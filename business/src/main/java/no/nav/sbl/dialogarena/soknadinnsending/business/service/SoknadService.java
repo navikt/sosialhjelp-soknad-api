@@ -28,12 +28,14 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseC
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStatus;
 import org.apache.commons.collections15.Closure;
 import org.apache.commons.collections15.Transformer;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Component;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.bind.JAXB;
@@ -50,6 +52,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import static java.lang.String.format;
 import static java.util.UUID.randomUUID;
 import static javax.xml.bind.JAXBContext.newInstance;
@@ -61,6 +64,7 @@ import static no.nav.modig.lang.collections.PredicateUtils.not;
 import static no.nav.modig.lang.collections.PredicateUtils.where;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.toInnsendingsvalg;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.getJournalforendeEnhet;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.getSkjemanummer;
@@ -174,7 +178,15 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     public WebSoknad hentSoknadMedBehandlingsId(String behandlingsId) {
         WebSoknad soknad = repository.hentMedBehandlingsId(behandlingsId);
         if (soknad == null) {
-            soknad = populerFraHenvendelse(behandlingsId);
+            Map<String, Object> map = populerFraHenvendelse(behandlingsId);
+            SoknadInnsendingStatus status = (SoknadInnsendingStatus) map.get("status");
+            if (status.equals(UNDER_ARBEID)) {
+                soknad = repository.hentMedBehandlingsId(behandlingsId);
+            } else {
+                soknad = new WebSoknad()
+                        .medskjemaNummer((String) map.get("skjemanummer"))
+                        .medStatus(status);
+            }
         }
         return soknad;
     }
@@ -186,7 +198,8 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         }
     }
 
-    private WebSoknad populerFraHenvendelse(String behandlingsId) {
+    private Map<String, Object> populerFraHenvendelse(String behandlingsId) {
+        Map<String, Object> returnMap = new HashMap<>();
         WSHentSoknadResponse wsSoknadsdata = henvendelseConnector.hentSoknad(behandlingsId);
 
         XMLMetadataListe vedleggListe = (XMLMetadataListe) wsSoknadsdata.getAny();
@@ -195,16 +208,19 @@ public class SoknadService implements SendSoknadService, EttersendingService {
             throw new ApplicationException("Kunne ikke hente opp søknad");
         }
 
-        byte[] bytes = fillagerConnector.hentFil(((XMLHovedskjema) hovedskjema.get()).getUuid());
-        WebSoknad soknad = JAXB.unmarshal(new ByteArrayInputStream(bytes), WebSoknad.class);
-
-        if (soknad.erUnderArbeid()) {
+        SoknadInnsendingStatus status = SoknadInnsendingStatus.valueOf(wsSoknadsdata.getStatus());
+        if (status.equals(UNDER_ARBEID)) {
+            byte[] bytes = fillagerConnector.hentFil(((XMLHovedskjema) hovedskjema.get()).getUuid());
+            WebSoknad soknad = JAXB.unmarshal(new ByteArrayInputStream(bytes), WebSoknad.class);
             repository.populerFraStruktur(soknad);
             List<WSInnhold> innhold = fillagerConnector.hentFiler(soknad.getBrukerBehandlingId());
             populerVedleggMedDataFraHenvendelse(soknad, innhold);
         }
 
-        return soknad;
+        returnMap.put("skjemanummer", ((XMLHovedskjema) hovedskjema.get()).getSkjemanummer());
+        returnMap.put("status", status);
+
+        return returnMap;
     }
 
     private void populerVedleggMedDataFraHenvendelse(WebSoknad soknad, List<WSInnhold> innhold) {
