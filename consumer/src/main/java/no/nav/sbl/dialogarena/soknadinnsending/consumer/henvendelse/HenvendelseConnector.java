@@ -32,6 +32,10 @@ public class HenvendelseConnector {
     @Named("sendSoknadService")
     private SendSoknadPortType sendSoknadService;
 
+    @Inject
+    @Named("sendSoknadSelftest")
+    private SendSoknadPortType sendSoknadSystembruker;
+
     public String hentSoknadEier(Long soknadId) {
         return "";
     }
@@ -105,7 +109,13 @@ public class HenvendelseConnector {
     public void avbrytSoknad(String behandlingsId) {
         logger.debug("Avbryt søknad");
         try {
-            sendSoknadService.avbrytSoknad(behandlingsId);
+            SendSoknadPortType sendSoknadPortType = sendSoknadService;
+            if(getSubjectHandler().getIdentType() == null) {
+                sendSoknadPortType = sendSoknadSystembruker;
+                logger.debug("Bruker systembruker for avbrytkall");
+            }
+
+            sendSoknadPortType.avbrytSoknad(behandlingsId);
         } catch (SOAPFaultException e) {
             logger.error("Kunne ikke avbryte søknad med ID {}", behandlingsId, e);
             throw new SystemException("Kunne ikke avbryte søknad", e, "exception.system.baksystem");
