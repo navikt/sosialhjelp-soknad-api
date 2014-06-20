@@ -32,7 +32,6 @@ import static java.util.Collections.sort;
 import static java.util.UUID.randomUUID;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
-import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -89,7 +88,7 @@ public class SoknadRepositoryJdbcTest {
                 .medUuid(uuid)
                 .medBehandlingId(behandlingsId)
                 .medskjemaNummer(skjemaNummer)
-                .opprettetDato(now());
+                .medOppretteDato(now());
 
         soknadRepository.opprettSoknad(soknad);
     }
@@ -100,7 +99,7 @@ public class SoknadRepositoryJdbcTest {
                 .medUuid(uuid)
                 .medAktorId(aktorId)
                 .medskjemaNummer(skjemaNummer)
-                .opprettetDato(now());
+                .medOppretteDato(now());
 
         soknadRepository.opprettSoknad(soknad);
     }
@@ -111,7 +110,7 @@ public class SoknadRepositoryJdbcTest {
                 .medUuid(uuid)
                 .medAktorId(aktorId)
                 .medBehandlingId(behandlingsId)
-                .opprettetDato(now());
+                .medOppretteDato(now());
 
         soknadRepository.opprettSoknad(soknad);
     }
@@ -283,9 +282,8 @@ public class SoknadRepositoryJdbcTest {
 
     @Test
     public void plukkerRiktigeSoknaderPaaTversAvAlleTraader() throws InterruptedException {
-        List<Long> soknaderSomSkalMellomlagres = lagreXSoknader(15, 2);
+        List<Long> soknaderSomSkalMellomlagres = lagreXSoknader(15, 3);
         lagreXSoknader(5, 0); // legger til søknader som ikke skal taes med
-
 
         final List<Long> soknaderSomBleMellomlagret = Collections.synchronizedList(new ArrayList<Long>());
         int numberOfThreads = 10;
@@ -314,57 +312,11 @@ public class SoknadRepositoryJdbcTest {
         assertThat(soknaderSomBleMellomlagret, equalTo(soknaderSomSkalMellomlagres));
     }
 
-    @Test
-    public void skalKunneAvslutteEnSoknad() {
-        opprettOgPersisterSoknad();
-
-        WebSoknad ikkeAvsluttetSoknad = soknadRepository.hentSoknad(soknadId);
-        soknadRepository.avslutt(ikkeAvsluttetSoknad);
-
-        WebSoknad avsluttetSoknad = soknadRepository.hentSoknad(soknadId);
-        assertThat(avsluttetSoknad, notNullValue());
-        assertThat(avsluttetSoknad.getStatus(), is(SoknadInnsendingStatus.FERDIG));
-    }
-
-    @Test
-    public void skalKunneAvbryteEnSoknad() {
-        opprettOgPersisterSoknad();
-
-        soknadRepository.avbryt(soknadId);
-
-        WebSoknad avbruttSoknad = soknadRepository.hentSoknad(soknadId);
-        assertThat(avbruttSoknad, notNullValue());
-        assertThat(avbruttSoknad.getStatus(), is(SoknadInnsendingStatus.AVBRUTT_AV_BRUKER));
-    }
-
     @Test(expected = EmptyResultDataAccessException.class)
     public void skalKunneSletteSoknad() {
         opprettOgPersisterSoknad();
         soknadRepository.slettSoknad(soknadId);
         soknadRepository.hentSoknad(soknadId);
-    }
-
-    @Test
-    public void skalSletteAllBrukerDataNaarEnSoknadAvbrytes() {
-        opprettOgPersisterSoknad();
-        lagreData("key1", null, "value1");
-        lagreData("key2", null, "value2");
-
-        WebSoknad ikkeAvbruttSoknad = soknadRepository.hentSoknadMedData(soknadId);
-        assertThat(ikkeAvbruttSoknad, notNullValue());
-        assertThat(ikkeAvbruttSoknad.getFaktaListe(), notNullValue());
-        assertThat(ikkeAvbruttSoknad.getFaktaListe().size(), is(2));
-        soknadRepository.avbryt(soknadId);
-
-        WebSoknad avbruttSoknad = soknadRepository.hentSoknadMedData(soknadId);
-        assertThat(avbruttSoknad, notNullValue());
-        assertThat(avbruttSoknad.getStatus(), is(SoknadInnsendingStatus.AVBRUTT_AV_BRUKER));
-        assertThat(avbruttSoknad.getFaktaListe(), notNullValue());
-//        assertThat(avbruttSoknad.getFakta(), empty());
-
-        List<Faktum> soknadBrukerData = soknadRepository.hentAlleBrukerData(soknadId);
-        assertThat(soknadBrukerData, notNullValue());
-        assertThat(soknadBrukerData, empty());
     }
 
     @Test
@@ -387,7 +339,7 @@ public class SoknadRepositoryJdbcTest {
                 .medAktorId("123123")
                 .medBehandlingId("AH123")
                 .medskjemaNummer(skjemaNummer)
-                .opprettetDato(now())
+                .medOppretteDato(now())
                 .leggTilFaktum(new Faktum().medSoknadId(101L).medFaktumId(11L).medKey("key1").medValue("val1").medType(BRUKERREGISTRERT).medProperty("test", "test"))
                 .leggTilFaktum(new Faktum().medSoknadId(101L).medFaktumId(12L).medKey("key2").medValue("val2").medType(SYSTEMREGISTRERT).medProperty("test2", "test2"))
                 .medVedlegg(Arrays.asList(new Vedlegg(101L, 11L, "L6", Vedlegg.Status.LastetOpp)));
@@ -397,11 +349,28 @@ public class SoknadRepositoryJdbcTest {
         assertThat(res, is(equalTo(soknad)));
     }
 
+    @Test
+    public void skalKunneHenteUtEttersendingMedBehandlingskjedeId() {
+        opprettOgPersisterEttersending("BehandlingsId");
+
+        Optional<WebSoknad> res = soknadRepository.hentEttersendingMedBehandlingskjedeId(behandlingsId);
+
+        assertThat(res.isSome(), is(true));
+        assertThat(res.get().getDelstegStatus(), is(DelstegStatus.ETTERSENDING_OPPRETTET));
+    }
+
+    @Test
+    public void skalFaaNullDersomManProverAHenteEttersendingMedBehandlingskjedeIdOgDetIkkeFinnesNoen() {
+        Optional<WebSoknad> res = soknadRepository.hentEttersendingMedBehandlingskjedeId(behandlingsId);
+
+        assertThat(res.isSome(), is(false));
+    }
+
     private List<Long> lagreXSoknader(int antall, int timerSidenLagring) {
         List<Long> soknadsIder = new ArrayList<>(antall);
         for (int i = 0; i < antall; i++) {
             Long id = opprettOgPersisterSoknad();
-            soknadRepositoryTestSupport.getJdbcTemplate().update("update soknad set sistlagret = SYSDATE - (INTERVAL '" + timerSidenLagring + "' HOUR) where soknad_id = ?", soknadId);
+            soknadRepositoryTestSupport.getJdbcTemplate().update("update soknad set sistlagret = CURRENT_TIMESTAMP - (INTERVAL '" + timerSidenLagring + "' HOUR) where soknad_id = ?", soknadId);
             soknadsIder.add(id);
         }
         return soknadsIder;
@@ -415,12 +384,25 @@ public class SoknadRepositoryJdbcTest {
         return opprettOgPersisterSoknad(randomUUID().toString(), nyAktorId);
     }
 
+    private Long opprettOgPersisterEttersending(String behandlinsId) {
+        soknad = WebSoknad.startEttersending(behandlingsId)
+                .medUuid(uuid)
+                .medAktorId(aktorId)
+                .medDelstegStatus(DelstegStatus.ETTERSENDING_OPPRETTET)
+                .medBehandlingskjedeId(behandlingsId)
+                .medskjemaNummer(skjemaNummer).medOppretteDato(now());
+        soknadId = soknadRepository.opprettSoknad(soknad);
+        soknad.setSoknadId(soknadId);
+        return soknadId;
+    }
+
     private Long opprettOgPersisterSoknad(String behId, String aktor) {
         soknad = WebSoknad.startSoknad()
                 .medUuid(uuid)
                 .medAktorId(aktor)
                 .medBehandlingId(behId)
-                .medskjemaNummer(skjemaNummer).opprettetDato(now());
+                .medDelstegStatus(DelstegStatus.OPPRETTET)
+                .medskjemaNummer(skjemaNummer).medOppretteDato(now());
         soknadId = soknadRepository.opprettSoknad(soknad);
         soknad.setSoknadId(soknadId);
         return soknadId;

@@ -17,7 +17,7 @@ angular.module('nav.fremdriftsindikator', [])
 
 				var spinner = angular.element(img);
 				spinner.insertAfter(element);
-                spinner.addClass('fremdriftsindikator')
+                spinner.addClass('fremdriftsindikator');
 				$compile(spinner)(scope);
 
 				scope.$watch('fremdriftsindikator.laster', function (value) {

@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 import com.google.common.base.Function;
+import no.nav.modig.core.exception.ApplicationException;
 import no.nav.modig.lang.collections.iter.ReduceFunction;
 import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
@@ -41,8 +42,6 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.limit
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.selectNextSequenceValue;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.AVBRUTT_AV_BRUKER;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.FERDIG;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad.startSoknad;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -96,11 +95,17 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     private void insertSoknad(WebSoknad soknad, Long databasenokkel) {
         getJdbcTemplate()
-                .update("insert into soknad (soknad_id, uuid, brukerbehandlingid, navsoknadid, aktorid, opprettetdato, status, delstegstatus) values (?,?,?,?,?,?,?,?)",
-                        databasenokkel, soknad.getUuid(), soknad.getBrukerBehandlingId(),
-                        soknad.getskjemaNummer(), soknad.getAktoerId(),
+                .update("insert into soknad (soknad_id, uuid, brukerbehandlingid, navsoknadid, aktorid, opprettetdato, status, delstegstatus, behandlingskjedeid, journalforendeEnhet) values (?,?,?,?,?,?,?,?,?,?)",
+                        databasenokkel,
+                        soknad.getUuid(),
+                        soknad.getBrukerBehandlingId(),
+                        soknad.getskjemaNummer(),
+                        soknad.getAktoerId(),
                         new Date(soknad.getOpprettetDato()),
-                        soknad.getStatus().name(), soknad.getDelstegStatus().name());
+                        soknad.getStatus().name(),
+                        soknad.getDelstegStatus().name(),
+                        soknad.getBehandlingskjedeId(),
+                        soknad.getJournalforendeEnhet());
     }
 
     @Override
@@ -123,6 +128,25 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         for (Vedlegg vedlegg : soknad.getVedlegg()) {
             vedleggRepository.opprettVedlegg(vedlegg, null);
         }
+    }
+
+    @Override
+    public Optional<WebSoknad> hentEttersendingMedBehandlingskjedeId(String behandlingsId) {
+        String sql = "select * from soknad where behandlingskjedeid = ? and status = 'UNDER_ARBEID'";
+        return on(getJdbcTemplate().query(sql, new SoknadRowMapper(), behandlingsId)).head();
+    }
+
+    @Override
+    public WebSoknad hentEttersendingMedBehandlingskjedeIdMedData(String behandlingsId) {
+        Optional<WebSoknad> soknadOptional = hentEttersendingMedBehandlingskjedeId(behandlingsId);
+
+        if (soknadOptional.isSome()) {
+            WebSoknad soknad = soknadOptional.get();
+            soknad.medBrukerData(hentAlleBrukerData(soknad.getSoknadId()));
+            return soknad;
+        }
+
+        throw new ApplicationException("Kunne ikke finne ettersending for behandlingsId " + behandlingsId);
     }
 
     @Override
@@ -327,23 +351,6 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     }
 
     @Override
-    public void avslutt(WebSoknad soknad) {
-        logger.debug("Setter status til søknad med id {} til ferdig",
-                soknad.getSoknadId());
-        String status = FERDIG.name();
-        getJdbcTemplate().update("update soknad set status = ? where soknad_id = ?", status, soknad.getSoknadId());
-    }
-
-    @Override
-    public void avbryt(Long soknad) {
-        logger.debug("Setter status til søknad med id {} til avbrutt", soknad);
-        String status = AVBRUTT_AV_BRUKER.name();
-        getJdbcTemplate().update("update soknad set status = ? where soknad_id = ?", status, soknad);
-        getJdbcTemplate().update("delete from vedlegg where soknad_id = ?", soknad);
-        getJdbcTemplate().update("delete from soknadbrukerdata where soknad_id = ?", soknad);
-    }
-
-    @Override
     public void slettSoknad(long soknadId) {
         logger.debug("Sletter søknad med ID: " + soknadId);
         getJdbcTemplate().update("delete from faktumegenskap where soknad_id = ?", soknadId);
@@ -375,9 +382,10 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
                     .medskjemaNummer(rs.getString("navsoknadid"))
                     .medAktorId(rs.getString("aktorid"))
                     .medUuid("uuid")
-                    .opprettetDato(new DateTime(rs.getTimestamp("opprettetdato").getTime()))
+                    .medOppretteDato(new DateTime(rs.getTimestamp("opprettetdato").getTime()))
                     .medStatus(SoknadInnsendingStatus.valueOf(rs.getString("status")))
-                    .medDelstegStatus(DelstegStatus.valueOf(rs.getString("delstegstatus")));
+                    .medDelstegStatus(DelstegStatus.valueOf(rs.getString("delstegstatus")))
+                    .medJournalforendeEnhet(rs.getString("journalforendeenhet"));
         }
     }
 }

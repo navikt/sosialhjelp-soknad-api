@@ -97,9 +97,16 @@ public class SoknadTpsDataControllerTest {
 
     @Test
     public void skalLagrePersonalia() throws Exception {
-        mockMvc.perform(post("/soknad/personalia").contentType(MediaType.APPLICATION_JSON).content("11"))
+        mockMvc.perform(post("/soknad/personalia/11").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-        verify(personaliaService).lagrePersonaliaOgBarn(SubjectHandler.getSubjectHandler().getUid(), 11L);
+        verify(personaliaService).lagrePersonaliaOgBarn(SubjectHandler.getSubjectHandler().getUid(), 11L, false);
+    }
+
+    @Test
+    public void skalLagrePersonaliaOgBarn() throws Exception {
+        mockMvc.perform(post("/soknad/personalia/11").contentType(MediaType.APPLICATION_JSON).content("true"))
+                .andExpect(status().isOk());
+        verify(personaliaService).lagrePersonaliaOgBarn(SubjectHandler.getSubjectHandler().getUid(), 11L, true);
     }
 
     @Test

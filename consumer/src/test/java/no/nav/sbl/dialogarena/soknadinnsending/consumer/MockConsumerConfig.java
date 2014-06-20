@@ -1,10 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLGyldighetsperiode;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostboksadresseNorsk;
-
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseNorge;
-
+import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 import no.aetat.arena.fodselsnr.Fodselsnr;
 import no.aetat.arena.personstatus.Personstatus;
 import no.aetat.arena.personstatus.PersonstatusType;
@@ -14,6 +10,7 @@ import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingsId;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSEmpty;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSSoknadsdata;
@@ -27,11 +24,14 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLEPost;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLElektroniskAdresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLElektroniskKommunikasjonskanal;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLGateadresse;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLGyldighetsperiode;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLLandkoder;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseNorge;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLNorskIdent;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPersonnavn;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostadresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostadressetyper;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostboksadresseNorsk;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostnummer;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLUstrukturertAdresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserRequest;
@@ -46,6 +46,7 @@ import no.nav.tjeneste.virksomhet.kodeverk.v2.meldinger.XMLHentKodeverkResponse;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Doedsdato;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjon;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjoner;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Landkoder;
@@ -88,7 +89,6 @@ import static org.mockito.Mockito.when;
 @ComponentScan(excludeFilters = @Filter(Configuration.class))
 
 public class MockConsumerConfig {
-
     @Configuration
     public static class SendSoknadWSConfig {
 
@@ -128,6 +128,11 @@ public class MockConsumerConfig {
                     lager.put(uuid, new WSHentSoknadResponse().withBehandlingsId(uuid).withAny(parameters.getAny()));
                     return new WSBehandlingsId().withBehandlingsId(uuid);
                 }
+
+                @Override
+                public List<WSBehandlingskjedeElement> hentBehandlingskjede(String behandlingsId) {
+                    return null;
+                }
             };
             return mock;
         }
@@ -166,6 +171,7 @@ public class MockConsumerConfig {
                     File file;
                     try {
                         file = new File("C:" + File.separator + "temp" + File.separator + s2);
+//                        file = new File("C:" + File.separator + "temp" + File.separator + "ettersending.pdf");
                         if (!file.exists()) {
                             file.createNewFile();
                         }
@@ -273,6 +279,9 @@ public class MockConsumerConfig {
 
             Familierelasjon familierelasjon2 = new Familierelasjon();
             Person barn2 = genererPersonMedGyldigIdentOgNavn("***REMOVED***", "Ole", "Mockmann");
+            Doedsdato doedsdato = new Doedsdato();
+            doedsdato.setDoedsdato(XMLGregorianCalendarImpl.createDate(2014, 2, 2, 0));
+            barn2.setDoedsdato(doedsdato);
             familierelasjon2.setTilPerson(barn2);
             Familierelasjoner familieRelasjonRolle2 = new Familierelasjoner();
             familieRelasjonRolle2.setValue("BARN");

@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 
 import java.util.List;
+import java.util.Map;
 
 public interface SendSoknadService {
 
@@ -15,7 +16,7 @@ public interface SendSoknadService {
 
     String hentSoknadEier(Long soknadId);
 
-    Long hentSoknadMedBehandlinsId(String behandlingsId);
+    Long hentSoknadMedBehandlingsId(String behandlingsId);
 
     Faktum lagreSoknadsFelt(Long soknadId, Faktum faktum);
 
@@ -29,10 +30,9 @@ public interface SendSoknadService {
 
     void slettBrukerFaktum(Long soknadId, Long faktumId);
 
-
-    WebSoknad hentSoknadMetaData(long soknadId);
-
     void settDelsteg(Long soknadId, DelstegStatus delstegStatus);
 
     SoknadStruktur hentSoknadStruktur(Long soknadId);
+
+    Map<String,String> hentInnsendtDatoForOpprinneligSoknad(String behandlingsId);
 }

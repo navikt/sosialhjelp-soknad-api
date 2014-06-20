@@ -1,5 +1,4 @@
 #visvedlegg {
-    position: fixed;
     width: 100%;
     height: 100%;
     z-index: 10;
@@ -9,49 +8,59 @@
     text-align: center;
     color: #0CA9E0;
     background-color: #333333;
+    padding-top: 0;
 
     .bildenavigering {
         height: 100%;
 
         .header {
-            height: 40px;
+            background-color: #333333;
+            position: fixed;
+            top: 0;
+            height: 50px;
             width: 102%;
             box-shadow: 0 1px 4px #000000;
             color: #d1d1d1;
-            position: relative;
             left: -1%;
             z-index: 1000;
 
-            .header-content {
-                max-width: 565px;
-                margin: 0 auto;
+            a {
+                font-family: Modus, Arial, Helvetica, sans-serif;
+                font-weight: 600;
+                font-size: 12px;
+                text-transform: uppercase;
                 position: relative;
-                padding-top: 10px;
+                top: 16px;
+                padding: 6px 25px;
+                border: 1px solid #5f5e5d;
+                width: 150px;
+                color: #fff;
 
-                .tilbake {
-                    position: absolute;
-                    left: 0;
+                &:hover, &:active, &:focus {
+                    text-decoration: none !important;
+                }
 
-                    a {
-                        padding: 6px 10px;
-                        border: 1px groove #d1d1d1;
-                        width: 150px;
-                        color: #d1d1d1;
-
-                        &.mobil {
-                            display: none;
-                        }
-                    }
-
+                &:hover {
+                    background-color: #00a9e0;
+                    border-color: #00a9e0;
+                    color: #000;
                 }
             }
         }
 
         .nav {
             height: 100%;
-            padding-top: 30px;
+            padding-top: 90px;
+
+            .navn {
+                color: #b7b1a9;
+                max-width: 80%;
+                margin: 0 auto;
+                font-weight: normal;
+            }
 
             .bilde {
+                padding-top: 40px;
                 min-height: 128px;
                 width: 100%;
 
@@ -85,28 +94,6 @@
     #visvedlegg {
         .bildenavigering {
             width: 100%;
-
-            .header {
-                .header-content {
-                    .tilbake {
-                        top: 5px;
-                        left: 15px;
-
-                        a {
-                            width: auto;
-                            padding: 6px 10px;
-
-                            &.mobil {
-                                display: block;
-                            }
-
-                            &.ikke-mobil{
-                                display: none;
-                            }
-                        }
-                    }
-                }
-            }
 
             .nav {
                 .bilde {

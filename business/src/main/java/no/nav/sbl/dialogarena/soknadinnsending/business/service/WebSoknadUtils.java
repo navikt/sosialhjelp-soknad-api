@@ -1,5 +1,15 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.Adresse;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBuilder;
+import org.joda.time.LocalDate;
+
+import java.util.List;
+import java.util.Map;
+
 import static java.util.Collections.reverseOrder;
 import static no.nav.modig.lang.collections.ComparatorUtils.compareWith;
 import static no.nav.modig.lang.collections.IterUtils.on;
@@ -12,17 +22,6 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.DATO_TIL;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.TYPE;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.Adresse;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBuilder;
-
-import org.joda.time.LocalDate;
-
-import java.util.List;
-import java.util.Map;
-
 public class WebSoknadUtils {
     public static final String DAGPENGER_VED_PERMITTERING = "NAV 04-01.04";
     public static final String DAGPENGER = "NAV 04-01.03";
@@ -31,6 +30,7 @@ public class WebSoknadUtils {
     public static final String PERMITTERT = "Permittert";
     public static final String REDUSERT_ARBEIDSTID = "Redusert arbeidstid";
     public static final String ANNEN_AARSAK = "Annen årsak";
+
     private static String erPermittertellerHarRedusertArbeidstid(WebSoknad soknad) {
 
         List<Faktum> sluttaarsak = soknad.getFaktaMedKey("arbeidsforhold");
@@ -54,6 +54,10 @@ public class WebSoknadUtils {
 
 
     public static String getSkjemanummer(WebSoknad soknad) {
+        if (soknad.erEttersending()) {
+            return soknad.getskjemaNummer();
+        }
+
         String sluttaarsak = erPermittertellerHarRedusertArbeidstid(soknad);
         if (sluttaarsak.equals(PERMITTERT)) {
             return DAGPENGER_VED_PERMITTERING;
@@ -65,7 +69,17 @@ public class WebSoknadUtils {
     public static String getJournalforendeEnhet(WebSoknad webSoknad) {
         String sluttaarsak = erPermittertellerHarRedusertArbeidstid(webSoknad);
         Personalia personalia = getPerson(webSoknad);
-           if ((personalia.harUtenlandskAdresseIEOS() && (!personalia.harNorskMidlertidigAdresse()))) {
+
+        if (webSoknad.erEttersending()) {
+            return webSoknad.getJournalforendeEnhet();
+        } else {
+            return finnJournalforendeEnhetForSoknad(sluttaarsak, personalia);
+
+        }
+    }
+
+    private static String finnJournalforendeEnhetForSoknad(String sluttaarsak, Personalia personalia) {
+        if ((personalia.harUtenlandskAdresseIEOS() && (!personalia.harNorskMidlertidigAdresse()))) {
             if (sluttaarsak.equals(PERMITTERT) || (sluttaarsak.equals(REDUSERT_ARBEIDSTID))) {
                 return EOS_DAGPENGER;
             } else {

@@ -73,6 +73,13 @@ public class FillagerConnector {
         } catch (SOAPFaultException e) {
             throw new SystemException("Kunne ikke hente filer fra baksystem", e, "exception.system.baksystem");
         }
+    }
 
+    public void slettAlle(String behandlingsId) {
+        try {
+            portType.slettAlle(behandlingsId);
+        } catch (SOAPFaultException e) {
+            throw new SystemException("Kunne ikke slette filer fra baksystem", e, "exception.system.baksystem");
+        }
     }
 }

@@ -1,12 +1,23 @@
 describe('utility funksjoner -', function () {
     describe('Array prototype:', function () {
 
-        var array, objArray;
+        var array, objArray, complexObjArray;
 
         beforeEach(function () {
             array = [1, 2, 3];
             objArray = [
                 {a: 1, 2: 'b'}
+            ];
+
+            complexObjArray = [
+                {
+                    field1: 1,
+                    field2: 2
+                },
+                {
+                    field1: 2,
+                    field2: 2
+                }
             ];
         });
 
@@ -41,6 +52,16 @@ describe('utility funksjoner -', function () {
         it('skal returnere -1 dersom ingen objekter i arrayet har gitt verdi', function () {
             expect(objArray.indexByValue(2)).toBe(-1);
         });
+
+        it('skal returnere index til første element med gitt verdi ved gitt attributt-navn', function () {
+            expect(complexObjArray.indexByFieldValue('field1', 1)).toBe(0);
+            expect(complexObjArray.indexByFieldValue('field1', 2)).toBe(1);
+            expect(complexObjArray.indexByFieldValue('field2', 2)).toBe(0);
+        });
+
+        it('skal returnere -1 dersom ingen element har gitt verdi ved gitt attributt', function () {
+            expect(complexObjArray.indexByFieldValue('field1', 3)).toBe(-1);
+        });
     });
 
     describe('String prototype', function() {
@@ -74,46 +95,23 @@ describe('utility funksjoner -', function () {
         });
     });
 
-    describe('Sjekk deep clone av et objekt', function () {
-        var obj;
-
-        beforeEach(function () {
-            obj = {1: 'a'};
-        });
-
-        it('deep clone skal klone ett objekt', function () {
-            var objDeepClone = deepClone(obj);
-            expect(Object.keys(objDeepClone)).toEqual(Object.keys(obj));
-        });
-
-        it('endringer i ett objekt skal ikke propageres til ett klonet objekt', function () {
-            var ikkeDeepClone = obj;
-            var objDeepClone = deepClone(obj);
-            obj[2] = 'b';
-
-            expect(Object.keys(obj).length).toEqual(2);
-            expect(Object.keys(ikkeDeepClone)).toEqual(Object.keys(obj));
-            expect(Object.keys(objDeepClone)).not.toEqual(Object.keys(obj));
-        });
-    });
-
     describe('Sjekk attributt av java-objekt', function () {
         it('skal returnere true for objekt som inneholder attributt uten angular-prefix', function () {
             var obj = {attributt: 1};
 
-            expect(harAttributt(obj, 'attributt')).toBe(1);
+            expect(harAttributt(null, obj, 'attributt')).toBe(1);
         });
 
         it('skal returnere false for objekt som ikke inneholder attributt uten angular-prefix', function () {
             var obj = {attributt: 1};
 
-            expect(harAttributt(obj, 'blah')).toBe(false);
+            expect(harAttributt(null, obj, 'blah')).toBe(false);
         });
 
         it('skal returnere true for objekt som inneholder attributt med angular-prefix men uten data-prefix', function () {
             var obj = {'ngAttributt': 1};
 
-            expect(harAttributt(obj, 'attributt')).toBe(1);
+            expect(harAttributt(null, obj, 'attributt')).toBe(1);
         });
     });
 
@@ -129,127 +127,6 @@ describe('utility funksjoner -', function () {
             var expectedStr = "Tekst";
             expect(capitalizeFirstLetter(str)).toBe(expectedStr);
         });
-    });
-
-    describe('opprettEgendefinertFeilmelding', function () {
-        it('Skal opprette egendefinert feilmeldingobjekt på errors', function () {
-            var feilmelding = opprettEgendefinertFeilmelding();
-            expect(feilmelding).toBeDefined();
-        });
-
-        it('Egendefinert feilmelding skal inneholde et navn', function () {
-            var feilmelding = opprettEgendefinertFeilmelding("navn");
-            expect(feilmelding.$name).toBeDefined();
-        });
-
-        it('Skal kunne oppgi navn til egendefinert feilmelding', function () {
-            var navn = "Navn";
-            var feilmelding = opprettEgendefinertFeilmelding(navn);
-            expect(feilmelding.$name).toBe(navn);
-        });
-
-        it('Skal kunne oppgi error-message for egendefiner feilmelding', function () {
-            var navn = "Navn";
-            var errormessage = "Error";
-            var feilmelding = opprettEgendefinertFeilmelding(navn, errormessage);
-            expect(feilmelding.$errorMessages).toBe(errormessage);
-        });
-
-        it('Skal kunne oppgi string for å referere til ett element', function () {
-            var navn = "Navn";
-            var errormessage = "Error";
-            var referanse = "Ref";
-            var feilmelding = opprettEgendefinertFeilmelding(navn, errormessage, referanse);
-            expect(feilmelding.$linkId).toBe(referanse);
-        });
-
-        it('Skal kunne oppgi valid for egendefiner feilmelding', function () {
-            var navn = "Navn";
-            var errormessage = "Error";
-            var valid = true;
-            var referanse = "Ref";
-            var feilmelding = opprettEgendefinertFeilmelding(navn, errormessage, referanse, valid);
-            expect(feilmelding.$valid).toBe(valid);
-        });
-
-        it('Invalid skal bli satt automatisk til det motsatte av valid', function () {
-            var navn = "Navn";
-            var errormessage = "Error";
-            var valid = true;
-            var referanse = "Ref";
-            var feilmelding = opprettEgendefinertFeilmelding(navn, errormessage, referanse, valid);
-            expect(feilmelding.$invalid).toBe(!valid);
-        });
-
-        it('Skal kunne sette om en feilmelding skal være den eneste som vises', function () {
-            var navn = "Navn";
-            var errormessage = "Error";
-            var valid = true;
-            var referanse = "Ref";
-            var skalVisesAlene = true;
-
-            var feilmelding = opprettEgendefinertFeilmelding(navn, errormessage, referanse, valid, skalVisesAlene);
-            expect(feilmelding.$skalVisesAlene).toBe(skalVisesAlene);
-        });
-    });
-
-    describe('settEgendefinertFeilmeldingsverdi', function () {
-        var scope, form, element;
-
-        beforeEach(inject(function ($compile, $rootScope) {
-            scope = $rootScope;
-            element = angular.element(
-                '<form name="form"></form>'
-            );
-            scope.permiteringProsent = '';
-            $compile(element)(scope);
-            scope.$digest();
-            form = scope.form;
-            element.scope().$apply();
-        }));
-
-        it('Skal kunne legge til feilmelding', function () {
-            var valid = false;
-
-            settEgendefinertFeilmeldingsverdi(form, 'feilmeldingskategori', 'navn', 'errormessage', 'referanseTilElement', valid, false);
-            expect(form.$error.feilmeldingskategori.length).toEqual(1);
-            expect(form.$error.feilmeldingskategori[0].$valid).toEqual(false);
-        });
-
-        it('Feilmelding skal fjernes dersom den endres til valid', function () {
-            var valid = false;
-
-            settEgendefinertFeilmeldingsverdi(form, 'feilmeldingskategori', 'navn', 'errormessage', 'referanseTilElement', valid, false);
-            expect(form.$error.feilmeldingskategori.length).toEqual(1);
-            expect(form.$error.feilmeldingskategori[0].$valid).toEqual(false);
-
-            settEgendefinertFeilmeldingsverdi(form, 'feilmeldingskategori', 'navn', 'errormessage', 'referanseTilElement', true, false);
-            expect(form.$error.feilmeldingskategori.length).toEqual(0);
-        });
-
-    });
-    describe('leggTilFeilmeldingHvisDenIkkeFinnes', function () {
-        var scope, form, element;
-
-        beforeEach(inject(function ($compile, $rootScope) {
-            scope = $rootScope;
-            element = angular.element(
-                '<form name="form"></form>'
-            );
-            scope.permiteringProsent = '';
-            $compile(element)(scope);
-            scope.$digest();
-            form = scope.form;
-            element.scope().$apply();
-        }));
-
-        it('Skal kunne legge til feilmelding hvis den ikke finnes ', function () {
-            form.$error.feilmeldingskategori = [];
-            expect(form.$error.feilmeldingskategori.length).toEqual(0);
-            leggTilFeilmeldingHvisDenIkkeFinnes(form, 'feilmeldingskategori', 'feilmeldingsnavn', 'feilmelding', 'feilmeldingElementNavn', true, false);
-            expect(form.$error.feilmeldingskategori.length).toEqual(1);
-        });
-
     });
 
     describe('reversere norsk datoformat (fra dd.MM.yyyy til yyyy.MM.dd', function () {
@@ -320,9 +197,9 @@ describe('utility funksjoner -', function () {
         });
 
         it('skal returnere true for fremtidig dato', function() {
-            var idag = new Date();
-            var imorgen = new Date(idag.getTime() + 86400000);
-                       
+            var imorgen = new Date();
+            imorgen.setDate(imorgen.getDate() + 1)
+
             var result = erFremtidigDato(imorgen.getFullYear(), imorgen.getMonth()+1, imorgen.getDate());
             expect(result).toEqual(true);
         });
@@ -354,7 +231,6 @@ describe('utility funksjoner -', function () {
             expect(konverterTallTilStringMedToSiffer(tall)).toBe("10");
         });
     });
-
 });
 
 

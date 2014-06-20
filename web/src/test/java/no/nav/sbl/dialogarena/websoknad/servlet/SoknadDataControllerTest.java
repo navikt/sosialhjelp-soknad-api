@@ -63,15 +63,15 @@ public class SoknadDataControllerTest {
 
     @Test
     public void skalHenteDataFraDiverseEndpoints() throws Exception {
-        when(soknadService.hentSoknad(11L)).thenReturn(WebSoknad.startSoknad().medId(11L).opprettetDato(new DateTime()).medskjemaNummer("NAV 04-01.03"));
+        when(soknadService.hentSoknad(11L)).thenReturn(WebSoknad.startSoknad().medId(11L).medOppretteDato(new DateTime()).medskjemaNummer("NAV 04-01.03"));
         mockMvc.perform(get("/soknad/{soknadId}", 11L).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("soknadId").value(11));
-        when(soknadService.hentSoknadMetaData(11L)).thenReturn(WebSoknad.startSoknad().medId(11L).opprettetDato(new DateTime()));
+        when(soknadService.hentSoknad(11L)).thenReturn(WebSoknad.startSoknad().medId(11L).medOppretteDato(new DateTime()));
         mockMvc.perform(get("/soknad/metadata/{soknadId}", 11L).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("soknadId").value(11));
-        when(soknadService.hentSoknadMedBehandlinsId("123")).thenReturn(15L);
+        when(soknadService.hentSoknadMedBehandlingsId("123")).thenReturn(15L);
         mockMvc.perform(get("/soknad/behandling/{behandlingsId}", "123").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("result").value("15"));

@@ -159,7 +159,7 @@ body.contrast {
     }
   }
 
-  .knapp-liten, .knapp-hoved-liten {
+  .knapp-liten, .knapp-hoved-liten, .knapp-advarsel {
     background-color: #ffffff !important;
     color: #000000 !important;
 
@@ -188,6 +188,9 @@ body.contrast {
       background-color: #ffffff !important;
       border-color: #ffffff;
     }
+  }
+  .datepicker label .datepicker-input .apne-datepicker {
+    background-color: transparent !important;
   }
 
   .vedlegginfoboks [class*="ikon-vedlegg-strek"] {
@@ -275,5 +278,48 @@ body.contrast {
 
   #barnetilleggForm .barn.jente .barnealder span {
     color: #fb6e8c !important;
+    background-color: transparent !important;
+  }
+
+  #barnetilleggForm .barn.gutt .barnealder span {
+    color: #0FBA47 !important;
+    background-color: transparent !important;
+  }
+
+  #barnetilleggForm .hake {
+    background: url(../img/hake-hvit.svg) no-repeat;
+  }
+
+  [class*="strek-ikon-slettet"], [class*="ikon-slettet-strek"] {
+    background-image: url(../img/under-dark.png), url(../img/hake_ok.svg);
+  }
+
+  footer.footer ul.fotlenker li a:before, .liste-vannrett li:not([class*="dropdown"]):before, #slett .rad-belyst .slett-soknad-stor .lenker-dot .liste-vannrett li:not([class*="dropdown"]):before, #slettet .slett-soknad-stor .lenker-dot .liste-vannrett li:not([class*="dropdown"]):before {
+    color: #fff;
+  }
+  #opplasting #opplastingform .begrensning .opplastingliste .leggtil {
+    border: 1px solid #fff;
+    label {
+      background-color: transparent !important;
+    }
+  }
+  #opplasting #opplastingform .begrensning .opplastingliste .leggtil {
+    background-image: url(../img/legg_til_hoykontrast.svg);
+    &:hover {
+      background-image: url(../img/legg_til.svg);
+    }
+  }
+  .bildenavigering .pil-hoyre-hvit {
+    background-image: url('../img/rund-pil-hvit-hoyre-hoykontrast.svg');
+    &:hover {
+      background-image: url('../img/rund-pil-hvit-hoyre-hover.svg');
+    }
+  }
+  .bildenavigering .pil-venstre-hvit {
+    background-image: url('../img/rund-pil-hvit-venstre-hoykontrast.svg');
+    color: #c30000;
+    &:hover {
+      background-image: url('../img/rund-pil-hvit-venstre-hover.svg');
+    }
   }
 }

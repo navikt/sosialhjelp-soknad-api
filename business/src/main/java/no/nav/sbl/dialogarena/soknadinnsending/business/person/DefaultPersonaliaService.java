@@ -84,7 +84,7 @@ public class DefaultPersonaliaService implements PersonaliaService {
     }
 
     @Override
-    public Personalia lagrePersonaliaOgBarn(String fodselsnummer, Long soknadId) {
+    public Personalia lagrePersonaliaOgBarn(String fodselsnummer, Long soknadId, Boolean lagreBarn) {
         XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse;
         HentKjerneinformasjonResponse kjerneinformasjonResponse;
 
@@ -106,10 +106,12 @@ public class DefaultPersonaliaService implements PersonaliaService {
         }
 
         Personalia personalia = PersonaliaTransform.mapTilPersonalia(preferanserResponse, kjerneinformasjonResponse, kodeverk);
-        List<Barn> barn = FamilierelasjonTransform.mapFamilierelasjon(kjerneinformasjonResponse);
-
         lagrePersonalia(soknadId, personalia);
-        lagreBarn(soknadId, barn);
+
+        if (lagreBarn) {
+            List<Barn> barn = FamilierelasjonTransform.mapFamilierelasjon(kjerneinformasjonResponse);
+            lagreBarn(soknadId, barn);
+        }
 
         return personalia;
     }

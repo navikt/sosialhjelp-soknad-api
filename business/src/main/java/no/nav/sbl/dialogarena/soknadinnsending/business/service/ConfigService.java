@@ -37,8 +37,10 @@ public class ConfigService {
     private String brukerProfilUrl;
     @Value("${dittnav.link.url}")
     private String dittnavUrl;
-    
-    
+
+    @Value("${soknad.ettersending.antalldager}")
+    private String antallDager;
+
     
     public Map<String,String> getConfig() {
         Map<String, String> result = new HashMap<String, String>();
@@ -52,8 +54,14 @@ public class ConfigService {
         result.put("soknad.reelarbeidsoker.url", reelarbeidsokerUrl);
         result.put("soknad.dagpengerbrosjyre.url", dagpengerBrosjyreUrl);
         result.put("soknad.brukerprofil.url", brukerProfilUrl);
+        result.put("soknad.ettersending.antalldager", antallDager);
 
         return result;
+    }
+
+    public String getValue(String key) {
+        Map<String, String> configMap = getConfig();
+        return configMap.get(key);
     }
 
     public Map<String,String> getConfig(Long soknadId) {
@@ -62,7 +70,7 @@ public class ConfigService {
         SoknadStruktur struktur = soknadService.hentSoknadStruktur(soknadId);
 
         for (SoknadVedlegg soknadVedlegg : struktur.getVedlegg()) {
-            settInnUrlForSkjema(soknadVedlegg.getSkjemaNummer(), result);
+            settInnUrlForSkjema(soknadVedlegg.getSkjemaNummerFiltrert(), result);
         }
 
         for (String skjemanummer : struktur.getVedleggReferanser()) {

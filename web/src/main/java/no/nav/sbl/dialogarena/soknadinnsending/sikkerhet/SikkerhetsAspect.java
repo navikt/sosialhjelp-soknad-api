@@ -1,6 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.sikkerhet;
 
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -18,6 +20,9 @@ public class SikkerhetsAspect {
     @Inject
     Tilgangskontroll tilgangskontroll;
 
+    @Inject
+    private SendSoknadService soknadService;
+
     @Pointcut("@annotation(no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad)")
     public void requestMapping() {
     }
@@ -26,7 +31,12 @@ public class SikkerhetsAspect {
     public void sjekkSoknadIdModBruker(Long soknadId, SjekkTilgangTilSoknad tilgang) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         if (tilgang.sjekkXsrf() && request.getMethod().equals(RequestMethod.POST.name())) {
-            XsrfGenerator.sjekkXsrfToken(request.getHeader("X-XSRF-TOKEN"), soknadId);
+            WebSoknad soknad = soknadService.hentSoknad(soknadId);
+            String brukerBehandlingId = soknad.getBrukerBehandlingId();
+            if (soknad.getBehandlingskjedeId() != null) {
+                brukerBehandlingId = soknad.getBehandlingskjedeId();
+            }
+            XsrfGenerator.sjekkXsrfToken(request.getHeader("X-XSRF-TOKEN"), brukerBehandlingId);
         }
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(soknadId);
     }

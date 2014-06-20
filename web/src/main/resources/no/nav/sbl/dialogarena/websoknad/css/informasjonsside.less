@@ -1,6 +1,10 @@
 #informasjonsside {
     border-top: 1px solid #d1d1d1;
 
+    .avhuket {
+        margin-top: 15px;
+    }
+
     .sjekket {
         display: inline-block;
         background: url(../img/hake_sort.png) no-repeat center;
@@ -33,12 +37,6 @@
         }
     }
 
-    h2 {
-        text-align: center;
-        padding-bottom: 25px !important;
-        margin-bottom: 25px !important;
-    }
-
     form.form-linje {
         margin-left: 5px;
     }
@@ -50,18 +48,26 @@
         li {
             &:before {
                 content: "•";
-                list-style-type: none;
-                padding: 0 0.9rem;
-                margin-left: -32px;
+                display: inline-block;
+                margin-left: -20px;
+                vertical-align: top;
+                position: relative;
+                padding-right: 10px;
             }
-            padding-bottom: 15px;
             padding-left: 20px;
+            padding-bottom: 15px;
             font-weight: bold;
 
-            p {
-                display: inline;
+            &:last-child {
+                padding-bottom: 0;
             }
+
+            p {
+                display: inline-block;
+            }
+
             a {
+                display: block;
                 font-weight: normal;
             }
         }
@@ -86,12 +92,6 @@
         border-bottom: 1px solid #d1d1d1;
 
     }
-    .viktig-info {
-        a {
-            display: block;
-            padding-top: 5px;
-        }
-    }
 
     .utslagskriterier-knapper {
         margin-top: 40px;
@@ -113,5 +113,16 @@
             display: block;
             margin: 0 auto 20px;
         }
+    }
+
+    .checkbox {
+        padding-top: 30px;
+        padding-left: 20px;
+    }
+
+    a.registrer {
+        display: block;
+        margin-top: 20px;
+        margin-bottom: 30px;
     }
 }

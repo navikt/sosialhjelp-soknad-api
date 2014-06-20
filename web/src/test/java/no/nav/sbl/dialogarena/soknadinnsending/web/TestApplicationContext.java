@@ -26,11 +26,10 @@ import javax.inject.Inject;
         FooterConfig.class,
         GAConfig.class,
         ContentConfig.class,
-        MockConsumerConfig.class,
         SoknadInnsendingDBConfig.class})
 
 public class TestApplicationContext {
-    private boolean mockHenvendelse = true;
+    private boolean mockHenvendelse = false;
     private boolean mockBrukerprofil = true;
     private boolean mockTps = true;
     private boolean mockKodeverk = true;

@@ -6,6 +6,7 @@ angular.module('nav.navfaktum', [])
 			controller: ['$scope', '$attrs', '$filter', function ($scope, $attrs, $filter) {
 				var val = $scope.parentFaktum.properties[$attrs.navFaktumProperty];
 				if (val && val.match(/\d\d\d\d\.\d\d\.\d\d/)) {
+                    val = val.replace(/\./g, '-');
 					val = new Date(val);
 				}
 
@@ -62,6 +63,7 @@ angular.module('nav.navfaktum', [])
 					props.forEach(function (prop) {
                         var val = $scope.faktum.properties[prop];
 						if (val && val.match(/\d\d\d\d\.\d\d\.\d\d/)) {
+                            val = val.replace(/\./g, '-');
 							val = new Date(val);
                         }
 						$scope.navproperties[prop] = val;
