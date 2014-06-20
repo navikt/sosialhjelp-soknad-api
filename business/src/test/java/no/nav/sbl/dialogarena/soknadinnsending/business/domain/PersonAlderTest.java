@@ -19,31 +19,31 @@ public class PersonAlderTest {
     @Test
     public void alderSkalVaere100ForPersonMedFNR_16051329123() {
         PersonAlder alder = new PersonAlder("16051329132");
-        assertEquals(100, alder.getAlder());
+        assertEquals(100, alder.getUtslagsAlder());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void skalFaaExceptionDersomFnrErUgyldig() {
+    @Test
+    public void skalIkkeFaaExceptionDersomFnrErUgyldig() {
         PersonAlder alder = new PersonAlder("16051329332");
-        assertEquals(100, alder.getAlder());
+        assertEquals(100, alder.getUtslagsAlder());
     }
 
     @Test
     public void alderSkalVaere105ForPersonMedFNR_06030849092() {
         PersonAlder alder = new PersonAlder("06030849092");
-        assertEquals(105, alder.getAlder());
+        assertEquals(105, alder.getUtslagsAlder());
     }
 
     @Test
     public void alderSkalVaere5ForPersonMedFNR_12040886859() {
         PersonAlder alder = new PersonAlder("12040886859");
-        assertEquals(5, alder.getAlder());
+        assertEquals(5, alder.getUtslagsAlder());
     }
 
     @Test
     public void skalReturnere66AarForPersonSomFyller67AarDenneMaaneden() {
         PersonAlder alder = new PersonAlder("02104635787");
-        assertEquals(66, alder.getAlder());
+        assertEquals(66, alder.getUtslagsAlder());
     }
 
     @Test
@@ -52,13 +52,13 @@ public class PersonAlderTest {
         DateTimeUtils.setCurrentMillisFixed(nyIdag);
 
         PersonAlder alder = new PersonAlder("02104635787");
-        assertEquals(67, alder.getAlder());
+        assertEquals(67, alder.getUtslagsAlder());
     }
 
     @Test
     public void alderSkalVaere100ForPersonMedDNummer_46071175367() {
         PersonAlder alder = new PersonAlder("46071175367");
-        assertEquals(2, alder.getAlder());
+        assertEquals(2, alder.getUtslagsAlder());
     }
     
     @Test

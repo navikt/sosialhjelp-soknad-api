@@ -59,11 +59,12 @@
         <appender-ref ref="exceptionlog"/>
     </logger>
 
-    <!--logger name="org.apache.cxf" level="info">
-        <appender-ref ref="infolog"/>
-    </logger-->
-    <logger name="org.apache.cxf" level="error">
+    <logger name="no.nav.sbl" level="info">
         <appender-ref ref="exceptionlog"/>
+    </logger>
+
+    <logger name="org.apache.cxf" level="info">
+        <appender-ref ref="infolog"/>
     </logger>
 
     <logger name="org.apache.pdfbox" level="error">

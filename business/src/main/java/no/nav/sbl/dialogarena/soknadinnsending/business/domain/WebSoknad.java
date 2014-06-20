@@ -17,16 +17,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
+import static no.nav.modig.lang.collections.PredicateUtils.not;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.ETTERSENDING_OPPRETTET;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.ER_ANNET_VEDLEGG;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.ER_LASTET_OPP;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WebSoknad implements Serializable {
-
     private Long soknadId;
     private String skjemaNummer;
     private String uuid;
     private String brukerBehandlingId;
+    private String behandlingskjedeId;
     private List<Faktum> faktaListe;
     private SoknadInnsendingStatus status;
     private String aktoerId;
@@ -34,14 +38,24 @@ public class WebSoknad implements Serializable {
     private DateTime sistLagret;
     private DelstegStatus delstegStatus;
     private List<Vedlegg> vedlegg;
+    private String journalforendeEnhet;
 
 
     public WebSoknad() {
         faktaListe = new ArrayList<>();
+        vedlegg = new ArrayList<>();
     }
 
     public static WebSoknad startSoknad() {
         return new WebSoknad().medStatus(SoknadInnsendingStatus.UNDER_ARBEID).medDelstegStatus(DelstegStatus.OPPRETTET);
+    }
+
+    public static WebSoknad startEttersending(String behandlingsId) {
+        return new WebSoknad()
+                .medStatus(SoknadInnsendingStatus.UNDER_ARBEID)
+                .medDelstegStatus(ETTERSENDING_OPPRETTET)
+                .medBehandlingId(behandlingsId)
+                .medOppretteDato(DateTime.now());
     }
 
     public Long getSistLagret() {
@@ -50,6 +64,22 @@ public class WebSoknad implements Serializable {
         } else {
             return null;
         }
+    }
+
+    public String getJournalforendeEnhet() {
+        return journalforendeEnhet;
+    }
+
+    public void setJournalforendeEnhet(String journalforendeEnhet) {
+        this.journalforendeEnhet = journalforendeEnhet;
+    }
+
+    public String getBehandlingskjedeId() {
+        return behandlingskjedeId;
+    }
+
+    public void setBehandlingskjedeId(String behandlingskjedeId) {
+        this.behandlingskjedeId = behandlingskjedeId;
     }
 
     public void setSistLagret(DateTime sistLagret) {
@@ -152,8 +182,18 @@ public class WebSoknad implements Serializable {
         return this;
     }
 
-    public WebSoknad opprettetDato(DateTime opprettetDato) {
+    public WebSoknad medOppretteDato(DateTime opprettetDato) {
         this.opprettetDato = opprettetDato;
+        return this;
+    }
+
+    public WebSoknad medBehandlingskjedeId(String behandlingskjedeId) {
+        this.behandlingskjedeId = behandlingskjedeId;
+        return this;
+    }
+
+    public WebSoknad medJournalforendeEnhet(String journalforendeEnhet) {
+        this.journalforendeEnhet = journalforendeEnhet;
         return this;
     }
 
@@ -218,6 +258,38 @@ public class WebSoknad implements Serializable {
         return null;
     }
 
+    /**
+     * Returnerer liste over vedlegg som er lastet opp i denne behandlingen.
+     *
+     * @return liste over vedlegg som er lastet opp i nåværende behandling
+     */
+    public List<Vedlegg> getOpplastedeVedlegg() {
+        return on(vedlegg).filter(new Predicate<Vedlegg>() {
+            @Override
+            public boolean evaluate(Vedlegg vedlegg) {
+                return vedlegg.getStorrelse() > 0;
+            }
+        }).collect();
+    }
+
+    public List<Vedlegg> getInnsendteVedlegg() {
+        return on(vedlegg).filter(new Predicate<Vedlegg>() {
+            @Override
+            public boolean evaluate(Vedlegg vedlegg) {
+                return vedlegg.getInnsendingsvalg().er(Vedlegg.Status.LastetOpp);
+            }
+        }).collect();
+    }
+
+    public List<Vedlegg> getIkkeInnsendteVedlegg() {
+        return on(vedlegg).filter(new Predicate<Vedlegg>() {
+            @Override
+            public boolean evaluate(Vedlegg vedlegg) {
+                return vedlegg.getInnsendingsvalg().erIkke(Vedlegg.Status.LastetOpp);
+            }
+        }).collect();
+    }
+
     public List<Faktum> getFaktaMedKeyOgPropertyLikTrue(final String key, final String propertyKey) {
         return on(faktaListe).filter(new Predicate<Faktum>() {
             @Override
@@ -244,7 +316,6 @@ public class WebSoknad implements Serializable {
                 return faktum.getKey().equals(key) && faktum.getParrentFaktum().equals(parentFaktumId);
             }
         }).collect();
-
     }
 
     @Override
@@ -301,7 +372,7 @@ public class WebSoknad implements Serializable {
                 .append("faktaListe", faktaListe)
                 .append("status", status)
                 .append("aktoerId", aktoerId)
-                .append("opprettetDato", opprettetDato)
+                .append("medOppretteDato", opprettetDato)
                 .append("sistLagret", sistLagret)
                 .append("delstegStatus", delstegStatus)
                 .append("vedlegg", vedlegg)
@@ -315,5 +386,17 @@ public class WebSoknad implements Serializable {
             }
         }
         return null;
+    }
+
+    public boolean erEttersending() {
+        return DelstegStatus.isEttersendingStatus(delstegStatus);
+    }
+
+    public boolean harAnnetVedleggSomIkkeErLastetOpp() {
+        return !on(vedlegg)
+                .filter(ER_ANNET_VEDLEGG)
+                .filter(not(ER_LASTET_OPP))
+                .collect()
+                .isEmpty();
     }
 }

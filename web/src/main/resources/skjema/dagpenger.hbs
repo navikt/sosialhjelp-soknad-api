@@ -61,7 +61,7 @@
             <span>
                 <span>{{ hentSkjemanummer }} {{ hentTekst "dagpenger.oppsummering.eSoknad" }}</span>
                 <span>|</span>
-                <span>{{ hentTekst "dagpenger.oppsummering.fastsattDato" }} 03.2014</span>
+                <span>{{ hentTekst "dagpenger.oppsummering.fastsattDato" }}</span>
             </span>
 		</div>
 
@@ -621,14 +621,6 @@
                                                 <span>{{ hentTekst "egennaering.fangstogfiske.false.arbeid.true"}}</span>
                                             {{else}}
                                                 <span>{{ hentTekst "egennaering.fangstogfiske.false.arbeid.false"}}</span>
-                                                <ul>
-                                                    {{#forFaktum "egennaering.fangstogfiske.false.arbeid.false.inntekt"}}
-                                                        <li class="kulepunkt">
-                                                            <span>{{ hentTekst "egennaering.fangstogfiske.false.arbeid.false.inntekt" }}:</span>
-                                                            <span>{{ value }}</span>
-                                                        </li>
-                                                    {{/forFaktum}}
-                                                </ul>
                                             {{/hvisSant}}
                                         </li>
                                     {{/forFaktum}}
@@ -715,6 +707,13 @@
                                                         </li>
                                                     {{/forFaktum}}
 
+                                                    {{#forFaktum "utdanning.kveld.navn"}}
+                                                        <li class="kulepunkt">
+                                                            <span>{{ hentTekst "utdanning.utdanning.navn" }}:</span>
+                                                            <span>{{ value }}</span>
+                                                        </li>
+                                                    {{/forFaktum}}
+
                                                     {{#forFaktum "utdanning.kveld.varighet"}}
                                                         <li class="kulepunkt">
                                                             <span>{{ hentTekst "utdanning.varighet" }}</span>
@@ -722,6 +721,14 @@
                                                             <span>{{ formatterLangDato properties.varighetTil }}</span>
                                                         </li>
                                                     {{/forFaktum}}
+
+                                                     {{#forFaktum "utdanning.semester.avslutning"}}
+                                                        <li class="kulepunkt">
+                                                            <span>{{ hentTekst "utdanning.semester.avslutning.dato" }}</span>
+                                                            <span>{{ formatterLangDato value }}</span>
+                                                        </li>
+                                                    {{/forFaktum}}
+
                                                 </ul>
                                             </li>
                                         {{/hvisSant}}
@@ -1199,7 +1206,15 @@
                                 {{/hvisLik}}
 
                                 {{#hvisLik innsendingsvalg "SendesIkke"}}
+                                    <span>{{ hentTekst "dagpenger.oppsummering.sendesIkkeSendesAvAndre" }}</span>
+                                {{/hvisLik}}
+
+                                {{#hvisLik innsendingsvalg "VedleggSendesIkke"}}
                                     <span>{{ hentTekst "dagpenger.oppsummering.sendesIkke" }}</span>
+                                {{/hvisLik}}
+
+                                {{#hvisLik innsendingsvalg "VedleggSendesAvAndre"}}
+                                    <span>{{ hentTekst "dagpenger.oppsummering.sendesAvAndre" }}</span>
                                 {{/hvisLik}}
                             </span>
                         </td>

@@ -12,15 +12,13 @@ public interface SoknadRepository {
 
     Long opprettSoknad(WebSoknad soknad);
 
+    WebSoknad hentEttersendingMedBehandlingskjedeIdMedData(String behandlingsId);
+
     WebSoknad hentSoknad(Long id);
 
     WebSoknad hentSoknadMedData(Long id);
 
     List<Faktum> hentAlleBrukerData(Long soknadId);
-
-    void avslutt(WebSoknad soknad);
-
-    void avbryt(Long soknad);
 
     Optional<WebSoknad> plukkSoknadTilMellomlagring();
 
@@ -53,4 +51,6 @@ public interface SoknadRepository {
     List<Faktum> hentBarneFakta(Long soknadId, Long faktumId);
 
     void populerFraStruktur(WebSoknad soknad);
+
+    Optional<WebSoknad> hentEttersendingMedBehandlingskjedeId(String behandlingsId);
 }

@@ -1,0 +1,21 @@
+<div id="start-ettersending" data-modalside data-sidetittel="ettersending.start.sidetittel">
+    <div data-ng-controller="StartEttersendingCtrl">
+        <div data-ng-show="kanStarteEttersending()">
+            <h1 class="strek-ikon-info-orange" data-ng-bind-html="'ettersending.start.tittel' | cmstekst"></h1>
+
+            <div>
+                <p data-ng-bind-html="'ettersending.start.informasjon.del1' | cmstekst"></p>
+
+                <p data-ng-bind-html="'ettersending.start.informasjon.del2' | cmstekst"></p>
+            </div>
+
+            <a href="#" class="knapp-link" data-ng-bind-html="'ettersending.start.informasjon.gaaVidere' | cmstekst"
+               data-ng-click="startEttersending($event)" role="button" data-fremdriftsindikator></a>
+        </div>
+        <div data-ng-show="!kanStarteEttersending()">
+            <h1 class="strek-ikon-info-orange" data-ng-bind-html="'ettersending.start.forsent.tittel' | cmstekst"></h1>
+            <p data-ng-bind-html="'ettersending.start.forsent.informasjon' | cmstekst"></p>
+            <a href="{{mineInnsendinger}}?behandlingsId={{sisteInnsendtBehandling}}" data-ng-bind-html=" 'feilmelding.mineinnsedinger.lenketekst' | cmstekst"></a>
+        </div>
+    </div>
+</div>

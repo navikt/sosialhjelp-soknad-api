@@ -53,7 +53,7 @@
         <div class="arbeidsforhold-boks" data-ng-if="harArbeidsforhold()">
             <div class="spm-boks vertikal" data-ng-repeat="af in arbeidsliste" data-ng-class="{'last': $last}">
                 <div id="arbeidsforhold{{af.arbeidsforhold.faktumId}}">
-                    <a href="#" class="lukk" data-ng-click="slettArbeidsforhold(af, $index, $event)"
+                    <a title="Slett arbeidsforhold" href="#" class="lukk" data-ng-click="slettArbeidsforhold(af, $index, $event)"
                        data-fokus-slettmoduler="arbeidsforhold" aria-label="{{ 'arbeidsforhold.lukk.aria' | cmstekst }}"> </a>
                     <span class="robust">{{ af.arbeidsforhold.properties.arbeidsgivernavn }}</span>
                     <span class="robust">, </span>
@@ -63,20 +63,6 @@
                         <div class="arbeidsgiver-oppsummering-sluttaarsaker">
                             <div data-ng-include="templates[af.sluttaarsak.properties.type].oppsummeringsurl"></div>
                         </div>
-                    </div>
-
-                    <div class="arbeidsforhold-oppsummering-endre-slett">
-                        <ul class="liste-vannrett">
-                            <li>
-                                <a href="#" data-ng-click="slettArbeidsforhold(af, $index, $event)"
-                                   data-fokus-slettmoduler="arbeidsforhold" data-ng-bind-html=" 'arbeidsforhold.slettarbeidsforhold' | cmstekst"></a>
-                            </li>
-                            <li>
-                                <a href="#" data-ng-click="endreArbeidsforhold(af, $index, $event)">
-                                    {{ 'arbeidsforhold.endrearbeidsforhold' | cmstekst }}
-                                </a>
-                            </li>
-                        </ul>
                     </div>
                 </div>
             </div>

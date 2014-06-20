@@ -1,0 +1,28 @@
+<h2 class="stor ikon-vedlegg-sendt" data-ng-bind-html="'ettersending.vedlegg.sendt' | cmstekst"></h2>
+<p class="ettersending-infotekst" data-ng-bind-html="'ettersending.vedlegg.sendt.informasjon' | cmstekst"></p>
+<div class="vedleggboks" data-ng-repeat="v in vedlegg | sendtInn | orderBy: 'opprettetDato'">
+    <div class="vedlegg-navn">
+        <div class="navn"
+             data-truncate-hover
+             data-ng-include="'../views/ettersending/partials/vedlegg-navn.html'"></div>
+
+        <span class="tittel-parent">
+            <span class="tittel"
+                  data-ng-include="'../views/ettersending/partials/vedlegg-tittel.html'"></span>
+
+            <span data-ng-if="!erAnnetVedlegg(v)"
+                  data-ng-include="'../views/ettersending/partials/vedlegg-hjelpetekst.html'"></span>
+        </span>
+
+
+        <div class="skjema-lenke" data-ng-if="harSkjemaLenke(v)">
+            <a href="{{ v.urls.URL }}" data-ng-bind-html="'ettersending.vedlegg.skjema.lastNed' | cmstekst"></a>
+        </div>
+    </div>
+    <div class="last-opp">
+        <div class="liten">
+            <a data-ng-href="#/opplasting/{{v.vedleggId}}"
+               data-ng-bind-html="'ettersending.vedlegg.lastOppIgjen' | cmstekst"></a>
+        </div>
+    </div>
+</div>

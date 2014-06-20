@@ -2,23 +2,37 @@ module.exports = function (grunt) {
     var timestamp = grunt.template.today("yyyymmddHHMMss");
 	grunt.initConfig({
 		pkg   : grunt.file.readJSON('package.json'),
-        builtminName: 'target/classes/META-INF/resources/js/built/built' + timestamp + '.min.js',
+        builtminNameSendsoknad: 'target/classes/META-INF/resources/js/built/built_sendsoknad' + timestamp + '.min.js',
+        builtminNameEttersending: 'target/classes/META-INF/resources/js/built/built_ettersending' + timestamp + '.min.js',
         html2js: {
             main: {
                 src: [
-                    'views/dagpenger-singlepage.html',
+                    'views/dagpenger/**/*.html',
+                    'views/common/**/*.html',
+                    'views/ettersending/**/*.html',
                     'views/templates/**/*.html',
-                    'js/app/**/*.html',
+                    'js/dagpenger/**/*.html',
+                    'js/ettersending/**/*.html',
                     'js/common/**/*.html'
                 ],
-                dest: 'target/classes/META-INF/resources/js/app/templates.js'
+                dest: 'target/classes/META-INF/resources/js/dagpenger/templates.js'
+            },
+            ettersending: {
+                src: [
+                    'views/common/**/*.html',
+                    'views/ettersending/**/*.html',
+                    'views/templates/**/*.html',
+                    'js/ettersending/**/*.html',
+                    'js/common/**/*.html'
+                ],
+                dest: 'target/classes/META-INF/resources/js/ettersending/templates.js'
             }
         },
 
         htmlbuild: {
-            dev: {
+            dev_sendsoknad: {
                 src: 'views/bootstrapTemplate.html',
-                dest: 'views/built/bootstrapDev.html',
+                dest: 'target/classes/META-INF/resources/views/built/bootstrapDev.html',
                 options: {
                     beautify: true,
                     relative: false,
@@ -40,45 +54,15 @@ module.exports = function (grunt) {
                         ],
                         libs: 'js/lib/*.js',
                         app: [
-                            'js/app/**/*.js',
+                            'js/dagpenger/**/*.js',
                             'js/common/**/*.js'
                         ]
                     }
                 }
             },
-            test: {
-                src: 'views/bootstrapTemplate.html',
-                dest: 'views/built/bootstrap.html',
-                options: {
-                    beautify: true,
-                    relative: false,
-                    prefix: '../',
-                    scripts: {
-                        angular: [
-                            'js/lib/angular/angular.js',
-                            'js/lib/angular/angular-*.js'
-                        ],
-                        fileupload: [
-                            'js/lib/jquery/jquery-ui-1.10.3.custom.js',
-                            'js/lib/jquery/cors/jquery.xdr-transport.js',
-                            'js/lib/jquery/cors/jquery.postmessage-transport.js',
-                            'js/lib/jquery/jquery.iframe-transport.js',
-                            'js/lib/jquery/jquery.fileupload.js',
-                            'js/lib/jquery/jquery.fileupload-process.js',
-                            'js/lib/jquery/jquery.fileupload-validate.js',
-                            'js/lib/jquery/jquery.fileupload-angular.js'
-                        ],
-                        libs: 'js/lib/*.js',
-                        app: [
-                            'js/app/**/*.js',
-                            'js/common/**/*.js'
-                        ]
-                    }
-                }
-            },
-            prod: {
+            prod_sendsoknad: {
                 src: 'views/bootstrapTemplateProd.html',
-                dest: 'views/built/bootstrap.html',
+                dest: 'target/classes/META-INF/resources/views/built/bootstrap.html',
                 options: {
                     beautify: true,
                     relative: false,
@@ -86,7 +70,52 @@ module.exports = function (grunt) {
                     scripts: {
                         built: {
                             cwd: 'target/classes/META-INF/resources',
-                            files: 'js/built/built' + timestamp + '.min.js'
+                            files: 'js/built/built_sendsoknad' + timestamp + '.min.js'
+                        }
+                    }
+                }
+            },
+            dev_ettersending: {
+                src: 'views/bootstrapTemplate.html',
+                dest: 'target/classes/META-INF/resources/views/built/bootstrapDevEttersending.html',
+                options: {
+                    beautify: true,
+                    relative: false,
+                    prefix: '../',
+                    scripts: {
+                        angular: [
+                            'js/lib/angular/angular.js',
+                            'js/lib/angular/angular-*.js'
+                        ],
+                        fileupload: [
+                            'js/lib/jquery/jquery-ui-1.10.3.custom.js',
+                            'js/lib/jquery/cors/jquery.xdr-transport.js',
+                            'js/lib/jquery/cors/jquery.postmessage-transport.js',
+                            'js/lib/jquery/jquery.iframe-transport.js',
+                            'js/lib/jquery/jquery.fileupload.js',
+                            'js/lib/jquery/jquery.fileupload-process.js',
+                            'js/lib/jquery/jquery.fileupload-validate.js',
+                            'js/lib/jquery/jquery.fileupload-angular.js'
+                        ],
+                        libs: 'js/lib/*.js',
+                        app: [
+                            'js/ettersending/**/*.js',
+                            'js/common/**/*.js'
+                        ]
+                    }
+                }
+            },
+            prod_ettersending: {
+                src: 'views/bootstrapTemplateProd.html',
+                dest: 'target/classes/META-INF/resources/views/built/bootstrapEttersending.html',
+                options: {
+                    beautify: true,
+                    relative: false,
+                    prefix: '../',
+                    scripts: {
+                        built: {
+                            cwd: 'target/classes/META-INF/resources',
+                            files: 'js/built/built_ettersending' + timestamp + '.min.js'
                         }
                     }
                 }
@@ -96,7 +125,7 @@ module.exports = function (grunt) {
 			options: {
 				separator: ';'
 			},
-			dist   : {
+			sendsoknad: {
 				src   : [
                     'js/lib/angular/angular.js',
                     'js/lib/angular/angular-*.js',
@@ -109,15 +138,42 @@ module.exports = function (grunt) {
                     'js/lib/jquery/jquery.fileupload-validate.js',
                     'js/lib/jquery/jquery.fileupload-angular.js',
                     'js/lib/*.js',
-                    'js/app/**/!(templates).js',
-                    'js/app/**/!(initDev).js',
-                    'target/classes/META-INF/resources/js/app/templates.js',
-                    'js/common/**/*.js'
+                    'js/dagpenger/**/!(initDev).js',
+                    'target/classes/META-INF/resources/js/dagpenger/templates.js',
+                    'js/common/**/!(templates).js'
 				],
-				dest  : 'target/classes/META-INF/resources/js/built/built' + timestamp + '.js',
+				dest: 'target/classes/META-INF/resources/js/built/built_sendsoknad' + timestamp + '.js',
 				nonull: true
-			}
+			},
+            ettersending: {
+                src   : [
+                    'js/lib/angular/angular.js',
+                    'js/lib/angular/angular-*.js',
+                    'js/lib/jquery/jquery-ui-1.10.3.custom.js',
+                    'js/lib/jquery/cors/jquery.xdr-transport.js',
+                    'js/lib/jquery/cors/jquery.postmessage-transport.js',
+                    'js/lib/jquery/jquery.iframe-transport.js',
+                    'js/lib/jquery/jquery.fileupload.js',
+                    'js/lib/jquery/jquery.fileupload-process.js',
+                    'js/lib/jquery/jquery.fileupload-validate.js',
+                    'js/lib/jquery/jquery.fileupload-angular.js',
+                    'js/lib/*.js',
+                    'target/classes/META-INF/resources/js/ettersending/templates.js',
+                    'js/ettersending/**/!(initDev).js',
+                    'js/common/**/!(templates).js'
+                ],
+                dest: 'target/classes/META-INF/resources/js/built/built_ettersending' + timestamp + '.js',
+                nonull: true
+            }
 		},
+        ngmin:  {
+            prod: {
+                cwd: 'target/classes/META-INF/resources/js/built',
+                expand: true,
+                src: ['**/*.js'],
+                dest: 'target/classes/grunt'
+            }
+        },
 		uglify: {
 			options: {
 				banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %> */\n',
@@ -125,41 +181,15 @@ module.exports = function (grunt) {
 			},
 			my_target: {
 				files: {
-                    '<%= builtminName %>': ['target/classes/META-INF/resources/js/built/built' + timestamp + '.js']
+                    '<%= builtminNameSendsoknad %>': ['target/classes/grunt/built_sendsoknad' + timestamp + '.js'],
+                    '<%= builtminNameEttersending %>': ['target/classes/grunt/built_ettersending' + timestamp + '.js']
 				}
 			}
 		},
-		watch : {
-			js  : {
-				files  : [
-                    'js/app/**/*.js',
-                    'js/common/**/*.js'
-                ],
-                tasks: 'jshint'
-			},
-			html: {
-				files  : [
-                    'js/app/**/*.html',
-                    'js/common/**/*.html',
-                    'views/templates/**/*.html',
-                    'views/dagpenger-singlepage.html'
-                ],
-                tasks: ['html2js', 'htmlbuild:dev']
-			},
-            testHtml: {
-                files  : [
-                    'js/app/**/*.html',
-                    'js/common/**/*.html',
-                    'views/templates/**/*.html',
-                    'views/dagpenger-singlepage.html'
-                ],
-                tasks: ['html2js', 'karma:local']
-            }
-		},
 		jshint: {
-			files  : ['gruntfile.js', 'js/app/**/*.js', 'js/common/**/*.js', 'test/**/*.js'],
+			files  : ['gruntfile.js', 'js/dagpenger/**/*.js', 'js/ettersending/**/*.js', 'js/common/**/*.js', 'test/**/*.js'],
 			options: {
-				ignores: ['js/built/*.js', 'js/app/i18n/**', 'js/app/templates.js', 'test/karma/lib/angular-mocks.js', 'js/common/directives/scrollbar/perfect-scrollbar.js'],
+				ignores: ['js/built/*.js', 'js/dagpenger/templates.js', 'js/ettersending/templates.js', 'test/karma/lib/angular-mocks.js', 'js/common/tredjeparts/**/*.js'],
                 globals: {
                     it: true,
                     expect: true,
@@ -184,24 +214,23 @@ module.exports = function (grunt) {
             }
 		},
 
-        clean: ['target/classes/META-INF/resources/js/built']
+        clean: ['target/classes/META-INF/resources/js/built', 'target/classes/grunt']
     });
 
 	// Load NPM tasks
-	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-html-build');
 	grunt.loadNpmTasks('grunt-html2js');
+	grunt.loadNpmTasks('grunt-ngmin');
 	grunt.loadNpmTasks('grunt-karma');
 
 	grunt.option('force', true);
 
-	grunt.registerTask('default', ['jshint', 'htmlbuild:dev', 'watch']);
-    grunt.registerTask('hint', ['jshint', 'watch']);
-    grunt.registerTask('maven', ['jshint', 'karma:unit', 'html2js', 'htmlbuild:dev']);
-    grunt.registerTask('maven-test', ['karma:unit']);
-	grunt.registerTask('maven-prod', ['clean', 'html2js', 'concat', 'uglify', 'htmlbuild:dev', 'htmlbuild:prod']);
+	grunt.registerTask('default', ['jshint', 'htmlbuild:dev_sendsoknad', 'htmlbuild:dev_ettersending']);
+    grunt.registerTask('maven', ['jshint', 'karma:unit', 'html2js', 'htmlbuild:dev_sendsoknad', 'htmlbuild:dev_ettersending']);
+    grunt.registerTask('mavenTest', ['karma:unit']);
+	grunt.registerTask('maven-prod', ['clean', 'html2js', 'concat:sendsoknad', 'concat:ettersending', 'ngmin', 'uglify', 'htmlbuild:dev_sendsoknad', 'htmlbuild:prod_sendsoknad', 'htmlbuild:dev_ettersending', 'htmlbuild:prod_ettersending']);
 };

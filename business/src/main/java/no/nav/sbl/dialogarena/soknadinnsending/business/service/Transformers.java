@@ -13,6 +13,9 @@ import java.util.Map;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.LASTET_OPP;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.SENDES_IKKE;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.SEND_SENERE;
+import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.VEDLEGG_SENDES_AV_ANDRE;
+import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.VEDLEGG_SENDES_IKKE;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class Transformers {
 
@@ -51,8 +54,9 @@ public class Transformers {
     public static XMLVedlegg[] convertToXmlVedleggListe(List<Vedlegg> vedleggForventnings) {
         List<XMLVedlegg> resultat = new ArrayList<>();
         for (Vedlegg vedlegg : vedleggForventnings) {
+            XMLVedlegg xmlVedlegg;
             if (vedlegg.getInnsendingsvalg().er(Vedlegg.Status.LastetOpp)) {
-                resultat.add(new XMLVedlegg()
+                xmlVedlegg = new XMLVedlegg()
                         .withFilnavn(vedlegg.lagFilNavn())
                         .withSideantall(vedlegg.getAntallSider())
                         .withMimetype("application/pdf")
@@ -60,14 +64,19 @@ public class Transformers {
                         .withFilstorrelse(vedlegg.getStorrelse().toString())
                         .withSkjemanummer(vedlegg.getSkjemaNummerFiltrert())
                         .withUuid(vedlegg.getFillagerReferanse())
-                        .withInnsendingsvalg(LASTET_OPP.value()));
+                        .withInnsendingsvalg(LASTET_OPP.value());
             } else {
-                resultat.add(new XMLVedlegg()
+                xmlVedlegg = new XMLVedlegg()
                         .withFilnavn(vedlegg.lagFilNavn())
                         .withTilleggsinfo(vedlegg.getNavn())
                         .withSkjemanummer(vedlegg.getSkjemaNummerFiltrert())
-                        .withInnsendingsvalg(toXmlInnsendingsvalg(vedlegg.getInnsendingsvalg())));
+                        .withInnsendingsvalg(toXmlInnsendingsvalg(vedlegg.getInnsendingsvalg()));
             }
+            String skjemanummerTillegg = vedlegg.getSkjemanummerTillegg();
+            if (isNotBlank(skjemanummerTillegg)) {
+                xmlVedlegg.setSkjemanummerTillegg(skjemanummerTillegg);
+            }
+            resultat.add(xmlVedlegg);
 
         }
         return resultat.toArray(new XMLVedlegg[resultat.size()]);
@@ -81,8 +90,29 @@ public class Transformers {
                 return SEND_SENERE.toString();
             case SendesIkke:
                 return SENDES_IKKE.toString();
+            case VedleggSendesAvAndre:
+                return VEDLEGG_SENDES_AV_ANDRE.toString();
+            case VedleggSendesIkke:
+                return VEDLEGG_SENDES_IKKE.toString();
             default:
                 return SENDES_IKKE.toString();
+        }
+    }
+
+    public static Vedlegg.Status toInnsendingsvalg(String xmlInnsendingsvalg) {
+        switch (xmlInnsendingsvalg) {
+            case "LASTET_OPP":
+                return Vedlegg.Status.LastetOpp;
+            case "SEND_SENERE":
+                return Vedlegg.Status.SendesSenere;
+            case "SENDES_IKKE":
+                return Vedlegg.Status.SendesIkke;
+            case "VEDLEGG_SENDES_IKKE":
+                return Vedlegg.Status.VedleggSendesIkke;
+            case "VEDLEGG_SENDES_AV_ANDRE":
+                return Vedlegg.Status.VedleggSendesAvAndre;
+            default:
+                return Vedlegg.Status.SendesIkke;
         }
     }
 }

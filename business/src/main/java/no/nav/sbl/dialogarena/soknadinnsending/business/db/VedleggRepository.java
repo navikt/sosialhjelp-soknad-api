@@ -30,11 +30,10 @@ public interface VedleggRepository {
      * Henter alle vedlegg for et faktum
      *
      * @param soknadId     soknaden det skal hentes for
-     * @param faktum       faktument det skal hentes for
-     * @param skjemaNummer hvilket vedlegg det skal hentes for
+     * @param fillagerReferanse fillagerreferansen for vedlegget
      * @return en liste med vedlegg
      */
-    List<Vedlegg> hentVedleggUnderBehandling(Long soknadId, Long faktum, String skjemaNummer);
+    List<Vedlegg> hentVedleggUnderBehandling(Long soknadId, String fillagerReferanse);
 
     void lagreVedleggMedData(Long soknadId, Long vedleggId, Vedlegg vedlegg);
 
@@ -101,4 +100,5 @@ public interface VedleggRepository {
     void slettVedleggOgData(Long soknadId, Long faktumId, String skjemaNummer);
 
 
+    void slettVedleggMedVedleggId(Long vedleggId);
 }

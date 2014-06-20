@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
+import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
@@ -33,12 +34,15 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinform
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonSikkerhetsbegrensning;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Doedsdato;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjon;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjoner;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Landkoder;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.NorskIdent;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personnavn;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personstatus;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personstatuser;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Statsborgerskap;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
@@ -285,11 +289,23 @@ public class DefaultPersonaliaServiceTest {
             HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
         mockGyldigPersonMedBarn();
 
-        personaliaService.lagrePersonaliaOgBarn(RIKTIG_IDENT, 21L);
+        personaliaService.lagrePersonaliaOgBarn(RIKTIG_IDENT, 21L, true);
 
         verify(soknadServiceMock, times(2)).lagreSystemFaktum(anyLong(),
                 any(Faktum.class), anyString());
     }
+
+    @Test
+    public void skalIkkeViseDoedeBarn() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
+        mockGyldigPersonMedBarn();
+        leggTilDoedeBarn();
+
+        personaliaService.lagrePersonaliaOgBarn(RIKTIG_IDENT, 21L, true);
+
+        verify(soknadServiceMock, times(2)).lagreSystemFaktum(anyLong(),
+                any(Faktum.class), anyString());
+    }
+
 
     @Test
     public void skalStottePersonerUtenMellomnavn()
@@ -624,6 +640,23 @@ public class DefaultPersonaliaServiceTest {
         xmlBruker.setPersonnavn(navnMedMellomnavn());
     }
 
+    private void leggTilDoedeBarn() {
+        List<Familierelasjon> familierelasjoner = person.getHarFraRolleI();
+        Familierelasjon familieRelasjon = new Familierelasjon();
+        Familierelasjoner type = new Familierelasjoner();
+        type.setValue("BARN");
+        familieRelasjon.setTilRolle(type);
+        familieRelasjon.setTilPerson(hentDoedtMockBarn());
+        familierelasjoner.add(familieRelasjon);
+
+        Familierelasjon familieRelasjon2 = new Familierelasjon();
+        Familierelasjoner type2 = new Familierelasjoner();
+        type2.setValue("BARN");
+        familieRelasjon2.setTilRolle(type);
+        familieRelasjon2.setTilPerson(hentDoedtMockBarnMedBostatus());
+        familierelasjoner.add(familieRelasjon2);
+    }
+
     private Person hentMockBarn() {
         Person barn = new Person();
         Personnavn navn = new Personnavn();
@@ -642,7 +675,51 @@ public class DefaultPersonaliaServiceTest {
         return barn;
     }
 
+    private Person hentDoedtMockBarn() {
+        Person barn = new Person();
+        Personnavn navn = new Personnavn();
+        navn.setFornavn("Jon");
+        navn.setEtternavn("Mockmann");
+        barn.setPersonnavn(navn);
+        NorskIdent ident = new NorskIdent();
+        ident.setIdent("03060194075");
+        barn.setIdent(ident);
 
+        Doedsdato doedsdato = new Doedsdato();
+        doedsdato.setDoedsdato(XMLGregorianCalendarImpl.createDate(2014, 2, 2, 0));
+        barn.setDoedsdato(doedsdato);
+
+        Statsborgerskap statsborgerskap = new Statsborgerskap();
+        Landkoder landkode = new Landkoder();
+        landkode.setValue("NOR");
+        statsborgerskap.setLand(landkode);
+        barn.setStatsborgerskap(statsborgerskap);
+        return barn;
+    }
+
+    private Person hentDoedtMockBarnMedBostatus() {
+        Person barn = new Person();
+        Personnavn navn = new Personnavn();
+        navn.setFornavn("Jarle");
+        navn.setEtternavn("Mockmann");
+        barn.setPersonnavn(navn);
+        NorskIdent ident = new NorskIdent();
+        ident.setIdent("01010091736");
+        barn.setIdent(ident);
+
+        Personstatuser personstatus = new Personstatuser();
+        personstatus.setValue("DØD");
+        Personstatus personstatusWrapper = new Personstatus();
+        personstatusWrapper.setPersonstatus(personstatus);
+        barn.setPersonstatus(personstatusWrapper);
+
+        Statsborgerskap statsborgerskap = new Statsborgerskap();
+        Landkoder landkode = new Landkoder();
+        landkode.setValue("NOR");
+        statsborgerskap.setLand(landkode);
+        barn.setStatsborgerskap(statsborgerskap);
+        return barn;
+    }
 
     private XMLMidlertidigPostadresseNorge generateMidlertidigAdresseNorge() {
         XMLMidlertidigPostadresseNorge xmlMidlertidigNorge = new XMLMidlertidigPostadresseNorge();
