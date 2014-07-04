@@ -44,7 +44,7 @@
                     "dittnav.link.url": "dittnavUrl",
                     "soknad.lonnskravskjema.url": "lonnskravSkjemaUrl",
                     "soknad.permitteringsskjema.url": "permiteringUrl",
-                    "minehenvendelser.link.url": "minehenvendelserUrl",
+                    "saksoversikt.link.url": "saksoversiktUrl",
                     "soknad.inngangsporten.url": "inngangsportenUrl",
                     "soknad.skjemaveileder.url": "skjemaVeilederUrl",
                     "soknad.brukerprofil.url": "brukerprofilUrl",
