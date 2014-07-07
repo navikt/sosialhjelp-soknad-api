@@ -105,7 +105,7 @@ public class SoknadServiceTest {
     public void skalPopulereFraHenvendelseNaarSoknadIkkeFinnes() throws IOException {
         Vedlegg vedlegg = new Vedlegg().medVedleggId(4L).medFillagerReferanse("uidVedlegg");
         Vedlegg vedleggCheck = new Vedlegg().medVedleggId(4L).medFillagerReferanse("uidVedlegg").medData(new byte[]{1, 2, 3});
-        WebSoknad soknad = new WebSoknad().medBehandlingId("123").medId(11L).medVedlegg(Arrays.asList(vedlegg));
+        WebSoknad soknad = new WebSoknad().medBehandlingId("123").medId(11L).medVedlegg(Arrays.asList(vedlegg)).medStatus(UNDER_ARBEID);
         WebSoknad soknadCheck = new WebSoknad().medBehandlingId("123").medId(11L).medVedlegg(Arrays.asList(vedleggCheck));
 
         when(henvendelsesConnector.hentSoknad("123")).thenReturn(
@@ -136,11 +136,11 @@ public class SoknadServiceTest {
                 return null;
             }
         }).when(handler).writeTo(any(OutputStream.class));
-        Long id = soknadService.hentSoknadMedBehandlingsId("123");
+        WebSoknad webSoknad = soknadService.hentSoknadMedBehandlingsId("123");
         soknadService.hentSoknadMedBehandlingsId("123");
         verify(soknadRepository, atMost(1)).populerFraStruktur(eq(soknadCheck));
         verify(vedleggRepository).lagreVedleggMedData(11L, 4L, vedleggCheck);
-        assertThat(id, is(equalTo(11L)));
+        assertThat(webSoknad.getSoknadId(), is(equalTo(11L)));
     }
 
     @Test

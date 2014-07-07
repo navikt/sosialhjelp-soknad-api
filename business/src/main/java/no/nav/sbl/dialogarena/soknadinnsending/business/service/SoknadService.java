@@ -18,8 +18,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingS
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknadId;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.SoknadAvbruttException;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.SoknadAvsluttetException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
@@ -37,6 +35,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Component;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.bind.JAXB;
@@ -53,6 +52,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import static java.lang.String.format;
 import static java.util.UUID.randomUUID;
 import static javax.xml.bind.JAXBContext.newInstance;
@@ -64,6 +64,7 @@ import static no.nav.modig.lang.collections.PredicateUtils.not;
 import static no.nav.modig.lang.collections.PredicateUtils.where;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.toInnsendingsvalg;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.getJournalforendeEnhet;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.getSkjemanummer;
@@ -174,13 +175,20 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         return lagretFaktumId;
     }
 
-    public Long hentSoknadMedBehandlingsId(String behandlingsId) {
+    public WebSoknad hentSoknadMedBehandlingsId(String behandlingsId) {
         WebSoknad soknad = repository.hentMedBehandlingsId(behandlingsId);
         if (soknad == null) {
-            populerFraHenvendelse(behandlingsId);
-            soknad = repository.hentMedBehandlingsId(behandlingsId);
+            Map<String, Object> map = populerFraHenvendelse(behandlingsId);
+            SoknadInnsendingStatus status = (SoknadInnsendingStatus) map.get("status");
+            if (status.equals(UNDER_ARBEID)) {
+                soknad = repository.hentMedBehandlingsId(behandlingsId);
+            } else {
+                soknad = new WebSoknad()
+                        .medskjemaNummer((String) map.get("skjemanummer"))
+                        .medStatus(status);
+            }
         }
-        return soknad.getSoknadId();
+        return soknad;
     }
 
     private void settDelstegStatus(Long soknadId, String faktumKey) {
@@ -190,28 +198,29 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         }
     }
 
-    private void populerFraHenvendelse(String behandlingsId) {
+    private Map<String, Object> populerFraHenvendelse(String behandlingsId) {
+        Map<String, Object> returnMap = new HashMap<>();
         WSHentSoknadResponse wsSoknadsdata = henvendelseConnector.hentSoknad(behandlingsId);
-        String soknadStatus = wsSoknadsdata.getStatus();
-        if (!soknadStatus.equals(WSStatus.UNDER_ARBEID.value())) {
-            if (WSStatus.AVBRUTT_AV_BRUKER.value().equals(soknadStatus)) {
-                throw new SoknadAvbruttException("Soknaden er avbrutt", null, "soknad.avbrutt");
-            } else if (WSStatus.FERDIG.value().equals(soknadStatus)) {
-                throw new SoknadAvsluttetException("Soknaden er avsluttet", null, "soknad.avsluttet");
-            }
-            throw new RuntimeException();
-        }
+
         XMLMetadataListe vedleggListe = (XMLMetadataListe) wsSoknadsdata.getAny();
         Optional<XMLMetadata> hovedskjema = on(vedleggListe.getMetadata()).filter(new InstanceOf<XMLMetadata>(XMLHovedskjema.class)).head();
-        if (hovedskjema.isSome()) {
+        if (!hovedskjema.isSome()) {
+            throw new ApplicationException("Kunne ikke hente opp søknad");
+        }
+
+        SoknadInnsendingStatus status = SoknadInnsendingStatus.valueOf(wsSoknadsdata.getStatus());
+        if (status.equals(UNDER_ARBEID)) {
             byte[] bytes = fillagerConnector.hentFil(((XMLHovedskjema) hovedskjema.get()).getUuid());
             WebSoknad soknad = JAXB.unmarshal(new ByteArrayInputStream(bytes), WebSoknad.class);
             repository.populerFraStruktur(soknad);
             List<WSInnhold> innhold = fillagerConnector.hentFiler(soknad.getBrukerBehandlingId());
             populerVedleggMedDataFraHenvendelse(soknad, innhold);
-        } else {
-            throw new ApplicationException("Kunne ikke hente opp søknad");
         }
+
+        returnMap.put("skjemanummer", ((XMLHovedskjema) hovedskjema.get()).getSkjemanummer());
+        returnMap.put("status", status);
+
+        return returnMap;
     }
 
     private void populerVedleggMedDataFraHenvendelse(WebSoknad soknad, List<WSInnhold> innhold) {
@@ -493,6 +502,11 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     @Override
     public SoknadStruktur hentSoknadStruktur(Long soknadId) {
         return hentStruktur(repository.hentSoknadType(soknadId));
+    }
+
+    @Override
+    public SoknadStruktur hentSoknadStruktur(String skjemaNummer) {
+        return hentStruktur(skjemaNummer);
     }
 
     private void genererVedleggForFaktum(Faktum faktum) {

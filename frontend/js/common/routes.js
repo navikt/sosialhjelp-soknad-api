@@ -33,6 +33,9 @@ angular.module('nav.common.routes', ['ngRoute'])
                     },
                     config: function(ConfigResolver) {
                         return ConfigResolver;
+                    },
+                    soknadOppsett: function(SoknadOppsettResolver) {
+                        return SoknadOppsettResolver;
                     }
                 }
             })

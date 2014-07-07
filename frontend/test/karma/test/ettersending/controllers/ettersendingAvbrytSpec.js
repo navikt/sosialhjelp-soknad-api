@@ -4,7 +4,7 @@
     describe('Avbryt ettersending-controller', function () {
         var scope, ctrl, httpBackend, timeout, vedlegg;
         var soknadId = 1;
-        var mineHenvendelserUrl = 'minehenvendelser';
+        var saksoversiktUrl = 'minehenvendelser';
         beforeEach(module('nav.services.ettersending', 'nav.ettersending.controllers.avbryt', 'ngResource'));
 
         beforeEach(function () {
@@ -18,7 +18,7 @@
                     soknadId: soknadId
                 },
                 config: {
-                    'minehenvendelser.link.url': mineHenvendelserUrl
+                    'saksoversikt.link.url': saksoversiktUrl
                 }
             });
         }));
@@ -112,7 +112,7 @@
             scope.slettEttersending();
             httpBackend.flush();
             timeout.flush();
-            expect(window.redirectTilUrl).toHaveBeenCalledWith(mineHenvendelserUrl);
+            expect(window.redirectTilUrl).toHaveBeenCalledWith(saksoversiktUrl);
         });
 
         it('skal sendes videre til side for avbrutt ettersending etter å ha avbrutt en ettersending', function () {
