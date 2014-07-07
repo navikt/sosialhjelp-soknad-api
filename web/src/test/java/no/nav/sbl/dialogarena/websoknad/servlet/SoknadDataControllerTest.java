@@ -71,7 +71,7 @@ public class SoknadDataControllerTest {
         mockMvc.perform(get("/soknad/metadata/{soknadId}", 11L).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("soknadId").value(11));
-        when(soknadService.hentSoknadMedBehandlingsId("123")).thenReturn(15L);
+        when(soknadService.hentSoknadMedBehandlingsId("123")).thenReturn(new WebSoknad().medId(15L));
         mockMvc.perform(get("/soknad/behandling/{behandlingsId}", "123").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("result").value("15"));

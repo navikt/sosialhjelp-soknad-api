@@ -399,4 +399,12 @@ public class WebSoknad implements Serializable {
                 .collect()
                 .isEmpty();
     }
+
+    public boolean erUnderArbeid() {
+        return status.equals(SoknadInnsendingStatus.UNDER_ARBEID);
+    }
+
+    public boolean erAvbryttAvBruker() {
+        return status.equals(SoknadInnsendingStatus.AVBRUTT_AV_BRUKER);
+    }
 }
