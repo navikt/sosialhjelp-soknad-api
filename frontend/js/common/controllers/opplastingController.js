@@ -202,4 +202,9 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload', 'opplasting.m
                 );
             });
         };
+    })
+    .directive('scrollOnError', function() {
+        return function(scope, elm) {
+            scrollToElement(elm, 50);
+        };
     });
