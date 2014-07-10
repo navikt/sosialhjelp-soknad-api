@@ -115,7 +115,7 @@ public class DefaultVedleggService implements VedleggService {
             } else {
                 throw new UgyldigOpplastingTypeException(
                         "Ugyldig filtype for opplasting", null,
-                        "vedlegg.opplasting.feil.filtype");
+                        "opplasting.feilmelding.feiltype");
             }
         } catch (IOException | COSVisitorException e) {
             throw new OpplastingException("Kunne ikke lagre fil", e,
