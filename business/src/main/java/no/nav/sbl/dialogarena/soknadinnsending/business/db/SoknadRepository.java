@@ -53,4 +53,6 @@ public interface SoknadRepository {
     void populerFraStruktur(WebSoknad soknad);
 
     Optional<WebSoknad> hentEttersendingMedBehandlingskjedeId(String behandlingsId);
+
+    Faktum hentFaktumMedKey(Long soknadId, String faktumKey);
 }
