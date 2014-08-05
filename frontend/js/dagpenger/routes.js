@@ -171,10 +171,23 @@ angular.module('sendsoknad.routes', ['ngRoute', 'nav.common.routes'])
             })
             .when('/kvittering-fortsettsenere', {
                 templateUrl: '../views/templates/kvittering-fortsettsenere.html',
+                controller: 'FortsettSenereKvitteringCtrl',
                 resolve: {
-                    notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
-                        return HentSoknadService;
-                    }]
+                    cms: function (CmsResolver) {
+                        return CmsResolver;
+                    },
+                    soknad: function(SoknadResolver) {
+                        return SoknadResolver;
+                    },
+                    fakta: function(FaktaResolver) {
+                        return FaktaResolver;
+                    },
+                    config: function(ConfigForSoknadResolver) {
+                        return ConfigForSoknadResolver;
+                    },
+                    behandlingsId: function(BehandlingIdResolver) {
+                        return BehandlingIdResolver;
+                    }
                 }
             })
             .when('/nyttbarn', {

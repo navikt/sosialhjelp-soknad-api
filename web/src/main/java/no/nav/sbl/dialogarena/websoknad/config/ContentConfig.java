@@ -72,7 +72,7 @@ public class ContentConfig {
                 "classpath:content/innholdstekster", "classpath:content/sbl-webkomponenter");
         messageSource.setDefaultEncoding("UTF-8");
         //Sjekk for nye filer en gang hvert 30. minutt.
-        messageSource.setCacheSeconds(60 * 30);
+        messageSource.setCacheSeconds(60*30);
         return messageSource;
     }
 
@@ -103,13 +103,13 @@ public class ContentConfig {
         Map<String, Innholdstekst> innhold = content.toMap(Innholdstekst.KEY);
         if (!innhold.isEmpty()) {
             for (Map.Entry<String, Innholdstekst> entry : innhold.entrySet()) {
-                data.append(entry.getValue().key).append("=").append(spripPTag(entry.getValue().value)).append(System.lineSeparator());
+                data.append(entry.getValue().key).append("=").append(stripPTag(entry.getValue().value)).append(System.lineSeparator());
             }
             FileUtils.write(file, data, "UTF-8");
         }
     }
 
-    private String spripPTag(String value) {
+    private String stripPTag(String value) {
         String res = value;
         if (value != null) {
             if (res.startsWith("<p>")) {

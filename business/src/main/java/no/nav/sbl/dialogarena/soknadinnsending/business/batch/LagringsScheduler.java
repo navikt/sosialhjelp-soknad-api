@@ -103,7 +103,7 @@ public class LagringsScheduler {
         return soknad.erEttersending();
     }
 
-    protected void lagreFilTilHenvendelseOgSlettILokalDb(Optional<WebSoknad> ws) throws InterruptedException {
+    protected void  lagreFilTilHenvendelseOgSlettILokalDb(Optional<WebSoknad> ws) throws InterruptedException {
         WebSoknad soknad = ws.get();
         try {
             if (soknad.getStatus().equals(SoknadInnsendingStatus.UNDER_ARBEID) && !soknad.erEttersending()) {

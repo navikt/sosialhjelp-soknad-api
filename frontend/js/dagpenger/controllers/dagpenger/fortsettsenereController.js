@@ -1,4 +1,4 @@
-angular.module('nav.fortsettsenere', ['nav.cmstekster'])
+angular.module('nav.fortsettsenere', [])
     .controller('FortsettSenereCtrl', ['$scope', 'data', '$location', 'fortsettSenereService', 'Faktum',
         function ($scope, data, $location, fortsettSenereService, Faktum) {
             var lagretEpost = data.finnFaktum('epost');
@@ -40,15 +40,14 @@ angular.module('nav.fortsettsenere', ['nav.cmstekster'])
             };
         }
     ])
-    .controller('FortsettSenereKvitteringCtrl', ['$scope', 'data', function ($scope, data) {
+    .controller('FortsettSenereKvitteringCtrl', function ($scope, data) {
         $scope.dittnavUrl = data.config["dittnav.link.url"];
         $scope.epost = data.finnFaktum('epost');
 
         if (!$scope.forrigeSide) {
             $scope.forrigeSide = '/soknad';
         }
-    }
-    ]);
+    });
 
 
 
