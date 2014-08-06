@@ -281,9 +281,13 @@ public class DefaultVedleggService implements VedleggService {
         pdf.open();
         PdfContentByte cb = pdfWriter.getDirectContent();
         PdfReader pdfReader = new PdfReader(pdfBytes);
-        PdfImportedPage firstPage = pdfWriter.getImportedPage(pdfReader, 1);
-        pdf.newPage();
-        cb.addTemplate(firstPage, 0, 0);
+        
+        for (int i = 1; i <= pdfReader.getNumberOfPages(); i++) {
+            PdfImportedPage page = pdfWriter.getImportedPage(pdfReader, i);
+            pdf.newPage();
+            cb.addTemplate(page, 0, 0);
+        }
+
         pdf.close();
         pdfWriter.close();
         pdfReader.close();
