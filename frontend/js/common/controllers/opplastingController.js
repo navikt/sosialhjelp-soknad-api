@@ -1,4 +1,4 @@
-angular.module('nav.opplasting.controller', ['blueimp.fileupload', 'opplasting.multiple'])
+angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
 
     .controller('OpplastingVedleggCtrl', function ($scope, $routeParams, vedleggService, data, vedleggListe) {
         $scope.vedleggListe = vedleggListe;
