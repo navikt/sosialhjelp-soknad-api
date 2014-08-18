@@ -39,9 +39,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Collections.sort;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -177,6 +179,14 @@ public class DefaultVedleggService implements VedleggService {
         List<Vedlegg> vedleggUnderBehandling = vedleggRepository
                 .hentVedleggUnderBehandling(soknadId,
                         forventning.getFillagerReferanse());
+
+        sort(vedleggUnderBehandling, new Comparator<Vedlegg>() {
+            @Override
+            public int compare(Vedlegg v1, Vedlegg v2) {
+                return v1.getVedleggId().compareTo(v2.getVedleggId());
+            }
+        });
+
         List<byte[]> bytes = new ArrayList<>();
         for (Vedlegg vedlegg : vedleggUnderBehandling) {
             bytes.add(vedleggRepository.hentVedleggData(soknadId, vedlegg.getVedleggId()));
