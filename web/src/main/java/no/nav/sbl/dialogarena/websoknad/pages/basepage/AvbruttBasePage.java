@@ -36,7 +36,7 @@ public class AvbruttBasePage extends WebPage {
                 new FooterPanel("footer", footerLinks, getInnloggetIsTrueModel(), FALSE, cmsContentRetriever)
         );
 
-        add(new ExternalLink("dittnav", System.getProperty("soknad.inngangsporten.url")));
+        add(new ExternalLink("dittnav", System.getProperty("dittnav.link.url")));
     }
 
     private AbstractReadOnlyModel<Boolean> getInnloggetIsTrueModel() {

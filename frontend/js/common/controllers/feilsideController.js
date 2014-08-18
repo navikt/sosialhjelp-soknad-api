@@ -6,5 +6,5 @@ angular.module('nav.feilside', [])
     }])
     .controller('FeilSideCtrl', ['$scope', 'data',  function ($scope, data) {
         $scope.mineInnsendinger = data.config["saksoversikt.link.url"];
-        $scope.inngangsportenUrl = data.config["soknad.inngangsporten.url"];
+        $scope.dittnavUrl = data.config["dittnav.link.url"];
     }]);
