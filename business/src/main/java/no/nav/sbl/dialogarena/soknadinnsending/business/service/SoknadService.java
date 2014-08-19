@@ -546,7 +546,15 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     }
 
     private boolean erParentAktiv(SoknadVedlegg soknadVedlegg, Faktum parent) {
-        return parent == null || parent.getValue().equals(soknadVedlegg.getFaktum().getDependOnValue());
+        return parent == null || erParentValueNullOgVedleggDependOnFalse(soknadVedlegg, parent) || parentValueErLikDependOnVerdi(soknadVedlegg, parent);
+    }
+
+    private boolean parentValueErLikDependOnVerdi(SoknadVedlegg soknadVedlegg, Faktum parent) {
+        return parent.getValue().equals(soknadVedlegg.getFaktum().getDependOnValue());
+    }
+    
+    private boolean erParentValueNullOgVedleggDependOnFalse(SoknadVedlegg soknadVedlegg, Faktum parent) {
+        return parent.getValue() == null && "false".equalsIgnoreCase(soknadVedlegg.getFaktum().getDependOnValue());
     }
 
     /**
