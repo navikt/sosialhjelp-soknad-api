@@ -23,8 +23,6 @@ public class ConfigService {
     private String saksoversiktUrl;
     @Value("${dialogarena.navnolink.url}")
     private String navNoUrl;
-    @Value("${soknad.inngangsporten.url}")
-    private String inngangsportenUrl;
     @Value("${soknad.skjemaveileder.url}")
     private String skjemaveilederUrl;
     @Value("${soknad.alderspensjon.url}")
@@ -48,7 +46,6 @@ public class ConfigService {
         result.put("saksoversikt.link.url", saksoversiktUrl);
         result.put("dittnav.link.url", dittnavUrl);
         result.put("dialogarena.navnolink.url", navNoUrl);
-        result.put("soknad.inngangsporten.url", inngangsportenUrl);
         result.put("soknad.skjemaveileder.url", skjemaveilederUrl);
         result.put("soknad.alderspensjon.url", alderspensjonUrl);
         result.put("soknad.reelarbeidsoker.url", reelarbeidsokerUrl);

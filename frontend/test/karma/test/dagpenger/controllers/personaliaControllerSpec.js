@@ -45,7 +45,6 @@
                     "soknad.lonnskravskjema.url": "lonnskravSkjemaUrl",
                     "soknad.permitteringsskjema.url": "permiteringUrl",
                     "saksoversikt.link.url": "saksoversiktUrl",
-                    "soknad.inngangsporten.url": "inngangsportenUrl",
                     "soknad.skjemaveileder.url": "skjemaVeilederUrl",
                     "soknad.brukerprofil.url": "brukerprofilUrl",
                     "soknad.reelarbeidsoker.url": "reelArbeidsokerUrl",
