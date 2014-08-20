@@ -1,4 +1,7 @@
 angular.module('nav.bekreftelse', [])
+    /* Er avhengig av at søknadsoppsett er hentet før vi kommer til denne kontrolleren, da temakode blir hentet sånn
+       Henter ikke for bekreftelsessiden siden man bare skal videresendes hit, og siden det blir krøll på backend
+    */
     .controller('BekreftelsesCtrl', function ($scope, config, $window, $timeout, $routeParams, $rootElement, data) {
         var appName = $rootElement.attr('data-ng-app');
         $scope.tekst = {
