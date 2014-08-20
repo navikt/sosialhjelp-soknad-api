@@ -1,7 +1,7 @@
 angular.module('nav.services.resolvers.ettersending', [])
-    .factory('EttersendingResolver', function (ettersendingService, data, BehandlingskjedeIdResolver, $q) {
+    .factory('EttersendingResolver', function (ettersendingService, data, BehandlingIdResolver, $q) {
         var ettersendingDefer = $q.defer();
-        BehandlingskjedeIdResolver
+        BehandlingIdResolver
             .then(function(result) {
                 ettersendingService.get({soknadId: result},
                     function (result) {

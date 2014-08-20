@@ -1,11 +1,12 @@
 angular.module('nav.services.resolvers.soknadoppsett', [])
-    .factory('SoknadOppsettResolver', function (data, $q, soknadService, BehandlingIdResolver) {
+    .factory('SoknadOppsettResolver', function (data, $q, BehandlingIdResolver, $resource) {
         var soknadOppsettDefer = $q.defer();
 
         BehandlingIdResolver
             .then(function(result) {
                 var soknadId = result;
-                soknadService.options({soknadId: soknadId},
+                $resource('/sendsoknad/rest/soknad/options/:soknadId').get(
+                    {soknadId: soknadId},
                     function (result) { // Success
                         data.soknadOppsett = result;
                         soknadOppsettDefer.resolve();

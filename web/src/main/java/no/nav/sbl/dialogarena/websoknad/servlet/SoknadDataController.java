@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -93,7 +92,13 @@ public class SoknadDataController {
     @SjekkTilgangTilSoknad
     public Map<String, String> hentSoknadIdMedBehandligsId(@PathVariable String behandlingsId) {
         Map<String, String> result = new HashMap<>();
-        WebSoknad soknad = soknadService.hentSoknadMedBehandlingsId(behandlingsId.replaceAll("%20", " "));
+        String sanitizedBehandlingsId = behandlingsId.replaceAll("%20", " ");
+        WebSoknad soknad = soknadService.hentSoknadMedBehandlingsId(sanitizedBehandlingsId);
+
+        if (soknad == null || !soknad.erUnderArbeid()) {
+            soknad = ettersendingService.hentEttersendingForBehandlingskjedeId(sanitizedBehandlingsId);
+        }
+
         result.put("result", soknad.getSoknadId().toString());
 
         return result;
@@ -102,7 +107,7 @@ public class SoknadDataController {
     @RequestMapping(value = "/behandlingskjede/{behandlingskjedeId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     @SjekkTilgangTilSoknad
-    public Map<String, String> hentSoknadIdForSisteBehandlingIBehandlingskjede(@PathVariable String behandlingskjedeId, HttpServletRequest request) {
+    public Map<String, String> hentSoknadIdForSisteBehandlingIBehandlingskjede(@PathVariable String behandlingskjedeId) {
         WebSoknad soknad = ettersendingService.hentEttersendingForBehandlingskjedeId(behandlingskjedeId.replaceAll("%20", " "));
         Map<String, String> result = new HashMap<>();
         result.put("result", soknad.getSoknadId().toString());
