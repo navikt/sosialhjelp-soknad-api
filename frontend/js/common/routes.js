@@ -1,6 +1,6 @@
 angular.module('nav.common.routes', ['ngRoute'])
 
-    .config(['$routeProvider', function ($routeProvider) {
+    .config(function ($routeProvider) {
         $routeProvider
             .when('/feilside', {
                 templateUrl: '../views/common/feilsider/feilsideBaksystem.html',
@@ -33,15 +33,12 @@ angular.module('nav.common.routes', ['ngRoute'])
                     },
                     config: function(ConfigResolver) {
                         return ConfigResolver;
-                    },
-                    soknadOppsett: function(SoknadOppsettResolver) {
-                        return SoknadOppsettResolver;
                     }
                 }
             })
             .otherwise({redirectTo: '/404'});
-    }])
-    .run(['$rootScope', '$location', '$anchorScroll', '$routeParams', function ($rootScope, $location, $anchorScroll, $routeParams) {
+    })
+    .run(function ($rootScope, $location, $anchorScroll, $routeParams) {
         $rootScope.$on('$routeChangeSuccess', function () {
             if (_gaq) {
                 var trackPage = "startSoknad";
@@ -53,4 +50,4 @@ angular.module('nav.common.routes', ['ngRoute'])
             $location.hash($routeParams.scrollTo);
             $anchorScroll();
         });
-    }]);
+    });
