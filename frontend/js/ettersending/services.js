@@ -8,6 +8,7 @@
             'nav.services.interceptor.cache',
             'nav.services.interceptor.timeout',
             'nav.services.interceptor.feilhandtering',
+            'nav.services.resolvers.soknadoppsett',
             'nav.services.vedlegg',
             'nav.services.faktum',
             'nav.services.personalia',

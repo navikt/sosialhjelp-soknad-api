@@ -1,5 +1,5 @@
 angular.module('nav.services.resolvers.soknadoppsett', [])
-    .factory('SoknadOppsettResolver', ['data', '$q', 'soknadService', 'BehandlingIdResolver', function (data, $q, soknadService, BehandlingIdResolver) {
+    .factory('SoknadOppsettResolver', function (data, $q, soknadService, BehandlingIdResolver) {
         var soknadOppsettDefer = $q.defer();
 
         BehandlingIdResolver
@@ -18,4 +18,4 @@ angular.module('nav.services.resolvers.soknadoppsett', [])
             });
 
         return soknadOppsettDefer.promise;
-    }]);
+    });
