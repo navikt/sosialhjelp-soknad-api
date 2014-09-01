@@ -66,7 +66,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
 
 
         $scope.options = {
-            maxFileSize: 1024*1024*10,
+            maxFileSize: 1024*1024*10*50,
             formData: {'X-XSRF-TOKEN': $cookies['XSRF-TOKEN']},
             acceptFileTypes: /(\.|\/)(jpg|png|pdf|jpeg)$/i,
             autoUpload: true,
@@ -85,6 +85,8 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                 var errorCode;
                 if(data.jqXHR.responseJSON){
                     errorCode = data.jqXHR.responseJSON.kode;
+                } else if (data.response().textStatus === 'parsererror'){
+                    errorCode = 'generell';
                 } else {
                     errorCode = data.response().errorThrown;
                 }
@@ -93,7 +95,6 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                     // Generell feil fra server fordi filstørrelsen er for stor. Sett rett key for CMS
                     errorCode = 'opplasting.feilmelding.maksstorrelse';
                 }
-
                 $scope.fremdriftsindikator.laster = false;
                 $scope.data.opplastingFeilet = cms.tekster[errorCode];
                 $.each(data.files, function (index, file) {
