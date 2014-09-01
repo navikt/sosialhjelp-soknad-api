@@ -66,7 +66,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
 
 
         $scope.options = {
-            maxFileSize: 1024*1024*10*50,
+            maxFileSize: 1024*1024*10,
             formData: {'X-XSRF-TOKEN': $cookies['XSRF-TOKEN']},
             acceptFileTypes: /(\.|\/)(jpg|png|pdf|jpeg)$/i,
             autoUpload: true,
