@@ -304,6 +304,7 @@ public class SoknadServiceTest {
     public void skalStarteSoknad() {
         DateTimeUtils.setCurrentMillisFixed(System.currentTimeMillis());
         when(henvendelsesConnector.startSoknad(anyString(), anyString(), anyString())).thenReturn("123");
+        when(soknadRepository.hentFaktumMedKey(anyLong(), anyString())).thenReturn(new Faktum().medFaktumId(1L));
         soknadService.startSoknad(DAGPENGER);
 
 

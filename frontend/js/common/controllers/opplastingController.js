@@ -85,8 +85,15 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                 var errorCode;
                 if(data.jqXHR.responseJSON){
                     errorCode = data.jqXHR.responseJSON.kode;
+                } else if (data.response().textStatus === 'parsererror'){
+                    errorCode = 'generell';
                 } else {
                     errorCode = data.response().errorThrown;
+                }
+
+                if (errorCode === 'generell') {
+                    // Generell feil fra server fordi filstørrelsen er for stor. Sett rett key for CMS
+                    errorCode = 'opplasting.feilmelding.maksstorrelse';
                 }
                 $scope.fremdriftsindikator.laster = false;
                 $scope.data.opplastingFeilet = cms.tekster[errorCode];
@@ -201,5 +208,10 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                     }
                 );
             });
+        };
+    })
+    .directive('scrollOnError', function() {
+        return function(scope, elm) {
+            scrollToElement(elm, 50);
         };
     });
