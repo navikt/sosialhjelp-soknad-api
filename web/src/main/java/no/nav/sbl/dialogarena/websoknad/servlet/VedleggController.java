@@ -45,6 +45,8 @@ public class VedleggController {
     @Inject
     private SendSoknadService soknadService;
 
+    private static final Integer MAKS_TOTAL_FILSTORRELSE = 1024*1024*10;
+
     private static byte[] getByteArray(MultipartFile file) {
         try {
             return IOUtils.toByteArray(file.getInputStream());
@@ -122,8 +124,15 @@ public class VedleggController {
             brukerBehandlingId = soknad.getBehandlingskjedeId();
         }
 
+
         XsrfGenerator.sjekkXsrfToken(xsrfToken, brukerBehandlingId);
         Vedlegg forventning = vedleggService.hentVedlegg(soknadId, vedleggId, false);
+
+        if (erFilForStor(soknadId, files, forventning)) {
+            throw new OpplastingException("Kunne ikke lagre fil fordi total filstørrelse er for stor", null,
+                    "vedlegg.opplasting.feil.forStor");
+        }
+
 
         List<Vedlegg> res = new ArrayList<>();
         for (MultipartFile file : files) {
@@ -147,6 +156,20 @@ public class VedleggController {
             }
         }
         return new VedleggOpplasting(res);
+    }
+
+    private Boolean erFilForStor(Long soknadId, List<MultipartFile> files, Vedlegg forventning) {
+        Long totalStorrelse = 0L;
+        List<Vedlegg> alleVedlegg = vedleggService.hentVedleggUnderBehandling(soknadId, forventning.getFillagerReferanse());
+        for (Vedlegg vedlegg : alleVedlegg) {
+            totalStorrelse += vedlegg.getStorrelse();
+        }
+
+        for (MultipartFile file : files) {
+            totalStorrelse += file.getSize();
+        }
+
+        return totalStorrelse > MAKS_TOTAL_FILSTORRELSE;
     }
 
     @RequestMapping(value = "/{vedleggId}/underBehandling", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)

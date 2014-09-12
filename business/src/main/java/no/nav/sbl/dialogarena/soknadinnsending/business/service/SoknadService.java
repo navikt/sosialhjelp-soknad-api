@@ -37,6 +37,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Component;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.bind.JAXB;
@@ -47,12 +48,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import static java.lang.String.format;
 import static java.util.UUID.randomUUID;
 import static javax.xml.bind.JAXBContext.newInstance;
@@ -470,16 +473,27 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
     private void prepopulerSoknadsFakta(Long soknadId) {
         SoknadStruktur soknadStruktur = hentSoknadStruktur(soknadId);
-        for (SoknadFaktum soknadFaktum : soknadStruktur.getFakta()) {
+        List<SoknadFaktum> fakta = soknadStruktur.getFakta();
+
+        Collections.sort(fakta, SoknadFaktum.sammenlignEtterDependOn());
+
+        for (SoknadFaktum soknadFaktum : fakta) {
             String flereTillatt = soknadFaktum.getFlereTillatt();
             String erSystemFaktum = soknadFaktum.getErSystemFaktum();
             if((flereTillatt != null && flereTillatt.equals("true")) || (erSystemFaktum != null && erSystemFaktum.equals("true"))) {
                 continue;
             }
+
             Faktum f = new Faktum()
                     .medKey(soknadFaktum.getId())
                     .medValue("")
                     .medType(Faktum.FaktumType.BRUKERREGISTRERT);
+
+            if (soknadFaktum.getDependOn() != null) {
+                Faktum parentFaktum = repository.hentFaktumMedKey(soknadId, soknadFaktum.getDependOn().getId());
+                f.setParrentFaktum(parentFaktum.getFaktumId());
+            }
+
             repository.lagreFaktum(soknadId,f);
         }
     }
@@ -532,7 +546,15 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     }
 
     private boolean erParentAktiv(SoknadVedlegg soknadVedlegg, Faktum parent) {
-        return parent == null || parent.getValue().equals(soknadVedlegg.getFaktum().getDependOnValue());
+        return parent == null || erParentValueNullOgVedleggDependOnFalse(soknadVedlegg, parent) || parentValueErLikDependOnVerdi(soknadVedlegg, parent);
+    }
+
+    private boolean parentValueErLikDependOnVerdi(SoknadVedlegg soknadVedlegg, Faktum parent) {
+        return parent.getValue().equals(soknadVedlegg.getFaktum().getDependOnValue());
+    }
+    
+    private boolean erParentValueNullOgVedleggDependOnFalse(SoknadVedlegg soknadVedlegg, Faktum parent) {
+        return parent.getValue() == null && "false".equalsIgnoreCase(soknadVedlegg.getFaktum().getDependOnValue());
     }
 
     /**

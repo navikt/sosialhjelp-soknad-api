@@ -6,6 +6,9 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
 import java.io.Serializable;
+import java.util.Comparator;
+
+import static org.apache.commons.lang3.StringUtils.countMatches;
 
 public class SoknadFaktum implements Serializable {
 
@@ -71,5 +74,26 @@ public class SoknadFaktum implements Serializable {
                 .append("flereTillatt", flereTillatt)
                 .append("erSystemFaktum", erSystemFaktum)
                 .toString();
+    }
+
+    /*
+    For å sortere etter dependency til andre faktum. Faktum uten depdenceny kommer
+    før faktum med dependency.
+     */
+    public static Comparator<SoknadFaktum> sammenlignEtterDependOn() {
+        return new Comparator<SoknadFaktum>() {
+            @Override
+            public int compare(SoknadFaktum sf1, SoknadFaktum sf2) {
+                if (sf1.getDependOn() == null && sf2.getDependOn() == null) {
+                    return 0;
+                } else if (sf1.getDependOn() == null && sf2.getDependOn() != null) {
+                    return -1;
+                } else if (sf1.getDependOn() != null && sf2.getDependOn() == null) {
+                    return 1;
+                } else {
+                    return countMatches(sf1.getDependOn().getId(), ".") - countMatches(sf2.getDependOn().getId(), ".");
+                }
+            }
+        };
     }
 }

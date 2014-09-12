@@ -4,10 +4,10 @@
     <parent>
         <groupId>no.nav.sbl.dialogarena</groupId>
         <artifactId>sendsoknad</artifactId>
-        <version>2.0.2</version>
+        <version>2.0.5</version>
     </parent>
     <artifactId>sendsoknad-business</artifactId>
-    <version>2.0.2</version>
+    <version>2.0.5</version>
     <name>${project.artifactId}</name>
     <build>
         <plugins>
@@ -79,6 +79,10 @@
         <dependency>
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-security-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lowagie</groupId>
+            <artifactId>itext</artifactId>
         </dependency>
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>

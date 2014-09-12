@@ -10,7 +10,7 @@
                href="javascript:void(0);">
             </a>
             <img data-ng-repeat="bilde in range(vedlegg.antallSider)"
-                 data-ng-src="../rest/soknad/{{vedlegg.soknadId}}/vedlegg/{{vedlegg.vedleggId}}/thumbnail?side={{bilde}}"
+                 data-ng-src="../rest/soknad/{{vedlegg.soknadId}}/vedlegg/{{vedlegg.vedleggId}}/thumbnail?side={{bilde}}&ts={{ hentTimestamp}}"
                  alt="Forhåndsvisning"
                  data-ferdig-lastet-bilde
                  data-ng-click="naviger(1)"

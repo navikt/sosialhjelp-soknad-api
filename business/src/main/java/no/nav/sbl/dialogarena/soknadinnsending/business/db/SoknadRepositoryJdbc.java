@@ -137,6 +137,12 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     }
 
     @Override
+    public Faktum hentFaktumMedKey(Long soknadId, String faktumKey) {
+        final String sql = "select * from SOKNADBRUKERDATA where soknad_id = ? and key = ?";
+        return getJdbcTemplate().queryForObject(sql, faktumRowMapper, soknadId, faktumKey);
+    }
+
+    @Override
     public WebSoknad hentEttersendingMedBehandlingskjedeIdMedData(String behandlingsId) {
         Optional<WebSoknad> soknadOptional = hentEttersendingMedBehandlingskjedeId(behandlingsId);
 
