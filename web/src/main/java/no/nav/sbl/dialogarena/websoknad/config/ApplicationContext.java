@@ -80,7 +80,7 @@ public class ApplicationContext {
     @Bean
     public MultipartResolver multipartResolver() {
         CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver();
-        commonsMultipartResolver.setMaxUploadSize(10 * 1024 * 1000);
+        commonsMultipartResolver.setMaxUploadSize(10 * 1024 * 1024);
         return commonsMultipartResolver;
     }
 

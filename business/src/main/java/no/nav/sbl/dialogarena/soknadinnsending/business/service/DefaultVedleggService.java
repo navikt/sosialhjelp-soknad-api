@@ -1,5 +1,12 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfImportedPage;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfWriter;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.detect.Detect;
@@ -19,6 +26,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnect
 import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.util.Splitter;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -31,9 +39,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Collections.sort;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -91,9 +101,13 @@ public class DefaultVedleggService implements VedleggService {
                 sjekkOmPdfErGyldig(document);
                 List<PDDocument> pages = new Splitter().split(document);
                 for (PDDocument page : pages) {
+                    PDPage pdPage = (PDPage) page.getDocumentCatalog().getAllPages().get(0);
+                    pdPage.getContents().addCompression();
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     page.save(baos);
                     page.close();
+
+                    ByteArrayOutputStream finalBaos = komprimerPdfMedIText(baos.toByteArray());
 
                     Vedlegg sideVedlegg = new Vedlegg()
                             .medVedleggId(null)
@@ -101,7 +115,7 @@ public class DefaultVedleggService implements VedleggService {
                             .medFaktumId(vedlegg.getFaktumId())
                             .medSkjemaNummer(vedlegg.getSkjemaNummer())
                             .medNavn(vedlegg.getNavn())
-                            .medStorrelse((long) baos.size())
+                            .medStorrelse((long) finalBaos.size())
                             .medAntallSider(1)
                             .medData(null)
                             .medOpprettetDato(vedlegg.getOpprettetDato())
@@ -109,15 +123,15 @@ public class DefaultVedleggService implements VedleggService {
                             .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
 
                     resultat.add(vedleggRepository.opprettVedlegg(sideVedlegg,
-                            baos.toByteArray()));
+                            finalBaos.toByteArray()));
                 }
                 document.close();
             } else {
                 throw new UgyldigOpplastingTypeException(
                         "Ugyldig filtype for opplasting", null,
-                        "vedlegg.opplasting.feil.filtype");
+                        "opplasting.feilmelding.feiltype");
             }
-        } catch (IOException | COSVisitorException e) {
+        } catch (DocumentException | IOException | COSVisitorException e) {
             throw new OpplastingException("Kunne ikke lagre fil", e,
                     "vedlegg.opplasting.feil.generell");
         }
@@ -165,12 +179,26 @@ public class DefaultVedleggService implements VedleggService {
         List<Vedlegg> vedleggUnderBehandling = vedleggRepository
                 .hentVedleggUnderBehandling(soknadId,
                         forventning.getFillagerReferanse());
+
+        sort(vedleggUnderBehandling, new Comparator<Vedlegg>() {
+            @Override
+            public int compare(Vedlegg v1, Vedlegg v2) {
+                return v1.getVedleggId().compareTo(v2.getVedleggId());
+            }
+        });
+
         List<byte[]> bytes = new ArrayList<>();
         for (Vedlegg vedlegg : vedleggUnderBehandling) {
             bytes.add(vedleggRepository.hentVedleggData(soknadId, vedlegg.getVedleggId()));
         }
         byte[] doc = pdfMerger.transform(bytes);
         doc = watermarker.forIdent(getSubjectHandler().getUid(), false).transform(doc);
+
+        try {
+            doc = komprimerPdfMedIText(doc).toByteArray();
+        } catch (IOException | DocumentException e) {
+            logger.error("Kunne ikke komprimere vedlegg under merge", e);
+        }
 
         forventning.leggTilInnhold(doc, vedleggUnderBehandling.size());
         WebSoknad soknad = repository.hentSoknad(soknadId);
@@ -194,7 +222,7 @@ public class DefaultVedleggService implements VedleggService {
 
     @Override
     public void lagreVedlegg(Long soknadId, Long vedleggId, Vedlegg vedlegg) {
-        if(nedgradertEllerForLavtInnsendingsValg(vedlegg)) {
+        if (nedgradertEllerForLavtInnsendingsValg(vedlegg)) {
             throw new ApplicationException("Ugyldig innsendingsstatus, opprinnelig innsendingstatus kan aldri nedgraderes");
         }
         vedleggRepository.lagreVedlegg(soknadId, vedleggId, vedlegg);
@@ -232,8 +260,8 @@ public class DefaultVedleggService implements VedleggService {
     private boolean nedgradertEllerForLavtInnsendingsValg(Vedlegg vedlegg) {
         Vedlegg.Status nyttInnsendingsvalg = vedlegg.getInnsendingsvalg();
         Vedlegg.Status opprinneligInnsendingsvalg = vedlegg.getOpprinneligInnsendingsvalg();
-        if(nyttInnsendingsvalg != null && opprinneligInnsendingsvalg != null){
-            if(nyttInnsendingsvalg.getPrioritet() <= 1 || (nyttInnsendingsvalg.getPrioritet() < opprinneligInnsendingsvalg.getPrioritet())) {
+        if (nyttInnsendingsvalg != null && opprinneligInnsendingsvalg != null) {
+            if (nyttInnsendingsvalg.getPrioritet() <= 1 || (nyttInnsendingsvalg.getPrioritet() < opprinneligInnsendingsvalg.getPrioritet())) {
                 return true;
             }
         }
@@ -253,5 +281,26 @@ public class DefaultVedleggService implements VedleggService {
             logger.debug("ignored exception");
 
         }
+    }
+
+    private ByteArrayOutputStream komprimerPdfMedIText(byte[] pdfBytes) throws DocumentException, IOException {
+        ByteArrayOutputStream returnBaos = new ByteArrayOutputStream();
+        Document pdf = new Document(PageSize.A4);
+        PdfWriter pdfWriter = PdfWriter.getInstance(pdf, returnBaos);
+        pdfWriter.setFullCompression();
+        pdf.open();
+        PdfContentByte cb = pdfWriter.getDirectContent();
+        PdfReader pdfReader = new PdfReader(pdfBytes);
+        
+        for (int i = 1; i <= pdfReader.getNumberOfPages(); i++) {
+            PdfImportedPage page = pdfWriter.getImportedPage(pdfReader, i);
+            pdf.newPage();
+            cb.addTemplate(page, 0, 0);
+        }
+
+        pdf.close();
+        pdfWriter.close();
+        pdfReader.close();
+        return returnBaos;
     }
 }
