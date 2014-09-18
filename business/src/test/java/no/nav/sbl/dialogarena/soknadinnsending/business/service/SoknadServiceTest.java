@@ -50,8 +50,8 @@ import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.OPPRETTET;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.UNDER_ARBEID;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.DAGPENGER;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.RUTES_I_BRUT;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.util.WebSoknadUtils.DAGPENGER;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.util.WebSoknadUtils.RUTES_I_BRUT;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
@@ -68,6 +68,7 @@ import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -86,6 +87,9 @@ public class SoknadServiceTest {
     private Kodeverk kodeverk;
     @Mock
     private NavMessageSource navMessageSource;
+
+    @Mock
+    private StartDatoService startDatoService;
 
     @InjectMocks
     private SoknadService soknadService;
@@ -278,7 +282,7 @@ public class SoknadServiceTest {
     }
 
     @Test
-    public void skalLagreSystemfaktumUtenUnuque() {
+    public void skalLagreSystemfaktumUtenUnique() {
         Faktum faktum = new Faktum().medKey("personalia").medValue("tester").medSoknadId(1L);
         when(soknadRepository.lagreFaktum(anyLong(), any(Faktum.class), anyBoolean())).thenReturn(2L);
         when(soknadRepository.hentFaktum(1L, 2L)).thenReturn(faktum);
@@ -321,6 +325,50 @@ public class SoknadServiceTest {
                 .medDelstegStatus(OPPRETTET);
         verify(soknadRepository).opprettSoknad(soknad);
         verify(soknadRepository, atLeastOnce()).lagreFaktum(anyLong(), any(Faktum.class));
+        DateTimeUtils.setCurrentMillisSystem();
+    }
+
+    @Test
+    public void skalIkkeGenerereVedleggForLonnsOgTrekksoppgaveDersomSoknadStartesUtenomJanuarOgFebruar() {
+        Long soknadId = 0L;
+        Faktum lonnsOgTrekkoppgaveFaktum = new Faktum()
+                .medSoknadId(soknadId)
+                .medKey("lonnsOgTrekkOppgave")
+                .medType(SYSTEMREGISTRERT)
+                .medValue("true");
+
+        DateTimeUtils.setCurrentMillisFixed(System.currentTimeMillis());
+        when(henvendelsesConnector.startSoknad(anyString(), anyString(), anyString())).thenReturn("123");
+        when(soknadRepository.hentFaktumMedKey(anyLong(), anyString())).thenReturn(new Faktum().medFaktumId(1L));
+        when(startDatoService.erJanuarEllerFebruar()).thenReturn(false);
+        when(soknadRepository.opprettSoknad(any(WebSoknad.class))).thenReturn(soknadId);
+        soknadService.startSoknad(DAGPENGER);
+
+        verify(soknadRepository, never()).lagreFaktum(soknadId, lonnsOgTrekkoppgaveFaktum, true);
+        verify(vedleggRepository, never()).lagreVedlegg(eq(soknadId), anyLong(), any(Vedlegg.class));
+        DateTimeUtils.setCurrentMillisSystem();
+    }
+
+    @Test
+    public void skalGenerereVedleggForLonnsOgTrekksoppgaveDersomSoknadStartesIJanuarEllerFebruar() {
+        Long soknadId = 0L;
+        Faktum lonnsOgTrekkoppgaveFaktum = new Faktum()
+                .medSoknadId(soknadId)
+                .medKey("lonnsOgTrekkOppgave")
+                .medType(SYSTEMREGISTRERT)
+                .medValue("true");
+
+        DateTimeUtils.setCurrentMillisFixed(System.currentTimeMillis());
+        when(henvendelsesConnector.startSoknad(anyString(), anyString(), anyString())).thenReturn("123");
+        when(soknadRepository.hentFaktumMedKey(anyLong(), anyString())).thenReturn(new Faktum().medFaktumId(1L));
+        when(startDatoService.erJanuarEllerFebruar()).thenReturn(true);
+        when(soknadRepository.hentSoknadType(anyLong())).thenReturn("NAV 04-01.04");
+        when(soknadRepository.hentFaktum(anyLong(), anyLong())).thenReturn(lonnsOgTrekkoppgaveFaktum);
+        when(soknadRepository.opprettSoknad(any(WebSoknad.class))).thenReturn(soknadId);
+
+        soknadService.startSoknad(DAGPENGER);
+        verify(soknadRepository, times(1)).lagreFaktum(soknadId, lonnsOgTrekkoppgaveFaktum, true);
+        verify(vedleggRepository, atLeastOnce()).lagreVedlegg(eq(soknadId), anyLong(), any(Vedlegg.class));
         DateTimeUtils.setCurrentMillisSystem();
     }
 

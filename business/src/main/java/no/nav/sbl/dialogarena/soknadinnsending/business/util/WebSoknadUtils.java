@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.soknadinnsending.business.service;
+package no.nav.sbl.dialogarena.soknadinnsending.business.util;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
