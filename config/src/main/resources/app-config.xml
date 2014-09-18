@@ -43,7 +43,7 @@
         <baseUrl alias="arena.personinfoservice" mapToProperty="soknad.webservice.arena.personinfo"/>
         
         <applicationProperties alias="soknad.ettersending.properties"/>
-        <applicationProperties alias="tillatmock"/>
+        <applicationProperties alias="soknad.properties"/>
 
         <smtpServer alias="dokumentinnsending.smtpServer" mapToProperty="dokumentinnsending.smtpServer"/>
         <localFiles name="sendsoknad" mapToProperty="sendsoknad.datadir"/>
