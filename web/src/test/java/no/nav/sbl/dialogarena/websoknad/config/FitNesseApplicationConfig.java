@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.common.kodeverk.JsonKodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.StartDatoService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.MockConsumerConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
@@ -55,6 +56,9 @@ public class FitNesseApplicationConfig {
     FillagerConnector faillagerConnector() {
         return new FillagerConnector();
     }
+
+    @Bean
+    StartDatoService startDatoService() {return new StartDatoService(); }
 
     @Bean
     public FluentWicketTester<WicketApplication> wicketTester(WicketApplication application) {
