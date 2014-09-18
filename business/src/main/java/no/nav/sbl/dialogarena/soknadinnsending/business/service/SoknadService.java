@@ -28,7 +28,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseC
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStatus;
 import org.apache.commons.collections15.Closure;
 import org.apache.commons.collections15.Transformer;
 import org.joda.time.DateTime;
@@ -67,8 +66,8 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Fak
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.toInnsendingsvalg;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.getJournalforendeEnhet;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.getSkjemanummer;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.util.WebSoknadUtils.getJournalforendeEnhet;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.util.WebSoknadUtils.getSkjemanummer;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -90,6 +89,9 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     private Kodeverk kodeverk;
     @Inject
     private NavMessageSource navMessageSource;
+
+    @Inject
+    private StartDatoService startDatoService;
 
     private static final String EKSTRA_VEDLEGG_KEY = "ekstraVedlegg";
     private List<String> gyldigeSkjemaer = Arrays.asList("NAV 04-01.03");
@@ -473,9 +475,22 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         bolkerFaktum.setProperties(erBolkerValidert);
 
         repository.lagreFaktum(soknadId, bolkerFaktum);
-
         prepopulerSoknadsFakta(soknadId);
+
+        opprettFaktumForLonnsOgTrekkoppgave(soknadId);
+
         return behandlingsId;
+    }
+
+    private void opprettFaktumForLonnsOgTrekkoppgave(Long soknadId) {
+        if (startDatoService.erJanuarEllerFebruar()) {
+            Faktum lonnsOgTrekkoppgaveFaktum = new Faktum()
+                    .medSoknadId(soknadId)
+                    .medKey("lonnsOgTrekkOppgave")
+                    .medType(SYSTEMREGISTRERT)
+                    .medValue("true");
+            lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum, "");
+        }
     }
 
     private void prepopulerSoknadsFakta(Long soknadId) {

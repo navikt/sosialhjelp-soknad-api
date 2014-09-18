@@ -630,6 +630,13 @@
         <flereTillatt>true</flereTillatt>
     </faktum>
 
+    <!-- Lønns- og trekk-oppgave -->
+    <faktum>
+        <id>lonnsOgTrekkOppgave</id>
+        <type>java.lang.Boolean</type>
+        <erSystemFaktum>true</erSystemFaktum>
+    </faktum>
+
     <!-- Ekstra vedlegg -->
     <faktum>
         <id>ekstraVedlegg</id>
@@ -928,6 +935,14 @@
         <onProperty>statsborgerskapType</onProperty>
         <onValue>norsk</onValue>
         <inverted>true</inverted>
+        <forSystemfaktum>true</forSystemfaktum>
+    </vedlegg>
+
+    <vedlegg>
+        <id>9</id>
+        <faktum>lonnsOgTrekkOppgave</faktum>
+        <onValue>true</onValue>
+        <skjemaNummer>M1</skjemaNummer>
         <forSystemfaktum>true</forSystemfaktum>
     </vedlegg>
 
