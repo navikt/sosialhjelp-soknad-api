@@ -34,7 +34,7 @@ public class FillagerConnector {
     private FilLagerPortType portTypeSystemSecurity;
 
     public void lagreFil(String behandlingsId, String uid, String fnr, InputStream fil) {
-        logger.info("Skal lagre soknad til henvendelse. UUID: " + uid + ". Behandlingsid: " + behandlingsId);
+        logger.info("Skal lagre fil til henvendelse for behandling med ID {}. UUID: {}", behandlingsId, uid);
         try {
 
             FilLagerPortType filLagerPortType = portType;
@@ -43,13 +43,13 @@ public class FillagerConnector {
                 logger.debug("Bruker systembruker for kall");
             }
             filLagerPortType.lagre(behandlingsId, uid, fnr, new DataHandler(new ByteArrayDataSource(fil, "application/octet-stream")));
-            logger.info("Søknad lagret til henvendelse");
+            logger.info("Fil lagret til henvendelse");
         } catch (IOException e) {
-            logger.error("Fikk ikke lagret søknad til henvendelse");
-            throw new ApplicationException("Kunne ikke lagre fil: " + e + ". BehandlingsID: " + behandlingsId, e, "exception.system.baksystem");
+            logger.error("Fikk ikke lagret fil til henvendelse");
+            throw new ApplicationException("Kunne ikke lagre fil: " + e + ". BehandlingsID: " + behandlingsId + ". UUID: " + uid, e, "exception.system.baksystem");
         } catch (SOAPFaultException ws) {
-            logger.error("Fikk ikke lagret søknad til henvendelse");
-            throw new SystemException("Feil i kommunikasjon med fillager: " + ws + ". BehandlingsID: " + behandlingsId, ws, "exception.system.baksystem");
+            logger.error("Fikk ikke lagret fil til henvendelse");
+            throw new SystemException("Feil i kommunikasjon med fillager: " + ws + ". BehandlingsID: " + behandlingsId + ". UUID: " + uid, ws, "exception.system.baksystem");
         }
     }
 

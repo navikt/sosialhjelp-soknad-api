@@ -3,9 +3,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfImportedPage;
 import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfStamper;
 import com.lowagie.text.pdf.PdfWriter;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
@@ -203,6 +202,7 @@ public class DefaultVedleggService implements VedleggService {
         forventning.leggTilInnhold(doc, vedleggUnderBehandling.size());
         WebSoknad soknad = repository.hentSoknad(soknadId);
 
+        logger.info("Lagrer fil til henvendelse for behandling {}, UUID: {}", soknad.getBrukerBehandlingId(), forventning.getFillagerReferanse());
         fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(),
                 forventning.getFillagerReferanse(), soknad.getAktoerId(),
                 new ByteArrayInputStream(doc));
@@ -286,20 +286,16 @@ public class DefaultVedleggService implements VedleggService {
     private ByteArrayOutputStream komprimerPdfMedIText(byte[] pdfBytes) throws DocumentException, IOException {
         ByteArrayOutputStream returnBaos = new ByteArrayOutputStream();
         Document pdf = new Document(PageSize.A4);
-        PdfWriter pdfWriter = PdfWriter.getInstance(pdf, returnBaos);
-        pdfWriter.setFullCompression();
-        pdf.open();
-        PdfContentByte cb = pdfWriter.getDirectContent();
         PdfReader pdfReader = new PdfReader(pdfBytes);
-        
-        for (int i = 1; i <= pdfReader.getNumberOfPages(); i++) {
-            PdfImportedPage page = pdfWriter.getImportedPage(pdfReader, i);
-            pdf.newPage();
-            cb.addTemplate(page, 0, 0);
-        }
+        PdfStamper stamper = new PdfStamper(pdfReader, returnBaos, PdfWriter.VERSION_1_7);
+        stamper.getWriter().setCompressionLevel(9);
 
+        for (int i = 1; i < pdfReader.getNumberOfPages(); i++) {
+            pdfReader.setPageContent(i, pdfReader.getPageContent(i));
+        }
+        stamper.setFullCompression();
         pdf.close();
-        pdfWriter.close();
+        stamper.close();
         pdfReader.close();
         return returnBaos;
     }
