@@ -405,6 +405,6 @@ public class WebSoknad implements Serializable {
     }
 
     public boolean erAvbryttAvBruker() {
-        return status.equals(SoknadInnsendingStatus.AVBRUTT_AV_BRUKER);
+        return status.equals(SoknadInnsendingStatus.AVBRUTT_AV_BRUKER) || status.equals(SoknadInnsendingStatus.AVBRUTT_AUTOMATISK);
     }
 }
