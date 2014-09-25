@@ -46,6 +46,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 			arbeidsforholdData = {
 				key       : 'arbeidsforhold',
 				properties: {
+                    'startetForrigeAar': 'false',
 					'arbeidsgivernavn': undefined,
 					'datofra'         : undefined,
 					'datotil'         : undefined,
@@ -80,9 +81,21 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 			$scope.runValidation(true);
 
 			if (form.$valid) {
+                settStartetForrigeAarProperty();
                 lagreArbeidsforholdOgSluttaarsak();
 			}
 		};
+
+        function settStartetForrigeAarProperty() {
+            var innevaerendeAar = new Date().getFullYear();
+            var arbeidsforholdSluttAar = new Date($scope.arbeidsforhold.properties.datotil).getFullYear() || new Date($scope.arbeidsforhold.properties.redusertfra).getFullYear() || new Date($scope.arbeidsforhold.properties.permiteringsperiodedatofra).getFullYear();
+            var arbeidsforholdetErFraForegaaendeAar = innevaerendeAar - arbeidsforholdSluttAar === 1;
+            var startetIJanuarEllerFebruar = data.finnFaktum('lonnsOgTrekkOppgave').value === "true";
+
+            if (startetIJanuarEllerFebruar && arbeidsforholdetErFraForegaaendeAar) {
+                $scope.arbeidsforhold.properties.startetForrigeAar = 'true';
+            }
+        }
 
 		function lagreArbeidsforholdOgSluttaarsak() {
             $scope.arbeidsforhold.$save({soknadId: data.soknad.soknadId}).then(function (arbeidsforholdData) {

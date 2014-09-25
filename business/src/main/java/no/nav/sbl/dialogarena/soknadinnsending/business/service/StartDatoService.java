@@ -9,7 +9,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.util.MockUtil.sta
 @Component
 public class StartDatoService {
 
-    public boolean erJanuarEllerFebruar() {
+    public Boolean erJanuarEllerFebruar() {
         Integer maaned;
         if (startdatoMockErTillattOgAktivert()) {
             maaned = MockUtil.valgtMaaned();

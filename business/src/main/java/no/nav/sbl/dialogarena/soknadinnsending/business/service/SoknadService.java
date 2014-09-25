@@ -484,14 +484,12 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     }
 
     private void opprettFaktumForLonnsOgTrekkoppgave(Long soknadId) {
-        if (startDatoService.erJanuarEllerFebruar()) {
-            Faktum lonnsOgTrekkoppgaveFaktum = new Faktum()
-                    .medSoknadId(soknadId)
-                    .medKey("lonnsOgTrekkOppgave")
-                    .medType(SYSTEMREGISTRERT)
-                    .medValue("true");
-            lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum, "");
-        }
+        Faktum lonnsOgTrekkoppgaveFaktum = new Faktum()
+                .medSoknadId(soknadId)
+                .medKey("lonnsOgTrekkOppgave")
+                .medType(SYSTEMREGISTRERT)
+                .medValue(startDatoService.erJanuarEllerFebruar().toString());
+        lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum, "");
     }
 
     private void prepopulerSoknadsFakta(Long soknadId) {
