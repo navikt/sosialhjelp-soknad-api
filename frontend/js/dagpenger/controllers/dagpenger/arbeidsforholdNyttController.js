@@ -94,6 +94,8 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 
             if (startetIJanuarEllerFebruar && arbeidsforholdetErFraForegaaendeAar) {
                 $scope.arbeidsforhold.properties.startetForrigeAar = 'true';
+            } else {
+                $scope.arbeidsforhold.properties.startetForrigeAar = 'false';
             }
         }
 
