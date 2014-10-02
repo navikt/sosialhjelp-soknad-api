@@ -86,9 +86,22 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 			}
 		};
 
+        function getArbeidsforholdSluttDato() {
+            switch ($scope.arbeidsforhold.properties.type) {
+                case 'Arbeidsgiver er konkurs':
+                    return $scope.arbeidsforhold.properties.konkursdato;
+                case 'Redusert arbeidstid':
+                   return $scope.arbeidsforhold.properties.redusertfra;
+                case 'Permittert':
+                    return $scope.arbeidsforhold.properties.permiteringsperiodedatofra;
+                default:
+                    return $scope.arbeidsforhold.properties.datotil
+            }
+        }
+
         function settStartetForrigeAarProperty() {
             var innevaerendeAar = new Date().getFullYear();
-            var arbeidsforholdSluttAar = new Date($scope.arbeidsforhold.properties.datotil).getFullYear() || new Date($scope.arbeidsforhold.properties.redusertfra).getFullYear() || new Date($scope.arbeidsforhold.properties.permiteringsperiodedatofra).getFullYear();
+            var arbeidsforholdSluttAar = new Date(getArbeidsforholdSluttDato()).getFullYear();
             var arbeidsforholdetErFraForegaaendeAar = innevaerendeAar - arbeidsforholdSluttAar === 1;
             var startetIJanuarEllerFebruar = data.finnFaktum('lonnsOgTrekkOppgave').value === "true";
 
