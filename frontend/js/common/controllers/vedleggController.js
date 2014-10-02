@@ -5,9 +5,9 @@ angular.module('nav.vedlegg.controller', [])
             vedleggId: $routeParams.vedleggId
         });
     }])
-    .controller('VedleggCtrl', ['$scope', '$location', 'data', 'vedleggService', 'Faktum', 'soknadService', '$timeout', function ($scope, $location, data, vedleggService, Faktum, soknadService, $timeout) {
+    .controller('VedleggCtrl', function ($scope, $location, data, vedleggService, Faktum, soknadService, $timeout, vedleggListe) {
         $scope.data = {soknadId: data.soknad.soknadId};
-        $scope.forventninger = vedleggService.query({soknadId: data.soknad.soknadId});
+        $scope.forventninger = vedleggListe;
 
         $scope.sidedata = {navn: 'vedlegg'};
 
@@ -64,7 +64,7 @@ angular.module('nav.vedlegg.controller', [])
                     });
                 });
         };
-    }])
+    })
 
     .controller('validervedleggCtrl', ['$scope', 'Faktum', function ($scope, Faktum) {
         if ($scope.forventning.innsendingsvalg === "VedleggKreves") {

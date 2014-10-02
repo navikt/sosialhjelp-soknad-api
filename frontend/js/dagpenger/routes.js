@@ -40,6 +40,7 @@ angular.module('sendsoknad.routes', ['ngRoute', 'nav.common.routes'])
             })
             .when('/vedlegg', {
                 templateUrl: '../views/templates/vedlegg/vedlegg.html',
+                controller: 'VedleggCtrl',
                 resolve: {
                     cms: function (CmsResolver) {
                         return CmsResolver;
@@ -61,6 +62,9 @@ angular.module('sendsoknad.routes', ['ngRoute', 'nav.common.routes'])
                     },
                     behandlingsId: function(BehandlingIdResolver) {
                         return BehandlingIdResolver;
+                    },
+                    vedleggListe: function (VedleggResolver) {
+                        return VedleggResolver;
                     }
                 }
             })
