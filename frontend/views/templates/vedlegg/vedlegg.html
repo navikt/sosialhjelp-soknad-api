@@ -2,7 +2,7 @@
 <div data-stegindikator steg-liste="veiledning, skjema, vedlegg, sendInn" data-aktiv-index="2"></div>
 
 <div data-ng-form="vedleggForm" id="vedlegg" class="soknad" data-sidetittel="sidetittel.opplasting"
-     data-ng-controller="VedleggCtrl" data-trigg-bolker data-tab-autoscroll>
+     data-trigg-bolker data-tab-autoscroll>
 
     <div class="rad-belyst inforad">
         <div class="begrensning sak-totredel">
@@ -36,7 +36,7 @@
         <div data-accordion data-close-others="false" data-ng-if="forventninger != null">
             <div class="vedlegg">
                 <div data-accordion-group
-                     data-ng-repeat="forventning in forventninger | orderBy: 'opprettetDato'"
+                     data-ng-repeat="forventning in forventninger | orderBy: 'faktumId'"
                      class="spm-blokk vertikal"
                      id="vedlegg_{{forventning.vedleggId}}">
                     <div data-accordion-heading>
