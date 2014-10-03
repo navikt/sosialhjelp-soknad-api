@@ -5,9 +5,9 @@ angular.module('nav.vedlegg.controller', [])
             vedleggId: $routeParams.vedleggId
         });
     }])
-    .controller('VedleggCtrl', function ($scope, $location, data, vedleggService, Faktum, soknadService, $timeout, vedleggListe) {
+    .controller('VedleggCtrl', function ($scope, $location, data, vedleggService, Faktum, soknadService, $timeout) {
         $scope.data = {soknadId: data.soknad.soknadId};
-        $scope.forventninger = vedleggListe;
+        $scope.forventninger = vedleggService.query({soknadId: data.soknad.soknadId});
 
         $scope.sidedata = {navn: 'vedlegg'};
 
