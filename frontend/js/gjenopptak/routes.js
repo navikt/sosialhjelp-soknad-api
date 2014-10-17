@@ -10,7 +10,7 @@ angular.module('gjenopptak.routes', ['ngRoute', 'nav.common.routes'])
                     }]
                 }
             })
-            .when('/test', {
+            .when('/', {
                 templateUrl: '../views/gjenopptak/gjenopptak.html',
                 resolve: {
                     cms: function (CmsResolver) {

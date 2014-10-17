@@ -1,1 +1,3 @@
-angular.module('utslagskriterierDagpenger.controllers', []);
+angular.module('utslagskriterierDagpenger.controllers', [
+    'utslagskriterierDagpenger.services'
+]);

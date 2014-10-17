@@ -2,8 +2,8 @@ angular.module('nav.ettersending.controllers.start', [])
     .controller('StartEttersendingCtrl', function ($scope, ettersendingService, data, EttersendingMetadataResolver) {
         $scope.mineInnsendinger = data.config["minehenvendelser.link.url"];
 
-        $scope.sisteInnsendtBehandling;
-        $scope.innsendtDato;
+        $scope.sisteInnsendtBehandling = null;
+        $scope.innsendtDato = null;
 
         var fristDato;
         EttersendingMetadataResolver.then(function(result) {

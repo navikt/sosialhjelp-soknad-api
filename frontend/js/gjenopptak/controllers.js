@@ -1,1 +1,4 @@
-angular.module('gjenopptak.controllers', ['gjenopptak.services']);
+angular.module('gjenopptak.controllers', [
+    'nav.feilside',
+    'gjenopptak.services'
+]);

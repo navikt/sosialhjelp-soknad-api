@@ -10,6 +10,6 @@ public class UtslagskriterierDagpengerPage extends BasePage {
     public UtslagskriterierDagpengerPage(PageParameters parameters) {
         super(parameters);
 
-        add(new SoknadComponent("soknad", SkjemaBootstrapFile.UTSLAGSKRITERIER));
+        add(new SoknadComponent("soknad", SkjemaBootstrapFile.UTSLAGSKRITERIER_DAGPENGER));
     }
 }
