@@ -3,7 +3,8 @@ package no.nav.sbl.dialogarena.websoknad.pages;
 public enum SkjemaBootstrapFile {
     GJENOPPTAK("Gjenopptak"),
     ETTERSENDING("Ettersending"),
-    DAGPENGER("Dagpenger");
+    DAGPENGER("Dagpenger"),
+    UTSLAGSKRITERIER("Utslagskriterier");
 
     private final String text;
 

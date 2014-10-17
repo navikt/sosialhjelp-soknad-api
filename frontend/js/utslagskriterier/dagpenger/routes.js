@@ -1,4 +1,4 @@
-angular.module('gjenopptak.routes', ['ngRoute', 'nav.common.routes'])
+angular.module('utslagskriterierDagpenger.routes', ['ngRoute', 'nav.common.routes'])
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider
             .when('/cmstekster', {
@@ -10,15 +10,12 @@ angular.module('gjenopptak.routes', ['ngRoute', 'nav.common.routes'])
                     }]
                 }
             })
-            .when('/test', {
-                templateUrl: '../views/gjenopptak/gjenopptak.html',
+            .when('/utslagskriterier/dagpenger', {
+                templateUrl: '../views/utslagskriterier/dagpenger/dagpenger.html',
                 resolve: {
                     cms: function (CmsResolver) {
                         return CmsResolver;
-                    },
-                    config: function (ConfigResolver) {
-                        return ConfigResolver;
                     }
                 }
-            });
+            })
     }]);

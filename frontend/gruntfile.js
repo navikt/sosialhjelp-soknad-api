@@ -5,17 +5,16 @@ module.exports = function (grunt) {
         builtminNameSendsoknad: 'target/classes/META-INF/resources/js/built/built_sendsoknad' + timestamp + '.min.js',
         builtminNameEttersending: 'target/classes/META-INF/resources/js/built/built_ettersending' + timestamp + '.min.js',
         builtminNameGjenopptak: 'target/classes/META-INF/resources/js/built/built_gjenopptak' + timestamp + '.min.js',
+        builtminNameUtslagskriterierDagpenger: 'target/classes/META-INF/resources/js/built/built_utslagskriterier_dagpenger' + timestamp + '.min.js',
         html2js: {
             main: {
                 src: [
                     'views/dagpenger/**/*.html',
                     'views/common/**/*.html',
                     'views/ettersending/**/*.html',
-                    'views/gjenopptak/**/*.html',
                     'views/templates/**/*.html',
                     'js/dagpenger/**/*.html',
                     'js/ettersending/**/*.html',
-                    'js/gjenopptak/**/*.html',
                     'js/common/**/*.html'
                 ],
                 dest: 'target/classes/META-INF/resources/js/dagpenger/templates.js'

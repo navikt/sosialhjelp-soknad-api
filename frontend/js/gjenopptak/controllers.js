@@ -1,1 +1,1 @@
-angular.module('gjenopptak.controllers', []);
+angular.module('gjenopptak.controllers', ['gjenopptak.services']);
