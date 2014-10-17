@@ -1,1 +1,3 @@
-angular.module('gjenopptak.directives', []);
+angular.module('gjenopptak.directives', [
+    'nav.cmstekster'
+]);
