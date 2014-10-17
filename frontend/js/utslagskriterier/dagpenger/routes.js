@@ -10,12 +10,12 @@ angular.module('utslagskriterierDagpenger.routes', ['ngRoute', 'nav.common.route
                     }]
                 }
             })
-            .when('/utslagskriterier/dagpenger', {
+            .when('/', {
                 templateUrl: '../views/utslagskriterier/dagpenger/dagpenger.html',
                 resolve: {
                     cms: function (CmsResolver) {
                         return CmsResolver;
                     }
                 }
-            })
+            });
     }]);

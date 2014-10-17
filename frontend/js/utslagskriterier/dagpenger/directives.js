@@ -1,1 +1,3 @@
-angular.module('utslagskriterierDagpenger.directives', []);
+angular.module('utslagskriterierDagpenger.directives', [
+    'nav.cmstekster'
+]);

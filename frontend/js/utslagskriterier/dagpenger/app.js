@@ -1,7 +1,6 @@
 angular.module('utslagskriterierDagpenger', [
     'common.init',
     'nav.modal',
-    'ui.keypress',
     'utslagskriterierDagpenger.services',
     'utslagskriterierDagpenger.directives',
     'utslagskriterierDagpenger.controllers',
@@ -10,5 +9,5 @@ angular.module('utslagskriterierDagpenger', [
     'ngAnimate',
     'ngCookies',
     'ngSanitize',
-    'templates-main'
+    'templates-utslagskriterierDagpenger'
 ]);

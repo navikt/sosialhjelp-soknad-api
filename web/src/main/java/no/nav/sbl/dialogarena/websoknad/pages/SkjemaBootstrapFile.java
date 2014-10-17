@@ -4,7 +4,7 @@ public enum SkjemaBootstrapFile {
     GJENOPPTAK("Gjenopptak"),
     ETTERSENDING("Ettersending"),
     DAGPENGER("Dagpenger"),
-    UTSLAGSKRITERIER("Utslagskriterier");
+    UTSLAGSKRITERIER_DAGPENGER("UtslagskriterierDagpenger");
 
     private final String text;
 
