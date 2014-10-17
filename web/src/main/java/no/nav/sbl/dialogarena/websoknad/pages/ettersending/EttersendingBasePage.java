@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.websoknad.pages.ettersending;
 
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.EttersendingService;
+import no.nav.sbl.dialogarena.websoknad.pages.SkjemaBootstrapFile;
 import no.nav.sbl.dialogarena.websoknad.pages.basepage.BasePage;
 import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.SoknadComponent;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
@@ -18,7 +19,7 @@ public class EttersendingBasePage extends BasePage {
     public EttersendingBasePage(PageParameters parameters) {
         super(parameters);
 
-        add(new SoknadComponent("soknad", true));
+        add(new SoknadComponent("soknad", SkjemaBootstrapFile.ETTERSENDING));
 
         brukerbehandlingId = parameters.get("brukerbehandlingId");
         if (brukerbehandlingId.isEmpty()) {
