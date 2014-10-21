@@ -1,3 +1,4 @@
 angular.module('utslagskriterierDagpenger.controllers', [
-    'utslagskriterierDagpenger.services'
+    'utslagskriterierDagpenger.services',
+    'nav.utslagskriterierDagpenger'
 ]);
