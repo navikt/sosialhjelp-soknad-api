@@ -39,24 +39,45 @@ angular.module('nav.input', ['nav.cmstekster'])
                         return cms.tekster[scope.hjelpetekst.tittel] !== undefined;
                     };
 
-                    var index = scope.navlabel.lastIndexOf(".true");
-                    if (index > -1) {
-                        scope.name = scope.navlabel.substr(0, index);
-                    } else {
-                        index = scope.navlabel.lastIndexOf(".false");
-                        scope.name = scope.navlabel.substr(0, index);
-
-                        if (index === -1) {
-                            if(scope.navlabel.indexOf('utdanning') > -1) {
-                                scope.name = "utdanning";
-                            } else if(scope.navlabel.indexOf('arbeidstilstand') > -1) {
-                                scope.name="arbeidstilstand";
-                            }
-                        }
-                    }
+                    scope.name = scope.navlabel.substr(0, scope.navlabel.lastIndexOf("."));
                 }
             },
             templateUrl: '../js/common/directives/navinput/navradioTemplate.html'
+        };
+    }])
+    .directive('navradioUtenfaktum', ['cms', function (cms) {
+        return {
+            restrict: 'A',
+            replace: true,
+            scope: {
+                radiomodel: '=',
+                navlabel: '@',
+                navfeilmelding: '@'
+            },
+            transclude: true,
+            link: {
+                pre: function (scope, element, attr) {
+                    scope.value = attr.value;
+                    scope.hjelpetekst = {
+                        tittel: attr.hjelpetekst + '.tittel',
+                        tekst: attr.hjelpetekst + '.tekst'
+                    };
+                },
+                post: function (scope, element, attr) {
+
+                    scope.hvisHarTranscludedInnhold = function () {
+                        var transcludeElement = element.find('.ng-transclude');
+                        return transcludeElement.text().trim().length > 0;
+                    };
+
+                    scope.hvisHarHjelpetekst = function() {
+                        return cms.tekster[scope.hjelpetekst.tittel] !== undefined;
+                    };
+
+                    scope.name = scope.navlabel.substr(0, scope.navlabel.lastIndexOf("."));
+                }
+            },
+            templateUrl: '../js/common/directives/navinput/navradioUtenfaktumTemplate.html'
         };
     }])
     .directive('navcheckbox', ['cms', function (cms) {
