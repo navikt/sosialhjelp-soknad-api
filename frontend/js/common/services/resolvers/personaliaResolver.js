@@ -19,10 +19,10 @@ angular.module('nav.services.resolvers.personalia', [])
 
         return personaliaDeferer.promise;
     })
-    .factory('EttersendingPersonaliaResolver', function ($q, BehandlingskjedeIdResolver, Personalia) {
+    .factory('EttersendingPersonaliaResolver', function ($q, BehandlingIdResolver, Personalia) {
 
         var personaliaDeferer = $q.defer();
-        BehandlingskjedeIdResolver
+        BehandlingIdResolver
             .then(function(result) {
                 var soknadId = result;
                 Personalia.lagre({soknadId: soknadId},
