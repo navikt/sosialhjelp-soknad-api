@@ -1,0 +1,29 @@
+<div class='spm form-linje boolean'>
+    <h4 class="spm-sporsmal">
+        <span data-ng-bind-html=" sporsmal | cmstekst"></span>
+        <span data-nav-hjelpetekstelement data-ng-if="hvisHarHjelpetekst()" data-tittel="{{ hjelpetekst.tittel | cmstekst }}"
+             data-tekst="{{ hjelpetekst.tekst | cmstekst }}"></span>
+    </h4>
+    <div data-navradio-utenfaktum
+         data-radiomodel="radiomodel"
+         data-navconfig
+         data-value='true'
+         data-navlabel='{{ trueLabel }}'
+        data-navfeilmelding="{{ navfeilmelding }}">
+    </div>
+    <div data-navradio-utenfaktum
+         data-radiomodel="radiomodel"
+         data-navconfig
+         data-value='false'
+         data-navlabel='{{ falseLabel }}'
+         data-navfeilmelding="{{ navfeilmelding }}">
+    </div>
+
+    <div data-melding>
+        <span class="melding" data-ng-bind-html=" navfeilmelding | cmstekst"></span>
+    </div>
+
+    <div data-ng-if="vis()" data-ng-show="skalViseTranscludedInnhold()">
+        <div class="ng-transclude nav-boolean ekstra-spm-boks"></div>
+    </div>
+</div>
