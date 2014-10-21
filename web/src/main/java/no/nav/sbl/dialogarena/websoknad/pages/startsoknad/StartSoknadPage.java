@@ -31,7 +31,7 @@ public class StartSoknadPage extends BasePage {
 
             if (soknad.erUnderArbeid()) {
                 new CookieUtils().save("XSRF-TOKEN", XsrfGenerator.generateXsrfToken(brukerbehandlingId.toString()));
-            } else if (soknad.erAvbryttAvBruker()) {
+            } else if (soknad.erAvbrytt()) {
                 redirectToInterceptPage(new AvbruttPage(new PageParameters()));
             } else {
                 String saksoversiktUrl = configService.getValue("saksoversikt.link.url");
