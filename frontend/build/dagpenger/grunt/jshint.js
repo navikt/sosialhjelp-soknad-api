@@ -1,0 +1,20 @@
+module.exports = {
+    "files": [
+        "js/dagpenger/**/*.js"
+    ],
+    "options": {
+        "ignores": [
+            "js/dagpenger/templates.js"
+        ],
+        "globals": {
+            "it": true,
+            "expect": true,
+            "describe": true,
+            "beforeEach": true,
+            "inject": true,
+            "angular": true,
+            "module": true,
+            "Date": true
+        }
+    }
+};

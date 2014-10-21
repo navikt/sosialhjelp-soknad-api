@@ -1,0 +1,23 @@
+{
+    "files": [
+        "gruntfile.js",
+        "js/common/**/*.js",
+        "test/**/*.js"
+    ],
+    "options": {
+        "ignores": [
+            "test/karma/lib/angular-mocks.js",
+            "js/common/tredjeparts/**/*.js"
+        ],
+        "globals": {
+            "it": true,
+            "expect": true,
+            "describe": true,
+            "beforeEach": true,
+            "inject": true,
+            "angular": true,
+            "module": true,
+            "Date": true
+        }
+    }
+}
