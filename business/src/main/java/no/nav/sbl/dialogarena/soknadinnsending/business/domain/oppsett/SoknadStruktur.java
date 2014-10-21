@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett;
 
 import org.apache.commons.collections15.Predicate;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
@@ -19,7 +20,16 @@ public class SoknadStruktur implements Serializable {
     private List<SoknadFaktum> fakta = new ArrayList<>();
     private List<SoknadVedlegg> vedlegg = new ArrayList<>();
     private List<String> vedleggReferanser = new ArrayList<>();
+    private String temaKode;
 
+    @XmlAttribute
+    public String getTemaKode() {
+        return temaKode;
+    }
+
+    public void setTemaKode(String temaKode) {
+        this.temaKode = temaKode;
+    }
 
     @XmlElement(name = "faktum")
     public List<SoknadFaktum> getFakta() {

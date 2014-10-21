@@ -1,5 +1,5 @@
 angular.module('nav.services.ettersending', [])
-    .factory('ettersendingService', ['$resource', function ($resource) {
+    .factory('ettersendingService', function ($resource) {
         return $resource('/sendsoknad/rest/soknad/:action/:soknadId',
             { soknadId: '@soknadId' },
             {
@@ -12,4 +12,4 @@ angular.module('nav.services.ettersending', [])
                 delete : { method: 'POST', params: { action: 'delete' }}
             }
         );
-    }]);
+    });

@@ -31,7 +31,7 @@
         beforeEach(module(function ($provide) {
             $provide.value("data", {
                 config: {
-                    'minehenvendelser.link.url': 'Mine henvendelser URL',
+                    'saksoversikt.link.url': 'Saksoversikt URL',
                     'soknad.ettersending.antalldager': '42'
                 }
             });

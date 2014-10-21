@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<wicket:head>
+    <title>Mocksetup</title>
+
+    <style>
+        .mockform {
+            padding: 10px;
+        }
+
+
+        ul {
+            list-style: none;
+        }
+
+         form input[type="checkbox"] {
+            height: 14px;
+            width: 20px;
+            opacity: 1;
+            position: relative;
+        }
+
+        form input[type="submit"] {
+            margin-top: 20px;
+        }
+
+        .liste-wrapper {
+            margin: 40px 0;
+        }
+
+
+
+    </style>
+</wicket:head>
+<wicket:extend>
+    <div class="rad-overskrift uten-ramme">
+        <div class="begrensning sak-totredel">
+            <div class="panel-mini">
+                <h1 class="diger">Mocksetup</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="rad uten-ramme behandlinger">
+        <div class="begrensning sak-totredel">
+            <div wicket:id="feedback"></div>
+        </div>
+    </div>
+
+    <div class="rad uten-ramme behandlinger">
+        <div class="begrensning sak-totredel">
+            <article class="panel-mini-belyst-soknad">
+                <section  class="oversikt-soknad-linje">
+                    <form wicket:id="velgMockForm" class="mockform" method="GET">
+                        <h1 class="robust-strek">Følgende tjenester benytter mock</h1>
+                        <hr class="rwd-line">
+                        <div class="liste-wrapper">
+                            <ul wicket:id="radioliste">
+                                <li>
+                                    <label>
+                                        <input type="checkbox" wicket:id="radioValg"/>
+                                        <span wicket:id="radioLabel"/>
+                                    </label>
+                                </li>
+                            </ul>
+                        </div>
+                        <select wicket:id="months">
+                            <wicket:container wicket:id="options">
+                                <option wicket:id="option"></option>
+                            </wicket:container>
+                        </select>
+                        <div>
+                            <input type="submit" value="Fullfør" class="knapp-link"/>
+                        </div>
+                    </form>
+                </section>
+            </article>
+        </div>
+    </div>
+</wicket:extend>
+</html>
