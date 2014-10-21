@@ -1,3 +1,57 @@
-<div>
-    <h1>Utslagskriterier dagpenger</h1>
+<div class="panel-standard-belyst skjema" data-ng-controller="utslagskritererDagpengerCtrl">
+    <div class="rad tittel" data-nav-tittel="skjema.tittel">
+        <div class="begrensning">
+            <h1 class="diger hoved-tittel" data-ng-bind-html="'utslagskriterier.dagpenger.overskrift' | cmstekst">Utslagskriterier dagpenger</h1>
+        </div>
+    </div>
+
+    <section class="spm-blokk open">
+
+        <div class="skjemaramme">
+            <div data-ng-form="startsoknadForm" data-novalidate>
+                <div data-form-errors></div>
+
+                <div class="skjemainnhold vertikal">
+                    <div class="spm form-linje boolean">
+                        <h4 class="spm-sporsmal" data-ng-bind-html=" 'utslagskriterier.dagpenger.utbetaling.sporsmal' | cmstekst"></h4>
+
+                        <div data-navradio-utenfaktum
+                                data-value="nei"
+                                data-navconfig
+                                data-radiomodel="gjenopptak.harMotattDagpenger"
+                                data-navlabel="utslagskriterier.dagpenger.utbetaling.nei"
+                                data-navfeilmelding="utslagskriterier.dagpenger.utbetaling.feilmelding">
+                        </div>
+
+                        <div data-navradio-utenfaktum
+                                data-navconfig
+                                data-radiomodel="gjenopptak.harMotattDagpenger"
+                                data-value="vetikke"
+                                data-navlabel="utslagskriterier.dagpenger.utbetaling.vetikke"
+                                data-navfeilmelding="utslagskriterier.dagpenger.utbetaling.feilmelding">
+                        </div>
+                        <div data-navradio-utenfaktum
+                                data-navconfig
+                                data-radiomodel="gjenopptak.harMotattDagpenger"
+                                data-value="ja"
+                                data-navlabel="utslagskriterier.dagpenger.utbetaling.ja"
+                                data-navfeilmelding="utslagskriterier.dagpenger.utbetaling.feilmelding">
+                        </div>
+
+                        <span class="melding" data-ng-bind-html="'utslagskriterier.dagpenger.utbetaling.feilmelding' | cmstekst"></span>
+
+
+                        <div class="ekstra-spm-boks nav-boolean form-linje" data-ng-if="gjenopptak.harMotattDagpenger === 'ja'">
+                            <div data-booleanradio-utenfaktum
+                                    data-nokkel="utslagskriterier.dagpenger.utbetaling.hararbeidet">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div data-startsoknad-button></div>
+
+            </div>
+        </div>
+    </section>
 </div>
