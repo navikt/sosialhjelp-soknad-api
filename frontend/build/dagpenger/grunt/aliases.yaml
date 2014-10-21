@@ -1,0 +1,8 @@
+default:
+  - 'jshint'
+  - 'htmlbuild:dev'
+
+maven-prod:
+  - 'html2js'
+  - 'concat'
+  - 'ngmin'
