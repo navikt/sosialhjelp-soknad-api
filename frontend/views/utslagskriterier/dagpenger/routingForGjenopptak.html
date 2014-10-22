@@ -1,13 +1,12 @@
-<div class="panel-standard-belyst skjema" data-ng-controller="utslagskritererDagpengerCtrl">
+<div class="panel-standard-belyst skjema hvit-side" data-ng-controller="routingForGjenopptakCtrl">
     <div class="rad tittel" data-nav-tittel="skjema.tittel">
         <div class="begrensning">
-            <h1 class="diger hoved-tittel" data-ng-bind-html="'utslagskriterier.dagpenger.overskrift' | cmstekst">Utslagskriterier dagpenger</h1>
+            <h1 class="diger hoved-tittel" data-ng-bind-html="'utslagskriterier.dagpenger.overskrift' | cmstekst"></h1>
         </div>
     </div>
 
     <section class="spm-blokk open">
-
-        <div class="skjemaramme">
+        <div class="skjemaramme uten-strek">
             <div data-ng-form="startsoknadForm" data-novalidate>
                 <div data-form-errors></div>
 
@@ -41,16 +40,16 @@
                         <span class="melding" data-ng-bind-html="'utslagskriterier.dagpenger.utbetaling.feilmelding' | cmstekst"></span>
 
 
-                        <div class="ekstra-spm-boks nav-boolean form-linje" data-ng-if="gjenopptak.harMotattDagpenger === 'ja'">
+                        <div class="ekstra-spm-boks nav-boolean" data-ng-if="gjenopptak.harMotattDagpenger === 'ja'">
                             <div data-booleanradio-utenfaktum
-                                    data-nokkel="utslagskriterier.dagpenger.utbetaling.hararbeidet">
+                                    data-nokkel="utslagskriterier.dagpenger.utbetaling.hararbeidet"
+                                    data-radiomodel="gjenopptak.harArbeidet">
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div data-startsoknad-button></div>
-
+                <div data-routing-for-gjenopptak-button></div>
             </div>
         </div>
     </section>

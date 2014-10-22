@@ -4,11 +4,13 @@
     'use strict';
     angular.module('utslagskriterierDagpenger.services', [
             'ngResource',
+            'nav.services.faktum',
+            'nav.services.soknad',
+            'nav.services.personalia',
             'nav.services.interceptor.cache',
             'nav.services.interceptor.timeout',
             'nav.services.interceptor.feilhandtering',
-            'nav.services.resolvers',
-            'nav.services.faktum'
+            'nav.services.resolvers'
         ])
 
         .config(['$httpProvider', function ($httpProvider) {
