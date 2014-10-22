@@ -6,16 +6,18 @@
         var scope, ctrl, vedleggServiceTmp, httpBackend;
         var soknadId = 1;
         beforeEach(module(
+            'ngRoute',
+            'nav.services.resolvers.behandlingsid',
             'nav.services.vedlegg',
             'nav.services.faktum',
             'nav.services.resolvers.vedlegg',
-            'nav.services.resolvers.behandlingskjedeid',
             'nav.ettersending.controllers.nyttVedlegg',
             'ngResource'
         ));
 
         beforeEach(function() {
             spyOn(window, 'getBehandlingIdFromUrl').andReturn(behandlingskjedeId);
+            spyOn(window, 'erEttersending').andReturn(true);
         });
 
         beforeEach(module(function ($provide) {
@@ -99,7 +101,7 @@
             ];
 
             $httpBackend
-                .when('GET', '/sendsoknad/rest/soknad/behandlingskjede/' + behandlingskjedeId)
+                .when('GET', '/sendsoknad/rest/soknad/behandling/' + behandlingskjedeId)
                 .respond(soknadId);
 
             $httpBackend

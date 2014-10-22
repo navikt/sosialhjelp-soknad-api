@@ -1,4 +1,4 @@
-<soknad skjemaNummer="NAV 04-01.03">
+<soknad skjemaNummer="NAV 04-01.03" temaKode="DAG">
     <!-- Reell arbeidsoker-->
     <faktum>
         <id>reellarbeidssoker.villigdeltid</id>
@@ -630,6 +630,13 @@
         <flereTillatt>true</flereTillatt>
     </faktum>
 
+    <!-- Lønns- og trekk-oppgave -->
+    <faktum>
+        <id>lonnsOgTrekkOppgave</id>
+        <type>java.lang.Boolean</type>
+        <erSystemFaktum>true</erSystemFaktum>
+    </faktum>
+
     <!-- Ekstra vedlegg -->
     <faktum>
         <id>ekstraVedlegg</id>
@@ -929,6 +936,16 @@
         <onValue>norsk</onValue>
         <inverted>true</inverted>
         <forSystemfaktum>true</forSystemfaktum>
+    </vedlegg>
+
+    <vedlegg>
+        <id>9</id>
+        <faktum>arbeidsforhold</faktum>
+        <skjemaNummer>M1</skjemaNummer>
+        <property>arbeidsgivernavn</property>
+        <onProperty>startetForrigeAar</onProperty>
+        <onValue>true</onValue>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
 
     <vedleggsreferanse>G2</vedleggsreferanse>

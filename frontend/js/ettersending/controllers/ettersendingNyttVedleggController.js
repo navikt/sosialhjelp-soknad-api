@@ -1,12 +1,12 @@
 angular.module('nav.ettersending.controllers.nyttVedlegg', [])
-    .controller('EttersendingNyttVedleggCtrl', function ($scope, data, vedleggService, $location, Faktum, EttersendingVedleggResolver) {
+    .controller('EttersendingNyttVedleggCtrl', function ($scope, data, vedleggService, $location, Faktum, VedleggResolver) {
 
         /*
          * Controlleren må være på formen, og kan derfor ikke legges til i routes. Derfor kan vi ikke injecte
          * resultatet fra vedlegg rett inn i controlleren, og vi må derfor hente det ut sånn her :|
          */
         var vedlegg;
-        EttersendingVedleggResolver.then(function(result) {
+        VedleggResolver.then(function(result) {
             vedlegg = result;
         });
 

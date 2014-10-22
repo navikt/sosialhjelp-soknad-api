@@ -66,7 +66,7 @@ angular.module('nav.services.interceptor.feilhandtering', [])
         };
     }])
     .controller('ServerFeilModalVinduCtrl', ['$scope', 'data', '$filter',  function ($scope, data) {
-        $scope.inngangsportenUrl = data.config["soknad.inngangsporten.url"];
+        $scope.dittnavUrl = data.config["dittnav.link.url"];
         $scope.loggutUrl = $('.innstillinger-innlogget .innlogging .loggut').attr('href');
 
         $scope.relast = function() {

@@ -3,7 +3,7 @@ angular.module('nav.services.resolvers.behandlingsid', [])
         var behandlingsIdDefer = $q.defer();
 
         var behandlingId;
-        if (erSoknadStartet()) {
+        if (erSoknadStartet() || erEttersending()) {
             behandlingId = getBehandlingIdFromUrl();
         } else {
             behandlingId = $route.current.params.behandlingId;
@@ -18,9 +18,8 @@ angular.module('nav.services.resolvers.behandlingsid', [])
                 }
             );
         } else {
-            behandlingsIdDefer.resolve();
+            behandlingsIdDefer.reject("Fant ikke behandlingsID");
         }
-
 
         return behandlingsIdDefer.promise;
     });
