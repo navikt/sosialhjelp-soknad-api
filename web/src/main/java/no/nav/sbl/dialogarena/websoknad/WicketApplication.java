@@ -99,6 +99,9 @@ public class WicketApplication extends WebApplication {
         mountPage("soknad/${brukerbehandlingId}", StartSoknadPage.class);
 
         mountPage("start/gjenopptak", GjenopptakPage.class);
+
+        //TODO: fix feilen her - går mot informasjonssiden
+        //mountPage("start/utslagskriterier_dagpenger/${brukerbehandlingId}", UtslagskriterierDagpengerPage.class);
         mountPage("start/utslagskriterier_dagpenger", UtslagskriterierDagpengerPage.class);
 
         mountPage("startettersending/${brukerbehandlingId}", StartEttersendingPage.class);
