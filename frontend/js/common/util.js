@@ -351,3 +351,24 @@ function isNotNullOrUndefined(obj) {
 function trimWhitespaceIString(str) {
     return str.replace(/\s+/g, '');
 }
+
+function setCookie(name, value, expire) {
+    var cookieString = name + "=" + JSON.stringify(value) + ";";
+    if(expire) {
+        var timer = new Date();
+        timer.setTime(timer.getTime() + (expire*60*60*1000));
+        cookieString += "expires=" + timer.toUTCString() + ";";
+    }
+    document.cookie = cookieString + "path=/;";
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0; i<ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1);
+        if (c.indexOf(name) != -1) return JSON.parse(c.substring(name.length,c.length));
+    }
+    return "";
+}
