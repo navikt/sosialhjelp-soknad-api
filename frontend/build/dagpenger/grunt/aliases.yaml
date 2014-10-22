@@ -2,7 +2,10 @@ default:
   - 'jshint'
   - 'htmlbuild:dev'
 
-maven-prod:
+prod:
   - 'html2js'
   - 'concat'
-  - 'ngmin'
+  - 'ngAnnotate'
+  - 'uglify'
+  - 'htmlbuild:dev'
+  - 'htmlbuild:prod'
