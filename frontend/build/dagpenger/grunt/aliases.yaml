@@ -1,11 +1,8 @@
 default:
-  - 'jshint'
   - 'htmlbuild:dev'
 
 prod:
   - 'html2js'
   - 'concat'
-  - 'ngAnnotate'
-  - 'uglify'
   - 'htmlbuild:dev'
   - 'htmlbuild:prod'

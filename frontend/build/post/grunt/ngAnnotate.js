@@ -6,7 +6,7 @@ module.exports = {
         files: [
             {
                 expand: true,
-                src: ['<%= resourcePath %><%= jsBuilt %>']
+                src: ['<%= resourcePath %>/js/built/*.js']
             }
         ]
     }

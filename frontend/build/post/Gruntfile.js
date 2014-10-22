@@ -1,9 +1,6 @@
 module.exports = function (grunt) {
-    var timestamp = grunt.option('timestamp');
     var path = require('path');
     var gruntPath = path.join(process.cwd(), 'grunt')
-    var appName = path.basename(process.cwd().split('/'));
-    var jsBuilt = 'js/built/built_' + appName + timestamp + '.js';
     var resourcePath = 'target/classes/META-INF/resources/';
 
     grunt.file.setBase('../../');
@@ -18,8 +15,6 @@ module.exports = function (grunt) {
         // data passed into config. Can use with <%= key %>
         data: {
             pkg: pkg,
-            timestamp: timestamp,
-            jsBuilt: jsBuilt,
             resourcePath: resourcePath
         }
     });
