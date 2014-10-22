@@ -4,6 +4,7 @@ public enum SoknadInnsendingStatus {
 
 	UNDER_ARBEID,
     FERDIG,
-    AVBRUTT_AV_BRUKER
+    AVBRUTT_AV_BRUKER,
+    AVBRUTT_AUTOMATISK
 
 }

@@ -105,13 +105,13 @@ public class WicketApplication extends WebApplication {
         mountPage("start/utslagskriterier_dagpenger", UtslagskriterierDagpengerPage.class);
 
         mountPage("startettersending/${brukerbehandlingId}", StartEttersendingPage.class);
+        mountPage("ettersending/${brukerbehandlingId}", EttersendingPage.class);
         mountPage("avbrutt", AvbruttPage.class);
         mountPage("ettersending/avbrutt", AvbruttEttersendingPage.class);
         mountPage("xmltopdf", XmlToPdfConverterPage.class);
 
         mountPage("internal/selftest", SelfTestPage.class);
         mountPage("soknadliste", SoknadListePage.class);
-
 
         getSecuritySettings().setEnforceMounts(true);
         getSecuritySettings().setCryptFactory(new KeyInSessionSunJceCryptFactory());

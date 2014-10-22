@@ -19,12 +19,10 @@ public class ConfigService {
     private SendSoknadService soknadService;
 
 
-    @Value("${minehenvendelser.link.url}")
-    private String mineHenvendelserUrl;
+    @Value("${saksoversikt.link.url}")
+    private String saksoversiktUrl;
     @Value("${dialogarena.navnolink.url}")
     private String navNoUrl;
-    @Value("${soknad.inngangsporten.url}")
-    private String inngangsportenUrl;
     @Value("${soknad.skjemaveileder.url}")
     private String skjemaveilederUrl;
     @Value("${soknad.alderspensjon.url}")
@@ -45,10 +43,9 @@ public class ConfigService {
     public Map<String,String> getConfig() {
         Map<String, String> result = new HashMap<String, String>();
         
-        result.put("minehenvendelser.link.url", mineHenvendelserUrl);
+        result.put("saksoversikt.link.url", saksoversiktUrl);
         result.put("dittnav.link.url", dittnavUrl);
         result.put("dialogarena.navnolink.url", navNoUrl);
-        result.put("soknad.inngangsporten.url", inngangsportenUrl);
         result.put("soknad.skjemaveileder.url", skjemaveilederUrl);
         result.put("soknad.alderspensjon.url", alderspensjonUrl);
         result.put("soknad.reelarbeidsoker.url", reelarbeidsokerUrl);

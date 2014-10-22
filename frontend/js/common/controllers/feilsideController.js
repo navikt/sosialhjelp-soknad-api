@@ -5,6 +5,6 @@ angular.module('nav.feilside', [])
         img.src = "../img/utropstegn-sirkel-gra.svg";
     }])
     .controller('FeilSideCtrl', ['$scope', 'data',  function ($scope, data) {
-        $scope.mineInnsendinger = data.config["minehenvendelser.link.url"];
-        $scope.inngangsportenUrl = data.config["soknad.inngangsporten.url"];
+        $scope.mineInnsendinger = data.config["saksoversikt.link.url"];
+        $scope.dittnavUrl = data.config["dittnav.link.url"];
     }]);

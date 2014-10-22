@@ -7,7 +7,7 @@ import no.nav.modig.test.fitnesse.fixture.SpringAwareDoFixture;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknadId;
-import no.nav.sbl.dialogarena.websoknad.config.FitNesseApplicationConfig;
+import no.nav.sbl.dialogarena.websoknad.config.TestApplicationConfig;
 import no.nav.sbl.dialogarena.websoknad.domain.StartSoknad;
 import no.nav.sbl.dialogarena.websoknad.servlet.SoknadDataController;
 import org.springframework.test.context.ContextConfiguration;
@@ -17,7 +17,7 @@ import java.util.Map;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 
-@ContextConfiguration(classes = FitNesseApplicationConfig.class)
+@ContextConfiguration(classes = TestApplicationConfig.class)
 public class SoknadInnsendingDriver extends SpringAwareDoFixture {
     static {
         System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());

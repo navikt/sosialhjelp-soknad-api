@@ -26,12 +26,11 @@
                     mapToProperty="soknad.webservice.henvendelse.fillager"/>
         <webservice alias="virksomhet:Kodeverk_v2" mapToProperty="sendsoknad.webservice.kodeverk"/>
         <baseUrl alias="innlogging.navnetjeneste" mapToProperty="innlogging.navnetjeneste"/>
-        <baseUrl alias="minehenvendelser.link" mapToProperty="minehenvendelser.link"/>
+        <baseUrl alias="saksoversikt.link" mapToProperty="saksoversikt.link"/>
         <baseUrl alias="dittnav.link" mapToProperty="dittnav.link"/>
         <baseUrl alias="appres.cms" mapToProperty="dialogarena.cms"/>
         <baseUrl alias="dialogarena.navnolink" mapToProperty="dialogarena.navnolink" />
 
-        <baseUrl alias="soknad.inngangsporten" mapToProperty="soknad.inngangsporten"/>
         <baseUrl alias="soknad.skjemaveileder" mapToProperty="soknad.skjemaveileder"/>
         <baseUrl alias="soknad.alderspensjon" mapToProperty="soknad.alderspensjon"/>
         <baseUrl alias="soknad.reelarbeidsoker" mapToProperty="soknad.reelarbeidsoker" />
@@ -44,6 +43,7 @@
         <baseUrl alias="arena.personinfoservice" mapToProperty="soknad.webservice.arena.personinfo"/>
         
         <applicationProperties alias="soknad.ettersending.properties"/>
+        <applicationProperties alias="soknad.properties"/>
 
         <smtpServer alias="dokumentinnsending.smtpServer" mapToProperty="dokumentinnsending.smtpServer"/>
         <localFiles name="sendsoknad" mapToProperty="sendsoknad.datadir"/>
