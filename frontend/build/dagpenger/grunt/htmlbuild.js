@@ -38,7 +38,7 @@ module.exports = {
             prefix: '../',
             scripts: {
                 built: {
-                    cwd: 'target/classes/META-INF/resources',
+                    cwd: '<%= resourcePath %>',
                     files: '<%= jsBuilt %>'
                 }
             }
