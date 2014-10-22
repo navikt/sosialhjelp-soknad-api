@@ -1,21 +1,47 @@
 module.exports = function (grunt) {
+    var timestamp = grunt.template.today("yyyymmddHHMMss");
+//    grunt.initConfig({
+//        hub: {
+//            options: {
+//                concurrent: 1
+//            },
+//            default: {
+//                src: ['build/pre/Gruntfile.js', 'build/!(pre)/Gruntfile.js', 'build/post/Gruntfile.js']
+//            },
+//            prod: {
+//                src: ['build/pre/Gruntfile.js', 'build/!(pre|post)/Gruntfile.js', 'build/post/Gruntfile.js'],
+//                tasks: ['prod']
+//            }
+//        }
+//    });
+//    grunt.loadNpmTasks('grunt-hub');
+//    grunt.registerTask('default', ['hub:default']);
+//    grunt.registerTask('prod', ['hub:prod']);
+
     grunt.initConfig({
-        hub: {
+        run_grunt: {
             options: {
-                concurrent: 1
+                concurrent: 1,
+                gruntOptions: {
+                    timestamp: timestamp,
+                    force: true
+                }
             },
             default: {
-                src: ['build/pre/Gruntfile.js', 'build/!(pre)/Gruntfile.js']
+                src: ['build/pre/Gruntfile.js', 'build/!(pre)/Gruntfile.js', 'build/post/Gruntfile.js']
             },
             prod: {
-                src: ['build/pre/Gruntfile.js', 'build/!(pre)/Gruntfile.js'],
-                tasks: ['prod']
+                options: {
+                    task: ['prod']
+                },
+                src: ['build/pre/Gruntfile.js', 'build/!(pre)/Gruntfile.js', 'build/post/Gruntfile.js']
             }
         }
     });
-    grunt.loadNpmTasks('grunt-hub');
-    grunt.registerTask('default', ['hub:default']);
-    grunt.registerTask('prod', ['hub:prod']);
+
+    grunt.loadNpmTasks('grunt-run-grunt');
+    grunt.registerTask('default', ['run_grunt:default']);
+    grunt.registerTask('prod', ['run_grunt:prod']);
 
 //    var timestamp = grunt.template.today("yyyymmddHHMMss");
 //    var path = require('path');

@@ -52,6 +52,6 @@
     "karma-ng-scenario": "^0.1.0",
     "load-grunt-config": "~0.14.0",
     "path": "~0.4.9",
-    "grunt-hub": "~0.7.0"
+    "grunt-run-grunt": "~0.1.4"
   }
 }
