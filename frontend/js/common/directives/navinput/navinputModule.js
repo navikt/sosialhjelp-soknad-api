@@ -25,7 +25,7 @@ angular.module('nav.input', ['nav.cmstekster'])
                         tekst: attr.hjelpetekst + '.tekst'
                     };
                 },
-                post: function (scope, element, attr) {
+                post: function (scope, element) {
                     scope.hvisAktiv = function () {
                         return scope.faktum.value === scope.value;
                     };
@@ -63,7 +63,7 @@ angular.module('nav.input', ['nav.cmstekster'])
                         tekst: attr.hjelpetekst + '.tekst'
                     };
                 },
-                post: function (scope, element, attr) {
+                post: function (scope, element) {
 
                     scope.hvisHarTranscludedInnhold = function () {
                         var transcludeElement = element.find('.ng-transclude');
@@ -75,6 +75,7 @@ angular.module('nav.input', ['nav.cmstekster'])
                     };
 
                     scope.name = scope.navlabel.substr(0, scope.navlabel.lastIndexOf("."));
+
                 }
             },
             templateUrl: '../js/common/directives/navinput/navradioUtenfaktumTemplate.html'
@@ -132,7 +133,7 @@ angular.module('nav.input', ['nav.cmstekster'])
                         scope.inputfeltmaxlength = undefined;
                     }
                 },
-                post: function (scope, element) {
+                post: function (scope) {
                     scope.harSporsmal = function() {
                         return isNotNullOrUndefined(scope.navsporsmal) && scope.navsporsmal.length > 0;
                     };
@@ -159,7 +160,7 @@ angular.module('nav.input', ['nav.cmstekster'])
                         scope.inputfeltmaxlength = undefined;
                     }
                 },
-                post: function (scope, element) {
+                post: function (scope) {
                     scope.harSporsmal = function() {
                         return isNotNullOrUndefined(scope.navsporsmal) && scope.navsporsmal.length > 0;
                     };
@@ -186,7 +187,7 @@ angular.module('nav.input', ['nav.cmstekster'])
             restrict: "A",
             replace: true,
             scope: true,
-            link: function (scope, element) {
+            link: function (scope) {
                 scope.visSlett = function(idx) {
                     if (scope.navVisSlett !== undefined && scope.navVisSlett === 'false') {
                         return false;
