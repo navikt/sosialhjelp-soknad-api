@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import static java.lang.String.format;
 
 public class StartSoknadPage extends BasePage {
+
     @Inject
     private SendSoknadService soknadService;
 

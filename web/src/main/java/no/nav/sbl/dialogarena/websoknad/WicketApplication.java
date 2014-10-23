@@ -9,10 +9,12 @@ import no.nav.sbl.dialogarena.webkomponent.innstillinger.InnstillingerPanel;
 import no.nav.sbl.dialogarena.websoknad.pages.XmlToPdfConverterPage;
 import no.nav.sbl.dialogarena.websoknad.pages.ettersending.AvbruttEttersendingPage;
 import no.nav.sbl.dialogarena.websoknad.pages.ettersending.StartEttersendingPage;
+import no.nav.sbl.dialogarena.websoknad.pages.gjenopptak.GjenopptakPage;
 import no.nav.sbl.dialogarena.websoknad.pages.soknadliste.SoknadListePage;
 import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.AvbruttPage;
 import no.nav.sbl.dialogarena.websoknad.pages.ettersending.EttersendingPage;
 import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.StartSoknadPage;
+import no.nav.sbl.dialogarena.websoknad.pages.utslagskriterier.UtslagskriterierDagpengerPage;
 import no.nav.sbl.dialogarena.websoknad.selftest.SelfTestPage;
 import org.apache.wicket.Application;
 import org.apache.wicket.Page;
@@ -95,6 +97,13 @@ public class WicketApplication extends WebApplication {
 
         mountPage("start/${soknadType}", StartSoknadPage.class);
         mountPage("soknad/${brukerbehandlingId}", StartSoknadPage.class);
+
+        mountPage("start/gjenopptak", GjenopptakPage.class);
+
+        //TODO: fix feilen her - går mot informasjonssiden
+        //mountPage("start/utslagskriterier_dagpenger/${brukerbehandlingId}", UtslagskriterierDagpengerPage.class);
+        mountPage("start/utslagskriterier_dagpenger", UtslagskriterierDagpengerPage.class);
+
         mountPage("startettersending/${brukerbehandlingId}", StartEttersendingPage.class);
         mountPage("ettersending/${brukerbehandlingId}", EttersendingPage.class);
         mountPage("avbrutt", AvbruttPage.class);

@@ -3,7 +3,8 @@ angular.module('utslagskriterierDagpenger.directives', [
     'nav.booleanradio',
     'nav.booleanradioUtenfaktum',
     'nav.navfaktum',
-    'nav.startsoknad',
+    'nav.routingForGjenopptakModule',
     'nav.feilmeldinger',
-    'nav.validering'
+    'nav.validering',
+    'nav.markup.bodydirective'
 ]);

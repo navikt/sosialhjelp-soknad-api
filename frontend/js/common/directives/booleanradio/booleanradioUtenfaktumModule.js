@@ -4,7 +4,9 @@ angular.module('nav.booleanradioUtenfaktum', ['nav.cmstekster', 'nav.input'])
 			restrict   : 'A',
 			replace    : true,
 			transclude : true,
-			scope      : true,
+			scope      : {
+                radiomodel: '='
+            },
 			require    : ['^form'],
 			link       : {
 				pre : function (scope, element, attrs) {
@@ -14,7 +16,6 @@ angular.module('nav.booleanradioUtenfaktum', ['nav.cmstekster', 'nav.input'])
 					scope.trueLabel = src + '.true';
 					scope.falseLabel = src + '.false';
 					scope.navfeilmelding = src + '.feilmelding';
-                    scope.radiomodel = null;
                     scope.hjelpetekst = {
                         tittel: src + '.hjelpetekst.tittel',
                         tekst: src + '.hjelpetekst.tekst'
