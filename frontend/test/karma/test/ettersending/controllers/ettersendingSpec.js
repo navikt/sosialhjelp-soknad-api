@@ -26,7 +26,7 @@
                     key: 'soknadInnsendingsDato',
                     value: '1399268154501'
                 }
-            ]
+            ];
 
             $provide.value("data", {
                 soknad: {
