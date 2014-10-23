@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.websoknad.config;
 
+import no.nav.innholdshenter.common.EnonicContentRetriever;
+import no.nav.innholdshenter.filter.DecoratorFilter;
 import no.nav.modig.content.CmsContentRetriever;
 import no.nav.modig.content.Content;
 import no.nav.modig.content.ContentRetriever;
@@ -22,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +47,8 @@ public class ContentConfig {
     private static final String INNHOLDSTEKSTER_NB_NO_LOCAL = "content.innholdstekster";
     private static final String SBL_WEBKOMPONENTER_NB_NO_REMOTE = "/app/sbl-webkomponenter/nb/tekster";
     private static final String SBL_WEBKOMPONENTER_NB_NO_LOCAL = "content.sbl-webkomponenter";
+    private static final String FRAGMENTS_URL = "common-html/v1/navno";
+    private static final List<String> NO_DECORATOR_PATTERNS = new ArrayList<>(asList(".*/img/.*", ".*selftest.*"));
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
 
@@ -144,4 +149,29 @@ public class ContentConfig {
         return cmsBaseUrl;
     }
 
+
+    @Bean
+    public DecoratorFilter decoratorFilter() {
+        DecoratorFilter decorator = new DecoratorFilter();
+        decorator.setFragmentsUrl(FRAGMENTS_URL);
+        decorator.setContentRetriever(appresContentRetriever());
+        decorator.setApplicationName("Saksoversikt");
+        decorator.setNoDecoratePatterns(NO_DECORATOR_PATTERNS);
+        decorator.setFragmentNames(asList(
+                "header-withmenu",
+                "footer-withmenu",
+                "inline-js-variables",
+                "webstats-ga",
+                "skiplinks"
+        ));
+        return decorator;
+    }
+
+    private EnonicContentRetriever appresContentRetriever() {
+        EnonicContentRetriever contentRetriever = new EnonicContentRetriever("saksoversikt");
+        contentRetriever.setBaseUrl(cmsBaseUrl);
+        contentRetriever.setRefreshIntervalSeconds(1800);
+        contentRetriever.setHttpTimeoutMillis(10000);
+        return contentRetriever;
+    }
 }

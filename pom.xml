@@ -51,6 +51,18 @@
     <dependencyManagement>
         <dependencies>
 
+            <dependency>
+                <groupId>no.nav.sbl</groupId>
+                <artifactId>innholdshenter</artifactId>
+                <version>2.3</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
             <!-- Avhengigheter med scope compile -->
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
