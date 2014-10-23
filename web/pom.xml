@@ -75,10 +75,6 @@
         </dependency>
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>sbl-webkomponent-footer</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>sbl-webkomponent-innstillinger</artifactId>
         </dependency>
         <dependency>
