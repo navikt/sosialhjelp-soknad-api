@@ -16,9 +16,9 @@ angular.module('nav.routingForGjenopptakModule', ['nav.cmstekster'])
                         });
 
                         if (scope.gjenopptak.harMotattDagpenger === "ja") {
-                            location.href = currentUrl.substring(0, currentUrl.indexOf('start/')) + 'start/gjenopptak';
+                            redirectTilUrl(currentUrl.substring(0, currentUrl.indexOf('start/')) + 'start/gjenopptak');
                         } else {
-                            location.href = currentUrl.substring(0, currentUrl.indexOf('start/')) + 'start/NAV%2004-01.03#/informasjonsside';
+                            redirectTilUrl(currentUrl.substring(0, currentUrl.indexOf('start/')) + 'start/NAV%2004-01.03#/informasjonsside');
                         }
                     } else {
                         scope.valider(true);
