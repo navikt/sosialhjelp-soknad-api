@@ -6,7 +6,7 @@ angular.module('nav.routingForGjenopptakModule', ['nav.cmstekster'])
             templateUrl: '../js/utslagskriterier/dagpenger/directives/startsoknadButtonTemplate.html',
             link: function (scope, el, attr, ctrl) {
                 scope.form = ctrl;
-
+                var eventString = 'RUN_VALIDATION' + ctrl.$name;
                 scope.validerOgStartSoknad = function () {
                     if (scope.form.$valid) {
                         var currentUrl = location.href;
@@ -21,7 +21,7 @@ angular.module('nav.routingForGjenopptakModule', ['nav.cmstekster'])
                             redirectTilUrl(currentUrl.substring(0, currentUrl.indexOf('start/')) + 'start/NAV%2004-01.03#/informasjonsside');
                         }
                     } else {
-                        scope.valider(true);
+                        scope.$broadcast(eventString);
                     }
                 };
             }
