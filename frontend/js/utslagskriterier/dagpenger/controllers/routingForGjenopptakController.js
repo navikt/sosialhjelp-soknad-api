@@ -4,8 +4,4 @@ angular.module('nav.routingForGjenopptak', [])
             harMotattDagpenger: null,
             harArbeidet: null
         };
-
-        $scope.valider = function (skalScrolle) {
-            $scope.runValidation(skalScrolle);
-        };
     });

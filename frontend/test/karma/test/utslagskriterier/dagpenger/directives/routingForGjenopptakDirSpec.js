@@ -34,11 +34,6 @@ describe('sporsmalferdig', function () {
     }));
 
     describe('validerOgStartSoknad', function () {
-        it('når skjemaet ikke validerer skal validerfunksjonen bli kalt', function () {
-            spyOn(scope, 'valider');
-            scope.validerOgStartSoknad();
-            expect(scope.valider).toHaveBeenCalledWith(true);
-        });
         it('når skjemaet er validert skal cookie settes', function () {
             scope.test = "validerer formen";
             window.redirectTilUrl = jasmine.createSpy('Redirect URL spy');

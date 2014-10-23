@@ -18,11 +18,5 @@
                 $scope: scope
             });
         }));
-
-        it('skal kjøre metodene lukkTab og settValidert for valid form', function () {
-            spyOn(scope, "runValidation").andReturn(true);
-            scope.valider(false);
-            expect(scope.runValidation).toHaveBeenCalledWith(false);
-        });
     });
 }());
