@@ -5,6 +5,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStr
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.ConfigService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.XsrfGenerator;
+import no.nav.sbl.dialogarena.websoknad.pages.SkjemaBootstrapFile;
 import no.nav.sbl.dialogarena.websoknad.pages.basepage.BasePage;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.cookies.CookieUtils;
@@ -23,7 +24,7 @@ public class StartSoknadPage extends BasePage {
 
     public StartSoknadPage(PageParameters parameters) {
         super(parameters);
-        add(new SoknadComponent("soknad"));
+        add(new SoknadComponent("soknad", SkjemaBootstrapFile.DAGPENGER));
         StringValue brukerbehandlingId = getPageParameters().get("brukerbehandlingId");
 
         if (!brukerbehandlingId.isEmpty()) {
