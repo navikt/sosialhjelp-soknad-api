@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Import;
         ApplicationContext.class,
         BusinessConfig.class,
         CacheConfig.class,
-        FooterConfig.class,
         GAConfig.class,
         ConsumerConfig.class,
         ContentConfig.class,

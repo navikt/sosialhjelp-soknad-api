@@ -20,7 +20,7 @@ import java.util.Locale;
 
 import static org.mockito.Mockito.mock;
 
-@Import({FooterConfig.class, GAConfig.class, ContentConfigTest.class, DbConfig.class, MockConsumerConfig.class})
+@Import({GAConfig.class, ContentConfigTest.class, DbConfig.class, MockConsumerConfig.class})
 public class TestApplicationConfig {
 
     @Value("${websoknad.navigasjonslink.url}")
