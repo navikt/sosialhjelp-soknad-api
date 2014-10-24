@@ -14,7 +14,7 @@
     <name>${project.artifactId}</name>
     <packaging>jar</packaging>
     <properties>
-        <grunttarget>maven-prod</grunttarget>
+        <grunttarget>prod</grunttarget>
     </properties>
 
 	<build>
@@ -68,13 +68,5 @@
 			</plugin>
 		</plugins>
 	</build>
-    <profiles>
-        <profile>
-            <id>utv</id>
-            <properties>
-                <grunttarget>maven-test</grunttarget>
-            </properties>
-        </profile>
-    </profiles>
 
 </project>
