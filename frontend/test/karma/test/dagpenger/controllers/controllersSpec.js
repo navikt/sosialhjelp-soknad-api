@@ -805,7 +805,7 @@
                 };
 
                 scope.data.leggTilFaktum(af1);
-                scope.data.leggTilFaktum(lonn)
+                scope.data.leggTilFaktum(lonn);
                 ctrl = $controller('ArbeidsforholdNyttCtrl', {
                     $scope: scope
                 });
