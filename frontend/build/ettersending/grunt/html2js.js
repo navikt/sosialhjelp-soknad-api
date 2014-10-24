@@ -7,6 +7,6 @@ module.exports = {
             'js/ettersending/**/*.html',
             'js/common/**/*.html'
         ],
-        dest: '<%= resourcePath %>js/dagpenger/templates.js'
+        dest: '<%= resourcePath %>js/ettersending/templates.js'
     }
 };
