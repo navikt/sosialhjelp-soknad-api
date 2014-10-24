@@ -15,18 +15,7 @@
 	        <h2 class="stor strek-ikon-info-orange" data-ng-bind-html=" cmsprefix+'.informasjonsside.tittel' | cmstekst"></h2>
 
 			<div class="viktig-info">
-				<ul class="informasjonsliste">
-					<li>
-						<p class="medium" data-ng-bind-html="cmsprefix+'.informasjonsside.informasjon.liste.1' | cmstekst"></p>
-					</li>
-                    <li>
-                        <p class="medium" data-ng-bind-html="cmsprefix+'.informasjonsside.informasjon.liste.2' | cmstekst"></p>
-                    </li>
-					<li>
-						<p class="medium" data-ng-bind-html="cmsprefix+'.informasjonsside.informasjon.liste.3' | cmstekst"></p>
-					</li>
-				</ul>
-
+				<p class="informasjonsliste" data-ng-bind-html="cmsprefix+'.informasjonsside.informasjon.liste' | cmstekst"></p>
 
 				<div class="checkbox form-linje" data-ng-if="oppsummering != true" data-checkbox-validate>
                     <input id="lestBrosjyre" data-ng-model="utslagskriterier.harlestbrosjyre" type="checkbox">
