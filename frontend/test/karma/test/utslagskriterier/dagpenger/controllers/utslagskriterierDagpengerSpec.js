@@ -70,17 +70,18 @@
 
         beforeEach(inject(function ($controller, $rootScope, data) {
             scope = $rootScope;
+            scope.data = data;
+
             ctrl = $controller('utslagskritererDagpengerCtrl', {
                 $scope: scope
             });
-            scope.data = data;
             scope.$digest();
         }));
 
         describe('UtslagskritererDagpengerCtrl', function () {
             it('alle url skal bli statt til riktig url', function () {
                 expect(scope.alderspensjonUrl).toEqual('alderspensjonUrl');
-                expect(scope.mineHenveldelserUrl).toEqual(saksoversiktUrl);
+                expect(scope.saksoversiktUrl).toEqual(saksoversiktUrl);
                 expect(scope.reelArbeidsokerUrl).toEqual('reelArbeidsokerUrl');
                 expect(scope.dittnavUrl).toEqual('dittnavUrl');
             });
