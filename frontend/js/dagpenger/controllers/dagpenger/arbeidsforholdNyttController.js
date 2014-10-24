@@ -95,7 +95,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
                 case 'Permittert':
                     return $scope.arbeidsforhold.properties.permiteringsperiodedatofra;
                 default:
-                    return $scope.arbeidsforhold.properties.datotil
+                    return $scope.arbeidsforhold.properties.datotil;
             }
         }
 

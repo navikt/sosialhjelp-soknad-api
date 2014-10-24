@@ -72,7 +72,7 @@ angular.module('nav.ettersending.controllers.main', [])
         }
 
         $scope.harSkjemaLenke = function (v) {
-            return v.urls['URL'];
+            return v.urls.URL;
         };
 
         $scope.sendEttersending = function () {
