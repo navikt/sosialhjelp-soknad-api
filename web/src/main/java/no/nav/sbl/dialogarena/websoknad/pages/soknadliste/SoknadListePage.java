@@ -13,7 +13,7 @@ public class SoknadListePage extends BasePage {
         add(new Link<String>("dagpenger") {
             @Override
             public void onClick() {
-                PageParameters parameters = new PageParameters().set("utslagskriterierSide", "utslagskriterier_dagpenger");
+                PageParameters parameters = new PageParameters().set("utslagskriterierSide", "dagpenger");
                 setResponsePage(UtslagskriterierDagpengerPage.class, parameters);
             }
         });

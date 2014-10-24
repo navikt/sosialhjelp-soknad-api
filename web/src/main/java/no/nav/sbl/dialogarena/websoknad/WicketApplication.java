@@ -95,20 +95,21 @@ public class WicketApplication extends WebApplication {
 
         Application.get().getRequestLoggerSettings().setRequestLoggerEnabled(true);
 
-        mountPage("start/${soknadType}", StartSoknadPage.class);
+        mountPage("start/NAV%2004-01.03", StartSoknadPage.class);
         mountPage("soknad/${brukerbehandlingId}", StartSoknadPage.class);
 
-        mountPage("start/gjenopptak", GjenopptakPage.class);
+        mountPage("start/NAV%2004-16.03", GjenopptakPage.class);
 
-        mountPage("start/${utslagskriterierSide}", UtslagskriterierDagpengerPage.class);
+        mountPage("utslagskriterier/${utslagskriterierSide}", UtslagskriterierDagpengerPage.class);
 
         mountPage("startettersending/${brukerbehandlingId}", StartEttersendingPage.class);
         mountPage("ettersending/${brukerbehandlingId}", EttersendingPage.class);
         mountPage("avbrutt", AvbruttPage.class);
         mountPage("ettersending/avbrutt", AvbruttEttersendingPage.class);
-        mountPage("xmltopdf", XmlToPdfConverterPage.class);
 
+        mountPage("xmltopdf", XmlToPdfConverterPage.class);
         mountPage("internal/selftest", SelfTestPage.class);
+
         mountPage("soknadliste", SoknadListePage.class);
 
         getSecuritySettings().setEnforceMounts(true);
