@@ -10,6 +10,24 @@ angular.module('gjenopptak.routes', ['ngRoute', 'nav.common.routes'])
                     }]
                 }
             })
+            .when('/informasjonsside', {
+                templateUrl: '../views/templates/informasjonsside.html',
+                controller: 'InformasjonsSideCtrl',
+                resolve: {
+                    cms: function (CmsResolver) {
+                        return CmsResolver;
+                    },
+                    config: function (ConfigResolver) {
+                        return ConfigResolver;
+                    },
+                    utslagskriterier: function(UtslagskriterierResolver) {
+                        return UtslagskriterierResolver;
+                    },
+                    soknadMetadata: function(SoknadMetadataResolver) {
+                        return SoknadMetadataResolver;
+                    }
+                }
+            })
             .when('/', {
                 templateUrl: '../views/gjenopptak/gjenopptak.html',
                 resolve: {
