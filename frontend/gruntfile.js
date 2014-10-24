@@ -10,13 +10,13 @@ module.exports = function (grunt) {
                 }
             },
             default: {
-                src: ['build/pre/Gruntfile.js', 'build/!(pre)/Gruntfile.js', 'build/post/Gruntfile.js']
+                src: ['build/pre/Gruntfile.js', 'build/dagpenger/Gruntfile.js', 'build/ettersending/Gruntfile.js', 'build/gjenopptak/Gruntfile.js', 'build/utslagskriterier/Gruntfile.js', 'build/post/Gruntfile.js']
             },
             prod: {
                 options: {
                     task: ['prod']
                 },
-                src: ['build/pre/Gruntfile.js', 'build/!(pre)/Gruntfile.js', 'build/post/Gruntfile.js']
+                src: ['build/pre/Gruntfile.js', 'build/dagpenger/Gruntfile.js', 'build/ettersending/Gruntfile.js', 'build/gjenopptak/Gruntfile.js', 'build/utslagskriterier/Gruntfile.js', 'build/post/Gruntfile.js']
             }
         },
         karma : {
