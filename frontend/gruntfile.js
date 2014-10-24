@@ -7,7 +7,8 @@ module.exports = function (grunt) {
                 gruntOptions: {
                     timestamp: timestamp,
                     force: true
-                }
+                },
+                debugCli: true
             },
             default: {
                 src: ['build/pre/Gruntfile.js', 'build/dagpenger/Gruntfile.js', 'build/ettersending/Gruntfile.js', 'build/gjenopptak/Gruntfile.js', 'build/utslagskriterier/Gruntfile.js', 'build/post/Gruntfile.js']
