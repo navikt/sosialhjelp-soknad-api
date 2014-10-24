@@ -7,7 +7,8 @@
             'nav.services.interceptor.cache',
             'nav.services.interceptor.timeout',
             'nav.services.interceptor.feilhandtering',
-            'nav.services.resolvers'
+            'nav.services.resolvers',
+            'nav.services.soknad'
         ])
 
         .config(['$httpProvider', function ($httpProvider) {
