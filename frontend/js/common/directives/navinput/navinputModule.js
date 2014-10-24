@@ -25,7 +25,7 @@ angular.module('nav.input', ['nav.cmstekster'])
                         tekst: attr.hjelpetekst + '.tekst'
                     };
                 },
-                post: function (scope, element, attr) {
+                post: function (scope, element) {
                     scope.hvisAktiv = function () {
                         return scope.faktum.value === scope.value;
                     };
@@ -39,24 +39,46 @@ angular.module('nav.input', ['nav.cmstekster'])
                         return cms.tekster[scope.hjelpetekst.tittel] !== undefined;
                     };
 
-                    var index = scope.navlabel.lastIndexOf(".true");
-                    if (index > -1) {
-                        scope.name = scope.navlabel.substr(0, index);
-                    } else {
-                        index = scope.navlabel.lastIndexOf(".false");
-                        scope.name = scope.navlabel.substr(0, index);
-
-                        if (index === -1) {
-                            if(scope.navlabel.indexOf('utdanning') > -1) {
-                                scope.name = "utdanning";
-                            } else if(scope.navlabel.indexOf('arbeidstilstand') > -1) {
-                                scope.name="arbeidstilstand";
-                            }
-                        }
-                    }
+                    scope.name = scope.navlabel.substr(0, scope.navlabel.lastIndexOf("."));
                 }
             },
             templateUrl: '../js/common/directives/navinput/navradioTemplate.html'
+        };
+    }])
+    .directive('navradioUtenfaktum', ['cms', function (cms) {
+        return {
+            restrict: 'A',
+            replace: true,
+            scope: {
+                radiomodel: '=',
+                navlabel: '@',
+                navfeilmelding: '@'
+            },
+            transclude: true,
+            link: {
+                pre: function (scope, element, attr) {
+                    scope.value = attr.value;
+                    scope.hjelpetekst = {
+                        tittel: attr.hjelpetekst + '.tittel',
+                        tekst: attr.hjelpetekst + '.tekst'
+                    };
+                },
+                post: function (scope, element) {
+
+                    scope.hvisHarTranscludedInnhold = function () {
+                        var transcludeElement = element.find('.ng-transclude');
+                        return transcludeElement.text().trim().length > 0;
+                    };
+
+                    scope.hvisHarHjelpetekst = function() {
+                        return cms.tekster[scope.hjelpetekst.tittel] !== undefined;
+                    };
+
+                    scope.name = scope.navlabel.substr(0, scope.navlabel.lastIndexOf("."));
+
+                }
+            },
+            templateUrl: '../js/common/directives/navinput/navradioUtenfaktumTemplate.html'
         };
     }])
     .directive('navcheckbox', ['cms', function (cms) {
@@ -111,7 +133,7 @@ angular.module('nav.input', ['nav.cmstekster'])
                         scope.inputfeltmaxlength = undefined;
                     }
                 },
-                post: function (scope, element) {
+                post: function (scope) {
                     scope.harSporsmal = function() {
                         return isNotNullOrUndefined(scope.navsporsmal) && scope.navsporsmal.length > 0;
                     };
@@ -138,7 +160,7 @@ angular.module('nav.input', ['nav.cmstekster'])
                         scope.inputfeltmaxlength = undefined;
                     }
                 },
-                post: function (scope, element) {
+                post: function (scope) {
                     scope.harSporsmal = function() {
                         return isNotNullOrUndefined(scope.navsporsmal) && scope.navsporsmal.length > 0;
                     };
@@ -165,7 +187,7 @@ angular.module('nav.input', ['nav.cmstekster'])
             restrict: "A",
             replace: true,
             scope: true,
-            link: function (scope, element) {
+            link: function (scope) {
                 scope.visSlett = function(idx) {
                     if (scope.navVisSlett !== undefined && scope.navVisSlett === 'false') {
                         return false;

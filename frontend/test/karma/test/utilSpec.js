@@ -198,7 +198,7 @@ describe('utility funksjoner -', function () {
 
         it('skal returnere true for fremtidig dato', function() {
             var imorgen = new Date();
-            imorgen.setDate(imorgen.getDate() + 1)
+            imorgen.setDate(imorgen.getDate() + 1);
 
             var result = erFremtidigDato(imorgen.getFullYear(), imorgen.getMonth()+1, imorgen.getDate());
             expect(result).toEqual(true);

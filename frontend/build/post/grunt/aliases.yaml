@@ -1,0 +1,5 @@
+default: []
+
+prod:
+  - 'ngAnnotate'
+  - 'uglify'
