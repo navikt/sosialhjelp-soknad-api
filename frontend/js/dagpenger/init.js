@@ -4,7 +4,7 @@ angular.module('sendsoknad')
     .value('data', {})
     .value('cms', {})
     .constant('validertKlasse', 'validert')
-    .run(['$rootScope', 'data', '$location', 'sjekkUtslagskriterier', function ($rootScope, data, $location, sjekkUtslagskriterier) {
+    .run(['$rootScope', 'data', '$location', function ($rootScope, data, $location) {
         $('#hoykontrast a, .skriftstorrelse a').attr('href', 'javascript:void(0)');
 
         $rootScope.$on('$routeChangeSuccess', function(event, next, current) {
@@ -25,7 +25,7 @@ angular.module('sendsoknad')
             }
 
             function skalRedirecteTilRettSideIfolgeDelstegStatus() {
-                return next.$$route.originalPath === "/informasjonsside" && sjekkUtslagskriterier.erOppfylt() && (!current || current.redirectTo === '/informasjonsside') && data.soknad;
+                return next.$$route.originalPath === "/informasjonsside" && (!current || current.redirectTo === '/informasjonsside') && data.soknad;
             }
         });
 

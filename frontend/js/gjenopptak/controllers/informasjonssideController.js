@@ -1,13 +1,8 @@
 angular.module('nav.informasjonsside', ['nav.cmstekster'])
     .controller('InformasjonsSideCtrl', ['$scope', 'data', '$location', 'soknadService', function ($scope, data, $location, soknadService) {
-        $scope.utslagskriterier = data.utslagskriterier;
+        $scope.utslagskriterier = {};
         $scope.utslagskriterier.harlestbrosjyre = false;
-
-        $scope.alderspensjonUrl = data.config["soknad.alderspensjon.url"];
-        $scope.mineHenveldelserUrl = data.config["saksoversikt.link.url"];
-        $scope.reelArbeidsokerUrl = data.config["soknad.reelarbeidsoker.url"];
-        $scope.dittnavUrl = data.config["dittnav.link.url"];
-        $scope.cmsprefix = "dagpenger";
+        $scope.cmsprefix = "gjenopptak";
 
         $scope.oppsummering = false;
         if (erSoknadStartet()) {
