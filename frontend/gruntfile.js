@@ -33,6 +33,7 @@ module.exports = function (grunt) {
         }
     });
 
+    grunt.option('force', true);
     grunt.loadNpmTasks('grunt-run-grunt');
     grunt.loadNpmTasks('grunt-karma');
     grunt.registerTask('default', ['run_grunt:default']);
