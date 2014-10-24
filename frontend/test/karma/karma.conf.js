@@ -30,6 +30,7 @@ module.exports = function (config) {
             '../../js/lib/bindonce.js',
             '../../js/dagpenger/**/*.js',
             '../../js/ettersending/**/*.js',
+            '../../js/utslagskriterier/**/*.js',
             '../../js/common/**/*.js',
             '../../js/lib/jquery/jquery.iframe-transport.js',
             '../../js/lib/jquery/jquery.fileupload.js',

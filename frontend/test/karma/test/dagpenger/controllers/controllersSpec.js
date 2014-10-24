@@ -795,7 +795,17 @@
                     faktumId: 111
                 };
 
+
+                var lonn = {
+                    key: 'lonnsOgTrekkOppgave',
+                    properties: {
+                        type: 'true',
+                    },
+                    faktumId: 111
+                };
+
                 scope.data.leggTilFaktum(af1);
+                scope.data.leggTilFaktum(lonn);
                 ctrl = $controller('ArbeidsforholdNyttCtrl', {
                     $scope: scope
                 });
@@ -1130,7 +1140,7 @@
 
             it('alle url skal bli statt til riktig url', function () {
                 expect(scope.alderspensjonUrl).toEqual('alderspensjonUrl');
-                expect(scope.mineHenveldelserUrl).toEqual(saksoversiktUrl);
+                expect(scope.saksoversiktUrl).toEqual(saksoversiktUrl);
                 expect(scope.reelArbeidsokerUrl).toEqual('reelArbeidsokerUrl');
                 expect(scope.dittnavUrl).toEqual('dittnavUrl');
             });
