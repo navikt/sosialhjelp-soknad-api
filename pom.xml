@@ -39,7 +39,6 @@
         <behandlingsinformasjon.tjenestespec.version>0.0.9</behandlingsinformasjon.tjenestespec.version>
         <fillager.tjenestespec.version>0.0.3</fillager.tjenestespec.version>
         <henvendelse.tjenestespesifikasjon.version.1>2.0.0</henvendelse.tjenestespesifikasjon.version.1>
-        <dialogarena.webkomponent.footer>1.0.8</dialogarena.webkomponent.footer>
         <dialogarena.webkomponent.navigasjon>1.0.5</dialogarena.webkomponent.navigasjon>
         <dialogarena.webkomponent.innstillinger>1.1.5</dialogarena.webkomponent.innstillinger>
         <dialogarena.dokumentinnsending.version>2.0.1</dialogarena.dokumentinnsending.version>
@@ -50,6 +49,18 @@
 
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>no.nav.sbl</groupId>
+                <artifactId>innholdshenter</artifactId>
+                <version>2.3</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
 
             <!-- Avhengigheter med scope compile -->
             <dependency>
@@ -107,11 +118,6 @@
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-frontend-ressurser</artifactId>
                 <version>${modig.frontend}</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>sbl-webkomponent-footer</artifactId>
-                <version>${dialogarena.webkomponent.footer}</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>

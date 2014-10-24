@@ -14,7 +14,7 @@
     <name>${project.artifactId}</name>
     <packaging>jar</packaging>
     <properties>
-        <grunttarget>maven-prod</grunttarget>
+        <grunttarget>prod</grunttarget>
     </properties>
 
 	<build>
@@ -44,7 +44,7 @@
 					<sourceDirectory>${basedir}</sourceDirectory>
 					<jsSourceDirectory>js</jsSourceDirectory>
                     <gruntBuildDirectory>${project.build.directory}/classes/META-INF/resources/js</gruntBuildDirectory>
-                    <target>${grunttarget}</target>
+                    <!--<target>${grunttarget}</target>-->
 					<gruntOptions>
 						<gruntOption>--verbose</gruntOption>
 					</gruntOptions>
@@ -68,13 +68,5 @@
 			</plugin>
 		</plugins>
 	</build>
-    <profiles>
-        <profile>
-            <id>utv</id>
-            <properties>
-                <grunttarget>maven-test</grunttarget>
-            </properties>
-        </profile>
-    </profiles>
 
 </project>
