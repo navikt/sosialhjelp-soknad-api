@@ -26,14 +26,9 @@ angular.module('gjenopptak.routes', ['ngRoute', 'nav.common.routes'])
                 }
             })
             .when('/', {
-                templateUrl: '../views/gjenopptak/gjenopptak.html',
-                resolve: {
-                    cms: function (CmsResolver) {
-                        return CmsResolver;
-                    },
-                    config: function (ConfigResolver) {
-                        return ConfigResolver;
-                    }
-                }
+                redirectTo: '/informasjonsside'
+            })
+            .otherwise({
+                redirectTo: '/404'
             });
     }]);
