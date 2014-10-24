@@ -20,6 +20,10 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>no.nav.sbl</groupId>
+            <artifactId>innholdshenter</artifactId>
+        </dependency>
         <!-- Avhengigheter med scope compile -->
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
@@ -68,10 +72,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>sendsoknad-business</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>sbl-webkomponent-footer</artifactId>
         </dependency>
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>

@@ -8,7 +8,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.MockConsumerConfig;
 import no.nav.sbl.dialogarena.websoknad.config.ApplicationContext;
 import no.nav.sbl.dialogarena.websoknad.config.ContentConfig;
-import no.nav.sbl.dialogarena.websoknad.config.FooterConfig;
 import no.nav.sbl.dialogarena.websoknad.config.GAConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +22,6 @@ import javax.inject.Inject;
         ApplicationContext.class,
         BusinessConfig.class,
         CacheConfig.class,
-        FooterConfig.class,
         GAConfig.class,
         ContentConfig.class,
         SoknadInnsendingDBConfig.class,
