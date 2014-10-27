@@ -20,15 +20,15 @@
         <sonar.exclusions>js/jquery/**,js/lib/**</sonar.exclusions>
     </properties>
     <build>
-        <sourceDirectory>src/main/webapp</sourceDirectory>
+        <sourceDirectory>js</sourceDirectory>
         <testSourceDirectory>src/test/js</testSourceDirectory>
         <resources>
             <resource>
-                <directory>src/main/webapp</directory>
+                <directory>js</directory>
                 <excludes>
-                    <exclude>js/jquery/*</exclude>
-                    <exclude>js/jquery/**/*</exclude>
-                    <exclude>js/lib/*</exclude>
+                    <exclude>jquery/*</exclude>
+                    <exclude>jquery/**/*</exclude>
+                    <exclude>lib/*</exclude>
                 </excludes>
             </resource>
         </resources>
