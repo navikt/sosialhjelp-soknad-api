@@ -18,7 +18,6 @@ angular.module('sendsoknad.controllers', [
     'nav.personalia',
     'nav.oppsummering',
     'nav.adresse',
-    'nav.informasjonsside',
     'nav.behandlingside',
     'nav.avbryt',
     'nav.bekreftelse',

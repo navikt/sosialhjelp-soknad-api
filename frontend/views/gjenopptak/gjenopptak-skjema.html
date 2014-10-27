@@ -1,0 +1,31 @@
+<div data-nav-tittel="skjema.tittel"></div>
+<div data-stegindikator data-steg-liste="veiledning, skjema, vedlegg, sendInn" data-aktiv-index="1"></div>
+<div class="dagpenger" data-ng-form="dagpengerForm" data-ng-cloak data-tab-autoscroll>
+    <div data-ng-controller="GjenopptakCtrl" data-scroll-tilbake-directive data-apne-bolker>
+        <div data-sticky-feilmelding></div>
+        <div class="rad soknad" data-sidetittel="sidetittel.skjema">
+            <section class="sak-hel">
+                <div class="panel-standard-belyst skjema">
+                    <div data-accordion data-close-others="false">
+                        <div data-accordion-group data-ng-repeat="gruppe in grupper" class="spm-blokk"
+                             id="{{gruppe.id}}" data-is-open="gruppe.apen" data-heading="{{ gruppe.tittel | cmstekst}}" data-sjekk-validert="gruppe.skalSettesTilValidVedForsteApning">
+                            <div data-div data-ng-if="gruppe.apen || gruppe.validering" data-ng-include="gruppe.template"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="rad ferdig-skjema">
+            <div class="begrensning">
+                <section class="sak-hel">
+                    <a href="#/vedlegg" class="knapp-hoved" role="button" data-fremdriftsindikator="grå" data-valider-skjema data-ng-click="validerSkjema($event)" data-ng-bind-html=" 'skjema.ferdig' | cmstekst"></a>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+<div data-sticky>
+    <div data-sist-lagret data-navtilbakelenke="ingenlenke"></div>
+</div>
+

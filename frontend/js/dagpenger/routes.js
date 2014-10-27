@@ -20,9 +20,6 @@ angular.module('sendsoknad.routes', ['ngRoute', 'nav.common.routes'])
                     },
                     config: function (ConfigResolver) {
                         return ConfigResolver;
-                    },
-                    soknadMetadata: function(SoknadMetadataResolver) {
-                        return SoknadMetadataResolver;
                     }
                 }
             })
