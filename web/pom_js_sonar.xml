@@ -10,7 +10,7 @@
         <version>1.0.8-SNAPSHOT</version>
     </parent>
 
-    <artifactId>sendsoknad-web</artifactId>
+    <artifactId>sendsoknad-frontend</artifactId>
     <name>${project.artifactId}</name>
     <packaging>war</packaging>
 
