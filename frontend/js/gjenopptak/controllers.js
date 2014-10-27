@@ -7,5 +7,6 @@ angular.module('gjenopptak.controllers', [
     'nav.reellarbeidssoker',
     'nav.avbryt',
     'nav.bekreftelse',
-    'nav.fortsettsenere'
+    'nav.fortsettsenere',
+    'nav.tilleggsopplysninger'
 ]);

@@ -135,6 +135,9 @@ angular.module('sendsoknad.routes', ['ngRoute', 'nav.common.routes'])
                     },
                     behandlingsId: function (BehandlingIdResolver) {
                         return BehandlingIdResolver;
+                    },
+                    fakta: function (FaktaResolver) {
+                        return FaktaResolver;
                     }
                 }
             })
