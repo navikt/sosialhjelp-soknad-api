@@ -10,7 +10,7 @@
         <version>1.0.8-SNAPSHOT</version>
     </parent>
 
-    <artifactId>sendsoknad-frontend</artifactId>
+    <artifactId>sendsoknad-web</artifactId>
     <name>${project.artifactId}</name>
     <packaging>war</packaging>
 
@@ -20,15 +20,15 @@
         <sonar.exclusions>js/jquery/**,js/lib/**</sonar.exclusions>
     </properties>
     <build>
-        <sourceDirectory>js</sourceDirectory>
+        <sourceDirectory>src/main/webapp</sourceDirectory>
         <testSourceDirectory>src/test/js</testSourceDirectory>
         <resources>
             <resource>
-                <directory>js</directory>
+                <directory>src/main/webapp</directory>
                 <excludes>
-                    <exclude>jquery/*</exclude>
-                    <exclude>jquery/**/*</exclude>
-                    <exclude>lib/*</exclude>
+                    <exclude>js/jquery/*</exclude>
+                    <exclude>js/jquery/**/*</exclude>
+                    <exclude>js/lib/*</exclude>
                 </excludes>
             </resource>
         </resources>
