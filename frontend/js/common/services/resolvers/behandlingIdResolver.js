@@ -5,7 +5,6 @@ angular.module('nav.services.resolvers.behandlingsid', [])
         var behandlingId;
         if (erSoknadStartet() || erEttersending()) {
             behandlingId = getBehandlingIdFromUrl();
-            console.log(behandlingId);
         } else {
             behandlingId = $route.current.params.behandlingId;
         }
