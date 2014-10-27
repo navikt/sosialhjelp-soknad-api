@@ -1,3 +1,6 @@
 angular.module('gjenopptak.directives', [
-    'nav.cmstekster'
+    'nav.cmstekster',
+    'nav.skjematittel',
+    'nav.markup',
+    'nav.stegindikator'
 ]);

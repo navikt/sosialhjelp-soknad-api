@@ -16,9 +16,9 @@ angular.module('nav.routingForGjenopptakModule', ['nav.cmstekster'])
                         });
 
                         if (scope.gjenopptak.harMotattDagpenger === "ja") {
-                            redirectTilUrl(currentUrl.substring(0, currentUrl.indexOf('start/')) + 'start/gjenopptak');
+                            redirectTilUrl(currentUrl.substring(0, currentUrl.indexOf('utslagskriterier/')) + 'start/NAV%2004-16.03#/informasjonsside');
                         } else {
-                            redirectTilUrl(currentUrl.substring(0, currentUrl.indexOf('start/')) + 'start/NAV%2004-01.03#/informasjonsside');
+                            redirectTilUrl(currentUrl.substring(0, currentUrl.indexOf('utslagskriterier/')) + 'start/NAV%2004-01.03#/informasjonsside');
                         }
                     } else {
                         scope.$broadcast(eventString);

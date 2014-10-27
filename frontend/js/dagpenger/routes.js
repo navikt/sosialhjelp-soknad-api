@@ -21,9 +21,6 @@ angular.module('sendsoknad.routes', ['ngRoute', 'nav.common.routes'])
                     config: function (ConfigResolver) {
                         return ConfigResolver;
                     },
-                    utslagskriterier: function(UtslagskriterierResolver) {
-                        return UtslagskriterierResolver;
-                    },
                     soknadMetadata: function(SoknadMetadataResolver) {
                         return SoknadMetadataResolver;
                     }

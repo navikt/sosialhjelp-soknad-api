@@ -228,7 +228,7 @@ public class SoknadDataController {
 
     @RequestMapping(value = "/opprett", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody()
-    @ResponseStatus(HttpStatus.CREATED)
+    //@ResponseStatus(HttpStatus.CREATED) TODO: Sjekk hvilken returkode vi skal bruke
     public Map<String, String> opprettSoknad(@RequestBody StartSoknad soknadType) {
         Map<String, String> result = new HashMap<>();
 
