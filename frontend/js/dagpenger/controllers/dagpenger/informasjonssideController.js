@@ -49,8 +49,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
             $scope.fremdriftsindikator.laster = true;
             $scope.soknad = soknadService.create({soknadType: soknadType},
                 function (result) {
-                    var currentUrl = location.href;
-                    location.href = currentUrl.substring(0, currentUrl.indexOf('start/')) + 'soknad/' + result.brukerbehandlingId + '#/soknad';
+                    $location.path("/soknad/" + result.brukerbehandlingId);
                 }, function () {
                     $scope.fremdriftsindikator.laster = false;
                 });

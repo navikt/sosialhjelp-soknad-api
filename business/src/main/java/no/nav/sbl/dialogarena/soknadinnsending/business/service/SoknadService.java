@@ -94,7 +94,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     private StartDatoService startDatoService;
 
     private static final String EKSTRA_VEDLEGG_KEY = "ekstraVedlegg";
-    private List<String> gyldigeSkjemaer = Arrays.asList("NAV 04-01.03");
+    private List<String> gyldigeSkjemaer = Arrays.asList("NAV 04-01.03", "NAV 04-16.03");
 
     @Override
     public void settDelsteg(Long soknadId, DelstegStatus delstegStatus) {
@@ -452,7 +452,6 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     @Override
     public String startSoknad(String navSoknadId) {
         validerSkjemanummer(navSoknadId);
-
         String mainUid = randomUUID().toString();
         String behandlingsId = henvendelseConnector
                 .startSoknad(getSubjectHandler().getUid(), navSoknadId, mainUid);
@@ -620,6 +619,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         Map<String,String> strukturDokumenter =  new HashMap<>();
         strukturDokumenter.put("NAV 04-01.04", "NAV 04-01.03.xml");
         strukturDokumenter.put("NAV 04-01.03", "NAV 04-01.03.xml");
+        strukturDokumenter.put("NAV 04-16.03", "NAV 04-16.03.xml");
 
         String type = strukturDokumenter.get(skjema);
 

@@ -1,6 +1,6 @@
 angular.module('nav.gjenopptak', [])
 	.controller('GjenopptakCtrl', ['$scope', 'data', '$modal', function ($scope, data, $modal) {
-
+        $scope.cmsprefix = "gjenopptak";
 		$scope.grupper = [
             {id: 'reellarbeidssoker', tittel: 'reellarbeidssoker.tittel', template: '../views/templates/reellarbeidssoker/reell-arbeidssoker.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false}
 		];
