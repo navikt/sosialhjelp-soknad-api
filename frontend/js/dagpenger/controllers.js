@@ -14,7 +14,6 @@ angular.module('sendsoknad.controllers', [
     'nav.arbeidsforhold',
     'nav.informasjonsside',
     'nav.feilside',
-    'nav.behandlingside',
     'nav.personalia',
     'nav.oppsummering',
     'nav.adresse',
