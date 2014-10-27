@@ -1,7 +1,7 @@
 describe('stegindikator', function () {
     var element, scope, timeout;
 
-    beforeEach(module('nav.dagpengerdirective', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.aapneForsteInvalidBolkDirective', 'nav.cmstekster', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
@@ -38,7 +38,7 @@ describe('stegindikator', function () {
 describe('stegindikator', function () {
     var element, scope, timeout;
 
-    beforeEach(module('nav.dagpengerdirective', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.aapneForsteInvalidBolkDirective', 'nav.cmstekster', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});

@@ -58,7 +58,7 @@ describe('sporsmalferdig', function () {
 
             scope.validerOgStartSoknad();
 
-            expect(window.redirectTilUrl).toHaveBeenCalledWith('start/gjenopptak');
+            expect(window.redirectTilUrl).toHaveBeenCalledWith('start/NAV%2004-16.03#/informasjonsside');
         });
     });
 });
