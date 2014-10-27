@@ -114,8 +114,9 @@ angular.module('sendsoknad.routes', ['ngRoute', 'nav.common.routes'])
                     }
                 }
             })
-            .when('/soknad', {
+            .when('/soknad/:behandlingId', {
                 templateUrl: '../views/dagpenger/dagpenger-skjema.html',
+                controller: 'DagpengerCtrl',
                 resolve: {
                     cms: function (CmsResolver) {
                         return CmsResolver;
@@ -123,19 +124,16 @@ angular.module('sendsoknad.routes', ['ngRoute', 'nav.common.routes'])
                     land: function (LandResolver) {
                         return LandResolver;
                     },
-                    soknad: function(SoknadResolver) {
+                    soknad: function (SoknadResolver) {
                         return SoknadResolver;
                     },
-                    fakta: function(FaktaResolver) {
-                        return FaktaResolver;
-                    },
-                    soknadOppsett: function(SoknadOppsettResolver) {
+                    soknadOppsett: function (SoknadOppsettResolver) {
                         return SoknadOppsettResolver;
                     },
-                    config: function(ConfigForSoknadResolver) {
+                    config: function (ConfigForSoknadResolver) {
                         return ConfigForSoknadResolver;
                     },
-                    behandlingsId: function(BehandlingIdResolver) {
+                    behandlingsId: function (BehandlingIdResolver) {
                         return BehandlingIdResolver;
                     }
                 }

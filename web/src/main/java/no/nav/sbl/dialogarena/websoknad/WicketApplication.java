@@ -96,8 +96,6 @@ public class WicketApplication extends WebApplication {
         Application.get().getRequestLoggerSettings().setRequestLoggerEnabled(true);
 
         mountPage("start/NAV%2004-01.03", StartSoknadPage.class);
-        mountPage("soknad/${brukerbehandlingId}", StartSoknadPage.class);
-
         mountPage("start/NAV%2004-16.03", GjenopptakPage.class);
 
         mountPage("utslagskriterier/${utslagskriterierSide}", UtslagskriterierDagpengerPage.class);
