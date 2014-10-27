@@ -2,7 +2,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
     .controller('InformasjonsSideCtrl', ['$scope', 'data', '$location', 'soknadService', function ($scope, data, $location, soknadService) {
         $scope.utslagskriterier = {};
         $scope.utslagskriterier.harlestbrosjyre = false;
-        $scope.cmsprefix = "dagpenger";
+        $scope.cmsprefix = "gjenopptak";
 
         $scope.oppsummering = false;
         if (erSoknadStartet()) {

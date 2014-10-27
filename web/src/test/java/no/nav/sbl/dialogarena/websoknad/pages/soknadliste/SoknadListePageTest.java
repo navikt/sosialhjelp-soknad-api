@@ -4,6 +4,7 @@ import no.nav.modig.wicket.test.FluentWicketTester;
 import no.nav.sbl.dialogarena.websoknad.WicketApplication;
 import no.nav.sbl.dialogarena.websoknad.config.TestApplicationConfig;
 import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.StartSoknadPage;
+import no.nav.sbl.dialogarena.websoknad.pages.utslagskriterier.UtslagskriterierDagpengerPage;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,6 +48,6 @@ public class SoknadListePageTest {
                 .click()
                 .link(withId("dagpenger"))
                 .should()
-                .beOn(StartSoknadPage.class);
+                .beOn(UtslagskriterierDagpengerPage.class);
     }
 }
