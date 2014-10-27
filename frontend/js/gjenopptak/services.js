@@ -8,6 +8,11 @@
             'nav.services.interceptor.timeout',
             'nav.services.interceptor.feilhandtering',
             'nav.services.resolvers',
+            'nav.services.soknad',
+            'nav.services.land',
+            'nav.services.personalia',
+            'nav.services.vedlegg',
+            'nav.services.faktum',
             'nav.services.soknad'
         ])
 

@@ -19,9 +19,32 @@ angular.module('gjenopptak.routes', ['ngRoute', 'nav.common.routes'])
                     },
                     config: function (ConfigResolver) {
                         return ConfigResolver;
+                    }
+                }
+            })
+            .when('/soknad', {
+                templateUrl: '../views/gjenopptak/gjenopptak-skjema.html',
+                resolve: {
+                    cms: function (CmsResolver) {
+                        return CmsResolver;
                     },
-                    soknadMetadata: function(SoknadMetadataResolver) {
-                        return SoknadMetadataResolver;
+                    land: function (LandResolver) {
+                        return LandResolver;
+                    },
+                    soknad: function(SoknadResolver) {
+                        return SoknadResolver;
+                    },
+                    fakta: function(FaktaResolver) {
+                        return FaktaResolver;
+                    },
+                    soknadOppsett: function(SoknadOppsettResolver) {
+                        return SoknadOppsettResolver;
+                    },
+                    config: function(ConfigForSoknadResolver) {
+                        return ConfigForSoknadResolver;
+                    },
+                    behandlingsId: function(BehandlingIdResolver) {
+                        return BehandlingIdResolver;
                     }
                 }
             })
