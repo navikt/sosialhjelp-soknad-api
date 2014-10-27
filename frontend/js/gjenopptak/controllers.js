@@ -8,5 +8,16 @@ angular.module('gjenopptak.controllers', [
     'nav.avbryt',
     'nav.bekreftelse',
     'nav.fortsettsenere',
+    'nav.tilleggsopplysninger',
+    'nav.ytelser',
+    'nav.egennaering',
+    'nav.verneplikt',
+    'nav.utdanning',
+    'nav.barnetillegg',
+    'nav.barn',
+    'nav.behandlingside',
+    'nav.adresse',
+    'nav.avbryt',
+    'nav.bekreftelse',
     'nav.tilleggsopplysninger'
 ]);
