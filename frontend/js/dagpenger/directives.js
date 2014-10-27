@@ -20,7 +20,7 @@ angular.module('sendsoknad.directives', [
 	'nav.accordion',
 	'nav.scroll.directive',
 	'nav.scrollbar',
-	'nav.dagpengerdirective',
+	'nav.aapneForsteInvalidBolkDirective',
 	'nav.skjematittel',
 	'nav.aria',
 	'nav.norskDatoFilter',

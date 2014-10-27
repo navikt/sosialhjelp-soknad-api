@@ -35,14 +35,17 @@ angular.module('gjenopptak.routes', ['ngRoute', 'nav.common.routes'])
                     soknad: function (SoknadResolver) {
                         return SoknadResolver;
                     },
-                    fakta: function (FaktaResolver) {
-                        return FaktaResolver;
-                    },
                     soknadOppsett: function (SoknadOppsettResolver) {
                         return SoknadOppsettResolver;
                     },
                     config: function (ConfigForSoknadResolver) {
                         return ConfigForSoknadResolver;
+                    },
+                    behandlingsId: function (BehandlingIdResolver) {
+                        return BehandlingIdResolver;
+                    },
+                    fakta: function (FaktaResolver) {
+                        return FaktaResolver;
                     }
                 }
             })
