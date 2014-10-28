@@ -10,6 +10,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknadId;
 import no.nav.sbl.dialogarena.websoknad.config.TestApplicationConfig;
 import no.nav.sbl.dialogarena.websoknad.domain.StartSoknad;
 import no.nav.sbl.dialogarena.websoknad.servlet.SoknadDataController;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ContextConfiguration;
 
 import javax.inject.Inject;
@@ -87,7 +88,7 @@ public class SoknadInnsendingDriver extends SpringAwareDoFixture {
     private Map<String, String> startSoknad() {
         StartSoknad soknadType = new StartSoknad();
         soknadType.setSoknadType("NAV 04-01.03");
-        return soknadDataController.opprettSoknad(soknadType);
+        return soknadDataController.opprettSoknad(soknadType, new MockHttpServletResponse());
     }
 
     public void lagreFaktumMedVerdi(String faktum, String verdi) {
