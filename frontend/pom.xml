@@ -44,7 +44,7 @@
 					<sourceDirectory>${basedir}</sourceDirectory>
 					<jsSourceDirectory>js</jsSourceDirectory>
                     <gruntBuildDirectory>${project.build.directory}/classes/META-INF/resources/js</gruntBuildDirectory>
-                    <!--<target>${grunttarget}</target>-->
+                    <target>${grunttarget}</target>
 					<gruntOptions>
 						<gruntOption>--verbose</gruntOption>
 					</gruntOptions>

@@ -102,7 +102,7 @@ public class SoknadDataControllerTest {
         when(soknadService.startSoknad(anyString())).thenReturn("123");
         mockMvc.perform(post("/soknad/opprett", 11L).contentType(MediaType.APPLICATION_JSON)
                 .content("{\"soknadType\":\"NAV 03-01.04\"}"))
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("brukerbehandlingId").value("123"));
         verify(soknadService).startSoknad("NAV 03-01.04");
     }

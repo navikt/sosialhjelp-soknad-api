@@ -5,20 +5,18 @@
     <modelVersion>4.0.0</modelVersion>
 
 	<groupId>no.nav.sbl.dialogarena</groupId>
-	<version>1.0.17-SNAPSHOT</version>
+	<version>2.1.2-SNAPSHOT</version>
 
     <artifactId>sendsoknad-frontend-sonar-js</artifactId>
     <name>${project.artifactId}</name>
     <packaging>jar</packaging>
     <properties>
-     	<sonar.sources>js</sonar.sources>
-     	<sonar.branch>js</sonar.branch>
         <sonar.language>js</sonar.language>
-        <sonar.exclusions>lib/**, built/**, common/tredjeparts/**, common/directives/select/selectModule.js, common/templates.js, **/initDev.js</sonar.exclusions>
+        <sonar.exclusions>js/lib/**, js/built/**, js/common/tredjeparts/**, js/common/directives/select/selectModule.js, js/common/templates.js, js/**/initDev.js</sonar.exclusions>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.javascript.jstest.reportsPath>target/surefire-reports/</sonar.javascript.jstest.reportsPath>
         <sonar.javascript.lcov.reportPath>target/karma-coverage/PhantomJS 1.9.7 (Linux)/lcov.info</sonar.javascript.lcov.reportPath>
-        <grunttarget>mavenTest</grunttarget>
+        <grunttarget>test</grunttarget>
     </properties>
 
 	<build>
