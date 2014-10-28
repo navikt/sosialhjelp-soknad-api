@@ -119,6 +119,20 @@
         <panel>ReelArbeidsoker</panel>
     </faktum>
 
+    <!-- Arbeidsforhold -->
+    <faktum>
+        <id>arbeidstilstand</id>
+        <type>java.lang.String</type>
+        <panel>Arbeidsforhold</panel>
+    </faktum>
+    <faktum>
+        <id>arbeidsforhold</id>
+        <panel>Arbeidsforhold</panel>
+        <dependOn>harIkkeJobbet</dependOn>
+        <dependOnValue>false</dependOnValue>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
     <!-- EgenNaering -->
     <faktum>
         <id>egennaering.driveregennaering</id>
@@ -936,5 +950,4 @@
 
     <vedleggsreferanse>G2</vedleggsreferanse>
     <vedleggsreferanse>NAV 04-08.03</vedleggsreferanse>
-
 </soknad>
