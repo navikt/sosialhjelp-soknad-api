@@ -69,9 +69,7 @@
             });
             $provide.value("cms", {'tekster': {'barnetillegg.nyttbarn.landDefault': ''}});
             $provide.value("$routeParams", {});
-        })
-        )
-        ;
+        }));
 
         beforeEach(inject(function ($injector, $rootScope, $controller, $compile) {
             $httpBackend = $injector.get('$httpBackend');
