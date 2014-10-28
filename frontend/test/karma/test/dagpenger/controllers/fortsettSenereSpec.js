@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    describe('DagpengerControllere', function () {
+    describe('DagpengerController', function () {
         var scope, ctrl, form, element, $httpBackend, event, location, epost;
         event = $.Event("click");
 
