@@ -799,7 +799,7 @@
                 var lonn = {
                     key: 'lonnsOgTrekkOppgave',
                     properties: {
-                        type: 'true'
+                        type: 'true',
                     },
                     faktumId: 111
                 };
