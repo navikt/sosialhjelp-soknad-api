@@ -4,7 +4,8 @@ angular.module('gjenopptak')
     .value('data', {})
     .value('cms', {})
     .constant('validertKlasse', 'validert')
-    .run(['$http', 'data', '$rootScope', function ($http, data, $rootScope) {
+    .run(['$http', 'data', '$rootScope', '$location', function ($http, data, $rootScope, $location) {
+        console.log(data);
         $rootScope.app = {
             laster: true
         };
@@ -54,7 +55,7 @@ angular.module('gjenopptak')
             } else if (data.soknad.delstegStatus === "VEDLEGG_VALIDERT") {
                 $location.path('/oppsummering');
             } else {
-                $location.path('/soknad');
+                $location.path('/soknad/' + data.soknad.brukerBehandlingId);
             }
         }
 
