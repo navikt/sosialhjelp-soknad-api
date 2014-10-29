@@ -4,7 +4,6 @@ angular.module('sendsoknad.controllers', [
     'nav.egennaering',
     'nav.verneplikt',
     'nav.utdanning',
-    'nav.vedlegg.controller',
     'nav.opplasting.controller',
     'nav.barnetillegg',
     'nav.barn',
