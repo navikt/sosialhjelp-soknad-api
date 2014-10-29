@@ -38,7 +38,7 @@ angular.module('gjenopptak')
 
         function redirectTilSkjemasideDersomSkjemaIkkeErValidert() {
             if (harHentetData() && !skjemaErValidert()) {
-                $location.path('/soknad');
+                $location.path("/soknad/" + data.soknad.brukerBehandlingId);
             }
         }
 
