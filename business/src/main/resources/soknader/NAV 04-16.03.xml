@@ -831,94 +831,6 @@
         <skjemaNummer>V6</skjemaNummer>
     </vedlegg>
     <vedlegg>
-        <id>4</id>
-        <faktum>arbeidsforhold</faktum>
-        <skjemaNummer>T8|sagtoppavarbeidsgiver</skjemaNummer>
-        <property>arbeidsgivernavn</property>
-        <onProperty>type</onProperty>
-        <onValue>Sagt opp av arbeidsgiver</onValue>
-        <flereTillatt>true</flereTillatt>
-    </vedlegg>
-    <vedlegg>
-        <id>4</id>
-        <faktum>arbeidsforhold</faktum>
-        <skjemaNummer>T8|kontraktutgaatt</skjemaNummer>
-        <property>arbeidsgivernavn</property>
-        <onProperty>type</onProperty>
-        <onValue>Kontrakt utgått</onValue>
-        <flereTillatt>true</flereTillatt>
-    </vedlegg>
-    <vedlegg>
-        <id>4</id>
-        <faktum>arbeidsforhold</faktum>
-        <skjemaNummer>T8|sagtoppselv</skjemaNummer>
-        <property>arbeidsgivernavn</property>
-        <onProperty>type</onProperty>
-        <onValue>Sagt opp selv</onValue>
-        <flereTillatt>true</flereTillatt>
-    </vedlegg>
-    <vedlegg>
-        <id>4</id>
-        <faktum>arbeidsforhold</faktum>
-        <skjemaNummer>T8|redusertarbeidstid</skjemaNummer>
-        <property>arbeidsgivernavn</property>
-        <onProperty>type</onProperty>
-        <onValue>Redusert arbeidstid</onValue>
-        <flereTillatt>true</flereTillatt>
-    </vedlegg>
-    <vedlegg>
-        <id>4</id>
-        <faktum>arbeidsforhold</faktum>
-        <skjemaNummer>T8|avskjediget</skjemaNummer>
-        <property>arbeidsgivernavn</property>
-        <onProperty>type</onProperty>
-        <onValue>Avskjediget</onValue>
-        <flereTillatt>true</flereTillatt>
-    </vedlegg>
-    <vedlegg>
-        <id>4</id>
-        <faktum>arbeidsforhold</faktum>
-        <skjemaNummer>G2</skjemaNummer>
-        <property>arbeidsgivernavn</property>
-        <onProperty>type</onProperty>
-        <onValue>Permittert</onValue>
-        <flereTillatt>true</flereTillatt>
-    </vedlegg>
-    <vedlegg>
-        <id>4</id>
-        <faktum>arbeidsforhold</faktum>
-        <skjemaNummer>O2</skjemaNummer>
-        <property>arbeidsgivernavn</property>
-        <flereTillatt>true</flereTillatt>
-    </vedlegg>
-    <vedlegg>
-        <id>4</id>
-        <faktum>arbeidsforhold</faktum>
-        <skjemaNummer>S9</skjemaNummer>
-        <property>arbeidsgivernavn</property>
-        <onProperty>eosland</onProperty>
-        <onValue>true</onValue>
-        <flereTillatt>true</flereTillatt>
-    </vedlegg>
-    <vedlegg>
-        <id>4</id>
-        <faktum>arbeidsforhold</faktum>
-        <skjemaNummer>A2</skjemaNummer>
-        <property>arbeidsgivernavn</property>
-        <onProperty>type</onProperty>
-        <onValue>Arbeidsgiver er konkurs</onValue>
-        <flereTillatt>true</flereTillatt>
-    </vedlegg>
-    <vedlegg>
-        <id>4</id>
-        <faktum>arbeidsforhold</faktum>
-        <skjemaNummer>M7</skjemaNummer>
-        <property>arbeidsgivernavn</property>
-        <onProperty>type</onProperty>
-        <onValue>Arbeidsgiver er konkurs</onValue>
-        <flereTillatt>true</flereTillatt>
-    </vedlegg>
-    <vedlegg>
         <id>6</id>
         <faktum>barn</faktum>
         <skjemaNummer>X8</skjemaNummer>
@@ -937,17 +849,6 @@
         <inverted>true</inverted>
         <forSystemfaktum>true</forSystemfaktum>
     </vedlegg>
-
-    <vedlegg>
-        <id>9</id>
-        <faktum>arbeidsforhold</faktum>
-        <skjemaNummer>M1</skjemaNummer>
-        <property>arbeidsgivernavn</property>
-        <onProperty>startetForrigeAar</onProperty>
-        <onValue>true</onValue>
-        <flereTillatt>true</flereTillatt>
-    </vedlegg>
-
     <vedleggsreferanse>G2</vedleggsreferanse>
     <vedleggsreferanse>NAV 04-08.03</vedleggsreferanse>
 </soknad>
