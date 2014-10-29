@@ -30,7 +30,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
         };
 
         $scope.soknadErStartet = function () {
-            return !(data.soknad === undefined);
+            return !(data.soknad === undefined || data.soknad.brukerBehandlingId === undefined);
         };
 
         $scope.soknadErIkkeFerdigstilt = function () {
