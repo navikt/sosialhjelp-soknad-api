@@ -49,8 +49,43 @@ angular.module('gjenopptak.routes', ['ngRoute', 'nav.common.routes'])
                     }
                 }
             })
+            .when('/vedlegg', {
+                templateUrl: '../views/templates/vedlegg/vedlegg.html',
+                resolve: {
+                    cms: function (CmsResolver) {
+                        return CmsResolver;
+                    },
+                    land: function (LandResolver) {
+                        return LandResolver;
+                    },
+                    soknad: function(SoknadResolver) {
+                        return SoknadResolver;
+                    },
+                    fakta: function(FaktaResolver) {
+                        return FaktaResolver;
+                    },
+                    soknadOppsett: function(SoknadOppsettResolver) {
+                        return SoknadOppsettResolver;
+                    },
+                    config: function(ConfigForSoknadResolver) {
+                        return ConfigForSoknadResolver;
+                    },
+                    behandlingsId: function(BehandlingIdResolver) {
+                        return BehandlingIdResolver;
+                    },
+                    vedleggListe: function (VedleggResolver) {
+                        return VedleggResolver;
+                    }
+                }
+            })
             .when('/', {
                 redirectTo: '/informasjonsside'
+            })
+            .when('/fortsettsenere', {
+
+            })
+            .when('/oppsummering', {
+
             })
             .otherwise({
                 redirectTo: '/404'
