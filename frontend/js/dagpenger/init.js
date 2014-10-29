@@ -35,7 +35,7 @@ angular.module('sendsoknad')
 
         function redirectTilSkjemasideDersomSkjemaIkkeErValidert() {
             if (harHentetData() && !skjemaErValidert()) {
-                $location.path('/soknad');
+                $location.path("/soknad/" + data.soknad.brukerBehandlingId);
             }
         }
 
