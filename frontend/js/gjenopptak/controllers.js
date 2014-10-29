@@ -1,6 +1,5 @@
 angular.module('gjenopptak.controllers', [
     'nav.feilside',
-    'gjenopptak.services',
     'nav.gjenopptak',
     'nav.personalia',
     'nav.informasjonsside',
@@ -19,5 +18,6 @@ angular.module('gjenopptak.controllers', [
     'nav.adresse',
     'nav.avbryt',
     'nav.bekreftelse',
-    'nav.tilleggsopplysninger'
+    'nav.tilleggsopplysninger',
+    'nav.vedlegg.controller'
 ]);
