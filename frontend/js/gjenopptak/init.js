@@ -5,7 +5,6 @@ angular.module('gjenopptak')
     .value('cms', {})
     .constant('validertKlasse', 'validert')
     .run(['$http', 'data', '$rootScope', '$location', function ($http, data, $rootScope, $location) {
-        console.log(data);
         $rootScope.app = {
             laster: true
         };

@@ -30,10 +30,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
         };
 
         $scope.soknadErStartet = function () {
-            if (erSoknadStartet()) {
-                return true;
-            }
-            return false;
+            return !(data.soknad === undefined);
         };
 
         $scope.soknadErIkkeFerdigstilt = function () {
@@ -67,7 +64,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
 
         $scope.forsettSoknadDersomBrosjyreLest = function () {
             if ($scope.harLestBrosjyre()) {
-                $location.path("/soknad");
+                $location.path("/soknad/" + data.soknad.brukerBehandlingId);
             }
         };
 
