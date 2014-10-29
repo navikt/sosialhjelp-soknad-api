@@ -51,7 +51,7 @@ angular.module('sendsoknad')
             } else if (data.soknad.delstegStatus === "VEDLEGG_VALIDERT") {
                 $location.path('/oppsummering');
             } else {
-                $location.path('/soknad');
+                $location.path('/soknad/' + data.soknad.brukerBehandlingId);
             }
         }
 
