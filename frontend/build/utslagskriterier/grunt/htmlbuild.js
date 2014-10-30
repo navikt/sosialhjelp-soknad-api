@@ -43,7 +43,7 @@ module.exports = {
     },
     prod: {
         src: '../../views/bootstrapTemplateProd.html',
-        dest: '<%= resourcePath %>views/built/bootstrapUtslagskritererDagpenger.html',
+        dest: '<%= resourcePath %>views/built/bootstrapUtslagskriterierDagpenger.html',
         options: {
             beautify: true,
             relative: false,
