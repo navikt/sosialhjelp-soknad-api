@@ -19,5 +19,6 @@ angular.module('gjenopptak.controllers', [
     'nav.avbryt',
     'nav.bekreftelse',
     'nav.tilleggsopplysninger',
-    'nav.vedlegg.controller'
+    'nav.vedlegg.controller',
+    'nav.opplasting.controller'
 ]);
