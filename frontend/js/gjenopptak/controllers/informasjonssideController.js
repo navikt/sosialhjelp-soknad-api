@@ -3,6 +3,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
         $scope.utslagskriterier = {};
         $scope.utslagskriterier.harlestbrosjyre = false;
         $scope.cmsprefix = "gjenopptak";
+        $scope.dittnavUrl = data.config["dittnav.link.url"];
 
         $scope.oppsummering = false;
         if (erSoknadStartet()) {
