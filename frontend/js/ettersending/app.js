@@ -8,5 +8,5 @@ angular.module('ettersending', [
     'ngAnimate',
     'ngCookies',
     'ngSanitize',
-    'templates-ettersending'
+    'templates-main'
 ]);
