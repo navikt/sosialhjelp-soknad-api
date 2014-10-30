@@ -1,7 +1,6 @@
 module.exports = {
     dev: {
         src: '../../views/bootstrapTemplate.html',
-        dest: '<%= resourcePath %>views/built/bootstrapDevUtslagskritererDagpenger.html',
         dest: '<%= resourcePath %>views/built/bootstrapDevUtslagskriterierDagpenger.html',
         options: {
             beautify: true,
