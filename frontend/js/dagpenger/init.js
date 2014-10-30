@@ -41,13 +41,13 @@ angular.module('sendsoknad')
 
         function redirectTilVedleggsideDersomVedleggIkkeErValidert() {
             if (harHentetData() && !vedleggErValidert()) {
-                $location.path('/vedlegg');
+                $location.path('/vedlegg/' + data.soknad.brukerBehandlingId);
             }
         }
 
         function redirectTilRettSideBasertPaDelstegStatus() {
             if (data.soknad.delstegStatus === "SKJEMA_VALIDERT") {
-                $location.path('/vedlegg');
+                $location.path('/vedlegg' + data.soknad.brukerBehandlingId);
             } else if (data.soknad.delstegStatus === "VEDLEGG_VALIDERT") {
                 $location.path('/oppsummering');
             } else {
