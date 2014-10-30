@@ -7,7 +7,7 @@ angular.module('nav.barn', [])
         var barnetilleggModus = url.indexOf('sokbarnetillegg') !== -1;
         var barnUnderEndring;
         $scope.underAtten = {value: ''};
-
+        $scope.brukerBehandlingId = data.soknad.brukerBehandlingId;
         $scope.soknadId = data.soknad.soknadId;
         $scope.nyttbarn = {barneinntekttall: undefined};
 
@@ -16,7 +16,7 @@ angular.module('nav.barn', [])
                 $("#land").width($("#land").width());
             }, 50);
         };
-        
+
         var faktumId;
         if (endreModus) {
             faktumId = url.split('/').pop();
@@ -94,7 +94,7 @@ angular.module('nav.barn', [])
                 $scope.barn.properties.ikkebarneinntekt=undefined;
             }
 
-            $location.path('soknad');
+            $location.path(data.soknad.brukerBehandlingId + '/soknad');
         };
 
         $scope.lagreBarn = function (form) {
@@ -130,7 +130,7 @@ angular.module('nav.barn', [])
         };
 
         $scope.erIkkeEosLand = function() {
-            return $scope.eosLandType === "ikkeEos";   
+            return $scope.eosLandType === "ikkeEos";
         };
 
         function oppdaterCookieValue(faktumId) {
@@ -151,7 +151,7 @@ angular.module('nav.barn', [])
                 $scope.barn = barnData;
                 oppdaterFaktumListe('barn', barnData);
                 oppdaterCookieValue(barnData.faktumId);
-                $location.path('soknad');
+                $location.path(data.soknad.brukerBehandlingId + '/soknad');
             });
         }
 
@@ -159,7 +159,7 @@ angular.module('nav.barn', [])
             var faktaType = data.finnFakta(type);
             if (faktaType.length > 0) {
                 if (endreModus || barnetilleggModus) {
-                     angular.forEach(data.fakta, function (value, index) {
+                    angular.forEach(data.fakta, function (value, index) {
                         if (value.faktumId === parseInt(barnData.faktumId)) {
                             data.fakta[index] = barnData;
                         }

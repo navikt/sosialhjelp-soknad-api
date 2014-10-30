@@ -46,7 +46,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
             $scope.fremdriftsindikator.laster = true;
             $scope.soknad = soknadService.create({soknadType: soknadType},
                 function (result) {
-                    $location.path("/soknad/" + result.brukerbehandlingId);
+                    $location.path(result.brukerbehandlingId + "/soknad/");
                 }, function () {
                     $scope.fremdriftsindikator.laster = false;
                 });
@@ -64,7 +64,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
 
         $scope.forsettSoknadDersomBrosjyreLest = function () {
             if ($scope.harLestBrosjyre()) {
-                $location.path("/soknad/" + data.soknad.brukerBehandlingId);
+                $location.path(data.soknad.brukerBehandlingId + "/soknad/");
             }
         };
 

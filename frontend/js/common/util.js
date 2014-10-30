@@ -380,3 +380,7 @@ function getCookie(cname) {
     }
     return "";
 }
+
+function erPaaSideMedPath(url, path) {
+    return url && url.indexOf(path) > -1;
+}

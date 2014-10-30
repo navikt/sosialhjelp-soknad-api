@@ -70,7 +70,7 @@
 
         <div class="knapper-opprett ikke-fadebakgrunn">
             <p data-ng-bind-html=" 'barnetillegg.nyttbarn.informasjon' | cmstekst"></p>
-            <button class="knapp-leggtil-liten" href="#/nyttbarn" data-ng-click="leggTilBarn($event)" data-ng-bind-html=" 'barnetillegg.nyttbarn' | cmstekst"></button>
+            <button class="knapp-leggtil-liten" href="#/{{brukerBehandlingId}}/nyttbarn" data-ng-click="leggTilBarn($event)" data-ng-bind-html=" 'barnetillegg.nyttbarn' | cmstekst"></button>
         </div>
 
         <div data-spmblokkferdig></div>
