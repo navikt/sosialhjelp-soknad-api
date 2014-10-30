@@ -159,10 +159,7 @@ public class ContentConfig {
         decorator.setNoDecoratePatterns(NO_DECORATOR_PATTERNS);
         decorator.setFragmentNames(asList(
                 "header-withmenu",
-                "footer-withmenu",
-                "inline-js-variables",
-                "webstats-ga",
-                "skiplinks"
+                "footer-withmenu"
         ));
         return decorator;
     }
