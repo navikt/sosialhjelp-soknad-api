@@ -32,7 +32,7 @@ angular.module('sendsoknad.routes', ['ngRoute', 'nav.common.routes'])
                     }
                 }
             })
-            .when('/vedlegg', {
+            .when('/vedlegg/:behandlingId', {
                 templateUrl: '../views/templates/vedlegg/vedlegg.html',
                 resolve: {
                     cms: function (CmsResolver) {
