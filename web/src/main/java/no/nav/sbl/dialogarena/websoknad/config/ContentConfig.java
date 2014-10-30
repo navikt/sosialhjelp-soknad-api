@@ -158,6 +158,7 @@ public class ContentConfig {
         decorator.setApplicationName("Saksoversikt");
         decorator.setNoDecoratePatterns(NO_DECORATOR_PATTERNS);
         decorator.setFragmentNames(asList(
+                "header-withmenu",
                 "footer-withmenu"
         ));
         return decorator;
