@@ -4,10 +4,7 @@ angular.module('gjenopptak')
     .value('data', {})
     .value('cms', {})
     .constant('validertKlasse', 'validert')
-    .run(['$http', 'data', '$rootScope', '$location', function ($http, data, $rootScope, $location) {
-        $rootScope.app = {
-            laster: true
-        };
+    .run(['$rootScope', 'data', '$location', function ($rootScope, data, $location) {
         $('#hoykontrast a, .skriftstorrelse a').attr('href', 'javascript:void(0)');
 
         $rootScope.$on('$routeChangeSuccess', function(event, next, current) {
@@ -17,18 +14,18 @@ angular.module('gjenopptak')
                  */
                 if (skalRedirecteTilRettSideIfolgeDelstegStatus()) {
                     redirectTilRettSideBasertPaDelstegStatus();
-                } else if (next.$$route.originalPath === "/oppsummering") {
+                } else if (erPaaSideMedPath(next.$$route.originalPath, '/oppsummering')) {
                     redirectTilVedleggsideDersomVedleggIkkeErValidert();
                     redirectTilSkjemasideDersomSkjemaIkkeErValidert();
-                } else if (next.$$route.originalPath === "/vedlegg") {
+                } else if (erPaaSideMedPath(next.$$route.originalPath, "/vedlegg")) {
                     redirectTilSkjemasideDersomSkjemaIkkeErValidert();
-                } else if (current && next.$$route.originalPath === "/fortsettsenere") {
+                } else if (current && erPaaSideMedPath(next.$$route.originalPath, "/fortsettsenere")) {
                     $rootScope.forrigeSide = current.$$route.originalPath;
                 }
             }
 
             function skalRedirecteTilRettSideIfolgeDelstegStatus() {
-                return next.$$route.originalPath === "/informasjonsside" && (!current || current.redirectTo === '/informasjonsside') && data.soknad;
+                return erPaaSideMedPath(next.$$route.originalPath, "/informasjonsside") && (!current || erPaaSideMedPath(current.redirectTo, '/informasjonsside')) && data.soknad;
             }
         });
 
@@ -38,23 +35,23 @@ angular.module('gjenopptak')
 
         function redirectTilSkjemasideDersomSkjemaIkkeErValidert() {
             if (harHentetData() && !skjemaErValidert()) {
-                $location.path("/soknad/" + data.soknad.brukerBehandlingId);
+                $location.path(data.soknad.brukerBehandlingId + "/soknad/");
             }
         }
 
         function redirectTilVedleggsideDersomVedleggIkkeErValidert() {
             if (harHentetData() && !vedleggErValidert()) {
-                $location.path('/vedlegg' + data.soknad.brukerBehandlingId);
+                $location.path(data.soknad.brukerBehandlingId + '/vedlegg/');
             }
         }
 
         function redirectTilRettSideBasertPaDelstegStatus() {
             if (data.soknad.delstegStatus === "SKJEMA_VALIDERT") {
-                $location.path('/vedlegg' + data.soknad.brukerBehandlingId);
+                $location.path(data.soknad.brukerBehandlingId + '/vedlegg');
             } else if (data.soknad.delstegStatus === "VEDLEGG_VALIDERT") {
-                $location.path('/oppsummering');
+                $location.path(data.soknad.brukerBehandlingId + '/oppsummering');
             } else {
-                $location.path('/soknad/' + data.soknad.brukerBehandlingId);
+                $location.path(data.soknad.brukerBehandlingId + '/soknad/');
             }
         }
 

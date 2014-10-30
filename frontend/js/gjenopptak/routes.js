@@ -22,7 +22,7 @@ angular.module('gjenopptak.routes', ['ngRoute', 'nav.common.routes'])
                     }
                 }
             })
-            .when('/soknad/:behandlingId', {
+            .when('/:behandlingId/soknad/', {
                 templateUrl: '../views/dagpenger/dagpenger-skjema.html',
                 controller: 'GjenopptakCtrl',
                 resolve: {
@@ -49,7 +49,7 @@ angular.module('gjenopptak.routes', ['ngRoute', 'nav.common.routes'])
                     }
                 }
             })
-            .when('/vedlegg/:behandlingId', {
+            .when('/:behandlingId/vedlegg', {
                 templateUrl: '../views/templates/vedlegg/vedlegg.html',
                 resolve: {
                     cms: function (CmsResolver) {
@@ -78,7 +78,7 @@ angular.module('gjenopptak.routes', ['ngRoute', 'nav.common.routes'])
                     }
                 }
             })
-            .when('/opplasting/:vedleggId', {
+            .when('/:behandlingId/opplasting/:vedleggId', {
                 templateUrl: '../views/templates/vedlegg/opplasting.html',
                 controller: 'OpplastingVedleggCtrl',
                 resolve: {
@@ -108,7 +108,7 @@ angular.module('gjenopptak.routes', ['ngRoute', 'nav.common.routes'])
                     }
                 }
             })
-            .when('/visVedlegg/:vedleggId', {
+            .when('/:behandlingId/visVedlegg/:vedleggId', {
                 templateUrl: '../views/common/vedlegg/visvedlegg.html',
                 resolve: {
                     cms: function (CmsResolver) {
@@ -134,7 +134,7 @@ angular.module('gjenopptak.routes', ['ngRoute', 'nav.common.routes'])
             .when('/', {
                 redirectTo: '/informasjonsside'
             })
-            .when('/fortsettsenere', {
+            .when('/:behandlingId/fortsettsenere', {
                 templateUrl: '../views/templates/fortsettSenere.html',
                 resolve: {
                     cms: function (CmsResolver) {
@@ -160,7 +160,7 @@ angular.module('gjenopptak.routes', ['ngRoute', 'nav.common.routes'])
                     }
                 }
             })
-            .when('/kvittering-fortsettsenere', {
+            .when('/:behandlingId/kvittering-fortsettsenere', {
                 templateUrl: '../views/templates/kvittering-fortsettsenere.html',
                 controller: 'FortsettSenereKvitteringCtrl',
                 resolve: {
@@ -181,7 +181,7 @@ angular.module('gjenopptak.routes', ['ngRoute', 'nav.common.routes'])
                     }
                 }
             })
-            .when('/nyttbarn', {
+            .when('/:behandlingId/nyttbarn', {
                 templateUrl: '../views/templates/barnetillegg/barnetillegg-nyttbarn.html',
                 resolve: {
                     cms: function (CmsResolver) {
@@ -207,7 +207,7 @@ angular.module('gjenopptak.routes', ['ngRoute', 'nav.common.routes'])
                     }
                 }
             })
-            .when('/endrebarn/:faktumId', {
+            .when('/:behandlingId/endrebarn/:faktumId', {
                 templateUrl: '../views/templates/barnetillegg/barnetillegg-nyttbarn.html',
                 resolve: {
                     cms: function (CmsResolver) {
@@ -233,7 +233,7 @@ angular.module('gjenopptak.routes', ['ngRoute', 'nav.common.routes'])
                     }
                 }
             })
-            .when('/sokbarnetillegg/:faktumId', {
+            .when('/:behandlingId/sokbarnetillegg/:faktumId', {
                 templateUrl: '../views/templates/barnetillegg/endreSystembarnTemplate.html',
                 resolve: {
                     cms: function (CmsResolver) {
@@ -259,7 +259,7 @@ angular.module('gjenopptak.routes', ['ngRoute', 'nav.common.routes'])
                     }
                 }
             })
-            .when('/oppsummering', {
+            .when('/:behandlingId/oppsummering', {
                 templateUrl: '../views/templates/oppsummering.html',
                 resolve: {
                     cms: function (CmsResolver) {
@@ -285,8 +285,8 @@ angular.module('gjenopptak.routes', ['ngRoute', 'nav.common.routes'])
                     }
                 }
             })
-            .when('/ferdigstilt', {
-                templateUrl: '../views/templates/ferdigstilt.html',
+            .when('/:behandlingId/avbryt', {
+                templateUrl: '../views/templates/avbryt.html',
                 resolve: {
                     cms: function (CmsResolver) {
                         return CmsResolver;
@@ -311,7 +311,30 @@ angular.module('gjenopptak.routes', ['ngRoute', 'nav.common.routes'])
                     }
                 }
             })
-            .otherwise({
-                redirectTo: '/404'
+            .when('/:behandlingId/ferdigstilt', {
+                templateUrl: '../views/templates/ferdigstilt.html',
+                resolve: {
+                    cms: function (CmsResolver) {
+                        return CmsResolver;
+                    },
+                    land: function (LandResolver) {
+                        return LandResolver;
+                    },
+                    soknad: function(SoknadResolver) {
+                        return SoknadResolver;
+                    },
+                    fakta: function(FaktaResolver) {
+                        return FaktaResolver;
+                    },
+                    soknadOppsett: function(SoknadOppsettResolver) {
+                        return SoknadOppsettResolver;
+                    },
+                    config: function(ConfigForSoknadResolver) {
+                        return ConfigForSoknadResolver;
+                    },
+                    behandlingsId: function(BehandlingIdResolver) {
+                        return BehandlingIdResolver;
+                    }
+                }
             });
     }]);

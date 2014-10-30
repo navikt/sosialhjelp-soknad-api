@@ -8,6 +8,7 @@ angular.module('nav.sistLagret', [])
             templateUrl: '../js/common/directives/sistlagret/sistLagretTemplate.html',
 			link       : function (scope) {
 				scope.soknadId = data.soknad.soknadId;
+                scope.brukerBehandlingId = data.soknad.brukerBehandlingId;
                 scope.lenke = {
                     value: ""
                 };
