@@ -86,8 +86,6 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                 if(data.jqXHR.responseJSON){
                     errorCode = data.jqXHR.responseJSON.kode;
                 } else if (data.response().textStatus === 'parsererror'){
-                    console.log(e);
-                    console.log(data);
                     errorCode = 'generell';
                 } else {
                     errorCode = data.response().errorThrown;
