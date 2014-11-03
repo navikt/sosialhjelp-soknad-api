@@ -36,8 +36,15 @@
 				</div>
 				<div data-ng-show="soknadErIkkeStartet()">
 					<input type="button" class="knapp-hoved" value="{{ 'utslagskriterier.utslag.fortsett' | cmstekst }}" data-ng-click="startSoknadDersomBrosjyreLest()" data-valider-informasjonsside data-fremdriftsindikator/>
-					<a href="{{ dittnavUrl }}" data-ng-bind-html=" 'utslagskriterier.utslag.avbryt.lenketekst' | cmstekst"></a>
-				</div>
+					<ul class="liste-vannrett">
+                        <li>
+                            <a class="inline" href="{{ dittnavUrl }}" data-ng-bind-html=" 'utslagskriterier.utslag.avbryt.lenketekst' | cmstekst"></a>
+                        </li>
+                        <li>
+                            <a class="inline" href="{{ tilbakeUrl }}" data-ng-bind-html=" cmsprefix + '.informasjonsside.tilbake.lenketekst' | cmstekst"></a>
+                        </li>
+                    </ul>
+                </div>
 			</div>
 		</form>
 	</div>
