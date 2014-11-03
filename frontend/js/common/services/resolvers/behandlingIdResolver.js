@@ -8,13 +8,16 @@ angular.module('nav.services.resolvers.behandlingsid', [])
         } else {
             behandlingId = $route.current.params.behandlingId;
         }
-
         if (behandlingId) {
             $resource('/sendsoknad/rest/soknad/behandling/:behandlingId').get(
                 {behandlingId: behandlingId},
                 function (result) {
                     $route.current.params.soknadId = result.result;
                     behandlingsIdDefer.resolve(result.result);
+                },
+                function (result) {
+                    redirectTilUrl("/sendsoknad/avbrutt");
+                    behandlingsIdDefer.reject("Fant ikke søknad for behandlingsID");
                 }
             );
         } else {
