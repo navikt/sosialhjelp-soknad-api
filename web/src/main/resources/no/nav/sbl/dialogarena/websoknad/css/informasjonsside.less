@@ -46,7 +46,7 @@
         margin-bottom: 0px;
         padding-left: 0px;
         li {
-            &:before {
+            &:before:not(:first-child) {
                 content: "•";
                 display: inline-block;
                 margin-left: -20px;
@@ -54,7 +54,7 @@
                 position: relative;
                 padding-right: 10px;
             }
-            padding-left: 20px;
+            margin-top: 0px;
             padding-bottom: 15px;
             font-weight: bold;
 
@@ -67,8 +67,18 @@
             }
 
             a {
-                display: block;
+                font-size: 1.075rem;
+                font-family: modus;
                 font-weight: normal;
+
+                &:not(.inline) {
+                    display: block;
+                    font-weight: normal;
+                }
+            }
+
+            &:not(:last-child) a {
+                padding-right: 15px;
             }
         }
     }
