@@ -392,10 +392,6 @@ public class WebSoknad implements Serializable {
         return DelstegStatus.isEttersendingStatus(delstegStatus);
     }
 
-    public boolean erGjenopptak() {
-        return skjemaNummer.equals("NAV 04-16.03");
-    }
-
     public boolean harAnnetVedleggSomIkkeErLastetOpp() {
         return !on(vedlegg)
                 .filter(ER_ANNET_VEDLEGG)
@@ -406,9 +402,5 @@ public class WebSoknad implements Serializable {
 
     public boolean erUnderArbeid() {
         return status.equals(SoknadInnsendingStatus.UNDER_ARBEID);
-    }
-
-    public boolean erAvbrytt() {
-        return status.equals(SoknadInnsendingStatus.AVBRUTT_AV_BRUKER) || status.equals(SoknadInnsendingStatus.AVBRUTT_AUTOMATISK);
     }
 }
