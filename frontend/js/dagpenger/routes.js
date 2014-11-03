@@ -400,5 +400,4 @@ angular.module('sendsoknad.routes', ['ngRoute', 'nav.common.routes'])
             .when('/', {
                 redirectTo: '/informasjonsside'
             });
-
     });
