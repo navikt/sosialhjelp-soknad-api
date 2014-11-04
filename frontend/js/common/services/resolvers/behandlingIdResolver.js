@@ -15,7 +15,7 @@ angular.module('nav.services.resolvers.behandlingsid', [])
                     $route.current.params.soknadId = result.result;
                     behandlingsIdDefer.resolve(result.result);
                 },
-                function (result) {
+                function () {
                     redirectTilUrl("/sendsoknad/avbrutt");
                     behandlingsIdDefer.reject("Fant ikke søknad for behandlingsID");
                 }

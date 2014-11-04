@@ -1,7 +1,7 @@
 <div data-modalside>
     <div class="vertikal arbeidsforhold-spm" data-ng-controller="ArbeidsforholdNyttCtrl"
          data-ng-form="nyttArbeidsforholdForm">
-        <a href="#/soknad" class="lukk" aria-label="{{'arbeidsforhold.nyttarbeidsforhold.lukk.aria' | cmstekst}}"></a>
+        <a href="#{{ soknadUrl }}" class="lukk" aria-label="{{'arbeidsforhold.nyttarbeidsforhold.lukk.aria' | cmstekst}}"></a>
 
         <div data-form-errors></div>
         <h2 class="stor-strek">
@@ -162,7 +162,7 @@
                 <input class="knapp-hoved-liten" type="submit"
                        value="{{ 'arbeidsforhold.nyttarbeidsforhold.lagre' | cmstekst }}"
                        data-ng-click="lagreArbeidsforhold(nyttArbeidsforholdForm);">
-                <a href="#/soknad" data-ng-bind-html=" 'arbeidsforhold.nyttarbeidsforhold.avbryt' | cmstekst"></a>
+                <a href="#{{ soknadUrl }}" data-ng-bind-html=" 'arbeidsforhold.nyttarbeidsforhold.avbryt' | cmstekst"></a>
             </div>
         </div>
 

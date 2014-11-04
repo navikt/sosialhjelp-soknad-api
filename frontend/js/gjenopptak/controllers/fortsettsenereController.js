@@ -15,7 +15,7 @@ angular.module('nav.fortsettsenere', [])
                 $scope.epost.value = personalia.properties.epost;
             }
 
-            $scope.forrigeSide = $scope.brukerBehandlingId + '/soknad';
+            $scope.forrigeSide = $scope.brukerBehandlingId + '/fortsett';
 
             $scope.soknadId = data.soknad.soknadId;
 
@@ -42,5 +42,9 @@ angular.module('nav.fortsettsenere', [])
     .controller('FortsettSenereKvitteringCtrl', function ($scope, data) {
         $scope.dittnavUrl = data.config["dittnav.link.url"];
         $scope.epost = data.finnFaktum('epost');
-        $scope.forrigeSide = data.soknad.brukerBehandlingId + '/soknad';
+        $scope.forrigeSide = data.soknad.brukerBehandlingId + '/fortett';
     });
+
+
+
+
