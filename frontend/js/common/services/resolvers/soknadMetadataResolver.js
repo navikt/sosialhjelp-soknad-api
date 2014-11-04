@@ -1,7 +1,7 @@
 angular.module('nav.services.resolvers.soknadmetadata', [])
     .factory('SoknadMetadataResolver', ['$resource', 'data', '$q', 'BehandlingIdResolver', function ($resource, data, $q, BehandlingIdResolver) {
         var metadata = $q.defer();
-        if(erSoknadStartet() || erEttersending()) {
+        if(erEttersending()) {
             BehandlingIdResolver
                 .then(function(result) {
                     var soknadId = result;

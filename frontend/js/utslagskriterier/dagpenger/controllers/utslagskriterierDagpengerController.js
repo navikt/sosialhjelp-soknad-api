@@ -9,10 +9,6 @@ angular.module('nav.utslagskriterierDagpenger', [])
         $scope.dittnavUrl = data.config["dittnav.link.url"];
 
         $scope.oppsummering = false;
-        if (erSoknadStartet()) {
-            $scope.utslagskriterier.harlestbrosjyre = true;
-            $scope.oppsummering = true;
-        }
 
         $scope.fremdriftsindikator = {
             laster: false
@@ -31,18 +27,6 @@ angular.module('nav.utslagskriterierDagpenger', [])
 
         $scope.tpsSvarerIkke = function () {
             if ($scope.utslagskriterier.error !== undefined) {
-                return true;
-            }
-            return false;
-        };
-
-        //TODO må muligens flyttes til dagpenger
-        $scope.soknadErIkkeStartet = function () {
-            return !$scope.soknadErStartet();
-        };
-
-        $scope.soknadErStartet = function () {
-            if (erSoknadStartet()) {
                 return true;
             }
             return false;
