@@ -6,7 +6,6 @@ angular.module('gjenopptak')
     .constant('validertKlasse', 'validert')
     .run(['$rootScope', 'data', '$location', function ($rootScope, data, $location) {
         $('#hoykontrast a, .skriftstorrelse a').attr('href', 'javascript:void(0)');
-
         $rootScope.$on('$routeChangeSuccess', function(event, next, current) {
             if (next.$$route) {
                 /*
