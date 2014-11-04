@@ -47,7 +47,7 @@ describe('sporsmalferdig', function () {
             element.scope().$apply();
             scope.validerOgStartSoknad();
 
-            expect(window.redirectTilUrl).toHaveBeenCalledWith('start/NAV%2004-01.03#/informasjonsside');
+            expect(window.redirectTilUrl).toHaveBeenCalledWith('soknad/NAV%2004-01.03#/informasjonsside');
         });
         it('ikke har motatt dagpenger så skal man redirectes til sendsoknad', function () {
             scope.gjenopptak.harMotattDagpenger = "ja";
@@ -58,7 +58,7 @@ describe('sporsmalferdig', function () {
 
             scope.validerOgStartSoknad();
 
-            expect(window.redirectTilUrl).toHaveBeenCalledWith('start/NAV%2004-16.03#/informasjonsside');
+            expect(window.redirectTilUrl).toHaveBeenCalledWith('soknad/NAV%2004-16.03#/informasjonsside');
         });
     });
 });
