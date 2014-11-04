@@ -28,7 +28,16 @@
                 },
                 soknad: {
                     soknadId: 1
-                }
+                },
+                config: {"soknad.sluttaarsak.url": "sluttaarsakUrl",
+                    "dittnav.link.url": "dittnavUrl",
+                    "soknad.lonnskravskjema.url": "lonnskravSkjemaUrl",
+                    "soknad.permitteringsskjema.url": "permiteringUrl",
+                    "soknad.skjemaveileder.url": "skjemaVeilederUrl",
+                    "soknad.brukerprofil.url": "brukerprofilUrl",
+                    "soknad.reelarbeidsoker.url": "reelArbeidsokerUrl",
+                    "soknad.alderspensjon.url": "alderspensjonUrl",
+                    "soknad.dagpengerbrosjyre.url": "dagpengerBrosjyreUrl" }
             });
             $provide.value("cms", {});
 
@@ -123,7 +132,7 @@
 
             httpBackend.flush();
 
-            expect(location.path()).toBe("/soknad/brukerbehandlingsid");
+            expect(location.path()).toBe("/brukerbehandlingsid/soknad/");
         });
     });
 }());

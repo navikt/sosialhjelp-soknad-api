@@ -527,17 +527,17 @@
             it('pathen skal endres til nyttbarn naar et barn blir lagt til', function () {
                 spyOn(location, 'path');
                 scope.leggTilBarn(event);
-                expect(location.path).toHaveBeenCalledWith("nyttbarn/");
+                expect(location.path).toHaveBeenCalledWith("undefined/nyttbarn/");
             });
             it('pathen skal endres til endrebarn/faktumid naar et barn blir endret', function () {
                 spyOn(location, 'path');
                 scope.endreBarn(0, event);
-                expect(location.path).toHaveBeenCalledWith("endrebarn/0");
+                expect(location.path).toHaveBeenCalledWith("undefined/endrebarn/0");
             });
-            it('pathen skal endres til sokbarnetillegg/faktumid naar et barn soker om barnetillegg', function () {
+            it('pathen skal endres til behandlingid/sokbarnetillegg/faktumid naar et barn soker om barnetillegg', function () {
                 spyOn(location, 'path');
                 scope.sokbarnetillegg(0, event);
-                expect(location.path).toHaveBeenCalledWith("sokbarnetillegg/0");
+                expect(location.path).toHaveBeenCalledWith("undefined/sokbarnetillegg/0");
             });
             it('nar et barn slettes skal dette barnet ikke lenger vaere lagret pa fakta', function () {
                 expect(scope.data.finnFakta('barn').length).toBe(2);
