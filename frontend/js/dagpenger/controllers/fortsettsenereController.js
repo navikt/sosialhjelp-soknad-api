@@ -25,12 +25,11 @@ angular.module('nav.fortsettsenere', [])
                 $scope.$broadcast('RUN_VALIDATION' + form.$name);
 
                 if (form.$valid) {
-                    var behandlingId = getBehandlingIdFromUrl();
                     if ($scope.epost) {
                         $scope.epost = new Faktum($scope.epost);
                         $scope.epost.$save({soknadId: data.soknad.soknadId}).then(function (epostData) {
                             data.leggTilFaktum(epostData);
-                            new fortsettSenereService({epost: $scope.epost.value}).$send({behandlingId: behandlingId}).then(function (data) {
+                            new fortsettSenereService({epost: $scope.epost.value}).$send({soknadId: data.soknad.skjemaNummer, behandlingId: $scope.brukerBehandlingId}).then(function (data) {
                                 $location.path($scope.brukerBehandlingId + '/kvittering-fortsettsenere');
                             });
                         });

@@ -7,10 +7,6 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
         $scope.tilbakeUrl = '../utslagskriterier/dagpenger/';
 
         $scope.oppsummering = false;
-        if (erSoknadStartet()) {
-            $scope.utslagskriterier.harlestbrosjyre = true;
-            $scope.oppsummering = true;
-        }
 
         $scope.fremdriftsindikator = {
             laster: false
@@ -69,6 +65,11 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
                 $location.path(data.soknad.brukerBehandlingId + "/soknad/");
             }
         };
+
+        if ($scope.soknadErStartet()) {
+            $scope.utslagskriterier.harlestbrosjyre = true;
+            $scope.oppsummering = true;
+        }
 
     }])
     .directive('validerInformasjonsside', [function () {

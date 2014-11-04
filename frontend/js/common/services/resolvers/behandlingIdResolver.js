@@ -3,7 +3,7 @@ angular.module('nav.services.resolvers.behandlingsid', [])
         var behandlingsIdDefer = $q.defer();
 
         var behandlingId;
-        if (erSoknadStartet() || erEttersending()) {
+        if (erEttersending()) {
             behandlingId = getBehandlingIdFromUrl();
         } else {
             behandlingId = $route.current.params.behandlingId;
