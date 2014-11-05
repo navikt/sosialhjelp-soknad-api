@@ -62,7 +62,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
 
         $scope.forsettSoknadDersomBrosjyreLest = function () {
             if ($scope.harLestBrosjyre()) {
-                $location.path(data.soknad.brukerBehandlingId + "/soknad/");
+                $location.path(data.soknad.brukerBehandlingId + "/fortsett");
             }
         };
 

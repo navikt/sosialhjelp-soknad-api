@@ -4,6 +4,7 @@ angular.module('nav.avbryt', [])
             laster: false
 
         };
+        $scope.brukerBehandlingId = data.soknad.brukerBehandlingId;
 
         $scope.krevBekreftelse = data.fakta.filter(function(item) {
             return item.type==="BRUKERREGISTRERT" && (item.value !== null || Object.keys(item.properties).length > 0);
