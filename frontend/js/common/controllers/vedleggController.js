@@ -101,7 +101,7 @@ angular.module('nav.vedlegg.controller', [])
         };
 
         $scope.endreInnsendingsvalg = function (forventning, valg) {
-            if (valg !== 'SendesSenere' && valg !== 'SendesIkke' && valg !== 'VedleggSendesAvAndre' && valg !== "VedleggSendesIkke") {
+            if (valg !== 'SendesSenere' && valg !== 'SendesIkke' && valg !== 'VedleggSendesAvAndre' && valg !== "VedleggSendesIkke" && valg !== "VedleggAlleredeSendt") {
                 forventning.innsendingsvalg = valg;
             }
             if (!$scope.hiddenFelt) {
@@ -142,6 +142,10 @@ angular.module('nav.vedlegg.controller', [])
                 return true;
             }
 
+        };
+
+        $scope.skalViseAlleredeSendtAlternativ = function() {
+            return $scope.options && $scope.options.visAlleredeSendtAlternativ === true;
         };
     }])
 

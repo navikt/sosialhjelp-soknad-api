@@ -8,6 +8,7 @@ angular.module('gjenopptak.controllers', [
     'nav.barnetillegg',
     'nav.barn',
     'nav.vedlegg.controller',
+    'nav.vedlegg.gjenopptak',
     'nav.fortsettsenere',
     'nav.gjenopptak',
     'nav.informasjonsside',
