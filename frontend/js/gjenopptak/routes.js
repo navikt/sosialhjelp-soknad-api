@@ -311,6 +311,20 @@ angular.module('gjenopptak.routes', ['ngRoute', 'nav.common.routes'])
                     }
                 }
             })
+            .when('/:behandlingId/fortsett',{
+                templateUrl: '../views/templates/fortsettRouting.html',
+                resolve: {
+                    config: function(ConfigResolver) {
+                        return ConfigResolver;
+                    },
+                    behandlingsId: function(BehandlingIdResolver) {
+                        return BehandlingIdResolver;
+                    },
+                    soknad: function(SoknadResolver) {
+                        return SoknadResolver;
+                    }
+                }
+            })
             .when('/:behandlingId/ferdigstilt', {
                 templateUrl: '../views/templates/ferdigstilt.html',
                 resolve: {

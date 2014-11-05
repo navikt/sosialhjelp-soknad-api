@@ -397,8 +397,21 @@ angular.module('sendsoknad.routes', ['ngRoute', 'nav.common.routes'])
                     }
                 }
             })
+            .when('/:behandlingId/fortsett',{
+                templateUrl: '../views/templates/fortsettRouting.html',
+                resolve: {
+                    config: function(ConfigResolver) {
+                        return ConfigResolver;
+                    },
+                    behandlingsId: function(BehandlingIdResolver) {
+                        return BehandlingIdResolver;
+                    },
+                    soknad: function(SoknadResolver) {
+                        return SoknadResolver;
+                    }
+                }
+            })
             .when('/', {
                 redirectTo: '/informasjonsside'
             });
-
     });
