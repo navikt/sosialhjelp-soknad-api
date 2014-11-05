@@ -64,6 +64,10 @@ angular.module('nav.datepicker', [])
 				requiredErrorMessage  : '@'
 			},
 			link: function (scope, element, attrs, form) {
+                scope.vars = {
+                    date: scope.ngModel
+                };
+
 				var eventForAValidereHeleFormen = 'RUN_VALIDATION' + form.$name;
 				var datoRegExp = new RegExp(/^\d\d\.\d\d\.\d\d\d\d$/);
 				var harHattFokus = false;
@@ -97,15 +101,19 @@ angular.module('nav.datepicker', [])
 				};
 
 				scope.blur = function () {
+
 					scope.harFokus = false;
 
-					if (new Date(scope.ngModel) < new Date(scope.fraDato)) {
-						scope.ngModel = '';
+					if (new Date(scope.vars.date) < new Date(scope.fraDato)) {
+                        scope.vars.date = '';
 						scope.tilDatoFeil = true;
-					} else if (new Date(scope.tilDato) < new Date(scope.ngModel)) {
+					} else if (new Date(scope.tilDato) < new Date(scope.vars.date)) {
+                        scope.ngModel = scope.vars.date;
 						scope.tilDato = '';
 						scope.tilDatoFeil = true;
-					}
+					} else {
+                        scope.ngModel = scope.vars.date;
+                    }
 
 					if (scope.lagre) {
 						$timeout(scope.lagre, 100);
@@ -193,14 +201,20 @@ angular.module('nav.datepicker', [])
 						return;
 					}
 
+                    console.log(newVal, oldVal);
+
 					if (newVal !== oldVal && scope.endret) {
 						scope.endret();
 					}
 
+                    if (isNaN(new Date(newVal).getDate()) && !isNaN(new Date(oldVal))) {
+                        scope.vars.date = '';
+                    }
+
 					scope.fremtidigDatoFeil = scope.sjekkUloveligFremtidigDato();
-					
 					if (new Date(scope.ngModel) < new Date(scope.fraDato)) {
 						scope.ngModel = '';
+                        scope.vars.date = '';
 						scope.tilDatoFeil = true;
 					} else if (new Date(scope.tilDato) < new Date(scope.ngModel)) {
 						scope.tilDato = '';
@@ -244,6 +258,7 @@ angular.module('nav.datepicker', [])
 					opts.onSelect = function () {
 						var dato = datepickerInput.datepicker('getDate');
 						scope.ngModel = $filter('date')(dato, 'yyyy-MM-dd');
+                        scope.vars.date = scope.ngModel;
 					};
 
 					opts.beforeShow = function () {
