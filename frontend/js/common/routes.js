@@ -13,6 +13,17 @@ angular.module('nav.common.routes', ['ngRoute'])
                     }
                 }
             })
+            .when('/feilside/soknadikkefunnet', {
+                templateUrl: '../views/common/feilsider/soknadIkkeFunnetFeilside.html',
+                resolve: {
+                    cms: function (CmsResolver) {
+                        return CmsResolver;
+                    },
+                    config: function (ConfigResolver) {
+                        return ConfigResolver;
+                    }
+                }
+            })
             .when('/404', {
                 templateUrl: '../views/common/feilsider/feilside404.html',
                 resolve: {
