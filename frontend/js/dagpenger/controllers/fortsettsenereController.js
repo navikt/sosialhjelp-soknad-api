@@ -29,7 +29,7 @@ angular.module('nav.fortsettsenere', [])
                         $scope.epost = new Faktum($scope.epost);
                         $scope.epost.$save({soknadId: data.soknad.soknadId}).then(function (epostData) {
                             data.leggTilFaktum(epostData);
-                            new fortsettSenereService({epost: $scope.epost.value}).$send({soknadId: data.soknad.skjemaNummer, behandlingId: $scope.brukerBehandlingId}).then(function (data) {
+                            new fortsettSenereService({epost: $scope.epost.value}).$send({skjemanavn: data.soknad.skjemaNummer, behandlingId: $scope.brukerBehandlingId}).then(function (data) {
                                 $location.path($scope.brukerBehandlingId + '/kvittering-fortsettsenere');
                             });
                         });
