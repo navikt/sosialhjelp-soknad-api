@@ -4,7 +4,6 @@ angular.module('sendsoknad.controllers', [
     'nav.egennaering',
     'nav.verneplikt',
     'nav.utdanning',
-    'nav.vedlegg.controller',
     'nav.opplasting.controller',
     'nav.barnetillegg',
     'nav.barn',
@@ -14,13 +13,12 @@ angular.module('sendsoknad.controllers', [
     'nav.arbeidsforhold',
     'nav.informasjonsside',
     'nav.feilside',
-    'nav.behandlingside',
     'nav.personalia',
     'nav.oppsummering',
     'nav.adresse',
-    'nav.informasjonsside',
     'nav.behandlingside',
     'nav.avbryt',
     'nav.bekreftelse',
-    'nav.tilleggsopplysninger'
+    'nav.tilleggsopplysninger',
+    'nav.fortsett.controller'
 ]);

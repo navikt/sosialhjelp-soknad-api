@@ -3,9 +3,62 @@
 angular.module('gjenopptak')
     .value('data', {})
     .value('cms', {})
-    .run(['$http', '$rootScope', function ($http, $rootScope) {
-        $rootScope.app = {
-            laster: true
-        };
+    .constant('validertKlasse', 'validert')
+    .run(['$rootScope', 'data', '$location', function ($rootScope, data, $location) {
         $('#hoykontrast a, .skriftstorrelse a').attr('href', 'javascript:void(0)');
+        $rootScope.$on('$routeChangeSuccess', function(event, next, current) {
+            if (next.$$route) {
+                /*
+                 * Dersom vi kommer inn på informasjonsside utenfra (current sin redirectTo er informasjonsside), og krav for søknaden er oppfylt, skal vi redirecte til rett side.
+                 */
+                if (skalRedirecteTilRettSideIfolgeDelstegStatus()) {
+                    redirectTilRettSideBasertPaDelstegStatus();
+                } else if (erPaaSideMedPath(next.$$route.originalPath, '/oppsummering')) {
+                    redirectTilVedleggsideDersomVedleggIkkeErValidert();
+                    redirectTilSkjemasideDersomSkjemaIkkeErValidert();
+                } else if (erPaaSideMedPath(next.$$route.originalPath, "/vedlegg")) {
+                    redirectTilSkjemasideDersomSkjemaIkkeErValidert();
+                } else if (current && erPaaSideMedPath(next.$$route.originalPath, "/fortsettsenere")) {
+                    $rootScope.forrigeSide = current.$$route.originalPath;
+                }
+            }
+
+            function skalRedirecteTilRettSideIfolgeDelstegStatus() {
+                return erPaaSideMedPath(next.$$route.originalPath, "/informasjonsside") && (!current || erPaaSideMedPath(current.redirectTo, '/informasjonsside')) && data.soknad;
+            }
+        });
+
+        function harHentetData() {
+            return data && data.soknad;
+        }
+
+        function redirectTilSkjemasideDersomSkjemaIkkeErValidert() {
+            if (harHentetData() && !skjemaErValidert()) {
+                $location.path(data.soknad.brukerBehandlingId + "/soknad/");
+            }
+        }
+
+        function redirectTilVedleggsideDersomVedleggIkkeErValidert() {
+            if (harHentetData() && !vedleggErValidert()) {
+                $location.path(data.soknad.brukerBehandlingId + '/vedlegg/');
+            }
+        }
+
+        function redirectTilRettSideBasertPaDelstegStatus() {
+            if (data.soknad.delstegStatus === "SKJEMA_VALIDERT") {
+                $location.path(data.soknad.brukerBehandlingId + '/vedlegg');
+            } else if (data.soknad.delstegStatus === "VEDLEGG_VALIDERT") {
+                $location.path(data.soknad.brukerBehandlingId + '/oppsummering');
+            } else {
+                $location.path(data.soknad.brukerBehandlingId + '/soknad/');
+            }
+        }
+
+        function skjemaErValidert() {
+            return data.soknad.delstegStatus === "SKJEMA_VALIDERT" || vedleggErValidert();
+        }
+
+        function vedleggErValidert() {
+            return data.soknad.delstegStatus === "VEDLEGG_VALIDERT";
+        }
     }]);

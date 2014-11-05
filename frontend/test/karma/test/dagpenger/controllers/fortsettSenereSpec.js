@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    describe('DagpengerControllere', function () {
+    describe('DagpengerController', function () {
         var scope, ctrl, form, element, $httpBackend, event, location, epost;
         event = $.Event("click");
 
@@ -37,7 +37,8 @@
                     fakta.push(faktum);
                 },
                 soknad: {
-                    soknadId: 1
+                    soknadId: 1,
+                    brukerBehandlingId: "BHD123"
                 },
                 config: {
                     "dittnav.link.url": "dittnavUrl"}
@@ -85,8 +86,8 @@
             it('scope.epost skal bli satt til eposten som ligger på data', function () {
                 expect(scope.epost.value).toEqual('epost@epost.no');
             });
-            it('scope.forrigeSide skal bli satt til /soknad hvis den ikke finnes fra før', function () {
-                expect(scope.forrigeSide).toEqual('/soknad');
+            it('scope.forrigeSide skal bli satt til #/behandlingsid/fortsett hvis den ikke finnes fra før', function () {
+                expect(scope.forrigeSide).toEqual('#/BHD123/fortsett');
             });
             it('sette riktig urler', function () {
                 expect(scope.dittnavUrl).toEqual('dittnavUrl');
@@ -117,9 +118,6 @@
 
             it('scope.epost.value skal bli satt til undefined hvis ikke epost finnes fra før ', function () {
                 expect(scope.epost.value).toEqual(undefined);
-            });
-            it('scope.forrigeSide skal bli satt til /soknad hvis den ikke finnes fra før', function () {
-                expect(scope.forrigeSide).toEqual('Forrige side');
             });
             it('skal få tilsendt kvittering til eposten som er blitt oppgitt hvis form er valid', function () {
                 expect(scope.epost.value).toEqual(undefined);
@@ -189,8 +187,8 @@
             it('scope.epost skal bli satt til eposten som ligger på data', function () {
                 expect(scope.epost.value).toEqual('epost@epost.no');
             });
-            it('scope.forrigeSide skal bli satt til /soknad hvis den ikke finnes fra før', function () {
-                expect(scope.forrigeSide).toEqual('/soknad');
+            it('scope.forrigeSide skal bli satt til #/behandlinId/fortsett hvis den ikke finnes fra før', function () {
+                expect(scope.forrigeSide).toEqual('#/BHD123/fortsett');
             });
             it('sette riktig urler', function () {
                 expect(scope.dittnavUrl).toEqual('dittnavUrl');
@@ -199,7 +197,6 @@
         describe('FortsettSenereKvitteringCtrlMedForrigeSide', function () {
             beforeEach(inject(function ($controller, data, $location) {
                 scope.data = data;
-                scope.forrigeSide = "Forrige side";
 
                 var epostFaktum = {
                     key: 'epost',
@@ -215,8 +212,8 @@
                 scope.$apply();
             }));
 
-            it('scope.forrigeSide skal bli satt til /soknad hvis den ikke finnes fra før', function () {
-                expect(scope.forrigeSide).toEqual('Forrige side');
+            it('scope.forrigeSide skal bli satt til #/behandlingId/fortsett hvis den ikke finnes fra før', function () {
+                expect(scope.forrigeSide).toEqual('#/BHD123/fortsett');
             });
         });
     });

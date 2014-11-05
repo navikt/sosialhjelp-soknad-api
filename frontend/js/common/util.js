@@ -43,9 +43,6 @@ String.prototype.toCamelCase = function () {
     });
 };
 
-function erSoknadStartet() {
-    return location.href.indexOf("sendsoknad/soknad/") > 0;
-}
 function erEttersending() {
     return location.href.indexOf("ettersending") > 0;
 }
@@ -379,4 +376,8 @@ function getCookie(cname) {
         }
     }
     return "";
+}
+
+function erPaaSideMedPath(url, path) {
+    return url && url.indexOf(path) > -1;
 }

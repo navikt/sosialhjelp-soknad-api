@@ -1,7 +1,8 @@
 angular.module('nav.routingForGjenopptak', [])
-    .controller('routingForGjenopptakCtrl', function ($scope) {
+    .controller('routingForGjenopptakCtrl', ['$scope', 'data', function ($scope, data) {
         $scope.gjenopptak = {
             harMotattDagpenger: null,
             harArbeidet: null
         };
-    });
+        $scope.dittnavUrl = data.config["dittnav.link.url"];
+    }]);
