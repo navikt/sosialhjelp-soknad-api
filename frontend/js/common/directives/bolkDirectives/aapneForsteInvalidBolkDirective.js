@@ -11,8 +11,7 @@ angular.module('nav.aapneForsteInvalidBolkDirective', [])
 
                         scope.apneTab(forsteInvalidBolk.attr('id'));
                         $timeout(function() {
-                            var fokusElement = forsteInvalidBolk.find('input').first();
-
+                            var fokusElement = forsteInvalidBolk.find('input:visible').first();
                             if (fokusElement.length > 0) {
                                 scrollToElement(fokusElement, 400);
                             }
