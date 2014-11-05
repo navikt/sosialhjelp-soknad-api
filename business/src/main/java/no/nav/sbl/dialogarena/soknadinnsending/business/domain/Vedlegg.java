@@ -346,7 +346,8 @@ public class Vedlegg {
         VedleggSendesAvAndre(3),
         SendesSenere(4),
         LastetOpp(5),
-        UnderBehandling(6);
+        UnderBehandling(6),
+        VedleggSendtTidliggere(7);
 
         private int prioritet;
         private Status(int prioritet) {

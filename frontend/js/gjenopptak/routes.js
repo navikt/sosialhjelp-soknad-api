@@ -51,6 +51,7 @@ angular.module('gjenopptak.routes', ['ngRoute', 'nav.common.routes'])
             })
             .when('/:behandlingId/vedlegg', {
                 templateUrl: '../views/templates/vedlegg/vedlegg.html',
+                controller: 'VedleggGjenopptakCtrl',
                 resolve: {
                     cms: function (CmsResolver) {
                         return CmsResolver;
