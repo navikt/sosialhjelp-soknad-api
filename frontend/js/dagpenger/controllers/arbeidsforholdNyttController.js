@@ -12,6 +12,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 		};
 		$scope.land = data.land;
         $scope.soknadId = data.soknad.soknadId;
+        $scope.soknadUrl = '/' + data.soknad.brukerBehandlingId + '/soknad';
 
         $scope.settBreddeSlikAtDetFungererIIE = function() {
             setTimeout(function() {
@@ -117,7 +118,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
                 $scope.arbeidsforhold = arbeidsforholdData;
 				oppdaterFaktumListe('arbeidsforhold', arbeidsforholdData);
 				oppdaterCookieValue(arbeidsforholdData.faktumId);
-                $location.path('soknad');
+                $location.path($scope.soknadUrl);
 			});
         }
 

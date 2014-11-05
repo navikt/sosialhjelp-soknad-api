@@ -15,7 +15,7 @@ angular.module('nav.fortsettsenere', [])
                 $scope.epost.value = personalia.properties.epost;
             }
 
-            $scope.forrigeSide = $scope.brukerBehandlingId + '/soknad';
+            $scope.forrigeSide = "#/" + $scope.brukerBehandlingId + '/fortsett';
 
             $scope.soknadId = data.soknad.soknadId;
 
@@ -25,12 +25,11 @@ angular.module('nav.fortsettsenere', [])
                 $scope.$broadcast('RUN_VALIDATION' + form.$name);
 
                 if (form.$valid) {
-                    var behandlingId = getBehandlingIdFromUrl();
                     if ($scope.epost) {
                         $scope.epost = new Faktum($scope.epost);
                         $scope.epost.$save({soknadId: data.soknad.soknadId}).then(function (epostData) {
                             data.leggTilFaktum(epostData);
-                            new fortsettSenereService({epost: $scope.epost.value}).$send({behandlingId: behandlingId}).then(function (data) {
+                            new fortsettSenereService({epost: $scope.epost.value}).$send({soknadId: data.soknad.skjemaNummer, behandlingId: $scope.brukerBehandlingId}).then(function (data) {
                                 $location.path($scope.brukerBehandlingId + '/kvittering-fortsettsenere');
                             });
                         });
@@ -42,5 +41,9 @@ angular.module('nav.fortsettsenere', [])
     .controller('FortsettSenereKvitteringCtrl', function ($scope, data) {
         $scope.dittnavUrl = data.config["dittnav.link.url"];
         $scope.epost = data.finnFaktum('epost');
-        $scope.forrigeSide = data.soknad.brukerBehandlingId + '/soknad';
+        $scope.forrigeSide = "#/" + data.soknad.brukerBehandlingId + '/fortsett';
     });
+
+
+
+
