@@ -13,6 +13,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.EttersendingServ
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.XsrfGenerator;
 import no.nav.sbl.dialogarena.websoknad.domain.StartSoknad;
 import org.apache.commons.collections15.Predicate;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.inject.Inject;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -211,6 +214,7 @@ public class SoknadDataController {
 
     @RequestMapping(value = "/opprett/ettersending/{behandlingskjedeId}", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody()
+    @ResponseStatus(HttpStatus.CREATED)
     public Map<String, String> opprettSoknadEttersending(@PathVariable String behandlingskjedeId) {
         Map<String, String> result = new HashMap<>();
         WebSoknad soknad = ettersendingService.hentEttersendingForBehandlingskjedeId(behandlingskjedeId);
@@ -227,12 +231,14 @@ public class SoknadDataController {
 
     @RequestMapping(value = "/opprett", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody()
-    public Map<String, String> opprettSoknad(@RequestBody StartSoknad soknadType) {
+    public Map<String, String> opprettSoknad(@RequestBody StartSoknad soknadType, HttpServletResponse response) {
         Map<String, String> result = new HashMap<>();
 
         String behandlingId = soknadService.startSoknad(soknadType.getSoknadType());
         result.put("brukerbehandlingId", behandlingId);
-
+        Cookie xsrfCookie = new Cookie("XSRF-TOKEN", XsrfGenerator.generateXsrfToken(behandlingId));
+        xsrfCookie.setPath("/");
+        response.addCookie(xsrfCookie);
         return result;
     }
 

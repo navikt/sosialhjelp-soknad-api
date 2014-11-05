@@ -94,9 +94,6 @@
             it('tpsIkkeSvarer skal returnere false hvis utslagskriterer ikke inneholder en error', function () {
                 expect(scope.tpsSvarerIkke()).toEqual(false);
             });
-            it('soknadErIkkeStartet skal returnere true hvis soknadErStartet', function () {
-                expect(scope.soknadErIkkeStartet()).toEqual(true);
-            });
 
             it('soknadErIkkeFerdigstilt skal returnere true hvis soknadErFerdigstilt ikke er true', function () {
                 expect(scope.soknadErIkkeFerdigstilt()).toEqual(true);
@@ -158,9 +155,6 @@
             });
             it('tpsSvarerIkke skal returnere true hvis utslagskriterer inneholder en error', function () {
                 expect(scope.tpsSvarerIkke()).toEqual(true);
-            });
-            it('soknadErStartet skal returnere false hvis erSoknadStartet ikke er true', function () {
-                expect(scope.soknadErStartet()).toEqual(false);
             });
             it('soknadErFerdigstilt skal returnere true hvis data.soknad sin status er ferdig', function () {
                 expect(scope.soknadErFerdigstilt()).toEqual(true);

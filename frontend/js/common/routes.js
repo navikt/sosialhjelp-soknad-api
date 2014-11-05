@@ -42,9 +42,6 @@ angular.module('nav.common.routes', ['ngRoute'])
         $rootScope.$on('$routeChangeSuccess', function () {
             if (_gaq) {
                 var trackPage = "startSoknad";
-                if (erSoknadStartet()) {
-                    trackPage = $location.path().split("/")[1];
-                }
                 _gaq.push(['_trackPageview', '/sendsoknad/' + trackPage]);
             }
             $location.hash($routeParams.scrollTo);

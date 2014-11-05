@@ -8,7 +8,7 @@ angular.module('nav.vedlegg.controller', [])
     .controller('VedleggCtrl', function ($scope, $location, data, vedleggService, Faktum, soknadService, $timeout) {
         $scope.data = {soknadId: data.soknad.soknadId};
         $scope.forventninger = vedleggService.query({soknadId: data.soknad.soknadId});
-
+        $scope.brukerBehandlingId = data.soknad.brukerBehandlingId;
         $scope.sidedata = {navn: 'vedlegg'};
 
         $scope.validert = {value: ''};
@@ -21,7 +21,7 @@ angular.module('nav.vedlegg.controller', [])
             if (form.$valid) {
                 soknadService.delsteg({soknadId: data.soknad.soknadId, delsteg: 'oppsummering'},
                     function() {
-                        $location.path('/oppsummering');
+                        $location.path(data.soknad.brukerBehandlingId + '/oppsummering');
                     },
                     function() {
                         $scope.fremdriftsindikator.laster = false;

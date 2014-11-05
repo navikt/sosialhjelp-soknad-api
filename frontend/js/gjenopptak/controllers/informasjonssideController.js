@@ -3,12 +3,10 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
         $scope.utslagskriterier = {};
         $scope.utslagskriterier.harlestbrosjyre = false;
         $scope.cmsprefix = "gjenopptak";
+        $scope.dittnavUrl = data.config["dittnav.link.url"];
+        $scope.tilbakeUrl = '../utslagskriterier/dagpenger/';
 
         $scope.oppsummering = false;
-        if (erSoknadStartet()) {
-            $scope.utslagskriterier.harlestbrosjyre = true;
-            $scope.oppsummering = true;
-        }
 
         $scope.fremdriftsindikator = {
             laster: false
@@ -30,10 +28,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
         };
 
         $scope.soknadErStartet = function () {
-            if (erSoknadStartet()) {
-                return true;
-            }
-            return false;
+            return !(data.soknad === undefined || data.soknad.brukerBehandlingId === undefined);
         };
 
         $scope.soknadErIkkeFerdigstilt = function () {
@@ -49,8 +44,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
             $scope.fremdriftsindikator.laster = true;
             $scope.soknad = soknadService.create({soknadType: soknadType},
                 function (result) {
-                    var currentUrl = location.href;
-                    location.href = currentUrl.substring(0, currentUrl.indexOf('start/')) + 'soknad/' + result.brukerbehandlingId + '#/soknad';
+                    $location.path(result.brukerbehandlingId + "/soknad/");
                 }, function () {
                     $scope.fremdriftsindikator.laster = false;
                 });
@@ -68,9 +62,14 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
 
         $scope.forsettSoknadDersomBrosjyreLest = function () {
             if ($scope.harLestBrosjyre()) {
-                $location.path("/soknad");
+                $location.path(data.soknad.brukerBehandlingId + "/fortsett");
             }
         };
+
+        if ($scope.soknadErStartet()) {
+            $scope.utslagskriterier.harlestbrosjyre = true;
+            $scope.oppsummering = true;
+        }
 
     }])
     .directive('validerInformasjonsside', [function () {

@@ -3,7 +3,7 @@ angular.module('nav.sporsmalferdig', [])
 		return {
 			require    : '^form',
 			replace    : true,
-			templateUrl: '../js/dagpenger/directives/sporsmalferdig/spmblokkFerdigTemplate.html',
+			templateUrl: '../js/common/directives/sporsmalferdig/spmblokkFerdigTemplate.html',
 			link: function (scope, element, attrs, form) {
                 var tab = element.closest('.accordion-group');
 
@@ -74,7 +74,7 @@ angular.module('nav.sporsmalferdig', [])
         return {
             require    : '^form',
             replace    : true,
-            templateUrl: '../js/dagpenger/directives/sporsmalferdig/vedleggblokkFerdigTemplate.html',
+            templateUrl: '../js/common/directives/sporsmalferdig/vedleggblokkFerdigTemplate.html',
             link: function (scope, element, attrs, form) {
                 var tab = element.closest('.accordion-group');
                 scope.gaaTilNeste = function () {

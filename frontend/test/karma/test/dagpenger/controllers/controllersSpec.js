@@ -69,9 +69,7 @@
             });
             $provide.value("cms", {'tekster': {'barnetillegg.nyttbarn.landDefault': ''}});
             $provide.value("$routeParams", {});
-        })
-        )
-        ;
+        }));
 
         beforeEach(inject(function ($injector, $rootScope, $controller, $compile) {
             $httpBackend = $injector.get('$httpBackend');
@@ -159,7 +157,7 @@
                 var idag = new Date();
                 var lastyear = idag.getFullYear() - 1;
                 var month = idag.getMonth() + 1;
-                var date = idag.getDate() -3;
+                var date = idag.getDate() - 3;
 
                 scope.barn.properties.fodselsdato = lastyear + "-" + month + "-" + date;
                 expect(scope.finnAlder().toString()).toEqual("1");
@@ -527,17 +525,17 @@
             it('pathen skal endres til nyttbarn naar et barn blir lagt til', function () {
                 spyOn(location, 'path');
                 scope.leggTilBarn(event);
-                expect(location.path).toHaveBeenCalledWith("nyttbarn/");
+                expect(location.path).toHaveBeenCalledWith("undefined/nyttbarn/");
             });
             it('pathen skal endres til endrebarn/faktumid naar et barn blir endret', function () {
                 spyOn(location, 'path');
                 scope.endreBarn(0, event);
-                expect(location.path).toHaveBeenCalledWith("endrebarn/0");
+                expect(location.path).toHaveBeenCalledWith("undefined/endrebarn/0");
             });
-            it('pathen skal endres til sokbarnetillegg/faktumid naar et barn soker om barnetillegg', function () {
+            it('pathen skal endres til behandlingId/sokbarnetillegg/faktumid naar et barn soker om barnetillegg', function () {
                 spyOn(location, 'path');
                 scope.sokbarnetillegg(0, event);
-                expect(location.path).toHaveBeenCalledWith("sokbarnetillegg/0");
+                expect(location.path).toHaveBeenCalledWith("undefined/sokbarnetillegg/0");
             });
             it('nar et barn slettes skal dette barnet ikke lenger vaere lagret pa fakta', function () {
                 expect(scope.data.finnFakta('barn').length).toBe(2);
@@ -557,7 +555,7 @@
                 expect(scope.settValidert).toHaveBeenCalledWith('barnetillegg');
             });
         });
-       
+
         describe('ArbeidsforholdCtrl', function () {
             var cookieStore;
             beforeEach(inject(function ($controller, data, $cookieStore) {
@@ -784,7 +782,7 @@
 
                 $httpBackend = $injector.get('$httpBackend');
                 $httpBackend.expectGET(/\d/).
-                respond('');
+                    respond('');
 
                 var af1 = {
                     key: 'arbeidsforhold',
@@ -828,7 +826,7 @@
 
                 scope.lagreArbeidsforhold(form);
                 expect(form.$valid).toBe(false);
-                
+
                 scope.arbeidsforhold.properties.arbeidsgivernavn = "A";
                 scope.arbeidsforhold.properties.datofra = "2014-10-10";
                 scope.arbeidsforhold.properties.datotil = "2014-10-10";
@@ -836,9 +834,9 @@
                 scope.sluttaarsak.properties.type = "Avskjediget";
                 scope.arbeidsforhold.properties.land = "NOR";
                 scope.arbeidsforhold.properties.eosland = "false";
-                scope.arbeidsforhold.properties.avskjedigetGrunn= "***REMOVED***11111111";
-                form.$valid =true;
-                
+                scope.arbeidsforhold.properties.avskjedigetGrunn = "***REMOVED***11111111";
+                form.$valid = true;
+
                 scope.lagreArbeidsforhold(form);
             });
 
@@ -965,7 +963,8 @@
                 var faktumSykepenger = {
                     key: 'sykepenger',
                     value: 'true',
-                    $save: function() {}
+                    $save: function () {
+                    }
                 };
                 scope.data.leggTilFaktum(faktumSykepenger);
 
@@ -1078,7 +1077,8 @@
                 var faktumSykepenger = {
                     key: 'sykepenger',
                     value: 'false',
-                    $save: function() {}
+                    $save: function () {
+                    }
                 };
                 scope.data.leggTilFaktum(faktumSykepenger);
                 scope.endreNavYtelse();
@@ -1089,19 +1089,22 @@
                 var faktumSykepenger = {
                     key: 'sykepenger',
                     value: 'true',
-                    $save: function(){}
+                    $save: function () {
+                    }
                 };
 
                 var offentligTjenestepensjon = {
                     key: 'aap',
                     value: 'true',
-                    $save: function() {}
+                    $save: function () {
+                    }
 
                 };
                 var ingenYtelse = {
                     key: 'ingennavytelser',
                     value: 'true',
-                    $save: function() {}
+                    $save: function () {
+                    }
                 };
 
                 scope.data.leggTilFaktum(faktumSykepenger);
@@ -1119,208 +1122,13 @@
                 var ingenYtelse = {
                     key: 'ingennavytelser',
                     value: 'false',
-                    $save: function() {}
+                    $save: function () {
+                    }
                 };
 
                 scope.data.leggTilFaktum(ingenYtelse);
                 scope.endreIngenNavYtelse();
                 expect(scope.harHuketAvCheckboksNavYtelse.value).toEqual('');
-            });
-        });
-        describe('InformasjonsSideCtrl', function () {
-            beforeEach(inject(function ($controller, data) {
-                scope.data = data;
-
-                ctrl = $controller('InformasjonsSideCtrl', {
-                    $scope: scope
-                });
-
-                scope.$apply();
-            }));
-
-            it('alle url skal bli statt til riktig url', function () {
-                expect(scope.alderspensjonUrl).toEqual('alderspensjonUrl');
-                expect(scope.saksoversiktUrl).toEqual(saksoversiktUrl);
-                expect(scope.reelArbeidsokerUrl).toEqual('reelArbeidsokerUrl');
-                expect(scope.dittnavUrl).toEqual('dittnavUrl');
-            });
-            it('harlestbrosjyre skal være satt til false hvis pathen ikke inneholder sendsoknad/soknad', function () {
-                expect(scope.utslagskriterier.harlestbrosjyre).toEqual(false);
-            });
-            it('hentAdresseLinjer skal returnere et tomt array hvis adresse ikke finnes i utslagskriteriene', function () {
-                expect(scope.hentAdresseLinjer()).toEqual([]);
-            });
-            it('tpsSvarer skal returnere true hvis tpsIkkeSvarer returnerer false', function () {
-                expect(scope.tpsSvarer()).toEqual(true);
-            });
-            it('tpsIkkeSvarer skal returnere false hvis utslagskriterer ikke inneholder en error', function () {
-                expect(scope.tpsSvarerIkke()).toEqual(false);
-            });
-            it('soknadErIkkeStartet skal returnere true hvis soknadErStartet', function () {
-                expect(scope.soknadErIkkeStartet()).toEqual(true);
-            });
-
-            it('soknadErIkkeFerdigstilt skal returnere true hvis soknadErFerdigstilt ikke er true', function () {
-                expect(scope.soknadErIkkeFerdigstilt()).toEqual(true);
-            });
-            it('soknadErFerdigstilt skal returnere false hvis data.soknad ikke har status', function () {
-                expect(scope.soknadErFerdigstilt()).toEqual(false);
-            });
-            it('startSoknad skal sette fremdriftsindikator til true', function () {
-                scope.startSoknad();
-                expect(scope.fremdriftsindikator.laster).toEqual(true);
-            });
-            it('harLestBrosjyre skal returnere false hvis ikke lest brosjyre', function () {
-                expect(scope.harLestBrosjyre()).toEqual(false);
-            });
-            it('fortsettlikevel skal kalle preventDefault på eventet', function () {
-                spyOn(event, 'preventDefault');
-                scope.fortsettLikevel(event);
-                expect(event.preventDefault).toHaveBeenCalled();
-            });
-            it('startSoknadDersomBrosjyreLest skal ikke kalle startSoknad dersom bruker ikke har lest brosjyre', function () {
-                spyOn(scope, 'harLestBrosjyre');
-                scope.startSoknadDersomBrosjyreLest();
-                expect(scope.harLestBrosjyre).toHaveBeenCalled();
-                expect(scope.harLestBrosjyre()).toNotBe(true);
-            });
-            it('forsettSoknadDersomBrosjyreLest skal ikke endre path til /soknad dersom brosjyre ikke er lest', function () {
-                spyOn(scope, 'harLestBrosjyre');
-                scope.forsettSoknadDersomBrosjyreLest();
-                expect(scope.harLestBrosjyre).toHaveBeenCalled();
-                expect(scope.harLestBrosjyre()).toNotBe(true);
-            });
-            it('kravForDagpengerOppfylt skal returnere false nar krav ikke er oppfylt', function () {
-                expect(scope.kravForDagpengerOppfylt()).toEqual(false);
-            });
-            it('kravForDagpengerIkkeOppfylt skal returnere true nar kravene ikke er oppfylt og soknaden ikke er ferdigstilt', function () {
-                expect(scope.kravForDagpengerIkkeOppfylt()).toEqual(true);
-            });
-            it('registrertArbeidssoker skal returnere false nar bruker ikke er registert arbeidssoker', function () {
-                expect(scope.registrertArbeidssoker()).toEqual(false);
-            });
-            it('gyldigAlder skal returnere false nar bruker er for gammel', function () {
-                expect(scope.gyldigAlder()).toEqual(false);
-            });
-            it('ikkeGyldigAlder skal returnere true nar bruker er for gammel', function () {
-                expect(scope.ikkeGyldigAlder()).toEqual(true);
-            });
-            it('bosattINorge skal returnere false nar bruker ikke er bosatt i Norge', function () {
-                expect(scope.bosattINorge()).toEqual(false);
-            });
-            it('ikkeBosattINorge skal returnere true nar bruker ikke er bosatt i Norge', function () {
-                expect(scope.ikkeBosattINorge()).toEqual(true);
-            });
-            it('ikkeRegistrertArbeidssoker skal returnere false nar bruker er registrert arbeidssoker', function () {
-                expect(scope.ikkeRegistrertArbeidssoker()).toEqual(false);
-            });
-            it('registrertArbeidssokerUkjent skal returnere true nar bruker ikke har status som arbeidssoker', function () {
-                expect(scope.registrertArbeidssokerUkjent()).toEqual(true);
-            });
-        });
-        describe('InformasjonsSideCtrlAndreUtslagskriterier', function () {
-            beforeEach(inject(function ($controller, data, $location) {
-                scope.data = data;
-                location = $location;
-                ctrl = $controller('InformasjonsSideCtrl', {
-                    $scope: scope
-                });
-
-                scope.data.utslagskriterier.registrertAdresse = "Gatenavn 56, Poststed 1234";
-                scope.data.utslagskriterier.error = "Det har skjedd en feil";
-                scope.data.utslagskriterier.harlestbrosjyre = true;
-                scope.data.utslagskriterier.registrertArbeidssøker = 'REGISTRERT';
-                scope.data.utslagskriterier.gyldigAlder = 'true';
-                scope.data.utslagskriterier.bosattINorge = 'true';
-                scope.data.soknad.status = "FERDIG";
-
-                scope.$apply();
-            }));
-
-            it('hentAdresseLinjer skal returnere adressen hvis adresse finnes i utslagskriteriene', function () {
-                expect(scope.hentAdresseLinjer()).toEqual(["Gatenavn 56", "Poststed 1234"]);
-            });
-            it('tpsSvarerIkke skal returnere true hvis utslagskriterer inneholder en error', function () {
-                expect(scope.tpsSvarerIkke()).toEqual(true);
-            });
-            it('soknadErStartet skal returnere false hvis erSoknadStartet ikke er true', function () {
-                expect(scope.soknadErStartet()).toEqual(false);
-            });
-            it('soknadErFerdigstilt skal returnere true hvis data.soknad sin status er ferdig', function () {
-                expect(scope.soknadErFerdigstilt()).toEqual(true);
-            });
-            it('soknadErIkkeFerdigstilt skal returnere false hvis data.soknad sin status er ferdig', function () {
-                expect(scope.soknadErIkkeFerdigstilt()).toEqual(false);
-            });
-            it('harLestBrosjyre skal returnere true hvis lest brosjyre', function () {
-                expect(scope.harLestBrosjyre()).toEqual(true);
-            });
-            it('startSoknadDersomBrosjyreLest skal kalle startSoknad dersom bruker har lest brosjyre', function () {
-                spyOn(scope, 'startSoknad');
-                scope.startSoknadDersomBrosjyreLest();
-                expect(scope.startSoknad).toHaveBeenCalled();
-            });
-            it('forsettSoknadDersomBrosjyreLest skal endre path til /soknad dersom brosjyre er lest', function () {
-                spyOn(location, 'path');
-                scope.forsettSoknadDersomBrosjyreLest();
-                expect(location.path).toHaveBeenCalledWith("/soknad");
-            });
-            it('kravForDagpengerOppfylt skal returnere true nar krav er oppfylt', function () {
-                expect(scope.kravForDagpengerOppfylt()).toEqual(true);
-            });
-            it('kravForDagpengerIkkeOppfylt skal returnere false nar kravene ikke er oppfylt men soknaden er ferdigstilt', function () {
-                expect(scope.kravForDagpengerIkkeOppfylt()).toEqual(false);
-            });
-            it('registrertArbeidssoker skal returnere true nar bruker er registert arbeidssoker', function () {
-                expect(scope.registrertArbeidssoker()).toEqual(true);
-            });
-            it('gyldigAlder skal returnere true nar bruker ikke er for gammel', function () {
-                expect(scope.gyldigAlder()).toEqual(true);
-            });
-            it('ikkeGyldigAlder skal returnere false nar bruker ikke er for gammel', function () {
-                expect(scope.ikkeGyldigAlder()).toEqual(false);
-            });
-            it('bosattINorge skal returnere false nar bruker ikke er bosatt i Norge', function () {
-                expect(scope.bosattINorge()).toEqual(true);
-            });
-            it('ikkeBosattINorge skal returnere false nar bruker  er bosatt i Norge', function () {
-                expect(scope.ikkeBosattINorge()).toEqual(false);
-            });
-            it('ikkeRegistrertArbeidssoker skal returnere false nar bruker er registrert arbeidssoker', function () {
-                expect(scope.ikkeRegistrertArbeidssoker()).toEqual(false);
-            });
-            it('registrertArbeidssokerUkjent skal returnere false nar bruker har status som arbeidssoker', function () {
-                expect(scope.registrertArbeidssokerUkjent()).toEqual(false);
-            });
-        });
-        describe('InformasjonsSideCtrlTredjeUtslagskriterier', function () {
-            beforeEach(inject(function ($controller, data, $location) {
-                scope.data = data;
-                location = $location;
-                ctrl = $controller('InformasjonsSideCtrl', {
-                    $scope: scope
-                });
-
-                scope.data.utslagskriterier.registrertAdresse = "Gatenavn 56, Poststed 1234";
-                scope.data.utslagskriterier.error = "Det har skjedd en feil";
-                scope.data.utslagskriterier.harlestbrosjyre = true;
-                scope.data.utslagskriterier.registrertArbeidssøker = 'REGISTRERT';
-                scope.data.utslagskriterier.bosattINorge = 'true';
-                scope.data.soknad.status = "UFERDIG";
-
-                scope.$apply();
-            }));
-
-            it('soknadErFerdigstilt skal returnere false hvis data.soknad sin status ikke er ferdig', function () {
-                expect(scope.soknadErFerdigstilt()).toEqual(false);
-            });
-            it('kravForDagpengerIkkeOppfylt skal returnere false nar kravene er oppfylt og soknaden er ikke ferdigstilt', function () {
-                scope.fortsettLikevel(event);
-                expect(scope.kravForDagpengerIkkeOppfylt()).toEqual(false);
-            });
-            it('kravForDagpengerOppfylt skal returnere true nar bruker trykker fortsett likevel', function () {
-                scope.fortsettLikevel(event);
-                expect(scope.kravForDagpengerOppfylt()).toEqual(true);
             });
         });
     });

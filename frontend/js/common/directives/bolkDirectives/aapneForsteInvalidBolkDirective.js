@@ -1,4 +1,4 @@
-angular.module('nav.dagpengerdirective', [])
+angular.module('nav.aapneForsteInvalidBolkDirective', [])
 	.directive('apneBolker', ['$timeout', '$cookieStore', function ($timeout, $cookieStore) {
 		return {
 			require: '^form',

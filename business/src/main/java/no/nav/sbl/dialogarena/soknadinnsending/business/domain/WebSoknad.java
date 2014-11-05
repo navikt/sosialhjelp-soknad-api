@@ -403,8 +403,4 @@ public class WebSoknad implements Serializable {
     public boolean erUnderArbeid() {
         return status.equals(SoknadInnsendingStatus.UNDER_ARBEID);
     }
-
-    public boolean erAvbrytt() {
-        return status.equals(SoknadInnsendingStatus.AVBRUTT_AV_BRUKER) || status.equals(SoknadInnsendingStatus.AVBRUTT_AUTOMATISK);
-    }
 }

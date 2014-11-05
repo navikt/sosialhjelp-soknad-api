@@ -6,10 +6,8 @@ import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.SoknadComponent;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 public class GjenopptakPage extends BasePage {
-
     public GjenopptakPage(PageParameters parameters) {
         super(parameters);
-
         add(new SoknadComponent("soknad", SkjemaBootstrapFile.GJENOPPTAK));
     }
 }

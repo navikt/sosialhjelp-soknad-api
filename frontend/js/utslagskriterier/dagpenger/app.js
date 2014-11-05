@@ -9,5 +9,5 @@ angular.module('utslagskriterierDagpenger', [
     'ngAnimate',
     'ngCookies',
     'ngSanitize',
-    'templates-utslagskriterierDagpenger'
+    'templates-main'
 ]);

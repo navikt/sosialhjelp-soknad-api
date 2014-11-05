@@ -8,6 +8,7 @@ describe('sist lagret', function () {
         $provide.value("data", {
             soknad: {
                 soknadId: 1,
+                brukerBehandlingId: "BHD123",
                 sistLagret: new Date("2014-01-01")
             }
         });
@@ -43,7 +44,7 @@ describe('sist lagret', function () {
             expect(scope.soknadHarAldriBlittLagret()).toEqual(false);
         });
         it('Hvis navtilbakelenke inneholder vedlegg skal scope.lenge.value gå til vedleggsiden', function () {
-            expect(scope.lenke.value).toEqual('#/vedlegg');
+            expect(scope.lenke.value).toEqual('#/BHD123/vedlegg');
         });
     });
 });
@@ -56,6 +57,7 @@ describe('stickybunnUtensistLagret', function () {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
         $provide.value("data", {
             soknad: {
+                brukerBehandlingId: "BHD123",
                 soknadId: 1
             }
         });
@@ -91,7 +93,7 @@ describe('stickybunnUtensistLagret', function () {
             expect(scope.soknadHarAldriBlittLagret()).toEqual(true);
         });
         it('Hvis navtilbakelenke inneholder soknad skal scope.lenke.value gå til soknadsiden', function () {
-            expect(scope.lenke.value).toEqual('#/soknad');
+            expect(scope.lenke.value).toEqual('#/BHD123/soknad');
         });
     });
 });
@@ -104,7 +106,8 @@ describe('stickybunnUtenLenketekst', function () {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
         $provide.value("data", {
             soknad: {
-                soknadId: 1
+                soknadId: 1,
+                brukerBehandlingId: "BHD123"
             }
         });
     }));
