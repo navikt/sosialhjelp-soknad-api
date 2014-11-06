@@ -78,8 +78,8 @@ public class VedleggControllerTest {
                 .param("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(brukerbehandlingId))
                 .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isCreated())
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("files[0].vedleggId").value(11))
                 .andExpect(jsonPath("files[1].vedleggId").value(12));
     }
