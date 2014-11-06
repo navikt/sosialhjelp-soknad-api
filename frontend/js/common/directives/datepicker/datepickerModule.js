@@ -197,6 +197,7 @@ angular.module('nav.datepicker', [])
                 }
 
 				scope.$watch('ngModel', function (newVal, oldVal) {
+                    console.log("Watch")
 					if (newVal === oldVal) {
 						return;
 					}
@@ -321,7 +322,7 @@ angular.module('nav.datepicker', [])
 			}
 		};
 	}])
-	.directive('datoMask', ['$filter', 'cms', function ($filter, cms) {
+	.directive('datoMask', function ($filter, cms, $timeout) {
 		return {
 			restrict: 'A',
 			require : 'ngModel',
@@ -363,6 +364,7 @@ angular.module('nav.datepicker', [])
 
 				var gammelInputVerdi = '';
 				ngModel.$parsers.unshift(function (datoInput) {
+                    console.log("Input", datoInput, ngModel.$viewValue);
 					var slettet = datoInput.length < gammelInputVerdi.length;
 					var caretPosisjon = hentCaretPosisjon(element);
 
@@ -382,11 +384,24 @@ angular.module('nav.datepicker', [])
 					}
 
 					gammelInputVerdi = datoInput;
-					ngModel.$viewValue = datoInput;
+                    console.log(datoInput);
+//                    console.log(ngModel);
+//                    console.log(ngModel.$viewValue, ngModel.$modelValue);
+					ngModel.$setViewValue(datoInput);
+					ngModel.$commitViewValue();
+//                    console.log(ngModel.$viewValue, ngModel.$modelValue);
+//                    console.log(ngModel);
 					ngModel.$render();
+//                    console.log(ngModel.$viewValue, ngModel.$modelValue);
+
+//                    $timeout(function() {
+//                        console.log(ngModel.$viewValue, ngModel.$modelValue);
+//                    },1500)
+//                    console.log(ngModel);
 					settCaretPosisjon(element, caretPosisjon);
 
 					return reverserNorskDatoformat(datoInput);
+//                    return datoInput;
 
                     function settInnPunktumDeromVedIndex1Eller4() {
                         if (i === 1 || i === 4) {
@@ -466,4 +481,4 @@ angular.module('nav.datepicker', [])
 				}
 			}
 		};
-	}]);
+	});
