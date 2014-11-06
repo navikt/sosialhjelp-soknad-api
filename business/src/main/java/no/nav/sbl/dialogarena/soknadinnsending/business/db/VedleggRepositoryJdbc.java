@@ -47,7 +47,7 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
 
     @Override
     public List<Vedlegg> hentPaakrevdeVedlegg(Long soknadId) {
-        return getJdbcTemplate().query("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, opprinneliginnsendingsvalg, storrelse, opprettetdato, antallsider, fillagerReferanse from Vedlegg where soknad_id = ? and innsendingsvalg in ('VedleggKreves', 'VedleggSendesIkke', 'VedleggSendesAvAndre', 'LastetOpp', 'SendesSenere','SendesIkke') ", new VedleggRowMapper(false), soknadId);
+        return getJdbcTemplate().query("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, opprinneliginnsendingsvalg, storrelse, opprettetdato, antallsider, fillagerReferanse from Vedlegg where soknad_id = ? and innsendingsvalg in ('VedleggKreves', 'VedleggSendesIkke', 'VedleggSendesAvAndre', 'VedleggAlleredeSendt', 'LastetOpp', 'SendesSenere','SendesIkke') ", new VedleggRowMapper(false), soknadId);
     }
 
     @Override
@@ -166,7 +166,7 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
 
     @Override
     public List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktumId) {
-        return getJdbcTemplate().query("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, opprinneliginnsendingsvalg, storrelse, opprettetdato, antallsider, fillagerReferanse from Vedlegg where soknad_id = ? and faktum=? and innsendingsvalg in ('VedleggKreves', 'LastetOpp', 'VedleggSendesAvAndre', 'VedleggSendesIkke', 'SendesSenere','SendesIkke') ", new VedleggRowMapper(false), soknadId, faktumId);
+        return getJdbcTemplate().query("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, opprinneliginnsendingsvalg, storrelse, opprettetdato, antallsider, fillagerReferanse from Vedlegg where soknad_id = ? and faktum=? and innsendingsvalg in ('VedleggKreves', 'LastetOpp', 'VedleggSendesAvAndre', 'VedleggSendesIkke', 'SendesSenere','SendesIkke', 'VedleggAlleredeSendt') ", new VedleggRowMapper(false), soknadId, faktumId);
     }
 
 }

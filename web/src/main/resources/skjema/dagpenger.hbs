@@ -68,7 +68,7 @@
 		<div id="soknad">
 			<img class="logo" src="http://localhost:8080/sendsoknad/img/nav-logo.gif"/>
 			<div class="hode">
-				<h1>{{ hentTekst "skjema.tittel" }}</h1>
+				<h1>{{ hentTekst "dagpenger.skjema.tittel" }}</h1>
                 <hr/>
                 {{#forFaktum "personalia"}}
                     <div class="personalia">
@@ -1216,6 +1216,10 @@
                                 {{#hvisLik innsendingsvalg "VedleggSendesAvAndre"}}
                                     <span>{{ hentTekst "dagpenger.oppsummering.sendesAvAndre" }}</span>
                                 {{/hvisLik}}
+
+                                 {{#hvisLik innsendingsvalg "VedleggAlleredeSendt"}}
+                                    <span>{{ hentTekst "dagpenger.oppsummering.vedleggAlleredeSendt" }}</span>
+                                 {{/hvisLik}}
                             </span>
                         </td>
                     </tr>
