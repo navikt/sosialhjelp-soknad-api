@@ -7,9 +7,10 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
 				tekst : '@'
 			},
 			templateUrl: '../js/common/directives/hjelpetekst/hjelpetekstTemplate.html',
-			link: function (scope, element) {
+			link: function (scope, element, attr) {
                 element.parent().addClass('hjelpetekst-parent');
                 var lukkEventTimestamp = 0;
+                scope.inline = attr.inline ? "-inline": "";
 
 				scope.visHjelp = false;
 				scope.toggleHjelpetekst = function () {
