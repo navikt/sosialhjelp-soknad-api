@@ -126,6 +126,12 @@
                 expect(scope.skalViseFeil.value).toBe(false);
             });
 
+            it('skal ikke vise feil etter å ha valgt allerede sendt', function() {
+                scope.endreInnsendingsvalg(scope.forventning, "VedleggAlleredeSendt");
+                expect(scope.hiddenFelt.value).toBe(true);
+                expect(scope.skalViseFeil.value).toBe(false);
+            });
+
             it('skal kunne slette annet vedlegg', function() {
                 scope.forventning.skjemaNummer = "N6";
                 scope.forventning.innsendingsvalg = "LastetOpp";
@@ -143,6 +149,17 @@
                 expect(scope.hiddenFelt).toEqual({value: '' });
                 expect(scope.skalViseFeil).toEqual({ value: true });
                 expect(scope.validert.value).toEqual(false);
+            });
+
+            it('skal ikke vise alternativet vedleggAlleredeSendt hvis dette ikke er satt til å vise', function() {
+                expect(scope.skalViseAlleredeSendtAlternativ()).not.toBe(true);
+            });
+            it('skal vise alternativet vedleggAlleredeSendt hvis dette ikke er satt til å vise', function() {
+                scope.options = {
+                    visAlleredeSendtAlternativ: true
+                };
+
+                expect(scope.skalViseAlleredeSendtAlternativ()).toBe(true);
             });
         });
 

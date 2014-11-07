@@ -16,6 +16,14 @@ angular.module('nav.vedlegg.controller', [])
             laster: false
         };
 
+        console.log($scope.forventninger);
+        for(var i=0; i<data.soknadOppsett.vedlegg.length; i++) {
+            if(data.soknadOppsett.vedlegg[i].skjemaNummer == "T3") {
+                console.log(data.soknadOppsett.vedlegg[i]);
+            }
+        }
+        console.log(data.soknadOppsett);
+
         $scope.validerVedlegg = function (form) {
             $scope.fremdriftsindikator.laster = true;
             if (form.$valid) {
