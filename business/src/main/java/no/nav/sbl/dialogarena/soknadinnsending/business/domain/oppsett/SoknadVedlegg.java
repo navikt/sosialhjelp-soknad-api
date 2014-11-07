@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -23,6 +24,7 @@ public class SoknadVedlegg implements Serializable {
     private String property;
     private Boolean inverted = false;
     private String oversetting;
+    private List<Vedlegg.Status> ekstraValg = new ArrayList<Vedlegg.Status>();
     private List<String> values = new ArrayList<>();
 
     @XmlIDREF
@@ -99,6 +101,11 @@ public class SoknadVedlegg implements Serializable {
     public void setOversetting(String oversetting) {
         this.oversetting = oversetting;
     }
+
+    public List<Vedlegg.Status> getEkstraValg() {
+        return ekstraValg;
+    }
+
 
     public boolean harOversetting() {
         return StringUtils.isNotEmpty(this.oversetting);

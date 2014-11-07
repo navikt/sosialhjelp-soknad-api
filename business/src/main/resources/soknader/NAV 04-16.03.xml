@@ -650,6 +650,9 @@
         </faktum>
         <onValue>true</onValue>
         <skjemaNummer>Y2</skjemaNummer>
+        <ekstraValg>
+            <valg>AlleredeSendt</valg>
+        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>5</id>
@@ -745,6 +748,9 @@
         <faktum>ikkeavtjentverneplikt</faktum>
         <onValue>false</onValue>
         <skjemaNummer>T3</skjemaNummer>
+        <ekstraValg>
+            <valg>AlleredeSendt</valg>
+        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>3</id>
