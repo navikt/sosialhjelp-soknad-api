@@ -151,14 +151,10 @@
                 expect(scope.validert.value).toEqual(false);
             });
 
-            it('skal ikke vise alternativet vedleggAlleredeSendt hvis dette ikke er satt til å vise', function() {
+            it('skal ikke vise alternativet vedleggAlleredeSendt hvis dette ikke er satt til å vises', function() {
                 expect(scope.skalViseAlleredeSendtAlternativ()).not.toBe(true);
             });
-            it('skal vise alternativet vedleggAlleredeSendt hvis dette ikke er satt til å vise', function() {
-                scope.options = {
-                    visAlleredeSendtAlternativ: true
-                };
-
+            it('skal vise alternativet vedleggAlleredeSendt hvis dette ikke er satt til å vises', function() {
                 expect(scope.skalViseAlleredeSendtAlternativ()).toBe(true);
             });
         });
