@@ -10,19 +10,12 @@ angular.module('nav.vedlegg.controller', [])
         $scope.forventninger = vedleggService.query({soknadId: data.soknad.soknadId});
         $scope.brukerBehandlingId = data.soknad.brukerBehandlingId;
         $scope.sidedata = {navn: 'vedlegg'};
+        $scope.soknadOppsett = data.soknadOppsett;
 
         $scope.validert = {value: ''};
         $scope.fremdriftsindikator = {
             laster: false
         };
-
-        console.log($scope.forventninger);
-        for(var i=0; i<data.soknadOppsett.vedlegg.length; i++) {
-            if(data.soknadOppsett.vedlegg[i].skjemaNummer == "T3") {
-                console.log(data.soknadOppsett.vedlegg[i]);
-            }
-        }
-        console.log(data.soknadOppsett);
 
         $scope.validerVedlegg = function (form) {
             $scope.fremdriftsindikator.laster = true;
@@ -152,9 +145,18 @@ angular.module('nav.vedlegg.controller', [])
 
         };
 
-        $scope.skalViseAlleredeSendtAlternativ = function() {
-            return $scope.options && $scope.options.visAlleredeSendtAlternativ === true;
+        $scope.skalViseAlleredeSendtAlternativ = function(index) {
+            var vedlegg = $scope.finnVedleggMedSkjemanummer($scope.forventninger[index].skjemaNummer);
+            return (vedlegg && vedlegg.ekstraValg && vedlegg.ekstraValg.indexOf("AlleredeSendt") > -1);
         };
+
+        $scope.finnVedleggMedSkjemanummer = function(skjemanummer) {
+            for(var i=0; i<$scope.soknadOppsett.vedlegg.length; i++) {
+                if($scope.soknadOppsett.vedlegg[i].skjemaNummer == skjemanummer) {
+                    return $scope.soknadOppsett.vedlegg[i];
+                }
+            }
+        }
     }])
 
     .directive('bildeNavigering', [function () {

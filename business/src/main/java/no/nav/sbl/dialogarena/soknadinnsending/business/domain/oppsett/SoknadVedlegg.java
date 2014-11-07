@@ -24,7 +24,7 @@ public class SoknadVedlegg implements Serializable {
     private String property;
     private Boolean inverted = false;
     private String oversetting;
-    private List<Vedlegg.Status> ekstraValg = new ArrayList<Vedlegg.Status>();
+    private List<String> ekstraValg = new ArrayList<>();
     private List<String> values = new ArrayList<>();
 
     @XmlIDREF
@@ -102,10 +102,15 @@ public class SoknadVedlegg implements Serializable {
         this.oversetting = oversetting;
     }
 
-    public List<Vedlegg.Status> getEkstraValg() {
+    @XmlElementWrapper(name = "ekstraValg")
+    @XmlElement(name = "valg")
+    public List<String> getEkstraValg() {
         return ekstraValg;
     }
 
+    public void setEkstraValg(List<String> valg) {
+        this.ekstraValg = valg;
+    }
 
     public boolean harOversetting() {
         return StringUtils.isNotEmpty(this.oversetting);
