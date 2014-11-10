@@ -609,6 +609,13 @@
         <dependOnValue>false</dependOnValue>
     </faktum>
 
+    <!-- Reberegning -->
+    <faktum>
+        <id>reberegning.nyberegning</id>
+        <type>java.lang.Boolean</type>
+        <panel>Reberegning</panel>
+    </faktum>
+
     <!-- Tilleggsopplysninger -->
     <faktum>
         <id>tilleggsopplysninger.fritekst</id>
