@@ -1,0 +1,18 @@
+<div class="skjemaramme">
+    <div data-ng-form="reberegningForm" class="skjemainnhold" data-ng-controller="ReberegningCtrl" data-novalidate>
+
+        <div data-navinfoboks>
+            <p data-ng-bind-html="'reberegning.infoboks.tekst' | cmstekst"></p>
+        </div>
+
+        <div data-form-errors></div>
+
+        <div data-nav-faktum="reberegning.nyberegning"
+             data-ng-model="faktum.value"
+             data-navconfig
+             data-booleanradio
+             data-nokkel="reberegning.nyberegning">
+        </div>
+        <div data-spmblokkferdig></div>
+    </div>
+</div>

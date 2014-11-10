@@ -5,7 +5,7 @@ angular.module('nav.reellarbeidssoker', [])
         $scope.pendleannen = data.finnFaktum('reellarbeidssoker.villigdeltid.annensituasjon');
         $scope.soknadId = data.soknad.soknadId;
 
-        $scope.navigering = {nesteside: 'arbeidsforhold'};
+        $scope.navigering = {nesteside: 'reberegning'};
         $scope.sidedata = {navn: 'reellarbeidssoker'};
 
         var deltidnokler = ['reellarbeidssoker.villigdeltid.reduserthelse', 'reellarbeidssoker.villigdeltid.omsorgbarnunder1aar', 'reellarbeidssoker.villigdeltid.eneansvarbarnunder5skoleaar', 'reellarbeidssoker.villigdeltid.eneansvarbarnopptil18aar', 'reellarbeidssoker.villigdeltid.omsorgansvar', 'reellarbeidssoker.villigdeltid.annensituasjon'];

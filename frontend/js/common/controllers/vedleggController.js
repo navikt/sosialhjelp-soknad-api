@@ -156,7 +156,7 @@ angular.module('nav.vedlegg.controller', [])
                     return $scope.soknadOppsett.vedlegg[i];
                 }
             }
-        }
+        };
     }])
 
     .directive('bildeNavigering', [function () {
