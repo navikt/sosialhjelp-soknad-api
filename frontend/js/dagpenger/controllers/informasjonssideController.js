@@ -41,6 +41,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
 
         $scope.startSoknad = function () {
             var soknadType = decodeURI(window.location.pathname).split("/")[3];
+            soknadType = soknadType.slice(0,3) + ' ' + soknadType.slice(3);
             $scope.fremdriftsindikator.laster = true;
             $scope.soknad = soknadService.create({soknadType: soknadType},
                 function (result) {
