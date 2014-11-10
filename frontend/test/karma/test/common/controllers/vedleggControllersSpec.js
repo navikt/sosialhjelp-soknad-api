@@ -90,18 +90,41 @@
         describe('validervedleggCtrlMedVedlegg', function () {
             beforeEach(inject(function ($controller, data) {
                 scope.data = data;
-                scope.forventning = {
+                var forventning1 = {
                     innsendingsvalg: "VedleggKreves",
+                    skjemaNummer: "N6",
                     storrelse: 42,
                     $save: function() {
                     },
                     $remove: function() {
-                       return {then: function() {
+                        return {then: function() {
 
-                       }};
+                        }};
                     }
                 };
-                scope.forventninger = [scope.forventning];
+
+                var forventning2 = {
+                    innsendingsvalg: "VedleggKreves",
+                    skjemaNummer: "N1",
+                    storrelse: 42,
+                    $save: function() {
+                    },
+                    $remove: function() {
+                        return {then: function() {
+
+                        }};
+                    }
+                };
+
+                scope.soknadOppsett = {
+                    vedlegg: [
+                        {skjemaNummer: "N2"},
+                        {skjemaNummer: "N1"},
+                        {skjemaNummer: "N6", ekstraValg: ["AlleredeSendt"]}
+                    ]
+                };
+                scope.forventning = forventning1;
+                scope.forventninger = [forventning1, forventning2];
                 scope.validert = {};
                 
                 ctrl = $controller('validervedleggCtrl', {
@@ -152,10 +175,18 @@
             });
 
             it('skal ikke vise alternativet vedleggAlleredeSendt hvis dette ikke er satt til å vises', function() {
-                expect(scope.skalViseAlleredeSendtAlternativ()).not.toBe(true);
+                expect(scope.skalViseAlleredeSendtAlternativ(1)).not.toBe(true);
             });
             it('skal vise alternativet vedleggAlleredeSendt hvis dette ikke er satt til å vises', function() {
-                expect(scope.skalViseAlleredeSendtAlternativ()).toBe(true);
+                expect(scope.skalViseAlleredeSendtAlternativ(0)).toBe(true);
+            });
+
+            it('finnVedleggMedSkjemanummer skal returnere undefined om vedlegg med gitt skjemanummer ikke finnes', function() {
+                expect(scope.finnVedleggMedSkjemanummer("finnesIkke")).toBeUndefined();
+            });
+
+            it('finnVedleggMedSkjemanummer skal returnere vedlegget med gitt skjemanummer', function() {
+                expect(scope.finnVedleggMedSkjemanummer("N6").skjemaNummer).toBe("N6");
             });
         });
 
