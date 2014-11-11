@@ -68,6 +68,15 @@ function redirectTilUrl(url) {
     window.location.href = url;
 }
 
+function erPaaSideMedPath(url, path) {
+    return url && url.indexOf(path) > -1;
+}
+
+function getSoknadstypeFromUrl() {
+    var soknadType = decodeURI(window.location.pathname).split("/")[3];
+    return soknadType ? soknadType.slice(0,3) + ' ' + soknadType.slice(3) : undefined;
+}
+
 function sjekkOmGittEgenskapTilObjektErTrue(objekt) {
     if (objekt) {
         return checkTrue(objekt.value);
@@ -378,6 +387,3 @@ function getCookie(cname) {
     return "";
 }
 
-function erPaaSideMedPath(url, path) {
-    return url && url.indexOf(path) > -1;
-}
