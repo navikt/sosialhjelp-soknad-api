@@ -32,6 +32,16 @@
          data-label="arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet"
          data-er-fremtidigdato-tillatt="true">
     </div>
+
+    <div class="nav-checkbox">
+        <input class="sendsoknad-checkbox"
+               data-boolean-verdi
+               id="checkbox1"
+               type="checkbox"
+               name="arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.vetikke"
+               data-ng-model="faktum.properties.lonnspliktigperiodevetikke">
+        <label for='checkbox1'>{{ 'arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.vetikke' | cmstekst }}</label>
+    </div>
 </div>
 
 <div class="prosentfelt"
