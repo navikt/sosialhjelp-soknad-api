@@ -10,6 +10,7 @@ angular.module('nav.vedlegg.controller', [])
         $scope.forventninger = vedleggService.query({soknadId: data.soknad.soknadId});
         $scope.brukerBehandlingId = data.soknad.brukerBehandlingId;
         $scope.sidedata = {navn: 'vedlegg'};
+        $scope.soknadOppsett = data.soknadOppsett;
 
         $scope.validert = {value: ''};
         $scope.fremdriftsindikator = {
@@ -101,7 +102,7 @@ angular.module('nav.vedlegg.controller', [])
         };
 
         $scope.endreInnsendingsvalg = function (forventning, valg) {
-            if (valg !== 'SendesSenere' && valg !== 'SendesIkke' && valg !== 'VedleggSendesAvAndre' && valg !== "VedleggSendesIkke") {
+            if (valg !== 'SendesSenere' && valg !== 'SendesIkke' && valg !== 'VedleggSendesAvAndre' && valg !== "VedleggSendesIkke" && valg !== "VedleggAlleredeSendt") {
                 forventning.innsendingsvalg = valg;
             }
             if (!$scope.hiddenFelt) {
@@ -136,12 +137,20 @@ angular.module('nav.vedlegg.controller', [])
         };
 
         $scope.skalViseNesteKnapp = function(forventning, erSiste) {
-            if (($scope.erEkstraVedlegg(forventning) && forventning.innsendingsvalg !== 'LastetOpp') || erSiste) {
-                return false;
-            } else {
-                return true;
-            }
+            return !(($scope.erEkstraVedlegg(forventning) && forventning.innsendingsvalg !== 'LastetOpp') || erSiste);
+        };
 
+        $scope.skalViseAlleredeSendtAlternativ = function(forventing) {
+            var vedlegg = $scope.finnVedleggMedSkjemanummer(forventing.skjemaNummer);
+            return (vedlegg && vedlegg.ekstraValg && vedlegg.ekstraValg.indexOf("AlleredeSendt") > -1);
+        };
+
+        $scope.finnVedleggMedSkjemanummer = function(skjemanummer) {
+            for(var i=0; i<$scope.soknadOppsett.vedlegg.length; i++) {
+                if($scope.soknadOppsett.vedlegg[i].skjemaNummer == skjemanummer) {
+                    return $scope.soknadOppsett.vedlegg[i];
+                }
+            }
         };
     }])
 

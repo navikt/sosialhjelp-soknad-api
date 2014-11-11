@@ -168,6 +168,8 @@ public class SoknadDataController {
         byte[] pdfOutputStream;
         if (soknad.erEttersending()) {
             pdfOutputStream = genererPdf(soknad, "/skjema/ettersending");
+        } else if(soknad.erGjenopptak()) {
+            pdfOutputStream = genererPdf(soknad, "/skjema/gjenopptak");
         } else {
             pdfOutputStream = genererPdf(soknad, "/skjema/dagpenger");
 
@@ -256,6 +258,10 @@ public class SoknadDataController {
     public String hentOppsummering(@PathVariable Long soknadId) throws IOException {
         WebSoknad soknad = soknadService.hentSoknad(soknadId);
         vedleggService.leggTilKodeverkFelter(soknad.getVedlegg());
-        return pdfTemplate.fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
+        if(soknad.erGjenopptak()) {
+            return  pdfTemplate.fyllHtmlMalMedInnhold(soknad, "/skjema/gjenopptak");
+        } else {
+            return pdfTemplate.fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
+        }
     }
 }

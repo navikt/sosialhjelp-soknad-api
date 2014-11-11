@@ -650,24 +650,36 @@
         </faktum>
         <onValue>true</onValue>
         <skjemaNummer>Y2</skjemaNummer>
+        <ekstraValg>
+            <valg>AlleredeSendt</valg>
+        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>5</id>
         <faktum>reellarbeidssoker.villigdeltid.reduserthelse</faktum>
         <onValue>true</onValue>
         <skjemaNummer>Y2</skjemaNummer>
+        <ekstraValg>
+            <valg>AlleredeSendt</valg>
+        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>5</id>
         <faktum>reellarbeidssoker.villigdeltid.omsorgansvar</faktum>
         <onValue>true</onValue>
         <skjemaNummer>Y2</skjemaNummer>
+        <ekstraValg>
+            <valg>AlleredeSendt</valg>
+        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>5</id>
         <faktum>reellarbeidssoker.villigdeltid.annensituasjon</faktum>
         <onValue>true</onValue>
         <skjemaNummer>Y2</skjemaNummer>
+        <ekstraValg>
+            <valg>AlleredeSendt</valg>
+        </ekstraValg>
     </vedlegg>
 
     <vedlegg>
@@ -676,30 +688,45 @@
         </faktum>
         <onValue>true</onValue>
         <skjemaNummer>Y2</skjemaNummer>
+        <ekstraValg>
+            <valg>AlleredeSendt</valg>
+        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>5</id>
         <faktum>reellarbeidssoker.villigpendle.reduserthelse</faktum>
         <onValue>true</onValue>
         <skjemaNummer>Y2</skjemaNummer>
+        <ekstraValg>
+            <valg>AlleredeSendt</valg>
+        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>5</id>
         <faktum>reellarbeidssoker.villigpendle.omsorgansvar</faktum>
         <onValue>true</onValue>
         <skjemaNummer>Y2</skjemaNummer>
+        <ekstraValg>
+            <valg>AlleredeSendt</valg>
+        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>5</id>
         <faktum>reellarbeidssoker.villigpendle.annensituasjon</faktum>
         <onValue>true</onValue>
         <skjemaNummer>Y2</skjemaNummer>
+        <ekstraValg>
+            <valg>AlleredeSendt</valg>
+        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>5</id>
         <faktum>reellarbeidssoker.villighelse</faktum>
         <onValue>false</onValue>
         <skjemaNummer>T9</skjemaNummer>
+        <ekstraValg>
+            <valg>AlleredeSendt</valg>
+        </ekstraValg>
     </vedlegg>
 
     <vedlegg>
@@ -758,6 +785,9 @@
         <faktum>egennaering.gardsbruk</faktum>
         <onValue>false</onValue>
         <skjemaNummer>G4</skjemaNummer>
+        <ekstraValg>
+            <valg>AlleredeSendt</valg>
+        </ekstraValg>
     </vedlegg>
 
     <vedlegg>
