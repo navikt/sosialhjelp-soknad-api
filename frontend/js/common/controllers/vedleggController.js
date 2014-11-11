@@ -137,7 +137,7 @@ angular.module('nav.vedlegg.controller', [])
         };
 
         $scope.skalViseNesteKnapp = function(forventning, erSiste) {
-            return (($scope.erEkstraVedlegg(forventning) && forventning.innsendingsvalg !== 'LastetOpp') || erSiste);
+            return !(($scope.erEkstraVedlegg(forventning) && forventning.innsendingsvalg !== 'LastetOpp') || erSiste);
         };
 
         $scope.skalViseAlleredeSendtAlternativ = function(forventing) {
