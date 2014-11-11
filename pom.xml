@@ -181,16 +181,6 @@
                 <version>0.0.1</version>
             </dependency>
             <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>dokumentinnsending-consumer</artifactId>
-                <version>${dialogarena.dokumentinnsending.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>dokumentinnsending-business</artifactId>
-                <version>${dialogarena.dokumentinnsending.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
                 <version>2.4</version>
