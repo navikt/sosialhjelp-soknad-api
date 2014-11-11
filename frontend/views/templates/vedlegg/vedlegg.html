@@ -145,7 +145,8 @@
                                         <label for="{{$index}}vedleggandreRadio" data-ng-bind-html=" 'vedlegg.faktum.vedleggsendesavandre' | cmstekst"></label>
                                     </div>
 
-                                    <div class="valg" data-ng-if="skalViseAlleredeSendtAlternativ($index)">
+
+                                    <div class="valg" data-ng-if="skalViseAlleredeSendtAlternativ(forventning)">
                                         <input id="{{$index}}vedleggAlleredeSendtRadio"
                                                data-ng-model="forventning.innsendingsvalg"
                                                type="radio"
