@@ -430,6 +430,38 @@
 				{{/forFakta}}
             </table>
 
+            <h2>{{ hentTekst "reberegning.tittel" }}</h2>
+            <table>
+                {{#forFaktum "reberegning.nyberegning"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td>
+                        {{#hvisSant value}}
+                        <span>{{ hentTekst "reberegning.nyberegning.true" }}</span>
+                        {{ else }}
+                        <span>{{ hentTekst "reberegning.nyberegning.false" }}</span>
+                        <ul>
+                            {{#forFakta "reberegning.nyberegning.startdato"}}
+                            <li class="kulepunkt">
+                                <span>{{ hentTekst value}}</span>
+                            </li>
+                            {{/forFakta}}
+                            {{#forFaktum "reberegning.nyberegning.arbeidstid"}}
+                            <li class="kulepunkt">
+                                {{#hvisSant value}}
+                                <span>{{ hentTekst "reberegning.nyberegning.arbeidstid.true" }}</span>
+                                {{else}}
+                                <span>{{ hentTekst "reberegning.nyberegning.arbeidstid.false" }}</span>
+                                {{/hvisSant}}
+                            </li>
+                            {{/forFaktum}}
+                        </ul>
+                        {{/hvisSant}}
+                    </td>
+                </tr>
+                {{/forFaktum}}
+            </table>
+
 			<h2>{{ hentTekst "egennaering.tittel" }}</h2>
             <table>
                 {{#forFaktum "egennaering.driveregennaering"}}
