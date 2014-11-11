@@ -5,8 +5,8 @@
 			@page   { size: A4; margin: 3.5cm 2cm 2.5cm; @top-center { content: element(header, last-except) }; @bottom-center { content: element(footer) }; }
             @page:first { margin: 1.5cm 2cm 2.5cm; }
 			*       { box-sizing: border-box; }
-			body    { font-family: Arial, sans-serif; font-size: 10pt; line-height: 1.4em; margin: 0; color: #3e3832; }
-			h1      { font-family: Modus, Arial, sans-serif; font-size: 24pt; }
+			body    { font-family: Arial, sans-serif; font-size: 10pt; line-height: 1.4; margin: 0; color: #3e3832; }
+			h1      { font-family: Modus, Arial, sans-serif; font-size: 24pt;}
 			h2, h3, h4, h5, h6 { font-family: Modus, Arial, sans-serif; font-size: 13pt; }
 			table   { border-collapse: collapse; width: 170mm; margin-bottom: 10mm; }
             table ul { list-style: none; padding-left: 0; margin-top: 0; margin-bottom: 0; }
@@ -53,22 +53,22 @@
                 <span class="navn">{{properties.navn}}</span><span class="fnr">{{properties.fnr}}</span>
             {{/forFaktum}}
             <span class="headerSider">
-                {{ hentTekst "dagpenger.oppsummering.sideAvTotal" }}
+                {{ hentTekst "gjenopptak.oppsummering.sideAvTotal" }}
             </span>
 		</div>
 
 		<div class="footer">
             <span>
-                <span>{{ hentSkjemanummer }} {{ hentTekst "dagpenger.oppsummering.eSoknad" }}</span>
+                <span>{{ hentSkjemanummer }} {{ hentTekst "gjenopptak.oppsummering.eSoknad" }}</span>
                 <span>|</span>
-                <span>{{ hentTekst "dagpenger.oppsummering.fastsattDato" }}</span>
+                <span>{{ hentTekst "gjenopptak.oppsummering.fastsattDato" }}</span>
             </span>
 		</div>
 
 		<div id="soknad">
 			<img class="logo" src="http://localhost:8080/sendsoknad/img/nav-logo.gif"/>
 			<div class="hode">
-				<h1>{{ hentTekst "dagpenger.skjema.tittel" }}</h1>
+				<h1>{{ hentTekst "gjenopptak.skjema.tittel" }}</h1>
                 <hr/>
                 {{#forFaktum "personalia"}}
                     <div class="personalia">
@@ -145,12 +145,12 @@
 
                                     {{#forFaktum "reellarbeidssoker.villigdeltid.maksimalarbeidstid"}}
                                         <li class="kulepunkt">
-                                            <span>{{ hentTekst "dagpenger.oppsummering.reellarbeidssoker.villigdeltid.antallTimer"}}</span>
+                                            <span>{{ hentTekst "gjenopptak.oppsummering.reellarbeidssoker.villigdeltid.antallTimer"}}</span>
                                             <span>{{ value }}</span>
                                             {{#hvisMer value "1"}}
-                                                <span>{{ hentTekst "dagpenger.oppsummering.antallTimerFlertall" }}</span>
+                                                <span>{{ hentTekst "gjenopptak.oppsummering.antallTimerFlertall" }}</span>
                                             {{else}}
-                                                <span>{{ hentTekst "dagpenger.oppsummering.antallTimer" }}</span>
+                                                <span>{{ hentTekst "gjenopptak.oppsummering.antallTimer" }}</span>
                                             {{/hvisMer}}
 
                                         </li>
@@ -271,11 +271,11 @@
                                 <li class="arbeidsforhold-varighet">
                                     <span>{{ formatterLangDato properties.datofra }}</span>
                                     {{#if properties.datotil}}
-                                        <span>{{ hentTekst "dagpenger.oppsummering.datotil" }}</span>
+                                        <span>{{ hentTekst "gjenopptak.oppsummering.datotil" }}</span>
                                         <span>{{ formatterLangDato properties.datotil }}</span>
                                     {{/if}}
                                     {{#if properties.konkursdato}}
-                                        <span>{{ hentTekst "dagpenger.oppsummering.datotil" }}</span>
+                                        <span>{{ hentTekst "gjenopptak.oppsummering.datotil" }}</span>
                                         <span>{{ formatterLangDato properties.konkursdato }}</span>
                                     {{/if}}
                                 </li>
@@ -397,7 +397,7 @@
                                         <span>{{ hentTekst "arbeidsforhold.arbeidsgiver.permittert.varighet" }}</span>
                                         <span>{{ formatterLangDato properties.permiteringsperiodedatofra }}</span>
                                         {{#if properties.permiteringsperiodedatotil}}
-                                            <span>{{ hentTekst "dagpenger.oppsummering.datotil" }}</span>
+                                            <span>{{ hentTekst "gjenopptak.oppsummering.datotil" }}</span>
                                             <span>{{ formatterLangDato properties.permiteringsperiodedatotil }}</span>
                                         {{/if}}
                                     </li>
@@ -406,14 +406,14 @@
                                         <span>{{ hentTekst "arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet" }}:</span>
                                         <span>{{ formatterLangDato properties.lonnspliktigperiodedatofra }}</span>
                                         {{#if properties.lonnspliktigperiodedatotil}}
-                                            <span>{{ hentTekst "dagpenger.oppsummering.datotil" }}</span>
+                                            <span>{{ hentTekst "gjenopptak.oppsummering.datotil" }}</span>
                                             <span>{{ formatterLangDato properties.lonnspliktigperiodedatotil }}</span>
                                         {{/if}}
                                     </li>
 
                                     <li class="kulepunkt">
                                         <span>{{ properties.permitteringProsent }}%</span>
-                                        <span>{{ hentTekst "dagpenger.oppsummering.arbeidsforhold.permitteringsgrad" }}</span>
+                                        <span>{{ hentTekst "gjenopptak.oppsummering.arbeidsforhold.permitteringsgrad" }}</span>
                                     </li>
                                 {{/hvisLik}}
                             </ul>
@@ -423,7 +423,7 @@
                     <tr>
                         <td class="sjekket"></td>
                         <td>
-                            <span>{{ hentTekst "dagpenger.oppsummering.arbeidsforhold.ingen" }}</span>
+                            <span>{{ hentTekst "gjenopptak.oppsummering.arbeidsforhold.ingen" }}</span>
                         </td>
                     </tr>
 
@@ -449,7 +449,7 @@
                                     {{/forFakta}}
                                     {{#forFaktum "egennaering.driveregennaering.arbeidsmengde"}}
                                         <li class="kulepunkt">
-                                            <span>{{ hentTekstMedParameter "dagpenger.oppsummering.egennaering.arbeidstimerIUken" value }}</span>
+                                            <span>{{ hentTekstMedParameter "gjenopptak.oppsummering.egennaering.arbeidstimerIUken" value }}</span>
                                         </li>
                                     {{/forFaktum}}
                                 </ul>
@@ -475,7 +475,7 @@
                                     {{/forFaktum}}
 
                                     <li class="kulepunkt">
-                                        <span>{{ hentTekst "dagpenger.oppsummering.egennaering.typeGaardsbruk" }}</span>
+                                        <span>{{ hentTekst "gjenopptak.oppsummering.egennaering.typeGaardsbruk" }}</span>
                                         <ul>
                                             {{#forFaktum "egennaering.gardsbruk.false.type.dyr"}}
                                                 {{#hvisSant value}}
@@ -512,7 +512,7 @@
                                     </li>
 
                                     <li class="kulepunkt">
-                                        <span>{{ hentTekst "dagpenger.oppsummering.egennaering.gaardsEiere" }}</span>
+                                        <span>{{ hentTekst "gjenopptak.oppsummering.egennaering.gaardsEiere" }}</span>
                                         <ul>
                                             {{#forFaktum "egennaering.gardsbruk.false.eier.jeg"}}
                                                 {{#hvisSant value}}
@@ -542,7 +542,7 @@
 
                                     {{#hvisFlereErTrue "egennaering.gardsbruk.false.eier" "1"}}
                                         <li class="kulepunkt">
-                                            <span>{{ hentTekst "dagpenger.oppsummering.egennaering.fordelingAvInntekt" }}</span>
+                                            <span>{{ hentTekst "gjenopptak.oppsummering.egennaering.fordelingAvInntekt" }}</span>
                                             <ul>
                                                 {{#forFaktum "egennaering.gardsbruk.false.eier.jeg"}}
                                                     {{#hvisSant value}}
@@ -1117,24 +1117,24 @@
             </table>
 
 
-            <h2>{{ hentTekst "dagpenger.oppsummering.barn.tittel" }}</h2>
+            <h2>{{ hentTekst "gjenopptak.oppsummering.barn.tittel" }}</h2>
             <table>
                 {{#forFaktaMedPropertySattTilTrue "barn" "barnetillegg"}}
                     <tr>
                         <td class="sjekket"></td>
                         <td>
                             <span class="barn-navn">{{ properties.sammensattnavn }},</span>
-                            <span>{{ hentTekst "dagpenger.oppsummering.fodt" }}</span>
+                            <span>{{ hentTekst "gjenopptak.oppsummering.fodt" }}</span>
                             {{#hvisLik type "SYSTEMREGISTRERT"}}
                                 <span>{{ formatterFodelsDato properties.fnr }},</span>
                             {{ else }}
                                 <span>{{ formatterFodelsDato properties.fodselsdato }},</span>
                             {{/hvisLik}}
 
-                            <span>{{ hentTekst "dagpenger.oppsummering.bor" }}</span>
+                            <span>{{ hentTekst "gjenopptak.oppsummering.bor" }}</span>
                             <span>{{ hentLand properties.land }},</span>
 
-                            <span>{{ hentTekst "dagpenger.oppsummering.inntekt" }}</span>
+                            <span>{{ hentTekst "gjenopptak.oppsummering.inntekt" }}</span>
                             {{#hvisLik properties.ikkebarneinntekt "false" }}
                                 <span>{{ properties.barneinntekttall }}</span>
                             {{ else }}
@@ -1147,7 +1147,7 @@
                     <tr>
                         <td class="sjekket"></td>
                         <td>
-                            <span>{{ hentTekst "dagpenger.oppsummering.ingenBarn" }}</span>
+                            <span>{{ hentTekst "gjenopptak.oppsummering.ingenBarn" }}</span>
                         </td>
                     </tr>
                 {{/forFaktaMedPropertySattTilTrue}}
@@ -1167,7 +1167,7 @@
                 {{/hvisIkkeTom}}
             {{/forFaktum}}
 
-            <h2>{{ hentTekst "dagpenger.oppsummering.vedlegg.tittel" }}</h2>
+            <h2>{{ hentTekst "gjenopptak.oppsummering.vedlegg.tittel" }}</h2>
             <table class="vedlegg">
                 {{#forVedlegg}}
                     <tr>
@@ -1191,34 +1191,34 @@
                                             <span class="vedlegg"></span>
                                             <span>{{ antallSider }}</span>
                                             {{#hvisLik antallSider "1"}}
-                                                <span>{{ hentTekst "dagpenger.oppsummering.side" }}</span>
+                                                <span>{{ hentTekst "gjenopptak.oppsummering.side" }}</span>
                                             {{ else }}
-                                                <span>{{ hentTekst "dagpenger.oppsummering.sider" }}</span>
+                                                <span>{{ hentTekst "gjenopptak.oppsummering.sider" }}</span>
                                             {{/hvisLik}}
 
                                         </span>
-                                        <a href="#{{ brukerBehandlingId }}/visVedlegg/{{ vedleggId }}" class="seVedlegg">{{ hentTekst "dagpenger.oppsummering.seVedlegg" }}</a>
+                                        <a href="#{{ brukerBehandlingId }}/visVedlegg/{{ vedleggId }}" class="seVedlegg">{{ hentTekst "gjenopptak.oppsummering.seVedlegg" }}</a>
                                     </span>
                                 {{/hvisLik}}
 
                                 {{#hvisLik innsendingsvalg "SendesSenere"}}
-                                    <span>{{ hentTekst "dagpenger.oppsummering.sendesSenere" }}</span>
+                                    <span>{{ hentTekst "gjenopptak.oppsummering.sendesSenere" }}</span>
                                 {{/hvisLik}}
 
                                 {{#hvisLik innsendingsvalg "SendesIkke"}}
-                                    <span>{{ hentTekst "dagpenger.oppsummering.sendesIkkeSendesAvAndre" }}</span>
+                                    <span>{{ hentTekst "gjenopptak.oppsummering.sendesIkkeSendesAvAndre" }}</span>
                                 {{/hvisLik}}
 
                                 {{#hvisLik innsendingsvalg "VedleggSendesIkke"}}
-                                    <span>{{ hentTekst "dagpenger.oppsummering.sendesIkke" }}</span>
+                                    <span>{{ hentTekst "gjenopptak.oppsummering.sendesIkke" }}</span>
                                 {{/hvisLik}}
 
                                 {{#hvisLik innsendingsvalg "VedleggSendesAvAndre"}}
-                                    <span>{{ hentTekst "dagpenger.oppsummering.sendesAvAndre" }}</span>
+                                    <span>{{ hentTekst "gjenopptak.oppsummering.sendesAvAndre" }}</span>
                                 {{/hvisLik}}
 
                                  {{#hvisLik innsendingsvalg "VedleggAlleredeSendt"}}
-                                    <span>{{ hentTekst "dagpenger.oppsummering.vedleggAlleredeSendt" }}</span>
+                                    <span>{{ hentTekst "gjenopptak.oppsummering.vedleggAlleredeSendt" }}</span>
                                  {{/hvisLik}}
                             </span>
                         </td>
@@ -1227,7 +1227,7 @@
                     <tr class="ingenVedleggTekst">
                         <td class="sjekket"></td>
                         <td >
-                            <span>{{ hentTekst "dagpenger.oppsummering.vedlegg.ingen" }}</span>
+                            <span>{{ hentTekst "gjenopptak.oppsummering.vedlegg.ingen" }}</span>
                         </td>
                     </tr>
                 {{/forVedlegg}}
@@ -1241,7 +1241,7 @@
                             <span class="sjekket"></span>
                         </td>
                         <td>
-                            {{ hentTekst "dagpenger.informasjonsside.lestbrosjyre.sporsmal" }}
+                            {{ hentTekst "gjenopptak.informasjonsside.lestbrosjyre.sporsmal" }}
                         </td>
                     </tr>
                     <tr>
@@ -1252,7 +1252,7 @@
                             <span class="sjekket"></span>
                         </td>
                         <td>
-                            {{ hentTekst "dagpenger.oppsummering.bekreftOpplysninger" }}
+                            {{ hentTekst "gjenopptak.oppsummering.bekreftOpplysninger" }}
                         </td>
                     </tr>
                 </table>

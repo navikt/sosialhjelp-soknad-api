@@ -10,7 +10,6 @@ import no.nav.sbl.dialogarena.websoknad.pages.XmlToPdfConverterPage;
 import no.nav.sbl.dialogarena.websoknad.pages.ettersending.AvbruttEttersendingPage;
 import no.nav.sbl.dialogarena.websoknad.pages.ettersending.EttersendingPage;
 import no.nav.sbl.dialogarena.websoknad.pages.ettersending.StartEttersendingPage;
-import no.nav.sbl.dialogarena.websoknad.pages.gjenopptak.GjenopptakPage;
 import no.nav.sbl.dialogarena.websoknad.pages.soknadliste.SoknadListePage;
 import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.AvbruttPage;
 import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.StartSoknadPage;
@@ -95,9 +94,7 @@ public class WicketApplication extends WebApplication {
 
         Application.get().getRequestLoggerSettings().setRequestLoggerEnabled(true);
 
-        mountPage("soknad/NAV%2004-01.03", StartSoknadPage.class);
-        mountPage("soknad/NAV%2004-16.03", GjenopptakPage.class);
-
+        mountPage("skjema/${skjemanummer}", StartSoknadPage.class);
         mountPage("utslagskriterier/${utslagskriterierSide}", UtslagskriterierDagpengerPage.class);
 
         mountPage("startettersending/${brukerbehandlingId}", StartEttersendingPage.class);

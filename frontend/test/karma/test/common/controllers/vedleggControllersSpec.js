@@ -6,8 +6,7 @@
     'use strict';
 
     describe('VedleggControllere', function () {
-        var scope, ctrl, form, element, barn, $httpBackend, event, location;
-        event = $.Event("click");
+        var scope, ctrl, form, element, barn, $httpBackend;
 
         beforeEach(module('sendsoknad.controllers', 'nav.feilmeldinger', 'sendsoknad.services'));
 
@@ -38,8 +37,8 @@
 
             element = angular.element(
                 '<form name="form">' +
-                    '<div form-errors></div>' +
-                    '<input type="text" ng-model="scope.barn.properties.fodselsdato" name="alder"/>' +
+                    '<div data-form-errors></div>' +
+                    '<input type="text" data-ng-model="scope.barn.properties.fodselsdato" name="alder"/>' +
                     '<input type="hidden" data-ng-model="underAtten.value" data-ng-required="true"/>' +
                     '</form>'
             );
@@ -90,18 +89,42 @@
         describe('validervedleggCtrlMedVedlegg', function () {
             beforeEach(inject(function ($controller, data) {
                 scope.data = data;
-                scope.forventning = {
+                var forventningAlleredeSendt = {
                     innsendingsvalg: "VedleggKreves",
+                    skjemaNummer: "N6",
                     storrelse: 42,
                     $save: function() {
                     },
                     $remove: function() {
-                       return {then: function() {
+                        return {then: function() {
 
-                       }};
+                        }};
                     }
                 };
-                scope.forventninger = [scope.forventning];
+
+                var forventning = {
+                    innsendingsvalg: "VedleggKreves",
+                    skjemaNummer: "N1",
+                    storrelse: 42,
+                    $save: function() {
+                    },
+                    $remove: function() {
+                        return {then: function() {
+
+                        }};
+                    }
+                };
+
+                scope.soknadOppsett = {
+                    vedlegg: [
+                        {skjemaNummer: "N2"},
+                        {skjemaNummer: "N1"},
+                        {skjemaNummer: "N6", ekstraValg: ["AlleredeSendt"]}
+                    ]
+                };
+                scope.forventningAlleredeSendt = forventningAlleredeSendt;
+                scope.forventning = forventning;
+                scope.forventninger = [forventningAlleredeSendt, forventning];
                 scope.validert = {};
                 
                 ctrl = $controller('validervedleggCtrl', {
@@ -126,6 +149,12 @@
                 expect(scope.skalViseFeil.value).toBe(false);
             });
 
+            it('skal ikke vise feil etter å ha valgt allerede sendt', function() {
+                scope.endreInnsendingsvalg(scope.forventning, "VedleggAlleredeSendt");
+                expect(scope.hiddenFelt.value).toBe(true);
+                expect(scope.skalViseFeil.value).toBe(false);
+            });
+
             it('skal kunne slette annet vedlegg', function() {
                 scope.forventning.skjemaNummer = "N6";
                 scope.forventning.innsendingsvalg = "LastetOpp";
@@ -143,6 +172,21 @@
                 expect(scope.hiddenFelt).toEqual({value: '' });
                 expect(scope.skalViseFeil).toEqual({ value: true });
                 expect(scope.validert.value).toEqual(false);
+            });
+
+            it('skal ikke vise alternativet vedleggAlleredeSendt hvis dette ikke er satt til å vises', function() {
+                expect(scope.skalViseAlleredeSendtAlternativ(scope.forventning)).not.toBe(true);
+            });
+            it('skal vise alternativet vedleggAlleredeSendt hvis dette er satt til å vises', function() {
+                expect(scope.skalViseAlleredeSendtAlternativ(scope.forventningAlleredeSendt)).toBe(true);
+            });
+
+            it('finnVedleggMedSkjemanummer skal returnere undefined om vedlegg med gitt skjemanummer ikke finnes', function() {
+                expect(scope.finnVedleggMedSkjemanummer("finnesIkke")).toBeUndefined();
+            });
+
+            it('finnVedleggMedSkjemanummer skal returnere vedlegget med gitt skjemanummer', function() {
+                expect(scope.finnVedleggMedSkjemanummer("N6").skjemaNummer).toBe("N6");
             });
         });
 

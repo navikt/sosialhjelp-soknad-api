@@ -392,6 +392,10 @@ public class WebSoknad implements Serializable {
         return DelstegStatus.isEttersendingStatus(delstegStatus);
     }
 
+    public boolean erGjenopptak() {
+        return this.skjemaNummer != null && (this.skjemaNummer.equals("NAV 04-16.03") || this.skjemaNummer.equals("NAV 04-16.04"));
+    }
+
     public boolean harAnnetVedleggSomIkkeErLastetOpp() {
         return !on(vedlegg)
                 .filter(ER_ANNET_VEDLEGG)
