@@ -40,10 +40,8 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
         };
 
         $scope.startSoknad = function () {
-            var soknadUri = decodeURI(window.location.pathname).split("/")[3];
-            if(soknadUri) {
-                var soknadType = soknadUri.slice(0,3) + ' ' + soknadUri.slice(3);
-            }
+            var soknadType = getSoknadstypeFromUrl();
+
             $scope.fremdriftsindikator.laster = true;
             $scope.soknad = soknadService.create({soknadType: soknadType},
                 function (result) {
