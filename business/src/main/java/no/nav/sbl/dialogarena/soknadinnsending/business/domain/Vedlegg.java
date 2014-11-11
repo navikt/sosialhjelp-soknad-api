@@ -11,7 +11,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -35,18 +34,8 @@ public class Vedlegg {
     private String fillagerReferanse = UUID.randomUUID().toString();
     private Map<String, String> urls = new HashMap<>();
     private String tittel;
-    private List<Status> ekstraValg;
 
     public Vedlegg() {
-    }
-
-
-    public Vedlegg(Long soknadId, Long faktumId, String skjemaNummer, Status innsendingsvalg, List<Status> ekstraValg) {
-        this.soknadId = soknadId;
-        this.faktumId = faktumId;
-        this.skjemaNummer = skjemaNummer;
-        this.innsendingsvalg = innsendingsvalg;
-        this.ekstraValg = ekstraValg;
     }
 
     public Vedlegg(Long soknadId, Long faktumId, String skjemaNummer, Status innsendingsvalg) {
@@ -123,11 +112,6 @@ public class Vedlegg {
 
     public Vedlegg medOpprinneligInnsendingsvalg(Status opprinneligInnsendingsvalg) {
         this.opprinneligInnsendingsvalg = opprinneligInnsendingsvalg;
-        return this;
-    }
-
-    public Vedlegg medEkstraValg(List<Status> ekstraValg) {
-        setEkstraValg(ekstraValg);
         return this;
     }
 
@@ -215,14 +199,6 @@ public class Vedlegg {
 
     public Map<String, String> getUrls() {
         return urls;
-    }
-
-    public List<Status> getEkstraValg() {
-        return ekstraValg;
-    }
-
-    public void setEkstraValg(List<Status> ekstraValg) {
-        this.ekstraValg = ekstraValg;
     }
 
     @XmlTransient
