@@ -13,6 +13,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 		$scope.land = data.land;
         $scope.soknadId = data.soknad.soknadId;
         $scope.soknadUrl = '/' + data.soknad.brukerBehandlingId + '/soknad';
+        $scope.permitteringsperioder = data.finnFakta('arbeidsforhold.permitteringsperiode') || [ ];
 
         $scope.settBreddeSlikAtDetFungererIIE = function() {
             setTimeout(function() {
@@ -125,6 +126,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
                 angular.forEach($scope.barnefaktum, function(faktum) {
                     faktum.parrentFaktum = arbeidsforholdData.faktumId;
                     promises.push(faktum.$save({soknadId: data.soknad.soknadId}));
+                    data.fakta.push(faktum);
                 });
 
                 $q.all(promises).then(function() {
