@@ -6,7 +6,6 @@ angular.module('nav.arbeidsforhold.permittering.directive',[])
             scope: true,
             link: {
                 pre: function(scope) {
-                    scope.permitteringsperioder = [];
                     scope.leggTilPeriode = function() {
                         var permitteringsperiode = new Faktum({
                             key: 'arbeidsforhold.permitteringsperiode',
@@ -16,7 +15,10 @@ angular.module('nav.arbeidsforhold.permittering.directive',[])
                         scope.permitteringsperioder.push(permitteringsperiode);
                         scope.barnefaktum.push(permitteringsperiode);
                     };
-                    scope.leggTilPeriode();
+
+                    if(scope.permitteringsperioder.length == 0) {
+                        scope.leggTilPeriode();
+                    }
 
                 }
             }
