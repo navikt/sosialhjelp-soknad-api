@@ -404,10 +404,14 @@
 
                                     <li class="kulepunkt">
                                         <span>{{ hentTekst "arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet" }}:</span>
-                                        <span>{{ formatterLangDato properties.lonnspliktigperiodedatofra }}</span>
-                                        {{#if properties.lonnspliktigperiodedatotil}}
-                                            <span>{{ hentTekst "dagpenger.oppsummering.datotil" }}</span>
-                                            <span>{{ formatterLangDato properties.lonnspliktigperiodedatotil }}</span>
+                                        {{#if properties.lonnspliktigperiodevetikke }}
+                                            <span>{{ hentTekst "arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.vetikke" }}</span>
+                                        {{else}}
+                                            <span>{{ formatterLangDato properties.lonnspliktigperiodedatofra }}</span>
+                                            {{#if properties.lonnspliktigperiodedatotil}}
+                                                <span>{{ hentTekst "gjenopptak.oppsummering.datotil" }}</span>
+                                                <span>{{ formatterLangDato properties.lonnspliktigperiodedatotil }}</span>
+                                            {{/if}}
                                         {{/if}}
                                     </li>
 
