@@ -1,4 +1,4 @@
-<div class="form-linje datepicker" data-ng-class="{feil: harFeil(), fokus: harFokus, nav: navDatepicker()}">
+<div class="form-linje datepicker" data-ng-class="{feil: harFeil(), fokus: harFokus, nav: navDatepicker(), disabled: disabled == 'true'}">
     <span class="caretPosition"></span>
     <label>
         <span class="labeltekst" data-ng-bind-html=" label | cmstekst"></span>
@@ -11,7 +11,8 @@
                        data-ng-focus="focus()"
                        data-ng-required="erRequired"
                        data-error-messages="'{{ requiredErrorMessage }}'"
-                       data-dato-mask>
+                       data-dato-mask
+                       data-ng-disabled="disabled == 'true'">
                 <span class="mask"></span>
                 <input type="hidden" data-ng-model="ngModel">
                 <span class="apne-datepicker" data-ng-click="toggleDatepicker()"></span>
@@ -25,12 +26,18 @@
                    data-ng-focus="focus()"
                    data-error-messages="'{{ requiredErrorMessage }}'"
                    placeholder="{{ 'dato.format' | cmstekst }}"
-                   data-aria-label="{{ 'dato.arialabel' | cmstekst }}">
+                   data-aria-label="{{ 'dato.arialabel' | cmstekst }}"
+                   data-ng-disabled="disabled == 'true'">
         </span>
+
     </label>
     <span class="melding" data-ng-if="harRequiredFeil()" data-ng-bind-html=" requiredErrorMessage | cmstekst"></span>
-    <span class="melding" data-ng-if="harTilDatoFeil()" data-ng-bind-html=" 'dato.tilDato.feilmelding' | cmstekst"></span>
-    <span class="melding" data-ng-if="harFormatteringsFeil()" data-ng-bind-html=" 'dato.format.feilmelding' | cmstekst"></span>
-    <span class="melding" data-ng-if="erIkkeGyldigDato()" data-ng-bind-html=" 'dato.ikkeGyldigDato.feilmelding' | cmstekst"></span>
-    <span class="melding" data-ng-if="erUloveligFremtidigDato()" data-ng-bind-html=" 'dato.ugyldigFremtidig.feilmelding' | cmstekst"></span>
+    <span class="melding" data-ng-if="harTilDatoFeil()"
+          data-ng-bind-html=" 'dato.tilDato.feilmelding' | cmstekst"></span>
+    <span class="melding" data-ng-if="harFormatteringsFeil()"
+          data-ng-bind-html=" 'dato.format.feilmelding' | cmstekst"></span>
+    <span class="melding" data-ng-if="erIkkeGyldigDato()"
+          data-ng-bind-html=" 'dato.ikkeGyldigDato.feilmelding' | cmstekst"></span>
+    <span class="melding" data-ng-if="erUloveligFremtidigDato()"
+          data-ng-bind-html=" 'dato.ugyldigFremtidig.feilmelding' | cmstekst"></span>
 </div>
