@@ -16,7 +16,7 @@ angular.module('nav.arbeidsforhold.permittering.directive',[])
                         scope.barnefaktum.push(permitteringsperiode);
                     };
 
-                    if(scope.permitteringsperioder.length == 0) {
+                    if(scope.permitteringsperioder.length === 0) {
                         scope.leggTilPeriode();
                     }
 
