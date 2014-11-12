@@ -678,9 +678,6 @@
     <vedlegg>
         <id>5</id>
         <faktum>reellarbeidssoker.villigdeltid.reduserthelse</faktum>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
         <onValue>true</onValue>
         <skjemaNummer>Y2</skjemaNummer>
         <ekstraValg>

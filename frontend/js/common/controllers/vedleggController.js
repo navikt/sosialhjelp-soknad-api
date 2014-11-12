@@ -137,16 +137,11 @@ angular.module('nav.vedlegg.controller', [])
         };
 
         $scope.skalViseNesteKnapp = function(forventning, erSiste) {
-            if (($scope.erEkstraVedlegg(forventning) && forventning.innsendingsvalg !== 'LastetOpp') || erSiste) {
-                return false;
-            } else {
-                return true;
-            }
-
+            return !(($scope.erEkstraVedlegg(forventning) && forventning.innsendingsvalg !== 'LastetOpp') || erSiste);
         };
 
-        $scope.skalViseAlleredeSendtAlternativ = function(index) {
-            var vedlegg = $scope.finnVedleggMedSkjemanummer($scope.forventninger[index].skjemaNummer);
+        $scope.skalViseAlleredeSendtAlternativ = function(forventing) {
+            var vedlegg = $scope.finnVedleggMedSkjemanummer(forventing.skjemaNummer);
             return (vedlegg && vedlegg.ekstraValg && vedlegg.ekstraValg.indexOf("AlleredeSendt") > -1);
         };
 
