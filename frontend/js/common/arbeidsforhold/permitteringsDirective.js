@@ -19,7 +19,6 @@ angular.module('nav.arbeidsforhold.permittering.directive',[])
                     if(scope.permitteringsperioder.length === 0) {
                         scope.leggTilPeriode();
                     }
-
                 }
             }
         };

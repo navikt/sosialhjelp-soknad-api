@@ -1,16 +1,18 @@
 angular.module('nav.arbeidsforhold.controller', [])
-    .controller('ArbeidsforholdCtrl', ['$scope', '$cookieStore', '$location', 'data', function ($scope, $cookieStore, $location, data) {
-        $scope.soknadId = data.soknad.soknadId;
-
+    .controller('ArbeidsforholdCtrl', function ($scope, $cookieStore, $location, data, datapersister) {
         $scope.templates = {
             'Sagt opp av arbeidsgiver': { oppsummeringsurl: '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver-oppsummering.html' },
             'Permittert': {oppsummeringsurl: '../views/templates/arbeidsforhold/permittert-oppsummering.html' },
             'Kontrakt utgått': {oppsummeringsurl: '../views/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.html'},
             'Sagt opp selv': {oppsummeringsurl: '../views/templates/arbeidsforhold/sagt-opp-selv-oppsummering.html' },
             'Redusert arbeidstid': {oppsummeringsurl: '../views/templates/arbeidsforhold/redusertarbeidstid-oppsummering.html' },
-            'Arbeidsgiver er konkurs': {oppsummeringsurl: '../views/templates/arbeidsforhold/konkurs-oppsummering.html'},
-            'Avskjediget': {oppsummeringsurl: '../views/templates/arbeidsforhold/avskjediget-oppsummering.html' }
+            'Arbeidsgiver er konkurs': {oppsummeringsurl: '../views/templates/arbeidsforhold/konkurs-oppsummering.html'}
         };
+
+        $scope.soknadId = data.soknad.soknadId;
+
+        // Resetter arbeidsforhol
+        datapersister.remove("arbeidsforholdData");
 
         var arbeidsforhold = data.finnFakta('arbeidsforhold');
         $scope.arbeidsliste = [];
@@ -146,4 +148,4 @@ angular.module('nav.arbeidsforhold.controller', [])
 
         }
 
-    }]);
+    });

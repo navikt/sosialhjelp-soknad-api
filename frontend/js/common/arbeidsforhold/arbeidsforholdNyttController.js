@@ -1,5 +1,5 @@
 angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
-	.controller('ArbeidsforholdNyttCtrl', function ($scope, data, Faktum, $location, $cookieStore, $resource, cms, $q) {
+	.controller('ArbeidsforholdNyttCtrl', function ($scope, data, Faktum, $location, $cookieStore, $resource, cms, $q, datapersister) {
 
 		$scope.templates = {
             'Sagt opp av arbeidsgiver': {url: '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver.html'},
@@ -12,8 +12,10 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 		};
 		$scope.land = data.land;
         $scope.soknadId = data.soknad.soknadId;
+        $scope.behandlingId = data.soknad.brukerBehandlingId;
         $scope.soknadUrl = '/' + data.soknad.brukerBehandlingId + '/soknad';
-        $scope.permitteringsperioder = data.finnFakta('arbeidsforhold.permitteringsperiode') || [ ];
+        $scope.barnefaktum = [];
+        $scope.permitteringsperioder =[];
 
         $scope.settBreddeSlikAtDetFungererIIE = function() {
             setTimeout(function() {
@@ -21,31 +23,35 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
             }, 50);
         };
 
-
 		var url = $location.$$url;
-		var endreModus = url.indexOf('endrearbeidsforhold') !== -1;
-		var arbeidsforholdData;
 
-		if (endreModus) {
-			var faktumId = url.split('/').pop();
-			var opprinneligData = data.finnFakta('arbeidsforhold');
+        var endreModus = url.indexOf('endrearbeidsforhold') !== -1;
+        var arbeidsforholdData;
+
+        if (endreModus) {
+            var faktumId = url.split('/').pop();
+            var opprinneligData = data.finnFakta('arbeidsforhold');
             var arbeidsforhold = angular.copy(opprinneligData);
+            $scope.permitteringsperioder = getPermitteringsPerioderMedParentFaktum(faktumId);
 
             angular.forEach(arbeidsforhold, function (value) {
-				if (value.faktumId === parseInt(faktumId)) {
-					arbeidsforholdData = value;
-				}
+                if (value.faktumId === parseInt(faktumId)) {
+                    arbeidsforholdData = value;
+                }
             });
 
-			angular.forEach($scope.templates, function (template, index) {
+            angular.forEach($scope.templates, function (template, index) {
                 if (arbeidsforholdData.properties.type === index) {
                     $scope.sluttaarsakType = index;
-				}
-			});
-
+                }
+            });
             $scope.settBreddeSlikAtDetFungererIIE();
-		} else {
-			arbeidsforholdData = {
+        } else if(datapersister.get("arbeidsforholdData")) {
+            arbeidsforholdData = datapersister.get("arbeidsforholdData");
+            $scope.barnefaktum = datapersister.get("barnefaktum") || [];
+            $scope.permitteringsperioder = $scope.permitteringsperioder.concat($scope.barnefaktum);
+        } else {
+            arbeidsforholdData = {
 				key       : 'arbeidsforhold',
 				properties: {
                     'startetForrigeAar': 'false',
@@ -59,9 +65,10 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 			};
             $scope.settBreddeSlikAtDetFungererIIE();
 		}
+        datapersister.set("arbeidsforholdData", arbeidsforholdData);
 		$scope.arbeidsforhold = new Faktum(arbeidsforholdData);
 		$scope.sluttaarsak = $scope.arbeidsforhold;
-        $scope.barnefaktum = [];
+        datapersister.set("barnefaktum", $scope.barnefaktum);
 
 		$scope.$watch(function () {
             if ($scope.arbeidsforhold.properties.land) {
@@ -124,15 +131,25 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 				oppdaterCookieValue(arbeidsforholdData.faktumId);
 
                 angular.forEach($scope.barnefaktum, function(faktum) {
+                    console.log("lagre!");
                     faktum.parrentFaktum = arbeidsforholdData.faktumId;
                     promises.push(faktum.$save({soknadId: data.soknad.soknadId}));
                     data.fakta.push(faktum);
                 });
 
                 $q.all(promises).then(function() {
+                    datapersister.remove("arbeidsforholdData");
                     $location.path($scope.soknadUrl);
                 });
 			});
+        }
+
+        function getPermitteringsPerioderMedParentFaktum(parentFaktumId) {
+            var permitteringsperioder = data.finnFakta('arbeidsforhold.permitteringsperiode') || [];
+            permitteringsperioder = permitteringsperioder.filter(function(permitteringsperiode) {
+               return (permitteringsperiode.parrentFaktum === parseInt(parentFaktumId));
+            });
+            return permitteringsperioder;
         }
 
 		function oppdaterCookieValue(faktumId) {
