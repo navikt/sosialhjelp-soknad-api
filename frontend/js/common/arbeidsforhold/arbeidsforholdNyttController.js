@@ -14,8 +14,11 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
         $scope.soknadId = data.soknad.soknadId;
         $scope.behandlingId = data.soknad.brukerBehandlingId;
         $scope.soknadUrl = '/' + data.soknad.brukerBehandlingId + '/soknad';
+        $scope.permitteringsPeriodeUrl = '/' + data.soknad.brukerBehandlingId + '/permitteringsperiode';
         $scope.barnefaktum = [];
         $scope.permitteringsperioder =[];
+
+        datapersister.remove("permitteringsperiode");
 
         $scope.settBreddeSlikAtDetFungererIIE = function() {
             setTimeout(function() {
@@ -45,11 +48,6 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
                     $scope.sluttaarsakType = index;
                 }
             });
-            $scope.settBreddeSlikAtDetFungererIIE();
-        } else if(datapersister.get("arbeidsforholdData")) {
-            arbeidsforholdData = datapersister.get("arbeidsforholdData");
-            $scope.barnefaktum = datapersister.get("barnefaktum") || [];
-            $scope.permitteringsperioder = $scope.permitteringsperioder.concat($scope.barnefaktum);
         } else {
             arbeidsforholdData = {
 				key       : 'arbeidsforhold',
@@ -63,8 +61,15 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
                     'land' : cms.tekster["arbeidsforhold.arbeidsgiver.landDefault"]
 				}
 			};
-            $scope.settBreddeSlikAtDetFungererIIE();
 		}
+        $scope.settBreddeSlikAtDetFungererIIE();
+
+        if(datapersister.get("arbeidsforholdData")) {
+            arbeidsforholdData = datapersister.get("arbeidsforholdData");
+            $scope.barnefaktum = datapersister.get("barnefaktum") || [];
+            $scope.permitteringsperioder = $scope.permitteringsperioder.concat($scope.barnefaktum);
+        }
+
         datapersister.set("arbeidsforholdData", arbeidsforholdData);
 		$scope.arbeidsforhold = new Faktum(arbeidsforholdData);
 		$scope.sluttaarsak = $scope.arbeidsforhold;
@@ -95,6 +100,11 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
                 lagreArbeidsforholdOgSluttaarsak();
 			}
 		};
+
+        $scope.aapneEndrePermitteringsperiode = function(index) {
+            datapersister.set("permitteringsperiode", $scope.permitteringsperioder[index]);
+            $location.path($scope.permitteringsPeriodeUrl);
+        };
 
         function getArbeidsforholdSluttDato() {
             switch ($scope.arbeidsforhold.properties.type) {
@@ -131,7 +141,6 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 				oppdaterCookieValue(arbeidsforholdData.faktumId);
 
                 angular.forEach($scope.barnefaktum, function(faktum) {
-                    console.log("lagre!");
                     faktum.parrentFaktum = arbeidsforholdData.faktumId;
                     promises.push(faktum.$save({soknadId: data.soknad.soknadId}));
                     data.fakta.push(faktum);
@@ -153,24 +162,24 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
         }
 
 		function oppdaterCookieValue(faktumId) {
-			var arbeidsforholdCookie = $cookieStore.get('scrollTil');
+            var arbeidsforholdCookie = $cookieStore.get('scrollTil');
 
-			$cookieStore.put('scrollTil', {
-				aapneTabs   : arbeidsforholdCookie.aapneTabs,
-				gjeldendeTab: arbeidsforholdCookie.gjeldendeTab,
-				faktumId    : faktumId
-			});
-		}
+            $cookieStore.put('scrollTil', {
+                aapneTabs: arbeidsforholdCookie.aapneTabs,
+                gjeldendeTab: arbeidsforholdCookie.gjeldendeTab,
+                faktumId: faktumId
+            });
+        }
 
 		function oppdaterFaktumListe(type, arbeidsforholdData) {
             if (!endreModus) {
-				data.fakta.push($scope[type]);
-			} else {
+                data.fakta.push($scope[type]);
+            } else {
                 angular.forEach(data.fakta, function (value, index) {
                     if (value.faktumId === parseInt(arbeidsforholdData.faktumId)) {
                         data.fakta[index] = arbeidsforholdData;
                     }
                 });
             }
-		}
+        }
 	});
