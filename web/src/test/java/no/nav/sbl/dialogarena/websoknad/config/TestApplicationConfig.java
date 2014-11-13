@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.common.kodeverk.JsonKodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.ConfigService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.EmailService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.StartDatoService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.MockConsumerConfig;
@@ -15,6 +16,8 @@ import no.nav.sbl.dialogarena.websoknad.WicketApplication;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.mail.MailSender;
 
 import java.util.Locale;
 
@@ -82,4 +85,20 @@ public class TestApplicationConfig {
     public JsonKodeverk jsonKodeverk() {
         return mock(JsonKodeverk.class);
     }
+
+    @Bean
+    public EmailService emailService() {
+        return mock(EmailService.class);
+    }
+
+    @Bean
+    public MailSender mailSender() {
+        return mock(MailSender.class);
+    }
+
+    @Bean
+    public TaskExecutor taskExecutor() {
+        return mock(TaskExecutor.class);
+    }
+
 }

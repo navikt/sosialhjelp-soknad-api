@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.websoknad.pages.soknadliste;
 import no.nav.modig.wicket.test.FluentWicketTester;
 import no.nav.sbl.dialogarena.websoknad.WicketApplication;
 import no.nav.sbl.dialogarena.websoknad.config.TestApplicationConfig;
-import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.StartSoknadPage;
 import no.nav.sbl.dialogarena.websoknad.pages.utslagskriterier.UtslagskriterierDagpengerPage;
 import org.junit.Before;
 import org.junit.Test;

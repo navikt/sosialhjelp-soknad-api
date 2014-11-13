@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.inject.Inject;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
@@ -163,7 +164,7 @@ public class SoknadDataController {
     @RequestMapping(value = "/send/{soknadId}", method = RequestMethod.POST, consumes = "application/json")
     @ResponseBody()
     @SjekkTilgangTilSoknad
-    public void sendSoknad(@PathVariable Long soknadId) {
+    public void sendSoknad(HttpServletRequest request, @PathVariable Long soknadId) {
         WebSoknad soknad = soknadService.hentSoknad(soknadId);
 
         byte[] pdfOutputStream;
@@ -173,9 +174,9 @@ public class SoknadDataController {
             pdfOutputStream = genererPdf(soknad, "/skjema/gjenopptak");
         } else {
             pdfOutputStream = genererPdf(soknad, "/skjema/dagpenger");
-
         }
-        soknadService.sendSoknad(soknadId, pdfOutputStream);
+
+        soknadService.sendSoknad(soknadId, pdfOutputStream, request.getRequestURL().toString());
     }
 
     private byte[] genererPdf(WebSoknad soknad, String hbsSkjemaPath) {

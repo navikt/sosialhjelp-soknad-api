@@ -31,9 +31,11 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
+import org.springframework.context.support.StaticMessageSource;
 
 import javax.activation.DataHandler;
 import javax.xml.bind.JAXB;
@@ -44,6 +46,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import static java.lang.System.setProperty;
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
@@ -90,6 +93,15 @@ public class SoknadServiceTest {
 
     @Mock
     private StartDatoService startDatoService;
+
+    @Spy
+    private StaticMessageSource messageSource = new StaticMessageSource();
+
+    @Mock
+    private EmailService emailService;
+
+    @Mock
+    private ConfigService configService;
 
     @InjectMocks
     private SoknadService soknadService;
@@ -170,8 +182,12 @@ public class SoknadServiceTest {
                         .medVedlegg(vedlegg));
 
         when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(vedlegg);
+        when(configService.getValue("saksoversikt.link.url")).thenReturn("saksoversiktUrl");
 
-        soknadService.sendSoknad(1L, new byte[]{1, 2, 3});
+        messageSource.addMessage("sendtSoknad.sendEpost.epostSubject", new Locale("nb", "NO"), "subject");
+        messageSource.addMessage("sendtSoknad.sendEpost.epostInnhold", new Locale("nb", "NO"), "innhold med url {0}, url {1}");
+
+        soknadService.sendSoknad(1L, new byte[]{1, 2, 3}, "miljo/rest/resten");
         verify(henvendelsesConnector).avsluttSoknad(eq("123"), refEq(new XMLHovedskjema()
                 .withUuid("uidHovedskjema")
                 .withInnsendingsvalg(XMLInnsendingsvalg.LASTET_OPP.toString())
@@ -196,6 +212,33 @@ public class SoknadServiceTest {
                                 .withTilleggsinfo("")
                                 .withSkjemanummer("L7")
                                 .withFilnavn("L7")));
+
+        verify(emailService, never()).sendEPostMedLenkeTilEttersendelse(null, "subject", "innhold");
+    }
+
+    @Test
+    public void sendSoknadSkalSendeEpostNarBrukerHarEpost() {
+        List<Vedlegg> vedlegg = Arrays.asList(
+                new Vedlegg()
+                        .medSkjemaNummer("L7")
+                        .medInnsendingsvalg(Vedlegg.Status.SendesIkke));
+
+        when(soknadRepository.hentSoknadMedData(1L)).thenReturn(
+                new WebSoknad().medAktorId("123456")
+                        .medBehandlingId("123")
+                        .medUuid("uidHovedskjema")
+                        .medskjemaNummer(DAGPENGER)
+                        .medFaktum(new Faktum().medKey("personalia").medProperty("epost", "minemail@nav.no"))
+                        .medVedlegg(vedlegg));
+
+        when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(vedlegg);
+        when(configService.getValue("saksoversikt.link.url")).thenReturn("saksoversiktUrl");
+
+        messageSource.addMessage("sendtSoknad.sendEpost.epostSubject", new Locale("nb", "NO"), "subject");
+        messageSource.addMessage("sendtSoknad.sendEpost.epostInnhold", new Locale("nb", "NO"), "innhold med url {0}, url {1}");
+
+        soknadService.sendSoknad(1L, new byte[]{1, 2, 3}, "miljo/rest/resten");
+        verify(emailService).sendEPostMedLenkeTilEttersendelse("minemail@nav.no", "subject","innhold med url saksoversiktUrl/detaljer/DAG/123, url miljo/startettersending/123");
     }
 
     @Test(expected = ApplicationException.class)
@@ -222,7 +265,7 @@ public class SoknadServiceTest {
 
         when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(vedlegg);
 
-        soknadService.sendSoknad(1L, new byte[]{1, 2, 3});
+        soknadService.sendSoknad(1L, new byte[]{1, 2, 3}, "url");
     }
 
     @Test
