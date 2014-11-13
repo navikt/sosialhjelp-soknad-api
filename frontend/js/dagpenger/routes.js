@@ -267,7 +267,7 @@ angular.module('sendsoknad.routes', ['ngRoute', 'nav.common.routes'])
                 }
             })
             .when('/:behandlingId/nyttarbeidsforhold', {
-                templateUrl: '../views/templates/arbeidsforhold-nytt.html',
+                templateUrl: '../views/templates/arbeidsforhold/arbeidsforhold-nytt.html',
                 resolve: {
                     cms: function (CmsResolver) {
                         return CmsResolver;
@@ -293,7 +293,7 @@ angular.module('sendsoknad.routes', ['ngRoute', 'nav.common.routes'])
                 }
             })
             .when('/:behandlingId/endrearbeidsforhold/:faktumId', {
-                templateUrl: '../views/templates/arbeidsforhold-nytt.html',
+                templateUrl: '../views/templates/arbeidsforhold/arbeidsforhold-nytt.html',
                 resolve: {
                     cms: function (CmsResolver) {
                         return CmsResolver;
