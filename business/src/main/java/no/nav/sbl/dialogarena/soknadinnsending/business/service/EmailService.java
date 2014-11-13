@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.websoknad.service;
+package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +30,15 @@ public class EmailService {
      * @param innhold innhold i mail
      */
     public void sendFortsettSenereEPost(String ePost, String subject, String innhold) {
+        SimpleMailMessage mail = new SimpleMailMessage();
+        mail.setTo(ePost);
+        mail.setSubject(subject);
+        mail.setText(innhold);
+        mail.setFrom("ikke-svar@nav.no");
+        addTask(mail);
+    }
+
+    public void sendEPostMedLenkeTilEttersendelse(String ePost, String subject, String innhold) {
         SimpleMailMessage mail = new SimpleMailMessage();
         mail.setTo(ePost);
         mail.setSubject(subject);
