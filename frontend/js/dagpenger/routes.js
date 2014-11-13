@@ -318,7 +318,7 @@ angular.module('sendsoknad.routes', ['ngRoute', 'nav.common.routes'])
                     }
                 }
             })
-            .when('/:behandlingId/nypermitteringsperiode', {
+            .when('/:behandlingId/permitteringsperiode', {
                 templateUrl: '../views/templates/arbeidsforhold/permitteringsperiode-nytt.html',
                 resolve: {
                     cms: function (CmsResolver) {

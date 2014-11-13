@@ -1,32 +1,32 @@
 angular.module('nav.arbeidsforhold.nypermitteringsperiode.controller', ['nav.arbeidsforhold.permittering.directive'])
 	.controller('PermitteringsperiodeNyttCtrl', function ($scope, $location, Faktum, data, datapersister) {
-        if(!datapersister.get("arbeidsforholdData")) {
-            $location.path(data.soknad.brukerBehandlingId + "/nyttarbeidsforhold");
+        var arbeidsforholdData = datapersister.get("arbeidsforholdData");
+        $scope.originalPermitteringsperiode = datapersister.get("permitteringsperiode");
+
+        if(!arbeidsforholdData) {
+            $location.path(data.soknad.brukerBehandlingId + "/soknad");
         }
 
-        $scope.arbeidsforholdUrl = "/" + data.soknad.brukerBehandlingId + "/nyttarbeidsforhold";
-        var url = $location.$$url;
-        var endreModus = url.indexOf('endrepermitteringsperiode') !== -1;
-
-        var permitteringsperiodeData;
-
-        if (endreModus) {
-            var faktumId = url.split('/').pop();
-            var opprinneligData = data.finnFakta('permitteringsperiode');
-            var permitteringsperiode = angular.copy(opprinneligData);
-            angular.forEach(permitteringsperiode, function (value) {
-                if (value.faktumId === parseInt(faktumId)) {
-                    permitteringsperiodeData = value;
-                }
-            });
+        console.log(arbeidsforholdData);
+        $scope.arbeidsforholdUrl = "/" + data.soknad.brukerBehandlingId;
+        if(arbeidsforholdData.faktumId) {
+            $scope.arbeidsforholdUrl += "/endrearbeidsforhold/" + arbeidsforholdData.faktumId;
         } else {
-            permitteringsperiodeData = {
+            $scope.arbeidsforholdUrl += "/nyttarbeidsforhold";
+        }
+
+        endreModus = $scope.originalPermitteringsperiode !== undefined;
+        $scope.cmsPostFix = endreModus ? ".endre" : "";
+
+        if(!endreModus) {
+            var permitteringsperiodeData = {
                 key       : 'arbeidsforhold.permitteringsperiode',
                 properties: { }
             };
+            $scope.permitteringsperiode = new Faktum(permitteringsperiodeData);
+        } else {
+            $scope.permitteringsperiode = angular.copy($scope.originalPermitteringsperiode);
         }
-
-        $scope.permitteringsperiode = new Faktum(permitteringsperiodeData);
 
         $scope.lagrePermitteringsperiode = function (form) {
             var eventString = 'RUN_VALIDATION' + form.$name;
@@ -34,10 +34,10 @@ angular.module('nav.arbeidsforhold.nypermitteringsperiode.controller', ['nav.arb
             $scope.runValidation(true);
 
             if (form.$valid) {
-                if(datapersister.get("barnefaktum")) {
-                    datapersister.get("barnefaktum").push($scope.permitteringsperiode);
+                if(endreModus) {
+                    oppdaterEksisterendePermitteringsPeriode($scope.originalPermitteringsperiode, $scope.permitteringsperiode);
                 } else {
-                    datapersister.set("barnefaktum", [$scope.permitteringsperiode]);
+                    lagreNyPermitteringsPeriode($scope.permitteringsperiode);
                 }
                 $location.path($scope.arbeidsforholdUrl);
             }
@@ -49,4 +49,18 @@ angular.module('nav.arbeidsforhold.nypermitteringsperiode.controller', ['nav.arb
             }, 50);
         };
         $scope.settBreddeSlikAtDetFungererIIE();
+
+        function lagreNyPermitteringsPeriode(permitteringsperiode) {
+            if(datapersister.get("barnefaktum")) {
+                datapersister.get("barnefaktum").push(permitteringsperiode);
+            } else {
+                datapersister.set("barnefaktum", [permitteringsperiode]);
+            }
+        }
+
+        function oppdaterEksisterendePermitteringsPeriode(original, nyData) {
+            angular.forEach(original, function(value, key) {
+                original[key] = nyData[key];
+            });
+        }
     });
