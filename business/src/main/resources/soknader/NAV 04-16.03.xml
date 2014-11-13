@@ -609,6 +609,27 @@
         <dependOnValue>false</dependOnValue>
     </faktum>
 
+    <!-- Reberegning -->
+    <faktum>
+        <id>reberegning.nyberegning</id>
+        <type>java.lang.Boolean</type>
+        <panel>Reberegning</panel>
+    </faktum>
+    <faktum>
+        <id>reberegning.nyberegning.startdato</id>
+        <type>java.lang.String</type>
+        <panel>Reberegning</panel>
+        <dependOn>reberegning.nyberegning</dependOn>
+        <dependOnValue>false</dependOnValue>
+    </faktum>
+    <faktum>
+        <id>reberegning.nyberegning.arbeidstid</id>
+        <type>java.lang.Boolean</type>
+        <panel>Reberegning</panel>
+        <dependOn>reberegning.nyberegning</dependOn>
+        <dependOnValue>false</dependOnValue>
+    </faktum>
+
     <!-- Tilleggsopplysninger -->
     <faktum>
         <id>tilleggsopplysninger.fritekst</id>
