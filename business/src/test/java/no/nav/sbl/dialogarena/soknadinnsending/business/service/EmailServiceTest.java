@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.websoknad.service;
+package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
