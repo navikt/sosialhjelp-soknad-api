@@ -36,8 +36,20 @@
     </div>
 </div>
 
-<div data-permitterings-periode></div>
-<a href="#{{permitteringsPeriodeUrl}}">Ny permittring</a>
+<div data-ng-if="permitteringsperioder.length < 2">
+    <h4 class="spm-sporsmal"
+        data-ng-bind-html=" 'arbeidsforhold.arbeidsgiver.permittert.varighet' | cmstekst"></h4>
+
+    <div data-permitterings-periode-input
+         data-permitteringsperiode="permitteringsperiode" >
+    </div>
+</div>
+
+<div data-ng-if="permitteringsperioder.length > 1"
+     data-permitterings-periode>
+</div>
+
+<a href="#{{permitteringsPeriodeUrl}}" data-ng-click="haandterEnkelPermittering()">Ny permittring</a>
 
 <div class="ekstra-spm-boks">
     <div data-navinfoboks>

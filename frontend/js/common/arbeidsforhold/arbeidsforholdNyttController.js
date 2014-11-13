@@ -17,6 +17,11 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
         $scope.permitteringsPeriodeUrl = '/' + data.soknad.brukerBehandlingId + '/permitteringsperiode';
         $scope.barnefaktum = [];
         $scope.permitteringsperioder =[];
+        $scope.permitteringsperiode = {
+            key: 'arbeidsforhold.permitteringsperiode',
+            properties: {}
+        };
+
 
         datapersister.remove("permitteringsperiode");
 
@@ -182,4 +187,11 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
                 });
             }
         }
+
+        $scope.haandterEnkelPermittering = function(){
+          console.log($scope.permitteringsperiode);
+          if(datapersister.get("barnefaktum")){
+              datapersister.get("barnefaktum").push(new Faktum($scope.permitteringsperiode));
+          }
+        };
 	});
