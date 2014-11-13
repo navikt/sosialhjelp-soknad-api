@@ -55,6 +55,7 @@ angular.module('sendsoknad')
         $http.get('../js/common/directives/melding/meldingTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/markup/vedlegginfoboksTemplate.html', {cache: $templateCache});
         $http.get('../views/templates/arbeidsforhold/arbeidsforhold-nytt.html', {cache: $templateCache});
+        $http.get('../views/templates/arbeidsforhold/permitteringsperiode-nytt.html', {cache: $templateCache});
         $http.get('../views/templates/arbeidsforhold/avskjediget.html', {cache: $templateCache});
         $http.get('../views/templates/arbeidsforhold/avskjediget-oppsummering.html', {cache: $templateCache});
         $http.get('../views/templates/arbeidsforhold/konkurs.html', {cache: $templateCache});
