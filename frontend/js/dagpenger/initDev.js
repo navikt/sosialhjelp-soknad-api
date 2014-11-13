@@ -16,7 +16,7 @@ angular.module('sendsoknad')
         $http.get('../views/templates/egennaering/gardsbruk.html', {cache: $templateCache});
         $http.get('../views/templates/verneplikt.html', {cache: $templateCache});
         $http.get('../views/templates/personalia.html', {cache: $templateCache});
-        $http.get('../views/templates/arbeidsforhold.html', {cache: $templateCache});
+        $http.get('../views/templates/arbeidsforhold/arbeidsforhold.html', {cache: $templateCache});
         $http.get('../views/templates/ytelser.html', {cache: $templateCache});
         $http.get('../views/templates/barnetillegg/barnetillegg.html', {cache: $templateCache});
         $http.get('../views/templates/barnetillegg/barnetillegg-nyttbarn.html', {cache: $templateCache});
@@ -54,7 +54,7 @@ angular.module('sendsoknad')
 
         $http.get('../js/common/directives/melding/meldingTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/markup/vedlegginfoboksTemplate.html', {cache: $templateCache});
-        $http.get('../views/templates/arbeidsforhold-nytt.html', {cache: $templateCache});
+        $http.get('../views/templates/arbeidsforhold/arbeidsforhold-nytt.html', {cache: $templateCache});
         $http.get('../views/templates/arbeidsforhold/avskjediget.html', {cache: $templateCache});
         $http.get('../views/templates/arbeidsforhold/avskjediget-oppsummering.html', {cache: $templateCache});
         $http.get('../views/templates/arbeidsforhold/konkurs.html', {cache: $templateCache});
