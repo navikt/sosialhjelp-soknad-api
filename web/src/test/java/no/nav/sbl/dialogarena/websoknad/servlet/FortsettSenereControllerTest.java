@@ -1,7 +1,8 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
-import no.nav.sbl.dialogarena.websoknad.service.EmailService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.EmailService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.ServerUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
