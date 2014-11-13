@@ -7,7 +7,6 @@ angular.module('nav.arbeidsforhold.nypermitteringsperiode.controller', ['nav.arb
             $location.path(data.soknad.brukerBehandlingId + "/soknad");
         }
 
-        console.log(arbeidsforholdData);
         $scope.arbeidsforholdUrl = "/" + data.soknad.brukerBehandlingId;
         if(arbeidsforholdData.faktumId) {
             $scope.arbeidsforholdUrl += "/endrearbeidsforhold/" + arbeidsforholdData.faktumId;
@@ -34,6 +33,7 @@ angular.module('nav.arbeidsforhold.nypermitteringsperiode.controller', ['nav.arb
             $scope.runValidation(true);
 
             if (form.$valid) {
+                console.log($scope.permitteringsperiode);
                 if(endreModus) {
                     oppdaterEksisterendePermitteringsPeriode($scope.originalPermitteringsperiode, $scope.permitteringsperiode);
                 } else {

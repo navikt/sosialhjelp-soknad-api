@@ -23,6 +23,15 @@ angular.module('nav.arbeidsforhold.permittering.directive',[])
             }
         };
     })
+    .directive('permitteringsPeriodeInput', function() {
+        return {
+            templateUrl: '../js/common/arbeidsforhold/templates/permitteringsPeriodeInputTemplate.html',
+            replace: true,
+            scope: {
+                permitteringsperiode: '='
+            }
+        };
+    })
     .directive('permitteringsPeriodeOppsummering', function(data) {
         return {
             templateUrl: '../js/common/arbeidsforhold/templates/permitteringsPerioderOppsummeringTemplate.html',
