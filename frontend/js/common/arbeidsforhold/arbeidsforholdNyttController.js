@@ -112,9 +112,16 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
             $location.path($scope.permitteringsPeriodeUrl);
         };
 
+        $scope.aapneLeggTilNyPermitteringsperiode = function() {
+            datapersister.set("permitteringsperioderTilSletting", $scope.permitteringsperioderTilSletting);
+            $location.path($scope.permitteringsPeriodeUrl);
+        }
+
 
         $scope.leggPermitteringsperiodeTilSletting = function (permitteringsperiode){
-            $scope.permitteringsperioderTilSletting.push(permitteringsperiode);
+            if(permitteringsperiode.faktumId) {
+                $scope.permitteringsperioderTilSletting.push(permitteringsperiode);
+            }
             removeFromList($scope.permitteringsperioder, permitteringsperiode);
             removeFromList($scope.barnefaktum, permitteringsperiode);
         };
@@ -221,7 +228,10 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
         }
 
         function removeFromList(list, element) {
-            list.splice(list.indexOf(element), 1);
+            var index = list.indexOf(element);
+            if(index >= 0) {
+                list.splice(index, 1);
+            }
         }
 
         function settPerioderKlarTilSletting() {
