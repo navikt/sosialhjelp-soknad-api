@@ -16,12 +16,8 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
         $scope.soknadUrl = '/' + data.soknad.brukerBehandlingId + '/soknad';
         $scope.permitteringsPeriodeUrl = '/' + data.soknad.brukerBehandlingId + '/permitteringsperiode';
         $scope.barnefaktum = [];
-        $scope.permitteringsperioder =[];
-        $scope.permitteringsperiode = {
-            key: 'arbeidsforhold.permitteringsperiode',
-            properties: {}
-        };
-
+        $scope.permitteringsperioder = [];
+        $scope.permitteringsperioderTilSletting = [];
 
         datapersister.remove("permitteringsperiode");
 
@@ -72,6 +68,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
         if(datapersister.get("arbeidsforholdData")) {
             arbeidsforholdData = datapersister.get("arbeidsforholdData");
             $scope.barnefaktum = datapersister.get("barnefaktum") || [];
+
             $scope.permitteringsperioder = $scope.permitteringsperioder.concat($scope.barnefaktum);
         }
 
@@ -100,13 +97,15 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 			$scope.$broadcast(eventString);
 			$scope.runValidation(true);
 
-			if (form.$valid) {
-                settStartetForrigeAarProperty();
-                lagreArbeidsforholdOgSluttaarsak();
-			}
-		};
 
-        $scope.aapneEndrePermitteringsperiode = function(index) {
+            if (form.$valid) {
+                settStartetForrigeAarProperty();
+                slettPermitteringsperioder();
+                lagreArbeidsforholdOgSluttaarsak();
+            }
+        };
+        $scope.aapneEndrePermitteringsperiode = function(permitteringsperiode) {
+            var index = $scope.permitteringsperioder.indexOf(permitteringsperiode)
             datapersister.set("permitteringsperiode", $scope.permitteringsperioder[index]);
             $location.path($scope.permitteringsPeriodeUrl);
         };
@@ -146,6 +145,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 				oppdaterCookieValue(arbeidsforholdData.faktumId);
 
                 angular.forEach($scope.barnefaktum, function(faktum) {
+                    console.log(faktum);
                     faktum.parrentFaktum = arbeidsforholdData.faktumId;
                     promises.push(faktum.$save({soknadId: data.soknad.soknadId}));
                     data.fakta.push(faktum);
@@ -188,10 +188,35 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
             }
         }
 
-        $scope.haandterEnkelPermittering = function(){
-          console.log($scope.permitteringsperiode);
-          if(datapersister.get("barnefaktum")){
-              datapersister.get("barnefaktum").push(new Faktum($scope.permitteringsperiode));
-          }
+        function slettPermitteringsperioder() {
+            angular.forEach($scope.permitteringsperioderTilSletting, function(permitteringsperiode){
+               if(permitteringsperiode.faktumId){
+                   data.slettFaktum(permitteringsperiode);
+               }
+            });
+
+        }
+
+        function removeFromList(list, element) {
+            list.splice(list.indexOf(element), 1);
+        }
+
+        $scope.leggPermitteringsperiodeTilSletting = function (permitteringsperiode){
+            $scope.permitteringsperioderTilSletting.push(permitteringsperiode);
+            removeFromList($scope.permitteringsperioder, permitteringsperiode);
+            removeFromList($scope.barnefaktum, permitteringsperiode);
+        };
+
+        $scope.getForstePermitteringsperiode = function() {
+            if($scope.permitteringsperioder.length === 0) {
+                var periode = {
+                    key: 'arbeidsforhold.permitteringsperiode',
+                    properties: {}
+                };
+                var faktum = new Faktum(periode);
+                $scope.barnefaktum = [faktum];
+                $scope.permitteringsperioder = [faktum];
+            }
+            return $scope.permitteringsperioder[0];
         };
 	});

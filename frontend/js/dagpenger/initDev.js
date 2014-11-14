@@ -6,7 +6,6 @@ angular.module('sendsoknad')
         $http.get('../js/common/tredjeparts/directives/modal/window.html', {cache: $templateCache});
         $http.get('../js/common/tredjeparts/directives/modal/backdrop.html', {cache: $templateCache});
 
-        $http.get('../js/common/arbeidsforhold/templates/permitteringsPerioderTemplate.html', {cache: $templateCache});
         $http.get('../js/common/arbeidsforhold/templates/permitteringsPerioderOppsummeringTemplate.html', {cache: $templateCache});
 
         $http.get('../views/templates/reellarbeidssoker/reell-arbeidssoker.html', {cache: $templateCache});
