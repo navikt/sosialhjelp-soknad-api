@@ -4,7 +4,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
         $scope.utslagskriterier.harlestbrosjyre = false;
         $scope.cmsprefix = "gjenopptak";
         $scope.dittnavUrl = data.config["dittnav.link.url"];
-        $scope.tilbakeUrl = '../utslagskriterier/dagpenger/';
+        $scope.tilbakeUrl = '../utslagskriterier/dagpenger';
 
         $scope.oppsummering = false;
 
