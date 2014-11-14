@@ -76,10 +76,14 @@
             expect(scope.harLestBrosjyre()).toEqual(false);
         });
         it('startSoknadDersomBrosjyreLest skal ikke kalle startSoknad dersom bruker ikke har lest brosjyre', function () {
-            spyOn(scope, 'harLestBrosjyre');
-            scope.startSoknadDersomBrosjyreLest();
-            expect(scope.harLestBrosjyre).toHaveBeenCalled();
-            expect(scope.harLestBrosjyre()).toNotBe(true);
+            spyOn(scope, 'startSoknad');
+            var mockForm = {
+                $name: 'formname',
+                $valid: false
+            };
+
+            scope.startSoknadDersomBrosjyreLest(mockForm);
+            expect(scope.startSoknad).not.toHaveBeenCalled();
         });
         it('forsettSoknadDersomBrosjyreLest skal ikke endre path til /soknad dersom brosjyre ikke er lest', function () {
             spyOn(scope, 'harLestBrosjyre');
@@ -114,10 +118,13 @@
         });
         it('startSoknadDersomBrosjyreLest skal kalle startSoknad dersom bruker har lest brosjyre', function () {
             spyOn(scope, 'startSoknad');
-            scope.utslagskriterier.harlestbrosjyre = true;
-            scope.$digest();
 
-            scope.startSoknadDersomBrosjyreLest();
+            var mockForm = {
+                $name: 'formname',
+                $valid: true
+            };
+
+            scope.startSoknadDersomBrosjyreLest(mockForm);
             expect(scope.startSoknad).toHaveBeenCalled();
         });
         it('startSoknad skal sette fremdriftsindikator til true', function () {
