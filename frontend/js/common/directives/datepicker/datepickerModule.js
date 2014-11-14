@@ -200,10 +200,10 @@ angular.module('nav.datepicker', [])
 					scope.fremtidigDatoFeil = scope.sjekkUloveligFremtidigDato();
 					
 					if (new Date(scope.ngModel) < new Date(scope.fraDato)) {
-						scope.ngModel = '';
-						scope.tilDatoFeil = true;
+                        scope.ngModel.$modelValue = '';
+                        scope.tilDatoFeil = true;
 					} else if (new Date(scope.tilDato) < new Date(scope.ngModel)) {
-						scope.tilDato = '';
+						scope.tilDato.$modelValue = '';
 						scope.tilDatoFeil = true;
 					}
 
