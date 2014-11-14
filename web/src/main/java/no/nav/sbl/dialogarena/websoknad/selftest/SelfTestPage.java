@@ -1,7 +1,12 @@
 package no.nav.sbl.dialogarena.websoknad.selftest;
 
+import no.aetat.arena.fodselsnr.Fodselsnr;
+import no.nav.arena.tjenester.person.v1.FaultGeneriskMsg;
+import no.nav.arena.tjenester.person.v1.PersonInfoServiceSoap;
+import no.nav.modig.core.exception.SystemException;
 import no.nav.modig.wicket.selftest.SelfTestBase;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
+import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
@@ -43,6 +48,13 @@ public class SelfTestPage extends SelfTestBase {
     private PersonPortType personService;
 
     @Inject
+    @Named("fillagerServiceSelftest")
+    private FilLagerPortType fillagerServiceSelftest;
+
+    @Inject
+    private PersonInfoServiceSoap personInfoServiceSoap;
+
+    @Inject
     @Named(value = "cmsBaseUrl")
     private String cmsBaseUrl;
 
@@ -52,7 +64,7 @@ public class SelfTestPage extends SelfTestBase {
 
     @Override
     protected void addToStatusList(List<AvhengighetStatus> statusList) {
-        new ServiceStatusHenter("HENVENDELSE-SENDSOKNAD") {
+        new ServiceStatusHenter("HENVENDELSE_SENDSOKNAD") {
             public void ping() {
                 sendSoknadSelftest.ping();
             }
@@ -74,6 +86,23 @@ public class SelfTestPage extends SelfTestBase {
         new ServiceStatusHenter("TPS_HENT_PERSON") {
             public void ping() {
                 personService.ping();
+            }
+        }.addStatus(statusList);
+
+        new ServiceStatusHenter("FILLAGER") {
+            public void ping() {
+               fillagerServiceSelftest.ping();
+            }
+        }.addStatus(statusList);
+
+        new ServiceStatusHenter("ARENA_PERSONINFO") {
+            public void ping() {
+                Fodselsnr fodselsnr = new Fodselsnr().withFodselsnummer("***REMOVED***");
+                try {
+                    personInfoServiceSoap.hentPersonStatus(fodselsnr);
+                } catch (FaultGeneriskMsg faultGeneriskMsg) {
+                    throw new SystemException("kall mot arena feilet", faultGeneriskMsg);
+                }
             }
         }.addStatus(statusList);
 
