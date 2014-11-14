@@ -104,11 +104,35 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
                 lagreArbeidsforholdOgSluttaarsak();
             }
         };
+
         $scope.aapneEndrePermitteringsperiode = function(permitteringsperiode) {
             var index = $scope.permitteringsperioder.indexOf(permitteringsperiode)
             datapersister.set("permitteringsperiode", $scope.permitteringsperioder[index]);
+            datapersister.set("permitteringsperioderTilSletting", $scope.permitteringsperioderTilSletting);
             $location.path($scope.permitteringsPeriodeUrl);
         };
+
+
+        $scope.leggPermitteringsperiodeTilSletting = function (permitteringsperiode){
+            $scope.permitteringsperioderTilSletting.push(permitteringsperiode);
+            removeFromList($scope.permitteringsperioder, permitteringsperiode);
+            removeFromList($scope.barnefaktum, permitteringsperiode);
+        };
+
+        $scope.getForstePermitteringsperiode = function() {
+            if($scope.permitteringsperioder.length === 0) {
+                var periode = {
+                    key: 'arbeidsforhold.permitteringsperiode',
+                    properties: {}
+                };
+                var faktum = new Faktum(periode);
+                $scope.barnefaktum.push(faktum);
+                $scope.permitteringsperioder = [faktum];
+            }
+            return $scope.permitteringsperioder[0];
+        };
+
+        settPerioderKlarTilSletting();
 
         function getArbeidsforholdSluttDato() {
             switch ($scope.arbeidsforhold.properties.type) {
@@ -145,7 +169,6 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 				oppdaterCookieValue(arbeidsforholdData.faktumId);
 
                 angular.forEach($scope.barnefaktum, function(faktum) {
-                    console.log(faktum);
                     faktum.parrentFaktum = arbeidsforholdData.faktumId;
                     promises.push(faktum.$save({soknadId: data.soknad.soknadId}));
                     data.fakta.push(faktum);
@@ -201,22 +224,11 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
             list.splice(list.indexOf(element), 1);
         }
 
-        $scope.leggPermitteringsperiodeTilSletting = function (permitteringsperiode){
-            $scope.permitteringsperioderTilSletting.push(permitteringsperiode);
-            removeFromList($scope.permitteringsperioder, permitteringsperiode);
-            removeFromList($scope.barnefaktum, permitteringsperiode);
-        };
-
-        $scope.getForstePermitteringsperiode = function() {
-            if($scope.permitteringsperioder.length === 0) {
-                var periode = {
-                    key: 'arbeidsforhold.permitteringsperiode',
-                    properties: {}
-                };
-                var faktum = new Faktum(periode);
-                $scope.barnefaktum = [faktum];
-                $scope.permitteringsperioder = [faktum];
-            }
-            return $scope.permitteringsperioder[0];
-        };
+        function settPerioderKlarTilSletting() {
+            var tilSletting = datapersister.get("permitteringsperioderTilSletting") || [];
+            angular.forEach(tilSletting, function(periode) {
+               $scope.leggPermitteringsperiodeTilSletting(periode);
+            });
+            datapersister.remove("permitteringsperioderTilSletting");
+        }
 	});

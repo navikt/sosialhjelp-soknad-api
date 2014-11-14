@@ -13,6 +13,7 @@ angular.module('nav.arbeidsforhold.controller', [])
 
         // Resetter arbeidsforhol
         datapersister.remove("arbeidsforholdData");
+        datapersister.remove("permitteringsperioderTilSletting");
 
         var arbeidsforhold = data.finnFakta('arbeidsforhold');
         $scope.arbeidsliste = [];
