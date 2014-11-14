@@ -41,15 +41,20 @@
         data-ng-bind-html=" 'arbeidsforhold.arbeidsgiver.permittert.varighet' | cmstekst"></h4>
 
     <div data-permitterings-periode-input
-         data-permitteringsperiode="permitteringsperiode" >
+         data-permitteringsperiode="getForstePermitteringsperiode()" >
     </div>
 </div>
 
-<div data-ng-if="permitteringsperioder.length > 1"
-     data-permitterings-periode>
+<div data-ng-if="permitteringsperioder.length > 1" data-ng-repeat="permitteringsperiode in permitteringsperioder">
+    <div data-permitterings-periode-info
+         data-permitteringsperiode="permitteringsperiode"
+         data-slett-permitteringsperiode="leggPermitteringsperiodeTilSletting(permitteringsperiode)"
+         data-endre-permitteringsperiode="aapneEndrePermitteringsperiode(permitteringsperiode)">
+    </div>
 </div>
-
-<a href="#{{permitteringsPeriodeUrl}}" data-ng-click="haandterEnkelPermittering()">Ny permittring</a>
+<div class="nypermittering">
+    <a class="knapp-leggtil-liten midstilt" href="#{{permitteringsPeriodeUrl}}" data-ng-bind-html="'arbeidsforhold.nypermitteringsperiode.leggtil' | cmstekst"/>
+</div>
 
 <div class="ekstra-spm-boks">
     <div data-navinfoboks>

@@ -1,34 +1,21 @@
 angular.module('nav.arbeidsforhold.permittering.directive',[])
-    .directive('permitteringsPeriode', function(Faktum) {
-        return {
-            templateUrl: '../js/common/arbeidsforhold/templates/permitteringsPerioderTemplate.html',
-            replace: true,
-            scope: true,
-            link: {
-                pre: function(scope) {
-                    scope.leggTilPeriode = function() {
-                        var permitteringsperiode = new Faktum({
-                            key: 'arbeidsforhold.permitteringsperiode',
-                            properties: {}
-                        });
-
-                        scope.permitteringsperioder.push(permitteringsperiode);
-                        scope.barnefaktum.push(permitteringsperiode);
-                    };
-
-                    if(scope.permitteringsperioder.length === 0) {
-                        scope.leggTilPeriode();
-                    }
-                }
-            }
-        };
-    })
     .directive('permitteringsPeriodeInput', function() {
         return {
             templateUrl: '../js/common/arbeidsforhold/templates/permitteringsPeriodeInputTemplate.html',
             replace: true,
             scope: {
                 permitteringsperiode: '='
+            }
+        };
+    })
+    .directive('permitteringsPeriodeInfo', function() {
+        return {
+            templateUrl: '../js/common/arbeidsforhold/templates/permitteringsPeriodeInfoTemplate.html',
+            replace: true,
+            scope: {
+                permitteringsperiode: '=',
+                endrePermitteringsperiode: '&',
+                slettPermitteringsperiode: '&'
             }
         };
     })
