@@ -22,17 +22,18 @@
          data-til-dato="faktum.properties.lonnspliktigperiodedatotil"
          data-label="arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet"
          data-er-fremtidigdato-tillatt="true"
+         data-er-fradato-required="erLonnspliktigperiodeRequired()"
          data-disabled="faktum.properties.lonnspliktigperiodevetikke">
     </div>
 
     <div class="nav-checkbox">
         <input class="sendsoknad-checkbox"
                data-boolean-verdi
-               id="checkbox1"
+               id="checkbox_vetikke"
                type="checkbox"
                name="arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.vetikke"
                data-ng-model="faktum.properties.lonnspliktigperiodevetikke">
-        <label for='checkbox1'>{{ 'arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.vetikke' | cmstekst }}</label>
+        <label for="checkbox_vetikke">{{ 'arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.vetikke' | cmstekst }}</label>
     </div>
 </div>
 

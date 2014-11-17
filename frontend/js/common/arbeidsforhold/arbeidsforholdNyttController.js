@@ -139,6 +139,10 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
             return $scope.permitteringsperioder[0];
         };
 
+        $scope.erLonnspliktigperiodeRequired = function() {
+            return $scope.arbeidsforhold.properties.lonnspliktigperiodevetikke !== "true";
+        };
+
         settPerioderKlarTilSletting();
 
         function getArbeidsforholdSluttDato() {
