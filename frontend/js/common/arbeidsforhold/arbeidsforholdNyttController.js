@@ -108,12 +108,14 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
         $scope.aapneEndrePermitteringsperiode = function(permitteringsperiode) {
             var index = $scope.permitteringsperioder.indexOf(permitteringsperiode)
             datapersister.set("permitteringsperiode", $scope.permitteringsperioder[index]);
+            datapersister.set("allePermitteringsperioder", $scope.permitteringsperioder);
             datapersister.set("permitteringsperioderTilSletting", $scope.permitteringsperioderTilSletting);
             $location.path($scope.permitteringsPeriodeUrl);
         };
 
         $scope.aapneLeggTilNyPermitteringsperiode = function() {
             datapersister.set("permitteringsperioderTilSletting", $scope.permitteringsperioderTilSletting);
+            datapersister.set("allePermitteringsperioder", $scope.permitteringsperioder);
             $location.path($scope.permitteringsPeriodeUrl);
         }
 

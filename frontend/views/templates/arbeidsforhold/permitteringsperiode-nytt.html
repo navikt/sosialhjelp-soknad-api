@@ -10,6 +10,11 @@
         <div data-permitterings-periode-input
              data-permitteringsperiode="permitteringsperiode" />
 
+        <input type="hidden"
+               data-ng-model="datoIntervallErValidert.value"
+               data-ng-required="true"
+               data-error-messages="'arbeidsforhold.nypermitteringsperiode.feil.overlapper'" />
+
         <div class="knapper-opprett">
             <input class="knapp-hoved-liten" type="submit"
                    value="{{ 'arbeidsforhold.nypermitteringsperiode.lagre'+cmsPostFix | cmstekst }}"

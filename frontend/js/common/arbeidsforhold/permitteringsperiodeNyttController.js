@@ -2,6 +2,9 @@ angular.module('nav.arbeidsforhold.nypermitteringsperiode.controller', ['nav.arb
 	.controller('PermitteringsperiodeNyttCtrl', function ($scope, $location, Faktum, data, datapersister) {
         var arbeidsforholdData = datapersister.get("arbeidsforholdData");
         $scope.originalPermitteringsperiode = datapersister.get("permitteringsperiode");
+        $scope.alleAndrePermitteringsperioder = datapersister.get("allePermitteringsperioder", []).filter(function(periode) {
+           return periode !== $scope.originalPermitteringsperiode;
+        });
 
         if(!arbeidsforholdData) {
             $location.path(data.soknad.brukerBehandlingId + "/soknad");
@@ -27,6 +30,8 @@ angular.module('nav.arbeidsforhold.nypermitteringsperiode.controller', ['nav.arb
             $scope.permitteringsperiode = angular.copy($scope.originalPermitteringsperiode);
         }
 
+        initialiserValideringAvIntervall();
+
         $scope.lagrePermitteringsperiode = function (form) {
             var eventString = 'RUN_VALIDATION' + form.$name;
             $scope.$broadcast(eventString);
@@ -49,6 +54,14 @@ angular.module('nav.arbeidsforhold.nypermitteringsperiode.controller', ['nav.arb
         };
         $scope.settBreddeSlikAtDetFungererIIE();
 
+        function initialiserValideringAvIntervall() {
+            $scope.datoIntervallErValidert = {value: "true"};
+            $scope.$watchCollection('[permitteringsperiode.properties.permiteringsperiodedatofra, permitteringsperiode.properties.permiteringsperiodedatotil]',
+                function() {
+                    $scope.datoIntervallErValidert.value = validerAtPeriodeIkkeOverlapperAndrePerioder() ? "true" : "";
+            });
+        }
+
         function lagreNyPermitteringsPeriode(permitteringsperiode) {
             if(datapersister.get("barnefaktum")) {
                 datapersister.get("barnefaktum").push(permitteringsperiode);
@@ -61,5 +74,28 @@ angular.module('nav.arbeidsforhold.nypermitteringsperiode.controller', ['nav.arb
             angular.forEach(original, function(value, key) {
                 original[key] = nyData[key];
             });
+        }
+
+        function validerAtPeriodeIkkeOverlapperAndrePerioder() {
+            var permittering = $scope.permitteringsperiode.properties;
+            var fraDato = new Date(permittering.permiteringsperiodedatofra);
+            var sluttDato = permittering.permiteringsperiodedatotil ? new Date(permittering.permiteringsperiodedatotil) : new Date();
+
+            for(var i=0; i<$scope.alleAndrePermitteringsperioder.length; i++) {
+                var periode = $scope.alleAndrePermitteringsperioder[i];
+                var periodeFra = new Date(periode.properties.permiteringsperiodedatofra);
+                var periodeTil = periode.properties.permiteringsperiodedatotil ? new Date(periode.properties.permiteringsperiodedatotil) : new Date();
+
+                if(erDatoMellomIntervall(fraDato, periodeFra, periodeTil)
+                    || erDatoMellomIntervall(sluttDato, periodeFra, periodeTil)
+                    || erDatoMellomIntervall(periodeFra, fraDato, sluttDato)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function erDatoMellomIntervall(dato, startDato, sluttDato) {
+            return dato >= startDato && dato <= sluttDato;
         }
     });
