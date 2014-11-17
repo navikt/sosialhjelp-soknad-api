@@ -44,6 +44,9 @@ angular.module('nav.common.routes', ['ngRoute'])
                     },
                     config: function(ConfigResolver) {
                         return ConfigResolver;
+                    },
+                    soknad: function(SoknadResolver) {
+                        return SoknadResolver;
                     }
                 }
             })

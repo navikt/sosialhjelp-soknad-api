@@ -381,54 +381,55 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     public void sendSoknad(long soknadId, byte[] pdf, String requestUrl) {
         WebSoknad soknad = hentSoknad(soknadId);
 
-        if (soknad.erEttersending() && soknad.getOpplastedeVedlegg().size() <= 0) {
-            logger.error("Kan ikke sende inn ettersendingen med ID {0} uten å ha lastet opp vedlegg", soknad.getBrukerBehandlingId());
-            throw new ApplicationException(String.format("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg"));
-        }
-
-        if (soknad.harAnnetVedleggSomIkkeErLastetOpp()) {
-            logger.error("Kan ikke sende inn behandling (ID: {0}) med Annet vedlegg (skjemanummer N6) som ikke er lastet opp", soknad.getBrukerBehandlingId());
-            throw new ApplicationException(String.format("Kan ikke sende inn behandling uten å ha lastet opp alle  vedlegg med skjemanummer N6"));
-        }
-
-        logger.info("Lagrer søknad som fil til henvendelse for behandling {}", soknad.getBrukerBehandlingId());
-        fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(pdf));
-
-        List<Vedlegg> vedleggForventnings = soknad.getVedlegg();
-
-        String skjemanummer = getSkjemanummer(soknad);
-        String journalforendeEnhet = getJournalforendeEnhet(soknad);
-        XMLHovedskjema hovedskjema = new XMLHovedskjema()
-                .withInnsendingsvalg(LASTET_OPP.toString())
-                .withSkjemanummer(skjemanummer)
-                .withFilnavn(skjemanummer)
-                .withMimetype("application/pdf")
-                .withFilstorrelse("" + pdf.length)
-                .withUuid(soknad.getUuid())
-                .withJournalforendeEnhet(journalforendeEnhet);
-        henvendelseConnector.avsluttSoknad(soknad.getBrukerBehandlingId(),
-                hovedskjema,
-                Transformers.convertToXmlVedleggListe(vedleggForventnings));
-        repository.slettSoknad(soknadId);
-
-        Faktum faktum = on(soknad.getFaktaListe())
-                .filter(personaliafaktum())
-                .collect()
-                .get(0);
-
-        String epost = faktum.getProperties().get("epost");
-
-        if (epost != null) {
-            String subject = messageSource.getMessage("sendtSoknad.sendEpost.epostSubject", null, new Locale("nb", "NO"));
-            String saksoversiktUrl = configService.getValue("saksoversikt.link.url") + "/detaljer/DAG/" + soknad.getBrukerBehandlingId();
-            String ettersendelseUrl = ServerUtils.getEttersendelseUrl(requestUrl, soknad.getBrukerBehandlingId());
-
-            String innhold = messageSource.getMessage("sendtSoknad.sendEpost.epostInnhold", new Object[]{saksoversiktUrl, ettersendelseUrl}, new Locale("nb", "NO"));
-
-            emailService.sendEPostMedLenkeTilEttersendelse(epost, subject, innhold);
-        } else {
-            logger.debug("Fant ingen epost");
-        }
+//        if (soknad.erEttersending() && soknad.getOpplastedeVedlegg().size() <= 0) {
+//            logger.error("Kan ikke sende inn ettersendingen med ID {0} uten å ha lastet opp vedlegg", soknad.getBrukerBehandlingId());
+//            throw new ApplicationException(String.format("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg"));
+//        }
+//
+//        if (soknad.harAnnetVedleggSomIkkeErLastetOpp()) {
+//            logger.error("Kan ikke sende inn behandling (ID: {0}) med Annet vedlegg (skjemanummer N6) som ikke er lastet opp", soknad.getBrukerBehandlingId());
+//            throw new ApplicationException(String.format("Kan ikke sende inn behandling uten å ha lastet opp alle  vedlegg med skjemanummer N6"));
+//        }
+//
+//        logger.info("Lagrer søknad som fil til henvendelse for behandling {}", soknad.getBrukerBehandlingId());
+//        fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(pdf));
+//
+//        List<Vedlegg> vedleggForventnings = soknad.getVedlegg();
+//
+//        String skjemanummer = getSkjemanummer(soknad);
+//        String journalforendeEnhet = getJournalforendeEnhet(soknad);
+//        XMLHovedskjema hovedskjema = new XMLHovedskjema()
+//                .withInnsendingsvalg(LASTET_OPP.toString())
+//                .withSkjemanummer(skjemanummer)
+//                .withFilnavn(skjemanummer)
+//                .withMimetype("application/pdf")
+//                .withFilstorrelse("" + pdf.length)
+//                .withUuid(soknad.getUuid())
+//                .withJournalforendeEnhet(journalforendeEnhet);
+//        henvendelseConnector.avsluttSoknad(soknad.getBrukerBehandlingId(),
+//                hovedskjema,
+//                Transformers.convertToXmlVedleggListe(vedleggForventnings));
+//        repository.slettSoknad(soknadId);
+//
+//        Faktum faktum = on(soknad.getFaktaListe())
+//                .filter(personaliafaktum())
+//                .collect()
+//                .get(0);
+//
+//        String epost = faktum.getProperties().get("epost");
+//
+//        if (epost != null) {
+//           // SoknadStruktur soknadStruktur = hentSoknadStruktur(soknadId);
+//            String subject = messageSource.getMessage("sendtSoknad.sendEpost.epostSubject", null, new Locale("nb", "NO"));
+//            String saksoversiktUrl = configService.getValue("saksoversikt.link.url") + "/detaljer/DAG" +"/" + soknad.getBrukerBehandlingId();
+//            String ettersendelseUrl = ServerUtils.getEttersendelseUrl(requestUrl, soknad.getBrukerBehandlingId());
+//
+//            String innhold = messageSource.getMessage("sendtSoknad.sendEpost.epostInnhold", new Object[]{saksoversiktUrl, ettersendelseUrl}, new Locale("nb", "NO"));
+//
+//            emailService.sendEPostMedLenkeTilEttersendelse(epost, subject, innhold);
+//        } else {
+//            logger.debug("Fant ingen epost");
+//        }
     }
 
     private static Predicate<Faktum> personaliafaktum() {
