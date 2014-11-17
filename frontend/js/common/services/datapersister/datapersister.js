@@ -6,8 +6,8 @@ angular.module('nav.services.datapersister', [])
         savedData[key] = value;
     }
 
-    function get(key) {
-        return savedData[key];
+    function get(key, defaultValue) {
+        return savedData[key] || defaultValue;
     }
 
     function remove(key) {

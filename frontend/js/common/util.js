@@ -105,9 +105,11 @@ function checkTrue(element) {
 }
 
 function scrollToElement(element, offset) {
-    var animationSpeed = 200;
-    var scrollPos = Math.max(element.offset().top - offset, 0);
-    $('body, html').scrollToPos(scrollPos, animationSpeed);
+    if(element.is(":visible")) {
+        var animationSpeed = 200;
+        var scrollPos = Math.max(element.offset().top - offset, 0);
+        $('body, html').scrollToPos(scrollPos, animationSpeed);
+    }
 }
 
 function verdiErIkkeTom(verdi) {
