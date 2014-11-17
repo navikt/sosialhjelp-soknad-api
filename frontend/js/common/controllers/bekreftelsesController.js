@@ -1,21 +1,30 @@
 angular.module('nav.bekreftelse', [])
     /* Er avhengig av at søknadsoppsett er hentet før vi kommer til denne kontrolleren, da temakode blir hentet sånn
-       Henter ikke for bekreftelsessiden siden man bare skal videresendes hit, og siden det blir krøll på backend
-    */
-    .controller('BekreftelsesCtrl', function ($scope, config, $window, $timeout, $routeParams, $rootElement, data) {
+     Henter ikke for bekreftelsessiden siden man bare skal videresendes hit, og siden det blir krøll på backend
+     */
+    .controller('BekreftelsesCtrl', function ($scope, config, $window, $timeout, $routeParams, $rootElement, data, bekreftelseEpostService) {
         var appName = $rootElement.attr('data-ng-app');
-        $scope.tekst = {
-            tittelKey: 'dagpenger.bekreftelse',
-            informasjonsKey: 'dagpenger.bekreftelse.informasjon'
+        $scope.cmsprefix = {
+            value: appName
         };
 
-        if (appName === 'ettersending') {
-            $scope.tekst.tittelKey = 'ettersending.bekreftelse';
-            $scope.tekst.informasjonsKey = 'ettersending.bekreftelse.informasjon';
+        $scope.epost = {
+            value: data.finnFaktum('epost')
+        };
+
+        $scope.brukerBehandlingId = data.soknad.brukerBehandlingId;
+
+        if (!$scope.epost.value) {
+            $scope.epost.value = data.finnFaktum('personalia').properties.epost;
         }
 
-        $timeout(function() {
-            var saksoversiktBaseUrl = config['saksoversikt.link.url'];
-            $window.location.href = saksoversiktBaseUrl + '/detaljer/' + data.soknadOppsett.temaKode + '/' + $routeParams.behandlingsId;
-        }, 5000);
+        $scope.sendEpost = function (form) {
+            if (form.$valid) {
+                new bekreftelseEpostService().$send({behandlingId: $scope.brukerBehandlingId, bekreftelsesepost: $scope.epost.value}).then(function (data) {
+                       console.log("epost sendt");
+//                    var saksoversiktBaseUrl = config['saksoversikt.link.url'];
+//                    $window.location.href = saksoversiktBaseUrl + '/detaljer/' + data.soknadOppsett.temaKode + '/' + $routeParams.behandlingsId;
+                });
+            }
+        };
     });
