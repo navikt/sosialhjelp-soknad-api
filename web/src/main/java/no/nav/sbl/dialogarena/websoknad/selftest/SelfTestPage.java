@@ -5,6 +5,7 @@ import no.nav.arena.tjenester.person.v1.FaultGeneriskMsg;
 import no.nav.arena.tjenester.person.v1.PersonInfoServiceSoap;
 import no.nav.modig.core.exception.SystemException;
 import no.nav.modig.wicket.selftest.SelfTestBase;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadInnsendingDBConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
@@ -14,9 +15,11 @@ import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.slf4j.Logger;
 import org.springframework.context.annotation.Import;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -27,7 +30,7 @@ import static java.lang.System.currentTimeMillis;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.slf4j.LoggerFactory.getLogger;
 
-@Import({ConsumerConfig.WsServices.class})
+@Import({ConsumerConfig.WsServices.class, SoknadInnsendingDBConfig.class})
 public class SelfTestPage extends SelfTestBase {
     private static final Logger logger = getLogger(SelfTestPage.class);
 
@@ -53,6 +56,9 @@ public class SelfTestPage extends SelfTestBase {
 
     @Inject
     private PersonInfoServiceSoap personInfoServiceSoap;
+
+    @Inject
+    private DataSource dataSource;
 
     @Inject
     @Named(value = "cmsBaseUrl")
@@ -102,6 +108,17 @@ public class SelfTestPage extends SelfTestBase {
                     personInfoServiceSoap.hentPersonStatus(fodselsnr);
                 } catch (FaultGeneriskMsg faultGeneriskMsg) {
                     throw new SystemException("kall mot arena feilet", faultGeneriskMsg);
+                }
+            }
+        }.addStatus(statusList);
+
+        new ServiceStatusHenter("LOKAL_DATABASE") {
+            public void ping() {
+                try {
+                    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+                    jdbcTemplate.queryForList("select * from dual");
+                } catch (Exception e) {
+                    throw new SystemException("database feilet", e);
                 }
             }
         }.addStatus(statusList);
