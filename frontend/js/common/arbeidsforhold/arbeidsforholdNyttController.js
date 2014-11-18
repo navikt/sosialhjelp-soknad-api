@@ -107,8 +107,8 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
             }
         };
 
-        function validerForm(forname) {
-            var eventString = 'RUN_VALIDATION' + forname;
+        function validerForm(formname) {
+            var eventString = 'RUN_VALIDATION' + formname;
             $scope.$broadcast(eventString);
         }
 
@@ -126,7 +126,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
                 datapersister.set("allePermitteringsperioder", $scope.permitteringsperioder);
                 $location.path($scope.permitteringsPeriodeUrl);
             } else {
-                //TODO sette på styling
+                validerForm(form.$name);
             }
         }
 
