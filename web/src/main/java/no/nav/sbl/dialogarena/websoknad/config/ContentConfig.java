@@ -2,11 +2,7 @@ package no.nav.sbl.dialogarena.websoknad.config;
 
 import no.nav.innholdshenter.common.EnonicContentRetriever;
 import no.nav.innholdshenter.filter.DecoratorFilter;
-import no.nav.modig.content.CmsContentRetriever;
-import no.nav.modig.content.Content;
-import no.nav.modig.content.ContentRetriever;
-import no.nav.modig.content.ValueRetriever;
-import no.nav.modig.content.ValuesFromContentWithResourceBundleFallback;
+import no.nav.modig.content.*;
 import no.nav.modig.content.enonic.HttpContentRetriever;
 import no.nav.modig.content.enonic.innholdstekst.Innholdstekst;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
@@ -30,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
+import static no.nav.sbl.dialogarena.websoknad.config.StripPTagsPropertyPersister.stripPTag;
 
 @Configuration
 public class ContentConfig {
@@ -75,7 +72,8 @@ public class ContentConfig {
                 "classpath:content/innholdstekster", "classpath:content/sbl-webkomponenter");
         messageSource.setDefaultEncoding("UTF-8");
         //Sjekk for nye filer en gang hvert 30. minutt.
-        messageSource.setCacheSeconds(60*30);
+        messageSource.setCacheSeconds(60 * 30);
+        messageSource.setPropertiesPersister(new StripPTagsPropertyPersister());
         return messageSource;
     }
 
