@@ -129,7 +129,7 @@ angular.module('nav.validering', ['nav.cmstekster'])
         };
     }])
 //    direktivet skal brukes på div-en som ligger rundt en checkboksgruppe og som skal ha inlinevalidering
-    .directive('checkboxValidate', [function () {
+    .directive('checkboxValidate', function () {
         return {
             require: ['^form'],
             link: function (scope, element, attrs, ctrl) {
@@ -166,5 +166,6 @@ angular.module('nav.validering', ['nav.cmstekster'])
                     }
                 });
             }
-        };
-    }]);
+        }
+    });
+

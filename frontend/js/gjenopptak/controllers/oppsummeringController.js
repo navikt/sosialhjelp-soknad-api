@@ -2,7 +2,6 @@ angular.module('nav.oppsummering', [])
     .controller('OppsummeringCtrl', ['$scope', 'data', '$location', 'soknadService', '$http', function ($scope, data, $location, soknadService, $http) {
         $scope.oppsummeringHtml = '';
         $scope.harbekreftet = {value: ''};
-        $scope.skalViseFeilmelding = {value: false};
         $scope.fremdriftsindikator = {
             laster: false
         };
@@ -16,17 +15,10 @@ angular.module('nav.oppsummering', [])
             $scope.oppsummeringHtml = soknadElement.html();
         });
 
-        $scope.$watch(function () {
-            if ($scope.harbekreftet) {
-                return $scope.harbekreftet.value;
-            }
-        }, function () {
-            $scope.skalViseFeilmelding.value = false;
-        });
+        $scope.sendSoknad = function (form) {
+            var eventString = 'RUN_VALIDATION' + form.$name;
 
-        $scope.sendSoknad = function () {
             if ($scope.harbekreftet.value) {
-                $scope.skalViseFeilmelding.value = false;
                 $scope.fremdriftsindikator.laster = true;
 
                 soknadService.send({soknadId: $scope.soknadId},
@@ -41,7 +33,7 @@ angular.module('nav.oppsummering', [])
                     }
                 );
             } else {
-                $scope.skalViseFeilmelding.value = true;
+                $scope.$broadcast(eventString);
             }
         };
     }])

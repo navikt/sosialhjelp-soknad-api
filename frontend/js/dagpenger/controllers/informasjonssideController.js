@@ -54,10 +54,14 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
             return $scope.utslagskriterier.harlestbrosjyre;
         };
 
-        $scope.startSoknadDersomBrosjyreLest = function () {
-            if ($scope.harLestBrosjyre()) {
-                $scope.startSoknad();
-            }
+        $scope.startSoknadDersomBrosjyreLest = function (form) {
+                var eventString = 'RUN_VALIDATION' + form.$name;
+
+                if (form.$valid) {
+                    $scope.startSoknad();
+                } else {
+                    $scope.$broadcast(eventString);
+                }
         };
 
         $scope.forsettSoknadDersomBrosjyreLest = function () {
@@ -70,18 +74,5 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
             $scope.utslagskriterier.harlestbrosjyre = true;
             $scope.oppsummering = true;
         }
-
-    }])
-    .directive('validerInformasjonsside', [function () {
-        return {
-            link: function (scope, element) {
-                var formElement = element.closest('form').find('.form-linje');
-                var input = formElement.find('input');
-                element.bind('click', function () {
-                    if (!input.is(':checked')) {
-                        formElement.addClass('feilstyling');
-                    }
-                });
-            }
-        };
     }]);
+
