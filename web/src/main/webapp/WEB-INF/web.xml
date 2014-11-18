@@ -38,7 +38,7 @@
 
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>no.nav.sbl.dialogarena.websoknad.config.SoknadinnsendingContext</param-value>
+        <param-value>no.nav.sbl.dialogarena.websoknad.config.SoknadinnsendingConfig</param-value>
     </context-param>
 
 
