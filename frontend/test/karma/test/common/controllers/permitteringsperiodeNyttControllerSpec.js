@@ -8,14 +8,9 @@
     describe('PermitteringsperiodeNyttCtrl', function () {
         var scope, ctrl;
 
-        beforeEach(module('sendsoknad.controllers', 'nav.feilmeldinger'));
+        beforeEach(module('sendsoknad.controllers', 'nav.feilmeldinger', 'sendsoknad.services'));
         beforeEach(module(function ($provide) {
-            var fakta = [
-                {
-                    key: "personalia",
-                    properties: {}
-                }
-            ];
+            var fakta = [];
 
             $provide.value("data", {
                 fakta: fakta,
@@ -56,16 +51,67 @@
             $provide.value("$routeParams", {});
         }));
 
-        beforeEach(inject(function ($injector, $rootScope, $controller, data) {
+        beforeEach(inject(function ($injector, $rootScope, $controller, Faktum, data, datapersister) {
+            datapersister.set("arbeidsforholdData", {});
+
+            var periode1 = {properties: {permiteringsperiodedatofra: "2010-01-01", permiteringsperiodedatotil: "2010-12-12"}}
+            var periode2 = {properties: {permiteringsperiodedatofra: "2011-01-01", permiteringsperiodedatotil: "2011-12-12"}}
+            datapersister.set("allePermitteringsperioder", [periode1, periode2]);
+
             scope = $rootScope;
             scope.permitteringsperiode = {};
-            ctrl = $controller('ReellarbeidssokerCtrl', {
+            ctrl = $controller('PermitteringsperiodeNyttCtrl', {
                 $scope: scope
             });
         }));
 
-        describe("validering av perioder", function() {
-            it("fjkj", function() {
+        describe("validering av permitteringsperioden (om den overlapper andre perioder)", function() {
+            it("datoIntervallErValidert skal være falsey om perioden er i en eksisterende periode", function() {
+                scope.datoIntervallErValidert.value = "true";
+                scope.permitteringsperiode.properties.permiteringsperiodedatofra = "2011-05-05";
+                scope.permitteringsperiode.properties.permiteringsperiodedatotil = "2011-06-06";
+                scope.$digest();
+                expect(scope.datoIntervallErValidert.value).toBeFalsy();
+            });
+
+            it("datoIntervallErValidert skal være falsey om perioden delvis overlapper en eksisterende periode", function() {
+                scope.datoIntervallErValidert.value = "true";
+                scope.permitteringsperiode.properties.permiteringsperiodedatofra = "2009-05-05";
+                scope.permitteringsperiode.properties.permiteringsperiodedatotil = "2010-01-10";
+                scope.$digest();
+                expect(scope.datoIntervallErValidert.value).toBeFalsy();
+            });
+
+            it("datoIntervallErValidert skal være truthy om perioden er etter alle andre perioder", function() {
+                scope.datoIntervallErValidert.value = "true";
+                scope.permitteringsperiode.properties.permiteringsperiodedatofra = "2013-05-05";
+                scope.permitteringsperiode.properties.permiteringsperiodedatotil = "2013-01-10";
+                scope.$digest();
+                expect(scope.datoIntervallErValidert.value).toBeTruthy();
+            });
+
+            it("datoIntervallErValidert skal være truthy om perioden er før alle andre perioder", function() {
+                scope.datoIntervallErValidert.value = "true";
+                scope.permitteringsperiode.properties.permiteringsperiodedatofra = "2001-05-05";
+                scope.permitteringsperiode.properties.permiteringsperiodedatotil = "2001-01-10";
+                scope.$digest();
+                expect(scope.datoIntervallErValidert.value).toBeTruthy();
+            });
+
+            it("skal ikke godta at permitteringsperioden starter på samme dag som en en annen periode avslutter (non-inclusive)", function() {
+                scope.datoIntervallErValidert.value = "true";
+                scope.permitteringsperiode.properties.permiteringsperiodedatofra = "2011-12-12";
+                scope.permitteringsperiode.properties.permiteringsperiodedatotil = "2011-12-20";
+                scope.$digest();
+                expect(scope.datoIntervallErValidert.value).toBeFalsy();
+            });
+
+            it("skal ikke godta at permitteringsperioden slutter på samme dag som en en annen periode starter (non-inclusive)", function() {
+                scope.datoIntervallErValidert.value = "true";
+                scope.permitteringsperiode.properties.permiteringsperiodedatofra = "2009-03-12";
+                scope.permitteringsperiode.properties.permiteringsperiodedatotil = "2010-01-01";
+                scope.$digest();
+                expect(scope.datoIntervallErValidert.value).toBeFalsy();
             });
         });
     });
