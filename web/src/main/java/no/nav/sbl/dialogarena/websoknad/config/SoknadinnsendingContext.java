@@ -9,14 +9,14 @@ import org.springframework.context.annotation.Import;
 
 @Configuration
 @Import({
-        ApplicationConfig.class,
+        ApplicationContext.class,
         BusinessConfig.class,
         CacheConfig.class,
         GAConfig.class,
         ConsumerConfig.class,
         ContentConfig.class,
         SoknadInnsendingDBConfig.class})
-public class SoknadinnsendingConfig {
+public class SoknadinnsendingContext {
 
 
 }

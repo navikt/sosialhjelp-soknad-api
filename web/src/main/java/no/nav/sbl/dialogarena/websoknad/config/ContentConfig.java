@@ -38,6 +38,7 @@ public class ContentConfig {
     @Inject
     private CacheManager cacheManager;
 
+
     private static final String DEFAULT_LOCALE = "nb";
     private static final String INNHOLDSTEKSTER_NB_NO_REMOTE = "/app/sendsoknad/bm/tekster";
     private static final String INNHOLDSTEKSTER_NB_NO_LOCAL = "content.innholdstekster";
@@ -46,6 +47,7 @@ public class ContentConfig {
     private static final String FRAGMENTS_URL = "common-html/v1/navno";
     private static final List<String> NO_DECORATOR_PATTERNS = new ArrayList<>(asList(".*/img/.*", ".*selftest.*"));
     protected final Logger logger = LoggerFactory.getLogger(getClass());
+
 
     @Bean
     public ValueRetriever siteContentRetriever() throws URISyntaxException {
@@ -122,6 +124,7 @@ public class ContentConfig {
         }
         return res;
     }
+
 
     @Bean
     public ContentRetriever enonicContentRetriever() {
