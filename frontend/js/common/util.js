@@ -244,6 +244,23 @@ function reverserNorskDatoformat(datoString) {
     }
 }
 
+function lagNorskDatoformatFraIsoStandard(datoString) {
+    var dato = new Date(datoString);
+    if(isNaN(dato)) {
+        return null;
+    }
+
+    function addLeedingZero(tall){
+        return tall.toString().length == 1 ?  "0" + tall : tall;
+    }
+
+    var dag = addLeedingZero(dato.getDate()),
+        maaned = addLeedingZero(dato.getMonth()+1),
+        aar = dato.getFullYear();
+
+    return dag + "." + maaned + "." + aar;
+}
+
 function erFremtidigDato(year, month, day) {
     var dato = new Date();
     dato.setMonth(month - 1);

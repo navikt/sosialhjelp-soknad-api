@@ -882,11 +882,9 @@
     </vedlegg>
     <vedlegg>
         <id>4</id>
-        <faktum>arbeidsforhold</faktum>
+        <faktum>arbeidsforhold.permitteringsperiode</faktum>
+        <property>permitteringsperiodeTittel</property>
         <skjemaNummer>G2</skjemaNummer>
-        <property>arbeidsgivernavn</property>
-        <onProperty>type</onProperty>
-        <onValue>Permittert</onValue>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
