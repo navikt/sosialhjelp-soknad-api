@@ -1,16 +1,16 @@
 angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
-	.controller('ArbeidsforholdNyttCtrl', function ($scope, data, Faktum, $location, $cookieStore, $resource, cms, $q, datapersister) {
+    .controller('ArbeidsforholdNyttCtrl', function ($scope, data, Faktum, $location, $cookieStore, $resource, cms, $q, datapersister) {
 
-		$scope.templates = {
+        $scope.templates = {
             'Sagt opp av arbeidsgiver': {url: '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver.html'},
-            'Permittert'              : {url: '../views/templates/arbeidsforhold/permittert.html'},
-            'Kontrakt utgått'         : {url: '../views/templates/arbeidsforhold/kontrakt-utgaatt.html'},
-            'Sagt opp selv'           : {url: '../views/templates/arbeidsforhold/sagt-opp-selv.html'},
-            'Redusert arbeidstid'     : {url: '../views/templates/arbeidsforhold/redusertarbeidstid.html'},
-            'Arbeidsgiver er konkurs' : {url: '../views/templates/arbeidsforhold/konkurs.html'},
-			'Avskjediget'             : {url: '../views/templates/arbeidsforhold/avskjediget.html'}
-		};
-		$scope.land = data.land;
+            'Permittert': {url: '../views/templates/arbeidsforhold/permittert.html'},
+            'Kontrakt utgått': {url: '../views/templates/arbeidsforhold/kontrakt-utgaatt.html'},
+            'Sagt opp selv': {url: '../views/templates/arbeidsforhold/sagt-opp-selv.html'},
+            'Redusert arbeidstid': {url: '../views/templates/arbeidsforhold/redusertarbeidstid.html'},
+            'Arbeidsgiver er konkurs': {url: '../views/templates/arbeidsforhold/konkurs.html'},
+            'Avskjediget': {url: '../views/templates/arbeidsforhold/avskjediget.html'}
+        };
+        $scope.land = data.land;
         $scope.soknadId = data.soknad.soknadId;
         $scope.behandlingId = data.soknad.brukerBehandlingId;
         $scope.soknadUrl = '/' + data.soknad.brukerBehandlingId + '/soknad';
@@ -21,13 +21,13 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 
         datapersister.remove("permitteringsperiode");
 
-        $scope.settBreddeSlikAtDetFungererIIE = function() {
-            setTimeout(function() {
+        $scope.settBreddeSlikAtDetFungererIIE = function () {
+            setTimeout(function () {
                 $("#land").width($("#land").width());
             }, 50);
         };
 
-		var url = $location.$$url;
+        var url = $location.$$url;
 
         var endreModus = url.indexOf('endrearbeidsforhold') !== -1;
         var arbeidsforholdData;
@@ -51,21 +51,21 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
             });
         } else {
             arbeidsforholdData = {
-				key       : 'arbeidsforhold',
-				properties: {
+                key: 'arbeidsforhold',
+                properties: {
                     'startetForrigeAar': 'false',
-					'arbeidsgivernavn': undefined,
-					'datofra'         : undefined,
-					'datotil'         : undefined,
+                    'arbeidsgivernavn': undefined,
+                    'datofra': undefined,
+                    'datotil': undefined,
                     'type': undefined,
                     'eosland': "false",
-                    'land' : cms.tekster["arbeidsforhold.arbeidsgiver.landDefault"]
-				}
-			};
-		}
+                    'land': cms.tekster["arbeidsforhold.arbeidsgiver.landDefault"]
+                }
+            };
+        }
         $scope.settBreddeSlikAtDetFungererIIE();
 
-        if(datapersister.get("arbeidsforholdData")) {
+        if (datapersister.get("arbeidsforholdData")) {
             arbeidsforholdData = datapersister.get("arbeidsforholdData");
             $scope.barnefaktum = datapersister.get("barnefaktum") || [];
 
@@ -73,16 +73,16 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
         }
 
         datapersister.set("arbeidsforholdData", arbeidsforholdData);
-		$scope.arbeidsforhold = new Faktum(arbeidsforholdData);
-		$scope.sluttaarsak = $scope.arbeidsforhold;
+        $scope.arbeidsforhold = new Faktum(arbeidsforholdData);
+        $scope.sluttaarsak = $scope.arbeidsforhold;
         datapersister.set("barnefaktum", $scope.barnefaktum);
 
-		$scope.$watch(function () {
+        $scope.$watch(function () {
             if ($scope.arbeidsforhold.properties.land) {
                 return $scope.arbeidsforhold.properties.land;
             }
         }, function () {
-            if($scope.arbeidsforhold.properties.land && $scope.arbeidsforhold.properties.land !== '') {
+            if ($scope.arbeidsforhold.properties.land && $scope.arbeidsforhold.properties.land !== '') {
                 $resource('/sendsoknad/rest/ereosland/:landkode').get(
                     {landkode: $scope.arbeidsforhold.properties.land},
                     function (eosdata) {
@@ -92,10 +92,13 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
             }
         });
 
-		$scope.lagreArbeidsforhold = function (form) {
-			var eventString = 'RUN_VALIDATION' + form.$name;
-			$scope.$broadcast(eventString);
-			$scope.runValidation(true);
+        $scope.lagreArbeidsforhold = function (form, subform) {
+            angular.forEach(subform, function(formname) {
+              validerForm(formname);
+            });
+
+            validerForm(form.$name)
+            $scope.runValidation(true);
 
 
             if (form.$valid) {
@@ -105,7 +108,12 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
             }
         };
 
-        $scope.aapneEndrePermitteringsperiode = function(permitteringsperiode) {
+        function validerForm(forname) {
+            var eventString = 'RUN_VALIDATION' + forname;
+            $scope.$broadcast(eventString);
+        }
+
+        $scope.aapneEndrePermitteringsperiode = function (permitteringsperiode) {
             var index = $scope.permitteringsperioder.indexOf(permitteringsperiode)
             datapersister.set("permitteringsperiode", $scope.permitteringsperioder[index]);
             datapersister.set("allePermitteringsperioder", $scope.permitteringsperioder);
@@ -113,23 +121,27 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
             $location.path($scope.permitteringsPeriodeUrl);
         };
 
-        $scope.aapneLeggTilNyPermitteringsperiode = function() {
-            datapersister.set("permitteringsperioderTilSletting", $scope.permitteringsperioderTilSletting);
-            datapersister.set("allePermitteringsperioder", $scope.permitteringsperioder);
-            $location.path($scope.permitteringsPeriodeUrl);
+        $scope.aapneLeggTilNyPermitteringsperiode = function (form) {
+            if (form.$valid) {
+                datapersister.set("permitteringsperioderTilSletting", $scope.permitteringsperioderTilSletting);
+                datapersister.set("allePermitteringsperioder", $scope.permitteringsperioder);
+                $location.path($scope.permitteringsPeriodeUrl);
+            } else {
+                //TODO sette på styling
+            }
         }
 
 
-        $scope.leggPermitteringsperiodeTilSletting = function (permitteringsperiode){
-            if(permitteringsperiode.faktumId) {
+        $scope.leggPermitteringsperiodeTilSletting = function (permitteringsperiode) {
+            if (permitteringsperiode.faktumId) {
                 $scope.permitteringsperioderTilSletting.push(permitteringsperiode);
             }
             removeFromList($scope.permitteringsperioder, permitteringsperiode);
             removeFromList($scope.barnefaktum, permitteringsperiode);
         };
 
-        $scope.getForstePermitteringsperiode = function() {
-            if($scope.permitteringsperioder.length === 0) {
+        $scope.getForstePermitteringsperiode = function () {
+            if ($scope.permitteringsperioder.length === 0) {
                 var periode = {
                     key: 'arbeidsforhold.permitteringsperiode',
                     properties: {}
@@ -141,7 +153,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
             return $scope.permitteringsperioder[0];
         };
 
-        $scope.erLonnspliktigperiodeRequired = function() {
+        $scope.erLonnspliktigperiodeRequired = function () {
             return $scope.arbeidsforhold.properties.lonnspliktigperiodevetikke !== "true";
         };
 
@@ -152,7 +164,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
                 case 'Arbeidsgiver er konkurs':
                     return $scope.arbeidsforhold.properties.konkursdato;
                 case 'Redusert arbeidstid':
-                   return $scope.arbeidsforhold.properties.redusertfra;
+                    return $scope.arbeidsforhold.properties.redusertfra;
                 case 'Permittert':
                     return $scope.arbeidsforhold.properties.permiteringsperiodedatofra;
                 default:
@@ -173,36 +185,36 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
             }
         }
 
-		function lagreArbeidsforholdOgSluttaarsak() {
+        function lagreArbeidsforholdOgSluttaarsak() {
             $scope.arbeidsforhold.$save({soknadId: data.soknad.soknadId}).then(function (arbeidsforholdData) {
                 var promises = [];
 
                 $scope.arbeidsforhold = arbeidsforholdData;
-				oppdaterFaktumListe('arbeidsforhold', arbeidsforholdData);
-				oppdaterCookieValue(arbeidsforholdData.faktumId);
+                oppdaterFaktumListe('arbeidsforhold', arbeidsforholdData);
+                oppdaterCookieValue(arbeidsforholdData.faktumId);
 
-                angular.forEach($scope.barnefaktum, function(faktum) {
+                angular.forEach($scope.barnefaktum, function (faktum) {
                     faktum.parrentFaktum = arbeidsforholdData.faktumId;
                     promises.push(faktum.$save({soknadId: data.soknad.soknadId}));
                     data.fakta.push(faktum);
                 });
 
-                $q.all(promises).then(function() {
+                $q.all(promises).then(function () {
                     datapersister.remove("arbeidsforholdData");
                     $location.path($scope.soknadUrl);
                 });
-			});
+            });
         }
 
         function getPermitteringsPerioderMedParentFaktum(parentFaktumId) {
             var permitteringsperioder = data.finnFakta('arbeidsforhold.permitteringsperiode') || [];
-            permitteringsperioder = permitteringsperioder.filter(function(permitteringsperiode) {
-               return (permitteringsperiode.parrentFaktum === parseInt(parentFaktumId));
+            permitteringsperioder = permitteringsperioder.filter(function (permitteringsperiode) {
+                return (permitteringsperiode.parrentFaktum === parseInt(parentFaktumId));
             });
             return permitteringsperioder;
         }
 
-		function oppdaterCookieValue(faktumId) {
+        function oppdaterCookieValue(faktumId) {
             var arbeidsforholdCookie = $cookieStore.get('scrollTil');
 
             $cookieStore.put('scrollTil', {
@@ -212,7 +224,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
             });
         }
 
-		function oppdaterFaktumListe(type, arbeidsforholdData) {
+        function oppdaterFaktumListe(type, arbeidsforholdData) {
             if (!endreModus) {
                 data.fakta.push($scope[type]);
             } else {
@@ -225,26 +237,26 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
         }
 
         function slettPermitteringsperioder() {
-            angular.forEach($scope.permitteringsperioderTilSletting, function(permitteringsperiode){
-               if(permitteringsperiode.faktumId){
-                   data.slettFaktum(permitteringsperiode);
-               }
+            angular.forEach($scope.permitteringsperioderTilSletting, function (permitteringsperiode) {
+                if (permitteringsperiode.faktumId) {
+                    data.slettFaktum(permitteringsperiode);
+                }
             });
 
         }
 
         function removeFromList(list, element) {
             var index = list.indexOf(element);
-            if(index >= 0) {
+            if (index >= 0) {
                 list.splice(index, 1);
             }
         }
 
         function settPerioderKlarTilSletting() {
             var tilSletting = datapersister.get("permitteringsperioderTilSletting") || [];
-            angular.forEach(tilSletting, function(periode) {
-               $scope.leggPermitteringsperiodeTilSletting(periode);
+            angular.forEach(tilSletting, function (periode) {
+                $scope.leggPermitteringsperiodeTilSletting(periode);
             });
             datapersister.remove("permitteringsperioderTilSletting");
         }
-	});
+    });
