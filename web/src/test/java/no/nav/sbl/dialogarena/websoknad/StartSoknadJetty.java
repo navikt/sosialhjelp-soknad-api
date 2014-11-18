@@ -62,7 +62,7 @@ public final class StartSoknadJetty {
     }
 
     private void configureLocalConfig() throws IOException {
-        setFrom("jetty-env.properties");
+        setFrom("environment-test.properties");
         setProperty("no.nav.sbl.dialogarena.sendsoknad.sslMock", "true");
         setProperty("no.nav.sbl.dialogarena.sendsoknad.hsqldb", "false");
         //setProperty(SUBJECTHANDLER_KEY, JettySubjectHandler.class.getName());

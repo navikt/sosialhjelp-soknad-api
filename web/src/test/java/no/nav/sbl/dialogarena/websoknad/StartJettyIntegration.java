@@ -27,7 +27,7 @@ public final class StartJettyIntegration {
         setProperty("no.nav.modig.security.systemuser.username", "BD05");
         setProperty("no.nav.modig.security.systemuser.password", "test");
         setProperty("org.apache.cxf.stax.allowInsecureParser", "true");
-        setFrom("jetty-env.properties");
+        setFrom("environment-test.properties");
         setProperty("no.nav.sbl.dialogarena.sendsoknad.sslMock", "true");
         setProperty("no.nav.sbl.dialogarena.sendsoknad.hsqldb", "false");
         setProperty("sendsoknad.batch.enabled", "false");
