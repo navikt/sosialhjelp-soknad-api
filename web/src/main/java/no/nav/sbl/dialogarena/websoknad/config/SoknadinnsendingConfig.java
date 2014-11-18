@@ -7,9 +7,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-/**
- * Applikasjonskontekst for ear-modulen.
- */
 @Configuration
 @Import({
         ApplicationConfig.class,
