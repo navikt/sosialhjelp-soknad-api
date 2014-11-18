@@ -142,7 +142,7 @@ angular.module('nav.input', ['nav.cmstekster'])
             templateUrl: '../js/common/directives/navinput/navtekstTemplate.html'
         };
     }])
-    .directive('navtall', [function () {
+    .directive('navtall', function (cms) {
         return {
             restrict: 'A',
             replace: true,
@@ -159,16 +159,23 @@ angular.module('nav.input', ['nav.cmstekster'])
                     } else {
                         scope.inputfeltmaxlength = undefined;
                     }
+                    scope.hjelpetekst = {
+                        tittel: attrs.hjelpetekst + '.tittel',
+                        tekst: attrs.hjelpetekst + '.tekst'
+                    };
                 },
                 post: function (scope) {
                     scope.harSporsmal = function() {
                         return isNotNullOrUndefined(scope.navsporsmal) && scope.navsporsmal.length > 0;
                     };
+                    scope.hvisHarHjelpetekst = function() {
+                        return cms.tekster[scope.hjelpetekst.tittel] !== undefined;
+                    };
                 }
             },
             templateUrl: '../js/common/directives/navinput/navtallTemplate.html'
         };
-    }])
+    })
     .directive('tekstfeltPatternvalidering', [function () {
         return {
             require: 'ngModel',
