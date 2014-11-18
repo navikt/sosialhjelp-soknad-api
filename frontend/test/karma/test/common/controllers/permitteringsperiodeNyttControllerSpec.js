@@ -6,7 +6,7 @@
     'use strict';
 
     describe('PermitteringsperiodeNyttCtrl', function () {
-        var scope, ctrl;
+        var scope, ctrl, persister, form;
 
         beforeEach(module('sendsoknad.controllers', 'nav.feilmeldinger', 'sendsoknad.services'));
         beforeEach(module(function ($provide) {
@@ -49,9 +49,12 @@
 
             $provide.value("cms", {'tekster': {'barnetillegg.nyttbarn.landDefault': ''}});
             $provide.value("$routeParams", {});
+
+            form = {$valid: true, $name: ""};
         }));
 
         beforeEach(inject(function ($injector, $rootScope, $controller, Faktum, data, datapersister) {
+            persister = datapersister;
             datapersister.set("arbeidsforholdData", {});
 
             var periode1 = {properties: {permiteringsperiodedatofra: "2010-01-01", permiteringsperiodedatotil: "2010-12-12"}}
@@ -60,10 +63,34 @@
 
             scope = $rootScope;
             scope.permitteringsperiode = {};
+            scope.runValidation = function() {};
             ctrl = $controller('PermitteringsperiodeNyttCtrl', {
                 $scope: scope
             });
         }));
+
+        describe("permitteringperiodeNyttController persistering", function() {
+            it("faktumet, med properties, skal pushes til barnefaktum på datapersisteren når det lagres", function() {
+                expect(persister.get("barnefaktum")).toBeFalsy();
+                scope.datoIntervallErValidert.value = "true";
+                scope.permitteringsperiode.properties.permiteringsperiodedatofra = "2011-05-05";
+                scope.permitteringsperiode.properties.permiteringsperiodedatotil = "2011-06-06";
+                scope.permitteringsperiode.properties.permitteringProsent=100;
+                scope.lagrePermitteringsperiode(form);
+                expect(persister.set("permitteringsperiode").length).toBe(1);
+            });
+
+            it("skal ikke persistere om form ikke er valid", function() {
+                expect(persister.get("barnefaktum")).toBeFalsy();
+                scope.datoIntervallErValidert.value = "";
+                scope.permitteringsperiode.properties.permiteringsperiodedatofra = "2011-05-05";
+                scope.permitteringsperiode.properties.permiteringsperiodedatotil = "2011-06-06";
+                scope.permitteringsperiode.properties.permitteringProsent=100;
+                form.$valid = false;
+                scope.lagrePermitteringsperiode(form);
+                expect(persister.get("barnefaktum")).toBeFalsy();
+            });
+        });
 
         describe("validering av permitteringsperioden (om den overlapper andre perioder)", function() {
             it("datoIntervallErValidert skal være falsey om perioden er i en eksisterende periode", function() {
