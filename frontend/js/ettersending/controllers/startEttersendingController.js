@@ -4,7 +4,7 @@ angular.module('nav.ettersending.controllers.start', [])
         EttersendingMetadataResolver.then(function(result) {
             var antallDager = data.config["soknad.ettersending.antalldager"];
             $scope.kvittering = {
-                url: data.config["saksoversikt.link.url"] + 'detaljer/DAG/' + result.sisteinnsendtbehandling
+                url: data.config["saksoversikt.link.url"] + '/detaljer/DAG/' + result.sisteinnsendtbehandling
             };
             fristDato = new Date(parseInt(result.innsendtdato));
             fristDato.setDate(new Date(parseInt(result.innsendtdato)).getDate() + parseInt(antallDager));
