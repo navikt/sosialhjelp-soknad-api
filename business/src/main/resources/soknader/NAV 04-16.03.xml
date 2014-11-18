@@ -624,7 +624,7 @@
     </faktum>
     <faktum>
         <id>reberegning.nyberegning.arbeidstid</id>
-        <type>java.lang.String</type>
+        <type>java.lang.Boolean</type>
         <panel>Reberegning</panel>
         <dependOn>reberegning.nyberegning</dependOn>
         <dependOnValue>false</dependOnValue>

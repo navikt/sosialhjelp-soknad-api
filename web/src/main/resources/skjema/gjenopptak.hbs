@@ -447,7 +447,11 @@
                         <ul>
                             {{#forFakta "reberegning.nyberegning.startdato"}}
                             <li class="kulepunkt">
-                                <span>{{ hentTekst value}}</span>
+                                {{#hvisLik value "soknadsdato"}}
+                                    <span>{{ hentTekst "reberegning.nyberegning.startdato.soknadsdato" }}</span>
+                                {{else}}
+                                    <span>{{ hentTekst "reberegning.nyberegning.startdato.aarskiftet" }}</span>
+                                {{/hvisLik}}
                             </li>
                             {{/forFakta}}
                             {{#forFaktum "reberegning.nyberegning.arbeidstid"}}

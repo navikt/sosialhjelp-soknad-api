@@ -68,19 +68,20 @@
             }));
 
             it('skal kunne sende soknad etter å ha krysset av checkbox', function() {
+                var mockForm = {
+                    $name: 'formname',
+                    $valid: false
+                };
+
                 expect(scope.harbekreftet).toEqual({value: ''});
-                expect(scope.skalViseFeilmelding.value).toEqual(false);
-                
-                scope.sendSoknad();
-                expect(scope.skalViseFeilmelding.value).toEqual(true);
+                scope.sendSoknad(mockForm);
 
                 $httpBackend.expectGET(/\d/).
                 respond('');
 
                 scope.harbekreftet.value = true;
                 scope.$digest();
-                scope.sendSoknad();
-                expect(scope.skalViseFeilmelding.value).toEqual(false);                
+                scope.sendSoknad(mockForm);
             });
 
             it('skal formattere fnr på riktig måte', function() {

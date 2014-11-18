@@ -2,10 +2,10 @@
     <div data-stegindikator data-steg-liste="veiledning, skjema, vedlegg, sendInn" data-aktiv-index="3"></div>
     <div data-panelbelyst data-sidetittel="sidetittel.skjema">
         <div class="oppsummering" data-ng-bind-html="oppsummeringHtml"></div>
-        <form data-ng-submit="sendSoknad()">
+        <form name="oppsummeringForm" data-ng-submit="sendSoknad(oppsummeringForm)">
 
-            <div class="checkbox form-linje" data-ng-class="{feilstyling : skalViseFeilmelding.value === true}"
-                 data-checkbox-validate>
+            <div class="checkbox form-linje" data-checkbox-validate>
+
                 <div class="dagpengerbrosjyre">
                     <span class="sjekket"></span>
                     <span data-ng-bind-html=" 'dagpenger.informasjonsside.lestbrosjyre.sporsmal' | cmstekst"></span>
@@ -16,7 +16,7 @@
                 <span class="melding" data-ng-bind-html=" 'dagpenger.oppsummering.bekreftelse.feilmelding' | cmstekst"></span>
             </div>
             <div class="oppsummering-knapp">
-                <input class="knapp-hoved" type="submit" value="{{ 'dagpenger.oppsummering.send' | cmstekst }}" data-fremdriftsindikator>
+                <input class="knapp-hoved" type="submit" value="{{ 'dagpenger.oppsummering.send' | cmstekst }}" data-fremdriftsindikator data-validering-uten-formerror>
             </div>
             <div data-sticky>
                 <div data-sist-lagret data-navtilbakelenke="tilbake.til.vedlegg.lenke"></div>
