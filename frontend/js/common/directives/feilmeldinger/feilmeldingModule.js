@@ -74,7 +74,7 @@ angular.module('nav.feilmeldinger', [])
                     if (scope.erKlikkbarFeil(feilmelding)) {
                         var formLinje = feilmelding.elem.closest('.form-linje');
                         scrollToElement(formLinje, 250);
-                        if(formLinje.hasClass("andelsfordeling-container")) {
+                        if (formLinje.hasClass("andelsfordeling-container")) {
                             formLinje.find('.form-linje').first().addClass('aktiv-feilmelding');
                         } else {
                             formLinje.addClass('aktiv-feilmelding');
@@ -83,11 +83,11 @@ angular.module('nav.feilmeldinger', [])
                         if (feilmelding.elem.is('[type=hidden]')) {
                             if (feilmelding.elem.hasClass('tekstfelt')) {
                                 scope.giFokus(formLinje.find('input[type=text]').filter(':visible').first());
-                            } else if(feilmelding.elem.hasClass('under-atten-dato')) {
+                            } else if (feilmelding.elem.hasClass('under-atten-dato')) {
                                 scope.giFokus(formLinje.find('input[type=text]').first());
-                            } else if(feilmelding.elem.hasClass('hidden-vedlegg')) {
+                            } else if (feilmelding.elem.hasClass('hidden-vedlegg')) {
                                 scope.giFokus(formLinje.find('a.knapp-link').first());
-                            } else if(feilmelding.elem.hasClass('legg-til-arbeidsforhold')) {
+                            } else if (feilmelding.elem.hasClass('legg-til-arbeidsforhold')) {
                                 scope.giFokus(formLinje.find('button'));
                             }
                             else {
@@ -104,7 +104,7 @@ angular.module('nav.feilmeldinger', [])
                  enn 1 for at checkbokser som bruker hidden-felt og ikke har klassen ng-invalid får riktig fokus
                  */
                 scope.giFokus = function (element) {
-                    $timeout(function() {
+                    $timeout(function () {
                         if (typeof element === 'object' && element.length > 1) {
                             for (var i = 0; i < element.length; i++) {
                                 if ($(element[i]).hasClass('ng-invalid')) {
@@ -137,7 +137,7 @@ angular.module('nav.feilmeldinger', [])
                         if (feil && feil.$skalVisesAlene === true && skalViseFlereFeilmeldinger) {
                             scope.feilmeldinger = [feilmelding];
                             skalViseFlereFeilmeldinger = false;
-                        } else if (skalViseFlereFeilmeldinger && feil) {
+                        } else if (skalViseFlereFeilmeldinger && feil && feilmelding) {
                             leggTilFeilmeldingHvisIkkeAlleredeLagtTil(scope.feilmeldinger, feilmelding);
                         }
                     });
@@ -149,7 +149,7 @@ angular.module('nav.feilmeldinger', [])
                     angular.forEach(verdi, function (feil) {
 
                         var feilmelding = finnFeilmelding(feil, feilNokkel);
-                        if (scope.feilmeldinger.indexByValue(feilmelding.feil) > -1 && feil) {
+                        if (feilmelding && scope.feilmeldinger.indexByValue(feilmelding.feil) > -1 && feil) {
                             leggTilFeilmeldingHvisIkkeAlleredeLagtTil(fortsattFeilListe, feilmelding);
                         }
                     });
@@ -166,10 +166,19 @@ angular.module('nav.feilmeldinger', [])
                     var feilmeldingNokkel = finnFeilmeldingsNokkel(feil, feilNokkel);
                     var feilmelding = cms.tekster[feilmeldingNokkel];
                     if (feilmelding === undefined) {
-                        feilmelding = feilmeldingNokkel;
+                        if (feilInneholderNyeFeil(feil)) {
+                            leggTilFeilmeldingerVedValidering(feil.$error.required, feilNokkel)
+                            return;
+                        } else {
+                            feilmelding = feilmeldingNokkel;
+                        }
                     }
 
                     return {feil: feilmelding, elem: finnTilhorendeElement(feil)};
+                }
+
+                function feilInneholderNyeFeil(feil) {
+                    return feil.$error && Array.isArray(feil.$error.required)
                 }
 
                 function finnFeilmeldingsNokkel(feil, feilNokkel) {
@@ -177,7 +186,6 @@ angular.module('nav.feilmeldinger', [])
                         if (typeof feil.$errorMessages === 'object') {
                             return feil.$errorMessages[feilNokkel];
                         } else if (typeof feil.$errorMessages === 'string') {
-
                             return feil.$errorMessages;
                         }
                     }
@@ -211,8 +219,8 @@ angular.module('nav.feilmeldinger', [])
             link: function (scope, element) {
                 $(element).bind('blur', function () {
                     var formLinje = $(element).closest('.form-linje');
-                    if(formLinje.hasClass('aktiv-feilmelding')) {
-                        $timeout(function() {
+                    if (formLinje.hasClass('aktiv-feilmelding')) {
+                        $timeout(function () {
                             formLinje.removeClass('aktiv-feilmelding');
                         }, 100);
                     }

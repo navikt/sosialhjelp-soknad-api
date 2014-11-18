@@ -2,10 +2,10 @@
     <h4 class="spm-sporsmal" data-ng-bind-html=" 'arbeidsforhold.arbeidsgiver.varighet.label' | cmstekst"></h4>
 
     <div data-nav-dato
-         data-ng-model="sluttaarsak.properties.datofra"
-         data-label="arbeidsforhold.arbeidsgiver.varighet.fra"
-         data-er-required="true"
-         data-required-error-message="arbeidsforhold.arbeidsgiver.varighet.fra.feilmelding">
+            data-ng-model="sluttaarsak.properties.datofra"
+            data-label="arbeidsforhold.arbeidsgiver.varighet.fra"
+            data-er-required="true"
+            data-required-error-message="arbeidsforhold.arbeidsgiver.varighet.fra.feilmelding">
     </div>
 </div>
 
@@ -13,51 +13,55 @@
     <h4 class="spm-sporsmal">
         <span data-ng-bind-html=" 'arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet' | cmstekst"></span>
         <span data-nav-hjelpetekstelement
-              data-tittel="{{ 'arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.hjelptekst.tittel' | cmstekst }}"
-              data-tekst="{{ 'arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.hjelptekst.tekst' | cmstekst}}"></span>
+                data-tittel="{{ 'arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.hjelptekst.tittel' | cmstekst }}"
+                data-tekst="{{ 'arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.hjelptekst.tekst' | cmstekst}}"></span>
     </h4>
 
     <div data-nav-dato-intervall
-         data-fra-dato="faktum.properties.lonnspliktigperiodedatofra"
-         data-til-dato="faktum.properties.lonnspliktigperiodedatotil"
-         data-label="arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet"
-         data-er-fremtidigdato-tillatt="true"
-         data-er-fradato-required="erLonnspliktigperiodeRequired()"
-         data-disabled="faktum.properties.lonnspliktigperiodevetikke">
+            data-fra-dato="faktum.properties.lonnspliktigperiodedatofra"
+            data-til-dato="faktum.properties.lonnspliktigperiodedatotil"
+            data-label="arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet"
+            data-er-fremtidigdato-tillatt="true"
+            data-er-fradato-required="erLonnspliktigperiodeRequired()"
+            data-disabled="faktum.properties.lonnspliktigperiodevetikke">
     </div>
 
     <div class="nav-checkbox">
         <input class="sendsoknad-checkbox"
-               data-boolean-verdi
-               id="checkbox_vetikke"
-               type="checkbox"
-               name="arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.vetikke"
-               data-ng-model="faktum.properties.lonnspliktigperiodevetikke">
+                data-boolean-verdi
+                id="checkbox_vetikke"
+                type="checkbox"
+                name="arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.vetikke"
+                data-ng-model="faktum.properties.lonnspliktigperiodevetikke">
         <label for="checkbox_vetikke">{{ 'arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.vetikke' | cmstekst }}</label>
-    </div>
-</div>
-
-<div data-ng-if="permitteringsperioder.length < 2">
-    <div data-permitterings-periode-input
-         data-permitteringsperiode="getForstePermitteringsperiode()" >
     </div>
 </div>
 
 <div data-ng-if="permitteringsperioder.length > 1" data-ng-repeat="permitteringsperiode in permitteringsperioder">
     <div data-permitterings-periode-info
-         data-permitteringsperiode="permitteringsperiode"
-         data-slett-permitteringsperiode="leggPermitteringsperiodeTilSletting(permitteringsperiode)"
-         data-endre-permitteringsperiode="aapneEndrePermitteringsperiode(permitteringsperiode)">
+            data-permitteringsperiode="permitteringsperiode"
+            data-slett-permitteringsperiode="leggPermitteringsperiodeTilSletting(permitteringsperiode)"
+            data-endre-permitteringsperiode="aapneEndrePermitteringsperiode(permitteringsperiode)">
     </div>
 </div>
-<div class="nypermittering">
-    <a class="knapp-leggtil-liten midstilt" href="" data-ng-click="aapneLeggTilNyPermitteringsperiode()" data-ng-bind-html="'arbeidsforhold.nypermitteringsperiode.leggtil' | cmstekst"/>
-</div>
+<div data-ng-form name="permiteringsperiodeForm">
+    <div data-ng-if="permitteringsperioder.length < 2">
+        <h4 class="spm-sporsmal"
+                data-ng-bind-html=" 'arbeidsforhold.arbeidsgiver.permittert.varighet' | cmstekst"></h4>
 
+        <div data-permitterings-periode-input
+                data-permitteringsperiode="getForstePermitteringsperiode()">
+        </div>
+    </div>
+
+    <div class="nypermittering">
+        <a class="knapp-leggtil-liten midstilt" href="" data-ng-click="aapneLeggTilNyPermitteringsperiode(permiteringsperiodeForm)" data-ng-bind-html="'arbeidsforhold.nypermitteringsperiode.leggtil' | cmstekst"/>
+    </div>
+</div>
 <div class="ekstra-spm-boks">
     <div data-navinfoboks>
         <p class="sluttaarsak-informasjon"
-           data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.permittert.informasjon' | cmstekst"></p>
+                data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.permittert.informasjon' | cmstekst"></p>
     </div>
     <div data-vedlegginfoboks>
         <ul>
