@@ -1,11 +1,11 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosLandService;
+
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.POSTADRESSE_UTLAND;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.UTENLANDSK_ADRESSE;
-
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosLandService;
 
 
 public class Personalia {
@@ -14,6 +14,7 @@ public class Personalia {
 
     public static final String PERSONALIA_KEY = "personalia";
     public static final String FNR_KEY = "fnr";
+    public static final String KONTONUMMER_KEY = "kontonummer";
     public static final String ALDER_KEY = "alder";
     public static final String EPOST_KEY = "epost";
     public static final String STATSBORGERSKAP_KEY = "statsborgerskap";
@@ -38,6 +39,7 @@ public class Personalia {
     private String kjonn;
     private Adresse gjeldendeAdresse;
     private Adresse sekundarAdresse;
+    private String kontonummer;
 
     public Personalia() {
     }
@@ -180,4 +182,12 @@ public class Personalia {
         return false;
     }
 
+    public String getKontonummer() {
+        return kontonummer;
+    }
+
+    public void setKontonummer(String kontonummer) {
+        this.kontonummer = kontonummer;
+
+    }
 }

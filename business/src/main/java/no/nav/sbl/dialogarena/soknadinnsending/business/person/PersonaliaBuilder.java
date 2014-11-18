@@ -9,6 +9,7 @@ public class PersonaliaBuilder {
     private String kjonn;
     private Adresse gjeldendeAdresse;
     private Adresse sekundarAdresse;
+    private String kontonummer;
 
     public static PersonaliaBuilder with() {
         return new PersonaliaBuilder();
@@ -65,7 +66,13 @@ public class PersonaliaBuilder {
         personalia.setGjeldendeAdresse(gjeldendeAdresse);
         personalia.setSekundarAdresse(sekundarAdresse);
         personalia.setAlder(alder);
+        personalia.setKontonummer(kontonummer);
 
         return personalia;
+    }
+
+    public PersonaliaBuilder kontonummer(String kontonummer) {
+        this.kontonummer = kontonummer;
+        return this;
     }
 }

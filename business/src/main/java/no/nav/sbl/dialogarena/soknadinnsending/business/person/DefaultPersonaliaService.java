@@ -33,6 +33,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_LANDKODE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_TYPE_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.KJONN_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.KONTONUMMER_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.NAVN_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.SEKUNDARADRESSE_GYLDIGFRA_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.SEKUNDARADRESSE_GYLDIGTIL_KEY;
@@ -121,6 +122,7 @@ public class DefaultPersonaliaService implements PersonaliaService {
 
         Faktum personaliaFaktum = new Faktum().medSoknadId(soknadId).medKey("personalia")
                 .medSystemProperty(FNR_KEY, personalia.getFnr())
+                .medSystemProperty(KONTONUMMER_KEY, personalia.getKontonummer())
                 .medSystemProperty(ALDER_KEY, personalia.getAlder())
                 .medSystemProperty(NAVN_KEY, personalia.getNavn())
                 .medSystemProperty(EPOST_KEY, personalia.getEpost())

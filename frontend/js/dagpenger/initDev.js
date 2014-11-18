@@ -25,7 +25,6 @@ angular.module('sendsoknad')
         $http.get('../views/templates/utdanning/utdanningKortvarigTemplate.html', {cache: $templateCache});
         $http.get('../views/templates/utdanning/utdanningKortvarigFlereTemplate.html', {cache: $templateCache});
         $http.get('../views/templates/utdanning/utdanningNorskTemplate.html', {cache: $templateCache});
-        $http.get('../views/templates/adresse.html', {cache: $templateCache});
         $http.get('../views/dagpenger/dagpenger-skjema.html', {cache: $templateCache});
         $http.get('../js/common/directives/booleanradio/booleanradioTemplate.html', {cache: $templateCache});
         $http.get('../js/common/tredjeparts/directives/accordion/accordionGroupTemplate.html', {cache: $templateCache});
@@ -66,4 +65,7 @@ angular.module('sendsoknad')
         $http.get('../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver-oppsummering.html', {cache: $templateCache});
         $http.get('../views/templates/arbeidsforhold/sagt-opp-selv.html', {cache: $templateCache});
         $http.get('../views/templates/arbeidsforhold/sagt-opp-selv-oppsummering.html', {cache: $templateCache});
+
+        $http.get('../js/modules/personalia/templates/personaliaTemplate.html', {cache: $templateCache});
+        $http.get('../js/modules/personalia/templates/adresseTemplate.html', {cache: $templateCache});
     }]);

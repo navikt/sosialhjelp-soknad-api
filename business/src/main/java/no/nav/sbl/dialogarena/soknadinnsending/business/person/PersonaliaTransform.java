@@ -33,9 +33,14 @@ public class PersonaliaTransform {
                 .kjonn(finnKjonn(xmlBruker))
                 .gjeldendeAdresse(finnGjeldendeAdresse(xmlBruker, kodeverk))
                 .sekundarAdresse(finnSekundarAdresse(xmlBruker, kodeverk))
+                .kontonummer(finnKontonummer(xmlBruker))
                 .build();
 
         return personalia;
+    }
+
+    private static String finnKontonummer(XMLBruker xmlBruker) {
+        return xmlBruker.getBankkonto().toString();
     }
 
     private static Adresse finnGjeldendeAdresse(XMLBruker xmlBruker, Kodeverk kodeverk) {
