@@ -14,7 +14,7 @@ import java.util.Properties;
 import static java.lang.System.setProperty;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = SoknadinnsendingConfig.class)
+@ContextConfiguration(classes = SoknadinnsendingContext.class)
 public class ApplicationContextTest {
 
     @BeforeClass
@@ -22,7 +22,7 @@ public class ApplicationContextTest {
         load("/environment-test.properties");
         System.setProperty("no.nav.modig.security.sts.url", "dummyvalue");
         System.setProperty("no.nav.modig.security.systemuser.username", "dummyvalue");
-        System.setProperty("no.nav.modig.security.systemuser.password", "dummyvalue");
+        System.setProperty("no.nav.modig.security.systemuser.password", "");
     }
 
     @Test
