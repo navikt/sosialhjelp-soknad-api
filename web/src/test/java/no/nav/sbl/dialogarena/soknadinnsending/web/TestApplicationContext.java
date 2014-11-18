@@ -2,11 +2,11 @@ package no.nav.sbl.dialogarena.soknadinnsending.web;
 
 import no.nav.modig.cache.CacheConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.BusinessConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.business.ServicesApplicationConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.business.ServicesApplicationContext;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadInnsendingDBConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.MockConsumerConfig;
-import no.nav.sbl.dialogarena.websoknad.config.ApplicationConfig;
+import no.nav.sbl.dialogarena.websoknad.config.ApplicationContext;
 import no.nav.sbl.dialogarena.websoknad.config.ContentConfig;
 import no.nav.sbl.dialogarena.websoknad.config.GAConfig;
 import org.springframework.context.annotation.Bean;
@@ -18,15 +18,15 @@ import javax.inject.Inject;
 @Configuration
 @Import({
         MockConsumerConfig.class,
-        ServicesApplicationConfig.class,
-        ApplicationConfig.class,
+        ServicesApplicationContext.class,
+        ApplicationContext.class,
         BusinessConfig.class,
         CacheConfig.class,
         GAConfig.class,
         ContentConfig.class,
         SoknadInnsendingDBConfig.class})
 
-public class TestApplicationConfig {
+public class TestApplicationContext {
     private boolean mockHenvendelse = false;
     private boolean mockBrukerprofil = true;
     private boolean mockTps = true;

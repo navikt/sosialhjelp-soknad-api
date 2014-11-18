@@ -21,9 +21,9 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 @Configuration
 @EnableScheduling
-public class ServicesApplicationConfig {
+public class ServicesApplicationContext {
 
-    private static final Logger logger = getLogger(ServicesApplicationConfig.class);
+    private static final Logger logger = getLogger(ServicesApplicationContext.class);
 
     @Value("${sendsoknad.datadir}")
     private File brukerprofilDataDirectory;

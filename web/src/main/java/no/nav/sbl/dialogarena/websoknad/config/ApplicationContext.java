@@ -17,10 +17,13 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+/**
+ * Applikasjonskontekst for ear-modulen.
+ */
 @Configuration
-public class ApplicationConfig {
+public class ApplicationContext {
 
-    private static final Logger logger = getLogger(ApplicationConfig.class);
+    private static final Logger logger = getLogger(ApplicationContext.class);
     @Value("${dialogarena.navnolink.url}")
     private String navigasjonslink;
     @Value("{$dokumentinnsending.smtpServer.port}")
@@ -45,6 +48,7 @@ public class ApplicationConfig {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
         javaMailSender.setDefaultEncoding("UTF-8");
         javaMailSender.setHost(smtpServerHost);
+        //TODO: if/else er quickfix inntil vi får ApplicationContextTest til å lese mailserverport.
         if (smtpServerHost.matches("-?\\d+")) {
             javaMailSender.setPort(Integer.parseInt(smtpServerPort));
         } else {
