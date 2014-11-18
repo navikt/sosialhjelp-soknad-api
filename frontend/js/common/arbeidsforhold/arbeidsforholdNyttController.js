@@ -3,14 +3,14 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 
         $scope.templates = {
             'Sagt opp av arbeidsgiver': {url: '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver.html'},
-            'Permittert': {url: '../views/templates/arbeidsforhold/permittert.html'},
-            'Kontrakt utgått': {url: '../views/templates/arbeidsforhold/kontrakt-utgaatt.html'},
-            'Sagt opp selv': {url: '../views/templates/arbeidsforhold/sagt-opp-selv.html'},
-            'Redusert arbeidstid': {url: '../views/templates/arbeidsforhold/redusertarbeidstid.html'},
-            'Arbeidsgiver er konkurs': {url: '../views/templates/arbeidsforhold/konkurs.html'},
-            'Avskjediget': {url: '../views/templates/arbeidsforhold/avskjediget.html'}
-        };
-        $scope.land = data.land;
+            'Permittert'              : {url: '../views/templates/arbeidsforhold/permittert.html'},
+            'Kontrakt utgått'         : {url: '../views/templates/arbeidsforhold/kontrakt-utgaatt.html'},
+            'Sagt opp selv'           : {url: '../views/templates/arbeidsforhold/sagt-opp-selv.html'},
+            'Redusert arbeidstid'     : {url: '../views/templates/arbeidsforhold/redusertarbeidstid.html'},
+            'Arbeidsgiver er konkurs' : {url: '../views/templates/arbeidsforhold/konkurs.html'},
+			'Avskjediget'             : {url: '../views/templates/arbeidsforhold/avskjediget.html'}
+		};
+		$scope.land = data.land;
         $scope.soknadId = data.soknad.soknadId;
         $scope.behandlingId = data.soknad.brukerBehandlingId;
         $scope.soknadUrl = '/' + data.soknad.brukerBehandlingId + '/soknad';
@@ -54,18 +54,18 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
                 key: 'arbeidsforhold',
                 properties: {
                     'startetForrigeAar': 'false',
-                    'arbeidsgivernavn': undefined,
-                    'datofra': undefined,
-                    'datotil': undefined,
+					'arbeidsgivernavn': undefined,
+					'datofra'         : undefined,
+					'datotil'         : undefined,
                     'type': undefined,
                     'eosland': "false",
-                    'land': cms.tekster["arbeidsforhold.arbeidsgiver.landDefault"]
-                }
-            };
-        }
+                    'land' : cms.tekster["arbeidsforhold.arbeidsgiver.landDefault"]
+				}
+			};
+		}
         $scope.settBreddeSlikAtDetFungererIIE();
 
-        if (datapersister.get("arbeidsforholdData")) {
+        if(datapersister.get("arbeidsforholdData")) {
             arbeidsforholdData = datapersister.get("arbeidsforholdData");
             $scope.barnefaktum = datapersister.get("barnefaktum") || [];
 
@@ -73,11 +73,11 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
         }
 
         datapersister.set("arbeidsforholdData", arbeidsforholdData);
-        $scope.arbeidsforhold = new Faktum(arbeidsforholdData);
-        $scope.sluttaarsak = $scope.arbeidsforhold;
+		$scope.arbeidsforhold = new Faktum(arbeidsforholdData);
+		$scope.sluttaarsak = $scope.arbeidsforhold;
         datapersister.set("barnefaktum", $scope.barnefaktum);
 
-        $scope.$watch(function () {
+		$scope.$watch(function () {
             if ($scope.arbeidsforhold.properties.land) {
                 return $scope.arbeidsforhold.properties.land;
             }
@@ -99,7 +99,6 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 
             validerForm(form.$name)
             $scope.runValidation(true);
-
 
             if (form.$valid) {
                 settStartetForrigeAarProperty();
@@ -193,7 +192,8 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
                 oppdaterFaktumListe('arbeidsforhold', arbeidsforholdData);
                 oppdaterCookieValue(arbeidsforholdData.faktumId);
 
-                angular.forEach($scope.barnefaktum, function (faktum) {
+                angular.forEach($scope.barnefaktum, function(faktum) {
+                    faktum.properties.permitteringsperiodeTittel = permitteringsperiodeTittel(faktum);
                     faktum.parrentFaktum = arbeidsforholdData.faktumId;
                     promises.push(faktum.$save({soknadId: data.soknad.soknadId}));
                     data.fakta.push(faktum);
@@ -203,7 +203,16 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
                     datapersister.remove("arbeidsforholdData");
                     $location.path($scope.soknadUrl);
                 });
-            });
+
+                function permitteringsperiodeTittel(faktum){
+                    var navn = arbeidsforholdData.properties.arbeidsgivernavn;
+                    var fra = lagNorskDatoformatFraIsoStandard(faktum.properties.permiteringsperiodedatofra);
+                    var til = lagNorskDatoformatFraIsoStandard(faktum.properties.permiteringsperiodedatotil) || cms.tekster['arbeidsforhold.permitteringsperiode.vedlegg.paagaaende'];
+                    var tilTekst = cms.tekster['arbeidsforhold.permitteringsperiode.vedlegg.til'];
+                    return navn + " (" + fra + tilTekst + " " + til + ")";
+                }
+
+			});
         }
 
         function getPermitteringsPerioderMedParentFaktum(parentFaktumId) {
