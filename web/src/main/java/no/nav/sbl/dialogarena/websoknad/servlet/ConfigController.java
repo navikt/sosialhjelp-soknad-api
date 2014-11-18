@@ -27,9 +27,9 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class ConfigController {
 
     @Inject
-    ConfigService configService;
+    private ConfigService configService;
     @Inject
-    LagringsScheduler lagringsScheduler;
+    private LagringsScheduler lagringsScheduler;
     @Inject
     private CacheManager cacheManager;
     @Inject
