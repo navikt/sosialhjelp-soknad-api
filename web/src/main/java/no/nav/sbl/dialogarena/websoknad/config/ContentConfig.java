@@ -112,6 +112,20 @@ public class ContentConfig {
         }
     }
 
+    private String stripPTag(String value) {
+        String res = value;
+        if (value != null) {
+            if (res.startsWith("<p>")) {
+                res = res.substring(3);
+            }
+            if (res.endsWith("</p>")) {
+                res = res.substring(0, res.length() - 4);
+            }
+        }
+        return res;
+    }
+
+
     @Bean
     public ContentRetriever enonicContentRetriever() {
         HttpContentRetriever httpContentRetriever = new HttpContentRetriever();

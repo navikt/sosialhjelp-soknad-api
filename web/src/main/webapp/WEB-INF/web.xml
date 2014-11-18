@@ -41,7 +41,6 @@
         <param-value>no.nav.sbl.dialogarena.websoknad.config.SoknadinnsendingContext</param-value>
     </context-param>
 
-
     <filter>
         <filter-name>MDCFilter</filter-name>
         <filter-class>no.nav.modig.presentation.logging.session.MDCFilter</filter-class>
