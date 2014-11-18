@@ -15,7 +15,7 @@
         <div data-ng-show="!kanStarteEttersending()">
             <h1 class="strek-ikon-info-orange" data-ng-bind-html="'ettersending.start.forsent.tittel' | cmstekst"></h1>
             <p data-ng-bind-html="'ettersending.start.forsent.informasjon' | cmstekst"></p>
-            <a href="{{mineInnsendinger}}?behandlingsId={{sisteInnsendtBehandling}}" data-ng-bind-html=" 'feilmelding.mineinnsedinger.lenketekst' | cmstekst"></a>
+            <a href="{{ kvittering.url }}" data-ng-bind-html=" 'feilmelding.mineinnsedinger.lenketekst' | cmstekst"></a>
         </div>
     </div>
 </div>
