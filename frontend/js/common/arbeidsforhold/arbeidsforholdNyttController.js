@@ -69,7 +69,9 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
             arbeidsforholdData = datapersister.get("arbeidsforholdData");
             $scope.barnefaktum = datapersister.get("barnefaktum") || [];
 
-            $scope.permitteringsperioder = $scope.permitteringsperioder.concat($scope.barnefaktum);
+            $scope.permitteringsperioder = $scope.permitteringsperioder.concat($scope.barnefaktum.filter(function(periode) {
+                return !periode.faktumId;
+            }));
         }
 
         datapersister.set("arbeidsforholdData", arbeidsforholdData);
@@ -196,7 +198,9 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
                     faktum.properties.permitteringsperiodeTittel = permitteringsperiodeTittel(faktum);
                     faktum.parrentFaktum = arbeidsforholdData.faktumId;
                     promises.push(faktum.$save({soknadId: data.soknad.soknadId}));
-                    data.fakta.push(faktum);
+                    if(!faktum.faktumId) {
+                        data.fakta.push(faktum);
+                    }
                 });
 
                 $q.all(promises).then(function () {

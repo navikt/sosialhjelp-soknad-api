@@ -74,6 +74,12 @@ angular.module('nav.arbeidsforhold.nypermitteringsperiode.controller', ['nav.arb
             angular.forEach(original, function(value, key) {
                 original[key] = nyData[key];
             });
+
+            var barnefaktum = datapersister.get("barnefaktum") || [];
+            if(!barnefaktum.indexOf(original) > -1) {
+                barnefaktum.push(original);
+                datapersister.set("barnefaktum", barnefaktum);
+            }
         }
 
         function validerAtPeriodeIkkeOverlapperAndrePerioder() {
