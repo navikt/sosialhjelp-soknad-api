@@ -46,16 +46,7 @@
                 soknad: {
                     soknadId: 1
                 },
-                config: {"soknad.sluttaarsak.url": "sluttaarsakUrl",
-                    "dittnav.link.url": "dittnavUrl",
-                    "soknad.lonnskravskjema.url": "lonnskravSkjemaUrl",
-                    "soknad.permitteringsskjema.url": "permiteringUrl",
-                    "saksoversikt.link.url": saksoversiktUrl,
-                    "soknad.skjemaveileder.url": "skjemaVeilederUrl",
-                    "soknad.brukerprofil.url": "brukerprofilUrl",
-                    "soknad.reelarbeidsoker.url": "reelArbeidsokerUrl",
-                    "soknad.alderspensjon.url": "alderspensjonUrl",
-                    "soknad.dagpengerbrosjyre.url": "dagpengerBrosjyreUrl" },
+                config: { },
 
                 slettFaktum: function (faktumData) {
                     fakta.forEach(function (item, index) {
@@ -63,8 +54,6 @@
                             fakta.splice(index, 1);
                         }
                     });
-                },
-                utslagskriterier: {
                 }
             });
             $provide.value("cms", {'tekster': {'barnetillegg.nyttbarn.landDefault': ''}});
