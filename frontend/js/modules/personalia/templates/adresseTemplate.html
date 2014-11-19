@@ -1,6 +1,6 @@
 <div class="adresse">
     <div data-ng-if="harGjeldendeAdresse()">
-        <span class="adressetype" data-ng-bind-html=" gjeldendeAdresseTypeLabel | cmstekst"></span>
+        <h3 class="personalia-header" data-ng-bind-html=" gjeldendeAdresseTypeLabel | cmstekst"></h3>
         <span data-ng-bind-html="formattertGjeldendeAdresse"></span>
         <p data-ng-show="harGjeldendeGyldigTilDato()">
             <span data-ng-bind-html=" 'personalia.gyldigTil' | cmstekst"></span>
@@ -9,7 +9,7 @@
     </div>
 
     <div class="sekundaerAdresse" data-ng-if="harSekundarAdresse()">
-        <span class="adressetype" data-ng-bind-html=" sekundarAdresseTypeLabel | cmstekst"></span>
+        <h3 class="personalia-header" data-ng-bind-html=" sekundarAdresseTypeLabel | cmstekst"></h3>
         <span data-ng-bind-html="formattertSekundarAdresse"></span>
         <p data-ng-show="harSekundarGyldigTilDato()">
             <span data-ng-bind-html=" 'personalia.gyldigTil' | cmstekst"></span>

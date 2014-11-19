@@ -10,6 +10,9 @@ public class PersonaliaBuilder {
     private Adresse gjeldendeAdresse;
     private Adresse sekundarAdresse;
     private String kontonummer;
+    private Boolean erUtenlandskBankkonto;
+    private String utenlandskKontoBanknavn;
+    private String utenlandskKontoLand;
 
     public static PersonaliaBuilder with() {
         return new PersonaliaBuilder();
@@ -55,6 +58,26 @@ public class PersonaliaBuilder {
         return this;
     }
 
+    public PersonaliaBuilder kontonummer(String kontonummer) {
+        this.kontonummer = kontonummer;
+        return this;
+    }
+
+    public PersonaliaBuilder erUtenlandskBankkonto(Boolean erUtenlandskBankkonto) {
+        this.erUtenlandskBankkonto = erUtenlandskBankkonto;
+        return this;
+    }
+
+    public PersonaliaBuilder utenlandskKontoBanknavn(String utenlandskKontoBanknavn) {
+        this.utenlandskKontoBanknavn = utenlandskKontoBanknavn;
+        return this;
+    }
+
+    public PersonaliaBuilder utenlandskKontoLand(String utenlandskKontoLand) {
+        this.utenlandskKontoLand = utenlandskKontoLand;
+        return this;
+    }
+
     public Personalia build() {
         Personalia personalia = new Personalia();
 
@@ -67,12 +90,10 @@ public class PersonaliaBuilder {
         personalia.setSekundarAdresse(sekundarAdresse);
         personalia.setAlder(alder);
         personalia.setKontonummer(kontonummer);
+        personalia.setErUtenlandskBankkonto(erUtenlandskBankkonto);
+        personalia.setUtenlandskKontoBanknavn(utenlandskKontoBanknavn);
+        personalia.setUtenlandskKontoLand(utenlandskKontoLand);
 
         return personalia;
-    }
-
-    public PersonaliaBuilder kontonummer(String kontonummer) {
-        this.kontonummer = kontonummer;
-        return this;
     }
 }
