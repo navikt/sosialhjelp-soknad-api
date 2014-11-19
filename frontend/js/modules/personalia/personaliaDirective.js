@@ -3,19 +3,19 @@ angular.module('nav.personalia.directive', [])
         return {
             replace: true,
             templateUrl: '../js/modules/personalia/templates/personaliaTemplate.html',
-            link: function(scope) {
+            link: function (scope) {
                 scope.personalia = data.finnFaktum('personalia').properties;
 
                 scope.brukerprofilUrl = data.config["soknad.brukerprofil.url"];
-                scope.erMann = function() {
-                    if(scope.personalia.kjonn) {
+                scope.erMann = function () {
+                    if (scope.personalia.kjonn) {
                         return scope.personalia.kjonn === 'm';
                     }
                     return false;
                 };
 
-                scope.erKvinne = function() {
-                    if(scope.personalia.kjonn) {
+                scope.erKvinne = function () {
+                    if (scope.personalia.kjonn) {
                         return scope.personalia.kjonn === 'k';
                     }
                     return false;
@@ -25,33 +25,33 @@ angular.module('nav.personalia.directive', [])
                     return scope.personalia !== null;
                 };
 
-                scope.erUtenlandskStatsborger = function() {
+                scope.erUtenlandskStatsborger = function () {
                     return scope.personalia.statsborgerskap !== 'NOR';
                 };
             }
         };
     })
-    .directive('adresse', function(data) {
+    .directive('adresse', function (data) {
         return {
             replace: true,
             templateUrl: '../js/modules/personalia/templates/adresseTemplate.html',
-            link: function(scope) {
+            link: function (scope) {
                 scope.personalia = data.finnFaktum('personalia').properties;
 
-                scope.harGjeldendeAdresse = function() {
+                scope.harGjeldendeAdresse = function () {
                     return scope.personalia.gjeldendeAdresse !== null;
                 };
 
                 scope.formattertGjeldendeAdresse = '';
                 scope.gjeldendeAdresseTypeLabel = '';
 
-                scope.hentFormattertAdresse = function(adresse) {
-                    if(adresse) {
+                scope.hentFormattertAdresse = function (adresse) {
+                    if (adresse) {
                         var formattertAdresse = '';
 
                         var adresseLinjer = adresse.split(',');
 
-                        adresseLinjer.forEach(function(adresseLinje) {
+                        adresseLinjer.forEach(function (adresseLinje) {
                             formattertAdresse += '<p>' + adresseLinje.trim() + '</p>';
                         });
                         return formattertAdresse;
@@ -59,7 +59,7 @@ angular.module('nav.personalia.directive', [])
                     return "";
                 };
 
-                scope.hentAdresseTypeNokkel = function(adresseType) {
+                scope.hentAdresseTypeNokkel = function (adresseType) {
                     if (adresseType === 'UTENLANDSK_ADRESSE' || adresseType === 'BOSTEDSADRESSE' || adresseType === 'POSTADRESSE') {
                         return 'personalia.folkeregistrertadresse';
                     } else if (adresseType === 'MIDLERTIDIG_POSTADRESSE_NORGE') {
@@ -76,15 +76,15 @@ angular.module('nav.personalia.directive', [])
                     scope.gjeldendeAdresseTypeLabel = scope.hentAdresseTypeNokkel(scope.personalia.gjeldendeAdresseType);
                 }
 
-                scope.harGjeldendeGyldigTilDato = function() {
+                scope.harGjeldendeGyldigTilDato = function () {
                     return scope.personalia.gjeldendeAdresseGyldigTil !== undefined && scope.personalia.gjeldendeAdresseGyldigTil !== null && scope.personalia.gjeldendeAdresseGyldigTil !== '';
                 };
 
-                scope.harSekundarGyldigTilDato = function() {
+                scope.harSekundarGyldigTilDato = function () {
                     return scope.personalia.sekundarAdresseGyldigTil !== undefined && scope.personalia.sekundarAdresseGyldigTil !== null && scope.personalia.gjeldendeAdresseGyldigTil !== '';
                 };
 
-                scope.harSekundarAdresse = function() {
+                scope.harSekundarAdresse = function () {
                     return scope.personalia.sekundarAdresse !== null;
                 };
 
@@ -94,6 +94,31 @@ angular.module('nav.personalia.directive', [])
                     scope.formattertSekundarAdresse = scope.hentFormattertAdresse(scope.personalia.sekundarAdresse);
                     scope.sekundarAdresseTypeLabel = scope.hentAdresseTypeNokkel(scope.personalia.sekundarAdresseType);
                 }
+            }
+        };
+    })
+    .directive('kontonr', function (data) {
+        return {
+            replace: true,
+            templateUrl: '../js/modules/personalia/templates/kontonummerTemplate.html',
+            link: function (scope) {
+                scope.personalia = data.finnFaktum('personalia').properties;
+                scope.vars = {
+                    kontonummer: scope.personalia.kontonummer,
+                    banknavn: scope.personalia.utenlandskKontoBanknavn,
+                    kontoland: scope.personalia.utenlandskKontoLand,
+                    erUtenlandskKonto: scope.personalia.erUtenlandskBankkonto
+                };
+
+                console.log(scope.personalia);
+
+                scope.harKontonummer = function () {
+                    return scope.vars.kontonummer != null;
+                };
+
+                scope.erUtenlandskKonto = function() {
+                    return scope.vars.erUtenlandskKonto;
+                };
             }
         };
     });

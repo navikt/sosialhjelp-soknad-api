@@ -15,6 +15,9 @@ public class Personalia {
     public static final String PERSONALIA_KEY = "personalia";
     public static final String FNR_KEY = "fnr";
     public static final String KONTONUMMER_KEY = "kontonummer";
+    public static final String ER_UTENLANDSK_BANKKONTO = "erUtenlandskBankkonto";
+    public static final String UTENLANDSK_KONTO_BANKNAVN = "utenlandskKontoBanknavn";
+    public static final String UTENLANDSK_KONTO_LAND = "utenlandskKontoLand";
     public static final String ALDER_KEY = "alder";
     public static final String EPOST_KEY = "epost";
     public static final String STATSBORGERSKAP_KEY = "statsborgerskap";
@@ -40,6 +43,9 @@ public class Personalia {
     private Adresse gjeldendeAdresse;
     private Adresse sekundarAdresse;
     private String kontonummer;
+    private Boolean erUtenlandskBankkonto;
+    private String utenlandskKontoBanknavn;
+    private String utenlandskKontoLand;
 
     public Personalia() {
     }
@@ -189,5 +195,29 @@ public class Personalia {
     public void setKontonummer(String kontonummer) {
         this.kontonummer = kontonummer;
 
+    }
+
+    public Boolean getErUtenlandskBankkonto() {
+        return erUtenlandskBankkonto;
+    }
+
+    public void setErUtenlandskBankkonto(Boolean erUtenlandskBankkonto) {
+        this.erUtenlandskBankkonto = erUtenlandskBankkonto;
+    }
+
+    public String getUtenlandskKontoBanknavn() {
+        return utenlandskKontoBanknavn;
+    }
+
+    public void setUtenlandskKontoBanknavn(String utenlandskKontoBanknavn) {
+        this.utenlandskKontoBanknavn = utenlandskKontoBanknavn;
+    }
+
+    public String getUtenlandskKontoLand() {
+        return utenlandskKontoLand;
+    }
+
+    public void setUtenlandskKontoLand(String utenlandskKontoLand) {
+        this.utenlandskKontoLand = utenlandskKontoLand;
     }
 }
