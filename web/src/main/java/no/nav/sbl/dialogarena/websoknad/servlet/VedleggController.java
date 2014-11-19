@@ -37,6 +37,7 @@ import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 @Controller()
 @RequestMapping("/soknad/{soknadId}/vedlegg")
 public class VedleggController {
+
     @Inject
     private VedleggService vedleggService;
 
@@ -110,7 +111,6 @@ public class VedleggController {
         return vedleggService.lagForhandsvisning(soknadId, vedleggId, side);
     }
 
-
     @RequestMapping(value = "/{vedleggId}/opplasting", method = RequestMethod.POST, produces = "text/plain; charset=utf-8")
     @ResponseBody()
     @SjekkTilgangTilSoknad(sjekkXsrf = false)
@@ -121,7 +121,6 @@ public class VedleggController {
             brukerBehandlingId = soknad.getBehandlingskjedeId();
         }
 
-
         XsrfGenerator.sjekkXsrfToken(xsrfToken, brukerBehandlingId);
         Vedlegg forventning = vedleggService.hentVedlegg(soknadId, vedleggId, false);
 
@@ -129,7 +128,6 @@ public class VedleggController {
             throw new OpplastingException("Kunne ikke lagre fil fordi total filstørrelse er for stor", null,
                     "vedlegg.opplasting.feil.forStor");
         }
-
 
         List<Vedlegg> res = new ArrayList<>();
         for (MultipartFile file : files) {
