@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
 import no.nav.sbl.dialogarena.websoknad.domain.FortsettSenere;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.EmailService;
+import no.nav.sbl.dialogarena.websoknad.service.EmailService;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,7 +15,7 @@ import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Locale;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.util.ServerUtils.getGjenopptaUrl;
+import static no.nav.sbl.dialogarena.websoknad.servlet.ServerUtils.getGjenopptaUrl;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**

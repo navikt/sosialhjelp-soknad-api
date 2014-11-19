@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.websoknad.config;
 import no.nav.sbl.dialogarena.print.HandleBarKjoerer;
 import no.nav.sbl.dialogarena.print.HtmlGenerator;
 import no.nav.sbl.dialogarena.websoknad.WicketApplication;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.EmailService;
+import no.nav.sbl.dialogarena.websoknad.service.EmailService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

@@ -118,7 +118,7 @@ public class SoknadDataControllerTest {
                 .andExpect(status().isOk());
         verify(vedleggService).leggTilKodeverkFelter(vedlegg);
         verify(pdfgenerator).lagPdfFil("html");
-        verify(soknadService).sendSoknad(11L, outputBytes, "http://localhost:80/soknad/send/11");
+        verify(soknadService).sendSoknad(11L, outputBytes);
     }
 
     @Test

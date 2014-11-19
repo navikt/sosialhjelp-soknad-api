@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.soknadinnsending.business.service;
+package no.nav.sbl.dialogarena.websoknad.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -22,7 +22,7 @@ public interface SendSoknadService {
 
     Long lagreSystemFaktum(Long soknadId, Faktum faktum, String uniqueProperty);
 
-    void sendSoknad(long soknadId, byte[] outputStream, String requestUrl);
+    void sendSoknad(long soknadId, byte[] outputStream);
 
     void avbrytSoknad(Long soknadId);
 
