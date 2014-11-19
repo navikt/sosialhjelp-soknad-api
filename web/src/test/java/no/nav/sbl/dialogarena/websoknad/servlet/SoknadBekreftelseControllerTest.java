@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.ConfigService;
 import no.nav.sbl.dialogarena.websoknad.service.EmailService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -25,15 +26,21 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import static org.mockito.Mockito.when;
+
 @RunWith(MockitoJUnitRunner.class)
-public class FortsettSenereControllerTest {
+public class SoknadBekreftelseControllerTest {
     @Mock
     private EmailService emailService;
+
+    @Mock
+    private ConfigService configService;
+
     @Spy
     private StaticMessageSource messageSource = new StaticMessageSource();
 
     @InjectMocks
-    private FortsettSenereController controller;
+    private SoknadBekreftelseController controller;
     private MockMvc mockMvc;
 
     @Before
@@ -49,17 +56,19 @@ public class FortsettSenereControllerTest {
     }
 
     @Test
-    public void skalKunneGenerereGjenopptaUrl() {
-        Assert.assertEquals("http://a34duvw22583.devillo.no:8181/sendsoknad/soknad/skjemanavn#/behandling/fortsett?utm_source=web&utm_medium=email&utm_campaign=2",
-                ServerUtils.getGjenopptaUrl("http://a34duvw22583.devillo.no:8181/sendsoknad/rest/soknad/244/fortsettsenere", "skjemanavn", "behandling"));
+    public void skalKunneGenerereEttersendelseUrl() {
+        Assert.assertEquals("http://a34duvw22583.devillo.no:8181/sendsoknad/startettersending/123",
+                ServerUtils.getEttersendelseUrl("http://a34duvw22583.devillo.no:8181/sendsoknad/rest/soknad/skjemanavn#/bekreftelse/123", "123"));
     }
 
     @Test
-    public void skalGjennoppta() throws Exception {
-        messageSource.addMessage("fortsettSenere.sendEpost.epostInnhold", new Locale("nb", "NO"), "test med url {0}");
-        mockMvc.perform(post("/soknad/{soknadId}/{behandlingsId}/fortsettsenere", "NAV13", "BH123").contentType(MediaType.APPLICATION_JSON).content("{\"epost\": \"test@epost.com\"}"))
-                .andExpect(status().isOk());
-        verify(emailService).sendFortsettSenereEPost("test@epost.com", "Lenke til påbegynt dagpengesøknad", "test med url http://localhost:80/soknad/NAV13/BH123/fortsettsenere/soknad/NAV13#/BH123/fortsett?utm_source=web&utm_medium=email&utm_campaign=2");
-    }
+    public void skalSendeEpost() throws Exception {
+        when(configService.getValue("saksoversikt.link.url")).thenReturn("saksoversiktUrl");
+        messageSource.addMessage("sendtSoknad.sendEpost.epostInnhold", new Locale("nb", "NO"), "Tekst. Saksoversikturl {0} og ettersendelseurl {1}");
+        messageSource.addMessage("sendtSoknad.sendEpost.epostSubject", new Locale("nb", "NO"), "emne");
 
+        mockMvc.perform(post("/bekreftelse/{behandlingId}", "123").contentType(MediaType.APPLICATION_JSON).content("{\"epost\": \"test@epost.com\", \"temaKode\": \"DAG\"}"))
+                .andExpect(status().isOk());
+        verify(emailService).sendEPostMedLenkeTilEttersendelse("test@epost.com", "emne", "Tekst. Saksoversikturl saksoversiktUrl/detaljer/DAG/123 og ettersendelseurl http://localhost:80/bekreftelse/123/startettersending/123");
+    }
 }

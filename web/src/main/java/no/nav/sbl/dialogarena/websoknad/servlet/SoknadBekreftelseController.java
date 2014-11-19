@@ -1,7 +1,9 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.EmailService;
-import no.nav.sbl.dialogarena.websoknad.domain.FortsettSenere;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.ConfigService;
+import no.nav.sbl.dialogarena.websoknad.service.EmailService;
+import no.nav.sbl.dialogarena.websoknad.domain.SoknadBekreftelse;
+import org.slf4j.Logger;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,7 +17,7 @@ import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Locale;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.util.ServerUtils.getEttersendelseUrl;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 
@@ -25,6 +27,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Controller
 @RequestMapping("/bekreftelse")
 public class SoknadBekreftelseController {
+    private static final Logger logger = getLogger(SoknadBekreftelseController.class);
 
     @Inject
     private EmailService emailService;
@@ -33,11 +36,23 @@ public class SoknadBekreftelseController {
     @Named("navMessageSource")
     private MessageSource messageSource;
 
-    @RequestMapping(value = "/{behandlingId}/{bekreftelsesmail}", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
+    @Inject
+    ConfigService configService;
+
+    @RequestMapping(value = "/{behandlingId}", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
     @ResponseBody()
-    public void sendEpost(HttpServletRequest request, @PathVariable String behandlingId, String bekreftelsesmail) {
-       String content = "sdfds";// messageSource.getMessage("fortsettSenere.sendEpost.epostInnhold", new Object[]{getEttersendelseUrl(request.getRequestURL().toString(), soknadId, behandlingId)}, new Locale("nb", "NO"));
-//        emailService.sendFortsettSenereEPost(epost.getEpost(), "Lenke til påbegynt dagpengesøknad", content);
+    public void sendEpost(HttpServletRequest request, @PathVariable String behandlingId, @RequestBody SoknadBekreftelse soknadBekreftelse) {
+        if (soknadBekreftelse.getEpost() != null) {
+            String subject = messageSource.getMessage("sendtSoknad.sendEpost.epostSubject", null, new Locale("nb", "NO"));
+            String saksoversiktUrl = configService.getValue("saksoversikt.link.url") + "/detaljer/"+ soknadBekreftelse.getTemaKode() +"/" + behandlingId;
+            String ettersendelseUrl = ServerUtils.getEttersendelseUrl(request.getRequestURL().toString(), behandlingId);
+
+            String innhold = messageSource.getMessage("sendtSoknad.sendEpost.epostInnhold", new Object[]{saksoversiktUrl, ettersendelseUrl}, new Locale("nb", "NO"));
+
+            emailService.sendEPostMedLenkeTilEttersendelse(soknadBekreftelse.getEpost(), subject, innhold);
+        } else {
+            logger.debug("Fant ingen epost");
+        }
     }
 }
 
