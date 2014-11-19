@@ -7,7 +7,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.task.TaskExecutor;
-import org.springframework.http.MediaType;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -21,10 +20,16 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.mvc.WebContentInterceptor;
 
 import java.nio.charset.Charset;
-import java.util.Arrays;
 import java.util.List;
 
+import static java.util.Arrays.asList;
 import static org.springframework.context.annotation.ComponentScan.Filter;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM;
+import static org.springframework.http.MediaType.IMAGE_JPEG;
+import static org.springframework.http.MediaType.IMAGE_PNG;
+import static org.springframework.http.MediaType.TEXT_HTML;
+import static org.springframework.http.MediaType.TEXT_PLAIN;
 
 @Configuration
 @EnableWebMvc
@@ -59,15 +64,11 @@ public class ServletConfig extends WebMvcConfigurerAdapter {
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         super.configureMessageConverters(converters);
-        MappingJackson2HttpMessageConverter json = new MappingJackson2HttpMessageConverter();
-        json.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN));
-        ByteArrayHttpMessageConverter imageConverter = new ByteArrayHttpMessageConverter();
-        imageConverter.setSupportedMediaTypes(Arrays.asList(MediaType.IMAGE_PNG, MediaType.IMAGE_JPEG, MediaType.APPLICATION_OCTET_STREAM));
-        StringHttpMessageConverter http = new StringHttpMessageConverter(Charset.forName("UTF-8"));
-        http.setSupportedMediaTypes(Arrays.asList(MediaType.TEXT_HTML));
-        converters.add(json);
-        converters.add(imageConverter);
-        converters.add(http);
+        converters.addAll(asList(
+                opprettJsontyper(),
+                opprettImagetyper(),
+                opprettHttptyper()
+        ));
     }
 
     @Override
@@ -77,6 +78,24 @@ public class ServletConfig extends WebMvcConfigurerAdapter {
         cache.setUseCacheControlHeader(false);
         cache.setUseCacheControlNoStore(false);
         registry.addInterceptor(cache).addPathPatterns("/**/thumbnail*");
+    }
+
+    private StringHttpMessageConverter opprettHttptyper() {
+        StringHttpMessageConverter http = new StringHttpMessageConverter(Charset.forName("UTF-8"));
+        http.setSupportedMediaTypes(asList(TEXT_HTML));
+        return http;
+    }
+
+    private ByteArrayHttpMessageConverter opprettImagetyper() {
+        ByteArrayHttpMessageConverter imageConverter = new ByteArrayHttpMessageConverter();
+        imageConverter.setSupportedMediaTypes(asList(IMAGE_PNG, IMAGE_JPEG, APPLICATION_OCTET_STREAM));
+        return imageConverter;
+    }
+
+    private MappingJackson2HttpMessageConverter opprettJsontyper() {
+        MappingJackson2HttpMessageConverter json = new MappingJackson2HttpMessageConverter();
+        json.setSupportedMediaTypes(asList(APPLICATION_JSON, TEXT_PLAIN));
+        return json;
     }
 
 }
