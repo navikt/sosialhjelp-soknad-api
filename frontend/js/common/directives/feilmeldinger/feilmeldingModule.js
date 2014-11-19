@@ -167,7 +167,7 @@ angular.module('nav.feilmeldinger', [])
                     var feilmelding = cms.tekster[feilmeldingNokkel];
                     if (feilmelding === undefined) {
                         if (feilInneholderNyeFeil(feil)) {
-                            leggTilFeilmeldingerVedValidering(feil.$error.required, feilNokkel)
+                            leggTilFeilmeldingerVedValidering(feil.$error.required, feilNokkel);
                             return;
                         } else {
                             feilmelding = feilmeldingNokkel;
@@ -178,7 +178,7 @@ angular.module('nav.feilmeldinger', [])
                 }
 
                 function feilInneholderNyeFeil(feil) {
-                    return feil.$error && Array.isArray(feil.$error.required)
+                    return feil.$error && Array.isArray(feil.$error.required);
                 }
 
                 function finnFeilmeldingsNokkel(feil, feilNokkel) {

@@ -57,8 +57,8 @@
             persister = datapersister;
             datapersister.set("arbeidsforholdData", {});
 
-            var periode1 = {properties: {permiteringsperiodedatofra: "2010-01-01", permiteringsperiodedatotil: "2010-12-12"}}
-            var periode2 = {properties: {permiteringsperiodedatofra: "2011-01-01", permiteringsperiodedatotil: "2011-12-12"}}
+            var periode1 = {properties: {permiteringsperiodedatofra: "2010-01-01", permiteringsperiodedatotil: "2010-12-12"}};
+            var periode2 = {properties: {permiteringsperiodedatofra: "2011-01-01", permiteringsperiodedatotil: "2011-12-12"}};
             datapersister.set("allePermitteringsperioder", [periode1, periode2]);
 
             scope = $rootScope;
@@ -77,7 +77,7 @@
                 scope.permitteringsperiode.properties.permiteringsperiodedatotil = "2011-06-06";
                 scope.permitteringsperiode.properties.permitteringProsent=100;
                 scope.lagrePermitteringsperiode(form);
-                expect(persister.set("permitteringsperiode").length).toBe(1);
+                expect(persister.get("barnefaktum").length).toBe(1);
             });
 
             it("skal ikke persistere om form ikke er valid", function() {
