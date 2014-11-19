@@ -31,7 +31,8 @@ import static org.springframework.context.annotation.ComponentScan.Filter;
 @EnableAsync
 @ComponentScan(excludeFilters = @Filter(Configuration.class))
 @EnableAspectJAutoProxy
-public class ServletContext extends WebMvcConfigurerAdapter {
+public class ServletConfig extends WebMvcConfigurerAdapter {
+
     @Bean
     public SikkerhetsAspect sikkerhet() {
         return new SikkerhetsAspect();
@@ -77,4 +78,5 @@ public class ServletContext extends WebMvcConfigurerAdapter {
         cache.setUseCacheControlNoStore(false);
         registry.addInterceptor(cache).addPathPatterns("/**/thumbnail*");
     }
+
 }

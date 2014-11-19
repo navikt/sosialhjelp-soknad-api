@@ -58,7 +58,6 @@ public class ExceptionController {
         return getResult("generell", HttpStatus.BAD_REQUEST);
     }
 
-
     private ResponseEntity<RestFeil> getResult(String id, HttpStatus badRequest) {
         HttpHeaders header = new HttpHeaders();
         header.setContentType(TEXT_PLAIN);
