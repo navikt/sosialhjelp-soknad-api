@@ -161,7 +161,7 @@
             <div class="knapper-opprett" data-ng-class="{valgt: faktum.properties.type}">
                 <input class="knapp-hoved-liten" type="submit"
                        value="{{ 'arbeidsforhold.nyttarbeidsforhold.lagre' | cmstekst }}"
-                       data-ng-click="lagreArbeidsforhold(nyttArbeidsforholdForm);">
+                       data-ng-click="lagreArbeidsforhold(nyttArbeidsforholdForm, ['permiteringsperiodeForm']);">
                 <a href="#{{ soknadUrl }}" data-ng-bind-html=" 'arbeidsforhold.nyttarbeidsforhold.avbryt' | cmstekst"></a>
             </div>
         </div>

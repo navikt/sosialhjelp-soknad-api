@@ -1,0 +1,25 @@
+<section class="permittingsperiode-info spm-boks">
+    <div data-nav-faktum="permitteringsperiode" data-ikke-auto-lagre="true">
+        <a title="Slett permitteringsperiode" href="" data-ng-click="slettPermitteringsperiode()" class="lukk" aria-label="{{ 'arbeidsforhold.lukk.aria' | cmstekst }}"> </a>
+        <div>
+            <div class="felt-info">
+                <span class="header" data-ng-bind-html="'arbeidsforhold.arbeidsgiver.permittert.varighet' | cmstekst"></span>
+                <span data-ng-bind="permitteringsperiode.properties.permiteringsperiodedatofra | date:'dd.MM.yyyy' | norskdato"/>
+                <span data-ng-if="permitteringsperiode.properties.permiteringsperiodedatotil" data-ng-bind-html="'arbeidsforhold.permitteringsperiode.info.til' | cmstekst"/>
+                <span data-ng-if="permitteringsperiode.properties.permiteringsperiodedatotil" data-ng-bind="permitteringsperiode.properties.permiteringsperiodedatotil | date:'dd.MM.yyyy' | norskdato"/>
+            </div>
+
+            <div class="felt-info">
+                <span class="header" data-ng-bind-html="'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad' | cmstekst"></span>
+                <span data-ng-bind="permitteringsperiode.properties.permitteringProsent"></span>
+                <span class="prosent" data-ng-bind-html=" 'arbeidsforhold.permittert.prosent' | cmstekst"></span>
+            </div>
+        </div>
+    </div>
+    <div class="endre-slett">
+        <ul class="liste-vannrett">
+            <li><a class="inline" href="" data-ng-click="slettPermitteringsperiode()">Slett</a></li>
+            <li><a class="inline" href="" data-ng-click="endrePermitteringsperiode()">Endre</a></li>
+        </ul>
+    </div>
+</section>
