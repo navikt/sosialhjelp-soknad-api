@@ -7,19 +7,16 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-/**
- * Applikasjonskontekst for ear-modulen.
- */
 @Configuration
 @Import({
-        ApplicationContext.class,
+        ApplicationConfig.class,
         BusinessConfig.class,
         CacheConfig.class,
         GAConfig.class,
         ConsumerConfig.class,
         ContentConfig.class,
         SoknadInnsendingDBConfig.class})
-public class SoknadinnsendingContext {
+public class SoknadinnsendingConfig {
 
 
 }
