@@ -76,7 +76,7 @@ angular.module('nav.arbeidsforhold.nypermitteringsperiode.controller', ['nav.arb
             });
 
             var barnefaktum = datapersister.get("barnefaktum") || [];
-            if(!barnefaktum.indexOf(original) > -1) {
+            if(barnefaktum.indexOf(original) < 0) {
                 barnefaktum.push(original);
                 datapersister.set("barnefaktum", barnefaktum);
             }
