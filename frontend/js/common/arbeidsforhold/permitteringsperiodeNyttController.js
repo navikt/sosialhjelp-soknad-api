@@ -86,9 +86,9 @@ angular.module('nav.arbeidsforhold.nypermitteringsperiode.controller', ['nav.arb
                 var periodeFra = new Date(periode.properties.permiteringsperiodedatofra);
                 var periodeTil = periode.properties.permiteringsperiodedatotil ? new Date(periode.properties.permiteringsperiodedatotil) : new Date();
 
-                if(erDatoMellomIntervall(fraDato, periodeFra, periodeTil)
-                    || erDatoMellomIntervall(sluttDato, periodeFra, periodeTil)
-                    || erDatoMellomIntervall(periodeFra, fraDato, sluttDato)) {
+                if(erDatoMellomIntervall(fraDato, periodeFra, periodeTil) ||
+                    erDatoMellomIntervall(sluttDato, periodeFra, periodeTil) ||
+                    erDatoMellomIntervall(periodeFra, fraDato, sluttDato)) {
                     return false;
                 }
             }

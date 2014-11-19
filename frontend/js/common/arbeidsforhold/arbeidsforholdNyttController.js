@@ -97,7 +97,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
               validerForm(formname);
             });
 
-            validerForm(form.$name)
+            validerForm(form.$name);
             $scope.runValidation(true);
 
             if (form.$valid) {
@@ -113,7 +113,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
         }
 
         $scope.aapneEndrePermitteringsperiode = function (permitteringsperiode) {
-            var index = $scope.permitteringsperioder.indexOf(permitteringsperiode)
+            var index = $scope.permitteringsperioder.indexOf(permitteringsperiode);
             datapersister.set("permitteringsperiode", $scope.permitteringsperioder[index]);
             datapersister.set("allePermitteringsperioder", $scope.permitteringsperioder);
             datapersister.set("permitteringsperioderTilSletting", $scope.permitteringsperioderTilSletting);
@@ -128,7 +128,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
             } else {
                 validerForm(form.$name);
             }
-        }
+        };
 
 
         $scope.leggPermitteringsperiodeTilSletting = function (permitteringsperiode) {
