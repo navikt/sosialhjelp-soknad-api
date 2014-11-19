@@ -68,5 +68,13 @@
 			</plugin>
 		</plugins>
 	</build>
+    <profiles>
+        <profile>
+            <id>utv</id>
+            <properties>
+                <grunttarget>maven-test</grunttarget>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>
