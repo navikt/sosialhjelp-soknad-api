@@ -250,7 +250,7 @@ describe('utility funksjoner -', function () {
         });
 
         it('skal kun godta dato på ISO-format', function() {
-           expect(lagNorskDatoformatFraIsoStandard("12-12-2014")).toBeNull();
+           expect(lagNorskDatoformatFraIsoStandard("12-12-AA")).toBeNull();
         });
     });
 });
