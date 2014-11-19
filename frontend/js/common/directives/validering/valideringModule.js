@@ -166,6 +166,6 @@ angular.module('nav.validering', ['nav.cmstekster'])
                     }
                 });
             }
-        }
+        };
     });
 

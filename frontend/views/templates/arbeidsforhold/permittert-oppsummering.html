@@ -9,24 +9,15 @@
         <p data-ng-bind="af.sluttaarsak.properties.type"></p>
     </li>
     <li>
-        <p data-ng-bind-html=" 'arbeidsforhold.arbeidsgiver.permittert.varighet' | cmstekst"></p>
-        <span data-ng-bind="af.sluttaarsak.properties.permiteringsperiodedatofra | date:'dd.MM.yyyy'"></span>
-        <span data-ng-if="af.sluttaarsak.properties.permiteringsperiodedatotil"> TIL </span>
-        <span data-ng-if="af.sluttaarsak.properties.permiteringsperiodedatotil" data-ng-bind="af.sluttaarsak.properties.permiteringsperiodedatotil | date:'dd.MM.yyyy'"></span>
-    </li>
-    <li>
         <p data-ng-bind-html=" 'arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet' | cmstekst"></p>
-        <span data-ng-bind="af.sluttaarsak.properties.lonnspliktigperiodedatofra | date:'dd.MM.yyyy'"></span>
-        <span data-ng-if="af.sluttaarsak.properties.lonnspliktigperiodedatotil"> TIL </span>
-        <span data-ng-if="af.sluttaarsak.properties.lonnspliktigperiodedatotil" data-ng-bind="af.sluttaarsak.properties.lonnspliktigperiodedatotil | date:'dd.MM.yyyy'"></span>
+        <div data-ng-if="!af.sluttaarsak.properties.lonnspliktigperiodevetikke">
+            <span data-ng-bind="af.sluttaarsak.properties.lonnspliktigperiodedatofra | date:'dd.MM.yyyy'"></span>
+            <span data-ng-if="af.sluttaarsak.properties.lonnspliktigperiodedatotil"> TIL </span>
+            <span data-ng-if="af.sluttaarsak.properties.lonnspliktigperiodedatotil" data-ng-bind="af.sluttaarsak.properties.lonnspliktigperiodedatotil | date:'dd.MM.yyyy'"></span>
+        </div>
+        <span data-ng-if="af.sluttaarsak.properties.lonnspliktigperiodevetikke">{{ 'arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.vetikke' | cmstekst }}</span>
     </li>
-    <li>
-        <span data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad' | cmstekst"></span>
-        <p>
-            <span data-ng-bind="af.sluttaarsak.properties.permitteringProsent"></span>
-            <span class="prosent" data-ng-bind-html=" 'arbeidsforhold.permittert.prosent' | cmstekst"></span>
-        </p>
-    </li>
+    <div data-permitterings-periode-oppsummering="{{ af.sluttaarsak.faktumId }}"></div>
 </ul>
 
 <div data-ng-include="'../views/templates/arbeidsforhold/slett-arbeidsforhold.html'"></div>

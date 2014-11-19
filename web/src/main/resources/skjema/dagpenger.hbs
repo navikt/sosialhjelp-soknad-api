@@ -40,9 +40,10 @@
             .arbeidsforhold-data { margin-top: 0; }
             .arbeidsforhold-data .arbeidsforhold-varighet { font-size: 8pt; padding-bottom: 0; list-style-type: none; padding-left: 0; }
             .barn-navn { font-weight: bold; }
-            .kulepunkt:before { content: "•"; font-size: 14pt; position: relative; top: 1pt; }
+            .kulepunkt:before { content: "•"; font-size: 14pt; position: relative; top: -1px; vertical-align: top; }
             .brosjyre-signatur { border-top: .2pt solid #ccc; margin-top: 10mm; padding-top: 10mm; page-break-inside: avoid; }
             .arbeidsforhold-arbeidsgiver, .arbeidsforhold-land { font-weight: bold; }
+            .permitteringsperiode { display: inline-block; margin-bottom: 5px; }
 		</style>
 	</head>
 	<body>
@@ -394,27 +395,34 @@
                                     </li>
 
                                     <li class="kulepunkt">
-                                        <span>{{ hentTekst "arbeidsforhold.arbeidsgiver.permittert.varighet" }}</span>
-                                        <span>{{ formatterLangDato properties.permiteringsperiodedatofra }}</span>
-                                        {{#if properties.permiteringsperiodedatotil}}
-                                            <span>{{ hentTekst "dagpenger.oppsummering.datotil" }}</span>
-                                            <span>{{ formatterLangDato properties.permiteringsperiodedatotil }}</span>
-                                        {{/if}}
-                                    </li>
-
-                                    <li class="kulepunkt">
                                         <span>{{ hentTekst "arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet" }}:</span>
-                                        <span>{{ formatterLangDato properties.lonnspliktigperiodedatofra }}</span>
-                                        {{#if properties.lonnspliktigperiodedatotil}}
-                                            <span>{{ hentTekst "dagpenger.oppsummering.datotil" }}</span>
-                                            <span>{{ formatterLangDato properties.lonnspliktigperiodedatotil }}</span>
+                                        {{#if properties.lonnspliktigperiodevetikke }}
+                                            <span>{{ hentTekst "arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.vetikke" }}</span>
+                                        {{else}}
+                                            <span>{{ formatterLangDato properties.lonnspliktigperiodedatofra }}</span>
+                                            {{#if properties.lonnspliktigperiodedatotil}}
+                                                <span>{{ hentTekst "gjenopptak.oppsummering.datotil" }}</span>
+                                                <span>{{ formatterLangDato properties.lonnspliktigperiodedatotil }}</span>
+                                            {{/if}}
                                         {{/if}}
                                     </li>
 
-                                    <li class="kulepunkt">
-                                        <span>{{ properties.permitteringProsent }}%</span>
-                                        <span>{{ hentTekst "dagpenger.oppsummering.arbeidsforhold.permitteringsgrad" }}</span>
-                                    </li>
+                                    <span class="arbeidsforhold-arbeidsgiver">{{ hentTekst "arbeidsforhold.arbeidsgiver.permittert.varighet.tittel" }}</span>
+                                    {{#forFakta "arbeidsforhold.permitteringsperiode"}}
+                                        <li class="kulepunkt">
+                                            <div class="permitteringsperiode">
+                                                <p>
+                                                    {{ formatterLangDato properties.permiteringsperiodedatofra }}
+                                                    {{ hentTekst "gjenopptak.oppsummering.datotil" }}
+                                                    {{ formatterLangDato properties.permiteringsperiodedatotil }}
+                                                </p>
+                                                <p>
+                                                    {{ properties.permitteringProsent }}%
+                                                    {{ hentTekst "dagpenger.oppsummering.arbeidsforhold.permitteringsgrad" }}
+                                                </p>
+                                            </div>
+                                        </li>
+                                    {{/forFakta}}
                                 {{/hvisLik}}
                             </ul>
                         </td>
