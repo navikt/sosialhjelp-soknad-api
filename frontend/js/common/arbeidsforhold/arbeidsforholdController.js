@@ -1,12 +1,12 @@
-angular.module('nav.arbeidsforhold.controller', [])
+angular.module('nav.arbeidsforhold.controller', ['nav.arbeidsforhold.turnus.directive'])
     .controller('ArbeidsforholdCtrl', function ($scope, $cookieStore, $location, data, datapersister) {
         $scope.templates = {
-            'Sagt opp av arbeidsgiver': { oppsummeringsurl: '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver-oppsummering.html' },
-            'Permittert': {oppsummeringsurl: '../views/templates/arbeidsforhold/permittert-oppsummering.html' },
-            'Kontrakt utgått': {oppsummeringsurl: '../views/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.html'},
-            'Sagt opp selv': {oppsummeringsurl: '../views/templates/arbeidsforhold/sagt-opp-selv-oppsummering.html' },
-            'Redusert arbeidstid': {oppsummeringsurl: '../views/templates/arbeidsforhold/redusertarbeidstid-oppsummering.html' },
-            'Arbeidsgiver er konkurs': {oppsummeringsurl: '../views/templates/arbeidsforhold/konkurs-oppsummering.html'}
+            'Sagt opp av arbeidsgiver': { oppsummeringsurl: '../js/common/arbeidsforhold/templates/oppsummeringer/sagt-opp-av-arbeidsgiver-oppsummering.html' },
+            'Permittert': {oppsummeringsurl: '../js/common/arbeidsforhold/templates/oppsummeringer/permittert-oppsummering.html' },
+            'Kontrakt utgått': {oppsummeringsurl: '../js/common/arbeidsforhold/templates/oppsummeringer/arbeidsforhold/kontrakt-utgaatt-oppsummering.html'},
+            'Sagt opp selv': {oppsummeringsurl: '../js/common/arbeidsforhold/templates/oppsummeringer/arbeidsforhold/sagt-opp-selv-oppsummering.html' },
+            'Redusert arbeidstid': {oppsummeringsurl: '../js/common/arbeidsforhold/templates/oppsummeringer/templates/arbeidsforhold/redusertarbeidstid-oppsummering.html' },
+            'Arbeidsgiver er konkurs': {oppsummeringsurl: '../js/common/arbeidsforhold/templates/oppsummeringer/views/templates/arbeidsforhold/konkurs-oppsummering.html'}
         };
 
         $scope.soknadId = data.soknad.soknadId;
