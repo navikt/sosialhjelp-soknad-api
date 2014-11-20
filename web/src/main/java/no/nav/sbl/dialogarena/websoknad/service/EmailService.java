@@ -47,7 +47,7 @@ public class EmailService {
      * @param innhold innhold i mail
      * @param behandlingId behandinglsiden til søknaden
      */
-    public void sendEpostEtterInnsendsSoknad(String ePost, String subject, String innhold, String behandlingId) {
+    public void sendEpostEtterInnsendtSoknad(String ePost, String subject, String innhold, String behandlingId) {
         SimpleMailMessage mail = new SimpleMailMessage();
         mail.setTo(ePost);
         mail.setSubject(subject);
