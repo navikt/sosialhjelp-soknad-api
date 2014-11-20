@@ -15,7 +15,6 @@
     <packaging>war</packaging>
 
     <properties>
-        <fitnesse.port>9979</fitnesse.port>
         <jetty.port>8080</jetty.port>
     </properties>
 
@@ -351,16 +350,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.fitnesse</groupId>
-            <artifactId>fitnesse</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.fitnesse</groupId>
-            <artifactId>fitlibrary</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <scope>test</scope>
@@ -490,38 +479,6 @@
     </build>
 
     <profiles>
-        <profile>
-            <id>fitnesse</id>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.codehaus.mojo</groupId>
-                            <artifactId>exec-maven-plugin</artifactId>
-                            <executions>
-                                <execution>
-                                    <goals>
-                                        <goal>exec</goal>
-                                    </goals>
-                                </execution>
-                            </executions>
-                            <configuration>
-                                <classpathScope>test</classpathScope>
-                                <executable>java</executable>
-                                <arguments>
-                                    <argument>-cp</argument>
-                                    <classpath />
-                                    <argument>no.nav.sbl.dialogarena.dokumentinnsending.FitNesseMain</argument>
-                                    <argument>-restart-server</argument>
-                                    <argument>-port</argument>
-                                    <argument>${fitnesse.port}</argument>
-                                </arguments>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
-        </profile>
         <profile>
             <id>jetty</id>
             <build>
