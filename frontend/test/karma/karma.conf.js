@@ -34,6 +34,7 @@ module.exports = function (config) {
             '../../js/gjenopptak/**/*.js',
             '../../js/utslagskriterier/**/*.js',
             '../../js/common/**/*.js',
+            '../../js/modules/**/*.js',
             '../../js/lib/jquery/jquery.iframe-transport.js',
             '../../js/lib/jquery/jquery.fileupload.js',
             '../../js/lib/jquery/jquery.fileupload-process.js',
@@ -79,7 +80,7 @@ module.exports = function (config) {
         // - Safari (only Mac)
         // - PhantomJS
         // - IE (only Windows)
-       browsers: ['PhantomJS', 'Chrome'],
+       browsers: ['PhantomJS'],
 
         // If browser does not capture in given timeout [ms], kill it
         captureTimeout: 60000,

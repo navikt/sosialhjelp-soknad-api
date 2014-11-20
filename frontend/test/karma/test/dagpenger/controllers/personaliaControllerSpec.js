@@ -169,27 +169,5 @@
                 expect(scope.erKvinne()).toEqual(true);
             });
         });
-        describe('PersonaliaCtrlIkkeKjonn', function () {
-            beforeEach(inject(function ($controller, data) {
-                scope.data = data;
-                var faktum = {
-                    key: 'personalia',
-                    properties: {
-                        alder: "61"
-                    }
-                };
-                scope.data.leggTilFaktum(faktum);
-                ctrl = $controller('PersonaliaCtrl', {
-                    $scope: scope
-                });
-            }));
-
-            it('hvis personen ikke har et kjønn så skal erMann returnere false', function () {
-                expect(scope.erMann()).toEqual(false);
-            });
-            it('hvis personen ikke har et kjønn så skal erKvinne returnere true', function () {
-                expect(scope.erKvinne()).toEqual(false);
-            });
-        });
     });
 }());
