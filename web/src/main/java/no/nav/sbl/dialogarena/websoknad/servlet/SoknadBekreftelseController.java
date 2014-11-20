@@ -49,7 +49,12 @@ public class SoknadBekreftelseController {
 
             String innhold = messageSource.getMessage("sendtSoknad.sendEpost.epostInnhold", new Object[]{saksoversiktUrl, ettersendelseUrl}, new Locale("nb", "NO"));
 
-            emailService.sendEpostEtterInnsendsSoknad(soknadBekreftelse.getEpost(), subject, innhold, behandlingId);
+            if(soknadBekreftelse.getErEttersendelse()) {
+                innhold = messageSource.getMessage("sendEttersendelse.sendEpost.epostInnhold", new Object[]{saksoversiktUrl, ettersendelseUrl}, new Locale("nb", "NO"));
+            }
+
+            emailService.sendEpostEtterInnsendtSoknad(soknadBekreftelse.getEpost(), subject, innhold, behandlingId);
+
         } else {
             logger.debug("Fant ingen epost");
         }

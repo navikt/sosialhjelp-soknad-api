@@ -6,6 +6,8 @@ public class SoknadBekreftelse implements Serializable {
     private String epost;
     private String temaKode;
 
+    private Boolean erEttersendelse;
+
     public SoknadBekreftelse() {
     }
 
@@ -23,6 +25,14 @@ public class SoknadBekreftelse implements Serializable {
 
     public void setTemaKode(String temaKode) {
         this.temaKode = temaKode;
+    }
+
+    public Boolean getErEttersendelse() {
+        return erEttersendelse;
+    }
+
+    public void setErEttersendelse(Boolean erEttersendelse) {
+        this.erEttersendelse = erEttersendelse;
     }
 
 }
