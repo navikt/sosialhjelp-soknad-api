@@ -30,7 +30,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 
-        <modig.frontend>1.1.64</modig.frontend>
+        <modig.frontend>1.1.94</modig.frontend>
         <wicket.version>6.17.0</wicket.version>
         <spring.version>3.2.9.RELEASE</spring.version>
         <cxf.version>2.7.9</cxf.version>
