@@ -1,14 +1,16 @@
-angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
+angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [
+                'nav.arbeidsforhold.permittering.directive',
+                'nav.arbeidsforhold.turnus.directive'])
     .controller('ArbeidsforholdNyttCtrl', function ($scope, data, Faktum, $location, $cookieStore, $resource, cms, $q, datapersister) {
 
         $scope.templates = {
-            'Sagt opp av arbeidsgiver': {url: '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver.html'},
-            'Permittert'              : {url: '../views/templates/arbeidsforhold/permittert.html'},
-            'Kontrakt utgått'         : {url: '../views/templates/arbeidsforhold/kontrakt-utgaatt.html'},
-            'Sagt opp selv'           : {url: '../views/templates/arbeidsforhold/sagt-opp-selv.html'},
-            'Redusert arbeidstid'     : {url: '../views/templates/arbeidsforhold/redusertarbeidstid.html'},
-            'Arbeidsgiver er konkurs' : {url: '../views/templates/arbeidsforhold/konkurs.html'},
-			'Avskjediget'             : {url: '../views/templates/arbeidsforhold/avskjediget.html'}
+            'Sagt opp av arbeidsgiver': {url: '../js/common/arbeidsforhold/templates/undersporsmaal/sagt-opp-av-arbeidsgiver.html'},
+            'Permittert'              : {url: '../js/common/arbeidsforhold/templates/undersporsmaal/permittert.html'},
+            'Kontrakt utgått'         : {url: '../js/common/arbeidsforhold/templates/undersporsmaal/kontrakt-utgaatt.html'},
+            'Sagt opp selv'           : {url: '../js/common/arbeidsforhold/templates/undersporsmaal/sagt-opp-selv.html'},
+            'Redusert arbeidstid'     : {url: '../js/common/arbeidsforhold/templates/undersporsmaal/redusertarbeidstid.html'},
+            'Arbeidsgiver er konkurs' : {url: '../js/common/arbeidsforhold/templates/undersporsmaal/konkurs.html'},
+			'Avskjediget'             : {url: '../js/common/arbeidsforhold/templates/undersporsmaal/avskjediget.html'}
 		};
 		$scope.land = data.land;
         $scope.soknadId = data.soknad.soknadId;
@@ -157,7 +159,6 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
         $scope.erLonnspliktigperiodeRequired = function () {
             return $scope.arbeidsforhold.properties.lonnspliktigperiodevetikke !== "true";
         };
-
         settPerioderKlarTilSletting();
 
         function getArbeidsforholdSluttDato() {
