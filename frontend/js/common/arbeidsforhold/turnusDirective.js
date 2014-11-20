@@ -5,6 +5,9 @@ angular.module('nav.arbeidsforhold.turnus.directive',[])
             replace: true,
             scope: {
                 arbeidsforhold: '='
+            },
+            link: function (scope) {
+                scope.parentFaktum = scope.arbeidsforhold;
             }
         };
     })
@@ -14,6 +17,9 @@ angular.module('nav.arbeidsforhold.turnus.directive',[])
             replace: true,
             scope: {
                 arbeidsforhold: '='
+            },
+            link: function (scope) {
+                scope.parentFaktum = scope.arbeidsforhold;
             }
         };
     });
