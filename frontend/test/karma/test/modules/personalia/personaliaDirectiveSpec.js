@@ -1,5 +1,6 @@
 describe('Personalia directive tests', function () {
     var element, scope;
+    var brukerprofilUrl = 'brukerprofil'
 
     beforeEach(module('nav.personalia', 'nav.cmstekster', 'templates-main'));
 
@@ -41,7 +42,7 @@ describe('Personalia directive tests', function () {
                 });
             },
             config: {
-                "soknad.brukerprofil.url": "brukerprofilUrl"
+                "soknad.brukerprofil.url": brukerprofilUrl
             }
         });
     }));
@@ -51,7 +52,8 @@ describe('Personalia directive tests', function () {
             var faktum = {
                 key: 'personalia',
                 properties: {
-                    alder: "61"
+                    alder: "61",
+                    statsborgerskap: 'NOR'
                 }
             };
             data.leggTilFaktum(faktum);
@@ -62,11 +64,51 @@ describe('Personalia directive tests', function () {
             scope = element.find('div').scope();
         }));
 
-        it('hvis personen ikke har et kjønn så skal erMann returnere false', function () {
-            expect(scope.erMann()).toEqual(false);
+        it('dersom personalia er hentet skal harHentetPersonalia returnere true', function () {
+            expect(scope.harHentetPersonalia()).toEqual(true);
         });
-        it('hvis personen ikke har et kjønn så skal erKvinne returnere false', function () {
-            expect(scope.erKvinne()).toEqual(false);
+
+        it('brukerprofilUrl skal bli satt til riktig url', function () {
+            expect(scope.brukerprofilUrl).toBe(brukerprofilUrl);
+        });
+
+        it('dersom statsborgerskap er norsk så skal erUtenlandskStatsborger returnere false', function () {
+            expect(scope.erUtenlandskStatsborger()).toEqual(false);
+        });
+
+        describe('ingen kjønn satt i personalia', function() {
+            it('hvis personen ikke har et kjønn så skal erMann returnere false', function () {
+                expect(scope.erMann()).toEqual(false);
+            });
+            it('hvis personen ikke har et kjønn så skal erKvinne returnere false', function () {
+                expect(scope.erKvinne()).toEqual(false);
+            });
+        });
+
+        describe('kjønn er satt til kvinne', function() {
+            beforeEach(function () {
+                scope.personalia.kjonn = 'k';
+            });
+
+            it('hvis personen er en kvinne så skal erMann returnere false', function () {
+                expect(scope.erMann()).toEqual(false);
+            });
+            it('hvis personen er en kvinne så skal erKvinne returnere true', function () {
+                expect(scope.erKvinne()).toEqual(true);
+            });
+        });
+
+        describe('kjønn er satt til kvinne', function() {
+            beforeEach(function () {
+                scope.personalia.kjonn = 'm';
+            });
+
+            it('hvis personen er en mann så skal erMann returnere true', function () {
+                expect(scope.erMann()).toEqual(true);
+            });
+            it('hvis personen er en mann så skal erKvinne returnere false', function () {
+                expect(scope.erKvinne()).toEqual(false);
+            });
         });
     });
 });
