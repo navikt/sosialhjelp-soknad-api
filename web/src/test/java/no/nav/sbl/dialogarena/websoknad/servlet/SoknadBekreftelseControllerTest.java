@@ -67,8 +67,20 @@ public class SoknadBekreftelseControllerTest {
         messageSource.addMessage("sendtSoknad.sendEpost.epostInnhold", new Locale("nb", "NO"), "Tekst. Saksoversikturl {0} og ettersendelseurl {1}");
         messageSource.addMessage("sendtSoknad.sendEpost.epostSubject", new Locale("nb", "NO"), "emne");
 
-        mockMvc.perform(post("/bekreftelse/{behandlingId}", "123").contentType(MediaType.APPLICATION_JSON).content("{\"epost\": \"test@epost.com\", \"temaKode\": \"DAG\"}"))
+        mockMvc.perform(post("/bekreftelse/{behandlingId}", "123").contentType(MediaType.APPLICATION_JSON).content("{\"epost\": \"test@epost.com\", \"temaKode\": \"DAG\", \"erEttersendelse\": \"false\"}"))
                 .andExpect(status().isOk());
         verify(emailService).sendEpostEtterInnsendtSoknad("test@epost.com", "emne", "Tekst. Saksoversikturl saksoversiktUrl/detaljer/DAG/123 og ettersendelseurl http://localhost:80/bekreftelse/123/startettersending/123", "123");
+    }
+
+    @Test
+    public void skalSendeEpostMedEttersendelseInnhold() throws Exception {
+        when(configService.getValue("saksoversikt.link.url")).thenReturn("saksoversiktUrl");
+        messageSource.addMessage("sendtSoknad.sendEpost.epostInnhold", new Locale("nb", "NO"), "Tekst. Saksoversikturl {0} og ettersendelseurl {1}");
+        messageSource.addMessage("sendEttersendelse.sendEpost.epostInnhold", new Locale("nb", "NO"), "Ettersendelse. Saksoversikturl {0} og ettersendelseurl {1}");
+        messageSource.addMessage("sendtSoknad.sendEpost.epostSubject", new Locale("nb", "NO"), "emne");
+
+        mockMvc.perform(post("/bekreftelse/{behandlingId}", "123").contentType(MediaType.APPLICATION_JSON).content("{\"epost\": \"test@epost.com\", \"temaKode\": \"DAG\", \"erEttersendelse\": true}"))
+                .andExpect(status().isOk());
+        verify(emailService).sendEpostEtterInnsendtSoknad("test@epost.com", "emne", "Ettersendelse. Saksoversikturl saksoversiktUrl/detaljer/DAG/123 og ettersendelseurl http://localhost:80/bekreftelse/123/startettersending/123", "123");
     }
 }
