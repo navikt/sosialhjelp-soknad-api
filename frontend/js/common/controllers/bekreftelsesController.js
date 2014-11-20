@@ -11,6 +11,7 @@ angular.module('nav.bekreftelse', [])
         $scope.fullfort = {value: false};
         $scope.fremdriftsindikator = {laster: false };
         $scope.brukerBehandlingId = {value: data.soknad.brukerBehandlingId};
+        $scope.erEttersendelse = {value: erEttersending()};
 
         if (!$scope.epost.value) {
             $scope.epost.value = data.finnFaktum('personalia').properties.epost;
@@ -26,7 +27,7 @@ angular.module('nav.bekreftelse', [])
                 $scope.fullfort.value = true;
                 $scope.fremdriftsindikator.laster = true;
 
-                new bekreftelseEpostService({epost: $scope.epost.value, temaKode: $scope.temaKode.value}).$send({behandlingId: $scope.brukerBehandlingId.value}).then(function () {
+                new bekreftelseEpostService({epost: $scope.epost.value, temaKode: $scope.temaKode.value, erEttersendelse: $scope.erEttersendelse.value}).$send({behandlingId: $scope.brukerBehandlingId.value}).then(function () {
                     $timeout(function() {
                         var saksoversiktBaseUrl = data.config['saksoversikt.link.url'];
 
