@@ -1,3 +1,73 @@
 <div>
-    TURNUSBLOKK
+    <div class="form-linje boolean spm-sporsmal">
+        <h4 class="spm-sporsmal" data-ng-bind-html=" 'arbeidsforhold.rotasjonskiftturnus.sporsmaal' | cmstekst"></h4>
+        <div data-navinfoboks>
+            <p data-ng-bind-html=" 'arbeidsforhold.rotasjonskiftturnus.infoboks' | cmstekst"></p>
+        </div>
+
+        <div class="nav-radio-knapp">
+            <input class="sendsoknad-radio"
+                   id="turnusRadio1"
+                   name="arbeidsforhold.rotasjonskiftturnus.radio"
+                   type="radio"
+                   value="nei"
+                   data-ng-model="arbeidsforhold.properties.rotasjonskiftturnus"
+                   data-ng-required="true"
+                   data-click-validate
+                   data-error-messages="'arbeidsforhold.rotasjonskiftturnus.sporsmaal.feilmelding'"
+                   data-aktiv-feilmelding>
+            <label for='turnusRadio1'>{{ 'arbeidsforhold.rotasjonskiftturnus.sporsmaal.alternativ.nei' | cmstekst }}</label>
+        </div>
+
+        <div class="nav-radio-knapp">
+            <input class="sendsoknad-radio"
+                   id="turnusRadio2"
+                   name="arbeidsforhold.rotasjonskiftturnus.radio"
+                   type="radio"
+                   value="turnus"
+                   data-ng-model="arbeidsforhold.properties.rotasjonskiftturnus"
+                   data-ng-required="true"
+                   data-click-validate
+                   data-error-messages="'arbeidsforhold.rotasjonskiftturnus.sporsmaal.feilmelding'"
+                   data-aktiv-feilmelding>
+            <label for='turnusRadio2'>{{ 'arbeidsforhold.rotasjonskiftturnus.sporsmaal.alternativ.jaturnus' | cmstekst }}</label>
+            <div data-nav-hjelpetekstelement data-tittel="{{ 'arbeidsforhold.rotasjonskiftturnus.sporsmaal.alternativ.jaturnus.hjelpetekst.tittel' | cmstekst }}"
+                 data-tekst="{{ 'arbeidsforhold.rotasjonskiftturnus.sporsmaal.alternativ.jaturnus.hjelpetekst.tekst' | cmstekst }}"></div>
+        </div>
+
+        <div class="nav-radio-knapp">
+            <input class="sendsoknad-radio"
+                   id="turnusRadio3"
+                   name="arbeidsforhold.rotasjonskiftturnus.radio"
+                   type="radio"
+                   value="rotasjon"
+                   data-ng-model="arbeidsforhold.properties.rotasjonskiftturnus"
+                   data-ng-required="true"
+                   data-click-validate
+                   data-error-messages="'arbeidsforhold.rotasjonskiftturnus.sporsmaal.feilmelding'"
+                   data-aktiv-feilmelding>
+            <label for='turnusRadio3'>{{ 'arbeidsforhold.rotasjonskiftturnus.sporsmaal.alternativ.jarotasjon' | cmstekst }}</label>
+            <div data-nav-hjelpetekstelement data-tittel="{{ 'arbeidsforhold.rotasjonskiftturnus.sporsmaal.alternativ.jarotasjon.hjelpetekst.tittel' | cmstekst }}"
+                 data-tekst="{{ 'arbeidsforhold.rotasjonskiftturnus.sporsmaal.alternativ.jarotasjon.hjelpetekst.tekst' | cmstekst }}"></div>
+        </div>
+    </div>
+    <div  class="form-linje boolean spm-sporsmal" data-ng-if="arbeidsforhold.properties.rotasjonskiftturnus == 'rotasjon'">
+        <div class="ekstra-spm-boks">
+            <div data-navinfoboks>
+                <p data-ng-bind-html=" 'arbeidsforhold.rotasjonskiftturnus.rotasjon.infoboks' | cmstekst"></p>
+            </div>
+
+            <div class="prosentfelt"
+                 data-navtall
+                 data-nav-faktum-property="arbeidsdager"
+                 data-navconfig
+                 data-navlabel="arbeidsforhold.rotasjonskiftturnus.rotasjon.arbeidsdager"
+                 data-navfeilmelding="'arbeidsforhold.rotasjonskiftturnus.rotasjon.arbeidsdager.feilmelding'"
+                 data-navminvalue="0"
+                 data-navmaxvalue="10000"
+                 data-regexvalidering="/^\d+$/"
+                 data-navmaxlength="4">
+            </div>
+        </div>
+    </div>
 </div>
