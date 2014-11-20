@@ -110,8 +110,6 @@ angular.module('nav.personalia.directive', [])
                     erUtenlandskKonto: scope.personalia.erUtenlandskBankkonto
                 };
 
-                console.log(scope.personalia);
-
                 scope.harKontonummer = function () {
                     return scope.vars.kontonummer != null;
                 };
