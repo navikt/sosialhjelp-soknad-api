@@ -13,6 +13,8 @@
         <p data-ng-if="af.sluttaarsak.properties.tilbudomjobbannetsted == 'true'" data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.true' | cmstekst"></p>
         <p data-ng-if="af.sluttaarsak.properties.tilbudomjobbannetsted == 'false'" data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.false' | cmstekst"></p>
     </li>
+    <div turnusblokk-oppsummering
+         arbeidsforhold="af"></div>
 </ul>
 
 <div data-ng-include="'../views/templates/arbeidsforhold/slett-arbeidsforhold.html'"></div>

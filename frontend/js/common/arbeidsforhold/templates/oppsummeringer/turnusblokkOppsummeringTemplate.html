@@ -1,3 +1,16 @@
-<div>
-    TURNUSBLOKK OPPSUMMERING
-</div>
+<ul>
+    <li>
+        <p data-ng-bind-html="'arbeidsforhold.rotasjonskiftturnus.sporsmaal' | cmstekst"></p>
+        <p data-ng-bind-html="arbeidsforhold.properties.rotasjonskiftturnus"></p>
+    </li>
+    <li data-ng-if="harValgtRotasjon()">
+        <p>
+            <span data-ng-bind-html="'arbeidsforhold.rotasjonskiftturnus.rotasjon.arbeidsdager' | cmstekst"></span>
+            <span data-ng-bind-html="arbeidsforhold.properties.arbeidsdager"></span>
+        </p>
+        <p>
+            <span data-ng-bind-html="'arbeidsforhold.rotasjonskiftturnus.rotasjon.avspaseringsdager' | cmstekst"></span>
+            <span data-ng-bind-html="arbeidsforhold.properties.avspaseringsdager"></span>
+        </p>
+    </li>
+</ul>
