@@ -1,0 +1,200 @@
+<h2>{{ hentTekst "egennaering.tittel" }}</h2>
+<table>
+    {{#forFaktum "egennaering.driveregennaering"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                {{#hvisSant value}}
+                    <span>{{ hentTekst "egennaering.driveregennaering.true"}}</span>
+                {{else}}
+                    <span>{{ hentTekst "egennaering.driveregennaering.false"}}</span>
+                    <ul>
+                        {{#forFakta "egennaering.drivergennaering.orgnummer"}}
+                            <li class="kulepunkt">
+                                <span>{{ hentTekst "egennaering.driveregennaering.false.organisasjonsnummer"}}:</span>
+                                <span>{{ value }}</span>
+                            </li>
+                        {{/forFakta}}
+                        {{#forFaktum "egennaering.driveregennaering.arbeidsmengde"}}
+                            <li class="kulepunkt">
+                                <span>{{ hentTekstMedParameter "dagpenger.oppsummering.egennaering.arbeidstimerIUken" value }}</span>
+                            </li>
+                        {{/forFaktum}}
+                    </ul>
+                {{/hvisSant}}
+            </td>
+        </tr>
+    {{/forFaktum}}
+
+    {{#forFaktum "egennaering.gardsbruk"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                {{#hvisSant value}}
+                    <span>{{ hentTekst "egennaering.gardsbruk.true"}}</span>
+                {{else}}
+                    <span>{{ hentTekst "egennaering.gardsbruk.false"}}</span>
+                    <ul>
+                        {{#forFaktum "egennaering.gardsbruk.false.organisasjonsnummer"}}
+                            <li class="kulepunkt">
+                                <span>{{ hentTekst "egennaering.gardsbruk.false.organisasjonsnummer" }}</span>
+                                <span>{{ value }}</span>
+                            </li>
+                        {{/forFaktum}}
+
+                        <li class="kulepunkt">
+                            <span>{{ hentTekst "dagpenger.oppsummering.egennaering.typeGaardsbruk" }}</span>
+                            <ul>
+                                {{#forFaktum "egennaering.gardsbruk.false.type.dyr"}}
+                                    {{#hvisSant value}}
+                                        <li class="kulepunkt">
+                                            <span>{{ hentTekst "egennaering.gardsbruk.false.type.dyr"}}</span>
+                                        </li>
+                                    {{/hvisSant}}
+                                {{/forFaktum}}
+
+                                {{#forFaktum "egennaering.gardsbruk.false.type.jord"}}
+                                    {{#hvisSant value}}
+                                        <li class="kulepunkt">
+                                            <span>{{ hentTekst "egennaering.gardsbruk.false.type.jord"}}</span>
+                                        </li>
+                                    {{/hvisSant}}
+                                {{/forFaktum}}
+
+                                {{#forFaktum "egennaering.gardsbruk.false.type.skog"}}
+                                    {{#hvisSant value}}
+                                        <li class="kulepunkt">
+                                            <span>{{ hentTekst "egennaering.gardsbruk.false.type.skog"}}</span>
+                                        </li>
+                                    {{/hvisSant}}
+                                {{/forFaktum}}
+
+                                {{#forFaktum "egennaering.gardsbruk.false.type.annet"}}
+                                    {{#hvisSant value}}
+                                        <li class="kulepunkt">
+                                            <span>{{ hentTekst "egennaering.gardsbruk.false.type.annet"}}</span>
+                                        </li>
+                                    {{/hvisSant}}
+                                {{/forFaktum}}
+                            </ul>
+                        </li>
+
+                        <li class="kulepunkt">
+                            <span>{{ hentTekst "dagpenger.oppsummering.egennaering.gaardsEiere" }}</span>
+                            <ul>
+                                {{#forFaktum "egennaering.gardsbruk.false.eier.jeg"}}
+                                    {{#hvisSant value}}
+                                        <li class="kulepunkt">
+                                            <span>{{ hentTekst "egennaering.gardsbruk.false.eier.jeg"}}</span>
+                                        </li>
+                                    {{/hvisSant}}
+                                {{/forFaktum}}
+
+                                {{#forFaktum "egennaering.gardsbruk.false.eier.ektefelle"}}
+                                    {{#hvisSant value}}
+                                        <li class="kulepunkt">
+                                            <span>{{ hentTekst "egennaering.gardsbruk.false.eier.ektefelle"}}</span>
+                                        </li>
+                                    {{/hvisSant}}
+                                {{/forFaktum}}
+
+                                {{#forFaktum "egennaering.gardsbruk.false.eier.annet"}}
+                                    {{#hvisSant value}}
+                                        <li class="kulepunkt">
+                                            <span>{{ hentTekst "egennaering.gardsbruk.false.eier.annet"}}</span>
+                                        </li>
+                                    {{/hvisSant}}
+                                {{/forFaktum}}
+                            </ul>
+                        </li>
+
+                        {{#hvisFlereErTrue "egennaering.gardsbruk.false.eier" "1"}}
+                            <li class="kulepunkt">
+                                <span>{{ hentTekst "dagpenger.oppsummering.egennaering.fordelingAvInntekt" }}</span>
+                                <ul>
+                                    {{#forFaktum "egennaering.gardsbruk.false.eier.jeg"}}
+                                        {{#hvisSant value}}
+                                            <li class="kulepunkt">
+                                                <span>{{ hentTekst "egennaering.gardsbruk.false.eierandel.din"}}:</span>
+                                                {{#forFaktum "egennaering.gardsbruk.false.eierandel.din"}}
+                                                    <span>{{ value }}%</span>
+                                                {{/forFaktum}}
+                                            </li>
+                                        {{/hvisSant}}
+                                    {{/forFaktum}}
+
+                                    {{#forFaktum "egennaering.gardsbruk.false.eier.ektefelle"}}
+                                        {{#hvisSant value}}
+                                            <li class="kulepunkt">
+                                                <span>{{ hentTekst "egennaering.gardsbruk.false.eierandel.ektefelle"}}:</span>
+                                                {{#forFaktum "egennaering.gardsbruk.false.eierandel.ektefelle"}}
+                                                    <span>{{ value }}%</span>
+                                                {{/forFaktum}}
+                                            </li>
+                                        {{/hvisSant}}
+                                    {{/forFaktum}}
+
+                                    {{#forFaktum "egennaering.gardsbruk.false.eier.annet"}}
+                                        {{#hvisSant value}}
+                                            <li class="kulepunkt">
+                                                <span>{{ hentTekst "egennaering.gardsbruk.false.eierandel.annet"}}:</span>
+                                                {{#forFaktum "egennaering.gardsbruk.false.eierandel.annet"}}
+                                                    <span>{{ value }}%</span>
+                                                {{/forFaktum}}
+                                            </li>
+                                        {{/hvisSant}}
+                                    {{/forFaktum}}
+                                </ul>
+                            </li>
+                        {{/hvisFlereErTrue}}
+
+                        <li class="kulepunkt">
+                            <span>{{ hentTekst "egennaering.gardsbruk.false.arbeidsforbruk" }}</span>
+                            <ul>
+                                <li class="kulepunkt">
+                                    {{#forFaktum "egennaering.gardsbruk.false.timer"}}
+                                        <span>{{ value }}</span>
+                                    {{/forFaktum}}
+
+                                    <span>{{ hentTekst "egennaering.gardsbruk.false.timer"}}</span>
+                                    <span>{{ hentTekst "egennaering.gardsbruk.false.aar" }}</span>
+                                    {{#forFaktum "egennaering.gardsbruk.false.aar"}}
+                                        <span>{{ value }}</span>
+                                    {{/forFaktum}}
+                                </li>
+
+                                {{#forFaktum "egennaering.gardsbruk.false.timeredegjoring"}}
+                                    <p>{{ value }}</p>
+                                {{/forFaktum}}
+                            </ul>
+                        </li>
+                    </ul>
+                {{/hvisSant}}
+            </td>
+        </tr>
+    {{/forFaktum}}
+
+    {{#forFaktum "egennaering.fangstogfiske"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                {{#hvisSant value}}
+                    <span>{{ hentTekst "egennaering.fangstogfiske.true"}}</span>
+                {{else}}
+                    <span>{{ hentTekst "egennaering.fangstogfiske.false"}}</span>
+                    <ul>
+                        {{#forFaktum "egennaering.fangstogfiske.false.arbeid"}}
+                            <li class="kulepunkt">
+                                {{#hvisSant value}}
+                                    <span>{{ hentTekst "egennaering.fangstogfiske.false.arbeid.true"}}</span>
+                                {{else}}
+                                    <span>{{ hentTekst "egennaering.fangstogfiske.false.arbeid.false"}}</span>
+                                {{/hvisSant}}
+                            </li>
+                        {{/forFaktum}}
+                    </ul>
+                {{/hvisSant}}
+            </td>
+        </tr>
+    {{/forFaktum}}
+</table>
