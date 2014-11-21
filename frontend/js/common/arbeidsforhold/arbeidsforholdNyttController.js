@@ -1,7 +1,7 @@
 angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [
                 'nav.arbeidsforhold.permittering.directive',
                 'nav.arbeidsforhold.turnus.directive'])
-    .controller('ArbeidsforholdNyttCtrl', function ($scope, data, Faktum, $location, $cookieStore, $resource, cms, $q, datapersister) {
+    .controller('ArbeidsforholdNyttCtrl', function ($scope, data, Faktum, $location, $cookieStore, $resource, cms, $q, datapersister, popup) {
 
         $scope.templates = {
             'Sagt opp av arbeidsgiver': {url: '../js/common/arbeidsforhold/templates/undersporsmaal/sagt-opp-av-arbeidsgiver.html'},
@@ -126,9 +126,10 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [
 
         $scope.aapneLeggTilNyPermitteringsperiode = function (form) {
             if (form.$valid) {
-                datapersister.set("permitteringsperioderTilSletting", $scope.permitteringsperioderTilSletting);
-                datapersister.set("allePermitteringsperioder", $scope.permitteringsperioder);
-                $location.path($scope.permitteringsPeriodeUrl);
+                popup.openPopup();
+//                datapersister.set("permitteringsperioderTilSletting", $scope.permitteringsperioderTilSletting);
+//                datapersister.set("allePermitteringsperioder", $scope.permitteringsperioder);
+//                $location.path($scope.permitteringsPeriodeUrl);
             } else {
                 validerForm(form.$name);
             }
