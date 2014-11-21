@@ -1,21 +1,38 @@
 angular.module('nav.bekreftelse', [])
     /* Er avhengig av at søknadsoppsett er hentet før vi kommer til denne kontrolleren, da temakode blir hentet sånn
-       Henter ikke for bekreftelsessiden siden man bare skal videresendes hit, og siden det blir krøll på backend
-    */
-    .controller('BekreftelsesCtrl', function ($scope, config, $window, $timeout, $routeParams, $rootElement, data) {
+     Henter ikke for bekreftelsessiden siden man bare skal videresendes hit, og siden det blir krøll på backend
+     */
+    .controller('BekreftelsesCtrl', function ($scope, $window, $timeout, $routeParams, $rootElement, data, bekreftelseEpostService) {
         var appName = $rootElement.attr('data-ng-app');
-        $scope.tekst = {
-            tittelKey: 'dagpenger.bekreftelse',
-            informasjonsKey: 'dagpenger.bekreftelse.informasjon'
-        };
 
-        if (appName === 'ettersending') {
-            $scope.tekst.tittelKey = 'ettersending.bekreftelse';
-            $scope.tekst.informasjonsKey = 'ettersending.bekreftelse.informasjon';
+        $scope.cmsprefix = {value: appName};
+        $scope.epost = {value: data.finnFaktum('epost')};
+        $scope.sendtEpost = {value: false};
+        $scope.fullfort = {value: false};
+        $scope.fremdriftsindikator = {laster: false };
+        $scope.erEttersendelse = {value: erEttersending()};
+
+        if (!$scope.epost.value) {
+            $scope.epost.value = data.finnFaktum('personalia').properties.epost;
         }
 
-        $timeout(function() {
-            var saksoversiktBaseUrl = config['saksoversikt.link.url'];
-            $window.location.href = saksoversiktBaseUrl + '/detaljer/' + data.soknadOppsett.temaKode + '/' + $routeParams.behandlingsId;
-        }, 5000);
+        $scope.sendEpost = function (form) {
+            $scope.temaKode = {value: data.soknadOppsett.temaKode};
+
+            if (form.$valid) {
+                if($scope.epost.value) {
+                    $scope.sendtEpost.value = true;
+                }
+                $scope.fullfort.value = true;
+                $scope.fremdriftsindikator.laster = true;
+
+                new bekreftelseEpostService({epost: $scope.epost.value, temaKode: $scope.temaKode.value, erEttersendelse: $scope.erEttersendelse.value}).$send({behandlingId: $routeParams.behandlingsId}).then(function () {
+                    $timeout(function() {
+                        var saksoversiktBaseUrl = data.config['saksoversikt.link.url'];
+
+                        redirectTilUrl(saksoversiktBaseUrl + '/detaljer/' + $scope.temaKode.value + '/' + $routeParams.behandlingsId);
+                    }, 3000);
+                });
+            }
+        };
     });
