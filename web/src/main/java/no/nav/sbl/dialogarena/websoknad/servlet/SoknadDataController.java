@@ -173,8 +173,8 @@ public class SoknadDataController {
             pdfOutputStream = genererPdf(soknad, "/skjema/gjenopptak");
         } else {
             pdfOutputStream = genererPdf(soknad, "/skjema/dagpenger");
-
         }
+
         soknadService.sendSoknad(soknadId, pdfOutputStream);
     }
 
