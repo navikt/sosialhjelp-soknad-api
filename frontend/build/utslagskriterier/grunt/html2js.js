@@ -1,5 +1,8 @@
 module.exports = {
     main: {
+        options: {
+            base: '../'
+        },
         src: [
             '../../views/common/**/*.html',
             '../../views/utslagskriterier/**/*.html',
