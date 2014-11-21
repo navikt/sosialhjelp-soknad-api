@@ -21,9 +21,10 @@ public class EmailService {
     private TaskExecutor executor;
 
     private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
+    private final String fraAdresse = "ikke-svar@nav.no";
 
     /**
-     * Sender en epost til innsender med link til skjemaet personen kan fortsette på senre.
+     * Sender en epost til innsender med link til skjemaet personen kan fortsette på senere.
      *
      * @param ePost   adressen til personen
      * @param subject Sunbject til mailen
@@ -34,28 +35,44 @@ public class EmailService {
         mail.setTo(ePost);
         mail.setSubject(subject);
         mail.setText(innhold);
-        mail.setFrom("ikke-svar@nav.no");
-        addTask(mail);
+        mail.setFrom(fraAdresse);
+        addTask(mail, "viser ikke behandlingsid for fortsettsenereepost");
     }
 
-    private void addTask(final SimpleMailMessage mail) {
-        addTask(mail, 0);
+    /**
+     * Sender en epost til innsender med link til ettersending og saksoversikt.
+     *
+     * @param ePost   adressen til personen
+     * @param subject Sunbject til mailen
+     * @param innhold innhold i mail
+     * @param behandlingId behandinglsiden til søknaden
+     */
+    public void sendEpostEtterInnsendtSoknad(String ePost, String subject, String innhold, String behandlingId) {
+        SimpleMailMessage mail = new SimpleMailMessage();
+        mail.setTo(ePost);
+        mail.setSubject(subject);
+        mail.setText(innhold);
+        mail.setFrom(fraAdresse);
+        addTask(mail, behandlingId);
     }
 
-    private void addTask(final SimpleMailMessage mail, final int loopCheck) {
+    private void addTask(final SimpleMailMessage mail, final String behandlingId) {
+        addTask(mail,behandlingId, 0);
+    }
+
+    private void addTask(final SimpleMailMessage mail, final String behandlingId, final int loopCheck) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
                     mailSender.send(mail);
-                    logger.info("Epost sendes: {}", mail);
+                    logger.info("Epost sendes:" + mail + " BrukerbehandlingId: " + behandlingId);
                 } catch (MailException me) {
                     if (loopCheck < 5) {
-                        addTask(mail, loopCheck + 1);
+                        addTask(mail, behandlingId, loopCheck + 1);
                     } else {
-                        logger.warn("Kunne ikke sende epost: {}", mail, me);
+                        logger.warn("Kunne ikke sende epost:" + mail + "BrukerbehandlingId: " + behandlingId, me);
                     }
-
                 }
             }
         });
