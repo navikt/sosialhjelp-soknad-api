@@ -36,7 +36,7 @@ public class EmailService {
         mail.setSubject(subject);
         mail.setText(innhold);
         mail.setFrom(fraAdresse);
-        addTask(mail, null);
+        addTask(mail, "viser ikke behandlingsid for fortsettsenereepost");
     }
 
     /**
