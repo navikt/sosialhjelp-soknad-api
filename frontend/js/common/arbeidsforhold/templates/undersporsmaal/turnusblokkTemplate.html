@@ -10,7 +10,7 @@
                    id="turnusRadio1"
                    name="arbeidsforhold.rotasjonskiftturnus.radio"
                    type="radio"
-                   value="nei"
+                   value="{{ 'arbeidsforhold.rotasjonskiftturnus.sporsmaal.alternativ.nei' | cmstekst }}"
                    data-ng-model="arbeidsforhold.properties.rotasjonskiftturnus"
                    data-ng-required="true"
                    data-click-validate
@@ -24,7 +24,7 @@
                    id="turnusRadio2"
                    name="arbeidsforhold.rotasjonskiftturnus.radio"
                    type="radio"
-                   value="turnus"
+                   value="{{ 'arbeidsforhold.rotasjonskiftturnus.sporsmaal.alternativ.jaturnus' | cmstekst }}"
                    data-ng-model="arbeidsforhold.properties.rotasjonskiftturnus"
                    data-ng-required="true"
                    data-click-validate
@@ -40,7 +40,7 @@
                    id="turnusRadio3"
                    name="arbeidsforhold.rotasjonskiftturnus.radio"
                    type="radio"
-                   value="rotasjon"
+                   value="{{ 'arbeidsforhold.rotasjonskiftturnus.sporsmaal.alternativ.jarotasjon' | cmstekst }}"
                    data-ng-model="arbeidsforhold.properties.rotasjonskiftturnus"
                    data-ng-required="true"
                    data-click-validate
@@ -55,7 +55,7 @@
         </div>
     </div>
 
-    <div class="form-linje boolean" data-ng-if="arbeidsforhold.properties.rotasjonskiftturnus == 'rotasjon'">
+    <div class="form-linje boolean" data-ng-if="harValgtRotasjon()">
         <div class="ekstra-spm-boks">
             <div data-navinfoboks>
                 <p data-ng-bind-html=" 'arbeidsforhold.rotasjonskiftturnus.rotasjon.infoboks' | cmstekst"></p>
