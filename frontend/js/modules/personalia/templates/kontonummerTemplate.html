@@ -1,6 +1,6 @@
 <div>
     <h3 class="personalia-header">{{ 'personalia.kontonummer' | cmstekst }}</h3>
-    <div data-ng-if="harKontonummer()" class="information-bold">
+    <div data-ng-if="harKontonummer()" class="personalia-information">
         <p>{{ vars.kontonummer }}</p>
         <p data-ng-if="erUtenlandskKonto()">
             <span>{{ vars.banknavn }}</span>
