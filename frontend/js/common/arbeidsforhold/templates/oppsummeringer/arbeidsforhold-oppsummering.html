@@ -1,5 +1,5 @@
 <div>
-    <div class="arbeidsforhold-boks">
+    <div class="arbeidsforhold-boks" data-ng-if="harArbeidsforhold()">
         <div class="spm-boks vertikal" data-ng-repeat="af in arbeidsliste" data-ng-class="{'last': $last}">
             <div id="arbeidsforhold{{af.arbeidsforhold.faktumId}}">
                 <a title="Slett arbeidsforhold" href="#" class="lukk" data-ng-click="slettArbeidsforhold(af, $index, $event)"
@@ -29,7 +29,7 @@
                        class="legg-til-arbeidsforhold">
             </div>
 
-            <button class="knapp-leggtil-liten" data-ng-click="nyttArbeidsforhold($event, arbeidsforholdForm)" role="button"
+            <button class="knapp-leggtil-liten" data-ng-click="nyttArbeidsforhold($event, $index, arbeidsforholdForm)" role="button"
                     data-aktiv-feilmelding data-ng-bind-html=" 'arbeidsforhold.nyttarbeidsforhold' | cmstekst"></button>
             <span class="melding" data-ng-bind-html=" 'arbeidsforhold.arbeidsforhold.required' | cmstekst"></span>
         </div>
