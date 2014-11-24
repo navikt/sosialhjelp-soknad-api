@@ -9,5 +9,6 @@ angular.module('ettersending', [
     'ngCookies',
     'ngSanitize',
     'templates-main',
-    'nav.cms'
+    'nav.cms',
+    'nav.personalia'
 ]);

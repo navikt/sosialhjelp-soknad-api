@@ -2,6 +2,9 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.PersonAlder;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBankkonto;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBankkontoNorge;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBankkontoUtland;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBruker;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLEPost;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLElektroniskKommunikasjonskanal;
@@ -23,8 +26,8 @@ public class PersonaliaTransform {
         XMLBruker xmlBruker = (XMLBruker) response.getPerson();
         Person xmlPerson = kjerneinformasjonResponse.getPerson();
 
-        Personalia personalia = PersonaliaBuilder
-                .with()
+        return PersonaliaBuilder.
+                with()
                 .fodselsnummer(finnFnr(xmlBruker))
                 .alder(finnAlder(finnFnr(xmlBruker)))
                 .navn(finnSammensattNavn(xmlBruker))
@@ -33,19 +36,55 @@ public class PersonaliaTransform {
                 .kjonn(finnKjonn(xmlBruker))
                 .gjeldendeAdresse(finnGjeldendeAdresse(xmlBruker, kodeverk))
                 .sekundarAdresse(finnSekundarAdresse(xmlBruker, kodeverk))
+                .kontonummer(finnKontonummer(xmlBruker))
+                .erUtenlandskBankkonto(erUtenlandskKonto(xmlBruker))
+                .utenlandskKontoBanknavn(finnUtenlandsKontoNavn(xmlBruker))
+                .utenlandskKontoLand(finnUtenlandskKontoLand(xmlBruker, kodeverk))
                 .build();
+    }
 
-        return personalia;
+    private static String finnUtenlandskKontoLand(XMLBruker xmlBruker, Kodeverk kodeverk) {
+        XMLBankkonto bankkonto = xmlBruker.getBankkonto();
+
+        if (bankkonto == null) {
+            return "";
+        }
+        String landkode = ((XMLBankkontoUtland) bankkonto).getBankkontoUtland().getLandkode().getValue();
+        return kodeverk.getLand(landkode);
+    }
+
+    private static String finnUtenlandsKontoNavn(XMLBruker xmlBruker) {
+        XMLBankkonto bankkonto = xmlBruker.getBankkonto();
+
+        if (bankkonto == null) {
+            return "";
+        }
+
+        return ((XMLBankkontoUtland) bankkonto).getBankkontoUtland().getBanknavn();
+    }
+
+    private static Boolean erUtenlandskKonto(XMLBruker xmlBruker) {
+        XMLBankkonto bankkonto = xmlBruker.getBankkonto();
+        return bankkonto != null && bankkonto instanceof XMLBankkontoUtland;
+    }
+
+    private static String finnKontonummer(XMLBruker xmlBruker) {
+        XMLBankkonto bankkonto = xmlBruker.getBankkonto();
+        if (bankkonto == null) {
+            return "";
+        } else if (bankkonto instanceof XMLBankkontoNorge) {
+            return ((XMLBankkontoNorge) bankkonto).getBankkonto().getBankkontonummer();
+        } else {
+            return ((XMLBankkontoUtland) bankkonto).getBankkontoUtland().getBankkontonummer();
+        }
     }
 
     private static Adresse finnGjeldendeAdresse(XMLBruker xmlBruker, Kodeverk kodeverk) {
-        Adresse adresse = new AdresseTransform().mapGjeldendeAdresse(xmlBruker, kodeverk);
-        return adresse;
+        return new AdresseTransform().mapGjeldendeAdresse(xmlBruker, kodeverk);
     }
 
     private static Adresse finnSekundarAdresse(XMLBruker xmlBruker, Kodeverk kodeverk) {
-        Adresse adresse = new AdresseTransform().mapSekundarAdresse(xmlBruker, kodeverk);
-        return adresse;
+        return new AdresseTransform().mapSekundarAdresse(xmlBruker, kodeverk);
     }
 
     private static String finnStatsborgerskap(Person xmlPerson) {
