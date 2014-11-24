@@ -2,7 +2,7 @@
     <p>
         <span data-ng-bind-html="'arbeidsforhold.arbeidsgiver.permittert.varighet' | cmstekst"></span>
         <span data-ng-bind="periode.properties.permiteringsperiodedatofra | date:'dd.MM.yyyy'"></span>
-        <span data-ng-if="periode.properties.permiteringsperiodedatotil" data-ng-bind-html="'arbeidsforhold.permitteringsperiode.oppsummeringer.til' | cmstekst"> TIL </span>
+        <span data-ng-if="periode.properties.permiteringsperiodedatotil" data-ng-bind-html="'arbeidsforhold.permitteringsperiode.oppsummeringer.til' | cmstekst"></span>
         <span data-ng-if="periode.properties.permiteringsperiodedatotil" data-ng-bind="periode.properties.permiteringsperiodedatotil | date:'dd.MM.yyyy'"></span>
     </p>
     <p>
