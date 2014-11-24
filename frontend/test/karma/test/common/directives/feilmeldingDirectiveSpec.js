@@ -3,7 +3,7 @@ describe('feilmeldinger', function () {
 
     var requiredFeil = 'Er required';
 
-    beforeEach(module('nav.feilmeldinger', 'templates-main', 'nav.cmstekster'));
+    beforeEach(module('nav.feilmeldinger', 'templates-main', 'nav.cms'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {

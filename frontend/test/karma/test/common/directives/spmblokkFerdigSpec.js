@@ -2,7 +2,7 @@ describe('sporsmalferdig', function () {
     var rootScope, element, scope, timeout, form, event;
     event = $.Event("click");
 
-    beforeEach(module('nav.sporsmalferdig', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.sporsmalferdig', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         var fakta = [
@@ -117,7 +117,7 @@ describe('sporsmalferdig', function () {
     var rootScope, element, scope, timeout, form, event;
     event = $.Event("click");
 
-    beforeEach(module('nav.sporsmalferdig', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.sporsmalferdig', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         var fakta = [
@@ -209,7 +209,7 @@ describe('sporsmalferdig', function () {
     var rootScope, element, scope, timeout, form, event;
     event = $.Event("click");
 
-    beforeEach(module('nav.sporsmalferdig', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.sporsmalferdig', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("data", {
@@ -253,7 +253,7 @@ describe('vedleggblokkferdig', function () {
     var rootScope, element, scope, timeout, form, event, compile;
     event = $.Event("click");
 
-    beforeEach(module('nav.sporsmalferdig', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.sporsmalferdig', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("data", {

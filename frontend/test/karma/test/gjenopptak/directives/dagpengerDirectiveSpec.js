@@ -1,7 +1,7 @@
 describe('stegindikator', function () {
     var element, scope, timeout;
 
-    beforeEach(module('nav.aapneForsteInvalidBolkDirective', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.aapneForsteInvalidBolkDirective', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
@@ -38,7 +38,7 @@ describe('stegindikator', function () {
 describe('stegindikator', function () {
     var element, scope, timeout;
 
-    beforeEach(module('nav.aapneForsteInvalidBolkDirective', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.aapneForsteInvalidBolkDirective', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
@@ -280,7 +280,7 @@ describe('sjekkBoklerValiditet', function () {
 describe('scrollTilbakeDirective', function () {
     var element, scope, timeout;
 
-    beforeEach(module('nav.scroll.directive', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.scroll.directive', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
@@ -323,7 +323,7 @@ describe('scrollTilbakeDirective', function () {
 describe('scrollTilbakeDirective', function () {
     var element, scope, timeout;
 
-    beforeEach(module('nav.scroll.directive', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.scroll.directive', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
@@ -361,7 +361,7 @@ describe('validerSkjema', function () {
     var element, scope, timeout, event, deferred, q, $httpBackend;
     event = $.Event("click");
 
-    beforeEach(module('nav.validerskjema', 'nav.cmstekster', 'templates-main', 'sendsoknad.services'));
+    beforeEach(module('nav.validerskjema', 'nav.cms', 'templates-main', 'sendsoknad.services'));
 
     beforeEach(module(function ($provide) {
         var fakta = [

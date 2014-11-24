@@ -9,5 +9,6 @@ angular.module('utslagskriterierDagpenger', [
     'ngAnimate',
     'ngCookies',
     'ngSanitize',
-    'templates-main'
+    'templates-main',
+    'nav.cms'
 ]);

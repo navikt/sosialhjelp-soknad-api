@@ -1,4 +1,4 @@
-angular.module('nav.dagpenger.informasjonsside', ['nav.cmstekster'])
+angular.module('nav.dagpenger.informasjonsside', [])
     .controller('InformasjonsSideCtrl', function ($scope, data, $location, soknadService) {
         $scope.utslagskriterier = {};
         $scope.utslagskriterier.harlestbrosjyre = false;
