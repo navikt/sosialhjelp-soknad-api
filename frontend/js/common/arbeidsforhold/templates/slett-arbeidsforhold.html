@@ -1,11 +1,11 @@
 <div class="arbeidsforhold-oppsummering-endre-slett">
     <ul class="liste-vannrett">
         <li>
-            <a href="#" data-ng-click="slettArbeidsforhold(af, $event)"
+            <a href="#" data-ng-click="slettArbeidsforhold(af, $index, $event)"
                data-fokus-slettmoduler="arbeidsforhold" data-ng-bind-html=" 'arbeidsforhold.slettarbeidsforhold' | cmstekst"></a>
         </li>
         <li>
-            <a href="#" data-ng-click="endreArbeidsforhold(af, $event)">
+            <a href="#" data-ng-click="endreArbeidsforhold(af, $index, $event)">
                 {{ 'arbeidsforhold.endrearbeidsforhold' | cmstekst }}
             </a>
         </li>

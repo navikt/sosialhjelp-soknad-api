@@ -9,7 +9,7 @@
         <p arbeidsforhold-sluttaarsak sluttaarsak="af.sluttaarsak.properties.type"></p>
     </li>
     <li>
-        <p data-ng-bind-html=" 'arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet' | cmstekst"></p>
+        <span data-ng-bind-html=" ('arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet' | cmstekst) + ':'"></span>
         <div data-ng-if="!af.sluttaarsak.properties.lonnspliktigperiodevetikke">
             <span data-ng-bind="af.sluttaarsak.properties.lonnspliktigperiodedatofra | date:'dd.MM.yyyy'"></span>
             <span data-ng-if="af.sluttaarsak.properties.lonnspliktigperiodedatotil" data-ng-bind-html="'arbeidsforhold.permitteringsperiode.oppsummeringer.til' | cmstekst"></span>
@@ -17,10 +17,11 @@
         </div>
         <span data-ng-if="af.sluttaarsak.properties.lonnspliktigperiodevetikke">{{ 'arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.vetikke' | cmstekst }}</span>
     </li>
-    <div data-permitterings-periode-oppsummering="{{ af.sluttaarsak.faktumId }}"></div>
-    <div turnusblokk-oppsummering
-         arbeidsforhold="af.arbeidsforhold"></div>
 </ul>
+
+<div data-permitterings-periode-oppsummering="{{ af.sluttaarsak.faktumId }}"></div>
+<div turnusblokk-oppsummering
+     arbeidsforhold="af.arbeidsforhold"></div>
 
 <div data-ng-include="'../js/common/arbeidsforhold/templates/slett-arbeidsforhold.html'"></div>
 
