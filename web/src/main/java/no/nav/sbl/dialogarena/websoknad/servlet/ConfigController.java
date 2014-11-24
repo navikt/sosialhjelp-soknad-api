@@ -54,6 +54,7 @@ public class ConfigController {
     public void kjorLagring() throws InterruptedException {
         lagringsScheduler.mellomlagreSoknaderOgNullstillLokalDb();
     }
+
     @RequestMapping(value="/internal/reset")
     @ResponseBody
     public String resetCache(@RequestParam("type") String type){

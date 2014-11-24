@@ -19,7 +19,9 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 @Controller
 public class UtslagskriterierController {
+
     private static final Logger logger = getLogger(UtslagskriterierController.class);
+
     @Inject
     private PersonaliaService personaliaService;
 

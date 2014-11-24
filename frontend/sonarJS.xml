@@ -12,7 +12,7 @@
     <packaging>jar</packaging>
     <properties>
         <sonar.language>js</sonar.language>
-        <sonar.exclusions>js/lib/**, js/built/**, js/common/tredjeparts/**, js/common/directives/select/selectModule.js, js/common/templates.js, js/**/initDev.js</sonar.exclusions>
+        <sonar.exclusions>js/lib/**, js/built/**, js/common/tredjeparts/**, js/common/directives/select/selectModule.js, js/common/templates.js, js/**/initDev.js, js/**/routes.js, , js/**/init.js</sonar.exclusions>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.javascript.jstest.reportsPath>target/surefire-reports/</sonar.javascript.jstest.reportsPath>
         <sonar.javascript.lcov.reportPath>target/karma-coverage/PhantomJS 1.9.7 (Linux)/lcov.info</sonar.javascript.lcov.reportPath>

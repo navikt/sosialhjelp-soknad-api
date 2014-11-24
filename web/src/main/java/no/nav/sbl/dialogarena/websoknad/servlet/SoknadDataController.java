@@ -52,6 +52,7 @@ import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 @ControllerAdvice()
 @RequestMapping("/soknad")
 public class SoknadDataController {
+
     @Inject
     private SendSoknadService soknadService;
     @Inject
@@ -63,13 +64,13 @@ public class SoknadDataController {
 
     private HtmlToPdf pdfGenerator = new PDFFabrikk();
 
-
     @RequestMapping(value = "/{soknadId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     @SjekkTilgangTilSoknad
     public WebSoknad hentSoknadData(@PathVariable Long soknadId) {
         return soknadService.hentSoknad(soknadId);
     }
+
     @RequestMapping(value = "/{soknadId}/struktur", method = RequestMethod.GET, produces = "application/json")
     public String hentSoknadSokXMl(@PathVariable Long soknadId) throws UnsupportedEncodingException {
         ByteArrayOutputStream ous = new ByteArrayOutputStream();
@@ -172,8 +173,8 @@ public class SoknadDataController {
             pdfOutputStream = genererPdf(soknad, "/skjema/gjenopptak");
         } else {
             pdfOutputStream = genererPdf(soknad, "/skjema/dagpenger");
-
         }
+
         soknadService.sendSoknad(soknadId, pdfOutputStream);
     }
 
