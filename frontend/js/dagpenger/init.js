@@ -1,6 +1,7 @@
 /* jshint scripturl: true */
 
 angular.module('sendsoknad')
+    .constant('cmsprefix', 'dagpenger.ordinaer.')
     .value('data', {})
     .value('cms', {})
     .constant('validertKlasse', 'validert')

@@ -16,6 +16,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.context.MessageSource;
+import org.springframework.context.NoSuchMessageException;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -45,8 +46,10 @@ public class HandleBarKjoerer implements HtmlGenerator {
     @Named("navMessageSource")
     private MessageSource navMessageSource;
 
+    private String soknadTypePrefix;
 
     public String fyllHtmlMalMedInnhold(WebSoknad soknad, String file) throws IOException {
+        this.soknadTypePrefix = soknad.getSoknadPrefix();
         return getHandlebars().compile(file)
                 .apply(soknad);
 
@@ -208,7 +211,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
         return new Helper<String>() {
             @Override
             public CharSequence apply(String key, Options options) throws IOException {
-                return navMessageSource.getMessage(key, new Object[]{options.param(0)}, new Locale("nb", "NO"));
+                return getCmsTekst(key, new Object[]{options.param(0)}, new Locale("nb", "NO"));
             }
         };
     }
@@ -217,9 +220,18 @@ public class HandleBarKjoerer implements HtmlGenerator {
         return new Helper<String>() {
             @Override
             public CharSequence apply(String key, Options options) throws IOException {
-                return navMessageSource.getMessage(key, options.params, new Locale("nb", "NO"));
+                return getCmsTekst(key, options.params, new Locale("nb", "NO"));
             }
         };
+    }
+
+    private String getCmsTekst(String key, Object[] parameters, Locale locale) {
+        try {
+            return navMessageSource.getMessage(soknadTypePrefix + "." + key, parameters, locale);
+        } catch (NoSuchMessageException e) {
+            return navMessageSource.getMessage(key, parameters, locale);
+        }
+
     }
 
     private Helper<Object> generateHvisIkkeTomHelper() {
@@ -399,4 +411,5 @@ public class HandleBarKjoerer implements HtmlGenerator {
         }
         return buffer.toString();
     }
+
 }

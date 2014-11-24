@@ -1,26 +1,26 @@
 angular.module('nav.cmstekster', [])
-	.directive('cmsvedlegg', [function () {
-		return {
-			scope   : false,
-			required: 'navFaktum',
-			link    : {
-				pre: function (scope, elem, attr) {
+    .directive('cmsvedlegg', function () {
+        return {
+            scope: false,
+            required: 'navFaktum',
+            link: {
+                pre: function (scope, elem, attr) {
                     scope.cmsProps = {};
                     if (attr.cmsvedlegg) {
-						scope.cmsProps.ekstra = attr.cmsvedlegg;
-					}
+                        scope.cmsProps.ekstra = attr.cmsvedlegg;
+                    }
                 }
-			}
-		};
-	}])
-    .filter('configUrl', ['data', function(data) {
-        return function(nokkel) {
+            }
+        };
+    })
+    .filter('configUrl', function (data) {
+        return function (nokkel) {
             var url = data.config[nokkel.toLowerCase() + '.url'];
 
             return url === undefined ? '' : url;
         };
-    }])
-    .filter('cmstekst', ['cms', '$sce', '$rootScope', function(cms, $sce, $rootScope) {
+    })
+    .filter('cmstekst', function (cms, $sce, $rootScope, data, cmsprefix, $injector) {
         /**
          * nokkel: Kan være objekt eller string. Dersom string, så er det nøkkelen som blir brukt i CMS.
          * Dersom det er ett objekt, så skal objektet inneholde to nøkler, en 'key' og en 'fallbackKey', begge som string.
@@ -30,22 +30,18 @@ angular.module('nav.cmstekster', [])
          * Dersom ett array, settes teksten ved en index inn i tilsvarende posisjon i CMS-teksten. Posisjon i CMS-teksten
          * markeres ved '{0}', '{1}' osv
          */
-        return function(nokkel, args) {
-            var tekst, usedKey = nokkel;
+        return function (nokkel, args) {
+            try {
 
-            if (nokkel instanceof Object) {
-                tekst = cms.tekster[nokkel.key];
-                usedKey = nokkel.key;
-                if (tekst === undefined) {
-                    tekst = cms.tekster[nokkel.fallbackKey];
-                    usedKey = nokkel.fallbackKey;
-                }
-            } else {
-                tekst = cms.tekster[nokkel];
             }
+            $injector('cmsprefix')
+
+            var tekst;
+            var key = getKeyToUse();
+            tekst = cms.tekster[key];
 
             if (args instanceof Array) {
-                args.forEach(function(argTekst, idx) {
+                args.forEach(function (argTekst, idx) {
                     tekst = tekst.replace('{' + idx + '}', argTekst);
                 });
             } else if (args) {
@@ -53,9 +49,29 @@ angular.module('nav.cmstekster', [])
             }
 
             if ($rootScope.visCmsnokkler) {
-                tekst += ' [' + usedKey + ']';
+                tekst += ' [' + key + ']';
             }
 
             return tekst === undefined ? '' : $sce.trustAsHtml(tekst);
+
+            function getKeyToUse() {
+                if (nokkel instanceof Object) {
+                    if (cms.tekster[prefix + nokkel.key]) {
+                        return cmsprefix + nokkel.key;
+                    } else if (cms.tekster[nokkel.key]) {
+                        return nokkel.key;
+                    } else if (cms.tekster[cmsprefix + nokkel.fallbackKey]) {
+                        return cms.tekster[cmsprefix + nokkel.fallbackKey];
+                    } else {
+                        return nokkel.fallbackKey;
+                    }
+                } else {
+                    if (cms.tekster[cmsprefix + nokkel]) {
+                        return cmsprefix + nokkel;
+                    } else {
+                        return nokkel;
+                    }
+                }
+            }
         };
-    }]);
+    });
