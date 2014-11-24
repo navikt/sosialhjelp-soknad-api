@@ -1,4 +1,12 @@
-angular.module('nav.services.resolvers.personalia', [])
+angular.module('nav.personalia.service', [])
+    .factory('Personalia', function ($resource) {
+        return $resource('/sendsoknad/rest/soknad/personalia/:soknadId',
+            { soknadId: '@soknadId' },
+            {
+                lagre   : { method: 'POST' }
+            }
+        );
+    })
     .factory('PersonaliaResolver', function ($q, BehandlingIdResolver, Personalia) {
 
         var personaliaDeferer = $q.defer();

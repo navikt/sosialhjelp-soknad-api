@@ -33,6 +33,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_LANDKODE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_TYPE_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.KJONN_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.KONTONUMMER_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.NAVN_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.SEKUNDARADRESSE_GYLDIGFRA_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.SEKUNDARADRESSE_GYLDIGTIL_KEY;
@@ -40,6 +41,9 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.SEKUNDARADRESSE_TYPE_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.STATSBORGERSKAPTYPE_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.STATSBORGERSKAP_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.ER_UTENLANDSK_BANKKONTO;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.UTENLANDSK_KONTO_BANKNAVN;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.UTENLANDSK_KONTO_LAND;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
@@ -121,6 +125,10 @@ public class DefaultPersonaliaService implements PersonaliaService {
 
         Faktum personaliaFaktum = new Faktum().medSoknadId(soknadId).medKey("personalia")
                 .medSystemProperty(FNR_KEY, personalia.getFnr())
+                .medSystemProperty(KONTONUMMER_KEY, personalia.getKontonummer())
+                .medSystemProperty(ER_UTENLANDSK_BANKKONTO, personalia.getErUtenlandskBankkonto().toString())
+                .medSystemProperty(UTENLANDSK_KONTO_BANKNAVN, personalia.getUtenlandskKontoBanknavn())
+                .medSystemProperty(UTENLANDSK_KONTO_LAND, personalia.getUtenlandskKontoLand())
                 .medSystemProperty(ALDER_KEY, personalia.getAlder())
                 .medSystemProperty(NAVN_KEY, personalia.getNavn())
                 .medSystemProperty(EPOST_KEY, personalia.getEpost())
