@@ -39,6 +39,7 @@ public class WebSoknad implements Serializable {
     private DelstegStatus delstegStatus;
     private List<Vedlegg> vedlegg;
     private String journalforendeEnhet;
+    private String soknadPrefix;
 
 
     public WebSoknad() {
@@ -406,5 +407,13 @@ public class WebSoknad implements Serializable {
 
     public boolean erUnderArbeid() {
         return status.equals(SoknadInnsendingStatus.UNDER_ARBEID);
+    }
+
+    public void medSoknadPrefix(String prefix) {
+        soknadPrefix = prefix;
+    }
+
+    public String getSoknadPrefix() {
+        return soknadPrefix;
     }
 }

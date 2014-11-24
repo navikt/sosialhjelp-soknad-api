@@ -1,4 +1,4 @@
-<div data-nav-tittel="{{ cmsprefix }}.skjema.tittel"></div>
+<div data-nav-tittel="skjema.tittel"></div>
 
 <div data-stegindikator data-steg-liste="veiledning, skjema, vedlegg, sendInn" data-aktiv-index="0"></div>
 
@@ -12,10 +12,10 @@
        		</div>
        	</div>
        	<form name="infoForm" data-ng-show="tpsSvarer()">
-	        <h2 class="stor strek-ikon-info-orange" data-ng-bind-html=" cmsprefix+'.informasjonsside.tittel' | cmstekst"></h2>
+	        <h2 class="stor strek-ikon-info-orange" data-ng-bind-html=" 'informasjonsside.tittel' | cmstekst"></h2>
 
 			<div class="viktig-info">
-				<p class="informasjonsliste" data-ng-bind-html="cmsprefix+'.informasjonsside.informasjon.liste' | cmstekst"></p>
+				<p class="informasjonsliste" data-ng-bind-html="'informasjonsside.informasjon.liste' | cmstekst"></p>
 
 				<div class="checkbox form-linje"
                         data-ng-if="oppsummering != true"
@@ -23,13 +23,13 @@
 
 
                     <input id="lestBrosjyre" data-ng-model="utslagskriterier.harlestbrosjyre" type="checkbox" data-ng-required="true" data-checkbox-validate>
-                    <label for="lestBrosjyre" data-ng-bind-html=" cmsprefix+'.informasjonsside.lestbrosjyre.sporsmal' | cmstekst"></label>
-                    <span class="melding" data-ng-bind-html=" cmsprefix+'.informasjonsside.lestbrosjyre.feilmelding' | cmstekst"></span>
+                    <label for="lestBrosjyre" data-ng-bind-html="'informasjonsside.lestbrosjyre.sporsmal' | cmstekst"></label>
+                    <span class="melding" data-ng-bind-html="'informasjonsside.lestbrosjyre.feilmelding' | cmstekst"></span>
 				</div>
 				
 				<div class="avhuket" data-ng-if="oppsummering == true">
 					<span class="sjekket"></span>
-                    <span data-ng-bind-html=" cmsprefix+'.informasjonsside.lestbrosjyre.sporsmal' | cmstekst"></span>
+                    <span data-ng-bind-html="'informasjonsside.lestbrosjyre.sporsmal' | cmstekst"></span>
 				</div>
 			</div>
 
@@ -43,8 +43,8 @@
                 </div>
 
                 <ul class="liste-vannrett">
-                    <li><a class="inline" href="{{ dittnavUrl }}" data-ng-bind-html=" 'utslagskriterier.utslag.avbryt.lenketekst' | cmstekst"></a></li>
-                    <li><a class="inline" href="{{ tilbakeUrl }}" data-ng-bind-html=" cmsprefix + '.informasjonsside.tilbake.lenketekst' | cmstekst"></a></li>
+                    <li><a class="inline" href="{{ dittnavUrl }}" data-ng-bind-html="'utslagskriterier.utslag.avbryt.lenketekst' | cmstekst"></a></li>
+                    <li><a class="inline" href="{{ tilbakeUrl }}" data-ng-bind-html="'informasjonsside.tilbake.lenketekst' | cmstekst"></a></li>
                 </ul>
 			</div>
 		</form>

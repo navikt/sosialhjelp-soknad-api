@@ -7,6 +7,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBuilder;
 import org.joda.time.LocalDate;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +24,13 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transform
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.TYPE;
 
 public class WebSoknadUtils {
+    public static final Map<String, String> soknadTypePrefixMap = new HashMap<String, String>(){{
+        put("NAV 04-01.03", "dagpenger.ordinaer");
+        put("NAV 04-01.04", "dagpenger.ordinaer");
+        put("NAV 04-16.03", "dagpenger.gjenopptak");
+        put("NAV 04-16.04", "dagpenger.gjenopptak");
+    }};
+
     public static final String DAGPENGER_VED_PERMITTERING = "NAV 04-01.04";
     public static final String DAGPENGER = "NAV 04-01.03";
     public static final String EOS_DAGPENGER = "4304";
@@ -102,5 +110,4 @@ public class WebSoknadUtils {
                 .gjeldendeAdresse(gjeldendeAdresse)
                 .build();
     }
-
 }

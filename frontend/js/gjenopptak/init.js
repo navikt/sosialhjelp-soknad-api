@@ -1,6 +1,7 @@
 /* jshint scripturl: true */
 
 angular.module('gjenopptak')
+    .constant('cmsprefix', 'dagpenger.gjenopptak.')
     .value('data', {})
     .value('cms', {})
     .constant('validertKlasse', 'validert')
