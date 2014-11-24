@@ -9,7 +9,7 @@ angular.module('nav.arbeidsforhold.turnus.directive',[])
                     return arbeidsforhold.properties.rotasjonskiftturnus == rotasjonTekst;
                 };
             }
-        }
+        };
     })
     .directive('turnusblokk', function(cms) {
         return {
