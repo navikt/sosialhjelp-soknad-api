@@ -35,6 +35,7 @@ import org.slf4j.Logger;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Component;
 
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.bind.JAXB;
@@ -65,9 +66,12 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Fak
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.toInnsendingsvalg;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.util.WebSoknadUtils.getJournalforendeEnhet;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.util.WebSoknadUtils.getSkjemanummer;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.WebSoknadUtils.soknadTypePrefixMap;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.slf4j.LoggerFactory.getLogger;
+import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.LASTET_OPP;
 
 @Component
 public class SoknadService implements SendSoknadService, EttersendingService {
@@ -380,22 +384,22 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         logger.info("Lagrer søknad som fil til henvendelse for behandling {}", soknad.getBrukerBehandlingId());
         fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(pdf));
 
-//        List<Vedlegg> vedleggForventnings = soknad.getVedlegg();
-//
-//        String skjemanummer = getSkjemanummer(soknad);
-//        String journalforendeEnhet = getJournalforendeEnhet(soknad);
-//        XMLHovedskjema hovedskjema = new XMLHovedskjema()
-//                .withInnsendingsvalg(LASTET_OPP.toString())
-//                .withSkjemanummer(skjemanummer)
-//                .withFilnavn(skjemanummer)
-//                .withMimetype("application/pdf")
-//                .withFilstorrelse("" + pdf.length)
-//                .withUuid(soknad.getUuid())
-//                .withJournalforendeEnhet(journalforendeEnhet);
-//        henvendelseConnector.avsluttSoknad(soknad.getBrukerBehandlingId(),
-//                hovedskjema,
-//                Transformers.convertToXmlVedleggListe(vedleggForventnings));
-//        repository.slettSoknad(soknadId);
+        List<Vedlegg> vedleggForventnings = soknad.getVedlegg();
+
+        String skjemanummer = getSkjemanummer(soknad);
+        String journalforendeEnhet = getJournalforendeEnhet(soknad);
+        XMLHovedskjema hovedskjema = new XMLHovedskjema()
+                .withInnsendingsvalg(LASTET_OPP.toString())
+                .withSkjemanummer(skjemanummer)
+                .withFilnavn(skjemanummer)
+                .withMimetype("application/pdf")
+                .withFilstorrelse("" + pdf.length)
+                .withUuid(soknad.getUuid())
+                .withJournalforendeEnhet(journalforendeEnhet);
+        henvendelseConnector.avsluttSoknad(soknad.getBrukerBehandlingId(),
+                hovedskjema,
+                Transformers.convertToXmlVedleggListe(vedleggForventnings));
+        repository.slettSoknad(soknadId);
     }
 
     private List<Vedlegg> hentVedleggOgPersister(XMLMetadataListe xmlVedleggListe, Long soknadId) {
