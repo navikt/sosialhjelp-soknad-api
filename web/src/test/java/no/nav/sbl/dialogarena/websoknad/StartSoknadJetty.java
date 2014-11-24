@@ -65,13 +65,10 @@ public final class StartSoknadJetty {
         setFrom("environment-test.properties");
         setProperty("no.nav.sbl.dialogarena.sendsoknad.sslMock", "true");
         setProperty("no.nav.sbl.dialogarena.sendsoknad.hsqldb", "false");
-        //setProperty(SUBJECTHANDLER_KEY, JettySubjectHandler.class.getName());
         setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
     }
 
     private void configureSecurity() {
-        //setProperty("no.nav.modig.security.sts.url", "http://es-gw-t.test.internsone.local:9080/SecurityTokenServiceProvider/");
-//        setProperty("no.nav.modig.security.sts.url", "http://localhost:8080/SecurityTokenServiceProvider/");
         setProperty("no.nav.modig.security.sts.url", "http://e34jbsl00713.devillo.no:8080/SecurityTokenServiceProvider/"); // Microscopium U1
         setProperty("no.nav.modig.security.systemuser.username", "BD05");
         setProperty("no.nav.modig.security.systemuser.password", "test");

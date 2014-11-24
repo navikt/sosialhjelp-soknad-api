@@ -71,6 +71,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.util.WebSoknadUti
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.slf4j.LoggerFactory.getLogger;
 
+
 @Component
 public class SoknadService implements SendSoknadService, EttersendingService {
     private static final Logger logger = getLogger(SoknadService.class);
@@ -264,8 +265,8 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         });
 
         WSBehandlingskjedeElement innsendtSoknad = sorterteBehandlinger.get(0);
-        result.put("innsendtdato",String.valueOf(innsendtSoknad.getInnsendtDato().getMillis()));
-        result.put("sisteinnsendtbehandling", sorterteBehandlinger.get(sorterteBehandlinger.size()-1).getBehandlingsId().toString());
+        result.put("innsendtdato", String.valueOf(innsendtSoknad.getInnsendtDato().getMillis()));
+        result.put("sisteinnsendtbehandling", sorterteBehandlinger.get(sorterteBehandlinger.size() - 1).getBehandlingsId().toString());
         return result;
     }
 
@@ -284,7 +285,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         List<WSBehandlingskjedeElement> behandlingskjede = henvendelseConnector.hentBehandlingskjede(behandingsId);
         WSHentSoknadResponse wsSoknadsdata = hentSisteIkkeAvbrutteSoknadIBehandlingskjede(behandlingskjede);
 
-        if(wsSoknadsdata.getInnsendtDato() == null) {
+        if (wsSoknadsdata.getInnsendtDato() == null) {
             throw new ApplicationException("Kan ikke starte ettersending på en ikke fullfort soknad");
         }
         DateTime innsendtDato = hentOrginalInnsendtDato(behandlingskjede, behandingsId);
@@ -324,7 +325,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         WSHentSoknadResponse wsEttersending = henvendelseConnector.hentSoknad(ettersendingsBehandlingId);
 
         String behandlingskjedeId;
-        if(opprinneligInnsending.getBehandlingskjedeId() != null) {
+        if (opprinneligInnsending.getBehandlingskjedeId() != null) {
             behandlingskjedeId = opprinneligInnsending.getBehandlingskjedeId();
         } else {
             behandlingskjedeId = opprinneligInnsending.getBehandlingsId();
@@ -434,10 +435,10 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         WebSoknad soknad = repository.hentSoknad(soknadId);
 
         /**
-        * Sletter alle vedlegg til søknader som blir avbrutt.
-        * Dette burde egentlig gjøres i henvendelse, siden vi uansett skal slette alle vedlegg på avbrutte søknader.
-        * I tillegg blir det liggende igjen mange vedlegg for søknader som er avbrutt før dette kallet ble lagt til.
-        * */
+         * Sletter alle vedlegg til søknader som blir avbrutt.
+         * Dette burde egentlig gjøres i henvendelse, siden vi uansett skal slette alle vedlegg på avbrutte søknader.
+         * I tillegg blir det liggende igjen mange vedlegg for søknader som er avbrutt før dette kallet ble lagt til.
+         * */
 
         fillagerConnector.slettAlle(soknad.getBrukerBehandlingId());
         henvendelseConnector.avbrytSoknad(soknad.getBrukerBehandlingId());
@@ -500,7 +501,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         for (SoknadFaktum soknadFaktum : fakta) {
             String flereTillatt = soknadFaktum.getFlereTillatt();
             String erSystemFaktum = soknadFaktum.getErSystemFaktum();
-            if((flereTillatt != null && flereTillatt.equals("true")) || (erSystemFaktum != null && erSystemFaktum.equals("true"))) {
+            if ((flereTillatt != null && flereTillatt.equals("true")) || (erSystemFaktum != null && erSystemFaktum.equals("true"))) {
                 continue;
             }
 
@@ -514,7 +515,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
                 f.setParrentFaktum(parentFaktum.getFaktumId());
             }
 
-            repository.lagreFaktum(soknadId,f);
+            repository.lagreFaktum(soknadId, f);
         }
     }
 
@@ -575,9 +576,11 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     }
 
     private boolean parentValueErLikDependOnVerdi(SoknadVedlegg soknadVedlegg, Faktum parent) {
-        return parent.getValue().equals(soknadVedlegg.getFaktum().getDependOnValue());
+        String value = parent.getValue();
+        String dependOnValue = soknadVedlegg.getFaktum().getDependOnValue();
+        return (value == null && dependOnValue == null) ||  value.equals(dependOnValue);
     }
-    
+
     private boolean erParentValueNullOgVedleggDependOnFalse(SoknadVedlegg soknadVedlegg, Faktum parent) {
         return parent.getValue() == null && "false".equalsIgnoreCase(soknadVedlegg.getFaktum().getDependOnValue());
     }
@@ -616,14 +619,14 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
     private SoknadStruktur hentStruktur(String skjema) {
         //TODO: Få flyttet dette ut på et vis? Ta i bruk.
-        Map<String,String> strukturDokumenter =  new HashMap<>();
+        Map<String, String> strukturDokumenter = new HashMap<>();
         strukturDokumenter.put("NAV 04-01.04", "NAV 04-01.03.xml");
         strukturDokumenter.put("NAV 04-01.03", "NAV 04-01.03.xml");
         strukturDokumenter.put("NAV 04-16.03", "NAV 04-16.03.xml");
 
         String type = strukturDokumenter.get(skjema);
 
-        if(type == null || type.isEmpty()) {
+        if (type == null || type.isEmpty()) {
             throw new ApplicationException("Fant ikke strukturdokument for nav-skjemanummer: " + skjema);
         }
 

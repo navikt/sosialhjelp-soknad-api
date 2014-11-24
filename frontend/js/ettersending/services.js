@@ -10,7 +10,8 @@
             'nav.services.interceptor.feilhandtering',
             'nav.services.vedlegg',
             'nav.services.faktum',
-            'nav.services.resolvers'
+            'nav.services.resolvers',
+            'nav.services.bekreftelse'
         ])
 
         .config(['$httpProvider', function ($httpProvider) {

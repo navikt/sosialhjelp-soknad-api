@@ -43,7 +43,6 @@ public class FaktaController {
         return soknadService.lagreSoknadsFelt(soknadId, faktum);
     }
 
-
     @RequestMapping(value = "/{faktumId}", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @ResponseBody()
     @SjekkTilgangTilSoknad

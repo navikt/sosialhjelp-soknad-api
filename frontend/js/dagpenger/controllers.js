@@ -11,7 +11,7 @@ angular.module('sendsoknad.controllers', [
     'nav.fortsettsenere',
     'nav.dagpenger',
     'nav.arbeidsforhold',
-    'nav.informasjonsside',
+    'nav.dagpenger.informasjonsside',
     'nav.feilside',
     'nav.oppsummering',
     'nav.adresse',

@@ -14,7 +14,7 @@ import java.util.Properties;
 import static java.lang.System.setProperty;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = SoknadinnsendingContext.class)
+@ContextConfiguration(classes = SoknadinnsendingConfig.class)
 public class ApplicationContextTest {
 
     @BeforeClass

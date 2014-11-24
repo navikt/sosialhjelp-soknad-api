@@ -4,8 +4,8 @@
     describe('InformasjonsSideCtrl', function () {
         var scope, ctrl, location, httpBackend;
 
-        beforeEach(module('sendsoknad.services', 'nav.services.soknad'));
-        beforeEach(module('sendsoknad.controllers'));
+        beforeEach(module('gjenopptak.services', 'nav.services.soknad'));
+        beforeEach(module('gjenopptak.controllers'));
 
         beforeEach(module(function ($provide) {
             var fakta = [

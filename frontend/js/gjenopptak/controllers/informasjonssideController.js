@@ -1,4 +1,4 @@
-angular.module('nav.informasjonsside', ['nav.cmstekster'])
+angular.module('nav.gjenopptak.informasjonsside', ['nav.cmstekster'])
     .controller('InformasjonsSideCtrl', ['$scope', 'data', '$location', 'soknadService', function ($scope, data, $location, soknadService) {
         $scope.utslagskriterier = {};
         $scope.utslagskriterier.harlestbrosjyre = false;

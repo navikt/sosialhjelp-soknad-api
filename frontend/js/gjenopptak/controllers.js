@@ -10,7 +10,7 @@ angular.module('gjenopptak.controllers', [
     'nav.vedlegg.controller',
     'nav.fortsettsenere',
     'nav.gjenopptak',
-    'nav.informasjonsside',
+    'nav.gjenopptak.informasjonsside',
     'nav.feilside',
     'nav.oppsummering',
     'nav.adresse',
