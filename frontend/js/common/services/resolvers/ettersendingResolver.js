@@ -1,9 +1,9 @@
 angular.module('nav.services.resolvers.ettersending', [])
-    .factory('EttersendingResolver', function (ettersendingService, data, BehandlingIdResolver, $q) {
+    .factory('EttersendingResolver', function (ettersendingService, data, $q, EttersendingPersonaliaResolver, $route) {
         var ettersendingDefer = $q.defer();
-        BehandlingIdResolver
-            .then(function(result) {
-                ettersendingService.get({soknadId: result},
+            EttersendingPersonaliaResolver.then(function() {
+                var soknadId = $route.current.params.soknadId;
+                ettersendingService.get({soknadId: soknadId},
                     function (result) {
                         data.soknad = result;
                         data.finnFaktum = function (key) {

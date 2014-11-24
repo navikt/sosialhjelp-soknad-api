@@ -195,13 +195,6 @@
             <scope>runtime</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
-
         <!-- Avhengigheter med scope test -->
         <dependency>
             <groupId>no.nav.modig</groupId>
