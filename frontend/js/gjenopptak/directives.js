@@ -1,6 +1,5 @@
 angular.module('gjenopptak.directives', [
     'nav.booleanradio',
-    'nav.cmstekster',
     'nav.input',
     'nav.feilmeldinger',
     'nav.stickyFeilmelding',

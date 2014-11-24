@@ -48,7 +48,7 @@ describe('directives', function () {
     });
 
     describe('cmstekster-direktiv', function () {
-        beforeEach(module('nav.cmstekster', function ($provide) {
+        beforeEach(module('nav.cms', function ($provide) {
             $provide.value("cms", {
                 tekster: {
                     "nokkel.label": "Label",

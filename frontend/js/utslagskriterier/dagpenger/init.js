@@ -1,7 +1,6 @@
 /* jshint scripturl: true */
 
 angular.module('utslagskriterierDagpenger')
-    .constant('cmsprefix', '')
     .value('data', {})
     .value('cms', {})
     .constant('validertKlasse', 'validert')
