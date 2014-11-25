@@ -144,7 +144,7 @@
                            data-ng-model="faktum.properties.type"
                            data-ng-required="true"
                            data-click-validate
-                           data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'"
+                           data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding' | cmstekst"
                            data-aktiv-feilmelding>
                     <label for='radio2' data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.radio.avskjediget' | cmstekst"></label>
                     <div data-nav-hjelpetekstelement data-tittel="{{ 'arbeidsforhold.sluttaarsak.avskjediget.hjelpetekst.tittel' | cmstekst }}"
@@ -155,7 +155,7 @@
             </div>
 
             <div data-ng-if="faktum.properties.type">
-                <div class="spm" data-nav-faktum="sluttaarsak" data-ikke-auto-lagre="true"
+                <div class="spm med-topplinje" data-nav-faktum="sluttaarsak" data-ikke-auto-lagre="true"
                      data-ng-include="templates[faktum.properties.type].url"></div>
             </div>
 

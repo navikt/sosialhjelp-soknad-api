@@ -1,13 +1,28 @@
 <div class="modalBoks begrensning">
     <div class="sak-totredel">
         <div class="panel-standard-belyst bekreftelse">
-            <h2 class="stor-ikon-infogronn-strek" data-ng-bind-html="'{{ tekst.tittelKey }}' | cmstekst"></h2>
+            <form name="bekreftelseForm" novalidate>
+                <h2 class="stor-ikon-infogronn-strek" data-ng-bind-html="cmsprefix.value +'.bekreftelse' | cmstekst"></h2>
 
-            <p data-ng-bind-html="'{{ tekst.informasjonsKey }}' | cmstekst"></p>
+                <p data-ng-bind-html="cmsprefix.value +'.bekreftelse.informasjon' | cmstekst" data-ng-if="!fullfort.value"></p>
+                <div>
+                    <div class="form-linje" data-ng-if="!fullfort.value">
+                        <label>
+                            <span class="labeltekst" data-ng-bind-html="cmsprefix.value +'.bekreftelse.epost.label' | cmstekst"></span>
+                            <input type="email" name="epost" role="textbox" data-ng-model="epost.value"
+                                    data-error-messages="{required: cmsprefix.value +'.bekreftelse.epost.required.feilmelding', pattern: cmsprefix.value +'.bekreftelse.epost.pattern.feilmelding' }"
+                                    data-ng-pattern="/^$|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}$/" data-blur-validate/>
+                        </label>
+                        <span class="melding"></span>
+                    </div>
+                    <p data-ng-if="sendtEpost.value" data-ng-bind-html="cmsprefix.value +'.bekreftelse.kvittering.informasjon.epost' | cmstekst"></p>
+                    <p data-ng-if="fullfort.value" data-ng-bind-html="cmsprefix.value +'.bekreftelse.kvittering.informasjon' | cmstekst"></p>
+                </div>
 
-            <div class="fremdriftsindikator">
-                <img src="../img/ajaxloader/hvit/loader_hvit_64.gif" alt="Fremdriftsindikator"/>
-            </div>
+                <div>
+                    <input type="submit" class="knapp-hoved-liten" value="{{ cmsprefix.value +'.bekreftelse.epost.fullfor' | cmstekst }}" role="button" data-ng-click="sendEpost(bekreftelseForm)" data-fremdriftsindikator>
+                </div>
+            </form>
         </div>
     </div>
 </div>

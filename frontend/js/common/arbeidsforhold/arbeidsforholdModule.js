@@ -3,5 +3,6 @@ angular.module('nav.arbeidsforhold',
         'nav.arbeidsforhold.controller',
         'nav.arbeidsforhold.nyttarbeidsforhold.controller',
         'nav.arbeidsforhold.permitteringpopup',
-        'nav.arbeidsforhold.turnus.directive'
+        'nav.arbeidsforhold.turnus.directive',
+        'nav.arbeidsforhold.directive'
     ]);

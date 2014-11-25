@@ -6,7 +6,7 @@
 
 <ul>
     <li>
-        <p data-ng-bind="af.sluttaarsak.properties.type"></p>
+        <p arbeidsforhold-sluttaarsak sluttaarsak="af.sluttaarsak.properties.type"></p>
     </li>
     <li>
         <span data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.redusertArbeidstid.fraDato.sporsmal' | cmstekst"></span>
@@ -17,9 +17,11 @@
         <p data-ng-if="af.sluttaarsak.properties.nyttTilbud == 'true'" data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.true' | cmstekst"></p>
         <p data-ng-if="af.sluttaarsak.properties.nyttTilbud == 'false'" data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.false' | cmstekst"></p>
     </li>
+    <div turnusblokk-oppsummering
+         arbeidsforhold="af.arbeidsforhold"></div>
 </ul>
 
-<div data-ng-include="'../views/templates/arbeidsforhold/slett-arbeidsforhold.html'"></div>
+<div data-ng-include="'../js/common/arbeidsforhold/templates/slett-arbeidsforhold.html'"></div>
 
 <div data-vedlegginfoboks>
     <ul>

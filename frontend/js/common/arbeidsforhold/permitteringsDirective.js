@@ -5,6 +5,14 @@ angular.module('nav.arbeidsforhold.permittering.directive',[])
             replace: true,
             scope: {
                 permitteringsperiode: '='
+            },
+            link: function(scope) {
+                scope.feilmelding = {
+                    required:'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.feilmelding',
+                    pattern: 'regex.tall',
+                    max: 'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.maxverdi.feilmelding',
+                    min:'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.minverdi.feilmelding'
+                };
             }
         };
     })
