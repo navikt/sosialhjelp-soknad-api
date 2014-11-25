@@ -1,5 +1,5 @@
 angular.module('nav.arbeidsforhold.controller', ['nav.arbeidsforhold.turnus.directive'])
-    .controller('ArbeidsforholdCtrl', function ($scope, $cookieStore, $location, data, datapersister) {
+    .controller('ArbeidsforholdCtrl', function ($scope, $cookieStore, $location, data) {
         $scope.templates = {
             'Sagt opp av arbeidsgiver': { oppsummeringsurl: '../js/common/arbeidsforhold/templates/oppsummeringer/sagt-opp-av-arbeidsgiver-oppsummering.html' },
             'Permittert': {oppsummeringsurl: '../js/common/arbeidsforhold/templates/oppsummeringer/permittert-oppsummering.html' },
@@ -10,10 +10,6 @@ angular.module('nav.arbeidsforhold.controller', ['nav.arbeidsforhold.turnus.dire
         };
 
         $scope.soknadId = data.soknad.soknadId;
-
-        // Resetter arbeidsforhol
-        datapersister.remove("arbeidsforholdData");
-        datapersister.remove("permitteringsperioderTilSletting");
 
         var arbeidsforhold = data.finnFakta('arbeidsforhold');
         $scope.arbeidsliste = [];
@@ -77,10 +73,9 @@ angular.module('nav.arbeidsforhold.controller', ['nav.arbeidsforhold.turnus.dire
         };
 
         $scope.hvisHarIkkeJobbet = function () {
-            var faktum = data.finnFaktum('arbeidstilstand');
-            return sjekkOmGittEgenskapTilObjektErVerdi(faktum, "harIkkeJobbet");
-
+            return !$scope.hvisHarJobbet();
         };
+
         $scope.hvisHarJobbetVarierende = function () {
             var faktum = data.finnFaktum('arbeidstilstand');
             return sjekkOmGittEgenskapTilObjektErVerdi(faktum, "varierendeArbeidstid");
@@ -100,11 +95,7 @@ angular.module('nav.arbeidsforhold.controller', ['nav.arbeidsforhold.turnus.dire
                 $scope.apneTab('arbeidsforhold');
             }
 
-            $scope.harKlikketKnapp = false;
-
-            if (!$scope.hvisHarIkkeJobbet()) {
-                $scope.harKlikketKnapp = true;
-            }
+            $scope.harKlikketKnapp = $scope.hvisHarJobbet();
         };
 
         $scope.nyttArbeidsforhold = function ($event) {
