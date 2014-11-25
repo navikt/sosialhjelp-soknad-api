@@ -119,17 +119,26 @@
         <panel>ReelArbeidsoker</panel>
     </faktum>
 
-    <!-- Arbeidsforhold -->
+    <!-- Nye arbeidsforhold -->
     <faktum>
-        <id>arbeidstilstand</id>
-        <type>java.lang.String</type>
-        <panel>Arbeidsforhold</panel>
+        <id>nyearbeidsforhold.arbeidsidensist</id>
+        <type>java.lang.Boolean</type>
+        <panel>NyeArbeidsforhold</panel>
     </faktum>
+
     <faktum>
         <id>arbeidsforhold</id>
-        <panel>Arbeidsforhold</panel>
-        <dependOn>harIkkeJobbet</dependOn>
+        <panel>NyeArbeidsforhold</panel>
+        <dependOn>nyearbeidsforhold.arbeidsidensist</dependOn>
         <dependOnValue>false</dependOnValue>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <faktum>
+        <id>arbeidsforhold.permitteringsperiode</id>
+        <panel>NyeArbeidsforhold</panel>
+        <dependOn>arbeidsforhold</dependOn>
+        <dependOnProperty>type</dependOnProperty>
+        <dependOnValue>Permittert</dependOnValue>
         <flereTillatt>true</flereTillatt>
     </faktum>
 
@@ -882,6 +891,26 @@
         <skjemaNummer>V6</skjemaNummer>
     </vedlegg>
     <vedlegg>
+        <id>6</id>
+        <faktum>barn</faktum>
+        <skjemaNummer>X8</skjemaNummer>
+        <property>sammensattnavn</property>
+        <onProperty>land</onProperty>
+        <onValue>NOR</onValue>
+        <forSystemfaktum>false</forSystemfaktum>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <id>7</id>
+        <faktum>personalia</faktum>
+        <skjemaNummer>T4</skjemaNummer>
+        <onProperty>statsborgerskapType</onProperty>
+        <onValue>norsk</onValue>
+        <inverted>true</inverted>
+        <forSystemfaktum>true</forSystemfaktum>
+    </vedlegg>
+
+    <vedlegg>
         <id>4</id>
         <faktum>arbeidsforhold</faktum>
         <skjemaNummer>T8|sagtoppavarbeidsgiver</skjemaNummer>
@@ -928,11 +957,9 @@
     </vedlegg>
     <vedlegg>
         <id>4</id>
-        <faktum>arbeidsforhold</faktum>
+        <faktum>arbeidsforhold.permitteringsperiode</faktum>
+        <property>permitteringsperiodeTittel</property>
         <skjemaNummer>G2</skjemaNummer>
-        <property>arbeidsgivernavn</property>
-        <onProperty>type</onProperty>
-        <onValue>Permittert</onValue>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
@@ -969,26 +996,6 @@
         <onValue>Arbeidsgiver er konkurs</onValue>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
-    <vedlegg>
-        <id>6</id>
-        <faktum>barn</faktum>
-        <skjemaNummer>X8</skjemaNummer>
-        <property>sammensattnavn</property>
-        <onProperty>land</onProperty>
-        <onValue>NOR</onValue>
-        <forSystemfaktum>false</forSystemfaktum>
-        <flereTillatt>true</flereTillatt>
-    </vedlegg>
-    <vedlegg>
-        <id>7</id>
-        <faktum>personalia</faktum>
-        <skjemaNummer>T4</skjemaNummer>
-        <onProperty>statsborgerskapType</onProperty>
-        <onValue>norsk</onValue>
-        <inverted>true</inverted>
-        <forSystemfaktum>true</forSystemfaktum>
-    </vedlegg>
-
     <vedlegg>
         <id>9</id>
         <faktum>arbeidsforhold</faktum>
