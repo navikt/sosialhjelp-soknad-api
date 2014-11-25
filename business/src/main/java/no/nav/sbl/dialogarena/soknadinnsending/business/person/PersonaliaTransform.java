@@ -70,12 +70,13 @@ public class PersonaliaTransform {
 
     private static String finnKontonummer(XMLBruker xmlBruker) {
         XMLBankkonto bankkonto = xmlBruker.getBankkonto();
-        if (bankkonto == null) {
-            return "";
+
+        if (bankkonto instanceof XMLBankkontoUtland) {
+            return ((XMLBankkontoUtland) bankkonto).getBankkontoUtland().getBankkontonummer();
         } else if (bankkonto instanceof XMLBankkontoNorge) {
             return ((XMLBankkontoNorge) bankkonto).getBankkonto().getBankkontonummer();
         } else {
-            return ((XMLBankkontoUtland) bankkonto).getBankkontoUtland().getBankkontonummer();
+            return "";
         }
     }
 
