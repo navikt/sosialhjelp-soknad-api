@@ -8,5 +8,7 @@ angular.module('gjenopptak', [
     'ngAnimate',
     'ngCookies',
     'ngSanitize',
-    'templates-main'
+    'templates-main',
+    'nav.arbeidsforhold',
+    'nav.personalia'
 ]);
