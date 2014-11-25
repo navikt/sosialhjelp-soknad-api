@@ -12,7 +12,6 @@ angular.module('gjenopptak.controllers', [
     'nav.gjenopptak',
     'nav.gjenopptak.informasjonsside',
     'nav.feilside',
-    'nav.personalia',
     'nav.oppsummering',
     'nav.adresse',
     'nav.behandlingside',

@@ -8,7 +8,8 @@ module.exports = {
             '../../views/gjenopptak/**/*.html',
             '../../views/templates/**/*.html',
             '../../js/gjenopptak/**/*.html',
-            '../../js/common/**/*.html'
+            '../../js/common/**/*.html',
+            '../../js/modules/**/*.html'
         ],
         dest: '<%= resourcePath %>js/gjenopptak/templates.js'
     }

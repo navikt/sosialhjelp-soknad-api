@@ -35,7 +35,8 @@ module.exports = {
                     cwd: '../../',
                     files: [
                         'js/utslagskriterier/dagpenger/**/*.js',
-                        'js/common/**/*.js'
+                        'js/common/**/*.js',
+                        'js/modules/**/*.js'
                     ]
                 }
             }
