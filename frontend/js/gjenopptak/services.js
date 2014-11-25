@@ -15,6 +15,7 @@
             'nav.services.interceptor.feilhandtering',
             'nav.services.fortsettsenere',
             'nav.services.resolvers',
+            'nav.services.popup',
             'nav.services.bekreftelse'
         ])
 

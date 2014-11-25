@@ -2,6 +2,7 @@ angular.module('nav.arbeidsforhold',
     [
         'nav.arbeidsforhold.controller',
         'nav.arbeidsforhold.nyttarbeidsforhold.controller',
-        'nav.arbeidsforhold.nypermitteringsperiode.controller',
+        'nav.arbeidsforhold.permitteringpopup',
+        'nav.arbeidsforhold.turnus.directive',
         'nav.arbeidsforhold.directive'
     ]);
