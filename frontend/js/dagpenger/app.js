@@ -10,7 +10,5 @@ angular.module('sendsoknad', [
 	'ngAnimate',
 	'ngCookies',
     'ngSanitize',
-    'templates-main',
-    'nav.arbeidsforhold',
-    'nav.personalia'
+    'templates-main'
 ]);
