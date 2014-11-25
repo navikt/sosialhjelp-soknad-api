@@ -19,7 +19,5 @@ angular.module('gjenopptak.controllers', [
     'nav.bekreftelse',
     'nav.tilleggsopplysninger',
     'nav.fortsett.controller',
-    'nav.reberegning',
-    'nav.arbeidsforhold',
-    'nav.personalia'
+    'nav.reberegning'
 ]);

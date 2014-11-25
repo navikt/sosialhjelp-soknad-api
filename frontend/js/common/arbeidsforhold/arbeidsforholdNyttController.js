@@ -16,11 +16,8 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [
         $scope.soknadId = data.soknad.soknadId;
         $scope.behandlingId = data.soknad.brukerBehandlingId;
         $scope.soknadUrl = '/' + data.soknad.brukerBehandlingId + '/soknad';
-        $scope.permitteringsPeriodeUrl = '/' + data.soknad.brukerBehandlingId + '/permitteringsperiode';
         $scope.permitteringsperioder = [];
         $scope.permitteringsperioderTilSletting = [];
-
-        $scope.test = {value: "entest"};
 
         $scope.settBreddeSlikAtDetFungererIIE = function () {
             setTimeout(function () {

@@ -18,7 +18,5 @@ angular.module('sendsoknad.controllers', [
     'nav.avbryt',
     'nav.bekreftelse',
     'nav.tilleggsopplysninger',
-    'nav.fortsett.controller',
-    'nav.arbeidsforhold',
-    'nav.personalia'
+    'nav.fortsett.controller'
 ]);

@@ -17,6 +17,13 @@ angular.module('nav.arbeidsforhold.directive',[])
             }
         };
     })
+    .directive('arbeidsforholdLeggtilKnapper', function() {
+        return {
+            templateUrl: '../js/common/arbeidsforhold/templates/arbeidsforhold-leggtil-knapper.html',
+            replace: true,
+            scope: true
+        };
+    })
     .directive('arbeidsforholdSluttaarsak', function() {
         function getCmsKeyFromSluttaarsak(sluttaarsak) {
             var cmsKey = "arbeidsforhold.sluttaarsak.radio.";
