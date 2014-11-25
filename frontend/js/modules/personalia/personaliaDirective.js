@@ -111,7 +111,7 @@ angular.module('nav.personalia.directive', [])
                 };
 
                 scope.harKontonummer = function () {
-                    return scope.vars.kontonummer != null;
+                    return scope.vars.kontonummer !== null;
                 };
 
                 scope.erUtenlandskKonto = function() {
