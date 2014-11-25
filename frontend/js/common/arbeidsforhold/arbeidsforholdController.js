@@ -1,5 +1,5 @@
 angular.module('nav.arbeidsforhold.controller', ['nav.arbeidsforhold.turnus.directive'])
-    .controller('ArbeidsforholdCtrl', function ($scope, $cookieStore, $location, data, datapersister) {
+    .controller('ArbeidsforholdCtrl', function ($scope, $cookieStore, $location, data) {
 
         $scope.soknadId = data.soknad.soknadId;
 
