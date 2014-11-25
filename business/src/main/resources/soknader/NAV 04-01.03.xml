@@ -135,6 +135,9 @@
     <faktum>
         <id>arbeidsforhold.permitteringsperiode</id>
         <panel>Arbeidsforhold</panel>
+        <dependOn>arbeidsforhold</dependOn>
+        <dependOnProperty>type</dependOnProperty>
+        <dependOnValue>Permittert</dependOnValue>
         <flereTillatt>true</flereTillatt>
     </faktum>
 

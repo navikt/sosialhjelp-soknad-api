@@ -327,6 +327,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     @Override
     public void slettBrukerFaktum(Long soknadId, Long faktumId) {
+        getJdbcTemplate().update("delete from vedlegg where faktum in (select soknadbrukerdata_id from SoknadBrukerdata sb where sb.soknad_id = ? and sb.parrent_faktum = ?)", soknadId, faktumId);
         getJdbcTemplate().update("delete from FaktumEgenskap where faktum_id in ( select soknadbrukerdata_id from SoknadBrukerdata sb where sb.soknad_id = ? and sb.parrent_faktum = ?)", soknadId, faktumId);
         getJdbcTemplate().update("delete from FaktumEgenskap where soknad_id = ? and faktum_id = ?", soknadId, faktumId);
         getJdbcTemplate().update("delete from soknadbrukerdata where soknad_id = ? and soknadbrukerdata_id = ? and type = 'BRUKERREGISTRERT'", soknadId, faktumId);

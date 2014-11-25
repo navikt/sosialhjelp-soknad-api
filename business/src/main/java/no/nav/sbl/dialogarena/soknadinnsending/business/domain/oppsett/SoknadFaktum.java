@@ -15,6 +15,8 @@ public class SoknadFaktum implements Serializable {
     private String id;
     private String type;
     private SoknadFaktum dependOn;
+
+    private String dependOnProperty;
     private String dependOnValue;
 
     private String flereTillatt;
@@ -52,6 +54,14 @@ public class SoknadFaktum implements Serializable {
         return dependOnValue;
     }
 
+    public String getDependOnProperty() {
+        return dependOnProperty;
+    }
+
+    public void setDependOnProperty(String dependOnProperty) {
+        this.dependOnProperty = dependOnProperty;
+    }
+
     public void setDependOnValue(String dependOnValue) {
         this.dependOnValue = dependOnValue;
     }
@@ -70,6 +80,7 @@ public class SoknadFaktum implements Serializable {
                 .append("id", id)
                 .append("type", type)
                 .append("dependOn", dependOn)
+                .append("dependOnProperty", dependOnProperty)
                 .append("dependOnValue", dependOnValue)
                 .append("flereTillatt", flereTillatt)
                 .append("erSystemFaktum", erSystemFaktum)

@@ -572,7 +572,16 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     }
 
     private boolean erParentAktiv(SoknadVedlegg soknadVedlegg, Faktum parent) {
-        return parent == null || erParentValueNullOgVedleggDependOnFalse(soknadVedlegg, parent) || parentValueErLikDependOnVerdi(soknadVedlegg, parent);
+        if(parent == null) {
+            return true;
+        } else {
+            String dependOnProperty = soknadVedlegg.getFaktum().getDependOnProperty();
+            if(dependOnProperty == null) {
+                return erParentValueNullOgVedleggDependOnFalse(soknadVedlegg, parent) || parentValueErLikDependOnVerdi(soknadVedlegg, parent);
+            } else {
+                return parentPropertyValueErLikDependOnverdi(soknadVedlegg, parent);
+            }
+        }
     }
 
     private boolean parentValueErLikDependOnVerdi(SoknadVedlegg soknadVedlegg, Faktum parent) {
@@ -583,6 +592,14 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
     private boolean erParentValueNullOgVedleggDependOnFalse(SoknadVedlegg soknadVedlegg, Faktum parent) {
         return parent.getValue() == null && "false".equalsIgnoreCase(soknadVedlegg.getFaktum().getDependOnValue());
+    }
+
+    private boolean parentPropertyValueErLikDependOnverdi(SoknadVedlegg soknadVedlegg, Faktum parent) {
+        SoknadFaktum faktum = soknadVedlegg.getFaktum();
+        String dependOnPropertyName = faktum.getDependOnProperty();
+        String expectedPropertyValue = faktum.getDependOnValue();
+        String actualPropertyValue = parent.getProperties().get(dependOnPropertyName);
+        return actualPropertyValue.equalsIgnoreCase(expectedPropertyValue);
     }
 
     /**
