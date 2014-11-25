@@ -1,6 +1,6 @@
 describe('Personalia directive tests', function () {
     var element, scope;
-    var brukerprofilUrl = 'brukerprofil'
+    var brukerprofilUrl = 'brukerprofil';
 
     beforeEach(module('nav.personalia', 'nav.cms', 'templates-main'));
 
