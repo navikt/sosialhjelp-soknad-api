@@ -6,7 +6,6 @@
             'ngResource',
             'nav.services.faktum',
             'nav.services.soknad',
-            'nav.services.personalia',
             'nav.services.interceptor.cache',
             'nav.services.interceptor.timeout',
             'nav.services.interceptor.feilhandtering',

@@ -12,7 +12,6 @@ angular.module('sendsoknad.controllers', [
     'nav.dagpenger',
     'nav.dagpenger.informasjonsside',
     'nav.feilside',
-    'nav.personalia',
     'nav.oppsummering',
     'nav.adresse',
     'nav.behandlingside',

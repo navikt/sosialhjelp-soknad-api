@@ -17,7 +17,8 @@ module.exports = {
             '../../js/lib/*.js',
             '<%= resourcePath %>js/ettersending/templates.js',
             '<%= resourcePath %>js/ettersending/**/!(initDev).js',
-            '<%= resourcePath %>js/common/**/!(templates).js'
+            '<%= resourcePath %>js/common/**/!(templates).js',
+            '../../js/modules/**/*.js'
         ],
         dest: '<%= resourcePath %><%= jsBuilt %>',
         nonull: true

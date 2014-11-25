@@ -34,6 +34,7 @@ module.exports = function (config) {
             '../../js/gjenopptak/**/*.js',
             '../../js/utslagskriterier/**/*.js',
             '../../js/common/**/*.js',
+            '../../js/modules/**/*.js',
             '../../js/lib/jquery/jquery.iframe-transport.js',
             '../../js/lib/jquery/jquery.fileupload.js',
             '../../js/lib/jquery/jquery.fileupload-process.js',
