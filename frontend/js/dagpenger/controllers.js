@@ -10,7 +10,6 @@ angular.module('sendsoknad.controllers', [
     'nav.vedlegg.controller',
     'nav.fortsettsenere',
     'nav.dagpenger',
-    'nav.arbeidsforhold',
     'nav.dagpenger.informasjonsside',
     'nav.feilside',
     'nav.personalia',
