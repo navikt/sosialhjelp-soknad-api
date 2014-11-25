@@ -8,7 +8,6 @@
             'nav.services.vedlegg',
             'nav.services.faktum',
             'nav.services.soknad',
-            'nav.services.personalia',
             'nav.services.interceptor.delsteg',
             'nav.services.interceptor.cache',
             'nav.services.interceptor.timeout',

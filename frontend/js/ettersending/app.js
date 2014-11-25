@@ -8,5 +8,6 @@ angular.module('ettersending', [
     'ngAnimate',
     'ngCookies',
     'ngSanitize',
-    'templates-main'
+    'templates-main',
+    'nav.personalia'
 ]);
