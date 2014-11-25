@@ -52,8 +52,8 @@
                                 <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'VedleggAlleredeSendt')" data-ng-bind-html=" 'vedlegg.behandlet.vedleggalleredesendt' | cmstekst"></div>
 
                                 <h2 class="stor">
+                                    <p class="permitteringsnavn" data-ng-show="forventning.navn">{{forventning.navn}}</p>
                                     <span>{{forventning.tittel}}</span>
-                                    <span data-ng-show="forventning.navn">: {{forventning.navn}}</span>
                                 </h2>
                             </div>
                         </div>

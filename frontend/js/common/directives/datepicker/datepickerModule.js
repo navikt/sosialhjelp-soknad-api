@@ -61,7 +61,8 @@ angular.module('nav.datepicker', [])
 				endret                : '&',
 				lagre                 : '&',
 				label                 : '@',
-				requiredErrorMessage  : '@'
+				requiredErrorMessage  : '@',
+                disabled              : '='
 			},
 			link: function (scope, element, attrs, form) {
 				var eventForAValidereHeleFormen = 'RUN_VALIDATION' + form.$name;
@@ -280,7 +281,8 @@ angular.module('nav.datepicker', [])
 				erBeggeRequired       : '=',
 				erFremtidigdatoTillatt: '=',
                 lagre                 : '&',
-				label                 : '@'
+				label                 : '@',
+                disabled              : '='
 			},
 			controller : function ($scope) {
 				$scope.fraLabel = $scope.label + '.fra';

@@ -1,13 +1,5 @@
 angular.module('nav.arbeidsforhold.controller', ['nav.arbeidsforhold.turnus.directive'])
     .controller('ArbeidsforholdCtrl', function ($scope, $cookieStore, $location, data) {
-        $scope.templates = {
-            'Sagt opp av arbeidsgiver': { oppsummeringsurl: '../js/common/arbeidsforhold/templates/oppsummeringer/sagt-opp-av-arbeidsgiver-oppsummering.html' },
-            'Permittert': {oppsummeringsurl: '../js/common/arbeidsforhold/templates/oppsummeringer/permittert-oppsummering.html' },
-            'Kontrakt utgått': {oppsummeringsurl: '../js/common/arbeidsforhold/templates/oppsummeringer/arbeidsforhold/kontrakt-utgaatt-oppsummering.html'},
-            'Sagt opp selv': {oppsummeringsurl: '../js/common/arbeidsforhold/templates/oppsummeringer/arbeidsforhold/sagt-opp-selv-oppsummering.html' },
-            'Redusert arbeidstid': {oppsummeringsurl: '../js/common/arbeidsforhold/templates/oppsummeringer/templates/arbeidsforhold/redusertarbeidstid-oppsummering.html' },
-            'Arbeidsgiver er konkurs': {oppsummeringsurl: '../js/common/arbeidsforhold/templates/oppsummeringer/views/templates/arbeidsforhold/konkurs-oppsummering.html'}
-        };
 
         $scope.soknadId = data.soknad.soknadId;
 
@@ -136,8 +128,6 @@ angular.module('nav.arbeidsforhold.controller', ['nav.arbeidsforhold.turnus.dire
                 gjeldendeTab: '#arbeidsforhold',
                 faktumId: faktumId
             });
-
-
         }
 
     });

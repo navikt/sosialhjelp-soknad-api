@@ -6,7 +6,7 @@
 
 <ul>
     <li>
-        <p data-ng-bind="af.sluttaarsak.properties.type"></p>
+        <p arbeidsforhold-sluttaarsak sluttaarsak="af.sluttaarsak.properties.type"></p>
     </li>
     <li>
         <span data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.avskjedigetgrunn.label' | cmstekst"></span>
@@ -14,7 +14,7 @@
     </li>
 </ul>
 
-<div data-ng-include="'../views/templates/arbeidsforhold/slett-arbeidsforhold.html'"></div>
+<div data-ng-include="'../js/common/arbeidsforhold/templates/slett-arbeidsforhold.html'"></div>
 
 <div data-vedlegginfoboks>
     <ul>
