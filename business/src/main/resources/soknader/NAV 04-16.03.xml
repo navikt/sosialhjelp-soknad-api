@@ -139,14 +139,6 @@
         <dependOnValue>false</dependOnValue>
         <flereTillatt>true</flereTillatt>
     </faktum>
-    <faktum>
-        <id>arbeidsforhold.permitteringsperiode</id>
-        <panel>NyeArbeidsforhold</panel>
-        <dependOn>arbeidsforhold</dependOn>
-        <dependOnProperty>type</dependOnProperty>
-        <dependOnValue>Permittert</dependOnValue>
-        <flereTillatt>true</flereTillatt>
-    </faktum>
 
     <!-- EgenNaering -->
     <faktum>

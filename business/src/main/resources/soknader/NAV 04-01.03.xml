@@ -140,6 +140,32 @@
         <dependOnValue>Permittert</dependOnValue>
         <flereTillatt>true</flereTillatt>
     </faktum>
+    <faktum>
+        <id>arbeidsforhold.grensearbeider</id>
+        <panel>Arbeidsforhold</panel>
+        <type>java.lang.Boolean</type>
+    </faktum>
+    <faktum>
+        <id>arbeidsforhold.grensearbeider.false.oftehjem</id>
+        <type>java.lang.String</type>
+        <panel>Arbeidsforhold</panel>
+        <dependOn>arbeidsforhold.grensearbeider</dependOn>
+        <dependOnValue>false</dependOnValue>
+    </faktum>
+    <faktum>
+        <id>arbeidsforhold.grensearbeider.false.adresse.fritekst</id>
+        <type>java.lang.String</type>
+        <panel>Arbeidsforhold</panel>
+        <dependOn>arbeidsforhold.grensearbeider</dependOn>
+        <dependOnValue>false</dependOnValue>
+    </faktum>
+    <faktum>
+        <id>arbeidsforhold.grensearbeider.false.adresse.land</id>
+        <type>java.lang.String</type>
+        <panel>Arbeidsforhold</panel>
+        <dependOn>arbeidsforhold.grensearbeider</dependOn>
+        <dependOnValue>false</dependOnValue>
+    </faktum>
 
     <!-- EgenNaering -->
     <faktum>

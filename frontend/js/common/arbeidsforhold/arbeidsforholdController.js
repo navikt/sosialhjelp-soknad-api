@@ -2,6 +2,9 @@ angular.module('nav.arbeidsforhold.controller', ['nav.arbeidsforhold.turnus.dire
     .controller('ArbeidsforholdCtrl', function ($scope, $cookieStore, $location, data) {
 
         $scope.soknadId = data.soknad.soknadId;
+        $scope.land = data.land;
+
+        var landFaktum = data.finnFaktum("arbeidsforhold.grensearbeider.false.adresse.land");
 
         var arbeidsforhold = data.finnFakta('arbeidsforhold');
         $scope.arbeidsliste = [];
@@ -9,6 +12,14 @@ angular.module('nav.arbeidsforhold.controller', ['nav.arbeidsforhold.turnus.dire
         angular.forEach(arbeidsforhold, function (af) {
             $scope.arbeidsliste.push({'arbeidsforhold': af, 'sluttaarsak': af});
         });
+
+        $scope.settBreddeSlikAtDetFungererIIE = function() {
+            setTimeout(function() {
+                $("#land").width($("#land").width());
+            }, 50);
+        };
+
+        $scope.settBreddeSlikAtDetFungererIIE();
 
         function compareArbeidsforholdDate(a1, a2) {
             if (a1.sluttaarsak.properties.datofra > a2.sluttaarsak.properties.datofra) {
