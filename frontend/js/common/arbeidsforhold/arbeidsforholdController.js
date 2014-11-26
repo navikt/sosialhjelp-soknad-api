@@ -1,4 +1,4 @@
-angular.module('nav.arbeidsforhold.controller', ['nav.arbeidsforhold.turnus.directive'])
+angular.module('nav.arbeidsforhold.controller', ['nav.arbeidsforhold.turnus.directive', 'nav.arbeidsforhold.grensearbeid.directive'])
     .controller('ArbeidsforholdCtrl', function ($scope, $cookieStore, $location, data) {
 
         $scope.soknadId = data.soknad.soknadId;
