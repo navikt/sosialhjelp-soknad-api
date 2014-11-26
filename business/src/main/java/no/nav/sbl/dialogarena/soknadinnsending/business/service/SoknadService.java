@@ -251,7 +251,8 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     public Map<String, String> hentInnsendtDatoForOpprinneligSoknad(String behandlingsId) {
         Map<String, String> result = new HashMap<>();
         List<WSBehandlingskjedeElement> wsBehandlingskjedeElements = henvendelseConnector.hentBehandlingskjede(behandlingsId);
-        List<WSBehandlingskjedeElement> sorterteBehandlinger = on(wsBehandlingskjedeElements).filter(where(STATUS, (equalTo(SoknadInnsendingStatus.FERDIG)))).collect(new Comparator<WSBehandlingskjedeElement>() {
+        List<WSBehandlingskjedeElement> sorterteBehandlinger = on(wsBehandlingskjedeElements).filter(
+                where(STATUS, (equalTo(SoknadInnsendingStatus.FERDIG)))).collect(new Comparator<WSBehandlingskjedeElement>() {
             @Override
             public int compare(WSBehandlingskjedeElement o1, WSBehandlingskjedeElement o2) {
                 DateTime dato1 = o1.getInnsendtDato();
@@ -305,7 +306,8 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     }
 
     private WSHentSoknadResponse hentSisteIkkeAvbrutteSoknadIBehandlingskjede(List<WSBehandlingskjedeElement> behandlingskjede) {
-        List<WSBehandlingskjedeElement> sorterteBehandlinger = on(behandlingskjede).filter(where(STATUS, not(equalTo(SoknadInnsendingStatus.AVBRUTT_AV_BRUKER)))).collect(new Comparator<WSBehandlingskjedeElement>() {
+        List<WSBehandlingskjedeElement> sorterteBehandlinger = on(behandlingskjede).filter(where(STATUS, not(equalTo(SoknadInnsendingStatus.AVBRUTT_AV_BRUKER))))
+                .collect(new Comparator<WSBehandlingskjedeElement>() {
             @Override
             public int compare(WSBehandlingskjedeElement o1, WSBehandlingskjedeElement o2) {
                 DateTime dato1 = o1.getInnsendtDato();

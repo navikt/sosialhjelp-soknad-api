@@ -26,7 +26,7 @@ public class UtslagskriterierController {
     private PersonaliaService personaliaService;
 
     @Inject
-    PersonInfoConnector personInfoConnector;
+    private PersonInfoConnector personInfoConnector;
 
     @RequestMapping(value = "utslagskriterier", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
