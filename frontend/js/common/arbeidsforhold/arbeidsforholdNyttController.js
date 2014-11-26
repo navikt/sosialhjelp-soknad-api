@@ -110,7 +110,6 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [
                 $scope.permitteringsperioderTilSletting.push(permitteringsperiode);
             }
             removeFromList($scope.permitteringsperioder, permitteringsperiode);
-//            removeFromList($scope.barnefaktum, permitteringsperiode);
         };
 
         $scope.getForstePermitteringsperiode = function () {
