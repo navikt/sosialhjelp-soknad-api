@@ -1,5 +1,5 @@
 <div class="skjemaramme">
-    <div data-ng-form="nyeArbeidsforholdForm" class="skjemainnhold" data-ng-controller="ArbeidsforholdCtrl">
+    <div data-ng-form="nyeArbeidsforholdForm" class="skjemainnhold" data-ng-controller="ArbeidsforholdCtrl" nye-arbeidsforhold>
         <div data-form-errors></div>
 
         <div data-nav-faktum="nyearbeidsforhold.arbeidsidensist">
@@ -16,7 +16,7 @@
                 </div>
             </div>
 
-            <div id="aarsak-dagpenger-stanset" class="spm">
+            <div id="aarsak-dagpenger-stanset" class="spm" data-ng-if="skalViseFritekstfelt()">
                 <div data-navtextarea
                      data-navconfig
                      data-nav-faktum="nyearbeidsforhold.aarsakdagpengerstanset"
