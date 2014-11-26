@@ -35,6 +35,7 @@ import static org.apache.commons.lang3.StringUtils.split;
 
 
 @Service
+@SuppressWarnings("PMD.TooManyMethods")
 public class HandleBarKjoerer implements HtmlGenerator {
 
 

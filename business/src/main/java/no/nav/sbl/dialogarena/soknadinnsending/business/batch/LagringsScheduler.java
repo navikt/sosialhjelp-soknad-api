@@ -45,34 +45,45 @@ public class LagringsScheduler {
         feilet = 0;
         if (Boolean.valueOf(System.getProperty("sendsoknad.batch.enabled", "true"))) { // TODO: Burde fjernes når applikasjonen skal ut i prod
             logger.info("---- Starter flytting av søknader til henvendelse-jobb ----");
-            for (Optional<WebSoknad> ws = soknadRepository.plukkSoknadTilMellomlagring(); ws.isSome(); ws = soknadRepository.plukkSoknadTilMellomlagring()) {
-                if(isPaabegyntEttersendelse(ws)) {
-                    if(!avbrytOgSlettEttersendelse(ws)) {
-                        feilListe.add(ws);
-                    }
-                } else {
-                    lagreFilTilHenvendelseOgSlettILokalDb(ws);
-                }
-                // Avslutt prosessen hvis det er gått for lang tid. Tyder på at noe er nede.
-                if (harGaattForLangTid()) {
-                    logger.warn("---- Jobben har kjørt i mer enn {} ms. Den blir derfor terminert ----", SCHEDULE_INTERRUPT_MS);
-                    return;
-                }
+            if (mellomlagre(feilListe)) {
+                return;
             }
 
-            for (Optional<WebSoknad> ws : feilListe) {
-                WebSoknad soknad = ws.get();
-                try {
-                    soknadRepository.leggTilbake(soknad);
-                } catch (Exception e1) {
-                    logger.error("Klarte ikke å legge tilbake søknad {}", soknad.getSoknadId(), e1);
-                }
-            }
+            leggTilbakeFeilende(feilListe);
 
             logger.info("---- Jobb fullført: {} vellykket, {} feilet ----", vellykket, feilet);
         } else {
             logger.warn("Batch disabled. Må sette environment property sendsoknad.batch.enabled til true for å sette den på igjen");
         }
+    }
+
+    private void leggTilbakeFeilende(List<Optional<WebSoknad>> feilListe) {
+        for (Optional<WebSoknad> ws : feilListe) {
+            WebSoknad soknad = ws.get();
+            try {
+                soknadRepository.leggTilbake(soknad);
+            } catch (Exception e1) {
+                logger.error("Klarte ikke å legge tilbake søknad {}", soknad.getSoknadId(), e1);
+            }
+        }
+    }
+
+    private boolean mellomlagre(List<Optional<WebSoknad>> feilListe) throws InterruptedException {
+        for (Optional<WebSoknad> ws = soknadRepository.plukkSoknadTilMellomlagring(); ws.isSome(); ws = soknadRepository.plukkSoknadTilMellomlagring()) {
+            if(isPaabegyntEttersendelse(ws)) {
+                if(!avbrytOgSlettEttersendelse(ws)) {
+                    feilListe.add(ws);
+                }
+            } else {
+                lagreFilTilHenvendelseOgSlettILokalDb(ws);
+            }
+            // Avslutt prosessen hvis det er gått for lang tid. Tyder på at noe er nede.
+            if (harGaattForLangTid()) {
+                logger.warn("---- Jobben har kjørt i mer enn {} ms. Den blir derfor terminert ----", SCHEDULE_INTERRUPT_MS);
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean avbrytOgSlettEttersendelse(Optional<WebSoknad> ws) throws InterruptedException {

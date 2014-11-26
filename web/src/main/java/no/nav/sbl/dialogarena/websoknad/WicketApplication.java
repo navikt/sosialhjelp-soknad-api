@@ -55,6 +55,33 @@ public class WicketApplication extends WebApplication {
 
         getRequestCycleSettings().setResponseRequestEncoding("UTF-8");
 
+        initFrontendConfigurator();
+
+        // Innstillinger vi kan ha
+        IApplicationSettings applicationSettings = getApplicationSettings();
+        applicationSettings.setPageExpiredErrorPage(getHomePage());
+        applicationSettings.setUploadProgressUpdatesEnabled(true);
+
+
+        new ApplicationSettingsConfig().withExternalExceptionPages(null).configure(this);
+
+        Application.get().getComponentPostOnBeforeRenderListeners().add(new StatelessChecker());
+
+        get().getStoreSettings().setMaxSizePerSession(Bytes.kilobytes(500));
+
+
+        Application.get().getRequestLoggerSettings().setRequestLoggerEnabled(true);
+
+        mountPages();
+
+        getSecuritySettings().setEnforceMounts(true);
+        getSecuritySettings().setCryptFactory(new KeyInSessionSunJceCryptFactory());
+        getResourceSettings().getStringResourceLoaders().add(0, new EnonicResourceLoader(cmsContentRetriever));
+
+        setSpringComponentInjector();
+    }
+
+    private void initFrontendConfigurator() {
         FrontendConfigurator configurator = new FrontendConfigurator();
 
         for (LessResources resource : LessResources.values()) {
@@ -78,40 +105,18 @@ public class WicketApplication extends WebApplication {
                 .addScripts(InnstillingerPanel.INNSTILLINGER_JS)
                 .withResourcePacking(this.usesDeploymentConfig())
                 .configure(this);
+    }
 
-        // Innstillinger vi kan ha
-        IApplicationSettings applicationSettings = getApplicationSettings();
-        applicationSettings.setPageExpiredErrorPage(getHomePage());
-        applicationSettings.setUploadProgressUpdatesEnabled(true);
-
-
-        new ApplicationSettingsConfig().withExternalExceptionPages(null).configure(this);
-
-        Application.get().getComponentPostOnBeforeRenderListeners().add(new StatelessChecker());
-
-        get().getStoreSettings().setMaxSizePerSession(Bytes.kilobytes(500));
-
-
-        Application.get().getRequestLoggerSettings().setRequestLoggerEnabled(true);
-
+    private void mountPages() {
         mountPage("skjema/${skjemanummer}", StartSoknadPage.class);
         mountPage("utslagskriterier/${utslagskriterierSide}", UtslagskriterierDagpengerPage.class);
-
         mountPage("startettersending/${brukerbehandlingId}", StartEttersendingPage.class);
         mountPage("ettersending/${brukerbehandlingId}", EttersendingPage.class);
         mountPage("avbrutt", AvbruttPage.class);
         mountPage("ettersending/avbrutt", AvbruttEttersendingPage.class);
-
         mountPage("xmltopdf", XmlToPdfConverterPage.class);
         mountPage("internal/selftest", SelfTestPage.class);
-
         mountPage("soknadliste", SoknadListePage.class);
-
-        getSecuritySettings().setEnforceMounts(true);
-        getSecuritySettings().setCryptFactory(new KeyInSessionSunJceCryptFactory());
-        getResourceSettings().getStringResourceLoaders().add(0, new EnonicResourceLoader(cmsContentRetriever));
-
-        setSpringComponentInjector();
     }
 
 
