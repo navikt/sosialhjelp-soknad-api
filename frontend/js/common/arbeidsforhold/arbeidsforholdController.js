@@ -4,8 +4,6 @@ angular.module('nav.arbeidsforhold.controller', ['nav.arbeidsforhold.turnus.dire
         $scope.soknadId = data.soknad.soknadId;
         $scope.land = data.land;
 
-        var landFaktum = data.finnFaktum("arbeidsforhold.grensearbeider.false.adresse.land");
-
         var arbeidsforhold = data.finnFakta('arbeidsforhold');
         $scope.arbeidsliste = [];
 
@@ -123,6 +121,14 @@ angular.module('nav.arbeidsforhold.controller', ['nav.arbeidsforhold.turnus.dire
                 $scope.harLagretArbeidsforhold = undefined;
             }
             $scope.harKlikketKnapp = false;
+        };
+
+        $scope.erUtenlandskStatsborger = function() {
+            var personalia = data.finnFaktum('personalia');
+            if(personalia && personalia.properties){
+                return personalia.properties.statsborgerskap !== 'NOR';
+            }
+            return false;
         };
 
 
