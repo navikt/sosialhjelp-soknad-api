@@ -2,14 +2,13 @@ describe('Personalia directive tests', function () {
     var element, scope;
     var brukerprofilUrl = 'brukerprofil';
 
-    beforeEach(module('nav.personalia', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.personalia', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         var fakta = [
             {}
         ];
 
-        $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
         $provide.value("data", {
             fakta: fakta,

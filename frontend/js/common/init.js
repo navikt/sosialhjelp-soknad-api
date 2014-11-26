@@ -1,5 +1,5 @@
 angular.module('common.init', [])
-    .run(['$rootScope', function($rootScope) {
+    .run(function($rootScope) {
         $rootScope.app = {
             laster: false
         };
@@ -13,4 +13,4 @@ angular.module('common.init', [])
         $rootScope.$on('$routeChangeSuccess', function() {
             $rootScope.app.laster = false;
         });
-    }]);
+    });

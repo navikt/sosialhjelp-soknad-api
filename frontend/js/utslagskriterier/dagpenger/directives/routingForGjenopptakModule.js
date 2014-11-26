@@ -1,4 +1,4 @@
-angular.module('nav.routingForGjenopptakModule', ['nav.cmstekster'])
+angular.module('nav.routingForGjenopptakModule', [])
     .directive('routingForGjenopptakButton', function () {
         return {
             replace: true,

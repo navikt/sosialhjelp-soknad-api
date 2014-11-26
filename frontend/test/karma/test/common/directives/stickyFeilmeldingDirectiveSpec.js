@@ -1,6 +1,6 @@
 describe('stickyFeilmeldingToFeil', function () {
     var element, scope;
-    beforeEach(module('nav.stickyFeilmelding', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.stickyFeilmelding', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
@@ -253,7 +253,7 @@ describe('stickyFeilmeldingToFeil', function () {
 });
 describe('stickyFeilmeldingFireFeil', function () {
     var element, scope;
-    beforeEach(module('nav.stickyFeilmelding', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.stickyFeilmelding', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
@@ -509,7 +509,7 @@ describe('stickyFeilmeldingFireFeil', function () {
 });
 describe('stickyFeilmeldingFireFeil', function () {
     var element, scope;
-    beforeEach(module('nav.stickyFeilmelding', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.stickyFeilmelding', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});

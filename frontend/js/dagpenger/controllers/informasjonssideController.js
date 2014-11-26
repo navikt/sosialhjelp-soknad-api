@@ -1,9 +1,8 @@
-angular.module('nav.dagpenger.informasjonsside', ['nav.cmstekster'])
-    .controller('InformasjonsSideCtrl', ['$scope', 'data', '$location', 'soknadService', function ($scope, data, $location, soknadService) {
+angular.module('nav.dagpenger.informasjonsside', [])
+    .controller('InformasjonsSideCtrl', function ($scope, data, $location, soknadService) {
         $scope.utslagskriterier = {};
         $scope.utslagskriterier.harlestbrosjyre = false;
-        $scope.cmsprefix = "dagpenger";
-        $scope.dittnavUrl = data.config["dittnav.link.url"];
+        $scope.dittnavUrl = data.config['dittnav.link.url'];
         $scope.tilbakeUrl = '../utslagskriterier/dagpenger';
 
         $scope.oppsummering = false;
@@ -74,5 +73,5 @@ angular.module('nav.dagpenger.informasjonsside', ['nav.cmstekster'])
             $scope.utslagskriterier.harlestbrosjyre = true;
             $scope.oppsummering = true;
         }
-    }]);
+    });
 

@@ -2,7 +2,7 @@ describe('melding', function () {
     var rootScope, element, scope, timeout, form, event, compile;
     event = $.Event("click");
 
-    beforeEach(module('nav.melding', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.melding', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("data", {

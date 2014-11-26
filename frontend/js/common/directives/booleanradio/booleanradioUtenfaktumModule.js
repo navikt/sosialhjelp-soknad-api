@@ -1,5 +1,5 @@
-angular.module('nav.booleanradioUtenfaktum', ['nav.cmstekster', 'nav.input'])
-	.directive('booleanradioUtenfaktum', ['cms', function (cms) {
+angular.module('nav.booleanradioUtenfaktum', ['nav.cms', 'nav.input'])
+	.directive('booleanradioUtenfaktum', function (cms) {
 		return {
 			restrict   : 'A',
 			replace    : true,
@@ -49,4 +49,4 @@ angular.module('nav.booleanradioUtenfaktum', ['nav.cmstekster', 'nav.input'])
 			},
 			templateUrl: '../js/common/directives/booleanradio/booleanradioUtenfaktumTemplate.html'
 		};
-	}]);
+	});

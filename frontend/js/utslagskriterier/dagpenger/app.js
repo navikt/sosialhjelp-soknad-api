@@ -10,5 +10,6 @@ angular.module('utslagskriterierDagpenger', [
     'ngCookies',
     'ngSanitize',
     'templates-main',
+    'nav.cms',
     'nav.personalia'
 ]);

@@ -10,5 +10,6 @@ angular.module('gjenopptak', [
     'ngSanitize',
     'templates-main',
     'nav.arbeidsforhold',
+    'nav.cms',
     'nav.personalia'
 ]);

@@ -1,7 +1,7 @@
 describe('sporsmalferdig', function () {
     var rootScope, element, scope, form, inputEl;
 
-    beforeEach(module('nav.routingForGjenopptakModule', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.routingForGjenopptakModule', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("data", {
