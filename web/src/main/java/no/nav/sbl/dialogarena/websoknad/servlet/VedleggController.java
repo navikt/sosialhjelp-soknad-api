@@ -114,7 +114,8 @@ public class VedleggController {
     @RequestMapping(value = "/{vedleggId}/opplasting", method = RequestMethod.POST, produces = "text/plain; charset=utf-8")
     @ResponseBody()
     @SjekkTilgangTilSoknad(sjekkXsrf = false)
-    public VedleggOpplasting lastOppDokumentSoknad(@PathVariable final Long soknadId, @PathVariable final Long vedleggId, @RequestParam("X-XSRF-TOKEN") final String xsrfToken, @RequestParam("files[]") final List<MultipartFile> files) {
+    public VedleggOpplasting lastOppDokumentSoknad(@PathVariable final Long soknadId, @PathVariable final Long vedleggId,
+                                                   @RequestParam("X-XSRF-TOKEN") final String xsrfToken, @RequestParam("files[]") final List<MultipartFile> files) {
         WebSoknad soknad = soknadService.hentSoknad(soknadId);
         String brukerBehandlingId = soknad.getBrukerBehandlingId();
         if (soknad.getBehandlingskjedeId() != null) {

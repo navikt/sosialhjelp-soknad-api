@@ -78,18 +78,7 @@ public class DefaultVedleggService implements VedleggService {
             if (Detect.isImage(bytes)) {
                 bytes = Convert.scaleImageAndConvertToPdf(bytes, new Dimension(1240, 1754));
 
-                Vedlegg sideVedlegg = new Vedlegg()
-                        .medVedleggId(null)
-                        .medSoknadId(vedlegg.getSoknadId())
-                        .medFaktumId(vedlegg.getFaktumId())
-                        .medSkjemaNummer(vedlegg.getSkjemaNummer())
-                        .medNavn(vedlegg.getNavn())
-                        .medStorrelse((long) bytes.length)
-                        .medAntallSider(1)
-                        .medData(null)
-                        .medOpprettetDato(vedlegg.getOpprettetDato())
-                        .medFillagerReferanse(vedlegg.getFillagerReferanse())
-                        .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
+                Vedlegg sideVedlegg = opprettVedlegg(vedlegg, (long) bytes.length);
 
                 resultat.add(vedleggRepository.opprettVedlegg(sideVedlegg,
                         bytes));
@@ -108,18 +97,7 @@ public class DefaultVedleggService implements VedleggService {
 
                     ByteArrayOutputStream finalBaos = komprimerPdfMedIText(baos.toByteArray());
 
-                    Vedlegg sideVedlegg = new Vedlegg()
-                            .medVedleggId(null)
-                            .medSoknadId(vedlegg.getSoknadId())
-                            .medFaktumId(vedlegg.getFaktumId())
-                            .medSkjemaNummer(vedlegg.getSkjemaNummer())
-                            .medNavn(vedlegg.getNavn())
-                            .medStorrelse((long) finalBaos.size())
-                            .medAntallSider(1)
-                            .medData(null)
-                            .medOpprettetDato(vedlegg.getOpprettetDato())
-                            .medFillagerReferanse(vedlegg.getFillagerReferanse())
-                            .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
+                    Vedlegg sideVedlegg = opprettVedlegg(vedlegg, (long) finalBaos.size());
 
                     resultat.add(vedleggRepository.opprettVedlegg(sideVedlegg,
                             finalBaos.toByteArray()));
@@ -136,6 +114,21 @@ public class DefaultVedleggService implements VedleggService {
         }
         repository.settSistLagretTidspunkt(vedlegg.getSoknadId());
         return resultat;
+    }
+
+    private static Vedlegg opprettVedlegg(Vedlegg vedlegg, long size) {
+        return new Vedlegg()
+                .medVedleggId(null)
+                .medSoknadId(vedlegg.getSoknadId())
+                .medFaktumId(vedlegg.getFaktumId())
+                .medSkjemaNummer(vedlegg.getSkjemaNummer())
+                .medNavn(vedlegg.getNavn())
+                .medStorrelse(size)
+                .medAntallSider(1)
+                .medData(null)
+                .medOpprettetDato(vedlegg.getOpprettetDato())
+                .medFillagerReferanse(vedlegg.getFillagerReferanse())
+                .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
     }
 
     @Override
