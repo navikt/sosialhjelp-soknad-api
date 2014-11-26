@@ -197,12 +197,9 @@ angular.module('nav.datepicker', [])
                 }
 
 				scope.$watch('ngModel', function (newVal, oldVal) {
-                    console.log("Watch")
 					if (newVal === oldVal) {
 						return;
 					}
-
-                    console.log(newVal, oldVal);
 
 					if (newVal !== oldVal && scope.endret) {
 						scope.endret();
@@ -363,17 +360,16 @@ angular.module('nav.datepicker', [])
 				});
 
 				var gammelInputVerdi = '';
-				ngModel.$parsers.unshift(function (datoInput) {
-                    console.log("Input", datoInput, ngModel.$viewValue);
-					var slettet = datoInput.length < gammelInputVerdi.length;
+				ngModel.$parsers.unshift(function (input) {
+					var slettet = input.length < gammelInputVerdi.length;
 					var caretPosisjon = hentCaretPosisjon(element);
 
 					if (!slettet) {
-						var start = caretPosisjon - (datoInput.length - gammelInputVerdi.length);
+						var start = caretPosisjon - (input.length - gammelInputVerdi.length);
 						var slutt = caretPosisjon;
 
-						for (var i = start; i < slutt && i < datoInput.length; i++) {
-							var skrevetTegn = datoInput[i];
+						for (var i = start; i < slutt && i < input.length; i++) {
+							var skrevetTegn = input[i];
 
                             if(slettTegnDersomDetIkkeStemmerMedFormatet()) {
                                 continue;
@@ -383,33 +379,19 @@ angular.module('nav.datepicker', [])
 						}
 					}
 
-					gammelInputVerdi = datoInput;
-                    console.log(datoInput);
-//                    console.log(ngModel);
-//                    console.log(ngModel.$viewValue, ngModel.$modelValue);
-					ngModel.$setViewValue(datoInput);
-					ngModel.$commitViewValue();
-//                    console.log(ngModel.$viewValue, ngModel.$modelValue);
-//                    console.log(ngModel);
-					ngModel.$render();
-//                    console.log(ngModel.$viewValue, ngModel.$modelValue);
-
-//                    $timeout(function() {
-//                        console.log(ngModel.$viewValue, ngModel.$modelValue);
-//                    },1500)
-//                    console.log(ngModel);
+					gammelInputVerdi = input;
+                    element.val(input);
 					settCaretPosisjon(element, caretPosisjon);
 
-					return reverserNorskDatoformat(datoInput);
-//                    return datoInput;
+					return reverserNorskDatoformat(input);
 
                     function settInnPunktumDeromVedIndex1Eller4() {
                         if (i === 1 || i === 4) {
-                            if (datoInput[i + 1] === '.') {
+                            if (input[i + 1] === '.') {
                                 caretPosisjon++;
                                 i++;
                             } else {
-                                datoInput = datoInput.splice(i + 1, 0, '.');
+                                input = input.splice(i + 1, 0, '.');
                                 caretPosisjon++;
                                 i++;
                                 slutt++;
@@ -418,9 +400,9 @@ angular.module('nav.datepicker', [])
                     }
 
                     function slettTegnDersomDetIkkeStemmerMedFormatet() {
-                        if (isNaN(skrevetTegn) || datoInput.substring(0, i + 1).length > datoMask.length || datoInput.splice(i, 1, '').length === datoMask.length) {
+                        if (isNaN(skrevetTegn) || input.substring(0, i + 1).length > datoMask.length || input.splice(i, 1, '').length === datoMask.length) {
                             if (skrevetTegn !== '.' || (i !== 2 && i !== 5)) {
-                                datoInput = datoInput.splice(i, 1, '');
+                                input = input.splice(i, 1, '');
                                 caretPosisjon--;
                                 i--;
                                 slutt--;
