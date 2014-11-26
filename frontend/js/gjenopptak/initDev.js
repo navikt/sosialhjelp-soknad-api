@@ -50,6 +50,8 @@ angular.module('gjenopptak')
         $http.get('../js/common/directives/melding/meldingTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/markup/vedlegginfoboksTemplate.html', {cache: $templateCache});
         $http.get('../views/templates/arbeidsforhold/nye-arbeidsforhold.html', {cache: $templateCache});
+        $http.get('../views/templates/arbeidsforhold/tidligere-arbeidsforhold.html', {cache: $templateCache});
+        $http.get('../js/modules/tidligereArbeidsforhold/templates/tidligereArbeidsforholdTemplate.html', {cache: $templateCache});
         $http.get('../views/templates/arbeidsforhold/arbeidsforhold-nytt.html', {cache: $templateCache});
         $http.get('../js/common/arbeidsforhold/templates/arbeidsforhold-leggtil-knapper.html', {cache: $templateCache});
         $http.get('../js/common/arbeidsforhold/templates/oppsummeringer/permitteringsPerioderOppsummeringTemplate.html', {cache: $templateCache});
