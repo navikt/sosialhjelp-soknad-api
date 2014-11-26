@@ -42,6 +42,15 @@
                 leggTilFaktum: function (faktum) {
                     fakta.push(faktum);
                 },
+                finnFaktumMedId: function (faktumId) {
+                    var res = null;
+                    fakta.forEach(function (item) {
+                        if (item.faktumId === faktumId) {
+                            res = item;
+                        }
+                    });
+                    return res;
+                },
                 land: 'Norge',
                 soknad: {
                     soknadId: 1

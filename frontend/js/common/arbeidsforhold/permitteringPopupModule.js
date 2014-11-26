@@ -23,7 +23,6 @@ angular.module('nav.arbeidsforhold.permitteringpopup', [])
             $modalInstance.close();
         };
         $scope.originalPermitteringsperiode = permittering;
-
         $scope.endreModus = permittering ? true : false;
         $scope.permitteringsperiode = $scope.endreModus ? angular.copy(permittering) : new Faktum({key: 'arbeidsforhold.permitteringsperiode', properties: {}});
 
@@ -35,7 +34,6 @@ angular.module('nav.arbeidsforhold.permitteringpopup', [])
         $scope.lagreNyPermitteringsPeriode = function(nypermittering) {
             permitteringer.push(nypermittering);
         };
-
     })
     .controller('permitteringsperiodeNyttCtrl', function ($scope) {
         $scope.lagrePermitteringsperiode = function (form) {
