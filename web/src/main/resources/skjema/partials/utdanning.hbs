@@ -1,0 +1,196 @@
+<h2>{{ hentTekst "utdanning.tittel" }}</h2>
+<table>
+    {{#forFaktum "utdanning"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                {{#hvisLik value "ikkeUtdanning"}}
+                    <span>{{ hentTekst "utdanning.svar.ikkeUtdanning" }}</span>
+                {{/hvisLik}}
+
+                {{#hvisLik value "avsluttetUtdanning"}}
+                    <span>{{ hentTekst "utdanning.svar.avsluttetUtdanning" }}</span>
+                {{/hvisLik}}
+
+                {{#hvisLik value "underUtdanning"}}
+                    <span>{{ hentTekst "utdanning.svar.underUtdanning" }}</span>
+                    <ul>
+                        {{#forFaktum "utdanning.kveld"}}
+                            {{#hvisSant value}}
+                                <li class="kulepunkt">
+                                    <span>{{ hentTekst "utdanning.svar.under.utdanning.kveld"}}</span>
+                                    <ul>
+                                        {{#forFaktum "utdanning.kveld.folges"}}
+                                            <li class="kulepunkt">
+                                                {{#hvisSant value}}
+                                                    <span>{{ hentTekst "utdanning.svar.under.utdanning.kveld.undervisning.folges.true" }}</span>
+                                                {{ else }}
+                                                    <span>{{ hentTekst "utdanning.svar.under.utdanning.kveld.undervisning.folges.false" }}</span>
+                                                {{/hvisSant}}
+                                            </li>
+                                        {{/forFaktum}}
+
+                                        {{#forFaktum "utdanning.kveld.progresjonUnder50"}}
+                                            <li class="kulepunkt">
+                                                {{#hvisSant value}}
+                                                    <span>{{ hentTekst "utdanning.progresjon.true" }}</span>
+                                                {{ else }}
+                                                    <span>{{ hentTekst "utdanning.progresjon.false" }}</span>
+                                                    <ul>
+                                                        {{#forFaktum "utdanning.kveld.PaabegyntUnder6mnd"}}
+                                                            <li class="kulepunkt">
+                                                                {{#hvisSant value}}
+                                                                    <span>{{ hentTekst "utdanning.paabegyntUnder6mnd.true" }}</span>
+                                                                {{ else }}
+                                                                    <span>{{ hentTekst "utdanning.paabegyntUnder6mnd.false" }}</span>
+                                                                {{/hvisSant}}
+                                                            </li>
+                                                        {{/forFaktum}}
+                                                    </ul>
+                                                {{/hvisSant}}
+                                            </li>
+                                        {{/forFaktum}}
+
+                                        {{#forFaktum "utdanning.kveld.sted"}}
+                                            <li class="kulepunkt">
+                                                <span>{{ hentTekst "utdanning.utdanningssted.navn" }}:</span>
+                                                <span>{{ value }}</span>
+                                            </li>
+                                        {{/forFaktum}}
+
+                                        {{#forFaktum "utdanning.kveld.navn"}}
+                                            <li class="kulepunkt">
+                                                <span>{{ hentTekst "utdanning.utdanning.navn" }}:</span>
+                                                <span>{{ value }}</span>
+                                            </li>
+                                        {{/forFaktum}}
+
+                                        {{#forFaktum "utdanning.kveld.varighet"}}
+                                            <li class="kulepunkt">
+                                                <span>{{ hentTekst "utdanning.varighet" }}</span>
+                                                <span>{{ formatterLangDato properties.varighetFra }}</span>
+                                                <span>{{ formatterLangDato properties.varighetTil }}</span>
+                                            </li>
+                                        {{/forFaktum}}
+
+                                        {{#forFaktum "utdanning.semester.avslutning"}}
+                                            <li class="kulepunkt">
+                                                <span>{{ hentTekst "utdanning.semester.avslutning.dato" }}</span>
+                                                <span>{{ formatterLangDato value }}</span>
+                                            </li>
+                                        {{/forFaktum}}
+
+                                    </ul>
+                                </li>
+                            {{/hvisSant}}
+                        {{/forFaktum}}
+
+                        {{#forFaktum "utdanning.kortvarig"}}
+                            {{#hvisSant value}}
+                                <li class="kulepunkt">
+                                    <span>{{ hentTekst "utdanning.svar.under.utdanning.kortvarig"}}</span>
+                                    <ul>
+                                        {{#forFaktum "utdanning.kortvarig.sted"}}
+                                            <li class="kulepunkt">
+                                                <span>{{ hentTekst "utdanning.utdanningssted.navn" }}:</span>
+                                                <span>{{ value }}</span>
+                                            </li>
+                                        {{/forFaktum}}
+
+                                        {{#forFaktum "utdanning.kortvarig.navn"}}
+                                            <li class="kulepunkt">
+                                                <span>{{ hentTekst "utdanning.utdanning.navn" }}:</span>
+                                                <span>{{ value }}</span>
+                                            </li>
+                                        {{/forFaktum}}
+
+                                        {{#forFaktum "utdanning.kortvarig.varighet"}}
+                                            <li class="kulepunkt">
+                                                <span>{{ hentTekst "utdanning.varighet" }}</span>
+                                                <span>{{ formatterLangDato properties.varighetFra }}</span>
+                                                <span>{{ formatterLangDato properties.varighetTil }}</span>
+                                            </li>
+                                        {{/forFaktum}}
+                                    </ul>
+                                </li>
+                            {{/hvisSant}}
+                        {{/forFaktum}}
+
+                        {{#forFaktum "utdanning.kortvarigflere"}}
+                            {{#hvisSant value}}
+                                <li class="kulepunkt">
+                                    <span>{{ hentTekst "utdanning.svar.under.utdanning.kortvarigflere"}}</span>
+                                    <ul>
+                                        {{#forFaktum "utdanning.kortvarigflere.sted"}}
+                                            <li class="kulepunkt">
+                                                <span>{{ hentTekst "utdanning.utdanningssted.navn" }}:</span>
+                                                <span>{{ value }}</span>
+                                            </li>
+                                        {{/forFaktum}}
+
+                                        {{#forFaktum "utdanning.kortvarigflere.navn"}}
+                                            <li class="kulepunkt">
+                                                <span>{{ hentTekst "utdanning.utdanning.navn" }}:</span>
+                                                <span>{{ value }}</span>
+                                            </li>
+                                        {{/forFaktum}}
+
+                                        {{#forFaktum "utdanning.kortvarigflere.varighet"}}
+                                            <li class="kulepunkt">
+                                                <span>{{ hentTekst "utdanning.varighet" }}</span>
+                                                <span>{{ formatterLangDato properties.varighetFra }}</span>
+                                                <span>{{ formatterLangDato properties.varighetTil }}</span>
+                                            </li>
+                                        {{/forFaktum}}
+                                    </ul>
+                                </li>
+                            {{/hvisSant}}
+                        {{/forFaktum}}
+
+                        {{#forFaktum "utdanning.norsk"}}
+                            {{#hvisSant value}}
+                                <li class="kulepunkt">
+                                    <span>{{ hentTekst "utdanning.svar.under.utdanning.norsk"}}</span>
+                                    <ul>
+                                        {{#forFaktum "utdanning.norsk.sted"}}
+                                            <li class="kulepunkt">
+                                                <span>{{ hentTekst "utdanning.utdanningssted.navn" }}:</span>
+                                                <span>{{ value }}</span>
+                                            </li>
+                                        {{/forFaktum}}
+
+                                        {{#forFaktum "utdanning.norsk.varighet"}}
+                                            <li class="kulepunkt">
+                                                <span>{{ hentTekst "utdanning.varighet" }}</span>
+                                                <span>{{ formatterLangDato properties.varighetFra }}</span>
+                                                <span>{{ formatterLangDato properties.varighetTil }}</span>
+                                            </li>
+                                        {{/forFaktum}}
+                                    </ul>
+                                </li>
+                            {{/hvisSant}}
+                        {{/forFaktum}}
+
+                        {{#forFaktum "utdanning.introduksjon"}}
+                            {{#hvisSant value}}
+                                <li class="kulepunkt">
+                                    <span>{{ hentTekst "utdanning.svar.under.utdanning.introduksjon"}}</span>
+                                </li>
+                            {{/hvisSant}}
+                        {{/forFaktum}}
+
+                        {{#forFaktum "underUtdanningAnnet"}}
+                            {{#hvisSant value}}
+                                <li class="kulepunkt">
+                                    <span>{{ hentTekst "utdanning.svar.under.utdanning.nei"}}</span>
+                                </li>
+                            {{/hvisSant}}
+                        {{/forFaktum}}
+
+
+                    </ul>
+                {{/hvisLik}}
+            </td>
+        </tr>
+    {{/forFaktum}}
+</table>

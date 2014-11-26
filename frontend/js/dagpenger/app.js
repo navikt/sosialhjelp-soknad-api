@@ -11,6 +11,7 @@ angular.module('sendsoknad', [
 	'ngCookies',
     'ngSanitize',
     'templates-main',
+    'nav.cms',
     'nav.arbeidsforhold',
     'nav.personalia'
 ]);

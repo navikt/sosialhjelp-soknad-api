@@ -6,7 +6,9 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.Adresse;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBuilder;
 import org.joda.time.LocalDate;
+import org.slf4j.Logger;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,8 +23,17 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.PERSONALIA_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.DATO_TIL;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.TYPE;
+import static org.slf4j.LoggerFactory.getLogger;
 
 public class WebSoknadUtils {
+    // Brukes for å finne prefix for tekster, så man kan ha søknadspesifikke tekster i gjennbrukbare moduler
+    private static final Map<String, String> SOKNAD_TYPE_PREFIX_MAP = new HashMap<String, String>() {{
+        put("NAV 04-01.03", "dagpenger.ordinaer");
+        put("NAV 04-01.04", "dagpenger.ordinaer");
+        put("NAV 04-16.03", "dagpenger.gjenopptak");
+        put("NAV 04-16.04", "dagpenger.gjenopptak");
+    }};
+
     public static final String DAGPENGER_VED_PERMITTERING = "NAV 04-01.04";
     public static final String DAGPENGER = "NAV 04-01.03";
     public static final String EOS_DAGPENGER = "4304";
@@ -30,6 +41,7 @@ public class WebSoknadUtils {
     public static final String PERMITTERT = "Permittert";
     public static final String REDUSERT_ARBEIDSTID = "Redusert arbeidstid";
     public static final String ANNEN_AARSAK = "Annen årsak";
+    private static final Logger LOGGER = getLogger(WebSoknadUtils.class);
 
     private static String erPermittertellerHarRedusertArbeidstid(WebSoknad soknad) {
 
@@ -103,4 +115,13 @@ public class WebSoknadUtils {
                 .build();
     }
 
+    public static String getSoknadPrefix(String skjemanummer) {
+        String prefix = SOKNAD_TYPE_PREFIX_MAP.get(skjemanummer);
+
+        if (prefix != null) {
+            return prefix;
+        }
+        LOGGER.warn("Fant ikke prefix for søknad med skjemanummer {}. Alle skjema må ha mapping fra skjemanummer til prefix", skjemanummer);
+        return "";
+    }
 }

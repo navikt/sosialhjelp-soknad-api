@@ -1,0 +1,15 @@
+<h2>{{ hentTekst "ikkeavtjentverneplikt.tittel" }}</h2>
+<table>
+    {{#forFaktum "ikkeavtjentverneplikt"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                {{#hvisSant value}}
+                    <span>{{ hentTekst "ikkeavtjentverneplikt.true" }}</span>
+                {{ else }}
+                    <span>{{ hentTekst "ikkeavtjentverneplikt.false" }}</span>
+                {{/hvisSant}}
+            </td>
+        </tr>
+    {{/forFaktum}}
+</table>

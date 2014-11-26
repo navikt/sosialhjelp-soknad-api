@@ -1,7 +1,7 @@
 describe('valideringBlurValidate', function () {
     var element, scope, timeout, elementNavn, form;
 
-    beforeEach(module('nav.validering', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.validering', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel',
@@ -89,7 +89,7 @@ describe('valideringBlurValidate', function () {
 describe('valideringBlurValidate', function () {
     var element, scope, timeout, elementNavn, form;
 
-    beforeEach(module('nav.validering', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.validering', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel',
@@ -140,7 +140,7 @@ describe('valideringBlurValidate', function () {
 describe('valideringclickValidate', function () {
     var rootScope, element, scope, timeout, elementNavn, form, elementNavnReq;
 
-    beforeEach(module('nav.validering', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.validering', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel',
@@ -240,7 +240,7 @@ describe('valideringclickValidate', function () {
 describe('checkboxValidate', function () {
     var rootScope, element, scope, timeout, elementNavn, form, elementNavnReq;
 
-    beforeEach(module('nav.validering', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.validering', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel',
