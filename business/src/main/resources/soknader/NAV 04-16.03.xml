@@ -127,6 +127,12 @@
     </faktum>
 
     <faktum>
+        <id>nyearbeidsforhold.aarsakdagpengerstanset</id>
+        <type>java.lang.String</type>
+        <panel>NyeArbeidsforhold</panel>
+    </faktum>
+
+    <faktum>
         <id>arbeidsforhold</id>
         <panel>NyeArbeidsforhold</panel>
         <dependOn>nyearbeidsforhold.arbeidsidensist</dependOn>
