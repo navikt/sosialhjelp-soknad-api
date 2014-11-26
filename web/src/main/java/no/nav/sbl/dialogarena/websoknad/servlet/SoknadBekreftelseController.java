@@ -37,7 +37,7 @@ public class SoknadBekreftelseController {
     private MessageSource messageSource;
 
     @Inject
-    ConfigService configService;
+    private ConfigService configService;
 
     @RequestMapping(value = "/{behandlingId}", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
     @ResponseBody()

@@ -6,7 +6,6 @@ import no.nav.sbl.dialogarena.webkomponent.navigasjon.NavigasjonPanel;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.model.AbstractReadOnlyModel;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 import javax.inject.Inject;
@@ -40,11 +39,4 @@ public class AvbruttBasePage extends WebPage {
             }
         };
     }
-
-    private static final IModel<Boolean> FALSE = new AbstractReadOnlyModel<Boolean>() {
-        @Override
-        public Boolean getObject() {
-            return false;
-        }
-    };
 }
