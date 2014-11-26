@@ -118,7 +118,7 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
                 throw new RuntimeException("Kunne ikke hente ut datainnhold", e);
             }
         }
-        return null;
+        return new byte[]{};
     }
 
     @Override

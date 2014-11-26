@@ -43,7 +43,8 @@ public class PDFFabrikk implements HtmlToPdf {
             renderer.layout();
             renderer.setPDFVersion(PdfWriter.VERSION_1_4);
             renderer.createPDF(os, false, 0);
-            renderer.getWriter().setOutputIntents("Custom", "PDF/A", "http://www.color.org", "AdobeRGB1998", IOUtils.toByteArray(PDFFabrikk.class.getClassLoader().getResourceAsStream("AdobeRGB1998.icc")));
+            renderer.getWriter().setOutputIntents("Custom", "PDF/A", "http://www.color.org", "AdobeRGB1998",
+                    IOUtils.toByteArray(PDFFabrikk.class.getClassLoader().getResourceAsStream("AdobeRGB1998.icc")));
             renderer.finishPDF();
         } catch (DocumentException|IOException e) {
             throw new ApplicationException("Kunne ikke lagre oppsummering som PDF", e);

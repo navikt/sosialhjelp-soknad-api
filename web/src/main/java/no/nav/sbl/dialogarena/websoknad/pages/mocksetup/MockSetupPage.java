@@ -30,7 +30,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.util.MockUtil.VAL
 public class MockSetupPage extends BasePage {
 
     private ListView<MockSetupModel> listView;
-    IModel<Integer> valgtMaaned;
+    private IModel<Integer> valgtMaaned;
     private static final List<String> MONTHS_LIST = Arrays.asList("Januar", "Februar", "Mars", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Desember");
 
     public MockSetupPage() {
