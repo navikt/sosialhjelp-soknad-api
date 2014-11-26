@@ -139,6 +139,21 @@
         <dependOnValue>false</dependOnValue>
         <flereTillatt>true</flereTillatt>
     </faktum>
+    <faktum>
+        <id>arbeidsforhold.permitteringsperiode</id>
+        <panel>Arbeidsforhold</panel>
+        <dependOn>arbeidsforhold</dependOn>
+        <dependOnProperty>type</dependOnProperty>
+        <dependOnValue>Permittert</dependOnValue>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+    <!-- Tidligere arbeidsforhold -->
+    <faktum>
+        <id>tidligerearbeidsforhold.permittert</id>
+        <type>java.lang.String</type>
+        <panel>TidligereArbeidsforhold</panel>
+    </faktum>
 
     <!-- EgenNaering -->
     <faktum>
