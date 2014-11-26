@@ -3,7 +3,7 @@
 /* global $ */
 
 (function () {
-    'use strict'
+    'use strict';
 
     describe('ArbeidsforholdCtrl', function () {
         var cookieStore;
