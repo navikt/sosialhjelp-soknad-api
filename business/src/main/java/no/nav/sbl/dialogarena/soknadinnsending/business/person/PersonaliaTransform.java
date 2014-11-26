@@ -46,7 +46,7 @@ public class PersonaliaTransform {
     private static String finnUtenlandskKontoLand(XMLBruker xmlBruker, Kodeverk kodeverk) {
         XMLBankkonto bankkonto = xmlBruker.getBankkonto();
 
-        if (bankkonto == null) {
+        if (bankkonto == null  || bankkonto instanceof XMLBankkontoNorge) {
             return "";
         }
         String landkode = ((XMLBankkontoUtland) bankkonto).getBankkontoUtland().getLandkode().getValue();
@@ -56,7 +56,7 @@ public class PersonaliaTransform {
     private static String finnUtenlandsKontoNavn(XMLBruker xmlBruker) {
         XMLBankkonto bankkonto = xmlBruker.getBankkonto();
 
-        if (bankkonto == null) {
+        if (bankkonto == null || bankkonto instanceof XMLBankkontoNorge) {
             return "";
         }
 
