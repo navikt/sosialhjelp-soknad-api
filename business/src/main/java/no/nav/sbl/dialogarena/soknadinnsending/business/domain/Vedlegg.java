@@ -35,7 +35,6 @@ public class Vedlegg {
     private Map<String, String> urls = new HashMap<>();
     private String tittel;
 
-
     public Vedlegg() {
     }
 
@@ -120,6 +119,7 @@ public class Vedlegg {
         return opprinneligInnsendingsvalg;
     }
 
+
     public void setOpprinneligInnsendingsvalg(Status opprinneligInnsendingsvalg) {
         this.opprinneligInnsendingsvalg = opprinneligInnsendingsvalg;
     }
@@ -140,10 +140,10 @@ public class Vedlegg {
         this.soknadId = soknadId;
     }
 
-
     public void setFaktumId(Long faktumId) {
         this.faktumId = faktumId;
     }
+
 
     public void setStorrelse(Long storrelse) {
         this.storrelse = storrelse;
@@ -346,7 +346,8 @@ public class Vedlegg {
         VedleggSendesAvAndre(3),
         SendesSenere(4),
         LastetOpp(5),
-        UnderBehandling(6);
+        UnderBehandling(6),
+        VedleggAlleredeSendt(7);
 
         private int prioritet;
         private Status(int prioritet) {

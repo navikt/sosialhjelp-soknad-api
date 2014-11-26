@@ -46,7 +46,7 @@
         margin-bottom: 0px;
         padding-left: 0px;
         li {
-            &:before {
+            &:before:not(:first-child) {
                 content: "•";
                 display: inline-block;
                 margin-left: -20px;
@@ -54,7 +54,7 @@
                 position: relative;
                 padding-right: 10px;
             }
-            padding-left: 20px;
+            margin-top: 0px;
             padding-bottom: 15px;
             font-weight: bold;
 
@@ -63,12 +63,22 @@
             }
 
             p {
-                display: inline-block;
+                display: inline;
             }
 
             a {
-                display: block;
+                font-size: 0.9375rem;
+                font-family: modus;
                 font-weight: normal;
+
+                &:not(.inline) {
+                    display: block;
+                    font-weight: normal;
+                }
+            }
+
+            &:not(:last-child) a {
+                padding-right: 15px;
             }
         }
     }
@@ -78,7 +88,7 @@
     }
 
     .label {
-        font-size: 0.85rem !important;
+        font-size: 0.75rem !important;
         text-transform: uppercase;
     }
 

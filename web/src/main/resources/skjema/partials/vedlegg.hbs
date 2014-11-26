@@ -1,0 +1,65 @@
+<h2>{{ hentTekst "dagpenger.oppsummering.vedlegg.tittel" }}</h2>
+<table class="vedlegg">
+    {{#forVedlegg}}
+        <tr>
+            {{#hvisLik innsendingsvalg "LastetOpp"}}
+                <td class="sjekket"></td>
+            {{else}}
+                <td class="usjekket"></td>
+            {{/hvisLik}}
+            <td>
+                <span>{{ tittel }}</span>
+
+                {{#if navn}}
+                    <span>: {{ navn }}</span>
+                {{/if}}
+            </td>
+            <td class="vedleggStatus">
+                <span>
+                    {{#hvisLik innsendingsvalg "LastetOpp"}}
+                        <span class="lastetOpp">
+                            <span class="antallSider">
+                                <span class="vedlegg"></span>
+                                <span>{{ antallSider }}</span>
+                                {{#hvisLik antallSider "1"}}
+                                    <span>{{ hentTekst "dagpenger.oppsummering.side" }}</span>
+                                {{ else }}
+                                    <span>{{ hentTekst "dagpenger.oppsummering.sider" }}</span>
+                                {{/hvisLik}}
+
+                            </span>
+                            <a href="#{{ brukerBehandlingId }}/visVedlegg/{{ vedleggId }}" class="seVedlegg">{{ hentTekst "dagpenger.oppsummering.seVedlegg" }}</a>
+                        </span>
+                    {{/hvisLik}}
+
+                    {{#hvisLik innsendingsvalg "SendesSenere"}}
+                        <span>{{ hentTekst "dagpenger.oppsummering.sendesSenere" }}</span>
+                    {{/hvisLik}}
+
+                    {{#hvisLik innsendingsvalg "SendesIkke"}}
+                        <span>{{ hentTekst "dagpenger.oppsummering.sendesIkkeSendesAvAndre" }}</span>
+                    {{/hvisLik}}
+
+                    {{#hvisLik innsendingsvalg "VedleggSendesIkke"}}
+                        <span>{{ hentTekst "dagpenger.oppsummering.sendesIkke" }}</span>
+                    {{/hvisLik}}
+
+                    {{#hvisLik innsendingsvalg "VedleggSendesAvAndre"}}
+                        <span>{{ hentTekst "dagpenger.oppsummering.sendesAvAndre" }}</span>
+                    {{/hvisLik}}
+
+                    {{#hvisLik innsendingsvalg "VedleggAlleredeSendt"}}
+                        <span>{{ hentTekst "dagpenger.oppsummering.vedleggAlleredeSendt" }}</span>
+                    {{/hvisLik}}
+                </span>
+            </td>
+        </tr>
+    {{ else }}
+        <tr class="ingenVedleggTekst">
+            <td class="sjekket"></td>
+            <td >
+                <span>{{ hentTekst "dagpenger.oppsummering.vedlegg.ingen" }}</span>
+            </td>
+        </tr>
+    {{/forVedlegg}}
+</table>

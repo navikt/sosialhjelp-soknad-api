@@ -1,0 +1,18 @@
+<hr/>
+{{#forFaktum "personalia"}}
+    <div class="personalia">
+        <span class="nvn">{{properties.navn}}</span>
+        <span class="fnr">{{properties.fnr}}</span>
+        <span class="adr">{{properties.gjeldendeAdresse}}</span>
+        <div>
+            <span>{{ hentTekst "personalia.kontonummer" }}</span>:
+            {{#hvisSant properties.erUtenlandskBankkonto}}
+                <span>{{ properties.kontonummer }}</span>,
+                <span>{{ properties.utenlandskKontoBanknavn }}</span>,
+                <span>{{ properties.utenlandskKontoLand }}</span>
+            {{else}}
+                <span>{{ properties.kontonummer }}</span>
+            {{/hvisSant}}
+        </div>
+    </div>
+{{/forFaktum}}

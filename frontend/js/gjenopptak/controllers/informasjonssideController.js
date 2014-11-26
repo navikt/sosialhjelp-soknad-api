@@ -1,14 +1,12 @@
-angular.module('nav.informasjonsside', ['nav.cmstekster'])
-    .controller('InformasjonsSideCtrl', ['$scope', 'data', '$location', 'soknadService', function ($scope, data, $location, soknadService) {
+angular.module('nav.gjenopptak.informasjonsside', [])
+    .controller('InformasjonsSideCtrl', function ($scope, data, $location, soknadService) {
         $scope.utslagskriterier = {};
         $scope.utslagskriterier.harlestbrosjyre = false;
         $scope.cmsprefix = "gjenopptak";
+        $scope.dittnavUrl = data.config["dittnav.link.url"];
+        $scope.tilbakeUrl = '../utslagskriterier/dagpenger';
 
         $scope.oppsummering = false;
-        if (erSoknadStartet()) {
-            $scope.utslagskriterier.harlestbrosjyre = true;
-            $scope.oppsummering = true;
-        }
 
         $scope.fremdriftsindikator = {
             laster: false
@@ -30,10 +28,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
         };
 
         $scope.soknadErStartet = function () {
-            if (erSoknadStartet()) {
-                return true;
-            }
-            return false;
+            return !(data.soknad === undefined || data.soknad.brukerBehandlingId === undefined);
         };
 
         $scope.soknadErIkkeFerdigstilt = function () {
@@ -45,12 +40,12 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
         };
 
         $scope.startSoknad = function () {
-            var soknadType = decodeURI(window.location.pathname).split("/")[3];
+            var soknadType = getSoknadstypeFromUrl();
+
             $scope.fremdriftsindikator.laster = true;
             $scope.soknad = soknadService.create({soknadType: soknadType},
                 function (result) {
-                    var currentUrl = location.href;
-                    location.href = currentUrl.substring(0, currentUrl.indexOf('start/')) + 'soknad/' + result.brukerbehandlingId + '#/soknad';
+                    $location.path(result.brukerbehandlingId + "/soknad/");
                 }, function () {
                     $scope.fremdriftsindikator.laster = false;
                 });
@@ -60,29 +55,25 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
             return $scope.utslagskriterier.harlestbrosjyre;
         };
 
-        $scope.startSoknadDersomBrosjyreLest = function () {
-            if ($scope.harLestBrosjyre()) {
+        $scope.startSoknadDersomBrosjyreLest = function (form) {
+            var eventString = 'RUN_VALIDATION' + form.$name;
+
+            if (form.$valid) {
                 $scope.startSoknad();
+            } else {
+                $scope.$broadcast(eventString);
             }
         };
 
         $scope.forsettSoknadDersomBrosjyreLest = function () {
             if ($scope.harLestBrosjyre()) {
-                $location.path("/soknad");
+                $location.path(data.soknad.brukerBehandlingId + "/fortsett");
             }
         };
 
-    }])
-    .directive('validerInformasjonsside', [function () {
-        return {
-            link: function (scope, element) {
-                var formElement = element.closest('form').find('.form-linje');
-                var input = formElement.find('input');
-                element.bind('click', function () {
-                    if (!input.is(':checked')) {
-                        formElement.addClass('feilstyling');
-                    }
-                });
-            }
-        };
-    }]);
+        if ($scope.soknadErStartet()) {
+            $scope.utslagskriterier.harlestbrosjyre = true;
+            $scope.oppsummering = true;
+        }
+
+    });

@@ -39,6 +39,7 @@ public class WebSoknad implements Serializable {
     private DelstegStatus delstegStatus;
     private List<Vedlegg> vedlegg;
     private String journalforendeEnhet;
+    private String soknadPrefix;
 
 
     public WebSoknad() {
@@ -392,6 +393,10 @@ public class WebSoknad implements Serializable {
         return DelstegStatus.isEttersendingStatus(delstegStatus);
     }
 
+    public boolean erGjenopptak() {
+        return this.skjemaNummer != null && (this.skjemaNummer.equals("NAV 04-16.03") || this.skjemaNummer.equals("NAV 04-16.04"));
+    }
+
     public boolean harAnnetVedleggSomIkkeErLastetOpp() {
         return !on(vedlegg)
                 .filter(ER_ANNET_VEDLEGG)
@@ -404,7 +409,11 @@ public class WebSoknad implements Serializable {
         return status.equals(SoknadInnsendingStatus.UNDER_ARBEID);
     }
 
-    public boolean erAvbrytt() {
-        return status.equals(SoknadInnsendingStatus.AVBRUTT_AV_BRUKER) || status.equals(SoknadInnsendingStatus.AVBRUTT_AUTOMATISK);
+    public void medSoknadPrefix(String prefix) {
+        soknadPrefix = prefix;
+    }
+
+    public String getSoknadPrefix() {
+        return soknadPrefix;
     }
 }

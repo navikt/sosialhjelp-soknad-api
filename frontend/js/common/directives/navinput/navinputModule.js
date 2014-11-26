@@ -1,5 +1,5 @@
-angular.module('nav.input', ['nav.cmstekster'])
-    .directive('navconfig', [function () {
+angular.module('nav.input', ['nav.cms'])
+    .directive('navconfig', function () {
         return {
             link: {
                 pre: function (scope, element, attr) {
@@ -10,8 +10,8 @@ angular.module('nav.input', ['nav.cmstekster'])
                     }
                 }}
         };
-    }])
-    .directive('navradio', ['cms', function (cms) {
+    })
+    .directive('navradio', function (cms) {
         return {
             restrict: 'A',
             replace: true,
@@ -44,8 +44,8 @@ angular.module('nav.input', ['nav.cmstekster'])
             },
             templateUrl: '../js/common/directives/navinput/navradioTemplate.html'
         };
-    }])
-    .directive('navradioUtenfaktum', ['cms', function (cms) {
+    })
+    .directive('navradioUtenfaktum', function (cms) {
         return {
             restrict: 'A',
             replace: true,
@@ -80,8 +80,8 @@ angular.module('nav.input', ['nav.cmstekster'])
             },
             templateUrl: '../js/common/directives/navinput/navradioUtenfaktumTemplate.html'
         };
-    }])
-    .directive('navcheckbox', ['cms', function (cms) {
+    })
+    .directive('navcheckbox', function (cms) {
         return {
             restrict: 'A',
             replace: true,
@@ -114,8 +114,8 @@ angular.module('nav.input', ['nav.cmstekster'])
                 }},
             templateUrl: '../js/common/directives/navinput/navcheckboxTemplate.html'
         };
-    }])
-    .directive('navtekst', [function () {
+    })
+    .directive('navtekst', function () {
         return {
             restrict: 'A',
             replace: true,
@@ -141,8 +141,8 @@ angular.module('nav.input', ['nav.cmstekster'])
             },
             templateUrl: '../js/common/directives/navinput/navtekstTemplate.html'
         };
-    }])
-    .directive('navtall', [function () {
+    })
+    .directive('navtall', function (cms) {
         return {
             restrict: 'A',
             replace: true,
@@ -159,17 +159,24 @@ angular.module('nav.input', ['nav.cmstekster'])
                     } else {
                         scope.inputfeltmaxlength = undefined;
                     }
+                    scope.hjelpetekst = {
+                        tittel: attrs.hjelpetekst + '.tittel',
+                        tekst: attrs.hjelpetekst + '.tekst'
+                    };
                 },
                 post: function (scope) {
                     scope.harSporsmal = function() {
                         return isNotNullOrUndefined(scope.navsporsmal) && scope.navsporsmal.length > 0;
                     };
+                    scope.hvisHarHjelpetekst = function() {
+                        return cms.tekster[scope.hjelpetekst.tittel] !== undefined;
+                    };
                 }
             },
             templateUrl: '../js/common/directives/navinput/navtallTemplate.html'
         };
-    }])
-    .directive('tekstfeltPatternvalidering', [function () {
+    })
+    .directive('tekstfeltPatternvalidering', function () {
         return {
             require: 'ngModel',
             link: function (scope, element, attrs, ctrl) {
@@ -180,7 +187,7 @@ angular.module('nav.input', ['nav.cmstekster'])
                 });
             }
         };
-    }])
+    })
 
     .directive('navorganisasjonsnummerfelt', [function () {
         return {

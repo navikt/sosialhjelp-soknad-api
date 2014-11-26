@@ -1,155 +1,159 @@
 .hjelpetekst-parent {
-    position: relative;
-    padding-right: 40px;
+  position: relative;
+  padding-right: 40px;
 }
 
-.hjelpetekst {
+[class^="hjelpetekst"] {
+  display: inline-block;
+  position: absolute;
+  top: -5px;
+  right: 0;
+
+  &[class*="-inline"] {
+    position: relative;
+    top: 0;
+  }
+
+  a.infoikon {
     display: inline-block;
+    margin-left: 0.175rem;
+    position: relative;
+    cursor: pointer;
+    padding: 5px;
+    width: 30px;
+    height: 30px;
+    text-decoration: none !important;
+
+    span {
+      display: block;
+      font-size: 13px !important;
+      line-height: 19px;
+      border-radius: 30px;
+      border: 1px solid #0067c5;
+      color: #0067c5;
+      text-align: center;
+      font-weight: bold;
+      text-decoration: none !important;
+    }
+
+    &:focus, &:hover, &:active {
+      text-decoration: none !important;
+      span {
+        color: #fff !important;
+        background-color: #0067c5;
+      }
+    }
+
+  }
+
+  .hjelpetekst-tooltip {
+    background-color: #3e3832;
+    padding-bottom: 20px;
     position: absolute;
-    top: -5px;
-    right: 0;
+    z-index: 1030;
+    width: 350px;
+    left: -15px;
+    opacity: 0;
 
-    a.infoikon {
+    &.vis {
+      opacity: 1;
+    }
+
+    .tittel {
+      padding: 20px 20px 0;
+      text-align: center;
+      max-width: 65%;
+      margin: 0 auto;
+
+      h3 {
         display: inline-block;
-        margin-left: 0.2rem;
-        position: relative;
-        cursor: pointer;
-        padding: 5px;
-        width: 30px;
-        height: 30px;
-        text-decoration: none !important;
+        color: #ccc;
+        text-align: center;
+        font-size: 1.06rem;
+        font-weight: 600;
+        font-family: Modus, Arial, Helvetica, sans-serif;
+      }
 
-        span {
-            display: block;
-            font-size: 13px !important;
-            line-height: 19px;
-            border-radius: 30px;
-            border: 1px solid #0067c5;
-            color: #0067c5;
-            text-align: center;
-            font-weight: bold;
-            text-decoration: none !important;
-        }
-
-        &:focus, &:hover, &:active {
-            text-decoration: none !important;
-            span {
-                color: #fff !important;
-                background-color: #0067c5;
-            }
-        }
-
-
-    }
-
-    .hjelpetekst-tooltip {
-        background-color: #3e3832;
-        padding-bottom: 20px;
+      .lukk-hjelpetekst {
         position: absolute;
-        z-index: 1030;
-        width: 350px;
-        left: -15px;
-        opacity: 0;
-
-        &.vis {
-            opacity: 1;
-        }
-
-        .tittel {
-            padding: 20px 20px 0;
-            text-align: center;
-            max-width: 65%;
-            margin: 0 auto;
-
-            h3 {
-                display: inline-block;
-                color: #ccc;
-                text-align: center;
-                font-size: 1.21rem;
-                font-weight: 600;
-                font-family: Modus, Arial, Helvetica, sans-serif;
-            }
-
-            .lukk-hjelpetekst {
-                position: absolute;
-                top: 21px;
-                right: 20px;
-                color: #00a9e0;
-                font-weight: 600;
-                text-transform: uppercase;
-                font-size: 0.857rem;
-            }
-        }
-
-        .tekst {
-            padding: 0 15px;
-            margin: 0 5px;
-            max-height: 150px;
-            overflow-y: hidden;
-
-            p {
-                color: #fff;
-            }
-        }
-
-        .ps-container {
-            &:hover {
-                [class*="ps-scrollbar"] {
-                    opacity: 1;
-                }
-            }
-
-            [class*="ps-scrollbar"] {
-                background-color: #00a9e0;
-                opacity: 0.6;
-
-                &:hover {
-                    opacity: 1;
-                }
-
-                &.in-scrolling {
-                    opacity: 1;
-                }
-            }
-        }
-
-        &:before {
-            content: "";
-            border: solid transparent;
-            border-width: 10px;
-            position: absolute;
-            height: 0;
-            width: 0;
-            left: 20px;
-            border-top-color: #3e3832;
-            top: 100%;
-        }
-
-        &.under {
-            &:before {
-                border-top-color: transparent;
-                border-bottom-color: #3e3832;
-                top: -20px;
-            }
-        }
+        top: 12px;
+        right: 14px;
+        color: #00a9e0;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.65625rem;
+      }
     }
+
+    .tekst {
+      padding: 0 15px;
+      margin: 0 5px;
+      max-height: 150px;
+      overflow-y: hidden;
+
+      p {
+        color: #fff;
+      }
+    }
+
+    .ps-container {
+      &:hover {
+        [class*="ps-scrollbar"] {
+          opacity: 1;
+        }
+      }
+
+      [class*="ps-scrollbar"] {
+        background-color: #00a9e0;
+        opacity: 0.6;
+
+        &:hover {
+          opacity: 1;
+        }
+
+        &.in-scrolling {
+          opacity: 1;
+        }
+      }
+    }
+
+    &:before {
+      content: "";
+      border: solid transparent;
+      border-width: 10px;
+      position: absolute;
+      height: 0;
+      width: 0;
+      left: 20px;
+      border-top-color: #3e3832;
+      top: 100%;
+    }
+
+    &.under {
+      &:before {
+        border-top-color: transparent;
+        border-bottom-color: #3e3832;
+        top: -20px;
+      }
+    }
+  }
 }
 
 @media only screen and (max-width: 767px) {
-    .hjelpetekst {
-        .hjelpetekst-tooltip {
-            position: fixed;
-            top: 10px !important;
-            bottom: 10px !important;
-            right: 10px !important;
-            left: 10px !important;
-            width: auto;
-            z-index: 1050;
+  [class^="hjelpetekst"] {
+    .hjelpetekst-tooltip {
+      position: fixed;
+      top: 10px !important;
+      bottom: 10px !important;
+      right: 10px !important;
+      left: 10px !important;
+      width: auto;
+      z-index: 1050;
 
-            &:before {
-                border: transparent;
-            }
-        }
+      &:before {
+        border: transparent;
+      }
     }
+  }
 }
 

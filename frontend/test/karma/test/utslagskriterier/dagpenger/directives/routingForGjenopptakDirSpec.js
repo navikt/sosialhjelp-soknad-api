@@ -1,7 +1,7 @@
 describe('sporsmalferdig', function () {
     var rootScope, element, scope, form, inputEl;
 
-    beforeEach(module('nav.routingForGjenopptakModule', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.routingForGjenopptakModule', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("data", {
@@ -47,7 +47,7 @@ describe('sporsmalferdig', function () {
             element.scope().$apply();
             scope.validerOgStartSoknad();
 
-            expect(window.redirectTilUrl).toHaveBeenCalledWith('start/NAV%2004-01.03#/informasjonsside');
+            expect(window.redirectTilUrl).toHaveBeenCalledWith('skjema/NAV04-01.03#/informasjonsside');
         });
         it('ikke har motatt dagpenger så skal man redirectes til sendsoknad', function () {
             scope.gjenopptak.harMotattDagpenger = "ja";
@@ -58,7 +58,7 @@ describe('sporsmalferdig', function () {
 
             scope.validerOgStartSoknad();
 
-            expect(window.redirectTilUrl).toHaveBeenCalledWith('start/gjenopptak');
+            expect(window.redirectTilUrl).toHaveBeenCalledWith('skjema/NAV04-16.03#/informasjonsside');
         });
     });
 });

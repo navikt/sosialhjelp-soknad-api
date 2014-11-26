@@ -9,13 +9,14 @@
             'nav.services.vedlegg',
             'nav.services.faktum',
             'nav.services.soknad',
-            'nav.services.personalia',
             'nav.services.interceptor.delsteg',
             'nav.services.interceptor.cache',
             'nav.services.interceptor.timeout',
             'nav.services.interceptor.feilhandtering',
             'nav.services.fortsettsenere',
-            'nav.services.resolvers'
+            'nav.services.resolvers',
+            'nav.services.datapersister',
+            'nav.services.bekreftelse'
         ])
 
         .config(['$httpProvider', function ($httpProvider) {

@@ -9,6 +9,7 @@ import org.junit.Test;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.LASTET_OPP;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.SENDES_IKKE;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.SEND_SENERE;
+import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.VEDLEGG_ALLEREDE_SENDT;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
@@ -41,5 +42,6 @@ public class TransformersTest {
         assertThat(Transformers.toXmlInnsendingsvalg(Vedlegg.Status.SendesIkke), is(equalTo(SENDES_IKKE.toString())));
         assertThat(Transformers.toXmlInnsendingsvalg(Vedlegg.Status.SendesSenere), is(equalTo(SEND_SENERE.toString())));
         assertThat(Transformers.toXmlInnsendingsvalg(Vedlegg.Status.IkkeVedlegg), is(equalTo(SENDES_IKKE.toString())));
+        assertThat(Transformers.toXmlInnsendingsvalg(Vedlegg.Status.VedleggAlleredeSendt), is(equalTo(VEDLEGG_ALLEREDE_SENDT.toString())));
     }
 }

@@ -123,7 +123,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                 data.soknad.vedlegg[soknadVedleggIdx] = result;
                 $scope.vedleggListe[vedleggListeIdx] = result;
                 $scope.fremdriftsindikator.laster = false;
-                $location.url('/vedlegg?scrollTo=vedlegg_' + $scope.data.vedleggId).replace();
+                $location.url(data.soknad.brukerBehandlingId + '/vedlegg?scrollTo=vedlegg_' + $scope.data.vedleggId).replace();
             });
         };
 

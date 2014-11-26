@@ -15,6 +15,7 @@ import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLIn
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.SEND_SENERE;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.VEDLEGG_SENDES_AV_ANDRE;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.VEDLEGG_SENDES_IKKE;
+import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.VEDLEGG_ALLEREDE_SENDT;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class Transformers {
@@ -94,6 +95,8 @@ public class Transformers {
                 return VEDLEGG_SENDES_AV_ANDRE.toString();
             case VedleggSendesIkke:
                 return VEDLEGG_SENDES_IKKE.toString();
+            case VedleggAlleredeSendt:
+                return VEDLEGG_ALLEREDE_SENDT.toString();
             default:
                 return SENDES_IKKE.toString();
         }
@@ -111,6 +114,8 @@ public class Transformers {
                 return Vedlegg.Status.VedleggSendesIkke;
             case "VEDLEGG_SENDES_AV_ANDRE":
                 return Vedlegg.Status.VedleggSendesAvAndre;
+            case "VEDLEGG_ALLEREDE_SENDT":
+                return Vedlegg.Status.VedleggAlleredeSendt;
             default:
                 return Vedlegg.Status.SendesIkke;
         }

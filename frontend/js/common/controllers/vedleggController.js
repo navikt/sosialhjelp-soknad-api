@@ -8,8 +8,9 @@ angular.module('nav.vedlegg.controller', [])
     .controller('VedleggCtrl', function ($scope, $location, data, vedleggService, Faktum, soknadService, $timeout) {
         $scope.data = {soknadId: data.soknad.soknadId};
         $scope.forventninger = vedleggService.query({soknadId: data.soknad.soknadId});
-
+        $scope.brukerBehandlingId = data.soknad.brukerBehandlingId;
         $scope.sidedata = {navn: 'vedlegg'};
+        $scope.soknadOppsett = data.soknadOppsett;
 
         $scope.validert = {value: ''};
         $scope.fremdriftsindikator = {
@@ -21,7 +22,7 @@ angular.module('nav.vedlegg.controller', [])
             if (form.$valid) {
                 soknadService.delsteg({soknadId: data.soknad.soknadId, delsteg: 'oppsummering'},
                     function() {
-                        $location.path('/oppsummering');
+                        $location.path(data.soknad.brukerBehandlingId + '/oppsummering');
                     },
                     function() {
                         $scope.fremdriftsindikator.laster = false;
@@ -101,7 +102,7 @@ angular.module('nav.vedlegg.controller', [])
         };
 
         $scope.endreInnsendingsvalg = function (forventning, valg) {
-            if (valg !== 'SendesSenere' && valg !== 'SendesIkke' && valg !== 'VedleggSendesAvAndre' && valg !== "VedleggSendesIkke") {
+            if (valg !== 'SendesSenere' && valg !== 'SendesIkke' && valg !== 'VedleggSendesAvAndre' && valg !== "VedleggSendesIkke" && valg !== "VedleggAlleredeSendt") {
                 forventning.innsendingsvalg = valg;
             }
             if (!$scope.hiddenFelt) {
@@ -136,12 +137,20 @@ angular.module('nav.vedlegg.controller', [])
         };
 
         $scope.skalViseNesteKnapp = function(forventning, erSiste) {
-            if (($scope.erEkstraVedlegg(forventning) && forventning.innsendingsvalg !== 'LastetOpp') || erSiste) {
-                return false;
-            } else {
-                return true;
-            }
+            return !(($scope.erEkstraVedlegg(forventning) && forventning.innsendingsvalg !== 'LastetOpp') || erSiste);
+        };
 
+        $scope.skalViseAlleredeSendtAlternativ = function(forventing) {
+            var vedlegg = $scope.finnVedleggMedSkjemanummer(forventing.skjemaNummer);
+            return (vedlegg && vedlegg.ekstraValg && vedlegg.ekstraValg.indexOf("AlleredeSendt") > -1);
+        };
+
+        $scope.finnVedleggMedSkjemanummer = function(skjemanummer) {
+            for(var i=0; i<$scope.soknadOppsett.vedlegg.length; i++) {
+                if($scope.soknadOppsett.vedlegg[i].skjemaNummer == skjemanummer) {
+                    return $scope.soknadOppsett.vedlegg[i];
+                }
+            }
         };
     }])
 

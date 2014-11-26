@@ -7,13 +7,13 @@
 
     <div id="knapper">
         <div>
-            <a class="knapp-link" href="#/fortsettsenere" data-ng-bind-html=" 'dagpenger.fortsettSenere.kvittering.sendpaanyttlink' | cmstekst"></a>
+            <a class="knapp-link" href="#/{{brukerBehandlingId}}/fortsettsenere" data-ng-bind-html=" 'dagpenger.fortsettSenere.kvittering.sendpaanyttlink' | cmstekst"></a>
         </div>
 
 
         <ul class="liste-vannrett">
             <li>
-                <a href="#{{ forrigeSide }}" data-ng-bind-html=" 'dagpenger.fortsettSenere.fortsettlink' | cmstekst"></a>
+                <a href="{{ forrigeSide }}" data-ng-bind-html=" 'dagpenger.fortsettSenere.fortsettlink' | cmstekst"></a>
             </li>
             <li>
                 <a href="{{ dittnavUrl }}" id="dittnav" role="link" data-ng-bind-html=" 'dagpenger.fortsettSenere.dittNav' | cmstekst"></a>

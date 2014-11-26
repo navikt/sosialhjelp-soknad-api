@@ -1,7 +1,13 @@
 package no.nav.sbl.dialogarena.websoknad.selftest;
 
+import no.aetat.arena.fodselsnr.Fodselsnr;
+import no.nav.arena.tjenester.person.v1.FaultGeneriskMsg;
+import no.nav.arena.tjenester.person.v1.PersonInfoServiceSoap;
+import no.nav.modig.core.exception.SystemException;
 import no.nav.modig.wicket.selftest.SelfTestBase;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadInnsendingDBConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
+import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
@@ -9,9 +15,11 @@ import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.slf4j.Logger;
 import org.springframework.context.annotation.Import;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -22,7 +30,7 @@ import static java.lang.System.currentTimeMillis;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.slf4j.LoggerFactory.getLogger;
 
-@Import({ConsumerConfig.WsServices.class})
+@Import({ConsumerConfig.WsServices.class, SoknadInnsendingDBConfig.class})
 public class SelfTestPage extends SelfTestBase {
     private static final Logger logger = getLogger(SelfTestPage.class);
 
@@ -43,6 +51,16 @@ public class SelfTestPage extends SelfTestBase {
     private PersonPortType personService;
 
     @Inject
+    @Named("fillagerServiceSelftest")
+    private FilLagerPortType fillagerServiceSelftest;
+
+    @Inject
+    private PersonInfoServiceSoap personInfoServiceSoap;
+
+    @Inject
+    private DataSource dataSource;
+
+    @Inject
     @Named(value = "cmsBaseUrl")
     private String cmsBaseUrl;
 
@@ -52,7 +70,7 @@ public class SelfTestPage extends SelfTestBase {
 
     @Override
     protected void addToStatusList(List<AvhengighetStatus> statusList) {
-        new ServiceStatusHenter("HENVENDELSE-SENDSOKNAD") {
+        new ServiceStatusHenter("HENVENDELSE_SENDSOKNAD") {
             public void ping() {
                 sendSoknadSelftest.ping();
             }
@@ -74,6 +92,34 @@ public class SelfTestPage extends SelfTestBase {
         new ServiceStatusHenter("TPS_HENT_PERSON") {
             public void ping() {
                 personService.ping();
+            }
+        }.addStatus(statusList);
+
+        new ServiceStatusHenter("FILLAGER") {
+            public void ping() {
+               fillagerServiceSelftest.ping();
+            }
+        }.addStatus(statusList);
+
+        new ServiceStatusHenter("ARENA_PERSONINFO") {
+            public void ping() {
+                Fodselsnr fodselsnr = new Fodselsnr().withFodselsnummer("01034128789");
+                try {
+                    personInfoServiceSoap.hentPersonStatus(fodselsnr);
+                } catch (FaultGeneriskMsg faultGeneriskMsg) {
+                    throw new SystemException("kall mot arena feilet", faultGeneriskMsg);
+                }
+            }
+        }.addStatus(statusList);
+
+        new ServiceStatusHenter("LOKAL_DATABASE") {
+            public void ping() {
+                try {
+                    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+                    jdbcTemplate.queryForList("select * from dual");
+                } catch (Exception e) {
+                    throw new SystemException("database feilet", e);
+                }
             }
         }.addStatus(statusList);
 

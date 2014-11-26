@@ -231,6 +231,28 @@ describe('utility funksjoner -', function () {
             expect(konverterTallTilStringMedToSiffer(tall)).toBe("10");
         });
     });
+
+    describe('lage norsk datoformat(dd.MM.YYYY) fra iso-standard(YYYY-MM-dd)', function() {
+        it('skal returnere 12.12.2014 om vi sender inn 2014-12-12', function() {
+            expect(lagNorskDatoformatFraIsoStandard("2014-12-12")).toBe("12.12.2014");
+        });
+
+        it('skal legge til 0 dager som har kun et siffer', function() {
+           expect(lagNorskDatoformatFraIsoStandard("2012-11-01")).toBe("01.11.2012");
+        });
+
+        it('skal legge til 0 på dager som har kun et siffer', function() {
+            expect(lagNorskDatoformatFraIsoStandard("2012-01-11")).toBe("11.01.2012");
+        });
+
+        it('skal returnere null ved ugyldig dato', function() {
+            expect(lagNorskDatoformatFraIsoStandard("2013-55-32")).toBeNull();
+        });
+
+        it('skal kun godta dato på ISO-format', function() {
+           expect(lagNorskDatoformatFraIsoStandard("12-12-AA")).toBeNull();
+        });
+    });
 });
 
 

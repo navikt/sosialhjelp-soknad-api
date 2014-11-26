@@ -1,13 +1,14 @@
 describe('sist lagret', function () {
     var scope, element;
 
-    beforeEach(module('nav.stickybunn', 'nav.sistLagret', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.stickybunn', 'nav.sistLagret', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
         $provide.value("data", {
             soknad: {
                 soknadId: 1,
+                brukerBehandlingId: "BHD123",
                 sistLagret: new Date("2014-01-01")
             }
         });
@@ -43,19 +44,20 @@ describe('sist lagret', function () {
             expect(scope.soknadHarAldriBlittLagret()).toEqual(false);
         });
         it('Hvis navtilbakelenke inneholder vedlegg skal scope.lenge.value gå til vedleggsiden', function () {
-            expect(scope.lenke.value).toEqual('#/vedlegg');
+            expect(scope.lenke.value).toEqual('#/BHD123/vedlegg');
         });
     });
 });
 describe('stickybunnUtensistLagret', function () {
     var scope, element;
 
-    beforeEach(module('nav.stickybunn', 'nav.sistLagret', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.stickybunn', 'nav.sistLagret', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
         $provide.value("data", {
             soknad: {
+                brukerBehandlingId: "BHD123",
                 soknadId: 1
             }
         });
@@ -91,20 +93,21 @@ describe('stickybunnUtensistLagret', function () {
             expect(scope.soknadHarAldriBlittLagret()).toEqual(true);
         });
         it('Hvis navtilbakelenke inneholder soknad skal scope.lenke.value gå til soknadsiden', function () {
-            expect(scope.lenke.value).toEqual('#/soknad');
+            expect(scope.lenke.value).toEqual('#/BHD123/soknad');
         });
     });
 });
 describe('stickybunnUtenLenketekst', function () {
     var scope, element;
 
-    beforeEach(module('nav.stickybunn', 'nav.sistLagret', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.stickybunn', 'nav.sistLagret', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
         $provide.value("data", {
             soknad: {
-                soknadId: 1
+                soknadId: 1,
+                brukerBehandlingId: "BHD123"
             }
         });
     }));

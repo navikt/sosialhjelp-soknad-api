@@ -18,11 +18,9 @@
                         </li>
                         <li>
                             <p class="info" data-ng-bind-html=" 'vedlegg.info2' | cmstekst"></p>
-
                         </li>
                         <li>
                             <p class="info" data-ng-bind-html=" 'vedlegg.info3' | cmstekst"></p>
-
                         </li>
                     </ul>
                 </div>
@@ -51,6 +49,7 @@
                                 <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'SendesSenere')" data-ng-bind-html=" 'vedlegg.behandlet.sendessenere' | cmstekst"></div>
                                 <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'VedleggSendesIkke')" data-ng-bind-html=" 'vedlegg.behandlet.vedleggsendesikke' | cmstekst"></div>
                                 <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'VedleggSendesAvAndre')" data-ng-bind-html=" 'vedlegg.behandlet.vedleggsendesavaandre' | cmstekst"></div>
+                                <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'VedleggAlleredeSendt')" data-ng-bind-html=" 'vedlegg.behandlet.vedleggalleredesendt' | cmstekst"></div>
 
                                 <h2 class="stor">
                                     <span>{{forventning.tittel}}</span>
@@ -97,7 +96,7 @@
                                 <div class="lastOpp">
                                     <ul>
                                         <li>
-                                            <a data-ng-href="#/opplasting/{{forventning.vedleggId}}" class="knapp-link"
+                                            <a data-ng-href="#/{{brukerBehandlingId}}/opplasting/{{forventning.vedleggId}}" class="knapp-link"
                                                data-ng-click="endreInnsendingsvalg(forventning, 'VedleggKreves');" data-ng-bind-html="'vedlegg.lastopp'
                                                 | cmstekst"></a>
                                         </li>
@@ -117,31 +116,46 @@
                                 </div>
                                 <div data-ng-if="!erEkstraVedlegg(forventning)">
                                     <h4 data-ng-bind-html=" 'vedlegg.faktum.andreInnsendingsvalg' | cmstekst"></h4>
+                                    <div class="valg">
+                                        <input id="{{$index}}ettersendRadio"
+                                               data-ng-model="forventning.innsendingsvalg"
+                                               type="radio" value="SendesSenere"
+                                               data-ng-click="endreInnsendingsvalg(forventning, 'SendesSenere')"
+                                               data-aktiv-feilmelding>
+                                        <label for="{{$index}}ettersendRadio" data-ng-bind-html=" 'vedlegg.faktum.ettersend' | cmstekst"></label>
+                                    </div>
 
-                                    <input id="{{$index}}ettersendRadio"
-                                           data-ng-model="forventning.innsendingsvalg"
-                                           type="radio" value="SendesSenere"
-                                           data-ng-click="endreInnsendingsvalg(forventning, 'SendesSenere')"
-                                           data-aktiv-feilmelding>
-                                    <label for="{{$index}}ettersendRadio" data-ng-bind-html=" 'vedlegg.faktum.ettersend' | cmstekst"></label>
+                                    <div class="valg">
+                                        <input id="{{$index}}vedleggikkesendRadio"
+                                               data-ng-model="forventning.innsendingsvalg"
+                                               type="radio"
+                                               value="VedleggSendesIkke"
+                                               data-ng-click="endreInnsendingsvalg(forventning, 'VedleggSendesIkke')"
+                                               data-aktiv-feilmelding>
+                                        <label for="{{$index}}vedleggikkesendRadio" data-ng-bind-html=" 'vedlegg.faktum.vedleggikkesend' | cmstekst"></label>
+                                    </div>
 
-                                    <input id="{{$index}}vedleggikkesendRadio"
-                                           data-ng-model="forventning.innsendingsvalg"
-                                           type="radio"
-                                           value="VedleggSendesIkke"
-                                           data-ng-click="endreInnsendingsvalg(forventning, 'VedleggSendesIkke')"
-                                           data-aktiv-feilmelding>
-                                    <label for="{{$index}}vedleggikkesendRadio" data-ng-bind-html=" 'vedlegg.faktum.vedleggikkesend' | cmstekst"></label>
+                                    <div class="valg">
+                                        <input id="{{$index}}vedleggandreRadio"
+                                               data-ng-model="forventning.innsendingsvalg"
+                                               type="radio"
+                                               value="VedleggSendesAvAndre"
+                                               data-ng-click="endreInnsendingsvalg(forventning, 'VedleggSendesAvAndre')"
+                                               data-aktiv-feilmelding>
+                                        <label for="{{$index}}vedleggandreRadio" data-ng-bind-html=" 'vedlegg.faktum.vedleggsendesavandre' | cmstekst"></label>
+                                    </div>
 
 
-                                    <input id="{{$index}}vedleggandreRadio"
-                                           data-ng-model="forventning.innsendingsvalg"
-                                           type="radio"
-                                           value="VedleggSendesAvAndre"
-                                           data-ng-click="endreInnsendingsvalg(forventning, 'VedleggSendesAvAndre')"
-                                           data-aktiv-feilmelding>
-                                    <label for="{{$index}}vedleggandreRadio" data-ng-bind-html=" 'vedlegg.faktum.vedleggsendesavandre' | cmstekst"></label>
-
+                                    <div class="valg" data-ng-if="skalViseAlleredeSendtAlternativ(forventning)">
+                                        <input id="{{$index}}vedleggAlleredeSendtRadio"
+                                               data-ng-model="forventning.innsendingsvalg"
+                                               type="radio"
+                                               value="VedleggAlleredeSendt"
+                                               data-ng-click="endreInnsendingsvalg(forventning, 'VedleggAlleredeSendt')"
+                                               data-aktiv-feilmelding>
+                                        <label for="{{$index}}vedleggAlleredeSendtRadio" data-ng-bind-html=" 'vedlegg.faktum.vedleggalleredesendt' | cmstekst"></label>
+                                        <span data-nav-hjelpetekstelement inline="true" data-tittel="{{ 'vedlegg.faktum.vedleggalleredesendt.hjelpetekst.tittel' | cmstekst }}" data-tekst="{{ 'vedlegg.faktum.vedleggalleredesendt.hjelpetekst.tekst' | cmstekst}}"></span>
+                                    </div>
 
                                     <input type="hidden" class="hidden-vedlegg" data-ng-model="hiddenFelt.value"
                                            data-ng-required="true"
@@ -195,5 +209,4 @@
     <div data-sticky>
         <div data-sist-lagret data-navtilbakelenke="tilbake.til.soknad.lenke"></div>
     </div>
-
 </div>

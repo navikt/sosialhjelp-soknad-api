@@ -10,7 +10,6 @@ import no.nav.sbl.dialogarena.websoknad.pages.XmlToPdfConverterPage;
 import no.nav.sbl.dialogarena.websoknad.pages.ettersending.AvbruttEttersendingPage;
 import no.nav.sbl.dialogarena.websoknad.pages.ettersending.EttersendingPage;
 import no.nav.sbl.dialogarena.websoknad.pages.ettersending.StartEttersendingPage;
-import no.nav.sbl.dialogarena.websoknad.pages.gjenopptak.GjenopptakPage;
 import no.nav.sbl.dialogarena.websoknad.pages.soknadliste.SoknadListePage;
 import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.AvbruttPage;
 import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.StartSoknadPage;
@@ -56,6 +55,33 @@ public class WicketApplication extends WebApplication {
 
         getRequestCycleSettings().setResponseRequestEncoding("UTF-8");
 
+        initFrontendConfigurator();
+
+        // Innstillinger vi kan ha
+        IApplicationSettings applicationSettings = getApplicationSettings();
+        applicationSettings.setPageExpiredErrorPage(getHomePage());
+        applicationSettings.setUploadProgressUpdatesEnabled(true);
+
+
+        new ApplicationSettingsConfig().withExternalExceptionPages(null).configure(this);
+
+        Application.get().getComponentPostOnBeforeRenderListeners().add(new StatelessChecker());
+
+        get().getStoreSettings().setMaxSizePerSession(Bytes.kilobytes(500));
+
+
+        Application.get().getRequestLoggerSettings().setRequestLoggerEnabled(true);
+
+        mountPages();
+
+        getSecuritySettings().setEnforceMounts(true);
+        getSecuritySettings().setCryptFactory(new KeyInSessionSunJceCryptFactory());
+        getResourceSettings().getStringResourceLoaders().add(0, new EnonicResourceLoader(cmsContentRetriever));
+
+        setSpringComponentInjector();
+    }
+
+    private void initFrontendConfigurator() {
         FrontendConfigurator configurator = new FrontendConfigurator();
 
         for (LessResources resource : LessResources.values()) {
@@ -79,44 +105,18 @@ public class WicketApplication extends WebApplication {
                 .addScripts(InnstillingerPanel.INNSTILLINGER_JS)
                 .withResourcePacking(this.usesDeploymentConfig())
                 .configure(this);
+    }
 
-        // Innstillinger vi kan ha
-        IApplicationSettings applicationSettings = getApplicationSettings();
-        applicationSettings.setPageExpiredErrorPage(getHomePage());
-        applicationSettings.setUploadProgressUpdatesEnabled(true);
-
-
-        new ApplicationSettingsConfig().withExternalExceptionPages(null).configure(this);
-
-        Application.get().getComponentPostOnBeforeRenderListeners().add(new StatelessChecker());
-
-        get().getStoreSettings().setMaxSizePerSession(Bytes.kilobytes(500));
-
-
-        Application.get().getRequestLoggerSettings().setRequestLoggerEnabled(true);
-
-        mountPage("start/NAV%2004-01.03", StartSoknadPage.class);
-        mountPage("soknad/${brukerbehandlingId}", StartSoknadPage.class);
-
-        mountPage("start/NAV%2004-16.03", GjenopptakPage.class);
-
+    private void mountPages() {
+        mountPage("skjema/${skjemanummer}", StartSoknadPage.class);
         mountPage("utslagskriterier/${utslagskriterierSide}", UtslagskriterierDagpengerPage.class);
-
         mountPage("startettersending/${brukerbehandlingId}", StartEttersendingPage.class);
         mountPage("ettersending/${brukerbehandlingId}", EttersendingPage.class);
         mountPage("avbrutt", AvbruttPage.class);
         mountPage("ettersending/avbrutt", AvbruttEttersendingPage.class);
-
         mountPage("xmltopdf", XmlToPdfConverterPage.class);
         mountPage("internal/selftest", SelfTestPage.class);
-
         mountPage("soknadliste", SoknadListePage.class);
-
-        getSecuritySettings().setEnforceMounts(true);
-        getSecuritySettings().setCryptFactory(new KeyInSessionSunJceCryptFactory());
-        getResourceSettings().getStringResourceLoaders().add(0, new EnonicResourceLoader(cmsContentRetriever));
-
-        setSpringComponentInjector();
     }
 
 

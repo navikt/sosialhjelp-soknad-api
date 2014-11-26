@@ -13,7 +13,10 @@ module.exports = function (config) {
         preprocessors: {
             '../../js/dagpenger/**/*.js': ['coverage'],
             '../../js/common/**/*.js': ['coverage'],
+            '../../js/modules/**/*.js': ['coverage'],
+            '../../js/gjenopptak/**/*.js': ['coverage'],
             '../../js/ettersending/**/*.js': ['coverage'],
+            '../../js/utslagskriterier/**/*.js': ['coverage'],
             '../../js/**/*.html': 'ng-html2js'
         },
 
@@ -30,8 +33,10 @@ module.exports = function (config) {
             '../../js/lib/bindonce.js',
             '../../js/dagpenger/**/*.js',
             '../../js/ettersending/**/*.js',
+            '../../js/gjenopptak/**/*.js',
             '../../js/utslagskriterier/**/*.js',
             '../../js/common/**/*.js',
+            '../../js/modules/**/*.js',
             '../../js/lib/jquery/jquery.iframe-transport.js',
             '../../js/lib/jquery/jquery.fileupload.js',
             '../../js/lib/jquery/jquery.fileupload-process.js',
@@ -43,7 +48,8 @@ module.exports = function (config) {
 
         // list of files to exclude
         exclude: [
-            '../../js/dagpenger/**/templates.js'
+            '../../js/dagpenger/**/templates.js',
+            '../../js/gjenopptak/**/templates.js'
         ],
 
         // test results reporter to use
