@@ -16,6 +16,7 @@ module.exports = function (config) {
             '../../js/modules/**/*.js': ['coverage'],
             '../../js/gjenopptak/**/*.js': ['coverage'],
             '../../js/ettersending/**/*.js': ['coverage'],
+            '../../js/utslagskriterier/**/*.js': ['coverage'],
             '../../js/**/*.html': 'ng-html2js'
         },
 
