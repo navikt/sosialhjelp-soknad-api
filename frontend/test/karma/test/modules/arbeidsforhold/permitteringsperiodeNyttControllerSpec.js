@@ -8,7 +8,7 @@
     describe('PermitteringsperiodeNyttCtrl', function () {
         var scope, ctrl, persister, form;
 
-        beforeEach(module('nav.arbeidsforhold', 'nav.feilmeldinger'));
+        beforeEach(module('nav.arbeidsforhold', 'nav.feilmeldinger', 'sendsoknad.services'));
         beforeEach(module(function ($provide) {
 
             var fakta = [];
@@ -61,7 +61,6 @@
             $provide.value("cms", {'tekster': {'barnetillegg.nyttbarn.landDefault': ''}});
             $provide.value("$routeParams", {});
 
-            $provide.value("Faktum", {});
             $provide.value("$modalInstance", {open: function () {
             }, close: function () {
             }});
@@ -76,7 +75,7 @@
             $provide.value("permittering");
         }));
 
-        beforeEach(inject(function ($injector, $rootScope, $controller, Faktum, data) {
+        beforeEach(inject(function ($injector, $rootScope, $controller, data) {
             scope = $rootScope;
             scope.permitteringsperiode = {};
             scope.runValidation = function () {
