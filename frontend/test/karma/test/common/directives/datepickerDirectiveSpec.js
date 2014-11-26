@@ -11,7 +11,7 @@ describe('datepicker', function () {
     var todayMs = 1394108384263;
     var oldDate = Date;
 
-    beforeEach(module('nav.datepicker', 'templates-main', 'nav.cmstekster'));
+    beforeEach(module('nav.datepicker', 'templates-main', 'nav.cms'));
 
     beforeEach(module(function ($provide) {
         Date = function() {

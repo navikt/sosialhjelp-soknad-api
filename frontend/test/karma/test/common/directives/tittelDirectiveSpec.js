@@ -2,7 +2,7 @@ describe('navTittel', function () {
     var element;
     var $scope;
 
-    beforeEach(module('nav.skjematittel', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.skjematittel', 'nav.cms', 'templates-main'));
 
      beforeEach(module(function ($provide) {
             $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});

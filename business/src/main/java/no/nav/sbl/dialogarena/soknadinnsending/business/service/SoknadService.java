@@ -68,6 +68,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInns
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.toInnsendingsvalg;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.WebSoknadUtils.getJournalforendeEnhet;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.WebSoknadUtils.getSkjemanummer;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.util.WebSoknadUtils.getSoknadPrefix;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -104,7 +105,9 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
     @Override
     public WebSoknad hentSoknad(long soknadId) {
-        return repository.hentSoknadMedData(soknadId);
+        WebSoknad soknad = repository.hentSoknadMedData(soknadId);
+        soknad.medSoknadPrefix(getSoknadPrefix(soknad.getskjemaNummer()));
+        return soknad;
     }
 
     @Override
@@ -304,20 +307,20 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     private WSHentSoknadResponse hentSisteIkkeAvbrutteSoknadIBehandlingskjede(List<WSBehandlingskjedeElement> behandlingskjede) {
         List<WSBehandlingskjedeElement> sorterteBehandlinger = on(behandlingskjede).filter(where(STATUS, not(equalTo(SoknadInnsendingStatus.AVBRUTT_AV_BRUKER))))
                 .collect(new Comparator<WSBehandlingskjedeElement>() {
-            @Override
-            public int compare(WSBehandlingskjedeElement o1, WSBehandlingskjedeElement o2) {
-                DateTime dato1 = o1.getInnsendtDato();
-                DateTime dato2 = o2.getInnsendtDato();
-                if (dato1 == null && dato2 == null) {
-                    return 0;
-                } else if (dato1 == null) {
-                    return -1;
-                } else if (dato2 == null) {
-                    return 1;
-                }
-                return dato2.compareTo(dato1);
-            }
-        });
+                    @Override
+                    public int compare(WSBehandlingskjedeElement o1, WSBehandlingskjedeElement o2) {
+                        DateTime dato1 = o1.getInnsendtDato();
+                        DateTime dato2 = o2.getInnsendtDato();
+                        if (dato1 == null && dato2 == null) {
+                            return 0;
+                        } else if (dato1 == null) {
+                            return -1;
+                        } else if (dato2 == null) {
+                            return 1;
+                        }
+                        return dato2.compareTo(dato1);
+                    }
+                });
 
         return henvendelseConnector.hentSoknad(sorterteBehandlinger.get(0).getBehandlingsId());
     }

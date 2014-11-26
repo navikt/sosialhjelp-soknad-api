@@ -1,7 +1,7 @@
 describe('sist lagret', function () {
     var scope, element;
 
-    beforeEach(module('nav.stickybunn', 'nav.sistLagret', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.stickybunn', 'nav.sistLagret', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
@@ -51,7 +51,7 @@ describe('sist lagret', function () {
 describe('stickybunnUtensistLagret', function () {
     var scope, element;
 
-    beforeEach(module('nav.stickybunn', 'nav.sistLagret', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.stickybunn', 'nav.sistLagret', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
@@ -100,7 +100,7 @@ describe('stickybunnUtensistLagret', function () {
 describe('stickybunnUtenLenketekst', function () {
     var scope, element;
 
-    beforeEach(module('nav.stickybunn', 'nav.sistLagret', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.stickybunn', 'nav.sistLagret', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});

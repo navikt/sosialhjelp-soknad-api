@@ -1,5 +1,5 @@
-angular.module('nav.stegindikator', ['nav.cmstekster'])
-	.directive('stegindikator', ['data', function (data) {
+angular.module('nav.stegindikator', [])
+	.directive('stegindikator', function (data) {
 		return {
 			restrict   : 'A',
 			replace    : true,
@@ -72,4 +72,4 @@ angular.module('nav.stegindikator', ['nav.cmstekster'])
                 }
             }
 		};
-	}]);
+	});

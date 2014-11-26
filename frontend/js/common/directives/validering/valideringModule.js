@@ -1,5 +1,5 @@
-angular.module('nav.validering', ['nav.cmstekster'])
-    .directive('blurValidate', ['cms', function (cms) {
+angular.module('nav.validering', ['nav.cms'])
+    .directive('blurValidate', function (cms) {
         return {
             require: ['ngModel', '^form'],
             link: function (scope, element, attrs, ctrls) {
@@ -74,9 +74,9 @@ angular.module('nav.validering', ['nav.cmstekster'])
                 }
             }
         };
-    }])
+    })
 
-    .directive('clickValidate', ['$timeout', 'cms', function ($timeout, cms) {
+    .directive('clickValidate', function ($timeout, cms) {
         return {
             require: ['ngModel', '^form'],
             link: function (scope, element, attrs, ctrls) {
@@ -127,7 +127,7 @@ angular.module('nav.validering', ['nav.cmstekster'])
                 }
             }
         };
-    }])
+    })
 //    direktivet skal brukes på div-en som ligger rundt en checkboksgruppe og som skal ha inlinevalidering
     .directive('checkboxValidate', function () {
         return {
