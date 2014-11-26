@@ -1,0 +1,56 @@
+<div class="skjemaramme">
+    <div data-ng-form="reberegningForm" class="skjemainnhold" data-ng-controller="ReberegningCtrl" data-novalidate>
+        <div data-navinfoboks>
+            <p data-ng-bind-html="'reberegning.infoboks.tekst' | cmstekst"></p>
+        </div>
+
+        <div data-form-errors></div>
+
+        <div data-nav-faktum="reberegning.nyberegning"
+             data-ng-model="faktum.value"
+             data-navconfig
+             data-booleanradio
+             data-nokkel="reberegning.nyberegning">
+
+            <div data-navinfoboks>
+                <p data-ng-bind-html=" 'reberegning.nyberegning.startdato.informasjon' | cmstekst"></p>
+            </div>
+
+            <div class="spm boolean form-linje">
+                <h4 class="spm-sporsmal">
+                    <span data-ng-bind-html=" 'reberegning.nyberegning.startdato.sporsmal' | cmstekst"></span>
+                </h4>
+
+                <div data-navradio
+                     data-value="soknadsdato"
+                     data-navconfig
+                     data-nav-faktum="reberegning.nyberegning.startdato"
+                     data-navlabel="reberegning.nyberegning.startdato.soknadsdato"
+                     data-navfeilmelding="reberegning.nyberegning.startdato.feilmelding">
+                </div>
+
+                <div data-navradio
+                     data-value="aarskiftet"
+                     data-navconfig
+                     data-nav-faktum="reberegning.nyberegning.startdato"
+                     data-navlabel="reberegning.nyberegning.startdato.aarskiftet"
+                     data-navfeilmelding="reberegning.nyberegning.startdato.feilmelding">
+                </div>
+
+                <div data-melding>
+                    <span class="melding" data-ng-bind-html=" navfeilmelding | cmstekst"></span>
+                </div>
+            </div>
+
+            <div data-navinfoboks>
+                <p data-ng-bind-html=" 'reberegning.nyberegning.arbeidstid.informasjon' | cmstekst"></p>
+            </div>
+
+            <div data-nav-faktum="reberegning.nyberegning.arbeidstid"
+                 data-booleanradio
+                 data-nokkel="reberegning.nyberegning.arbeidstid">
+            </div>
+        </div>
+        <div data-spmblokkferdig></div>
+    </div>
+</div>

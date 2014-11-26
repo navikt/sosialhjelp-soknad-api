@@ -1,4 +1,4 @@
-<div data-nav-tittel="{{ cmsprefix }}.skjema.tittel"></div>
+<div data-nav-tittel="skjema.tittel"></div>
 
 <div data-stegindikator data-steg-liste="veiledning, skjema, vedlegg, sendInn" data-aktiv-index="0"></div>
 
@@ -11,33 +11,41 @@
        			<a type="button" class="knapp-hoved" href="{{ dittnavUrl }}" data-ng-bind-html=" 'feilmelding.lenketekst' | cmstekst"></a>
        		</div>
        	</div>
-       	<form data-ng-show="tpsSvarer()">
-	        <h2 class="stor strek-ikon-info-orange" data-ng-bind-html=" cmsprefix+'.informasjonsside.tittel' | cmstekst"></h2>
+       	<form name="infoForm" data-ng-show="tpsSvarer()">
+	        <h2 class="stor strek-ikon-info-orange" data-ng-bind-html=" 'informasjonsside.tittel' | cmstekst"></h2>
 
 			<div class="viktig-info">
-				<p class="informasjonsliste" data-ng-bind-html="cmsprefix+'.informasjonsside.informasjon.liste' | cmstekst"></p>
+				<p class="informasjonsliste" data-ng-bind-html="'informasjonsside.informasjon.liste' | cmstekst"></p>
 
-				<div class="checkbox form-linje" data-ng-if="oppsummering != true" data-checkbox-validate>
-                    <input id="lestBrosjyre" data-ng-model="utslagskriterier.harlestbrosjyre" type="checkbox">
-                    <label for="lestBrosjyre" data-ng-bind-html=" cmsprefix+'.informasjonsside.lestbrosjyre.sporsmal' | cmstekst"></label>
-                    <span class="melding" data-ng-bind-html=" cmsprefix+'.informasjonsside.lestbrosjyre.feilmelding' | cmstekst"></span>
+				<div class="checkbox form-linje"
+                        data-ng-if="oppsummering != true"
+                        data-checkbox-validate>
+
+
+                    <input id="lestBrosjyre" data-ng-model="utslagskriterier.harlestbrosjyre" type="checkbox" data-ng-required="true" data-checkbox-validate>
+                    <label for="lestBrosjyre" data-ng-bind-html="'informasjonsside.lestbrosjyre.sporsmal' | cmstekst"></label>
+                    <span class="melding" data-ng-bind-html="'informasjonsside.lestbrosjyre.feilmelding' | cmstekst"></span>
 				</div>
 				
 				<div class="avhuket" data-ng-if="oppsummering == true">
 					<span class="sjekket"></span>
-                    <span data-ng-bind-html=" cmsprefix+'.informasjonsside.lestbrosjyre.sporsmal' | cmstekst"></span>
+                    <span data-ng-bind-html="'informasjonsside.lestbrosjyre.sporsmal' | cmstekst"></span>
 				</div>
 			</div>
 
-
 			<div class="utslagskriterier-knapper">
 				<div data-ng-show="soknadErStartet()">
-					<input type="button" class="knapp-hoved" value="{{ 'utslagskriterier.utslag.fortsettSoknad' | cmstekst }}" data-ng-click="forsettSoknadDersomBrosjyreLest()" data-valider-informasjonsside data-fremdriftsindikator/>
-				</div>
+					<input type="button" class="knapp-hoved" value="{{ 'utslagskriterier.utslag.fortsettSoknad' | cmstekst }}" data-ng-click="forsettSoknadDersomBrosjyreLest()"  data-fremdriftsindikator/>
+                </div>
+
 				<div data-ng-show="soknadErIkkeStartet()">
-					<input type="button" class="knapp-hoved" value="{{ 'utslagskriterier.utslag.fortsett' | cmstekst }}" data-ng-click="startSoknadDersomBrosjyreLest()" data-valider-informasjonsside data-fremdriftsindikator/>
-					<a href="{{ dittnavUrl }}" data-ng-bind-html=" 'utslagskriterier.utslag.avbryt.lenketekst' | cmstekst"></a>
-				</div>
+					<input type="button" class="knapp-hoved" value="{{ 'utslagskriterier.utslag.fortsett' | cmstekst }}" data-ng-click="startSoknadDersomBrosjyreLest(infoForm)" data-fremdriftsindikator />
+                </div>
+
+                <ul class="liste-vannrett">
+                    <li><a class="inline" href="{{ dittnavUrl }}" data-ng-bind-html="'utslagskriterier.utslag.avbryt.lenketekst' | cmstekst"></a></li>
+                    <li><a class="inline" href="{{ tilbakeUrl }}" data-ng-bind-html="'informasjonsside.tilbake.lenketekst' | cmstekst"></a></li>
+                </ul>
 			</div>
 		</form>
 	</div>

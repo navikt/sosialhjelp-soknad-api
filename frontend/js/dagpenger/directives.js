@@ -1,6 +1,5 @@
 angular.module('sendsoknad.directives', [
 	'nav.booleanradio',
-	'nav.cmstekster',
 	'nav.input',
 	'nav.feilmeldinger',
 	'nav.stickyFeilmelding',
@@ -20,7 +19,7 @@ angular.module('sendsoknad.directives', [
 	'nav.accordion',
 	'nav.scroll.directive',
 	'nav.scrollbar',
-	'nav.dagpengerdirective',
+	'nav.aapneForsteInvalidBolkDirective',
 	'nav.skjematittel',
 	'nav.aria',
 	'nav.norskDatoFilter',

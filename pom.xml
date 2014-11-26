@@ -5,7 +5,7 @@
     <parent>
         <groupId>no.nav.sbl.dialogarena</groupId>
         <artifactId>dialogarena</artifactId>
-        <version>2.1</version>
+        <version>4</version>
     </parent>
 
     <modules>
@@ -30,13 +30,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 
-        <modig.frontend>1.1.64</modig.frontend>
-        <wicket.version>6.17.0</wicket.version>
+        <modig.frontend>1.1.94</modig.frontend>
+        <wicket.version>6.18.0</wicket.version>
         <spring.version>3.2.9.RELEASE</spring.version>
         <cxf.version>2.7.9</cxf.version>
         <modig-security.version>1.0.21</modig-security.version>
         <sendsoknad.tjenestespec.version>0.0.23</sendsoknad.tjenestespec.version>
-        <behandlingsinformasjon.tjenestespec.version>0.0.9</behandlingsinformasjon.tjenestespec.version>
+        <behandlingsinformasjon.tjenestespec.version>0.0.26</behandlingsinformasjon.tjenestespec.version>
         <fillager.tjenestespec.version>0.0.3</fillager.tjenestespec.version>
         <henvendelse.tjenestespesifikasjon.version.1>2.0.0</henvendelse.tjenestespesifikasjon.version.1>
         <dialogarena.webkomponent.navigasjon>1.0.5</dialogarena.webkomponent.navigasjon>
@@ -101,23 +101,18 @@
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>common-lokalt-kodeverk</artifactId>
-                <version>1.0.41</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>cglib</groupId>
-                        <artifactId>cglib</artifactId>
-                    </exclusion>
-                </exclusions>
+                <version>1.1.0</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-frontend-wicket</artifactId>
                 <version>${modig.frontend}</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.modig</groupId>
-                <artifactId>modig-frontend-ressurser</artifactId>
-                <version>${modig.frontend}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
@@ -162,11 +157,6 @@
 
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>henvendelse-jaxws</artifactId>
-                <version>${henvendelse.tjenestespesifikasjon.version.1}</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>sendsoknad-tjenestespesifikasjon</artifactId>
                 <version>${sendsoknad.tjenestespec.version}</version>
             </dependency>
@@ -179,16 +169,6 @@
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>arena-personinfo-tjenestespesifikasjon</artifactId>
                 <version>0.0.1</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>dokumentinnsending-consumer</artifactId>
-                <version>${dialogarena.dokumentinnsending.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>dokumentinnsending-business</artifactId>
-                <version>${dialogarena.dokumentinnsending.version}</version>
             </dependency>
             <dependency>
                 <groupId>joda-time</groupId>
@@ -212,16 +192,6 @@
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>org.jvnet.jaxb2_commons</groupId>
-                <artifactId>jaxb2-basics-runtime</artifactId>
-                <version>0.6.5</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.sbl.felles</groupId>
-                <artifactId>nav-sbl-felles-commons-security</artifactId>
-                <version>3.30</version>
-            </dependency>
-            <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>common-detect</artifactId>
                 <version>2.2.2</version>
@@ -237,11 +207,16 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-
             <dependency>
                 <groupId>org.apache.pdfbox</groupId>
                 <artifactId>pdfbox</artifactId>
                 <version>1.8.2</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.xhtmlrenderer</groupId>
@@ -289,6 +264,7 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>jcl-over-slf4j</artifactId>
                 <version>1.7.7</version>
+                <scope>runtime</scope>
             </dependency>
             <dependency>
                 <groupId>com.google.code.gson</groupId>
@@ -313,11 +289,6 @@
             <dependency>
                 <groupId>org.apache.wicket</groupId>
                 <artifactId>wicket-devutils</artifactId>
-                <version>${wicket.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.wicket</groupId>
-                <artifactId>wicket-datetime</artifactId>
                 <version>${wicket.version}</version>
             </dependency>
             <dependency>
@@ -375,10 +346,6 @@
                         <groupId>commons-logging</groupId>
                         <artifactId>commons-logging</artifactId>
                     </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-beans</artifactId>
-                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
@@ -401,44 +368,16 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context-support</artifactId>
                 <version>${spring.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-beans</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-tx</artifactId>
-                <version>${spring.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-beans</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-orm</artifactId>
                 <version>${spring.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-jdbc</artifactId>
                 <version>${spring.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-beans</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-entitymanager</artifactId>
-                <version>4.3.0.Beta3</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -449,32 +388,11 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-aop</artifactId>
                 <version>${spring.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-beans</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.federation</groupId>
-                <artifactId>amclientsdk</artifactId>
-                <version>8.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.codehaus.jettison</groupId>
-                <artifactId>jettison</artifactId>
-                <version>1.3.5</version>
             </dependency>
             <dependency>
                 <groupId>javax.inject</groupId>
                 <artifactId>javax.inject</artifactId>
                 <version>1</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.activation</groupId>
-                <artifactId>activation</artifactId>
-                <version>1.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.cxf</groupId>
@@ -527,11 +445,6 @@
             </dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>
-                <artifactId>modig-security</artifactId>
-                <version>${modig-security.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.modig</groupId>
                 <artifactId>modig-security-authorization</artifactId>
                 <version>${modig-security.version}</version>
             </dependency>
@@ -561,25 +474,6 @@
                 <version>${modig-security.version}</version>
             </dependency>
             <dependency>
-                <groupId>no.nav.modig</groupId>
-                <artifactId>modig-security-ws</artifactId>
-                <version>${modig-security.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.cxf</groupId>
-                        <artifactId>cxf-rt-bindings-soap</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>xml-apis</groupId>
-                        <artifactId>xml-apis</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-jaxrs</artifactId>
                 <version>2.3.5.Final</version>
@@ -594,6 +488,12 @@
                 <groupId>org.apache.ws.security</groupId>
                 <artifactId>wss4j</artifactId>
                 <version>1.6.12</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>
@@ -604,11 +504,6 @@
                 <groupId>javax.mail</groupId>
                 <artifactId>mail</artifactId>
                 <version>1.5.0-b01</version>
-            </dependency>
-            <dependency>
-                <groupId>com.55minutes</groupId>
-                <artifactId>fiftyfive-wicket-core</artifactId>
-                <version>4.0.4-MOD</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
@@ -704,7 +599,7 @@
             <dependency>
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-testcertificates</artifactId>
-                <version>1.0.0</version>
+                <version>1.1.3</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -736,32 +631,6 @@
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>org.fitnesse</groupId>
-                <artifactId>fitnesse</artifactId>
-                <version>20121220</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.fitnesse</groupId>
-                <artifactId>fitlibrary</artifactId>
-                <version>2.0</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>log4j</groupId>
-                        <artifactId>log4j</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>junit</groupId>
-                        <artifactId>junit-dep</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
                 <version>1.2.17</version>
@@ -776,14 +645,8 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>1.9.5</version>
+                <version>1.10.8</version>
                 <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.objenesis</groupId>
-                        <artifactId>objenesis</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -799,34 +662,16 @@
             </dependency>
 
             <dependency>
-                <groupId>eviware</groupId>
-                <artifactId>maven-soapui-plugin</artifactId>
-                <version>4.5.1</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>xml-apis</groupId>
-                        <artifactId>xml-apis</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>eviware</groupId>
-                <artifactId>soapui</artifactId>
-                <version>4.5.1</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>xml-apis</groupId>
-                        <artifactId>xml-apis</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
                 <groupId>commons-httpclient</groupId>
                 <artifactId>commons-httpclient</artifactId>
                 <version>3.1-osgi</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.codehaus.plexus</groupId>
@@ -847,18 +692,6 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>org.reflections</groupId>
-                <artifactId>reflections</artifactId>
-                <version>0.9.9-RC1</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-transports-http-jetty</artifactId>
-                <version>${cxf.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>common-jetty</artifactId>
                 <version>1.0.23</version>
@@ -868,6 +701,12 @@
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-content</artifactId>
                 <version>1.2.2</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
         </dependencies>
     </dependencyManagement>

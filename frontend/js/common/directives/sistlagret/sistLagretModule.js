@@ -8,14 +8,15 @@ angular.module('nav.sistLagret', [])
             templateUrl: '../js/common/directives/sistlagret/sistLagretTemplate.html',
 			link       : function (scope) {
 				scope.soknadId = data.soknad.soknadId;
+                scope.brukerBehandlingId = data.soknad.brukerBehandlingId;
                 scope.lenke = {
                     value: ""
                 };
 
                 if(scope.navtilbakelenke.indexOf('vedlegg') > -1) {
-                    scope.lenke.value="#/vedlegg";
+                    scope.lenke.value="#/" + data.soknad.brukerBehandlingId + "/vedlegg";
                 } else if (scope.navtilbakelenke.indexOf('soknad') > -1) {
-                    scope.lenke.value="#/soknad";
+                    scope.lenke.value="#/" + data.soknad.brukerBehandlingId + "/soknad";
                 }
 
 				scope.hentSistLagretTid = function () {

@@ -1,6 +1,6 @@
 describe('navtextarea', function () {
     var element, scope, timeout;
-    beforeEach(module('nav.textarea', 'nav.cmstekster', 'templates-main', 'ngSanitize'));
+    beforeEach(module('nav.textarea', 'nav.cms', 'templates-main', 'ngSanitize'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'ennokkel.sporsmal': 'Et sporsmal'}});
@@ -63,7 +63,7 @@ describe('navtextarea', function () {
 });
 describe('navtextareaUtenSporsmal', function () {
     var element, scope;
-    beforeEach(module('nav.textarea', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.textarea', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'ikkeetsporsmal': ''}});

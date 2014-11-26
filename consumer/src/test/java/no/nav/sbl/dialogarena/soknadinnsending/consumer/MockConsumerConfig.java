@@ -18,6 +18,11 @@ import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStartSoknad
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBankkonto;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBankkontoNorge;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBankkontoUtland;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBankkontonummer;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBankkontonummerUtland;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBostedsadresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBruker;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLEPost;
@@ -541,7 +546,34 @@ public class MockConsumerConfig {
             xmlNorskIdent.setIdent(RIKTIG_IDENT);
             xmlBruker.setIdent(xmlNorskIdent);
 
+            xmlBruker.setBankkonto(utenlandskBankkonto());
+
             return xmlBruker;
+        }
+
+        private XMLBankkonto norskBankkonto() {
+            XMLBankkontonummer bankkontonummer = new XMLBankkontonummer();
+            bankkontonummer.setBankkontonummer("1234 12 12345");
+
+            XMLBankkontoNorge bankkonto = new XMLBankkontoNorge();
+            bankkonto.setBankkonto(bankkontonummer);
+
+            return bankkonto;
+        }
+
+        private XMLBankkonto utenlandskBankkonto() {
+            XMLLandkoder landkoder = new XMLLandkoder();
+            landkoder.setValue("DNK");
+
+            XMLBankkontonummerUtland bankkontonummer = new XMLBankkontonummerUtland();
+            bankkontonummer.setBanknavn("Nordea");
+            bankkontonummer.setBankkontonummer("9876 98 98765");
+            bankkontonummer.setLandkode(landkoder);
+
+            XMLBankkontoUtland bankkonto = new XMLBankkontoUtland();
+            bankkonto.setBankkontoUtland(bankkontonummer);
+
+            return bankkonto;
         }
 
         public BrukerprofilPortType brukerProfilSelftest() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {

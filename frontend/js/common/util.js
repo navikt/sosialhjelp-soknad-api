@@ -43,9 +43,6 @@ String.prototype.toCamelCase = function () {
     });
 };
 
-function erSoknadStartet() {
-    return location.href.indexOf("sendsoknad/soknad/") > 0;
-}
 function erEttersending() {
     return location.href.indexOf("ettersending") > 0;
 }
@@ -69,6 +66,15 @@ function redirectTilSide(side) {
 
 function redirectTilUrl(url) {
     window.location.href = url;
+}
+
+function erPaaSideMedPath(url, path) {
+    return url && url.indexOf(path) > -1;
+}
+
+function getSoknadstypeFromUrl() {
+    var soknadType = decodeURI(window.location.pathname).split("/")[3];
+    return soknadType ? soknadType.slice(0,3) + ' ' + soknadType.slice(3) : undefined;
 }
 
 function sjekkOmGittEgenskapTilObjektErTrue(objekt) {
@@ -99,9 +105,11 @@ function checkTrue(element) {
 }
 
 function scrollToElement(element, offset) {
-    var animationSpeed = 200;
-    var scrollPos = Math.max(element.offset().top - offset, 0);
-    $('body, html').scrollToPos(scrollPos, animationSpeed);
+    if(element.is(":visible")) {
+        var animationSpeed = 200;
+        var scrollPos = Math.max(element.offset().top - offset, 0);
+        $('body, html').scrollToPos(scrollPos, animationSpeed);
+    }
 }
 
 function verdiErIkkeTom(verdi) {
@@ -234,6 +242,23 @@ function reverserNorskDatoformat(datoString) {
     } else {
         return '';
     }
+}
+
+function lagNorskDatoformatFraIsoStandard(datoString) {
+    var dato = new Date(datoString);
+    if(isNaN(dato)) {
+        return null;
+    }
+
+    function addLeedingZero(tall){
+        return tall.toString().length == 1 ?  "0" + tall : tall;
+    }
+
+    var dag = addLeedingZero(dato.getDate()),
+        maaned = addLeedingZero(dato.getMonth()+1),
+        aar = dato.getFullYear();
+
+    return dag + "." + maaned + "." + aar;
 }
 
 function erFremtidigDato(year, month, day) {
@@ -380,3 +405,4 @@ function getCookie(cname) {
     }
     return "";
 }
+

@@ -90,6 +90,5 @@ public class SoknadTpsDataController {
             logger.error("Kunne ikke hente personalia");
         }
         return personalia;
-
     }
 }

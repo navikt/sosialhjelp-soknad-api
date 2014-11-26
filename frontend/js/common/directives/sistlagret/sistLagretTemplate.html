@@ -13,10 +13,10 @@
             <a href="{{ lenke.value}}" data-ng-bind-html=" navtilbakelenke | cmstekst"></a>
         </li>
         <li>
-            <a href="#/fortsettsenere" data-ng-bind-html=" 'fortsettSenere' | cmstekst"></a>
+            <a href="#/{{brukerBehandlingId}}/fortsettsenere" data-ng-bind-html=" 'fortsettSenere' | cmstekst"></a>
         </li>
         <li>
-            <a href="#/avbryt" data-ng-bind-html=" 'avbryt.soknad' | cmstekst"></a>
+            <a href="#/{{brukerBehandlingId}}/avbryt" data-ng-bind-html=" 'avbryt.soknad' | cmstekst"></a>
         </li>
     </ul>
 </div>

@@ -1,7 +1,7 @@
 describe('navradio', function () {
     var scope, element;
 
-    beforeEach(module('nav.input', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.input', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
@@ -45,7 +45,7 @@ describe('navradio', function () {
 describe('navradio', function () {
     var scope, element;
 
-    beforeEach(module('nav.input', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.input', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
@@ -86,7 +86,7 @@ describe('navradio', function () {
 describe('navradio', function () {
     var scope, element;
 
-    beforeEach(module('nav.input', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.input', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
@@ -120,7 +120,7 @@ describe('navradio', function () {
 describe('navradioMedArbeidsforhold', function () {
     var scope, element;
 
-    beforeEach(module('nav.input', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.input', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
@@ -159,7 +159,7 @@ describe('navradioMedArbeidsforhold', function () {
 describe('navcheckbox', function () {
     var scope, element;
 
-    beforeEach(module('nav.input', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.input', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster':
@@ -206,7 +206,7 @@ describe('navcheckbox', function () {
 describe('navcheckboxUtenHjelpetekst', function () {
     var scope, element;
 
-    beforeEach(module('nav.input', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.input', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster':
@@ -246,7 +246,7 @@ describe('navcheckboxUtenHjelpetekst', function () {
 describe('navtekst', function () {
     var scope, element;
 
-    beforeEach(module('nav.input', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.input', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster':
@@ -286,7 +286,7 @@ describe('navtekst', function () {
 describe('navtekstMedSporsmalOgRegEx', function () {
     var scope, element;
 
-    beforeEach(module('nav.input', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.input', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster':
@@ -329,7 +329,7 @@ describe('navtekstMedSporsmalOgRegEx', function () {
 describe('navorganisasjonsnummerfelt', function () {
     var scope, element;
 
-    beforeEach(module('nav.input', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.input', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster':
@@ -372,7 +372,7 @@ describe('navorganisasjonsnummerfelt', function () {
 describe('navorganisasjonsnummerfeltNavVisSlettTrue', function () {
     var scope, element;
 
-    beforeEach(module('nav.input', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.input', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster':
@@ -412,7 +412,7 @@ describe('navorganisasjonsnummerfeltNavVisSlettTrue', function () {
 describe('navorganisasjonsnummerfeltVisSlett', function () {
     var scope, element;
 
-    beforeEach(module('nav.input', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.input', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster':
@@ -448,7 +448,7 @@ describe('navorganisasjonsnummerfeltVisSlett', function () {
 describe('orgnrValidate', function () {
     var scope, element, inputnavn, form;
 
-    beforeEach(module('nav.input', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.input', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster':

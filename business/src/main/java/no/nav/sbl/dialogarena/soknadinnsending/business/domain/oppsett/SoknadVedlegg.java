@@ -23,6 +23,7 @@ public class SoknadVedlegg implements Serializable {
     private String property;
     private Boolean inverted = false;
     private String oversetting;
+    private List<String> ekstraValg = new ArrayList<>();
     private List<String> values = new ArrayList<>();
 
     @XmlIDREF
@@ -98,6 +99,16 @@ public class SoknadVedlegg implements Serializable {
 
     public void setOversetting(String oversetting) {
         this.oversetting = oversetting;
+    }
+
+    @XmlElementWrapper(name = "ekstraValg")
+    @XmlElement(name = "valg")
+    public List<String> getEkstraValg() {
+        return ekstraValg;
+    }
+
+    public void setEkstraValg(List<String> valg) {
+        this.ekstraValg = valg;
     }
 
     public boolean harOversetting() {

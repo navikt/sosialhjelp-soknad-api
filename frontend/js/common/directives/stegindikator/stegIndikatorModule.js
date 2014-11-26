@@ -1,5 +1,5 @@
-angular.module('nav.stegindikator', ['nav.cmstekster'])
-	.directive('stegindikator', ['data', function (data) {
+angular.module('nav.stegindikator', [])
+	.directive('stegindikator', function (data) {
 		return {
 			restrict   : 'A',
 			replace    : true,
@@ -33,16 +33,18 @@ angular.module('nav.stegindikator', ['nav.cmstekster'])
                     };
 
                     scope.hentLenke = function(idx) {
+                        var baseUrl = "#";
+                        if(data.soknad) {
+                            baseUrl += '/' + data.soknad.brukerBehandlingId;
+                        }
+
                         if (idx === 2) {
-                            return '#/vedlegg';
+                            return baseUrl + '/vedlegg';
                         } else if (idx === 1) {
-                            return '#/soknad';
-                        }
-                        else if (idx === 3)
-                        {
-                            return '#/oppsummering';
-                        }
-                        else {
+                            return baseUrl + '/soknad';
+                        } else if (idx === 3) {
+                            return baseUrl + '/oppsummering';
+                        } else {
                             return '#/informasjonsside';
                         }
                     };
@@ -70,4 +72,4 @@ angular.module('nav.stegindikator', ['nav.cmstekster'])
                 }
             }
 		};
-	}]);
+	});

@@ -94,7 +94,7 @@ PUBLIC "-//OpenSSO Policy Administration DTD//EN"
 			<Condition name="condition_SendSoknad_001_AuthenticationLevel" type="AuthLevelCondition">
 				<AttributeValuePair>
 					<Attribute name="AuthLevel"/>
-					<Value>/:4</Value>
+					<Value>4</Value>
 				</AttributeValuePair>
 			</Condition>
 		</Conditions>

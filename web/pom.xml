@@ -15,7 +15,6 @@
     <packaging>war</packaging>
 
     <properties>
-        <fitnesse.port>9979</fitnesse.port>
         <jetty.port>8080</jetty.port>
     </properties>
 
@@ -28,6 +27,14 @@
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>kodeverk-tjenestespesifikasjon</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.sbl.dialogarena</groupId>
+            <artifactId>fillager-tjenestespesifikasjon</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.sbl.dialogarena</groupId>
+            <artifactId>arena-personinfo-tjenestespesifikasjon</artifactId>
         </dependency>
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
@@ -139,6 +146,10 @@
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
         </dependency>
         <dependency>
@@ -217,8 +228,6 @@
         <dependency>
             <groupId>org.codehaus.woodstox</groupId>
             <artifactId>woodstox-core-asl</artifactId>
-            <version>4.2.0</version>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>no.nav.modig</groupId>
@@ -256,17 +265,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
             <artifactId>spring-expression</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-tx</artifactId>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -346,16 +345,6 @@
         <dependency>
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-wicket-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.fitnesse</groupId>
-            <artifactId>fitnesse</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.fitnesse</groupId>
-            <artifactId>fitlibrary</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -482,80 +471,12 @@
                             <Implementation-Version>${project.version}</Implementation-Version>
                         </manifestEntries>
                     </archive>
-                    <!--<webResources>-->
-                        <!--<resource>-->
-                            <!--<directory>../frontend/target-grunt/lib</directory>-->
-                            <!--<targetPath>js/lib</targetPath>-->
-                        <!--</resource>-->
-                    <!--</webResources>-->
                 </configuration>
             </plugin>
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-dependency-plugin</artifactId>-->
-                <!--<version>2.8</version>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>copy</id>-->
-                        <!--<phase>generate-resources</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>unpack</goal>-->
-                        <!--</goals>-->
-                        <!--<configuration>-->
-                            <!--<artifactItems>-->
-                                <!--<artifactItem>-->
-                                    <!--<groupId>${project.groupId}</groupId>-->
-                                    <!--<artifactId>sendsoknad-frontend</artifactId>-->
-                                    <!--<version>${project.version}</version>-->
-                                    <!--<type>jar</type>-->
-                                    <!--<overWrite>false</overWrite>-->
-                                    <!--<outputDirectory>${project.build.directory}/${artifactId}-${project.version}/js</outputDirectory>-->
-                                    <!--<excludes>**/META-INF/**</excludes>-->
-                                <!--</artifactItem>-->
-                            <!--</artifactItems>-->
-                            <!--&lt;!&ndash;<outputDirectory>${basedir}/src/main/webapp/grunt</outputDirectory>&ndash;&gt;-->
-                            <!--<overWriteReleases>false</overWriteReleases>-->
-                            <!--<overWriteSnapshots>true</overWriteSnapshots>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
         </plugins>
     </build>
 
     <profiles>
-        <profile>
-            <id>fitnesse</id>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.codehaus.mojo</groupId>
-                            <artifactId>exec-maven-plugin</artifactId>
-                            <executions>
-                                <execution>
-                                    <goals>
-                                        <goal>exec</goal>
-                                    </goals>
-                                </execution>
-                            </executions>
-                            <configuration>
-                                <classpathScope>test</classpathScope>
-                                <executable>java</executable>
-                                <arguments>
-                                    <argument>-cp</argument>
-                                    <classpath />
-                                    <argument>no.nav.sbl.dialogarena.dokumentinnsending.FitNesseMain</argument>
-                                    <argument>-restart-server</argument>
-                                    <argument>-port</argument>
-                                    <argument>${fitnesse.port}</argument>
-                                </arguments>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
-        </profile>
         <profile>
             <id>jetty</id>
             <build>

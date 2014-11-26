@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(MockitoJUnitRunner.class)
 public class FortsettSenereControllerTest {
     @Mock
-    private EmailService kodeverk;
+    private EmailService emailService;
     @Spy
     private StaticMessageSource messageSource = new StaticMessageSource();
 
@@ -50,16 +50,16 @@ public class FortsettSenereControllerTest {
 
     @Test
     public void skalKunneGenerereGjenopptaUrl() {
-        Assert.assertEquals("http://a34duvw22583.devillo.no:8181/sendsoknad/soknad/abc-123-def?utm_source=web&utm_medium=email&utm_campaign=2",
-                ServerUtils.getGjenopptaUrl("http://a34duvw22583.devillo.no:8181/sendsoknad/rest/soknad/244/fortsettsenere", "abc-123-def"));
+        Assert.assertEquals("http://a34duvw22583.devillo.no:8181/sendsoknad/soknad/skjemanavn#/behandling/fortsett?utm_source=web&utm_medium=email&utm_campaign=2",
+                ServerUtils.getGjenopptaUrl("http://a34duvw22583.devillo.no:8181/sendsoknad/rest/soknad/244/fortsettsenere", "skjemanavn", "behandling"));
     }
 
     @Test
     public void skalGjennoppta() throws Exception {
         messageSource.addMessage("fortsettSenere.sendEpost.epostInnhold", new Locale("nb", "NO"), "test med url {0}");
-        mockMvc.perform(post("/soknad/{behandlingsId}/fortsettsenere", "BH123").contentType(MediaType.APPLICATION_JSON).content("{\"epost\": \"test@epost.com\"}"))
+        mockMvc.perform(post("/soknad/{soknadId}/{behandlingsId}/fortsettsenere", "NAV13", "BH123").contentType(MediaType.APPLICATION_JSON).content("{\"epost\": \"test@epost.com\"}"))
                 .andExpect(status().isOk());
-        verify(kodeverk).sendFortsettSenereEPost("test@epost.com", "Lenke til påbegynt dagpengesøknad", "test med url http://localhost:80/soknad/BH123/fortsettsenere/soknad/BH123?utm_source=web&utm_medium=email&utm_campaign=2");
+        verify(emailService).sendFortsettSenereEPost("test@epost.com", "Lenke til påbegynt dagpengesøknad", "test med url http://localhost:80/soknad/NAV13/BH123/fortsettsenere/soknad/NAV13#/BH123/fortsett?utm_source=web&utm_medium=email&utm_campaign=2");
     }
 
 }

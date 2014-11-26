@@ -1,0 +1,19 @@
+<div class="adresse">
+    <div data-ng-if="harGjeldendeAdresse()">
+        <h3 class="personalia-header" data-ng-bind-html=" gjeldendeAdresseTypeLabel | cmstekst"></h3>
+        <span data-ng-bind-html="formattertGjeldendeAdresse"></span>
+        <p data-ng-show="harGjeldendeGyldigTilDato()">
+            <span data-ng-bind-html=" 'personalia.gyldigTil' | cmstekst"></span>
+            <span> {{ personalia.gjeldendeAdresseGyldigTil | date:'dd.MM.yyyy' }} </span>
+        </p>
+    </div>
+
+    <div class="sekundaerAdresse" data-ng-if="harSekundarAdresse()">
+        <h3 class="personalia-header" data-ng-bind-html=" sekundarAdresseTypeLabel | cmstekst"></h3>
+        <span data-ng-bind-html="formattertSekundarAdresse"></span>
+        <p data-ng-show="harSekundarGyldigTilDato()">
+            <span data-ng-bind-html=" 'personalia.gyldigTil' | cmstekst"></span>
+            <span> {{ personalia.sekundarAdresseGyldigTil | date:'dd.MM.yyyy' }} </span>
+        </p>
+    </div>
+</div>

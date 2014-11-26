@@ -68,8 +68,10 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInns
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.toInnsendingsvalg;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.WebSoknadUtils.getJournalforendeEnhet;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.WebSoknadUtils.getSkjemanummer;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.util.WebSoknadUtils.getSoknadPrefix;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.slf4j.LoggerFactory.getLogger;
+
 
 @Component
 public class SoknadService implements SendSoknadService, EttersendingService {
@@ -94,7 +96,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     private StartDatoService startDatoService;
 
     private static final String EKSTRA_VEDLEGG_KEY = "ekstraVedlegg";
-    private List<String> gyldigeSkjemaer = Arrays.asList("NAV 04-01.03");
+    private List<String> gyldigeSkjemaer = Arrays.asList("NAV 04-01.03", "NAV 04-16.03");
 
     @Override
     public void settDelsteg(Long soknadId, DelstegStatus delstegStatus) {
@@ -103,7 +105,9 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
     @Override
     public WebSoknad hentSoknad(long soknadId) {
-        return repository.hentSoknadMedData(soknadId);
+        WebSoknad soknad = repository.hentSoknadMedData(soknadId);
+        soknad.medSoknadPrefix(getSoknadPrefix(soknad.getskjemaNummer()));
+        return soknad;
     }
 
     @Override
@@ -246,7 +250,8 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     public Map<String, String> hentInnsendtDatoForOpprinneligSoknad(String behandlingsId) {
         Map<String, String> result = new HashMap<>();
         List<WSBehandlingskjedeElement> wsBehandlingskjedeElements = henvendelseConnector.hentBehandlingskjede(behandlingsId);
-        List<WSBehandlingskjedeElement> sorterteBehandlinger = on(wsBehandlingskjedeElements).filter(where(STATUS, (equalTo(SoknadInnsendingStatus.FERDIG)))).collect(new Comparator<WSBehandlingskjedeElement>() {
+        List<WSBehandlingskjedeElement> sorterteBehandlinger = on(wsBehandlingskjedeElements).filter(
+                where(STATUS, (equalTo(SoknadInnsendingStatus.FERDIG)))).collect(new Comparator<WSBehandlingskjedeElement>() {
             @Override
             public int compare(WSBehandlingskjedeElement o1, WSBehandlingskjedeElement o2) {
                 DateTime dato1 = o1.getInnsendtDato();
@@ -264,8 +269,8 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         });
 
         WSBehandlingskjedeElement innsendtSoknad = sorterteBehandlinger.get(0);
-        result.put("innsendtdato",String.valueOf(innsendtSoknad.getInnsendtDato().getMillis()));
-        result.put("sisteinnsendtbehandling", sorterteBehandlinger.get(sorterteBehandlinger.size()-1).getBehandlingsId().toString());
+        result.put("innsendtdato", String.valueOf(innsendtSoknad.getInnsendtDato().getMillis()));
+        result.put("sisteinnsendtbehandling", sorterteBehandlinger.get(sorterteBehandlinger.size() - 1).getBehandlingsId().toString());
         return result;
     }
 
@@ -284,7 +289,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         List<WSBehandlingskjedeElement> behandlingskjede = henvendelseConnector.hentBehandlingskjede(behandingsId);
         WSHentSoknadResponse wsSoknadsdata = hentSisteIkkeAvbrutteSoknadIBehandlingskjede(behandlingskjede);
 
-        if(wsSoknadsdata.getInnsendtDato() == null) {
+        if (wsSoknadsdata.getInnsendtDato() == null) {
             throw new ApplicationException("Kan ikke starte ettersending på en ikke fullfort soknad");
         }
         DateTime innsendtDato = hentOrginalInnsendtDato(behandlingskjede, behandingsId);
@@ -300,21 +305,22 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     }
 
     private WSHentSoknadResponse hentSisteIkkeAvbrutteSoknadIBehandlingskjede(List<WSBehandlingskjedeElement> behandlingskjede) {
-        List<WSBehandlingskjedeElement> sorterteBehandlinger = on(behandlingskjede).filter(where(STATUS, not(equalTo(SoknadInnsendingStatus.AVBRUTT_AV_BRUKER)))).collect(new Comparator<WSBehandlingskjedeElement>() {
-            @Override
-            public int compare(WSBehandlingskjedeElement o1, WSBehandlingskjedeElement o2) {
-                DateTime dato1 = o1.getInnsendtDato();
-                DateTime dato2 = o2.getInnsendtDato();
-                if (dato1 == null && dato2 == null) {
-                    return 0;
-                } else if (dato1 == null) {
-                    return -1;
-                } else if (dato2 == null) {
-                    return 1;
-                }
-                return dato2.compareTo(dato1);
-            }
-        });
+        List<WSBehandlingskjedeElement> sorterteBehandlinger = on(behandlingskjede).filter(where(STATUS, not(equalTo(SoknadInnsendingStatus.AVBRUTT_AV_BRUKER))))
+                .collect(new Comparator<WSBehandlingskjedeElement>() {
+                    @Override
+                    public int compare(WSBehandlingskjedeElement o1, WSBehandlingskjedeElement o2) {
+                        DateTime dato1 = o1.getInnsendtDato();
+                        DateTime dato2 = o2.getInnsendtDato();
+                        if (dato1 == null && dato2 == null) {
+                            return 0;
+                        } else if (dato1 == null) {
+                            return -1;
+                        } else if (dato2 == null) {
+                            return 1;
+                        }
+                        return dato2.compareTo(dato1);
+                    }
+                });
 
         return henvendelseConnector.hentSoknad(sorterteBehandlinger.get(0).getBehandlingsId());
     }
@@ -324,7 +330,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         WSHentSoknadResponse wsEttersending = henvendelseConnector.hentSoknad(ettersendingsBehandlingId);
 
         String behandlingskjedeId;
-        if(opprinneligInnsending.getBehandlingskjedeId() != null) {
+        if (opprinneligInnsending.getBehandlingskjedeId() != null) {
             behandlingskjedeId = opprinneligInnsending.getBehandlingskjedeId();
         } else {
             behandlingskjedeId = opprinneligInnsending.getBehandlingsId();
@@ -434,10 +440,10 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         WebSoknad soknad = repository.hentSoknad(soknadId);
 
         /**
-        * Sletter alle vedlegg til søknader som blir avbrutt.
-        * Dette burde egentlig gjøres i henvendelse, siden vi uansett skal slette alle vedlegg på avbrutte søknader.
-        * I tillegg blir det liggende igjen mange vedlegg for søknader som er avbrutt før dette kallet ble lagt til.
-        * */
+         * Sletter alle vedlegg til søknader som blir avbrutt.
+         * Dette burde egentlig gjøres i henvendelse, siden vi uansett skal slette alle vedlegg på avbrutte søknader.
+         * I tillegg blir det liggende igjen mange vedlegg for søknader som er avbrutt før dette kallet ble lagt til.
+         * */
 
         fillagerConnector.slettAlle(soknad.getBrukerBehandlingId());
         henvendelseConnector.avbrytSoknad(soknad.getBrukerBehandlingId());
@@ -452,7 +458,6 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     @Override
     public String startSoknad(String navSoknadId) {
         validerSkjemanummer(navSoknadId);
-
         String mainUid = randomUUID().toString();
         String behandlingsId = henvendelseConnector
                 .startSoknad(getSubjectHandler().getUid(), navSoknadId, mainUid);
@@ -501,7 +506,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         for (SoknadFaktum soknadFaktum : fakta) {
             String flereTillatt = soknadFaktum.getFlereTillatt();
             String erSystemFaktum = soknadFaktum.getErSystemFaktum();
-            if((flereTillatt != null && flereTillatt.equals("true")) || (erSystemFaktum != null && erSystemFaktum.equals("true"))) {
+            if ((flereTillatt != null && flereTillatt.equals("true")) || (erSystemFaktum != null && erSystemFaktum.equals("true"))) {
                 continue;
             }
 
@@ -515,7 +520,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
                 f.setParrentFaktum(parentFaktum.getFaktumId());
             }
 
-            repository.lagreFaktum(soknadId,f);
+            repository.lagreFaktum(soknadId, f);
         }
     }
 
@@ -576,9 +581,11 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     }
 
     private boolean parentValueErLikDependOnVerdi(SoknadVedlegg soknadVedlegg, Faktum parent) {
-        return parent.getValue().equals(soknadVedlegg.getFaktum().getDependOnValue());
+        String value = parent.getValue();
+        String dependOnValue = soknadVedlegg.getFaktum().getDependOnValue();
+        return (value == null && dependOnValue == null) ||  value.equals(dependOnValue);
     }
-    
+
     private boolean erParentValueNullOgVedleggDependOnFalse(SoknadVedlegg soknadVedlegg, Faktum parent) {
         return parent.getValue() == null && "false".equalsIgnoreCase(soknadVedlegg.getFaktum().getDependOnValue());
     }
@@ -617,13 +624,14 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
     private SoknadStruktur hentStruktur(String skjema) {
         //TODO: Få flyttet dette ut på et vis? Ta i bruk.
-        Map<String,String> strukturDokumenter =  new HashMap<>();
+        Map<String, String> strukturDokumenter = new HashMap<>();
         strukturDokumenter.put("NAV 04-01.04", "NAV 04-01.03.xml");
         strukturDokumenter.put("NAV 04-01.03", "NAV 04-01.03.xml");
+        strukturDokumenter.put("NAV 04-16.03", "NAV 04-16.03.xml");
 
         String type = strukturDokumenter.get(skjema);
 
-        if(type == null || type.isEmpty()) {
+        if (type == null || type.isEmpty()) {
             throw new ApplicationException("Fant ikke strukturdokument for nav-skjemanummer: " + skjema);
         }
 

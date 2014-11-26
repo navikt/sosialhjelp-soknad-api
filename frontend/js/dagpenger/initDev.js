@@ -13,7 +13,7 @@ angular.module('sendsoknad')
         $http.get('../views/templates/egennaering/gardsbruk.html', {cache: $templateCache});
         $http.get('../views/templates/verneplikt.html', {cache: $templateCache});
         $http.get('../views/templates/personalia.html', {cache: $templateCache});
-        $http.get('../views/templates/arbeidsforhold.html', {cache: $templateCache});
+        $http.get('../views/templates/arbeidsforhold/arbeidsforhold.html', {cache: $templateCache});
         $http.get('../views/templates/ytelser.html', {cache: $templateCache});
         $http.get('../views/templates/barnetillegg/barnetillegg.html', {cache: $templateCache});
         $http.get('../views/templates/barnetillegg/barnetillegg-nyttbarn.html', {cache: $templateCache});
@@ -25,7 +25,6 @@ angular.module('sendsoknad')
         $http.get('../views/templates/utdanning/utdanningKortvarigTemplate.html', {cache: $templateCache});
         $http.get('../views/templates/utdanning/utdanningKortvarigFlereTemplate.html', {cache: $templateCache});
         $http.get('../views/templates/utdanning/utdanningNorskTemplate.html', {cache: $templateCache});
-        $http.get('../views/templates/adresse.html', {cache: $templateCache});
         $http.get('../views/dagpenger/dagpenger-skjema.html', {cache: $templateCache});
         $http.get('../js/common/directives/booleanradio/booleanradioTemplate.html', {cache: $templateCache});
         $http.get('../js/common/tredjeparts/directives/accordion/accordionGroupTemplate.html', {cache: $templateCache});
@@ -44,26 +43,34 @@ angular.module('sendsoknad')
         $http.get('../js/common/directives/feilmeldinger/stickyFeilmeldingTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/markup/navinfoboksTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/markup/panelStandardBelystTemplate.html', {cache: $templateCache});
-        $http.get('../js/dagpenger/directives/sporsmalferdig/spmblokkFerdigTemplate.html', {cache: $templateCache});
+        $http.get('../js/common/directives/sporsmalferdig/spmblokkFerdigTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/stegindikator/stegIndikatorTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/sistlagret/sistLagretTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/markup/modalsideTemplate.html', {cache: $templateCache});
 
         $http.get('../js/common/directives/melding/meldingTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/markup/vedlegginfoboksTemplate.html', {cache: $templateCache});
-        $http.get('../views/templates/arbeidsforhold-nytt.html', {cache: $templateCache});
-        $http.get('../views/templates/arbeidsforhold/avskjediget.html', {cache: $templateCache});
-        $http.get('../views/templates/arbeidsforhold/avskjediget-oppsummering.html', {cache: $templateCache});
-        $http.get('../views/templates/arbeidsforhold/konkurs.html', {cache: $templateCache});
-        $http.get('../views/templates/arbeidsforhold/konkurs-oppsummering.html', {cache: $templateCache});
-        $http.get('../views/templates/arbeidsforhold/kontrakt-utgaatt.html', {cache: $templateCache});
-        $http.get('../views/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.html', {cache: $templateCache});
-        $http.get('../views/templates/arbeidsforhold/permittert.html', {cache: $templateCache});
-        $http.get('../views/templates/arbeidsforhold/permittert-oppsummering.html', {cache: $templateCache});
-        $http.get('../views/templates/arbeidsforhold/redusertarbeidstid.html', {cache: $templateCache});
-        $http.get('../views/templates/arbeidsforhold/redusertarbeidstid-oppsummering.html', {cache: $templateCache});
-        $http.get('../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver.html', {cache: $templateCache});
-        $http.get('../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver-oppsummering.html', {cache: $templateCache});
-        $http.get('../views/templates/arbeidsforhold/sagt-opp-selv.html', {cache: $templateCache});
-        $http.get('../views/templates/arbeidsforhold/sagt-opp-selv-oppsummering.html', {cache: $templateCache});
+
+        $http.get('../views/templates/arbeidsforhold/arbeidsforhold-nytt.html', {cache: $templateCache});
+        $http.get('../views/templates/arbeidsforhold/permitteringsperiode-nytt.html', {cache: $templateCache});
+        $http.get('../js/common/arbeidsforhold/templates/oppsummeringer/permitteringsPerioderOppsummeringTemplate.html', {cache: $templateCache});
+        $http.get('../js/common/arbeidsforhold/templates/undersporsmaal/avskjediget.html', {cache: $templateCache});
+        $http.get('../js/common/arbeidsforhold/templates/oppsummeringer/avskjediget-oppsummering.html', {cache: $templateCache});
+        $http.get('../js/common/arbeidsforhold/templates/undersporsmaal/konkurs.html', {cache: $templateCache});
+        $http.get('../js/common/arbeidsforhold/templates/oppsummeringer/konkurs-oppsummering.html', {cache: $templateCache});
+        $http.get('../js/common/arbeidsforhold/templates/undersporsmaal/kontrakt-utgaatt.html', {cache: $templateCache});
+        $http.get('../js/common/arbeidsforhold/templates/oppsummeringer/kontrakt-utgaatt-oppsummering.html', {cache: $templateCache});
+        $http.get('../js/common/arbeidsforhold/templates/undersporsmaal/permittert.html', {cache: $templateCache});
+        $http.get('../js/common/arbeidsforhold/templates/oppsummeringer/permittert-oppsummering.html', {cache: $templateCache});
+        $http.get('../js/common/arbeidsforhold/templates/undersporsmaal/redusertarbeidstid.html', {cache: $templateCache});
+        $http.get('../js/common/arbeidsforhold/templates/oppsummeringer/redusertarbeidstid-oppsummering.html', {cache: $templateCache});
+        $http.get('../js/common/arbeidsforhold/templates/undersporsmaal/sagt-opp-av-arbeidsgiver.html', {cache: $templateCache});
+        $http.get('../js/common/arbeidsforhold/templates/oppsummeringer/sagt-opp-av-arbeidsgiver-oppsummering.html', {cache: $templateCache});
+        $http.get('../js/common/arbeidsforhold/templates/undersporsmaal/sagt-opp-selv.html', {cache: $templateCache});
+        $http.get('../js/common/arbeidsforhold/templates/oppsummeringer/sagt-opp-selv-oppsummering.html', {cache: $templateCache});
+        $http.get('../js/common/arbeidsforhold/templates/undersporsmaal/turnusblokkTemplate.html', {cache: $templateCache});
+        $http.get('../js/common/arbeidsforhold/templates/oppsummeringer/turnusblokkOppsummeringTemplate.html', {cache: $templateCache});
+
+        $http.get('../js/modules/personalia/templates/personaliaTemplate.html', {cache: $templateCache});
+        $http.get('../js/modules/personalia/templates/adresseTemplate.html', {cache: $templateCache});
     }]);

@@ -13,6 +13,17 @@ angular.module('nav.common.routes', ['ngRoute'])
                     }
                 }
             })
+            .when('/feilside/soknadikkefunnet', {
+                templateUrl: '../views/common/feilsider/soknadIkkeFunnetFeilside.html',
+                resolve: {
+                    cms: function (CmsResolver) {
+                        return CmsResolver;
+                    },
+                    config: function (ConfigResolver) {
+                        return ConfigResolver;
+                    }
+                }
+            })
             .when('/404', {
                 templateUrl: '../views/common/feilsider/feilside404.html',
                 resolve: {
@@ -42,9 +53,6 @@ angular.module('nav.common.routes', ['ngRoute'])
         $rootScope.$on('$routeChangeSuccess', function () {
             if (_gaq) {
                 var trackPage = "startSoknad";
-                if (erSoknadStartet()) {
-                    trackPage = $location.path().split("/")[1];
-                }
                 _gaq.push(['_trackPageview', '/sendsoknad/' + trackPage]);
             }
             $location.hash($routeParams.scrollTo);
