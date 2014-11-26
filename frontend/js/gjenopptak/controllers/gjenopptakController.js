@@ -4,7 +4,7 @@ angular.module('nav.gjenopptak', [])
         $scope.grupper = [
             {id: 'reellarbeidssoker', tittel: 'reellarbeidssoker.tittel', template: '../views/templates/reellarbeidssoker/reell-arbeidssoker.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false},
             {id: 'arbeidsforhold', tittel: 'nyearbeidsforhold.tittel', template: '../views/templates/arbeidsforhold/nye-arbeidsforhold.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false},
-            {id: 'tidligerearbeidsforhold', tittel: 'tidligerearbeidsforhold.tittel', template: '../views/templates/arbeidsforhold/tidligere-arbeidsforhold.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false},
+            {id: 'tidligerearbeidsforhold', tittel: 'tidligerearbeidsforhold.tittel', template: '../views/templates/tidligere-arbeidsforhold.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false},
             {id: 'reberegning', tittel: 'reberegning.tittel', template: '../views/templates/reberegning.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false},
             {id: 'egennaering', tittel: 'egennaering.tittel', template: '../views/templates/egennaering/egen-naering.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false},
             {id: 'verneplikt', tittel: 'ikkeavtjentverneplikt.tittel', template: '../views/templates/verneplikt.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false},
