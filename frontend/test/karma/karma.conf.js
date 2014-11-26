@@ -13,6 +13,7 @@ module.exports = function (config) {
         preprocessors: {
             '../../js/dagpenger/**/*.js': ['coverage'],
             '../../js/common/**/*.js': ['coverage'],
+            '../../js/modules/**/*.js': ['coverage'],
             '../../js/gjenopptak/**/*.js': ['coverage'],
             '../../js/ettersending/**/*.js': ['coverage'],
             '../../js/**/*.html': 'ng-html2js'
