@@ -9,5 +9,6 @@ angular.module('gjenopptak', [
     'ngCookies',
     'ngSanitize',
     'templates-main',
+    'nav.cms',
     'nav.personalia'
 ]);

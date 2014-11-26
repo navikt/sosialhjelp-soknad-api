@@ -1,6 +1,5 @@
 angular.module('ettersending.directives', [
 	'ettersending.services',
-	'nav.cmstekster',
 	'nav.feilmeldinger',
 	'nav.markup',
 	'nav.fremdriftsindikator',
