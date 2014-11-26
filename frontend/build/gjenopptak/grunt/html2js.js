@@ -5,7 +5,7 @@ module.exports = {
         },
         src: [
             '../../views/common/**/*.html',
-            '../../views/gjenopptak/**/*.html',
+            '../../views/dagpenger/**/*.html',
             '../../views/templates/**/*.html',
             '../../js/gjenopptak/**/*.html',
             '../../js/common/**/*.html',
