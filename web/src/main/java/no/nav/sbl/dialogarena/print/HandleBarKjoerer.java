@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -80,6 +81,8 @@ public class HandleBarKjoerer implements HtmlGenerator {
         handlebars.registerHelper("forIkkeInnsendteVedlegg", generateForIkkeInnsendteVedleggHelper());
         handlebars.registerHelper("hvisHarIkkeInnsendteDokumenter", generateHvisHarIkkeInnsendteDokumenterHelper());
         handlebars.registerHelper("hvisUtenlandskStatsborger", generateHvisUtenlandskStatsborgerHelper());
+        handlebars.registerHelper("skalViseRotasjonTurnusSporsmaal", generateSkalViseRotasjonTurnusSporsmaalHelper());
+        handlebars.registerHelper("hvisLikCmsTekst", generateHvisLikCmsTekstHelper());
 
         return handlebars;
     }
@@ -426,4 +429,42 @@ public class HandleBarKjoerer implements HtmlGenerator {
         return buffer.toString();
     }
 
+    private Helper<Object> generateSkalViseRotasjonTurnusSporsmaalHelper() {
+        return new Helper<Object>() {
+            private boolean faktumSkalIkkeHaRotasjonssporsmaal(Faktum faktum) {
+                List<String> verdierSomGenerererSporsmaal = Arrays.asList(
+                        "Permittert",
+                        "Sagt opp av arbeidsgiver",
+                        "Kontrakt utgått",
+                        "Sagt opp selv",
+                        "Redusert arbeidstid"
+                );
+                return !verdierSomGenerererSporsmaal.contains(faktum.getProperties().get("type"));
+            }
+
+            @Override
+            public CharSequence apply(Object value, Options options) throws IOException {
+                WebSoknad soknad = finnWebSoknad(options.context);
+                List<Faktum> fakta = soknad.getFaktaMedKey("arbeidsforhold");
+
+                if (fakta.isEmpty() || faktumSkalIkkeHaRotasjonssporsmaal(fakta.get(0))) {
+                    return options.inverse(this);
+                } else {
+                    return options.fn(this);
+                }
+            }
+        };
+    }
+
+    private Helper<Object> generateHvisLikCmsTekstHelper() {
+        return new Helper<Object>() {
+            @Override
+            public CharSequence apply(Object value, Options options) throws IOException {
+                if(value != null && getCmsTekst(options.param(0).toString(), new Object[]{}, new Locale("nb", "NO")).equalsIgnoreCase(value.toString())) {
+                    return options.fn(this);
+                }
+                return options.inverse(this);
+            }
+        };
+    }
 }
