@@ -2,7 +2,11 @@ package no.nav.sbl.dialogarena.websoknad.config;
 
 import no.nav.innholdshenter.common.EnonicContentRetriever;
 import no.nav.innholdshenter.filter.DecoratorFilter;
-import no.nav.modig.content.*;
+import no.nav.modig.content.CmsContentRetriever;
+import no.nav.modig.content.Content;
+import no.nav.modig.content.ContentRetriever;
+import no.nav.modig.content.ValueRetriever;
+import no.nav.modig.content.ValuesFromContentWithResourceBundleFallback;
 import no.nav.modig.content.enonic.HttpContentRetriever;
 import no.nav.modig.content.enonic.innholdstekst.Innholdstekst;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
@@ -26,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
-import static no.nav.sbl.dialogarena.websoknad.config.StripPTagsPropertyPersister.stripPTag;
 
 @Configuration
 public class ContentConfig {
@@ -106,13 +109,20 @@ public class ContentConfig {
         Map<String, Innholdstekst> innhold = content.toMap(Innholdstekst.KEY);
         if (!innhold.isEmpty()) {
             for (Map.Entry<String, Innholdstekst> entry : innhold.entrySet()) {
-                data.append(entry.getValue().key).append("=").append(stripPTag(entry.getValue().value)).append(System.lineSeparator());
+                data.append(entry.getValue().key).append("=").append(formatText(entry.getValue().value)).append(System.lineSeparator());
             }
             FileUtils.write(file, data, "UTF-8");
         }
     }
 
-    private String stripPTag(String value) {
+    private String formatText(String value) {
+        String resultValue;
+        resultValue = stripParagraphTags(value);
+        resultValue = removeNewline(resultValue);
+        return resultValue;
+    }
+
+    private String stripParagraphTags(String value) {
         String res = value;
         if (value != null) {
             if (res.startsWith("<p>")) {
@@ -125,6 +135,9 @@ public class ContentConfig {
         return res;
     }
 
+    private String removeNewline(String value) {
+        return value.replaceAll("\n", "");
+    }
 
     @Bean
     public ContentRetriever enonicContentRetriever() {
