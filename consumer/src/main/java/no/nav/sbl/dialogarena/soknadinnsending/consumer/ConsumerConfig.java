@@ -6,6 +6,10 @@ import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadata;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.cxf.TimeoutFeature;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonConnector;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoConnector;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSSoknadsdata;
@@ -21,7 +25,6 @@ import org.apache.ws.security.handler.WSHandlerConstants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
@@ -38,9 +41,14 @@ import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder.CO
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder.RECEIVE_TIMEOUT;
 
 @Configuration
-@ComponentScan(excludeFilters = @ComponentScan.Filter(Configuration.class))
 @EnableCaching
-@Import(ConsumerConfig.WsServices.class)
+@Import({
+        ConsumerConfig.WsServices.class,
+        FillagerConnector.class,
+        HenvendelseConnector.class,
+        PersonConnector.class,
+        PersonInfoConnector.class
+})
 public class ConsumerConfig {
     //Må godta så store xml-payloads pga Kodeverk postnr
     static {
