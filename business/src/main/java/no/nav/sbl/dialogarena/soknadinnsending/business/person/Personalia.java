@@ -33,6 +33,7 @@ public class Personalia {
     public static final String SEKUNDARADRESSE_TYPE_KEY = "sekundarAdresseType";
     public static final String SEKUNDARADRESSE_GYLDIGFRA_KEY = "sekundarAdresseGyldigFra";
     public static final String SEKUNDARADRESSE_GYLDIGTIL_KEY = "sekundarAdresseGyldigTil";
+    public static final String SEKUNDARADRESSE_LANDKODE = "sekundarAdresseLandkode";
 
     private String fnr;
     private String alder;

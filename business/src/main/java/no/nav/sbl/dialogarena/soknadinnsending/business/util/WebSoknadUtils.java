@@ -114,8 +114,12 @@ public class WebSoknadUtils {
         gjeldendeAdresse.setAdresse(properties.get(GJELDENDEADRESSE_KEY));
         gjeldendeAdresse.setAdressetype(properties.get(GJELDENDEADRESSE_TYPE_KEY));
         gjeldendeAdresse.setLandkode(properties.get(GJELDENDEADRESSE_LANDKODE));
+        Adresse senkundarAdresse = new Adresse();
+        senkundarAdresse.setAdresse(properties.get(SEKUNDARADRESSE_KEY));
+        senkundarAdresse.setAdressetype(properties.get(SEKUNDARADRESSE_TYPE_KEY));
+        senkundarAdresse.setLandkode(properties.get(SEKUNDARADRESSE_LANDKODE));
         return PersonaliaBuilder.with()
-                .gjeldendeAdresse(gjeldendeAdresse).statsborgerskap(properties.get(STATSBORGERSKAP_KEY))
+                .gjeldendeAdresse(gjeldendeAdresse).sekundarAdresse(senkundarAdresse).statsborgerskap(properties.get(STATSBORGERSKAP_KEY))
                 .build();
     }
 
