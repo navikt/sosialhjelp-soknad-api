@@ -44,11 +44,13 @@ import java.util.Map;
 
 import static java.util.Collections.sort;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.LastetOpp;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
 public class DefaultVedleggService implements VedleggService {
     private static final Logger logger = getLogger(DefaultVedleggService.class);
+    public static final String KVITTERING = "L7";
 
     @Inject
     @Named("soknadInnsendingRepository")
@@ -231,6 +233,15 @@ public class DefaultVedleggService implements VedleggService {
         for (Vedlegg v : vedlegg) {
             medKodeverk(v);
         }
+    }
+
+    @Override
+    public void lagreKvitteringSomVedlegg(Long soknadId, byte[] kvittering) {
+        Vedlegg kvitteringVedlegg = new Vedlegg(soknadId, null, KVITTERING, LastetOpp);
+        kvitteringVedlegg.medData(kvittering);
+        WebSoknad soknad = repository.hentSoknad(soknadId);
+        lagreVedlegg(soknadId, kvitteringVedlegg.getVedleggId(), kvitteringVedlegg);
+        fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(), kvitteringVedlegg.getFillagerReferanse(), soknad.getAktoerId(), new ByteArrayInputStream(kvitteringVedlegg.getData()));
     }
 
     private static void sjekkOmPdfErGyldig(PDDocument document) {

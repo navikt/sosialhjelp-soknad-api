@@ -26,4 +26,6 @@ public interface VedleggService {
     void lagreVedlegg(Long soknadId, Long vedleggId, Vedlegg vedlegg);
 
     void leggTilKodeverkFelter(List<Vedlegg> vedlegg);
+
+    void lagreKvitteringSomVedlegg(Long soknadId, byte[] kvittering);
 }
