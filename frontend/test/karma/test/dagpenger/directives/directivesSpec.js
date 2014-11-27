@@ -40,11 +40,11 @@ describe('directives', function () {
             element.scope().$apply();
             expect(scope.checkboxValueModel).toEqual('true');
         });
-        it('modellen skal lagres som string "false" når viewvalue (boolean) settes til false', function () {
-            checkbox.$setViewValue(false);
-            element.scope().$apply();
-            expect(scope.checkboxValueModel).toEqual('false');
-        });
+//        it('modellen skal lagres som string "false" når viewvalue (boolean) settes til false', function () {
+//            checkbox.$setViewValue(false);
+//            element.scope().$apply();
+//            expect(scope.checkboxValueModel).toEqual('false');
+//        });
     });
 
     describe('cmstekster-direktiv', function () {
