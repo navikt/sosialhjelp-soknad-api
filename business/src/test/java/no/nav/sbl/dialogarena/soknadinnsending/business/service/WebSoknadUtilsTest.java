@@ -17,9 +17,7 @@ import java.util.Map;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.UTENLANDSK_ADRESSE;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_LANDKODE;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_TYPE_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.*;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.WebSoknadUtils.DAGPENGER;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.WebSoknadUtils.DAGPENGER_VED_PERMITTERING;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.WebSoknadUtils.getJournalforendeEnhet;
@@ -77,19 +75,23 @@ public class WebSoknadUtilsTest {
     public void harSkjemanummer0000DerMinstEnErPermitteringOgBrukerBorInnenlands() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
         WebSoknad soknad = lagSoknad(lagAvskjediget("2014-1-1"), lagPermittert("2014-1-1"), lagAvskjediget("2014-1-1"), lagNorksStatsborgerPersonaliaFaktum());
-        Personalia personalia = WebSoknadUtils.getPerson(soknad);
-        personalia.setGjeldendeAdresse(lagUtenlandskAdresse());
-        personalia.setSekundarAdresse(lagSekundarAdresseNorge());
+
+        Faktum personalia = getPersonaliaFaktum(soknad);
+        setGjeldendeAdressePaaPersonaliaFaktum(personalia, lagUtenlandskEOSAdresse());
+        setSekundarAdressePaaPersonaliaFaktum(personalia, lagSekundarAdresseNorge());
+
         assertEquals(RUTES_I_BRUT, getJournalforendeEnhet(soknad));
     }
 
     @Test
     public void harSkjemanummer0000DerMinstEnErPermitteringOgBrukerBorIUtlandetOgHarNorskMidlertidigAdresse() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagAvskjediget("2014-1-1"), lagPermittert("2014-1-1"), lagAvskjediget("2014-1-1"), lagNorksStatsborgerPersonaliaFaktum());
-        Personalia personalia = WebSoknadUtils.getPerson(soknad);
-        personalia.setGjeldendeAdresse(lagUtenlandskAdresse());
-        personalia.setSekundarAdresse(lagSekundarAdresseNorge());
+        WebSoknad soknad = lagSoknad(lagAvskjediget("2014-1-1"), lagPermittert("2014-1-1"), lagAvskjediget("2014-1-1"));
+
+        Faktum personalia = getPersonaliaFaktum(soknad);
+        setGjeldendeAdressePaaPersonaliaFaktum(personalia, lagUtenlandskEOSAdresse());
+        setSekundarAdressePaaPersonaliaFaktum(personalia, lagSekundarAdresseNorge());
+
         assertEquals(RUTES_I_BRUT, getJournalforendeEnhet(soknad));
     }
 
@@ -98,34 +100,24 @@ public class WebSoknadUtilsTest {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
         WebSoknad soknad = lagSoknad(lagPermittert("2014-1-1"));
         Adresse utlandeos = lagUtenlandskEOSAdresse();
-        soknad.getFaktaMedKey("personalia").get(0)
-                .medProperty(GJELDENDEADRESSE_KEY, utlandeos.getAdresse())
-                .medProperty(GJELDENDEADRESSE_LANDKODE, utlandeos.getLandkode())
-                .medProperty(GJELDENDEADRESSE_TYPE_KEY, utlandeos.getAdressetype());
-        Personalia personalia = WebSoknadUtils.getPerson(soknad);
-        personalia.setGjeldendeAdresse(utlandeos);
+        Faktum personalia = getPersonaliaFaktum(soknad);
+        setGjeldendeAdressePaaPersonaliaFaktum(personalia, utlandeos);
 
         assertEquals(EOS_DAGPENGER, getJournalforendeEnhet(soknad));
-
     }
+
     @Test
     public void skalRuteSoknadTilEosLandMed3Caser() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
         WebSoknad soknad = lagSoknad(
                 lagRedusertArbeidstid("2014-01-01"),
                 lagAvskjediget("2014-03-06"),
-                lagPermittert("2014-03-01")
-                );
+                lagPermittert("2014-03-01"));
         Adresse utlandeos = lagUtenlandskEOSAdresse();
-        soknad.getFaktaMedKey("personalia").get(0)
-                .medProperty(GJELDENDEADRESSE_KEY, utlandeos.getAdresse())
-                .medProperty(GJELDENDEADRESSE_LANDKODE, utlandeos.getLandkode())
-                .medProperty(GJELDENDEADRESSE_TYPE_KEY, utlandeos.getAdressetype());
-        Personalia personalia = WebSoknadUtils.getPerson(soknad);
-        personalia.setGjeldendeAdresse(utlandeos);
+        Faktum personalia = getPersonaliaFaktum(soknad);
+        setGjeldendeAdressePaaPersonaliaFaktum(personalia, utlandeos);
 
         assertEquals(RUTES_I_BRUT, getJournalforendeEnhet(soknad));
-
     }
 
     @Test
@@ -186,5 +178,22 @@ public class WebSoknadUtilsTest {
     }
     private static Faktum lagNorksStatsborgerPersonaliaFaktum(){
         return new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("personalia").medProperty("statsborgerskap", "NOR");
+    }
+
+    private static void setSekundarAdressePaaPersonaliaFaktum(Faktum personalia, Adresse adresse) {
+        personalia.medProperty(SEKUNDARADRESSE_KEY, adresse.getAdresse())
+                .medProperty(SEKUNDARADRESSE_TYPE_KEY, adresse.getAdressetype())
+                .medProperty(SEKUNDARADRESSE_LANDKODE, adresse.getLandkode());
+    }
+
+    private static void setGjeldendeAdressePaaPersonaliaFaktum(Faktum personalia, Adresse adresse) {
+        personalia.medProperty("statsborgerskap", "NOR")
+                .medProperty(GJELDENDEADRESSE_KEY, adresse.getAdresse())
+                .medProperty(GJELDENDEADRESSE_TYPE_KEY, adresse.getAdressetype())
+                .medProperty(GJELDENDEADRESSE_LANDKODE, adresse.getLandkode());
+    }
+
+    private static Faktum getPersonaliaFaktum(WebSoknad soknad) {
+        return soknad.getFaktumMedKey("personalia");
     }
 }
