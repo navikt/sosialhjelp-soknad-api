@@ -3,8 +3,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Adresse;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
-import no.nav.sbl.dialogarena.soknadinnsending.business.util.WebSoknadUtils;
 import org.joda.time.DateTimeUtils;
 import org.joda.time.LocalDate;
 import org.junit.Test;
@@ -74,7 +72,7 @@ public class WebSoknadUtilsTest {
     @Test
     public void harSkjemanummer0000DerMinstEnErPermitteringOgBrukerBorInnenlands() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagAvskjediget("2014-1-1"), lagPermittert("2014-1-1"), lagAvskjediget("2014-1-1"), lagNorksStatsborgerPersonaliaFaktum());
+        WebSoknad soknad = lagSoknad(lagAvskjediget("2014-1-1"), lagPermittert("2014-1-1"), lagAvskjediget("2014-1-1"));
 
         Faktum personalia = getPersonaliaFaktum(soknad);
         setGjeldendeAdressePaaPersonaliaFaktum(personalia, lagUtenlandskEOSAdresse());
@@ -104,6 +102,39 @@ public class WebSoknadUtilsTest {
         setGjeldendeAdressePaaPersonaliaFaktum(personalia, utlandeos);
 
         assertEquals(EOS_DAGPENGER, getJournalforendeEnhet(soknad));
+    }
+
+    @Test
+    public void skalRuteSoknadTilEosLandHvisBrukerErUtenlandskOgGrensearbeider() {
+        DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
+        WebSoknad soknad = lagSoknad(lagPermittert("2014-1-1"), lagGrensearbeiderFaktum());
+        Faktum personalia = getPersonaliaFaktum(soknad);
+        setUtenlanskEOSStatsborger(personalia);
+        setBrukerTilAVaereGrensearbeider(soknad.getFaktumMedKey("arbeidsforhold.grensearbeider"));
+
+        assertEquals(EOS_DAGPENGER, getJournalforendeEnhet(soknad));
+    }
+
+    @Test
+    public void skalRuteSoknadNormaltHvisBrukerErUtenlandskMenIkkeGrensearbeider() {
+        DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
+        WebSoknad soknad = lagSoknad(lagPermittert("2014-1-1"), lagGrensearbeiderFaktum());
+        Faktum personalia = getPersonaliaFaktum(soknad);
+        setUtenlanskEOSStatsborger(personalia);
+        setBrukerTilIkkeGrensearbeider(soknad.getFaktumMedKey("arbeidsforhold.grensearbeider"));
+
+        assertEquals(RUTES_I_BRUT, getJournalforendeEnhet(soknad));
+    }
+
+    @Test
+    public void skalRuteSoknadNormaltHvisBrukerErGrensearbeiderOgNorskStatsborger() {
+        DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
+        WebSoknad soknad = lagSoknad(lagPermittert("2014-1-1"), lagGrensearbeiderFaktum());
+        Faktum personalia = getPersonaliaFaktum(soknad);
+        setNorskStatsborger(personalia);
+        setBrukerTilAVaereGrensearbeider(soknad.getFaktumMedKey("arbeidsforhold.grensearbeider"));
+
+        assertEquals(RUTES_I_BRUT, getJournalforendeEnhet(soknad));
     }
 
     @Test
@@ -176,9 +207,6 @@ public class WebSoknadUtilsTest {
         faktum.setProperties(properties);
         return faktum;
     }
-    private static Faktum lagNorksStatsborgerPersonaliaFaktum(){
-        return new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("personalia").medProperty("statsborgerskap", "NOR");
-    }
 
     private static void setSekundarAdressePaaPersonaliaFaktum(Faktum personalia, Adresse adresse) {
         personalia.medProperty(SEKUNDARADRESSE_KEY, adresse.getAdresse())
@@ -191,6 +219,26 @@ public class WebSoknadUtilsTest {
                 .medProperty(GJELDENDEADRESSE_KEY, adresse.getAdresse())
                 .medProperty(GJELDENDEADRESSE_TYPE_KEY, adresse.getAdressetype())
                 .medProperty(GJELDENDEADRESSE_LANDKODE, adresse.getLandkode());
+    }
+
+    private static void setNorskStatsborger(Faktum personalia) {
+        personalia.medProperty("statsborgerskap", "NOR");
+    }
+
+    private static void setUtenlanskEOSStatsborger(Faktum personalia) {
+        personalia.medProperty("statsborgerskap", "SWE");
+    }
+
+    private static Faktum lagGrensearbeiderFaktum(){
+        return new Faktum().medKey("arbeidsforhold.grensearbeider");
+    }
+
+    private static void setBrukerTilAVaereGrensearbeider(Faktum grensearbeider) {
+        grensearbeider.setValue("false");
+    }
+
+    private static void setBrukerTilIkkeGrensearbeider(Faktum grensearbeider) {
+        grensearbeider.setValue("true");
     }
 
     private static Faktum getPersonaliaFaktum(WebSoknad soknad) {
