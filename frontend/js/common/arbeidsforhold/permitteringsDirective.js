@@ -21,7 +21,7 @@ angular.module('nav.arbeidsforhold.permittering.directive',[])
     })
     .directive('permitteringsPeriodeOppsummering', function(data) {
         return {
-            templateUrl: '../js/common/arbeidsforhold/templates/permitteringsPerioderOppsummeringTemplate.html',
+            templateUrl: '../js/common/arbeidsforhold/templates/oppsummeringer/permitteringsPerioderOppsummeringTemplate.html',
             replace: true,
             scope: {
                 parentFaktum: '@permitteringsPeriodeOppsummering'

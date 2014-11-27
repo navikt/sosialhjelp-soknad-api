@@ -75,7 +75,7 @@ public final class StartSoknadJetty {
         setProperty("org.apache.cxf.stax.allowInsecureParser", "true");
     }
 
-    // For å logge inn lokalt må du sette cookie: document.cookie="nav-esso=***REMOVED***-4; path=/sendsoknad/"
+    // For å logge inn lokalt må du sette cookie i selftesten: document.cookie="nav-esso=***REMOVED***-4; path=/sendsoknad/"
 
     @SuppressWarnings("unused")
     private static class Intellij {

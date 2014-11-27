@@ -13,7 +13,7 @@
                 <form data-ng-show="tpsSvarer()">
                     <div id="utslagskriterier" data-ng-if="kravForDagpengerIkkeOppfylt()">
                         <div class="utslagskriterie" data-ng-if="ikkeBosattINorge()">
-                            <h2 class="stor strek-ikon-info-orange" data-ng-bind-html=" 'dagpenger.informasjonsside.ikkebosattinorge.tittel' | cmstekst"></h2>
+                            <h2 class="stor strek-ikon-info-orange" data-ng-bind-html=" 'informasjonsside.ikkebosattinorge.tittel' | cmstekst"></h2>
 
                             <p class="label" data-ng-bind-html=" 'utslagskriterier.utslag.bosted.label' | cmstekst"></p>
                             <div class="adresse">
@@ -33,7 +33,7 @@
                         </div>
 
                         <div class="utslagskriterie" data-ng-if="ikkeGyldigAlder()">
-                            <h2 class="stor strek-ikon-info-orange" data-ng-bind-html=" 'dagpenger.informasjonsside.ikkegyldigalder.tittel' | cmstekst"></h2>
+                            <h2 class="stor strek-ikon-info-orange" data-ng-bind-html=" 'informasjonsside.ikkegyldigalder.tittel' | cmstekst"></h2>
                             <ul>
                                 <li>
                                     <span data-ng-bind-html=" 'utslagskriterier.utslag.alder.1' | cmstekst"></span>
@@ -43,7 +43,7 @@
                         </div>
 
                         <div class="utslagskriterie" data-ng-if="ikkeRegistrertArbeidssoker() || registrertArbeidssokerUkjent()">
-                            <h2 class="stor strek-ikon-info-orange" data-ng-bind-html=" 'dagpenger.informasjonsside.ikkegyldigarbeidssoker.tittel' | cmstekst"></h2>
+                            <h2 class="stor strek-ikon-info-orange" data-ng-bind-html=" 'informasjonsside.ikkegyldigarbeidssoker.tittel' | cmstekst"></h2>
                             <ul data-ng-if="ikkeRegistrertArbeidssoker()">
                                 <li>
                                     <span data-ng-bind-html="'utslagskriterier.utslag.reellarbeidssoker.liste.1' | cmstekst"></span>
