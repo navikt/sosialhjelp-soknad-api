@@ -76,7 +76,7 @@ public class WebSoknadUtilsTest {
     @Test
     public void harSkjemanummer0000DerMinstEnErPermitteringOgBrukerBorInnenlands() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagAvskjediget("2014-1-1"), lagPermittert("2014-1-1"), lagAvskjediget("2014-1-1"));
+        WebSoknad soknad = lagSoknad(lagAvskjediget("2014-1-1"), lagPermittert("2014-1-1"), lagAvskjediget("2014-1-1"), lagNorksStatsborgerPersonaliaFaktum());
         Personalia personalia = WebSoknadUtils.getPerson(soknad);
         personalia.setGjeldendeAdresse(lagUtenlandskAdresse());
         personalia.setSekundarAdresse(lagSekundarAdresseNorge());
@@ -86,7 +86,7 @@ public class WebSoknadUtilsTest {
     @Test
     public void harSkjemanummer0000DerMinstEnErPermitteringOgBrukerBorIUtlandetOgHarNorskMidlertidigAdresse() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagAvskjediget("2014-1-1"), lagPermittert("2014-1-1"), lagAvskjediget("2014-1-1"));
+        WebSoknad soknad = lagSoknad(lagAvskjediget("2014-1-1"), lagPermittert("2014-1-1"), lagAvskjediget("2014-1-1"), lagNorksStatsborgerPersonaliaFaktum());
         Personalia personalia = WebSoknadUtils.getPerson(soknad);
         personalia.setGjeldendeAdresse(lagUtenlandskAdresse());
         personalia.setSekundarAdresse(lagSekundarAdresseNorge());
@@ -183,5 +183,8 @@ public class WebSoknadUtilsTest {
         Faktum faktum = new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("arbeidsforhold");
         faktum.setProperties(properties);
         return faktum;
+    }
+    private static Faktum lagNorksStatsborgerPersonaliaFaktum(){
+        return new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("personalia").medProperty("statsborgerskap", "NOR");
     }
 }

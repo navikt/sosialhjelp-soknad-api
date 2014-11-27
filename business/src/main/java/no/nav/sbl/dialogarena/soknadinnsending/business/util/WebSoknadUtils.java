@@ -17,10 +17,7 @@ import static no.nav.modig.lang.collections.ComparatorUtils.compareWith;
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.modig.lang.collections.PredicateUtils.equalTo;
 import static no.nav.modig.lang.collections.PredicateUtils.where;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_LANDKODE;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_TYPE_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.PERSONALIA_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.*;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.DATO_TIL;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.TYPE;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -81,25 +78,32 @@ public class WebSoknadUtils {
     public static String getJournalforendeEnhet(WebSoknad webSoknad) {
         String sluttaarsak = erPermittertellerHarRedusertArbeidstid(webSoknad);
         Personalia personalia = getPerson(webSoknad);
+        Faktum grensearbeiderFakta = webSoknad.getFaktumMedKey("arbeidsforhold.grensearbeider");
+        boolean erGrensearbeider = false;
+        if(grensearbeiderFakta != null && grensearbeiderFakta.getValue() != null){
+            erGrensearbeider = grensearbeiderFakta.getValue().equals("false");
+        }
 
         if (webSoknad.erEttersending()) {
             return webSoknad.getJournalforendeEnhet();
         } else {
-            return finnJournalforendeEnhetForSoknad(sluttaarsak, personalia);
+            return finnJournalforendeEnhetForSoknad(sluttaarsak, personalia, erGrensearbeider);
 
         }
     }
 
-    private static String finnJournalforendeEnhetForSoknad(String sluttaarsak, Personalia personalia) {
-        if ((personalia.harUtenlandskAdresseIEOS() && (!personalia.harNorskMidlertidigAdresse()))) {
-            if (sluttaarsak.equals(PERMITTERT) || (sluttaarsak.equals(REDUSERT_ARBEIDSTID))) {
+    private static String finnJournalforendeEnhetForSoknad(String sluttaarsak, Personalia personalia, boolean erGrensearbeider) {
+        if (sluttaarsak.equals(PERMITTERT) || (sluttaarsak.equals(REDUSERT_ARBEIDSTID))) {
+            if ((personalia.harUtenlandskAdresseIEOS() && (!personalia.harNorskMidlertidigAdresse()))) {
                 return EOS_DAGPENGER;
-            } else {
-                return RUTES_I_BRUT;
             }
-        } else {
-            return RUTES_I_BRUT;
+            boolean erUtenlandskStatsborger = personalia.getStatsborgerskap().equals("NOR") ? false : true;
+            if (erGrensearbeider && erUtenlandskStatsborger){
+                return EOS_DAGPENGER;
+            }
         }
+
+        return RUTES_I_BRUT;
     }
 
 
@@ -111,7 +115,7 @@ public class WebSoknadUtils {
         gjeldendeAdresse.setAdressetype(properties.get(GJELDENDEADRESSE_TYPE_KEY));
         gjeldendeAdresse.setLandkode(properties.get(GJELDENDEADRESSE_LANDKODE));
         return PersonaliaBuilder.with()
-                .gjeldendeAdresse(gjeldendeAdresse)
+                .gjeldendeAdresse(gjeldendeAdresse).statsborgerskap(properties.get(STATSBORGERSKAP_KEY))
                 .build();
     }
 
