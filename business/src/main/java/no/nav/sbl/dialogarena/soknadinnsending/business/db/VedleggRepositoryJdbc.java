@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 import no.nav.modig.core.exception.SystemException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import org.apache.commons.io.IOUtils;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.PreparedStatementSetter;
@@ -27,6 +28,7 @@ import java.util.List;
 @Named("vedleggRepository")
 //marker alle metoder som transactional. Alle operasjoner vil skje i en transactional write context. Read metoder kan overstyre dette om det trengs.
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
+@Configuration
 public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepository {
 
     private DefaultLobHandler lobHandler;
