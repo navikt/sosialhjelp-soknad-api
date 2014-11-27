@@ -27,7 +27,9 @@
         <div id="ettersending">
             <img class="logo" src="http://localhost:8080/sendsoknad/img/nav-logo-stor.gif"/>
             <div class="hode">
-                <h1>{{ hentTekst "ettersending.kvittering.tittel" }}</h1>
+                {{#hvisSant erEttersending}}
+                    <h1>{{ hentTekst "ettersending.kvittering.tittel" }}</h1>
+                {{/hvisSant }}
                 <h1>{{ hentTekst "skjema.tittel" }}</h1>
                 <hr/>
                 {{#forFaktum "personalia"}}
