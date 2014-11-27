@@ -150,18 +150,40 @@
                             <li class="kulepunkt">
                                 <div class="permitteringsperiode">
                                     <p>
-                                        {{ formatterLangDato properties.permiteringsperiodedatofra }}
-                                        {{ hentTekst "gjenopptak.oppsummering.datotil" }}
-                                        {{ formatterLangDato properties.permiteringsperiodedatotil }}
+                                        <span>{{ formatterLangDato properties.permiteringsperiodedatofra }}</span>
+                                        <span>{{ hentTekst "gjenopptak.oppsummering.datotil" }}</span>
+                                        <span>{{ formatterLangDato properties.permiteringsperiodedatotil }}</span>
                                     </p>
                                     <p>
-                                        {{ properties.permitteringProsent }}%
-                                        {{ hentTekst "dagpenger.oppsummering.arbeidsforhold.permitteringsgrad" }}
+                                        <span>{{ properties.permitteringProsent }}%</span>
+                                        <span>{{ hentTekst "dagpenger.oppsummering.arbeidsforhold.permitteringsgrad" }}</span>
                                     </p>
                                 </div>
                             </li>
                         {{/forFakta}}
                     {{/hvisLik}}
+
+                    {{#skalViseRotasjonTurnusSporsmaal}}
+                        <span class="arbeidsforhold-arbeidsgiver">{{ hentTekst "arbeidsforhold.rotasjonskiftturnus.sporsmaal" }}</span>
+                        <li class="kulepunkt">
+                            <p class="rotasjonturnus">{{ properties.rotasjonskiftturnus }}</p>
+                        </li>
+
+                        {{#hvisLikCmsTekst properties.rotasjonskiftturnus "arbeidsforhold.rotasjonskiftturnus.sporsmaal.alternativ.jarotasjon"}}
+                            <li class="kulepunkt">
+                                <p class="rotasjonturnus">
+                                    <span>{{hentTekst "arbeidsforhold.rotasjonskiftturnus.rotasjon.arbeidsdager"}}</span>
+                                    <span>{{ properties.arbeidsdager }}</span>
+                                </p>
+                            </li>
+                            <li class="kulepunkt">
+                                <p class="rotasjonturnus">
+                                    <span>{{hentTekst "arbeidsforhold.rotasjonskiftturnus.rotasjon.avspaseringsdager"}}</span>
+                                    <span>{{ properties.avspaseringsdager }}</span>
+                                </p>
+                            </li>
+                        {{/hvisLikCmsTekst}}
+                    {{/skalViseRotasjonTurnusSporsmaal}}
                 </ul>
             </td>
         </tr>
