@@ -12,6 +12,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
@@ -48,6 +49,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Named("soknadInnsendingRepository")
 // marker alle metoder som transactional. Alle operasjoner vil skje i en
 // transactional write context. Read metoder kan overstyre dette om det trengs.
+@Configuration
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
 public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implements SoknadRepository {
 
