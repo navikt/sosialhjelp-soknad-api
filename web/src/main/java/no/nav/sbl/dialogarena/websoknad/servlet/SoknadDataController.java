@@ -160,7 +160,7 @@ public class SoknadDataController {
     public void sendSoknad(@PathVariable Long soknadId) {
         WebSoknad soknad = soknadService.hentSoknad(soknadId);
 
-        byte[] kvittering = genererPdf(soknad, "/skjema/kvittering");;
+        byte[] kvittering = genererPdf(soknad, "/skjema/kvittering");
         if (soknad.erEttersending()) {
             soknadService.sendSoknad(soknadId, kvittering);
         } else {

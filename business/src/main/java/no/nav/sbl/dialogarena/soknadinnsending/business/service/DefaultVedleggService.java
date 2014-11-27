@@ -44,13 +44,13 @@ import java.util.Map;
 
 import static java.util.Collections.sort;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
+import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.KVITTERING;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.LastetOpp;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
 public class DefaultVedleggService implements VedleggService {
     private static final Logger logger = getLogger(DefaultVedleggService.class);
-    public static final String KVITTERING = "L7";
 
     @Inject
     @Named("soknadInnsendingRepository")
