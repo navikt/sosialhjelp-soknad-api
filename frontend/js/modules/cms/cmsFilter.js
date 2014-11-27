@@ -17,6 +17,6 @@ angular.module('nav.cms.filter', [])
          * markeres ved '{0}', '{1}' osv
          */
         return function (nokkel, args) {
-            return cmsService.getText(nokkel, args)
+            return cmsService.getText(nokkel, args);
         };
     });
