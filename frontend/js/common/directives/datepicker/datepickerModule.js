@@ -101,7 +101,6 @@ angular.module('nav.datepicker', [])
 				};
 
 				scope.blur = function () {
-
 					scope.harFokus = false;
 
 					if (new Date(scope.vars.date) < new Date(scope.fraDato)) {

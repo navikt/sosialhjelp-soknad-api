@@ -87,7 +87,7 @@ describe('vedleggbolker', function () {
         timeout.flush();
         scope.$apply();
 
-        element.find('#til-oppsummering').trigger('click');
+        element.find('#til-oppsummering').triggerHandler('click');
     });
     it('Bolk er lukket og validert, skal fortsatt være lukket', function () {
         var accordionGroup1 = element.find('.accordion-group').first();
@@ -97,7 +97,7 @@ describe('vedleggbolker', function () {
         timeout.flush();
         scope.$apply();
 
-        element.find('#til-oppsummering').trigger('click');
+        element.find('#til-oppsummering').triggerHandler('click');
         expect(accordionGroup1.hasClass('open')).toBe(false);
     });
     it('hvis formen er valid så skal det ikke skje noe med bolkene', function () {
@@ -108,7 +108,7 @@ describe('vedleggbolker', function () {
         scope.$apply();
 
         expect(accordionGroup1.hasClass('open')).toBe(true);
-        element.find('#til-oppsummering').trigger('click');
+        element.find('#til-oppsummering').triggerHandler('click');
         expect(accordionGroup1.hasClass('open')).toBe(true);
     });
 });
@@ -153,7 +153,7 @@ describe('vedleggbolker', function () {
     });
 
     it('Forste bolk som inneholder feil, dvs har klassen ekstraVedlegg eller ikke har behandlet, skal få klassen open', function () {
-        element.find('a').click();
+        element.find('a').triggerHandler('click');
         jasmine.Clock.tick(20000);
         timeout.flush();
     });
