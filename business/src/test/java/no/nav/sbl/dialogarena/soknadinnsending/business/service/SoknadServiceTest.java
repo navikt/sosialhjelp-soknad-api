@@ -261,6 +261,44 @@ public class SoknadServiceTest {
         verify(vedleggRepository).lagreVedlegg(1L, 4L, vedlegg.medInnsendingsvalg(Vedlegg.Status.VedleggKreves));
 
     }
+    @Test
+    public void skalSletteVedlegg() {
+        Long soknadId = 1L;
+        Long faktumId = 1L;
+        Faktum arbeidsforholdFaktum = new Faktum().medKey("arbeidsforhold").medProperty("type", "Permittert").medFaktumId(1L);
+        Vedlegg permitteringsVedlegg = new Vedlegg().medVedleggId(4L).medSkjemaNummer("G2").medSoknadId(soknadId).medInnsendingsvalg(Vedlegg.Status.UnderBehandling).medFaktumId(faktumId);
+        Vedlegg arbeidsgiverVedlegg = new Vedlegg().medVedleggId(4L).medSkjemaNummer("O2").medSoknadId(soknadId).medInnsendingsvalg(Vedlegg.Status.UnderBehandling).medFaktumId(faktumId);
+
+        when(soknadRepository.hentFaktum(soknadId, faktumId)).thenReturn(arbeidsforholdFaktum);
+        when(vedleggRepository.hentVedleggForFaktum(soknadId, faktumId)).thenReturn(Arrays.asList(permitteringsVedlegg, arbeidsgiverVedlegg));
+
+        soknadService.slettBrukerFaktum(soknadId, faktumId);
+
+        verify(vedleggRepository, times(1)).slettVedleggOgData(soknadId, faktumId, "G2");
+        verify(vedleggRepository, times(1)).slettVedleggOgData(soknadId, faktumId, "O2");
+        verify(soknadRepository, times(1)).slettBrukerFaktum(soknadId, faktumId);
+    }
+
+    @Test
+    public void oppdatereFaktum() {
+        Long soknadId = 1L;
+        Long arbeidsforholdFaktumId = 1L;
+        Long permitteringFaktumId = 2L;
+        Faktum arbeidsforholdFaktum = new Faktum().medKey("arbeidsforhold").medProperty("type", "Konkurs").medFaktumId(1L);
+        Faktum permitteringsFaktum = new Faktum().medKey("arbeidsforhold.permitteringsperiode").medProperty("permitteringsperiodefra", "1111-11-11").medFaktumId(permitteringFaktumId).medParrentFaktumId(arbeidsforholdFaktumId);
+        Vedlegg permitteringsVedlegg = new Vedlegg().medVedleggId(4L).medSkjemaNummer("G2").medSoknadId(soknadId).medInnsendingsvalg(Vedlegg.Status.UnderBehandling).medFaktumId(permitteringFaktumId);
+        Vedlegg arbeidsgiverVedlegg = new Vedlegg().medVedleggId(4L).medSkjemaNummer("O2").medSoknadId(soknadId).medInnsendingsvalg(Vedlegg.Status.UnderBehandling).medFaktumId(arbeidsforholdFaktumId);
+
+        when(soknadRepository.lagreFaktum(soknadId, permitteringsFaktum)).thenReturn(permitteringFaktumId);
+        when(soknadRepository.hentFaktum(soknadId, permitteringFaktumId)).thenReturn(permitteringsFaktum);
+        when(soknadRepository.hentFaktum(soknadId, arbeidsforholdFaktumId)).thenReturn(arbeidsforholdFaktum);
+        when(vedleggRepository.hentVedleggForskjemaNummer(soknadId, permitteringFaktumId, "G2")).thenReturn(permitteringsVedlegg);
+        when(vedleggRepository.hentVedleggForskjemaNummer(soknadId, arbeidsforholdFaktumId, "O2")).thenReturn(arbeidsgiverVedlegg);
+
+        soknadService.lagreSoknadsFelt(soknadId, permitteringsFaktum);
+
+        assertThat(permitteringsVedlegg.getInnsendingsvalg(), is(Vedlegg.Status.IkkeVedlegg));
+    }
 
     @Test
     public void skalIkkeoppdatereDelstegstatusVedEpost() {
