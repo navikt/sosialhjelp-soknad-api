@@ -15,6 +15,7 @@
         <module>frontend</module>
         <module>web</module>
         <module>jee</module>
+        <module>mock</module>
     </modules>
 
     <name>Dialogarena - Send Søknad</name>
