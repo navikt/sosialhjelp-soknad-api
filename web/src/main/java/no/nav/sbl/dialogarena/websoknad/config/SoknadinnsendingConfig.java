@@ -18,5 +18,4 @@ import org.springframework.context.annotation.Import;
         SoknadInnsendingDBConfig.class})
 public class SoknadinnsendingConfig {
 
-
 }
