@@ -183,6 +183,9 @@ public class ConsumerConfig {
 
     @Configuration
     public static class KodeverkWSConfig {
+
+        public static final String KODEVERK_KEY = "start.kodeverk.withmock";
+
         @Value("${sendsoknad.webservice.kodeverk.url}")
         private String kodeverkEndPoint;
 
@@ -197,7 +200,13 @@ public class ConsumerConfig {
 
         @Bean
         public KodeverkPortType kodeverkService() {
-            return factory().withSystemSecurity().get();
+            KodeverkPortType prod = factory().withSystemSecurity().get();
+            KodeverkPortType mock = createKodeverkMock();
+            return prod;
+        }
+
+        private KodeverkPortType createKodeverkMock() {
+            return null;  //To change body of created methods use File | Settings | File Templates.
         }
 
         @Bean
