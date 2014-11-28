@@ -1,8 +1,8 @@
 <div class='spm form-linje boolean'>
     <h4 class="spm-sporsmal">
-        <span data-ng-bind-html=" sporsmal | cmstekst"></span>
+        <span data-ng-bind-html=" sporsmal | cmstekst:getCmsArgument() "></span>
         <span data-nav-hjelpetekstelement data-ng-if="hvisHarHjelpetekst()" data-tittel="{{ hjelpetekst.tittel | cmstekst }}"
-             data-tekst="{{ hjelpetekst.tekst | cmstekst }}"></span>
+             data-tekst="{{ hjelpetekst.tekst | cmstekst:getCmsArgument() }}"></span>
     </h4>
     <div data-navradio
          data-navconfig
