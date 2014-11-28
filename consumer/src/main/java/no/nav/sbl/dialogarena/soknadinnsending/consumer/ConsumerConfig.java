@@ -10,6 +10,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnect
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonConnector;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoConnector;
+import no.nav.sbl.dialogarena.mock.kodeverk.KodeverkMock;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSSoknadsdata;
@@ -201,12 +202,11 @@ public class ConsumerConfig {
         @Bean
         public KodeverkPortType kodeverkService() {
             KodeverkPortType prod = factory().withSystemSecurity().get();
-            KodeverkPortType mock = createKodeverkMock();
+            KodeverkPortType mock = new KodeverkMock().kodeverkMock();
+            if (true) {
+                return mock;
+            }
             return prod;
-        }
-
-        private KodeverkPortType createKodeverkMock() {
-            return null;  //To change body of created methods use File | Settings | File Templates.
         }
 
         @Bean
