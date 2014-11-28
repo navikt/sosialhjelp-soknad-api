@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 import no.nav.modig.core.exception.SystemException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import org.apache.commons.io.IOUtils;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.PreparedStatementSetter;
