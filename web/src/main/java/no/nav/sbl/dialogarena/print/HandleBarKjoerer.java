@@ -60,6 +60,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
     private Handlebars getHandlebars() {
         Handlebars handlebars = new Handlebars();
 
+        handlebars.registerHelper("adresse", generateAdresseHelper());
         handlebars.registerHelper("forFaktum", generateForFaktumHelper());
         handlebars.registerHelper("forFakta", generateForFaktaHelper());
         handlebars.registerHelper("forFaktaMedPropertySattTilTrue", generateForFaktaMedPropTrueHelper());
@@ -80,11 +81,26 @@ public class HandleBarKjoerer implements HtmlGenerator {
         handlebars.registerHelper("forInnsendteVedlegg", generateForInnsendteVedleggHelper());
         handlebars.registerHelper("forIkkeInnsendteVedlegg", generateForIkkeInnsendteVedleggHelper());
         handlebars.registerHelper("hvisHarIkkeInnsendteDokumenter", generateHvisHarIkkeInnsendteDokumenterHelper());
-        handlebars.registerHelper("hvisUtenlandskStatsborger", generateHvisUtenlandskStatsborgerHelper());
         handlebars.registerHelper("skalViseRotasjonTurnusSporsmaal", generateSkalViseRotasjonTurnusSporsmaalHelper());
         handlebars.registerHelper("hvisLikCmsTekst", generateHvisLikCmsTekstHelper());
 
         return handlebars;
+    }
+
+    private Helper<String> generateAdresseHelper() {
+        return new Helper<String>() {
+            @Override
+            public CharSequence apply(String adresse, Options options) throws IOException {
+                String[] adresselinjer = adresse.split("\n");
+
+                String resultAdresse = "";
+                for (String adresselinje : adresselinjer) {
+                    resultAdresse += "<p>" + adresselinje + "</p>";
+                }
+
+                return resultAdresse;
+            }
+        };
     }
 
     private Helper<Object> generateHvisHarIkkeInnsendteDokumenterHelper() {
@@ -369,18 +385,6 @@ public class HandleBarKjoerer implements HtmlGenerator {
         };
     }
 
-    private Helper<String> generateHvisUtenlandskStatsborgerHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String o, Options options) throws IOException {
-                if (o.equals("NOR")) {
-                    return options.inverse(this);
-                } else {
-                    return options.fn(this);
-                }
-            }
-        };
-    }
     private Helper<String> generateForFaktumHelper() {
         return new Helper<String>() {
             @Override

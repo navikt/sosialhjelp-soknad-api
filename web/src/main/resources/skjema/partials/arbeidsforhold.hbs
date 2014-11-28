@@ -198,7 +198,8 @@
 
 
     {{#forFaktum "personalia"}}
-        {{#hvisUtenlandskStatsborger properties.statsborgerskap}}
+        {{#hvisLik properties.statsborgerskap "NOR"}}
+        {{else}}
             {{#forFaktum "arbeidsforhold.grensearbeider"}}
                 <tr>
                     <td class="sjekket"></td>
@@ -216,7 +217,8 @@
 
                                 {{#forFaktum "arbeidsforhold.grensearbeider.false.adresse.fritekst"}}
                                     <li class="kulepunkt">
-                                        <span>{{value}}</span>
+                                        <span>{{hentTekst "arbeidsforhold.grensearbeider.false.adresse.oppsummering"}}</span>
+                                        {{{adresse value}}}
                                     </li>
                                 {{/forFaktum}}
 
@@ -230,6 +232,6 @@
                     </td>
                 </tr>
             {{/forFaktum}}
-        {{/hvisUtenlandskStatsborger}}
+        {{/hvisLik}}
     {{/forFaktum}}
 </table>
