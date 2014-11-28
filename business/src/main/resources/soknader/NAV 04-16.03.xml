@@ -155,6 +155,30 @@
         <panel>TidligereArbeidsforhold</panel>
     </faktum>
 
+    <faktum>
+        <id>tidligerearbeidsforhold.tidligerearbeidsgiver</id>
+        <type>java.lang.String</type>
+        <panel>TidligereArbeidsforhold</panel>
+        <dependOn>tidligerearbeidsforhold.permittert</dependOn>
+        <dependOnValue>permittert</dependOnValue>
+    </faktum>
+
+    <faktum>
+        <id>tidligerearbeidsforhold.jobbetsidensist</id>
+        <type>java.lang.Boolean</type>
+        <panel>TidligereArbeidsforhold</panel>
+        <dependOn>tidligerearbeidsforhold.permittert</dependOn>
+        <dependOnValue>permittert</dependOnValue>
+    </faktum>
+
+    <faktum>
+        <id>tidligerearbeidsforhold.fortsattansatt</id>
+        <type>java.lang.Boolean</type>
+        <panel>TidligereArbeidsforhold</panel>
+        <dependOn>tidligerearbeidsforhold.permittert</dependOn>
+        <dependOnValue>permittert</dependOnValue>
+    </faktum>
+
     <!-- EgenNaering -->
     <faktum>
         <id>egennaering.driveregennaering</id>
