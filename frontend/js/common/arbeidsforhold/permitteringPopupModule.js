@@ -21,7 +21,11 @@ angular.module('nav.arbeidsforhold.permitteringpopup', [])
     }])
     .controller('PermitteringPopupCtrl', function ($scope, $modalInstance, permitteringer, permittering, Faktum) {
         $scope.lukk = function () {
+            var fokusElement = angular.element(".knapp-leggtil-liten");
+            scrollToElement(fokusElement, 200);
+            fokusElement.focus();
             $modalInstance.close();
+
         };
         $scope.originalPermitteringsperiode = permittering;
         $scope.endreModus = permittering ? true : false;
@@ -32,7 +36,7 @@ angular.module('nav.arbeidsforhold.permitteringpopup', [])
         });
         $scope.cmsPostFix = $scope.endreModus ? ".endre" : "";
 
-        $scope.lagreNyPermitteringsPeriode = function(nypermittering) {
+        $scope.lagreNyPermitteringsPeriode = function (nypermittering) {
             permitteringer.push(nypermittering);
         };
     })
@@ -46,7 +50,7 @@ angular.module('nav.arbeidsforhold.permitteringpopup', [])
             if (form.$valid) {
                 if (!$scope.endreModus) {
                     $scope.lagreNyPermitteringsPeriode($scope.permitteringsperiode);
-                } else  {
+                } else {
                     oppdaterEksisterendePermitteringsPeriode($scope.originalPermitteringsperiode, $scope.permitteringsperiode);
                 }
                 $scope.lukk();

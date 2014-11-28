@@ -17,7 +17,6 @@ angular.module('sendsoknad.directives', [
 	'nav.bildenavigering',
 	'nav.navfaktum',
 	'nav.accordion',
-	'nav.scroll.directive',
 	'nav.scrollbar',
 	'nav.aapneForsteInvalidBolkDirective',
 	'nav.skjematittel',

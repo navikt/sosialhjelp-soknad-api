@@ -10,5 +10,6 @@ angular.module('ettersending', [
     'ngSanitize',
     'templates-main',
     'nav.cms',
-    'nav.personalia'
+    'nav.personalia',
+    'nav.scroll'
 ]);
