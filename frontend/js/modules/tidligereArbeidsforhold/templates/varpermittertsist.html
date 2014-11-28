@@ -7,14 +7,12 @@
     <div data-navradio
          data-value="ikkePermittert"
          data-navconfig
-         data-nav-faktum="tidligerearbeidsforhold.permittert"
          data-navlabel="tidligerearbeidsforhold.permittert.nei"
          data-navfeilmelding="tidligerearbeidsforhold.permittert.feilmelding">
     </div>
 
     <div data-navradio
          data-navconfig
-         data-nav-faktum="tidligerearbeidsforhold.permittert"
          data-value="permittertFiske"
          data-navlabel="tidligerearbeidsforhold.permittert.jafiske"
          data-hjelpetekst="tidligerearbeidsforhold.permittert.jafiske.hjelpetekst"
@@ -23,14 +21,17 @@
 
     <div data-navradio
          data-navconfig
-         data-nav-faktum="tidligerearbeidsforhold.permittert"
          data-value="permittert"
          data-navlabel="tidligerearbeidsforhold.permittert.ja"
          data-navfeilmelding="tidligerearbeidsforhold.permittert.feilmelding">
     </div>
 
-    <div data-ng-if="erPermittert()">
+    <div data-ng-if="hvisVarPermittert()">
         <div data-tidligere-arbeidsgiver></div>
+    </div>
+
+    <div data-melding>
+        <span class="melding" data-ng-bind-html=" 'tidligerearbeidsforhold.permittert.feilmelding' | cmstekst"></span>
     </div>
 
 </div>

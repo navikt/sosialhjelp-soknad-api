@@ -11,22 +11,35 @@ angular.module('nav.tidligerearbeidsforhold.directive', [])
             scope: true,
             templateUrl: '../js/modules/tidligereArbeidsforhold/templates/varpermittertsist.html',
             link: function(scope) {
-                scope.varPermittert = data.finnFaktum('tidligerearbeidsforhold.permittert');
-                scope.erPermittert = function() {
-                    return scope.varPermittert.value == "permittert";
-                }
+                scope.varPermittertFaktum = data.finnFaktum('tidligerearbeidsforhold.permittert');
+                scope.hvisVarPermittert = function() {
+                    return scope.varPermittertFaktum.value == "permittert";
+                };
             }
         };
     })
-    .directive('tidligereArbeidsgiver', function(data) {
+    .directive('tidligereArbeidsgiver', function(data, cms) {
         return {
             replace: true,
             templateUrl: '../js/modules/tidligereArbeidsforhold/templates/tidligereArbeidsgiver.html',
             link: function(scope) {
                 scope.cmsArgumenter = {
                     modelFaktum: data.finnFaktum('tidligerearbeidsforhold.tidligerearbeidsgiver'),
-                    default: "[arbeidsgiver]"
+                    default: cms.tekster["tidligerearbeidsforhold.tidligerearbeidsgiver.defaultnavn"]
                 };
+                scope.jobbetSidenSistFaktum = data.finnFaktum('tidligerearbeidsforhold.jobbetsidensist');
+                scope.hvisHarArbeidet = function() {
+                    return scope.jobbetSidenSistFaktum.value == "false";
+                };
+            }
+        };
+    })
+    .directive('hvorLengeArbeidetSist', function() {
+        return {
+            replace: true,
+            templateUrl: '../js/modules/tidligereArbeidsforhold/templates/hvorlengearbeidetsist.html',
+            pre: function(scope) {
+                console.log("running");
             }
         };
     });

@@ -164,7 +164,7 @@
     </faktum>
 
     <faktum>
-        <id>tidligerearbeidsforhold.jobbetsidensist</id>
+        <id>tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsidensist</id>
         <type>java.lang.Boolean</type>
         <panel>TidligereArbeidsforhold</panel>
         <dependOn>tidligerearbeidsforhold.permittert</dependOn>
@@ -172,7 +172,15 @@
     </faktum>
 
     <faktum>
-        <id>tidligerearbeidsforhold.fortsattansatt</id>
+        <id>tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsammenhengende</id>
+        <type>java.lang.String</type>
+        <panel>TidligereArbeidsforhold</panel>
+        <dependOn>tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsidensist</dependOn>
+        <dependOnValue>false</dependOnValue>
+    </faktum>
+
+    <faktum>
+        <id>tidligerearbeidsforhold.tidligerearbeidsgiver.fortsattansatt</id>
         <type>java.lang.Boolean</type>
         <panel>TidligereArbeidsforhold</panel>
         <dependOn>tidligerearbeidsforhold.permittert</dependOn>
