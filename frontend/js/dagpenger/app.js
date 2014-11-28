@@ -13,5 +13,6 @@ angular.module('sendsoknad', [
     'templates-main',
     'nav.cms',
     'nav.arbeidsforhold',
-    'nav.personalia'
+    'nav.personalia',
+    'nav.scroll'
 ]);
