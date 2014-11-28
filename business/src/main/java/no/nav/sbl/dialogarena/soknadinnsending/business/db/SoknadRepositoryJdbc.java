@@ -20,7 +20,6 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.support.JdbcUtils;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,7 +49,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Named("soknadInnsendingRepository")
 // marker alle metoder som transactional. Alle operasjoner vil skje i en
 // transactional write context. Read metoder kan overstyre dette om det trengs.
-@Component
+@Configuration
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
 public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implements SoknadRepository {
 
