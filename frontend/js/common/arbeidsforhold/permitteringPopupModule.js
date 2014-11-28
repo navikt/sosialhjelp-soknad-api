@@ -6,6 +6,7 @@ angular.module('nav.arbeidsforhold.permitteringpopup', [])
                     templateUrl: '../js/common/arbeidsforhold/templates/permitteringPopupTemplate.html',
                     controller: 'PermitteringPopupCtrl',
                     scope: $scope,
+                    windowClass: 'smalt',
                     resolve: {
                         permitteringer: function () {
                             return permitteringer;
