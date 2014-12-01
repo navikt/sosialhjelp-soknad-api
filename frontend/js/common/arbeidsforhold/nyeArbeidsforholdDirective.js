@@ -8,6 +8,10 @@ angular.module('nav.nyearbeidsforhold.directive',[])
                 $scope.skalViseFritekstfelt = function() {
                     return isNotNullOrUndefined($scope.faktum.value);
                 };
+                $scope.faktum = data.finnFaktum("nyearbeidsforhold.arbeidsidensist");
+                $scope.harJobbetSidenSistMotattDagpenger = function() {
+                    return $scope.faktum.value == "false";
+                };
             }
         };
     });

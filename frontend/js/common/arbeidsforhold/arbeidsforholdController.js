@@ -1,4 +1,4 @@
-angular.module('nav.arbeidsforhold.controller')
+angular.module('nav.arbeidsforhold.controller', [])
     .controller('ArbeidsforholdCtrl', function ($scope, $cookieStore, $location, data) {
 
         $scope.soknadId = data.soknad.soknadId;

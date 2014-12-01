@@ -18,6 +18,5 @@ angular.module('gjenopptak.controllers', [
     'nav.avbryt',
     'nav.bekreftelse',
     'nav.tilleggsopplysninger',
-    'nav.fortsett.controller',
-    'nav.reberegning'
+    'nav.fortsett.controller'
 ]);

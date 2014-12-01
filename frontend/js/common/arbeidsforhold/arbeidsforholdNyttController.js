@@ -1,6 +1,4 @@
-angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [
-                'nav.arbeidsforhold.permittering.directive',
-                'nav.arbeidsforhold.turnus.directive'])
+angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
     .controller('ArbeidsforholdNyttCtrl', function ($scope, data, Faktum, $location, $cookieStore, $resource, cms, $q, permitteringPopup) {
 
         $scope.templates = {
