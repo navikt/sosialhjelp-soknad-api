@@ -25,9 +25,12 @@
     <packaging>pom</packaging>
 
     <properties>
-        <sonar.exclusions>**/*Config*</sonar.exclusions>
+        <!-- Sonaroppsett for å få med integrasjonstester på testdekning -->
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+        <!-- Lagrer IT-info til enhetstestfil -->
+        <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco-ut.exec</sonar.jacoco.reportPath>
+        <sonar.language>java</sonar.language>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 
