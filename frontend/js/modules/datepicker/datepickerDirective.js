@@ -37,7 +37,35 @@
  */
 
 angular.module('nav.datepicker.directive', [])
-    .directive('navDato', ['$timeout', 'datepickerConfig', '$filter', 'cms', function ($timeout, datepickerConfig, $filter, cms) {
+    .directive('dato', function () {
+        return {
+            restrict   : 'A',
+            require    : '^form',
+            replace    : true,
+            templateUrl: '../js/modules/datepicker/templates/datepickerTemplate.html',
+            scope      : {
+                model: '=ngModel'
+            },
+            link: function (scope, element, attrs, form) {
+
+            }
+        };
+    })
+    .directive('datoInput', function () {
+        return {
+            restrict   : 'A',
+            require    : '^form',
+            replace    : true,
+            templateUrl: '../js/modules/datepicker/templates/customDateInputTemplate.html',
+            scope      : {
+                model: '=datoInput'
+            },
+            link: function (scope, element, attrs, form) {
+
+            }
+        };
+    })
+    .directive('navDato', function ($timeout, datepickerConfig, $filter, cms) {
         return {
             restrict   : 'A',
             require    : '^form',
@@ -275,7 +303,7 @@ angular.module('nav.datepicker.directive', [])
                 }
             }
         };
-    }])
+    })
     .directive('navDatoIntervall', [function () {
         return {
             restrict   : 'A',
@@ -315,7 +343,7 @@ angular.module('nav.datepicker.directive', [])
             }
         };
     }])
-    .directive('datoMask', function ($filter, cms, $timeout) {
+    .directive('datoMask', function ($filter, cms) {
         return {
             restrict: 'A',
             require : 'ngModel',
@@ -459,4 +487,92 @@ angular.module('nav.datepicker.directive', [])
                 }
             }
         };
+    })
+    .directive('restrictInput', function ($filter, cms, datepickerInputKeys, datepickerNonInputKeys, datepickerInputService) {
+        return {
+            restrict: 'A',
+            require : 'ngModel',
+            link    : function (scope, element, attrs, ngModel) {
+                if (!ngModel) {
+                    return;
+                }
+
+                var allowedKeys = datepickerInputKeys.concat(datepickerNonInputKeys);
+                var datoMask = cms.tekster['dato.format'];
+                var caretPosisjonElement = element.closest('.datepicker').find('.caretPosition');
+                caretPosisjonElement.hide();
+
+                element.bind('blur', function () {
+                    caretPosisjonElement.hide();
+                });
+
+                element.bind('focus', function () {
+                    caretPosisjonElement.show();
+                });
+
+                element.bind('keydown', function (event) {
+                    return datepickerInputService.isValidInput(event.keyCode, element.val().length, datoMask.length);
+                });
+
+                ngModel.$formatters.unshift(function (dato) {
+                    if (dato) {
+                        var datoSomDateObjekt = new Date(dato);
+                        return $filter('date')(datoSomDateObjekt, 'dd.MM.yyyy');
+                    } else {
+                        return '';
+                    }
+                });
+
+                var gammelInputVerdi = '';
+                ngModel.$parsers.unshift(function (input) {
+                    var slettet = input.length < gammelInputVerdi.length;
+                    var caretPosisjon = hentCaretPosisjon(element);
+
+                    if (!slettet) {
+                        var start = caretPosisjon - (input.length - gammelInputVerdi.length);
+                        var slutt = caretPosisjon;
+
+                        for (var i = start; i < slutt && i < input.length; i++) {
+                            var skrevetTegn = input[i];
+
+                            settInnPunktumDeromVedIndex1Eller4();
+                        }
+                    }
+
+                    gammelInputVerdi = input;
+                    element.val(input);
+                    settCaretPosisjon(element, caretPosisjon);
+
+                    return reverserNorskDatoformat(input);
+
+                    function settInnPunktumDeromVedIndex1Eller4() {
+                        if (i === 1 || i === 4) {
+                            if (input[i + 1] === '.') {
+                                caretPosisjon++;
+                                i++;
+                            } else {
+                                input = input.splice(i + 1, 0, '.');
+                                caretPosisjon++;
+                                i++;
+                                slutt++;
+                            }
+                        }
+                    }
+
+                    function slettTegnDersomDetIkkeStemmerMedFormatet() {
+                        if (input.substring(0, i + 1).length > datoMask.length || input.splice(i, 1, '').length === datoMask.length) {
+                            if (skrevetTegn !== '.' || (i !== 2 && i !== 5)) {
+                                input = input.splice(i, 1, '');
+                                caretPosisjon--;
+                                i--;
+                                slutt--;
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                });
+            }
+        };
     });
+
