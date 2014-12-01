@@ -899,7 +899,7 @@
                 </property>
             </activation>
             <properties>
-                <sonar.jacoco.excludes>*SelfTestPage.*</sonar.jacoco.excludes>
+                <sonar.jacoco.excludes>*SelfTestPage.*:*no/nav/sbl/dialogarena/sendsoknad/mockmodul/**</sonar.jacoco.excludes>
             </properties>
         </profile>
         <profile>
