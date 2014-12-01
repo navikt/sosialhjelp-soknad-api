@@ -47,8 +47,10 @@ angular.module('nav.cms.service', [])
                 if ($rootScope.visCmsnokkler) {
                     tekst += ' [' + key + ']';
                 }
-
                 return tekst === undefined ? '' : $sce.trustAsHtml(tekst);
+            },
+            getTrustedHtml: function(nokkel, args) {
+                return $sce.getTrustedHtml(this.getText(nokkel, args));
             }
         };
     });

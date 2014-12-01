@@ -37,31 +37,334 @@
  */
 
 angular.module('nav.datepicker.directive', [])
-    .directive('dato', function () {
+    .directive('dato', function (cms) {
+        return {
+            restrict   : 'A',
+            require    : '^form',
+            replace    : true,
+            templateUrl: '../js/modules/datepicker/templates/dateTemplate.html',
+            scope      : {
+                model: '=ngModel',
+                tilDatoFeil: '=?',
+                erRequired: '=?',
+                erFremtidigdatoTillatt: '=?',
+                tilDato: '=?',
+                fraDato: '=?',
+                disabled: '=?',
+                tilDatoFeil: '=?',
+                label: '@',
+                requiredErrorMessage: '@',
+                lagre: '&'
+
+            },
+            link: function (scope, element) {
+                var ugyldigFremtidigDatoFeilmelding = cms.tekster['dato.ugyldigFremtidig.feilmelding'];
+                scope.vars = {
+                    model: scope.model,
+                    harFeil: false,
+                    harFokus: false,
+                    harHattFokus: false,
+                    datepickerClosed: true,
+                    erRequired: scope.erRequired,
+                    requiredErrorMessage: scope.requiredErrorMessage,
+                    lagre: scope.lagre
+                };
+
+                scope.$watch('model', function(newValue, oldValue) {
+                    if (newValue === oldValue) {
+                        return;
+                    }
+
+                    if (new Date(newValue) < new Date(scope.fraDato)) {
+                        scope.vars.model = '';
+                        scope.tilDatoFeil = true;
+                    } else if (new Date(scope.tilDato) < new Date(newValue)) {
+                        scope.tilDato = '';
+                        scope.tilDatoFeil = true;
+                    }
+
+                    scope.vars.model = scope.model;
+                });
+
+                scope.$watch('vars.model', function(newValue, oldValue) {
+                    if (newValue === oldValue) {
+                        return;
+                    }
+
+                    if (scope.endret) {
+                        scope.endret();
+                    }
+
+                    scope.fremtidigDatoFeil = scope.sjekkUloveligFremtidigDato();
+                    if (new Date(newValue) < new Date(scope.fraDato)) {
+                        scope.vars.model = '';
+                        scope.tilDatoFeil = true;
+                    }
+
+                    scope.model = scope.vars.model;
+                });
+
+                var datoRegExp = new RegExp(/^\d\d\.\d\d\.\d\d\d\d$/);
+
+                function harIkkeFokusOgHarHattFokus() {
+                    return !scope.vars.harFokus && scope.vars.harHattFokus;
+                }
+
+                function inputfeltHarTekstMenIkkeGyldigDatoFormat() {
+                    var tekstInput = element.find('input[type=text]');
+                    return tekstInput.val() && !datoRegExp.test(tekstInput.val());
+                }
+
+                function inputfeltHarTekstOgGyldigDatoFormat() {
+                    var tekstInput = element.find('input[type=text]');
+                    return tekstInput.val() && datoRegExp.test(tekstInput.val());
+                }
+
+                scope.navDatepicker = function() {
+                    return !scope.vanligDatepicker();
+                };
+
+                scope.vanligDatepicker = function() {
+                    return erTouchDevice() && getIEVersion() < 0;
+                };
+
+                scope.harRequiredFeil = function () {
+                    if (scope.navDatepicker()) {
+                        return erRequiredOgHarIkkeModellSattOgHarIkkeTilDatoFeil() && inputHarIkkeInnhold() && harIkkeFokusOgHarHattFokus() && scope.vars.datepickerClosed &&
+                            !inputfeltHarTekstMenIkkeGyldigDatoFormat() && !erGyldigDato(element.find('input[type=text]').val());
+                    } else {
+                        return erRequiredOgHarIkkeModellSattOgHarIkkeTilDatoFeil() && harIkkeFokusOgHarHattFokus() ;
+                    }
+
+                    function inputHarIkkeInnhold() {
+                        return element.find('input[type=text]').val() === undefined || element.find('input[type=text]').val().trim().length === 0;
+                    }
+
+                    function erRequiredOgHarIkkeModellSattOgHarIkkeTilDatoFeil() {
+                        return scope.vars.erRequired && !scope.vars.model && !scope.tilDatoFeil;
+                    }
+                };
+
+                scope.harTilDatoFeil = function () {
+                    return !scope.vars.model && harIkkeFokusOgHarHattFokus() && scope.vars.datepickerClosed && scope.tilDatoFeil;
+                };
+
+                scope.harFormatteringsFeil = function () {
+                    return inputfeltHarTekstMenIkkeGyldigDatoFormat() && harIkkeFokusOgHarHattFokus();
+                };
+
+                scope.sjekkUloveligFremtidigDato = function () {
+                    if(!scope.erFremtidigdatoTillatt && scope.vars.model !== undefined) {
+                        var dateArray = scope.vars.model.split("-");
+                        return erFremtidigDato(dateArray[0], dateArray[1], dateArray[2]);
+                    }
+                    return false;
+                };
+
+                scope.erUloveligFremtidigDato = function() {
+                    var el;
+                    if(scope.fremtidigDatoFeil && harIkkeFokusOgHarHattFokus()) {
+                        el = element.controller('ngModel');
+                        el.$setValidity(ugyldigFremtidigDatoFeilmelding, false);
+                        return true;
+                    } else if(!scope.fremtidigDatoFeil) {
+                        el = element.controller('ngModel');
+                        el.$setValidity(ugyldigFremtidigDatoFeilmelding, true);
+                        return false;
+                    }
+                    return false;
+                };
+
+                scope.erIkkeGyldigDato = function () {
+                    return !scope.ngModel && inputfeltHarTekstOgGyldigDatoFormat() &&
+                        !erGyldigDato(element.find('input[type=text]').val()) && harIkkeFokusOgHarHattFokus();
+                };
+
+                scope.harFeil = function () {
+                    if (scope.navDatepicker()) {
+                        return harFeilMedNavDatepicker();
+                    } else {
+                        return harFeilMedDateInput();
+                    }
+                };
+
+                function harFeilMedNavDatepicker() {
+                    return scope.harRequiredFeil() || scope.harFormatteringsFeil() || scope.harTilDatoFeil() || scope.erIkkeGyldigDato() || scope.erUloveligFremtidigDato();
+                }
+
+                function harFeilMedDateInput() {
+                    return scope.harRequiredFeil() || scope.harTilDatoFeil();
+                }
+            }
+        };
+    })
+    .directive('datepicker', function(datepickerConfig, $filter) {
         return {
             restrict   : 'A',
             require    : '^form',
             replace    : true,
             templateUrl: '../js/modules/datepicker/templates/datepickerTemplate.html',
             scope      : {
-                model: '=ngModel'
+                model: '=datepicker',
+                harHattFokus: '=',
+                isClosed: '=',
+                erFremtidigdatoTillatt: '=?'
             },
-            link: function (scope, element, attrs, form) {
+            link: function (scope, element) {
+                scope.options = {};
+                if (!scope.erFremtidigdatoTillatt) {
+                    scope.options.maxDate = new Date();
+                }
 
+                var inputElement = element.find('input');
+                scope.toggleDatepicker = function () {
+                    var dateDiv = $('#ui-datepicker-div');
+                    if (dateDiv.is(':hidden')) {
+                        inputElement.datepicker('show');
+                        var pos = dateDiv.position();
+                        pos.top = pos.top + 32;
+                        dateDiv.offset(pos);
+                    }
+                };
+
+                var defaultDate = new Date();
+
+                function datepickerOptions() {
+                    var currentDefaultDate = defaultDate;
+                    defaultDate = scope.model ? new Date(scope.model) : currentDefaultDate;
+
+                    if (currentDefaultDate.getTime() !== defaultDate.getTime()) {
+                        scope.options = angular.extend({}, {defaultDate: defaultDate}, scope.options);
+                    }
+                    return angular.extend({}, datepickerConfig, scope.options);
+                }
+
+                function leggTilDatepicker() {
+                    var opts = datepickerOptions();
+
+                    opts.onSelect = function () {
+                        var dato = inputElement.datepicker('getDate');
+                        scope.model = $filter('date')(dato, 'yyyy-MM-dd');
+                    };
+
+                    opts.beforeShow = function () {
+                        scope.isClosed = false;
+                        scope.harHattFokus = true;
+                    };
+                    opts.onClose = function () {
+                        scope.isClosed = true;
+                        scope.$apply();
+                    };
+
+                    inputElement.datepicker('destroy');
+                    inputElement.datepicker(opts);
+                }
+
+                // Legger til datepicker på nytt dersom options endrer seg
+                scope.$watch(datepickerOptions, leggTilDatepicker, true);
+
+                scope.$watch('model', function (newValue, oldValue) {
+                    if (newValue === oldValue) {
+                        return;
+                    }
+
+                    if (isNaN(new Date(scope.model).getDate())) {
+                        inputElement.datepicker('setDate', new Date());
+                    } else {
+                        inputElement.datepicker('setDate', new Date(scope.model));
+                    }
+                });
             }
         };
     })
-    .directive('datoInput', function () {
+    .directive('datoInput', function ($timeout, deviceService) {
         return {
             restrict   : 'A',
             require    : '^form',
             replace    : true,
             templateUrl: '../js/modules/datepicker/templates/customDateInputTemplate.html',
             scope      : {
-                model: '=datoInput'
+                model: '=datoInput',
+                harHattFokus: '=',
+                harFokus: '=',
+                erRequired: '=?',
+                lagre: '&',
+                requiredErrorMessage: '@'
             },
             link: function (scope, element, attrs, form) {
+                var eventForAValidereHeleFormen = 'RUN_VALIDATION' + form.$name;
+                scope.$on(eventForAValidereHeleFormen, function () {
+                    scope.harHattFokus = true;
+                });
 
+                scope.blur = function () {
+                    scope.harFokus = false;
+
+                    if (new Date(scope.model) < new Date(scope.fraDato)) {
+                        scope.model = '';
+                        scope.tilDatoFeil = true;
+                    } else if (new Date(scope.tilDato) < new Date(scope.model)) {
+                        scope.tilDato = '';
+                        scope.tilDatoFeil = true;
+                    }
+
+                    if (scope.lagre) {
+                        $timeout(scope.lagre, 100);
+                    }
+                };
+
+                scope.focus = function () {
+                    scope.harFokus = true;
+                    scope.harHattFokus = true;
+                    if (scope.tilDatoFeil !== undefined) {
+                        scope.tilDatoFeil = false;
+                    }
+                };
+
+                scope.visible = function() {
+                    return deviceService.isTouchDevice();
+                };
+            }
+        };
+    })
+    .directive('htmlDatepicker', function () {
+        return {
+            restrict: 'A',
+            require: '^form',
+            replace: true,
+            templateUrl: '../js/modules/datepicker/templates/html5DatepickerTemplate.html',
+            scope: {
+                model: '=htmlDatepicker',
+                harHattFokus: '=',
+                harFokus: '=',
+                erRequired: '=?',
+                lagre: '&',
+                requiredErrorMessage: '@'
+            },
+            link: function(scope) {
+                scope.blur = function () {
+                    scope.harFokus = false;
+
+                    if (new Date(scope.model) < new Date(scope.fraDato)) {
+                        scope.model = '';
+                        scope.tilDatoFeil = true;
+                    } else if (new Date(scope.tilDato) < new Date(scope.model)) {
+                        scope.tilDato = '';
+                        scope.tilDatoFeil = true;
+                    }
+
+                    if (scope.lagre) {
+                        $timeout(scope.lagre, 100);
+                    }
+                };
+
+                scope.focus = function () {
+                    scope.harFokus = true;
+                    scope.harHattFokus = true;
+                    if (scope.tilDatoFeil !== undefined) {
+                        scope.tilDatoFeil = false;
+                    }
+                };
             }
         };
     })
@@ -343,7 +646,7 @@ angular.module('nav.datepicker.directive', [])
             }
         };
     }])
-    .directive('datoMask', function ($filter, cms) {
+    .directive('datoMaskOld', function ($filter, cms) {
         return {
             restrict: 'A',
             require : 'ngModel',
@@ -488,7 +791,7 @@ angular.module('nav.datepicker.directive', [])
             }
         };
     })
-    .directive('restrictInput', function ($filter, cms, datepickerInputService) {
+    .directive('restrictInput', function ($filter, cmsService, datepickerInputService) {
         return {
             restrict: 'A',
             require : 'ngModel',
@@ -496,8 +799,7 @@ angular.module('nav.datepicker.directive', [])
                 if (!ngModel) {
                     return;
                 }
-
-                var datoMask = cms.tekster['dato.format'];
+                var datoMask = cmsService.getTrustedHtml('dato.format');
                 var caretPosisjonElement = element.closest('.datepicker').find('.caretPosition');
                 caretPosisjonElement.hide();
 
@@ -526,7 +828,7 @@ angular.module('nav.datepicker.directive', [])
                 ngModel.$parsers.unshift(function (input) {
                     var slettet = input.length < oldInput.length;
                     var caretPosition = hentCaretPosisjon(element);
-                    
+
                     if (!slettet) {
                         var res = datepickerInputService.addPeriodAtRightIndex(input, oldInput, caretPosition);
                         input = res[0];
@@ -540,5 +842,36 @@ angular.module('nav.datepicker.directive', [])
                 });
             }
         };
-    });
+    })
+    .directive('datoMask', function (cssService, maskService) {
+        return {
+            restrict: 'A',
+            link: {
+                pre: function(scope, element) {
+                    element.after('<span class="caretPosition"></span>');
+                },
+                post: function(scope, element) {
+                    var inputElement = element.prev();
+                    var caretPositionElement = element.next();
+                    var paddingTop = cssService.getComputedStyle(inputElement, 'padding-top')
+                    var inputElementLeft = inputElement.position().left + cssService.getComputedStyle(inputElement, 'padding-left');
 
+                    scope.$watch(function() {
+                        return inputElement.val();
+                    }, function(newValue) {
+                        var text = newValue;
+                        if (text === undefined) {
+                            text = '';
+                        }
+
+                        caretPositionElement.text(text);
+                        var left = inputElementLeft + caretPositionElement.outerWidth();
+                        var top = inputElement.position().top + paddingTop - 3;
+                        element.css({top: top + 'px', left: left + 'px'});
+
+                        element.text(maskService.getMaskText(text));
+                    });
+                }
+            }
+        }
+    });

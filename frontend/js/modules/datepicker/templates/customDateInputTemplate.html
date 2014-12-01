@@ -1,5 +1,10 @@
 <div>
     <input type="text"
+           data-ng-blur="blur()"
+           data-ng-focus="focus()"
            data-ng-model="model"
+           data-ng-required="erRequired"
+           data-error-messages="'{{ requiredErrorMessage }}'"
            data-restrict-input>
+    <span class="mask" data-dato-mask="model"></span>
 </div>
