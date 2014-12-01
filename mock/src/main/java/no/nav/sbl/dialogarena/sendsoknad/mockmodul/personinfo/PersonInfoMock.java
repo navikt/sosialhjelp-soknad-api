@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.sendsoknad.mockmodul.kodeverk;
+package no.nav.sbl.dialogarena.sendsoknad.mockmodul.personinfo;
 
 import no.nav.arena.tjenester.person.v1.PersonInfoServiceSoap;
 

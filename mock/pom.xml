@@ -38,6 +38,11 @@
             <classifier>jaxws</classifier>
         </dependency>
 
+        <dependency>
+            <groupId>no.nav.sbl.dialogarena</groupId>
+            <artifactId>brukerprofil-tjenestespesifikasjon</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>
