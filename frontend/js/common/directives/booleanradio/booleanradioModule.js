@@ -24,7 +24,7 @@ angular.module('nav.booleanradio', ['nav.cms', 'nav.input'])
 							return cmsArgs.modelFaktum.value ? cmsArgs.modelFaktum.value : cmsArgs.default;
 						}
 						return null;
-					}
+					};
 				},
 				post: function (scope, element) {
 					scope.hvisModelErTrue = function () {
