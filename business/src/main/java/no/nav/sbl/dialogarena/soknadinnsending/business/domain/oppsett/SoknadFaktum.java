@@ -3,10 +3,13 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.List;
 
 import static org.apache.commons.lang3.StringUtils.countMatches;
 
@@ -18,6 +21,7 @@ public class SoknadFaktum implements Serializable {
 
     private String dependOnProperty;
     private String dependOnValue;
+    private List<String> dependOnValues;
 
     private String flereTillatt;
     private String erSystemFaktum;
@@ -54,16 +58,26 @@ public class SoknadFaktum implements Serializable {
         return dependOnValue;
     }
 
+    public void setDependOnValue(String dependOnValue) {
+        this.dependOnValue = dependOnValue;
+    }
+
+    @XmlElementWrapper(name = "dependOnValues")
+    @XmlElement(name = "value")
+    public List<String> getDependOnValues() {
+        return dependOnValues;
+    }
+
+    public void setDependOnValues(List<String> values) {
+        dependOnValues = values;
+    }
+
     public String getDependOnProperty() {
         return dependOnProperty;
     }
 
     public void setDependOnProperty(String dependOnProperty) {
         this.dependOnProperty = dependOnProperty;
-    }
-
-    public void setDependOnValue(String dependOnValue) {
-        this.dependOnValue = dependOnValue;
     }
 
     public String getFlereTillatt() { return flereTillatt; }
@@ -73,6 +87,26 @@ public class SoknadFaktum implements Serializable {
     public String getErSystemFaktum() { return erSystemFaktum; }
 
     public void setErSystemFaktum(String erSystemFaktum) { this.erSystemFaktum = erSystemFaktum; }
+
+    public SoknadFaktum medDependOn(SoknadFaktum parent) {
+        this.dependOn = parent;
+        return this;
+    }
+
+    public SoknadFaktum medDependOnValue(String value) {
+        this.dependOnValue = value;
+        return this;
+    }
+
+    public SoknadFaktum medDependOnValues(List<String> values) {
+        this.dependOnValues = values;
+        return this;
+    }
+
+    public SoknadFaktum medId(String id) {
+        this.setId(id);
+        return this;
+    }
 
     @Override
     public String toString() {
