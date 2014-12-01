@@ -667,6 +667,8 @@
     <faktum>
         <id>reberegning.nyberegning</id>
         <type>java.lang.Boolean</type>
+        <dependOn>nyearbeidsforhold.arbeidsidensist</dependOn>
+        <dependOnValue>false</dependOnValue>
         <panel>Reberegning</panel>
     </faktum>
     <faktum>

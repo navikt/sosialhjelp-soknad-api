@@ -24,7 +24,6 @@ angular.module('gjenopptak')
         $http.get('../views/templates/utdanning/utdanningKortvarigTemplate.html', {cache: $templateCache});
         $http.get('../views/templates/utdanning/utdanningKortvarigFlereTemplate.html', {cache: $templateCache});
         $http.get('../views/templates/utdanning/utdanningNorskTemplate.html', {cache: $templateCache});
-        $http.get('../views/templates/reberegning.html', {cache: $templateCache});
         $http.get('../views/dagpenger/dagpenger-skjema.html', {cache: $templateCache});
         $http.get('../js/common/directives/booleanradio/booleanradioTemplate.html', {cache: $templateCache});
         $http.get('../js/common/tredjeparts/directives/accordion/accordionGroupTemplate.html', {cache: $templateCache});
