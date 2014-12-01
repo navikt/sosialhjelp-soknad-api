@@ -151,17 +151,18 @@ angular.module('nav.validering', ['nav.cms'])
                     return element.find('input:checked').length;
                 }, function () {
                     var formLinje = element.closest('.form-linje');
+                    var melding = formLinje.find('.melding').first();
                     if (element.find('input:checked').length > 0 && formLinje.hasClass('feil')) {
                         if (formLinje.hasClass('aktiv-feilmelding')) {
-                            fadeAktivFeilmelding(formLinje, formLinje.find('.melding'), 'feil', scope);
+                            fadeAktivFeilmelding(formLinje, melding, 'feil', scope);
                         } else {
-                            fadeFeilmelding(formLinje, formLinje.find('.melding'), 'feil', scope);
+                            fadeFeilmelding(formLinje, melding, 'feil', scope);
                         }
                     } else if (element.find('input:checked').length > 0 && formLinje.hasClass('feilstyling')) {
                         if (formLinje.hasClass('aktiv-feilmelding')) {
-                            fadeAktivFeilmelding(formLinje, formLinje.children('.melding'), 'feilstyling', scope);
+                            fadeAktivFeilmelding(formLinje, melding, 'feilstyling', scope);
                         } else {
-                            fadeFeilmelding(formLinje, formLinje.children('.melding'), 'feilstyling', scope);
+                            fadeFeilmelding(formLinje, melding, 'feilstyling', scope);
                         }
                     }
                 });
