@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.mock.kodeverk;
+package no.nav.sbl.dialogarena.sendsoknad.mockmodul.kodeverk;
 
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
 import org.mockito.Mockito;
