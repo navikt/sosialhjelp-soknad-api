@@ -6,7 +6,6 @@ angular.module('nav.vedleggbolker', [])
                 $timeout(function () {
                     var bolker = $(".accordion-group");
                     var bolkerMedFeil = finnBolkerMedOgUtenFeil(bolker);
-
                     apneForsteBolkMedFeil(bolkerMedFeil.medFeil[0]);
                 }, 500);
 
@@ -22,26 +21,27 @@ angular.module('nav.vedleggbolker', [])
 
                 function apneFeilBolkerSomIkkeErApenFraFor(bolker) {
                     for (var i = 0; i < bolker.length; i++) {
-                        var bolk = $(bolker[i]);
+                        var bolk = angular.element(bolker[i]);
 
                         if (!(bolk.hasClass('open'))) {
-                            bolk.find('.accordion-toggle').trigger('click');
+                            bolk.find('.accordion-toggle').triggerHandler('click');
                         }
                     }
                 }
 
                 function lukkeRiktigBolkerSomIkkErLukketFraFor(bolker) {
                     for (var i = 0; i < bolker.length; i++) {
-                        var bolk = $(bolker[i]);
+                        var bolk = angular.element(bolker[i]);
                         if (bolk.hasClass('open')) {
-                            bolk.find('.accordion-toggle').trigger('click');
+                            bolk.find('.accordion-toggle').triggerHandler('click');
                         }
                     }
                 }
 
                 function apneForsteBolkMedFeil(bolk) {
-                    if(!($(bolk).hasClass('open'))) {
-                        $(bolk).find('.accordion-toggle').trigger('click');
+                    var bolkElement = angular.element(bolk);
+                    if(!(bolkElement.hasClass('open'))) {
+                        bolkElement.find('.accordion-toggle').triggerHandler('click');
                     }
                 }
 
