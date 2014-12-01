@@ -7,16 +7,21 @@
          data-ng-required>
     </div>
 
-    <div data-nav-faktum="tidligerearbeidsforhold.jobbetsidensist"
+    <div data-nav-faktum="tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsidensist"
          data-navconfig
          data-booleanradio
          data-nokkel="tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsidensist">
     </div>
 
-    <div class="undersporsmal"
-         data-ng-if="hvisHarArbeidet()"
-         data-nav-faktum="tidligerearbeidsforhold.jobbetsammenhengende"
-         data-hvor-lenge-arbeidet-sist>
+    <div data-ng-if="hvisHarArbeidet()"
+         data-nav-faktum="tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsammenhengende">
+        <div data-ng-if="hvisVarPermittert()">
+            <div data-ng-include="'../js/modules/tidligereArbeidsforhold/templates/hvorlengearbeidetsist.html'"></div>
+        </div>
+
+        <div data-ng-if="hvisVarPermittertFiske()">
+            <div data-ng-include="'../js/modules/tidligereArbeidsforhold/templates/hvorlengearbeidetsistFiske.html'"></div>
+        </div>
     </div>
 
     <div data-nav-faktum="tidligerearbeidsforhold.fortsattansatt"
