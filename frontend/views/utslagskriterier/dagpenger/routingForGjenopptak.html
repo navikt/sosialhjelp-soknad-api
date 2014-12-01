@@ -12,7 +12,20 @@
                     <span>routing:</span>
                     <span>{{vars.test}}</span>
                 </p>
-                <div data-dato data-ng-model="vars.test"></div>
+                <div data-dato data-ng-model="vars.test" data-er-required="true" data-required-error-message="arbeidsforhold.arbeidsgiver.varighet.til.feilmelding"></div>
+
+                <p>
+                    <p>routing:</p>
+                    <p>{{ vars.dato.fra }}</p>
+                    <p>{{ vars.dato.til }}</p>
+                </p>
+                <div data-nav-dato-intervall
+                     data-fra-dato="vars.dato.fra"
+                     data-til-dato="vars.dato.til"
+                     data-label="arbeidsforhold.arbeidsgiver.varighet"
+                     data-er-begge-required="true"
+                     data-lagre="lagreFaktum()">
+                </div>
                 <div class="spm form-linje boolean">
                     <h4 class="spm-sporsmal" data-ng-bind-html=" 'utslagskriterier.dagpenger.utbetaling.sporsmal' | cmstekst"></h4>
 

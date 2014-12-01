@@ -30,4 +30,57 @@ angular.module('nav.datepicker.service', [])
                 return [input, caretPosition];
             }
         };
+    })
+    .factory('maskService', function(cmsService) {
+        return {
+            getMaskText: function(text) {
+                function skalViseDatoFormatFraOgMedDag() {
+                    return antallPunktum === 0 && text.length < 3;
+                }
+
+                function skalViseDatoFormatFraOgMedMaaned() {
+                    var dagTekst = text.substring(0, text.indexOf('.'));
+                    return antallPunktum === 1 && dagTekst.length < 3 && maanedTekst.length < 4;
+                }
+
+                function skalBareViseDatoFormatMedAar() {
+                    var dagOgMaanedTekst = text.substring(0, text.lastIndexOf('.'));
+                    return antallPunktum === 2 && dagOgMaanedTekst.length < 6 && aarTekst.length < 5;
+                }
+
+                var maskText = '';
+                var initialMaskText = cmsService.getTrustedHtml('dato.format');
+                var antallPunktum = text.match(/\./g) === null ? 0 : text.match(/\./g).length;
+                var maanedTekst = text.substring(text.indexOf('.'), text.length);
+                var aarTekst = text.substring(text.lastIndexOf('.'), text.length);
+                if (skalViseDatoFormatFraOgMedDag()) {
+                    maskText = initialMaskText.substring(text.length, initialMaskText.length);
+                } else if (skalViseDatoFormatFraOgMedMaaned()) {
+                    maskText = initialMaskText.substring(2 + maanedTekst.length, initialMaskText.length);
+                } else if (skalBareViseDatoFormatMedAar()) {
+                    maskText = initialMaskText.substring(5 + aarTekst.length, initialMaskText.length);
+                }
+
+                return maskText;
+            }
+        };
+    })
+    .factory('deviceService', function() {
+        return {
+            isTouchDevice: function() {
+                return erTouchDevice() && getIEVersion() < 0;
+            }
+        };
+    })
+    .factory('cssService', function() {
+        return {
+            getComputedStyle: function(element, property) {
+                var value = window.getComputedStyle(element[0], null).getPropertyValue(property)
+                if (value.indexOf('px') !== -1) {
+                    value = parseInt(value.substring(0, value.length - 2));
+                }
+
+                return value;
+            }
+        };
     });
