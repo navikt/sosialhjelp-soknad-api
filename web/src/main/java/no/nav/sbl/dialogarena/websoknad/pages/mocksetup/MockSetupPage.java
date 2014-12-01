@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.websoknad.pages.mocksetup;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.util.MockUtil;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.MockUtil;
 import no.nav.sbl.dialogarena.websoknad.pages.basepage.BasePage;
 import no.nav.sbl.dialogarena.websoknad.pages.soknadliste.SoknadListePage;
 import org.apache.wicket.extensions.markup.html.form.select.IOptionRenderer;
@@ -25,7 +25,7 @@ import java.util.List;
 import static java.lang.System.getProperty;
 import static java.lang.System.setProperty;
 import static java.util.Arrays.asList;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.util.MockUtil.VALGTMAANED_PROPERTY;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.MockUtil.VALGTMAANED_PROPERTY;
 
 public class MockSetupPage extends BasePage {
 

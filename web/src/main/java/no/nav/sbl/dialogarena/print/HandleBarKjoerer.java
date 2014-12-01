@@ -39,8 +39,8 @@ import static org.apache.commons.lang3.StringUtils.split;
 @SuppressWarnings("PMD.TooManyMethods")
 public class HandleBarKjoerer implements HtmlGenerator {
 
-
     public static final Locale NO_LOCALE = new Locale("nb", "no");
+    
     @Inject
     private Kodeverk kodeverk;
 

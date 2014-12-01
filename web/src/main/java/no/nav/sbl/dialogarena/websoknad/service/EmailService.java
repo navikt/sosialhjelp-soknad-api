@@ -4,10 +4,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.mail.MailException;
-import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessagePreparator;
 
 import javax.inject.Inject;
+import javax.mail.Message;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 /**
  * Klasse som tar seg av utsending av epost
@@ -16,7 +20,7 @@ import javax.inject.Inject;
 public class EmailService {
 
     @Inject
-    private MailSender mailSender;
+    private JavaMailSender mailSender;
     @Inject
     private TaskExecutor executor;
 
@@ -47,13 +51,17 @@ public class EmailService {
      * @param innhold innhold i mail
      * @param behandlingId behandinglsiden til søknaden
      */
-    public void sendEpostEtterInnsendtSoknad(String ePost, String subject, String innhold, String behandlingId) {
-        SimpleMailMessage mail = new SimpleMailMessage();
-        mail.setTo(ePost);
-        mail.setSubject(subject);
-        mail.setText(innhold);
-        mail.setFrom(fraAdresse);
-        addTask(mail, behandlingId);
+    public void sendEpostEtterInnsendtSoknad(final String ePost, final String subject, final String innhold, String behandlingId) {
+        final String htmlInnhold = "<p>" + innhold + "</p>";
+        MimeMessagePreparator preparator = new MimeMessagePreparator() {
+            public void prepare(MimeMessage mimeMessage) throws Exception {
+                mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(ePost));
+                mimeMessage.setFrom(fraAdresse);
+                mimeMessage.setContent(htmlInnhold, "text/html;charset=utf-8");
+                mimeMessage.setSubject(subject);
+            }
+        };
+        addTask(preparator, behandlingId, ePost, htmlInnhold, 0);
     }
 
     private void addTask(final SimpleMailMessage mail, final String behandlingId) {
@@ -72,6 +80,24 @@ public class EmailService {
                         addTask(mail, behandlingId, loopCheck + 1);
                     } else {
                         logger.warn("Kunne ikke sende epost:" + mail + "BrukerbehandlingId: " + behandlingId, me);
+                    }
+                }
+            }
+        });
+    }
+
+    private void addTask(final MimeMessagePreparator preparator, final String behandlingId, final String tilEpost, final String epostinnhold, final int loopCheck) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    mailSender.send(preparator);
+                    logger.info("Epost sendes til: " + tilEpost + " med innhold: " + epostinnhold + " BrukerbehandlingId: " + behandlingId);
+                } catch (MailException me) {
+                    if (loopCheck < 5) {
+                        addTask(preparator, behandlingId, tilEpost, epostinnhold, loopCheck + 1);
+                    } else {
+                        logger.warn("Epost kunne ikke sendes til: " + tilEpost + " med innhold: " + epostinnhold + " BrukerbehandlingId: " + behandlingId, me);
                     }
                 }
             }

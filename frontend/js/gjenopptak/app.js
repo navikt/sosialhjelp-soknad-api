@@ -10,5 +10,6 @@ angular.module('gjenopptak', [
     'ngSanitize',
     'templates-main',
     'nav.cms',
-    'nav.personalia'
+    'nav.personalia',
+    'nav.datepicker'
 ]);

@@ -13,7 +13,7 @@ import javax.sql.DataSource;
 @Configuration
 @Import(value = {DatabaseTestContext.class})
 @EnableTransactionManagement()
-public class DbConfig {
+public class DbTestConfig {
     @Inject
     private DataSource dataSource;
 
