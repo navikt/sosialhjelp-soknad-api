@@ -15,6 +15,7 @@
         <module>frontend</module>
         <module>web</module>
         <module>jee</module>
+        <module>mock</module>
     </modules>
 
     <name>Dialogarena - Send Søknad</name>
@@ -646,7 +647,6 @@
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
                 <version>1.10.8</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>

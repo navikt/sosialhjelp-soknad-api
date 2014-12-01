@@ -36,9 +36,7 @@ public class SoknadComponent extends WebComponent {
             file = "META-INF/resources/views/built/bootstrapDev";
         }
 
-            file = file + skjemaBootstrapPostfix;
-
-        file = file + ".html";
+        file += skjemaBootstrapPostfix + ".html";
 
         try (InputStream content = this.getClass().getClassLoader().getResourceAsStream(file)) {
             replaceComponentTagBody(markupStream, openTag, copyToString(content, forName("UTF-8")));

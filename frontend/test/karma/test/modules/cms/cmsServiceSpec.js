@@ -82,7 +82,7 @@ describe('cms', function () {
         beforeEach(inject(function (cmsService, $sce, $rootScope) {
             cmsTextService = cmsService;
             sce = $sce;
-            rootScope = $rootScope
+            rootScope = $rootScope;
         }));
 
         it('skal få ut tekst fra gitt key', function() {

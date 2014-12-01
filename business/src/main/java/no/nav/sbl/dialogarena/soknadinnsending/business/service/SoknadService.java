@@ -72,14 +72,14 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.util.WebSoknadUti
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.slf4j.LoggerFactory.getLogger;
 
-
 @Component
 public class SoknadService implements SendSoknadService, EttersendingService {
+
     private static final Logger logger = getLogger(SoknadService.class);
+
     @Inject
     @Named("soknadInnsendingRepository")
     private SoknadRepository repository;
-
     @Inject
     @Named("vedleggRepository")
     private VedleggRepository vedleggRepository;
@@ -91,7 +91,6 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     private Kodeverk kodeverk;
     @Inject
     private NavMessageSource navMessageSource;
-
     @Inject
     private StartDatoService startDatoService;
 

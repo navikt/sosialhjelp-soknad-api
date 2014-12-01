@@ -115,65 +115,87 @@ angular.module('nav.input', ['nav.cms'])
             templateUrl: '../js/common/directives/navinput/navcheckboxTemplate.html'
         };
     })
-    .directive('navtekst', function () {
+    .directive('navtekst', function ($compile) {
         return {
             restrict: 'A',
+            templateUrl: '../js/common/directives/navinput/navtekstTemplate.html',
             replace: true,
             scope: true,
-            link: {
-                pre: function (scope, element, attrs) {
-                    if (attrs.regexvalidering) {
-                        scope.regexvalidering = attrs.regexvalidering.toString();
-                    } else {
-                        scope.regexvalidering = '';
-                    }
-                    if (attrs.inputfeltmaxlength) {
-                        scope.inputfeltmaxlength = attrs.inputfeltmaxlength;
-                    } else {
-                        scope.inputfeltmaxlength = undefined;
-                    }
-                },
-                post: function (scope) {
+            compile: function(tElement, tAttrs) {
+                if (tAttrs.navminlength) {
+                    tElement.find('input').attr('data-ng-minlength', tAttrs.navminlength);
+                    tElement.find('input').attr('minlength', tAttrs.navminlength);
+                }
+
+                if (tAttrs.navmaxlength) {
+                    tElement.find('input').attr('data-ng-maxlength', tAttrs.navmaxlength);
+                    tElement.find('input').attr('maxlength', tAttrs.navmaxlength);
+                }
+
+                if (tAttrs.regexvalidering) {
+                    tElement.find('input').attr('data-ng-pattern', tAttrs.regexvalidering.toString());
+                }
+
+                tElement.removeAttr('navtekst');
+                tElement.removeAttr('data-navtekst');
+                $compile(tElement.find('input'));
+
+                return function (scope) {
                     scope.harSporsmal = function() {
                         return isNotNullOrUndefined(scope.navsporsmal) && scope.navsporsmal.length > 0;
                     };
-                }
-            },
-            templateUrl: '../js/common/directives/navinput/navtekstTemplate.html'
+                };
+            }
         };
     })
-    .directive('navtall', function (cms) {
+    .directive('navtall', function (cms, $compile) {
         return {
             restrict: 'A',
             replace: true,
+            templateUrl: '../js/common/directives/navinput/navtallTemplate.html',
             scope: true,
-            link: {
-                pre: function (scope, element, attrs) {
-                    if (attrs.regexvalidering) {
-                        scope.regexvalidering = attrs.regexvalidering.toString();
-                    } else {
-                        scope.regexvalidering = '';
-                    }
-                    if (attrs.inputfeltmaxlength) {
-                        scope.inputfeltmaxlength = attrs.inputfeltmaxlength;
-                    } else {
-                        scope.inputfeltmaxlength = undefined;
-                    }
-                    scope.hjelpetekst = {
-                        tittel: attrs.hjelpetekst + '.tittel',
-                        tekst: attrs.hjelpetekst + '.tekst'
-                    };
-                },
-                post: function (scope) {
-                    scope.harSporsmal = function() {
-                        return isNotNullOrUndefined(scope.navsporsmal) && scope.navsporsmal.length > 0;
-                    };
-                    scope.hvisHarHjelpetekst = function() {
-                        return cms.tekster[scope.hjelpetekst.tittel] !== undefined;
-                    };
+            compile: function(tElement, tAttrs) {
+                if (tAttrs.navminlength) {
+                    tElement.find('input').attr('minlength', tAttrs.navminlength);
                 }
-            },
-            templateUrl: '../js/common/directives/navinput/navtallTemplate.html'
+
+                if (tAttrs.navmaxlength) {
+                    tElement.find('input').attr('maxlength', tAttrs.navmaxlength);
+                }
+
+                if (tAttrs.regexvalidering) {
+                    tElement.find('input').attr('data-ng-pattern', tAttrs.regexvalidering.toString());
+                }
+
+                if (tAttrs.navminvalue) {
+                    tElement.find('input').attr('data-min', tAttrs.navminvalue);
+                }
+
+                if (tAttrs.navmaxvalue) {
+                    tElement.find('input').attr('data-max', tAttrs.navmaxvalue);
+                }
+
+                tElement.removeAttr('navtall');
+                tElement.removeAttr('data-navtall');
+                $compile(tElement.find('input'));
+
+                return {
+                    pre: function (scope, element, attrs) {
+                        scope.hjelpetekst = {
+                            tittel: attrs.hjelpetekst + '.tittel',
+                            tekst: attrs.hjelpetekst + '.tekst'
+                        };
+                    },
+                    post: function (scope) {
+                        scope.harSporsmal = function() {
+                            return isNotNullOrUndefined(scope.navsporsmal) && scope.navsporsmal.length > 0;
+                        };
+                        scope.hvisHarHjelpetekst = function() {
+                            return cms.tekster[scope.hjelpetekst.tittel] !== undefined;
+                        };
+                    }
+                };
+            }
         };
     })
     .directive('tekstfeltPatternvalidering', function () {

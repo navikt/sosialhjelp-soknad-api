@@ -17,7 +17,7 @@
                         {{/forFakta}}
                         {{#forFaktum "egennaering.driveregennaering.arbeidsmengde"}}
                             <li class="kulepunkt">
-                                <span>{{ hentTekstMedParameter "dagpenger.oppsummering.egennaering.arbeidstimerIUken" value }}</span>
+                                <span>{{ hentTekstMedParameter "oppsummering.egennaering.arbeidstimerIUken" value }}</span>
                             </li>
                         {{/forFaktum}}
                     </ul>
@@ -32,6 +32,7 @@
             <td>
                 {{#hvisSant value}}
                     <span>{{ hentTekst "egennaering.gardsbruk.true"}}</span>
+                    <span>{{ hentTekst "egennaering.gardsbruk.true"}}</span>
                 {{else}}
                     <span>{{ hentTekst "egennaering.gardsbruk.false"}}</span>
                     <ul>
@@ -43,7 +44,7 @@
                         {{/forFaktum}}
 
                         <li class="kulepunkt">
-                            <span>{{ hentTekst "dagpenger.oppsummering.egennaering.typeGaardsbruk" }}</span>
+                            <span>{{ hentTekst "oppsummering.egennaering.typeGaardsbruk" }}</span>
                             <ul>
                                 {{#forFaktum "egennaering.gardsbruk.false.type.dyr"}}
                                     {{#hvisSant value}}
@@ -80,7 +81,7 @@
                         </li>
 
                         <li class="kulepunkt">
-                            <span>{{ hentTekst "dagpenger.oppsummering.egennaering.gaardsEiere" }}</span>
+                            <span>{{ hentTekst "oppsummering.egennaering.gaardsEiere" }}</span>
                             <ul>
                                 {{#forFaktum "egennaering.gardsbruk.false.eier.jeg"}}
                                     {{#hvisSant value}}
@@ -110,7 +111,7 @@
 
                         {{#hvisFlereErTrue "egennaering.gardsbruk.false.eier" "1"}}
                             <li class="kulepunkt">
-                                <span>{{ hentTekst "dagpenger.oppsummering.egennaering.fordelingAvInntekt" }}</span>
+                                <span>{{ hentTekst "oppsummering.egennaering.fordelingAvInntekt" }}</span>
                                 <ul>
                                     {{#forFaktum "egennaering.gardsbruk.false.eier.jeg"}}
                                         {{#hvisSant value}}

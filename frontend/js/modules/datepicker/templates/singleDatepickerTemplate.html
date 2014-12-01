@@ -3,10 +3,10 @@
     <label>
         <span class="labeltekst" data-ng-bind-html=" label | cmstekst"></span>
         <span class="vekk" data-ng-bind-html=" 'dato.format' | cmstekst"></span>
-        <span data-ng-show="navDatepicker()">
+        <span data-ng-if="navDatepicker()">
             <span class="datepicker-input">
                 <input type="text"
-                       data-ng-model="ngModel"
+                       data-ng-model="vars.date"
                        data-ng-blur="blur()"
                        data-ng-focus="focus()"
                        data-ng-required="erRequired"
@@ -14,13 +14,13 @@
                        data-dato-mask
                        data-ng-disabled="disabled == 'true'">
                 <span class="mask"></span>
-                <input type="hidden" data-ng-model="ngModel">
+                <input type="hidden" data-ng-model="vars.date">
                 <span class="apne-datepicker" data-ng-click="toggleDatepicker()"></span>
             </span>
         </span>
-        <span data-ng-show="vanligDatepicker()">
+        <span data-ng-if="vanligDatepicker()">
             <input type="date"
-                   data-ng-model="ngModel"
+                   data-ng-model="vars.date"
                    data-ng-required="erRequired"
                    data-ng-blur="blur()"
                    data-ng-focus="focus()"

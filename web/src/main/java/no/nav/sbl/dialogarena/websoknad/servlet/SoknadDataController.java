@@ -237,7 +237,7 @@ public class SoknadDataController {
         String behandlingId = soknadService.startSoknad(soknadType.getSoknadType());
         result.put("brukerbehandlingId", behandlingId);
         Cookie xsrfCookie = new Cookie("XSRF-TOKEN", XsrfGenerator.generateXsrfToken(behandlingId));
-        xsrfCookie.setPath("/");
+        xsrfCookie.setPath("/sendsoknad");
         response.addCookie(xsrfCookie);
         return result;
     }

@@ -97,7 +97,7 @@
                                     <ul>
                                         <li>
                                             <a data-ng-href="#/{{brukerBehandlingId}}/opplasting/{{forventning.vedleggId}}" class="knapp-link"
-                                               data-ng-click="endreInnsendingsvalg(forventning, 'VedleggKreves');" data-ng-bind-html="'vedlegg.lastopp'
+                                               data-ng-click="fjernInnsendingsvalg(forventning);" data-ng-bind-html="'vedlegg.lastopp'
                                                 | cmstekst"></a>
                                         </li>
                                         <li>
@@ -119,8 +119,9 @@
                                     <div class="valg">
                                         <input id="{{$index}}ettersendRadio"
                                                data-ng-model="forventning.innsendingsvalg"
-                                               type="radio" value="SendesSenere"
-                                               data-ng-click="endreInnsendingsvalg(forventning, 'SendesSenere')"
+                                               type="radio"
+                                               value="SendesSenere"
+                                               data-fjern-radio-valg="forventning"
                                                data-aktiv-feilmelding>
                                         <label for="{{$index}}ettersendRadio" data-ng-bind-html=" 'vedlegg.faktum.ettersend' | cmstekst"></label>
                                     </div>
@@ -130,7 +131,7 @@
                                                data-ng-model="forventning.innsendingsvalg"
                                                type="radio"
                                                value="VedleggSendesIkke"
-                                               data-ng-click="endreInnsendingsvalg(forventning, 'VedleggSendesIkke')"
+                                               data-fjern-radio-valg="forventning"
                                                data-aktiv-feilmelding>
                                         <label for="{{$index}}vedleggikkesendRadio" data-ng-bind-html=" 'vedlegg.faktum.vedleggikkesend' | cmstekst"></label>
                                     </div>
@@ -140,7 +141,7 @@
                                                data-ng-model="forventning.innsendingsvalg"
                                                type="radio"
                                                value="VedleggSendesAvAndre"
-                                               data-ng-click="endreInnsendingsvalg(forventning, 'VedleggSendesAvAndre')"
+                                               data-fjern-radio-valg="forventning"
                                                data-aktiv-feilmelding>
                                         <label for="{{$index}}vedleggandreRadio" data-ng-bind-html=" 'vedlegg.faktum.vedleggsendesavandre' | cmstekst"></label>
                                     </div>
@@ -151,7 +152,7 @@
                                                data-ng-model="forventning.innsendingsvalg"
                                                type="radio"
                                                value="VedleggAlleredeSendt"
-                                               data-ng-click="endreInnsendingsvalg(forventning, 'VedleggAlleredeSendt')"
+                                               data-fjern-radio-valg="forventning"
                                                data-aktiv-feilmelding>
                                         <label for="{{$index}}vedleggAlleredeSendtRadio" data-ng-bind-html=" 'vedlegg.faktum.vedleggalleredesendt' | cmstekst"></label>
                                         <span data-nav-hjelpetekstelement inline="true" data-tittel="{{ 'vedlegg.faktum.vedleggalleredesendt.hjelpetekst.tittel' | cmstekst }}" data-tekst="{{ 'vedlegg.faktum.vedleggalleredesendt.hjelpetekst.tekst' | cmstekst}}"></span>
