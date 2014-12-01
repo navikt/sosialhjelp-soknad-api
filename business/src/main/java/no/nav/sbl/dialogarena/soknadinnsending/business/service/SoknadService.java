@@ -615,9 +615,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     private boolean annetFaktumHarForventning(Long soknadId, String skjemaNummer, String onValue, SoknadStruktur struktur) {
         List<SoknadVedlegg> vedleggMedGittSkjemanummer = struktur.vedleggForSkjemanr(skjemaNummer);
         for (SoknadVedlegg sv : vedleggMedGittSkjemanummer) {
-
-            String faktumKey = sv.getFaktum().getId();
-            if (repository.isVedleggPaakrevd(soknadId, faktumKey, onValue, sv.getFaktum().getDependOnValue())) {
+            if (repository.isVedleggPaakrevd(soknadId, onValue, sv)) {
                 return true;
             }
         }

@@ -169,6 +169,11 @@ public class SoknadVedlegg implements Serializable {
         return getFaktum().getDependOn() != null;
     }
 
+    public SoknadVedlegg medFaktum(SoknadFaktum faktum) {
+        this.setFaktum(faktum);
+        return this;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this)

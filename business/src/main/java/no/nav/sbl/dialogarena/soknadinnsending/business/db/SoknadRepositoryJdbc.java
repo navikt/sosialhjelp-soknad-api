@@ -10,13 +10,17 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.FaktumEgenskap;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.transaction.annotation.Isolation;
@@ -233,22 +237,72 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     }
 
     @Override
-    public Boolean isVedleggPaakrevd(Long soknadId, String key, String value, String dependOnValue) {
-        String sql = "SELECT count(*) FROM soknadbrukerdata faktum " +
-                "LEFT OUTER JOIN soknadbrukerdata parent on parent.soknadbrukerdata_id = faktum.parrent_faktum " +
-                "WHERE faktum.soknad_id=? AND faktum.key=? AND faktum.value like ? " +
-                "AND (faktum.parrent_faktum is null OR parent.value like ?)";
+    public Boolean isVedleggPaakrevd(Long soknadId, String value, SoknadVedlegg soknadVedlegg) {
+        SoknadFaktum faktum = soknadVedlegg.getFaktum();
+        String key = faktum.getId();
+        Integer count = 0;
 
-        Integer count;
-        try {
-            count = getJdbcTemplate().queryForObject(sql, Integer.class, soknadId, key, value, dependOnValue);
-        } catch (DataAccessException e) {
-            logger.warn("Klarte ikke hente count fra soknadBrukerData", e);
-            return false;
+        count += finnAntallFaktumMedGittKeyOgValue(soknadId, key, value);
+        return sjekkOmVedleggErPaakrevd(soknadId, count, faktum);
+    }
+
+    private Boolean sjekkOmVedleggErPaakrevd(Long soknadId, Integer antallFunnet, SoknadFaktum faktum) {
+        if(antallFunnet > 0) {
+            if(faktum.getDependOn() != null) {
+                return isVedleggPaakrevdParent(soknadId, faktum.getDependOn(), faktum);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private Boolean isVedleggPaakrevdParent(Long soknadId, SoknadFaktum faktum, SoknadFaktum barneFaktum) {
+        Integer count = 0;
+        if(barneFaktum.getDependOnValues() != null) {
+            count += finnAntallFaktumMedGittKeyOgEnAvFlereValues(soknadId, faktum.getId(), barneFaktum.getDependOnValues());
+        }
+        if(barneFaktum.getDependOnValue() != null) {
+            count += finnAntallFaktumMedGittKeyOgValue(soknadId, faktum.getId(), barneFaktum.getDependOnValue());
+        }
+        return sjekkOmVedleggErPaakrevd(soknadId, count, faktum);
+    }
+
+    private Integer finnAntallFaktumMedGittKeyOgValue(Long soknadId, String key, String value) {
+        if(value == null) {
+            return 0;
         }
 
-        return count != null && count > 0;
+        String sql = "SELECT count(*) FROM soknadbrukerdata faktum " +
+                "WHERE faktum.soknad_id=? AND faktum.key=? AND faktum.value like ?";
 
+        try {
+            return getJdbcTemplate().queryForObject(sql, Integer.class, soknadId, key, value);
+        } catch (DataAccessException e) {
+            logger.warn("Klarte ikke hente count fra soknadBrukerData", e);
+            return 0;
+        }
+    }
+
+    private Integer finnAntallFaktumMedGittKeyOgEnAvFlereValues(Long soknadId, String key, List<String> values) {
+        if(values == null) {
+            return 0;
+        }
+
+        String sql = "SELECT count(*) FROM soknadbrukerdata faktum " +
+                "WHERE faktum.soknad_id=:soknadid AND faktum.key=:faktumkey AND faktum.value IN (:dependonvalues)"; //
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("soknadid", soknadId);
+        params.addValue("faktumkey", key);
+        params.addValue("dependonvalues", values);
+
+        try {
+            NamedParameterJdbcTemplate template = new  NamedParameterJdbcTemplate(getJdbcTemplate().getDataSource());
+            return template.queryForObject(sql, params, Integer.class);
+        } catch (DataAccessException e) {
+            logger.warn("Klarte ikke hente count fra soknadBrukerData", e);
+            return 0;
+        }
     }
 
     @Override
