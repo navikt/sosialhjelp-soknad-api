@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.sendsoknad.mockmodul.kodeverk;
+package no.nav.sbl.dialogarena.sendsoknad.mockmodul.person;
 
 import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
 

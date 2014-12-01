@@ -6,9 +6,10 @@ import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadata;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.cxf.TimeoutFeature;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil.BrukerprofilMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.kodeverk.KodeverkMock;
-import no.nav.sbl.dialogarena.sendsoknad.mockmodul.kodeverk.PersonInfoMock;
-import no.nav.sbl.dialogarena.sendsoknad.mockmodul.kodeverk.PersonMock;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.personinfo.PersonInfoMock;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonConnector;
@@ -184,11 +185,10 @@ public class ConsumerConfig {
 
         @Bean
         public PersonPortType personService() {
-            if(mockErTillattOgSlaattPaaForKey(PERSON_KEY)) {
+            if (mockErTillattOgSlaattPaaForKey(PERSON_KEY)) {
                 return new PersonMock().personMock();
-            } else{
-                return factory().withUserSecurity().get();
             }
+            return factory().withUserSecurity().get();
         }
 
         @Bean
@@ -234,6 +234,8 @@ public class ConsumerConfig {
     @Configuration
     public static class BrukerProfilWSConfig {
 
+        public static final String BRUKERPROFIL_KEY = "start.brukerprofil.withmock";
+
         @Value("${soknad.webservice.brukerprofil.brukerprofilservice.url}")
         private String brukerProfilEndpoint;
 
@@ -249,6 +251,9 @@ public class ConsumerConfig {
 
         @Bean
         public BrukerprofilPortType brukerProfilService() {
+            if (mockErTillattOgSlaattPaaForKey(BRUKERPROFIL_KEY)) {
+                return new BrukerprofilMock().brukerprofilMock();
+            }
             return factory().withUserSecurity().get();
         }
 
