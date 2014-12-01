@@ -6,11 +6,26 @@
         <artifactId>sendsoknad</artifactId>
         <version>3.0.0-SNAPSHOT</version>
     </parent>
+
     <artifactId>sendsoknad-business</artifactId>
     <version>3.0.0-SNAPSHOT</version>
     <name>${project.artifactId}</name>
+
+    <properties>
+        <!-- Lagrer IT-info til enhetstestfil -->
+        <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco-ut.exec</sonar.jacoco.reportPath>
+        <fitnesse.port>9977</fitnesse.port>
+    </properties>
+
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <configuration>
+                    <destFile>${sonar.jacoco.reportPath}</destFile>
+                </configuration>
+            </plugin>
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
                 <executions>
