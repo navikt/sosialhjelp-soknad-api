@@ -10,11 +10,11 @@
                     <li class="arbeidsforhold-varighet">
                         <span>{{ formatterLangDato properties.datofra }}</span>
                         {{#if properties.datotil}}
-                            <span>{{ hentTekst "dagpenger.oppsummering.datotil" }}</span>
+                            <span>{{ hentTekst "oppsummering.datotil" }}</span>
                             <span>{{ formatterLangDato properties.datotil }}</span>
                         {{/if}}
                         {{#if properties.konkursdato}}
-                            <span>{{ hentTekst "dagpenger.oppsummering.datotil" }}</span>
+                            <span>{{ hentTekst "oppsummering.datotil" }}</span>
                             <span>{{ formatterLangDato properties.konkursdato }}</span>
                         {{/if}}
                     </li>
@@ -139,7 +139,7 @@
                             {{else}}
                                 <span>{{ formatterLangDato properties.lonnspliktigperiodedatofra }}</span>
                                 {{#if properties.lonnspliktigperiodedatotil}}
-                                    <span>{{ hentTekst "gjenopptak.oppsummering.datotil" }}</span>
+                                    <span>{{ hentTekst "oppsummering.datotil" }}</span>
                                     <span>{{ formatterLangDato properties.lonnspliktigperiodedatotil }}</span>
                                 {{/if}}
                             {{/if}}
@@ -151,12 +151,12 @@
                                 <div class="permitteringsperiode">
                                     <p>
                                         {{ formatterLangDato properties.permiteringsperiodedatofra }}
-                                        {{ hentTekst "gjenopptak.oppsummering.datotil" }}
+                                        {{ hentTekst "oppsummering.datotil" }}
                                         {{ formatterLangDato properties.permiteringsperiodedatotil }}
                                     </p>
                                     <p>
                                         {{ properties.permitteringProsent }}%
-                                        {{ hentTekst "dagpenger.oppsummering.arbeidsforhold.permitteringsgrad" }}
+                                        {{ hentTekst "oppsummering.arbeidsforhold.permitteringsgrad" }}
                                     </p>
                                 </div>
                             </li>
@@ -169,7 +169,7 @@
         <tr>
             <td class="sjekket"></td>
             <td>
-                <span>{{ hentTekst "dagpenger.oppsummering.arbeidsforhold.ingen" }}</span>
+                <span>{{ hentTekst "oppsummering.arbeidsforhold.ingen" }}</span>
             </td>
         </tr>
 
