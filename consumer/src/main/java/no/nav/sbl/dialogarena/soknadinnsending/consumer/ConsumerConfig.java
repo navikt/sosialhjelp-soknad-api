@@ -38,6 +38,7 @@ import java.util.Map;
 
 import static java.lang.System.getProperty;
 import static java.lang.System.setProperty;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.MockUtil.mockErTillattOgSlaattPaaForKey;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder.CONNECTION_TIMEOUT;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder.RECEIVE_TIMEOUT;
 
@@ -203,7 +204,7 @@ public class ConsumerConfig {
         public KodeverkPortType kodeverkService() {
             KodeverkPortType prod = factory().withSystemSecurity().get();
             KodeverkPortType mock = new KodeverkMock().kodeverkMock();
-            if (true) {
+            if (mockErTillattOgSlaattPaaForKey(KODEVERK_KEY)) {
                 return mock;
             }
             return prod;
