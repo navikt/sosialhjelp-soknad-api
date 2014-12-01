@@ -82,10 +82,10 @@ public class BrukerprofilMock {
 
         try {
             when(mock.hentKontaktinformasjonOgPreferanser(any(XMLHentKontaktinformasjonOgPreferanserRequest.class))).thenReturn(response);
-        } catch (HentKontaktinformasjonOgPreferanserPersonIkkeFunnet hentKontaktinformasjonOgPreferanserPersonIkkeFunnet) {
-            throw new RuntimeException();
-        } catch (HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning hentKontaktinformasjonOgPreferanserSikkerhetsbegrensning) {
-            throw new RuntimeException();
+        } catch (HentKontaktinformasjonOgPreferanserPersonIkkeFunnet ikkeFunnet) {
+            throw new RuntimeException(ikkeFunnet);
+        } catch (HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning sikkerhetsbegrensning) {
+            throw new RuntimeException(sikkerhetsbegrensning);
         }
         //Mockito.doThrow(new RuntimeException()).when(mock).hentKontaktinformasjonOgPreferanser(any(XMLHentKontaktinformasjonOgPreferanserRequest.class));
 
