@@ -1,21 +1,21 @@
-<h2>{{ hentTekst "dagpenger.oppsummering.barn.tittel" }}</h2>
+<h2>{{ hentTekst "oppsummering.barn.tittel" }}</h2>
 <table>
     {{#forFaktaMedPropertySattTilTrue "barn" "barnetillegg"}}
         <tr>
             <td class="sjekket"></td>
             <td>
                 <span class="barn-navn">{{ properties.sammensattnavn }},</span>
-                <span>{{ hentTekst "dagpenger.oppsummering.fodt" }}</span>
+                <span>{{ hentTekst "oppsummering.fodt" }}</span>
                 {{#hvisLik type "SYSTEMREGISTRERT"}}
                     <span>{{ formatterFodelsDato properties.fnr }},</span>
                 {{ else }}
                     <span>{{ formatterFodelsDato properties.fodselsdato }},</span>
                 {{/hvisLik}}
 
-                <span>{{ hentTekst "dagpenger.oppsummering.bor" }}</span>
+                <span>{{ hentTekst "oppsummering.bor" }}</span>
                 <span>{{ hentLand properties.land }},</span>
 
-                <span>{{ hentTekst "dagpenger.oppsummering.inntekt" }}</span>
+                <span>{{ hentTekst "oppsummering.inntekt" }}</span>
                 {{#hvisLik properties.ikkebarneinntekt "false" }}
                     <span>{{ properties.barneinntekttall }}</span>
                 {{ else }}
@@ -28,7 +28,7 @@
         <tr>
             <td class="sjekket"></td>
             <td>
-                <span>{{ hentTekst "dagpenger.oppsummering.ingenBarn" }}</span>
+                <span>{{ hentTekst "oppsummering.ingenBarn" }}</span>
             </td>
         </tr>
     {{/forFaktaMedPropertySattTilTrue}}
