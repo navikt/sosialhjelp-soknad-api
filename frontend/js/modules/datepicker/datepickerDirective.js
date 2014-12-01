@@ -488,7 +488,7 @@ angular.module('nav.datepicker.directive', [])
             }
         };
     })
-    .directive('restrictInput', function ($filter, cms, datepickerInputKeys, datepickerNonInputKeys, datepickerInputService) {
+    .directive('restrictInput', function ($filter, cms, datepickerInputService) {
         return {
             restrict: 'A',
             require : 'ngModel',
@@ -497,7 +497,6 @@ angular.module('nav.datepicker.directive', [])
                     return;
                 }
 
-                var allowedKeys = datepickerInputKeys.concat(datepickerNonInputKeys);
                 var datoMask = cms.tekster['dato.format'];
                 var caretPosisjonElement = element.closest('.datepicker').find('.caretPosition');
                 caretPosisjonElement.hide();
@@ -511,7 +510,7 @@ angular.module('nav.datepicker.directive', [])
                 });
 
                 element.bind('keydown', function (event) {
-                    return datepickerInputService.isValidInput(event.keyCode, element.val().length, datoMask.length);
+                    return datepickerInputService.isValidInput(event.keyCode, element.val().length, datoMask.length, hentCaretPosisjon(element));
                 });
 
                 ngModel.$formatters.unshift(function (dato) {
@@ -523,54 +522,21 @@ angular.module('nav.datepicker.directive', [])
                     }
                 });
 
-                var gammelInputVerdi = '';
+                var oldInput = '';
                 ngModel.$parsers.unshift(function (input) {
-                    var slettet = input.length < gammelInputVerdi.length;
-                    var caretPosisjon = hentCaretPosisjon(element);
-
+                    var slettet = input.length < oldInput.length;
+                    var caretPosition = hentCaretPosisjon(element);
+                    
                     if (!slettet) {
-                        var start = caretPosisjon - (input.length - gammelInputVerdi.length);
-                        var slutt = caretPosisjon;
-
-                        for (var i = start; i < slutt && i < input.length; i++) {
-                            var skrevetTegn = input[i];
-
-                            settInnPunktumDeromVedIndex1Eller4();
-                        }
+                        var res = datepickerInputService.addPeriodAtRightIndex(input, oldInput, caretPosition);
+                        input = res[0];
+                        caretPosition = res[1];
                     }
-
-                    gammelInputVerdi = input;
+                    oldInput = input;
                     element.val(input);
-                    settCaretPosisjon(element, caretPosisjon);
+                    settCaretPosisjon(element, caretPosition);
 
                     return reverserNorskDatoformat(input);
-
-                    function settInnPunktumDeromVedIndex1Eller4() {
-                        if (i === 1 || i === 4) {
-                            if (input[i + 1] === '.') {
-                                caretPosisjon++;
-                                i++;
-                            } else {
-                                input = input.splice(i + 1, 0, '.');
-                                caretPosisjon++;
-                                i++;
-                                slutt++;
-                            }
-                        }
-                    }
-
-                    function slettTegnDersomDetIkkeStemmerMedFormatet() {
-                        if (input.substring(0, i + 1).length > datoMask.length || input.splice(i, 1, '').length === datoMask.length) {
-                            if (skrevetTegn !== '.' || (i !== 2 && i !== 5)) {
-                                input = input.splice(i, 1, '');
-                                caretPosisjon--;
-                                i--;
-                                slutt--;
-                                return true;
-                            }
-                        }
-                        return false;
-                    }
                 });
             }
         };
