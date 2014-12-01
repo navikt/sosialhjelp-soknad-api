@@ -27,6 +27,11 @@
             <artifactId>mockito-core</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>no.nav.sbl.dialogarena</groupId>
+            <artifactId>arena-personinfo-tjenestespesifikasjon</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>

@@ -6,6 +6,7 @@ import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadata;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.cxf.TimeoutFeature;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.kodeverk.PersonInfoMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonConnector;
@@ -124,33 +125,40 @@ public class ConsumerConfig {
 
     @Configuration
     public static class PersonInfoWSConfig {
+
+        public static final String PERSONINFO_KEY = "start.personinfo.withmock";
+
         @Value("${soknad.webservice.arena.personinfo.url}")
         private String endpoint;
 
         @Bean
         public PersonInfoServiceSoap personInfoServiceSoap() {
-            JaxWsProxyFactoryBean factoryBean = new JaxWsProxyFactoryBean();
-            factoryBean.setServiceClass(PersonInfoServiceSoap.class);
-            factoryBean.setAddress(endpoint);
+            if (mockErTillattOgSlaattPaaForKey(PERSONINFO_KEY)) {
+                return new PersonInfoMock().personInfoMock();
+            } else {
+                JaxWsProxyFactoryBean factoryBean = new JaxWsProxyFactoryBean();
+                factoryBean.setServiceClass(PersonInfoServiceSoap.class);
+                factoryBean.setAddress(endpoint);
 
-            Map<String, Object> map = new HashMap<>();
-            map.put(WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN);
-            map.put(WSHandlerConstants.PASSWORD_TYPE, "PasswordText");
-            map.put(WSHandlerConstants.USER, getProperty("arena.personInfoService.username"));
-            CallbackHandler passwordCallbackHandler = new CallbackHandler() {
-                @Override
-                public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
-                    WSPasswordCallback callback = (WSPasswordCallback) callbacks[0];
-                    callback.setPassword(getProperty("arena.personInfoService.password"));
-                }
-            };
-            map.put(WSHandlerConstants.PW_CALLBACK_REF, passwordCallbackHandler);
-            factoryBean.getOutInterceptors().add(new WSS4JOutInterceptor(map));
+                Map<String, Object> map = new HashMap<>();
+                map.put(WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN);
+                map.put(WSHandlerConstants.PASSWORD_TYPE, "PasswordText");
+                map.put(WSHandlerConstants.USER, getProperty("arena.personInfoService.username"));
+                CallbackHandler passwordCallbackHandler = new CallbackHandler() {
+                    @Override
+                    public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
+                        WSPasswordCallback callback = (WSPasswordCallback) callbacks[0];
+                        callback.setPassword(getProperty("arena.personInfoService.password"));
+                    }
+                };
+                map.put(WSHandlerConstants.PW_CALLBACK_REF, passwordCallbackHandler);
+                factoryBean.getOutInterceptors().add(new WSS4JOutInterceptor(map));
 
-            factoryBean.getFeatures().add(new LoggingFeature());
-            factoryBean.getFeatures().add(new TimeoutFeature(RECEIVE_TIMEOUT, CONNECTION_TIMEOUT));
+                factoryBean.getFeatures().add(new LoggingFeature());
+                factoryBean.getFeatures().add(new TimeoutFeature(RECEIVE_TIMEOUT, CONNECTION_TIMEOUT));
 
-            return factoryBean.create(PersonInfoServiceSoap.class);
+                return factoryBean.create(PersonInfoServiceSoap.class);
+            }
         }
 
     }
