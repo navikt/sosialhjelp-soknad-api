@@ -67,10 +67,10 @@ public class PersonMock {
 
         try {
             when(mock.hentKjerneinformasjon(any(HentKjerneinformasjonRequest.class))).thenReturn(response);
-        } catch (HentKjerneinformasjonPersonIkkeFunnet hentKjerneinformasjonPersonIkkeFunnet) {
-            throw new RuntimeException();
-        } catch (HentKjerneinformasjonSikkerhetsbegrensning hentKjerneinformasjonSikkerhetsbegrensning) {
-            throw new RuntimeException();
+        } catch (HentKjerneinformasjonPersonIkkeFunnet ikkeFunnet) {
+            throw new RuntimeException(ikkeFunnet);
+        } catch (HentKjerneinformasjonSikkerhetsbegrensning sikkerhetsbegrensning) {
+            throw new RuntimeException(sikkerhetsbegrensning);
         }
         //Mockito.doThrow(new RuntimeException()).when(mock).hentKjerneinformasjon(any(HentKjerneinformasjonRequest.class));
         //when(mock.hentKjerneinformasjon(any(HentKjerneinformasjonRequest.class))).thenThrow(new WebServiceException());
