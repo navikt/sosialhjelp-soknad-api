@@ -1,5 +1,5 @@
 angular.module('nav.nyearbeidsforhold.directive',[])
-    .directive('nyeArbeidsforhold', function(cms) {
+    .directive('nyeArbeidsforhold', function() {
         return {
             replace: false,
             scope: true,
