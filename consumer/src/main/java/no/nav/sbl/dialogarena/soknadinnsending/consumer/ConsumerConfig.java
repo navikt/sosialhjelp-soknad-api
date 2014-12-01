@@ -8,8 +8,8 @@ import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.cxf.TimeoutFeature;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil.BrukerprofilMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.kodeverk.KodeverkMock;
-import no.nav.sbl.dialogarena.sendsoknad.mockmodul.personinfo.PersonInfoMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.personinfo.PersonInfoMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonConnector;
@@ -44,6 +44,7 @@ import static java.lang.System.setProperty;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.MockUtil.mockErTillattOgSlaattPaaForKey;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder.CONNECTION_TIMEOUT;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder.RECEIVE_TIMEOUT;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.util.InstanceSwitcher.createSwitcher;
 
 @Configuration
 @EnableCaching
@@ -185,10 +186,9 @@ public class ConsumerConfig {
 
         @Bean
         public PersonPortType personService() {
-            if (mockErTillattOgSlaattPaaForKey(PERSON_KEY)) {
-                return new PersonMock().personMock();
-            }
-            return factory().withUserSecurity().get();
+            PersonPortType mock = new PersonMock().personMock();
+            PersonPortType prod = factory().withUserSecurity().get();
+            return createSwitcher(prod, mock, PERSON_KEY, PersonPortType.class);
         }
 
         @Bean
@@ -219,10 +219,7 @@ public class ConsumerConfig {
         public KodeverkPortType kodeverkService() {
             KodeverkPortType prod = factory().withSystemSecurity().get();
             KodeverkPortType mock = new KodeverkMock().kodeverkMock();
-            if (mockErTillattOgSlaattPaaForKey(KODEVERK_KEY)) {
-                return mock;
-            }
-            return prod;
+            return createSwitcher(prod, mock, KODEVERK_KEY, KodeverkPortType.class);
         }
 
         @Bean
@@ -251,10 +248,9 @@ public class ConsumerConfig {
 
         @Bean
         public BrukerprofilPortType brukerProfilService() {
-            if (mockErTillattOgSlaattPaaForKey(BRUKERPROFIL_KEY)) {
-                return new BrukerprofilMock().brukerprofilMock();
-            }
-            return factory().withUserSecurity().get();
+            BrukerprofilPortType mock = new BrukerprofilMock().brukerprofilMock();
+            BrukerprofilPortType prod = factory().withUserSecurity().get();
+            return createSwitcher(prod, mock, BRUKERPROFIL_KEY, BrukerprofilPortType.class);
         }
 
         @Bean
