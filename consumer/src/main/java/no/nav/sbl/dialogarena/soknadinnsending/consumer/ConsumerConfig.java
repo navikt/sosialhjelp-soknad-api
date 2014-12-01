@@ -6,12 +6,13 @@ import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadata;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.cxf.TimeoutFeature;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.kodeverk.KodeverkMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.kodeverk.PersonInfoMock;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.kodeverk.PersonMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonConnector;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoConnector;
-import no.nav.sbl.dialogarena.sendsoknad.mockmodul.kodeverk.KodeverkMock;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSSoknadsdata;
@@ -166,6 +167,8 @@ public class ConsumerConfig {
     @Configuration
     public static class PersonWSConfig {
 
+        public static final String PERSON_KEY = "start.person.withmock";
+
         @Value("${soknad.webservice.person.personservice.url}")
         private String personEndpoint;
 
@@ -181,7 +184,11 @@ public class ConsumerConfig {
 
         @Bean
         public PersonPortType personService() {
-            return factory().withUserSecurity().get();
+            if(mockErTillattOgSlaattPaaForKey(PERSON_KEY)) {
+                return new PersonMock().personMock();
+            } else{
+                return factory().withUserSecurity().get();
+            }
         }
 
         @Bean
