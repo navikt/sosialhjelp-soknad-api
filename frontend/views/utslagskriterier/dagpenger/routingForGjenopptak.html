@@ -8,6 +8,11 @@
     <section class="spm-blokk open">
         <div class="skjemaramme uten-strek">
             <div data-ng-form="startsoknadForm" class="skjemainnhold vertikal" data-novalidate>
+                <p>
+                    <span>routing:</span>
+                    <span>{{vars.test}}</span>
+                </p>
+                <div data-dato data-ng-model="vars.test"></div>
                 <div class="spm form-linje boolean">
                     <h4 class="spm-sporsmal" data-ng-bind-html=" 'utslagskriterier.dagpenger.utbetaling.sporsmal' | cmstekst"></h4>
 

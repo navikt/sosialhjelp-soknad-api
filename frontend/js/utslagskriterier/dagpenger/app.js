@@ -11,5 +11,6 @@ angular.module('utslagskriterierDagpenger', [
     'ngSanitize',
     'templates-main',
     'nav.cms',
-    'nav.personalia'
+    'nav.personalia',
+    'nav.datepicker'
 ]);
