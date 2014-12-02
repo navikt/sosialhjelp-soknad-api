@@ -1,6 +1,5 @@
 <div class="form-linje">
-    <div data-navinfoboks>
-        <p data-ng-bind-html="'reberegning.infoboks.tekst' | cmstekst"></p>
+    <div data-navinfoboks data-infoTekster="['reberegning.infoboks.tekst']">
     </div>
 
     <div data-nav-faktum="reberegning.nyberegning"
@@ -9,8 +8,7 @@
          data-booleanradio
          data-nokkel="reberegning.nyberegning">
 
-        <div data-navinfoboks>
-            <p data-ng-bind-html=" 'reberegning.nyberegning.startdato.informasjon' | cmstekst"></p>
+        <div data-navinfoboks data-infoTekster="['reberegning.nyberegning.startdato.informasjon']">
         </div>
 
         <div class="spm boolean form-linje">
@@ -39,8 +37,7 @@
             </div>
         </div>
 
-        <div data-navinfoboks>
-            <p data-ng-bind-html=" 'reberegning.nyberegning.arbeidstid.informasjon' | cmstekst"></p>
+        <div data-navinfoboks data-infoTekster="['reberegning.nyberegning.arbeidstid.informasjon']">
         </div>
 
         <div data-nav-faktum="reberegning.nyberegning.arbeidstid"
