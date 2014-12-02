@@ -42,7 +42,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {DbConfig.class})
+@ContextConfiguration(classes = {DbTestConfig.class})
 public class SoknadRepositoryJdbcTest {
 
     @Inject

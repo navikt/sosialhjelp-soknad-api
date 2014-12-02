@@ -12,12 +12,12 @@ import java.util.Map;
 
 @Component
 public class ConfigService {
+
     @Inject
     private Kodeverk kodeverk;
 
     @Inject
     private SendSoknadService soknadService;
-
 
     @Value("${saksoversikt.link.url}")
     private String saksoversiktUrl;
@@ -35,11 +35,9 @@ public class ConfigService {
     private String brukerProfilUrl;
     @Value("${dittnav.link.url}")
     private String dittnavUrl;
-
     @Value("${soknad.ettersending.antalldager}")
     private String antallDager;
 
-    
     public Map<String,String> getConfig() {
         Map<String, String> result = new HashMap<String, String>();
         

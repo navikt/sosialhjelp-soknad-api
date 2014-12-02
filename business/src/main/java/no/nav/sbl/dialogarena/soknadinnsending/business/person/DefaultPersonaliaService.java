@@ -7,7 +7,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosLandService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.IkkeFunnetException;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonConnector;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
@@ -51,10 +51,10 @@ public class DefaultPersonaliaService implements PersonaliaService {
 
     private static final Logger logger = getLogger(DefaultPersonaliaService.class);
     @Inject
-    @Named("brukerProfilService")
+    @Named("brukerProfilEndpoint")
     private BrukerprofilPortType brukerProfil;
     @Inject
-    private PersonConnector personConnector;
+    private PersonService personService;
     @Inject
     private Kodeverk kodeverk;
     @Inject
@@ -69,7 +69,7 @@ public class DefaultPersonaliaService implements PersonaliaService {
         HentKjerneinformasjonResponse kjerneinformasjonResponse;
 
         try {
-            kjerneinformasjonResponse = personConnector.hentKjerneinformasjon(lagXMLRequestKjerneinformasjon(fodselsnummer));
+            kjerneinformasjonResponse = personService.hentKjerneinformasjon(lagXMLRequestKjerneinformasjon(fodselsnummer));
             preferanserResponse = brukerProfil.hentKontaktinformasjonOgPreferanser(lagXMLRequestPreferanser(fodselsnummer));
         } catch (IkkeFunnetException | HentKontaktinformasjonOgPreferanserPersonIkkeFunnet e) {
             logger.error("Ikke funnet person i TPS", e);
@@ -93,7 +93,7 @@ public class DefaultPersonaliaService implements PersonaliaService {
         HentKjerneinformasjonResponse kjerneinformasjonResponse;
 
         try {
-            kjerneinformasjonResponse = personConnector.hentKjerneinformasjon(lagXMLRequestKjerneinformasjon(fodselsnummer));
+            kjerneinformasjonResponse = personService.hentKjerneinformasjon(lagXMLRequestKjerneinformasjon(fodselsnummer));
             preferanserResponse = brukerProfil.hentKontaktinformasjonOgPreferanser(lagXMLRequestPreferanser(fodselsnummer));
         } catch (IkkeFunnetException e) {
             logger.warn("Ikke funnet person i TPS");
