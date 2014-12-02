@@ -63,18 +63,26 @@ public class WebSoknadUtils {
         return ANNEN_AARSAK;
     }
 
+    private static boolean harBlittPermittertIEtAvArbeidsforholdene(WebSoknad soknad) {
+        List<Faktum> alleArbeidsforhold = soknad.getFaktaMedKey("arbeidsforhold");
+        if(!alleArbeidsforhold.isEmpty()) {
+            return on(alleArbeidsforhold).filter(where(TYPE, equalTo(PERMITTERT))).head().isSome();
+        }
+        return false;
+    }
+
 
     public static String getSkjemanummer(WebSoknad soknad) {
         if (soknad.erEttersending()) {
             return soknad.getskjemaNummer();
         }
 
-        String sluttaarsak = erPermittertellerHarRedusertArbeidstid(soknad);
+        boolean erPermittert = harBlittPermittertIEtAvArbeidsforholdene(soknad);
 
         if(soknad.erGjenopptak()) {
-            return sluttaarsak.equals(PERMITTERT) ? GJENOPPTAK_VED_PERMITTERING : GJENOPPTAK;
+            return erPermittert ? GJENOPPTAK_VED_PERMITTERING : GJENOPPTAK;
         }
-        return sluttaarsak.equals(PERMITTERT) ? DAGPENGER_VED_PERMITTERING : DAGPENGER;
+        return erPermittert ? DAGPENGER_VED_PERMITTERING : DAGPENGER;
     }
 
     public static String getJournalforendeEnhet(WebSoknad webSoknad) {
