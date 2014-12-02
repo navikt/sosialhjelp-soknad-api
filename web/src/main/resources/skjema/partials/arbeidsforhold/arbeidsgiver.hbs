@@ -1,4 +1,7 @@
+<table>
 {{#forFakta "arbeidsforhold"}}
+    <tr>
+        <td class="sjekket"></td>
         <td>
             <span class="arbeidsforhold-arbeidsgiver">{{ properties.arbeidsgivernavn }},</span>
             <span class="arbeidsforhold-land">{{ hentLand properties.land }}</span>
@@ -141,7 +144,7 @@
                         {{/if}}
                     </li>
 
-                    <span class="arbeidsforhold-arbeidsgiver">{{ hentTekst "arbeidsforhold.arbeidsgiver.permittert.varighet.tittel" }}</span>
+                    <span>{{ hentTekst "arbeidsforhold.arbeidsgiver.permittert.varighet.tittel" }}</span>
                     {{#forFakta "arbeidsforhold.permitteringsperiode"}}
                         <li class="kulepunkt">
                             <div class="permitteringsperiode">
@@ -160,7 +163,7 @@
                 {{/hvisLik}}
 
                 {{#skalViseRotasjonTurnusSporsmaal}}
-                    <span class="arbeidsforhold-arbeidsgiver">{{ hentTekst "arbeidsforhold.rotasjonskiftturnus.sporsmaal" }}</span>
+                    <span>{{ hentTekst "arbeidsforhold.rotasjonskiftturnus.sporsmaal" }}</span>
                     <li class="kulepunkt">
                         <p class="rotasjonturnus">{{ properties.rotasjonskiftturnus }}</p>
                     </li>
@@ -191,3 +194,4 @@
         </td>
     </tr>
 {{/forFakta}}
+</table>
