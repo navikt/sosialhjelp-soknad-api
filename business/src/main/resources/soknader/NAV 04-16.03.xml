@@ -160,7 +160,10 @@
         <type>java.lang.String</type>
         <panel>TidligereArbeidsforhold</panel>
         <dependOn>tidligerearbeidsforhold.permittert</dependOn>
-        <dependOnValue>permittert</dependOnValue>
+        <dependOnValues>
+            <value>permittert</value>
+            <value>permittertFiske</value>
+        </dependOnValues>
     </faktum>
 
     <faktum>
@@ -168,7 +171,10 @@
         <type>java.lang.Boolean</type>
         <panel>TidligereArbeidsforhold</panel>
         <dependOn>tidligerearbeidsforhold.permittert</dependOn>
-        <dependOnValue>permittert</dependOnValue>
+        <dependOnValues>
+            <value>permittert</value>
+            <value>permittertFiske</value>
+        </dependOnValues>
     </faktum>
 
     <faktum>
@@ -184,7 +190,10 @@
         <type>java.lang.Boolean</type>
         <panel>TidligereArbeidsforhold</panel>
         <dependOn>tidligerearbeidsforhold.permittert</dependOn>
-        <dependOnValue>permittert</dependOnValue>
+        <dependOnValues>
+            <value>permittert</value>
+            <value>permittertFiske</value>
+        </dependOnValues>
     </faktum>
 
     <!-- EgenNaering -->
@@ -1051,6 +1060,13 @@
         <onProperty>startetForrigeAar</onProperty>
         <onValue>true</onValue>
         <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
+    <vedlegg>
+        <id>9</id>
+        <faktum>tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsammenhengende</faktum>
+        <onValue>true</onValue>
+        <skjemaNummer>G2</skjemaNummer>
     </vedlegg>
 
     <vedleggsreferanse>G2</vedleggsreferanse>
