@@ -1,0 +1,33 @@
+<span class="arbeidsforhold-arbeidsgiver">{{ hentTekst "reberegning.tittel" }}</span>
+{{#forFaktum "reberegning.nyberegning"}}
+<tr>
+    <td class="sjekket"></td>
+    <td>
+        {{#hvisSant value}}
+        <span>{{ hentTekst "reberegning.nyberegning.true" }}</span>
+        {{ else }}
+        <span>{{ hentTekst "reberegning.nyberegning.false" }}</span>
+        <ul>
+            {{#forFakta "reberegning.nyberegning.startdato"}}
+            <li class="kulepunkt">
+                {{#hvisLik value "soknadsdato"}}
+                <span>{{ hentTekst "reberegning.nyberegning.startdato.soknadsdato" }}</span>
+                {{else}}
+                <span>{{ hentTekst "reberegning.nyberegning.startdato.aarskiftet" }}</span>
+                {{/hvisLik}}
+            </li>
+            {{/forFakta}}
+            {{#forFaktum "reberegning.nyberegning.arbeidstid"}}
+            <li class="kulepunkt">
+                {{#hvisSant value}}
+                <span>{{ hentTekst "reberegning.nyberegning.arbeidstid.true" }}</span>
+                {{else}}
+                <span>{{ hentTekst "reberegning.nyberegning.arbeidstid.false" }}</span>
+                {{/hvisSant}}
+            </li>
+            {{/forFaktum}}
+        </ul>
+        {{/hvisSant}}
+    </td>
+</tr>
+{{/forFaktum}}

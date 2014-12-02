@@ -1,0 +1,37 @@
+{{#forFaktum "personalia"}}
+    {{#hvisLik properties.statsborgerskap "NOR"}}
+    {{else}}
+        {{#forFaktum "arbeidsforhold.grensearbeider"}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    {{#hvisSant value}}
+                    <span>{{hentTekst "arbeidsforhold.grensearbeider.true"}}</span>
+                    {{else}}
+                    <span>{{hentTekst "arbeidsforhold.grensearbeider.false"}}</span>
+                    <ul>
+                        {{#forFaktum "arbeidsforhold.grensearbeider.false.adresse.land"}}
+                        <li class="kulepunkt">
+                            <span>{{value}}</span>
+                        </li>
+                        {{/forFaktum}}
+
+                        {{#forFaktum "arbeidsforhold.grensearbeider.false.adresse.fritekst"}}
+                        <li class="kulepunkt">
+                            <span>{{hentTekst "arbeidsforhold.grensearbeider.false.adresse.oppsummering"}}</span>
+                            {{{adresse value}}}
+                        </li>
+                        {{/forFaktum}}
+
+                        {{#forFaktum "arbeidsforhold.grensearbeider.false.oftehjem"}}
+                        <li class="kulepunkt">
+                            <span>{{hentTekst value}}</span>
+                        </li>
+                        {{/forFaktum}}
+                    </ul>
+                    {{/hvisSant}}
+                </td>
+            </tr>
+        {{/forFaktum}}
+    {{/hvisLik}}
+{{/forFaktum}}
