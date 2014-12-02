@@ -1,10 +1,10 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.util.MockUtil;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.MockUtil;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.util.MockUtil.startdatoMockErTillattOgAktivert;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.MockUtil.startdatoMockErTillattOgAktivert;
 
 @Component
 public class StartDatoService {

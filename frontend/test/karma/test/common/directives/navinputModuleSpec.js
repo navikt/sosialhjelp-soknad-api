@@ -274,10 +274,6 @@ describe('navtekst', function () {
         scope = element.find('div').scope();
     }));
     describe("navtekst", function () {
-        it('regexvalidering skal settes til tom string nar det ikke skal vaere regexvalidering pa feltet', function () {
-            expect(scope.regexvalidering).toBe('');
-            expect(scope.inputfeltmaxlength).toBe(undefined);
-        });
         it('harSporsmal skal returnere false hvis sporsmal ikke finnes', function () {
             expect(scope.harSporsmal()).toBe(false);
         });
@@ -305,8 +301,7 @@ describe('navtekstMedSporsmalOgRegEx', function () {
                 'data-navlabel="ikkehjelpetekstlabel" ' +
                 ' data-navendret="enFunksjon()"' +
                 'data-regexvalidering="/^(\\d+(?:[\\.\\,]\\d{0,2})?)$/"' +
-                'data-navsporsmal="barnetillegg.barnetilegg.barneinntekttall.sporsmal" ' +
-                'data-inputfeltmaxlength="200"> ' +
+                'data-navsporsmal="barnetillegg.barnetilegg.barneinntekttall.sporsmal">' +
                 '</div> ' +
                 '</form>');
 
@@ -318,8 +313,8 @@ describe('navtekstMedSporsmalOgRegEx', function () {
     }));
     describe("navtekst", function () {
         it('regexvalidering skal settes til den aktuelle regexpatternet', function () {
-            expect(scope.regexvalidering).toBe("/^(\\d+(?:[\\.\\,]\\d{0,2})?)$/");
-            expect(scope.inputfeltmaxlength).toBe('200');
+            var input = element.find('input');
+            expect(input.attr('data-ng-pattern')).toBe('/^(\\d+(?:[\\.\\,]\\d{0,2})?)$/');
         });
         it('harSporsmal skal returnere true hvis har sporsmal', function () {
             expect(scope.harSporsmal()).toBe(true);
@@ -489,11 +484,14 @@ describe('orgnrValidate', function () {
             expect(scope.lagreFaktum).wasNotCalled();
 
         });
+
         it('lagreFaktum skal bli kalt hvis inputfeltet er valid og blur blir kalt', function () {
             spyOn(scope, 'lagreFaktum');
 
             var inputEl = element.find('input');
-            inputnavn.$setViewValue(123456789);
+            scope.model = 123456789;
+            scope.$apply();
+
             inputEl.blur();
             expect(scope.lagreFaktum).toHaveBeenCalled();
         });

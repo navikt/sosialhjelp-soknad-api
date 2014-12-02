@@ -12,7 +12,6 @@ angular.module('sendsoknad.directives', [
 	'nav.stickybunn',
 	'nav.select',
 	'nav.hjelpetekst',
-	'nav.datepicker',
 	'nav.sidetittel',
 	'nav.bildenavigering',
 	'nav.navfaktum',

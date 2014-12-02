@@ -25,20 +25,17 @@ import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
-public class HenvendelseConnector {
+public class HenvendelseService {
 
-    private static final Logger logger = getLogger(HenvendelseConnector.class);
-    @Inject
-    @Named("sendSoknadService")
-    private SendSoknadPortType sendSoknadService;
+    private static final Logger logger = getLogger(HenvendelseService.class);
 
     @Inject
-    @Named("sendSoknadSelftest")
-    private SendSoknadPortType sendSoknadSystembruker;
+    @Named("sendSoknadEndpoint")
+    private SendSoknadPortType sendSoknadEndpoint;
 
-    public String hentSoknadEier(Long soknadId) {
-        return "";
-    }
+    @Inject
+    @Named("sendSoknadSelftestEndpoint")
+    private SendSoknadPortType sendSoknadSelftestEndpoint;
 
     public String startSoknad(String fnr, String skjema, String uid) {
         logger.info("Starter søknad");
@@ -66,7 +63,7 @@ public class HenvendelseConnector {
 
     private String startSoknadEllerEttersending(WSStartSoknadRequest xmlStartSoknadRequest) {
         try {
-            return sendSoknadService.startSoknad(xmlStartSoknadRequest).getBehandlingsId();
+            return sendSoknadEndpoint.startSoknad(xmlStartSoknadRequest).getBehandlingsId();
         } catch (SOAPFaultException e) {
             logger.error("Feil ved start søknad for bruker " + xmlStartSoknadRequest.getFodselsnummer(), e);
             throw new SystemException("Kunne ikke opprette ny søknad", e, "exception.system.baksystem");
@@ -75,7 +72,7 @@ public class HenvendelseConnector {
 
     public List<WSBehandlingskjedeElement> hentBehandlingskjede(String behandlingskjedeId) {
         try {
-            List<WSBehandlingskjedeElement> wsBehandlingskjedeElementer = sendSoknadService.hentBehandlingskjede(behandlingskjedeId);
+            List<WSBehandlingskjedeElement> wsBehandlingskjedeElementer = sendSoknadEndpoint.hentBehandlingskjede(behandlingskjedeId);
             if (wsBehandlingskjedeElementer.isEmpty()) {
                 throw new ApplicationException("Fant ingen behandlinger i en behandlingskjede med behandlingsID " + behandlingskjedeId);
             }
@@ -91,7 +88,7 @@ public class HenvendelseConnector {
             WSSoknadsdata parameters = new WSSoknadsdata().withBehandlingsId(behandlingsId).withAny(new XMLMetadataListe()
                     .withMetadata(hovedskjema)
                     .withMetadata(vedlegg));
-            sendSoknadService.sendSoknad(parameters);
+            sendSoknadEndpoint.sendSoknad(parameters);
         } catch (SOAPFaultException e) {
             logger.error("Feil ved innsending av søknad: " + e, e);
             throw new SystemException("Kunne ikke sende inn søknad", e, "exception.system.baksystem");
@@ -100,7 +97,7 @@ public class HenvendelseConnector {
 
     public no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSEmpty sendSoknad(WSSoknadsdata soknadsData) {
         try {
-            return sendSoknadService.sendSoknad(soknadsData);
+            return sendSoknadEndpoint.sendSoknad(soknadsData);
         } catch (Exception e) {
             throw new SystemException("Kunne ikke sende søknad", e, "exception.system.baksystem");
         }
@@ -109,9 +106,9 @@ public class HenvendelseConnector {
     public void avbrytSoknad(String behandlingsId) {
         logger.debug("Avbryt søknad");
         try {
-            SendSoknadPortType sendSoknadPortType = sendSoknadService;
+            SendSoknadPortType sendSoknadPortType = sendSoknadEndpoint;
             if(getSubjectHandler().getIdentType() == null) {
-                sendSoknadPortType = sendSoknadSystembruker;
+                sendSoknadPortType = sendSoknadSelftestEndpoint;
                 logger.debug("Bruker systembruker for avbrytkall");
             }
 
@@ -142,6 +139,6 @@ public class HenvendelseConnector {
     }
 
     public WSHentSoknadResponse hentSoknad(String behandlingsId) {
-        return sendSoknadService.hentSoknad(new WSBehandlingsId().withBehandlingsId(behandlingsId));
+        return sendSoknadEndpoint.hentSoknad(new WSBehandlingsId().withBehandlingsId(behandlingsId));
     }
 }

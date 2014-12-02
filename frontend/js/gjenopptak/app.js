@@ -12,6 +12,7 @@ angular.module('gjenopptak', [
     'nav.arbeidsforhold',
     'nav.tidligerearbeidsforhold',
     'nav.cms',
+    'nav.datepicker',
     'nav.personalia',
     'nav.scroll'
 ]);

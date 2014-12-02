@@ -12,7 +12,8 @@ angular.module('sendsoknad', [
     'ngSanitize',
     'templates-main',
     'nav.cms',
-    'nav.arbeidsforhold',
     'nav.personalia',
+    'nav.datepicker',
+    'nav.arbeidsforhold',
     'nav.scroll'
 ]);

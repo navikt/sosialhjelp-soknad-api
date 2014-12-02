@@ -67,7 +67,7 @@ angular.module('nav.vedlegg.controller', [])
         };
     })
 
-    .controller('validervedleggCtrl', ['$scope', 'Faktum', function ($scope, Faktum) {
+    .controller('validervedleggCtrl', function ($scope, Faktum) {
         if ($scope.forventning.innsendingsvalg === "VedleggKreves") {
             $scope.hiddenFelt = {value: '' };
             $scope.skalViseFeil = { value: true };
@@ -101,27 +101,13 @@ angular.module('nav.vedlegg.controller', [])
             return 'vedlegg_' + forventning.skjemaNummer;
         };
 
-        $scope.endreInnsendingsvalg = function (forventning, valg) {
-            if (valg !== 'SendesSenere' && valg !== 'SendesIkke' && valg !== 'VedleggSendesAvAndre' && valg !== "VedleggSendesIkke" && valg !== "VedleggAlleredeSendt") {
-                forventning.innsendingsvalg = valg;
-            }
-            if (!$scope.hiddenFelt) {
-                $scope.hiddenFelt = { value: "" };
-                $scope.skalViseFeil = { value: "" };
-            }
+        $scope.fjernInnsendingsvalg = function(forventning) {
+            forventning.innsendingsvalg = 'VedleggKreves';
+        };
 
-            if (forventning.innsendingsvalg === valg) {
-                forventning.innsendingsvalg = "VedleggKreves";
-                $scope.hiddenFelt.value = "";
-                $scope.skalViseFeil.value = true;
-                forventning.$save();
-            } else {
-                forventning.innsendingsvalg = valg;
-                forventning.$save();
-
-                $scope.hiddenFelt.value = true;
-                $scope.skalViseFeil.value = false;
-            }
+        $scope.endreInnsendingsvalg = function (hiddenValue, skalViseFeil) {
+            $scope.hiddenFelt.value = hiddenValue;
+            $scope.skalViseFeil.value = skalViseFeil;
         };
 
         $scope.erEkstraVedlegg = function (forventning) {
@@ -152,7 +138,7 @@ angular.module('nav.vedlegg.controller', [])
                 }
             }
         };
-    }])
+    })
 
     .directive('bildeNavigering', [function () {
         return {
@@ -160,4 +146,28 @@ angular.module('nav.vedlegg.controller', [])
             replace: 'true',
             templateUrl: '../../'
         };
-    }]);
+    }])
+    .directive('fjernRadioValg', function() {
+        return {
+            scope:  {
+                forventning: '=fjernRadioValg'
+            },
+            link: function(scope, element, attrs) {
+                var forrigeValg = scope.forventning.innsendingsvalg;
+                var valg = attrs.value;
+                element.bind('click', function() {
+                    if (scope.forventning.innsendingsvalg === forrigeValg) {
+                        scope.forventning.innsendingsvalg = 'VedleggKreves';
+                        scope.$parent.endreInnsendingsvalg('', true);
+                        scope.forventning.$save();
+                    } else {
+                        scope.forventning.innsendingsvalg = valg;
+                        scope.forventning.$save();
+                        scope.$parent.endreInnsendingsvalg(true, false);
+                    }
+                    forrigeValg = scope.forventning.innsendingsvalg;
+                    scope.$apply();
+                });
+            }
+        };
+    });

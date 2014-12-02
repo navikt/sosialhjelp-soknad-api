@@ -137,24 +137,6 @@
                 expect(scope.skalViseFeil).toEqual({value: true});
             });
 
-            it('skal vise feil når man endrer innsending til vedleggKreves', function () {
-                scope.endreInnsendingsvalg(scope.forventning, "VedleggKreves");
-                expect(scope.hiddenFelt).toEqual({value: ''});
-                expect(scope.skalViseFeil).toEqual({value: true});
-            });
-
-            it('skal ikke vise feil etter å ha valgt sende senere', function() {
-                scope.endreInnsendingsvalg(scope.forventning, "SendesSenere");
-                expect(scope.hiddenFelt.value).toBe(true);
-                expect(scope.skalViseFeil.value).toBe(false);
-            });
-
-            it('skal ikke vise feil etter å ha valgt allerede sendt', function() {
-                scope.endreInnsendingsvalg(scope.forventning, "VedleggAlleredeSendt");
-                expect(scope.hiddenFelt.value).toBe(true);
-                expect(scope.skalViseFeil.value).toBe(false);
-            });
-
             it('skal kunne slette annet vedlegg', function() {
                 scope.forventning.skjemaNummer = "N6";
                 scope.forventning.innsendingsvalg = "LastetOpp";
