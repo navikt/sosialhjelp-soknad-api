@@ -114,7 +114,7 @@ public class WicketApplication extends WebApplication {
         mountPage("skjema/${skjemanummer}", StartSoknadPage.class);
         mountPage("utslagskriterier/${utslagskriterierSide}", UtslagskriterierDagpengerPage.class);
         mountPage("startettersending/${brukerbehandlingId}", StartEttersendingPage.class);
-        mountPage("ettersending/${brukerbehandlingId}", EttersendingPage.class);
+        mountPage("skjema/ettersending", EttersendingPage.class);
         mountPage("avbrutt", AvbruttPage.class);
         mountPage("ettersending/avbrutt", AvbruttEttersendingPage.class);
         mountPage("xmltopdf", XmlToPdfConverterPage.class);

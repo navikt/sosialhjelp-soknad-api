@@ -25,7 +25,10 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.common.routes'])
                     }
                 }
             })
-            .when('/vedlegg', {
+            .when('/:behandlingId', {
+                redirectTo: '/:behandlingId/vedlegg'
+            })
+            .when('/:behandlingId/vedlegg', {
                 templateUrl: '../views/ettersending/ettersending.html',
                 controller: 'EttersendingCtrl',
                 resolve: {
