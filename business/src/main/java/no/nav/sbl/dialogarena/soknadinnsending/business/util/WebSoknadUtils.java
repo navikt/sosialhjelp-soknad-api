@@ -59,7 +59,42 @@ public class WebSoknadUtils {
                 return REDUSERT_ARBEIDSTID;
             }
         }
+
+        if (soknad.erGjenopptak()){
+            if(ingenNyeArbeidsforhold(soknad) && varPermittertForrigeGangDuSokteOmDagpenger(soknad)){
+                return PERMITTERT;
+            }
+        }
         return ANNEN_AARSAK;
+    }
+
+    private static boolean varPermittertForrigeGangDuSokteOmDagpenger(WebSoknad soknad) {
+        Faktum permittertForrigeGang = soknad.getFaktumMedKey("tidligerearbeidsforhold.permittert");
+        if(permittertForrigeGang == null){
+            return false;
+        }
+
+        String value = permittertForrigeGang.getValue();
+        if(value.equals("permittertFiske") || value.equals("permittert")){
+            return true;
+        }
+        return false;
+    }
+    
+    private static boolean harBlittPermittertIEtAvArbeidsforholdene(WebSoknad soknad) {
+        List<Faktum> alleArbeidsforhold = soknad.getFaktaMedKey("arbeidsforhold");
+        if(!alleArbeidsforhold.isEmpty()) {
+            return on(alleArbeidsforhold).filter(where(TYPE, equalTo(PERMITTERT))).head().isSome();
+        }
+        return false;
+    }
+
+    private static boolean ingenNyeArbeidsforhold(WebSoknad soknad) {
+        Faktum nyeArbeidsforhold = soknad.getFaktumMedKey("nyearbeidsforhold.arbeidsidensist");
+        if(nyeArbeidsforhold == null){
+            return false;
+        }
+        return nyeArbeidsforhold.getValue().equals("true");
     }
 
 
@@ -77,29 +112,32 @@ public class WebSoknadUtils {
     }
 
     public static String getJournalforendeEnhet(WebSoknad webSoknad) {
-        String sluttaarsak = erPermittertellerHarRedusertArbeidstid(webSoknad);
-        Personalia personalia = getPerson(webSoknad);
-        Faktum grensearbeiderFakta = webSoknad.getFaktumMedKey("arbeidsforhold.grensearbeider");
-        boolean erGrensearbeider = false;
-        if(grensearbeiderFakta != null && grensearbeiderFakta.getValue() != null){
-            erGrensearbeider = grensearbeiderFakta.getValue().equals("false");
-        }
-
         if (webSoknad.erEttersending()) {
             return webSoknad.getJournalforendeEnhet();
         } else {
-            return finnJournalforendeEnhetForSoknad(sluttaarsak, personalia, erGrensearbeider);
-
+            return finnJournalforendeEnhetForSoknad(webSoknad);
         }
     }
 
-    private static String finnJournalforendeEnhetForSoknad(String sluttaarsak, Personalia personalia, boolean erGrensearbeider) {
+    private static boolean erGrensearbeider(WebSoknad webSoknad) {
+        Faktum grensearbeiderFaktum = webSoknad.getFaktumMedKey("arbeidsforhold.grensearbeider");
+        boolean erGrensearbeider = false;
+        if(grensearbeiderFaktum != null && grensearbeiderFaktum.getValue() != null){
+            erGrensearbeider = grensearbeiderFaktum.getValue().equals("false");
+        }
+        return erGrensearbeider;
+    }
+
+    private static String finnJournalforendeEnhetForSoknad(WebSoknad webSoknad) {
+        String sluttaarsak = erPermittertellerHarRedusertArbeidstid(webSoknad);
+        Personalia personalia = getPerson(webSoknad);
+
         if (sluttaarsak.equals(PERMITTERT) || (sluttaarsak.equals(REDUSERT_ARBEIDSTID))) {
             if ((personalia.harUtenlandskAdresseIEOS() && (!personalia.harNorskMidlertidigAdresse()))) {
                 return EOS_DAGPENGER;
             }
             boolean erUtenlandskStatsborger = personalia.getStatsborgerskap().equals("NOR") ? false : true;
-            if (erGrensearbeider && erUtenlandskStatsborger){
+            if (erGrensearbeider(webSoknad) && erUtenlandskStatsborger){
                 return EOS_DAGPENGER;
             }
         }
