@@ -33,6 +33,8 @@ public class WebSoknadUtils {
 
     public static final String DAGPENGER_VED_PERMITTERING = "NAV 04-01.04";
     public static final String DAGPENGER = "NAV 04-01.03";
+    public static final String GJENOPPTAK_VED_PERMITTERING = "NAV 04-16.04";
+    public static final String GJENOPPTAK = "NAV 04-16.03";
     public static final String EOS_DAGPENGER = "4304";
     public static final String RUTES_I_BRUT = "";
     public static final String PERMITTERT = "Permittert";
@@ -68,11 +70,11 @@ public class WebSoknadUtils {
         }
 
         String sluttaarsak = erPermittertellerHarRedusertArbeidstid(soknad);
-        if (sluttaarsak.equals(PERMITTERT)) {
-            return DAGPENGER_VED_PERMITTERING;
-        } else {
-            return DAGPENGER;
+
+        if(soknad.erGjenopptak()) {
+            return sluttaarsak.equals(PERMITTERT) ? GJENOPPTAK_VED_PERMITTERING : GJENOPPTAK;
         }
+        return sluttaarsak.equals(PERMITTERT) ? DAGPENGER_VED_PERMITTERING : DAGPENGER;
     }
 
     public static String getJournalforendeEnhet(WebSoknad webSoknad) {
