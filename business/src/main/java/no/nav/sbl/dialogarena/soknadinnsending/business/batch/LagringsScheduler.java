@@ -4,8 +4,8 @@ import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -33,9 +33,9 @@ public class LagringsScheduler {
     @Inject
     private SoknadRepository soknadRepository;
     @Inject
-    private FillagerConnector fillagerConnector;
+    private FillagerService fillagerService;
     @Inject
-    private HenvendelseConnector henvendelseConnector;
+    private HenvendelseService henvendelseService;
 
     @Scheduled(fixedRate = SCHEDULE_RATE_MS)
     public void mellomlagreSoknaderOgNullstillLokalDb() throws InterruptedException {
@@ -89,10 +89,10 @@ public class LagringsScheduler {
     private boolean avbrytOgSlettEttersendelse(Optional<WebSoknad> ws) throws InterruptedException {
         WebSoknad soknad = ws.get();
         try {
-            henvendelseConnector.avbrytSoknad(soknad.getBrukerBehandlingId());
+            henvendelseService.avbrytSoknad(soknad.getBrukerBehandlingId());
 
             try {
-                fillagerConnector.slettAlle(soknad.getBrukerBehandlingId());
+                fillagerService.slettAlle(soknad.getBrukerBehandlingId());
             } catch (Exception e) {
                 logger.error("Sletting av filer feilet for ettersending {}. Henvendelsen de hører til er satt til avbrutt, og ettersendingen slettes i sendsøknad.", soknad.getSoknadId(), e);
             }
@@ -120,7 +120,7 @@ public class LagringsScheduler {
             if (soknad.getStatus().equals(SoknadInnsendingStatus.UNDER_ARBEID) && !soknad.erEttersending()) {
                 StringWriter xml = new StringWriter();
                 JAXB.marshal(soknad, xml);
-                fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(xml.toString().getBytes()));
+                fillagerService.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(xml.toString().getBytes()));
             }
             soknadRepository.slettSoknad(soknad.getSoknadId());
             vellykket++;

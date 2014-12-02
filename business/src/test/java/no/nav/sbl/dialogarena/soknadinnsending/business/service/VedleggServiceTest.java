@@ -8,7 +8,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -56,7 +56,7 @@ public class VedleggServiceTest {
     @Mock
     private SendSoknadService soknadService;
     @Mock
-    private FillagerConnector fillagerConnector;
+    private FillagerService fillagerService;
     @Mock
     private Kodeverk kodeverk;
 
@@ -138,7 +138,7 @@ public class VedleggServiceTest {
         vedleggSjekk.setData(vedlegg.getData());
         vedleggSjekk.medStorrelse((long) vedlegg.getData().length);
         verify(vedleggRepository).lagreVedleggMedData(1L, 2L, vedleggSjekk);
-        verify(fillagerConnector).lagreFil(eq("123"), eq(vedleggSjekk.getFillagerReferanse()), eq("234"), any(InputStream.class));
+        verify(fillagerService).lagreFil(eq("123"), eq(vedleggSjekk.getFillagerReferanse()), eq("234"), any(InputStream.class));
     }
 
     @Test

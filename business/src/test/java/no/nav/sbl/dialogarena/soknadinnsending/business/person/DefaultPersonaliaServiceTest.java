@@ -6,7 +6,7 @@ import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosLandService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonConnector;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
@@ -130,7 +130,7 @@ public class DefaultPersonaliaServiceTest {
     private DefaultPersonaliaService personaliaService;
 
     @Mock
-    private PersonConnector personMock;
+    private PersonService personMock;
 
     @Mock
     @SuppressWarnings("PMD")

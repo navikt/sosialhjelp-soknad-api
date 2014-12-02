@@ -39,23 +39,23 @@ public class SelfTestPage extends SelfTestBase {
     private static final Logger logger = getLogger(SelfTestPage.class);
 
     @Inject
-    @Named("sendSoknadSelftest")
+    @Named("sendSoknadSelftestEndpoint")
     private SendSoknadPortType sendSoknadSelftest;
 
     @Inject
-    @Named("kodeverkServiceSelftest")
+    @Named("kodeverkSelftestEndpoint")
     private KodeverkPortType kodeverkServiceSelftest;
 
     @Inject
-    @Named("brukerProfilService")
+    @Named("brukerProfilEndpoint")
     private BrukerprofilPortType brukerProfilService;
 
     @Inject
-    @Named("personService")
+    @Named("personEndpoint")
     private PersonPortType personService;
 
     @Inject
-    @Named("fillagerServiceSelftest")
+    @Named("fillagerSelftestEndpoint")
     private FilLagerPortType fillagerServiceSelftest;
 
     @Inject
