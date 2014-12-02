@@ -10,10 +10,10 @@ import no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil.BrukerprofilMock
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.kodeverk.KodeverkMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.personinfo.PersonInfoMock;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonConnector;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoConnector;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSSoknadsdata;
@@ -49,10 +49,10 @@ import static no.nav.sbl.dialogarena.soknadinnsending.consumer.util.InstanceSwit
 @EnableCaching
 @Import({
         ConsumerConfig.WsServices.class,
-        FillagerConnector.class,
-        HenvendelseConnector.class,
-        PersonConnector.class,
-        PersonInfoConnector.class
+        FillagerService.class,
+        HenvendelseService.class,
+        PersonService.class,
+        PersonInfoService.class
 })
 public class ConsumerConfig {
     //Må godta så store xml-payloads pga Kodeverk postnr
@@ -90,12 +90,12 @@ public class ConsumerConfig {
         }
 
         @Bean
-        public SendSoknadPortType sendSoknadService() {
+        public SendSoknadPortType sendSoknadEndpoint() {
             return factory().withUserSecurity().get();
         }
 
         @Bean
-        public SendSoknadPortType sendSoknadSelftest() {
+        public SendSoknadPortType sendSoknadSelftestEndpoint() {
             return factory().withSystemSecurity().get();
         }
     }
@@ -115,12 +115,12 @@ public class ConsumerConfig {
         }
 
         @Bean
-        public FilLagerPortType fillagerService() {
+        public FilLagerPortType fillagerEndpoint() {
             return factory().withMDC().withUserSecurity().get();
         }
 
         @Bean
-        public FilLagerPortType fillagerServiceSelftest() {
+        public FilLagerPortType fillagerSelftestEndpoint() {
             return factory().withSystemSecurity().get();
         }
     }
@@ -134,13 +134,13 @@ public class ConsumerConfig {
         private String endpoint;
 
         @Bean
-        public PersonInfoServiceSoap personInfoServiceSoap() {
+        public PersonInfoServiceSoap personInfoEndpoint() {
             PersonInfoServiceSoap mock = new PersonInfoMock().personInfoMock();
-            PersonInfoServiceSoap prod = opprettPersonInfoServiceSoap();
+            PersonInfoServiceSoap prod = opprettPersonInfoEndpoint();
             return createSwitcher(prod, mock, PERSONINFO_KEY, PersonInfoServiceSoap.class);
         }
 
-        private PersonInfoServiceSoap opprettPersonInfoServiceSoap() {
+        private PersonInfoServiceSoap opprettPersonInfoEndpoint() {
             JaxWsProxyFactoryBean factoryBean = new JaxWsProxyFactoryBean();
             factoryBean.setServiceClass(PersonInfoServiceSoap.class);
             factoryBean.setAddress(endpoint);
@@ -185,14 +185,14 @@ public class ConsumerConfig {
         }
 
         @Bean
-        public PersonPortType personService() {
+        public PersonPortType personEndpoint() {
             PersonPortType mock = new PersonMock().personMock();
             PersonPortType prod = factory().withUserSecurity().get();
             return createSwitcher(prod, mock, PERSON_KEY, PersonPortType.class);
         }
 
         @Bean
-        public PersonPortType personServiceSelftest() {
+        public PersonPortType personSelftestEndpoint() {
             return factory().withSystemSecurity().get();
         }
 
@@ -216,14 +216,14 @@ public class ConsumerConfig {
         }
 
         @Bean
-        public KodeverkPortType kodeverkService() {
+        public KodeverkPortType kodeverkEndpoint() {
             KodeverkPortType prod = factory().withSystemSecurity().get();
             KodeverkPortType mock = new KodeverkMock().kodeverkMock();
             return createSwitcher(prod, mock, KODEVERK_KEY, KodeverkPortType.class);
         }
 
         @Bean
-        public KodeverkPortType kodeverkServiceSelftest() {
+        public KodeverkPortType kodeverkSelftestEndpoint() {
             return factory().withSystemSecurity().get();
         }
     }
@@ -247,14 +247,14 @@ public class ConsumerConfig {
         }
 
         @Bean
-        public BrukerprofilPortType brukerProfilService() {
+        public BrukerprofilPortType brukerProfilEndpoint() {
             BrukerprofilPortType mock = new BrukerprofilMock().brukerprofilMock();
             BrukerprofilPortType prod = factory().withUserSecurity().get();
             return createSwitcher(prod, mock, BRUKERPROFIL_KEY, BrukerprofilPortType.class);
         }
 
         @Bean
-        public BrukerprofilPortType brukerProfilSelftest() {
+        public BrukerprofilPortType brukerProfilSelftestEndpoint() {
             return factory().withSystemSecurity().get();
         }
     }

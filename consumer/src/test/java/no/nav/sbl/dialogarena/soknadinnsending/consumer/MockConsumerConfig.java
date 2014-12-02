@@ -97,7 +97,7 @@ public class MockConsumerConfig {
     public static class SendSoknadWSConfig {
 
         @Bean
-        public SendSoknadPortType sendSoknadService() {
+        public SendSoknadPortType sendSoknadEndpoint() {
             final Map<String, WSHentSoknadResponse> lager = new HashMap<>();
             SendSoknadPortType mock = new SendSoknadPortType() {
                 @Override
@@ -142,8 +142,8 @@ public class MockConsumerConfig {
         }
 
         @Bean
-        public SendSoknadPortType sendSoknadSelftest() {
-            return sendSoknadService();
+        public SendSoknadPortType sendSoknadSelftestEndpoint() {
+            return sendSoknadEndpoint();
         }
     }
 
@@ -151,7 +151,7 @@ public class MockConsumerConfig {
     public static class FilLagerWSConfig {
 
         @Bean
-        public FilLagerPortType fillagerService() {
+        public FilLagerPortType fillagerEndpoint() {
             FilLagerPortType filLagerPortType = new FilLagerPortType() {
                 @Override
                 public void slett(String s) {
@@ -229,8 +229,8 @@ public class MockConsumerConfig {
         }
 
         @Bean
-        public FilLagerPortType fillagerServiceSelftest() {
-            return fillagerService();
+        public FilLagerPortType fillagerSelftestEndpoint() {
+            return fillagerEndpoint();
         }
     }
 
@@ -239,7 +239,7 @@ public class MockConsumerConfig {
         public static final String ARBS = "ARBS";
 
         @Bean
-        public PersonInfoServiceSoap personInfoServiceSoap() {
+        public PersonInfoServiceSoap personInfoEndpoint() {
             PersonInfoServiceSoap mock = mock(PersonInfoServiceSoap.class);
             Personstatus personstatus = new Personstatus();
             PersonstatusType.PersonData personData = new PersonstatusType.PersonData();
@@ -260,7 +260,7 @@ public class MockConsumerConfig {
     public static class PersonWSConfig {
 
         @Bean
-        public PersonPortType personService() throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning {
+        public PersonPortType personEndpoint() throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning {
             PersonPortType mock = mock(PersonPortType.class);
             HentKjerneinformasjonResponse response = new HentKjerneinformasjonResponse();
             Person person = genererPersonMedGyldigIdentOgNavn("03076321565", "person", "mock");
@@ -310,8 +310,8 @@ public class MockConsumerConfig {
         }
 
         @Bean
-        public PersonPortType personServiceSelftest() throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning {
-            return personService();
+        public PersonPortType personSelftestEndpoint() throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning {
+            return personEndpoint();
         }
 
         private Person genererPersonMedGyldigIdentOgNavn(String ident, String fornavn, String etternavn) {
@@ -355,7 +355,7 @@ public class MockConsumerConfig {
         }
 
         @Bean
-        public KodeverkPortType kodeverkService() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
+        public KodeverkPortType kodeverkEndpoint() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
             KodeverkPortType mock = mock(KodeverkPortType.class);
             when(mock.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenReturn(kodeverkResponse());
 
@@ -363,8 +363,8 @@ public class MockConsumerConfig {
         }
 
         @Bean
-        public KodeverkPortType kodeverkServiceSelftest() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
-            return kodeverkService();
+        public KodeverkPortType kodeverkSelftestEndpoint() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
+            return kodeverkEndpoint();
         }
 
     }
@@ -408,7 +408,7 @@ public class MockConsumerConfig {
         }
 
         @Bean
-        public BrukerprofilPortType brukerProfilService() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
+        public BrukerprofilPortType brukerProfilEndpoint() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
             BrukerprofilPortType mock = mock(BrukerprofilPortType.class);
             XMLHentKontaktinformasjonOgPreferanserResponse response = new XMLHentKontaktinformasjonOgPreferanserResponse();
             XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(true);
@@ -577,7 +577,7 @@ public class MockConsumerConfig {
         }
 
         public BrukerprofilPortType brukerProfilSelftest() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
-            return brukerProfilService();
+            return brukerProfilEndpoint();
         }
     }
 }

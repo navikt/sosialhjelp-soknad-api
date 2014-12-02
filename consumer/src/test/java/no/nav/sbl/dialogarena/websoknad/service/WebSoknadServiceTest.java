@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.websoknad.service;
 
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingsId;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStartSoknadRequest;
@@ -23,10 +23,10 @@ public class WebSoknadServiceTest {
 
     private static final String BEHANDLINGS_ID = "129187212";
     @Mock
-    @Named("sendSoknadService")
+    @Named("sendSoknadEndpoint")
     SendSoknadPortType webservice;
     @InjectMocks
-    HenvendelseConnector service;
+    HenvendelseService service;
 
     @Before
     public void setUp() {
