@@ -41,7 +41,6 @@ import java.util.Map;
 
 import static java.lang.System.getProperty;
 import static java.lang.System.setProperty;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.MockUtil.mockErTillattOgSlaattPaaForKey;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder.CONNECTION_TIMEOUT;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder.RECEIVE_TIMEOUT;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.util.InstanceSwitcher.createSwitcher;
@@ -136,32 +135,33 @@ public class ConsumerConfig {
 
         @Bean
         public PersonInfoServiceSoap personInfoServiceSoap() {
-            if (mockErTillattOgSlaattPaaForKey(PERSONINFO_KEY)) {
-                return new PersonInfoMock().personInfoMock();
-            } else {
-                JaxWsProxyFactoryBean factoryBean = new JaxWsProxyFactoryBean();
-                factoryBean.setServiceClass(PersonInfoServiceSoap.class);
-                factoryBean.setAddress(endpoint);
+            PersonInfoServiceSoap mock = new PersonInfoMock().personInfoMock();
+            PersonInfoServiceSoap prod = opprettPersonInfoServiceSoap();
+            return createSwitcher(prod, mock, PERSONINFO_KEY, PersonInfoServiceSoap.class);
+        }
 
-                Map<String, Object> map = new HashMap<>();
-                map.put(WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN);
-                map.put(WSHandlerConstants.PASSWORD_TYPE, "PasswordText");
-                map.put(WSHandlerConstants.USER, getProperty("arena.personInfoService.username"));
-                CallbackHandler passwordCallbackHandler = new CallbackHandler() {
-                    @Override
-                    public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
-                        WSPasswordCallback callback = (WSPasswordCallback) callbacks[0];
-                        callback.setPassword(getProperty("arena.personInfoService.password"));
-                    }
-                };
-                map.put(WSHandlerConstants.PW_CALLBACK_REF, passwordCallbackHandler);
-                factoryBean.getOutInterceptors().add(new WSS4JOutInterceptor(map));
+        private PersonInfoServiceSoap opprettPersonInfoServiceSoap() {
+            JaxWsProxyFactoryBean factoryBean = new JaxWsProxyFactoryBean();
+            factoryBean.setServiceClass(PersonInfoServiceSoap.class);
+            factoryBean.setAddress(endpoint);
 
-                factoryBean.getFeatures().add(new LoggingFeature());
-                factoryBean.getFeatures().add(new TimeoutFeature(RECEIVE_TIMEOUT, CONNECTION_TIMEOUT));
+            Map<String, Object> map = new HashMap<>();
+            map.put(WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN);
+            map.put(WSHandlerConstants.PASSWORD_TYPE, "PasswordText");
+            map.put(WSHandlerConstants.USER, getProperty("arena.personInfoService.username"));
+            CallbackHandler passwordCallbackHandler = new CallbackHandler() {
+                @Override
+                public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
+                    WSPasswordCallback callback = (WSPasswordCallback) callbacks[0];
+                    callback.setPassword(getProperty("arena.personInfoService.password"));
+                }
+            };
+            map.put(WSHandlerConstants.PW_CALLBACK_REF, passwordCallbackHandler);
+            factoryBean.getOutInterceptors().add(new WSS4JOutInterceptor(map));
 
-                return factoryBean.create(PersonInfoServiceSoap.class);
-            }
+            factoryBean.getFeatures().add(new LoggingFeature());
+            factoryBean.getFeatures().add(new TimeoutFeature(RECEIVE_TIMEOUT, CONNECTION_TIMEOUT));
+            return factoryBean.create(PersonInfoServiceSoap.class);
         }
 
     }
