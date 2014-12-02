@@ -57,12 +57,7 @@
                         </div>
                     </div>
 
-                    <div data-vedlegginfoboks data-ng-if="norskBarnIkkeFunnetITPS(b)">
-                        <ul>
-                            <li>
-                                <p data-ng-bind-html="'Dagpenger.vedlegg.X8.header' | cmstekst"></p>
-                            </li>
-                        </ul>
+                    <div data-vedlegginfoboks data-vedleggTekster="['Dagpenger.vedlegg.X8.header']" data-ng-if="norskBarnIkkeFunnetITPS(b)">
                     </div>
                 </div>
             </div>

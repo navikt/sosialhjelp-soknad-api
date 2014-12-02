@@ -114,8 +114,7 @@
     <span class="melding"></span>
 
     <div class="ekstra-spm-boks" data-ng-if="sluttaarsak.properties.lonnsgaranti == 'Nei'">
-        <div data-navinfoboks>
-            <p data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.nei.informasjon' | cmstekst"></p>
+        <div data-navinfoboks data-infoTekster="['arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.nei.informasjon']">
         </div>
     </div>
 </div>
@@ -126,16 +125,5 @@
      data-nav-faktum-property="lonnkonkursmaaned"
      data-nokkel="arbeidsforhold.sluttaarsak.konkurs.lonnkonkursmaaned"></div>
 
-<div class="ekstra-spm-boks" data-vedlegginfoboks>
-    <ul>
-        <li>
-            <p data-ng-bind-html="'Dagpenger.vedlegg.O2.header' | cmstekst"></p>
-        </li>
-        <li>
-            <p data-ng-bind-html="'Dagpenger.vedlegg.M7.header' | cmstekst"></p>
-        </li>
-        <li>
-            <p data-ng-bind-html="'Dagpenger.vedlegg.A2.header' | cmstekst"></p>
-        </li>
-    </ul>
+<div class="ekstra-spm-boks" data-vedlegginfoboks data-vedleggTekster="['Dagpenger.vedlegg.O2.header', 'Dagpenger.vedlegg.M7.header', 'Dagpenger.vedlegg.A2.header']">
 </div>

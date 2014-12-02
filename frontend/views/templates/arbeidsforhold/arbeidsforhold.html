@@ -13,8 +13,7 @@
                  data-navfeilmelding="arbeidsforhold.arbeidstilstand.feilmelding">
             </div>
             <div class="ekstra-spm-boks nav-boolean" data-ng-if="hvisHarJobbetFast()">
-                <div data-navinfoboks>
-                    <span data-ng-bind-html=" 'arbeidsforhold.arbeidstilstand.fastarbeidstid.informasjonstekst' | cmstekst"></span>
+                <div data-navinfoboks data-infoTekster="['arbeidsforhold.arbeidstilstand.fastarbeidstid.informasjonstekst']">
                 </div>
             </div>
 
@@ -27,8 +26,7 @@
                  data-navfeilmelding="arbeidsforhold.arbeidstilstand.feilmelding">
             </div>
             <div class="ekstra-spm-boks nav-boolean" data-ng-if="hvisHarJobbetVarierende()">
-                <div data-navinfoboks>
-                    <span data-ng-bind-html=" 'arbeidsforhold.arbeidstilstand.varierendearbeidstid.informasjonstekst' | cmstekst"></span>
+                <div data-navinfoboks data-infoTekster="[ 'arbeidsforhold.arbeidstilstand.varierendearbeidstid.informasjonstekst']">
                 </div>
             </div>
 
@@ -40,10 +38,7 @@
                  data-navfeilmelding="arbeidsforhold.arbeidstilstand.feilmelding">
             </div>
             <div class="ekstra-spm-boks nav-boolean" data-ng-if="hvisHarIkkeJobbet()">
-                <div data-navinfoboks>
-                    <p data-ng-bind-html=" 'arbeidsforhold.arbeidstilstand.harikkejobbet.informasjonstekst.del1' | cmstekst"></p>
-
-                    <p data-ng-bind-html=" 'arbeidsforhold.arbeidstilstand.harikkejobbet.informasjonstekst.del2' | cmstekst"></p>
+                <div data-navinfoboks data-infoTekster="['arbeidsforhold.arbeidstilstand.harikkejobbet.informasjonstekst.del1', 'arbeidsforhold.arbeidstilstand.harikkejobbet.informasjonstekst.del2']">
                 </div>
             </div>
 
