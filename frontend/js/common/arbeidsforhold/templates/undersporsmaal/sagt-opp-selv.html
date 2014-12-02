@@ -18,20 +18,8 @@
 
 <div data-turnusblokk data-arbeidsforhold="arbeidsforhold"></div>
 
-<div class="ekstra-spm-boks">
-    <div data-navinfoboks>
-        <p class="sluttaarsak-informasjon" data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.sagtoppselv.informasjon' | cmstekst"></p>
 
-        <p data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.advarsel' | cmstekst"></p>
-    </div>
-    <div data-vedlegginfoboks>
-        <ul>
-            <li>
-                <p data-ng-bind-html="'Dagpenger.vedlegg.O2.header' | cmstekst"></p>
-            </li>
-            <li>
-                <span data-ng-bind-html=" 'Dagpenger.vedlegg.T8.header' | cmstekst"></span>
-            </li>
-        </ul>
-    </div>
-</div>
+<div data-arbeidsforhold-vedlegg-infoboks
+        data-info-tekster="['arbeidsforhold.sluttaarsak.sagtoppselv.informasjon', 'arbeidsforhold.sluttaarsak.advarsel']"
+        data-vedlegg-tekster="['Dagpenger.vedlegg.O2.header', 'Dagpenger.vedlegg.T8.header']"></div>
+

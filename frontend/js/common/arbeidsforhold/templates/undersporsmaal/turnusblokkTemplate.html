@@ -1,7 +1,6 @@
-<div turnusblokk-har-rotasjon>
+<div data-turnusblokk-har-rotasjon>
     <div class="form-linje boolean">
-        <div data-navinfoboks>
-            <p data-ng-bind-html=" 'arbeidsforhold.rotasjonskiftturnus.infoboks' | cmstekst"></p>
+        <div data-navinfoboks data-infoTekster="['arbeidsforhold.rotasjonskiftturnus.infoboks']">
         </div>
         <h4 class="spm-sporsmal" data-ng-bind-html=" 'arbeidsforhold.rotasjonskiftturnus.sporsmaal' | cmstekst"></h4>
 
@@ -53,34 +52,35 @@
         <div data-melding>
             <span class="melding" data-ng-bind-html=" 'arbeidsforhold.rotasjonskiftturnus.sporsmaal.feilmelding' | cmstekst"></span>
         </div>
-    </div>
 
-    <div class="form-linje boolean" data-ng-if="harValgtRotasjon(arbeidsforhold)" data-nav-faktum="arbeidsforhold" data-ikke-auto-lagre="true">
-        <div class="ekstra-spm-boks">
-            <div data-navinfoboks>
-                <p data-ng-bind-html=" 'arbeidsforhold.rotasjonskiftturnus.rotasjon.infoboks' | cmstekst"></p>
+        <div class="ekstra-spm-boks" data-ng-if="harValgtRotasjon(arbeidsforhold)" data-nav-faktum="arbeidsforhold" data-ikke-auto-lagre="true">
+            <div class="form-linje boolean">
+                <h4 class="spm-sporsmal" data-ng-bind-html=" 'arbeidsforhold.rotasjonskiftturnus.rotasjon.sporsmaal' | cmstekst"></h4>
+
+                <div class="nummerfelt"
+                        data-navtall
+                        data-nav-faktum-property="arbeidsdager"
+                        data-navconfig
+                        data-navlabel="arbeidsforhold.rotasjonskiftturnus.rotasjon.arbeidsdager"
+                        data-navfeilmelding="'arbeidsforhold.rotasjonskiftturnus.rotasjon.arbeidsdager.feilmelding'"
+                        data-navminvalue="0"
+                        data-regexvalidering="/^\d+$/"
+                        data-navmaxlength="10">
+                </div>
+
+                <div class="nummerfelt"
+                        data-navtall
+                        data-nav-faktum-property="avspaseringsdager"
+                        data-navconfig
+                        data-navlabel="arbeidsforhold.rotasjonskiftturnus.rotasjon.avspaseringsdager"
+                        data-navfeilmelding="'arbeidsforhold.rotasjonskiftturnus.rotasjon.avspaseringsdager.feilmelding'"
+                        data-navminvalue="0"
+                        data-regexvalidering="/^\d+$/"
+                        data-navmaxlength="10">
+                </div>
             </div>
 
-            <div class="nummerfelt"
-                 data-navtall
-                 data-nav-faktum-property="arbeidsdager"
-                 data-navconfig
-                 data-navlabel="arbeidsforhold.rotasjonskiftturnus.rotasjon.arbeidsdager"
-                 data-navfeilmelding="'arbeidsforhold.rotasjonskiftturnus.rotasjon.arbeidsdager.feilmelding'"
-                 data-navminvalue="0"
-                 data-regexvalidering="/^\d+$/"
-                 data-navmaxlength="10">
-            </div>
-
-            <div class="nummerfelt"
-                 data-navtall
-                 data-nav-faktum-property="avspaseringsdager"
-                 data-navconfig
-                 data-navlabel="arbeidsforhold.rotasjonskiftturnus.rotasjon.avspaseringsdager"
-                 data-navfeilmelding="'arbeidsforhold.rotasjonskiftturnus.rotasjon.avspaseringsdager.feilmelding'"
-                 data-navminvalue="0"
-                 data-regexvalidering="/^\d+$/"
-                 data-navmaxlength="10">
+            <div data-vedlegginfoboks data-vedleggTekster="['Dagpenger.vedlegg.O2.header']">
             </div>
         </div>
     </div>

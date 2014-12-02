@@ -1,5 +1,5 @@
 <div class="skjemaramme">
-    <div data-ng-form="nyeArbeidsforholdForm" class="skjemainnhold" data-ng-controller="ArbeidsforholdCtrl" nye-arbeidsforhold>
+    <div data-ng-form="nyeArbeidsforholdForm" class="skjemainnhold" data-ng-controller="ArbeidsforholdCtrl" data-nye-arbeidsforhold>
         <div data-form-errors></div>
 
         <div data-nav-faktum="nyearbeidsforhold.arbeidsidensist">
@@ -8,8 +8,7 @@
                      data-booleanradio
                      data-nokkel="nyearbeidsforhold.arbeidsidensist">
 
-                    <div data-navinfoboks>
-                        <p data-ng-bind-html=" 'nyearbeisforhold.nyttarbeidsforhold.infoboks' | cmstekst"></p>
+                    <div data-navinfoboks data-infoTekster="['nyearbeisforhold.nyttarbeidsforhold.infoboks']">
                     </div>
                     <div data-arbeidsforhold-oppsummering></div>
                     <div data-arbeidsforhold-leggtil-knapper></div>

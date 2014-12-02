@@ -8,5 +8,6 @@ angular.module('nav.arbeidsforhold',
         'nav.arbeidsforhold.reberegning.directive',
         'nav.arbeidsforhold.grensearbeid.directive',
         'nav.nyearbeidsforhold.directive',
-        'nav.arbeidsforhold.directive'
+        'nav.arbeidsforhold.directive',
+        'nav.arbeidsforhold.vedlegginfoboks'
     ]);

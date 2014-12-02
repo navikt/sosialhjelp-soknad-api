@@ -5,8 +5,7 @@
      data-nokkel="reellarbeidssoker.villighelse"
      data-hjelpetekst>
 
-    <div data-navinfoboks>
-        <span data-ng-bind-html=" 'reellarbeidssoker.villighelse.false.vedlegginformasjon' | cmstekst"></span>
+    <div data-navinfoboks data-infoTekster="['reellarbeidssoker.villighelse.false.vedlegginformasjon']">
     </div>
 
     <div data-navtextarea
@@ -16,11 +15,6 @@
          data-maxlengde="500"
          data-obligatorisk="true"></div>
 
-    <div data-vedlegginfoboks data-ng-if="kanIkkeTaAlleTyperArbeid()">
-        <ul>
-            <li>
-                <span data-ng-bind-html="'Dagpenger.vedlegg.T9.header' | cmstekst"></span>
-            </li>
-        </ul>
+    <div data-vedlegginfoboks data-vedleggTekster="['Dagpenger.vedlegg.T9.header']" data-ng-if="kanIkkeTaAlleTyperArbeid()">
     </div>
 </div>
