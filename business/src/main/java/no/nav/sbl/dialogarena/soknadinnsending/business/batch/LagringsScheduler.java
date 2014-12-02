@@ -43,7 +43,7 @@ public class LagringsScheduler {
         batchStartTime = DateTime.now();
         vellykket = 0;
         feilet = 0;
-        if (Boolean.valueOf(System.getProperty("sendsoknad.batch.enabled", "true"))) { // TODO: Burde fjernes når applikasjonen skal ut i prod
+        if (Boolean.valueOf(System.getProperty("sendsoknad.batch.enabled", "true"))) {
             logger.info("---- Starter flytting av søknader til henvendelse-jobb ----");
             if (mellomlagre(feilListe)) {
                 return;
