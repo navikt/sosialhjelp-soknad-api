@@ -605,7 +605,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     private boolean parentValueErLikDependOnVerdi(SoknadFaktum faktum, Faktum parent) {
         String value = parent.getValue();
         String dependOnValue = faktum.getDependOnValue();
-        return (value == null && dependOnValue == null) ||  value.equals(dependOnValue);
+        return value == null ? dependOnValue == null : value.equals(dependOnValue);
     }
 
     private boolean parentValueErLikEnAvVerdieneIDependOnValues(SoknadFaktum faktum, Faktum parent) {
