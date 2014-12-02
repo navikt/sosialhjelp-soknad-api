@@ -6,12 +6,13 @@ import no.aetat.arena.personstatus.Personstatus;
 import no.aetat.arena.personstatus.PersonstatusType;
 import no.nav.arena.tjenester.person.v1.FaultGeneriskMsg;
 import no.nav.arena.tjenester.person.v1.PersonInfoServiceSoap;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadata;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
+import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingsId;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSEmpty;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSSoknadsdata;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStartSoknadRequest;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
@@ -60,15 +61,29 @@ import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personnavn;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Statsborgerskap;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
+import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 
+import javax.activation.DataHandler;
+import javax.mail.util.ByteArrayDataSource;
+import javax.xml.ws.Holder;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -78,65 +93,11 @@ import static org.mockito.Mockito.when;
 @Configuration
 @ComponentScan(excludeFilters = @Filter(Configuration.class))
 public class MockConsumerConfig {
-    //TODO: Midlertidig
     @Configuration
     public static class SendSoknadWSConfig {
-        @Value("${soknad.webservice.henvendelse.sendsoknadservice.url}")
-        private String soknadServiceEndpoint;
-
-        private ServiceBuilder<SendSoknadPortType>.PortTypeBuilder<SendSoknadPortType> factory() {
-            return new ServiceBuilder<>(SendSoknadPortType.class)
-                    .asStandardService()
-                    .withAddress(soknadServiceEndpoint)
-                    .withWsdl("classpath:SendSoknad.wsdl")
-                            //.withServiceName(new QName("http://nav.no/tjeneste/domene/brukerdialog/sendsoknad/v1", "SendSoknadPortType"))
-                    .withExtraClasses(new Class[]{XMLMetadataListe.class, WSSoknadsdata.class, WSStartSoknadRequest.class, XMLMetadata.class, XMLVedlegg.class, XMLHovedskjema.class})
-                    .build()
-                    .withHttpsMock()
-                    .withMDC();
-        }
 
         @Bean
         public SendSoknadPortType sendSoknadService() {
-            return factory().withUserSecurity().get();
-        }
-
-        @Bean
-        public SendSoknadPortType sendSoknadSelftest() {
-            return factory().withSystemSecurity().get();
-        }
-    }
-
-    @Configuration
-    public static class FilLagerWSConfig {
-        @Value("${soknad.webservice.henvendelse.fillager.url}")
-        private String serviceEndpoint;
-
-        private ServiceBuilder<FilLagerPortType>.PortTypeBuilder<FilLagerPortType> factory() {
-            return new ServiceBuilder<>(FilLagerPortType.class)
-                    .asStandardService()
-                    .withAddress(serviceEndpoint)
-                    .withWsdl("classpath:FilLager.wsdl")
-                    .build()
-                    .withHttpsMock();
-        }
-
-        @Bean
-        public FilLagerPortType fillagerService() {
-            return factory().withMDC().withUserSecurity().get();
-        }
-
-        @Bean
-        public FilLagerPortType fillagerServiceSelftest() {
-            return factory().withSystemSecurity().get();
-        }
-    }
-
-    /*@Configuration
-    public static class SendSoknadWSConfig {
-
-        @Bean
-        public SendSoknadPortType sendSoknadEndpoint() {
             final Map<String, WSHentSoknadResponse> lager = new HashMap<>();
             SendSoknadPortType mock = new SendSoknadPortType() {
                 @Override
@@ -181,8 +142,8 @@ public class MockConsumerConfig {
         }
 
         @Bean
-        public SendSoknadPortType sendSoknadSelftestEndpoint() {
-            return sendSoknadEndpoint();
+        public SendSoknadPortType sendSoknadSelftest() {
+            return sendSoknadService();
         }
     }
 
@@ -190,7 +151,7 @@ public class MockConsumerConfig {
     public static class FilLagerWSConfig {
 
         @Bean
-        public FilLagerPortType fillagerEndpoint() {
+        public FilLagerPortType fillagerService() {
             FilLagerPortType filLagerPortType = new FilLagerPortType() {
                 @Override
                 public void slett(String s) {
@@ -268,17 +229,17 @@ public class MockConsumerConfig {
         }
 
         @Bean
-        public FilLagerPortType fillagerSelftestEndpoint() {
-            return fillagerEndpoint();
+        public FilLagerPortType fillagerServiceSelftest() {
+            return fillagerService();
         }
-    }*/
+    }
 
     @Configuration
     public static class PersonInfoWSConfig {
         public static final String ARBS = "ARBS";
 
         @Bean
-        public PersonInfoServiceSoap personInfoEndpoint() {
+        public PersonInfoServiceSoap personInfoServiceSoap() {
             PersonInfoServiceSoap mock = mock(PersonInfoServiceSoap.class);
             Personstatus personstatus = new Personstatus();
             PersonstatusType.PersonData personData = new PersonstatusType.PersonData();
@@ -299,7 +260,7 @@ public class MockConsumerConfig {
     public static class PersonWSConfig {
 
         @Bean
-        public PersonPortType personEndpoint() throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning {
+        public PersonPortType personService() throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning {
             PersonPortType mock = mock(PersonPortType.class);
             HentKjerneinformasjonResponse response = new HentKjerneinformasjonResponse();
             Person person = genererPersonMedGyldigIdentOgNavn("***REMOVED***", "person", "mock");
@@ -349,8 +310,8 @@ public class MockConsumerConfig {
         }
 
         @Bean
-        public PersonPortType personSelftestEndpoint() throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning {
-            return personEndpoint();
+        public PersonPortType personServiceSelftest() throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning {
+            return personService();
         }
 
         private Person genererPersonMedGyldigIdentOgNavn(String ident, String fornavn, String etternavn) {
@@ -394,7 +355,7 @@ public class MockConsumerConfig {
         }
 
         @Bean
-        public KodeverkPortType kodeverkEndpoint() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
+        public KodeverkPortType kodeverkService() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
             KodeverkPortType mock = mock(KodeverkPortType.class);
             when(mock.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenReturn(kodeverkResponse());
 
@@ -402,8 +363,8 @@ public class MockConsumerConfig {
         }
 
         @Bean
-        public KodeverkPortType kodeverkSelftestEndpoint() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
-            return kodeverkEndpoint();
+        public KodeverkPortType kodeverkServiceSelftest() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
+            return kodeverkService();
         }
 
     }
@@ -447,7 +408,7 @@ public class MockConsumerConfig {
         }
 
         @Bean
-        public BrukerprofilPortType brukerProfilEndpoint() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
+        public BrukerprofilPortType brukerProfilService() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
             BrukerprofilPortType mock = mock(BrukerprofilPortType.class);
             XMLHentKontaktinformasjonOgPreferanserResponse response = new XMLHentKontaktinformasjonOgPreferanserResponse();
             XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(true);
@@ -616,7 +577,7 @@ public class MockConsumerConfig {
         }
 
         public BrukerprofilPortType brukerProfilSelftest() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
-            return brukerProfilEndpoint();
+            return brukerProfilService();
         }
     }
 }
