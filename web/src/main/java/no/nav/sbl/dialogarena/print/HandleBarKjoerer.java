@@ -62,6 +62,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
         handlebars.registerHelper("adresse", generateAdresseHelper());
         handlebars.registerHelper("forFaktum", generateForFaktumHelper());
         handlebars.registerHelper("forFakta", generateForFaktaHelper());
+        handlebars.registerHelper("forBarnefakta", generateForBarnefaktaHelper());
         handlebars.registerHelper("forFaktaMedPropertySattTilTrue", generateForFaktaMedPropTrueHelper());
         handlebars.registerHelper("formatterFodelsDato", generateFormatterFodselsdatoHelper());
         handlebars.registerHelper("formatterLangDato", generateFormatterLangDatoHelper());
@@ -398,7 +399,22 @@ public class HandleBarKjoerer implements HtmlGenerator {
             public CharSequence apply(String key, Options options) throws IOException {
                 WebSoknad soknad = finnWebSoknad(options.context);
                 List<Faktum> fakta = soknad.getFaktaMedKey(key);
+                if (fakta.isEmpty()) {
+                    return options.inverse(this);
+                } else {
+                    return lagItererbarRespons(options, fakta);
+                }
+            }
+        };
+    }
 
+    private Helper<String> generateForBarnefaktaHelper() {
+        return new Helper<String>() {
+            @Override
+            public CharSequence apply(String key, Options options) throws IOException {
+                WebSoknad soknad = finnWebSoknad(options.context);
+                Faktum parentFaktum = (Faktum) options.context.parent().model();
+                List<Faktum> fakta = soknad.getFaktaMedKeyOgParentFaktum(key, parentFaktum.getFaktumId());
                 if (fakta.isEmpty()) {
                     return options.inverse(this);
                 } else {
