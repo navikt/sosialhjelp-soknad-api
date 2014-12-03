@@ -109,8 +109,7 @@ angular.module('nav.datepicker.directive', [])
                 };
 
                 scope.vanligDatepicker = function() {
-//                    return deviceService.isTouchDevice();
-                    return true;
+                    return deviceService.isTouchDevice();
                 };
 
                 scope.harRequiredFeil = function () {
