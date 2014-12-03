@@ -237,11 +237,27 @@ public class DefaultVedleggService implements VedleggService {
 
     @Override
     public void lagreKvitteringSomVedlegg(Long soknadId, byte[] kvittering) {
-        Vedlegg kvitteringVedlegg = new Vedlegg(soknadId, null, KVITTERING, LastetOpp);
-        kvitteringVedlegg.medData(kvittering);
+        Vedlegg kvitteringVedlegg = vedleggRepository.hentVedleggForskjemaNummer(soknadId, null, KVITTERING);
+        if (kvitteringVedlegg == null) {
+            kvitteringVedlegg = new Vedlegg(soknadId, null, KVITTERING, LastetOpp);
+            oppdaterInnholdIKvittering(kvitteringVedlegg, kvittering);
+            vedleggRepository.opprettVedlegg(kvitteringVedlegg, kvittering);
+        } else {
+            oppdaterInnholdIKvittering(kvitteringVedlegg, kvittering);
+            vedleggRepository.lagreVedleggMedData(soknadId, kvitteringVedlegg.getVedleggId(), kvitteringVedlegg);
+        }
         WebSoknad soknad = repository.hentSoknad(soknadId);
-        lagreVedlegg(soknadId, kvitteringVedlegg.getVedleggId(), kvitteringVedlegg);
         fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(), kvitteringVedlegg.getFillagerReferanse(), soknad.getAktoerId(), new ByteArrayInputStream(kvitteringVedlegg.getData()));
+    }
+
+    private void oppdaterInnholdIKvittering(Vedlegg vedlegg, byte[] data) {
+        vedlegg.medData(data);
+        vedlegg.medStorrelse((long) data.length);
+        try {
+            vedlegg.medAntallSider(new PdfReader(data).getNumberOfPages());
+        } catch (IOException e) {
+            logger.info("Klarte ikke å finne antall sider i kvittering, vedleggid [{}]. Fortsetter uten sideantall.", vedlegg.getVedleggId(), e);
+        }
     }
 
     private static void sjekkOmPdfErGyldig(PDDocument document) {
