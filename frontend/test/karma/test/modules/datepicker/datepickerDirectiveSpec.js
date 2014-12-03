@@ -38,7 +38,7 @@ describe('datepicker', function () {
         beforeEach(inject(function ($compile, $rootScope) {
             rootElement = angular.element(
                 '<form>' +
-                    '<div nav-dato ng-model="fraDato" er-required="true" label="label.tekst" required-error-message="required.feil"></div>' +
+                    '<div dato ng-model="dato" er-required="true" label="label.tekst" required-error-message="required.feil"></div>' +
                 '</form>');
             rootScope = $rootScope;
             $compile(rootElement)($rootScope);
