@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.websoknad.config;
 
+import no.nav.modig.core.context.ThreadLocalSubjectHandler;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,7 +16,10 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
 
+import static java.lang.System.getProperties;
 import static java.lang.System.setProperty;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.MockUtil.DEFAULT_MOCK_TILLATT;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.MockUtil.TILLATMOCK_PROPERTY;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = SoknadinnsendingConfig.class)
@@ -27,6 +31,8 @@ public class ApplicationContextTest {
         System.setProperty("no.nav.modig.security.sts.url", "dummyvalue");
         System.setProperty("no.nav.modig.security.systemuser.username", "dummyvalue");
         System.setProperty("no.nav.modig.security.systemuser.password", "");
+        System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
+        getProperties().setProperty(TILLATMOCK_PROPERTY, DEFAULT_MOCK_TILLATT);
 
         SimpleNamingContextBuilder builder = new SimpleNamingContextBuilder();
         builder.bind("jdbc/SoknadInnsendingDS", Mockito.mock(DataSource.class));

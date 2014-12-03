@@ -11,15 +11,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoConnector.Status;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService.Status;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class PersonInfoConnectorTest {
+public class PersonInfoServiceTest {
 
-    @InjectMocks private PersonInfoConnector connector;
+    @InjectMocks private PersonInfoService connector;
     @Mock private PersonInfoServiceSoap service;
 
     @Test

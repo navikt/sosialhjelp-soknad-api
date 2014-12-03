@@ -3,7 +3,7 @@ angular.module('nav.dagpenger.informasjonsside', [])
         $scope.utslagskriterier = {};
         $scope.utslagskriterier.harlestbrosjyre = false;
         $scope.dittnavUrl = data.config['dittnav.link.url'];
-        $scope.tilbakeUrl = '../utslagskriterier/dagpenger';
+        $scope.tilbakeUrl = '../utslagskriterier/dagpenger#/routing';
 
         $scope.oppsummering = false;
 
