@@ -384,7 +384,7 @@ public class MockConsumerConfig {
         private static final String EN_ANNEN_ADRESSELINJE = "Nord-Poiti";
         private static final String EN_TREDJE_ADRESSELINJE = "1111 Helsinki";
         private static final String EN_FJERDE_ADRESSELINJE = "Finland";
-        
+
         private static final String EN_POSTBOKS_ADRESSEEIER = "Per Conradi";
         private static final String ET_POSTBOKS_NAVN = "Postboksstativet";
         private static final String EN_POSTBOKS_NUMMER = "66";
@@ -429,15 +429,15 @@ public class MockConsumerConfig {
             xmlBruker.setMidlertidigPostadresse(midlertidigPostboksAdresseNorge);
             XMLPostadressetyper xmlPostadresseType = new XMLPostadressetyper();
             xmlPostadresseType.setValue("MIDLERTIDIG_POSTADRESSE_NORGE");
-            
+
             xmlBruker.setMidlertidigPostadresse(midlertidigPostboksAdresseNorge);
         }
-        
+
         private XMLMidlertidigPostadresseNorge generateMidlertidigPostboksAdresseNorge() {
             XMLMidlertidigPostadresseNorge xmlMidlertidigNorge = new XMLMidlertidigPostadresseNorge();
             XMLGyldighetsperiode xmlGyldighetsperiode = generateGyldighetsperiode(true);
             xmlMidlertidigNorge.setPostleveringsPeriode(xmlGyldighetsperiode);
-            
+
             XMLPostboksadresseNorsk xmlPostboksAdresse = new XMLPostboksadresseNorsk();
             xmlPostboksAdresse.setPostboksanlegg(ET_POSTBOKS_NAVN);
             xmlPostboksAdresse.setPostboksnummer(EN_POSTBOKS_NUMMER);

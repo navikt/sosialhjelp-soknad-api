@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.websoknad.service;
 
+import no.nav.modig.core.exception.ApplicationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.task.TaskExecutor;
@@ -10,6 +11,7 @@ import org.springframework.mail.javamail.MimeMessagePreparator;
 
 import javax.inject.Inject;
 import javax.mail.Message;
+import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -54,11 +56,16 @@ public class EmailService {
     public void sendEpostEtterInnsendtSoknad(final String ePost, final String subject, final String innhold, String behandlingId) {
         final String htmlInnhold = "<p>" + innhold + "</p>";
         MimeMessagePreparator preparator = new MimeMessagePreparator() {
-            public void prepare(MimeMessage mimeMessage) throws Exception {
-                mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(ePost));
-                mimeMessage.setFrom(fraAdresse);
-                mimeMessage.setContent(htmlInnhold, "text/html;charset=utf-8");
-                mimeMessage.setSubject(subject);
+            public void prepare(MimeMessage mimeMessage) {
+                try {
+                    mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(ePost));
+                    mimeMessage.setFrom(fraAdresse);
+                    mimeMessage.setContent(htmlInnhold, "text/html;charset=utf-8");
+                    mimeMessage.setSubject(subject);
+                } catch (MessagingException e) {
+                    logger.error("Kunne ikke opprette e-post", e);
+                    throw new ApplicationException("Kunne ikke opprette e-post", e);
+                }
             }
         };
         addTask(preparator, behandlingId, ePost, htmlInnhold, 0);

@@ -109,7 +109,7 @@ public class ContentConfig {
         Map<String, Innholdstekst> innhold = content.toMap(Innholdstekst.KEY);
         if (!innhold.isEmpty()) {
             for (Map.Entry<String, Innholdstekst> entry : innhold.entrySet()) {
-                data.append(entry.getValue().key).append("=").append(formatText(entry.getValue().value)).append(System.lineSeparator());
+                data.append(entry.getValue().key).append('=').append(formatText(entry.getValue().value)).append(System.lineSeparator());
             }
             FileUtils.write(file, data, "UTF-8");
         }
