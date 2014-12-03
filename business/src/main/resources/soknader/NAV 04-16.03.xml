@@ -1072,6 +1072,7 @@
     <vedlegg>
         <id>9</id>
         <faktum>tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsammenhengende</faktum>
+        <property>arbeidsgivernavn</property>
         <onValue>true</onValue>
         <skjemaNummer>G2</skjemaNummer>
     </vedlegg>

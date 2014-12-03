@@ -32,6 +32,7 @@ angular.module('nav.tidligerearbeidsforhold.directive', [])
                 };
                 scope.jobbetSidenSistFaktum = data.finnFaktum('tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsidensist');
                 scope.hvisHarArbeidet = function() {
+                    scope.jobbetSammenhengendeFaktum.properties.arbeidsgivernavn = scope.cmsArgumenter.modelFaktum.value;
                     return scope.jobbetSidenSistFaktum.value == "false";
                 };
 

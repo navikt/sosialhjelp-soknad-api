@@ -30,11 +30,7 @@
          data-nokkel="tidligerearbeidsforhold.tidligerearbeidsgiver.fortsattansatt">
     </div>
 
-    <div data-ng-if="hvisHarJobbetMerEnn6Uker()" data-vedlegginfoboks>
-        <ul>
-            <li>
-                <span data-ng-bind-html=" 'Dagpenger.vedlegg.G2.header' | cmstekst"></span>
-            </li>
-        </ul>
+    <div data-ng-if="hvisHarJobbetMerEnn6Uker()" data-vedlegginfoboks
+         data-vedleggtekster="['Dagpenger.vedlegg.G2.header']">
     </div>
 </div>
