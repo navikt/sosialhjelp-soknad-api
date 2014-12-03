@@ -31,7 +31,7 @@
             <plugin>
                 <artifactId>maven-ear-plugin</artifactId>
                 <configuration>
-                    <version>7</version>
+                    <version>6</version>
                     <modules>
                         <webModule>
                             <groupId>${project.groupId}</groupId>
