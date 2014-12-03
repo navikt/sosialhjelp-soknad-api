@@ -72,9 +72,11 @@ public class HandleBarKjoerer implements HtmlGenerator {
         handlebars.registerHelper("hvisIkkeTom", generateHvisIkkeTomHelper());
         handlebars.registerHelper("hentTekst", generateHvisTekstHelper());
         handlebars.registerHelper("hentTekstMedParameter", generateHentTekstMedParameterHelper());
+        handlebars.registerHelper("hentTekstMedFaktumParameter", generateHentTekstMedFaktumParameterHelper());
         handlebars.registerHelper("hentLand", generateHentLandHelper());
         handlebars.registerHelper("forVedlegg", generateForVedleggHelper());
         handlebars.registerHelper("hentSkjemanummer", generateHentSkjemanummerHelper());
+        handlebars.registerHelper("hentFaktumValue", generateHentFaktumValueHelper());
         handlebars.registerHelper("hvisFlereErTrue", generateHvisFlereSomStarterMedErTrueHelper());
         handlebars.registerHelper("sendtInnInfo", generateSendtInnInfoHelper());
         handlebars.registerHelper("forInnsendteVedlegg", generateForInnsendteVedleggHelper());
@@ -236,6 +238,17 @@ public class HandleBarKjoerer implements HtmlGenerator {
         };
     }
 
+    private Helper<String> generateHentTekstMedFaktumParameterHelper() {
+        return new Helper<String>() {
+            @Override
+            public CharSequence apply(String key, Options options) throws IOException {
+                WebSoknad soknad = finnWebSoknad(options.context);
+                Faktum faktum = soknad.getFaktumMedKey(options.param(0).toString());
+                return getCmsTekst(key, new Object[]{faktum.getValue()}, new Locale("nb", "NO"));
+            }
+        };
+    }
+
     private Helper<String> generateHvisTekstHelper() {
         return new Helper<String>() {
             @Override
@@ -364,6 +377,17 @@ public class HandleBarKjoerer implements HtmlGenerator {
                 } else {
                     return lagItererbarRespons(options, fakta);
                 }
+            }
+        };
+    }
+
+    private Helper<String> generateHentFaktumValueHelper() {
+        return new Helper<String>() {
+            @Override
+            public CharSequence apply(String key, Options options) throws IOException {
+                WebSoknad soknad = finnWebSoknad(options.context);
+                Faktum faktum = soknad.getFaktumMedKey(key);
+                return faktum.getValue();
             }
         };
     }
