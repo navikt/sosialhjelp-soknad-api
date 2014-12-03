@@ -5,8 +5,8 @@ angular.module('nav.arbeidsforhold.vedlegginfoboks', [])
         replace    : true,
         templateUrl: '../js/common/arbeidsforhold/templates/arbeidsforholdVedleggInfoboksTemplate.html',
         link: function(scope, element, attrs) {
-            scope.vedleggTekster = $parse(attrs.vedleggTekster)(scope);
-            scope.infoTekster = $parse(attrs.infoTekster)(scope);
+            scope.vedleggTekster = $parse(attrs.vedleggtekster)(scope);
+            scope.infoTekster = $parse(attrs.infotekster)(scope);
         }
     };
 });

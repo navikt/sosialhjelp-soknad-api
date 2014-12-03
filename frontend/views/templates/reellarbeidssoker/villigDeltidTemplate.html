@@ -4,10 +4,10 @@
      data-booleanradio
      data-nokkel="reellarbeidssoker.villigdeltid">
 
-    <div data-ng-if="erUnder60Aar()" data-navinfoboks data-infoTekster="['reellarbeidssoker.villigdeltid.false.informasjon.under60']">
+    <div data-ng-if="erUnder60Aar()" data-navinfoboks data-infotekster="['reellarbeidssoker.villigdeltid.false.informasjon.under60']">
     </div>
 
-    <div data-ng-if="erOver59Aar()" data-navinfoboks data-infoTekster="['reellarbeidssoker.villigdeltid.false.informasjon.over60']">
+    <div data-ng-if="erOver59Aar()" data-navinfoboks data-infotekster="['reellarbeidssoker.villigdeltid.false.informasjon.over60']">
     </div>
 
     <div class="form-linje checkbox" data-ng-if="erUnder60Aar()" data-checkbox-validate>
@@ -52,7 +52,7 @@
              data-navlabel="reellarbeidssoker.annensituasjon"
              data-navendret="endreDeltidsAarsaker()"></div>
 
-        <div class="siste-element" data-ng-if="harValgtAnnetUnntakDeltid()" data-navinfoboks data-infoTekster="['reellarbeidssoker.unntak.dokumentasjon']">
+        <div class="siste-element" data-ng-if="harValgtAnnetUnntakDeltid()" data-navinfoboks data-infotekster="['reellarbeidssoker.unntak.dokumentasjon']">
         </div>
 
         <span class="melding" data-ng-bind-html=" 'reellarbeidssoker.villigdeltid.false.minstEnCheckboksErAvhuketForDeltid.feilmelding' | cmstekst"></span>
