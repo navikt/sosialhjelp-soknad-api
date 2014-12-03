@@ -77,7 +77,7 @@
             it('skal kalle funksjon for å videresende til ettersendelse når ettersendingen er starte', function () {
                 scope.startEttersending($.Event("click"));
                 httpBackend.flush();
-                expect(window.redirectTilSide).toHaveBeenCalledWith('/sendsoknad/ettersending/' + behandlingskjedeId + '#/vedlegg');
+                expect(window.redirectTilSide).toHaveBeenCalledWith('/sendsoknad/skjema/ettersending#/' + behandlingskjedeId + '/vedlegg');
             });
         });
 
