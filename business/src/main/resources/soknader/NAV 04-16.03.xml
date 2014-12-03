@@ -1075,6 +1075,7 @@
         <property>arbeidsgivernavn</property>
         <onValue>true</onValue>
         <skjemaNummer>G2</skjemaNummer>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
 
     <vedleggsreferanse>G2</vedleggsreferanse>
