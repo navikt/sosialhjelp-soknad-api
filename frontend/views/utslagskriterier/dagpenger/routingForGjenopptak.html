@@ -1,3 +1,5 @@
+<input type="text" data-ng-model="testmodell" data-ng-pattern="/\d\d\.\d\d\.\d\d\d\d/">
+
 <div class="panel-standard-belyst skjema hvit-side" data-ng-controller="routingForGjenopptakCtrl">
     <div class="rad tittel" data-nav-tittel="skjema.tittel">
         <div class="begrensning">
@@ -8,24 +10,6 @@
     <section class="spm-blokk open">
         <div class="skjemaramme uten-strek">
             <div data-ng-form="startsoknadForm" class="skjemainnhold vertikal" data-novalidate>
-                <p>
-                    <span>routing:</span>
-                    <span>{{vars.test}}</span>
-                </p>
-                <div data-dato data-ng-model="vars.test" data-er-required="true" data-required-error-message="arbeidsforhold.arbeidsgiver.varighet.til.feilmelding"></div>
-
-                <p>
-                    <p>routing:</p>
-                    <p>{{ vars.dato.fra }}</p>
-                    <p>{{ vars.dato.til }}</p>
-                </p>
-                <div data-nav-dato-intervall
-                     data-fra-dato="vars.dato.fra"
-                     data-til-dato="vars.dato.til"
-                     data-label="arbeidsforhold.arbeidsgiver.varighet"
-                     data-er-begge-required="true"
-                     data-lagre="lagreFaktum()">
-                </div>
                 <div class="spm form-linje boolean">
                     <h4 class="spm-sporsmal" data-ng-bind-html=" 'utslagskriterier.dagpenger.utbetaling.sporsmal' | cmstekst"></h4>
 
