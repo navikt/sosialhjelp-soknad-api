@@ -97,7 +97,6 @@ public class WebSoknadUtils {
         return nyeArbeidsforhold.getValue().equals("true");
     }
 
-
     public static String getSkjemanummer(WebSoknad soknad) {
         if (soknad.erEttersending()) {
             return soknad.getskjemaNummer();
