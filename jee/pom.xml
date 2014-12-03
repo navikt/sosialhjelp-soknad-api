@@ -24,13 +24,6 @@
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>brukerprofil-wsmock-web</artifactId>
-            <version>1.6.39</version>
-            <type>war</type>
-            <scope>runtime</scope>
-        </dependency>
     </dependencies>
 
     <build>
@@ -38,19 +31,13 @@
             <plugin>
                 <artifactId>maven-ear-plugin</artifactId>
                 <configuration>
-                    <version>6</version>
+                    <version>7</version>
                     <modules>
                         <webModule>
                             <groupId>${project.groupId}</groupId>
                             <artifactId>sendsoknad-web</artifactId>
                             <contextRoot>/sendsoknad</contextRoot>
                             <bundleFileName>sendsoknad-web.war</bundleFileName>
-                        </webModule>
-                        <webModule>
-                            <groupId>${project.groupId}</groupId>
-                            <artifactId>brukerprofil-wsmock-web</artifactId>
-                            <contextRoot>/wsmock</contextRoot>
-                            <bundleFileName>brukerprofil-wsmock-web.war</bundleFileName>
                         </webModule>
                     </modules>
                     <encoding>UTF-8</encoding>
