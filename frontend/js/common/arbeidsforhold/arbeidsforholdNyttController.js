@@ -155,7 +155,6 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
         }
 
         function lagreArbeidsforholdOgSluttaarsak() {
-            console.log($scope.permitteringsperioder);
             $scope.arbeidsforhold.$save({soknadId: data.soknad.soknadId}).then(function (arbeidsforholdData) {
                 var promises = [];
 
