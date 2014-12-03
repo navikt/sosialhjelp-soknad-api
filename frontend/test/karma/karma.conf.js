@@ -27,6 +27,7 @@ module.exports = function (config) {
             '../../js/lib/angular/angular.js',
             'lib/*.js',
             '../../js/lib/angular/angular-resource.js',
+            '../../js/lib/angular/angular-messages.js',
             '../../js/lib/angular/angular-sanitize.js',
             '../../js/lib/angular/angular-cookies.js',
             '../../js/lib/angular/angular-route.js',
