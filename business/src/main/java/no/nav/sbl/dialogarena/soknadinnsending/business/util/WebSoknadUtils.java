@@ -43,7 +43,6 @@ public class WebSoknadUtils {
     private static final Logger LOGGER = getLogger(WebSoknadUtils.class);
 
     private static String erPermittertellerHarRedusertArbeidstid(WebSoknad soknad) {
-
         List<Faktum> sluttaarsak = soknad.getFaktaMedKey("arbeidsforhold");
         boolean erPermittert;
         boolean harRedusertArbeidstid;
@@ -63,21 +62,13 @@ public class WebSoknadUtils {
         return ANNEN_AARSAK;
     }
 
-    private static boolean harBlittPermittertIEtAvArbeidsforholdene(WebSoknad soknad) {
-        List<Faktum> alleArbeidsforhold = soknad.getFaktaMedKey("arbeidsforhold");
-        if(!alleArbeidsforhold.isEmpty()) {
-            return on(alleArbeidsforhold).filter(where(TYPE, equalTo(PERMITTERT))).head().isSome();
-        }
-        return false;
-    }
-
 
     public static String getSkjemanummer(WebSoknad soknad) {
         if (soknad.erEttersending()) {
             return soknad.getskjemaNummer();
         }
 
-        boolean erPermittert = harBlittPermittertIEtAvArbeidsforholdene(soknad);
+        boolean erPermittert = erPermittertellerHarRedusertArbeidstid(soknad).equals(PERMITTERT);
 
         if(soknad.erGjenopptak()) {
             return erPermittert ? GJENOPPTAK_VED_PERMITTERING : GJENOPPTAK;
