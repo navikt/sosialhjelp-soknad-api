@@ -138,6 +138,21 @@ public class WebSoknadUtilsTest {
     }
 
     @Test
+    public void skalRutesTilEOSHvisGjenopptakOgBrukerHarIngenNyeArbforholOgErGrensearbeiderOgPermittertForrigeGangHanFikkDagpenger() {
+        DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
+        WebSoknad soknad = lagSoknad(lagGrensearbeiderFaktum(), lagArbeidSidenSistFaktum(), lagPermittertForrigeGangFaktum());
+        Faktum personalia = getPersonaliaFaktum(soknad);
+
+        setTilGjenopptak(soknad);
+        setUtenlanskEOSStatsborger(personalia);
+        setBrukerTilAVaereGrensearbeider(soknad.getFaktumMedKey("arbeidsforhold.grensearbeider"));
+        setIngenNyeArbeidsforhold(soknad.getFaktumMedKey("nyearbeidsforhold.arbeidsidensist"));
+        setPermittertForrigeGangHanFikkDagpenger(soknad.getFaktumMedKey("tidligerearbeidsforhold.permittert"));
+
+        assertEquals(EOS_DAGPENGER, getJournalforendeEnhet(soknad));
+    }
+
+    @Test
     public void skalRuteSoknadTilEosLandMed3Caser() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
         WebSoknad soknad = lagSoknad(
@@ -225,23 +240,27 @@ public class WebSoknadUtilsTest {
         personalia.medProperty("statsborgerskap", "NOR");
     }
 
-    private static void setUtenlanskEOSStatsborger(Faktum personalia) {
-        personalia.medProperty("statsborgerskap", "SWE");
-    }
+    private static void setUtenlanskEOSStatsborger(Faktum personalia) { personalia.medProperty("statsborgerskap", "SWE"); }
+
+    private static Faktum lagArbeidSidenSistFaktum() { return new Faktum().medKey("nyearbeidsforhold.arbeidsidensist"); }
+
+    private static Faktum lagPermittertForrigeGangFaktum() { return new Faktum().medKey("tidligerearbeidsforhold.permittert"); }
+
+    private void setIngenNyeArbeidsforhold(Faktum nyeArbeidsforhold) { nyeArbeidsforhold.setValue("true"); }
+
+    private void setPermittertForrigeGangHanFikkDagpenger(Faktum arbeidSidenSist) { arbeidSidenSist.setValue("permittert"); }
 
     private static Faktum lagGrensearbeiderFaktum(){
         return new Faktum().medKey("arbeidsforhold.grensearbeider");
     }
 
-    private static void setBrukerTilAVaereGrensearbeider(Faktum grensearbeider) {
-        grensearbeider.setValue("false");
-    }
+    private static void setBrukerTilAVaereGrensearbeider(Faktum grensearbeider) { grensearbeider.setValue("false"); }
 
-    private static void setBrukerTilIkkeGrensearbeider(Faktum grensearbeider) {
-        grensearbeider.setValue("true");
-    }
+    private static void setBrukerTilIkkeGrensearbeider(Faktum grensearbeider) { grensearbeider.setValue("true"); }
 
     private static Faktum getPersonaliaFaktum(WebSoknad soknad) {
         return soknad.getFaktumMedKey("personalia");
     }
+
+    private static void setTilGjenopptak(WebSoknad soknad){ soknad.setSkjemaNummer("NAV 04-16.03");}
 }
