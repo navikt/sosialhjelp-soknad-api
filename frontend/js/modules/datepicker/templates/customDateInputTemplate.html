@@ -1,11 +1,14 @@
 <div>
     <input type="text"
+           name="{{ name }}"
            data-ng-blur="blur()"
            data-ng-focus="focus()"
            data-ng-model="model"
            data-ng-required="erRequired"
+           data-future-date="erFremtidigdatoTillatt"
+           data-date-format
+           data-valid-date
            data-error-messages="'{{ requiredErrorMessage }}'"
-           data-restrict-input
-           data-date-required="erRequired">
+           data-restrict-input>
     <span class="mask" data-dato-mask="model"></span>
 </div>
