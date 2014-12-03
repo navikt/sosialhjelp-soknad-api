@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.websoknad.pages.mocksetup;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.util.MockUtil;
 import no.nav.sbl.dialogarena.websoknad.pages.basepage.BasePage;
 import no.nav.sbl.dialogarena.websoknad.pages.soknadliste.SoknadListePage;
 import org.apache.wicket.extensions.markup.html.form.select.IOptionRenderer;
@@ -25,7 +24,12 @@ import java.util.List;
 import static java.lang.System.getProperty;
 import static java.lang.System.setProperty;
 import static java.util.Arrays.asList;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.util.MockUtil.VALGTMAANED_PROPERTY;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig.BrukerProfilWSConfig.BRUKERPROFIL_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig.KodeverkWSConfig.KODEVERK_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig.PersonInfoWSConfig.PERSONINFO_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig.PersonWSConfig.PERSON_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.MockUtil.TILLATSTARTDATOMOCK_PROPERTY;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.MockUtil.VALGTMAANED_PROPERTY;
 
 public class MockSetupPage extends BasePage {
 
@@ -94,7 +98,12 @@ public class MockSetupPage extends BasePage {
 
     private List<MockSetupModel> lagModeller() {
         return asList(
-                new MockSetupModel("Startdato", MockUtil.TILLATSTARTDATOMOCK_PROPERTY)
+                new MockSetupModel("Startdato", TILLATSTARTDATOMOCK_PROPERTY),
+
+                new MockSetupModel("Kodeverk", KODEVERK_KEY),
+                new MockSetupModel("Personinfo", PERSONINFO_KEY),
+                new MockSetupModel("Person", PERSON_KEY),
+                new MockSetupModel("Brukerprofil", BRUKERPROFIL_KEY)
         );
     }
 

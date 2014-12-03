@@ -9,7 +9,7 @@ import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 import org.slf4j.Logger;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -18,17 +18,23 @@ import javax.xml.ws.WebServiceException;
 import static org.slf4j.LoggerFactory.getLogger;
 
 
-@Service
-public class PersonConnector {
-    private static final Logger logger = getLogger(PersonConnector.class);
+@Component
+public class PersonService {
+
+    private static final Logger logger = getLogger(PersonService.class);
+
     @Inject
-    @Named("personService")
-    private PersonPortType person;
+    @Named("personEndpoint")
+    private PersonPortType personEndpoint;
+
+    @Inject
+    @Named("personSelftestEndpoint")
+    private PersonPortType personSelftestEndpoint;
 
     public HentKjerneinformasjonResponse hentKjerneinformasjon(HentKjerneinformasjonRequest request) {
 
         try {
-            return person.hentKjerneinformasjon(request);
+            return personEndpoint.hentKjerneinformasjon(request);
         } catch (HentKjerneinformasjonPersonIkkeFunnet e) {
             logger.error("Fant ikke bruker i TPS (Person-servicen).", e);
             throw new IkkeFunnetException("fant ikke bruker: " + request.getIdent(), e);
@@ -43,6 +49,6 @@ public class PersonConnector {
     }
     
     public void ping() {
-        person.ping();
+        personSelftestEndpoint.ping();
     }
 }

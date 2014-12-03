@@ -12,6 +12,9 @@ import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
 import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.http.WebRequest;
+import org.apache.wicket.request.http.WebResponse;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.slf4j.Logger;
 import org.springframework.context.annotation.Import;
@@ -19,6 +22,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.Cookie;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -35,23 +39,23 @@ public class SelfTestPage extends SelfTestBase {
     private static final Logger logger = getLogger(SelfTestPage.class);
 
     @Inject
-    @Named("sendSoknadSelftest")
+    @Named("sendSoknadSelftestEndpoint")
     private SendSoknadPortType sendSoknadSelftest;
 
     @Inject
-    @Named("kodeverkServiceSelftest")
+    @Named("kodeverkSelftestEndpoint")
     private KodeverkPortType kodeverkServiceSelftest;
 
     @Inject
-    @Named("brukerProfilService")
+    @Named("brukerProfilEndpoint")
     private BrukerprofilPortType brukerProfilService;
 
     @Inject
-    @Named("personService")
+    @Named("personEndpoint")
     private PersonPortType personService;
 
     @Inject
-    @Named("fillagerServiceSelftest")
+    @Named("fillagerSelftestEndpoint")
     private FilLagerPortType fillagerServiceSelftest;
 
     @Inject
@@ -66,6 +70,15 @@ public class SelfTestPage extends SelfTestBase {
 
     public SelfTestPage(PageParameters params) {
         super("sendsoknad", params);
+        WebRequest request = (WebRequest)RequestCycle.get().getRequest();
+
+        Cookie cookie = request.getCookie("nav-esso");
+        if (cookie == null) {
+            cookie = new Cookie("nav-esso", "***REMOVED***-4");
+            cookie.setPath("/sendsoknad");
+            WebResponse response = (WebResponse)RequestCycle.get().getResponse();
+            response.addCookie(cookie);
+        }
     }
 
     @Override

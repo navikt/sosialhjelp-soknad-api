@@ -20,35 +20,35 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class PersonConnectorTest {
+public class PersonServiceTest {
     @InjectMocks
-    private PersonConnector personConnector;
+    private PersonService personService;
     @Mock
     private PersonPortType personPortType;
 
     @Test
     public void skalKalleTjeneste() throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning {
         HentKjerneinformasjonRequest request = new HentKjerneinformasjonRequest();
-        personConnector.hentKjerneinformasjon(request);
+        personService.hentKjerneinformasjon(request);
         verify(personPortType).hentKjerneinformasjon(request);
     }
 
     @Test(expected = IkkeFunnetException.class)
     public void skalWrappeExceptions() throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning {
         when(personPortType.hentKjerneinformasjon(any(HentKjerneinformasjonRequest.class))).thenThrow(new HentKjerneinformasjonPersonIkkeFunnet("", null));
-        personConnector.hentKjerneinformasjon(new HentKjerneinformasjonRequest());
+        personService.hentKjerneinformasjon(new HentKjerneinformasjonRequest());
     }
 
     @Test(expected = SikkerhetsBegrensningException.class)
     public void skalWrappeExceptions2() throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning {
         when(personPortType.hentKjerneinformasjon(any(HentKjerneinformasjonRequest.class))).thenThrow(new HentKjerneinformasjonSikkerhetsbegrensning("", null));
-        personConnector.hentKjerneinformasjon(new HentKjerneinformasjonRequest());
+        personService.hentKjerneinformasjon(new HentKjerneinformasjonRequest());
     }
 
     @Test(expected = TjenesteUtilgjengeligException.class)
     public void skalWrappeExceptions3() throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning {
         when(personPortType.hentKjerneinformasjon(any(HentKjerneinformasjonRequest.class))).thenThrow(new WebServiceException("", null));
-        personConnector.hentKjerneinformasjon(new HentKjerneinformasjonRequest());
+        personService.hentKjerneinformasjon(new HentKjerneinformasjonRequest());
     }
 
 

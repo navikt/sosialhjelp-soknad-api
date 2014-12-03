@@ -5,7 +5,7 @@
     <parent>
         <groupId>no.nav.sbl.dialogarena</groupId>
         <artifactId>dialogarena</artifactId>
-        <version>4</version>
+        <version>3</version>
     </parent>
 
     <modules>
@@ -15,6 +15,7 @@
         <module>frontend</module>
         <module>web</module>
         <module>jee</module>
+        <module>mock</module>
     </modules>
 
     <name>Dialogarena - Send Søknad</name>
@@ -24,9 +25,12 @@
     <packaging>pom</packaging>
 
     <properties>
-        <sonar.exclusions>**/*Config*</sonar.exclusions>
+        <!-- Sonaroppsett for å få med integrasjonstester på testdekning -->
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+        <!-- Lagrer IT-info til enhetstestfil -->
+        <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco-ut.exec</sonar.jacoco.reportPath>
+        <sonar.language>java</sonar.language>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 
@@ -49,6 +53,31 @@
 
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>sendsoknad-consumer</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>sendsoknad-business</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>sendsoknad-frontend</artifactId>
+                <version>${project.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>sendsoknad-mock</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>no.nav.sbl</groupId>
@@ -137,7 +166,6 @@
                 <version>1.0.4</version>
                 <classifier>jaxws</classifier>
             </dependency>
-
 
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
@@ -243,7 +271,6 @@
                 <artifactId>itext</artifactId>
                 <version>2.1.7</version>
             </dependency>
-
 
             <dependency>
                 <groupId>org.hamcrest</groupId>
@@ -571,6 +598,20 @@
             <!-- Avhengigheter med scope test -->
 
             <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>sendsoknad-consumer</artifactId>
+                <version>${project.version}</version>
+                <type>test-jar</type>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>sendsoknad-business</artifactId>
+                <version>${project.version}</version>
+                <type>test-jar</type>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>common-test</artifactId>
                 <version>1.2</version>
@@ -646,7 +687,6 @@
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
                 <version>1.10.8</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -847,11 +887,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <excludes>
-                        <exclude>*Config.class</exclude>
-                    </excludes>
-                </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -899,7 +934,7 @@
                 </property>
             </activation>
             <properties>
-                <sonar.jacoco.excludes>*SelfTestPage.*</sonar.jacoco.excludes>
+                <sonar.jacoco.excludes>*SelfTestPage.*:*no/nav/sbl/dialogarena/sendsoknad/mockmodul/**</sonar.jacoco.excludes>
             </properties>
         </profile>
         <profile>
