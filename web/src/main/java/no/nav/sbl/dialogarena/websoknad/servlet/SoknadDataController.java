@@ -18,13 +18,7 @@ import no.nav.sbl.dialogarena.websoknad.domain.StartSoknad;
 import org.apache.commons.collections15.Predicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import javax.servlet.http.Cookie;
@@ -166,16 +160,19 @@ public class SoknadDataController {
     public void sendSoknad(@PathVariable Long soknadId) {
         WebSoknad soknad = soknadService.hentSoknad(soknadId);
 
-        byte[] pdfOutputStream;
+        byte[] kvittering = genererPdf(soknad, "/skjema/kvittering");
         if (soknad.erEttersending()) {
-            pdfOutputStream = genererPdf(soknad, "/skjema/ettersending");
-        } else if(soknad.erGjenopptak()) {
-            pdfOutputStream = genererPdf(soknad, "/skjema/gjenopptak");
+            soknadService.sendSoknad(soknadId, kvittering);
         } else {
-            pdfOutputStream = genererPdf(soknad, "/skjema/dagpenger");
+            byte[] soknadPdf;
+            if(soknad.erGjenopptak()) {
+                soknadPdf = genererPdf(soknad, "/skjema/gjenopptak");
+            } else {
+                soknadPdf = genererPdf(soknad, "/skjema/dagpenger");
+            }
+            vedleggService.lagreKvitteringSomVedlegg(soknadId, kvittering);
+            soknadService.sendSoknad(soknadId, soknadPdf);
         }
-
-        soknadService.sendSoknad(soknadId, pdfOutputStream);
     }
 
     private byte[] genererPdf(WebSoknad soknad, String hbsSkjemaPath) {

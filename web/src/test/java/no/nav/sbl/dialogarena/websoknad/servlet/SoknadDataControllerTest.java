@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
+import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.print.HtmlGenerator;
 import no.nav.sbl.dialogarena.print.HtmlToPdf;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
@@ -23,9 +24,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.lang.System.setProperty;
+import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -53,6 +57,7 @@ public class SoknadDataControllerTest {
 
     @Before
     public void setup() {
+        setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         MappingJackson2HttpMessageConverter json = new MappingJackson2HttpMessageConverter();
         json.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON, MediaType.TEXT_HTML));
 
@@ -108,7 +113,7 @@ public class SoknadDataControllerTest {
     }
 
     @Test
-    public void skalSendeSoknad() throws Exception {
+    public void skalSendeSoknadOgLeggeVedKvittering() throws Exception {
         byte[] outputBytes = new byte[]{1, 2, 3};
         List<Vedlegg> vedlegg = Arrays.asList(new Vedlegg().medVedleggId(123L));
         when(soknadService.hentSoknad(11L)).thenReturn(WebSoknad.startSoknad().medVedlegg(vedlegg));
@@ -116,8 +121,9 @@ public class SoknadDataControllerTest {
         when(pdfgenerator.lagPdfFil(anyString())).thenReturn(outputBytes);
         mockMvc.perform(post("/soknad/send/{soknadId}", 11L).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-        verify(vedleggService).leggTilKodeverkFelter(vedlegg);
-        verify(pdfgenerator).lagPdfFil("html");
+        verify(vedleggService, times(2)).leggTilKodeverkFelter(vedlegg);
+        verify(vedleggService).lagreKvitteringSomVedlegg(11L, outputBytes);
+        verify(pdfgenerator, times(2)).lagPdfFil("html");
         verify(soknadService).sendSoknad(11L, outputBytes);
     }
 
