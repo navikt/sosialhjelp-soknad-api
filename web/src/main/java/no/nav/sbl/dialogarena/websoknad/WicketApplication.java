@@ -10,6 +10,7 @@ import no.nav.sbl.dialogarena.websoknad.pages.XmlToPdfConverterPage;
 import no.nav.sbl.dialogarena.websoknad.pages.ettersending.AvbruttEttersendingPage;
 import no.nav.sbl.dialogarena.websoknad.pages.ettersending.EttersendingPage;
 import no.nav.sbl.dialogarena.websoknad.pages.ettersending.StartEttersendingPage;
+import no.nav.sbl.dialogarena.websoknad.pages.mocksetup.MockSetupPage;
 import no.nav.sbl.dialogarena.websoknad.pages.soknadliste.SoknadListePage;
 import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.AvbruttPage;
 import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.StartSoknadPage;
@@ -27,6 +28,8 @@ import org.apache.wicket.util.lang.Bytes;
 import org.springframework.context.ApplicationContext;
 
 import javax.inject.Inject;
+
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.MockUtil.mockSetupErTillatt;
 
 
 public class WicketApplication extends WebApplication {
@@ -111,12 +114,15 @@ public class WicketApplication extends WebApplication {
         mountPage("skjema/${skjemanummer}", StartSoknadPage.class);
         mountPage("utslagskriterier/${utslagskriterierSide}", UtslagskriterierDagpengerPage.class);
         mountPage("startettersending/${brukerbehandlingId}", StartEttersendingPage.class);
-        mountPage("ettersending/${brukerbehandlingId}", EttersendingPage.class);
+        mountPage("skjema/ettersending", EttersendingPage.class);
         mountPage("avbrutt", AvbruttPage.class);
         mountPage("ettersending/avbrutt", AvbruttEttersendingPage.class);
         mountPage("xmltopdf", XmlToPdfConverterPage.class);
         mountPage("internal/selftest", SelfTestPage.class);
         mountPage("soknadliste", SoknadListePage.class);
+        if (mockSetupErTillatt()) {
+            mountPage("internal/mocksetup", MockSetupPage.class);
+        }
     }
 
 

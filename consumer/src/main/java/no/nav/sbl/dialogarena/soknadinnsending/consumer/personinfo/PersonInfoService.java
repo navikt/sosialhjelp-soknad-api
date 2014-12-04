@@ -11,19 +11,19 @@ import javax.inject.Inject;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
-public class PersonInfoConnector {
+public class PersonInfoService {
 
     public static final String ARBS = "ARBS";
 
     public enum Status {REGISTRERT, IKKE_REGISTRERT, UKJENT}
 
     @Inject
-    private PersonInfoServiceSoap service;
-    private static final Logger logger = getLogger(PersonInfoConnector.class);
+    private PersonInfoServiceSoap personInfoEndpoint;
+    private static final Logger logger = getLogger(PersonInfoService.class);
 
     public Status hentArbeidssokerStatus(String fnr) {
         try {
-            Personstatus personstatus = service.hentPersonStatus(new Fodselsnr().withFodselsnummer(fnr));
+            Personstatus personstatus = personInfoEndpoint.hentPersonStatus(new Fodselsnr().withFodselsnummer(fnr));
             return mapTilStatus(personstatus);
         } catch (Exception e) {
             logger.error("Feil ved henting av personstatus for fnr {}", fnr, e);

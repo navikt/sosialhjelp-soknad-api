@@ -16,8 +16,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
@@ -80,9 +80,9 @@ public class SoknadServiceTest {
     @Mock
     private VedleggRepository vedleggRepository;
     @Mock
-    private HenvendelseConnector henvendelsesConnector;
+    private HenvendelseService henvendelsesConnector;
     @Mock
-    private FillagerConnector fillagerConnector;
+    private FillagerService fillagerService;
     @Mock
     private Kodeverk kodeverk;
     @Mock
@@ -126,9 +126,9 @@ public class SoknadServiceTest {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         JAXB.marshal(soknad, baos);
         DataHandler handler = mock(DataHandler.class);
-        when(fillagerConnector.hentFil("uidHovedskjema"))
+        when(fillagerService.hentFil("uidHovedskjema"))
                 .thenReturn(baos.toByteArray());
-        when(fillagerConnector.hentFiler("123"))
+        when(fillagerService.hentFiler("123"))
                 .thenReturn(Arrays.asList(
                         new WSInnhold().withUuid("uidVedlegg").withInnhold(handler)
                 ));

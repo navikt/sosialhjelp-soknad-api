@@ -8,12 +8,12 @@ import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.cxf.TimeoutFeature;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil.BrukerprofilMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.kodeverk.KodeverkMock;
-import no.nav.sbl.dialogarena.sendsoknad.mockmodul.personinfo.PersonInfoMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonConnector;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoConnector;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.personinfo.PersonInfoMock;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSSoknadsdata;
@@ -41,18 +41,18 @@ import java.util.Map;
 
 import static java.lang.System.getProperty;
 import static java.lang.System.setProperty;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.MockUtil.mockErTillattOgSlaattPaaForKey;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder.CONNECTION_TIMEOUT;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder.RECEIVE_TIMEOUT;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.util.InstanceSwitcher.createSwitcher;
 
 @Configuration
 @EnableCaching
 @Import({
         ConsumerConfig.WsServices.class,
-        FillagerConnector.class,
-        HenvendelseConnector.class,
-        PersonConnector.class,
-        PersonInfoConnector.class
+        FillagerService.class,
+        HenvendelseService.class,
+        PersonService.class,
+        PersonInfoService.class
 })
 public class ConsumerConfig {
     //Må godta så store xml-payloads pga Kodeverk postnr
@@ -90,12 +90,12 @@ public class ConsumerConfig {
         }
 
         @Bean
-        public SendSoknadPortType sendSoknadService() {
+        public SendSoknadPortType sendSoknadEndpoint() {
             return factory().withUserSecurity().get();
         }
 
         @Bean
-        public SendSoknadPortType sendSoknadSelftest() {
+        public SendSoknadPortType sendSoknadSelftestEndpoint() {
             return factory().withSystemSecurity().get();
         }
     }
@@ -115,12 +115,12 @@ public class ConsumerConfig {
         }
 
         @Bean
-        public FilLagerPortType fillagerService() {
+        public FilLagerPortType fillagerEndpoint() {
             return factory().withMDC().withUserSecurity().get();
         }
 
         @Bean
-        public FilLagerPortType fillagerServiceSelftest() {
+        public FilLagerPortType fillagerSelftestEndpoint() {
             return factory().withSystemSecurity().get();
         }
     }
@@ -134,33 +134,34 @@ public class ConsumerConfig {
         private String endpoint;
 
         @Bean
-        public PersonInfoServiceSoap personInfoServiceSoap() {
-            if (mockErTillattOgSlaattPaaForKey(PERSONINFO_KEY)) {
-                return new PersonInfoMock().personInfoMock();
-            } else {
-                JaxWsProxyFactoryBean factoryBean = new JaxWsProxyFactoryBean();
-                factoryBean.setServiceClass(PersonInfoServiceSoap.class);
-                factoryBean.setAddress(endpoint);
+        public PersonInfoServiceSoap personInfoEndpoint() {
+            PersonInfoServiceSoap mock = new PersonInfoMock().personInfoMock();
+            PersonInfoServiceSoap prod = opprettPersonInfoEndpoint();
+            return createSwitcher(prod, mock, PERSONINFO_KEY, PersonInfoServiceSoap.class);
+        }
 
-                Map<String, Object> map = new HashMap<>();
-                map.put(WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN);
-                map.put(WSHandlerConstants.PASSWORD_TYPE, "PasswordText");
-                map.put(WSHandlerConstants.USER, getProperty("arena.personInfoService.username"));
-                CallbackHandler passwordCallbackHandler = new CallbackHandler() {
-                    @Override
-                    public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
-                        WSPasswordCallback callback = (WSPasswordCallback) callbacks[0];
-                        callback.setPassword(getProperty("arena.personInfoService.password"));
-                    }
-                };
-                map.put(WSHandlerConstants.PW_CALLBACK_REF, passwordCallbackHandler);
-                factoryBean.getOutInterceptors().add(new WSS4JOutInterceptor(map));
+        private PersonInfoServiceSoap opprettPersonInfoEndpoint() {
+            JaxWsProxyFactoryBean factoryBean = new JaxWsProxyFactoryBean();
+            factoryBean.setServiceClass(PersonInfoServiceSoap.class);
+            factoryBean.setAddress(endpoint);
 
-                factoryBean.getFeatures().add(new LoggingFeature());
-                factoryBean.getFeatures().add(new TimeoutFeature(RECEIVE_TIMEOUT, CONNECTION_TIMEOUT));
+            Map<String, Object> map = new HashMap<>();
+            map.put(WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN);
+            map.put(WSHandlerConstants.PASSWORD_TYPE, "PasswordText");
+            map.put(WSHandlerConstants.USER, getProperty("arena.personInfoService.username"));
+            CallbackHandler passwordCallbackHandler = new CallbackHandler() {
+                @Override
+                public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
+                    WSPasswordCallback callback = (WSPasswordCallback) callbacks[0];
+                    callback.setPassword(getProperty("arena.personInfoService.password"));
+                }
+            };
+            map.put(WSHandlerConstants.PW_CALLBACK_REF, passwordCallbackHandler);
+            factoryBean.getOutInterceptors().add(new WSS4JOutInterceptor(map));
 
-                return factoryBean.create(PersonInfoServiceSoap.class);
-            }
+            factoryBean.getFeatures().add(new LoggingFeature());
+            factoryBean.getFeatures().add(new TimeoutFeature(RECEIVE_TIMEOUT, CONNECTION_TIMEOUT));
+            return factoryBean.create(PersonInfoServiceSoap.class);
         }
 
     }
@@ -184,15 +185,14 @@ public class ConsumerConfig {
         }
 
         @Bean
-        public PersonPortType personService() {
-            if (mockErTillattOgSlaattPaaForKey(PERSON_KEY)) {
-                return new PersonMock().personMock();
-            }
-            return factory().withUserSecurity().get();
+        public PersonPortType personEndpoint() {
+            PersonPortType mock = new PersonMock().personMock();
+            PersonPortType prod = factory().withUserSecurity().get();
+            return createSwitcher(prod, mock, PERSON_KEY, PersonPortType.class);
         }
 
         @Bean
-        public PersonPortType personServiceSelftest() {
+        public PersonPortType personSelftestEndpoint() {
             return factory().withSystemSecurity().get();
         }
 
@@ -216,17 +216,14 @@ public class ConsumerConfig {
         }
 
         @Bean
-        public KodeverkPortType kodeverkService() {
+        public KodeverkPortType kodeverkEndpoint() {
             KodeverkPortType prod = factory().withSystemSecurity().get();
             KodeverkPortType mock = new KodeverkMock().kodeverkMock();
-            if (mockErTillattOgSlaattPaaForKey(KODEVERK_KEY)) {
-                return mock;
-            }
-            return prod;
+            return createSwitcher(prod, mock, KODEVERK_KEY, KodeverkPortType.class);
         }
 
         @Bean
-        public KodeverkPortType kodeverkServiceSelftest() {
+        public KodeverkPortType kodeverkSelftestEndpoint() {
             return factory().withSystemSecurity().get();
         }
     }
@@ -250,15 +247,14 @@ public class ConsumerConfig {
         }
 
         @Bean
-        public BrukerprofilPortType brukerProfilService() {
-            if (mockErTillattOgSlaattPaaForKey(BRUKERPROFIL_KEY)) {
-                return new BrukerprofilMock().brukerprofilMock();
-            }
-            return factory().withUserSecurity().get();
+        public BrukerprofilPortType brukerProfilEndpoint() {
+            BrukerprofilPortType mock = new BrukerprofilMock().brukerprofilMock();
+            BrukerprofilPortType prod = factory().withUserSecurity().get();
+            return createSwitcher(prod, mock, BRUKERPROFIL_KEY, BrukerprofilPortType.class);
         }
 
         @Bean
-        public BrukerprofilPortType brukerProfilSelftest() {
+        public BrukerprofilPortType brukerProfilSelftestEndpoint() {
             return factory().withSystemSecurity().get();
         }
     }

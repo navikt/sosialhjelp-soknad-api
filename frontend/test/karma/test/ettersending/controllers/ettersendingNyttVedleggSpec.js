@@ -16,7 +16,6 @@
         ));
 
         beforeEach(function() {
-            spyOn(window, 'getBehandlingIdFromUrl').andReturn(behandlingskjedeId);
             spyOn(window, 'erEttersending').andReturn(true);
         });
 
@@ -24,6 +23,14 @@
             $provide.value("data", {
                 soknad: {
                     soknadId: soknadId
+                }
+            });
+
+            $provide.value("$route", {
+                current: {
+                    params: {
+                        behandlingId: behandlingskjedeId
+                    }
                 }
             });
         }));

@@ -300,7 +300,6 @@ angular.module('nav.input', ['nav.cms'])
             link: {
                 pre: function(scope, element, attrs, ctrls) {
                     var ngModel = ctrls[0];
-
                     if (attrs.min) {
                         var min = parseFloat(attrs.min);
                         ngModel.$parsers.push(function(input) {
@@ -308,7 +307,6 @@ angular.module('nav.input', ['nav.cms'])
                             if (isNaN(num)) {
                                 return input;
                             }
-
 
                             ngModel.$setValidity('min', num > min);
                             return input;
