@@ -2,73 +2,178 @@ describe('datepicker services', function () {
     beforeEach(module('nav.datepicker.service'));
 
     describe('dateService', function () {
-        var injectedDateService;
+        var service;
+        var OldDate = Date;
+        var today = 1399268154501;
+        var idagSomString = '05.05.2014';
         beforeEach(inject(function (dateService) {
-            injectedDateService = dateService;
+            service = dateService;
+
+            Date = function(time) {
+                if (time === undefined) {
+                    return new OldDate(today);
+                }
+                return new OldDate(time);
+            };
         }));
+
+        afterEach(function() {
+            Date = OldDate;
+        });
 
         describe('isValidDate', function() {
             it('01.01.2000 skal være gyldig dato', function() {
-                expect(injectedDateService.isValidDate('01.01.2000')).toBe(true);
+                expect(service.isValidDate('01.01.2000')).toBe(true);
             });
 
             it('31.01.2000 skal være gyldig dato', function() {
-                expect(injectedDateService.isValidDate('31.01.2000')).toBe(true);
+                expect(service.isValidDate('31.01.2000')).toBe(true);
             });
 
             it('15.01.2000 skal være gyldig dato', function() {
-                expect(injectedDateService.isValidDate('15.01.2000')).toBe(true);
+                expect(service.isValidDate('15.01.2000')).toBe(true);
             });
 
             it('28.02.2014 skal være gyldig dato', function() {
-                expect(injectedDateService.isValidDate('28.02.2014')).toBe(true);
+                expect(service.isValidDate('28.02.2014')).toBe(true);
             });
 
             it('29.02.2012 skal være gyldig dato', function() {
-                expect(injectedDateService.isValidDate('29.02.2012')).toBe(true);
+                expect(service.isValidDate('29.02.2012')).toBe(true);
             });
 
             it('30.02.2012 skal være ikke gyldig dato', function() {
-                expect(injectedDateService.isValidDate('30.02.2012')).toBe(false);
+                expect(service.isValidDate('30.02.2012')).toBe(false);
             });
 
             it('10.13.2012 skal være ikke gyldig dato', function() {
-                expect(injectedDateService.isValidDate('10.13.2012')).toBe(false);
+                expect(service.isValidDate('10.13.2012')).toBe(false);
             });
 
             it('10.00.2012 skal være ikke gyldig dato', function() {
-                expect(injectedDateService.isValidDate('10.00.2012')).toBe(false);
+                expect(service.isValidDate('10.00.2012')).toBe(false);
             });
         });
 
         describe('reverseNorwegianDateFormat', function() {
             it('01.05.2000 skal bli formatert til 2000-05-01', function() {
-                expect(injectedDateService.reverseNorwegianDateFormat('01.05.2000')).toBe('2000-05-01');
+                expect(service.reverseNorwegianDateFormat('01.05.2000')).toBe('2000-05-01');
             });
         });
 
         describe('hasCorrectDateFormat', function() {
             it('01.01.2000 skal være gyldig datoformat', function() {
-                expect(injectedDateService.hasCorrectDateFormat('01.01.2000')).toBe(true);
+                expect(service.hasCorrectDateFormat('01.01.2000')).toBe(true);
             });
 
             it('01.01.200 skal være ikke gyldig datoformat', function() {
-                expect(injectedDateService.hasCorrectDateFormat('01.01.200')).toBe(false);
+                expect(service.hasCorrectDateFormat('01.01.200')).toBe(false);
             });
 
             it('1.01.2000 skal være ikke gyldig datoformat', function() {
-                expect(injectedDateService.hasCorrectDateFormat('1.01.2000')).toBe(false);
+                expect(service.hasCorrectDateFormat('1.01.2000')).toBe(false);
             });
 
             it('01.1.2000 skal være ikke gyldig datoformat', function() {
-                expect(injectedDateService.hasCorrectDateFormat('01.1.2000')).toBe(false);
+                expect(service.hasCorrectDateFormat('01.1.2000')).toBe(false);
             });
 
-//            describe('isFutureDate', function() {
-//                it('', function() {
-//                    expect(injectedDateService.reverseNorwegianDateFormat('01.05.2000')).toBe('2000-05-01');
-//                });
-//            });
+            describe('isFutureDate', function() {
+                it('En dag som har vært skal returnere false', function() {
+                    expect(service.isFutureDate('04.05.2014')).toBe(false);
+                });
+
+                it('En dag som var forrige måned skal returnere false', function() {
+                    expect(service.isFutureDate('05.04.2014')).toBe(false);
+                });
+
+                it('En dag som har vært for lenge siden skal returnere false', function() {
+                    expect(service.isFutureDate('04.05.1014')).toBe(false);
+                });
+
+                it('I dag skal returnere false', function() {
+                    expect(service.isFutureDate(idagSomString)).toBe(false);
+                });
+
+                it('I morgen skal returnere true', function() {
+                    expect(service.isFutureDate('06.05.2014')).toBe(true);
+                });
+
+                it('En dag neste måned skal returnere true', function() {
+                    expect(service.isFutureDate('05.06.2014')).toBe(true);
+                });
+            });
+        });
+    });
+
+    describe('maskService', function () {
+        var service;
+        var initialMaskText = 'dd.mm.yyyy';
+
+        beforeEach(module(function ($provide) {
+            $provide.value('cmsService', {
+                getTrustedHtml: function() {
+                    return initialMaskText;
+                }
+            });
+        }));
+
+        beforeEach(inject(function (maskService) {
+            service = maskService;
+        }));
+
+        describe('getMaskText', function() {
+            it('skal få initialMaskText ved tom string', function() {
+                expect(service.getMaskText('')).toBe(initialMaskText);
+            });
+
+            it('skal få d.mm.yyyy ved string med ett for dag', function() {
+                expect(service.getMaskText('1')).toBe('d.mm.yyyy');
+            });
+
+            it('skal få .mm.yyyy ved string med to tall for dag', function() {
+                expect(service.getMaskText('12')).toBe('.mm.yyyy');
+            });
+
+            it('skal få tom string ved 3 tall for dag', function() {
+                expect(service.getMaskText('123')).toBe('');
+            });
+
+            it('skal få mm.yyyy ved rett dag-format og ett punktum', function() {
+                expect(service.getMaskText('12.')).toBe('mm.yyyy');
+            });
+
+            it('skal få m.yyyy ved rett dag-format og ett tall for måned', function() {
+                expect(service.getMaskText('12.1')).toBe('m.yyyy');
+            });
+
+            it('skal få tom string ved rett dag-format og galt månedformat ', function() {
+                expect(service.getMaskText('12.123')).toBe('');
+            });
+
+            it('skal få yyy ved rett dag- og måned-format, og ett tall for år', function() {
+                expect(service.getMaskText('12.12.1')).toBe('yyy');
+            });
+        });
+    });
+
+    describe('datepickerInputService', function () {
+        var service;
+        var periodKeyCode = 190;
+        var inputKeys = [];
+        var nonInputKeys = [periodKeyCode];
+
+        beforeEach(module(function ($provide) {
+            $provide.value('datepickerInputKeys', inputKeys);
+            $provide.value('datepickerNonInputKeys', nonInputKeys);
+        }));
+
+        beforeEach(inject(function (datepickerInputService) {
+            service = datepickerInputService;
+        }));
+
+        describe('isValidInput', function() {
+
         });
     });
 });
