@@ -1,0 +1,15 @@
+<span data-ng-message="toDate">
+    <span class="melding" data-ng-bind-html=" 'dato.tilDato.feilmelding' | cmstekst"></span>
+</span>
+<span data-ng-message="required" data-ng-if="!vars.harFokus">
+    <span class="melding" data-ng-bind-html="requiredErrorMessage | cmstekst"></span>
+</span>
+<span data-ng-message="dateFormat" data-ng-if="!vars.harFokus">
+    <span class="melding" data-ng-bind-html="'dato.format.feilmelding' | cmstekst"></span>
+</span>
+<span data-ng-message="validDate" data-ng-if="!vars.harFokus">
+    <span class="melding" data-ng-bind-html="'dato.ikkeGyldigDato.feilmelding' | cmstekst"></span>
+</span>
+<span data-ng-message="futureDate" data-ng-if="!vars.harFokus">
+    <span class="melding" data-ng-bind-html=" 'dato.ugyldigFremtidig.feilmelding' | cmstekst"></span>
+</span>

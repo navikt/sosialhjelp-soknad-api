@@ -30,7 +30,6 @@ angular.module('sendsoknad')
         $http.get('../js/common/tredjeparts/directives/accordion/accordionGroupTemplate.html', {cache: $templateCache});
         $http.get('../js/common/tredjeparts/directives/accordion/accordionTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/hjelpetekst/hjelpetekstTemplate.html', {cache: $templateCache});
-        $http.get('../js/modules/datepicker/templates/singleDatepickerTemplate.html', {cache: $templateCache});
         $http.get('../js/modules/datepicker/templates/doubleDatepickerTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/navinput/navbuttonspinnerTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/navinput/navcheckboxTemplate.html', {cache: $templateCache});
