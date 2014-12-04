@@ -24,10 +24,12 @@
         </style>
 	</head>
 	<body>
-        <div id="ettersending">
+        <div id="kvittering">
             <img class="logo" src="http://localhost:8080/sendsoknad/img/nav-logo-stor.gif"/>
             <div class="hode">
-                <h1>{{ hentTekst "ettersending.kvittering.tittel" }}</h1>
+                {{#hvisSant erEttersending}}
+                    <h1>{{ hentTekst "ettersending.kvittering.tittel" }}</h1>
+                {{/hvisSant }}
                 <h1>{{ hentTekst "skjema.tittel" }}</h1>
                 <hr/>
                 {{#forFaktum "personalia"}}
@@ -42,43 +44,44 @@
             </div>
             <div class="sendt-info">
                 {{#sendtInnInfo }}
-                    <span>{{ hentTekst "ettersending.kvittering.erSendt" sendtInn ikkeSendtInn innsendtDato }}</span>
+                    <span>{{ hentTekst "kvittering.erSendt" sendtInn ikkeSendtInn innsendtDato }}</span>
                 {{/sendtInnInfo }}
             </div>
 
-            <h3>{{ hentTekst "ettersending.kvittering.innsendt.tittel" }}</h3>
+            <h3>{{ hentTekst "kvittering.innsendt.tittel" }}</h3>
             <ul class="innsendt">
                 {{#forInnsendteVedlegg }}
                     <li>
                         <span>
-                            {{ tittel }}{{#hvisIkkeTom navn }}:{{/hvisIkkeTom}}
+                            {{ tittel ~}}
+                            {{#hvisIkkeTom navn ~}}
+                                : {{ navn ~}}
+                            {{/hvisIkkeTom}}
                         </span>
-                        {{#hvisIkkeTom navn }}
-                            <span>{{ navn }}</span>
-                        {{/hvisIkkeTom}}
                     </li>
                 {{/forInnsendteVedlegg }}
             </ul>
 
             {{#hvisHarIkkeInnsendteDokumenter }}
-                <h3>{{ hentTekst "ettersending.kvittering.ikkeInnsendt.tittel" }}</h3>
+                <h3>{{ hentTekst "kvittering.ikkeInnsendt.tittel" }}</h3>
                 <ul class="ikke-innsendt">
                     {{#forIkkeInnsendteVedlegg }}
                         <li>
                             <span>
-                                {{ tittel }}{{#hvisIkkeTom navn }}:{{/hvisIkkeTom}}
+                                {{ tittel ~}}
+                                {{#hvisIkkeTom navn ~}}
+                                    : {{ navn }}
+                                {{/hvisIkkeTom}}
+                                ({{ hentTekst (concat 'vedlegg.behandlet.' innsendingsvalg)}})
                             </span>
-                            {{#hvisIkkeTom navn }}
-                                <span>{{ navn }}</span>
-                            {{/hvisIkkeTom}}
                         </li>
                     {{/forIkkeInnsendteVedlegg }}
                 </ul>
             {{/hvisHarIkkeInnsendteDokumenter }}
 
             <div class="informasjon">
-                <p>{{ hentTekst "ettersending.kvittering.informasjonstekst.del1" }}</p>
-                <p>{{ hentTekst "ettersending.kvittering.informasjonstekst.del2" }}</p>
+                <p>{{ hentTekst "kvittering.informasjonstekst.del1" }}</p>
+                <p>{{ hentTekst "kvittering.informasjonstekst.del2" }}</p>
             </div>
 
 
