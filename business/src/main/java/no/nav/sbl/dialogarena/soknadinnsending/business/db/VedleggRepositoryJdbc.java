@@ -1,7 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 import no.nav.modig.core.exception.SystemException;
+import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
+import org.apache.commons.collections15.Predicate;
 import org.apache.commons.io.IOUtils;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -24,6 +26,9 @@ import java.io.InputStream;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
+
+import static no.nav.modig.lang.collections.IterUtils.on;
+import static no.nav.modig.lang.collections.PredicateUtils.not;
 
 @Named("vedleggRepository")
 //marker alle metoder som transactional. Alle operasjoner vil skje i en transactional write context. Read metoder kan overstyre dette om det trengs.
@@ -51,9 +56,10 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
 
     @Override
     public List<Vedlegg> hentPaakrevdeVedlegg(Long soknadId) {
-        return getJdbcTemplate().query("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, opprinneliginnsendingsvalg, storrelse, opprettetdato," +
+        List<Vedlegg> vedlegg = getJdbcTemplate().query("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, opprinneliginnsendingsvalg, storrelse, opprettetdato," +
                 " antallsider, fillagerReferanse from Vedlegg where soknad_id = ? and innsendingsvalg in ('VedleggKreves', 'VedleggSendesIkke', 'VedleggSendesAvAndre'," +
                 " 'VedleggAlleredeSendt', 'LastetOpp', 'SendesSenere','SendesIkke') ", new VedleggRowMapper(false), soknadId);
+        return on(vedlegg).filter(not(ER_KVITTERING)).collect();
     }
 
     @Override
@@ -185,4 +191,10 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
                 new VedleggRowMapper(false), soknadId, faktumId);
     }
 
+    private static final Predicate<? super Vedlegg> ER_KVITTERING = new Predicate<Vedlegg>() {
+        @Override
+        public boolean evaluate(Vedlegg vedlegg) {
+            return vedlegg.getSkjemaNummer().equalsIgnoreCase(Kodeverk.KVITTERING);
+        }
+    };
 }
