@@ -14,5 +14,6 @@ angular.module('gjenopptak', [
     'nav.cms',
     'nav.datepicker',
     'nav.personalia',
-    'nav.scroll'
+    'nav.scroll',
+    'nav.vedlegg'
 ]);

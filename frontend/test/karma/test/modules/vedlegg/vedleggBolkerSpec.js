@@ -1,7 +1,7 @@
 describe('vedleggbolker', function () {
-    var rootScope, element, scope, timeout, form, inputmodell;
+    var element, scope, timeout, form, inputmodell;
 
-    beforeEach(module('nav.vedleggbolker', 'nav.cms', 'templates-main', 'nav.accordion'));
+    beforeEach(module('nav.vedlegg', 'nav.cms', 'templates-main', 'nav.accordion'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel',
@@ -113,9 +113,9 @@ describe('vedleggbolker', function () {
     });
 });
 describe('vedleggbolker', function () {
-    var rootScope, element, scope, timeout, form, inputmodell;
+    var element, scope, timeout, form, inputmodell;
 
-    beforeEach(module('nav.vedleggbolker', 'nav.cms', 'templates-main', 'nav.accordion'));
+    beforeEach(module('nav.vedlegg', 'nav.cms', 'templates-main', 'nav.accordion'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel',

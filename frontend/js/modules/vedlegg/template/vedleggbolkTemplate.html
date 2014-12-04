@@ -1,0 +1,15 @@
+<div class="bolk-fokus">
+    <div class="vedlegg-bolk"
+            data-ng-class="{behandlet: !vedleggEr('VedleggKreves'),
+                                 ekstraVedlegg: !ekstraVedleggFerdig(),
+                                 validert: vedleggFerdigBehandlet()}">
+        <div class="flipp"></div>
+
+        <div data-behandlet-vedlegg data-status="forventning.innsendingsvalg"></div>
+        <p class="permitteringsnavn" data-ng-show="forventning.navn">{{forventning.navn}}</p>
+
+        <h2 class="stor">
+            <span>{{forventning.tittel}}</span>
+        </h2>
+    </div>
+</div>
