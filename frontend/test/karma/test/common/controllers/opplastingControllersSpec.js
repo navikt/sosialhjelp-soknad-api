@@ -65,6 +65,14 @@
             it("skal hente vedlegg", function() {
                 expect(scope.vedlegg).toNotBe(undefined);
             });
+            it("skal være annet vedlegg", function() {
+                scope.vedlegg.skjemaNummer = "N6";
+                expect(scope.erAnnetVedlegg()).toBeTruthy();
+            });
+            it("skal ikke være annet vedlegg", function() {
+                scope.vedlegg.skjemaNummer = "Y2";
+                expect(scope.erIkkeAnnetVedlegg()).toBeTruthy();
+            });
         });
 
         describe('OpplastingCtrl', function () {
