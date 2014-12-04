@@ -1,7 +1,7 @@
 [class^="hjelpetekst"] {
   display: inline-block;
   position: absolute;
-  top: -5px;
+  top: 0px;
   right: 0;
 
   &[class*="-inline"] {
@@ -134,16 +134,16 @@
   }
 }
 
+#ytelser,.modalBoks {
+  .hjelpetekst {
+    position: relative;
+    top: 0px;
+  }
+}
+
 .hjelpetekst-parent {
   position: relative;
   padding-right: 40px;
-}
-
-@media only screen and (min-width: 768px) {
-  .hjelpetekst {
-       position: relative;
-       top: 0;
-     }
 }
 
 @media only screen and (max-width: 767px) {
