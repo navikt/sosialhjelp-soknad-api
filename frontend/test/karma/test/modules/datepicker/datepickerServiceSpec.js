@@ -143,6 +143,10 @@ describe('datepicker services', function () {
                 expect(service.getMaskText('12.')).toBe('mm.yyyy');
             });
 
+            it('skal få tom string ved dato så 2 punktum', function() {
+                expect(service.getMaskText('12..')).toBe('');
+            });
+
             it('skal få m.yyyy ved rett dag-format og ett tall for måned', function() {
                 expect(service.getMaskText('12.1')).toBe('m.yyyy');
             });
@@ -160,8 +164,9 @@ describe('datepicker services', function () {
     describe('datepickerInputService', function () {
         var service;
         var periodKeyCode = 190;
-        var inputKeys = [];
-        var nonInputKeys = [periodKeyCode];
+        var inputKeys = [1,2,3,4,5,6, periodKeyCode];
+        var nonInputKeys = [7, 8, 9];
+        var maxLength = 10;
 
         beforeEach(module(function ($provide) {
             $provide.value('datepickerInputKeys', inputKeys);
@@ -173,7 +178,48 @@ describe('datepicker services', function () {
         }));
 
         describe('isValidInput', function() {
+            it('gyldig input-key og under maks-lengde skal returnere true', function() {
+                expect(service.isValidInput(1, 0, maxLength, 0)).toBe(true);
+            });
 
+            it('gyldig ikke input-key og under maks-lengde skal returnere true', function() {
+                expect(service.isValidInput(7, 0, maxLength, 0)).toBe(true);
+            });
+
+            it('ikke gyldig key skal returnere false', function() {
+                expect(service.isValidInput(100, 0, maxLength, 0)).toBe(false);
+            });
+
+            it('gyldig input-key men lengden er allerede på maks skal gi false', function() {
+                expect(service.isValidInput(1, maxLength, maxLength, 0)).toBe(false);
+            });
+
+            it('gyldig ikke input-key med lengde som allerede er på maks skal gi true', function() {
+                expect(service.isValidInput(7, maxLength, maxLength, 0)).toBe(true);
+            });
+
+            it('punktum skal bare være gyldig dersom caret er ved index 2 eller 5', function() {
+                expect(service.isValidInput(periodKeyCode, 0, maxLength, 2)).toBe(true);
+                expect(service.isValidInput(periodKeyCode, 0, maxLength, 5)).toBe(true);
+                expect(service.isValidInput(periodKeyCode, 0, maxLength, 6)).toBe(false);
+            });
+        });
+
+        describe('addPeriodAtRightIndex', function() {
+            it('skal sette inn punktum ved index 3 og 6', function() {
+                expect(service.addPeriodAtRightIndex('10', '1', 2)[0]).toBe('10.');
+                expect(service.addPeriodAtRightIndex('10.10', '10.1', 5)[0]).toBe('10.10.');
+            });
+
+            it('skal ikke sette inn punktum ved index annet enn 3 og 6', function() {
+                expect(service.addPeriodAtRightIndex('1', '', 1)[0]).toBe('1');
+                expect(service.addPeriodAtRightIndex('10.1', '10.', 4)[0]).toBe('10.1');
+            });
+
+            it('skal ikke sette inn punktum dersom det allerede er punktum ved index 3 og 6', function() {
+                expect(service.addPeriodAtRightIndex('10.', '10', 3)[0]).toBe('10.');
+                expect(service.addPeriodAtRightIndex('10.10.', '10.10', 6)[0]).toBe('10.10.');
+            });
         });
     });
 });
