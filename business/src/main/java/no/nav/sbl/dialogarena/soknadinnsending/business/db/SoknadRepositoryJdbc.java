@@ -263,9 +263,6 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         if(barneFaktum.getDependOnValues() != null) {
             count += finnAntallFaktumMedGittKeyOgEnAvFlereValues(soknadId, faktum.getId(), barneFaktum.getDependOnValues());
         }
-        if(barneFaktum.getDependOnValue() != null) {
-            count += finnAntallFaktumMedGittKeyOgValue(soknadId, faktum.getId(), barneFaktum.getDependOnValue());
-        }
         return sjekkOmVedleggErPaakrevd(soknadId, count, faktum);
     }
 

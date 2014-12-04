@@ -128,7 +128,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         on(repository.hentBarneFakta(soknadId, faktum.getFaktumId())).forEach(new Closure<Faktum>() {
             @Override
             public void execute(Faktum faktum) {
-                lagreSoknadsFelt(soknadId, faktum);
+                genererVedleggForFaktum(faktum);
             }
         });
 
@@ -581,12 +581,8 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         if(parent == null || faktum == null) {
             return true;
         } else {
-            if(erDependOnPropertyLikParentPropertyVerdi(faktum, parent) ||
-                    erParentValueNullOgVedleggDependOnFalse(faktum, parent) ||
-                    parentValueErLikDependOnVerdi(faktum, parent) ||
-                    parentValueErLikEnAvVerdieneIDependOnValues(faktum, parent)) {
-
-                Long parentParentFaktumId =  parent.getParrentFaktum();
+            if(parentValueErLikEnAvVerdieneIDependOnValues(faktum, parent)) {
+                Long parentParentFaktumId = parent.getParrentFaktum();
                 if(parentParentFaktumId == null) {
                     return true;
                 }
@@ -598,18 +594,10 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         }
     }
 
-    private boolean erDependOnPropertyLikParentPropertyVerdi(SoknadFaktum faktum, Faktum parent) {
-        String dependOnProperty = faktum.getDependOnProperty();
-        return (dependOnProperty != null && parentPropertyValueErLikDependOnverdi(faktum, parent));
-    }
-
-    private boolean parentValueErLikDependOnVerdi(SoknadFaktum faktum, Faktum parent) {
-        String value = parent.getValue();
-        String dependOnValue = faktum.getDependOnValue();
-        return value == null ? dependOnValue == null : value.equals(dependOnValue);
-    }
-
     private boolean parentValueErLikEnAvVerdieneIDependOnValues(SoknadFaktum faktum, Faktum parent) {
+        if(faktum.getDependOn() == null) {
+            return true;
+        }
         String value = parent.getValue();
         List<String> dependOnValues = faktum.getDependOnValues();
         if(dependOnValues != null) {
@@ -620,17 +608,6 @@ public class SoknadService implements SendSoknadService, EttersendingService {
             }
         }
         return false;
-    }
-
-    private boolean erParentValueNullOgVedleggDependOnFalse(SoknadFaktum faktum, Faktum parent) {
-        return parent.getValue() == null && "false".equalsIgnoreCase(faktum.getDependOnValue());
-    }
-
-    private boolean parentPropertyValueErLikDependOnverdi(SoknadFaktum faktum, Faktum parent) {
-        String dependOnPropertyName = faktum.getDependOnProperty();
-        String expectedPropertyValue = faktum.getDependOnValue();
-        String actualPropertyValue = parent.getProperties().get(dependOnPropertyName);
-        return actualPropertyValue.equalsIgnoreCase(expectedPropertyValue);
     }
 
     /**
