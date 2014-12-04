@@ -1,76 +1,27 @@
 angular.module('nav.vedlegg.bolker', [])
-    .directive('triggBolker', ['$timeout', function ($timeout) {
+    .directive('triggBolker', function ($timeout, bolk) {
         return {
             require: 'form',
             link: function ($scope, element, attrs, ctrl) {
                 $timeout(function () {
                     var bolker = $(".accordion-group");
-                    var bolkerMedFeil = finnBolkerMedOgUtenFeil(bolker);
-                    apneForsteBolkMedFeil(bolkerMedFeil.medFeil[0]);
+                    var bolkerMedFeil = bolk.finnBolkerMedOgUtenFeil(bolker);
+                    bolk.apneForsteBolkMedFeil(bolkerMedFeil.medFeil[0]);
                 }, 500);
 
                 //Bolker med feil og som er lukket skal åpnes ved validering av hele vedleggsiden
                 element.find('#til-oppsummering').bind('click', function () {
                     if (ctrl.$invalid) {
-                        var alleBolker = finnAlleBolker();
-                        var inndeltBolker = finnBolkerMedOgUtenFeil(alleBolker);
-                        apneFeilBolkerSomIkkeErApenFraFor(inndeltBolker.medFeil);
-                        lukkeRiktigBolkerSomIkkErLukketFraFor(inndeltBolker.utenFeil);
+                        var alleBolker = bolk.finnAlleBolker();
+                        var inndeltBolker = bolk.finnBolkerMedOgUtenFeil(alleBolker);
+                        bolk.apneFeilBolkerSomIkkeErApenFraFor(inndeltBolker.medFeil);
+                        bolk.lukkeRiktigBolkerSomIkkErLukketFraFor(inndeltBolker.utenFeil);
                     }
                 });
-
-                function apneFeilBolkerSomIkkeErApenFraFor(bolker) {
-                    for (var i = 0; i < bolker.length; i++) {
-                        var bolk = angular.element(bolker[i]);
-
-                        if (!(bolk.hasClass('open'))) {
-                            bolk.find('.accordion-toggle').triggerHandler('click');
-                        }
-                    }
-                }
-
-                function lukkeRiktigBolkerSomIkkErLukketFraFor(bolker) {
-                    for (var i = 0; i < bolker.length; i++) {
-                        var bolk = angular.element(bolker[i]);
-                        if (bolk.hasClass('open')) {
-                            bolk.find('.accordion-toggle').triggerHandler('click');
-                        }
-                    }
-                }
-
-                function apneForsteBolkMedFeil(bolk) {
-                    var bolkElement = angular.element(bolk);
-                    if(!(bolkElement.hasClass('open'))) {
-                        bolkElement.find('.accordion-toggle').triggerHandler('click');
-                    }
-                }
-
-                function bolkHarFeil(bolk) {
-                    return $(bolk).find('.vedlegg-bolk').hasClass('ekstraVedlegg') || !($(bolk).find('.vedlegg-bolk').hasClass('behandlet'));
-                }
-
-                function finnAlleBolker() {
-                    return $(".accordion-group");
-                }
-
-                function finnBolkerMedOgUtenFeil(bolker) {
-                    var bolkerMedFeil = [];
-                    var bolkerUtenfeil = [];
-
-                    for (var i = 0; i < bolker.length; i++) {
-                        if (bolkHarFeil(bolker[i])) {
-                            bolkerMedFeil.push(bolker[i]);
-                        } else {
-                            bolkerUtenfeil.push(bolker[i]);
-                        }
-                    }
-                    return {medFeil: bolkerMedFeil, utenFeil: bolkerUtenfeil };
-                }
-
             }
         };
-    }])
-    .directive('apneAnnetVedlegg', ['$interval', '$timeout', function ($interval, $timeout) {
+    })
+    .directive('apneAnnetVedlegg', function ($interval, $timeout) {
         return {
             link: function ($scope, element) {
                 element.bind('click', function () {
@@ -89,4 +40,4 @@ angular.module('nav.vedlegg.bolker', [])
                 });
             }
         };
-    }]);
+    });

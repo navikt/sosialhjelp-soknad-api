@@ -1,10 +1,10 @@
 angular.module('nav.vedlegg.controller', [])
-    .controller('VisVedleggCtrl', ['$scope', '$routeParams', 'vedleggService', 'data', function ($scope, $routeParams, vedleggService, data) {
+    .controller('VisVedleggCtrl', function ($scope, $routeParams, vedleggService, data) {
         $scope.vedlegg = vedleggService.get({
             soknadId: data.soknad.soknadId,
             vedleggId: $routeParams.vedleggId
         });
-    }])
+    })
     .controller('VedleggCtrl', function ($scope, $location, data, vedleggService, Faktum, soknadService, $timeout) {
         $scope.data = {soknadId: data.soknad.soknadId};
         $scope.forventninger = vedleggService.query({soknadId: data.soknad.soknadId});
@@ -55,7 +55,6 @@ angular.module('nav.vedlegg.controller', [])
                 });
         };
     })
-
     .controller('validervedleggCtrl', function ($scope, Faktum) {
         if ($scope.forventning.innsendingsvalg === "VedleggKreves") {
             $scope.hiddenFelt = {value: '' };
@@ -127,36 +126,5 @@ angular.module('nav.vedlegg.controller', [])
                 }
             }
         };
-    })
 
-    .directive('bildeNavigering', [function () {
-        return {
-            restrict: 'a',
-            replace: 'true',
-            templateUrl: '../../'
-        };
-    }])
-    .directive('fjernRadioValg', function() {
-        return {
-            scope:  {
-                forventning: '=fjernRadioValg'
-            },
-            link: function(scope, element, attrs) {
-                var forrigeValg = scope.forventning.innsendingsvalg;
-                var valg = attrs.value;
-                element.bind('click', function() {
-                    if (scope.forventning.innsendingsvalg === forrigeValg) {
-                        scope.forventning.innsendingsvalg = 'VedleggKreves';
-                        scope.$parent.endreInnsendingsvalg('', true);
-                        scope.forventning.$save();
-                    } else {
-                        scope.forventning.innsendingsvalg = valg;
-                        scope.forventning.$save();
-                        scope.$parent.endreInnsendingsvalg(true, false);
-                    }
-                    forrigeValg = scope.forventning.innsendingsvalg;
-                    scope.$apply();
-                });
-            }
-        };
     });
