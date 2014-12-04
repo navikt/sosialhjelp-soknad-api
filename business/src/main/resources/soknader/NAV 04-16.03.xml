@@ -10,49 +10,63 @@
         <type>java.lang.Boolean</type>
         <panel>ReelArbeidsoker</panel>
         <dependOn>reellarbeidssoker.villigdeltid</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigdeltid.reduserthelse</id>
         <type>java.lang.Boolean</type>
         <panel>ReelArbeidsoker</panel>
         <dependOn>reellarbeidssoker.villigdeltid</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigdeltid.omsorgansvar</id>
         <type>java.lang.Boolean</type>
         <panel>ReelArbeidsoker</panel>
         <dependOn>reellarbeidssoker.villigdeltid</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigdeltid.annensituasjon</id>
         <type>java.lang.Boolean</type>
         <panel>ReelArbeidsoker</panel>
         <dependOn>reellarbeidssoker.villigdeltid</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigdeltid.omsorgbarnunder1aar</id>
         <type>java.lang.Boolean</type>
         <panel>ReelArbeidsoker</panel>
         <dependOn>reellarbeidssoker.villigdeltid</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigdeltid.eneansvarbarnunder5skoleaar</id>
         <type>java.lang.Boolean</type>
         <panel>ReelArbeidsoker</panel>
         <dependOn>reellarbeidssoker.villigdeltid</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigdeltid.maksimalarbeidstid</id>
         <type>java.lang.Boolean</type>
         <panel>ReelArbeidsoker</panel>
         <dependOn>reellarbeidssoker.villigdeltid</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigpendle</id>
@@ -64,42 +78,54 @@
         <type>java.lang.Boolean</type>
         <panel>ReelArbeidsoker</panel>
         <dependOn>reellarbeidssoker.villigpendle</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigpendle.reduserthelse</id>
         <type>java.lang.Boolean</type>
         <panel>ReelArbeidsoker</panel>
         <dependOn>reellarbeidssoker.villigpendle</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigpendle.omsorgansvar</id>
         <type>java.lang.Boolean</type>
         <panel>ReelArbeidsoker</panel>
         <dependOn>reellarbeidssoker.villigpendle</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigpendle.annensituasjon</id>
         <type>java.lang.Boolean</type>
         <panel>ReelArbeidsoker</panel>
         <dependOn>reellarbeidssoker.villigpendle</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigpendle.pendleomsorgbarnunder1aar</id>
         <type>java.lang.Boolean</type>
         <panel>ReelArbeidsoker</panel>
         <dependOn>reellarbeidssoker.villigpendle</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigpendle.eneansvarbarnunder5skoleaar</id>
         <type>java.lang.Boolean</type>
         <panel>ReelArbeidsoker</panel>
         <dependOn>reellarbeidssoker.villigpendle</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villighelse</id>
@@ -111,7 +137,9 @@
         <type>java.lang.String</type>
         <panel>ReelArbeidsoker</panel>
         <dependOn>reellarbeidssoker.villighelse</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigjobb</id>
@@ -136,7 +164,9 @@
         <id>arbeidsforhold</id>
         <panel>NyeArbeidsforhold</panel>
         <dependOn>nyearbeidsforhold.arbeidsidensist</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
         <flereTillatt>true</flereTillatt>
     </faktum>
     <faktum>
@@ -144,7 +174,9 @@
         <panel>Arbeidsforhold</panel>
         <dependOn>arbeidsforhold</dependOn>
         <dependOnProperty>type</dependOnProperty>
-        <dependOnValue>Permittert</dependOnValue>
+        <dependOnValues>
+            <value>Permittert</value>
+        </dependOnValues>
         <flereTillatt>true</flereTillatt>
     </faktum>
 
@@ -182,7 +214,9 @@
         <type>java.lang.String</type>
         <panel>TidligereArbeidsforhold</panel>
         <dependOn>tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsidensist</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
 
     <faktum>
@@ -207,14 +241,18 @@
         <type>java.lang.String</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.driveregennaering</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>egennaering.drivergennaering.orgnummer</id>
         <type>java.lang.String</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.driveregennaering</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
         <flereTillatt>true</flereTillatt>
     </faktum>
     <faktum>
@@ -227,98 +265,126 @@
         <type>java.lang.String</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.gardsbruk</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.type.dyr</id>
         <type>java.lang.Boolean</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.gardsbruk</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.type.jord</id>
         <type>java.lang.Boolean</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.gardsbruk</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.type.skog</id>
         <type>java.lang.Boolean</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.gardsbruk</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.type.annet</id>
         <type>java.lang.Boolean</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.gardsbruk</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.eier.jeg</id>
         <type>java.lang.Boolean</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.gardsbruk</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.eier.ektefelle</id>
         <type>java.lang.Boolean</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.gardsbruk</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.eier.annet</id>
         <type>java.lang.Boolean</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.gardsbruk</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.eierandel.din</id>
         <type>java.lang.String</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.gardsbruk</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.eierandel.ektefelle</id>
         <type>java.lang.String</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.gardsbruk</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.eierandel.annet</id>
         <type>java.lang.String</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.gardsbruk</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.timer</id>
         <type>java.lang.String</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.gardsbruk</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.aar</id>
         <type>java.lang.String</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.gardsbruk</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.timeredegjoring</id>
         <type>java.lang.String</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.gardsbruk</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>egennaering.fangstogfiske</id>
@@ -330,7 +396,9 @@
         <type>java.lang.Boolean</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.fangstogfiske</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
 
     <!-- Verneplikt -->
@@ -351,140 +419,180 @@
         <type>java.lang.Boolean</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning</dependOn>
-        <dependOnValue>underUtdanning</dependOnValue>
+        <dependOnValues>
+            <value>underUtdanning</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>utdanning.kveld.folges</id>
         <type>java.lang.Boolean</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.kveld</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>utdanning.kveld.progresjonUnder50</id>
         <type>java.lang.Boolean</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.kveld</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>utdanning.kveld.PaabegyntUnder6mnd</id>
         <type>java.lang.Boolean</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.kveld</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>utdanning.kveld.sted</id>
         <type>java.lang.String</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.kveld</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>utdanning.kveld.navn</id>
         <type>java.lang.String</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.kveld</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>utdanning.kveld.varighet</id>
         <type>java.lang.String</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.kveld</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>utdanning.kortvarig</id>
         <type>java.lang.Boolean</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning</dependOn>
-        <dependOnValue>underUtdanning</dependOnValue>
+        <dependOnValues>
+            <value>underUtdanning</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>utdanning.kortvarig.sted</id>
         <type>java.lang.String</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.kortvarig</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>utdanning.kortvarig.navn</id>
         <type>java.lang.String</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.kortvarig</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>utdanning.kortvarig.varighet</id>
         <type>java.lang.String</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.kortvarig</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>utdanning.kortvarigflere</id>
         <type>java.lang.Boolean</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning</dependOn>
-        <dependOnValue>underUtdanning</dependOnValue>
+        <dependOnValues>
+            <value>underUtdanning</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>utdanning.kortvarigflere.sted</id>
         <type>java.lang.String</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.kortvarigflere</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>utdanning.kortvarigflere.navn</id>
         <type>java.lang.String</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.kortvarigflere</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>utdanning.kortvarigflere.varighet</id>
         <type>java.lang.String</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.kortvarigflere</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>utdanning.norsk</id>
         <type>java.lang.Boolean</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning</dependOn>
-        <dependOnValue>underUtdanning</dependOnValue>
+        <dependOnValues>
+            <value>underUtdanning</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>utdanning.norsk.sted</id>
         <type>java.lang.String</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.norsk</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>utdanning.norsk.varighet</id>
         <type>java.lang.String</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.norsk</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>underUtdanningAnnet</id>
         <type>java.lang.Boolean</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning</dependOn>
-        <dependOnValue>underUtdanning</dependOnValue>
+        <dependOnValues>
+            <value>underUtdanning</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>utdanning.introduksjon</id>
         <type>java.lang.Boolean</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning</dependOn>
-        <dependOnValue>underUtdanning</dependOnValue>
+        <dependOnValues>
+            <value>underUtdanning</value>
+        </dependOnValues>
     </faktum>
 
     <!-- Ytelser -->
@@ -493,119 +601,153 @@
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
         <dependOn>ingenYtelse</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>ytelser.stonadFisker.utbetaler</id>
         <type>java.lang.String</type>
         <panel>AndreYtelser</panel>
         <dependOn>stonadFisker</dependOn>
-        <dependOnValue>true</dependOnValue>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>garantilott</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
         <dependOn>ingenYtelse</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>garantilottUtbetaler</id>
         <type>java.lang.String</type>
         <panel>AndreYtelser</panel>
         <dependOn>garantilott</dependOn>
-        <dependOnValue>true</dependOnValue>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>offentligTjenestepensjon</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
         <dependOn>ingenYtelse</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>offentligTjenestepensjonUtbetaler</id>
         <type>java.lang.String</type>
         <panel>AndreYtelser</panel>
         <dependOn>offentligTjenestepensjon</dependOn>
-        <dependOnValue>true</dependOnValue>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>privatTjenestepensjon</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
         <dependOn>ingenYtelse</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>privatTjenestepensjonUtbetaler</id>
         <type>java.lang.String</type>
         <panel>AndreYtelser</panel>
         <dependOn>privatTjenestepensjon</dependOn>
-        <dependOnValue>true</dependOnValue>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>etterlonn</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
         <dependOn>ingenYtelse</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>etterlonnUtbetaler</id>
         <type>java.lang.String</type>
         <panel>AndreYtelser</panel>
         <dependOn>etterlonn</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>vartpenger</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
         <dependOn>ingenYtelse</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>vartpengerUtbetaler</id>
         <type>java.lang.String</type>
         <panel>AndreYtelser</panel>
         <dependOn>vartpenger</dependOn>
-        <dependOnValue>true</dependOnValue>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>dagpengerEOS</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
         <dependOn>ingenYtelse</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>dagpengerEOSUtbetalerLand</id>
         <type>java.lang.String</type>
         <panel>AndreYtelser</panel>
         <dependOn>dagpengerEOS</dependOn>
-        <dependOnValue>true</dependOnValue>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>annenYtelse</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
         <dependOn>ingenYtelse</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>annenYtelseType</id>
         <type>java.lang.String</type>
         <panel>AndreYtelser</panel>
         <dependOn>annenYtelse</dependOn>
-        <dependOnValue>true</dependOnValue>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>annenYtelseUtbetaler</id>
         <type>java.lang.String</type>
         <panel>AndreYtelser</panel>
         <dependOn>annenYtelse</dependOn>
-        <dependOnValue>true</dependOnValue>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>ingenYtelse</id>
@@ -617,42 +759,54 @@
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
         <dependOn>ingennavytelser</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>aap</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
         <dependOn>ingennavytelser</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>uforetrygd</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
         <dependOn>ingennavytelser</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>svangerskapspenger</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
         <dependOn>ingennavytelser</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>foreldrepenger</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
         <dependOn>ingennavytelser</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>ventelonn</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
         <dependOn>ingennavytelser</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>ingennavytelser</id>
@@ -669,7 +823,9 @@
         <type>java.lang.String</type>
         <panel>AndreYtelser</panel>
         <dependOn>ikkeavtale</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
 
     <!-- Reberegning -->
@@ -677,7 +833,9 @@
         <id>reberegning.nyberegning</id>
         <type>java.lang.Boolean</type>
         <dependOn>nyearbeidsforhold.arbeidsidensist</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
         <panel>Reberegning</panel>
     </faktum>
     <faktum>
@@ -685,14 +843,18 @@
         <type>java.lang.String</type>
         <panel>Reberegning</panel>
         <dependOn>reberegning.nyberegning</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reberegning.nyberegning.arbeidstid</id>
         <type>java.lang.Boolean</type>
         <panel>Reberegning</panel>
         <dependOn>reberegning.nyberegning</dependOn>
-        <dependOnValue>false</dependOnValue>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
 
     <!-- Tilleggsopplysninger -->
