@@ -79,7 +79,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>sendsoknad-consumer</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <!-- Avhengigheter med scope compile -->
