@@ -22,7 +22,6 @@ angular.module('sendsoknad.directives', [
 	'nav.aria',
 	'nav.norskDatoFilter',
     'nav.fokus',
-    'nav.vedleggbolker',
     'nav.sjekkBoklerValiditet',
     'nav.validerskjema',
     'nav.melding',

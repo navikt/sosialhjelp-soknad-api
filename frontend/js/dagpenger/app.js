@@ -15,5 +15,6 @@ angular.module('sendsoknad', [
     'nav.personalia',
     'nav.datepicker',
     'nav.arbeidsforhold',
-    'nav.scroll'
+    'nav.scroll',
+    'nav.vedlegg'
 ]);

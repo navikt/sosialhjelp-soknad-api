@@ -1,4 +1,4 @@
-angular.module('nav.vedleggbolker', [])
+angular.module('nav.vedlegg.bolker', [])
     .directive('triggBolker', ['$timeout', function ($timeout) {
         return {
             require: 'form',
@@ -64,8 +64,7 @@ angular.module('nav.vedleggbolker', [])
                             bolkerUtenfeil.push(bolker[i]);
                         }
                     }
-                    var resultatBolker = {medFeil: bolkerMedFeil, utenFeil: bolkerUtenfeil };
-                    return resultatBolker;
+                    return {medFeil: bolkerMedFeil, utenFeil: bolkerUtenfeil };
                 }
 
             }

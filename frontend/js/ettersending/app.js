@@ -11,5 +11,6 @@ angular.module('ettersending', [
     'templates-main',
     'nav.cms',
     'nav.personalia',
-    'nav.scroll'
+    'nav.scroll',
+    'nav.vedlegg'
 ]);

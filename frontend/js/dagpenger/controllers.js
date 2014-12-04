@@ -7,7 +7,6 @@ angular.module('sendsoknad.controllers', [
     'nav.opplasting.controller',
     'nav.barnetillegg',
     'nav.barn',
-    'nav.vedlegg.controller',
     'nav.fortsettsenere',
     'nav.dagpenger',
     'nav.dagpenger.informasjonsside',
