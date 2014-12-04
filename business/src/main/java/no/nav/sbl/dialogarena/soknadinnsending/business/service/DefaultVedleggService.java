@@ -247,7 +247,7 @@ public class DefaultVedleggService implements VedleggService {
             vedleggRepository.lagreVedleggMedData(soknadId, kvitteringVedlegg.getVedleggId(), kvitteringVedlegg);
         }
         WebSoknad soknad = repository.hentSoknad(soknadId);
-        fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(), kvitteringVedlegg.getFillagerReferanse(), soknad.getAktoerId(), new ByteArrayInputStream(kvitteringVedlegg.getData()));
+        fillagerService.lagreFil(soknad.getBrukerBehandlingId(), kvitteringVedlegg.getFillagerReferanse(), soknad.getAktoerId(), new ByteArrayInputStream(kvitteringVedlegg.getData()));
     }
 
     private void oppdaterInnholdIKvittering(Vedlegg vedlegg, byte[] data) {
