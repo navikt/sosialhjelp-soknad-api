@@ -386,6 +386,8 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         fillagerService.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(pdf));
 
         List<Vedlegg> vedleggForventnings = soknad.getVedlegg();
+        Vedlegg kvittering = vedleggRepository.hentVedleggForskjemaNummer(soknadId, null, Kodeverk.KVITTERING);
+        vedleggForventnings.add(kvittering);
 
         String skjemanummer = getSkjemanummer(soknad);
         String journalforendeEnhet = getJournalforendeEnhet(soknad);

@@ -40,6 +40,8 @@ import static org.apache.commons.lang3.StringUtils.split;
 @SuppressWarnings("PMD.TooManyMethods")
 public class HandleBarKjoerer implements HtmlGenerator {
 
+    public static final Locale NO_LOCALE = new Locale("nb", "no");
+    
     @Inject
     private Kodeverk kodeverk;
 
@@ -83,6 +85,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
         handlebars.registerHelper("forInnsendteVedlegg", generateForInnsendteVedleggHelper());
         handlebars.registerHelper("forIkkeInnsendteVedlegg", generateForIkkeInnsendteVedleggHelper());
         handlebars.registerHelper("hvisHarIkkeInnsendteDokumenter", generateHvisHarIkkeInnsendteDokumenterHelper());
+        handlebars.registerHelper("concat", generateConcatStringHelper());
         handlebars.registerHelper("skalViseRotasjonTurnusSporsmaal", generateSkalViseRotasjonTurnusSporsmaalHelper());
         handlebars.registerHelper("hvisLikCmsTekst", generateHvisLikCmsTekstHelper());
 
@@ -157,8 +160,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
                 WebSoknad soknad = finnWebSoknad(options.context);
                 Map<String, String> infoMap = new HashMap<>();
 
-                Locale locale = new Locale("nb", "no");
-                DateTimeFormatter dt = DateTimeFormat.forPattern("d. MMMM yyyy").withLocale(locale);
+                DateTimeFormatter dt = DateTimeFormat.forPattern("d. MMMM yyyy").withLocale(NO_LOCALE);
 
                 infoMap.put("sendtInn", String.valueOf(soknad.getInnsendteVedlegg().size()));
                 infoMap.put("ikkeSendtInn", String.valueOf(soknad.getVedlegg().size()));
@@ -234,7 +236,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
         return new Helper<String>() {
             @Override
             public CharSequence apply(String key, Options options) throws IOException {
-                return getCmsTekst(key, new Object[]{options.param(0)}, new Locale("nb", "NO"));
+                return getCmsTekst(key, new Object[]{options.param(0)}, NO_LOCALE);
             }
         };
     }
@@ -254,7 +256,20 @@ public class HandleBarKjoerer implements HtmlGenerator {
         return new Helper<String>() {
             @Override
             public CharSequence apply(String key, Options options) throws IOException {
-                return getCmsTekst(key, options.params, new Locale("nb", "NO"));
+                return getCmsTekst(key, options.params, NO_LOCALE);
+            }
+        };
+    }
+
+    private Helper<String> generateConcatStringHelper() {
+        return new Helper<String>() {
+            @Override
+            public CharSequence apply(String first, Options options) throws IOException {
+                StringBuilder builder = new StringBuilder(first);
+                for (Object string : options.params) {
+                    builder.append(string);
+                }
+                return builder.toString();
             }
         };
     }
@@ -503,7 +518,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
         return new Helper<Object>() {
             @Override
             public CharSequence apply(Object value, Options options) throws IOException {
-                if(value != null && getCmsTekst(options.param(0).toString(), new Object[]{}, new Locale("nb", "NO")).equalsIgnoreCase(value.toString())) {
+                if(value != null && getCmsTekst(options.param(0).toString(), new Object[]{}, NO_LOCALE).equalsIgnoreCase(value.toString())) {
                     return options.fn(this);
                 }
                 return options.inverse(this);
