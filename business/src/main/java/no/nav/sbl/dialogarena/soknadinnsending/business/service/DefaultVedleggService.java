@@ -21,7 +21,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigOpplastingTypeException;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -67,7 +67,7 @@ public class DefaultVedleggService implements VedleggService {
     private SendSoknadService soknadService;
 
     @Inject
-    private FillagerConnector fillagerConnector;
+    private FillagerService fillagerService;
 
     private PdfMerger pdfMerger = new PdfMerger();
     private PdfWatermarker watermarker = new PdfWatermarker();
@@ -198,7 +198,7 @@ public class DefaultVedleggService implements VedleggService {
         WebSoknad soknad = repository.hentSoknad(soknadId);
 
         logger.info("Lagrer fil til henvendelse for behandling {}, UUID: {}", soknad.getBrukerBehandlingId(), forventning.getFillagerReferanse());
-        fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(),
+        fillagerService.lagreFil(soknad.getBrukerBehandlingId(),
                 forventning.getFillagerReferanse(), soknad.getAktoerId(),
                 new ByteArrayInputStream(doc));
 

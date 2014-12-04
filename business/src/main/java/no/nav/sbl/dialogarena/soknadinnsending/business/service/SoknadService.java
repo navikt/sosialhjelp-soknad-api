@@ -23,8 +23,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStr
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
@@ -84,9 +84,9 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     @Named("vedleggRepository")
     private VedleggRepository vedleggRepository;
     @Inject
-    private HenvendelseConnector henvendelseConnector;
+    private HenvendelseService henvendelseService;
     @Inject
-    private FillagerConnector fillagerConnector;
+    private FillagerService fillagerService;
     @Inject
     private Kodeverk kodeverk;
     @Inject
@@ -206,7 +206,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
     private Map<String, Object> populerFraHenvendelse(String behandlingsId) {
         Map<String, Object> returnMap = new HashMap<>();
-        WSHentSoknadResponse wsSoknadsdata = henvendelseConnector.hentSoknad(behandlingsId);
+        WSHentSoknadResponse wsSoknadsdata = henvendelseService.hentSoknad(behandlingsId);
 
         XMLMetadataListe vedleggListe = (XMLMetadataListe) wsSoknadsdata.getAny();
         Optional<XMLMetadata> hovedskjema = on(vedleggListe.getMetadata()).filter(new InstanceOf<XMLMetadata>(XMLHovedskjema.class)).head();
@@ -216,10 +216,10 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
         SoknadInnsendingStatus status = SoknadInnsendingStatus.valueOf(wsSoknadsdata.getStatus());
         if (status.equals(UNDER_ARBEID)) {
-            byte[] bytes = fillagerConnector.hentFil(((XMLHovedskjema) hovedskjema.get()).getUuid());
+            byte[] bytes = fillagerService.hentFil(((XMLHovedskjema) hovedskjema.get()).getUuid());
             WebSoknad soknad = JAXB.unmarshal(new ByteArrayInputStream(bytes), WebSoknad.class);
             repository.populerFraStruktur(soknad);
-            List<WSInnhold> innhold = fillagerConnector.hentFiler(soknad.getBrukerBehandlingId());
+            List<WSInnhold> innhold = fillagerService.hentFiler(soknad.getBrukerBehandlingId());
             populerVedleggMedDataFraHenvendelse(soknad, innhold);
         }
 
@@ -248,7 +248,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     @Override
     public Map<String, String> hentInnsendtDatoForOpprinneligSoknad(String behandlingsId) {
         Map<String, String> result = new HashMap<>();
-        List<WSBehandlingskjedeElement> wsBehandlingskjedeElements = henvendelseConnector.hentBehandlingskjede(behandlingsId);
+        List<WSBehandlingskjedeElement> wsBehandlingskjedeElements = henvendelseService.hentBehandlingskjede(behandlingsId);
         List<WSBehandlingskjedeElement> sorterteBehandlinger = on(wsBehandlingskjedeElements).filter(
                 where(STATUS, (equalTo(SoknadInnsendingStatus.FERDIG)))).collect(new Comparator<WSBehandlingskjedeElement>() {
             @Override
@@ -285,7 +285,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
     @Override
     public Long startEttersending(String behandingsId) {
-        List<WSBehandlingskjedeElement> behandlingskjede = henvendelseConnector.hentBehandlingskjede(behandingsId);
+        List<WSBehandlingskjedeElement> behandlingskjede = henvendelseService.hentBehandlingskjede(behandingsId);
         WSHentSoknadResponse wsSoknadsdata = hentSisteIkkeAvbrutteSoknadIBehandlingskjede(behandlingskjede);
 
         if (wsSoknadsdata.getInnsendtDato() == null) {
@@ -321,12 +321,12 @@ public class SoknadService implements SendSoknadService, EttersendingService {
                     }
                 });
 
-        return henvendelseConnector.hentSoknad(sorterteBehandlinger.get(0).getBehandlingsId());
+        return henvendelseService.hentSoknad(sorterteBehandlinger.get(0).getBehandlingsId());
     }
 
     private WebSoknad lagEttersendingFraWsSoknad(WSHentSoknadResponse opprinneligInnsending, DateTime innsendtDato) {
-        String ettersendingsBehandlingId = henvendelseConnector.startEttersending(opprinneligInnsending);
-        WSHentSoknadResponse wsEttersending = henvendelseConnector.hentSoknad(ettersendingsBehandlingId);
+        String ettersendingsBehandlingId = henvendelseService.startEttersending(opprinneligInnsending);
+        WSHentSoknadResponse wsEttersending = henvendelseService.hentSoknad(ettersendingsBehandlingId);
 
         String behandlingskjedeId;
         if (opprinneligInnsending.getBehandlingskjedeId() != null) {
@@ -383,7 +383,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         }
 
         logger.info("Lagrer søknad som fil til henvendelse for behandling {}", soknad.getBrukerBehandlingId());
-        fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(pdf));
+        fillagerService.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(pdf));
 
         List<Vedlegg> vedleggForventnings = soknad.getVedlegg();
         Vedlegg kvittering = vedleggRepository.hentVedleggForskjemaNummer(soknadId, null, Kodeverk.KVITTERING);
@@ -399,7 +399,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
                 .withFilstorrelse("" + pdf.length)
                 .withUuid(soknad.getUuid())
                 .withJournalforendeEnhet(journalforendeEnhet);
-        henvendelseConnector.avsluttSoknad(soknad.getBrukerBehandlingId(),
+        henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(),
                 hovedskjema,
                 Transformers.convertToXmlVedleggListe(vedleggForventnings));
         repository.slettSoknad(soknadId);
@@ -446,8 +446,8 @@ public class SoknadService implements SendSoknadService, EttersendingService {
          * I tillegg blir det liggende igjen mange vedlegg for søknader som er avbrutt før dette kallet ble lagt til.
          * */
 
-        fillagerConnector.slettAlle(soknad.getBrukerBehandlingId());
-        henvendelseConnector.avbrytSoknad(soknad.getBrukerBehandlingId());
+        fillagerService.slettAlle(soknad.getBrukerBehandlingId());
+        henvendelseService.avbrytSoknad(soknad.getBrukerBehandlingId());
         repository.slettSoknad(soknadId);
     }
 
@@ -460,7 +460,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     public String startSoknad(String navSoknadId) {
         validerSkjemanummer(navSoknadId);
         String mainUid = randomUUID().toString();
-        String behandlingsId = henvendelseConnector
+        String behandlingsId = henvendelseService
                 .startSoknad(getSubjectHandler().getUid(), navSoknadId, mainUid);
         WebSoknad soknad = WebSoknad.startSoknad()
                 .medBehandlingId(behandlingsId).medskjemaNummer(navSoknadId)

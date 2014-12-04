@@ -29,14 +29,14 @@ public class ServicesApplicationConfig {
     private File brukerprofilDataDirectory;
 
     @Inject
-    private KodeverkPortType kodeverkService;
+    private KodeverkPortType kodeverkEndpoint;
 
     @Bean
     public Kodeverk kodeverk() {
         if (brukerprofilDataDirectory == null) {
             logger.warn("Definer property 'brukerprofil.datadir' for å aktivere fallback for kodeverk dersom tjenesten går ned");
         }
-        return new StandardKodeverk(kodeverkService, NORSK_BOKMAAL, optional(brukerprofilDataDirectory).map(appendPathname("kodeverkdump")));
+        return new StandardKodeverk(kodeverkEndpoint, NORSK_BOKMAAL, optional(brukerprofilDataDirectory).map(appendPathname("kodeverkdump")));
     }
     @Bean
     public JsonKodeverk jsonKodeverk(){

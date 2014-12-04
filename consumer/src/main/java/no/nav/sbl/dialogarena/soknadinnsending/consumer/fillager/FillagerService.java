@@ -23,23 +23,22 @@ import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
-public class FillagerConnector {
+public class FillagerService {
 
-    private static final Logger logger = getLogger(FillagerConnector.class);
+    private static final Logger logger = getLogger(FillagerService.class);
     @Inject
-    @Named("fillagerService")
-    private FilLagerPortType portType;
+    @Named("fillagerEndpoint")
+    private FilLagerPortType filLagerEndpoint;
     @Inject
-    @Named("fillagerServiceSelftest")
-    private FilLagerPortType portTypeSystemSecurity;
+    @Named("fillagerSelftestEndpoint")
+    private FilLagerPortType filLagerSelftestEndpoint;
 
     public void lagreFil(String behandlingsId, String uid, String fnr, InputStream fil) {
         logger.info("Skal lagre fil til henvendelse for behandling med ID {}. UUID: {}", behandlingsId, uid);
         try {
-
-            FilLagerPortType filLagerPortType = portType;
+            FilLagerPortType filLagerPortType = filLagerEndpoint;
             if (getSubjectHandler().getIdentType() == null) {
-                filLagerPortType = portTypeSystemSecurity;
+                filLagerPortType = filLagerSelftestEndpoint;
                 logger.debug("Bruker systembruker for kall");
             }
             filLagerPortType.lagre(behandlingsId, uid, fnr, new DataHandler(new ByteArrayDataSource(fil, "application/octet-stream")));
@@ -56,7 +55,7 @@ public class FillagerConnector {
     public byte[] hentFil(String uuid) {
         Holder<DataHandler> innhold = new Holder<>();
         try {
-            portType.hent(new Holder<>(uuid), innhold);
+            filLagerEndpoint.hent(new Holder<>(uuid), innhold);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             innhold.value.writeTo(baos);
             return baos.toByteArray();
@@ -69,7 +68,7 @@ public class FillagerConnector {
 
     public List<WSInnhold> hentFiler(String brukerBehandlingId) {
         try {
-            return portType.hentAlle(brukerBehandlingId);
+            return filLagerEndpoint.hentAlle(brukerBehandlingId);
         } catch (SOAPFaultException e) {
             throw new SystemException("Kunne ikke hente filer fra baksystem", e, "exception.system.baksystem");
         }
@@ -77,7 +76,7 @@ public class FillagerConnector {
 
     public void slettAlle(String behandlingsId) {
         try {
-            portType.slettAlle(behandlingsId);
+            filLagerEndpoint.slettAlle(behandlingsId);
         } catch (SOAPFaultException e) {
             throw new SystemException("Kunne ikke slette filer fra baksystem", e, "exception.system.baksystem");
         }
