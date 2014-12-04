@@ -171,15 +171,24 @@ public class SoknadServiceTest {
 
         when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(vedlegg);
 
+        when(vedleggRepository.hentVedleggForskjemaNummer(1L, null, Kodeverk.KVITTERING))
+                .thenReturn(new Vedlegg()
+                                .medFillagerReferanse("kvitteringRef")
+                                .medSkjemaNummer(Kodeverk.KVITTERING)
+                                .medInnsendingsvalg(Vedlegg.Status.LastetOpp)
+                                .medStorrelse(3L)
+                                .medAntallSider(1)
+                );
+
         soknadService.sendSoknad(1L, new byte[]{1, 2, 3});
         verify(henvendelsesConnector).avsluttSoknad(eq("123"), refEq(new XMLHovedskjema()
-                .withUuid("uidHovedskjema")
-                .withInnsendingsvalg(XMLInnsendingsvalg.LASTET_OPP.toString())
-                .withJournalforendeEnhet(RUTES_I_BRUT)
-                .withFilnavn(DAGPENGER)
-                .withFilstorrelse("3")
-                .withMimetype("application/pdf")
-                .withSkjemanummer(DAGPENGER)),
+                        .withUuid("uidHovedskjema")
+                        .withInnsendingsvalg(XMLInnsendingsvalg.LASTET_OPP.toString())
+                        .withJournalforendeEnhet(RUTES_I_BRUT)
+                        .withFilnavn(DAGPENGER)
+                        .withFilstorrelse("3")
+                        .withMimetype("application/pdf")
+                        .withSkjemanummer(DAGPENGER)),
                 refEq(
                         new XMLVedlegg()
                                 .withUuid("uidVedlegg1")
@@ -195,7 +204,18 @@ public class SoknadServiceTest {
                                 .withInnsendingsvalg(XMLInnsendingsvalg.SENDES_IKKE.toString())
                                 .withTilleggsinfo("")
                                 .withSkjemanummer("L7")
-                                .withFilnavn("L7")));
+                                .withFilnavn("L7")),
+                refEq(
+                        new XMLVedlegg()
+                                .withUuid("kvitteringRef")
+                                .withInnsendingsvalg(XMLInnsendingsvalg.LASTET_OPP.toString())
+                                .withFilnavn(Kodeverk.KVITTERING)
+                                .withTilleggsinfo("")
+                                .withFilstorrelse("3")
+                                .withSideantall(1)
+                                .withMimetype("application/pdf")
+                                .withSkjemanummer(Kodeverk.KVITTERING))
+        );
     }
 
     @Test(expected = ApplicationException.class)
@@ -371,7 +391,7 @@ public class SoknadServiceTest {
     }
 
     @Test
-    public  void skalStarteForsteEttersending() {
+    public void skalStarteForsteEttersending() {
         String behandlingsId = "soknadBehandlingId";
         String ettersendingsBehandlingId = "ettersendingBehandlingId";
 

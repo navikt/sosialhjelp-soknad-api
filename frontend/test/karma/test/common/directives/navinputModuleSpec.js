@@ -185,7 +185,7 @@ describe('navcheckbox', function () {
 
         scope = element.find('div').scope();
     }));
-    describe("navradio", function () {
+    describe("navcheckbox", function () {
         it('skal sette riktig tekster for hjelpetekst', function () {
             expect(scope.hjelpetekst.tittel).toBe('Min tittel');
             expect(scope.hjelpetekst.tekst).toBe('Min tekst');
@@ -513,3 +513,84 @@ describe('orgnrValidate', function () {
         });
     });
 });
+describe('navtall', function () {
+    var scope, element;
+
+    beforeEach(module('nav.input', 'nav.cms', 'templates-main'));
+
+    beforeEach(module(function ($provide) {
+        $provide.value("cms", {'tekster':
+        {'hjelpetekstlabel.hjelpetekst.tittel': 'Min tittel',
+            'hjelpetekstlabel.hjelpetekst.tekst': 'Min tekst'}
+        });
+        $provide.value("data", {});
+    }));
+
+    beforeEach(inject(function ($compile, $rootScope) {
+        element = angular.element(
+            '<form name="form" > ' +
+            '<div data-navtall' +
+            ' data-navconfig' +
+            ' data-nav-faktum="arbeidstilstand"' +
+            ' data-hjelpetekst="hjelpetekstlabel.hjelpetekst"' +
+            ' data-navsporsmal="hjelpetekstlabel.hjelpetekst"' +
+            ' data-navlabel="hjelpetekstlabel.hjelpetekst"' +
+            ' data-navfeilmelding="hjelpetekstlabel.hjelpetekst"' +
+            ' data-ng-model="faktum.value" ' +
+            ' data-navlabel="hjelpetekstlabel"' +
+            ' data-navminvalue="1"' +
+            ' data-regexvalidering="/^\\d+$/"' +
+            ' data-navmaxvalue="10"> ' + "</div>" +
+            '</form>');
+
+        $rootScope.faktum = { value: '' };
+        $compile(element)($rootScope);
+        $rootScope.$apply();
+
+        scope = element.find('div').scope();
+        scope.lagreFaktum = function(){};
+    }));
+
+    describe('tallRange', function(){
+        it('skal ikke lagre faktum hvis tallinput er over max', function () {
+            spyOn(scope, 'lagreFaktum');
+            var inputEl = element.find('input');
+            scope.form.navtall.$setViewValue("1234");
+            inputEl.blur();
+            expect(scope.lagreFaktum).wasNotCalled();
+        });
+
+        it('skal ikke lagre faktum hvis tallinput er under min', function () {
+            spyOn(scope, 'lagreFaktum');
+            var inputEl = element.find('input');
+            scope.form.navtall.$setViewValue("0");
+            inputEl.blur();
+            expect(scope.lagreFaktum).wasNotCalled();
+        });
+
+        it('skal lagre faktum hvis tallinput er mellom min og max', function () {
+            spyOn(scope, 'lagreFaktum');
+            var inputEl = element.find('input');
+            scope.form.navtall.$setViewValue("5");
+            inputEl.blur();
+            expect(scope.lagreFaktum).toHaveBeenCalled();
+        });
+
+        it('max skal være inklusiv', function () {
+            spyOn(scope, 'lagreFaktum');
+            var inputEl = element.find('input');
+            scope.form.navtall.$setViewValue("10");
+            inputEl.blur();
+            expect(scope.lagreFaktum).toHaveBeenCalled();
+        });
+
+        it('min skal ikke være inklusiv', function () {
+            spyOn(scope, 'lagreFaktum');
+            var inputEl = element.find('input');
+            scope.form.navtall.$setViewValue("1");
+            inputEl.blur();
+            expect(scope.lagreFaktum).wasNotCalled();
+        });
+    });
+});
+
