@@ -23,7 +23,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>sendsoknad-mock</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
@@ -184,7 +183,6 @@
             <artifactId>common-test</artifactId>
             <scope>test</scope>
         </dependency>
-
 
         <dependency>
             <groupId>no.nav.modig</groupId>
