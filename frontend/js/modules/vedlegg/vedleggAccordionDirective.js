@@ -2,7 +2,7 @@ angular.module('nav.vedlegg.accordion', [])
     .directive('behandletVedlegg', function () {
         return {
             replace: true,
-            template: '<div class="vedleggsnavn"><p class="mini behandlet" data-ng-if="status !== \'VedleggKreves\'" data-ng-bind-html="\'vedlegg.behandlet.\' +  status.toLowerCase()  | cmstekst "></p></div>',
+            template: '<div class="vedleggsnavn"><p class="mini behandlet" data-ng-if="status !== \'VedleggKreves\'" data-ng-bind-html="\'vedlegg.behandlet.\' +  status  | cmstekst "></p></div>',
             scope: {
                 status: '='
             }
