@@ -593,8 +593,6 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         }
     }
 
-
-
     private boolean parentValueErLikEnAvVerdieneIDependOnValues(SoknadFaktum faktum, Faktum parent) {
         if(faktum.getDependOn() == null) {
             return true;
