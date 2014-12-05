@@ -11,7 +11,7 @@ angular.module('nav.arbeidsforhold.turnus.directive',[])
             }
         };
     })
-    .directive('turnusblokk', function(cms) {
+    .directive('turnusblokk', function() {
         return {
             require: 'turnusblokkHarRotasjon',
             templateUrl: '../js/common/arbeidsforhold/templates/undersporsmaal/turnusblokkTemplate.html',
@@ -25,7 +25,7 @@ angular.module('nav.arbeidsforhold.turnus.directive',[])
             }
         };
     })
-    .directive('turnusblokkOppsummering', function(cms) {
+    .directive('turnusblokkOppsummering', function() {
         return {
             require: 'turnusblokkHarRotasjon',
 
