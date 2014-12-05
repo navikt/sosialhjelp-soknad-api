@@ -221,38 +221,6 @@ public class SoknadRepositoryJdbcTest {
     }
 
     @Test
-    public void skalReturnereAtVedleggErPaakrevd() {
-        opprettOgPersisterSoknad();
-        Faktum parentFaktum = new Faktum().medKey("key1").medValue("dependOnValue").medSoknadId(soknad.getSoknadId()).medType(BRUKERREGISTRERT);
-        Long parentFaktumId = soknadRepository.lagreFaktum(soknad.getSoknadId(), parentFaktum);
-        SoknadFaktum parentSoknadFaktum = new SoknadFaktum().medId("key1");
-
-        Faktum faktum = new Faktum().medKey("key2").medValue("true").medSoknadId(soknad.getSoknadId()).medType(BRUKERREGISTRERT).medParrentFaktumId(parentFaktumId);
-        soknadRepository.lagreFaktum(soknad.getSoknadId(), faktum);
-        SoknadFaktum soknadFaktum = new SoknadFaktum().medId("key2").medDependOn(parentSoknadFaktum).medDependOnValue("dependOnValue");
-        SoknadVedlegg vedlegg = new SoknadVedlegg().medFaktum(soknadFaktum);
-
-        Boolean vedleggPaakrevd = soknadRepository.isVedleggPaakrevd(soknadId, "true", vedlegg);
-        Assert.assertTrue(vedleggPaakrevd);
-    }
-
-    @Test
-    public void skalReturnereAtVedleggIkkeErPaakrevd() {
-        opprettOgPersisterSoknad();
-        Faktum parentFaktum = new Faktum().medKey("key1").medValue("false").medSoknadId(soknad.getSoknadId()).medType(BRUKERREGISTRERT);
-        Long parentFaktumId = soknadRepository.lagreFaktum(soknad.getSoknadId(), parentFaktum);
-        SoknadFaktum parentSoknadFaktum = new SoknadFaktum().medId("key1");
-
-        Faktum faktum = new Faktum().medKey("key2").medValue("true").medSoknadId(soknad.getSoknadId()).medType(BRUKERREGISTRERT).medParrentFaktumId(parentFaktumId);
-        soknadRepository.lagreFaktum(soknad.getSoknadId(), faktum);
-        SoknadFaktum soknadFaktum = new SoknadFaktum().medId("key2").medDependOn(parentSoknadFaktum).medDependOnValue("dependOnValue");
-        SoknadVedlegg vedlegg = new SoknadVedlegg().medFaktum(soknadFaktum);
-
-        Boolean vedleggPaakrevd = soknadRepository.isVedleggPaakrevd(soknadId, "true", vedlegg);
-        Assert.assertFalse(vedleggPaakrevd);
-    }
-
-    @Test
     public void skalReturnereAtVedleggErPaakrevdOmParentHarEnAvDependOnValues() {
         opprettOgPersisterSoknad();
         Faktum parentFaktum = new Faktum().medKey("key1").medValue("dependOnValue").medSoknadId(soknad.getSoknadId()).medType(BRUKERREGISTRERT);
@@ -293,11 +261,11 @@ public class SoknadRepositoryJdbcTest {
 
         Faktum parentFaktum = new Faktum().medKey("parent").medValue("parentValue").medSoknadId(soknad.getSoknadId()).medType(BRUKERREGISTRERT);
         Long parentFaktumId = soknadRepository.lagreFaktum(soknad.getSoknadId(), parentFaktum);
-        SoknadFaktum parentSoknadFaktum = new SoknadFaktum().medId("parent").medDependOn(parentParentSoknadFaktum).medDependOnValue("parentParentValue");
+        SoknadFaktum parentSoknadFaktum = new SoknadFaktum().medId("parent").medDependOn(parentParentSoknadFaktum).medDependOnValues(Arrays.asList("parentParentValue"));
 
         Faktum faktum = new Faktum().medKey("key").medValue("true").medSoknadId(soknad.getSoknadId()).medType(BRUKERREGISTRERT).medParrentFaktumId(parentFaktumId);
         soknadRepository.lagreFaktum(soknad.getSoknadId(), faktum);
-        SoknadFaktum soknadFaktum = new SoknadFaktum().medId("key").medDependOn(parentSoknadFaktum).medDependOnValue("parentValue");
+        SoknadFaktum soknadFaktum = new SoknadFaktum().medId("key").medDependOn(parentSoknadFaktum).medDependOnValues(Arrays.asList("parentValue"));
         SoknadVedlegg vedlegg = new SoknadVedlegg().medFaktum(soknadFaktum);
 
         Boolean vedleggPaakrevd = soknadRepository.isVedleggPaakrevd(soknadId, "true", vedlegg);
@@ -313,11 +281,11 @@ public class SoknadRepositoryJdbcTest {
 
         Faktum parentFaktum = new Faktum().medKey("parent").medValue("parentValue").medSoknadId(soknad.getSoknadId()).medType(BRUKERREGISTRERT);
         Long parentFaktumId = soknadRepository.lagreFaktum(soknad.getSoknadId(), parentFaktum);
-        SoknadFaktum parentSoknadFaktum = new SoknadFaktum().medId("parent").medDependOn(parentParentSoknadFaktum).medDependOnValue("parentParentValue");
+        SoknadFaktum parentSoknadFaktum = new SoknadFaktum().medId("parent").medDependOn(parentParentSoknadFaktum).medDependOnValues(Arrays.asList("parentParentValue"));
 
         Faktum faktum = new Faktum().medKey("key").medValue("true").medSoknadId(soknad.getSoknadId()).medType(BRUKERREGISTRERT).medParrentFaktumId(parentFaktumId);
         soknadRepository.lagreFaktum(soknad.getSoknadId(), faktum);
-        SoknadFaktum soknadFaktum = new SoknadFaktum().medId("key").medDependOn(parentSoknadFaktum).medDependOnValue("parentValue");
+        SoknadFaktum soknadFaktum = new SoknadFaktum().medId("key").medDependOn(parentSoknadFaktum).medDependOnValues(Arrays.asList("parentValue"));
         SoknadVedlegg vedlegg = new SoknadVedlegg().medFaktum(soknadFaktum);
 
         Boolean vedleggPaakrevd = soknadRepository.isVedleggPaakrevd(soknadId, "true", vedlegg);
