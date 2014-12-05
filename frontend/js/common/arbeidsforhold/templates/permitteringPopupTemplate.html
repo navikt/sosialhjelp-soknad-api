@@ -2,13 +2,13 @@
     <section>
         <div class="vertikal arbeidsforhold-spm" data-ng-form="nyPermitteringsperiodeForm" data-ng-controller="permitteringsperiodeNyttCtrl">
             <a href="javascript:void(0)" data-ng-click="lukk()" class="lukk" aria-label="{{'arbeidsforhold.nypermitteringsperiode.lukk.aria' | cmstekst}}"></a>
-            <h2 class="stor-strek">
+            <h2 class="stor-strek brekker">
                 <span data-ng-bind-html=" 'arbeidsforhold.nypermitteringsperiode.tittel'+cmsPostFix | cmstekst"></span>
             </h2>
 
             <div data-form-errors></div>
             <div data-permitterings-periode-input
-                    data-permitteringsperiode="permitteringsperiode"/>
+                    data-permitteringsperiode="permitteringsperiode"></div>
 
             <input type="hidden"
                     data-ng-model="datoIntervallErValidert.value"

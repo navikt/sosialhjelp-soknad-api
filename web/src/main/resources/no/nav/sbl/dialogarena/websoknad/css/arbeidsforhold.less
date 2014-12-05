@@ -1,4 +1,9 @@
 .arbeidsforhold-spm {
+
+    h2.brekker span {
+      line-height: 2.5rem;
+      display: inline-block;
+    }
   .med-topplinje {
     border-top: 1px solid #ddd;
     padding-top: 20px;
@@ -19,6 +24,16 @@
       .varighet:last-child {
         margin-top: 30px;
       }
+    }
+  }
+
+  .topplinje {
+    margin: 15px 15px 0 15px;
+    padding: 0 0 15px 0;
+    border-top: 1px solid #ddd;
+
+    &.lavere-bunn {
+      padding: 0;
     }
   }
 
@@ -53,7 +68,7 @@
       }
     }
     .nav-checkbox {
-      margin-top: 10px;
+      margin-top: 15px;
     }
 
     .form-linje .form-linje {
@@ -73,8 +88,14 @@
     }
   }
 
-  .ekstra-spm-boks.vedlegginfoboks {
-    margin-top: 10px;
+  .ekstra-spm-boks {
+    .vedlegginfoboks {
+      margin-top: 10px;
+    }
+    .infoboks {
+      padding-left: 0;
+      padding-right: 0;
+    }
   }
 
   .fiks-siste-boks {
@@ -85,6 +106,10 @@
 
   .infoboks + .vedlegginfoboks {
     margin-top: 30px;
+  }
+  .infoboks {
+    padding-left: 15px;
+    padding-right: 15px;
   }
 }
 
@@ -241,11 +266,14 @@
   margin-bottom: 20px;
   display: inline-block;
 }
+.permitteringsform {
+  padding: 15px 0;
+}
 
-.permittingsperiode-info {
+.permitteringsperiode-info {
   &.spm-boks {
     padding-bottom: 5px;
-    margin: 15px 15px 20px 15px;
+    margin: 15px 15px 0px 15px;
   }
 
   .felt-info {

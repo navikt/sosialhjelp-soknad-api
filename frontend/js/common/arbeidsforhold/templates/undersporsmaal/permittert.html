@@ -16,7 +16,7 @@
             data-endre-permitteringsperiode="aapneEndrePermitteringsperiode(permitteringsperiode)">
     </div>
 </div>
-<div data-ng-form name="permiteringsperiodeForm">
+<div data-ng-form name="permiteringsperiodeForm" class="permitteringsform">
     <div data-ng-if="permitteringsperioder.length < 2">
         <div data-permitterings-periode-input
                 data-permitteringsperiode="getForstePermitteringsperiode()">
@@ -24,18 +24,18 @@
     </div>
 
     <div class="nypermittering">
-        <a class="knapp-leggtil-liten" href="" data-ng-click="aapneLeggTilNyPermitteringsperiode(permiteringsperiodeForm)" data-ng-bind-html="'arbeidsforhold.nypermitteringsperiode.leggtil' | cmstekst"></a>
+        <a class="knapp-leggtil-liten" href="javascript:void(0)" aria-role="Button" data-ng-click="aapneLeggTilNyPermitteringsperiode(permiteringsperiodeForm)" data-ng-bind-html="'arbeidsforhold.nypermitteringsperiode.leggtil' | cmstekst"></a>
     </div>
 </div>
 
+<div class="topplinje"></div>
+
 <div class="varighet form-linje">
-    <h4 class="spm-sporsmal med-topplinje">
-        <div>
-            <span data-ng-bind-html=" 'arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet' | cmstekst"></span>
+    <h4 class="spm-sporsmal">
+        <span data-ng-bind-html=" 'arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet' | cmstekst"></span>
             <span data-nav-hjelpetekstelement
                     data-tittel="{{ 'arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.hjelptekst.tittel' | cmstekst }}"
                     data-tekst="{{ 'arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.hjelptekst.tekst' | cmstekst}}"></span>
-        </div>
     </h4>
 
     <div data-nav-dato-intervall
