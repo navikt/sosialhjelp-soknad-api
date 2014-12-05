@@ -125,12 +125,6 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
         Faktum resultat = repository.hentFaktum(soknadId, faktumId);
         genererVedleggForFaktum(resultat);
-        on(repository.hentBarneFakta(soknadId, faktum.getFaktumId())).forEach(new Closure<Faktum>() {
-            @Override
-            public void execute(Faktum faktum) {
-                genererVedleggForFaktum(faktum);
-            }
-        });
 
         return resultat;
     }
@@ -520,7 +514,6 @@ public class SoknadService implements SendSoknadService, EttersendingService {
                 Faktum parentFaktum = repository.hentFaktumMedKey(soknadId, soknadFaktum.getDependOn().getId());
                 f.setParrentFaktum(parentFaktum.getFaktumId());
             }
-
             repository.lagreFaktum(soknadId, f);
         }
     }
@@ -554,10 +547,16 @@ public class SoknadService implements SendSoknadService, EttersendingService {
                 vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
             }
         }
+
+        on(repository.hentBarneFakta(faktum.getSoknadId(), faktum.getFaktumId())).forEach(new Closure<Faktum>() {
+            @Override
+            public void execute(Faktum faktum) {
+                genererVedleggForFaktum(faktum);
+            }
+        });
     }
 
-    private boolean erVedleggKrevdAvAnnetFaktum(Faktum faktum,
-                                                SoknadStruktur struktur, SoknadVedlegg soknadVedlegg) {
+    private boolean erVedleggKrevdAvAnnetFaktum(Faktum faktum, SoknadStruktur struktur, SoknadVedlegg soknadVedlegg) {
         return !soknadVedlegg.getFlereTillatt() && annetFaktumHarForventning(faktum.getSoknadId(), soknadVedlegg.getSkjemaNummer(), soknadVedlegg.getOnValue(), struktur);
     }
 
@@ -594,11 +593,21 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         }
     }
 
+
+
     private boolean parentValueErLikEnAvVerdieneIDependOnValues(SoknadFaktum faktum, Faktum parent) {
         if(faktum.getDependOn() == null) {
             return true;
         }
-        String value = parent.getValue();
+
+        String value;
+        String dependOnPropertyName = faktum.getDependOnProperty();
+        if(dependOnPropertyName != null) {
+            value = parent.getProperties().get(dependOnPropertyName);
+        } else {
+            value = parent.getValue();
+        }
+
         List<String> dependOnValues = faktum.getDependOnValues();
         if(dependOnValues != null) {
             for(String dependOnValue : dependOnValues) {

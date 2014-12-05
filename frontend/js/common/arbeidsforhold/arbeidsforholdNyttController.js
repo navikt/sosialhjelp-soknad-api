@@ -155,6 +155,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
         }
 
         function lagreArbeidsforholdOgSluttaarsak() {
+            settParentfaktumForArbeidsforholdHvisAvhengerAvArbeidSidenSist();
             $scope.arbeidsforhold.$save({soknadId: data.soknad.soknadId}).then(function (arbeidsforholdData) {
                 var promises = [];
 
@@ -182,6 +183,13 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
                 }
 
 			});
+        }
+
+        function settParentfaktumForArbeidsforholdHvisAvhengerAvArbeidSidenSist() {
+            var parentFaktum = data.finnFaktum("nyearbeidsforhold.arbeidsidensist");
+            if(parentFaktum) {
+                $scope.arbeidsforhold.parrentFaktum = parentFaktum.faktumId
+            }
         }
 
         function getPermitteringsPerioderMedParentFaktum(parentFaktumId) {

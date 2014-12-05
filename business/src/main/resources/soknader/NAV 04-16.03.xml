@@ -836,7 +836,6 @@
         <dependOnValues>
             <value>false</value>
         </dependOnValues>
-        <panel>Reberegning</panel>
     </faktum>
     <faktum>
         <id>reberegning.nyberegning.startdato</id>
