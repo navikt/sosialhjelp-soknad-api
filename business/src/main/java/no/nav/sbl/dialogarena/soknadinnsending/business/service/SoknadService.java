@@ -578,7 +578,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     }
 
     private boolean erParentAktiv(SoknadFaktum faktum, Faktum parent) {
-        if(parent == null || faktum == null) {
+        if(parent == null) {
             return true;
         } else {
             if(parentValueErLikEnAvVerdieneIDependOnValues(faktum, parent)) {
