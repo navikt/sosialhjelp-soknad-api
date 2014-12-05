@@ -260,10 +260,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     private Boolean sjekkOmVedleggErPaakrevd(Long soknadId, Integer antallFunnet, SoknadFaktum faktum) {
         if(antallFunnet > 0) {
-            if(faktum.getDependOn() != null) {
-                return isVedleggPaakrevdParent(soknadId, faktum.getDependOn(), faktum);
-            }
-            return true;
+            return faktum.getDependOn() != null ? isVedleggPaakrevdParent(soknadId, faktum.getDependOn(), faktum) : Boolean.valueOf(true);
         }
         return false;
     }
@@ -281,8 +278,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
             return 0;
         }
 
-        String sql = "SELECT count(*) FROM soknadbrukerdata faktum " +
-                "WHERE faktum.soknad_id=? AND faktum.key=? AND faktum.value like ?";
+        String sql = "SELECT count(*) FROM soknadbrukerdata WHERE soknad_id=? AND key=? AND value like ?";
 
         try {
             return getJdbcTemplate().queryForObject(sql, Integer.class, soknadId, key, value);
@@ -297,8 +293,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
             return 0;
         }
 
-        String sql = "SELECT count(*) FROM soknadbrukerdata faktum " +
-                "WHERE faktum.soknad_id=:soknadid AND faktum.key=:faktumkey AND faktum.value IN (:dependonvalues)"; //
+        String sql = "SELECT count(*) FROM soknadbrukerdata WHERE soknad_id=:soknadid AND key=:faktumkey AND value IN (:dependonvalues)"; //
 
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("soknadid", soknadId);
