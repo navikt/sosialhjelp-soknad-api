@@ -45,7 +45,7 @@ angular.module('nav.arbeidsforhold.permitteringpopup', [])
             var eventString = 'RUN_VALIDATION' + form.$name;
             $scope.$broadcast(eventString);
 
-            $scope.runValidation(true);
+            $scope.runValidation(false);
 
             if (form.$valid) {
                 if (!$scope.endreModus) {
