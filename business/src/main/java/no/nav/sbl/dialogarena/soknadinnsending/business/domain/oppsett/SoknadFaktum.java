@@ -63,6 +63,11 @@ public class SoknadFaktum implements Serializable {
         dependOnValues = values;
     }
 
+    public SoknadFaktum medDependOnValues(List<String> values) {
+        setDependOnValues(values);
+        return this;
+    }
+
     public String getDependOnProperty() {
         return dependOnProperty;
     }

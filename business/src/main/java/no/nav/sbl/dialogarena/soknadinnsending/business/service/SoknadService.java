@@ -602,7 +602,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         List<String> dependOnValues = faktum.getDependOnValues();
         if(dependOnValues != null) {
             for(String dependOnValue : dependOnValues) {
-                if(value.equalsIgnoreCase(dependOnValue)) {
+                if(dependOnValue.equalsIgnoreCase(value)) {
                     return true;
                 }
             }
