@@ -3,6 +3,7 @@ angular.module('nav.arbeidsforhold.permittering.directive',[])
         return {
             templateUrl: '../js/common/arbeidsforhold/templates/permitteringsPeriodeInputTemplate.html',
             replace: true,
+            transclude: true,
             scope: {
                 permitteringsperiode: '='
             },
