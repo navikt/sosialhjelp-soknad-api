@@ -5,15 +5,16 @@
             <h2 class="stor-strek brekker">
                 <span data-ng-bind-html=" 'arbeidsforhold.nypermitteringsperiode.tittel'+cmsPostFix | cmstekst"></span>
             </h2>
-
-            <div data-form-errors></div>
             <div data-permitterings-periode-input
-                    data-permitteringsperiode="permitteringsperiode"></div>
+                    data-permitteringsperiode="permitteringsperiode">
 
-            <input type="hidden"
-                    data-ng-model="datoIntervallErValidert.value"
-                    data-ng-required="true"
-                    data-error-messages="'arbeidsforhold.nypermitteringsperiode.feil.overlapper'"/>
+                <span class="melding" data-ng-bind-html="'arbeidsforhold.nypermitteringsperiode.feil.overlapper' |cmstekst"></span>
+                <input type="hidden"
+                        class="datointervall-validering"
+                        data-hidden-input-validering
+                        data-ng-model="datoIntervallErValidert.value"
+                        data-ng-required="true"/>
+            </div>
 
             <div class="knapper-opprett">
                 <input class="knapp-hoved-liten" type="submit"

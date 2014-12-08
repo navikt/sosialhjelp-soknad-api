@@ -168,5 +168,38 @@ angular.module('nav.validering', ['nav.cms'])
                 });
             }
         };
+    })
+
+    .directive('hiddenInputValidering', function (cms) {
+        return {
+            require: ['^form', 'ngModel'],
+            link: function (scope, element, attrs, ctrl) {
+                var eventString = 'RUN_VALIDATION' + ctrl[0].$name;
+                var model = ctrl[1];
+                var formLinje = element.closest(".form-linje");
+
+                scope.$on(eventString, function () {
+                    if (erUgyldig()) {
+                        formLinje.addClass("feil boolean");
+                    }
+                });
+
+                function erUgyldig() {
+                    return !model.$modelValue || model.$modelValue.length === 0;
+                }
+
+                scope.$watch(function () {
+                    return model.$modelValue;
+                }, function (newVal, oldVal) {
+                    if (newVal !== oldVal && model.$modelValue.length > 0) {
+                        if ($('body').hasClass('contrast')) {
+                            fadeContrastFeilmelding(formLinje, element.prevAll('.melding'), 'feil', scope);
+                        } else {
+                            fadeFeilmelding(formLinje, element.prevAll('.melding'), 'feil', scope);
+                        }
+                    }
+                });
+            }
+        };
     });
 

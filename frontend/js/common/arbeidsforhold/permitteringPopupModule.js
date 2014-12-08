@@ -45,8 +45,6 @@ angular.module('nav.arbeidsforhold.permitteringpopup', [])
             var eventString = 'RUN_VALIDATION' + form.$name;
             $scope.$broadcast(eventString);
 
-            $scope.runValidation(false);
-
             if (form.$valid) {
                 if (!$scope.endreModus) {
                     $scope.lagreNyPermitteringsPeriode($scope.permitteringsperiode);

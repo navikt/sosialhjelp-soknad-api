@@ -96,8 +96,6 @@
         beforeEach(inject(function ($injector, $rootScope, $controller, data, _permitteringer_) {
             scope = $rootScope;
             scope.permitteringsperiode = {};
-            scope.runValidation = function () {
-            };
             permitteringer = _permitteringer_;
             ctrl = $controller('PermitteringPopupCtrl', {
                 $scope: scope
@@ -138,8 +136,6 @@
         beforeEach(inject(function ($injector, $rootScope, $controller, data, _permitteringer_, _permittering_) {
             scope = $rootScope;
             scope.permitteringsperiode = {};
-            scope.runValidation = function () {
-            };
             permitteringer = _permitteringer_;
             permittering = _permittering_;
             ctrl = $controller('PermitteringPopupCtrl', {
@@ -180,8 +176,6 @@
             scope.alleAndrePermitteringsperioder = permitteringer;
 
 
-            scope.runValidation = function () {
-            };
             scope.lagreNyPermitteringsPeriode = function (permitteringsperiode) {
             };
             scope.lukk = function () {
@@ -192,12 +186,10 @@
                 $scope: scope
             });
         }));
-        it("lagrePermitteringsperiode skal kalle runValidation true og broadcaste formnavnet", function () {
+        it("lagrePermitteringsperiode skal broadcaste formnavnet", function () {
             form.$name = "TestForm";
-            spyOn(scope, "runValidation");
             spyOn(scope, "$broadcast");
             scope.lagrePermitteringsperiode(form);
-            expect(scope.runValidation).toHaveBeenCalledWith(true);
             expect(scope.$broadcast).toHaveBeenCalledWith("RUN_VALIDATIONTestForm");
         });
         it("lagrePermitteringsperiode skal legge til ny permitteringsperiode i permitteringslisten når formen er valid og ikke i endreModus", function () {
