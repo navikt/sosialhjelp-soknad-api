@@ -1,10 +1,10 @@
 angular.module('nav.vedlegg.controller', [])
-    .controller('VisVedleggCtrl', ['$scope', '$routeParams', 'vedleggService', 'data', function ($scope, $routeParams, vedleggService, data) {
+    .controller('VisVedleggCtrl', function ($scope, $routeParams, vedleggService, data) {
         $scope.vedlegg = vedleggService.get({
             soknadId: data.soknad.soknadId,
             vedleggId: $routeParams.vedleggId
         });
-    }])
+    })
     .controller('VedleggCtrl', function ($scope, $location, data, vedleggService, Faktum, soknadService, $timeout) {
         $scope.data = {soknadId: data.soknad.soknadId};
         $scope.forventninger = vedleggService.query({soknadId: data.soknad.soknadId});
@@ -55,7 +55,6 @@ angular.module('nav.vedlegg.controller', [])
                 });
         };
     })
-
     .controller('validervedleggCtrl', function ($scope, Faktum) {
         if ($scope.forventning.innsendingsvalg === "VedleggKreves") {
             $scope.hiddenFelt = {value: '' };
@@ -125,44 +124,6 @@ angular.module('nav.vedlegg.controller', [])
                 if($scope.soknadOppsett.vedlegg[i].skjemaNummer == skjemanummer) {
                     return $scope.soknadOppsett.vedlegg[i];
                 }
-            }
-        };
-    })
-
-    .directive('bildeNavigering', [function () {
-        return {
-            restrict: 'a',
-            replace: 'true',
-            templateUrl: '../../'
-        };
-    }])
-    .directive('fjernRadioValg', function() {
-        return {
-            scope:  {
-                forventning: '=fjernRadioValg'
-            },
-            link: function(scope, element, attrs) {
-                function skalFjerneAvhukingen() {
-                    return scope.forventning.innsendingsvalg === scope.forventning.forrigeinnsendingsvalg;
-                }
-
-                function settInnsendingsvalg(nyttValg, hiddenValue, skalViseFeil) {
-                    scope.forventning.innsendingsvalg = nyttValg;
-                    scope.$parent.endreInnsendingsvalg(hiddenValue, skalViseFeil);
-                    scope.forventning.forrigeinnsendingsvalg = scope.forventning.innsendingsvalg;
-                    scope.forventning.$save();
-                    scope.$apply();
-                }
-
-                var valg = attrs.value;
-                element.bind('click', function() {
-                    if (skalFjerneAvhukingen()) {
-                        settInnsendingsvalg("VedleggKreves", '', true);
-                    } else {
-                        settInnsendingsvalg(valg, true, false);
-                    }
-
-                });
             }
         };
     });
