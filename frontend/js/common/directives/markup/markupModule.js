@@ -1,1 +1,6 @@
-angular.module('nav.markup', ['nav.markup.panelbelyst', 'nav.markup.navinfoboks', 'nav.markup.bodydirective', 'nav.markup.modalside']);
+angular.module('nav.markup', [
+    'nav.markup.panelbelyst',
+    'nav.markup.navinfoboks',
+    'nav.markup.bodydirective',
+    'nav.markup.modalside'
+]);
