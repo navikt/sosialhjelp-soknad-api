@@ -125,12 +125,6 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
         Faktum resultat = repository.hentFaktum(soknadId, faktumId);
         genererVedleggForFaktum(resultat);
-        on(repository.hentBarneFakta(soknadId, faktum.getFaktumId())).forEach(new Closure<Faktum>() {
-            @Override
-            public void execute(Faktum faktum) {
-                lagreSoknadsFelt(soknadId, faktum);
-            }
-        });
 
         return resultat;
     }
@@ -520,7 +514,6 @@ public class SoknadService implements SendSoknadService, EttersendingService {
                 Faktum parentFaktum = repository.hentFaktumMedKey(soknadId, soknadFaktum.getDependOn().getId());
                 f.setParrentFaktum(parentFaktum.getFaktumId());
             }
-
             repository.lagreFaktum(soknadId, f);
         }
     }
@@ -554,10 +547,16 @@ public class SoknadService implements SendSoknadService, EttersendingService {
                 vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
             }
         }
+
+        on(repository.hentBarneFakta(faktum.getSoknadId(), faktum.getFaktumId())).forEach(new Closure<Faktum>() {
+            @Override
+            public void execute(Faktum faktum) {
+                genererVedleggForFaktum(faktum);
+            }
+        });
     }
 
-    private boolean erVedleggKrevdAvAnnetFaktum(Faktum faktum,
-                                                SoknadStruktur struktur, SoknadVedlegg soknadVedlegg) {
+    private boolean erVedleggKrevdAvAnnetFaktum(Faktum faktum, SoknadStruktur struktur, SoknadVedlegg soknadVedlegg) {
         return !soknadVedlegg.getFlereTillatt() && annetFaktumHarForventning(faktum.getSoknadId(), soknadVedlegg.getSkjemaNummer(), soknadVedlegg.getOnValue(), struktur);
     }
 
@@ -578,15 +577,11 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     }
 
     private boolean erParentAktiv(SoknadFaktum faktum, Faktum parent) {
-        if(parent == null || faktum == null) {
+        if(parent == null) {
             return true;
         } else {
-            if(erDependOnPropertyLikParentPropertyVerdi(faktum, parent) ||
-                    erParentValueNullOgVedleggDependOnFalse(faktum, parent) ||
-                    parentValueErLikDependOnVerdi(faktum, parent) ||
-                    parentValueErLikEnAvVerdieneIDependOnValues(faktum, parent)) {
-
-                Long parentParentFaktumId =  parent.getParrentFaktum();
+            if(parentValueErLikEnAvVerdieneIDependOnValues(faktum, parent)) {
+                Long parentParentFaktumId = parent.getParrentFaktum();
                 if(parentParentFaktumId == null) {
                     return true;
                 }
@@ -598,39 +593,28 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         }
     }
 
-    private boolean erDependOnPropertyLikParentPropertyVerdi(SoknadFaktum faktum, Faktum parent) {
-        String dependOnProperty = faktum.getDependOnProperty();
-        return (dependOnProperty != null && parentPropertyValueErLikDependOnverdi(faktum, parent));
-    }
-
-    private boolean parentValueErLikDependOnVerdi(SoknadFaktum faktum, Faktum parent) {
-        String value = parent.getValue();
-        String dependOnValue = faktum.getDependOnValue();
-        return value == null ? dependOnValue == null : value.equals(dependOnValue);
-    }
-
     private boolean parentValueErLikEnAvVerdieneIDependOnValues(SoknadFaktum faktum, Faktum parent) {
-        String value = parent.getValue();
+        if(faktum.getDependOn() == null) {
+            return true;
+        }
+
+        String value;
+        String dependOnPropertyName = faktum.getDependOnProperty();
+        if(dependOnPropertyName != null) {
+            value = parent.getProperties().get(dependOnPropertyName);
+        } else {
+            value = parent.getValue();
+        }
+
         List<String> dependOnValues = faktum.getDependOnValues();
         if(dependOnValues != null) {
             for(String dependOnValue : dependOnValues) {
-                if(value.equalsIgnoreCase(dependOnValue)) {
+                if(dependOnValue.equalsIgnoreCase(value)) {
                     return true;
                 }
             }
         }
         return false;
-    }
-
-    private boolean erParentValueNullOgVedleggDependOnFalse(SoknadFaktum faktum, Faktum parent) {
-        return parent.getValue() == null && "false".equalsIgnoreCase(faktum.getDependOnValue());
-    }
-
-    private boolean parentPropertyValueErLikDependOnverdi(SoknadFaktum faktum, Faktum parent) {
-        String dependOnPropertyName = faktum.getDependOnProperty();
-        String expectedPropertyValue = faktum.getDependOnValue();
-        String actualPropertyValue = parent.getProperties().get(dependOnPropertyName);
-        return actualPropertyValue.equalsIgnoreCase(expectedPropertyValue);
     }
 
     /**

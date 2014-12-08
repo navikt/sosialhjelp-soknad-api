@@ -80,14 +80,6 @@ public class WebSoknadUtils {
         }
         return false;
     }
-    
-    private static boolean harBlittPermittertIEtAvArbeidsforholdene(WebSoknad soknad) {
-        List<Faktum> alleArbeidsforhold = soknad.getFaktaMedKey("arbeidsforhold");
-        if(!alleArbeidsforhold.isEmpty()) {
-            return on(alleArbeidsforhold).filter(where(TYPE, equalTo(PERMITTERT))).head().isSome();
-        }
-        return false;
-    }
 
     private static boolean ingenNyeArbeidsforhold(WebSoknad soknad) {
         Faktum nyeArbeidsforhold = soknad.getFaktumMedKey("nyearbeidsforhold.arbeidsidensist");

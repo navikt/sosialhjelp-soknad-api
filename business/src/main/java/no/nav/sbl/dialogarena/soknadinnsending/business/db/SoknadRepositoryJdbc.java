@@ -235,7 +235,17 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     @Override
     public List<Faktum> hentBarneFakta(Long soknadId, Long faktumId) {
-        return getJdbcTemplate().query("select * from soknadbrukerdata where soknad_id = ? and parrent_faktum = ?", faktumRowMapper, soknadId, faktumId);
+        String hentBarnefaktaSql = "select * from soknadbrukerdata where soknad_id = ? and parrent_faktum = ?";
+        String propertiesSql = "select * from FAKTUMEGENSKAP where soknad_id = ? and faktum_id=?";
+
+        List<Faktum> fakta = getJdbcTemplate().query(hentBarnefaktaSql, faktumRowMapper, soknadId, faktumId);
+        for(Faktum faktum : fakta) {
+            List<FaktumEgenskap> properties = getJdbcTemplate().query(propertiesSql, faktumEgenskapRowMapper, soknadId, faktum.getFaktumId());
+            for (FaktumEgenskap faktumEgenskap : properties) {
+                faktum.medEgenskap(faktumEgenskap);
+            }
+        }
+        return fakta;
     }
 
     @Override
@@ -259,9 +269,6 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         Integer count = 0;
         if(barneFaktum.getDependOnValues() != null) {
             count += finnAntallFaktumMedGittKeyOgEnAvFlereValues(soknadId, faktum.getId(), barneFaktum.getDependOnValues());
-        }
-        if(barneFaktum.getDependOnValue() != null) {
-            count += finnAntallFaktumMedGittKeyOgValue(soknadId, faktum.getId(), barneFaktum.getDependOnValue());
         }
         return sjekkOmVedleggErPaakrevd(soknadId, count, faktum);
     }

@@ -20,7 +20,6 @@ public class SoknadFaktum implements Serializable {
     private SoknadFaktum dependOn;
 
     private String dependOnProperty;
-    private String dependOnValue;
     private List<String> dependOnValues;
 
     private String flereTillatt;
@@ -54,14 +53,6 @@ public class SoknadFaktum implements Serializable {
         this.dependOn = dependOn;
     }
 
-    public String getDependOnValue() {
-        return dependOnValue;
-    }
-
-    public void setDependOnValue(String dependOnValue) {
-        this.dependOnValue = dependOnValue;
-    }
-
     @XmlElementWrapper(name = "dependOnValues")
     @XmlElement(name = "value")
     public List<String> getDependOnValues() {
@@ -70,6 +61,11 @@ public class SoknadFaktum implements Serializable {
 
     public void setDependOnValues(List<String> values) {
         dependOnValues = values;
+    }
+
+    public SoknadFaktum medDependOnValues(List<String> values) {
+        setDependOnValues(values);
+        return this;
     }
 
     public String getDependOnProperty() {
@@ -93,16 +89,6 @@ public class SoknadFaktum implements Serializable {
         return this;
     }
 
-    public SoknadFaktum medDependOnValue(String value) {
-        this.dependOnValue = value;
-        return this;
-    }
-
-    public SoknadFaktum medDependOnValues(List<String> values) {
-        this.dependOnValues = values;
-        return this;
-    }
-
     public SoknadFaktum medId(String id) {
         this.setId(id);
         return this;
@@ -115,7 +101,7 @@ public class SoknadFaktum implements Serializable {
                 .append("type", type)
                 .append("dependOn", dependOn)
                 .append("dependOnProperty", dependOnProperty)
-                .append("dependOnValue", dependOnValue)
+                .append("dependOnValues", dependOnValues.toString())
                 .append("flereTillatt", flereTillatt)
                 .append("erSystemFaktum", erSystemFaktum)
                 .toString();
