@@ -146,19 +146,22 @@ angular.module('nav.vedlegg.controller', [])
                     return scope.forventning.innsendingsvalg === scope.forventning.forrigeinnsendingsvalg;
                 }
 
+                function settInnsendingsvalg(nyttValg, hiddenValue, skalViseFeil) {
+                    scope.forventning.innsendingsvalg = nyttValg;
+                    scope.$parent.endreInnsendingsvalg(hiddenValue, skalViseFeil);
+                    scope.forventning.forrigeinnsendingsvalg = scope.forventning.innsendingsvalg;
+                    scope.forventning.$save();
+                    scope.$apply();
+                }
+
                 var valg = attrs.value;
                 element.bind('click', function() {
                     if (skalFjerneAvhukingen()) {
-                        scope.forventning.innsendingsvalg = 'VedleggKreves';
-                        scope.$parent.endreInnsendingsvalg('', true);
-                        scope.forventning.$save();
+                        settInnsendingsvalg("VedleggKreves", '', true);
                     } else {
-                        scope.forventning.innsendingsvalg = valg;
-                        scope.forventning.$save();
-                        scope.$parent.endreInnsendingsvalg(true, false);
+                        settInnsendingsvalg(valg, true, false);
                     }
-                    scope.$apply();
-                    scope.forventning.forrigeinnsendingsvalg = scope.forventning.innsendingsvalg;
+
                 });
             }
         };
