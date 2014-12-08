@@ -142,10 +142,13 @@ angular.module('nav.vedlegg.controller', [])
                 forventning: '=fjernRadioValg'
             },
             link: function(scope, element, attrs) {
-                var forrigeValg = scope.forventning.innsendingsvalg;
+                function skalFjerneAvhukingen() {
+                    return scope.forventning.innsendingsvalg === scope.forventning.forrigeinnsendingsvalg;
+                }
+
                 var valg = attrs.value;
                 element.bind('click', function() {
-                    if (scope.forventning.innsendingsvalg === forrigeValg) {
+                    if (skalFjerneAvhukingen()) {
                         scope.forventning.innsendingsvalg = 'VedleggKreves';
                         scope.$parent.endreInnsendingsvalg('', true);
                         scope.forventning.$save();
@@ -154,8 +157,8 @@ angular.module('nav.vedlegg.controller', [])
                         scope.forventning.$save();
                         scope.$parent.endreInnsendingsvalg(true, false);
                     }
-                    forrigeValg = scope.forventning.innsendingsvalg;
                     scope.$apply();
+                    scope.forventning.forrigeinnsendingsvalg = scope.forventning.innsendingsvalg;
                 });
             }
         };
