@@ -6,8 +6,11 @@ angular.module('nav.markup.navinfoboks', [])
             templateUrl: '../js/common/directives/markup/navinfoboksTemplate.html',
             link: function (scope, el, attrs) {
                 var infotekster = $parse(attrs.infotekster)(scope);
-                scope.infoTekster = [];
-                typeof infotekster === 'string' ? scope.infoTekster.push(infotekster) : scope.infoTekster = infotekster;
+                if (typeof infotekster === 'string') {
+                    scope.infoTekster = [infotekster];
+                } else {
+                    scope.infoTekster = infotekster;
+                }
             }
         };
     })
@@ -18,8 +21,11 @@ angular.module('nav.markup.navinfoboks', [])
             templateUrl: '../js/common/directives/markup/vedlegginfoboksTemplate.html',
             link: function (scope, el, attrs) {
                 var vedleggtekster = $parse(attrs.vedleggtekster)(scope);
-                scope.vedleggTekster = [];
-                typeof vedleggtekster === 'string' ? scope.vedleggTekster.push(vedleggtekster) : scope.vedleggTekster = vedleggtekster;
+                if (typeof vedleggtekster === 'string') {
+                    scope.vedleggTekster = [vedleggtekster];
+                } else {
+                    scope.vedleggTekster = vedleggtekster;
+                }
             }
         };
     });
