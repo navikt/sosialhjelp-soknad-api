@@ -468,20 +468,11 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         WebSoknadId websoknadId = new WebSoknadId();
         websoknadId.setId(soknadId);
 
-        List<String> bolker = Arrays.asList("reellarbeidssoker", "arbeidsforhold", "egennaering", "verneplikt", "utdanning", "ytelser", "personalia", "barnetillegg", "fritekst");
-        Map<String, String> erBolkerValidert = new HashMap<>();
-        for (String bolk : bolker) {
-            erBolkerValidert.put(bolk, "false");
-        }
-
         Faktum bolkerFaktum = new Faktum().medSoknadId(soknadId).medKey("bolker").medType(BRUKERREGISTRERT);
-        bolkerFaktum.setProperties(erBolkerValidert);
-
         repository.lagreFaktum(soknadId, bolkerFaktum);
+
         prepopulerSoknadsFakta(soknadId);
-
         opprettFaktumForLonnsOgTrekkoppgave(soknadId);
-
         return behandlingsId;
     }
 
