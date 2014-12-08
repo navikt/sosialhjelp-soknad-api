@@ -11,7 +11,9 @@ angular.module('nav.vedlegg.accordion', [])
                 scope.getCmsStatusNokkel = function() {
                     return 'vedlegg.behandlet.' + scope.status;
                 };
-                scope.vedleggKreves = scope.status !== 'VedleggKreves';
+                scope.vedleggKreves = function () {
+                    return scope.status !== 'VedleggKreves';
+                };
             }
         };
     })
