@@ -5,6 +5,13 @@ angular.module('nav.vedlegg.accordion', [])
             templateUrl: '../js/modules/vedlegg/template/vedleggAccordionBehandletTemplate.html',
             scope: {
                 status: '='
+            },
+
+            link: function(scope) {
+                scope.getCmsStatusNokkel = function() {
+                    return 'vedlegg.behandlet.' + scope.status;
+                };
+                scope.vedleggKreves = scope.status !== 'VedleggKreves';
             }
         };
     })
