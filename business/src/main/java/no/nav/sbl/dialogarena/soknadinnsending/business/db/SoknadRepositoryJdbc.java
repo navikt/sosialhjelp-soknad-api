@@ -221,6 +221,10 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
 
     private Faktum hentFaktum(final Long soknadId, final Long faktumId, boolean forUpdate) {
+        if(faktumId == null) {
+            return null;
+        }
+
         final String sql = "select * from SOKNADBRUKERDATA where soknad_id = ? and soknadbrukerdata_id = ? " + (forUpdate?" for update": "");
         String propertiesSql = "select * from FAKTUMEGENSKAP where soknad_id = ? and faktum_id=?";
 
