@@ -69,21 +69,16 @@
             </div>
 
             <div data-ng-if="erEosLandAnnetEnnNorge()">
-                <div class="ekstra-spm-boks" data-navinfoboks>
-                    <p class="sluttaarsak-informasjon" data-ng-bind-html=" 'barnetillegg.nyttbarn.land.eos' | cmstekst"></p>
+                <div class="ekstra-spm-boks" data-navinfoboks data-infotekster="['barnetillegg.nyttbarn.land.eos']">
                 </div>
             </div>
             <div data-ng-if="erIkkeEosLand()">
-                <div class="ekstra-spm-boks" data-navinfoboks>
-                    <p class="sluttaarsak-informasjon" data-ng-bind-html=" 'barnetillegg.nyttbarn.land.ikkeeos' | cmstekst"></p>
+                <div class="ekstra-spm-boks" data-navinfoboks data-infotekster="['barnetillegg.nyttbarn.land.ikkeeos']">
                 </div>
             </div>
 
             <div data-ng-if="barn.properties.land === 'NOR'">
-                <div class="ekstra-spm-boks" data-vedlegginfoboks>
-                    <ul>
-                        <li data-ng-bind-html="'Dagpenger.vedlegg.X8.header' | cmstekst"></li>
-                    </ul>
+                <div class="ekstra-spm-boks" data-vedlegginfoboks data-vedleggTekster="['Dagpenger.vedlegg.X8.header']">
                 </div>
             </div>
 

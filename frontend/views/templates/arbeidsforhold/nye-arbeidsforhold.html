@@ -1,0 +1,35 @@
+<div class="skjemaramme">
+    <div data-ng-form="nyeArbeidsforholdForm" class="skjemainnhold" data-ng-controller="ArbeidsforholdCtrl" data-nye-arbeidsforhold>
+        <div data-form-errors></div>
+
+        <div data-nav-faktum="nyearbeidsforhold.arbeidsidensist">
+            <div class="spm form-linje">
+                <div data-navconfig
+                     data-booleanradio
+                     data-nokkel="nyearbeidsforhold.arbeidsidensist">
+
+                    <div data-navinfoboks data-infotekster="['nyearbeisforhold.nyttarbeidsforhold.infoboks']">
+                    </div>
+                    <div data-arbeidsforhold-oppsummering></div>
+                    <div data-arbeidsforhold-leggtil-knapper></div>
+                </div>
+            </div>
+
+            <div id="aarsak-dagpenger-stanset" class="spm" data-ng-if="skalViseFritekstfelt()">
+                <div data-navtextarea
+                     data-navconfig
+                     data-nav-faktum="nyearbeidsforhold.aarsakdagpengerstanset"
+                     data-nokkel="nyearbeidsforhold.aarsakdagpengerstanset"
+                     data-maxlengde="500"
+                     data-obligatorisk="true">
+                </div>
+            </div>
+        </div>
+
+        <div data-ng-if="harJobbetSidenSistMotattDagpenger()" data-reberegning-dagpenger></div>
+        <div data-ng-if="erUtenlandskStatsborger()" data-grensearbeid ></div>
+        <div data-spmblokkferdig></div>
+    </div>
+</div>
+
+

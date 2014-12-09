@@ -17,10 +17,7 @@ import static no.nav.modig.lang.collections.ComparatorUtils.compareWith;
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.modig.lang.collections.PredicateUtils.equalTo;
 import static no.nav.modig.lang.collections.PredicateUtils.where;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_LANDKODE;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_TYPE_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.PERSONALIA_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.*;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.DATO_TIL;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.TYPE;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -36,6 +33,8 @@ public class WebSoknadUtils {
 
     public static final String DAGPENGER_VED_PERMITTERING = "NAV 04-01.04";
     public static final String DAGPENGER = "NAV 04-01.03";
+    public static final String GJENOPPTAK_VED_PERMITTERING = "NAV 04-16.04";
+    public static final String GJENOPPTAK = "NAV 04-16.03";
     public static final String EOS_DAGPENGER = "4304";
     public static final String RUTES_I_BRUT = "";
     public static final String PERMITTERT = "Permittert";
@@ -44,7 +43,6 @@ public class WebSoknadUtils {
     private static final Logger LOGGER = getLogger(WebSoknadUtils.class);
 
     private static String erPermittertellerHarRedusertArbeidstid(WebSoknad soknad) {
-
         List<Faktum> sluttaarsak = soknad.getFaktaMedKey("arbeidsforhold");
         boolean erPermittert;
         boolean harRedusertArbeidstid;
@@ -61,45 +59,81 @@ public class WebSoknadUtils {
                 return REDUSERT_ARBEIDSTID;
             }
         }
+
+        if (soknad.erGjenopptak()){
+            if(ingenNyeArbeidsforhold(soknad) && varPermittertForrigeGangDuSokteOmDagpenger(soknad)){
+                return PERMITTERT;
+            }
+        }
         return ANNEN_AARSAK;
     }
 
+    private static boolean varPermittertForrigeGangDuSokteOmDagpenger(WebSoknad soknad) {
+        Faktum permittertForrigeGang = soknad.getFaktumMedKey("tidligerearbeidsforhold.permittert");
+        if(permittertForrigeGang == null){
+            return false;
+        }
+
+        String value = permittertForrigeGang.getValue();
+        if(value.equals("permittertFiske") || value.equals("permittert")){
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean ingenNyeArbeidsforhold(WebSoknad soknad) {
+        Faktum nyeArbeidsforhold = soknad.getFaktumMedKey("nyearbeidsforhold.arbeidsidensist");
+        if(nyeArbeidsforhold == null){
+            return false;
+        }
+        return nyeArbeidsforhold.getValue().equals("true");
+    }
 
     public static String getSkjemanummer(WebSoknad soknad) {
         if (soknad.erEttersending()) {
             return soknad.getskjemaNummer();
         }
 
-        String sluttaarsak = erPermittertellerHarRedusertArbeidstid(soknad);
-        if (sluttaarsak.equals(PERMITTERT)) {
-            return DAGPENGER_VED_PERMITTERING;
-        } else {
-            return DAGPENGER;
+        boolean erPermittert = erPermittertellerHarRedusertArbeidstid(soknad).equals(PERMITTERT);
+
+        if(soknad.erGjenopptak()) {
+            return erPermittert ? GJENOPPTAK_VED_PERMITTERING : GJENOPPTAK;
         }
+        return erPermittert ? DAGPENGER_VED_PERMITTERING : DAGPENGER;
     }
 
     public static String getJournalforendeEnhet(WebSoknad webSoknad) {
-        String sluttaarsak = erPermittertellerHarRedusertArbeidstid(webSoknad);
-        Personalia personalia = getPerson(webSoknad);
-
         if (webSoknad.erEttersending()) {
             return webSoknad.getJournalforendeEnhet();
         } else {
-            return finnJournalforendeEnhetForSoknad(sluttaarsak, personalia);
-
+            return finnJournalforendeEnhetForSoknad(webSoknad);
         }
     }
 
-    private static String finnJournalforendeEnhetForSoknad(String sluttaarsak, Personalia personalia) {
-        if ((personalia.harUtenlandskAdresseIEOS() && (!personalia.harNorskMidlertidigAdresse()))) {
-            if (sluttaarsak.equals(PERMITTERT) || (sluttaarsak.equals(REDUSERT_ARBEIDSTID))) {
-                return EOS_DAGPENGER;
-            } else {
-                return RUTES_I_BRUT;
-            }
-        } else {
-            return RUTES_I_BRUT;
+    private static boolean erGrensearbeider(WebSoknad webSoknad) {
+        Faktum grensearbeiderFaktum = webSoknad.getFaktumMedKey("arbeidsforhold.grensearbeider");
+        boolean erGrensearbeider = false;
+        if(grensearbeiderFaktum != null && grensearbeiderFaktum.getValue() != null){
+            erGrensearbeider = grensearbeiderFaktum.getValue().equals("false");
         }
+        return erGrensearbeider;
+    }
+
+    private static String finnJournalforendeEnhetForSoknad(WebSoknad webSoknad) {
+        String sluttaarsak = erPermittertellerHarRedusertArbeidstid(webSoknad);
+        Personalia personalia = getPerson(webSoknad);
+
+        if (sluttaarsak.equals(PERMITTERT) || (sluttaarsak.equals(REDUSERT_ARBEIDSTID))) {
+            if ((personalia.harUtenlandskAdresseIEOS() && (!personalia.harNorskMidlertidigAdresse()))) {
+                return EOS_DAGPENGER;
+            }
+            boolean erUtenlandskStatsborger = personalia.getStatsborgerskap().equals("NOR") ? false : true;
+            if (erGrensearbeider(webSoknad) && erUtenlandskStatsborger){
+                return EOS_DAGPENGER;
+            }
+        }
+
+        return RUTES_I_BRUT;
     }
 
 
@@ -110,8 +144,12 @@ public class WebSoknadUtils {
         gjeldendeAdresse.setAdresse(properties.get(GJELDENDEADRESSE_KEY));
         gjeldendeAdresse.setAdressetype(properties.get(GJELDENDEADRESSE_TYPE_KEY));
         gjeldendeAdresse.setLandkode(properties.get(GJELDENDEADRESSE_LANDKODE));
+        Adresse senkundarAdresse = new Adresse();
+        senkundarAdresse.setAdresse(properties.get(SEKUNDARADRESSE_KEY));
+        senkundarAdresse.setAdressetype(properties.get(SEKUNDARADRESSE_TYPE_KEY));
+        senkundarAdresse.setLandkode(properties.get(SEKUNDARADRESSE_LANDKODE));
         return PersonaliaBuilder.with()
-                .gjeldendeAdresse(gjeldendeAdresse)
+                .gjeldendeAdresse(gjeldendeAdresse).sekundarAdresse(senkundarAdresse).statsborgerskap(properties.get(STATSBORGERSKAP_KEY))
                 .build();
     }
 

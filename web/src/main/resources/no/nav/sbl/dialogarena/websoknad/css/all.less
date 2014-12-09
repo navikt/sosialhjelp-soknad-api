@@ -115,13 +115,13 @@ input[type="number"]::-webkit-outer-spin-button {
     h5 {
       font-size: 0.875rem;
       margin-top: 0;
-        margin-bottom: 10px;
+      margin-bottom: 10px;
     }
 
     ul {
       padding-left: 15px;
-        margin-top: 10px;
-        margin-bottom: 10px;
+      margin-top: 10px;
+      margin-bottom: 10px;
 
       p {
         margin: 0;
@@ -130,11 +130,12 @@ input[type="number"]::-webkit-outer-spin-button {
   }
 }
 
+a p {
+  color: #3e3832;
+}
+
 @media only screen and (max-width: 767px) {
   .vedlegginfoboks {
-    margin-right: 0;
-    margin-left: 0;
-
     .ikon-vedlegg-strek {
       background-image: none;
       padding-left: 0;
@@ -836,14 +837,7 @@ form, [ng-form], [data-ng-form] {
   background-color: transparent;
   background-repeat: no-repeat;
 
-  &:hover {
+  &:hover, &:focus, &:active {
     background: url("../img/kryss_hover.svg");
-  }
-}
-
-#ytelser {
-  .hjelpetekst {
-    position: relative;
-    top: 0;
   }
 }

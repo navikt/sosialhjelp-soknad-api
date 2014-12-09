@@ -1,0 +1,92 @@
+<h2>{{ hentTekst "tidligerearbeidsforhold.tittel" }}</h2>
+<table>
+    {{#forFaktum "tidligerearbeidsforhold.permittert"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                {{#hvisLik "permittertFiske" value}}
+                    <span>{{ hentTekst "tidligerearbeidsforhold.permittert.jafiske" }}</span>
+                {{/hvisLik}}
+                {{#hvisLik "permittert" value}}
+                    <span>{{ hentTekst "tidligerearbeidsforhold.permittert.ja" }}</span>
+                {{/hvisLik}}
+                {{#hvisLik "ikkePermittert" value}}
+                    <span>{{ hentTekst "tidligerearbeidsforhold.permittert.nei" }}</span>
+                {{/hvisLik}}
+            </td>
+        </tr>
+        {{#hvisLik "ikkePermittert" value}}
+        {{else}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{ hentTekst "tidligerearbeidsforhold.tidligerearbeidsgiver.oppsummering" }}</span>
+                    <span>{{ hentFaktumValue "tidligerearbeidsforhold.tidligerearbeidsgiver"}}</span>
+                </td>
+            </tr>
+
+            {{#forFaktum "tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsidensist"}}
+                {{#hvisSant value}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>
+                            <span>{{ hentTekstMedFaktumParameter
+                                        "tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsidensist.true"
+                                        "tidligerearbeidsforhold.tidligerearbeidsgiver" }}</span>
+                        </td>
+                    </tr>
+                {{else}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>
+                            <span>{{ hentTekstMedFaktumParameter
+                                        "tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsidensist.false"
+                                        "tidligerearbeidsforhold.tidligerearbeidsgiver" }}</span>
+                        </td>
+                    </tr>
+                    {{#forFaktum "tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsammenhengende"}}
+                        <tr>
+                            <td class="sjekket"></td>
+                            <td>
+                                {{#hvisSant value}}
+                                    {{#forFaktum "tidligerearbeidsforhold.permittert"}}
+                                        {{#hvisLik value "permittert"}}
+                                            <span>{{ hentTekst "tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsammenhengende.alt1"}}</span>
+                                        {{else}}
+                                            <span>{{ hentTekst "tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsammenhengende.fiske.alt1"}}</span>
+                                        {{/hvisLik}}
+                                    {{/forFaktum}}
+                                {{else}}
+                                    {{#forFaktum "tidligerearbeidsforhold.permittert"}}
+                                        {{#hvisLik value "permittert"}}
+                                            <span>{{ hentTekst "tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsammenhengende.alt2"}}</span>
+                                        {{else}}
+                                            <span>{{ hentTekst "tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsammenhengende.fiske.alt2"}}</span>
+                                        {{/hvisLik}}
+                                    {{/forFaktum}}
+                                {{/hvisSant}}
+                            </td>
+                        </tr>
+                    {{/forFaktum}}
+                {{/hvisSant}}
+            {{/forFaktum}}
+
+            {{#forFaktum "tidligerearbeidsforhold.tidligerearbeidsgiver.fortsattansatt"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td>
+                        {{#hvisSant value}}
+                            <span>{{ hentTekstMedFaktumParameter
+                                        "tidligerearbeidsforhold.tidligerearbeidsgiver.fortsattansatt.true"
+                                        "tidligerearbeidsforhold.tidligerearbeidsgiver" }}</span>
+                        {{else}}
+                            <span>{{ hentTekstMedFaktumParameter
+                                        "tidligerearbeidsforhold.tidligerearbeidsgiver.fortsattansatt.false"
+                                        "tidligerearbeidsforhold.tidligerearbeidsgiver" }}</span>
+                        {{/hvisSant}}
+                    </td>
+                </tr>
+            {{/forFaktum}}
+        {{/hvisLik}}
+    {{/forFaktum}}
+</table>

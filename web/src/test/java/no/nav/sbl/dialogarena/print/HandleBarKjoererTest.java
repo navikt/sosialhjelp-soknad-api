@@ -42,7 +42,7 @@ public class HandleBarKjoererTest {
     @Test
     public void skalKompilereDagpenger() throws IOException {
         WebSoknad soknad = new WebSoknad()
-                .medFaktum(new Faktum().medKey("personalia").medProperty("fnr", "15038000000").medProperty("navn", "Test Nordmann").medProperty("alder", "40"))
+                .medFaktum(new Faktum().medKey("personalia").medProperty("fnr", "15038000000").medProperty("navn", "Test Nordmann").medProperty("alder", "40").medProperty("statsborgerskap", "NOR"))
                 .medFaktum(new Faktum().medKey("arbeidsforhold").medProperty("type", "konkurs").medProperty("navn", "Test").medProperty("datofra", "2010-01-01").medProperty("datoTil", "2013-01-01"))
                 .medFaktum(new Faktum().medKey("barn").medType(SYSTEMREGISTRERT).medProperty("fnr", "01010091736").medProperty("navn", "test barn").medProperty("barnetillegg", "true"))
                 .medFaktum(new Faktum().medKey("barn").medType(BRUKERREGISTRERT).medProperty("fodselsdato", "2013-01-01").medProperty("navn", "test barn").medProperty("barnetillegg", "true"))
@@ -59,7 +59,7 @@ public class HandleBarKjoererTest {
     @Test
     public void skalReprodusereFeil() throws IOException {
         WebSoknad soknad = new WebSoknad()
-                .medFaktum(new Faktum().medKey("personalia").medProperty("fnr", "15038000000").medProperty("navn", "Test Nordmann").medProperty("alder", "40"))
+                .medFaktum(new Faktum().medKey("personalia").medProperty("fnr", "15038000000").medProperty("navn", "Test Nordmann").medProperty("alder", "40").medProperty("statsborgerskap", "NOR"))
                 .medFaktum(new Faktum().medKey("arbeidsforhold")
                         .medProperty("type", "konkurs")
                         .medProperty("navn", "Test")

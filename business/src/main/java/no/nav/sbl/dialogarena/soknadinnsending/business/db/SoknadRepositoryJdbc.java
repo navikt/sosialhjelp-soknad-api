@@ -10,13 +10,17 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.FaktumEgenskap;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.stereotype.Component;
@@ -217,6 +221,10 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
 
     private Faktum hentFaktum(final Long soknadId, final Long faktumId, boolean forUpdate) {
+        if(faktumId == null) {
+            return null;
+        }
+
         final String sql = "select * from SOKNADBRUKERDATA where soknad_id = ? and soknadbrukerdata_id = ? " + (forUpdate?" for update": "");
         String propertiesSql = "select * from FAKTUMEGENSKAP where soknad_id = ? and faktum_id=?";
 
@@ -231,26 +239,78 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     @Override
     public List<Faktum> hentBarneFakta(Long soknadId, Long faktumId) {
-        return getJdbcTemplate().query("select * from soknadbrukerdata where soknad_id = ? and parrent_faktum = ?", faktumRowMapper, soknadId, faktumId);
+        String hentBarnefaktaSql = "select * from soknadbrukerdata where soknad_id = ? and parrent_faktum = ?";
+        String propertiesSql = "select * from FAKTUMEGENSKAP where soknad_id = ? and faktum_id=?";
+
+        List<Faktum> fakta = getJdbcTemplate().query(hentBarnefaktaSql, faktumRowMapper, soknadId, faktumId);
+        for(Faktum faktum : fakta) {
+            List<FaktumEgenskap> properties = getJdbcTemplate().query(propertiesSql, faktumEgenskapRowMapper, soknadId, faktum.getFaktumId());
+            for (FaktumEgenskap faktumEgenskap : properties) {
+                faktum.medEgenskap(faktumEgenskap);
+            }
+        }
+        return fakta;
     }
 
     @Override
-    public Boolean isVedleggPaakrevd(Long soknadId, String key, String value, String dependOnValue) {
-        String sql = "SELECT count(*) FROM soknadbrukerdata faktum " +
-                "LEFT OUTER JOIN soknadbrukerdata parent on parent.soknadbrukerdata_id = faktum.parrent_faktum " +
-                "WHERE faktum.soknad_id=? AND faktum.key=? AND faktum.value like ? " +
-                "AND (faktum.parrent_faktum is null OR parent.value like ?)";
+    public Boolean isVedleggPaakrevd(Long soknadId, String value, SoknadVedlegg soknadVedlegg) {
+        SoknadFaktum faktum = soknadVedlegg.getFaktum();
+        String key = faktum.getId();
+        Integer count = 0;
 
-        Integer count;
-        try {
-            count = getJdbcTemplate().queryForObject(sql, Integer.class, soknadId, key, value, dependOnValue);
-        } catch (DataAccessException e) {
-            logger.warn("Klarte ikke hente count fra soknadBrukerData", e);
-            return false;
+        count += finnAntallFaktumMedGittKeyOgValue(soknadId, key, value);
+        return sjekkOmVedleggErPaakrevd(soknadId, count, faktum);
+    }
+
+    private Boolean sjekkOmVedleggErPaakrevd(Long soknadId, Integer antallFunnet, SoknadFaktum faktum) {
+        if(antallFunnet > 0) {
+            return faktum.getDependOn() != null ? isVedleggPaakrevdParent(soknadId, faktum.getDependOn(), faktum) : Boolean.valueOf(true);
+        }
+        return false;
+    }
+
+    private Boolean isVedleggPaakrevdParent(Long soknadId, SoknadFaktum faktum, SoknadFaktum barneFaktum) {
+        Integer count = 0;
+        if(barneFaktum.getDependOnValues() != null) {
+            count += finnAntallFaktumMedGittKeyOgEnAvFlereValues(soknadId, faktum.getId(), barneFaktum.getDependOnValues());
+        }
+        return sjekkOmVedleggErPaakrevd(soknadId, count, faktum);
+    }
+
+    private Integer finnAntallFaktumMedGittKeyOgValue(Long soknadId, String key, String value) {
+        if(value == null) {
+            return 0;
         }
 
-        return count != null && count > 0;
+        String sql = "SELECT count(*) FROM soknadbrukerdata WHERE soknad_id=? AND key=? AND value like ?";
 
+        try {
+            return getJdbcTemplate().queryForObject(sql, Integer.class, soknadId, key, value);
+        } catch (DataAccessException e) {
+            logger.warn("Klarte ikke hente count fra soknadBrukerData", e);
+            return 0;
+        }
+    }
+
+    private Integer finnAntallFaktumMedGittKeyOgEnAvFlereValues(Long soknadId, String key, List<String> values) {
+        if(values == null) {
+            return 0;
+        }
+
+        String sql = "SELECT count(*) FROM soknadbrukerdata WHERE soknad_id=:soknadid AND key=:faktumkey AND value IN (:dependonvalues)"; //
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("soknadid", soknadId);
+        params.addValue("faktumkey", key);
+        params.addValue("dependonvalues", values);
+
+        try {
+            NamedParameterJdbcTemplate template = new  NamedParameterJdbcTemplate(getJdbcTemplate().getDataSource());
+            return template.queryForObject(sql, params, Integer.class);
+        } catch (DataAccessException e) {
+            logger.warn("Klarte ikke hente count fra soknadBrukerData", e);
+            return 0;
+        }
     }
 
     @Override
@@ -331,8 +391,11 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     @Override
     public void slettBrukerFaktum(Long soknadId, Long faktumId) {
-        getJdbcTemplate().update("delete from FaktumEgenskap where faktum_id in ( select soknadbrukerdata_id from " +
-                "SoknadBrukerdata sb where sb.soknad_id = ? and sb.parrent_faktum = ?)", soknadId, faktumId);
+        getJdbcTemplate().update("delete from vedlegg where faktum in (select soknadbrukerdata_id " +
+                "from SoknadBrukerdata sb where sb.soknad_id = ? and sb.parrent_faktum = ?)", soknadId, faktumId);
+        getJdbcTemplate().update("delete from FaktumEgenskap where faktum_id in " +
+                "( select soknadbrukerdata_id from SoknadBrukerdata sb " +
+                    "where sb.soknad_id = ? and sb.parrent_faktum = ?)", soknadId, faktumId);
         getJdbcTemplate().update("delete from FaktumEgenskap where soknad_id = ? and faktum_id = ?", soknadId, faktumId);
         getJdbcTemplate().update("delete from soknadbrukerdata where soknad_id = ? and soknadbrukerdata_id = ? and type = 'BRUKERREGISTRERT'", soknadId, faktumId);
         getJdbcTemplate().update("delete from SOKNADBRUKERDATA where soknad_id=? and parrent_faktum=?", soknadId, faktumId);

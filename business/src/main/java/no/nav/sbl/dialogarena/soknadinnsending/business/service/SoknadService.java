@@ -125,12 +125,6 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
         Faktum resultat = repository.hentFaktum(soknadId, faktumId);
         genererVedleggForFaktum(resultat);
-        on(repository.hentBarneFakta(soknadId, faktum.getFaktumId())).forEach(new Closure<Faktum>() {
-            @Override
-            public void execute(Faktum faktum) {
-                genererVedleggForFaktum(faktum);
-            }
-        });
 
         return resultat;
     }
@@ -462,8 +456,10 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         String mainUid = randomUUID().toString();
         String behandlingsId = henvendelseService
                 .startSoknad(getSubjectHandler().getUid(), navSoknadId, mainUid);
+
         WebSoknad soknad = WebSoknad.startSoknad()
-                .medBehandlingId(behandlingsId).medskjemaNummer(navSoknadId)
+                .medBehandlingId(behandlingsId)
+                .medskjemaNummer(navSoknadId)
                 .medUuid(mainUid)
                 .medAktorId(getSubjectHandler().getUid())
                 .medOppretteDato(DateTime.now());
@@ -472,20 +468,11 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         WebSoknadId websoknadId = new WebSoknadId();
         websoknadId.setId(soknadId);
 
-        List<String> bolker = Arrays.asList("reellarbeidssoker", "arbeidsforhold", "egennaering", "verneplikt", "utdanning", "ytelser", "personalia", "barnetillegg", "fritekst");
-        Map<String, String> erBolkerValidert = new HashMap<>();
-        for (String bolk : bolker) {
-            erBolkerValidert.put(bolk, "false");
-        }
-
         Faktum bolkerFaktum = new Faktum().medSoknadId(soknadId).medKey("bolker").medType(BRUKERREGISTRERT);
-        bolkerFaktum.setProperties(erBolkerValidert);
-
         repository.lagreFaktum(soknadId, bolkerFaktum);
+
         prepopulerSoknadsFakta(soknadId);
-
         opprettFaktumForLonnsOgTrekkoppgave(soknadId);
-
         return behandlingsId;
     }
 
@@ -501,28 +488,28 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     private void prepopulerSoknadsFakta(Long soknadId) {
         SoknadStruktur soknadStruktur = hentSoknadStruktur(soknadId);
         List<SoknadFaktum> fakta = soknadStruktur.getFakta();
-
         Collections.sort(fakta, SoknadFaktum.sammenlignEtterDependOn());
 
         for (SoknadFaktum soknadFaktum : fakta) {
-            String flereTillatt = soknadFaktum.getFlereTillatt();
-            String erSystemFaktum = soknadFaktum.getErSystemFaktum();
-            if ((flereTillatt != null && flereTillatt.equals("true")) || (erSystemFaktum != null && erSystemFaktum.equals("true"))) {
-                continue;
+            if (erIkkeSystemfaktumOgKunEtErTillatt(soknadFaktum)) {
+                Faktum f = new Faktum()
+                        .medKey(soknadFaktum.getId())
+                        .medValue("")
+                        .medType(Faktum.FaktumType.BRUKERREGISTRERT);
+
+                if (soknadFaktum.getDependOn() != null) {
+                    Faktum parentFaktum = repository.hentFaktumMedKey(soknadId, soknadFaktum.getDependOn().getId());
+                    f.setParrentFaktum(parentFaktum.getFaktumId());
+                }
+                repository.lagreFaktum(soknadId, f);
             }
-
-            Faktum f = new Faktum()
-                    .medKey(soknadFaktum.getId())
-                    .medValue("")
-                    .medType(Faktum.FaktumType.BRUKERREGISTRERT);
-
-            if (soknadFaktum.getDependOn() != null) {
-                Faktum parentFaktum = repository.hentFaktumMedKey(soknadId, soknadFaktum.getDependOn().getId());
-                f.setParrentFaktum(parentFaktum.getFaktumId());
-            }
-
-            repository.lagreFaktum(soknadId, f);
         }
+    }
+
+    private boolean erIkkeSystemfaktumOgKunEtErTillatt(SoknadFaktum faktum) {
+        String flereTillatt = faktum.getFlereTillatt();
+        String erSystemFaktum = faktum.getErSystemFaktum();
+        return !((flereTillatt != null && flereTillatt.equals("true")) || (erSystemFaktum != null && erSystemFaktum.equals("true")));
     }
 
     private void validerSkjemanummer(String navSoknadId) {
@@ -545,31 +532,47 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         SoknadStruktur struktur = hentSoknadStruktur(faktum.getSoknadId());
         List<SoknadVedlegg> aktuelleVedlegg = struktur.vedleggFor(faktum.getKey());
         for (SoknadVedlegg soknadVedlegg : aktuelleVedlegg) {
-            Vedlegg vedlegg = vedleggRepository.hentVedleggForskjemaNummer(faktum.getSoknadId(), soknadVedlegg.getFlereTillatt() ? faktum.getFaktumId() : null, soknadVedlegg.getSkjemaNummer());
-            Faktum parentFaktum = faktum.getParrentFaktum() != null ? repository.hentFaktum(faktum.getSoknadId(), faktum.getParrentFaktum()) : null;
-            if (soknadVedlegg.trengerVedlegg(faktum) && erParentAktiv(soknadVedlegg, parentFaktum)) {
-                lagrePaakrevdVedlegg(faktum, soknadVedlegg, vedlegg);
-            } else if (vedlegg != null && !erVedleggKrevdAvAnnetFaktum(faktum, struktur, soknadVedlegg)) { // sett vedleggsforventning til ikke paakrevd
-                vedlegg.setInnsendingsvalg(Vedlegg.Status.IkkeVedlegg);
-                vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
-            }
+            oppdaterOgLagreVedlegg(struktur, soknadVedlegg, faktum);
+        }
+        genererVedleggForBarnefakta(faktum);
+    }
+
+    private void oppdaterOgLagreVedlegg(SoknadStruktur struktur, SoknadVedlegg soknadVedlegg, Faktum faktum) {
+        Long faktumId = soknadVedlegg.getFlereTillatt() ? faktum.getFaktumId() : null;
+        Vedlegg vedlegg = vedleggRepository.hentVedleggForskjemaNummer(faktum.getSoknadId(), faktumId, soknadVedlegg.getSkjemaNummer());
+        Faktum parentFaktum = repository.hentFaktum(faktum.getSoknadId(), faktum.getParrentFaktum());
+
+        if (soknadVedlegg.trengerVedlegg(faktum) && erParentAktiv(soknadVedlegg.getFaktum(), parentFaktum)) {
+            lagrePaakrevdVedlegg(faktum, soknadVedlegg, vedlegg);
+        } else if (vedlegg != null && !erVedleggKrevdAvAnnetFaktum(faktum, struktur, soknadVedlegg)) {
+            vedlegg.setInnsendingsvalg(Vedlegg.Status.IkkeVedlegg);
+            vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
         }
     }
 
-    private boolean erVedleggKrevdAvAnnetFaktum(Faktum faktum,
-                                                SoknadStruktur struktur, SoknadVedlegg soknadVedlegg) {
+    private void genererVedleggForBarnefakta(Faktum parentFaktum) {
+        on(repository.hentBarneFakta(parentFaktum.getSoknadId(), parentFaktum.getFaktumId())).forEach(new Closure<Faktum>() {
+            @Override
+            public void execute(Faktum faktum) {
+                genererVedleggForFaktum(faktum);
+            }
+        });
+    }
+
+    private boolean erVedleggKrevdAvAnnetFaktum(Faktum faktum, SoknadStruktur struktur, SoknadVedlegg soknadVedlegg) {
         return !soknadVedlegg.getFlereTillatt() && annetFaktumHarForventning(faktum.getSoknadId(), soknadVedlegg.getSkjemaNummer(), soknadVedlegg.getOnValue(), struktur);
     }
 
     private void lagrePaakrevdVedlegg(Faktum faktum, SoknadVedlegg soknadVedlegg, Vedlegg v) {
         Vedlegg vedlegg = v;
         if (vedlegg == null) {
-            vedlegg = new Vedlegg(faktum.getSoknadId(), soknadVedlegg.getFlereTillatt() ? faktum.getFaktumId() : null, soknadVedlegg.getSkjemaNummer(), Vedlegg.Status.VedleggKreves);
+            Long faktumId = soknadVedlegg.getFlereTillatt() ? faktum.getFaktumId() : null;
+            vedlegg = new Vedlegg(faktum.getSoknadId(), faktumId, soknadVedlegg.getSkjemaNummer(), Vedlegg.Status.VedleggKreves);
             vedlegg.setVedleggId(vedleggRepository.opprettVedlegg(vedlegg, null));
         }
         vedlegg.oppdatertInnsendtStatus();
 
-        if (soknadVedlegg.getProperty() != null && faktum.getProperties().containsKey(soknadVedlegg.getProperty())) {
+        if (vedleggHarTittelFraProperty(soknadVedlegg, faktum)) {
             vedlegg.setNavn(faktum.getProperties().get(soknadVedlegg.getProperty()));
         } else if (soknadVedlegg.harOversetting()) {
             vedlegg.setNavn(navMessageSource.getMessage(soknadVedlegg.getOversetting().replace("${key}", faktum.getKey()), new Object[0], new Locale("nb", "NO")));
@@ -577,18 +580,44 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
     }
 
-    private boolean erParentAktiv(SoknadVedlegg soknadVedlegg, Faktum parent) {
-        return parent == null || erParentValueNullOgVedleggDependOnFalse(soknadVedlegg, parent) || parentValueErLikDependOnVerdi(soknadVedlegg, parent);
+    private boolean vedleggHarTittelFraProperty(SoknadVedlegg vedlegg, Faktum faktum) {
+        return vedlegg.getProperty() != null && faktum.getProperties().containsKey(vedlegg.getProperty());
     }
 
-    private boolean parentValueErLikDependOnVerdi(SoknadVedlegg soknadVedlegg, Faktum parent) {
-        String value = parent.getValue();
-        String dependOnValue = soknadVedlegg.getFaktum().getDependOnValue();
-        return (value == null && dependOnValue == null) ||  value.equals(dependOnValue);
+    private boolean erParentAktiv(SoknadFaktum faktum, Faktum parent) {
+        if(parent == null) {
+            return true;
+        }
+
+        if(parentValueErLikEnAvVerdieneIDependOnValues(faktum, parent)) {
+            Faktum parentParentFaktum = repository.hentFaktum(parent.getSoknadId(), parent.getParrentFaktum());
+            SoknadFaktum parentSoknadFaktum = faktum.getDependOn();
+            return erParentAktiv(parentSoknadFaktum, parentParentFaktum);
+        }
+        return false;
     }
 
-    private boolean erParentValueNullOgVedleggDependOnFalse(SoknadVedlegg soknadVedlegg, Faktum parent) {
-        return parent.getValue() == null && "false".equalsIgnoreCase(soknadVedlegg.getFaktum().getDependOnValue());
+    private boolean parentValueErLikEnAvVerdieneIDependOnValues(SoknadFaktum faktum, Faktum parent) {
+        if(faktum.getDependOn() == null) {
+            return true;
+        }
+
+        String parentVerdi = hentVerdiFaktumErAvhengigAvPaaParent(faktum, parent);
+        List<String> dependOnValues = faktum.getDependOnValues();
+        for(String dependOnValue : dependOnValues) {
+            if(dependOnValue.equalsIgnoreCase(parentVerdi)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String hentVerdiFaktumErAvhengigAvPaaParent(SoknadFaktum faktum, Faktum parent) {
+        String dependOnPropertyName = faktum.getDependOnProperty();
+        if(dependOnPropertyName != null) {
+            return parent.getProperties().get(dependOnPropertyName);
+        }
+        return parent.getValue();
     }
 
     /**
@@ -599,9 +628,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     private boolean annetFaktumHarForventning(Long soknadId, String skjemaNummer, String onValue, SoknadStruktur struktur) {
         List<SoknadVedlegg> vedleggMedGittSkjemanummer = struktur.vedleggForSkjemanr(skjemaNummer);
         for (SoknadVedlegg sv : vedleggMedGittSkjemanummer) {
-
-            String faktumKey = sv.getFaktum().getId();
-            if (repository.isVedleggPaakrevd(soknadId, faktumKey, onValue, sv.getFaktum().getDependOnValue())) {
+            if (repository.isVedleggPaakrevd(soknadId, onValue, sv)) {
                 return true;
             }
         }
@@ -619,7 +646,6 @@ public class SoknadService implements SendSoknadService, EttersendingService {
             vedlegg.setTittel(koder.get(Kodeverk.Nokkel.TITTEL));
         } catch (Exception ignore) {
             logger.debug("ignored exception");
-
         }
     }
 

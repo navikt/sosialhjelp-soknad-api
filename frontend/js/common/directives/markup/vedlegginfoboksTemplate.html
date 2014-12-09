@@ -1,7 +1,11 @@
 <div class="vedlegginfoboks">
     <div class="mini ikon-vedlegg-strek">
         <h5 data-ng-bind-html=" 'vedlegg.leggved' | cmstekst"></h5>
-        <p data-ng-transclude></p>
+        <ul>
+            <li data-ng-repeat="vedleggtekst in vedleggTekster track by $index">
+                <p data-ng-bind-html="vedleggtekst | cmstekst"></p>
+            </li>
+        </ul>
         <p class="lastopp" data-ng-bind-html=" 'vedlegg.infoboks.lastopp' | cmstekst"></p>
     </div>
 </div>

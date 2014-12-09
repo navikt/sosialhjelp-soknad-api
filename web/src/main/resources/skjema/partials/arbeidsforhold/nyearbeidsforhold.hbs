@@ -1,0 +1,33 @@
+<h2>{{ hentTekst "nyearbeidsforhold.tittel" }}</h2>
+{{#forFaktum "nyearbeidsforhold.arbeidsidensist"}}
+    {{#hvisSant value}}
+        <table>
+            <tr>
+                <td class="sjekket"></td>
+                <td><span>{{ hentTekst "nyearbeidsforhold.arbeidsidensist.true"}}</span></td>
+            </tr>
+        </table>
+    {{else}}
+        <table>
+            <tr>
+                <td class="sjekket"></td>
+                <td><span>{{ hentTekst "nyearbeidsforhold.arbeidsidensist.false"}}</span></td>
+            </tr>
+
+            {{#forFaktum "nyearbeidsforhold.aarsakdagpengerstanset"}}
+            <tr>
+                <td class="sjekket">
+                </td>
+                <td>
+                    <span>{{ hentTekst "nyearbeidsforhold.aarsakdagpengerstanset.oppsummering" }}</span>
+                    <span>{{value}}</span>
+                </td>
+            </tr>
+            {{/forFaktum}}
+        </table>
+
+        {{> skjema/partials/arbeidsforhold/grensearbeider }}
+        {{> skjema/partials/arbeidsforhold/reberegning }}
+        {{> skjema/partials/arbeidsforhold/arbeidsgiver }}
+    {{/hvisSant}}
+{{/forFaktum}}
