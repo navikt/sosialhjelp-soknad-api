@@ -26,9 +26,11 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class FillagerService {
 
     private static final Logger logger = getLogger(FillagerService.class);
+
     @Inject
     @Named("fillagerEndpoint")
     private FilLagerPortType filLagerEndpoint;
+
     @Inject
     @Named("fillagerSelftestEndpoint")
     private FilLagerPortType filLagerSelftestEndpoint;
@@ -56,9 +58,9 @@ public class FillagerService {
         Holder<DataHandler> innhold = new Holder<>();
         try {
             filLagerEndpoint.hent(new Holder<>(uuid), innhold);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            innhold.value.writeTo(baos);
-            return baos.toByteArray();
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            innhold.value.writeTo(stream);
+            return stream.toByteArray();
         } catch (IOException e) {
             throw new SystemException("Kunne ikke hente ut fil fra henvendelse", e, "exception.system.baksystem");
         } catch (SOAPFaultException e) {
