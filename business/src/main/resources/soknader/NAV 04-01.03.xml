@@ -1124,8 +1124,15 @@
         <id>7</id>
         <faktum>personalia</faktum>
         <skjemaNummer>T4</skjemaNummer>
-        <onProperty>statsborgerskapType</onProperty>
-        <onValue>norsk</onValue>
+        <onProperty>statsborgerskap</onProperty>
+        <onValues>
+            <value>NOR</value>
+            <value>SWE</value>
+            <value>FRO</value>
+            <value>ISL</value>
+            <value>DNK</value>
+            <value>FIN</value>
+        </onValues>
         <inverted>true</inverted>
         <forSystemfaktum>true</forSystemfaktum>
     </vedlegg>
