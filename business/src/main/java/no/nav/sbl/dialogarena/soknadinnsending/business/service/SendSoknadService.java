@@ -36,5 +36,4 @@ public interface SendSoknadService {
 
     Map<String,String> hentInnsendtDatoForOpprinneligSoknad(String behandlingsId);
 
-    SoknadStruktur hentSoknadStruktur(String skjemaNummer);
 }
