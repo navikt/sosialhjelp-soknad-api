@@ -6,7 +6,7 @@ angular.module('nav.datepicker.validation', [])
             link: function(scope, element, attrs, ngModel) {
                 ngModel.$validators.dateFormat = function(modelValue, viewValue) {
                     return dateService.hasCorrectDateFormat(viewValue);
-                }
+                };
             }
         };
     })
@@ -17,7 +17,7 @@ angular.module('nav.datepicker.validation', [])
             link: function(scope, element, attrs, ngModel) {
                 ngModel.$validators.validDate = function(modelValue, viewValue) {
                     return dateService.isValidDate(viewValue);
-                }
+                };
             }
         };
     })
@@ -29,7 +29,7 @@ angular.module('nav.datepicker.validation', [])
                 if (!$parse(attrs.futureDate)(scope)) {
                     ngModel.$validators.futureDate = function(modelValue, viewValue) {
                         return !dateService.isFutureDate(viewValue);
-                    }
+                    };
                 }
             }
         };

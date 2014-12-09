@@ -38,7 +38,7 @@ angular.module('nav.datepicker.service', [])
                 if (dayRegExp.test(text) || monthRegExp.test(text) || yearRegExp.test(text)) {
                     return initialMaskText.substring(text.length, initialMaskText.length);
                 } else {
-                    return ''
+                    return '';
                 }
             }
         };
@@ -53,7 +53,7 @@ angular.module('nav.datepicker.service', [])
     .factory('cssService', function() {
         return {
             getComputedStyle: function(element, property) {
-                var value = window.getComputedStyle(element[0], null).getPropertyValue(property)
+                var value = window.getComputedStyle(element[0], null).getPropertyValue(property);
                 if (value.indexOf('px') !== -1) {
                     value = parseInt(value.substring(0, value.length - 2));
                 }
@@ -68,7 +68,7 @@ angular.module('nav.datepicker.service', [])
                 return 'xxxxxxxx'.replace(/[x]/g, function(c) {
                     var r = Math.random()*16| 0, v = c == 'x' ? r : (r&0x3|0x8);
                     return v.toString(16);
-                })
+                });
             }
         };
     })

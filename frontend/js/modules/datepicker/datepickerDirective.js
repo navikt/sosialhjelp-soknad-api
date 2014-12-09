@@ -406,7 +406,7 @@ angular.module('nav.datepicker.directive', [])
                 post: function(scope, element) {
                     var inputElement = element.prev();
                     var caretPositionElement = element.next();
-                    var paddingTop = cssService.getComputedStyle(inputElement, 'padding-top')
+                    var paddingTop = cssService.getComputedStyle(inputElement, 'padding-top');
                     var inputElementLeft = inputElement.position().left + cssService.getComputedStyle(inputElement, 'padding-left');
 
                     scope.$watch(function() {
@@ -426,5 +426,5 @@ angular.module('nav.datepicker.directive', [])
                     });
                 }
             }
-        }
+        };
     });
