@@ -35,7 +35,7 @@
                         <a class="lukk" data-ng-if="!!file.vedleggId" data-ng-click="file.$destroy()"
                            data-ng-controller="SlettOpplastingCtrl" href="javascript:void(0);"
                            data-aria-label="'opplasting.slett.siden' | cmstekst"></a>
-                        <a class="vis-vedlegg" href="#visVedlegg/{{file.vedleggId}}" data-ng-if="!!file.vedleggId">
+                        <a class="vis-vedlegg" href="#/{{ brukerBehandlingId }}/visVedlegg/{{file.vedleggId}}" data-ng-if="!!file.vedleggId">
                             <img data-ng-src="../rest/soknad/{{file.soknadId}}/vedlegg/{{file.vedleggId}}/thumbnail"
                                  data-ferdig-lastet-bilde>
                         </a>
