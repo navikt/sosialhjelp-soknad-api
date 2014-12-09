@@ -87,7 +87,6 @@ import static org.mockito.Mockito.when;
 
 @Configuration
 @ComponentScan(excludeFilters = @Filter(Configuration.class))
-
 public class MockConsumerConfig {
     @Configuration
     public static class SendSoknadWSConfig {

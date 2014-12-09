@@ -1,14 +1,14 @@
 angular.module('ettersending.routes', ['ngRoute', 'nav.common.routes'])
 
-    .config(['$routeProvider', function ($routeProvider) {
+    .config(function ($routeProvider) {
         $routeProvider
             .when('/cmstekster', {
                 redirectTo: '/',
                 resolve: {
-                    notUsedButRequiredProperty: ['$rootScope', function ($rootScope) {
+                    notUsedButRequiredProperty: function ($rootScope) {
                         $rootScope.visCmsnokkler = true;
                         return true;
-                    }]
+                    }
                 }
             })
             .when('/', {
@@ -32,20 +32,23 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.common.routes'])
                     cms: function (CmsResolver) {
                         return CmsResolver;
                     },
-                    behandlingskjedeId: function (BehandlingskjedeIdResolver) {
-                        return BehandlingskjedeIdResolver;
+                    behandlingskjedeId: function (BehandlingIdResolver) {
+                        return BehandlingIdResolver;
                     },
                     ettersending: function (EttersendingResolver) {
                         return EttersendingResolver;
                     },
-                    vedlegg: function (EttersendingVedleggResolver) {
-                        return EttersendingVedleggResolver;
+                    vedlegg: function (VedleggResolver) {
+                        return VedleggResolver;
                     },
                     config: function(ConfigResolver) {
                         return ConfigResolver;
                     },
                     personalia: function(EttersendingPersonaliaResolver) {
                         return EttersendingPersonaliaResolver;
+                    },
+                    soknadOppsett: function(SoknadOppsettResolver) {
+                        return SoknadOppsettResolver;
                     }
                 }
             })
@@ -58,8 +61,8 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.common.routes'])
                     ettersending: function (EttersendingResolver) {
                         return EttersendingResolver;
                     },
-                    vedlegg: function (EttersendingVedleggResolver) {
-                        return EttersendingVedleggResolver;
+                    vedlegg: function (VedleggResolver) {
+                        return VedleggResolver;
                     },
                     config: function (ConfigResolver) {
                         return ConfigResolver;
@@ -76,8 +79,8 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.common.routes'])
                     ettersending: function (EttersendingResolver) {
                         return EttersendingResolver;
                     },
-                    vedleggListe: function (EttersendingVedleggResolver) {
-                        return EttersendingVedleggResolver;
+                    vedleggListe: function (VedleggResolver) {
+                        return VedleggResolver;
                     },
                     config: function (ConfigResolver) {
                         return ConfigResolver;
@@ -97,8 +100,8 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.common.routes'])
                     config: function (ConfigResolver) {
                         return ConfigResolver;
                     },
-                    vedlegg: function (EttersendingVedleggResolver) {
-                        return EttersendingVedleggResolver;
+                    vedlegg: function (VedleggResolver) {
+                        return VedleggResolver;
                     }
                 }
             })
@@ -116,4 +119,4 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.common.routes'])
                     }
                 }
             });
-    }]);
+    });

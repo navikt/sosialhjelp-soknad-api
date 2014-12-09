@@ -16,7 +16,7 @@ public interface SendSoknadService {
 
     String hentSoknadEier(Long soknadId);
 
-    Long hentSoknadMedBehandlingsId(String behandlingsId);
+    WebSoknad hentSoknadMedBehandlingsId(String behandlingsId);
 
     Faktum lagreSoknadsFelt(Long soknadId, Faktum faktum);
 
@@ -35,4 +35,6 @@ public interface SendSoknadService {
     SoknadStruktur hentSoknadStruktur(Long soknadId);
 
     Map<String,String> hentInnsendtDatoForOpprinneligSoknad(String behandlingsId);
+
+    SoknadStruktur hentSoknadStruktur(String skjemaNummer);
 }
