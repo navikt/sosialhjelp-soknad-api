@@ -3,6 +3,7 @@ angular.module('nav.markup.navinfoboks', [])
         return {
             restrict: 'A',
             replace: true,
+            scope: true,
             templateUrl: '../js/common/directives/markup/navinfoboksTemplate.html',
             link: function (scope, el, attrs) {
                 var infotekster = $parse(attrs.infotekster)(scope);
@@ -18,6 +19,7 @@ angular.module('nav.markup.navinfoboks', [])
         return {
             restrict: 'A',
             replace: true,
+            scope: true,
             templateUrl: '../js/common/directives/markup/vedlegginfoboksTemplate.html',
             link: function (scope, el, attrs) {
                 var vedleggtekster = $parse(attrs.vedleggtekster)(scope);

@@ -13,6 +13,7 @@ describe('nav.markup.navinfoboks', function() {
                 element = angular.element(getHtmlForNavinfoboks('["tekst1", "tekst2", "tekst3"]'));
                 $compile(element)(scope);
                 scope.$apply();
+                scope = element.find(".infoboks-inner").scope();
             });
 
             expect(scope.infoTekster.length).toBe(3);
@@ -25,6 +26,7 @@ describe('nav.markup.navinfoboks', function() {
                 element = angular.element(getHtmlForNavinfoboks('"testTekstSingle"'));
                 $compile(element)(scope);
                 scope.$apply();
+                scope = element.find(".infoboks-inner").scope();
             });
 
             expect(scope.infoTekster.length).toBe(1);
@@ -43,6 +45,7 @@ describe('nav.markup.navinfoboks', function() {
                 element = angular.element(getHtmlForVedlegginfoboks('["tekst1", "tekst2", "tekst3"]'));
                 $compile(element)(scope);
                 scope.$apply();
+                scope = element.find(".ikon-vedlegg-strek").scope();
             });
 
             expect(scope.vedleggTekster.length).toBe(3);
@@ -55,6 +58,7 @@ describe('nav.markup.navinfoboks', function() {
                 element = angular.element(getHtmlForVedlegginfoboks('"testTekstSingle"'));
                 $compile(element)(scope);
                 scope.$apply();
+                scope = element.find(".ikon-vedlegg-strek").scope();
             });
 
             expect(scope.vedleggTekster.length).toBe(1);
