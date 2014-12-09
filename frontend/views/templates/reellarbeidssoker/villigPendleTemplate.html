@@ -8,7 +8,7 @@
     <div data-ng-if="erOver59Aar()" data-navinfoboks data-infotekster="['reellarbeidssoker.villigpendle.false.informasjon.over60']">
     </div>
 
-    <div class="form-linje checkbox" data-ng-if="erUnder60Aar()" data-checkbox-validate>
+    <div class="form-linje checkbox hjelpetekst-hoyrestilt" data-ng-if="erUnder60Aar()" data-checkbox-validate>
         <input type="hidden" data-ng-model="harHuketAvCheckboksPendle.value"
                data-nav-faktum="reellarbeidssoker.villigpendle"
                data-ng-required="faktum.value == 'false' && erUnder60Aar()"
