@@ -6,11 +6,11 @@
     <parent>
         <groupId>no.nav.sbl.dialogarena</groupId>
         <artifactId>sendsoknad</artifactId>
-        <version>2.0.6</version>
+        <version>2.1.6</version>
     </parent>
 
     <artifactId>sendsoknad-web</artifactId>
-  	<version>2.0.6</version>
+  	<version>2.1.6</version>
     <name>${project.artifactId}</name>
     <packaging>war</packaging>
 
@@ -20,6 +20,10 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>no.nav.sbl</groupId>
+            <artifactId>innholdshenter</artifactId>
+        </dependency>
         <!-- Avhengigheter med scope compile -->
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
@@ -71,10 +75,6 @@
         </dependency>
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>sbl-webkomponent-footer</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>sbl-webkomponent-innstillinger</artifactId>
         </dependency>
         <dependency>
@@ -104,6 +104,10 @@
         <dependency>
             <groupId>org.apache.wicket</groupId>
             <artifactId>wicket-spring</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.wicket</groupId>
+            <artifactId>wicket-extensions</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.wicket</groupId>
