@@ -52,7 +52,7 @@ public class EmailServiceTest {
         MimeMessagePreparator preparator = new MimeMessagePreparator() {
             public void prepare(MimeMessage mimeMessage) throws Exception {
                 mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress("til"));
-                mimeMessage.setFrom("ikke-svar@nav.no");
+                mimeMessage.setFrom(new InternetAddress("ikke-svar@nav.no"));
                 mimeMessage.setContent(htmlInnhold, "text/html;charset=utf-8");
                 mimeMessage.setSubject("subject");
             }

@@ -10,6 +10,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 
 import javax.inject.Inject;
+import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
@@ -59,7 +60,7 @@ public class EmailService {
             public void prepare(MimeMessage mimeMessage) {
                 try {
                     mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(ePost));
-                    mimeMessage.setFrom(fraAdresse);
+                    mimeMessage.setFrom(new InternetAddress(fraAdresse));
                     mimeMessage.setContent(htmlInnhold, "text/html;charset=utf-8");
                     mimeMessage.setSubject(subject);
                 } catch (MessagingException e) {
