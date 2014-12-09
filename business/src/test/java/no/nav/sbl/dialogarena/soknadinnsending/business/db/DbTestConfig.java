@@ -2,6 +2,10 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepositoryJdbc;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepositoryJdbc;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

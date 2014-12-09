@@ -10,6 +10,22 @@ import java.util.Map;
 
 public interface SendSoknadService {
 
+    public interface Create {
+
+    }
+
+    public interface Read {
+
+    }
+
+    public interface Update {
+
+    }
+
+    public interface Delete {
+
+    }
+
     String startSoknad(String navSoknadId);
 
     WebSoknad hentSoknad(long soknadId);

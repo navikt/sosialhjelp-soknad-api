@@ -1,7 +1,8 @@
-package no.nav.sbl.dialogarena.soknadinnsending.business.db;
+package no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg;
 
 import no.nav.modig.core.exception.SystemException;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.io.IOUtils;
@@ -30,8 +31,10 @@ import java.util.List;
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.modig.lang.collections.PredicateUtils.not;
 
+/**
+ * marker alle metoder som transactional. Alle operasjoner vil skje i en transactional write context. Read metoder kan overstyre dette om det trengs.
+ */
 @Named("vedleggRepository")
-//marker alle metoder som transactional. Alle operasjoner vil skje i en transactional write context. Read metoder kan overstyre dette om det trengs.
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
 @Component
 public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepository {
@@ -50,7 +53,7 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
     @Override
     public List<Vedlegg> hentVedleggUnderBehandling(Long soknadId, String fillagerReferanse) {
         return getJdbcTemplate().query("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, opprinneliginnsendingsvalg, storrelse, opprettetdato, " +
-                "antallsider, fillagerReferanse from Vedlegg where soknad_id = ? and fillagerreferanse = ? and innsendingsvalg = 'UnderBehandling'",
+                        "antallsider, fillagerReferanse from Vedlegg where soknad_id = ? and fillagerreferanse = ? and innsendingsvalg = 'UnderBehandling'",
                 new VedleggRowMapper(false), soknadId, fillagerReferanse);
     }
 
@@ -165,11 +168,11 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
         try {
             if (faktumId == null) {
                 return getJdbcTemplate().queryForObject("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, opprinneliginnsendingsvalg, storrelse, antallsider," +
-                        " fillagerReferanse, opprettetdato from Vedlegg where soknad_id = ? and faktum is null and skjemaNummer = ? and innsendingsvalg != 'UnderBehandling'",
+                                " fillagerReferanse, opprettetdato from Vedlegg where soknad_id = ? and faktum is null and skjemaNummer = ? and innsendingsvalg != 'UnderBehandling'",
                         new VedleggRowMapper(false), soknadId, skjemaNummer);
             } else {
                 return getJdbcTemplate().queryForObject("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, opprinneliginnsendingsvalg, storrelse, antallsider," +
-                        " fillagerReferanse, opprettetdato from Vedlegg where soknad_id = ? and faktum = ? and skjemaNummer = ? and innsendingsvalg != 'UnderBehandling'",
+                                " fillagerReferanse, opprettetdato from Vedlegg where soknad_id = ? and faktum = ? and skjemaNummer = ? and innsendingsvalg != 'UnderBehandling'",
                         new VedleggRowMapper(false), soknadId, faktumId, skjemaNummer);
             }
 
@@ -186,8 +189,8 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
     @Override
     public List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktumId) {
         return getJdbcTemplate().query("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, opprinneliginnsendingsvalg, storrelse, opprettetdato, antallsider," +
-                " fillagerReferanse from Vedlegg where soknad_id = ? and faktum=? and innsendingsvalg in " +
-                "('VedleggKreves', 'LastetOpp', 'VedleggSendesAvAndre', 'VedleggSendesIkke', 'SendesSenere','SendesIkke', 'VedleggAlleredeSendt') ",
+                        " fillagerReferanse from Vedlegg where soknad_id = ? and faktum=? and innsendingsvalg in " +
+                        "('VedleggKreves', 'LastetOpp', 'VedleggSendesAvAndre', 'VedleggSendesIkke', 'SendesSenere','SendesIkke', 'VedleggAlleredeSendt') ",
                 new VedleggRowMapper(false), soknadId, faktumId);
     }
 

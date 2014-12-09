@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.VedleggRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;

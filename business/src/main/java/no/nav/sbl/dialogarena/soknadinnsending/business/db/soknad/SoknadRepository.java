@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.soknadinnsending.business.db;
+package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad;
 
 
 import no.nav.modig.lang.option.Optional;
@@ -12,8 +12,6 @@ import java.util.List;
 public interface SoknadRepository {
 
     Long opprettSoknad(WebSoknad soknad);
-
-    WebSoknad hentEttersendingMedBehandlingskjedeIdMedData(String behandlingsId);
 
     WebSoknad hentSoknad(Long id);
 

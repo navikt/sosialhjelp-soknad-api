@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.soknadinnsending.business.db;
+package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;

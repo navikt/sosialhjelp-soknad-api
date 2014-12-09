@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.batch;
 
 import no.nav.modig.lang.option.Optional;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
@@ -39,7 +39,7 @@ public class LagringsScheduler {
 
     @Scheduled(fixedRate = SCHEDULE_RATE_MS)
     public void mellomlagreSoknaderOgNullstillLokalDb() throws InterruptedException {
-        List<Optional<WebSoknad>> feilListe =  new ArrayList<>();
+        List<Optional<WebSoknad>> feilListe = new ArrayList<>();
         batchStartTime = DateTime.now();
         vellykket = 0;
         feilet = 0;
@@ -70,8 +70,8 @@ public class LagringsScheduler {
 
     private boolean mellomlagre(List<Optional<WebSoknad>> feilListe) throws InterruptedException {
         for (Optional<WebSoknad> ws = soknadRepository.plukkSoknadTilMellomlagring(); ws.isSome(); ws = soknadRepository.plukkSoknadTilMellomlagring()) {
-            if(isPaabegyntEttersendelse(ws)) {
-                if(!avbrytOgSlettEttersendelse(ws)) {
+            if (isPaabegyntEttersendelse(ws)) {
+                if (!avbrytOgSlettEttersendelse(ws)) {
                     feilListe.add(ws);
                 }
             } else {
@@ -114,7 +114,7 @@ public class LagringsScheduler {
         return soknad.erEttersending();
     }
 
-    protected void  lagreFilTilHenvendelseOgSlettILokalDb(Optional<WebSoknad> ws) throws InterruptedException {
+    protected void lagreFilTilHenvendelseOgSlettILokalDb(Optional<WebSoknad> ws) throws InterruptedException {
         WebSoknad soknad = ws.get();
         try {
             if (soknad.getStatus().equals(SoknadInnsendingStatus.UNDER_ARBEID) && !soknad.erEttersending()) {
@@ -135,7 +135,6 @@ public class LagringsScheduler {
             }
             Thread.sleep(1000); // Så loggen ikke blir fylt opp
         }
-
     }
 
     private boolean harGaattForLangTid() {

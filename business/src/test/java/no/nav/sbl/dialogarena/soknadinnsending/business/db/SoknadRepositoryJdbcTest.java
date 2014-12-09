@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 
 import no.nav.modig.lang.option.Optional;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
