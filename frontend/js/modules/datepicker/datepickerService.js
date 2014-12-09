@@ -1,11 +1,22 @@
 angular.module('nav.datepicker.service', [])
-    .factory('datepickerInputService', function(datepickerInputKeys, datepickerNonInputKeys) {
+    .factory('datepickerInputService', function(datepickerInputKeys, datepickerUtilityKeys, periodKeyCode, cKeyCode, vKeyCode) {
         return {
-            isValidInput: function(keyCode, currentLength, maxLength, caretPosition) {
+            isValidInput: function(event, currentLength, maxLength, caretPosition, hasSelectedText) {
                 function isAllowedPeriod() {
-                    return (keyCode === 190 && (caretPosition === 2 || caretPosition === 5) || keyCode !== 190);
+                    return (keyCode === periodKeyCode && (caretPosition === 2 || caretPosition === 5) || keyCode !== periodKeyCode);
                 }
-                return datepickerNonInputKeys.contains(keyCode) || (datepickerInputKeys.contains(keyCode) && isAllowedPeriod() && currentLength < maxLength);
+
+                function isRegularInputAllowed() {
+                    return hasSelectedText || currentLength < maxLength;
+                }
+
+                function isAllowedUtilityInput() {
+                    return datepickerUtilityKeys.contains(keyCode) || ctrlPressed && (keyCode === cKeyCode || keyCode === vKeyCode);
+                }
+
+                var keyCode = event.keyCode, ctrlPressed = event.ctrlKey;
+
+                return isAllowedUtilityInput() || (datepickerInputKeys.contains(keyCode) && isAllowedPeriod() && isRegularInputAllowed());
             },
             addPeriodAtRightIndex: function(input, oldInput, caretPosition) {
                 var start = caretPosition - (input.length - oldInput.length);
