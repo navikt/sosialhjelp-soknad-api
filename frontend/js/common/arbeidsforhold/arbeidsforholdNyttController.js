@@ -204,6 +204,12 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 
         function oppdaterCookieValue(faktumId) {
             var arbeidsforholdCookie = $cookieStore.get('scrollTil');
+            if(!arbeidsforholdCookie) {
+                arbeidsforholdCookie = {
+                    aapneTabs: ['arbeidsforhold'],
+                    gjeldendeTab: "#arbeidsforhold"
+                };
+            }
 
             $cookieStore.put('scrollTil', {
                 aapneTabs: arbeidsforholdCookie.aapneTabs,
