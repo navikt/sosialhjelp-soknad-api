@@ -1,9 +1,9 @@
-package no.nav.sbl.dialogarena.soknadinnsending.business.db;
+package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad;
 
 import com.google.common.base.Function;
-import no.nav.modig.core.exception.ApplicationException;
 import no.nav.modig.lang.collections.iter.ReduceFunction;
 import no.nav.modig.lang.option.Optional;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.FaktumEgenskap;
@@ -50,9 +50,11 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Fak
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad.startSoknad;
 import static org.slf4j.LoggerFactory.getLogger;
 
+/**
+ * marker alle metoder som transactional. Alle operasjoner vil skje i en
+ * transactional write context. Read metoder kan overstyre dette om det trengs.
+ */
 @Named("soknadInnsendingRepository")
-// marker alle metoder som transactional. Alle operasjoner vil skje i en
-// transactional write context. Read metoder kan overstyre dette om det trengs.
 @Component
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
 public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implements SoknadRepository {
@@ -82,6 +84,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
                     rs.getBoolean("systemegenskap"));
         }
     };
+
     @Inject
     private VedleggRepository vedleggRepository;
 
@@ -148,19 +151,6 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     public Faktum hentFaktumMedKey(Long soknadId, String faktumKey) {
         final String sql = "select * from SOKNADBRUKERDATA where soknad_id = ? and key = ?";
         return getJdbcTemplate().queryForObject(sql, faktumRowMapper, soknadId, faktumKey);
-    }
-
-    @Override
-    public WebSoknad hentEttersendingMedBehandlingskjedeIdMedData(String behandlingsId) {
-        Optional<WebSoknad> soknadOptional = hentEttersendingMedBehandlingskjedeId(behandlingsId);
-
-        if (soknadOptional.isSome()) {
-            WebSoknad soknad = soknadOptional.get();
-            soknad.medBrukerData(hentAlleBrukerData(soknad.getSoknadId()));
-            return soknad;
-        }
-
-        throw new ApplicationException("Kunne ikke finne ettersending for behandlingsId " + behandlingsId);
     }
 
     @Override
@@ -355,7 +345,6 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
             oppdaterBrukerData(soknadId, faktum, systemLagring);
             return faktum.getFaktumId();
         }
-
     }
 
     private BeanPropertySqlParameterSource forFaktum(Faktum faktum) {

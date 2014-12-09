@@ -5,7 +5,7 @@ import no.nav.arena.tjenester.person.v1.FaultGeneriskMsg;
 import no.nav.arena.tjenester.person.v1.PersonInfoServiceSoap;
 import no.nav.modig.core.exception.SystemException;
 import no.nav.modig.wicket.selftest.SelfTestBase;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadInnsendingDBConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadInnsendingDBConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;

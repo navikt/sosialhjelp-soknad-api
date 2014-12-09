@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.soknadinnsending.business.db;
+package no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 
@@ -11,11 +11,11 @@ import java.sql.SQLException;
  * Klasse som mapper db kall til vedlegg.
  */
 public class VedleggRowMapper implements RowMapper<Vedlegg> {
+
     private final boolean includeData;
 
     public VedleggRowMapper(boolean includeData) {
         this.includeData = includeData;
-
     }
 
     @Override
@@ -36,7 +36,6 @@ public class VedleggRowMapper implements RowMapper<Vedlegg> {
             opprinneligInnsendingsvalg = Vedlegg.Status.valueOf(valg);
         }
 
-
         Vedlegg result = new Vedlegg()
                 .medVedleggId(rs.getLong("vedlegg_id"))
                 .medSoknadId(rs.getLong("soknad_id"))
@@ -50,7 +49,8 @@ public class VedleggRowMapper implements RowMapper<Vedlegg> {
                 .medOpprettetDato(rs.getTimestamp("opprettetdato").getTime())
                 .medInnsendingsvalg(innsendingsvalg)
                 .medOpprinneligInnsendingsvalg(opprinneligInnsendingsvalg);
-        
+
         return result;
     }
+
 }
