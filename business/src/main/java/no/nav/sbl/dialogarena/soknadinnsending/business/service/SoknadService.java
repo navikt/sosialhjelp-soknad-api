@@ -115,7 +115,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     }
 
     @Override
-    public Faktum lagreSoknadsFelt(final Long soknadId, Faktum faktum) {
+    public Faktum lagreSoknadsFelt(Long soknadId, Faktum faktum) {
         faktum.setType(BRUKERREGISTRERT);
         faktum.setSoknadId(soknadId);
         Long faktumId = repository.lagreFaktum(soknadId, faktum);
