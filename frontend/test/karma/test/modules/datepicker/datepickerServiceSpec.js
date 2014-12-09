@@ -165,12 +165,15 @@ describe('datepicker services', function () {
         var service;
         var periodKeyCode = 190;
         var inputKeys = [1,2,3,4,5,6, periodKeyCode];
-        var nonInputKeys = [7, 8, 9];
+        var utilityKeys = [7, 8, 9];
         var maxLength = 10;
 
         beforeEach(module(function ($provide) {
             $provide.value('datepickerInputKeys', inputKeys);
-            $provide.value('datepickerNonInputKeys', nonInputKeys);
+            $provide.value('datepickerUtilityKeys', utilityKeys);
+            $provide.value('periodKeyCode', 190);
+            $provide.value('cKeyCode', 67);
+            $provide.value('vKeyCode', 86);
         }));
 
         beforeEach(inject(function (datepickerInputService) {
@@ -179,29 +182,53 @@ describe('datepicker services', function () {
 
         describe('isValidInput', function() {
             it('gyldig input-key og under maks-lengde skal returnere true', function() {
-                expect(service.isValidInput(1, 0, maxLength, 0)).toBe(true);
+                var event = {
+                    keyCode: 1,
+                    ctrlKey: false
+                };
+                expect(service.isValidInput(event, 0, maxLength, 0, false)).toBe(true);
             });
 
             it('gyldig ikke input-key og under maks-lengde skal returnere true', function() {
-                expect(service.isValidInput(7, 0, maxLength, 0)).toBe(true);
+                var event = {
+                    keyCode: 7,
+                    ctrlKey: false
+                };
+                expect(service.isValidInput(event, 0, maxLength, 0, false)).toBe(true);
             });
 
             it('ikke gyldig key skal returnere false', function() {
-                expect(service.isValidInput(100, 0, maxLength, 0)).toBe(false);
+                var event = {
+                    keyCode: 100,
+                    ctrlKey: false
+                };
+                expect(service.isValidInput(event, 0, maxLength, 0, false)).toBe(false);
             });
 
             it('gyldig input-key men lengden er allerede på maks skal gi false', function() {
-                expect(service.isValidInput(1, maxLength, maxLength, 0)).toBe(false);
+                var event = {
+                    keyCode: 1,
+                    ctrlKey: false
+                };
+                expect(service.isValidInput(event, maxLength, maxLength, 0, false)).toBe(false);
             });
 
             it('gyldig ikke input-key med lengde som allerede er på maks skal gi true', function() {
-                expect(service.isValidInput(7, maxLength, maxLength, 0)).toBe(true);
+                var event = {
+                    keyCode: 7,
+                    ctrlKey: false
+                };
+                expect(service.isValidInput(event, maxLength, maxLength, 0, false)).toBe(true);
             });
 
             it('punktum skal bare være gyldig dersom caret er ved index 2 eller 5', function() {
-                expect(service.isValidInput(periodKeyCode, 0, maxLength, 2)).toBe(true);
-                expect(service.isValidInput(periodKeyCode, 0, maxLength, 5)).toBe(true);
-                expect(service.isValidInput(periodKeyCode, 0, maxLength, 6)).toBe(false);
+                var event = {
+                    keyCode: periodKeyCode,
+                    ctrlKey: false
+                };
+                expect(service.isValidInput(event, 0, maxLength, 2, false)).toBe(true);
+                expect(service.isValidInput(event, 0, maxLength, 5, false)).toBe(true);
+                expect(service.isValidInput(event, 0, maxLength, 6, false)).toBe(false);
             });
         });
 
