@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.websoknad.config;
 
 import no.nav.modig.core.context.ThreadLocalSubjectHandler;
+import no.nav.sbl.dialogarena.websoknad.servlet.ServletConfig;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,6 +9,7 @@ import org.mockito.Mockito;
 import org.springframework.mock.jndi.SimpleNamingContextBuilder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -21,8 +23,12 @@ import static java.lang.System.setProperty;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.MockUtil.DEFAULT_MOCK_TILLATT;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.MockUtil.TILLATMOCK_PROPERTY;
 
+@WebAppConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = SoknadinnsendingConfig.class)
+@ContextConfiguration(classes = {
+        SoknadinnsendingConfig.class,
+        ServletConfig.class
+})
 public class ApplicationContextTest {
 
     @BeforeClass

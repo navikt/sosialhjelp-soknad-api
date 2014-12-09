@@ -29,7 +29,7 @@ public class EosController {
         result.put("result", String.valueOf(eosService.isEosLandAnnetEnnNorge(landkode)));
         return result;
     }
-    
+
     @RequestMapping(value = "/landtype/{landkode}", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
     @ResponseBody()
     public Map<String, String> landType(@PathVariable String landkode) {

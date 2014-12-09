@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.ServiceConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SikkerhetsAspect;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.Tilgangskontroll;
 import org.springframework.context.annotation.Bean;
@@ -45,6 +46,7 @@ import static org.springframework.http.MediaType.TEXT_PLAIN;
         SoknadDataController.class,
         SoknadTpsDataController.class,
         UtslagskriterierController.class,
+        ServiceConfig.class,
         VedleggController.class
 })
 public class ServletConfig extends WebMvcConfigurerAdapter {

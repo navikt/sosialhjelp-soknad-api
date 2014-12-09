@@ -10,7 +10,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 
 import javax.inject.Inject;
-import javax.mail.Address;
+import javax.inject.Named;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
@@ -25,6 +25,7 @@ public class EmailService {
     @Inject
     private JavaMailSender mailSender;
     @Inject
+    @Named("threadPoolTaskExecutor")
     private TaskExecutor executor;
 
     private static final Logger logger = LoggerFactory.getLogger(EmailService.class);

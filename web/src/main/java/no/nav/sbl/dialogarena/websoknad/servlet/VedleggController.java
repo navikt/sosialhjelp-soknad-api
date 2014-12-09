@@ -44,7 +44,7 @@ public class VedleggController {
     @Inject
     private SendSoknadService soknadService;
 
-    private static final Integer MAKS_TOTAL_FILSTORRELSE = 1024*1024*10;
+    private static final Integer MAKS_TOTAL_FILSTORRELSE = 1024 * 1024 * 10;
 
     private static byte[] getByteArray(MultipartFile file) {
         try {
