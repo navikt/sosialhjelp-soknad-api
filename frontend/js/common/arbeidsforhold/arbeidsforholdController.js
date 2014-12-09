@@ -139,7 +139,6 @@ angular.module('nav.arbeidsforhold.controller', [])
                     aapneTabIds.push(gruppe.id);
                 }
             });
-
             $cookieStore.put('scrollTil', {
                 aapneTabs: aapneTabIds,
                 gjeldendeTab: '#arbeidsforhold',
