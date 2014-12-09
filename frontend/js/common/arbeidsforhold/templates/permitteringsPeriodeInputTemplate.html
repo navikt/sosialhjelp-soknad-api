@@ -2,14 +2,15 @@
     <div class="spm" data-nav-faktum="permitteringsperiode" data-ikke-auto-lagre="true">
         <div class="varighet form-linje">
             <h4 class="spm-sporsmal"
-                data-ng-bind-html=" 'arbeidsforhold.arbeidsgiver.permittert.varighet' | cmstekst"></h4>
+                    data-ng-bind-html=" 'arbeidsforhold.arbeidsgiver.permittert.varighet' | cmstekst"></h4>
             <div data-nav-dato-intervall
-                 data-fra-dato="faktum.properties.permiteringsperiodedatofra"
-                 data-til-dato="faktum.properties.permiteringsperiodedatotil"
-                 data-label="arbeidsforhold.arbeidsgiver.permittert.varighet"
-                 data-er-fremtidigdato-tillatt="true"
-                 data-er-fradato-required="true">
+                    data-fra-dato="faktum.properties.permiteringsperiodedatofra"
+                    data-til-dato="faktum.properties.permiteringsperiodedatotil"
+                    data-label="arbeidsforhold.arbeidsgiver.permittert.varighet"
+                    data-er-fremtidigdato-tillatt="true"
+                    data-er-fradato-required="true">
             </div>
+            <div class="ng-transclude"></div>
         </div>
         <div class="prosentfelt"
              data-navtall
@@ -18,7 +19,7 @@
              data-navconfig
              data-nav-faktum-property="permitteringProsent"
              data-navlabel="arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.label"
-             data-navfeilmelding="{required:'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.feilmelding', pattern: 'regex.tall', max: 'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.maxverdi.feilmelding', min:'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.minverdi.feilmelding'}"
+             data-navfeilmelding="feilmelding"
              data-navminvalue="0"
              data-navmaxvalue="100"
              data-regexvalidering="/^\d+$/"

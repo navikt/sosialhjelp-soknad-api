@@ -8,7 +8,6 @@ angular.module('ettersending.directives', [
 	'nav.hjelpetekst',
 	'nav.sidetittel',
 	'nav.bildenavigering',
-	'nav.scroll.directive',
 	'nav.skjematittel',
 	'nav.aria',
 	'nav.norskDatoFilter',

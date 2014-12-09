@@ -160,6 +160,58 @@ angular.module('gjenopptak.routes', ['ngRoute', 'nav.common.routes'])
                     }
                 }
             })
+            .when('/:behandlingId/nyttarbeidsforhold', {
+                templateUrl: '../views/templates/arbeidsforhold/arbeidsforhold-nytt.html',
+                resolve: {
+                    cms: function (CmsResolver) {
+                        return CmsResolver;
+                    },
+                    land: function (LandResolver) {
+                        return LandResolver;
+                    },
+                    soknad: function(SoknadResolver) {
+                        return SoknadResolver;
+                    },
+                    fakta: function(FaktaResolver) {
+                        return FaktaResolver;
+                    },
+                    soknadOppsett: function(SoknadOppsettResolver) {
+                        return SoknadOppsettResolver;
+                    },
+                    config: function(ConfigForSoknadResolver) {
+                        return ConfigForSoknadResolver;
+                    },
+                    behandlingsId: function(BehandlingIdResolver) {
+                        return BehandlingIdResolver;
+                    }
+                }
+            })
+            .when('/:behandlingId/endrearbeidsforhold/:faktumId', {
+                templateUrl: '../views/templates/arbeidsforhold/arbeidsforhold-nytt.html',
+                resolve: {
+                    cms: function (CmsResolver) {
+                        return CmsResolver;
+                    },
+                    land: function (LandResolver) {
+                        return LandResolver;
+                    },
+                    soknad: function(SoknadResolver) {
+                        return SoknadResolver;
+                    },
+                    fakta: function(FaktaResolver) {
+                        return FaktaResolver;
+                    },
+                    soknadOppsett: function(SoknadOppsettResolver) {
+                        return SoknadOppsettResolver;
+                    },
+                    config: function(ConfigForSoknadResolver) {
+                        return ConfigForSoknadResolver;
+                    },
+                    behandlingsId: function(BehandlingIdResolver) {
+                        return BehandlingIdResolver;
+                    }
+                }
+            })
             .when('/:behandlingId/kvittering-fortsettsenere', {
                 templateUrl: '../views/templates/kvittering-fortsettsenere.html',
                 controller: 'FortsettSenereKvitteringCtrl',

@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -60,8 +61,10 @@ public class HandleBarKjoerer implements HtmlGenerator {
     private Handlebars getHandlebars() {
         Handlebars handlebars = new Handlebars();
 
+        handlebars.registerHelper("adresse", generateAdresseHelper());
         handlebars.registerHelper("forFaktum", generateForFaktumHelper());
         handlebars.registerHelper("forFakta", generateForFaktaHelper());
+        handlebars.registerHelper("forBarnefakta", generateForBarnefaktaHelper());
         handlebars.registerHelper("forFaktaMedPropertySattTilTrue", generateForFaktaMedPropTrueHelper());
         handlebars.registerHelper("formatterFodelsDato", generateFormatterFodselsdatoHelper());
         handlebars.registerHelper("formatterLangDato", generateFormatterLangDatoHelper());
@@ -72,17 +75,37 @@ public class HandleBarKjoerer implements HtmlGenerator {
         handlebars.registerHelper("hvisIkkeTom", generateHvisIkkeTomHelper());
         handlebars.registerHelper("hentTekst", generateHvisTekstHelper());
         handlebars.registerHelper("hentTekstMedParameter", generateHentTekstMedParameterHelper());
+        handlebars.registerHelper("hentTekstMedFaktumParameter", generateHentTekstMedFaktumParameterHelper());
         handlebars.registerHelper("hentLand", generateHentLandHelper());
         handlebars.registerHelper("forVedlegg", generateForVedleggHelper());
         handlebars.registerHelper("hentSkjemanummer", generateHentSkjemanummerHelper());
+        handlebars.registerHelper("hentFaktumValue", generateHentFaktumValueHelper());
         handlebars.registerHelper("hvisFlereErTrue", generateHvisFlereSomStarterMedErTrueHelper());
         handlebars.registerHelper("sendtInnInfo", generateSendtInnInfoHelper());
         handlebars.registerHelper("forInnsendteVedlegg", generateForInnsendteVedleggHelper());
         handlebars.registerHelper("forIkkeInnsendteVedlegg", generateForIkkeInnsendteVedleggHelper());
         handlebars.registerHelper("hvisHarIkkeInnsendteDokumenter", generateHvisHarIkkeInnsendteDokumenterHelper());
         handlebars.registerHelper("concat", generateConcatStringHelper());
+        handlebars.registerHelper("skalViseRotasjonTurnusSporsmaal", generateSkalViseRotasjonTurnusSporsmaalHelper());
+        handlebars.registerHelper("hvisLikCmsTekst", generateHvisLikCmsTekstHelper());
 
         return handlebars;
+    }
+
+    private Helper<String> generateAdresseHelper() {
+        return new Helper<String>() {
+            @Override
+            public CharSequence apply(String adresse, Options options) throws IOException {
+                String[] adresselinjer = adresse.split("\n");
+
+                String resultAdresse = "";
+                for (String adresselinje : adresselinjer) {
+                    resultAdresse += "<p>" + adresselinje + "</p>";
+                }
+
+                return resultAdresse;
+            }
+        };
     }
 
     private Helper<Object> generateHvisHarIkkeInnsendteDokumenterHelper() {
@@ -218,6 +241,17 @@ public class HandleBarKjoerer implements HtmlGenerator {
         };
     }
 
+    private Helper<String> generateHentTekstMedFaktumParameterHelper() {
+        return new Helper<String>() {
+            @Override
+            public CharSequence apply(String key, Options options) throws IOException {
+                WebSoknad soknad = finnWebSoknad(options.context);
+                Faktum faktum = soknad.getFaktumMedKey(options.param(0).toString());
+                return getCmsTekst(key, new Object[]{faktum.getValue()}, new Locale("nb", "NO"));
+            }
+        };
+    }
+
     private Helper<String> generateHvisTekstHelper() {
         return new Helper<String>() {
             @Override
@@ -322,7 +356,8 @@ public class HandleBarKjoerer implements HtmlGenerator {
         return new Helper<String>() {
             @Override
             public CharSequence apply(String dato, Options options) throws IOException {
-                DateTimeFormatter dt = DateTimeFormat.forPattern("d. MMMM yyyy").withLocale(NO_LOCALE);
+                Locale locale = new Locale("nb", "no");
+                DateTimeFormatter dt = DateTimeFormat.forPattern("d. MMMM yyyy").withLocale(locale);
                 if (StringUtils.isNotEmpty(dato)) {
                     return dt.print(DateTime.parse(dato));
                 }
@@ -362,13 +397,39 @@ public class HandleBarKjoerer implements HtmlGenerator {
         };
     }
 
+    private Helper<String> generateHentFaktumValueHelper() {
+        return new Helper<String>() {
+            @Override
+            public CharSequence apply(String key, Options options) throws IOException {
+                WebSoknad soknad = finnWebSoknad(options.context);
+                Faktum faktum = soknad.getFaktumMedKey(key);
+                return faktum.getValue();
+            }
+        };
+    }
+
     private Helper<String> generateForFaktaHelper() {
         return new Helper<String>() {
             @Override
             public CharSequence apply(String key, Options options) throws IOException {
                 WebSoknad soknad = finnWebSoknad(options.context);
                 List<Faktum> fakta = soknad.getFaktaMedKey(key);
+                if (fakta.isEmpty()) {
+                    return options.inverse(this);
+                } else {
+                    return lagItererbarRespons(options, fakta);
+                }
+            }
+        };
+    }
 
+    private Helper<String> generateForBarnefaktaHelper() {
+        return new Helper<String>() {
+            @Override
+            public CharSequence apply(String key, Options options) throws IOException {
+                WebSoknad soknad = finnWebSoknad(options.context);
+                Faktum parentFaktum = (Faktum) options.context.parent().model();
+                List<Faktum> fakta = soknad.getFaktaMedKeyOgParentFaktum(key, parentFaktum.getFaktumId());
                 if (fakta.isEmpty()) {
                     return options.inverse(this);
                 } else {
@@ -426,4 +487,42 @@ public class HandleBarKjoerer implements HtmlGenerator {
         return buffer.toString();
     }
 
+    private Helper<Object> generateSkalViseRotasjonTurnusSporsmaalHelper() {
+        return new Helper<Object>() {
+            private boolean faktumSkalIkkeHaRotasjonssporsmaal(Faktum faktum) {
+                List<String> verdierSomGenerererSporsmaal = Arrays.asList(
+                        "Permittert",
+                        "Sagt opp av arbeidsgiver",
+                        "Kontrakt utgått",
+                        "Sagt opp selv",
+                        "Redusert arbeidstid"
+                );
+                return !verdierSomGenerererSporsmaal.contains(faktum.getProperties().get("type"));
+            }
+
+            @Override
+            public CharSequence apply(Object value, Options options) throws IOException {
+                WebSoknad soknad = finnWebSoknad(options.context);
+                List<Faktum> fakta = soknad.getFaktaMedKey("arbeidsforhold");
+
+                if (fakta.isEmpty() || faktumSkalIkkeHaRotasjonssporsmaal(fakta.get(0))) {
+                    return options.inverse(this);
+                } else {
+                    return options.fn(this);
+                }
+            }
+        };
+    }
+
+    private Helper<Object> generateHvisLikCmsTekstHelper() {
+        return new Helper<Object>() {
+            @Override
+            public CharSequence apply(Object value, Options options) throws IOException {
+                if(value != null && getCmsTekst(options.param(0).toString(), new Object[]{}, NO_LOCALE).equalsIgnoreCase(value.toString())) {
+                    return options.fn(this);
+                }
+                return options.inverse(this);
+            }
+        };
+    }
 }

@@ -318,32 +318,6 @@ angular.module('sendsoknad.routes', ['ngRoute', 'nav.common.routes'])
                     }
                 }
             })
-            .when('/:behandlingId/permitteringsperiode', {
-                templateUrl: '../views/templates/arbeidsforhold/permitteringsperiode-nytt.html',
-                resolve: {
-                    cms: function (CmsResolver) {
-                        return CmsResolver;
-                    },
-                    land: function (LandResolver) {
-                        return LandResolver;
-                    },
-                    soknad: function(SoknadResolver) {
-                        return SoknadResolver;
-                    },
-                    fakta: function(FaktaResolver) {
-                        return FaktaResolver;
-                    },
-                    soknadOppsett: function(SoknadOppsettResolver) {
-                        return SoknadOppsettResolver;
-                    },
-                    config: function(ConfigForSoknadResolver) {
-                        return ConfigForSoknadResolver;
-                    },
-                    behandlingsId: function(BehandlingIdResolver) {
-                        return BehandlingIdResolver;
-                    }
-                }
-            })
             .when('/:behandlingId/oppsummering', {
                 templateUrl: '../views/templates/oppsummering.html',
                 resolve: {

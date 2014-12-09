@@ -5,7 +5,6 @@ angular.module('gjenopptak')
         $http.get('../views/common/feilsider/feilsideBaksystem.html', {cache: $templateCache});
         $http.get('../js/common/tredjeparts/directives/modal/window.html', {cache: $templateCache});
         $http.get('../js/common/tredjeparts/directives/modal/backdrop.html', {cache: $templateCache});
-
         $http.get('../views/templates/reellarbeidssoker/reell-arbeidssoker.html', {cache: $templateCache});
         $http.get('../views/templates/egennaering/egen-naering.html', {cache: $templateCache});
         $http.get('../views/templates/egennaering/egenNaeringvirksomhet.html', {cache: $templateCache});
@@ -25,7 +24,6 @@ angular.module('gjenopptak')
         $http.get('../views/templates/utdanning/utdanningKortvarigTemplate.html', {cache: $templateCache});
         $http.get('../views/templates/utdanning/utdanningKortvarigFlereTemplate.html', {cache: $templateCache});
         $http.get('../views/templates/utdanning/utdanningNorskTemplate.html', {cache: $templateCache});
-        $http.get('../views/templates/reberegning.html', {cache: $templateCache});
         $http.get('../views/dagpenger/dagpenger-skjema.html', {cache: $templateCache});
         $http.get('../js/common/directives/booleanradio/booleanradioTemplate.html', {cache: $templateCache});
         $http.get('../js/common/tredjeparts/directives/accordion/accordionGroupTemplate.html', {cache: $templateCache});
@@ -48,11 +46,12 @@ angular.module('gjenopptak')
         $http.get('../js/common/directives/stegindikator/stegIndikatorTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/sistlagret/sistLagretTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/markup/modalsideTemplate.html', {cache: $templateCache});
-
         $http.get('../js/common/directives/melding/meldingTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/markup/vedlegginfoboksTemplate.html', {cache: $templateCache});
+        $http.get('../views/templates/arbeidsforhold/nye-arbeidsforhold.html', {cache: $templateCache});
+        $http.get('../views/templates/tidligere-arbeidsforhold.html', {cache: $templateCache});
         $http.get('../views/templates/arbeidsforhold/arbeidsforhold-nytt.html', {cache: $templateCache});
-        $http.get('../views/templates/arbeidsforhold/permitteringsperiode-nytt.html', {cache: $templateCache});
+        $http.get('../js/common/arbeidsforhold/templates/arbeidsforhold-leggtil-knapper.html', {cache: $templateCache});
         $http.get('../js/common/arbeidsforhold/templates/oppsummeringer/permitteringsPerioderOppsummeringTemplate.html', {cache: $templateCache});
         $http.get('../js/common/arbeidsforhold/templates/undersporsmaal/avskjediget.html', {cache: $templateCache});
         $http.get('../js/common/arbeidsforhold/templates/oppsummeringer/avskjediget-oppsummering.html', {cache: $templateCache});

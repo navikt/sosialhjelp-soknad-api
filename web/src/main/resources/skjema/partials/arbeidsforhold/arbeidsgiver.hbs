@@ -1,0 +1,197 @@
+<table>
+{{#forFakta "arbeidsforhold"}}
+    <tr>
+        <td class="sjekket"></td>
+        <td>
+            <span class="arbeidsforhold-arbeidsgiver">{{ properties.arbeidsgivernavn }},</span>
+            <span class="arbeidsforhold-land">{{ hentLand properties.land }}</span>
+            <ul class="arbeidsforhold-data">
+                <li class="arbeidsforhold-varighet">
+                    <span>{{ formatterLangDato properties.datofra }}</span>
+                    {{#if properties.datotil}}
+                        <span>{{ hentTekst "dagpenger.oppsummering.datotil" }}</span>
+                        <span>{{ formatterLangDato properties.datotil }}</span>
+                    {{/if}}
+                    {{#if properties.konkursdato}}
+                        <span>{{ hentTekst "dagpenger.oppsummering.datotil" }}</span>
+                        <span>{{ formatterLangDato properties.konkursdato }}</span>
+                    {{/if}}
+                </li>
+
+
+                {{#hvisLik properties.type "Avskjediget"}}
+                    <li class="kulepunkt">
+                        <span>{{ hentTekst "arbeidsforhold.sluttaarsak.radio.avskjediget" }}</span>
+                        <p>{{ properties.avskjedigetGrunn }}</p>
+                    </li>
+                {{/hvisLik}}
+
+                {{#hvisLik properties.type "Kontrakt utgått"}}
+                    <li class="kulepunkt">
+                        <span>{{ hentTekst "arbeidsforhold.sluttaarsak.radio.kontraktutgaatt" }}</span>
+                    </li>
+
+                    <li class="kulepunkt">
+                        {{#hvisSant properties.tilbudomjobbannetsted }}
+                            <span>{{ hentTekst "arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.true" }}</span>
+                        {{else}}
+                            <span>{{ hentTekst "arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.false" }}</span>
+                        {{/hvisSant}}
+                    </li>
+                {{/hvisLik}}
+
+                {{#hvisLik properties.type "Redusert arbeidstid"}}
+                    <li class="kulepunkt">
+                        <span>{{ hentTekst "arbeidsforhold.sluttaarsak.radio.redusertArbeidstid" }}</span>
+                    </li>
+                    <li class="kulepunkt">
+                        <span> {{ hentTekst "arbeidsforhold.sluttaarsak.redusertArbeidstid.fraDato.oppsummering" }} </span>
+                        <span>{{ formatterLangDato properties.redusertfra }}</span>
+                    </li>
+
+                    <li class="kulepunkt">
+                        {{#hvisSant properties.nyttTilbud }}
+                            <span>{{ hentTekst "arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.true" }}</span>
+                        {{else}}
+                            <span>{{ hentTekst "arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.false" }}</span>
+                        {{/hvisSant}}
+                    </li>
+                {{/hvisLik}}
+
+                {{#hvisLik properties.type "Arbeidsgiver er konkurs"}}
+                    <li class="kulepunkt">
+                        <span>{{ hentTekst "arbeidsforhold.sluttaarsak.radio.arbeidsgiverErKonkurs" }}</span>
+                    </li>
+
+                    <li class="kulepunkt">
+                        <span>{{ hentTekst "arbeidsforhold.sluttaarsak.konkurs.bostyrersnavn.label" }}:</span>
+                        <span>{{ properties.bostyrersnavn }}</span>
+                    </li>
+                    <li class="kulepunkt">
+                        {{#hvisLik properties.lonnsgaranti "JaHarSokt" }}
+                            <span>{{ hentTekst "arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.jaharsokt" }}</span>
+                            <ul>
+                                <li class="kulepunkt">
+                                    {{#hvisLik properties.lonnsgarantidekker "Nei" }}
+                                        <span>{{ hentTekst "arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.nei" }}</span>
+                                    {{/hvisLik}}
+
+                                    {{#hvisLik properties.lonnsgarantidekker "Ja" }}
+                                        <span>{{ hentTekst "arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.ja" }}</span>
+                                    {{/hvisLik}}
+
+                                    {{#hvisLik properties.lonnsgarantidekker "Vet ikke" }}
+                                        <span>{{ hentTekst "arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.vetikke" }}</span>
+                                    {{/hvisLik}}
+                                </li>
+                            </ul>
+                        {{/hvisLik}}
+
+                        {{#hvisLik properties.lonnsgaranti "JaSkalSoke" }}
+                            <span>{{ hentTekst "arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.jaskalsoke" }}</span>
+                        {{/hvisLik}}
+
+                        {{#hvisLik properties.lonnsgaranti "Nei" }}
+                            <span>{{ hentTekst "arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.nei" }}</span>
+                        {{/hvisLik}}
+                    </li>
+                    <li class="kulepunkt">
+                        {{#hvisSant properties.lonnkonkursmaaned }}
+                            <span>{{ hentTekst "arbeidsforhold.sluttaarsak.konkurs.lonnkonkursmaaned.true" }}</span>
+                        {{else}}
+                            <span>{{ hentTekst "arbeidsforhold.sluttaarsak.konkurs.lonnkonkursmaaned.false" }}</span>
+                        {{/hvisSant}}
+                    </li>
+                {{/hvisLik}}
+
+                {{#hvisLik properties.type "Sagt opp av arbeidsgiver"}}
+                    <li class="kulepunkt">
+                        <span>{{ hentTekst "arbeidsforhold.sluttaarsak.radio.sagtOppAvArbeidsgiver" }}</span>
+                        <p>{{ properties.aarsak }}</p>
+                    </li>
+
+                    <li class="kulepunkt">
+                        {{#hvisSant properties.sagtOppAvArbeidsgiverTilbudomjobbannetsted }}
+                            <span>{{ hentTekst "arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.true" }}</span>
+                        {{else}}
+                            <span>{{ hentTekst "arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.false" }}</span>
+                        {{/hvisSant}}
+                    </li>
+                {{/hvisLik}}
+
+                {{#hvisLik properties.type "Sagt opp selv"}}
+                    <li class="kulepunkt">
+                        <span>{{ hentTekst "arbeidsforhold.sluttaarsak.radio.sagtOppSelv" }}</span>
+                        <p>{{ properties.sagtoppselvAarsak }}</p>
+                    </li>
+                {{/hvisLik}}
+
+                {{#hvisLik properties.type "Permittert"}}
+                    <li class="kulepunkt">
+                        <span>{{ hentTekst "arbeidsforhold.sluttaarsak.radio.permittert" }}</span>
+                    </li>
+
+                    <li class="kulepunkt">
+                        <span>{{ hentTekst "arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet" }}:</span>
+                        {{#if properties.lonnspliktigperiodevetikke }}
+                            <span>{{ hentTekst "arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.vetikke" }}</span>
+                        {{else}}
+                            <span>{{ formatterLangDato properties.lonnspliktigperiodedatofra }}</span>
+                            {{#if properties.lonnspliktigperiodedatotil}}
+                                <span>{{ hentTekst "gjenopptak.oppsummering.datotil" }}</span>
+                                <span>{{ formatterLangDato properties.lonnspliktigperiodedatotil }}</span>
+                            {{/if}}
+                        {{/if}}
+                    </li>
+
+                    <p>{{ hentTekst "arbeidsforhold.arbeidsgiver.permittert.varighet.tittel" }}</p>
+                    {{#forBarnefakta "arbeidsforhold.permitteringsperiode"}}
+                        <li class="kulepunkt">
+                            <div class="permitteringsperiode">
+                                <p>
+                                    <span>{{ formatterLangDato properties.permiteringsperiodedatofra }}</span>
+                                    <span>{{ hentTekst "gjenopptak.oppsummering.datotil" }}</span>
+                                    <span>{{ formatterLangDato properties.permiteringsperiodedatotil }}</span>
+                                </p>
+                                <p>
+                                    <span>{{ properties.permitteringProsent }}%</span>
+                                    <span>{{ hentTekst "dagpenger.oppsummering.arbeidsforhold.permitteringsgrad" }}</span>
+                                </p>
+                            </div>
+                        </li>
+                    {{/forBarnefakta}}
+                {{/hvisLik}}
+
+                {{#skalViseRotasjonTurnusSporsmaal}}
+                    <p>{{ hentTekst "arbeidsforhold.rotasjonskiftturnus.sporsmaal" }}</p>
+                    <li class="kulepunkt">
+                        <p class="rotasjonturnus">{{ properties.rotasjonskiftturnus }}</p>
+                    </li>
+
+                    {{#hvisLikCmsTekst properties.rotasjonskiftturnus "arbeidsforhold.rotasjonskiftturnus.sporsmaal.alternativ.jarotasjon"}}
+                        <li class="kulepunkt">
+                            <p class="rotasjonturnus">
+                                <span>{{hentTekst "arbeidsforhold.rotasjonskiftturnus.rotasjon.arbeidsdager"}}</span>
+                                <span>{{ properties.arbeidsdager }}</span>
+                            </p>
+                        </li>
+                        <li class="kulepunkt">
+                            <p class="rotasjonturnus">
+                                <span>{{hentTekst "arbeidsforhold.rotasjonskiftturnus.rotasjon.avspaseringsdager"}}</span>
+                                <span>{{ properties.avspaseringsdager }}</span>
+                            </p>
+                        </li>
+                    {{/hvisLikCmsTekst}}
+                {{/skalViseRotasjonTurnusSporsmaal}}
+            </ul>
+        </td>
+    </tr>
+{{else}}
+    <tr>
+        <td class="sjekket"></td>
+        <td>
+            <span>{{ hentTekst "dagpenger.oppsummering.arbeidsforhold.ingen" }}</span>
+        </td>
+    </tr>
+{{/forFakta}}
+</table>

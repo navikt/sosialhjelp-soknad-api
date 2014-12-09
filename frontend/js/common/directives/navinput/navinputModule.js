@@ -24,6 +24,13 @@ angular.module('nav.input', ['nav.cms'])
                         tittel: attr.hjelpetekst + '.tittel',
                         tekst: attr.hjelpetekst + '.tekst'
                     };
+                    scope.getCmsArgument = function() {
+                        var cmsArgs = scope.cmsArgumenter;
+                        if(cmsArgs && cmsArgs.modelFaktum) {
+                            return cmsArgs.modelFaktum.value ? cmsArgs.modelFaktum.value : cmsArgs.default;
+                        }
+                        return null;
+                    };
                 },
                 post: function (scope, element) {
                     scope.hvisAktiv = function () {
