@@ -368,8 +368,10 @@ angular.module('nav.datepicker.directive', [])
                     caretPosisjonElement.show();
                 });
 
+                // Dersom det er ønskelig å sjekke tekst som blir limt inn, kan vi binde til paste
                 element.bind('keydown', function (event) {
-                    return datepickerInputService.isValidInput(event.keyCode, element.val().length, datoMask.length, hentCaretPosisjon(element));
+                    var hasSelectedText = element[0].selectionEnd - element[0].selectionStart > 0;
+                    return datepickerInputService.isValidInput(event, element.val().length, datoMask.length, hentCaretPosisjon(element), hasSelectedText);
                 });
 
                 ngModel.$formatters.unshift(function (dato) {

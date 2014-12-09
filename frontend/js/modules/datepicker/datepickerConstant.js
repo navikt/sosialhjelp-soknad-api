@@ -9,6 +9,9 @@ angular.module('nav.datepicker.constant', [])
     .constant('datepickerInputKeys', [
         47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 190
     ])
-    .constant('datepickerNonInputKeys', [
+    .constant('datepickerUtilityKeys', [
         46, 37, 39, 8, 9, 35, 36, 45
-    ]);
+    ])
+    .constant('periodKeyCode', 190)
+    .constant('cKeyCode', 67)
+    .constant('vKeyCode', 86);
