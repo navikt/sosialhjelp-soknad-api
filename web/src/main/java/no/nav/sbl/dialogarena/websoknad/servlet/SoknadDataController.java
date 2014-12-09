@@ -165,7 +165,7 @@ public class SoknadDataController {
             soknadService.sendSoknad(soknadId, kvittering);
         } else {
             byte[] soknadPdf;
-            if(soknad.erGjenopptak()) {
+            if (soknad.erGjenopptak()) {
                 soknadPdf = genererPdf(soknad, "/skjema/gjenopptak");
             } else {
                 soknadPdf = genererPdf(soknad, "/skjema/dagpenger");
@@ -256,8 +256,8 @@ public class SoknadDataController {
     public String hentOppsummering(@PathVariable Long soknadId) throws IOException {
         WebSoknad soknad = soknadService.hentSoknad(soknadId);
         vedleggService.leggTilKodeverkFelter(soknad.getVedlegg());
-        if(soknad.erGjenopptak()) {
-            return  pdfTemplate.fyllHtmlMalMedInnhold(soknad, "/skjema/gjenopptak");
+        if (soknad.erGjenopptak()) {
+            return pdfTemplate.fyllHtmlMalMedInnhold(soknad, "/skjema/gjenopptak");
         } else {
             return pdfTemplate.fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
         }
