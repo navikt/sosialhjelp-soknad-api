@@ -27,18 +27,18 @@
     </label>
     <div data-ng-messages="form[name].$error" data-ng-if="harFeil()">
         <span data-ng-message="toDate">
-            <span class="melding" data-ng-bind-html=" 'dato.tilDato.feilmelding' | cmstekst"></span>
+            <span class="melding" data-ng-bind-html="'dato.tilDato.feilmelding' | cmstekst"></span>
         </span>
-        <span data-ng-message="required" data-ng-if="!vars.harFokus">
+        <span data-ng-message="required">
             <span class="melding" data-ng-bind-html="requiredErrorMessage | cmstekst"></span>
         </span>
-        <span data-ng-message="dateFormat" data-ng-if="!vars.harFokus">
+        <span data-ng-message="dateFormat">
             <span class="melding" data-ng-bind-html="'dato.format.feilmelding' | cmstekst"></span>
         </span>
-        <span data-ng-message="validDate" data-ng-if="!vars.harFokus">
+        <span data-ng-message="validDate">
             <span class="melding" data-ng-bind-html="'dato.ikkeGyldigDato.feilmelding' | cmstekst"></span>
         </span>
-        <span data-ng-message="futureDate" data-ng-if="!vars.harFokus">
+        <span data-ng-message="futureDate">
             <span class="melding" data-ng-bind-html=" 'dato.ugyldigFremtidig.feilmelding' | cmstekst"></span>
         </span>
     </div>
