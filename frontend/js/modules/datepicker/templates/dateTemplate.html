@@ -4,23 +4,25 @@
         <span class="vekk" data-ng-bind-html=" 'dato.format' | cmstekst"></span>
         <div class="datepicker-input" data-ng-if="navDatepicker()">
             <div data-dato-input="vars.model"
-                 data-har-fokus="vars.harFokus"
-                 data-er-required="vars.erRequired"
-                 data-datepicker-closed="vars.datepickerClosed"
-                 data-name="{{ vars.name }}"
-                 data-required-error-message="{{ vars.requiredErrorMessage }}"
-                 data-er-fremtidigdato-tillatt="vars.erFremtidigdatoTillatt"
-                 data-lagre="vars.lagre"></div>
+                    data-har-fokus="vars.harFokus"
+                    data-er-required="vars.erRequired"
+                    data-datepicker-closed="vars.datepickerClosed"
+                    data-name="{{ vars.name }}"
+                    data-required-error-message="{{ vars.requiredErrorMessage }}"
+                    data-er-fremtidigdato-tillatt="vars.erFremtidigdatoTillatt"
+                    data-lagre="vars.lagre"
+                    data-disabled="disabled"></div>
             <div data-datepicker="vars.model"
-                 data-har-hatt-fokus="vars.harHattFokus" data-is-closed="vars.datepickerClosed" data-er-fremtidigdato-tillatt="vars.erFremtidigdatoTillatt"></div>
+                    data-har-hatt-fokus="vars.harHattFokus" data-is-closed="vars.datepickerClosed" data-er-fremtidigdato-tillatt="vars.erFremtidigdatoTillatt"></div>
         </div>
         <div data-ng-if="vanligDatepicker()">
             <div data-html-datepicker="vars.model"
-                 data-har-fokus="vars.harFokus"
-                 data-name="{{ vars.name }}"
-                 data-er-required="vars.erRequired"
-                 data-required-error-message="{{ vars.requiredErrorMessage }}"
-                 data-lagre="vars.lagre"></div>
+                    data-har-fokus="vars.harFokus"
+                    data-name="{{ vars.name }}"
+                    data-er-required="vars.erRequired"
+                    data-required-error-message="{{ vars.requiredErrorMessage }}"
+                    data-lagre="vars.lagre"
+                    data-disabled="disabled"></div>
         </div>
     </label>
     <div data-ng-messages="form[name].$error" data-ng-if="harFeil()">

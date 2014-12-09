@@ -248,7 +248,8 @@ angular.module('nav.datepicker.directive', [])
                 erFremtidigdatoTillatt: '=?',
                 lagre: '&',
                 requiredErrorMessage: '@',
-                name: '@'
+                name: '@',
+                disabled: '=?'
             },
             link: function (scope, element, attrs, form) {
                 var eventForAValidereHeleFormen = 'RUN_VALIDATION' + form.$name;
@@ -281,6 +282,7 @@ angular.module('nav.datepicker.directive', [])
                 model: '=htmlDatepicker',
                 harFokus: '=',
                 erRequired: '=?',
+                disabled: '=?',
                 lagre: '&',
                 requiredErrorMessage: '@',
                 name: '@'
@@ -319,7 +321,8 @@ angular.module('nav.datepicker.directive', [])
                 erBeggeRequired       : '=',
                 erFremtidigdatoTillatt: '=',
                 lagre                 : '&',
-                label                 : '@'
+                label                 : '@',
+                disabled              : '=?'
             },
             controller : function ($scope) {
                 $scope.fraLabel = $scope.label + '.fra';
