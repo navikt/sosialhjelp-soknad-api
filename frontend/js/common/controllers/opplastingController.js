@@ -24,6 +24,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
 
         $scope.skalViseFeilmelding = false;
         $scope.opplastingFeilet = false;
+        $scope.brukerBehandlingId = data.soknad.brukerBehandlingId;
 
         $scope.data = {
             vedleggId: $routeParams.vedleggId,

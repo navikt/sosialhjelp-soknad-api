@@ -156,6 +156,52 @@ describe('navradioMedArbeidsforhold', function () {
     });
 });
 
+describe('navradioUtenfaktum', function () {
+    var scope, element;
+
+    beforeEach(module('nav.input', 'nav.cms', 'templates-main'));
+
+    beforeEach(module(function ($provide) {
+        $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
+        $provide.value("data", {});
+    }));
+
+    beforeEach(inject(function ($compile, $rootScope) {
+        element = angular.element(
+            '<form name="form" > ' +
+                '<div data-navradio-utenfaktum ' +
+                'data-value="value" ' +
+                'data-navconfig ' +
+                'data-radiomodel="minmodel" ' +
+                'data-navlabel="navlabel.false" ' +
+                'data-navfeilmelding="tittel.key"> ' +
+                '</div> ' +
+            '</form>');
+
+        $compile(element)($rootScope);
+        $rootScope.$apply();
+
+        scope = element.find('div').scope().$$childTail;
+    }));
+
+    it('tekstene skal bli satt', function () {
+        expect(scope.value).toBe('value');
+        expect(scope.navlabel).toBe('navlabel.false');
+    });
+
+    it('name skal bli satt til navlabel', function () {
+        expect(scope.name).toBe('navlabel');
+    });
+
+    it('hvisHarTranscludedInnhold skal returnere false om dne ikke har transcluded innhold', function() {
+       expect(scope.hvisHarTranscludedInnhold()).toBeFalsy();
+    });
+
+    it('hvisHarHjelpetekst skal returnere false om dne ikke har hjelpetekst', function() {
+        expect(scope.hvisHarHjelpetekst()).toBeFalsy();
+    });
+});
+
 describe('navcheckbox', function () {
     var scope, element;
 

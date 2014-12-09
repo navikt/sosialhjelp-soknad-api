@@ -14,6 +14,7 @@
             <module name="sun.jdk"/>
             <system>
                 <paths>
+                    <path name="com/sun/org/apache/xerces/internal/jaxp/datatype"/>
                     <path name="com/sun/image/codec/jpeg"/>
                 </paths>
             </system>
