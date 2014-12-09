@@ -563,7 +563,8 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         return !soknadVedlegg.getFlereTillatt() && annetFaktumHarForventning(faktum.getSoknadId(), soknadVedlegg.getSkjemaNummer(), soknadVedlegg.getOnValue(), struktur);
     }
 
-    private void lagrePaakrevdVedlegg(Faktum faktum, SoknadVedlegg soknadVedlegg, Vedlegg vedlegg) {
+    private void lagrePaakrevdVedlegg(Faktum faktum, SoknadVedlegg soknadVedlegg, Vedlegg v) {
+        Vedlegg vedlegg = v;
         if (vedlegg == null) {
             Long faktumId = soknadVedlegg.getFlereTillatt() ? faktum.getFaktumId() : null;
             vedlegg = new Vedlegg(faktum.getSoknadId(), faktumId, soknadVedlegg.getSkjemaNummer(), Vedlegg.Status.VedleggKreves);
