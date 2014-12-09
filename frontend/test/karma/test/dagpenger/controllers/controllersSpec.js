@@ -5,6 +5,8 @@
 (function () {
     'use strict';
 
+    var saksoversiktUrl = "saksoversiktUrl";
+
     describe('DagpengerControllere', function () {
         var scope, ctrl, form, element, barn, $httpBackend, event, location, epost;
         event = $.Event("click");
@@ -48,8 +50,7 @@
                     "dittnav.link.url": "dittnavUrl",
                     "soknad.lonnskravskjema.url": "lonnskravSkjemaUrl",
                     "soknad.permitteringsskjema.url": "permiteringUrl",
-                    "minehenvendelser.link.url": "minehenvendelserUrl",
-                    "soknad.inngangsporten.url": "inngangsportenUrl",
+                    "saksoversikt.link.url": saksoversiktUrl,
                     "soknad.skjemaveileder.url": "skjemaVeilederUrl",
                     "soknad.brukerprofil.url": "brukerprofilUrl",
                     "soknad.reelarbeidsoker.url": "reelArbeidsokerUrl",
@@ -935,9 +936,9 @@
                 });
             }));
 
-            it('Mine innsendinger og inngangsporten skal settes til riktig url', function () {
-                expect(scope.mineInnsendinger).toEqual("minehenvendelserUrl");
-                expect(scope.inngangsportenUrl).toEqual("inngangsportenUrl");
+            it('Mine innsendinger og dittnav skal settes til riktig url', function () {
+                expect(scope.mineInnsendinger).toEqual(saksoversiktUrl);
+                expect(scope.dittnavUrl).toEqual("dittnavUrl");
             });
         });
         describe('YtelserCtrl', function () {
@@ -1129,9 +1130,9 @@
 
             it('alle url skal bli statt til riktig url', function () {
                 expect(scope.alderspensjonUrl).toEqual('alderspensjonUrl');
-                expect(scope.mineHenveldelserUrl).toEqual('minehenvendelserUrl');
+                expect(scope.mineHenveldelserUrl).toEqual(saksoversiktUrl);
                 expect(scope.reelArbeidsokerUrl).toEqual('reelArbeidsokerUrl');
-                expect(scope.inngangsportenUrl).toEqual('inngangsportenUrl');
+                expect(scope.dittnavUrl).toEqual('dittnavUrl');
             });
             it('harlestbrosjyre skal være satt til false hvis pathen ikke inneholder sendsoknad/soknad', function () {
                 expect(scope.utslagskriterier.harlestbrosjyre).toEqual(false);

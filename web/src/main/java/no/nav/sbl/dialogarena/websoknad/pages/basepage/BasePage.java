@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.websoknad.pages.basepage;
 
 import no.nav.modig.content.CmsContentRetriever;
-import no.nav.sbl.dialogarena.webkomponent.footer.FooterPanel;
 import no.nav.sbl.dialogarena.webkomponent.innstillinger.InnstillingerPanel;
 import no.nav.sbl.dialogarena.webkomponent.navigasjon.NavigasjonPanel;
 import org.apache.wicket.markup.html.WebPage;
@@ -11,7 +10,6 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.Map;
 
 
 public class BasePage extends WebPage {
@@ -22,17 +20,12 @@ public class BasePage extends WebPage {
     @Named("navigasjonslink")
     private String navigasjonsLink;
 
-    @Inject
-    @Named("footerLinks")
-	private Map<String, String> footerLinks;
-
 
     public BasePage(PageParameters parameters) {
         super(parameters);
         add(
                 new InnstillingerPanel("innstillinger", getInnloggetIsTrueModel(), cmsContentRetriever, false),
-                new NavigasjonPanel("navigasjon", navigasjonsLink, cmsContentRetriever),
-                new FooterPanel("footer", footerLinks, getInnloggetIsTrueModel(), FALSE, cmsContentRetriever)
+                new NavigasjonPanel("navigasjon", navigasjonsLink, cmsContentRetriever)
         );
     }
 

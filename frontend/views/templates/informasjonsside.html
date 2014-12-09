@@ -8,7 +8,7 @@
         	<h1 class="utrop-sirkel-ikon" data-ng-bind-html=" 'feilmelding' | cmstekst"></h1>
        		<p class="mini-strek" data-ng-bind-html=" 'feilmelding.tps' | cmstekst"></p>
 			<div class="knapper">
-       			<a type="button" class="knapp-hoved" href="{{ inngangsportenUrl }}" data-ng-bind-html=" 'feilmelding.lenketekst' | cmstekst"></a>
+       			<a type="button" class="knapp-hoved" href="{{ dittnavUrl }}" data-ng-bind-html=" 'feilmelding.lenketekst' | cmstekst"></a>
        		</div>
        	</div>
        	<form data-ng-show="tpsSvarer()">
@@ -27,10 +27,10 @@
 			
 					<ul>
 						<li>
-							<p data-ng-bind-html=" 'utslagskriterier.utslag.bosted.liste.1' | cmstekst"></p>
+							<p class="medium" data-ng-bind-html=" 'utslagskriterier.utslag.bosted.liste.1' | cmstekst"></p>
 						</li>
 						<li>
-							<p data-ng-bind-html=" 'utslagskriterier.utslag.bosted.liste.2' | cmstekst"></p>
+							<p class="medium" data-ng-bind-html=" 'utslagskriterier.utslag.bosted.liste.2' | cmstekst"></p>
 						</li>
 					</ul>
 				</div>
@@ -39,7 +39,7 @@
 					<h2 class="stor strek-ikon-info-orange" data-ng-bind-html=" 'dagpenger.informasjonsside.ikkegyldigalder.tittel' | cmstekst"></h2>
 					<ul>
 						<li>
-							<span data-ng-bind-html=" 'utslagskriterier.utslag.alder.1' | cmstekst"></span>
+							<p class="medium" data-ng-bind-html=" 'utslagskriterier.utslag.alder.1' | cmstekst"></p>
 							<a href="{{ alderspensjonUrl }}" target="_blank" data-ng-bind-html=" 'utslagskriterier.utslag.alder.2.lenketekst' | cmstekst"></a>
 						</li>
 					</ul>
@@ -49,10 +49,10 @@
                     <h2 class="stor strek-ikon-info-orange" data-ng-bind-html=" 'dagpenger.informasjonsside.ikkegyldigarbeidssoker.tittel' | cmstekst"></h2>
                     <ul data-ng-if="ikkeRegistrertArbeidssoker()">
                         <li>
-                            <span data-ng-bind-html="'utslagskriterier.utslag.reellarbeidssoker.liste.1' | cmstekst"></span>
+                            <p class="medium" data-ng-bind-html="'utslagskriterier.utslag.reellarbeidssoker.liste.1' | cmstekst"></p>
                         </li>
                         <li>
-                            <span data-ng-bind-html="'utslagskriterier.utslag.reellarbeidssoker.liste.2' | cmstekst"></span>
+                            <p class="medium" data-ng-bind-html="'utslagskriterier.utslag.reellarbeidssoker.liste.2' | cmstekst"></p>
                         </li>
                     </ul>
                     <ul data-ng-if="registrertArbeidssokerUkjent()">
@@ -62,6 +62,7 @@
                     </ul>
                 </div>
 			</div>
+
 
 			<div class="viktig-info" data-ng-show="kravForDagpengerOppfylt()">
 				<ul class="informasjonsliste">
@@ -96,14 +97,14 @@
 				</div>
 				<div data-ng-show="soknadErIkkeStartet()">
 					<input type="button" class="knapp-hoved" value="{{ 'utslagskriterier.utslag.fortsett' | cmstekst }}" data-ng-click="startSoknadDersomBrosjyreLest()" data-valider-informasjonsside data-fremdriftsindikator/>
-					<a href="{{ inngangsportenUrl }}" data-ng-bind-html=" 'utslagskriterier.utslag.avbryt.lenketekst' | cmstekst"></a>
+					<a href="{{ dittnavUrl }}" data-ng-bind-html=" 'utslagskriterier.utslag.avbryt.lenketekst' | cmstekst"></a>
 				</div>
 			</div>
 
 			<div class="utslagskriterier-knapper" data-ng-if="kravForDagpengerIkkeOppfylt()">
                 <div data-ng-if="ikkeRegistrertArbeidssoker() || registrertArbeidssokerUkjent()">
                     <a class="knapp-hoved" href="{{ reelArbeidsokerUrl }}" data-ng-bind-html="'utslagskriterier.utslag.reellarbeidssoker.registert' | cmstekst"></a>
-                    <a class="registrer" href="{{ inngangsportenUrl }}" data-ng-bind-html=" 'utslagskriterier.utslag.avbryt.lenketekst' | cmstekst"></a>
+                    <a class="registrer" href="{{ dittnavUrl }}" data-ng-bind-html=" 'utslagskriterier.utslag.avbryt.lenketekst' | cmstekst"></a>
                     <p>
                         <a href="#" data-ng-click="fortsettLikevel($event)" data-ng-bind-html=" 'utslagskriterier.utslag.fortsettlikevel' | cmstekst"></a>
                         <span data-ng-bind-html=" 'utslagskriterier.utslag.infoAvslag' | cmstekst"></span>
@@ -111,7 +112,7 @@
                 </div>
 
                 <div data-ng-if="!ikkeRegistrertArbeidssoker() && !registrertArbeidssokerUkjent()">
-                    <a class="knapp-hoved" href="{{ inngangsportenUrl }}" data-ng-bind-html=" 'utslagskriterier.utslag.avbryt.lenketekst' | cmstekst"></a>
+                    <a class="knapp-hoved" href="{{ dittnavUrl }}" data-ng-bind-html=" 'utslagskriterier.utslag.avbryt.lenketekst' | cmstekst"></a>
                     <p>
                         <a href="#" data-ng-click="fortsettLikevel($event)" data-ng-bind-html=" 'utslagskriterier.utslag.fortsettlikevel' | cmstekst"></a>,
                         <span data-ng-bind-html=" 'utslagskriterier.utslag.infoAvslag' | cmstekst"></span>

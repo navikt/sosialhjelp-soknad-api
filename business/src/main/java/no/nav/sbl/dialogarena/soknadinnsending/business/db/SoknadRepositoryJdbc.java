@@ -158,7 +158,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     @Override
     public WebSoknad hentSoknad(Long id) {
         String sql = "select * from SOKNAD where soknad_id = ?";
-        return getJdbcTemplate().queryForObject(sql, new SoknadRowMapper(), id);
+         return getJdbcTemplate().queryForObject(sql, new SoknadRowMapper(), id);
     }
 
     @Override

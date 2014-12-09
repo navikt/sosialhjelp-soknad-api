@@ -45,8 +45,6 @@ public final class StartSoknadJetty {
         TestCertificates.setupTemporaryKeyStore(this.getClass().getResourceAsStream("/keystore.jks"), "devillokeystore1234");
         TestCertificates.setupTemporaryTrustStore(this.getClass().getResourceAsStream("/truststore.jts"), "changeit");
 
-
-
         JAASLoginService jaasLoginService = new JAASLoginService("OpenAM Realm");
         jaasLoginService.setLoginModuleName("openam");
         Jetty jetty = usingWar(WEBAPP_SOURCE)
@@ -79,6 +77,8 @@ public final class StartSoknadJetty {
         setProperty("no.nav.modig.security.systemuser.password", "test");
         setProperty("org.apache.cxf.stax.allowInsecureParser", "true");
     }
+
+    // For å logge inn lokalt må du sette cookie: document.cookie="nav-esso=01015245464-4; path=/sendsoknad/"
 
     @SuppressWarnings("unused")
     private static class Intellij {

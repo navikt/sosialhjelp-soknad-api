@@ -6,9 +6,9 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
         $scope.utslagskriterier.harlestbrosjyre = false;
 
         $scope.alderspensjonUrl = data.config["soknad.alderspensjon.url"];
-        $scope.mineHenveldelserUrl = data.config["minehenvendelser.link.url"];
+        $scope.mineHenveldelserUrl = data.config["saksoversikt.link.url"];
         $scope.reelArbeidsokerUrl = data.config["soknad.reelarbeidsoker.url"];
-        $scope.inngangsportenUrl = data.config["soknad.inngangsporten.url"];
+        $scope.dittnavUrl = data.config["dittnav.link.url"];
 
         $scope.oppsummering = false;
         if (erSoknadStartet()) {

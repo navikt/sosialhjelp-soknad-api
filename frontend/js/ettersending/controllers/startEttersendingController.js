@@ -1,18 +1,13 @@
 angular.module('nav.ettersending.controllers.start', [])
     .controller('StartEttersendingCtrl', function ($scope, ettersendingService, data, EttersendingMetadataResolver) {
-        $scope.mineInnsendinger = data.config["minehenvendelser.link.url"];
-
-        $scope.sisteInnsendtBehandling;
-        $scope.innsendtDato;
-
         var fristDato;
         EttersendingMetadataResolver.then(function(result) {
             var antallDager = data.config["soknad.ettersending.antalldager"];
-            $scope.innsendtDato = new Date(parseInt(result.innsendtdato));
-
-            $scope.sisteInnsendtBehandling = result.sisteinnsendtbehandling;
+            $scope.kvittering = {
+                url: data.config["saksoversikt.link.url"] + '/detaljer/DAG/' + result.sisteinnsendtbehandling
+            };
             fristDato = new Date(parseInt(result.innsendtdato));
-            fristDato.setDate($scope.innsendtDato.getDate() + parseInt(antallDager));
+            fristDato.setDate(new Date(parseInt(result.innsendtdato)).getDate() + parseInt(antallDager));
         });
 
         $scope.kanStarteEttersending = function () {
