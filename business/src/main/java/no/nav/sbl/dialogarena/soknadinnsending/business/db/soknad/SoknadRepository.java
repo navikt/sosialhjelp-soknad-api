@@ -43,7 +43,7 @@ public interface SoknadRepository {
 
     String hentSoknadType(Long soknadId);
 
-    Boolean isVedleggPaakrevd(Long soknadId, String value, SoknadVedlegg soknadVedlegg);
+    Boolean isVedleggPaakrevd(Long soknadId, List<String> values, SoknadVedlegg soknadVedlegg);
 
     void settDelstegstatus(Long soknadId, DelstegStatus status);
 

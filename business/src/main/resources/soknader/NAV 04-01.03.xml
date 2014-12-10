@@ -842,25 +842,33 @@
         <id>5</id>
         <faktum>reellarbeidssoker.villigdeltid.eneansvarbarnopptil18aar
         </faktum>
-        <onValue>true</onValue>
+        <onValues>
+            <value>true</value>
+        </onValues>
         <skjemaNummer>Y2</skjemaNummer>
     </vedlegg>
     <vedlegg>
         <id>5</id>
         <faktum>reellarbeidssoker.villigdeltid.reduserthelse</faktum>
-        <onValue>true</onValue>
+        <onValues>
+            <value>true</value>
+        </onValues>
         <skjemaNummer>Y2</skjemaNummer>
     </vedlegg>
     <vedlegg>
         <id>5</id>
         <faktum>reellarbeidssoker.villigdeltid.omsorgansvar</faktum>
-        <onValue>true</onValue>
+        <onValues>
+            <value>true</value>
+        </onValues>
         <skjemaNummer>Y2</skjemaNummer>
     </vedlegg>
     <vedlegg>
         <id>5</id>
         <faktum>reellarbeidssoker.villigdeltid.annensituasjon</faktum>
-        <onValue>true</onValue>
+        <onValues>
+            <value>true</value>
+        </onValues>
         <skjemaNummer>Y2</skjemaNummer>
     </vedlegg>
 
@@ -868,96 +876,126 @@
         <id>5</id>
         <faktum>reellarbeidssoker.villigpendle.eneansvarbarnopptil18aar
         </faktum>
-        <onValue>true</onValue>
+        <onValues>
+            <value>true</value>
+        </onValues>
         <skjemaNummer>Y2</skjemaNummer>
     </vedlegg>
     <vedlegg>
         <id>5</id>
         <faktum>reellarbeidssoker.villigpendle.reduserthelse</faktum>
-        <onValue>true</onValue>
+        <onValues>
+            <value>true</value>
+        </onValues>
         <skjemaNummer>Y2</skjemaNummer>
     </vedlegg>
     <vedlegg>
         <id>5</id>
         <faktum>reellarbeidssoker.villigpendle.omsorgansvar</faktum>
-        <onValue>true</onValue>
+        <onValues>
+            <value>true</value>
+        </onValues>
         <skjemaNummer>Y2</skjemaNummer>
     </vedlegg>
     <vedlegg>
         <id>5</id>
         <faktum>reellarbeidssoker.villigpendle.annensituasjon</faktum>
-        <onValue>true</onValue>
+        <onValues>
+            <value>true</value>
+        </onValues>
         <skjemaNummer>Y2</skjemaNummer>
     </vedlegg>
     <vedlegg>
         <id>5</id>
         <faktum>reellarbeidssoker.villighelse</faktum>
-        <onValue>false</onValue>
+        <onValues>
+            <value>false</value>
+        </onValues>
         <skjemaNummer>T9</skjemaNummer>
     </vedlegg>
 
     <vedlegg>
         <id>1</id>
         <faktum>utdanning</faktum>
-        <onValue>avsluttetUtdanning</onValue>
+        <onValues>
+            <value>avsluttetUtdanning</value>
+        </onValues>
         <skjemaNummer>T2</skjemaNummer>
     </vedlegg>
 
     <vedlegg>
         <id>8</id>
         <faktum>utdanning.kveld</faktum>
-        <onValue>true</onValue>
+        <onValues>
+            <value>true</value>
+        </onValues>
         <skjemaNummer>T1</skjemaNummer>
     </vedlegg>
     <vedlegg>
         <id>8</id>
         <faktum>utdanning.kortvarig</faktum>
-        <onValue>true</onValue>
+        <onValues>
+            <value>true</value>
+        </onValues>
         <skjemaNummer>T1</skjemaNummer>
     </vedlegg>
     <vedlegg>
         <id>8</id>
         <faktum>utdanning.kortvarigflere</faktum>
-        <onValue>true</onValue>
+        <onValues>
+            <value>true</value>
+        </onValues>
         <skjemaNummer>T1</skjemaNummer>
     </vedlegg>
     <vedlegg>
         <id>8</id>
         <faktum>utdanning.norsk</faktum>
-        <onValue>true</onValue>
+        <onValues>
+            <value>true</value>
+        </onValues>
         <skjemaNummer>T1</skjemaNummer>
     </vedlegg>
     <vedlegg>
         <id>8</id>
         <faktum>underUtdanningAnnet</faktum>
-        <onValue>true</onValue>
+        <onValues>
+            <value>true</value>
+        </onValues>
         <skjemaNummer>T1</skjemaNummer>
     </vedlegg>
 
     <vedlegg>
         <id>2</id>
         <faktum>ikkeavtjentverneplikt</faktum>
-        <onValue>false</onValue>
+        <onValues>
+            <value>false</value>
+        </onValues>
         <skjemaNummer>T3</skjemaNummer>
     </vedlegg>
     <vedlegg>
         <id>3</id>
         <faktum>ekstraVedlegg</faktum>
-        <onValue>true</onValue>
+        <onValues>
+            <value>true</value>
+        </onValues>
         <skjemaNummer>N6</skjemaNummer>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <id>3</id>
         <faktum>egennaering.gardsbruk</faktum>
-        <onValue>false</onValue>
+        <onValues>
+            <value>false</value>
+        </onValues>
         <skjemaNummer>G4</skjemaNummer>
     </vedlegg>
 
     <vedlegg>
         <id>3</id>
         <faktum>offentligTjenestepensjon</faktum>
-        <onValue>true</onValue>
+        <onValues>
+            <value>true</value>
+        </onValues>
         <skjemaNummer>K1</skjemaNummer>
         <flereTillatt>true</flereTillatt>
         <oversetting>ytelser.${key}</oversetting>
@@ -965,7 +1003,9 @@
     <vedlegg>
         <id>3</id>
         <faktum>privatTjenestepensjon</faktum>
-        <onValue>true</onValue>
+        <onValues>
+            <value>true</value>
+        </onValues>
         <skjemaNummer>K1</skjemaNummer>
         <flereTillatt>true</flereTillatt>
         <oversetting>ytelser.${key}</oversetting>
@@ -973,7 +1013,9 @@
     <vedlegg>
         <id>3</id>
         <faktum>stonadFisker</faktum>
-        <onValue>true</onValue>
+        <onValues>
+            <value>true</value>
+        </onValues>
         <skjemaNummer>K1</skjemaNummer>
         <flereTillatt>true</flereTillatt>
         <oversetting>ytelser.${key}</oversetting>
@@ -981,7 +1023,9 @@
     <vedlegg>
         <id>3</id>
         <faktum>garantilott</faktum>
-        <onValue>true</onValue>
+        <onValues>
+            <value>true</value>
+        </onValues>
         <skjemaNummer>K1</skjemaNummer>
         <flereTillatt>true</flereTillatt>
         <oversetting>ytelser.${key}</oversetting>
@@ -989,7 +1033,9 @@
     <vedlegg>
         <id>3</id>
         <faktum>etterlonn</faktum>
-        <onValue>true</onValue>
+        <onValues>
+            <value>true</value>
+        </onValues>
         <skjemaNummer>K1</skjemaNummer>
         <flereTillatt>true</flereTillatt>
         <oversetting>ytelser.${key}</oversetting>
@@ -997,7 +1043,9 @@
     <vedlegg>
         <id>3</id>
         <faktum>vartpenger</faktum>
-        <onValue>true</onValue>
+        <onValues>
+            <value>true</value>
+        </onValues>
         <skjemaNummer>K1</skjemaNummer>
         <flereTillatt>true</flereTillatt>
         <oversetting>ytelser.${key}</oversetting>
@@ -1005,7 +1053,9 @@
     <vedlegg>
         <id>3</id>
         <faktum>dagpengerEOS</faktum>
-        <onValue>true</onValue>
+        <onValues>
+            <value>true</value>
+        </onValues>
         <skjemaNummer>K1</skjemaNummer>
         <oversetting>ytelser.${key}</oversetting>
         <flereTillatt>true</flereTillatt>
@@ -1013,7 +1063,9 @@
     <vedlegg>
         <id>3</id>
         <faktum>annenYtelse</faktum>
-        <onValue>true</onValue>
+        <onValues>
+            <value>true</value>
+        </onValues>
         <skjemaNummer>K1</skjemaNummer>
         <oversetting>ytelser.${key}</oversetting>
         <flereTillatt>true</flereTillatt>
@@ -1021,7 +1073,9 @@
     <vedlegg>
         <id>8</id>
         <faktum>ikkeavtale</faktum>
-        <onValue>false</onValue>
+        <onValues>
+            <value>false</value>
+        </onValues>
         <skjemaNummer>V6</skjemaNummer>
     </vedlegg>
     <vedlegg>
@@ -1030,7 +1084,9 @@
         <skjemaNummer>T8|sagtoppavarbeidsgiver</skjemaNummer>
         <property>arbeidsgivernavn</property>
         <onProperty>type</onProperty>
-        <onValue>Sagt opp av arbeidsgiver</onValue>
+        <onValues>
+            <value>Sagt opp av arbeidsgiver</value>
+        </onValues>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
@@ -1039,7 +1095,9 @@
         <skjemaNummer>T8|kontraktutgaatt</skjemaNummer>
         <property>arbeidsgivernavn</property>
         <onProperty>type</onProperty>
-        <onValue>Kontrakt utgått</onValue>
+        <onValues>
+            <value>Kontrakt utgått</value>
+        </onValues>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
@@ -1048,7 +1106,9 @@
         <skjemaNummer>T8|sagtoppselv</skjemaNummer>
         <property>arbeidsgivernavn</property>
         <onProperty>type</onProperty>
-        <onValue>Sagt opp selv</onValue>
+        <onValues>
+            <value>Sagt opp selv</value>
+        </onValues>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
@@ -1057,7 +1117,9 @@
         <skjemaNummer>T8|redusertarbeidstid</skjemaNummer>
         <property>arbeidsgivernavn</property>
         <onProperty>type</onProperty>
-        <onValue>Redusert arbeidstid</onValue>
+        <onValues>
+            <value>Redusert arbeidstid</value>
+        </onValues>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
@@ -1066,7 +1128,9 @@
         <skjemaNummer>T8|avskjediget</skjemaNummer>
         <property>arbeidsgivernavn</property>
         <onProperty>type</onProperty>
-        <onValue>Avskjediget</onValue>
+        <onValues>
+            <value>Avskjediget</value>
+        </onValues>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
@@ -1089,7 +1153,9 @@
         <skjemaNummer>S9</skjemaNummer>
         <property>arbeidsgivernavn</property>
         <onProperty>eosland</onProperty>
-        <onValue>true</onValue>
+        <onValues>
+            <value>true</value>
+        </onValues>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
@@ -1098,7 +1164,9 @@
         <skjemaNummer>A2</skjemaNummer>
         <property>arbeidsgivernavn</property>
         <onProperty>type</onProperty>
-        <onValue>Arbeidsgiver er konkurs</onValue>
+        <onValues>
+            <value>Arbeidsgiver er konkurs</value>
+        </onValues>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
@@ -1107,7 +1175,9 @@
         <skjemaNummer>M7</skjemaNummer>
         <property>arbeidsgivernavn</property>
         <onProperty>type</onProperty>
-        <onValue>Arbeidsgiver er konkurs</onValue>
+        <onValues>
+            <value>Arbeidsgiver er konkurs</value>
+        </onValues>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
@@ -1116,7 +1186,9 @@
         <skjemaNummer>X8</skjemaNummer>
         <property>sammensattnavn</property>
         <onProperty>land</onProperty>
-        <onValue>NOR</onValue>
+        <onValues>
+            <value>NOR</value>
+        </onValues>
         <forSystemfaktum>false</forSystemfaktum>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
@@ -1143,7 +1215,9 @@
         <skjemaNummer>M1</skjemaNummer>
         <property>arbeidsgivernavn</property>
         <onProperty>startetForrigeAar</onProperty>
-        <onValue>true</onValue>
+        <onValues>
+            <value>true</value>
+        </onValues>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
@@ -1153,7 +1227,9 @@
         <skjemaNummer>T3</skjemaNummer>
         <property>arbeidsgivernavn</property>
         <onProperty>rotasjonskiftturnus</onProperty>
-        <onValue>Ja, jeg jobber rotasjon</onValue>
+        <onValues>
+            <value>Ja, jeg jobber rotasjon</value>
+        </onValues>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 

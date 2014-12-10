@@ -235,7 +235,7 @@ public class SoknadRepositoryJdbcTest {
         SoknadFaktum soknadFaktum = new SoknadFaktum().medId("key2").medDependOn(parentSoknadFaktum).medDependOnValues(Arrays.asList("true", "dependOnValue"));
         SoknadVedlegg vedlegg = new SoknadVedlegg().medFaktum(soknadFaktum);
 
-        Boolean vedleggPaakrevd = soknadRepository.isVedleggPaakrevd(soknadId, "true", vedlegg);
+        Boolean vedleggPaakrevd = soknadRepository.isVedleggPaakrevd(soknadId, Arrays.asList("true"), vedlegg);
         Assert.assertTrue(vedleggPaakrevd);
     }
 
@@ -251,7 +251,7 @@ public class SoknadRepositoryJdbcTest {
         SoknadFaktum soknadFaktum = new SoknadFaktum().medId("key2").medDependOn(parentSoknadFaktum).medDependOnValues(Arrays.asList("true", "dependOnValue"));
         SoknadVedlegg vedlegg = new SoknadVedlegg().medFaktum(soknadFaktum);
 
-        Boolean vedleggPaakrevd = soknadRepository.isVedleggPaakrevd(soknadId, "true", vedlegg);
+        Boolean vedleggPaakrevd = soknadRepository.isVedleggPaakrevd(soknadId, Arrays.asList("true"), vedlegg);
         assertFalse(vedleggPaakrevd);
     }
 
@@ -271,7 +271,7 @@ public class SoknadRepositoryJdbcTest {
         SoknadFaktum soknadFaktum = new SoknadFaktum().medId("key").medDependOn(parentSoknadFaktum).medDependOnValues(Arrays.asList("parentValue"));
         SoknadVedlegg vedlegg = new SoknadVedlegg().medFaktum(soknadFaktum);
 
-        Boolean vedleggPaakrevd = soknadRepository.isVedleggPaakrevd(soknadId, "true", vedlegg);
+        Boolean vedleggPaakrevd = soknadRepository.isVedleggPaakrevd(soknadId, Arrays.asList("true"), vedlegg);
         Assert.assertTrue(vedleggPaakrevd);
     }
 
@@ -291,7 +291,7 @@ public class SoknadRepositoryJdbcTest {
         SoknadFaktum soknadFaktum = new SoknadFaktum().medId("key").medDependOn(parentSoknadFaktum).medDependOnValues(Arrays.asList("parentValue"));
         SoknadVedlegg vedlegg = new SoknadVedlegg().medFaktum(soknadFaktum);
 
-        Boolean vedleggPaakrevd = soknadRepository.isVedleggPaakrevd(soknadId, "true", vedlegg);
+        Boolean vedleggPaakrevd = soknadRepository.isVedleggPaakrevd(soknadId, Arrays.asList("true"), vedlegg);
         assertFalse(vedleggPaakrevd);
     }
 

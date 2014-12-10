@@ -35,14 +35,6 @@ public class SoknadVedlegg implements Serializable {
         this.faktum = faktum;
     }
 
-    public String getOnValue() {
-        return values != null && !values.isEmpty() ? values.get(0) : null;
-    }
-
-    public void setOnValue(String onValue) {
-        this.values = Arrays.asList(onValue);
-    }
-
     @XmlElementWrapper(name = "onValues")
     @XmlElement(name = "value")
     public List<String> getOnValues() {

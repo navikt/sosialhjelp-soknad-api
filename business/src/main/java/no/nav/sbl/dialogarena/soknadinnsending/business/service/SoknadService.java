@@ -555,7 +555,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     }
 
     private boolean erVedleggKrevdAvAnnetFaktum(Faktum faktum, SoknadStruktur struktur, SoknadVedlegg soknadVedlegg) {
-        return !soknadVedlegg.getFlereTillatt() && annetFaktumHarForventning(faktum.getSoknadId(), soknadVedlegg.getSkjemaNummer(), soknadVedlegg.getOnValue(), struktur);
+        return !soknadVedlegg.getFlereTillatt() && annetFaktumHarForventning(faktum.getSoknadId(), soknadVedlegg.getSkjemaNummer(), soknadVedlegg.getOnValues(), struktur);
     }
 
     private void lagrePaakrevdVedlegg(Faktum faktum, SoknadVedlegg soknadVedlegg, Vedlegg v) {
@@ -620,10 +620,10 @@ public class SoknadService implements SendSoknadService, EttersendingService {
      * dersom soknadbrukerdata har et innslag som har riktig onValue, returneres true (et annet faktum trigger vedlegget)
      * ellers returneres false
      */
-    private boolean annetFaktumHarForventning(Long soknadId, String skjemaNummer, String onValue, SoknadStruktur struktur) {
+    private boolean annetFaktumHarForventning(Long soknadId, String skjemaNummer, List<String> onValues, SoknadStruktur struktur) {
         List<SoknadVedlegg> vedleggMedGittSkjemanummer = struktur.vedleggForSkjemanr(skjemaNummer);
         for (SoknadVedlegg sv : vedleggMedGittSkjemanummer) {
-            if (repository.isVedleggPaakrevd(soknadId, onValue, sv)) {
+            if (repository.isVedleggPaakrevd(soknadId, onValues, sv)) {
                 return true;
             }
         }
