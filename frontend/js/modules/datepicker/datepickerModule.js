@@ -1,4 +1,8 @@
 angular.module('nav.datepicker', [
     'nav.datepicker.directive',
-    'nav.datepicker.constant'
+    'nav.datepicker.service',
+    'nav.datepicker.validation',
+    'nav.datepicker.constant',
+    'nav.datepicker.datoinput',
+    'nav.datepicker.dato'
 ]);

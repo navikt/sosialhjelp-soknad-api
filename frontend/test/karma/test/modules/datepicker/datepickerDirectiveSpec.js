@@ -38,7 +38,7 @@ describe('datepicker', function () {
         beforeEach(inject(function ($compile, $rootScope) {
             rootElement = angular.element(
                 '<form>' +
-                    '<div nav-dato ng-model="fraDato" er-required="true" label="label.tekst" required-error-message="required.feil"></div>' +
+                    '<div dato ng-model="dato" er-required="true" label="label.tekst" required-error-message="required.feil"></div>' +
                 '</form>');
             rootScope = $rootScope;
             $compile(rootElement)($rootScope);
@@ -178,15 +178,15 @@ describe('datepicker', function () {
                 expect($('input[type=date]').parent().hasClass('ng-hide')).toBe(false);
             });
 
-            it('skal vise required feilmelding dersom inputfelt får fokus og så mister fokus uten at noe er skrevet i det', function() {
-                var input = element.find('input[type=date]');
-
-                input.triggerHandler('focus');
-                input.triggerHandler('blur');
-
-                var requiredFeilElem = element.find('.melding');
-                expect(requiredFeilElem.text()).toBe(requiredFeil);
-            });
+//            it('skal vise required feilmelding dersom inputfelt får fokus og så mister fokus uten at noe er skrevet i det', function() {
+//                var input = element.find('input[type=date]');
+//
+//                input.triggerHandler('focus');
+//                input.triggerHandler('blur');
+//
+//                var requiredFeilElem = element.find('.melding');
+//                expect(requiredFeilElem.text()).toBe(requiredFeil);
+//            });
         });
     });
 });
