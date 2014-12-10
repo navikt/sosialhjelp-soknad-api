@@ -25,6 +25,7 @@
                     data-disabled="disabled"></div>
         </div>
     </label>
+    <span>{{form[name].$error}}</span>
     <div data-ng-messages="form[name].$error" data-ng-if="harFeil()">
         <span data-ng-message="toDate">
             <span class="melding" data-ng-bind-html="'dato.tilDato.feilmelding' | cmstekst"></span>
