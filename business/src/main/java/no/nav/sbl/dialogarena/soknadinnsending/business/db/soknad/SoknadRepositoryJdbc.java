@@ -243,12 +243,12 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     }
 
     @Override
-    public Boolean isVedleggPaakrevd(Long soknadId, String value, SoknadVedlegg soknadVedlegg) {
+    public Boolean isVedleggPaakrevd(Long soknadId, List<String> values, SoknadVedlegg soknadVedlegg) {
         SoknadFaktum faktum = soknadVedlegg.getFaktum();
         String key = faktum.getId();
         Integer count = 0;
 
-        count += finnAntallFaktumMedGittKeyOgValue(soknadId, key, value);
+        count += finnAntallFaktumMedGittKeyOgEnAvFlereValues(soknadId, key, values);
         return sjekkOmVedleggErPaakrevd(soknadId, count, faktum);
     }
 
@@ -265,21 +265,6 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
             count += finnAntallFaktumMedGittKeyOgEnAvFlereValues(soknadId, faktum.getId(), barneFaktum.getDependOnValues());
         }
         return sjekkOmVedleggErPaakrevd(soknadId, count, faktum);
-    }
-
-    private Integer finnAntallFaktumMedGittKeyOgValue(Long soknadId, String key, String value) {
-        if (value == null) {
-            return 0;
-        }
-
-        String sql = "SELECT count(*) FROM soknadbrukerdata WHERE soknad_id=? AND key=? AND value like ?";
-
-        try {
-            return getJdbcTemplate().queryForObject(sql, Integer.class, soknadId, key, value);
-        } catch (DataAccessException e) {
-            logger.warn("Klarte ikke hente count fra soknadBrukerData", e);
-            return 0;
-        }
     }
 
     private Integer finnAntallFaktumMedGittKeyOgEnAvFlereValues(Long soknadId, String key, List<String> values) {
