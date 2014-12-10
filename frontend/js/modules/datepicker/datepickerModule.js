@@ -4,6 +4,5 @@ angular.module('nav.datepicker', [
     'nav.datepicker.validation',
     'nav.datepicker.constant',
     'nav.datepicker.datoinput',
-    'nav.datepicker.dato',
-    'ngMessages'
+    'nav.datepicker.dato'
 ]);
