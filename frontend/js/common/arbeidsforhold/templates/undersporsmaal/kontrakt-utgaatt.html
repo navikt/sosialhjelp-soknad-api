@@ -16,21 +16,10 @@
      data-nokkel="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette"></div>
 
 <div class="fiks-siste-boks ekstra-spm-boks" data-ng-if="sluttaarsak.properties.tilbudomjobbannetsted == 'true'">
-    <div data-navinfoboks>
-        <p data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.advarsel' | cmstekst"></p>
-
-        <p>{{ 'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.true.informasjon' | cmstekst
-            }}</p>
+    <div data-navinfoboks data-infotekster="['arbeidsforhold.sluttaarsak.advarsel', 'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.true.informasjon']">
     </div>
 </div>
 
-<div class="ekstra-spm-boks" data-vedlegginfoboks>
-    <ul>
-        <li>
-            <p data-ng-bind-html="'Dagpenger.vedlegg.O2.header' | cmstekst"></p>
-        </li>
-        <li>
-            <span data-ng-bind-html=" 'Dagpenger.vedlegg.T8.header' | cmstekst"></span>
-        </li>
-    </ul>
-</div>
+<div data-turnusblokk data-arbeidsforhold="arbeidsforhold"></div>
+
+<div data-arbeidsforhold-vedlegg-infoboks data-vedleggtekster="['Dagpenger.vedlegg.O2.header', 'Dagpenger.vedlegg.T8.header']"></div>

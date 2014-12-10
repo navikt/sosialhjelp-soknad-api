@@ -1,12 +1,7 @@
-.hjelpetekst-parent {
-  position: relative;
-  padding-right: 40px;
-}
-
 [class^="hjelpetekst"] {
   display: inline-block;
   position: absolute;
-  top: -5px;
+  top: 0px;
   right: 0;
 
   &[class*="-inline"] {
@@ -19,7 +14,7 @@
     margin-left: 0.175rem;
     position: relative;
     cursor: pointer;
-    padding: 5px;
+    padding: 0px 5px 5px 5px;
     width: 30px;
     height: 30px;
     text-decoration: none !important;
@@ -139,7 +134,32 @@
   }
 }
 
+#ytelser,.modalBoks {
+  .hjelpetekst {
+    position: relative;
+    top: 0px;
+  }
+}
+.hjelpetekst-hoyrestilt {
+  .hjelpetekst-parent {
+    display: block;
+    position: relative;
+    padding-right: 40px;
+  }
+}
+
+.hjelpetekst-parent {
+  display: inline-block;
+  position: relative;
+  padding-right: 40px;
+}
+
 @media only screen and (max-width: 767px) {
+  .hjelpetekst {
+    position: absolute;
+    right: 0;
+  }
+
   [class^="hjelpetekst"] {
     .hjelpetekst-tooltip {
       position: fixed;

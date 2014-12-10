@@ -18,6 +18,13 @@ angular.module('nav.booleanradio', ['nav.cms', 'nav.input'])
                         tittel: src + '.hjelpetekst.tittel',
                         tekst: src + '.hjelpetekst.tekst'
                     };
+					scope.getCmsArgument = function() {
+						var cmsArgs = scope.cmsArgumenter;
+						if(cmsArgs && cmsArgs.modelFaktum) {
+							return cmsArgs.modelFaktum.value ? cmsArgs.modelFaktum.value : cmsArgs.default;
+						}
+						return null;
+					};
 				},
 				post: function (scope, element) {
 					scope.hvisModelErTrue = function () {

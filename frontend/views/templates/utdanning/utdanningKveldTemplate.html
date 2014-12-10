@@ -1,7 +1,6 @@
 
 
-<div data-navinfoboks>
-    <span data-ng-bind-html=" 'utdanning.svar.under.utdanning.kveld.undervisning.folges.info' | cmstekst"></span>
+<div data-navinfoboks data-infotekster="['utdanning.svar.under.utdanning.kveld.undervisning.folges.info']">
 </div>
 
 <div data-nav-faktum="utdanning.kveld.folges"
@@ -11,24 +10,21 @@
 
 
 
-<div data-navinfoboks>
-    <span data-ng-bind-html=" 'utdanning.progresjon.informasjon' | cmstekst"></span>
+<div data-navinfoboks data-infotekster="['utdanning.progresjon.informasjon']">
 </div>
 <div data-nav-faktum="utdanning.kveld.progresjonUnder50"
      data-er-required="false"
      data-booleanradio
      data-nokkel="utdanning.progresjon">
 
-    <div data-navinfoboks>
-        <span data-ng-bind-html=" 'utdanning.paabegyntUnder6mnd.informasjon' | cmstekst"></span>
+    <div data-navinfoboks data-infotekster="['utdanning.paabegyntUnder6mnd.informasjon']">
     </div>
     <div data-nav-faktum="utdanning.kveld.PaabegyntUnder6mnd"
          data-er-required="false"
          data-booleanradio
          data-nokkel="utdanning.paabegyntUnder6mnd">
 
-        <div data-navinfoboks>
-            <span data-ng-bind-html=" 'utdanning.unntak.under6mnd' | cmstekst"></span>
+        <div data-navinfoboks data-infotekster="['utdanning.unntak.under6mnd']">
         </div>
     </div>
 </div>
@@ -69,8 +65,5 @@
          data-lagre="lagreFaktum()">
     </div>
 </div>
-<div data-vedlegginfoboks>
-    <ul>
-        <li><p data-ng-bind-html="'Dagpenger.vedlegg.T1.header' | cmstekst"></p></li>
-    </ul>
+<div data-vedlegginfoboks data-vedleggTekster="['Dagpenger.vedlegg.T1.header']">
 </div>

@@ -1,0 +1,36 @@
+<div class="ekstra-spm-boks">
+    <div data-navtekst
+         data-navconfig
+         data-nav-faktum="tidligerearbeidsforhold.tidligerearbeidsgiver"
+         data-navsporsmal="tidligerearbeidsforhold.tidligerearbeidsgiver.sporsmal"
+         data-navfeilmelding="'tidligerearbeidsforhold.tidligerearbeidsgiver.feilmelding'"
+         data-ng-required>
+    </div>
+
+    <div data-nav-faktum="tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsidensist"
+         data-navconfig
+         data-booleanradio
+         data-nokkel="tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsidensist">
+    </div>
+
+    <div data-ng-if="hvisHarArbeidet()"
+         data-nav-faktum="tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsammenhengende">
+        <div data-ng-if="hvisVarPermittert()">
+            <div data-ng-include="'../js/modules/tidligereArbeidsforhold/templates/hvorlengearbeidetsist.html'"></div>
+        </div>
+
+        <div data-ng-if="hvisVarPermittertFiske()">
+            <div data-ng-include="'../js/modules/tidligereArbeidsforhold/templates/hvorlengearbeidetsistFiske.html'"></div>
+        </div>
+    </div>
+
+    <div data-nav-faktum="tidligerearbeidsforhold.tidligerearbeidsgiver.fortsattansatt"
+         data-navconfig
+         data-booleanradio
+         data-nokkel="tidligerearbeidsforhold.tidligerearbeidsgiver.fortsattansatt">
+    </div>
+
+    <div data-ng-if="hvisHarJobbetMerEnn6Uker()" data-vedlegginfoboks
+         data-vedleggtekster="['Dagpenger.vedlegg.G2.header']">
+    </div>
+</div>

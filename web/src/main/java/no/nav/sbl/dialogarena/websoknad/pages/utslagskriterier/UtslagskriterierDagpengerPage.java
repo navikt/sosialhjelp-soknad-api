@@ -1,13 +1,11 @@
 package no.nav.sbl.dialogarena.websoknad.pages.utslagskriterier;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.SoknadAvbruttException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.SoknadAvsluttetException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.ConfigService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.XsrfGenerator;
 import no.nav.sbl.dialogarena.websoknad.pages.SkjemaBootstrapFile;
 import no.nav.sbl.dialogarena.websoknad.pages.basepage.BasePage;
-import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.AvbruttPage;
 import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.RedirectTilKvitteringPage;
 import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.SoknadComponent;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
@@ -38,8 +36,6 @@ public class UtslagskriterierDagpengerPage extends BasePage {
             } catch (SoknadAvsluttetException e) {
                 String mineHenvendelserUrl = configService.getValue("minehenvendelser.link.url");
                 setResponsePage(new RedirectTilKvitteringPage(mineHenvendelserUrl + "?behandlingsId=" + brukerbehandlingId));
-            } catch (SoknadAvbruttException e) {
-                redirectToInterceptPage(new AvbruttPage(new PageParameters()));
             }
         }
     }

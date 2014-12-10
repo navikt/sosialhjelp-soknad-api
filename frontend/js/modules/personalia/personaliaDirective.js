@@ -28,6 +28,11 @@ angular.module('nav.personalia.directive', [])
                 scope.erUtenlandskStatsborger = function () {
                     return scope.personalia.statsborgerskap !== 'NOR';
                 };
+
+                scope.erIkkeNordiskStatsborger = function () {
+                    var nordiskeLandkoder = ["NOR", "SWE", "FIN", "DNK", "ISL", "FRO"];
+                    return nordiskeLandkoder.indexOf(scope.personalia.statsborgerskap) <= -1;
+                };
             }
         };
     })

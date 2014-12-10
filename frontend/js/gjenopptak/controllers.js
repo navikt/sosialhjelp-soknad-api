@@ -7,7 +7,6 @@ angular.module('gjenopptak.controllers', [
     'nav.opplasting.controller',
     'nav.barnetillegg',
     'nav.barn',
-    'nav.vedlegg.controller',
     'nav.fortsettsenere',
     'nav.gjenopptak',
     'nav.gjenopptak.informasjonsside',
@@ -18,6 +17,5 @@ angular.module('gjenopptak.controllers', [
     'nav.avbryt',
     'nav.bekreftelse',
     'nav.tilleggsopplysninger',
-    'nav.fortsett.controller',
-    'nav.reberegning'
+    'nav.fortsett.controller'
 ]);

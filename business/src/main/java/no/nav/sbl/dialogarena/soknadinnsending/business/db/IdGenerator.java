@@ -2,12 +2,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 import static java.lang.Long.parseLong;
 
-/**
- * Genererer behandlingsid basert på applikasjonsid / prefix og databasenøkkel
- */
 public class IdGenerator {
 	
-    public static final String APPLIKASJONSID = "BD07";
     private static final String APPLIKASJON_PREFIX_BASE_36 = "10";
 
     public static String lagBehandlingsId(long databasenokkel) {

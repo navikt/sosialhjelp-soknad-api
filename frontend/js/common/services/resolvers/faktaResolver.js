@@ -17,6 +17,15 @@ angular.module('nav.services.resolvers.fakta', [])
                         });
                         return res;
                     };
+                    data.finnFaktumMedId = function(faktumId) {
+                        var res = null;
+                        data.fakta.forEach(function (item) {
+                            if (item.faktumId === faktumId) {
+                                res = item;
+                            }
+                        });
+                        return res;
+                    };
 
                     data.finnFakta = function (key) {
                         var res = [];

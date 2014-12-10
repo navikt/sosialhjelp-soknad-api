@@ -15,7 +15,6 @@
             'nav.services.interceptor.feilhandtering',
             'nav.services.fortsettsenere',
             'nav.services.resolvers',
-            'nav.services.datapersister',
             'nav.services.bekreftelse'
         ])
 
