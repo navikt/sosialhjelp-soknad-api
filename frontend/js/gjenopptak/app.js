@@ -15,5 +15,6 @@ angular.module('gjenopptak', [
     'nav.datepicker',
     'nav.personalia',
     'nav.scroll',
-    'nav.vedlegg'
+    'nav.vedlegg',
+    'ngMessages'
 ]);

@@ -16,5 +16,6 @@ angular.module('sendsoknad', [
     'nav.datepicker',
     'nav.arbeidsforhold',
     'nav.scroll',
-    'nav.vedlegg'
+    'nav.vedlegg',
+    'ngMessages'
 ]);

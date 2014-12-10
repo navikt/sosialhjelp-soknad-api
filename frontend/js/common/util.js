@@ -261,49 +261,6 @@ function lagNorskDatoformatFraIsoStandard(datoString) {
     return dag + "." + maaned + "." + aar;
 }
 
-function erFremtidigDato(year, month, day) {
-    var dato = new Date();
-    dato.setMonth(month - 1);
-    dato.setDate(day);
-    dato.setFullYear(year);
-    dato.setHours(0);
-    dato.setMilliseconds(0);
-    dato.setSeconds(0);
-    dato.setMinutes(0);
-
-    var dagensDato = new Date();
-    var temp = new Date();
-    temp.setMonth(dagensDato.getMonth());
-    temp.setDate(dagensDato.getDate());
-    temp.setFullYear(dagensDato.getFullYear());
-    temp.setHours(0);
-    temp.setMilliseconds(0);
-    temp.setSeconds(0);
-    temp.setMinutes(0);
-
-    var morgenDagensDatoMillis = temp.setTime(temp.getTime() + 86400000);
-
-    if (dato.getTime() >= morgenDagensDatoMillis) {
-        return true;
-    }
-    return false;
-}
-
-// stackoverflow.com/questions/5812220/test-if-date-is-valid
-function erGyldigDato(datoString) {
-    var bits = datoString.split('.');
-    var aar = bits[2];
-    var maaned = bits[1];
-    var dag = bits[0];
-    var dagerIMaaned = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
-    // Skuddår
-    if (((aar % 4) === 0 && aar % 100) || (aar % 400) === 0) {
-        dagerIMaaned[1] = 29;
-    }
-    return dag <= dagerIMaaned[--maaned];
-}
-
 function konverterTallTilStringMedToSiffer(tall) {
     var tallMedToSiffer = '0' + tall;
     return tallMedToSiffer.slice(-2);
