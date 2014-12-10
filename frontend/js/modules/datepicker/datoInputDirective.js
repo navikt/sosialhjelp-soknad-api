@@ -42,9 +42,6 @@ angular.module('nav.datepicker.datoinput', [])
             restrict: 'A',
             require : 'ngModel',
             link    : function (scope, element, attrs, ngModel) {
-                if (!ngModel) {
-                    return;
-                }
                 var datoMask = cmsService.getTrustedHtml('dato.format');
                 var caretPosisjonElement = element.closest('.datepicker').find('.caretPosition');
                 caretPosisjonElement.hide();
