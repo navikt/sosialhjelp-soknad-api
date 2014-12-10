@@ -1,5 +1,5 @@
 angular.module('nav.datepicker.service', [])
-    .factory('datepickerInputService', function(datepickerInputKeys, datepickerUtilityKeys, periodKeyCode, cKeyCode, vKeyCode) {
+    .factory('datepickerInputService', function(datepickerInputKeys, datepickerUtilityKeys, periodKeyCode, ctrlKeyCodes) {
         return {
             isValidInput: function(event, currentLength, maxLength, caretPosition, hasSelectedText) {
                 function isAllowedPeriod() {
@@ -11,7 +11,7 @@ angular.module('nav.datepicker.service', [])
                 }
 
                 function isAllowedUtilityInput() {
-                    return datepickerUtilityKeys.contains(keyCode) || ctrlPressed && (keyCode === cKeyCode || keyCode === vKeyCode);
+                    return datepickerUtilityKeys.contains(keyCode) || ctrlPressed && ctrlKeyCodes;
                 }
 
                 var keyCode = event.keyCode, ctrlPressed = event.ctrlKey;
@@ -101,7 +101,7 @@ angular.module('nav.datepicker.service', [])
                     }
                     return dag <= dagerIMaaned[--maaned];
                 }
-                return false;
+                return true;
             },
             reverseNorwegianDateFormat: function(dateString) {
                 if (this.hasCorrectDateFormat(dateString) && this.isValidDate(dateString)) {
@@ -111,7 +111,7 @@ angular.module('nav.datepicker.service', [])
                 }
             },
             hasCorrectDateFormat: function(date) {
-                return dateFormatRegExp.test(date);
+                return dateFormatRegExp.test(date) || date.length === 0;
             },
             isFutureDate: function (dateString) {
                 var dateArray = dateString.split(".");

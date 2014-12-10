@@ -31,8 +31,6 @@
  * Følgende attributter kan oppgis:
  *      - er-tildato-required: Expression som sier om til-dato er påkrevd. Er false dersom ikke oppgitt
  *      - er-fradato-required: Expression som sier om fra-dato er påkrevd. Er false dersom ikke oppgitt
- *      - er-begge-required: Expression som sier om både til- og fra-dato er påkrevd. Er false dersom ikke oppgitt.
- *                           Denne setter både er-fradato-required og er-tildato-required.
  *      - er-fremtidigdato-tillatt: Expression som sier om det er lovelig å sette datoen frem i tid.
  */
 
@@ -56,101 +54,105 @@ angular.module('nav.datepicker.directive', [])
                 lagre: '&?'
 
             },
-            link: function (scope, element, attrs, form) {
-                scope.form = form;
-                scope.name = scope.name !== undefined ? scope.name : guidService.getGuid();
-                scope.vars = {
-                    model: scope.model,
-                    harFokus: false,
-                    datepickerClosed: true,
-                    erRequired: scope.erRequired,
-                    requiredErrorMessage: scope.requiredErrorMessage,
-                    lagre: scope.lagre,
-                    name: scope.name,
-                    erFremtidigdatoTillatt: scope.erFremtidigdatoTillatt
-                };
-                scope.$watch('model', function(newValue, oldValue) {
-                    if (newValue === oldValue) {
-                        return;
+            link: {
+                pre: function(scope) {
+                    scope.name = scope.name !== undefined ? scope.name : guidService.getGuid();
+                    scope.vars = {
+                        model: scope.model,
+                        harFokus: false,
+                        datepickerClosed: true,
+                        erRequired: scope.erRequired,
+                        requiredErrorMessage: scope.requiredErrorMessage,
+                        lagre: scope.lagre,
+                        name: scope.name,
+                        erFremtidigdatoTillatt: scope.erFremtidigdatoTillatt
+                    };
+                },
+                post: function (scope, element, attrs, form) {
+                    scope.form = form;
+                    scope.$watch('model', function(newValue, oldValue) {
+                        if (newValue === oldValue) {
+                            return;
+                        }
+
+                        var toInputFieldName = element.next().find('input').first().attr('name');
+                        if (new Date(scope.tilDato) < new Date(newValue)) {
+                            scope.tilDato = '';
+                            form[toInputFieldName].$setValidity('toDate', false);
+                        }
+
+                        scope.vars.model = scope.model;
+                    });
+
+                    scope.$watch('vars.model', function(newValue, oldValue) {
+                        if (newValue === oldValue) {
+                            return;
+                        }
+
+                        if (scope.endret) {
+                            scope.endret();
+                        }
+
+                        if (new Date(newValue) < new Date(scope.fraDato)) {
+                            scope.vars.model = '';
+                            form[scope.name].$setValidity('toDate', false);
+                            form[scope.name].$touched = true;
+                            form[scope.name].$untouched = false;
+                        } else if (!isNaN(new Date(newValue))) {
+                            form[scope.name].$setValidity('toDate', true);
+                        }
+
+                        scope.model = scope.vars.model;
+                    });
+
+                    scope.navDatepicker = function() {
+                        return !scope.vanligDatepicker();
+                    };
+
+                    scope.vanligDatepicker = function() {
+                        return deviceService.isTouchDevice();
+                    };
+
+                    scope.harRequiredFeil = function () {
+                        var input = form[scope.name];
+                        return input && input.$error.required && input.$touched && !scope.vars.harFokus;
+                    };
+
+                    scope.harTilDatoFeil = function () {
+                        var input = form[scope.name];
+                        return input && input.$error.toDate && input.$touched;
+                    };
+
+                    scope.harFormatteringsFeil = function () {
+                        var input = form[scope.name];
+                        return input && input.$error.dateFormat && input.$touched && !scope.vars.harFokus;
+                    };
+
+                    scope.erUloveligFremtidigDato = function() {
+                        var input = form[scope.name];
+                        return input && input.$error.futureDate && input.$touched && !scope.vars.harFokus;
+                    };
+
+                    scope.erIkkeGyldigDato = function () {
+                        var input = form[scope.name];
+                        return input && input.$error.validDate && input.$touched && !scope.vars.harFokus;
+                    };
+
+                    scope.harFeil = function () {
+                        if (scope.navDatepicker()) {
+                            return harFeilMedNavDatepicker();
+                        } else {
+                            return harFeilMedDateInput();
+                        }
+                    };
+
+                    function harFeilMedNavDatepicker() {
+                        return scope.harRequiredFeil() || scope.harFormatteringsFeil() || scope.harTilDatoFeil() || scope.erIkkeGyldigDato() || scope.erUloveligFremtidigDato();
                     }
 
-                    var toInputFieldName = element.next().find('input').first().attr('name');
-                    if (new Date(scope.tilDato) < new Date(newValue)) {
-                        scope.tilDato = '';
-                        form[toInputFieldName].$setValidity('toDate', false);
+                    function harFeilMedDateInput() {
+                        return scope.harRequiredFeil() || scope.harTilDatoFeil();
                     }
-
-                    scope.vars.model = scope.model;
-                });
-
-                scope.$watch('vars.model', function(newValue, oldValue) {
-                    if (newValue === oldValue) {
-                        return;
-                    }
-
-                    if (scope.endret) {
-                        scope.endret();
-                    }
-
-                    if (new Date(newValue) < new Date(scope.fraDato)) {
-                        scope.vars.model = '';
-                        form[scope.name].$setValidity('toDate', false);
-                        form[scope.name].$touched = true;
-                        form[scope.name].$untouched = false;
-                    } else if (!isNaN(new Date(newValue))) {
-                        form[scope.name].$setValidity('toDate', true);
-                    }
-
-                    scope.model = scope.vars.model;
-                });
-
-                scope.navDatepicker = function() {
-                    return !scope.vanligDatepicker();
-                };
-
-                scope.vanligDatepicker = function() {
-                    return deviceService.isTouchDevice();
-                };
-
-                scope.harRequiredFeil = function () {
-                    var input = form[scope.name];
-                    return input && input.$error.required && input.$touched && !scope.vars.harFokus;
-                };
-
-                scope.harTilDatoFeil = function () {
-                    var input = form[scope.name];
-                    return input && input.$error.toDate && input.$touched;
-                };
-
-                scope.harFormatteringsFeil = function () {
-                    var input = form[scope.name];
-                    return input && input.$error.dateFormat && input.$touched && !scope.vars.harFokus;
-                };
-
-                scope.erUloveligFremtidigDato = function() {
-                    var input = form[scope.name];
-                    return input && input.$error.futureDate && input.$touched && !scope.vars.harFokus;
-                };
-
-                scope.erIkkeGyldigDato = function () {
-                    var input = form[scope.name];
-                    return input && input.$error.validDate && input.$touched && !scope.vars.harFokus;
-                };
-
-                scope.harFeil = function () {
-                    if (scope.navDatepicker()) {
-                        return harFeilMedNavDatepicker();
-                    } else {
-                        return harFeilMedDateInput();
-                    }
-                };
-
-                function harFeilMedNavDatepicker() {
-                    return scope.harRequiredFeil() || scope.harFormatteringsFeil() || scope.harTilDatoFeil() || scope.erIkkeGyldigDato() || scope.erUloveligFremtidigDato();
-                }
-
-                function harFeilMedDateInput() {
-                    return scope.harRequiredFeil() || scope.harTilDatoFeil();
                 }
             }
         };
@@ -318,7 +320,6 @@ angular.module('nav.datepicker.directive', [])
                 tilDato               : '=',
                 erFradatoRequired     : '=',
                 erTildatoRequired     : '=',
-                erBeggeRequired       : '=',
                 erFremtidigdatoTillatt: '=',
                 lagre                 : '&',
                 label                 : '@',
@@ -330,21 +331,6 @@ angular.module('nav.datepicker.directive', [])
                 $scope.fraFeilmelding = $scope.fraLabel + '.feilmelding';
                 $scope.tilFeilmelding = $scope.tilLabel + '.feilmelding';
                 $scope.tilDatoFeil = false;
-
-                if ($scope.erBeggeRequired) {
-                    $scope.$watch('erBeggeRequired', function () {
-                        $scope.fradatoRequired = $scope.erBeggeRequired;
-                        $scope.tildatoRequired = $scope.erBeggeRequired;
-                    });
-                } else {
-                    $scope.$watch('erFradatoRequired', function () {
-                        $scope.fradatoRequired = $scope.erFradatoRequired;
-                    });
-
-                    $scope.$watch('erTildatoRequired', function () {
-                        $scope.tildatoRequired = $scope.erTildatoRequired;
-                    });
-                }
             }
         };
     })

@@ -1,20 +1,21 @@
 <div class="varighet form-linje">
     <h4 class="spm-sporsmal" data-ng-bind-html=" 'arbeidsforhold.arbeidsgiver.varighet.label' | cmstekst"></h4>
     <div data-nav-dato-intervall
-         data-fra-dato="sluttaarsak.properties.datofra"
-         data-til-dato="sluttaarsak.properties.datotil"
-         data-label="arbeidsforhold.arbeidsgiver.varighet"
-         data-er-begge-required="true"
-         data-lagre="lagreFaktum()">
+            data-fra-dato="sluttaarsak.properties.datofra"
+            data-til-dato="sluttaarsak.properties.datotil"
+            data-label="arbeidsforhold.arbeidsgiver.varighet"
+            data-er-fradato-required="true"
+            data-er-tildato-required="true"
+            data-lagre="lagreFaktum()">
     </div>
 </div>
 
 <div data-navtextarea
-     data-navconfig
-     data-nav-faktum-property="avskjedigetGrunn"
-     data-nokkel="arbeidsforhold.sluttaarsak.avskjedigetgrunn"
-     data-maxlengde="500"
-     data-obligatorisk="true"></div>
+        data-navconfig
+        data-nav-faktum-property="avskjedigetGrunn"
+        data-nokkel="arbeidsforhold.sluttaarsak.avskjedigetgrunn"
+        data-maxlengde="500"
+        data-obligatorisk="true"></div>
 
 <div class="ekstra-spm-boks">
     <div data-navinfoboks data-infotekster="['arbeidsforhold.sluttaarsak.avskjediget.informasjon.1', 'arbeidsforhold.sluttaarsak.avskjediget.informasjon.2']">
