@@ -2,9 +2,6 @@ package no.nav.sbl.dialogarena.soknadinnsending;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- * Klasse for å returnere et resultat av en opplasting
- */
 @XmlRootElement
 public class RestFeil {
 
