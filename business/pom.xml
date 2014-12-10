@@ -197,11 +197,6 @@
             <artifactId>jackson-annotations</artifactId>
         </dependency>
 		
-		<dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-        </dependency>
-
         <!-- Avhengigheter med runtime-scope -->
         <dependency>
             <groupId>com.oracle</groupId>

@@ -8,7 +8,7 @@
     describe('VedleggControllere', function () {
         var scope, ctrl, form, element, barn, $httpBackend;
 
-        beforeEach(module('sendsoknad.controllers', 'nav.feilmeldinger', 'sendsoknad.services'));
+        beforeEach(module('nav.vedlegg.controller', 'nav.feilmeldinger', 'sendsoknad.services'));
 
         beforeEach(module(function ($provide) {
             var fakta = [
@@ -62,27 +62,6 @@
                 expect(scope.runValidationBleKalt).toEqual(false);
                 scope.validerVedlegg(form);
                 expect(scope.runValidationBleKalt).toEqual(true);
-            });
-
-            it('skal sjekke at ekstra vedlegg er feridg', function() {
-                scope.nyttAnnetVedlegg();
-                var forventning = {
-                    skjemaNummer: "N6",
-                    navn: undefined
-                };
-                expect(scope.ekstraVedleggFerdig(forventning)).toBe(false);
-                forventning.navn = "Mitt ekstra vedlegg";
-                expect(scope.ekstraVedleggFerdig(forventning)).toBe(true);
-            });
-
-            it('skal sjekke om vedlegg er ferdig behandlet', function() {
-                var forventning = {
-                    innsendingsvalg: 'VedleggKreves'
-                };
-                expect(scope.vedleggFerdigBehandlet(forventning)).toBe(false);
-
-                forventning.innsendingsvalg = 'LastetOpp';
-                expect(scope.vedleggFerdigBehandlet(forventning)).toBe(true);
             });
         });
 

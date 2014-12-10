@@ -23,14 +23,10 @@
                 <div data-kontonr></div>
             </div>
 
-            <div data-ng-if="erUtenlandskStatsborger()">
-                <div class="statsborgerskap" data-navinfoboks>
-                    {{ 'personalia.utenlandskstatsborger.statsborgerskap.informasjon' | cmstekst }}
+            <div data-ng-if="erIkkeNordiskStatsborger()">
+                <div class="statsborgerskap" data-navinfoboks data-infotekster="['personalia.utenlandskstatsborger.statsborgerskap.informasjon']">
                 </div>
-                <div class="ekstra-spm-boks" data-vedlegginfoboks>
-                    <ul>
-                        <li data-ng-bind-html="'Dagpenger.vedlegg.T4.header' | cmstekst"></li>
-                    </ul>
+                <div class="ekstra-spm-boks" data-vedlegginfoboks data-vedleggTekster="['Dagpenger.vedlegg.T4.header']">
                 </div>
             </div>
         </div>

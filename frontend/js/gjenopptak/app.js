@@ -9,7 +9,11 @@ angular.module('gjenopptak', [
     'ngCookies',
     'ngSanitize',
     'templates-main',
+    'nav.arbeidsforhold',
+    'nav.tidligerearbeidsforhold',
     'nav.cms',
+    'nav.datepicker',
     'nav.personalia',
-    'nav.datepicker'
+    'nav.scroll',
+    'nav.vedlegg'
 ]);

@@ -1,19 +1,8 @@
-angular.module('nav.arbeidsforhold.controller', ['nav.arbeidsforhold.turnus.directive'])
-    .controller('ArbeidsforholdCtrl', function ($scope, $cookieStore, $location, data, datapersister) {
-        $scope.templates = {
-            'Sagt opp av arbeidsgiver': { oppsummeringsurl: '../js/common/arbeidsforhold/templates/oppsummeringer/sagt-opp-av-arbeidsgiver-oppsummering.html' },
-            'Permittert': {oppsummeringsurl: '../js/common/arbeidsforhold/templates/oppsummeringer/permittert-oppsummering.html' },
-            'Kontrakt utgått': {oppsummeringsurl: '../js/common/arbeidsforhold/templates/oppsummeringer/arbeidsforhold/kontrakt-utgaatt-oppsummering.html'},
-            'Sagt opp selv': {oppsummeringsurl: '../js/common/arbeidsforhold/templates/oppsummeringer/arbeidsforhold/sagt-opp-selv-oppsummering.html' },
-            'Redusert arbeidstid': {oppsummeringsurl: '../js/common/arbeidsforhold/templates/oppsummeringer/templates/arbeidsforhold/redusertarbeidstid-oppsummering.html' },
-            'Arbeidsgiver er konkurs': {oppsummeringsurl: '../js/common/arbeidsforhold/templates/oppsummeringer/views/templates/arbeidsforhold/konkurs-oppsummering.html'}
-        };
+angular.module('nav.arbeidsforhold.controller', [])
+    .controller('ArbeidsforholdCtrl', function ($scope, $cookieStore, $location, data) {
 
         $scope.soknadId = data.soknad.soknadId;
-
-        // Resetter arbeidsforhol
-        datapersister.remove("arbeidsforholdData");
-        datapersister.remove("permitteringsperioderTilSletting");
+        $scope.land = data.land;
 
         var arbeidsforhold = data.finnFakta('arbeidsforhold');
         $scope.arbeidsliste = [];
@@ -21,6 +10,14 @@ angular.module('nav.arbeidsforhold.controller', ['nav.arbeidsforhold.turnus.dire
         angular.forEach(arbeidsforhold, function (af) {
             $scope.arbeidsliste.push({'arbeidsforhold': af, 'sluttaarsak': af});
         });
+
+        $scope.settBreddeSlikAtDetFungererIIE = function() {
+            setTimeout(function() {
+                $("#land").width($("#land").width());
+            }, 50);
+        };
+
+        $scope.settBreddeSlikAtDetFungererIIE();
 
         function compareArbeidsforholdDate(a1, a2) {
             if (a1.sluttaarsak.properties.datofra > a2.sluttaarsak.properties.datofra) {
@@ -77,10 +74,9 @@ angular.module('nav.arbeidsforhold.controller', ['nav.arbeidsforhold.turnus.dire
         };
 
         $scope.hvisHarIkkeJobbet = function () {
-            var faktum = data.finnFaktum('arbeidstilstand');
-            return sjekkOmGittEgenskapTilObjektErVerdi(faktum, "harIkkeJobbet");
-
+            return !$scope.hvisHarJobbet();
         };
+
         $scope.hvisHarJobbetVarierende = function () {
             var faktum = data.finnFaktum('arbeidstilstand');
             return sjekkOmGittEgenskapTilObjektErVerdi(faktum, "varierendeArbeidstid");
@@ -100,11 +96,7 @@ angular.module('nav.arbeidsforhold.controller', ['nav.arbeidsforhold.turnus.dire
                 $scope.apneTab('arbeidsforhold');
             }
 
-            $scope.harKlikketKnapp = false;
-
-            if (!$scope.hvisHarIkkeJobbet()) {
-                $scope.harKlikketKnapp = true;
-            }
+            $scope.harKlikketKnapp = $scope.hvisHarJobbet();
         };
 
         $scope.nyttArbeidsforhold = function ($event) {
@@ -131,6 +123,14 @@ angular.module('nav.arbeidsforhold.controller', ['nav.arbeidsforhold.turnus.dire
             $scope.harKlikketKnapp = false;
         };
 
+        $scope.erUtenlandskStatsborger = function() {
+            var personalia = data.finnFaktum('personalia');
+            if(personalia && personalia.properties){
+                return personalia.properties.statsborgerskap !== 'NOR';
+            }
+            return false;
+        };
+
 
         function settArbeidsforholdCookie(faktumId) {
             var aapneTabIds = [];
@@ -139,14 +139,11 @@ angular.module('nav.arbeidsforhold.controller', ['nav.arbeidsforhold.turnus.dire
                     aapneTabIds.push(gruppe.id);
                 }
             });
-
             $cookieStore.put('scrollTil', {
                 aapneTabs: aapneTabIds,
                 gjeldendeTab: '#arbeidsforhold',
                 faktumId: faktumId
             });
-
-
         }
 
     });

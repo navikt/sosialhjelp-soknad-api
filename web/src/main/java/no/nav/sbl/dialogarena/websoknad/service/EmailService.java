@@ -10,6 +10,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
@@ -24,6 +25,7 @@ public class EmailService {
     @Inject
     private JavaMailSender mailSender;
     @Inject
+    @Named("threadPoolTaskExecutor")
     private TaskExecutor executor;
 
     private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
@@ -48,9 +50,9 @@ public class EmailService {
     /**
      * Sender en epost til innsender med link til ettersending og saksoversikt.
      *
-     * @param ePost   adressen til personen
-     * @param subject Sunbject til mailen
-     * @param innhold innhold i mail
+     * @param ePost        adressen til personen
+     * @param subject      Sunbject til mailen
+     * @param innhold      innhold i mail
      * @param behandlingId behandinglsiden til søknaden
      */
     public void sendEpostEtterInnsendtSoknad(final String ePost, final String subject, final String innhold, String behandlingId) {
@@ -59,7 +61,7 @@ public class EmailService {
             public void prepare(MimeMessage mimeMessage) {
                 try {
                     mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(ePost));
-                    mimeMessage.setFrom(fraAdresse);
+                    mimeMessage.setFrom(new InternetAddress(fraAdresse));
                     mimeMessage.setContent(htmlInnhold, "text/html;charset=utf-8");
                     mimeMessage.setSubject(subject);
                 } catch (MessagingException e) {
@@ -72,7 +74,7 @@ public class EmailService {
     }
 
     private void addTask(final SimpleMailMessage mail, final String behandlingId) {
-        addTask(mail,behandlingId, 0);
+        addTask(mail, behandlingId, 0);
     }
 
     private void addTask(final SimpleMailMessage mail, final String behandlingId, final int loopCheck) {
@@ -98,8 +100,8 @@ public class EmailService {
             @Override
             public void run() {
                 try {
-                    mailSender.send(preparator);
                     logger.info("Epost sendes til: " + tilEpost + " med innhold: " + epostinnhold + " BrukerbehandlingId: " + behandlingId);
+                    mailSender.send(preparator);
                 } catch (MailException me) {
                     if (loopCheck < 5) {
                         addTask(preparator, behandlingId, tilEpost, epostinnhold, loopCheck + 1);

@@ -27,6 +27,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Controller
 @RequestMapping("/bekreftelse")
 public class SoknadBekreftelseController {
+
     private static final Logger logger = getLogger(SoknadBekreftelseController.class);
 
     @Inject
@@ -44,12 +45,12 @@ public class SoknadBekreftelseController {
     public void sendEpost(HttpServletRequest request, @PathVariable String behandlingId, @RequestBody SoknadBekreftelse soknadBekreftelse) {
         if (soknadBekreftelse.getEpost() != null) {
             String subject = messageSource.getMessage("sendtSoknad.sendEpost.epostSubject", null, new Locale("nb", "NO"));
-            String saksoversiktUrl = configService.getValue("saksoversikt.link.url") + "/detaljer/"+ soknadBekreftelse.getTemaKode() +"/" + behandlingId;
+            String saksoversiktUrl = configService.getValue("saksoversikt.link.url") + "/detaljer/" + soknadBekreftelse.getTemaKode() + "/" + behandlingId;
             String ettersendelseUrl = ServerUtils.getEttersendelseUrl(request.getRequestURL().toString(), behandlingId);
 
             String innhold = messageSource.getMessage("sendtSoknad.sendEpost.epostInnhold", new Object[]{saksoversiktUrl, ettersendelseUrl}, new Locale("nb", "NO"));
 
-            if(soknadBekreftelse.getErEttersendelse()) {
+            if (soknadBekreftelse.getErEttersendelse()) {
                 innhold = messageSource.getMessage("sendEttersendelse.sendEpost.epostInnhold", new Object[]{saksoversiktUrl}, new Locale("nb", "NO"));
             }
 

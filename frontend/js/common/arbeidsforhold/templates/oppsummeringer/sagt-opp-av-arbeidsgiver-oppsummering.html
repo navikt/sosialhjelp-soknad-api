@@ -6,7 +6,7 @@
 
 <ul>
     <li>
-        <p data-ng-bind="af.sluttaarsak.properties.type"></p>
+        <p data-arbeidsforhold-sluttaarsak data-sluttaarsak="af.sluttaarsak.properties.type"></p>
     </li>
     <li>
         <span data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.aarsak.label' | cmstekst"></span>
@@ -21,17 +21,11 @@
             {{ 'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.false' | cmstekst }}
         </p>
     </li>
+    <div data-turnusblokk-oppsummering
+         data-arbeidsforhold="af.arbeidsforhold"></div>
 </ul>
 
-<div data-ng-include="'../views/templates/arbeidsforhold/slett-arbeidsforhold.html'"></div>
+<div data-ng-include="'../js/common/arbeidsforhold/templates/slett-arbeidsforhold.html'"></div>
 
-<div data-vedlegginfoboks>
-    <ul>
-        <li>
-            <span data-ng-bind-html="'Dagpenger.vedlegg.O2.header' | cmstekst"></span>
-        </li>
-        <li>
-            <span data-ng-bind-html="'Dagpenger.vedlegg.T8.header' | cmstekst"></span>
-        </li>
-    </ul>
+<div data-vedlegginfoboks data-vedleggTekster="['Dagpenger.vedlegg.O2.header', 'Dagpenger.vedlegg.T8.header']">
 </div>

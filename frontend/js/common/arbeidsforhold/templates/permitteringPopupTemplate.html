@@ -1,0 +1,27 @@
+<div class="permittering-modal">
+    <section>
+        <div class="vertikal arbeidsforhold-spm" data-ng-form="nyPermitteringsperiodeForm" data-ng-controller="permitteringsperiodeNyttCtrl">
+            <a href="javascript:void(0)" data-ng-click="lukk()" class="lukk" aria-label="{{'arbeidsforhold.nypermitteringsperiode.lukk.aria' | cmstekst}}"></a>
+            <h2 class="stor-strek brekker">
+                <span data-ng-bind-html=" 'arbeidsforhold.nypermitteringsperiode.tittel'+cmsPostFix | cmstekst"></span>
+            </h2>
+            <div data-permitterings-periode-input
+                    data-permitteringsperiode="permitteringsperiode">
+
+                <span class="melding" data-ng-bind-html="'arbeidsforhold.nypermitteringsperiode.feil.overlapper' |cmstekst"></span>
+                <input type="hidden"
+                        class="datointervall-validering"
+                        data-hidden-input-validering
+                        data-ng-model="datoIntervallErValidert.value"
+                        data-ng-required="true"/>
+            </div>
+
+            <div class="knapper-opprett">
+                <input class="knapp-hoved-liten" type="submit"
+                        value="{{ 'arbeidsforhold.nypermitteringsperiode.lagre'+cmsPostFix | cmstekst }}"
+                        data-ng-click="lagrePermitteringsperiode(nyPermitteringsperiodeForm);">
+                <a href="javascript:void(0)" data-ng-click="avbryt()" data-ng-bind-html=" 'arbeidsforhold.nypermitteringsperiode.avbryt' | cmstekst"></a>
+            </div>
+        </div>
+    </section>
+</div>

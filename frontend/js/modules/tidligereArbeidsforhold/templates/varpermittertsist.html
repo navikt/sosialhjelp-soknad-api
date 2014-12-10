@@ -1,0 +1,40 @@
+<div class="spm boolean form-linje">
+    <div data-navinfoboks data-infotekster="['tidligerearbeidsforhold.permittert.infoboks']">
+    </div>
+    <h4 class="spm-sporsmal" data-ng-bind-html=" 'tidligerearbeidsforhold.permittert.sporsmal' | cmstekst"></h4>
+
+    <div data-navradio
+         data-value="ikkePermittert"
+         data-navconfig
+         data-navlabel="tidligerearbeidsforhold.permittert.nei"
+         data-navfeilmelding="tidligerearbeidsforhold.permittert.feilmelding">
+    </div>
+
+    <div data-navradio
+         data-navconfig
+         data-value="permittertFiske"
+         data-navlabel="tidligerearbeidsforhold.permittert.jafiske"
+         data-hjelpetekst="tidligerearbeidsforhold.permittert.jafiske.hjelpetekst"
+         data-navfeilmelding="tidligerearbeidsforhold.permittert.feilmelding">
+    </div>
+
+    <div data-ng-if="hvisVarPermittertFiske()">
+        <div data-tidligere-arbeidsgiver></div>
+    </div>
+
+    <div data-navradio
+         data-navconfig
+         data-value="permittert"
+         data-navlabel="tidligerearbeidsforhold.permittert.ja"
+         data-navfeilmelding="tidligerearbeidsforhold.permittert.feilmelding">
+    </div>
+
+    <div data-ng-if="hvisVarPermittert()">
+        <div data-tidligere-arbeidsgiver></div>
+    </div>
+
+    <div data-melding>
+        <span class="melding" data-ng-bind-html=" 'tidligerearbeidsforhold.permittert.feilmelding' | cmstekst"></span>
+    </div>
+
+</div>

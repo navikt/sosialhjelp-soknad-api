@@ -10,7 +10,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class SoknadVedlegg implements Serializable {
@@ -33,14 +32,6 @@ public class SoknadVedlegg implements Serializable {
 
     public void setFaktum(SoknadFaktum faktum) {
         this.faktum = faktum;
-    }
-
-    public String getOnValue() {
-        return values != null && !values.isEmpty() ? values.get(0) : null;
-    }
-
-    public void setOnValue(String onValue) {
-        this.values = Arrays.asList(onValue);
     }
 
     @XmlElementWrapper(name = "onValues")
@@ -167,6 +158,11 @@ public class SoknadVedlegg implements Serializable {
 
     public boolean harParent() {
         return getFaktum().getDependOn() != null;
+    }
+
+    public SoknadVedlegg medFaktum(SoknadFaktum faktum) {
+        this.setFaktum(faktum);
+        return this;
     }
 
     @Override

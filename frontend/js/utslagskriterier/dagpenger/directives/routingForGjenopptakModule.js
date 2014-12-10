@@ -10,11 +10,6 @@ angular.module('nav.routingForGjenopptakModule', [])
                 scope.validerOgStartSoknad = function () {
                     if (scope.form.$valid) {
                         var currentUrl = location.href;
-                        setCookie('routingGjenopptak', {
-                            arbeidSiste52Uker: scope.gjenopptak.harMotattDagpenger,
-                            harArbeidet: scope.gjenopptak.harArbeidet
-                        });
-
                         if (scope.gjenopptak.harMotattDagpenger === "ja") {
                             redirectTilUrl(currentUrl.substring(0, currentUrl.indexOf('utslagskriterier/')) + 'skjema/NAV04-16.03#/informasjonsside');
                         } else {

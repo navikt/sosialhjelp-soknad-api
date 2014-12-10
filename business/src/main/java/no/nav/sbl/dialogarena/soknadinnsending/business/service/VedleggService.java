@@ -5,10 +5,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import java.io.InputStream;
 import java.util.List;
 
-/**
- * Metoder som manippulerer vedlegg.
- */
 public interface VedleggService {
+
     List<Long> splitOgLagreVedlegg(Vedlegg vedlegg, InputStream inputStream);
 
     List<Vedlegg> hentVedleggUnderBehandling(Long soknadId, String fillagerReferanse);
@@ -28,4 +26,5 @@ public interface VedleggService {
     void leggTilKodeverkFelter(List<Vedlegg> vedlegg);
 
     void lagreKvitteringSomVedlegg(Long soknadId, byte[] kvittering);
+
 }
