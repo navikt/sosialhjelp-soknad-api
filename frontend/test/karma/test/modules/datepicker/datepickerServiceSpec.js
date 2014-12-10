@@ -172,8 +172,7 @@ describe('datepicker services', function () {
             $provide.value('datepickerInputKeys', inputKeys);
             $provide.value('datepickerUtilityKeys', utilityKeys);
             $provide.value('periodKeyCode', 190);
-            $provide.value('cKeyCode', 67);
-            $provide.value('vKeyCode', 86);
+            $provide.value('ctrlKeyCodes', [65, 67, 88, 86]);
         }));
 
         beforeEach(inject(function (datepickerInputService) {
