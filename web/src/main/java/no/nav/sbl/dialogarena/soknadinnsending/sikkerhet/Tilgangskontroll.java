@@ -9,7 +9,7 @@ import no.nav.modig.security.tilgangskontroll.policy.pdp.picketlink.PicketLinkDe
 import no.nav.modig.security.tilgangskontroll.policy.pep.EnforcementPoint;
 import no.nav.modig.security.tilgangskontroll.policy.pep.PEPImpl;
 import no.nav.modig.security.tilgangskontroll.policy.request.attributes.SubjectAttribute;
-import no.nav.sbl.dialogarena.soknadinnsending.SoknadInnsendingConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.SikkerhetsConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.EttersendingService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
@@ -38,7 +38,7 @@ public class Tilgangskontroll {
     private EttersendingService ettersendingService;
 
     public Tilgangskontroll() {
-        DecisionPoint pdp = new PicketLinkDecisionPoint(SoknadInnsendingConfig.class.getResource("/security/policyConfig.xml"));
+        DecisionPoint pdp = new PicketLinkDecisionPoint(SikkerhetsConfig.class.getResource("/security/policyConfig.xml"));
         pep = new PEPImpl(pdp);
         ((PEPImpl) pep).setRequestEnrichers(asList(new EnvironmentRequestEnricher(), new SecurityContextRequestEnricher()));
     }
