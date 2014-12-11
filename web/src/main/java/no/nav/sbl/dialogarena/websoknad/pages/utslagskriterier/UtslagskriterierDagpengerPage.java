@@ -29,8 +29,6 @@ public class UtslagskriterierDagpengerPage extends BasePage {
         StringValue brukerbehandlingId = getPageParameters().get("brukerbehandlingId");
         if (!brukerbehandlingId.isEmpty()) {
             try {
-                // TODO: Burde sikkert fikse dette
-                // Henter søknaden for å triggere populering fra henvendelse, som kan kaste exceptions
                 soknadService.hentSoknadMedBehandlingsId(brukerbehandlingId.toString());
                 new CookieUtils().save("XSRF-TOKEN", XsrfGenerator.generateXsrfToken(brukerbehandlingId.toString()));
             } catch (SoknadAvsluttetException e) {
