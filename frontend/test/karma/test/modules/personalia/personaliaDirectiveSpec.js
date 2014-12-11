@@ -71,10 +71,6 @@ describe('Personalia directive tests', function () {
             expect(scope.brukerprofilUrl).toBe(brukerprofilUrl);
         });
 
-        it('dersom statsborgerskap er norsk så skal erUtenlandskStatsborger returnere false', function () {
-            expect(scope.erUtenlandskStatsborger()).toEqual(false);
-        });
-
         describe('ingen kjønn satt i personalia', function() {
             it('hvis personen ikke har et kjønn så skal erMann returnere false', function () {
                 expect(scope.erMann()).toEqual(false);
