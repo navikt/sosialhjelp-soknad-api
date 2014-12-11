@@ -180,7 +180,7 @@
                             data-ng-change="endreIngenYtelse()"
                             data-boolean-verdi
                             data-aktiv-feilmelding>
-                    <label for="ingenYtelseCheckbox" data-ng-bind-html=" 'ytelser.ingenYtelse' | cmstekst"></label>
+                    <label for="ingenYtelseCheckbox" data-ng-bind-html="'ytelser.ingenYtelse' | cmstekst"></label>
                 </div>
             </div>
             <span class="melding" data-ng-bind-html=" 'ytelser.minstEnCheckboksErAvhuket.feilmelding' | cmstekst"></span>
@@ -189,8 +189,8 @@
             <input type="hidden" data-ng-model="harHuketAvCheckboksNavYtelse.value" data-ng-required="true"
                     data-error-messages="'ytelser.minstEnCheckboksErAvhuket.navYtelserfeilmelding'">
             <h4 class="spm-sporsmal">
-                <span data-ng-bind-html=" 'ytelser.nav.informasjon' | cmstekst"></span>
-                <span data-ng-bind-html=" 'ytelser.nav.sporsmal' | cmstekst"></span>
+                <span data-ng-bind-html="'ytelser.nav.informasjon' | cmstekst"></span>
+                <span data-ng-bind-html="'ytelser.nav.sporsmal' | cmstekst"></span>
             </h4>
 
             <div data-navcheckbox
@@ -243,14 +243,14 @@
                         data-ng-change="endreIngenNavYtelse(ytelserForm)"
                         data-boolean-verdi
                         data-aktiv-feilmelding/>
-                <label for="ingennavytelserCheckbox" data-ng-bind-html=" 'ytelser.nav.ingen' | cmstekst"></label>
+                <label for="ingennavytelserCheckbox" data-ng-bind-html="'ytelser.nav.ingen' | cmstekst"></label>
             </div>
-            <span class="melding" data-ng-bind-html=" 'ytelser.minstEnCheckboksErAvhuket.navYtelserfeilmelding' | cmstekst"></span>
+            <span class="melding" data-ng-bind-html="'ytelser.minstEnCheckboksErAvhuket.navYtelserfeilmelding' | cmstekst"></span>
         </div>
 
         <div>
             <h4 class="spm-sporsmal">
-                <span data-ng-bind-html=" 'ytelser.goder.info' | cmstekst"></span>
+                <span data-ng-bind-html="'ytelser.goder.info' | cmstekst"></span>
             </h4>
 
             <div data-nav-faktum="ikkeavtale"
