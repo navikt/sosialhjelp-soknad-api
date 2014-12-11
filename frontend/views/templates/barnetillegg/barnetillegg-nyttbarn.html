@@ -89,7 +89,8 @@
         <div class="knapper-opprett">
             <input class="knapp-hoved-liten" name="lagre" type="submit"
                    value="{{ 'barnetillegg.nyttbarn.lagre' | cmstekst }}"
-                   data-ng-click="lagreBarn(nyttBarnForm);">
+                   data-ng-click="lagreBarn(nyttBarnForm);"
+                   data-fremdriftsindikator>
 
             <a href="#/{{brukerBehandlingId}}/soknad" data-ng-click="avbrytBarnetilegg($event)">
                 {{ 'barnetillegg.nyttbarn.avbryt' | cmstekst }}

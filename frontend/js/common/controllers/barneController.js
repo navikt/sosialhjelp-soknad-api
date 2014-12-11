@@ -1,6 +1,6 @@
 angular.module('nav.barn', [])
 
-    .controller('BarneCtrl', ['$scope', 'Faktum', 'data', '$cookieStore', '$location', '$resource', 'cms', function ($scope, Faktum, data, $cookieStore, $location, $resource, cms) {
+    .controller('BarneCtrl', function ($scope, Faktum, data, $cookieStore, $location, $resource, cms) {
         var soknadId = data.soknad.soknadId;
         var url = $location.$$url;
         var endreModus = url.indexOf('endrebarn') !== -1;
@@ -10,6 +10,9 @@ angular.module('nav.barn', [])
         $scope.brukerBehandlingId = data.soknad.brukerBehandlingId;
         $scope.soknadId = data.soknad.soknadId;
         $scope.nyttbarn = {barneinntekttall: undefined};
+        $scope.fremdriftsindikator = {
+            laster: false
+        };
 
         $scope.settBreddeSlikAtDetFungererIIE = function() {
             setTimeout(function() {
@@ -103,6 +106,7 @@ angular.module('nav.barn', [])
             $scope.runValidation(true);
 
             if (form.$valid) {
+                $scope.fremdriftsindikator.laster = true;
                 $scope.barn.properties.alder = $scope.finnAlder();
                 $scope.barn.properties.sammensattnavn = finnSammensattNavn();
                 lagreBarnOgBarnetilleggFaktum();
@@ -152,6 +156,8 @@ angular.module('nav.barn', [])
                 oppdaterFaktumListe('barn', barnData);
                 oppdaterCookieValue(barnData.faktumId);
                 $location.path(data.soknad.brukerBehandlingId + '/soknad');
+            }, function (){
+                $scope.fremdriftsindikator.laster = false;
             });
         }
 
@@ -232,4 +238,4 @@ angular.module('nav.barn', [])
             }
             return 'undefined';
         };
-    }]);
+    });
