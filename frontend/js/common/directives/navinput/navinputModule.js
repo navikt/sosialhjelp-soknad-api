@@ -24,6 +24,7 @@ angular.module('nav.input', ['nav.cms'])
                         tittel: attr.hjelpetekst + '.tittel',
                         tekst: attr.hjelpetekst + '.tekst'
                     };
+                    scope.hjelpetekstinline = attr.hjelpetekstinline;
                     scope.getCmsArgument = function() {
                         var cmsArgs = scope.cmsArgumenter;
                         if(cmsArgs && cmsArgs.modelFaktum) {
