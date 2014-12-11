@@ -1,14 +1,14 @@
 <div class="sticky-feilmelding" data-ng-show="skalVises()">
     <div>
         <div class="antall-feil-innholder">
-            <span class="vise-tekst" data-ng-bind-html=" 'skjema.feilmelding.antall.feilmeldinger' | cmstekst"></span>
-            <span class="antall-feil"> {{feil.antallFeil}}</span>
+            <span class="vise-tekst" data-ng-bind-html="'skjema.feilmelding.antall.feilmeldinger' | cmstekst"></span>
+            <span class="antall-feil">{{feil.antallFeil}}</span>
         </div>
         <span class="navigeringsknapper">
             <a class="forrige" data-ng-click="forrige()"
-               data-ng-class="{deaktiverFeilmelding: skalDeaktivereForrigeKnapp()}" data-ng-bind-html=" 'skjema.feilmelding.gaatil.forrige' | cmstekst"></a>
+               data-ng-class="{deaktiverFeilmelding: skalDeaktivereForrigeKnapp()}" data-ng-bind-html="'skjema.feilmelding.gaatil.forrige' | cmstekst"></a>
             <a class="neste" data-ng-click="neste()"
-               data-ng-class="{deaktiverFeilmelding: skalDeaktivereNesteKnapp}" data-ng-bind-html=" 'skjema.feilmelding.gaatil.neste' | cmstekst"></a>
+               data-ng-class="{deaktiverFeilmelding: skalDeaktivereNesteKnapp}" data-ng-bind-html="'skjema.feilmelding.gaatil.neste' | cmstekst"></a>
         </span>
         <span>
             <a data-ng-click="lukk()" class="lukk" aria-label="{{ 'skjema.feilmelding.lukk.aria' | cmstekst }}" ></a>
