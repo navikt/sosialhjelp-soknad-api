@@ -46,15 +46,15 @@
     </logger>
 
     <logger name="org.springframework" level="warn">
-        <appender-ref ref="exceptionlog"/>
+        <appender-ref ref="infolog"/>
     </logger>
 
     <logger name="no.nav.modig.lang.reflect" level="warn">
-        <appender-ref ref="exceptionlog"/>
+        <appender-ref ref="infolog"/>
     </logger>
 
     <logger name="no.nav.sbl" level="info">
-        <appender-ref ref="exceptionlog"/>
+        <appender-ref ref="infolog"/>
     </logger>
 
     <logger name="org.apache.cxf" level="info">
