@@ -17,6 +17,10 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
         $scope.permitteringsperioder = [];
         $scope.permitteringsperioderTilSletting = [];
 
+        $scope.fremdriftsindikator = {
+            laster: false
+        }
+
         $scope.settBreddeSlikAtDetFungererIIE = function () {
             setTimeout(function () {
                 $("#land").width($("#land").width());
@@ -80,6 +84,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
             $scope.runValidation(true);
 
             if (form.$valid) {
+                $scope.fremdriftsindikator.laster = true;
                 settStartetForrigeAarProperty();
                 slettPermitteringsperioder();
                 lagreArbeidsforholdOgSluttaarsak();
@@ -172,6 +177,8 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 
                 $q.all(promises).then(function () {
                     $location.path($scope.soknadUrl);
+                }, function (){
+                    $scope.fremdriftsindikator.laster = false;
                 });
 
                 function permitteringsperiodeTittel(faktum){
