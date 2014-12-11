@@ -1,6 +1,6 @@
 <div class='spm form-linje boolean'>
     <h4 class="spm-sporsmal">
-        <span data-ng-bind-html=" sporsmal | cmstekst:getCmsArgument() "></span>
+        <span data-ng-bind-html="sporsmal | cmstekst:getCmsArgument()"></span>
         <span data-nav-hjelpetekstelement data-ng-if="hvisHarHjelpetekst()" data-tittel="{{ hjelpetekst.tittel | cmstekst }}"
              data-tekst="{{ hjelpetekst.tekst | cmstekst:getCmsArgument() }}"></span>
     </h4>
@@ -16,7 +16,7 @@
     </div>
 
     <div data-melding>
-        <span class="melding" data-ng-bind-html=" navfeilmelding | cmstekst"></span>
+        <span class="melding" data-ng-bind-html="navfeilmelding | cmstekst"></span>
     </div>
 
     <div data-ng-if="vis()" data-ng-show="skalViseTranscludedInnhold()">
