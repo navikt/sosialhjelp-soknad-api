@@ -17,6 +17,22 @@ angular.module('nav.arbeidsforhold.directive',[])
             }
         };
     })
+    .directive('avbrytlenke', function($location) {
+        return {
+            templateUrl: '../js/common/arbeidsforhold/templates/avbrytlenke.html',
+            replace: true,
+            scope: {
+                lenketekst: "@",
+                lenkepath: "@"
+            },
+
+            link: function(scope) {
+                scope.avbryt = function() {
+                    $location.path(scope.lenkepath);
+                };
+            }
+        };
+    })
     .directive('arbeidsforholdLeggtilKnapper', function() {
         return {
             templateUrl: '../js/common/arbeidsforhold/templates/arbeidsforhold-leggtil-knapper.html',

@@ -158,7 +158,7 @@
                 <input class="knapp-hoved-liten" type="submit"
                         value="{{ 'arbeidsforhold.nyttarbeidsforhold.lagre' | cmstekst }}"
                         data-ng-click="lagreArbeidsforhold(nyttArbeidsforholdForm, ['permiteringsperiodeForm']);">
-                <a href="#{{ soknadUrl }}" data-ng-bind-html=" 'arbeidsforhold.nyttarbeidsforhold.avbryt' | cmstekst"></a>
+                <div data-avbrytlenke data-lenketekst="arbeidsforhold.nyttarbeidsforhold.avbryt" data-lenkepath="{{ soknadUrl }}" />
             </div>
         </div>
 
