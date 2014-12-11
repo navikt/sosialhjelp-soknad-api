@@ -15,9 +15,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.util.StreamUtils.copyToString;
 
 
-/**
- * Klasse som laster inn en html snutt fra en tempate inn i siden.
- */
 public class SoknadComponent extends WebComponent {
 
     private static final Logger logger = getLogger(SoknadComponent.class);
