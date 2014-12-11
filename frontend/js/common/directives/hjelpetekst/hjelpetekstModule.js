@@ -1,5 +1,5 @@
 angular.module('nav.hjelpetekst', ['nav.animation'])
-	.directive('navHjelpetekstelement', ['$document', '$window', '$timeout', function ($document, $window, $timeout) {
+	.directive('navHjelpetekstelement', function ($document, $window, $timeout) {
 		return {
 			replace    : true,
 			scope      : {
@@ -8,36 +8,38 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
 			},
 			templateUrl: '../js/common/directives/hjelpetekst/hjelpetekstTemplate.html',
 			link: function (scope, element, attr) {
+                if(attr.hjelpetekstinline === "true") {
+                    element.addClass("hjelpetekst-inline");
+                }
+
                 element.parent().addClass('hjelpetekst-parent');
                 var lukkEventTimestamp = 0;
-                scope.inline = attr.inline ? "-inline": "";
+                scope.visHjelp = false;
+                scope.toggleHjelpetekst = function () {
+                    scope.visHjelp = !scope.visHjelp;
+                };
 
-				scope.visHjelp = false;
-				scope.toggleHjelpetekst = function () {
-					scope.visHjelp = !scope.visHjelp;
-				};
-
-				scope.lukk = function (event) {
-					scope.visHjelp = false;
+                scope.lukk = function (event) {
+                    scope.visHjelp = false;
                     $($window).unbind('resize');
                     settFokusTilNesteElement(angular.element(event.target));
-				};
+                };
 
-				scope.stoppKlikk = function (event) {
+                scope.stoppKlikk = function (event) {
                     lukkEventTimestamp = event.timeStamp;
-				};
+                };
 
-				$document.bind('click', function (event) {
+                $document.bind('click', function (event) {
                     if (lukkEventTimestamp !== event.timeStamp) {
                         $timeout(function() {
                             scope.visHjelp = false;
                         });
                     }
-				});
+                });
 			}
 		};
-	}])
-	.directive('navHjelpetekstTooltip', ['$timeout', '$document', '$window', function ($timeout, $document, $window) {
+	})
+	.directive('navHjelpetekstTooltip', function ($timeout, $document, $window) {
 		return function (scope, element) {
             var mobilStorrelse = 767;
 
@@ -102,4 +104,4 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
                 element.find('.tekst').css({'max-height': hoyde + "px"});
             }
 		};
-	}]);
+	});
