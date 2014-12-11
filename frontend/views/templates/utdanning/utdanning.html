@@ -3,7 +3,7 @@
         <div data-form-errors></div>
 
         <div class="spm boolean hjelpetekst-hoyrestilt form-linje">
-            <h4 class="spm-sporsmal" data-ng-bind-html=" 'utdanning.informasjon' | cmstekst"></h4>
+            <h4 class="spm-sporsmal" data-ng-bind-html="'utdanning.informasjon' | cmstekst"></h4>
 
             <div data-navradio
                  data-value="ikkeUtdanning"
@@ -40,7 +40,7 @@
             <span class="melding"> </span>
 
             <div class="ekstra-info nav-boolean form-linje checkbox" data-ng-if="hvis('utdanning', 'underUtdanning')" data-checkbox-validate data-nav-faktum="utdanning">
-                <h4 class="spm-sporsmal" data-ng-bind-html=" 'utdanning.sporsmal' | cmstekst"></h4>
+                <h4 class="spm-sporsmal" data-ng-bind-html="'utdanning.sporsmal' | cmstekst"></h4>
 
                 <input type="hidden"
                        data-ng-model="harHuketAvCheckboks.value"
@@ -97,8 +97,8 @@
                            data-ng-change="endreUtdannelseAnnet()"
                            data-boolean-verdi
                             data-aktiv-feilmelding/>
-                    <label for="underUtdanningNeiCheckbox" data-ng-bind-html=" 'utdanning.svar.under.utdanning.nei' | cmstekst"></label>
-                    <span class="utdanning-nei-melding" data-ng-bind-html=" 'utdanning.harValgtUtdanning.feilmelding' | cmstekst"></span>
+                    <label for="underUtdanningNeiCheckbox" data-ng-bind-html="'utdanning.svar.under.utdanning.nei' | cmstekst"></label>
+                    <span class="utdanning-nei-melding" data-ng-bind-html="'utdanning.harValgtUtdanning.feilmelding' | cmstekst"></span>
                 </div>
 
                 <div class="ekstra-spm-boks nav-checkbox" data-ng-if="hvis('underUtdanningAnnet')">
@@ -110,7 +110,7 @@
                         </ul>
                     </div>
                 </div>
-                <span class="melding" data-ng-bind-html=" 'utdanning.minstEnAvhuket.feilmelding' | cmstekst"></span>
+                <span class="melding" data-ng-bind-html="'utdanning.minstEnAvhuket.feilmelding' | cmstekst"></span>
 
             </div>
 

@@ -1,22 +1,22 @@
 <div>
     <div>
         <span data-ng-if="soknadHarBlittLagret()">
-            <span data-ng-bind-html=" 'sistLagret.lagret' | cmstekst"></span>
+            <span data-ng-bind-html="'sistLagret.lagret' | cmstekst"></span>
             <span>
                 {{ hentSistLagretTid() | date:'short' }}
             </span>
         </span>
-        <span data-ng-if="soknadHarAldriBlittLagret()" data-ng-bind-html=" 'sistLagret.aldriLagret' | cmstekst"></span>
+        <span data-ng-if="soknadHarAldriBlittLagret()" data-ng-bind-html="'sistLagret.aldriLagret' | cmstekst"></span>
     </div>
     <ul class="liste-vannrett">
         <li data-ng-if="navtilbakelenke !== 'ingenlenke'">
-            <a href="{{ lenke.value}}" data-ng-bind-html=" navtilbakelenke | cmstekst"></a>
+            <a href="{{ lenke.value}}" data-ng-bind-html="navtilbakelenke | cmstekst"></a>
         </li>
         <li>
-            <a href="#/{{brukerBehandlingId}}/fortsettsenere" data-ng-bind-html=" 'fortsettSenere' | cmstekst"></a>
+            <a href="#/{{brukerBehandlingId}}/fortsettsenere" data-ng-bind-html="'fortsettSenere' | cmstekst"></a>
         </li>
         <li>
-            <a href="#/{{brukerBehandlingId}}/avbryt" data-ng-bind-html=" 'avbryt.soknad' | cmstekst"></a>
+            <a href="#/{{brukerBehandlingId}}/avbryt" data-ng-bind-html="'avbryt.soknad' | cmstekst"></a>
         </li>
     </ul>
 </div>
