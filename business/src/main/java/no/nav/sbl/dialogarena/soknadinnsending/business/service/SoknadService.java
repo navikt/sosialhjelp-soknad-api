@@ -609,10 +609,13 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
     private String hentVerdiFaktumErAvhengigAvPaaParent(SoknadFaktum faktum, Faktum parent) {
         String dependOnPropertyName = faktum.getDependOnProperty();
+        String verdiManErAvhengigAv;
         if(dependOnPropertyName != null) {
-            return parent.getProperties().get(dependOnPropertyName);
+            verdiManErAvhengigAv = parent.getProperties().get(dependOnPropertyName);
+        } else {
+            verdiManErAvhengigAv = parent.getValue();
         }
-        return parent.getValue();
+        return verdiManErAvhengigAv == null ? "false"  : verdiManErAvhengigAv;
     }
 
     /**
