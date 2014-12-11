@@ -13,4 +13,4 @@ angular.module('nav.datepicker.constant', [])
         46, 37, 39, 8, 9, 35, 36, 45
     ])
     .constant('periodKeyCode', 190)
-    .constant('ctrlKeyCodes', [65, 67, 88, 86])
+    .constant('ctrlKeyCodes', [65, 67, 88, 86]);

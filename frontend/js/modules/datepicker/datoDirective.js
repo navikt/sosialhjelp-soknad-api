@@ -103,7 +103,7 @@ angular.module('nav.datepicker.dato', [])
 
                     scope.harRequiredFeil = function () {
                         var input = form[scope.name];
-                        return input && input.$error.required && input.$touched && !scope.vars.harFokus;
+                        return input && input.$error.required && input.$touched && !scope.vars.harFokus && scope.vars.datepickerClosed;
                     };
 
                     scope.harTilDatoFeil = function () {
@@ -113,17 +113,17 @@ angular.module('nav.datepicker.dato', [])
 
                     scope.harFormatteringsFeil = function () {
                         var input = form[scope.name];
-                        return input && input.$error.dateFormat && input.$touched && !scope.vars.harFokus;
+                        return input && input.$error.dateFormat && input.$touched && !scope.vars.harFokus && scope.vars.datepickerClosed;
                     };
 
                     scope.erUloveligFremtidigDato = function() {
                         var input = form[scope.name];
-                        return input && input.$error.futureDate && input.$touched && !scope.vars.harFokus;
+                        return input && input.$error.futureDate && input.$touched && !scope.vars.harFokus && scope.vars.datepickerClosed;
                     };
 
                     scope.erIkkeGyldigDato = function () {
                         var input = form[scope.name];
-                        return input && input.$error.validDate && input.$touched && !scope.vars.harFokus;
+                        return input && input.$error.validDate && input.$touched && !scope.vars.harFokus && scope.vars.datepickerClosed;
                     };
 
                     scope.harFeil = function () {
