@@ -16,7 +16,6 @@
     cursor: pointer;
     padding: 0px 5px 5px 5px;
     width: 30px;
-    height: 30px;
     text-decoration: none !important;
 
     span {
@@ -134,12 +133,6 @@
   }
 }
 
-#ytelser,.modalBoks {
-  .hjelpetekst {
-    position: relative;
-    top: 0px;
-  }
-}
 .hjelpetekst-hoyrestilt {
   .hjelpetekst-parent {
     display: block;
@@ -152,6 +145,17 @@
   display: inline-block;
   position: relative;
   padding-right: 40px;
+}
+
+@media only screen and (max-width: 450px) {
+  .hjelpetekst-parent {
+    display: block;
+
+    .hjelpetekst-inline {
+      position: absolute;
+      right: 0;
+    }
+  }
 }
 
 @media only screen and (max-width: 767px) {

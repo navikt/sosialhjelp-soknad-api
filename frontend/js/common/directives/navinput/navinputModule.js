@@ -54,6 +54,7 @@ angular.module('nav.input', ['nav.cms'])
     })
     .directive('navradioUtenfaktum', function (cms) {
         return {
+            templateUrl: '../js/common/directives/navinput/navradioUtenfaktumTemplate.html',
             restrict: 'A',
             replace: true,
             scope: {
@@ -84,8 +85,7 @@ angular.module('nav.input', ['nav.cms'])
                     scope.name = scope.navlabel.substr(0, scope.navlabel.lastIndexOf("."));
 
                 }
-            },
-            templateUrl: '../js/common/directives/navinput/navradioUtenfaktumTemplate.html'
+            }
         };
     })
     .directive('navcheckbox', function (cms) {
@@ -100,6 +100,7 @@ angular.module('nav.input', ['nav.cms'])
                         tittel: cms.tekster[attr.navlabel + '.hjelpetekst.tittel'],
                         tekst: cms.tekster[attr.navlabel + '.hjelpetekst.tekst']
                     };
+                    scope.hjelpetekstinline = attr.hjelpetekstinline;
                 },
                 post: function (scope, element) {
                     scope.hvisHarHjelpetekst = function () {

@@ -2,7 +2,7 @@
     <div data-ng-form="ytelserForm" class="skjemainnhold vertikal" data-ng-controller="YtelserCtrl" data-novalidate>
         <div data-form-errors></div>
 
-        <div class="spm form-linje hjelpetekst-hoyrestilt andreytelser checkbox" data-checkbox-validate>
+        <div class="spm form-linje andreytelser checkbox" data-checkbox-validate>
             <input type="hidden" data-ng-model="harHuketAvCheckboksYtelse.value" data-ng-required="true"
                     data-error-messages="'ytelser.minstEnCheckboksErAvhuket.feilmelding'">
             <h4 class="spm-sporsmal">
@@ -79,8 +79,11 @@
             </div>
 
             <div data-navcheckbox
-                    data-navconfig data-nav-faktum="etterlonn"
-                    data-navlabel="ytelser.etterlonn" data-navendret="endreYtelse(ytelserForm)">
+                    data-navconfig
+                    data-nav-faktum="etterlonn"
+                    data-navlabel="ytelser.etterlonn"
+                    data-navendret="endreYtelse(ytelserForm)"
+                    data-hjelpetekstinline="true">
 
                 <div data-navinfoboks data-infotekster="['ytelser.etterlonnUtbetaler.informasjon']">
                 </div>
@@ -95,8 +98,11 @@
             </div>
 
             <div data-navcheckbox
-                    data-navconfig data-nav-faktum="vartpenger"
-                    data-navlabel="ytelser.vartpenger" data-navendret="endreYtelse(ytelserForm)">
+                    data-navconfig
+                    data-nav-faktum="vartpenger"
+                    data-navlabel="ytelser.vartpenger"
+                    data-navendret="endreYtelse(ytelserForm)"
+                    data-hjelpetekstinline="true">
 
                 <div data-navinfoboks data-infotekster="['ytelser.vartpengerUtbetaler.informasjon']">
                 </div>
@@ -225,7 +231,8 @@
                     data-navconfig
                     data-nav-faktum="ventelonn"
                     data-navlabel="ytelser.nav.ventelonn"
-                    data-navendret="endreNavYtelse(ytelserForm)"></div>
+                    data-navendret="endreNavYtelse(ytelserForm)"
+                    data-hjelpetekstinline="true"></div>
 
 
             <div class="annetvalg-nei form-linje" data-nav-faktum="ingennavytelser">
