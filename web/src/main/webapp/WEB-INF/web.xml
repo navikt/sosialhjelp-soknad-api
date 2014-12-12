@@ -68,7 +68,15 @@
     </filter>
     <filter-mapping>
         <filter-name>decoratorFilter</filter-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>/start/*</url-pattern>
+        <url-pattern>/soknad/*</url-pattern>
+        <url-pattern>/startettersending/*</url-pattern>
+        <url-pattern>/ettersending/*</url-pattern>
+        <url-pattern>/avbrutt/*</url-pattern>
+        <url-pattern>/ettersending/*</url-pattern>
+        <url-pattern>/xmltopdf/*</url-pattern>
+        <url-pattern>/soknadliste/*</url-pattern>
+        <url-pattern>/internal/*</url-pattern>
     </filter-mapping>
 
     <!--HttpSessionSecurityIntegrationFilter blir erstattet ved kjøring i Jetty. Se JettyTestServer (context.setOverrideDescriptor(...)) og override-web.xml-->
