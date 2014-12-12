@@ -189,7 +189,7 @@ angular.module('nav.barn', [])
             }
         }, function () {
             if($scope.barn.properties.land && $scope.barn.properties.land !== '') {
-                $resource('/sendsoknad/rest/landtype/:landkode').get(
+                $resource('/sendsoknad/rest/land/statsborgerskap/type/:landkode').get(
                     {landkode: $scope.barn.properties.land},
                     function (eosdata) { // Success
                         $scope.eosLandType = eosdata.result;

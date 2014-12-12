@@ -66,10 +66,10 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
             }
         }, function () {
             if ($scope.arbeidsforhold.properties.land && $scope.arbeidsforhold.properties.land !== '') {
-                $resource('/sendsoknad/rest/ereosland/:landkode').get(
+                $resource('/sendsoknad/rest/land/statsborgerskap/type/:landkode').get(
                     {landkode: $scope.arbeidsforhold.properties.land},
                     function (eosdata) {
-                        $scope.arbeidsforhold.properties.eosland = eosdata.result;
+                        $scope.arbeidsforhold.properties.eosland = eosdata.result === 'eos';
                     }
                 );
             }

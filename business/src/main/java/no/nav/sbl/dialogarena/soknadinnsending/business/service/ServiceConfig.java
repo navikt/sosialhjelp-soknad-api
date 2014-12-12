@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Import;
 @Import({
         ConfigService.class,
         DefaultVedleggService.class,
-        EosLandService.class,
+        LandService.class,
         SoknadService.class,
         StartDatoService.class,
 })

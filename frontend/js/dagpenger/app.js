@@ -17,5 +17,6 @@ angular.module('sendsoknad', [
     'nav.arbeidsforhold',
     'nav.scroll',
     'nav.vedlegg',
-    'ngMessages'
+    'ngMessages',
+    'nav.land'
 ]);

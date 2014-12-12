@@ -4,7 +4,7 @@ import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosLandService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.LandService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
@@ -140,7 +140,7 @@ public class DefaultPersonaliaServiceTest {
     private BrukerprofilPortType brukerProfilMock;
 
     @Mock
-    private EosLandService eosLandService;
+    private LandService eosLandService;
 
     @Mock
     private Kodeverk kodeverkMock;

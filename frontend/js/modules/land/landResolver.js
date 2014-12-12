@@ -1,4 +1,4 @@
-angular.module('nav.services.resolvers.land', [])
+angular.module('nav.land.resolver', [])
     .factory('LandResolver', ['landService', 'data', function (landService, data) {
         var land = landService.get(
             function (result) { // Success

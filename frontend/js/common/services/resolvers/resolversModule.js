@@ -1,6 +1,5 @@
 angular.module('nav.services.resolvers', [
     'nav.services.resolvers.utslagskriterier',
-    'nav.services.resolvers.land',
     'nav.services.resolvers.config',
     'nav.services.resolvers.cms',
     'nav.services.resolvers.soknadmetadata',

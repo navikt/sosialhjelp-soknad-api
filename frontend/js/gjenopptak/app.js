@@ -16,5 +16,6 @@ angular.module('gjenopptak', [
     'nav.personalia',
     'nav.scroll',
     'nav.vedlegg',
-    'ngMessages'
+    'ngMessages',
+    'nav.land'
 ]);
