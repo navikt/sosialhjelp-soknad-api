@@ -1222,9 +1222,9 @@
     </vedlegg>
 
     <vedlegg>
-        <id>9</id>
+        <id>10</id>
         <faktum>arbeidsforhold</faktum>
-        <skjemaNummer>T3</skjemaNummer>
+        <skjemaNummer>M6</skjemaNummer>
         <property>arbeidsgivernavn</property>
         <onProperty>rotasjonskiftturnus</onProperty>
         <onValues>

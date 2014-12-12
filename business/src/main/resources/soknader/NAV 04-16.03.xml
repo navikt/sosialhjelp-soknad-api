@@ -1315,13 +1315,13 @@
         <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
-        <id>9</id>
+        <id>10</id>
         <faktum>tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsammenhengende</faktum>
         <property>arbeidsgivernavn</property>
         <onValues>
             <value>true</value>
         </onValues>
-        <skjemaNummer>G2</skjemaNummer>
+        <skjemaNummer>M6</skjemaNummer>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
