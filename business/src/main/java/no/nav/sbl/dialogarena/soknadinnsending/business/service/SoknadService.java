@@ -523,6 +523,11 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         return hentStruktur(repository.hentSoknadType(soknadId));
     }
 
+    @Override
+    public SoknadStruktur hentSoknadStruktur(String skjemanummer) {
+        return hentStruktur(skjemanummer);
+    }
+
     private void genererVedleggForFaktum(Faktum faktum) {
         SoknadStruktur struktur = hentSoknadStruktur(faktum.getSoknadId());
         List<SoknadVedlegg> aktuelleVedlegg = struktur.vedleggFor(faktum.getKey());

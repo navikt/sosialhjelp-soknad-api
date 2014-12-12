@@ -1,9 +1,9 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.ConfigService;
-import no.nav.sbl.dialogarena.websoknad.service.EmailService;
 import no.nav.sbl.dialogarena.websoknad.domain.SoknadBekreftelse;
+import no.nav.sbl.dialogarena.websoknad.service.EmailService;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,15 +37,14 @@ public class SoknadBekreftelseController {
     @Named("navMessageSource")
     private MessageSource messageSource;
 
-    @Inject
-    private ConfigService configService;
+    @Value("${saksoversikt.link.url}")
+    private String saksoversiktUrl;
 
     @RequestMapping(value = "/{behandlingId}", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
     @ResponseBody()
     public void sendEpost(HttpServletRequest request, @PathVariable String behandlingId, @RequestBody SoknadBekreftelse soknadBekreftelse) {
         if (soknadBekreftelse.getEpost() != null) {
             String subject = messageSource.getMessage("sendtSoknad.sendEpost.epostSubject", null, new Locale("nb", "NO"));
-            String saksoversiktUrl = configService.getValue("saksoversikt.link.url") + "/detaljer/" + soknadBekreftelse.getTemaKode() + "/" + behandlingId;
             String ettersendelseUrl = ServerUtils.getEttersendelseUrl(request.getRequestURL().toString(), behandlingId);
 
             String innhold = messageSource.getMessage("sendtSoknad.sendEpost.epostInnhold", new Object[]{saksoversiktUrl, ettersendelseUrl}, new Locale("nb", "NO"));

@@ -49,6 +49,7 @@ public interface SendSoknadService {
     void settDelsteg(Long soknadId, DelstegStatus delstegStatus);
 
     SoknadStruktur hentSoknadStruktur(Long soknadId);
+    SoknadStruktur hentSoknadStruktur(String skjemanummer);
 
     Map<String,String> hentInnsendtDatoForOpprinneligSoknad(String behandlingsId);
 

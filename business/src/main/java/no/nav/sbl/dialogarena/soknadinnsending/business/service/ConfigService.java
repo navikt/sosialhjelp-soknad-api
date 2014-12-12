@@ -54,11 +54,6 @@ public class ConfigService {
         return result;
     }
 
-    public String getValue(String key) {
-        Map<String, String> configMap = getConfig();
-        return configMap.get(key);
-    }
-
     public Map<String,String> getConfig(Long soknadId) {
         Map<String, String> result = getConfig();
 
