@@ -156,6 +156,10 @@
 
     <faktum>
         <id>nyearbeidsforhold.aarsakdagpengerstanset</id>
+        <dependOn>nyearbeidsforhold.arbeidsidensist</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
         <type>java.lang.String</type>
         <panel>NyeArbeidsforhold</panel>
     </faktum>
