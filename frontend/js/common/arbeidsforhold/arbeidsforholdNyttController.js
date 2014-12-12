@@ -19,7 +19,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 
         $scope.fremdriftsindikator = {
             laster: false
-        }
+        };
 
         $scope.settBreddeSlikAtDetFungererIIE = function () {
             setTimeout(function () {
