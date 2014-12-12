@@ -135,7 +135,6 @@ angular.module('nav.datepicker.dato', [])
                     };
 
                     function harFeilMedNavDatepicker() {
-                        console.log(scope.disabled);
                         return scope.harRequiredFeil() || scope.harFormatteringsFeil() || scope.harTilDatoFeil() || scope.erIkkeGyldigDato()
                             || scope.erUloveligFremtidigDato() && (scope.disabled === undefined || scope.disabled === false);
                     }
