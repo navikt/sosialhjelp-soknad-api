@@ -40,7 +40,7 @@
         <cxf.version>2.7.9</cxf.version>
         <modig-security.version>1.0.21</modig-security.version>
         <sendsoknad.tjenestespec.version>0.0.23</sendsoknad.tjenestespec.version>
-        <behandlingsinformasjon.tjenestespec.version>0.0.26</behandlingsinformasjon.tjenestespec.version>
+        <behandlingsinformasjon.tjenestespec.version>0.0.28</behandlingsinformasjon.tjenestespec.version>
         <fillager.tjenestespec.version>0.0.3</fillager.tjenestespec.version>
         <henvendelse.tjenestespesifikasjon.version.1>2.0.0</henvendelse.tjenestespesifikasjon.version.1>
         <dialogarena.webkomponent.navigasjon>1.0.5</dialogarena.webkomponent.navigasjon>

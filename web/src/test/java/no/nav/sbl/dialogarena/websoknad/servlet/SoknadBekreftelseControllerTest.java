@@ -26,8 +26,6 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import static org.mockito.Mockito.when;
-
 @RunWith(MockitoJUnitRunner.class)
 public class SoknadBekreftelseControllerTest {
     @Mock
@@ -63,7 +61,6 @@ public class SoknadBekreftelseControllerTest {
 
     @Test
     public void skalSendeEpost() throws Exception {
-        when(configService.getValue("saksoversikt.link.url")).thenReturn("saksoversiktUrl");
         messageSource.addMessage("sendtSoknad.sendEpost.epostInnhold", new Locale("nb", "NO"), "Tekst. Saksoversikturl {0} og ettersendelseurl {1}");
         messageSource.addMessage("sendtSoknad.sendEpost.epostSubject", new Locale("nb", "NO"), "emne");
 
@@ -74,7 +71,6 @@ public class SoknadBekreftelseControllerTest {
 
     @Test
     public void skalSendeEpostMedEttersendelseInnhold() throws Exception {
-        when(configService.getValue("saksoversikt.link.url")).thenReturn("saksoversiktUrl");
         messageSource.addMessage("sendtSoknad.sendEpost.epostInnhold", new Locale("nb", "NO"), "Tekst. Saksoversikturl {0} og ettersendelseurl {1}");
         messageSource.addMessage("sendEttersendelse.sendEpost.epostInnhold", new Locale("nb", "NO"), "Ettersendelse. Saksoversikturl {0}");
         messageSource.addMessage("sendtSoknad.sendEpost.epostSubject", new Locale("nb", "NO"), "emne");
