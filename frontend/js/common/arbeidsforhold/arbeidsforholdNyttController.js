@@ -150,7 +150,8 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
             var innevaerendeAar = new Date().getFullYear();
             var arbeidsforholdSluttAar = new Date(getArbeidsforholdSluttDato()).getFullYear();
             var arbeidsforholdetErFraForegaaendeAar = innevaerendeAar - arbeidsforholdSluttAar === 1;
-            var startetIJanuarEllerFebruar = data.finnFaktum('lonnsOgTrekkOppgave').value === "true";
+            var faktum = data.finnFaktum('lonnsOgTrekkOppgave');
+            var startetIJanuarEllerFebruar = faktum ? data.finnFaktum('lonnsOgTrekkOppgave').value === "true" : false;
 
             if (startetIJanuarEllerFebruar && arbeidsforholdetErFraForegaaendeAar) {
                 $scope.arbeidsforhold.properties.startetForrigeAar = 'true';
