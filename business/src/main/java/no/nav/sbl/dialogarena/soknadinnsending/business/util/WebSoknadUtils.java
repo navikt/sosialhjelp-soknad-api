@@ -127,7 +127,7 @@ public class WebSoknadUtils {
             if ((personalia.harUtenlandskAdresseIEOS() && (!personalia.harNorskMidlertidigAdresse()))) {
                 return EOS_DAGPENGER;
             }
-            boolean erUtenlandskStatsborger = personalia.getStatsborgerskap().equals("NOR") ? false : true;
+            boolean erUtenlandskStatsborger = !personalia.getStatsborgerskap().equals("NOR");
             if (erGrensearbeider(webSoknad) && erUtenlandskStatsborger){
                 return EOS_DAGPENGER;
             }
