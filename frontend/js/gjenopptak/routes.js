@@ -32,6 +32,9 @@ angular.module('gjenopptak.routes', ['ngRoute', 'nav.common.routes'])
                     land: function (LandResolver) {
                         return LandResolver;
                     },
+                    eosLand: function (EosLandResolver) {
+                        return EosLandResolver;
+                    },
                     soknad: function (SoknadResolver) {
                         return SoknadResolver;
                     },

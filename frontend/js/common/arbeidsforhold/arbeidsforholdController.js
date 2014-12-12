@@ -2,7 +2,7 @@ angular.module('nav.arbeidsforhold.controller', [])
     .controller('ArbeidsforholdCtrl', function ($scope, $cookieStore, $location, data) {
 
         $scope.soknadId = data.soknad.soknadId;
-        $scope.land = data.land;
+        $scope.land = data.eosLand;
 
         var arbeidsforhold = data.finnFakta('arbeidsforhold');
         $scope.arbeidsliste = [];
