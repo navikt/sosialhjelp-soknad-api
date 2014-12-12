@@ -115,7 +115,7 @@
 
 
                 scope.cms = cms;
-                $httpBackend.expectGET('/sendsoknad/rest/landtype/' + scope.barn.properties.land).
+                $httpBackend.expectGET('/sendsoknad/rest/land/statsborgerskap/type/' + scope.barn.properties.land).
                     respond({});
 
                 scope.data = data;

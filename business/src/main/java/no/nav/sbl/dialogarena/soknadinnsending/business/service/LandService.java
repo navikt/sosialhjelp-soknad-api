@@ -14,10 +14,12 @@ import java.util.List;
  *
  */
 @Component
-public class EosLandService {
+public class LandService {
     private static final List<String> EOS_LAND = Arrays.asList("BEL","BGR", "DNK", "EST", "FIN", "FRA", "GRC", "IRL", "ISL", "ITA", "CYP", "LVA", "LIE", "LTU", "LUX", "MLT", "NLD"
             , "POL", "PRT", "ROU", "SVK", "SVN", "ESP", "GBR", "SWE", "CZE", "DEU", "HUN", "AUT", "CHE", "HRV");
-    
+
+    public static final String EOS = "eos";
+
     public String getStatsborgeskapType(String landkode) {
         if("NOR".equals(landkode)) {
             return "norsk";
@@ -27,8 +29,8 @@ public class EosLandService {
             return "ikkeEos";
         }
     }
-    
-    public boolean isEosLandAnnetEnnNorge(String landkode) {
-        return EOS_LAND.contains(landkode);
+
+    public List<String> getEosLand() {
+        return EOS_LAND;
     }
 }

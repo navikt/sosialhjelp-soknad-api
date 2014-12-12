@@ -37,7 +37,7 @@ import static org.springframework.http.MediaType.TEXT_PLAIN;
 @EnableAspectJAutoProxy
 @Import({
         ConfigController.class,
-        EosController.class,
+        LandController.class,
         ExceptionController.class,
         FaktaController.class,
         FortsettSenereController.class,

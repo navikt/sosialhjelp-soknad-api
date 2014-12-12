@@ -3,18 +3,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class EosLandServiceTest {
-    EosLandService service = new EosLandService();
-    
-    @Test
-    public void skalReturnereTrueForEosBorgerFraAnnetLandEnnNorge() {
-        Assert.assertTrue(service.isEosLandAnnetEnnNorge("DNK"));
-    }
-    
-    @Test
-    public void skalReturnereFalseForEosBorgerFraNorge() {
-        Assert.assertFalse(service.isEosLandAnnetEnnNorge("NOR"));
-    }
+public class LandServiceTest {
+    LandService service = new LandService();
     
     @Test
     public void skalReturnereNorskForNorskLandkode() {

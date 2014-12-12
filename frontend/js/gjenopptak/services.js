@@ -4,7 +4,6 @@
     'use strict';
     angular.module('gjenopptak.services', [
             'ngResource',
-            'nav.services.land',
             'nav.services.vedlegg',
             'nav.services.faktum',
             'nav.services.soknad',
