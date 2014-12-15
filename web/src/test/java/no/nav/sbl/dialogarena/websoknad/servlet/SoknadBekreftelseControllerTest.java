@@ -66,7 +66,7 @@ public class SoknadBekreftelseControllerTest {
 
         mockMvc.perform(post("/bekreftelse/{behandlingId}", "123").contentType(MediaType.APPLICATION_JSON).content("{\"epost\": \"test@epost.com\", \"temaKode\": \"DAG\", \"erEttersendelse\": \"false\"}"))
                 .andExpect(status().isOk());
-        verify(emailService).sendEpostEtterInnsendtSoknad("test@epost.com", "emne", "Tekst. Saksoversikturl saksoversiktUrl/detaljer/DAG/123 og ettersendelseurl http://localhost:80/bekreftelse/123/startettersending/123", "123");
+        verify(emailService).sendEpostEtterInnsendtSoknad("test@epost.com", "emne", "Tekst. Saksoversikturl null/detaljer/DAG/123 og ettersendelseurl http://localhost:80/bekreftelse/123/startettersending/123", "123");
     }
 
     @Test
@@ -77,6 +77,6 @@ public class SoknadBekreftelseControllerTest {
 
         mockMvc.perform(post("/bekreftelse/{behandlingId}", "123").contentType(MediaType.APPLICATION_JSON).content("{\"epost\": \"test@epost.com\", \"temaKode\": \"DAG\", \"erEttersendelse\": true}"))
                 .andExpect(status().isOk());
-        verify(emailService).sendEpostEtterInnsendtSoknad("test@epost.com", "emne", "Ettersendelse. Saksoversikturl saksoversiktUrl/detaljer/DAG/123", "123");
+        verify(emailService).sendEpostEtterInnsendtSoknad("test@epost.com", "emne", "Ettersendelse. Saksoversikturl null/detaljer/DAG/123", "123");
     }
 }

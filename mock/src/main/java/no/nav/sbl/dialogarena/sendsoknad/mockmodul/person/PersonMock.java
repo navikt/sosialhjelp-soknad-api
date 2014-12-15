@@ -30,7 +30,7 @@ public class PersonMock {
 
         Statsborgerskap statsborgerskap = new Statsborgerskap();
         Landkoder landkoder = new Landkoder();
-        landkoder.setValue("NOR");
+        landkoder.setValue("DNK");
         statsborgerskap.setLand(landkoder);
         person.setStatsborgerskap(statsborgerskap);
 

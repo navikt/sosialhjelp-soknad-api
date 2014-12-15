@@ -36,14 +36,14 @@ public class WebSoknadUtilsTest {
     @Test
     public void harSkjemanummerDagpengerHvisNyesteArbeidsforholdIkkeErPermittering() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagPermittert("2014-1-1"), lagAvskjediget("2014-2-1"));
+        WebSoknad soknad = lagSoknad(lagPermittert(), lagPermitteringsperiode("2014-1-1"), lagAvskjediget("2014-2-1"));
         assertEquals(DAGPENGER, getSkjemanummer(soknad));
     }
 
     @Test
     public void harSkjemanummerDagpengerVedPermitteringHvisNyesteArbeidsforholdErPermittering() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagPermittert("2014-2-1"), lagAvskjediget("2014-1-1"));
+        WebSoknad soknad = lagSoknad(lagPermittert(), lagPermitteringsperiode("2014-1-1"), lagAvskjediget("2014-1-1"));
         assertEquals(DAGPENGER_VED_PERMITTERING, getSkjemanummer(soknad));
     }
 
@@ -57,7 +57,7 @@ public class WebSoknadUtilsTest {
     @Test
     public void testCornerCase(){
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagPermittert("2014-2-1"), lagAvskjediget("2014-1-1"));
+        WebSoknad soknad = lagSoknad(lagPermittert(), lagPermitteringsperiode("2014-1-1"), lagAvskjediget("2014-1-1"));
         assertEquals(DAGPENGER_VED_PERMITTERING, getSkjemanummer(soknad));
 
     }
@@ -65,14 +65,14 @@ public class WebSoknadUtilsTest {
     @Test
     public void harSkjemanummerDagpengerVedPermitteringHvisToArbeidsforholdPaaSammeDagOgMinstEnErPermittering() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagAvskjediget("2014-1-1"), lagPermittert("2014-1-1"), lagAvskjediget("2014-1-1"));
+        WebSoknad soknad = lagSoknad(lagAvskjediget("2014-1-1"), lagPermittert(), lagPermitteringsperiode("2014-1-1"), lagAvskjediget("2014-1-1"));
         assertEquals(DAGPENGER_VED_PERMITTERING, getSkjemanummer(soknad));
     }
 
     @Test
     public void harSkjemanummer0000DerMinstEnErPermitteringOgBrukerBorInnenlands() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagAvskjediget("2014-1-1"), lagPermittert("2014-1-1"), lagAvskjediget("2014-1-1"));
+        WebSoknad soknad = lagSoknad(lagAvskjediget("2014-1-1"), lagPermittert(), lagPermitteringsperiode("2014-1-1"), lagAvskjediget("2014-1-1"));
 
         Faktum personalia = getPersonaliaFaktum(soknad);
         setGjeldendeAdressePaaPersonaliaFaktum(personalia, lagUtenlandskEOSAdresse());
@@ -84,7 +84,7 @@ public class WebSoknadUtilsTest {
     @Test
     public void harSkjemanummer0000DerMinstEnErPermitteringOgBrukerBorIUtlandetOgHarNorskMidlertidigAdresse() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagAvskjediget("2014-1-1"), lagPermittert("2014-1-1"), lagAvskjediget("2014-1-1"));
+        WebSoknad soknad = lagSoknad(lagAvskjediget("2014-1-1"), lagPermittert(), lagPermitteringsperiode("2014-1-1"), lagAvskjediget("2014-1-1"));
 
         Faktum personalia = getPersonaliaFaktum(soknad);
         setGjeldendeAdressePaaPersonaliaFaktum(personalia, lagUtenlandskEOSAdresse());
@@ -96,7 +96,7 @@ public class WebSoknadUtilsTest {
     @Test
     public void skalRuteSoknadTilEosLand() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagPermittert("2014-1-1"));
+        WebSoknad soknad = lagSoknad(lagPermittert(), lagPermitteringsperiode("2014-1-1"));
         Adresse utlandeos = lagUtenlandskEOSAdresse();
         Faktum personalia = getPersonaliaFaktum(soknad);
         setGjeldendeAdressePaaPersonaliaFaktum(personalia, utlandeos);
@@ -107,7 +107,7 @@ public class WebSoknadUtilsTest {
     @Test
     public void skalRuteSoknadTilEosLandHvisBrukerErUtenlandskOgGrensearbeider() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagPermittert("2014-1-1"), lagGrensearbeiderFaktum());
+        WebSoknad soknad = lagSoknad(lagPermittert(), lagPermitteringsperiode("2014-1-1"), lagGrensearbeiderFaktum());
         Faktum personalia = getPersonaliaFaktum(soknad);
         setUtenlanskEOSStatsborger(personalia);
         setBrukerTilAVaereGrensearbeider(soknad.getFaktumMedKey("arbeidsforhold.grensearbeider"));
@@ -118,7 +118,7 @@ public class WebSoknadUtilsTest {
     @Test
     public void skalRuteSoknadNormaltHvisBrukerErUtenlandskMenIkkeGrensearbeider() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagPermittert("2014-1-1"), lagGrensearbeiderFaktum());
+        WebSoknad soknad = lagSoknad(lagPermittert(), lagPermitteringsperiode("2014-1-1"), lagGrensearbeiderFaktum());
         Faktum personalia = getPersonaliaFaktum(soknad);
         setUtenlanskEOSStatsborger(personalia);
         setBrukerTilIkkeGrensearbeider(soknad.getFaktumMedKey("arbeidsforhold.grensearbeider"));
@@ -129,7 +129,7 @@ public class WebSoknadUtilsTest {
     @Test
     public void skalRuteSoknadNormaltHvisBrukerErGrensearbeiderOgNorskStatsborger() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagPermittert("2014-1-1"), lagGrensearbeiderFaktum());
+        WebSoknad soknad = lagSoknad(lagPermittert(), lagPermitteringsperiode("2014-1-1"), lagGrensearbeiderFaktum());
         Faktum personalia = getPersonaliaFaktum(soknad);
         setNorskStatsborger(personalia);
         setBrukerTilAVaereGrensearbeider(soknad.getFaktumMedKey("arbeidsforhold.grensearbeider"));
@@ -158,7 +158,8 @@ public class WebSoknadUtilsTest {
         WebSoknad soknad = lagSoknad(
                 lagRedusertArbeidstid("2014-01-01"),
                 lagAvskjediget("2014-03-06"),
-                lagPermittert("2014-03-01"));
+                lagPermittert(),
+                lagPermitteringsperiode("2014-1-1"));
         Adresse utlandeos = lagUtenlandskEOSAdresse();
         Faktum personalia = getPersonaliaFaktum(soknad);
         setGjeldendeAdressePaaPersonaliaFaktum(personalia, utlandeos);
@@ -169,7 +170,7 @@ public class WebSoknadUtilsTest {
     @Test
     public void harSkjemanummerDagpengerVedPermitteringHvisDetIkkeErSattDatoTilForPermittering() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagPermittert(null), lagAvskjediget("2014-1-1"));
+        WebSoknad soknad = lagSoknad(lagPermittert(), lagPermitteringsperiode("2014-1-1"), lagAvskjediget("2014-1-1"));
         assertEquals(DAGPENGER_VED_PERMITTERING, getSkjemanummer(soknad));
     }
 
@@ -183,8 +184,20 @@ public class WebSoknadUtilsTest {
         return soknad;
     }
 
-    private static Faktum lagPermittert(String dato) {
-        return lagFaktum("Permittert", "permiteringsperiodedatofra", dato);
+    private Faktum lagPermitteringsperiode(String dato) {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("permiteringsperiodedatofra", dato);
+        Faktum faktum = new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("arbeidsforhold.permitteringsperiode");
+        faktum.setProperties(properties);
+        return faktum;
+    }
+
+    private static Faktum lagPermittert() {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("type", "Permittert");
+        Faktum faktum = new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("arbeidsforhold");
+        faktum.setProperties(properties);
+        return faktum;
     }
 
     private static Faktum lagAvskjediget(String dato) {

@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBuilder
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,9 +17,18 @@ import static java.util.Collections.reverseOrder;
 import static no.nav.modig.lang.collections.ComparatorUtils.compareWith;
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.modig.lang.collections.PredicateUtils.equalTo;
+import static no.nav.modig.lang.collections.PredicateUtils.not;
 import static no.nav.modig.lang.collections.PredicateUtils.where;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_LANDKODE;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_TYPE_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.PERSONALIA_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.SEKUNDARADRESSE_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.SEKUNDARADRESSE_LANDKODE;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.SEKUNDARADRESSE_TYPE_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.STATSBORGERSKAP_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.DATO_TIL;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.DATO_TIL_PERMITTERING;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.TYPE;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -47,11 +57,21 @@ public class WebSoknadUtils {
         boolean erPermittert;
         boolean harRedusertArbeidstid;
         if (!sluttaarsak.isEmpty()) {
-            List<Faktum> sortertEtterDatoTil = on(sluttaarsak).collect(reverseOrder(compareWith(DATO_TIL)));
-            LocalDate nyesteDato = on(sortertEtterDatoTil).map(DATO_TIL).head().getOrElse(null);
-            List<Faktum> nyesteSluttaarsaker = on(sortertEtterDatoTil).filter(where(DATO_TIL, equalTo(nyesteDato))).collect();
-            erPermittert = on(nyesteSluttaarsaker).filter(where(TYPE, equalTo(PERMITTERT))).head().isSome();
-            harRedusertArbeidstid = on(nyesteSluttaarsaker).filter(where(TYPE, equalTo(REDUSERT_ARBEIDSTID))).head().isSome();
+            List<Faktum> sluttaarsakerIkkePermitteringSortertEtterDatoTil = on(sluttaarsak)
+                    .filter(where(TYPE, not(equalTo(PERMITTERT))))
+                    .collect(reverseOrder(compareWith(DATO_TIL)));
+
+            List<Faktum> permitteringsperioder = on(soknad.getFaktaMedKey("arbeidsforhold.permitteringsperiode"))
+                    .collect(reverseOrder(compareWith(DATO_TIL_PERMITTERING)));
+
+            LocalDate nyesteDatoIkkePermittert = on(sluttaarsakerIkkePermitteringSortertEtterDatoTil).map(DATO_TIL).head().getOrElse(null);
+            LocalDate nyesteDatoPermittert = on(permitteringsperioder).map(DATO_TIL_PERMITTERING).head().getOrElse(null);
+
+            LocalDate nyesteDato = on(Arrays.asList(nyesteDatoIkkePermittert, nyesteDatoPermittert)).filter(not(equalTo(null))).collect(reverseOrder()).get(0);
+
+            List<Faktum> nyesteSluttaarsakerIkkePermittert = on(sluttaarsakerIkkePermitteringSortertEtterDatoTil).filter(where(DATO_TIL, equalTo(nyesteDato))).collect();
+            erPermittert = on(permitteringsperioder).filter(where(DATO_TIL_PERMITTERING, equalTo(nyesteDato))).head().isSome();
+            harRedusertArbeidstid = on(nyesteSluttaarsakerIkkePermittert).filter(where(TYPE, equalTo(REDUSERT_ARBEIDSTID))).head().isSome();
             if (erPermittert) {
                 return PERMITTERT;
             }

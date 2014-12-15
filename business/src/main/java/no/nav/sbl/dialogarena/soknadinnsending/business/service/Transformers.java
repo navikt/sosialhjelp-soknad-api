@@ -20,6 +20,14 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class Transformers {
 
+    public static final Transformer<Faktum, LocalDate> DATO_TIL_PERMITTERING = new Transformer<Faktum, LocalDate>() {
+        @Override
+        public LocalDate transform(Faktum faktum) {
+            Map<String, String> properties = faktum.getProperties();
+            return new LocalDate(properties.get("permiteringsperiodedatofra"));
+        }
+    };
+
     public static final Transformer<Faktum, LocalDate> DATO_TIL = new Transformer<Faktum, LocalDate>() {
         @Override
         public LocalDate transform(Faktum faktum) {
@@ -37,8 +45,6 @@ public class Transformers {
                     return new LocalDate(properties.get("datotil"));
                 case "Sagt opp selv":
                     return new LocalDate(properties.get("datotil"));
-                case "Permittert":
-                    return new LocalDate(properties.get("permiteringsperiodedatofra"));
                 default:
                     return null;
             }
