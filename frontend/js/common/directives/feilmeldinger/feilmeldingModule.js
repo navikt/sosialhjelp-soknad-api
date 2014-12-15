@@ -35,7 +35,6 @@ angular.module('nav.feilmeldinger', [])
                 scope.runValidation = function (skalScrolle) {
                     scope.feilmeldinger = [];
                     var skalViseFlereFeilmeldinger = true;
-                    var skalViseFlereBarneFeilmeldinger = true;
                     angular.forEach(ctrl.$error, function (verdi, feilNokkel) {
                         if (skalViseFlereFeilmeldinger) {
                             skalViseFlereFeilmeldinger = leggTilFeilmeldingerVedValidering(verdi, feilNokkel);
@@ -61,7 +60,7 @@ angular.module('nav.feilmeldinger', [])
                     var fortsattFeilListe = [];
 
                     angular.forEach(ctrl.$error, function (verdi, feilNokkel) {
-                        fortsattFeilListe = fortsattFeilListe.concat(leggTilFeilSomFortsattSkalVises(verdi, feilNokkel));
+                        fortsattFeilListe = fortsattFeilListe.concat(leggTilFeilSomFortsattSkalVises(verdi, feilNokkel, []));
                     });
                     scope.feilmeldinger = fortsattFeilListe;
                 };
@@ -144,12 +143,13 @@ angular.module('nav.feilmeldinger', [])
                     return skalViseFlereFeilmeldinger;
                 }
 
-                function leggTilFeilSomFortsattSkalVises(verdi, feilNokkel) {
-                    var fortsattFeilListe = [];
+                function leggTilFeilSomFortsattSkalVises(verdi, feilNokkel, fortsattFeilListe) {
                     angular.forEach(verdi, function (feil) {
-
                         var feilmelding = finnFeilmelding(feil, feilNokkel);
-                        if (feilmelding && scope.feilmeldinger.indexByValue(feilmelding.feil) > -1 && feil) {
+
+                        if (feilmelding === undefined && feilErSubform(feil, feilNokkel)) {
+                            leggTilFeilSomFortsattSkalVises(feil.$error[feilNokkel], feilNokkel, fortsattFeilListe);
+                        } else if (feilmelding && scope.feilmeldinger.indexByValue(feilmelding.feil) > -1 && feil) {
                             leggTilFeilmeldingHvisIkkeAlleredeLagtTil(fortsattFeilListe, feilmelding);
                         }
                     });
@@ -166,18 +166,17 @@ angular.module('nav.feilmeldinger', [])
                     var feilmeldingNokkel = finnFeilmeldingsNokkel(feil, feilNokkel);
                     var feilmelding = cms.tekster[feilmeldingNokkel];
                     if (feilmelding === undefined) {
-                        if (feilInneholderNyeFeil(feil, feilNokkel)) {
+                        if (feilErSubform(feil, feilNokkel)) {
                             leggTilFeilmeldingerVedValidering(feil.$error[feilNokkel], feilNokkel);
                             return;
                         } else {
                             feilmelding = feilmeldingNokkel;
                         }
                     }
-
                     return {feil: feilmelding, elem: finnTilhorendeElement(feil)};
                 }
 
-                function feilInneholderNyeFeil(feil, feilNokkel) {
+                function feilErSubform(feil, feilNokkel) {
                     return feil.$error && Array.isArray(feil.$error[feilNokkel]);
                 }
 
