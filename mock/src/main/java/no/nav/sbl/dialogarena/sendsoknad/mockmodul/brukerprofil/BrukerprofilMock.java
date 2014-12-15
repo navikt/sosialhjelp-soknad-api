@@ -76,7 +76,7 @@ public class BrukerprofilMock {
         XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(true);
 
         settAdresse(xmlBruker, "UTENLANDSK_ADRESSE");
-//        settSekundarAdresse(xmlBruker);
+        settSekundarAdresse(xmlBruker);
 
         response.setPerson(xmlBruker);
 
