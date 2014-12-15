@@ -32,8 +32,8 @@ public class TransformersTest {
         assertThat(Transformers.DATO_TIL.transform(faktum.medProperty("type", "Arbeidsgiver er konkurs")), is(equalTo(new LocalDate("2013-01-03"))));
         assertThat(Transformers.DATO_TIL.transform(faktum.medProperty("type", "Sagt opp av arbeidsgiver")), is(equalTo(new LocalDate("2013-01-01"))));
         assertThat(Transformers.DATO_TIL.transform(faktum.medProperty("type", "Sagt opp selv")), is(equalTo(new LocalDate("2013-01-01"))));
-        assertThat(Transformers.DATO_TIL.transform(faktum.medProperty("type", "Permittert")), is(equalTo(new LocalDate("2013-01-04"))));
         assertThat(Transformers.DATO_TIL.transform(faktum.medProperty("type", "tullball")), is(nullValue()));
+        assertThat(Transformers.DATO_TIL_PERMITTERING.transform(faktum.medProperty("type", "Permittert")), is(equalTo(new LocalDate("2013-01-04"))));
     }
 
     @Test
