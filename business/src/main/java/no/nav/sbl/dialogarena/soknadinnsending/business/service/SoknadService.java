@@ -539,8 +539,10 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
     private void oppdaterOgLagreVedlegg(SoknadStruktur struktur, SoknadVedlegg soknadVedlegg, Faktum faktum) {
         Long faktumId = soknadVedlegg.getFlereTillatt() ? faktum.getFaktumId() : null;
-        Vedlegg vedlegg = vedleggRepository.hentVedleggForskjemaNummer(faktum.getSoknadId(), faktumId, soknadVedlegg.getSkjemaNummer());
         Faktum parentFaktum = repository.hentFaktum(faktum.getSoknadId(), faktum.getParrentFaktum());
+        Vedlegg vedlegg = vedleggRepository.hentVedleggForskjemaNummerMedTillegg(
+                faktum.getSoknadId(), faktumId, soknadVedlegg.getSkjemaNummer(), soknadVedlegg.getSkjemanummerTillegg()
+        );
 
         if (soknadVedlegg.trengerVedlegg(faktum) && erParentAktiv(soknadVedlegg.getFaktum(), parentFaktum)) {
             lagrePaakrevdVedlegg(faktum, soknadVedlegg, vedlegg);
@@ -567,7 +569,12 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         Vedlegg vedlegg = v;
         if (vedlegg == null) {
             Long faktumId = soknadVedlegg.getFlereTillatt() ? faktum.getFaktumId() : null;
-            vedlegg = new Vedlegg(faktum.getSoknadId(), faktumId, soknadVedlegg.getSkjemaNummer(), Vedlegg.Status.VedleggKreves);
+            vedlegg = new Vedlegg()
+                    .medSoknadId(faktum.getSoknadId())
+                    .medFaktumId(faktumId)
+                    .medSkjemaNummer(soknadVedlegg.getSkjemaNummer())
+                    .medSkjemanummerTillegg(soknadVedlegg.getSkjemanummerTillegg())
+                    .medInnsendingsvalg(Vedlegg.Status.VedleggKreves);
             vedlegg.setVedleggId(vedleggRepository.opprettVedlegg(vedlegg, null));
         }
         vedlegg.oppdatertInnsendtStatus();
@@ -640,7 +647,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
     private void medKodeverk(Vedlegg vedlegg) {
         try {
-            Map<Kodeverk.Nokkel, String> koder = kodeverk.getKoder(vedlegg.getSkjemaNummerFiltrert());
+            Map<Kodeverk.Nokkel, String> koder = kodeverk.getKoder(vedlegg.getSkjemaNummer());
             for (Entry<Nokkel, String> nokkelEntry : koder.entrySet()) {
                 if (nokkelEntry.getKey().toString().contains("URL")) {
                     vedlegg.leggTilURL(nokkelEntry.getKey().toString(), koder.get(nokkelEntry.getKey()));

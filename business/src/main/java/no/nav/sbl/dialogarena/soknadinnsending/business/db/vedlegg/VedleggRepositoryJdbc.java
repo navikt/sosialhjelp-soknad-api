@@ -78,10 +78,17 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
                     protected void setValues(PreparedStatement ps, LobCreator lobCreator) throws SQLException {
                         Vedlegg.Status opprinneligInnsendingsvalg = vedlegg.getOpprinneligInnsendingsvalg();
 
+                        String skjemanummerMedTillegg = vedlegg.getSkjemaNummer();
+                        String tillegg = vedlegg.getSkjemanummerTillegg();
+
+                        if(tillegg != null && !tillegg.isEmpty()) {
+                            skjemanummerMedTillegg = skjemanummerMedTillegg + "|" + vedlegg.getSkjemanummerTillegg();
+                        }
+
                         ps.setLong(1, vedlegg.getVedleggId());
                         ps.setLong(2, vedlegg.getSoknadId());
                         ps.setObject(3, vedlegg.getFaktumId());
-                        ps.setString(4, vedlegg.getSkjemaNummer());
+                        ps.setString(4, skjemanummerMedTillegg);
                         ps.setString(5, vedlegg.getNavn());
                         ps.setString(6, vedlegg.getInnsendingsvalg().toString());
                         ps.setString(7, opprinneligInnsendingsvalg != null ? opprinneligInnsendingsvalg.toString() : null);
@@ -178,6 +185,15 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
 
         } catch (EmptyResultDataAccessException e) {
             return null;
+        }
+    }
+
+    @Override
+    public Vedlegg hentVedleggForskjemaNummerMedTillegg(Long soknadId, Long faktumId, String skjemaNummer, String skjemanummerTillegg) {
+        if(skjemanummerTillegg == null || skjemanummerTillegg.isEmpty()) {
+            return hentVedleggForskjemaNummer(soknadId, faktumId, skjemaNummer);
+        } else {
+            return hentVedleggForskjemaNummer(soknadId, faktumId, skjemaNummer + "|" + skjemanummerTillegg);
         }
     }
 

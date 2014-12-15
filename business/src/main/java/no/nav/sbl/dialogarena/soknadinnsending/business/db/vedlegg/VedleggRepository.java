@@ -20,6 +20,8 @@ public interface VedleggRepository {
 
     Vedlegg hentVedleggForskjemaNummer(Long soknadId, Long faktumId, String skjemaNummer);
 
+    Vedlegg hentVedleggForskjemaNummerMedTillegg(Long soknadId, Long faktumId, String skjemaNummer, String skjemanummerTillegg);
+
     void slettVedleggUnderBehandling(Long soknadId, Long faktumId, String gosysId);
 
     Vedlegg hentVedleggMedInnhold(Long soknadId, Long vedleggId);

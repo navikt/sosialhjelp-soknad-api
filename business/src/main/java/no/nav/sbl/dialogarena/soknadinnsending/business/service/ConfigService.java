@@ -60,7 +60,7 @@ public class ConfigService {
         SoknadStruktur struktur = soknadService.hentSoknadStruktur(soknadId);
 
         for (SoknadVedlegg soknadVedlegg : struktur.getVedlegg()) {
-            settInnUrlForSkjema(soknadVedlegg.getSkjemaNummerFiltrert(), result);
+            settInnUrlForSkjema(soknadVedlegg.getSkjemaNummer(), result);
         }
 
         for (String skjemanummer : struktur.getVedleggReferanser()) {
