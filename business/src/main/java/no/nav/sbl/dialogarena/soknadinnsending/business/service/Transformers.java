@@ -69,14 +69,14 @@ public class Transformers {
                         .withMimetype("application/pdf")
                         .withTilleggsinfo(vedlegg.getNavn())
                         .withFilstorrelse(vedlegg.getStorrelse().toString())
-                        .withSkjemanummer(vedlegg.getSkjemaNummerFiltrert())
+                        .withSkjemanummer(vedlegg.getSkjemaNummer())
                         .withUuid(vedlegg.getFillagerReferanse())
                         .withInnsendingsvalg(LASTET_OPP.value());
             } else {
                 xmlVedlegg = new XMLVedlegg()
                         .withFilnavn(vedlegg.lagFilNavn())
                         .withTilleggsinfo(vedlegg.getNavn())
-                        .withSkjemanummer(vedlegg.getSkjemaNummerFiltrert())
+                        .withSkjemanummer(vedlegg.getSkjemaNummer())
                         .withInnsendingsvalg(toXmlInnsendingsvalg(vedlegg.getInnsendingsvalg()));
             }
             String skjemanummerTillegg = vedlegg.getSkjemanummerTillegg();

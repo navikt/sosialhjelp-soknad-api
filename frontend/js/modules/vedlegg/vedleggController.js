@@ -110,6 +110,14 @@ angular.module('nav.vedlegg.controller', [])
             $scope.validert.value = false;
         };
 
+        $scope.getCmsKeyForForventning = function(forventning) {
+            var cmsKey = 'Dagpenger.vedlegg.' + forventning.skjemaNummer;
+            if(verdiErIkkeTom(forventning.skjemanummerTillegg)) {
+                cmsKey += "." + forventning.skjemanummerTillegg;
+            }
+            return cmsKey + '.bekrefte'
+        }
+
         $scope.skalViseNesteKnapp = function(forventning, erSiste) {
             return !(($scope.erEkstraVedlegg(forventning) && forventning.innsendingsvalg !== 'LastetOpp') || erSiste);
         };

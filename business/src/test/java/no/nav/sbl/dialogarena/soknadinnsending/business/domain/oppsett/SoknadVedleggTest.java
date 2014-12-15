@@ -59,7 +59,7 @@ public class SoknadVedleggTest {
 
         @Override
         public boolean evaluate(SoknadVedlegg soknadVedlegg) {
-            return this.kode.equals(soknadVedlegg.getSkjemaNummerFiltrert());
+            return this.kode.equals(soknadVedlegg.getSkjemaNummer());
         }
 
         public static Predicate<? super SoknadVedlegg> id(String kode) {

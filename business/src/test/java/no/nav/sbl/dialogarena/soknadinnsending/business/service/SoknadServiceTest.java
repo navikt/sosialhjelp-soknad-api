@@ -270,7 +270,7 @@ public class SoknadServiceTest {
         when(soknadRepository.lagreFaktum(1L, faktum)).thenReturn(2L);
         when(soknadRepository.hentFaktum(1L, 2L)).thenReturn(faktum);
         Vedlegg vedlegg = new Vedlegg().medVedleggId(4L).medSkjemaNummer("T3").medSoknadId(1L).medInnsendingsvalg(Vedlegg.Status.IkkeVedlegg);
-        when(vedleggRepository.hentVedleggForskjemaNummer(1L, null, "T3")).thenReturn(vedlegg);
+        when(vedleggRepository.hentVedleggForskjemaNummerMedTillegg(1L, null, "T3", null)).thenReturn(vedlegg);
         when(vedleggRepository.opprettVedlegg(any(Vedlegg.class), any(byte[].class))).thenReturn(4L);
         soknadService.lagreSoknadsFelt(1L, faktum);
         verify(soknadRepository).settSistLagretTidspunkt(1L);
@@ -312,8 +312,8 @@ public class SoknadServiceTest {
         when(soknadRepository.lagreFaktum(soknadId, permitteringsFaktum)).thenReturn(permitteringFaktumId);
         when(soknadRepository.hentFaktum(soknadId, permitteringFaktumId)).thenReturn(permitteringsFaktum);
         when(soknadRepository.hentFaktum(soknadId, arbeidsforholdFaktumId)).thenReturn(arbeidsforholdFaktum);
-        when(vedleggRepository.hentVedleggForskjemaNummer(soknadId, permitteringFaktumId, "G2")).thenReturn(permitteringsVedlegg);
-        when(vedleggRepository.hentVedleggForskjemaNummer(soknadId, arbeidsforholdFaktumId, "O2")).thenReturn(arbeidsgiverVedlegg);
+        when(vedleggRepository.hentVedleggForskjemaNummerMedTillegg(soknadId, permitteringFaktumId, "G2", null)).thenReturn(permitteringsVedlegg);
+        when(vedleggRepository.hentVedleggForskjemaNummerMedTillegg(soknadId, arbeidsforholdFaktumId, "O2", null)).thenReturn(arbeidsgiverVedlegg);
 
         soknadService.lagreSoknadsFelt(soknadId, permitteringsFaktum);
 
