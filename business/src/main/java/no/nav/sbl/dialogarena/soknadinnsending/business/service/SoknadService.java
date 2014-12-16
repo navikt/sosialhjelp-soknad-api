@@ -26,6 +26,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseS
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
+import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -53,6 +54,7 @@ import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.modig.lang.collections.PredicateUtils.equalTo;
 import static no.nav.modig.lang.collections.PredicateUtils.not;
 import static no.nav.modig.lang.collections.PredicateUtils.where;
+import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.KVITTERING;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.UNDER_ARBEID;
@@ -254,8 +256,10 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
         WebSoknad soknad = WebSoknad.startEttersending(ettersendingsBehandlingId);
         String mainUid = randomUUID().toString();
-        XMLMetadataListe xmlVedleggListe = (XMLMetadataListe) wsEttersending.getAny();
-        Optional<XMLMetadata> hovedskjema = on(xmlVedleggListe.getMetadata()).filter(new InstanceOf<XMLMetadata>(XMLHovedskjema.class)).head();
+        List<XMLMetadata> xmlVedleggListe = ((XMLMetadataListe) wsEttersending.getAny()).getMetadata();
+        List<XMLMetadata> filtrertXmlVedleggListe = on(xmlVedleggListe).filter(not(kvittering())).collect();
+
+        Optional<XMLMetadata> hovedskjema = on(filtrertXmlVedleggListe).filter(new InstanceOf<XMLMetadata>(XMLHovedskjema.class)).head();
         if (!hovedskjema.isSome()) {
             throw new ApplicationException("Kunne ikke hente opp hovedskjema for søknad");
         }
@@ -280,9 +284,18 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         faktaService.lagreSystemFaktum(soknadId, soknadInnsendingsDato, "");
         soknad.setFaktaListe(repository.hentAlleBrukerData(soknadId));
 
-        soknad.setVedlegg(hentVedleggOgPersister(xmlVedleggListe, soknadId));
+        soknad.setVedlegg(hentVedleggOgPersister(new XMLMetadataListe(filtrertXmlVedleggListe), soknadId));
 
         return soknad;
+    }
+
+    private static Predicate<XMLMetadata> kvittering() {
+        return new Predicate<XMLMetadata>() {
+            @Override
+            public boolean evaluate(XMLMetadata xmlMetadata) {
+                return KVITTERING.equals(((XMLVedlegg) xmlMetadata).getSkjemanummer());
+            }
+        };
     }
 
     @Override
@@ -302,9 +315,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         logger.info("Lagrer søknad som fil til henvendelse for behandling {}", soknad.getBrukerBehandlingId());
         fillagerService.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(pdf));
 
-        List<Vedlegg> vedleggForventnings = soknad.getVedlegg();
-        Vedlegg kvittering = vedleggRepository.hentVedleggForskjemaNummer(soknadId, null, Kodeverk.KVITTERING);
-        vedleggForventnings.add(kvittering);
+        List<Vedlegg> vedleggForventninger = hentVedleggOgKvittering(soknad);
 
         String skjemanummer = getSkjemanummer(soknad);
         String journalforendeEnhet = getJournalforendeEnhet(soknad);
@@ -318,8 +329,17 @@ public class SoknadService implements SendSoknadService, EttersendingService {
                 .withJournalforendeEnhet(journalforendeEnhet);
         henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(),
                 hovedskjema,
-                Transformers.convertToXmlVedleggListe(vedleggForventnings));
+                Transformers.convertToXmlVedleggListe(vedleggForventninger));
         repository.slettSoknad(soknadId);
+    }
+
+    private List<Vedlegg> hentVedleggOgKvittering(WebSoknad soknad) {
+        List<Vedlegg> vedleggForventninger = soknad.getVedlegg();
+        Vedlegg kvittering = vedleggRepository.hentVedleggForskjemaNummer(soknad.getSoknadId(), null, KVITTERING);
+        if (kvittering != null) {
+            vedleggForventninger.add(kvittering);
+        }
+        return vedleggForventninger;
     }
 
     private List<Vedlegg> hentVedleggOgPersister(XMLMetadataListe xmlVedleggListe, Long soknadId) {
