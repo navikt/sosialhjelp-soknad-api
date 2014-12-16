@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.websoknad.servlet;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -28,16 +27,13 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class FaktaController {
 
     @Inject
-    private SendSoknadService soknadService;
-
-    @Inject
     private FaktaService faktaService;
 
     @RequestMapping(value = "", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
     @ResponseBody()
     @SjekkTilgangTilSoknad
     public List<Faktum> hentSoknadData(@PathVariable Long soknadId) {
-        return soknadService.hentFakta(soknadId);
+        return faktaService.hentFakta(soknadId);
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
