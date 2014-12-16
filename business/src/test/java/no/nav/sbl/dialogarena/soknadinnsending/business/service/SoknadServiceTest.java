@@ -67,7 +67,6 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -265,23 +264,6 @@ public class SoknadServiceTest {
     }
 
     @Test
-    public void skalLagreSoknadFelt() {
-        Faktum faktum = new Faktum().medKey("ikkeavtjentverneplikt").medValue("false").medFaktumId(1L);
-        when(soknadRepository.lagreFaktum(1L, faktum)).thenReturn(2L);
-        when(soknadRepository.hentFaktum(1L, 2L)).thenReturn(faktum);
-        Vedlegg vedlegg = new Vedlegg().medVedleggId(4L).medSkjemaNummer("T3").medSoknadId(1L).medInnsendingsvalg(Vedlegg.Status.IkkeVedlegg);
-        when(vedleggRepository.hentVedleggForskjemaNummer(1L, null, "T3")).thenReturn(vedlegg);
-        when(vedleggRepository.opprettVedlegg(any(Vedlegg.class), any(byte[].class))).thenReturn(4L);
-        soknadService.lagreSoknadsFelt(1L, faktum);
-        verify(soknadRepository).settSistLagretTidspunkt(1L);
-        when(soknadRepository.hentBarneFakta(1L, faktum.getFaktumId())).thenReturn(Arrays.asList(new Faktum().medKey("subkey")));
-
-        //Verifiser vedlegg sjekker.
-        verify(soknadRepository).lagreFaktum(1L, faktum);
-        verify(vedleggRepository).lagreVedlegg(1L, 4L, vedlegg.medInnsendingsvalg(Vedlegg.Status.VedleggKreves));
-
-    }
-    @Test
     public void skalSletteVedlegg() {
         Long soknadId = 1L;
         Long faktumId = 1L;
@@ -297,36 +279,6 @@ public class SoknadServiceTest {
         verify(vedleggRepository, times(1)).slettVedleggOgData(soknadId, faktumId, "G2");
         verify(vedleggRepository, times(1)).slettVedleggOgData(soknadId, faktumId, "O2");
         verify(soknadRepository, times(1)).slettBrukerFaktum(soknadId, faktumId);
-    }
-
-    @Test
-    public void oppdatereFaktum() {
-        Long soknadId = 1L;
-        Long arbeidsforholdFaktumId = 1L;
-        Long permitteringFaktumId = 2L;
-        Faktum arbeidsforholdFaktum = new Faktum().medKey("arbeidsforhold").medProperty("type", "Konkurs").medFaktumId(1L);
-        Faktum permitteringsFaktum = new Faktum().medKey("arbeidsforhold.permitteringsperiode").medProperty("permitteringsperiodefra", "1111-11-11").medFaktumId(permitteringFaktumId).medParrentFaktumId(arbeidsforholdFaktumId);
-        Vedlegg permitteringsVedlegg = new Vedlegg().medVedleggId(4L).medSkjemaNummer("G2").medSoknadId(soknadId).medInnsendingsvalg(Vedlegg.Status.UnderBehandling).medFaktumId(permitteringFaktumId);
-        Vedlegg arbeidsgiverVedlegg = new Vedlegg().medVedleggId(4L).medSkjemaNummer("O2").medSoknadId(soknadId).medInnsendingsvalg(Vedlegg.Status.UnderBehandling).medFaktumId(arbeidsforholdFaktumId);
-
-        when(soknadRepository.lagreFaktum(soknadId, permitteringsFaktum)).thenReturn(permitteringFaktumId);
-        when(soknadRepository.hentFaktum(soknadId, permitteringFaktumId)).thenReturn(permitteringsFaktum);
-        when(soknadRepository.hentFaktum(soknadId, arbeidsforholdFaktumId)).thenReturn(arbeidsforholdFaktum);
-        when(vedleggRepository.hentVedleggForskjemaNummer(soknadId, permitteringFaktumId, "G2")).thenReturn(permitteringsVedlegg);
-        when(vedleggRepository.hentVedleggForskjemaNummer(soknadId, arbeidsforholdFaktumId, "O2")).thenReturn(arbeidsgiverVedlegg);
-
-        soknadService.lagreSoknadsFelt(soknadId, permitteringsFaktum);
-
-        assertThat(permitteringsVedlegg.getInnsendingsvalg(), is(Vedlegg.Status.IkkeVedlegg));
-    }
-
-    @Test
-    public void skalIkkeoppdatereDelstegstatusVedEpost() {
-        Faktum faktum = new Faktum().medKey("epost").medValue("false").medFaktumId(1L);
-        when(soknadRepository.lagreFaktum(1L, faktum)).thenReturn(2L);
-        when(soknadRepository.hentFaktum(1L, 2L)).thenReturn(faktum);
-        soknadService.lagreSoknadsFelt(1L, faktum);
-        verify(soknadRepository, never()).settDelstegstatus(anyLong(), any(DelstegStatus.class));
     }
 
     @Test
