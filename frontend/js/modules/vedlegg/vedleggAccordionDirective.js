@@ -22,10 +22,10 @@ angular.module('nav.vedlegg.accordion', [])
             replace: true,
             templateUrl: '../js/modules/vedlegg/template/vedleggbolkTemplate.html',
             scope: {
-                forventning: '='
+                forventning: '=',
+                forventningForm: '='
             },
             link: function (scope) {
-
                 scope.vedleggEr = function(status) {
                     return scope.forventning.innsendingsvalg === status;
                 };
@@ -38,7 +38,8 @@ angular.module('nav.vedlegg.accordion', [])
                 };
 
                 scope.vedleggFerdigBehandlet = function() {
-                    return scope.ekstraVedleggFerdig() && !scope.vedleggEr('VedleggKreves');
+                    console.log(scope.ekstraVedleggFerdig() && !scope.vedleggEr('VedleggKreves') && scope.forventningForm.$valid);
+                    return scope.ekstraVedleggFerdig() && !scope.vedleggEr('VedleggKreves') && scope.forventningForm.$valid;
                 };
             }
         };
