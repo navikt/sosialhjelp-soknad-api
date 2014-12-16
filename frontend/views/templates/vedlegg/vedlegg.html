@@ -85,7 +85,7 @@
                                         </li>
                                         <li>
                                              <span class="melding annet"
-                                                   data-ng-if="erEkstraVedlegg(forventning)" data-ng-bind-html=" 'vedlegg.annet.inlinefeilmelding' | cmstekst"></span>
+                                                   data-ng-if="erEkstraVedlegg(forventning)" data-ng-bind-html="'vedlegg.annet.inlinefeilmelding' | cmstekst"></span>
                                         </li>
                                         <li>
                                             <a href="javascript:void(0)" aria-role="button"
@@ -98,7 +98,7 @@
                                     </ul>
                                 </div>
                                 <div data-ng-if="!erEkstraVedlegg(forventning)">
-                                    <h4 data-ng-bind-html=" 'vedlegg.faktum.andreInnsendingsvalg' | cmstekst"></h4>
+                                    <h4 data-ng-bind-html="'vedlegg.faktum.andreInnsendingsvalg' | cmstekst"></h4>
                                     <div class="valg">
                                         <input id="{{$index}}ettersendRadio"
                                                data-ng-model="forventning.innsendingsvalg"
@@ -106,7 +106,7 @@
                                                value="SendesSenere"
                                                data-fjern-radio-valg="forventning"
                                                data-aktiv-feilmelding>
-                                        <label for="{{$index}}ettersendRadio" data-ng-bind-html=" 'vedlegg.faktum.ettersend' | cmstekst"></label>
+                                        <label for="{{$index}}ettersendRadio" data-ng-bind-html="'vedlegg.faktum.ettersend' | cmstekst"></label>
                                     </div>
 
                                     <div class="valg">
@@ -116,7 +116,7 @@
                                                value="VedleggSendesIkke"
                                                data-fjern-radio-valg="forventning"
                                                data-aktiv-feilmelding>
-                                        <label for="{{$index}}vedleggikkesendRadio" data-ng-bind-html=" 'vedlegg.faktum.vedleggikkesend' | cmstekst"></label>
+                                        <label for="{{$index}}vedleggikkesendRadio" data-ng-bind-html="'vedlegg.faktum.vedleggikkesend' | cmstekst"></label>
                                     </div>
 
                                     <div class="valg">
@@ -126,7 +126,7 @@
                                                value="VedleggSendesAvAndre"
                                                data-fjern-radio-valg="forventning"
                                                data-aktiv-feilmelding>
-                                        <label for="{{$index}}vedleggandreRadio" data-ng-bind-html=" 'vedlegg.faktum.vedleggsendesavandre' | cmstekst"></label>
+                                        <label for="{{$index}}vedleggandreRadio" data-ng-bind-html="'vedlegg.faktum.VedleggSendesAvAndre' | cmstekst"></label>
                                     </div>
 
 
@@ -137,7 +137,7 @@
                                                value="VedleggAlleredeSendt"
                                                data-fjern-radio-valg="forventning"
                                                data-aktiv-feilmelding>
-                                        <label for="{{$index}}vedleggAlleredeSendtRadio" data-ng-bind-html=" 'vedlegg.faktum.vedleggalleredesendt' | cmstekst"></label>
+                                        <label for="{{$index}}vedleggAlleredeSendtRadio" data-ng-bind-html="'vedlegg.faktum.vedleggalleredesendt' | cmstekst"></label>
                                         <span data-nav-hjelpetekstelement inline="true" data-tittel="{{ 'vedlegg.faktum.vedleggalleredesendt.hjelpetekst.tittel' | cmstekst }}" data-tekst="{{ 'vedlegg.faktum.vedleggalleredesendt.hjelpetekst.tekst' | cmstekst}}"></span>
                                     </div>
 
