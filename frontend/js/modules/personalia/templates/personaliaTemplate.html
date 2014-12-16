@@ -10,8 +10,9 @@
     <div data-ng-if="harHentetPersonalia()">
         <div class="personalia">
             <div class="alderOgKjonn" data-ng-class="{mann: erMann(), kvinne: erKvinne()}">
-                <span class="aar" data-ng-bind-html=" 'aar' | cmstekst"></span>
+                <span aria-hidden="true" class="aar" data-ng-bind-html=" 'aar' | cmstekst"></span>
                 <span class="alder robust">{{ personalia.alder }}</span>
+                <span class="visuallyhidden aar" data-ng-bind-html=" 'aar' | cmstekst"></span>
             </div>
             <div class="personInfo">
                 <div class="navnOgFnr">
