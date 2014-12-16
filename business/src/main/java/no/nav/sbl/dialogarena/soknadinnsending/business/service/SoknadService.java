@@ -22,7 +22,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFak
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.SoknadStrukturUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
@@ -32,14 +32,11 @@ import org.apache.commons.collections15.Closure;
 import org.apache.commons.collections15.Transformer;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.bind.JAXB;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -53,9 +50,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import static java.lang.String.format;
 import static java.util.UUID.randomUUID;
-import static javax.xml.bind.JAXBContext.newInstance;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.LASTET_OPP;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.modig.lang.collections.IterUtils.on;
@@ -94,8 +89,9 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     private NavMessageSource navMessageSource;
     @Inject
     private StartDatoService startDatoService;
+    @Inject
+    private FaktaService faktaService;
 
-    private static final String EKSTRA_VEDLEGG_KEY = "ekstraVedlegg";
     private List<String> gyldigeSkjemaer = Arrays.asList("NAV 04-01.03", "NAV 04-16.03");
 
     @Override
@@ -115,52 +111,6 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         return repository.hentSoknad(soknadId).getAktoerId();
     }
 
-    @Override
-    public void slettBrukerFaktum(Long soknadId, Long faktumId) {
-        final Faktum faktum;
-        try {
-            faktum = repository.hentFaktum(soknadId, faktumId);
-        } catch (IncorrectResultSizeDataAccessException e) {
-            logger.info("Skipped delete because faktum does not exist.");
-            return;
-        }
-
-        String faktumKey = faktum.getKey();
-        List<Vedlegg> vedleggliste = vedleggRepository.hentVedleggForFaktum(soknadId, faktumId);
-
-        for (Vedlegg vedlegg : vedleggliste) {
-            vedleggRepository.slettVedleggOgData(soknadId, vedlegg.getFaktumId(), vedlegg.getSkjemaNummer());
-        }
-        repository.slettBrukerFaktum(soknadId, faktumId);
-        repository.settSistLagretTidspunkt(soknadId);
-        settDelstegStatus(soknadId, faktumKey);
-    }
-
-    @Override
-    public Long lagreSystemFaktum(Long soknadId, Faktum f, String uniqueProperty) {
-        logger.debug("*** Lagrer systemfaktum ***: " + f.getKey());
-        f.setType(SYSTEMREGISTRERT);
-        List<Faktum> fakta = repository.hentSystemFaktumList(soknadId, f.getKey());
-
-        if (!uniqueProperty.isEmpty()) {
-            for (Faktum faktum : fakta) {
-                if (faktum.matcherUnikProperty(uniqueProperty, f)) {
-                    f.setFaktumId(faktum.getFaktumId());
-                    Long lagretFaktumId = repository.lagreFaktum(soknadId, f, true);
-                    Faktum hentetFaktum = repository.hentFaktum(soknadId, lagretFaktumId);
-                    genererVedleggForFaktum(hentetFaktum);
-                    return lagretFaktumId;
-                }
-            }
-        }
-        Long lagretFaktumId = repository.lagreFaktum(soknadId, f, true);
-        Faktum hentetFaktum = repository.hentFaktum(soknadId, lagretFaktumId);
-        genererVedleggForFaktum(hentetFaktum);
-
-        repository.settSistLagretTidspunkt(soknadId);
-        return lagretFaktumId;
-    }
-
     public WebSoknad hentSoknadMedBehandlingsId(String behandlingsId) {
         WebSoknad soknad = repository.hentMedBehandlingsId(behandlingsId);
         if (soknad == null) {
@@ -175,13 +125,6 @@ public class SoknadService implements SendSoknadService, EttersendingService {
             }
         }
         return soknad;
-    }
-
-    private void settDelstegStatus(Long soknadId, String faktumKey) {
-        //Setter delstegstatus dersom et faktum blir lagret, med mindre det er epost eller ekstra vedlegg. Bør gjøres mer elegant, litt quickfix
-        if (!Personalia.EPOST_KEY.equals(faktumKey) && !EKSTRA_VEDLEGG_KEY.equals(faktumKey)) {
-            repository.settDelstegstatus(soknadId, DelstegStatus.UTFYLLING);
-        }
     }
 
     private Map<String, Object> populerFraHenvendelse(String behandlingsId) {
@@ -340,7 +283,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
                 .medKey("soknadInnsendingsDato")
                 .medValue(String.valueOf(innsendtDato.getMillis()))
                 .medType(SYSTEMREGISTRERT);
-        lagreSystemFaktum(soknadId, soknadInnsendingsDato, "");
+        faktaService.lagreSystemFaktum(soknadId, soknadInnsendingsDato, "");
         soknad.setFaktaListe(repository.hentAlleBrukerData(soknadId));
 
         soknad.setVedlegg(hentVedleggOgPersister(xmlVedleggListe, soknadId));
@@ -468,7 +411,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
                 .medKey("lonnsOgTrekkOppgave")
                 .medType(SYSTEMREGISTRERT)
                 .medValue(startDatoService.erJanuarEllerFebruar().toString());
-        lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum, "");
+        faktaService.lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum, "");
     }
 
     private void prepopulerSoknadsFakta(Long soknadId) {
@@ -506,12 +449,12 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
     @Override
     public SoknadStruktur hentSoknadStruktur(Long soknadId) {
-        return hentStruktur(repository.hentSoknadType(soknadId));
+        return SoknadStrukturUtils.hentStruktur(repository.hentSoknadType(soknadId));
     }
 
     @Override
     public SoknadStruktur hentSoknadStruktur(String skjemanummer) {
-        return hentStruktur(skjemanummer);
+        return SoknadStrukturUtils.hentStruktur(skjemanummer);
     }
 
     private void genererVedleggForFaktum(Faktum faktum) {
@@ -635,29 +578,6 @@ public class SoknadService implements SendSoknadService, EttersendingService {
             vedlegg.setTittel(koder.get(Kodeverk.Nokkel.TITTEL));
         } catch (Exception ignore) {
             logger.debug("ignored exception");
-        }
-    }
-
-    private SoknadStruktur hentStruktur(String skjema) {
-        //TODO: Få flyttet dette ut på et vis? Ta i bruk.
-        Map<String, String> strukturDokumenter = new HashMap<>();
-        strukturDokumenter.put("NAV 04-01.04", "NAV 04-01.03.xml");
-        strukturDokumenter.put("NAV 04-01.03", "NAV 04-01.03.xml");
-        strukturDokumenter.put("NAV 04-16.03", "NAV 04-16.03.xml");
-
-        String type = strukturDokumenter.get(skjema);
-
-        if (type == null || type.isEmpty()) {
-            throw new ApplicationException("Fant ikke strukturdokument for nav-skjemanummer: " + skjema);
-        }
-
-        try {
-            Unmarshaller unmarshaller = newInstance(SoknadStruktur.class)
-                    .createUnmarshaller();
-            return (SoknadStruktur) unmarshaller.unmarshal(SoknadStruktur.class
-                    .getResourceAsStream(format("/soknader/%s", type)));
-        } catch (JAXBException e) {
-            throw new RuntimeException("Kunne ikke laste definisjoner. ", e);
         }
     }
 
