@@ -15,8 +15,8 @@ import java.util.List;
  */
 @Component
 public class LandService {
-    private static final List<String> EOS_LAND = Arrays.asList("BEL","BGR", "DNK", "EST", "FIN", "FRA", "GRC", "IRL", "ISL", "ITA", "CYP", "LVA", "LIE", "LTU", "LUX", "MLT", "NLD"
-            , "POL", "PRT", "ROU", "SVK", "SVN", "ESP", "GBR", "SWE", "CZE", "DEU", "HUN", "AUT", "CHE", "HRV");
+    private static final List<String> EOS_LAND = Arrays.asList("BEL","BGR", "DNK", "CZE", "EST", "FIN", "FRA", "GRC", "IRL", "ISL", "ITA", "HRV" , "CYP", "LVA", "LIE", "LTU", "LUX", "MLT", "NLD"
+            , "POL", "PRT", "ROU", "SVK", "SVN", "ESP", "GBR", "CHE", "SWE", "DEU", "HUN", "AUT");
 
     public static final String EOS = "eos";
 
