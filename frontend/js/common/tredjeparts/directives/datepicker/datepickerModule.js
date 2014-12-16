@@ -186,7 +186,7 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.dateparser', 'ui.bootst
                 datepickerMode: '=?',
                 dateDisabled: '&'
             },
-            require: ['datepicker', '?^ngModel'],
+            require: ['datepicker-bootstrap', '?^ngModel'],
             controller: 'DatepickerController',
             link: function(scope, element, attrs, ctrls) {
                 var datepickerCtrl = ctrls[0], ngModelCtrl = ctrls[1];
@@ -203,7 +203,7 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.dateparser', 'ui.bootst
             restrict: 'EA',
             replace: true,
             templateUrl: '../js/common/tredjeparts/directives/datepicker/template/day.html',
-            require: '^datepicker',
+            require: '^datepicker-bootstrap',
             link: function(scope, element, attrs, ctrl) {
                 scope.showWeeks = ctrl.showWeeks;
 
@@ -311,7 +311,7 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.dateparser', 'ui.bootst
             restrict: 'EA',
             replace: true,
             templateUrl: '../js/common/tredjeparts/directives/datepicker/template/month.html',
-            require: '^datepicker',
+            require: '^datepicker-bootstrap',
             link: function(scope, element, attrs, ctrl) {
                 ctrl.step = { years: 1 };
                 ctrl.element = element;
@@ -366,7 +366,7 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.dateparser', 'ui.bootst
             restrict: 'EA',
             replace: true,
             templateUrl: '../js/common/tredjeparts/directives/datepicker/template/year.html',
-            require: '^datepicker',
+            require: '^datepicker-bootstrap',
             link: function(scope, element, attrs, ctrl) {
                 var range = ctrl.yearRange;
 
@@ -459,7 +459,7 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.dateparser', 'ui.bootst
                     });
 
                     // popup element used to display calendar
-                    var popupEl = angular.element('<div datepicker-popup-wrap><div datepicker></div></div>');
+                    var popupEl = angular.element('<div datepicker-popup-wrap><div datepicker-bootstrap></div></div>');
                     popupEl.attr({
                         'ng-model': 'date',
                         'ng-change': 'dateSelection()'
