@@ -1,4 +1,4 @@
-angular.module('nav.datepicker.datoinput', [])
+angular.module('nav.datepicker.datoinput', ['ui.bootstrap.datepicker'])
     .directive('datoInput', function ($timeout) {
     return {
         restrict   : 'A',
