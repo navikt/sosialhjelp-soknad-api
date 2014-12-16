@@ -158,11 +158,12 @@ public class SoknadServiceTest {
                         .medNavn("Test Annet vedlegg")
                         .medAntallSider(3),
                 new Vedlegg()
-                        .medSkjemaNummer("L7")
+                        .medSkjemaNummer("L8")
                         .medInnsendingsvalg(Vedlegg.Status.SendesIkke));
 
         when(soknadRepository.hentSoknadMedData(1L)).thenReturn(
-                new WebSoknad().medAktorId("123456")
+                new WebSoknad().medId(1L)
+                        .medAktorId("123456")
                         .medBehandlingId("123")
                         .medUuid("uidHovedskjema")
                         .medskjemaNummer(DAGPENGER)
@@ -201,10 +202,10 @@ public class SoknadServiceTest {
                                 .withSkjemanummer("N6")),
                 refEq(
                         new XMLVedlegg()
-                                .withInnsendingsvalg(XMLInnsendingsvalg.SENDES_IKKE.toString())
+                        .withInnsendingsvalg(XMLInnsendingsvalg.SENDES_IKKE.toString())
                                 .withTilleggsinfo("")
-                                .withSkjemanummer("L7")
-                                .withFilnavn("L7")),
+                                .withSkjemanummer("L8")
+                                .withFilnavn("L8")),
                 refEq(
                         new XMLVedlegg()
                                 .withUuid("kvitteringRef")
