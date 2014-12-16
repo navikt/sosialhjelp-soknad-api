@@ -34,6 +34,7 @@ public class Vedlegg {
     private String fillagerReferanse = UUID.randomUUID().toString();
     private Map<String, String> urls = new HashMap<>();
     private String tittel;
+    private String aarsak;
 
     public Vedlegg() {
     }
@@ -105,6 +106,11 @@ public class Vedlegg {
         return this;
     }
 
+    public Vedlegg medAarsak(String aarsak) {
+        this.setAarsak(aarsak);
+        return this;
+    }
+
     public Vedlegg medInnsendingsvalg(Status innsendingsvalg) {
         this.innsendingsvalg = innsendingsvalg;
         return this;
@@ -113,6 +119,14 @@ public class Vedlegg {
     public Vedlegg medOpprinneligInnsendingsvalg(Status opprinneligInnsendingsvalg) {
         this.opprinneligInnsendingsvalg = opprinneligInnsendingsvalg;
         return this;
+    }
+
+    public String getAarsak() {
+        return this.aarsak;
+    }
+
+    public void setAarsak(String aarsak) {
+        this.aarsak = aarsak;
     }
 
     public Status getOpprinneligInnsendingsvalg() {
@@ -229,6 +243,7 @@ public class Vedlegg {
                 .append(this.antallSider, rhs.antallSider)
                 .append(this.data, rhs.data)
                 .append(this.fillagerReferanse, rhs.fillagerReferanse)
+                .append(this.aarsak, rhs.aarsak)
                 .isEquals();
     }
 
@@ -244,6 +259,7 @@ public class Vedlegg {
                 .append(antallSider)
                 .append(data)
                 .append(fillagerReferanse)
+                .append(aarsak)
                 .toHashCode();
     }
 
@@ -259,6 +275,7 @@ public class Vedlegg {
                 .append("antallSider", antallSider)
                 .append("data", data)
                 .append("fillagerReferanse", fillagerReferanse)
+                .append("aarsak", aarsak)
                 .toString();
     }
 
