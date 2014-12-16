@@ -80,6 +80,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     @Inject
     @Named("soknadInnsendingRepository")
     private SoknadRepository repository;
+
     @Inject
     @Named("vedleggRepository")
     private VedleggRepository vedleggRepository;
@@ -112,21 +113,6 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     @Override
     public String hentSoknadEier(Long soknadId) {
         return repository.hentSoknad(soknadId).getAktoerId();
-    }
-
-    @Override
-    public Faktum lagreSoknadsFelt(Long soknadId, Faktum faktum) {
-        faktum.setType(BRUKERREGISTRERT);
-        faktum.setSoknadId(soknadId);
-        Long faktumId = repository.lagreFaktum(soknadId, faktum);
-        repository.settSistLagretTidspunkt(soknadId);
-
-        settDelstegStatus(soknadId, faktum.getKey());
-
-        Faktum resultat = repository.hentFaktum(soknadId, faktumId);
-        genererVedleggForFaktum(resultat);
-
-        return resultat;
     }
 
     @Override

@@ -34,8 +34,6 @@ public interface SendSoknadService {
 
     WebSoknad hentSoknadMedBehandlingsId(String behandlingsId);
 
-    Faktum lagreSoknadsFelt(Long soknadId, Faktum faktum);
-
     Long lagreSystemFaktum(Long soknadId, Faktum faktum, String uniqueProperty);
 
     void sendSoknad(long soknadId, byte[] outputStream);

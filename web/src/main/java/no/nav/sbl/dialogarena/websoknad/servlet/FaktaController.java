@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktumService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,9 @@ public class FaktaController {
     @Inject
     private SendSoknadService soknadService;
 
+    @Inject
+    private FaktumService faktumService;
+
     @RequestMapping(value = "", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
     @ResponseBody()
     @SjekkTilgangTilSoknad
@@ -40,14 +44,14 @@ public class FaktaController {
     @ResponseBody()
     @SjekkTilgangTilSoknad
     public Faktum lagreNyttFaktum(@PathVariable Long soknadId, @RequestBody Faktum faktum) {
-        return soknadService.lagreSoknadsFelt(soknadId, faktum);
+        return faktumService.lagreSoknadsFelt(soknadId, faktum);
     }
 
     @RequestMapping(value = "/{faktumId}", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @ResponseBody()
     @SjekkTilgangTilSoknad
     public Faktum lagreFaktum(@PathVariable Long soknadId, @RequestBody Faktum faktum) {
-        return soknadService.lagreSoknadsFelt(soknadId, faktum);
+        return faktumService.lagreSoknadsFelt(soknadId, faktum);
     }
 
     @RequestMapping(value = "/{faktumId}/delete", method = RequestMethod.POST)
