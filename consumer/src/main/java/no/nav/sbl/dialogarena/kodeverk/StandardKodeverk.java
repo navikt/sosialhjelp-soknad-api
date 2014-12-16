@@ -88,7 +88,33 @@ public class StandardKodeverk implements Kodeverk {
 
     @Override
     public String getLand(String landkode) {
-        return hentFoersteTermnavnFraKodeIKodeverk(landkode, LANDKODE);
+        String landFraKodeverk = hentFoersteTermnavnFraKodeIKodeverk(landkode, LANDKODE);
+        return formaterLand(landFraKodeverk);
+    }
+
+    private String formaterLand(String land) {
+        String formaterMedSpace = setUpperCaseBeforeRegex(land.toLowerCase(), " ");
+        String formaterMedDash = setUpperCaseBeforeRegex(formaterMedSpace, "-");
+        String formaterMedSlash = setUpperCaseBeforeRegex(formaterMedDash, "/");
+        return formaterMedSlash;
+    }
+
+    private String setUpperCaseBeforeRegex(String s, String regex) {
+        String[] split = s.split(regex);
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < split.length; i++) {
+            if(i > 0) {
+                sb.append(regex);
+            }
+
+            if(split[i].equals("og")) {
+                sb.append(split[i]);
+            }else{
+                sb.append(split[i].substring(0, 1).toUpperCase());
+                sb.append(split[i].substring(1));
+            }
+        }
+        return sb.toString();
     }
 
     @Override
