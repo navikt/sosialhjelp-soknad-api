@@ -1,11 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 
-import java.util.List;
 import java.util.Map;
 
 public interface SendSoknadService {
@@ -37,8 +35,6 @@ public interface SendSoknadService {
     void sendSoknad(long soknadId, byte[] outputStream);
 
     void avbrytSoknad(Long soknadId);
-
-    List<Faktum> hentFakta(Long soknadId);
 
     void settDelsteg(Long soknadId, DelstegStatus delstegStatus);
 

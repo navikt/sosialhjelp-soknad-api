@@ -101,6 +101,10 @@ public class FaktaService {
         settDelstegStatus(soknadId, faktumKey);
     }
 
+    public List<Faktum> hentFakta(Long soknadId) {
+        return repository.hentAlleBrukerData(soknadId);
+    }
+
     private void settDelstegStatus(Long soknadId, String faktumKey) {
         //Setter delstegstatus dersom et faktum blir lagret, med mindre det er epost eller ekstra vedlegg. Bør gjøres mer elegant, litt quickfix
         if (!Personalia.EPOST_KEY.equals(faktumKey) && !EKSTRA_VEDLEGG_KEY.equals(faktumKey)) {

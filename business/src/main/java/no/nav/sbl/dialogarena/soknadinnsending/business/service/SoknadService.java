@@ -20,15 +20,12 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknadId;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
-import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.SoknadStrukturUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
-import org.apache.commons.collections15.Closure;
 import org.apache.commons.collections15.Transformer;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -46,7 +43,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -85,8 +81,6 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     private FillagerService fillagerService;
     @Inject
     private Kodeverk kodeverk;
-    @Inject
-    private NavMessageSource navMessageSource;
     @Inject
     private StartDatoService startDatoService;
     @Inject
@@ -375,11 +369,6 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     }
 
     @Override
-    public List<Faktum> hentFakta(Long soknadId) {
-        return repository.hentAlleBrukerData(soknadId);
-    }
-
-    @Override
     public String startSoknad(String navSoknadId) {
         validerSkjemanummer(navSoknadId);
         String mainUid = randomUUID().toString();
@@ -455,116 +444,6 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     @Override
     public SoknadStruktur hentSoknadStruktur(String skjemanummer) {
         return SoknadStrukturUtils.hentStruktur(skjemanummer);
-    }
-
-    private void genererVedleggForFaktum(Faktum faktum) {
-        SoknadStruktur struktur = hentSoknadStruktur(faktum.getSoknadId());
-        List<SoknadVedlegg> aktuelleVedlegg = struktur.vedleggFor(faktum.getKey());
-        for (SoknadVedlegg soknadVedlegg : aktuelleVedlegg) {
-            oppdaterOgLagreVedlegg(struktur, soknadVedlegg, faktum);
-        }
-        genererVedleggForBarnefakta(faktum);
-    }
-
-    private void oppdaterOgLagreVedlegg(SoknadStruktur struktur, SoknadVedlegg soknadVedlegg, Faktum faktum) {
-        Long faktumId = soknadVedlegg.getFlereTillatt() ? faktum.getFaktumId() : null;
-        Vedlegg vedlegg = vedleggRepository.hentVedleggForskjemaNummer(faktum.getSoknadId(), faktumId, soknadVedlegg.getSkjemaNummer());
-        Faktum parentFaktum = repository.hentFaktum(faktum.getSoknadId(), faktum.getParrentFaktum());
-
-        if (soknadVedlegg.trengerVedlegg(faktum) && erParentAktiv(soknadVedlegg.getFaktum(), parentFaktum)) {
-            lagrePaakrevdVedlegg(faktum, soknadVedlegg, vedlegg);
-        } else if (vedlegg != null && !erVedleggKrevdAvAnnetFaktum(faktum, struktur, soknadVedlegg)) {
-            vedlegg.setInnsendingsvalg(Vedlegg.Status.IkkeVedlegg);
-            vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
-        }
-    }
-
-    private void genererVedleggForBarnefakta(Faktum parentFaktum) {
-        on(repository.hentBarneFakta(parentFaktum.getSoknadId(), parentFaktum.getFaktumId())).forEach(new Closure<Faktum>() {
-            @Override
-            public void execute(Faktum faktum) {
-                genererVedleggForFaktum(faktum);
-            }
-        });
-    }
-
-    private boolean erVedleggKrevdAvAnnetFaktum(Faktum faktum, SoknadStruktur struktur, SoknadVedlegg soknadVedlegg) {
-        return !soknadVedlegg.getFlereTillatt() && annetFaktumHarForventning(faktum.getSoknadId(), soknadVedlegg.getSkjemaNummer(), soknadVedlegg.getOnValues(), struktur);
-    }
-
-    private void lagrePaakrevdVedlegg(Faktum faktum, SoknadVedlegg soknadVedlegg, Vedlegg v) {
-        Vedlegg vedlegg = v;
-        if (vedlegg == null) {
-            Long faktumId = soknadVedlegg.getFlereTillatt() ? faktum.getFaktumId() : null;
-            vedlegg = new Vedlegg(faktum.getSoknadId(), faktumId, soknadVedlegg.getSkjemaNummer(), Vedlegg.Status.VedleggKreves);
-            vedlegg.setVedleggId(vedleggRepository.opprettVedlegg(vedlegg, null));
-        }
-        vedlegg.oppdatertInnsendtStatus();
-
-        if (vedleggHarTittelFraProperty(soknadVedlegg, faktum)) {
-            vedlegg.setNavn(faktum.getProperties().get(soknadVedlegg.getProperty()));
-        } else if (soknadVedlegg.harOversetting()) {
-            vedlegg.setNavn(navMessageSource.getMessage(soknadVedlegg.getOversetting().replace("${key}", faktum.getKey()), new Object[0], new Locale("nb", "NO")));
-        }
-        vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
-    }
-
-    private boolean vedleggHarTittelFraProperty(SoknadVedlegg vedlegg, Faktum faktum) {
-        return vedlegg.getProperty() != null && faktum.getProperties().containsKey(vedlegg.getProperty());
-    }
-
-    private boolean erParentAktiv(SoknadFaktum faktum, Faktum parent) {
-        if(parent == null) {
-            return true;
-        }
-
-        if(parentValueErLikEnAvVerdieneIDependOnValues(faktum, parent)) {
-            Faktum parentParentFaktum = repository.hentFaktum(parent.getSoknadId(), parent.getParrentFaktum());
-            SoknadFaktum parentSoknadFaktum = faktum.getDependOn();
-            return erParentAktiv(parentSoknadFaktum, parentParentFaktum);
-        }
-        return false;
-    }
-
-    private boolean parentValueErLikEnAvVerdieneIDependOnValues(SoknadFaktum faktum, Faktum parent) {
-        if(faktum.getDependOn() == null) {
-            return true;
-        }
-
-        String parentVerdi = hentVerdiFaktumErAvhengigAvPaaParent(faktum, parent);
-        List<String> dependOnValues = faktum.getDependOnValues();
-        for(String dependOnValue : dependOnValues) {
-            if(dependOnValue.equalsIgnoreCase(parentVerdi)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private String hentVerdiFaktumErAvhengigAvPaaParent(SoknadFaktum faktum, Faktum parent) {
-        String dependOnPropertyName = faktum.getDependOnProperty();
-        String verdiManErAvhengigAv;
-        if(dependOnPropertyName != null) {
-            verdiManErAvhengigAv = parent.getProperties().get(dependOnPropertyName);
-        } else {
-            verdiManErAvhengigAv = parent.getValue();
-        }
-        return verdiManErAvhengigAv == null ? "false"  : verdiManErAvhengigAv;
-    }
-
-    /**
-     * Looper alle mulige vedleggsforventinger for gitt skjemanummer,
-     * dersom soknadbrukerdata har et innslag som har riktig onValue, returneres true (et annet faktum trigger vedlegget)
-     * ellers returneres false
-     */
-    private boolean annetFaktumHarForventning(Long soknadId, String skjemaNummer, List<String> onValues, SoknadStruktur struktur) {
-        List<SoknadVedlegg> vedleggMedGittSkjemanummer = struktur.vedleggForSkjemanr(skjemaNummer);
-        for (SoknadVedlegg sv : vedleggMedGittSkjemanummer) {
-            if (repository.isVedleggPaakrevd(soknadId, onValues, sv)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private void medKodeverk(Vedlegg vedlegg) {
