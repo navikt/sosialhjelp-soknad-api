@@ -38,7 +38,6 @@ angular.module('nav.vedlegg.accordion', [])
                 };
 
                 scope.vedleggFerdigBehandlet = function() {
-                    console.log(scope.ekstraVedleggFerdig() && !scope.vedleggEr('VedleggKreves') && scope.forventningForm.$valid);
                     return scope.ekstraVedleggFerdig() && !scope.vedleggEr('VedleggKreves') && scope.forventningForm.$valid;
                 };
             }

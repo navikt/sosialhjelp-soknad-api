@@ -167,8 +167,7 @@ angular.module('nav.feilmeldinger', [])
                     var feilmelding = cms.tekster[feilmeldingNokkel];
                     if (feilmelding === undefined) {
                         if (feilErSubform(feil, feilNokkel)) {
-                            leggTilFeilmeldingerVedValidering(feil.$error[feilNokkel], feilNokkel);
-                            return;
+                            return finnFeilmelding(feil.$error[feilNokkel][0], feilNokkel);
                         } else {
                             feilmelding = feilmeldingNokkel;
                         }
