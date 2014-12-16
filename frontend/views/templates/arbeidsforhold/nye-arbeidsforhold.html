@@ -2,46 +2,52 @@
     <div data-ng-form="nyeArbeidsforholdForm" class="skjemainnhold" data-ng-controller="ArbeidsforholdCtrl" data-nye-arbeidsforhold>
         <div data-form-errors></div>
 
-        <div data-nav-faktum="nyearbeidsforhold.arbeidsidensist">
-            <div class="spm form-linje">
-                <div data-navconfig
-                     data-navradio
-                     value="true"
-                     data-navlabel="nyearbeidsforhold.arbeidsidensist.true">
+        <div class="spm form-linje boolean">
+            <h4 class="spm-sporsmal" data-ng-bind-html="'nyearbeidsforhold.arbeidsidensist.sporsmal' | cmstekst"></h4>
 
-                    <div data-navtextarea
-                         data-navconfig
-                         data-nav-faktum="nyearbeidsforhold.aarsakdagpengerstanset"
-                         data-nokkel="nyearbeidsforhold.aarsakdagpengerstanset"
-                         data-maxlengde="500"
-                         data-obligatorisk="true">
-                    </div>
-                </div>
+            <div data-navconfig
+                    data-navradio
+                    data-value="true"
+                    data-nav-faktum="nyearbeidsforhold.arbeidsidensist"
+                    data-navlabel="nyearbeidsforhold.arbeidsidensist.true"
+                    data-navfeilmelding="nyearbeidsforhold.arbeidsidensist.feilmelding">
 
-                <div data-navconfig
-                     data-navradio
-                     value="false"
-                     data-navlabel="nyearbeidsforhold.arbeidsidensist.false">
-
-                    <div data-navinfoboks data-infotekster="['nyearbeisforhold.nyttarbeidsforhold.infoboks']"></div>
-                    <div data-arbeidsforhold-oppsummering></div>
-                    <div data-arbeidsforhold-leggtil-knapper></div>
+                <div data-navtextarea
+                        data-navconfig
+                        data-nav-faktum="nyearbeidsforhold.aarsakdagpengerstanset"
+                        data-nokkel="nyearbeidsforhold.aarsakdagpengerstanset"
+                        data-maxlengde="500"
+                        data-obligatorisk="true">
                 </div>
             </div>
 
-            <div id="aarsak-dagpenger-stanset" class="spm" data-ng-if="skalViseFritekstfelt()">
-                <div data-navtextarea
-                     data-navconfig
-                     data-nav-faktum="nyearbeidsforhold.aarsakdagpengerstanset"
-                     data-nokkel="nyearbeidsforhold.aarsakdagpengerstanset"
-                     data-maxlengde="500"
-                     data-obligatorisk="true">
-                </div>
+            <div data-navconfig
+                    data-navradio
+                    data-value="false"
+                    data-nav-faktum="nyearbeidsforhold.arbeidsidensist"
+                    data-navlabel="nyearbeidsforhold.arbeidsidensist.false"
+                    data-navfeilmelding="nyearbeidsforhold.arbeidsidensist.feilmelding">
+
+                <div data-navinfoboks data-infotekster="['nyearbeisforhold.nyttarbeidsforhold.infoboks']"></div>
+                <div data-arbeidsforhold-oppsummering></div>
+                <div data-arbeidsforhold-leggtil-knapper></div>
+            </div>
+
+            <span class="melding" data-ng-bind-html="'nyearbeidsforhold.arbeidsidensist.feilmelding' | cmstekst"></span>
+        </div>
+
+        <div id="aarsak-dagpenger-stanset" class="spm" data-ng-if="skalViseFritekstfelt()">
+            <div data-navtextarea
+                    data-navconfig
+                    data-nav-faktum="nyearbeidsforhold.aarsakdagpengerstanset"
+                    data-nokkel="nyearbeidsforhold.aarsakdagpengerstanset"
+                    data-maxlengde="500"
+                    data-obligatorisk="true">
             </div>
         </div>
 
         <div data-ng-if="harJobbetSidenSistMotattDagpenger()" data-reberegning-dagpenger></div>
-        <div data-ng-if="erUtenlandskStatsborger()" data-grensearbeid ></div>
+        <div data-ng-if="erUtenlandskStatsborger()" data-grensearbeid></div>
         <div data-spmblokkferdig></div>
     </div>
 </div>
