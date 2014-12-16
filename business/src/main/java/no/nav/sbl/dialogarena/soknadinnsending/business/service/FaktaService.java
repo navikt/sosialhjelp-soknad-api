@@ -10,18 +10,24 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStr
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.SoknadStrukturUtils;
 import org.apache.commons.collections15.Closure;
+import org.slf4j.Logger;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
+import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import java.util.List;
 import java.util.Locale;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
+import static org.slf4j.LoggerFactory.getLogger;
 
-public class FaktumService {
+@Component
+public class FaktaService {
     @Inject
     @Named("soknadInnsendingRepository")
     private SoknadRepository repository;
@@ -31,13 +37,10 @@ public class FaktumService {
     private VedleggRepository vedleggRepository;
 
     @Inject
-    private SoknadService soknadService;
-
-    @Inject
     private NavMessageSource navMessageSource;
 
     private static final String EKSTRA_VEDLEGG_KEY = "ekstraVedlegg";
-
+    private static final Logger logger = getLogger(FaktaService.class);
 
 
     public Faktum lagreSoknadsFelt(Long soknadId, Faktum faktum) {
@@ -54,6 +57,50 @@ public class FaktumService {
         return resultat;
     }
 
+    public Long lagreSystemFaktum(Long soknadId, Faktum f, String uniqueProperty) {
+        logger.debug("*** Lagrer systemfaktum ***: " + f.getKey());
+        f.setType(SYSTEMREGISTRERT);
+        List<Faktum> fakta = repository.hentSystemFaktumList(soknadId, f.getKey());
+
+        if (!uniqueProperty.isEmpty()) {
+            for (Faktum faktum : fakta) {
+                if (faktum.matcherUnikProperty(uniqueProperty, f)) {
+                    f.setFaktumId(faktum.getFaktumId());
+                    Long lagretFaktumId = repository.lagreFaktum(soknadId, f, true);
+                    Faktum hentetFaktum = repository.hentFaktum(soknadId, lagretFaktumId);
+                    genererVedleggForFaktum(hentetFaktum);
+                    return lagretFaktumId;
+                }
+            }
+        }
+        Long lagretFaktumId = repository.lagreFaktum(soknadId, f, true);
+        Faktum hentetFaktum = repository.hentFaktum(soknadId, lagretFaktumId);
+        genererVedleggForFaktum(hentetFaktum);
+
+        repository.settSistLagretTidspunkt(soknadId);
+        return lagretFaktumId;
+    }
+
+    public void slettBrukerFaktum(Long soknadId, Long faktumId) {
+        final Faktum faktum;
+        try {
+            faktum = repository.hentFaktum(soknadId, faktumId);
+        } catch (IncorrectResultSizeDataAccessException e) {
+            logger.info("Skipped delete because faktum does not exist.");
+            return;
+        }
+
+        String faktumKey = faktum.getKey();
+        List<Vedlegg> vedleggliste = vedleggRepository.hentVedleggForFaktum(soknadId, faktumId);
+
+        for (Vedlegg vedlegg : vedleggliste) {
+            vedleggRepository.slettVedleggOgData(soknadId, vedlegg.getFaktumId(), vedlegg.getSkjemaNummer());
+        }
+        repository.slettBrukerFaktum(soknadId, faktumId);
+        repository.settSistLagretTidspunkt(soknadId);
+        settDelstegStatus(soknadId, faktumKey);
+    }
+
     private void settDelstegStatus(Long soknadId, String faktumKey) {
         //Setter delstegstatus dersom et faktum blir lagret, med mindre det er epost eller ekstra vedlegg. Bør gjøres mer elegant, litt quickfix
         if (!Personalia.EPOST_KEY.equals(faktumKey) && !EKSTRA_VEDLEGG_KEY.equals(faktumKey)) {
@@ -62,12 +109,16 @@ public class FaktumService {
     }
 
     private void genererVedleggForFaktum(Faktum faktum) {
-        SoknadStruktur struktur = soknadService.hentSoknadStruktur(faktum.getSoknadId());
+        SoknadStruktur struktur = hentSoknadStruktur(faktum.getSoknadId());
         List<SoknadVedlegg> aktuelleVedlegg = struktur.vedleggFor(faktum.getKey());
         for (SoknadVedlegg soknadVedlegg : aktuelleVedlegg) {
             oppdaterOgLagreVedlegg(struktur, soknadVedlegg, faktum);
         }
         genererVedleggForBarnefakta(faktum);
+    }
+
+    private SoknadStruktur hentSoknadStruktur(Long soknadId) {
+        return SoknadStrukturUtils.hentStruktur(repository.hentSoknadType(soknadId));
     }
 
     private void oppdaterOgLagreVedlegg(SoknadStruktur struktur, SoknadVedlegg soknadVedlegg, Faktum faktum) {

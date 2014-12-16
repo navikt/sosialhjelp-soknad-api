@@ -11,7 +11,6 @@ import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
@@ -58,7 +57,6 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -89,6 +87,9 @@ public class SoknadServiceTest {
 
     @Mock
     private StartDatoService startDatoService;
+
+    @Mock
+    private FaktaService faktaService;
 
     @InjectMocks
     private SoknadService soknadService;
@@ -263,56 +264,10 @@ public class SoknadServiceTest {
         assertThat(soknadService.hentSoknadEier(1L), is(equalTo("123")));
     }
 
-    @Test
-    public void skalSletteVedlegg() {
-        Long soknadId = 1L;
-        Long faktumId = 1L;
-        Faktum arbeidsforholdFaktum = new Faktum().medKey("arbeidsforhold").medProperty("type", "Permittert").medFaktumId(1L);
-        Vedlegg permitteringsVedlegg = new Vedlegg().medVedleggId(4L).medSkjemaNummer("G2").medSoknadId(soknadId).medInnsendingsvalg(Vedlegg.Status.UnderBehandling).medFaktumId(faktumId);
-        Vedlegg arbeidsgiverVedlegg = new Vedlegg().medVedleggId(4L).medSkjemaNummer("O2").medSoknadId(soknadId).medInnsendingsvalg(Vedlegg.Status.UnderBehandling).medFaktumId(faktumId);
 
-        when(soknadRepository.hentFaktum(soknadId, faktumId)).thenReturn(arbeidsforholdFaktum);
-        when(vedleggRepository.hentVedleggForFaktum(soknadId, faktumId)).thenReturn(Arrays.asList(permitteringsVedlegg, arbeidsgiverVedlegg));
 
-        soknadService.slettBrukerFaktum(soknadId, faktumId);
 
-        verify(vedleggRepository, times(1)).slettVedleggOgData(soknadId, faktumId, "G2");
-        verify(vedleggRepository, times(1)).slettVedleggOgData(soknadId, faktumId, "O2");
-        verify(soknadRepository, times(1)).slettBrukerFaktum(soknadId, faktumId);
-    }
 
-    @Test
-    public void skalSletteBrukerfaktum() {
-        when(vedleggRepository.hentVedleggForFaktum(1L, 1L)).thenReturn(Arrays.asList(new Vedlegg().medVedleggId(111L).medSkjemaNummer("a1").medFaktumId(111L)));
-        when(soknadRepository.hentFaktum(1L, 1L)).thenReturn(new Faktum().medKey("key"));
-        soknadService.slettBrukerFaktum(1L, 1L);
-        verify(vedleggRepository).slettVedleggOgData(1L, 111L, "a1");
-        verify(soknadRepository).slettBrukerFaktum(1L, 1L);
-        verify(soknadRepository).settDelstegstatus(1L, DelstegStatus.UTFYLLING);
-    }
-
-    @Test
-    public void skalLagreSystemfaktumUtenUnique() {
-        Faktum faktum = new Faktum().medKey("personalia").medValue("tester").medSoknadId(1L);
-        when(soknadRepository.lagreFaktum(anyLong(), any(Faktum.class), anyBoolean())).thenReturn(2L);
-        when(soknadRepository.hentFaktum(1L, 2L)).thenReturn(faktum);
-        soknadService.lagreSystemFaktum(1L, faktum, "");
-        verify(soknadRepository).lagreFaktum(1L, faktum, true);
-    }
-
-    @Test
-    public void skalLagreSystemfaktummedUniqueSomFinnes() {
-        Faktum faktum = new Faktum().medKey("personalia").medSystemProperty("fno", "123").medSoknadId(1L);
-        Faktum faktumSjekk = new Faktum().medKey("personalia").medSystemProperty("fno", "123").medSoknadId(1L).medType(Faktum.FaktumType.SYSTEMREGISTRERT);
-
-        when(soknadRepository.lagreFaktum(anyLong(), any(Faktum.class), anyBoolean())).thenReturn(2L);
-        when(soknadRepository.hentFaktum(1L, 2L)).thenReturn(faktum);
-        when(soknadRepository.hentSystemFaktumList(1L, faktum.getKey())).thenReturn(Arrays.asList(
-                new Faktum().medFaktumId(5L).medKey("personalia").medSystemProperty("fno", "123"),
-                new Faktum().medFaktumId(6L).medKey("personalia").medSystemProperty("fno", "124")));
-        soknadService.lagreSystemFaktum(1L, faktum, "fno");
-        verify(soknadRepository).lagreFaktum(1L, faktumSjekk.medFaktumId(5L), true);
-    }
 
     @Test
     public void skalStarteSoknad() {
@@ -355,7 +310,7 @@ public class SoknadServiceTest {
         when(soknadRepository.opprettSoknad(any(WebSoknad.class))).thenReturn(soknadId);
         soknadService.startSoknad(DAGPENGER);
 
-        verify(soknadRepository, times(1)).lagreFaktum(soknadId, lonnsOgTrekkoppgaveFaktum, true);
+        verify(faktaService, times(1)).lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum, "");
         DateTimeUtils.setCurrentMillisSystem();
     }
 
@@ -376,7 +331,7 @@ public class SoknadServiceTest {
         when(soknadRepository.opprettSoknad(any(WebSoknad.class))).thenReturn(soknadId);
         soknadService.startSoknad(DAGPENGER);
 
-        verify(soknadRepository, times(1)).lagreFaktum(soknadId, lonnsOgTrekkoppgaveFaktum, true);
+        verify(faktaService, times(1)).lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum, "");
         DateTimeUtils.setCurrentMillisSystem();
     }
 
@@ -423,7 +378,7 @@ public class SoknadServiceTest {
         when(soknadRepository.hentFaktum(anyLong(), anyLong())).thenReturn(soknadInnsendingsDatoFaktum);
 
         Long ettersendingSoknadId = soknadService.startEttersending(behandlingsId);
-        verify(soknadRepository).lagreFaktum(anyLong(), any(Faktum.class), anyBoolean());
+        verify(faktaService).lagreSystemFaktum(anyLong(), any(Faktum.class), anyString());
         assertNotNull(ettersendingSoknadId);
     }
 

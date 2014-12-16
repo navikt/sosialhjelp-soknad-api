@@ -34,15 +34,11 @@ public interface SendSoknadService {
 
     WebSoknad hentSoknadMedBehandlingsId(String behandlingsId);
 
-    Long lagreSystemFaktum(Long soknadId, Faktum faktum, String uniqueProperty);
-
     void sendSoknad(long soknadId, byte[] outputStream);
 
     void avbrytSoknad(Long soknadId);
 
     List<Faktum> hentFakta(Long soknadId);
-
-    void slettBrukerFaktum(Long soknadId, Long faktumId);
 
     void settDelsteg(Long soknadId, DelstegStatus delstegStatus);
 

@@ -10,7 +10,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.EttersendingService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktumService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad;
@@ -56,7 +56,7 @@ public class SoknadDataController {
     private VedleggService vedleggService;
 
     @Inject
-    private FaktumService faktumService;
+    private FaktaService faktaService;
 
     @Inject
     private HtmlGenerator pdfTemplate;
@@ -198,7 +198,7 @@ public class SoknadDataController {
     public void lagreSoknad(@PathVariable Long soknadId,
                             @RequestBody WebSoknad webSoknad) {
         for (Faktum faktum : webSoknad.getFaktaListe()) {
-            faktumService.lagreSoknadsFelt(soknadId, faktum);
+            faktaService.lagreSoknadsFelt(soknadId, faktum);
         }
     }
 

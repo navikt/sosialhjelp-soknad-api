@@ -4,8 +4,8 @@ import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.LandService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.IkkeFunnetException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
@@ -26,6 +26,7 @@ import java.util.List;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.ALDER_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.EPOST_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.ER_UTENLANDSK_BANKKONTO;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.FNR_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_GYLDIGFRA_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_GYLDIGTIL_KEY;
@@ -41,7 +42,6 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.SEKUNDARADRESSE_TYPE_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.STATSBORGERSKAPTYPE_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.STATSBORGERSKAP_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.ER_UTENLANDSK_BANKKONTO;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.UTENLANDSK_KONTO_BANKNAVN;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.UTENLANDSK_KONTO_LAND;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -58,9 +58,10 @@ public class DefaultPersonaliaService implements PersonaliaService {
     @Inject
     private Kodeverk kodeverk;
     @Inject
-    private SendSoknadService soknadService;
-    @Inject
     private LandService eosLandService;
+
+    @Inject
+    private FaktaService faktaService;
 
 
     @Override
@@ -145,7 +146,7 @@ public class DefaultPersonaliaService implements PersonaliaService {
                 .medSystemProperty(SEKUNDARADRESSE_GYLDIGFRA_KEY, personalia.getSekundarAdresse().getGyldigFra())
                 .medSystemProperty(SEKUNDARADRESSE_GYLDIGTIL_KEY, personalia.getSekundarAdresse().getGyldigTil());
 
-        soknadService.lagreSystemFaktum(soknadId, personaliaFaktum, "fnr");
+        faktaService.lagreSystemFaktum(soknadId, personaliaFaktum, "fnr");
     }
 
     private void lagreBarn(Long soknadId, List<Barn> barneliste) {
@@ -160,7 +161,7 @@ public class DefaultPersonaliaService implements PersonaliaService {
                     .medSystemProperty("kjonn", barn.getKjonn())
                     .medSystemProperty("alder", barn.getAlder().toString())
                     .medSystemProperty("land", barn.getLand());
-            soknadService.lagreSystemFaktum(soknadId, barneFaktum, "fnr");
+            faktaService.lagreSystemFaktum(soknadId, barneFaktum, "fnr");
         }
     }
 
