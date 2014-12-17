@@ -41,6 +41,7 @@ angular.module('nav.fortsettsenere', [])
     .controller('FortsettSenereKvitteringCtrl', function ($scope, data) {
         $scope.dittnavUrl = data.config["dittnav.link.url"];
         $scope.epost = data.finnFaktum('epost');
+        $scope.brukerBehandlingId = data.soknad.brukerBehandlingId;
         $scope.forrigeSide = "#/" + data.soknad.brukerBehandlingId + '/fortsett';
     });
 
