@@ -70,6 +70,12 @@ public class SoknadDataController {
         return soknadService.hentSoknad(soknadId);
     }
 
+    @RequestMapping(value = "hentsoknad/{behandlingsId}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody()
+    public WebSoknad hentSoknadMedBehandlingsId(@PathVariable String behandlingsId) {
+        return soknadService.hentSoknadMedBehandlingsId(behandlingsId);
+    }
+
     @RequestMapping(value = "/{soknadId}/struktur", method = RequestMethod.GET, produces = "application/json")
     public String hentSoknadSokXMl(@PathVariable Long soknadId) throws UnsupportedEncodingException {
         ByteArrayOutputStream ous = new ByteArrayOutputStream();

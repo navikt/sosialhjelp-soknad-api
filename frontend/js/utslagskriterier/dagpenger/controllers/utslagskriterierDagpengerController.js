@@ -1,5 +1,5 @@
 angular.module('nav.utslagskriterierDagpenger', [])
-    .controller('utslagskritererDagpengerCtrl', ['$scope', 'data', '$location', 'soknadService', 'sjekkUtslagskriterier', function ($scope, data, $location, soknadService, sjekkUtslagskriterier) {
+    .controller('utslagskritererDagpengerCtrl', function ($scope, data, $location, soknadService, sjekkUtslagskriterier, $routeParams) {
         $scope.utslagskriterier = data.utslagskriterier;
         $scope.utslagskriterier.harlestbrosjyre = false;
 
@@ -48,8 +48,11 @@ angular.module('nav.utslagskriterierDagpenger', [])
         };
 
         $scope.kravForDagpengerOppfylt = function () {
-            if (sjekkUtslagskriterier.erOppfylt()) {
-                $location.path("/routing");
+            if (sjekkUtslagskriterier.erOppfylt() && erIkkeFortsattSenereSoknad()) {
+                $location.path("/routing/dagpenger");
+            } else if(sjekkUtslagskriterier.erOppfylt() && erFortsattSenereSoknad()) {
+                var soknad = soknadService.hentMedBehandlingsId({behandlingsId: $routeParams.behandlingsId});
+                console.log(soknad);
             }
         };
 
@@ -85,10 +88,18 @@ angular.module('nav.utslagskriterierDagpenger', [])
             return !$scope.bosattINorge();
         };
 
-        function tilRoutingForGjenopptak() {
-            $location.path("/routing");
+        function erFortsattSenereSoknad() {
+            return $routeParams.behandlingsId !== undefined;
         }
-    }])
+
+        function erIkkeFortsattSenereSoknad() {
+            return !erFortsattSenereSoknad();
+        }
+
+        function tilRoutingForGjenopptak() {
+            $location.path("/routing/dagpenger");
+        }
+    })
     .factory('sjekkUtslagskriterier', ['data', function (data) {
         function registrertArbeidssoker() {
             return data.utslagskriterier.registrertArbeidssøker === 'REGISTRERT';
