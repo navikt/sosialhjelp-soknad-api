@@ -93,6 +93,9 @@ public class StandardKodeverk implements Kodeverk {
     }
 
     private String formaterLand(String land) {
+        if(land == null) {
+            return land;
+        }
         String formaterMedSpace = setUpperCaseBeforeRegex(land.toLowerCase(), " ");
         String formaterMedDash = setUpperCaseBeforeRegex(formaterMedSpace, "-");
         String formaterMedSlash = setUpperCaseBeforeRegex(formaterMedDash, "/");
