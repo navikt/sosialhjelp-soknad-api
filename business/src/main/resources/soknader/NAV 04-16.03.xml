@@ -1327,6 +1327,9 @@
         <property>permitteringsperiodeTittel</property>
         <skjemaNummer>G2</skjemaNummer>
         <flereTillatt>true</flereTillatt>
+        <ekstraValg>
+            <valg>AlleredeSendt</valg>
+        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>4</id>
