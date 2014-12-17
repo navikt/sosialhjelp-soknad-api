@@ -58,7 +58,6 @@ angular.module('nav.feilmeldinger', [])
 
                 scope.fjernFeilmeldingerSomErFikset = function () {
                     var fortsattFeilListe = [];
-
                     angular.forEach(ctrl.$error, function (verdi, feilNokkel) {
                         fortsattFeilListe = fortsattFeilListe.concat(leggTilFeilSomFortsattSkalVises(verdi, feilNokkel, []));
                     });

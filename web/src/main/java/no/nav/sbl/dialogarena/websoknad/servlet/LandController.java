@@ -10,11 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -46,7 +42,11 @@ public class LandController {
             Map<String, String> norge = new LinkedHashMap<>();
             norge.put("text", "Norge");
             norge.put("value", "NOR");
+
+            List<Map<String, String>> alleAndreLand = landliste;
+            landliste = new ArrayList<>();
             landliste.add(norge);
+            landliste.addAll(alleAndreLand);
         }
         Map<String, List<Map<String, String>>> resultMap = new LinkedHashMap<>();
         resultMap.put("result", landliste);
