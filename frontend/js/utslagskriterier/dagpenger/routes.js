@@ -19,15 +19,32 @@ angular.module('utslagskriterierDagpenger.routes', ['ngRoute', 'nav.common.route
                     config: function (ConfigResolver) {
                         return ConfigResolver;
                     },
-                    utslagskriterier: function(UtslagskriterierResolver) {
+                    utslagskriterier: function (UtslagskriterierResolver) {
                         return UtslagskriterierResolver;
                     },
-                    soknadMetadata: function(SoknadMetadataResolver) {
+                    soknadMetadata: function (SoknadMetadataResolver) {
                         return SoknadMetadataResolver;
                     }
                 }
             })
-            .when('/routing', {
+            .when('/:behandlingsId', {
+                templateUrl: '../views/utslagskriterier/dagpenger/utslagskritererDagpenger.html',
+                resolve: {
+                    cms: function (CmsResolver) {
+                        return CmsResolver;
+                    },
+                    config: function (ConfigResolver) {
+                        return ConfigResolver;
+                    },
+                    utslagskriterier: function (UtslagskriterierResolver) {
+                        return UtslagskriterierResolver;
+                    },
+                    soknadMetadata: function (SoknadMetadataResolver) {
+                        return SoknadMetadataResolver;
+                    }
+                }
+            })
+            .when('/routing/dagpenger', {
                 templateUrl: '../views/utslagskriterier/dagpenger/routingForGjenopptak.html',
                 resolve: {
                     cms: function (CmsResolver) {
