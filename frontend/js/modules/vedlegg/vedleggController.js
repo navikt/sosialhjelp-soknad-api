@@ -115,7 +115,7 @@ angular.module('nav.vedlegg.controller', [])
             if(verdiErIkkeTom(forventning.skjemanummerTillegg)) {
                 cmsKey += "." + forventning.skjemanummerTillegg;
             }
-            return cmsKey + '.bekrefte'
+            return cmsKey + '.bekrefte';
         }
 
         $scope.skalViseNesteKnapp = function(forventning, erSiste) {
