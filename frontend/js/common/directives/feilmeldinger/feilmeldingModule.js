@@ -46,6 +46,8 @@ angular.module('nav.feilmeldinger', [])
                             scrollToElement(elem, 100);
                         }, 1);
                     }
+
+                    scope.broadcastValideringTilSubforms(ctrl);
                     scope.$broadcast(eventString);
                     return ctrl.$valid;
                 };
@@ -123,6 +125,15 @@ angular.module('nav.feilmeldinger', [])
                     return feilmelding.elem && feilmelding.elem.length > 0;
                 };
 
+                scope.broadcastValideringTilSubforms = function(controller) {
+                    angular.forEach(controller.$error, function(verdi) {
+                        if(Array.isArray(verdi)){
+                            angular.forEach(verdi, function(subform) {
+                                scope.$broadcast("RUN_VALIDATION" + subform.$name);
+                            })
+                        }
+                    })
+                }
 
                 /*
                  * Dersom vi har en egendefinert feil med der $skalVisesAlene er satt til true så skal kun denne feilmeldingen vises. I det tilfellet fjernes alle andre feilmeldinger
