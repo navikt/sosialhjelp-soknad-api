@@ -1228,7 +1228,7 @@
         <property>arbeidsgivernavn</property>
         <onProperty>rotasjonskiftturnus</onProperty>
         <onValues>
-            <value>Ja, jeg jobber rotasjon</value>
+            <value>jarotasjon</value>
         </onValues>
         <flereTillatt>true</flereTillatt>
     </vedlegg>

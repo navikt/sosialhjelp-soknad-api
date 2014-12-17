@@ -164,11 +164,11 @@
 
                 {{#skalViseRotasjonTurnusSporsmaal}}
                     <p>{{ hentTekst "arbeidsforhold.rotasjonskiftturnus.sporsmaal" }}</p>
-                    <li class="kulepunkt">
-                        <p class="rotasjonturnus">{{ properties.rotasjonskiftturnus }}</p>
-                    </li>
 
-                    {{#hvisLikCmsTekst properties.rotasjonskiftturnus "arbeidsforhold.rotasjonskiftturnus.sporsmaal.alternativ.jarotasjon"}}
+                    {{#hvisLik properties.rotasjonskiftturnus "jarotasjon"}}
+                        <li class="kulepunkt">
+                            <p class="rotasjonturnus">{{hentTekst "arbeidsforhold.rotasjonskiftturnus.sporsmaal.alternativ.jarotasjon"}}</p>
+                        </li>
                         <li class="kulepunkt">
                             <p class="rotasjonturnus">
                                 <span>{{hentTekst "arbeidsforhold.rotasjonskiftturnus.rotasjon.arbeidsdager"}}</span>
@@ -181,7 +181,19 @@
                                 <span>{{ properties.avspaseringsdager }}</span>
                             </p>
                         </li>
-                    {{/hvisLikCmsTekst}}
+                    {{/hvisLik}}
+
+                    {{#hvisLik properties.rotasjonskiftturnus "jaturnus"}}
+                        <li class="kulepunkt">
+                            <p class="rotasjonturnus">{{hentTekst "arbeidsforhold.rotasjonskiftturnus.sporsmaal.alternativ.jaturnus"}}</p>
+                        </li>
+                    {{/hvisLik}}
+
+                    {{#hvisLik properties.rotasjonskiftturnus "nei"}}
+                        <li class="kulepunkt">
+                            <p class="rotasjonturnus">{{hentTekst "arbeidsforhold.rotasjonskiftturnus.sporsmaal.alternativ.nei"}}</p>
+                        </li>
+                    {{/hvisLik}}
                 {{/skalViseRotasjonTurnusSporsmaal}}
             </ul>
         </td>
