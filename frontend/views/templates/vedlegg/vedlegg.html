@@ -147,6 +147,13 @@
                                                    data-aktiv-feilmelding>
                                             <label for="{{$index}}vedleggAlleredeSendtRadio" data-ng-bind-html="'vedlegg.faktum.vedleggalleredesendt' | cmstekst"></label>
                                             <span data-nav-hjelpetekstelement inline="true" data-tittel="{{ 'vedlegg.faktum.vedleggalleredesendt.hjelpetekst.tittel' | cmstekst }}" data-tekst="{{ 'vedlegg.faktum.vedleggalleredesendt.hjelpetekst.tekst' | cmstekst}}"></span>
+
+                                            <div data-ng-if="forventning.innsendingsvalg == 'VedleggAlleredeSendt'">
+                                                <div data-vedlegg-text-input
+                                                     data-forventning="forventning"
+                                                     data-nokkel="vedlegg.behandlet.vedleggAlleredeSendt.fritekst"
+                                                     data-maxlengde="200"></div>
+                                            </div>
                                         </div>
 
                                         <input type="hidden" class="hidden-vedlegg" data-ng-model="hiddenFelt.value"
