@@ -116,7 +116,7 @@ angular.module('nav.vedlegg.controller', [])
                 cmsKey += "." + forventning.skjemanummerTillegg;
             }
             return cmsKey + '.bekrefte';
-        }
+        };
 
         $scope.skalViseNesteKnapp = function(forventning, erSiste) {
             return !(($scope.erEkstraVedlegg(forventning) && forventning.innsendingsvalg !== 'LastetOpp') || erSiste);
