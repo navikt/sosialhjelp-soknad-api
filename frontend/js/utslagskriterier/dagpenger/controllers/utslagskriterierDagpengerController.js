@@ -51,8 +51,10 @@ angular.module('nav.utslagskriterierDagpenger', [])
             if (sjekkUtslagskriterier.erOppfylt() && erIkkeFortsattSenereSoknad()) {
                 $location.path("/routing/dagpenger");
             } else if(sjekkUtslagskriterier.erOppfylt() && erFortsattSenereSoknad()) {
-                var soknad = soknadService.hentMedBehandlingsId({behandlingsId: $routeParams.behandlingsId});
-                console.log(soknad);
+                console.log($routeParams.behandlingsId);
+                soknadService.hentMedBehandlingsId({behandlingId: $routeParams.behandlingsId}).then(function(resultat) {
+                    console.log(resultat);
+                });
             }
         };
 
