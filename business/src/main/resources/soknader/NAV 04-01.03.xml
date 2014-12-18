@@ -1081,7 +1081,8 @@
     <vedlegg>
         <id>4</id>
         <faktum>arbeidsforhold</faktum>
-        <skjemaNummer>T8|sagtoppavarbeidsgiver</skjemaNummer>
+        <skjemaNummer>T8</skjemaNummer>
+        <skjemanummerTillegg>sagtoppavarbeidsgiver</skjemanummerTillegg>
         <property>arbeidsgivernavn</property>
         <onProperty>type</onProperty>
         <onValues>
@@ -1092,7 +1093,8 @@
     <vedlegg>
         <id>4</id>
         <faktum>arbeidsforhold</faktum>
-        <skjemaNummer>T8|kontraktutgaatt</skjemaNummer>
+        <skjemaNummer>T8</skjemaNummer>
+        <skjemanummerTillegg>kontraktutgaatt</skjemanummerTillegg>
         <property>arbeidsgivernavn</property>
         <onProperty>type</onProperty>
         <onValues>
@@ -1103,7 +1105,8 @@
     <vedlegg>
         <id>4</id>
         <faktum>arbeidsforhold</faktum>
-        <skjemaNummer>T8|sagtoppselv</skjemaNummer>
+        <skjemaNummer>T8</skjemaNummer>
+        <skjemanummerTillegg>sagtoppselv</skjemanummerTillegg>
         <property>arbeidsgivernavn</property>
         <onProperty>type</onProperty>
         <onValues>
@@ -1114,7 +1117,8 @@
     <vedlegg>
         <id>4</id>
         <faktum>arbeidsforhold</faktum>
-        <skjemaNummer>T8|redusertarbeidstid</skjemaNummer>
+        <skjemaNummer>T8</skjemaNummer>
+        <skjemanummerTillegg>redusertarbeidstid</skjemanummerTillegg>
         <property>arbeidsgivernavn</property>
         <onProperty>type</onProperty>
         <onValues>
@@ -1125,7 +1129,8 @@
     <vedlegg>
         <id>4</id>
         <faktum>arbeidsforhold</faktum>
-        <skjemaNummer>T8|avskjediget</skjemaNummer>
+        <skjemaNummer>T8</skjemaNummer>
+        <skjemanummerTillegg>avskjediget</skjemanummerTillegg>
         <property>arbeidsgivernavn</property>
         <onProperty>type</onProperty>
         <onValues>

@@ -64,7 +64,7 @@
                                 </div>
                             </div>
                             <h4 data-ng-if="!erEkstraVedlegg(forventning)" class="info-liste"
-                                data-ng-bind-html="'Dagpenger.vedlegg.' + forventning.skjemaNummer + '.bekrefte' | cmstekst"></h4>
+                                data-ng-bind-html="getCmsKeyForForventning(forventning) | cmstekst"></h4>
 
                             <div class="spm-knapper send-valg checkboxAsRadio form-linje knapp"
                                  data-ng-if="!vedleggEr(forventning, 'LastetOpp')"

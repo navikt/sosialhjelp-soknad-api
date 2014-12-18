@@ -19,6 +19,7 @@ public class SoknadVedlegg implements Serializable {
     private Boolean forSystemfaktum;
     private Boolean flereTillatt = false;
     private String skjemaNummer;
+    private String skjemanummerTillegg;
     private String property;
     private Boolean inverted = false;
     private String oversetting;
@@ -56,15 +57,16 @@ public class SoknadVedlegg implements Serializable {
         return skjemaNummer;
     }
 
-    public String getSkjemaNummerFiltrert() {
-        if (getSkjemaNummer() != null && getSkjemaNummer().contains("|")) {
-            return getSkjemaNummer().substring(0, getSkjemaNummer().indexOf("|"));
-        }
-        return getSkjemaNummer();
-    }
-
     public void setSkjemaNummer(String skjemaNummer) {
         this.skjemaNummer = skjemaNummer;
+    }
+
+    public String getSkjemanummerTillegg() {
+        return skjemanummerTillegg;
+    }
+
+    public void setSkjemanummerTillegg(String tillegg) {
+        this.skjemanummerTillegg = tillegg;
     }
 
     public String getProperty() {
