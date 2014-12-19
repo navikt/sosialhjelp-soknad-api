@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.common.kodeverk.JsonKodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.ConfigService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.StartDatoService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.MockConsumerConfig;
@@ -64,6 +65,11 @@ public class TestApplicationConfig {
     @Bean
     public ConfigService configService() {
         return new ConfigService();
+    }
+
+    @Bean
+    public FaktaService faktaService() {
+        return new FaktaService();
     }
 
     @Bean
