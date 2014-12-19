@@ -44,7 +44,7 @@ public class UtslagskriterierController {
             utslagskriterierResultat.put("registrertAdresseGyldigFra", personalia.getGjeldendeAdresse().getGyldigFra());
             utslagskriterierResultat.put("registrertAdresseGyldigTil", personalia.getGjeldendeAdresse().getGyldigTil());
         } catch (Exception e) {
-            logger.error("Kunne ikke hente personalia" + e.getMessage());
+            logger.error("Kunne ikke hente personalia", e);
             utslagskriterierResultat.put("error", e.getMessage());
         }
         return utslagskriterierResultat;
