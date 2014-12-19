@@ -12,6 +12,7 @@ angular.module('utslagskriterierDagpenger.routes', ['ngRoute', 'nav.common.route
             })
             .when('/', {
                 templateUrl: '../views/utslagskriterier/dagpenger/utslagskritererDagpenger.html',
+                controller: 'utslagskritererDagpengerCtrl',
                 resolve: {
                     cms: function (CmsResolver) {
                         return CmsResolver;
@@ -24,11 +25,15 @@ angular.module('utslagskriterierDagpenger.routes', ['ngRoute', 'nav.common.route
                     },
                     soknadMetadata: function (SoknadMetadataResolver) {
                         return SoknadMetadataResolver;
+                    },
+                    soknad: function() {
+                        return {};
                     }
                 }
             })
             .when('/:behandlingsId', {
                 templateUrl: '../views/utslagskriterier/dagpenger/utslagskritererDagpenger.html',
+                controller: 'utslagskritererDagpengerCtrl',
                 resolve: {
                     cms: function (CmsResolver) {
                         return CmsResolver;
@@ -41,6 +46,9 @@ angular.module('utslagskriterierDagpenger.routes', ['ngRoute', 'nav.common.route
                     },
                     soknadMetadata: function (SoknadMetadataResolver) {
                         return SoknadMetadataResolver;
+                    },
+                    soknad: function(soknadService, $route) {
+                        return soknadService.hentMedBehandlingsId({behandlingsId: $route.current.params.behandlingsId}).$promise;
                     }
                 }
             })
