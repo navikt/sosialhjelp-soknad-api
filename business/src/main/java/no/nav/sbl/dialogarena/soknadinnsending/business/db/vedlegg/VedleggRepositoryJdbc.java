@@ -112,7 +112,7 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
     public void lagreVedleggMedData(final Long soknadId, final Long vedleggId, final Vedlegg vedlegg) {
 
         try {
-            getJdbcTemplate().update("update vedlegg set innsendingsvalg = ?, storrelse = ?, antallsider = ?, aarsak = ? data = ? where soknad_id = ? and vedlegg_id = ?", new PreparedStatementSetter() {
+            getJdbcTemplate().update("update vedlegg set innsendingsvalg = ?, storrelse = ?, antallsider = ?, aarsak = ?, data = ? where soknad_id = ? and vedlegg_id = ?", new PreparedStatementSetter() {
                 @Override
                 public void setValues(PreparedStatement preparedStatement) throws SQLException {
                     preparedStatement.setString(1, vedlegg.getInnsendingsvalg().toString());
