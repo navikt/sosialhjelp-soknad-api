@@ -127,7 +127,9 @@ public class FaktaService {
 
     private void oppdaterOgLagreVedlegg(SoknadStruktur struktur, SoknadVedlegg soknadVedlegg, Faktum faktum) {
         Long faktumId = soknadVedlegg.getFlereTillatt() ? faktum.getFaktumId() : null;
-        Vedlegg vedlegg = vedleggRepository.hentVedleggForskjemaNummer(faktum.getSoknadId(), faktumId, soknadVedlegg.getSkjemaNummer());
+        Vedlegg vedlegg = vedleggRepository.hentVedleggForskjemaNummerMedTillegg(
+                faktum.getSoknadId(), faktumId, soknadVedlegg.getSkjemaNummer(), soknadVedlegg.getSkjemanummerTillegg()
+        );
         Faktum parentFaktum = repository.hentFaktum(faktum.getSoknadId(), faktum.getParrentFaktum());
 
         if (soknadVedlegg.trengerVedlegg(faktum) && erParentAktiv(soknadVedlegg.getFaktum(), parentFaktum)) {
@@ -164,7 +166,12 @@ public class FaktaService {
         Vedlegg vedlegg = v;
         if (vedlegg == null) {
             Long faktumId = soknadVedlegg.getFlereTillatt() ? faktum.getFaktumId() : null;
-            vedlegg = new Vedlegg(faktum.getSoknadId(), faktumId, soknadVedlegg.getSkjemaNummer(), Vedlegg.Status.VedleggKreves);
+            vedlegg = new Vedlegg()
+                    .medSoknadId(faktum.getSoknadId())
+                    .medFaktumId(faktumId)
+                    .medSkjemaNummer(soknadVedlegg.getSkjemaNummer())
+                    .medSkjemanummerTillegg(soknadVedlegg.getSkjemanummerTillegg())
+                    .medInnsendingsvalg(Vedlegg.Status.VedleggKreves);
             vedlegg.setVedleggId(vedleggRepository.opprettVedlegg(vedlegg, null));
         }
         vedlegg.oppdatertInnsendtStatus();

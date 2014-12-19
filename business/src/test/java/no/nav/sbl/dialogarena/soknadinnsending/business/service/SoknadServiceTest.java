@@ -265,11 +265,7 @@ public class SoknadServiceTest {
         assertThat(soknadService.hentSoknadEier(1L), is(equalTo("123")));
     }
 
-
-
-
-
-
+    
     @Test
     public void skalStarteSoknad() {
         DateTimeUtils.setCurrentMillisFixed(System.currentTimeMillis());

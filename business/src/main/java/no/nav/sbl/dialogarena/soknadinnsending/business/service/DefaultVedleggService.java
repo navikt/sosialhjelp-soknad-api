@@ -290,7 +290,7 @@ public class DefaultVedleggService implements VedleggService {
 
     private void medKodeverk(Vedlegg vedlegg) {
         try {
-            Map<Kodeverk.Nokkel, String> koder = kodeverk.getKoder(vedlegg.getSkjemaNummerFiltrert());
+            Map<Kodeverk.Nokkel, String> koder = kodeverk.getKoder(vedlegg.getSkjemaNummer());
             for (Map.Entry<Kodeverk.Nokkel, String> nokkelEntry : koder.entrySet()) {
                 if (nokkelEntry.getKey().toString().contains("URL")) {
                     vedlegg.leggTilURL(nokkelEntry.getKey().toString(), koder.get(nokkelEntry.getKey()));
