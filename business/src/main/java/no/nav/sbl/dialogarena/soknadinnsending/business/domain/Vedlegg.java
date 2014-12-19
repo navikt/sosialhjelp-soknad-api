@@ -24,6 +24,7 @@ public class Vedlegg {
     private Long soknadId;
     private Long faktumId;
     private String skjemaNummer;
+    private String skjemanummerTillegg;
     private Status innsendingsvalg;
     private Status opprinneligInnsendingsvalg;
     private String navn = "";
@@ -62,6 +63,11 @@ public class Vedlegg {
 
     public Vedlegg medSkjemaNummer(String skjemaNummer) {
         setSkjemaNummer(skjemaNummer);
+        return this;
+    }
+
+    public Vedlegg medSkjemanummerTillegg(String tillegg) {
+        setSkjemanummerTillegg(tillegg);
         return this;
     }
 
@@ -189,6 +195,14 @@ public class Vedlegg {
         this.skjemaNummer = skjemaNummer;
     }
 
+    public String getSkjemanummerTillegg() {
+        return this.skjemanummerTillegg;
+    }
+
+    public void setSkjemanummerTillegg(String tillegg) {
+        this.skjemanummerTillegg = tillegg;
+    }
+
     public String getFillagerReferanse() {
         return fillagerReferanse;
     }
@@ -301,23 +315,9 @@ public class Vedlegg {
         }
     }
 
-    public String getSkjemaNummerFiltrert() {
-        if (getSkjemaNummer() != null && getSkjemaNummer().contains("|")) {
-            return getSkjemaNummer().substring(0, getSkjemaNummer().indexOf("|"));
-        }
-        return getSkjemaNummer();
-    }
-
     @JsonIgnore
     public String lagFilNavn() {
-        return getSkjemaNummer().equals("N6") ? getNavn() : getSkjemaNummerFiltrert();
-    }
-
-    public String getSkjemanummerTillegg() {
-        if (getSkjemaNummer() != null && getSkjemaNummer().contains("|")) {
-            return getSkjemaNummer().substring(getSkjemaNummer().indexOf("|") + 1, getSkjemaNummer().length());
-        }
-        return "";
+        return getSkjemaNummer().equals("N6") ? getNavn() : getSkjemaNummer();
     }
 
     public static final Predicate<Vedlegg> ER_ANNET_VEDLEGG = new Predicate<Vedlegg>() {

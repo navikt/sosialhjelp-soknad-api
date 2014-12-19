@@ -1,16 +1,22 @@
-<div turnusblokk-har-rotasjon>
+<div>
     <h4 data-ng-bind-html="'arbeidsforhold.rotasjonskiftturnus.sporsmaal' | cmstekst"></h4>
     <ul>
-        <li>
-            <p data-ng-bind-html="arbeidsforhold.properties.rotasjonskiftturnus"></p>
+        <li data-ng-if="arbeidsforhold.properties.rotasjonskiftturnus == 'jarotasjon'">
+            <p data-ng-bind-html="'arbeidsforhold.rotasjonskiftturnus.sporsmaal.alternativ.jarotasjon' | cmstekst"></p>
         </li>
-        <li data-ng-if="harValgtRotasjon(arbeidsforhold)">
+        <li data-ng-if="arbeidsforhold.properties.rotasjonskiftturnus == 'jarotasjon'">
             <span data-ng-bind-html="'arbeidsforhold.rotasjonskiftturnus.rotasjon.arbeidsdager' | cmstekst"></span>
             <span data-ng-bind-html="arbeidsforhold.properties.arbeidsdager"></span>
         </li>
-        <li data-ng-if="harValgtRotasjon(arbeidsforhold)">
+        <li data-ng-if="arbeidsforhold.properties.rotasjonskiftturnus == 'jarotasjon'">
             <span data-ng-bind-html="'arbeidsforhold.rotasjonskiftturnus.rotasjon.avspaseringsdager' | cmstekst"></span>
             <span data-ng-bind-html="arbeidsforhold.properties.avspaseringsdager"></span>
+        </li>
+        <li data-ng-if="arbeidsforhold.properties.rotasjonskiftturnus == 'jaturnus'">
+            <p data-ng-bind-html="'arbeidsforhold.rotasjonskiftturnus.sporsmaal.alternativ.jaturnus' | cmstekst"></p>
+        </li>
+        <li data-ng-if="arbeidsforhold.properties.rotasjonskiftturnus == 'nei'">
+            <p data-ng-bind-html="'arbeidsforhold.rotasjonskiftturnus.sporsmaal.alternativ.nei' | cmstekst"></p>
         </li>
     </ul>
 </div>
