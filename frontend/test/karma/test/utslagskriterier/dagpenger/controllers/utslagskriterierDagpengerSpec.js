@@ -205,7 +205,7 @@
             it('soknadErFerdigstilt skal returnere false hvis data.soknad sin status ikke er ferdig', function () {
                 expect(scope.soknadErFerdigstilt()).toEqual(false);
             });
-            it('kravForDagpengerOppfylt skal endre pathen til routing/dagpenger nar utslagskriteriene ikke inntreffer', function () {
+            it('redirectTilRiktigSideHvisKravForDagpengerOppfylt skal endre pathen til routing/dagpenger nar utslagskriteriene ikke inntreffer', function () {
                 spyOn(location, 'path');
                 scope.fortsettLikevel(event);
                 expect(location.path).toHaveBeenCalledWith("/routing/dagpenger");
@@ -299,7 +299,7 @@
 
         describe('Utslagskriterier med fortsettSenere fra gjenopptak', function () {
             it('skal redirecte til gjenopptakurl med delstegstatus søknad', function () {
-                scope.kravForDagpengerOppfylt();
+                scope.redirectTilRiktigSideHvisKravForDagpengerOppfylt();
                 expect(window.redirectTilUrl).toHaveBeenCalledWith("skjema/NAV04-16.03#/123/vedlegg");
             });
         });
@@ -391,7 +391,7 @@
 
         describe('Utslagskriterier med fortsettSenere fra gjenopptak', function () {
             it('skal redirecte til gjenopptakurl med delstegstatus søknad', function () {
-                scope.kravForDagpengerOppfylt();
+                scope.redirectTilRiktigSideHvisKravForDagpengerOppfylt();
                 expect(window.redirectTilUrl).not.toHaveBeenCalledWith("skjema/NAV04-16.03#/123/oppsummering");
                 scope.fortsettLikevel(event);
                 expect(window.redirectTilUrl).toHaveBeenCalledWith("skjema/NAV04-16.03#/123/oppsummering");

@@ -53,7 +53,7 @@ angular.module('nav.utslagskriterierDagpenger', [])
             }
         };
 
-        $scope.kravForDagpengerOppfylt = function () {
+        $scope.redirectTilRiktigSideHvisKravForDagpengerOppfylt = function () {
             if (sjekkUtslagskriterier.erOppfylt()) {
                 if (erIkkeFortsattSenereSoknad()) {
                     $location.path("/routing/dagpenger");
@@ -77,8 +77,6 @@ angular.module('nav.utslagskriterierDagpenger', [])
                     delsteg = 'oppsummering';
                     break;
                 case 'OPPRETTET':
-                    delsteg = 'soknad';
-                    break;
                 case 'UTFYLLING':
                     delsteg = 'soknad';
                     break;
@@ -134,7 +132,7 @@ angular.module('nav.utslagskriterierDagpenger', [])
             $location.path("/routing/dagpenger");
         }
 
-        $scope.kravForDagpengerOppfylt();
+        $scope.redirectTilRiktigSideHvisKravForDagpengerOppfylt();
     })
     .factory('sjekkUtslagskriterier', ['data', function (data) {
         function registrertArbeidssoker() {
