@@ -108,16 +108,19 @@
         }
     }
     &.disabled {
-      .datepicker-input {
-        background-color: #f1f1f1;
-        border: 1px solid #b1b3b5;
-      }
+        .datepicker-input {
+            background-color: #f1f1f1;
+            border: 1px solid #b1b3b5;
+          }
 
-      label {
-        .apne-datepicker {
-          background-image: url(../img/kalender_disabled.svg);
+        label {
+            .apne-datepicker {
+                background-image: url(../img/kalender_disabled.svg);
+                &:hover {
+                    background-image: url(../img/kalender_disabled.svg);
+                }
+            }
         }
-      }
     }
 }
 
