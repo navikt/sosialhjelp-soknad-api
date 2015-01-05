@@ -31,6 +31,7 @@ angular.module('nav.feilmeldinger', [])
             link: function postLink(scope, elem, attrs, ctrl) {
                 var eventString = 'RUN_VALIDATION' + ctrl.$name;
 
+                scope.skalViseFlereLikeFeilmelding = attrs['godtaLikeFeilmeldinger'] === "true";
                 scope.feilmeldinger = [];
                 scope.runValidation = function (skalScrolle) {
                     scope.feilmeldinger = [];
@@ -147,7 +148,7 @@ angular.module('nav.feilmeldinger', [])
                             scope.feilmeldinger = [feilmelding];
                             skalViseFlereFeilmeldinger = false;
                         } else if (skalViseFlereFeilmeldinger && feil && feilmelding) {
-                            leggTilFeilmeldingHvisIkkeAlleredeLagtTil(scope.feilmeldinger, feilmelding);
+                            leggTilFeilmeldinger(scope.feilmeldinger, feilmelding);
                         }
                     });
                     return skalViseFlereFeilmeldinger;
@@ -160,10 +161,18 @@ angular.module('nav.feilmeldinger', [])
                         if (feilmelding === undefined && feilErSubform(feil, feilNokkel)) {
                             leggTilFeilSomFortsattSkalVises(feil.$error[feilNokkel], feilNokkel, fortsattFeilListe);
                         } else if (feilmelding && scope.feilmeldinger.indexByValue(feilmelding.feil) > -1 && feil) {
-                            leggTilFeilmeldingHvisIkkeAlleredeLagtTil(fortsattFeilListe, feilmelding);
+                            leggTilFeilmeldinger(fortsattFeilListe, feilmelding);
                         }
                     });
                     return fortsattFeilListe;
+                }
+
+                function leggTilFeilmeldinger(feilListe, feilmelding) {
+                    if(scope.skalViseFlereLikeFeilmelding) {
+                        feilListe.push(feilmelding);
+                    } else {
+                        leggTilFeilmeldingHvisIkkeAlleredeLagtTil(feilListe, feilmelding);
+                    }
                 }
 
                 function leggTilFeilmeldingHvisIkkeAlleredeLagtTil(feilListe, feilmelding) {
