@@ -47,7 +47,8 @@ public class VedleggRowMapper implements RowMapper<Vedlegg> {
                 .medData(includeData ? rs.getBytes("data") : null)
                 .medOpprettetDato(rs.getTimestamp("opprettetdato").getTime())
                 .medInnsendingsvalg(innsendingsvalg)
-                .medOpprinneligInnsendingsvalg(opprinneligInnsendingsvalg);
+                .medOpprinneligInnsendingsvalg(opprinneligInnsendingsvalg)
+                .medAarsak(rs.getString("aarsak"));
 
         String skjemanummerFraDb = rs.getString("skjemaNummer");
         result.setSkjemaNummer(skjemanummerFraDb.split("\\|")[0]);

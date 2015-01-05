@@ -134,6 +134,7 @@ public class VedleggRepositoryJdbcTest {
                 .medFillagerReferanse("1234")
                 .medData(null)
                 .medOpprettetDato(DateTime.now().getMillis())
+                .medAarsak("")
                 .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
     }
 
