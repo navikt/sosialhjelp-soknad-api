@@ -1,5 +1,7 @@
 angular.module('nav.utslagskriterierDagpenger', [])
-    .controller('utslagskritererDagpengerCtrl', ['$scope', 'data', '$location', 'soknadService', 'sjekkUtslagskriterier', function ($scope, data, $location, soknadService, sjekkUtslagskriterier) {
+    .controller('utslagskritererDagpengerCtrl', function ($scope, data, $location, sjekkUtslagskriterier, soknad, $location, $routeParams) {
+        $scope.soknad = soknad;
+
         $scope.utslagskriterier = data.utslagskriterier;
         $scope.utslagskriterier.harlestbrosjyre = false;
 
@@ -44,17 +46,50 @@ angular.module('nav.utslagskriterierDagpenger', [])
 
         $scope.fortsettLikevel = function ($event) {
             $event.preventDefault();
-            tilRoutingForGjenopptak();
-        };
-
-        $scope.kravForDagpengerOppfylt = function () {
-            if (sjekkUtslagskriterier.erOppfylt()) {
-                $location.path("/routing");
+            if (erFortsattSenereSoknad()) {
+                redirectTilRiktigDelsteg();
+            } else {
+                tilRoutingForGjenopptak();
             }
         };
 
+        $scope.redirectTilRiktigSideHvisKravForDagpengerOppfylt = function () {
+            if (sjekkUtslagskriterier.erOppfylt()) {
+                if (erIkkeFortsattSenereSoknad()) {
+                    $location.path("/routing/dagpenger");
+                } else if (erFortsattSenereSoknad()) {
+                    if ($scope.soknad.skjemaNummer) {
+                        redirectTilRiktigDelsteg();
+                    } else {
+                        $location.path("/routing/dagpenger");
+                    }
+                }
+            }
+        };
+
+        function redirectTilRiktigDelsteg() {
+            var delsteg = "";
+            switch ($scope.soknad.delstegStatus) {
+                case 'SKJEMA_VALIDERT':
+                    delsteg = 'vedlegg';
+                    break;
+                case 'VEDLEGG_VALIDERT':
+                    delsteg = 'oppsummering';
+                    break;
+                case 'OPPRETTET':
+                case 'UTFYLLING':
+                    delsteg = 'soknad';
+                    break;
+            }
+
+            var currentUrl = location.href;
+            var soknadsUrl = currentUrl.substring(0, currentUrl.indexOf('utslagskriterier/')) + 'skjema/' + $scope.soknad.skjemaNummer.replace(" ", "") + '#/';
+
+            redirectTilUrl(soknadsUrl + $scope.soknad.brukerBehandlingId + "/" + delsteg);
+        }
+
         $scope.kravForDagpengerIkkeOppfylt = function () {
-            return !$scope.kravForDagpengerOppfylt() && $scope.soknadErIkkeFerdigstilt();
+            return !sjekkUtslagskriterier.erOppfylt() && $scope.soknadErIkkeFerdigstilt();
         };
 
         $scope.gyldigAlder = function () {
@@ -85,10 +120,20 @@ angular.module('nav.utslagskriterierDagpenger', [])
             return !$scope.bosattINorge();
         };
 
-        function tilRoutingForGjenopptak() {
-            $location.path("/routing");
+        function erFortsattSenereSoknad() {
+            return $routeParams.behandlingsId !== undefined;
         }
-    }])
+
+        function erIkkeFortsattSenereSoknad() {
+            return !erFortsattSenereSoknad();
+        }
+
+        function tilRoutingForGjenopptak() {
+            $location.path("/routing/dagpenger");
+        }
+
+        $scope.redirectTilRiktigSideHvisKravForDagpengerOppfylt();
+    })
     .factory('sjekkUtslagskriterier', ['data', function (data) {
         function registrertArbeidssoker() {
             return data.utslagskriterier.registrertArbeidssøker === 'REGISTRERT';

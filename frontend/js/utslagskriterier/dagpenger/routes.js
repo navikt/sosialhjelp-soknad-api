@@ -12,6 +12,7 @@ angular.module('utslagskriterierDagpenger.routes', ['ngRoute', 'nav.common.route
             })
             .when('/', {
                 templateUrl: '../views/utslagskriterier/dagpenger/utslagskritererDagpenger.html',
+                controller: 'utslagskritererDagpengerCtrl',
                 resolve: {
                     cms: function (CmsResolver) {
                         return CmsResolver;
@@ -19,15 +20,39 @@ angular.module('utslagskriterierDagpenger.routes', ['ngRoute', 'nav.common.route
                     config: function (ConfigResolver) {
                         return ConfigResolver;
                     },
-                    utslagskriterier: function(UtslagskriterierResolver) {
+                    utslagskriterier: function (UtslagskriterierResolver) {
                         return UtslagskriterierResolver;
                     },
-                    soknadMetadata: function(SoknadMetadataResolver) {
+                    soknadMetadata: function (SoknadMetadataResolver) {
                         return SoknadMetadataResolver;
+                    },
+                    soknad: function() {
+                        return {};
                     }
                 }
             })
-            .when('/routing', {
+            .when('/:behandlingsId', {
+                templateUrl: '../views/utslagskriterier/dagpenger/utslagskritererDagpenger.html',
+                controller: 'utslagskritererDagpengerCtrl',
+                resolve: {
+                    cms: function (CmsResolver) {
+                        return CmsResolver;
+                    },
+                    config: function (ConfigResolver) {
+                        return ConfigResolver;
+                    },
+                    utslagskriterier: function (UtslagskriterierResolver) {
+                        return UtslagskriterierResolver;
+                    },
+                    soknadMetadata: function (SoknadMetadataResolver) {
+                        return SoknadMetadataResolver;
+                    },
+                    soknad: function(soknadService, $route) {
+                        return soknadService.hentMedBehandlingsId({behandlingsId: $route.current.params.behandlingsId}).$promise;
+                    }
+                }
+            })
+            .when('/routing/dagpenger', {
                 templateUrl: '../views/utslagskriterier/dagpenger/routingForGjenopptak.html',
                 resolve: {
                     cms: function (CmsResolver) {
