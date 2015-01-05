@@ -2,12 +2,10 @@
     <ul class="liste-vannrett">
         <li>
             <a href="#" data-ng-click="slettArbeidsforhold(af, $index, $event)"
-               data-fokus-slettmoduler="arbeidsforhold" data-ng-bind-html=" 'arbeidsforhold.slettarbeidsforhold' | cmstekst"></a>
+               data-fokus-slettmoduler="arbeidsforhold" data-ng-bind-html=" 'arbeidsforhold.slettarbeidsforhold' | cmstekst" data-aria-label="'arbeidsforhold.slettarbeidsforhold' | cmstekst" data-aria-role="button"></a>
         </li>
         <li>
-            <a href="#" data-ng-click="endreArbeidsforhold(af, $index, $event)">
-                {{ 'arbeidsforhold.endrearbeidsforhold' | cmstekst }}
-            </a>
+            <a href="#" data-ng-click="endreArbeidsforhold(af, $index, $event)" data-ng-bind-html=" 'arbeidsforhold.endrearbeidsforhold' | cmstekst " data-aria-label=" 'arbeidsforhold.endrearbeidsforhold' | cmstekst" data-aria-role="button"></a>
         </li>
     </ul>
 </div>
