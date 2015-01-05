@@ -903,9 +903,6 @@
             <value>true</value>
         </onValues>
         <skjemaNummer>Y2</skjemaNummer>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>5</id>
@@ -914,9 +911,6 @@
             <value>true</value>
         </onValues>
         <skjemaNummer>Y2</skjemaNummer>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>5</id>
@@ -925,9 +919,6 @@
             <value>true</value>
         </onValues>
         <skjemaNummer>Y2</skjemaNummer>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>5</id>
@@ -936,9 +927,6 @@
             <value>true</value>
         </onValues>
         <skjemaNummer>Y2</skjemaNummer>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
 
     <vedlegg>
@@ -949,9 +937,6 @@
             <value>true</value>
         </onValues>
         <skjemaNummer>Y2</skjemaNummer>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>5</id>
@@ -960,9 +945,6 @@
             <value>true</value>
         </onValues>
         <skjemaNummer>Y2</skjemaNummer>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>5</id>
@@ -971,9 +953,6 @@
             <value>true</value>
         </onValues>
         <skjemaNummer>Y2</skjemaNummer>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>5</id>
@@ -982,9 +961,6 @@
             <value>true</value>
         </onValues>
         <skjemaNummer>Y2</skjemaNummer>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>5</id>
@@ -993,9 +969,6 @@
             <value>false</value>
         </onValues>
         <skjemaNummer>T9</skjemaNummer>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
 
     <vedlegg>
@@ -1005,9 +978,6 @@
             <value>avsluttetUtdanning</value>
         </onValues>
         <skjemaNummer>T2</skjemaNummer>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
 
     <vedlegg>
@@ -1017,9 +987,6 @@
             <value>true</value>
         </onValues>
         <skjemaNummer>T1</skjemaNummer>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>8</id>
@@ -1028,9 +995,6 @@
             <value>true</value>
         </onValues>
         <skjemaNummer>T1</skjemaNummer>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>8</id>
@@ -1039,9 +1003,6 @@
             <value>true</value>
         </onValues>
         <skjemaNummer>T1</skjemaNummer>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>8</id>
@@ -1050,9 +1011,6 @@
             <value>true</value>
         </onValues>
         <skjemaNummer>T1</skjemaNummer>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>8</id>
@@ -1061,9 +1019,6 @@
             <value>true</value>
         </onValues>
         <skjemaNummer>T1</skjemaNummer>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
 
     <vedlegg>
@@ -1073,9 +1028,6 @@
             <value>false</value>
         </onValues>
         <skjemaNummer>T3</skjemaNummer>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>3</id>
@@ -1085,9 +1037,6 @@
         </onValues>
         <skjemaNummer>N6</skjemaNummer>
         <flereTillatt>true</flereTillatt>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>3</id>
@@ -1096,9 +1045,6 @@
             <value>false</value>
         </onValues>
         <skjemaNummer>G4</skjemaNummer>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
 
     <vedlegg>
@@ -1110,9 +1056,6 @@
         <skjemaNummer>K1</skjemaNummer>
         <flereTillatt>true</flereTillatt>
         <oversetting>ytelser.${key}</oversetting>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>3</id>
@@ -1123,9 +1066,6 @@
         <skjemaNummer>K1</skjemaNummer>
         <flereTillatt>true</flereTillatt>
         <oversetting>ytelser.${key}</oversetting>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>3</id>
@@ -1136,9 +1076,6 @@
         <skjemaNummer>K1</skjemaNummer>
         <flereTillatt>true</flereTillatt>
         <oversetting>ytelser.${key}</oversetting>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>3</id>
@@ -1149,9 +1086,6 @@
         <skjemaNummer>K1</skjemaNummer>
         <flereTillatt>true</flereTillatt>
         <oversetting>ytelser.${key}</oversetting>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>3</id>
@@ -1162,9 +1096,6 @@
         <skjemaNummer>K1</skjemaNummer>
         <flereTillatt>true</flereTillatt>
         <oversetting>ytelser.${key}</oversetting>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>3</id>
@@ -1175,9 +1106,6 @@
         <skjemaNummer>K1</skjemaNummer>
         <flereTillatt>true</flereTillatt>
         <oversetting>ytelser.${key}</oversetting>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>3</id>
@@ -1188,9 +1116,6 @@
         <skjemaNummer>K1</skjemaNummer>
         <oversetting>ytelser.${key}</oversetting>
         <flereTillatt>true</flereTillatt>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>3</id>
@@ -1201,9 +1126,6 @@
         <skjemaNummer>K1</skjemaNummer>
         <oversetting>ytelser.${key}</oversetting>
         <flereTillatt>true</flereTillatt>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>8</id>
@@ -1212,9 +1134,6 @@
             <value>false</value>
         </onValues>
         <skjemaNummer>V6</skjemaNummer>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>6</id>
@@ -1227,9 +1146,6 @@
         </onValues>
         <forSystemfaktum>false</forSystemfaktum>
         <flereTillatt>true</flereTillatt>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>7</id>
@@ -1246,9 +1162,6 @@
         </onValues>
         <inverted>true</inverted>
         <forSystemfaktum>true</forSystemfaktum>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
 
     <vedlegg>
@@ -1262,9 +1175,6 @@
             <value>Sagt opp av arbeidsgiver</value>
         </onValues>
         <flereTillatt>true</flereTillatt>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>4</id>
@@ -1277,9 +1187,6 @@
             <value>Kontrakt utgått</value>
         </onValues>
         <flereTillatt>true</flereTillatt>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>4</id>
@@ -1292,9 +1199,6 @@
             <value>Sagt opp selv</value>
         </onValues>
         <flereTillatt>true</flereTillatt>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>4</id>
@@ -1307,9 +1211,6 @@
             <value>Redusert arbeidstid</value>
         </onValues>
         <flereTillatt>true</flereTillatt>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>4</id>
@@ -1322,9 +1223,6 @@
             <value>Avskjediget</value>
         </onValues>
         <flereTillatt>true</flereTillatt>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>4</id>
@@ -1332,9 +1230,6 @@
         <property>permitteringsperiodeTittel</property>
         <skjemaNummer>G2</skjemaNummer>
         <flereTillatt>true</flereTillatt>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>4</id>
@@ -1342,9 +1237,6 @@
         <skjemaNummer>O2</skjemaNummer>
         <property>arbeidsgivernavn</property>
         <flereTillatt>true</flereTillatt>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>4</id>
@@ -1356,9 +1248,6 @@
             <value>true</value>
         </onValues>
         <flereTillatt>true</flereTillatt>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>4</id>
@@ -1370,9 +1259,6 @@
             <value>Arbeidsgiver er konkurs</value>
         </onValues>
         <flereTillatt>true</flereTillatt>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>4</id>
@@ -1384,9 +1270,6 @@
             <value>Arbeidsgiver er konkurs</value>
         </onValues>
         <flereTillatt>true</flereTillatt>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>9</id>
@@ -1398,9 +1281,6 @@
             <value>true</value>
         </onValues>
         <flereTillatt>true</flereTillatt>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>9</id>
@@ -1412,9 +1292,6 @@
             <value>jarotasjon</value>
         </onValues>
         <flereTillatt>true</flereTillatt>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
     <vedlegg>
         <id>10</id>
@@ -1425,9 +1302,6 @@
         </onValues>
         <skjemaNummer>M6</skjemaNummer>
         <flereTillatt>true</flereTillatt>
-        <ekstraValg>
-            <valg>AlleredeSendt</valg>
-        </ekstraValg>
     </vedlegg>
 
     <vedleggsreferanse>G2</vedleggsreferanse>
