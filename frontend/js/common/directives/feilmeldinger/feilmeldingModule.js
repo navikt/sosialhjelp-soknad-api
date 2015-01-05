@@ -31,7 +31,7 @@ angular.module('nav.feilmeldinger', [])
             link: function postLink(scope, elem, attrs, ctrl) {
                 var eventString = 'RUN_VALIDATION' + ctrl.$name;
 
-                scope.skalViseFlereLikeFeilmelding = attrs['godtaLikeFeilmeldinger'] === "true";
+                scope.skalViseFlereLikeFeilmelding = attrs.godtaLikeFeilmeldinger === "true";
                 scope.feilmeldinger = [];
                 scope.runValidation = function (skalScrolle) {
                     scope.feilmeldinger = [];
@@ -130,10 +130,10 @@ angular.module('nav.feilmeldinger', [])
                         if(Array.isArray(verdi)){
                             angular.forEach(verdi, function(subform) {
                                 scope.$broadcast("RUN_VALIDATION" + subform.$name);
-                            })
+                            });
                         }
-                    })
-                }
+                    });
+                };
 
                 /*
                  * Dersom vi har en egendefinert feil med der $skalVisesAlene er satt til true så skal kun denne feilmeldingen vises. I det tilfellet fjernes alle andre feilmeldinger
