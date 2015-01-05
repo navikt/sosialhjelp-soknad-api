@@ -1,0 +1,33 @@
+<div class="form-linje textarea-container">
+    <div class="ekstra-spm-boks">
+        <h4 class="spm-sporsmal" data-ng-if="harSporsmal()">
+            <span data-ng-bind-html="sporsmal | cmstekst"></span>
+            <span data-nav-hjelpetekstelement
+                  data-ng-if="harHjelpetekst()"
+                  data-tittel="{{ hjelpetekst.tittel | cmstekst }}"
+                  data-tekst="{{ hjelpetekst.tekst | cmstekst }}">
+            </span>
+        </h4>
+        <label>
+            <span data-ng-bind-html=" label | cmstekst"></span>
+
+            <textarea data-ng-model="forventning.aarsak"
+                      data-error-messages="'{{ feilmelding }}'"
+                      data-ng-required="true"
+                      data-ng-trim="false"
+                      aria-controls="{{sporsmal}}"
+                      data-validate-textarea
+                      data-ng-blur="mistetFokus()"
+                      data-aktiv-feilmelding></textarea>
+
+            <span class="egen-linje" data-ng-show="harFokusOgFeil() === true">
+                <span class="tellertekst" data-ng-class="{negativtekstteller: counter < 0 }" aria-live="polite"
+                      id="{{sporsmal}}"> {{counter}} </span>
+                <span data-ng-if="counter < 0" data-ng-bind-html="negativtellertekst | cmstekst"></span>
+                <span data-ng-if="counter >= 0" data-ng-bind-html=" tellertekst | cmstekst"></span>
+            </span>
+        </label>
+
+        <span class="melding" data-ng-bind-html="feilmelding | cmstekst"></span>
+    </div>
+</div>

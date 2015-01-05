@@ -976,12 +976,12 @@
         <profile>
             <id>u1</id>
             <properties>
-                <flyway.user>sendsoknad</flyway.user>
-                <flyway.password>password</flyway.password>
+                <flyway.user>sendsok_u2</flyway.user>
+                <flyway.password>oq02k4qn2mxp</flyway.password>
                 <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
                 <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
                 <flyway.alias>henvendelseDS</flyway.alias>
-                <flyway.placeholders.url>jdbc:oracle:thin:@d32dbfl001.oera-t.local:1521:msbsu02
+                <flyway.placeholders.url>jdbc:oracle:thin:@d32dbfl002.oera-t.local:1521:sendu
                 </flyway.placeholders.url>
                 <flyway.locations>db/migration/${flyway.alias}</flyway.locations>
             </properties>
