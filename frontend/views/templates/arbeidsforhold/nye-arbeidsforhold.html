@@ -28,9 +28,11 @@
                     data-navlabel="nyearbeidsforhold.arbeidsidensist.false"
                     data-navfeilmelding="nyearbeidsforhold.arbeidsidensist.feilmelding">
 
-                <div data-navinfoboks data-infotekster="['nyearbeisforhold.nyttarbeidsforhold.infoboks']"></div>
-                <div data-arbeidsforhold-oppsummering></div>
-                <div data-arbeidsforhold-leggtil-knapper></div>
+                <div class="form-linje">
+                    <h4 class="spm-sporsmal" data-ng-bind-html="'nyearbeisforhold.nyttarbeidsforhold.infoboks' | cmstekst"></h4>
+                    <div data-arbeidsforhold-oppsummering></div>
+                    <div data-arbeidsforhold-leggtil-knapper></div>
+                </div>
             </div>
 
             <span class="melding" data-ng-bind-html="'nyearbeidsforhold.arbeidsidensist.feilmelding' | cmstekst"></span>
