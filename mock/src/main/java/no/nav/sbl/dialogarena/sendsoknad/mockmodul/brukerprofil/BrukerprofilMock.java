@@ -75,7 +75,7 @@ public class BrukerprofilMock {
         XMLHentKontaktinformasjonOgPreferanserResponse response = new XMLHentKontaktinformasjonOgPreferanserResponse();
         XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(true);
 
-        settAdresse(xmlBruker, "UTENLANDSK_ADRESSE");
+        settAdresse(xmlBruker, "BOSTEDSADRESSE");
         settSekundarAdresse(xmlBruker);
 
         response.setPerson(xmlBruker);
