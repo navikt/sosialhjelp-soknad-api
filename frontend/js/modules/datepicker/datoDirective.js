@@ -127,7 +127,9 @@ angular.module('nav.datepicker.dato', [])
                     };
 
                     scope.harFeil = function () {
-                        if (scope.navDatepicker()) {
+                        if (scope.disabled == 'true') {
+                            return false;
+                        } else if (scope.navDatepicker()) {
                             return harFeilMedNavDatepicker();
                         } else {
                             return harFeilMedDateInput();
