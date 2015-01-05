@@ -32,7 +32,7 @@ angular.module('nav.vedlegg.directive', [])
 
                     scope.lagreFaktum = function () {
                         scope.forventning.$save();
-                    }
+                    };
 
                     element.find('textarea').bind('focus', function () {
                         $timeout(function() {
@@ -61,7 +61,7 @@ angular.module('nav.vedlegg.directive', [])
                     };
                 }
             }
-        }
+        };
     })
     .directive('fjernRadioValg', function() {
         return {
