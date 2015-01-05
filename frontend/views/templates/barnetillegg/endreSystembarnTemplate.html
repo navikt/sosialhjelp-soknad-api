@@ -1,6 +1,6 @@
 <div data-modalside>
     <div class="vertikal barn-spm" data-ng-form="nyttBarnForm" data-ng-controller="BarneCtrl">
-        <a href="#/{{brukerBehandlingId}}/soknad" data-ng-click="avbrytBarnetilegg($event)" class="lukk" aria-label="{{ 'barnetillegg.sokerbarnetillegg.lukk.aria' | cmstekst }}"></a>
+        <a href="#/{{brukerBehandlingId}}/soknad" data-ng-click="avbrytBarnetilegg($event)" class="lukk" title="{{ 'barnetillegg.sokerbarnetillegg.lukk.aria' | cmstekst }}" aria-hidden="true"></a>
         <div data-form-errors></div>
 
         <div data-nav-faktum="barn" data-ikke-auto-lagre="true">
