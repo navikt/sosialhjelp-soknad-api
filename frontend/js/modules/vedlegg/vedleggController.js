@@ -122,11 +122,6 @@ angular.module('nav.vedlegg.controller', [])
             return !(($scope.erEkstraVedlegg(forventning) && forventning.innsendingsvalg !== 'LastetOpp') || erSiste);
         };
 
-        $scope.skalViseAlleredeSendtAlternativ = function(forventing) {
-            var vedlegg = $scope.finnVedleggMedSkjemanummer(forventing.skjemaNummer);
-            return (vedlegg && vedlegg.ekstraValg && vedlegg.ekstraValg.indexOf("AlleredeSendt") > -1);
-        };
-
         $scope.finnVedleggMedSkjemanummer = function(skjemanummer) {
             for(var i=0; i<$scope.soknadOppsett.vedlegg.length; i++) {
                 if($scope.soknadOppsett.vedlegg[i].skjemaNummer == skjemanummer) {

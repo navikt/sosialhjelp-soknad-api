@@ -135,13 +135,6 @@
                 expect(scope.validert.value).toEqual(false);
             });
 
-            it('skal ikke vise alternativet vedleggAlleredeSendt hvis dette ikke er satt til å vises', function() {
-                expect(scope.skalViseAlleredeSendtAlternativ(scope.forventning)).not.toBe(true);
-            });
-            it('skal vise alternativet vedleggAlleredeSendt hvis dette er satt til å vises', function() {
-                expect(scope.skalViseAlleredeSendtAlternativ(scope.forventningAlleredeSendt)).toBe(true);
-            });
-
             it('finnVedleggMedSkjemanummer skal returnere undefined om vedlegg med gitt skjemanummer ikke finnes', function() {
                 expect(scope.finnVedleggMedSkjemanummer("finnesIkke")).toBeUndefined();
             });
