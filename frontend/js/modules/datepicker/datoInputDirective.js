@@ -34,6 +34,14 @@ angular.module('nav.datepicker.datoinput', ['ui.bootstrap.datepicker'])
             scope.focus = function () {
                 scope.harFokus = true;
             };
+
+            scope.maxDate = scope.erFremtidigdatoTillatt === true ? fjernMaxdato() : new Date();
+
+            function fjernMaxdato() {
+                element.removeAttr("max-date");
+                return undefined;
+            }
+
         },
         controller: function($scope) {
             $scope.today = function() {
@@ -60,7 +68,6 @@ angular.module('nav.datepicker.datoinput', ['ui.bootstrap.datepicker'])
                 $event.stopPropagation();
 
                 $scope.opened = true;
-                console.log("controller - click - open")
             };
 
             $scope.dateOptions = {
