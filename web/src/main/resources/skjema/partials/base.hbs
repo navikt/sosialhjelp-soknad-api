@@ -10,12 +10,14 @@
             h2, h3, h4, h5, h6 { font-family: Modus, Arial, sans-serif; font-size: 13pt; }
             table   { border-collapse: collapse; width: 170mm; margin-bottom: 10mm; }
             table ul { list-style: none; padding-left: 0; margin-top: 0; margin-bottom: 0; }
+            table ul ul { margin-left: 16px }
+            table ul ul > p { font-weight: bold; }
             td      { vertical-align: middle; text-align: left; padding: 0; font-size: 10pt; }
             td:first-child { width: 3.5mm; vertical-align: top; }
-            td:last-child { width: 166.5mm; padding-bottom: 5px; }
+            td:last-child { width: 166.5mm; padding-bottom: 5px; padding-left: 10px; }
             h2 { page-break-after: avoid; }
             li p { margin-left: 2.55mm; margin-top: 0.5mm; padding-top: 0; margin-bottom: 0; padding-bottom: 0; }
-            ul > p { margin-top: 2.55mm; }
+            ul > p { margin-top: 2.55mm; margin-bottom: 6px; }
             .header { position: running(header); text-align: center; margin-bottom: 1cm; }
             .header span { font-family: Modus, Arial, sans-serif; display: inline-block; }
             .header .header-logo { position: absolute; left: 0; top: 8mm; width: 14mm; }
@@ -45,6 +47,7 @@
             .barn-navn { font-weight: bold; }
             .kulepunkt:before { content: "•"; font-size: 14pt; position: relative; top: -1px; vertical-align: top; }
             .brosjyre-signatur { border-top: .2pt solid #ccc; margin-top: 10mm; padding-top: 10mm; page-break-inside: avoid; }
+            .arbeidsforhold { margin-top: 7px; }
             .overskrift, .arbeidsforhold-arbeidsgiver, .arbeidsforhold-land { font-weight: bold; display: block; }
             .permitteringsperiode { display: inline-block; margin-bottom: 5px; }
             .rotasjonturnus { display: inline-block; margin-left: 15px; }
