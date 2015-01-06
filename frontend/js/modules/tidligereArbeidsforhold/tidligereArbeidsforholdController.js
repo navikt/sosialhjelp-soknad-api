@@ -6,7 +6,7 @@ angular.module('nav.tidligerearbeidsforhold.controller', [])
                 $scope.lukkTab('tidligerearbeidsforhold');
                 $scope.settValidert('tidligerearbeidsforhold');
             } else {
-                $scope.apneTab('tidligerarbeidsforhold');
+                $scope.apneTab('tidligerearbeidsforhold');
             }
         };
     });
