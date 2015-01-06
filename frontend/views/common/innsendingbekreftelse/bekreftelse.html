@@ -5,7 +5,7 @@
                 <h2 class="stor-ikon-infogronn-strek" data-ng-bind-html="cmsprefix.value +'.bekreftelse' | cmstekst"></h2>
 
                 <p data-ng-bind-html="cmsprefix.value +'.bekreftelse.informasjon' | cmstekst" data-ng-if="!fullfort.value"></p>
-                <div>
+                <div data-ng-if="!erEttersendelse.value">
                     <div class="form-linje" data-ng-if="!fullfort.value">
                         <label>
                             <span class="labeltekst" data-ng-bind-html="cmsprefix.value +'.bekreftelse.epost.label' | cmstekst"></span>
