@@ -127,7 +127,9 @@ angular.module('nav.datepicker.dato', [])
                     };
 
                     scope.harFeil = function () {
-                        if (scope.navDatepicker()) {
+                        if (scope.disabled == 'true') {
+                            return false;
+                        } else if (scope.navDatepicker()) {
                             return harFeilMedNavDatepicker();
                         } else {
                             return harFeilMedDateInput();
@@ -136,12 +138,11 @@ angular.module('nav.datepicker.dato', [])
 
                     function harFeilMedNavDatepicker() {
                         return scope.harRequiredFeil() || scope.harFormatteringsFeil() || scope.harTilDatoFeil() ||
-                            scope.erIkkeGyldigDato() ||scope.erUloveligFremtidigDato() && (scope.disabled === undefined ||
-                            scope.disabled === false);
+                            scope.erIkkeGyldigDato() || scope.erUloveligFremtidigDato();
                     }
 
                     function harFeilMedDateInput() {
-                        return scope.harRequiredFeil() || scope.harTilDatoFeil() && (scope.disabled === undefined || scope.disabled === false);
+                        return scope.harRequiredFeil() || scope.harTilDatoFeil();
                     }
                 }
             }

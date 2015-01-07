@@ -40,7 +40,6 @@ public class VedleggRowMapper implements RowMapper<Vedlegg> {
                 .medVedleggId(rs.getLong("vedlegg_id"))
                 .medSoknadId(rs.getLong("soknad_id"))
                 .medFaktumId(rs.getLong("faktum"))
-                .medSkjemaNummer(rs.getString("skjemaNummer"))
                 .medNavn(rs.getString("navn"))
                 .medStorrelse(rs.getLong("storrelse"))
                 .medAntallSider(rs.getInt("antallsider"))
@@ -48,7 +47,14 @@ public class VedleggRowMapper implements RowMapper<Vedlegg> {
                 .medData(includeData ? rs.getBytes("data") : null)
                 .medOpprettetDato(rs.getTimestamp("opprettetdato").getTime())
                 .medInnsendingsvalg(innsendingsvalg)
-                .medOpprinneligInnsendingsvalg(opprinneligInnsendingsvalg);
+                .medOpprinneligInnsendingsvalg(opprinneligInnsendingsvalg)
+                .medAarsak(rs.getString("aarsak"));
+
+        String skjemanummerFraDb = rs.getString("skjemaNummer");
+        result.setSkjemaNummer(skjemanummerFraDb.split("\\|")[0]);
+        if(skjemanummerFraDb.contains("|")) {
+            result.setSkjemanummerTillegg(skjemanummerFraDb.split("\\|")[1]);
+        }
 
         return result;
     }

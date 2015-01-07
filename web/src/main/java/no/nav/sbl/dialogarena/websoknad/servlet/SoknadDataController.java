@@ -10,6 +10,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.EttersendingService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad;
@@ -53,6 +54,10 @@ public class SoknadDataController {
     private EttersendingService ettersendingService;
     @Inject
     private VedleggService vedleggService;
+
+    @Inject
+    private FaktaService faktaService;
+
     @Inject
     private HtmlGenerator pdfTemplate;
 
@@ -63,6 +68,12 @@ public class SoknadDataController {
     @SjekkTilgangTilSoknad
     public WebSoknad hentSoknadData(@PathVariable Long soknadId) {
         return soknadService.hentSoknad(soknadId);
+    }
+
+    @RequestMapping(value = "/hentsoknad/{behandlingsId}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody()
+    public WebSoknad hentSoknadMedBehandlingsId(@PathVariable String behandlingsId) {
+        return soknadService.hentSoknadMedBehandlingsId(behandlingsId);
     }
 
     @RequestMapping(value = "/{soknadId}/struktur", method = RequestMethod.GET, produces = "application/json")
@@ -193,7 +204,7 @@ public class SoknadDataController {
     public void lagreSoknad(@PathVariable Long soknadId,
                             @RequestBody WebSoknad webSoknad) {
         for (Faktum faktum : webSoknad.getFaktaListe()) {
-            soknadService.lagreSoknadsFelt(soknadId, faktum);
+            faktaService.lagreSoknadsFelt(soknadId, faktum);
         }
     }
 

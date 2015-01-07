@@ -77,10 +77,10 @@ public class LandControllerTest {
         when(kodeverk.getLand("SE")).thenReturn("Sverige");
         mockMvc.perform(get("/land"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("result[0].text").value("Sverige"))
-                .andExpect(jsonPath("result[0].value").value("SE"))
-                .andExpect(jsonPath("result[1].text").value("Norge"))
-                .andExpect(jsonPath("result[1].value").value("NOR"));
+                .andExpect(jsonPath("result[0].text").value("Norge"))
+                .andExpect(jsonPath("result[0].value").value("NOR"))
+                .andExpect(jsonPath("result[1].text").value("Sverige"))
+                .andExpect(jsonPath("result[1].value").value("SE"));
         verify(kodeverk).getAlleLandkoder();
     }
 

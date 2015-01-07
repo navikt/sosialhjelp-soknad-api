@@ -1,4 +1,4 @@
-<table>
+<table class="arbeidsforhold">
 {{#forFakta "arbeidsforhold"}}
     <tr>
         <td class="sjekket"></td>
@@ -9,11 +9,11 @@
                 <li class="arbeidsforhold-varighet">
                     <span>{{ formatterLangDato properties.datofra }}</span>
                     {{#if properties.datotil}}
-                        <span>{{ hentTekst "dagpenger.oppsummering.datotil" }}</span>
+                        <span>{{ hentTekst "oppsummering.datotil" }}</span>
                         <span>{{ formatterLangDato properties.datotil }}</span>
                     {{/if}}
                     {{#if properties.konkursdato}}
-                        <span>{{ hentTekst "dagpenger.oppsummering.datotil" }}</span>
+                        <span>{{ hentTekst "oppsummering.datotil" }}</span>
                         <span>{{ formatterLangDato properties.konkursdato }}</span>
                     {{/if}}
                 </li>
@@ -138,37 +138,40 @@
                         {{else}}
                             <span>{{ formatterLangDato properties.lonnspliktigperiodedatofra }}</span>
                             {{#if properties.lonnspliktigperiodedatotil}}
-                                <span>{{ hentTekst "gjenopptak.oppsummering.datotil" }}</span>
+                                <span>{{ hentTekst "oppsummering.datotil" }}</span>
                                 <span>{{ formatterLangDato properties.lonnspliktigperiodedatotil }}</span>
                             {{/if}}
                         {{/if}}
                     </li>
 
+                <ul>
                     <p>{{ hentTekst "arbeidsforhold.arbeidsgiver.permittert.varighet.tittel" }}</p>
                     {{#forBarnefakta "arbeidsforhold.permitteringsperiode"}}
                         <li class="kulepunkt">
                             <div class="permitteringsperiode">
                                 <p>
                                     <span>{{ formatterLangDato properties.permiteringsperiodedatofra }}</span>
-                                    <span>{{ hentTekst "gjenopptak.oppsummering.datotil" }}</span>
+                                    <span>{{ hentTekst "oppsummering.datotil" }}</span>
                                     <span>{{ formatterLangDato properties.permiteringsperiodedatotil }}</span>
                                 </p>
                                 <p>
                                     <span>{{ properties.permitteringProsent }}%</span>
-                                    <span>{{ hentTekst "dagpenger.oppsummering.arbeidsforhold.permitteringsgrad" }}</span>
+                                    <span>{{ hentTekst "oppsummering.arbeidsforhold.permitteringsgrad" }}</span>
                                 </p>
                             </div>
                         </li>
                     {{/forBarnefakta}}
+                </ul>
                 {{/hvisLik}}
 
+                <ul>
                 {{#skalViseRotasjonTurnusSporsmaal}}
                     <p>{{ hentTekst "arbeidsforhold.rotasjonskiftturnus.sporsmaal" }}</p>
-                    <li class="kulepunkt">
-                        <p class="rotasjonturnus">{{ properties.rotasjonskiftturnus }}</p>
-                    </li>
 
-                    {{#hvisLikCmsTekst properties.rotasjonskiftturnus "arbeidsforhold.rotasjonskiftturnus.sporsmaal.alternativ.jarotasjon"}}
+                    {{#hvisLik properties.rotasjonskiftturnus "jarotasjon"}}
+                        <li class="kulepunkt">
+                            <p class="rotasjonturnus">{{hentTekst "arbeidsforhold.rotasjonskiftturnus.sporsmaal.alternativ.jarotasjon"}}</p>
+                        </li>
                         <li class="kulepunkt">
                             <p class="rotasjonturnus">
                                 <span>{{hentTekst "arbeidsforhold.rotasjonskiftturnus.rotasjon.arbeidsdager"}}</span>
@@ -181,8 +184,21 @@
                                 <span>{{ properties.avspaseringsdager }}</span>
                             </p>
                         </li>
-                    {{/hvisLikCmsTekst}}
+                    {{/hvisLik}}
+
+                    {{#hvisLik properties.rotasjonskiftturnus "jaturnus"}}
+                        <li class="kulepunkt">
+                            <p class="rotasjonturnus">{{hentTekst "arbeidsforhold.rotasjonskiftturnus.sporsmaal.alternativ.jaturnus"}}</p>
+                        </li>
+                    {{/hvisLik}}
+
+                    {{#hvisLik properties.rotasjonskiftturnus "nei"}}
+                        <li class="kulepunkt">
+                            <p class="rotasjonturnus">{{hentTekst "arbeidsforhold.rotasjonskiftturnus.sporsmaal.alternativ.nei"}}</p>
+                        </li>
+                    {{/hvisLik}}
                 {{/skalViseRotasjonTurnusSporsmaal}}
+                </ul>
             </ul>
         </td>
     </tr>
@@ -190,7 +206,7 @@
     <tr>
         <td class="sjekket"></td>
         <td>
-            <span>{{ hentTekst "dagpenger.oppsummering.arbeidsforhold.ingen" }}</span>
+            <span>{{ hentTekst "oppsummering.arbeidsforhold.ingen" }}</span>
         </td>
     </tr>
 {{/forFakta}}

@@ -9,6 +9,7 @@ angular.module('nav.datepicker.directive', [])
                 model: '=datepicker',
                 harHattFokus: '=',
                 isClosed: '=',
+                disabled: '=?',
                 erFremtidigdatoTillatt: '=?'
             },
             link: function (scope, element) {
@@ -20,7 +21,7 @@ angular.module('nav.datepicker.directive', [])
                 var inputElement = element.find('input');
                 scope.toggleDatepicker = function () {
                     var dateDiv = $('#ui-datepicker-div');
-                    if (dateDiv.is(':hidden')) {
+                    if (dateDiv.is(':hidden') && scope.disabled !== 'true') {
                         inputElement.datepicker('show');
                         var pos = dateDiv.position();
                         pos.top = pos.top + 32;

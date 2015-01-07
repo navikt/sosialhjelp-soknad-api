@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Import;
         LandService.class,
         SoknadService.class,
         StartDatoService.class,
+        FaktaService.class
 })
 public class ServiceConfig {
 }
