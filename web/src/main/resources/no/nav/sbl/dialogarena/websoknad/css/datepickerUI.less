@@ -1,13 +1,115 @@
-.datepicker-input {
+@datepickerblaa: #0CA9E0;
+@datepickerrod: #c30000;
+@datepickergonn: green;
+
+.input-group {
+  input {
+    height: 30px;
+    visibility: hidden;
+    width: 0;
+  }
+
+  ul {
+    border-radius: 2%;
+    border: 1px solid #d1d1d1;
+    padding: 5px;
+  }
+
+  .btn, button {
+    background-color: #fff;
+    background-image: none;
+    border: none;
+    padding: 3px 9px;
+  }
 
   table {
-    button {
-      background-color: transparent;
+    outline: none;
+
+    thead {
+      tr:first-child {
+        border-bottom: 1px solid #3d3731;
+      }
+      tr:last-child {
+        font-family: modus;
+        font-weight: bold;
+        font-size: .75rem;
+        text-transform: capitalize;
+
+        small {
+          font-size: 100%;
+        }
+      }
+    }
+
+    tbody {
+      tr td {
+        font-family: modus;
+        font-size: 0.85rem;
+        font-weight: normal;
+
+        &:first-child {
+          font-family: arial;
+          font-weight: italic;
+          font-size: 0.75rem;
+          color: brown;
+          border-right: 1px solid #d1d1d1;
+        }
+        &:last-child {
+          span {
+            color: @datepickerrod;
+          }
+        }
+
+        span {
+          line-height: 1.6rem;
+        }
+      }
+
+      .text-muted {
+        color: #9e9b98 !important;
+        font-size: 0.85rem;
+        font-weight: normal;
+      }
+
+      .text-info {
+        color: @datepickerblaa;
+      }
+
+      .btn-info {
+        padding: initial;
+        span {
+          color: #fff;
+        }
+      }
+
+      .btn.active {
+        background: @datepickerrod;
+        border-radius: 50%;
+
+        span {
+          color: #ffffff !important;
+        }
+      }
     }
   }
 
-}
+  .btn-info, .btn-danger, .btn-success {
+    color: #fff;
+    text-transform: initial;
+    padding: 5px 25px;
 
-body {
-  background: red !important;
+  }
+
+  .btn-info {
+    background-color: @datepickerblaa;
+  }
+
+  .btn-danger {
+    background-color: @datepickerrod;
+  }
+
+  .btn-success {
+    background-color: @datepickergonn;
+  }
+
 }
