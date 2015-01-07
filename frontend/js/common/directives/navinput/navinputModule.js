@@ -89,7 +89,7 @@ angular.module('nav.input', ['nav.cms'])
             }
         };
     })
-    .directive('navcheckbox', function (cms) {
+    .directive('navcheckbox', function (cmsService) {
         return {
             restrict: 'A',
             replace: true,
@@ -98,8 +98,8 @@ angular.module('nav.input', ['nav.cms'])
             link: {
                 pre: function (scope, elem, attr) {
                     scope.hjelpetekst = {
-                        tittel: cms.tekster[attr.navlabel + '.hjelpetekst.tittel'],
-                        tekst: cms.tekster[attr.navlabel + '.hjelpetekst.tekst']
+                        tittel: cmsService.getText(attr.navlabel + '.hjelpetekst.tittel'),
+                        tekst: cmsService.getText(attr.navlabel + '.hjelpetekst.tekst')
                     };
                     scope.hjelpetekstinline = attr.hjelpetekstinline;
                 },
