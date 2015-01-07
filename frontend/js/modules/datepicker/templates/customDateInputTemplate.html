@@ -22,14 +22,20 @@
                 data-ng-model="model"
                 data-is-open="opened"
                 data-max-date="maxDate"
-                datepicker-options="dateOptions"
-                date-disabled="disabled(date, mode)"
+                data-datepicker-options="dateOptions"
+                data-date-disabled="disabled(date, mode)"
                 data-ng-required="erRequired"
-                data-close-text="Close"
-                style="width: 0; height: 0;"/>
+                data-close-text="{{'datepicker.lukk' | cmstekst }}"
+                data-clear-text="{{'datepicker.fjern' | cmstekst }}"
+                data-current-text="{{'datepicker.idag' | cmstekst }}"
+                data-aria-hidden="true"/>
 
               <span class="input-group-btn">
-                <button class="apne-datepicker" type="button" data-ng-click="open($event)" style="position: absolute; right: 0; top:0;">Kal</button>
+                <a href="javascript:void(0)"
+                        class="apne-datepicker"
+                        data-ng-click="open($event)"
+                        data-aria-role="button"
+                        data-aria-label="{{'datepicker.arialabel.apne' | cmstekst }}"></a>
               </span>
     </p>
 </div>
