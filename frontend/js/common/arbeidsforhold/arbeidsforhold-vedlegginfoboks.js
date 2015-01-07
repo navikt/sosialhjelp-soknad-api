@@ -15,8 +15,7 @@ angular.module('nav.arbeidsforhold.vedlegginfoboks', [])
                 pre: function (scope) {
                     scope.alleVedleggtekster = scope.vedleggtekster;
                     if (isNotNullOrUndefined(scope.rotasjonVedlegg)) {
-                        var rotasjonTekst = cms.tekster['arbeidsforhold.rotasjonskiftturnus.sporsmaal.alternativ.jarotasjon'];
-                        if (scope.arbeidsforhold.properties.rotasjonskiftturnus == rotasjonTekst) {
+                        if (scope.arbeidsforhold.properties.rotasjonskiftturnus == "jarotasjon") {
                             scope.alleVedleggtekster = scope.vedleggtekster.concat("Dagpenger.vedlegg.M6.header");
                         }
                     }

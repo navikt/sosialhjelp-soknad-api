@@ -1,4 +1,6 @@
 #oppsummering {
+    font-size: 0.85rem;
+
     .stegindikator {
         margin-top: 60px;
     }
@@ -48,6 +50,7 @@
         table {
             tr td:last-child {
                 padding-bottom: 10px;
+                padding-left: 10px;
             }
 
             ul {
@@ -58,6 +61,7 @@
 
                 > p {
                     margin-top: 10px;
+                    margin-bottom: 6px;
                 }
 
                 li p span {
@@ -65,7 +69,11 @@
                 }
 
                 ul {
-                    margin-left: 5px;
+                    margin-left: 16px;
+
+                    > p {
+                        font-weight: bold;
+                    }
                 }
             }
         }
@@ -79,12 +87,16 @@
             display: block;
         }
 
-        .arbeidsforhold-data {
-            margin-top: 0;
+        .arbeidsforhold {
+            margin-top: 7px;
 
-            .arbeidsforhold-varighet {
-                font-size: 0.75rem;
-                padding-bottom: 5px;
+            .arbeidsforhold-data {
+                margin-top: 0;
+
+                .arbeidsforhold-varighet {
+                    font-size: 0.75rem;
+                    padding-bottom: 5px;
+                }
             }
         }
 
@@ -100,8 +112,11 @@
         }
 
         .kulepunkt {
-            padding-left: 20px;
-            margin-bottom: 2px;
+            padding-left: 10px;
+
+            span:first-child {
+                margin-left: -5px;
+            }
 
             &:before {
                 content: "•";
@@ -125,8 +140,9 @@
         .personalia {
             text-align: center;
             .nvn, .fnr {
-                font-size: 0.9975rem;
+                font-size: 1.05rem;
                 font-weight: bold;
+                font-family: Modus, Arial, sans-serif;
             }
 
             .adr {
@@ -137,6 +153,17 @@
         .vedlegg {
             position: relative;
             width: 100%;
+
+            .aarsak {
+                display: block;
+                white-space: normal;
+                word-break: normal;
+            }
+
+            .tittel {
+                vertical-align: top;
+                padding-top: 5px;
+            }
 
             .sjekket {
                 position: relative;

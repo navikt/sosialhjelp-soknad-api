@@ -16,7 +16,7 @@ angular.module('nav.textarea', [])
 				pre : function (scope, element, attr) {
 					scope.nokkel = attr.nokkel;
 					scope.sporsmal = attr.nokkel + '.sporsmal';
-                    scope.hjelpetekst = { tittel: attr.nokkel + '.hjelpetekst.tittel', tekst: attr.nokkel + ".hjelpetekst.tekst" };
+					scope.hjelpetekst = { tittel: attr.nokkel + '.hjelpetekst.tittel', tekst: attr.nokkel + ".hjelpetekst.tekst" };
 					scope.label = attr.nokkel + '.label';
 					scope.feilmelding = attr.nokkel + '.feilmelding';
 					scope.tellertekst = attr.nokkel + '.tellertekst';

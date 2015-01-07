@@ -1,7 +1,7 @@
 <div data-modalside>
     <div class="vertikal arbeidsforhold-spm" data-ng-controller="ArbeidsforholdNyttCtrl"
             data-ng-form="nyttArbeidsforholdForm">
-        <a href="#{{ soknadUrl }}" class="lukk" aria-label="{{'arbeidsforhold.nyttarbeidsforhold.lukk.aria' | cmstekst}}"></a>
+        <a href="#{{ soknadUrl }}" class="lukk" title="{{'arbeidsforhold.nyttarbeidsforhold.lukk.aria' | cmstekst}}" data-aria-label="{{'arbeidsforhold.nyttarbeidsforhold.lukk.aria' | cmstekst}}"></a>
 
         <div data-form-errors></div>
         <h2 class="stor-strek">
@@ -139,7 +139,7 @@
                             data-ng-model="faktum.properties.type"
                             data-ng-required="true"
                             data-click-validate
-                            data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding' | cmstekst"
+                            data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'"
                             data-aktiv-feilmelding>
                     <label for='radio2' data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.radio.avskjediget' | cmstekst"></label>
                     <div data-nav-hjelpetekstelement data-hjelpetekstinline="true" data-tittel="{{ 'arbeidsforhold.sluttaarsak.avskjediget.hjelpetekst.tittel' | cmstekst }}"

@@ -1,4 +1,4 @@
-<div data-turnusblokk-har-rotasjon>
+<div>
     <div class="topplinje"></div>
 
     <div data-navinfoboks data-infotekster="['arbeidsforhold.rotasjonskiftturnus.infoboks']"></div>
@@ -11,7 +11,7 @@
                     id="turnusRadio1"
                     name="arbeidsforhold.rotasjonskiftturnus.radio"
                     type="radio"
-                    value="{{ 'arbeidsforhold.rotasjonskiftturnus.sporsmaal.alternativ.nei' | cmstekst }}"
+                    value="nei"
                     data-ng-model="arbeidsforhold.properties.rotasjonskiftturnus"
                     data-ng-required="true"
                     data-click-validate
@@ -25,7 +25,7 @@
                     id="turnusRadio2"
                     name="arbeidsforhold.rotasjonskiftturnus.radio"
                     type="radio"
-                    value="{{ 'arbeidsforhold.rotasjonskiftturnus.sporsmaal.alternativ.jaturnus' | cmstekst }}"
+                    value="jaturnus"
                     data-ng-model="arbeidsforhold.properties.rotasjonskiftturnus"
                     data-ng-required="true"
                     data-click-validate
@@ -41,7 +41,7 @@
                     id="turnusRadio3"
                     name="arbeidsforhold.rotasjonskiftturnus.radio"
                     type="radio"
-                    value="{{ 'arbeidsforhold.rotasjonskiftturnus.sporsmaal.alternativ.jarotasjon' | cmstekst }}"
+                    value="jarotasjon"
                     data-ng-model="arbeidsforhold.properties.rotasjonskiftturnus"
                     data-ng-required="true"
                     data-click-validate
@@ -55,7 +55,7 @@
             <span class="melding" data-ng-bind-html=" 'arbeidsforhold.rotasjonskiftturnus.sporsmaal.feilmelding' | cmstekst"></span>
         </div>
 
-        <div class="ekstra-spm-boks" data-ng-if="harValgtRotasjon(arbeidsforhold)" data-nav-faktum="arbeidsforhold" data-ikke-auto-lagre="true">
+        <div class="ekstra-spm-boks" data-ng-if="arbeidsforhold.properties.rotasjonskiftturnus == 'jarotasjon'" data-nav-faktum="arbeidsforhold" data-ikke-auto-lagre="true">
             <div class="form-linje boolean">
                 <h4 class="spm-sporsmal" data-ng-bind-html=" 'arbeidsforhold.rotasjonskiftturnus.rotasjon.sporsmaal' | cmstekst"></h4>
 

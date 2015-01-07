@@ -66,6 +66,7 @@
             $provide.value("cms", {'tekster': {'hjelpetekst.tittel': 'Tittel hjelpetekst',
                 'hjelpetekst.tekst': 'Hjelpetekst tekst' }
             });
+            $provide.value("soknad", { });
         }));
 
         beforeEach(inject(function ($controller, $rootScope, data) {
@@ -204,10 +205,196 @@
             it('soknadErFerdigstilt skal returnere false hvis data.soknad sin status ikke er ferdig', function () {
                 expect(scope.soknadErFerdigstilt()).toEqual(false);
             });
-            it('kravForDagpengerOppfylt skal endre pathen til routing nar utslagskriteriene ikke inntreffer', function () {
+            it('redirectTilRiktigSideHvisKravForDagpengerOppfylt skal endre pathen til routing/dagpenger nar utslagskriteriene ikke inntreffer', function () {
                 spyOn(location, 'path');
                 scope.fortsettLikevel(event);
-                expect(location.path).toHaveBeenCalledWith("/routing");
+                expect(location.path).toHaveBeenCalledWith("/routing/dagpenger");
+            });
+        });
+    });
+    describe('UtslagskriterierDagpengerCtrlMedFortsettSenere', function () {
+        var scope, ctrl, httpBackend, event;
+        event = $.Event("click");
+
+        beforeEach(module('ngCookies', 'sendsoknad.services', 'nav.modal'));
+        beforeEach(module('nav.utslagskriterierDagpenger', 'nav.feilmeldinger'));
+
+        beforeEach(module(function ($provide) {
+            var fakta = [
+                {}
+            ];
+
+            $provide.value("data", {
+                fakta: fakta,
+                finnFaktum: function (key) {
+                    var res = null;
+                    fakta.forEach(function (item) {
+                        if (item.key == key) {
+                            res = item;
+                        }
+                    });
+                    return res;
+                },
+                finnFakta: function (key) {
+                    var res = [];
+                    fakta.forEach(function (item) {
+                        if (item.key === key) {
+                            res.push(item);
+                        }
+                    });
+                    return res;
+                },
+                leggTilFaktum: function (faktum) {
+                    fakta.push(faktum);
+                },
+                land: 'Norge',
+                soknad: {
+                    soknadId: 1
+                },
+                config: {"soknad.sluttaarsak.url": "sluttaarsakUrl",
+                    "dittnav.link.url": "dittnavUrl",
+                    "soknad.lonnskravskjema.url": "lonnskravSkjemaUrl",
+                    "soknad.permitteringsskjema.url": "permiteringUrl",
+                    "saksoversikt.link.url": saksoversiktUrl,
+                    "soknad.skjemaveileder.url": "skjemaVeilederUrl",
+                    "soknad.brukerprofil.url": "brukerprofilUrl",
+                    "soknad.reelarbeidsoker.url": "reelArbeidsokerUrl",
+                    "soknad.alderspensjon.url": "alderspensjonUrl",
+                    "soknad.dagpengerbrosjyre.url": "dagpengerBrosjyreUrl" },
+
+                slettFaktum: function (faktumData) {
+                    fakta.forEach(function (item, index) {
+                        if (item.faktumId === faktumData.faktumId) {
+                            fakta.splice(index, 1);
+                        }
+                    });
+                },
+                utslagskriterier: {
+                    registrertArbeidssøker: 'REGISTRERT',
+                    gyldigAlder: 'true',
+                    bosattINorge: 'true'
+                }
+            });
+            $provide.value("cms", {'tekster': {'hjelpetekst.tittel': 'Tittel hjelpetekst',
+                'hjelpetekst.tekst': 'Hjelpetekst tekst' }
+            });
+            $provide.value("$routeParams", {behandlingsId: 123});
+            $provide.value("soknad", { skjemaNummer: 'NAV04-16.03', delstegStatus: 'SKJEMA_VALIDERT', brukerBehandlingId: '123'});
+        }));
+
+        beforeEach(function () {
+            window.redirectTilUrl = jasmine.createSpy('Redirect URL spy');
+        });
+
+        beforeEach(inject(function ($controller, $rootScope, data, $httpBackend) {
+            scope = $rootScope;
+            scope.data = data;
+            httpBackend = $httpBackend;
+
+            ctrl = $controller('utslagskritererDagpengerCtrl', {
+                $scope: scope
+            });
+            scope.$digest();
+        }));
+
+        describe('Utslagskriterier med fortsettSenere fra gjenopptak', function () {
+            it('skal redirecte til gjenopptakurl med delstegstatus søknad', function () {
+                scope.redirectTilRiktigSideHvisKravForDagpengerOppfylt();
+                expect(window.redirectTilUrl).toHaveBeenCalledWith("skjema/NAV04-16.03#/123/vedlegg");
+            });
+        });
+    });
+    describe('UtslagskriterierDagpengerCtrlMedFortsettSenere m/utslag', function () {
+        var scope, ctrl, httpBackend, event;
+        event = $.Event("click");
+
+        beforeEach(module('ngCookies', 'sendsoknad.services', 'nav.modal'));
+        beforeEach(module('nav.utslagskriterierDagpenger', 'nav.feilmeldinger'));
+
+        beforeEach(module(function ($provide) {
+            var fakta = [
+                {}
+            ];
+
+            $provide.value("data", {
+                fakta: fakta,
+                finnFaktum: function (key) {
+                    var res = null;
+                    fakta.forEach(function (item) {
+                        if (item.key == key) {
+                            res = item;
+                        }
+                    });
+                    return res;
+                },
+                finnFakta: function (key) {
+                    var res = [];
+                    fakta.forEach(function (item) {
+                        if (item.key === key) {
+                            res.push(item);
+                        }
+                    });
+                    return res;
+                },
+                leggTilFaktum: function (faktum) {
+                    fakta.push(faktum);
+                },
+                land: 'Norge',
+                soknad: {
+                    soknadId: 1
+                },
+                config: {"soknad.sluttaarsak.url": "sluttaarsakUrl",
+                    "dittnav.link.url": "dittnavUrl",
+                    "soknad.lonnskravskjema.url": "lonnskravSkjemaUrl",
+                    "soknad.permitteringsskjema.url": "permiteringUrl",
+                    "saksoversikt.link.url": saksoversiktUrl,
+                    "soknad.skjemaveileder.url": "skjemaVeilederUrl",
+                    "soknad.brukerprofil.url": "brukerprofilUrl",
+                    "soknad.reelarbeidsoker.url": "reelArbeidsokerUrl",
+                    "soknad.alderspensjon.url": "alderspensjonUrl",
+                    "soknad.dagpengerbrosjyre.url": "dagpengerBrosjyreUrl" },
+
+                slettFaktum: function (faktumData) {
+                    fakta.forEach(function (item, index) {
+                        if (item.faktumId === faktumData.faktumId) {
+                            fakta.splice(index, 1);
+                        }
+                    });
+                },
+                utslagskriterier: {
+                    registrertArbeidssøker: 'REGISTRERT',
+                    gyldigAlder: 'true',
+                    bosattINorge: 'false'
+                }
+            });
+            $provide.value("cms", {'tekster': {'hjelpetekst.tittel': 'Tittel hjelpetekst',
+                'hjelpetekst.tekst': 'Hjelpetekst tekst' }
+            });
+            $provide.value("$routeParams", {behandlingsId: 123});
+            $provide.value("soknad", { skjemaNummer: 'NAV04-16.03', delstegStatus: 'VEDLEGG_VALIDERT', brukerBehandlingId: '123'});
+        }));
+
+        beforeEach(function () {
+            window.redirectTilUrl = jasmine.createSpy('Redirect URL spy');
+        });
+
+        beforeEach(inject(function ($controller, $rootScope, data, $httpBackend) {
+            scope = $rootScope;
+            scope.data = data;
+            httpBackend = $httpBackend;
+
+            ctrl = $controller('utslagskritererDagpengerCtrl', {
+                $scope: scope
+            });
+            scope.$digest();
+        }));
+
+        describe('Utslagskriterier med fortsettSenere fra gjenopptak', function () {
+            it('skal redirecte til gjenopptakurl med delstegstatus søknad', function () {
+                scope.redirectTilRiktigSideHvisKravForDagpengerOppfylt();
+                expect(window.redirectTilUrl).not.toHaveBeenCalledWith("skjema/NAV04-16.03#/123/oppsummering");
+                scope.fortsettLikevel(event);
+                expect(window.redirectTilUrl).toHaveBeenCalledWith("skjema/NAV04-16.03#/123/oppsummering");
             });
         });
     });

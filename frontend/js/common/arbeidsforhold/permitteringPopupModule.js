@@ -39,6 +39,10 @@ angular.module('nav.arbeidsforhold.permitteringpopup', [])
         $scope.lagreNyPermitteringsPeriode = function (nypermittering) {
             permitteringer.push(nypermittering);
         };
+
+        $scope.$on('$locationChangeStart', function() {
+            $scope.lukk();
+        });
     })
     .controller('permitteringsperiodeNyttCtrl', function ($scope) {
         $scope.lagrePermitteringsperiode = function (form) {

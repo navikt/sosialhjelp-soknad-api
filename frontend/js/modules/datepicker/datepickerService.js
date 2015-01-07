@@ -90,9 +90,9 @@ angular.module('nav.datepicker.service', [])
                 if (date) {
                     // stackoverflow.com/questions/5812220/test-if-date-is-valid
                     var bits = date.split('.');
-                    var aar = bits[2];
-                    var maaned = bits[1];
                     var dag = bits[0];
+                    var maaned = bits[1];
+                    var aar = bits[2];
                     var dagerIMaaned = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
                     // Skuddår
