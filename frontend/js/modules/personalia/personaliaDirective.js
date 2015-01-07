@@ -33,7 +33,7 @@ angular.module('nav.personalia.directive', [])
                 scope.getBrukerprofilLenke = function() {
                     var profilLenkeTekst = cmsService.getText("personalia.intro.tekst");
                     return "<a href=\"" + scope.brukerprofilUrl + "\" target=\"_blank\">" + profilLenkeTekst + "</a>";
-                }
+                };
             }
         };
     })

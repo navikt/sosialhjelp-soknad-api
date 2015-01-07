@@ -19,7 +19,7 @@ angular.module('nav.feilmeldinger', [])
     }])
 
     // For å bruke, legg til <div form-errors></div>
-    .directive('formErrors', ['cms', '$timeout', function (cms, $timeout) {
+    .directive('formErrors', ['cmsService', '$timeout', function (cmsService, $timeout) {
         return {
             // only works if embedded in a form or an ngForm (that's in a form).
             // It does use its closest parent that is a form OR ngForm
@@ -183,7 +183,7 @@ angular.module('nav.feilmeldinger', [])
 
                 function finnFeilmelding(feil, feilNokkel) {
                     var feilmeldingNokkel = finnFeilmeldingsNokkel(feil, feilNokkel);
-                    var feilmelding = cms.tekster[feilmeldingNokkel];
+                    var feilmelding = cmsService.getText(feilmeldingNokkel);
                     if (feilmelding === undefined) {
                         if (feilErSubform(feil, feilNokkel)) {
                             return finnFeilmelding(feil.$error[feilNokkel][0], feilNokkel);

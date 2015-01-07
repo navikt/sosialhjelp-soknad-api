@@ -1,5 +1,5 @@
 angular.module('nav.textarea', [])
-	.directive('navtextarea', ['cms', '$timeout', function (cms, $timeout) {
+	.directive('navtextarea', ['cmsService', '$timeout', function (cmsService, $timeout) {
 		var linker = function (scope) {
 			if (scope.attr('data-obligatorisk')) {
 				return '../js/common/directives/navtextarea/navtextareaObligatoriskTemplate.html';
@@ -41,12 +41,12 @@ angular.module('nav.textarea', [])
 					});
 
                     scope.harSporsmal = function() {
-                        var tekst = cms.tekster[scope.sporsmal];
+                        var tekst = cmsService.getText(scope.sporsmal);
                         return isNotNullOrUndefined(tekst) && tekst.length > 0;
                     };
 
                     scope.harHjelpetekst = function() {
-                        var tekst = cms.tekster[scope.hjelpetekst.tekst];
+                        var tekst = cmsService.getText(scope.hjelpetekst.tekst);
                         return isNotNullOrUndefined(tekst) && tekst.length > 0;
                     };
 
@@ -57,7 +57,7 @@ angular.module('nav.textarea', [])
 			templateUrl: linker
 		};
 	}])
-	.directive('validateTextarea', ['$timeout', 'cms', function ($timeout, cms) {
+	.directive('validateTextarea', ['$timeout', 'cmsService', function ($timeout, cmsService) {
 		return {
 			require: ['ngModel', '^form'],
 			link   : function (scope, element, attrs, ctrls) {
@@ -120,11 +120,11 @@ angular.module('nav.textarea', [])
 				}
 
 				function settFeilmeldingsTekst() {
-					var feilmeldingTekst = cms.tekster['textarea.feilmleding'];
+					var feilmeldingTekst = cmsService.getText('textarea.feilmleding');
 					if (scope.counter > -1) {
 						var feilmeldingsNokkel = element[0].getAttribute('data-error-messages').toString();
 						//hack for å fjerne dobbeltfnuttene rundt feilmeldingsnokk
-						feilmeldingTekst = cms.tekster[feilmeldingsNokkel.substring(1, feilmeldingsNokkel.length - 1)];
+						feilmeldingTekst = cmsService.getText(feilmeldingsNokkel.substring(1, feilmeldingsNokkel.length - 1));
 					}
 					element.closest('.form-linje').find('.melding').text(feilmeldingTekst);
 				}

@@ -1,5 +1,5 @@
 angular.module('nav.validering', ['nav.cms'])
-    .directive('blurValidate', function (cms) {
+    .directive('blurValidate', function (cmsService) {
         return {
             require: ['ngModel', '^form'],
             link: function (scope, element, attrs, ctrls) {
@@ -64,7 +64,7 @@ angular.module('nav.validering', ['nav.cms'])
                             feilmeldingsNokkel = feil[feilNokkel];
                         }
 
-                        var feilmeldingTekst = cms.tekster[feilmeldingsNokkel];
+                        var feilmeldingTekst = cmsService.getText(feilmeldingsNokkel);
                         formElem.find('.melding').first().text(feilmeldingTekst);
                     }
                 }
@@ -76,7 +76,7 @@ angular.module('nav.validering', ['nav.cms'])
         };
     })
 
-    .directive('clickValidate', function ($timeout, cms) {
+    .directive('clickValidate', function ($timeout, cmsService) {
         return {
             require: ['ngModel', '^form'],
             link: function (scope, element, attrs, ctrls) {
@@ -122,7 +122,7 @@ angular.module('nav.validering', ['nav.cms'])
                 function settFeilmeldingsTekst() {
                     var feilmeldingsNokkel = element[0].getAttribute('data-error-messages').toString();
                     //hack for å fjerne dobbeltfnuttene rundt feilmeldingsnokk
-                    var feilmeldingTekst = cms.tekster[feilmeldingsNokkel.substring(1, feilmeldingsNokkel.length - 1)];
+                    var feilmeldingTekst = cmsService.getText(feilmeldingsNokkel.substring(1, feilmeldingsNokkel.length - 1));
                     element.closest('.form-linje').find('.melding').text(feilmeldingTekst);
                 }
             }
