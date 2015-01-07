@@ -25,6 +25,17 @@
                 <td class="sjekket"></td>
                 <td><span>{{ hentTekst "nyearbeidsforhold.arbeidsidensist.false"}}</span></td>
             </tr>
+
+            {{#forFaktum "nyearbeidsforhold.aarsakdagpengerstanset"}}
+            <tr>
+                <td class="sjekket">
+                </td>
+                <td>
+                    <span>{{ hentTekst "nyearbeidsforhold.aarsakdagpengerstanset.oppsummering" }}</span>
+                    <span>{{value}}</span>
+                </td>
+            </tr>
+            {{/forFaktum}}
         </table>
 
         {{> skjema/partials/arbeidsforhold/grensearbeider }}

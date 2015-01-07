@@ -1,5 +1,5 @@
 <div class="skjemaramme">
-    <div data-ng-form="nyeArbeidsforholdForm" class="skjemainnhold" data-ng-controller="ArbeidsforholdCtrl" data-nye-arbeidsforhold>
+    <div data-ng-form="arbeidsforholdForm" class="skjemainnhold" data-ng-controller="ArbeidsforholdCtrl" data-nye-arbeidsforhold>
         <div data-form-errors></div>
 
         <div class="spm form-linje boolean">
@@ -28,6 +28,14 @@
                     data-navlabel="nyearbeidsforhold.arbeidsidensist.false"
                     data-navfeilmelding="nyearbeidsforhold.arbeidsidensist.feilmelding">
 
+                <div data-navtextarea
+                     data-navconfig
+                     data-nav-faktum="nyearbeidsforhold.aarsakdagpengerstanset"
+                     data-nokkel="nyearbeidsforhold.aarsakdagpengerstanset"
+                     data-maxlengde="500"
+                     data-obligatorisk="true">
+                </div>
+
                 <div class="form-linje">
                     <h4 class="spm-sporsmal" data-ng-bind-html="'nyearbeisforhold.nyttarbeidsforhold.infoboks' | cmstekst"></h4>
                     <div data-arbeidsforhold-oppsummering></div>
@@ -36,16 +44,6 @@
             </div>
 
             <span class="melding" data-ng-bind-html="'nyearbeidsforhold.arbeidsidensist.feilmelding' | cmstekst"></span>
-        </div>
-
-        <div id="aarsak-dagpenger-stanset" class="spm" data-ng-if="skalViseFritekstfelt()">
-            <div data-navtextarea
-                    data-navconfig
-                    data-nav-faktum="nyearbeidsforhold.aarsakdagpengerstanset"
-                    data-nokkel="nyearbeidsforhold.aarsakdagpengerstanset"
-                    data-maxlengde="500"
-                    data-obligatorisk="true">
-            </div>
         </div>
 
         <div data-ng-if="harJobbetSidenSistMotattDagpenger()" data-reberegning-dagpenger></div>
