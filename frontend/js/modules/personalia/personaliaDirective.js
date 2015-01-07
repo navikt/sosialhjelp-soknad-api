@@ -1,5 +1,5 @@
 angular.module('nav.personalia.directive', [])
-    .directive('navPersonalia', function (data, cms) {
+    .directive('navPersonalia', function (data, cmsService) {
         return {
             replace: true,
             templateUrl: '../js/modules/personalia/templates/personaliaTemplate.html',
@@ -31,7 +31,7 @@ angular.module('nav.personalia.directive', [])
                 };
 
                 scope.getBrukerprofilLenke = function() {
-                    var profilLenkeTekst = cms.tekster["personalia.intro.tekst"];
+                    var profilLenkeTekst = cmsService.getText("personalia.intro.tekst");
                     return "<a href=\"" + scope.brukerprofilUrl + "\" target=\"_blank\">" + profilLenkeTekst + "</a>";
                 }
             }

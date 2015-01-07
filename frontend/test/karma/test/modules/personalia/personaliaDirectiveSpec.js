@@ -9,7 +9,13 @@ describe('Personalia directive tests', function () {
             {}
         ];
 
-        $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
+        var cms = {'tekster': {'tittel.key': 'Min tittel'}};
+        $provide.value("cms", cms);
+        $provide.value("cmsService", {
+            getText: function(nokkel) {
+                return cms.tekster[nokkel];
+            }
+        });
         $provide.value("data", {
             fakta: fakta,
             finnFaktum: function (key) {
