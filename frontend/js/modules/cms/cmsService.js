@@ -49,6 +49,23 @@ angular.module('nav.cms.service', [])
                 }
                 return tekst === undefined ? undefined : $sce.trustAsHtml(tekst);
             },
+            getTextSafe: function(nokkel, args) {
+                var key = resolveKeyService.getKey(nokkel);
+                var tekst = cms.tekster[key];
+
+                if (args instanceof Array) {
+                    args.forEach(function (argTekst, idx) {
+                        tekst = tekst.replace('{' + idx + '}', argTekst);
+                    });
+                } else if (args) {
+                    tekst = tekst.replace('{0}', args);
+                }
+
+                if ($rootScope.visCmsnokkler) {
+                    tekst += ' [' + key + ']';
+                }
+                return tekst;
+            },
             getTrustedHtml: function(nokkel, args) {
                 return $sce.getTrustedHtml(this.getText(nokkel, args));
             }
