@@ -1,9 +1,7 @@
 <div data-ng-form="personaliaForm" class="skjemainnhold" data-ng-controller="PersonaliaCtrl" data-novalidate>
     <div class="informasjon">
         <span class="informasjonstekst">
-            <span data-ng-bind-html="'personalia.intro' | cmstekst"></span>
-            <a href="{{ brukerprofilUrl }}" target="_blank"
-               data-ng-bind-html="'personalia.intro.tekst' | cmstekst"></a>
+            <p data-ng-bind-html="'personalia.intro' | cmstekst:getBrukerprofilLenke()"></p>
         </span>
     </div>
 
