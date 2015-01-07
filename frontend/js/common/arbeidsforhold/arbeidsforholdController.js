@@ -89,7 +89,6 @@ angular.module('nav.arbeidsforhold.controller', [])
 
         $scope.valider = function (skalScrolle) {
             var valid = $scope.runValidation(skalScrolle);
-            console.log("run validation!");
             if (valid) {
                 $scope.lukkTab('arbeidsforhold');
                 $scope.settValidert('arbeidsforhold');
