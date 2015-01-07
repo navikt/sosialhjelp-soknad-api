@@ -14,6 +14,7 @@ public enum LessResources {
     SELECT_LESS("select"),
     SKJEMA_LESS("skjema"),
     DATEPICKER_LESS("datepicker"),
+    DATEPICKERUI_LESS("datepickerUI"),
     TEXTAREA_LESS("textarea"),
     ARBEIDSFORHOLD_LESS("arbeidsforhold"),
     BARNETILLEGG_LESS("barnetillegg"),
