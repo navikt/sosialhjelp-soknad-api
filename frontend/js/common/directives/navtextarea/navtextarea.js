@@ -1,5 +1,5 @@
 angular.module('nav.textarea', [])
-	.directive('navtextarea', ['cmsService', '$timeout', function (cmsService, $timeout) {
+	.directive('navtextarea', ['cms', '$timeout', function (cms, $timeout) {
 		var linker = function (scope) {
 			if (scope.attr('data-obligatorisk')) {
 				return '../js/common/directives/navtextarea/navtextareaObligatoriskTemplate.html';
@@ -41,12 +41,12 @@ angular.module('nav.textarea', [])
 					});
 
                     scope.harSporsmal = function() {
-                        var tekst = cmsService.getText(scope.sporsmal);
+                        var tekst = cms.tekster[scope.sporsmal];
                         return isNotNullOrUndefined(tekst) && tekst.length > 0;
                     };
 
                     scope.harHjelpetekst = function() {
-                        var tekst = cmsService.getText(scope.hjelpetekst.tekst);
+                        var tekst = cms.tekster[scope.hjelpetekst.tekst];
                         return isNotNullOrUndefined(tekst) && tekst.length > 0;
                     };
 

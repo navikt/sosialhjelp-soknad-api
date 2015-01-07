@@ -56,7 +56,14 @@
                     });
                 }
             });
-            $provide.value("cms", {'tekster': {}});
+
+            var cmsTekster = {'tekster': {}}
+            $provide.value("cms", cmsTekster);
+            $provide.value("cmsService", {
+                getText: function(nokkel) {
+                    return cmsTekster.tekster[nokkel];
+                }
+            });
             $provide.value("$routeParams", {});
         }));
 
