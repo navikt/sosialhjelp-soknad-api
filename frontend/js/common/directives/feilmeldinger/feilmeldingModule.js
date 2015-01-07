@@ -183,7 +183,7 @@ angular.module('nav.feilmeldinger', [])
 
                 function finnFeilmelding(feil, feilNokkel) {
                     var feilmeldingNokkel = finnFeilmeldingsNokkel(feil, feilNokkel);
-                    var feilmelding = cmsService.getText(feilmeldingNokkel);
+                    var feilmelding = cmsService.getTextSafe(feilmeldingNokkel);
                     if (feilmelding === undefined) {
                         if (feilErSubform(feil, feilNokkel)) {
                             return finnFeilmelding(feil.$error[feilNokkel][0], feilNokkel);

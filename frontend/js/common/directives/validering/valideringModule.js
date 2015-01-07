@@ -64,7 +64,7 @@ angular.module('nav.validering', ['nav.cms'])
                             feilmeldingsNokkel = feil[feilNokkel];
                         }
 
-                        var feilmeldingTekst = cmsService.getText(feilmeldingsNokkel);
+                        var feilmeldingTekst = cmsService.getTextSafe(feilmeldingsNokkel);
                         formElem.find('.melding').first().text(feilmeldingTekst);
                     }
                 }
@@ -122,7 +122,7 @@ angular.module('nav.validering', ['nav.cms'])
                 function settFeilmeldingsTekst() {
                     var feilmeldingsNokkel = element[0].getAttribute('data-error-messages').toString();
                     //hack for å fjerne dobbeltfnuttene rundt feilmeldingsnokk
-                    var feilmeldingTekst = cmsService.getText(feilmeldingsNokkel.substring(1, feilmeldingsNokkel.length - 1));
+                    var feilmeldingTekst = cmsService.getTextSafe(feilmeldingsNokkel.substring(1, feilmeldingsNokkel.length - 1));
                     element.closest('.form-linje').find('.melding').text(feilmeldingTekst);
                 }
             }
