@@ -226,7 +226,7 @@ public class SoknadDataController {
     @RequestMapping(value = "/opprett/ettersending/{behandlingskjedeId}", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody()
     @ResponseStatus(HttpStatus.CREATED)
-    public Map<String, String> opprettSoknadEttersending(@PathVariable String behandlingskjedeId) {
+    public Map<String, String> opprettSoknadEttersending(@PathVariable String behandlingskjedeId, HttpServletResponse response) {
         Map<String, String> result = new HashMap<>();
         WebSoknad soknad = ettersendingService.hentEttersendingForBehandlingskjedeId(behandlingskjedeId);
         Long soknadId;
@@ -237,6 +237,11 @@ public class SoknadDataController {
         }
 
         result.put("soknadId", soknadId.toString());
+
+        Cookie xsrfCookie = new Cookie("XSRF-TOKEN", XsrfGenerator.generateXsrfToken(behandlingskjedeId));
+        xsrfCookie.setPath("/sendsoknad");
+        response.addCookie(xsrfCookie);
+
         return result;
     }
 
