@@ -34,22 +34,25 @@ angular.module('nav.feilmeldinger', [])
                 scope.skalViseFeilmeldingerMedSammeTekst = attrs.visFlereLikeFeilmeldinger === "true";
                 scope.feilmeldinger = [];
                 scope.runValidation = function (skalScrolle) {
-                    scope.broadcastValideringTilSubforms(ctrl);
                     scope.$broadcast(eventString);
+                    scope.broadcastValideringTilSubforms(ctrl);
 
-                    scope.feilmeldinger = [];
-                    var skalViseFlereFeilmeldinger = true;
-                    angular.forEach(ctrl.$error, function (verdi, feilNokkel) {
-                        if (skalViseFlereFeilmeldinger) {
-                            skalViseFlereFeilmeldinger = leggTilFeilmeldingerVedValidering(verdi, feilNokkel);
+                    $timeout(function() {
+                        scope.feilmeldinger = [];
+                        var skalViseFlereFeilmeldinger = true;
+                        angular.forEach(ctrl.$error, function (verdi, feilNokkel) {
+                            if (skalViseFlereFeilmeldinger) {
+                                skalViseFlereFeilmeldinger = leggTilFeilmeldingerVedValidering(verdi, feilNokkel);
+                            }
+                        });
+
+                        if (scope.feilmeldinger.length > 0 && skalScrolle) {
+                            $timeout(function () {
+                                scrollToElement(elem, 100);
+                            }, 1);
                         }
-                    });
+                    }, 50);
 
-                    if (scope.feilmeldinger.length > 0 && skalScrolle) {
-                        $timeout(function () {
-                            scrollToElement(elem, 100);
-                        }, 1);
-                    }
                     return ctrl.$valid;
                 };
 
