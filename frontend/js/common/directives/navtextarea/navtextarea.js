@@ -149,7 +149,6 @@ angular.module('nav.textarea', [])
 						element.closest('.form-linje').removeClass('feil');
 						scope.lagreFaktum();
 					}
-
 				};
 			}
 		};
