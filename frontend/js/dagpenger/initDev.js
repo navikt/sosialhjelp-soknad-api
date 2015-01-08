@@ -45,6 +45,8 @@ angular.module('sendsoknad')
         $http.get('../js/common/directives/sporsmalferdig/spmblokkFerdigTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/stegindikator/stegIndikatorTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/sistlagret/sistLagretTemplate.html', {cache: $templateCache});
+        $http.get('../js/common/arbeidsforhold/templates/grensearbeidTemplate.html', {cache: $templateCache});
+        $http.get('../js/modules/tidligereArbeidsforhold/templates/varpermittertsist.html', {cache: $templateCache});
         $http.get('../js/common/directives/markup/modalsideTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/melding/meldingTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/markup/vedlegginfoboksTemplate.html', {cache: $templateCache});
