@@ -47,12 +47,12 @@ angular.module('nav.vedlegg.directive', [])
                     });
 
                     scope.harSporsmal = function() {
-                        var tekst = cmsService.getText(scope.sporsmal);
+                        var tekst = cmsService.getTextSafe(scope.sporsmal);
                         return isNotNullOrUndefined(tekst) && tekst.length > 0;
                     };
 
                     scope.harHjelpetekst = function() {
-                        var tekst = cmsService.getText(scope.hjelpetekst.tekst);
+                        var tekst = cmsService.getTextSafe(scope.hjelpetekst.tekst);
                         return isNotNullOrUndefined(tekst) && tekst.length > 0;
                     };
 
