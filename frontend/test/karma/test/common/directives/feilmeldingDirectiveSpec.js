@@ -28,21 +28,26 @@ describe('feilmeldinger', function () {
     it('feilmelding skal vises dersom ett inputfelt har error-messages satt og feltet inneholder feil', function () {
         scope.runValidation(false);
         scope.$apply();
-        expect(element.find('li').length).toBe(1);
+
+        waitsFor(function() {
+            return scope.feilmeldinger.length == 1;
+        }, 500);
+
+        runs(function() {
+            expect(scope.feilmeldinger.length).toBe(1);
+        });
     });
 
     it('feilmelding skal ha rett tekst', function () {
         scope.runValidation(false);
         scope.$apply();
-        expect(element.find('li').text().trim()).toBe(requiredFeil);
-    });
+        waitsFor(function() {
+            return scope.feilmeldinger.length > 0;
+        }, 500);
 
-    it('skal scrolle til feilmelding dersom man klikker på den', function () {
-        scope.runValidation(false);
-        scope.$apply();
-        spyOn(window, 'scrollToElement');
-        element.find('li').triggerHandler('click');
-        expect(window.scrollToElement).toHaveBeenCalled();
+        runs(function() {
+            expect(scope.feilmeldinger[0].feil).toBe("Er required");
+        });
     });
 
     it('skal fjerne feilmelding når feilen blir rettet', function () {

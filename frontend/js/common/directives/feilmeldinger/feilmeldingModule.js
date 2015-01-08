@@ -37,7 +37,7 @@ angular.module('nav.feilmeldinger', [])
                     scope.$broadcast(eventString);
                     scope.broadcastValideringTilSubforms(ctrl);
 
-                    $timeout(function() {
+                    setTimeout(function() {
                         scope.feilmeldinger = [];
                         var skalViseFlereFeilmeldinger = true;
                         angular.forEach(ctrl.$error, function (verdi, feilNokkel) {
@@ -227,7 +227,7 @@ angular.module('nav.feilmeldinger', [])
                         return elem.closest('[data-ng-form]').find('[name=' + feil.$linkId + ']');
                     }
                     if (feil && feil.$elementErrorAttr) {
-                        return elem.closest('[data-ng-form]').find(".feil, .feilstyling").find("[data-error-messages=\"" + feil.$elementErrorAttr + "\"], [error-messages=\"" + feil.$elementErrorAttr + "\"]");
+                        return elem.closest('[data-ng-form]').find("[data-error-messages=\"" + feil.$elementErrorAttr + "\"], [error-messages=\"" + feil.$elementErrorAttr + "\"]");
                     }
                 }
             }
