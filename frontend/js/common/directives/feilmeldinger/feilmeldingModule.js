@@ -31,6 +31,7 @@ angular.module('nav.feilmeldinger', [])
             link: function postLink(scope, elem, attrs, ctrl) {
                 var eventString = 'RUN_VALIDATION' + ctrl.$name;
 
+                scope.skalViseFeilmeldingerMedSammeTekst = attrs.visFlereLikeFeilmeldinger === "true";
                 scope.feilmeldinger = [];
                 scope.runValidation = function (skalScrolle) {
                     scope.broadcastValideringTilSubforms(ctrl);
@@ -142,7 +143,6 @@ angular.module('nav.feilmeldinger', [])
                     var skalViseFlereFeilmeldinger = true;
                     angular.forEach(verdi, function (feil) {
                         var feilmeldinger = finnFeilmelding(feil, feilNokkel);
-
                         angular.forEach(feilmeldinger, function(feilmelding) {
                             if (feil && feil.$skalVisesAlene === true && skalViseFlereFeilmeldinger) {
                                 scope.feilmeldinger = [feilmelding];
@@ -162,7 +162,7 @@ angular.module('nav.feilmeldinger', [])
                         angular.forEach(feilmeldinger, function(feilmelding){
                             if (feilmelding === undefined && feilErSubform(feil, feilNokkel)) {
                                 leggTilFeilSomFortsattSkalVises(feil.$error[feilNokkel], feilNokkel, fortsattFeilListe);
-                            } else if (feilmelding && !feilFinnesIkkeIFeilliste(scope.feilmeldinger, feilmelding) && feil) {
+                            } else if (feilmelding && !skalLeggeTilFeilIFeillisten(scope.feilmeldinger, feilmelding) && feil) {
                                 leggTilFeilmeldingHvisIkkeAlleredeLagtTil(fortsattFeilListe, feilmelding);
                             }
                         });
@@ -171,19 +171,19 @@ angular.module('nav.feilmeldinger', [])
                 }
 
                 function leggTilFeilmeldingHvisIkkeAlleredeLagtTil(feilListe, feilmelding) {
-                    if (feilFinnesIkkeIFeilliste(feilListe, feilmelding)) {
+                    if (skalLeggeTilFeilIFeillisten(feilListe, feilmelding)) {
                         feilListe.push(feilmelding);
                     }
                 }
 
-                function feilFinnesIkkeIFeilliste(feilliste, feilmelding) {
-                    var feilFinnesIkkeIListe = true;
+                function skalLeggeTilFeilIFeillisten(feilliste, feilmelding) {
+                    var skalLeggeTilFeilIListe = true;
                     angular.forEach(feilliste, function(feil){
-                        if(feil.elem.is(feilmelding.elem)) {
-                            feilFinnesIkkeIListe = false;
+                        if(feil.elem.is(feilmelding.elem) || (!scope.skalViseFeilmeldingerMedSammeTekst && (feilliste.indexByValue(feilmelding.feil) > -1))) {
+                            skalLeggeTilFeilIListe = false;
                         }
                     });
-                    return feilFinnesIkkeIListe;
+                    return skalLeggeTilFeilIListe;
                 }
 
                 function finnFeilmelding(feil, feilNokkel) {
@@ -224,7 +224,7 @@ angular.module('nav.feilmeldinger', [])
                         return elem.closest('[data-ng-form]').find('[name=' + feil.$linkId + ']');
                     }
                     if (feil && feil.$elementErrorAttr) {
-                        return elem.closest('[data-ng-form]').find(".feil").find("[data-error-messages=\"" + feil.$elementErrorAttr + "\"], [error-messages=\"" + feil.$elementErrorAttr + "\"]");
+                        return elem.closest('[data-ng-form]').find(".feil, .feilstyling").find("[data-error-messages=\"" + feil.$elementErrorAttr + "\"], [error-messages=\"" + feil.$elementErrorAttr + "\"]");
                     }
                 }
             }
