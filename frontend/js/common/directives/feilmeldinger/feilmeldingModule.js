@@ -231,16 +231,6 @@ angular.module('nav.feilmeldinger', [])
         };
     }
     ])
-    .filter('fiksRekkefolge', [function () {
-        return function (feilmeldinger) {
-            var sortertFeilmeldingerArray = [];
-
-            for (var i = 1; i < feilmeldinger.length - 1; i++) {
-//              skal bruke tabIndex når det er på plass
-            }
-            return feilmeldinger;
-        };
-    }])
     .directive('aktivFeilmelding', ['$timeout', function ($timeout) {
         return {
             link: function (scope, element) {
