@@ -408,13 +408,7 @@ a p {
       }
     }
   }
-  .flipp:hover {
-    border-color: transparent transparent #004283 transparent !important;
 
-    &:before {
-      border-top: @flipp-size solid #0067c5 !important;
-    }
-  }
   &.open {
     background-color: white;
 
@@ -428,8 +422,12 @@ a p {
     }
   }
 
-  &:not(.open) .accordion-heading:hover .flipp:before {
-    border-top: 30px solid #0067c5;
+  &:not(.open) .accordion-heading:hover .flipp {
+    border-color: transparent transparent #004283;
+
+    &:before {
+        border-top: 30px solid #0067c5;
+    }
   }
 
   .flipp {
