@@ -37,21 +37,19 @@ angular.module('nav.feilmeldinger', [])
                     scope.$broadcast(eventString);
                     scope.broadcastValideringTilSubforms(ctrl);
 
-                    setTimeout(function() {
-                        scope.feilmeldinger = [];
-                        var skalViseFlereFeilmeldinger = true;
-                        angular.forEach(ctrl.$error, function (verdi, feilNokkel) {
-                            if (skalViseFlereFeilmeldinger) {
-                                skalViseFlereFeilmeldinger = leggTilFeilmeldingerVedValidering(verdi, feilNokkel);
-                            }
-                        });
-
-                        if (scope.feilmeldinger.length > 0 && skalScrolle) {
-                            $timeout(function () {
-                                scrollToElement(elem, 100);
-                            }, 1);
+                    scope.feilmeldinger = [];
+                    var skalViseFlereFeilmeldinger = true;
+                    angular.forEach(ctrl.$error, function (verdi, feilNokkel) {
+                        if (skalViseFlereFeilmeldinger) {
+                            skalViseFlereFeilmeldinger = leggTilFeilmeldingerVedValidering(verdi, feilNokkel);
                         }
-                    }, 50);
+                    });
+
+                    if (scope.feilmeldinger.length > 0 && skalScrolle) {
+                        $timeout(function () {
+                            scrollToElement(elem, 100);
+                        }, 1);
+                    }
 
                     return ctrl.$valid;
                 };
