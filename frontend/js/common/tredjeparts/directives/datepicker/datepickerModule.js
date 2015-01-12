@@ -133,6 +133,7 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.dateparser', 'ui.bootst
                 month = self.activeDate.getMonth() + direction * (self.step.months || 0);
             self.activeDate.setFullYear(year, month, 1);
             self.refreshView();
+            focusElement();
         };
 
         $scope.resetMode = function () {
