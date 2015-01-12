@@ -1,8 +1,13 @@
 @datepickerblaa: #0CA9E0;
 @datepickerrod: #c30000;
-@datepickergonn: green;
+@datepickergonn: #119b47;
+@datepickersvart: #3d3731;
 
 .input-group {
+  button:focus {
+    text-decoration: underline !important;
+  }
+
   input {
     height: 30px;
     visibility: hidden;
@@ -23,11 +28,23 @@
   }
 
   table {
-    outline: none;
-
     thead {
+      .datepicker-title {
+        text-transform: capitalize;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+      .btn:hover, .btn:focus {
+        background-color: #fff;
+        strong {
+          text-decoration: underline;
+        }
+      }
+
       tr:first-child {
-        border-bottom: 1px solid #3d3731;
+        border-bottom: 1px solid @datepickersvart;
       }
       tr:last-child {
         font-family: modus;
@@ -39,77 +56,173 @@
           font-size: 100%;
         }
       }
-    }
+      .pull-left {
+        background: url(../img/pil-venstre.svg) no-repeat;
+        height: 13px;
+        background-position-x: right;
 
+        &:hover, &:focus {
+          background: url(../img/pil-venstre-hover.svg) no-repeat;
+          background-position-x: right;
+          height: 13px;
+        }
+      }
+      .pull-right {
+        background: url(../img/pil-hoyre.svg) no-repeat;
+        height: 13px;
+
+        &:hover, &:focus {
+          background: url(../img/pil-hoyre-hover.svg) no-repeat;
+          height: 13px;
+        }
+      }
+    }
+    tbody:focus {
+      outline: none;
+
+    }
+  }
+  table.day {
     tbody {
       tr td {
         font-family: modus;
         font-size: 0.85rem;
         font-weight: normal;
 
+        .btn {
+          border: 1px solid transparent;
+        }
+
         &:first-child {
           font-family: arial;
           font-weight: italic;
           font-size: 0.75rem;
-          color: brown;
+          color: #675b53;
           border-right: 1px solid #d1d1d1;
         }
+
         &:last-child {
           span {
             color: @datepickerrod;
+          }
+          &:hover {
+            span {
+              color: @datepickersvart;
+            }
           }
         }
 
         span {
           line-height: 1.6rem;
         }
-      }
 
-      .text-muted {
-        color: #9e9b98 !important;
-        font-size: 0.85rem;
-        font-weight: normal;
-      }
+        .btn.active, .btn.active.btn-info {
+          border: 1px solid @datepickerrod;
+          border-radius: 50%;
+          background-color: #fff;
 
-      .text-info {
-        color: @datepickerblaa;
-      }
+          span {
+            color: @datepickersvart;
+          }
 
-      .btn-info {
-        padding: initial;
-        span {
-          color: #fff;
+          &:hover {
+            border-radius: 3px;
+            border: 1px solid #d1d1d1;
+            background-color: #c3c3c3;
+          }
         }
-      }
 
-      .btn.active {
-        background: @datepickerrod;
-        border-radius: 50%;
+        span.text-muted, .btn[disabled] span {
+          color: #9e9b98;
+          font-size: 0.85rem;
+          font-weight: normal;
+        }
 
-        span {
-          color: #ffffff !important;
+        .btn.idag {
+          border-radius: 50%;
+          background-color: @datepickerblaa;
+          border: 1px solid @datepickerblaa;
+
+          &:hover {
+            background-color: #c3c3c3;
+            border-radius: 3px;
+            border: 1px solid #c3c3c3;
+            span {
+              color: @datepickersvart;
+            }
+          }
+          span {
+            color: #fff;
+          }
+        }
+        &:hover {
+          .text-muted {
+            color: #fff;
+          }
         }
       }
     }
   }
+  table.month, table.year {
+    tbody tr td {
+      button {
+        padding: 10px 20px;
 
-  .btn-info, .btn-danger, .btn-success {
-    color: #fff;
-    text-transform: initial;
-    padding: 5px 25px;
+        span {
+          font-size: 1rem !important;
+          color: #9e9b98;
+        }
+        &:hover span {
+          color: @datepickersvart;
+        }
+      }
 
+      .btn.active, .btn.active.btn-info {
+        background-color: #fff;
+
+        span {
+          color: @datepickersvart;
+          font-weight: 900;
+        }
+
+        &:hover {
+          border-radius: 3px;
+          background-color: #c3c3c3;
+        }
+      }
+
+      span.text-muted, .btn[disabled] span {
+        color: #9e9b98;
+        font-size: 0.85rem;
+        font-weight: normal;
+      }
+
+    }
   }
 
-  .btn-info {
-    background-color: @datepickerblaa;
-  }
+  ul li:last-child {
+    .btn-info, .btn-danger, .btn-success {
+      color: #fff;
+      text-transform: initial;
+      padding: 5px 15px;
 
-  .btn-danger {
-    background-color: @datepickerrod;
-  }
+      &:hover, &:focus {
+        background-color: #c3c3c3;
+        color: @datepickersvart;
+        text-decoration: underline !important;
+      }
+    }
 
-  .btn-success {
-    background-color: @datepickergonn;
-  }
+    .btn-info {
+      background-color: @datepickerblaa;
+    }
 
+    .btn-danger {
+      background-color: @datepickerrod;
+    }
+
+    .btn-success {
+      background-color: @datepickergonn;
+    }
+  }
 }
