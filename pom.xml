@@ -34,7 +34,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 
-        <modig.frontend>1.1.95</modig.frontend>
+        <modig.frontend>1.1.96</modig.frontend>
         <wicket.version>6.18.0</wicket.version>
         <spring.version>3.2.9.RELEASE</spring.version>
         <cxf.version>2.7.9</cxf.version>
