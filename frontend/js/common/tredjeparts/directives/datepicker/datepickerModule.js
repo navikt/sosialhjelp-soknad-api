@@ -575,8 +575,7 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.dateparser', 'ui.bootst
                         }
 
                         if (closeOnDateSelection) {
-                            scope.isOpen = false;
-                            element[0].focus();
+                            scope.close();
                         }
                     };
 
