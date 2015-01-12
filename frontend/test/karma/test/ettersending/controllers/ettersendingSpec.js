@@ -145,7 +145,7 @@
         }));
 
         it('skal sette fristdato til 42 dager etter innsendt dato', function () {
-            expect(scope.informasjon.frist[1]).toBe('17. mai 2014');
+            expect(scope.informasjon.frist[1]).toBe('17. Mai 2014');
         });
 
         it('skal ha rett antall vedlegg', function () {
