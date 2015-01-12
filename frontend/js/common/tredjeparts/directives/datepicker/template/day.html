@@ -1,36 +1,35 @@
-<table role="grid" aria-labelledby="{{uniqueId}}-title" aria-activedescendant="{{activeDateId}}">
+<table data-role="grid" data-aria-labelledby="{{uniqueId}}-title" data-aria-activedescendant="{{activeDateId}}" class="day">
     <thead>
         <tr>
             <th>
-                <button type="button" class="btn btn-default btn-sm pull-left" ng-click="move(-1)" tabindex="-1"><i class="glyphicon glyphicon-chevron-left"></i></button>
+                <button type="button" class="btn btn-default btn-sm pull-left" data-ng-click="move(-1)" tabindex="0"><i class="glyphicon glyphicon-chevron-left"></i></button>
             </th>
             <th colspan="{{5 + showWeeks}}">
-                <button id="{{uniqueId}}-title" role="heading" aria-live="assertive" aria-atomic="true" type="button" class="btn btn-default btn-sm" ng-click="toggleMode()" tabindex="-1" style="width:100%;">
+                <button id="{{uniqueId}}-title" data-role="heading" data-aria-live="assertive" data-aria-atomic="true" type="button" class="btn btn-default btn-sm datepicker-title" data-ng-click="toggleMode()" tabindex="0" style="width:100%;">
                     <strong>{{title}}</strong></button>
             </th>
             <th>
-                <button type="button" class="btn btn-default btn-sm pull-right
-                " ng-click="move(1)" tabindex="-1"><i class="glyphicon glyphicon-chevron-right"></i></button>
+                <button type="button" class="btn btn-default btn-sm pull-right" data-ng-click="move(1)" tabindex="0"><i class="glyphicon glyphicon-chevron-right"></i></button>
             </th>
         </tr>
         <tr>
-            <th ng-show="showWeeks" class="text-center"></th>
-            <th ng-repeat="label in labels track by $index" class="text-center">
-                <small aria-label="{{label.full}}">{{label.abbr}}</small>
+            <th data-ng-show="showWeeks" class="text-center"></th>
+            <th data-ng-repeat="label in labels track by $index" class="text-center">
+                <small data-aria-label="{{label.full}}">{{label.abbr}}</small>
             </th>
         </tr>
     </thead>
-    <tbody>
-        <tr ng-repeat="row in rows track by $index">
-            <td ng-show="showWeeks" class="text-center h6"><em>{{ weekNumbers[$index] }}</em></td>
-            <td ng-repeat="dt in row track by dt.date"
-                    class="text-center" role="gridcell" id="{{dt.uid}}" aria-disabled="{{!!dt.disabled}}">
+    <tbody tabindex="0">
+        <tr data-ng-repeat="row in rows track by $index">
+            <td data-ng-show="showWeeks" class="text-center h6"><em>{{ weekNumbers[$index] }}</em></td>
+            <td data-ng-repeat="dt in row track by dt.date"
+                    class="text-center" data-role="gridcell" id="{{dt.uid}}" data-aria-disabled="{{!!dt.disabled}}">
                 <button type="button" style="width:100%;" class="btn btn-default btn-sm"
-                        ng-class="{'btn-info': dt.selected, active: isActive(dt)}"
-                        ng-click="select(dt.date)"
-                        ng-disabled="dt.disabled"
+                        data-ng-class="{'btn-info': dt.selected, active: isActive(dt), idag: dt.current}"
+                        data-ng-click="select(dt.date)"
+                        data-ng-disabled="dt.disabled"
                         tabindex="-1">
-                    <span ng-class="{'text-muted': dt.secondary,'text-info': dt.current}">{{dt.label}}</span></button>
+                    <span data-ng-class="{'text-muted': dt.secondary,'text-info': dt.current}">{{dt.label}}</span></button>
             </td>
         </tr>
     </tbody>
