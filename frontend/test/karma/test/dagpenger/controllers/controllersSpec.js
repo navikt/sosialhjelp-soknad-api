@@ -67,7 +67,13 @@
                 utslagskriterier: {
                 }
             });
-            $provide.value("cms", {'tekster': {'barnetillegg.nyttbarn.landDefault': ''}});
+            var cmsTekster = {'tekster': {'barnetillegg.nyttbarn.landDefault': ''}};
+            $provide.value("cms", cmsTekster);
+            $provide.value("cmsService", {
+                getText: function(nokkel) {
+                    return cms.tekster[nokkel];
+                }
+            });
             $provide.value("$routeParams", {});
         }));
 

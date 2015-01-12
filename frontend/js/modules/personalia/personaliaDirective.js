@@ -1,12 +1,12 @@
 angular.module('nav.personalia.directive', [])
-    .directive('navPersonalia', function (data) {
+    .directive('navPersonalia', function (data, cmsService) {
         return {
             replace: true,
             templateUrl: '../js/modules/personalia/templates/personaliaTemplate.html',
             link: function (scope) {
                 scope.personalia = data.finnFaktum('personalia').properties;
-
                 scope.brukerprofilUrl = data.config["soknad.brukerprofil.url"];
+
                 scope.erMann = function () {
                     if (scope.personalia.kjonn) {
                         return scope.personalia.kjonn === 'm';
@@ -28,6 +28,11 @@ angular.module('nav.personalia.directive', [])
                 scope.erIkkeNordiskStatsborger = function () {
                     var nordiskeLandkoder = ["NOR", "SWE", "FIN", "DNK", "ISL", "FRO"];
                     return nordiskeLandkoder.indexOf(scope.personalia.statsborgerskap) <= -1;
+                };
+
+                scope.getBrukerprofilLenke = function() {
+                    var profilLenkeTekst = cmsService.getText("personalia.intro.tekst");
+                    return "<a href=\"" + scope.brukerprofilUrl + "\" target=\"_blank\">" + profilLenkeTekst + "</a>";
                 };
             }
         };

@@ -78,12 +78,35 @@ angular.module('nav.sporsmalferdig', [])
             link: function (scope, element, attrs, form) {
                 var tab = element.closest('.accordion-group');
                 scope.gaaTilNeste = function () {
-                    var nesteTab = tab.next();
-                    lukkBolk(tab);
-                    gaaTilTab(nesteTab);
-                    apneBolk(nesteTab);
-                    setFokus(nesteTab);
+                    if(form.$valid) {
+                        var nesteTab = tab.next();
+                        lukkBolk(tab);
+                        gaaTilTab(nesteTab);
+                        apneBolk(nesteTab);
+                        settFokus(nesteTab);
+                    } else {
+                        angular.forEach(form.$error, function (feil) {
+                            var el = finnElementMedFeilOgSettFeilmelding(feil[0], scope);
+                            scrollToElement(el, 200);
+                            el.focus();
+                        });
+                    }
                 };
+
+                function finnElementMedFeilOgSettFeilmelding(feil, scope) {
+                    var selector = "[data-error-messages=\"" + feil.$elementErrorAttr + "\"], " +
+                        "[error-messages=\"" + feil.$elementErrorAttr + "\"]";
+
+                    var el = element.closest('[data-ng-form]').find(selector);
+                    if(el.is(":visible")) {
+                        el.closest(".form-linje").addClass("feil");
+                        return el;
+                    } else {
+                        scope.validert.value = true;
+                        scope.skalViseFeil.value = true;
+                        return element.closest('[data-ng-form]').find("[type=\"radio\"]").first();
+                    }
+                }
 
                 function gaaTilTab(nyTab) {
                     if (nyTab.length > 0) {
@@ -112,7 +135,7 @@ angular.module('nav.sporsmalferdig', [])
                     }
                 }
 
-                function setFokus(tab) {
+                function settFokus(tab) {
                     tab.closest('.accordion-group').find('a').focus();
                 }
             }

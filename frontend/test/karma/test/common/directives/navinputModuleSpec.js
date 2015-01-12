@@ -4,7 +4,13 @@ describe('navradio', function () {
     beforeEach(module('nav.input', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
-        $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
+        var tekster = {'tekster': {'tittel.key': 'Min tittel'}};
+        $provide.value("cms", tekster);
+        $provide.value("cmsService", {
+            getText: function(nokkel) {
+                return tekster.tekster[nokkel];
+            }
+        });
         $provide.value("data", {});
     }));
 
@@ -233,8 +239,8 @@ describe('navcheckbox', function () {
     }));
     describe("navcheckbox", function () {
         it('skal sette riktig tekster for hjelpetekst', function () {
-            expect(scope.hjelpetekst.tittel).toBe('Min tittel');
-            expect(scope.hjelpetekst.tekst).toBe('Min tekst');
+            expect(scope.hjelpetekst.tittel.$$unwrapTrustedValue()).toBe('Min tittel');
+            expect(scope.hjelpetekst.tekst.$$unwrapTrustedValue()).toBe('Min tekst');
         });
         it('hvisHarHjelpetekst skal returnere true', function () {
             expect(scope.hvisHarHjelpetekst()).toNotBe(undefined);

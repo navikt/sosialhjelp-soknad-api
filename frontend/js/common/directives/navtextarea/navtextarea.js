@@ -57,7 +57,7 @@ angular.module('nav.textarea', [])
 			templateUrl: linker
 		};
 	}])
-	.directive('validateTextarea', ['$timeout', 'cms', function ($timeout, cms) {
+	.directive('validateTextarea', ['$timeout', 'cmsService', function ($timeout, cmsService) {
 		return {
 			require: ['ngModel', '^form'],
 			link   : function (scope, element, attrs, ctrls) {
@@ -120,11 +120,11 @@ angular.module('nav.textarea', [])
 				}
 
 				function settFeilmeldingsTekst() {
-					var feilmeldingTekst = cms.tekster['textarea.feilmleding'];
+					var feilmeldingTekst = cmsService.getText('textarea.feilmleding');
 					if (scope.counter > -1) {
 						var feilmeldingsNokkel = element[0].getAttribute('data-error-messages').toString();
 						//hack for å fjerne dobbeltfnuttene rundt feilmeldingsnokk
-						feilmeldingTekst = cms.tekster[feilmeldingsNokkel.substring(1, feilmeldingsNokkel.length - 1)];
+						feilmeldingTekst = cmsService.getText(feilmeldingsNokkel.substring(1, feilmeldingsNokkel.length - 1));
 					}
 					element.closest('.form-linje').find('.melding').text(feilmeldingTekst);
 				}
@@ -147,8 +147,8 @@ angular.module('nav.textarea', [])
 						element.closest('.form-linje').addClass('feil');
 					} else {
 						element.closest('.form-linje').removeClass('feil');
+						scope.lagreFaktum();
 					}
-					scope.lagreFaktum();
 				};
 			}
 		};

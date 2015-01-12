@@ -75,7 +75,14 @@
                 utslagskriterier: {
                 }
             });
-            $provide.value("cms", {tekster: [{'arbeidsforhold.arbeidsiver.landDefault': "Norge"}]});
+
+            var cmsNokkler =  {tekster: [{'arbeidsforhold.arbeidsiver.landDefault': "Norge"}]};
+            $provide.value("cms", cmsNokkler);
+            $provide.value("cmsService", {
+                getText: function(nokkel) {
+                    return cmsNokkler.tekster[nokkel];
+                }
+            });
         }));
 
         beforeEach(inject(function ($controller, $rootScope, data, $cookieStore) {

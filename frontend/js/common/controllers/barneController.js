@@ -1,6 +1,6 @@
 angular.module('nav.barn', [])
 
-    .controller('BarneCtrl', function ($scope, Faktum, data, $cookieStore, $location, $resource, cms) {
+    .controller('BarneCtrl', function ($scope, Faktum, data, $cookieStore, $location, $resource, cmsService) {
         var soknadId = data.soknad.soknadId;
         var url = $location.$$url;
         var endreModus = url.indexOf('endrebarn') !== -1;
@@ -63,7 +63,7 @@ angular.module('nav.barn', [])
                     'etternavn': undefined,
                     'sammensattnavn': undefined,
                     'alder': undefined,
-                    'land' : cms.tekster["barnetillegg.nyttbarn.landDefault"],
+                    'land' : cmsService.getText("barnetillegg.nyttbarn.landDefault"),
                     'barnetillegg': 'true',
                     'barneinntekttall': undefined,
                     'ikkebarneinntekt': undefined

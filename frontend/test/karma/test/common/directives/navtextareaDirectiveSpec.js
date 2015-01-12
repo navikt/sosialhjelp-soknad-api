@@ -50,11 +50,21 @@ describe('navtextarea', function () {
             scope.feil = true;
             expect(scope.harFokusOgFeil()).toBe(true);
         });
-        it('harFokusOgFeil skal returnere true når textarea ikke har feil men har fokus', function () {
+        it('fritekstfelt skal lagre faktum på blur hvis korrekt utfylt', function () {
             spyOn(scope, 'lagreFaktum');
+            element.find('textarea').val("1234");
+            element.find('textarea').trigger("input");
+            scope.$digest();
             element.find('textarea').blur();
-
             expect(scope.lagreFaktum).toHaveBeenCalled();
+        });
+        it('fritekstfelt skal ikke lagre faktum hvis tomt felt', function () {
+            spyOn(scope, 'lagreFaktum');
+            element.find('textarea').val("");
+            element.find('textarea').trigger("input");
+            scope.$digest();
+            element.find('textarea').blur();
+            expect(scope.lagreFaktum).not.toHaveBeenCalled();
         });
         it('harSporsmal skal returnere true når textarea er knyttet til et spørsmal', function () {
             expect(scope.harSporsmal()).toBe(true);

@@ -6,7 +6,7 @@ angular.module('nav.vedlegg.directive', [])
             templateUrl: '../../'
         };
     })
-    .directive('vedleggTextInput', function(cms, $timeout) {
+    .directive('vedleggTextInput', function(cmsService, $timeout) {
         return {
             scope: {
                 forventning: '='
@@ -47,12 +47,12 @@ angular.module('nav.vedlegg.directive', [])
                     });
 
                     scope.harSporsmal = function() {
-                        var tekst = cms.tekster[scope.sporsmal];
+                        var tekst = cmsService.getTextSafe(scope.sporsmal);
                         return isNotNullOrUndefined(tekst) && tekst.length > 0;
                     };
 
                     scope.harHjelpetekst = function() {
-                        var tekst = cms.tekster[scope.hjelpetekst.tekst];
+                        var tekst = cmsService.getTextSafe(scope.hjelpetekst.tekst);
                         return isNotNullOrUndefined(tekst) && tekst.length > 0;
                     };
 
