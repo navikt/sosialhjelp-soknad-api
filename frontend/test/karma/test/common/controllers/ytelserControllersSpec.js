@@ -57,7 +57,7 @@
                 }
             });
 
-            var cmsTekster = {'tekster': {}}
+            var cmsTekster = {'tekster': {}};
             $provide.value("cms", cmsTekster);
             $provide.value("cmsService", {
                 getText: function(nokkel) {
