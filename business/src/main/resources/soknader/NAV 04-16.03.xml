@@ -1294,7 +1294,7 @@
         <faktum>tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsammenhengende</faktum>
         <property>arbeidsgivernavn</property>
         <onValues>
-            <value>true</value>
+            <value>false</value>
         </onValues>
         <skjemaNummer>G2</skjemaNummer>
         <flereTillatt>true</flereTillatt>
