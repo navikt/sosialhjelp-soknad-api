@@ -1,5 +1,5 @@
 angular.module('nav.datepicker', [
-    'nav.datepicker.directive',
+    'nav.datepicker.htmlDirective',
     'nav.datepicker.service',
     'nav.datepicker.validation',
     'nav.datepicker.constant',

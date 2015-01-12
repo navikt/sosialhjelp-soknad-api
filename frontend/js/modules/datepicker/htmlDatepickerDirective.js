@@ -1,4 +1,4 @@
-angular.module('nav.datepicker.directive', [])
+angular.module('nav.datepicker.htmlDirective', [])
     .directive('htmlDatepicker', function ($timeout) {
         return {
             restrict: 'A',
