@@ -219,11 +219,18 @@ angular.module('nav.barn', [])
 
         $scope.finnAlder = function () {
             if ($scope.barn.properties.fodselsdato) {
-                var year = parseInt($scope.barn.properties.fodselsdato.split("-")[0]);
-                var maaned = parseInt($scope.barn.properties.fodselsdato.split("-")[1]);
-                var dag = parseInt($scope.barn.properties.fodselsdato.split("-")[2]);
-                var dagensDato = new Date();
+                var year, maaned, dag;
+                if($scope.barn.properties.fodselsdato.toString().indexOf("-") > -1) {
+                    year = parseInt($scope.barn.properties.fodselsdato.split("-")[0]);
+                    maaned = parseInt($scope.barn.properties.fodselsdato.split("-")[1]);
+                    dag = parseInt($scope.barn.properties.fodselsdato.split("-")[2]);
+                } else  {
+                    year = parseInt($scope.barn.properties.fodselsdato.getFullYear());
+                    maaned = parseInt($scope.barn.properties.fodselsdato.getMonth());
+                    dag = parseInt($scope.barn.properties.fodselsdato.getDay());
+                }
 
+                var dagensDato = new Date();
                 var result = dagensDato.getFullYear() - year;
 
                 if (parseInt(dagensDato.getMonth() + 1) < maaned) {
