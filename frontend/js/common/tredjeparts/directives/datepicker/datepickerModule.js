@@ -124,6 +124,7 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.dateparser', 'ui.bootst
             } else {
                 self.activeDate = date;
                 $scope.datepickerMode = self.modes[ self.modes.indexOf($scope.datepickerMode) - 1 ];
+                focusElement();
             }
         };
 
@@ -138,13 +139,14 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.dateparser', 'ui.bootst
             $scope.datepickerMode = self.minMode;
         };
 
-        $scope.toggleMode = function (direction) {
+        $scope.toggleMode = function (direction, focusSelector) {
             direction = direction || 1;
 
             if (($scope.datepickerMode === self.maxMode && direction === 1) || ($scope.datepickerMode === self.minMode && direction === -1)) {
                 return;
             }
 
+            focusElement(undefined, focusSelector);
             $scope.datepickerMode = self.modes[ self.modes.indexOf($scope.datepickerMode) + direction ];
         };
 
@@ -187,13 +189,11 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.dateparser', 'ui.bootst
                 focusElement();
             } else if (evt.ctrlKey && (key === 'up' || key === 'down')) {
                 $scope.toggleMode(key === 'up' ? 1 : -1);
-                focusElement();
 
             } else if ((!harFokusPaaDatoDel() && (key === 'enter' || key === 'space'))) {
-                $scope.toggleMode(1);
-                focusElement(evt, "th .datepicker-title");
+                $scope.toggleMode(1, "th .datepicker-title");
 
-            } else {
+            } else if(harFokusPaaDatoDel()) {
                 self.handleKeyDown(key, evt);
                 self.refreshView();
             }
