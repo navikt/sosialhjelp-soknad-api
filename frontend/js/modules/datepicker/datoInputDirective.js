@@ -42,7 +42,6 @@ angular.module('nav.datepicker.datoinput', ['ui.bootstrap.datepicker'])
 
             scope.open = function($event) {
                 $event.preventDefault();
-                $event.stopPropagation();
 
                 if(scope.disabled != 'true') {
                     scope.opened = !scope.opened;
