@@ -3,22 +3,20 @@
     <tr>
         <td class="sjekket"></td>
         <td>
-            <span class="arbeidsforhold-arbeidsgiver">{{ properties.arbeidsgivernavn }},</span>
+            <span class="arbeidsforhold-arbeidsgiver">{{ properties.arbeidsgivernavn }}</span>
+            <div class="arbeidsforhold-data">
+                <span>({{ formatterLangDato properties.datofra }}</span>
+                {{#if properties.datotil}}
+                    <span>{{ hentTekst "oppsummering.datotil" }}</span>
+                    <span>{{ formatterLangDato properties.datotil }})</span>
+                {{/if}}
+                {{#if properties.konkursdato}}
+                    <span>{{ hentTekst "oppsummering.datotil" }}</span>
+                    <span>{{ formatterLangDato properties.konkursdato }})</span>
+                {{/if}}
+            </div>
             <span class="arbeidsforhold-land">{{ hentLand properties.land }}</span>
-            <ul class="arbeidsforhold-data">
-                <li class="arbeidsforhold-varighet">
-                    <span>{{ formatterLangDato properties.datofra }}</span>
-                    {{#if properties.datotil}}
-                        <span>{{ hentTekst "oppsummering.datotil" }}</span>
-                        <span>{{ formatterLangDato properties.datotil }}</span>
-                    {{/if}}
-                    {{#if properties.konkursdato}}
-                        <span>{{ hentTekst "oppsummering.datotil" }}</span>
-                        <span>{{ formatterLangDato properties.konkursdato }}</span>
-                    {{/if}}
-                </li>
-
-
+            <ul>
                 {{#hvisLik properties.type "Avskjediget"}}
                     <li class="kulepunkt">
                         <span>{{ hentTekst "arbeidsforhold.sluttaarsak.radio.avskjediget" }}</span>
