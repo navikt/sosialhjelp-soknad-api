@@ -107,12 +107,15 @@
   &.disabled {
     .datepicker-input {
       background-color: #f1f1f1;
-      border: 1px solid green;
+      border: 1px solid #b1b3b5;
     }
 
     label {
       .apne-datepicker {
-        background-image: url(../img/kalender_hover.svg);
+        background-image: url(../img/kalender_disabled.svg);
+        &:hover, &:focus {
+          background-image: url(../img/kalender_disabled.svg);
+        }
       }
     }
   }
@@ -138,12 +141,18 @@
     font-weight: bold;
   }
 }
+
 .btn-sm {
   padding: 5px 10px;
   font-size: 0.85rem;
   line-height: 1,5;
   border-radius: 3px;
 }
+
+.omslag.modalside  .datepicker-input .input-group ul {
+  left: 60% !important;
+}
+
 
 @media only screen and (max-width: 767px) {
   .datepicker-intervall {
@@ -154,6 +163,9 @@
         margin-top: 30px;
       }
     }
+  }
+  .omslag.modalside  .datepicker-input .input-group ul {
+    left: 0 !important;
   }
 }
 
