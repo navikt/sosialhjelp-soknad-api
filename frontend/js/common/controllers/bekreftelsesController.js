@@ -10,7 +10,7 @@ angular.module('nav.bekreftelse', [])
         $scope.sendtEpost = {value: false};
         $scope.fullfort = {value: false};
         $scope.fremdriftsindikator = {laster: false };
-        $scope.erEttersendelse = {value: erEttersending()};
+        $scope.erEttersendelse = {value: false};
 
         if (!$scope.epost.value) {
             $scope.epost.value = data.finnFaktum('personalia').properties.epost;
