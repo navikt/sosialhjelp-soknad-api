@@ -272,7 +272,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
             return 0;
         }
 
-        String sql = "SELECT count(*) FROM soknadbrukerdata WHERE soknad_id=:soknadid AND key=:faktumkey AND value IN (:dependonvalues)"; //
+        String sql = "SELECT count(*) FROM soknadbrukerdata WHERE soknad_id=:soknadid AND key=:faktumkey AND value IN (:dependonvalues)";
 
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("soknadid", soknadId);
@@ -340,6 +340,14 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     private void oppdaterBrukerData(long soknadId, Faktum faktum, Boolean systemLagring) {
         Faktum lagretFaktum = hentFaktum(soknadId, faktum.getFaktumId());
+
+        // Siden faktum-value er endret fra CLOB til Varchar må vi få med oss om det skulle oppstå tilfeller
+        // hvor dette lager problemer. Logges som kritisk
+        if(faktum.getValue() != null && faktum.getValue().length() > 500) {
+            logger.error("Prøver å opppdatere faktum med en value som overstiger 500 tegn. (SøknadID: %s, Faktumkey: %s, Faktumtype: %s) ",
+                    Long.toString(soknadId), faktum.getKey(), faktum.getTypeString());
+            faktum.setValue(faktum.getValue().substring(0, 500));
+        }
 
         if (lagretFaktum.er(BRUKERREGISTRERT) || systemLagring) {
             getJdbcTemplate()

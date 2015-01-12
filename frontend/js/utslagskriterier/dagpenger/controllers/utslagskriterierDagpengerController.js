@@ -1,5 +1,5 @@
 angular.module('nav.utslagskriterierDagpenger', [])
-    .controller('utslagskritererDagpengerCtrl', function ($scope, data, $location, sjekkUtslagskriterier, soknad, $location, $routeParams) {
+    .controller('utslagskritererDagpengerCtrl', function ($scope, data, $location, sjekkUtslagskriterier, soknad, $routeParams) {
         $scope.soknad = soknad;
 
         $scope.utslagskriterier = data.utslagskriterier;

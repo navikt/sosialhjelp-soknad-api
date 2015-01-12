@@ -21,14 +21,14 @@ angular.module('nav.tidligerearbeidsforhold.directive', [])
             }
         };
     })
-    .directive('tidligereArbeidsgiver', function(data, cms) {
+    .directive('tidligereArbeidsgiver', function(data, cmsService) {
         return {
             replace: true,
             templateUrl: '../js/modules/tidligereArbeidsforhold/templates/tidligereArbeidsgiver.html',
             link: function(scope) {
                 scope.cmsArgumenter = {
                     modelFaktum: data.finnFaktum('tidligerearbeidsforhold.tidligerearbeidsgiver'),
-                    default: cms.tekster["tidligerearbeidsforhold.tidligerearbeidsgiver.defaultnavn"]
+                    default: cmsService.getText("tidligerearbeidsforhold.tidligerearbeidsgiver.defaultnavn")
                 };
                 scope.jobbetSidenSistFaktum = data.finnFaktum('tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsidensist');
                 scope.hvisHarArbeidet = function() {
