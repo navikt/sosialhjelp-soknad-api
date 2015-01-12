@@ -160,7 +160,7 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.dateparser', 'ui.bootst
         // Listen for focus requests from popup directive
         $scope.$on('datepicker.focus', focusElement);
 
-        $scope.$on('datepicke.tilbakestillGUI', function (event, datomodell) {
+        $scope.$on('datepicker.tilbakestillGUI', function (event, datomodell) {
             $scope.resetMode();
             if (datomodell) {
                 self.activeDate = new Date(datomodell);
