@@ -121,5 +121,17 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.common.routes'])
                         return ConfigResolver;
                     }
                 }
+            })
+            .when('/bekreftelse/:behandlingsId', {
+                templateUrl: '../js/ettersending/innsendingsbekreftelse/bekreftelse.html',
+                controller: 'BekreftelseEttersendingCtrl',
+                resolve: {
+                    cms: function (CmsResolver) {
+                        return CmsResolver;
+                    },
+                    config: function(ConfigResolver) {
+                        return ConfigResolver;
+                    }
+                }
             });
     });
