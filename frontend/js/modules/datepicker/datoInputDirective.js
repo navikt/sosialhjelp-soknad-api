@@ -35,49 +35,35 @@ angular.module('nav.datepicker.datoinput', ['ui.bootstrap.datepicker'])
                 scope.harFokus = true;
             };
 
-            scope.maxDate = scope.erFremtidigdatoTillatt === true ? fjernMaxdato() : new Date();
+            scope.disableDate = function(date, mode) {
+                var idag = new Date();
+                return mode === 'day' && scope.erFremtidigdatoTillatt !== 'true' && date > idag.setDate(idag.getDate() +1);
+            };
 
-            function fjernMaxdato() {
-                element.removeAttr("max-date");
-                return undefined;
-            }
+            scope.open = function($event) {
+                $event.preventDefault();
+                $event.stopPropagation();
 
+                if(scope.disabled != 'true') {
+                    scope.opened = !scope.opened;
+                }
+            };
         },
         controller: function($scope) {
             $scope.today = function() {
                 $scope.dt = new Date();
             };
+
             $scope.today();
-
-            $scope.clear = function () {
-                $scope.dt = null;
-            };
-
-            // Disable weekend selection
-            $scope.disabled = function(date, mode) {
-                return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
-            };
 
             $scope.toggleMin = function() {
                 $scope.minDate = $scope.minDate ? null : new Date();
             };
+
             $scope.toggleMin();
-
-            $scope.open = function($event) {
-                $event.preventDefault();
-                $event.stopPropagation();
-
-                $scope.opened = true;
-            };
-
-            $scope.dateOptions = {
-                formatYear: 'yy',
-                startingDay: 1
-            };
 
             $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
             $scope.format = $scope.formats[0];
-
         }
     };
 })
