@@ -89,7 +89,7 @@
                                                        data-ng-if="erEkstraVedlegg(forventning)" data-ng-bind-html="'vedlegg.annet.inlinefeilmelding' | cmstekst"></span>
                                             </li>
                                             <li>
-                                                <a href="javascript:void(0)" aria-role="button"
+                                                <a href="javascript:void(0)" role="button"
                                                    data-ng-if="erEkstraVedlegg(forventning)"
                                                    data-ng-click="slettAnnetVedlegg(forventning);" name="Slett"
                                                    data-fokus-slett-annet>
@@ -169,7 +169,7 @@
                                         <div data-bildenavigering data-vedlegg="forventning"
                                              data-nav-template="bildenavigeringTemplateLiten.html"></div>
                                         <div class="knapper">
-                                            <a href="javascript:void(0)" aria-role="button"
+                                            <a href="javascript:void(0)" role="button"
                                                data-ng-click="slettVedlegg(forventning)"
                                                data-ng-bind-html="'vedlegg.slettvedlegg' | cmstekst"></a>
                                         </div>
@@ -200,9 +200,9 @@
     <div class="rad ferdig-skjema">
         <div class="begrensning sak-totredel">
             <section class="panel-standard oversikt">
-                <a href="javascript:void(0)" aria-role="button" id="til-oppsummering" class="knapp-hoved"
+                <a href="javascript:void(0)" role="button" id="til-oppsummering" class="knapp-hoved"
                    data-ng-click="validerVedlegg(vedleggForm)"
-                   data-fremdriftsindikator="grå" role="button" data-ng-bind-html=" 'vedlegg.ferdig' | cmstekst">
+                   data-fremdriftsindikator="grå" data-ng-bind-html=" 'vedlegg.ferdig' | cmstekst">
                 </a>
             </section>
         </div>
