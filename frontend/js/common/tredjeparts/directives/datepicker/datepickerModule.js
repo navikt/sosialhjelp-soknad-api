@@ -166,6 +166,7 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.dateparser', 'ui.bootst
             $scope.resetMode();
             if (datomodell) {
                 self.activeDate = new Date(datomodell);
+
             } else {
                 self.activeDate = new Date();
             }
@@ -236,6 +237,8 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.dateparser', 'ui.bootst
 
                 ctrl.step = { months: 1 };
                 ctrl.element = element;
+
+                ctrl.title = "test";
 
                 var DAYS_IN_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
@@ -335,6 +338,10 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.dateparser', 'ui.bootst
                 };
 
                 ctrl.refreshView();
+
+                scope.$on('datepicker.tilbakestillGUI', function (event, datomodell) {
+                    ctrl._refreshView();
+                });
             }
         };
     }])
