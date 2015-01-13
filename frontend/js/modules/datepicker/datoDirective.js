@@ -90,7 +90,11 @@ angular.module('nav.datepicker.dato', [])
                             form[scope.name].$setValidity('toDate', true);
                         }
 
-                        scope.model = scope.vars.model;
+                        if(typeof(scope.vars.model) === 'object') {
+                            scope.model = konverterDatoTilStringMedLeadingZero(scope.vars.model);
+                        } else {
+                            scope.model = scope.vars.model;
+                        }
                     });
 
                     scope.navDatepicker = function() {

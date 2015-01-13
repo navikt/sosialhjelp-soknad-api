@@ -575,16 +575,6 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.dateparser', 'ui.bootst
                             scope.opprinneligDato = ngModel.$viewValue.toString();
                         }
 
-                        scope.date = scope.date.getFullYear().toString() + "-" + (scope.date.getMonth() + 1).toString() + "-"
-                            + scope.date.getDate().toString();
-                        console.log(scope.date)
-                        var test =
-                        scope.date = test;
-                        ngModel.$modelValue = test;
-                        ngModel.$viewValue = test;
-                        console.log(ngModel.$viewValue);
-                        console.log(ngModel.$modelValue);
-
                         if (closeOnDateSelection) {
                             scope.close();
                         }
