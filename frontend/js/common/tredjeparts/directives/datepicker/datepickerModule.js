@@ -71,7 +71,6 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.dateparser', 'ui.bootst
             if (ngModelCtrl.$modelValue) {
                 var date = new Date(ngModelCtrl.$modelValue),
                     isValid = !isNaN(date);
-
                 if (isValid) {
                     this.activeDate = date;
                 } else {
@@ -194,7 +193,7 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.dateparser', 'ui.bootst
             } else if ((!harFokusPaaDatoDel() && (key === 'enter' || key === 'space'))) {
                 $scope.toggleMode(1, "th .datepicker-title");
 
-            } else if(harFokusPaaDatoDel()) {
+            } else if (harFokusPaaDatoDel()) {
                 self.handleKeyDown(key, evt);
                 self.refreshView();
             }
@@ -569,11 +568,22 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.dateparser', 'ui.bootst
                         ngModel.$setViewValue(scope.date);
                         ngModel.$render();
 
+
                         scope.opprinneligDato = new Date().toString();
 
                         if (ngModel.$viewValue) {
                             scope.opprinneligDato = ngModel.$viewValue.toString();
                         }
+
+                        scope.date = scope.date.getFullYear().toString() + "-" + (scope.date.getMonth() + 1).toString() + "-"
+                            + scope.date.getDate().toString();
+                        console.log(scope.date)
+                        var test =
+                        scope.date = test;
+                        ngModel.$modelValue = test;
+                        ngModel.$viewValue = test;
+                        console.log(ngModel.$viewValue);
+                        console.log(ngModel.$modelValue);
 
                         if (closeOnDateSelection) {
                             scope.close();

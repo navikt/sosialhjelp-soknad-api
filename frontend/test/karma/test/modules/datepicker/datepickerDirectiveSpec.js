@@ -53,9 +53,9 @@ describe('datepicker directive', function () {
         }));
 
         describe('skal ha rett tekst', function() {
-//            it('skal ha rett labeltekst', function() {
-//                expect(element.find('.labeltekst').text()).toBe(label);
-//            });
+            it('skal ha rett labeltekst', function() {
+                expect(element.find('.labeltekst').text()).toBe(label);
+            });
 //
 //            it('skal ha rett datoformat, som skal ha klasse vekk', function() {
 //                var datoFormatElem = element.find('.labeltekst').next();
