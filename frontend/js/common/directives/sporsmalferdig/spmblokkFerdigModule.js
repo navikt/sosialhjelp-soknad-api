@@ -136,7 +136,7 @@ angular.module('nav.sporsmalferdig', [])
                 }
 
                 function settFokus(tab) {
-                    tab.closest('.accordion-group').find('a').focus();
+                    tab.closest('.accordion-group').find('a.accordion-toggle').focus();
                 }
             }
         };
