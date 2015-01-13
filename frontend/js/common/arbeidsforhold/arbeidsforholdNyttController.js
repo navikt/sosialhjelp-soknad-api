@@ -1,5 +1,6 @@
 angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
-    .controller('ArbeidsforholdNyttCtrl', function ($scope, data, Faktum, $location, $cookieStore, $resource, cmsService, $q, permitteringPopup) {
+    .controller('ArbeidsforholdNyttCtrl', function ($scope, data, Faktum, $location, $cookieStore, $resource, cmsService,
+                                                    $q, permitteringPopup, $filter) {
 
         $scope.templates = {
             'Sagt opp av arbeidsgiver': {url: '../js/common/arbeidsforhold/templates/undersporsmaal/sagt-opp-av-arbeidsgiver.html'},
@@ -184,11 +185,15 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 
                 function permitteringsperiodeTittel(faktum){
                     var navn = arbeidsforholdData.properties.arbeidsgivernavn;
-                    var fra = lagNorskDatoformatFraIsoStandard(faktum.properties.permiteringsperiodedatofra);
-                    var til = lagNorskDatoformatFraIsoStandard(faktum.properties.permiteringsperiodedatotil) ||
-                        cmsService.getText('arbeidsforhold.permitteringsperiode.vedlegg.paagaaende');
+                    var fra = $filter('norskdato')(lagNorskDatoformatFraIsoStandard(faktum.properties.permiteringsperiodedatofra));
+                    var til = cmsService.getText('arbeidsforhold.permitteringsperiode.vedlegg.paagaaende');
+
+                    if(verdiErIkkeTom(faktum.properties.permiteringsperiodedatotil)) {
+                        til = $filter('norskdato')(lagNorskDatoformatFraIsoStandard(faktum.properties.permiteringsperiodedatotil));
+                    }
+
                     var tilTekst = cmsService.getText('arbeidsforhold.permitteringsperiode.vedlegg.til');
-                    return navn + " (" + fra + tilTekst + " " + til + ")";
+                    return navn + " (" + fra + " " + tilTekst + " " + til + ")";
                 }
 
 			});

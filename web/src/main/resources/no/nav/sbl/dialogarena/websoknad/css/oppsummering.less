@@ -42,6 +42,11 @@
         border-bottom: 1px solid #ddd;
         word-break: break-word;
 
+        .stor {
+            text-transform: uppercase;
+            font-size: 1rem;
+        }
+
         .permitteringsperiode {
             display: inline-block;
             margin-bottom: 5px;
@@ -156,70 +161,47 @@
             }
         }
 
-        .vedlegg {
-            position: relative;
-            width: 100%;
+        .vedlegg .container{
+            margin-bottom: 10px;
+            padding: 0;
+
+            .lastetOpp {
+                .vedleggSymbol {
+                    display: inline-block;
+                    background: url(../img/vedlegg-svart.svg) no-repeat center;
+                    width: 20px;
+                    height: 20px;
+                    position: relative;
+                    top: 4px;
+                    margin-right: 5px;
+                }
+
+                a {
+                    font-size: 0.85rem;
+                }
+
+                .antallSider {
+                    &:after {
+                        content: "•";
+                        padding-left: 8px;
+                        padding-right: 5px;
+                        color: #000000;
+                    }
+                }
+            }
 
             .aarsak {
                 display: block;
-                white-space: normal;
-                word-break: normal;
             }
 
-            .tittel {
-                vertical-align: top;
-                padding-top: 5px;
+            .status {
+                display: block;
+                font-style: italic;
             }
 
-            .sjekket {
-                position: relative;
-                top: 7px;
-                margin-right: 5px;
+            .navn {
+                font-weight: 900;
             }
-
-            .usjekket {
-                position: relative;
-                top: 4px;
-                margin-right: 5px;
-            }
-
-            .vedleggStatus {
-                text-align: right;
-                white-space: nowrap;
-                padding-left: 30px;
-
-                .lastetOpp {
-                    .vedlegg {
-                        display: inline-block;
-                        background: url(../img/vedlegg-svart.svg) no-repeat center;
-                        width: 20px;
-                        height: 20px;
-                        position: relative;
-                        top: 4px;
-                        margin-right: 10px;
-                    }
-
-                    .antallSider {
-                        &:after {
-                            content: "•";
-                            padding-left: 8px;
-                            padding-right: 5px;
-                            color: #000000;
-                        }
-                    }
-                }
-            }
-
-            .ingenVedleggTekst {
-                .sjekket {
-                    top: 0
-                }
-
-                td:last-child {
-                    width: 100%;
-                }
-            }
-
         }
 
         .hode {
