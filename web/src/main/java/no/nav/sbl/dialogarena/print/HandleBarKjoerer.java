@@ -34,6 +34,7 @@ import static no.nav.modig.lang.collections.IterUtils.on;
 import static org.apache.commons.lang3.ArrayUtils.reverse;
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.StringUtils.split;
+import static org.slf4j.LoggerFactory.getLogger;
 
 
 @Service
@@ -313,12 +314,17 @@ public class HandleBarKjoerer implements HtmlGenerator {
         return new Helper<String>() {
             @Override
             public CharSequence apply(String value, Options options) throws IOException {
-                Integer grense = Integer.parseInt((String) options.param(0));
-                Integer verdi = Integer.parseInt(value);
-                if (verdi > grense) {
+                try {
+                    Double grense = Double.parseDouble(((String) options.param(0)).replace(',', '.'));
+                    Double verdi = Double.parseDouble(value.replace(',', '.'));
+                    if (verdi > grense) {
+                        return options.fn(this);
+                    } else {
+                        return options.inverse(this);
+                    }
+                } catch (NumberFormatException e) {
+                    getLogger(HandleBarKjoerer.class).error("Kunne ikke parse input til double", e);
                     return options.fn(this);
-                } else {
-                    return options.inverse(this);
                 }
             }
         };
