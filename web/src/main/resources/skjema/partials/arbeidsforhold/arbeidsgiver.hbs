@@ -3,16 +3,16 @@
     <tr>
         <td class="sjekket"></td>
         <td>
-            <span class="arbeidsforhold-arbeidsgiver">{{ properties.arbeidsgivernavn }}</span>
+            <span class="arbeidsforhold-arbeidsgiver stor">{{ properties.arbeidsgivernavn }}</span>
             <div class="arbeidsforhold-data">
-                <span>({{ formatterLangDato properties.datofra }}</span>
+                <span>{{ formatterLangDato properties.datofra }}</span>
                 {{#if properties.datotil}}
                     <span>{{ hentTekst "oppsummering.datotil" }}</span>
-                    <span>{{ formatterLangDato properties.datotil }})</span>
+                    <span>{{ formatterLangDato properties.datotil }}</span>
                 {{/if}}
                 {{#if properties.konkursdato}}
                     <span>{{ hentTekst "oppsummering.datotil" }}</span>
-                    <span>{{ formatterLangDato properties.konkursdato }})</span>
+                    <span>{{ formatterLangDato properties.konkursdato }}</span>
                 {{/if}}
             </div>
             <span class="arbeidsforhold-land">{{ hentLand properties.land }}</span>
