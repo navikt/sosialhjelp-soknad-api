@@ -80,10 +80,9 @@ angular.module('nav.sporsmalferdig', [])
                 scope.gaaTilNeste = function () {
                     if(form.$valid) {
                         var nesteTab = tab.next();
+                        apneBolk(nesteTab);
                         lukkBolk(tab);
                         gaaTilTab(nesteTab);
-                        apneBolk(nesteTab);
-                        settFokus(nesteTab);
                     } else {
                         angular.forEach(form.$error, function (feil) {
                             var el = finnElementMedFeilOgSettFeilmelding(feil[0], scope);
@@ -111,8 +110,9 @@ angular.module('nav.sporsmalferdig', [])
                 function gaaTilTab(nyTab) {
                     if (nyTab.length > 0) {
                         $timeout(function () {
-                            scrollToElement(nyTab, 120);
-                        }, 0);
+                            scrollToElement(nyTab, 0, 200);
+                            settFokus(nyTab);
+                        }, 50);
                     }
                 }
 
