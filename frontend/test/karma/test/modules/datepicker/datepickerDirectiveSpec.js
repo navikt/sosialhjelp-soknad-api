@@ -41,15 +41,15 @@ describe('datepicker directive', function () {
         });
 
         beforeEach(inject(function ($compile, $rootScope) {
-            form = angular.element(
-                '<form>' +
-                    '<div dato ng-model="dato" er-required="true" label="label.tekst" required-error-message="required.feil"></div>' +
-                '</form>');
-            rootScope = $rootScope;
-            $compile(form)($rootScope);
-            $rootScope.$apply();
-            element = form.find('.datepicker');
-            scope = element.isolateScope();
+//            form = angular.element(
+//                '<form>' +
+//                    '<div dato ng-model="dato" er-required="true" label="label.tekst" required-error-message="required.feil"></div>' +
+//                '</form>');
+//            rootScope = $rootScope;
+//            $compile(form)($rootScope);
+//            $rootScope.$apply();
+//            element = form.find('.datepicker');
+//            scope = element.isolateScope();
         }));
 
         describe('skal ha rett tekst', function() {
