@@ -14,7 +14,7 @@ describe('feilmeldinger', function () {
 
     beforeEach(inject(function ($compile, $rootScope) {
 
-        element = angular.element('<div data-ng-form="form"><div form-errors></div><div class="form-linje"><input type="text" ng-model="inputModel" ng-required="true" data-error-messages="\'error.key\'"></div></div>');
+        element = angular.element('<div data-ng-form="form"><div form-errors></div><div class="form-linje feil"><input type="text" ng-model="inputModel" ng-required="true" data-error-messages="\'error.key\'"></div></div>');
         scope = $rootScope;
 
         $compile(element)(scope);
