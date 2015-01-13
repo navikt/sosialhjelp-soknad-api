@@ -261,6 +261,10 @@ function lagNorskDatoformatFraIsoStandard(datoString) {
     return dag + "." + maaned + "." + aar;
 }
 
+function konverterDatoTilStringMedLeadingZero(dato) {
+    return dato.getFullYear() + "-" + konverterTallTilStringMedToSiffer(dato.getMonth()+1) + "-" + konverterTallTilStringMedToSiffer(dato.getDate());
+}
+
 function konverterTallTilStringMedToSiffer(tall) {
     var tallMedToSiffer = '0' + tall;
     return tallMedToSiffer.slice(-2);
