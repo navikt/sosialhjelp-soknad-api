@@ -104,9 +104,9 @@ function checkTrue(element) {
     return element.toString() === 'true';
 }
 
-function scrollToElement(element, offset) {
+function scrollToElement(element, offset, speed) {
     if(element.is(":visible")) {
-        var animationSpeed = 200;
+        var animationSpeed = speed || 200;
         var scrollPos = Math.max(element.offset().top - offset, 0);
         $('body, html').scrollToPos(scrollPos, animationSpeed);
     }
