@@ -48,7 +48,7 @@ angular.module('nav.feilmeldinger', [])
 
                         if (scope.feilmeldinger.length > 0 && skalScrolle) {
                             $timeout(function () {
-                                scrollToElement(elem, 100);
+                                scrollToElement(elem.parent(), 150);
                             }, 50);
                         }
                     }, 50);
@@ -223,10 +223,11 @@ angular.module('nav.feilmeldinger', [])
 
                 function finnTilhorendeElement(feil) {
                     if (feil && feil.$linkId) {
-                        return elem.closest('[data-ng-form]').find('[name=' + feil.$linkId + ']');
+                        return elem.closest('[data-ng-form]').find(".feil, .feilstyling").find('[name=' + feil.$linkId + ']');
                     }
                     if (feil && feil.$elementErrorAttr) {
-                        return elem.closest('[data-ng-form]').find("[data-error-messages=\"" + feil.$elementErrorAttr + "\"], [error-messages=\"" + feil.$elementErrorAttr + "\"]");
+                        return elem.closest('[data-ng-form]').find(".feil, .feilstyling")
+                            .find("[data-error-messages=\"" + feil.$elementErrorAttr + "\"], [error-messages=\"" + feil.$elementErrorAttr + "\"]");
                     }
                 }
             }
