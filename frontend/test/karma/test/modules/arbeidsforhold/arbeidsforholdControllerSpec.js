@@ -151,6 +151,8 @@
                 expect(scope.arbeidsliste.length).toBe(2);
             });
             it('arbeidslisten skal vare tom etter at alle arbeidsforhold er slettet', function () {
+                scope.arbeidsforholdForm = {$setDirty: function() { }};
+
                 scope.slettArbeidsforhold(scope.arbeidsliste[0], 0, event);
                 scope.slettArbeidsforhold(scope.arbeidsliste[0], 0, event);
                 scope.slettArbeidsforhold(scope.arbeidsliste[0], 0, event);
