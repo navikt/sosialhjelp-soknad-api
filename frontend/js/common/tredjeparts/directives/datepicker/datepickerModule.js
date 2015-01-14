@@ -191,8 +191,16 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.dateparser', 'ui.bootst
             } else if (evt.ctrlKey && (key === 'up' || key === 'down')) {
                 $scope.toggleMode(key === 'up' ? 1 : -1);
 
-            } else if ((!harFokusPaaDatoDel() && (key === 'enter' || key === 'space'))) {
+            } else if ((harFokusPaaTitle() && (key === 'enter' || key === 'space'))) {
                 $scope.toggleMode(1, "th .datepicker-title");
+
+            } else if ((harFokusPaaPil(".pull-left") && (key === 'enter' || key === 'space'))) {
+                $scope.move(-1);
+                focusElement(undefined, 'th button.pull-left' );
+
+            } else if ((harFokusPaaPil(".pull-right") && (key === 'enter' || key === 'space'))) {
+                $scope.move(1);
+                focusElement(undefined, 'th button.pull-right' );
 
             } else if (harFokusPaaDatoDel()) {
                 self.handleKeyDown(key, evt);
@@ -202,6 +210,14 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.dateparser', 'ui.bootst
 
         function harFokusPaaDatoDel() {
             return ($(".input-group tbody:focus").length > 0);
+        }
+
+        function harFokusPaaTitle() {
+            return ($(".input-group .datepicker-title:focus").length > 0);
+        }
+
+        function harFokusPaaPil(retning) {
+            return ($(".input-group thead th button" +  retning + ":focus").length > 0);
         }
     }])
 
