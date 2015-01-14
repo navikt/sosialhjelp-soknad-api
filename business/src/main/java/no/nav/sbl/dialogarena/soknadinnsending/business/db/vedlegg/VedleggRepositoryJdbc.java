@@ -78,17 +78,10 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
                     protected void setValues(PreparedStatement ps, LobCreator lobCreator) throws SQLException {
                         Vedlegg.Status opprinneligInnsendingsvalg = vedlegg.getOpprinneligInnsendingsvalg();
 
-                        String skjemanummerMedTillegg = vedlegg.getSkjemaNummer();
-                        String tillegg = vedlegg.getSkjemanummerTillegg();
-
-                        if(tillegg != null && !tillegg.isEmpty()) {
-                            skjemanummerMedTillegg = skjemanummerMedTillegg + "|" + vedlegg.getSkjemanummerTillegg();
-                        }
-
                         ps.setLong(1, vedlegg.getVedleggId());
                         ps.setLong(2, vedlegg.getSoknadId());
                         ps.setObject(3, vedlegg.getFaktumId());
-                        ps.setString(4, skjemanummerMedTillegg);
+                        ps.setString(4, getSkjemanummerMedTillegg(vedlegg));
                         ps.setString(5, vedlegg.getNavn());
                         ps.setString(6, vedlegg.getInnsendingsvalg().toString());
                         ps.setString(7, opprinneligInnsendingsvalg != null ? opprinneligInnsendingsvalg.toString() : null);
@@ -158,6 +151,12 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
     }
 
     @Override
+    public void slettVedleggOgData(Long soknadId, Vedlegg vedlegg) {
+        getJdbcTemplate().update("delete from vedlegg where soknad_id = ? and faktum = ? and skjemaNummer = ?",
+                soknadId, vedlegg.getFaktumId(), getSkjemanummerMedTillegg(vedlegg));
+    }
+
+    @Override
     public void slettVedleggMedVedleggId(Long vedleggId) {
         getJdbcTemplate().update("delete from vedlegg where vedlegg_id = ?", vedleggId);
     }
@@ -219,4 +218,14 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
             return vedlegg.getSkjemaNummer().equalsIgnoreCase(Kodeverk.KVITTERING);
         }
     };
+
+    private static String getSkjemanummerMedTillegg(Vedlegg vedlegg) {
+        String skjemanummerMedTillegg = vedlegg.getSkjemaNummer();
+        String tillegg = vedlegg.getSkjemanummerTillegg();
+
+        if(tillegg != null && !tillegg.isEmpty()) {
+            skjemanummerMedTillegg = skjemanummerMedTillegg + "|" + vedlegg.getSkjemanummerTillegg();
+        }
+        return skjemanummerMedTillegg;
+    }
 }
