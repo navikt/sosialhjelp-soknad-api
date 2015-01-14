@@ -90,95 +90,6 @@
     tbody:focus {
       outline: none;
     }
-    tr td {
-      font-family: modus;
-      font-size: 0.85rem;
-      font-weight: normal;
-
-      .btn, .btn[disabled] {
-        border: 2px solid transparent;
-
-        &:hover {
-          background-color: #fff;
-          border-radius: 0%;
-          border: 2px solid #dddddd;
-        }
-
-        &:focus {
-          text-decoration: underline !important;
-        }
-      }
-      .btn[disabled]:focus span {
-        color: @datepcikergraa;
-      }
-
-      .btn[disabled].active {
-        color: #dddddd;
-      }
-
-      span {
-        line-height: 1.6rem;
-      }
-
-      .btn.active, .btn.active.btn-info {
-        border: 2px solid @datepickerblaa;
-        color: #fff;
-        border-radius: 0%;
-        background-color: @datepickerblaa;
-
-        span {
-          color: #ffffff;
-        }
-
-        &:hover {
-          border: 2px solid @datepcikergraa;
-          span {
-            color: #ffffff;
-          }
-        }
-      }
-
-      span.text-muted, .btn[disabled] span {
-        color: #9e9b98;
-        font-size: 0.85rem;
-        font-weight: normal;
-
-      }
-
-      .btn.idag {
-        border-radius: 0%;
-        border: 2px solid @datepickerblaa;
-
-        &:hover {
-          border: 2px solid @datepcikergraa;
-        }
-        &.active {
-          color: #ffffff;
-          background: @datepickerblaa;
-
-          span {
-            color: #ffffff;
-          }
-
-          &:hover {
-            border: 2px spolid @datepcikergraa;
-            color: #fff;
-            span {
-              color: #fff;
-            }
-          }
-        }
-
-      }
-      &:hover {
-        .text-muted {
-          color: #fff;
-        }
-      }
-    }
-  }
-
-  table.day {
     tbody {
       &:focus .btn.active {
         text-decoration: underline;
@@ -187,6 +98,96 @@
         }
       }
 
+      tr td {
+        font-family: modus;
+        font-size: 0.85rem;
+        font-weight: normal;
+
+        .btn, .btn[disabled] {
+          border: 2px solid transparent;
+
+          &:hover:not(.active) {
+            background-color: #fff;
+            border-radius: 0%;
+            border: 2px solid #dddddd;
+          }
+
+          &:focus {
+            text-decoration: underline !important;
+          }
+        }
+        .btn[disabled]:focus span {
+          color: @datepcikergraa;
+        }
+
+        .btn[disabled].active {
+          color: #dddddd;
+        }
+
+        span {
+          line-height: 1.6rem;
+        }
+
+        .btn.active, .btn.active.btn-info {
+          border: 2px solid @datepickerblaa;
+          color: #fff;
+          border-radius: 0%;
+          background-color: @datepickerblaa;
+
+          span {
+            color: #ffffff;
+          }
+
+          &:hover {
+            border: 2px solid @datepcikergraa;
+            span {
+              color: #ffffff;
+            }
+          }
+        }
+
+        span.text-muted, .btn[disabled]:not(.active) span {
+          color: #9e9b98;
+          font-size: 0.85rem;
+          font-weight: normal;
+        }
+
+        .btn.idag {
+          border-radius: 0%;
+          border: 2px solid @datepickerblaa;
+
+          &:hover {
+            border: 2px solid @datepcikergraa;
+          }
+          &.active {
+            color: #ffffff;
+            background: @datepickerblaa;
+
+            span {
+              color: #ffffff;
+            }
+
+            &:hover {
+              border: 2px spolid @datepcikergraa;
+              color: #fff;
+              span {
+                color: #fff;
+              }
+            }
+          }
+
+        }
+        &:hover {
+          .text-muted {
+            color: #fff;
+          }
+        }
+      }
+    }
+  }
+
+  table.day {
+    tbody {
       tr td {
         &:first-child {
           font-family: arial;
@@ -199,12 +200,21 @@
         &:last-child {
           span {
             color: @datepickerrod;
+
+            &.text-muted {
+              color: #9e9b98;
+            }
           }
 
-          .btn:hover span {
+          .active span {
+              color: #fff;
+            }
+
+
+          .btn:hover:not(.active, .text-muted) span {
             color: @datepickerrod;
           }
-          .btn:hover[disabled] span {
+          .btn:hover span.text-muted {
             color: #9e9b98;
           }
         }
@@ -218,7 +228,6 @@
 
         span {
           font-size: 1rem !important;
-          color: #9e9b98;
         }
       }
     }
@@ -230,7 +239,6 @@
 
         span {
           font-size: 1rem !important;
-          color: #9e9b98;
         }
       }
     }
