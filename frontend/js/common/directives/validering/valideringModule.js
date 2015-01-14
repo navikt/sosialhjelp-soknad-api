@@ -191,7 +191,7 @@ angular.module('nav.validering', ['nav.cms'])
                 scope.$watch(function () {
                     return model.$modelValue;
                 }, function (newVal, oldVal) {
-                    if (newVal !== oldVal && model.$modelValue.length > 0) {
+                    if (newVal !== oldVal && model.$modelValue && model.$modelValue.length > 0) {
                         if ($('body').hasClass('contrast')) {
                             fadeContrastFeilmelding(formLinje, element.prevAll('.melding'), 'feil', scope);
                         } else {

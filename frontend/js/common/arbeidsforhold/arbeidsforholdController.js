@@ -119,6 +119,7 @@ angular.module('nav.arbeidsforhold.controller', [])
 
             if ($scope.arbeidsliste.length === 0) {
                 $scope.harLagretArbeidsforhold = undefined;
+                $scope.arbeidsforholdForm.$setDirty();
             }
             $scope.harKlikketKnapp = false;
         };
