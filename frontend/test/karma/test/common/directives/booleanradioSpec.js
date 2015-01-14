@@ -51,7 +51,7 @@ describe('booleanradio', function () {
     }));
 
     it('Skal sette inn korrekt tekst', function () {
-        expect(element.find('h4 span').first().text().trim()).toBe(sporsmal);
+        expect(element.find('h4').first().text().trim()).toBe(sporsmal);
         expect(element.find('label').first().text()).toBe(truelabel);
         expect(element.find('label').last().text()).toBe(falselabel);
     });
