@@ -94,7 +94,7 @@ public class FaktaService {
         List<Vedlegg> vedleggliste = vedleggRepository.hentVedleggForFaktum(soknadId, faktumId);
 
         for (Vedlegg vedlegg : vedleggliste) {
-            vedleggRepository.slettVedleggOgData(soknadId, vedlegg.getFaktumId(), vedlegg.getSkjemaNummer());
+            vedleggRepository.slettVedleggOgData(soknadId, vedlegg);
         }
         repository.slettBrukerFaktum(soknadId, faktumId);
         repository.settSistLagretTidspunkt(soknadId);
