@@ -39,10 +39,10 @@
                         <div class="venstrestilt" data-ng-show="erBrukerregistrert(b)">
                             <ul class="liste-vannrett">
                                 <li>
-                                    <a href="#" data-ng-click="slettBarn(b, $index, $event)" data-ng-bind-html=" 'barnetillegg.slettbarn' | cmstekst"></a>
+                                    <a href="javascript:void(0)" role="button" data-ng-click="slettBarn(b, $index, $event)" data-ng-bind-html=" 'barnetillegg.slettbarn' | cmstekst"></a>
                                 </li>
                                 <li>
-                                    <a href="#" data-ng-click="endreBarn(b.faktumId, $event)" data-ng-bind-html=" 'barnetillegg.endrebarn' | cmstekst"></a>
+                                    <a href="javascript:void(0)" role="button" data-ng-click="endreBarn(b.faktumId, $event)" data-ng-bind-html=" 'barnetillegg.endrebarn' | cmstekst"></a>
                                 </li>
                             </ul>
                         </div>
@@ -51,7 +51,8 @@
                             <button class="knapp-vanlig-liten" href="#" data-ng-click="sokbarnetillegg(b.faktumId, $event)"
                                data-ng-if="barnetilleggIkkeRegistrert(b)" data-ng-bind-html=" 'barnetillegg.barnetilegg.sporsmal' | cmstekst"></button>
 
-                            <a href="#" data-ng-if="barnetilleggErRegistrert(b)"
+                            <a href="javascript:void(0)" data-ng-if="barnetilleggErRegistrert(b)"
+                               role="button"
                                data-ng-click="slettBarnetillegg(b, $index, $event)" data-ng-bind-html=" 'barnetillegg.slettbarnetillegg' | cmstekst"></a>
                         </div>
                     </div>
