@@ -1,12 +1,12 @@
 <div class="form-linje textarea-container">
-    <h4 class="spm-sporsmal" data-ng-if="harSporsmal()">
-        <span data-ng-bind-html="sporsmal | cmstekst"></span>
+    <div data-ng-if="harSporsmal()">
+        <h4 class="spm-sporsmal" data-ng-bind-html="sporsmal | cmstekst"></h4>
         <span data-nav-hjelpetekstelement
               data-ng-if="harHjelpetekst()"
               data-tittel="{{ hjelpetekst.tittel | cmstekst }}"
               data-tekst="{{ hjelpetekst.tekst | cmstekst }}">
         </span>
-    </h4>
+    </div>
     <label>
         <span data-ng-bind-html=" label | cmstekst"></span>
         <textarea data-ng-name="faktum.key"
