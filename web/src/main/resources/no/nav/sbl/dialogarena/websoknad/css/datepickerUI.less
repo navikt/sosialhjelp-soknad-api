@@ -179,39 +179,40 @@
     }
   }
   table.month, table.year {
-    tbody tr td {
-      button {
-        padding: 10px 20px;
+    tbody {
+      &:focus .btn.active span {
+        color: @datepickersvart;
+        font-weight: 600;
 
-        span {
-          font-size: 1rem !important;
+      }
+      tr td {
+        button {
+          padding: 10px 20px;
+
+          span {
+            font-size: 1rem !important;
+            color: #9e9b98;
+          }
+          &:hover span {
+            color: @datepickersvart;
+          }
+        }
+
+        .btn.active, .btn.active.btn-info {
+          background-color: #fff;
+
+          &:hover {
+            border-radius: 3px;
+            background-color: #c3c3c3;
+          }
+        }
+
+        span.text-muted, .btn[disabled] span {
           color: #9e9b98;
-        }
-        &:hover span {
-          color: @datepickersvart;
-        }
-      }
-
-      .btn.active, .btn.active.btn-info {
-        background-color: #fff;
-
-        span {
-          color: @datepickersvart;
-          font-weight: 600;
-        }
-
-        &:hover {
-          border-radius: 3px;
-          background-color: #c3c3c3;
+          font-size: 0.85rem;
+          font-weight: normal;
         }
       }
-
-      span.text-muted, .btn[disabled] span {
-        color: #9e9b98;
-        font-size: 0.85rem;
-        font-weight: normal;
-      }
-
     }
   }
 
