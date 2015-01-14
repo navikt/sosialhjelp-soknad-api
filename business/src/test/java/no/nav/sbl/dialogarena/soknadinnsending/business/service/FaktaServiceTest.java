@@ -97,10 +97,11 @@ public class FaktaServiceTest {
 
     @Test
     public void skalSletteBrukerfaktum() {
-        when(vedleggRepository.hentVedleggForFaktum(1L, 1L)).thenReturn(Arrays.asList(new Vedlegg().medVedleggId(111L).medSkjemaNummer("a1").medFaktumId(111L)));
+        Vedlegg vedlegg = new Vedlegg().medVedleggId(111L).medSkjemaNummer("a1").medFaktumId(111L);
+        when(vedleggRepository.hentVedleggForFaktum(1L, 1L)).thenReturn(Arrays.asList(vedlegg));
         when(soknadRepository.hentFaktum(1L, 1L)).thenReturn(new Faktum().medKey("key"));
         faktaService.slettBrukerFaktum(1L, 1L);
-        verify(vedleggRepository).slettVedleggOgData(1L, 111L, "a1");
+        verify(vedleggRepository).slettVedleggOgData(1L, vedlegg);
         verify(soknadRepository).slettBrukerFaktum(1L, 1L);
         verify(soknadRepository).settDelstegstatus(1L, DelstegStatus.UTFYLLING);
     }
@@ -118,8 +119,8 @@ public class FaktaServiceTest {
 
         faktaService.slettBrukerFaktum(soknadId, faktumId);
 
-        verify(vedleggRepository, times(1)).slettVedleggOgData(soknadId, faktumId, "G2");
-        verify(vedleggRepository, times(1)).slettVedleggOgData(soknadId, faktumId, "O2");
+        verify(vedleggRepository, times(1)).slettVedleggOgData(soknadId, permitteringsVedlegg);
+        verify(vedleggRepository, times(1)).slettVedleggOgData(soknadId, arbeidsgiverVedlegg);
         verify(soknadRepository, times(1)).slettBrukerFaktum(soknadId, faktumId);
     }
 
