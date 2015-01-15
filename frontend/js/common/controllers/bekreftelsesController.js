@@ -13,7 +13,7 @@ angular.module('nav.bekreftelse', [])
         $scope.erEttersendelse = {value: false};
 
         if (!$scope.epost.value) {
-            $scope.epost.value = data.finnFaktum('personalia').properties.epost;
+            $scope.epost.value = data.finnFaktum('personalia').properties.epost  || "";
         }
 
         $scope.sendEpost = function (form) {
