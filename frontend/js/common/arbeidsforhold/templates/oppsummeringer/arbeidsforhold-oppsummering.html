@@ -2,8 +2,7 @@
     <div data-ng-if="harArbeidsforhold()" class="arbeidsforhold-boks">
         <div class="spm-boks vertikal" data-ng-repeat="af in arbeidsliste" data-ng-class="{'last': $last}">
             <div id="arbeidsforhold{{af.arbeidsforhold.faktumId}}">
-                <span class="robust">{{ af.arbeidsforhold.properties.arbeidsgivernavn }}</span>
-                <span class="robust">, </span>
+                <span class="robust">{{ af.arbeidsforhold.properties.arbeidsgivernavn }},</span>
                 <span class="robust">{{ finnLandFraLandkode(af.arbeidsforhold.properties.land) }}</span>
 
                 <div class="arbeidsforhold-land-sluttaarsak-blokk">

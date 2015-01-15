@@ -63,7 +63,7 @@ angular.module('nav.barn', [])
                     'etternavn': undefined,
                     'sammensattnavn': undefined,
                     'alder': undefined,
-                    'land' : cmsService.getText("barnetillegg.nyttbarn.landDefault"),
+                    'land' : cmsService.getTextSafe("barnetillegg.nyttbarn.landDefaultlandDefault"),
                     'barnetillegg': 'true',
                     'barneinntekttall': undefined,
                     'ikkebarneinntekt': undefined

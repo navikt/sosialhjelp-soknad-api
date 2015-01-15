@@ -3,7 +3,7 @@
     <tr>
         <td class="sjekket"></td>
         <td>
-            <span class="arbeidsforhold-arbeidsgiver stor">{{ properties.arbeidsgivernavn }}</span>
+            <span class="arbeidsforhold-arbeidsgiver stor">{{ properties.arbeidsgivernavn }}, {{ hentLand properties.land }}</span>
             <div class="arbeidsforhold-data">
                 <span>{{ formatterLangDato properties.datofra }}</span>
                 {{#if properties.datotil}}
@@ -15,7 +15,6 @@
                     <span>{{ formatterLangDato properties.konkursdato }}</span>
                 {{/if}}
             </div>
-            <span class="arbeidsforhold-land">{{ hentLand properties.land }}</span>
             <ul>
                 {{#hvisLik properties.type "Avskjediget"}}
                     <li class="kulepunkt">
