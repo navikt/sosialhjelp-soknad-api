@@ -627,7 +627,7 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.dateparser', 'ui.bootst
                     };
 
                     function eventTargetErIkkeDetteElementet(event) {
-                        return !element.closest(".input-group").find(".apne-datepicker").is(event.toElement);
+                        return !element.closest(".input-group").find(".apne-datepicker").is(event.target);
                     }
 
                     var keydown = function (evt, noApply) {
