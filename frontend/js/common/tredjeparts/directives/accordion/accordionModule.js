@@ -79,7 +79,7 @@ angular.module('nav.accordion', ['ui.bootstrap.transition'])
 						initialAnimSkip = false;
 						fixUpHeight(scope, element, 0);
 					} else {
-						fixUpHeight(scope, element, element[0].scrollHeight + 'px');
+						fixUpHeight(scope, element, element[0].scrollHeight+ 1000 + 'px');
 						doTransition({'height': '0'});
 					}
 				};
