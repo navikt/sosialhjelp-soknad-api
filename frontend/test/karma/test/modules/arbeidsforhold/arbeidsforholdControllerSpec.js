@@ -81,6 +81,9 @@
             $provide.value("cmsService", {
                 getText: function(nokkel) {
                     return cmsNokkler.tekster[nokkel];
+                },
+                getTextSafe: function(nokkel) {
+                    return cmsNokkler.tekster[nokkel];
                 }
             });
         }));
