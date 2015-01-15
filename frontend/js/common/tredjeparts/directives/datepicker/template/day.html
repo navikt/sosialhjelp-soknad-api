@@ -25,12 +25,14 @@
             <td data-ng-show="showWeeks" class="text-center h6"><em>{{ weekNumbers[$index] }}</em></td>
             <td data-ng-repeat="dt in row track by dt.date"
                     class="text-center" role="gridcell" id="{{dt.uid}}" aria-disabled="{{!!dt.disabled}}">
+
                 <a style="width:100%;" class="btn btn-default btn-sm"
                         data-ng-class="{'btn-info': dt.selected, active: isActive(dt), idag: dt.current}"
                         data-ng-click="select(dt.date)"
                         data-ng-disabled="dt.disabled"
                         tabindex="-1"
-                        role="button">
+                        role="button"
+                        aria-hidden="{{dt.secondary || dt.disabled}}">
                     <span data-ng-class="{'text-muted': dt.secondary,'text-info': dt.current}">{{dt.label}}</span>
                 </a>
             </td>
