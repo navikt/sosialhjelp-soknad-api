@@ -1,4 +1,5 @@
 <table data-role="grid" data-aria-labelledby="{{uniqueId}}-title" data-aria-activedescendant="{{activeDateId}}" class="day">
+   <caption class="hidden" data-ng-bind-html="'datepicker.day.caption' | cmstekst"></caption>
     <thead>
         <tr>
             <th>
@@ -13,8 +14,8 @@
             </th>
         </tr>
         <tr>
-            <th data-ng-show="showWeeks" class="text-center"></th>
-            <th data-ng-repeat="label in labels track by $index" class="text-center">
+            <th scope="col" data-ng-show="showWeeks" class="text-center"><span data-ng-bind-html="'datepicker.ukedager' | cmstekst" class="hidden"></span></span> </th>
+            <th scope="col" data-ng-repeat="label in labels track by $index" class="text-center">
                 <small data-aria-label="{{label.full}}">{{label.abbr}}</small>
             </th>
         </tr>
