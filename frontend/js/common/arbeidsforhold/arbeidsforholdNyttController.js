@@ -53,7 +53,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 					'datotil'         : undefined,
                     'type': undefined,
                     'eosland': "false",
-                    'land' : cmsService.getText("arbeidsforhold.arbeidsgiver.landDefault")
+                    'land' : cmsService.getTextSafe("arbeidsforhold.arbeidsgiver.landDefault")
 				}
 			};
 		}
