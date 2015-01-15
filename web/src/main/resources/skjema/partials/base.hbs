@@ -43,7 +43,7 @@
             .kulepunkt:before { content: "•"; font-size: 14pt; position: relative; top: -1px; vertical-align: top; }
             .brosjyre-signatur { border-top: .2pt solid #ccc; margin-top: 10mm; padding-top: 10mm; page-break-inside: avoid; }
             .arbeidsforhold { margin-top: 7px; }
-            .overskrift, .arbeidsforhold-arbeidsgiver, .arbeidsforhold-land { font-weight: bold; display: block; }
+            .overskrift, .arbeidsforhold-arbeidsgiver { font-weight: bold; display: block; }
             .permitteringsperiode { display: inline-block; margin-bottom: 5px; }
             .rotasjonturnus { display: inline-block; margin-left: 15px; }
             .rotasjonturnus.span { margin: 0; padding: 0; }
@@ -61,7 +61,8 @@
         <div class="header">
             <img class="header-logo" src="http://localhost:8080/sendsoknad/img/nav-logo.gif"/>
             {{#forFaktum "personalia"}}
-                <span class="navn">{{properties.navn}}</span><span class="fnr">{{properties.fnr}}</span>
+                <span class="navn">{{properties.navn}}</span>
+                <span class="fnr">{{properties.fnr}}</span>
             {{/forFaktum}}
             <span class="headerSider">
                 {{ hentTekst "oppsummering.sideAvTotal" }}
