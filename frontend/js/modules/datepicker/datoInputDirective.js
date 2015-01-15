@@ -44,7 +44,7 @@ angular.module('nav.datepicker.datoinput', ['ui.bootstrap.datepicker'])
                 $event.preventDefault();
 
                 if(scope.disabled != 'true') {
-                    scope.opened = !scope.opened;
+                    scope.opened = scope.opened === undefined ? true : !scope.opened;
                 }
             };
         },
