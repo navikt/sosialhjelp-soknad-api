@@ -152,8 +152,11 @@ angular.module('nav.ettersending.controllers.main', [])
             if (v.innsendingsvalg === 'VedleggSendesIkke') {
                 return 'ettersending.vedlegg.vedleggSendesIkke';
             } else if (v.innsendingsvalg === 'VedleggSendesAvAndre') {
-                return'ettersending.vedlegg.vedleggSendesAvAndre';
-            } else {
+                return 'ettersending.vedlegg.vedleggSendesAvAndre';
+            } else if (v.innsendingsvalg === "VedleggAlleredeSendt") {
+                return 'ettersending.vedlegg.vedleggAlleredeSendt';
+            }
+             else {
                 // TODO: Denne kan fjernes når det ikke lengre er mulig å sende inn ettersending på søknader som er sendt inn før vi la til sendes av andre
                 return 'ettersending.vedlegg.sendesIkke';
             }
@@ -181,6 +184,11 @@ angular.module('nav.ettersending.controllers.main', [])
     .filter('sendesIkke', function (sjekkOmSkalEttersendes) {
         return function (input) {
             return input.filter(sjekkOmSkalEttersendes.skalIkkeSendes);
+        };
+    })
+    .filter('alleredeSendt', function (sjekkOmSkalEttersendes) {
+        return function (input) {
+            return input.filter(sjekkOmSkalEttersendes.alleredeSendt);
         };
     })
     .factory('sjekkOmSkalEttersendes', function () {
@@ -222,6 +230,6 @@ angular.module('nav.ettersending.controllers.main', [])
 
             skalIkkeSendes: function (v) {
                 return !skalEttersendes(v) && !erLastetOpp(v);
-            }
+            },
         };
     });
