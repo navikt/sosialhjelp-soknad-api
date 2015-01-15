@@ -62,6 +62,9 @@
             $provide.value("cmsService", {
                 getText: function(nokkel) {
                     return cmsTekster.tekster[nokkel];
+                },
+                getTextSafe: function(nokkel) {
+                    return cmsTekster.tekster[nokkel];
                 }
             });
             $provide.value("$routeParams", {});
