@@ -77,19 +77,6 @@ public class VedleggRepositoryJdbcTest {
     }
 
     @Test
-    public void skalSletteVedleggOgData() {
-        Long id = vedleggRepository.opprettVedlegg(getVedlegg(), new byte[]{1, 2, 3});
-        Long id2 = vedleggRepository.opprettVedlegg(getVedlegg().medSkjemaNummer("2"), new byte[]{1, 2, 3});
-        vedleggRepository.slettVedleggOgData(12L, 10L, "1");
-        try {
-            vedleggRepository.hentVedlegg(12L, id);
-            fail("ikke slettet");
-        } catch (Exception e) {
-        }
-        vedleggRepository.hentVedlegg(12L, id2);
-    }
-
-    @Test
     public void skalSletteVedleggOgDataMedVedleggParameter() {
         Long id = vedleggRepository.opprettVedlegg(getVedlegg(), new byte[]{1, 2, 3});
         Long id2 = vedleggRepository.opprettVedlegg(getVedlegg().medSkjemaNummer("2"), new byte[]{1, 2, 3});

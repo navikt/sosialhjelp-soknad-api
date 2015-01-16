@@ -32,8 +32,6 @@ public interface VedleggRepository {
 
     List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktumId);
 
-    void slettVedleggOgData(Long soknadId, Long faktumId, String skjemaNummer);
-
     void slettVedleggOgData(Long soknadId, Vedlegg vedlegg);
 
     void slettVedleggMedVedleggId(Long vedleggId);
