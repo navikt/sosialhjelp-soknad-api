@@ -8,7 +8,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBuilder
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,40 +51,41 @@ public class WebSoknadUtils {
     public static final String ANNEN_AARSAK = "Annen årsak";
     private static final Logger LOGGER = getLogger(WebSoknadUtils.class);
 
-    private static String erPermittertellerHarRedusertArbeidstid(WebSoknad soknad) {
-        List<Faktum> sluttaarsak = soknad.getFaktaMedKey("arbeidsforhold");
-        boolean erPermittert;
-        boolean harRedusertArbeidstid;
-        if (!sluttaarsak.isEmpty()) {
-            List<Faktum> sluttaarsakerIkkePermitteringSortertEtterDatoTil = on(sluttaarsak)
-                    .filter(where(TYPE, not(equalTo(PERMITTERT))))
-                    .collect(reverseOrder(compareWith(DATO_TIL)));
+    private static String finnSluttaarsakSisteArbeidsforhold(WebSoknad soknad) {
+        List<Faktum> sorterteArbeidsforholdIkkePermittert = on(soknad.getFaktaMedKey("arbeidsforhold"))
+                .filter(where(TYPE, not(equalTo(PERMITTERT))))
+                .collect(reverseOrder(compareWith(DATO_TIL)));
 
-            List<Faktum> permitteringsperioder = on(soknad.getFaktaMedKey("arbeidsforhold.permitteringsperiode"))
-                    .collect(reverseOrder(compareWith(DATO_TIL_PERMITTERING)));
+        LocalDate sluttdatoSistePermitteringsperiode = getSluttdatoForSistePermitteringsperiode(soknad);
+        LocalDate sluttdatoSisteArbeidsforholdIkkePermittert = getSluttdatoForSisteArbeidsforhold(sorterteArbeidsforholdIkkePermittert);
 
-            LocalDate nyesteDatoIkkePermittert = on(sluttaarsakerIkkePermitteringSortertEtterDatoTil).map(DATO_TIL).head().getOrElse(null);
-            LocalDate nyesteDatoPermittert = on(permitteringsperioder).map(DATO_TIL_PERMITTERING).head().getOrElse(null);
-
-            LocalDate nyesteDato = on(Arrays.asList(nyesteDatoIkkePermittert, nyesteDatoPermittert)).filter(not(equalTo(null))).collect(reverseOrder()).get(0);
-
-            List<Faktum> nyesteSluttaarsakerIkkePermittert = on(sluttaarsakerIkkePermitteringSortertEtterDatoTil).filter(where(DATO_TIL, equalTo(nyesteDato))).collect();
-            erPermittert = on(permitteringsperioder).filter(where(DATO_TIL_PERMITTERING, equalTo(nyesteDato))).head().isSome();
-            harRedusertArbeidstid = on(nyesteSluttaarsakerIkkePermittert).filter(where(TYPE, equalTo(REDUSERT_ARBEIDSTID))).head().isSome();
-            if (erPermittert) {
-                return PERMITTERT;
-            }
-            if (harRedusertArbeidstid) {
-                return REDUSERT_ARBEIDSTID;
-            }
-        }
-
-        if (soknad.erGjenopptak()){
-            if(ingenNyeArbeidsforhold(soknad) && varPermittertForrigeGangDuSokteOmDagpenger(soknad)){
-                return PERMITTERT;
-            }
+        if(erSisteSluttaarsakPermittering(sluttdatoSistePermitteringsperiode, sluttdatoSisteArbeidsforholdIkkePermittert)) {
+            return PERMITTERT;
+        } else if (soknad.erGjenopptak() && ingenNyeArbeidsforhold(soknad) && varPermittertForrigeGangDuSokteOmDagpenger(soknad)){
+            return PERMITTERT;
+        } else if(erSisteSluttaarsakRedusertArbeidstid(sluttdatoSisteArbeidsforholdIkkePermittert, sorterteArbeidsforholdIkkePermittert)) {
+            return REDUSERT_ARBEIDSTID;
         }
         return ANNEN_AARSAK;
+    }
+
+    private static boolean erSisteSluttaarsakPermittering(LocalDate datoSistePermittering, LocalDate datoSisteArberidsforhold) {
+        return datoSistePermittering != null && (datoSisteArberidsforhold == null || !datoSistePermittering.isBefore(datoSisteArberidsforhold));
+    }
+
+    private static boolean erSisteSluttaarsakRedusertArbeidstid(LocalDate datoSisteArberidsforhold, List<Faktum> arbeidsforholdSortert) {
+        List<Faktum> arbeidsforholdMedDatoTilSattTilSisteDag = on(arbeidsforholdSortert).filter(where(DATO_TIL, equalTo(datoSisteArberidsforhold))).collect();
+        return on(arbeidsforholdMedDatoTilSattTilSisteDag).filter(where(TYPE, equalTo(REDUSERT_ARBEIDSTID))).head().isSome();
+    }
+
+    private static LocalDate getSluttdatoForSistePermitteringsperiode(WebSoknad soknad) {
+        List<Faktum> permitteringsperioder = on(soknad.getFaktaMedKey("arbeidsforhold.permitteringsperiode"))
+                .collect(reverseOrder(compareWith(DATO_TIL_PERMITTERING)));
+        return on(permitteringsperioder).map(DATO_TIL_PERMITTERING).head().getOrElse(null);
+    }
+
+    private static LocalDate getSluttdatoForSisteArbeidsforhold(List<Faktum> arbeidsforholdSortert) {
+        return on(arbeidsforholdSortert).map(DATO_TIL).head().getOrElse(null);
     }
 
     private static boolean varPermittertForrigeGangDuSokteOmDagpenger(WebSoknad soknad) {
@@ -95,18 +95,12 @@ public class WebSoknadUtils {
         }
 
         String value = permittertForrigeGang.getValue();
-        if(value.equals("permittertFiske") || value.equals("permittert")){
-            return true;
-        }
-        return false;
+        return value.equals("permittertFiske") || value.equals("permittert");
     }
 
     private static boolean ingenNyeArbeidsforhold(WebSoknad soknad) {
         Faktum nyeArbeidsforhold = soknad.getFaktumMedKey("nyearbeidsforhold.arbeidsidensist");
-        if(nyeArbeidsforhold == null){
-            return false;
-        }
-        return nyeArbeidsforhold.getValue().equals("true");
+        return nyeArbeidsforhold != null && nyeArbeidsforhold.getValue().equals("true");
     }
 
     public static String getSkjemanummer(WebSoknad soknad) {
@@ -114,7 +108,7 @@ public class WebSoknadUtils {
             return soknad.getskjemaNummer();
         }
 
-        boolean erPermittert = erPermittertellerHarRedusertArbeidstid(soknad).equals(PERMITTERT);
+        boolean erPermittert = finnSluttaarsakSisteArbeidsforhold(soknad).equals(PERMITTERT);
 
         if(soknad.erGjenopptak()) {
             return erPermittert ? GJENOPPTAK_VED_PERMITTERING : GJENOPPTAK;
@@ -140,11 +134,11 @@ public class WebSoknadUtils {
     }
 
     private static String finnJournalforendeEnhetForSoknad(WebSoknad webSoknad) {
-        String sluttaarsak = erPermittertellerHarRedusertArbeidstid(webSoknad);
+        String sluttaarsak = finnSluttaarsakSisteArbeidsforhold(webSoknad);
         Personalia personalia = getPerson(webSoknad);
 
         if (sluttaarsak.equals(PERMITTERT) || (sluttaarsak.equals(REDUSERT_ARBEIDSTID))) {
-            if ((personalia.harUtenlandskAdresseIEOS() && (!personalia.harNorskMidlertidigAdresse()))) {
+            if (harUtenlandskAdresseIEOS(personalia)) {
                 return EOS_DAGPENGER;
             }
             boolean erUtenlandskStatsborger = !personalia.getStatsborgerskap().equals("NOR");
@@ -156,6 +150,9 @@ public class WebSoknadUtils {
         return RUTES_I_BRUT;
     }
 
+    private static boolean harUtenlandskAdresseIEOS(Personalia personalia) {
+        return (personalia.harUtenlandskAdresseIEOS() && (!personalia.harNorskMidlertidigAdresse()));
+    }
 
     public static Personalia getPerson(WebSoknad webSoknad) {
         Map<String, String> properties = webSoknad.getFaktaMedKey(PERSONALIA_KEY).get(0).getProperties();
