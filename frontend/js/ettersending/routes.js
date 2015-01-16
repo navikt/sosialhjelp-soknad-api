@@ -25,8 +25,23 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.common.routes'])
                     }
                 }
             })
-            .when('/:behandlingId', {
-                redirectTo: '/:behandlingId/vedlegg'
+            .when('/avbryt', {
+                templateUrl: '../views/ettersending/avbryt.html',
+                controller: 'EttersendingAvbrytCtrl',
+                resolve: {
+                    cms: function (CmsResolver) {
+                        return CmsResolver;
+                    },
+                    ettersending: function (EttersendingResolver) {
+                        return EttersendingResolver;
+                    },
+                    config: function (ConfigResolver) {
+                        return ConfigResolver;
+                    },
+                    vedlegg: function (VedleggResolver) {
+                        return VedleggResolver;
+                    }
+                }
             })
             .when('/:behandlingId/vedlegg', {
                 templateUrl: '../views/ettersending/ettersending.html',
@@ -90,24 +105,6 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.common.routes'])
                     }
                 }
             })
-            .when('/avbryt', {
-                templateUrl: '../views/ettersending/avbryt.html',
-                controller: 'EttersendingAvbrytCtrl',
-                resolve: {
-                    cms: function (CmsResolver) {
-                        return CmsResolver;
-                    },
-                    ettersending: function (EttersendingResolver) {
-                        return EttersendingResolver;
-                    },
-                    config: function (ConfigResolver) {
-                        return ConfigResolver;
-                    },
-                    vedlegg: function (VedleggResolver) {
-                        return VedleggResolver;
-                    }
-                }
-            })
             .when('/visVedlegg/:vedleggId', {
                 templateUrl: '../views/common/vedlegg/visvedlegg.html',
                 resolve: {
@@ -129,9 +126,12 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.common.routes'])
                     cms: function (CmsResolver) {
                         return CmsResolver;
                     },
-                    config: function(ConfigResolver) {
+                    config: function (ConfigResolver) {
                         return ConfigResolver;
                     }
                 }
+            })
+            .when('/:behandlingId', {
+                redirectTo: '/:behandlingId/vedlegg'
             });
     });
