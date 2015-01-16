@@ -186,11 +186,6 @@ angular.module('nav.ettersending.controllers.main', [])
             return input.filter(sjekkOmSkalEttersendes.skalIkkeSendes);
         };
     })
-    .filter('alleredeSendt', function (sjekkOmSkalEttersendes) {
-        return function (input) {
-            return input.filter(sjekkOmSkalEttersendes.alleredeSendt);
-        };
-    })
     .factory('sjekkOmSkalEttersendes', function () {
         function skalEttersendes(v) {
             if (erLastetOppIDenneInnsendingen(v)) {
@@ -230,6 +225,6 @@ angular.module('nav.ettersending.controllers.main', [])
 
             skalIkkeSendes: function (v) {
                 return !skalEttersendes(v) && !erLastetOpp(v);
-            },
+            }
         };
     });

@@ -146,11 +146,6 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
     }
 
     @Override
-    public void slettVedleggOgData(Long soknadId, Long faktumId, String skjemaNummer) {
-        getJdbcTemplate().update("delete from vedlegg where soknad_id = ? and faktum = ? and skjemaNummer = ?", soknadId, faktumId, skjemaNummer);
-    }
-
-    @Override
     public void slettVedleggOgData(Long soknadId, Vedlegg vedlegg) {
         getJdbcTemplate().update("delete from vedlegg where soknad_id = ? and faktum = ? and skjemaNummer = ?",
                 soknadId, vedlegg.getFaktumId(), getSkjemanummerMedTillegg(vedlegg));
