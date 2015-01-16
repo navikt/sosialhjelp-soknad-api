@@ -81,7 +81,7 @@ angular.module('nav.datepicker.dato', [])
                             scope.endret();
                         }
 
-                        if (new Date(newValue) < new Date(scope.fraDato)) {
+                        if (datoFoerAnnenDatoUtenTimer(newValue, scope.fraDato)) {
                             scope.vars.model = '';
                             form[scope.name].$setValidity('toDate', false);
                             form[scope.name].$touched = true;
@@ -147,6 +147,16 @@ angular.module('nav.datepicker.dato', [])
 
                     function harFeilMedDateInput() {
                         return scope.harRequiredFeil() || scope.harTilDatoFeil();
+                    }
+
+                    function datoFoerAnnenDatoUtenTimer(datoString, dato2String) {
+                        var dato1 = new Date(datoString);
+                        dato1.setHours(0,0,0,0);
+
+                        var dato2 = new Date(dato2String);
+                        dato2.setHours(0,0,0,0);
+
+                        return dato1 < dato2;
                     }
                 }
             }
