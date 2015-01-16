@@ -144,23 +144,24 @@ describe('datepicker directive', function () {
             });
         });
 
-        // TODO Skriv om dersom vi får lagt til angularui sin datepicker
-        describe('jQuery datepicker', function () {
-//            var datepickerKnapp;
-//            var datepickerInput;
-//
-//
-//            beforeEach(function() {
-//                datepickerKnapp = element.find('.apne-datepicker');
-//                datepickerInput = element.find('input[type=hidden]');
-//            });
-//
-//            it('skal få opp datepicker ved å trykke på datepicker-knappen', function () {
-////                spyOn(scope, 'toggleDatepicker').andCallThrough();
-////                datepickerKnapp.trigger('click');
-////                scope.$apply();
-////                expect(scope.toggleDatepicker).toHaveBeenCalled();
-//            });
+        describe('angularUI datepicker', function () {
+            var datepickerKnapp, datepicker, datepickerInput;
+
+
+            beforeEach(function() {
+                datepickerKnapp = element.find('.apne-datepicker').first();
+                datepickerInput = element.find('input[type=hidden]');
+                datepicker = element.find(".dropdown-menu").first();
+            });
+
+            it('skal få opp datepicker ved å trykke på datepicker-knappen og lukke den hvis man trykker en gang til', function () {
+                datepickerKnapp.trigger('click');
+                scope.$apply();
+                expect(datepicker.css("display")).toBe("block");
+                datepickerKnapp.trigger('click');
+                scope.$apply();
+                expect(datepicker.css("display")).toBe("none");
+            });
         });
     });
 });
