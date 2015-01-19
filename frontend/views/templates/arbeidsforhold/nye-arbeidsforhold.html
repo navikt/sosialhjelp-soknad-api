@@ -11,13 +11,16 @@
                     data-nav-faktum="nyearbeidsforhold.arbeidsidensist"
                     data-navlabel="nyearbeidsforhold.arbeidsidensist.true"
                     data-navfeilmelding="nyearbeidsforhold.arbeidsidensist.feilmelding">
+            </div>
 
+            <div data-ng-if="!harJobbetSidenSistMotattDagpenger()"
+                 class="ekstra-spm-boks">
                 <div data-navtextarea
-                        data-navconfig
-                        data-nav-faktum="nyearbeidsforhold.aarsakdagpengerstanset"
-                        data-nokkel="nyearbeidsforhold.aarsakdagpengerstanset"
-                        data-maxlengde="500"
-                        data-obligatorisk="true">
+                     data-navconfig
+                     data-nav-faktum="nyearbeidsforhold.aarsakdagpengerstanset"
+                     data-nokkel="nyearbeidsforhold.aarsakdagpengerstanset"
+                     data-maxlengde="500"
+                     data-obligatorisk="true">
                 </div>
             </div>
 
@@ -27,7 +30,10 @@
                     data-nav-faktum="nyearbeidsforhold.arbeidsidensist"
                     data-navlabel="nyearbeidsforhold.arbeidsidensist.false"
                     data-navfeilmelding="nyearbeidsforhold.arbeidsidensist.feilmelding">
+            </div>
 
+            <div data-ng-if="harJobbetSidenSistMotattDagpenger()"
+                 class="ekstra-spm-boks">
                 <div data-navtextarea
                      data-navconfig
                      data-nav-faktum="nyearbeidsforhold.aarsakdagpengerstanset"
