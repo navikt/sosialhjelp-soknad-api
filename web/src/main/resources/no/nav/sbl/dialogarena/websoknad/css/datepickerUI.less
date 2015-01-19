@@ -20,13 +20,12 @@
     background-color: #fff;
     background-image: none;
     border: none;
-    padding: 8px 10px;
+    padding: 5px 10px;
   }
 
   .dropdown-menu {
-    li:last-child {
+    li:first-child {
       position: relative;
-      height: 3rem;
 
       a.lukk:hover, a.lukk:focus {
         background: url("../img/kryss_hover.svg");
@@ -36,6 +35,9 @@
 
   table {
     thead {
+      tr th {
+        text-align: center;
+      }
       .datepicker-title {
         text-transform: capitalize;
 
@@ -43,6 +45,29 @@
           text-decoration: underline;
         }
       }
+      .datepicker-forrige {
+        background: url(../img/pil-venstre.svg) no-repeat;
+        height: 13px;
+        background-position-x: right;
+        margin-top: 4px;
+
+        &:hover, &:focus {
+          background: url(../img/pil-venstre-hover.svg) no-repeat;
+          background-position-x: right;
+          height: 13px;
+        }
+      }
+      .datepicker-neste {
+        background: url(../img/pil-hoyre.svg) no-repeat;
+        height: 13px;
+        margin-top: 4px;
+
+        &:hover, &:focus {
+          background: url(../img/pil-hoyre-hover.svg) no-repeat;
+          height: 13px;
+        }
+      }
+
       .btn:hover, .btn:focus {
         background-color: #fff;
         strong {
@@ -52,6 +77,7 @@
 
       tr:first-child {
         border-bottom: 1px solid @datepickersvart;
+
       }
       tr:last-child {
         font-family: modus;
@@ -63,26 +89,7 @@
           font-size: 100%;
         }
       }
-      .pull-left {
-        background: url(../img/pil-venstre.svg) no-repeat;
-        height: 13px;
-        background-position-x: right;
 
-        &:hover, &:focus {
-          background: url(../img/pil-venstre-hover.svg) no-repeat;
-          background-position-x: right;
-          height: 13px;
-        }
-      }
-      .pull-right {
-        background: url(../img/pil-hoyre.svg) no-repeat;
-        height: 13px;
-
-        &:hover, &:focus {
-          background: url(../img/pil-hoyre-hover.svg) no-repeat;
-          height: 13px;
-        }
-      }
     }
     tbody td {
       padding: 0;
@@ -188,6 +195,7 @@
           font-size: 0.75rem;
           color: #675b53;
           border-right: 1px solid #dddddd;
+          padding: 0 10px;
         }
 
         &:last-child {
