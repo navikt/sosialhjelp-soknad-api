@@ -14,6 +14,15 @@ angular.module('nav.gjenopptak', [])
             {id: 'tilleggsopplysninger', tittel: 'tilleggsopplysninger.tittel', template: '../views/templates/tilleggsopplysninger.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false}
         ];
 
+        angular.forEach($scope.grupper, function(gruppe, index) {
+            $scope.$watch("grupper[" + index + "].apen", function(nyverdi, gammelverdi) {
+                if(nyverdi == gammelverdi) {
+                    return true;
+                }
+                settVisningAvGruppe($scope.grupper[index], nyverdi);
+            })
+        });
+
         $scope.leggTilValideringsmetode = function(bolkId, valideringsmetode) {
             var idx = $scope.grupper.indexByValue(bolkId);
             $scope.grupper[idx].valideringsmetode = valideringsmetode;
@@ -41,6 +50,17 @@ angular.module('nav.gjenopptak', [])
             var idx = $scope.grupper.indexByValue(id);
             $scope.grupper[idx].validering = false;
         };
+
+        function settVisningAvGruppe(gruppe, state) {
+            clearTimeout(gruppe.timer);
+            if(state == true) {
+                gruppe.skalVises = true;
+            } else {
+                gruppe.timer = setTimeout(function(){
+                    gruppe.skalVises = false;
+                }, 300);
+            }
+        }
 
 		function settApenStatusForAccordion(apen, ider) {
 			if (ider instanceof Array) {
