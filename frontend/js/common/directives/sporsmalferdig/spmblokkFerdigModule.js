@@ -82,7 +82,7 @@ angular.module('nav.sporsmalferdig', [])
                         var nesteTab = tab.next();
                         apneBolk(nesteTab);
                         lukkBolk(tab);
-                        gaaTilTab(nesteTab);
+                        gaaTilTab(tab);
                     } else {
                         angular.forEach(form.$error, function (feil) {
                             var el = finnElementMedFeilOgSettFeilmelding(feil[0], scope);
