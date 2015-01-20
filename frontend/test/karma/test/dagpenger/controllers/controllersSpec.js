@@ -188,7 +188,10 @@
                     {id: 'bolk', apen: true}
                 ];
                 scope.lukkTab("bolk");
-                expect(scope.grupper[0].apen).toBe(false);
+
+                waitsFor(function(){
+                    return scope.grupper[0].apen === false;
+                }, "lukkTab skal sette apen til False etter et lite delay", 500);
             });
             it('bolk1 og bolk2 skal få status apen til false når lukkTab blir kalt for bolk1 og bolk2', function () {
                 scope.grupper = [
@@ -197,8 +200,10 @@
                 ];
                 var bolker = ['bolk1', 'bolk2'];
                 scope.lukkTab(bolker);
-                expect(scope.grupper[0].apen).toBe(false);
-                expect(scope.grupper[1].apen).toBe(false);
+
+                waitsFor(function(){
+                    return scope.grupper[0].apen === false && scope.grupper[1].apen === false;
+                }, "lukkTab skal sette apen til False etter et lite delay", 500);
             });
             it('bolk skal ikke få status apen til false når bolknavnet ikke finnes', function () {
                 scope.grupper = [
