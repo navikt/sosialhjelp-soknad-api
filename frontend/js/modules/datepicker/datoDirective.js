@@ -97,6 +97,12 @@ angular.module('nav.datepicker.dato', [])
                         }
                     });
 
+                    scope.$watch('erRequired', function(newVal, oldVal) {
+                        if(newVal !== oldVal && !newVal ) {
+                            form[scope.name].$setValidity('toDate', true);
+                        }
+                    });
+
                     scope.navDatepicker = function() {
                         return !scope.vanligDatepicker();
                     };
@@ -131,7 +137,7 @@ angular.module('nav.datepicker.dato', [])
                     };
 
                     scope.harFeil = function () {
-                        if (scope.disabled == 'true') {
+                        if (!scope.erRequired || scope.disabled === 'true') {
                             return false;
                         } else if (scope.navDatepicker()) {
                             return harFeilMedNavDatepicker();

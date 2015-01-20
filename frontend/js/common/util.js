@@ -262,7 +262,10 @@ function lagNorskDatoformatFraIsoStandard(datoString) {
 }
 
 function konverterDatoTilStringMedLeadingZero(dato) {
-    return dato.getFullYear() + "-" + konverterTallTilStringMedToSiffer(dato.getMonth()+1) + "-" + konverterTallTilStringMedToSiffer(dato.getDate());
+    if(dato) {
+        return dato.getFullYear() + "-" + konverterTallTilStringMedToSiffer(dato.getMonth()+1) + "-" + konverterTallTilStringMedToSiffer(dato.getDate());
+    }
+    return "";
 }
 
 function konverterTallTilStringMedToSiffer(tall) {
