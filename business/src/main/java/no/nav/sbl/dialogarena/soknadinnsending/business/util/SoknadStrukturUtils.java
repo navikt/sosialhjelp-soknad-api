@@ -18,6 +18,7 @@ public class SoknadStrukturUtils {
         strukturDokumenter.put("NAV 04-01.04", "NAV 04-01.03.xml");
         strukturDokumenter.put("NAV 04-01.03", "NAV 04-01.03.xml");
         strukturDokumenter.put("NAV 04-16.03", "NAV 04-16.03.xml");
+        strukturDokumenter.put("NAV 04-16.04", "NAV 04-16.03.xml");
 
         String type = strukturDokumenter.get(skjema);
 
