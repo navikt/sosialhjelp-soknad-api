@@ -8,6 +8,10 @@ angular.module('nav.nyearbeidsforhold.directive',[])
                 $scope.harJobbetSidenSistMotattDagpenger = function() {
                     return $scope.faktum.value == "false";
                 };
+
+                $scope.harIkkeJobbetSidenSistMotattDagpenger = function() {
+                    return $scope.faktum.value == "true";
+                };
             }
         };
     });
