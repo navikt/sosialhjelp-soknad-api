@@ -18,7 +18,7 @@ angular.module('nav.dagpenger', [])
 					return true;
 				}
 				settVisningAvGruppe($scope.grupper[index], nyverdi);
-			})
+			});
 		});
 
         $scope.leggTilValideringsmetode = function(bolkId, valideringsmetode) {
@@ -53,7 +53,7 @@ angular.module('nav.dagpenger', [])
 
 		function settVisningAvGruppe(gruppe, state) {
 			clearTimeout(gruppe.timer);
-			if(state == true) {
+			if(state === true) {
 				gruppe.skalVises = true;
 			} else {
 				gruppe.timer = setTimeout(function(){
