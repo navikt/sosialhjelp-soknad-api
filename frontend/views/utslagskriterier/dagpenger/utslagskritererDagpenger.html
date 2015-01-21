@@ -6,7 +6,7 @@
                     <h1 class="utrop-sirkel-ikon" data-ng-bind-html=" 'feilmelding' | cmstekst"></h1>
                     <p class="mini-strek" data-ng-bind-html=" 'feilmelding.tps' | cmstekst"></p>
                     <div class="knapper">
-                        <a type="button" class="knapp-hoved" href="{{ inngangsportenUrl }}" data-ng-bind-html="'feilmelding.lenketekst' | cmstekst"></a>
+                        <a type="button" class="knapp-hoved" href="{{ dittnavUrl }}" data-ng-bind-html="'feilmelding.lenketekst' | cmstekst"></a>
                     </div>
                 </div>
 
@@ -63,7 +63,7 @@
                     <div class="utslagskriterier-knapper" data-ng-if="kravForDagpengerIkkeOppfylt()">
                         <div data-ng-if="ikkeRegistrertArbeidssoker() || registrertArbeidssokerUkjent()">
                             <a class="knapp-hoved" href="{{ reelArbeidsokerUrl }}" data-ng-bind-html="'utslagskriterier.utslag.reellarbeidssoker.registert' | cmstekst"></a>
-                            <a class="registrer" href="{{ inngangsportenUrl }}" data-ng-bind-html=" 'utslagskriterier.utslag.avbryt.lenketekst' | cmstekst"></a>
+                            <a class="registrer" href="{{ dittnavUrl }}" data-ng-bind-html=" 'utslagskriterier.utslag.avbryt.lenketekst' | cmstekst"></a>
                             <p>
                                 <a href="#" data-ng-click="fortsettLikevel($event)" data-ng-bind-html=" 'utslagskriterier.utslag.fortsettlikevel' | cmstekst"></a>
                                 <span data-ng-bind-html=" 'utslagskriterier.utslag.infoAvslag' | cmstekst"></span>
@@ -71,7 +71,7 @@
                         </div>
 
                         <div data-ng-if="!ikkeRegistrertArbeidssoker() && !registrertArbeidssokerUkjent()">
-                            <a class="knapp-hoved" href="{{ inngangsportenUrl }}" data-ng-bind-html=" 'utslagskriterier.utslag.avbryt.lenketekst' | cmstekst"></a>
+                            <a class="knapp-hoved" href="{{ dittnavUrl }}" data-ng-bind-html=" 'utslagskriterier.utslag.avbryt.lenketekst' | cmstekst"></a>
                             <p>
                                 <a href="#" data-ng-click="fortsettLikevel($event)" data-ng-bind-html=" 'utslagskriterier.utslag.fortsettlikevel' | cmstekst"></a>,
                                 <span data-ng-bind-html=" 'utslagskriterier.utslag.infoAvslag' | cmstekst"></span>
