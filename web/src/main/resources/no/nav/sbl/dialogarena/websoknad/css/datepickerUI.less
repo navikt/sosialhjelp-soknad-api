@@ -115,6 +115,9 @@
         font-size: 0.85rem;
         font-weight: normal;
 
+        .btn:focus {
+        }
+
         .btn, .btn[disabled] {
           border: 2px solid transparent;
 
@@ -123,20 +126,25 @@
             border-radius: 0%;
             border: 2px solid #dddddd;
           }
+        }
+        .btn[disabled] {
+          cursor: text;
 
           &:focus {
-            text-decoration: underline !important;
+            text-decoration: none !important;
+
+            span {
+              color: @datepcikergraa;
+
+              &:focus {
+                text-decoration: none !important;
+              }
+            }
+          }
+          .active {
+            color: #dddddd;
           }
         }
-        .btn[disabled]:focus span {
-          color: @datepcikergraa;
-        }
-
-        .btn[disabled].active {
-          color: #dddddd;
-        }
-
-
 
         .btn.active, .btn.active.btn-info {
           border: 2px solid @datepickerblaa;
@@ -213,9 +221,8 @@
           }
 
           .active span {
-              color: #fff;
-            }
-
+            color: #fff;
+          }
 
           .btn:hover:not(.active, .text-muted) span {
             color: @datepickerrod;
