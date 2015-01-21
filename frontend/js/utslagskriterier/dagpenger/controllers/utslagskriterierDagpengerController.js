@@ -42,8 +42,6 @@ angular.module('nav.utslagskriterierDagpenger', [])
             return data && data.soknad && data.soknad.status === "FERDIG";
         };
 
-        //slutt
-
         $scope.fortsettLikevel = function ($event) {
             $event.preventDefault();
             if (erFortsattSenereSoknad()) {
