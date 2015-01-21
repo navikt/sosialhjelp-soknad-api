@@ -24,6 +24,14 @@ public class LandController {
     @Inject
     private LandService landService;
 
+    @RequestMapping(method = RequestMethod.PUT, produces = "application/json")
+    @ResponseBody()
+    public Map<String, String> leggTilLand() {
+        HashMap<String, String> result = new HashMap<>();
+        result.put("status", "ok");
+        return result;
+    }
+
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public Map<String, List<Map<String, String>>> hentAlleLand() {
