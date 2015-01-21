@@ -39,7 +39,7 @@ angular.module('nav.datepicker.datoinput', ['ui.bootstrap.datepicker'])
                 var idag = new Date();
 
                 if(mode === 'day' && !scope.erFremtidigdatoTillatt) {
-                    return date > idag.setDate(idag.getDate() +1);
+                    return date > idag.setDate(idag.getDate());
                 }
                 return false;
             };
