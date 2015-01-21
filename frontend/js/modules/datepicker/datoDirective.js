@@ -1,20 +1,20 @@
 angular.module('nav.datepicker.dato', [])
     .directive('navDatoIntervall', function () {
         return {
-            restrict   : 'A',
-            replace    : true,
+            restrict: 'A',
+            replace: true,
             templateUrl: '../js/modules/datepicker/templates/doubleDatepickerTemplate.html',
-            scope      : {
-                fraDato               : '=',
-                tilDato               : '=',
-                erFradatoRequired     : '=',
-                erTildatoRequired     : '=',
+            scope: {
+                fraDato: '=',
+                tilDato: '=',
+                erFradatoRequired: '=',
+                erTildatoRequired: '=',
                 erFremtidigdatoTillatt: '=',
-                lagre                 : '&',
-                label                 : '@',
-                disabled              : '=?'
+                lagre: '&',
+                label: '@',
+                disabled: '=?'
             },
-            controller : function ($scope) {
+            controller: function ($scope) {
                 $scope.fraLabel = $scope.label + '.fra';
                 $scope.tilLabel = $scope.label + '.til';
                 $scope.fraFeilmelding = $scope.fraLabel + '.feilmelding';
@@ -25,11 +25,11 @@ angular.module('nav.datepicker.dato', [])
     })
     .directive('dato', function (cms, deviceService, guidService) {
         return {
-            restrict   : 'A',
-            require    : '^form',
-            replace    : true,
+            restrict: 'A',
+            require: '^form',
+            replace: true,
             templateUrl: '../js/modules/datepicker/templates/dateTemplate.html',
-            scope      : {
+            scope: {
                 model: '=ngModel',
                 erRequired: '=?',
                 erFremtidigdatoTillatt: '=?',
@@ -43,7 +43,7 @@ angular.module('nav.datepicker.dato', [])
 
             },
             link: {
-                pre: function(scope) {
+                pre: function (scope) {
                     scope.name = scope.name !== undefined ? scope.name : guidService.getGuid();
                     scope.vars = {
                         model: scope.model,
@@ -58,21 +58,24 @@ angular.module('nav.datepicker.dato', [])
                 },
                 post: function (scope, element, attrs, form) {
                     scope.form = form;
-                    scope.$watch('model', function(newValue, oldValue) {
+                    scope.$watch('model', function (newValue, oldValue) {
                         if (newValue === oldValue) {
                             return;
                         }
-
                         var toInputFieldName = element.next().find('input').first().attr('name');
-                        if (new Date(scope.tilDato) < new Date(newValue)) {
-                            scope.tilDato = '';
+                        if (new Date(scope.tilDato) < new Date(newValue) || scope.fraDato > new Date(newValue)) {
+//                            scope.tilDato = '';
                             form[toInputFieldName].$setValidity('toDate', false);
+                        } else if (!scope.erRequired) {
+                            form[scope.name].$setValidity('toDate', true);
+                        } else if (toInputFieldName && form[toInputFieldName].$invalid) {
+                            form[toInputFieldName].$setValidity('toDate', true);
                         }
 
                         scope.vars.model = scope.model;
                     });
 
-                    scope.$watch('vars.model', function(newValue, oldValue) {
+                    scope.$watch('vars.model', function (newValue, oldValue) {
                         if (newValue === oldValue) {
                             return;
                         }
@@ -82,7 +85,7 @@ angular.module('nav.datepicker.dato', [])
                         }
 
                         if (datoFoerAnnenDatoUtenTimer(newValue, scope.fraDato)) {
-                            scope.vars.model = '';
+//                            scope.vars.model = '';
                             form[scope.name].$setValidity('toDate', false);
                             form[scope.name].$touched = true;
                             form[scope.name].$untouched = false;
@@ -90,24 +93,28 @@ angular.module('nav.datepicker.dato', [])
                             form[scope.name].$setValidity('toDate', true);
                         }
 
-                        if(typeof(scope.vars.model) === 'object') {
+                        if (typeof(scope.vars.model) === 'object') {
                             scope.model = konverterDatoTilStringMedLeadingZero(scope.vars.model);
                         } else {
                             scope.model = scope.vars.model;
                         }
                     });
 
-                    scope.$watch('erRequired', function(newVal, oldVal) {
-                        if(newVal !== oldVal && !newVal ) {
-                            form[scope.name].$setValidity('toDate', true);
+                    scope.$watch('erRequired', function (newVal, oldVal) {
+                        if (newVal !== oldVal) {
+                            if (erRequiredMedTildatoFeorFradato(newVal)) {
+                                form[scope.name].$setValidity('toDate', false);
+                            } else {
+                                form[scope.name].$setValidity('toDate', true);
+                            }
                         }
                     });
 
-                    scope.navDatepicker = function() {
+                    scope.navDatepicker = function () {
                         return !scope.vanligDatepicker();
                     };
 
-                    scope.vanligDatepicker = function() {
+                    scope.vanligDatepicker = function () {
                         return deviceService.isTouchDevice();
                     };
 
@@ -118,7 +125,7 @@ angular.module('nav.datepicker.dato', [])
 
                     scope.harTilDatoFeil = function () {
                         var input = form[scope.name];
-                        return input && input.$error.toDate && input.$touched;
+                        return input && input.$error.toDate;
                     };
 
                     scope.harFormatteringsFeil = function () {
@@ -126,7 +133,7 @@ angular.module('nav.datepicker.dato', [])
                         return input && input.$error.dateFormat && input.$touched && !scope.vars.harFokus && scope.vars.datepickerClosed;
                     };
 
-                    scope.erUloveligFremtidigDato = function() {
+                    scope.erUloveligFremtidigDato = function () {
                         var input = form[scope.name];
                         return input && input.$error.futureDate && input.$touched && !scope.vars.harFokus && scope.vars.datepickerClosed;
                     };
@@ -137,7 +144,7 @@ angular.module('nav.datepicker.dato', [])
                     };
 
                     scope.harFeil = function () {
-                        if (!scope.erRequired || scope.disabled === 'true') {
+                        if (scope.disabled === 'true') {
                             return false;
                         } else if (scope.navDatepicker()) {
                             return harFeilMedNavDatepicker();
@@ -145,6 +152,11 @@ angular.module('nav.datepicker.dato', [])
                             return harFeilMedDateInput();
                         }
                     };
+
+                    function erRequiredMedTildatoFeorFradato(requireVal) {
+                        var tilDato = scope.model;
+                        return requireVal && scope.fraDato && tilDato && scope.fraDato > tilDato;
+                    }
 
                     function harFeilMedNavDatepicker() {
                         return scope.harRequiredFeil() || scope.harFormatteringsFeil() || scope.harTilDatoFeil() ||
@@ -157,10 +169,10 @@ angular.module('nav.datepicker.dato', [])
 
                     function datoFoerAnnenDatoUtenTimer(datoString, dato2String) {
                         var dato1 = new Date(datoString);
-                        dato1.setHours(0,0,0,0);
+                        dato1.setHours(0, 0, 0, 0);
 
                         var dato2 = new Date(dato2String);
-                        dato2.setHours(0,0,0,0);
+                        dato2.setHours(0, 0, 0, 0);
 
                         return dato1 < dato2;
                     }

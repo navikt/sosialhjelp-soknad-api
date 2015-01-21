@@ -37,7 +37,11 @@ angular.module('nav.datepicker.datoinput', ['ui.bootstrap.datepicker'])
 
             scope.disableDate = function(date, mode) {
                 var idag = new Date();
-                return mode === 'day' && scope.erFremtidigdatoTillatt !== 'true' && date > idag.setDate(idag.getDate() +1);
+
+                if(mode === 'day' && !scope.erFremtidigdatoTillatt) {
+                    return date > idag.setDate(idag.getDate() +1);
+                }
+                return false;
             };
 
             scope.open = function($event) {
