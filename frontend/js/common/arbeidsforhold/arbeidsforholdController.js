@@ -3,6 +3,7 @@ angular.module('nav.arbeidsforhold.controller', [])
 
         $scope.soknadId = data.soknad.soknadId;
         $scope.land = data.eosLand;
+        $scope.harKlikketKnapp = false;
 
         var arbeidsforhold = data.finnFakta('arbeidsforhold');
         $scope.arbeidsliste = [];
@@ -69,8 +70,16 @@ angular.module('nav.arbeidsforhold.controller', [])
 
 
         $scope.hvisHarJobbet = function () {
-            var faktum = data.finnFaktum('arbeidstilstand');
-            return !sjekkOmGittEgenskapTilObjektErVerdi(faktum, "harIkkeJobbet");
+            var faktumOrdinaer = data.finnFaktum('arbeidstilstand');
+            var faktumGjenopptak = data.finnFaktum("nyearbeidsforhold.arbeidsidensist");
+
+            if(faktumOrdinaer) {
+                return !sjekkOmGittEgenskapTilObjektErVerdi(faktumOrdinaer, "harIkkeJobbet");
+            } else if(faktumGjenopptak) {
+                return sjekkOmGittEgenskapTilObjektErVerdi(faktumGjenopptak, "false");
+            } else {
+                return false;
+            }
         };
 
         $scope.hvisHarIkkeJobbet = function () {
