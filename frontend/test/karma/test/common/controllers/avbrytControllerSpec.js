@@ -7,11 +7,10 @@
 
     var saksoversiktUrl = "saksoversiktUrl";
 
-    describe('DagpengerControllere', function () {
-        var scope, ctrl, form, element, barn, $httpBackend, event, location, epost;
-        event = $.Event("click");
+    describe('AvbrytModulen', function () {
+        var scope, element;
 
-        beforeEach(module('ngCookies', 'sendsoknad.services', 'nav.modal'));
+        beforeEach(module('ngCookies', 'sendsoknad.services', 'nav.modal', 'nav.avbryt'));
         beforeEach(module('sendsoknad.controllers', 'nav.feilmeldinger'));
 
         beforeEach(module(function ($provide) {
@@ -60,44 +59,40 @@
             $provide.value("$routeParams", {});
         }));
 
-        beforeEach(inject(function ($injector, $rootScope) {
-            scope = $rootScope;
+        beforeEach(inject(function ($rootScope, $compile, $templateCache, $httpBackend, data) {
+            $templateCache.put('../js/modules/avbryt/templates/slettSoknadTemplate.html', '<span>noe innhold</span>');
+            $httpBackend.when("POST", "/sendsoknad/rest/soknad/delete/1").respond();
+            $rootScope.data = data;
+
+            var elem = angular.element("<div data-slett-soknad></div>");
+            var brukerregistrertFaktum = {
+                key: 'brukerregistrertFaktum',
+                type: 'BRUKERREGISTRERT'
+            };
+            var brukerregistrertFaktum2 = {
+                key: 'brukerregistrertFaktum',
+                type: 'BRUKERREGISTRERT'
+            };
+
+            $rootScope.data.leggTilFaktum(brukerregistrertFaktum);
+            $rootScope.data.leggTilFaktum(brukerregistrertFaktum2);
+
+            element = $compile(elem)($rootScope);
+            scope = element.scope();
+            scope.$digest();
         }));
 
-        describe('AvbrytCtrl', function () {
-            beforeEach(inject(function ($controller, data) {
-                ctrl = $controller('AvbrytCtrl', {
-                    $scope: scope
-                });
+        describe('SlettSoknadDirective', function () {
+            beforeEach(inject(function (data) {
                 scope.data = data;
-
             }));
             it('fremdriftsindikatoren skal vises nar man sletter soknaden', function () {
                 scope.submitForm();
                 expect(scope.fremdriftsindikator.laster).toEqual(true);
             });
         });
-        describe('AvbrytCtrlMedBrukerregistrertFakta', function () {
-            beforeEach(inject(function ($controller, data) {
-                scope.data = data;
 
-                var brukerregistrertFaktum = {
-                    key: 'brukerregistrertFaktum',
-                    type: 'BRUKERREGISTRERT'
-                };
-                var brukerregistrertFaktum2 = {
-                    key: 'brukerregistrertFaktum',
-                    type: 'BRUKERREGISTRERT'
-                };
-
-                scope.data.leggTilFaktum(brukerregistrertFaktum);
-                scope.data.leggTilFaktum(brukerregistrertFaktum2);
-
-                ctrl = $controller('AvbrytCtrl', {
-                    $scope: scope
-                });
-            }));
-
+        describe('SlettSoknadDirective', function () {
             it('skal kreve brekftelse med fakta som er brukerregistrerte', function () {
                 expect(scope.krevBekreftelse).toEqual(true);
             });

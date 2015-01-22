@@ -1,7 +1,7 @@
 angular.module('nav.avbryt.slettSoknadDirective', [])
     .directive('slettSoknad', function (data, soknadService, $location) {
         return {
-            scope: false,
+            scope: true,
             templateUrl: '../js/modules/avbryt/templates/slettSoknadTemplate.html',
             link: function(scope) {
                 scope.fremdriftsindikator = {
