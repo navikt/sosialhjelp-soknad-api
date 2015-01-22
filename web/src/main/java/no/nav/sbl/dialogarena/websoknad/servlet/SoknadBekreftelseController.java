@@ -48,10 +48,12 @@ public class SoknadBekreftelseController {
             String ettersendelseUrl = ServerUtils.getEttersendelseUrl(request.getRequestURL().toString(), behandlingId);
             String saksoversiktLink = saksoversiktUrl + "/detaljer/" + soknadBekreftelse.getTemaKode() + "/" + behandlingId;
             String innhold = messageSource.getMessage("sendtSoknad.sendEpost.epostInnhold", new Object[]{saksoversiktLink, ettersendelseUrl}, new Locale("nb", "NO"));
-
             if (soknadBekreftelse.getErEttersendelse()) {
                 innhold = messageSource.getMessage("sendEttersendelse.sendEpost.epostInnhold", new Object[]{saksoversiktLink}, new Locale("nb", "NO"));
             }
+
+            // getMessage stripper vekk ytterske lag med p-tags. Men i eposten ønsker vi å kunne  for "fikse" dette legger vi dem bare på igjen
+            innhold = "<p>" + innhold + "</p>";
 
             emailService.sendEpostEtterInnsendtSoknad(soknadBekreftelse.getEpost(), subject, innhold, behandlingId);
 
