@@ -151,6 +151,10 @@ angular.module('nav.barn', [])
          * Til slutt legges de to faktumene inn i sine respektive lister for at de skal vises i 'oppsummeringsmodus'
          **/
         function lagreBarnOgBarnetilleggFaktum() {
+            if($scope.endrerSystemregistrertBarn()) {
+                $scope.barn.properties.barnetillegg = "true";
+            }
+
             $scope.barn.$save({soknadId: soknadId}).then(function (barnData) {
                 $scope.barn = barnData;
                 oppdaterFaktumListe('barn', barnData);

@@ -82,7 +82,13 @@
                 </div>
             </div>
 
-            <div data-ng-include="'../views/templates/barnetillegg/barnetilleggSporsmalTemplate.html'"></div>
+            <div data-ng-if="leggerTilNyttBarnEllerEndrerBarn()">
+                <div data-ng-include="'../views/templates/barnetillegg/barnetilleggNyttBarnSporsmalTemplate.html'"></div>
+            </div>
+            <div data-ng-if="endrerSystemregistrertBarn()">
+                <div data-ng-include="'../views/templates/barnetillegg/barnetilleggSporsmalTemplate.html'"></div>
+            </div>
+
         </div>
 
 
