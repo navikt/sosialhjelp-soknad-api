@@ -268,6 +268,16 @@ function konverterDatoTilStringMedLeadingZero(dato) {
     return "";
 }
 
+function datoFoerAnnenDatoUtenTimer(datoString, dato2String) {
+    var dato1 = new Date(datoString);
+    dato1.setHours(0, 0, 0, 0);
+
+    var dato2 = new Date(dato2String);
+    dato2.setHours(0, 0, 0, 0);
+
+    return dato1 < dato2;
+}
+
 function konverterTallTilStringMedToSiffer(tall) {
     var tallMedToSiffer = '0' + tall;
     return tallMedToSiffer.slice(-2);
