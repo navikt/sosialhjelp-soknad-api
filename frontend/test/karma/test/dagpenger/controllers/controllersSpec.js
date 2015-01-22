@@ -113,44 +113,6 @@
             epost = form.epost;
             element.scope().$apply();
         }));
-        describe('AvbrytCtrl', function () {
-            beforeEach(inject(function ($controller, data) {
-                ctrl = $controller('AvbrytCtrl', {
-                    $scope: scope
-                });
-                scope.data = data;
-
-            }));
-            it('fremdriftsindikatoren skal vises nar man sletter soknaden', function () {
-                scope.submitForm();
-                expect(scope.fremdriftsindikator.laster).toEqual(true);
-            });
-        });
-        describe('AvbrytCtrlMedBrukerregistrertFakta', function () {
-            beforeEach(inject(function ($controller, data) {
-                scope.data = data;
-
-                var brukerregistrertFaktum = {
-                    key: 'brukerregistrertFaktum',
-                    type: 'BRUKERREGISTRERT'
-                };
-                var brukerregistrertFaktum2 = {
-                    key: 'brukerregistrertFaktum',
-                    type: 'BRUKERREGISTRERT'
-                };
-
-                scope.data.leggTilFaktum(brukerregistrertFaktum);
-                scope.data.leggTilFaktum(brukerregistrertFaktum2);
-
-                ctrl = $controller('AvbrytCtrl', {
-                    $scope: scope
-                });
-            }));
-
-            it('skal kreve brekftelse med fakta som er brukerregistrerte', function () {
-                expect(scope.krevBekreftelse).toEqual(true);
-            });
-        });
         describe('DagpengerCtrl', function () {
             beforeEach(inject(function ($controller, data) {
                 ctrl = $controller('DagpengerCtrl', {
