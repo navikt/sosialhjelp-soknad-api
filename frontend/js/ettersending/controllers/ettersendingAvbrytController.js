@@ -1,5 +1,5 @@
 angular.module('nav.ettersending.controllers.avbryt', [])
-    .controller('EttersendingAvbrytCtrl', function ($scope, data, ettersendingService, $timeout, vedlegg) {
+    .controller('EttersendingAvbrytCtrl', function ($scope, data, ettersendingService, $timeout, vedlegg, $location) {
         $scope.fremdriftsindikator = {
             laster: false
         };
@@ -14,7 +14,7 @@ angular.module('nav.ettersending.controllers.avbryt', [])
                     var delay = 1500 - ($.now() - start);
                     $timeout(function() {
                         if ($scope.harLastetOppNoenDokumenter()) {
-                            redirectTilSide('/sendsoknad/ettersending/avbrutt');
+                            $location.path('/avbrutt');
                         } else {
                             redirectTilMineHenvendelser();
                         }
@@ -25,7 +25,6 @@ angular.module('nav.ettersending.controllers.avbryt', [])
                 }
             );
         };
-
 
         $scope.harLastetOppNoenDokumenter = function() {
             return vedlegg.filter(function (v) {

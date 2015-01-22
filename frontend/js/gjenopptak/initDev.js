@@ -19,6 +19,10 @@ angular.module('gjenopptak')
         $http.get('../views/templates/barnetillegg/barnetilleggSporsmalTemplate.html', {cache: $templateCache});
         $http.get('../views/templates/barnetillegg/endreSystembarnTemplate.html', {cache: $templateCache});
         $http.get('../views/templates/tilleggsopplysninger.html', {cache: $templateCache});
+        $http.get('../views/templates/avbryt.html', {cache: $templateCache});
+        $http.get('../views/templates/avbrutt.html', {cache: $templateCache});
+        $http.get('../js/modules/avbryt/templates/slettSoknadTemplate.html', {cache: $templateCache});
+        $http.get('../js/modules/avbryt/templates/soknadSlettetTemplate.html', {cache: $templateCache});
         $http.get('../js/modules/tidligereArbeidsforhold/templates/varpermittertsist.html', {cache: $templateCache});
         $http.get('../js/common/arbeidsforhold/templates/grensearbeidTemplate.html', {cache: $templateCache});
         $http.get('../views/templates/utdanning/utdanning.html', {cache: $templateCache});
