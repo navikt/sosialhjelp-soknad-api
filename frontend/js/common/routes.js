@@ -47,6 +47,18 @@ angular.module('nav.common.routes', ['ngRoute'])
                     }
                 }
             })
+            .when('/avbrutt', {
+                templateUrl: '../views/templates/avbrutt.html',
+                controller: 'AvbrytCtrl',
+                resolve: {
+                    cms: function (CmsResolver) {
+                        return CmsResolver;
+                    },
+                    config: function(ConfigForSoknadResolver) {
+                        return ConfigForSoknadResolver;
+                    }
+                }
+            })
             .otherwise({redirectTo: '/404'});
     })
     .run(function ($rootScope, $location, $anchorScroll, $routeParams) {

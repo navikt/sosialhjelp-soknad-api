@@ -13,6 +13,10 @@ angular.module('sendsoknad')
         $http.get('../views/templates/egennaering/gardsbruk.html', {cache: $templateCache});
         $http.get('../views/templates/verneplikt.html', {cache: $templateCache});
         $http.get('../views/templates/personalia.html', {cache: $templateCache});
+        $http.get('../views/templates/avbryt.html', {cache: $templateCache});
+        $http.get('../views/templates/avbrutt.html', {cache: $templateCache});
+        $http.get('../js/modules/avbryt/templates/slettSoknadTemplate.html', {cache: $templateCache});
+        $http.get('../js/modules/avbryt/templates/soknadSlettetTemplate.html', {cache: $templateCache});
         $http.get('../views/templates/arbeidsforhold/arbeidsforhold.html', {cache: $templateCache});
         $http.get('../views/templates/ytelser.html', {cache: $templateCache});
         $http.get('../views/templates/barnetillegg/barnetillegg.html', {cache: $templateCache});

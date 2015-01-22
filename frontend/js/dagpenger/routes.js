@@ -350,6 +350,7 @@ angular.module('sendsoknad.routes', ['ngRoute', 'nav.common.routes'])
             })
             .when('/:behandlingId/avbryt', {
                 templateUrl: '../views/templates/avbryt.html',
+                controller: 'AvbrytCtrl',
                 resolve: {
                     cms: function (CmsResolver) {
                         return CmsResolver;

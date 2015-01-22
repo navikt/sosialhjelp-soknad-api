@@ -1,5 +1,4 @@
 angular.module('ettersending.routes', ['ngRoute', 'nav.common.routes'])
-
     .config(function ($routeProvider) {
         $routeProvider
             .when('/cmstekster', {

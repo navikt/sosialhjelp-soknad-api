@@ -6,12 +6,10 @@ import no.nav.modig.frontend.FrontendModules;
 import no.nav.modig.frontend.MetaTag;
 import no.nav.modig.wicket.configuration.ApplicationSettingsConfig;
 import no.nav.sbl.dialogarena.webkomponent.innstillinger.InnstillingerPanel;
-import no.nav.sbl.dialogarena.websoknad.pages.ettersending.AvbruttEttersendingPage;
 import no.nav.sbl.dialogarena.websoknad.pages.ettersending.EttersendingPage;
 import no.nav.sbl.dialogarena.websoknad.pages.ettersending.StartEttersendingPage;
 import no.nav.sbl.dialogarena.websoknad.pages.mocksetup.MockSetupPage;
 import no.nav.sbl.dialogarena.websoknad.pages.soknadliste.SoknadListePage;
-import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.AvbruttPage;
 import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.StartSoknadPage;
 import no.nav.sbl.dialogarena.websoknad.pages.utslagskriterier.UtslagskriterierDagpengerPage;
 import no.nav.sbl.dialogarena.websoknad.selftest.SelfTestPage;
@@ -114,8 +112,6 @@ public class WicketApplication extends WebApplication {
         mountPage("utslagskriterier/${utslagskriterierSide}", UtslagskriterierDagpengerPage.class);
         mountPage("startettersending/${brukerbehandlingId}", StartEttersendingPage.class);
         mountPage("skjema/ettersending", EttersendingPage.class);
-        mountPage("avbrutt", AvbruttPage.class);
-        mountPage("ettersending/avbrutt", AvbruttEttersendingPage.class);
         mountPage("internal/selftest", SelfTestPage.class);
         mountPage("soknadliste", SoknadListePage.class);
         if (mockSetupErTillatt()) {
