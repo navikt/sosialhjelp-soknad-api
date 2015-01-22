@@ -7,12 +7,9 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.springframework.beans.factory.annotation.Value;
 
 public class UtslagskriterierDagpengerPage extends BasePage {
-    @Value("${saksoversikt.link.url}")
-    private String saksoversiktUrl;
 
     public UtslagskriterierDagpengerPage(PageParameters parameters) {
         super(parameters);
-
         add(new SoknadComponent("soknad", SkjemaBootstrapFile.UTSLAGSKRITERIER_DAGPENGER));
     }
 }
