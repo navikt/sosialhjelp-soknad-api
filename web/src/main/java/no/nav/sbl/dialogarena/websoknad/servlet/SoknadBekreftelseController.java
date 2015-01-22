@@ -52,7 +52,8 @@ public class SoknadBekreftelseController {
                 innhold = messageSource.getMessage("sendEttersendelse.sendEpost.epostInnhold", new Object[]{saksoversiktLink}, new Locale("nb", "NO"));
             }
 
-            // getMessage stripper vekk ytterske lag med p-tags. Men i eposten ønsker vi å kunne  for "fikse" dette legger vi dem bare på igjen
+            // getMessage stripper vekk ytterske lag med p-tags. Siden vi i eposten ønskelig mulighet for flere
+            // paragrader må man legge på igjen p-tagsene for å unngå potsensielle feil i HTMLen
             innhold = "<p>" + innhold + "</p>";
 
             emailService.sendEpostEtterInnsendtSoknad(soknadBekreftelse.getEpost(), subject, innhold, behandlingId);
