@@ -2,8 +2,13 @@ angular.module('nav.bekreftelse', [])
     /* Er avhengig av at søknadsoppsett er hentet før vi kommer til denne kontrolleren, da temakode blir hentet sånn
      Henter ikke for bekreftelsessiden siden man bare skal videresendes hit, og siden det blir krøll på backend
      */
-    .controller('BekreftelsesCtrl', function ($scope, $window, $timeout, $routeParams, $rootElement, data, bekreftelseEpostService) {
+    .controller('BekreftelsesCtrl', function ($scope, $window, $timeout, $routeParams, $rootElement, data, bekreftelseEpostService, $location) {
         var appName = $rootElement.attr('data-ng-app');
+
+        if(data.faktum === undefined) {
+            $location.path("/feilside/soknadikkefunnet");
+            return false;
+        }
 
         $scope.cmsprefix = {value: appName};
         $scope.epost = {value: data.finnFaktum('epost')};
