@@ -161,7 +161,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
                 WebSoknad soknad = finnWebSoknad(options.context);
                 Map<String, String> infoMap = new HashMap<>();
 
-                DateTimeFormatter dt = DateTimeFormat.forPattern("d. MMMM yyyy, klokken hh.mm").withLocale(NO_LOCALE);
+                DateTimeFormatter dt = DateTimeFormat.forPattern("d. MMMM yyyy', klokken' HH.mm").withLocale(NO_LOCALE);
 
                 infoMap.put("sendtInn", String.valueOf(soknad.getInnsendteVedlegg().size()));
                 infoMap.put("ikkeSendtInn", String.valueOf(soknad.getVedlegg().size()));
