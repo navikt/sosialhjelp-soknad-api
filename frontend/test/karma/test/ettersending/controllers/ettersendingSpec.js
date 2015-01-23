@@ -56,11 +56,11 @@
             httpBackend = $httpBackend;
 
             $httpBackend
-                .when('POST', '/sendsoknad/rest/soknad/' + soknadId + '/vedlegg/2/delete?skjemaNummer=T8')
+                .whenPOST(/^\/sendsoknad\/rest\/soknad\/[0-9]+\/vedlegg\/[0-9]+\/delete/)
                 .respond();
 
             $httpBackend
-                .when('POST', '/sendsoknad/rest/soknad/send/' + soknadId)
+                .whenPOST(/^\/sendsoknad\/rest\/soknad\/[0-9]+\/send/)
                 .respond();
 
             scope = $rootScope;
