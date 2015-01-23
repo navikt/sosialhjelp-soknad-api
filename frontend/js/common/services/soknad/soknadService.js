@@ -1,6 +1,6 @@
 angular.module('nav.services.soknad', [])
     .factory('soknadService', ['$resource', function ($resource) {
-        return $resource('/sendsoknad/rest/soknad/:action/:soknadId',
+        return $resource('/sendsoknad/rest/soknad/:action/:soknadId' + getCacheBurstingParameter(),
             { soknadId: '@soknadId', soknadType: '@soknadType', delsteg: '@delsteg'},
             {
                 create: {
@@ -21,7 +21,7 @@ angular.module('nav.services.soknad', [])
                 hentMedBehandlingsId: {
                     method: 'GET',
                     params: {behandlingsId: '@behandlingsId'},
-                    url: '/sendsoknad/rest/soknad/hentsoknad/:behandlingsId'
+                    url: '/sendsoknad/rest/soknad/hentsoknad/:behandlingsId' + getCacheBurstingParameter()
                 }
             }
         );
