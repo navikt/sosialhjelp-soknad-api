@@ -43,6 +43,16 @@ String.prototype.toCamelCase = function () {
     });
 };
 
+/*
+ * Cachebursting brukes for å la rest-kall trenge gjennom litt overivrig caching
+ * i enkelte nettlesere (IE9 og IE10 f.eks.). Dette gjøres da det ikke er ønskelig
+ * å disable caching av disse ressursene på API siden.
+ */
+function getCacheBurstingParameter() {
+    var uniqueNumber = ((new Date().getTime() / 1000) | 0);
+    return "?cacheburst=" + uniqueNumber;
+}
+
 function erEttersending() {
     return location.href.indexOf("ettersending") > 0;
 }
