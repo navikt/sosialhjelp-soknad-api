@@ -116,7 +116,7 @@
                 .respond(vedlegg);
 
             $httpBackend
-                .when('POST', '/sendsoknad/rest/soknad/' + soknadId +'/fakta')
+                .whenPOST(/^\/sendsoknad\/rest\/soknad\/[0-9]+\/fakta/)
                 .respond({
                     faktumId: 1
                 });
