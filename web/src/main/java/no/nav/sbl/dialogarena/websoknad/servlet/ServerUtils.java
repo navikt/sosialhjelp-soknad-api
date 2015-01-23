@@ -6,8 +6,8 @@ public class ServerUtils {
 
 	public static String getGjenopptaUrl(String requestUrl, String soknadId, String behandlingId) {
         String fullServerPath =  requestUrl.split("/rest/")[0];
-		String gjenopptaUrl = "/utslagskriterier/dagpenger#/";
-		return fullServerPath.concat(gjenopptaUrl).concat(behandlingId).concat("?utm_source=web&utm_medium=email&utm_campaign=2");
+        String gjenopptaUrl = String.format("/skjema/%s#/%s/fortsett", soknadId.replaceAll("\\s", ""), behandlingId);
+		return fullServerPath.concat(gjenopptaUrl).concat("?utm_source=web&utm_medium=email&utm_campaign=2");
 	}
 
     public static String getEttersendelseUrl(String requestUrl, String behandlingId) {
