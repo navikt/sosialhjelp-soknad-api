@@ -35,8 +35,9 @@ public class FortsettSenereController {
     @RequestMapping(value = "/{soknadId}/{behandlingId}/fortsettsenere", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
     @ResponseBody()
     public void sendEpost(HttpServletRequest request, @PathVariable String soknadId, @PathVariable String behandlingId, @RequestBody FortsettSenere epost) {
+        String requestBaseUrl = request.getRequestURL().toString().split("soknad")[0].concat("sendsoknad");
         String content = messageSource.getMessage("fortsettSenere.sendEpost.epostInnhold",
-                new Object[]{getGjenopptaUrl(request.getRequestURL().toString(), soknadId, behandlingId)}, new Locale("nb", "NO"));
+                new Object[]{getGjenopptaUrl(requestBaseUrl, soknadId, behandlingId)}, new Locale("nb", "NO"));
         emailService.sendFortsettSenereEPost(epost.getEpost(), "Lenke til påbegynt dagpengesøknad", content);
     }
 }
