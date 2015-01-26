@@ -21,6 +21,8 @@ import java.util.Locale;
 
 import static java.lang.System.setProperty;
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -59,7 +61,7 @@ public class FortsettSenereControllerTest {
         messageSource.addMessage("fortsettSenere.sendEpost.epostInnhold", new Locale("nb", "NO"), "test med url {0}");
         mockMvc.perform(post("/soknad/{soknadId}/{behandlingsId}/fortsettsenere", "NAV13", "BH123").contentType(MediaType.APPLICATION_JSON).content("{\"epost\": \"test@epost.com\"}"))
                 .andExpect(status().isOk());
-        verify(emailService).sendFortsettSenereEPost("test@epost.com", "Lenke til påbegynt dagpengesøknad", "test med url http://localhost:80/sendsoknad/skjema/NAV13#/BH123/fortsett?utm_source=web&utm_medium=email&utm_campaign=2");
+        verify(emailService).sendFortsettSenereEPost(eq("test@epost.com"), eq("Lenke til påbegynt dagpengesøknad"), anyString());
     }
 
 }
