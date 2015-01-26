@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.ConfigService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.websoknad.service.EmailService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -32,7 +32,7 @@ public class SoknadBekreftelseControllerTest {
     private EmailService emailService;
 
     @Mock
-    private ConfigService configService;
+    private InformasjonService informasjon;
 
     @Spy
     private StaticMessageSource messageSource = new StaticMessageSource();

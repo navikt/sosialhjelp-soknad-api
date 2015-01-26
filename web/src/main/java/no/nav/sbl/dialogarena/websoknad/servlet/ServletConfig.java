@@ -37,15 +37,13 @@ import static org.springframework.http.MediaType.TEXT_PLAIN;
 @EnableAsync
 @EnableAspectJAutoProxy
 @Import({
-        ConfigController.class,
-        LandController.class,
+        InformasjonController.class,
+        InternalController.class,
         ExceptionController.class,
         FaktaController.class,
         FortsettSenereController.class,
-        MessageController.class,
         SoknadBekreftelseController.class,
         SoknadDataController.class,
-        SoknadTpsDataController.class,
         UtslagskriterierController.class,
         ServiceConfig.class,
         VedleggController.class
