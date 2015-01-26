@@ -4,6 +4,7 @@ import no.nav.sbl.dialogarena.print.HandleBarKjoerer;
 import no.nav.sbl.dialogarena.print.HtmlGenerator;
 import no.nav.sbl.dialogarena.websoknad.WicketApplication;
 import no.nav.sbl.dialogarena.websoknad.service.EmailService;
+import no.nav.sbl.dialogarena.websoknad.servlet.InnloggetBruker;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -83,6 +84,11 @@ public class ApplicationConfig {
         CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver();
         commonsMultipartResolver.setMaxUploadSize(10 * 1024 * 1024);
         return commonsMultipartResolver;
+    }
+
+    @Bean
+    public InnloggetBruker innloggetBruker() {
+        return new InnloggetBruker();
     }
 
     @Bean

@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class ConfigService {
+public class InformasjonService {
 
     @Inject
     private Kodeverk kodeverk;
@@ -38,8 +38,8 @@ public class ConfigService {
     @Value("${soknad.ettersending.antalldager}")
     private String antallDager;
 
-    public Map<String,String> getConfig() {
-        Map<String, String> result = new HashMap<String, String>();
+    public Map<String,String> hentMiljovariabler() {
+        Map<String, String> result = new HashMap<>();
         
         result.put("saksoversikt.link.url", saksoversiktUrl);
         result.put("dittnav.link.url", dittnavUrl);
@@ -54,10 +54,10 @@ public class ConfigService {
         return result;
     }
 
-    public Map<String,String> getConfig(Long soknadId) {
-        Map<String, String> result = getConfig();
+    public Map<String,String> hentVedleggsskjema(String type) {
+        Map<String, String> result = new HashMap<>();
 
-        SoknadStruktur struktur = soknadService.hentSoknadStruktur(soknadId);
+        SoknadStruktur struktur = soknadService.hentSoknadStruktur(type);
 
         for (SoknadVedlegg soknadVedlegg : struktur.getVedlegg()) {
             settInnUrlForSkjema(soknadVedlegg.getSkjemaNummer(), result);
