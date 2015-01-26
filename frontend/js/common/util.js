@@ -50,7 +50,7 @@ String.prototype.toCamelCase = function () {
  */
 function getCacheBurstingParameter() {
     var uniqueNumber = ((new Date().getTime() / 1000) | 0);
-    return "?cacheburst=" + uniqueNumber;
+    return "?t=" + uniqueNumber;
 }
 
 function erEttersending() {
