@@ -1,1 +1,0 @@
-angular.module('nav.scroll', ['nav.scroll.directive']);
