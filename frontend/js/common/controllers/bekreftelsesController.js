@@ -10,16 +10,16 @@ angular.module('nav.bekreftelse', [])
             return false;
         }
 
+        $scope.epost = data.finnFaktum('epost');
+        if(!$scope.epost) {
+            $scope.epost = {value: data.finnFaktum('personalia').properties.epost};
+        }
+
         $scope.cmsprefix = {value: appName};
-        $scope.epost = {value: data.finnFaktum('epost')};
         $scope.sendtEpost = {value: false};
         $scope.fullfort = {value: false};
         $scope.fremdriftsindikator = {laster: false };
         $scope.erEttersendelse = {value: false};
-
-        if (!$scope.epost.value) {
-            $scope.epost.value = data.finnFaktum('personalia').properties.epost  || "";
-        }
 
         $scope.sendEpost = function (form) {
             $scope.temaKode = {value: data.soknadOppsett.temaKode};
