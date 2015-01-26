@@ -12,7 +12,6 @@
         <module>config</module>
         <module>business</module>
         <module>consumer</module>
-        <module>frontend</module>
         <module>web</module>
         <module>jee</module>
         <module>mock</module>
