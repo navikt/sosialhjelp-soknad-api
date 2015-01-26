@@ -4,8 +4,8 @@ angular.module('nav.bekreftelse', [])
      */
     .controller('BekreftelsesCtrl', function ($scope, $window, $timeout, $routeParams, $rootElement, data, bekreftelseEpostService, $location) {
         var appName = $rootElement.attr('data-ng-app');
-
-        if(data.faktum === undefined) {
+        
+        if(data.fakta === undefined) {
             $location.path("/feilside/soknadikkefunnet");
             return false;
         }
