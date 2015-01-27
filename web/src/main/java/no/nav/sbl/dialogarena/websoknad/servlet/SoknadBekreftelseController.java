@@ -56,6 +56,7 @@ public class SoknadBekreftelseController {
             // paragrader må man legge på igjen p-tagsene for å unngå potsensielle feil i HTMLen
             innhold = "<p>" + innhold + "</p>";
 
+            logger.info("Sender epost med bekreftelse: %s", innhold); // TODO: Denne kan fjernes så fort man verifiserer at epostene er riktige
             emailService.sendEpostEtterInnsendtSoknad(soknadBekreftelse.getEpost(), subject, innhold, behandlingId);
 
         } else {
