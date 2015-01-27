@@ -64,7 +64,6 @@ angular.module('nav.datepicker.dato', [])
                         }
                         var toInputFieldName = element.next().find('input').first().attr('name');
                         if (new Date(scope.tilDato) < new Date(newValue) || scope.fraDato > new Date(newValue)) {
-//                            scope.tilDato = '';
                             form[toInputFieldName].$setValidity('toDate', false);
                         } else if (!scope.erRequired) {
                             form[scope.name].$setValidity('toDate', true);
@@ -85,7 +84,6 @@ angular.module('nav.datepicker.dato', [])
                         }
 
                         if (datoFoerAnnenDatoUtenTimer(newValue, scope.fraDato)) {
-//                            scope.vars.model = '';
                             form[scope.name].$setValidity('toDate', false);
                             form[scope.name].$touched = true;
                             form[scope.name].$untouched = false;
