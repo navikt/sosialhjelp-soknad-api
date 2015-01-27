@@ -96,7 +96,7 @@ public class SoknadDataController {
     @RequestMapping(value = "/behandling/{behandlingsId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     @SjekkTilgangTilSoknad
-    public Map<String, String> hentSoknadIdMedBehandligsId(@PathVariable String behandlingsId) {
+    public Map<String, String> hentSoknadIdMedBehandligsId(@PathVariable String behandlingsId, HttpServletResponse response) {
         Map<String, String> result = new HashMap<>();
         String sanitizedBehandlingsId = behandlingsId.replaceAll("%20", " ");
         WebSoknad soknad = soknadService.hentSoknadMedBehandlingsId(sanitizedBehandlingsId);
@@ -106,6 +106,10 @@ public class SoknadDataController {
         }
 
         result.put("result", soknad.getSoknadId().toString());
+
+        Cookie xsrfCookie = new Cookie("XSRF-TOKEN", XsrfGenerator.generateXsrfToken(behandlingsId));
+        xsrfCookie.setPath("/sendsoknad");
+        response.addCookie(xsrfCookie);
 
         return result;
     }
@@ -237,14 +241,11 @@ public class SoknadDataController {
 
     @RequestMapping(value = "/opprett", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody()
-    public Map<String, String> opprettSoknad(@RequestBody StartSoknad soknadType, HttpServletResponse response) {
+    public Map<String, String> opprettSoknad(@RequestBody StartSoknad soknadType) {
         Map<String, String> result = new HashMap<>();
 
         String behandlingId = soknadService.startSoknad(soknadType.getSoknadType());
         result.put("brukerbehandlingId", behandlingId);
-        Cookie xsrfCookie = new Cookie("XSRF-TOKEN", XsrfGenerator.generateXsrfToken(behandlingId));
-        xsrfCookie.setPath("/sendsoknad");
-        response.addCookie(xsrfCookie);
         return result;
     }
 
