@@ -4,7 +4,6 @@ import no.aetat.arena.fodselsnr.Fodselsnr;
 import no.nav.arena.tjenester.person.v1.FaultGeneriskMsg;
 import no.nav.arena.tjenester.person.v1.PersonInfoServiceSoap;
 import no.nav.modig.core.exception.SystemException;
-import no.nav.modig.wicket.selftest.SelfTestBase;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadInnsendingDBConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
@@ -12,17 +11,12 @@ import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
 import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
-import org.apache.wicket.request.cycle.RequestCycle;
-import org.apache.wicket.request.http.WebRequest;
-import org.apache.wicket.request.http.WebResponse;
-import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.slf4j.Logger;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.servlet.http.Cookie;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -35,7 +29,7 @@ import static java.net.HttpURLConnection.HTTP_OK;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Import({ConsumerConfig.WsServices.class, SoknadInnsendingDBConfig.class})
-public class SelfTestPage extends SelfTestBase {
+public class SelfTestPage  {
     private static final Logger logger = getLogger(SelfTestPage.class);
 
     @Inject
@@ -68,8 +62,8 @@ public class SelfTestPage extends SelfTestBase {
     @Named(value = "cmsBaseUrl")
     private String cmsBaseUrl;
 
-    public SelfTestPage(PageParameters params) {
-        super("sendsoknad", params);
+    public SelfTestPage() {
+        /*super("sendsoknad", params);
         WebRequest request = (WebRequest)RequestCycle.get().getRequest();
 
         Cookie cookie = request.getCookie("nav-esso");
@@ -78,9 +72,9 @@ public class SelfTestPage extends SelfTestBase {
             cookie.setPath("/sendsoknad");
             WebResponse response = (WebResponse)RequestCycle.get().getResponse();
             response.addCookie(cookie);
-        }
+        } */
     }
-
+/*
     @Override
     protected void addToStatusList(List<AvhengighetStatus> statusList) {
         new ServiceStatusHenter("HENVENDELSE_SENDSOKNAD") {
@@ -159,5 +153,5 @@ public class SelfTestPage extends SelfTestBase {
             }
         }
         return new AvhengighetStatus("ENONIC_CMS", status, currentTimeMillis() - startTime, format("URL: %s", cmsBaseUrl));
-    }
+    }*/
 }

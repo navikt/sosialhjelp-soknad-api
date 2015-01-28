@@ -8,8 +8,6 @@
         </encoder>
     </appender>
 
-    <logger name="org.apache.wicket.util.tester.BaseWicketTester" level="info" />
-    <logger name="org.apache.wicket" level="error" />
     <logger name="org.springframework" level="warn" />
     <logger name="no.nav.modig.lang.reflect" level="warn" />
     <logger name="no.nav.sbl" level="debug" />

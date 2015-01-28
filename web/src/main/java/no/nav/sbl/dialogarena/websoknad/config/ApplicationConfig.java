@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.websoknad.config;
 
 import no.nav.sbl.dialogarena.print.HandleBarKjoerer;
 import no.nav.sbl.dialogarena.print.HtmlGenerator;
-import no.nav.sbl.dialogarena.websoknad.WicketApplication;
 import no.nav.sbl.dialogarena.websoknad.service.EmailService;
 import no.nav.sbl.dialogarena.websoknad.servlet.InnloggetBruker;
 import org.slf4j.Logger;
@@ -63,11 +62,6 @@ public class ApplicationConfig {
     @Bean
     public String navigasjonslink() {
         return navigasjonslink;
-    }
-
-    @Bean
-    public WicketApplication dokumentinnsendingApplication() {
-        return new WicketApplication();
     }
 
     @Bean
