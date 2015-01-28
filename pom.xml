@@ -34,7 +34,6 @@
 
 
         <modig.frontend>1.1.96</modig.frontend>
-        <wicket.version>6.18.0</wicket.version>
         <spring.version>3.2.9.RELEASE</spring.version>
         <cxf.version>2.7.9</cxf.version>
         <modig-security.version>1.0.21</modig-security.version>
@@ -42,8 +41,6 @@
         <behandlingsinformasjon.tjenestespec.version>0.0.28</behandlingsinformasjon.tjenestespec.version>
         <fillager.tjenestespec.version>0.0.3</fillager.tjenestespec.version>
         <henvendelse.tjenestespesifikasjon.version.1>2.0.0</henvendelse.tjenestespesifikasjon.version.1>
-        <dialogarena.webkomponent.navigasjon>1.0.5</dialogarena.webkomponent.navigasjon>
-        <dialogarena.webkomponent.innstillinger>1.1.5</dialogarena.webkomponent.innstillinger>
         <dialogarena.dokumentinnsending.version>2.0.1</dialogarena.dokumentinnsending.version>
         <ojdbc.version>11.2.0.3</ojdbc.version>
         <flying.saucer.version>9.0.4</flying.saucer.version>
@@ -127,30 +124,14 @@
                 <version>3.2.1</version>
             </dependency>
             <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>1.9</version>
+            </dependency>
+            <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>common-lokalt-kodeverk</artifactId>
                 <version>1.1.2</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.modig</groupId>
-                <artifactId>modig-frontend-wicket</artifactId>
-                <version>${modig.frontend}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>sbl-webkomponent-innstillinger</artifactId>
-                <version>${dialogarena.webkomponent.innstillinger}</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>sbl-webkomponent-navigasjon</artifactId>
-                <version>${dialogarena.webkomponent.navigasjon}</version>
             </dependency>
 
             <dependency>
@@ -206,17 +187,6 @@
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-lang</artifactId>
                 <version>2.0.2</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.modig</groupId>
-                <artifactId>modig-wicket</artifactId>
-                <version>2.0.31</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.httpmmon-typemponents</groupId>
-                        <artifactId>httpcore</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
@@ -310,36 +280,6 @@
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
                 <version>2.2.4</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.wicket</groupId>
-                <artifactId>wicket-core</artifactId>
-                <version>${wicket.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.wicket</groupId>
-                <artifactId>wicket-extensions</artifactId>
-                <version>${wicket.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.wicket</groupId>
-                <artifactId>wicket-request</artifactId>
-                <version>${wicket.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.wicket</groupId>
-                <artifactId>wicket-devutils</artifactId>
-                <version>${wicket.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.wicket</groupId>
-                <artifactId>wicket-spring</artifactId>
-                <version>${wicket.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.wicket</groupId>
-                <artifactId>wicket-util</artifactId>
-                <version>${wicket.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -505,11 +445,6 @@
             </dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>
-                <artifactId>modig-security-wicket</artifactId>
-                <version>${modig-security.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.modig</groupId>
                 <artifactId>modig-security-core</artifactId>
                 <version>${modig-security.version}</version>
             </dependency>
@@ -655,18 +590,6 @@
                 <artifactId>modig-testcertificates</artifactId>
                 <version>1.1.3</version>
                 <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.modig</groupId>
-                <artifactId>modig-wicket-test</artifactId>
-                <version>1.0.0</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>junit</groupId>
-                        <artifactId>junit-dep</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>

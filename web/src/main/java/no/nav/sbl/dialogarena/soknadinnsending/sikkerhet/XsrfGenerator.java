@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.sikkerhet;
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.modig.core.exception.AuthorizationException;
-import org.apache.wicket.util.crypt.Base64;
+import org.apache.commons.codec.binary.Base64;
 import org.joda.time.DateTime;
 
 import javax.crypto.Mac;
