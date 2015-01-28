@@ -37,6 +37,10 @@ public class FortsettSenereController {
     public void sendEpost(HttpServletRequest request, @PathVariable String soknadId, @PathVariable String behandlingId, @RequestBody FortsettSenere epost) {
         String content = messageSource.getMessage("fortsettSenere.sendEpost.epostInnhold",
                 new Object[]{getGjenopptaUrl(request.getRequestURL().toString(), soknadId, behandlingId)}, new Locale("nb", "NO"));
+
+        // getMessage stripper vekk ytterske lag med p-tags. Siden vi i eposten ønskelig mulighet for flere
+        // paragrader må man legge på igjen p-tagsene for å unngå potsensielle feil i HTMLen
+        content = "<p>" + content + "</p>";
         emailService.sendFortsettSenereEPost(epost.getEpost(), "Lenke til påbegynt dagpengesøknad", content);
     }
 }
