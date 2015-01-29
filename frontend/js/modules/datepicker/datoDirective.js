@@ -12,6 +12,7 @@ angular.module('nav.datepicker.dato', [])
                 erFremtidigdatoTillatt: '=',
                 lagre: '&',
                 label: '@',
+                faktum: '=?',
                 disabled: '=?'
             },
             controller: function ($scope) {
@@ -35,6 +36,7 @@ angular.module('nav.datepicker.dato', [])
                 erFremtidigdatoTillatt: '=?',
                 tilDato: '=?',
                 fraDato: '=?',
+                faktum: '=?',
                 disabled: '=?',
                 label: '@',
                 name: '@?',
@@ -58,6 +60,12 @@ angular.module('nav.datepicker.dato', [])
                 },
                 post: function (scope, element, attrs, form) {
                     scope.form = form;
+
+                    if(scope.faktum) {
+                        watchDato('faktum.properties.varighetFra');
+                        watchDato('faktum.properties.varighetTil');
+                    }
+
                     scope.$watch('model', function (newValue, oldValue) {
                         if (newValue === oldValue) {
                             return;
@@ -150,6 +158,15 @@ angular.module('nav.datepicker.dato', [])
                             return harFeilMedDateInput();
                         }
                     };
+
+                    function watchDato(felt) {
+                        scope.$watch(felt, function (newValue, oldValue){
+                            if (newValue === oldValue) {
+                                return;
+                            }
+                            scope.lagre();
+                        });
+                    }
 
                     function erRequiredMedTildatoFeorFradato(requireVal) {
                         var tilDato = scope.model;

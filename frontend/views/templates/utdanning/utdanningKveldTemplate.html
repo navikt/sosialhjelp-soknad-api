@@ -46,8 +46,9 @@
 <div class="varighet form-linje" data-nav-faktum="utdanning.kveld.varighet">
     <h4 class="spm-sporsmal" data-ng-bind-html=" 'utdanning.varighet.label' | cmstekst"></h4>
     <div data-nav-dato-intervall
-         data-fra-dato="navproperties.varighetFra"
-         data-til-dato="navproperties.varighetTil"
+         data-fra-dato="faktum.properties.varighetFra"
+         data-til-dato="faktum.properties.varighetTil"
+         data-faktum="faktum"
          data-label="utdanning.svar.under.utdanning.kveld.varighet"
          data-er-fremtidigdato-tillatt="true"
          data-er-fradato-required="fraDatoErRequired()"
