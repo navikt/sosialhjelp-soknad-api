@@ -45,15 +45,14 @@ angular.module('nav.navfaktum', [])
 					);
 					data.fakta.push($scope.faktum);
 				}
-				$scope.parentFaktum = $scope.faktum;
 
 				$scope.lagreFaktum = function () {
                     if($scope.$parent.faktum && $scope.faktum.key.indexOf($scope.$parent.faktum.key) >= 0){
-                        $scope.parentFaktum.parrentFaktum = $scope.$parent.faktum.faktumId;
+                        $scope.faktum.parrentFaktum = $scope.$parent.faktum.faktumId;
                     }
 
                     if (!$scope.ikkeAutoLagre) {
-                        $scope.parentFaktum.$save();
+                        $scope.faktum.$save();
 					}
 				};
 				this.lagreFaktum = $scope.lagreFaktum;
