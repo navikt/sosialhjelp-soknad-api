@@ -187,14 +187,18 @@ a p {
       margin: 0 10px;
       width: 80px;
       display: inline-block;
-    }
-    span a:hover {
-      cursor: pointer;
-      background-color: #0ca9e1;
-      border: 1px solid #0ca9e1;
-      text-decoration: none;
-    }
 
+      &:hover {
+        cursor: pointer;
+        background-color: #0ca9e1;
+        border: 1px solid #0ca9e1;
+        text-decoration: none;
+      }
+
+      &.lukk:focus {
+        border: 1px dotted #0ca9e1;
+      }
+    }
     .deaktiverFeilmelding {
       background-color: #5f5e5d;
       color: #000;

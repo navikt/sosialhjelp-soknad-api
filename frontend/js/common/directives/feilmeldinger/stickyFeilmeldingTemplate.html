@@ -5,13 +5,14 @@
             <span class="antall-feil">{{feil.antallFeil}}</span>
         </div>
         <span class="navigeringsknapper">
-            <a class="forrige" data-ng-click="forrige()"
+            <a class="forrige" data-ng-click="forrige()" tabindex="1"
                data-ng-class="{deaktiverFeilmelding: skalDeaktivereForrigeKnapp()}" data-ng-bind-html="'skjema.feilmelding.gaatil.forrige' | cmstekst"></a>
-            <a class="neste" data-ng-click="neste()"
+            <a class="neste" data-ng-click="neste()" tabindex="1"
                data-ng-class="{deaktiverFeilmelding: skalDeaktivereNesteKnapp}" data-ng-bind-html="'skjema.feilmelding.gaatil.neste' | cmstekst"></a>
         </span>
         <span>
-            <a data-ng-click="lukk()" title="{{ 'skjema.feilmelding.lukk.aria' | cmstekst }}" class="lukk" aria-label="{{ 'skjema.feilmelding.lukk.aria' | cmstekst }}" ></a>
+            <a data-ng-click="lukk()" title="{{ 'skjema.feilmelding.lukk.aria' | cmstekst }}" class="lukk"
+               aria-label="{{ 'skjema.feilmelding.lukk.aria' | cmstekst }}"  tabindex="1"></a>
         </span>
     </div>
 </div>
