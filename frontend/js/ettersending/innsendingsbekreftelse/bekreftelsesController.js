@@ -8,7 +8,7 @@ angular.module('ettersending.bekreftelse', [])
 
         $scope.epost = data.finnFaktum('epost');
         if(!$scope.epost) {
-            $scope.epost.value = data.finnFaktum('personalia').properties.epost;
+            $scope.epost = { value: data.finnFaktum('personalia').properties.epost };
         }
 
         $scope.erEttersendelse = {value: true};
