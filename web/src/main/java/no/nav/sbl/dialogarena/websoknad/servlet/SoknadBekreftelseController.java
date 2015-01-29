@@ -43,7 +43,7 @@ public class SoknadBekreftelseController {
     @RequestMapping(value = "/{behandlingId}", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
     @ResponseBody()
     public void sendEpost(HttpServletRequest request, @PathVariable String behandlingId, @RequestBody SoknadBekreftelse soknadBekreftelse) {
-        if (soknadBekreftelse.getEpost() != null) {
+        if (soknadBekreftelse.getEpost() != null && !soknadBekreftelse.getEpost().isEmpty()) {
             String subject = messageSource.getMessage("sendtSoknad.sendEpost.epostSubject", null, new Locale("nb", "NO"));
             String ettersendelseUrl = ServerUtils.getEttersendelseUrl(request.getRequestURL().toString(), behandlingId);
             String saksoversiktLink = saksoversiktUrl + "/detaljer/" + soknadBekreftelse.getTemaKode() + "/" + behandlingId;
@@ -58,7 +58,7 @@ public class SoknadBekreftelseController {
             emailService.sendEpostEtterInnsendtSoknad(soknadBekreftelse.getEpost(), subject, innhold, behandlingId);
 
         } else {
-            logger.debug("Fant ingen epost");
+            logger.debug("Fant ingen epostadresse");
         }
     }
 }
