@@ -1,8 +1,13 @@
 angular.module('nav.services.resolvers.ettersendingmetadata', [])
-    .factory('EttersendingMetadataResolver', ['$resource', 'data', '$q', '$route', function ($resource, data, $q, $route) {
+    .factory('EttersendingMetadataResolver', function ($resource, data, $q, $route, $location) {
         var metadata = $q.defer();
+        var behandlingId;
 
-        var behandlingId = getBehandlingsIdFromUrlForEttersending();
+        if(data.soknad) {
+            behandlingId = data.soknad.behandlingskjedeId;
+        } else {
+            behandlingId = getBehandlingsIdFromUrlForEttersending();
+        }
         $route.current.params.behandlingId = behandlingId;
 
         $resource('/sendsoknad/rest/soknad/behandlingmetadata/:behandlingId').get(
@@ -11,5 +16,10 @@ angular.module('nav.services.resolvers.ettersendingmetadata', [])
                 metadata.innsendtDato = result.result;
                 metadata.resolve(result);
             });
+
+        if(data.soknad) {
+            $location.path("/" + behandlingId + "/vedlegg");
+        }
+
         return metadata.promise;
-    }]);
+    });
