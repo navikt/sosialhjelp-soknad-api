@@ -1,13 +1,8 @@
 angular.module('nav.services.resolvers.ettersendingmetadata', [])
     .factory('EttersendingMetadataResolver', function ($resource, data, $q, $route, $location) {
         var metadata = $q.defer();
-        var behandlingId;
-
-        if(data.soknad) {
-            behandlingId = data.soknad.behandlingskjedeId;
-        } else {
-            behandlingId = getBehandlingsIdFromUrlForEttersending();
-        }
+        var behandlingId = data.soknad ? data.soknad.behandlingskjedeId : getBehandlingsIdFromUrlForEttersending();
+        
         $route.current.params.behandlingId = behandlingId;
 
         $resource('/sendsoknad/rest/soknad/behandlingmetadata/:behandlingId').get(
