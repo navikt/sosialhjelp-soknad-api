@@ -1,4 +1,4 @@
-var monthNames = ['Januar', 'Februar', 'Mars', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Desember'];
+var monthNames = ['januar', 'februar', 'mars', 'april', 'mai', 'juni', 'juli', 'august', 'september', 'oktober', 'november', 'desember'];
 angular.module('nav.norskDatoFilter', [])
     .filter('norskdato', [function () {
         return function (input) {
