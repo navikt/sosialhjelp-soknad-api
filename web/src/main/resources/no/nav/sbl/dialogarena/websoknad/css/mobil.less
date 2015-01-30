@@ -26,12 +26,24 @@
         font-size: 1.4rem;
     }
 
-    .omslag:not(.modalside) {
+    .omslag:not(.modalside), .ekstra-info {
         .ekstra-spm-boks {
             padding: 25px 10px;
             position: relative;
             left: -25px;
             width: 100vw;
+
+            .ekstra-spm-boks {
+                padding-left: 40px;
+                width: 90vw;
+                padding-bottom: 0;
+                margin-bottom: 0;
+            }
+
+            .infoboks {
+                margin-left: auto;
+                margin-right: auto;
+            }
 
             &:after, &:before {
                 left: 49%;

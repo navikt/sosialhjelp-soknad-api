@@ -22,7 +22,6 @@ public enum LessResources {
     MODALSIDE("modalside"),
     EGENNAERING("egennaering"),
     PERSONALIA("personalia"),
-    UTDANNING_LESS("utdanning"),
     STEGINDIKATOR_LESS("stegindikator"),
     MOBIL_LESS("mobil"),
     FEILSIDE_LESS("feilside"),
