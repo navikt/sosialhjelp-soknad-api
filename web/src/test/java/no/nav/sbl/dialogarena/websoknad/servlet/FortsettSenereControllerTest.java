@@ -59,9 +59,10 @@ public class FortsettSenereControllerTest {
     @Test
     public void skalGjennoppta() throws Exception {
         messageSource.addMessage("fortsettSenere.sendEpost.epostInnhold", new Locale("nb", "NO"), "test med url {0}");
+        messageSource.addMessage("fortsettSenere.sendEpost.epostTittel", new Locale("nb", "NO"), "Lenke til påbegynt dagpengesøknad");
         mockMvc.perform(post("/soknad/{soknadId}/{behandlingsId}/fortsettsenere", "NAV13", "BH123").contentType(MediaType.APPLICATION_JSON).content("{\"epost\": \"test@epost.com\"}"))
                 .andExpect(status().isOk());
-        verify(emailService).sendFortsettSenereEPost(eq("test@epost.com"), eq("Lenke til påbegynt dagpengesøknad"), anyString());
+        verify(emailService).sendEpost(eq("test@epost.com"), eq("Lenke til påbegynt dagpengesøknad"), anyString(), eq("BH123"));
     }
 
 }

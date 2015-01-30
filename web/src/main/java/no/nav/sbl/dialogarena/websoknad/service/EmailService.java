@@ -32,22 +32,6 @@ public class EmailService {
     private final String fraAdresse = "ikke-svar@nav.no";
 
     /**
-     * Sender en epost til innsender med link til skjemaet personen kan fortsette på senere.
-     *
-     * @param ePost   adressen til personen
-     * @param subject Sunbject til mailen
-     * @param innhold innhold i mail
-     */
-    public void sendFortsettSenereEPost(String ePost, String subject, String innhold) {
-        SimpleMailMessage mail = new SimpleMailMessage();
-        mail.setTo(ePost);
-        mail.setSubject(subject);
-        mail.setText(innhold);
-        mail.setFrom(fraAdresse);
-        addTask(mail, "viser ikke behandlingsid for fortsettsenereepost");
-    }
-
-    /**
      * Sender en epost til innsender med link til ettersending og saksoversikt.
      *
      * @param ePost        adressen til personen
@@ -55,14 +39,18 @@ public class EmailService {
      * @param innhold      innhold i mail
      * @param behandlingId behandinglsiden til søknaden
      */
-    public void sendEpostEtterInnsendtSoknad(final String ePost, final String subject, final String innhold, String behandlingId) {
+    public void sendEpost(final String ePost, final String subject, final String innhold, String behandlingId) {
         final String htmlInnhold = "<p>" + innhold + "</p>";
+        addTask(getMimePreperator(ePost, subject, htmlInnhold), behandlingId, ePost, htmlInnhold, 0);
+    }
+
+    private MimeMessagePreparator getMimePreperator(final String epost, final String subject, final String innhold) {
         MimeMessagePreparator preparator = new MimeMessagePreparator() {
             public void prepare(MimeMessage mimeMessage) {
                 try {
-                    mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(ePost));
+                    mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(epost));
                     mimeMessage.setFrom(new InternetAddress(fraAdresse));
-                    mimeMessage.setContent(htmlInnhold, "text/html;charset=utf-8");
+                    mimeMessage.setContent(innhold, "text/html;charset=utf-8");
                     mimeMessage.setSubject(subject);
                 } catch (MessagingException e) {
                     logger.error("Kunne ikke opprette e-post", e);
@@ -70,29 +58,7 @@ public class EmailService {
                 }
             }
         };
-        addTask(preparator, behandlingId, ePost, htmlInnhold, 0);
-    }
-
-    private void addTask(final SimpleMailMessage mail, final String behandlingId) {
-        addTask(mail, behandlingId, 0);
-    }
-
-    private void addTask(final SimpleMailMessage mail, final String behandlingId, final int loopCheck) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    mailSender.send(mail);
-                    logger.info("Epost sendes:" + mail + " BrukerbehandlingId: " + behandlingId);
-                } catch (MailException me) {
-                    if (loopCheck < 5) {
-                        addTask(mail, behandlingId, loopCheck + 1);
-                    } else {
-                        logger.warn("Kunne ikke sende epost:" + mail + "BrukerbehandlingId: " + behandlingId, me);
-                    }
-                }
-            }
-        });
+        return preparator;
     }
 
     private void addTask(final MimeMessagePreparator preparator, final String behandlingId, final String tilEpost, final String epostinnhold, final int loopCheck) {

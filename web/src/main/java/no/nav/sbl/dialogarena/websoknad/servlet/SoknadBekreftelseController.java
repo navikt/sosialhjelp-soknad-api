@@ -52,10 +52,7 @@ public class SoknadBekreftelseController {
                 innhold = messageSource.getMessage("sendEttersendelse.sendEpost.epostInnhold", new Object[]{saksoversiktLink}, new Locale("nb", "NO"));
             }
 
-            // getMessage stripper vekk ytterske lag med p-tags. Siden vi i eposten ønskelig mulighet for flere
-            // paragrader må man legge på igjen p-tagsene for å unngå potsensielle feil i HTMLen
-            innhold = "<p>" + innhold + "</p>";
-            emailService.sendEpostEtterInnsendtSoknad(soknadBekreftelse.getEpost(), subject, innhold, behandlingId);
+            emailService.sendEpost(soknadBekreftelse.getEpost(), subject, innhold, behandlingId);
 
         } else {
             logger.debug("Fant ingen epostadresse");
