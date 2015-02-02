@@ -181,7 +181,7 @@ angular.module('nav.ettersending.controllers.main', [])
             return input.filter(sjekkOmSkalEttersendes.erSendtInn);
         };
     })
-    .filter('sendesIkke', function (sjekkOmSkalEttersendes) {
+    .filter('sendesIkkeEllerAlleredeSendt', function (sjekkOmSkalEttersendes) {
         return function (input) {
             return input.filter(sjekkOmSkalEttersendes.skalIkkeSendes);
         };
