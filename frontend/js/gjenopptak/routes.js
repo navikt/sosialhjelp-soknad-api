@@ -19,6 +19,9 @@ angular.module('gjenopptak.routes', ['ngRoute', 'nav.common.routes'])
                     },
                     config: function (ConfigResolver) {
                         return ConfigResolver;
+                    },
+                    soknad: function(SoknadResolverUtenRedirect) {
+                        return SoknadResolverUtenRedirect;
                     }
                 }
             })
