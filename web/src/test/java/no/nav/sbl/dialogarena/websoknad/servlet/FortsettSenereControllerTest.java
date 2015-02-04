@@ -52,7 +52,7 @@ public class FortsettSenereControllerTest {
 
     @Test
     public void skalKunneGenerereGjenopptaUrl() {
-        Assert.assertEquals("http://a34duvw22583.devillo.no:8181/sendsoknad/skjema/skjemanavn/behandling?utm_source=web&utm_medium=email&utm_campaign=2",
+        Assert.assertEquals("http://a34duvw22583.devillo.no:8181/sendsoknad/skjemanavn/behandling?utm_source=web&utm_medium=email&utm_campaign=2",
                 ServerUtils.getGjenopptaUrl("http://a34duvw22583.devillo.no:8181/sendsoknad/rest/soknad/244/fortsettsenere", "skjemanavn", "behandling"));
     }
 
