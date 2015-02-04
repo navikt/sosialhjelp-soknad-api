@@ -1,10 +1,10 @@
-angular.module('nav.services.resolvers.soknadutslagskriterier', [])
-    .factory('SoknadForUtslagskriterierResolver', function (data, $q, $resource, soknadService) {
+angular.module('nav.services.resolvers.soknadutenredirect', [])
+    .factory('SoknadResolverUtenRedirect', function (data, $q, $resource, soknadService) {
         var behandlingsIdDefer = $q.defer();
         var behandlingsId = getBehandlingIdFromUrl();
 
         var soknad = {};
-        data.soknad = soknad;
+        data.soknad = undefined;
 
         if(isNotNullOrUndefined(behandlingsId)) {
             $resource('/sendsoknad/rest/soknad/behandling/:behandlingsId').get(
