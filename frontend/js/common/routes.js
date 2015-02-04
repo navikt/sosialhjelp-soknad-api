@@ -35,7 +35,7 @@ angular.module('nav.common.routes', ['ngRoute'])
                     }
                 }
             })
-            .when('/bekreftelse/:behandlingsId', {
+            .when('/bekreftelse/', {
                 templateUrl: '../views/common/innsendingbekreftelse/bekreftelse.html',
                 controller: 'BekreftelsesCtrl',
                 resolve: {

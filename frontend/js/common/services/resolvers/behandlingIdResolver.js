@@ -2,7 +2,7 @@ angular.module('nav.services.resolvers.behandlingsid', [])
     .factory('BehandlingIdResolver', function ($resource, $q, $route) {
         var behandlingsIdDefer = $q.defer();
 
-        var behandlingId = $route.current.params.behandlingId;
+        var behandlingId = getBehandlingIdFromUrl();
 
         if (behandlingId) {
             $resource('/sendsoknad/rest/soknad/behandling/:behandlingId').get(

@@ -108,10 +108,10 @@ public class WicketApplication extends WebApplication {
     }
 
     private void mountPages() {
-        mountPage("skjema/${skjemanummer}", StartSoknadPage.class);
+        mountPage("skjema/${skjemanummer}/${brukerbehandlingId}", StartSoknadPage.class);
         mountPage("utslagskriterier/${utslagskriterierSide}", UtslagskriterierDagpengerPage.class);
         mountPage("startettersending/${brukerbehandlingId}", StartEttersendingPage.class);
-        mountPage("skjema/ettersending", EttersendingPage.class);
+        mountPage("skjema/ettersending/${brukerbehandlingId}N", EttersendingPage.class);
         mountPage("internal/selftest", SelfTestPage.class);
         mountPage("soknadliste", SoknadListePage.class);
         if (mockSetupErTillatt()) {

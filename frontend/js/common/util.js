@@ -58,16 +58,17 @@ function erEttersending() {
 }
 
 function getBehandlingIdFromUrl() {
-    return location.pathname.split('/').last();
-}
-
-function getBehandlingsIdFromUrlForEttersending() {
     // Hack for å hente ut behandlingID
     var url = window.location.href;
     var hashIdx = url.indexOf('#/');
     var behandlingsIdStart = url.substring(0, hashIdx).lastIndexOf('/') + 1;
     return url.substring(behandlingsIdStart, hashIdx);
 }
+
+function getBehandlingsIdFromUrlForEttersending() {
+    return getBehandlingIdFromUrl();
+}
+
 
 function redirectTilSide(side) {
     var baseUrl = window.location.href.substring(0, window.location.href.indexOf('/sendsoknad'));
