@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.websoknad.config;
 
 import no.nav.modig.core.context.ThreadLocalSubjectHandler;
-import no.nav.sbl.dialogarena.websoknad.servlet.ServletConfig;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,8 +25,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.consumer.MockUtil.TILLATMO
 @WebAppConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {
-        SoknadinnsendingConfig.class,
-        ServletConfig.class
+        SoknadinnsendingConfig.class
 })
 public class ApplicationContextTest {
 

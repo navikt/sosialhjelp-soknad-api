@@ -196,7 +196,7 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
         </dependency>
-		
+
         <!-- Avhengigheter med runtime-scope -->
         <dependency>
             <groupId>com.oracle</groupId>
