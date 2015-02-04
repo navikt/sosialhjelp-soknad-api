@@ -43,7 +43,7 @@ angular.module('nav.dagpenger.informasjonsside', [])
             $scope.fremdriftsindikator.laster = true;
             $scope.soknad = soknadService.create({soknadType: soknadType},
                 function (result) {
-                    $location.path(result.brukerbehandlingId + "/soknad/");
+                    $location.path("/soknad/");
                 }, function () {
                     $scope.fremdriftsindikator.laster = false;
                 });
@@ -65,7 +65,7 @@ angular.module('nav.dagpenger.informasjonsside', [])
 
         $scope.forsettSoknadDersomBrosjyreLest = function () {
             if ($scope.harLestBrosjyre()) {
-                $location.path(data.soknad.brukerBehandlingId + "/fortsett");
+                $location.path("/fortsett");
             }
         };
 

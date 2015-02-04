@@ -35,7 +35,7 @@ angular.module('gjenopptak')
 
         function redirectTilSkjemasideDersomSkjemaIkkeErValidert() {
             if (harHentetData() && !skjemaErValidert()) {
-                $location.path(data.soknad.brukerBehandlingId + "/soknad/");
+                $location.path("/soknad/");
             }
         }
 
@@ -47,11 +47,11 @@ angular.module('gjenopptak')
 
         function redirectTilRettSideBasertPaDelstegStatus() {
             if (data.soknad.delstegStatus === "SKJEMA_VALIDERT") {
-                $location.path(data.soknad.brukerBehandlingId + '/vedlegg');
+                $location.path('/vedlegg');
             } else if (data.soknad.delstegStatus === "VEDLEGG_VALIDERT") {
-                $location.path(data.soknad.brukerBehandlingId + '/oppsummering');
+                $location.path('/oppsummering');
             } else {
-                $location.path(data.soknad.brukerBehandlingId + '/soknad/');
+                $location.path('/soknad/');
             }
         }
 
