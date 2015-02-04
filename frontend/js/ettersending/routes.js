@@ -42,7 +42,7 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.common.routes'])
                     }
                 }
             })
-            .when('/:behandlingId/vedlegg', {
+            .when('/vedlegg', {
                 templateUrl: '../views/ettersending/ettersending.html',
                 controller: 'EttersendingCtrl',
                 resolve: {
@@ -130,7 +130,4 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.common.routes'])
                     }
                 }
             })
-            .when('/:behandlingId', {
-                redirectTo: '/:behandlingId/vedlegg'
-            });
     });
