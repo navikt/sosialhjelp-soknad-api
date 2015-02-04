@@ -11,9 +11,9 @@ angular.module('nav.routingForGjenopptakModule', [])
                     if (scope.form.$valid) {
                         var currentUrl = location.href;
                         if (scope.gjenopptak.harMotattDagpenger === "ja") {
-                            redirectTilUrl(currentUrl.substring(0, currentUrl.indexOf('utslagskriterier/')) + 'skjema/NAV04-16.03#/informasjonsside');
+                            redirectTilUrl(currentUrl.substring(0, currentUrl.indexOf('utslagskriterier/')) + 'NAV04-16.03/start#/informasjonsside');
                         } else {
-                            redirectTilUrl(currentUrl.substring(0, currentUrl.indexOf('utslagskriterier/')) + 'skjema/NAV04-01.03#/informasjonsside');
+                            redirectTilUrl(currentUrl.substring(0, currentUrl.indexOf('utslagskriterier/')) + 'NAV04-01.03/start#/informasjonsside');
                         }
                     } else {
                         scope.$broadcast(eventString);
