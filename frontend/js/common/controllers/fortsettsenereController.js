@@ -15,7 +15,7 @@ angular.module('nav.fortsettsenere', [])
                 $scope.epost.value = personalia.properties.epost;
             }
 
-            $scope.forrigeSide = "#/" + $scope.brukerBehandlingId + '/fortsett';
+            $scope.forrigeSide = "#/";
 
             $scope.soknadId = data.soknad.soknadId;
 
@@ -42,7 +42,7 @@ angular.module('nav.fortsettsenere', [])
         $scope.dittnavUrl = data.config["dittnav.link.url"];
         $scope.epost = data.finnFaktum('epost');
         $scope.brukerBehandlingId = data.soknad.brukerBehandlingId;
-        $scope.forrigeSide = "#/fortsett";
+        $scope.forrigeSide = "#/";
     });
 
 
