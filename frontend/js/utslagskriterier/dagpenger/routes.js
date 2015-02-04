@@ -23,9 +23,6 @@ angular.module('utslagskriterierDagpenger.routes', ['ngRoute', 'nav.common.route
                     utslagskriterier: function (UtslagskriterierResolver) {
                         return UtslagskriterierResolver;
                     },
-                    soknadMetadata: function (SoknadMetadataResolver) {
-                        return SoknadMetadataResolver;
-                    },
                     soknad: function() {
                         return {};
                     }
@@ -44,11 +41,8 @@ angular.module('utslagskriterierDagpenger.routes', ['ngRoute', 'nav.common.route
                     utslagskriterier: function (UtslagskriterierResolver) {
                         return UtslagskriterierResolver;
                     },
-                    soknadMetadata: function (SoknadMetadataResolver) {
-                        return SoknadMetadataResolver;
-                    },
-                    soknad: function(soknadService, $route) {
-                        return soknadService.hentMedBehandlingsId({behandlingsId: $route.current.params.behandlingsId}).$promise;
+                    soknad: function() {
+                        return {};
                     }
                 }
             })
