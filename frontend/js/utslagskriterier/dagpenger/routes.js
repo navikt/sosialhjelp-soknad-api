@@ -23,26 +23,8 @@ angular.module('utslagskriterierDagpenger.routes', ['ngRoute', 'nav.common.route
                     utslagskriterier: function (UtslagskriterierResolver) {
                         return UtslagskriterierResolver;
                     },
-                    soknad: function() {
-                        return {};
-                    }
-                }
-            })
-            .when('/:behandlingsId', {
-                templateUrl: '../views/utslagskriterier/dagpenger/utslagskritererDagpenger.html',
-                controller: 'utslagskritererDagpengerCtrl',
-                resolve: {
-                    cms: function (CmsResolver) {
-                        return CmsResolver;
-                    },
-                    config: function (ConfigResolver) {
-                        return ConfigResolver;
-                    },
-                    utslagskriterier: function (UtslagskriterierResolver) {
-                        return UtslagskriterierResolver;
-                    },
-                    soknad: function() {
-                        return {};
+                    soknad: function(SoknadForUtslagskriterierResolver) {
+                        return SoknadForUtslagskriterierResolver;
                     }
                 }
             })
