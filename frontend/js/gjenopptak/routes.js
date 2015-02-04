@@ -367,20 +367,6 @@ angular.module('gjenopptak.routes', ['ngRoute', 'nav.common.routes'])
                     }
                 }
             })
-            .when('/fortsett',{
-                templateUrl: '../views/templates/fortsettRouting.html',
-                resolve: {
-                    config: function(ConfigResolver) {
-                        return ConfigResolver;
-                    },
-                    behandlingsId: function(BehandlingIdResolver) {
-                        return BehandlingIdResolver;
-                    },
-                    soknad: function(SoknadResolver) {
-                        return SoknadResolver;
-                    }
-                }
-            })
             .when('/ferdigstilt', {
                 templateUrl: '../views/templates/ferdigstilt.html',
                 resolve: {

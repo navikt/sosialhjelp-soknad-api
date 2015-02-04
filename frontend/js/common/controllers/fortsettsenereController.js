@@ -30,7 +30,7 @@ angular.module('nav.fortsettsenere', [])
                         $scope.epost.$save({soknadId: data.soknad.soknadId}).then(function (epostData) {
                             data.leggTilFaktum(epostData);
                             new fortsettSenereService({epost: $scope.epost.value}).$send({skjemanavn: data.soknad.skjemaNummer, behandlingId: $scope.brukerBehandlingId}).then(function (data) {
-                                $location.path($scope.brukerBehandlingId + '/kvittering-fortsettsenere');
+                                $location.path('/kvittering-fortsettsenere');
                             });
                         });
                     }
@@ -42,7 +42,7 @@ angular.module('nav.fortsettsenere', [])
         $scope.dittnavUrl = data.config["dittnav.link.url"];
         $scope.epost = data.finnFaktum('epost');
         $scope.brukerBehandlingId = data.soknad.brukerBehandlingId;
-        $scope.forrigeSide = "#/" + data.soknad.brukerBehandlingId + '/fortsett';
+        $scope.forrigeSide = "#/fortsett";
     });
 
 

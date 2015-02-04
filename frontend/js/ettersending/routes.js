@@ -118,7 +118,7 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.common.routes'])
                     }
                 }
             })
-            .when('/bekreftelse/:behandlingsId', {
+            .when('/bekreftelse/', {
                 templateUrl: '../js/ettersending/innsendingsbekreftelse/bekreftelse.html',
                 controller: 'BekreftelseEttersendingCtrl',
                 resolve: {

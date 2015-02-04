@@ -29,19 +29,19 @@ angular.module('nav.barnetillegg', [])
         $scope.leggTilBarn = function ($event) {
             $event.preventDefault();
             settBarnCookie();
-            $location.path(data.soknad.brukerBehandlingId + '/nyttbarn/');
+            $location.path('/nyttbarn/');
         };
 
         $scope.endreBarn = function (faktumId, $event) {
             $event.preventDefault();
             settBarnCookie(faktumId);
-            $location.path(data.soknad.brukerBehandlingId + '/endrebarn/' + faktumId);
+            $location.path('/endrebarn/' + faktumId);
         };
 
         $scope.sokbarnetillegg = function (faktumId, $event) {
             $event.preventDefault();
             settBarnCookie(faktumId);
-            $location.path(data.soknad.brukerBehandlingId + '/sokbarnetillegg/' + faktumId);
+            $location.path('/sokbarnetillegg/' + faktumId);
         };
 
         $scope.slettBarn = function (b, index, $event) {

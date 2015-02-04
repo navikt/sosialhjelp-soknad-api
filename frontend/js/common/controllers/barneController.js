@@ -97,7 +97,7 @@ angular.module('nav.barn', [])
                 $scope.barn.properties.ikkebarneinntekt=undefined;
             }
 
-            $location.path(data.soknad.brukerBehandlingId + '/soknad');
+            $location.path('/soknad');
         };
 
         $scope.lagreBarn = function (form) {
@@ -159,7 +159,7 @@ angular.module('nav.barn', [])
                 $scope.barn = barnData;
                 oppdaterFaktumListe('barn', barnData);
                 oppdaterCookieValue(barnData.faktumId);
-                $location.path(data.soknad.brukerBehandlingId + '/soknad');
+                $location.path('/soknad');
             }, function (){
                 $scope.fremdriftsindikator.laster = false;
             });

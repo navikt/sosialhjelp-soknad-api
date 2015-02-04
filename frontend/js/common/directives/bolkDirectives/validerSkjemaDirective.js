@@ -27,7 +27,7 @@ angular.module('nav.validerskjema', [])
                             bolkerFaktum.$save().then(function(result) {
                                 soknadService.delsteg({soknadId: data.soknad.soknadId, delsteg: 'vedlegg'},
                                     function () {
-                                        $location.path( data.soknad.brukerBehandlingId + '/vedlegg/');
+                                        $location.path('/vedlegg/');
                                     },
                                     function () {
                                         scope.fremdriftsindikator.laster = false;
