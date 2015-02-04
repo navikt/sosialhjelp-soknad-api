@@ -66,7 +66,7 @@ angular.module('nav.dagpenger.informasjonsside', [])
 
         $scope.forsettSoknadDersomBrosjyreLest = function () {
             if ($scope.harLestBrosjyre()) {
-                $location.path("/fortsett");
+                $location.path("/soknad");
             }
         };
 

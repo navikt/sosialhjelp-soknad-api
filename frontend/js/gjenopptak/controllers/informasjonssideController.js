@@ -68,7 +68,7 @@ angular.module('nav.gjenopptak.informasjonsside', [])
 
         $scope.forsettSoknadDersomBrosjyreLest = function () {
             if ($scope.harLestBrosjyre()) {
-                $location.path(data.soknad.brukerBehandlingId + "/fortsett");
+                $location.path('/soknad');
             }
         };
 
