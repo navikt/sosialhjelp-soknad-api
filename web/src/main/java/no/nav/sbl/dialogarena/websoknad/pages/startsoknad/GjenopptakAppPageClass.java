@@ -12,7 +12,7 @@ public class GjenopptakAppPageClass extends BasePage {
         super(parameters);
         WebComponent soknad;
         soknad = new SoknadComponent("soknad", GJENOPPTAK);
-        soknad.add(new AttributeAppender("data-ng-app", "sendsoknad"));
+        soknad.add(new AttributeAppender("data-ng-app", "gjenopptak"));
         add(soknad);
     }
 }
