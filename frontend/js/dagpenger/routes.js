@@ -18,6 +18,9 @@ angular.module('sendsoknad.routes', ['ngRoute', 'nav.common.routes'])
                     cms: function (CmsResolver) {
                         return CmsResolver;
                     },
+                    soknad: function(SoknadResolverUtenRedirect) {
+                        return SoknadResolverUtenRedirect;
+                    },
                     config: function (ConfigResolver) {
                         return ConfigResolver;
                     }
