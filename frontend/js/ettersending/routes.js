@@ -129,5 +129,5 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.common.routes'])
                         return ConfigResolver;
                     }
                 }
-            })
+            });
     });
