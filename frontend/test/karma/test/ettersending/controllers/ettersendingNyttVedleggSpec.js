@@ -135,7 +135,6 @@
                 '$name': 'name',
                 '$valid': false
             });
-            httpBackend.flush();
             expect(vedleggServiceTmp.hentAnnetVedlegg).not.toHaveBeenCalled();
         });
 

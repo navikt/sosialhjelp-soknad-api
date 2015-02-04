@@ -131,15 +131,5 @@
             scope.startSoknad();
             expect(scope.fremdriftsindikator.laster).toBe(true);
         });
-        it('startSoknad skal legge på brukerbehandlingsid på pathen', function () {
-            httpBackend.expectPOST('/sendsoknad/rest/soknad/opprett')
-                .respond({brukerbehandlingId: "brukerbehandlingsid"});
-
-            scope.startSoknad();
-
-            httpBackend.flush();
-
-            expect(location.path()).toBe("/brukerbehandlingsid/soknad/");
-        });
     });
 }());
