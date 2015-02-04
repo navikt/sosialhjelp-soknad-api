@@ -23,8 +23,8 @@ angular.module('utslagskriterierDagpenger.routes', ['ngRoute', 'nav.common.route
                     utslagskriterier: function (UtslagskriterierResolver) {
                         return UtslagskriterierResolver;
                     },
-                    soknad: function(SoknadForUtslagskriterierResolver) {
-                        return SoknadForUtslagskriterierResolver;
+                    soknad: function(SoknadResolverUtenRedirect) {
+                        return SoknadResolverUtenRedirect;
                     }
                 }
             })

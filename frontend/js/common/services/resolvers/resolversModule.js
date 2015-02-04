@@ -10,5 +10,5 @@ angular.module('nav.services.resolvers', [
     'nav.services.resolvers.fakta',
     'nav.services.resolvers.ettersending',
     'nav.services.resolvers.vedlegg',
-    'nav.services.resolvers.soknadutslagskriterier'
+    'nav.services.resolvers.soknadutenredirect'
 ]);
