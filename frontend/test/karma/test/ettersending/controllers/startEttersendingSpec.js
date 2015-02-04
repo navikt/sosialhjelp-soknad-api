@@ -15,7 +15,7 @@
         beforeEach(function () {
             spyOn(window, 'getBehandlingIdFromUrl').andReturn(behandlingskjedeId);
             spyOn(window, 'getBehandlingsIdFromUrlForEttersending').andReturn(behandlingsId);
-            window.redirectTilSide = jasmine.createSpy('Redirect spy');
+            window.redirectTilUnderside = jasmine.createSpy('Redirect spy');
             Date = function(time) {
                 if (time === undefined) {
                     return new OldDate(today);
@@ -77,7 +77,7 @@
             it('skal kalle funksjon for å videresende til ettersendelse når ettersendingen er starte', function () {
                 scope.startEttersending($.Event("click"));
                 httpBackend.flush();
-                expect(window.redirectTilSide).toHaveBeenCalledWith('/sendsoknad/skjema/ettersending#/' + behandlingskjedeId + '/vedlegg');
+                expect(window.redirectTilUnderside).toHaveBeenCalledWith('/ettersending/' + behandlingskjedeId + '#/vedlegg');
             });
         });
 
