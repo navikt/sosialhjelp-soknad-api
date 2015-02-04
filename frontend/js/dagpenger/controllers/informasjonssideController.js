@@ -43,7 +43,8 @@ angular.module('nav.dagpenger.informasjonsside', [])
             $scope.fremdriftsindikator.laster = true;
             $scope.soknad = soknadService.create({soknadType: soknadType},
                 function (result) {
-                    $location.path("/soknad/");
+                    var soknadtypeForUrl = trimWhitespaceIString(soknadType);
+                    redirectTilUnderside("/" + soknadtypeForUrl + "/" + result.brukerbehandlingId + "#soknad");
                 }, function () {
                     $scope.fremdriftsindikator.laster = false;
                 });

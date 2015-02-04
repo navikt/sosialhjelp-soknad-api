@@ -62,16 +62,26 @@ function getBehandlingIdFromUrl() {
     var url = window.location.href;
     var hashIdx = url.indexOf('#/');
     var behandlingsIdStart = url.substring(0, hashIdx).lastIndexOf('/') + 1;
-    return url.substring(behandlingsIdStart, hashIdx);
+    var behandlingsId = url.substring(behandlingsIdStart, hashIdx);
+    return behandlingsId === "start" ? undefined : behandlingsId;
 }
 
 function getBehandlingsIdFromUrlForEttersending() {
     return getBehandlingIdFromUrl();
 }
 
+function getBaseUrl() {
+    var splittedUrl = window.location.href.split("/");
+    return splittedUrl[0] + "//" + splittedUrl[2];
+}
+
+function getBaseUrlMedRotmappe() {
+    var splittedUrl = window.location.href.split("/");
+    return splittedUrl[0] + "//" + splittedUrl[2] + "/" + splittedUrl[3];
+}
 
 function redirectTilSide(side) {
-    var baseUrl = window.location.href.substring(0, window.location.href.indexOf('/sendsoknad'));
+    var baseUrl = getBaseUrl();
     redirectTilUrl(baseUrl + side);
 }
 
@@ -79,12 +89,17 @@ function redirectTilUrl(url) {
     window.location.href = url;
 }
 
+function redirectTilUnderside(side) {
+    var baseUrl = getBaseUrlMedRotmappe();
+    redirectTilUrl(baseUrl + side);
+}
+
 function erPaaSideMedPath(url, path) {
     return url && url.indexOf(path) > -1;
 }
 
 function getSoknadstypeFromUrl() {
-    var soknadType = decodeURI(window.location.pathname).split("/")[3];
+    var soknadType = decodeURI(window.location.pathname).split("/")[2];
     return soknadType ? soknadType.slice(0,3) + ' ' + soknadType.slice(3) : undefined;
 }
 
