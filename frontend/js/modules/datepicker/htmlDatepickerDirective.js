@@ -37,7 +37,7 @@ angular.module('nav.datepicker.htmlDirective', [])
 
                 scope.$watch('vars.model', function() {
                     scope.model = konverterDatoTilStringMedLeadingZero(scope.vars.model);
-                })
+                });
             }
         };
     });
