@@ -88,7 +88,7 @@ angular.module('nav.ettersending.controllers.main', [])
                 ettersendingService.send({soknadId: data.soknad.soknadId},
                     {},
                     function () {
-                        $location.path('bekreftelse/' + data.soknad.brukerBehandlingId);
+                        $location.path('bekreftelse/');
                         $scope.fremdriftsindikator.laster = false;
                     },
                     function () {

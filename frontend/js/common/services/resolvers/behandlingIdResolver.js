@@ -1,8 +1,8 @@
 angular.module('nav.services.resolvers.behandlingsid', [])
-    .factory('BehandlingIdResolver', function ($resource, $q, $route) {
+    .factory('BehandlingIdResolver', function ($resource, $q, $route, $routeParams) {
         var behandlingsIdDefer = $q.defer();
 
-        var behandlingId = $route.current.params.behandlingId;
+        var behandlingId = $routeParams.behandlingsId || getBehandlingIdFromUrl();
 
         if (behandlingId) {
             $resource('/sendsoknad/rest/soknad/behandling/:behandlingId').get(

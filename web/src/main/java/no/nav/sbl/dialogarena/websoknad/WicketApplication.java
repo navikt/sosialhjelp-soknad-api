@@ -10,7 +10,8 @@ import no.nav.sbl.dialogarena.websoknad.pages.ettersending.EttersendingPage;
 import no.nav.sbl.dialogarena.websoknad.pages.ettersending.StartEttersendingPage;
 import no.nav.sbl.dialogarena.websoknad.pages.mocksetup.MockSetupPage;
 import no.nav.sbl.dialogarena.websoknad.pages.soknadliste.SoknadListePage;
-import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.StartSoknadPage;
+import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.DagpengerAppPageClass;
+import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.GjenopptakAppPageClass;
 import no.nav.sbl.dialogarena.websoknad.pages.utslagskriterier.UtslagskriterierDagpengerPage;
 import no.nav.sbl.dialogarena.websoknad.selftest.SelfTestPage;
 import org.apache.wicket.Application;
@@ -108,10 +109,11 @@ public class WicketApplication extends WebApplication {
     }
 
     private void mountPages() {
-        mountPage("skjema/${skjemanummer}", StartSoknadPage.class);
+        mountPage("NAV04-01.03/${brukerbehandlingId}", DagpengerAppPageClass.class);
+        mountPage("NAV04-16.03/${brukerbehandlingId}", GjenopptakAppPageClass.class);
         mountPage("utslagskriterier/${utslagskriterierSide}", UtslagskriterierDagpengerPage.class);
         mountPage("startettersending/${brukerbehandlingId}", StartEttersendingPage.class);
-        mountPage("skjema/ettersending", EttersendingPage.class);
+        mountPage("ettersending/${brukerbehandlingId}", EttersendingPage.class);
         mountPage("internal/selftest", SelfTestPage.class);
         mountPage("soknadliste", SoknadListePage.class);
         if (mockSetupErTillatt()) {

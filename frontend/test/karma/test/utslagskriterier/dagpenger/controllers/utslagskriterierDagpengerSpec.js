@@ -283,7 +283,7 @@
         }));
 
         beforeEach(function () {
-            window.redirectTilUrl = jasmine.createSpy('Redirect URL spy');
+            window.redirectTilUnderside = jasmine.createSpy('Redirect URL spy');
         });
 
         beforeEach(inject(function ($controller, $rootScope, data, $httpBackend) {
@@ -300,7 +300,7 @@
         describe('Utslagskriterier med fortsettSenere fra gjenopptak', function () {
             it('skal redirecte til gjenopptakurl med delstegstatus søknad', function () {
                 scope.redirectTilRiktigSideHvisKravForDagpengerOppfylt();
-                expect(window.redirectTilUrl).toHaveBeenCalledWith("skjema/NAV04-16.03#/123/vedlegg");
+                expect(window.redirectTilUnderside).toHaveBeenCalledWith("/NAV04-16.03/123#/vedlegg");
             });
         });
     });
@@ -375,7 +375,7 @@
         }));
 
         beforeEach(function () {
-            window.redirectTilUrl = jasmine.createSpy('Redirect URL spy');
+            window.redirectTilUnderside = jasmine.createSpy('Redirect URL spy');
         });
 
         beforeEach(inject(function ($controller, $rootScope, data, $httpBackend) {
@@ -392,9 +392,9 @@
         describe('Utslagskriterier med fortsettSenere fra gjenopptak', function () {
             it('skal redirecte til gjenopptakurl med delstegstatus søknad', function () {
                 scope.redirectTilRiktigSideHvisKravForDagpengerOppfylt();
-                expect(window.redirectTilUrl).not.toHaveBeenCalledWith("skjema/NAV04-16.03#/123/oppsummering");
+                expect(window.redirectTilUnderside).not.toHaveBeenCalledWith("/NAV04-16.03/123#/oppsummering");
                 scope.fortsettLikevel(event);
-                expect(window.redirectTilUrl).toHaveBeenCalledWith("skjema/NAV04-16.03#/123/oppsummering");
+                expect(window.redirectTilUnderside).toHaveBeenCalledWith("/NAV04-16.03/123#/oppsummering");
             });
         });
     });

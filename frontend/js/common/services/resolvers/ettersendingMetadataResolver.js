@@ -13,7 +13,7 @@ angular.module('nav.services.resolvers.ettersendingmetadata', [])
             });
 
         if(data.soknad) {
-            $location.path("/" + behandlingId + "/vedlegg");
+            $location.path("/vedlegg");
         }
 
         return metadata.promise;

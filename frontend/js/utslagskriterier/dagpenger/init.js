@@ -35,7 +35,7 @@ angular.module('utslagskriterierDagpenger')
 
         function redirectTilSkjemasideDersomSkjemaIkkeErValidert() {
             if (harHentetData() && !skjemaErValidert()) {
-                $location.path("/soknad/" + data.soknad.brukerBehandlingId);
+                $location.path("/soknad/");
             }
         }
 
@@ -51,7 +51,7 @@ angular.module('utslagskriterierDagpenger')
             } else if (data.soknad.delstegStatus === "VEDLEGG_VALIDERT") {
                 $location.path('/oppsummering');
             } else {
-                $location.path("/soknad/" + data.soknad.brukerBehandlingId);
+                $location.path("/soknad/");
             }
         }
 

@@ -1,5 +1,5 @@
 angular.module('nav.utslagskriterierDagpenger', [])
-    .controller('utslagskritererDagpengerCtrl', function ($scope, data, $location, sjekkUtslagskriterier, soknad, $routeParams) {
+    .controller('utslagskritererDagpengerCtrl', function ($scope, data, $location, sjekkUtslagskriterier, soknad) {
         $scope.soknad = soknad;
 
         $scope.utslagskriterier = data.utslagskriterier;
@@ -80,10 +80,7 @@ angular.module('nav.utslagskriterierDagpenger', [])
                     break;
             }
 
-            var currentUrl = location.href;
-            var soknadsUrl = currentUrl.substring(0, currentUrl.indexOf('utslagskriterier/')) + 'skjema/' + $scope.soknad.skjemaNummer.replace(" ", "") + '#/';
-
-            redirectTilUrl(soknadsUrl + $scope.soknad.brukerBehandlingId + "/" + delsteg);
+            redirectTilUnderside("/" + soknad.skjemaNummer.replace(" ", "") + "/" + soknad.brukerBehandlingId + "#/" + delsteg);
         }
 
         $scope.kravForDagpengerIkkeOppfylt = function () {
@@ -119,7 +116,7 @@ angular.module('nav.utslagskriterierDagpenger', [])
         };
 
         function erFortsattSenereSoknad() {
-            return $routeParams.behandlingsId !== undefined;
+            return soknad.brukerBehandlingId !== undefined;
         }
 
         function erIkkeFortsattSenereSoknad() {

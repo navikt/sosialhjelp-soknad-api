@@ -34,9 +34,6 @@ angular.module('nav.stegindikator', [])
 
                     scope.hentLenke = function(idx) {
                         var baseUrl = "#";
-                        if(data.soknad) {
-                            baseUrl += '/' + data.soknad.brukerBehandlingId;
-                        }
 
                         if (idx === 2) {
                             return baseUrl + '/vedlegg';

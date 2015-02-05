@@ -125,7 +125,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                 $scope.vedleggListe[vedleggListeIdx] = result;
                 $scope.fremdriftsindikator.laster = false;
                 var brukerBehandlingId = data.soknad.behandlingskjedeId ? data.soknad.behandlingskjedeId : data.soknad.brukerBehandlingId;
-                $location.url(brukerBehandlingId + '/vedlegg?scrollTo=vedlegg_' + $scope.data.vedleggId);
+                $location.url('/vedlegg?scrollTo=vedlegg_' + $scope.data.vedleggId);
             });
         };
 
