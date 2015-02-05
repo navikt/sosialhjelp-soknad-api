@@ -62,7 +62,7 @@ function getBehandlingIdFromUrl() {
     var url = window.location.href;
     var hashIdx = url.indexOf('#/');
     var behandlingsIdStart = url.substring(0, hashIdx).lastIndexOf('/') + 1;
-    var behandlingsId = url.substring(behandlingsIdStart, hashIdx);
+    var behandlingsId = url.substring(behandlingsIdStart, hashIdx).split("?")[0];
     return behandlingsId === "start" ? undefined : behandlingsId;
 }
 
