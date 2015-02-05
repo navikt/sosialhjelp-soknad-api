@@ -14,9 +14,9 @@ angular.module('nav.sistLagret', [])
                 };
 
                 if(scope.navtilbakelenke.indexOf('vedlegg') > -1) {
-                    scope.lenke.value="#/" + data.soknad.brukerBehandlingId + "/vedlegg";
+                    scope.lenke.value="#/vedlegg";
                 } else if (scope.navtilbakelenke.indexOf('soknad') > -1) {
-                    scope.lenke.value="#/" + data.soknad.brukerBehandlingId + "/soknad";
+                    scope.lenke.value="#/soknad";
                 }
 
 				scope.hentSistLagretTid = function () {

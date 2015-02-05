@@ -41,7 +41,7 @@ angular.module('gjenopptak')
 
         function redirectTilVedleggsideDersomVedleggIkkeErValidert() {
             if (harHentetData() && !vedleggErValidert()) {
-                $location.path(data.soknad.brukerBehandlingId + '/vedlegg/');
+                $location.path('/vedlegg/');
             }
         }
 
