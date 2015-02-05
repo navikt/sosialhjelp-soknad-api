@@ -508,10 +508,12 @@ public class HandleBarKjoerer implements HtmlGenerator {
 
             @Override
             public CharSequence apply(Object value, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-                List<Faktum> fakta = soknad.getFaktaMedKey("arbeidsforhold");
+                if(!(options.context.model() instanceof Faktum)) {
+                    return options.inverse(this);
+                }
 
-                if (fakta.isEmpty() || faktumSkalIkkeHaRotasjonssporsmaal(fakta.get(0))) {
+                Faktum faktum = (Faktum) options.context.model();
+                if (faktumSkalIkkeHaRotasjonssporsmaal(faktum)) {
                     return options.inverse(this);
                 } else {
                     return options.fn(this);
