@@ -15,6 +15,8 @@ angular.module('nav.datepicker.htmlDirective', [])
                 name: '@'
             },
             link: function(scope, element, attrs, form) {
+                scope.vars = {model: new Date(scope.model)};
+
                 var eventForAValidereHeleFormen = 'RUN_VALIDATION' + form.$name;
                 scope.$on(eventForAValidereHeleFormen, function () {
                     form[scope.name].$touched = true;
@@ -32,6 +34,10 @@ angular.module('nav.datepicker.htmlDirective', [])
                 scope.focus = function () {
                     scope.harFokus = true;
                 };
+
+                scope.$watch('vars.model', function() {
+                    scope.model = konverterDatoTilStringMedLeadingZero(scope.vars.model);
+                })
             }
         };
     });

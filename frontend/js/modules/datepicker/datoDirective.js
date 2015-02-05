@@ -49,6 +49,7 @@ angular.module('nav.datepicker.dato', [])
                     scope.name = scope.name !== undefined ? scope.name : guidService.getGuid();
                     scope.vars = {
                         model: scope.model,
+                        dateModel: Date(scope.model),
                         harFokus: false,
                         datepickerClosed: true,
                         erRequired: scope.erRequired,
