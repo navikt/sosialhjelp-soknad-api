@@ -42,7 +42,7 @@ angular.module('sendsoknad')
 
         function redirectTilVedleggsideDersomVedleggIkkeErValidert() {
             if (harHentetData() && !vedleggErValidert()) {
-                $location.path(data.soknad.brukerBehandlingId + '/vedlegg/');
+                $location.path('/vedlegg/');
             }
         }
 
