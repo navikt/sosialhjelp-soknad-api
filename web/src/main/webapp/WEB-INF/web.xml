@@ -69,6 +69,8 @@
     <filter-mapping>
         <filter-name>decoratorFilter</filter-name>
         <url-pattern>/skjema/*</url-pattern>
+        <url-pattern>/NAV04-01.03/*</url-pattern>
+        <url-pattern>/NAV04-16.03/*</url-pattern>
         <url-pattern>/utslagskriterier/*</url-pattern>
         <url-pattern>/startettersending/*</url-pattern>
         <url-pattern>/avbrutt/*</url-pattern>

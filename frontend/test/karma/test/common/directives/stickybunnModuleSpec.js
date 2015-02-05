@@ -44,7 +44,7 @@ describe('sist lagret', function () {
             expect(scope.soknadHarAldriBlittLagret()).toEqual(false);
         });
         it('Hvis navtilbakelenke inneholder vedlegg skal scope.lenge.value gå til vedleggsiden', function () {
-            expect(scope.lenke.value).toEqual('#/BHD123/vedlegg');
+            expect(scope.lenke.value).toEqual('#/vedlegg');
         });
     });
 });
@@ -93,7 +93,7 @@ describe('stickybunnUtensistLagret', function () {
             expect(scope.soknadHarAldriBlittLagret()).toEqual(true);
         });
         it('Hvis navtilbakelenke inneholder soknad skal scope.lenke.value gå til soknadsiden', function () {
-            expect(scope.lenke.value).toEqual('#/BHD123/soknad');
+            expect(scope.lenke.value).toEqual('#/soknad');
         });
     });
 });

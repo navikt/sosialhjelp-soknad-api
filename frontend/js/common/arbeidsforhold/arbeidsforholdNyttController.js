@@ -14,7 +14,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 		$scope.land = data.land;
         $scope.soknadId = data.soknad.soknadId;
         $scope.behandlingId = data.soknad.brukerBehandlingId;
-        $scope.soknadUrl = '/' + data.soknad.brukerBehandlingId + '/soknad';
+        $scope.soknadUrl = '/soknad';
         $scope.permitteringsperioder = [];
         $scope.permitteringsperioderTilSletting = [];
 

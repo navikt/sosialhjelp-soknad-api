@@ -23,32 +23,8 @@ angular.module('utslagskriterierDagpenger.routes', ['ngRoute', 'nav.common.route
                     utslagskriterier: function (UtslagskriterierResolver) {
                         return UtslagskriterierResolver;
                     },
-                    soknadMetadata: function (SoknadMetadataResolver) {
-                        return SoknadMetadataResolver;
-                    },
-                    soknad: function() {
-                        return {};
-                    }
-                }
-            })
-            .when('/:behandlingsId', {
-                templateUrl: '../views/utslagskriterier/dagpenger/utslagskritererDagpenger.html',
-                controller: 'utslagskritererDagpengerCtrl',
-                resolve: {
-                    cms: function (CmsResolver) {
-                        return CmsResolver;
-                    },
-                    config: function (ConfigResolver) {
-                        return ConfigResolver;
-                    },
-                    utslagskriterier: function (UtslagskriterierResolver) {
-                        return UtslagskriterierResolver;
-                    },
-                    soknadMetadata: function (SoknadMetadataResolver) {
-                        return SoknadMetadataResolver;
-                    },
-                    soknad: function(soknadService, $route) {
-                        return soknadService.hentMedBehandlingsId({behandlingsId: $route.current.params.behandlingsId}).$promise;
+                    soknad: function(SoknadResolverUtenRedirect) {
+                        return SoknadResolverUtenRedirect;
                     }
                 }
             })

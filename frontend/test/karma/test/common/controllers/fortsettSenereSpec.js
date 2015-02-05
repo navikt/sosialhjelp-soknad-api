@@ -86,8 +86,8 @@
             it('scope.epost skal bli satt til eposten som ligger på data', function () {
                 expect(scope.epost.value).toEqual('epost@epost.no');
             });
-            it('scope.forrigeSide skal bli satt til #/behandlingsid/fortsett hvis den ikke finnes fra før', function () {
-                expect(scope.forrigeSide).toEqual('#/BHD123/fortsett');
+            it('scope.forrigeSide skal bli satt til #/ hvis den ikke finnes fra før', function () {
+                expect(scope.forrigeSide).toEqual('#/');
             });
             it('sette riktig urler', function () {
                 expect(scope.dittnavUrl).toEqual('dittnavUrl');
@@ -187,8 +187,8 @@
             it('scope.epost skal bli satt til eposten som ligger på data', function () {
                 expect(scope.epost.value).toEqual('epost@epost.no');
             });
-            it('scope.forrigeSide skal bli satt til #/behandlinId/fortsett hvis den ikke finnes fra før', function () {
-                expect(scope.forrigeSide).toEqual('#/BHD123/fortsett');
+            it('scope.forrigeSide skal bli satt til #/ hvis den ikke finnes fra før', function () {
+                expect(scope.forrigeSide).toEqual('#/');
             });
             it('sette riktig urler', function () {
                 expect(scope.dittnavUrl).toEqual('dittnavUrl');
@@ -212,8 +212,8 @@
                 scope.$apply();
             }));
 
-            it('scope.forrigeSide skal bli satt til #/behandlingId/fortsett hvis den ikke finnes fra før', function () {
-                expect(scope.forrigeSide).toEqual('#/BHD123/fortsett');
+            it('scope.forrigeSide skal bli satt til #/ hvis den ikke finnes fra før', function () {
+                expect(scope.forrigeSide).toEqual('#/');
             });
         });
     });

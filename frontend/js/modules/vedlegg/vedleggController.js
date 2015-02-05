@@ -22,7 +22,7 @@ angular.module('nav.vedlegg.controller', [])
             if (form.$valid) {
                 soknadService.delsteg({soknadId: data.soknad.soknadId, delsteg: 'oppsummering'},
                     function() {
-                        $location.path(data.soknad.brukerBehandlingId + '/oppsummering');
+                        $location.path('/oppsummering');
                     },
                     function() {
                         $scope.fremdriftsindikator.laster = false;
