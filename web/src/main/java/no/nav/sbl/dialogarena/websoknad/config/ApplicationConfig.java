@@ -2,6 +2,8 @@ package no.nav.sbl.dialogarena.websoknad.config;
 
 import no.nav.sbl.dialogarena.print.HandleBarKjoerer;
 import no.nav.sbl.dialogarena.print.HtmlGenerator;
+import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SikkerhetsAspect;
+import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.websoknad.service.EmailService;
 import no.nav.sbl.dialogarena.websoknad.servlet.InnloggetBruker;
 import org.slf4j.Logger;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -37,6 +40,24 @@ public class ApplicationConfig {
         PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
         propertySourcesPlaceholderConfigurer.setLocalOverride(true);
         return propertySourcesPlaceholderConfigurer;
+    }
+
+    @Bean
+    public SikkerhetsAspect sikkerhet() {
+        return new SikkerhetsAspect();
+    }
+
+    @Bean
+    public Tilgangskontroll tilgangskontroll() {
+        return new Tilgangskontroll();
+    }
+
+    @Bean
+    public TaskExecutor thumbnailExecutor() {
+        ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
+        threadPoolTaskExecutor.setCorePoolSize(1);
+        threadPoolTaskExecutor.setMaxPoolSize(10);
+        return threadPoolTaskExecutor;
     }
 
     @Bean
@@ -89,4 +110,6 @@ public class ApplicationConfig {
     public HtmlGenerator handleBarKjoerer(){
         return new HandleBarKjoerer();
     }
+
+
 }

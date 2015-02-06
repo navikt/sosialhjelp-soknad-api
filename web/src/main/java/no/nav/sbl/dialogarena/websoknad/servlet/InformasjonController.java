@@ -7,19 +7,25 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.LandService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
-import java.util.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 /**
  * Klassen håndterer rest kall for å hente informasjon
  */
 @Controller
-@ControllerAdvice()
-@RequestMapping(value = "/informasjon")
+@Path("/informasjon")
+@Produces(APPLICATION_JSON)
 public class InformasjonController {
 
     @Inject
@@ -33,39 +39,45 @@ public class InformasjonController {
     @Inject
     private LandService landService;
 
-    @RequestMapping(value = "/miljovariabler", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
-    @ResponseBody()
+    @GET
+    @Path("/miljovariabler")
     public Map<String, String> hentMiljovariabler() {
         return informasjon.hentMiljovariabler();
     }
 
-    @RequestMapping(value = "/vedleggsskjema", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
-    @ResponseBody()
-    public Map<String, String> hentVedleggsskjema(@RequestParam String type) { return informasjon.hentVedleggsskjema(type); }
+    @GET
+    @Path("/vedleggsskjema")
+    public Map<String, String> hentVedleggsskjema(@QueryParam("type") String type) {
+        return informasjon.hentVedleggsskjema(type);
+    }
 
-    @RequestMapping(value = "/personalia", method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody()
-    public Personalia hentPersonalia() { return innloggetBruker.hentPersonalia(); }
+    @GET
+    @Path("/personalia")
+    public Personalia hentPersonalia() {
+        return innloggetBruker.hentPersonalia();
+    }
 
-    @RequestMapping(value = "/poststed", method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody()
-    public String hentPoststed(@RequestParam String postnummer) {
+    @GET
+    @Path("/poststed")
+    public String hentPoststed(@QueryParam("postnummer") String postnummer) {
         return kodeverk.getPoststed(postnummer);
     }
 
-    @RequestMapping(value = "/tekster", method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody()
-    public Properties hentTekster(@RequestParam String type, @RequestParam String sprak) { return messageSource.getBundleFor(type, new Locale("nb", "NO")); }
+    @GET
+    @Path("/tekster")
+    public Properties hentTekster(@QueryParam("type") String type, @QueryParam("sprak") String sprak) {
+        return messageSource.getBundleFor(type, new Locale("nb", "NO"));
+    }
 
-    @RequestMapping(value = "/land", method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody()
-    public List<Land> hentLand(@RequestParam(required = false) String filter) {
+    @GET
+    @Path("/land")
+    public List<Land> hentLand(@QueryParam("filter") String filter) {
         return landService.hentLand(filter);
     }
 
-    @RequestMapping(value = "/land/actions/hentstatsborgerskapstype", method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody()
-    public Map<String, String> hentStatsborgerskapstype(@RequestParam String landkode) {
+    @GET
+    @Path("/land/actions/hentstatsborgerskapstype")
+    public Map<String, String> hentStatsborgerskapstype(@QueryParam("landkode") String landkode) {
         return landService.hentStatsborgerskapstype(landkode);
     }
 

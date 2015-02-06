@@ -168,11 +168,8 @@ public class DefaultVedleggService implements VedleggService {
 
     @Override
     public Long genererVedleggFaktum(Long soknadId, Long vedleggId) {
-        Vedlegg forventning = vedleggRepository
-                .hentVedlegg(soknadId, vedleggId);
-        List<Vedlegg> vedleggUnderBehandling = vedleggRepository
-                .hentVedleggUnderBehandling(soknadId,
-                        forventning.getFillagerReferanse());
+        Vedlegg forventning = vedleggRepository.hentVedlegg(soknadId, vedleggId);
+        List<Vedlegg> vedleggUnderBehandling = vedleggRepository.hentVedleggUnderBehandling(soknadId,forventning.getFillagerReferanse());
 
         sort(vedleggUnderBehandling, new Comparator<Vedlegg>() {
             @Override
@@ -198,12 +195,9 @@ public class DefaultVedleggService implements VedleggService {
         WebSoknad soknad = repository.hentSoknad(soknadId);
 
         logger.info("Lagrer fil til henvendelse for behandling {}, UUID: {}", soknad.getBrukerBehandlingId(), forventning.getFillagerReferanse());
-        fillagerService.lagreFil(soknad.getBrukerBehandlingId(),
-                forventning.getFillagerReferanse(), soknad.getAktoerId(),
-                new ByteArrayInputStream(doc));
+        fillagerService.lagreFil(soknad.getBrukerBehandlingId(), forventning.getFillagerReferanse(), soknad.getAktoerId(), new ByteArrayInputStream(doc));
 
-        vedleggRepository.slettVedleggUnderBehandling(soknadId,
-                forventning.getFaktumId(), forventning.getSkjemaNummer());
+        vedleggRepository.slettVedleggUnderBehandling(soknadId, forventning.getFaktumId(), forventning.getSkjemaNummer());
         vedleggRepository.lagreVedleggMedData(soknadId, vedleggId, forventning);
         return vedleggId;
     }

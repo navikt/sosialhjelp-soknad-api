@@ -42,7 +42,6 @@ public class FaktaService {
     private static final String EKSTRA_VEDLEGG_KEY = "ekstraVedlegg";
     private static final Logger logger = getLogger(FaktaService.class);
 
-
     public Faktum lagreSoknadsFelt(Long soknadId, Faktum faktum) {
         faktum.setType(BRUKERREGISTRERT);
         faktum.setSoknadId(soknadId);
