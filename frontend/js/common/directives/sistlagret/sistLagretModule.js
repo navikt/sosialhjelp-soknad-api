@@ -24,7 +24,7 @@ angular.module('nav.sistLagret', [])
 				};
 
 				scope.soknadHarBlittLagret = function () {
-                    if(data.soknad.sistLagret) {
+                    if(data.soknad && data.soknad.sistLagret) {
                         return data.soknad.sistLagret !== null;
                     } else {
                         return false;
