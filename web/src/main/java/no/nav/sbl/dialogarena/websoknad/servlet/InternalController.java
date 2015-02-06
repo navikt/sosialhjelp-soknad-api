@@ -5,16 +5,15 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource
 import no.nav.sbl.dialogarena.websoknad.config.ContentConfig;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 
 @Controller
-@ControllerAdvice()
-@RequestMapping("/internal")
+@Path("/internal")
 public class InternalController {
     @Inject
     private ContentConfig contentConfig;
@@ -26,14 +25,21 @@ public class InternalController {
     private NavMessageSource messageSource;
 
 
-    @RequestMapping(value = "/lagre")
+    @GET
+    @Path("/selftest")
+    public String dummyselftest() {
+        return "ok";
+    }
+
+    @POST
+    @Path(value = "/lagre")
     public void kjorLagring() throws InterruptedException {
         lagringsScheduler.mellomlagreSoknaderOgNullstillLokalDb();
     }
 
-    @RequestMapping(value = "/resetcache")
-    @ResponseBody
-    public String resetCache(@RequestParam String type) {
+    @GET
+    @Path(value = "/resetcache")
+    public String resetCache(@QueryParam("type") String type) {
         if ("cms".equals(type)) {
             cacheManager.getCache("cms.content").clear();
             cacheManager.getCache("cms.article").clear();

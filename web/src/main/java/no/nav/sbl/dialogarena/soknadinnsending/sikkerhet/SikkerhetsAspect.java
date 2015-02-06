@@ -27,6 +27,7 @@ public class SikkerhetsAspect {
     public void requestMapping() {
     }
 
+    //TODO: denne må ses på i forhold til at man fjerner søknadsid fra fakta og vedlegg endepunktene
     @Before(value = "requestMapping() && args(soknadId, ..) && @annotation(tilgang)", argNames = "soknadId, tilgang")
     public void sjekkSoknadIdModBruker(Long soknadId, SjekkTilgangTilSoknad tilgang) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
