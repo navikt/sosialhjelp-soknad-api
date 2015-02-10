@@ -134,6 +134,17 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 
         settPerioderKlarTilSletting();
 
+        function getSistePermitteringsperiodeStartdato() {
+            var sisteDato;
+            angular.forEach($scope.permitteringsperioder, function(permiteringsperiode){
+                var permitertDato = new Date(permiteringsperiode.properties.permiteringsperiodedatofra);
+                if(permitertDato > sisteDato || sisteDato === undefined) {
+                    sisteDato = permitertDato;
+                }
+            });
+            return sisteDato;
+        }
+
         function getArbeidsforholdSluttDato() {
             switch ($scope.arbeidsforhold.properties.type) {
                 case 'Arbeidsgiver er konkurs':
@@ -141,7 +152,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
                 case 'Redusert arbeidstid':
                     return $scope.arbeidsforhold.properties.redusertfra;
                 case 'Permittert':
-                    return $scope.arbeidsforhold.properties.permiteringsperiodedatofra;
+                    return getSistePermitteringsperiodeStartdato();
                 default:
                     return $scope.arbeidsforhold.properties.datotil;
             }
