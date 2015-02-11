@@ -2,7 +2,7 @@ angular.module('nav.bekreftelse', [])
     /* Er avhengig av at søknadsoppsett er hentet før vi kommer til denne kontrolleren, da temakode blir hentet sånn
      Henter ikke for bekreftelsessiden siden man bare skal videresendes hit, og siden det blir krøll på backend
      */
-    .controller('BekreftelsesCtrl', function ($scope, $window, $timeout, $routeParams, $rootElement, data, bekreftelseEpostService, $location) {
+    .controller('BekreftelsesCtrl', function ($scope, $window, $timeout, $rootElement, data, bekreftelseEpostService, $location) {
         var appName = $rootElement.attr('data-ng-app');
         
         if(data.fakta === undefined) {
@@ -20,6 +20,7 @@ angular.module('nav.bekreftelse', [])
         $scope.fullfort = {value: false};
         $scope.fremdriftsindikator = {laster: false };
         $scope.erEttersendelse = {value: false};
+        var brukerBehandlingId = data.soknad.brukerBehandlingId;
 
         $scope.sendEpost = function (form) {
             $scope.temaKode = {value: data.soknadOppsett.temaKode};
@@ -31,11 +32,11 @@ angular.module('nav.bekreftelse', [])
                 $scope.fullfort.value = true;
                 $scope.fremdriftsindikator.laster = true;
 
-                new bekreftelseEpostService({epost: $scope.epost.value, temaKode: $scope.temaKode.value, erEttersendelse: $scope.erEttersendelse.value}).$send({behandlingId: $routeParams.behandlingsId}).then(function () {
+                new bekreftelseEpostService({epost: $scope.epost.value, temaKode: $scope.temaKode.value, erEttersendelse: $scope.erEttersendelse.value}).$send({behandlingId: brukerBehandlingId}).then(function () {
                     $timeout(function() {
                         var saksoversiktBaseUrl = data.config['saksoversikt.link.url'];
 
-                        redirectTilUrl(saksoversiktBaseUrl + '/detaljer/' + $scope.temaKode.value + '/' + $routeParams.behandlingsId);
+                        redirectTilUrl(saksoversiktBaseUrl + '/detaljer/' + $scope.temaKode.value + '/' + brukerBehandlingId);
                     }, 3000);
                 });
             }
