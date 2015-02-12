@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.websoknad.servlet;
+package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
@@ -10,7 +10,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.XsrfGenerator;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.inject.Inject;
@@ -26,13 +25,9 @@ import java.util.List;
 import static javax.ws.rs.core.MediaType.*;
 import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 
-/**
- * Controller klasse som brukes til å laste opp filer fra frontend.
- */
-@Controller()
 @Path("/vedlegg/{vedleggId}")
 @Produces(APPLICATION_JSON)
-public class VedleggController {
+public class VedleggRessurs {
 
     @Inject
     private VedleggService vedleggService;

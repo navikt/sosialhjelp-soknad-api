@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.websoknad.servlet;
+package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
@@ -6,7 +6,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad;
 import org.apache.commons.collections15.Predicate;
-import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -18,10 +17,9 @@ import static no.nav.modig.lang.collections.IterUtils.on;
 /**
  * Klassen håndterer alle rest kall for å hente grunnlagsdata til applikasjonen.
  */
-@Controller
 @Path("/fakta")
 @Produces(APPLICATION_JSON)
-public class FaktaController {
+public class FaktaRessurs {
 
     @Inject
     private FaktaService faktaService;

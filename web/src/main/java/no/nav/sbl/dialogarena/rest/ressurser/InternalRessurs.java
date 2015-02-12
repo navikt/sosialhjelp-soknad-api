@@ -1,10 +1,9 @@
-package no.nav.sbl.dialogarena.websoknad.servlet;
+package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.websoknad.config.ContentConfig;
 import org.springframework.cache.CacheManager;
-import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -12,9 +11,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 
-@Controller
 @Path("/internal")
-public class InternalController {
+public class InternalRessurs {
     @Inject
     private ContentConfig contentConfig;
     @Inject

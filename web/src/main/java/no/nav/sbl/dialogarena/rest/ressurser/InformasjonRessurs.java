@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.websoknad.servlet;
+package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.PersonAlder;
@@ -9,9 +9,9 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.LandService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService;
+import no.nav.sbl.dialogarena.websoknad.servlet.InnloggetBruker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -26,12 +26,11 @@ import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 /**
  * Klassen håndterer rest kall for å hente informasjon
  */
-@Controller
 @Path("/informasjon")
 @Produces(APPLICATION_JSON)
-public class InformasjonController {
+public class InformasjonRessurs {
 
-    private static final Logger logger = LoggerFactory.getLogger(InformasjonController.class);
+    private static final Logger logger = LoggerFactory.getLogger(InformasjonRessurs.class);
 
     @Inject
     private InformasjonService informasjon;

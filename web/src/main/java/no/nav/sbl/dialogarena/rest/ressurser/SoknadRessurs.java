@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.websoknad.servlet;
+package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.print.HtmlGenerator;
