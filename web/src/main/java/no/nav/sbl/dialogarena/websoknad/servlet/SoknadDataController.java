@@ -166,8 +166,11 @@ public class SoknadDataController {
         WebSoknad soknad = soknadService.hentSoknad(soknadId);
 
         byte[] kvittering = genererPdf(soknad, "/skjema/kvittering");
+        vedleggService.lagreKvitteringSomVedlegg(soknadId, kvittering);
+
         if (soknad.erEttersending()) {
-            soknadService.sendSoknad(soknadId, kvittering);
+            byte[] dummyPdfSomHovedskjema = genererDummyPdf(soknad);
+            soknadService.sendSoknad(soknadId, dummyPdfSomHovedskjema);
         } else {
             byte[] soknadPdf;
             if (soknad.erGjenopptak()) {
@@ -175,9 +178,18 @@ public class SoknadDataController {
             } else {
                 soknadPdf = genererPdf(soknad, "/skjema/dagpenger");
             }
-            vedleggService.lagreKvitteringSomVedlegg(soknadId, kvittering);
             soknadService.sendSoknad(soknadId, soknadPdf);
         }
+    }
+
+    private byte[] genererDummyPdf(WebSoknad soknad) {
+        String pdfMarkup;
+        try {
+            pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(soknad, "skjema/ettersending/dummy");
+        } catch (IOException e) {
+            throw new ApplicationException("Kunne ikke lage markup av ettersending-dummy", e);
+        }
+        return pdfGenerator.lagPdfFil(pdfMarkup);
     }
 
     private byte[] genererPdf(WebSoknad soknad, String hbsSkjemaPath) {
