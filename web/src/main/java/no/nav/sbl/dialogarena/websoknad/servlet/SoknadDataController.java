@@ -166,11 +166,8 @@ public class SoknadDataController {
         WebSoknad soknad = soknadService.hentSoknad(soknadId);
 
         byte[] kvittering = genererPdf(soknad, "/skjema/kvittering");
-        vedleggService.lagreKvitteringSomVedlegg(soknadId, kvittering);
-
         if (soknad.erEttersending()) {
-            Vedlegg opplastetVedlegg = finnEttVedleggSomErLastetOppIDenneEttersendelsen(soknad);
-            soknadService.sendEttersending(soknadId, opplastetVedlegg);
+            soknadService.sendSoknad(soknadId, kvittering);
         } else {
             byte[] soknadPdf;
             if (soknad.erGjenopptak()) {
@@ -178,16 +175,8 @@ public class SoknadDataController {
             } else {
                 soknadPdf = genererPdf(soknad, "/skjema/dagpenger");
             }
+            vedleggService.lagreKvitteringSomVedlegg(soknadId, kvittering);
             soknadService.sendSoknad(soknadId, soknadPdf);
-        }
-    }
-
-    private Vedlegg finnEttVedleggSomErLastetOppIDenneEttersendelsen(WebSoknad soknad) {
-        List<Vedlegg> opplastedeVedlegg = soknad.getOpplastedeVedlegg();
-        if(opplastedeVedlegg.isEmpty()){
-            return null;
-        } else {
-            return opplastedeVedlegg.get(0);
         }
     }
 

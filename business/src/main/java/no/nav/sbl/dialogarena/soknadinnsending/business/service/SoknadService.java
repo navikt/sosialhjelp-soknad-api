@@ -302,7 +302,15 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     public void sendSoknad(long soknadId, byte[] pdf) {
         WebSoknad soknad = hentSoknad(soknadId);
 
-        sjekkOmHarAnnetVedleggSomIkkeErLastetOpp(soknad);
+        if (soknad.erEttersending() && soknad.getOpplastedeVedlegg().size() <= 0) {
+            logger.error("Kan ikke sende inn ettersendingen med ID {0} uten å ha lastet opp vedlegg", soknad.getBrukerBehandlingId());
+            throw new ApplicationException(String.format("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg"));
+        }
+
+        if (soknad.harAnnetVedleggSomIkkeErLastetOpp()) {
+            logger.error("Kan ikke sende inn behandling (ID: {0}) med Annet vedlegg (skjemanummer N6) som ikke er lastet opp", soknad.getBrukerBehandlingId());
+            throw new ApplicationException(String.format("Kan ikke sende inn behandling uten å ha lastet opp alle  vedlegg med skjemanummer N6"));
+        }
 
         logger.info("Lagrer søknad som fil til henvendelse for behandling {}", soknad.getBrukerBehandlingId());
         fillagerService.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(pdf));
@@ -312,59 +320,16 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         String skjemanummer = getSkjemanummer(soknad);
         String journalforendeEnhet = getJournalforendeEnhet(soknad);
         XMLHovedskjema hovedskjema = new XMLHovedskjema()
-                    .withInnsendingsvalg(LASTET_OPP.toString())
-                    .withSkjemanummer(skjemanummer)
-                    .withFilnavn(skjemanummer)
-                    .withMimetype("application/pdf")
-                    .withFilstorrelse("" + pdf.length)
-                    .withUuid(soknad.getUuid())
-                    .withJournalforendeEnhet(journalforendeEnhet);
-            henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(),
-                    hovedskjema,
-                    Transformers.convertToXmlVedleggListe(vedleggForventninger));
-
-        repository.slettSoknad(soknadId);
-    }
-
-    private void sjekkOmHarAnnetVedleggSomIkkeErLastetOpp(WebSoknad soknad) {
-        if (soknad.harAnnetVedleggSomIkkeErLastetOpp()) {
-            logger.error("Kan ikke sende inn behandling (ID: {0}) med Annet vedlegg (skjemanummer N6) som ikke er lastet opp", soknad.getBrukerBehandlingId());
-            throw new ApplicationException(String.format("Kan ikke sende inn behandling uten å ha lastet opp alle  vedlegg med skjemanummer N6"));
-        }
-    }
-
-    @Override
-    public void sendEttersending(long soknadId, final Vedlegg vedleggSomSkalSettesTilHovedskjema) {
-        WebSoknad soknad = hentSoknad(soknadId);
-
-        if (soknad.getOpplastedeVedlegg().size() <= 0) {
-            logger.error("Kan ikke sende inn ettersendingen med ID {0} uten å ha lastet opp vedlegg", soknad.getBrukerBehandlingId());
-            throw new ApplicationException(String.format("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg"));
-        }
-
-        sjekkOmHarAnnetVedleggSomIkkeErLastetOpp(soknad);
-
-        List<Vedlegg> vedleggForventninger = hentVedleggOgKvittering(soknad);
-        List<Vedlegg> alleVedleggUtenomVedleggetSomSkalVaereHovedskjema = on(vedleggForventninger).filter(new Predicate<Vedlegg>() {
-            @Override
-            public boolean evaluate(Vedlegg vedlegg) {
-                return !vedlegg.equals(vedleggSomSkalSettesTilHovedskjema);
-            }
-        }).collect();
-
-        String journalforendeEnhet = getJournalforendeEnhet(soknad);
-        XMLHovedskjema hovedskjema = new XMLHovedskjema()
                 .withInnsendingsvalg(LASTET_OPP.toString())
-                .withSkjemanummer(vedleggSomSkalSettesTilHovedskjema.getSkjemaNummer())
-                .withFilnavn(vedleggSomSkalSettesTilHovedskjema.getSkjemaNummer())
+                .withSkjemanummer(skjemanummer)
+                .withFilnavn(skjemanummer)
                 .withMimetype("application/pdf")
-                .withFilstorrelse("" + vedleggSomSkalSettesTilHovedskjema.getStorrelse())
-                .withUuid(vedleggSomSkalSettesTilHovedskjema.getFillagerReferanse())
+                .withFilstorrelse("" + pdf.length)
+                .withUuid(soknad.getUuid())
                 .withJournalforendeEnhet(journalforendeEnhet);
         henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(),
                 hovedskjema,
-                Transformers.convertToXmlVedleggListe(alleVedleggUtenomVedleggetSomSkalVaereHovedskjema));
-
+                Transformers.convertToXmlVedleggListe(vedleggForventninger));
         repository.slettSoknad(soknadId);
     }
 

@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 
@@ -34,8 +33,6 @@ public interface SendSoknadService {
     WebSoknad hentSoknadMedBehandlingsId(String behandlingsId);
 
     void sendSoknad(long soknadId, byte[] outputStream);
-
-    void sendEttersending(long soknadId, Vedlegg vedleggSomSkalSettesTilHovedskjema);
 
     void avbrytSoknad(Long soknadId);
 
