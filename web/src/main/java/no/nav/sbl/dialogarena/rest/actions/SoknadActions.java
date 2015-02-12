@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.websoknad.servlet;
+package no.nav.sbl.dialogarena.rest.actions;
 
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.print.HtmlGenerator;
@@ -15,10 +15,8 @@ import no.nav.sbl.dialogarena.websoknad.service.EmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
