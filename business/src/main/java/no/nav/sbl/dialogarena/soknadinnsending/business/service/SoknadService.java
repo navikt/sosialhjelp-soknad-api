@@ -20,6 +20,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknadId;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.SoknadStrukturUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
@@ -87,6 +88,8 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     private StartDatoService startDatoService;
     @Inject
     private FaktaService faktaService;
+    @Inject
+    private PersonaliaService personaliaService;
 
     private List<String> gyldigeSkjemaer = Arrays.asList("NAV 04-01.03", "NAV 04-16.03");
 
@@ -164,6 +167,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         }
     }
 
+    //TODO: kan man hente samme informasjon fra soknad, eller trenger man denne shortcuten?  rest-url "/behandlingmetadata/{behandlingsId}"
     @Override
     public Map<String, String> hentInnsendtDatoForOpprinneligSoknad(String behandlingsId) {
         Map<String, String> result = new HashMap<>();
@@ -203,7 +207,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     }
 
     @Override
-    public Long startEttersending(String behandingsId) {
+    public Long startEttersending(String behandingsId, String fodselsnummer) {
         List<WSBehandlingskjedeElement> behandlingskjede = henvendelseService.hentBehandlingskjede(behandingsId);
         WSHentSoknadResponse wsSoknadsdata = hentSisteIkkeAvbrutteSoknadIBehandlingskjede(behandlingskjede);
 
@@ -211,7 +215,9 @@ public class SoknadService implements SendSoknadService, EttersendingService {
             throw new ApplicationException("Kan ikke starte ettersending på en ikke fullfort soknad");
         }
         DateTime innsendtDato = hentOrginalInnsendtDato(behandlingskjede, behandingsId);
-        return lagEttersendingFraWsSoknad(wsSoknadsdata, innsendtDato).getSoknadId();
+        Long soknadId = lagEttersendingFraWsSoknad(wsSoknadsdata, innsendtDato).getSoknadId();
+        personaliaService.lagrePersonaliaOgBarn(fodselsnummer, soknadId, false);
+        return soknadId;
     }
 
     private DateTime hentOrginalInnsendtDato(List<WSBehandlingskjedeElement> behandlingskjede, String behandlingsId) {
@@ -389,7 +395,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     }
 
     @Override
-    public String startSoknad(String navSoknadId) {
+    public String startSoknad(String navSoknadId, String fodselsnummer) {
         validerSkjemanummer(navSoknadId);
         String mainUid = randomUUID().toString();
         String behandlingsId = henvendelseService
@@ -411,6 +417,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
         prepopulerSoknadsFakta(soknadId);
         opprettFaktumForLonnsOgTrekkoppgave(soknadId);
+        personaliaService.lagrePersonaliaOgBarn(fodselsnummer, soknadId, true);
         return behandlingsId;
     }
 

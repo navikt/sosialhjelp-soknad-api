@@ -16,7 +16,9 @@ public class SoknadApplication extends ResourceConfig {
         super(InformasjonController.class,
                 InternalController.class,
                 FaktaController.class,
-                VedleggController.class);
+                VedleggController.class,
+                SoknadRessurs.class,
+                SoknadActions.class);
 
         register(MultiPartFeature.class);
         LOG.info("Starter Jersey");
