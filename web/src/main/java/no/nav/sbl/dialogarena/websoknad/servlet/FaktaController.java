@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
+import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.modig.lang.collections.IterUtils.on;
@@ -57,13 +58,13 @@ public class FaktaController {
     @GET
     @Path("/{faktumId}/vedlegg")
     @SjekkTilgangTilSoknad
-    public Vedlegg hentAnnetVedlegg(@PathParam("faktumId") final Long faktumId, @QueryParam("soknadId") final Long soknadId) {
+    public List<Vedlegg> hentVedlegg(@PathParam("faktumId") final Long faktumId, @QueryParam("soknadId") final Long soknadId) {
         return on(vedleggService.hentPaakrevdeVedlegg(soknadId)).filter(new Predicate<Vedlegg>() {
             @Override
             public boolean evaluate(Vedlegg vedleggForventning) {
                 return vedleggForventning.getFaktumId().equals(faktumId);
             }
-        }).collect().get(0);
+        }).collect();
     }
 
 }

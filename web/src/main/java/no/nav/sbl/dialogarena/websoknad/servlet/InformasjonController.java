@@ -1,11 +1,16 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.PersonAlder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.dto.Land;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.LandService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
@@ -13,12 +18,10 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 
 /**
  * Klassen håndterer rest kall for å hente informasjon
@@ -27,6 +30,8 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @Path("/informasjon")
 @Produces(APPLICATION_JSON)
 public class InformasjonController {
+
+    private static final Logger logger = LoggerFactory.getLogger(InformasjonController.class);
 
     @Inject
     private InformasjonService informasjon;
@@ -38,6 +43,10 @@ public class InformasjonController {
     private Kodeverk kodeverk;
     @Inject
     private LandService landService;
+    @Inject
+    private PersonaliaService personaliaService;
+    @Inject
+    private PersonInfoService personInfoService;
 
     @GET
     @Path("/miljovariabler")
@@ -79,6 +88,28 @@ public class InformasjonController {
     @Path("/land/actions/hentstatsborgerskapstype")
     public Map<String, String> hentStatsborgerskapstype(@QueryParam("landkode") String landkode) {
         return landService.hentStatsborgerskapstype(landkode);
+    }
+
+    @GET
+    @Path("/utslagskriterier")
+    public Map<String, String> sjekkUtslagskriterier() {
+        String uid = getSubjectHandler().getUid();
+        PersonInfoService.Status status = personInfoService.hentArbeidssokerStatus(uid);
+        Map<String, String> utslagskriterierResultat = new HashMap<>();
+        utslagskriterierResultat.put("registrertArbeidssøker", status.name());
+
+        try {
+            Personalia personalia = personaliaService.hentPersonalia(uid);
+            utslagskriterierResultat.put("gyldigAlder", new PersonAlder(uid).sjekkAlder().toString());
+            utslagskriterierResultat.put("bosattINorge", ((Boolean) !personalia.harUtenlandskAdresse()).toString());
+            utslagskriterierResultat.put("registrertAdresse", personalia.getGjeldendeAdresse().getAdresse());
+            utslagskriterierResultat.put("registrertAdresseGyldigFra", personalia.getGjeldendeAdresse().getGyldigFra());
+            utslagskriterierResultat.put("registrertAdresseGyldigTil", personalia.getGjeldendeAdresse().getGyldigTil());
+        } catch (Exception e) {
+            logger.error("Kunne ikke hente personalia", e);
+            utslagskriterierResultat.put("error", e.getMessage());
+        }
+        return utslagskriterierResultat;
     }
 
 }

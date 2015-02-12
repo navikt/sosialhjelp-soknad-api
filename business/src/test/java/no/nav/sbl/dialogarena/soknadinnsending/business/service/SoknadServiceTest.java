@@ -15,6 +15,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
@@ -84,12 +85,12 @@ public class SoknadServiceTest {
     private Kodeverk kodeverk;
     @Mock
     private NavMessageSource navMessageSource;
-
     @Mock
     private StartDatoService startDatoService;
-
     @Mock
     private FaktaService faktaService;
+    @Mock
+    private PersonaliaService personaliaService;
 
     @InjectMocks
     private SoknadService soknadService;
@@ -272,7 +273,7 @@ public class SoknadServiceTest {
         when(henvendelsesConnector.startSoknad(anyString(), anyString(), anyString())).thenReturn("123");
         when(soknadRepository.hentFaktumMedKey(anyLong(), anyString())).thenReturn(new Faktum().medFaktumId(1L));
         when(soknadRepository.hentFaktum(anyLong(), anyLong())).thenReturn(new Faktum().medFaktumId(1L));
-        soknadService.startSoknad(DAGPENGER);
+        soknadService.startSoknad(DAGPENGER, "***REMOVED***");
 
         ArgumentCaptor<String> uid = ArgumentCaptor.forClass(String.class);
         String bruker = StaticSubjectHandler.getSubjectHandler().getUid();
@@ -305,7 +306,7 @@ public class SoknadServiceTest {
         when(soknadRepository.hentFaktum(anyLong(), anyLong())).thenReturn(new Faktum().medFaktumId(1L));
         when(startDatoService.erJanuarEllerFebruar()).thenReturn(false);
         when(soknadRepository.opprettSoknad(any(WebSoknad.class))).thenReturn(soknadId);
-        soknadService.startSoknad(DAGPENGER);
+        soknadService.startSoknad(DAGPENGER, "***REMOVED***");
 
         verify(faktaService, times(1)).lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum, "");
         DateTimeUtils.setCurrentMillisSystem();
@@ -326,7 +327,7 @@ public class SoknadServiceTest {
         when(soknadRepository.hentFaktum(anyLong(), anyLong())).thenReturn(new Faktum().medFaktumId(1L));
         when(startDatoService.erJanuarEllerFebruar()).thenReturn(true);
         when(soknadRepository.opprettSoknad(any(WebSoknad.class))).thenReturn(soknadId);
-        soknadService.startSoknad(DAGPENGER);
+        soknadService.startSoknad(DAGPENGER, "***REMOVED***");
 
         verify(faktaService, times(1)).lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum, "");
         DateTimeUtils.setCurrentMillisSystem();
@@ -374,7 +375,7 @@ public class SoknadServiceTest {
                 .medType(SYSTEMREGISTRERT);
         when(soknadRepository.hentFaktum(anyLong(), anyLong())).thenReturn(soknadInnsendingsDatoFaktum);
 
-        Long ettersendingSoknadId = soknadService.startEttersending(behandlingsId);
+        Long ettersendingSoknadId = soknadService.startEttersending(behandlingsId, "***REMOVED***");
         verify(faktaService).lagreSystemFaktum(anyLong(), any(Faktum.class), anyString());
         assertNotNull(ettersendingSoknadId);
     }
@@ -393,7 +394,7 @@ public class SoknadServiceTest {
         when(henvendelsesConnector.hentBehandlingskjede(behandlingsId)).thenReturn(Arrays.asList(behandlingskjedeElement));
         when(henvendelsesConnector.hentSoknad(behandlingsId)).thenReturn(orginalInnsending);
 
-        soknadService.startEttersending(behandlingsId);
+        soknadService.startEttersending(behandlingsId, "***REMOVED***");
     }
 
     @Test

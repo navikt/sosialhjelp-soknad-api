@@ -2,9 +2,9 @@ package no.nav.sbl.dialogarena.websoknad.servlet;
 
 import static java.lang.String.valueOf;
 
-public class ServerUtils {
+public class UrlUtils {
 
-	public static String getGjenopptaUrl(String requestUrl, String soknadId, String behandlingId) {
+	public static String getGjenopptaUrl(String requestUrl, String behandlingId) {
         String fullServerPath =  requestUrl.split("/rest/")[0];
 		String gjenopptaUrl = "/utslagskriterier/dagpenger#/";
 		return fullServerPath.concat(gjenopptaUrl).concat(behandlingId).concat("?utm_source=web&utm_medium=email&utm_campaign=2");

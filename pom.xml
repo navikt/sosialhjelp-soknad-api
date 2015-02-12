@@ -37,7 +37,7 @@
         <spring.version>3.2.9.RELEASE</spring.version>
         <jersey.version>2.15</jersey.version>
         <cxf.version>2.7.9</cxf.version>
-        <modig-security.version>1.0.23</modig-security.version>
+        <modig-security.version>1.0.24-NO_RESTEASY</modig-security.version>
         <sendsoknad.tjenestespec.version>0.0.23</sendsoknad.tjenestespec.version>
         <behandlingsinformasjon.tjenestespec.version>0.0.28</behandlingsinformasjon.tjenestespec.version>
         <fillager.tjenestespec.version>0.0.3</fillager.tjenestespec.version>
