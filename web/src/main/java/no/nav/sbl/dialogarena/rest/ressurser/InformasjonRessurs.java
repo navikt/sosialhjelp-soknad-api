@@ -55,8 +55,12 @@ public class InformasjonRessurs {
 
     @GET
     @Path("/vedleggsskjema")
-    public Map<String, String> hentVedleggsskjema(@QueryParam("type") String type) {
-        return informasjon.hentVedleggsskjema(type);
+    public Map<String, String> hentVedleggsskjema(@QueryParam("type") String type, @QueryParam("behandlingsId") String behandlingsId) {
+        if (type != null) {
+            return informasjon.hentVedleggsskjema(type);
+        } else {
+            return informasjon.hentVedleggsskjemaForBehandlingsId(behandlingsId);
+        }
     }
 
     @GET
