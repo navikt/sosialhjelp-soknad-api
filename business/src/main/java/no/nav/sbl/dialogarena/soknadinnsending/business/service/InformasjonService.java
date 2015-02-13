@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
 import org.springframework.beans.factory.annotation.Value;
@@ -53,6 +54,12 @@ public class InformasjonService {
 
         return result;
     }
+
+    public Map<String,String> hentVedleggsskjemaForBehandlingsId(String behandlingsId) {
+        WebSoknad soknad = soknadService.hentSoknadMedBehandlingsId(behandlingsId);
+        return hentVedleggsskjema(soknad.getskjemaNummer());
+    }
+
 
     public Map<String,String> hentVedleggsskjema(String type) {
         Map<String, String> result = new HashMap<>();
