@@ -53,6 +53,7 @@ public class SoknadRessurs {
     @Path("/{soknadId}")
     @SjekkTilgangTilSoknad
     public WebSoknad hentSoknadData(@PathParam("soknadId") Long soknadId) {
+        // todo: denne MÅ støtte behandlingsid
         return soknadService.hentSoknad(soknadId);
     }
 
