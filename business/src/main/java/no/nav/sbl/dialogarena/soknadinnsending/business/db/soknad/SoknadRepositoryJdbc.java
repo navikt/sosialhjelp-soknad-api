@@ -57,7 +57,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Named("soknadInnsendingRepository")
 @Component
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
-public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implements SoknadRepository {
+public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport {
 
     public static final String INSERT_FAKTUM = "insert into SOKNADBRUKERDATA (soknadbrukerdata_id, soknad_id, key, value, type, parrent_faktum, sistendret) values " +
             "(:faktumId, :soknadId, :key, :value, :typeString, :parrentFaktum, CURRENT_TIMESTAMP)";
