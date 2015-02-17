@@ -10,7 +10,7 @@
 
             <td>
                 <div class="container">
-                    <p>{{ tittel }}</p>
+                    <p class="tittel">{{ tittel }}</p>
                     {{#if navn}}
                         <p class="navn">{{ navn }}</p>
                     {{/if}}
@@ -40,8 +40,7 @@
                         {{/hvisLik}}
 
                         {{#hvisLik innsendingsvalg "VedleggSendesIkke"}}
-                        <span class="aarsak">{{ aarsak }}</span>
-                        <span class="status">{{ hentTekst "oppsummering.sendesIkke" }}</span>
+                        <span class="status">{{ hentTekst "oppsummering.sendesIkke" }}:</span><span class="aarsak">{{ aarsak }}</span>
                         {{/hvisLik}}
 
                         {{#hvisLik innsendingsvalg "VedleggSendesAvAndre"}}
@@ -49,8 +48,7 @@
                         {{/hvisLik}}
 
                         {{#hvisLik innsendingsvalg "VedleggAlleredeSendt"}}
-                        <span class="aarsak">{{ aarsak }}</span>
-                        <span class="status">{{ hentTekst "oppsummering.vedleggAlleredeSendt" }}</span>
+                        <span class="status">{{ hentTekst "oppsummering.vedleggAlleredeSendt" }}:</span><span class="aarsak">{{ aarsak }}</span>
                         {{/hvisLik}}
                     </p>
                 </div>
