@@ -46,7 +46,7 @@ public class VedleggRessurs {
     //TODO: bør kanskje returnere det oppdaterte vedlegget
     @PUT
     @SjekkTilgangTilSoknad
-    public void lagreVedlegg(@PathParam("vedleggId") final Long vedleggId, @QueryParam("soknadId") final Long soknadId, @RequestBody Vedlegg vedlegg) {
+    public void lagreVedlegg(@PathParam("vedleggId") final Long vedleggId, @QueryParam("soknadId") final Long soknadId, Vedlegg vedlegg) {
         vedleggService.lagreVedlegg(soknadId, vedleggId, vedlegg);
     }
 
