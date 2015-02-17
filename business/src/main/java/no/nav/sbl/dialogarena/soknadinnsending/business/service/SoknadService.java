@@ -78,9 +78,8 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
     private List<String> gyldigeSkjemaer = Arrays.asList("NAV 04-01.03", "NAV 04-16.03");
 
-    @Override
-    public void settDelsteg(Long soknadId, DelstegStatus delstegStatus) {
-        repository.settDelstegstatus(soknadId, delstegStatus);
+    public void settDelsteg(String behandlingsId, DelstegStatus delstegStatus) {
+        repository.settDelstegstatus(behandlingsId, delstegStatus);
     }
 
     @Override
@@ -90,7 +89,16 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         return soknad;
     }
 
-    @Override
+    public WebSoknad hentSoknad(String behandlingsId) {
+        WebSoknad soknad = repository.hentSoknadMedData(behandlingsId);
+        if (soknad == null) {
+            populerFraHenvendelse(behandlingsId);
+            soknad = repository.hentSoknadMedData(behandlingsId);
+        }
+        soknad.medSoknadPrefix(getSoknadPrefix(soknad.getskjemaNummer()));
+        return soknad;
+    }
+
     public String hentSoknadEier(Long soknadId) {
         return repository.hentSoknad(soknadId).getAktoerId();
     }
@@ -363,8 +371,8 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     }
 
     @Override
-    public void avbrytSoknad(Long soknadId) {
-        WebSoknad soknad = repository.hentSoknad(soknadId);
+    public void avbrytSoknad(String behandlingsId) {
+        WebSoknad soknad = repository.hentMedBehandlingsId(behandlingsId);
 
         /**
          * Sletter alle vedlegg til søknader som blir avbrutt.
@@ -374,7 +382,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
         fillagerService.slettAlle(soknad.getBrukerBehandlingId());
         henvendelseService.avbrytSoknad(soknad.getBrukerBehandlingId());
-        repository.slettSoknad(soknadId);
+        repository.slettSoknad(soknad.getSoknadId());
     }
 
     @Override

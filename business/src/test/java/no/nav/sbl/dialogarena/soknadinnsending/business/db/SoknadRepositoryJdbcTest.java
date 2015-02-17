@@ -3,11 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
 import org.joda.time.DateTime;
@@ -35,14 +31,9 @@ import static java.util.Collections.sort;
 import static java.util.UUID.randomUUID;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 import static org.joda.time.DateTime.now;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {DbTestConfig.class})
@@ -310,6 +301,13 @@ public class SoknadRepositoryJdbcTest {
     public void skalSetteDelstegstatus(){
         opprettOgPersisterSoknad();
         soknadRepository.settDelstegstatus(soknadId, DelstegStatus.SAMTYKKET);
+        assertThat(soknadRepository.hentSoknad(soknadId).getDelstegStatus(), is(equalTo(DelstegStatus.SAMTYKKET)));
+    }
+
+    @Test
+    public void skalSetteDelstegstatusMedBehandlingsId() {
+        opprettOgPersisterSoknad();
+        soknadRepository.settDelstegstatus(behandlingsId, DelstegStatus.SAMTYKKET);
         assertThat(soknadRepository.hentSoknad(soknadId).getDelstegStatus(), is(equalTo(DelstegStatus.SAMTYKKET)));
     }
 

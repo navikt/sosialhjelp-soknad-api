@@ -52,9 +52,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Fak
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.WebSoknadUtils.DAGPENGER;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.WebSoknadUtils.RUTES_I_BRUT;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
@@ -62,13 +60,7 @@ import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.refEq;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.atMost;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SoknadServiceTest {
@@ -249,8 +241,8 @@ public class SoknadServiceTest {
 
     @Test
     public void skalSetteDelsteg() {
-        soknadService.settDelsteg(1L, OPPRETTET);
-        verify(soknadRepository).settDelstegstatus(1L, OPPRETTET);
+        soknadService.settDelsteg("1", OPPRETTET);
+        verify(soknadRepository).settDelstegstatus("1", OPPRETTET);
     }
 
     @Test
@@ -399,8 +391,8 @@ public class SoknadServiceTest {
 
     @Test
     public void skalAvbryteSoknad() {
-        when(soknadRepository.hentSoknad(11L)).thenReturn(new WebSoknad().medBehandlingId("123"));
-        soknadService.avbrytSoknad(11L);
+        when(soknadRepository.hentMedBehandlingsId("123")).thenReturn(new WebSoknad().medBehandlingId("123").medId(11L));
+        soknadService.avbrytSoknad("123");
         verify(soknadRepository).slettSoknad(11L);
         verify(henvendelsesConnector).avbrytSoknad("123");
     }
