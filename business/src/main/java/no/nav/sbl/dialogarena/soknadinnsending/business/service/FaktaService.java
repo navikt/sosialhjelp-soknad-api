@@ -100,8 +100,8 @@ public class FaktaService {
         settDelstegStatus(soknadId, faktumKey);
     }
 
-    public List<Faktum> hentFakta(Long soknadId) {
-        return repository.hentAlleBrukerData(soknadId);
+    public List<Faktum> hentFakta(String behandlingsId) {
+        return repository.hentAlleBrukerData(behandlingsId);
     }
 
     private void settDelstegStatus(Long soknadId, String faktumKey) {

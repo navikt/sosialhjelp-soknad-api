@@ -50,17 +50,17 @@ public class SoknadRessurs {
     private HtmlGenerator pdfTemplate;
 
     @GET
-    @Path("/{soknadId}")
+    @Path("/{behandlingsId}")
     @SjekkTilgangTilSoknad
-    public WebSoknad hentSoknadData(@PathParam("soknadId") String behandlingsId) {
+    public WebSoknad hentSoknadData(@PathParam("behandlingsId") String behandlingsId) {
         return soknadService.hentSoknad(behandlingsId);
     }
 
     @GET
-    @Path("/{soknadId}")
+    @Path("/{behandlingsId}")
     @Produces(TEXT_HTML)
     @SjekkTilgangTilSoknad
-    public String hentOppsummering(@PathParam("soknadId") String behandlingsId) throws IOException {
+    public String hentOppsummering(@PathParam("behandlingsId") String behandlingsId) throws IOException {
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId);
         vedleggService.leggTilKodeverkFelter(soknad.getVedlegg());
         if (soknad.erGjenopptak()) {
@@ -96,9 +96,9 @@ public class SoknadRessurs {
     }
 
     @PUT
-    @Path("/{soknadId}")
+    @Path("/{behandlingsId}")
     @SjekkTilgangTilSoknad
-    public void settDelstegStatus(@PathParam("soknadId") String behandlingsId, @QueryParam("delsteg") String delsteg) {
+    public void settDelstegStatus(@PathParam("behandlingsId") String behandlingsId, @QueryParam("delsteg") String delsteg) {
         if (delsteg == null) {
             throw new ApplicationException("Ugyldig delsteg sendt inn til REST-controller.");
         } else {
@@ -119,32 +119,32 @@ public class SoknadRessurs {
     }
 
     @DELETE
-    @Path("/{soknadId}")
+    @Path("/{behandlingsId}")
     @SjekkTilgangTilSoknad
-    public void slettSoknad(@PathParam("soknadId") String behandlingsId) {
+    public void slettSoknad(@PathParam("behandlingsId") String behandlingsId) {
         soknadService.avbrytSoknad(behandlingsId);
     }
 
     @GET
-    @Path("/{soknadId}/struktur")
+    @Path("/{behandlingsId}/struktur")
     @SjekkTilgangTilSoknad
-    public SoknadStruktur hentSoknadStruktur(@PathParam("soknadId") String behandlingsId) {
+    public SoknadStruktur hentSoknadStruktur(@PathParam("behandlingsId") String behandlingsId) {
         String skjemanavn = soknadService.hentSoknad(behandlingsId).getskjemaNummer();
         return SoknadStrukturUtils.hentStruktur(skjemanavn);
     }
 
     @GET
-    @Path("/{soknadId}/fakta")
+    @Path("/{behandlingsId}/fakta")
     @SjekkTilgangTilSoknad
-    public List<Faktum> hentFakta(@PathParam("soknadId") final Long soknadId) {
-        return faktaService.hentFakta(soknadId);
+    public List<Faktum> hentFakta(@PathParam("behandlingsId") String behandlingsId) {
+        return faktaService.hentFakta(behandlingsId);
     }
 
     @GET
-    @Path("/{soknadId}/vedlegg")
+    @Path("/{behandlingsId}/vedlegg")
     @SjekkTilgangTilSoknad
-    public List<Vedlegg> hentPaakrevdeVedlegg(@PathParam("soknadId") final Long soknadId) {
-        return vedleggService.hentPaakrevdeVedlegg(soknadId);
+    public List<Vedlegg> hentPaakrevdeVedlegg(@PathParam("behandlingsId") String behandlingsId) {
+        return vedleggService.hentPaakrevdeVedlegg(behandlingsId);
     }
 
     private static Cookie xsrfCookie(String behandlingId) {

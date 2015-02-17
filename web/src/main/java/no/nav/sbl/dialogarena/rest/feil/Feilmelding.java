@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.rest.feil;
 public class Feilmelding {
 
     //TODO: burde dette være noe annet enn cms-nøkkel?
+    // TODO: Caller ID
     private String id;
     private String message;
 

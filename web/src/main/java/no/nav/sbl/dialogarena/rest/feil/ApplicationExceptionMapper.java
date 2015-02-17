@@ -30,6 +30,7 @@ public class ApplicationExceptionMapper implements ExceptionMapper<ModigExceptio
             response = status(NOT_ACCEPTABLE);
             logger.warn("Feilet opplasting", e);
         } else {
+            // TODO: Pakk dette inn i 400-feil pga. BigIP
             response = serverError();
             logger.error("REST-kall feilet", e);
         }

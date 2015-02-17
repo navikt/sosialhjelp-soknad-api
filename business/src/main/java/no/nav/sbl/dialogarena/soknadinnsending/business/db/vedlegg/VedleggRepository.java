@@ -29,6 +29,7 @@ public interface VedleggRepository {
     void lagreVedlegg(Long soknadId, Long vedleggId, Vedlegg vedlegg);
 
     List<Vedlegg> hentPaakrevdeVedlegg(Long soknadId);
+    List<Vedlegg> hentPaakrevdeVedlegg(String behandlingsId);
 
     List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktumId);
 

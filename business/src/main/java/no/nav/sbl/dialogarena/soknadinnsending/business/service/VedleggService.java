@@ -11,6 +11,7 @@ public interface VedleggService {
 
     List<Vedlegg> hentVedleggUnderBehandling(Long soknadId, String fillagerReferanse);
 
+    Vedlegg hentVedlegg(String behandlingsId, Long vedleggId, boolean medInnhold);
     Vedlegg hentVedlegg(Long soknadId, Long vedleggId, boolean medInnhold);
 
     void slettVedlegg(Long soknadId, Long vedleggId);
@@ -18,8 +19,10 @@ public interface VedleggService {
     byte[] lagForhandsvisning(Long soknadId, Long vedleggId, int side);
 
     Long genererVedleggFaktum(Long soknadId, Long vedleggId);
+    Long genererVedleggFaktum(String behandlingsId, Long vedleggId);
 
     List<Vedlegg> hentPaakrevdeVedlegg(Long soknadId);
+    List<Vedlegg> hentPaakrevdeVedlegg(String behandlingsId);
 
     void lagreVedlegg(Long soknadId, Long vedleggId, Vedlegg vedlegg);
 
