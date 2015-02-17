@@ -139,6 +139,7 @@ public class DefaultVedleggService implements VedleggService {
     }
 
     @Override
+    // TODO: Burde disse ta inn soknadId/behandlingsId? Er det pga. sikkerhet?
     public Vedlegg hentVedlegg(Long soknadId, Long vedleggId, boolean medInnhold) {
         if (medInnhold) {
             Vedlegg vedlegg = vedleggRepository.hentVedleggMedInnhold(soknadId, vedleggId);
@@ -149,6 +150,11 @@ public class DefaultVedleggService implements VedleggService {
             medKodeverk(vedlegg);
             return vedlegg;
         }
+    }
+    @Override
+    public Vedlegg hentVedlegg(String behandlingsId, Long vedleggId, boolean medInnhold) {
+        WebSoknad soknad = soknadService.hentSoknad(behandlingsId);
+        return hentVedlegg(soknad.getSoknadId(), vedleggId, medInnhold);
     }
 
     @Override
@@ -164,6 +170,12 @@ public class DefaultVedleggService implements VedleggService {
     @Override
     public byte[] lagForhandsvisning(Long soknadId, Long vedleggId, int side) {
         return new ConvertToPng(new Dimension(600, 800), side).transform(vedleggRepository.hentVedleggData(soknadId, vedleggId));
+    }
+
+    @Override
+    public Long genererVedleggFaktum(String behandlingsId, Long vedleggId) {
+        WebSoknad soknad = soknadService.hentSoknad(behandlingsId);
+        return genererVedleggFaktum(soknad.getSoknadId(), vedleggId);
     }
 
     @Override
@@ -205,6 +217,13 @@ public class DefaultVedleggService implements VedleggService {
     @Override
     public List<Vedlegg> hentPaakrevdeVedlegg(Long soknadId) {
         List<Vedlegg> paakrevdeVedlegg = vedleggRepository.hentPaakrevdeVedlegg(soknadId);
+        leggTilKodeverkFelter(paakrevdeVedlegg);
+        return paakrevdeVedlegg;
+    }
+
+    @Override
+    public List<Vedlegg> hentPaakrevdeVedlegg(String behandlingsId) {
+        List<Vedlegg> paakrevdeVedlegg = vedleggRepository.hentPaakrevdeVedlegg(behandlingsId);
         leggTilKodeverkFelter(paakrevdeVedlegg);
         return paakrevdeVedlegg;
     }

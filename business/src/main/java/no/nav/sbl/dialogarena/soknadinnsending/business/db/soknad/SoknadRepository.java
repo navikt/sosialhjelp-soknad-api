@@ -19,6 +19,7 @@ public interface SoknadRepository {
 
     WebSoknad hentSoknadMedData(String behandlingsId);
 
+    List<Faktum> hentAlleBrukerData(String behandlingsId);
     List<Faktum> hentAlleBrukerData(Long soknadId);
 
     Optional<WebSoknad> plukkSoknadTilMellomlagring();

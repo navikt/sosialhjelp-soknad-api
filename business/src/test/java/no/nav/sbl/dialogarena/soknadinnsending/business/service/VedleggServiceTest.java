@@ -161,8 +161,8 @@ public class VedleggServiceTest {
         Vedlegg vedlegg = new Vedlegg().medSkjemaNummer("L6");
         Vedlegg vedleggSjekk = new Vedlegg().medSkjemaNummer("L6").medTittel("tittel").medUrl("URL", "url")
                 .medFillagerReferanse(vedlegg.getFillagerReferanse());
-        when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(Arrays.asList(vedlegg));
-        List<Vedlegg> vedleggs = vedleggService.hentPaakrevdeVedlegg(1L);
+        when(vedleggRepository.hentPaakrevdeVedlegg(anyString())).thenReturn(Arrays.asList(vedlegg));
+        List<Vedlegg> vedleggs = vedleggService.hentPaakrevdeVedlegg("10000000ABC");
         assertThat(vedleggs.get(0), is(equalTo(vedleggSjekk)));
     }
 

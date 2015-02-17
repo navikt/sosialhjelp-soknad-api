@@ -171,16 +171,11 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     }
 
     public WebSoknad hentSoknadMedData(Long id) {
-        return hentSoknad(id)
-                .medBrukerData(hentAlleBrukerData(id))
-                .medVedlegg(vedleggRepository.hentPaakrevdeVedlegg(id));
+        return hentSoknad(id).medBrukerData(hentAlleBrukerData(id)).medVedlegg(vedleggRepository.hentPaakrevdeVedlegg(id));
     }
 
     public WebSoknad hentSoknadMedData(String behandlingsId) {
-        WebSoknad webSoknad = hentMedBehandlingsId(behandlingsId);
-        return webSoknad
-                .medBrukerData(hentAlleBrukerData(webSoknad.getSoknadId()))
-                .medVedlegg(vedleggRepository.hentPaakrevdeVedlegg(webSoknad.getSoknadId()));
+        return hentMedBehandlingsId(behandlingsId).medBrukerData(hentAlleBrukerData(behandlingsId)).medVedlegg(vedleggRepository.hentPaakrevdeVedlegg(behandlingsId));
     }
 
     public WebSoknad hentMedBehandlingsId(String behandlingsId) {
@@ -352,6 +347,22 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     public void settSistLagretTidspunkt(Long soknadId) {
         getJdbcTemplate().update("update soknad set sistlagret = CURRENT_TIMESTAMP where soknad_id = ?", soknadId);
+    }
+
+    public List<Faktum> hentAlleBrukerData(String behandlingsId) {
+        List<Faktum> fakta = select("select * from SOKNADBRUKERDATA where soknad_id = (select soknad_id from SOKNAD where brukerbehandlingid = ?) order by soknadbrukerdata_id asc", faktumRowMapper, behandlingsId);
+        List<FaktumEgenskap> egenskaper = select("select * from FAKTUMEGENSKAP where soknad_id = (select soknad_id from SOKNAD where brukerbehandlingid = ?)", faktumEgenskapRowMapper, behandlingsId);
+        Map<Long, Faktum> faktaMap = uniqueIndex(fakta, new Function<Faktum, Long>() {
+            public Long apply(Faktum input) {
+                return input.getFaktumId();
+            }
+        });
+        for (FaktumEgenskap faktumEgenskap : egenskaper) {
+            if (faktaMap.containsKey(faktumEgenskap.getFaktumId())) {
+                faktaMap.get(faktumEgenskap.getFaktumId()).medEgenskap(faktumEgenskap);
+            }
+        }
+        return fakta;
     }
 
     public List<Faktum> hentAlleBrukerData(Long soknadId) {

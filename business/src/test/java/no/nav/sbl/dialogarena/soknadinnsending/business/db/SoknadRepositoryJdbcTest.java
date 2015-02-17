@@ -174,7 +174,7 @@ public class SoknadRepositoryJdbcTest {
         lagreData("key3", null, "value3");
 
 
-        List<Faktum> soknadBrukerData = soknadRepository.hentAlleBrukerData(soknadId);
+        List<Faktum> soknadBrukerData = soknadRepository.hentAlleBrukerData(behandlingsId);
 
         assertThat(soknadBrukerData, notNullValue());
         assertThat(soknadBrukerData.size(), is(3));
@@ -320,13 +320,13 @@ public class SoknadRepositoryJdbcTest {
         opprettOgPersisterSoknad();
         Long faktumId = lagreData(key, null, value);
 
-        Faktum ikkeOppdaterData = soknadRepository.hentAlleBrukerData(soknadId).get(0);
+        Faktum ikkeOppdaterData = soknadRepository.hentAlleBrukerData(behandlingsId).get(0);
         assertThat(ikkeOppdaterData, notNullValue());
         assertThat(ikkeOppdaterData.getValue(), is(value));
 
 
         lagreData(key, faktumId, oppdatertValue);
-        Faktum oppdaterData = soknadRepository.hentAlleBrukerData(soknadId).get(0);
+        Faktum oppdaterData = soknadRepository.hentAlleBrukerData(behandlingsId).get(0);
         assertThat(oppdaterData, notNullValue());
         assertThat(oppdaterData.getValue(), is(oppdatertValue));
     }
@@ -392,7 +392,7 @@ public class SoknadRepositoryJdbcTest {
 
         WebSoknad soknad = soknadRepository.hentSoknadMedData(soknadId);
         soknadRepository.leggTilbake(soknad);
-        List<Faktum> soknadBrukerData = soknadRepository.hentAlleBrukerData(soknadId);
+        List<Faktum> soknadBrukerData = soknadRepository.hentAlleBrukerData(behandlingsId);
         assertThat(soknadBrukerData, notNullValue());
     }
 
