@@ -22,6 +22,4 @@ public interface EttersendingService {
 
     Long startEttersending(String behandingId, String fodselsnummer);
 
-    void avbrytSoknad(Long soknadId);
-
 }

@@ -53,15 +53,15 @@ public class SoknadRessurs {
     @Path("/{soknadId}")
     @SjekkTilgangTilSoknad
     public WebSoknad hentSoknadData(@PathParam("soknadId") String behandlingsId) {
-        return soknadService.hentSoknadMedBehandlingsId(behandlingsId);
+        return soknadService.hentSoknad(behandlingsId);
     }
 
     @GET
     @Path("/{soknadId}")
     @Produces(TEXT_HTML)
     @SjekkTilgangTilSoknad
-    public String hentOppsummering(@PathParam("soknadId") Long soknadId) throws IOException {
-        WebSoknad soknad = soknadService.hentSoknad(soknadId);
+    public String hentOppsummering(@PathParam("soknadId") String behandlingsId) throws IOException {
+        WebSoknad soknad = soknadService.hentSoknad(behandlingsId);
         vedleggService.leggTilKodeverkFelter(soknad.getVedlegg());
         if (soknad.erGjenopptak()) {
             return pdfTemplate.fyllHtmlMalMedInnhold(soknad, "/skjema/gjenopptak");
@@ -98,7 +98,7 @@ public class SoknadRessurs {
     @PUT
     @Path("/{soknadId}")
     @SjekkTilgangTilSoknad
-    public void settDelstegStatus(@PathParam("soknadId") Long soknadId, @QueryParam("delsteg") String delsteg) {
+    public void settDelstegStatus(@PathParam("soknadId") String behandlingsId, @QueryParam("delsteg") String delsteg) {
         if (delsteg == null) {
             throw new ApplicationException("Ugyldig delsteg sendt inn til REST-controller.");
         } else {
@@ -114,22 +114,22 @@ public class SoknadRessurs {
             } else {
                 throw new ApplicationException("Ugyldig delsteg sendt inn til REST-controller.");
             }
-            soknadService.settDelsteg(soknadId, delstegstatus);
+            soknadService.settDelsteg(behandlingsId, delstegstatus);
         }
     }
 
     @DELETE
     @Path("/{soknadId}")
     @SjekkTilgangTilSoknad
-    public void slettSoknad(@PathParam("soknadId") Long soknadId) {
-        soknadService.avbrytSoknad(soknadId);
+    public void slettSoknad(@PathParam("soknadId") String behandlingsId) {
+        soknadService.avbrytSoknad(behandlingsId);
     }
 
     @GET
     @Path("/{soknadId}/struktur")
     @SjekkTilgangTilSoknad
-    public SoknadStruktur hentSoknadStruktur(@PathParam("soknadId") Long soknadId) {
-        String skjemanavn = soknadService.hentSoknad(soknadId).getskjemaNummer();
+    public SoknadStruktur hentSoknadStruktur(@PathParam("soknadId") String behandlingsId) {
+        String skjemanavn = soknadService.hentSoknad(behandlingsId).getskjemaNummer();
         return SoknadStrukturUtils.hentStruktur(skjemanavn);
     }
 

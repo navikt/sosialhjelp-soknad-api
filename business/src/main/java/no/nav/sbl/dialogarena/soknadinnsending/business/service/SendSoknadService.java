@@ -28,15 +28,17 @@ public interface SendSoknadService {
 
     WebSoknad hentSoknad(long soknadId);
 
+    WebSoknad hentSoknad(String behandlingsId);
+
     String hentSoknadEier(Long soknadId);
 
     WebSoknad hentSoknadMedBehandlingsId(String behandlingsId);
 
     void sendSoknad(long soknadId, byte[] outputStream);
 
-    void avbrytSoknad(Long soknadId);
+    void avbrytSoknad(String behandlingsId);
 
-    void settDelsteg(Long soknadId, DelstegStatus delstegStatus);
+    void settDelsteg(String behandlingsId, DelstegStatus delstegStatus);
 
     SoknadStruktur hentSoknadStruktur(Long soknadId);
     SoknadStruktur hentSoknadStruktur(String skjemanummer);
