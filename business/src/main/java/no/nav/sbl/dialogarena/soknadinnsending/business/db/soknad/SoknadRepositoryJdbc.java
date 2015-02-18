@@ -145,6 +145,11 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         return getJdbcTemplate().queryForObject(sql, new SoknadRowMapper(), id);
     }
 
+    public WebSoknad hentSoknad(String behandlingsId) {
+        String sql = "select * from SOKNAD where brukerbehandlingid = ?";
+        return getJdbcTemplate().queryForObject(sql, new SoknadRowMapper(), behandlingsId);
+    }
+
     public Optional<WebSoknad> plukkSoknadTilMellomlagring() {
         while (true) {
             String select = "select * from soknad where sistlagret < CURRENT_TIMESTAMP - (INTERVAL '1' HOUR) and batch_status = 'LEDIG'" + limit(1);

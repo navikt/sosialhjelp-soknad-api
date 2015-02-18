@@ -154,10 +154,11 @@ public class SoknadServiceTest {
                         .medSkjemaNummer("L8")
                         .medInnsendingsvalg(Vedlegg.Status.SendesIkke));
 
-        when(soknadRepository.hentSoknadMedData(1L)).thenReturn(
+        String behandlingsId = "123";
+        when(soknadRepository.hentSoknadMedData(behandlingsId)).thenReturn(
                 new WebSoknad().medId(1L)
                         .medAktorId("123456")
-                        .medBehandlingId("123")
+                        .medBehandlingId(behandlingsId)
                         .medUuid("uidHovedskjema")
                         .medskjemaNummer(DAGPENGER)
                         .medFaktum(new Faktum().medKey("personalia"))
@@ -174,8 +175,8 @@ public class SoknadServiceTest {
                                 .medAntallSider(1)
                 );
 
-        soknadService.sendSoknad(1L, new byte[]{1, 2, 3});
-        verify(henvendelsesConnector).avsluttSoknad(eq("123"), refEq(new XMLHovedskjema()
+        soknadService.sendSoknad(behandlingsId, new byte[]{1, 2, 3});
+        verify(henvendelsesConnector).avsluttSoknad(eq(behandlingsId), refEq(new XMLHovedskjema()
                         .withUuid("uidHovedskjema")
                         .withInnsendingsvalg(XMLInnsendingsvalg.LASTET_OPP.toString())
                         .withJournalforendeEnhet(RUTES_I_BRUT)
@@ -214,6 +215,7 @@ public class SoknadServiceTest {
 
     @Test(expected = ApplicationException.class)
     public void skalIkkeSendeSoknadMedN6VedleggSomIkkeErSendtInn() {
+        String behandlingsId = "10000000ABC";
         List<Vedlegg> vedlegg = Arrays.asList(
                 new Vedlegg()
                         .medSkjemaNummer("N6")
@@ -226,17 +228,18 @@ public class SoknadServiceTest {
                         .medSkjemaNummer("L7")
                         .medInnsendingsvalg(Vedlegg.Status.SendesIkke));
 
-        when(soknadRepository.hentSoknadMedData(1L)).thenReturn(
+        when(soknadRepository.hentSoknadMedData(behandlingsId)).thenReturn(
                 new WebSoknad().medAktorId("123456")
-                        .medBehandlingId("123")
+                        .medBehandlingId(behandlingsId)
                         .medUuid("uidHovedskjema")
                         .medskjemaNummer(DAGPENGER)
                         .medFaktum(new Faktum().medKey("personalia"))
-                        .medVedlegg(vedlegg));
+                        .medVedlegg(vedlegg)
+                        .medId(1L));
 
         when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(vedlegg);
 
-        soknadService.sendSoknad(1L, new byte[]{1, 2, 3});
+        soknadService.sendSoknad(behandlingsId, new byte[]{1, 2, 3});
     }
 
     @Test

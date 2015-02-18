@@ -249,17 +249,17 @@ public class DefaultVedleggService implements VedleggService {
     }
 
     @Override
-    public void lagreKvitteringSomVedlegg(Long soknadId, byte[] kvittering) {
-        Vedlegg kvitteringVedlegg = vedleggRepository.hentVedleggForskjemaNummer(soknadId, null, KVITTERING);
+    public void lagreKvitteringSomVedlegg(String behandlingsId, byte[] kvittering) {
+        WebSoknad soknad = repository.hentSoknad(behandlingsId);
+        Vedlegg kvitteringVedlegg = vedleggRepository.hentVedleggForskjemaNummer(soknad.getSoknadId(), null, KVITTERING);
         if (kvitteringVedlegg == null) {
-            kvitteringVedlegg = new Vedlegg(soknadId, null, KVITTERING, LastetOpp);
+            kvitteringVedlegg = new Vedlegg(soknad.getSoknadId(), null, KVITTERING, LastetOpp);
             oppdaterInnholdIKvittering(kvitteringVedlegg, kvittering);
             vedleggRepository.opprettVedlegg(kvitteringVedlegg, kvittering);
         } else {
             oppdaterInnholdIKvittering(kvitteringVedlegg, kvittering);
-            vedleggRepository.lagreVedleggMedData(soknadId, kvitteringVedlegg.getVedleggId(), kvitteringVedlegg);
+            vedleggRepository.lagreVedleggMedData(soknad.getSoknadId(), kvitteringVedlegg.getVedleggId(), kvitteringVedlegg);
         }
-        WebSoknad soknad = repository.hentSoknad(soknadId);
         fillagerService.lagreFil(soknad.getBrukerBehandlingId(), kvitteringVedlegg.getFillagerReferanse(), soknad.getAktoerId(), new ByteArrayInputStream(kvitteringVedlegg.getData()));
     }
 

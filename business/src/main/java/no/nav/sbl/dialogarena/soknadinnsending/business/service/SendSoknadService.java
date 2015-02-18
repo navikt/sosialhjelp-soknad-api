@@ -34,7 +34,7 @@ public interface SendSoknadService {
 
     WebSoknad hentSoknadMedBehandlingsId(String behandlingsId);
 
-    void sendSoknad(long soknadId, byte[] outputStream);
+    void sendSoknad(String behandlingsId, byte[] outputStream);
 
     void avbrytSoknad(String behandlingsId);
 
