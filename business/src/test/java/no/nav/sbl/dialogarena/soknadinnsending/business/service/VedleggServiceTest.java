@@ -89,10 +89,10 @@ public class VedleggServiceTest {
 
     @Test
     public void skalHenteVedlegg() {
-        vedleggService.hentVedlegg(11L, 1L, false);
-        verify(vedleggRepository).hentVedlegg(11L, 1L);
-        vedleggService.hentVedlegg(11L, 1L, true);
-        verify(vedleggRepository).hentVedleggMedInnhold(11L, 1L);
+        vedleggService.hentVedlegg(1L, false);
+        verify(vedleggRepository).hentVedlegg(1L);
+        vedleggService.hentVedlegg(1L, true);
+        verify(vedleggRepository).hentVedleggMedInnhold(1L);
     }
 
     @Test
@@ -124,29 +124,30 @@ public class VedleggServiceTest {
         Vedlegg vedlegg = new Vedlegg().medSkjemaNummer("L6").medSoknadId(1L).medVedleggId(2L);
         byte[] bytes = getBytesFromFile("/pdfs/minimal.pdf");
         Vedlegg vedleggSjekk = new Vedlegg().medSkjemaNummer("L6").medSoknadId(1L).medAntallSider(1).medVedleggId(2L).medFillagerReferanse(vedlegg.getFillagerReferanse()).medData(bytes);
-        when(vedleggRepository.hentVedlegg(1L, 2L)).thenReturn(vedlegg);
-        when(vedleggRepository.hentVedleggUnderBehandling(1L, vedlegg.getFillagerReferanse())).thenReturn(Arrays.asList(new Vedlegg().medVedleggId(10L)));
-        when(vedleggRepository.hentVedleggData(1L, 10L)).thenReturn(bytes);
-        when(soknadRepository.hentSoknad(1L)).thenReturn(new WebSoknad().medBehandlingId("123").medAktorId("234"));
-        vedleggService.genererVedleggFaktum(1L, 2L);
+        when(vedleggRepository.hentVedlegg(2L)).thenReturn(vedlegg);
+        when(vedleggRepository.hentVedleggUnderBehandling("ABC", vedlegg.getFillagerReferanse())).thenReturn(Arrays.asList(new Vedlegg().medVedleggId(10L)));
+        when(vedleggRepository.hentVedleggData(10L)).thenReturn(bytes);
+        when(soknadRepository.hentSoknad("ABC")).thenReturn(new WebSoknad().medBehandlingId("ABC").medAktorId("234").medId(1L));
+        vedleggService.genererVedleggFaktum("ABC", 2L);
         vedleggSjekk.setData(vedlegg.getData());
         vedleggSjekk.medStorrelse((long) vedlegg.getData().length);
         verify(vedleggRepository).lagreVedleggMedData(1L, 2L, vedleggSjekk);
-        verify(fillagerService).lagreFil(eq("123"), eq(vedleggSjekk.getFillagerReferanse()), eq("234"), any(InputStream.class));
+        verify(fillagerService).lagreFil(eq("ABC"), eq(vedleggSjekk.getFillagerReferanse()), eq("234"), any(InputStream.class));
     }
 
     @Test
     public void skalGenererForhandsvisning() throws IOException {
-        when(vedleggRepository.hentVedleggData(11L, 1L)).thenReturn(getBytesFromFile("/pdfs/minimal.pdf"));
-        byte[] bytes = vedleggService.lagForhandsvisning(11L, 1L, 0);
+        when(vedleggRepository.hentVedleggData(1L)).thenReturn(getBytesFromFile("/pdfs/minimal.pdf"));
+        byte[] bytes = vedleggService.lagForhandsvisning(1L, 0);
         assertThat(bytes, instanceOf(byte[].class));
     }
 
     @Test
     public void skalSletteVedlegg() {
-        when(soknadService.hentSoknad(1L)).thenReturn(new WebSoknad().medBehandlingId("123").medAktorId("234").medDelstegStatus(DelstegStatus.OPPRETTET));
+        when(soknadService.hentSoknad(1L)).thenReturn(new WebSoknad().medBehandlingId("123").medAktorId("234").medDelstegStatus(DelstegStatus.OPPRETTET).medId(1L));
+        when(vedleggService.hentVedlegg(2L, false)).thenReturn(new Vedlegg().medSoknadId(1L));
 
-        vedleggService.slettVedlegg(1L, 2L);
+        vedleggService.slettVedlegg(2L);
 
         verify(vedleggRepository).slettVedlegg(1L, 2L);
         verify(soknadRepository).settDelstegstatus(1L, SKJEMA_VALIDERT);
@@ -169,8 +170,8 @@ public class VedleggServiceTest {
     @Test
     public void skalLagreVedlegg() {
         when(soknadService.hentSoknad(11L)).thenReturn(new WebSoknad().medDelstegStatus(OPPRETTET));
-        Vedlegg vedlegg = new Vedlegg().medVedleggId(1L);
-        vedleggService.lagreVedlegg(11L, 1L, vedlegg);
+        Vedlegg vedlegg = new Vedlegg().medVedleggId(1L).medSoknadId(11L);
+        vedleggService.lagreVedlegg(1L, vedlegg);
         verify(vedleggRepository).lagreVedlegg(11L, 1L, vedlegg);
     }
 
@@ -179,27 +180,27 @@ public class VedleggServiceTest {
         Vedlegg opplastetVedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(Vedlegg.Status.LastetOpp);
 
         opplastetVedlegg.setInnsendingsvalg(Vedlegg.Status.SendesIkke);
-        vedleggService.lagreVedlegg(11L, 1L, opplastetVedlegg);
+        vedleggService.lagreVedlegg(1L, opplastetVedlegg);
         verify(vedleggRepository, never()).lagreVedlegg(11L, 1L, opplastetVedlegg);
     }
 
     @Test
     public void skalKunneLagreVedleggMedSammeInnsendinsStatus() {
         when(soknadService.hentSoknad(11L)).thenReturn(new WebSoknad().medDelstegStatus(OPPRETTET));
-        Vedlegg opplastetVedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(Vedlegg.Status.LastetOpp);
+        Vedlegg opplastetVedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(Vedlegg.Status.LastetOpp).medSoknadId(11L);
 
         opplastetVedlegg.setInnsendingsvalg(Vedlegg.Status.LastetOpp);
-        vedleggService.lagreVedlegg(11L, 1L, opplastetVedlegg);
+        vedleggService.lagreVedlegg(1L, opplastetVedlegg);
         verify(vedleggRepository).lagreVedlegg(11L, 1L, opplastetVedlegg);
     }
 
     @Test
     public void skalIkkeSetteDelstegDersomVedleggLagresPaaEttersending() {
         when(soknadService.hentSoknad(11L)).thenReturn(new WebSoknad().medDelstegStatus(ETTERSENDING_OPPRETTET));
-        Vedlegg opplastetVedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(Vedlegg.Status.LastetOpp);
+        Vedlegg opplastetVedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(Vedlegg.Status.LastetOpp).medSoknadId(11L);
 
         opplastetVedlegg.setInnsendingsvalg(Vedlegg.Status.LastetOpp);
-        vedleggService.lagreVedlegg(11L, 1L, opplastetVedlegg);
+        vedleggService.lagreVedlegg(1L, opplastetVedlegg);
         verify(vedleggRepository).lagreVedlegg(11L, 1L, opplastetVedlegg);
         verify(soknadRepository, never()).settDelstegstatus(11L, DelstegStatus.SKJEMA_VALIDERT);
     }
@@ -207,10 +208,10 @@ public class VedleggServiceTest {
     @Test
     public void skalKunneLagreVedleggMedOppgradertInnsendingsStatus() {
         when(soknadService.hentSoknad(11L)).thenReturn(new WebSoknad().medDelstegStatus(OPPRETTET));
-        Vedlegg vedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(Vedlegg.Status.SendesIkke);
+        Vedlegg vedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(Vedlegg.Status.SendesIkke).medSoknadId(11L);
 
         vedlegg.setInnsendingsvalg(Vedlegg.Status.SendesSenere);
-        vedleggService.lagreVedlegg(11L, 1L, vedlegg);
+        vedleggService.lagreVedlegg(1L, vedlegg);
         verify(vedleggRepository).lagreVedlegg(11L, 1L, vedlegg);
     }
 
@@ -219,7 +220,7 @@ public class VedleggServiceTest {
         Vedlegg vedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(Vedlegg.Status.VedleggKreves);
 
         vedlegg.setInnsendingsvalg(Vedlegg.Status.VedleggKreves);
-        vedleggService.lagreVedlegg(11L, 1L, vedlegg);
+        vedleggService.lagreVedlegg(1L, vedlegg);
         verify(vedleggRepository, never()).lagreVedlegg(11L, 1L, vedlegg);
     }
 

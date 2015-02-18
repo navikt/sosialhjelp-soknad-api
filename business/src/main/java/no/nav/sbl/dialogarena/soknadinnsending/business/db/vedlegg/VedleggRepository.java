@@ -10,13 +10,13 @@ public interface VedleggRepository {
 
     void slettVedlegg(Long soknadId, Long vedleggId);
 
-    List<Vedlegg> hentVedleggUnderBehandling(Long soknadId, String fillagerReferanse);
+    List<Vedlegg> hentVedleggUnderBehandling(String behandlingsId, String fillagerReferanse);
 
     void lagreVedleggMedData(Long soknadId, Long vedleggId, Vedlegg vedlegg);
 
-    byte[] hentVedleggData(Long soknadId, Long vedleggId);
+    byte[] hentVedleggData(Long vedleggId);
 
-    Vedlegg hentVedlegg(Long soknadId, Long vedleggId);
+    Vedlegg hentVedlegg(Long vedleggId);
 
     Vedlegg hentVedleggForskjemaNummer(Long soknadId, Long faktumId, String skjemaNummer);
 
@@ -24,7 +24,7 @@ public interface VedleggRepository {
 
     void slettVedleggUnderBehandling(Long soknadId, Long faktumId, String gosysId);
 
-    Vedlegg hentVedleggMedInnhold(Long soknadId, Long vedleggId);
+    Vedlegg hentVedleggMedInnhold(Long vedleggId);
 
     void lagreVedlegg(Long soknadId, Long vedleggId, Vedlegg vedlegg);
 
