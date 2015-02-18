@@ -215,8 +215,8 @@ public class DefaultVedleggService implements VedleggService {
     }
 
     @Override
-    public List<Vedlegg> hentPaakrevdeVedlegg(Long soknadId) {
-        List<Vedlegg> paakrevdeVedlegg = vedleggRepository.hentPaakrevdeVedlegg(soknadId);
+    public List<Vedlegg> hentPaakrevdeVedlegg(Long faktumId) {
+        List<Vedlegg> paakrevdeVedlegg = vedleggRepository.hentPaakrevdeVedlegg(faktumId);
         leggTilKodeverkFelter(paakrevdeVedlegg);
         return paakrevdeVedlegg;
     }

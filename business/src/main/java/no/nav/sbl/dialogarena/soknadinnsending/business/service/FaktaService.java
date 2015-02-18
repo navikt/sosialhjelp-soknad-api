@@ -5,6 +5,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggReposi
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
@@ -42,9 +43,17 @@ public class FaktaService {
     private static final String EKSTRA_VEDLEGG_KEY = "ekstraVedlegg";
     private static final Logger logger = getLogger(FaktaService.class);
 
-    public Faktum lagreSoknadsFelt(Long soknadId, Faktum faktum) {
+    public Faktum lagreSoknadsFelt(String behandlingsId, Faktum faktum) {
+        WebSoknad soknad = repository.hentSoknad(behandlingsId);
+        faktum.setSoknadId(soknad.getSoknadId());
+
+        return lagreSoknadsFelt(faktum);
+    }
+
+    public Faktum lagreSoknadsFelt(Faktum faktum) {
+        Long soknadId = faktum.getSoknadId();
         faktum.setType(BRUKERREGISTRERT);
-        faktum.setSoknadId(soknadId);
+
         Long faktumId = repository.lagreFaktum(soknadId, faktum);
         repository.settSistLagretTidspunkt(soknadId);
 
@@ -80,14 +89,15 @@ public class FaktaService {
         return lagretFaktumId;
     }
 
-    public void slettBrukerFaktum(Long soknadId, Long faktumId) {
+    public void slettBrukerFaktum(Long faktumId) {
         final Faktum faktum;
         try {
-            faktum = repository.hentFaktum(soknadId, faktumId);
+            faktum = repository.hentFaktum(faktumId);
         } catch (IncorrectResultSizeDataAccessException e) {
             logger.info("Skipped delete because faktum does not exist.");
             return;
         }
+        Long soknadId = faktum.getSoknadId();
 
         String faktumKey = faktum.getKey();
         List<Vedlegg> vedleggliste = vedleggRepository.hentVedleggForFaktum(soknadId, faktumId);

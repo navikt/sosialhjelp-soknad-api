@@ -58,13 +58,14 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
     }
 
     @Override
-    public List<Vedlegg> hentPaakrevdeVedlegg(Long soknadId) {
+    public List<Vedlegg> hentPaakrevdeVedlegg(Long faktumId) {
         List<Vedlegg> vedlegg = getJdbcTemplate().query("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, opprinneliginnsendingsvalg, storrelse, opprettetdato," +
-                " antallsider, fillagerReferanse, aarsak from Vedlegg where soknad_id = ? and innsendingsvalg in ('VedleggKreves', 'VedleggSendesIkke', 'VedleggSendesAvAndre'," +
-                " 'VedleggAlleredeSendt', 'LastetOpp', 'SendesSenere','SendesIkke') ", new VedleggRowMapper(false), soknadId);
+                " antallsider, fillagerReferanse, aarsak from Vedlegg where faktum = ? and innsendingsvalg in ('VedleggKreves', 'VedleggSendesIkke', 'VedleggSendesAvAndre'," +
+                " 'VedleggAlleredeSendt', 'LastetOpp', 'SendesSenere','SendesIkke') ", new VedleggRowMapper(false), faktumId);
         return on(vedlegg).filter(not(ER_KVITTERING)).collect();
     }
 
+    @Override
     public List<Vedlegg> hentPaakrevdeVedlegg(String behandlingsId) {
         List<Vedlegg> vedlegg = getJdbcTemplate().query("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, opprinneliginnsendingsvalg, storrelse, opprettetdato," +
                 " antallsider, fillagerReferanse, aarsak from Vedlegg where soknad_id = (select soknad_id from SOKNAD where brukerbehandlingid = ?) and innsendingsvalg in ('VedleggKreves', 'VedleggSendesIkke', 'VedleggSendesAvAndre'," +
