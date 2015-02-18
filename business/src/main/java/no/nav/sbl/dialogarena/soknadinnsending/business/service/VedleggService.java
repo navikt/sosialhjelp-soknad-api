@@ -28,6 +28,6 @@ public interface VedleggService {
 
     void leggTilKodeverkFelter(List<Vedlegg> vedlegg);
 
-    void lagreKvitteringSomVedlegg(Long soknadId, byte[] kvittering);
+    void lagreKvitteringSomVedlegg(String behandlingsId, byte[] kvittering);
 
 }

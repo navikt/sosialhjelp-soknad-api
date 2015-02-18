@@ -27,7 +27,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.websoknad.servlet.UrlUtils.getEttersendelseUrl;
 import static no.nav.sbl.dialogarena.websoknad.servlet.UrlUtils.getGjenopptaUrl;
 
-@Path("/soknad/{soknadId}/actions")
+@Path("/soknad/{behandlingsId}/actions")
 @Produces(APPLICATION_JSON)
 public class SoknadActions {
 
@@ -62,12 +62,12 @@ public class SoknadActions {
     @POST
     @Path("/send")
     @SjekkTilgangTilSoknad
-    public void sendSoknad(@PathParam("soknadId") Long soknadId) {
-        WebSoknad soknad = soknadService.hentSoknad(soknadId);
+    public void sendSoknad(@PathParam("behandlingsId") String behandlingsId) {
+        WebSoknad soknad = soknadService.hentSoknad(behandlingsId);
 
         byte[] kvittering = genererPdf(soknad, "/skjema/kvittering");
         if (soknad.erEttersending()) {
-            soknadService.sendSoknad(soknadId, kvittering);
+            soknadService.sendSoknad(behandlingsId, kvittering);
         } else {
             byte[] soknadPdf;
             if (soknad.erGjenopptak()) {
@@ -75,29 +75,27 @@ public class SoknadActions {
             } else {
                 soknadPdf = genererPdf(soknad, "/skjema/dagpenger");
             }
-            vedleggService.lagreKvitteringSomVedlegg(soknadId, kvittering);
-            soknadService.sendSoknad(soknadId, soknadPdf);
+            vedleggService.lagreKvitteringSomVedlegg(behandlingsId, kvittering);
+            soknadService.sendSoknad(behandlingsId, soknadPdf);
         }
     }
 
     //TODO: trenger man å wrappe epost i eget objekt?
     @POST
     @Path("/fortsettsenere")
-    public void sendEpost(@PathParam("soknadId") Long soknadId, FortsettSenere epost, @Context HttpServletRequest request) {
-        String behandlingId = soknadService.hentSoknad(soknadId).getBrukerBehandlingId();
+    public void sendEpost(@PathParam("behandlingsId") String behandlingsId, FortsettSenere epost, @Context HttpServletRequest request) {
         String content = messageSource.getMessage("fortsettSenere.sendEpost.epostInnhold",
-                new Object[]{getGjenopptaUrl(request.getRequestURL().toString(), behandlingId)}, new Locale("nb", "NO"));
+                new Object[]{getGjenopptaUrl(request.getRequestURL().toString(), behandlingsId)}, new Locale("nb", "NO"));
         emailService.sendFortsettSenereEPost(epost.getEpost(), "Lenke til påbegynt dagpengesøknad", content);
     }
 
     @POST
     @Path("/bekreftinnsending")
-    public void sendEpost(@PathParam("soknadId") Long soknadId, SoknadBekreftelse soknadBekreftelse, @Context HttpServletRequest request) {
+    public void sendEpost(@PathParam("behandlingsId") String behandlingsId, SoknadBekreftelse soknadBekreftelse, @Context HttpServletRequest request) {
         if (soknadBekreftelse.getEpost() != null) {
-            String behandlingId = soknadService.hentSoknad(soknadId).getBrukerBehandlingId();
             String subject = messageSource.getMessage("sendtSoknad.sendEpost.epostSubject", null, new Locale("nb", "NO"));
-            String ettersendelseUrl = getEttersendelseUrl(request.getRequestURL().toString(), behandlingId);
-            String saksoversiktLink = saksoversiktUrl + "/detaljer/" + soknadBekreftelse.getTemaKode() + "/" + behandlingId;
+            String ettersendelseUrl = getEttersendelseUrl(request.getRequestURL().toString(), behandlingsId);
+            String saksoversiktLink = saksoversiktUrl + "/detaljer/" + soknadBekreftelse.getTemaKode() + "/" + behandlingsId;
             String innhold = messageSource.getMessage("sendtSoknad.sendEpost.epostInnhold", new Object[]{saksoversiktLink, ettersendelseUrl}, new Locale("nb", "NO"));
             if (soknadBekreftelse.getErEttersendelse()) {
                 innhold = messageSource.getMessage("sendEttersendelse.sendEpost.epostInnhold", new Object[]{saksoversiktLink}, new Locale("nb", "NO"));
@@ -107,7 +105,7 @@ public class SoknadActions {
             // paragrader må man legge på igjen p-tagsene for å unngå potsensielle feil i HTMLen
             innhold = "<p>" + innhold + "</p>";
 
-            emailService.sendEpostEtterInnsendtSoknad(soknadBekreftelse.getEpost(), subject, innhold, behandlingId);
+            emailService.sendEpostEtterInnsendtSoknad(soknadBekreftelse.getEpost(), subject, innhold, behandlingsId);
 
         } else {
             logger.debug("Fant ingen epost, sender ikke mail for innsendig");

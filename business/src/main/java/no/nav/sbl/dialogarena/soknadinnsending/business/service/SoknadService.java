@@ -296,9 +296,13 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     }
 
     @Override
-    public void sendSoknad(long soknadId, byte[] pdf) {
-        WebSoknad soknad = hentSoknad(soknadId);
+    public void sendSoknad(String behandlingsId, byte[] pdf) {
+        WebSoknad soknad = hentSoknad(behandlingsId);
+        sendSoknad(soknad, pdf);
+    }
 
+    private void sendSoknad(WebSoknad soknad, byte[] pdf) {
+        long soknadId = soknad.getSoknadId();
         if (soknad.erEttersending() && soknad.getOpplastedeVedlegg().size() <= 0) {
             logger.error("Kan ikke sende inn ettersendingen med ID {0} uten å ha lastet opp vedlegg", soknad.getBrukerBehandlingId());
             throw new ApplicationException(String.format("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg"));
