@@ -9,22 +9,20 @@ public interface VedleggService {
 
     List<Long> splitOgLagreVedlegg(Vedlegg vedlegg, InputStream inputStream);
 
-    List<Vedlegg> hentVedleggUnderBehandling(Long soknadId, String fillagerReferanse);
+    List<Vedlegg> hentVedleggUnderBehandling(String behandlingsId, String fillagerReferanse);
 
-    Vedlegg hentVedlegg(String behandlingsId, Long vedleggId, boolean medInnhold);
-    Vedlegg hentVedlegg(Long soknadId, Long vedleggId, boolean medInnhold);
+    Vedlegg hentVedlegg(Long vedleggId, boolean medInnhold);
 
-    void slettVedlegg(Long soknadId, Long vedleggId);
+    void slettVedlegg(Long vedleggId);
 
-    byte[] lagForhandsvisning(Long soknadId, Long vedleggId, int side);
+    byte[] lagForhandsvisning(Long vedleggId, int side);
 
-    Long genererVedleggFaktum(Long soknadId, Long vedleggId);
     Long genererVedleggFaktum(String behandlingsId, Long vedleggId);
 
     List<Vedlegg> hentPaakrevdeVedlegg(Long faktumId);
     List<Vedlegg> hentPaakrevdeVedlegg(String behandlingsId);
 
-    void lagreVedlegg(Long soknadId, Long vedleggId, Vedlegg vedlegg);
+    void lagreVedlegg(Long vedleggId, Vedlegg vedlegg);
 
     void leggTilKodeverkFelter(List<Vedlegg> vedlegg);
 

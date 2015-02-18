@@ -56,7 +56,7 @@ public class SoknadActions {
     @SjekkTilgangTilSoknad
     public Vedlegg leggVedVedlegg(@PathParam("behandlingsId") final String behandlingsId, @QueryParam("vedleggId") final Long vedleggId) {
         vedleggService.genererVedleggFaktum(behandlingsId, vedleggId);
-        return vedleggService.hentVedlegg(behandlingsId, vedleggId, false);
+        return vedleggService.hentVedlegg(vedleggId, false);
     }
 
     @POST

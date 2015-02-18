@@ -27,7 +27,6 @@ public interface SendSoknadService {
     String startSoknad(String navSoknadId, String fnr);
 
     WebSoknad hentSoknad(long soknadId);
-
     WebSoknad hentSoknad(String behandlingsId);
 
     String hentSoknadEier(Long soknadId);
