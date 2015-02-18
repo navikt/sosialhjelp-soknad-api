@@ -5,14 +5,13 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad;
-import org.apache.commons.collections15.Predicate;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import java.util.List;
 
+import static java.lang.String.format;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.modig.lang.collections.IterUtils.on;
 
 /**
  * Klassen håndterer alle rest kall for å hente grunnlagsdata til applikasjonen.
@@ -27,13 +26,13 @@ public class FaktaRessurs {
     @Inject
     private VedleggService vedleggService;
 
-    //todo: legg til GET for faktum
+    // TODO: legg til GET for faktum?
 
     @POST
     @Consumes(APPLICATION_JSON)
     @SjekkTilgangTilSoknad
-    public Faktum opprettFaktum(@QueryParam("soknadId") final Long soknadId, Faktum faktum) {
-        return faktaService.lagreSoknadsFelt(soknadId, faktum);
+    public Faktum opprettFaktum(@QueryParam("behandlingsId") final String behandlingsId, Faktum faktum) {
+        return faktaService.lagreSoknadsFelt(behandlingsId, faktum);
     }
 
     @PUT
@@ -41,28 +40,24 @@ public class FaktaRessurs {
     @Consumes(APPLICATION_JSON)
     @SjekkTilgangTilSoknad
     public Faktum lagreFaktum(@PathParam("faktumId") final Long faktumId, Faktum faktum) {
-        return faktaService.lagreSoknadsFelt(faktum.getSoknadId(), faktum);
+        if (faktumId.equals(faktum.getFaktumId())) {
+            return faktaService.lagreSoknadsFelt(faktum);
+        } else {
+            throw new RuntimeException(format("Faktumets ID (%d) matcher ikke faktumId (%d)", faktum.getFaktumId(), faktumId)); // TODO: Kast exception med 400 og Feilmelding?
+        }
     }
 
-    // TODO: Fjern soknadId
     @DELETE
     @Path("/{faktumId}")
     @SjekkTilgangTilSoknad
-    public void slettFaktum(@PathParam("faktumId") final Long faktumId, @QueryParam("soknadId") final Long soknadId) {
-        faktaService.slettBrukerFaktum(soknadId, faktumId);
+    public void slettFaktum(@PathParam("faktumId") final Long faktumId) {
+        faktaService.slettBrukerFaktum(faktumId);
     }
 
-    // TODO: Fjern soknadId
     @GET
     @Path("/{faktumId}/vedlegg")
     @SjekkTilgangTilSoknad
-    public List<Vedlegg> hentVedlegg(@PathParam("faktumId") final Long faktumId, @QueryParam("soknadId") final Long soknadId) {
-        return on(vedleggService.hentPaakrevdeVedlegg(soknadId)).filter(new Predicate<Vedlegg>() {
-            @Override
-            public boolean evaluate(Vedlegg vedleggForventning) {
-                return vedleggForventning.getFaktumId().equals(faktumId);
-            }
-        }).collect();
+    public List<Vedlegg> hentVedlegg(@PathParam("faktumId") final Long faktumId) {
+        return vedleggService.hentPaakrevdeVedlegg(faktumId);
     }
-
 }

@@ -176,7 +176,8 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     }
 
     public WebSoknad hentSoknadMedData(Long id) {
-        return hentSoknad(id).medBrukerData(hentAlleBrukerData(id)).medVedlegg(vedleggRepository.hentPaakrevdeVedlegg(id));
+        WebSoknad soknad = hentSoknad(id).medBrukerData(hentAlleBrukerData(id));
+        return soknad.medVedlegg(vedleggRepository.hentPaakrevdeVedlegg(soknad.getBrukerBehandlingId()));
     }
 
     public WebSoknad hentSoknadMedData(String behandlingsId) {
@@ -192,22 +193,23 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         }
     }
 
-    public Faktum hentFaktum(Long soknadId, Long faktumId) {
-        return hentFaktum(soknadId, faktumId, false);
-    }
-
-    private Faktum hentFaktum(final Long soknadId, final Long faktumId, boolean forUpdate) {
+    public Faktum hentFaktum(Long faktumId) {
         if (faktumId == null) {
             return null;
         }
-        final String sql = "select * from SOKNADBRUKERDATA where soknad_id = ? and soknadbrukerdata_id = ? " + (forUpdate ? " for update" : "");
-        String propertiesSql = "select * from FAKTUMEGENSKAP where soknad_id = ? and faktum_id=?";
-        Faktum result = getJdbcTemplate().queryForObject(sql, faktumRowMapper, soknadId, faktumId);
-        List<FaktumEgenskap> properties = getJdbcTemplate().query(propertiesSql, faktumEgenskapRowMapper, soknadId, result.getFaktumId());
+        final String sql = "select * from SOKNADBRUKERDATA where soknadbrukerdata_id = ?";
+        String propertiesSql = "select * from FAKTUMEGENSKAP where soknad_id = ? and faktum_id = ?";
+        Faktum faktum = getJdbcTemplate().queryForObject(sql, faktumRowMapper, faktumId);
+        List<FaktumEgenskap> properties = getJdbcTemplate().query(propertiesSql, faktumEgenskapRowMapper, faktum.getSoknadId(), faktum.getFaktumId());
         for (FaktumEgenskap faktumEgenskap : properties) {
-            result.medEgenskap(faktumEgenskap);
+            faktum.medEgenskap(faktumEgenskap);
         }
-        return result;
+        return faktum;
+    }
+
+    public Faktum hentFaktum(final Long soknadId, final Long faktumId) {
+        // TODO: Rydd opp i de som bruker denne med soknadId
+        return hentFaktum(faktumId);
     }
 
     public List<Faktum> hentBarneFakta(Long soknadId, Long faktumId) {

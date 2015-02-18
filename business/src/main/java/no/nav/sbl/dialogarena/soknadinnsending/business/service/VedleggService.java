@@ -21,7 +21,7 @@ public interface VedleggService {
     Long genererVedleggFaktum(Long soknadId, Long vedleggId);
     Long genererVedleggFaktum(String behandlingsId, Long vedleggId);
 
-    List<Vedlegg> hentPaakrevdeVedlegg(Long soknadId);
+    List<Vedlegg> hentPaakrevdeVedlegg(Long faktumId);
     List<Vedlegg> hentPaakrevdeVedlegg(String behandlingsId);
 
     void lagreVedlegg(Long soknadId, Long vedleggId, Vedlegg vedlegg);
