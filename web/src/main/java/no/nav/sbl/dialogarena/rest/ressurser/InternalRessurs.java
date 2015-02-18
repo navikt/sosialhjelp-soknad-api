@@ -6,10 +6,8 @@ import no.nav.sbl.dialogarena.websoknad.config.ContentConfig;
 import org.springframework.cache.CacheManager;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 
 @Path("/internal")
 public class InternalRessurs {
@@ -27,6 +25,13 @@ public class InternalRessurs {
     @Path("/selftest")
     public String dummyselftest() {
         return "ok";
+    }
+
+    @GET
+    @Path("/isAlive")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String isAlive() {
+        return "{status: \"ok\", message: \"soknadsapiet fungerer\"}";
     }
 
     @POST
