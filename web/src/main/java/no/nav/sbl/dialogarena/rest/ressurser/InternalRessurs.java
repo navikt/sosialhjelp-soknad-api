@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.SelfTestService;
 import no.nav.sbl.dialogarena.websoknad.config.ContentConfig;
 import org.springframework.cache.CacheManager;
 
@@ -23,8 +24,10 @@ public class InternalRessurs {
 
     @GET
     @Path("/selftest")
-    public String dummyselftest() {
-        return "ok";
+    @Produces(MediaType.TEXT_HTML)
+    public String selftest() {
+        SelfTestService service = new SelfTestService("Søknads api");
+        return service.buildHtmlString();
     }
 
     @GET
