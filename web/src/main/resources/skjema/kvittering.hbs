@@ -5,16 +5,16 @@
             @page:first { margin: 12mm 2cm 2.5cm; }
             *       { box-sizing: border-box; }
             body    { font-family: Arial, sans-serif; font-size: 10pt; line-height: 1.4em; margin: 0; color: #3e3832; }
-            h1      { font-family: Modus, Arial, sans-serif; font-size: 22pt; font-weight: 300 }
-            h2      { font-family: Modus, Arial, sans-serif; font-size: 20pt; font-weight: 300; }
+            h1      { font-family: Modus, Arial, sans-serif; font-size: 22pt; font-weight: normal; }
             h3, h4, h5, h6 { font-family: Modus, Arial, sans-serif; font-size: 13pt; font-weight: 300; }
             .logo      { position: absolute; left: 80mm; top: 0; width: 20mm; }
             .hode      { text-align: center; margin: 20mm 0 10.5mm; padding-bottom: 10.5mm; border-bottom: .5pt solid #999; }
             .hode hr   { border: none; border-top: .5pt solid #999; width: 8mm; margin: 10mm auto 8mm; }
             .hode .personalia > span { display: block; }
             .hode .nvn, .hode .fnr { font-family: Modus, Arial, sans-serif; font-weight: bold; font-size: 13pt; font-weight: 300; }
-            .hode .adr { font-family: Modus, Arial, sans-serif; margin-top: 2mm; }
+            .hode { font-family: Modus, Arial, sans-serif; margin-top: 2mm; }
             .sendt-info { margin-bottom: 10.5mm; }
+            .header-bold { font-weight: 300; }
             ul { list-style: none; padding-left: 0; margin-top: 0; margin-bottom: 10.5mm; }
             .innsendt li { background: url(http://localhost:8080/sendsoknad/img/hake_sort_200.jpg) no-repeat left center; padding-left: 4mm; background-size: 2.3mm; }
             .ikke-innsendt li { background: url(http://localhost:8080/sendsoknad/img/minus_sort.gif) no-repeat left center; padding-left: 4mm; background-size: 2mm; }
@@ -27,7 +27,7 @@
         <div id="kvittering">
             <img class="logo" src="http://localhost:8080/sendsoknad/img/nav-logo-stor.gif"/>
             <div class="hode">
-                <h1>{{ hentTekst "kvittering.tittel" }}</h1>
+                <h1 class="header-bold">{{ hentTekst "kvittering.tittel" }}</h1>
                 {{#hvisEttersending}}
                     <h1>{{ hentTekst "ettersending.kvittering.tittel" }}</h1>
                 {{/hvisEttersending}}
