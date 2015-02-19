@@ -26,12 +26,12 @@ public interface SendSoknadService {
 
     String startSoknad(String navSoknadId, String fnr);
 
-    WebSoknad hentSoknad(long soknadId);
     WebSoknad hentSoknad(String behandlingsId);
 
-    String hentSoknadEier(Long soknadId);
+    WebSoknad hentSoknadMedFaktaOgVedlegg(long soknadId);
+    WebSoknad hentSoknadMedFaktaOgVedlegg(String behandlingsId);
 
-    WebSoknad hentSoknadMedBehandlingsId(String behandlingsId);
+    String hentSoknadEier(Long soknadId);
 
     void sendSoknad(String behandlingsId, byte[] outputStream);
 

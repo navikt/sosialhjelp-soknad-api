@@ -53,7 +53,7 @@ public class SoknadRessurs {
     @Path("/{behandlingsId}")
     @SjekkTilgangTilSoknad
     public WebSoknad hentSoknadData(@PathParam("behandlingsId") String behandlingsId) {
-        return soknadService.hentSoknad(behandlingsId);
+        return soknadService.hentSoknadMedFaktaOgVedlegg(behandlingsId);
     }
 
     @GET
@@ -61,7 +61,7 @@ public class SoknadRessurs {
     @Produces(TEXT_HTML)
     @SjekkTilgangTilSoknad
     public String hentOppsummering(@PathParam("behandlingsId") String behandlingsId) throws IOException {
-        WebSoknad soknad = soknadService.hentSoknad(behandlingsId);
+        WebSoknad soknad = soknadService.hentSoknadMedFaktaOgVedlegg(behandlingsId);
         vedleggService.leggTilKodeverkFelter(soknad.getVedlegg());
         if (soknad.erGjenopptak()) {
             return pdfTemplate.fyllHtmlMalMedInnhold(soknad, "/skjema/gjenopptak");

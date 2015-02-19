@@ -62,7 +62,7 @@ public class SikkerhetsAspectTest {
 
     @Before
     public void init() {
-        when(soknadService.hentSoknad(anyLong())).thenReturn(new WebSoknad().medBehandlingId(brukerBehandlingsId));
+        when(soknadService.hentSoknadMedFaktaOgVedlegg(anyLong())).thenReturn(new WebSoknad().medBehandlingId(brukerBehandlingsId));
     }
 
     @Test

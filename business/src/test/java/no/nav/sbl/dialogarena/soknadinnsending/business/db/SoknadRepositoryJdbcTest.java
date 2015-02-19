@@ -67,7 +67,7 @@ public class SoknadRepositoryJdbcTest {
     }
 
     @Test
-    public void skalSetteSistLagret(){
+    public void skalSetteSistLagret() {
         opprettOgPersisterSoknad();
         soknadRepository.settSistLagretTidspunkt(soknadId);
         WebSoknad endret = soknadRepository.hentSoknad(soknadId);
@@ -127,7 +127,7 @@ public class SoknadRepositoryJdbcTest {
         String behId = randomUUID().toString();
         opprettOgPersisterSoknad(behId, "aktor-3");
 
-        WebSoknad opprettetSoknad = soknadRepository.hentMedBehandlingsId(behId);
+        WebSoknad opprettetSoknad = soknadRepository.hentSoknad(behId);
 
         assertThat(opprettetSoknad, notNullValue());
         assertThat(opprettetSoknad.getStatus(), is(SoknadInnsendingStatus.UNDER_ARBEID));
@@ -139,7 +139,7 @@ public class SoknadRepositoryJdbcTest {
     @Test
     public void skalFaaNullVedUkjentBehandlingsId() {
         String behId = randomUUID().toString();
-        WebSoknad soknad = soknadRepository.hentMedBehandlingsId(behId);
+        WebSoknad soknad = soknadRepository.hentSoknad(behId);
         Assert.assertNull(soknad);
     }
 
@@ -190,18 +190,15 @@ public class SoknadRepositoryJdbcTest {
         assertThat(personalia.get(0), is(equalTo(result)));
     }
 
-    @Test
+    @Test(expected = EmptyResultDataAccessException.class)
     public void skalSletteFaktum() {
         opprettOgPersisterSoknad();
         Long id = lagreData("key", null, "value");
         Faktum faktum = soknadRepository.hentFaktum(soknadId, id);
         assertThat(faktum, is(notNullValue()));
         soknadRepository.slettBrukerFaktum(soknadId, id);
-        try {
-            soknadRepository.hentFaktum(soknadId, id);
-            fail("ikke slettet");
-        } catch (EmptyResultDataAccessException ex) {
-        }
+        soknadRepository.hentFaktum(soknadId, id);
+        fail("ikke slettet");
     }
 
     @Test
@@ -291,14 +288,16 @@ public class SoknadRepositoryJdbcTest {
         soknadId = opprettOgPersisterSoknad();
         soknadRepository.lagreFaktum(soknadId, new Faktum().medSoknadId(soknadId).medKey("system1").medType(SYSTEMREGISTRERT));
     }
+
     @Test
-    public void skalHenteSoknadType(){
+    public void skalHenteSoknadType() {
         opprettOgPersisterSoknad();
         String s = soknadRepository.hentSoknadType(soknadId);
         assertThat(s, is(equalTo(soknad.getskjemaNummer())));
     }
+
     @Test
-    public void skalSetteDelstegstatus(){
+    public void skalSetteDelstegstatus() {
         opprettOgPersisterSoknad();
         soknadRepository.settDelstegstatus(soknadId, DelstegStatus.SAMTYKKET);
         assertThat(soknadRepository.hentSoknad(soknadId).getDelstegStatus(), is(equalTo(DelstegStatus.SAMTYKKET)));
@@ -416,7 +415,7 @@ public class SoknadRepositoryJdbcTest {
 
     @Test
     public void skalKunneHenteUtEttersendingMedBehandlingskjedeId() {
-        opprettOgPersisterEttersending("BehandlingsId");
+        opprettOgPersisterEttersending();
 
         Optional<WebSoknad> res = soknadRepository.hentEttersendingMedBehandlingskjedeId(behandlingsId);
 
@@ -486,7 +485,7 @@ public class SoknadRepositoryJdbcTest {
         return opprettOgPersisterSoknad(randomUUID().toString(), nyAktorId);
     }
 
-    private Long opprettOgPersisterEttersending(String behandlinsId) {
+    private Long opprettOgPersisterEttersending() {
         soknad = WebSoknad.startEttersending(behandlingsId)
                 .medUuid(uuid)
                 .medAktorId(aktorId)

@@ -114,7 +114,7 @@ public class SoknadServiceTest {
                                         new XMLHovedskjema().withUuid("uidHovedskjema"),
                                         new XMLVedlegg().withUuid("uidVedlegg")))
         );
-        when(soknadRepository.hentMedBehandlingsId("123")).thenReturn(null, soknad, soknad);
+        when(soknadRepository.hentSoknad("123")).thenReturn(null, soknad, soknad);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         JAXB.marshal(soknad, baos);
@@ -133,8 +133,8 @@ public class SoknadServiceTest {
                 return null;
             }
         }).when(handler).writeTo(any(OutputStream.class));
-        WebSoknad webSoknad = soknadService.hentSoknadMedBehandlingsId("123");
-        soknadService.hentSoknadMedBehandlingsId("123");
+        WebSoknad webSoknad = soknadService.hentSoknad("123");
+        soknadService.hentSoknad("123");
         verify(soknadRepository, atMost(1)).populerFraStruktur(eq(soknadCheck));
         verify(vedleggRepository).lagreVedleggMedData(11L, 4L, vedleggCheck);
         assertThat(webSoknad.getSoknadId(), is(equalTo(11L)));
@@ -252,7 +252,7 @@ public class SoknadServiceTest {
     public void skalHenteSoknad() {
         when(soknadRepository.hentSoknadMedData(1L)).thenReturn(new WebSoknad().medId(1L));
         when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(new ArrayList<Vedlegg>());
-        assertThat(soknadService.hentSoknad(1L), is(equalTo(new WebSoknad().medId(1L).medVedlegg(new ArrayList<Vedlegg>()))));
+        assertThat(soknadService.hentSoknadMedFaktaOgVedlegg(1L), is(equalTo(new WebSoknad().medId(1L).medVedlegg(new ArrayList<Vedlegg>()))));
     }
 
     @Test
@@ -394,7 +394,7 @@ public class SoknadServiceTest {
 
     @Test
     public void skalAvbryteSoknad() {
-        when(soknadRepository.hentMedBehandlingsId("123")).thenReturn(new WebSoknad().medBehandlingId("123").medId(11L));
+        when(soknadRepository.hentSoknad("123")).thenReturn(new WebSoknad().medBehandlingId("123").medId(11L));
         soknadService.avbrytSoknad("123");
         verify(soknadRepository).slettSoknad(11L);
         verify(henvendelsesConnector).avbrytSoknad("123");
