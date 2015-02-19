@@ -147,7 +147,11 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     public WebSoknad hentSoknad(String behandlingsId) {
         String sql = "select * from SOKNAD where brukerbehandlingid = ?";
-        return getJdbcTemplate().queryForObject(sql, new SoknadRowMapper(), behandlingsId);
+        try {
+            return getJdbcTemplate().queryForObject(sql, new SoknadRowMapper(), behandlingsId);
+        } catch (EmptyResultDataAccessException ignore) {
+            return null;
+        }
     }
 
     public Optional<WebSoknad> plukkSoknadTilMellomlagring() {
@@ -181,16 +185,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     }
 
     public WebSoknad hentSoknadMedData(String behandlingsId) {
-        return hentMedBehandlingsId(behandlingsId).medBrukerData(hentAlleBrukerData(behandlingsId)).medVedlegg(vedleggRepository.hentPaakrevdeVedlegg(behandlingsId));
-    }
-
-    public WebSoknad hentMedBehandlingsId(String behandlingsId) {
-        String sql = "select * from SOKNAD where brukerbehandlingid = ?";
-        try {
-            return getJdbcTemplate().queryForObject(sql, new SoknadRowMapper(), behandlingsId);
-        } catch (EmptyResultDataAccessException ignore) {
-            return null;
-        }
+        return hentSoknad(behandlingsId).medBrukerData(hentAlleBrukerData(behandlingsId)).medVedlegg(vedleggRepository.hentPaakrevdeVedlegg(behandlingsId));
     }
 
     public Faktum hentFaktum(Long faktumId) {

@@ -32,8 +32,6 @@ public interface SoknadRepository {
 
     Long lagreFaktum(long soknadId, Faktum faktum, Boolean systemFaktum);
 
-    WebSoknad hentMedBehandlingsId(String behandlingsId);
-
     Faktum hentFaktum(Long faktumId);
     Faktum hentFaktum(Long soknadId, Long faktumId);
 

@@ -59,7 +59,6 @@ public class InformasjonService {
         return result;
     }
 
-    //todo: lage en egen meteode for å hente skjemanummer fra beh.id
     public Map<String,String> hentVedleggsskjemaForBehandlingsId(String behandlingsId) {
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId);
         return hentVedleggsskjema(soknad.getskjemaNummer());
