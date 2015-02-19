@@ -27,9 +27,10 @@
         <div id="kvittering">
             <img class="logo" src="http://localhost:8080/sendsoknad/img/nav-logo-stor.gif"/>
             <div class="hode">
-                {{#hvisSant erEttersending}}
+                <h1>{{ hentTekst "kvittering.tittel" }}</h1>
+                {{#hvisEttersending}}
                     <h1>{{ hentTekst "ettersending.kvittering.tittel" }}</h1>
-                {{/hvisSant }}
+                {{/hvisEttersending}}
                 <h1>{{ hentTekst "skjema.tittel" }}</h1>
                 <hr/>
                 {{#forFaktum "personalia"}}

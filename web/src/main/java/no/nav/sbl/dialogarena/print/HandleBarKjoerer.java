@@ -70,6 +70,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
         handlebars.registerHelper("formatterFodelsDato", generateFormatterFodselsdatoHelper());
         handlebars.registerHelper("formatterLangDato", generateFormatterLangDatoHelper());
         handlebars.registerHelper("hvisSant", generateHvisSantHelper());
+        handlebars.registerHelper("hvisEttersending", generateHvisEttersendingHelper());
         handlebars.registerHelper("hvisMindre", generateHvisMindreHelper());
         handlebars.registerHelper("hvisMer", generateHvisMerHelper());
         handlebars.registerHelper("hvisLik", generateHvisLikHelper());
@@ -350,6 +351,19 @@ public class HandleBarKjoerer implements HtmlGenerator {
             @Override
             public CharSequence apply(String value, Options options) throws IOException {
                 if (value != null && value.equals("true")) {
+                    return options.fn(this);
+                } else {
+                    return options.inverse(this);
+                }
+            }
+        };
+    }
+    private Helper<Object> generateHvisEttersendingHelper() {
+        return new Helper<Object>() {
+            @Override
+            public CharSequence apply(Object o, Options options) throws IOException {
+                WebSoknad soknad = finnWebSoknad(options.context);
+                if (soknad.erEttersending()) {
                     return options.fn(this);
                 } else {
                     return options.inverse(this);
