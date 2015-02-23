@@ -83,15 +83,14 @@ public class VedleggRessurs {
     @POST
     @Path("/fil")
     @Consumes(MULTIPART_FORM_DATA)
-    @SjekkTilgangTilSoknad(sjekkXsrf = false)
+    @SjekkTilgangTilSoknad
     public List<Vedlegg> lastOppFiler(@PathParam("vedleggId") final Long vedleggId, @QueryParam("behandlingsId") String behandlingsId,
-                                          @QueryParam("X-XSRF-TOKEN") final String xsrfToken, @FormDataParam("files") final List<FormDataBodyPart> files) {
+                                        @FormDataParam("files[]") final List<FormDataBodyPart> files) {
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId);
         if (soknad.getBehandlingskjedeId() != null) {
             behandlingsId = soknad.getBehandlingskjedeId();
         }
 
-        XsrfGenerator.sjekkXsrfToken(xsrfToken, behandlingsId);
         Vedlegg forventning = vedleggService.hentVedlegg(vedleggId, false);
 
         if (erFilForStor(behandlingsId, files, forventning)) {
