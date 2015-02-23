@@ -27,7 +27,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.websoknad.servlet.UrlUtils.getEttersendelseUrl;
 import static no.nav.sbl.dialogarena.websoknad.servlet.UrlUtils.getGjenopptaUrl;
 
-@Path("/soknad/{behandlingsId}/actions")
+@Path("/soknader/{behandlingsId}/actions")
 @Produces(APPLICATION_JSON)
 public class SoknadActions {
 
