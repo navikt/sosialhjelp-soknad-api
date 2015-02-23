@@ -56,6 +56,7 @@ public class VedleggRessurs {
 
     @GET
     @Path("/fil")
+    @Produces(APPLICATION_JSON)
     @SjekkTilgangTilSoknad
     public List<Vedlegg> hentVedleggUnderBehandling(@PathParam("vedleggId") final Long vedleggId, @QueryParam("behandlingsId") final String behandlingsId) {
         Vedlegg forventning = vedleggService.hentVedlegg(vedleggId, false);
@@ -74,7 +75,7 @@ public class VedleggRessurs {
 
     @GET
     @Path("/fil")
-    @Produces(IMAGE_PNG_VALUE)
+    @Produces("image/*")
     @SjekkTilgangTilSoknad
     public byte[] lagForhandsvisningForVedlegg(@PathParam("vedleggId") final Long vedleggId, @QueryParam("side") final int side) {
         return vedleggService.lagForhandsvisning(vedleggId, side);
