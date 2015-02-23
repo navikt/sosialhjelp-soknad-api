@@ -1,7 +1,16 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
+import no.aetat.arena.fodselsnr.Fodselsnr;
+import no.nav.arena.tjenester.person.v1.FaultGeneriskMsg;
+import no.nav.arena.tjenester.person.v1.PersonInfoServiceSoap;
+import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
+import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
+import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -27,6 +36,31 @@ public class SelfTestService extends SelfTestBase {
 
     private static final Logger logger = getLogger(SelfTestService.class);
 
+    @Inject
+    @Named("sendSoknadSelftestEndpoint")
+    private SendSoknadPortType CMSEndpoint;
+
+    @Inject
+    @Named("fillagerSelftestEndpoint")
+    private FilLagerPortType fillagerEndpoint;
+
+    @Inject
+    @Named("personEndpoint")
+    private PersonPortType personEndpoint;
+
+    @Inject
+    @Named("kodeverkSelftestEndpoint")
+    private KodeverkPortType kodeverkEndpoint;
+
+    @Inject
+    @Named("brukerProfilEndpoint")
+    private BrukerprofilPortType brukerProfilEndpoint;
+
+    @Inject
+    private PersonInfoServiceSoap personInfoServiceSoap;
+
+    @Inject
+    private DataSource dataSource;
 
     public SelfTestService() {
         this("Søknads api");
@@ -71,11 +105,108 @@ public class SelfTestService extends SelfTestBase {
         return new AvhengighetStatus("ENONIC_APPRES", status, currentTimeMillis() - start, format("URL: %s", url));
     }
 
+    private AvhengighetStatus getHenvendelseWSStatus() {
+        long start = currentTimeMillis();
+        String status = STATUS_ERROR;
+        try {
+            CMSEndpoint.ping();
+            status = STATUS_OK;
+        } catch (Exception e) {
+            logger.warn("<<<<<<Error Contacting Henvendelse WS", e);
+        }
+        return new AvhengighetStatus("HENVENDELSE_TJENESTE_PING", status, currentTimeMillis() - start);
+    }
+
+    private AvhengighetStatus getFillagerStatus() {
+        long start = currentTimeMillis();
+        String status = STATUS_ERROR;
+        try {
+            fillagerEndpoint.ping();
+            status = STATUS_OK;
+        } catch (Exception e) {
+            logger.warn("<<<<<<Error Contacting Fillager (i Henvendelse)WS", e);
+        }
+        return new AvhengighetStatus("FILLAGER_PING", status, currentTimeMillis() - start);
+    }
+
+    private AvhengighetStatus getPersonStatus() {
+        long start = currentTimeMillis();
+        String status = STATUS_ERROR;
+        try {
+            personEndpoint.ping();
+            status = STATUS_OK;
+        } catch (Exception e) {
+            logger.warn("<<<<<<Error Contacting TPS WS (Person-servicen)", e);
+        }
+        return new AvhengighetStatus("TPS_PERSON_PING", status, currentTimeMillis() - start);
+    }
+
+    private AvhengighetStatus getKodeverkStatus() {
+        long start = currentTimeMillis();
+        String status = STATUS_ERROR;
+        try {
+            kodeverkEndpoint.ping();
+            status = STATUS_OK;
+        } catch (Exception e) {
+            logger.warn("<<<<<<Error Contacting Kodeverk WS", e);
+        }
+        return new AvhengighetStatus("KODEVERK_PING", status, currentTimeMillis() - start);
+    }
+
+
+    private AvhengighetStatus getBrukerProfilStatus() {
+        long start = currentTimeMillis();
+        String status = STATUS_ERROR;
+        try {
+            brukerProfilEndpoint.ping();
+            status = STATUS_OK;
+        } catch (Exception e) {
+            logger.warn("<<<<<<Error Contacting Brukerprofil WS", e);
+        }
+        return new AvhengighetStatus("TPS_BRUKERPROFIL_PING", status, currentTimeMillis() - start);
+    }
+
+    private AvhengighetStatus getPersonInfoStatus() {
+        long start = currentTimeMillis();
+        String status = STATUS_ERROR;
+        Fodselsnr fodselsnr = new Fodselsnr().withFodselsnummer("***REMOVED***");
+        try {
+            personInfoServiceSoap.hentPersonStatus(fodselsnr);
+            status = STATUS_OK;
+        } catch (FaultGeneriskMsg faultGeneriskMsg) {
+            logger.warn("<<<<<<Error Contacting Arena WS", faultGeneriskMsg);
+        }
+
+        return new AvhengighetStatus("ARENA_PERSONINFO_PING", status, currentTimeMillis() - start);
+    }
+
+    private AvhengighetStatus getLokalDatabaseStatus() {
+        long start = currentTimeMillis();
+
+        String status = STATUS_ERROR;
+
+        try {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+            jdbcTemplate.queryForList("select * from dual");
+            status = STATUS_OK;
+        } catch (Exception e) {
+            logger.warn("<<<<<<Error Contacting Arena WS", e);
+        }
+
+        return new AvhengighetStatus("LOKAL_DATABASE_PING", status, currentTimeMillis() - start);
+    }
 
     protected void replaceStatusList(List<AvhengighetStatus> statusList) {
         statusList.clear();
         statusList.addAll(asList(
-                getCMSStatus()
+                getCMSStatus(),
+                getHenvendelseWSStatus(),
+                getFillagerStatus(),
+                getKodeverkStatus(),
+                getPersonStatus(),
+                getBrukerProfilStatus(),
+                getPersonInfoStatus(),
+                getLokalDatabaseStatus()
         ));
     }
 
