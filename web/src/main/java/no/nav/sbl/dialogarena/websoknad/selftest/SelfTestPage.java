@@ -76,7 +76,7 @@ public class SelfTestPage  {
     }
 /*
     @Override
-    protected void addToStatusList(List<AvhengighetStatus> statusList) {
+    protected void replaceStatusList(List<AvhengighetStatus> statusList) {
         new ServiceStatusHenter("HENVENDELSE_SENDSOKNAD") {
             public void ping() {
                 sendSoknadSelftest.ping();

@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Import;
         DefaultVedleggService.class,
         LandService.class,
         SoknadService.class,
+        SelfTestService.class,
         StartDatoService.class,
         FaktaService.class
 })

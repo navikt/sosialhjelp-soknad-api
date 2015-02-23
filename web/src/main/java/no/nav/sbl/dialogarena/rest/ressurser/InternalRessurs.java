@@ -9,6 +9,7 @@ import org.springframework.cache.CacheManager;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.Map;
 
 @Path("/internal")
 public class InternalRessurs {
@@ -20,14 +21,22 @@ public class InternalRessurs {
     private CacheManager cacheManager;
     @Inject
     private NavMessageSource messageSource;
+    @Inject
+    private SelfTestService selfTest;
 
 
     @GET
     @Path("/selftest")
     @Produces(MediaType.TEXT_HTML)
     public String selftest() {
-        SelfTestService service = new SelfTestService("Søknads api");
-        return service.buildHtmlString();
+        return selfTest.getAsHTML();
+    }
+
+    @GET
+    @Path("/selftest.json")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Map<String, Object> selftestLight() {
+        return selfTest.getAsJSON();
     }
 
     @GET

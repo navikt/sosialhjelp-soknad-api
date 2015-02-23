@@ -3,13 +3,10 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
-import java.beans.Introspector;
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -29,7 +26,6 @@ public abstract class SelfTestBase {
     protected SelfTestBase(String applikasjonsNavn) {
         this.applikasjonsNavn = applikasjonsNavn;
         this.statusList = new ArrayList();
-        this.addToStatusList(statusList);
         this.status = "OK";
 
         ArrayList failed = new ArrayList();
@@ -49,7 +45,7 @@ public abstract class SelfTestBase {
         }
     }
 
-    protected abstract void addToStatusList(List<SelfTestBase.AvhengighetStatus> var1);
+    protected abstract void replaceStatusList(List<SelfTestBase.AvhengighetStatus> var1);
 
     public class SelfTestHTML {
 
