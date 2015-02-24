@@ -1,17 +1,12 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.LandService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.StatsborgerskapType;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.POSTADRESSE_UTLAND;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.UTENLANDSK_ADRESSE;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.*;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.LandService.EOS;
 
 
 public class Personalia {
-
-    private static LandService landService = new LandService();
 
     public static final String PERSONALIA_KEY = "personalia";
     public static final String FNR_KEY = "fnr";
@@ -146,7 +141,7 @@ public class Personalia {
             return false;
         }
 
-        if ((harUtenlandsAdressekode(adressetype)) && (landService.getStatsborgeskapType(landkode).equals(EOS))) {
+        if ((harUtenlandsAdressekode(adressetype)) && (StatsborgerskapType.get(landkode).equals(EOS))) {
             return true;
         }
         return false;

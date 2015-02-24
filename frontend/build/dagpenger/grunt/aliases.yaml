@@ -1,8 +1,0 @@
-default:
-  - 'htmlbuild:dev'
-
-prod:
-  - 'html2js'
-  - 'concat'
-  - 'htmlbuild:dev'
-  - 'htmlbuild:prod'

@@ -27,11 +27,12 @@ public class SikkerhetsAspect {
     public void requestMapping() {
     }
 
+    //TODO: denne må ses på i forhold til at man fjerner søknadsid fra fakta og vedlegg endepunktene
     @Before(value = "requestMapping() && args(soknadId, ..) && @annotation(tilgang)", argNames = "soknadId, tilgang")
     public void sjekkSoknadIdModBruker(Long soknadId, SjekkTilgangTilSoknad tilgang) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         if (tilgang.sjekkXsrf() && request.getMethod().equals(RequestMethod.POST.name())) {
-            WebSoknad soknad = soknadService.hentSoknad(soknadId);
+            WebSoknad soknad = soknadService.hentSoknadMedFaktaOgVedlegg(soknadId);
             String brukerBehandlingId = soknad.getBrukerBehandlingId();
             if (soknad.getBehandlingskjedeId() != null) {
                 brukerBehandlingId = soknad.getBehandlingskjedeId();

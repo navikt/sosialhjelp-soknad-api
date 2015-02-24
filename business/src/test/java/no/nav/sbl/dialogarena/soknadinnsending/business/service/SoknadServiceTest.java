@@ -15,6 +15,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
@@ -51,9 +52,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Fak
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.WebSoknadUtils.DAGPENGER;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.WebSoknadUtils.RUTES_I_BRUT;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
@@ -61,13 +60,7 @@ import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.refEq;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.atMost;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SoknadServiceTest {
@@ -84,12 +77,12 @@ public class SoknadServiceTest {
     private Kodeverk kodeverk;
     @Mock
     private NavMessageSource navMessageSource;
-
     @Mock
     private StartDatoService startDatoService;
-
     @Mock
     private FaktaService faktaService;
+    @Mock
+    private PersonaliaService personaliaService;
 
     @InjectMocks
     private SoknadService soknadService;
@@ -121,7 +114,7 @@ public class SoknadServiceTest {
                                         new XMLHovedskjema().withUuid("uidHovedskjema"),
                                         new XMLVedlegg().withUuid("uidVedlegg")))
         );
-        when(soknadRepository.hentMedBehandlingsId("123")).thenReturn(null, soknad, soknad);
+        when(soknadRepository.hentSoknad("123")).thenReturn(null, soknad, soknad);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         JAXB.marshal(soknad, baos);
@@ -140,8 +133,8 @@ public class SoknadServiceTest {
                 return null;
             }
         }).when(handler).writeTo(any(OutputStream.class));
-        WebSoknad webSoknad = soknadService.hentSoknadMedBehandlingsId("123");
-        soknadService.hentSoknadMedBehandlingsId("123");
+        WebSoknad webSoknad = soknadService.hentSoknad("123");
+        soknadService.hentSoknad("123");
         verify(soknadRepository, atMost(1)).populerFraStruktur(eq(soknadCheck));
         verify(vedleggRepository).lagreVedleggMedData(11L, 4L, vedleggCheck);
         assertThat(webSoknad.getSoknadId(), is(equalTo(11L)));
@@ -161,10 +154,11 @@ public class SoknadServiceTest {
                         .medSkjemaNummer("L8")
                         .medInnsendingsvalg(Vedlegg.Status.SendesIkke));
 
-        when(soknadRepository.hentSoknadMedData(1L)).thenReturn(
+        String behandlingsId = "123";
+        when(soknadRepository.hentSoknadMedData(behandlingsId)).thenReturn(
                 new WebSoknad().medId(1L)
                         .medAktorId("123456")
-                        .medBehandlingId("123")
+                        .medBehandlingId(behandlingsId)
                         .medUuid("uidHovedskjema")
                         .medskjemaNummer(DAGPENGER)
                         .medFaktum(new Faktum().medKey("personalia"))
@@ -181,8 +175,8 @@ public class SoknadServiceTest {
                                 .medAntallSider(1)
                 );
 
-        soknadService.sendSoknad(1L, new byte[]{1, 2, 3});
-        verify(henvendelsesConnector).avsluttSoknad(eq("123"), refEq(new XMLHovedskjema()
+        soknadService.sendSoknad(behandlingsId, new byte[]{1, 2, 3});
+        verify(henvendelsesConnector).avsluttSoknad(eq(behandlingsId), refEq(new XMLHovedskjema()
                         .withUuid("uidHovedskjema")
                         .withInnsendingsvalg(XMLInnsendingsvalg.LASTET_OPP.toString())
                         .withJournalforendeEnhet(RUTES_I_BRUT)
@@ -221,6 +215,7 @@ public class SoknadServiceTest {
 
     @Test(expected = ApplicationException.class)
     public void skalIkkeSendeSoknadMedN6VedleggSomIkkeErSendtInn() {
+        String behandlingsId = "10000000ABC";
         List<Vedlegg> vedlegg = Arrays.asList(
                 new Vedlegg()
                         .medSkjemaNummer("N6")
@@ -233,30 +228,31 @@ public class SoknadServiceTest {
                         .medSkjemaNummer("L7")
                         .medInnsendingsvalg(Vedlegg.Status.SendesIkke));
 
-        when(soknadRepository.hentSoknadMedData(1L)).thenReturn(
+        when(soknadRepository.hentSoknadMedData(behandlingsId)).thenReturn(
                 new WebSoknad().medAktorId("123456")
-                        .medBehandlingId("123")
+                        .medBehandlingId(behandlingsId)
                         .medUuid("uidHovedskjema")
                         .medskjemaNummer(DAGPENGER)
                         .medFaktum(new Faktum().medKey("personalia"))
-                        .medVedlegg(vedlegg));
+                        .medVedlegg(vedlegg)
+                        .medId(1L));
 
         when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(vedlegg);
 
-        soknadService.sendSoknad(1L, new byte[]{1, 2, 3});
+        soknadService.sendSoknad(behandlingsId, new byte[]{1, 2, 3});
     }
 
     @Test
     public void skalSetteDelsteg() {
-        soknadService.settDelsteg(1L, OPPRETTET);
-        verify(soknadRepository).settDelstegstatus(1L, OPPRETTET);
+        soknadService.settDelsteg("1", OPPRETTET);
+        verify(soknadRepository).settDelstegstatus("1", OPPRETTET);
     }
 
     @Test
     public void skalHenteSoknad() {
         when(soknadRepository.hentSoknadMedData(1L)).thenReturn(new WebSoknad().medId(1L));
         when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(new ArrayList<Vedlegg>());
-        assertThat(soknadService.hentSoknad(1L), is(equalTo(new WebSoknad().medId(1L).medVedlegg(new ArrayList<Vedlegg>()))));
+        assertThat(soknadService.hentSoknadMedFaktaOgVedlegg(1L), is(equalTo(new WebSoknad().medId(1L).medVedlegg(new ArrayList<Vedlegg>()))));
     }
 
     @Test
@@ -272,7 +268,7 @@ public class SoknadServiceTest {
         when(henvendelsesConnector.startSoknad(anyString(), anyString(), anyString())).thenReturn("123");
         when(soknadRepository.hentFaktumMedKey(anyLong(), anyString())).thenReturn(new Faktum().medFaktumId(1L));
         when(soknadRepository.hentFaktum(anyLong(), anyLong())).thenReturn(new Faktum().medFaktumId(1L));
-        soknadService.startSoknad(DAGPENGER);
+        soknadService.startSoknad(DAGPENGER, "01019012345");
 
         ArgumentCaptor<String> uid = ArgumentCaptor.forClass(String.class);
         String bruker = StaticSubjectHandler.getSubjectHandler().getUid();
@@ -305,7 +301,7 @@ public class SoknadServiceTest {
         when(soknadRepository.hentFaktum(anyLong(), anyLong())).thenReturn(new Faktum().medFaktumId(1L));
         when(startDatoService.erJanuarEllerFebruar()).thenReturn(false);
         when(soknadRepository.opprettSoknad(any(WebSoknad.class))).thenReturn(soknadId);
-        soknadService.startSoknad(DAGPENGER);
+        soknadService.startSoknad(DAGPENGER, "01019012345");
 
         verify(faktaService, times(1)).lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum, "");
         DateTimeUtils.setCurrentMillisSystem();
@@ -326,7 +322,7 @@ public class SoknadServiceTest {
         when(soknadRepository.hentFaktum(anyLong(), anyLong())).thenReturn(new Faktum().medFaktumId(1L));
         when(startDatoService.erJanuarEllerFebruar()).thenReturn(true);
         when(soknadRepository.opprettSoknad(any(WebSoknad.class))).thenReturn(soknadId);
-        soknadService.startSoknad(DAGPENGER);
+        soknadService.startSoknad(DAGPENGER, "01019012345");
 
         verify(faktaService, times(1)).lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum, "");
         DateTimeUtils.setCurrentMillisSystem();
@@ -374,7 +370,7 @@ public class SoknadServiceTest {
                 .medType(SYSTEMREGISTRERT);
         when(soknadRepository.hentFaktum(anyLong(), anyLong())).thenReturn(soknadInnsendingsDatoFaktum);
 
-        Long ettersendingSoknadId = soknadService.startEttersending(behandlingsId);
+        Long ettersendingSoknadId = soknadService.startEttersending(behandlingsId, "01019012345");
         verify(faktaService).lagreSystemFaktum(anyLong(), any(Faktum.class), anyString());
         assertNotNull(ettersendingSoknadId);
     }
@@ -393,13 +389,13 @@ public class SoknadServiceTest {
         when(henvendelsesConnector.hentBehandlingskjede(behandlingsId)).thenReturn(Arrays.asList(behandlingskjedeElement));
         when(henvendelsesConnector.hentSoknad(behandlingsId)).thenReturn(orginalInnsending);
 
-        soknadService.startEttersending(behandlingsId);
+        soknadService.startEttersending(behandlingsId, "01019012345");
     }
 
     @Test
     public void skalAvbryteSoknad() {
-        when(soknadRepository.hentSoknad(11L)).thenReturn(new WebSoknad().medBehandlingId("123"));
-        soknadService.avbrytSoknad(11L);
+        when(soknadRepository.hentSoknad("123")).thenReturn(new WebSoknad().medBehandlingId("123").medId(11L));
+        soknadService.avbrytSoknad("123");
         verify(soknadRepository).slettSoknad(11L);
         verify(henvendelsesConnector).avbrytSoknad("123");
     }

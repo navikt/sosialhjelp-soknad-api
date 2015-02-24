@@ -1,23 +1,37 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import org.junit.Assert;
+import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.dto.Land;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
+
+@RunWith(MockitoJUnitRunner.class)
 public class LandServiceTest {
+
+    @Mock
+    private Kodeverk kodeverk;
+
+    @InjectMocks
     LandService service = new LandService();
     
     @Test
-    public void skalReturnereNorskForNorskLandkode() {
-        Assert.assertEquals("norsk", service.getStatsborgeskapType("NOR"));
-    }
-    
-    @Test
-    public void skalReturnereEosForDanskLandkode() {
-        Assert.assertEquals("eos", service.getStatsborgeskapType("DNK"));
-    }
-    
-    @Test
-    public void skalReturnereikkeEosForOmanskLandkode() {
-        Assert.assertEquals("ikkeEos", service.getStatsborgeskapType("OMN"));
+    public void resultatetSkalInneholdeNorgeSelvOmNorgeIkkeKomFraKodeverk() throws Exception {
+        when(kodeverk.getAlleLandkoder()).thenReturn(Arrays.asList("SE", "IS", "PL"));
+        when(kodeverk.getLand("SE")).thenReturn("Sverige");
+        when(kodeverk.getLand("IS")).thenReturn("Island");
+        when(kodeverk.getLand("PL")).thenReturn("Polen");
+
+        List<Land> land = service.hentLand(null);
+        assertThat(land.get(0).getText(), equalTo("Norge"));
     }
 }

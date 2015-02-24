@@ -24,19 +24,20 @@ public interface SendSoknadService {
 
     }
 
-    String startSoknad(String navSoknadId);
+    String startSoknad(String navSoknadId, String fnr);
 
-    WebSoknad hentSoknad(long soknadId);
+    WebSoknad hentSoknad(String behandlingsId);
+
+    WebSoknad hentSoknadMedFaktaOgVedlegg(long soknadId);
+    WebSoknad hentSoknadMedFaktaOgVedlegg(String behandlingsId);
 
     String hentSoknadEier(Long soknadId);
 
-    WebSoknad hentSoknadMedBehandlingsId(String behandlingsId);
+    void sendSoknad(String behandlingsId, byte[] outputStream);
 
-    void sendSoknad(long soknadId, byte[] outputStream);
+    void avbrytSoknad(String behandlingsId);
 
-    void avbrytSoknad(Long soknadId);
-
-    void settDelsteg(Long soknadId, DelstegStatus delstegStatus);
+    void settDelsteg(String behandlingsId, DelstegStatus delstegStatus);
 
     SoknadStruktur hentSoknadStruktur(Long soknadId);
     SoknadStruktur hentSoknadStruktur(String skjemanummer);

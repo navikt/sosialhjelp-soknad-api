@@ -14,9 +14,12 @@ public interface SoknadRepository {
     Long opprettSoknad(WebSoknad soknad);
 
     WebSoknad hentSoknad(Long id);
+    WebSoknad hentSoknad(String behandlingsId);
 
     WebSoknad hentSoknadMedData(Long id);
+    WebSoknad hentSoknadMedData(String behandlingsId);
 
+    List<Faktum> hentAlleBrukerData(String behandlingsId);
     List<Faktum> hentAlleBrukerData(Long soknadId);
 
     Optional<WebSoknad> plukkSoknadTilMellomlagring();
@@ -29,8 +32,7 @@ public interface SoknadRepository {
 
     Long lagreFaktum(long soknadId, Faktum faktum, Boolean systemFaktum);
 
-    WebSoknad hentMedBehandlingsId(String behandlingsId);
-
+    Faktum hentFaktum(Long faktumId);
     Faktum hentFaktum(Long soknadId, Long faktumId);
 
     List<Faktum> hentSystemFaktumList(Long soknadId, String key);
@@ -46,6 +48,8 @@ public interface SoknadRepository {
     Boolean isVedleggPaakrevd(Long soknadId, List<String> values, SoknadVedlegg soknadVedlegg);
 
     void settDelstegstatus(Long soknadId, DelstegStatus status);
+
+    void settDelstegstatus(String behandlingsId, DelstegStatus status);
 
     List<Faktum> hentBarneFakta(Long soknadId, Long faktumId);
 

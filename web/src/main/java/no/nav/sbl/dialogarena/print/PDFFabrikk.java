@@ -12,12 +12,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 
-public class PDFFabrikk implements HtmlToPdf {
+public class PDFFabrikk {
 
     /**
      * Lag en pdf fra en html-string.
      */
-    public byte[] lagPdfFil(String html) {
+    public static byte[] lagPdfFil(String html) {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         try {
             ITextRenderer renderer = new ITextRenderer() {

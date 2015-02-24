@@ -1,2 +1,0 @@
-!1 Classpath
-!path ${java.class.path}

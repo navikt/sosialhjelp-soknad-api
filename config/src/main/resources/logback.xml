@@ -37,14 +37,6 @@
         </rollingPolicy>
     </appender>
 
-    <logger name="org.apache.wicket.util.tester.BaseWicketTester" level="info">
-        <appender-ref ref="infolog"/>
-    </logger>
-
-    <logger name="org.apache.wicket" level="error">
-        <appender-ref ref="exceptionlog"/>
-    </logger>
-
     <logger name="org.springframework" level="warn">
         <appender-ref ref="infolog"/>
     </logger>

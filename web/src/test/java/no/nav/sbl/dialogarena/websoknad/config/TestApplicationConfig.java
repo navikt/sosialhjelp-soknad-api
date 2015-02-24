@@ -1,23 +1,19 @@
 package no.nav.sbl.dialogarena.websoknad.config;
 
 
-import no.nav.modig.wicket.test.FluentWicketTester;
 import no.nav.sbl.dialogarena.common.kodeverk.JsonKodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.ConfigService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.StartDatoService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.MockConsumerConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
-import no.nav.sbl.dialogarena.websoknad.WicketApplication;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-
-import java.util.Locale;
 
 import static org.mockito.Mockito.mock;
 
@@ -63,25 +59,13 @@ public class TestApplicationConfig {
     StartDatoService startDatoService() {return new StartDatoService(); }
 
     @Bean
-    public ConfigService configService() {
-        return new ConfigService();
+    public InformasjonService configService() {
+        return new InformasjonService();
     }
 
     @Bean
     public FaktaService faktaService() {
         return new FaktaService();
-    }
-
-    @Bean
-    public FluentWicketTester<WicketApplication> wicketTester(WicketApplication application) {
-        FluentWicketTester<WicketApplication> wicketTester = new FluentWicketTester<>(application);
-        wicketTester.tester.getSession().setLocale(new Locale("NO"));
-        return wicketTester;
-    }
-
-    @Bean
-    public WicketApplication soknadsInnsendingApplication() {
-        return new WicketApplication();
     }
 
     @Bean

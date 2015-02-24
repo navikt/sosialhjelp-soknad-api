@@ -20,8 +20,6 @@ public interface EttersendingService {
 
     WebSoknad hentEttersendingForBehandlingskjedeId(String behandlingskjedeId);
 
-    Long startEttersending(String behandingId);
-
-    void avbrytSoknad(Long soknadId);
+    Long startEttersending(String behandingId, String fodselsnummer);
 
 }
