@@ -1,9 +1,14 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.joda.time.DateTime;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -24,14 +29,26 @@ import static org.junit.Assert.fail;
 @ContextConfiguration(classes = {DbTestConfig.class})
 public class VedleggRepositoryJdbcTest {
 
+    public static final String BEHANDLINGS_ID = "ABC";
+
     @Inject
     private VedleggRepository vedleggRepository;
     @Inject
+    private SoknadRepository soknadRepository;
+    @Inject
     private RepositoryTestSupport soknadRepositoryTestSupport;
+
+    private Long soknadId;
+
+    @Before
+    public void setUp() {
+        soknadId = soknadRepository.opprettSoknad(getSoknad());
+    }
 
     @After
     public void cleanUp() {
         soknadRepositoryTestSupport.getJdbcTemplate().update("delete from Vedlegg");
+        soknadRepositoryTestSupport.getJdbcTemplate().update("delete from Soknad");
     }
 
     @Test
@@ -40,8 +57,8 @@ public class VedleggRepositoryJdbcTest {
         Vedlegg v = getVedlegg(bytes);
         vedleggRepository.opprettVedlegg(v, bytes);
 
-        List<Vedlegg> vedlegg = vedleggRepository.hentVedleggUnderBehandling(v.getSoknadId(), v.getFillagerReferanse());
-         assertThat(vedlegg.size(), is(equalTo(1)));
+        List<Vedlegg> vedlegg = vedleggRepository.hentVedleggUnderBehandling(BEHANDLINGS_ID, v.getFillagerReferanse());
+        assertThat(vedlegg.size(), is(equalTo(1)));
         v.setVedleggId(vedlegg.get(0).getVedleggId());
         assertThat(vedlegg.get(0), is(equalTo(v)));
     }
@@ -50,11 +67,11 @@ public class VedleggRepositoryJdbcTest {
     public void skalKunneSletteVedlegg() {
         final Vedlegg v = getVedlegg();
         Long id = vedleggRepository.opprettVedlegg(v, new byte[0]);
-        List<Vedlegg> hentet = vedleggRepository.hentVedleggUnderBehandling(v.getSoknadId(), v.getFillagerReferanse());
+        List<Vedlegg> hentet = vedleggRepository.hentVedleggUnderBehandling(BEHANDLINGS_ID, v.getFillagerReferanse());
         assertThat(hentet, is(notNullValue()));
         assertThat(hentet.size(), is(1));
         vedleggRepository.slettVedlegg(v.getSoknadId(), id);
-        hentet = vedleggRepository.hentVedleggUnderBehandling(v.getSoknadId(), v.getFillagerReferanse());
+        hentet = vedleggRepository.hentVedleggUnderBehandling("ABC", v.getFillagerReferanse());
         assertThat(hentet, is(notNullValue()));
         assertThat(hentet.size(), is(0));
     }
@@ -64,15 +81,15 @@ public class VedleggRepositoryJdbcTest {
         byte[] lagret = new byte[]{1, 2, 3};
         final Vedlegg v = getVedlegg(lagret);
         Long id = vedleggRepository.opprettVedlegg(v, lagret);
-        byte[] hentet = vedleggRepository.hentVedleggData(v.getSoknadId(), id);
+        byte[] hentet = vedleggRepository.hentVedleggData(id);
         assertThat(hentet, is(equalTo(lagret)));
     }
 
     @Test
     public void skalLagreVedleggMedData() {
         Long id = vedleggRepository.opprettVedlegg(getVedlegg(), null);
-        vedleggRepository.lagreVedleggMedData(12L, id, getVedlegg().medData(new byte[]{1, 2, 3}));
-        Vedlegg vedlegg = vedleggRepository.hentVedleggMedInnhold(12L, id);
+        vedleggRepository.lagreVedleggMedData(soknadId, id, getVedlegg().medData(new byte[]{1, 2, 3}));
+        Vedlegg vedlegg = vedleggRepository.hentVedleggMedInnhold(id);
         assertThat(vedlegg, is(equalTo(getVedlegg().medData(new byte[]{1, 2, 3}).medVedleggId(id))));
     }
 
@@ -80,34 +97,30 @@ public class VedleggRepositoryJdbcTest {
     public void skalSletteVedleggOgDataMedVedleggParameter() {
         Long id = vedleggRepository.opprettVedlegg(getVedlegg(), new byte[]{1, 2, 3});
         Long id2 = vedleggRepository.opprettVedlegg(getVedlegg().medSkjemaNummer("2"), new byte[]{1, 2, 3});
-        vedleggRepository.slettVedleggOgData(12L, new Vedlegg().medFaktumId(10L).medSkjemaNummer("1"));
+        vedleggRepository.slettVedleggOgData(soknadId, new Vedlegg().medFaktumId(10L).medSkjemaNummer("1"));
         try {
-            vedleggRepository.hentVedlegg(12L, id);
+            vedleggRepository.hentVedlegg(id);
             fail("ikke slettet");
         } catch (Exception e) {
         }
-        vedleggRepository.hentVedlegg(12L, id2);
+        vedleggRepository.hentVedlegg(id2);
     }
 
-    @Test
+    @Test(expected = Exception.class)
     public void skalSletteVedleggUnderBehandling() {
         Long id = vedleggRepository.opprettVedlegg(getVedlegg().medInnsendingsvalg(Vedlegg.Status.UnderBehandling), new byte[]{1, 2, 3});
         Long id2 = vedleggRepository.opprettVedlegg(getVedlegg().medInnsendingsvalg(Vedlegg.Status.SendesSenere), new byte[]{1, 2, 3});
-        vedleggRepository.slettVedleggUnderBehandling(12L, 10L, "1");
-        vedleggRepository.hentVedlegg(12L, id2);
-        try {
-            vedleggRepository.hentVedlegg(12L, id);
-            fail("ikke slettet");
-        } catch (Exception e) {
-        }
+        vedleggRepository.slettVedleggUnderBehandling(soknadId, 10L, "1");
+        vedleggRepository.hentVedlegg(id2);
+        vedleggRepository.hentVedlegg(id);
     }
 
     @Test
     public void skalHenteVedleggForSkjema() {
         Long id = vedleggRepository.opprettVedlegg(getVedlegg().medInnsendingsvalg(Vedlegg.Status.LastetOpp), new byte[]{1, 2, 3});
         Long id2 = vedleggRepository.opprettVedlegg(getVedlegg().medFaktumId(null).medInnsendingsvalg(Vedlegg.Status.LastetOpp), new byte[]{1, 2, 3});
-        assertThat(vedleggRepository.hentVedleggForskjemaNummer(12L, 10L, "1").getVedleggId(), is(equalTo(id)));
-        assertThat(vedleggRepository.hentVedleggForskjemaNummer(12L, null, "1").getVedleggId(), is(equalTo(id2)));
+        assertThat(vedleggRepository.hentVedleggForskjemaNummer(soknadId, 10L, "1").getVedleggId(), is(equalTo(id)));
+        assertThat(vedleggRepository.hentVedleggForskjemaNummer(soknadId, null, "1").getVedleggId(), is(equalTo(id2)));
     }
 
     @Test(expected = EmptyResultDataAccessException.class)
@@ -115,7 +128,7 @@ public class VedleggRepositoryJdbcTest {
         Long id = vedleggRepository.opprettVedlegg(getVedlegg().medInnsendingsvalg(Vedlegg.Status.VedleggKreves), null);
 
         vedleggRepository.slettVedleggMedVedleggId(id);
-        vedleggRepository.hentVedlegg(12L, id);
+        vedleggRepository.hentVedlegg(id);
     }
 
     private Vedlegg getVedlegg() {
@@ -125,7 +138,7 @@ public class VedleggRepositoryJdbcTest {
     private Vedlegg getVedlegg(byte[] bytes) {
         return new Vedlegg()
                 .medVedleggId(null)
-                .medSoknadId(12L)
+                .medSoknadId(soknadId)
                 .medFaktumId(10L)
                 .medSkjemaNummer("1")
                 .medNavn("navn")
@@ -138,4 +151,14 @@ public class VedleggRepositoryJdbcTest {
                 .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
     }
 
+    private WebSoknad getSoknad() {
+        return new WebSoknad()
+                .medBehandlingId(BEHANDLINGS_ID)
+                .medskjemaNummer("NAV007")
+                .medAktorId("DEF")
+                .medOppretteDato(DateTime.now())
+                .medStatus(SoknadInnsendingStatus.UNDER_ARBEID)
+                .medDelstegStatus(DelstegStatus.UTFYLLING)
+                .medUuid("C4F3B4B3");
+    }
 }

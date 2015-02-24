@@ -3,11 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
 import org.joda.time.DateTime;
@@ -35,14 +31,9 @@ import static java.util.Collections.sort;
 import static java.util.UUID.randomUUID;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 import static org.joda.time.DateTime.now;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {DbTestConfig.class})
@@ -76,7 +67,7 @@ public class SoknadRepositoryJdbcTest {
     }
 
     @Test
-    public void skalSetteSistLagret(){
+    public void skalSetteSistLagret() {
         opprettOgPersisterSoknad();
         soknadRepository.settSistLagretTidspunkt(soknadId);
         WebSoknad endret = soknadRepository.hentSoknad(soknadId);
@@ -136,7 +127,7 @@ public class SoknadRepositoryJdbcTest {
         String behId = randomUUID().toString();
         opprettOgPersisterSoknad(behId, "aktor-3");
 
-        WebSoknad opprettetSoknad = soknadRepository.hentMedBehandlingsId(behId);
+        WebSoknad opprettetSoknad = soknadRepository.hentSoknad(behId);
 
         assertThat(opprettetSoknad, notNullValue());
         assertThat(opprettetSoknad.getStatus(), is(SoknadInnsendingStatus.UNDER_ARBEID));
@@ -148,7 +139,7 @@ public class SoknadRepositoryJdbcTest {
     @Test
     public void skalFaaNullVedUkjentBehandlingsId() {
         String behId = randomUUID().toString();
-        WebSoknad soknad = soknadRepository.hentMedBehandlingsId(behId);
+        WebSoknad soknad = soknadRepository.hentSoknad(behId);
         Assert.assertNull(soknad);
     }
 
@@ -183,7 +174,7 @@ public class SoknadRepositoryJdbcTest {
         lagreData("key3", null, "value3");
 
 
-        List<Faktum> soknadBrukerData = soknadRepository.hentAlleBrukerData(soknadId);
+        List<Faktum> soknadBrukerData = soknadRepository.hentAlleBrukerData(behandlingsId);
 
         assertThat(soknadBrukerData, notNullValue());
         assertThat(soknadBrukerData.size(), is(3));
@@ -199,18 +190,15 @@ public class SoknadRepositoryJdbcTest {
         assertThat(personalia.get(0), is(equalTo(result)));
     }
 
-    @Test
+    @Test(expected = EmptyResultDataAccessException.class)
     public void skalSletteFaktum() {
         opprettOgPersisterSoknad();
         Long id = lagreData("key", null, "value");
         Faktum faktum = soknadRepository.hentFaktum(soknadId, id);
         assertThat(faktum, is(notNullValue()));
         soknadRepository.slettBrukerFaktum(soknadId, id);
-        try {
-            soknadRepository.hentFaktum(soknadId, id);
-            fail("ikke slettet");
-        } catch (EmptyResultDataAccessException ex) {
-        }
+        soknadRepository.hentFaktum(soknadId, id);
+        fail("ikke slettet");
     }
 
     @Test
@@ -300,16 +288,25 @@ public class SoknadRepositoryJdbcTest {
         soknadId = opprettOgPersisterSoknad();
         soknadRepository.lagreFaktum(soknadId, new Faktum().medSoknadId(soknadId).medKey("system1").medType(SYSTEMREGISTRERT));
     }
+
     @Test
-    public void skalHenteSoknadType(){
+    public void skalHenteSoknadType() {
         opprettOgPersisterSoknad();
         String s = soknadRepository.hentSoknadType(soknadId);
         assertThat(s, is(equalTo(soknad.getskjemaNummer())));
     }
+
     @Test
-    public void skalSetteDelstegstatus(){
+    public void skalSetteDelstegstatus() {
         opprettOgPersisterSoknad();
         soknadRepository.settDelstegstatus(soknadId, DelstegStatus.SAMTYKKET);
+        assertThat(soknadRepository.hentSoknad(soknadId).getDelstegStatus(), is(equalTo(DelstegStatus.SAMTYKKET)));
+    }
+
+    @Test
+    public void skalSetteDelstegstatusMedBehandlingsId() {
+        opprettOgPersisterSoknad();
+        soknadRepository.settDelstegstatus(behandlingsId, DelstegStatus.SAMTYKKET);
         assertThat(soknadRepository.hentSoknad(soknadId).getDelstegStatus(), is(equalTo(DelstegStatus.SAMTYKKET)));
     }
 
@@ -322,13 +319,13 @@ public class SoknadRepositoryJdbcTest {
         opprettOgPersisterSoknad();
         Long faktumId = lagreData(key, null, value);
 
-        Faktum ikkeOppdaterData = soknadRepository.hentAlleBrukerData(soknadId).get(0);
+        Faktum ikkeOppdaterData = soknadRepository.hentAlleBrukerData(behandlingsId).get(0);
         assertThat(ikkeOppdaterData, notNullValue());
         assertThat(ikkeOppdaterData.getValue(), is(value));
 
 
         lagreData(key, faktumId, oppdatertValue);
-        Faktum oppdaterData = soknadRepository.hentAlleBrukerData(soknadId).get(0);
+        Faktum oppdaterData = soknadRepository.hentAlleBrukerData(behandlingsId).get(0);
         assertThat(oppdaterData, notNullValue());
         assertThat(oppdaterData.getValue(), is(oppdatertValue));
     }
@@ -394,7 +391,7 @@ public class SoknadRepositoryJdbcTest {
 
         WebSoknad soknad = soknadRepository.hentSoknadMedData(soknadId);
         soknadRepository.leggTilbake(soknad);
-        List<Faktum> soknadBrukerData = soknadRepository.hentAlleBrukerData(soknadId);
+        List<Faktum> soknadBrukerData = soknadRepository.hentAlleBrukerData(behandlingsId);
         assertThat(soknadBrukerData, notNullValue());
     }
 
@@ -418,7 +415,7 @@ public class SoknadRepositoryJdbcTest {
 
     @Test
     public void skalKunneHenteUtEttersendingMedBehandlingskjedeId() {
-        opprettOgPersisterEttersending("BehandlingsId");
+        opprettOgPersisterEttersending();
 
         Optional<WebSoknad> res = soknadRepository.hentEttersendingMedBehandlingskjedeId(behandlingsId);
 
@@ -488,7 +485,7 @@ public class SoknadRepositoryJdbcTest {
         return opprettOgPersisterSoknad(randomUUID().toString(), nyAktorId);
     }
 
-    private Long opprettOgPersisterEttersending(String behandlinsId) {
+    private Long opprettOgPersisterEttersending() {
         soknad = WebSoknad.startEttersending(behandlingsId)
                 .medUuid(uuid)
                 .medAktorId(aktorId)

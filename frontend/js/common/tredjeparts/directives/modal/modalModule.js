@@ -1,1 +1,0 @@
-angular.module('nav.modal', ['nav.modal.window', 'nav.modal.controller', 'nav.modal.aria', 'nav.modal.focus']);

@@ -1,48 +1,26 @@
 package no.nav.sbl.dialogarena.websoknad.pages.mocksetup;
 
-import no.nav.sbl.dialogarena.websoknad.pages.basepage.BasePage;
-import no.nav.sbl.dialogarena.websoknad.pages.soknadliste.SoknadListePage;
-import org.apache.wicket.extensions.markup.html.form.select.IOptionRenderer;
-import org.apache.wicket.extensions.markup.html.form.select.Select;
-import org.apache.wicket.extensions.markup.html.form.select.SelectOptions;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.CheckBox;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.util.WildcardCollectionModel;
-import org.apache.wicket.request.mapper.parameter.PageParameters;
-
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
-import static java.lang.System.getProperty;
-import static java.lang.System.setProperty;
 import static java.util.Arrays.asList;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig.BrukerProfilWSConfig.BRUKERPROFIL_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig.KodeverkWSConfig.KODEVERK_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig.PersonInfoWSConfig.PERSONINFO_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig.PersonWSConfig.PERSON_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.MockUtil.TILLATSTARTDATOMOCK_PROPERTY;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.MockUtil.VALGTMAANED_PROPERTY;
 
-public class MockSetupPage extends BasePage {
-
+public class MockSetupPage {
+/*
     private ListView<MockSetupModel> listView;
     private IModel<Integer> valgtMaaned;
     private static final List<String> MONTHS_LIST = Arrays.asList("Januar", "Februar", "Mars", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Desember");
 
     public MockSetupPage() {
-        super(new PageParameters());
+        *//*super(new PageParameters());
         add(
                 new FeedbackPanel("feedback"),
                 createVelgMockForm()
-        );
+        );*//*
     }
 
     @SuppressWarnings("unchecked")
@@ -79,7 +57,6 @@ public class MockSetupPage extends BasePage {
 
                 setProperty(VALGTMAANED_PROPERTY, valgtMaaned.getObject().toString());
 
-                setResponsePage(SoknadListePage.class);
             }
         }.add(listView, months);
     }
@@ -94,7 +71,7 @@ public class MockSetupPage extends BasePage {
                 );
             }
         };
-    }
+    }*/
 
     private List<MockSetupModel> lagModeller() {
         return asList(

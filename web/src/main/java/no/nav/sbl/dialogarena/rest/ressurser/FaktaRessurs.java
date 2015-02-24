@@ -1,0 +1,73 @@
+package no.nav.sbl.dialogarena.rest.ressurser;
+
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad;
+
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import java.util.List;
+
+import static java.lang.String.format;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+
+/**
+ * Klassen håndterer alle rest kall for å hente grunnlagsdata til applikasjonen.
+ */
+@Path("/fakta")
+@Produces(APPLICATION_JSON)
+public class FaktaRessurs {
+
+    @Inject
+    private FaktaService faktaService;
+
+    @Inject
+    private VedleggService vedleggService;
+
+    // TODO: legg til GET for faktum?
+
+    @POST
+    @Consumes(APPLICATION_JSON)
+    @SjekkTilgangTilSoknad
+    public Faktum opprettFaktum(@QueryParam("behandlingsId") final String behandlingsId, Faktum faktum) {
+        return faktaService.lagreSoknadsFelt(behandlingsId, faktum);
+    }
+
+    @PUT
+    @Path("/{faktumId}")
+    @Consumes(APPLICATION_JSON)
+    @SjekkTilgangTilSoknad
+    public Faktum lagreFaktum(@PathParam("faktumId") final Long faktumId, Faktum faktum) {
+        if (faktumId.equals(faktum.getFaktumId())) {
+            return faktaService.lagreSoknadsFelt(faktum);
+        } else {
+            throw new RuntimeException(format("Faktumets ID (%d) matcher ikke faktumId (%d)", faktum.getFaktumId(), faktumId)); // TODO: Kast exception med 400 og Feilmelding?
+        }
+    }
+
+    // TODO: midlertidig fiks som støtter oppdatering av faktum med POST pga. av begrensning i angualar.js sin resource-impl (snakk med Steffen Tangstad)
+    @POST
+    @Path("/{faktumId}")
+    @Consumes(APPLICATION_JSON)
+    @SjekkTilgangTilSoknad
+    public Faktum lagreFaktumMedPost(@PathParam("faktumId") final Long faktumId, Faktum faktum) {
+        return lagreFaktum(faktumId, faktum);
+    }
+
+
+    @DELETE
+    @Path("/{faktumId}")
+    @SjekkTilgangTilSoknad
+    public void slettFaktum(@PathParam("faktumId") final Long faktumId) {
+        faktaService.slettBrukerFaktum(faktumId);
+    }
+
+    @GET
+    @Path("/{faktumId}/vedlegg")
+    @SjekkTilgangTilSoknad
+    public List<Vedlegg> hentVedlegg(@PathParam("faktumId") final Long faktumId) {
+        return vedleggService.hentPaakrevdeVedlegg(faktumId);
+    }
+}

@@ -1,2 +1,0 @@
-[[Front Page][.FrontPage]]
-[[root][root]] (for global !-!path's-!, ''etc.'')

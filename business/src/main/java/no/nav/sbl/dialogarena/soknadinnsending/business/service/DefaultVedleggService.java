@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.awt.Dimension;
+import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -134,45 +134,47 @@ public class DefaultVedleggService implements VedleggService {
     }
 
     @Override
-    public List<Vedlegg> hentVedleggUnderBehandling(Long soknadId, String fillagerReferanse) {
-        return vedleggRepository.hentVedleggUnderBehandling(soknadId, fillagerReferanse);
+    public List<Vedlegg> hentVedleggUnderBehandling(String behandlingsId, String fillagerReferanse) {
+        return vedleggRepository.hentVedleggUnderBehandling(behandlingsId, fillagerReferanse);
     }
 
     @Override
-    public Vedlegg hentVedlegg(Long soknadId, Long vedleggId, boolean medInnhold) {
+    public Vedlegg hentVedlegg(Long vedleggId, boolean medInnhold) {
         if (medInnhold) {
-            Vedlegg vedlegg = vedleggRepository.hentVedleggMedInnhold(soknadId, vedleggId);
+            Vedlegg vedlegg = vedleggRepository.hentVedleggMedInnhold(vedleggId);
             medKodeverk(vedlegg);
             return vedlegg;
         } else {
-            Vedlegg vedlegg = vedleggRepository.hentVedlegg(soknadId, vedleggId);
+            Vedlegg vedlegg = vedleggRepository.hentVedlegg(vedleggId);
             medKodeverk(vedlegg);
             return vedlegg;
         }
     }
 
     @Override
-    public void slettVedlegg(Long soknadId, Long vedleggId) {
-        WebSoknad soknad = soknadService.hentSoknad(soknadId);
+    public void slettVedlegg(Long vedleggId) {
+        Vedlegg vedlegg = hentVedlegg(vedleggId, false);
+        WebSoknad soknad = soknadService.hentSoknadMedFaktaOgVedlegg(vedlegg.getSoknadId());
+        Long soknadId = soknad.getSoknadId();
+
         vedleggRepository.slettVedlegg(soknadId, vedleggId);
         repository.settSistLagretTidspunkt(soknadId);
-        if (soknad != null && !soknad.erEttersending()) {
+        if (!soknad.erEttersending()) {
             repository.settDelstegstatus(soknadId, DelstegStatus.SKJEMA_VALIDERT);
         }
     }
 
     @Override
-    public byte[] lagForhandsvisning(Long soknadId, Long vedleggId, int side) {
-        return new ConvertToPng(new Dimension(600, 800), side).transform(vedleggRepository.hentVedleggData(soknadId, vedleggId));
+    public byte[] lagForhandsvisning(Long vedleggId, int side) {
+        return new ConvertToPng(new Dimension(600, 800), side).transform(vedleggRepository.hentVedleggData(vedleggId));
     }
 
     @Override
-    public Long genererVedleggFaktum(Long soknadId, Long vedleggId) {
-        Vedlegg forventning = vedleggRepository
-                .hentVedlegg(soknadId, vedleggId);
-        List<Vedlegg> vedleggUnderBehandling = vedleggRepository
-                .hentVedleggUnderBehandling(soknadId,
-                        forventning.getFillagerReferanse());
+    public Long genererVedleggFaktum(String behandlingsId, Long vedleggId) {
+        Vedlegg forventning = vedleggRepository.hentVedlegg(vedleggId);
+        WebSoknad soknad = repository.hentSoknad(behandlingsId);
+        List<Vedlegg> vedleggUnderBehandling = vedleggRepository.hentVedleggUnderBehandling(behandlingsId, forventning.getFillagerReferanse());
+        Long soknadId = soknad.getSoknadId();
 
         sort(vedleggUnderBehandling, new Comparator<Vedlegg>() {
             @Override
@@ -183,7 +185,7 @@ public class DefaultVedleggService implements VedleggService {
 
         List<byte[]> bytes = new ArrayList<>();
         for (Vedlegg vedlegg : vedleggUnderBehandling) {
-            bytes.add(vedleggRepository.hentVedleggData(soknadId, vedlegg.getVedleggId()));
+            bytes.add(vedleggRepository.hentVedleggData(vedlegg.getVedleggId()));
         }
         byte[] doc = pdfMerger.transform(bytes);
         doc = watermarker.forIdent(getSubjectHandler().getUid(), false).transform(doc);
@@ -195,36 +197,39 @@ public class DefaultVedleggService implements VedleggService {
         }
 
         forventning.leggTilInnhold(doc, vedleggUnderBehandling.size());
-        WebSoknad soknad = repository.hentSoknad(soknadId);
 
         logger.info("Lagrer fil til henvendelse for behandling {}, UUID: {}", soknad.getBrukerBehandlingId(), forventning.getFillagerReferanse());
-        fillagerService.lagreFil(soknad.getBrukerBehandlingId(),
-                forventning.getFillagerReferanse(), soknad.getAktoerId(),
-                new ByteArrayInputStream(doc));
+        fillagerService.lagreFil(soknad.getBrukerBehandlingId(), forventning.getFillagerReferanse(), soknad.getAktoerId(), new ByteArrayInputStream(doc));
 
-        vedleggRepository.slettVedleggUnderBehandling(soknadId,
-                forventning.getFaktumId(), forventning.getSkjemaNummer());
+        vedleggRepository.slettVedleggUnderBehandling(soknadId, forventning.getFaktumId(), forventning.getSkjemaNummer());
         vedleggRepository.lagreVedleggMedData(soknadId, vedleggId, forventning);
         return vedleggId;
     }
 
     @Override
-    public List<Vedlegg> hentPaakrevdeVedlegg(Long soknadId) {
-        List<Vedlegg> paakrevdeVedlegg = vedleggRepository.hentPaakrevdeVedlegg(soknadId);
+    public List<Vedlegg> hentPaakrevdeVedlegg(Long faktumId) {
+        List<Vedlegg> paakrevdeVedlegg = vedleggRepository.hentPaakrevdeVedlegg(faktumId);
         leggTilKodeverkFelter(paakrevdeVedlegg);
         return paakrevdeVedlegg;
     }
 
     @Override
-    public void lagreVedlegg(Long soknadId, Long vedleggId, Vedlegg vedlegg) {
+    public List<Vedlegg> hentPaakrevdeVedlegg(String behandlingsId) {
+        List<Vedlegg> paakrevdeVedlegg = vedleggRepository.hentPaakrevdeVedlegg(behandlingsId);
+        leggTilKodeverkFelter(paakrevdeVedlegg);
+        return paakrevdeVedlegg;
+    }
+
+    @Override
+    public void lagreVedlegg(Long vedleggId, Vedlegg vedlegg) {
         if (nedgradertEllerForLavtInnsendingsValg(vedlegg)) {
             throw new ApplicationException("Ugyldig innsendingsstatus, opprinnelig innsendingstatus kan aldri nedgraderes");
         }
-        vedleggRepository.lagreVedlegg(soknadId, vedleggId, vedlegg);
-        repository.settSistLagretTidspunkt(soknadId);
+        vedleggRepository.lagreVedlegg(vedlegg.getSoknadId(), vedleggId, vedlegg);
+        repository.settSistLagretTidspunkt(vedlegg.getSoknadId());
 
-        if (!soknadService.hentSoknad(soknadId).erEttersending()) {
-            repository.settDelstegstatus(soknadId, DelstegStatus.SKJEMA_VALIDERT);
+        if (!soknadService.hentSoknadMedFaktaOgVedlegg(vedlegg.getSoknadId()).erEttersending()) {
+            repository.settDelstegstatus(vedlegg.getSoknadId(), DelstegStatus.SKJEMA_VALIDERT);
         }
     }
 
@@ -236,17 +241,17 @@ public class DefaultVedleggService implements VedleggService {
     }
 
     @Override
-    public void lagreKvitteringSomVedlegg(Long soknadId, byte[] kvittering) {
-        Vedlegg kvitteringVedlegg = vedleggRepository.hentVedleggForskjemaNummer(soknadId, null, KVITTERING);
+    public void lagreKvitteringSomVedlegg(String behandlingsId, byte[] kvittering) {
+        WebSoknad soknad = repository.hentSoknad(behandlingsId);
+        Vedlegg kvitteringVedlegg = vedleggRepository.hentVedleggForskjemaNummer(soknad.getSoknadId(), null, KVITTERING);
         if (kvitteringVedlegg == null) {
-            kvitteringVedlegg = new Vedlegg(soknadId, null, KVITTERING, LastetOpp);
+            kvitteringVedlegg = new Vedlegg(soknad.getSoknadId(), null, KVITTERING, LastetOpp);
             oppdaterInnholdIKvittering(kvitteringVedlegg, kvittering);
             vedleggRepository.opprettVedlegg(kvitteringVedlegg, kvittering);
         } else {
             oppdaterInnholdIKvittering(kvitteringVedlegg, kvittering);
-            vedleggRepository.lagreVedleggMedData(soknadId, kvitteringVedlegg.getVedleggId(), kvitteringVedlegg);
+            vedleggRepository.lagreVedleggMedData(soknad.getSoknadId(), kvitteringVedlegg.getVedleggId(), kvitteringVedlegg);
         }
-        WebSoknad soknad = repository.hentSoknad(soknadId);
         fillagerService.lagreFil(soknad.getBrukerBehandlingId(), kvitteringVedlegg.getFillagerReferanse(), soknad.getAktoerId(), new ByteArrayInputStream(kvitteringVedlegg.getData()));
     }
 

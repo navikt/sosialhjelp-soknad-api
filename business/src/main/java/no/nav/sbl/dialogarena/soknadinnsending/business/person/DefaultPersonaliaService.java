@@ -5,7 +5,7 @@ import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.LandService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.StatsborgerskapType;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.IkkeFunnetException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
@@ -24,26 +24,7 @@ import javax.xml.ws.WebServiceException;
 import java.util.List;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.ALDER_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.EPOST_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.ER_UTENLANDSK_BANKKONTO;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.FNR_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_GYLDIGFRA_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_GYLDIGTIL_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_LANDKODE;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_TYPE_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.KJONN_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.KONTONUMMER_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.NAVN_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.SEKUNDARADRESSE_GYLDIGFRA_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.SEKUNDARADRESSE_GYLDIGTIL_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.SEKUNDARADRESSE_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.SEKUNDARADRESSE_TYPE_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.STATSBORGERSKAPTYPE_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.STATSBORGERSKAP_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.UTENLANDSK_KONTO_BANKNAVN;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.UTENLANDSK_KONTO_LAND;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
@@ -57,9 +38,6 @@ public class DefaultPersonaliaService implements PersonaliaService {
     private PersonService personService;
     @Inject
     private Kodeverk kodeverk;
-    @Inject
-    private LandService eosLandService;
-
     @Inject
     private FaktaService faktaService;
 
@@ -134,7 +112,7 @@ public class DefaultPersonaliaService implements PersonaliaService {
                 .medSystemProperty(NAVN_KEY, personalia.getNavn())
                 .medSystemProperty(EPOST_KEY, personalia.getEpost())
                 .medSystemProperty(STATSBORGERSKAP_KEY, statsborgerskap)
-                .medSystemProperty(STATSBORGERSKAPTYPE_KEY, eosLandService.getStatsborgeskapType(statsborgerskap))
+                .medSystemProperty(STATSBORGERSKAPTYPE_KEY, StatsborgerskapType.get(statsborgerskap))
                 .medSystemProperty(KJONN_KEY, personalia.getKjonn())
                 .medSystemProperty(GJELDENDEADRESSE_KEY, personalia.getGjeldendeAdresse().getAdresse())
                 .medSystemProperty(GJELDENDEADRESSE_TYPE_KEY, personalia.getGjeldendeAdresse().getAdressetype())

@@ -32,24 +32,25 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transform
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class WebSoknadUtils {
+    private static final Logger LOGGER = getLogger(WebSoknadUtils.class);
+
     // Brukes for å finne prefix for tekster, så man kan ha søknadspesifikke tekster i gjennbrukbare moduler
     private static final Map<String, String> SOKNAD_TYPE_PREFIX_MAP = new HashMap<String, String>() {{
-        put("NAV 04-01.03", "dagpenger.ordinaer");
-        put("NAV 04-01.04", "dagpenger.ordinaer");
-        put("NAV 04-16.03", "dagpenger.gjenopptak");
-        put("NAV 04-16.04", "dagpenger.gjenopptak");
+        put(DAGPENGER, "dagpenger.ordinaer");
+        put(DAGPENGER_VED_PERMITTERING, "dagpenger.ordinaer");
+        put(GJENOPPTAK, "dagpenger.gjenopptak");
+        put(GJENOPPTAK_VED_PERMITTERING, "dagpenger.gjenopptak");
     }};
 
-    public static final String DAGPENGER_VED_PERMITTERING = "NAV 04-01.04";
     public static final String DAGPENGER = "NAV 04-01.03";
-    public static final String GJENOPPTAK_VED_PERMITTERING = "NAV 04-16.04";
+    public static final String DAGPENGER_VED_PERMITTERING = "NAV 04-01.04";
     public static final String GJENOPPTAK = "NAV 04-16.03";
+    public static final String GJENOPPTAK_VED_PERMITTERING = "NAV 04-16.04";
     public static final String EOS_DAGPENGER = "4304";
     public static final String RUTES_I_BRUT = "";
     public static final String PERMITTERT = "Permittert";
     public static final String REDUSERT_ARBEIDSTID = "Redusert arbeidstid";
     public static final String ANNEN_AARSAK = "Annen årsak";
-    private static final Logger LOGGER = getLogger(WebSoknadUtils.class);
 
     private static String finnSluttaarsakSisteArbeidsforhold(WebSoknad soknad) {
         List<Faktum> sorterteArbeidsforholdIkkePermittert = on(soknad.getFaktaMedKey("arbeidsforhold"))

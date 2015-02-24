@@ -5,13 +5,13 @@ import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.modig.core.exception.AuthorizationException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
-import org.apache.wicket.protocol.http.mock.MockHttpServletRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -62,7 +62,7 @@ public class SikkerhetsAspectTest {
 
     @Before
     public void init() {
-        when(soknadService.hentSoknad(anyLong())).thenReturn(new WebSoknad().medBehandlingId(brukerBehandlingsId));
+        when(soknadService.hentSoknadMedFaktaOgVedlegg(anyLong())).thenReturn(new WebSoknad().medBehandlingId(brukerBehandlingsId));
     }
 
     @Test
@@ -82,6 +82,6 @@ public class SikkerhetsAspectTest {
         MockHttpServletRequest request = new MockHttpServletRequest(null, null, null);
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
         request.setMethod("POST");
-        request.setHeader("X-XSRF-TOKEN", token);
+        request.addHeader("X-XSRF-TOKEN", token);
     }
 }

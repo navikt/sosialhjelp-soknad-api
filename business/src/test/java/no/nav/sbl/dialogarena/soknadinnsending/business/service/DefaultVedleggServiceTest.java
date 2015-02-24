@@ -22,6 +22,7 @@ import static org.mockito.Mockito.when;
 public class DefaultVedleggServiceTest {
 
     private static final long SOKNAD_ID = 1L;
+    private static final String BEHANDLING_ID = "1000000ABC";
 
     @Mock
     VedleggRepository vedleggRepository;
@@ -37,20 +38,20 @@ public class DefaultVedleggServiceTest {
 
     @Test
     public void skalOppretteKvitteringHvisDenIkkeFinnes() {
-        when(soknadRepository.hentSoknad(SOKNAD_ID)).thenReturn(new WebSoknad().medBehandlingId("XXX").medAktorId("aktor-1"));
+        when(soknadRepository.hentSoknad(BEHANDLING_ID)).thenReturn(new WebSoknad().medBehandlingId("XXX").medAktorId("aktor-1"));
         byte[] kvittering = {'b', 'o', 'o', 'm'};
-        vedleggService.lagreKvitteringSomVedlegg(SOKNAD_ID, kvittering);
+        vedleggService.lagreKvitteringSomVedlegg(BEHANDLING_ID, kvittering);
         verify(vedleggRepository).opprettVedlegg(any(Vedlegg.class), eq(kvittering));
     }
 
     @Test
     public void skalOppdatereKvitteringHvisDenAlleredeFinnes() {
-        when(soknadRepository.hentSoknad(SOKNAD_ID)).thenReturn(new WebSoknad().medBehandlingId("XXX").medAktorId("aktor-1"));
-        Vedlegg eksiterendeKvittering = new Vedlegg(SOKNAD_ID, null, KVITTERING, LastetOpp);
-        when(vedleggRepository.hentVedleggForskjemaNummer(SOKNAD_ID, null, KVITTERING)).thenReturn(eksiterendeKvittering);
+        when(soknadRepository.hentSoknad(BEHANDLING_ID)).thenReturn(new WebSoknad().medBehandlingId(BEHANDLING_ID).medAktorId("aktor-1").medId(SOKNAD_ID));
+        Vedlegg eksisterendeKvittering = new Vedlegg(SOKNAD_ID, null, KVITTERING, LastetOpp);
+        when(vedleggRepository.hentVedleggForskjemaNummer(SOKNAD_ID, null, KVITTERING)).thenReturn(eksisterendeKvittering);
         byte[] kvitteringPdf = {'b', 'o', 'o', 'm'};
-        vedleggService.lagreKvitteringSomVedlegg(SOKNAD_ID, kvitteringPdf);
-        verify(vedleggRepository).lagreVedleggMedData(SOKNAD_ID, eksiterendeKvittering.getVedleggId(), eksiterendeKvittering);
+        vedleggService.lagreKvitteringSomVedlegg(BEHANDLING_ID, kvitteringPdf);
+        verify(vedleggRepository).lagreVedleggMedData(SOKNAD_ID, eksisterendeKvittering.getVedleggId(), eksisterendeKvittering);
     }
 
 }

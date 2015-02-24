@@ -44,7 +44,7 @@ public class Tilgangskontroll {
     }
 
     public void verifiserBrukerHarTilgangTilSoknad(String behandlingsId) {
-        WebSoknad soknad = soknadService.hentSoknadMedBehandlingsId(behandlingsId);
+        WebSoknad soknad = soknadService.hentSoknad(behandlingsId);
 
         if (!soknad.erUnderArbeid()) {
             soknad = ettersendingService.hentEttersendingForBehandlingskjedeId(behandlingsId);
