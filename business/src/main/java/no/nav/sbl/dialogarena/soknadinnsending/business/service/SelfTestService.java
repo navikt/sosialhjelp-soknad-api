@@ -20,12 +20,9 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static java.lang.String.format;
-
-
 import static java.lang.System.currentTimeMillis;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.util.Arrays.asList;
@@ -35,6 +32,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class SelfTestService extends SelfTestBase {
 
     private static final Logger logger = getLogger(SelfTestService.class);
+    private static final String applikasjonsNavn = "SENDSØKNAD";
 
     @Inject
     @Named("sendSoknadSelftestEndpoint")
@@ -62,27 +60,34 @@ public class SelfTestService extends SelfTestBase {
     @Inject
     private DataSource dataSource;
 
-    public SelfTestService() {
-        this("Søknads api");
-    }
-
-    public SelfTestService(String applikasjonsNavn) {
-        super(applikasjonsNavn);
-    }
-
     public String getAsHTML() {
-        this.replaceStatusList(statusList);
-        html = new SelfTestHTML(applikasjonsNavn + " selftest");
+        replaceStatusList();
+        sjekkOppsummertStatus();
+        SelfTestHTML html = new SelfTestHTML(applikasjonsNavn + " selftest");
 
-        html.appendToBody("h1", "Service status: " + status);
+        html.appendToBody("h1", "Service status: " + oppsummertStatus);
         html.appendToBody("h3", applikasjonsNavn + " - " + version);
         html.appendToBody("h3", host);
         html.appendToBody(statusList);
-        html.appendToBody("h5", "Siden generert: " + LocalDateTime.now().toString("yyyy-MM-dd HH:mm:ss"));
+        html.appendToBody("h5", "Siden generert: " + LocalDateTime.now().toString(DATE_FORMAT));
 
         html.appendToBody("h6", message);
 
         return html.buildPage();
+    }
+
+    public Map<String, Object> getAsJSON() {
+        replaceStatusList();
+        sjekkOppsummertStatus();
+        Map<String, Object> content = new HashMap<>();
+        content.put("navn", applikasjonsNavn + "selftest");
+        content.put("host", host);
+        content.put("version", version);
+        content.put("status", oppsummertStatus);
+        content.put("message", message);
+        content.put("avhengigheter", statusList);
+
+        return content;
     }
 
     private AvhengighetStatus getCMSStatus() {
@@ -96,7 +101,7 @@ public class SelfTestService extends SelfTestBase {
             connection.setConnectTimeout(10000);
             status = connection.getResponseCode() == HTTP_OK ? STATUS_OK : STATUS_ERROR;
         } catch (IOException e) {
-            logger.warn("CMS not reachable on " + url , e);
+            logger.warn("CMS not reachable on " + url, e);
         } finally {
             if (connection != null) {
                 connection.disconnect();
@@ -122,7 +127,7 @@ public class SelfTestService extends SelfTestBase {
         String status = STATUS_ERROR;
         try {
             fillagerEndpoint.ping();
-            status = STATUS_OK;
+            oppsummertStatus = STATUS_OK;
         } catch (Exception e) {
             logger.warn("<<<<<<Error Contacting Fillager (i Henvendelse)WS", e);
         }
@@ -196,7 +201,7 @@ public class SelfTestService extends SelfTestBase {
         return new AvhengighetStatus("LOKAL_DATABASE_PING", status, currentTimeMillis() - start);
     }
 
-    protected void replaceStatusList(List<AvhengighetStatus> statusList) {
+    protected void replaceStatusList() {
         statusList.clear();
         statusList.addAll(asList(
                 getCMSStatus(),
@@ -209,19 +214,5 @@ public class SelfTestService extends SelfTestBase {
                 getLokalDatabaseStatus()
         ));
     }
-
-    public Map<String, Object> getAsJSON() {
-        this.replaceStatusList(statusList);
-        Map<String, Object> content = new HashMap<>();
-        content.put("navn", applikasjonsNavn + "selftest");
-        content.put("host", this.host);
-        content.put("version", this.version);
-        content.put("status", this.status);
-        content.put("message", this.message);
-        content.put("avhengigheter", this.statusList);
-
-        return content;
-    }
-
 
 }

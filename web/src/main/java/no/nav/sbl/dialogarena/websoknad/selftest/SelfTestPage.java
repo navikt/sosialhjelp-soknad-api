@@ -135,7 +135,7 @@ public class SelfTestPage  {
 
     private AvhengighetStatus cmsStatus() {
         long startTime = currentTimeMillis();
-        String status = SelfTestBase.STATUS_ERROR;
+        String oppsummertStatus = SelfTestBase.STATUS_ERROR;
 
         HttpURLConnection connection = null;
         try {
@@ -143,7 +143,7 @@ public class SelfTestPage  {
             connection = (HttpURLConnection) url.openConnection();
             connection.setConnectTimeout(10000);
             if (HTTP_OK == connection.getResponseCode()) {
-                status = SelfTestBase.STATUS_OK;
+                oppsummertStatus = SelfTestBase.STATUS_OK;
             }
         } catch (IOException e) {
             logger.info("<<<<<<<Error contacting CMS! " + e.getMessage());
@@ -152,6 +152,6 @@ public class SelfTestPage  {
                 connection.disconnect();
             }
         }
-        return new AvhengighetStatus("ENONIC_CMS", status, currentTimeMillis() - startTime, format("URL: %s", cmsBaseUrl));
+        return new AvhengighetStatus("ENONIC_CMS", oppsummertStatus, currentTimeMillis() - startTime, format("URL: %s", cmsBaseUrl));
     }*/
 }
