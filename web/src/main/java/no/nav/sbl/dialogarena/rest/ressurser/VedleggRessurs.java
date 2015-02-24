@@ -56,6 +56,7 @@ public class VedleggRessurs {
 
     @GET
     @Path("/fil")
+    @Produces(APPLICATION_JSON)
     @SjekkTilgangTilSoknad
     public List<Vedlegg> hentVedleggUnderBehandling(@PathParam("vedleggId") final Long vedleggId, @QueryParam("behandlingsId") final String behandlingsId) {
         Vedlegg forventning = vedleggService.hentVedlegg(vedleggId, false);
@@ -74,7 +75,7 @@ public class VedleggRessurs {
 
     @GET
     @Path("/fil")
-    @Produces(IMAGE_PNG_VALUE)
+    @Produces("image/*")
     @SjekkTilgangTilSoknad
     public byte[] lagForhandsvisningForVedlegg(@PathParam("vedleggId") final Long vedleggId, @QueryParam("side") final int side) {
         return vedleggService.lagForhandsvisning(vedleggId, side);
@@ -83,15 +84,14 @@ public class VedleggRessurs {
     @POST
     @Path("/fil")
     @Consumes(MULTIPART_FORM_DATA)
-    @SjekkTilgangTilSoknad(sjekkXsrf = false)
+    @SjekkTilgangTilSoknad
     public List<Vedlegg> lastOppFiler(@PathParam("vedleggId") final Long vedleggId, @QueryParam("behandlingsId") String behandlingsId,
-                                          @QueryParam("X-XSRF-TOKEN") final String xsrfToken, @FormDataParam("files") final List<FormDataBodyPart> files) {
+                                        @FormDataParam("files[]") final List<FormDataBodyPart> files) {
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId);
         if (soknad.getBehandlingskjedeId() != null) {
             behandlingsId = soknad.getBehandlingskjedeId();
         }
 
-        XsrfGenerator.sjekkXsrfToken(xsrfToken, behandlingsId);
         Vedlegg forventning = vedleggService.hentVedlegg(vedleggId, false);
 
         if (erFilForStor(behandlingsId, files, forventning)) {

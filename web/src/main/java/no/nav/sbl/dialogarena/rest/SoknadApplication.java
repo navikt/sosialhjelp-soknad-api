@@ -15,6 +15,8 @@ public class SoknadApplication extends ResourceConfig {
     public SoknadApplication() {
         packages("no.nav.sbl.dialogarena.rest");
         register(MultiPartFeature.class);
+        register(new CustomObjectMapper()); //todo: midlertidig fiks for å få timestamp for datoer i json-response
+
         LOG.info("Starter Jersey");
     }
 }
