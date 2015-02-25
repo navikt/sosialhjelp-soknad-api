@@ -65,7 +65,7 @@ public class PersonaliaTransform {
 
     private static Boolean erUtenlandskKonto(XMLBruker xmlBruker) {
         XMLBankkonto bankkonto = xmlBruker.getBankkonto();
-        return bankkonto != null && bankkonto instanceof XMLBankkontoUtland;
+        return bankkonto instanceof XMLBankkontoUtland;
     }
 
     private static String finnKontonummer(XMLBruker xmlBruker) {

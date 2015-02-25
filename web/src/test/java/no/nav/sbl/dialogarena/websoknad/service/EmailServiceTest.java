@@ -33,19 +33,8 @@ public class EmailServiceTest {
     private TaskExecutor taskExecutor = new SyncTaskExecutor();
 
     @Test
-    public void sendMail() {
-        emailService.sendFortsettSenereEPost("til", "subject", "innhold");
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo("til");
-        message.setSubject("subject");
-        message.setText("innhold");
-        message.setFrom("ikke-svar@nav.no");
-        verify(mailSender).send(refEq(message));
-    }
-
-    @Test
-    public void sendEpostEtterInnsendtSoknad() {
-        emailService.sendEpostEtterInnsendtSoknad("til", "subject", "innhold", "123");
+    public void sendEpost() {
+        emailService.sendEpost("til", "subject", "innhold", "123");
 
         final String htmlInnhold = "<p>" + "innhold" + "</p>";
 
@@ -58,17 +47,5 @@ public class EmailServiceTest {
             }
         };
         verify(mailSender).send(any(MimeMessagePreparator.class));
-    }
-
-    @Test
-    public void skalProve5Ganger() {
-        doThrow(new MailException("messsage"){}).when(mailSender).send(any(SimpleMailMessage.class));
-        emailService.sendFortsettSenereEPost("til", "subject", "innhold");
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo("til");
-        message.setSubject("subject");
-        message.setText("innhold");
-        message.setFrom("ikke-svar@nav.no");
-        verify(mailSender, times(6)).send(refEq(message));
     }
 }

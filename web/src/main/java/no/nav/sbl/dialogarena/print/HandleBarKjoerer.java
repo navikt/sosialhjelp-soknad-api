@@ -70,6 +70,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
         handlebars.registerHelper("formatterFodelsDato", generateFormatterFodselsdatoHelper());
         handlebars.registerHelper("formatterLangDato", generateFormatterLangDatoHelper());
         handlebars.registerHelper("hvisSant", generateHvisSantHelper());
+        handlebars.registerHelper("hvisEttersending", generateHvisEttersendingHelper());
         handlebars.registerHelper("hvisMindre", generateHvisMindreHelper());
         handlebars.registerHelper("hvisMer", generateHvisMerHelper());
         handlebars.registerHelper("hvisLik", generateHvisLikHelper());
@@ -161,7 +162,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
                 WebSoknad soknad = finnWebSoknad(options.context);
                 Map<String, String> infoMap = new HashMap<>();
 
-                DateTimeFormatter dt = DateTimeFormat.forPattern("d. MMMM yyyy, klokken hh.mm").withLocale(NO_LOCALE);
+                DateTimeFormatter dt = DateTimeFormat.forPattern("d. MMMM yyyy', klokken' HH.mm").withLocale(NO_LOCALE);
 
                 infoMap.put("sendtInn", String.valueOf(soknad.getInnsendteVedlegg().size()));
                 infoMap.put("ikkeSendtInn", String.valueOf(soknad.getVedlegg().size()));
@@ -357,6 +358,19 @@ public class HandleBarKjoerer implements HtmlGenerator {
             }
         };
     }
+    private Helper<Object> generateHvisEttersendingHelper() {
+        return new Helper<Object>() {
+            @Override
+            public CharSequence apply(Object o, Options options) throws IOException {
+                WebSoknad soknad = finnWebSoknad(options.context);
+                if (soknad.erEttersending()) {
+                    return options.fn(this);
+                } else {
+                    return options.inverse(this);
+                }
+            }
+        };
+    }
 
     private Helper<String> generateFormatterLangDatoHelper() {
         return new Helper<String>() {
@@ -508,10 +522,12 @@ public class HandleBarKjoerer implements HtmlGenerator {
 
             @Override
             public CharSequence apply(Object value, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-                List<Faktum> fakta = soknad.getFaktaMedKey("arbeidsforhold");
+                if(!(options.context.model() instanceof Faktum)) {
+                    return options.inverse(this);
+                }
 
-                if (fakta.isEmpty() || faktumSkalIkkeHaRotasjonssporsmaal(fakta.get(0))) {
+                Faktum faktum = (Faktum) options.context.model();
+                if (faktumSkalIkkeHaRotasjonssporsmaal(faktum)) {
                     return options.inverse(this);
                 } else {
                     return options.fn(this);

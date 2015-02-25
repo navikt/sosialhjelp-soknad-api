@@ -290,7 +290,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         return new Predicate<XMLMetadata>() {
             @Override
             public boolean evaluate(XMLMetadata xmlMetadata) {
-                return KVITTERING.equals(((XMLVedlegg) xmlMetadata).getSkjemanummer());
+                return xmlMetadata instanceof XMLVedlegg && KVITTERING.equals(((XMLVedlegg) xmlMetadata).getSkjemanummer());
             }
         };
     }
