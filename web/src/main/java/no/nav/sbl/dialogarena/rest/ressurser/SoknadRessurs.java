@@ -52,7 +52,8 @@ public class SoknadRessurs {
     @GET
     @Path("/{behandlingsId}")
     @SjekkTilgangTilSoknad
-    public WebSoknad hentSoknadData(@PathParam("behandlingsId") String behandlingsId) {
+    public WebSoknad hentSoknadData(@PathParam("behandlingsId") String behandlingsId, @Context HttpServletResponse response) {
+        response.addCookie(xsrfCookie(behandlingsId));
         return soknadService.hentSoknadMedFaktaOgVedlegg(behandlingsId);
     }
 
@@ -71,27 +72,26 @@ public class SoknadRessurs {
     }
 
 
-    // TODO: kan vi ta inn request param direkte istedet for StartSoknad + refactor + hva er returverdien
+    // TODO: kan vi ta inn request param direkte istedet for StartSoknad + refactor
     @POST
     @Consumes(APPLICATION_JSON)
     public Map<String, String> opprettSoknad(@QueryParam("ettersendTil") String behandlingsId, StartSoknad soknadType, @Context HttpServletResponse response) {
         Map<String, String> result = new HashMap<>();
         String fodselsnummer = getSubjectHandler().getUid();
 
+        String opprettetBehandlingsId;
         if (behandlingsId == null) {
-            String behandlingId = soknadService.startSoknad(soknadType.getSoknadType(), fodselsnummer);
-            result.put("brukerbehandlingId", behandlingId);
+            opprettetBehandlingsId = soknadService.startSoknad(soknadType.getSoknadType(), fodselsnummer);
         } else {
             WebSoknad soknad = ettersendingService.hentEttersendingForBehandlingskjedeId(behandlingsId);
-            Long soknadId;
             if (soknad == null) {
-                soknadId = ettersendingService.startEttersending(behandlingsId, fodselsnummer);
+                opprettetBehandlingsId = ettersendingService.startEttersending(behandlingsId, fodselsnummer);
             } else {
-                soknadId = soknad.getSoknadId();
+                opprettetBehandlingsId = soknad.getBrukerBehandlingId();
             }
-            result.put("soknadId", soknadId.toString());
         }
-        response.addCookie(xsrfCookie(behandlingsId));
+        result.put("brukerbehandlingId", opprettetBehandlingsId);
+        response.addCookie(xsrfCookie(opprettetBehandlingsId));
         return result;
     }
 

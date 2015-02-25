@@ -370,9 +370,9 @@ public class SoknadServiceTest {
                 .medType(SYSTEMREGISTRERT);
         when(soknadRepository.hentFaktum(anyLong(), anyLong())).thenReturn(soknadInnsendingsDatoFaktum);
 
-        Long ettersendingSoknadId = soknadService.startEttersending(behandlingsId, "***REMOVED***");
+        String ettersendingBehandlingsId = soknadService.startEttersending(behandlingsId, "***REMOVED***");
         verify(faktaService).lagreSystemFaktum(anyLong(), any(Faktum.class), anyString());
-        assertNotNull(ettersendingSoknadId);
+        assertNotNull(ettersendingBehandlingsId);
     }
 
     @Test(expected = ApplicationException.class)

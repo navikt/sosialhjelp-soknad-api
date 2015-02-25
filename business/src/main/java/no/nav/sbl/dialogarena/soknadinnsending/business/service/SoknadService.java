@@ -200,17 +200,17 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     }
 
     @Override
-    public Long startEttersending(String behandingsId, String fodselsnummer) {
-        List<WSBehandlingskjedeElement> behandlingskjede = henvendelseService.hentBehandlingskjede(behandingsId);
+    public String startEttersending(String behandlingsIdSoknad, String fodselsnummer) {
+        List<WSBehandlingskjedeElement> behandlingskjede = henvendelseService.hentBehandlingskjede(behandlingsIdSoknad);
         WSHentSoknadResponse wsSoknadsdata = hentSisteIkkeAvbrutteSoknadIBehandlingskjede(behandlingskjede);
 
         if (wsSoknadsdata.getInnsendtDato() == null) {
             throw new ApplicationException("Kan ikke starte ettersending på en ikke fullfort soknad");
         }
-        DateTime innsendtDato = hentOrginalInnsendtDato(behandlingskjede, behandingsId);
-        Long soknadId = lagEttersendingFraWsSoknad(wsSoknadsdata, innsendtDato).getSoknadId();
-        personaliaService.lagrePersonaliaOgBarn(fodselsnummer, soknadId, false);
-        return soknadId;
+        DateTime innsendtDato = hentOrginalInnsendtDato(behandlingskjede, behandlingsIdSoknad);
+        WebSoknad ettersending = lagEttersendingFraWsSoknad(wsSoknadsdata, innsendtDato);
+        personaliaService.lagrePersonaliaOgBarn(fodselsnummer, ettersending.getSoknadId(), false);
+        return ettersending.getBrukerBehandlingId();
     }
 
     private DateTime hentOrginalInnsendtDato(List<WSBehandlingskjedeElement> behandlingskjede, String behandlingsId) {
