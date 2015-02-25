@@ -8,7 +8,6 @@ import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
 import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
-import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -19,8 +18,7 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
@@ -32,7 +30,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class SelfTestService extends SelfTestBase {
 
     private static final Logger logger = getLogger(SelfTestService.class);
-    private static final String applikasjonsNavn = "SENDSØKNAD";
 
     @Inject
     @Named("sendSoknadSelftestEndpoint")
@@ -60,34 +57,23 @@ public class SelfTestService extends SelfTestBase {
     @Inject
     private DataSource dataSource;
 
-    public String getAsHTML() {
-        replaceStatusList();
-        sjekkOppsummertStatus();
-        SelfTestHTML html = new SelfTestHTML(applikasjonsNavn + " selftest");
-
-        html.appendToBody("h1", "Service status: " + oppsummertStatus);
-        html.appendToBody("h3", applikasjonsNavn + " - " + version);
-        html.appendToBody("h3", host);
-        html.appendToBody(statusList);
-        html.appendToBody("h5", "Siden generert: " + LocalDateTime.now().toString(DATE_FORMAT));
-
-        html.appendToBody("h6", message);
-
-        return html.buildPage();
+    @Override
+    protected List<AvhengighetStatus> populerStatusliste() {
+        return asList(
+                getCMSStatus(),
+                getHenvendelseWSStatus(),
+                getFillagerStatus(),
+                getKodeverkStatus(),
+                getPersonStatus(),
+                getBrukerProfilStatus(),
+                getPersonInfoStatus(),
+                getLokalDatabaseStatus()
+        );
     }
 
-    public Map<String, Object> getAsJSON() {
-        replaceStatusList();
-        sjekkOppsummertStatus();
-        Map<String, Object> content = new HashMap<>();
-        content.put("navn", applikasjonsNavn + "selftest");
-        content.put("host", host);
-        content.put("version", version);
-        content.put("status", oppsummertStatus);
-        content.put("message", message);
-        content.put("avhengigheter", statusList);
-
-        return content;
+    @Override
+    protected String applikasjonsNavn() {
+        return "SØKNADSAPI";
     }
 
     private AvhengighetStatus getCMSStatus() {
@@ -199,20 +185,6 @@ public class SelfTestService extends SelfTestBase {
         }
 
         return new AvhengighetStatus("LOKAL_DATABASE_PING", status, currentTimeMillis() - start);
-    }
-
-    protected void replaceStatusList() {
-        statusList.clear();
-        statusList.addAll(asList(
-                getCMSStatus(),
-                getHenvendelseWSStatus(),
-                getFillagerStatus(),
-                getKodeverkStatus(),
-                getPersonStatus(),
-                getBrukerProfilStatus(),
-                getPersonInfoStatus(),
-                getLokalDatabaseStatus()
-        ));
     }
 
 }
