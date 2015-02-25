@@ -1,13 +1,17 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
+import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 
 import java.io.Serializable;
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
+import static java.net.InetAddress.getLocalHost;
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -18,13 +22,66 @@ public abstract class SelfTestBase {
     protected static final String STATUS_OK = "OK";
     protected static final String STATUS_ERROR = "ERROR";
 
-    protected String version = getApplicationVersion();
-    protected String host = this.getHost();
+    protected String version = "TODO fix versjon";
     protected String oppsummertStatus;
     protected String message;
-    protected ArrayList<AvhengighetStatus> statusList = new ArrayList();
+    protected List<AvhengighetStatus> statusList = new ArrayList();
 
-    public void sjekkOppsummertStatus() {
+    public String asHtml() {
+        updateStatusList();
+        sjekkOppsummertStatus();
+        return hentHtmlContent();
+    }
+
+    public Map<String, Object> asJson() {
+        updateStatusList();
+        sjekkOppsummertStatus();
+        return hentJsonContent();
+    }
+
+    protected abstract List<AvhengighetStatus> populerStatusliste();
+    protected abstract String applikasjonsNavn();
+
+    /**
+     * Override ved behov for ekstra info i selftest
+     */
+    protected String extraHtml() {
+        return "";
+    }
+
+    private String hentHtmlContent() {
+        SelfTestHTML html = new SelfTestHTML(applikasjonsNavn() + " selftest");
+
+        html.appendToBody("h1", "Service status: " + oppsummertStatus);
+        html.appendToBody("h3", applikasjonsNavn() + " - " + version);
+        html.appendToBody("h3", getHost());
+        html.appendToBody(statusList);
+        html.appendToBody("h5", "Siden generert: " + LocalDateTime.now().toString(DATE_FORMAT));
+        html.appendToBody("h6", message);
+        if (!extraHtml().isEmpty()) {
+            html.appendToBody("p", extraHtml());
+        }
+
+        return html.buildPage();
+    }
+
+    private Map<String, Object> hentJsonContent() {
+        Map<String, Object> content = new HashMap<>();
+        content.put("navn", applikasjonsNavn() + "selftest");
+        content.put("host", getHost());
+        content.put("version", version);
+        content.put("status", oppsummertStatus);
+        content.put("message", message);
+        content.put("avhengigheter", statusList);
+
+        return content;
+    }
+
+    private void updateStatusList() {
+        statusList = populerStatusliste();
+    }
+
+    private void sjekkOppsummertStatus() {
         ArrayList<String> failed = new ArrayList<>();
         oppsummertStatus = STATUS_OK;
         for (AvhengighetStatus avhengighetStatus : statusList) {
@@ -39,7 +96,7 @@ public abstract class SelfTestBase {
         }
     }
 
-    public class SelfTestHTML {
+    private class SelfTestHTML {
 
         private String title;
         private String newLine = System.getProperty("line.separator");
@@ -102,7 +159,7 @@ public abstract class SelfTestBase {
             body.append(str + newLine);
         }
 
-        public void appendToBody(ArrayList list) {
+        public void appendToBody(List list) {
 
             body.append("<table>" + newLine);
             body.append("<table>" + newLine);
@@ -130,20 +187,16 @@ public abstract class SelfTestBase {
 
     }
 
-    protected String getApplicationVersion() {
-        return getClass().getPackage().getImplementationVersion();
-    }
-
     private String getHost() {
         try {
-            return InetAddress.getLocalHost().getCanonicalHostName();
+            return getLocalHost().getCanonicalHostName();
         } catch (UnknownHostException e) {
             logger.error("Error retrieving host", e);
             return "unknown host";
         }
     }
 
-    public static class AvhengighetStatus implements Serializable {
+    protected static class AvhengighetStatus implements Serializable {
         private final String navn;
         private final String status;
         private final long durationMilis;

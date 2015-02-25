@@ -24,19 +24,18 @@ public class InternalRessurs {
     @Inject
     private SelfTestService selfTest;
 
-
     @GET
     @Path("/selftest")
     @Produces(MediaType.TEXT_HTML)
     public String selftest() {
-        return selfTest.getAsHTML();
+        return selfTest.asHtml();
     }
 
     @GET
     @Path("/selftest.json")
     @Produces(MediaType.APPLICATION_JSON)
     public Map<String, Object> selftestLight() {
-        return selfTest.getAsJSON();
+        return selfTest.asJson();
     }
 
     @GET
