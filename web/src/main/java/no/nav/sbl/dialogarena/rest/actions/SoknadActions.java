@@ -65,17 +65,19 @@ public class SoknadActions {
     public void sendSoknad(@PathParam("behandlingsId") String behandlingsId) {
         WebSoknad soknad = soknadService.hentSoknadMedFaktaOgVedlegg(behandlingsId);
 
-        byte[] kvittering = genererPdf(soknad, "/skjema/kvittering");
+        byte[] kvittering = genererPdfMedKodeverksverdier(soknad, "/skjema/kvittering");
+        vedleggService.lagreKvitteringSomVedlegg(behandlingsId, kvittering);
+
         if (soknad.erEttersending()) {
-            soknadService.sendSoknad(behandlingsId, kvittering);
+            byte[] dummyPdfSomHovedskjema = genererPdf(soknad, "skjema/ettersending/dummy");
+            soknadService.sendSoknad(behandlingsId, dummyPdfSomHovedskjema);
         } else {
             byte[] soknadPdf;
             if (soknad.erGjenopptak()) {
-                soknadPdf = genererPdf(soknad, "/skjema/gjenopptak");
+                soknadPdf = genererPdfMedKodeverksverdier(soknad, "/skjema/gjenopptak");
             } else {
-                soknadPdf = genererPdf(soknad, "/skjema/dagpenger");
+                soknadPdf = genererPdfMedKodeverksverdier(soknad, "/skjema/dagpenger");
             }
-            vedleggService.lagreKvitteringSomVedlegg(behandlingsId, kvittering);
             soknadService.sendSoknad(behandlingsId, soknadPdf);
         }
     }
@@ -86,13 +88,15 @@ public class SoknadActions {
     public void sendEpost(@PathParam("behandlingsId") String behandlingsId, FortsettSenere epost, @Context HttpServletRequest request) {
         String content = messageSource.getMessage("fortsettSenere.sendEpost.epostInnhold",
                 new Object[]{getGjenopptaUrl(request.getRequestURL().toString(), behandlingsId)}, new Locale("nb", "NO"));
-        emailService.sendFortsettSenereEPost(epost.getEpost(), "Lenke til påbegynt dagpengesøknad", content);
+        String subject = messageSource.getMessage("fortsettSenere.sendEpost.epostTittel", null, new Locale("nb", "NO"));
+
+        emailService.sendEpost(epost.getEpost(), subject, content, behandlingsId);
     }
 
     @POST
     @Path("/bekreftinnsending")
     public void sendEpost(@PathParam("behandlingsId") String behandlingsId, SoknadBekreftelse soknadBekreftelse, @Context HttpServletRequest request) {
-        if (soknadBekreftelse.getEpost() != null) {
+        if (soknadBekreftelse.getEpost() != null && !soknadBekreftelse.getEpost().isEmpty()) {
             String subject = messageSource.getMessage("sendtSoknad.sendEpost.epostSubject", null, new Locale("nb", "NO"));
             String ettersendelseUrl = getEttersendelseUrl(request.getRequestURL().toString(), behandlingsId);
             String saksoversiktLink = saksoversiktUrl + "/detaljer/" + soknadBekreftelse.getTemaKode() + "/" + behandlingsId;
@@ -101,26 +105,25 @@ public class SoknadActions {
                 innhold = messageSource.getMessage("sendEttersendelse.sendEpost.epostInnhold", new Object[]{saksoversiktLink}, new Locale("nb", "NO"));
             }
 
-            // getMessage stripper vekk ytterske lag med p-tags. Siden vi i eposten ønskelig mulighet for flere
-            // paragrader må man legge på igjen p-tagsene for å unngå potsensielle feil i HTMLen
-            innhold = "<p>" + innhold + "</p>";
-
-            emailService.sendEpostEtterInnsendtSoknad(soknadBekreftelse.getEpost(), subject, innhold, behandlingsId);
+            emailService.sendEpost(soknadBekreftelse.getEpost(), subject, innhold, behandlingsId);
 
         } else {
-            logger.debug("Fant ingen epost, sender ikke mail for innsendig");
+            logger.debug("Fant ingen epostadresse");
         }
+    }
+
+    private byte[] genererPdfMedKodeverksverdier(WebSoknad soknad, String hbsSkjemaPath) {
+        vedleggService.leggTilKodeverkFelter(soknad.getVedlegg());
+        return genererPdf(soknad, hbsSkjemaPath);
     }
 
     private byte[] genererPdf(WebSoknad soknad, String hbsSkjemaPath) {
         String pdfMarkup;
         try {
-            vedleggService.leggTilKodeverkFelter(soknad.getVedlegg());
             pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(soknad, hbsSkjemaPath);
         } catch (IOException e) {
-            throw new ApplicationException("Kunne ikke lage markup av søknad", e);
+            throw new ApplicationException("Kunne ikke lage markup for skjema " + hbsSkjemaPath, e);
         }
-
         return PDFFabrikk.lagPdfFil(pdfMarkup);
     }
 }

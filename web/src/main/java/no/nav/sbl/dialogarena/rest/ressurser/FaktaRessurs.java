@@ -47,6 +47,16 @@ public class FaktaRessurs {
         }
     }
 
+    // TODO: midlertidig fiks som støtter oppdatering av faktum med POST pga. av begrensning i angualar.js sin resource-impl (snakk med Steffen Tangstad)
+    @POST
+    @Path("/{faktumId}")
+    @Consumes(APPLICATION_JSON)
+    @SjekkTilgangTilSoknad
+    public Faktum lagreFaktumMedPost(@PathParam("faktumId") final Long faktumId, Faktum faktum) {
+        return lagreFaktum(faktumId, faktum);
+    }
+
+
     @DELETE
     @Path("/{faktumId}")
     @SjekkTilgangTilSoknad

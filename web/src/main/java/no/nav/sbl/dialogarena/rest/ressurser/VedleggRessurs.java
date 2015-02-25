@@ -6,7 +6,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.Opplast
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.XsrfGenerator;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -22,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.*;
-import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 
 @Path("/vedlegg/{vedleggId}")
 @Produces(APPLICATION_JSON)

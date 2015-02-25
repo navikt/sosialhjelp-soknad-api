@@ -13,6 +13,7 @@
             table ul ul { margin-left: 0; padding-left: 0; }
             table ul ul .kulepunkt {  margin-bottom: 5px; }
             table ul ul > p { font-weight: bold; }
+            p.ikke-bold {font-weight: normal}
             td      { vertical-align: middle; text-align: left; padding: 0; font-size: 10pt; }
             td:first-child { width: 3.5mm; vertical-align: top; }
             td:last-child { width: 166.5mm; padding-bottom: 5px; padding-left: 10px; }
@@ -33,7 +34,6 @@
             .usjekket  { display: inline-block; background: url(http://localhost:8080/sendsoknad/img/minus_sort.gif) no-repeat center; width: 10px; height: 10px; }
             .hode      { text-align: center; margin: 15mm 0 9.5mm; padding-bottom: 9.5mm; border-bottom: .2pt solid #ccc; }
             .hode hr   { border: none; border-top: .2pt solid #ccc; width: 8mm; margin: 7mm auto 5mm; }
-            .hode span { display: block; }
             .hode .nvn, .hode .fnr { font-family: Modus, Arial, sans-serif; font-weight: bold; font-size: 13pt; }
             .hode .adr { margin-top: 2mm; }
             .stor { text-transform: uppercase; font-size: 1rem; }
@@ -43,6 +43,7 @@
             .kulepunkt:before { content: "•"; font-size: 14pt; position: relative; top: -1px; vertical-align: top; }
             .brosjyre-signatur { border-top: .2pt solid #ccc; margin-top: 10mm; padding-top: 10mm; page-break-inside: avoid; }
             .arbeidsforhold { margin-top: 7px; }
+            table.arbeidsforhold { margin-bottom: 0; }
             .overskrift, .arbeidsforhold-arbeidsgiver { font-weight: bold; display: block; }
             .permitteringsperiode { display: inline-block; margin-bottom: 5px; }
             .rotasjonturnus { display: inline-block; margin-left: 15px; }
@@ -50,10 +51,14 @@
             .vedlegg .container{ margin-bottom: 10px; padding: 0; }
             .vedlegg .lastetOpp .vedleggSymbol { display: none; }
             .vedlegg .lastetOpp a { font-size: 0.85rem; }
-            .vedlegg .aarsak { display: block; }
-            .vedlegg .status { display: block; font-style: italic; }
-            .vedlegg .navn { font-weight: 900; }
+            .vedlegg .aarsak { font-weight: normal; }
+            .vedlegg .status { margin-right: 5px; }
+            .vedlegg .tittel { font-weight: bold; }
             .vedlegg .seVedlegg { display: none; }
+            .vedlegg p { margin: 0; }
+            .personalia p { margin: 0; }
+            .arbeidsidensist-container table {margin-bottom: 0}
+            .arbeidsidensist-container {margin-bottom: 10mm}
         </style>
     </head>
     <body>

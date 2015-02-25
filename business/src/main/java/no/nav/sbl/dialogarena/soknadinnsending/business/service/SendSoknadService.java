@@ -8,19 +8,19 @@ import java.util.Map;
 
 public interface SendSoknadService {
 
-    public interface Create {
+    interface Create {
 
     }
 
-    public interface Read {
+    interface Read {
 
     }
 
-    public interface Update {
+    interface Update {
 
     }
 
-    public interface Delete {
+    interface Delete {
 
     }
 
