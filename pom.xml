@@ -778,7 +778,7 @@
                 </property>
             </activation>
             <properties>
-                <sonar.jacoco.excludes>*SelfTestPage.*:*no/nav/sbl/dialogarena/sendsoknad/mockmodul/**</sonar.jacoco.excludes>
+                <sonar.jacoco.excludes>*no/nav/sbl/dialogarena/sendsoknad/mockmodul/**</sonar.jacoco.excludes>
             </properties>
         </profile>
         <profile>
