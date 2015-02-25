@@ -59,4 +59,10 @@
             </openAm>
         </logins>
     </security>
+
+    <loadBalancer>
+        <contextRoot>sendsoknad</contextRoot>
+        <lbHealthMonitor type="HTTPS" isAliveUrl="internal/isAlive" interval="5" timeout="16"/>
+        <lbPool slowRampTime="30" loadBalancingMethod="LEAST_CONNECTIONS" connectionLimit="900"/>
+    </loadBalancer>
 </application>
