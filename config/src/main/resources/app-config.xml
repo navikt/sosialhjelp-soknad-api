@@ -12,12 +12,6 @@
         <ear groupId="no.nav.sbl.dialogarena" artifactId="sendsoknad-jee"/>
     </artifacts>
 
-    <loadBalancer>
-        <contextRoot>dialoginnsending</contextRoot>
-        <lbHealthMonitor type="HTTPS" isAliveUrl="internal/isAlive" interval="5" timeout="16"/>
-        <lbPool slowRampTime="30" loadBalancingMethod="LEAST_CONNECTIONS" connectionLimit="900"/>
-    </loadBalancer>
-
     <resources>
     	<datasource alias="soknadInnsendingDataSource" jndi="java:/datasources/SoknadInnsendingDS">
             <pool maxPoolSize="300" minPoolSize="0"/>
