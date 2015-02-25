@@ -99,7 +99,7 @@ public class InformasjonRessurs {
         String uid = getSubjectHandler().getUid();
         PersonInfoService.Status status = personInfoService.hentArbeidssokerStatus(uid);
         Map<String, String> utslagskriterierResultat = new HashMap<>();
-        utslagskriterierResultat.put("registrertArbeidssøker", status.name());
+        utslagskriterierResultat.put("registrertArbeidssoker", status.name());
 
         try {
             Personalia personalia = personaliaService.hentPersonalia(uid);
