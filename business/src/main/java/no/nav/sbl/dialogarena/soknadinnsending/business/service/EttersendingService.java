@@ -4,22 +4,19 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 
 public interface EttersendingService {
 
-    public interface Create {
+    interface Create {
 
     }
 
-    public interface Read {
+    interface Read {
 
     }
 
-    public interface Update {
+    interface Update {
 
     }
-
-
 
     WebSoknad hentEttersendingForBehandlingskjedeId(String behandlingskjedeId);
 
     Long startEttersending(String behandingId, String fodselsnummer);
-
 }
