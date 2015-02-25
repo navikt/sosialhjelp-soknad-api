@@ -28,7 +28,7 @@ public class EmailService {
     private TaskExecutor executor;
 
     private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
-    private final String fraAdresse = "ikke-svar@nav.no";
+    private static final String FRA_ADRESSE = "ikke-svar@nav.no";
 
     /**
      * Sender en epost til innsender med link til ettersending og saksoversikt.
@@ -48,7 +48,7 @@ public class EmailService {
             public void prepare(MimeMessage mimeMessage) {
                 try {
                     mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(epost));
-                    mimeMessage.setFrom(new InternetAddress(fraAdresse));
+                    mimeMessage.setFrom(new InternetAddress(FRA_ADRESSE));
                     mimeMessage.setContent(innhold, "text/html;charset=utf-8");
                     mimeMessage.setSubject(subject);
                 } catch (MessagingException e) {

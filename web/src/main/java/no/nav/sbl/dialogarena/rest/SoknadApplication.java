@@ -10,13 +10,13 @@ import org.slf4j.LoggerFactory;
  */
 public class SoknadApplication extends ResourceConfig {
 
-    Logger LOG = LoggerFactory.getLogger(SoknadApplication.class);
+    private static final Logger logger = LoggerFactory.getLogger(SoknadApplication.class);
 
     public SoknadApplication() {
         packages("no.nav.sbl.dialogarena.rest");
         register(MultiPartFeature.class);
         register(new CustomObjectMapper()); //todo: midlertidig fiks for å få timestamp for datoer i json-response
 
-        LOG.info("Starter Jersey");
+        logger.info("Starter Jersey");
     }
 }

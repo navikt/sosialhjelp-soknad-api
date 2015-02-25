@@ -96,12 +96,12 @@ public class WebSoknadUtils {
         }
 
         String value = permittertForrigeGang.getValue();
-        return value.equals("permittertFiske") || value.equals("permittert");
+        return "permittertFiske".equals(value) || "permittert".equals(value);
     }
 
     private static boolean ingenNyeArbeidsforhold(WebSoknad soknad) {
         Faktum nyeArbeidsforhold = soknad.getFaktumMedKey("nyearbeidsforhold.arbeidsidensist");
-        return nyeArbeidsforhold != null && nyeArbeidsforhold.getValue().equals("true");
+        return nyeArbeidsforhold != null && "true".equals(nyeArbeidsforhold.getValue());
     }
 
     public static String getSkjemanummer(WebSoknad soknad) {
