@@ -113,7 +113,7 @@ public class SelfTestService extends SelfTestBase {
         String status = STATUS_ERROR;
         try {
             fillagerEndpoint.ping();
-            oppsummertStatus = STATUS_OK;
+            status = STATUS_OK;
         } catch (Exception e) {
             logger.warn("<<<<<<Error Contacting Fillager (i Henvendelse)WS", e);
         }
