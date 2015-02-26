@@ -49,13 +49,6 @@ public class SelfTest {
     }
 
 
-    /**
-     * Override ved behov for ekstra info i selftest
-     */
-    protected String extraHtml() {
-        return "";
-    }
-
     private String hentHtmlContent() {
         SelfTestHTML html = new SelfTestHTML(APPLIKASJONS_NAVN + " selftest");
 
@@ -65,9 +58,6 @@ public class SelfTest {
         html.appendToBody(statusList);
         html.appendToBody("h5", "Siden generert: " + LocalDateTime.now().toString(DATE_FORMAT));
         html.appendToBody("h6", message);
-        if (!extraHtml().isEmpty()) {
-            html.appendToBody("p", extraHtml());
-        }
 
         return html.buildPage();
     }
@@ -202,7 +192,6 @@ public class SelfTest {
     private void setVersion(ServletContext context) {
 
         try {
-
             try (InputStream inputStream = context.getResourceAsStream(("/META-INF/MANIFEST.MF"))) {
                 Manifest manifest = new Manifest(inputStream);
                 version = manifest.getMainAttributes().getValue(Attributes.Name.IMPLEMENTATION_VERSION.toString());
