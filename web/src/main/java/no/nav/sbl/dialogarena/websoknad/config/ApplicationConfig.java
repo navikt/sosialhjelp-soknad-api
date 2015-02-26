@@ -2,6 +2,8 @@ package no.nav.sbl.dialogarena.websoknad.config;
 
 import no.nav.sbl.dialogarena.print.HandleBarKjoerer;
 import no.nav.sbl.dialogarena.print.HtmlGenerator;
+import no.nav.sbl.dialogarena.selftest.SelfTest;
+import no.nav.sbl.dialogarena.soknadinnsending.business.selftest.SelfTestService;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SikkerhetsAspect;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.websoknad.service.EmailService;
@@ -34,7 +36,6 @@ public class ApplicationConfig {
     private String smtpServerPort;
     @Value("${dokumentinnsending.smtpServer.host}")
     private String smtpServerHost;
-
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
         PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
@@ -111,5 +112,14 @@ public class ApplicationConfig {
         return new HandleBarKjoerer();
     }
 
+    @Bean
+    public SelfTestService selfTestService() {
+        return new SelfTestService();
+    }
+
+    @Bean
+    public SelfTest selfTest(){
+        return new SelfTest();
+    }
 
 }
