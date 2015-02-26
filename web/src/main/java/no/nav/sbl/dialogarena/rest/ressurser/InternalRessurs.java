@@ -1,13 +1,15 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
+import no.nav.sbl.dialogarena.selftest.SelfTest;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.SelfTestService;
 import no.nav.sbl.dialogarena.websoknad.config.ContentConfig;
 import org.springframework.cache.CacheManager;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.util.Map;
 
@@ -22,20 +24,20 @@ public class InternalRessurs {
     @Inject
     private NavMessageSource messageSource;
     @Inject
-    private SelfTestService selfTest;
+    private SelfTest selfTest;
 
     @GET
     @Path("/selftest")
     @Produces(MediaType.TEXT_HTML)
-    public String selftest() {
-        return selfTest.asHtml();
+    public String selftest(@Context HttpServletRequest request) {
+        return selfTest.asHtml(request.getServletContext());
     }
 
     @GET
     @Path("/selftest.json")
     @Produces(MediaType.APPLICATION_JSON)
-    public Map<String, Object> selftestLight() {
-        return selfTest.asJson();
+    public Map<String, Object> selftestJSON(@Context HttpServletRequest request) {
+        return selfTest.asJson(request.getServletContext());
     }
 
     @GET

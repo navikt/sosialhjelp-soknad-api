@@ -1,46 +1,53 @@
-package no.nav.sbl.dialogarena.soknadinnsending.business.service;
+package no.nav.sbl.dialogarena.selftest;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.selftest.AvhengighetStatus;
+import no.nav.sbl.dialogarena.soknadinnsending.business.selftest.SelfTestService;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 
-import java.io.Serializable;
+import javax.inject.Inject;
+import javax.servlet.ServletContext;
+import java.io.InputStream;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 import static java.net.InetAddress.getLocalHost;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.selftest.SelfTestService.STATUS_ERROR;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.selftest.SelfTestService.STATUS_OK;
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.slf4j.LoggerFactory.getLogger;
 
-public abstract class SelfTestBase {
+public class SelfTest {
 
-    private static final Logger logger = getLogger(SelfTestBase.class);
+    private static final Logger logger = getLogger(SelfTest.class);
     protected static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-    protected static final String STATUS_OK = "OK";
-    protected static final String STATUS_ERROR = "ERROR";
 
-    protected String version = "TODO fix versjon";
+    protected String version = "Unknown";
     protected String oppsummertStatus;
     protected String message;
-    protected List<AvhengighetStatus> statusList = new ArrayList();
+    protected List<AvhengighetStatus> statusList = new ArrayList<>();
+    private static final String APPLIKASJONS_NAVN = "Søknadsapi";
 
-    public String asHtml() {
-        updateStatusList();
+    @Inject
+    private SelfTestService selfTestService;
+
+
+    public String asHtml(ServletContext context) {
+        setVersion(context);
+        statusList = selfTestService.hentStatusliste();
         sjekkOppsummertStatus();
         return hentHtmlContent();
     }
 
-    public Map<String, Object> asJson() {
-        updateStatusList();
+    public Map<String, Object> asJson(ServletContext context) {
+        setVersion(context);
+        statusList = selfTestService.hentStatusliste();
         sjekkOppsummertStatus();
         return hentJsonContent();
     }
 
-    protected abstract List<AvhengighetStatus> populerStatusliste();
-    protected abstract String applikasjonsNavn();
 
     /**
      * Override ved behov for ekstra info i selftest
@@ -50,10 +57,10 @@ public abstract class SelfTestBase {
     }
 
     private String hentHtmlContent() {
-        SelfTestHTML html = new SelfTestHTML(applikasjonsNavn() + " selftest");
+        SelfTestHTML html = new SelfTestHTML(APPLIKASJONS_NAVN + " selftest");
 
         html.appendToBody("h1", "Service status: " + oppsummertStatus);
-        html.appendToBody("h3", applikasjonsNavn() + " - " + version);
+        html.appendToBody("h3", APPLIKASJONS_NAVN + " - " + version);
         html.appendToBody("h3", getHost());
         html.appendToBody(statusList);
         html.appendToBody("h5", "Siden generert: " + LocalDateTime.now().toString(DATE_FORMAT));
@@ -67,7 +74,7 @@ public abstract class SelfTestBase {
 
     private Map<String, Object> hentJsonContent() {
         Map<String, Object> content = new HashMap<>();
-        content.put("navn", applikasjonsNavn() + "selftest");
+        content.put("navn", APPLIKASJONS_NAVN + "selftest");
         content.put("host", getHost());
         content.put("version", version);
         content.put("status", oppsummertStatus);
@@ -75,10 +82,6 @@ public abstract class SelfTestBase {
         content.put("avhengigheter", statusList);
 
         return content;
-    }
-
-    private void updateStatusList() {
-        statusList = populerStatusliste();
     }
 
     private void sjekkOppsummertStatus() {
@@ -173,7 +176,7 @@ public abstract class SelfTestBase {
             Iterator iterator = list.iterator();
 
             while (iterator.hasNext()) {
-                SelfTestBase.AvhengighetStatus serviceStatus = (SelfTestBase.AvhengighetStatus) iterator.next();
+                AvhengighetStatus serviceStatus = (AvhengighetStatus) iterator.next();
                 body.append("<tr>" + newLine);
                 body.append("<td>" + serviceStatus.getStatus() + "</td>" + newLine);
                 body.append("<td>" + serviceStatus.getName() + "</td>" + newLine);
@@ -196,38 +199,19 @@ public abstract class SelfTestBase {
         }
     }
 
-    protected static class AvhengighetStatus implements Serializable {
-        private final String navn;
-        private final String status;
-        private final long durationMilis;
-        private final String beskrivelse;
+    private void setVersion(ServletContext context) {
 
-        public AvhengighetStatus(String name, String status, long durationMilis, String beskrivelse) {
-            this.navn = name;
-            this.status = status;
-            this.durationMilis = durationMilis;
-            this.beskrivelse = beskrivelse;
-        }
+        try {
 
-        public AvhengighetStatus(String name, String status, long durationMilis) {
-            this(name, status, durationMilis, "");
-        }
-
-        public String getName() {
-            return this.navn;
-        }
-
-        public String getStatus() {
-            return this.status;
-        }
-
-        public long getDurationMilis() {
-            return this.durationMilis;
-        }
-
-        public String getBeskrivelse() {
-            return this.beskrivelse;
+            try (InputStream inputStream = context.getResourceAsStream(("/META-INF/MANIFEST.MF"))) {
+                Manifest manifest = new Manifest(inputStream);
+                version = manifest.getMainAttributes().getValue(Attributes.Name.IMPLEMENTATION_VERSION.toString());
+            }
+        } catch (Exception e) {
+            logger.error("Unable to fetch the application version", e);
+            version = "Unknown";
         }
     }
+
 
 }

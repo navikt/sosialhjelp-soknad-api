@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.soknadinnsending.business.service;
+package no.nav.sbl.dialogarena.soknadinnsending.business.selftest;
 
 import no.aetat.arena.fodselsnr.Fodselsnr;
 import no.nav.arena.tjenester.person.v1.FaultGeneriskMsg;
@@ -10,7 +10,6 @@ import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
 import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
 import org.slf4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -26,10 +25,11 @@ import static java.net.HttpURLConnection.HTTP_OK;
 import static java.util.Arrays.asList;
 import static org.slf4j.LoggerFactory.getLogger;
 
-@Component
-public class SelfTestService extends SelfTestBase {
+public class SelfTestService  {
 
     private static final Logger logger = getLogger(SelfTestService.class);
+    public static final String STATUS_OK = "OK";
+    public static final String STATUS_ERROR = "ERROR";
 
     @Inject
     @Named("sendSoknadSelftestEndpoint")
@@ -57,8 +57,7 @@ public class SelfTestService extends SelfTestBase {
     @Inject
     private DataSource dataSource;
 
-    @Override
-    protected List<AvhengighetStatus> populerStatusliste() {
+    public List<AvhengighetStatus> hentStatusliste() {
         return asList(
                 getCMSStatus(),
                 getHenvendelseWSStatus(),
@@ -69,11 +68,6 @@ public class SelfTestService extends SelfTestBase {
                 getPersonInfoStatus(),
                 getLokalDatabaseStatus()
         );
-    }
-
-    @Override
-    protected String applikasjonsNavn() {
-        return "SØKNADSAPI";
     }
 
     private AvhengighetStatus getCMSStatus() {
