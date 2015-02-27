@@ -1,13 +1,8 @@
 angular.module('nav.services.resolvers.behandlingsid', [])
-    .factory('BehandlingIdResolver', function ($resource, $q, $route) {
+    .factory('BehandlingIdResolver', function ($resource, $q, $route, $routeParams) {
         var behandlingsIdDefer = $q.defer();
 
-        var behandlingId;
-        if (erSoknadStartet() || erEttersending()) {
-            behandlingId = getBehandlingIdFromUrl();
-        } else {
-            behandlingId = $route.current.params.behandlingId;
-        }
+        var behandlingId = $routeParams.behandlingsId || getBehandlingIdFromUrl();
 
         if (behandlingId) {
             $resource('/sendsoknad/rest/soknad/behandling/:behandlingId').get(
@@ -15,6 +10,10 @@ angular.module('nav.services.resolvers.behandlingsid', [])
                 function (result) {
                     $route.current.params.soknadId = result.result;
                     behandlingsIdDefer.resolve(result.result);
+                },
+                function () {
+                    redirectTilUrl("#/feilside/soknadikkefunnet");
+                    behandlingsIdDefer.reject("Fant ikke søknad for behandlingsID");
                 }
             );
         } else {

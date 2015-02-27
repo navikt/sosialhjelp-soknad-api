@@ -1,19 +1,24 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.LandService;
+
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.POSTADRESSE_UTLAND;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.UTENLANDSK_ADRESSE;
-
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosLandService;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.LandService.EOS;
 
 
 public class Personalia {
 
-    private static EosLandService eosLandService = new EosLandService();
+    private static LandService landService = new LandService();
 
     public static final String PERSONALIA_KEY = "personalia";
     public static final String FNR_KEY = "fnr";
+    public static final String KONTONUMMER_KEY = "kontonummer";
+    public static final String ER_UTENLANDSK_BANKKONTO = "erUtenlandskBankkonto";
+    public static final String UTENLANDSK_KONTO_BANKNAVN = "utenlandskKontoBanknavn";
+    public static final String UTENLANDSK_KONTO_LAND = "utenlandskKontoLand";
     public static final String ALDER_KEY = "alder";
     public static final String EPOST_KEY = "epost";
     public static final String STATSBORGERSKAP_KEY = "statsborgerskap";
@@ -29,6 +34,7 @@ public class Personalia {
     public static final String SEKUNDARADRESSE_TYPE_KEY = "sekundarAdresseType";
     public static final String SEKUNDARADRESSE_GYLDIGFRA_KEY = "sekundarAdresseGyldigFra";
     public static final String SEKUNDARADRESSE_GYLDIGTIL_KEY = "sekundarAdresseGyldigTil";
+    public static final String SEKUNDARADRESSE_LANDKODE = "sekundarAdresseLandkode";
 
     private String fnr;
     private String alder;
@@ -38,6 +44,10 @@ public class Personalia {
     private String kjonn;
     private Adresse gjeldendeAdresse;
     private Adresse sekundarAdresse;
+    private String kontonummer;
+    private Boolean erUtenlandskBankkonto;
+    private String utenlandskKontoBanknavn;
+    private String utenlandskKontoLand;
 
     public Personalia() {
     }
@@ -109,10 +119,10 @@ public class Personalia {
     public boolean harUtenlandskAdresse() {
         String adressetype = null;
 
-        if(gjeldendeAdresse != null) {
-            adressetype = gjeldendeAdresse.getAdressetype(); 
+        if (gjeldendeAdresse != null) {
+            adressetype = gjeldendeAdresse.getAdressetype();
         }
-        
+
         if (adressetype == null) {
             return false;
         }
@@ -126,8 +136,8 @@ public class Personalia {
     public boolean harUtenlandskAdresseIEOS() {
 
         String adressetype = null;
-        String landkode =  null;
-        if(gjeldendeAdresse != null) {
+        String landkode = null;
+        if (gjeldendeAdresse != null) {
             adressetype = gjeldendeAdresse.getAdressetype();
             landkode = gjeldendeAdresse.getLandkode();
         }
@@ -136,9 +146,8 @@ public class Personalia {
             return false;
         }
 
-        if ((harUtenlandsAdressekode(adressetype)) && (eosLandService.isEosLandAnnetEnnNorge(landkode)))
-        {
-               return true;
+        if ((harUtenlandsAdressekode(adressetype)) && (landService.getStatsborgeskapType(landkode).equals(EOS))) {
+            return true;
         }
         return false;
     }
@@ -153,8 +162,7 @@ public class Personalia {
     }
 
     public boolean harNorskMidlertidigAdresse() {
-        if (sekundarAdresse == null)
-        {
+        if (sekundarAdresse == null) {
             return false;
         }
         String adressetype = sekundarAdresse.getAdressetype();
@@ -170,8 +178,7 @@ public class Personalia {
 
     public boolean harUtenlandskFolkeregistrertAdresse() {
 
-        if ((gjeldendeAdresse == null) || (gjeldendeAdresse.getAdressetype() == null))
-        {
+        if ((gjeldendeAdresse == null) || (gjeldendeAdresse.getAdressetype() == null)) {
             return false;
         }
         if (gjeldendeAdresse.getAdressetype().equalsIgnoreCase(UTENLANDSK_ADRESSE.name())) {
@@ -180,4 +187,36 @@ public class Personalia {
         return false;
     }
 
+    public String getKontonummer() {
+        return kontonummer;
+    }
+
+    public void setKontonummer(String kontonummer) {
+        this.kontonummer = kontonummer;
+
+    }
+
+    public Boolean getErUtenlandskBankkonto() {
+        return erUtenlandskBankkonto;
+    }
+
+    public void setErUtenlandskBankkonto(Boolean erUtenlandskBankkonto) {
+        this.erUtenlandskBankkonto = erUtenlandskBankkonto;
+    }
+
+    public String getUtenlandskKontoBanknavn() {
+        return utenlandskKontoBanknavn;
+    }
+
+    public void setUtenlandskKontoBanknavn(String utenlandskKontoBanknavn) {
+        this.utenlandskKontoBanknavn = utenlandskKontoBanknavn;
+    }
+
+    public String getUtenlandskKontoLand() {
+        return utenlandskKontoLand;
+    }
+
+    public void setUtenlandskKontoLand(String utenlandskKontoLand) {
+        this.utenlandskKontoLand = utenlandskKontoLand;
+    }
 }

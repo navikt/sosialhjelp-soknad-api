@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.websoknad.servlet;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.PersonAlder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoConnector;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,18 +19,20 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 @Controller
 public class UtslagskriterierController {
+
     private static final Logger logger = getLogger(UtslagskriterierController.class);
+
     @Inject
     private PersonaliaService personaliaService;
 
     @Inject
-    PersonInfoConnector personInfoConnector;
+    private PersonInfoService personInfoService;
 
     @RequestMapping(value = "utslagskriterier", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public Map<String, String> sjekkUtslagskriterier() {
         String uid = getSubjectHandler().getUid();
-        PersonInfoConnector.Status status = personInfoConnector.hentArbeidssokerStatus(uid);
+        PersonInfoService.Status status = personInfoService.hentArbeidssokerStatus(uid);
         Map<String, String> utslagskriterierResultat = new HashMap<>();
         utslagskriterierResultat.put("registrertArbeidssøker", status.name());
 
@@ -42,7 +44,7 @@ public class UtslagskriterierController {
             utslagskriterierResultat.put("registrertAdresseGyldigFra", personalia.getGjeldendeAdresse().getGyldigFra());
             utslagskriterierResultat.put("registrertAdresseGyldigTil", personalia.getGjeldendeAdresse().getGyldigTil());
         } catch (Exception e) {
-            logger.error("Kunne ikke hente personalia" + e.getMessage());
+            logger.error("Kunne ikke hente personalia", e);
             utslagskriterierResultat.put("error", e.getMessage());
         }
         return utslagskriterierResultat;

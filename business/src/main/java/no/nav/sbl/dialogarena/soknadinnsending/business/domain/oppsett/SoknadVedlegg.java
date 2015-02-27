@@ -10,7 +10,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class SoknadVedlegg implements Serializable {
@@ -20,9 +19,11 @@ public class SoknadVedlegg implements Serializable {
     private Boolean forSystemfaktum;
     private Boolean flereTillatt = false;
     private String skjemaNummer;
+    private String skjemanummerTillegg;
     private String property;
     private Boolean inverted = false;
     private String oversetting;
+    private List<String> ekstraValg = new ArrayList<>();
     private List<String> values = new ArrayList<>();
 
     @XmlIDREF
@@ -32,14 +33,6 @@ public class SoknadVedlegg implements Serializable {
 
     public void setFaktum(SoknadFaktum faktum) {
         this.faktum = faktum;
-    }
-
-    public String getOnValue() {
-        return values != null && !values.isEmpty() ? values.get(0) : null;
-    }
-
-    public void setOnValue(String onValue) {
-        this.values = Arrays.asList(onValue);
     }
 
     @XmlElementWrapper(name = "onValues")
@@ -64,15 +57,16 @@ public class SoknadVedlegg implements Serializable {
         return skjemaNummer;
     }
 
-    public String getSkjemaNummerFiltrert() {
-        if (getSkjemaNummer() != null && getSkjemaNummer().contains("|")) {
-            return getSkjemaNummer().substring(0, getSkjemaNummer().indexOf("|"));
-        }
-        return getSkjemaNummer();
-    }
-
     public void setSkjemaNummer(String skjemaNummer) {
         this.skjemaNummer = skjemaNummer;
+    }
+
+    public String getSkjemanummerTillegg() {
+        return skjemanummerTillegg;
+    }
+
+    public void setSkjemanummerTillegg(String tillegg) {
+        this.skjemanummerTillegg = tillegg;
     }
 
     public String getProperty() {
@@ -98,6 +92,16 @@ public class SoknadVedlegg implements Serializable {
 
     public void setOversetting(String oversetting) {
         this.oversetting = oversetting;
+    }
+
+    @XmlElementWrapper(name = "ekstraValg")
+    @XmlElement(name = "valg")
+    public List<String> getEkstraValg() {
+        return ekstraValg;
+    }
+
+    public void setEkstraValg(List<String> valg) {
+        this.ekstraValg = valg;
     }
 
     public boolean harOversetting() {
@@ -156,6 +160,11 @@ public class SoknadVedlegg implements Serializable {
 
     public boolean harParent() {
         return getFaktum().getDependOn() != null;
+    }
+
+    public SoknadVedlegg medFaktum(SoknadFaktum faktum) {
+        this.setFaktum(faktum);
+        return this;
     }
 
     @Override

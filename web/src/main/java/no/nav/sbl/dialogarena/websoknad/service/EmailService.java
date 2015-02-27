@@ -1,13 +1,19 @@
 package no.nav.sbl.dialogarena.websoknad.service;
 
+import no.nav.modig.core.exception.ApplicationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.mail.MailException;
-import org.springframework.mail.MailSender;
-import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessagePreparator;
 
 import javax.inject.Inject;
+import javax.inject.Named;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 /**
  * Klasse som tar seg av utsending av epost
@@ -16,46 +22,57 @@ import javax.inject.Inject;
 public class EmailService {
 
     @Inject
-    private MailSender mailSender;
+    private JavaMailSender mailSender;
     @Inject
+    @Named("threadPoolTaskExecutor")
     private TaskExecutor executor;
 
     private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
+    private final String fraAdresse = "ikke-svar@nav.no";
 
     /**
-     * Sender en epost til innsender med link til skjemaet personen kan fortsette på senre.
+     * Sender en epost til innsender med link til ettersending og saksoversikt.
      *
-     * @param ePost   adressen til personen
-     * @param subject Sunbject til mailen
-     * @param innhold innhold i mail
+     * @param ePost        adressen til personen
+     * @param subject      Sunbject til mailen
+     * @param innhold      innhold i mail
+     * @param behandlingId behandinglsiden til søknaden
      */
-    public void sendFortsettSenereEPost(String ePost, String subject, String innhold) {
-        SimpleMailMessage mail = new SimpleMailMessage();
-        mail.setTo(ePost);
-        mail.setSubject(subject);
-        mail.setText(innhold);
-        mail.setFrom("ikke-svar@nav.no");
-        addTask(mail);
+    public void sendEpost(final String ePost, final String subject, final String innhold, String behandlingId) {
+        final String htmlInnhold = "<p>" + innhold + "</p>";
+        addTask(getMimePreperator(ePost, subject, htmlInnhold), behandlingId, ePost, htmlInnhold, 0);
     }
 
-    private void addTask(final SimpleMailMessage mail) {
-        addTask(mail, 0);
+    private MimeMessagePreparator getMimePreperator(final String epost, final String subject, final String innhold) {
+        MimeMessagePreparator preparator = new MimeMessagePreparator() {
+            public void prepare(MimeMessage mimeMessage) {
+                try {
+                    mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(epost));
+                    mimeMessage.setFrom(new InternetAddress(fraAdresse));
+                    mimeMessage.setContent(innhold, "text/html;charset=utf-8");
+                    mimeMessage.setSubject(subject);
+                } catch (MessagingException e) {
+                    logger.error("Kunne ikke opprette e-post", e);
+                    throw new ApplicationException("Kunne ikke opprette e-post", e);
+                }
+            }
+        };
+        return preparator;
     }
 
-    private void addTask(final SimpleMailMessage mail, final int loopCheck) {
+    private void addTask(final MimeMessagePreparator preparator, final String behandlingId, final String tilEpost, final String epostinnhold, final int loopCheck) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    mailSender.send(mail);
-                    logger.info("Epost sendes: {}", mail);
+                    logger.info("Epost sendes til: " + tilEpost + " med innhold: " + epostinnhold + " BrukerbehandlingId: " + behandlingId);
+                    mailSender.send(preparator);
                 } catch (MailException me) {
                     if (loopCheck < 5) {
-                        addTask(mail, loopCheck + 1);
+                        addTask(preparator, behandlingId, tilEpost, epostinnhold, loopCheck + 1);
                     } else {
-                        logger.warn("Kunne ikke sende epost: {}", mail, me);
+                        logger.warn("Epost kunne ikke sendes til: " + tilEpost + " med innhold: " + epostinnhold + " BrukerbehandlingId: " + behandlingId, me);
                     }
-
                 }
             }
         });

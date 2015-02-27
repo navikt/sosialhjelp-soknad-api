@@ -1,34 +1,8 @@
-<div id="slett" class="soknad avbryt-boks" data-sidetittel="sidetittel.slett">
+<div id="avbryt" class="soknad avbryt-boks" data-sidetittel="sidetittel.slett">
     <div class="rad-belyst inforad">
         <div class="begrensning sak-totredel">
-            <section class="panel-standard oversikt" data-ng-controller="AvbrytCtrl">
-
-                <div class="fremdriftsindikator" ng-show="krevBekreftelse === false">
-                    <img src="../img/ajaxloader/hvit/loader_hvit_64.gif" alt="Fremdriftsindikator"/>
-                </div>
-
-                <div ng-show="krevBekreftelse == true">
-                    <h1 class="stor-ikon-slett-strek" data-ng-bind-html=" 'slett.tittel' | cmstekst"></h1>
-
-                    <p class="info" data-ng-bind-html=" 'slett.informasjon' | cmstekst"></p>
-                </div>
-
-                <div class="slett-soknad-stor">
-                    <div data-ng-show="krevBekreftelse == true">
-
-                        <form novalidate>
-                            <input type="button"
-                                   class="knapp-advarsel"
-                                   value="{{ 'avbryt.slett' | cmstekst }}"
-                                   data-ng-click="submitForm()"
-                                   data-fremdriftsindikator>
-                        </form>
-
-                        <div>
-                            <a href="#/soknad" data-ng-bind-html=" 'slett.tilbake' | cmstekst"></a>
-                        </div>
-                    </div>
-                </div>
+            <section class="panel-standard oversikt">
+                <div data-slett-soknad></div>
             </section>
         </div>
     </div>

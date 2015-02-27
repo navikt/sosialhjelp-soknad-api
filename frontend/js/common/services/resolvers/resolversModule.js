@@ -1,6 +1,5 @@
 angular.module('nav.services.resolvers', [
     'nav.services.resolvers.utslagskriterier',
-    'nav.services.resolvers.land',
     'nav.services.resolvers.config',
     'nav.services.resolvers.cms',
     'nav.services.resolvers.soknadmetadata',
@@ -11,5 +10,5 @@ angular.module('nav.services.resolvers', [
     'nav.services.resolvers.fakta',
     'nav.services.resolvers.ettersending',
     'nav.services.resolvers.vedlegg',
-    'nav.services.resolvers.personalia'
+    'nav.services.resolvers.soknadutenredirect'
 ]);

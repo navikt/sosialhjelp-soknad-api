@@ -13,6 +13,17 @@ angular.module('nav.common.routes', ['ngRoute'])
                     }
                 }
             })
+            .when('/feilside/soknadikkefunnet', {
+                templateUrl: '../views/common/feilsider/soknadIkkeFunnetFeilside.html',
+                resolve: {
+                    cms: function (CmsResolver) {
+                        return CmsResolver;
+                    },
+                    config: function (ConfigResolver) {
+                        return ConfigResolver;
+                    }
+                }
+            })
             .when('/404', {
                 templateUrl: '../views/common/feilsider/feilside404.html',
                 resolve: {
@@ -24,7 +35,7 @@ angular.module('nav.common.routes', ['ngRoute'])
                     }
                 }
             })
-            .when('/bekreftelse/:behandlingsId', {
+            .when('/bekreftelse/', {
                 templateUrl: '../views/common/innsendingbekreftelse/bekreftelse.html',
                 controller: 'BekreftelsesCtrl',
                 resolve: {
@@ -36,15 +47,24 @@ angular.module('nav.common.routes', ['ngRoute'])
                     }
                 }
             })
+            .when('/avbrutt', {
+                templateUrl: '../views/templates/avbrutt.html',
+                controller: 'AvbrytCtrl',
+                resolve: {
+                    cms: function (CmsResolver) {
+                        return CmsResolver;
+                    },
+                    config: function(ConfigForSoknadResolver) {
+                        return ConfigForSoknadResolver;
+                    }
+                }
+            })
             .otherwise({redirectTo: '/404'});
     })
     .run(function ($rootScope, $location, $anchorScroll, $routeParams) {
         $rootScope.$on('$routeChangeSuccess', function () {
             if (_gaq) {
                 var trackPage = "startSoknad";
-                if (erSoknadStartet()) {
-                    trackPage = $location.path().split("/")[1];
-                }
                 _gaq.push(['_trackPageview', '/sendsoknad/' + trackPage]);
             }
             $location.hash($routeParams.scrollTo);

@@ -1,5 +1,5 @@
 angular.module('nav.bildenavigering', [])
-    .directive('bildenavigering', [function () {
+    .directive('bildenavigering', function (data) {
         return {
             restrict: 'A',
             replace: true,
@@ -9,6 +9,7 @@ angular.module('nav.bildenavigering', [])
 
             link: function (scope, element) {
                 var bilder = [];
+                scope.brukerBehandlingId = data.soknad.brukerBehandlingId;
                 scope.side = 0;
                 scope.bilder = bilder;
 
@@ -44,5 +45,5 @@ angular.module('nav.bildenavigering', [])
                 }
             }
         };
-    }]);
+    });
 

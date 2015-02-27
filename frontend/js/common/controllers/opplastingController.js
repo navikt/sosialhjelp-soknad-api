@@ -13,7 +13,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
             return !$scope.erAnnetVedlegg();
         };
     })
-    .controller('OpplastingCtrl', function ($scope, $location, $routeParams, $cookies, vedleggService, data, cms) {
+    .controller('OpplastingCtrl', function ($scope, $location, $routeParams, $cookies, vedleggService, data, cmsService) {
         $scope.fremdriftsindikator = {
             laster: false
         };
@@ -24,6 +24,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
 
         $scope.skalViseFeilmelding = false;
         $scope.opplastingFeilet = false;
+        $scope.brukerBehandlingId = data.soknad.brukerBehandlingId;
 
         $scope.data = {
             vedleggId: $routeParams.vedleggId,
@@ -96,7 +97,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                     errorCode = 'opplasting.feilmelding.maksstorrelse';
                 }
                 $scope.fremdriftsindikator.laster = false;
-                $scope.data.opplastingFeilet = cms.tekster[errorCode];
+                $scope.data.opplastingFeilet = cmsService.getText(errorCode);
                 $.each(data.files, function (index, file) {
                     data.scope.clear(file);
                     $scope.clear(file);
@@ -104,9 +105,9 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
             },
             // Error and info messages:
             messages: {
-                maxNumberOfFiles: cms.tekster['opplasting.feilmelding.makssider'],
-                acceptFileTypes: cms.tekster['opplasting.feilmelding.feiltype'],
-                maxFileSize: cms.tekster['opplasting.feilmelding.maksstorrelse']
+                maxNumberOfFiles: cmsService.getText('opplasting.feilmelding.makssider'),
+                acceptFileTypes: cmsService.getText('opplasting.feilmelding.feiltype'),
+                maxFileSize: cmsService.getText('opplasting.feilmelding.maksstorrelse')
             }
         };
 
@@ -123,7 +124,8 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                 data.soknad.vedlegg[soknadVedleggIdx] = result;
                 $scope.vedleggListe[vedleggListeIdx] = result;
                 $scope.fremdriftsindikator.laster = false;
-                $location.url('/vedlegg?scrollTo=vedlegg_' + $scope.data.vedleggId).replace();
+                var brukerBehandlingId = data.soknad.behandlingskjedeId ? data.soknad.behandlingskjedeId : data.soknad.brukerBehandlingId;
+                $location.url('/vedlegg?scrollTo=vedlegg_' + $scope.data.vedleggId);
             });
         };
 

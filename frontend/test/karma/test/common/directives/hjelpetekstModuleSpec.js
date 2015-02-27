@@ -6,7 +6,7 @@ describe('hjelpetekst', function () {
 
     beforeEach(module(
         'nav.hjelpetekst',
-        'nav.cmstekster',
+        'nav.cms',
         'ngSanitize',
         'templates-main'));
 

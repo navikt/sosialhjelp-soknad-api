@@ -129,89 +129,6 @@ describe('utility funksjoner -', function () {
         });
     });
 
-    describe('reversere norsk datoformat (fra dd.MM.yyyy til yyyy.MM.dd', function () {
-        it('skal få returverdi', function () {
-            var dato = reverserNorskDatoformat("");
-            expect(dato).toBeDefined();
-        });
-
-        it('skal få tom string dersom datostringen er på galt format', function () {
-            var dato = reverserNorskDatoformat("");
-            expect(dato).toBe("");
-        });
-
-        it('skal få tilbake string med innhold dersom datostringen er på rett format', function () {
-            var dato = reverserNorskDatoformat("01.01.2013");
-            expect(dato.length).toBeGreaterThan(0);
-        });
-
-
-        it('skal få tilbake dato på format yyyy-MM-dd', function () {
-            var forventetDatoFormattering = '2013-01-01';
-            var dato = reverserNorskDatoformat("01.01.2013");
-            expect(dato).toBe(forventetDatoFormattering);
-        });
-    });
-
-    describe('datovalidering', function() {
-        it('skal få resultat tilbake fra datovalidering', function() {
-            var datoString = "01.01.2010";
-            var erGyldig = erGyldigDato(datoString);
-
-            expect(erGyldig).toBeDefined();
-        });
-
-        it('skal få tilbake boolean fra datovalidering', function () {
-            var datoString = "01.01.2010";
-            var erGyldig = erGyldigDato(datoString);
-
-            expect(typeof erGyldig).toBe("boolean");
-        });
-
-        it('skal få true dersom en datostring er gyldig', function () {
-            var datoString = "01.01.2010";
-            var erGyldig = erGyldigDato(datoString);
-
-            expect(erGyldig).toBe(true);
-        });
-
-        it('skal få false dersom en datostring ikke er gyldig', function () {
-            var datoString = "40.01.2010";
-            var erGyldig = erGyldigDato(datoString);
-
-            expect(erGyldig).toBe(false);
-        });
-
-        it('skal få at 29. februar ikke er gyldig dato dersom det ikke er skuddår', function () {
-            var datoString = "29.02.2010";
-            var erGyldig = erGyldigDato(datoString);
-
-            expect(erGyldig).toBe(false);
-        });
-
-        it('skal få at 29. februar er gyldig dato dersom det er skuddår', function () {
-            var datoString = "29.02.2012";
-            var erGyldig = erGyldigDato(datoString);
-
-            expect(erGyldig).toBe(true);
-        });
-
-        it('skal returnere true for fremtidig dato', function() {
-            var imorgen = new Date();
-            imorgen.setDate(imorgen.getDate() + 1)
-
-            var result = erFremtidigDato(imorgen.getFullYear(), imorgen.getMonth()+1, imorgen.getDate());
-            expect(result).toEqual(true);
-        });
-
-        it('skal returnere false for ikke fremtidig dato', function() {
-            var idag = new Date();
-            
-            var result = erFremtidigDato(idag.getFullYear(), idag.getMonth()+1, idag.getDate());
-            expect(result).toBe(false);
-        });
-    });
-
     describe('tall med 2 siffer', function () {
         it('skal få returverdi', function () {
             var tall = 1;
@@ -229,6 +146,28 @@ describe('utility funksjoner -', function () {
             var tall = 10;
 
             expect(konverterTallTilStringMedToSiffer(tall)).toBe("10");
+        });
+    });
+
+    describe('lage norsk datoformat(dd.MM.YYYY) fra iso-standard(YYYY-MM-dd)', function() {
+        it('skal returnere 12.12.2014 om vi sender inn 2014-12-12', function() {
+            expect(lagNorskDatoformatFraIsoStandard("2014-12-12")).toBe("12.12.2014");
+        });
+
+        it('skal legge til 0 dager som har kun et siffer', function() {
+           expect(lagNorskDatoformatFraIsoStandard("2012-11-01")).toBe("01.11.2012");
+        });
+
+        it('skal legge til 0 på dager som har kun et siffer', function() {
+            expect(lagNorskDatoformatFraIsoStandard("2012-01-11")).toBe("11.01.2012");
+        });
+
+        it('skal returnere null ved ugyldig dato', function() {
+            expect(lagNorskDatoformatFraIsoStandard("2013-55-32")).toBeNull();
+        });
+
+        it('skal kun godta dato på ISO-format', function() {
+           expect(lagNorskDatoformatFraIsoStandard("12-12-AA")).toBeNull();
         });
     });
 });

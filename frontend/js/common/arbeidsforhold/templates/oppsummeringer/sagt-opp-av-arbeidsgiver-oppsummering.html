@@ -1,0 +1,34 @@
+<div class="varighet">
+    <span data-ng-bind="af.sluttaarsak.properties.datofra | date:'dd.MM.yyyy' | norskdato"></span>
+    <span data-ng-if="af.sluttaarsak.properties.datotil" data-ng-bind-html=" 'dato.til' | cmstekst"></span>
+    <span data-ng-if="af.sluttaarsak.properties.datotil" data-ng-bind="af.sluttaarsak.properties.datotil | date:'dd.MM.yyyy' | norskdato"></span>
+</div>
+
+<ul>
+    <li>
+        <p data-arbeidsforhold-sluttaarsak data-sluttaarsak="af.sluttaarsak.properties.type"></p>
+    </li>
+    <li>
+        <span data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.aarsak.label' | cmstekst"></span>
+        <p data-ng-bind="af.sluttaarsak.properties.aarsak"></p>
+    </li>
+    <li>
+        <span data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.sporsmal' | cmstekst"></span>
+        <p data-ng-if="af.sluttaarsak.properties.sagtOppAvArbeidsgiverTilbudomjobbannetsted == 'true'">
+            {{ 'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.true' | cmstekst }}
+        </p>
+        <p data-ng-show="af.sluttaarsak.properties.sagtOppAvArbeidsgiverTilbudomjobbannetsted == 'false'">
+            {{ 'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.false' | cmstekst }}
+        </p>
+    </li>
+</ul>
+<div data-turnusblokk-oppsummering
+        data-arbeidsforhold="af.arbeidsforhold"></div>
+
+<div data-ng-include="'../js/common/arbeidsforhold/templates/slett-arbeidsforhold.html'"></div>
+
+<div data-arbeidsforhold-vedlegg-infoboks
+     data-arbeidsforhold="af.arbeidsforhold"
+     data-rotasjon-vedlegg="true"
+     data-vedleggtekster="['Dagpenger.vedlegg.O2.header', 'Dagpenger.vedlegg.T8.header']">
+</div>

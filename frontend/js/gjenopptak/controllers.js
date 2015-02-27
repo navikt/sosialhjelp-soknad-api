@@ -1,0 +1,20 @@
+angular.module('gjenopptak.controllers', [
+    'nav.reellarbeidssoker',
+    'nav.ytelser',
+    'nav.egennaering',
+    'nav.verneplikt',
+    'nav.utdanning',
+    'nav.opplasting.controller',
+    'nav.barnetillegg',
+    'nav.barn',
+    'nav.fortsettsenere',
+    'nav.gjenopptak',
+    'nav.gjenopptak.informasjonsside',
+    'nav.feilside',
+    'nav.oppsummering',
+    'nav.adresse',
+    'nav.behandlingside',
+    'nav.avbryt',
+    'nav.bekreftelse',
+    'nav.tilleggsopplysninger'
+]);

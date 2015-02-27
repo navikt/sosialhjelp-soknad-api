@@ -272,11 +272,11 @@ public class AdresseTransform {
         stringBuilder.append(xmlPostboksAdresse.getTilleggsadresse());
         stringBuilder.append(", ");
         stringBuilder.append(getPostnummerString(xmlPostboksAdresse));
-        stringBuilder.append(" ");
+        stringBuilder.append(' ');
         stringBuilder.append(kodeverk.getPoststed(getPostnummerString(xmlPostboksAdresse)));
         stringBuilder.append(", ");
         stringBuilder.append(xmlPostboksAdresse.getPostboksanlegg());
-        stringBuilder.append(" ");
+        stringBuilder.append(' ');
         stringBuilder.append(xmlPostboksAdresse.getPostboksnummer());
         adresse.setAdresse(stringBuilder.toString());
 
@@ -296,7 +296,7 @@ public class AdresseTransform {
             stringBuilder.append(", ");
         }
         stringBuilder.append(getPostnummerString(xmlMatrikkelAdresse));
-        stringBuilder.append(" ");
+        stringBuilder.append(' ');
         stringBuilder.append(kodeverk.getPoststed(getPostnummerString(xmlMatrikkelAdresse)));
         stringBuilder.append(", ");
         stringBuilder.append(xmlMatrikkelAdresse.getEiendomsnavn());
@@ -317,12 +317,12 @@ public class AdresseTransform {
             stringBuilder.append(", ");
         }
         stringBuilder.append(xmlGateAdresse.getGatenavn());
-        stringBuilder.append(" ");
+        stringBuilder.append(' ');
         stringBuilder.append(getHusnummer(xmlGateAdresse));
         stringBuilder.append(getHusbokstav(xmlGateAdresse));
         stringBuilder.append(", ");
         stringBuilder.append(getPostnummerString(xmlGateAdresse));
-        stringBuilder.append(" ");
+        stringBuilder.append(' ');
         stringBuilder.append(kodeverk.getPoststed(getPostnummerString(xmlGateAdresse)));
         adresse.setAdresse(stringBuilder.toString());
 
@@ -335,12 +335,12 @@ public class AdresseTransform {
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(xmlGateAdresse.getGatenavn());
-        stringBuilder.append(" ");
+        stringBuilder.append(' ');
         stringBuilder.append(getHusnummer(xmlGateAdresse));
         stringBuilder.append(getHusbokstav(xmlGateAdresse));
         stringBuilder.append(", ");
         stringBuilder.append(getPostnummerString(xmlGateAdresse));
-        stringBuilder.append(" ");
+        stringBuilder.append(' ');
         stringBuilder.append(kodeverk.getPoststed(getPostnummerString(xmlGateAdresse)));
         adresse.setAdresse(stringBuilder.toString());
 

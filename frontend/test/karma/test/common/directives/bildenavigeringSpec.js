@@ -1,7 +1,7 @@
 describe('stickybunn', function () {
     var scope, element;
 
-    beforeEach(module('nav.bildenavigering', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.bildenavigering', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});

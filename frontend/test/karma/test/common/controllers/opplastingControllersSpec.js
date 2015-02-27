@@ -22,7 +22,13 @@
                     soknadId: 1
                 }
             });
-            $provide.value("cms", {'tekster': {'barnetillegg.nyttbarn.landDefault': ''}});
+            var cmsTekster = {'tekster': {'barnetillegg.nyttbarn.landDefault': ''}};
+            $provide.value("cms", cmsTekster);
+            $provide.value("cmsService", {
+                getText: function(nokkel) {
+                    return cmsTekster.tekster[nokkel];
+                }
+            });
             $provide.value("$routeParams", {});
         }));
 
@@ -64,6 +70,14 @@
 
             it("skal hente vedlegg", function() {
                 expect(scope.vedlegg).toNotBe(undefined);
+            });
+            it("skal være annet vedlegg", function() {
+                scope.vedlegg.skjemaNummer = "N6";
+                expect(scope.erAnnetVedlegg()).toBeTruthy();
+            });
+            it("skal ikke være annet vedlegg", function() {
+                scope.vedlegg.skjemaNummer = "Y2";
+                expect(scope.erIkkeAnnetVedlegg()).toBeTruthy();
             });
         });
 

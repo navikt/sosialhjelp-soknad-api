@@ -1,4 +1,6 @@
 #oppsummering {
+    font-size: 0.85rem;
+
     .stegindikator {
         margin-top: 60px;
     }
@@ -38,25 +40,54 @@
     .oppsummering {
         padding-bottom: 40px;
         border-bottom: 1px solid #ddd;
+        word-break: break-word;
+
+        .stor {
+            text-transform: uppercase;
+            font-size: 1rem;
+        }
+
+        .permitteringsperiode {
+            display: inline-block;
+            margin-bottom: 5px;
+            width: 95%;
+        }
 
         table {
             tr td:last-child {
                 padding-bottom: 10px;
+                padding-left: 10px;
             }
 
             ul {
                 list-style: none;
-                padding-left: 0;
-                margin-top: 2px;
+                padding-left: 20px;
+                margin-top: 10px;
                 margin-bottom: 0;
 
-                ul {
-                    margin-left: 5px;
+                > p {
+                    margin-top: 10px;
+                    margin-bottom: 6px;
                 }
 
-                li {
-                    p {
-                        margin-left: 11px;
+                li p span {
+                    white-space: nowrap;
+                }
+
+                ul {
+                    margin-left: 0;
+                    padding-left: 0;
+
+                    .kulepunkt {
+                        margin-bottom: 5px;
+                    }
+
+                    > p {
+                        font-weight: bold;
+                    }
+
+                    p.ikke-bold {
+                        font-weight: normal;
                     }
                 }
             }
@@ -66,16 +97,21 @@
             display: none;
         }
 
-        .arbeidsforhold-arbeidsgiver, .arbeidsforhold-land {
+        .overskrift, .arbeidsforhold-arbeidsgiver {
             font-weight: bold;
+            display: block;
         }
 
-        .arbeidsforhold-data {
-            margin-top: 0;
+        .arbeidsforhold {
+            margin-top: 7px;
 
-            .arbeidsforhold-varighet {
-                font-size: 0.85rem;
-                padding-bottom: 5px;
+            .arbeidsforhold-data {
+                margin-top: 0;
+
+                .arbeidsforhold-varighet {
+                    font-size: 0.75rem;
+                    padding-bottom: 5px;
+                }
             }
         }
 
@@ -91,27 +127,38 @@
         }
 
         .kulepunkt {
-            padding-left: 20px;
-            margin-bottom: 2px;
+            padding-left: 10px;
+
+            span:first-child {
+                margin-left: -5px;
+            }
 
             &:before {
                 content: "•";
-                font-size: 1.2rem;
+                font-size: 1.06rem;
                 position: relative;
-                top: 1px;
+                top: -3px;
                 left: -10px;
+                vertical-align: top;
             }
 
-            span:first-child {
-                margin-left: -10px;
+            .rotasjonturnus {
+                display: inline-block;
+
+                span {
+                    margin: 0;
+                    padding: 0;
+                }
             }
         }
 
         .personalia {
             text-align: center;
             .nvn, .fnr {
-                font-size: 1.14rem;
+                font-size: 1.1rem;
                 font-weight: bold;
+                font-family: Modus, Arial, sans-serif;
+                display: block;
             }
 
             .adr {
@@ -119,59 +166,46 @@
             }
         }
 
-        .vedlegg {
-            position: relative;
-            width: 100%;
+        .vedlegg .container{
+            margin-bottom: 10px;
+            padding: 0;
 
-            .sjekket {
-                position: relative;
-                top: 7px;
-                margin-right: 5px;
-            }
+            .lastetOpp {
+                .vedleggSymbol {
+                    display: inline-block;
+                    background: url(../img/vedlegg-svart.svg) no-repeat center;
+                    width: 20px;
+                    height: 20px;
+                    position: relative;
+                    top: 4px;
+                    margin-right: 5px;
+                }
 
-            .usjekket {
-                position: relative;
-                top: 4px;
-                margin-right: 5px;
-            }
+                a {
+                    font-size: 0.85rem;
+                }
 
-            .vedleggStatus {
-                text-align: right;
-                white-space: nowrap;
-                padding-left: 30px;
-
-                .lastetOpp {
-                    .vedlegg {
-                        display: inline-block;
-                        background: url(../img/vedlegg-svart.svg) no-repeat center;
-                        width: 20px;
-                        height: 20px;
-                        position: relative;
-                        top: 4px;
-                        margin-right: 10px;
-                    }
-
-                    .antallSider {
-                        &:after {
-                            content: "•";
-                            padding-left: 8px;
-                            padding-right: 5px;
-                            color: #000000;
-                        }
+                .antallSider {
+                    &:after {
+                        content: "•";
+                        padding-left: 8px;
+                        padding-right: 5px;
+                        color: #000000;
                     }
                 }
             }
 
-            .ingenVedleggTekst {
-                .sjekket {
-                    top: 0
-                }
-
-                td:last-child {
-                    width: 100%;
-                }
+            .tittel {
+                font-weight: bold;
             }
 
+            .aarsak {
+                font-style: italic
+            }
+
+            .status {
+                margin-right: 5px;
+            }
         }
 
         .hode {

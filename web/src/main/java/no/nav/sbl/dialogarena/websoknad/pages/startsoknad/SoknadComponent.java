@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.websoknad.pages.startsoknad;
 
+import no.nav.sbl.dialogarena.websoknad.pages.SkjemaBootstrapFile;
 import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.MarkupStream;
@@ -14,23 +15,15 @@ import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.util.StreamUtils.copyToString;
 
 
-/**
- * Klasse som laster inn en html snutt fra en tempate inn i siden.
- */
 public class SoknadComponent extends WebComponent {
 
     private static final Logger logger = getLogger(SoknadComponent.class);
-    private static final String ETTERSENDING_POSTFIX = "Ettersending";
-    private Boolean erEttersending;
+    private SkjemaBootstrapFile skjemaBootstrapPostfix;
 
 
-    public SoknadComponent(String id) {
-        this(id, false);
-    }
-
-    public SoknadComponent(String id, Boolean erEttersending) {
+    public SoknadComponent(String id, SkjemaBootstrapFile skjemaBootstrapPostfix) {
         super(id);
-        this.erEttersending = erEttersending;
+        this.skjemaBootstrapPostfix = skjemaBootstrapPostfix;
     }
 
     @Override
@@ -40,11 +33,7 @@ public class SoknadComponent extends WebComponent {
             file = "META-INF/resources/views/built/bootstrapDev";
         }
 
-        if (erEttersending) {
-            file = file + ETTERSENDING_POSTFIX;
-        }
-
-        file = file + ".html";
+        file += skjemaBootstrapPostfix + ".html";
 
         try (InputStream content = this.getClass().getClassLoader().getResourceAsStream(file)) {
             replaceComponentTagBody(markupStream, openTag, copyToString(content, forName("UTF-8")));

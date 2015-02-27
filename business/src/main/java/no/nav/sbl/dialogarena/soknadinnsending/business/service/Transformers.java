@@ -15,9 +15,18 @@ import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLIn
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.SEND_SENERE;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.VEDLEGG_SENDES_AV_ANDRE;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.VEDLEGG_SENDES_IKKE;
+import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.VEDLEGG_ALLEREDE_SENDT;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class Transformers {
+
+    public static final Transformer<Faktum, LocalDate> DATO_TIL_PERMITTERING = new Transformer<Faktum, LocalDate>() {
+        @Override
+        public LocalDate transform(Faktum faktum) {
+            Map<String, String> properties = faktum.getProperties();
+            return new LocalDate(properties.get("permiteringsperiodedatofra"));
+        }
+    };
 
     public static final Transformer<Faktum, LocalDate> DATO_TIL = new Transformer<Faktum, LocalDate>() {
         @Override
@@ -36,8 +45,6 @@ public class Transformers {
                     return new LocalDate(properties.get("datotil"));
                 case "Sagt opp selv":
                     return new LocalDate(properties.get("datotil"));
-                case "Permittert":
-                    return new LocalDate(properties.get("permiteringsperiodedatofra"));
                 default:
                     return null;
             }
@@ -62,14 +69,14 @@ public class Transformers {
                         .withMimetype("application/pdf")
                         .withTilleggsinfo(vedlegg.getNavn())
                         .withFilstorrelse(vedlegg.getStorrelse().toString())
-                        .withSkjemanummer(vedlegg.getSkjemaNummerFiltrert())
+                        .withSkjemanummer(vedlegg.getSkjemaNummer())
                         .withUuid(vedlegg.getFillagerReferanse())
                         .withInnsendingsvalg(LASTET_OPP.value());
             } else {
                 xmlVedlegg = new XMLVedlegg()
                         .withFilnavn(vedlegg.lagFilNavn())
                         .withTilleggsinfo(vedlegg.getNavn())
-                        .withSkjemanummer(vedlegg.getSkjemaNummerFiltrert())
+                        .withSkjemanummer(vedlegg.getSkjemaNummer())
                         .withInnsendingsvalg(toXmlInnsendingsvalg(vedlegg.getInnsendingsvalg()));
             }
             String skjemanummerTillegg = vedlegg.getSkjemanummerTillegg();
@@ -94,6 +101,8 @@ public class Transformers {
                 return VEDLEGG_SENDES_AV_ANDRE.toString();
             case VedleggSendesIkke:
                 return VEDLEGG_SENDES_IKKE.toString();
+            case VedleggAlleredeSendt:
+                return VEDLEGG_ALLEREDE_SENDT.toString();
             default:
                 return SENDES_IKKE.toString();
         }
@@ -111,6 +120,8 @@ public class Transformers {
                 return Vedlegg.Status.VedleggSendesIkke;
             case "VEDLEGG_SENDES_AV_ANDRE":
                 return Vedlegg.Status.VedleggSendesAvAndre;
+            case "VEDLEGG_ALLEREDE_SENDT":
+                return Vedlegg.Status.VedleggAlleredeSendt;
             default:
                 return Vedlegg.Status.SendesIkke;
         }

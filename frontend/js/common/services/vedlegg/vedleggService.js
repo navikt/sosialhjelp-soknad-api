@@ -1,6 +1,6 @@
 angular.module('nav.services.vedlegg', [])
     .factory('vedleggService', ['$resource', function ($resource) {
-        return $resource('/sendsoknad/rest/soknad/:soknadId/vedlegg/:vedleggId/:action',
+        return $resource('/sendsoknad/rest/soknad/:soknadId/vedlegg/:vedleggId/:action' + getCacheBurstingParameter(),
             {
                 soknadId : '@soknadId',
                 vedleggId: '@vedleggId',
@@ -8,7 +8,7 @@ angular.module('nav.services.vedlegg', [])
             {
                 get   : { method: 'GET', params: {} },
                 hentAnnetVedlegg : {
-                    url: '/sendsoknad/rest/soknad/:soknadId/vedlegg/:faktumId/hentannetvedlegg',
+                    url: '/sendsoknad/rest/soknad/:soknadId/vedlegg/:faktumId/hentannetvedlegg' + getCacheBurstingParameter(),
                     method: 'GET',
                     params: {faktumId: '@faktumId'}},
                 merge : { method: 'POST', params: {action: 'generer'} },

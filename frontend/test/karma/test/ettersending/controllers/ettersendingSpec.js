@@ -26,7 +26,7 @@
                     key: 'soknadInnsendingsDato',
                     value: '1399268154501'
                 }
-            ]
+            ];
 
             $provide.value("data", {
                 soknad: {
@@ -56,11 +56,11 @@
             httpBackend = $httpBackend;
 
             $httpBackend
-                .when('POST', '/sendsoknad/rest/soknad/' + soknadId + '/vedlegg/2/delete?skjemaNummer=T8')
+                .whenPOST(/^\/sendsoknad\/rest\/soknad\/[0-9]+\/vedlegg\/[0-9]+\/delete/)
                 .respond();
 
             $httpBackend
-                .when('POST', '/sendsoknad/rest/soknad/send/' + soknadId)
+                .whenPOST(/^\/sendsoknad\/rest\/soknad\/[0-9]+\/send/)
                 .respond();
 
             scope = $rootScope;
@@ -145,7 +145,7 @@
         }));
 
         it('skal sette fristdato til 42 dager etter innsendt dato', function () {
-            expect(scope.informasjon.frist[1]).toBe('17. mai 2014');
+            expect(scope.informasjon.frist[1].toLowerCase()).toBe('17. mai 2014');
         });
 
         it('skal ha rett antall vedlegg', function () {

@@ -1,5 +1,5 @@
-angular.module('nav.validering', ['nav.cmstekster'])
-    .directive('blurValidate', ['cms', function (cms) {
+angular.module('nav.validering', ['nav.cms'])
+    .directive('blurValidate', function (cmsService) {
         return {
             require: ['ngModel', '^form'],
             link: function (scope, element, attrs, ctrls) {
@@ -64,7 +64,7 @@ angular.module('nav.validering', ['nav.cmstekster'])
                             feilmeldingsNokkel = feil[feilNokkel];
                         }
 
-                        var feilmeldingTekst = cms.tekster[feilmeldingsNokkel];
+                        var feilmeldingTekst = cmsService.getTextSafe(feilmeldingsNokkel);
                         formElem.find('.melding').first().text(feilmeldingTekst);
                     }
                 }
@@ -74,9 +74,9 @@ angular.module('nav.validering', ['nav.cmstekster'])
                 }
             }
         };
-    }])
+    })
 
-    .directive('clickValidate', ['$timeout', 'cms', function ($timeout, cms) {
+    .directive('clickValidate', function ($timeout, cmsService) {
         return {
             require: ['ngModel', '^form'],
             link: function (scope, element, attrs, ctrls) {
@@ -122,14 +122,14 @@ angular.module('nav.validering', ['nav.cmstekster'])
                 function settFeilmeldingsTekst() {
                     var feilmeldingsNokkel = element[0].getAttribute('data-error-messages').toString();
                     //hack for å fjerne dobbeltfnuttene rundt feilmeldingsnokk
-                    var feilmeldingTekst = cms.tekster[feilmeldingsNokkel.substring(1, feilmeldingsNokkel.length - 1)];
+                    var feilmeldingTekst = cmsService.getTextSafe(feilmeldingsNokkel.substring(1, feilmeldingsNokkel.length - 1));
                     element.closest('.form-linje').find('.melding').text(feilmeldingTekst);
                 }
             }
         };
-    }])
+    })
 //    direktivet skal brukes på div-en som ligger rundt en checkboksgruppe og som skal ha inlinevalidering
-    .directive('checkboxValidate', [function () {
+    .directive('checkboxValidate', function () {
         return {
             require: ['^form'],
             link: function (scope, element, attrs, ctrl) {
@@ -151,20 +151,55 @@ angular.module('nav.validering', ['nav.cmstekster'])
                     return element.find('input:checked').length;
                 }, function () {
                     var formLinje = element.closest('.form-linje');
+                    var melding = formLinje.find('.melding').first();
                     if (element.find('input:checked').length > 0 && formLinje.hasClass('feil')) {
                         if (formLinje.hasClass('aktiv-feilmelding')) {
-                            fadeAktivFeilmelding(formLinje, formLinje.find('.melding'), 'feil', scope);
+                            fadeAktivFeilmelding(formLinje, melding, 'feil', scope);
                         } else {
-                            fadeFeilmelding(formLinje, formLinje.find('.melding'), 'feil', scope);
+                            fadeFeilmelding(formLinje, melding, 'feil', scope);
                         }
                     } else if (element.find('input:checked').length > 0 && formLinje.hasClass('feilstyling')) {
                         if (formLinje.hasClass('aktiv-feilmelding')) {
-                            fadeAktivFeilmelding(formLinje, formLinje.children('.melding'), 'feilstyling', scope);
+                            fadeAktivFeilmelding(formLinje, melding, 'feilstyling', scope);
                         } else {
-                            fadeFeilmelding(formLinje, formLinje.children('.melding'), 'feilstyling', scope);
+                            fadeFeilmelding(formLinje, melding, 'feilstyling', scope);
                         }
                     }
                 });
             }
         };
-    }]);
+    })
+
+    .directive('hiddenInputValidering', function (cms) {
+        return {
+            require: ['^form', 'ngModel'],
+            link: function (scope, element, attrs, ctrl) {
+                var eventString = 'RUN_VALIDATION' + ctrl[0].$name;
+                var model = ctrl[1];
+                var formLinje = element.closest(".form-linje");
+
+                scope.$on(eventString, function () {
+                    if (erUgyldig()) {
+                        formLinje.addClass("feil boolean");
+                    }
+                });
+
+                function erUgyldig() {
+                    return !model.$modelValue || model.$modelValue.length === 0;
+                }
+
+                scope.$watch(function () {
+                    return model.$modelValue;
+                }, function (newVal, oldVal) {
+                    if (newVal !== oldVal && model.$modelValue && model.$modelValue.length > 0) {
+                        if ($('body').hasClass('contrast')) {
+                            fadeContrastFeilmelding(formLinje, element.prevAll('.melding'), 'feil', scope);
+                        } else {
+                            fadeFeilmelding(formLinje, element.prevAll('.melding'), 'feil', scope);
+                        }
+                    }
+                });
+            }
+        };
+    });
+

@@ -1,0 +1,15 @@
+<div class="form-linje checkbox" data-checkbox-validate>
+    <input data-ng-model="barn.properties.barnetillegg" name="barnetilegg"
+           id="barnetilegg" type="checkbox"
+           data-error-messages="'barnetillegg.nyttbarn.barnetillegg.feilmelding'"
+           data-boolean-verdi data-ng-required="true"
+           data-aktiv-feilmelding>
+    <label for="barnetilegg" data-ng-bind-html=" 'barnetillegg.barnetilegg.sporsmal' | cmstekst"></label>
+    <span class="melding">
+        {{ 'barnetillegg.nyttbarn.barnetillegg.feilmelding' | cmstekst }}
+    </span>
+</div>
+
+<div data-ng-if="barnetilleggErRegistrert()">
+    <div data-ng-include="'../views/templates/barnetillegg/barnetilleggSporsmalTemplate.html'"></div>
+</div>

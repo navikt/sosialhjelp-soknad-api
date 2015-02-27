@@ -25,7 +25,7 @@ describe('ArbeidsforholdCtrl', function () {
                 }
             });
 
-        $httpBackend.expectGET('/sendsoknad/rest/soknad/kodeverk/landliste').
+        $httpBackend.expectGET('/sendsoknad/rest/land').
             respond({result: ["Norge", "Sverige", "Danmark"]});
 
         routeParams = {};

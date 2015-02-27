@@ -1,5 +1,4 @@
-<div data-navinfoboks>
-    <span data-ng-bind-html=" 'utdanning.svar.under.utdanning.kortvarigflere.informasjon' | cmstekst"></span>
+<div data-navinfoboks data-infotekster="['utdanning.svar.under.utdanning.kortvarigflere.informasjon']">
 </div>
 
 <div data-navtekst
@@ -23,16 +22,14 @@
      data-nav-property="['varighetFra', 'varighetTil']">
     <h4 class="spm-sporsmal" data-ng-bind-html=" 'utdanning.varighet.label' | cmstekst"></h4>
     <div data-nav-dato-intervall
-         data-fra-dato="navproperties.varighetFra"
-         data-til-dato="navproperties.varighetTil"
+         data-fra-dato="faktum.properties.varighetFra"
+         data-til-dato="faktum.properties.varighetTil"
+         data-faktum="faktum"
          data-label="utdanning.svar.under.utdanning.kortvarigflere.varighet"
          data-er-fremtidigdato-tillatt="true"
          data-lagre="lagreFaktum()">
     </div>
 </div>
 
-<div data-vedlegginfoboks>
-    <ul>
-        <li><p data-ng-bind-html="'Dagpenger.vedlegg.T1.header' | cmstekst"></p></li>
-    </ul>
+<div data-vedlegginfoboks data-vedleggTekster="['Dagpenger.vedlegg.T1.header' ]">
 </div>

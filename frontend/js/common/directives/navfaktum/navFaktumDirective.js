@@ -3,35 +3,24 @@ angular.module('nav.navfaktum', [])
 		return {
 			replace   : false,
 			scope     : true,
-			controller: ['$scope', '$attrs', '$filter', function ($scope, $attrs, $filter) {
-				var val = $scope.parentFaktum.properties[$attrs.navFaktumProperty];
-				if (val && val.match(/\d\d\d\d\.\d\d\.\d\d/)) {
-                    val = val.replace(/\./g, '-');
-					val = new Date(val);
-				}
-
+			controller: function ($scope, $attrs) {
+				var val = $scope.faktum.properties[$attrs.navFaktumProperty];
+				$scope.parentFaktum = $scope.faktum;
 				$scope.faktum = {key: $attrs.navFaktumProperty, value: val};
 
                 $scope.$watch('faktum.value', function (newValue) {
 					if (newValue) {
-						var value = newValue;
-						if (angular.isDate(value)) {
-							value = $filter('date')(value, 'yyyy.MM.dd');
-                        } else {
-							value = value.toString();
-						}
-						$scope.parentFaktum.properties[$attrs.navFaktumProperty] = value;
+						$scope.parentFaktum.properties[$attrs.navFaktumProperty] = newValue;
 					}
 				});
-			}]};
+			}};
 	}])
 	.directive('navFaktum', [function () {
 		return {
 			replace   : false,
 			scope     : true,
-			controller: ['$scope', '$attrs', '$filter', 'data', 'Faktum', function ($scope, $attrs, $filter, data, Faktum) {
+			controller:  function ($scope, $attrs, $filter, data, Faktum) {
 				var faktumNavn = $attrs.navFaktum.replace(/_/g, '.');
-				var props = $scope.$eval($attrs.navProperty);
 				$scope.ikkeAutoLagre = $attrs.ikkeAutoLagre;
 				var satt = false;
 
@@ -56,41 +45,17 @@ angular.module('nav.navfaktum', [])
 					);
 					data.fakta.push($scope.faktum);
 				}
-				$scope.parentFaktum = $scope.faktum;
-
-				if (props) {
-                    $scope.navproperties = {};
-					props.forEach(function (prop) {
-                        var val = $scope.faktum.properties[prop];
-						if (val && val.match(/\d\d\d\d\.\d\d\.\d\d/)) {
-                            val = val.replace(/\./g, '-');
-							val = new Date(val);
-                        }
-						$scope.navproperties[prop] = val;
-					});
-				}
 
 				$scope.lagreFaktum = function () {
                     if($scope.$parent.faktum && $scope.faktum.key.indexOf($scope.$parent.faktum.key) >= 0){
-                        $scope.parentFaktum.parrentFaktum = $scope.$parent.faktum.faktumId;
+                        $scope.faktum.parrentFaktum = $scope.$parent.faktum.faktumId;
                     }
 
                     if (!$scope.ikkeAutoLagre) {
-						if (props) {
-							props.forEach(function (prop) {
-								var value = $scope.navproperties[prop];
-								if (value !== undefined && angular.isDate(value)) {
-                                    value = $filter('date')(value, 'yyyy.MM.dd');
-								} else if (value !== undefined) {
-                                    value = value.toString();
-                                }
-								$scope.parentFaktum.properties[prop] = value;
-							});
-						}
-                        $scope.parentFaktum.$save();
+                        $scope.faktum.$save();
 					}
 				};
 				this.lagreFaktum = $scope.lagreFaktum;
-			}]
+			}
 		};
 	}]);

@@ -40,6 +40,7 @@ h4 {
 .nav-checkbox, .nav-radio-knapp {
     margin-left: 32px;
     margin-bottom: 8px;
+    display: block;
 
     > label {
         margin-left: -32px;
@@ -63,7 +64,7 @@ h4 {
 
 .henter-personalia {
     text-align: center;
-    margin-top: 3rem;
+    margin-top: 2.925rem;
 }
 
 .ferdig-skjema {
@@ -107,11 +108,11 @@ h4 {
 
 .spm {
     .spm-sporsmal {
-        font-size: 1.21rem;
+        font-size: 1.06rem;
         font-weight: 600;
         font-family: Modus, Arial, Helvetica, sans-serif;
         margin-bottom: 10px;
-        line-height: 1.6rem;
+        line-height: 1.4rem;
     }
 
     .ekstra-info {
@@ -125,17 +126,21 @@ h4 {
         }
 
         .spm-sporsmal {
-            font-size: 1rem;
+            font-size: 1.0rem;
             font-weight: bold;
-            line-height: 1.4rem;
+            line-height: 1.225rem;
         }
     }
+
+    .nav-checkbox, .nav-radio-knapp, .valg {
+         &.hjelpetekst-parent label {
+             margin-right: 0;
+         }
+     }
 }
 
-
 .ekstra-spm-boks {
-    padding-top: 35px;
-    padding-bottom: 35px;
+    padding: 25px 10px;
     margin-top: 20px;
     margin-bottom: 20px;
 
@@ -203,10 +208,9 @@ h4 {
 
         &:after, &:before {
             bottom: 0;
-            border-bottom-color: transparent;
-            border-width: 0;
             margin-left: 0;
-            border: none;
+            border: 0 none;
+            border-bottom-color: transparent;
             content: "";
             height: 0;
             width: 0;
@@ -225,6 +229,13 @@ h4 {
 
     .form-linje {
         padding: 15px;
+
+        &.undersporsmal {
+            margin-left: 0px;
+            margin-top: -5px;
+            padding-top: 0px;
+            padding-left: 45px;
+        }
     }
 
     .textarea-container {

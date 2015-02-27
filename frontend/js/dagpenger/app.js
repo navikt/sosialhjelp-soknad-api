@@ -10,5 +10,13 @@ angular.module('sendsoknad', [
 	'ngAnimate',
 	'ngCookies',
     'ngSanitize',
-    'templates-main'
+    'templates-main',
+    'nav.cms',
+    'nav.personalia',
+    'nav.datepicker',
+    'nav.arbeidsforhold',
+    'nav.scroll',
+    'nav.vedlegg',
+    'ngMessages',
+    'nav.land'
 ]);

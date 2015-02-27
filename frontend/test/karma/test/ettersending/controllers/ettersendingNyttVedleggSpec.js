@@ -16,7 +16,6 @@
         ));
 
         beforeEach(function() {
-            spyOn(window, 'getBehandlingIdFromUrl').andReturn(behandlingskjedeId);
             spyOn(window, 'erEttersending').andReturn(true);
         });
 
@@ -24,6 +23,14 @@
             $provide.value("data", {
                 soknad: {
                     soknadId: soknadId
+                }
+            });
+
+            $provide.value("$route", {
+                current: {
+                    params: {
+                        behandlingId: behandlingskjedeId
+                    }
                 }
             });
         }));
@@ -109,7 +116,7 @@
                 .respond(vedlegg);
 
             $httpBackend
-                .when('POST', '/sendsoknad/rest/soknad/' + soknadId +'/fakta')
+                .whenPOST(/^\/sendsoknad\/rest\/soknad\/[0-9]+\/fakta/)
                 .respond({
                     faktumId: 1
                 });
@@ -128,7 +135,6 @@
                 '$name': 'name',
                 '$valid': false
             });
-            httpBackend.flush();
             expect(vedleggServiceTmp.hentAnnetVedlegg).not.toHaveBeenCalled();
         });
 

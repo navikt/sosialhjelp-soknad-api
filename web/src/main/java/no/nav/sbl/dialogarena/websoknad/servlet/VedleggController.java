@@ -37,13 +37,14 @@ import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 @Controller()
 @RequestMapping("/soknad/{soknadId}/vedlegg")
 public class VedleggController {
+
     @Inject
     private VedleggService vedleggService;
 
     @Inject
     private SendSoknadService soknadService;
 
-    private static final Integer MAKS_TOTAL_FILSTORRELSE = 1024*1024*10;
+    private static final Integer MAKS_TOTAL_FILSTORRELSE = 1024 * 1024 * 10;
 
     private static byte[] getByteArray(MultipartFile file) {
         try {
@@ -110,17 +111,16 @@ public class VedleggController {
         return vedleggService.lagForhandsvisning(soknadId, vedleggId, side);
     }
 
-
     @RequestMapping(value = "/{vedleggId}/opplasting", method = RequestMethod.POST, produces = "text/plain; charset=utf-8")
     @ResponseBody()
     @SjekkTilgangTilSoknad(sjekkXsrf = false)
-    public VedleggOpplasting lastOppDokumentSoknad(@PathVariable final Long soknadId, @PathVariable final Long vedleggId, @RequestParam("X-XSRF-TOKEN") final String xsrfToken, @RequestParam("files[]") final List<MultipartFile> files) {
+    public VedleggOpplasting lastOppDokumentSoknad(@PathVariable final Long soknadId, @PathVariable final Long vedleggId,
+                                                   @RequestParam("X-XSRF-TOKEN") final String xsrfToken, @RequestParam("files[]") final List<MultipartFile> files) {
         WebSoknad soknad = soknadService.hentSoknad(soknadId);
         String brukerBehandlingId = soknad.getBrukerBehandlingId();
         if (soknad.getBehandlingskjedeId() != null) {
             brukerBehandlingId = soknad.getBehandlingskjedeId();
         }
-
 
         XsrfGenerator.sjekkXsrfToken(xsrfToken, brukerBehandlingId);
         Vedlegg forventning = vedleggService.hentVedlegg(soknadId, vedleggId, false);
@@ -129,7 +129,6 @@ public class VedleggController {
             throw new OpplastingException("Kunne ikke lagre fil fordi total filstørrelse er for stor", null,
                     "vedlegg.opplasting.feil.forStor");
         }
-
 
         List<Vedlegg> res = new ArrayList<>();
         for (MultipartFile file : files) {

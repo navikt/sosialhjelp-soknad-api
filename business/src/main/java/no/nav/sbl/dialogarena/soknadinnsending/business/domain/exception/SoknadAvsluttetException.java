@@ -4,7 +4,9 @@ import no.nav.modig.core.exception.ApplicationException;
 
 
 public class SoknadAvsluttetException extends ApplicationException {
+
     public SoknadAvsluttetException(String message, Throwable cause, String id) {
         super(message, cause, id);
     }
+
 }

@@ -4,9 +4,9 @@ import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosLandService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonConnector;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.LandService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
@@ -130,17 +130,17 @@ public class DefaultPersonaliaServiceTest {
     private DefaultPersonaliaService personaliaService;
 
     @Mock
-    private PersonConnector personMock;
+    private PersonService personMock;
 
     @Mock
     @SuppressWarnings("PMD")
-    private SoknadService soknadServiceMock;
+    private FaktaService faktaService;
 
     @Mock
     private BrukerprofilPortType brukerProfilMock;
 
     @Mock
-    private EosLandService eosLandService;
+    private LandService eosLandService;
 
     @Mock
     private Kodeverk kodeverkMock;
@@ -291,7 +291,7 @@ public class DefaultPersonaliaServiceTest {
 
         personaliaService.lagrePersonaliaOgBarn(RIKTIG_IDENT, 21L, true);
 
-        verify(soknadServiceMock, times(2)).lagreSystemFaktum(anyLong(),
+        verify(faktaService, times(2)).lagreSystemFaktum(anyLong(),
                 any(Faktum.class), anyString());
     }
 
@@ -302,7 +302,7 @@ public class DefaultPersonaliaServiceTest {
 
         personaliaService.lagrePersonaliaOgBarn(RIKTIG_IDENT, 21L, true);
 
-        verify(soknadServiceMock, times(2)).lagreSystemFaktum(anyLong(),
+        verify(faktaService, times(2)).lagreSystemFaktum(anyLong(),
                 any(Faktum.class), anyString());
     }
 

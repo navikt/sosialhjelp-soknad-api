@@ -14,14 +14,14 @@ import no.nav.sbl.dialogarena.pdf.Convert;
 import no.nav.sbl.dialogarena.pdf.ConvertToPng;
 import no.nav.sbl.dialogarena.pdf.PdfMerger;
 import no.nav.sbl.dialogarena.pdf.PdfWatermarker;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.VedleggRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigOpplastingTypeException;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -44,6 +44,8 @@ import java.util.Map;
 
 import static java.util.Collections.sort;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
+import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.KVITTERING;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.LastetOpp;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -65,7 +67,7 @@ public class DefaultVedleggService implements VedleggService {
     private SendSoknadService soknadService;
 
     @Inject
-    private FillagerConnector fillagerConnector;
+    private FillagerService fillagerService;
 
     private PdfMerger pdfMerger = new PdfMerger();
     private PdfWatermarker watermarker = new PdfWatermarker();
@@ -78,18 +80,7 @@ public class DefaultVedleggService implements VedleggService {
             if (Detect.isImage(bytes)) {
                 bytes = Convert.scaleImageAndConvertToPdf(bytes, new Dimension(1240, 1754));
 
-                Vedlegg sideVedlegg = new Vedlegg()
-                        .medVedleggId(null)
-                        .medSoknadId(vedlegg.getSoknadId())
-                        .medFaktumId(vedlegg.getFaktumId())
-                        .medSkjemaNummer(vedlegg.getSkjemaNummer())
-                        .medNavn(vedlegg.getNavn())
-                        .medStorrelse((long) bytes.length)
-                        .medAntallSider(1)
-                        .medData(null)
-                        .medOpprettetDato(vedlegg.getOpprettetDato())
-                        .medFillagerReferanse(vedlegg.getFillagerReferanse())
-                        .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
+                Vedlegg sideVedlegg = opprettVedlegg(vedlegg, (long) bytes.length);
 
                 resultat.add(vedleggRepository.opprettVedlegg(sideVedlegg,
                         bytes));
@@ -108,18 +99,7 @@ public class DefaultVedleggService implements VedleggService {
 
                     ByteArrayOutputStream finalBaos = komprimerPdfMedIText(baos.toByteArray());
 
-                    Vedlegg sideVedlegg = new Vedlegg()
-                            .medVedleggId(null)
-                            .medSoknadId(vedlegg.getSoknadId())
-                            .medFaktumId(vedlegg.getFaktumId())
-                            .medSkjemaNummer(vedlegg.getSkjemaNummer())
-                            .medNavn(vedlegg.getNavn())
-                            .medStorrelse((long) finalBaos.size())
-                            .medAntallSider(1)
-                            .medData(null)
-                            .medOpprettetDato(vedlegg.getOpprettetDato())
-                            .medFillagerReferanse(vedlegg.getFillagerReferanse())
-                            .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
+                    Vedlegg sideVedlegg = opprettVedlegg(vedlegg, (long) finalBaos.size());
 
                     resultat.add(vedleggRepository.opprettVedlegg(sideVedlegg,
                             finalBaos.toByteArray()));
@@ -136,6 +116,21 @@ public class DefaultVedleggService implements VedleggService {
         }
         repository.settSistLagretTidspunkt(vedlegg.getSoknadId());
         return resultat;
+    }
+
+    private static Vedlegg opprettVedlegg(Vedlegg vedlegg, long size) {
+        return new Vedlegg()
+                .medVedleggId(null)
+                .medSoknadId(vedlegg.getSoknadId())
+                .medFaktumId(vedlegg.getFaktumId())
+                .medSkjemaNummer(vedlegg.getSkjemaNummer())
+                .medNavn(vedlegg.getNavn())
+                .medStorrelse(size)
+                .medAntallSider(1)
+                .medData(null)
+                .medOpprettetDato(vedlegg.getOpprettetDato())
+                .medFillagerReferanse(vedlegg.getFillagerReferanse())
+                .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
     }
 
     @Override
@@ -203,7 +198,7 @@ public class DefaultVedleggService implements VedleggService {
         WebSoknad soknad = repository.hentSoknad(soknadId);
 
         logger.info("Lagrer fil til henvendelse for behandling {}, UUID: {}", soknad.getBrukerBehandlingId(), forventning.getFillagerReferanse());
-        fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(),
+        fillagerService.lagreFil(soknad.getBrukerBehandlingId(),
                 forventning.getFillagerReferanse(), soknad.getAktoerId(),
                 new ByteArrayInputStream(doc));
 
@@ -240,6 +235,31 @@ public class DefaultVedleggService implements VedleggService {
         }
     }
 
+    @Override
+    public void lagreKvitteringSomVedlegg(Long soknadId, byte[] kvittering) {
+        Vedlegg kvitteringVedlegg = vedleggRepository.hentVedleggForskjemaNummer(soknadId, null, KVITTERING);
+        if (kvitteringVedlegg == null) {
+            kvitteringVedlegg = new Vedlegg(soknadId, null, KVITTERING, LastetOpp);
+            oppdaterInnholdIKvittering(kvitteringVedlegg, kvittering);
+            vedleggRepository.opprettVedlegg(kvitteringVedlegg, kvittering);
+        } else {
+            oppdaterInnholdIKvittering(kvitteringVedlegg, kvittering);
+            vedleggRepository.lagreVedleggMedData(soknadId, kvitteringVedlegg.getVedleggId(), kvitteringVedlegg);
+        }
+        WebSoknad soknad = repository.hentSoknad(soknadId);
+        fillagerService.lagreFil(soknad.getBrukerBehandlingId(), kvitteringVedlegg.getFillagerReferanse(), soknad.getAktoerId(), new ByteArrayInputStream(kvitteringVedlegg.getData()));
+    }
+
+    private void oppdaterInnholdIKvittering(Vedlegg vedlegg, byte[] data) {
+        vedlegg.medData(data);
+        vedlegg.medStorrelse((long) data.length);
+        try {
+            vedlegg.medAntallSider(new PdfReader(data).getNumberOfPages());
+        } catch (IOException e) {
+            logger.info("Klarte ikke å finne antall sider i kvittering, vedleggid [{}]. Fortsetter uten sideantall.", vedlegg.getVedleggId(), e);
+        }
+    }
+
     private static void sjekkOmPdfErGyldig(PDDocument document) {
         PdfDetector detector = new PdfDetector(document);
         if (detector.pdfIsSigned()) {
@@ -270,7 +290,7 @@ public class DefaultVedleggService implements VedleggService {
 
     private void medKodeverk(Vedlegg vedlegg) {
         try {
-            Map<Kodeverk.Nokkel, String> koder = kodeverk.getKoder(vedlegg.getSkjemaNummerFiltrert());
+            Map<Kodeverk.Nokkel, String> koder = kodeverk.getKoder(vedlegg.getSkjemaNummer());
             for (Map.Entry<Kodeverk.Nokkel, String> nokkelEntry : koder.entrySet()) {
                 if (nokkelEntry.getKey().toString().contains("URL")) {
                     vedlegg.leggTilURL(nokkelEntry.getKey().toString(), koder.get(nokkelEntry.getKey()));

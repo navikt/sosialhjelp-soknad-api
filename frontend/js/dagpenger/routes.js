@@ -18,18 +18,15 @@ angular.module('sendsoknad.routes', ['ngRoute', 'nav.common.routes'])
                     cms: function (CmsResolver) {
                         return CmsResolver;
                     },
+                    soknad: function(SoknadResolverUtenRedirect) {
+                        return SoknadResolverUtenRedirect;
+                    },
                     config: function (ConfigResolver) {
                         return ConfigResolver;
-                    },
-                    utslagskriterier: function(UtslagskriterierResolver) {
-                        return UtslagskriterierResolver;
-                    },
-                    soknadMetadata: function(SoknadMetadataResolver) {
-                        return SoknadMetadataResolver;
                     }
                 }
             })
-            .when('/behandling/:behandlingId', {
+            .when('/behandling', {
                 templateUrl: '../views/templates/informasjonsside.html',
                 controller: 'BehandlingCtrl',
                 resolve: {
@@ -122,6 +119,7 @@ angular.module('sendsoknad.routes', ['ngRoute', 'nav.common.routes'])
             })
             .when('/soknad', {
                 templateUrl: '../views/dagpenger/dagpenger-skjema.html',
+                controller: 'DagpengerCtrl',
                 resolve: {
                     cms: function (CmsResolver) {
                         return CmsResolver;
@@ -129,20 +127,23 @@ angular.module('sendsoknad.routes', ['ngRoute', 'nav.common.routes'])
                     land: function (LandResolver) {
                         return LandResolver;
                     },
-                    soknad: function(SoknadResolver) {
+                    eosLand: function (EosLandResolver) {
+                        return EosLandResolver;
+                    },
+                    soknad: function (SoknadResolver) {
                         return SoknadResolver;
                     },
-                    fakta: function(FaktaResolver) {
-                        return FaktaResolver;
-                    },
-                    soknadOppsett: function(SoknadOppsettResolver) {
+                    soknadOppsett: function (SoknadOppsettResolver) {
                         return SoknadOppsettResolver;
                     },
-                    config: function(ConfigForSoknadResolver) {
+                    config: function (ConfigForSoknadResolver) {
                         return ConfigForSoknadResolver;
                     },
-                    behandlingsId: function(BehandlingIdResolver) {
+                    behandlingsId: function (BehandlingIdResolver) {
                         return BehandlingIdResolver;
+                    },
+                    fakta: function (FaktaResolver) {
+                        return FaktaResolver;
                     }
                 }
             })
@@ -272,7 +273,7 @@ angular.module('sendsoknad.routes', ['ngRoute', 'nav.common.routes'])
                 }
             })
             .when('/nyttarbeidsforhold', {
-                templateUrl: '../views/templates/arbeidsforhold-nytt.html',
+                templateUrl: '../views/templates/arbeidsforhold/arbeidsforhold-nytt.html',
                 resolve: {
                     cms: function (CmsResolver) {
                         return CmsResolver;
@@ -298,7 +299,7 @@ angular.module('sendsoknad.routes', ['ngRoute', 'nav.common.routes'])
                 }
             })
             .when('/endrearbeidsforhold/:faktumId', {
-                templateUrl: '../views/templates/arbeidsforhold-nytt.html',
+                templateUrl: '../views/templates/arbeidsforhold/arbeidsforhold-nytt.html',
                 resolve: {
                     cms: function (CmsResolver) {
                         return CmsResolver;
@@ -352,6 +353,7 @@ angular.module('sendsoknad.routes', ['ngRoute', 'nav.common.routes'])
             })
             .when('/avbryt', {
                 templateUrl: '../views/templates/avbryt.html',
+                controller: 'AvbrytCtrl',
                 resolve: {
                     cms: function (CmsResolver) {
                         return CmsResolver;
@@ -405,5 +407,4 @@ angular.module('sendsoknad.routes', ['ngRoute', 'nav.common.routes'])
             .when('/', {
                 redirectTo: '/informasjonsside'
             });
-
     });

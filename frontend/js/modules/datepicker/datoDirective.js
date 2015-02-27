@@ -1,0 +1,188 @@
+angular.module('nav.datepicker.dato', [])
+    .directive('navDatoIntervall', function () {
+        return {
+            restrict: 'A',
+            replace: true,
+            templateUrl: '../js/modules/datepicker/templates/doubleDatepickerTemplate.html',
+            scope: {
+                fraDato: '=',
+                tilDato: '=',
+                erFradatoRequired: '=',
+                erTildatoRequired: '=',
+                erFremtidigdatoTillatt: '=',
+                lagre: '&',
+                label: '@',
+                faktum: '=?',
+                disabled: '=?'
+            },
+            controller: function ($scope) {
+                $scope.fraLabel = $scope.label + '.fra';
+                $scope.tilLabel = $scope.label + '.til';
+                $scope.fraFeilmelding = $scope.fraLabel + '.feilmelding';
+                $scope.tilFeilmelding = $scope.tilLabel + '.feilmelding';
+                $scope.tilDatoFeil = false;
+            }
+        };
+    })
+    .directive('dato', function (cms, deviceService, guidService) {
+        return {
+            restrict: 'A',
+            require: '^form',
+            replace: true,
+            templateUrl: '../js/modules/datepicker/templates/dateTemplate.html',
+            scope: {
+                model: '=ngModel',
+                erRequired: '=?',
+                erFremtidigdatoTillatt: '=?',
+                tilDato: '=?',
+                fraDato: '=?',
+                faktum: '=?',
+                disabled: '=?',
+                label: '@',
+                name: '@?',
+                requiredErrorMessage: '@?',
+                lagre: '&?'
+
+            },
+            link: {
+                pre: function (scope) {
+                    scope.name = scope.name !== undefined ? scope.name : guidService.getGuid();
+                    scope.vars = {
+                        model: scope.model,
+                        dateModel: Date(scope.model),
+                        harFokus: false,
+                        datepickerClosed: true,
+                        erRequired: scope.erRequired,
+                        requiredErrorMessage: scope.requiredErrorMessage,
+                        lagre: scope.lagre,
+                        name: scope.name,
+                        erFremtidigdatoTillatt: scope.erFremtidigdatoTillatt
+                    };
+                },
+                post: function (scope, element, attrs, form) {
+                    scope.form = form;
+
+                    if(scope.faktum) {
+                        watchDato('faktum.properties.varighetFra');
+                        watchDato('faktum.properties.varighetTil');
+                    }
+
+                    scope.$watch('model', function (newValue, oldValue) {
+                        if (newValue === oldValue) {
+                            return;
+                        }
+                        var toInputFieldName = element.next().find('input').first().attr('name');
+                        if (new Date(scope.tilDato) < new Date(newValue) || scope.fraDato > new Date(newValue)) {
+                            form[toInputFieldName].$setValidity('toDate', false);
+                        } else if (!scope.erRequired) {
+                            form[scope.name].$setValidity('toDate', true);
+                        } else if (toInputFieldName && form[toInputFieldName].$invalid) {
+                            form[toInputFieldName].$setValidity('toDate', true);
+                        }
+
+                        scope.vars.model = scope.model;
+                    });
+
+                    scope.$watch('vars.model', function (newValue, oldValue) {
+                        if (newValue === oldValue) {
+                            return;
+                        }
+
+                        if (scope.endret) {
+                            scope.endret();
+                        }
+
+                        if (datoFoerAnnenDatoUtenTimer(newValue, scope.fraDato)) {
+                            form[scope.name].$setValidity('toDate', false);
+                            form[scope.name].$touched = true;
+                            form[scope.name].$untouched = false;
+                        } else if (!isNaN(new Date(newValue))) {
+                            form[scope.name].$setValidity('toDate', true);
+                        }
+
+                        if (typeof(scope.vars.model) === 'object') {
+                            scope.model = konverterDatoTilStringMedLeadingZero(scope.vars.model);
+                        } else {
+                            scope.model = scope.vars.model;
+                        }
+                    });
+
+                    scope.$watch('erRequired', function (newVal, oldVal) {
+                        if (newVal !== oldVal) {
+                            if (erRequiredMedTildatoFeorFradato(newVal)) {
+                                form[scope.name].$setValidity('toDate', false);
+                            } else {
+                                form[scope.name].$setValidity('toDate', true);
+                            }
+                        }
+                    });
+
+                    scope.navDatepicker = function () {
+                        return !scope.vanligDatepicker();
+                    };
+
+                    scope.vanligDatepicker = function () {
+                        return deviceService.isTouchDevice();
+                    };
+
+                    scope.harRequiredFeil = function () {
+                        var input = form[scope.name];
+                        return input && input.$error.required && input.$touched && !scope.vars.harFokus && scope.vars.datepickerClosed;
+                    };
+
+                    scope.harTilDatoFeil = function () {
+                        var input = form[scope.name];
+                        return input && input.$error.toDate;
+                    };
+
+                    scope.harFormatteringsFeil = function () {
+                        var input = form[scope.name];
+                        return input && input.$error.dateFormat && input.$touched && !scope.vars.harFokus && scope.vars.datepickerClosed;
+                    };
+
+                    scope.erUloveligFremtidigDato = function () {
+                        var input = form[scope.name];
+                        return input && input.$error.futureDate && input.$touched && !scope.vars.harFokus && scope.vars.datepickerClosed;
+                    };
+
+                    scope.erIkkeGyldigDato = function () {
+                        var input = form[scope.name];
+                        return input && input.$error.validDate && input.$touched && !scope.vars.harFokus && scope.vars.datepickerClosed;
+                    };
+
+                    scope.harFeil = function () {
+                        if (scope.disabled === 'true') {
+                            return false;
+                        } else if (scope.navDatepicker()) {
+                            return harFeilMedNavDatepicker();
+                        } else {
+                            return harFeilMedDateInput();
+                        }
+                    };
+
+                    function watchDato(felt) {
+                        scope.$watch(felt, function (newValue, oldValue){
+                            if (newValue === oldValue) {
+                                return;
+                            }
+                            scope.lagre();
+                        });
+                    }
+
+                    function erRequiredMedTildatoFeorFradato(requireVal) {
+                        var tilDato = scope.model;
+                        return requireVal && scope.fraDato && tilDato && scope.fraDato > tilDato;
+                    }
+
+                    function harFeilMedNavDatepicker() {
+                        return scope.harRequiredFeil() || scope.harFormatteringsFeil() || scope.harTilDatoFeil() ||
+                            scope.erIkkeGyldigDato() || scope.erUloveligFremtidigDato();
+                    }
+
+                    function harFeilMedDateInput() {
+                        return scope.harRequiredFeil() || scope.harTilDatoFeil();
+                    }
+                }
+            }
+        };
+    });

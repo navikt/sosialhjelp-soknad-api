@@ -1,7 +1,7 @@
 describe('booleanradio', function () {
     var rootScope, element, scope, timeout, elementNavn, form, elementNavnReq, injectData;
 
-    beforeEach(module('nav.booleanradio', 'nav.cmstekster', 'templates-main', 'nav.input', 'nav.navfaktum', 'sendsoknad.services', 'nav.hjelpetekst', 'nav.animation'));
+    beforeEach(module('nav.booleanradio', 'nav.cms', 'templates-main', 'nav.input', 'nav.navfaktum', 'sendsoknad.services', 'nav.hjelpetekst', 'nav.animation'));
 
     var sporsmal = 'Spørsmal';
     var truelabel = 'True label';
@@ -51,7 +51,7 @@ describe('booleanradio', function () {
     }));
 
     it('Skal sette inn korrekt tekst', function () {
-        expect(element.find('h4 span').first().text().trim()).toBe(sporsmal);
+        expect(element.find('h4').first().text().trim()).toBe(sporsmal);
         expect(element.find('label').first().text()).toBe(truelabel);
         expect(element.find('label').last().text()).toBe(falselabel);
     });

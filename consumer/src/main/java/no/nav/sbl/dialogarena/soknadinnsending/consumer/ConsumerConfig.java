@@ -6,6 +6,14 @@ import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadata;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.cxf.TimeoutFeature;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil.BrukerprofilMock;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.kodeverk.KodeverkMock;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.personinfo.PersonInfoMock;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSSoknadsdata;
@@ -21,7 +29,6 @@ import org.apache.ws.security.handler.WSHandlerConstants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
@@ -36,11 +43,17 @@ import static java.lang.System.getProperty;
 import static java.lang.System.setProperty;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder.CONNECTION_TIMEOUT;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder.RECEIVE_TIMEOUT;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.util.InstanceSwitcher.createSwitcher;
 
 @Configuration
-@ComponentScan(excludeFilters = @ComponentScan.Filter(Configuration.class))
 @EnableCaching
-@Import(ConsumerConfig.WsServices.class)
+@Import({
+        ConsumerConfig.WsServices.class,
+        FillagerService.class,
+        HenvendelseService.class,
+        PersonService.class,
+        PersonInfoService.class
+})
 public class ConsumerConfig {
     //Må godta så store xml-payloads pga Kodeverk postnr
     static {
@@ -77,12 +90,12 @@ public class ConsumerConfig {
         }
 
         @Bean
-        public SendSoknadPortType sendSoknadService() {
+        public SendSoknadPortType sendSoknadEndpoint() {
             return factory().withUserSecurity().get();
         }
 
         @Bean
-        public SendSoknadPortType sendSoknadSelftest() {
+        public SendSoknadPortType sendSoknadSelftestEndpoint() {
             return factory().withSystemSecurity().get();
         }
     }
@@ -102,23 +115,32 @@ public class ConsumerConfig {
         }
 
         @Bean
-        public FilLagerPortType fillagerService() {
+        public FilLagerPortType fillagerEndpoint() {
             return factory().withMDC().withUserSecurity().get();
         }
 
         @Bean
-        public FilLagerPortType fillagerServiceSelftest() {
+        public FilLagerPortType fillagerSelftestEndpoint() {
             return factory().withSystemSecurity().get();
         }
     }
 
     @Configuration
     public static class PersonInfoWSConfig {
+
+        public static final String PERSONINFO_KEY = "start.personinfo.withmock";
+
         @Value("${soknad.webservice.arena.personinfo.url}")
         private String endpoint;
 
         @Bean
-        public PersonInfoServiceSoap personInfoServiceSoap() {
+        public PersonInfoServiceSoap personInfoEndpoint() {
+            PersonInfoServiceSoap mock = new PersonInfoMock().personInfoMock();
+            PersonInfoServiceSoap prod = opprettPersonInfoEndpoint();
+            return createSwitcher(prod, mock, PERSONINFO_KEY, PersonInfoServiceSoap.class);
+        }
+
+        private PersonInfoServiceSoap opprettPersonInfoEndpoint() {
             JaxWsProxyFactoryBean factoryBean = new JaxWsProxyFactoryBean();
             factoryBean.setServiceClass(PersonInfoServiceSoap.class);
             factoryBean.setAddress(endpoint);
@@ -139,7 +161,6 @@ public class ConsumerConfig {
 
             factoryBean.getFeatures().add(new LoggingFeature());
             factoryBean.getFeatures().add(new TimeoutFeature(RECEIVE_TIMEOUT, CONNECTION_TIMEOUT));
-
             return factoryBean.create(PersonInfoServiceSoap.class);
         }
 
@@ -147,6 +168,8 @@ public class ConsumerConfig {
 
     @Configuration
     public static class PersonWSConfig {
+
+        public static final String PERSON_KEY = "start.person.withmock";
 
         @Value("${soknad.webservice.person.personservice.url}")
         private String personEndpoint;
@@ -162,12 +185,14 @@ public class ConsumerConfig {
         }
 
         @Bean
-        public PersonPortType personService() {
-            return factory().withUserSecurity().get();
+        public PersonPortType personEndpoint() {
+            PersonPortType mock = new PersonMock().personMock();
+            PersonPortType prod = factory().withUserSecurity().get();
+            return createSwitcher(prod, mock, PERSON_KEY, PersonPortType.class);
         }
 
         @Bean
-        public PersonPortType personServiceSelftest() {
+        public PersonPortType personSelftestEndpoint() {
             return factory().withSystemSecurity().get();
         }
 
@@ -175,6 +200,9 @@ public class ConsumerConfig {
 
     @Configuration
     public static class KodeverkWSConfig {
+
+        public static final String KODEVERK_KEY = "start.kodeverk.withmock";
+
         @Value("${sendsoknad.webservice.kodeverk.url}")
         private String kodeverkEndPoint;
 
@@ -188,18 +216,22 @@ public class ConsumerConfig {
         }
 
         @Bean
-        public KodeverkPortType kodeverkService() {
-            return factory().withSystemSecurity().get();
+        public KodeverkPortType kodeverkEndpoint() {
+            KodeverkPortType prod = factory().withSystemSecurity().get();
+            KodeverkPortType mock = new KodeverkMock().kodeverkMock();
+            return createSwitcher(prod, mock, KODEVERK_KEY, KodeverkPortType.class);
         }
 
         @Bean
-        public KodeverkPortType kodeverkServiceSelftest() {
+        public KodeverkPortType kodeverkSelftestEndpoint() {
             return factory().withSystemSecurity().get();
         }
     }
 
     @Configuration
     public static class BrukerProfilWSConfig {
+
+        public static final String BRUKERPROFIL_KEY = "start.brukerprofil.withmock";
 
         @Value("${soknad.webservice.brukerprofil.brukerprofilservice.url}")
         private String brukerProfilEndpoint;
@@ -215,12 +247,14 @@ public class ConsumerConfig {
         }
 
         @Bean
-        public BrukerprofilPortType brukerProfilService() {
-            return factory().withUserSecurity().get();
+        public BrukerprofilPortType brukerProfilEndpoint() {
+            BrukerprofilPortType mock = new BrukerprofilMock().brukerprofilMock();
+            BrukerprofilPortType prod = factory().withUserSecurity().get();
+            return createSwitcher(prod, mock, BRUKERPROFIL_KEY, BrukerprofilPortType.class);
         }
 
         @Bean
-        public BrukerprofilPortType brukerProfilSelftest() {
+        public BrukerprofilPortType brukerProfilSelftestEndpoint() {
             return factory().withSystemSecurity().get();
         }
     }

@@ -1,6 +1,7 @@
 /* jshint scripturl: true */
 
 angular.module('ettersending')
+    .constant('cmsprefix', 'ettersending.')
     .value('data', {})
     .value('cms', {})
     .run(['$http', '$rootScope', function ($http, $rootScope) {
