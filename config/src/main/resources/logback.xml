@@ -31,7 +31,7 @@
         <encoder>
             <pattern>${loggingPattern}</pattern>
         </encoder>
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <maxHistory>90</maxHistory>
             <FileNamePattern>${APP_LOG_HOME}/sendsoknad-batch-log-%d{yyyy-MM-dd}.gz</FileNamePattern>
         </rollingPolicy>
