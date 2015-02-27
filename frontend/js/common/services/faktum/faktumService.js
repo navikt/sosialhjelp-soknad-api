@@ -1,7 +1,7 @@
 angular.module('nav.services.faktum', [])
     .factory('Faktum', ['$resource', function ($resource) {
         var url = '/sendsoknad/rest/soknad/:soknadId/fakta/:faktumId/:mode';
-        return $resource(url,
+        return $resource(url + getCacheBurstingParameter(),
             {soknadId: '@soknadId', faktumId: '@faktumId', mode: '@mode'},
             {
                 save  : { method: 'POST', params: {mode: ''}},

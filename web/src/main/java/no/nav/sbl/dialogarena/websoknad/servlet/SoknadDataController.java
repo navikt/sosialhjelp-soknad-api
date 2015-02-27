@@ -10,25 +10,22 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.EttersendingService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.SoknadStrukturUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.XsrfGenerator;
 import no.nav.sbl.dialogarena.websoknad.domain.StartSoknad;
 import org.apache.commons.collections15.Predicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXB;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -36,8 +33,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.lang.String.format;
-import static javax.xml.bind.JAXBContext.newInstance;
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
@@ -49,17 +44,21 @@ import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 @ControllerAdvice()
 @RequestMapping("/soknad")
 public class SoknadDataController {
+
     @Inject
     private SendSoknadService soknadService;
     @Inject
     private EttersendingService ettersendingService;
     @Inject
     private VedleggService vedleggService;
+
+    @Inject
+    private FaktaService faktaService;
+
     @Inject
     private HtmlGenerator pdfTemplate;
 
     private HtmlToPdf pdfGenerator = new PDFFabrikk();
-
 
     @RequestMapping(value = "/{soknadId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
@@ -67,6 +66,13 @@ public class SoknadDataController {
     public WebSoknad hentSoknadData(@PathVariable Long soknadId) {
         return soknadService.hentSoknad(soknadId);
     }
+
+    @RequestMapping(value = "/hentsoknad/{behandlingsId}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody()
+    public WebSoknad hentSoknadMedBehandlingsId(@PathVariable String behandlingsId) {
+        return soknadService.hentSoknadMedBehandlingsId(behandlingsId);
+    }
+
     @RequestMapping(value = "/{soknadId}/struktur", method = RequestMethod.GET, produces = "application/json")
     public String hentSoknadSokXMl(@PathVariable Long soknadId) throws UnsupportedEncodingException {
         ByteArrayOutputStream ous = new ByteArrayOutputStream();
@@ -90,7 +96,7 @@ public class SoknadDataController {
     @RequestMapping(value = "/behandling/{behandlingsId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     @SjekkTilgangTilSoknad
-    public Map<String, String> hentSoknadIdMedBehandligsId(@PathVariable String behandlingsId) {
+    public Map<String, String> hentSoknadIdMedBehandligsId(@PathVariable String behandlingsId, HttpServletResponse response) {
         Map<String, String> result = new HashMap<>();
         String sanitizedBehandlingsId = behandlingsId.replaceAll("%20", " ");
         WebSoknad soknad = soknadService.hentSoknadMedBehandlingsId(sanitizedBehandlingsId);
@@ -101,6 +107,10 @@ public class SoknadDataController {
 
         result.put("result", soknad.getSoknadId().toString());
 
+        Cookie xsrfCookie = new Cookie("XSRF-TOKEN", XsrfGenerator.generateXsrfToken(behandlingsId));
+        xsrfCookie.setPath("/sendsoknad");
+        response.addCookie(xsrfCookie);
+
         return result;
     }
 
@@ -108,15 +118,8 @@ public class SoknadDataController {
     @ResponseBody()
     @SjekkTilgangTilSoknad
     public SoknadStruktur hentSoknadStruktur(@PathVariable Long soknadId) {
-        String type = soknadService.hentSoknad(soknadId).getskjemaNummer() + ".xml";
-        try {
-            Unmarshaller unmarshaller = newInstance(SoknadStruktur.class)
-                    .createUnmarshaller();
-            return (SoknadStruktur) unmarshaller.unmarshal(SoknadStruktur.class
-                    .getResourceAsStream(format("/soknader/%s", type)));
-        } catch (JAXBException e) {
-            throw new RuntimeException("Kunne ikke laste definisjoner. ", e);
-        }
+        String skjemanavn = soknadService.hentSoknad(soknadId).getskjemaNummer();
+        return SoknadStrukturUtils.hentStruktur(skjemanavn);
     }
 
     @RequestMapping(value = "/delsteg/{soknadId}/{delsteg}", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
@@ -162,14 +165,31 @@ public class SoknadDataController {
     public void sendSoknad(@PathVariable Long soknadId) {
         WebSoknad soknad = soknadService.hentSoknad(soknadId);
 
-        byte[] pdfOutputStream;
-        if (soknad.erEttersending()) {
-            pdfOutputStream = genererPdf(soknad, "/skjema/ettersending");
-        } else {
-            pdfOutputStream = genererPdf(soknad, "/skjema/dagpenger");
+        byte[] kvittering = genererPdf(soknad, "/skjema/kvittering");
+        vedleggService.lagreKvitteringSomVedlegg(soknadId, kvittering);
 
+        if (soknad.erEttersending()) {
+            byte[] dummyPdfSomHovedskjema = genererDummyPdf(soknad);
+            soknadService.sendSoknad(soknadId, dummyPdfSomHovedskjema);
+        } else {
+            byte[] soknadPdf;
+            if (soknad.erGjenopptak()) {
+                soknadPdf = genererPdf(soknad, "/skjema/gjenopptak");
+            } else {
+                soknadPdf = genererPdf(soknad, "/skjema/dagpenger");
+            }
+            soknadService.sendSoknad(soknadId, soknadPdf);
         }
-        soknadService.sendSoknad(soknadId, pdfOutputStream);
+    }
+
+    private byte[] genererDummyPdf(WebSoknad soknad) {
+        String pdfMarkup;
+        try {
+            pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(soknad, "skjema/ettersending/dummy");
+        } catch (IOException e) {
+            throw new ApplicationException("Kunne ikke lage markup av ettersending-dummy", e);
+        }
+        return pdfGenerator.lagPdfFil(pdfMarkup);
     }
 
     private byte[] genererPdf(WebSoknad soknad, String hbsSkjemaPath) {
@@ -190,7 +210,7 @@ public class SoknadDataController {
     public void lagreSoknad(@PathVariable Long soknadId,
                             @RequestBody WebSoknad webSoknad) {
         for (Faktum faktum : webSoknad.getFaktaListe()) {
-            soknadService.lagreSoknadsFelt(soknadId, faktum);
+            faktaService.lagreSoknadsFelt(soknadId, faktum);
         }
     }
 
@@ -211,7 +231,8 @@ public class SoknadDataController {
 
     @RequestMapping(value = "/opprett/ettersending/{behandlingskjedeId}", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody()
-    public Map<String, String> opprettSoknadEttersending(@PathVariable String behandlingskjedeId) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public Map<String, String> opprettSoknadEttersending(@PathVariable String behandlingskjedeId, HttpServletResponse response) {
         Map<String, String> result = new HashMap<>();
         WebSoknad soknad = ettersendingService.hentEttersendingForBehandlingskjedeId(behandlingskjedeId);
         Long soknadId;
@@ -222,6 +243,11 @@ public class SoknadDataController {
         }
 
         result.put("soknadId", soknadId.toString());
+
+        Cookie xsrfCookie = new Cookie("XSRF-TOKEN", XsrfGenerator.generateXsrfToken(behandlingskjedeId));
+        xsrfCookie.setPath("/sendsoknad");
+        response.addCookie(xsrfCookie);
+
         return result;
     }
 
@@ -232,7 +258,6 @@ public class SoknadDataController {
 
         String behandlingId = soknadService.startSoknad(soknadType.getSoknadType());
         result.put("brukerbehandlingId", behandlingId);
-
         return result;
     }
 
@@ -250,6 +275,10 @@ public class SoknadDataController {
     public String hentOppsummering(@PathVariable Long soknadId) throws IOException {
         WebSoknad soknad = soknadService.hentSoknad(soknadId);
         vedleggService.leggTilKodeverkFelter(soknad.getVedlegg());
-        return pdfTemplate.fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
+        if (soknad.erGjenopptak()) {
+            return pdfTemplate.fyllHtmlMalMedInnhold(soknad, "/skjema/gjenopptak");
+        } else {
+            return pdfTemplate.fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
+        }
     }
 }

@@ -50,6 +50,7 @@ public class ExceptionController {
         logger.warn("Rest kall feilet med: " + ex, ex);
         return getResult(ex.getId(), HttpStatus.BAD_REQUEST);
     }
+
     @ResponseBody
     @ExceptionHandler(Throwable.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -57,7 +58,6 @@ public class ExceptionController {
         logger.warn("Rest kall feilet med: " + ex, ex);
         return getResult("generell", HttpStatus.BAD_REQUEST);
     }
-
 
     private ResponseEntity<RestFeil> getResult(String id, HttpStatus badRequest) {
         HttpHeaders header = new HttpHeaders();

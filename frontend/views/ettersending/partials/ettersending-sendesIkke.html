@@ -1,6 +1,6 @@
 <h2 class="stor ikon-vedlegg-sendesIkke" data-ng-bind-html="'ettersending.vedlegg.sendesIkkeAvDeg' | cmstekst"></h2>
 <p class="ettersending-infotekst" data-ng-bind-html="'ettersending.vedlegg.sendesIkkeAvDeg.informasjon' | cmstekst"></p>
-<div class="vedleggboks" data-ng-repeat="v in vedlegg | sendesIkke | orderBy: 'opprettetDato'">
+<div class="vedleggboks" data-ng-repeat="v in vedlegg | sendesIkkeEllerAlleredeSendt | orderBy: 'opprettetDato'">
     <div class="vedlegg-navn">
         <div class="navn"
              data-truncate-hover

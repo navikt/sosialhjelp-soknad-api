@@ -1,5 +1,5 @@
-angular.module('nav.booleanradio', ['nav.cmstekster', 'nav.input'])
-	.directive('booleanradio', ['cms', function (cms) {
+angular.module('nav.booleanradio', ['nav.cms', 'nav.input'])
+	.directive('booleanradio', function (cms) {
 		return {
 			restrict   : 'A',
 			replace    : true,
@@ -18,6 +18,13 @@ angular.module('nav.booleanradio', ['nav.cmstekster', 'nav.input'])
                         tittel: src + '.hjelpetekst.tittel',
                         tekst: src + '.hjelpetekst.tekst'
                     };
+					scope.getCmsArgument = function() {
+						var cmsArgs = scope.cmsArgumenter;
+						if(cmsArgs && cmsArgs.modelFaktum) {
+							return cmsArgs.modelFaktum.value ? cmsArgs.modelFaktum.value : cmsArgs.default;
+						}
+						return null;
+					};
 				},
 				post: function (scope, element) {
 					scope.hvisModelErTrue = function () {
@@ -47,4 +54,4 @@ angular.module('nav.booleanradio', ['nav.cmstekster', 'nav.input'])
 			},
 			templateUrl: '../js/common/directives/booleanradio/booleanradioTemplate.html'
 		};
-	}]);
+	});

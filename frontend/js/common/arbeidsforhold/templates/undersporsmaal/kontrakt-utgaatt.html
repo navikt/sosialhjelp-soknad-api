@@ -1,0 +1,26 @@
+<div class="varighet form-linje">
+    <h4 class="spm-sporsmal" data-ng-bind-html=" 'arbeidsforhold.arbeidsgiver.varighet.label' | cmstekst"></h4>
+    <div data-nav-dato-intervall
+         data-fra-dato="sluttaarsak.properties.datofra"
+         data-til-dato="sluttaarsak.properties.datotil"
+         data-label="arbeidsforhold.arbeidsgiver.varighet"
+         data-er-fremtidigdato-tillatt="true"
+         data-er-fradato-required="true"
+         data-er-tildato-required="true"
+         data-lagre="lagreFaktum()">
+    </div>
+</div>
+
+<div data-booleanradio
+     data-navconfig
+     data-nav-faktum-property="tilbudomjobbannetsted"
+     data-nokkel="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette"></div>
+
+<div class="fiks-siste-boks ekstra-spm-boks" data-ng-if="sluttaarsak.properties.tilbudomjobbannetsted == 'true'">
+    <div data-navinfoboks data-infotekster="['arbeidsforhold.sluttaarsak.advarsel', 'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.true.informasjon']">
+    </div>
+</div>
+
+<div data-turnusblokk data-arbeidsforhold="arbeidsforhold"></div>
+
+<div data-arbeidsforhold-vedlegg-infoboks data-vedleggtekster="['Dagpenger.vedlegg.O2.header', 'Dagpenger.vedlegg.T8.header']"></div>

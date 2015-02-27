@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import org.joda.time.DateTime;
 import org.junit.After;
@@ -20,7 +21,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {DbConfig.class})
+@ContextConfiguration(classes = {DbTestConfig.class})
 public class VedleggRepositoryJdbcTest {
 
     @Inject
@@ -76,10 +77,10 @@ public class VedleggRepositoryJdbcTest {
     }
 
     @Test
-    public void skalSletteVedleggOgData() {
+    public void skalSletteVedleggOgDataMedVedleggParameter() {
         Long id = vedleggRepository.opprettVedlegg(getVedlegg(), new byte[]{1, 2, 3});
         Long id2 = vedleggRepository.opprettVedlegg(getVedlegg().medSkjemaNummer("2"), new byte[]{1, 2, 3});
-        vedleggRepository.slettVedleggOgData(12L, 10L, "1");
+        vedleggRepository.slettVedleggOgData(12L, new Vedlegg().medFaktumId(10L).medSkjemaNummer("1"));
         try {
             vedleggRepository.hentVedlegg(12L, id);
             fail("ikke slettet");
@@ -133,6 +134,7 @@ public class VedleggRepositoryJdbcTest {
                 .medFillagerReferanse("1234")
                 .medData(null)
                 .medOpprettetDato(DateTime.now().getMillis())
+                .medAarsak("")
                 .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
     }
 

@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 public class SikkerhetsAspect {
     @Inject
-    Tilgangskontroll tilgangskontroll;
+    private Tilgangskontroll tilgangskontroll;
 
     @Inject
     private SendSoknadService soknadService;

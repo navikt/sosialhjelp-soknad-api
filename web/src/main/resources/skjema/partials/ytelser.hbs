@@ -1,0 +1,270 @@
+<h2>{{ hentTekst "ytelser.tittel" }}</h2>
+<table>
+{{#forFaktum "offentligTjenestepensjon"}}
+    {{#hvisSant value}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>{{ hentTekst "ytelser.offentligTjenestepensjon" }}</span>
+                <ul>
+                    {{#forFaktum "offentligTjenestepensjonUtbetaler"}}
+                        <li class="kulepunkt">
+                            <span>{{ hentTekst "ytelser.offentligTjenestepensjonUtbetaler" }}</span>
+                            <span>{{ value }}</span>
+                        </li>
+                    {{/forFaktum}}
+                </ul>
+            </td>
+        </tr>
+    {{/hvisSant}}
+{{/forFaktum}}
+
+{{#forFaktum "privatTjenestepensjon"}}
+    {{#hvisSant value}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>{{ hentTekst "ytelser.privatTjenestepensjon" }}</span>
+                <ul>
+                    {{#forFaktum "privatTjenestepensjonUtbetaler"}}
+                        <li class="kulepunkt">
+                            <span>{{ hentTekst "ytelser.privatTjenestepensjonUtbetaler" }}</span>
+                            <span>{{ value }}</span>
+                        </li>
+                    {{/forFaktum}}
+                </ul>
+            </td>
+        </tr>
+    {{/hvisSant}}
+{{/forFaktum}}
+
+{{#forFaktum "stonadFisker"}}
+    {{#hvisSant value}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>{{ hentTekst "ytelser.stonadFisker" }}</span>
+                <ul>
+                    {{#forFaktum "ytelser.stonadFisker.utbetaler"}}
+                        <li class="kulepunkt">
+                            <span>{{ hentTekst "ytelser.stonadFisker.utbetaler" }}</span>
+                            <span>{{ value }}</span>
+                        </li>
+                    {{/forFaktum}}
+                </ul>
+            </td>
+        </tr>
+    {{/hvisSant}}
+{{/forFaktum}}
+
+{{#forFaktum "garantilott"}}
+    {{#hvisSant value}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>{{ hentTekst "ytelser.garantilott" }}</span>
+                <ul>
+                    {{#forFaktum "garantilottUtbetaler"}}
+                        <li class="kulepunkt">
+                            <span>{{ hentTekst "ytelser.garantilottUtbetaler" }}</span>
+                            <span>{{ value }}</span>
+                        </li>
+                    {{/forFaktum}}
+                </ul>
+            </td>
+        </tr>
+    {{/hvisSant}}
+{{/forFaktum}}
+
+{{#forFaktum "etterlonn"}}
+    {{#hvisSant value}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>{{ hentTekst "ytelser.etterlonn" }}</span>
+                <ul>
+                    {{#forFaktum "etterlonnUtbetaler"}}
+                        <li class="kulepunkt">
+                            <span>{{ hentTekst "ytelser.etterlonnUtbetaler" }}</span>
+                            <span>{{ value }}</span>
+                        </li>
+                    {{/forFaktum}}
+                </ul>
+            </td>
+        </tr>
+    {{/hvisSant}}
+{{/forFaktum}}
+
+{{#forFaktum "vartpenger"}}
+    {{#hvisSant value}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>{{ hentTekst "ytelser.vartpenger" }}</span>
+                <ul>
+                    {{#forFaktum "vartpengerUtbetaler"}}
+                        <li class="kulepunkt">
+                            <span>{{ hentTekst "ytelser.vartpengerUtbetaler" }}</span>
+                            <span>{{ value }}</span>
+                        </li>
+                    {{/forFaktum}}
+                </ul>
+            </td>
+        </tr>
+    {{/hvisSant}}
+{{/forFaktum}}
+
+{{#forFaktum "dagpengerEOS"}}
+    {{#hvisSant value}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>{{ hentTekst "ytelser.dagpengerEOS" }}</span>
+                <ul>
+                    {{#forFaktum "dagpengerEOSUtbetalerLand"}}
+                        <li class="kulepunkt">
+                            <span>{{ hentTekst "ytelser.dagpengerEOSUtbetaler" }}</span>
+                            <span>{{ value }}</span>
+                        </li>
+                    {{/forFaktum}}
+                </ul>
+            </td>
+        </tr>
+    {{/hvisSant}}
+{{/forFaktum}}
+
+{{#forFaktum "annenYtelse"}}
+    {{#hvisSant value}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>{{ hentTekst "ytelser.annenYtelse" }}</span>
+                <ul>
+                    {{#forFaktum "annenYtelseType"}}
+                        <li class="kulepunkt">
+                            <span>{{ hentTekst "ytelser.annenYtelseType" }}</span>
+                            <span>{{ value }}</span>
+                        </li>
+                    {{/forFaktum}}
+
+                    {{#forFaktum "annenYtelseUtbetaler"}}
+                        <li class="kulepunkt">
+                            <span>{{ hentTekst "ytelser.annenYtelseUtbetaler" }}</span>
+                            <span>{{ value }}</span>
+                        </li>
+                    {{/forFaktum}}
+                </ul>
+            </td>
+        </tr>
+    {{/hvisSant}}
+{{/forFaktum}}
+
+{{#forFaktum "ingenYtelse"}}
+    {{#hvisSant value}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>{{ hentTekst "ytelser.ingenYtelse" }}</span>
+            </td>
+        </tr>
+    {{/hvisSant}}
+{{/forFaktum}}
+
+{{#forFaktum "sykepenger"}}
+    {{#hvisSant value}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>{{ hentTekst "ytelser.nav.sykepenger" }}</span>
+            </td>
+        </tr>
+    {{/hvisSant}}
+{{/forFaktum}}
+
+{{#forFaktum "aap"}}
+    {{#hvisSant value}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>{{ hentTekst "ytelser.nav.aap" }}</span>
+            </td>
+        </tr>
+    {{/hvisSant}}
+{{/forFaktum}}
+
+{{#forFaktum "uforetrygd"}}
+    {{#hvisSant value}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>{{ hentTekst "ytelser.nav.uforetrygd" }}</span>
+            </td>
+        </tr>
+    {{/hvisSant}}
+{{/forFaktum}}
+
+{{#forFaktum "svangerskapspenger"}}
+    {{#hvisSant value}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>{{ hentTekst "ytelser.nav.svangerskapspenger" }}</span>
+            </td>
+        </tr>
+    {{/hvisSant}}
+{{/forFaktum}}
+
+{{#forFaktum "foreldrepenger"}}
+    {{#hvisSant value}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>{{ hentTekst "ytelser.nav.foreldrepenger" }}</span>
+            </td>
+        </tr>
+    {{/hvisSant}}
+{{/forFaktum}}
+
+{{#forFaktum "ventelonn"}}
+    {{#hvisSant value}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>{{ hentTekst "ytelser.nav.ventelonn" }}</span>
+            </td>
+        </tr>
+    {{/hvisSant}}
+{{/forFaktum}}
+
+{{#forFaktum "ingennavytelser"}}
+    {{#hvisSant value}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>{{ hentTekst "ytelser.nav.ingen" }}</span>
+            </td>
+        </tr>
+    {{/hvisSant}}
+{{/forFaktum}}
+
+{{#forFaktum "ikkeavtale"}}
+    <tr>
+        <td class="sjekket"></td>
+        <td>
+            {{#hvisSant value}}
+                <span>{{ hentTekst "ytelser.ikkeavtale.true" }}</span>
+            {{ else }}
+                <span>{{ hentTekst "ytelser.ikkeavtale.false" }}</span>
+                <ul>
+                    {{#forFaktum "ytelser.ikkeavtale.avtale"}}
+                        <li class="kulepunkt">
+                            <span>{{ hentTekst "ytelser.ikkeavtale.avtale.sporsmal" }}</span>
+                            <span>{{ value }}</span>
+                        </li>
+                    {{/forFaktum}}
+                </ul>
+            {{/hvisSant}}
+        </td>
+    </tr>
+{{/forFaktum}}
+</table>

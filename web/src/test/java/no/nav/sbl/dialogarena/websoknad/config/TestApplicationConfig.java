@@ -6,11 +6,12 @@ import no.nav.sbl.dialogarena.common.kodeverk.JsonKodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.ConfigService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.StartDatoService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.MockConsumerConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import no.nav.sbl.dialogarena.websoknad.WicketApplication;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -49,13 +50,13 @@ public class TestApplicationConfig {
     }
 
     @Bean
-    HenvendelseConnector henvendelseConnector() {
-        return new HenvendelseConnector();
+    HenvendelseService henvendelseService() {
+        return new HenvendelseService();
     }
     
     @Bean
-    FillagerConnector fillagerConnector() {
-        return new FillagerConnector();
+    FillagerService fillagerService() {
+        return new FillagerService();
     }
 
     @Bean
@@ -64,6 +65,11 @@ public class TestApplicationConfig {
     @Bean
     public ConfigService configService() {
         return new ConfigService();
+    }
+
+    @Bean
+    public FaktaService faktaService() {
+        return new FaktaService();
     }
 
     @Bean

@@ -1,5 +1,4 @@
 angular.module('ettersending.routes', ['ngRoute', 'nav.common.routes'])
-
     .config(function ($routeProvider) {
         $routeProvider
             .when('/cmstekster', {
@@ -22,6 +21,24 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.common.routes'])
                     },
                     metadata: function(EttersendingMetadataResolver) {
                         return EttersendingMetadataResolver;
+                    }
+                }
+            })
+            .when('/avbryt', {
+                templateUrl: '../views/ettersending/avbryt.html',
+                controller: 'EttersendingAvbrytCtrl',
+                resolve: {
+                    cms: function (CmsResolver) {
+                        return CmsResolver;
+                    },
+                    ettersending: function (EttersendingResolver) {
+                        return EttersendingResolver;
+                    },
+                    config: function (ConfigResolver) {
+                        return ConfigResolver;
+                    },
+                    vedlegg: function (VedleggResolver) {
+                        return VedleggResolver;
                     }
                 }
             })
@@ -87,9 +104,8 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.common.routes'])
                     }
                 }
             })
-            .when('/avbryt', {
-                templateUrl: '../views/ettersending/avbryt.html',
-                controller: 'EttersendingAvbrytCtrl',
+            .when('/visVedlegg/:vedleggId', {
+                templateUrl: '../views/common/vedlegg/visvedlegg.html',
                 resolve: {
                     cms: function (CmsResolver) {
                         return CmsResolver;
@@ -99,20 +115,15 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.common.routes'])
                     },
                     config: function (ConfigResolver) {
                         return ConfigResolver;
-                    },
-                    vedlegg: function (VedleggResolver) {
-                        return VedleggResolver;
                     }
                 }
             })
-            .when('/visVedlegg/:vedleggId', {
-                templateUrl: '../views/common/vedlegg/visvedlegg.html',
+            .when('/bekreftelse/', {
+                templateUrl: '../js/ettersending/innsendingsbekreftelse/bekreftelse.html',
+                controller: 'BekreftelseEttersendingCtrl',
                 resolve: {
                     cms: function (CmsResolver) {
                         return CmsResolver;
-                    },
-                    ettersending: function (EttersendingResolver) {
-                        return EttersendingResolver;
                     },
                     config: function (ConfigResolver) {
                         return ConfigResolver;

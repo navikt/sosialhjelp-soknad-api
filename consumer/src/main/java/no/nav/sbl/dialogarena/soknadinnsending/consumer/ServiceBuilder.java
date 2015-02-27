@@ -36,7 +36,7 @@ final class ServiceBuilder<T> {
     public static final int RECEIVE_TIMEOUT = 30000;
     public static final int CONNECTION_TIMEOUT = 10000;
     public Class<T> resultClass;
-    JaxWsProxyFactoryBean factoryBean;
+    private JaxWsProxyFactoryBean factoryBean;
 
     ServiceBuilder(Class<T> resultClass) {
         factoryBean = new JaxWsProxyFactoryBean();

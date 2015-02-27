@@ -16,15 +16,7 @@ public class SQLUtils {
 			return "and rownum <= " + limit;
 		}
 	}
-	
-	public static String nextvalue(String sequence) {
-		if ("hsqldb".equals(getProperty(DIALECT_PROPERTY))) {
-			return "next value for " + sequence;
-		} else {
-			return sequence + ".nextval";
-		}
-	}
-	
+
 	public static String selectNextSequenceValue(String sequence) {
 		if ("hsqldb".equals(getProperty(DIALECT_PROPERTY))) {
 			return "call next value for " + sequence;

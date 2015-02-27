@@ -27,9 +27,9 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class ConfigController {
 
     @Inject
-    ConfigService configService;
+    private ConfigService configService;
     @Inject
-    LagringsScheduler lagringsScheduler;
+    private LagringsScheduler lagringsScheduler;
     @Inject
     private CacheManager cacheManager;
     @Inject
@@ -50,14 +50,15 @@ public class ConfigController {
         return configService.getConfig(soknadId);
     }
 
-    @RequestMapping(value="/internal/lagre")
+    @RequestMapping(value = "/internal/lagre")
     public void kjorLagring() throws InterruptedException {
         lagringsScheduler.mellomlagreSoknaderOgNullstillLokalDb();
     }
-    @RequestMapping(value="/internal/reset")
+
+    @RequestMapping(value = "/internal/reset")
     @ResponseBody
-    public String resetCache(@RequestParam("type") String type){
-        if("cms".equals(type)){
+    public String resetCache(@RequestParam("type") String type) {
+        if ("cms".equals(type)) {
             cacheManager.getCache("cms.content").clear();
             cacheManager.getCache("cms.article").clear();
             contentConfig.lastInnNyeInnholdstekster();

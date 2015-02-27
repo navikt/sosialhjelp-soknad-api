@@ -1,7 +1,7 @@
 describe('valideringBlurValidate', function () {
     var element, scope, timeout, elementNavn, form;
 
-    beforeEach(module('nav.validering', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.validering', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel',
@@ -89,7 +89,7 @@ describe('valideringBlurValidate', function () {
 describe('valideringBlurValidate', function () {
     var element, scope, timeout, elementNavn, form;
 
-    beforeEach(module('nav.validering', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.validering', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel',
@@ -140,7 +140,7 @@ describe('valideringBlurValidate', function () {
 describe('valideringclickValidate', function () {
     var rootScope, element, scope, timeout, elementNavn, form, elementNavnReq;
 
-    beforeEach(module('nav.validering', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.validering', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel',
@@ -240,7 +240,7 @@ describe('valideringclickValidate', function () {
 describe('checkboxValidate', function () {
     var rootScope, element, scope, timeout, elementNavn, form, elementNavnReq;
 
-    beforeEach(module('nav.validering', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.validering', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel',
@@ -349,6 +349,59 @@ describe('checkboxValidate', function () {
             scope.$digest();
             jasmine.Clock.tick(3000);
             expect(formEl.hasClass('feilstyling')).toBe(false);
+        });
+    });
+});
+describe('hiddenInputValidering', function () {
+    var rootScope, element, scope, timeout, elementNavn, form, elementNavnReq;
+
+    beforeEach(module('nav.validering', 'nav.cms', 'templates-main'));
+
+    beforeEach(module(function ($provide) {
+        $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel',
+            '{feilmeldingstekst}': 'Min feilmelding'}
+        });
+        $provide.value("$cookieStore", {
+            get: function () {
+                return true;
+            }
+        });
+    }));
+
+    beforeEach(inject(function ($compile, $rootScope, $timeout) {
+        rootScope = $rootScope;
+        scope = $rootScope;
+        timeout = $timeout;
+        element = angular.element(
+            '<form name="form">' +
+                '<div class="form-linje">' +
+                '<input type="hidden" required data-ng-model="modell"  name="inputname" data-error-messages="{feilmeldingstekst}" data-hidden-input-validering> ' +
+                '<span class="melding"></span>' +
+                '</div> ' +
+                '</form>');
+
+        $compile(element)(scope);
+        scope.$apply();
+        form = scope.form;
+        elementNavn = form.inputname;
+        elementNavnReq = form.inputnameReq;
+    }));
+
+    beforeEach(function () {
+        jasmine.Clock.useMock();
+    });
+
+    describe('hiddenInputValidering', function () {
+        it('elementet skal ikke ha klassen feil', function () {
+            expect(element.find('.form-linje').hasClass('feil')).toBe(false);
+        });
+        it('elementet skal få klassen feil når blokken blir validert og elementet ikke er gyldig', function () {
+            expect(element.find('.form-linje').hasClass('feil')).toBe(false);
+            scope.$broadcast("RUN_VALIDATIONform");
+            expect(element.find('.form-linje').hasClass('feil')).toBe(true);
+        });
+        it('elementet blir gyldig så skal feil-klassen fjernes', function () {
+
         });
     });
 });

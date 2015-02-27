@@ -6,14 +6,13 @@ import no.nav.modig.frontend.FrontendModules;
 import no.nav.modig.frontend.MetaTag;
 import no.nav.modig.wicket.configuration.ApplicationSettingsConfig;
 import no.nav.sbl.dialogarena.webkomponent.innstillinger.InnstillingerPanel;
-import no.nav.sbl.dialogarena.websoknad.pages.XmlToPdfConverterPage;
-import no.nav.sbl.dialogarena.websoknad.pages.ettersending.AvbruttEttersendingPage;
 import no.nav.sbl.dialogarena.websoknad.pages.ettersending.EttersendingPage;
 import no.nav.sbl.dialogarena.websoknad.pages.ettersending.StartEttersendingPage;
 import no.nav.sbl.dialogarena.websoknad.pages.mocksetup.MockSetupPage;
 import no.nav.sbl.dialogarena.websoknad.pages.soknadliste.SoknadListePage;
-import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.AvbruttPage;
-import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.StartSoknadPage;
+import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.DagpengerAppPageClass;
+import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.GjenopptakAppPageClass;
+import no.nav.sbl.dialogarena.websoknad.pages.utslagskriterier.UtslagskriterierDagpengerPage;
 import no.nav.sbl.dialogarena.websoknad.selftest.SelfTestPage;
 import org.apache.wicket.Application;
 import org.apache.wicket.Page;
@@ -28,7 +27,7 @@ import org.springframework.context.ApplicationContext;
 
 import javax.inject.Inject;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.util.MockUtil.mockErTillattOgAktivert;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.MockUtil.mockSetupErTillatt;
 
 
 public class WicketApplication extends WebApplication {
@@ -57,6 +56,33 @@ public class WicketApplication extends WebApplication {
 
         getRequestCycleSettings().setResponseRequestEncoding("UTF-8");
 
+        initFrontendConfigurator();
+
+        // Innstillinger vi kan ha
+        IApplicationSettings applicationSettings = getApplicationSettings();
+        applicationSettings.setPageExpiredErrorPage(getHomePage());
+        applicationSettings.setUploadProgressUpdatesEnabled(true);
+
+
+        new ApplicationSettingsConfig().withExternalExceptionPages(null).configure(this);
+
+        Application.get().getComponentPostOnBeforeRenderListeners().add(new StatelessChecker());
+
+        get().getStoreSettings().setMaxSizePerSession(Bytes.kilobytes(500));
+
+
+        Application.get().getRequestLoggerSettings().setRequestLoggerEnabled(true);
+
+        mountPages();
+
+        getSecuritySettings().setEnforceMounts(true);
+        getSecuritySettings().setCryptFactory(new KeyInSessionSunJceCryptFactory());
+        getResourceSettings().getStringResourceLoaders().add(0, new EnonicResourceLoader(cmsContentRetriever));
+
+        setSpringComponentInjector();
+    }
+
+    private void initFrontendConfigurator() {
         FrontendConfigurator configurator = new FrontendConfigurator();
 
         for (LessResources resource : LessResources.values()) {
@@ -80,41 +106,19 @@ public class WicketApplication extends WebApplication {
                 .addScripts(InnstillingerPanel.INNSTILLINGER_JS)
                 .withResourcePacking(this.usesDeploymentConfig())
                 .configure(this);
+    }
 
-        // Innstillinger vi kan ha
-        IApplicationSettings applicationSettings = getApplicationSettings();
-        applicationSettings.setPageExpiredErrorPage(getHomePage());
-        applicationSettings.setUploadProgressUpdatesEnabled(true);
-
-
-        new ApplicationSettingsConfig().withExternalExceptionPages(null).configure(this);
-
-        Application.get().getComponentPostOnBeforeRenderListeners().add(new StatelessChecker());
-
-        get().getStoreSettings().setMaxSizePerSession(Bytes.kilobytes(500));
-
-
-        Application.get().getRequestLoggerSettings().setRequestLoggerEnabled(true);
-
-        mountPage("start/${soknadType}", StartSoknadPage.class);
-        mountPage("soknad/${brukerbehandlingId}", StartSoknadPage.class);
+    private void mountPages() {
+        mountPage("NAV04-01.03/${brukerbehandlingId}", DagpengerAppPageClass.class);
+        mountPage("NAV04-16.03/${brukerbehandlingId}", GjenopptakAppPageClass.class);
+        mountPage("utslagskriterier/${utslagskriterierSide}", UtslagskriterierDagpengerPage.class);
         mountPage("startettersending/${brukerbehandlingId}", StartEttersendingPage.class);
         mountPage("ettersending/${brukerbehandlingId}", EttersendingPage.class);
-        mountPage("avbrutt", AvbruttPage.class);
-        mountPage("ettersending/avbrutt", AvbruttEttersendingPage.class);
-        mountPage("xmltopdf", XmlToPdfConverterPage.class);
-        mountPage("soknadliste", SoknadListePage.class);
         mountPage("internal/selftest", SelfTestPage.class);
-        if (mockErTillattOgAktivert()) {
+        mountPage("soknadliste", SoknadListePage.class);
+        if (mockSetupErTillatt()) {
             mountPage("internal/mocksetup", MockSetupPage.class);
         }
-
-
-        getSecuritySettings().setEnforceMounts(true);
-        getSecuritySettings().setCryptFactory(new KeyInSessionSunJceCryptFactory());
-        getResourceSettings().getStringResourceLoaders().add(0, new EnonicResourceLoader(cmsContentRetriever));
-
-        setSpringComponentInjector();
     }
 
 

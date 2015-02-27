@@ -1,10 +1,16 @@
 describe('navradio', function () {
     var scope, element;
 
-    beforeEach(module('nav.input', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.input', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
-        $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
+        var tekster = {'tekster': {'tittel.key': 'Min tittel'}};
+        $provide.value("cms", tekster);
+        $provide.value("cmsService", {
+            getText: function(nokkel) {
+                return tekster.tekster[nokkel];
+            }
+        });
         $provide.value("data", {});
     }));
 
@@ -45,7 +51,7 @@ describe('navradio', function () {
 describe('navradio', function () {
     var scope, element;
 
-    beforeEach(module('nav.input', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.input', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
@@ -86,7 +92,7 @@ describe('navradio', function () {
 describe('navradio', function () {
     var scope, element;
 
-    beforeEach(module('nav.input', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.input', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
@@ -112,10 +118,6 @@ describe('navradio', function () {
         scope = element.find('div').scope();
     }));
     describe("navradioMedUtdanning", function () {
-        it('name skal bli satt til utdanning', function () {
-            expect(scope.navlabel).toBe('etellerutdanningnoe');
-            expect(scope.name).toBe('utdanning');
-        });
         it('hvisAktiv skal returnere false hvis faktum value ikke er det samme som scope.value', function () {
             expect(scope.hvisAktiv()).toBe(false);
         });
@@ -124,7 +126,7 @@ describe('navradio', function () {
 describe('navradioMedArbeidsforhold', function () {
     var scope, element;
 
-    beforeEach(module('nav.input', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.input', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
@@ -152,17 +154,18 @@ describe('navradioMedArbeidsforhold', function () {
     describe("navradio", function () {
         it('name skal bli satt til arbeidstilstand', function () {
             expect(scope.navlabel).toBe('et.arbeidstilstand.noe');
-            expect(scope.name).toBe('arbeidstilstand');
+            expect(scope.name).toBe('et.arbeidstilstand');
         });
         it('hvisAktiv skal returnere false hvis faktum value ikke er det samme som scope.value', function () {
             expect(scope.hvisAktiv()).toBe(false);
         });
     });
 });
-describe('navradio', function () {
+
+describe('navradioUtenfaktum', function () {
     var scope, element;
 
-    beforeEach(module('nav.input', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.input', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
@@ -172,32 +175,43 @@ describe('navradio', function () {
     beforeEach(inject(function ($compile, $rootScope) {
         element = angular.element(
             '<form name="form" > ' +
-                '<div data-navradio ' +
+                '<div data-navradio-utenfaktum ' +
                 'data-value="value" ' +
                 'data-navconfig ' +
-                'data-nav-faktum="arbeidstilstand" ' +
-                'data-navlabel="et.noe" ' +
+                'data-radiomodel="minmodel" ' +
+                'data-navlabel="navlabel.false" ' +
                 'data-navfeilmelding="tittel.key"> ' +
                 '</div> ' +
-                '</form>');
+            '</form>');
 
-        $rootScope.faktum = {value: ''};
         $compile(element)($rootScope);
         $rootScope.$apply();
 
-        scope = element.find('div').scope();
+        scope = element.find('div').scope().$$childTail;
     }));
-    describe("navradio", function () {
-        it('hvis navlabel ikke inneholder true eller false eller noen av de andre spesielle keyene skal det settes til en tom string', function () {
-            expect(scope.navlabel).toBe('et.noe');
-            expect(scope.name).toBe('');
-        });
+
+    it('tekstene skal bli satt', function () {
+        expect(scope.value).toBe('value');
+        expect(scope.navlabel).toBe('navlabel.false');
+    });
+
+    it('name skal bli satt til navlabel', function () {
+        expect(scope.name).toBe('navlabel');
+    });
+
+    it('hvisHarTranscludedInnhold skal returnere false om dne ikke har transcluded innhold', function() {
+       expect(scope.hvisHarTranscludedInnhold()).toBeFalsy();
+    });
+
+    it('hvisHarHjelpetekst skal returnere false om dne ikke har hjelpetekst', function() {
+        expect(scope.hvisHarHjelpetekst()).toBeFalsy();
     });
 });
+
 describe('navcheckbox', function () {
     var scope, element;
 
-    beforeEach(module('nav.input', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.input', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster':
@@ -223,10 +237,10 @@ describe('navcheckbox', function () {
 
         scope = element.find('div').scope();
     }));
-    describe("navradio", function () {
+    describe("navcheckbox", function () {
         it('skal sette riktig tekster for hjelpetekst', function () {
-            expect(scope.hjelpetekst.tittel).toBe('Min tittel');
-            expect(scope.hjelpetekst.tekst).toBe('Min tekst');
+            expect(scope.hjelpetekst.tittel.$$unwrapTrustedValue()).toBe('Min tittel');
+            expect(scope.hjelpetekst.tekst.$$unwrapTrustedValue()).toBe('Min tekst');
         });
         it('hvisHarHjelpetekst skal returnere true', function () {
             expect(scope.hvisHarHjelpetekst()).toNotBe(undefined);
@@ -244,7 +258,7 @@ describe('navcheckbox', function () {
 describe('navcheckboxUtenHjelpetekst', function () {
     var scope, element;
 
-    beforeEach(module('nav.input', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.input', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster':
@@ -284,7 +298,7 @@ describe('navcheckboxUtenHjelpetekst', function () {
 describe('navtekst', function () {
     var scope, element;
 
-    beforeEach(module('nav.input', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.input', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster':
@@ -312,10 +326,6 @@ describe('navtekst', function () {
         scope = element.find('div').scope();
     }));
     describe("navtekst", function () {
-        it('regexvalidering skal settes til tom string nar det ikke skal vaere regexvalidering pa feltet', function () {
-            expect(scope.regexvalidering).toBe('');
-            expect(scope.inputfeltmaxlength).toBe(undefined);
-        });
         it('harSporsmal skal returnere false hvis sporsmal ikke finnes', function () {
             expect(scope.harSporsmal()).toBe(false);
         });
@@ -324,7 +334,7 @@ describe('navtekst', function () {
 describe('navtekstMedSporsmalOgRegEx', function () {
     var scope, element;
 
-    beforeEach(module('nav.input', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.input', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster':
@@ -343,8 +353,7 @@ describe('navtekstMedSporsmalOgRegEx', function () {
                 'data-navlabel="ikkehjelpetekstlabel" ' +
                 ' data-navendret="enFunksjon()"' +
                 'data-regexvalidering="/^(\\d+(?:[\\.\\,]\\d{0,2})?)$/"' +
-                'data-navsporsmal="barnetillegg.barnetilegg.barneinntekttall.sporsmal" ' +
-                'data-inputfeltmaxlength="200"> ' +
+                'data-navsporsmal="barnetillegg.barnetilegg.barneinntekttall.sporsmal">' +
                 '</div> ' +
                 '</form>');
 
@@ -356,8 +365,8 @@ describe('navtekstMedSporsmalOgRegEx', function () {
     }));
     describe("navtekst", function () {
         it('regexvalidering skal settes til den aktuelle regexpatternet', function () {
-            expect(scope.regexvalidering).toBe("/^(\\d+(?:[\\.\\,]\\d{0,2})?)$/");
-            expect(scope.inputfeltmaxlength).toBe('200');
+            var input = element.find('input');
+            expect(input.attr('data-ng-pattern')).toBe('/^(\\d+(?:[\\.\\,]\\d{0,2})?)$/');
         });
         it('harSporsmal skal returnere true hvis har sporsmal', function () {
             expect(scope.harSporsmal()).toBe(true);
@@ -367,7 +376,7 @@ describe('navtekstMedSporsmalOgRegEx', function () {
 describe('navorganisasjonsnummerfelt', function () {
     var scope, element;
 
-    beforeEach(module('nav.input', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.input', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster':
@@ -410,7 +419,7 @@ describe('navorganisasjonsnummerfelt', function () {
 describe('navorganisasjonsnummerfeltNavVisSlettTrue', function () {
     var scope, element;
 
-    beforeEach(module('nav.input', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.input', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster':
@@ -450,7 +459,7 @@ describe('navorganisasjonsnummerfeltNavVisSlettTrue', function () {
 describe('navorganisasjonsnummerfeltVisSlett', function () {
     var scope, element;
 
-    beforeEach(module('nav.input', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.input', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster':
@@ -486,7 +495,7 @@ describe('navorganisasjonsnummerfeltVisSlett', function () {
 describe('orgnrValidate', function () {
     var scope, element, inputnavn, form;
 
-    beforeEach(module('nav.input', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.input', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster':
@@ -527,11 +536,14 @@ describe('orgnrValidate', function () {
             expect(scope.lagreFaktum).wasNotCalled();
 
         });
+
         it('lagreFaktum skal bli kalt hvis inputfeltet er valid og blur blir kalt', function () {
             spyOn(scope, 'lagreFaktum');
 
             var inputEl = element.find('input');
-            inputnavn.$setViewValue(123456789);
+            scope.model = 123456789;
+            scope.$apply();
+
             inputEl.blur();
             expect(scope.lagreFaktum).toHaveBeenCalled();
         });
@@ -553,3 +565,84 @@ describe('orgnrValidate', function () {
         });
     });
 });
+describe('navtall', function () {
+    var scope, element;
+
+    beforeEach(module('nav.input', 'nav.cms', 'templates-main'));
+
+    beforeEach(module(function ($provide) {
+        $provide.value("cms", {'tekster':
+        {'hjelpetekstlabel.hjelpetekst.tittel': 'Min tittel',
+            'hjelpetekstlabel.hjelpetekst.tekst': 'Min tekst'}
+        });
+        $provide.value("data", {});
+    }));
+
+    beforeEach(inject(function ($compile, $rootScope) {
+        element = angular.element(
+            '<form name="form" > ' +
+            '<div data-navtall' +
+            ' data-navconfig' +
+            ' data-nav-faktum="arbeidstilstand"' +
+            ' data-hjelpetekst="hjelpetekstlabel.hjelpetekst"' +
+            ' data-navsporsmal="hjelpetekstlabel.hjelpetekst"' +
+            ' data-navlabel="hjelpetekstlabel.hjelpetekst"' +
+            ' data-navfeilmelding="hjelpetekstlabel.hjelpetekst"' +
+            ' data-ng-model="faktum.value" ' +
+            ' data-navlabel="hjelpetekstlabel"' +
+            ' data-navminvalue="1"' +
+            ' data-regexvalidering="/^\\d+$/"' +
+            ' data-navmaxvalue="10"> ' + "</div>" +
+            '</form>');
+
+        $rootScope.faktum = { value: '' };
+        $compile(element)($rootScope);
+        $rootScope.$apply();
+
+        scope = element.find('div').scope();
+        scope.lagreFaktum = function(){};
+    }));
+
+    describe('tallRange', function(){
+        it('skal ikke lagre faktum hvis tallinput er over max', function () {
+            spyOn(scope, 'lagreFaktum');
+            var inputEl = element.find('input');
+            scope.form.navtall.$setViewValue("1234");
+            inputEl.blur();
+            expect(scope.lagreFaktum).wasNotCalled();
+        });
+
+        it('skal ikke lagre faktum hvis tallinput er under min', function () {
+            spyOn(scope, 'lagreFaktum');
+            var inputEl = element.find('input');
+            scope.form.navtall.$setViewValue("0");
+            inputEl.blur();
+            expect(scope.lagreFaktum).wasNotCalled();
+        });
+
+        it('skal lagre faktum hvis tallinput er mellom min og max', function () {
+            spyOn(scope, 'lagreFaktum');
+            var inputEl = element.find('input');
+            scope.form.navtall.$setViewValue("5");
+            inputEl.blur();
+            expect(scope.lagreFaktum).toHaveBeenCalled();
+        });
+
+        it('max skal være inklusiv', function () {
+            spyOn(scope, 'lagreFaktum');
+            var inputEl = element.find('input');
+            scope.form.navtall.$setViewValue("10");
+            inputEl.blur();
+            expect(scope.lagreFaktum).toHaveBeenCalled();
+        });
+
+        it('min skal ikke være inklusiv', function () {
+            spyOn(scope, 'lagreFaktum');
+            var inputEl = element.find('input');
+            scope.form.navtall.$setViewValue("1");
+            inputEl.blur();
+            expect(scope.lagreFaktum).wasNotCalled();
+        });
+    });
+});
+

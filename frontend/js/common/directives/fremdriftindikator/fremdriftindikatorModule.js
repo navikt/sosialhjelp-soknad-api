@@ -6,13 +6,13 @@ angular.module('nav.fremdriftsindikator', [])
                 var farge = attrs.fremdriftsindikator;
                 var img;
                 if (farge === 'grå') {
-                    img = '<img src="../img/ajaxloader/graa/loader_graa_48.gif"/>';
+                    img = '<img alt="fremdriftsindikator" src="../img/ajaxloader/graa/loader_graa_48.gif"/>';
                 } else if (farge === 'rød') {
-                    img = '<img src="../img/ajaxloader/roed/loader_rod_48.gif"/>';
+                    img = '<img alt="fremdriftsindikator" src="../img/ajaxloader/roed/loader_rod_48.gif"/>';
                 } else if (farge === 'svart') {
-                    img = '<img src="../img/ajaxloader/svart/loader_svart_48.gif"/>';
+                    img = '<img alt="fremdriftsindikator" src="../img/ajaxloader/svart/loader_svart_48.gif"/>';
                 } else {
-                    img = '<img src="../img/ajaxloader/hvit/loader_hvit_48.gif"/>';
+                    img = '<img alt="fremdriftsindikator" src="../img/ajaxloader/hvit/loader_hvit_48.gif"/>';
                 }
 
 				var spinner = angular.element(img);

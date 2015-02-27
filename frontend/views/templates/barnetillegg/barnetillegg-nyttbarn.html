@@ -1,6 +1,6 @@
 <div data-modalside>
     <div class="vertikal barn-spm" data-ng-form="nyttBarnForm" data-ng-controller="BarneCtrl">
-        <a href="#/soknad" data-ng-click="avbrytBarnetilegg($event)" class="lukk" aria-label="{{ 'barnetillegg.nyttbarn.lukk.aria' | cmstekst }}"></a>
+        <a href="#/{{brukerBehandlingId}}/soknad" data-ng-click="avbrytBarnetilegg($event)" class="lukk" title="{{ 'barnetillegg.nyttbarn.lukk.aria' | cmstekst }}" aria-label="{{ 'barnetillegg.nyttbarn.lukk.aria' | cmstekst }}"></a>
         <div data-form-errors></div>
 
         <h2 class="stor-strek" data-ng-if="endrerSystemregistrertBarn()">
@@ -37,7 +37,7 @@
                            data-ng-required="true"
                            data-error-messages="'barnetillegg.nyttbarn.fodselsdato.feilmelding'">
 
-                    <div data-nav-dato
+                    <div data-dato
                          data-ng-model="barn.properties.fodselsdato"
                          data-label="barnetillegg.nyttbarn.fodselsdato"
                          data-er-required="true"
@@ -69,32 +69,34 @@
             </div>
 
             <div data-ng-if="erEosLandAnnetEnnNorge()">
-                <div class="ekstra-spm-boks" data-navinfoboks>
-                    <p class="sluttaarsak-informasjon" data-ng-bind-html=" 'barnetillegg.nyttbarn.land.eos' | cmstekst"></p>
+                <div class="ekstra-spm-boks" data-navinfoboks data-infotekster="['barnetillegg.nyttbarn.land.eos']">
                 </div>
             </div>
             <div data-ng-if="erIkkeEosLand()">
-                <div class="ekstra-spm-boks" data-navinfoboks>
-                    <p class="sluttaarsak-informasjon" data-ng-bind-html=" 'barnetillegg.nyttbarn.land.ikkeeos' | cmstekst"></p>
+                <div class="ekstra-spm-boks" data-navinfoboks data-infotekster="['barnetillegg.nyttbarn.land.ikkeeos']">
                 </div>
             </div>
 
             <div data-ng-if="barn.properties.land === 'NOR'">
-                <div class="ekstra-spm-boks" data-vedlegginfoboks>
-                    <ul>
-                        <li data-ng-bind-html="'Dagpenger.vedlegg.X8.header' | cmstekst"></li>
-                    </ul>
+                <div class="ekstra-spm-boks" data-vedlegginfoboks data-vedleggTekster="['Dagpenger.vedlegg.X8.header']">
                 </div>
             </div>
 
-            <div data-ng-include="'../views/templates/barnetillegg/barnetilleggSporsmalTemplate.html'"></div>
+            <div data-ng-if="leggerTilNyttBarnEllerEndrerBarn()">
+                <div data-ng-include="'../views/templates/barnetillegg/barnetilleggNyttBarnSporsmalTemplate.html'"></div>
+            </div>
+            <div data-ng-if="endrerSystemregistrertBarn()">
+                <div data-ng-include="'../views/templates/barnetillegg/barnetilleggSporsmalTemplate.html'"></div>
+            </div>
+
         </div>
 
 
         <div class="knapper-opprett">
             <input class="knapp-hoved-liten" name="lagre" type="submit"
                    value="{{ 'barnetillegg.nyttbarn.lagre' | cmstekst }}"
-                   data-ng-click="lagreBarn(nyttBarnForm);">
+                   data-ng-click="lagreBarn(nyttBarnForm);"
+                   data-fremdriftsindikator>
 
             <a href="#/soknad" data-ng-click="avbrytBarnetilegg($event)">
                 {{ 'barnetillegg.nyttbarn.avbryt' | cmstekst }}

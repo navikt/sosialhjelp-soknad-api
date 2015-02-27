@@ -4,10 +4,10 @@ import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosLandService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.LandService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.IkkeFunnetException;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonConnector;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
@@ -26,6 +26,7 @@ import java.util.List;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.ALDER_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.EPOST_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.ER_UTENLANDSK_BANKKONTO;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.FNR_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_GYLDIGFRA_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_GYLDIGTIL_KEY;
@@ -33,6 +34,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_LANDKODE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_TYPE_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.KJONN_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.KONTONUMMER_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.NAVN_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.SEKUNDARADRESSE_GYLDIGFRA_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.SEKUNDARADRESSE_GYLDIGTIL_KEY;
@@ -40,6 +42,8 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.SEKUNDARADRESSE_TYPE_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.STATSBORGERSKAPTYPE_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.STATSBORGERSKAP_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.UTENLANDSK_KONTO_BANKNAVN;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.UTENLANDSK_KONTO_LAND;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
@@ -47,16 +51,17 @@ public class DefaultPersonaliaService implements PersonaliaService {
 
     private static final Logger logger = getLogger(DefaultPersonaliaService.class);
     @Inject
-    @Named("brukerProfilService")
+    @Named("brukerProfilEndpoint")
     private BrukerprofilPortType brukerProfil;
     @Inject
-    private PersonConnector personConnector;
+    private PersonService personService;
     @Inject
     private Kodeverk kodeverk;
     @Inject
-    private SendSoknadService soknadService;
+    private LandService eosLandService;
+
     @Inject
-    private EosLandService eosLandService;
+    private FaktaService faktaService;
 
 
     @Override
@@ -65,7 +70,7 @@ public class DefaultPersonaliaService implements PersonaliaService {
         HentKjerneinformasjonResponse kjerneinformasjonResponse;
 
         try {
-            kjerneinformasjonResponse = personConnector.hentKjerneinformasjon(lagXMLRequestKjerneinformasjon(fodselsnummer));
+            kjerneinformasjonResponse = personService.hentKjerneinformasjon(lagXMLRequestKjerneinformasjon(fodselsnummer));
             preferanserResponse = brukerProfil.hentKontaktinformasjonOgPreferanser(lagXMLRequestPreferanser(fodselsnummer));
         } catch (IkkeFunnetException | HentKontaktinformasjonOgPreferanserPersonIkkeFunnet e) {
             logger.error("Ikke funnet person i TPS", e);
@@ -89,7 +94,7 @@ public class DefaultPersonaliaService implements PersonaliaService {
         HentKjerneinformasjonResponse kjerneinformasjonResponse;
 
         try {
-            kjerneinformasjonResponse = personConnector.hentKjerneinformasjon(lagXMLRequestKjerneinformasjon(fodselsnummer));
+            kjerneinformasjonResponse = personService.hentKjerneinformasjon(lagXMLRequestKjerneinformasjon(fodselsnummer));
             preferanserResponse = brukerProfil.hentKontaktinformasjonOgPreferanser(lagXMLRequestPreferanser(fodselsnummer));
         } catch (IkkeFunnetException e) {
             logger.warn("Ikke funnet person i TPS");
@@ -121,6 +126,10 @@ public class DefaultPersonaliaService implements PersonaliaService {
 
         Faktum personaliaFaktum = new Faktum().medSoknadId(soknadId).medKey("personalia")
                 .medSystemProperty(FNR_KEY, personalia.getFnr())
+                .medSystemProperty(KONTONUMMER_KEY, personalia.getKontonummer())
+                .medSystemProperty(ER_UTENLANDSK_BANKKONTO, personalia.getErUtenlandskBankkonto().toString())
+                .medSystemProperty(UTENLANDSK_KONTO_BANKNAVN, personalia.getUtenlandskKontoBanknavn())
+                .medSystemProperty(UTENLANDSK_KONTO_LAND, personalia.getUtenlandskKontoLand())
                 .medSystemProperty(ALDER_KEY, personalia.getAlder())
                 .medSystemProperty(NAVN_KEY, personalia.getNavn())
                 .medSystemProperty(EPOST_KEY, personalia.getEpost())
@@ -137,7 +146,7 @@ public class DefaultPersonaliaService implements PersonaliaService {
                 .medSystemProperty(SEKUNDARADRESSE_GYLDIGFRA_KEY, personalia.getSekundarAdresse().getGyldigFra())
                 .medSystemProperty(SEKUNDARADRESSE_GYLDIGTIL_KEY, personalia.getSekundarAdresse().getGyldigTil());
 
-        soknadService.lagreSystemFaktum(soknadId, personaliaFaktum, "fnr");
+        faktaService.lagreSystemFaktum(soknadId, personaliaFaktum, "fnr");
     }
 
     private void lagreBarn(Long soknadId, List<Barn> barneliste) {
@@ -152,7 +161,7 @@ public class DefaultPersonaliaService implements PersonaliaService {
                     .medSystemProperty("kjonn", barn.getKjonn())
                     .medSystemProperty("alder", barn.getAlder().toString())
                     .medSystemProperty("land", barn.getLand());
-            soknadService.lagreSystemFaktum(soknadId, barneFaktum, "fnr");
+            faktaService.lagreSystemFaktum(soknadId, barneFaktum, "fnr");
         }
     }
 

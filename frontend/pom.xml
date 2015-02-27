@@ -6,15 +6,15 @@
     <parent>
         <groupId>no.nav.sbl.dialogarena</groupId>
         <artifactId>sendsoknad</artifactId>
-        <version>2.1.7</version>
+        <version>3.0.14</version>
     </parent>
 
     <artifactId>sendsoknad-frontend</artifactId>
-    <version>2.1.7</version>
+    <version>3.0.14</version>
     <name>${project.artifactId}</name>
     <packaging>jar</packaging>
     <properties>
-        <grunttarget>maven-prod</grunttarget>
+        <grunttarget>prod</grunttarget>
     </properties>
 
 	<build>

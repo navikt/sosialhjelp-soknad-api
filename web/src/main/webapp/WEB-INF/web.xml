@@ -27,6 +27,7 @@
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
+
     <listener>
         <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
     </listener>
@@ -38,9 +39,8 @@
 
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>no.nav.sbl.dialogarena.websoknad.config.SoknadinnsendingContext</param-value>
+        <param-value>no.nav.sbl.dialogarena.websoknad.config.SoknadinnsendingConfig</param-value>
     </context-param>
-
 
     <filter>
         <filter-name>MDCFilter</filter-name>
@@ -51,6 +51,7 @@
         <filter-name>MDCFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
+
     <filter>
         <filter-name>SecurityHeaderFilter</filter-name>
         <filter-class>no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.HeaderFilter</filter-class>
@@ -67,13 +68,13 @@
     </filter>
     <filter-mapping>
         <filter-name>decoratorFilter</filter-name>
-        <url-pattern>/start/*</url-pattern>
-        <url-pattern>/soknad/*</url-pattern>
+        <url-pattern>/skjema/*</url-pattern>
+        <url-pattern>/NAV04-01.03/*</url-pattern>
+        <url-pattern>/NAV04-16.03/*</url-pattern>
+        <url-pattern>/utslagskriterier/*</url-pattern>
         <url-pattern>/startettersending/*</url-pattern>
-        <url-pattern>/ettersending/*</url-pattern>
         <url-pattern>/avbrutt/*</url-pattern>
         <url-pattern>/ettersending/*</url-pattern>
-        <url-pattern>/xmltopdf/*</url-pattern>
         <url-pattern>/soknadliste/*</url-pattern>
         <url-pattern>/internal/*</url-pattern>
     </filter-mapping>
@@ -102,6 +103,12 @@
             <param-value>deployment</param-value>
         </init-param>
     </filter>
+    <filter-mapping>
+        <filter-name>wicket</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>ERROR</dispatcher>
+    </filter-mapping>
 
     <filter>
         <filter-name>charEncodingFilter</filter-name>
@@ -116,14 +123,6 @@
             <param-value>true</param-value>
         </init-param>
     </filter>
-
-    <filter-mapping>
-        <filter-name>wicket</filter-name>
-        <url-pattern>/*</url-pattern>
-        <dispatcher>REQUEST</dispatcher>
-        <dispatcher>ERROR</dispatcher>
-    </filter-mapping>
-
     <filter-mapping>
         <filter-name>charEncodingFilter</filter-name>
         <url-pattern>/*</url-pattern>
@@ -138,7 +137,7 @@
         </init-param>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>no.nav.sbl.dialogarena.websoknad.servlet.ServletContext</param-value>
+            <param-value>no.nav.sbl.dialogarena.websoknad.servlet.ServletConfig</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
         <async-supported>true</async-supported>
@@ -147,6 +146,7 @@
         <servlet-name>soknadBacking</servlet-name>
         <url-pattern>/rest/*</url-pattern>
     </servlet-mapping>
+
     <error-page>
         <error-code>401</error-code>
         <location>/feilsider/401.html</location>
@@ -166,6 +166,7 @@
         <error-code>500</error-code>
         <location>/feilsider/500.html</location>
     </error-page>
+
     <resource-ref>
         <res-ref-name>jdbc/SoknadInnsendingDS</res-ref-name>
         <res-type>javax.sql.DataSource</res-type>

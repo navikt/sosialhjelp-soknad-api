@@ -32,10 +32,13 @@ public class FortsettSenereController {
     @Named("navMessageSource")
     private MessageSource messageSource;
 
-    @RequestMapping(value = "/{behandlingId}/fortsettsenere", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/{soknadId}/{behandlingId}/fortsettsenere", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
     @ResponseBody()
-    public void sendEpost(HttpServletRequest request, @PathVariable String behandlingId, @RequestBody FortsettSenere epost) {
-        String content = messageSource.getMessage("fortsettSenere.sendEpost.epostInnhold", new Object[]{getGjenopptaUrl(request.getRequestURL().toString(), behandlingId)}, new Locale("nb", "NO"));
-        emailService.sendFortsettSenereEPost(epost.getEpost(), "Lenke til påbegynt dagpengesøknad", content);
+    public void sendEpost(HttpServletRequest request, @PathVariable String soknadId, @PathVariable String behandlingId, @RequestBody FortsettSenere epost) {
+        String content = messageSource.getMessage("fortsettSenere.sendEpost.epostInnhold",
+                new Object[]{getGjenopptaUrl(request.getRequestURL().toString(), soknadId, behandlingId)}, new Locale("nb", "NO"));
+        String subject = messageSource.getMessage("fortsettSenere.sendEpost.epostTittel", null, new Locale("nb", "NO"));
+
+        emailService.sendEpost(epost.getEpost(), subject, content, behandlingId);
     }
 }

@@ -1,21 +1,44 @@
 angular.module('nav.bekreftelse', [])
     /* Er avhengig av at søknadsoppsett er hentet før vi kommer til denne kontrolleren, da temakode blir hentet sånn
-       Henter ikke for bekreftelsessiden siden man bare skal videresendes hit, og siden det blir krøll på backend
-    */
-    .controller('BekreftelsesCtrl', function ($scope, config, $window, $timeout, $routeParams, $rootElement, data) {
+     Henter ikke for bekreftelsessiden siden man bare skal videresendes hit, og siden det blir krøll på backend
+     */
+    .controller('BekreftelsesCtrl', function ($scope, $window, $timeout, $rootElement, data, bekreftelseEpostService, $location) {
         var appName = $rootElement.attr('data-ng-app');
-        $scope.tekst = {
-            tittelKey: 'dagpenger.bekreftelse',
-            informasjonsKey: 'dagpenger.bekreftelse.informasjon'
-        };
-
-        if (appName === 'ettersending') {
-            $scope.tekst.tittelKey = 'ettersending.bekreftelse';
-            $scope.tekst.informasjonsKey = 'ettersending.bekreftelse.informasjon';
+        
+        if(data.fakta === undefined) {
+            $location.path("/feilside/soknadikkefunnet");
+            return false;
         }
 
-        $timeout(function() {
-            var saksoversiktBaseUrl = config['saksoversikt.link.url'];
-            $window.location.href = saksoversiktBaseUrl + '/detaljer/' + data.soknadOppsett.temaKode + '/' + $routeParams.behandlingsId;
-        }, 5000);
+        $scope.epost = data.finnFaktum('epost');
+        if(!$scope.epost) {
+            $scope.epost = {value: data.finnFaktum('personalia').properties.epost};
+        }
+
+        $scope.cmsprefix = {value: appName};
+        $scope.sendtEpost = {value: false};
+        $scope.fullfort = {value: false};
+        $scope.fremdriftsindikator = {laster: false };
+        $scope.erEttersendelse = {value: false};
+        var brukerBehandlingId = data.soknad.brukerBehandlingId;
+
+        $scope.sendEpost = function (form) {
+            $scope.temaKode = {value: data.soknadOppsett.temaKode};
+
+            if (form.$valid) {
+                if($scope.epost.value) {
+                    $scope.sendtEpost.value = true;
+                }
+                $scope.fullfort.value = true;
+                $scope.fremdriftsindikator.laster = true;
+
+                new bekreftelseEpostService({epost: $scope.epost.value, temaKode: $scope.temaKode.value, erEttersendelse: $scope.erEttersendelse.value}).$send({behandlingId: brukerBehandlingId}).then(function () {
+                    $timeout(function() {
+                        var saksoversiktBaseUrl = data.config['saksoversikt.link.url'];
+
+                        redirectTilUrl(saksoversiktBaseUrl + '/detaljer/' + $scope.temaKode.value + '/' + brukerBehandlingId);
+                    }, 3000);
+                });
+            }
+        };
     });

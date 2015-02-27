@@ -24,6 +24,7 @@ public class Vedlegg {
     private Long soknadId;
     private Long faktumId;
     private String skjemaNummer;
+    private String skjemanummerTillegg;
     private Status innsendingsvalg;
     private Status opprinneligInnsendingsvalg;
     private String navn = "";
@@ -34,7 +35,7 @@ public class Vedlegg {
     private String fillagerReferanse = UUID.randomUUID().toString();
     private Map<String, String> urls = new HashMap<>();
     private String tittel;
-
+    private String aarsak;
 
     public Vedlegg() {
     }
@@ -63,6 +64,11 @@ public class Vedlegg {
 
     public Vedlegg medSkjemaNummer(String skjemaNummer) {
         setSkjemaNummer(skjemaNummer);
+        return this;
+    }
+
+    public Vedlegg medSkjemanummerTillegg(String tillegg) {
+        setSkjemanummerTillegg(tillegg);
         return this;
     }
 
@@ -106,6 +112,11 @@ public class Vedlegg {
         return this;
     }
 
+    public Vedlegg medAarsak(String aarsak) {
+        this.setAarsak(aarsak);
+        return this;
+    }
+
     public Vedlegg medInnsendingsvalg(Status innsendingsvalg) {
         this.innsendingsvalg = innsendingsvalg;
         return this;
@@ -116,9 +127,18 @@ public class Vedlegg {
         return this;
     }
 
+    public String getAarsak() {
+        return this.aarsak;
+    }
+
+    public void setAarsak(String aarsak) {
+        this.aarsak = aarsak;
+    }
+
     public Status getOpprinneligInnsendingsvalg() {
         return opprinneligInnsendingsvalg;
     }
+
 
     public void setOpprinneligInnsendingsvalg(Status opprinneligInnsendingsvalg) {
         this.opprinneligInnsendingsvalg = opprinneligInnsendingsvalg;
@@ -140,10 +160,10 @@ public class Vedlegg {
         this.soknadId = soknadId;
     }
 
-
     public void setFaktumId(Long faktumId) {
         this.faktumId = faktumId;
     }
+
 
     public void setStorrelse(Long storrelse) {
         this.storrelse = storrelse;
@@ -189,6 +209,14 @@ public class Vedlegg {
         this.skjemaNummer = skjemaNummer;
     }
 
+    public String getSkjemanummerTillegg() {
+        return this.skjemanummerTillegg;
+    }
+
+    public void setSkjemanummerTillegg(String tillegg) {
+        this.skjemanummerTillegg = tillegg;
+    }
+
     public String getFillagerReferanse() {
         return fillagerReferanse;
     }
@@ -229,6 +257,7 @@ public class Vedlegg {
                 .append(this.antallSider, rhs.antallSider)
                 .append(this.data, rhs.data)
                 .append(this.fillagerReferanse, rhs.fillagerReferanse)
+                .append(this.aarsak, rhs.aarsak)
                 .isEquals();
     }
 
@@ -244,6 +273,7 @@ public class Vedlegg {
                 .append(antallSider)
                 .append(data)
                 .append(fillagerReferanse)
+                .append(aarsak)
                 .toHashCode();
     }
 
@@ -259,6 +289,7 @@ public class Vedlegg {
                 .append("antallSider", antallSider)
                 .append("data", data)
                 .append("fillagerReferanse", fillagerReferanse)
+                .append("aarsak", aarsak)
                 .toString();
     }
 
@@ -301,23 +332,9 @@ public class Vedlegg {
         }
     }
 
-    public String getSkjemaNummerFiltrert() {
-        if (getSkjemaNummer() != null && getSkjemaNummer().contains("|")) {
-            return getSkjemaNummer().substring(0, getSkjemaNummer().indexOf("|"));
-        }
-        return getSkjemaNummer();
-    }
-
     @JsonIgnore
     public String lagFilNavn() {
-        return getSkjemaNummer().equals("N6") ? getNavn() : getSkjemaNummerFiltrert();
-    }
-
-    public String getSkjemanummerTillegg() {
-        if (getSkjemaNummer() != null && getSkjemaNummer().contains("|")) {
-            return getSkjemaNummer().substring(getSkjemaNummer().indexOf("|") + 1, getSkjemaNummer().length());
-        }
-        return "";
+        return getSkjemaNummer().equals("N6") ? getNavn() : getSkjemaNummer();
     }
 
     public static final Predicate<Vedlegg> ER_ANNET_VEDLEGG = new Predicate<Vedlegg>() {
@@ -346,7 +363,8 @@ public class Vedlegg {
         VedleggSendesAvAndre(3),
         SendesSenere(4),
         LastetOpp(5),
-        UnderBehandling(6);
+        UnderBehandling(6),
+        VedleggAlleredeSendt(7);
 
         private int prioritet;
         private Status(int prioritet) {

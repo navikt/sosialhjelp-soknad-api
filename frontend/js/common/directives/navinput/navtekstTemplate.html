@@ -3,14 +3,10 @@
     <label>
         <span class="labeltekst" data-ng-bind-html=" navlabel | cmstekst"></span>
         <input type="text"
+               maxlength="250"
                data-ng-required="true"
                data-ng-model="faktum.value"
                data-error-messages="{{ navfeilmelding }}"
-               data-ng-pattern="{{ regexvalidering }}"
-               data-ng-minlength="{{ navminlength }}"
-               data-ng-maxlength="{{ navmaxlength }}"
-               minlength="{{ navminlength }}"
-               maxlength="{{ navmaxlength }}"
                data-blur-validate
                data-tekstfelt-patternvalidering
                data-aktiv-feilmelding/>

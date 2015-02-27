@@ -21,14 +21,18 @@ angular.module('nav.fokus', [])
             link: function (scope, elm, attrs) {
                 var id = attrs.fokusSlettmoduler;
                 elm.bind("click", function () {
-                    angular.element("#" + id + " .knapp-leggtil-liten").focus();
+                    if(id) {
+                        angular.element("#" + id + " .knapp-leggtil-liten").focus();
+                    } else {
+                        angular.element(".knapp-leggtil-liten").focus();
+                    }
                 });
             }
         };
     }])
     .directive('fokusSlettAnnet', [function () {
         return {
-            link: function (scope, elm, attrs) {
+            link: function (scope, elm) {
                 elm.bind("click", function () {
                     angular.element(".knapp-stor").focus();
                 });
@@ -37,7 +41,7 @@ angular.module('nav.fokus', [])
     }])
     .directive('leggtilOrgnr', [function () {
         return {
-            link: function (scope, elm, attrs) {
+            link: function (scope, elm) {
                 elm.bind("click", function () {
                     elm.prev().find('.orgnummer-repeat input').focus();
                 });

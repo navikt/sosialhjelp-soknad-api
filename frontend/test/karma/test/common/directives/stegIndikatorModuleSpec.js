@@ -1,7 +1,7 @@
 describe('stegindikator', function () {
     var element, scope;
 
-    beforeEach(module('nav.stegindikator', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.stegindikator', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
@@ -45,7 +45,7 @@ describe('stegindikator', function () {
 describe('stegindikatorUtfyllingErStartet', function () {
     var element, scope;
 
-    beforeEach(module('nav.stegindikator', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.stegindikator', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
@@ -79,7 +79,7 @@ describe('stegindikatorUtfyllingErStartet', function () {
 describe('stegindikatorUtfyllingErStartet', function () {
     var element, scope;
 
-    beforeEach(module('nav.stegindikator', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.stegindikator', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
@@ -113,7 +113,7 @@ describe('stegindikatorUtfyllingErStartet', function () {
 describe('stegindikatorUtfyllingErStartet', function () {
     var element, scope;
 
-    beforeEach(module('nav.stegindikator', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.stegindikator', 'nav.cms', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});

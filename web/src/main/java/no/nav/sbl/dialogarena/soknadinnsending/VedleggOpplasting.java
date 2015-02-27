@@ -5,9 +5,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
-/**
- * Klasse for å returnere et resultat av en opplasting
- */
 @XmlRootElement
 public class VedleggOpplasting {
     private List<Vedlegg> files;

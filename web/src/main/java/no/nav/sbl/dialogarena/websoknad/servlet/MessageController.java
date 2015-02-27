@@ -20,7 +20,6 @@ public class MessageController {
 
     private boolean tvingNorsk = true;
 
-    // TODO: Endre URL til å ikke inneholde enonic
     @RequestMapping(value = "/enonic/{side}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public Properties hentTekster(@PathVariable String side, Locale locale) {

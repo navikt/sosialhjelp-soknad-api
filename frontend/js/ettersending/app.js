@@ -8,5 +8,9 @@ angular.module('ettersending', [
     'ngAnimate',
     'ngCookies',
     'ngSanitize',
-    'templates-ettersending'
+    'templates-main',
+    'nav.cms',
+    'nav.personalia',
+    'nav.scroll',
+    'nav.vedlegg'
 ]);

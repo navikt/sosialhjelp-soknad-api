@@ -62,40 +62,6 @@ public class SoknadTpsDataControllerTest {
     }
 
     @Test
-    public void skalHenteLandkoder() throws Exception {
-        when(kodeverk.getAlleLandkoder()).thenReturn(Arrays.asList("SE", "IS", "PL", "NOR"));
-        when(kodeverk.getLand("SE")).thenReturn("Sverige");
-        when(kodeverk.getLand("IS")).thenReturn("Island");
-        when(kodeverk.getLand("PL")).thenReturn("Polen");
-        when(kodeverk.getLand("NOR")).thenReturn("Norge");
-
-        mockMvc.perform(get("/soknad/kodeverk/landliste", "1234"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("result[0].text").value("Sverige"))
-                .andExpect(jsonPath("result[0].value").value("SE"))
-                .andExpect(jsonPath("result[1].text").value("Island"))
-                .andExpect(jsonPath("result[1].value").value("IS"))
-                .andExpect(jsonPath("result[2].text").value("Polen"))
-                .andExpect(jsonPath("result[2].value").value("PL"))
-                .andExpect(jsonPath("result[3].text").value("Norge"))
-                .andExpect(jsonPath("result[3].value").value("NOR"));
-        verify(kodeverk).getAlleLandkoder();
-    }
-
-    @Test
-    public void skalLeggeTilNorge() throws Exception {
-        when(kodeverk.getAlleLandkoder()).thenReturn(Arrays.asList("SE"));
-        when(kodeverk.getLand("SE")).thenReturn("Sverige");
-        mockMvc.perform(get("/soknad/kodeverk/landliste", "1234"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("result[0].text").value("Sverige"))
-                .andExpect(jsonPath("result[0].value").value("SE"))
-                .andExpect(jsonPath("result[1].text").value("Norge"))
-                .andExpect(jsonPath("result[1].value").value("NOR"));
-        verify(kodeverk).getAlleLandkoder();
-    }
-
-    @Test
     public void skalLagrePersonalia() throws Exception {
         mockMvc.perform(post("/soknad/personalia/11").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());

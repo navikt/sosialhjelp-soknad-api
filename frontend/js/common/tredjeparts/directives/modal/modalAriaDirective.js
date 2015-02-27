@@ -7,7 +7,7 @@ angular.module('nav.modal.aria', [])
             var descriptionElement = header.next();
 
             if (header.attr('id')) {
-                element.attr('data-aria-labelledby', header.attr('id'));
+                element.attr('aria-labelledby', header.attr('id'));
             } else {
                 header.attr('id', defaultLabelledby);
             }

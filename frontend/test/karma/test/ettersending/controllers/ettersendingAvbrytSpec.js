@@ -2,7 +2,7 @@
     'use strict';
 
     describe('Avbryt ettersending-controller', function () {
-        var scope, ctrl, httpBackend, timeout, vedlegg;
+        var scope, ctrl, httpBackend, timeout, vedlegg, location;
         var soknadId = 1;
         var saksoversiktUrl = 'minehenvendelser';
         beforeEach(module('nav.services.ettersending', 'nav.ettersending.controllers.avbryt', 'ngResource'));
@@ -10,6 +10,7 @@
         beforeEach(function () {
             window.redirectTilSide = jasmine.createSpy('Redirect spy');
             window.redirectTilUrl = jasmine.createSpy('Redirect URL spy');
+            location = {path: jasmine.createSpy("Redirect angular-path spy")};
         });
 
         beforeEach(module(function ($provide) {
@@ -21,6 +22,7 @@
                     'saksoversikt.link.url': saksoversiktUrl
                 }
             });
+            $provide.value("$location", location);
         }));
 
         beforeEach(inject(function ($controller, $rootScope, data) {
@@ -120,7 +122,7 @@
             scope.slettEttersending();
             httpBackend.flush();
             timeout.flush();
-            expect(window.redirectTilSide).toHaveBeenCalledWith('/sendsoknad/ettersending/avbrutt');
+            expect(location.path).toHaveBeenCalledWith('/avbrutt');
         });
     });
 }());
