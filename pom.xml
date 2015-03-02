@@ -12,6 +12,7 @@
         <module>config</module>
         <module>business</module>
         <module>consumer</module>
+        <module>dialogselftest</module>
         <module>web</module>
         <module>jee</module>
         <module>mock</module>
@@ -93,6 +94,11 @@
             </dependency>
 
             <!-- Avhengigheter med scope compile -->
+            <dependency>
+                <groupId>org.json</groupId>
+                <artifactId>json</artifactId>
+                <version>20140107</version>
+            </dependency>
             <dependency>
                 <groupId>org.glassfish.jersey.ext</groupId>
                 <artifactId>jersey-spring3</artifactId>
@@ -704,6 +710,12 @@
                 <artifactId>common-jetty</artifactId>
                 <version>1.0.23</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-jaas</artifactId>
+                <scope>test</scope>
+                <version>9.0.5.***REMOVED***15</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>
