@@ -89,7 +89,7 @@ public class SelfTest {
         }
     }
 
-    private class SelfTestHTML {
+    private static class SelfTestHTML {
 
         private String title;
         private String newLine = System.getProperty("line.separator");
@@ -102,11 +102,11 @@ public class SelfTest {
         }
 
         public String buildPage() {
-            String header = buildHeader();
-            String body = buildBody();
+            String newHeader = buildHeader();
+            String newBody = buildBody();
             String footer = buildFooter();
 
-            return header + style + body + footer;
+            return newHeader + style + newBody + footer;
         }
 
         private String buildStyle() {

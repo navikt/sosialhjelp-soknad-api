@@ -100,12 +100,12 @@ public class HandleBarKjoerer implements HtmlGenerator {
             public CharSequence apply(String adresse, Options options) throws IOException {
                 String[] adresselinjer = adresse.split("\n");
 
-                String resultAdresse = "";
+                StringBuilder resultAdresse = new StringBuilder();
                 for (String adresselinje : adresselinjer) {
-                    resultAdresse += "<p>" + adresselinje + "</p>";
+                    resultAdresse.append("<p>").append(adresselinje).append("</p>");
                 }
 
-                return resultAdresse;
+                return resultAdresse.toString();
             }
         };
     }

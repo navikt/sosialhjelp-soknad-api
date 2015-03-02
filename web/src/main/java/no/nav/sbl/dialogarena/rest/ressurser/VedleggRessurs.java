@@ -85,14 +85,15 @@ public class VedleggRessurs {
     @SjekkTilgangTilSoknad
     public List<Vedlegg> lastOppFiler(@PathParam("vedleggId") final Long vedleggId, @QueryParam("behandlingsId") String behandlingsId,
                                         @FormDataParam("files[]") final List<FormDataBodyPart> files) {
+        String id = behandlingsId;
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId);
         if (soknad.getBehandlingskjedeId() != null) {
-            behandlingsId = soknad.getBehandlingskjedeId();
+            id = soknad.getBehandlingskjedeId();
         }
 
         Vedlegg forventning = vedleggService.hentVedlegg(vedleggId, false);
 
-        if (erFilForStor(behandlingsId, files, forventning)) {
+        if (erFilForStor(id, files, forventning)) {
             throw new OpplastingException("Kunne ikke lagre fil fordi total filstørrelse er for stor", null,
                     "vedlegg.opplasting.feil.forStor");
         }
@@ -114,8 +115,8 @@ public class VedleggRessurs {
                     .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
 
             List<Long> ids = vedleggService.splitOgLagreVedlegg(vedlegg, new ByteArrayInputStream(in));
-            for (Long id : ids) {
-                res.add(vedleggService.hentVedlegg(id, false));
+            for (Long vedleggsId : ids) {
+                res.add(vedleggService.hentVedlegg(vedleggsId, false));
             }
         }
         return res;
