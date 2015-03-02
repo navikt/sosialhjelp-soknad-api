@@ -104,7 +104,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
                         soknad.getBrukerBehandlingId(),
                         soknad.getskjemaNummer(),
                         soknad.getAktoerId(),
-                        new Date(soknad.getOpprettetDato()),
+                        soknad.getOpprettetDato().toDate(),
                         soknad.getStatus().name(),
                         soknad.getDelstegStatus().name(),
                         soknad.getBehandlingskjedeId(),
