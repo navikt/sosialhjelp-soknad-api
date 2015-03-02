@@ -59,12 +59,8 @@ public class WebSoknad implements Serializable {
                 .medOppretteDato(DateTime.now());
     }
 
-    public Long getSistLagret() {
-        if (sistLagret != null) {
-            return sistLagret.getMillis();
-        } else {
-            return null;
-        }
+    public DateTime getSistLagret() {
+        return sistLagret;
     }
 
     public String getJournalforendeEnhet() {
@@ -207,8 +203,8 @@ public class WebSoknad implements Serializable {
         return this;
     }
 
-    public Long getOpprettetDato() {
-        return opprettetDato.getMillis();
+    public DateTime getOpprettetDato() {
+        return opprettetDato;
     }
 
     public WebSoknad medId(long id) {
