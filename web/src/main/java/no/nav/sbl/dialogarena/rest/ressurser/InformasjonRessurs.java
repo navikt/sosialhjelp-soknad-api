@@ -50,9 +50,7 @@ public class InformasjonRessurs {
     @GET
     @Path("/miljovariabler")
     public Map<String, String> hentMiljovariabler() {
-        logger.info("==================Begynner å hente miljøvariabler fra enonic til JS-app");
         Map<String, String> stringStringMap = informasjon.hentMiljovariabler();
-        logger.info("==================Ferdig med å hente tekster fra enonic til JS-app");
         return stringStringMap;
 
     }
@@ -82,9 +80,7 @@ public class InformasjonRessurs {
     @GET
     @Path("/tekster")
     public Properties hentTekster(@QueryParam("type") String type, @QueryParam("sprak") String sprak) {
-        logger.info("==================Begynner å hente tekster fra enonic til JS-app");
         Properties properties = messageSource.getBundleFor(type, new Locale("nb", "NO"));
-        logger.info("==================Ferdig med å hente tekster fra enonic til JS-app");
         return properties;
     }
 
