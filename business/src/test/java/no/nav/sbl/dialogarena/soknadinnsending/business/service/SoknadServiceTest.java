@@ -102,8 +102,10 @@ public class SoknadServiceTest {
     public void skalPopulereFraHenvendelseNaarSoknadIkkeFinnes() throws IOException {
         Vedlegg vedlegg = new Vedlegg().medVedleggId(4L).medFillagerReferanse("uidVedlegg");
         Vedlegg vedleggCheck = new Vedlegg().medVedleggId(4L).medFillagerReferanse("uidVedlegg").medData(new byte[]{1, 2, 3});
-        WebSoknad soknad = new WebSoknad().medBehandlingId("123").medId(11L).medVedlegg(Arrays.asList(vedlegg)).medStatus(UNDER_ARBEID);
-        WebSoknad soknadCheck = new WebSoknad().medBehandlingId("123").medId(11L).medVedlegg(Arrays.asList(vedleggCheck));
+        WebSoknad soknad = new WebSoknad().medBehandlingId("123").medskjemaNummer("NAV 04-01.03").medId(11L)
+                .medVedlegg(Arrays.asList(vedlegg)).medStatus(UNDER_ARBEID);
+        WebSoknad soknadCheck = new WebSoknad().medBehandlingId("123").medskjemaNummer("NAV 04-01.03").medId(11L)
+                .medVedlegg(Arrays.asList(vedleggCheck));
 
         when(henvendelsesConnector.hentSoknad("123")).thenReturn(
                 new WSHentSoknadResponse()
@@ -250,9 +252,9 @@ public class SoknadServiceTest {
 
     @Test
     public void skalHenteSoknad() {
-        when(soknadRepository.hentSoknadMedData(1L)).thenReturn(new WebSoknad().medId(1L));
+        when(soknadRepository.hentSoknadMedData(1L)).thenReturn(new WebSoknad().medId(1L).medskjemaNummer("NAV 04-01.03"));
         when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(new ArrayList<Vedlegg>());
-        assertThat(soknadService.hentSoknadMedFaktaOgVedlegg(1L), is(equalTo(new WebSoknad().medId(1L).medVedlegg(new ArrayList<Vedlegg>()))));
+        assertThat(soknadService.hentSoknadMedFaktaOgVedlegg(1L), is(equalTo(new WebSoknad().medId(1L).medskjemaNummer("NAV 04-01.03").medVedlegg(new ArrayList<Vedlegg>()))));
     }
 
     @Test
