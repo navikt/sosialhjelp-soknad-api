@@ -40,6 +40,8 @@ public class InformasjonService {
     private String antallDager;
     @Value("${dialogarena.cms.url}")
     private String appresUrl;
+    @Value("${dialoginnsending.url}")
+    private String dialoginnsendingUrl;
 
     public Map<String,String> hentMiljovariabler() {
         Map<String, String> result = new HashMap<>();
@@ -53,6 +55,7 @@ public class InformasjonService {
         result.put("soknad.dagpengerbrosjyre.url", dagpengerBrosjyreUrl);
         result.put("soknad.brukerprofil.url", brukerProfilUrl);
         result.put("dialogarena.cms.url", appresUrl);
+        result.put("dialoginnsending.url", dialoginnsendingUrl);
 
         result.put("soknad.ettersending.antalldager", antallDager);
 
