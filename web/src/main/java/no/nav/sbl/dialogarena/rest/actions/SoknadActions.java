@@ -22,6 +22,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import java.io.IOException;
 import java.util.Locale;
+import java.util.Map;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.websoknad.servlet.UrlUtils.getEttersendelseUrl;
@@ -85,6 +86,7 @@ public class SoknadActions {
     //TODO: trenger man å wrappe epost i eget objekt?
     @POST
     @Path("/fortsettsenere")
+    @SjekkTilgangTilSoknad
     public void sendEpost(@PathParam("behandlingsId") String behandlingsId, FortsettSenere epost, @Context HttpServletRequest request) {
         String content = messageSource.getMessage("fortsettSenere.sendEpost.epostInnhold",
                 new Object[]{getGjenopptaUrl(request.getRequestURL().toString(), behandlingsId)}, new Locale("nb", "NO"));
@@ -95,6 +97,7 @@ public class SoknadActions {
 
     @POST
     @Path("/bekreftinnsending")
+    @SjekkTilgangTilSoknad
     public void sendEpost(@PathParam("behandlingsId") String behandlingsId, SoknadBekreftelse soknadBekreftelse, @Context HttpServletRequest request) {
         if (soknadBekreftelse.getEpost() != null && !soknadBekreftelse.getEpost().isEmpty()) {
             String subject = messageSource.getMessage("sendtSoknad.sendEpost.epostSubject", null, new Locale("nb", "NO"));
@@ -110,6 +113,13 @@ public class SoknadActions {
         } else {
             logger.debug("Fant ingen epostadresse");
         }
+    }
+
+    @GET
+    @Path("/sisteinnsending")
+    @SjekkTilgangTilSoknad
+    public Map<String, String> finnSisteInnsending(@PathParam("behandlingsId") String behandlingsId) {
+        return soknadService.hentInnsendtDatoOgSisteInnsending(behandlingsId);
     }
 
     private byte[] genererPdfMedKodeverksverdier(WebSoknad soknad, String hbsSkjemaPath) {

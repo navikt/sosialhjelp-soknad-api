@@ -96,8 +96,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         if (soknad == null) {
             soknad = hentFraHenvendelse(behandlingsId, false);
         }
-        soknad.medSoknadPrefix(getSoknadPrefix(soknad.getskjemaNummer()))
-                .medSoknadUrl(getSoknadUrl(soknad.getskjemaNummer()));
+        soknad.medSoknadPrefix(getSoknadPrefix(soknad.getskjemaNummer())).medSoknadUrl(getSoknadUrl(soknad.getskjemaNummer()));
         return soknad;
     }
 
@@ -106,8 +105,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         if (soknad == null) {
             soknad = hentFraHenvendelse(behandlingsId, true);
         }
-        soknad.medSoknadPrefix(getSoknadPrefix(soknad.getskjemaNummer()))
-                .medSoknadUrl(getSoknadUrl(soknad.getskjemaNummer()));
+        soknad.medSoknadPrefix(getSoknadPrefix(soknad.getskjemaNummer())).medSoknadUrl(getSoknadUrl(soknad.getskjemaNummer()));
         return soknad;
     }
 
@@ -163,32 +161,16 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         }
     }
 
-    //TODO: kan man hente samme informasjon fra soknad, eller trenger man denne shortcuten?  rest-url "/behandlingmetadata/{behandlingsId}"
     @Override
-    public Map<String, String> hentInnsendtDatoForOpprinneligSoknad(String behandlingsId) {
+    public Map<String, String> hentInnsendtDatoOgSisteInnsending(String behandlingsId) {
         Map<String, String> result = new HashMap<>();
         List<WSBehandlingskjedeElement> wsBehandlingskjedeElements = henvendelseService.hentBehandlingskjede(behandlingsId);
-        List<WSBehandlingskjedeElement> sorterteBehandlinger = on(wsBehandlingskjedeElements).filter(
-                where(STATUS, (equalTo(SoknadInnsendingStatus.FERDIG)))).collect(new Comparator<WSBehandlingskjedeElement>() {
-            @Override
-            public int compare(WSBehandlingskjedeElement o1, WSBehandlingskjedeElement o2) {
-                DateTime dato1 = o1.getInnsendtDato();
-                DateTime dato2 = o2.getInnsendtDato();
-
-                if (dato1 == null && dato2 == null) {
-                    return 0;
-                } else if (dato1 == null) {
-                    return 1;
-                } else if (dato2 == null) {
-                    return -1;
-                }
-                return dato1.compareTo(dato2);
-            }
-        });
+        List<WSBehandlingskjedeElement> sorterteBehandlinger =
+                on(wsBehandlingskjedeElements).filter(where(STATUS, (equalTo(SoknadInnsendingStatus.FERDIG)))).collect(SORTER_INNSENDT_DATO);
 
         WSBehandlingskjedeElement innsendtSoknad = sorterteBehandlinger.get(0);
-        result.put("innsendtdato", String.valueOf(innsendtSoknad.getInnsendtDato().getMillis()));
-        result.put("sisteinnsendtbehandling", sorterteBehandlinger.get(sorterteBehandlinger.size() - 1).getBehandlingsId());
+        result.put("innsendtdatoSoknad", String.valueOf(innsendtSoknad.getInnsendtDato().getMillis()));
+        result.put("sistInnsendteBehandlingsId", sorterteBehandlinger.get(sorterteBehandlinger.size() - 1).getBehandlingsId());
         return result;
     }
 
@@ -492,6 +474,23 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     private static final Transformer<WSBehandlingskjedeElement, String> BEHANDLINGS_ID = new Transformer<WSBehandlingskjedeElement, String>() {
         public String transform(WSBehandlingskjedeElement input) {
             return input.getBehandlingsId();
+        }
+    };
+
+    private static final Comparator<WSBehandlingskjedeElement> SORTER_INNSENDT_DATO = new Comparator<WSBehandlingskjedeElement>() {
+        @Override
+        public int compare(WSBehandlingskjedeElement o1, WSBehandlingskjedeElement o2) {
+            DateTime dato1 = o1.getInnsendtDato();
+            DateTime dato2 = o2.getInnsendtDato();
+
+            if (dato1 == null && dato2 == null) {
+                return 0;
+            } else if (dato1 == null) {
+                return 1;
+            } else if (dato2 == null) {
+                return -1;
+            }
+            return dato1.compareTo(dato2);
         }
     };
 }
