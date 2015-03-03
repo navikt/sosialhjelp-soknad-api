@@ -40,6 +40,7 @@ public class WebSoknad implements Serializable {
     private List<Vedlegg> vedlegg;
     private String journalforendeEnhet;
     private String soknadPrefix;
+    private String soknadUrl;
 
 
     public WebSoknad() {
@@ -105,6 +106,9 @@ public class WebSoknad implements Serializable {
 
     public final String getskjemaNummer() {
         return skjemaNummer;
+    }
+    public final String getSoknadUrl() {
+        return soknadUrl;
     }
 
     public List<Vedlegg> getVedlegg() {
@@ -191,6 +195,11 @@ public class WebSoknad implements Serializable {
 
     public WebSoknad medJournalforendeEnhet(String journalforendeEnhet) {
         this.journalforendeEnhet = journalforendeEnhet;
+        return this;
+    }
+
+    public WebSoknad medSoknadUrl(String url) {
+        this.soknadUrl = url;
         return this;
     }
 
@@ -408,8 +417,9 @@ public class WebSoknad implements Serializable {
         return status.equals(SoknadInnsendingStatus.AVBRUTT_AV_BRUKER) || status.equals(SoknadInnsendingStatus.AVBRUTT_AUTOMATISK);
     }
 
-    public void medSoknadPrefix(String prefix) {
+    public WebSoknad medSoknadPrefix(String prefix) {
         soknadPrefix = prefix;
+        return this;
     }
 
     public String getSoknadPrefix() {
