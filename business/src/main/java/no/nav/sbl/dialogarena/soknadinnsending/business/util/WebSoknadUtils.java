@@ -34,14 +34,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class WebSoknadUtils {
     private static final Logger LOGGER = getLogger(WebSoknadUtils.class);
 
-    // Brukes for å finne prefix for tekster, så man kan ha søknadspesifikke tekster i gjennbrukbare moduler
-    private static final Map<String, String> SOKNAD_TYPE_PREFIX_MAP = new HashMap<String, String>() {{
-        put(DAGPENGER, "dagpenger.ordinaer");
-        put(DAGPENGER_VED_PERMITTERING, "dagpenger.ordinaer");
-        put(GJENOPPTAK, "dagpenger.gjenopptak");
-        put(GJENOPPTAK_VED_PERMITTERING, "dagpenger.gjenopptak");
-    }};
-
     public static final String DAGPENGER = "NAV 04-01.03";
     public static final String DAGPENGER_VED_PERMITTERING = "NAV 04-01.04";
     public static final String GJENOPPTAK = "NAV 04-16.03";
@@ -51,6 +43,19 @@ public class WebSoknadUtils {
     public static final String PERMITTERT = "Permittert";
     public static final String REDUSERT_ARBEIDSTID = "Redusert arbeidstid";
     public static final String ANNEN_AARSAK = "Annen årsak";
+
+    // Brukes for å finne prefix for tekster, så man kan ha søknadspesifikke tekster i gjennbrukbare moduler
+    private static final Map<String, String> SOKNAD_TYPE_PREFIX_MAP = new HashMap<String, String>() {{
+        put(DAGPENGER, "dagpenger.ordinaer");
+        put(DAGPENGER_VED_PERMITTERING, "dagpenger.ordinaer");
+        put(GJENOPPTAK, "dagpenger.gjenopptak");
+        put(GJENOPPTAK_VED_PERMITTERING, "dagpenger.gjenopptak");
+    }};
+
+    private static final Map<String, String> soknadUrlFasitRessurs = new HashMap<String, String>() {{
+        put(DAGPENGER, "soknad.dagpenger.ordinaer.url");
+        put(GJENOPPTAK, "soknad.dagpenger.gjenopptak.url");
+    }};
 
     private static String finnSluttaarsakSisteArbeidsforhold(WebSoknad soknad) {
         List<Faktum> sorterteArbeidsforholdIkkePermittert = on(soknad.getFaktaMedKey("arbeidsforhold"))
@@ -169,6 +174,10 @@ public class WebSoknadUtils {
         return PersonaliaBuilder.with()
                 .gjeldendeAdresse(gjeldendeAdresse).sekundarAdresse(senkundarAdresse).statsborgerskap(properties.get(STATSBORGERSKAP_KEY))
                 .build();
+    }
+
+    public static String getSoknadUrl(String skjemanummer) {
+        return System.getProperty(soknadUrlFasitRessurs.get(skjemanummer));
     }
 
     public static String getSoknadPrefix(String skjemanummer) {
