@@ -345,6 +345,20 @@ public class SoknadRepositoryJdbcTest {
     }
 
     @Test
+    public void skalReturnereNullOmSoknadMedBehandlingsIdIkkeFinnes() {
+        opprettOgPersisterSoknad();
+        WebSoknad soknadMedData = soknadRepository.hentSoknadMedData("soknadSomIkkeFinnes");
+        assertThat(soknadMedData, nullValue());
+    }
+
+    @Test
+    public void skalReturnereNullOmSoknadMedSoknadIdIkkeFinnes() {
+        opprettOgPersisterSoknad();
+        WebSoknad soknadMedData = soknadRepository.hentSoknadMedData(***REMOVED***L);
+        assertThat(soknadMedData, nullValue());
+    }
+
+    @Test
     public void plukkerRiktigeSoknaderPaaTversAvAlleTraader() throws InterruptedException {
         List<Long> soknaderSomSkalMellomlagres = lagreXSoknader(15, 3);
         lagreXSoknader(5, 0); // legger til søknader som ikke skal taes med

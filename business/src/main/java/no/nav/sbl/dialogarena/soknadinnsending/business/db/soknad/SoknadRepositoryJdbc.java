@@ -180,12 +180,23 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     }
 
     public WebSoknad hentSoknadMedData(Long id) {
-        WebSoknad soknad = hentSoknad(id).medBrukerData(hentAlleBrukerData(id));
-        return soknad.medVedlegg(vedleggRepository.hentPaakrevdeVedlegg(soknad.getBrukerBehandlingId()));
+        WebSoknad soknad = hentSoknad(id);
+        if(soknad != null) {
+            leggTilBrukerdataOgVedleggPaaSoknad(soknad, soknad.getBrukerBehandlingId());
+        }
+        return soknad;
     }
 
     public WebSoknad hentSoknadMedData(String behandlingsId) {
-        return hentSoknad(behandlingsId).medBrukerData(hentAlleBrukerData(behandlingsId)).medVedlegg(vedleggRepository.hentPaakrevdeVedlegg(behandlingsId));
+        WebSoknad soknad = hentSoknad(behandlingsId);
+        if(soknad != null) {
+            leggTilBrukerdataOgVedleggPaaSoknad(soknad, behandlingsId);
+        }
+        return soknad;
+    }
+
+    private WebSoknad leggTilBrukerdataOgVedleggPaaSoknad(WebSoknad soknad, String behandlingsId) {
+        return soknad.medBrukerData(hentAlleBrukerData(behandlingsId)).medVedlegg(vedleggRepository.hentPaakrevdeVedlegg(behandlingsId));
     }
 
     public Faktum hentFaktum(Long faktumId) {
