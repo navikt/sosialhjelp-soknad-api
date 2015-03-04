@@ -54,6 +54,10 @@
         </logins>
     </security>
 
+    <serverOptions>
+        <jvmArgs>-Xmx1024m</jvmArgs>
+    </serverOptions>
+
     <loadBalancer>
         <contextRoot>sendsoknad</contextRoot>
         <lbHealthMonitor type="HTTPS" isAliveUrl="internal/isAlive" interval="5" timeout="16"/>
