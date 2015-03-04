@@ -142,7 +142,11 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     public WebSoknad hentSoknad(Long id) {
         String sql = "select * from SOKNAD where soknad_id = ?";
-        return getJdbcTemplate().queryForObject(sql, new SoknadRowMapper(), id);
+        try {
+            return getJdbcTemplate().queryForObject(sql, new SoknadRowMapper(), id);
+        } catch (EmptyResultDataAccessException ignore) {
+            return null;
+        }
     }
 
     public WebSoknad hentSoknad(String behandlingsId) {

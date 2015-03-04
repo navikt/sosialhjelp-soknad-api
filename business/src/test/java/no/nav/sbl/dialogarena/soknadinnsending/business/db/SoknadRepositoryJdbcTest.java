@@ -354,7 +354,7 @@ public class SoknadRepositoryJdbcTest {
     @Test
     public void skalReturnereNullOmSoknadMedSoknadIdIkkeFinnes() {
         opprettOgPersisterSoknad();
-        WebSoknad soknadMedData = soknadRepository.hentSoknadMedData(***REMOVED***L);
+        WebSoknad soknadMedData = soknadRepository.hentSoknadMedData(1000000000L);
         assertThat(soknadMedData, nullValue());
     }
 
@@ -390,11 +390,11 @@ public class SoknadRepositoryJdbcTest {
         assertThat(soknaderSomBleMellomlagret, equalTo(soknaderSomSkalMellomlagres));
     }
 
-    @Test(expected = EmptyResultDataAccessException.class)
+    @Test
     public void skalKunneSletteSoknad() {
         opprettOgPersisterSoknad();
         soknadRepository.slettSoknad(soknadId);
-        soknadRepository.hentSoknad(soknadId);
+        assertNull(soknadRepository.hentSoknad(soknadId));
     }
 
     @Test
