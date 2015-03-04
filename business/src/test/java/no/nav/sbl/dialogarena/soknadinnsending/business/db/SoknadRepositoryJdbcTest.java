@@ -57,6 +57,7 @@ public class SoknadRepositoryJdbcTest {
     @After
     public void cleanUp() {
         soknadRepositoryTestSupport.getJdbcTemplate().update("delete from Vedlegg");
+        soknadRepositoryTestSupport.getJdbcTemplate().update("delete from faktumegenskap");
         soknadRepositoryTestSupport.getJdbcTemplate().update("delete from soknadbrukerdata");
         soknadRepositoryTestSupport.getJdbcTemplate().update("delete from Soknad");
     }
