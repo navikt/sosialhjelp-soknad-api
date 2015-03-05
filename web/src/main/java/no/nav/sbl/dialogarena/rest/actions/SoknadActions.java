@@ -25,8 +25,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.websoknad.servlet.UrlUtils.getEttersendelseUrl;
-import static no.nav.sbl.dialogarena.websoknad.servlet.UrlUtils.getGjenopptaUrl;
+import static no.nav.sbl.dialogarena.utils.UrlUtils.getEttersendelseUrl;
+import static no.nav.sbl.dialogarena.utils.UrlUtils.getGjenopptaUrl;
 
 @Path("/soknader/{behandlingsId}/actions")
 @Produces(APPLICATION_JSON)

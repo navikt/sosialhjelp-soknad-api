@@ -95,7 +95,7 @@ public class SoknadRessurs {
         return result;
     }
 
-    @PUT
+    @PUT  // todo: burde kanskje endres til POST
     @Path("/{behandlingsId}")
     @SjekkTilgangTilSoknad
     public void settDelstegStatus(@PathParam("behandlingsId") String behandlingsId, @QueryParam("delsteg") String delsteg) {

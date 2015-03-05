@@ -7,7 +7,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.selftest.SelfTestService
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SikkerhetsAspect;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.websoknad.service.EmailService;
-import no.nav.sbl.dialogarena.websoknad.servlet.InnloggetBruker;
+import no.nav.sbl.dialogarena.utils.InnloggetBruker;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
