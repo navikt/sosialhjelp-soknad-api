@@ -9,7 +9,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.LandService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService;
-import no.nav.sbl.dialogarena.websoknad.servlet.InnloggetBruker;
+import no.nav.sbl.dialogarena.utils.InnloggetBruker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,8 +50,7 @@ public class InformasjonRessurs {
     @GET
     @Path("/miljovariabler")
     public Map<String, String> hentMiljovariabler() {
-        Map<String, String> stringStringMap = informasjon.hentMiljovariabler();
-        return stringStringMap;
+        return informasjon.hentMiljovariabler();
 
     }
 

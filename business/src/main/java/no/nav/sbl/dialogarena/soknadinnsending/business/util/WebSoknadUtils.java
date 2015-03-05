@@ -53,8 +53,8 @@ public class WebSoknadUtils {
     }};
 
     private static final Map<String, String> soknadUrlFasitRessurs = new HashMap<String, String>() {{
-        put(DAGPENGER, "soknad.dagpenger.ordinaer.url");
-        put(GJENOPPTAK, "soknad.dagpenger.gjenopptak.url");
+        put(DAGPENGER, "soknad.dagpenger.ordinaer.path");
+        put(GJENOPPTAK, "soknad.dagpenger.gjenopptak.path");
     }};
 
     private static String finnSluttaarsakSisteArbeidsforhold(WebSoknad soknad) {
