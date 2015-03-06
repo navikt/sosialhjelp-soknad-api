@@ -30,10 +30,6 @@ public class PersonAlder implements Serializable{
         return yearsBetween(utslagsFodselsdato, new LocalDate()).getYears();
 	}
 	
-	public Boolean sjekkAlder() {
-		return getUtslagsAlder() < 67;
-	}
-
     private String hentUtslagsFodselsdatoFraFnr(String fodselsnummer){
         NavFodselsnummer fnr = new NavFodselsnummer(fodselsnummer);
         return fnr.getBirthYear() + "-" + fnr.getMonth() + "-01";
