@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.rest.feil;
 
+import no.nav.modig.core.exception.AuthorizationException;
 import no.nav.modig.core.exception.ModigException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigOpplastingTypeException;
@@ -12,6 +13,7 @@ import javax.ws.rs.ext.Provider;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.Response.Status.NOT_ACCEPTABLE;
+import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 import static javax.ws.rs.core.Response.Status.UNSUPPORTED_MEDIA_TYPE;
 import static javax.ws.rs.core.Response.serverError;
 import static javax.ws.rs.core.Response.status;
@@ -29,6 +31,9 @@ public class ApplicationExceptionMapper implements ExceptionMapper<ModigExceptio
         } else if (e instanceof OpplastingException) {
             response = status(NOT_ACCEPTABLE);
             logger.warn("Feilet opplasting", e);
+        } else if (e instanceof AuthorizationException) {
+            response = status(UNAUTHORIZED);
+            logger.info("Ikke tilgang til ressurs", e);
         } else {
             // TODO: Pakk dette inn i 400-feil pga. BigIP
             response = serverError();

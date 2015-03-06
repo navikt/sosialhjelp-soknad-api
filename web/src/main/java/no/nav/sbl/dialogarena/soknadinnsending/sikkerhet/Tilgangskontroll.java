@@ -11,18 +11,18 @@ import no.nav.modig.security.tilgangskontroll.policy.pep.PEPImpl;
 import no.nav.modig.security.tilgangskontroll.policy.request.attributes.SubjectAttribute;
 import no.nav.sbl.dialogarena.soknadinnsending.SikkerhetsConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.EttersendingService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
+import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import static java.lang.String.valueOf;
 import static java.util.Arrays.asList;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
-import static no.nav.modig.security.tilgangskontroll.utils.AttributeUtils.ownerId;
-import static no.nav.modig.security.tilgangskontroll.utils.AttributeUtils.resourceId;
-import static no.nav.modig.security.tilgangskontroll.utils.AttributeUtils.resourceType;
+import static no.nav.modig.security.tilgangskontroll.utils.AttributeUtils.*;
 import static no.nav.modig.security.tilgangskontroll.utils.RequestUtils.forRequest;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * Tilgangskontrollimplementasjon som bruker EnforcementPoint fra modig.security
@@ -30,12 +30,11 @@ import static no.nav.modig.security.tilgangskontroll.utils.RequestUtils.forReque
 @Named("tilgangskontroll")
 public class Tilgangskontroll {
 
+    private static final Logger logger = getLogger(Tilgangskontroll.class);
+
     private final EnforcementPoint pep;
     @Inject
     private SendSoknadService soknadService;
-
-    @Inject
-    private EttersendingService ettersendingService;
 
     public Tilgangskontroll() {
         DecisionPoint pdp = new PicketLinkDecisionPoint(SikkerhetsConfig.class.getResource("/security/policyConfig.xml"));
@@ -44,23 +43,26 @@ public class Tilgangskontroll {
     }
 
     public void verifiserBrukerHarTilgangTilSoknad(String behandlingsId) {
-        WebSoknad soknad = soknadService.hentSoknad(behandlingsId);
-
-        if (!soknad.erUnderArbeid()) {
-            soknad = ettersendingService.hentEttersendingForBehandlingskjedeId(behandlingsId);
+        Long soknadId = 0L;
+        String aktoerId = "undefined";
+        try {
+            WebSoknad soknad = soknadService.hentSoknad(behandlingsId);
+            soknadId = soknad.getSoknadId();
+            aktoerId = soknad.getAktoerId();
+        } catch (Exception e) {
+            logger.warn("Kunne ikke avgjøre hvem som eier søknad med behandlingsId {} -> Ikke tilgang.", behandlingsId, e);
         }
-        verifiserBrukerHarTilgangTilSoknad(soknad.getSoknadId());
+        verifiserBrukerHarTilgangTilSoknad(aktoerId, soknadId);
     }
 
-    public void verifiserBrukerHarTilgangTilSoknad(Long soknadId) {
-        String eier = soknadService.hentSoknadEier(soknadId);
+    public void verifiserBrukerHarTilgangTilSoknad(String eier, Long soknadId) {
         String aktorId = getSubjectHandler().getUid();
         SubjectAttribute aktorSubjectId = new SubjectAttribute(new URN("urn:nav:ikt:tilgangskontroll:xacml:subject:aktor-id"), new StringValue(aktorId));
 
         pep.assertAccess(
                 forRequest(
                         resourceType("Soknad"),
-                        resourceId(soknadId.toString()),
+                        resourceId(valueOf(soknadId)),
                         ownerId(eier),
                         aktorSubjectId));
     }

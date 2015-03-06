@@ -5,6 +5,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.websoknad.config.ContentConfig;
 import org.springframework.cache.CacheManager;
+import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +14,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.util.Map;
 
+@Controller
 @Path("/internal")
 public class InternalRessurs {
     @Inject

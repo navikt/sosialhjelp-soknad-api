@@ -34,6 +34,7 @@ public interface SoknadRepository {
 
     Faktum hentFaktum(Long faktumId);
     Faktum hentFaktum(Long soknadId, Long faktumId);
+    String hentBehandlingsIdTilFaktum(Long faktumId);
 
     List<Faktum> hentSystemFaktumList(Long soknadId, String key);
 

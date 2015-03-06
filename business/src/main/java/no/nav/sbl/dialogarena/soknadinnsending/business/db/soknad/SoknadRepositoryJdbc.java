@@ -26,7 +26,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -220,6 +219,17 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     public Faktum hentFaktum(final Long soknadId, final Long faktumId) {
         // TODO: Rydd opp i de som bruker denne med soknadId
         return hentFaktum(faktumId);
+    }
+
+    @Override
+    public String hentBehandlingsIdTilFaktum(Long faktumId) {
+        final String sql = "select brukerbehandlingId from soknad where soknad_id = (select soknad_id from soknadbrukerdata where soknadbrukerdata_id = ?)";
+        try {
+            return getJdbcTemplate().queryForObject(sql, String.class, faktumId);
+        } catch (EmptyResultDataAccessException e) {
+            logger.debug("Fant ikke behandlingsId for faktumId {}", faktumId);
+            return null;
+        }
     }
 
     public List<Faktum> hentBarneFakta(Long soknadId, Long faktumId) {
