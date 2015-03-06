@@ -43,6 +43,14 @@ public class FaktaService {
     private static final String EKSTRA_VEDLEGG_KEY = "ekstraVedlegg";
     private static final Logger logger = getLogger(FaktaService.class);
 
+    public List<Faktum> hentFakta(String behandlingsId) {
+        return repository.hentAlleBrukerData(behandlingsId);
+    }
+
+    public String hentBehandlingsId(Long faktumId) {
+        return repository.hentBehandlingsIdTilFaktum(faktumId);
+    }
+
     public Faktum lagreSoknadsFelt(String behandlingsId, Faktum faktum) {
         WebSoknad soknad = repository.hentSoknad(behandlingsId);
         faktum.setSoknadId(soknad.getSoknadId());
@@ -108,10 +116,6 @@ public class FaktaService {
         repository.slettBrukerFaktum(soknadId, faktumId);
         repository.settSistLagretTidspunkt(soknadId);
         settDelstegStatus(soknadId, faktumKey);
-    }
-
-    public List<Faktum> hentFakta(String behandlingsId) {
-        return repository.hentAlleBrukerData(behandlingsId);
     }
 
     private void settDelstegStatus(Long soknadId, String faktumKey) {

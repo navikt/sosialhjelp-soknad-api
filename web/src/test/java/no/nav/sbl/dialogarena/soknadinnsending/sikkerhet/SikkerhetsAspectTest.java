@@ -3,14 +3,16 @@ package no.nav.sbl.dialogarena.soknadinnsending.sikkerhet;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.modig.core.exception.AuthorizationException;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -19,42 +21,22 @@ import java.lang.annotation.Annotation;
 
 import static java.lang.System.setProperty;
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.when;
+import static no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad.Type.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.XsrfGenerator.generateXsrfToken;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SikkerhetsAspectTest {
-    public static final SjekkTilgangTilSoknad TILGANG = new SjekkTilgangTilSoknad() {
-        @Override
-        public boolean sjekkXsrf() {
-            return true;
-        }
 
-        @Override
-        public boolean equals(Object obj) {
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            return 0;
-        }
-
-        @Override
-        public String toString() {
-            return null;
-        }
-
-        @Override
-        public Class<? extends Annotation> annotationType() {
-            return SjekkTilgangTilSoknad.class;
-        }
-    };
     @Mock
     private Tilgangskontroll tilgangskontroll;
     @Mock
-    private SendSoknadService soknadService;
-
+    private VedleggService vedleggService;
+    @Mock
+    private FaktaService faktaService;
     @InjectMocks
     private SikkerhetsAspect sikkerhetsAspect;
 
@@ -62,23 +44,119 @@ public class SikkerhetsAspectTest {
 
     @Before
     public void init() {
-        when(soknadService.hentSoknadMedFaktaOgVedlegg(anyLong())).thenReturn(new WebSoknad().medBehandlingId(brukerBehandlingsId));
+        setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
     }
 
     @Test
-    public void skalTesteSikkerhet() {
-        setup(XsrfGenerator.generateXsrfToken(brukerBehandlingsId));
-        sikkerhetsAspect.sjekkSoknadIdModBruker(1L, TILGANG);
+    public void skalSjekkeSikkerhetForBehandling() {
+        setup(generateXsrfToken(brukerBehandlingsId));
+        sikkerhetsAspect.sjekkOmBrukerHarTilgang(brukerBehandlingsId, getSjekkTilgangTilSoknad(Behandling));
+        verifyNoMoreInteractions(faktaService, vedleggService);
+    }
+
+    @Test
+    public void skalSjekkeOmBrukerHarTilgangTilFakta() {
+        setup(generateXsrfToken(brukerBehandlingsId));
+        when(faktaService.hentBehandlingsId(1L)).thenReturn(brukerBehandlingsId);
+        sikkerhetsAspect.sjekkOmBrukerHarTilgang(1L, getSjekkTilgangTilSoknad(Faktum));
+        verify(faktaService, times(1)).hentBehandlingsId(1L);
+    }
+
+    @Test
+    public void skalSjekkeOmBrukerHarTilgangTilVedlegg() {
+        setup(generateXsrfToken(brukerBehandlingsId));
+        when(vedleggService.hentBehandlingsId(1L)).thenReturn(brukerBehandlingsId);
+        sikkerhetsAspect.sjekkOmBrukerHarTilgang(1L, getSjekkTilgangTilSoknad(Vedlegg));
+        verify(vedleggService, times(1)).hentBehandlingsId(1L);
+    }
+
+    @Test(expected = AuthorizationException.class)
+    public void skalHandtereHvisIkkeVedleggFinnes() {
+        setup(generateXsrfToken(brukerBehandlingsId));
+        when(vedleggService.hentBehandlingsId(1L)).thenReturn(null);
+        sikkerhetsAspect.sjekkOmBrukerHarTilgang(1L, getSjekkTilgangTilSoknad(Vedlegg));
+        verify(vedleggService, times(1)).hentBehandlingsId(1L);
     }
 
     @Test(expected = AuthorizationException.class)
     public void skalKasteExceptionNaarTokenIkkeStemmer() {
-        setup("tull");
-        sikkerhetsAspect.sjekkSoknadIdModBruker(1L, TILGANG);
+        setup("tulletoken");
+        sikkerhetsAspect.sjekkOmBrukerHarTilgang(brukerBehandlingsId, getSjekkTilgangTilSoknad(Behandling));
+    }
+
+    @Test
+    public void soknadRessursSkalBliMatchetAvAspectet() {
+        setup("token");
+        AspectJProxyFactory f = new AspectJProxyFactory(new Testclass());
+        SikkerhetsAspect sa = spy(new SikkerhetsAspect());
+        f.addAspect(sa);
+        Testinterface proxy = f.getProxy();
+        doNothing().when(sa).sjekkOmBrukerHarTilgang(any(), any(SjekkTilgangTilSoknad.class));
+
+        proxy.behandlingMetode("test");
+        proxy.vedleggMetode(2L);
+
+        ArgumentCaptor<SjekkTilgangTilSoknad> argumentCaptor = ArgumentCaptor.forClass(SjekkTilgangTilSoknad.class);
+        verify(sa).sjekkOmBrukerHarTilgang(eq("test"), argumentCaptor.capture());
+        assertThat(argumentCaptor.getValue().type(), is(Behandling));
+        verify(sa).sjekkOmBrukerHarTilgang(eq(2L), argumentCaptor.capture());
+        assertThat(argumentCaptor.getValue().type(), is(Vedlegg));
+    }
+
+    interface Testinterface {
+
+        void behandlingMetode(String behandlingsId);
+        void vedleggMetode(Long vedleggId);
+
+    }
+
+    private class Testclass implements Testinterface {
+
+        @SjekkTilgangTilSoknad()
+        public void behandlingMetode(String behandlingsId) {
+        }
+
+        @SjekkTilgangTilSoknad(type = Vedlegg)
+        public void vedleggMetode(Long vedleggId) {
+        }
+
+    }
+
+    private static SjekkTilgangTilSoknad getSjekkTilgangTilSoknad(final SjekkTilgangTilSoknad.Type type) {
+        return new SjekkTilgangTilSoknad() {
+            @Override
+            public boolean sjekkXsrf() {
+                return true;
+            }
+
+            @Override
+            public Type type() {
+                return type;
+            }
+
+            @Override
+            public boolean equals(Object obj) {
+                return false;
+            }
+
+            @Override
+            public int hashCode() {
+                return 0;
+            }
+
+            @Override
+            public String toString() {
+                return null;
+            }
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return SjekkTilgangTilSoknad.class;
+            }
+        };
     }
 
     private void setup(String token) {
-        setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         MockHttpServletRequest request = new MockHttpServletRequest(null, null, null);
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
         request.setMethod("POST");

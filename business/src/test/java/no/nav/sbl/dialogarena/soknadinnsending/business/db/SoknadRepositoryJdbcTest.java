@@ -213,6 +213,20 @@ public class SoknadRepositoryJdbcTest {
     }
 
     @Test
+    public void skalFinneBehandlingsIdTilSoknadFraFaktumId() {
+        Long soknadId = opprettOgPersisterSoknad("123abc", "aktor");
+        Long faktumId = lagreData(soknadId, "key", null, "value");
+        String behandlingsIdTilFaktum = soknadRepository.hentBehandlingsIdTilFaktum(faktumId);
+        assertThat(behandlingsIdTilFaktum, is("123abc"));
+    }
+
+    @Test
+    public void skalReturnereNullHvisFaktumIdIkkeFinnes() {
+        String behandlingsIdTilFaktum = soknadRepository.hentBehandlingsIdTilFaktum(999L);
+        assertThat(behandlingsIdTilFaktum, is(nullValue()));
+    }
+
+    @Test
     public void skalReturnereAtVedleggErPaakrevdOmParentHarEnAvDependOnValues() {
         opprettOgPersisterSoknad();
         Faktum parentFaktum = new Faktum().medKey("key1").medValue("dependOnValue").medSoknadId(soknad.getSoknadId()).medType(BRUKERREGISTRERT);
@@ -525,6 +539,10 @@ public class SoknadRepositoryJdbcTest {
     }
 
     private Long lagreData(String key, Long faktumId, String value) {
+        return lagreData(soknadId, key, faktumId, value);
+    }
+
+    private Long lagreData(Long soknadId, String key, Long faktumId, String value) {
         return soknadRepository.lagreFaktum(soknadId, new Faktum().medSoknadId(soknadId).medFaktumId(faktumId).medKey(key).medValue(value).medType(BRUKERREGISTRERT));
     }
 }

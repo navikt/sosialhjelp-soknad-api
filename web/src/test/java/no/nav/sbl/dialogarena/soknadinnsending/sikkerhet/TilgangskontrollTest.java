@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.sikkerhet;
 import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.modig.core.exception.AuthorizationException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,18 +25,15 @@ public class TilgangskontrollTest {
     public void skalGiTilgangForBruker() {
         System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         StaticSubjectHandler subjectHandler = (StaticSubjectHandler) SubjectHandler.getSubjectHandler();
-        when(soknadService.hentSoknadEier(1L)).thenReturn(subjectHandler.getUid());
-        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(1L);
-
+        when(soknadService.hentSoknad("123")).thenReturn(new WebSoknad().medAktorId(subjectHandler.getUid()));
+        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123");
     }
 
     @Test(expected = AuthorizationException.class)
     public void skalFeileForAndre() {
         System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
-        StaticSubjectHandler subjectHandler = (StaticSubjectHandler) SubjectHandler.getSubjectHandler();
-        when(soknadService.hentSoknadEier(1L)).thenReturn("123");
-        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(1L);
-
+        when(soknadService.hentSoknad("XXX")).thenReturn(new WebSoknad().medAktorId("other_user"));
+        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("XXX");
     }
 
 }

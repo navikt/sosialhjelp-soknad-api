@@ -76,7 +76,7 @@ public class ApplicationConfig {
             javaMailSender.setPort(Integer.parseInt(smtpServerPort));
         } else {
             javaMailSender.setPort(25);
-            logger.error("Smtpport not set properly, using default port 25");
+            logger.warn("Smtpport not set properly, using default port 25");
         }
         return javaMailSender;
     }
