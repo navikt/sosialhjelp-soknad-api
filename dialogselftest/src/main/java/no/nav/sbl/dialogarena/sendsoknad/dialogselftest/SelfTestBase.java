@@ -113,11 +113,7 @@ public abstract class SelfTestBase {
         }
 
         public String buildPage() {
-            String header = buildHeader();
-            String body = buildBody();
-            String footer = buildFooter();
-
-            return header + style + body + footer;
+            return buildHeader() + style + buildBody() + buildFooter();
         }
 
         private String buildStyle() {
