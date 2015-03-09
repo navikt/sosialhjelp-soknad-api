@@ -7,9 +7,6 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/**
- * Klasse som mapper db kall til vedlegg.
- */
 public class VedleggRowMapper implements RowMapper<Vedlegg> {
 
     private final boolean includeData;
