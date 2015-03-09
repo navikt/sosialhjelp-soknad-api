@@ -34,8 +34,7 @@ public class SoknadActions {
 
     private static Logger logger = LoggerFactory.getLogger(SoknadActions.class);
 
-    @Value("${saksoversikt.link.url}")
-    private String saksoversiktUrl;
+    private String saksoversiktUrl = System.getProperty("saksoversikt.link.url");
 
     @Inject
     private VedleggService vedleggService;

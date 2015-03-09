@@ -55,7 +55,7 @@ public class InformasjonService {
         result.put("soknad.dagpengerbrosjyre.url", dagpengerBrosjyreUrl);
         result.put("soknad.brukerprofil.url", brukerProfilUrl);
         result.put("dialogarena.cms.url", appresUrl);
-        result.put("dialoginnsending.url", dialoginnsendingSoknadPath);
+        result.put("dialoginnsending.soknad.path", dialoginnsendingSoknadPath);
 
         result.put("soknad.ettersending.antalldager", antallDager);
 
