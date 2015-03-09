@@ -21,10 +21,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>sendsoknad-mock</artifactId>
-        </dependency>
-        <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>dialogarena-behandlingsinformasjon</artifactId>
         </dependency>

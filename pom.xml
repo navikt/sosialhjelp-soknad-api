@@ -15,7 +15,6 @@
         <module>dialogselftest</module>
         <module>web</module>
         <module>jee</module>
-        <module>mock</module>
     </modules>
 
     <name>Dialogarena - Send Søknad</name>
@@ -73,12 +72,6 @@
                 <artifactId>sendsoknad-frontend</artifactId>
                 <version>${project.version}</version>
                 <scope>runtime</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>sendsoknad-mock</artifactId>
-                <version>${project.version}</version>
             </dependency>
 
             <dependency>
