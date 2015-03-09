@@ -38,6 +38,7 @@ public class ServicesApplicationConfig {
         }
         return new StandardKodeverk(kodeverkEndpoint, NORSK_BOKMAAL, optional(brukerprofilDataDirectory).map(appendPathname("kodeverkdump")));
     }
+
     @Bean
     public JsonKodeverk jsonKodeverk(){
         return new JsonKodeverk(getClass().getResourceAsStream("/kodeverk.json"));

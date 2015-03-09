@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 import java.io.Serializable;
 
 public class FaktumEgenskap implements Serializable {
-    //public enum FaktumType { FAGREGISTER, BRUKERREGISTRERT; }
     private Long faktumId;
     private Long soknadId;
     private String key;

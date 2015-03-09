@@ -13,7 +13,6 @@ import static javax.xml.bind.JAXBContext.newInstance;
 
 public class SoknadStrukturUtils {
     public static SoknadStruktur hentStruktur(String skjema) {
-        //TODO: Få flyttet dette ut på et vis? Ta i bruk.
         Map<String, String> strukturDokumenter = new HashMap<>();
         strukturDokumenter.put("NAV 04-01.04", "NAV 04-01.03.xml");
         strukturDokumenter.put("NAV 04-01.03", "NAV 04-01.03.xml");
