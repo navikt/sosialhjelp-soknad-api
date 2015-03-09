@@ -375,8 +375,14 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     }
 
     public List<Faktum> hentAlleBrukerData(String behandlingsId) {
-        List<Faktum> fakta = select("select * from SOKNADBRUKERDATA where soknad_id = (select soknad_id from SOKNAD where brukerbehandlingid = ?) order by soknadbrukerdata_id asc", faktumRowMapper, behandlingsId);
-        List<FaktumEgenskap> egenskaper = select("select * from FAKTUMEGENSKAP where soknad_id = (select soknad_id from SOKNAD where brukerbehandlingid = ?)", faktumEgenskapRowMapper, behandlingsId);
+        List<Faktum> fakta = select(
+                "select * from SOKNADBRUKERDATA where soknad_id = (select soknad_id from SOKNAD where brukerbehandlingid = ?) order by soknadbrukerdata_id asc",
+                faktumRowMapper,
+                behandlingsId);
+        List<FaktumEgenskap> egenskaper = select(
+                "select * from FAKTUMEGENSKAP where soknad_id = (select soknad_id from SOKNAD where brukerbehandlingid = ?)",
+                faktumEgenskapRowMapper,
+                behandlingsId);
         Map<Long, Faktum> faktaMap = uniqueIndex(fakta, new Function<Faktum, Long>() {
             public Long apply(Faktum input) {
                 return input.getFaktumId();
