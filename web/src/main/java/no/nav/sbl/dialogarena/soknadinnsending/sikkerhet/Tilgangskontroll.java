@@ -43,7 +43,7 @@ public class Tilgangskontroll {
     }
 
     public void verifiserBrukerHarTilgangTilSoknad(String behandlingsId) {
-        Long soknadId = 0L;
+        Long soknadId = null;
         String aktoerId = "undefined";
         try {
             WebSoknad soknad = soknadService.hentSoknad(behandlingsId);
