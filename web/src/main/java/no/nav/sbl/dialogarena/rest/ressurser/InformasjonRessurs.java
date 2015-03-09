@@ -51,7 +51,6 @@ public class InformasjonRessurs {
     @Path("/miljovariabler")
     public Map<String, String> hentMiljovariabler() {
         return informasjon.hentMiljovariabler();
-
     }
 
     @GET
@@ -79,8 +78,7 @@ public class InformasjonRessurs {
     @GET
     @Path("/tekster")
     public Properties hentTekster(@QueryParam("type") String type, @QueryParam("sprak") String sprak) {
-        Properties properties = messageSource.getBundleFor(type, new Locale("nb", "NO"));
-        return properties;
+        return messageSource.getBundleFor(type, new Locale("nb", "NO"));
     }
 
     @GET
@@ -97,7 +95,7 @@ public class InformasjonRessurs {
 
     @GET
     @Path("/utslagskriterier")
-    public Map<String, String> sjekkUtslagskriterier() {
+    public Map<String, String> hentUtslagskriterier() {
         String uid = getSubjectHandler().getUid();
         PersonInfoService.Status status = personInfoService.hentArbeidssokerStatus(uid);
         Map<String, String> utslagskriterierResultat = new HashMap<>();
