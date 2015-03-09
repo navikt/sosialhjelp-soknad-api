@@ -39,7 +39,6 @@ public class SikkerhetsAspect {
 
     @Before(value = "requestMapping() && args(id, ..) && @annotation(tilgang)", argNames = "id, tilgang")
     public void sjekkOmBrukerHarTilgang(Object id, SjekkTilgangTilSoknad tilgang) {
-        logger.info("Sjekker tilgang til ressurs med id {} og type ", id, tilgang.type());
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
 
         String behandlingsId;
@@ -57,6 +56,7 @@ public class SikkerhetsAspect {
                 behandlingsId = (String) id;
         }
 
+        logger.info("Sjekker tilgang til ressurs med behandlingsId {} og type {}", behandlingsId, tilgang.type());
         if (tilgang.sjekkXsrf() && skrivOperasjon(request)) {
             sjekkXsrfToken(request.getHeader("X-XSRF-TOKEN"), behandlingsId);
         }
