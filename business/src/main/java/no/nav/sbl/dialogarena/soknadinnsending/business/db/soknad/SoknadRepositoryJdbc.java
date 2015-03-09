@@ -4,7 +4,12 @@ import com.google.common.base.Function;
 import no.nav.modig.lang.collections.iter.ReduceFunction;
 import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.FaktumEgenskap;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
 import org.joda.time.DateTime;
@@ -12,7 +17,11 @@ import org.slf4j.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.*;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
@@ -26,7 +35,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -185,7 +193,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     public WebSoknad hentSoknadMedData(Long id) {
         WebSoknad soknad = hentSoknad(id);
-        if(soknad != null) {
+        if (soknad != null) {
             leggTilBrukerdataOgVedleggPaaSoknad(soknad, soknad.getBrukerBehandlingId());
         }
         return soknad;
@@ -193,7 +201,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     public WebSoknad hentSoknadMedData(String behandlingsId) {
         WebSoknad soknad = hentSoknad(behandlingsId);
-        if(soknad != null) {
+        if (soknad != null) {
             leggTilBrukerdataOgVedleggPaaSoknad(soknad, behandlingsId);
         }
         return soknad;

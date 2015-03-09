@@ -93,9 +93,9 @@ public class SelfTest {
 
         private String title;
         private String newLine = System.getProperty("line.separator");
-        private StringBuilder header = new StringBuilder();
-        private StringBuilder style = new StringBuilder();
-        private StringBuilder body = new StringBuilder();
+        private String header = "";
+        private String style = "";
+        private String body = "";
 
         public SelfTestHTML(String title) {
             this.title = title;
@@ -110,28 +110,28 @@ public class SelfTest {
         }
 
         private String buildStyle() {
-            style.append("<style type=\"text/css\">");
-            style.append("table{" +
+            style.concat("<style type=\"text/css\">");
+            style.concat("table{" +
                     "background-color: #f0f8ff;" +
                     " border-collapse: collapse;" +
                     "}");
-            style.append(" td, th {" +
+            style.concat(" td, th {" +
                     "border: 1px #888 solid;" +
                     "border-collapse: collapse;" +
                     "padding: 1px 5px 1px 5px;" +
                     "}");
-            style.append("</style>");
+            style.concat("</style>");
 
-            return style.toString();
+            return style;
         }
 
         private String buildHeader() {
-            header.append("<!DOCTYPE html>" + newLine);
-            header.append("<html lang=\"no\">" + newLine);
-            header.append("<head>" + newLine);
-            header.append("<title>" + title + "</title>" + newLine);
-            header.append(buildStyle() + newLine + "</head>" + newLine);
-            return header.toString();
+            header.concat("<!DOCTYPE html>" + newLine);
+            header.concat("<html lang=\"no\">" + newLine);
+            header.concat("<head>" + newLine);
+            header.concat("<title>" + title + "</title>" + newLine);
+            header.concat(buildStyle() + newLine + "</head>" + newLine);
+            return header;
         }
 
         private String buildFooter() {
@@ -140,7 +140,7 @@ public class SelfTest {
 
         private String buildBody() {
             return "<body>" + newLine +
-                    body.toString() + newLine +
+                    body + newLine +
                     "</body>" + newLine;
         }
 
@@ -149,32 +149,32 @@ public class SelfTest {
             String str = "<%tag%>%text%</%tag%>".
                     replace("%tag%", tag).
                     replace("%text%", text);
-            body.append(str + newLine);
+            body.concat(str + newLine);
         }
 
         public void appendToBody(List list) {
 
-            body.append("<table>" + newLine);
-            body.append("<table>" + newLine);
-            body.append("<tr>" + newLine);
-            body.append("<th>Status</th>" + newLine);
-            body.append("<th>Navn</th>" + newLine);
-            body.append("<th>Responstid ms</th>" + newLine);
-            body.append("<th>Beskrivelse</th>" + newLine);
-            body.append("</tr>" + newLine);
+            body.concat("<table>" + newLine);
+            body.concat("<table>" + newLine);
+            body.concat("<tr>" + newLine);
+            body.concat("<th>Status</th>" + newLine);
+            body.concat("<th>Navn</th>" + newLine);
+            body.concat("<th>Responstid ms</th>" + newLine);
+            body.concat("<th>Beskrivelse</th>" + newLine);
+            body.concat("</tr>" + newLine);
 
             Iterator iterator = list.iterator();
 
             while (iterator.hasNext()) {
                 AvhengighetStatus serviceStatus = (AvhengighetStatus) iterator.next();
-                body.append("<tr>" + newLine);
-                body.append("<td>" + serviceStatus.getStatus() + "</td>" + newLine);
-                body.append("<td>" + serviceStatus.getName() + "</td>" + newLine);
-                body.append("<td>" + serviceStatus.getDurationMilis() + "</td>" + newLine);
-                body.append("<td>" + serviceStatus.getBeskrivelse() + "</td>" + newLine);
-                body.append("</tr>" + newLine);
+                body.concat("<tr>" + newLine);
+                body.concat("<td>" + serviceStatus.getStatus() + "</td>" + newLine);
+                body.concat("<td>" + serviceStatus.getName() + "</td>" + newLine);
+                body.concat("<td>" + serviceStatus.getDurationMilis() + "</td>" + newLine);
+                body.concat("<td>" + serviceStatus.getBeskrivelse() + "</td>" + newLine);
+                body.concat("</tr>" + newLine);
             }
-            body.append("</table>" + newLine);
+            body.concat("</table>" + newLine);
 
         }
 
