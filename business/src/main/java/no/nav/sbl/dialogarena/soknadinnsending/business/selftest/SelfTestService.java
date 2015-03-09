@@ -33,7 +33,7 @@ public class SelfTestService  {
 
     @Inject
     @Named("sendSoknadSelftestEndpoint")
-    private SendSoknadPortType CMSEndpoint;
+    private SendSoknadPortType cmsEndpoint;
 
     @Inject
     @Named("fillagerSelftestEndpoint")
@@ -94,7 +94,7 @@ public class SelfTestService  {
         long start = currentTimeMillis();
         String status = STATUS_ERROR;
         try {
-            CMSEndpoint.ping();
+            cmsEndpoint.ping();
             status = STATUS_OK;
         } catch (Exception e) {
             logger.warn("<<<<<<Error Contacting Henvendelse WS", e);
