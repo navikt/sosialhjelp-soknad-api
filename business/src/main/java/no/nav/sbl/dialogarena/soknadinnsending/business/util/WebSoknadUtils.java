@@ -52,7 +52,7 @@ public class WebSoknadUtils {
         put(GJENOPPTAK_VED_PERMITTERING, "dagpenger.gjenopptak");
     }};
 
-    private static final Map<String, String> soknadUrlFasitRessurs = new HashMap<String, String>() {{
+    private static final Map<String, String> SOKNAD_URL_FASIT_RESSURS = new HashMap<String, String>() {{
         put(DAGPENGER, "soknad.dagpenger.ordinaer.path");
         put(GJENOPPTAK, "soknad.dagpenger.gjenopptak.path");
     }};
@@ -177,7 +177,7 @@ public class WebSoknadUtils {
     }
 
     public static String getSoknadUrl(String skjemanummer) {
-        return System.getProperty(soknadUrlFasitRessurs.get(skjemanummer));
+        return System.getProperty(SOKNAD_URL_FASIT_RESSURS.get(skjemanummer));
     }
 
     public static String getSoknadPrefix(String skjemanummer) {
