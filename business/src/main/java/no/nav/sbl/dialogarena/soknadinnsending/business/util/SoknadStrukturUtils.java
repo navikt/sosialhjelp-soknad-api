@@ -27,10 +27,8 @@ public class SoknadStrukturUtils {
         }
 
         try {
-            Unmarshaller unmarshaller = newInstance(SoknadStruktur.class)
-                    .createUnmarshaller();
-            return (SoknadStruktur) unmarshaller.unmarshal(SoknadStruktur.class
-                    .getResourceAsStream(format("/soknader/%s", type)));
+            Unmarshaller unmarshaller = newInstance(SoknadStruktur.class).createUnmarshaller();
+            return (SoknadStruktur) unmarshaller.unmarshal(SoknadStruktur.class.getResourceAsStream(format("/soknader/%s", type)));
         } catch (JAXBException e) {
             throw new RuntimeException("Kunne ikke laste definisjoner. ", e);
         }
