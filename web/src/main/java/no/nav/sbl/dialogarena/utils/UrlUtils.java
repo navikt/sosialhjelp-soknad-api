@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 
 public class UrlUtils {
-    public static final String HOSTNAME_REGEX = "(^http.://.*)/";
+    public static final String HOSTNAME_REGEX = "(^http.://.*?)/";
 
     private static final String ETTERSENDING_PATH = System.getProperty("dialoginnsending.ettersending.path");
     private static final String FORTSETT_PATH = "/dagpenger/utslagskriterier";

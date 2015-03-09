@@ -107,7 +107,7 @@ public class InformasjonRessurs {
 
         try {
             Personalia personalia = personaliaService.hentPersonalia(uid);
-            utslagskriterierResultat.put("gyldigAlder", new PersonAlder(uid).sjekkAlder().toString());
+            utslagskriterierResultat.put("alder", Integer.toString(new PersonAlder(uid).getUtslagsAlder()));
             utslagskriterierResultat.put("bosattINorge", ((Boolean) !personalia.harUtenlandskAdresse()).toString());
             utslagskriterierResultat.put("registrertAdresse", personalia.getGjeldendeAdresse().getAdresse());
             utslagskriterierResultat.put("registrertAdresseGyldigFra", personalia.getGjeldendeAdresse().getGyldigFra());

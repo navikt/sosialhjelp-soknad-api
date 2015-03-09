@@ -11,7 +11,7 @@ public class UrlUtilsTest {
 
     private static final String BEHANDLING_ID = "100000XXX";
     private static final String DIALOGINNSENDING_PATH = "/dialoginnsending/ettersending";
-    private static final String REQUEST_URL = "https://tjenester.nav.no/something";
+    private static final String REQUEST_URL = "https://tjenester.nav.no/something/234q/endamer";
 
     @BeforeClass
     public static void setup() {
