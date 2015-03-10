@@ -4,9 +4,6 @@ import org.apache.commons.collections15.Transformer;
 
 import java.util.Comparator;
 
-/**
- * Klasse med Comparators
- */
 public final class Comparators {
 
     public static <T, C extends Comparable<C>> Comparator<T> compareBy(Transformer<T, C> transformer) {

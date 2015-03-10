@@ -1,21 +1,13 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.MockUtil;
-import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.MockUtil.startdatoMockErTillattOgAktivert;
+import static org.joda.time.DateTime.now;
 
 @Component
 public class StartDatoService {
 
     public Boolean erJanuarEllerFebruar() {
-        Integer maaned;
-        if (startdatoMockErTillattOgAktivert()) {
-            maaned = MockUtil.valgtMaaned();
-        } else {
-            maaned = DateTime.now().monthOfYear().get();
-        }
-        return maaned < 3;
+        return now().monthOfYear().get() < 3;
     }
 }
