@@ -31,7 +31,6 @@
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <!-- Lagrer IT-info til enhetstestfil -->
         <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco-ut.exec</sonar.jacoco.reportPath>
-        <sonar.jacoco.excludes>no/nav/sbl/dialogarena/sendsoknad/mockmodul/**/*,no/nav/sbl/dialogarena/sendsoknad/dialogselftest/**/*</sonar.jacoco.excludes>
         <sonar.language>java</sonar.language>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
