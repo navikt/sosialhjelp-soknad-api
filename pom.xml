@@ -28,7 +28,8 @@
     <properties>
         <sonar.exclusions>
             **/dialogselftest/**,
-            **/mockmodul/**
+            **/mockmodul/**,
+            **/selftest/**
         </sonar.exclusions>
         <!-- Sonaroppsett for å få med integrasjonstester på testdekning -->
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
