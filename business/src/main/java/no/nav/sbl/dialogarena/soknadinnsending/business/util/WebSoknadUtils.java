@@ -38,6 +38,10 @@ public class WebSoknadUtils {
     public static final String DAGPENGER_VED_PERMITTERING = "NAV 04-01.04";
     public static final String GJENOPPTAK = "NAV 04-16.03";
     public static final String GJENOPPTAK_VED_PERMITTERING = "NAV 04-16.04";
+    public static final String FORELDREPENGER_FODSEL = "NAV 14-05.09";
+    public static final String FORELDREPENGER_ADOPSJON = "NAV 14-05.06";
+    public static final String ENGANGSSTONAD_FODSEL = "NAV 14-05.07";
+    public static final String ENGANGSSTONAD_ADOPSJON = "NAV 14-05.08";
     public static final String EOS_DAGPENGER = "4304";
     public static final String RUTES_I_BRUT = "";
     public static final String PERMITTERT = "Permittert";
@@ -50,11 +54,19 @@ public class WebSoknadUtils {
         put(DAGPENGER_VED_PERMITTERING, "dagpenger.ordinaer");
         put(GJENOPPTAK, "dagpenger.gjenopptak");
         put(GJENOPPTAK_VED_PERMITTERING, "dagpenger.gjenopptak");
+        put(FORELDREPENGER_FODSEL, "foreldresoknad");
+        put(FORELDREPENGER_ADOPSJON, "foreldresoknad");
+        put(ENGANGSSTONAD_FODSEL, "foreldresoknad");
+        put(ENGANGSSTONAD_ADOPSJON, "foreldresoknad");
     }};
 
-    private static final Map<String, String> soknadUrlFasitRessurs = new HashMap<String, String>() {{
+    private static final Map<String, String> SOKNAD_URL_FASIT_RESSURS = new HashMap<String, String>() {{
         put(DAGPENGER, "soknad.dagpenger.ordinaer.path");
         put(GJENOPPTAK, "soknad.dagpenger.gjenopptak.path");
+        put(FORELDREPENGER_FODSEL, "foreldresoknad.foreldrepenger.fodsel.path");
+        put(FORELDREPENGER_ADOPSJON, "foreldresoknad.engangsstonad.adopsjon.path");
+        put(ENGANGSSTONAD_FODSEL, "foreldresoknad.foreldrepenger.fodsel.path");
+        put(ENGANGSSTONAD_ADOPSJON, "foreldresoknad.engangsstonad.adopsjon.path");
     }};
 
     private static String finnSluttaarsakSisteArbeidsforhold(WebSoknad soknad) {
@@ -177,7 +189,7 @@ public class WebSoknadUtils {
     }
 
     public static String getSoknadUrl(String skjemanummer) {
-        return System.getProperty(soknadUrlFasitRessurs.get(skjemanummer));
+        return System.getProperty(SOKNAD_URL_FASIT_RESSURS.get(skjemanummer));
     }
 
     public static String getSoknadPrefix(String skjemanummer) {

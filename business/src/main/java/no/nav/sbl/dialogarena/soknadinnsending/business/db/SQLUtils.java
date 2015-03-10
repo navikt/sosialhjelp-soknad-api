@@ -2,9 +2,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 import static java.lang.System.getProperty;
 
-/**
- * Hjelpeklasse for å håndtere forskjeller mellom sqldialekter
- */
 public class SQLUtils {
 	
 	public static final String DIALECT_PROPERTY = "sqldialect";

@@ -11,9 +11,6 @@ import java.util.List;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
 
-/**
- * Denne klassen fungerer som en oversikt over en søknad. Den Lister ut en søknad med tilhørende felter og avhengigheter.
- */
 @XmlRootElement(name = "soknad")
 public class SoknadStruktur implements Serializable {
 

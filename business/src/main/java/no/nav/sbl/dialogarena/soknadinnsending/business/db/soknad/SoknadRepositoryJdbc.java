@@ -4,7 +4,12 @@ import com.google.common.base.Function;
 import no.nav.modig.lang.collections.iter.ReduceFunction;
 import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.FaktumEgenskap;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
 import org.joda.time.DateTime;
@@ -12,7 +17,11 @@ import org.slf4j.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.*;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
@@ -112,7 +121,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     public void populerFraStruktur(WebSoknad soknad) {
         insertSoknad(soknad, soknad.getSoknadId());
-        List<FaktumEgenskap> egenskaper = on(soknad.getFaktaListe()).reduce(new ReduceFunction<Faktum, List<FaktumEgenskap>>() {
+        List<FaktumEgenskap> egenskaper = on(soknad.getFakta()).reduce(new ReduceFunction<Faktum, List<FaktumEgenskap>>() {
             public List<FaktumEgenskap> reduce(List<FaktumEgenskap> egenskaper, Faktum faktum) {
                 egenskaper.addAll(faktum.getFaktumEgenskaper());
                 return egenskaper;
@@ -122,7 +131,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
                 return new ArrayList<>();
             }
         });
-        getNamedParameterJdbcTemplate().batchUpdate(INSERT_FAKTUM, SqlParameterSourceUtils.createBatch(soknad.getFaktaListe().toArray()));
+        getNamedParameterJdbcTemplate().batchUpdate(INSERT_FAKTUM, SqlParameterSourceUtils.createBatch(soknad.getFakta().toArray()));
         getNamedParameterJdbcTemplate().batchUpdate(INSERT_FAKTUMEGENSKAP, SqlParameterSourceUtils.createBatch(egenskaper.toArray()));
         for (Vedlegg vedlegg : soknad.getVedlegg()) {
             vedleggRepository.opprettVedlegg(vedlegg, null);
@@ -184,7 +193,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     public WebSoknad hentSoknadMedData(Long id) {
         WebSoknad soknad = hentSoknad(id);
-        if(soknad != null) {
+        if (soknad != null) {
             leggTilBrukerdataOgVedleggPaaSoknad(soknad, soknad.getBrukerBehandlingId());
         }
         return soknad;
@@ -192,7 +201,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     public WebSoknad hentSoknadMedData(String behandlingsId) {
         WebSoknad soknad = hentSoknad(behandlingsId);
-        if(soknad != null) {
+        if (soknad != null) {
             leggTilBrukerdataOgVedleggPaaSoknad(soknad, behandlingsId);
         }
         return soknad;
@@ -377,8 +386,14 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     }
 
     public List<Faktum> hentAlleBrukerData(String behandlingsId) {
-        List<Faktum> fakta = select("select * from SOKNADBRUKERDATA where soknad_id = (select soknad_id from SOKNAD where brukerbehandlingid = ?) order by soknadbrukerdata_id asc", faktumRowMapper, behandlingsId);
-        List<FaktumEgenskap> egenskaper = select("select * from FAKTUMEGENSKAP where soknad_id = (select soknad_id from SOKNAD where brukerbehandlingid = ?)", faktumEgenskapRowMapper, behandlingsId);
+        List<Faktum> fakta = select(
+                "select * from SOKNADBRUKERDATA where soknad_id = (select soknad_id from SOKNAD where brukerbehandlingid = ?) order by soknadbrukerdata_id asc",
+                faktumRowMapper,
+                behandlingsId);
+        List<FaktumEgenskap> egenskaper = select(
+                "select * from FAKTUMEGENSKAP where soknad_id = (select soknad_id from SOKNAD where brukerbehandlingid = ?)",
+                faktumEgenskapRowMapper,
+                behandlingsId);
         Map<Long, Faktum> faktaMap = uniqueIndex(fakta, new Function<Faktum, Long>() {
             public Long apply(Faktum input) {
                 return input.getFaktumId();

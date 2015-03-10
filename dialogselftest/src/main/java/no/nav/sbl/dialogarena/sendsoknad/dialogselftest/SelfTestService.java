@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.System.currentTimeMillis;
+import static java.lang.System.getProperty;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -38,7 +39,7 @@ public class SelfTestService extends SelfTestBase {
         String status = STATUS_ERROR;
         HttpURLConnection connection;
         try {
-            connection = (HttpURLConnection) new URL(System.getProperty("soknadsapi.url") + "/internal/isAlive").openConnection();
+            connection = (HttpURLConnection) new URL(getProperty("soknadsapi.url") + "/internal/isAlive").openConnection();
             connection.setConnectTimeout(10000);
             status = connection.getResponseCode() == HTTP_OK ? STATUS_OK : STATUS_ERROR;
         } catch (Exception e) {
@@ -48,50 +49,49 @@ public class SelfTestService extends SelfTestBase {
     }
 
     private List<AvhengighetStatus> getAPISelftest() {
-        List<AvhengighetStatus> APISelftestStatusListe = new ArrayList<>();
-
-        String APISelftestInnhold = lesInnholdApiSelftest();
+        List<AvhengighetStatus> statuser = new ArrayList<>();
+        String innhold = lesInnholdApiSelftest();
 
         try {
-            JSONObject jsonAPISelftest = new JSONObject(APISelftestInnhold);
-
-            JSONArray APIAvhengigheter = jsonAPISelftest.getJSONArray("avhengigheter");
+            JSONObject jsonAPISelftest = new JSONObject(innhold);
+            JSONArray avhengigheter = jsonAPISelftest.getJSONArray("avhengigheter");
 
             AvhengighetStatus avhengighetStatus;
-            for (int tabellRad = 0; tabellRad < APIAvhengigheter.length(); tabellRad++) {
-                JSONObject jsonAPIAvhengighet = APIAvhengigheter.getJSONObject(tabellRad);
+            for (int tabellRad = 0; tabellRad < avhengigheter.length(); tabellRad++) {
+                JSONObject jsonAPIAvhengighet = avhengigheter.getJSONObject(tabellRad);
                 avhengighetStatus = new AvhengighetStatus(
                         jsonAPIAvhengighet.getString("name"),
                         jsonAPIAvhengighet.getString("status"),
                         jsonAPIAvhengighet.getLong("durationMilis"),
                         jsonAPIAvhengighet.getString("beskrivelse"));
-                APISelftestStatusListe.add(avhengighetStatus);
+                statuser.add(avhengighetStatus);
             }
         } catch (JSONException e) {
             logger.warn("<<<<<<Error ved forsøk på å opprette JSON object av API-selftest ", e);
         }
-        return APISelftestStatusListe;
+        return statuser;
     }
 
     private String lesInnholdApiSelftest() {
         StringBuilder innhold = new StringBuilder();
         try {
-            URL apiPath =  new URL(System.getProperty("soknadsapi.url") + "/internal/selftest.json");
+            URL apiPath = new URL(getProperty("soknadsapi.url") + "/internal/selftest.json");
             HttpURLConnection api = (HttpURLConnection) apiPath.openConnection();
             api.setConnectTimeout(10000);
 
-            InputStream APISelftest = api.getInputStream();
-            BufferedReader innholdLeser = new BufferedReader(new InputStreamReader(APISelftest));
+            InputStream apiStream = api.getInputStream();
+            BufferedReader innholdLeser = new BufferedReader(new InputStreamReader(apiStream));
 
-            String input;
-            while( (input = innholdLeser.readLine()) != null ){
+            String input = innholdLeser.readLine();
+            while (input != null) {
                 innhold.append(input);
+                input = innholdLeser.readLine();
             }
             innholdLeser.close();
 
         } catch (Exception e) {
             logger.warn("<<<<<<Error Contacting REST API Selftest", e);
         }
-        return  innhold.toString();
+        return innhold.toString();
     }
 }

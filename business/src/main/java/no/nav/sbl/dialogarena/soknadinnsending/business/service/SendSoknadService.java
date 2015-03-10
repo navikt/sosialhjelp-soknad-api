@@ -8,22 +8,6 @@ import java.util.Map;
 
 public interface SendSoknadService {
 
-    interface Create {
-
-    }
-
-    interface Read {
-
-    }
-
-    interface Update {
-
-    }
-
-    interface Delete {
-
-    }
-
     String startSoknad(String navSoknadId, String fnr);
 
     WebSoknad hentSoknad(String behandlingsId);

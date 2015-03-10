@@ -31,7 +31,7 @@ public class WebSoknad implements Serializable {
     private String uuid;
     private String brukerBehandlingId;
     private String behandlingskjedeId;
-    private List<Faktum> faktaListe;
+    private List<Faktum> fakta;
     private SoknadInnsendingStatus status;
     private String aktoerId;
     private DateTime opprettetDato;
@@ -44,7 +44,7 @@ public class WebSoknad implements Serializable {
 
 
     public WebSoknad() {
-        faktaListe = new ArrayList<>();
+        fakta = new ArrayList<>();
         vedlegg = new ArrayList<>();
     }
 
@@ -126,16 +126,16 @@ public class WebSoknad implements Serializable {
         this.skjemaNummer = skjemaNummer;
     }
 
-    public List<Faktum> getFaktaListe() {
-        return faktaListe;
+    public List<Faktum> getFakta() {
+        return fakta;
     }
 
-    public void setFaktaListe(List<Faktum> faktaListe) {
-        this.faktaListe = faktaListe;
+    public void setFakta(List<Faktum> fakta) {
+        this.fakta = fakta;
     }
 
     public final WebSoknad leggTilFaktum(Faktum faktum) {
-        this.faktaListe.add(faktum);
+        this.fakta.add(faktum);
         return this;
     }
 
@@ -149,8 +149,8 @@ public class WebSoknad implements Serializable {
 
     public long antallFakta() {
         long antallFaktum = 0;
-        if (faktaListe != null) {
-            antallFaktum = faktaListe.size();
+        if (fakta != null) {
+            antallFaktum = fakta.size();
         }
         return antallFaktum;
     }
@@ -179,7 +179,7 @@ public class WebSoknad implements Serializable {
         return this;
     }
     public WebSoknad medFaktum(Faktum faktum) {
-        getFaktaListe().add(faktum);
+        getFakta().add(faktum);
         return this;
     }
 
@@ -232,7 +232,7 @@ public class WebSoknad implements Serializable {
     }
 
     public WebSoknad medBrukerData(List<Faktum> brukerData) {
-        setFaktaListe(new ArrayList<>(brukerData));
+        setFakta(new ArrayList<>(brukerData));
         return this;
     }
 
@@ -247,7 +247,7 @@ public class WebSoknad implements Serializable {
     }
 
     public List<Faktum> getFaktaMedKey(final String key) {
-        return on(faktaListe).filter(new Predicate<Faktum>() {
+        return on(fakta).filter(new Predicate<Faktum>() {
             @Override
             public boolean evaluate(Faktum faktum) {
                 return faktum.getKey().equals(key);
@@ -256,7 +256,7 @@ public class WebSoknad implements Serializable {
     }
 
     public Faktum getFaktumMedKey(final String key) {
-        for (Faktum faktum : faktaListe) {
+        for (Faktum faktum : fakta) {
             if (faktum.getKey().equals(key)) {
                 return faktum;
             }
@@ -297,7 +297,7 @@ public class WebSoknad implements Serializable {
     }
 
     public List<Faktum> getFaktaMedKeyOgPropertyLikTrue(final String key, final String propertyKey) {
-        return on(faktaListe).filter(new Predicate<Faktum>() {
+        return on(fakta).filter(new Predicate<Faktum>() {
             @Override
             public boolean evaluate(Faktum faktum) {
                 return faktum.getKey().equals(key) && faktum.getProperties().get(propertyKey) != null && faktum.getProperties().get(propertyKey).equals("true");
@@ -306,7 +306,7 @@ public class WebSoknad implements Serializable {
     }
 
     public List<Faktum> getFaktaSomStarterMed(final String key) {
-        return on(faktaListe).filter(new Predicate<Faktum>() {
+        return on(fakta).filter(new Predicate<Faktum>() {
             @Override
             public boolean evaluate(Faktum faktum) {
                 return faktum.getKey().startsWith(key);
@@ -316,7 +316,7 @@ public class WebSoknad implements Serializable {
     }
 
     public List<Faktum> getFaktaMedKeyOgParentFaktum(final String key, final Long parentFaktumId) {
-        return on(faktaListe).filter(new Predicate<Faktum>() {
+        return on(fakta).filter(new Predicate<Faktum>() {
             @Override
             public boolean evaluate(Faktum faktum) {
                 return faktum.getKey().equals(key) && faktum.getParrentFaktum().equals(parentFaktumId);
@@ -341,7 +341,7 @@ public class WebSoknad implements Serializable {
                 .append(this.skjemaNummer, rhs.skjemaNummer)
                 .append(this.uuid, rhs.uuid)
                 .append(this.brukerBehandlingId, rhs.brukerBehandlingId)
-                .append(this.faktaListe, rhs.faktaListe)
+                .append(this.fakta, rhs.fakta)
                 .append(this.status, rhs.status)
                 .append(this.aktoerId, rhs.aktoerId)
                 .append(this.opprettetDato, rhs.opprettetDato)
@@ -358,7 +358,7 @@ public class WebSoknad implements Serializable {
                 .append(skjemaNummer)
                 .append(uuid)
                 .append(brukerBehandlingId)
-                .append(faktaListe)
+                .append(fakta)
                 .append(status)
                 .append(aktoerId)
                 .append(opprettetDato)
@@ -375,7 +375,7 @@ public class WebSoknad implements Serializable {
                 .append("skjemaNummer", skjemaNummer)
                 .append("uuid", uuid)
                 .append("brukerBehandlingId", brukerBehandlingId)
-                .append("faktaListe", faktaListe)
+                .append("fakta", fakta)
                 .append("status", status)
                 .append("aktoerId", aktoerId)
                 .append("medOppretteDato", opprettetDato)

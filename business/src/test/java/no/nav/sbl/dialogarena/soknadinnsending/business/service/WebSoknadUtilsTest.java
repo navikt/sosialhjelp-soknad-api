@@ -180,7 +180,7 @@ public class WebSoknadUtilsTest {
         Faktum person = new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("personalia");
         fakta.addAll(Arrays.asList(sluttaarsaker));
         fakta.add(person);
-        soknad.setFaktaListe(fakta);
+        soknad.setFakta(fakta);
         return soknad;
     }
 

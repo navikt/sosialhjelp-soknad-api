@@ -25,8 +25,6 @@ public class SoknadFaktum implements Serializable {
     private String flereTillatt;
     private String erSystemFaktum;
 
-
-
     @XmlID()
     public String getId() {
         return id;

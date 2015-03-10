@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.System.getProperty;
 import static java.net.InetAddress.getLocalHost;
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -103,46 +104,44 @@ public abstract class SelfTestBase {
     private class SelfTestHTML {
 
         private String title;
-        private String newLine = System.getProperty("line.separator");
-        private StringBuilder header = new StringBuilder();
-        private StringBuilder style = new StringBuilder();
-        private StringBuilder body = new StringBuilder();
+        private String newLine = getProperty("line.separator");
+        private String style;
+        private String body = "";
 
         public SelfTestHTML(String title) {
             this.title = title;
         }
 
         public String buildPage() {
-            String header = buildHeader();
-            String body = buildBody();
-            String footer = buildFooter();
-
-            return header + style + body + footer;
+            return buildHeader() + style + buildBody() + buildFooter();
         }
 
         private String buildStyle() {
-            style.append("<style type=\"text/css\">");
-            style.append("table{" +
+            StringBuilder styleBuilder = new StringBuilder();
+            styleBuilder.append("<style type=\"text/css\">");
+            styleBuilder.append("table{" +
                     "background-color: #f0f8ff;" +
                     " border-collapse: collapse;" +
                     "}");
-            style.append(" td, th {" +
+            styleBuilder.append(" td, th {" +
                     "border: 1px #888 solid;" +
                     "border-collapse: collapse;" +
                     "padding: 1px 5px 1px 5px;" +
                     "}");
-            style.append("</style>");
+            styleBuilder.append("</style>");
 
-            return style.toString();
+            String styleResult = styleBuilder.toString();
+            style = styleResult;
+            return styleResult;
         }
 
         private String buildHeader() {
-            header.append("<!DOCTYPE html>" + newLine);
-            header.append("<html lang=\"no\">" + newLine);
-            header.append("<head>" + newLine);
-            header.append("<title>" + title + "</title>" + newLine);
-            header.append(buildStyle() + newLine + "</head>" + newLine);
-            return header.toString();
+            return ""
+                    .concat("<!DOCTYPE html>" + newLine)
+                    .concat("<html lang=\"no\">" + newLine)
+                    .concat("<head>" + newLine)
+                    .concat("<title>" + title + "</title>" + newLine)
+                    .concat(buildStyle() + newLine + "</head>" + newLine);
         }
 
         private String buildFooter() {
@@ -151,7 +150,7 @@ public abstract class SelfTestBase {
 
         private String buildBody() {
             return "<body>" + newLine +
-                    body.toString() + newLine +
+                    body + newLine +
                     "</body>" + newLine;
         }
 
@@ -160,33 +159,32 @@ public abstract class SelfTestBase {
             String str = "<%tag%>%text%</%tag%>".
                     replace("%tag%", tag).
                     replace("%text%", text);
-            body.append(str + newLine);
+            body.concat(str + newLine);
         }
 
         public void appendToBody(List list) {
 
-            body.append("<table>" + newLine);
-            body.append("<table>" + newLine);
-            body.append("<tr>" + newLine);
-            body.append("<th>Status</th>" + newLine);
-            body.append("<th>Navn</th>" + newLine);
-            body.append("<th>Responstid ms</th>" + newLine);
-            body.append("<th>Beskrivelse</th>" + newLine);
-            body.append("</tr>" + newLine);
+            body.concat("<table>" + newLine);
+            body.concat("<table>" + newLine);
+            body.concat("<tr>" + newLine);
+            body.concat("<th>Status</th>" + newLine);
+            body.concat("<th>Navn</th>" + newLine);
+            body.concat("<th>Responstid ms</th>" + newLine);
+            body.concat("<th>Beskrivelse</th>" + newLine);
+            body.concat("</tr>" + newLine);
 
             Iterator iterator = list.iterator();
 
             while (iterator.hasNext()) {
                 SelfTestBase.AvhengighetStatus serviceStatus = (SelfTestBase.AvhengighetStatus) iterator.next();
-                body.append("<tr>" + newLine);
-                body.append("<td>" + serviceStatus.getStatus() + "</td>" + newLine);
-                body.append("<td>" + serviceStatus.getName() + "</td>" + newLine);
-                body.append("<td>" + serviceStatus.getDurationMilis() + "</td>" + newLine);
-                body.append("<td>" + serviceStatus.getBeskrivelse() + "</td>" + newLine);
-                body.append("</tr>" + newLine);
+                body.concat("<tr>" + newLine);
+                body.concat("<td>" + serviceStatus.getStatus() + "</td>" + newLine);
+                body.concat("<td>" + serviceStatus.getName() + "</td>" + newLine);
+                body.concat("<td>" + serviceStatus.getDurationMilis() + "</td>" + newLine);
+                body.concat("<td>" + serviceStatus.getBeskrivelse() + "</td>" + newLine);
+                body.concat("</tr>" + newLine);
             }
-            body.append("</table>" + newLine);
-
+            body.concat("</table>" + newLine);
         }
 
     }
