@@ -121,7 +121,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     public void populerFraStruktur(WebSoknad soknad) {
         insertSoknad(soknad, soknad.getSoknadId());
-        List<FaktumEgenskap> egenskaper = on(soknad.getFaktaListe()).reduce(new ReduceFunction<Faktum, List<FaktumEgenskap>>() {
+        List<FaktumEgenskap> egenskaper = on(soknad.getFakta()).reduce(new ReduceFunction<Faktum, List<FaktumEgenskap>>() {
             public List<FaktumEgenskap> reduce(List<FaktumEgenskap> egenskaper, Faktum faktum) {
                 egenskaper.addAll(faktum.getFaktumEgenskaper());
                 return egenskaper;
@@ -131,7 +131,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
                 return new ArrayList<>();
             }
         });
-        getNamedParameterJdbcTemplate().batchUpdate(INSERT_FAKTUM, SqlParameterSourceUtils.createBatch(soknad.getFaktaListe().toArray()));
+        getNamedParameterJdbcTemplate().batchUpdate(INSERT_FAKTUM, SqlParameterSourceUtils.createBatch(soknad.getFakta().toArray()));
         getNamedParameterJdbcTemplate().batchUpdate(INSERT_FAKTUMEGENSKAP, SqlParameterSourceUtils.createBatch(egenskaper.toArray()));
         for (Vedlegg vedlegg : soknad.getVedlegg()) {
             vedleggRepository.opprettVedlegg(vedlegg, null);

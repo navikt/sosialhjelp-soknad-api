@@ -265,7 +265,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
                 .medValue(String.valueOf(innsendtDato.getMillis()))
                 .medType(SYSTEMREGISTRERT);
         faktaService.lagreSystemFaktum(soknadId, soknadInnsendingsDato, "");
-        soknad.setFaktaListe(repository.hentAlleBrukerData(soknadId));
+        soknad.setFakta(repository.hentAlleBrukerData(soknadId));
 
         soknad.setVedlegg(hentVedleggOgPersister(new XMLMetadataListe(filtrertXmlVedleggListe), soknadId));
 

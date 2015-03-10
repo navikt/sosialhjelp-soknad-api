@@ -54,7 +54,7 @@ public class SoknadRessurs {
     @SjekkTilgangTilSoknad
     public WebSoknad hentSoknadData(@PathParam("behandlingsId") String behandlingsId, @Context HttpServletResponse response) {
         response.addCookie(xsrfCookie(behandlingsId));
-        return soknadService.hentSoknadMedFaktaOgVedlegg(behandlingsId);
+        return soknadService.hentSoknad(behandlingsId);
     }
 
     @GET
