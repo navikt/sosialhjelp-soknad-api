@@ -1,0 +1,30 @@
+<soknad skjemaNummer="NAV 14-05.00" temaKode="FOR">
+    <!-- Søknadsvalg -->
+    <faktum>
+        <id>soknadsvalg.stonadsype</id>
+        <type>java.lang.String</type>
+        <panel>Soknadsvalg</panel>
+    </faktum>
+    <faktum>
+        <id>soknadsvalg.fodselelleradopsjon</id>
+        <type>java.lang.String</type>
+        <panel>Soknadsvalg</panel>
+    </faktum>
+
+    <!-- Veiledning -->
+    <faktum>
+        <id>veiledning.mor.terminbekreftelse</id>
+        <type>java.lang.String</type>
+        <panel>Veiledning</panel>
+    </faktum>
+    <faktum>
+        <id>veiledning.adopsjon.overtakelse</id>
+        <type>java.lang.String</type>
+        <panel>Veiledning</panel>
+    </faktum>
+    <faktum>
+        <id>veiledning.far.harforstattinformasjon</id>
+        <type>java.land.Boolean</type>
+        <panel>Veiledning</panel>
+    </faktum>
+</soknad>

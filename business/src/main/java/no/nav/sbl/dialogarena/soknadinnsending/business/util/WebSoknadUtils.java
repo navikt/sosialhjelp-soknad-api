@@ -38,6 +38,10 @@ public class WebSoknadUtils {
     public static final String DAGPENGER_VED_PERMITTERING = "NAV 04-01.04";
     public static final String GJENOPPTAK = "NAV 04-16.03";
     public static final String GJENOPPTAK_VED_PERMITTERING = "NAV 04-16.04";
+    public static final String FORELDREPENGER_FODSEL = "NAV 14-05.09";
+    public static final String FORELDREPENGER_ADOPSJON = "NAV 14-05.06";
+    public static final String ENGANGSSTONAD_FODSEL = "NAV 14-05.07";
+    public static final String ENGANGSSTONAD_ADOPSJON = "NAV 14-05.08";
     public static final String EOS_DAGPENGER = "4304";
     public static final String RUTES_I_BRUT = "";
     public static final String PERMITTERT = "Permittert";
