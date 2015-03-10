@@ -13,11 +13,12 @@ import static javax.xml.bind.JAXBContext.newInstance;
 
 public class SoknadStrukturUtils {
     public static SoknadStruktur hentStruktur(String skjema) {
+        //TODO: Få flyttet dette ut på et vis? Ta i bruk.
         Map<String, String> strukturDokumenter = new HashMap<>();
-        strukturDokumenter.put("NAV 04-01.04", "NAV 04-01.03.xml");
-        strukturDokumenter.put("NAV 04-01.03", "NAV 04-01.03.xml");
-        strukturDokumenter.put("NAV 04-16.03", "NAV 04-16.03.xml");
-        strukturDokumenter.put("NAV 04-16.04", "NAV 04-16.03.xml");
+        strukturDokumenter.put("NAV 04-01.04", "dagpenger_ordinaer.xml");
+        strukturDokumenter.put("NAV 04-01.03", "dagpenger_ordinaer.xml");
+        strukturDokumenter.put("NAV 04-16.03", "dagpenger_gjenopptak.xml");
+        strukturDokumenter.put("NAV 04-16.04", "dagpenger_gjenopptak.xml");
         strukturDokumenter.put("NAV 14-05.06", "foreldresoknad.xml");
         strukturDokumenter.put("NAV 14-05.07", "foreldresoknad.xml");
         strukturDokumenter.put("NAV 14-05.08", "foreldresoknad.xml");
@@ -30,8 +31,10 @@ public class SoknadStrukturUtils {
         }
 
         try {
-            Unmarshaller unmarshaller = newInstance(SoknadStruktur.class).createUnmarshaller();
-            return (SoknadStruktur) unmarshaller.unmarshal(SoknadStruktur.class.getResourceAsStream(format("/soknader/%s", type)));
+            Unmarshaller unmarshaller = newInstance(SoknadStruktur.class)
+                    .createUnmarshaller();
+            return (SoknadStruktur) unmarshaller.unmarshal(SoknadStruktur.class
+                    .getResourceAsStream(format("/soknader/%s", type)));
         } catch (JAXBException e) {
             throw new RuntimeException("Kunne ikke laste definisjoner. ", e);
         }
