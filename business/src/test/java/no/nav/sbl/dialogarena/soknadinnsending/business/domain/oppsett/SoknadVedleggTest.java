@@ -42,7 +42,7 @@ public class SoknadVedleggTest {
 
     @Test
     public void testConfigForArbeidsforhold(){
-        SoknadStruktur struktur = hentStruktur("NAV 04-01.03");
+        SoknadStruktur struktur = hentStruktur("dagpenger_ordinaer");
         List<SoknadVedlegg> arbeidsforhold = struktur.vedleggFor("arbeidsforhold");
         assertThat(arbeidsforhold.get(0).trengerVedlegg(sagtOppAvArbeidsgiver), is(true));
         assertThat(arbeidsforhold.get(1).trengerVedlegg(kontraktUtgaat), is(true));
@@ -55,7 +55,7 @@ public class SoknadVedleggTest {
         private String kode;
         public ErSkjema(String kode){
             this.kode = kode;
-        };
+        }
 
         @Override
         public boolean evaluate(SoknadVedlegg soknadVedlegg) {

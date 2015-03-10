@@ -180,9 +180,9 @@ public class HandleBarKjoerer implements HtmlGenerator {
                 Integer grense = Integer.parseInt((String) options.param(0));
 
                 WebSoknad soknad = finnWebSoknad(options.context);
-                List<Faktum> faktaListe = soknad.getFaktaSomStarterMed(o);
+                List<Faktum> fakta = soknad.getFaktaSomStarterMed(o);
 
-                int size = on(faktaListe).filter(new Predicate<Faktum>() {
+                int size = on(fakta).filter(new Predicate<Faktum>() {
                     @Override
                     public boolean evaluate(Faktum faktum) {
                         String value = faktum.getValue();

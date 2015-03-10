@@ -355,8 +355,8 @@ public class SoknadRepositoryJdbcTest {
         WebSoknad soknadMedData = soknadRepository.hentSoknadMedData(soknadId);
 
         assertThat(soknadMedData, notNullValue());
-        assertThat(soknadMedData.getFaktaListe(), notNullValue());
-        assertThat(soknadMedData.getFaktaListe().size(), is(3));
+        assertThat(soknadMedData.getFakta(), notNullValue());
+        assertThat(soknadMedData.getFakta().size(), is(3));
     }
 
     @Test

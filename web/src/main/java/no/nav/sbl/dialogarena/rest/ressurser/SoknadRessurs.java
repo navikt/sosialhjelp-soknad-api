@@ -56,7 +56,7 @@ public class SoknadRessurs {
     @SjekkTilgangTilSoknad
     public WebSoknad hentSoknadData(@PathParam("behandlingsId") String behandlingsId, @Context HttpServletResponse response) {
         response.addCookie(xsrfCookie(behandlingsId));
-        return soknadService.hentSoknadMedFaktaOgVedlegg(behandlingsId);
+        return soknadService.hentSoknad(behandlingsId);
     }
 
     @GET
@@ -150,8 +150,8 @@ public class SoknadRessurs {
     }
 
     private static Cookie xsrfCookie(String behandlingId) {
-        Cookie xsrfCookie = new Cookie("XSRF-TOKEN", XsrfGenerator.generateXsrfToken(behandlingId));
-        xsrfCookie.setPath("/sendsoknad");
+        Cookie xsrfCookie = new Cookie("XSRF-TOKEN-SOKNAD-API", XsrfGenerator.generateXsrfToken(behandlingId));
+        xsrfCookie.setPath("/");
         return xsrfCookie;
     }
 

@@ -13,34 +13,27 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Component
 public class PersonInfoService {
 
-    public static final String ARBS = "ARBS";
-
-    public enum Status {REGISTRERT, IKKE_REGISTRERT, UKJENT}
+    static final String UKJENT = "UKJENT";
+    static final String IKKE_REGISTRERT = "IKKE_REGISTRERT";
 
     @Inject
     private PersonInfoServiceSoap personInfoEndpoint;
     private static final Logger logger = getLogger(PersonInfoService.class);
 
-    public Status hentArbeidssokerStatus(String fnr) {
+    public String hentArbeidssokerStatus(String fnr) {
         try {
             Personstatus personstatus = personInfoEndpoint.hentPersonStatus(new Fodselsnr().withFodselsnummer(fnr));
             return mapTilStatus(personstatus);
         } catch (Exception e) {
             logger.error("Feil ved henting av personstatus for fnr {}", fnr, e);
-            return Status.UKJENT;
+            return UKJENT;
         }
     }
 
-    private static Status mapTilStatus(Personstatus personstatus) {
+    private static String mapTilStatus(Personstatus personstatus) {
         if (personstatus == null || personstatus.getPersonData() == null) {
-            return Status.IKKE_REGISTRERT;
+            return IKKE_REGISTRERT;
         }
-        String statusArbeidsoker = personstatus.getPersonData().getStatusArbeidsoker();
-        switch (statusArbeidsoker) {
-            case ARBS:
-                return Status.REGISTRERT;
-            default:
-                return Status.IKKE_REGISTRERT;
-        }
+        return personstatus.getPersonData().getStatusArbeidsoker();
     }
 }

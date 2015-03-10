@@ -16,7 +16,6 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 /**
- * Klasse som tar seg av utsending av epost
  * Alle operasjoner som sender mail er asynkrone. Ingen bekreftelse på om eposten er sendt vil bli gitt.
  */
 public class EmailService {
@@ -30,14 +29,6 @@ public class EmailService {
     private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
     private static final String FRA_ADRESSE = "ikke-svar@nav.no";
 
-    /**
-     * Sender en epost til innsender med link til ettersending og saksoversikt.
-     *
-     * @param ePost        adressen til personen
-     * @param subject      Sunbject til mailen
-     * @param innhold      innhold i mail
-     * @param behandlingId behandinglsiden til søknaden
-     */
     public void sendEpost(final String ePost, final String subject, final String innhold, String behandlingId) {
         final String htmlInnhold = "<p>" + innhold + "</p>";
         addTask(getMimePreperator(ePost, subject, htmlInnhold), behandlingId, ePost, htmlInnhold, 0);
