@@ -26,6 +26,10 @@
     <packaging>pom</packaging>
 
     <properties>
+        <sonar.exclusions>
+            no/nav/sbl/dialogarena/sendsoknad/dialogselftest/**/*,
+            no/nav/sbl/dialogarena/sendsoknad/mockmodul/**/*
+        </sonar.exclusions>
         <!-- Sonaroppsett for å få med integrasjonstester på testdekning -->
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
