@@ -806,7 +806,7 @@
                 </property>
             </activation>
             <properties>
-                <sonar.jacoco.excludes>*no/nav/sbl/dialogarena/sendsoknad/mockmodul/**</sonar.jacoco.excludes>
+                <sonar.jacoco.excludes>*no/nav/sbl/dialogarena/sendsoknad/mockmodul/**:*no/nav/sbl/dialogarena/sendsoknad/dialogselftest/**</sonar.jacoco.excludes>
             </properties>
         </profile>
         <profile>
