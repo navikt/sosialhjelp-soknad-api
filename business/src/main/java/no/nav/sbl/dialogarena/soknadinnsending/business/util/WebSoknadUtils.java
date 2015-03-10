@@ -54,11 +54,19 @@ public class WebSoknadUtils {
         put(DAGPENGER_VED_PERMITTERING, "dagpenger.ordinaer");
         put(GJENOPPTAK, "dagpenger.gjenopptak");
         put(GJENOPPTAK_VED_PERMITTERING, "dagpenger.gjenopptak");
+        put(FORELDREPENGER_FODSEL, "foreldresoknad");
+        put(FORELDREPENGER_ADOPSJON, "foreldresoknad");
+        put(ENGANGSSTONAD_FODSEL, "foreldresoknad");
+        put(ENGANGSSTONAD_ADOPSJON, "foreldresoknad");
     }};
 
     private static final Map<String, String> SOKNAD_URL_FASIT_RESSURS = new HashMap<String, String>() {{
         put(DAGPENGER, "soknad.dagpenger.ordinaer.path");
         put(GJENOPPTAK, "soknad.dagpenger.gjenopptak.path");
+        put(FORELDREPENGER_FODSEL, "foreldresoknad.foreldrepenger.fodsel.path");
+        put(FORELDREPENGER_ADOPSJON, "foreldresoknad.engangsstonad.adopsjon.path");
+        put(ENGANGSSTONAD_FODSEL, "foreldresoknad.foreldrepenger.fodsel.path");
+        put(ENGANGSSTONAD_ADOPSJON, "foreldresoknad.engangsstonad.adopsjon.path");
     }};
 
     private static String finnSluttaarsakSisteArbeidsforhold(WebSoknad soknad) {
