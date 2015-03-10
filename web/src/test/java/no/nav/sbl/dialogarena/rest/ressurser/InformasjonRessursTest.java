@@ -12,12 +12,13 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoSer
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Map;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService.Status.REGISTRERT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
@@ -44,7 +45,7 @@ public class InformasjonRessursTest {
     @Before
     public void setUp() {
         System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", StaticSubjectHandler.class.getName());
-        when(personInfoService.hentArbeidssokerStatus(anyString())).thenReturn(REGISTRERT);
+        when(personInfoService.hentArbeidssokerStatus(anyString())).thenReturn("ARBS");
         when(personaliaService.hentPersonalia(anyString())).thenReturn(personalia());
     }
 
@@ -74,7 +75,7 @@ public class InformasjonRessursTest {
     @Test
     public void utslagskriterierInneholderAlleKriteriene() {
         Map<String, String> utslagskriterier = ressurs.hentUtslagskriterier();
-        assertThat(utslagskriterier.containsKey("registrertArbeidssoker")).isTrue();
+        assertThat(utslagskriterier.containsKey("arbeidssokerstatus")).isTrue();
         assertThat(utslagskriterier.containsKey("alder")).isTrue();
         assertThat(utslagskriterier.containsKey("bosattINorge")).isTrue();
         assertThat(utslagskriterier.containsKey("registrertAdresse")).isTrue();

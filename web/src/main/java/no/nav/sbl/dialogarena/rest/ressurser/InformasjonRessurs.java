@@ -97,9 +97,8 @@ public class InformasjonRessurs {
     @Path("/utslagskriterier")
     public Map<String, String> hentUtslagskriterier() {
         String uid = getSubjectHandler().getUid();
-        PersonInfoService.Status status = personInfoService.hentArbeidssokerStatus(uid);
         Map<String, String> utslagskriterierResultat = new HashMap<>();
-        utslagskriterierResultat.put("registrertArbeidssoker", status.name());
+        utslagskriterierResultat.put("arbeidssokerstatus", personInfoService.hentArbeidssokerStatus(uid));
 
         try {
             Personalia personalia = personaliaService.hentPersonalia(uid);

@@ -11,7 +11,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService.Status;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService.IKKE_REGISTRERT;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService.UKJENT;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
@@ -23,30 +24,23 @@ public class PersonInfoServiceTest {
     @Mock private PersonInfoServiceSoap service;
 
     @Test
-    public void returnererRegistrertHvisStatusArbeidssokerErARBS() throws FaultGeneriskMsg {
+    public void skalReturnererFormidlingsgruppekode() throws FaultGeneriskMsg {
         when(service.hentPersonStatus(any(Fodselsnr.class))).thenReturn(new Personstatus().withPersonData(new PersonstatusType.PersonData().withStatusArbeidsoker("ARBS")));
-        Status status = connector.hentArbeidssokerStatus("12345678910");
-        assertEquals(Status.REGISTRERT, status);
+        String status = connector.hentArbeidssokerStatus("12345678910");
+        assertEquals("ARBS", status);
     }
 
     @Test
-    public void returnererRegistrertHvisStatusArbeidssokerIkkeErARBS() throws FaultGeneriskMsg {
-        when(service.hentPersonStatus(any(Fodselsnr.class))).thenReturn(new Personstatus().withPersonData(new PersonstatusType.PersonData().withStatusArbeidsoker("PARBS")));
-        Status status = connector.hentArbeidssokerStatus("12345678910");
-        assertEquals(Status.IKKE_REGISTRERT, status);
-    }
-
-    @Test
-    public void returnererIkkeRegistrertHvisTjenestenSvarerMedNull() throws FaultGeneriskMsg {
+    public void skalReturnererIkkeRegistrertHvisTjenestenSvarerMedNull() throws FaultGeneriskMsg {
         when(service.hentPersonStatus(any(Fodselsnr.class))).thenReturn(null);
-        Status status = connector.hentArbeidssokerStatus("12345678910");
-        assertEquals(Status.IKKE_REGISTRERT, status);
+        String status = connector.hentArbeidssokerStatus("12345678910");
+        assertEquals(IKKE_REGISTRERT, status);
     }
 
     @Test
     public void returnererUkjentHvisServicekallFeiler() throws FaultGeneriskMsg {
         when(service.hentPersonStatus(any(Fodselsnr.class))).thenThrow(new RuntimeException("Tjenesten er nede"));
-        Status status = connector.hentArbeidssokerStatus("12345678910");
-        assertEquals(Status.UKJENT, status);
+        String status = connector.hentArbeidssokerStatus("12345678910");
+        assertEquals(UKJENT, status);
     }
 }
