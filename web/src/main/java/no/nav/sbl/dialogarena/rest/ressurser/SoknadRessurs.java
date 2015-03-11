@@ -90,7 +90,7 @@ public class SoknadRessurs {
                 opprettetBehandlingsId = soknad.getBrukerBehandlingId();
             }
         }
-        result.put("brukerbehandlingId", opprettetBehandlingsId);
+        result.put("brukerBehandlingId", opprettetBehandlingsId);
         response.addCookie(xsrfCookie(opprettetBehandlingsId));
         return result;
     }
