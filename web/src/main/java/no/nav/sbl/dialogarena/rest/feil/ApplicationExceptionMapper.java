@@ -33,7 +33,7 @@ public class ApplicationExceptionMapper implements ExceptionMapper<ModigExceptio
             logger.warn("Feilet opplasting", e);
         } else if (e instanceof AuthorizationException) {
             response = status(UNAUTHORIZED);
-            logger.info("Ikke tilgang til ressurs", e);
+            logger.warn("Ikke tilgang til ressurs", e);
         } else {
             // TODO: Pakk dette inn i 400-feil pga. BigIP
             response = serverError();
