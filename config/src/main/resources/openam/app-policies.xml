@@ -6,7 +6,7 @@ PUBLIC "-//OpenSSO Policy Administration DTD//EN"
 <!-- extracted from realm, / -->
 <Policies>
 	<Policy name="SendSoknad_001" referralPolicy="false" active="true" >
-		<Rule name="rule_SendSoknad__001_02">
+		<Rule name="rule_SendSoknad_001_02">
 			<ServiceName name="iPlanetAMWebAgentService" />
 			<ResourceName name="https://${DomainName}/sendsoknad/*?*" />
 			<AttributeValuePair>
@@ -23,6 +23,10 @@ PUBLIC "-//OpenSSO Policy Administration DTD//EN"
             </AttributeValuePair>
             <AttributeValuePair>
                 <Attribute name="DELETE" />
+                <Value>allow</Value>
+            </AttributeValuePair>
+            <AttributeValuePair>
+                <Attribute name="OPTIONS"/>
                 <Value>allow</Value>
             </AttributeValuePair>
 		</Rule>
@@ -45,6 +49,10 @@ PUBLIC "-//OpenSSO Policy Administration DTD//EN"
                 <Attribute name="DELETE" />
                 <Value>allow</Value>
             </AttributeValuePair>
+            <AttributeValuePair>
+                <Attribute name="OPTIONS"/>
+                <Value>allow</Value>
+            </AttributeValuePair>
 		</Rule>
 		<Rule name="rule_SendSoknad_001_04">
 			<ServiceName name="iPlanetAMWebAgentService" />
@@ -65,6 +73,10 @@ PUBLIC "-//OpenSSO Policy Administration DTD//EN"
                 <Attribute name="DELETE" />
                 <Value>allow</Value>
             </AttributeValuePair>
+            <AttributeValuePair>
+                <Attribute name="OPTIONS"/>
+                <Value>allow</Value>
+            </AttributeValuePair>
 		</Rule>
 		<Rule name="rule_SendSoknad_001_03">
 			<ServiceName name="iPlanetAMWebAgentService" />
@@ -83,6 +95,10 @@ PUBLIC "-//OpenSSO Policy Administration DTD//EN"
             </AttributeValuePair>
             <AttributeValuePair>
                 <Attribute name="DELETE" />
+                <Value>allow</Value>
+            </AttributeValuePair>
+            <AttributeValuePair>
+                <Attribute name="OPTIONS"/>
                 <Value>allow</Value>
             </AttributeValuePair>
 		</Rule>
