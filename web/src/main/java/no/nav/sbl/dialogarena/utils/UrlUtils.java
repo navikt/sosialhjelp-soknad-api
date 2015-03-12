@@ -3,11 +3,12 @@ package no.nav.sbl.dialogarena.utils;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.lang.System.getProperty;
+
 
 public class UrlUtils {
     public static final String HOSTNAME_REGEX = "(^http.://.*?)/";
 
-    private static final String ETTERSENDING_PATH = System.getProperty("dialoginnsending.ettersending.path");
     private static final String FORTSETT_PATH = "/dagpenger/utslagskriterier";
 
     //todo: denne bør egentlig gå til dialoginnsending slik at den er generell for alle typer søknader
@@ -16,7 +17,7 @@ public class UrlUtils {
     }
 
     public static String getEttersendelseUrl(String requestUrl, String behandlingId) {
-        return getBaseUrl(requestUrl) + ETTERSENDING_PATH + "/" + behandlingId;
+        return getBaseUrl(requestUrl) + getProperty("dialoginnsending.ettersending.path") + "/" + behandlingId;
     }
 
     private static String getBaseUrl(String requestUrl) {
