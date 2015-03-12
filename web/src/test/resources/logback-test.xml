@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <configuration>
-
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%date [%-5level] [%thread] %logger{5} %replace(- [%X{consumerId}, %X{callId}, %X{userId}] ){'- \[, , \] ',''}- %m%n</pattern>
@@ -11,8 +9,8 @@
     <logger name="org.springframework" level="warn" />
     <logger name="no.nav.modig.lang.reflect" level="warn" />
     <logger name="no.nav.sbl" level="debug" />
-
     <logger name="org.apache.cxf" level="info" />
+
     <root level="INFO">
         <appender-ref ref="Console"/>
     </root>

@@ -37,6 +37,17 @@
         </rollingPolicy>
     </appender>
 
+    <appender name="klientlogg" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${APP_LOG_HOME}/${MAIN_APPLICATION}-klient.log</File>
+        <encoder>
+            <pattern>${loggingPattern}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <maxHistory>90</maxHistory>
+            <FileNamePattern>${APP_LOG_HOME}/${MAIN_APPLICATION}-klient-log-%d{yyyy-MM-dd}.gz</FileNamePattern>
+        </rollingPolicy>
+    </appender>
+
     <appender name="SYSLOG" class="ch.qos.logback.classic.net.SyslogAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>${syslog.filter.level:-INFO}</level>
@@ -55,20 +66,16 @@
         <appender-ref ref="infolog"/>
     </logger>
 
-    <logger name="no.nav.sbl" level="info">
-        <appender-ref ref="infolog"/>
-    </logger>
-
-    <logger name="org.apache.cxf" level="info">
-        <appender-ref ref="infolog"/>
-    </logger>
-
     <logger name="org.apache.pdfbox" level="error">
         <appender-ref ref="exceptionlog"/>
     </logger>
 
     <logger name="no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler" level="info">
         <appender-ref ref="batchlog"/>
+    </logger>
+
+    <logger name="klientlogger" level="debug">
+        <appender-ref ref="klientlogg"/>
     </logger>
 
     <root level="${ROOT_LOG_LEVEL:-INFO}">
