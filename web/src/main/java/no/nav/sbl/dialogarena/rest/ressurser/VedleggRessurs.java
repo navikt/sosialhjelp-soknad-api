@@ -6,9 +6,11 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.Opplast
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.XsrfGenerator;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -21,7 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.UnderBehandling;
+import static no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad.Type.Vedlegg;
 
+@Controller
 @Path("/vedlegg/{vedleggId}")
 @Produces(APPLICATION_JSON)
 public class VedleggRessurs {
@@ -35,27 +40,26 @@ public class VedleggRessurs {
     private static final Integer MAKS_TOTAL_FILSTORRELSE = 1024 * 1024 * 10;
 
     @GET
-    @SjekkTilgangTilSoknad
+    @SjekkTilgangTilSoknad(type = Vedlegg)
     public Vedlegg hentVedlegg(@PathParam("vedleggId") final Long vedleggId) {
         return vedleggService.hentVedlegg(vedleggId, false);
     }
 
     @PUT
-    @SjekkTilgangTilSoknad
+    @SjekkTilgangTilSoknad(type = Vedlegg)
     public void lagreVedlegg(@PathParam("vedleggId") final Long vedleggId, Vedlegg vedlegg) {
         vedleggService.lagreVedlegg(vedleggId, vedlegg);
     }
 
     @DELETE
-    @SjekkTilgangTilSoknad
+    @SjekkTilgangTilSoknad(type = Vedlegg)
     public void slettVedlegg(@PathParam("vedleggId") final Long vedleggId) {
         vedleggService.slettVedlegg(vedleggId);
     }
 
     @GET
     @Path("/fil")
-    @Produces(APPLICATION_JSON)
-    @SjekkTilgangTilSoknad
+    @SjekkTilgangTilSoknad(type = Vedlegg)
     public List<Vedlegg> hentVedleggUnderBehandling(@PathParam("vedleggId") final Long vedleggId, @QueryParam("behandlingsId") final String behandlingsId) {
         Vedlegg forventning = vedleggService.hentVedlegg(vedleggId, false);
         return vedleggService.hentVedleggUnderBehandling(behandlingsId, forventning.getFillagerReferanse());
@@ -64,7 +68,7 @@ public class VedleggRessurs {
     @GET
     @Path("/fil")
     @Produces(APPLICATION_OCTET_STREAM)
-    @SjekkTilgangTilSoknad
+    @SjekkTilgangTilSoknad(type = Vedlegg)
     public byte[] hentVedleggData(@PathParam("vedleggId") final Long vedleggId, @Context HttpServletResponse response) {
         Vedlegg vedlegg = vedleggService.hentVedlegg(vedleggId, true);
         response.setHeader("Content-Disposition", "attachment; filename=\"" + vedlegg.getVedleggId() + ".pdf\"");
@@ -74,7 +78,7 @@ public class VedleggRessurs {
     @GET
     @Path("/fil")
     @Produces("image/*")
-    @SjekkTilgangTilSoknad
+    @SjekkTilgangTilSoknad(type = Vedlegg)
     public byte[] lagForhandsvisningForVedlegg(@PathParam("vedleggId") final Long vedleggId, @QueryParam("side") final int side) {
         return vedleggService.lagForhandsvisning(vedleggId, side);
     }
@@ -82,18 +86,19 @@ public class VedleggRessurs {
     @POST
     @Path("/fil")
     @Consumes(MULTIPART_FORM_DATA)
-    @SjekkTilgangTilSoknad
+    @Produces("text/plain; charset=utf-8") // må være slik for at det skal fungere i IE sier Wang
+    @SjekkTilgangTilSoknad(sjekkXsrf = false, type = Vedlegg)
     public List<Vedlegg> lastOppFiler(@PathParam("vedleggId") final Long vedleggId, @QueryParam("behandlingsId") String behandlingsId,
-                                        @FormDataParam("files[]") final List<FormDataBodyPart> files) {
-        String id = behandlingsId;
+                                          @QueryParam("X-XSRF-TOKEN") final String xsrfToken, @FormDataParam("files[]") final List<FormDataBodyPart> files) {
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId);
         if (soknad.getBehandlingskjedeId() != null) {
-            id = soknad.getBehandlingskjedeId();
+            behandlingsId = soknad.getBehandlingskjedeId();
         }
 
+        XsrfGenerator.sjekkXsrfToken(xsrfToken, behandlingsId);
         Vedlegg forventning = vedleggService.hentVedlegg(vedleggId, false);
 
-        if (erFilForStor(id, files, forventning)) {
+        if (erFilForStor(behandlingsId, files, forventning)) {
             throw new OpplastingException("Kunne ikke lagre fil fordi total filstørrelse er for stor", null,
                     "vedlegg.opplasting.feil.forStor");
         }
@@ -112,11 +117,11 @@ public class VedleggRessurs {
                     .medFillagerReferanse(forventning.getFillagerReferanse())
                     .medData(in)
                     .medOpprettetDato(forventning.getOpprettetDato())
-                    .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
+                    .medInnsendingsvalg(UnderBehandling);
 
             List<Long> ids = vedleggService.splitOgLagreVedlegg(vedlegg, new ByteArrayInputStream(in));
-            for (Long vedleggsId : ids) {
-                res.add(vedleggService.hentVedlegg(vedleggsId, false));
+            for (Long id : ids) {
+                res.add(vedleggService.hentVedlegg(id, false));
             }
         }
         return res;

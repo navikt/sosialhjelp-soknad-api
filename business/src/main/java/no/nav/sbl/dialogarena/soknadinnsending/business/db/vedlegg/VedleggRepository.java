@@ -37,4 +37,6 @@ public interface VedleggRepository {
 
     void slettVedleggMedVedleggId(Long vedleggId);
 
+    String hentBehandlingsIdTilVedlegg(Long vedleggId);
+
 }

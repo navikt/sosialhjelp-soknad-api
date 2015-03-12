@@ -35,9 +35,9 @@ public class XsrfGenerator {
 
     public static void sjekkXsrfToken(String givenToken, String behandlingsId) {
         String token = generateXsrfToken(behandlingsId);
-        boolean sjekk = token.equals(givenToken)
+        boolean valid = token.equals(givenToken)
                 || generateXsrfToken(behandlingsId, new DateTime().minusDays(1).toString("yyyyMMdd")).equals(givenToken);
-        if (!sjekk) {
+        if (!valid) {
             throw new AuthorizationException("Feil token");
         }
     }

@@ -230,6 +230,17 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         return hentFaktum(faktumId);
     }
 
+    @Override
+    public String hentBehandlingsIdTilFaktum(Long faktumId) {
+        final String sql = "select brukerbehandlingId from soknad where soknad_id = (select soknad_id from soknadbrukerdata where soknadbrukerdata_id = ?)";
+        try {
+            return getJdbcTemplate().queryForObject(sql, String.class, faktumId);
+        } catch (EmptyResultDataAccessException e) {
+            logger.debug("Fant ikke behandlingsId for faktumId {}", faktumId);
+            return null;
+        }
+    }
+
     public List<Faktum> hentBarneFakta(Long soknadId, Long faktumId) {
         String hentBarnefaktaSql = "select * from soknadbrukerdata where soknad_id = ? and parrent_faktum = ?";
         String propertiesSql = "select * from FAKTUMEGENSKAP where soknad_id = ? and faktum_id=?";

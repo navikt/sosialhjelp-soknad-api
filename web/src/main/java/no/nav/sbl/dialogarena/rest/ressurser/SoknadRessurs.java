@@ -15,6 +15,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.util.SoknadStrukturUtils
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.XsrfGenerator;
 import no.nav.sbl.dialogarena.websoknad.domain.StartSoknad;
+import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 import javax.servlet.http.Cookie;
@@ -30,6 +31,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 
+@Controller
 @Path("/soknader")
 @Produces(APPLICATION_JSON)
 public class SoknadRessurs {

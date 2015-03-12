@@ -5,6 +5,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad;
+import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -12,10 +13,12 @@ import java.util.List;
 
 import static java.lang.String.format;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad.Type.Faktum;
 
 /**
  * Klassen håndterer alle rest kall for å hente grunnlagsdata til applikasjonen.
  */
+@Controller
 @Path("/fakta")
 @Produces(APPLICATION_JSON)
 public class FaktaRessurs {
@@ -38,7 +41,7 @@ public class FaktaRessurs {
     @PUT
     @Path("/{faktumId}")
     @Consumes(APPLICATION_JSON)
-    @SjekkTilgangTilSoknad
+    @SjekkTilgangTilSoknad(type = Faktum)
     public Faktum lagreFaktum(@PathParam("faktumId") final Long faktumId, Faktum faktum) {
         if (faktumId.equals(faktum.getFaktumId())) {
             return faktaService.lagreSoknadsFelt(faktum);
@@ -51,7 +54,7 @@ public class FaktaRessurs {
     @POST
     @Path("/{faktumId}")
     @Consumes(APPLICATION_JSON)
-    @SjekkTilgangTilSoknad
+    @SjekkTilgangTilSoknad(type = Faktum)
     public Faktum lagreFaktumMedPost(@PathParam("faktumId") final Long faktumId, Faktum faktum) {
         return lagreFaktum(faktumId, faktum);
     }
@@ -59,14 +62,14 @@ public class FaktaRessurs {
 
     @DELETE
     @Path("/{faktumId}")
-    @SjekkTilgangTilSoknad
+    @SjekkTilgangTilSoknad(type = Faktum)
     public void slettFaktum(@PathParam("faktumId") final Long faktumId) {
         faktaService.slettBrukerFaktum(faktumId);
     }
 
     @GET
     @Path("/{faktumId}/vedlegg")
-    @SjekkTilgangTilSoknad
+    @SjekkTilgangTilSoknad(type = Faktum)
     public List<Vedlegg> hentVedlegg(@PathParam("faktumId") final Long faktumId) {
         return vedleggService.hentPaakrevdeVedlegg(faktumId);
     }

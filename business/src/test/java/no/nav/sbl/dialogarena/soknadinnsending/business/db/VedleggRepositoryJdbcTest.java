@@ -19,9 +19,7 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.util.List;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
@@ -83,6 +81,19 @@ public class VedleggRepositoryJdbcTest {
         Long id = vedleggRepository.opprettVedlegg(v, lagret);
         byte[] hentet = vedleggRepository.hentVedleggData(id);
         assertThat(hentet, is(equalTo(lagret)));
+    }
+
+    @Test
+    public void skalHenteBehandligsIdTilVedlegg() {
+        Long vedleggId = vedleggRepository.opprettVedlegg(getVedlegg(), null);
+        String behandlingsIdTilVedlegg = vedleggRepository.hentBehandlingsIdTilVedlegg(vedleggId);
+        assertThat(BEHANDLINGS_ID, is(behandlingsIdTilVedlegg));
+    }
+
+    @Test
+    public void skalReturnereNullHvisVedleggIdIkkeFinnes() {
+        String behandlingsIdTilVedlegg = vedleggRepository.hentBehandlingsIdTilVedlegg(666L);
+        assertThat(behandlingsIdTilVedlegg, is(nullValue()));
     }
 
     @Test

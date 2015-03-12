@@ -4,10 +4,8 @@ import no.nav.sbl.dialogarena.print.HandleBarKjoerer;
 import no.nav.sbl.dialogarena.print.HtmlGenerator;
 import no.nav.sbl.dialogarena.selftest.SelfTest;
 import no.nav.sbl.dialogarena.soknadinnsending.business.selftest.SelfTestService;
-import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SikkerhetsAspect;
-import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.Tilgangskontroll;
-import no.nav.sbl.dialogarena.websoknad.service.EmailService;
 import no.nav.sbl.dialogarena.utils.InnloggetBruker;
+import no.nav.sbl.dialogarena.websoknad.service.EmailService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -44,16 +42,6 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public SikkerhetsAspect sikkerhet() {
-        return new SikkerhetsAspect();
-    }
-
-    @Bean
-    public Tilgangskontroll tilgangskontroll() {
-        return new Tilgangskontroll();
-    }
-
-    @Bean
     public TaskExecutor thumbnailExecutor() {
         ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
         threadPoolTaskExecutor.setCorePoolSize(1);
@@ -76,7 +64,7 @@ public class ApplicationConfig {
             javaMailSender.setPort(Integer.parseInt(smtpServerPort));
         } else {
             javaMailSender.setPort(25);
-            logger.error("Smtpport not set properly, using default port 25");
+            logger.warn("Smtpport not set properly, using default port 25");
         }
         return javaMailSender;
     }

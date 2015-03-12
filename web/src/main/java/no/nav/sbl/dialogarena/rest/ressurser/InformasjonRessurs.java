@@ -12,6 +12,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoSer
 import no.nav.sbl.dialogarena.utils.InnloggetBruker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -26,6 +27,7 @@ import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 /**
  * Klassen håndterer rest kall for å hente informasjon
  */
+@Controller
 @Path("/informasjon")
 @Produces(APPLICATION_JSON)
 public class InformasjonRessurs {
