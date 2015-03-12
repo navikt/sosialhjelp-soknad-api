@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.rest.Logg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.PersonAlder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.dto.Land;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
@@ -15,10 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import java.util.*;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -33,6 +31,7 @@ import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 public class InformasjonRessurs {
 
     private static final Logger logger = LoggerFactory.getLogger(InformasjonRessurs.class);
+    private static final Logger klientlogger = LoggerFactory.getLogger("klientlogger");
 
     @Inject
     private InformasjonService informasjon;
@@ -114,6 +113,27 @@ public class InformasjonRessurs {
             utslagskriterierResultat.put("error", e.getMessage());
         }
         return utslagskriterierResultat;
+    }
+
+    @POST
+    @Path("/actions/logg")
+    public void loggFraKlient(Logg logg) {
+        String level = logg.getLevel();
+
+        switch (level) {
+            case "INFO":
+                klientlogger.info(logg.melding());
+                break;
+            case "WARN":
+                klientlogger.warn(logg.melding());
+                break;
+            case "ERROR":
+                klientlogger.error(logg.melding());
+                break;
+            default:
+                klientlogger.debug(logg.melding());
+                break;
+        }
     }
 
 }
