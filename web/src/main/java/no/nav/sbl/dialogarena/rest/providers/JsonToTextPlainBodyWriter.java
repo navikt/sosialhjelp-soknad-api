@@ -31,7 +31,8 @@ public class JsonToTextPlainBodyWriter implements MessageBodyWriter<Object> {
     }
 
     @Override
-    public void writeTo(Object object, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
+    public void writeTo(Object object, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
+            throws IOException, WebApplicationException {
         entityStream.write(JSON_MAPPER.writeValueAsBytes(object));
     }
 
