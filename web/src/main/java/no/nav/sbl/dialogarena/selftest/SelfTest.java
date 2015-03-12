@@ -110,27 +110,27 @@ public class SelfTest {
         }
 
         private String buildStyle() {
-            style.concat("<style type=\"text/css\">");
-            style.concat("table{" +
+            style = style.concat("<style type=\"text/css\">");
+            style = style.concat("table{" +
                     "background-color: #f0f8ff;" +
                     " border-collapse: collapse;" +
                     "}");
-            style.concat(" td, th {" +
+            style = style.concat(" td, th {" +
                     "border: 1px #888 solid;" +
                     "border-collapse: collapse;" +
                     "padding: 1px 5px 1px 5px;" +
                     "}");
-            style.concat("</style>");
+            style = style.concat("</style>");
 
             return style;
         }
 
         private String buildHeader() {
-            header.concat("<!DOCTYPE html>" + newLine);
-            header.concat("<html lang=\"no\">" + newLine);
-            header.concat("<head>" + newLine);
-            header.concat("<title>" + title + "</title>" + newLine);
-            header.concat(buildStyle() + newLine + "</head>" + newLine);
+            header = header.concat("<!DOCTYPE html>" + newLine);
+            header = header.concat("<html lang=\"no\">" + newLine);
+            header = header.concat("<head>" + newLine);
+            header = header.concat("<title>" + title + "</title>" + newLine);
+            header = header.concat(buildStyle() + newLine + "</head>" + newLine);
             return header;
         }
 
@@ -149,32 +149,32 @@ public class SelfTest {
             String str = "<%tag%>%text%</%tag%>".
                     replace("%tag%", tag).
                     replace("%text%", text);
-            body.concat(str + newLine);
+            body = body.concat(str + newLine);
         }
 
         public void appendToBody(List list) {
 
-            body.concat("<table>" + newLine);
-            body.concat("<table>" + newLine);
-            body.concat("<tr>" + newLine);
-            body.concat("<th>Status</th>" + newLine);
-            body.concat("<th>Navn</th>" + newLine);
-            body.concat("<th>Responstid ms</th>" + newLine);
-            body.concat("<th>Beskrivelse</th>" + newLine);
-            body.concat("</tr>" + newLine);
+            body = body.concat("<table>" + newLine);
+            body = body.concat("<table>" + newLine);
+            body = body.concat("<tr>" + newLine);
+            body = body.concat("<th>Status</th>" + newLine);
+            body = body.concat("<th>Navn</th>" + newLine);
+            body = body.concat("<th>Responstid ms</th>" + newLine);
+            body = body.concat("<th>Beskrivelse</th>" + newLine);
+            body = body.concat("</tr>" + newLine);
 
             Iterator iterator = list.iterator();
 
             while (iterator.hasNext()) {
                 AvhengighetStatus serviceStatus = (AvhengighetStatus) iterator.next();
-                body.concat("<tr>" + newLine);
-                body.concat("<td>" + serviceStatus.getStatus() + "</td>" + newLine);
-                body.concat("<td>" + serviceStatus.getName() + "</td>" + newLine);
-                body.concat("<td>" + serviceStatus.getDurationMilis() + "</td>" + newLine);
-                body.concat("<td>" + serviceStatus.getBeskrivelse() + "</td>" + newLine);
-                body.concat("</tr>" + newLine);
+                body = body.concat("<tr>" + newLine);
+                body = body.concat("<td>" + serviceStatus.getStatus() + "</td>" + newLine);
+                body = body.concat("<td>" + serviceStatus.getName() + "</td>" + newLine);
+                body = body.concat("<td>" + serviceStatus.getDurationMilis() + "</td>" + newLine);
+                body = body.concat("<td>" + serviceStatus.getBeskrivelse() + "</td>" + newLine);
+                body = body.concat("</tr>" + newLine);
             }
-            body.concat("</table>" + newLine);
+            body = body.concat("</table>" + newLine);
 
         }
 
@@ -192,6 +192,7 @@ public class SelfTest {
     private void setVersion(ServletContext context) {
 
         try {
+
             try (InputStream inputStream = context.getResourceAsStream(("/META-INF/MANIFEST.MF"))) {
                 Manifest manifest = new Manifest(inputStream);
                 version = manifest.getMainAttributes().getValue(Attributes.Name.IMPLEMENTATION_VERSION.toString());
@@ -200,6 +201,7 @@ public class SelfTest {
             logger.error("Unable to fetch the application version", e);
             version = "Unknown";
         }
+
     }
 
 
