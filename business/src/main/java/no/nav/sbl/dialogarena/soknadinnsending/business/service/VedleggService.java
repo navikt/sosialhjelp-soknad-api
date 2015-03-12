@@ -11,6 +11,7 @@ public interface VedleggService {
 
     List<Vedlegg> hentVedleggUnderBehandling(String behandlingsId, String fillagerReferanse);
 
+    Vedlegg hentVedlegg(Long vedleggId);
     Vedlegg hentVedlegg(Long vedleggId, boolean medInnhold);
 
     String hentBehandlingsId(Long vedleggId);

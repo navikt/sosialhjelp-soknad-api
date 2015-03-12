@@ -139,6 +139,11 @@ public class DefaultVedleggService implements VedleggService {
     }
 
     @Override
+    public Vedlegg hentVedlegg(Long vedleggId) {
+        return hentVedlegg(vedleggId, false);
+    }
+
+    @Override
     public Vedlegg hentVedlegg(Long vedleggId, boolean medInnhold) {
         if (medInnhold) {
             Vedlegg vedlegg = vedleggRepository.hentVedleggMedInnhold(vedleggId);

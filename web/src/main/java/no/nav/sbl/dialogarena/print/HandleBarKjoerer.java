@@ -54,8 +54,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
 
     public String fyllHtmlMalMedInnhold(WebSoknad soknad, String file) throws IOException {
         this.soknadTypePrefix = soknad.getSoknadPrefix();
-        return getHandlebars().compile(file)
-                .apply(soknad);
+        return getHandlebars().compile(file).apply(soknad);
 
     }
 

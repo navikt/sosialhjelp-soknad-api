@@ -12,4 +12,8 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
     public Properties getBundleFor(String prefix, Locale locale) {
         return getMergedProperties(locale).getProperties();
     }
+
+    public String finnTekst(String code, Object[] args, Locale locale) {
+        return getMessage(code, args, locale);
+    }
 }

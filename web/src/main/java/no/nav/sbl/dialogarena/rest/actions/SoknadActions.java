@@ -53,14 +53,14 @@ public class SoknadActions {
     private EmailService emailService;
 
     @Inject
-    private NavMessageSource messageSource;
+    private NavMessageSource tekster;
 
     @GET
     @Path("/leggved")
     @SjekkTilgangTilSoknad
     public Vedlegg leggVedVedlegg(@PathParam("behandlingsId") final String behandlingsId, @QueryParam("vedleggId") final Long vedleggId) {
         vedleggService.genererVedleggFaktum(behandlingsId, vedleggId);
-        return vedleggService.hentVedlegg(vedleggId, false);
+        return vedleggService.hentVedlegg(vedleggId);
     }
 
     @POST
@@ -91,9 +91,8 @@ public class SoknadActions {
     @Path("/fortsettsenere")
     @SjekkTilgangTilSoknad
     public void sendEpost(@PathParam("behandlingsId") String behandlingsId, FortsettSenere epost, @Context HttpServletRequest request) {
-        String content = messageSource.getMessage("fortsettSenere.sendEpost.epostInnhold",
-                new Object[]{getGjenopptaUrl(request.getRequestURL().toString(), behandlingsId)}, new Locale("nb", "NO"));
-        String subject = messageSource.getMessage("fortsettSenere.sendEpost.epostTittel", null, new Locale("nb", "NO"));
+        String content = tekster.finnTekst("fortsettSenere.sendEpost.epostInnhold", new Object[]{getGjenopptaUrl(request.getRequestURL().toString(), behandlingsId)}, new Locale("nb", "NO"));
+        String subject = tekster.finnTekst("fortsettSenere.sendEpost.epostTittel", null, new Locale("nb", "NO"));
 
         emailService.sendEpost(epost.getEpost(), subject, content, behandlingsId);
     }
@@ -103,16 +102,18 @@ public class SoknadActions {
     @SjekkTilgangTilSoknad
     public void sendEpost(@PathParam("behandlingsId") String behandlingsId, SoknadBekreftelse soknadBekreftelse, @Context HttpServletRequest request) {
         if (soknadBekreftelse.getEpost() != null && !soknadBekreftelse.getEpost().isEmpty()) {
-            String subject = messageSource.getMessage("sendtSoknad.sendEpost.epostSubject", null, new Locale("nb", "NO"));
+            String subject = tekster.finnTekst("sendtSoknad.sendEpost.epostSubject", null, new Locale("nb", "NO"));
             String ettersendelseUrl = getEttersendelseUrl(request.getRequestURL().toString(), behandlingsId);
             String saksoversiktLink = saksoversiktUrl + "/detaljer/" + soknadBekreftelse.getTemaKode() + "/" + behandlingsId;
-            String innhold = messageSource.getMessage("sendtSoknad.sendEpost.epostInnhold", new Object[]{saksoversiktLink, ettersendelseUrl}, new Locale("nb", "NO"));
+
+            String innhold;
             if (soknadBekreftelse.getErEttersendelse()) {
-                innhold = messageSource.getMessage("sendEttersendelse.sendEpost.epostInnhold", new Object[]{saksoversiktLink}, new Locale("nb", "NO"));
+                innhold = tekster.finnTekst("sendEttersendelse.sendEpost.epostInnhold", new Object[]{saksoversiktLink}, new Locale("nb", "NO"));
+            } else {
+                innhold = tekster.finnTekst("sendtSoknad.sendEpost.epostInnhold", new Object[]{saksoversiktLink, ettersendelseUrl}, new Locale("nb", "NO"));
             }
 
             emailService.sendEpost(soknadBekreftelse.getEpost(), subject, innhold, behandlingsId);
-
         } else {
             logger.debug("Fant ingen epostadresse");
         }
