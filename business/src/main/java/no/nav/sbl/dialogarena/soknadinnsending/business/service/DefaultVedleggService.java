@@ -152,6 +152,11 @@ public class DefaultVedleggService implements VedleggService {
     }
 
     @Override
+    public String hentBehandlingsId(Long vedleggId) {
+        return vedleggRepository.hentBehandlingsIdTilVedlegg(vedleggId);
+    }
+
+    @Override
     public void slettVedlegg(Long vedleggId) {
         Vedlegg vedlegg = hentVedlegg(vedleggId, false);
         WebSoknad soknad = soknadService.hentSoknadMedFaktaOgVedlegg(vedlegg.getSoknadId());

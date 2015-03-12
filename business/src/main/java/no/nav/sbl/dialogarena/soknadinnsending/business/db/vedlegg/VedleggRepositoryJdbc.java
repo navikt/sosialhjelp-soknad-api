@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.PreparedStatementSetter;
@@ -30,13 +31,16 @@ import java.util.List;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.modig.lang.collections.PredicateUtils.not;
+import static org.slf4j.LoggerFactory.getLogger;
 
 @Named("vedleggRepository")
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
 @Component
 public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepository {
+    private static final Logger logger = getLogger(VedleggRepositoryJdbc.class);
 
     private DefaultLobHandler lobHandler;
+
 
     public VedleggRepositoryJdbc() {
         lobHandler = new DefaultLobHandler();
@@ -161,6 +165,17 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
     @Override
     public void slettVedleggMedVedleggId(Long vedleggId) {
         getJdbcTemplate().update("delete from vedlegg where vedlegg_id = ?", vedleggId);
+    }
+
+    @Override
+    public String hentBehandlingsIdTilVedlegg(Long vedleggId) {
+        final String sql = "select brukerbehandlingId from soknad where soknad_id = (select soknad_id from vedlegg where vedlegg_id = ?)";
+        try {
+            return getJdbcTemplate().queryForObject(sql, String.class, vedleggId);
+        } catch (EmptyResultDataAccessException e) {
+            logger.debug("Fant ikke behandlingsId for vedleggId {}", vedleggId);
+            return null;
+        }
     }
 
     @Override

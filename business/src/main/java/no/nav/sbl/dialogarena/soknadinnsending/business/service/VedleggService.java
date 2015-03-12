@@ -13,6 +13,8 @@ public interface VedleggService {
 
     Vedlegg hentVedlegg(Long vedleggId, boolean medInnhold);
 
+    String hentBehandlingsId(Long vedleggId);
+
     void slettVedlegg(Long vedleggId);
 
     byte[] lagForhandsvisning(Long vedleggId, int side);
