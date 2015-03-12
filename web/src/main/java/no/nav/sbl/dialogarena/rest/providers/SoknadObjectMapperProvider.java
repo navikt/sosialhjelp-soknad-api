@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.rest;
+package no.nav.sbl.dialogarena.rest.providers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;

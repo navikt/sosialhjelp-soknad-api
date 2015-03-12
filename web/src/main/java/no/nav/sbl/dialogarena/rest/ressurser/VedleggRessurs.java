@@ -86,10 +86,10 @@ public class VedleggRessurs {
     @POST
     @Path("/fil")
     @Consumes(MULTIPART_FORM_DATA)
-    @Produces("text/plain; charset=utf-8") // må være slik for at det skal fungere i IE sier Wang
-    @SjekkTilgangTilSoknad(sjekkXsrf = false, type = Vedlegg)
+    @Produces("text/plain;charset=utf-8") // må være slik for at det skal fungere i IE9 sier Wang
+    @SjekkTilgangTilSoknad(sjekkXsrf = false, type = Vedlegg) // sjekkXsrf er false fordi IE9 ikke kan sende xsrf-token i header, kan fjernes en vakker dag når vi ikke skal støtte IE9
     public List<Vedlegg> lastOppFiler(@PathParam("vedleggId") final Long vedleggId, @QueryParam("behandlingsId") String behandlingsId,
-                                          @QueryParam("X-XSRF-TOKEN") final String xsrfToken, @FormDataParam("files[]") final List<FormDataBodyPart> files) {
+                                          @FormDataParam("X-XSRF-TOKEN") final String xsrfToken, @FormDataParam("files[]") final List<FormDataBodyPart> files) {
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId);
         if (soknad.getBehandlingskjedeId() != null) {
             behandlingsId = soknad.getBehandlingskjedeId();

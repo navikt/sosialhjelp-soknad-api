@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import no.nav.sbl.dialogarena.rest.providers.SoknadObjectMapperProvider;
 import org.hamcrest.CoreMatchers;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
