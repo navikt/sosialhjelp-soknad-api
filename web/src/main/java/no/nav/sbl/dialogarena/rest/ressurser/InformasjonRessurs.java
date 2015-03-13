@@ -4,11 +4,13 @@ import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.rest.Logg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.PersonAlder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.dto.Land;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.LandService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.SoknadStrukturUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService;
 import no.nav.sbl.dialogarena.utils.InnloggetBruker;
 import org.slf4j.Logger;
@@ -92,6 +94,18 @@ public class InformasjonRessurs {
     @Path("/land/actions/hentstatsborgerskapstype")
     public Map<String, String> hentStatsborgerskapstype(@QueryParam("landkode") String landkode) {
         return landService.hentStatsborgerskapstype(landkode);
+    }
+
+    @GET
+    @Path("/soknadstruktur")
+    public SoknadStruktur hentSoknadStruktur(@QueryParam("skjemanummer") String skjemanummer, @QueryParam("filter") String filter) {
+        SoknadStruktur soknadStruktur = SoknadStrukturUtils.hentStruktur(skjemanummer);
+        if ("temakode".equalsIgnoreCase(filter)) {
+            SoknadStruktur miniSoknadstruktur = new SoknadStruktur();
+            miniSoknadstruktur.setTemaKode(soknadStruktur.getTemaKode());
+            return miniSoknadstruktur;
+        }
+        return soknadStruktur;
     }
 
     @GET

@@ -6,12 +6,10 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.EttersendingService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.util.SoknadStrukturUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.XsrfGenerator;
 import no.nav.sbl.dialogarena.websoknad.domain.StartSoknad;
@@ -125,14 +123,6 @@ public class SoknadRessurs {
     @SjekkTilgangTilSoknad
     public void slettSoknad(@PathParam("behandlingsId") String behandlingsId) {
         soknadService.avbrytSoknad(behandlingsId);
-    }
-
-    @GET
-    @Path("/{behandlingsId}/struktur")
-    @SjekkTilgangTilSoknad
-    public SoknadStruktur hentSoknadStruktur(@PathParam("behandlingsId") String behandlingsId) {
-        String skjemanavn = soknadService.hentSoknad(behandlingsId).getskjemaNummer();
-        return SoknadStrukturUtils.hentStruktur(skjemanavn);
     }
 
     @GET
