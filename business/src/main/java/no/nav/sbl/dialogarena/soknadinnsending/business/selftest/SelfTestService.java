@@ -184,8 +184,8 @@ public class SelfTestService  {
         } catch (Exception e) {
             logger.warn("<<<<<<Error Contacting Local database", e);
         }
-        String url = ((DriverManagerDataSource) dataSource).getUrl();
-        return new AvhengighetStatus("LOKAL_DATABASE_PING", status, currentTimeMillis() - start, format("URL: %s", url));
+        String beskrivelse = "Lokal database";
+        return new AvhengighetStatus("LOKAL_DATABASE_PING", status, currentTimeMillis() - start, beskrivelse);
     }
 
 }
