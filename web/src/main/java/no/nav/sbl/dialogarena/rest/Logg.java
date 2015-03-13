@@ -7,13 +7,13 @@ import static java.lang.String.format;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Logg {
 
-    String level;
-    String message;
-    String jsFileUrl;
-    String lineNumber;
-    String columnNumber;
-    String url;
-    String userAgent;
+    private String level;
+    private String message;
+    private String jsFileUrl;
+    private String lineNumber;
+    private String columnNumber;
+    private String url;
+    private String userAgent;
 
     public String getLevel() {
         return level;
