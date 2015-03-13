@@ -24,7 +24,7 @@
     </faktum>
     <faktum>
         <id>veiledning.far.harforstattinformasjon</id>
-        <type>java.land.Boolean</type>
+        <type>java.lang.Boolean</type>
         <panel>Veiledning</panel>
     </faktum>
 </soknad>
