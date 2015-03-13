@@ -10,6 +10,7 @@ import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
 import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
 import org.slf4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.Properties;
 
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
@@ -99,7 +101,8 @@ public class SelfTestService  {
         } catch (Exception e) {
             logger.warn("<<<<<<Error Contacting Henvendelse WS", e);
         }
-        return new AvhengighetStatus("HENVENDELSE_TJENESTE_PING", status, currentTimeMillis() - start);
+        String beskrivelse = "Web service for Henvendelse";
+        return new AvhengighetStatus("HENVENDELSE_TJENESTE_PING", status, currentTimeMillis() - start, beskrivelse);
     }
 
     private AvhengighetStatus getFillagerStatus() {
@@ -111,7 +114,8 @@ public class SelfTestService  {
         } catch (Exception e) {
             logger.warn("<<<<<<Error Contacting Fillager (i Henvendelse)WS", e);
         }
-        return new AvhengighetStatus("FILLAGER_PING", status, currentTimeMillis() - start);
+        String beskrivelse = "Web service for fillager (i Henvendelse)";
+        return new AvhengighetStatus("FILLAGER_PING", status, currentTimeMillis() - start, beskrivelse);
     }
 
     private AvhengighetStatus getPersonStatus() {
@@ -123,7 +127,8 @@ public class SelfTestService  {
         } catch (Exception e) {
             logger.warn("<<<<<<Error Contacting TPS WS (Person-servicen)", e);
         }
-        return new AvhengighetStatus("TPS_PERSON_PING", status, currentTimeMillis() - start);
+        String beskrivelse = "Web service for TPS (Person-service)";
+        return new AvhengighetStatus("TPS_PERSON_PING", status, currentTimeMillis() - start, beskrivelse);
     }
 
     private AvhengighetStatus getKodeverkStatus() {
@@ -135,7 +140,8 @@ public class SelfTestService  {
         } catch (Exception e) {
             logger.warn("<<<<<<Error Contacting Kodeverk WS", e);
         }
-        return new AvhengighetStatus("KODEVERK_PING", status, currentTimeMillis() - start);
+        String beskrivelse = "Web service for Kodeverk" ;
+        return new AvhengighetStatus("KODEVERK_PING", status, currentTimeMillis() - start, beskrivelse);
     }
 
 
@@ -148,7 +154,8 @@ public class SelfTestService  {
         } catch (Exception e) {
             logger.warn("<<<<<<Error Contacting Brukerprofil WS", e);
         }
-        return new AvhengighetStatus("TPS_BRUKERPROFIL_PING", status, currentTimeMillis() - start);
+        String beskrivelse = "Web service for Brukerprofil";
+        return new AvhengighetStatus("TPS_BRUKERPROFIL_PING", status, currentTimeMillis() - start, beskrivelse);
     }
 
     private AvhengighetStatus getPersonInfoStatus() {
@@ -159,10 +166,10 @@ public class SelfTestService  {
             personInfoServiceSoap.hentPersonStatus(fodselsnr);
             status = STATUS_OK;
         } catch (FaultGeneriskMsg faultGeneriskMsg) {
-            logger.warn("<<<<<<Error Contacting Arena WS", faultGeneriskMsg);
+            logger.warn("<<<<<<Error Contacting Personinfo (i  Arena) ", faultGeneriskMsg);
         }
-
-        return new AvhengighetStatus("ARENA_PERSONINFO_PING", status, currentTimeMillis() - start);
+        String beskrivelse = "Web service for Personinfo (i Arena)";
+        return new AvhengighetStatus("ARENA_PERSONINFO_PING", status, currentTimeMillis() - start, beskrivelse);
     }
 
     private AvhengighetStatus getLokalDatabaseStatus() {
@@ -175,10 +182,10 @@ public class SelfTestService  {
             jdbcTemplate.queryForList("select * from dual");
             status = STATUS_OK;
         } catch (Exception e) {
-            logger.warn("<<<<<<Error Contacting Arena WS", e);
+            logger.warn("<<<<<<Error Contacting Local database", e);
         }
-
-        return new AvhengighetStatus("LOKAL_DATABASE_PING", status, currentTimeMillis() - start);
+        String url = ((DriverManagerDataSource) dataSource).getUrl();
+        return new AvhengighetStatus("LOKAL_DATABASE_PING", status, currentTimeMillis() - start, format("URL: %s", url));
     }
 
 }
