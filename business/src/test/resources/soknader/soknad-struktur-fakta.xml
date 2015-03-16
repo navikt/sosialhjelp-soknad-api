@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<webSoknad>
+    <soknadId>38244</soknadId>
+    <skjemaNummer>NAV 04-16.03</skjemaNummer>
+    <uuid>281c86c6-79c3-484b-a2ea-a80***REMOVED***b1</uuid>
+    <brukerBehandlingId>10000YFi7</brukerBehandlingId>
+    <fakta>
+        <faktumId>2020897</faktumId>
+        <soknadId>38244</soknadId>
+        <parrentFaktum>2020892</parrentFaktum>
+        <key>utdanning.kveld</key>
+        <properties/>
+        <type>BRUKERREGISTRERT</type>
+    </fakta>
+    <fakta>
+        <faktumId>2020898</faktumId>
+        <soknadId>38244</soknadId>
+        <parrentFaktum>2020892</parrentFaktum>
+        <key>utdanning.kortvarig</key>
+        <properties/>
+        <type>BRUKERREGISTRERT</type>
+    </fakta>
+    <fakta>
+        <faktumId>2020979</faktumId>
+        <soknadId>38244</soknadId>
+        <key>personalia</key>
+        <faktumEgenskaper>
+            <faktumId>2020979</faktumId>
+            <key>utenlandskKontoLand</key>
+            <soknadId>38244</soknadId>
+            <systemEgenskap>1</systemEgenskap>
+            <value>Sverige</value>
+        </faktumEgenskaper>
+        <faktumEgenskaper>
+            <faktumId>2020979</faktumId>
+            <key>gjeldendeAdresse</key>
+            <soknadId>38244</soknadId>
+            <systemEgenskap>1</systemEgenskap>
+            <value>BAGARVGEN 7, 635 19 ESKILSTUNA, SVERIGE, Sverige</value>
+        </faktumEgenskaper>
+        <properties>
+            <entry>
+                <key>fnr</key>
+                <value>64014504506</value>
+            </entry>
+            <entry>
+                <key>gjeldendeAdresse</key>
+                <value>BAGARVÃGEN 7, 635 19 ESKILSTUNA, SVERIGE, Sverige</value>
+            </entry>
+            <entry>
+                <key>gjeldendeAdresseLandkode</key>
+                <value>SWE</value>
+            </entry>
+            <entry>
+                <key>sekundarAdresseGyldigTil</key>
+            </entry>
+            <entry>
+                <key>gjeldendeAdresseType</key>
+                <value>UTENLANDSK_ADRESSE</value>
+            </entry>
+        </properties>
+        <type>SYSTEMREGISTRERT</type>
+    </fakta>
+    <status>UNDER_ARBEID</status>
+    <aktoerId>64014504506</aktoerId>
+    <opprettetDato/>
+    <sistLagret/>
+    <delstegStatus>OPPRETTET</delstegStatus>
+</webSoknad>
