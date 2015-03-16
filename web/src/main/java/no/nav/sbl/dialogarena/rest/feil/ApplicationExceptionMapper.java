@@ -12,9 +12,7 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.Response.Status.NOT_ACCEPTABLE;
-import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
-import static javax.ws.rs.core.Response.Status.UNSUPPORTED_MEDIA_TYPE;
+import static javax.ws.rs.core.Response.Status.*;
 import static javax.ws.rs.core.Response.serverError;
 import static javax.ws.rs.core.Response.status;
 
@@ -32,8 +30,9 @@ public class ApplicationExceptionMapper implements ExceptionMapper<ModigExceptio
             response = status(NOT_ACCEPTABLE);
             logger.warn("Feilet opplasting", e);
         } else if (e instanceof AuthorizationException) {
-            response = status(UNAUTHORIZED);
+            response = status(FORBIDDEN);
             logger.warn("Ikke tilgang til ressurs", e);
+            return response.type(APPLICATION_JSON).entity(new Feilmelding(e.getId(), "Ikke tilgang til ressurs")).build();
         } else {
             // TODO: Pakk dette inn i 400-feil pga. BigIP
             response = serverError();
