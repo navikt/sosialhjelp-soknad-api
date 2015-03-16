@@ -8,9 +8,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.joda.time.DateTime;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -31,6 +29,12 @@ public class WebSoknad implements Serializable {
     private String uuid;
     private String brukerBehandlingId;
     private String behandlingskjedeId;
+    // Trenger ekstra annotering fordi vi midlertidig har mellomlagrede soknader på gammelt format (faktaListe) i henvendelse.
+    // Denne kan fjernes når gamle mellomlagrede søknader er borte i henvendelse
+    @XmlElements({
+            @XmlElement(name = "faktaListe", type = Faktum.class),
+            @XmlElement(name = "fakta", type = Faktum.class)
+    })
     private List<Faktum> fakta;
     private SoknadInnsendingStatus status;
     private String aktoerId;

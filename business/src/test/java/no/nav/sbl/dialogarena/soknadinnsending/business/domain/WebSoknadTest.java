@@ -4,36 +4,40 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.xml.bind.JAXB;
+import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.Is.is;
 
 public class WebSoknadTest {
 
-	WebSoknad soknad;
-	Long soknadId;
-	Long faktumId;
-	
-	@Before
-	public void setUp() {
-		soknadId = 2l;
-		faktumId = 33l;
-		soknad = new WebSoknad();
-		soknad.setSoknadId(soknadId);
-	}
-	
-	@Test
-	public void shouldKunneLageTomSoknad() {
-		Assert.assertEquals(0,soknad.antallFakta());
-	}
-	
-	@Test
-	public void skalKunneLeggeTilFakta() {
-		soknad.leggTilFaktum(new Faktum().medSoknadId(soknadId).medFaktumId(faktumId).medKey("enKey").medValue("enValue"));
-		Assert.assertEquals(1,soknad.antallFakta());
-	}
+    WebSoknad soknad;
+    Long soknadId;
+    Long faktumId;
+
+    @Before
+    public void setUp() {
+        soknadId = 2l;
+        faktumId = 33l;
+        soknad = new WebSoknad();
+        soknad.setSoknadId(soknadId);
+    }
+
+    @Test
+    public void shouldKunneLageTomSoknad() {
+        Assert.assertEquals(0, soknad.antallFakta());
+    }
+
+    @Test
+    public void skalKunneLeggeTilFakta() {
+        soknad.leggTilFaktum(new Faktum().medSoknadId(soknadId).medFaktumId(faktumId).medKey("enKey").medValue("enValue"));
+        Assert.assertEquals(1, soknad.antallFakta());
+    }
 
     @Test
     public void skalReturnereTrueDersomSoknadHarN6VedleggSomIkkeErLastetOpp() {
@@ -85,5 +89,31 @@ public class WebSoknadTest {
 
         soknad.setVedlegg(vedlegg);
         assertThat(soknad.harAnnetVedleggSomIkkeErLastetOpp(), is(false));
+    }
+
+    @Test
+    public void skalUnmarshalleMellomlagredeSoknaderMedFaktaElementer() {
+        InputStream soknadMedFaktaElementer = this.getClass().getResourceAsStream("/soknader/soknad-struktur-fakta.xml");
+        WebSoknad soknad = JAXB.unmarshal(soknadMedFaktaElementer, WebSoknad.class);
+        assertThat(soknad.antallFakta(), is(3L));
+    }
+
+    @Test
+    public void skalUnmarshalleGamleMellomlagredeSoknaderMedFaktalisteElementer() {
+        InputStream soknadMedFaktalisteElementer = this.getClass().getResourceAsStream("/soknader/soknad-struktur-faktaListe.xml");
+        WebSoknad soknad = JAXB.unmarshal(soknadMedFaktalisteElementer, WebSoknad.class);
+        assertThat(soknad.antallFakta(), is(3L));
+    }
+
+    @Test
+    public void skalMarshalleSoknaderTilFaktaElementer() {
+        InputStream gammelStruktur = this.getClass().getResourceAsStream("/soknader/soknad-struktur-faktaListe.xml");
+        WebSoknad soknad = JAXB.unmarshal(gammelStruktur, WebSoknad.class);
+
+        OutputStream output = new ByteArrayOutputStream();
+        JAXB.marshal(soknad, output);
+        String xml = output.toString();
+        assertThat(xml, containsString("<fakta>"));
+        assertThat(xml, not(containsString("<faktaListe>")));
     }
 }
