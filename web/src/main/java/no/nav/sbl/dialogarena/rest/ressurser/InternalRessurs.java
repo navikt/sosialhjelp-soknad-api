@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 import no.nav.sbl.dialogarena.selftest.SelfTest;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
-import no.nav.sbl.dialogarena.websoknad.config.ContentConfig;
+import no.nav.sbl.dialogarena.config.ContentConfig;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Controller;
 

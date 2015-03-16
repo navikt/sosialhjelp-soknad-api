@@ -1,12 +1,12 @@
 package no.nav.sbl.dialogarena.rest.actions;
 
-import no.nav.sbl.dialogarena.print.HtmlGenerator;
+import no.nav.sbl.dialogarena.service.HtmlGenerator;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
-import no.nav.sbl.dialogarena.websoknad.domain.SoknadBekreftelse;
-import no.nav.sbl.dialogarena.websoknad.service.EmailService;
+import no.nav.sbl.dialogarena.rest.meldinger.SoknadBekreftelse;
+import no.nav.sbl.dialogarena.service.EmailService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -4,7 +4,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
-import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad;
+import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
@@ -13,7 +13,7 @@ import java.util.List;
 
 import static java.lang.String.format;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad.Type.Faktum;
+import static no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad.Type.Faktum;
 
 /**
  * Klassen håndterer alle rest kall for å hente grunnlagsdata til applikasjonen.
