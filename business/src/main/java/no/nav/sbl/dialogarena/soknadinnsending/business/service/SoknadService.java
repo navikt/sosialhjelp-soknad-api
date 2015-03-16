@@ -57,7 +57,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
     private static final Logger logger = getLogger(SoknadService.class);
 
-    private static final List<String> GYLDIGE_SKJEMAER = asList(DAGPENGER, GJENOPPTAK,
+    private static final List<String> GYLDIGE_SKJEMAER = asList(AAP, DAGPENGER, GJENOPPTAK,
             FORELDREPENGER_FODSEL, FORELDREPENGER_ADOPSJON, ENGANGSSTONAD_FODSEL, ENGANGSSTONAD_ADOPSJON);
 
     @Inject

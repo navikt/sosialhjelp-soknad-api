@@ -47,6 +47,8 @@ public class ContentConfig {
     private static final String INNHOLDSTEKSTER_NB_NO_LOCAL = "content.innholdstekster";
     private static final String FORELDRESOKNAD_NB_NO_REMOTE = "/app/foreldrepenger/nb_NO/tekster";
     private static final String FORELDRESOKNAD_NB_NO_LOCAL = "content.foreldresoknad_innholdstekster";
+    private static final String AAP_NB_NO_REMOTE = "/app/AAP/nb_NO/tekster";
+    private static final String AAP_NB_NO_LOCAL = "content.aap_innholdstekster";
     private static final String FRAGMENTS_URL = "common-html/v1/navno";
     private static final List<String> NO_DECORATOR_PATTERNS = new ArrayList<>(asList(".*/img/.*", ".*selftest.*"));
     protected final Logger logger = LoggerFactory.getLogger(getClass());
@@ -58,10 +60,11 @@ public class ContentConfig {
         uris.put(DEFAULT_LOCALE,
                 asList(
                         new URI(cmsBaseUrl + INNHOLDSTEKSTER_NB_NO_REMOTE),
-                        new URI(cmsBaseUrl + FORELDRESOKNAD_NB_NO_REMOTE)
+                        new URI(cmsBaseUrl + FORELDRESOKNAD_NB_NO_REMOTE),
+                        new URI(cmsBaseUrl + AAP_NB_NO_REMOTE)
                 ));
         return new ValuesFromContentWithResourceBundleFallback(
-                asList(INNHOLDSTEKSTER_NB_NO_LOCAL, FORELDRESOKNAD_NB_NO_LOCAL),
+                asList(INNHOLDSTEKSTER_NB_NO_LOCAL, FORELDRESOKNAD_NB_NO_LOCAL, AAP_NB_NO_LOCAL),
                 enonicContentRetriever(),
                 uris,
                 DEFAULT_LOCALE);
@@ -74,7 +77,11 @@ public class ContentConfig {
         messageSource.setBasenames(
                 new File(brukerprofilDataDirectory, "enonic/innholdstekster").toURI().toString(),
                 new File(brukerprofilDataDirectory, "enonic/foreldresoknad_innholdstekster").toURI().toString(),
-                "classpath:content/innholdstekster", "classpath:content/foreldresoknad_innholdstekster");
+                new File(brukerprofilDataDirectory, "enonic/aap_innholdstekster").toURI().toString(),
+                "classpath:content/innholdstekster",
+                "classpath:content/foreldresoknad_innholdstekster",
+                "classpath:content/aap_innholdstekster");
+
         messageSource.setDefaultEncoding("UTF-8");
         //Sjekk for nye filer en gang hvert 30. minutt.
         messageSource.setCacheSeconds(60 * 30);
@@ -90,6 +97,7 @@ public class ContentConfig {
         try {
             saveLocal("enonic/innholdstekster_nb.properties", new URI(cmsBaseUrl + INNHOLDSTEKSTER_NB_NO_REMOTE));
             saveLocal("enonic/foreldresoknad_innholdstekster_nb_NO.properties", new URI(cmsBaseUrl + FORELDRESOKNAD_NB_NO_REMOTE));
+            saveLocal("enonic/aap_innholdstekster_nb_NO.properties", new URI(cmsBaseUrl + AAP_NB_NO_REMOTE));
         } catch (Exception e) {
             logger.warn("Feilet under henting av enonic innholdstekster: " + e, e);
         }

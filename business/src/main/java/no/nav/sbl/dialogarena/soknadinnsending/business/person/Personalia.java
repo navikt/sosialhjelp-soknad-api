@@ -128,6 +128,10 @@ public class Personalia {
         return false;
     }
 
+    public String erBosattIEOSLand() {
+        return String.valueOf(!harUtenlandskAdresse() || harUtenlandskAdresseIEOS());
+    }
+
     public boolean harUtenlandskAdresseIEOS() {
 
         String adressetype = null;

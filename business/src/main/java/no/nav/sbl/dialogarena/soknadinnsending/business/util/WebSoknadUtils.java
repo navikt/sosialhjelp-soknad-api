@@ -35,6 +35,7 @@ public class WebSoknadUtils {
     private static final Logger LOGGER = getLogger(WebSoknadUtils.class);
 
     public static final String DAGPENGER = "NAV 04-01.03";
+    public static final String AAP = "NAV 11-13.05";
     public static final String DAGPENGER_VED_PERMITTERING = "NAV 04-01.04";
     public static final String GJENOPPTAK = "NAV 04-16.03";
     public static final String GJENOPPTAK_VED_PERMITTERING = "NAV 04-16.04";
@@ -50,6 +51,7 @@ public class WebSoknadUtils {
 
     // Brukes for å finne prefix for tekster, så man kan ha søknadspesifikke tekster i gjennbrukbare moduler
     private static final Map<String, String> SOKNAD_TYPE_PREFIX_MAP = new HashMap<String, String>() {{
+        put(AAP, "aap.ordinaer");
         put(DAGPENGER, "dagpenger.ordinaer");
         put(DAGPENGER_VED_PERMITTERING, "dagpenger.ordinaer");
         put(GJENOPPTAK, "dagpenger.gjenopptak");
@@ -61,6 +63,7 @@ public class WebSoknadUtils {
     }};
 
     private static final Map<String, String> SOKNAD_URL_FASIT_RESSURS = new HashMap<String, String>() {{
+        put(AAP, "soknad.aap.ordinaer.path");
         put(DAGPENGER, "soknad.dagpenger.ordinaer.path");
         put(GJENOPPTAK, "soknad.dagpenger.gjenopptak.path");
         put(FORELDREPENGER_FODSEL, "foreldresoknad.foreldrepenger.fodsel.path");
