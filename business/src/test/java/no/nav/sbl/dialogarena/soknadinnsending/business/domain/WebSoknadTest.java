@@ -93,21 +93,21 @@ public class WebSoknadTest {
 
     @Test
     public void skalUnmarshalleMellomlagredeSoknaderMedFaktaElementer() {
-        InputStream soknadMedFaktaElementer = this.getClass().getResourceAsStream("/soknader/soknad-struktur-fakta.xml");
+        InputStream soknadMedFaktaElementer = WebSoknadTest.class.getResourceAsStream("/soknader/soknad-struktur-fakta.xml");
         WebSoknad soknad = JAXB.unmarshal(soknadMedFaktaElementer, WebSoknad.class);
         assertThat(soknad.antallFakta(), is(3L));
     }
 
     @Test
     public void skalUnmarshalleGamleMellomlagredeSoknaderMedFaktalisteElementer() {
-        InputStream soknadMedFaktalisteElementer = this.getClass().getResourceAsStream("/soknader/soknad-struktur-faktaListe.xml");
+        InputStream soknadMedFaktalisteElementer = WebSoknad.class.getResourceAsStream("/soknader/soknad-struktur-faktaListe.xml");
         WebSoknad soknad = JAXB.unmarshal(soknadMedFaktalisteElementer, WebSoknad.class);
         assertThat(soknad.antallFakta(), is(3L));
     }
 
     @Test
     public void skalMarshalleSoknaderTilFaktaElementer() {
-        InputStream gammelStruktur = this.getClass().getResourceAsStream("/soknader/soknad-struktur-faktaListe.xml");
+        InputStream gammelStruktur = WebSoknad.class.getResourceAsStream("/soknader/soknad-struktur-faktaListe.xml");
         WebSoknad soknad = JAXB.unmarshal(gammelStruktur, WebSoknad.class);
 
         OutputStream output = new ByteArrayOutputStream();
