@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.modig.core.exception.ApplicationException;
-import no.nav.sbl.dialogarena.print.HtmlGenerator;
+import no.nav.sbl.dialogarena.service.HtmlGenerator;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
@@ -10,9 +10,9 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.EttersendingServ
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
-import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.XsrfGenerator;
-import no.nav.sbl.dialogarena.websoknad.domain.StartSoknad;
+import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
+import no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator;
+import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;

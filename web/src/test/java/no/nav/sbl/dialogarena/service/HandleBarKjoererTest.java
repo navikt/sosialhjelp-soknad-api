@@ -1,0 +1,86 @@
+package no.nav.sbl.dialogarena.service;
+
+import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.service.HandleBarKjoerer;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.context.MessageSource;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Locale;
+
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+
+@RunWith(MockitoJUnitRunner.class)
+public class HandleBarKjoererTest {
+    @InjectMocks
+    private HandleBarKjoerer handleBarKjoerer;
+
+    @Mock
+    private MessageSource messageSource;
+
+    @Mock
+    private Kodeverk kodeverk;
+
+    @Before
+    public void setup() {
+        when(messageSource.getMessage(any(String.class), any(Object[].class), any(Locale.class))).thenReturn("mock");
+    }
+
+    @Test
+    public void skalKompilereDagpenger() throws IOException {
+        WebSoknad soknad = new WebSoknad()
+                .medFaktum(new Faktum().medKey("personalia").medProperty("fnr", "***REMOVED***").medProperty("navn", "Test Nordmann").medProperty("alder", "40").medProperty("statsborgerskap", "NOR"))
+                .medFaktum(new Faktum().medKey("arbeidsforhold").medProperty("type", "Arbeidsgiver er konkurs").medProperty("navn", "Test").medProperty("datofra", "2010-01-01").medProperty("datoTil", "2013-01-01"))
+                .medFaktum(new Faktum().medKey("barn").medType(SYSTEMREGISTRERT).medProperty("fnr", "***REMOVED***").medProperty("navn", "test barn").medProperty("barnetillegg", "true"))
+                .medFaktum(new Faktum().medKey("barn").medType(BRUKERREGISTRERT).medProperty("fodselsdato", "2013-01-01").medProperty("navn", "test barn").medProperty("barnetillegg", "true"))
+                .medFaktum(new Faktum().medKey("reellarbeidssoker.villigflytte").medValue("true"))
+                .medFaktum(new Faktum().medKey("reellarbeidssoker.villigdeltid").medValue("false"))
+                .medFaktum(new Faktum().medKey("reellarbeidssoker.villigdeltid.maksimalarbeidstid").medValue("20"))
+                .medVedlegg(Arrays.asList(new Vedlegg().medSkjemaNummer("L6").medInnsendingsvalg(Vedlegg.Status.LastetOpp)));
+
+        String html = handleBarKjoerer.fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
+        assertThat(html, containsString("***REMOVED***"));
+
+    }
+
+    @Test
+    public void skalReprodusereFeil() throws IOException {
+        WebSoknad soknad = new WebSoknad()
+                .medFaktum(new Faktum().medKey("personalia").medProperty("fnr", "***REMOVED***").medProperty("navn", "Test Nordmann").medProperty("alder", "40").medProperty("statsborgerskap", "NOR"))
+                .medFaktum(new Faktum().medKey("arbeidsforhold")
+                        .medProperty("type", "Arbeidsgiver er konkurs")
+                        .medProperty("navn", "Test")
+                        .medProperty("datofra", "2010-01-01")
+                        .medProperty("datoTil", "2013-01-01"))
+                .medFaktum(new Faktum().medKey("utdanning").medValue("underUtdanning"))
+                .medFaktum(new Faktum().medKey("utdanning.kveld").medValue("true"))
+                .medFaktum(new Faktum().medKey("utdanning.kveld.progresjonUnder50").medValue("false"))
+                .medFaktum(new Faktum().medKey("utdanning.kveld.navn").medValue("test"))
+                .medFaktum(new Faktum().medKey("utdanning.kveld.PaabegyntUnder6mnd").medValue("true"))
+                .medFaktum(new Faktum().medKey("utdanning.kveld.varighet").medValue(null).medProperty("varighetFra", "2014-02-05"))
+                .medFaktum(new Faktum().medKey("utdanning.kveld.folges").medValue("true"))
+                .medFaktum(new Faktum().medKey("utdanning.kveld.sted").medValue("test"))
+                .medFaktum(new Faktum().medKey("barn").medType(SYSTEMREGISTRERT).medProperty("fnr", "***REMOVED***").medProperty("navn", "test barn").medProperty("barnetillegg", "true"))
+                .medFaktum(new Faktum().medKey("barn").medType(BRUKERREGISTRERT).medProperty("fodselsdato", "2013-01-01").medProperty("navn", "test barn").medProperty("barnetillegg", "true"))
+                .medFaktum(new Faktum().medKey("reellarbeidssoker.villigflytte").medValue("true"))
+                .medFaktum(new Faktum().medKey("reellarbeidssoker.villigdeltid").medValue("false"))
+                .medFaktum(new Faktum().medKey("reellarbeidssoker.villigdeltid.maksimalarbeidstid").medValue("20"))
+                .medVedlegg(Arrays.asList(new Vedlegg().medSkjemaNummer("L6").medInnsendingsvalg(Vedlegg.Status.LastetOpp)));
+        String html = handleBarKjoerer.fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
+        assertThat(html, containsString("***REMOVED***"));
+    }
+}

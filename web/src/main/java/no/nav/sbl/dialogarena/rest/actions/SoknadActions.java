@@ -1,17 +1,17 @@
 package no.nav.sbl.dialogarena.rest.actions;
 
 import no.nav.modig.core.exception.ApplicationException;
-import no.nav.sbl.dialogarena.print.HtmlGenerator;
-import no.nav.sbl.dialogarena.print.PDFFabrikk;
+import no.nav.sbl.dialogarena.service.HtmlGenerator;
+import no.nav.sbl.dialogarena.utils.PDFFabrikk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
-import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad;
-import no.nav.sbl.dialogarena.websoknad.domain.FortsettSenere;
-import no.nav.sbl.dialogarena.websoknad.domain.SoknadBekreftelse;
-import no.nav.sbl.dialogarena.websoknad.service.EmailService;
+import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
+import no.nav.sbl.dialogarena.rest.meldinger.FortsettSenere;
+import no.nav.sbl.dialogarena.rest.meldinger.SoknadBekreftelse;
+import no.nav.sbl.dialogarena.service.EmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
