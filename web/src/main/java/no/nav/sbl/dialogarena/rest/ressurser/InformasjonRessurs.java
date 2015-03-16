@@ -122,6 +122,8 @@ public class InformasjonRessurs {
             utslagskriterierResultat.put("registrertAdresse", personalia.getGjeldendeAdresse().getAdresse());
             utslagskriterierResultat.put("registrertAdresseGyldigFra", personalia.getGjeldendeAdresse().getGyldigFra());
             utslagskriterierResultat.put("registrertAdresseGyldigTil", personalia.getGjeldendeAdresse().getGyldigTil());
+            utslagskriterierResultat.put("erBosattIEOSLand", personalia.erBosattIEOSLand());
+
         } catch (Exception e) {
             logger.error("Kunne ikke hente personalia", e);
             utslagskriterierResultat.put("error", e.getMessage());
