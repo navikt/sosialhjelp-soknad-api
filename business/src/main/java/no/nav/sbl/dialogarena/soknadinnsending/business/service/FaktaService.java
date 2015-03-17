@@ -67,7 +67,7 @@ public class FaktaService {
 
         settDelstegStatus(soknadId, faktum.getKey());
 
-        Faktum resultat = repository.hentFaktum(soknadId, faktumId);
+        Faktum resultat = repository.hentFaktum(faktumId);
         genererVedleggForFaktum(resultat);
 
         return resultat;
@@ -83,14 +83,14 @@ public class FaktaService {
                 if (faktum.matcherUnikProperty(uniqueProperty, f)) {
                     f.setFaktumId(faktum.getFaktumId());
                     Long lagretFaktumId = repository.lagreFaktum(soknadId, f, true);
-                    Faktum hentetFaktum = repository.hentFaktum(soknadId, lagretFaktumId);
+                    Faktum hentetFaktum = repository.hentFaktum(lagretFaktumId);
                     genererVedleggForFaktum(hentetFaktum);
                     return lagretFaktumId;
                 }
             }
         }
         Long lagretFaktumId = repository.lagreFaktum(soknadId, f, true);
-        Faktum hentetFaktum = repository.hentFaktum(soknadId, lagretFaktumId);
+        Faktum hentetFaktum = repository.hentFaktum(lagretFaktumId);
         genererVedleggForFaktum(hentetFaktum);
 
         repository.settSistLagretTidspunkt(soknadId);
@@ -143,7 +143,7 @@ public class FaktaService {
         Vedlegg vedlegg = vedleggRepository.hentVedleggForskjemaNummerMedTillegg(
                 faktum.getSoknadId(), faktumId, soknadVedlegg.getSkjemaNummer(), soknadVedlegg.getSkjemanummerTillegg()
         );
-        Faktum parentFaktum = repository.hentFaktum(faktum.getSoknadId(), faktum.getParrentFaktum());
+        Faktum parentFaktum = repository.hentFaktum(faktum.getParrentFaktum());
 
         if (soknadVedlegg.trengerVedlegg(faktum) && erParentAktiv(soknadVedlegg.getFaktum(), parentFaktum)) {
             lagrePaakrevdVedlegg(faktum, soknadVedlegg, vedlegg);
@@ -163,12 +163,12 @@ public class FaktaService {
     }
 
     private boolean erParentAktiv(SoknadFaktum faktum, Faktum parent) {
-        if(parent == null) {
+        if (parent == null) {
             return true;
         }
 
-        if(parentValueErLikEnAvVerdieneIDependOnValues(faktum, parent)) {
-            Faktum parentParentFaktum = repository.hentFaktum(parent.getSoknadId(), parent.getParrentFaktum());
+        if (parentValueErLikEnAvVerdieneIDependOnValues(faktum, parent)) {
+            Faktum parentParentFaktum = repository.hentFaktum(parent.getParrentFaktum());
             SoknadFaktum parentSoknadFaktum = faktum.getDependOn();
             return erParentAktiv(parentSoknadFaktum, parentParentFaktum);
         }

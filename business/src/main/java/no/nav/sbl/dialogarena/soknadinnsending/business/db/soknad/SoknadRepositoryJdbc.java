@@ -225,11 +225,6 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         return faktum;
     }
 
-    public Faktum hentFaktum(final Long soknadId, final Long faktumId) {
-        // TODO: Rydd opp i de som bruker denne med soknadId
-        return hentFaktum(faktumId);
-    }
-
     @Override
     public String hentBehandlingsIdTilFaktum(Long faktumId) {
         final String sql = "select brukerbehandlingId from soknad where soknad_id = (select soknad_id from soknadbrukerdata where soknadbrukerdata_id = ?)";
@@ -325,7 +320,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         if (faktum.getFaktumId() == null) {
             faktum.setFaktumId(getJdbcTemplate().queryForObject(selectNextSequenceValue("SOKNAD_BRUKER_DATA_ID_SEQ"), Long.class));
             getNamedParameterJdbcTemplate().update(INSERT_FAKTUM, forFaktum(faktum));
-            lagreAlleEgenskaper(soknadId, faktum, systemLagring);
+            lagreAlleEgenskaper(faktum, systemLagring);
             return faktum.getFaktumId();
         } else {
             oppdaterBrukerData(soknadId, faktum, systemLagring);
@@ -340,7 +335,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     }
 
     private void oppdaterBrukerData(long soknadId, Faktum faktum, Boolean systemLagring) {
-        Faktum lagretFaktum = hentFaktum(soknadId, faktum.getFaktumId());
+        Faktum lagretFaktum = hentFaktum(faktum.getFaktumId());
         // Siden faktum-value er endret fra CLOB til Varchar må vi få med oss om det skulle oppstå tilfeller
         // hvor dette lager problemer. Logges som kritisk
         if (faktum.getValue() != null && faktum.getValue().length() > 500) {
@@ -353,11 +348,11 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
                     .update("update soknadbrukerdata set value=? where soknadbrukerdata_id = ? and soknad_id = ?",
                             faktum.getValue(), faktum.getFaktumId(), soknadId);
         }
-        lagreAlleEgenskaper(soknadId, faktum, systemLagring);
+        lagreAlleEgenskaper(faktum, systemLagring);
     }
 
-    private void lagreAlleEgenskaper(Long soknadId, Faktum faktum, Boolean systemLagring) {
-        Faktum lagretFaktum = hentFaktum(soknadId, faktum.getFaktumId());
+    private void lagreAlleEgenskaper(Faktum faktum, Boolean systemLagring) {
+        Faktum lagretFaktum = hentFaktum(faktum.getFaktumId());
         if (systemLagring) {
             faktum.kopierBrukerlagrede(lagretFaktum);
         } else {
@@ -366,7 +361,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
                 faktum.kopierSystemlagrede(lagretFaktum);
             }
         }
-        getJdbcTemplate().update("delete from faktumegenskap where soknad_id = ? and faktum_id = ?", soknadId, faktum.getFaktumId());
+        getJdbcTemplate().update("delete from faktumegenskap where faktum_id = ?", faktum.getFaktumId());
         getNamedParameterJdbcTemplate().batchUpdate(INSERT_FAKTUMEGENSKAP, SqlParameterSourceUtils.createBatch(faktum.getFaktumEgenskaper().toArray()));
     }
 
