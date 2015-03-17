@@ -66,10 +66,10 @@ public class WebSoknadUtils {
         put(AAP, "soknad.aap.ordinaer.path");
         put(DAGPENGER, "soknad.dagpenger.ordinaer.path");
         put(GJENOPPTAK, "soknad.dagpenger.gjenopptak.path");
-        put(FORELDREPENGER_FODSEL, "foreldresoknad.foreldrepenger.fodsel.path");
-        put(FORELDREPENGER_ADOPSJON, "foreldresoknad.engangsstonad.adopsjon.path");
-        put(ENGANGSSTONAD_FODSEL, "foreldresoknad.foreldrepenger.fodsel.path");
-        put(ENGANGSSTONAD_ADOPSJON, "foreldresoknad.engangsstonad.adopsjon.path");
+        put(FORELDREPENGER_FODSEL, "foreldresoknad.path");
+        put(FORELDREPENGER_ADOPSJON, "foreldresoknad.path");
+        put(ENGANGSSTONAD_FODSEL, "foreldresoknad.path");
+        put(ENGANGSSTONAD_ADOPSJON, "foreldresoknad.path");
     }};
 
     private static String finnSluttaarsakSisteArbeidsforhold(WebSoknad soknad) {
