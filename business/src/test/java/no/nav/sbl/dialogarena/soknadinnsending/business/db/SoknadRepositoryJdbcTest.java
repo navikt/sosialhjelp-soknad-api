@@ -195,10 +195,10 @@ public class SoknadRepositoryJdbcTest {
     public void skalSletteFaktum() {
         opprettOgPersisterSoknad();
         Long id = lagreData("key", null, "value");
-        Faktum faktum = soknadRepository.hentFaktum(soknadId, id);
+        Faktum faktum = soknadRepository.hentFaktum(id);
         assertThat(faktum, is(notNullValue()));
         soknadRepository.slettBrukerFaktum(soknadId, id);
-        soknadRepository.hentFaktum(soknadId, id);
+        soknadRepository.hentFaktum(id);
         fail("ikke slettet");
     }
 
@@ -209,7 +209,7 @@ public class SoknadRepositoryJdbcTest {
         Long faktumId = lagreData("key2", null, "value2");
         lagreData("key3", null, "value3");
 
-        soknadRepository.hentFaktum(soknadId, faktumId);
+        soknadRepository.hentFaktum(faktumId);
     }
 
     @Test

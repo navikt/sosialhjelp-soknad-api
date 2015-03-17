@@ -29,11 +29,10 @@ public interface SoknadRepository {
     List<WebSoknad> hentListe(String aktorId);
 
     Long lagreFaktum(long soknadId, Faktum faktum);
-
     Long lagreFaktum(long soknadId, Faktum faktum, Boolean systemFaktum);
 
     Faktum hentFaktum(Long faktumId);
-    Faktum hentFaktum(Long soknadId, Long faktumId);
+
     String hentBehandlingsIdTilFaktum(Long faktumId);
 
     List<Faktum> hentSystemFaktumList(Long soknadId, String key);
@@ -49,7 +48,6 @@ public interface SoknadRepository {
     Boolean isVedleggPaakrevd(Long soknadId, List<String> values, SoknadVedlegg soknadVedlegg);
 
     void settDelstegstatus(Long soknadId, DelstegStatus status);
-
     void settDelstegstatus(String behandlingsId, DelstegStatus status);
 
     List<Faktum> hentBarneFakta(Long soknadId, Long faktumId);

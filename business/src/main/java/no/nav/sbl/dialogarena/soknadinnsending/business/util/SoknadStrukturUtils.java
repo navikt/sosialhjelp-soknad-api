@@ -13,7 +13,8 @@ import static javax.xml.bind.JAXBContext.newInstance;
 
 public class SoknadStrukturUtils {
     public static SoknadStruktur hentStruktur(String skjema) {
-        //TODO: Få flyttet dette ut på et vis? Ta i bruk.
+
+        //TODO: Sentraliser mapping mellom skjemanummer og type/skjema. Se WebSoknadUtils.
         Map<String, String> strukturDokumenter = new HashMap<>();
         strukturDokumenter.put("NAV 11-13.05", "aap.xml");
         strukturDokumenter.put("NAV 04-01.04", "dagpenger_ordinaer.xml");

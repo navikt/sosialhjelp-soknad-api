@@ -58,8 +58,8 @@ public class FaktaServiceTest {
 
         when(soknadRepository.hentSoknad(behandlingsId)).thenReturn(new WebSoknad().medId(soknadId));
         when(soknadRepository.lagreFaktum(soknadId, permitteringsFaktum)).thenReturn(permitteringFaktumId);
-        when(soknadRepository.hentFaktum(soknadId, permitteringFaktumId)).thenReturn(permitteringsFaktum);
-        when(soknadRepository.hentFaktum(soknadId, arbeidsforholdFaktumId)).thenReturn(arbeidsforholdFaktum);
+        when(soknadRepository.hentFaktum(permitteringFaktumId)).thenReturn(permitteringsFaktum);
+        when(soknadRepository.hentFaktum(arbeidsforholdFaktumId)).thenReturn(arbeidsforholdFaktum);
         when(vedleggRepository.hentVedleggForskjemaNummerMedTillegg(soknadId, permitteringFaktumId, "G2", null)).thenReturn(permitteringsVedlegg);
         when(vedleggRepository.hentVedleggForskjemaNummerMedTillegg(soknadId, arbeidsforholdFaktumId, "O2", null)).thenReturn(arbeidsgiverVedlegg);
 
@@ -75,7 +75,7 @@ public class FaktaServiceTest {
         Faktum faktum = new Faktum().medKey("epost").medValue("false").medFaktumId(soknadId);
         when(soknadRepository.hentSoknad(behandlingsId)).thenReturn(new WebSoknad().medId(soknadId));
         when(soknadRepository.lagreFaktum(soknadId, faktum)).thenReturn(2L);
-        when(soknadRepository.hentFaktum(soknadId, 2L)).thenReturn(faktum);
+        when(soknadRepository.hentFaktum(2L)).thenReturn(faktum);
         faktaService.lagreSoknadsFelt(behandlingsId, faktum);
         verify(soknadRepository, never()).settDelstegstatus(anyLong(), any(DelstegStatus.class));
     }
@@ -87,7 +87,7 @@ public class FaktaServiceTest {
         Faktum faktum = new Faktum().medKey("ikkeavtjentverneplikt").medValue("false").medFaktumId(soknadId);
         when(soknadRepository.hentSoknad(behandlingsId)).thenReturn(new WebSoknad().medId(soknadId));
         when(soknadRepository.lagreFaktum(soknadId, faktum)).thenReturn(2L);
-        when(soknadRepository.hentFaktum(soknadId, 2L)).thenReturn(faktum);
+        when(soknadRepository.hentFaktum(2L)).thenReturn(faktum);
         Vedlegg vedlegg = new Vedlegg().medVedleggId(4L).medSkjemaNummer("T3").medSoknadId(soknadId).medInnsendingsvalg(Vedlegg.Status.IkkeVedlegg);
         when(vedleggRepository.hentVedleggForskjemaNummerMedTillegg(soknadId, null, "T3", null)).thenReturn(vedlegg);
         when(vedleggRepository.opprettVedlegg(any(Vedlegg.class), any(byte[].class))).thenReturn(4L);
@@ -136,7 +136,7 @@ public class FaktaServiceTest {
         Faktum faktumSjekk = new Faktum().medKey("personalia").medSystemProperty("fno", "123").medSoknadId(1L).medType(Faktum.FaktumType.SYSTEMREGISTRERT);
 
         when(soknadRepository.lagreFaktum(anyLong(), any(Faktum.class), anyBoolean())).thenReturn(2L);
-        when(soknadRepository.hentFaktum(1L, 2L)).thenReturn(faktum);
+        when(soknadRepository.hentFaktum(2L)).thenReturn(faktum);
         when(soknadRepository.hentSystemFaktumList(1L, faktum.getKey())).thenReturn(Arrays.asList(
                 new Faktum().medFaktumId(5L).medKey("personalia").medSystemProperty("fno", "123"),
                 new Faktum().medFaktumId(6L).medKey("personalia").medSystemProperty("fno", "124")));
@@ -148,7 +148,7 @@ public class FaktaServiceTest {
     public void skalLagreSystemfaktumUtenUnique() {
         Faktum faktum = new Faktum().medKey("personalia").medValue("tester").medSoknadId(1L);
         when(soknadRepository.lagreFaktum(anyLong(), any(Faktum.class), anyBoolean())).thenReturn(2L);
-        when(soknadRepository.hentFaktum(1L, 2L)).thenReturn(faktum);
+        when(soknadRepository.hentFaktum(2L)).thenReturn(faktum);
         faktaService.lagreSystemFaktum(1L, faktum, "");
         verify(soknadRepository).lagreFaktum(1L, faktum, true);
     }

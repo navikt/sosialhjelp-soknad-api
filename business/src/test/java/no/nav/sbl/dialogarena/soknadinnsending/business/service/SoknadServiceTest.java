@@ -269,7 +269,7 @@ public class SoknadServiceTest {
         DateTimeUtils.setCurrentMillisFixed(System.currentTimeMillis());
         when(henvendelsesConnector.startSoknad(anyString(), anyString(), anyString())).thenReturn("123");
         when(soknadRepository.hentFaktumMedKey(anyLong(), anyString())).thenReturn(new Faktum().medFaktumId(1L));
-        when(soknadRepository.hentFaktum(anyLong(), anyLong())).thenReturn(new Faktum().medFaktumId(1L));
+        when(soknadRepository.hentFaktum(anyLong())).thenReturn(new Faktum().medFaktumId(1L));
         soknadService.startSoknad(DAGPENGER, "01019012345");
 
         ArgumentCaptor<String> uid = ArgumentCaptor.forClass(String.class);
@@ -300,7 +300,7 @@ public class SoknadServiceTest {
         DateTimeUtils.setCurrentMillisFixed(System.currentTimeMillis());
         when(henvendelsesConnector.startSoknad(anyString(), anyString(), anyString())).thenReturn("123");
         when(soknadRepository.hentFaktumMedKey(anyLong(), anyString())).thenReturn(new Faktum().medFaktumId(1L));
-        when(soknadRepository.hentFaktum(anyLong(), anyLong())).thenReturn(new Faktum().medFaktumId(1L));
+        when(soknadRepository.hentFaktum(anyLong())).thenReturn(new Faktum().medFaktumId(1L));
         when(startDatoService.erJanuarEllerFebruar()).thenReturn(false);
         when(soknadRepository.opprettSoknad(any(WebSoknad.class))).thenReturn(soknadId);
         soknadService.startSoknad(DAGPENGER, "01019012345");
@@ -321,7 +321,7 @@ public class SoknadServiceTest {
         DateTimeUtils.setCurrentMillisFixed(System.currentTimeMillis());
         when(henvendelsesConnector.startSoknad(anyString(), anyString(), anyString())).thenReturn("123");
         when(soknadRepository.hentFaktumMedKey(anyLong(), anyString())).thenReturn(new Faktum().medFaktumId(1L));
-        when(soknadRepository.hentFaktum(anyLong(), anyLong())).thenReturn(new Faktum().medFaktumId(1L));
+        when(soknadRepository.hentFaktum(anyLong())).thenReturn(new Faktum().medFaktumId(1L));
         when(startDatoService.erJanuarEllerFebruar()).thenReturn(true);
         when(soknadRepository.opprettSoknad(any(WebSoknad.class))).thenReturn(soknadId);
         soknadService.startSoknad(DAGPENGER, "01019012345");
@@ -370,7 +370,7 @@ public class SoknadServiceTest {
                 .medKey("soknadInnsendingsDato")
                 .medValue(String.valueOf(innsendingsDato.getMillis()))
                 .medType(SYSTEMREGISTRERT);
-        when(soknadRepository.hentFaktum(anyLong(), anyLong())).thenReturn(soknadInnsendingsDatoFaktum);
+        when(soknadRepository.hentFaktum(anyLong())).thenReturn(soknadInnsendingsDatoFaktum);
 
         String ettersendingBehandlingsId = soknadService.startEttersending(behandlingsId, "01019012345");
         verify(faktaService).lagreSystemFaktum(anyLong(), any(Faktum.class), anyString());
