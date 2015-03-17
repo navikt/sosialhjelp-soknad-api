@@ -10,7 +10,6 @@ import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
 import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
 import org.slf4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -19,7 +18,6 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
-import java.util.Properties;
 
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
