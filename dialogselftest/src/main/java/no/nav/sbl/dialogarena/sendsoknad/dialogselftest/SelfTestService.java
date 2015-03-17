@@ -30,8 +30,22 @@ public class SelfTestService extends SelfTestBase {
     protected List<AvhengighetStatus> populerStatusliste() {
         List<AvhengighetStatus> liste = new ArrayList<>();
         liste.add(getAPIStatus());
-        liste.addAll(getAPISelftest());
+        liste.add(getEnonicStatus());
         return liste;
+    }
+
+    private AvhengighetStatus getEnonicStatus() {
+        long start = currentTimeMillis();
+        String status = STATUS_ERROR;
+        HttpURLConnection connection;
+        try {
+            connection = (HttpURLConnection) new URL(getProperty("soknadsapi.url") + "/internal/isAlive").openConnection();
+            connection.setConnectTimeout(10000);
+            status = connection.getResponseCode() == HTTP_OK ? STATUS_OK : STATUS_ERROR;
+        } catch (Exception e) {
+            logger.warn("<<<<<<Error Contacting REST API isAlive", e);
+        }
+        return new AvhengighetStatus("REST API", status, currentTimeMillis() - start);
     }
 
     private AvhengighetStatus getAPIStatus() {
@@ -48,50 +62,4 @@ public class SelfTestService extends SelfTestBase {
         return new AvhengighetStatus("REST API", status, currentTimeMillis() - start);
     }
 
-    private List<AvhengighetStatus> getAPISelftest() {
-        List<AvhengighetStatus> statuser = new ArrayList<>();
-        String innhold = lesInnholdApiSelftest();
-
-        try {
-            JSONObject jsonAPISelftest = new JSONObject(innhold);
-            JSONArray avhengigheter = jsonAPISelftest.getJSONArray("avhengigheter");
-
-            AvhengighetStatus avhengighetStatus;
-            for (int tabellRad = 0; tabellRad < avhengigheter.length(); tabellRad++) {
-                JSONObject jsonAPIAvhengighet = avhengigheter.getJSONObject(tabellRad);
-                avhengighetStatus = new AvhengighetStatus(
-                        jsonAPIAvhengighet.getString("name"),
-                        jsonAPIAvhengighet.getString("status"),
-                        jsonAPIAvhengighet.getLong("durationMilis"),
-                        jsonAPIAvhengighet.getString("beskrivelse"));
-                statuser.add(avhengighetStatus);
-            }
-        } catch (JSONException e) {
-            logger.warn("<<<<<<Error ved forsøk på å opprette JSON object av API-selftest ", e);
-        }
-        return statuser;
-    }
-
-    private String lesInnholdApiSelftest() {
-        StringBuilder innhold = new StringBuilder();
-        try {
-            URL apiPath = new URL(getProperty("soknadsapi.url") + "/internal/selftest.json");
-            HttpURLConnection api = (HttpURLConnection) apiPath.openConnection();
-            api.setConnectTimeout(10000);
-
-            InputStream apiStream = api.getInputStream();
-            BufferedReader innholdLeser = new BufferedReader(new InputStreamReader(apiStream));
-
-            String input = innholdLeser.readLine();
-            while (input != null) {
-                innhold.append(input);
-                input = innholdLeser.readLine();
-            }
-            innholdLeser.close();
-
-        } catch (Exception e) {
-            logger.warn("<<<<<<Error Contacting REST API Selftest", e);
-        }
-        return innhold.toString();
-    }
 }
