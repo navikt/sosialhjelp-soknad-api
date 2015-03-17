@@ -12,7 +12,7 @@ public class UrlUtils {
     private static final String FORTSETT_PATH = "/dagpenger/utslagskriterier";
 
     //todo: denne bør egentlig gå til dialoginnsending slik at den er generell for alle typer søknader
-    public static String getGjenopptaUrl(String requestUrl, String behandlingId) {
+    public static String getFortsettUrl(String requestUrl, String behandlingId) {
         return getBaseUrl(requestUrl) + FORTSETT_PATH + "/" + behandlingId + "?utm_source=web&utm_medium=email&utm_campaign=2";
     }
 

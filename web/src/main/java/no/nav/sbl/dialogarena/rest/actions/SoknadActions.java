@@ -30,7 +30,7 @@ import java.util.Map;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.utils.UrlUtils.getEttersendelseUrl;
-import static no.nav.sbl.dialogarena.utils.UrlUtils.getGjenopptaUrl;
+import static no.nav.sbl.dialogarena.utils.UrlUtils.getFortsettUrl;
 
 @Path("/soknader/{behandlingsId}/actions")
 @Produces(APPLICATION_JSON)
@@ -91,7 +91,7 @@ public class SoknadActions {
     @Path("/fortsettsenere")
     @SjekkTilgangTilSoknad
     public void sendEpost(@PathParam("behandlingsId") String behandlingsId, FortsettSenere epost, @Context HttpServletRequest request) {
-        String content = tekster.finnTekst("fortsettSenere.sendEpost.epostInnhold", new Object[]{getGjenopptaUrl(request.getRequestURL().toString(), behandlingsId)}, new Locale("nb", "NO"));
+        String content = tekster.finnTekst("fortsettSenere.sendEpost.epostInnhold", new Object[]{getFortsettUrl(request.getRequestURL().toString(), behandlingsId)}, new Locale("nb", "NO"));
         String subject = tekster.finnTekst("fortsettSenere.sendEpost.epostTittel", null, new Locale("nb", "NO"));
 
         emailService.sendEpost(epost.getEpost(), subject, content, behandlingsId);

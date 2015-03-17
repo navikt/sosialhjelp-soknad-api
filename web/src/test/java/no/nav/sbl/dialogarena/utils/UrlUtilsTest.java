@@ -20,7 +20,7 @@ public class UrlUtilsTest {
 
     @Test
     public void skalLageUrlForFortsettSenere() {
-        assertThat(UrlUtils.getGjenopptaUrl(REQUEST_URL, BEHANDLING_ID), startsWith("https://tjenester.nav.no/dagpenger/utslagskriterier/" + BEHANDLING_ID));
+        assertThat(UrlUtils.getFortsettUrl(REQUEST_URL, BEHANDLING_ID), startsWith("https://tjenester.nav.no/dagpenger/utslagskriterier/" + BEHANDLING_ID));
     }
 
     @Test
