@@ -88,7 +88,8 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     public WebSoknad hentSoknadMedFaktaOgVedlegg(long soknadId) {
         WebSoknad soknad = repository.hentSoknadMedData(soknadId);
         soknad.medSoknadPrefix(getSoknadPrefix(soknad.getskjemaNummer()))
-                .medSoknadUrl(getSoknadUrl(soknad.getskjemaNummer()));
+                .medSoknadUrl(getSoknadUrl(soknad.getskjemaNummer()))
+                .medFortsettSoknadURL(getFortsettSoknadUrl(soknad.getskjemaNummer()));
         return soknad;
     }
 
@@ -97,7 +98,9 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         if (soknad == null) {
             soknad = hentFraHenvendelse(behandlingsId, false);
         }
-        soknad.medSoknadPrefix(getSoknadPrefix(soknad.getskjemaNummer())).medSoknadUrl(getSoknadUrl(soknad.getskjemaNummer()));
+        soknad.medSoknadPrefix(getSoknadPrefix(soknad.getskjemaNummer()))
+                .medSoknadUrl(getSoknadUrl(soknad.getskjemaNummer()))
+                .medFortsettSoknadURL(getFortsettSoknadUrl(soknad.getskjemaNummer()));
         return soknad;
     }
 
@@ -106,7 +109,9 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         if (soknad == null) {
             soknad = hentFraHenvendelse(behandlingsId, true);
         }
-        soknad.medSoknadPrefix(getSoknadPrefix(soknad.getskjemaNummer())).medSoknadUrl(getSoknadUrl(soknad.getskjemaNummer()));
+        soknad.medSoknadPrefix(getSoknadPrefix(soknad.getskjemaNummer()))
+                .medSoknadUrl(getSoknadUrl(soknad.getskjemaNummer()))
+                .medFortsettSoknadURL(getFortsettSoknadUrl(soknad.getskjemaNummer()));
         return soknad;
     }
 

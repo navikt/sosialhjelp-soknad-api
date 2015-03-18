@@ -72,6 +72,15 @@ public class WebSoknadUtils {
         put(ENGANGSSTONAD_ADOPSJON, "foreldresoknad.path");
     }};
 
+    private static final Map<String, String> SOKNAD_FORTSETT_URL_FASIT_RESSURS =  new HashMap<String, String> (){{
+        put(DAGPENGER, "soknad.dagpenger.fortsett.path");
+        put(GJENOPPTAK, "soknad.dagpenger.fortsett.path");
+        put(FORELDREPENGER_FODSEL, "foreldresoknad.fortsett.path");
+        put(FORELDREPENGER_ADOPSJON, "foreldresoknad.fortsett.path");
+        put(ENGANGSSTONAD_FODSEL, "foreldresoknad.fortsett.path");
+        put(ENGANGSSTONAD_ADOPSJON, "foreldresoknad.fortsett.path");
+    }};
+
     private static String finnSluttaarsakSisteArbeidsforhold(WebSoknad soknad) {
         List<Faktum> sorterteArbeidsforholdIkkePermittert = on(soknad.getFaktaMedKey("arbeidsforhold"))
                 .filter(where(TYPE, not(equalTo(PERMITTERT))))
@@ -193,6 +202,10 @@ public class WebSoknadUtils {
 
     public static String getSoknadUrl(String skjemanummer) {
         return System.getProperty(SOKNAD_URL_FASIT_RESSURS.get(skjemanummer));
+    }
+
+    public static String getFortsettSoknadUrl(String skjemanummer) {
+        return System.getProperty(SOKNAD_FORTSETT_URL_FASIT_RESSURS.get(skjemanummer));
     }
 
     public static String getSoknadPrefix(String skjemanummer) {
