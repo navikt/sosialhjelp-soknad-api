@@ -142,6 +142,7 @@ public class SoknadRessurs {
     private static Cookie xsrfCookie(String behandlingId) {
         Cookie xsrfCookie = new Cookie("XSRF-TOKEN-SOKNAD-API", XsrfGenerator.generateXsrfToken(behandlingId));
         xsrfCookie.setPath("/");
+        xsrfCookie.setSecure(true);
         return xsrfCookie;
     }
 
