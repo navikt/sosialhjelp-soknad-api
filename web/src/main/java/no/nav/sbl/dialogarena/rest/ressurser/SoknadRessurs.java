@@ -72,7 +72,6 @@ public class SoknadRessurs {
     }
 
 
-    // TODO: kan vi ta inn request param direkte istedet for StartSoknad + refactor
     @POST
     @Consumes(APPLICATION_JSON)
     public Map<String, String> opprettSoknad(@QueryParam("ettersendTil") String behandlingsId, StartSoknad soknadType, @Context HttpServletResponse response) {
@@ -95,7 +94,7 @@ public class SoknadRessurs {
         return result;
     }
 
-    @PUT  // todo: burde kanskje endres til POST
+    @PUT  //TODO: Burde endres til POST - En PUT må sende med hele objektet for å følge spec'en
     @Path("/{behandlingsId}")
     @SjekkTilgangTilSoknad
     public void settDelstegStatus(@PathParam("behandlingsId") String behandlingsId, @QueryParam("delsteg") String delsteg) {

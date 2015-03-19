@@ -89,11 +89,11 @@ public class WebSoknadUtils {
         LocalDate sluttdatoSistePermitteringsperiode = getSluttdatoForSistePermitteringsperiode(soknad);
         LocalDate sluttdatoSisteArbeidsforholdIkkePermittert = getSluttdatoForSisteArbeidsforhold(sorterteArbeidsforholdIkkePermittert);
 
-        if(erSisteSluttaarsakPermittering(sluttdatoSistePermitteringsperiode, sluttdatoSisteArbeidsforholdIkkePermittert)) {
+        if (erSisteSluttaarsakPermittering(sluttdatoSistePermitteringsperiode, sluttdatoSisteArbeidsforholdIkkePermittert)) {
             return PERMITTERT;
-        } else if (soknad.erGjenopptak() && ingenNyeArbeidsforhold(soknad) && varPermittertForrigeGangDuSokteOmDagpenger(soknad)){
+        } else if (soknad.erGjenopptak() && ingenNyeArbeidsforhold(soknad) && varPermittertForrigeGangDuSokteOmDagpenger(soknad)) {
             return PERMITTERT;
-        } else if(erSisteSluttaarsakRedusertArbeidstid(sluttdatoSisteArbeidsforholdIkkePermittert, sorterteArbeidsforholdIkkePermittert)) {
+        } else if (erSisteSluttaarsakRedusertArbeidstid(sluttdatoSisteArbeidsforholdIkkePermittert, sorterteArbeidsforholdIkkePermittert)) {
             return REDUSERT_ARBEIDSTID;
         }
         return ANNEN_AARSAK;
@@ -120,7 +120,7 @@ public class WebSoknadUtils {
 
     private static boolean varPermittertForrigeGangDuSokteOmDagpenger(WebSoknad soknad) {
         Faktum permittertForrigeGang = soknad.getFaktumMedKey("tidligerearbeidsforhold.permittert");
-        if(permittertForrigeGang == null){
+        if (permittertForrigeGang == null) {
             return false;
         }
 
@@ -140,7 +140,7 @@ public class WebSoknadUtils {
 
         boolean erPermittert = finnSluttaarsakSisteArbeidsforhold(soknad).equals(PERMITTERT);
 
-        if(soknad.erGjenopptak()) {
+        if (soknad.erGjenopptak()) {
             return erPermittert ? GJENOPPTAK_VED_PERMITTERING : GJENOPPTAK;
         }
         return erPermittert ? DAGPENGER_VED_PERMITTERING : DAGPENGER;
@@ -157,7 +157,7 @@ public class WebSoknadUtils {
     private static boolean erGrensearbeider(WebSoknad webSoknad) {
         Faktum grensearbeiderFaktum = webSoknad.getFaktumMedKey("arbeidsforhold.grensearbeider");
         boolean erGrensearbeider = false;
-        if(grensearbeiderFaktum != null && grensearbeiderFaktum.getValue() != null){
+        if (grensearbeiderFaktum != null && grensearbeiderFaktum.getValue() != null) {
             erGrensearbeider = grensearbeiderFaktum.getValue().equals("false");
         }
         return erGrensearbeider;
@@ -172,7 +172,7 @@ public class WebSoknadUtils {
                 return EOS_DAGPENGER;
             }
             boolean erUtenlandskStatsborger = !personalia.getStatsborgerskap().equals("NOR");
-            if (erGrensearbeider(webSoknad) && erUtenlandskStatsborger){
+            if (erGrensearbeider(webSoknad) && erUtenlandskStatsborger) {
                 return EOS_DAGPENGER;
             }
         }
@@ -201,7 +201,10 @@ public class WebSoknadUtils {
     }
 
     public static String getSoknadUrl(String skjemanummer) {
-        return System.getProperty(SOKNAD_URL_FASIT_RESSURS.get(skjemanummer));
+        if (SOKNAD_URL_FASIT_RESSURS.containsKey(skjemanummer)) {
+            return System.getProperty(SOKNAD_URL_FASIT_RESSURS.get(skjemanummer));
+        }
+        return "";
     }
 
     public static String getFortsettSoknadUrl(String skjemanummer) {

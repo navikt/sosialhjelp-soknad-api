@@ -29,8 +29,6 @@ public class FaktaRessurs {
     @Inject
     private VedleggService vedleggService;
 
-    // TODO: legg til GET for faktum?
-
     @POST
     @Consumes(APPLICATION_JSON)
     @SjekkTilgangTilSoknad
