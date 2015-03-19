@@ -86,7 +86,6 @@ public class SoknadActions {
         }
     }
 
-    //TODO: trenger man å wrappe epost i eget objekt?
     @POST
     @Path("/fortsettsenere")
     @SjekkTilgangTilSoknad
