@@ -59,13 +59,7 @@ public class ApplicationConfig {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
         javaMailSender.setDefaultEncoding("UTF-8");
         javaMailSender.setHost(smtpServerHost);
-        //TODO: if/else er quickfix inntil vi får ApplicationContextTest til å lese mailserverport.
-        if (smtpServerHost.matches("-?\\d+")) {
-            javaMailSender.setPort(Integer.parseInt(smtpServerPort));
-        } else {
-            javaMailSender.setPort(25);
-            logger.warn("Smtpport not set properly, using default port 25");
-        }
+        javaMailSender.setPort(Integer.parseInt(smtpServerPort));
         return javaMailSender;
     }
 
