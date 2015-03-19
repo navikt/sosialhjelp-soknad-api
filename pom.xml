@@ -761,10 +761,14 @@
                     <configuration>
                         <propertiesFilesRoot>${project.basedir}/web/src/main/resources/content</propertiesFilesRoot>
                         <propertiesFiler>
-                            <nb>innholdstekster_nb.properties</nb>
+                            <dpnb>innholdstekster_nb.properties</dpnb>
+                            <aapnb>aap_innholdstekster.properties</aapnb>
+                            <fpnb>foreldresoknad_innholdstekster.properties</fpnb>
                         </propertiesFiler>
                         <menyPunktPaths>
-                            <nb>/site/18/app/sendsoknad/bm/tekster</nb>
+                            <dpnb>/site/18/app/sendsoknad/bm/tekster</dpnb>
+                            <aapnb>/site/18/app/AAP/nb_NO/tekster</aapnb>
+                            <fpnb>/site/18/app/foreldrepenger/nb_NO/tekster</fpnb>
                         </menyPunktPaths>
                     </configuration>
                 </plugin>
