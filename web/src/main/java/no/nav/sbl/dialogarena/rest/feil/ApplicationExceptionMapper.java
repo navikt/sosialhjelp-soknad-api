@@ -34,7 +34,6 @@ public class ApplicationExceptionMapper implements ExceptionMapper<ModigExceptio
             logger.warn("Ikke tilgang til ressurs", e);
             return response.type(APPLICATION_JSON).entity(new Feilmelding(e.getId(), "Ikke tilgang til ressurs")).build();
         } else {
-            // TODO: Pakk dette inn i 400-feil pga. BigIP? - Børge tar dette med Kai
             response = serverError();
             logger.error("REST-kall feilet", e);
         }
