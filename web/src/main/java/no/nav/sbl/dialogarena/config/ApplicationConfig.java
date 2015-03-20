@@ -1,12 +1,11 @@
 package no.nav.sbl.dialogarena.config;
 
+import no.nav.sbl.dialogarena.selftest.SelfTest;
+import no.nav.sbl.dialogarena.service.EmailService;
 import no.nav.sbl.dialogarena.service.HandleBarKjoerer;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
-import no.nav.sbl.dialogarena.selftest.SelfTest;
 import no.nav.sbl.dialogarena.soknadinnsending.business.selftest.SelfTestService;
 import no.nav.sbl.dialogarena.utils.InnloggetBruker;
-import no.nav.sbl.dialogarena.service.EmailService;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,8 +16,6 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
-
-import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * Applikasjonskontekst for ear-modulen.
