@@ -4,6 +4,7 @@
         <p class="nvn">{{properties.navn}}</p>
         <p class="fnr">{{properties.fnr}}</p>
         <p class="adr">{{properties.gjeldendeAdresse}}</p>
+        {{#if properties.kontonummer }}
         <div>
             <span>{{ hentTekst "personalia.kontonummer" }}</span>:
             {{#hvisSant properties.erUtenlandskBankkonto}}
@@ -14,5 +15,6 @@
                 <span>{{ properties.kontonummer }}</span>
             {{/hvisSant}}
         </div>
+        {{/if}}
     </div>
 {{/forFaktum}}
