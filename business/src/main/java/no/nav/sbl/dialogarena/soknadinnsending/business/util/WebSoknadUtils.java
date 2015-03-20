@@ -73,6 +73,7 @@ public class WebSoknadUtils {
     }};
 
     private static final Map<String, String> SOKNAD_FORTSETT_URL_FASIT_RESSURS =  new HashMap<String, String> (){{
+        put(AAP, "soknad.aap.fortsett.path");
         put(DAGPENGER, "soknad.dagpenger.fortsett.path");
         put(GJENOPPTAK, "soknad.dagpenger.fortsett.path");
         put(FORELDREPENGER_FODSEL, "foreldresoknad.fortsett.path");
