@@ -26,8 +26,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Configuration
 public class ApplicationConfig {
 
-    private static final Logger logger = getLogger(ApplicationConfig.class);
-
     @Value("${dialogarena.navnolink.url}")
     private String navigasjonslink;
     @Value("${dokumentinnsending.smtpServer.port}")
