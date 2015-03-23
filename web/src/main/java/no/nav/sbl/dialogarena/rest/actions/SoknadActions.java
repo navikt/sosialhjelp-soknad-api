@@ -90,7 +90,7 @@ public class SoknadActions {
     @Path("/fortsettsenere")
     @SjekkTilgangTilSoknad
     public void sendEpost(@PathParam("behandlingsId") String behandlingsId, FortsettSenere epost, @Context HttpServletRequest request) {
-        String content = tekster.finnTekst("fortsettSenere.sendEpost.epostInnhold", new Object[]{getFortsettUrl(request.getRequestURL().toString(), behandlingsId)}, new Locale("nb", "NO"));
+        String content = tekster.finnTekst("fortsettSenere.sendEpost.epostInnhold", new Object[]{getFortsettUrl(behandlingsId)}, new Locale("nb", "NO"));
         String subject = tekster.finnTekst("fortsettSenere.sendEpost.epostTittel", null, new Locale("nb", "NO"));
 
         emailService.sendEpost(epost.getEpost(), subject, content, behandlingsId);

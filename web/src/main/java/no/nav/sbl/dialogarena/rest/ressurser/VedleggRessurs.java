@@ -1,12 +1,12 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
+import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
+import no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
-import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
-import no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -17,14 +17,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.*;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.UnderBehandling;
 import static no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad.Type.Vedlegg;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.UnderBehandling;
 
 @Controller
 @Path("/vedlegg/{vedleggId}")
@@ -140,7 +141,7 @@ public class VedleggRessurs {
         }
 
         for (FormDataBodyPart file : files) {
-            totalStorrelse += file.getContentDisposition().getSize();
+            totalStorrelse += file.getValueAs(File.class).length();
         }
 
         return totalStorrelse > MAKS_TOTAL_FILSTORRELSE;
