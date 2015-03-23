@@ -7,12 +7,10 @@
         {{#if properties.kontonummer }}
         <div>
             <span>{{ hentTekst "personalia.kontonummer" }}</span>:
-            {{#hvisSant properties.erUtenlandskBankkonto}}
-                <span>{{ properties.kontonummer }}</span>,
-                <span>{{ properties.utenlandskKontoBanknavn }}</span>,
-                <span>{{ properties.utenlandskKontoLand }}</span>
-            {{else}}
-                <span>{{ properties.kontonummer }}</span>
+            <span>{{ properties.kontonummer ~}}</span>
+            {{~#hvisSant properties.erUtenlandskBankkonto ~}}
+                 , <span>{{ properties.utenlandskKontoBanknavn }}</span>,
+                <span>{{ properties.utenlandskKontoLand ~}}</span>
             {{/hvisSant}}
         </div>
         {{/if}}
