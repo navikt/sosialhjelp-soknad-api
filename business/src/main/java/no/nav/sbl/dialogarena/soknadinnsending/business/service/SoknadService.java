@@ -89,7 +89,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         WebSoknad soknad = repository.hentSoknadMedData(soknadId);
         soknad.medSoknadPrefix(getSoknadPrefix(soknad.getskjemaNummer()))
                 .medSoknadUrl(getSoknadUrl(soknad.getskjemaNummer()))
-                .medFortsettSoknadURL(getFortsettSoknadUrl(soknad.getskjemaNummer()));
+                .medFortsettSoknadUrl(getFortsettSoknadUrl(soknad.getskjemaNummer()));
         return soknad;
     }
 
@@ -100,7 +100,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         }
         soknad.medSoknadPrefix(getSoknadPrefix(soknad.getskjemaNummer()))
                 .medSoknadUrl(getSoknadUrl(soknad.getskjemaNummer()))
-                .medFortsettSoknadURL(getFortsettSoknadUrl(soknad.getskjemaNummer()));
+                .medFortsettSoknadUrl(getFortsettSoknadUrl(soknad.getskjemaNummer()));
         return soknad;
     }
 
@@ -111,7 +111,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         }
         soknad.medSoknadPrefix(getSoknadPrefix(soknad.getskjemaNummer()))
                 .medSoknadUrl(getSoknadUrl(soknad.getskjemaNummer()))
-                .medFortsettSoknadURL(getFortsettSoknadUrl(soknad.getskjemaNummer()));
+                .medFortsettSoknadUrl(getFortsettSoknadUrl(soknad.getskjemaNummer()));
         return soknad;
     }
 
