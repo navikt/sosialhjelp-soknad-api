@@ -9,8 +9,8 @@ import static java.lang.System.getProperty;
 public class UrlUtils {
     public static final String HOSTNAME_REGEX = "(^http.://.*?)/";
 
-    public static String getFortsettUrl(String requestUrl, String behandlingId) {
-        return getBaseUrl(requestUrl) + getProperty("dialoginnsending.soknad.path") + "/" + behandlingId + "#/fortsettsoknad" + "?utm_source=web&utm_medium=email&utm_campaign=2";
+    public static String getFortsettUrl(String behandlingId) {
+        return getProperty("dialoginnsending.link.url") + "/soknad/" + behandlingId + "?utm_source=web&utm_medium=email&utm_campaign=2";
     }
 
     public static String getEttersendelseUrl(String requestUrl, String behandlingId) {
