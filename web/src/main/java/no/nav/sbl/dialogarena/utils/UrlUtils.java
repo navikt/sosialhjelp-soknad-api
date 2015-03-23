@@ -9,11 +9,8 @@ import static java.lang.System.getProperty;
 public class UrlUtils {
     public static final String HOSTNAME_REGEX = "(^http.://.*?)/";
 
-    private static final String FORTSETT_PATH = "/dagpenger/utslagskriterier";
-
-    //todo: denne bør egentlig gå til dialoginnsending slik at den er generell for alle typer søknader
     public static String getFortsettUrl(String requestUrl, String behandlingId) {
-        return getBaseUrl(requestUrl) + FORTSETT_PATH + "/" + behandlingId + "?utm_source=web&utm_medium=email&utm_campaign=2";
+        return getBaseUrl(requestUrl) + getProperty("dialoginnsending.soknad.path") + "/" + behandlingId + "#/fortsettsoknad" + "?utm_source=web&utm_medium=email&utm_campaign=2";
     }
 
     public static String getEttersendelseUrl(String requestUrl, String behandlingId) {
