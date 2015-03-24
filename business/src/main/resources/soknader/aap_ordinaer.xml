@@ -5,4 +5,11 @@
         <panel>Personalia</panel>
         <erSystemFaktum>true</erSystemFaktum>
     </faktum>
+
+    <!-- Tilleggsopplysninger -->
+    <faktum>
+        <id>tilleggsopplysninger.fritekst</id>
+        <type>java.lang.String</type>
+        <panel>Tilleggsopplysninger</panel>
+    </faktum>
 </soknad>
