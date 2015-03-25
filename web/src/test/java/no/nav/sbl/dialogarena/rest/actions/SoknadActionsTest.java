@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.mock.web.MockHttpServletRequest;
 
+import javax.servlet.ServletContext;
 import java.util.Locale;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.ETTERSENDING_OPPRETTET;
@@ -37,6 +38,8 @@ public class SoknadActionsTest {
     VedleggService vedleggService;
     @Mock
     HtmlGenerator pdfTemplate;
+    @Mock
+    ServletContext servletContext;
 
     @InjectMocks
     SoknadActions actions;
@@ -44,6 +47,7 @@ public class SoknadActionsTest {
     @Before
     public void setUp() {
         when(tekster.finnTekst(eq("sendtSoknad.sendEpost.epostSubject"), any(Object[].class), any(Locale.class))).thenReturn("Emne");
+        when(servletContext.getRealPath(anyString())).thenReturn("");
     }
 
     @Test

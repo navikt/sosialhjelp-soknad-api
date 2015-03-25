@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -24,7 +25,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.Locale;
 import java.util.Map;
 
@@ -54,6 +57,9 @@ public class SoknadActions {
 
     @Inject
     private NavMessageSource tekster;
+
+    @Context
+    private ServletContext servletContext;
 
     @GET
     @Path("/leggved")
@@ -137,6 +143,9 @@ public class SoknadActions {
         } catch (IOException e) {
             throw new ApplicationException("Kunne ikke lage markup for skjema " + hbsSkjemaPath, e);
         }
-        return PDFFabrikk.lagPdfFil(pdfMarkup);
+
+        String skjemaPath = new File(servletContext.getRealPath("/")).toURI().toString();
+
+        return PDFFabrikk.lagPdfFil(pdfMarkup, skjemaPath);
     }
 }
