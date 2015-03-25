@@ -70,5 +70,13 @@
         <panel>Infofar</panel>
     </faktum>
 
+    <!-- Soknad -->
+    <!-- Opphold i Norge-->
+    <faktum>
+        <id>oppholdnorge.tidligere</id>
+        <type>java.lang.String</type>
+        <panel>OppholdNorge</panel>
+    </faktum>
+
 
 </soknad>
