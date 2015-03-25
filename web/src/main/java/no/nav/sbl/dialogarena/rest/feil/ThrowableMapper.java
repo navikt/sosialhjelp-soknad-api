@@ -17,7 +17,7 @@ public class ThrowableMapper implements ExceptionMapper<Throwable> {
     @Override
     public Response toResponse(Throwable e) {
         logger.error("Noe uventet feilet", e);
-        // TODO: Pakk dette inn i 400-feil pga. BigIP? - Børge tar dette med Kai
+        // TODO: Hva skjer når man ikke finner et endepunkt? 404 sier ikke hva som ble prøvd hentet.
         return serverError().type(APPLICATION_JSON).entity(new Feilmelding("unexpected_error", e.getMessage())).build();
     }
 }
