@@ -17,7 +17,7 @@ public class PDFFabrikk {
     /**
      * Lag en pdf fra en html-string.
      */
-    public static byte[] lagPdfFil(String html) {
+    public static byte[] lagPdfFil(String html, String skjemaPath) {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         try {
             ITextRenderer renderer = new ITextRenderer() {
@@ -32,7 +32,9 @@ public class PDFFabrikk {
                     super.preOpen(iTextRenderer);
                 }
             });
-            renderer.setDocumentFromString(html, "");
+
+            renderer.setDocumentFromString(html, skjemaPath);
+
             renderer.getFontResolver().addFont("/fonts/modus/ModusRegular.ttf", "Modus", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
             renderer.getFontResolver().addFont("/fonts/modus/ModusLight.ttf", "Modus", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
             renderer.getFontResolver().addFont("/fonts/modus/ModusBold.ttf", "Modus", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
