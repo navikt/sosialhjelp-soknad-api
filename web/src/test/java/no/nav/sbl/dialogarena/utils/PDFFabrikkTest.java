@@ -37,7 +37,10 @@ public class PDFFabrikkTest {
         String html;
         try {
             html = handleBarKjoerer.fyllHtmlMalMedInnhold(soknad, "/html/WebSoknadHtml");
-            byte[] pdfFil = new PDFFabrikk().lagPdfFil(html);
+
+            String skjemaPath = "file://" + PDFFabrikk.class.getResource("/").getPath();
+            byte[] pdfFil = PDFFabrikk.lagPdfFil(html, skjemaPath);
+
             Assert.assertTrue(pdfFil.length > 0);
         } catch (IOException e) {
             Assert.assertTrue(false);
