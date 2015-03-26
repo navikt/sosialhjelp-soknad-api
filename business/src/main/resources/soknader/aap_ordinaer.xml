@@ -12,4 +12,17 @@
         <type>java.lang.String</type>
         <panel>Tilleggsopplysninger</panel>
     </faktum>
+
+    <!-- Utenlandsopphold -->
+    <faktum>
+        <id>utenlandsopphold.EOSLand</id>
+        <type>java.lang.String</type>
+        <panel>Utenlandsopphold</panel>
+    </faktum>
+
+    <faktum>
+        <id>utenlandsopphold.EOSLand.periode</id>
+        <panel>Utenlandsopphold</panel>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
 </soknad>
