@@ -77,6 +77,20 @@
         <type>java.lang.String</type>
         <panel>OppholdNorge</panel>
     </faktum>
-
+    <faktum>
+        <id>oppholdnorge.tidligere.periode</id>
+        <panel>OppholdNorge</panel>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <faktum>
+        <id>oppholdnorge.fremtidig</id>
+        <type>java.lang.String</type>
+        <panel>OppholdNorge</panel>
+    </faktum>
+    <faktum>
+        <id>oppholdnorge.fremtidig.periode</id>
+        <panel>OppholdNorge</panel>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
 
 </soknad>
