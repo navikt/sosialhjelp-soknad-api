@@ -27,4 +27,48 @@
         <type>java.lang.Boolean</type>
         <panel>Veiledning</panel>
     </faktum>
+
+    <!-- Opplysninger om Far -->
+    <faktum>
+        <id>infofar.aleneomsorg</id>
+        <type>java.lang.String</type>
+        <panel>Infofar</panel>
+    </faktum>
+    <faktum>
+        <id>infofar.aleneomsorg.fritekst</id>
+        <type>java.lang.String</type>
+        <panel>Infofar</panel>
+    </faktum>
+    <faktum>
+        <id>infofar.farrett</id>
+        <type>java.lang.Boolean</type>
+        <panel>Infofar</panel>
+    </faktum>
+    <faktum>
+        <id>infofar.farrett.fritekst</id>
+        <type>java.lang.String</type>
+        <panel>Infofar</panel>
+    </faktum>
+    <faktum>
+        <id>infofar.opplysninger.fornavn</id>
+        <type>java.lang.String</type>
+        <panel>Infofar</panel>
+    </faktum>
+    <faktum>
+        <id>infofar.opplysninger.etternavn</id>
+        <type>java.lang.String</type>
+        <panel>Infofar</panel>
+    </faktum>
+    <faktum>
+        <id>infofar.opplysninger.personnummer</id>
+        <type>java.lang.String</type>
+        <panel>Infofar</panel>
+    </faktum>
+    <faktum>
+        <id>infofar.opplysninger.fodselsdato</id>
+        <type>java.lang.String</type>
+        <panel>Infofar</panel>
+    </faktum>
+
+
 </soknad>
