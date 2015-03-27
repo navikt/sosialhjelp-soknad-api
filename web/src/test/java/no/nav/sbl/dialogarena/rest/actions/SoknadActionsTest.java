@@ -52,22 +52,22 @@ public class SoknadActionsTest {
 
     @Test
     public void sendSoknadSkalLageDagpengerPdfMedKodeverksverdier() throws Exception{
-        when(soknadService.hentSoknadMedFaktaOgVedlegg(BEHANDLINGS_ID)).thenReturn(soknad());
+        when(soknadService.hentSoknadMedFaktaOgVedlegg(BEHANDLINGS_ID)).thenReturn(soknad().medSoknadPrefix("dagpenger.ordinaer"));
         when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyString())).thenReturn("<html></html>");
 
         actions.sendSoknad(BEHANDLINGS_ID);
 
-        verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), eq("/skjema/dagpenger"));
+        verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), eq("/skjema/dagpenger.ordinaer"));
     }
 
     @Test
     public void sendGjenopptakSkalLageGjenopptakPdfMedKodeverksverdier() throws Exception{
-        when(soknadService.hentSoknadMedFaktaOgVedlegg(BEHANDLINGS_ID)).thenReturn(soknad().medskjemaNummer("NAV 04-16.03"));
+        when(soknadService.hentSoknadMedFaktaOgVedlegg(BEHANDLINGS_ID)).thenReturn(soknad().medSoknadPrefix("dagpenger.gjenopptak"));
         when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyString())).thenReturn("<html></html>");
 
         actions.sendSoknad(BEHANDLINGS_ID);
 
-        verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), eq("/skjema/gjenopptak"));
+        verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), eq("/skjema/dagpenger.gjenopptak"));
     }
 
     @Test
