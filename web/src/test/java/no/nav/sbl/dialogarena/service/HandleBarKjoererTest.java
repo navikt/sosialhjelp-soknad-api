@@ -52,7 +52,7 @@ public class HandleBarKjoererTest {
                 .medFaktum(new Faktum().medKey("reellarbeidssoker.villigdeltid.maksimalarbeidstid").medValue("20"))
                 .medVedlegg(Arrays.asList(new Vedlegg().medSkjemaNummer("L6").medInnsendingsvalg(Vedlegg.Status.LastetOpp)));
 
-        String html = handleBarKjoerer.fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
+        String html = handleBarKjoerer.fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger.ordinaer");
         assertThat(html, containsString("***REMOVED***"));
 
     }
@@ -80,7 +80,7 @@ public class HandleBarKjoererTest {
                 .medFaktum(new Faktum().medKey("reellarbeidssoker.villigdeltid").medValue("false"))
                 .medFaktum(new Faktum().medKey("reellarbeidssoker.villigdeltid.maksimalarbeidstid").medValue("20"))
                 .medVedlegg(Arrays.asList(new Vedlegg().medSkjemaNummer("L6").medInnsendingsvalg(Vedlegg.Status.LastetOpp)));
-        String html = handleBarKjoerer.fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
+        String html = handleBarKjoerer.fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger.ordinaer");
         assertThat(html, containsString("***REMOVED***"));
     }
 }
