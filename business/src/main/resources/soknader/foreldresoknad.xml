@@ -84,6 +84,12 @@
         <flereTillatt>true</flereTillatt>
     </faktum>
 
+    <!-- Barnet-bolk -->
+    <faktum>
+        <id>barnet.dato</id>
+        <type>java.lang.String</type>
+    </faktum>
+
     <!-- Tilleggsopplysninger -->
     <faktum>
         <id>tilleggsopplysninger.fritekst</id>
