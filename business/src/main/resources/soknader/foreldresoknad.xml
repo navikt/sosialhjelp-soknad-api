@@ -25,6 +25,22 @@
 
     <!-- Opplysninger om Far -->
     <faktum>
+        <id>infofar.opplysninger.fornavn</id>
+        <type>java.lang.String</type>
+    </faktum>
+    <faktum>
+        <id>infofar.opplysninger.etternavn</id>
+        <type>java.lang.String</type>
+    </faktum>
+    <faktum>
+        <id>infofar.opplysninger.personnummer</id>
+        <type>java.lang.String</type>
+    </faktum>
+    <faktum>
+        <id>infofar.opplysninger.fodselsdato</id>
+        <type>java.lang.String</type>
+    </faktum>
+    <faktum>
         <id>infofar.aleneomsorg</id>
         <type>java.lang.String</type>
     </faktum>
@@ -41,19 +57,11 @@
         <type>java.lang.String</type>
     </faktum>
     <faktum>
-        <id>infofar.opplysninger.fornavn</id>
-        <type>java.lang.String</type>
+        <id>infofar.informert</id>
+        <type>java.lang.Boolean</type>
     </faktum>
     <faktum>
-        <id>infofar.opplysninger.etternavn</id>
-        <type>java.lang.String</type>
-    </faktum>
-    <faktum>
-        <id>infofar.opplysninger.personnummer</id>
-        <type>java.lang.String</type>
-    </faktum>
-    <faktum>
-        <id>infofar.opplysninger.fodselsdato</id>
+        <id>infofar.informert.fritekst</id>
         <type>java.lang.String</type>
     </faktum>
 
