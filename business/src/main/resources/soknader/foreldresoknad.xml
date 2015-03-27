@@ -76,4 +76,9 @@
         <flereTillatt>true</flereTillatt>
     </faktum>
 
+    <!-- Tilleggsopplysninger -->
+    <faktum>
+        <id>tilleggsopplysninger.fritekst</id>
+        <type>java.lang.String</type>
+    </faktum>
 </soknad>
