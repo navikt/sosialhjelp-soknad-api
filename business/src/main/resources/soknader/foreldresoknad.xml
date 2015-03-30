@@ -3,71 +3,66 @@
     <faktum>
         <id>soknadsvalg.stonadstype</id>
         <type>java.lang.String</type>
-        <panel>Soknadsvalg</panel>
     </faktum>
     <faktum>
         <id>soknadsvalg.fodselelleradopsjon</id>
         <type>java.lang.String</type>
-        <panel>Soknadsvalg</panel>
     </faktum>
 
     <!-- Veiledning -->
     <faktum>
         <id>veiledning.mor.terminbekreftelse</id>
         <type>java.lang.String</type>
-        <panel>Veiledning</panel>
     </faktum>
     <faktum>
         <id>veiledning.adopsjon.overtakelse</id>
         <type>java.lang.String</type>
-        <panel>Veiledning</panel>
     </faktum>
     <faktum>
         <id>veiledning.far.harforstattinformasjon</id>
         <type>java.lang.Boolean</type>
-        <panel>Veiledning</panel>
     </faktum>
 
     <!-- Opplysninger om Far -->
     <faktum>
-        <id>infofar.aleneomsorg</id>
-        <type>java.lang.String</type>
-        <panel>Infofar</panel>
-    </faktum>
-    <faktum>
-        <id>infofar.aleneomsorg.fritekst</id>
-        <type>java.lang.String</type>
-        <panel>Infofar</panel>
-    </faktum>
-    <faktum>
-        <id>infofar.farrett</id>
-        <type>java.lang.Boolean</type>
-        <panel>Infofar</panel>
-    </faktum>
-    <faktum>
-        <id>infofar.farrett.fritekst</id>
-        <type>java.lang.String</type>
-        <panel>Infofar</panel>
-    </faktum>
-    <faktum>
         <id>infofar.opplysninger.fornavn</id>
         <type>java.lang.String</type>
-        <panel>Infofar</panel>
     </faktum>
     <faktum>
         <id>infofar.opplysninger.etternavn</id>
         <type>java.lang.String</type>
-        <panel>Infofar</panel>
     </faktum>
     <faktum>
         <id>infofar.opplysninger.personnummer</id>
         <type>java.lang.String</type>
-        <panel>Infofar</panel>
     </faktum>
     <faktum>
         <id>infofar.opplysninger.fodselsdato</id>
         <type>java.lang.String</type>
-        <panel>Infofar</panel>
+    </faktum>
+    <faktum>
+        <id>infofar.aleneomsorg</id>
+        <type>java.lang.String</type>
+    </faktum>
+    <faktum>
+        <id>infofar.aleneomsorg.fritekst</id>
+        <type>java.lang.String</type>
+    </faktum>
+    <faktum>
+        <id>infofar.farrett</id>
+        <type>java.lang.Boolean</type>
+    </faktum>
+    <faktum>
+        <id>infofar.farrett.fritekst</id>
+        <type>java.lang.String</type>
+    </faktum>
+    <faktum>
+        <id>infofar.informert</id>
+        <type>java.lang.Boolean</type>
+    </faktum>
+    <faktum>
+        <id>infofar.informert.fritekst</id>
+        <type>java.lang.String</type>
     </faktum>
 
     <!-- Soknad -->
@@ -75,22 +70,36 @@
     <faktum>
         <id>oppholdnorge.tidligere</id>
         <type>java.lang.String</type>
-        <panel>OppholdNorge</panel>
     </faktum>
     <faktum>
         <id>oppholdnorge.tidligere.periode</id>
-        <panel>OppholdNorge</panel>
         <flereTillatt>true</flereTillatt>
     </faktum>
     <faktum>
         <id>oppholdnorge.fremtidig</id>
-        <type>java.lang.String</type>
         <panel>OppholdNorge</panel>
     </faktum>
     <faktum>
         <id>oppholdnorge.fremtidig.periode</id>
-        <panel>OppholdNorge</panel>
         <flereTillatt>true</flereTillatt>
     </faktum>
 
+    <!-- Tilleggsopplysninger -->
+    <faktum>
+        <id>tilleggsopplysninger.fritekst</id>
+        <type>java.lang.String</type>
+    </faktum>
+
+    <!-- Egen næring -->
+    <faktum>
+        <id>egennaering.arbeidegennaering</id>
+        <type>java.lang.Boolean</type>
+        <panel>EgenNaering</panel>
+    </faktum>
+    <faktum>
+        <id>naeringsvirksomhet</id>
+        <type>java.lang.String</type>
+        <flereTillat>true</flereTillat>
+        <panel>EgenNaering</panel>
+    </faktum>
 </soknad>
