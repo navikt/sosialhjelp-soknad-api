@@ -89,4 +89,17 @@
         <id>tilleggsopplysninger.fritekst</id>
         <type>java.lang.String</type>
     </faktum>
+
+    <!-- Egen næring -->
+    <faktum>
+        <id>egennaering.arbeidegennaering</id>
+        <type>java.lang.Boolean</type>
+        <panel>EgenNaering</panel>
+    </faktum>
+    <faktum>
+        <id>naeringsvirksomhet</id>
+        <type>java.lang.String</type>
+        <flereTillat>true</flereTillat>
+        <panel>EgenNaering</panel>
+    </faktum>
 </soknad>
