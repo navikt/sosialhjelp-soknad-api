@@ -23,9 +23,9 @@ public class RedirectRessurs {
 
     @GET
     @Path("utslagskriterier/{behandlingsId}")
-    public Response fortsettSenereRedirect(@PathParam("behandlingsId") String behandlingsId, @Context HttpServletRequest request) throws URISyntaxException {
+    public Response fortsettSenereRedirect(@PathParam("behandlingsId") String behandlingsId) throws URISyntaxException {
         LOG.info("Fortsett senere med gammel URL");
-        return movedPermanently(new URI(getFortsettUrl(request.getRequestURL().toString(), behandlingsId)));
+        return movedPermanently(new URI(getFortsettUrl(behandlingsId)));
     }
 
     @GET
