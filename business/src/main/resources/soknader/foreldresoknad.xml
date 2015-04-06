@@ -136,6 +136,11 @@
         <id>ytelser.sluttpakke</id>
     </faktum>
 
+    <!-- Perioder -->
+    <faktum>
+        <id>perioder.startdato</id>
+    </faktum>
+
     <!-- Ekstra vedlegg -->
     <faktum>
         <id>ekstraVedlegg</id>
