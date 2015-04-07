@@ -226,12 +226,4 @@
             <value>adopsjon</value>
         </onValues>
     </vedlegg>
-    <vedlegg>
-        <id>4</id>
-        <faktum>veiledning.far.harforstattinformasjon</faktum>
-        <skjemaNummer>O7</skjemaNummer>
-        <onValues>
-            <value>true</value>
-        </onValues>
-    </vedlegg>
 </soknad>
