@@ -1,12 +1,6 @@
 package no.nav.sbl.dialogarena.config;
 
-import no.nav.innholdshenter.common.EnonicContentRetriever;
-import no.nav.innholdshenter.filter.DecoratorFilter;
-import no.nav.modig.content.CmsContentRetriever;
-import no.nav.modig.content.Content;
-import no.nav.modig.content.ContentRetriever;
-import no.nav.modig.content.ValueRetriever;
-import no.nav.modig.content.ValuesFromContentWithResourceBundleFallback;
+import no.nav.modig.content.*;
 import no.nav.modig.content.enonic.HttpContentRetriever;
 import no.nav.modig.content.enonic.innholdstekst.Innholdstekst;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
@@ -25,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,8 +43,7 @@ public class ContentConfig {
     private static final String FORELDRESOKNAD_NB_NO_LOCAL = "content.foreldresoknad_innholdstekster";
     private static final String AAP_NB_NO_REMOTE = "/app/AAP/nb_NO/tekster";
     private static final String AAP_NB_NO_LOCAL = "content.aap_innholdstekster";
-    private static final String FRAGMENTS_URL = "common-html/v1/navno";
-    private static final List<String> NO_DECORATOR_PATTERNS = new ArrayList<>(asList(".*/img/.*", ".*selftest.*"));
+    
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
 
@@ -162,33 +154,5 @@ public class ContentConfig {
         cmsContentRetriever.setTeksterRetriever(siteContentRetriever());
         cmsContentRetriever.setArtikkelRetriever(siteContentRetriever());
         return cmsContentRetriever;
-    }
-
-    @Bean(name = "cmsBaseUrl")
-    public String cmsBaseUrl() {
-        return cmsBaseUrl;
-    }
-
-
-    @Bean
-    public DecoratorFilter decoratorFilter() {
-        DecoratorFilter decorator = new DecoratorFilter();
-        decorator.setFragmentsUrl(FRAGMENTS_URL);
-        decorator.setContentRetriever(appresContentRetriever());
-        decorator.setApplicationName("Saksoversikt");
-        decorator.setNoDecoratePatterns(NO_DECORATOR_PATTERNS);
-        decorator.setFragmentNames(asList(
-                "header-withmenu",
-                "footer-withmenu"
-        ));
-        return decorator;
-    }
-
-    private EnonicContentRetriever appresContentRetriever() {
-        EnonicContentRetriever contentRetriever = new EnonicContentRetriever("saksoversikt");
-        contentRetriever.setBaseUrl(cmsBaseUrl);
-        contentRetriever.setRefreshIntervalSeconds(1800);
-        contentRetriever.setHttpTimeoutMillis(10000);
-        return contentRetriever;
     }
 }
