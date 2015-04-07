@@ -64,11 +64,9 @@ public class SoknadRessurs {
     public String hentOppsummering(@PathParam("behandlingsId") String behandlingsId) throws IOException {
         WebSoknad soknad = soknadService.hentSoknadMedFaktaOgVedlegg(behandlingsId);
         vedleggService.leggTilKodeverkFelter(soknad.getVedlegg());
-        if (soknad.erGjenopptak()) {
-            return pdfTemplate.fyllHtmlMalMedInnhold(soknad, "/skjema/gjenopptak");
-        } else {
-            return pdfTemplate.fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
-        }
+
+        String oppsummeringSti = "/skjema/" + soknad.getSoknadPrefix();
+        return pdfTemplate.fyllHtmlMalMedInnhold(soknad, oppsummeringSti);
     }
 
 

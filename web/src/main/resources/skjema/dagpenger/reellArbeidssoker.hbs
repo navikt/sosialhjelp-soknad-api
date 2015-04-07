@@ -1,0 +1,179 @@
+<h2>{{ hentTekst "reellarbeidssoker.tittel" }}</h2>
+<table>
+    {{#forFaktum "reellarbeidssoker.villigdeltid"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                {{#hvisSant value}}
+                    {{ hentTekst "reellarbeidssoker.villigdeltid.true"}}
+                {{else}}
+                    {{ hentTekst "reellarbeidssoker.villigdeltid.false"}}
+
+                    <ul>
+                        {{#forFaktum "personalia"}}
+                            {{#hvisMindre properties.alder "60"}}
+                                {{#forFaktum "reellarbeidssoker.villigdeltid.reduserthelse"}}
+                                    {{#hvisSant value}}
+                                        <li class="kulepunkt">
+                                            <span>{{ hentTekst "reellarbeidssoker.reduserthelse"}}</span>
+                                        </li>
+                                    {{/hvisSant}}
+                                {{/forFaktum}}
+
+                                {{#forFaktum "reellarbeidssoker.villigdeltid.omsorgbarnunder1aar"}}
+                                    {{#hvisSant value}}
+                                        <li class="kulepunkt">
+                                            <span>{{ hentTekst "reellarbeidssoker.omsorgbarnunder1aar"}}</span>
+                                        </li>
+                                    {{/hvisSant}}
+                                {{/forFaktum}}
+
+                                {{#forFaktum "reellarbeidssoker.villigdeltid.eneansvarbarnunder5skoleaar"}}
+                                    {{#hvisSant value}}
+                                        <li class="kulepunkt">
+                                            <span>{{ hentTekst "reellarbeidssoker.eneansvarbarnunder5skoleaar"}}</span>
+                                        </li>
+                                    {{/hvisSant}}
+                                {{/forFaktum}}
+
+                                {{#forFaktum "reellarbeidssoker.villigdeltid.eneansvarbarnopptil18aar"}}
+                                    {{#hvisSant value}}
+                                        <li class="kulepunkt">
+                                            <span>{{ hentTekst "reellarbeidssoker.eneansvarbarnopptil18aar"}}</span>
+                                        </li>
+                                    {{/hvisSant}}
+                                {{/forFaktum}}
+
+                                {{#forFaktum "reellarbeidssoker.villigdeltid.omsorgansvar"}}
+                                    {{#hvisSant value}}
+                                        <li class="kulepunkt">
+                                            <span>{{ hentTekst "reellarbeidssoker.omsorgansvar"}}</span>
+                                        </li>
+                                    {{/hvisSant}}
+                                {{/forFaktum}}
+
+                                {{#forFaktum "reellarbeidssoker.villigdeltid.annensituasjon"}}
+                                    {{#hvisSant value}}
+                                        <li class="kulepunkt">
+                                            <span>{{ hentTekst "reellarbeidssoker.annensituasjon"}}</span>
+                                        </li>
+                                    {{/hvisSant}}
+                                {{/forFaktum}}
+                            {{/hvisMindre}}
+                        {{/forFaktum}}
+
+                        {{#forFaktum "reellarbeidssoker.villigdeltid.maksimalarbeidstid"}}
+                            <li class="kulepunkt">
+                                <span>{{ hentTekst "dagpenger.oppsummering.reellarbeidssoker.villigdeltid.antallTimer"}}</span>
+                                <span>{{ value }}</span>
+                                {{#hvisMer value "1"}}
+                                    <span>{{ hentTekst "dagpenger.oppsummering.antallTimerFlertall" }}</span>
+                                {{else}}
+                                    <span>{{ hentTekst "dagpenger.oppsummering.antallTimer" }}</span>
+                                {{/hvisMer}}
+
+                            </li>
+                        {{/forFaktum}}
+                    </ul>
+                {{/hvisSant}}
+            </td>
+        </tr>
+    {{/forFaktum}}
+    {{#forFaktum "reellarbeidssoker.villigpendle"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                {{#hvisSant value}}
+                    <span>{{ hentTekst "reellarbeidssoker.villigpendle.true"}}</span>
+                {{else}}
+                    <span>{{ hentTekst "reellarbeidssoker.villigpendle.false"}}</span>
+
+                    <ul>
+                        {{#forFaktum "personalia"}}
+                            {{#hvisMindre properties.alder "60"}}
+                                {{#forFaktum "reellarbeidssoker.villigpendle.reduserthelse"}}
+                                    {{#hvisSant value}}
+                                        <li class="kulepunkt">
+                                            <span>{{ hentTekst "reellarbeidssoker.pendlereduserthelse"}}</span>
+                                        </li>
+                                    {{/hvisSant}}
+                                {{/forFaktum}}
+
+                                {{#forFaktum "reellarbeidssoker.villigpendle.pendleomsorgbarnunder1aar"}}
+                                    {{#hvisSant value}}
+                                        <li class="kulepunkt">
+                                            <span>{{ hentTekst "reellarbeidssoker.pendleomsorgbarnunder1aar"}}</span>
+                                        </li>
+                                    {{/hvisSant}}
+                                {{/forFaktum}}
+
+                                {{#forFaktum "reellarbeidssoker.villigpendle.eneansvarbarnunder5skoleaar"}}
+                                    {{#hvisSant value}}
+                                        <li class="kulepunkt">
+                                            <span>{{ hentTekst "reellarbeidssoker.pendleeneansvarbarnunder5skoleaar"}}</span>
+                                        </li>
+                                    {{/hvisSant}}
+                                {{/forFaktum}}
+
+                                {{#forFaktum "reellarbeidssoker.villigpendle.eneansvarbarnopptil18aar"}}
+                                    {{#hvisSant value}}
+                                        <li class="kulepunkt">
+                                            <span>{{ hentTekst "reellarbeidssoker.pendleeneansvarbarnopptil18aar"}}</span>
+                                        </li>
+                                    {{/hvisSant}}
+                                {{/forFaktum}}
+
+                                {{#forFaktum "reellarbeidssoker.villigpendle.omsorgansvar"}}
+                                    {{#hvisSant value}}
+                                        <li class="kulepunkt">
+                                            <span>{{ hentTekst "reellarbeidssoker.pendleomsorgansvar"}}</span>
+                                        </li>
+                                    {{/hvisSant}}
+                                {{/forFaktum}}
+
+                                {{#forFaktum "reellarbeidssoker.villigpendle.annensituasjon"}}
+                                    {{#hvisSant value}}
+                                        <li class="kulepunkt">
+                                            <span>{{ hentTekst "reellarbeidssoker.pendleannensituasjon"}}</span>
+                                        </li>
+                                    {{/hvisSant}}
+                                {{/forFaktum}}
+                            {{/hvisMindre}}
+                        {{/forFaktum}}
+                    </ul>
+                {{/hvisSant}}
+            </td>
+        </tr>
+    {{/forFaktum}}
+    {{#forFaktum "reellarbeidssoker.villighelse"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                {{#hvisSant value}}
+                    <span>{{ hentTekst "reellarbeidssoker.villighelse.true"}}</span>
+                {{else}}
+                    <span>{{ hentTekst "reellarbeidssoker.villighelse.false"}}</span>
+                    <ul>
+                        {{#forFaktum "reellarbeidssoker.villighelse.fritekst"}}
+                            <li class="kulepunkt">
+                                <span>{{ value }}</span>
+                            </li>
+                        {{/forFaktum}}
+                    </ul>
+                {{/hvisSant}}
+            </td>
+        </tr>
+    {{/forFaktum}}
+    {{#forFaktum "reellarbeidssoker.villigjobb"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                {{#hvisSant value}}
+                    <span>{{ hentTekst "reellarbeidssoker.villigjobb.true"}}</span>
+                {{else}}
+                    <span>{{ hentTekst "reellarbeidssoker.villigjobb.false"}}</span>
+                {{/hvisSant}}
+            </td>
+        </tr>
+    {{/forFaktum}}
+</table>

@@ -77,11 +77,8 @@ public class SoknadActions {
             soknadService.sendSoknad(behandlingsId, dummyPdfSomHovedskjema);
         } else {
             byte[] soknadPdf;
-            if (soknad.erGjenopptak()) {
-                soknadPdf = genererPdfMedKodeverksverdier(soknad, "/skjema/gjenopptak");
-            } else {
-                soknadPdf = genererPdfMedKodeverksverdier(soknad, "/skjema/dagpenger");
-            }
+            String oppsummeringSti = "/skjema/" + soknad.getSoknadPrefix();
+            soknadPdf = genererPdfMedKodeverksverdier(soknad, oppsummeringSti);
             soknadService.sendSoknad(behandlingsId, soknadPdf);
         }
     }
