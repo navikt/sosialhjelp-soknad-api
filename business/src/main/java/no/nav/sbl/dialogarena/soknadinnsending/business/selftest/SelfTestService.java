@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.selftest;
 
 import no.aetat.arena.fodselsnr.Fodselsnr;
-import no.nav.arena.tjenester.person.v1.FaultGeneriskMsg;
 import no.nav.arena.tjenester.person.v1.PersonInfoServiceSoap;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
@@ -163,8 +162,8 @@ public class SelfTestService  {
         try {
             personInfoServiceSoap.hentPersonStatus(fodselsnr);
             status = STATUS_OK;
-        } catch (FaultGeneriskMsg faultGeneriskMsg) {
-            logger.warn("<<<<<<Error Contacting Personinfo (i  Arena) ", faultGeneriskMsg);
+        } catch (Exception exception) {
+            logger.warn("<<<<<<Error Contacting Personinfo (i  Arena) ", exception);
         }
         String beskrivelse = "Web service for Personinfo (i Arena)";
         return new AvhengighetStatus("ARENA_PERSONINFO_PING", status, currentTimeMillis() - start, beskrivelse);
