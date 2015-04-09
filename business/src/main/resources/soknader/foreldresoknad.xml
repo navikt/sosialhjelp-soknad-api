@@ -58,19 +58,19 @@
     </faktum>
 
     <!-- Soknad -->
-    <!-- Opphold i Norge-->
+    <!-- Tilknytning i Norge-->
     <faktum>
-        <id>oppholdnorge.tidligere</id>
+        <id>tilknytningnorge.tidligere</id>
     </faktum>
     <faktum>
-        <id>oppholdnorge.tidligere.periode</id>
+        <id>tilknytningnorge.tidligere.periode</id>
         <flereTillatt>true</flereTillatt>
     </faktum>
     <faktum>
-        <id>oppholdnorge.fremtidig</id>
+        <id>tilknytningnorge.fremtidig</id>
     </faktum>
     <faktum>
-        <id>oppholdnorge.fremtidig.periode</id>
+        <id>tilknytningnorge.fremtidig.periode</id>
         <flereTillatt>true</flereTillatt>
     </faktum>
 
