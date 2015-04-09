@@ -36,10 +36,7 @@
         <id>infofar.opplysninger.etternavn</id>
     </faktum>
     <faktum>
-        <id>infofar.opplysninger.personnummer</id>
-    </faktum>
-    <faktum>
-        <id>infofar.opplysninger.fodselsdato</id>
+        <id>infofar.opplysninger.personinfo</id>
     </faktum>
     <faktum>
         <id>infofar.aleneomsorg</id>
