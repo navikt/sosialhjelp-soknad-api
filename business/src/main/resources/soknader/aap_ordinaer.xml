@@ -21,11 +21,6 @@
         <panel>Utenlandsopphold</panel>
     </faktum>
     <faktum>
-        <id>utenlandsopphold.oppholdINorge.situasjon</id>
-        <panel>Utenlandsopphold</panel>
-        <flereTillatt>false</flereTillatt>
-    </faktum>
-    <faktum>
         <id>utenlandsopphold.oppholdINorge.false.norge</id>
         <type>java.lang.Boolean</type>
         <panel>Utenlandsopphold</panel>
