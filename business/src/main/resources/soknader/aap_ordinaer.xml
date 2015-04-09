@@ -14,12 +14,45 @@
     </faktum>
 
     <!-- Utenlandsopphold -->
+    <!-- Opphold i Norge siste tre år -->
+    <faktum>
+        <id>utenlandsopphold.oppholdINorge</id>
+        <type>java.lang.String</type>
+        <panel>Utenlandsopphold</panel>
+    </faktum>
+    <faktum>
+        <id>utenlandsopphold.oppholdINorge.situasjon</id>
+        <panel>Utenlandsopphold</panel>
+        <flereTillatt>false</flereTillatt>
+    </faktum>
+    <faktum>
+        <id>utenlandsopphold.oppholdINorge.false.norge</id>
+        <type>java.lang.Boolean</type>
+        <panel>Utenlandsopphold</panel>
+    </faktum>
+    <faktum>
+        <id>utenlandsopphold.oppholdINorge.false.EOSLand</id>
+        <type>java.lang.Boolean</type>
+        <panel>Utenlandsopphold</panel>
+    </faktum>
+    <faktum>
+        <id>utenlandsopphold.oppholdINorge.false.flyktning</id>
+        <type>java.lang.Boolean</type>
+        <panel>Utenlandsopphold</panel>
+    </faktum>
+    <faktum>
+        <id>utenlandsopphold.oppholdINorge.false.ingen</id>
+        <type>java.lang.Boolean</type>
+        <panel>Utenlandsopphold</panel>
+    </faktum>
+
+    <!-- Utenlandsopphold -->
+    <!-- Arbeid i EØS-land før sykdom -->
     <faktum>
         <id>utenlandsopphold.EOSLand</id>
         <type>java.lang.String</type>
         <panel>Utenlandsopphold</panel>
     </faktum>
-
     <faktum>
         <id>utenlandsopphold.EOSLand.periode</id>
         <panel>Utenlandsopphold</panel>
