@@ -12,6 +12,7 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 import static javax.ws.rs.core.Response.Status.*;
 import static javax.ws.rs.core.Response.serverError;
 import static javax.ws.rs.core.Response.status;
@@ -39,6 +40,7 @@ public class ApplicationExceptionMapper implements ExceptionMapper<ModigExceptio
             logger.error("REST-kall feilet", e);
         }
 
-        return response.type(APPLICATION_JSON).entity(new Feilmelding(e.getId(), e.getMessage())).build();
+        // Mediatypen kan settes til APPLICATION_JSON når vi ikke trenger å støtte IE9 lenger.
+        return response.type(TEXT_PLAIN).entity(new Feilmelding(e.getId(), e.getMessage())).build();
     }
 }
