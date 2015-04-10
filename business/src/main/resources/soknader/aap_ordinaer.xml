@@ -16,27 +16,27 @@
     <!-- Utenlandsopphold -->
     <!-- Opphold i Norge siste tre år -->
     <faktum>
-        <id>utenlandsopphold.oppholdINorgeTreSisteAar</id>
+        <id>utenlandsopphold.oppholdINorgeSisteTreAar</id>
         <type>java.lang.String</type>
         <panel>Utenlandsopphold</panel>
     </faktum>
     <faktum>
-        <id>utenlandsopphold.oppholdINorgeTreSisteAar.false.boddINorgeSisteAaret</id>
+        <id>utenlandsopphold.oppholdINorgeSisteTreAar.false.boddINorgeSisteAaret</id>
         <type>java.lang.Boolean</type>
         <panel>Utenlandsopphold</panel>
     </faktum>
     <faktum>
-        <id>utenlandsopphold.oppholdINorgeTreSisteAar.false.boddIEOSLandSisteTreAar</id>
+        <id>utenlandsopphold.oppholdINorgeSisteTreAar.false.boddIEOSLandSisteTreAar</id>
         <type>java.lang.Boolean</type>
         <panel>Utenlandsopphold</panel>
     </faktum>
     <faktum>
-        <id>utenlandsopphold.oppholdINorgeTreSisteAar.false.registrertFlyktning</id>
+        <id>utenlandsopphold.oppholdINorgeSisteTreAar.false.registrertFlyktning</id>
         <type>java.lang.Boolean</type>
         <panel>Utenlandsopphold</panel>
     </faktum>
     <faktum>
-        <id>utenlandsopphold.oppholdINorgeTreSisteAar.false.ingenPassendeSituasjoner</id>
+        <id>utenlandsopphold.oppholdINorgeSisteTreAar.false.ingenPassendeSituasjoner</id>
         <type>java.lang.Boolean</type>
         <panel>Utenlandsopphold</panel>
     </faktum>
