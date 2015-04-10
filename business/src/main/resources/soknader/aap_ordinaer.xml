@@ -34,13 +34,17 @@
         <id>utenlandsopphold.oppholdINorgeSisteTreAar.false.registrertFlyktning</id>
         <type>java.lang.Boolean</type>
         <panel>Utenlandsopphold</panel>
+        <dependOn>utenlandsopphold.oppholdINorgeSisteTreAar</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>utenlandsopphold.oppholdINorgeSisteTreAar.false.ingenPassendeSituasjoner</id>
         <type>java.lang.Boolean</type>
         <panel>Utenlandsopphold</panel>
     </faktum>
-
+    
     <!-- Utenlandsopphold -->
     <!-- Arbeid i EØS-land før sykdom -->
     <faktum>
@@ -53,4 +57,19 @@
         <panel>Utenlandsopphold</panel>
         <flereTillatt>true</flereTillatt>
     </faktum>
+
+    <!-- Ekstra vedlegg -->
+    <faktum>
+        <id>ekstraVedlegg</id>
+        <type>java.lang.boolean</type>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <id>5</id>
+        <faktum>utenlandsopphold.oppholdINorgeSisteTreAar.false.registrertFlyktning</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>P2</skjemaNummer>
+    </vedlegg>
 </soknad>
