@@ -2,38 +2,27 @@
     <!-- Systemfakta -->
     <faktum>
         <id>personalia</id>
-        <panel>Personalia</panel>
         <erSystemFaktum>true</erSystemFaktum>
     </faktum>
 
     <!-- Tilleggsopplysninger -->
     <faktum>
         <id>tilleggsopplysninger.fritekst</id>
-        <type>java.lang.String</type>
-        <panel>Tilleggsopplysninger</panel>
     </faktum>
 
     <!-- Utenlandsopphold -->
     <!-- Opphold i Norge siste tre år -->
     <faktum>
         <id>utenlandsopphold.oppholdINorgeSisteTreAar</id>
-        <type>java.lang.String</type>
-        <panel>Utenlandsopphold</panel>
     </faktum>
     <faktum>
         <id>utenlandsopphold.oppholdINorgeSisteTreAar.false.boddINorgeSisteAaret</id>
-        <type>java.lang.Boolean</type>
-        <panel>Utenlandsopphold</panel>
     </faktum>
     <faktum>
         <id>utenlandsopphold.oppholdINorgeSisteTreAar.false.boddIEOSLandSisteTreAar</id>
-        <type>java.lang.Boolean</type>
-        <panel>Utenlandsopphold</panel>
     </faktum>
     <faktum>
         <id>utenlandsopphold.oppholdINorgeSisteTreAar.false.registrertFlyktning</id>
-        <type>java.lang.Boolean</type>
-        <panel>Utenlandsopphold</panel>
         <dependOn>utenlandsopphold.oppholdINorgeSisteTreAar</dependOn>
         <dependOnValues>
             <value>false</value>
@@ -41,27 +30,21 @@
     </faktum>
     <faktum>
         <id>utenlandsopphold.oppholdINorgeSisteTreAar.false.ingenPassendeSituasjoner</id>
-        <type>java.lang.Boolean</type>
-        <panel>Utenlandsopphold</panel>
     </faktum>
-    
+
     <!-- Utenlandsopphold -->
     <!-- Arbeid i EØS-land før sykdom -->
     <faktum>
         <id>utenlandsopphold.EOSLand</id>
-        <type>java.lang.String</type>
-        <panel>Utenlandsopphold</panel>
     </faktum>
     <faktum>
         <id>utenlandsopphold.EOSLand.periode</id>
-        <panel>Utenlandsopphold</panel>
         <flereTillatt>true</flereTillatt>
     </faktum>
 
     <!-- Ekstra vedlegg -->
     <faktum>
         <id>ekstraVedlegg</id>
-        <type>java.lang.boolean</type>
         <flereTillatt>true</flereTillatt>
     </faktum>
     <vedlegg>
