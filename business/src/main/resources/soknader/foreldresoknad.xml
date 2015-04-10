@@ -73,7 +73,20 @@
         <id>tilknytningnorge.fremtidig.periode</id>
         <flereTillatt>true</flereTillatt>
     </faktum>
-
+    
+    <!-- Arbeidsforhold -->
+    <faktum>
+        <id>arbeidsforhold.yrkesaktiv</id>
+    </faktum>
+    <faktum>
+        <id>arbeidsforhold</id>
+        <dependOn>arbeidsforhold.yrkesaktiv</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    
     <!-- Barnet-bolk -->
     <faktum>
         <id>barnet.dato</id>
@@ -218,5 +231,28 @@
         <onValues>
             <value>adopsjon</value>
         </onValues>
+    </vedlegg>
+
+    <vedlegg>
+        <id>5</id>
+        <faktum>arbeidsforhold</faktum>
+        <skjemaNummer>O2</skjemaNummer>
+        <property>arbeidsgivernavn</property>
+        <onProperty>ansatt</onProperty>
+        <onValues>
+            <value>false</value>
+        </onValues>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <id>5</id>
+        <faktum>arbeidsforhold</faktum>
+        <skjemaNummer>T7</skjemaNummer>
+        <property>arbeidsgivernavn</property>
+        <onProperty>ansatt</onProperty>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
 </soknad>
