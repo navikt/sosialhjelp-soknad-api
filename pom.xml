@@ -12,7 +12,6 @@
         <module>config</module>
         <module>business</module>
         <module>consumer</module>
-        <module>dialogselftest</module>
         <module>web</module>
         <module>jee</module>
         <module>mock</module>
@@ -27,7 +26,6 @@
 
     <properties>
         <sonar.exclusions>
-            **/dialogselftest/**,
             **/mockmodul/**,
             **/selftest/**
         </sonar.exclusions>
@@ -799,7 +797,7 @@
                 </property>
             </activation>
             <properties>
-                <sonar.jacoco.excludes>no/nav/sbl/dialogarena/sendsoknad/mockmodul/**/*,no/nav/sbl/dialogarena/sendsoknad/dialogselftest/**/*</sonar.jacoco.excludes>
+                <sonar.jacoco.excludes>no/nav/sbl/dialogarena/sendsoknad/mockmodul/**/*</sonar.jacoco.excludes>
             </properties>
         </profile>
         <profile>
