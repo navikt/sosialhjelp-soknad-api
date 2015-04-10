@@ -2,14 +2,57 @@
     <!-- Systemfakta -->
     <faktum>
         <id>personalia</id>
-        <panel>Personalia</panel>
         <erSystemFaktum>true</erSystemFaktum>
     </faktum>
 
     <!-- Tilleggsopplysninger -->
     <faktum>
         <id>tilleggsopplysninger.fritekst</id>
-        <type>java.lang.String</type>
-        <panel>Tilleggsopplysninger</panel>
     </faktum>
+
+    <!-- Utenlandsopphold -->
+    <!-- Opphold i Norge siste tre år -->
+    <faktum>
+        <id>utenlandsopphold.oppholdINorgeSisteTreAar</id>
+    </faktum>
+    <faktum>
+        <id>utenlandsopphold.oppholdINorgeSisteTreAar.false.boddINorgeSisteAaret</id>
+    </faktum>
+    <faktum>
+        <id>utenlandsopphold.oppholdINorgeSisteTreAar.false.boddIEOSLandSisteTreAar</id>
+    </faktum>
+    <faktum>
+        <id>utenlandsopphold.oppholdINorgeSisteTreAar.false.registrertFlyktning</id>
+        <dependOn>utenlandsopphold.oppholdINorgeSisteTreAar</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>utenlandsopphold.oppholdINorgeSisteTreAar.false.ingenPassendeSituasjoner</id>
+    </faktum>
+
+    <!-- Utenlandsopphold -->
+    <!-- Arbeid i EØS-land før sykdom -->
+    <faktum>
+        <id>utenlandsopphold.EOSLand</id>
+    </faktum>
+    <faktum>
+        <id>utenlandsopphold.EOSLand.periode</id>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+    <!-- Ekstra vedlegg -->
+    <faktum>
+        <id>ekstraVedlegg</id>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <id>5</id>
+        <faktum>utenlandsopphold.oppholdINorgeSisteTreAar.false.registrertFlyktning</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>P2</skjemaNummer>
+    </vedlegg>
 </soknad>
