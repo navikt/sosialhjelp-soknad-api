@@ -58,6 +58,11 @@
     </faktum>
 
     <!-- Soknad -->
+    <!-- Rettigheter -->
+    <faktum>
+        <id>rettigheter.overtak</id>
+    </faktum>
+    
     <!-- Tilknytning til Norge-->
     <faktum>
         <id>tilknytningnorge.tidligere</id>
@@ -73,7 +78,7 @@
         <id>tilknytningnorge.fremtidig.periode</id>
         <flereTillatt>true</flereTillatt>
     </faktum>
-    
+
     <!-- Arbeidsforhold -->
     <faktum>
         <id>arbeidsforhold.yrkesaktiv</id>
@@ -86,7 +91,7 @@
         </dependOnValues>
         <flereTillatt>true</flereTillatt>
     </faktum>
-    
+
     <!-- Barnet-bolk -->
     <faktum>
         <id>barnet.dato</id>
@@ -254,5 +259,25 @@
             <value>true</value>
         </onValues>
         <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
+    <!-- Vedlegg rettigheter -->
+    <vedlegg>
+        <id>6</id>
+        <faktum>rettigheter.overtak</faktum>
+        <onValues>
+            <value>adpotererAlene</value>
+        </onValues>
+        <skjemaNummer>K1</skjemaNummer>
+    </vedlegg>
+    <vedlegg>
+        <id>6</id>
+        <faktum>rettigheter.overtak</faktum>
+        <onValues>
+            <value>fattTildeltForeldreansvar</value>
+            <value>overtattOmsorgInnen53UkerFodsel</value>
+            <value>overtattOmsorgInnen53UkerAdopsjon</value>
+        </onValues>
+        <skjemaNummer>O7</skjemaNummer>
     </vedlegg>
 </soknad>
