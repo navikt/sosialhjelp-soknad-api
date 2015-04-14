@@ -109,10 +109,6 @@
     <faktum>
         <id>egennaering.arbeidegennaering</id>
     </faktum>
-    <faktum>
-        <id>naeringsvirksomhet</id>
-        <flereTillat>true</flereTillat>
-    </faktum>
 
     <!-- Andre ytelser -->
     <faktum>
