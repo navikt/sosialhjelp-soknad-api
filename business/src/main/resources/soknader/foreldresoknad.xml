@@ -214,6 +214,7 @@
         <onProperty>gjeldendeAdresseType</onProperty>
         <onValues>
             <value>UTENLANDSK_ADRESSE</value>
+            <value>MIDLERTIDIG_POSTADRESSE_UTLAND</value>
         </onValues>
     </vedlegg>
     <vedlegg>
@@ -234,6 +235,7 @@
         </onValues>
     </vedlegg>
 
+    <!-- vedlegg for arbeidsforhold -->
     <vedlegg>
         <id>5</id>
         <faktum>arbeidsforhold</faktum>
