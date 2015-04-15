@@ -98,7 +98,17 @@ public class SoknadService implements SendSoknadService, EttersendingService {
             soknad = hentFraHenvendelse(behandlingsId, false);
         }
         soknad.medSoknadPrefix(getSoknadPrefix(soknad.getskjemaNummer())).medSoknadUrl(getSoknadUrl(soknad.getskjemaNummer()));
+
+        oppdaterPersonalia(soknad);
+
         return soknad;
+    }
+
+    private void oppdaterPersonalia(WebSoknad soknad) {
+        if (soknad.getSistLagret() == null || soknad.getSistLagret().isBefore(DateTime.now().minusDays(1))) {
+            String fodselsnummer = getSubjectHandler().getUid();
+            personaliaService.lagrePersonaliaOgBarn(fodselsnummer, soknad.getSoknadId(), !soknad.erEttersending());
+        }
     }
 
     public WebSoknad hentSoknadMedFaktaOgVedlegg(String behandlingsId) {
