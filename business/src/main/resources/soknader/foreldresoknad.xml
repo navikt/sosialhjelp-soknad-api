@@ -147,6 +147,11 @@
         <id>ytelser.sluttpakke</id>
     </faktum>
 
+    <!-- Fedrekvote -->
+    <faktum>
+        <id>fedrekvote</id>
+    </faktum>
+
     <!-- Perioder -->
     <faktum>
         <id>perioder.startdato</id>
@@ -155,7 +160,6 @@
     <!-- Ekstra vedlegg -->
     <faktum>
         <id>ekstraVedlegg</id>
-        <type>java.lang.boolean</type>
         <flereTillatt>true</flereTillatt>
     </faktum>
     <vedlegg>
