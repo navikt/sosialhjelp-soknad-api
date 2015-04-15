@@ -73,6 +73,11 @@
         <flereTillatt>true</flereTillatt>
     </faktum>
 
+    <!-- Yrkesskade -->
+    <faktum>
+        <id>yrkesskade.soeknadsgrunn</id>
+    </faktum>
+
     <!-- Ekstra vedlegg -->
     <faktum>
         <id>ekstraVedlegg</id>
