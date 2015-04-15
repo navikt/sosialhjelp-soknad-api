@@ -63,6 +63,7 @@
         <id>utenlandsopphold.oppholdINorgeSisteTreAar.false.ingenPassendeSituasjoner</id>
     </faktum>
 
+
     <!-- Utenlandsopphold -->
     <!-- Arbeid i EØS-land før sykdom -->
     <faktum>
@@ -86,4 +87,10 @@
         </onValues>
         <skjemaNummer>P2</skjemaNummer>
     </vedlegg>
+
+    <!-- Ung ufør-->
+    <faktum>
+        <id>ungufor</id>
+    </faktum>
+
 </soknad>
