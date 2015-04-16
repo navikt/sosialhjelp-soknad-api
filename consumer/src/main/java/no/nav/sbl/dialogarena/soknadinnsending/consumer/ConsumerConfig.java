@@ -6,6 +6,7 @@ import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadata;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.cxf.TimeoutFeature;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.arbeid.ArbeidsforholdMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil.BrukerprofilMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.kodeverk.KodeverkMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
@@ -18,6 +19,7 @@ import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSSoknadsdata;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStartSoknadRequest;
+import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
 import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
@@ -35,6 +37,7 @@ import org.springframework.context.annotation.Import;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.UnsupportedCallbackException;
+import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -65,6 +68,7 @@ public class ConsumerConfig {
             SendSoknadWSConfig.class,
             FilLagerWSConfig.class,
             PersonInfoWSConfig.class,
+            ArbeidWSConfig.class,
             BrukerProfilWSConfig.class,
             KodeverkWSConfig.class,
             PersonWSConfig.class})
@@ -193,6 +197,40 @@ public class ConsumerConfig {
 
         @Bean
         public PersonPortType personSelftestEndpoint() {
+            return factory().withSystemSecurity().get();
+        }
+
+    }
+
+    @Configuration
+    public static class ArbeidWSConfig {
+
+        public static final String ARBEID_KEY = "start.arbeid.withmock";
+
+        @Value("${soknad.webservice.arbeid.arbeidsforhold}")
+        private String arbeidsforholdEndpoint;
+
+        private ServiceBuilder<ArbeidsforholdV3>.PortTypeBuilder<ArbeidsforholdV3> factory() {
+            return new ServiceBuilder<>(ArbeidsforholdV3.class)
+                    .asStandardService()
+                    .withAddress(arbeidsforholdEndpoint)
+                    .withWsdl("classpath:/wsdl/no/nav/tjeneste/virksomhet/arbeidsforhold/v3/Binding.wsdl")
+                    .withServiceName(new QName("http://nav.no/tjeneste/virksomhet/arbeidsforhold/v3/Binding", "Arbeidsforhold_v3"))
+                    .withEndpointName(new QName("http://nav.no/tjeneste/virksomhet/arbeidsforhold/v3/Binding", "Arbeidsforhold_v3Port"))
+                    .build()
+                    .withHttpsMock()
+                    .withMDC();
+        }
+
+        @Bean
+        public ArbeidsforholdV3 arbeidEndpoint() {
+            ArbeidsforholdV3 mock = new ArbeidsforholdMock().arbeidMock();
+            ArbeidsforholdV3 prod = factory().withUserSecurity().get();
+            return createSwitcher(prod, mock, ARBEID_KEY, ArbeidsforholdV3.class);
+        }
+
+        @Bean
+        public ArbeidsforholdV3 arbeidSelftestEndpoint() {
             return factory().withSystemSecurity().get();
         }
 
