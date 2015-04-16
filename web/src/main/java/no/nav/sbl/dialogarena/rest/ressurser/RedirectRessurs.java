@@ -19,7 +19,7 @@ import static no.nav.sbl.dialogarena.utils.UrlUtils.getFortsettUrl;
 @Path("/")
 public class RedirectRessurs {
 
-    private static Logger LOG = LoggerFactory.getLogger(RedirectRessurs.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RedirectRessurs.class);
 
     @GET
     @Path("utslagskriterier/{behandlingsId}")
