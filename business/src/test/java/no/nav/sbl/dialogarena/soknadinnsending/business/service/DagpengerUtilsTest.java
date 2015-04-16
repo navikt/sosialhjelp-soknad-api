@@ -16,13 +16,13 @@ import java.util.Map;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.UTENLANDSK_ADRESSE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.*;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.util.WebSoknadUtils.DAGPENGER;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.util.WebSoknadUtils.DAGPENGER_VED_PERMITTERING;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.util.WebSoknadUtils.getJournalforendeEnhet;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.util.WebSoknadUtils.getSkjemanummer;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.DAGPENGER;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.DAGPENGER_VED_PERMITTERING;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.getJournalforendeEnhet;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.getSkjemanummer;
 import static org.junit.Assert.assertEquals;
 
-public class WebSoknadUtilsTest {
+public class DagpengerUtilsTest {
 
     public static final String EOS_DAGPENGER = "4304";
     public static final String RUTES_I_BRUT = "";
