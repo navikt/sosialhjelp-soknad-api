@@ -17,6 +17,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
@@ -309,8 +310,8 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
         List<Vedlegg> vedleggForventninger = hentVedleggOgKvittering(soknad);
 
-        String skjemanummer = getSkjemanummer(soknad);
-        String journalforendeEnhet = getJournalforendeEnhet(soknad);
+        String skjemanummer = soknad.erDagpengeSoknad() ? DagpengerUtils.getSkjemanummer(soknad) : soknad.getskjemaNummer();
+        String journalforendeEnhet = soknad.erDagpengeSoknad() ? DagpengerUtils.getJournalforendeEnhet(soknad) : soknad.getJournalforendeEnhet();
         XMLHovedskjema hovedskjema = new XMLHovedskjema()
                 .withInnsendingsvalg(LASTET_OPP.toString())
                 .withSkjemanummer(skjemanummer)
