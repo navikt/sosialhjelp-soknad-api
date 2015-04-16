@@ -6,7 +6,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.Adresse;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBuilder;
 import org.joda.time.LocalDate;
-import org.slf4j.Logger;
 
 import java.util.List;
 import java.util.Map;
@@ -28,20 +27,17 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.DATO_TIL;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.DATO_TIL_PERMITTERING;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.TYPE;
-import static org.slf4j.LoggerFactory.getLogger;
 
 public class DagpengerUtils {
-    private static final Logger LOGGER = getLogger(DagpengerUtils.class);
-//TO DO: fjerne alle disse og logikken spesfikk for dagpenger
-    private static final String DAGPENGER = "NAV 04-01.03";
-    private static final String DAGPENGER_VED_PERMITTERING = "NAV 04-01.04";
-    private static final String GJENOPPTAK = "NAV 04-16.03";
-    private static final String GJENOPPTAK_VED_PERMITTERING = "NAV 04-16.04";
-    private static final String EOS_DAGPENGER = "4304";
-    private static final String RUTES_I_BRUT = "";
-    private static final String PERMITTERT = "Permittert";
-    private static final String REDUSERT_ARBEIDSTID = "Redusert arbeidstid";
-    private static final String ANNEN_AARSAK = "Annen årsak";
+    public static final String DAGPENGER = "NAV 04-01.03";
+    public static final String DAGPENGER_VED_PERMITTERING = "NAV 04-01.04";
+    public static final String GJENOPPTAK = "NAV 04-16.03";
+    public static final String GJENOPPTAK_VED_PERMITTERING = "NAV 04-16.04";
+    public static final String EOS_DAGPENGER = "4304";
+    public static final String RUTES_I_BRUT = "";
+    public static final String PERMITTERT = "Permittert";
+    public static final String REDUSERT_ARBEIDSTID = "Redusert arbeidstid";
+    public static final String ANNEN_AARSAK = "Annen årsak";
 
     private static String finnSluttaarsakSisteArbeidsforhold(WebSoknad soknad) {
         List<Faktum> sorterteArbeidsforholdIkkePermittert = on(soknad.getFaktaMedKey("arbeidsforhold"))
@@ -95,7 +91,7 @@ public class DagpengerUtils {
         return nyeArbeidsforhold != null && "true".equals(nyeArbeidsforhold.getValue());
     }
 
-    private static String getSkjemanummerForDagpengesoknad(WebSoknad soknad) {
+    public static String getSkjemanummer(WebSoknad soknad) {
         boolean erPermittert = finnSluttaarsakSisteArbeidsforhold(soknad).equals(PERMITTERT);
         if (soknad.erGjenopptak()) {
             return erPermittert ? GJENOPPTAK_VED_PERMITTERING : GJENOPPTAK;
@@ -103,30 +99,7 @@ public class DagpengerUtils {
         return erPermittert ? DAGPENGER_VED_PERMITTERING : DAGPENGER;
     }
 
-    public static String getSkjemanummer(WebSoknad soknad) {
-        if (soknad.erDagpengeSoknad()) {
-            return getSkjemanummerForDagpengesoknad(soknad);
-        }
-        return soknad.getskjemaNummer();
-    }
-
     public static String getJournalforendeEnhet(WebSoknad webSoknad) {
-        if (webSoknad.erDagpengeSoknad()) {
-            return finnJournalforendeEnhetForSoknad(webSoknad);
-        }
-        return webSoknad.getJournalforendeEnhet();
-    }
-
-    private static boolean erGrensearbeider(WebSoknad webSoknad) {
-        Faktum grensearbeiderFaktum = webSoknad.getFaktumMedKey("arbeidsforhold.grensearbeider");
-        boolean erGrensearbeider = false;
-        if (grensearbeiderFaktum != null && grensearbeiderFaktum.getValue() != null) {
-            erGrensearbeider = grensearbeiderFaktum.getValue().equals("false");
-        }
-        return erGrensearbeider;
-    }
-
-    private static String finnJournalforendeEnhetForSoknad(WebSoknad webSoknad) {
         String sluttaarsak = finnSluttaarsakSisteArbeidsforhold(webSoknad);
         Personalia personalia = getPerson(webSoknad);
 
@@ -139,8 +112,16 @@ public class DagpengerUtils {
                 return EOS_DAGPENGER;
             }
         }
-
         return RUTES_I_BRUT;
+    }
+
+    private static boolean erGrensearbeider(WebSoknad webSoknad) {
+        Faktum grensearbeiderFaktum = webSoknad.getFaktumMedKey("arbeidsforhold.grensearbeider");
+        boolean erGrensearbeider = false;
+        if (grensearbeiderFaktum != null && grensearbeiderFaktum.getValue() != null) {
+            erGrensearbeider = grensearbeiderFaktum.getValue().equals("false");
+        }
+        return erGrensearbeider;
     }
 
     private static boolean harUtenlandskAdresseIEOS(Personalia personalia) {
