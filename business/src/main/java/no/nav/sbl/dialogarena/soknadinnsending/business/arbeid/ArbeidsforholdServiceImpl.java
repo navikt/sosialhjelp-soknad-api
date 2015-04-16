@@ -9,8 +9,10 @@ import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.N
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Periode;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Regelverker;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerRequest;
+import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.OrganisasjonV4;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -25,7 +27,15 @@ public class ArbeidsforholdServiceImpl implements ArbeidsforholdService {
     @Inject
     @Named("arbeidEndpoint")
     private ArbeidsforholdV3 arbeidsforholdV2;
-    private ArbeidsforholdTransformer transformer = new ArbeidsforholdTransformer();
+    @Inject
+    @Named("organisasjonEndpoint")
+    private OrganisasjonV4 organisasjonV4;
+    private ArbeidsforholdTransformer transformer;
+
+    @PostConstruct
+    public void createTransformer(){
+        transformer = new ArbeidsforholdTransformer(organisasjonV4);
+    }
 
     @Override
     public List<Arbeidsforhold> hentArbeidsforhold(String fodselsnummer) {
@@ -38,7 +48,7 @@ public class ArbeidsforholdServiceImpl implements ArbeidsforholdService {
             throw new RuntimeException(e);
         }
         periode.setFom(datatypeFactory.newXMLGregorianCalendar(2015, 1, 1, 0, 0, 0, 0, DatatypeConstants.FIELD_UNDEFINED));
-        periode.setTom(datatypeFactory.newXMLGregorianCalendar(2015, 4, 16,0,0,0,0, DatatypeConstants.FIELD_UNDEFINED));
+        periode.setTom(datatypeFactory.newXMLGregorianCalendar(2015, 4, 16, 0, 0, 0, 0, DatatypeConstants.FIELD_UNDEFINED));
         request.setArbeidsforholdIPeriode(periode);
         NorskIdent ident = new NorskIdent();
         ident.setIdent(fodselsnummer);
