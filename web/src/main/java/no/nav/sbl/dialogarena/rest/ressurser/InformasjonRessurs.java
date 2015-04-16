@@ -3,6 +3,8 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.rest.Logg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.Arbeidsforhold;
+import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.ArbeidsforholdService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.PersonAlder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.dto.Land;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
@@ -49,6 +51,8 @@ public class InformasjonRessurs {
     private PersonaliaService personaliaService;
     @Inject
     private PersonInfoService personInfoService;
+    @Inject
+    private ArbeidsforholdService arbeidsforholdService;
 
     @GET
     @Path("/miljovariabler")
@@ -106,6 +110,11 @@ public class InformasjonRessurs {
             return miniSoknadstruktur;
         }
         return soknadStruktur;
+    }
+    @GET
+    @Path("/arbeidsforhold/{fnr}")
+    public List<Arbeidsforhold> arbforhold(@PathParam("fnr")String fnr){
+        return arbeidsforholdService.hentArbeidsforhold(fnr);
     }
 
     @GET
