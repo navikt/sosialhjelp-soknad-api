@@ -10,13 +10,13 @@ import no.nav.modig.lang.collections.predicate.InstanceOf;
 import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.Nokkel;
+import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.util.SoknadStrukturUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
@@ -37,7 +37,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
 
-import static java.util.Arrays.asList;
 import static java.util.UUID.randomUUID;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.LASTET_OPP;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
@@ -56,9 +55,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class SoknadService implements SendSoknadService, EttersendingService {
 
     private static final Logger logger = getLogger(SoknadService.class);
-
-    private static final List<String> GYLDIGE_SKJEMAER = asList(AAP, DAGPENGER, GJENOPPTAK,
-            FORELDREPENGER_FODSEL, FORELDREPENGER_ADOPSJON, ENGANGSSTONAD_FODSEL, ENGANGSSTONAD_ADOPSJON);
 
     @Inject
     @Named("soknadInnsendingRepository")
@@ -87,9 +83,10 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
     public WebSoknad hentSoknadMedFaktaOgVedlegg(long soknadId) {
         WebSoknad soknad = repository.hentSoknadMedData(soknadId);
-        soknad.medSoknadPrefix(getSoknadPrefix(soknad.getskjemaNummer()))
-                .medSoknadUrl(getSoknadUrl(soknad.getskjemaNummer()))
-                .medFortsettSoknadUrl(getFortsettSoknadUrl(soknad.getskjemaNummer()));
+        WebSoknadConfig config = new WebSoknadConfig(soknad.getskjemaNummer());
+        soknad.medSoknadPrefix(config.getSoknadTypePrefix())
+                .medSoknadUrl(config.getSoknadUrl())
+                .medFortsettSoknadUrl(config.getSoknadFortsettUrl());
         return soknad;
     }
 
@@ -98,20 +95,23 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         if (soknad == null) {
             soknad = hentFraHenvendelse(behandlingsId, false);
         }
-        soknad.medSoknadPrefix(getSoknadPrefix(soknad.getskjemaNummer()))
-                .medSoknadUrl(getSoknadUrl(soknad.getskjemaNummer()))
-                .medFortsettSoknadUrl(getFortsettSoknadUrl(soknad.getskjemaNummer()));
+        WebSoknadConfig config = new WebSoknadConfig(soknad.getskjemaNummer());
+        soknad.medSoknadPrefix(config.getSoknadTypePrefix())
+                .medSoknadUrl(config.getSoknadUrl())
+                .medFortsettSoknadUrl(config.getSoknadFortsettUrl());
         return soknad;
     }
 
+    //to do: bare ta inn behandlingsid videre
     public WebSoknad hentSoknadMedFaktaOgVedlegg(String behandlingsId) {
         WebSoknad soknad = repository.hentSoknadMedData(behandlingsId);
         if (soknad == null) {
             soknad = hentFraHenvendelse(behandlingsId, true);
         }
-        soknad.medSoknadPrefix(getSoknadPrefix(soknad.getskjemaNummer()))
-                .medSoknadUrl(getSoknadUrl(soknad.getskjemaNummer()))
-                .medFortsettSoknadUrl(getFortsettSoknadUrl(soknad.getskjemaNummer()));
+        WebSoknadConfig config = new WebSoknadConfig(soknad.getskjemaNummer());
+        soknad.medSoknadPrefix(config.getSoknadTypePrefix())
+                .medSoknadUrl(config.getSoknadUrl())
+                .medFortsettSoknadUrl(config.getSoknadFortsettUrl());
         return soknad;
     }
 
@@ -442,19 +442,20 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     }
 
     private void validerSkjemanummer(String navSoknadId) {
-        if (!GYLDIGE_SKJEMAER.contains(navSoknadId)) {
+        if (!WebSoknadConfig.SKJEMANAVN.containsKey(navSoknadId)) {
             throw new ApplicationException("Ikke gyldig skjemanummer " + navSoknadId);
         }
     }
 
     @Override
     public SoknadStruktur hentSoknadStruktur(Long soknadId) {
-        return SoknadStrukturUtils.hentStruktur(repository.hentSoknadType(soknadId));
+        String skjemanummer = repository.hentSoknadType(soknadId);
+        return new WebSoknadConfig(skjemanummer).hentStruktur();
     }
 
     @Override
     public SoknadStruktur hentSoknadStruktur(String skjemanummer) {
-        return SoknadStrukturUtils.hentStruktur(skjemanummer);
+        return new WebSoknadConfig(skjemanummer).hentStruktur();
     }
 
     private void medKodeverk(Vedlegg vedlegg) {

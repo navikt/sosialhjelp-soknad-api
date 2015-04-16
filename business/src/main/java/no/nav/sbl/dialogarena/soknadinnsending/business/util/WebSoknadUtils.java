@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.util;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Adresse;
@@ -33,54 +34,16 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class WebSoknadUtils {
     private static final Logger LOGGER = getLogger(WebSoknadUtils.class);
-
-    public static final String DAGPENGER = "NAV 04-01.03";
-    public static final String AAP = "NAV 11-13.05";
-    public static final String DAGPENGER_VED_PERMITTERING = "NAV 04-01.04";
-    public static final String GJENOPPTAK = "NAV 04-16.03";
-    public static final String GJENOPPTAK_VED_PERMITTERING = "NAV 04-16.04";
-    public static final String FORELDREPENGER_FODSEL = "NAV 14-05.09";
-    public static final String FORELDREPENGER_ADOPSJON = "NAV 14-05.06";
-    public static final String ENGANGSSTONAD_FODSEL = "NAV 14-05.07";
-    public static final String ENGANGSSTONAD_ADOPSJON = "NAV 14-05.08";
-    public static final String EOS_DAGPENGER = "4304";
-    public static final String RUTES_I_BRUT = "";
-    public static final String PERMITTERT = "Permittert";
-    public static final String REDUSERT_ARBEIDSTID = "Redusert arbeidstid";
-    public static final String ANNEN_AARSAK = "Annen årsak";
-
-    // Brukes for å finne prefix for tekster, så man kan ha søknadspesifikke tekster i gjennbrukbare moduler
-    private static final Map<String, String> SOKNAD_TYPE_PREFIX_MAP = new HashMap<String, String>() {{
-        put(AAP, "aap.ordinaer");
-        put(DAGPENGER, "dagpenger.ordinaer");
-        put(DAGPENGER_VED_PERMITTERING, "dagpenger.ordinaer");
-        put(GJENOPPTAK, "dagpenger.gjenopptak");
-        put(GJENOPPTAK_VED_PERMITTERING, "dagpenger.gjenopptak");
-        put(FORELDREPENGER_FODSEL, "foreldresoknad");
-        put(FORELDREPENGER_ADOPSJON, "foreldresoknad");
-        put(ENGANGSSTONAD_FODSEL, "foreldresoknad");
-        put(ENGANGSSTONAD_ADOPSJON, "foreldresoknad");
-    }};
-
-    private static final Map<String, String> SOKNAD_URL_FASIT_RESSURS = new HashMap<String, String>() {{
-        put(AAP, "soknad.aap.ordinaer.path");
-        put(DAGPENGER, "soknad.dagpenger.ordinaer.path");
-        put(GJENOPPTAK, "soknad.dagpenger.gjenopptak.path");
-        put(FORELDREPENGER_FODSEL, "foreldresoknad.path");
-        put(FORELDREPENGER_ADOPSJON, "foreldresoknad.path");
-        put(ENGANGSSTONAD_FODSEL, "foreldresoknad.path");
-        put(ENGANGSSTONAD_ADOPSJON, "foreldresoknad.path");
-    }};
-
-    private static final Map<String, String> SOKNAD_FORTSETT_URL_FASIT_RESSURS =  new HashMap<String, String> (){{
-        put(AAP, "soknad.aap.fortsett.path");
-        put(DAGPENGER, "soknad.dagpenger.fortsett.path");
-        put(GJENOPPTAK, "soknad.dagpenger.fortsett.path");
-        put(FORELDREPENGER_FODSEL, "foreldresoknad.fortsett.path");
-        put(FORELDREPENGER_ADOPSJON, "foreldresoknad.fortsett.path");
-        put(ENGANGSSTONAD_FODSEL, "foreldresoknad.fortsett.path");
-        put(ENGANGSSTONAD_ADOPSJON, "foreldresoknad.fortsett.path");
-    }};
+//TO DO: fjerne alle disse og logikken spesfikk for dagpenger
+    private static final String DAGPENGER = "NAV 04-01.03";
+    private static final String DAGPENGER_VED_PERMITTERING = "NAV 04-01.04";
+    private static final String GJENOPPTAK = "NAV 04-16.03";
+    private static final String GJENOPPTAK_VED_PERMITTERING = "NAV 04-16.04";
+    private static final String EOS_DAGPENGER = "4304";
+    private static final String RUTES_I_BRUT = "";
+    private static final String PERMITTERT = "Permittert";
+    private static final String REDUSERT_ARBEIDSTID = "Redusert arbeidstid";
+    private static final String ANNEN_AARSAK = "Annen årsak";
 
     private static String finnSluttaarsakSisteArbeidsforhold(WebSoknad soknad) {
         List<Faktum> sorterteArbeidsforholdIkkePermittert = on(soknad.getFaktaMedKey("arbeidsforhold"))
@@ -200,26 +163,5 @@ public class WebSoknadUtils {
         return PersonaliaBuilder.with()
                 .gjeldendeAdresse(gjeldendeAdresse).sekundarAdresse(senkundarAdresse).statsborgerskap(properties.get(STATSBORGERSKAP_KEY))
                 .build();
-    }
-
-    public static String getSoknadUrl(String skjemanummer) {
-        if (SOKNAD_URL_FASIT_RESSURS.containsKey(skjemanummer)) {
-            return System.getProperty(SOKNAD_URL_FASIT_RESSURS.get(skjemanummer));
-        }
-        return "";
-    }
-
-    public static String getFortsettSoknadUrl(String skjemanummer) {
-        return System.getProperty(SOKNAD_FORTSETT_URL_FASIT_RESSURS.get(skjemanummer));
-    }
-
-    public static String getSoknadPrefix(String skjemanummer) {
-        String prefix = SOKNAD_TYPE_PREFIX_MAP.get(skjemanummer);
-
-        if (prefix != null) {
-            return prefix;
-        }
-        LOGGER.warn("Fant ikke prefix for søknad med skjemanummer {}. Alle skjema må ha mapping fra skjemanummer til prefix", skjemanummer);
-        return "";
     }
 }
