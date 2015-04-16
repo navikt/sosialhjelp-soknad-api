@@ -59,6 +59,11 @@ final class ServiceBuilder<T> {
         return this;
     }
 
+    public ServiceBuilder<T> withEndpointName(QName name) {
+        factoryBean.setEndpointName(name);
+        return this;
+    }
+
     public ServiceBuilder<T> withAddress(String address) {
         factoryBean.setAddress(address);
         return this;
