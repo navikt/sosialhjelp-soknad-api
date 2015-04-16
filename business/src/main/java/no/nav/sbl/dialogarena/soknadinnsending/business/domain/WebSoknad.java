@@ -413,6 +413,14 @@ public class WebSoknad implements Serializable {
         return DelstegStatus.isEttersendingStatus(delstegStatus);
     }
 
+    public boolean erDagpengeSoknad() {
+        return (erOrdinaerDagpengeSoknad() || erGjenopptak()) && !this.erEttersending();
+    }
+
+    public boolean erOrdinaerDagpengeSoknad() {
+        return this.skjemaNummer != null && (this.skjemaNummer.equals("NAV 04-01.03") || this.skjemaNummer.equals("NAV 04-01.04"));
+    }
+
     public boolean erGjenopptak() {
         return this.skjemaNummer != null && (this.skjemaNummer.equals("NAV 04-16.03") || this.skjemaNummer.equals("NAV 04-16.04"));
     }

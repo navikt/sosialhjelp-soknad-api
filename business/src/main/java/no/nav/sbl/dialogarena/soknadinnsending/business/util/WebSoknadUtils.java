@@ -134,25 +134,26 @@ public class WebSoknadUtils {
         return nyeArbeidsforhold != null && "true".equals(nyeArbeidsforhold.getValue());
     }
 
-    public static String getSkjemanummer(WebSoknad soknad) {
-        if (soknad.erEttersending()) {
-            return soknad.getskjemaNummer();
-        }
-
+    private static String getSkjemanummerForDagpengesoknad(WebSoknad soknad) {
         boolean erPermittert = finnSluttaarsakSisteArbeidsforhold(soknad).equals(PERMITTERT);
-
         if (soknad.erGjenopptak()) {
             return erPermittert ? GJENOPPTAK_VED_PERMITTERING : GJENOPPTAK;
         }
         return erPermittert ? DAGPENGER_VED_PERMITTERING : DAGPENGER;
     }
 
+    public static String getSkjemanummer(WebSoknad soknad) {
+        if (soknad.erDagpengeSoknad()) {
+            return getSkjemanummerForDagpengesoknad(soknad);
+        }
+        return soknad.getskjemaNummer();
+    }
+
     public static String getJournalforendeEnhet(WebSoknad webSoknad) {
-        if (webSoknad.erEttersending()) {
-            return webSoknad.getJournalforendeEnhet();
-        } else {
+        if (webSoknad.erDagpengeSoknad()) {
             return finnJournalforendeEnhetForSoknad(webSoknad);
         }
+        return webSoknad.getJournalforendeEnhet();
     }
 
     private static boolean erGrensearbeider(WebSoknad webSoknad) {
