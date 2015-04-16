@@ -51,7 +51,11 @@
             <artifactId>nav-arbeidsforhold-v3-tjenestespesifikasjon</artifactId>
             <classifier>jaxws</classifier>
         </dependency>
-
+        <dependency>
+            <groupId>no.nav.tjenester.fim</groupId>
+            <artifactId>nav-fim-organisasjon-v4-tjenestespesifikasjon</artifactId>
+            <classifier>jaxws</classifier>
+        </dependency>
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>arena-personinfo-tjenestespesifikasjon</artifactId>

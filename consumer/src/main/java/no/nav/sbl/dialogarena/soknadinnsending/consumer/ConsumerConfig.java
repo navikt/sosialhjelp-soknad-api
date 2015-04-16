@@ -22,6 +22,7 @@ import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStartSoknad
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
+import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.OrganisasjonV4;
 import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
 import org.apache.cxf.feature.LoggingFeature;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
@@ -69,6 +70,7 @@ public class ConsumerConfig {
             FilLagerWSConfig.class,
             PersonInfoWSConfig.class,
             ArbeidWSConfig.class,
+            OrganisasjonWSConfig.class,
             BrukerProfilWSConfig.class,
             KodeverkWSConfig.class,
             PersonWSConfig.class})
@@ -231,6 +233,39 @@ public class ConsumerConfig {
 
         @Bean
         public ArbeidsforholdV3 arbeidSelftestEndpoint() {
+            return factory().withSystemSecurity().get();
+        }
+
+    }
+    @Configuration
+    public static class OrganisasjonWSConfig {
+
+        public static final String ARBEID_KEY = "start.arbeid.withmock";
+
+        @Value("${soknad.webservice.arbeid.organisasjon}")
+        private String organisasjonEndpoint;
+
+        private ServiceBuilder<OrganisasjonV4>.PortTypeBuilder<OrganisasjonV4> factory() {
+            return new ServiceBuilder<>(OrganisasjonV4.class)
+                    .asStandardService()
+                    .withAddress(organisasjonEndpoint)
+                    .withWsdl("classpath:/wsdl/no/nav/tjeneste/virksomhet/organisasjon/v4/Binding.wsdl")
+                    .withServiceName(new QName("http://nav.no/tjeneste/virksomhet/organisasjon/v4/Binding", "Organisasjon_v4"))
+                    .withEndpointName(new QName("http://nav.no/tjeneste/virksomhet/organisasjon/v4/Binding", "Organisasjon_v4Port"))
+                    .build()
+                    .withHttpsMock()
+                    .withMDC();
+        }
+
+        @Bean
+        public OrganisasjonV4 organisasjonEndpoint() {
+            OrganisasjonV4 mock = new ArbeidsforholdMock().organisasjonMock();
+            OrganisasjonV4 prod = factory().withSystemSecurity().get();
+            return createSwitcher(prod, mock, ARBEID_KEY, OrganisasjonV4.class);
+        }
+
+        @Bean
+        public OrganisasjonV4 organisasjonSelftestEndpoint() {
             return factory().withSystemSecurity().get();
         }
 

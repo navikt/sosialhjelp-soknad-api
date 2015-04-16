@@ -7,6 +7,14 @@ import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.A
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Gyldighetsperiode;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerRequest;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerResponse;
+import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.HentOrganisasjonOrganisasjonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.HentOrganisasjonUgyldigInput;
+import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.OrganisasjonV4;
+import no.nav.tjeneste.virksomhet.organisasjon.v4.informasjon.Organisasjon;
+import no.nav.tjeneste.virksomhet.organisasjon.v4.informasjon.UstrukturertNavn;
+import no.nav.tjeneste.virksomhet.organisasjon.v4.informasjon.Virksomhet;
+import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.HentOrganisasjonRequest;
+import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.HentOrganisasjonResponse;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -41,5 +49,22 @@ public class ArbeidsforholdMock {
         gperiode.setTom(XMLGregorianCalendarImpl.createDate(2015, 1, 1, 0));
         periode.setPeriode(gperiode);
         return null;
+    }
+
+
+    public OrganisasjonV4 organisasjonMock() {
+        OrganisasjonV4 mock = mock(OrganisasjonV4.class);
+        try {
+            HentOrganisasjonResponse response = new HentOrganisasjonResponse();
+            Organisasjon organisasjon = new Virksomhet();
+            UstrukturertNavn value = new UstrukturertNavn();
+            value.getNavnelinje().add("Mock navn arbeidsgiver");
+            organisasjon.setNavn(value);
+            response.setOrganisasjon(organisasjon);
+            when(mock.hentOrganisasjon(any(HentOrganisasjonRequest.class))).thenReturn(response);
+        } catch (HentOrganisasjonOrganisasjonIkkeFunnet | HentOrganisasjonUgyldigInput hentOrganisasjonOrganisasjonIkkeFunnet) {
+            hentOrganisasjonOrganisasjonIkkeFunnet.printStackTrace();
+        }
+        return mock;
     }
 }
