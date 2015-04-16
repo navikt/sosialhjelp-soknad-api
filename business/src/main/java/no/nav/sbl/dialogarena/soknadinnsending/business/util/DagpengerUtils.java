@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.util;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Adresse;
@@ -9,7 +8,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBuilder
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,8 +30,8 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transform
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.TYPE;
 import static org.slf4j.LoggerFactory.getLogger;
 
-public class WebSoknadUtils {
-    private static final Logger LOGGER = getLogger(WebSoknadUtils.class);
+public class DagpengerUtils {
+    private static final Logger LOGGER = getLogger(DagpengerUtils.class);
 //TO DO: fjerne alle disse og logikken spesfikk for dagpenger
     private static final String DAGPENGER = "NAV 04-01.03";
     private static final String DAGPENGER_VED_PERMITTERING = "NAV 04-01.04";
