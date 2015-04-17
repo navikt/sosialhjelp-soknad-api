@@ -23,7 +23,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.ER
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class WebSoknad implements Serializable {
+public class  WebSoknad implements Serializable {
     private Long soknadId;
     private String skjemaNummer;
     private String uuid;
@@ -411,6 +411,14 @@ public class WebSoknad implements Serializable {
 
     public boolean erEttersending() {
         return DelstegStatus.isEttersendingStatus(delstegStatus);
+    }
+
+    public boolean erDagpengeSoknad() {
+        return (erOrdinaerDagpengeSoknad() || erGjenopptak()) && !this.erEttersending();
+    }
+
+    public boolean erOrdinaerDagpengeSoknad() {
+        return this.skjemaNummer != null && (this.skjemaNummer.equals("NAV 04-01.03") || this.skjemaNummer.equals("NAV 04-01.04"));
     }
 
     public boolean erGjenopptak() {
