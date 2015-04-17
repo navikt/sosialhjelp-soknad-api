@@ -157,6 +157,11 @@
         <id>perioder.startdato</id>
     </faktum>
 
+    <!-- Perioder -->
+    <faktum>
+        <id>dekningsgrad</id>
+    </faktum>
+
     <!-- Ekstra vedlegg -->
     <faktum>
         <id>ekstraVedlegg</id>
