@@ -135,8 +135,7 @@ public class FaktaService {
     }
 
     private SoknadStruktur hentSoknadStruktur(Long soknadId) {
-        String skjemanummer = repository.hentSoknadType(soknadId);
-        return new WebSoknadConfig(skjemanummer).hentStruktur();
+        return new WebSoknadConfig(soknadId, repository).hentStruktur();
     }
 
     private void oppdaterOgLagreVedlegg(SoknadStruktur struktur, SoknadVedlegg soknadVedlegg, Faktum faktum) {

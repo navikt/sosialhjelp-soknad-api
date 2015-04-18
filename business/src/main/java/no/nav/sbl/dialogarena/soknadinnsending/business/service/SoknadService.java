@@ -48,7 +48,6 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Fak
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.toInnsendingsvalg;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.*;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -450,8 +449,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
     @Override
     public SoknadStruktur hentSoknadStruktur(Long soknadId) {
-        String skjemanummer = repository.hentSoknadType(soknadId);
-        return new WebSoknadConfig(skjemanummer).hentStruktur();
+        return new WebSoknadConfig(soknadId, repository).hentStruktur();
     }
 
     @Override
