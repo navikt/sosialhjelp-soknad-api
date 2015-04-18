@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business;
 
 
 import no.nav.modig.core.exception.ApplicationException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 
 import javax.xml.bind.JAXBException;
@@ -63,8 +64,12 @@ public class WebSoknadConfig {
         put(FORELDREPENGER, "foreldresoknad.xml");
     }};
 
-    public WebSoknadConfig() { //må ta inn behandlingsid eller søknad for å hente rett skjemanummer?
-        this("NAV");
+    public WebSoknadConfig(Long soknadId, SoknadRepository repository) { //må ta inn behandlingsid eller søknad for å hente rett skjemanummer?
+        String skjemanummer = repository.hentSoknadType(soknadId);
+        System.out.println(skjemanummer);
+        if (SKJEMANAVN.containsKey(skjemanummer)) {
+            skjemaNavn = SKJEMANAVN.get(skjemanummer);
+        }
     }
 
     public WebSoknadConfig(String skjemanummer) {

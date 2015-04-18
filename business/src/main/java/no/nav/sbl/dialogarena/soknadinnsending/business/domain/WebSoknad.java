@@ -23,7 +23,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.ER
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class  WebSoknad implements Serializable {
+public class WebSoknad implements Serializable {
     private Long soknadId;
     private String skjemaNummer;
     private String uuid;
@@ -111,14 +111,6 @@ public class  WebSoknad implements Serializable {
 
     public final String getskjemaNummer() {
         return skjemaNummer;
-    }
-
-    public final String getSoknadUrl() {
-        return soknadUrl;
-    }
-
-    public final String getFortsettSoknadUrl() {
-        return fortsettSoknadUrl;
     }
 
     public List<Vedlegg> getVedlegg() {
