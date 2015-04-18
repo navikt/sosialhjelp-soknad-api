@@ -16,6 +16,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggReposi
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
@@ -75,6 +76,8 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     private FaktaService faktaService;
     @Inject
     private PersonaliaService personaliaService;
+    @Inject
+    private BarnService barnService;
 
 
     public void settDelsteg(String behandlingsId, DelstegStatus delstegStatus) {
@@ -200,7 +203,8 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         }
         DateTime innsendtDato = hentOrginalInnsendtDato(behandlingskjede, behandlingsIdSoknad);
         WebSoknad ettersending = lagEttersendingFraWsSoknad(wsSoknadsdata, innsendtDato);
-        personaliaService.lagrePersonaliaOgBarn(fodselsnummer, ettersending.getSoknadId(), false);
+        personaliaService.lagrePersonaliaLagre(fodselsnummer, ettersending.getSoknadId());
+        barnService.lagrePersonaliaLagre(fodselsnummer, ettersending.getSoknadId());
         return ettersending.getBrukerBehandlingId();
     }
 
@@ -401,7 +405,8 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
         prepopulerSoknadsFakta(soknadId);
         opprettFaktumForLonnsOgTrekkoppgave(soknadId);
-        personaliaService.lagrePersonaliaOgBarn(fodselsnummer, soknadId, true);
+        personaliaService.lagrePersonaliaLagre(fodselsnummer, soknadId);
+        barnService.lagrePersonaliaLagre(fodselsnummer, soknadId);
         return behandlingsId;
     }
 
