@@ -15,6 +15,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
@@ -83,6 +84,8 @@ public class SoknadServiceTest {
     private FaktaService faktaService;
     @Mock
     private PersonaliaService personaliaService;
+    @Mock
+    private BarnService barnService;
 
     @InjectMocks
     private SoknadService soknadService;
