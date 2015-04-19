@@ -4,11 +4,11 @@ package no.nav.sbl.dialogarena.soknadinnsending.business;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.BolkService;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static java.lang.String.format;
 import static javax.xml.bind.JAXBContext.newInstance;
@@ -20,6 +20,9 @@ public class WebSoknadConfig {
     public static final String DAGPENGER_GJENOPPTAK = "dagpengerGjenopptak";
     public static final String FORELDREPENGER = "foreldrepenger";
     public static final String AAP = "aap";
+
+    private static final String BOLK_PERSONALIA_CLASS = "class no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService";
+    private static final String BOLK_BARN_CLASS = "class no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnService";
 
     public static final Map<String, String> SKJEMANAVN = new HashMap<String, String>() {{
         put("NAV 04-01.03", DAGPENGER_ORDINAER);
@@ -62,6 +65,13 @@ public class WebSoknadConfig {
         put(DAGPENGER_ORDINAER, "dagpenger_ordinaer.xml");
         put(DAGPENGER_GJENOPPTAK, "dagpenger_gjenopptak.xml");
         put(FORELDREPENGER, "foreldresoknad.xml");
+    }};
+
+    private static final Map<String, List<String>> SOKNAD_BOLKER = new HashMap<String, List<String>> () {{
+       put(DAGPENGER_ORDINAER, Arrays.asList(BOLK_PERSONALIA_CLASS, BOLK_BARN_CLASS));
+       put(DAGPENGER_GJENOPPTAK, Arrays.asList(BOLK_PERSONALIA_CLASS, BOLK_BARN_CLASS));
+       put(AAP, Arrays.asList(BOLK_PERSONALIA_CLASS, BOLK_BARN_CLASS));
+       put(FORELDREPENGER, Arrays.asList(BOLK_PERSONALIA_CLASS, BOLK_BARN_CLASS));
     }};
 
     public WebSoknadConfig(Long soknadId, SoknadRepository repository) { //må ta inn behandlingsid eller søknad for å hente rett skjemanummer?
@@ -114,6 +124,19 @@ public class WebSoknadConfig {
         } catch (JAXBException e) {
             throw new RuntimeException("Kunne ikke laste definisjoner. ", e);
         }
+    }
+
+    public List<BolkService> getSoknadBolker (List<BolkService> alleBolker) {
+
+        List<BolkService> soknadBolker = new ArrayList<>();
+        if (SOKNAD_BOLKER.containsKey(skjemaNavn)) {
+            for(BolkService bolk : alleBolker){
+                if(SOKNAD_BOLKER.get(skjemaNavn).contains(bolk.getClass().toString())){
+                    soknadBolker.add(bolk);
+                }
+            }
+        }
+        return soknadBolker;
     }
 
 

@@ -17,6 +17,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
@@ -203,8 +204,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         }
         DateTime innsendtDato = hentOrginalInnsendtDato(behandlingskjede, behandlingsIdSoknad);
         WebSoknad ettersending = lagEttersendingFraWsSoknad(wsSoknadsdata, innsendtDato);
-        personaliaService.lagrePersonaliaLagre(fodselsnummer, ettersending.getSoknadId());
-        barnService.lagrePersonaliaLagre(fodselsnummer, ettersending.getSoknadId());
+        lagrePredeinerteBolker(fodselsnummer, ettersending.getSoknadId());
         return ettersending.getBrukerBehandlingId();
     }
 
@@ -405,8 +405,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
         prepopulerSoknadsFakta(soknadId);
         opprettFaktumForLonnsOgTrekkoppgave(soknadId);
-        personaliaService.lagrePersonaliaLagre(fodselsnummer, soknadId);
-        barnService.lagrePersonaliaLagre(fodselsnummer, soknadId);
+        lagrePredeinerteBolker(fodselsnummer, soknadId);
         return behandlingsId;
     }
 
@@ -504,4 +503,15 @@ public class SoknadService implements SendSoknadService, EttersendingService {
             return dato1.compareTo(dato2);
         }
     };
+
+    private void lagrePredeinerteBolker(String fodselsnummer, Long soknadId ) {
+        List<BolkService> alleBolker = Arrays.asList(personaliaService, barnService);
+
+        List<BolkService> soknadBolker = new WebSoknadConfig(soknadId, repository).getSoknadBolker(alleBolker);
+
+        for(BolkService bolk : soknadBolker) {
+            bolk.lagreBolk(fodselsnummer, soknadId);
+        }
+
+    }
 }
