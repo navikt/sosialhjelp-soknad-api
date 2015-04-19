@@ -61,7 +61,7 @@ public class PersonaliaService implements BolkService{
     }
 
     @Override
-    public void lagrePersonaliaLagre(String fodselsnummer, Long soknadId) {
+    public void lagreBolk(String fodselsnummer, Long soknadId) {
         XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse;
         HentKjerneinformasjonResponse kjerneinformasjonResponse;
 

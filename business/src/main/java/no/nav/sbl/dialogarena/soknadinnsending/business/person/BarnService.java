@@ -30,7 +30,7 @@ public class BarnService implements BolkService {
 
 
     @Override
-    public void lagrePersonaliaLagre(String fodselsnummer, Long soknadId) {
+    public void lagreBolk(String fodselsnummer, Long soknadId) {
         HentKjerneinformasjonResponse kjerneinformasjonResponse;
 
         try {

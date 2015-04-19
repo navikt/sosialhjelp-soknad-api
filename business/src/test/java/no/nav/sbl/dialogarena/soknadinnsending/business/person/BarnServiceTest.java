@@ -118,7 +118,7 @@ public class BarnServiceTest {
     public void skalHenteBarn() throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
         mockGyldigPersonMedBarn();
 
-        barnService.lagrePersonaliaLagre(RIKTIG_IDENT, 21L);
+        barnService.lagreBolk(RIKTIG_IDENT, 21L);
 
         verify(faktaService, times(1)).lagreSystemFaktum(anyLong(), any(Faktum.class), anyString());
     }
@@ -128,7 +128,7 @@ public class BarnServiceTest {
         mockGyldigPersonMedBarn();
         leggTilDoedeBarn();
 
-        barnService.lagrePersonaliaLagre(RIKTIG_IDENT, 21L);
+        barnService.lagreBolk(RIKTIG_IDENT, 21L);
 
         verify(faktaService, times(1)).lagreSystemFaktum(anyLong(), any(Faktum.class), anyString());
     }
