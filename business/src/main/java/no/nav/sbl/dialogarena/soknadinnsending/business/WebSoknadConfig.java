@@ -21,8 +21,8 @@ public class WebSoknadConfig {
     public static final String FORELDREPENGER = "foreldrepenger";
     public static final String AAP = "aap";
 
-    private static final String BOLK_PERSONALIA_CLASS = "class no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService";
-    private static final String BOLK_BARN_CLASS = "class no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnService";
+    private static final String BOLK_PERSONALIA_CLASS = "PersonaliaService";
+    private static final String BOLK_BARN_CLASS = "BarnService";
 
     public static final Map<String, String> SKJEMANAVN = new HashMap<String, String>() {{
         put("NAV 04-01.03", DAGPENGER_ORDINAER);
@@ -127,11 +127,10 @@ public class WebSoknadConfig {
     }
 
     public List<BolkService> getSoknadBolker (List<BolkService> alleBolker) {
-
         List<BolkService> soknadBolker = new ArrayList<>();
         if (SOKNAD_BOLKER.containsKey(skjemaNavn)) {
             for(BolkService bolk : alleBolker){
-                if(SOKNAD_BOLKER.get(skjemaNavn).contains(bolk.getClass().toString())){
+                if(SOKNAD_BOLKER.get(skjemaNavn).contains(bolk.getClass().getSimpleName())){
                     soknadBolker.add(bolk);
                 }
             }
