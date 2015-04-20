@@ -269,8 +269,10 @@ public class AdresseTransform {
         adresse.setGyldigTil(dateTimeFormat.print(gyldigTil));
 
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(xmlPostboksAdresse.getTilleggsadresse());
-        stringBuilder.append(", ");
+        if (xmlPostboksAdresse.getTilleggsadresse() != null) {
+            stringBuilder.append(xmlPostboksAdresse.getTilleggsadresse());
+            stringBuilder.append(", ");
+        }
         stringBuilder.append(getPostnummerString(xmlPostboksAdresse));
         stringBuilder.append(' ');
         stringBuilder.append(kodeverk.getPoststed(getPostnummerString(xmlPostboksAdresse)));
@@ -291,7 +293,7 @@ public class AdresseTransform {
         adresse.setGyldigTil(dateTimeFormat.print(gyldigTil));
 
         StringBuilder stringBuilder = new StringBuilder();
-        if(xmlMatrikkelAdresse.getTilleggsadresse() != null) {
+        if (xmlMatrikkelAdresse.getTilleggsadresse() != null) {
             stringBuilder.append(xmlMatrikkelAdresse.getTilleggsadresse());
             stringBuilder.append(", ");
         }
@@ -299,7 +301,9 @@ public class AdresseTransform {
         stringBuilder.append(' ');
         stringBuilder.append(kodeverk.getPoststed(getPostnummerString(xmlMatrikkelAdresse)));
         stringBuilder.append(", ");
-        stringBuilder.append(xmlMatrikkelAdresse.getEiendomsnavn());
+        if (xmlMatrikkelAdresse.getEiendomsnavn() != null) {
+            stringBuilder.append(xmlMatrikkelAdresse.getEiendomsnavn());
+        }
         adresse.setAdresse(stringBuilder.toString());
 
         return adresse;
