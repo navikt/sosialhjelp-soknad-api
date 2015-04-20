@@ -62,7 +62,7 @@ public class InformasjonRessursTest {
         assertThat(miljovariabler.containsKey("soknad.dagpengerbrosjyre.url")).isTrue();
         assertThat(miljovariabler.containsKey("soknad.brukerprofil.url")).isTrue();
         assertThat(miljovariabler.containsKey("dialogarena.cms.url")).isTrue();
-        assertThat(miljovariabler.containsKey("dialoginnsending.soknad.path")).isTrue();
+        assertThat(miljovariabler.containsKey("soknadinnsending.soknad.path")).isTrue();
         assertThat(miljovariabler.containsKey("soknad.ettersending.antalldager")).isTrue();
     }
 
