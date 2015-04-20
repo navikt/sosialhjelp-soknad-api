@@ -2,32 +2,22 @@
 
     <faktum>
         <id>fastlege.navn</id>
-        <panel>Fastlege</panel>
-        <type>java.lang.String</type>
     </faktum>
 
     <faktum>
         <id>fastlege.tlfnr</id>
-        <panel>Fastlege</panel>
-        <type>java.lang.String</type>
     </faktum>
 
     <faktum>
         <id>fastlege.harfastlege</id>
-        <panel>Fastlege</panel>
-        <type>java.lang.Boolean</type>
     </faktum>
 
     <faktum>
         <id>fastlege.annen.behandlende.navn</id>
-        <panel>Fastlege</panel>
-        <type>java.lang.String</type>
     </faktum>
 
     <faktum>
         <id>fastlege.annen.behandlende.tlfnr</id>
-        <panel>Fastlege</panel>
-        <type>java.lang.String</type>
     </faktum>
 
     <!-- Systemfakta -->
@@ -63,7 +53,6 @@
         <id>utenlandsopphold.oppholdINorgeSisteTreAar.false.ingenPassendeSituasjoner</id>
     </faktum>
 
-
     <!-- Utenlandsopphold -->
     <!-- Arbeid i EØS-land før sykdom -->
     <faktum>
@@ -78,7 +67,6 @@
     <faktum>
         <id>yrkesskade.soeknadsgrunn</id>
     </faktum>
-
 
     <!-- Ung ufør-->
     <faktum>
