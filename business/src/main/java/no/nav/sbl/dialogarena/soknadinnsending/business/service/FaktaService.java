@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.List;
@@ -39,6 +40,14 @@ public class FaktaService {
 
     @Inject
     private NavMessageSource navMessageSource;
+
+    private WebSoknadConfig config;
+
+    @PostConstruct
+    public void initBolker(){
+        config = new WebSoknadConfig(repository);
+    }
+
 
     private static final String EKSTRA_VEDLEGG_KEY = "ekstraVedlegg";
     private static final Logger logger = getLogger(FaktaService.class);
@@ -135,7 +144,7 @@ public class FaktaService {
     }
 
     private SoknadStruktur hentSoknadStruktur(Long soknadId) {
-        return new WebSoknadConfig(soknadId, repository).hentStruktur();
+        return config.hentStruktur(soknadId);
     }
 
     private void oppdaterOgLagreVedlegg(SoknadStruktur struktur, SoknadVedlegg soknadVedlegg, Faktum faktum) {

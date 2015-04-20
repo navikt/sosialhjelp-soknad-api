@@ -99,7 +99,7 @@ public class InformasjonRessurs {
     @GET
     @Path("/soknadstruktur")
     public SoknadStruktur hentSoknadStruktur(@QueryParam("skjemanummer") String skjemanummer, @QueryParam("filter") String filter) {
-        SoknadStruktur soknadStruktur = new WebSoknadConfig(skjemanummer).hentStruktur();
+        SoknadStruktur soknadStruktur = new WebSoknadConfig().hentStruktur(skjemanummer);
         if ("temakode".equalsIgnoreCase(filter)) {
             SoknadStruktur miniSoknadstruktur = new SoknadStruktur();
             miniSoknadstruktur.setTemaKode(soknadStruktur.getTemaKode());

@@ -13,16 +13,17 @@ import java.util.*;
 import static java.lang.String.format;
 import static javax.xml.bind.JAXBContext.newInstance;
 
+//Dette er et resultat av den første refaktureringen av søknads-configene. Det ligger lapp i backloggen på å splitte denne filen inn i én fil for hver søknad.
 public class WebSoknadConfig {
-    private String skjemaNavn = "";
+    private static SoknadRepository repository;
 
     public static final String DAGPENGER_ORDINAER = "dagpengerOrdinaer";
     public static final String DAGPENGER_GJENOPPTAK = "dagpengerGjenopptak";
     public static final String FORELDREPENGER = "foreldrepenger";
     public static final String AAP = "aap";
 
-    private static final String BOLK_PERSONALIA_CLASS = "PersonaliaService";
-    private static final String BOLK_BARN_CLASS = "BarnService";
+    private static final String BOLK_PERSONALIA = "Personalia";
+    private static final String BOLK_BARN = "Barn";
 
     public static final Map<String, String> SKJEMANAVN = new HashMap<String, String>() {{
         put("NAV 04-01.03", DAGPENGER_ORDINAER);
@@ -67,49 +68,50 @@ public class WebSoknadConfig {
         put(FORELDREPENGER, "foreldresoknad.xml");
     }};
 
-    private static final Map<String, List<String>> SOKNAD_BOLKER = new HashMap<String, List<String>> () {{
-       put(DAGPENGER_ORDINAER, Arrays.asList(BOLK_PERSONALIA_CLASS, BOLK_BARN_CLASS));
-       put(DAGPENGER_GJENOPPTAK, Arrays.asList(BOLK_PERSONALIA_CLASS, BOLK_BARN_CLASS));
-       put(AAP, Arrays.asList(BOLK_PERSONALIA_CLASS, BOLK_BARN_CLASS));
-       put(FORELDREPENGER, Arrays.asList(BOLK_PERSONALIA_CLASS, BOLK_BARN_CLASS));
+    public static final Map<String, List<String>> SOKNAD_BOLKER = new HashMap<String, List<String>> () {{
+       put(DAGPENGER_ORDINAER, Arrays.asList( BOLK_PERSONALIA, BOLK_BARN));
+       put(DAGPENGER_GJENOPPTAK, Arrays.asList(BOLK_PERSONALIA, BOLK_BARN));
+       put(AAP, Arrays.asList(BOLK_PERSONALIA, BOLK_BARN));
+       put(FORELDREPENGER, Arrays.asList(BOLK_PERSONALIA, BOLK_BARN));
     }};
 
-    public WebSoknadConfig(Long soknadId, SoknadRepository repository) { //må ta inn behandlingsid eller søknad for å hente rett skjemanummer?
-        String skjemanummer = repository.hentSoknadType(soknadId);
-        System.out.println(skjemanummer);
-        if (SKJEMANAVN.containsKey(skjemanummer)) {
-            skjemaNavn = SKJEMANAVN.get(skjemanummer);
-        }
+    public WebSoknadConfig(SoknadRepository repository) { //må ta inn behandlingsid eller søknad for å hente rett skjemanummer?
+        this.repository = repository;
     }
 
-    public WebSoknadConfig(String skjemanummer) {
-        if(SKJEMANAVN.containsKey(skjemanummer)){
-            skjemaNavn = SKJEMANAVN.get(skjemanummer);
-        }
+    public WebSoknadConfig() {
     }
 
-    public String getSoknadTypePrefix () {
+    public String getSoknadTypePrefix (long soknadId) {
+        String skjemaNavn = finnSkjemaNavn(soknadId);
         if (SOKNAD_TYPE_PREFIX_MAP.containsKey(skjemaNavn)) {
             return SOKNAD_TYPE_PREFIX_MAP.get(skjemaNavn);
         }
         else{ return ""; }
     }
 
-    public String getSoknadUrl () {
+    public String getSoknadUrl (long soknadId) {
+        String skjemaNavn = finnSkjemaNavn(soknadId);
         if (SOKNAD_URL_FASIT_RESSURS.containsKey(skjemaNavn)) {
             return System.getProperty(SOKNAD_URL_FASIT_RESSURS.get(skjemaNavn));
         }
         else{ return ""; }
     }
 
-    public String getSoknadFortsettUrl () {
+    public String getSoknadFortsettUrl (long soknadId) {
+        String skjemaNavn = finnSkjemaNavn(soknadId);
         if (SOKNAD_FORTSETT_URL_FASIT_RESSURS.containsKey(skjemaNavn)) {
             return System.getProperty(SOKNAD_FORTSETT_URL_FASIT_RESSURS.get(skjemaNavn));
         }
         else{ return ""; }
     }
 
-    public SoknadStruktur hentStruktur () {
+    public SoknadStruktur hentStruktur (long soknadId) {
+        String skjemaNavn = finnSkjemaNavn(soknadId);
+        return hentStruktur(skjemaNavn);
+    }
+
+    public SoknadStruktur hentStruktur (String skjemaNavn) {
         String type = STRUKTURDOKUEMENTER.get(skjemaNavn);
 
         if (type == null || type.isEmpty()) {
@@ -126,11 +128,13 @@ public class WebSoknadConfig {
         }
     }
 
-    public List<BolkService> getSoknadBolker (List<BolkService> alleBolker) {
+
+    public List<BolkService> getSoknadBolker (Long soknadId, List<BolkService> alleBolker) {
+        String skjemaNavn = finnSkjemaNavn(soknadId);
         List<BolkService> soknadBolker = new ArrayList<>();
         if (SOKNAD_BOLKER.containsKey(skjemaNavn)) {
             for(BolkService bolk : alleBolker){
-                if(SOKNAD_BOLKER.get(skjemaNavn).contains(bolk.getClass().getSimpleName())){
+                if(SOKNAD_BOLKER.get(skjemaNavn).contains(bolk.tilbyrBolk())){
                     soknadBolker.add(bolk);
                 }
             }
@@ -138,5 +142,14 @@ public class WebSoknadConfig {
         return soknadBolker;
     }
 
+    private String finnSkjemaNavn(Long soknadId) {
+
+        String skjemanummer = repository.hentSoknadType(soknadId);
+        String skjemaNavn = "";
+        if (SKJEMANAVN.containsKey(skjemanummer)) {
+            skjemaNavn = SKJEMANAVN.get(skjemanummer);
+        }
+        return skjemaNavn;
+    }
 
 }
