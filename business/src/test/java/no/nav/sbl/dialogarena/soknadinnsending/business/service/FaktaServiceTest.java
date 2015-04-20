@@ -41,6 +41,7 @@ public class FaktaServiceTest {
 
     @Before
     public void before() {
+        faktaService.initBolker();
         setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         when(soknadRepository.hentSoknadType(anyLong())).thenReturn(DAGPENGER);
     }

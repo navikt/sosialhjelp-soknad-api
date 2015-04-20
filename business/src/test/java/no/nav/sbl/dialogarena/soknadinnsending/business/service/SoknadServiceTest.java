@@ -35,6 +35,7 @@ import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
+import org.springframework.context.ApplicationContext;
 
 import javax.activation.DataHandler;
 import javax.xml.bind.JAXB;
@@ -86,6 +87,8 @@ public class SoknadServiceTest {
     private PersonaliaService personaliaService;
     @Mock
     private BarnService barnService;
+    @Mock
+    ApplicationContext applicationContex;
 
     @InjectMocks
     private SoknadService soknadService;
@@ -97,6 +100,7 @@ public class SoknadServiceTest {
 
     @Before
     public void before() {
+        soknadService.initBolker();
         setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         when(soknadRepository.hentSoknadType(anyLong())).thenReturn(DAGPENGER);
     }
