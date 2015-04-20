@@ -16,8 +16,8 @@ public class UrlUtilsTest {
 
     @Before
     public void setup() {
-        System.setProperty("dialoginnsending.link.url", DIALOGINNSENDING_SOKNAD_URL);
-        System.setProperty("dialoginnsending.ettersending.path", DIALOGINNSENDING_ETTERSENDING_PATH);
+        System.setProperty("soknadinnsending.link.url", DIALOGINNSENDING_SOKNAD_URL);
+        System.setProperty("soknadinnsending.ettersending.path", DIALOGINNSENDING_ETTERSENDING_PATH);
     }
 
     @Test

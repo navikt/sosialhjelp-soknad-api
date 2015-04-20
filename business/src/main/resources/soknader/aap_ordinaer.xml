@@ -79,6 +79,12 @@
         <id>yrkesskade.soeknadsgrunn</id>
     </faktum>
 
+
+    <!-- Ung ufør-->
+    <faktum>
+        <id>ungufor</id>
+    </faktum>
+
     <!-- Ekstra vedlegg -->
     <faktum>
         <id>ekstraVedlegg</id>
@@ -92,10 +98,12 @@
         </onValues>
         <skjemaNummer>P2</skjemaNummer>
     </vedlegg>
-
-    <!-- Ung ufør-->
-    <faktum>
-        <id>ungufor</id>
-    </faktum>
-
+    <vedlegg>
+        <id>6</id>
+        <faktum>ungufor</faktum>
+        <onValues>
+            <value>false</value>
+        </onValues>
+        <skjemaNummer>V1</skjemaNummer>
+    </vedlegg>
 </soknad>

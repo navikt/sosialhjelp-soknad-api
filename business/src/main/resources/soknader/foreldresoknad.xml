@@ -157,6 +157,11 @@
         <id>perioder.startdato</id>
     </faktum>
 
+    <!-- Perioder -->
+    <faktum>
+        <id>dekningsgrad</id>
+    </faktum>
+
     <!-- Ekstra vedlegg -->
     <faktum>
         <id>ekstraVedlegg</id>
@@ -243,25 +248,41 @@
     <vedlegg>
         <id>5</id>
         <faktum>arbeidsforhold</faktum>
-        <skjemaNummer>O2</skjemaNummer>
+        <skjemaNummer>T7</skjemaNummer>
         <property>arbeidsgivernavn</property>
-        <onProperty>ansatt</onProperty>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <id>5</id>
+        <faktum>arbeidsforhold</faktum>
+        <skjemaNummer>T8</skjemaNummer>
+        <property>arbeidsgivernavn</property>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
+    <vedlegg>
+        <id>5</id>
+        <faktum>arbeidsforhold</faktum>
+        <skjemaNummer>M6</skjemaNummer>
+        <property>arbeidsgivernavn</property>
+        <onProperty>variabelstillingsprosent</onProperty>
         <onValues>
-            <value>false</value>
+            <value>true</value>
         </onValues>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <id>5</id>
         <faktum>arbeidsforhold</faktum>
-        <skjemaNummer>T7</skjemaNummer>
+        <skjemaNummer>L4</skjemaNummer>
         <property>arbeidsgivernavn</property>
-        <onProperty>ansatt</onProperty>
+        <onProperty>variabelstillingsprosent</onProperty>
         <onValues>
             <value>true</value>
         </onValues>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
+
 
     <!-- Vedlegg rettigheter -->
     <vedlegg>
