@@ -156,6 +156,10 @@
     <faktum>
         <id>perioder.startdato</id>
     </faktum>
+    <faktum>
+        <id>perioder.permisjon</id>
+        <dependOn>arbeidsforhold</dependOn>
+    </faktum>
 
     <!-- Perioder -->
     <faktum>
