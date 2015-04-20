@@ -15,12 +15,12 @@ public class UrlUtilsTest {
 
     @Before
     public void setup() {
-        System.setProperty("dialoginnsending.ettersending.path", DIALOGINNSENDING_PATH);
+        System.setProperty("soknadinnsending.ettersending.path", DIALOGINNSENDING_PATH);
     }
 
     @Test
     public void skalLageUrlForFortsettSenere() {
-        assertThat(UrlUtils.getFortsettUrl(REQUEST_URL, BEHANDLING_ID), startsWith("https://tjenester.nav.no/dagpenger/utslagskriterier/" + BEHANDLING_ID));
+        assertThat(UrlUtils.getFortsettUrl(REQUEST_URL, BEHANDLING_ID), startsWith("https://tjenester.nav.no/soknaddagpenger/utslagskriterier/" + BEHANDLING_ID));
     }
 
     @Test
