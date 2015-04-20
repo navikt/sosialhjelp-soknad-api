@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
@@ -22,12 +23,17 @@ public class BarnService implements BolkService {
 
 
     private static final Logger logger = getLogger(BarnService.class);
+    private static final String BOLKNAVN = "Barn";
+
     @Inject
     private PersonService personService;
     @Inject
     private FaktaService faktaService;
 
-
+    @Override
+    public String tilbyrBolk() {
+        return BOLKNAVN;
+    }
 
     @Override
     public void lagreBolk(String fodselsnummer, Long soknadId) {

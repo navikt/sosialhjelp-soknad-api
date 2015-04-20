@@ -16,9 +16,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggReposi
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BolkService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
@@ -29,8 +27,10 @@ import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.bind.JAXB;
@@ -76,9 +76,16 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     @Inject
     private FaktaService faktaService;
     @Inject
-    private PersonaliaService personaliaService;
-    @Inject
-    private BarnService barnService;
+    ApplicationContext applicationContex;
+
+    private List<BolkService> bolker;
+    private WebSoknadConfig config;
+
+    @PostConstruct
+    public void initBolker(){
+        bolker = new ArrayList<>(applicationContex.getBeansOfType(BolkService.class).values());
+        config = new WebSoknadConfig(repository);
+    }
 
 
     public void settDelsteg(String behandlingsId, DelstegStatus delstegStatus) {
@@ -87,10 +94,10 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
     public WebSoknad hentSoknadMedFaktaOgVedlegg(long soknadId) {
         WebSoknad soknad = repository.hentSoknadMedData(soknadId);
-        WebSoknadConfig config = new WebSoknadConfig(soknad.getskjemaNummer());
-        soknad.medSoknadPrefix(config.getSoknadTypePrefix())
-                .medSoknadUrl(config.getSoknadUrl())
-                .medFortsettSoknadUrl(config.getSoknadFortsettUrl());
+
+        soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknadId))
+                .medSoknadUrl(config.getSoknadUrl(soknadId))
+                .medFortsettSoknadUrl(config.getSoknadFortsettUrl(soknadId));
         return soknad;
     }
 
@@ -99,10 +106,9 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         if (soknad == null) {
             soknad = hentFraHenvendelse(behandlingsId, false);
         }
-        WebSoknadConfig config = new WebSoknadConfig(soknad.getskjemaNummer());
-        soknad.medSoknadPrefix(config.getSoknadTypePrefix())
-                .medSoknadUrl(config.getSoknadUrl())
-                .medFortsettSoknadUrl(config.getSoknadFortsettUrl());
+        soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknad.getSoknadId()))
+                .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
+                .medFortsettSoknadUrl(config.getSoknadFortsettUrl(soknad.getSoknadId()));
         return soknad;
     }
 
@@ -112,10 +118,9 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         if (soknad == null) {
             soknad = hentFraHenvendelse(behandlingsId, true);
         }
-        WebSoknadConfig config = new WebSoknadConfig(soknad.getskjemaNummer());
-        soknad.medSoknadPrefix(config.getSoknadTypePrefix())
-                .medSoknadUrl(config.getSoknadUrl())
-                .medFortsettSoknadUrl(config.getSoknadFortsettUrl());
+        soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknad.getSoknadId()))
+                .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
+                .medFortsettSoknadUrl(config.getSoknadFortsettUrl(soknad.getSoknadId()));
         return soknad;
     }
 
@@ -453,12 +458,12 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
     @Override
     public SoknadStruktur hentSoknadStruktur(Long soknadId) {
-        return new WebSoknadConfig(soknadId, repository).hentStruktur();
+        return config.hentStruktur(soknadId);
     }
 
     @Override
     public SoknadStruktur hentSoknadStruktur(String skjemanummer) {
-        return new WebSoknadConfig(skjemanummer).hentStruktur();
+        return config.hentStruktur(skjemanummer);
     }
 
     private void medKodeverk(Vedlegg vedlegg) {
@@ -504,14 +509,10 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         }
     };
 
-    private void lagrePredeinerteBolker(String fodselsnummer, Long soknadId ) {
-        List<BolkService> alleBolker = Arrays.asList(personaliaService, barnService);
-
-        List<BolkService> soknadBolker = new WebSoknadConfig(soknadId, repository).getSoknadBolker(alleBolker);
-
-        for(BolkService bolk : soknadBolker) {
+    private void lagrePredeinerteBolker(String fodselsnummer, Long soknadId) {
+        List<BolkService> soknadBolker = config.getSoknadBolker(soknadId, bolker);
+        for (BolkService bolk : soknadBolker) {
             bolk.lagreBolk(fodselsnummer, soknadId);
         }
-
     }
 }

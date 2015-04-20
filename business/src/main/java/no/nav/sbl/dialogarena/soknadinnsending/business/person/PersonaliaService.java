@@ -29,6 +29,8 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class PersonaliaService implements BolkService{
 
     private static final Logger logger = getLogger(PersonaliaService.class);
+    private static final String BOLKNAVN = "Personalia";
+
     @Inject
     @Named("brukerProfilEndpoint")
     private BrukerprofilPortType brukerProfil;
@@ -58,6 +60,11 @@ public class PersonaliaService implements BolkService{
             throw new ApplicationException("TPS:webserviceException", e);
         }
         return PersonaliaTransform.mapTilPersonalia(preferanserResponse, kjerneinformasjonResponse, kodeverk);
+    }
+
+    @Override
+    public String tilbyrBolk() {
+        return BOLKNAVN;
     }
 
     @Override
