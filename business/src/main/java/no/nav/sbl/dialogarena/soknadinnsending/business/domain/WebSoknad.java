@@ -440,4 +440,10 @@ public class WebSoknad implements Serializable {
     public String getSoknadPrefix() {
         return soknadPrefix;
     }
+    public String getSoknadUrl() {
+        return soknadUrl;
+    }
+    public String getSoknadFortsettUrl() {
+        return fortsettSoknadUrl;
+    }
 }

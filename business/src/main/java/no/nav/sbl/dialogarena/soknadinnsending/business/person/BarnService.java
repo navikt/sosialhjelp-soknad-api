@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;

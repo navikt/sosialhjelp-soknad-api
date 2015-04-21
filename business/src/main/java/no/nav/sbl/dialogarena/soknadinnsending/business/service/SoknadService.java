@@ -76,7 +76,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     @Inject
     private FaktaService faktaService;
     @Inject
-    ApplicationContext applicationContex;
+    public ApplicationContext applicationContex;
 
     private List<BolkService> bolker;
     private WebSoknadConfig config;
