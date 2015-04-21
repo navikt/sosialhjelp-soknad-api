@@ -1,2 +1,19 @@
-<hr/>
-<p>Kvittering: barnet</p>
+<h2>{{ hentTekst "barnet.tittel" }}</h2>
+<table>
+    {{#forFaktum "barnet.dato"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>Termindato {{ formatterLangDato value}}</span>
+            </td>
+        </tr>
+    {{/forFaktum}}
+    {{#forFaktum "barnet.antall"}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{value}} barn</span>
+                </td>
+            </tr>
+        {{/forFaktum}}
+</table>
