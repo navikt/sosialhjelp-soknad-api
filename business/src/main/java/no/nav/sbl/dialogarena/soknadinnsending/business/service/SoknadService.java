@@ -92,6 +92,10 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         repository.settDelstegstatus(behandlingsId, delstegStatus);
     }
 
+    public void settJournalforendeEnhet(String behandlingsId, String journalforendeEnhet) {
+        repository.settJournalforendeEnhet(behandlingsId, journalforendeEnhet);
+    }
+
     public WebSoknad hentSoknadMedFaktaOgVedlegg(long soknadId) {
         WebSoknad soknad = repository.hentSoknadMedData(soknadId);
 

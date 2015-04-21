@@ -50,6 +50,9 @@ public interface SoknadRepository {
     void settDelstegstatus(Long soknadId, DelstegStatus status);
     void settDelstegstatus(String behandlingsId, DelstegStatus status);
 
+    void settJournalforendeEnhet(Long soknadId, String journalforendeEnhet);
+    void settJournalforendeEnhet(String behandlingsId, String journalforendeEnhet);
+
     List<Faktum> hentBarneFakta(Long soknadId, Long faktumId);
 
     void populerFraStruktur(WebSoknad soknad);

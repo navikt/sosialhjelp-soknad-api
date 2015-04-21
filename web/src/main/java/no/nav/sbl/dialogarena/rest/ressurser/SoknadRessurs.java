@@ -92,29 +92,18 @@ public class SoknadRessurs {
         return result;
     }
 
-    @PUT  //TODO: Burde endres til POST - En PUT må sende med hele objektet for å følge spec'en
+    @PUT  //TODO: Burde endres til å sende med hele objektet for å følge spec'en
     @Path("/{behandlingsId}")
     @SjekkTilgangTilSoknad
-    public void settDelstegStatus(@PathParam("behandlingsId") String behandlingsId, @QueryParam("delsteg") String delsteg) {
-        if (delsteg == null) {
-            throw new ApplicationException("Ugyldig delsteg sendt inn til REST-controller.");
-        } else {
-            DelstegStatus delstegstatus;
-            if (delsteg.equalsIgnoreCase("utfylling")) {
-                delstegstatus = DelstegStatus.UTFYLLING;
+    public void oppdaterSoknad(@PathParam("behandlingsId") String behandlingsId,
+                               @QueryParam("delsteg") String delsteg,
+                               @QueryParam("journalforendeenhet") String journalforendeenhet) {
+        if(delsteg != null) {
+            settDelstegStatus(behandlingsId, delsteg);
+        }
 
-            } else if (delsteg.equalsIgnoreCase("opprettet")) {
-                delstegstatus = DelstegStatus.OPPRETTET;
-
-            } else if (delsteg.equalsIgnoreCase("vedlegg")) {
-                delstegstatus = DelstegStatus.SKJEMA_VALIDERT;
-
-            } else if (delsteg.equalsIgnoreCase("oppsummering")) {
-                delstegstatus = DelstegStatus.VEDLEGG_VALIDERT;
-            } else {
-                throw new ApplicationException("Ugyldig delsteg sendt inn til REST-controller.");
-            }
-            soknadService.settDelsteg(behandlingsId, delstegstatus);
+        if(journalforendeenhet != null) {
+            settJournalforendeEnhet(behandlingsId, journalforendeenhet);
         }
     }
 
@@ -137,6 +126,30 @@ public class SoknadRessurs {
     @SjekkTilgangTilSoknad
     public List<Vedlegg> hentPaakrevdeVedlegg(@PathParam("behandlingsId") String behandlingsId) {
         return vedleggService.hentPaakrevdeVedlegg(behandlingsId);
+    }
+
+    private void settJournalforendeEnhet(String behandlingsId, String delsteg) {
+        soknadService.settJournalforendeEnhet(behandlingsId, delsteg);
+    }
+
+    private void settDelstegStatus(String behandlingsId, String delsteg) {
+        DelstegStatus delstegstatus;
+        if (delsteg.equalsIgnoreCase("utfylling")) {
+            delstegstatus = DelstegStatus.UTFYLLING;
+
+        } else if (delsteg.equalsIgnoreCase("opprettet")) {
+            delstegstatus = DelstegStatus.OPPRETTET;
+
+        } else if (delsteg.equalsIgnoreCase("vedlegg")) {
+            delstegstatus = DelstegStatus.SKJEMA_VALIDERT;
+
+        } else if (delsteg.equalsIgnoreCase("oppsummering")) {
+            delstegstatus = DelstegStatus.VEDLEGG_VALIDERT;
+
+        } else {
+            throw new ApplicationException("Ugyldig delsteg sendt inn til REST-controller.");
+        }
+        soknadService.settDelsteg(behandlingsId, delstegstatus);
     }
 
     private static Cookie xsrfCookie(String behandlingId) {
