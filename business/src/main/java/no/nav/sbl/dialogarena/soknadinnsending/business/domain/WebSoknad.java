@@ -443,7 +443,7 @@ public class WebSoknad implements Serializable {
     public String getSoknadUrl() {
         return soknadUrl;
     }
-    public String getSoknadFortsettUrl() {
+    public String getFortsettSoknadUrl() {
         return fortsettSoknadUrl;
     }
 }
