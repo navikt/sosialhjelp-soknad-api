@@ -109,6 +109,9 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknad.getSoknadId()))
                 .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
                 .medFortsettSoknadUrl(config.getSoknadFortsettUrl(soknad.getSoknadId()));
+
+        lagrePredeinerteBolker(getSubjectHandler().getUid(), soknad.getSoknadId());
+
         return soknad;
     }
 
