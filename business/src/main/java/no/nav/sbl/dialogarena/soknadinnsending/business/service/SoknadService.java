@@ -97,7 +97,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
         soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknadId))
                 .medSoknadUrl(config.getSoknadUrl(soknadId))
-                .medFortsettSoknadUrl(config.getSoknadFortsettUrl(soknadId));
+                .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknadId));
         return soknad;
     }
 
@@ -108,7 +108,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         }
         soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknad.getSoknadId()))
                 .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
-                .medFortsettSoknadUrl(config.getSoknadFortsettUrl(soknad.getSoknadId()));
+                .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
 
         lagrePredeinerteBolker(getSubjectHandler().getUid(), soknad.getSoknadId());
 
@@ -123,7 +123,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         }
         soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknad.getSoknadId()))
                 .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
-                .medFortsettSoknadUrl(config.getSoknadFortsettUrl(soknad.getSoknadId()));
+                .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
         return soknad;
     }
 

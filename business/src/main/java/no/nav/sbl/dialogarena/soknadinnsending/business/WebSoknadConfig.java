@@ -98,7 +98,7 @@ public class WebSoknadConfig {
         else{ return ""; }
     }
 
-    public String getSoknadFortsettUrl (long soknadId) {
+    public String getFortsettSoknadUrl(long soknadId) {
         String skjemaNavn = finnSkjemaNavn(soknadId);
         if (SOKNAD_FORTSETT_URL_FASIT_RESSURS.containsKey(skjemaNavn)) {
             return System.getProperty(SOKNAD_FORTSETT_URL_FASIT_RESSURS.get(skjemaNavn));
