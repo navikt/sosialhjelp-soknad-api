@@ -158,7 +158,6 @@
     </faktum>
     <faktum>
         <id>perioder.permisjon</id>
-        <dependOn>arbeidsforhold</dependOn>
     </faktum>
 
     <!-- Perioder -->
