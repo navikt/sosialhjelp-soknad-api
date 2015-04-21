@@ -103,6 +103,9 @@ public class SoknadRessurs {
             if (delsteg.equalsIgnoreCase("utfylling")) {
                 delstegstatus = DelstegStatus.UTFYLLING;
 
+            } else if (delsteg.equalsIgnoreCase("opprettet")) {
+                delstegstatus = DelstegStatus.OPPRETTET;
+
             } else if (delsteg.equalsIgnoreCase("vedlegg")) {
                 delstegstatus = DelstegStatus.SKJEMA_VALIDERT;
 
