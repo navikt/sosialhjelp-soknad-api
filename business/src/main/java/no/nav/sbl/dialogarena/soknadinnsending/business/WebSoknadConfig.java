@@ -108,10 +108,15 @@ public class WebSoknadConfig {
 
     public SoknadStruktur hentStruktur (long soknadId) {
         String skjemaNavn = finnSkjemaNavn(soknadId);
-        return hentStruktur(skjemaNavn);
+        return hentStrukturForSkjemanavn(skjemaNavn);
     }
 
-    public SoknadStruktur hentStruktur (String skjemaNavn) {
+    public SoknadStruktur hentStruktur (String skjemaNummer) {
+        String skjemaNavn = SKJEMANAVN.get(skjemaNummer);
+        return hentStrukturForSkjemanavn(skjemaNavn);
+    }
+
+    private SoknadStruktur hentStrukturForSkjemanavn(String skjemaNavn) {
         String type = STRUKTURDOKUEMENTER.get(skjemaNavn);
 
         if (type == null || type.isEmpty()) {
