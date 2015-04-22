@@ -22,3 +22,29 @@
 
     {{/forFaktum}}
 </table>
+
+<table>
+    {{#forFaktum "tilknytningnorge.fremtidig"}}
+        {{#hvisSant value}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{ hentTekst "tilknytningnorge.fremtidig.true" }}</span>
+                </td>
+            </tr>
+        {{else}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{ hentTekst "tilknytningnorge.fremtidig.false" }}</span>
+                    {{#forFakta "tilknytningnorge.fremtidig.periode"}}
+                        {{> skjema/foreldresoknad/utenlandsopphold}}
+                    {{/forFakta}}
+                </td>
+            </tr>
+        {{/hvisSant}}
+
+    {{/forFaktum}}
+</table>
+
+
