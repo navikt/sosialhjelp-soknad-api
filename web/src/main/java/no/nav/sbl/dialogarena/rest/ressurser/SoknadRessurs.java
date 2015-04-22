@@ -98,6 +98,11 @@ public class SoknadRessurs {
     public void oppdaterSoknad(@PathParam("behandlingsId") String behandlingsId,
                                @QueryParam("delsteg") String delsteg,
                                @QueryParam("journalforendeenhet") String journalforendeenhet) {
+
+        if(delsteg == null && journalforendeenhet == null) {
+            throw new BadRequestException("Ingen queryparametre ble sendt inn.");
+        }
+
         if(delsteg != null) {
             settDelstegStatus(behandlingsId, delsteg);
         }
