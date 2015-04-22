@@ -1,2 +1,21 @@
-<hr/>
-<p>Kvittering: Opphold Norge</p>
+<h2>{{ hentTekst "tilknytningnorge.tittel" }}</h2>
+<table>
+    {{#forFaktum "tilknytningnorge.tidligere"}}
+        {{#hvisSant value}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{ hentTekst "tilknytningnorge.tidligere.true" }}</span>
+                </td>
+            </tr>
+            {{else}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{ hentTekst "tilknytningnorge.tidligere.false" }}</span>
+                </td>
+            </tr>
+        {{/hvisSant}}
+
+    {{/forFaktum}}
+</table>
