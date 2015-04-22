@@ -1,2 +1,11 @@
-<hr/>
-<p>Kvittering: dekningsgrad</p>
+{{#forFaktum "dekningsgrad"}}
+    <h2>{{ hentTekst "dekningsgrad.tittel" }}</h2>
+    <table>
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>{{ value }}{{ hentTekst "oppsummering.dekningsgrad.tekst" }}</span>
+            </td>
+        </tr>
+    </table>
+{{/forFaktum}}
