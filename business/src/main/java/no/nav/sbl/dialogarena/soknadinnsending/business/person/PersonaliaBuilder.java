@@ -90,7 +90,7 @@ public class PersonaliaBuilder {
         Personalia personalia = new Personalia();
 
         personalia.setFnr(fnr);
-        personalia.setFodelsdato(fodselsdato);
+        personalia.setFodselsdato(fodselsdato);
         personalia.setNavn(navn);
         personalia.setEpost(epost);
         personalia.setStatsborgerskap(statsborgerskap);

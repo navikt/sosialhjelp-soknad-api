@@ -33,7 +33,7 @@ public class Personalia {
     public static final String SEKUNDARADRESSE_LANDKODE = "sekundarAdresseLandkode";
 
     private String fnr;
-    private LocalDate fodelsdato;
+    private LocalDate fodselsdato;
     private String alder;
     private String navn;
     private String epost;
@@ -57,12 +57,12 @@ public class Personalia {
         this.fnr = fnr;
     }
 
-    public LocalDate getFodelsdato() {
-        return fodelsdato;
+    public LocalDate getFodselsdato() {
+        return fodselsdato;
     }
 
-    public void setFodelsdato(LocalDate fodelsdato) {
-        this.fodelsdato = fodelsdato;
+    public void setFodselsdato(LocalDate fodselsdato) {
+        this.fodselsdato = fodselsdato;
     }
 
     public String getAlder() {
