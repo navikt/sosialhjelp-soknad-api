@@ -440,11 +440,6 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
                 .update("update soknad set delstegstatus=? where brukerbehandlingid = ?", status.name(), behandlingsId);
     }
 
-    public void settJournalforendeEnhet(Long soknadId, String journalforendeEnhet) {
-        getJdbcTemplate()
-                .update("update soknad set journalforendeenhet=? where soknad_id=?", journalforendeEnhet, soknadId);
-    }
-
     public void settJournalforendeEnhet(String behandlingsId, String journalforendeEnhet) {
         getJdbcTemplate()
                 .update("update soknad set journalforendeenhet=? where brukerbehandlingid=?", journalforendeEnhet, behandlingsId);
