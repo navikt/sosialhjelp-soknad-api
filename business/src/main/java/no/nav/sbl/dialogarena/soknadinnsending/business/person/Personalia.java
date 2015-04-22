@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.StatsborgerskapType;
+import org.joda.time.LocalDate;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.*;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.LandService.EOS;
@@ -32,6 +33,7 @@ public class Personalia {
     public static final String SEKUNDARADRESSE_LANDKODE = "sekundarAdresseLandkode";
 
     private String fnr;
+    private LocalDate fodelsdato;
     private String alder;
     private String navn;
     private String epost;
@@ -53,6 +55,14 @@ public class Personalia {
 
     public void setFnr(String fnr) {
         this.fnr = fnr;
+    }
+
+    public LocalDate getFodelsdato() {
+        return fodelsdato;
+    }
+
+    public void setFodelsdato(LocalDate fodelsdato) {
+        this.fodelsdato = fodelsdato;
     }
 
     public String getAlder() {

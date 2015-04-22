@@ -28,6 +28,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.ws.WebServiceException;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -119,6 +121,7 @@ public class DefaultPersonaliaServiceTest {
 
         HentKjerneinformasjonResponse response = new HentKjerneinformasjonResponse();
         person = genererPersonMedGyldigIdentOgNavn(RIKTIG_IDENT, ET_FORNAVN, ET_ETTERNAVN);
+        person.setFoedselsdato(fodseldato(1983, 12, 16));
         List<Familierelasjon> familieRelasjoner = person.getHarFraRolleI();
         Familierelasjon familierelasjon = new Familierelasjon();
         Person barn1 = genererPersonMedGyldigIdentOgNavn(BARN_IDENT, BARN_FORNAVN, BARN_ETTERNAVN);
@@ -726,5 +729,15 @@ public class DefaultPersonaliaServiceTest {
         xmlPerson.setIdent(norskIdent);
 
         return xmlPerson;
+    }
+
+    private Foedselsdato fodseldato(int year, int month, int day) {
+        Foedselsdato foedselsdato = new Foedselsdato();
+        try {
+            foedselsdato.setFoedselsdato(DatatypeFactory.newInstance().newXMLGregorianCalendarDate(year, month, day, 0));
+        } catch (DatatypeConfigurationException e) {
+            throw new RuntimeException("Klarte ikke å sette fødselsdato", e);
+        }
+        return foedselsdato;
     }
 }
