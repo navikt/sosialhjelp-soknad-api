@@ -1,2 +1,62 @@
-<hr/>
-<p>Kvittering: andreytelser</p>
+<h2>{{ hentTekst "andreytelser.tittel" }}</h2>
+{{#forFaktum "ytelser.ventelonn"}}
+    {{#hvisLik "true" value}}
+        <table>
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{ hentTekst "ytelser.ventelonn.label" }}</span>
+                </td>
+            </tr>
+        </table>
+    {{/hvisLik}}
+{{/forFaktum}}
+{{#forFaktum "ytelser.lonnarbeidsgiver"}}
+    {{#hvisLik "true" value}}
+        <table>
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{ hentTekst "ytelser.lonnarbeidsgiver.label" }}</span>
+                </td>
+            </tr>
+        </table>
+    {{/hvisLik}}
+{{/forFaktum}}
+{{#forFaktum "ytelser.vartpenger"}}
+    {{#hvisLik "true" value}}
+        <table>
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{ hentTekst "ytelser.vartpenger.label" }}</span>
+                </td>
+            </tr>
+        </table>
+    {{/hvisLik}}
+{{/forFaktum}}
+{{#forFaktum "ytelser.avtjening"}}
+    {{#hvisLik "true" value}}
+        <table>
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{ hentTekst "ytelser.avtjening.label" }}</span>
+                </td>
+            </tr>
+        </table>
+    {{/hvisLik}}
+{{/forFaktum}}
+{{#forFaktum "ytelser.ingenYtelse"}}
+    {{#hvisLik "true" value}}
+        <table>
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{ hentTekst "ytelser.ingenYtelse.label" }}</span>
+                </td>
+            </tr>
+        </table>
+    {{/hvisLik}}
+{{/forFaktum}}
+
