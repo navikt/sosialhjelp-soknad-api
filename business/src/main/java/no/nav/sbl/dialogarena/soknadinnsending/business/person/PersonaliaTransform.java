@@ -12,6 +12,7 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinform
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Statsborgerskap;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
+import org.joda.time.LocalDate;
 
 public class PersonaliaTransform {
 
@@ -29,6 +30,7 @@ public class PersonaliaTransform {
         return PersonaliaBuilder.
                 with()
                 .fodselsnummer(finnFnr(xmlBruker))
+                .fodselsdato(finnFodselsdato(xmlPerson))
                 .alder(finnAlder(finnFnr(xmlBruker)))
                 .navn(finnSammensattNavn(xmlBruker))
                 .epost(finnEpost(xmlBruker))
@@ -95,6 +97,10 @@ public class PersonaliaTransform {
         } else {
             return "NOR";
         }
+    }
+
+    private static LocalDate finnFodselsdato(Person person) {
+        return new LocalDate(person.getFoedselsdato().getFoedselsdato().toGregorianCalendar());
     }
 
     private static String finnEpost(XMLBruker xmlBruker) {

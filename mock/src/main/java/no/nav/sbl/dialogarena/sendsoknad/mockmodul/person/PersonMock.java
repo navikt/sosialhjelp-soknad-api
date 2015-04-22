@@ -4,17 +4,12 @@ import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Doedsdato;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjon;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjoner;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Landkoder;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.NorskIdent;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personnavn;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Statsborgerskap;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
@@ -27,6 +22,7 @@ public class PersonMock {
         PersonPortType mock = mock(PersonPortType.class);
         HentKjerneinformasjonResponse response = new HentKjerneinformasjonResponse();
         Person person = genererPersonMedGyldigIdentOgNavn("***REMOVED***", "person", "mock");
+        person.setFoedselsdato(fodseldato(1963, 7, 3));
 
         Statsborgerskap statsborgerskap = new Statsborgerskap();
         Landkoder landkoder = new Landkoder();
@@ -92,6 +88,16 @@ public class PersonMock {
         xmlPerson.setIdent(norskIdent);
 
         return xmlPerson;
+    }
+
+    private Foedselsdato fodseldato(int year, int month, int day) {
+        Foedselsdato foedselsdato = new Foedselsdato();
+        try {
+            foedselsdato.setFoedselsdato(DatatypeFactory.newInstance().newXMLGregorianCalendarDate(year, month, day, 0));
+        } catch (DatatypeConfigurationException e) {
+            throw new RuntimeException("Klarte ikke å sette fødselsdato", e);
+        }
+        return foedselsdato;
     }
 
 }

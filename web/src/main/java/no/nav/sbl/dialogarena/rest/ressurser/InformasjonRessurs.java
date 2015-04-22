@@ -110,14 +110,15 @@ public class InformasjonRessurs {
 
     @GET
     @Path("/utslagskriterier")
-    public Map<String, String> hentUtslagskriterier() {
+    public Map<String, Object> hentUtslagskriterier() {
         String uid = getSubjectHandler().getUid();
-        Map<String, String> utslagskriterierResultat = new HashMap<>();
+        Map<String, Object> utslagskriterierResultat = new HashMap<>();
         utslagskriterierResultat.put("arbeidssokerstatus", personInfoService.hentArbeidssokerStatus(uid));
 
         try {
             Personalia personalia = personaliaService.hentPersonalia(uid);
-            utslagskriterierResultat.put("alder", Integer.toString(new PersonAlder(uid).getUtslagsAlder()));
+            utslagskriterierResultat.put("alder", Integer.toString(new PersonAlder(uid).getAlder()));
+            utslagskriterierResultat.put("fodselsdato", personalia.getFodselsdato());
             utslagskriterierResultat.put("bosattINorge", ((Boolean) !personalia.harUtenlandskAdresse()).toString());
             utslagskriterierResultat.put("registrertAdresse", personalia.getGjeldendeAdresse().getAdresse());
             utslagskriterierResultat.put("registrertAdresseGyldigFra", personalia.getGjeldendeAdresse().getGyldigFra());
