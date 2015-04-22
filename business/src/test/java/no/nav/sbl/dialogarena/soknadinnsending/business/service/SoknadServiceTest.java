@@ -258,6 +258,12 @@ public class SoknadServiceTest {
     }
 
     @Test
+    public void skalSetteJournalforendeEnhet() {
+        soknadService.settJournalforendeEnhet("1", "1234");
+        verify(soknadRepository).settJournalforendeEnhet("1", "1234");
+    }
+
+    @Test
     public void skalHenteSoknad() {
         when(soknadRepository.hentSoknadMedData(1L)).thenReturn(new WebSoknad().medId(1L).medskjemaNummer("NAV 04-01.03"));
         when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(new ArrayList<Vedlegg>());

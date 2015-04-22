@@ -326,6 +326,13 @@ public class SoknadRepositoryJdbcTest {
     }
 
     @Test
+    public void skalSetteJournalforendeEnhet() {
+        opprettOgPersisterSoknad();
+        soknadRepository.settJournalforendeEnhet(behandlingsId, "NAV EØS");
+        assertThat(soknadRepository.hentSoknad(behandlingsId).getJournalforendeEnhet(), is(equalTo("NAV EØS")));
+    }
+
+    @Test
     public void skalKunneOppdatereLagretBrukerData() {
         String key = "key";
         String value = "value";
