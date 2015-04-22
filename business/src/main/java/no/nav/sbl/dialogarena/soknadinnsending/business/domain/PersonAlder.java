@@ -15,24 +15,13 @@ import static org.joda.time.Years.yearsBetween;
 public class PersonAlder implements Serializable{
 
     private LocalDate fodselsdato;
-    private LocalDate utslagsFodselsdato;
 
     public PersonAlder(String dNummerEllerFodselsnummer){
         this.fodselsdato = parse(hentFodselsdatoFraFnr(dNummerEllerFodselsnummer));
-        this.utslagsFodselsdato = parse(hentUtslagsFodselsdatoFraFnr(dNummerEllerFodselsnummer)).plusMonths(1);
     }
 
     public int getAlder() {
         return yearsBetween(fodselsdato, new LocalDate()).getYears();
-    }
-
-	public int getUtslagsAlder() {
-        return yearsBetween(utslagsFodselsdato, new LocalDate()).getYears();
-	}
-	
-    private String hentUtslagsFodselsdatoFraFnr(String fodselsnummer){
-        NavFodselsnummer fnr = new NavFodselsnummer(fodselsnummer);
-        return fnr.getBirthYear() + "-" + fnr.getMonth() + "-01";
     }
 
     private String hentFodselsdatoFraFnr(String fodselsnummer){

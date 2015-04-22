@@ -1,7 +1,10 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
+import org.joda.time.LocalDate;
+
 public class PersonaliaBuilder {
     private String fnr;
+    private LocalDate fodselsdato;
     private String alder;
     private String navn;
     private String epost;
@@ -20,6 +23,11 @@ public class PersonaliaBuilder {
 
     public PersonaliaBuilder fodselsnummer(String fnr) {
         this.fnr = fnr;
+        return this;
+    }
+
+    public PersonaliaBuilder fodselsdato(LocalDate fodselsdato) {
+        this.fodselsdato = fodselsdato;
         return this;
     }
 
@@ -82,6 +90,7 @@ public class PersonaliaBuilder {
         Personalia personalia = new Personalia();
 
         personalia.setFnr(fnr);
+        personalia.setFodelsdato(fodselsdato);
         personalia.setNavn(navn);
         personalia.setEpost(epost);
         personalia.setStatsborgerskap(statsborgerskap);
