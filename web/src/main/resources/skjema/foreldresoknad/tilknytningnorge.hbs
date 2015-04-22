@@ -13,6 +13,11 @@
                 <td class="sjekket"></td>
                 <td>
                     <span>{{ hentTekst "tilknytningnorge.tidligere.false" }}</span>
+                    {{#forFaktum "tilknytningnorge.tidligere.periode"}}
+                        <p>
+                            {{ hentLand properties.land}}
+                        </p>
+                    {{/forFaktum}}
                 </td>
             </tr>
         {{/hvisSant}}
