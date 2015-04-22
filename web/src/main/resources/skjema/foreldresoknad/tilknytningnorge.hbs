@@ -13,11 +13,9 @@
                 <td class="sjekket"></td>
                 <td>
                     <span>{{ hentTekst "tilknytningnorge.tidligere.false" }}</span>
-                    {{#forFaktum "tilknytningnorge.tidligere.periode"}}
-                        <p>
-                            {{ hentLand properties.land}}
-                        </p>
-                    {{/forFaktum}}
+                    {{#forFakta "tilknytningnorge.tidligere.periode"}}
+                        {{> skjema/foreldresoknad/utenlandsopphold}}
+                    {{/forFakta}}
                 </td>
             </tr>
         {{/hvisSant}}
