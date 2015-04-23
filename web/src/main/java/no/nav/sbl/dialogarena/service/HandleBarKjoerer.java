@@ -204,11 +204,10 @@ public class HandleBarKjoerer implements HtmlGenerator {
             @Override
             public CharSequence apply(Object context, Options options) throws IOException {
                 WebSoknad soknad = finnWebSoknad(options.context);
-                if(soknad.erDagpengeSoknad()){
+                if(soknad.erDagpengeSoknad()) {
                     return DagpengerUtils.getSkjemanummer(soknad);
-                }else {
-                    return soknad.getskjemaNummer();
                 }
+                return soknad.getskjemaNummer();
             }
         };
     }
