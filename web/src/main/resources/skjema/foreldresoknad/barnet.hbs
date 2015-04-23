@@ -4,16 +4,32 @@
         <tr>
             <td class="sjekket"></td>
             <td>
-                <span>Termindato {{ formatterLangDato value}}</span>
+                <span>
+                    {{#forFaktum "soknadsvalg.fodselelleradopsjon"}}
+                        {{#hvisLik value "fodsel"}}
+                            {{#forFaktum "veiledning.mor.terminbekreftelse"}}
+                                {{#hvisLik value "fodt"}}
+                                    {{hentTekst "oppsummering.barnet.fodselsdato"}}
+                                {{else}}
+                                    {{hentTekst "oppsummering.barnet.termindato"}}
+                                {{/hvisLik}}
+
+                            {{/forFaktum}}
+                        {{/hvisLik}}
+                        {{#hvisLik value "adopsjon"}}
+                            {{hentTekst "oppsummering.barnet.overtagelsesdato"}}
+                        {{/hvisLik}}
+                    {{/forFaktum}}
+                    {{ formatterLangDato value}}</span>
             </td>
         </tr>
     {{/forFaktum}}
     {{#forFaktum "barnet.antall"}}
-            <tr>
-                <td class="sjekket"></td>
-                <td>
-                    <span>{{value}} barn</span>
-                </td>
-            </tr>
-        {{/forFaktum}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>{{value}} {{hentTekst "oppsummering.barnet.antallTekst"}}</span>
+            </td>
+        </tr>
+    {{/forFaktum}}
 </table>
