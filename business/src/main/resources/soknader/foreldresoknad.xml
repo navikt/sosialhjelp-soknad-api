@@ -292,7 +292,7 @@
         <id>6</id>
         <faktum>rettigheter.overtak</faktum>
         <onValues>
-            <value>adpotererAlene</value>
+            <value>adoptererAlene</value>
         </onValues>
         <skjemaNummer>K1</skjemaNummer>
     </vedlegg>
