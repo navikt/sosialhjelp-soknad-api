@@ -203,7 +203,11 @@ public class HandleBarKjoerer implements HtmlGenerator {
         return new Helper<Object>() {
             @Override
             public CharSequence apply(Object context, Options options) throws IOException {
-                return DagpengerUtils.getSkjemanummer(finnWebSoknad(options.context));
+                WebSoknad soknad = finnWebSoknad(options.context);
+                if(soknad.erDagpengeSoknad()) {
+                    return DagpengerUtils.getSkjemanummer(soknad);
+                }
+                return soknad.getskjemaNummer();
             }
         };
     }
