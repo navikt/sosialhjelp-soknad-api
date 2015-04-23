@@ -11,6 +11,12 @@
                     {{hentLand properties.land}}
                 {{/hvisSant}}
                 </div>
+                <div>{{#hvisSant properties.ansatt}}
+                    {{hentTekst "oppsummering.arbeidsforhold.fra"}} {{formatterLangDato properties.fom }} {{hentTekst "oppsummering.arbeidsforhold.tilna"}}
+                {{else}}
+                    {{hentTekst "oppsummering.arbeidsforhold.fra"}} {{formatterLangDato properties.fom }} {{hentTekst "oppsummering.arbeidsforhold.til"}} {{formatterLangDato properties.tom}}
+                {{/hvisSant}}
+                </div>
                 <div>
                 {{#hvisSant properties.variabelstillingsprosent}}
                     {{hentTekst "arbeidsforhold.ansatt.stillingsprosent.variabel"}}
