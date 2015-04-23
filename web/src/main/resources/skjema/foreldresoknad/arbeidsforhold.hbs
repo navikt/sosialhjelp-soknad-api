@@ -1,2 +1,24 @@
-<hr/>
-<p>Kvittering: arbeidsforhold</p>
+<h2>{{hentTekst "arbeidsforhold.tittel"}}</h2>
+<table>
+    {{#forFakta "arbeidsforhold"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span class="strong">{{properties.arbeidsgivernavn}}</span>
+                <div>{{#hvisSant properties.jobbetkuninorge}}
+                    {{hentTekst "oppsummering.arbeidsforhold.jobbetkuninorge"}}
+                    {{else}}
+                    {{hentLand properties.land}}
+                {{/hvisSant}}
+                </div>
+                <div>
+                {{#hvisSant properties.variabelstillingsprosent}}
+                    {{hentTekst "arbeidsforhold.ansatt.stillingsprosent.variabel"}}
+                    {{else}}
+                    {{properties.stillingsprosent}} {{hentTekst "oppsummering.arbeidsforhold.stillingsprosent.label"}}
+                {{/hvisSant}}
+                </div>
+            </td>
+        </tr>
+    {{/forFakta}}
+</table>
