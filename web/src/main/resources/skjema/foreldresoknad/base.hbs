@@ -89,38 +89,28 @@
                 {{> skjema/foreldresoknad/personalia }}
             </div>
 
-            {{#forFaktum "soknadsvalg.fodselelleradopsjon"}}
-
-                {{#hvisLik value "adopsjon"}}
-                    {{#block "contentAdopsjon" }}{{/block}}
-
-                {{ else }}
-                    {{#forFaktum "soknadsvalg.stonadstype"}}
-
-                        {{#hvisLik "foreldrepengerFar" value}}
-                            {{#block "contentforeldrepengerFar" }}{{/block}}
-                        {{/hvisLik}}
-
-                        {{#hvisLik "engangsstonadFar" value}}
-                            {{#block "contentEngangsstonadFar" }}{{/block}}
-                        {{/hvisLik}}
-
-                        {{#hvisLik "foreldrepengerMor" value}}
-                            {{#block "contentForeldrepengerMor" }}{{/block}}
-                        {{/hvisLik}}
-
-                        {{#hvisLik "engangsstonadMor" value}}
-                            {{#block "contentEngangsstonadMor" }}{{/block}}
-                        {{/hvisLik}}
-
-                    {{/forFaktum}}
-                {{/hvisLik}}
-            {{/forFaktum}}
-
             {{#forFaktum "soknadsvalg.stonadstype"}}
+
+                {{#hvisLik "foreldrepengerFar" value}}
+                    {{#block "contentforeldrepengerFar" }}{{/block}}
+                {{/hvisLik}}
+
+                {{#hvisLik "engangsstonadFar" value}}
+                    {{#block "contentEngangsstonadFar" }}{{/block}}
+                {{/hvisLik}}
+
+                {{#hvisLik "foreldrepengerMor" value}}
+                    {{#block "contentForeldrepengerMor" }}{{/block}}
+                {{/hvisLik}}
+
+                {{#hvisLik "engangsstonadMor" value}}
+                    {{#block "contentEngangsstonadMor" }}{{/block}}
+                {{/hvisLik}}
+
                 {{#hvisLik "overforing" value}}
                     {{#block "contentOverforingFedrekvote" }}{{/block}}
                 {{/hvisLik}}
+
             {{/forFaktum}}
 
             <div class="brosjyre-signatur">
