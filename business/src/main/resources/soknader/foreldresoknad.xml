@@ -39,13 +39,13 @@
         <id>infofar.opplysninger.personinfo</id>
     </faktum>
     <faktum>
-        <id>infofar.aleneomsorg</id>
+        <id>rettigheter.omsorg</id>
     </faktum>
     <faktum>
         <id>infofar.aleneomsorg.fritekst</id>
     </faktum>
     <faktum>
-        <id>infofar.farrett</id>
+        <id>rettighet.harrett</id>
     </faktum>
     <faktum>
         <id>infofar.farrett.fritekst</id>
@@ -292,7 +292,7 @@
         <id>6</id>
         <faktum>rettigheter.overtak</faktum>
         <onValues>
-            <value>adpotererAlene</value>
+            <value>adoptererAlene</value>
         </onValues>
         <skjemaNummer>K1</skjemaNummer>
     </vedlegg>
