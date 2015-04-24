@@ -68,9 +68,30 @@
         <id>yrkesskade.soeknadsgrunn</id>
     </faktum>
 
-    <!-- Ung ufør-->
+    <!-- Ung ufør -->
     <faktum>
         <id>ungufor</id>
+    </faktum>
+
+    <!-- Samtalen -->
+    <!-- Alle utenom studenter -->
+    <faktum>
+        <id>samtalen.ikkestudent.samtalemedNAV</id>
+    </faktum>
+    <faktum>
+        <id>samtalen.ikkestudent.arbeidsmuligheter</id>
+    </faktum>
+    <faktum>
+        <id>samtalen.ikkestudent.arbeidsmuligheter.arbeidserfaring</id>
+    </faktum>
+    <faktum>
+        <id>samtalen.ikkestudent.arbeidsmuligheter.kunnskapogegenskaper</id>
+    </faktum>
+    <faktum>
+        <id>samtalen.ikkestudent.arbeidsmuligheter.helsesituasjon</id>
+    </faktum>
+    <faktum>
+        <id>samtalen.ikkestudent.arbeidsmuligheter.andreforhold</id>
     </faktum>
 
     <!-- Ekstra vedlegg -->
