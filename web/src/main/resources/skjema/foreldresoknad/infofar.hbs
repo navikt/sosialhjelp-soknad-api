@@ -5,11 +5,51 @@
         <td>
             <span>{{hentFaktumValue "infofar.opplysninger.fornavn"}} {{hentFaktumValue "infofar.opplysninger.etternavn"}},
                 {{#forFaktum "infofar.opplysninger.personinfo"}}
-                    {{#hvisLik "fodselsdato" properties.valg}}{{formatterLangDato properties.fodselsdato}}
-                    {{else}}{{properties.personnummer}}
-                    {{/hvisLik}}
+                    {{#hvisLik "fodselsdato" properties.valg}}{{formatterLangDato properties.fodselsdato}}{{/hvisLik}}
+                    {{#hvisLik "personnummer" properties.valg}}{{properties.personnummer}}{{/hvisLik}}
                 {{/forFaktum}}
             </span>
         </td>
     </tr>
+    <tr>
+        <td class="sjekket"></td>
+        <td>
+            {{#forFaktum "infofar.aleneomsorg"}}
+                {{#hvisLik "morFarBorSammen" value}}
+                    <span>{{hentTekst "infofar.aleneomsorg.alternativ.1"}}</span>{{/hvisLik}}
+                {{#hvisLik "aleneomsorgMor" value}}
+                    </span>{{hentTekst "infofar.aleneomsorg.alternativ.2"}}</span>
+                    <div>{{hentFaktumValue "infofar.aleneomsorg.fritekst"}}</div>
+                {{/hvisLik}}
+            {{/forFaktum}}
+        </td>
+    </tr>
+    {{#forFaktum "infofar.farrett"}}
+        {{#hvisIkkeTom value}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    {{#hvisLik "true" value}}<span>{{hentTekst "infofar.farrett.true"}}</span>{{/hvisLik}}
+                    {{#hvisLik "false" value}}
+                        </span>{{hentTekst "infofar.farrett.false"}}</span>
+                        <div>{{hentFaktumValue "infofar.farrett.fritekst"}}</div>
+                    {{/hvisLik}}
+                </td>
+            </tr>
+        {{/hvisIkkeTom}}
+    {{/forFaktum}}
+    {{#forFaktum "infofar.informert"}}
+        {{#hvisIkkeTom value}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    {{#hvisLik "true" value}}<span>{{hentTekst "infofar.informert.true"}}</span>{{/hvisLik}}
+                    {{#hvisLik "false" value}}
+                        </span>{{hentTekst "infofar.informert.false"}}</span>
+                        <div>{{hentFaktumValue "infofar.informert.fritekst"}}</div>
+                    {{/hvisLik}}
+                </td>
+            </tr>
+        {{/hvisIkkeTom}}
+    {{/forFaktum}}
 </table>
