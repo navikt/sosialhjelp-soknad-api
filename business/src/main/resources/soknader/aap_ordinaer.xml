@@ -1,21 +1,18 @@
 <soknad skjemaNummer="NAV 11-13.05" temaKode="AAP">
 
+    <!-- Fastlege -->
     <faktum>
         <id>fastlege.navn</id>
     </faktum>
-
     <faktum>
         <id>fastlege.tlfnr</id>
     </faktum>
-
     <faktum>
         <id>fastlege.harfastlege</id>
     </faktum>
-
     <faktum>
         <id>fastlege.annen.behandlende.navn</id>
     </faktum>
-
     <faktum>
         <id>fastlege.annen.behandlende.tlfnr</id>
     </faktum>
@@ -61,6 +58,26 @@
     <faktum>
         <id>utenlandsopphold.EOSLand.periode</id>
         <flereTillatt>true</flereTillatt>
+    </faktum>
+
+    <!-- Nåværende situasjon -->
+    <faktum>
+        <id>navaerendeSituasjon.iArbeid</id>
+    </faktum>
+    <faktum>
+        <id>navaerendeSituasjon.sykmeldt</id>
+    </faktum>
+    <faktum>
+        <id>navaerendeSituasjon.arbeidsledig</id>
+    </faktum>
+    <faktum>
+        <id>navaerendeSituasjon.student</id>
+    </faktum>
+    <faktum>
+        <id>navaerendeSituasjon.forstegangstjeneste</id>
+    </faktum>
+    <faktum>
+        <id>navaerendeSituasjon.annet</id>
     </faktum>
 
     <!-- Yrkesskade -->
