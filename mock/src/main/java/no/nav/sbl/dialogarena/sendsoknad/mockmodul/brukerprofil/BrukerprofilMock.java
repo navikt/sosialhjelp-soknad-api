@@ -87,8 +87,6 @@ public class BrukerprofilMock {
         } catch (HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning sikkerhetsbegrensning) {
             throw new RuntimeException(sikkerhetsbegrensning);
         }
-        //Mockito.doThrow(new RuntimeException()).when(mock).hentKontaktinformasjonOgPreferanser(any(XMLHentKontaktinformasjonOgPreferanserRequest.class));
-
         return mock;
     }
 
