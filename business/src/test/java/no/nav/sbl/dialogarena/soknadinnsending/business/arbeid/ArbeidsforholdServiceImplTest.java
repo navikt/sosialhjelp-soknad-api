@@ -1,0 +1,150 @@
+package no.nav.sbl.dialogarena.soknadinnsending.business.arbeid;
+
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.dto.Land;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
+import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.FinnArbeidsforholdPrArbeidstakerSikkerhetsbegrensning;
+import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.FinnArbeidsforholdPrArbeidstakerUgyldigInput;
+import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold;
+import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerRequest;
+import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerResponse;
+import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.OrganisasjonV4;
+import org.joda.time.DateTime;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@RunWith(MockitoJUnitRunner.class)
+public class ArbeidsforholdServiceImplTest {
+
+
+    @Mock
+    ArbeidsforholdV3 arbeidsforholdV3;
+    @Mock
+    private OrganisasjonV4 organisasjonV4;
+    @Mock
+    private FaktaService faktaService;
+    @Mock
+    private ArbeidsforholdTransformer transformer;
+
+    private long tom = new DateTime().getMillis();
+    private long fom = new DateTime().minusYears(1).getMillis();
+
+    @InjectMocks
+    private ArbeidsforholdService service = new ArbeidsforholdServiceImpl();
+
+    @Test
+    public void skalLagreSystemfakta() throws Exception {
+        Arbeidsforhold arbeidsforhold = setup(lagArbeidsforhold());
+        service.lagreArbeidsforhold("123", 11L);
+        Mockito.verify(arbeidsforholdV3).finnArbeidsforholdPrArbeidstaker(any(FinnArbeidsforholdPrArbeidstakerRequest.class));
+        verify(transformer).apply(arbeidsforhold);
+        verify(faktaService).lagreSystemFaktum(eq(11L), any(Faktum.class), eq("edagref"));
+    }
+
+    @Test
+    public void skalSetteAlleFaktumFelter() throws Exception {
+        no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.Arbeidsforhold result = lagArbeidsforhold();
+        setup(result);
+        service.lagreArbeidsforhold("123", 11L);
+        ArgumentCaptor<Faktum> argCaptor = ArgumentCaptor.forClass(Faktum.class);
+        verify(faktaService).lagreSystemFaktum(eq(11L), argCaptor.capture(), eq("edagref"));
+
+        Faktum faktum = argCaptor.getValue();
+
+        assertThat(faktum.finnEgenskap("orgnr").getValue(), equalTo("12345"));
+        assertThat(faktum.finnEgenskap("arbeidsgivernavn").getValue(), equalTo("test"));
+        assertThat(faktum.finnEgenskap("fom").getValue(), equalTo(fom + ""));
+        assertThat(faktum.finnEgenskap("tom").getValue(), equalTo(tom + ""));
+        assertThat(faktum.finnEgenskap("land").getValue(), equalTo("NO"));
+        assertThat(faktum.finnEgenskap("stillingstype").getValue(), equalTo("fast"));
+        assertThat(faktum.finnEgenskap("stillingsprosent").getValue(), equalTo("50"));
+        assertThat(faktum.finnEgenskap("kilde").getValue(), equalTo("EDAG"));
+        assertThat(faktum.finnEgenskap("edagref").getValue(), equalTo("123"));
+
+    }
+
+    @Test
+    public void skalSetteVariabel() throws Exception {
+        no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.Arbeidsforhold result = lagArbeidsforhold();
+        result.harFastStilling = false;
+        result.fastStillingsprosent = 0L;
+        result.variabelStillingsprosent = true;
+        setup(result);
+        service.lagreArbeidsforhold("123", 11L);
+        ArgumentCaptor<Faktum> argCaptor = ArgumentCaptor.forClass(Faktum.class);
+        verify(faktaService).lagreSystemFaktum(eq(11L), argCaptor.capture(), eq("edagref"));
+
+        Faktum faktum = argCaptor.getValue();
+
+        assertThat(faktum.finnEgenskap("stillingstype").getValue(), equalTo("variabel"));
+        assertThat(faktum.finnEgenskap("stillingsprosent").getValue(), equalTo("0"));
+    }
+
+    @Test
+    public void skalSetteMixed() throws Exception {
+        no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.Arbeidsforhold result = lagArbeidsforhold();
+        result.variabelStillingsprosent = true;
+        setup(result);
+        service.lagreArbeidsforhold("123", 11L);
+        ArgumentCaptor<Faktum> argCaptor = ArgumentCaptor.forClass(Faktum.class);
+        verify(faktaService).lagreSystemFaktum(eq(11L), argCaptor.capture(), eq("edagref"));
+
+        Faktum faktum = argCaptor.getValue();
+
+        assertThat(faktum.finnEgenskap("stillingstype").getValue(), equalTo("fastOgVariabel"));
+        assertThat(faktum.finnEgenskap("stillingsprosent").getValue(), equalTo("50"));
+    }
+
+    @Test
+    public void skalSettePagaende() throws Exception {
+        no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.Arbeidsforhold result = lagArbeidsforhold();
+        result.tom = null;
+        setup(result);
+        service.lagreArbeidsforhold("123", 11L);
+        ArgumentCaptor<Faktum> argCaptor = ArgumentCaptor.forClass(Faktum.class);
+        verify(faktaService).lagreSystemFaktum(eq(11L), argCaptor.capture(), eq("edagref"));
+
+        Faktum faktum = argCaptor.getValue();
+
+        assertThat(faktum.finnEgenskap("ansatt").getValue(), equalTo("true"));
+    }
+
+    private Arbeidsforhold setup(no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.Arbeidsforhold result) throws FinnArbeidsforholdPrArbeidstakerSikkerhetsbegrensning, FinnArbeidsforholdPrArbeidstakerUgyldigInput {
+        FinnArbeidsforholdPrArbeidstakerResponse t = new FinnArbeidsforholdPrArbeidstakerResponse();
+        Arbeidsforhold arbeidsforhold = new Arbeidsforhold();
+        t.getArbeidsforhold().add(arbeidsforhold);
+        when(arbeidsforholdV3.finnArbeidsforholdPrArbeidstaker(any(FinnArbeidsforholdPrArbeidstakerRequest.class))).thenReturn(t);
+        when(transformer.apply(any(Arbeidsforhold.class))).thenReturn(result);
+        return arbeidsforhold;
+    }
+
+    private no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.Arbeidsforhold lagArbeidsforhold() {
+        no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.Arbeidsforhold arbeidsforhold = new no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.Arbeidsforhold();
+        arbeidsforhold.orgnr = "12345";
+        arbeidsforhold.arbridsgiverNavn = "test";
+        arbeidsforhold.harFastStilling = true;
+        arbeidsforhold.variabelStillingsprosent = false;
+        arbeidsforhold.land = new Land("norge", "NO");
+        arbeidsforhold.fastStillingsprosent = 50L;
+        arbeidsforhold.edagId = 123L;
+        arbeidsforhold.fom = fom;
+        arbeidsforhold.tom = tom;
+
+
+        return arbeidsforhold;
+    }
+
+}
