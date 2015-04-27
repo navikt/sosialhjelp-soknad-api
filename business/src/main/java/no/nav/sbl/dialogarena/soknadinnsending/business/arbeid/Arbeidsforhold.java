@@ -1,10 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.arbeid;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.dto.Land;
-import org.joda.time.Interval;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Arbeidsforhold {
     public String orgnr;
@@ -12,11 +8,8 @@ public class Arbeidsforhold {
     public Land land;
     public Long fom;
     public Long tom;
-    public List<Utenlandsopphold> utenlandsopphold = new ArrayList<>();
-    static class Utenlandsopphold{
-        public Long fom;
-        public Long tom;
-        public String land;
-    }
-
+    public Long edagId;
+    public Long fastStillingsprosent = 0L;
+    public boolean variabelStillingsprosent;
+    public boolean harFastStilling;
 }
