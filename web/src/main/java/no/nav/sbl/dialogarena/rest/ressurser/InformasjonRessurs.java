@@ -112,8 +112,9 @@ public class InformasjonRessurs {
         return soknadStruktur;
     }
     @GET
-    @Path("/arbeidsforhold/{fnr}")
-    public List<Arbeidsforhold> arbforhold(@PathParam("fnr")String fnr){
+    @Path("/arbeidsforhold/{soknadId}/{fnr}")
+    public List<Arbeidsforhold> arbforhold(@PathParam("soknadId") Long soknadId, @PathParam("fnr")String fnr){
+        arbeidsforholdService.lagreArbeidsforhold(fnr, soknadId);
         return arbeidsforholdService.hentArbeidsforhold(fnr);
     }
 
