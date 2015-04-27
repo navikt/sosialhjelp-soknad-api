@@ -24,6 +24,7 @@ public class WebSoknadConfig {
 
     private static final String BOLK_PERSONALIA = "Personalia";
     private static final String BOLK_BARN = "Barn";
+    private static final String BOLK_ARBEIDSFORHOLD = "Arbeidsforhold";
 
     public static final Map<String, String> SKJEMANAVN = new HashMap<String, String>() {{
         put("NAV 04-01.03", DAGPENGER_ORDINAER);
@@ -72,7 +73,7 @@ public class WebSoknadConfig {
        put(DAGPENGER_ORDINAER, Arrays.asList( BOLK_PERSONALIA, BOLK_BARN));
        put(DAGPENGER_GJENOPPTAK, Arrays.asList(BOLK_PERSONALIA, BOLK_BARN));
        put(AAP, Arrays.asList(BOLK_PERSONALIA, BOLK_BARN));
-       put(FORELDREPENGER, Arrays.asList(BOLK_PERSONALIA, BOLK_BARN));
+       put(FORELDREPENGER, Arrays.asList(BOLK_PERSONALIA, BOLK_BARN, BOLK_ARBEIDSFORHOLD));
     }};
 
     public WebSoknadConfig(SoknadRepository repository) { //må ta inn behandlingsid eller søknad for å hente rett skjemanummer?
