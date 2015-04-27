@@ -277,8 +277,11 @@ public class AdresseTransform {
         stringBuilder.append(' ');
         stringBuilder.append(kodeverk.getPoststed(getPostnummerString(xmlPostboksAdresse)));
         stringBuilder.append(", ");
-        stringBuilder.append(xmlPostboksAdresse.getPostboksanlegg());
-        stringBuilder.append(' ');
+        String postboksanlegg = xmlPostboksAdresse.getPostboksanlegg();
+        if (postboksanlegg != null && !postboksanlegg.isEmpty()) {
+            stringBuilder.append(postboksanlegg);
+            stringBuilder.append(' ');
+        }
         stringBuilder.append(xmlPostboksAdresse.getPostboksnummer());
         adresse.setAdresse(stringBuilder.toString());
 
