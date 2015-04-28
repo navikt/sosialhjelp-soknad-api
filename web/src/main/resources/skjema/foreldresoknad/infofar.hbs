@@ -14,17 +14,17 @@
     <tr>
         <td class="sjekket"></td>
         <td>
-            {{#forFaktum "infofar.aleneomsorg"}}
-                {{#hvisLik "morFarBorSammen" value}}
+            {{#forFaktum "rettigheter.omsorg"}}
+                {{#hvisLik "morfarborsammen" value}}
                     <span>{{hentTekst "infofar.aleneomsorg.alternativ.1"}}</span>{{/hvisLik}}
-                {{#hvisLik "aleneomsorgMor" value}}
+                {{#hvisLik "aleneomsorg" value}}
                     <span>{{hentTekst "infofar.aleneomsorg.alternativ.2"}}</span>
                     <div>{{hentFaktumValue "infofar.aleneomsorg.fritekst"}}</div>
                 {{/hvisLik}}
             {{/forFaktum}}
         </td>
     </tr>
-    {{#forFaktum "infofar.farrett"}}
+    {{#forFaktum "rettighet.harrett"}}
         {{#hvisIkkeTom value}}
             <tr>
                 <td class="sjekket"></td>
