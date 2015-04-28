@@ -90,6 +90,12 @@
         <id>navaerendeSituasjon.student.avbruttStudie</id>
     </faktum>
     <faktum>
+        <id>navaerendeSituasjon.student.avbruttStudie.vilFortsette</id>
+    </faktum>
+    <faktum>
+        <id>navaerendeSituasjon.student.avbruttStudie.vilFortsette.mottarSykestipend</id>
+    </faktum>
+    <faktum>
         <id>navaerendeSituasjon.forstegangstjeneste</id>
     </faktum>
     <faktum>
