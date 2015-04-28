@@ -37,8 +37,10 @@ public class ContentConfig {
 
 
     private static final String DEFAULT_LOCALE = "nb";
-    private static final String INNHOLDSTEKSTER_NB_NO_REMOTE = "/app/sendsoknad/nb_NO/tekster";
-    private static final String INNHOLDSTEKSTER_NB_NO_LOCAL = "content.sendsoknad";
+    private static final String SENDSOKNAD_NB_NO_REMOTE = "/app/sendsoknad/nb_NO/tekster";
+    private static final String SENDSOKNAD_NB_NO_LOCAL = "content.sendsoknad";
+    private static final String DAGPENGER_NB_NO_REMOTE = "/app/dagpenger/nb_NO/tekster";
+    private static final String DAGPENGER_NB_NO_LOCAL = "content.dagpenger";
     private static final String FORELDRESOKNAD_NB_NO_REMOTE = "/app/foreldrepenger/nb_NO/tekster";
     private static final String FORELDRESOKNAD_NB_NO_LOCAL = "content.foreldrepenger";
     private static final String AAP_NB_NO_REMOTE = "/app/AAP/nb_NO/tekster";
@@ -52,12 +54,13 @@ public class ContentConfig {
         Map<String, List<URI>> uris = new HashMap<>();
         uris.put(DEFAULT_LOCALE,
                 asList(
-                        new URI(cmsBaseUrl + INNHOLDSTEKSTER_NB_NO_REMOTE),
+                        new URI(cmsBaseUrl + SENDSOKNAD_NB_NO_REMOTE),
+                        new URI(cmsBaseUrl + DAGPENGER_NB_NO_REMOTE),
                         new URI(cmsBaseUrl + FORELDRESOKNAD_NB_NO_REMOTE),
                         new URI(cmsBaseUrl + AAP_NB_NO_REMOTE)
                 ));
         return new ValuesFromContentWithResourceBundleFallback(
-                asList(INNHOLDSTEKSTER_NB_NO_LOCAL, FORELDRESOKNAD_NB_NO_LOCAL, AAP_NB_NO_LOCAL),
+                asList(SENDSOKNAD_NB_NO_LOCAL, DAGPENGER_NB_NO_LOCAL, FORELDRESOKNAD_NB_NO_LOCAL, AAP_NB_NO_LOCAL),
                 enonicContentRetriever(),
                 uris,
                 DEFAULT_LOCALE);
@@ -69,9 +72,11 @@ public class ContentConfig {
         NavMessageSource messageSource = new NavMessageSource();
         messageSource.setBasenames(
                 new File(brukerprofilDataDirectory, "enonic/sendsoknad").toURI().toString(),
+                new File(brukerprofilDataDirectory, "enonic/dagpenger").toURI().toString(),
                 new File(brukerprofilDataDirectory, "enonic/foreldrepenger").toURI().toString(),
                 new File(brukerprofilDataDirectory, "enonic/aap_innholdstekster").toURI().toString(),
                 "classpath:content/sendsoknad",
+                "classpath:content/dagpenger",
                 "classpath:content/foreldrepenger",
                 "classpath:content/aap_innholdstekster");
 
@@ -88,7 +93,8 @@ public class ContentConfig {
         logger.debug("Leser inn innholdstekster fra enonic");
         clearContentCache();
         try {
-            saveLocal("enonic/sendsoknad_nb_NO.properties", new URI(cmsBaseUrl + INNHOLDSTEKSTER_NB_NO_REMOTE));
+            saveLocal("enonic/sendsoknad_nb_NO.properties", new URI(cmsBaseUrl + SENDSOKNAD_NB_NO_REMOTE));
+            saveLocal("enonic/dagpenger_nb_NO.properties", new URI(cmsBaseUrl + DAGPENGER_NB_NO_REMOTE));
             saveLocal("enonic/foreldrepenger_nb_NO.properties", new URI(cmsBaseUrl + FORELDRESOKNAD_NB_NO_REMOTE));
             saveLocal("enonic/aap_innholdstekster_nb_NO.properties", new URI(cmsBaseUrl + AAP_NB_NO_REMOTE));
         } catch (Exception e) {
