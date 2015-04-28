@@ -35,7 +35,7 @@ public class ArbeidsforholdServiceImpl implements ArbeidsforholdService, BolkSer
     private FaktaService faktaService;
     private ArbeidsforholdTransformer transformer;
     private DatatypeFactory datatypeFactory = lagDatatypeFactory();
-    private final Regelverker AA_ORDNINGEN = new Regelverker();
+    private static final Regelverker AA_ORDNINGEN = new Regelverker();
     {
         AA_ORDNINGEN.setValue("A_ORDNINGEN");
     }
