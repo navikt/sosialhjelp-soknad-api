@@ -72,6 +72,12 @@
         <id>navaerendeSituasjon.iArbeid</id>
     </faktum>
     <faktum>
+        <id>navaerendeSituasjon.iArbeid.ansatt</id>
+    </faktum>
+    <faktum>
+        <id>navaerendeSituasjon.iArbeid.selvstendigNaeringsdrivende</id>
+    </faktum>
+    <faktum>
         <id>navaerendeSituasjon.sykmeldt</id>
     </faktum>
     <faktum>
@@ -81,10 +87,16 @@
         <id>navaerendeSituasjon.student</id>
     </faktum>
     <faktum>
+        <id>navaerendeSituasjon.student.avbruttStudie</id>
+    </faktum>
+    <faktum>
         <id>navaerendeSituasjon.forstegangstjeneste</id>
     </faktum>
     <faktum>
         <id>navaerendeSituasjon.annet</id>
+    </faktum>
+    <faktum>
+        <id>navaerendeSituasjon.annet.fritekst</id>
     </faktum>
 
     <!-- Yrkesskade -->
