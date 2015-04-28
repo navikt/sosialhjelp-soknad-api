@@ -17,6 +17,13 @@
         <id>fastlege.annen.behandlende.tlfnr</id>
     </faktum>
 
+    <!-- Barnetillegg -->
+    <faktum>
+        <id>barn</id>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+
     <!-- Systemfakta -->
     <faktum>
         <id>personalia</id>
