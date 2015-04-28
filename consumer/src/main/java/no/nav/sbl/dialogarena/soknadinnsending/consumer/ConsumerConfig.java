@@ -242,7 +242,7 @@ public class ConsumerConfig {
 
         public static final String ARBEID_KEY = "start.arbeid.withmock";
 
-        @Value("${soknad.webservice.arbeid.organisasjon}")
+        @Value("${soknad.webservice.arbeid.organisasjon.url}")
         private String organisasjonEndpoint;
 
         private ServiceBuilder<OrganisasjonV4>.PortTypeBuilder<OrganisasjonV4> factory() {
