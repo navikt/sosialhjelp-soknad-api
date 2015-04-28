@@ -85,7 +85,18 @@ public class InformasjonRessurs {
     @GET
     @Path("/tekster")
     public Properties hentTekster(@QueryParam("type") String type, @QueryParam("sprak") String sprak) {
-        return messageSource.getBundleFor(type, new Locale("nb", "NO"));
+        if (sprak == null || sprak.trim().isEmpty()) {
+            sprak = "nb_NO";
+        }
+
+        if (!sprak.matches("[a-z][a-z]_[A-Z][A-Z]")) {
+            throw new IllegalArgumentException("Språk må matche xx_XX: " + sprak);
+        }
+
+        String[] split = sprak.split("_");
+        Locale locale = new Locale(split[0], split[1]);
+
+        return messageSource.getBundleFor(type, locale);
     }
 
     @GET
