@@ -11,45 +11,52 @@
             </span>
         </td>
     </tr>
+
+    {{#forFaktum "rettigheter.omsorg"}}
     <tr>
         <td class="sjekket"></td>
-        <td>
-            {{#forFaktum "rettigheter.omsorg"}}
-                {{#hvisLik "morfarborsammen" value}}
-                    <span>{{hentTekst "infofar.aleneomsorg.alternativ.1"}}</span>{{/hvisLik}}
-                {{#hvisLik "aleneomsorg" value}}
-                    <span>{{hentTekst "infofar.aleneomsorg.alternativ.2"}}</span>
-                    <div>{{hentFaktumValue "infofar.aleneomsorg.fritekst"}}</div>
-                {{/hvisLik}}
-            {{/forFaktum}}
-        </td>
+    <td>{{#hvisLik "aleneomsorg" value}}
+        <span>{{hentTekst "infofar.aleneomsorg.alternativ.2"}}</span>
+
+        <div>{{hentFaktumValue "infofar.aleneomsorg.fritekst"}}</div>
+    </td>
     </tr>
-    {{#forFaktum "rettighet.harrett"}}
-        {{#hvisIkkeTom value}}
-            <tr>
-                <td class="sjekket"></td>
-                <td>
-                    {{#hvisLik "true" value}}<span>{{hentTekst "infofar.farrett.true"}}</span>{{/hvisLik}}
-                    {{#hvisLik "false" value}}
-                        <span>{{hentTekst "infofar.farrett.false"}}</span>
-                        <div>{{hentFaktumValue "infofar.farrett.fritekst"}}</div>
-                    {{/hvisLik}}
-                </td>
+    {{/hvisLik}}
+
+        {{#hvisLik "morfarborsammen" value}}
+            <span>{{hentTekst "infofar.aleneomsorg.alternativ.1"}}</span>
+            </td>
             </tr>
-        {{/hvisIkkeTom}}
-    {{/forFaktum}}
-    {{#forFaktum "infofar.informert"}}
-        {{#hvisIkkeTom value}}
-            <tr>
-                <td class="sjekket"></td>
-                <td>
-                    {{#hvisLik "true" value}}<span>{{hentTekst "infofar.informert.true"}}</span>{{/hvisLik}}
-                    {{#hvisLik "false" value}}
-                        <span>{{hentTekst "infofar.informert.false"}}</span>
-                        <div>{{hentFaktumValue "infofar.informert.fritekst"}}</div>
-                    {{/hvisLik}}
-                </td>
-            </tr>
-        {{/hvisIkkeTom}}
+            {{#forFaktum "rettighet.harrett"}}
+                {{#hvisIkkeTom value}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>
+                            {{#hvisLik "true" value}}<span>{{hentTekst "infofar.farrett.true"}}</span>{{/hvisLik}}
+                            {{#hvisLik "false" value}}
+                                <span>{{hentTekst "infofar.farrett.false"}}</span>
+
+                                <div>{{hentFaktumValue "infofar.farrett.fritekst"}}</div>
+                            {{/hvisLik}}
+                        </td>
+                    </tr>
+                {{/hvisIkkeTom}}
+            {{/forFaktum}}
+            {{#forFaktum "infofar.informert"}}
+                {{#hvisIkkeTom value}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>
+                            {{#hvisLik "true" value}}<span>{{hentTekst "infofar.informert.true"}}</span>{{/hvisLik}}
+                            {{#hvisLik "false" value}}
+                                <span>{{hentTekst "infofar.informert.false"}}</span>
+
+                                <div>{{hentFaktumValue "infofar.informert.fritekst"}}</div>
+                            {{/hvisLik}}
+                        </td>
+                    </tr>
+                {{/hvisIkkeTom}}
+            {{/forFaktum}}
+        {{/hvisLik}}
     {{/forFaktum}}
 </table>
