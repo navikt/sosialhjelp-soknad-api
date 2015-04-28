@@ -6,11 +6,11 @@
     <parent>
         <groupId>no.nav.sbl.dialogarena</groupId>
         <artifactId>sendsoknad</artifactId>
-        <version>5.6-SNAPSHOT</version>
+        <version>5.7-SNAPSHOT</version>
     </parent>
 
     <artifactId>sendsoknad-mock</artifactId>
-    <version>5.6-SNAPSHOT</version>
+    <version>5.7-SNAPSHOT</version>
     <name>${project.artifactId}</name>
 
     <dependencies>
@@ -33,6 +33,16 @@
         <dependency>
             <groupId>no.nav.tjenester.fim</groupId>
             <artifactId>nav-fim-person-v1-tjenestespesifikasjon</artifactId>
+            <classifier>jaxws</classifier>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.tjenester.fim</groupId>
+            <artifactId>nav-arbeidsforhold-v3-tjenestespesifikasjon</artifactId>
+            <classifier>jaxws</classifier>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.tjenester.fim</groupId>
+            <artifactId>nav-fim-organisasjon-v4-tjenestespesifikasjon</artifactId>
             <classifier>jaxws</classifier>
         </dependency>
 

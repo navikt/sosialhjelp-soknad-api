@@ -21,7 +21,7 @@
     <description>Innsending av elektronisk søknad.</description>
     <groupId>no.nav.sbl.dialogarena</groupId>
     <artifactId>sendsoknad</artifactId>
-    <version>5.6-SNAPSHOT</version>
+    <version>5.7-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -196,7 +196,24 @@
                 <version>1.0.4</version>
                 <classifier>jaxws</classifier>
             </dependency>
-
+            <dependency>
+                <groupId>no.nav.tjenester.fim</groupId>
+                <artifactId>nav-fim-arbeidsforhold-v2-tjenestespesifikasjon</artifactId>
+                <version>2.0.0</version>
+                <classifier>jaxws</classifier>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.tjenester.fim</groupId>
+                <artifactId>nav-arbeidsforhold-v3-tjenestespesifikasjon</artifactId>
+                <version>1.1.1</version>
+                <classifier>jaxws</classifier>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.tjenester.fim</groupId>
+                <artifactId>nav-fim-organisasjon-v4-tjenestespesifikasjon</artifactId>
+                <version>1.0.0</version>
+                <classifier>jaxws</classifier>
+            </dependency>
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>kodeverk-tjenestespesifikasjon</artifactId>
@@ -741,20 +758,29 @@
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <!-- for å synke innhold mot Enonic kjør: mvn modig-content:sync -Denonic.username=XXX -Denonic.password=XXX -Denonic.url=http://<ip-adresse til admin-node>:8080 Se "Enonic Miljøer" på Confluence for IP-adresser -->
                     <groupId>no.nav.modig</groupId>
                     <artifactId>modig-content-maven-plugin</artifactId>
-                    <version>1.1.1</version>
+                    <version>2.0.0</version>
                     <configuration>
                         <propertiesFilesRoot>${project.basedir}/web/src/main/resources/content</propertiesFilesRoot>
                         <propertiesFiler>
-                            <dpnb>innholdstekster_nb.properties</dpnb>
                             <aapnb>aap_innholdstekster.properties</aapnb>
-                            <fpnb>foreldresoknad_innholdstekster.properties</fpnb>
+                            <ssnb>sendsoknad_nb_NO.properties</ssnb>
+                            <ssen>sendsoknad_en_GB.properties</ssen>
+                            <dpnb>dagpenger_nb_NO.properties</dpnb>
+                            <dpen>dagpenger_en_GB.properties</dpen>
+                            <fpnb>foreldrepenger_nb_NO.properties</fpnb>
+                            <fpen>foreldrepenger_en_GB.properties</fpen>
                         </propertiesFiler>
                         <menyPunktPaths>
-                            <dpnb>/site/18/app/sendsoknad/bm/tekster</dpnb>
                             <aapnb>/site/18/app/AAP/nb_NO/tekster</aapnb>
+                            <ssnb>/site/18/app/sendsoknad/nb_NO/tekster</ssnb>
+                            <ssen>/site/18/app/sendsoknad/en_GB/tekster</ssen>
+                            <dpnb>/site/18/app/dagpenger/nb_NO/tekster</dpnb>
+                            <dpen>/site/18/app/dagpenger/en_GB/tekster</dpen>
                             <fpnb>/site/18/app/foreldrepenger/nb_NO/tekster</fpnb>
+                            <fpen>/site/18/app/foreldrepenger/en_GB/tekster</fpen>
                         </menyPunktPaths>
                     </configuration>
                 </plugin>
