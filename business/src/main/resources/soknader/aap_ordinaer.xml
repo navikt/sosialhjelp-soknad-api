@@ -131,7 +131,10 @@
     </faktum>
 
     <!-- Samtalen -->
-    <!-- Studenter som ikke skal tilbake til studiet-->
+    <!-- Studenter-->
+    <faktum>
+        <id>samtalen.student.tilbaketilstudiet.samtalemedNAV</id>
+    </faktum>
     <faktum>
         <id>samtalen.student.ikketilbaketilstudiet.samtalemedNAV</id>
     </faktum>
