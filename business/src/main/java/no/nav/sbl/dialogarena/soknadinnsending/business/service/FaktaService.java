@@ -254,4 +254,8 @@ public class FaktaService {
         }
         return verdiManErAvhengigAv == null ? "false"  : verdiManErAvhengigAv;
     }
+
+    public Faktum hentFaktumMedKey(Long soknadId, String key) {
+        return repository.hentFaktumMedKey(soknadId, key);
+    }
 }

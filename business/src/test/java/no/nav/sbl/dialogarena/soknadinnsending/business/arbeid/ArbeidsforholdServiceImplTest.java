@@ -43,7 +43,7 @@ public class ArbeidsforholdServiceImplTest {
     private long fom = new DateTime().minusYears(1).getMillis();
 
     @InjectMocks
-    private ArbeidsforholdService service = new ArbeidsforholdServiceImpl();
+    private ArbeidsforholdService service = new DefaultArbeidsforholdService();
 
     @Test
     public void skalLagreSystemfakta() throws Exception {
