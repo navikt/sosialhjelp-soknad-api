@@ -7,14 +7,21 @@
                 <span>
                     {{#forFaktum "soknadsvalg.fodselelleradopsjon"}}
                         {{#hvisLik value "fodsel"}}
+
                             {{#forFaktum "veiledning.mor.terminbekreftelse"}}
                                 {{#hvisLik value "fodt"}}
                                     {{hentTekst "oppsummering.barnet.fodselsdato"}}
                                 {{else}}
                                     {{hentTekst "oppsummering.barnet.termindato"}}
                                 {{/hvisLik}}
-
                             {{/forFaktum}}
+
+                            {{#forFaktum "soknadsvalg.stonadstype"}}
+                                {{#hvisLik value "foreldrepengerFar"}}
+                                    {{hentTekst "oppsummering.barnet.fodselsdato"}}
+                                {{/hvisLik}}
+                            {{/forFaktum}}
+
                         {{/hvisLik}}
                         {{#hvisLik value "adopsjon"}}
                             {{hentTekst "oppsummering.barnet.overtagelsesdato"}}
