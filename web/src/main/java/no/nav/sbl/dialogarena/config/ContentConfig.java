@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.config;
 
-import no.nav.modig.content.*;
+import no.nav.modig.content.Content;
+import no.nav.modig.content.ContentRetriever;
 import no.nav.modig.content.enonic.HttpContentRetriever;
 import no.nav.modig.content.enonic.innholdstekst.Innholdstekst;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
@@ -18,69 +19,38 @@ import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import static java.util.Arrays.asList;
 
 @Configuration
 public class ContentConfig {
 
     @Value("${dialogarena.cms.url}")
     private String cmsBaseUrl;
+
     @Value("${sendsoknad.datadir}")
     private File brukerprofilDataDirectory;
+
     @Inject
     private CacheManager cacheManager;
 
-
-    private static final String DEFAULT_LOCALE = "nb";
-    private static final String SENDSOKNAD_NB_NO_REMOTE = "/app/sendsoknad/nb_NO/tekster";
-    private static final String SENDSOKNAD_NB_NO_LOCAL = "content.sendsoknad";
-    private static final String DAGPENGER_NB_NO_REMOTE = "/app/dagpenger/nb_NO/tekster";
-    private static final String DAGPENGER_NB_NO_LOCAL = "content.dagpenger";
-    private static final String FORELDRESOKNAD_NB_NO_REMOTE = "/app/foreldrepenger/nb_NO/tekster";
-    private static final String FORELDRESOKNAD_NB_NO_LOCAL = "content.foreldrepenger";
-    private static final String AAP_NB_NO_REMOTE = "/app/AAP/nb_NO/tekster";
-    private static final String AAP_NB_NO_LOCAL = "content.aap_innholdstekster";
-    
     protected final Logger logger = LoggerFactory.getLogger(getClass());
-
-
-    @Bean
-    public ValueRetriever siteContentRetriever() throws URISyntaxException {
-        Map<String, List<URI>> uris = new HashMap<>();
-        uris.put(DEFAULT_LOCALE,
-                asList(
-                        new URI(cmsBaseUrl + SENDSOKNAD_NB_NO_REMOTE),
-                        new URI(cmsBaseUrl + DAGPENGER_NB_NO_REMOTE),
-                        new URI(cmsBaseUrl + FORELDRESOKNAD_NB_NO_REMOTE),
-                        new URI(cmsBaseUrl + AAP_NB_NO_REMOTE)
-                ));
-        return new ValuesFromContentWithResourceBundleFallback(
-                asList(SENDSOKNAD_NB_NO_LOCAL, DAGPENGER_NB_NO_LOCAL, FORELDRESOKNAD_NB_NO_LOCAL, AAP_NB_NO_LOCAL),
-                enonicContentRetriever(),
-                uris,
-                DEFAULT_LOCALE);
-    }
 
     @Bean
     public NavMessageSource navMessageSource() {
         //Vi lager en reloadablemessagesource som henter både fra lokal disk og fra classpath. Se lastInnNyeInnholdstekster for å se koden som skriver de filene som hentes fra enonic.
         NavMessageSource messageSource = new NavMessageSource();
+
+        String brukerprofilDataDirectoryString = brukerprofilDataDirectory.toURI().toString();
+
         messageSource.setBasenames(
-                new File(brukerprofilDataDirectory, "enonic/sendsoknad").toURI().toString(),
-                new File(brukerprofilDataDirectory, "enonic/dagpenger").toURI().toString(),
-                new File(brukerprofilDataDirectory, "enonic/foreldrepenger").toURI().toString(),
-                new File(brukerprofilDataDirectory, "enonic/aap_innholdstekster").toURI().toString(),
-                "classpath:content/sendsoknad",
-                "classpath:content/dagpenger",
-                "classpath:content/foreldrepenger",
-                "classpath:content/aap_innholdstekster");
+                new NavMessageSource.Bundle("sendsoknad", brukerprofilDataDirectoryString + "enonic/sendsoknad", "classpath:content/sendsoknad"),
+                new NavMessageSource.Bundle("dagpenger", brukerprofilDataDirectoryString + "enonic/dagpenger", "classpath:content/dagpenger"),
+                new NavMessageSource.Bundle("foreldrepenger", brukerprofilDataDirectoryString + "enonic/foreldrepenger", "classpath:content/foreldrepenger"),
+                new NavMessageSource.Bundle("aap_innholdstekster", brukerprofilDataDirectoryString + "enonic/aap_innholdstekster", "classpath:content/aap_innholdstekster")
+        );
 
         messageSource.setDefaultEncoding("UTF-8");
+
         //Sjekk for nye filer en gang hvert 30. minutt.
         messageSource.setCacheSeconds(60 * 30);
         messageSource.setPropertiesPersister(new StripPTagsPropertyPersister());
@@ -93,10 +63,13 @@ public class ContentConfig {
         logger.debug("Leser inn innholdstekster fra enonic");
         clearContentCache();
         try {
-            saveLocal("enonic/sendsoknad_nb_NO.properties", new URI(cmsBaseUrl + SENDSOKNAD_NB_NO_REMOTE));
-            saveLocal("enonic/dagpenger_nb_NO.properties", new URI(cmsBaseUrl + DAGPENGER_NB_NO_REMOTE));
-            saveLocal("enonic/foreldrepenger_nb_NO.properties", new URI(cmsBaseUrl + FORELDRESOKNAD_NB_NO_REMOTE));
-            saveLocal("enonic/aap_innholdstekster_nb_NO.properties", new URI(cmsBaseUrl + AAP_NB_NO_REMOTE));
+            saveLocal("enonic/sendsoknad_nb_NO.properties", new URI(cmsBaseUrl + "/app/sendsoknad/nb_NO/tekster"));
+            saveLocal("enonic/sendsoknad_en_GB.properties", new URI(cmsBaseUrl + "/app/sendsoknad/en_GB/tekster"));
+            saveLocal("enonic/dagpenger_nb_NO.properties", new URI(cmsBaseUrl + "/app/dagpenger/nb_NO/tekster"));
+            saveLocal("enonic/dagpenger_en_GB.properties", new URI(cmsBaseUrl + "/app/dagpenger/en_GB/tekster"));
+            saveLocal("enonic/foreldrepenger_nb_NO.properties", new URI(cmsBaseUrl + "/app/foreldrepenger/nb_NO/tekster"));
+            saveLocal("enonic/foreldrepenger_en_GB.properties", new URI(cmsBaseUrl + "/app/foreldrepenger/en_GB/tekster"));
+            saveLocal("enonic/aap_innholdstekster_nb_NO.properties", new URI(cmsBaseUrl + "/app/AAP/nb_NO/tekster"));
         } catch (Exception e) {
             logger.warn("Feilet under henting av enonic innholdstekster: " + e, e);
         }
@@ -151,14 +124,5 @@ public class ContentConfig {
         HttpContentRetriever httpContentRetriever = new HttpContentRetriever();
         httpContentRetriever.http.setTimeout(20 * 1000);
         return httpContentRetriever;
-    }
-
-    @Bean
-    public CmsContentRetriever cmsContentRetriever() throws URISyntaxException {
-        CmsContentRetriever cmsContentRetriever = new CmsContentRetriever();
-        cmsContentRetriever.setDefaultLocale(DEFAULT_LOCALE);
-        cmsContentRetriever.setTeksterRetriever(siteContentRetriever());
-        cmsContentRetriever.setArtikkelRetriever(siteContentRetriever());
-        return cmsContentRetriever;
     }
 }
