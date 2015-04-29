@@ -1,2 +1,17 @@
-<hr/>
-<p>Kvittering: overforingfedrekvote</p>
+<h2> {{hentTekst "overforingfedrekvote.tittel"}}</h2>
+<table>
+    {{#forFaktum "fedrekvote"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>
+                    {{#hvisLik value "sykdom"}}{{hentTekst "fedrekvote.valg.sykdom"}}{{/hvisLik}}
+                    {{#hvisLik value "aleneomsorg"}}{{hentTekst "fedrekvote.valg.aleneomsorg"}}{{/hvisLik}}
+                    {{#hvisLik value "helseinstitusjon"}}{{hentTekst "fedrekvote.valg.helseinstitusjon"}}{{/hvisLik}}
+                    {{#hvisLik value "ikkerett"}}{{hentTekst "fedrekvote.valg.ikkerett"}}{{/hvisLik}}
+                    {{#hvisLik value "ingen"}}{{hentTekst "fedrekvote.valg.ingen"}}{{/hvisLik}}
+                </span>
+            </td>
+        </tr>
+    {{/forFaktum}}
+</table>

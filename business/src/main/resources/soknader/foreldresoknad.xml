@@ -110,6 +110,15 @@
         <id>egennaering.arbeidegennaering</id>
     </faktum>
 
+    <faktum>
+        <id>naeringsvirksomhet</id>
+        <dependOn>egennaering.arbeidegennaering</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
     <!-- Andre ytelser -->
     <faktum>
         <id>ytelser.ingenYtelse</id>
@@ -286,6 +295,20 @@
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
+
+    <!-- Vedlegg Egen Næring -->
+
+    <vedlegg>
+        <id>7</id>
+        <faktum>naeringsvirksomhet</faktum>
+        <skjemaNummer>T7</skjemaNummer>
+        <property>navn</property>
+        <onProperty>reinskapsforer</onProperty>
+        <onValues>
+            <value>false</value>
+        </onValues>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 
     <!-- Vedlegg rettigheter -->
     <vedlegg>

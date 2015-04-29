@@ -17,6 +17,13 @@
         <id>fastlege.annen.behandlende.tlfnr</id>
     </faktum>
 
+    <!-- Barnetillegg -->
+    <faktum>
+        <id>barn</id>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+
     <!-- Systemfakta -->
     <faktum>
         <id>personalia</id>
@@ -65,6 +72,12 @@
         <id>navaerendeSituasjon.iArbeid</id>
     </faktum>
     <faktum>
+        <id>navaerendeSituasjon.iArbeid.ansatt</id>
+    </faktum>
+    <faktum>
+        <id>navaerendeSituasjon.iArbeid.selvstendigNaeringsdrivende</id>
+    </faktum>
+    <faktum>
         <id>navaerendeSituasjon.sykmeldt</id>
     </faktum>
     <faktum>
@@ -74,10 +87,22 @@
         <id>navaerendeSituasjon.student</id>
     </faktum>
     <faktum>
+        <id>navaerendeSituasjon.student.avbruttStudie</id>
+    </faktum>
+    <faktum>
+        <id>navaerendeSituasjon.student.avbruttStudie.vilFortsette</id>
+    </faktum>
+    <faktum>
+        <id>navaerendeSituasjon.student.avbruttStudie.vilFortsette.mottarSykestipend</id>
+    </faktum>
+    <faktum>
         <id>navaerendeSituasjon.forstegangstjeneste</id>
     </faktum>
     <faktum>
         <id>navaerendeSituasjon.annet</id>
+    </faktum>
+    <faktum>
+        <id>navaerendeSituasjon.annet.fritekst</id>
     </faktum>
 
     <!-- Yrkesskade -->
@@ -99,16 +124,37 @@
         <id>samtalen.ikkestudent.arbeidsmuligheter</id>
     </faktum>
     <faktum>
-        <id>samtalen.ikkestudent.arbeidsmuligheter.arbeidserfaring</id>
+        <id>samtalen.ikkestudent.arbeidserfaring</id>
     </faktum>
     <faktum>
-        <id>samtalen.ikkestudent.arbeidsmuligheter.kunnskapogegenskaper</id>
+        <id>samtalen.ikkestudent.kunnskapogegenskaper</id>
     </faktum>
     <faktum>
-        <id>samtalen.ikkestudent.arbeidsmuligheter.helsesituasjon</id>
+        <id>samtalen.ikkestudent.helsesituasjon</id>
     </faktum>
     <faktum>
-        <id>samtalen.ikkestudent.arbeidsmuligheter.andreforhold</id>
+        <id>samtalen.ikkestudent.andreforhold</id>
+    </faktum>
+
+    <!-- Samtalen -->
+    <!-- Studenter-->
+    <faktum>
+        <id>samtalen.student.tilbaketilstudiet.samtalemedNAV</id>
+    </faktum>
+    <faktum>
+        <id>samtalen.student.ikketilbaketilstudiet.samtalemedNAV</id>
+    </faktum>
+    <faktum>
+        <id>samtalen.student.arbeidserfaring</id>
+    </faktum>
+    <faktum>
+        <id>samtalen.student.kunnskapogegenskaper</id>
+    </faktum>
+    <faktum>
+        <id>samtalen.student.helsesituasjon</id>
+    </faktum>
+    <faktum>
+        <id>samtalen.student.andreforhold</id>
     </faktum>
 
     <!-- Ekstra vedlegg -->

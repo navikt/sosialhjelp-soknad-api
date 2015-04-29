@@ -16,7 +16,8 @@ import org.slf4j.LoggerFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 
-public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold, Arbeidsforhold>, Function<no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold, Arbeidsforhold> {
+public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold, Arbeidsforhold>,
+        Function<no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold, Arbeidsforhold> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ArbeidsforholdTransformer.class);
     public static final String KODEVERK_AVLONNING_FAST = "fast";
     private final OrganisasjonV4 organisasjonV4;
@@ -83,7 +84,9 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
             }
         } else if (arbeidsforhold.getArbeidsgiver() instanceof HistoriskArbeidsgiverMedArbeidsgivernummer) {
             return ((HistoriskArbeidsgiverMedArbeidsgivernummer) arbeidsforhold.getArbeidsgiver()).getNavn();
-        } else return "";
+        } else {
+            return "";
+        }
     }
 
     private HentOrganisasjonRequest lagOrgRequest(String orgnr) {

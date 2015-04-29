@@ -1,2 +1,35 @@
-<hr/>
-<p>Kvittering: barnet</p>
+<h2>{{ hentTekst "barnet.tittel" }}</h2>
+<table>
+    {{#forFaktum "barnet.dato"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>
+                    {{#forFaktum "soknadsvalg.fodselelleradopsjon"}}
+                        {{#hvisLik value "fodsel"}}
+                            {{#forFaktum "veiledning.mor.terminbekreftelse"}}
+                                {{#hvisLik value "fodt"}}
+                                    {{hentTekst "oppsummering.barnet.fodselsdato"}}
+                                {{else}}
+                                    {{hentTekst "oppsummering.barnet.termindato"}}
+                                {{/hvisLik}}
+
+                            {{/forFaktum}}
+                        {{/hvisLik}}
+                        {{#hvisLik value "adopsjon"}}
+                            {{hentTekst "oppsummering.barnet.overtagelsesdato"}}
+                        {{/hvisLik}}
+                    {{/forFaktum}}
+                    {{ formatterLangDato value}}</span>
+            </td>
+        </tr>
+    {{/forFaktum}}
+    {{#forFaktum "barnet.antall"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>{{value}} {{hentTekst "oppsummering.barnet.antallTekst"}}</span>
+            </td>
+        </tr>
+    {{/forFaktum}}
+</table>
