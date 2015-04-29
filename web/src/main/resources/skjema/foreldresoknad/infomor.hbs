@@ -1,2 +1,14 @@
-<hr/>
-<p>Kvittering: infomor</p>
+<h2>{{hentTekst "foreldresoknad.infomor.tittel"}}</h2>
+<table>
+    <tr>
+        <td class="sjekket"></td>
+        <td>
+            <span>{{hentFaktumValue "infomor.opplysninger.fornavn"}} {{hentFaktumValue "infomor.opplysninger.etternavn"}},
+                {{#forFaktum "infomor.opplysninger.personinfo"}}
+                    {{#hvisLik "fodselsdato" properties.valg}}{{formatterLangDato properties.fodselsdato}}{{/hvisLik}}
+                    {{#hvisLik "personnummer" properties.valg}}{{properties.personnummer}}{{/hvisLik}}
+                {{/forFaktum}}
+            </span>
+        </td>
+    </tr>
+</table>
