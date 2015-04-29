@@ -67,8 +67,8 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
     }
 
     private static class FileTuple {
-        String remoteFile;
-        String localFile;
+        private String remoteFile;
+        private String localFile;
         FileTuple(String remoteFile, String localFile) {
             this.remoteFile = remoteFile;
             this.localFile = localFile;
@@ -76,8 +76,8 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
     }
 
     public static class Bundle {
-        String type;
-        FileTuple tuple;
+        public String type;
+        public FileTuple tuple;
         public Bundle(String type, String remoteFile, String localFile) {
             this.type = type;
             this.tuple = new FileTuple(remoteFile, localFile);
