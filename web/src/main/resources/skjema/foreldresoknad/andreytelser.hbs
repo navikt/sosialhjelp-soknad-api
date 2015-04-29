@@ -1,2 +1,72 @@
-<hr/>
-<p>Kvittering: andreytelser</p>
+<h2>{{ hentTekst "andreytelser.tittel" }}</h2>
+<table>
+    {{#forFaktum "ytelser.ventelonn"}}
+        {{#hvisSant value}}
+
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{ hentTekst "ytelser.ventelonn.label" }}</span>
+                </td>
+            </tr>
+        {{/hvisSant}}
+    {{/forFaktum}}
+    {{#forFaktum "ytelser.lonnarbeidsgiver"}}
+        {{#hvisSant value}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{ hentTekst "ytelser.lonnarbeidsgiver.label" }}</span>
+                </td>
+            </tr>
+        {{/hvisSant}}
+    {{/forFaktum}}
+    {{#forFaktum "ytelser.vartpenger"}}
+        {{#hvisSant value}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{ hentTekst "ytelser.vartpenger.label" }}</span>
+                </td>
+            </tr>
+        {{/hvisSant}}
+    {{/forFaktum}}
+    {{#forFaktum "ytelser.avtjening"}}
+        {{#hvisSant value}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{ hentTekst "ytelser.avtjening.label" }}</span>
+                </td>
+            </tr>
+        {{/hvisSant}}
+    {{/forFaktum}}
+    {{#forFaktum "ytelser.ingenYtelse"}}
+        {{#hvisSant value}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{ hentTekst "ytelser.ingenYtelse.label" }}</span>
+                </td>
+            </tr>
+        {{/hvisSant}}
+    {{/forFaktum}}
+
+    {{#forFaktum "ytelser.sluttpakke"}}
+        {{#hvisSant value}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{ hentTekst "andreytelser.sluttpakke.true" }}</span>
+                </td>
+            </tr>
+        {{else}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{ hentTekst "andreytelser.sluttpakke.false" }}</span>
+                </td>
+            </tr>
+        {{/hvisSant}}
+    {{/forFaktum}}
+</table>

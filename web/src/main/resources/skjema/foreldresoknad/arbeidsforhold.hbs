@@ -1,2 +1,43 @@
-<hr/>
-<p>Kvittering: arbeidsforhold</p>
+<h2>{{hentTekst "arbeidsforhold.tittel"}}</h2>
+<table>
+    {{#forFaktum "arbeidsforhold.yrkesaktiv"}}
+        {{#hvisSant value}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{hentTekst "arbeidsforhold.yrkesaktiv.true"}}</span>
+                </td>
+            </tr>
+        {{else}}
+
+            {{#forFakta "arbeidsforhold"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td>
+                        <span class="strong">{{properties.arbeidsgivernavn}}</span>
+
+                        <div>{{#hvisSant properties.jobbetkuninorge}}
+                            {{hentTekst "oppsummering.arbeidsforhold.jobbetkuninorge"}}
+                        {{else}}
+                            {{hentLand properties.land}}
+                        {{/hvisSant}}
+                        </div>
+                        <div>{{#hvisSant properties.ansatt}}
+                            {{hentTekst "oppsummering.arbeidsforhold.fra"}} {{formatterLangDato properties.fom }} {{hentTekst "oppsummering.arbeidsforhold.tilna"}}
+                        {{else}}
+                            {{hentTekst "oppsummering.arbeidsforhold.fra"}} {{formatterLangDato properties.fom }} {{hentTekst "oppsummering.arbeidsforhold.til"}} {{formatterLangDato properties.tom}}
+                        {{/hvisSant}}
+                        </div>
+                        <div>
+                            {{#hvisSant properties.variabelstillingsprosent}}
+                                {{hentTekst "arbeidsforhold.ansatt.stillingsprosent.variabel"}}
+                            {{else}}
+                                {{properties.stillingsprosent}} {{hentTekst "oppsummering.arbeidsforhold.stillingsprosent.label"}}
+                            {{/hvisSant}}
+                        </div>
+                    </td>
+                </tr>
+            {{/forFakta}}
+        {{/hvisSant}}
+    {{/forFaktum}}
+</table>
