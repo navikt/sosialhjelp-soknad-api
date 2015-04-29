@@ -5,10 +5,56 @@
         <td>
             <span>{{hentFaktumValue "infomor.opplysninger.fornavn"}} {{hentFaktumValue "infomor.opplysninger.etternavn"}},
                 {{#forFaktum "infomor.opplysninger.personinfo"}}
-                    {{#hvisLik "fodselsdato" properties.valg}}{{formatterLangDato properties.fodselsdato}}{{/hvisLik}}
+                    {{#hvisLik "fodselsdato" properties.valg}}{{formatterLangDato properties.fodelsdato}}{{/hvisLik}}
                     {{#hvisLik "personnummer" properties.valg}}{{properties.personnummer}}{{/hvisLik}}
                 {{/forFaktum}}
             </span>
         </td>
-    </tr>
+    </tr> {{#forFaktum "rettigheter.omsorg"}}
+    <tr>
+        <td class="sjekket"></td>
+         <td>
+        {{#hvisLik "aleneomsorg" value}}
+            <span>{{hentTekst "foreldresoknad.infomor.aleneomsorg.alternativ.2"}}</span>
+                {{#forFaktum "infomor.aleneomsorg.omsorgfradato"}}
+                    <div>{{hentTekst "foreldresoknad.oppsummering.infomor.aleneomsorg.fradat.beskrivelse"}} {{formatterLangDato value}}</div>
+                {{/forFaktum}}
+        </td>
+        </tr>
+        {{/hvisLik}}
+
+        {{#hvisLik "morfarborsammen" value}}
+            <span>{{hentTekst "foreldresoknad.infomor.aleneomsorg.alternativ.1"}}</span>
+        </td>
+        </tr>
+        {{#forFaktum "rettighet.harrett"}}
+            {{#hvisIkkeTom value}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td>
+                        {{#hvisLik "true" value}}<span>{{hentTekst "foreldresoknad.infomor.morrett.true"}}</span>{{/hvisLik}}
+                        {{#hvisLik "ufore" value}}<span>{{hentTekst "foreldresoknad.infomor.morrett.ufore"}}</span>{{/hvisLik}}
+                        {{#hvisLik "false" value}}
+                            <span>{{hentTekst "foreldresoknad.infomor.morrett.false"}}</span>
+                        {{/hvisLik}}
+                    </td>
+                </tr>
+            {{/hvisIkkeTom}}
+        {{/forFaktum}}
+        {{#forFaktum "infomor.informert"}}
+            {{#hvisIkkeTom value}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td>
+                        {{#hvisLik "true" value}}<span>{{hentTekst "foreldresoknad.infomor.informert.true"}}</span>{{/hvisLik}}
+                        {{#hvisLik "false" value}}
+                            <span>{{hentTekst "foreldresoknad.infomor.informert.false"}}</span>
+                            <div>{{hentTekst "foreldresoknad.infomor.informert.fritekst.label"}}: <em>{{hentFaktumValue "infomor.informert.fritekst"}}</em></div>
+                        {{/hvisLik}}
+                    </td>
+                </tr>
+            {{/hvisIkkeTom}}
+        {{/forFaktum}}
+    {{/hvisLik}}
+{{/forFaktum}}
 </table>
