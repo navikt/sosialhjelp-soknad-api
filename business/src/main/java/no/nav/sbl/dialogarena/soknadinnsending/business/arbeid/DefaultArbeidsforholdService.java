@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-public class ArbeidsforholdServiceImpl implements ArbeidsforholdService, BolkService {
+public class DefaultArbeidsforholdService implements ArbeidsforholdService, BolkService {
     @Inject
     @Named("arbeidEndpoint")
     private ArbeidsforholdV3 arbeidsforholdV2;
@@ -36,7 +36,7 @@ public class ArbeidsforholdServiceImpl implements ArbeidsforholdService, BolkSer
     private ArbeidsforholdTransformer transformer;
     private DatatypeFactory datatypeFactory = lagDatatypeFactory();
     private static final Regelverker AA_ORDNINGEN = new Regelverker();
-    {
+    static {
         AA_ORDNINGEN.setValue("A_ORDNINGEN");
     }
 
@@ -78,6 +78,15 @@ public class ArbeidsforholdServiceImpl implements ArbeidsforholdService, BolkSer
                     .medSystemProperty("kilde", "EDAG")
                     .medSystemProperty("edagref", "" + arbeidsforhold.edagId);
             arbridsforholdFaktum.setFaktumId(faktaService.lagreSystemFaktum(soknadId, arbridsforholdFaktum, "edagref"));
+        }
+        if(forhold.size() > 0){
+            Faktum yrkesaktiv = faktaService.hentFaktumMedKey(soknadId, "arbeidsforhold.yrkesaktiv");
+            if(yrkesaktiv == null){
+                yrkesaktiv = new Faktum()
+                        .medSoknadId(soknadId)
+                        .medKey("arbeidsforhold.yrkesaktiv");
+            }
+            faktaService.lagreSystemFaktum(soknadId, yrkesaktiv.medValue("true"), "");
         }
     }
 
