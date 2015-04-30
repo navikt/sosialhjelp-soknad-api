@@ -6,8 +6,8 @@ public class Arbeidsforhold {
     public String orgnr;
     public String arbridsgiverNavn;
     public Land land;
-    public Long fom;
-    public Long tom;
+    public String fom;
+    public String tom;
     public Long edagId;
     public Long fastStillingsprosent = 0L;
     public boolean variabelStillingsprosent;
