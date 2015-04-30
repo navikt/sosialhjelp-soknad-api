@@ -32,10 +32,12 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
         String remoteFile = calculateFilenameForLocale(fileTuple.remoteFile, locale);
         String localFile = calculateFilenameForLocale(fileTuple.localFile, locale);
 
-        Properties properties = getProperties(remoteFile).getProperties();
-        if (properties == null) {
-            properties = getProperties(localFile).getProperties();
+        Properties properties = getProperties(localFile).getProperties();
+        Properties remoteProperties = getProperties(remoteFile).getProperties();
+        if (remoteProperties != null) {
+            properties.putAll(remoteProperties);
         }
+
         return properties;
     }
 
