@@ -277,9 +277,10 @@
         <faktum>arbeidsforhold</faktum>
         <skjemaNummer>M6</skjemaNummer>
         <property>arbeidsgivernavn</property>
-        <onProperty>variabelstillingsprosent</onProperty>
+        <onProperty>stillingstype</onProperty>
         <onValues>
-            <value>true</value>
+            <value>fastOgVariabel</value>
+            <value>variabel</value>
         </onValues>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
@@ -288,9 +289,10 @@
         <faktum>arbeidsforhold</faktum>
         <skjemaNummer>L4</skjemaNummer>
         <property>arbeidsgivernavn</property>
-        <onProperty>variabelstillingsprosent</onProperty>
+        <onProperty>stillingstype</onProperty>
         <onValues>
-            <value>true</value>
+            <value>fastOgVariabel</value>
+            <value>variabel</value>
         </onValues>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
