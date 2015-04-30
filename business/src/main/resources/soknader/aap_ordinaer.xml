@@ -178,4 +178,11 @@
         </onValues>
         <skjemaNummer>V1</skjemaNummer>
     </vedlegg>
+    <vedlegg>
+        <id>7</id>
+        <faktum>barn</faktum>
+        <skjemaNummer>X8</skjemaNummer>
+        <forSystemfaktum>false</forSystemfaktum>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 </soknad>
