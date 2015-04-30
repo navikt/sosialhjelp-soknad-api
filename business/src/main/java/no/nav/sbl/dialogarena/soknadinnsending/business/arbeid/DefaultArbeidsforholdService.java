@@ -27,10 +27,10 @@ import java.util.Objects;
 public class DefaultArbeidsforholdService implements ArbeidsforholdService, BolkService {
     @Inject
     @Named("arbeidEndpoint")
-    private ArbeidsforholdV3 arbeidsforholdV2;
+    private ArbeidsforholdV3 arbeidsforholdWebWervice;
     @Inject
     @Named("organisasjonEndpoint")
-    private OrganisasjonV4 organisasjonV4;
+    private OrganisasjonV4 organisasjonWebService;
     @Inject
     private FaktaService faktaService;
     private ArbeidsforholdTransformer transformer;
@@ -49,13 +49,13 @@ public class DefaultArbeidsforholdService implements ArbeidsforholdService, Bolk
     }
     @PostConstruct
     public void createTransformer() throws DatatypeConfigurationException {
-        transformer = new ArbeidsforholdTransformer(organisasjonV4);
+        transformer = new ArbeidsforholdTransformer(organisasjonWebService);
     }
 
     @Override
     public List<Arbeidsforhold> hentArbeidsforhold(String fodselsnummer) {
         try {
-            return Lists.transform(arbeidsforholdV2.finnArbeidsforholdPrArbeidstaker(lagArbeidsforholdRequest(fodselsnummer)).getArbeidsforhold(), transformer);
+            return Lists.transform(arbeidsforholdWebWervice.finnArbeidsforholdPrArbeidstaker(lagArbeidsforholdRequest(fodselsnummer)).getArbeidsforhold(), transformer);
         } catch (FinnArbeidsforholdPrArbeidstakerSikkerhetsbegrensning | FinnArbeidsforholdPrArbeidstakerUgyldigInput e) {
             throw new RuntimeException(e.getMessage(), e);
         }
@@ -106,7 +106,7 @@ public class DefaultArbeidsforholdService implements ArbeidsforholdService, Bolk
 
     private Periode lagSporrePeriode() {
         Periode periode = new Periode();
-        periode.setFom(datatypeFactory.newXMLGregorianCalendar(new DateTime().minusMonths(6).toGregorianCalendar()));
+        periode.setFom(datatypeFactory.newXMLGregorianCalendar(new DateTime().minusMonths(10).toGregorianCalendar()));
         periode.setTom(datatypeFactory.newXMLGregorianCalendar(new DateTime().toGregorianCalendar()));
         return periode;
     }
