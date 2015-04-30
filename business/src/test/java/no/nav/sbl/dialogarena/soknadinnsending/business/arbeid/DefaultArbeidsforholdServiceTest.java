@@ -27,29 +27,29 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ArbeidsforholdServiceImplTest {
+public class DefaultArbeidsforholdServiceTest {
 
 
     @Mock
-    ArbeidsforholdV3 arbeidsforholdV3;
+    ArbeidsforholdV3 arbeidsforholdWebService;
     @Mock
-    private OrganisasjonV4 organisasjonV4;
+    private OrganisasjonV4 organisasjonWebService;
     @Mock
     private FaktaService faktaService;
     @Mock
     private ArbeidsforholdTransformer transformer;
 
-    private long tom = new DateTime().getMillis();
-    private long fom = new DateTime().minusYears(1).getMillis();
+    private String tom = new DateTime().toString("yyyy-MM-dd");
+    private String fom = new DateTime().minusYears(1).toString("yyyy-MM-dd");
 
     @InjectMocks
-    private ArbeidsforholdService service = new ArbeidsforholdServiceImpl();
+    private ArbeidsforholdService service = new DefaultArbeidsforholdService();
 
     @Test
     public void skalLagreSystemfakta() throws Exception {
         Arbeidsforhold arbeidsforhold = setup(lagArbeidsforhold());
         service.lagreArbeidsforhold("123", 11L);
-        Mockito.verify(arbeidsforholdV3).finnArbeidsforholdPrArbeidstaker(any(FinnArbeidsforholdPrArbeidstakerRequest.class));
+        Mockito.verify(arbeidsforholdWebService).finnArbeidsforholdPrArbeidstaker(any(FinnArbeidsforholdPrArbeidstakerRequest.class));
         verify(transformer).apply(arbeidsforhold);
         verify(faktaService).lagreSystemFaktum(eq(11L), any(Faktum.class), eq("edagref"));
     }
@@ -126,7 +126,7 @@ public class ArbeidsforholdServiceImplTest {
         FinnArbeidsforholdPrArbeidstakerResponse t = new FinnArbeidsforholdPrArbeidstakerResponse();
         Arbeidsforhold arbeidsforhold = new Arbeidsforhold();
         t.getArbeidsforhold().add(arbeidsforhold);
-        when(arbeidsforholdV3.finnArbeidsforholdPrArbeidstaker(any(FinnArbeidsforholdPrArbeidstakerRequest.class))).thenReturn(t);
+        when(arbeidsforholdWebService.finnArbeidsforholdPrArbeidstaker(any(FinnArbeidsforholdPrArbeidstakerRequest.class))).thenReturn(t);
         when(transformer.apply(any(Arbeidsforhold.class))).thenReturn(result);
         return arbeidsforhold;
     }

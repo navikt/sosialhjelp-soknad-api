@@ -48,7 +48,7 @@ public class ArbeidsforholdMock {
         gperiode.setFom(XMLGregorianCalendarImpl.createDate(2014, 1, 1, 0));
         gperiode.setTom(XMLGregorianCalendarImpl.createDate(2015, 1, 1, 0));
         periode.setPeriode(gperiode);
-        return null;
+        return periode;
     }
 
 
