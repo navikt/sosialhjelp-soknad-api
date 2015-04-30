@@ -16,14 +16,14 @@ public class NavMessageSourceTest {
     {
         mockedCmsValues.put("c:/sendsoknad_nb_NO", "felles.key=norsk felles fra disk");
         mockedCmsValues.put("c:/sendsoknad_en_GB", "felles.key=engelsk felles fra disk");
-        mockedCmsValues.put("c:/dagpenger_nb_NO", "dagpenger.key=norsk dagpenger fra disk");
+        mockedCmsValues.put("c:/dagpenger_nb_NO", "dagpenger.key=norsk dagpenger fra disk;dagpenger.key.disk=norsk dagpenger kun på disk");
         mockedCmsValues.put("c:/dagpenger_en_GB", "dagpenger.key=engelsk dagpenger fra disk");
         mockedCmsValues.put("c:/foreldrepenger_nb_NO", "foreldrepenger.key=norsk foreldrepenger fra disk");
         mockedCmsValues.put("c:/foreldrepenger_en_GB", "foreldrepenger.key=engelsk foreldrepenger fra disk");
 
         mockedCmsValues.put("classpath:sendsoknad_nb_NO", "felles.key=norsk felles fra minne");
         mockedCmsValues.put("classpath:sendsoknad_en_GB", "felles.key=engelsk felles fra minne");
-        mockedCmsValues.put("classpath:dagpenger_nb_NO", "dagpenger.key=norsk dagpenger fra minne");
+        mockedCmsValues.put("classpath:dagpenger_nb_NO", "dagpenger.key=norsk dagpenger fra minne;dagpenger.key.minne=norsk dagpenger kun i minne");
         mockedCmsValues.put("classpath:dagpenger_en_GB", "dagpenger.key=engelsk dagpenger fra minne");
         mockedCmsValues.put("classpath:foreldrepenger_nb_NO", "foreldrepenger.key=norsk foreldrepenger fra minne");
         mockedCmsValues.put("classpath:foreldrepenger_en_GB", "foreldrepenger.key=engelsk foreldrepenger fra minne");
@@ -45,7 +45,9 @@ public class NavMessageSourceTest {
                     mockedProperties = null;
                 } else {
                     String mockedValue = mockedCmsValues.get(filename);
-                    mockedProperties.put(mockedValue.split("=")[0], mockedValue.split("=")[1]);
+                    for (String keyValueString : mockedValue.split(";")) {
+                        mockedProperties.put(keyValueString.split("=")[0], keyValueString.split("=")[1]);
+                    }
                 }
 
                 return new PropertiesHolder(mockedProperties, 0);
@@ -111,5 +113,13 @@ public class NavMessageSourceTest {
         properties = messageSource.getBundleFor("dagpenger", new Locale("nb", "NO"));
         assertEquals("norsk felles fra disk", properties.getProperty("felles.key"));
         assertEquals("norsk dagpenger fra disk", properties.getProperty("dagpenger.key"));
+    }
+
+    @Test
+    public void skalHenteEnEnkeltTekstFraDiskHvisDenIkkeErIMinne() {
+        Properties properties = messageSource.getBundleFor("dagpenger", new Locale("nb", "NO"));
+        assertEquals("norsk dagpenger fra disk", properties.getProperty("dagpenger.key"));
+        assertEquals("norsk dagpenger kun i minne", properties.getProperty("dagpenger.key.minne"));
+        assertEquals("norsk dagpenger kun på disk", properties.getProperty("dagpenger.key.disk"));
     }
 }
