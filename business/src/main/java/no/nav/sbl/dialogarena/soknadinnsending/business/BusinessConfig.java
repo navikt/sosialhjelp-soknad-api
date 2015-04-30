@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.ArbeidsforholdServiceImpl;
+import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.DefaultArbeidsforholdService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnService;
@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Import;
         PersonaliaService.class,
         BarnService.class,
         ConsumerConfig.class,
-        ArbeidsforholdServiceImpl.class,
+        DefaultArbeidsforholdService.class,
         ServiceConfig.class,
         ServicesApplicationConfig.class
 })

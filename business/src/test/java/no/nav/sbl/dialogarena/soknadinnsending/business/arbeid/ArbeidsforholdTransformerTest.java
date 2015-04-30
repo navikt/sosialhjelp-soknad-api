@@ -58,7 +58,7 @@ public class ArbeidsforholdTransformerTest {
         assertThat(result.harFastStilling, equalTo(true));
         assertThat(result.fastStillingsprosent, equalTo(100L));
         assertThat(result.variabelStillingsprosent, equalTo(false));
-        assertThat(result.fom, equalTo(new DateTime(2015, 1, 1, 0, 0).getMillis()));
+        assertThat(result.fom, equalTo("2015-01-01"));
         assertThat(result.tom, equalTo(null));
         assertThat(result.arbridsgiverNavn, equalTo("Testesen A/S, andre linje"));
     }
