@@ -10,6 +10,7 @@ import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.OrganisasjonV4;
 import no.nav.tjeneste.virksomhet.organisasjon.v4.informasjon.UstrukturertNavn;
 import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.HentOrganisasjonRequest;
 import org.apache.commons.collections15.Transformer;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,8 +35,8 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
         result.arbridsgiverNavn = hentOrgNavn(arbeidsforhold, result.orgnr);
 
         Gyldighetsperiode periode = arbeidsforhold.getAnsettelsesPeriode().getPeriode();
-        result.fom = toLong(periode.getFom());
-        result.tom = toLong(periode.getTom());
+        result.fom = toStringDate(periode.getFom());
+        result.tom = toStringDate(periode.getTom());
 
         if (arbeidsforhold.getArbeidsavtale() != null) {
             for (Arbeidsavtale arbeidsavtale : arbeidsforhold.getArbeidsavtale()) {
@@ -59,8 +60,8 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
         }
     }
 
-    private Long toLong(XMLGregorianCalendar fom) {
-        return fom != null ? fom.toGregorianCalendar().getTimeInMillis() : null;
+    private String toStringDate(XMLGregorianCalendar fom) {
+        return fom != null ? new DateTime(fom.toGregorianCalendar()).toString("yyyy-MM-dd") : null;
     }
 
     private Long nullSafe(BigDecimal number) {
