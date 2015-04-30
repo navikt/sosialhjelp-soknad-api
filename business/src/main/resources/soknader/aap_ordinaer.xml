@@ -87,10 +87,10 @@
         <id>navaerendeSituasjon.student</id>
     </faktum>
     <faktum>
-        <id>navaerendeSituasjon.student.avbruttStudie</id>
+        <id>navaerendeSituasjon.student.studererFortsatt</id>
     </faktum>
     <faktum>
-        <id>navaerendeSituasjon.student.avbruttStudie.vilFortsette</id>
+        <id>navaerendeSituasjon.student.avbruttStudie.ikkeTilbake</id>
     </faktum>
     <faktum>
         <id>navaerendeSituasjon.student.avbruttStudie.vilFortsette.mottarSykestipend</id>
