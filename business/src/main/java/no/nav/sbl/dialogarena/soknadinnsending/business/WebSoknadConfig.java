@@ -22,9 +22,9 @@ public class WebSoknadConfig {
     public static final String FORELDREPENGER = "foreldrepenger";
     public static final String AAP = "aap";
 
-    private static final String BOLK_PERSONALIA = "Personalia";
-    private static final String BOLK_BARN = "Barn";
-    private static final String BOLK_ARBEIDSFORHOLD = "Arbeidsforhold";
+    public static final String BOLK_PERSONALIA = "Personalia";
+    public static final String BOLK_BARN = "Barn";
+    public static final String BOLK_ARBEIDSFORHOLD = "Arbeidsforhold";
 
     public static final Map<String, String> SKJEMANAVN = new HashMap<String, String>() {{
         put("NAV 04-01.03", DAGPENGER_ORDINAER);
