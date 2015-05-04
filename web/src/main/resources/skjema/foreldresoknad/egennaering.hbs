@@ -1,2 +1,77 @@
-<hr/>
-<p>Kvittering: egennaering</p>
+<h2>{{hentTekst "foreldresoknad.egennaering.tittel"}}</h2>
+<table>
+    {{#forFaktum "egennaering.arbeidegennaering"}}
+        {{#hvisSant value}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{hentTekst "foreldresoknad.egennaering.arbeidegennaering.false"}}</span>
+                </td>
+            </tr>
+        {{else}}
+
+            {{#forFakta "naeringsvirksomhet"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td>
+                        <span class="strong">{{properties.navn}}</span>
+
+                        <div>{{properties.orgnummer}}</div>
+
+                        <div>
+                            {{#hvisLik properties.type "fiske"}}
+                                {{hentTekst "foreldresoknad.egennaering.nynaering.type.fiske"}}
+                                {{#hvisLik properties.typefiske "blada" }}
+                                    {{hentTekst "foreldresoknad.egennaering.nynaering.typefiske.blada"}}
+                                {{/hvisLik}}
+                                {{#hvisLik properties.typefiske "bladb" }}
+                                    {{hentTekst "foreldresoknad.egennaering.nynaering.typefiske.bladb"}}
+                                {{/hvisLik}}
+                                {{#hvisLik properties.typefiske "lott" }}
+                                    {{hentTekst "foreldresoknad.egennaering.nynaering.typefiske.lott"}}
+                                {{/hvisLik}}
+                                {{#hvisLik properties.typefiske "hyse" }}
+                                    {{hentTekst "foreldresoknad.egennaering.nynaering.typefiske.hyse"}}
+                                {{/hvisLik}}
+                            {{/hvisLik}}
+                            {{#hvisLik properties.type "frilanser"}}
+                                {{hentTekst "foreldresoknad.egennaering.nynaering.type.frilanser"}}
+                            {{/hvisLik}}
+                            {{#hvisLik properties.type "jordskog"}}
+                                {{hentTekst "foreldresoknad.egennaering.nynaering.type.jordskog"}}
+                            {{/hvisLik}}
+                            {{#hvisLik properties.type "reindrift"}}
+                                {{hentTekst "foreldresoknad.egennaering.nynaering.type.reindrift"}}
+                            {{/hvisLik}}
+                        </div>
+
+                        <div>{{#hvisSant properties.startetfireaarsiden}}
+                            {{hentTekst "foreldresoknad.egennaering.nynaering.startetfireaarsiden.true"}}
+                        {{else}}
+                            {{hentTekst "foreldresoknad.egennaering.nynaering.startetfireaarsiden.false"}}
+                        {{/hvisSant}}
+                        </div>
+
+                        <div>{{#hvisSant properties.varigendring}}
+                            {{hentTekst "foreldresoknad.egennaering.nynaering.varigendring.true"}}
+                        {{else}}
+                            {{hentTekst "foreldresoknad.egennaering.nynaering.varigendring.false"}}
+                        {{/hvisSant}}
+                        </div>
+
+                        <div>{{#hvisSant properties.regnskapsforer}}
+                            {{hentTekst "foreldresoknad.egennaering.nynaering.reinskapsforer.true"}}
+                            {{hentTekst "foreldresoknad.egennaering.nynaering.reinskapsforer.navn.label"}}: {{properties.regnskapsforernavn}}
+                            {{hentTekst "foreldresoknad.egennaering.nynaering.reinskapsforer.tlf.label"}}: {{properties.regnskapsforertlf}}
+                        {{else}}
+                            {{hentTekst "foreldresoknad.egennaering.nynaering.reinskapsforer.false"}}
+                        {{/hvisSant}}
+                        </div>
+
+
+                    </td>
+                </tr>
+            {{/forFakta}}
+        {{/hvisSant}}
+    {{/forFaktum}}
+</table>
