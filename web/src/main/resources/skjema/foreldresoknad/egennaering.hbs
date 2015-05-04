@@ -54,8 +54,8 @@
 
                         <div>{{#hvisSant properties.varigendring}}
                             {{hentTekst "foreldresoknad.egennaering.nynaering.varigendring.true"}}
-                            <div>{{formatterLangDato properties.datoendring}}</div>
-                            <div>{{properties.varigendringbeskrivelse}}</div>
+                            <div>{{hentTekst "foreldresoknad.oppsummering.egennaering.varigendring.dato"}} {{formatterLangDato properties.datoendring}}</div>
+                            <div>{{hentTekst "foreldresoknad.egennaering.nynaering.varigendring.true.endring.label"}}: <em>{{properties.varigendringbeskrivelse}}</em></div>
                         {{else}}
                             {{hentTekst "foreldresoknad.egennaering.nynaering.varigendring.false"}}
                         {{/hvisSant}}
