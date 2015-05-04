@@ -47,6 +47,7 @@
 
                         <div>{{#hvisSant properties.startetfireaarsiden}}
                             {{hentTekst "foreldresoknad.egennaering.nynaering.startetfireaarsiden.true"}}
+                            <div>{{hentTekst "foreldresoknad.oppsummering.egennaering.startetnar.dato"}} {{formatterLangDato properties.startetnar}}</div>
                         {{else}}
                             {{hentTekst "foreldresoknad.egennaering.nynaering.startetfireaarsiden.false"}}
                         {{/hvisSant}}
@@ -60,6 +61,12 @@
                             {{hentTekst "foreldresoknad.egennaering.nynaering.varigendring.false"}}
                         {{/hvisSant}}
                         </div>
+
+                        {{#forFakta "egennaering.oppdragsgiver"}}
+                            <div>{{hentTekst "foreldresoknad.oppsummering.egennaering.oppdrag.beskrivelse"}} {{properties.navn}}
+                                {{hentTekst "foreldresoknad.oppsummering.egennaering.oppdrag.fra"}} {{formatterLangDato properties.fradato}}
+                                {{hentTekst "foreldresoknad.oppsummering.egennaering.oppdrag.til"}} {{formatterLangDato properties.tildato}}</div>
+                        {{/forFakta}}
 
                         <div>{{#hvisSant properties.regnskapsforer}}
                             {{hentTekst "foreldresoknad.egennaering.nynaering.reinskapsforer.true"}}
