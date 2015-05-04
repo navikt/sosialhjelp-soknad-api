@@ -15,24 +15,25 @@
                     <td class="sjekket"></td>
                     <td>
                         <span class="strong">{{properties.navn}}</span>
+                        <ul>
+                        <li class="kulepunkt">{{hentTekst "foreldresoknad.oppsummering.egennaering.orgnummer"}} {{properties.orgnummer}}</li>
+                        <li class="kulepunkt">{{#hvisLik properties.type "fiske"}}
+                               {{hentTekst "foreldresoknad.egennaering.nynaering.type.fiske"}}
+                                    <ul><li class="kulepunkt">
+                                    {{#hvisLik properties.typefiske "blada" }}
+                                        {{hentTekst "foreldresoknad.egennaering.nynaering.typefiske.blada"}}
+                                    {{/hvisLik}}
+                                    {{#hvisLik properties.typefiske "bladb" }}
+                                        {{hentTekst "foreldresoknad.egennaering.nynaering.typefiske.bladb"}}
+                                    {{/hvisLik}}
+                                    {{#hvisLik properties.typefiske "lott" }}
+                                        {{hentTekst "foreldresoknad.egennaering.nynaering.typefiske.lott"}}
+                                    {{/hvisLik}}
+                                    {{#hvisLik properties.typefiske "hyse" }}
+                                        {{hentTekst "foreldresoknad.egennaering.nynaering.typefiske.hyse"}}
+                                    {{/hvisLik}}
+                                    </li></ul>
 
-                        <div>{{hentTekst "foreldresoknad.oppsummering.egennaering.orgnummer"}} {{properties.orgnummer}}</div>
-
-                        <div>
-                            {{#hvisLik properties.type "fiske"}}
-                                {{hentTekst "foreldresoknad.egennaering.nynaering.type.fiske"}}
-                                {{#hvisLik properties.typefiske "blada" }}
-                                    {{hentTekst "foreldresoknad.egennaering.nynaering.typefiske.blada"}}
-                                {{/hvisLik}}
-                                {{#hvisLik properties.typefiske "bladb" }}
-                                    {{hentTekst "foreldresoknad.egennaering.nynaering.typefiske.bladb"}}
-                                {{/hvisLik}}
-                                {{#hvisLik properties.typefiske "lott" }}
-                                    {{hentTekst "foreldresoknad.egennaering.nynaering.typefiske.lott"}}
-                                {{/hvisLik}}
-                                {{#hvisLik properties.typefiske "hyse" }}
-                                    {{hentTekst "foreldresoknad.egennaering.nynaering.typefiske.hyse"}}
-                                {{/hvisLik}}
                             {{/hvisLik}}
                             {{#hvisLik properties.type "frilanser"}}
                                 {{hentTekst "foreldresoknad.egennaering.nynaering.type.frilanser"}}
@@ -43,39 +44,43 @@
                             {{#hvisLik properties.type "reindrift"}}
                                 {{hentTekst "foreldresoknad.egennaering.nynaering.type.reindrift"}}
                             {{/hvisLik}}
-                        </div>
+                        </li>
 
-                        <div>{{#hvisSant properties.startetfireaarsiden}}
+                        <li class="kulepunkt">{{#hvisSant properties.startetfireaarsiden}}
                             {{hentTekst "foreldresoknad.egennaering.nynaering.startetfireaarsiden.true"}}
-                            <div>{{hentTekst "foreldresoknad.oppsummering.egennaering.startetnar.dato"}} {{formatterLangDato properties.startetnar}}</div>
+                                <ul><li class="kulepunkt">{{hentTekst "foreldresoknad.oppsummering.egennaering.startetnar.dato"}} {{formatterLangDato properties.startetnar}}<li></ul>
+                            </li>
                         {{else}}
                             {{hentTekst "foreldresoknad.egennaering.nynaering.startetfireaarsiden.false"}}
                         {{/hvisSant}}
-                        </div>
+                        </li>
 
-                        <div>{{#hvisSant properties.varigendring}}
-                            {{hentTekst "foreldresoknad.egennaering.nynaering.varigendring.true"}}
-                            <div>{{hentTekst "foreldresoknad.oppsummering.egennaering.varigendring.dato"}} {{formatterLangDato properties.datoendring}}</div>
-                            <div>{{hentTekst "foreldresoknad.egennaering.nynaering.varigendring.true.endring.label"}}: <em>{{properties.varigendringbeskrivelse}}</em></div>
+                         <li class="kulepunkt">{{#hvisSant properties.varigendring}}{{hentTekst "foreldresoknad.egennaering.nynaering.varigendring.true"}}
+                            <ul>
+                                <li class="kulepunkt">{{hentTekst "foreldresoknad.oppsummering.egennaering.varigendring.dato"}} {{formatterLangDato properties.datoendring}}</li>
+                                <li class="kulepunkt">{{hentTekst "foreldresoknad.egennaering.nynaering.varigendring.true.endring.label"}}: <em>{{properties.varigendringbeskrivelse}}</em></li>
+                            </ul>
                         {{else}}
                             {{hentTekst "foreldresoknad.egennaering.nynaering.varigendring.false"}}
                         {{/hvisSant}}
-                        </div>
+                        </li>
 
                         {{#forFakta "egennaering.oppdragsgiver"}}
-                            <div>{{hentTekst "foreldresoknad.oppsummering.egennaering.oppdrag.beskrivelse"}} {{properties.navn}}
+                            <li class="kulepunkt">{{hentTekst "foreldresoknad.oppsummering.egennaering.oppdrag.beskrivelse"}} {{properties.navn}}
                                 {{hentTekst "foreldresoknad.oppsummering.egennaering.oppdrag.fra"}} {{formatterLangDato properties.fradato}}
-                                {{hentTekst "foreldresoknad.oppsummering.egennaering.oppdrag.til"}} {{formatterLangDato properties.tildato}}</div>
+                                {{hentTekst "foreldresoknad.oppsummering.egennaering.oppdrag.til"}} {{formatterLangDato properties.tildato}}</li>
                         {{/forFakta}}
 
-                        <div>{{#hvisSant properties.regnskapsforer}}
-                            {{hentTekst "foreldresoknad.egennaering.nynaering.reinskapsforer.true"}}
-                            {{hentTekst "foreldresoknad.egennaering.nynaering.reinskapsforer.navn.label"}}: {{properties.regnskapsforernavn}}
-                            {{hentTekst "foreldresoknad.egennaering.nynaering.reinskapsforer.tlf.label"}}: {{properties.regnskapsforertlf}}
+                        <li class="kulepunkt">{{#hvisSant properties.regnskapsforer}}{{hentTekst "foreldresoknad.egennaering.nynaering.reinskapsforer.true"}}
+                            <ul>
+                                <li class="kulepunkt">{{hentTekst "foreldresoknad.egennaering.nynaering.reinskapsforer.navn.label"}}: {{properties.regnskapsforernavn}}</li>
+                                <li class="kulepunkt">{{hentTekst "foreldresoknad.egennaering.nynaering.reinskapsforer.tlf.label"}}: {{properties.regnskapsforertlf}}</li>
+                            </ul>
                         {{else}}
                             {{hentTekst "foreldresoknad.egennaering.nynaering.reinskapsforer.false"}}
                         {{/hvisSant}}
-                        </div>
+                        </li>
+                        </ul>
 
 
                     </td>
