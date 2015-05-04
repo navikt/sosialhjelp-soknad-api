@@ -79,7 +79,7 @@ public class DefaultArbeidsforholdService implements ArbeidsforholdService, Bolk
                     .medSystemProperty("edagref", "" + arbeidsforhold.edagId);
             arbridsforholdFaktum.setFaktumId(faktaService.lagreSystemFaktum(soknadId, arbridsforholdFaktum, "edagref"));
         }
-        if(forhold.size() > 0){
+        if(!forhold.isEmpty()){
             Faktum yrkesaktiv = faktaService.hentFaktumMedKey(soknadId, "arbeidsforhold.yrkesaktiv");
             if(yrkesaktiv == null){
                 yrkesaktiv = new Faktum()
