@@ -196,7 +196,10 @@ public class FaktaService {
                     .medInnsendingsvalg(Vedlegg.Status.VedleggKreves);
             vedlegg.setVedleggId(vedleggRepository.opprettVedlegg(vedlegg, null));
         }
-        vedlegg.oppdatertInnsendtStatus();
+
+        if (faktum.getType().equals(Faktum.FaktumType.BRUKERREGISTRERT)) {
+            vedlegg.oppdatertInnsendtStatus();
+        }
 
         if (vedleggHarTittelFraProperty(soknadVedlegg, faktum)) {
             vedlegg.setNavn(faktum.getProperties().get(soknadVedlegg.getProperty()));
