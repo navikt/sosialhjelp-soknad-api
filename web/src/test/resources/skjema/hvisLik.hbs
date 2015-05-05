@@ -14,3 +14,12 @@
     {{/hvisLik}}
 {{/hvisLik}}
 
+{{#hvisLik brukerBehandlingId "1A"}}
+    erLik:{{brukerBehandlingId}}
+{{/hvisLik}}
+
+{{#hvisLik brukerBehandlingId "1A"}}
+    {{#hvisLik brukerBehandlingId "1A"}}
+        erLik:nested:{{brukerBehandlingId}}
+    {{/hvisLik}}
+{{/hvisLik}}
