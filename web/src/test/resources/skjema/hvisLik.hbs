@@ -1,0 +1,25 @@
+{{#hvisLik "true" "true"}}
+    erLik:true
+{{/hvisLik}}
+
+{{#hvisLik "false" "true"}}
+    ulike:true
+{{else}}
+    ulike:false
+{{/hvisLik}}
+
+{{#hvisLik "true" "true"}}
+    {{#hvisLik "true" "true"}}
+        erLik:nested:true
+    {{/hvisLik}}
+{{/hvisLik}}
+
+{{#hvisLik brukerBehandlingId "1A"}}
+    erLik:{{brukerBehandlingId}}
+{{/hvisLik}}
+
+{{#hvisLik brukerBehandlingId "1A"}}
+    {{#hvisLik brukerBehandlingId "1A"}}
+        erLik:nested:{{brukerBehandlingId}}
+    {{/hvisLik}}
+{{/hvisLik}}
