@@ -11,6 +11,7 @@ import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.Nokkel;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.business.config.SoknadConfigUtil;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.*;
@@ -458,7 +459,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     }
 
     private void validerSkjemanummer(String navSoknadId) {
-        if (!WebSoknadConfig.SKJEMANAVN.containsKey(navSoknadId)) {
+        if (!SoknadConfigUtil.getAlleSkjemanummer().contains(navSoknadId)) {
             throw new ApplicationException("Ikke gyldig skjemanummer " + navSoknadId);
         }
     }

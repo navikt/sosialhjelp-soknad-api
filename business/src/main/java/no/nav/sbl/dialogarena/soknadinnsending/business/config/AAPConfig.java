@@ -6,30 +6,28 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class AAPConfig {
-    private static final String SOKNAD_TYPE_PREFIX = "aap.ordinaer";
-    private static final String SOKNAD_URL_FASIT_RESSURS = "soknad.aap.ordinaer.path";
-    private static final String SOKNAD_FORTSETT_URL_FASIT_RESSURS = "soknad.aap.fortsett.path";
-    private static final String STRUKTURDOKUEMENT = "aap_ordinaer.xml";
-    private static final List<String> SOKNAD_BOLKER =  Arrays.asList(WebSoknadConfig.BOLK_PERSONALIA, WebSoknadConfig.BOLK_BARN, WebSoknadConfig.BOLK_ARBEIDSFORHOLD);
-
+public class AAPConfig implements SoknadConfig {
     public String getSoknadTypePrefix () {
-        return SOKNAD_TYPE_PREFIX;
+        return "aap.ordinaer";
     }
 
     public String getSoknadUrl () {
-        return SOKNAD_URL_FASIT_RESSURS;
+        return "soknad.aap.ordinaer.path";
     }
 
     public String getFortsettSoknadUrl() {
-        return SOKNAD_FORTSETT_URL_FASIT_RESSURS;
+        return "soknad.aap.fortsett.path";
     }
 
     public String hentStruktur () {
-        return STRUKTURDOKUEMENT;
+        return "aap_ordinaer.xml";
+    }
+
+    public List<String> getSkjemanummer() {
+        return Arrays.asList("NAV 11-13.05");
     }
 
     public List<String> getSoknadBolker() {
-        return SOKNAD_BOLKER;
+        return Arrays.asList(WebSoknadConfig.BOLK_PERSONALIA, WebSoknadConfig.BOLK_BARN, WebSoknadConfig.BOLK_ARBEIDSFORHOLD);
     }
 }

@@ -6,30 +6,28 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class DagpengerGjenopptakConfig {
-    private static final String SOKNAD_TYPE_PREFIX = "dagpenger.gjenopptak";
-    private static final String SOKNAD_URL_FASIT_RESSURS = "soknad.dagpenger.gjenopptak.path";
-    private static final String SOKNAD_FORTSETT_URL_FASIT_RESSURS = "soknad.dagpenger.fortsett.path";
-    private static final String STRUKTURDOKUEMENT = "dagpenger_gjenopptak.xml";
-    private static final List<String> SOKNAD_BOLKER =  Arrays.asList(WebSoknadConfig.BOLK_PERSONALIA, WebSoknadConfig.BOLK_BARN);
-
+public class DagpengerGjenopptakConfig implements SoknadConfig {
     public String getSoknadTypePrefix () {
-        return SOKNAD_TYPE_PREFIX;
+        return "dagpenger.gjenopptak";
     }
 
     public String getSoknadUrl () {
-        return SOKNAD_URL_FASIT_RESSURS;
+        return "soknad.dagpenger.gjenopptak.path";
     }
 
     public String getFortsettSoknadUrl() {
-        return SOKNAD_FORTSETT_URL_FASIT_RESSURS;
+        return "soknad.dagpenger.fortsett.path";
     }
 
     public String hentStruktur () {
-        return STRUKTURDOKUEMENT;
+        return "dagpenger_gjenopptak.xml";
+    }
+
+    public List<String> getSkjemanummer() {
+        return Arrays.asList("NAV 04-16.03", "NAV 04-16.04");
     }
 
     public List<String> getSoknadBolker() {
-        return SOKNAD_BOLKER;
+        return Arrays.asList(WebSoknadConfig.BOLK_PERSONALIA, WebSoknadConfig.BOLK_BARN);
     }
 }
