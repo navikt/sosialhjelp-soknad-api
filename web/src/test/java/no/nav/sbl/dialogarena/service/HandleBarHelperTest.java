@@ -33,4 +33,20 @@ public class HandleBarHelperTest {
         String html = new HandleBarKjoerer().fyllHtmlMalMedInnhold(mockSoknad, "/skjema/hvisLik");
         assertThat(html).contains("erLik:nested:true");
     }
+
+    @Test
+    public void hvisLikSkalViseInnholdFraSoknad() throws IOException {
+        WebSoknad soknad = new WebSoknad();
+        soknad.medBehandlingId("1A");
+        String html = new HandleBarKjoerer().fyllHtmlMalMedInnhold(soknad, "/skjema/hvisLik");
+        assertThat(html).contains("erLik:1A");
+    }
+
+    @Test
+    public void hvisLikNostetSkalViseInnholdFraSoknad() throws IOException {
+        WebSoknad soknad = new WebSoknad();
+        soknad.medBehandlingId("1A");
+        String html = new HandleBarKjoerer().fyllHtmlMalMedInnhold(soknad, "/skjema/hvisLik");
+        assertThat(html).contains("erLik:nested:1A");
+    }
 }
