@@ -70,11 +70,11 @@
                         {{/hvisSant}}
                         </li>
 
-                        {{#forFakta "egennaering.oppdragsgiver"}}
+                        {{#forBarnefakta "egennaering.oppdragsgiver"}}
                             <li class="kulepunkt">{{hentTekst "foreldresoknad.oppsummering.egennaering.oppdrag.beskrivelse"}} {{properties.navn}}
                                 {{hentTekst "foreldresoknad.oppsummering.egennaering.oppdrag.fra"}} {{formatterLangDato properties.fradato}}
                                 {{hentTekst "foreldresoknad.oppsummering.egennaering.oppdrag.til"}} {{formatterLangDato properties.tildato}}</li>
-                        {{/forFakta}}
+                        {{/forBarnefakta}}
 
                         <li class="kulepunkt">{{#hvisSant properties.regnskapsforer}}
                             <span>{{hentTekst "foreldresoknad.egennaering.nynaering.reinskapsforer.true"}}</span>
