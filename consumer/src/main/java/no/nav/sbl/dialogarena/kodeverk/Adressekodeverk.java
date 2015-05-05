@@ -1,8 +1,5 @@
 package no.nav.sbl.dialogarena.kodeverk;
 
-/**
- * Kodeverksinterface for oppslag på adresse-elementer.
- */
 public interface Adressekodeverk {
 
     String LANDKODE_NORGE = "NOR";
