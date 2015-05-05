@@ -116,24 +116,24 @@
     </faktum>
 
     <!-- Samtalen -->
-    <!-- Alle utenom studenter -->
+    <!-- Hovedvisning -->
     <faktum>
-        <id>samtalen.ikkestudent.samtalemedNAV</id>
+        <id>samtalen.samtalemedNAV</id>
     </faktum>
     <faktum>
-        <id>samtalen.ikkestudent.arbeidsmuligheter</id>
+        <id>samtalen.arbeidsmuligheter</id>
     </faktum>
     <faktum>
-        <id>samtalen.ikkestudent.arbeidserfaring</id>
+        <id>samtalen.arbeidserfaring</id>
     </faktum>
     <faktum>
-        <id>samtalen.ikkestudent.kunnskapogegenskaper</id>
+        <id>samtalen.kunnskapogegenskaper</id>
     </faktum>
     <faktum>
-        <id>samtalen.ikkestudent.helsesituasjon</id>
+        <id>samtalen.helsesituasjon</id>
     </faktum>
     <faktum>
-        <id>samtalen.ikkestudent.andreforhold</id>
+        <id>samtalen.andreforhold</id>
     </faktum>
 
     <!-- Samtalen -->
