@@ -22,6 +22,7 @@ import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.DAGPENGER;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyLong;
@@ -57,7 +58,9 @@ public class FaktaServiceTest {
         Vedlegg permitteringsVedlegg = new Vedlegg().medVedleggId(4L).medSkjemaNummer("G2").medSoknadId(soknadId).medInnsendingsvalg(Vedlegg.Status.UnderBehandling).medFaktumId(permitteringFaktumId);
         Vedlegg arbeidsgiverVedlegg = new Vedlegg().medVedleggId(4L).medSkjemaNummer("O2").medSoknadId(soknadId).medInnsendingsvalg(Vedlegg.Status.UnderBehandling).medFaktumId(arbeidsforholdFaktumId);
 
-        when(soknadRepository.hentSoknad(behandlingsId)).thenReturn(new WebSoknad().medId(soknadId));
+        when(soknadRepository.hentSoknad(behandlingsId)).thenReturn(new WebSoknad().medId(soknadId).medDelstegStatus(DelstegStatus.UTFYLLING));
+        when(soknadRepository.hentSoknad(soknadId)).thenReturn(new WebSoknad().medId(soknadId).medDelstegStatus(DelstegStatus.UTFYLLING));
+
         when(soknadRepository.lagreFaktum(soknadId, permitteringsFaktum)).thenReturn(permitteringFaktumId);
         when(soknadRepository.hentFaktum(permitteringFaktumId)).thenReturn(permitteringsFaktum);
         when(soknadRepository.hentFaktum(arbeidsforholdFaktumId)).thenReturn(arbeidsforholdFaktum);
@@ -74,7 +77,8 @@ public class FaktaServiceTest {
         long soknadId = 1L;
         String behandlingsId = "1000000ABC";
         Faktum faktum = new Faktum().medKey("epost").medValue("false").medFaktumId(soknadId);
-        when(soknadRepository.hentSoknad(behandlingsId)).thenReturn(new WebSoknad().medId(soknadId));
+        when(soknadRepository.hentSoknad(behandlingsId)).thenReturn(new WebSoknad().medId(soknadId).medDelstegStatus(DelstegStatus.UTFYLLING));
+        when(soknadRepository.hentSoknad(soknadId)).thenReturn(new WebSoknad().medId(soknadId).medDelstegStatus(DelstegStatus.UTFYLLING));
         when(soknadRepository.lagreFaktum(soknadId, faktum)).thenReturn(2L);
         when(soknadRepository.hentFaktum(2L)).thenReturn(faktum);
         faktaService.lagreSoknadsFelt(behandlingsId, faktum);
@@ -86,7 +90,8 @@ public class FaktaServiceTest {
         long soknadId = 1L;
         String behandlingsId = "1000000ABC";
         Faktum faktum = new Faktum().medKey("ikkeavtjentverneplikt").medValue("false").medFaktumId(soknadId);
-        when(soknadRepository.hentSoknad(behandlingsId)).thenReturn(new WebSoknad().medId(soknadId));
+        when(soknadRepository.hentSoknad(behandlingsId)).thenReturn(new WebSoknad().medId(soknadId).medDelstegStatus(DelstegStatus.UTFYLLING));
+        when(soknadRepository.hentSoknad(soknadId)).thenReturn(new WebSoknad().medId(soknadId).medDelstegStatus(DelstegStatus.UTFYLLING));
         when(soknadRepository.lagreFaktum(soknadId, faktum)).thenReturn(2L);
         when(soknadRepository.hentFaktum(2L)).thenReturn(faktum);
         Vedlegg vedlegg = new Vedlegg().medVedleggId(4L).medSkjemaNummer("T3").medSoknadId(soknadId).medInnsendingsvalg(Vedlegg.Status.IkkeVedlegg);
@@ -101,10 +106,25 @@ public class FaktaServiceTest {
         verify(vedleggRepository).lagreVedlegg(soknadId, 4L, vedlegg.medInnsendingsvalg(Vedlegg.Status.VedleggKreves));
 
     }
+    @Test
+    public void skalValidereEndringAvDelstegstatus(){
+        long soknadId = 1L;
+        String behandlingsId = "1000000ABC";
+        Faktum faktum = new Faktum().medKey("ikkeavtjentverneplikt").medValue("false").medFaktumId(soknadId);
+        when(soknadRepository.hentSoknad(behandlingsId)).thenReturn(new WebSoknad().medId(soknadId).medDelstegStatus(DelstegStatus.ETTERSENDING_OPPRETTET));
+        when(soknadRepository.lagreFaktum(soknadId, faktum)).thenReturn(2L);
+        when(soknadRepository.hentFaktum(2L)).thenReturn(faktum);
+        try {
+            faktaService.lagreSoknadsFelt(behandlingsId, faktum);
+            fail("validerte ikke endring");
+        } catch(Exception ignore){}
+
+    }
 
     @Test
     public void skalSletteBrukerfaktum() {
         Vedlegg vedlegg = new Vedlegg().medVedleggId(111L).medSkjemaNummer("a1").medFaktumId(111L);
+        when(soknadRepository.hentSoknad(1L)).thenReturn(new WebSoknad().medId(1L).medDelstegStatus(DelstegStatus.UTFYLLING));
         when(vedleggRepository.hentVedleggForFaktum(1L, 1L)).thenReturn(Arrays.asList(vedlegg));
         when(soknadRepository.hentFaktum(1L)).thenReturn(new Faktum().medKey("key").medSoknadId(1L));
         faktaService.slettBrukerFaktum(1L);
@@ -123,6 +143,7 @@ public class FaktaServiceTest {
 
         when(soknadRepository.hentFaktum(faktumId)).thenReturn(arbeidsforholdFaktum);
         when(vedleggRepository.hentVedleggForFaktum(soknadId, faktumId)).thenReturn(Arrays.asList(permitteringsVedlegg, arbeidsgiverVedlegg));
+        when(soknadRepository.hentSoknad(1L)).thenReturn(new WebSoknad().medId(1L).medDelstegStatus(DelstegStatus.UTFYLLING));
 
         faktaService.slettBrukerFaktum(faktumId);
 
