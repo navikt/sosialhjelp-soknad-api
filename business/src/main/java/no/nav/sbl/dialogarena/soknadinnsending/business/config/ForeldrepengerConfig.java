@@ -1,36 +1,33 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.config;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 
 import java.util.Arrays;
 import java.util.List;
 
 
-public class ForeldrepengerConfig {
-    private static final String SOKNAD_TYPE_PREFIX = "foreldresoknad";
-    private static final String SOKNAD_URL_FASIT_RESSURS = "foreldresoknad.path";
-    private static final String SOKNAD_FORTSETT_URL_FASIT_RESSURS = "foreldresoknad.fortsett.path";
-    private static final String STRUKTURDOKUEMENT = "foreldresoknad.xml";
-    private static final List<String> SOKNAD_BOLKER =  Arrays.asList(WebSoknadConfig.BOLK_PERSONALIA, WebSoknadConfig.BOLK_BARN, WebSoknadConfig.BOLK_ARBEIDSFORHOLD);
-
+public class ForeldrepengerConfig implements SoknadConfig {
     public String getSoknadTypePrefix () {
-        return SOKNAD_TYPE_PREFIX;
+        return "foreldresoknad";
     }
 
     public String getSoknadUrl () {
-        return SOKNAD_URL_FASIT_RESSURS;
+        return "foreldresoknad.path";
     }
 
     public String getFortsettSoknadUrl() {
-        return SOKNAD_FORTSETT_URL_FASIT_RESSURS;
+        return "foreldresoknad.fortsett.path";
     }
 
     public String hentStruktur () {
-        return STRUKTURDOKUEMENT;
+        return "foreldresoknad.xml";
+    }
+
+    public List<String> getSkjemanummer() {
+        return Arrays.asList("NAV 14-05.06", "NAV 14-05.07", "NAV 14-05.08", "NAV 14-05.09");
     }
 
     public List<String> getSoknadBolker() {
-        return SOKNAD_BOLKER;
+        return Arrays.asList(WebSoknadConfig.BOLK_PERSONALIA, WebSoknadConfig.BOLK_BARN, WebSoknadConfig.BOLK_ARBEIDSFORHOLD);
     }
 }
