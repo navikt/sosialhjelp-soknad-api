@@ -1,0 +1,16 @@
+{{#hvisLik "true" "true"}}
+    erLik:true
+{{/hvisLik}}
+
+{{#hvisLik "false" "true"}}
+    ulike:true
+{{else}}
+    ulike:false
+{{/hvisLik}}
+
+{{#hvisLik "true" "true"}}
+    {{#hvisLik "true" "true"}}
+        erLik:nested:true
+    {{/hvisLik}}
+{{/hvisLik}}
+
