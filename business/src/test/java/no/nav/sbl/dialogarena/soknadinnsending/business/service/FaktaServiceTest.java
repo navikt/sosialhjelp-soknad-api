@@ -21,9 +21,9 @@ import java.util.Arrays;
 
 import static java.lang.System.setProperty;
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.ETTERSENDING_OPPRETTET;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.OPPRETTET;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.DAGPENGER;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
@@ -51,6 +51,7 @@ public class FaktaServiceTest {
     public void before() {
         setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         when(soknadRepository.hentSoknadType(anyLong())).thenReturn(DAGPENGER);
+        when(soknadRepository.hentSoknad(anyLong())).thenReturn(new WebSoknad().medDelstegStatus(OPPRETTET));
         when(config.hentStruktur(any(Long.class))).thenReturn(new SoknadStruktur());
     }
 
@@ -81,20 +82,6 @@ public class FaktaServiceTest {
 
         //Verifiser vedlegg sjekker.
         verify(soknadRepository).lagreFaktum(soknadId, faktum);
-
-    }
-    @Test
-    public void skalValidereEndringAvDelstegstatus(){
-        long soknadId = 1L;
-        String behandlingsId = "1000000ABC";
-        Faktum faktum = new Faktum().medKey("ikkeavtjentverneplikt").medValue("false").medFaktumId(soknadId);
-        when(soknadRepository.hentSoknad(behandlingsId)).thenReturn(new WebSoknad().medId(soknadId).medDelstegStatus(DelstegStatus.ETTERSENDING_OPPRETTET));
-        when(soknadRepository.lagreFaktum(soknadId, faktum)).thenReturn(2L);
-        when(soknadRepository.hentFaktum(2L)).thenReturn(faktum);
-        try {
-            faktaService.lagreSoknadsFelt(behandlingsId, faktum);
-            fail("validerte ikke endring");
-        } catch(Exception ignore){}
 
     }
 
