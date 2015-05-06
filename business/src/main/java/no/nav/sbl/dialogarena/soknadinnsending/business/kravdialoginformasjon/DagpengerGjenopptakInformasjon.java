@@ -1,12 +1,11 @@
-package no.nav.sbl.dialogarena.soknadinnsending.business.config;
+package no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-
-import java.util.Arrays;
 import java.util.List;
 
+import static java.util.Arrays.asList;
 
-public class DagpengerGjenopptakConfig implements SoknadConfig {
+
+public class DagpengerGjenopptakInformasjon implements KravdialogInformasjon {
     public String getSoknadTypePrefix () {
         return "dagpenger.gjenopptak";
     }
@@ -24,10 +23,10 @@ public class DagpengerGjenopptakConfig implements SoknadConfig {
     }
 
     public List<String> getSkjemanummer() {
-        return Arrays.asList("NAV 04-16.03", "NAV 04-16.04");
+        return asList("NAV 04-16.03", "NAV 04-16.04");
     }
 
     public List<String> getSoknadBolker() {
-        return Arrays.asList(WebSoknadConfig.BOLK_PERSONALIA, WebSoknadConfig.BOLK_BARN);
+        return asList(BOLK_PERSONALIA, BOLK_BARN);
     }
 }

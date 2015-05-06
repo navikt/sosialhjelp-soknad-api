@@ -9,11 +9,14 @@ import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
@@ -88,6 +91,10 @@ public class SoknadServiceTest {
     @Mock
     private BarnService barnService;
     @Mock
+    private WebSoknadConfig config;
+    @Mock
+    private KravdialogInformasjonHolder kravdialogInformasjonHolder;
+    @Mock
     ApplicationContext applicationContex;
 
     @InjectMocks
@@ -103,6 +110,9 @@ public class SoknadServiceTest {
         soknadService.initBolker();
         setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         when(soknadRepository.hentSoknadType(anyLong())).thenReturn(DAGPENGER);
+        when(config.getSoknadBolker(any(Long.class), any(List.class))).thenReturn(new ArrayList());
+        when(config.hentStruktur(any(Long.class))).thenReturn(new SoknadStruktur());
+        when(kravdialogInformasjonHolder.hentAlleSkjemanumre()).thenReturn(new ArrayList<String>());
     }
 
     @Test

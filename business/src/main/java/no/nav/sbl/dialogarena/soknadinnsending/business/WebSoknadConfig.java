@@ -2,12 +2,15 @@ package no.nav.sbl.dialogarena.soknadinnsending.business;
 
 
 import no.nav.modig.core.exception.ApplicationException;
-import no.nav.sbl.dialogarena.soknadinnsending.business.config.SoknadConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.business.config.SoknadConfigUtil;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.KravdialogInformasjon;
+import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BolkService;
+import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.util.ArrayList;
@@ -16,45 +19,42 @@ import java.util.List;
 import static java.lang.String.format;
 import static javax.xml.bind.JAXBContext.newInstance;
 
+@Component
 public class WebSoknadConfig {
-    private static SoknadRepository repository;
-    public static final String BOLK_PERSONALIA = "Personalia";
-    public static final String BOLK_BARN = "Barn";
-    public static final String BOLK_ARBEIDSFORHOLD = "Arbeidsforhold";
 
-    public WebSoknadConfig(SoknadRepository repository) { //må ta inn behandlingsid eller søknad for å hente rett skjemanummer?
-        this.repository = repository;
-    }
+    @Inject
+    @Named("soknadInnsendingRepository")
+    private SoknadRepository repository;
 
-    public WebSoknadConfig() {
-    }
+    @Inject
+    private KravdialogInformasjonHolder kravdialogInformasjonHolder;
 
     public String getSoknadTypePrefix (long soknadId) {
-        SoknadConfig skjemaConfig = finnSkjemaConfig(soknadId);
+        KravdialogInformasjon skjemaConfig = finnSkjemaConfig(soknadId);
         return skjemaConfig.getSoknadTypePrefix();
     }
 
     public String getSoknadUrl (long soknadId) {
-        SoknadConfig skjemaConfig = finnSkjemaConfig(soknadId);
+        KravdialogInformasjon skjemaConfig = finnSkjemaConfig(soknadId);
         return skjemaConfig.getSoknadUrl();
     }
 
     public String getFortsettSoknadUrl(long soknadId) {
-        SoknadConfig skjemaConfig = finnSkjemaConfig(soknadId);
+        KravdialogInformasjon skjemaConfig = finnSkjemaConfig(soknadId);
         return skjemaConfig.getFortsettSoknadUrl();
     }
 
     public SoknadStruktur hentStruktur (long soknadId) {
-        SoknadConfig skjemaConfig = finnSkjemaConfig(soknadId);
+        KravdialogInformasjon skjemaConfig = finnSkjemaConfig(soknadId);
         return hentStrukturForSkjemanavn(skjemaConfig);
     }
 
     public SoknadStruktur hentStruktur (String skjemaNummer) {
-        SoknadConfig skjemaConfig = SoknadConfigUtil.getConfig(skjemaNummer);
+        KravdialogInformasjon skjemaConfig = kravdialogInformasjonHolder.hentKonfigurasjon(skjemaNummer);
         return hentStrukturForSkjemanavn(skjemaConfig);
     }
 
-    private SoknadStruktur hentStrukturForSkjemanavn(SoknadConfig skjemaConfig) {
+    private SoknadStruktur hentStrukturForSkjemanavn(KravdialogInformasjon skjemaConfig) {
         String type = skjemaConfig.hentStruktur();
         if (type == null || type.isEmpty()) {
             throw new ApplicationException("Fant ikke strukturdokument for skjema: " + skjemaConfig.getClass().getSimpleName());
@@ -71,7 +71,7 @@ public class WebSoknadConfig {
     }
 
     public List<BolkService> getSoknadBolker (Long soknadId, List<BolkService> alleBolker) {
-        SoknadConfig skjemaConfig = finnSkjemaConfig(soknadId);
+        KravdialogInformasjon skjemaConfig = finnSkjemaConfig(soknadId);
         List<String> configBolker = skjemaConfig.getSoknadBolker();
 
         List<BolkService> soknadBolker = new ArrayList<>();
@@ -83,8 +83,8 @@ public class WebSoknadConfig {
         return soknadBolker;
     }
 
-    private SoknadConfig finnSkjemaConfig(Long soknadId) {
+    private KravdialogInformasjon finnSkjemaConfig(Long soknadId) {
         String skjemanummer = repository.hentSoknadType(soknadId);
-        return SoknadConfigUtil.getConfig(skjemanummer);
+        return kravdialogInformasjonHolder.hentKonfigurasjon(skjemanummer);
     }
 }
