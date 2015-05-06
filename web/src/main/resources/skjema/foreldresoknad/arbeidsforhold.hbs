@@ -29,11 +29,11 @@
                         {{/hvisSant}}
                         </div>
                         <div>
-                            {{#hvisSant properties.variabelstillingsprosent}}
+                            {{#hvisLik properties.stillingstype "variabel"}}
                                 {{hentTekst "arbeidsforhold.ansatt.stillingsprosent.variabel"}}
                             {{else}}
                                 {{properties.stillingsprosent}} {{hentTekst "oppsummering.arbeidsforhold.stillingsprosent.label"}}
-                            {{/hvisSant}}
+                            {{/hvisLik}}
                         </div>
                     </td>
                 </tr>
