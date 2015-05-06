@@ -5,7 +5,7 @@
             <tr>
                 <td class="sjekket"></td>
                 <td>
-                    <span>{{hentTekst "foreldresoknad.egennaering.arbeidegennaering.false"}}</span>
+                    <span>{{hentTekst "foreldresoknad.egennaering.arbeidegennaering.true"}}</span>
                 </td>
             </tr>
         {{else}}
@@ -88,18 +88,16 @@
                         {{/forBarnefakta}}
 
                         <li class="kulepunkt">{{#hvisSant properties.regnskapsforer}}
-                            <span>{{hentTekst "foreldresoknad.egennaering.nynaering.reinskapsforer.true"}}</span>
+                            <span>{{hentTekst "foreldresoknad.egennaering.nynaering.regnskapsforer.true"}}</span>
                             <ul>
-                                <li class="kulepunkt">{{hentTekst "foreldresoknad.egennaering.nynaering.reinskapsforer.navn.label"}}: {{properties.regnskapsforernavn}}</li>
-                                <li class="kulepunkt">{{hentTekst "foreldresoknad.egennaering.nynaering.reinskapsforer.tlf.label"}}: {{properties.regnskapsforertlf}}</li>
+                                <li class="kulepunkt">{{hentTekst "foreldresoknad.egennaering.nynaering.regnskapsforer.navn.label"}}: {{properties.regnskapsforernavn}}</li>
+                                <li class="kulepunkt">{{hentTekst "foreldresoknad.egennaering.nynaering.regnskapsforer.tlf.label"}}: {{properties.regnskapsforertlf}}</li>
                             </ul>
                         {{else}}
-                            <span>{{hentTekst "foreldresoknad.egennaering.nynaering.reinskapsforer.false"}}</span>
+                            <span>{{hentTekst "foreldresoknad.egennaering.nynaering.regnskapsforer.false"}}</span>
                         {{/hvisSant}}
                         </li>
                         </ul>
-
-
                     </td>
                 </tr>
             {{/forFakta}}
