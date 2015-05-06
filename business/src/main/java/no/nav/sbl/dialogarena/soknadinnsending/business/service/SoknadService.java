@@ -480,7 +480,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     }
 
     private void validerSkjemanummer(String navSoknadId) {
-        if (kravdialogInformasjonHolder.hentAlleSkjemanumre().contains(navSoknadId)) {
+        if (!kravdialogInformasjonHolder.hentAlleSkjemanumre().contains(navSoknadId)) {
             throw new ApplicationException("Ikke gyldig skjemanummer " + navSoknadId);
         }
     }
