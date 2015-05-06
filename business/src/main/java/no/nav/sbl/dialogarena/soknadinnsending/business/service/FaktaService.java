@@ -258,4 +258,8 @@ public class FaktaService {
     public Faktum hentFaktumMedKey(Long soknadId, String key) {
         return repository.hentFaktumMedKey(soknadId, key);
     }
+
+    public Faktum hentFaktum(Long faktumId) {
+        return repository.hentFaktum(faktumId);
+    }
 }
