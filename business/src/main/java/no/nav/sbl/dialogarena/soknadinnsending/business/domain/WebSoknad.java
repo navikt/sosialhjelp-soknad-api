@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigDelstegEndringException;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -445,5 +446,11 @@ public class WebSoknad implements Serializable {
     }
     public String getFortsettSoknadUrl() {
         return fortsettSoknadUrl;
+    }
+
+    public void validerDelstegEndring(DelstegStatus nyStatus) {
+        if(delstegStatus.erEttersending() && !nyStatus.erEttersending()){
+            throw new UgyldigDelstegEndringException(String.format("Kan ikke endre status fra %s til %s", delstegStatus, nyStatus), "soknad.delsteg.endring.ettersending");
+        }
     }
 }

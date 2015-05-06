@@ -17,10 +17,6 @@ public class MockUtil {
         return valueOf(getProperty(TILLATMOCK_PROPERTY, DEFAULT_MOCK_TILLATT));
     }
 
-    public static boolean mockErTillattOgSlaattPaaForKey(String key) {
-        return mockSetupErTillatt() && getProperty(key, DEFAULT_MOCK_TILLATT).equalsIgnoreCase(ALLOW_MOCK);
-    }
-
     public static boolean startdatoMockErTillattOgAktivert() {
         return getProperty(TILLATSTARTDATOMOCK_PROPERTY, DEFAULT_MOCK_TILLATT).equalsIgnoreCase(ALLOW_MOCK);
     }

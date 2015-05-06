@@ -231,7 +231,7 @@
     <vedlegg>
         <id>4</id>
         <faktum>personalia</faktum>
-        <skjemaNummer>O7</skjemaNummer>
+        <skjemaNummer>R4</skjemaNummer>
         <onProperty>gjeldendeAdresseType</onProperty>
         <onValues>
             <value>UTENLANDSK_ADRESSE</value>
@@ -241,7 +241,7 @@
     <vedlegg>
         <id>4</id>
         <faktum>veiledning.mor.terminbekreftelse</faktum>
-        <skjemaNummer>O7</skjemaNummer>
+        <skjemaNummer>P3</skjemaNummer>
         <onValues>
             <value>merEnn26Uker</value>
             <value>mindreEnn26Uker</value>
@@ -250,7 +250,7 @@
     <vedlegg>
         <id>4</id>
         <faktum>soknadsvalg.fodselelleradopsjon</faktum>
-        <skjemaNummer>O7</skjemaNummer>
+        <skjemaNummer>P5</skjemaNummer>
         <onValues>
             <value>adopsjon</value>
         </onValues>

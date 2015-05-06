@@ -21,7 +21,7 @@
     <description>Innsending av elektronisk søknad.</description>
     <groupId>no.nav.sbl.dialogarena</groupId>
     <artifactId>sendsoknad</artifactId>
-    <version>5.8-SNAPSHOT</version>
+    <version>5.10-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -738,7 +738,7 @@
             <dependency>
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-content</artifactId>
-                <version>1.2.2</version>
+                <version>2.0.9</version>
                 <exclusions>
                     <exclusion>
                         <groupId>commons-logging</groupId>
@@ -765,7 +765,8 @@
                     <configuration>
                         <propertiesFilesRoot>${project.basedir}/web/src/main/resources/content</propertiesFilesRoot>
                         <propertiesFiler>
-                            <aapnb>aap_innholdstekster.properties</aapnb>
+                            <aapnb>aap_nb_NO.properties</aapnb>
+                            <aapen>aap_en_GB.properties</aapen>
                             <ssnb>sendsoknad_nb_NO.properties</ssnb>
                             <ssen>sendsoknad_en_GB.properties</ssen>
                             <dpnb>dagpenger_nb_NO.properties</dpnb>
@@ -775,6 +776,7 @@
                         </propertiesFiler>
                         <menyPunktPaths>
                             <aapnb>/site/18/app/AAP/nb_NO/tekster</aapnb>
+                            <aapen>/site/18/app/AAP/en_GB/tekster</aapen>
                             <ssnb>/site/18/app/sendsoknad/nb_NO/tekster</ssnb>
                             <ssen>/site/18/app/sendsoknad/en_GB/tekster</ssen>
                             <dpnb>/site/18/app/dagpenger/nb_NO/tekster</dpnb>
