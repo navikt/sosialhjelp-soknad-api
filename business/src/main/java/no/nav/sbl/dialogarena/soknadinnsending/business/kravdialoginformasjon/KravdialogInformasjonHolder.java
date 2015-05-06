@@ -1,0 +1,40 @@
+package no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon;
+
+import no.nav.modig.core.exception.ApplicationException;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Arrays.asList;
+
+public class KravdialogInformasjonHolder {
+
+    private List<KravdialogInformasjon> soknadsKonfigurasjoner = new ArrayList<>();
+
+    public KravdialogInformasjonHolder() {
+        soknadsKonfigurasjoner.addAll(asList(
+                new AAPInformasjon(),
+                new DagpengerGjenopptakInformasjon(),
+                new DagpengerOrdinaerInformasjon(),
+                new ForeldrepengerInformasjon()
+        ));
+    }
+
+    public KravdialogInformasjon hentKonfigurasjon(String skjemanummer) {
+        for (KravdialogInformasjon soknadKonfigurasjon : soknadsKonfigurasjoner) {
+            if (soknadKonfigurasjon.getSkjemanummer().contains(skjemanummer)) {
+                return soknadKonfigurasjon;
+            }
+        }
+        throw new ApplicationException("Fant ikke config for skjemanummer: " + skjemanummer);
+    }
+
+    public List<String> hentAlleSkjemanumre() {
+        List<String> skjemanumre = new ArrayList();
+        for (KravdialogInformasjon soknadKonfigurasjon : soknadsKonfigurasjoner) {
+            skjemanumre.addAll(soknadKonfigurasjon.getSkjemanummer());
+        }
+        return skjemanumre;
+    }
+
+}

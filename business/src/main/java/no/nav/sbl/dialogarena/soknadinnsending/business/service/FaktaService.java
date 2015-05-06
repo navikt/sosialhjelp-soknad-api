@@ -17,7 +17,6 @@ import org.slf4j.Logger;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.List;
@@ -30,6 +29,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
 public class FaktaService {
+
     @Inject
     @Named("soknadInnsendingRepository")
     private SoknadRepository repository;
@@ -41,13 +41,8 @@ public class FaktaService {
     @Inject
     private NavMessageSource navMessageSource;
 
+    @Inject
     private WebSoknadConfig config;
-
-    @PostConstruct
-    public void initBolker(){
-        config = new WebSoknadConfig(repository);
-    }
-
 
     private static final String EKSTRA_VEDLEGG_KEY = "ekstraVedlegg";
     private static final Logger logger = getLogger(FaktaService.class);
