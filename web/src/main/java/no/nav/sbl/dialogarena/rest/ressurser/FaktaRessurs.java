@@ -36,6 +36,13 @@ public class FaktaRessurs {
         return faktaService.lagreSoknadsFelt(behandlingsId, faktum);
     }
 
+    @GET
+    @Path("/{faktumId}")
+    @SjekkTilgangTilSoknad(type = Faktum)
+    public Faktum hentFaktum(@PathParam("faktumId") final Long faktumId) {
+        return faktaService.hentFaktum(faktumId);
+    }
+
     @PUT
     @Path("/{faktumId}")
     @Consumes(APPLICATION_JSON)
