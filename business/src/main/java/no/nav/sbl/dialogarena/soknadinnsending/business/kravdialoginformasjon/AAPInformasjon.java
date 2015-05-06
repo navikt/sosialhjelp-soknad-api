@@ -1,12 +1,11 @@
-package no.nav.sbl.dialogarena.soknadinnsending.business.config;
+package no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-
-import java.util.Arrays;
 import java.util.List;
 
+import static java.util.Arrays.asList;
 
-public class AAPConfig implements SoknadConfig {
+
+public class AAPInformasjon implements KravdialogInformasjon {
     public String getSoknadTypePrefix () {
         return "aap.ordinaer";
     }
@@ -24,10 +23,10 @@ public class AAPConfig implements SoknadConfig {
     }
 
     public List<String> getSkjemanummer() {
-        return Arrays.asList("NAV 11-13.05");
+        return asList("NAV 11-13.05");
     }
 
     public List<String> getSoknadBolker() {
-        return Arrays.asList(WebSoknadConfig.BOLK_PERSONALIA, WebSoknadConfig.BOLK_BARN, WebSoknadConfig.BOLK_ARBEIDSFORHOLD);
+        return asList(BOLK_PERSONALIA, BOLK_BARN, BOLK_ARBEIDSFORHOLD);
     }
 }

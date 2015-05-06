@@ -1,12 +1,10 @@
-package no.nav.sbl.dialogarena.soknadinnsending.business.config;
-
-import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
+package no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon;
 
 import java.util.Arrays;
 import java.util.List;
 
 
-public class DagpengerOrdinaerConfig implements SoknadConfig {
+public class DagpengerOrdinaerInformasjon implements KravdialogInformasjon {
     public String getSoknadTypePrefix () {
         return "dagpenger.ordinaer";
     }
@@ -28,6 +26,6 @@ public class DagpengerOrdinaerConfig implements SoknadConfig {
     }
 
     public List<String> getSoknadBolker() {
-        return Arrays.asList(WebSoknadConfig.BOLK_PERSONALIA, WebSoknadConfig.BOLK_BARN);
+        return Arrays.asList(BOLK_PERSONALIA, BOLK_BARN);
     }
 }

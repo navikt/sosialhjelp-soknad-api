@@ -1,12 +1,14 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
+import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,12 +22,13 @@ import java.util.Arrays;
 import static java.lang.System.setProperty;
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.DAGPENGER;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FaktaServiceTest {
@@ -35,38 +38,17 @@ public class FaktaServiceTest {
     private VedleggRepository vedleggRepository;
     @Mock
     private NavMessageSource navMessageSource;
+    @Mock
+    private WebSoknadConfig config;
 
     @InjectMocks
     private FaktaService faktaService;
 
     @Before
     public void before() {
-        faktaService.initBolker();
         setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         when(soknadRepository.hentSoknadType(anyLong())).thenReturn(DAGPENGER);
-    }
-
-    @Test
-    public void oppdatereFaktum() {
-        Long soknadId = 1L;
-        String behandlingsId = "1000000ABC";
-        Long arbeidsforholdFaktumId = 1L;
-        Long permitteringFaktumId = 2L;
-        Faktum arbeidsforholdFaktum = new Faktum().medKey("arbeidsforhold").medProperty("type", "Konkurs").medFaktumId(1L);
-        Faktum permitteringsFaktum = new Faktum().medKey("arbeidsforhold.permitteringsperiode").medProperty("permitteringsperiodefra", "1111-11-11").medFaktumId(permitteringFaktumId).medParrentFaktumId(arbeidsforholdFaktumId);
-        Vedlegg permitteringsVedlegg = new Vedlegg().medVedleggId(4L).medSkjemaNummer("G2").medSoknadId(soknadId).medInnsendingsvalg(Vedlegg.Status.UnderBehandling).medFaktumId(permitteringFaktumId);
-        Vedlegg arbeidsgiverVedlegg = new Vedlegg().medVedleggId(4L).medSkjemaNummer("O2").medSoknadId(soknadId).medInnsendingsvalg(Vedlegg.Status.UnderBehandling).medFaktumId(arbeidsforholdFaktumId);
-
-        when(soknadRepository.hentSoknad(behandlingsId)).thenReturn(new WebSoknad().medId(soknadId));
-        when(soknadRepository.lagreFaktum(soknadId, permitteringsFaktum)).thenReturn(permitteringFaktumId);
-        when(soknadRepository.hentFaktum(permitteringFaktumId)).thenReturn(permitteringsFaktum);
-        when(soknadRepository.hentFaktum(arbeidsforholdFaktumId)).thenReturn(arbeidsforholdFaktum);
-        when(vedleggRepository.hentVedleggForskjemaNummerMedTillegg(soknadId, permitteringFaktumId, "G2", null)).thenReturn(permitteringsVedlegg);
-        when(vedleggRepository.hentVedleggForskjemaNummerMedTillegg(soknadId, arbeidsforholdFaktumId, "O2", null)).thenReturn(arbeidsgiverVedlegg);
-
-        faktaService.lagreSoknadsFelt(behandlingsId, permitteringsFaktum);
-
-        assertThat(permitteringsVedlegg.getInnsendingsvalg(), is(Vedlegg.Status.IkkeVedlegg));
+        when(config.hentStruktur(any(Long.class))).thenReturn(new SoknadStruktur());
     }
 
     @Test
@@ -89,16 +71,12 @@ public class FaktaServiceTest {
         when(soknadRepository.hentSoknad(behandlingsId)).thenReturn(new WebSoknad().medId(soknadId));
         when(soknadRepository.lagreFaktum(soknadId, faktum)).thenReturn(2L);
         when(soknadRepository.hentFaktum(2L)).thenReturn(faktum);
-        Vedlegg vedlegg = new Vedlegg().medVedleggId(4L).medSkjemaNummer("T3").medSoknadId(soknadId).medInnsendingsvalg(Vedlegg.Status.IkkeVedlegg);
-        when(vedleggRepository.hentVedleggForskjemaNummerMedTillegg(soknadId, null, "T3", null)).thenReturn(vedlegg);
-        when(vedleggRepository.opprettVedlegg(any(Vedlegg.class), any(byte[].class))).thenReturn(4L);
         faktaService.lagreSoknadsFelt(behandlingsId, faktum);
         verify(soknadRepository).settSistLagretTidspunkt(soknadId);
         when(soknadRepository.hentBarneFakta(soknadId, faktum.getFaktumId())).thenReturn(Arrays.asList(new Faktum().medKey("subkey")));
 
         //Verifiser vedlegg sjekker.
         verify(soknadRepository).lagreFaktum(soknadId, faktum);
-        verify(vedleggRepository).lagreVedlegg(soknadId, 4L, vedlegg.medInnsendingsvalg(Vedlegg.Status.VedleggKreves));
 
     }
 
