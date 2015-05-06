@@ -451,7 +451,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
             @Override
             public CharSequence apply(String key, Options options) throws IOException {
                 WebSoknad soknad = finnWebSoknad(options.context);
-                Faktum parentFaktum = (Faktum) options.context.parent().model();
+                Faktum parentFaktum = finnFaktum(options.context);
                 List<Faktum> fakta = soknad.getFaktaMedKeyOgParentFaktum(key, parentFaktum.getFaktumId());
                 if (fakta.isEmpty()) {
                     return options.inverse(this);
@@ -485,6 +485,16 @@ public class HandleBarKjoerer implements HtmlGenerator {
             return (WebSoknad) context.model();
         } else {
             return finnWebSoknad(context.parent());
+        }
+    }
+
+    private static Faktum finnFaktum(Context context) {
+        if (context == null) {
+            return null;
+        } else if (context.model() instanceof Faktum) {
+            return (Faktum) context.model();
+        } else {
+            return finnFaktum(context.parent());
         }
     }
 

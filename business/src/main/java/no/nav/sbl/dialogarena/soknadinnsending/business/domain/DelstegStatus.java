@@ -10,4 +10,8 @@ public enum DelstegStatus {
         List<DelstegStatus> ettersendingStatuses = Arrays.asList(ETTERSENDING_UTFYLLING, ETTERSENDING_OPPRETTET);
         return ettersendingStatuses.contains(status);
     }
+    private static List<DelstegStatus> ETTERSENDING = Arrays.asList(ETTERSENDING_OPPRETTET, ETTERSENDING_UTFYLLING);
+    public boolean erEttersending() {
+        return ETTERSENDING.contains(this);
+    }
 }
