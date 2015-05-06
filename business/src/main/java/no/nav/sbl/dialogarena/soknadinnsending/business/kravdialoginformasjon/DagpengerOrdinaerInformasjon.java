@@ -10,11 +10,11 @@ public class DagpengerOrdinaerInformasjon implements KravdialogInformasjon {
     }
 
     public String getSoknadUrl () {
-        return "soknad.dagpenger.ordinaer.path";
+        return System.getProperty("soknad.dagpenger.ordinaer.path");
     }
 
     public String getFortsettSoknadUrl() {
-        return "soknad.dagpenger.fortsett.path";
+        return System.getProperty("soknad.dagpenger.fortsett.path");
     }
 
     public String hentStruktur () {
