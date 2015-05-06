@@ -41,6 +41,7 @@ import org.mockito.stubbing.Answer;
 import org.springframework.context.ApplicationContext;
 
 import javax.activation.DataHandler;
+import javax.inject.Inject;
 import javax.xml.bind.JAXB;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -112,7 +113,7 @@ public class SoknadServiceTest {
         when(soknadRepository.hentSoknadType(anyLong())).thenReturn(DAGPENGER);
         when(config.getSoknadBolker(any(Long.class), any(List.class))).thenReturn(new ArrayList());
         when(config.hentStruktur(any(Long.class))).thenReturn(new SoknadStruktur());
-        when(kravdialogInformasjonHolder.hentAlleSkjemanumre()).thenReturn(new ArrayList<String>());
+        when(kravdialogInformasjonHolder.hentAlleSkjemanumre()).thenReturn(new KravdialogInformasjonHolder().hentAlleSkjemanumre());
     }
 
     @Test
