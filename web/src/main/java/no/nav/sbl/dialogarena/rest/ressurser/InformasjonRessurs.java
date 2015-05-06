@@ -53,6 +53,8 @@ public class InformasjonRessurs {
     private PersonInfoService personInfoService;
     @Inject
     private ArbeidsforholdService arbeidsforholdService;
+    @Inject
+    private WebSoknadConfig webSoknadConfig;
 
     @GET
     @Path("/miljovariabler")
@@ -114,7 +116,7 @@ public class InformasjonRessurs {
     @GET
     @Path("/soknadstruktur")
     public SoknadStruktur hentSoknadStruktur(@QueryParam("skjemanummer") String skjemanummer, @QueryParam("filter") String filter) {
-        SoknadStruktur soknadStruktur = new WebSoknadConfig().hentStruktur(skjemanummer);
+        SoknadStruktur soknadStruktur = webSoknadConfig.hentStruktur(skjemanummer);
         if ("temakode".equalsIgnoreCase(filter)) {
             SoknadStruktur miniSoknadstruktur = new SoknadStruktur();
             miniSoknadstruktur.setTemaKode(soknadStruktur.getTemaKode());
