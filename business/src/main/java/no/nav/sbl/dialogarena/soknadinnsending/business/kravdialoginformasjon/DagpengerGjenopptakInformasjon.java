@@ -11,11 +11,11 @@ public class DagpengerGjenopptakInformasjon implements KravdialogInformasjon {
     }
 
     public String getSoknadUrl () {
-        return "soknad.dagpenger.gjenopptak.path";
+        return System.getProperty("soknad.dagpenger.gjenopptak.path");
     }
 
     public String getFortsettSoknadUrl() {
-        return "soknad.dagpenger.fortsett.path";
+        return System.getProperty("soknad.dagpenger.fortsett.path");
     }
 
     public String hentStruktur () {
