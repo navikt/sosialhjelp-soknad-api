@@ -17,7 +17,7 @@ public class DagpengerOrdinaerInformasjon implements KravdialogInformasjon {
         return "soknad.dagpenger.fortsett.path";
     }
 
-    public String hentStruktur () {
+    public String getStrukturFilnavn() {
         return "dagpenger_ordinaer.xml";
     }
 

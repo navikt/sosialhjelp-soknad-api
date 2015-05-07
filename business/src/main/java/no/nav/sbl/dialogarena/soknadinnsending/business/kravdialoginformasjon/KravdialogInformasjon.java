@@ -12,7 +12,7 @@ public interface KravdialogInformasjon {
     String getSoknadUrlKey();
     String getFortsettSoknadUrlKey();
     List<String> getSoknadBolker();
-    String hentStruktur ();
+    String getStrukturFilnavn();
     List<String> getSkjemanummer();
 
 }
