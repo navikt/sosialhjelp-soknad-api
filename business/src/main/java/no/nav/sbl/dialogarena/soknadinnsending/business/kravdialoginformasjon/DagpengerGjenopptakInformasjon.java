@@ -18,7 +18,7 @@ public class DagpengerGjenopptakInformasjon implements KravdialogInformasjon {
         return "soknad.dagpenger.fortsett.path";
     }
 
-    public String hentStruktur () {
+    public String getStrukturFilnavn() {
         return "dagpenger_gjenopptak.xml";
     }
 
