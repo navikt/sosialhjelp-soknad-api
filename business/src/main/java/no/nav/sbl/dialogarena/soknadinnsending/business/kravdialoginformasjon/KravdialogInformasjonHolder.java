@@ -1,12 +1,14 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon;
 
 import no.nav.modig.core.exception.ApplicationException;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.asList;
 
+@Component
 public class KravdialogInformasjonHolder {
 
     private List<KravdialogInformasjon> soknadsKonfigurasjoner = new ArrayList<>();
