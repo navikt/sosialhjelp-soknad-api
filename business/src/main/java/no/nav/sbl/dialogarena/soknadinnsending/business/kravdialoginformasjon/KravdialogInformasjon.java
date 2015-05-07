@@ -4,13 +4,13 @@ import java.util.List;
 
 public interface KravdialogInformasjon {
 
-    public static final String BOLK_PERSONALIA = "Personalia";
-    public static final String BOLK_BARN = "Barn";
-    public static final String BOLK_ARBEIDSFORHOLD = "Arbeidsforhold";
+    String BOLK_PERSONALIA = "Personalia";
+    String BOLK_BARN = "Barn";
+    String BOLK_ARBEIDSFORHOLD = "Arbeidsforhold";
 
     String getSoknadTypePrefix();
-    String getSoknadUrl();
-    String getFortsettSoknadUrl();
+    String getSoknadUrlKey();
+    String getFortsettSoknadUrlKey();
     List<String> getSoknadBolker();
     String hentStruktur ();
     List<String> getSkjemanummer();

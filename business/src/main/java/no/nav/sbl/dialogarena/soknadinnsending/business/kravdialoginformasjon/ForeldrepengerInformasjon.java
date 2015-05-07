@@ -9,12 +9,12 @@ public class ForeldrepengerInformasjon implements KravdialogInformasjon {
         return "foreldresoknad";
     }
 
-    public String getSoknadUrl () {
-        return System.getProperty("foreldresoknad.path");
+    public String getSoknadUrlKey() {
+        return "foreldresoknad.path";
     }
 
-    public String getFortsettSoknadUrl() {
-        return System.getProperty("foreldresoknad.fortsett.path");
+    public String getFortsettSoknadUrlKey() {
+        return "foreldresoknad.fortsett.path";
     }
 
     public String hentStruktur () {

@@ -10,12 +10,12 @@ public class AAPInformasjon implements KravdialogInformasjon {
         return "aap.ordinaer";
     }
 
-    public String getSoknadUrl () {
-        return System.getProperty("soknad.aap.ordinaer.path");
+    public String getSoknadUrlKey() {
+        return "soknad.aap.ordinaer.path";
     }
 
-    public String getFortsettSoknadUrl() {
-        return System.getProperty("soknad.aap.fortsett.path");
+    public String getFortsettSoknadUrlKey() {
+        return "soknad.aap.fortsett.path";
     }
 
     public String hentStruktur () {
