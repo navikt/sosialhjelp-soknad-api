@@ -18,7 +18,7 @@ public class AAPInformasjon implements KravdialogInformasjon {
         return "soknad.aap.fortsett.path";
     }
 
-    public String hentStruktur () {
+    public String getStrukturFilnavn() {
         return "aap_ordinaer.xml";
     }
 

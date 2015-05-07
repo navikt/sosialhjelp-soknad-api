@@ -17,7 +17,7 @@ public class ForeldrepengerInformasjon implements KravdialogInformasjon {
         return "foreldresoknad.fortsett.path";
     }
 
-    public String hentStruktur () {
+    public String getStrukturFilnavn() {
         return "foreldresoknad.xml";
     }
 
