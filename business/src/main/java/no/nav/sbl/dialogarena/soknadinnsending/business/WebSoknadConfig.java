@@ -36,12 +36,12 @@ public class WebSoknadConfig {
 
     public String getSoknadUrl (long soknadId) {
         KravdialogInformasjon skjemaConfig = finnSkjemaConfig(soknadId);
-        return skjemaConfig.getSoknadUrl();
+        return System.getProperty(skjemaConfig.getSoknadUrlKey());
     }
 
     public String getFortsettSoknadUrl(long soknadId) {
         KravdialogInformasjon skjemaConfig = finnSkjemaConfig(soknadId);
-        return skjemaConfig.getFortsettSoknadUrl();
+        return System.getProperty(skjemaConfig.getFortsettSoknadUrlKey());
     }
 
     public SoknadStruktur hentStruktur (long soknadId) {

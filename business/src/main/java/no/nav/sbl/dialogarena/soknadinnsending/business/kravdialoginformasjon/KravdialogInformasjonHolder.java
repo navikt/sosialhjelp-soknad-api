@@ -30,7 +30,7 @@ public class KravdialogInformasjonHolder {
     }
 
     public List<String> hentAlleSkjemanumre() {
-        List<String> skjemanumre = new ArrayList();
+        List<String> skjemanumre = new ArrayList<>();
         for (KravdialogInformasjon soknadKonfigurasjon : soknadsKonfigurasjoner) {
             skjemanumre.addAll(soknadKonfigurasjon.getSkjemanummer());
         }
