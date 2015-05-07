@@ -31,7 +31,11 @@
                         <div>
                             {{#hvisLik properties.stillingstype "variabel"}}
                                 {{hentTekst "arbeidsforhold.ansatt.stillingsprosent.variabel"}}
-                            {{else}}
+                            {{/hvisLik}}
+                            {{#hvisLik properties.stillingstype "fastOgVariabel"}}
+                                {{hentTekst "arbeidsforhold.stillingstype.fastOgVariabel"}}
+                            {{/hvisLik}}
+                            {{#hvisLik properties.stillingstype "fast"}}
                                 {{properties.stillingsprosent}} {{hentTekst "oppsummering.arbeidsforhold.stillingsprosent.label"}}
                             {{/hvisLik}}
                         </div>
