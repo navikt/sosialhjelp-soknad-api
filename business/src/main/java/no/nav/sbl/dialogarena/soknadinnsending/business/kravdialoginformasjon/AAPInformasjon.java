@@ -27,6 +27,6 @@ public class AAPInformasjon implements KravdialogInformasjon {
     }
 
     public List<String> getSoknadBolker() {
-        return asList(BOLK_PERSONALIA, BOLK_BARN, BOLK_ARBEIDSFORHOLD);
+        return asList(BOLK_PERSONALIA, BOLK_BARN);
     }
 }
