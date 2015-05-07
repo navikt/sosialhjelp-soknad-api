@@ -55,7 +55,7 @@ public class WebSoknadConfig {
     }
 
     private SoknadStruktur hentStrukturForSkjemanavn(KravdialogInformasjon skjemaConfig) {
-        String type = skjemaConfig.hentStruktur();
+        String type = skjemaConfig.getStrukturFilnavn();
         if (type == null || type.isEmpty()) {
             throw new ApplicationException("Fant ikke strukturdokument for skjema: " + skjemaConfig.getClass().getSimpleName());
         }
