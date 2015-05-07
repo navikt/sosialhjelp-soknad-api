@@ -157,6 +157,17 @@
         <id>samtalen.student.andreforhold</id>
     </faktum>
 
+    <!-- Andre ytelser -->
+    <faktum>
+        <id>andreytelser.yterserfraNAV.kvalifiseringsstonad</id>
+    </faktum>
+    <faktum>
+        <id>andreytelser.yterserfraNAV.okonomisksosialhjelp</id>
+    </faktum>
+    <faktum>
+        <id>andreytelser.yterserfraNAV.ikkemottattellersokt</id>
+    </faktum>
+
     <!-- Ekstra vedlegg -->
     <faktum>
         <id>ekstraVedlegg</id>
