@@ -403,7 +403,7 @@ public class WebSoknad implements Serializable {
     }
 
     public boolean erEttersending() {
-        return DelstegStatus.isEttersendingStatus(delstegStatus);
+        return delstegStatus != null && delstegStatus.erEttersending();
     }
 
     public boolean erDagpengeSoknad() {
