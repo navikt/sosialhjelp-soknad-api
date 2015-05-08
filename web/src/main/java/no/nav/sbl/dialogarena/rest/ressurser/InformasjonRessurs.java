@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.rest.Logg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.Arbeidsforhold;
 import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.ArbeidsforholdService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.PersonAlder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.dto.Land;
@@ -124,13 +123,7 @@ public class InformasjonRessurs {
         }
         return soknadStruktur;
     }
-    @GET
-    @Path("/arbeidsforhold/{soknadId}/{fnr}")
-    public List<Arbeidsforhold> arbforhold(@PathParam("soknadId") Long soknadId, @PathParam("fnr")String fnr){
-        arbeidsforholdService.lagreArbeidsforhold(fnr, soknadId);
-        return arbeidsforholdService.hentArbeidsforhold(fnr);
-    }
-
+    
     @GET
     @Path("/utslagskriterier")
     public Map<String, Object> hentUtslagskriterier() {
