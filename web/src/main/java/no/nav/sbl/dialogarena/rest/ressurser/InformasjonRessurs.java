@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.rest.Logg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.ArbeidsforholdService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.PersonAlder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.dto.Land;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
@@ -50,8 +49,6 @@ public class InformasjonRessurs {
     private PersonaliaService personaliaService;
     @Inject
     private PersonInfoService personInfoService;
-    @Inject
-    private ArbeidsforholdService arbeidsforholdService;
     @Inject
     private WebSoknadConfig webSoknadConfig;
 
@@ -123,7 +120,7 @@ public class InformasjonRessurs {
         }
         return soknadStruktur;
     }
-    
+
     @GET
     @Path("/utslagskriterier")
     public Map<String, Object> hentUtslagskriterier() {
