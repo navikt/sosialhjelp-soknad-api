@@ -40,7 +40,7 @@
                         {{/hvisLik}}
 
                         {{#hvisLik innsendingsvalg "VedleggSendesIkke"}}
-                        <span class="status">{{ hentTekst "oppsummering.sendesIkke" }}</span><span class="aarsak">{{ aarsak }}</span>
+                        <span class="status">{{ hentTekst "oppsummering.sendesIkke" }}</span>
                         {{/hvisLik}}
 
                         {{#hvisLik innsendingsvalg "VedleggSendesAvAndre"}}
@@ -48,9 +48,16 @@
                         {{/hvisLik}}
 
                         {{#hvisLik innsendingsvalg "VedleggAlleredeSendt"}}
-                        <span class="status">{{ hentTekst "oppsummering.vedleggAlleredeSendt" }}</span><span class="aarsak">{{ aarsak }}</span>
+                        <span class="status">{{ hentTekst "oppsummering.vedleggAlleredeSendt" }}</span>
                         {{/hvisLik}}
                     </p>
+
+                    {{#hvisLik innsendingsvalg "VedleggSendesIkke"}}
+                        <p><span class="aarsak">{{ aarsak }}</span></p>
+                    {{/hvisLik}}
+                    {{#hvisLik innsendingsvalg "VedleggAlleredeSendt"}}
+                        <p><span class="aarsak">{{ aarsak }}</span></p>
+                    {{/hvisLik}}
                 </div>
             </td>
         </tr>
