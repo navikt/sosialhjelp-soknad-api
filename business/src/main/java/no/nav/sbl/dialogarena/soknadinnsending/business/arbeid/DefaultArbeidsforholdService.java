@@ -13,6 +13,7 @@ import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.R
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerRequest;
 import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.OrganisasjonV4;
 import org.joda.time.DateTime;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -133,6 +134,7 @@ public class DefaultArbeidsforholdService implements ArbeidsforholdService, Bolk
     }
 
     @Override
+    @Cacheable("arbeidsforholdCache")
     public void lagreBolk(String fodselsnummer, Long soknadId) {
         lagreArbeidsforhold(fodselsnummer, soknadId);
     }
