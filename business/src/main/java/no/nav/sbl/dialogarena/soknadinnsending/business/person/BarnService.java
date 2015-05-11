@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 import org.slf4j.Logger;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -35,6 +36,7 @@ public class BarnService implements BolkService {
     }
 
     @Override
+    @Cacheable("barnCache")
     public void lagreBolk(String fodselsnummer, Long soknadId) {
         HentKjerneinformasjonResponse kjerneinformasjonResponse;
 
