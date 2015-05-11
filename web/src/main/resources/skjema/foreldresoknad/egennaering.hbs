@@ -61,16 +61,17 @@
                             {{/hvisLik}}
                         </li>
 
-                        <li class="kulepunkt">{{#hvisSant properties.startetfireaarsiden}}
+                        <li class="kulepunkt">
+                        {{#hvisSant properties.startetfireaarsiden}}
                             {{hentTekst "foreldresoknad.egennaering.nynaering.startetfireaarsiden.true"}}
-                                <ul><li class="kulepunkt">{{hentTekst "foreldresoknad.oppsummering.egennaering.startetnar.dato"}} {{formatterLangDato properties.startetnar}}<li></ul>
-                            </li>
+                                <ul><li class="kulepunkt">{{hentTekst "foreldresoknad.oppsummering.egennaering.startetnar.dato"}} {{formatterLangDato properties.startetnar}}</li></ul>
                         {{else}}
                             <span>{{hentTekst "foreldresoknad.egennaering.nynaering.startetfireaarsiden.false"}}</span>
                         {{/hvisSant}}
                         </li>
 
-                         <li class="kulepunkt">{{#hvisSant properties.varigendring}}
+                         <li class="kulepunkt">
+                         {{#hvisSant properties.varigendring}}
                              <span>{{hentTekst "foreldresoknad.egennaering.nynaering.varigendring.true"}}</span>
                             <ul>
                                 <li class="kulepunkt">{{hentTekst "foreldresoknad.oppsummering.egennaering.varigendring.dato"}} {{formatterLangDato properties.datoendring}}</li>
