@@ -85,8 +85,10 @@ public class DefaultArbeidsforholdService implements ArbeidsforholdService, Bolk
                 yrkesaktiv = new Faktum()
                         .medSoknadId(soknadId)
                         .medKey("arbeidsforhold.yrkesaktiv");
+                faktaService.lagreSystemFaktum(soknadId, yrkesaktiv.medValue("false"), "");
+            } else if("true".equals(yrkesaktiv.getValue())){
+                faktaService.lagreSystemFaktum(soknadId, yrkesaktiv.medValue("false"), "");
             }
-            faktaService.lagreSystemFaktum(soknadId, yrkesaktiv.medValue("false"), "");
         }
     }
 
