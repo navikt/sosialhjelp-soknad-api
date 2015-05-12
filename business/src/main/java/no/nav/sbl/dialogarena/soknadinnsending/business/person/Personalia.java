@@ -186,14 +186,10 @@ public class Personalia {
     }
 
     public boolean harUtenlandskFolkeregistrertAdresse() {
-
         if ((gjeldendeAdresse == null) || (gjeldendeAdresse.getAdressetype() == null)) {
             return false;
         }
-        if (gjeldendeAdresse.getAdressetype().equalsIgnoreCase(UTENLANDSK_ADRESSE.name())) {
-            return true;
-        }
-        return false;
+        return gjeldendeAdresse.getAdressetype().equalsIgnoreCase(UTENLANDSK_ADRESSE.name());
     }
 
     public String getKontonummer() {
