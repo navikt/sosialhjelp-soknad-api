@@ -25,14 +25,14 @@ public class TilgangskontrollTest {
     public void skalGiTilgangForBruker() {
         System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         StaticSubjectHandler subjectHandler = (StaticSubjectHandler) SubjectHandler.getSubjectHandler();
-        when(soknadService.hentSoknad("123")).thenReturn(new WebSoknad().medAktorId(subjectHandler.getUid()));
+        when(soknadService.hentSoknadForTilgangskontroll("123")).thenReturn(new WebSoknad().medAktorId(subjectHandler.getUid()));
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123");
     }
 
     @Test(expected = AuthorizationException.class)
     public void skalFeileForAndre() {
         System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
-        when(soknadService.hentSoknad("XXX")).thenReturn(new WebSoknad().medAktorId("other_user"));
+        when(soknadService.hentSoknadForTilgangskontroll("XXX")).thenReturn(new WebSoknad().medAktorId("other_user"));
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("XXX");
     }
 
