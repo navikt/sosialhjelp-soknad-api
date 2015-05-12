@@ -41,7 +41,6 @@ import org.mockito.stubbing.Answer;
 import org.springframework.context.ApplicationContext;
 
 import javax.activation.DataHandler;
-import javax.inject.Inject;
 import javax.xml.bind.JAXB;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -106,6 +105,7 @@ public class SoknadServiceTest {
         return IOUtils.toByteArray(resourceAsStream);
     }
 
+    @SuppressWarnings("unchecked")
     @Before
     public void before() {
         soknadService.initBolker();
@@ -135,6 +135,7 @@ public class SoknadServiceTest {
                                         new XMLVedlegg().withUuid("uidVedlegg")))
         );
         when(soknadRepository.hentSoknad("123")).thenReturn(null, soknad, soknad);
+        when(soknadRepository.hentSoknadMedData(11L)).thenReturn(soknad, soknad);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         JAXB.marshal(soknad, baos);
@@ -294,12 +295,15 @@ public class SoknadServiceTest {
         when(henvendelsesConnector.startSoknad(anyString(), anyString(), anyString())).thenReturn("123");
         when(soknadRepository.hentFaktumMedKey(anyLong(), anyString())).thenReturn(new Faktum().medFaktumId(1L));
         when(soknadRepository.hentFaktum(anyLong())).thenReturn(new Faktum().medFaktumId(1L));
+        when(soknadRepository.opprettSoknad(any(WebSoknad.class))).thenReturn(1L);
+        when(soknadRepository.hentSoknadMedData(1L)).thenReturn(new WebSoknad().medId(1L));
         soknadService.startSoknad(DAGPENGER, "***REMOVED***");
 
         ArgumentCaptor<String> uid = ArgumentCaptor.forClass(String.class);
         String bruker = StaticSubjectHandler.getSubjectHandler().getUid();
         verify(henvendelsesConnector).startSoknad(eq(bruker), eq(DAGPENGER), uid.capture());
         WebSoknad soknad = new WebSoknad()
+                .medId(1L)
                 .medBehandlingId("123")
                 .medUuid(uid.getValue())
                 .medskjemaNummer(DAGPENGER)
@@ -327,6 +331,7 @@ public class SoknadServiceTest {
         when(soknadRepository.hentFaktum(anyLong())).thenReturn(new Faktum().medFaktumId(1L));
         when(startDatoService.erJanuarEllerFebruar()).thenReturn(false);
         when(soknadRepository.opprettSoknad(any(WebSoknad.class))).thenReturn(soknadId);
+        when(soknadRepository.hentSoknadMedData(soknadId)).thenReturn(new WebSoknad().medId(soknadId));
         soknadService.startSoknad(DAGPENGER, "***REMOVED***");
 
         verify(faktaService, times(1)).lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum, "");
@@ -348,6 +353,7 @@ public class SoknadServiceTest {
         when(soknadRepository.hentFaktum(anyLong())).thenReturn(new Faktum().medFaktumId(1L));
         when(startDatoService.erJanuarEllerFebruar()).thenReturn(true);
         when(soknadRepository.opprettSoknad(any(WebSoknad.class))).thenReturn(soknadId);
+        when(soknadRepository.hentSoknadMedData(soknadId)).thenReturn(new WebSoknad().medId(soknadId));
         soknadService.startSoknad(DAGPENGER, "***REMOVED***");
 
         verify(faktaService, times(1)).lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum, "");
@@ -395,6 +401,8 @@ public class SoknadServiceTest {
                 .medValue(String.valueOf(innsendingsDato.getMillis()))
                 .medType(SYSTEMREGISTRERT);
         when(soknadRepository.hentFaktum(anyLong())).thenReturn(soknadInnsendingsDatoFaktum);
+        when(soknadRepository.opprettSoknad(any(WebSoknad.class))).thenReturn(soknadId);
+        when(soknadRepository.hentSoknadMedData(soknadId)).thenReturn(new WebSoknad().medId(soknadId));
 
         String ettersendingBehandlingsId = soknadService.startEttersending(behandlingsId, "***REMOVED***");
         verify(faktaService).lagreSystemFaktum(anyLong(), any(Faktum.class), anyString());

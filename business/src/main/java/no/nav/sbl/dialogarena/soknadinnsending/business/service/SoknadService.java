@@ -136,7 +136,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
                 .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
                 .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
 
-        lagrePredeinerteBolker(getSubjectHandler().getUid(), soknad.getSoknadId());
+        lagrePredeinerteBolker(getSubjectHandler().getUid(), soknad);
 
         return soknad;
     }
@@ -238,7 +238,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         }
         DateTime innsendtDato = hentOrginalInnsendtDato(behandlingskjede, behandlingsIdSoknad);
         WebSoknad ettersending = lagEttersendingFraWsSoknad(wsSoknadsdata, innsendtDato);
-        lagrePredeinerteBolker(fodselsnummer, ettersending.getSoknadId());
+        lagrePredeinerteBolker(fodselsnummer, ettersending);
         return ettersending.getBrukerBehandlingId();
     }
 
@@ -433,13 +433,13 @@ public class SoknadService implements SendSoknadService, EttersendingService {
                 .medOppretteDato(DateTime.now());
 
         Long soknadId = repository.opprettSoknad(soknad);
-
+        soknad.setSoknadId(soknadId);
         Faktum bolkerFaktum = new Faktum().medSoknadId(soknadId).medKey("bolker").medType(BRUKERREGISTRERT);
         repository.lagreFaktum(soknadId, bolkerFaktum);
 
         prepopulerSoknadsFakta(soknadId);
         opprettFaktumForLonnsOgTrekkoppgave(soknadId);
-        lagrePredeinerteBolker(fodselsnummer, soknadId);
+        lagrePredeinerteBolker(fodselsnummer, soknad);
         return behandlingsId;
     }
 
@@ -538,10 +538,13 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         }
     };
 
-    private void lagrePredeinerteBolker(String fodselsnummer, Long soknadId) {
-        List<BolkService> soknadBolker = config.getSoknadBolker(soknadId, bolker);
+    private void lagrePredeinerteBolker(String fodselsnummer, final WebSoknad soknad) {
+        WebSoknad soknadMedFakta = hentSoknadMedFaktaOgVedlegg(soknad.getSoknadId());
+        List<BolkService> soknadBolker = config.getSoknadBolker(soknad.getSoknadId(), bolker);
+        List<Faktum> systemfaktum = new ArrayList<>();
         for (BolkService bolk : soknadBolker) {
-            bolk.lagreBolk(fodselsnummer, soknadId);
+            systemfaktum.addAll(bolk.genererSystemFakta(fodselsnummer, soknad.getSoknadId()));
         }
+        faktaService.lagreSystemFakta(soknadMedFakta, systemfaktum);
     }
 }

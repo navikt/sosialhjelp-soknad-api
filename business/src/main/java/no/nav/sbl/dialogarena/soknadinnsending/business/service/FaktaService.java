@@ -77,6 +77,22 @@ public class FaktaService {
         return resultat;
     }
 
+    public void lagreSystemFakta(final WebSoknad soknad, List<Faktum> fakta) {
+        on(fakta).forEach(new Closure<Faktum>() {
+            @Override
+            public void execute(Faktum faktum) {
+                Faktum existing = soknad.getFaktaMedKeyOgProperty(faktum.getKey(), faktum.getUnikProperty(), faktum.getProperties().get(faktum.getUnikProperty()));
+                if(existing != null) {
+                    faktum.setFaktumId(existing.getFaktumId());
+                    faktum.kopierBrukerlagrede(existing);
+                }
+                faktum.setType(SYSTEMREGISTRERT);
+                faktum.setFaktumId(repository.lagreFaktum(soknad.getSoknadId(), faktum, true));
+                genererVedleggForFaktum(faktum);
+            }
+        });
+    }
+
     public Long lagreSystemFaktum(Long soknadId, Faktum f, String uniqueProperty) {
         logger.debug("*** Lagrer systemfaktum ***: " + f.getKey());
         f.setType(SYSTEMREGISTRERT);
