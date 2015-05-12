@@ -8,7 +8,12 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.*;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBruker;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLEPost;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLElektroniskAdresse;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLElektroniskKommunikasjonskanal;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLNorskIdent;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPersonnavn;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserRequest;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonPersonIkkeFunnet;
@@ -16,8 +21,6 @@ import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonSikkerhetsbegre
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,10 +30,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.List;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
 
 @RunWith(value = MockitoJUnitRunner.class)
 public class BarnServiceTest {
@@ -76,7 +78,6 @@ public class BarnServiceTest {
     private Kodeverk kodeverkMock;
     private XMLBruker xmlBruker;
     private Person person;
-    private DateTimeFormatter dateTimeFormat;
 
     @Before
     public void setup() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
@@ -84,8 +85,6 @@ public class BarnServiceTest {
         when(kodeverkMock.getPoststed(EN_ANNEN_ADRESSE_POSTNUMMER)).thenReturn(EN_ADRESSE_POSTSTED);
         when(kodeverkMock.getLand(NORGE_KODE)).thenReturn(NORGE);
         when(kodeverkMock.getLand(EN_LANDKODE)).thenReturn(ET_LAND);
-
-        dateTimeFormat = DateTimeFormat.forPattern("yyyy-MM-dd");
 
         HentKjerneinformasjonResponse response = new HentKjerneinformasjonResponse();
         person = genererPersonMedGyldigIdentOgNavn(RIKTIG_IDENT, ET_FORNAVN, ET_ETTERNAVN);
@@ -118,9 +117,9 @@ public class BarnServiceTest {
     public void skalHenteBarn() throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
         mockGyldigPersonMedBarn();
 
-        barnService.lagreBolk(RIKTIG_IDENT, 21L);
-
-        verify(faktaService, times(1)).lagreSystemFaktum(anyLong(), any(Faktum.class), anyString());
+        List<Faktum> faktums = barnService.genererSystemFakta(BARN_IDENT, 21L);
+        assertThat(faktums.size(), equalTo(1));
+        assertThat(faktums.get(0).getProperties().get("fnr"), equalTo(BARN_IDENT));
     }
 
     @Test
@@ -128,9 +127,9 @@ public class BarnServiceTest {
         mockGyldigPersonMedBarn();
         leggTilDoedeBarn();
 
-        barnService.lagreBolk(RIKTIG_IDENT, 21L);
-
-        verify(faktaService, times(1)).lagreSystemFaktum(anyLong(), any(Faktum.class), anyString());
+        List<Faktum> faktums = barnService.genererSystemFakta(BARN_IDENT, 21L);
+        assertThat(faktums.size(), equalTo(1));
+        assertThat(faktums.get(0).getProperties().get("fnr"), equalTo(BARN_IDENT));
     }
 
     private void mockGyldigPersonMedBarn() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
@@ -235,7 +234,6 @@ public class BarnServiceTest {
     private static XMLElektroniskAdresse lagElektroniskAdresse() {
         return new XMLEPost().withIdentifikator(EN_EPOST);
     }
-
 
 
     private static XMLPersonnavn navnMedMellomnavn() {

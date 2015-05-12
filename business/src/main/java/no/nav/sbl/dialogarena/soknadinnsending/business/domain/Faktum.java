@@ -19,6 +19,7 @@ import java.util.Set;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Faktum implements Serializable {
+    public static final String UNIQUE_KEY = "uniqueKey";
     private Long faktumId;
     private Long soknadId;
     private Long parrentFaktum;
@@ -92,6 +93,10 @@ public class Faktum implements Serializable {
             properties = new HashMap<>();
         }
         return properties;
+    }
+    @JsonIgnore
+    public String getUnikProperty(){
+        return getProperties().get(UNIQUE_KEY);
     }
 
     public void setProperties(Map<String, String> properties) {
@@ -280,12 +285,19 @@ public class Faktum implements Serializable {
     }
 
     public boolean matcherUnikProperty(String uniqueProperty, Faktum faktum) {
+        return matcherUnikProperty(uniqueProperty, faktum.getProperties().get(uniqueProperty));
+    }
+    public boolean matcherUnikProperty(String uniqueProperty, String value) {
         return harEgenskap(uniqueProperty)
-                && getProperties().get(uniqueProperty).equals(faktum.getProperties().get(uniqueProperty));
+                && getProperties().get(uniqueProperty).equals(value);
     }
 
     private boolean harEgenskap(String uniqueProperty) {
         return getProperties().get(uniqueProperty) != null;
+    }
+
+    public Faktum medUnikProperty(String unikRef) {
+        return medSystemProperty(UNIQUE_KEY, unikRef);
     }
 
     public enum FaktumType {SYSTEMREGISTRERT, BRUKERREGISTRERT}
