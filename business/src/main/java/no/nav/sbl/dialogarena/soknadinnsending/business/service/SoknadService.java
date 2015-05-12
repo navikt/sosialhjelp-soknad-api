@@ -119,10 +119,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     }
 
     public WebSoknad hentSoknad(String behandlingsId) {
-        WebSoknad soknad = repository.hentSoknad(behandlingsId);
-        if (soknad == null) {
-            soknad = hentFraHenvendelse(behandlingsId, false);
-        }
+        WebSoknad soknad = hentSoknadFraDbEllerHenvendelse(behandlingsId);
         soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknad.getSoknadId()))
                 .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
                 .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
@@ -130,6 +127,10 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         lagrePredeinerteBolker(getSubjectHandler().getUid(), soknad.getSoknadId());
 
         return soknad;
+    }
+
+    public WebSoknad hentSoknadForTilgangskontroll(String behandlingsId) {
+        return hentSoknadFraDbEllerHenvendelse(behandlingsId);
     }
 
     //to do: bare ta inn behandlingsid videre
@@ -144,8 +145,12 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         return soknad;
     }
 
-    public String hentSoknadEier(Long soknadId) {
-        return repository.hentSoknad(soknadId).getAktoerId();
+    private WebSoknad hentSoknadFraDbEllerHenvendelse(String behandlingsId) {
+        WebSoknad soknad = repository.hentSoknad(behandlingsId);
+        if (soknad == null) {
+            soknad = hentFraHenvendelse(behandlingsId, false);
+        }
+        return soknad;
     }
 
     private WebSoknad hentFraHenvendelse(String behandlingsId, boolean medFaktumOgVedlegg) {

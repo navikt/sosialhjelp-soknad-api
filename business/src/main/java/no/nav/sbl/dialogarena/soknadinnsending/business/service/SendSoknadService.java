@@ -15,7 +15,7 @@ public interface SendSoknadService {
     WebSoknad hentSoknadMedFaktaOgVedlegg(long soknadId);
     WebSoknad hentSoknadMedFaktaOgVedlegg(String behandlingsId);
 
-    String hentSoknadEier(Long soknadId);
+    WebSoknad hentSoknadForTilgangskontroll(String behandlingsId);
 
     void sendSoknad(String behandlingsId, byte[] outputStream);
 
