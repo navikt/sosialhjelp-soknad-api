@@ -6,6 +6,9 @@ import static java.util.Arrays.asList;
 
 
 public class DagpengerGjenopptakInformasjon implements KravdialogInformasjon {
+
+    private static List<String> skjemanummer = asList("NAV 04-16.03", "NAV 04-16.04");
+
     public String getSoknadTypePrefix () {
         return "dagpenger.gjenopptak";
     }
@@ -23,10 +26,14 @@ public class DagpengerGjenopptakInformasjon implements KravdialogInformasjon {
     }
 
     public List<String> getSkjemanummer() {
-        return asList("NAV 04-16.03", "NAV 04-16.04");
+        return skjemanummer;
     }
 
     public List<String> getSoknadBolker() {
         return asList(BOLK_PERSONALIA, BOLK_BARN);
+    }
+
+    public static boolean erDagpengerGjenopptak(String skjema) {
+        return skjemanummer.contains(skjema);
     }
 }
