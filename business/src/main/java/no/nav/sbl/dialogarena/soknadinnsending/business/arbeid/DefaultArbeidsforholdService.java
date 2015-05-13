@@ -81,13 +81,18 @@ public class DefaultArbeidsforholdService implements ArbeidsforholdService, Bolk
             arbridsforholdFaktum.setFaktumId(faktaService.lagreSystemFaktum(soknadId, arbridsforholdFaktum, "edagref"));
         }
         if(!forhold.isEmpty()){
-            Faktum yrkesaktiv = faktaService.hentFaktumMedKey(soknadId, "arbeidsforhold.yrkesaktiv");
+            Faktum yrkesaktiv;
+            try {
+                yrkesaktiv = faktaService.hentFaktumMedKey(soknadId, "arbeidsforhold.yrkesaktiv");
+            } catch(Exception ignore){
+                yrkesaktiv =  null;
+            }
             if(yrkesaktiv == null){
                 yrkesaktiv = new Faktum()
                         .medSoknadId(soknadId)
                         .medKey("arbeidsforhold.yrkesaktiv");
                 faktaService.lagreSystemFaktum(soknadId, yrkesaktiv.medValue("false"), "");
-            } else if("true".equals(yrkesaktiv.getValue())){
+            } else if(!"false".equals(yrkesaktiv.getValue())){
                 faktaService.lagreSystemFaktum(soknadId, yrkesaktiv.medValue("false"), "");
             }
         }
