@@ -41,15 +41,17 @@
                         </div>
 
                         {{#unless properties.kilde "EDAG"}}
-                            {{#hvisSant properties.permisjon}}
-                                <div>{{hentTekst "perioder.permisjon.true"}}</div>
-                            {{else}}
-                                <div>{{hentTekst "perioder.permisjon.false"}}</div>
-                                {{#hvisSant properties.opphorer}}
-                                    <div>{{hentTekst "perioder.permisjon.opphorer.true"}}</div>
+                            {{#hvisSant properties.ansatt}}
+                                {{#hvisSant properties.permisjon}}
+                                    <div>{{hentTekst "perioder.permisjon.true"}}</div>
                                 {{else}}
-                                    <div>{{hentTekst "perioder.permisjon.opphorer.false"}}</div>
-                                    <div>{{properties.aarsakikkeavtalt}}</div>
+                                    <div>{{hentTekst "perioder.permisjon.false"}}</div>
+                                    {{#hvisSant properties.opphorer}}
+                                        <div>{{hentTekst "perioder.permisjon.opphorer.true"}}</div>
+                                    {{else}}
+                                        <div>{{hentTekst "perioder.permisjon.opphorer.false"}}</div>
+                                        <div>{{properties.aarsakikkeavtalt}}</div>
+                                    {{/hvisSant}}
                                 {{/hvisSant}}
                             {{/hvisSant}}
                         {{/unless}}
