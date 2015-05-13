@@ -235,7 +235,6 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         }
         DateTime innsendtDato = hentOrginalInnsendtDato(behandlingskjede, behandlingsIdSoknad);
         WebSoknad ettersending = lagEttersendingFraWsSoknad(wsSoknadsdata, innsendtDato);
-        lagrePredeinerteBolker(fodselsnummer, ettersending);
         return ettersending.getBrukerBehandlingId();
     }
 
@@ -453,7 +452,6 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
         prepopulerSoknadsFakta(soknadId);
         opprettFaktumForLonnsOgTrekkoppgave(soknadId);
-        lagrePredeinerteBolker(fodselsnummer, soknad);
         return behandlingsId;
     }
 
