@@ -289,9 +289,9 @@ public class SoknadServiceTest {
 
     @Test
     public void skalHenteSoknad() {
-        when(soknadRepository.hentSoknadMedData(1L)).thenReturn(new WebSoknad().medId(1L).medskjemaNummer("NAV 04-01.03"));
+        when(soknadRepository.hentSoknad(1L)).thenReturn(new WebSoknad().medId(1L).medskjemaNummer("NAV 04-01.03"));
         when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(new ArrayList<Vedlegg>());
-        assertThat(soknadService.hentSoknadMedFaktaOgVedlegg(1L), is(equalTo(new WebSoknad().medId(1L).medskjemaNummer("NAV 04-01.03").medVedlegg(new ArrayList<Vedlegg>()))));
+        assertThat(soknadService.hentSoknad(1L), is(equalTo(new WebSoknad().medId(1L).medskjemaNummer("NAV 04-01.03"))));
     }
 
     @Test

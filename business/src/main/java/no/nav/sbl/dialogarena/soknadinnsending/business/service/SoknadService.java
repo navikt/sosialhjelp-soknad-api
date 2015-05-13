@@ -110,13 +110,8 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         repository.settJournalforendeEnhet(behandlingsId, journalforendeEnhet);
     }
 
-    public WebSoknad hentSoknadMedFaktaOgVedlegg(long soknadId) {
-        WebSoknad soknad = repository.hentSoknadMedData(soknadId);
-
-        soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknadId))
-                .medSoknadUrl(config.getSoknadUrl(soknadId))
-                .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknadId));
-        return soknad;
+    public WebSoknad hentSoknad(long soknadId) {
+        return repository.hentSoknad(soknadId);
     }
 
     public WebSoknad hentSoknad(String behandlingsId) {
