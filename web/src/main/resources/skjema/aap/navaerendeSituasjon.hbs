@@ -1,1 +1,114 @@
-<h2>Nåværende situasjon</h2>
+<h2>{{ hentTekst "navaerendeSituasjon.tittel" }}</h2>
+<table>
+    {{#forFaktum "navaerendeSituasjon.iArbeid"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                {{#hvisSant value}}
+                    <span>{{ hentTekst "navaerendeSituasjon.iArbeid"}}</span>
+                    <ul>
+                        {{#forFaktum "navaerendeSituasjon.iArbeid.ansatt"}}
+                            {{#hvisSant value}}
+                                <li class="kulepunkt">
+                                    <span>{{ hentTekst "navaerendeSituasjon.iArbeid.ansatt"}}</span>
+                                </li>
+                            {{/hvisSant}}
+                        {{/forFaktum}}
+                        {{#forFaktum "navaerendeSituasjon.iArbeid.selvstendigNaeringsdrivende"}}
+                            {{#hvisSant value}}
+                                <li class="kulepunkt">
+                                    <span>{{ hentTekst "navaerendeSituasjon.iArbeid.selvstendigNaeringsdrivende"}}</span>
+                                </li>
+                            {{/hvisSant}}
+                        {{/forFaktum}}
+                    </ul>
+                {{/hvisSant}}
+            </td>
+        </tr>
+    {{/forFaktum}}
+    {{#forFaktum "navaerendeSituasjon.sykmeldt"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                {{#hvisSant value}}
+                    <span>{{ hentTekst "navaerendeSituasjon.sykmeldt"}}</span>
+                {{/hvisSant}}
+            </td>
+        </tr>
+    {{/forFaktum}}
+    {{#forFaktum "navaerendeSituasjon.arbeidsledig"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                {{#hvisSant value}}
+                    <span>{{ hentTekst "navaerendeSituasjon.arbeidsledig"}}</span>
+                {{/hvisSant}}
+            </td>
+        </tr>
+    {{/forFaktum}}
+    {{#forFaktum "navaerendeSituasjon.student"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                {{#hvisSant value}}
+                    <span>{{ hentTekst "navaerendeSituasjon.student"}}</span>
+                    <ul>
+                        {{#forFaktum "navaerendeSituasjon.student.studererFortsatt"}}
+                            <li class="kulepunkt">
+                                {{#hvisSant value}}
+                                    <span>{{ hentTekst "navaerendeSituasjon.student.studererFortsatt.true"}}</span>
+                                {{else}}
+                                    <span>{{ hentTekst "navaerendeSituasjon.student.studererFortsatt.false"}}</span>
+                                    {{#forFaktum "navaerendeSituasjon.student.avbruttStudie.ikkeTilbake"}}
+                                        <ul>
+                                            <li class="kulepunkt">
+                                                {{#hvisSant value}}
+                                                    <span>{{ hentTekst "navaerendeSituasjon.student.avbruttStudie.ikkeTilbake.true"}}</span>
+                                                {{else}}
+                                                    <span>{{ hentTekst "navaerendeSituasjon.student.avbruttStudie.ikkeTilbake.false"}}</span>
+                                                    {{#forFaktum "navaerendeSituasjon.student.avbruttStudie.vilFortsette.mottarSykestipend"}}
+                                                        <ul>
+                                                            <li class="kulepunkt">
+                                                                {{#hvisSant value}}
+                                                                    <span>{{ hentTekst "navaerendeSituasjon.student.avbruttStudie.vilFortsette.mottarSykestipend.true"}}</span>
+                                                                {{else}}
+                                                                    <span>{{ hentTekst "navaerendeSituasjon.student.avbruttStudie.vilFortsette.mottarSykestipend.false"}}</span>
+                                                                {{/hvisSant}}
+                                                            </li>
+                                                        </ul>
+                                                    {{/forFaktum}}
+                                                {{/hvisSant}}
+                                            </li>
+                                        </ul>
+                                    {{/forFaktum}}
+                                {{/hvisSant}}
+                            </li>
+                        {{/forFaktum}}
+                    </ul>
+                {{/hvisSant}}
+            </td>
+        </tr>
+    {{/forFaktum}}
+    {{#forFaktum "navaerendeSituasjon.forstegangstjeneste"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                {{#hvisSant value}}
+                    <span>{{ hentTekst "navaerendeSituasjon.forstegangstjeneste"}}</span>
+                {{/hvisSant}}
+            </td>
+        </tr>
+    {{/forFaktum}}
+    {{#forFaktum "navaerendeSituasjon.annet"}}
+        {{#hvisSant value}}
+            {{#forFaktum "navaerendeSituasjon.annet.fritekst"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td>
+                        <em>{{ value }}</em>
+                    </td>
+                </tr>
+            {{/forFaktum}}
+        {{/hvisSant}}
+    {{/forFaktum}}
+</table>
