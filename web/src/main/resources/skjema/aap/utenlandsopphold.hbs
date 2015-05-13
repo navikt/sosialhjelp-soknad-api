@@ -7,9 +7,9 @@
                 <td class="sjekket"></td>
                 <td>
                     {{#hvisSant value}}
-                        <em>{{ hentTekst "aap.ordinaer.utenlandsopphold.oppholdINorgeSisteTreAar.true" }}</em>
+                        <span>{{ hentTekst "aap.ordinaer.utenlandsopphold.oppholdINorgeSisteTreAar.true" }}</span>
                     {{else}}
-                        <em>{{ hentTekst "aap.ordinaer.utenlandsopphold.oppholdINorgeSisteTreAar.false" }}</em>
+                        <span>{{ hentTekst "aap.ordinaer.utenlandsopphold.oppholdINorgeSisteTreAar.false" }}</span>
 
                         {{#forFaktum "utenlandsopphold.oppholdINorgeSisteTreAar.false.boddINorgeSisteAaret"}}
                             {{#hvisSant value}}
@@ -46,9 +46,9 @@
                 <td class="sjekket"></td>
                 <td>
                     {{#hvisSant value}}
-                        <em>{{ hentTekst "utenlandsopphold.EOSLand.true" }}</em>
+                        <span>{{ hentTekst "utenlandsopphold.EOSLand.true" }}</span>
                     {{else}}
-                        <em>{{ hentTekst "utenlandsopphold.EOSLand.false" }}</em>
+                        <span>{{ hentTekst "utenlandsopphold.EOSLand.false" }}</span>
 
                         {{#forFakta "utenlandsopphold.EOSLand.periode"}}
                             <li class="kulepunkt">

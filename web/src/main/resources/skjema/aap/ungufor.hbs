@@ -1,1 +1,17 @@
-<h2>Ung ufør</h2>
+{{#forFaktum "ungufor"}}
+    {{#hvisIkkeTom value}}
+        <h2>{{ hentTekst "ungufor.tittel" }}</h2>
+        <table>
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    {{#hvisSant value}}
+                        <span>{{ hentTekst "ungufor.true" }}</span>
+                    {{ else }}
+                        <span>{{ hentTekst "ungufor.false" }}</span>
+                    {{/hvisSant}}
+                </td>
+            </tr>
+        </table>
+    {{/hvisIkkeTom}}
+{{/forFaktum}}
