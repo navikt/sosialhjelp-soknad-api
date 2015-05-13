@@ -167,6 +167,54 @@
     <faktum>
         <id>andreytelser.yterserfraNAV.ikkemottattellersokt</id>
     </faktum>
+    <faktum>
+        <id>andreytelser.utbetalinger.fraarbeidsgiver</id>
+    </faktum>
+    <faktum>
+        <id>andreytelser.utbetalinger.fraarbeidsgiver.utbetalingen.engangsbelop</id>
+    </faktum>
+    <faktum>
+        <id>andreytelser.utbetalinger.fraarbeidsgiver.engangsbelop.belop</id>
+    </faktum>
+    <faktum>
+        <id>andreytelser.utbetalinger.fraarbeidsgiver.utbetalingen.lopendeutbetaling</id>
+    </faktum>
+    <faktum>
+        <id>andreytelser.utbetalinger.fraarbeidsgiver.lopendeutbetaling.belop</id>
+    </faktum>
+    <faktum>
+        <id>andreytelser.utbetalinger.fraarbeidsgiver.lopendeutbetaling.opphorer</id>
+    </faktum>
+    <faktum>
+        <id>andreytelser.utbetalinger.fraandre.omsorgslonn</id>
+    </faktum>
+    <faktum>
+        <id>andreytelser.utbetalinger.fraandre.fosterhjemsgodtgjorelse</id>
+    </faktum>
+    <faktum>
+        <id>andreytelser.utbetalinger.fraandre.verv</id>
+    </faktum>
+    <faktum>
+        <id>andreytelser.utbetalinger.fraandre.utenlandsketrygdemyndigheter</id>
+    </faktum>
+    <faktum>
+        <id>andreytelser.utbetalinger.fraandre.utenlandsketrygdemyndigheter.ytelse</id>
+    </faktum>
+    <faktum>
+        <id>andreytelser.utbetalinger.fraandre.utenlandsketrygdemyndigheter.land</id>
+    </faktum>
+    <faktum>
+        <id>andreytelser.utbetalinger.fraandre.annet</id>
+    </faktum>
+    <faktum>
+        <id>andreytelser.utbetalinger.fraandre.annet.ytelse</id>
+    </faktum>
+    <faktum>
+        <id>andreytelser.utbetalinger.fraandre.annet.utbetaler</id>
+    </faktum>
+    <faktum>
+        <id>andreytelser.utbetalinger.fraandre.ikkemottattellersokt</id>
+    </faktum>
 
     <!-- Ekstra vedlegg -->
     <faktum>
@@ -195,5 +243,11 @@
         <skjemaNummer>X8</skjemaNummer>
         <forSystemfaktum>false</forSystemfaktum>
         <flereTillatt>true</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <id>8</id>
+        <faktum>andreytelser.utbetalinger.fraarbeidsgiver</faktum>
+        <skjemaNummer>V5</skjemaNummer>
+        <forSystemfaktum>false</forSystemfaktum>
     </vedlegg>
 </soknad>
