@@ -14,7 +14,8 @@
                 <tr>
                     <td class="sjekket"></td>
                     <td>
-                        <span class="strong">{{properties.arbeidsgivernavn}}</span>
+                        <span class="strong">{{properties.arbeidsgivernavn}}
+                        {{#hvisIkkeTom properties.orgnr}} ({{properties.orgnr}}){{/hvisIkkeTom}}</span>
 
                         {{#hvisSant properties.jobbetkuninorge}}{{else}}
                         <div>
