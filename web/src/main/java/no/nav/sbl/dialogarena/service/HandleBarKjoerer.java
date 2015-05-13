@@ -22,12 +22,7 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import static no.bekk.bekkopen.person.FodselsnummerValidator.getFodselsnummer;
 import static no.nav.modig.lang.collections.IterUtils.on;
@@ -42,7 +37,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class HandleBarKjoerer implements HtmlGenerator {
 
     public static final Locale NO_LOCALE = new Locale("nb", "no");
-    
+
     @Inject
     private Kodeverk kodeverk;
 
@@ -89,6 +84,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
         handlebars.registerHelper("concat", generateConcatStringHelper());
         handlebars.registerHelper("skalViseRotasjonTurnusSporsmaal", generateSkalViseRotasjonTurnusSporsmaalHelper());
         handlebars.registerHelper("hvisLikCmsTekst", generateHvisLikCmsTekstHelper());
+        handlebars.registerHelper("toLowerCase", generateToLowerCaseHelper());
 
         return handlebars;
     }
@@ -204,7 +200,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
             @Override
             public CharSequence apply(Object context, Options options) throws IOException {
                 WebSoknad soknad = finnWebSoknad(options.context);
-                if(soknad.erDagpengeSoknad()) {
+                if (soknad.erDagpengeSoknad()) {
                     return DagpengerUtils.getSkjemanummer(soknad);
                 }
                 return soknad.getskjemaNummer();
@@ -361,6 +357,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
             }
         };
     }
+
     private Helper<Object> generateHvisEttersendingHelper() {
         return new Helper<Object>() {
             @Override
@@ -535,7 +532,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
 
             @Override
             public CharSequence apply(Object value, Options options) throws IOException {
-                if(!(options.context.model() instanceof Faktum)) {
+                if (!(options.context.model() instanceof Faktum)) {
                     return options.inverse(this);
                 }
 
@@ -553,10 +550,19 @@ public class HandleBarKjoerer implements HtmlGenerator {
         return new Helper<Object>() {
             @Override
             public CharSequence apply(Object value, Options options) throws IOException {
-                if(value != null && getCmsTekst(options.param(0).toString(), new Object[]{}, NO_LOCALE).equalsIgnoreCase(value.toString())) {
+                if (value != null && getCmsTekst(options.param(0).toString(), new Object[]{}, NO_LOCALE).equalsIgnoreCase(value.toString())) {
                     return options.fn(this);
                 }
                 return options.inverse(this);
+            }
+        };
+    }
+
+    private Helper<Object> generateToLowerCaseHelper() {
+        return new Helper<Object>() {
+            @Override
+            public CharSequence apply(Object value, Options options) throws IOException {
+                return value.toString().toLowerCase();
             }
         };
     }

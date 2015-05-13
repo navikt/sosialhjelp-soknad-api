@@ -124,9 +124,9 @@ public class FaktaService {
 
     private void settDelstegStatus(Long soknadId, String faktumKey) {
         WebSoknad webSoknad = repository.hentSoknad(soknadId);
-        webSoknad.validerDelstegEndring(DelstegStatus.UTFYLLING);
-        //Setter delstegstatus dersom et faktum blir lagret, med mindre det er epost eller ekstra vedlegg. Bør gjøres mer elegant, litt quickfix
+        //Sjekker og setter delstegstatus dersom et faktum blir lagret, med mindre det er epost eller ekstra vedlegg. Bør gjøres mer elegant, fremdeles litt quickfix
         if (!Personalia.EPOST_KEY.equals(faktumKey) && !EKSTRA_VEDLEGG_KEY.equals(faktumKey)) {
+            webSoknad.validerDelstegEndring(DelstegStatus.UTFYLLING);
             repository.settDelstegstatus(soknadId, DelstegStatus.UTFYLLING);
         }
     }

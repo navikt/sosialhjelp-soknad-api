@@ -1,0 +1,21 @@
+{{#forFaktum "yrkesskade.soeknadsgrunn"}}
+    {{#hvisIkkeTom value}}
+        <h2>{{ hentTekst "yrkesskade.tittel" }}</h2>
+        <table>
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    {{#hvisLik value "yrkesskadeGodkjent"}}
+                        <em>{{ hentTekst "yrkesskade.soeknadsgrunn.yrkesskade.godkjent" }}</em>
+                    {{/hvisLik}}
+                    {{#hvisLik value "yrkesskadeIkkeSvarPaaSoeknad"}}
+                        <em>{{ hentTekst "yrkesskade.soeknadsgrunn.yrkesskade.ikkeSvarPaaSoeknad" }}</em>
+                    {{/hvisLik}}
+                    {{#hvisLik value "yrkesskadeAnnet"}}
+                        <em>{{ hentTekst "yrkesskade.soeknadsgrunn.annet" }}</em>
+                    {{/hvisLik}}
+                </td>
+            </tr>
+        </table>
+    {{/hvisIkkeTom}}
+{{/forFaktum}}

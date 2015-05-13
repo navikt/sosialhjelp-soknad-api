@@ -41,7 +41,6 @@ import org.mockito.stubbing.Answer;
 import org.springframework.context.ApplicationContext;
 
 import javax.activation.DataHandler;
-import javax.inject.Inject;
 import javax.xml.bind.JAXB;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -281,13 +280,6 @@ public class SoknadServiceTest {
         assertThat(soknadService.hentSoknadMedFaktaOgVedlegg(1L), is(equalTo(new WebSoknad().medId(1L).medskjemaNummer("NAV 04-01.03").medVedlegg(new ArrayList<Vedlegg>()))));
     }
 
-    @Test
-    public void skalHenteSoknadEier() {
-        when(soknadRepository.hentSoknad(1L)).thenReturn(new WebSoknad().medId(1L).medAktorId("123"));
-        assertThat(soknadService.hentSoknadEier(1L), is(equalTo("123")));
-    }
-
-    
     @Test
     public void skalStarteSoknad() {
         DateTimeUtils.setCurrentMillisFixed(System.currentTimeMillis());
