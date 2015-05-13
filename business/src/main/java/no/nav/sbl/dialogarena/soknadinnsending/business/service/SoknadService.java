@@ -18,6 +18,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFak
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BolkService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
@@ -93,11 +94,11 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     @Inject
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
 
-    private List<BolkService> bolker;
+    private Map<String, BolkService> bolker;
 
     @PostConstruct
     public void initBolker() {
-        bolker = new ArrayList<>(applicationContex.getBeansOfType(BolkService.class).values());
+        bolker = applicationContex.getBeansOfType(BolkService.class);
     }
 
 
@@ -124,7 +125,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
                 .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
                 .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
 
-        lagrePredeinerteBolker(getSubjectHandler().getUid(), soknad.getSoknadId());
+        lagrePredeinerteBolker(getSubjectHandler().getUid(), soknad);
 
         return soknad;
     }
@@ -234,7 +235,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         }
         DateTime innsendtDato = hentOrginalInnsendtDato(behandlingskjede, behandlingsIdSoknad);
         WebSoknad ettersending = lagEttersendingFraWsSoknad(wsSoknadsdata, innsendtDato);
-        lagrePredeinerteBolker(fodselsnummer, ettersending.getSoknadId());
+        lagrePredeinerteBolker(fodselsnummer, ettersending);
         return ettersending.getBrukerBehandlingId();
     }
 
@@ -445,13 +446,14 @@ public class SoknadService implements SendSoknadService, EttersendingService {
                 .medOppretteDato(DateTime.now());
 
         Long soknadId = repository.opprettSoknad(soknad);
+        soknad.setSoknadId(soknadId);
 
         Faktum bolkerFaktum = new Faktum().medSoknadId(soknadId).medKey("bolker").medType(BRUKERREGISTRERT);
         repository.lagreFaktum(soknadId, bolkerFaktum);
 
         prepopulerSoknadsFakta(soknadId);
         opprettFaktumForLonnsOgTrekkoppgave(soknadId);
-        lagrePredeinerteBolker(fodselsnummer, soknadId);
+        lagrePredeinerteBolker(fodselsnummer, soknad);
         return behandlingsId;
     }
 
@@ -550,10 +552,14 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         }
     };
 
-    private void lagrePredeinerteBolker(String fodselsnummer, Long soknadId) {
-        List<BolkService> soknadBolker = config.getSoknadBolker(soknadId, bolker);
-        for (BolkService bolk : soknadBolker) {
-            bolk.lagreBolk(fodselsnummer, soknadId);
+    private void lagrePredeinerteBolker(String fodselsnummer, WebSoknad soknad) {
+        if (soknad.erEttersending()) {
+            bolker.get(PersonaliaService.class.getName()).lagreBolk(fodselsnummer, soknad.getSoknadId());
+        } else {
+            List<BolkService> soknadBolker = config.getSoknadBolker(soknad.getSoknadId(), bolker.values());
+            for (BolkService bolk : soknadBolker) {
+                bolk.lagreBolk(fodselsnummer, soknad.getSoknadId());
+            }
         }
     }
 }
