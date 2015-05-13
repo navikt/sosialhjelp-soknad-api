@@ -16,12 +16,12 @@
                     <td>
                         <span class="strong">{{properties.arbeidsgivernavn}}</span>
 
-                        <div>{{#hvisSant properties.jobbetkuninorge}}
-                            {{hentTekst "oppsummering.arbeidsforhold.jobbetkuninorge"}}
-                        {{else}}
+                        {{#hvisSant properties.jobbetkuninorge}}{{else}}
+                        <div>
                             {{hentLand properties.land}}
-                        {{/hvisSant}}
                         </div>
+                        {{/hvisSant}}
+
                         <div>{{#hvisSant properties.ansatt}}
                             {{hentTekst "oppsummering.arbeidsforhold.fra"}} {{formatterLangDato properties.fom }} {{hentTekst "oppsummering.arbeidsforhold.tilna"}}
                         {{else}}
