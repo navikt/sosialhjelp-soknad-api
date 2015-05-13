@@ -1,0 +1,65 @@
+<h2>{{ hentTekst "oppsummering.utenlandsopphold.tittel" }}</h2>
+<h3>{{ hentTekst "utenlandsopphold.oppholdINorgeSisteTreAar.overskrift" }}</h3>
+{{#forFaktum "utenlandsopphold.oppholdINorgeSisteTreAar"}}
+    {{#hvisIkkeTom value}}
+        <table>
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    {{#hvisSant value}}
+                        <em>{{ hentTekst "aap.ordinaer.utenlandsopphold.oppholdINorgeSisteTreAar.true" }}</em>
+                    {{else}}
+                        <em>{{ hentTekst "aap.ordinaer.utenlandsopphold.oppholdINorgeSisteTreAar.false" }}</em>
+
+                        {{#forFaktum "utenlandsopphold.oppholdINorgeSisteTreAar.false.boddINorgeSisteAaret"}}
+                            {{#hvisSant value}}
+                                <li class="kulepunkt">
+                                    <span>{{ hentTekst "aap.ordinaer.utenlandsopphold.oppholdINorgeSisteTreAar.false.boddINorgeSisteAaret"}}</span>
+                                </li>
+                            {{/hvisSant}}
+                        {{/forFaktum}}
+                        {{#forFaktum "utenlandsopphold.oppholdINorgeSisteTreAar.false.boddIEOSLandSisteTreAar"}}
+                            {{#hvisSant value}}
+                                <li class="kulepunkt">
+                                    <span>{{ hentTekst "utenlandsopphold.oppholdINorgeSisteTreAar.false.boddIEOSLandSisteTreAar"}}</span>
+                                </li>
+                            {{/hvisSant}}
+                        {{/forFaktum}}
+                        {{#forFaktum "utenlandsopphold.oppholdINorgeSisteTreAar.false.registrertFlyktning"}}
+                            {{#hvisSant value}}
+                                <li class="kulepunkt">
+                                    <span>{{ hentTekst "utenlandsopphold.oppholdINorgeSisteTreAar.false.registrertFlyktning"}}</span>
+                                </li>
+                            {{/hvisSant}}
+                        {{/forFaktum}}
+                    {{/hvisSant}}
+                </td>
+            </tr>
+        </table>
+    {{/hvisIkkeTom}}
+{{/forFaktum}}
+<h3>{{ hentTekst "utenlandsopphold.EOSLand.overskrift" }}</h3>
+{{#forFaktum "utenlandsopphold.EOSLand"}}
+    {{#hvisIkkeTom value}}
+        <table>
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    {{#hvisSant value}}
+                        <em>{{ hentTekst "utenlandsopphold.EOSLand.true" }}</em>
+                    {{else}}
+                        <em>{{ hentTekst "utenlandsopphold.EOSLand.false" }}</em>
+
+                        {{#forFakta "utenlandsopphold.EOSLand.periode"}}
+                            <li class="kulepunkt">
+                                <span>Land: {{ hentLand properties.eosLand }},</span>
+                                <span>fra {{ toLowerCase properties.fraMaaned }}&nbsp;{{ properties.fraAar }}</span>
+                                <span>til {{ toLowerCase properties.tilMaaned }}&nbsp;{{ properties.tilAar }}</span>
+                            </li>
+                        {{/forFakta}}
+                    {{/hvisSant}}
+                </td>
+            </tr>
+        </table>
+    {{/hvisIkkeTom}}
+{{/forFaktum}}
