@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Arrays.asList;
