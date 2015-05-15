@@ -1,0 +1,40 @@
+{{#hvisIkkeTom value}}
+    <table>
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                {{#hvisLik value "harhattsamtale"}}
+                    <span>{{ hentTekst "samtalen.student.ikketilbaketilstudiet.samtalemedNAV.harhattsamtale" }}</span>
+                {{/hvisLik}}
+                {{#hvisLik value "harikkehattsamtale"}}
+                    <span>{{ hentTekst "samtalen.student.ikketilbaketilstudiet.samtalemedNAV.harikkehattsamtale" }}</span>
+                    <ul>
+                        {{#forFaktum "samtalen.student.arbeidserfaring"}}
+                            <li class="kulepunkt">
+                                <span>{{ value }}</span>
+                            </li>
+                        {{/forFaktum}}
+                        {{#forFaktum "samtalen.student.kunnskapogegenskaper"}}
+                            <li class="kulepunkt">
+                                <span>{{ value }}</span>
+                            </li>
+                        {{/forFaktum}}
+                        {{#forFaktum "samtalen.student.helsesituasjon"}}
+                            <li class="kulepunkt">
+                                <span>{{ value }}</span>
+                            </li>
+                        {{/forFaktum}}
+                        {{#forFaktum "samtalen.student.andreforhold"}}
+                            <li class="kulepunkt">
+                                <span>{{ value }}</span>
+                            </li>
+                        {{/forFaktum}}
+                    </ul>
+                {{/hvisLik}}
+                {{#hvisLik value "ikkeistandtilsamtale"}}
+                    <span>{{ hentTekst "samtalen.student.ikketilbaketilstudiet.samtalemedNAV.ikkeistandtilsamtale" }}</span>
+                {{/hvisLik}}
+            </td>
+        </tr>
+    </table>
+{{/hvisIkkeTom}}
