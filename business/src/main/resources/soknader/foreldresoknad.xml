@@ -305,7 +305,7 @@
         <faktum>naeringsvirksomhet</faktum>
         <skjemaNummer>T7</skjemaNummer>
         <property>navn</property>
-        <onProperty>reinskapsforer</onProperty>
+        <onProperty>regnskapsforer</onProperty>
         <onValues>
             <value>false</value>
         </onValues>
