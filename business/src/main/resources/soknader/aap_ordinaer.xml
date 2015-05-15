@@ -159,13 +159,13 @@
 
     <!-- Andre ytelser -->
     <faktum>
-        <id>andreytelser.yterserfraNAV.kvalifiseringsstonad</id>
+        <id>andreytelser.ytelserfraNAV.kvalifiseringsstonad</id>
     </faktum>
     <faktum>
-        <id>andreytelser.yterserfraNAV.okonomisksosialhjelp</id>
+        <id>andreytelser.ytelserfraNAV.okonomisksosialhjelp</id>
     </faktum>
     <faktum>
-        <id>andreytelser.yterserfraNAV.ikkemottattellersokt</id>
+        <id>andreytelser.ytelserfraNAV.ikkemottattellersokt</id>
     </faktum>
     <faktum>
         <id>andreytelser.utbetalinger.fraarbeidsgiver</id>
