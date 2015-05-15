@@ -1,10 +1,10 @@
 <h2>{{ hentTekst "navaerendeSituasjon.tittel" }}</h2>
 <table>
     {{#forFaktum "navaerendeSituasjon.iArbeid"}}
-        <tr>
-            <td class="sjekket"></td>
-            <td>
-                {{#hvisSant value}}
+        {{#hvisSant value}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
                     <span>{{ hentTekst "navaerendeSituasjon.iArbeid"}}</span>
                     <ul>
                         {{#forFaktum "navaerendeSituasjon.iArbeid.ansatt"}}
@@ -22,35 +22,35 @@
                             {{/hvisSant}}
                         {{/forFaktum}}
                     </ul>
-                {{/hvisSant}}
-            </td>
-        </tr>
+                </td>
+            </tr>
+        {{/hvisSant}}
     {{/forFaktum}}
     {{#forFaktum "navaerendeSituasjon.sykmeldt"}}
-        <tr>
-            <td class="sjekket"></td>
-            <td>
-                {{#hvisSant value}}
+        {{#hvisSant value}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
                     <span>{{ hentTekst "navaerendeSituasjon.sykmeldt"}}</span>
-                {{/hvisSant}}
-            </td>
-        </tr>
+                </td>
+            </tr>
+        {{/hvisSant}}
     {{/forFaktum}}
     {{#forFaktum "navaerendeSituasjon.arbeidsledig"}}
-        <tr>
-            <td class="sjekket"></td>
-            <td>
-                {{#hvisSant value}}
+        {{#hvisSant value}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
                     <span>{{ hentTekst "navaerendeSituasjon.arbeidsledig"}}</span>
-                {{/hvisSant}}
-            </td>
-        </tr>
+                </td>
+            </tr>
+        {{/hvisSant}}
     {{/forFaktum}}
     {{#forFaktum "navaerendeSituasjon.student"}}
-        <tr>
-            <td class="sjekket"></td>
-            <td>
-                {{#hvisSant value}}
+        {{#hvisSant value}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
                     <span>{{ hentTekst "navaerendeSituasjon.student"}}</span>
                     <ul>
                         {{#forFaktum "navaerendeSituasjon.student.studererFortsatt"}}
@@ -85,19 +85,19 @@
                             </li>
                         {{/forFaktum}}
                     </ul>
-                {{/hvisSant}}
-            </td>
-        </tr>
+                </td>
+            </tr>
+        {{/hvisSant}}
     {{/forFaktum}}
     {{#forFaktum "navaerendeSituasjon.forstegangstjeneste"}}
-        <tr>
-            <td class="sjekket"></td>
-            <td>
-                {{#hvisSant value}}
+        {{#hvisSant value}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
                     <span>{{ hentTekst "navaerendeSituasjon.forstegangstjeneste"}}</span>
-                {{/hvisSant}}
-            </td>
-        </tr>
+                </td>
+            </tr>
+        {{/hvisSant}}
     {{/forFaktum}}
     {{#forFaktum "navaerendeSituasjon.annet"}}
         {{#hvisSant value}}

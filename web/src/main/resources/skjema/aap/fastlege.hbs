@@ -1,1 +1,20 @@
-<h2>Fastlege</h2>
+<h2>{{ hentTekst "fastlege.tittel" }}</h2>
+{{#forFaktum "fastlege.harIkkeFastlege"}}
+    {{#hvisSant value}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <div>{{ hentTekst "fastlege.annen.behandlende.navn.label" }}</div>
+                <div>{{ hentFaktumValue "fastlege.annen.behandlende.navn" }}</div>
+                <div>Telefonnummer: {{ hentFaktumValue "fastlege.annen.behandlende.tlfnr" }}</div>
+            </td>
+        </tr>
+    {{else}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>Fastlege: {{ hentFaktumValue "fastlege.navn" }}, telefonnummer: {{ hentFaktumValue "fastlege.tlfnr" }}</span>
+            </td>
+        </tr>
+    {{/hvisSant}}
+{{/forFaktum}}
