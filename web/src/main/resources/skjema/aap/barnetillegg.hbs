@@ -1,1 +1,30 @@
-<h2>Barnetillegg</h2>
+<h2>{{ hentTekst "barnetillegg.tittel" }}</h2>
+
+{{#forFakta "barn"}}
+    <table>
+        <tr>
+            <h3>{{properties.sammensattnavn}}</h3>
+
+            {{#forBarnefakta "barn.harinntekt"}}
+                <td class="sjekket"></td>
+
+            <td>
+                {{#hvisSant value}}
+
+                    <span>{{ hentTekst "barnetillegg.barn.harInntekt"}}</span>
+
+                    {{#forFaktum "barn.inntekt"}}
+                        <div><span class="kulepunkt">Inntekt: {{value}} kr</span></div>
+                    {{/forFaktum}}
+
+                {{else}}
+                    <div><span>{{ hentTekst "barnetillegg.barn.harIkkeInntekt"}}</span></div>
+
+                {{/hvisSant}}
+
+            {{/forBarnefakta}}
+
+        </td>
+        </tr>
+    </table>
+{{/forFakta}}
