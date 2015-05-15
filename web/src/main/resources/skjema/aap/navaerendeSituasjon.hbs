@@ -101,14 +101,21 @@
     {{/forFaktum}}
     {{#forFaktum "navaerendeSituasjon.annet"}}
         {{#hvisSant value}}
-            {{#forFaktum "navaerendeSituasjon.annet.fritekst"}}
-                <tr>
-                    <td class="sjekket"></td>
-                    <td>
-                        <span>{{ value }}</span>
-                    </td>
-                </tr>
-            {{/forFaktum}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{ hentTekst "navaerendeSituasjon.annet"}}</span>
+                    <ul>
+                        {{#forFaktum "navaerendeSituasjon.annet.fritekst"}}
+                            {{#hvisIkkeTom value}}
+                                <li class="kulepunkt">
+                                    <span>{{ value }}</span>
+                                </li>
+                            {{/hvisIkkeTom}}
+                        {{/forFaktum}}
+                    </ul>
+                </td>
+            </tr>
         {{/hvisSant}}
     {{/forFaktum}}
 </table>
