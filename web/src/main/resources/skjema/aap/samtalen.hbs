@@ -1,1 +1,16 @@
-<h2>Samtale med NAV</h2>
+<h2>{{ hentTekst "samtalen.tittel" }}</h2>
+
+{{! TODO: skrive sjekk på hvis student ikke er eneste valg }}
+{{#forFaktum "samtalen.samtalemedNAV"}}
+    {{> skjema/aap/samtalen/ikkeKunStudent }}
+{{/forFaktum}}
+
+{{! TODO: skrive sjekk på: hvis kun student og har avbrutt studiet, men som har planer om å fortsette studiet senere }}
+{{#forFaktum "samtalen.student.tilbaketilstudiet.samtalemedNAV"}}
+    {{> skjema/aap/samtalen/enkelStudentvisning }}
+{{/forFaktum}}
+
+{{! TODO: skrive sjekk på: hvis kun student og fortsatt studerer eller (har avbrutt, og planlegger ikke å komme tilbake til studiet )}}
+{{#forFaktum "samtalen.student.ikketilbaketilstudiet.samtalemedNAV"}}
+    {{> skjema/aap/samtalen/fullstendigStudentvisning }}
+{{/forFaktum}}
