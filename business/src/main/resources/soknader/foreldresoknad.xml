@@ -306,9 +306,6 @@
         <skjemaNummer>T7</skjemaNummer>
         <property>navn</property>
         <onProperty>regnskapsforer</onProperty>
-        <onValues>
-            <value>false</value>
-        </onValues>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
