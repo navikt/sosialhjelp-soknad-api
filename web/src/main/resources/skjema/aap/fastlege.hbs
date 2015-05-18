@@ -1,12 +1,13 @@
 <h2>{{ hentTekst "fastlege.tittel" }}</h2>
-{{#forFaktum "fastlege.harIkkeFastlege"}}
-    <table>
+<table>
+    {{#forFaktum "fastlege.harIkkeFastlege"}}
+
         {{#hvisSant value}}
             <tr>
                 <td class="sjekket"></td>
                 <td>
                     <div>{{ hentTekst "fastlege.annen.behandlende.navn.label" }}:</div>
-                    <span>Navn og adresse: {{ hentFaktumValue "fastlege.annen.behandlende.navn" }}</span>
+                    <span>{{ hentFaktumValue "fastlege.annen.behandlende.navn" }}</span>
                     <br/>
                     <span>Telefonnummer: {{ hentFaktumValue "fastlege.annen.behandlende.tlfnr" }}</span>
                 </td>
@@ -15,9 +16,20 @@
             <tr>
                 <td class="sjekket"></td>
                 <td>
-                    <span>Fastlege: {{ hentFaktumValue "fastlege.navn" }}, telefonnummer: {{ hentFaktumValue "fastlege.tlfnr" }}</span>
+                        <span>Fastlege: {{ hentFaktumValue "fastlege.navn" }}
+                            , telefonnummer: {{ hentFaktumValue "fastlege.tlfnr" }}</span>
                 </td>
             </tr>
         {{/hvisSant}}
-    </table>
-{{/forFaktum}}
+
+    {{else}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>Fastlege: {{ hentFaktumValue "fastlege.navn" }}
+                    , telefonnummer: {{ hentFaktumValue "fastlege.tlfnr" }}</span>
+            </td>
+        </tr>
+
+    {{/forFaktum}}
+</table>
