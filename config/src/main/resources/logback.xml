@@ -66,10 +66,6 @@
         <appender-ref ref="infolog"/>
     </logger>
 
-    <logger name="no.nav" level="debug">
-        <appender-ref ref="infolog"/>
-    </logger>
-
     <logger name="org.apache.pdfbox" level="error">
         <appender-ref ref="exceptionlog"/>
     </logger>
