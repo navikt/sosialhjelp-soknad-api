@@ -436,21 +436,17 @@ public class HandleBarKjoerer implements HtmlGenerator {
         return new Helper<Object>() {
             @Override
             public CharSequence apply(Object context, Options options) throws IOException {
-
-
                 WebSoknad soknad = finnWebSoknad(options.context);
                 List<Faktum> fakta = soknad.getFaktaSomStarterMed("perioder.tidsrom");
                 List<Faktum> sortertFaktaEtterDato = on(fakta).collect(new Comparator<Faktum>() {
                     @Override
                     public int compare(Faktum o1, Faktum o2) {
-
                         DateTimeFormatter dt = DateTimeFormat.forPattern("yyyy-MM-dd").withLocale(NO_LOCALE);
                         DateTime fradato = dt.parseDateTime(o1.getProperties().get("fradato"));
                         DateTime tildato = dt.parseDateTime(o1.getProperties().get("tildato"));
                         return tildato.compareTo(fradato);
                     }
                 });
-
                 if (sortertFaktaEtterDato.isEmpty()) {
                     return options.inverse(this);
                 } else {
