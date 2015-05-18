@@ -1,2 +1,9 @@
-<hr/>
-<p>Kvittering: perioder</p>
+<h2>{{ hentTekst "foreldresoknad.perioder.tittel" }}</h2>
+<table>
+{{#forPerioder}}
+    <tr>
+        <td>{{properties.beskrivelse}}</td>
+        <td>{{formatterFodelsDato properties.fradato}} - {{formatterFodelsDato properties.tildato}}</td>
+    </tr>
+{{/forPerioder}}
+</table>
