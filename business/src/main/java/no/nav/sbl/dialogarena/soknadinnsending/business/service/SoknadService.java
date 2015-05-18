@@ -120,7 +120,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
                 .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
                 .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
 
-        lagrePredeinerteBolker(getSubjectHandler().getUid(), soknad);
+        oppdaterKjentInformasjon(getSubjectHandler().getUid(), soknad);
 
         return soknad;
     }
@@ -545,14 +545,22 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         }
     };
 
-    private void lagrePredeinerteBolker(String fodselsnummer, WebSoknad soknad) {
+    private void oppdaterKjentInformasjon(String fodselsnummer, WebSoknad soknad) {
         if (soknad.erEttersending()) {
-            bolker.get(PersonaliaService.class.getName()).lagreBolk(fodselsnummer, soknad.getSoknadId());
+            lagrePersonalia(fodselsnummer, soknad.getSoknadId());
         } else {
-            List<BolkService> soknadBolker = config.getSoknadBolker(soknad.getSoknadId(), bolker.values());
-            for (BolkService bolk : soknadBolker) {
-                bolk.lagreBolk(fodselsnummer, soknad.getSoknadId());
-            }
+            lagreAllInformasjon(fodselsnummer, soknad.getSoknadId());
+        }
+    }
+
+    private void lagrePersonalia(String fodselsnummer, Long soknadId) {
+        bolker.get(PersonaliaService.class.getName()).lagreBolk(fodselsnummer, soknadId);
+    }
+
+    private void lagreAllInformasjon(String fodselsnummer, Long soknadId) {
+        List<BolkService> soknadBolker = config.getSoknadBolker(soknadId, bolker.values());
+        for (BolkService bolk : soknadBolker) {
+            bolk.lagreBolk(fodselsnummer, soknadId);
         }
     }
 }
