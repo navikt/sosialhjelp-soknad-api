@@ -64,13 +64,9 @@ public class ContentConfig {
         clearContentCache();
         try {
             saveLocal("enonic/sendsoknad_nb_NO.properties", new URI(cmsBaseUrl + "/app/sendsoknad/nb_NO/tekster"));
-            saveLocal("enonic/sendsoknad_en_GB.properties", new URI(cmsBaseUrl + "/app/sendsoknad/en_GB/tekster"));
             saveLocal("enonic/dagpenger_nb_NO.properties", new URI(cmsBaseUrl + "/app/dagpenger/nb_NO/tekster"));
-            saveLocal("enonic/dagpenger_en_GB.properties", new URI(cmsBaseUrl + "/app/dagpenger/en_GB/tekster"));
             saveLocal("enonic/foreldrepenger_nb_NO.properties", new URI(cmsBaseUrl + "/app/foreldrepenger/nb_NO/tekster"));
-            saveLocal("enonic/foreldrepenger_en_GB.properties", new URI(cmsBaseUrl + "/app/foreldrepenger/en_GB/tekster"));
             saveLocal("enonic/aap_nb_NO.properties", new URI(cmsBaseUrl + "/app/AAP/nb_NO/tekster"));
-            saveLocal("enonic/aap_en_GB.properties", new URI(cmsBaseUrl + "/app/AAP/en_GB/tekster"));
         } catch (Exception e) {
             logger.warn("Feilet under henting av enonic innholdstekster: " + e, e);
         }

@@ -766,23 +766,15 @@
                         <propertiesFilesRoot>${project.basedir}/web/src/main/resources/content</propertiesFilesRoot>
                         <propertiesFiler>
                             <aapnb>aap_nb_NO.properties</aapnb>
-                            <aapen>aap_en_GB.properties</aapen>
                             <ssnb>sendsoknad_nb_NO.properties</ssnb>
-                            <ssen>sendsoknad_en_GB.properties</ssen>
                             <dpnb>dagpenger_nb_NO.properties</dpnb>
-                            <dpen>dagpenger_en_GB.properties</dpen>
                             <fpnb>foreldrepenger_nb_NO.properties</fpnb>
-                            <fpen>foreldrepenger_en_GB.properties</fpen>
                         </propertiesFiler>
                         <menyPunktPaths>
                             <aapnb>/site/18/app/AAP/nb_NO/tekster</aapnb>
-                            <aapen>/site/18/app/AAP/en_GB/tekster</aapen>
                             <ssnb>/site/18/app/sendsoknad/nb_NO/tekster</ssnb>
-                            <ssen>/site/18/app/sendsoknad/en_GB/tekster</ssen>
                             <dpnb>/site/18/app/dagpenger/nb_NO/tekster</dpnb>
-                            <dpen>/site/18/app/dagpenger/en_GB/tekster</dpen>
                             <fpnb>/site/18/app/foreldrepenger/nb_NO/tekster</fpnb>
-                            <fpen>/site/18/app/foreldrepenger/en_GB/tekster</fpen>
                         </menyPunktPaths>
                     </configuration>
                 </plugin>
