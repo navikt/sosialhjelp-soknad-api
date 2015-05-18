@@ -1,6 +1,5 @@
 <h2>{{ hentTekst "foreldresoknad.perioder.tittel" }}</h2>
 <table>
-{{#forPerioder}}
     <thead>
     <tr>
         <th>{{hentTekst "perioder.oppsummering.tabell.permisjon"}}</th>
@@ -8,10 +7,11 @@
     </tr>
     </thead>
     <tbody>
+    {{#forPerioder}}
         <tr>
             <td>{{properties.beskrivelse}}</td>
             <td>{{formatterFodelsDato properties.fradato}} - {{formatterFodelsDato properties.tildato}}</td>
         </tr>
+    {{/forPerioder}}
     </tbody>
-{{/forPerioder}}
 </table>
