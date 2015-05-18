@@ -22,10 +22,11 @@ public class ForeldrepengerInformasjon implements KravdialogInformasjon {
     }
 
     public List<String> getSkjemanummer() {
-        return Arrays.asList("NAV 14-05.06", "NAV 14-05.07", "NAV 14-05.08", "NAV 14-05.09");
+        return Arrays.asList("NAV 14-05.06", "NAV 14-05.07", "NAV 14-05.08");
     }
 
     public List<String> getSoknadBolker() {
         return Arrays.asList(BOLK_PERSONALIA, BOLK_BARN, BOLK_ARBEIDSFORHOLD);
     }
 }
+
