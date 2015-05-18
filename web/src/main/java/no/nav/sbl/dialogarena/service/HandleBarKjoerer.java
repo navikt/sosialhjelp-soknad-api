@@ -28,6 +28,7 @@ import static no.bekk.bekkopen.person.FodselsnummerValidator.getFodselsnummer;
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static org.apache.commons.lang3.ArrayUtils.reverse;
 import static org.apache.commons.lang3.StringUtils.join;
+import static org.apache.commons.lang3.StringUtils.ordinalIndexOf;
 import static org.apache.commons.lang3.StringUtils.split;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -74,6 +75,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
         handlebars.registerHelper("hentTekstMedFaktumParameter", generateHentTekstMedFaktumParameterHelper());
         handlebars.registerHelper("hentLand", generateHentLandHelper());
         handlebars.registerHelper("forVedlegg", generateForVedleggHelper());
+        handlebars.registerHelper("forPerioder", generateHelperForPeriodeTidsromFakta());
         handlebars.registerHelper("hentSkjemanummer", generateHentSkjemanummerHelper());
         handlebars.registerHelper("hentFaktumValue", generateHentFaktumValueHelper());
         handlebars.registerHelper("hvisFlereErTrue", generateHvisFlereSomStarterMedErTrueHelper());
@@ -88,6 +90,8 @@ public class HandleBarKjoerer implements HtmlGenerator {
 
         return handlebars;
     }
+
+
 
     private Helper<String> generateAdresseHelper() {
         return new Helper<String>() {
@@ -424,6 +428,30 @@ public class HandleBarKjoerer implements HtmlGenerator {
                 WebSoknad soknad = finnWebSoknad(options.context);
                 Faktum faktum = soknad.getFaktumMedKey(key);
                 return faktum.getValue();
+            }
+        };
+    }
+
+    private Helper<Object> generateHelperForPeriodeTidsromFakta() {
+        return new Helper<Object>() {
+            @Override
+            public CharSequence apply(Object context, Options options) throws IOException {
+                WebSoknad soknad = finnWebSoknad(options.context);
+                List<Faktum> fakta = soknad.getFaktaSomStarterMed("perioder.tidsrom");
+                List<Faktum> sortertFaktaEtterDato = on(fakta).collect(new Comparator<Faktum>() {
+                    @Override
+                    public int compare(Faktum o1, Faktum o2) {
+                        DateTimeFormatter dt = DateTimeFormat.forPattern("yyyy-MM-dd").withLocale(NO_LOCALE);
+                        DateTime fradato = dt.parseDateTime(o1.getProperties().get("fradato"));
+                        DateTime tildato = dt.parseDateTime(o1.getProperties().get("tildato"));
+                        return tildato.compareTo(fradato);
+                    }
+                });
+                if (sortertFaktaEtterDato.isEmpty()) {
+                    return options.inverse(this);
+                } else {
+                    return lagItererbarRespons(options, sortertFaktaEtterDato);
+                }
             }
         };
     }
