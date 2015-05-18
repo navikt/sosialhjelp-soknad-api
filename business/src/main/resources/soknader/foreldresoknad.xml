@@ -270,6 +270,11 @@
         <skjemaNummer>T8</skjemaNummer>
         <property>arbeidsgivernavn</property>
         <flereTillatt>true</flereTillatt>
+        <onProperty>kilde</onProperty>
+        <onValues>
+            <value>EDAG</value>
+        </onValues>
+        <inverted>true</inverted>
     </vedlegg>
 
     <vedlegg>
