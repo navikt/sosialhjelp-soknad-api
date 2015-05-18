@@ -12,7 +12,7 @@ public interface SendSoknadService {
 
     WebSoknad hentSoknad(String behandlingsId);
 
-    WebSoknad hentSoknadMedFaktaOgVedlegg(long soknadId);
+    WebSoknad hentSoknad(long soknadId);
     WebSoknad hentSoknadMedFaktaOgVedlegg(String behandlingsId);
 
     WebSoknad hentSoknadForTilgangskontroll(String behandlingsId);
