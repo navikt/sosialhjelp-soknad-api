@@ -28,7 +28,6 @@ import static no.bekk.bekkopen.person.FodselsnummerValidator.getFodselsnummer;
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static org.apache.commons.lang3.ArrayUtils.reverse;
 import static org.apache.commons.lang3.StringUtils.join;
-import static org.apache.commons.lang3.StringUtils.ordinalIndexOf;
 import static org.apache.commons.lang3.StringUtils.split;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -70,7 +69,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
         handlebars.registerHelper("hvisMer", generateHvisMerHelper());
         handlebars.registerHelper("hvisLik", generateHvisLikHelper());
         handlebars.registerHelper("hvisIkkeTom", generateHvisIkkeTomHelper());
-        handlebars.registerHelper("hentTekst", generateHvisTekstHelper());
+        handlebars.registerHelper("hentTekst", generateHentTekstHelper());
         handlebars.registerHelper("hentTekstMedParameter", generateHentTekstMedParameterHelper());
         handlebars.registerHelper("hentTekstMedFaktumParameter", generateHentTekstMedFaktumParameterHelper());
         handlebars.registerHelper("hentLand", generateHentLandHelper());
@@ -91,8 +90,6 @@ public class HandleBarKjoerer implements HtmlGenerator {
 
         return handlebars;
     }
-
-
 
     private Helper<String> generateAdresseHelper() {
         return new Helper<String>() {
@@ -258,7 +255,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
         };
     }
 
-    private Helper<String> generateHvisTekstHelper() {
+    private Helper<String> generateHentTekstHelper() {
         return new Helper<String>() {
             @Override
             public CharSequence apply(String key, Options options) throws IOException {
