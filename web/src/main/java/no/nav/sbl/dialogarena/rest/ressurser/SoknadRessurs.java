@@ -99,15 +99,15 @@ public class SoknadRessurs {
                                @QueryParam("delsteg") String delsteg,
                                @QueryParam("journalforendeenhet") String journalforendeenhet) {
 
-        if(delsteg == null && journalforendeenhet == null) {
+        if (delsteg == null && journalforendeenhet == null) {
             throw new BadRequestException("Ingen queryparametre ble sendt inn.");
         }
 
-        if(delsteg != null) {
+        if (delsteg != null) {
             settDelstegStatus(behandlingsId, delsteg);
         }
 
-        if(journalforendeenhet != null) {
+        if (journalforendeenhet != null) {
             settJournalforendeEnhet(behandlingsId, journalforendeenhet);
         }
     }

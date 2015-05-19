@@ -27,6 +27,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginforma
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@SuppressWarnings("PMD.TooManyMethods")
 public class WebSoknad implements Serializable {
     private Long soknadId;
     private String skjemaNummer;
