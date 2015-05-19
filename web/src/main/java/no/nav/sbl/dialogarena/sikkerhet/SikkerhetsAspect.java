@@ -7,6 +7,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -47,6 +48,9 @@ public class SikkerhetsAspect {
                 behandlingsId = (String) id;
                 break;
             case Faktum:
+                if(!faktumMedIdEksisterer((Long) id)) {
+                    return;
+                }
                 behandlingsId = faktaService.hentBehandlingsId((Long) id);
                 break;
             case Vedlegg:
@@ -61,6 +65,15 @@ public class SikkerhetsAspect {
             sjekkXsrfToken(request.getHeader("X-XSRF-TOKEN"), behandlingsId);
         }
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId);
+    }
+
+    private boolean faktumMedIdEksisterer(Long id) {
+        try {
+            faktaService.hentFaktum(id);
+        } catch(IncorrectResultSizeDataAccessException e) {
+            return false;
+        }
+        return true;
     }
 
     private static boolean skrivOperasjon(HttpServletRequest request) {

@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.sikkerhet;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.modig.core.exception.AuthorizationException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import org.junit.Before;
@@ -13,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -58,8 +60,17 @@ public class SikkerhetsAspectTest {
     public void skalSjekkeOmBrukerHarTilgangTilFakta() {
         setup(generateXsrfToken(brukerBehandlingsId));
         when(faktaService.hentBehandlingsId(1L)).thenReturn(brukerBehandlingsId);
+        when(faktaService.hentFaktum(1L)).thenReturn(new Faktum());
         sikkerhetsAspect.sjekkOmBrukerHarTilgang(1L, getSjekkTilgangTilSoknad(Faktum));
         verify(faktaService, times(1)).hentBehandlingsId(1L);
+    }
+
+    @Test()
+    public void skalIkkeGiFeilmeldingOmFaktumIkkeEksisterer() {
+        setup(generateXsrfToken(brukerBehandlingsId));
+        when(faktaService.hentFaktum(1L)).thenThrow(new IncorrectResultSizeDataAccessException(0, 1));
+        sikkerhetsAspect.sjekkOmBrukerHarTilgang(1L, getSjekkTilgangTilSoknad(Faktum));
+        verify(tilgangskontroll, times(0)).verifiserBrukerHarTilgangTilSoknad(brukerBehandlingsId);
     }
 
     @Test
