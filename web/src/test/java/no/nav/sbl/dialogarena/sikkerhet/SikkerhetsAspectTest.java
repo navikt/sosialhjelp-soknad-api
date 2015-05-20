@@ -14,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -69,7 +68,7 @@ public class SikkerhetsAspectTest {
     @Test(expected = NotFoundException.class)
     public void skalGiNotFoundExceptionOmRessursIkkeFinnes() {
         setup(generateXsrfToken(brukerBehandlingsId));
-        when(faktaService.hentFaktum(1L)).thenThrow(new IncorrectResultSizeDataAccessException(0, 1));
+        when(faktaService.hentFaktum(1L)).thenReturn(null);
         sikkerhetsAspect.sjekkOmBrukerHarTilgang(1L, getSjekkTilgangTilSoknad(Faktum));
     }
 
