@@ -7,13 +7,13 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.NotFoundException;
 
 import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.sjekkXsrfToken;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -48,9 +48,6 @@ public class SikkerhetsAspect {
                 behandlingsId = (String) id;
                 break;
             case Faktum:
-                if(!faktumMedIdEksisterer((Long) id)) {
-                    return;
-                }
                 behandlingsId = faktaService.hentBehandlingsId((Long) id);
                 break;
             case Vedlegg:
@@ -60,20 +57,15 @@ public class SikkerhetsAspect {
                 behandlingsId = (String) id;
         }
 
+        if(behandlingsId == null) {
+            throw new NotFoundException("Fant ikke ressurs.");
+        }
+
         logger.info("Sjekker tilgang til ressurs med behandlingsId {} og type {}", behandlingsId, tilgang.type());
         if (tilgang.sjekkXsrf() && skrivOperasjon(request)) {
             sjekkXsrfToken(request.getHeader("X-XSRF-TOKEN"), behandlingsId);
         }
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId);
-    }
-
-    private boolean faktumMedIdEksisterer(Long id) {
-        try {
-            faktaService.hentFaktum(id);
-        } catch(IncorrectResultSizeDataAccessException e) {
-            return false;
-        }
-        return true;
     }
 
     private static boolean skrivOperasjon(HttpServletRequest request) {
