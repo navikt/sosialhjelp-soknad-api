@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.sikkerhet;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.modig.core.exception.AuthorizationException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import org.junit.Before;
@@ -17,6 +18,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.ws.rs.NotFoundException;
 import java.lang.annotation.Annotation;
 
 import static java.lang.System.setProperty;
@@ -58,8 +60,16 @@ public class SikkerhetsAspectTest {
     public void skalSjekkeOmBrukerHarTilgangTilFakta() {
         setup(generateXsrfToken(brukerBehandlingsId));
         when(faktaService.hentBehandlingsId(1L)).thenReturn(brukerBehandlingsId);
+        when(faktaService.hentFaktum(1L)).thenReturn(new Faktum());
         sikkerhetsAspect.sjekkOmBrukerHarTilgang(1L, getSjekkTilgangTilSoknad(Faktum));
         verify(faktaService, times(1)).hentBehandlingsId(1L);
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void skalGiNotFoundExceptionOmRessursIkkeFinnes() {
+        setup(generateXsrfToken(brukerBehandlingsId));
+        when(faktaService.hentFaktum(1L)).thenReturn(null);
+        sikkerhetsAspect.sjekkOmBrukerHarTilgang(1L, getSjekkTilgangTilSoknad(Faktum));
     }
 
     @Test
@@ -70,12 +80,11 @@ public class SikkerhetsAspectTest {
         verify(vedleggService, times(1)).hentBehandlingsId(1L);
     }
 
-    @Test(expected = AuthorizationException.class)
+    @Test(expected = NotFoundException.class)
     public void skalHandtereHvisIkkeVedleggFinnes() {
         setup(generateXsrfToken(brukerBehandlingsId));
         when(vedleggService.hentBehandlingsId(1L)).thenReturn(null);
         sikkerhetsAspect.sjekkOmBrukerHarTilgang(1L, getSjekkTilgangTilSoknad(Vedlegg));
-        verify(vedleggService, times(1)).hentBehandlingsId(1L);
     }
 
     @Test(expected = AuthorizationException.class)
