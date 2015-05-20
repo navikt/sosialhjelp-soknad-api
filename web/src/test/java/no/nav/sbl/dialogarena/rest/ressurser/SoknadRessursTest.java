@@ -20,8 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.BadRequestException;
 
 import static no.nav.sbl.dialogarena.rest.ressurser.SoknadRessurs.XSRF_TOKEN;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
@@ -57,7 +56,7 @@ public class SoknadRessursTest {
         ArgumentCaptor<Cookie> cookie = ArgumentCaptor.forClass(Cookie.class);
         ressurs.hentSoknadData(BEHANDLINGSID, response);
         verify(response).addCookie(cookie.capture());
-        assertThat(cookie.getValue().getName(), is(XSRF_TOKEN));
+        assertThat(cookie.getValue().getName()).isEqualTo(XSRF_TOKEN);
     }
 
     @Test
@@ -66,7 +65,7 @@ public class SoknadRessursTest {
         ArgumentCaptor<Cookie> cookie = ArgumentCaptor.forClass(Cookie.class);
         ressurs.opprettSoknad(null, type, response);
         verify(response).addCookie(cookie.capture());
-        assertThat(cookie.getValue().getName(), is(XSRF_TOKEN));
+        assertThat(cookie.getValue().getName()).isEqualTo(XSRF_TOKEN);
     }
 
     @Test
