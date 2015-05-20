@@ -28,11 +28,14 @@ import java.util.Map;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
+import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.generateXsrfToken;
 
 @Controller
 @Path("/soknader")
 @Produces(APPLICATION_JSON)
 public class SoknadRessurs {
+
+    public static final String XSRF_TOKEN = "XSRF-TOKEN-SOKNAD-API";
 
     @Inject
     private FaktaService faktaService;
@@ -158,7 +161,7 @@ public class SoknadRessurs {
     }
 
     private static Cookie xsrfCookie(String behandlingId) {
-        Cookie xsrfCookie = new Cookie("XSRF-TOKEN-SOKNAD-API", XsrfGenerator.generateXsrfToken(behandlingId));
+        Cookie xsrfCookie = new Cookie(XSRF_TOKEN, generateXsrfToken(behandlingId));
         xsrfCookie.setPath("/");
         xsrfCookie.setSecure(true);
         return xsrfCookie;
