@@ -149,7 +149,7 @@ public class SoknadServiceTest {
                                         new XMLVedlegg().withUuid("uidVedlegg")))
         );
         when(soknadRepository.hentSoknad("123")).thenReturn(null, soknad, soknad);
-        when(soknadRepository.hentSoknadMedData(11L)).thenReturn(soknad, soknad);
+        when(soknadRepository.hentSoknadMedData("123")).thenReturn(soknad, soknad);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         JAXB.marshal(soknad, baos);
@@ -348,30 +348,33 @@ public class SoknadServiceTest {
 
     @Test
     public void skalLagreSystemfakumSomDefinertForSoknadVedHenting() {
+        WebSoknad soknad = new WebSoknad()
+                .medBehandlingId("123")
+                .medskjemaNummer(DAGPENGER)
+                .medId(1L);
         when(soknadRepository.hentSoknad("123")).thenReturn(
-                new WebSoknad()
-                        .medBehandlingId("123")
-                        .medskjemaNummer(DAGPENGER)
-                        .medId(1L));
+                soknad);
         when(config.getSoknadBolker(any(Long.class), anyListOf(BolkService.class))).thenReturn(asList(personaliaService, barnService));
-
+        when(soknadRepository.hentSoknadMedData(anyString())).thenReturn(soknad);
         soknadService.hentSoknad("123");
-        verify(personaliaService, times(1)).lagreBolk(anyString(), anyLong());
-        verify(barnService, times(1)).lagreBolk(anyString(), anyLong());
-        verify(arbeidsforholdService, never()).lagreBolk(anyString(), anyLong());
+        verify(personaliaService, times(1)).genererSystemFakta(anyString(), anyLong());
+        verify(barnService, times(1)).genererSystemFakta(anyString(), anyLong());
+        verify(arbeidsforholdService, never()).genererSystemFakta(anyString(), anyLong());
     }
 
     @Test
     public void skalKunLagreSystemfakumPersonaliaForEttersendingerVedHenting() {
+        WebSoknad soknad = new WebSoknad().medBehandlingId("123")
+                .medskjemaNummer(DAGPENGER)
+                .medDelstegStatus(ETTERSENDING_OPPRETTET)
+                .medId(1L);
         when(soknadRepository.hentSoknad("123")).thenReturn(
-                new WebSoknad().medBehandlingId("123")
-                        .medskjemaNummer(DAGPENGER)
-                        .medDelstegStatus(ETTERSENDING_OPPRETTET)
-                        .medId(1L));
+                soknad);
         when(config.getSoknadBolker(any(Long.class), anyListOf(BolkService.class))).thenReturn(asList(personaliaService, barnService));
+        when(soknadRepository.hentSoknadMedData(anyString())).thenReturn(soknad);
         soknadService.hentSoknad("123");
-        verify(personaliaService, times(1)).lagreBolk(anyString(), anyLong());
-        verify(barnService, never()).lagreBolk(anyString(), anyLong());
+        verify(personaliaService, times(1)).genererSystemFakta(anyString(), anyLong());
+        verify(barnService, never()).genererSystemFakta(anyString(), anyLong());
     }
 
     @Test
