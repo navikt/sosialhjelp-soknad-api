@@ -15,7 +15,8 @@ public class KravdialogInformasjonHolder {
 
     public KravdialogInformasjonHolder() {
         soknadsKonfigurasjoner.addAll(asList(
-                new AAPInformasjon(),
+                new AAPOrdinaerInformasjon(),
+                new AAPGjenopptakInformasjon(),
                 new DagpengerGjenopptakInformasjon(),
                 new DagpengerOrdinaerInformasjon(),
                 new ForeldrepengerInformasjon()
