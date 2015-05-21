@@ -118,6 +118,17 @@ public class HandleBarHelperTest {
         assertThat(html).contains("ikke:ikkeSendtInn3");
     }
 
+    @Test
+    public void hvisFlereStarterMedSkalReturnereTrueOmFlereHarVerdienTrue() throws IOException {
+        WebSoknad soknad = new WebSoknad().medBehandlingId("1A");
+        soknad.medFaktum(new Faktum().medKey("start.1").medValue("true"));
+        soknad.medFaktum(new Faktum().medKey("start.2").medValue("true"));
+        soknad.medFaktum(new Faktum().medKey("start.3").medValue("true"));
+
+        String html = new HandleBarKjoerer().fyllHtmlMalMedInnhold(soknad, "/skjema/hvisFlereErTrue");
+        assertThat(html).contains("flere");
+    }
+
     private Faktum getPeriodeFaktum(String key, String fradato, String tildato, String value) {
         return new Faktum().medKey(key).medProperty("fradato", fradato).medProperty("tildato", tildato).medValue(value);
     }
