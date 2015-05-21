@@ -361,7 +361,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
         if (soknad.erDagpengeSoknad()) {
             journalforendeEnhet = DagpengerUtils.getJournalforendeEnhet(soknad);
-        } else if (soknad.erAapSoknad() && adresserOgStatsborgerskap(soknad).harUtenlandskFolkeregistrertAdresse()) {
+        } else if (soknad.erAapSoknad() && adresserOgStatsborgerskap(soknad).harUtenlandskAdresse()) {
             journalforendeEnhet = AAP_INTERNASJONAL;
         } else {
             journalforendeEnhet = soknad.getJournalforendeEnhet();
