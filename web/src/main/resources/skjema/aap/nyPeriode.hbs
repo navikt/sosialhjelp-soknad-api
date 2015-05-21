@@ -1,0 +1,54 @@
+{{#forFaktum "nyPeriode.gjenopptagelsesdato"}}
+    {{#hvisIkkeTom value}}
+        <h2>{{ hentTekst "nyPeriode.tittel" }}</h2>
+        <span>{{ hentTekst "nyPeriode.gjenopptagelsesdato.sporsmal" }}</span>
+        <table>
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    {{ formatterFodelsDato value }}
+                </td>
+            </tr>
+        </table>
+        <span>{{ hentTekst "nyPeriode.grunn.sporsmal" }}</span>
+        <table>
+            {{#forFaktum "nyPeriode.grunn.arbeid"}}
+                {{#hvisSant value}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td>
+                        {{ hentTekst "nyPeriode.grunn.arbeid" }}
+                    </td>
+                {{/hvisSant}}
+            {{/forFaktum}}
+            {{#forFaktum "nyPeriode.grunn.fodselspermisjon"}}
+                {{#hvisSant value}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td>
+                        {{ hentTekst "nyPeriode.grunn.fodselspermisjon" }}
+                    </td>
+                {{/hvisSant}}
+            {{/forFaktum}}
+            {{#forFaktum "nyPeriode.grunn.annet"}}
+                {{#hvisSant value}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>
+                            <span>{{ hentTekst "nyPeriode.grunn.annet"}}</span>
+                            <ul>
+                                {{#forFaktum "nyPeriode.grunn.annet.fritekst"}}
+                                    {{#hvisIkkeTom value}}
+                                        <li class="kulepunkt">
+                                            <span>{{ value }}</span>
+                                        </li>
+                                    {{/hvisIkkeTom}}
+                                {{/forFaktum}}
+                            </ul>
+                        </td>
+                    </tr>
+                {{/hvisSant}}
+            {{/forFaktum}}
+        </table>
+    {{/hvisIkkeTom}}
+{{/forFaktum}}
