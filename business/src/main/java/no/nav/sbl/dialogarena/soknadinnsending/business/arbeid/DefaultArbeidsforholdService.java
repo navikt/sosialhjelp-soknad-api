@@ -70,7 +70,23 @@ public class DefaultArbeidsforholdService implements ArbeidsforholdService, Bolk
 
     public List<Faktum> genererArbeidsforhold(String fodselsnummer, final Long soknadId) {
         List<Faktum> result =  new ArrayList<>();
-        result.addAll(on(hentArbeidsforhold(fodselsnummer)).map(new Transformer<Arbeidsforhold, Faktum>() {
+        result.addAll(on(hentArbeidsforhold(fodselsnummer)).map(arbeidsforholdTransformer(soknadId)).collect());
+        if (!result.isEmpty()) {
+            Faktum yrkesaktiv = faktaService.hentFaktumMedKey(soknadId, "arbeidsforhold.yrkesaktiv");
+            if (yrkesaktiv == null) {
+                result.add(new Faktum()
+                        .medSoknadId(soknadId)
+                        .medKey("arbeidsforhold.yrkesaktiv")
+                        .medValue("false"));
+            } else if("true".equals(yrkesaktiv.getValue())){
+                result.add(yrkesaktiv.medValue("false"));
+            }
+        }
+        return result;
+    }
+
+    private static Transformer<Arbeidsforhold, Faktum> arbeidsforholdTransformer(final Long soknadId) {
+        return new Transformer<Arbeidsforhold, Faktum>() {
             @Override
             public Faktum transform(Arbeidsforhold arbeidsforhold) {
                 return new Faktum()
@@ -88,19 +104,7 @@ public class DefaultArbeidsforholdService implements ArbeidsforholdService, Bolk
                         .medSystemProperty("edagref", "" + arbeidsforhold.edagId)
                         .medUnikProperty("edagref");
             }
-        }).collect());
-        if (!result.isEmpty()) {
-            Faktum yrkesaktiv = faktaService.hentFaktumMedKey(soknadId, "arbeidsforhold.yrkesaktiv");
-            if (yrkesaktiv == null) {
-                result.add(new Faktum()
-                        .medSoknadId(soknadId)
-                        .medKey("arbeidsforhold.yrkesaktiv")
-                        .medValue("false"));
-            } else if("true".equals(yrkesaktiv.getValue())){
-                result.add(yrkesaktiv.medValue("false"));
-            }
-        }
-        return result;
+        };
     }
 
     private FinnArbeidsforholdPrArbeidstakerRequest lagArbeidsforholdRequest(String fodselsnummer) {
@@ -124,11 +128,11 @@ public class DefaultArbeidsforholdService implements ArbeidsforholdService, Bolk
         return periode;
     }
 
-    private String trueFalse(boolean test) {
+    private static String trueFalse(boolean test) {
         return test ? "true" : "false";
     }
 
-    private String finnStillingsType(Arbeidsforhold arbeidsforhold) {
+    private static String finnStillingsType(Arbeidsforhold arbeidsforhold) {
         if (arbeidsforhold.harFastStilling && arbeidsforhold.variabelStillingsprosent) {
             return "fastOgVariabel";
         } else if (arbeidsforhold.harFastStilling) {
