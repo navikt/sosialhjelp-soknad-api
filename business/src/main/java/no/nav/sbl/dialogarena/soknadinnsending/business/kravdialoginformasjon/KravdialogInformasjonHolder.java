@@ -19,6 +19,7 @@ public class KravdialogInformasjonHolder {
                 new DagpengerGjenopptakInformasjon(),
                 new DagpengerOrdinaerInformasjon(),
                 new ForeldrepengerInformasjon()
+                //new ForeldrepengerOverforingInformasjon()
         ));
     }
 

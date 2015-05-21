@@ -22,12 +22,7 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import static no.bekk.bekkopen.person.FodselsnummerValidator.getFodselsnummer;
 import static no.nav.modig.lang.collections.IterUtils.on;
@@ -42,7 +37,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class HandleBarKjoerer implements HtmlGenerator {
 
     public static final Locale NO_LOCALE = new Locale("nb", "no");
-    
+
     @Inject
     private Kodeverk kodeverk;
 
@@ -74,11 +69,12 @@ public class HandleBarKjoerer implements HtmlGenerator {
         handlebars.registerHelper("hvisMer", generateHvisMerHelper());
         handlebars.registerHelper("hvisLik", generateHvisLikHelper());
         handlebars.registerHelper("hvisIkkeTom", generateHvisIkkeTomHelper());
-        handlebars.registerHelper("hentTekst", generateHvisTekstHelper());
+        handlebars.registerHelper("hentTekst", generateHentTekstHelper());
         handlebars.registerHelper("hentTekstMedParameter", generateHentTekstMedParameterHelper());
         handlebars.registerHelper("hentTekstMedFaktumParameter", generateHentTekstMedFaktumParameterHelper());
         handlebars.registerHelper("hentLand", generateHentLandHelper());
         handlebars.registerHelper("forVedlegg", generateForVedleggHelper());
+        handlebars.registerHelper("forPerioder", generateHelperForPeriodeTidsromFakta());
         handlebars.registerHelper("hentSkjemanummer", generateHentSkjemanummerHelper());
         handlebars.registerHelper("hentFaktumValue", generateHentFaktumValueHelper());
         handlebars.registerHelper("hvisFlereErTrue", generateHvisFlereSomStarterMedErTrueHelper());
@@ -89,6 +85,8 @@ public class HandleBarKjoerer implements HtmlGenerator {
         handlebars.registerHelper("concat", generateConcatStringHelper());
         handlebars.registerHelper("skalViseRotasjonTurnusSporsmaal", generateSkalViseRotasjonTurnusSporsmaalHelper());
         handlebars.registerHelper("hvisLikCmsTekst", generateHvisLikCmsTekstHelper());
+        handlebars.registerHelper("toLowerCase", generateToLowerCaseHelper());
+        handlebars.registerHelper("hvisKunStudent", generateHvisKunStudentHelper());
 
         return handlebars;
     }
@@ -204,7 +202,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
             @Override
             public CharSequence apply(Object context, Options options) throws IOException {
                 WebSoknad soknad = finnWebSoknad(options.context);
-                if(soknad.erDagpengeSoknad()) {
+                if (soknad.erDagpengeSoknad()) {
                     return DagpengerUtils.getSkjemanummer(soknad);
                 }
                 return soknad.getskjemaNummer();
@@ -257,7 +255,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
         };
     }
 
-    private Helper<String> generateHvisTekstHelper() {
+    private Helper<String> generateHentTekstHelper() {
         return new Helper<String>() {
             @Override
             public CharSequence apply(String key, Options options) throws IOException {
@@ -361,6 +359,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
             }
         };
     }
+
     private Helper<Object> generateHvisEttersendingHelper() {
         return new Helper<Object>() {
             @Override
@@ -427,6 +426,30 @@ public class HandleBarKjoerer implements HtmlGenerator {
                 WebSoknad soknad = finnWebSoknad(options.context);
                 Faktum faktum = soknad.getFaktumMedKey(key);
                 return faktum.getValue();
+            }
+        };
+    }
+
+    private Helper<Object> generateHelperForPeriodeTidsromFakta() {
+        return new Helper<Object>() {
+            @Override
+            public CharSequence apply(Object context, Options options) throws IOException {
+                WebSoknad soknad = finnWebSoknad(options.context);
+                List<Faktum> fakta = soknad.getFaktaSomStarterMed("perioder.tidsrom");
+                List<Faktum> sortertFaktaEtterDato = on(fakta).collect(new Comparator<Faktum>() {
+                    @Override
+                    public int compare(Faktum o1, Faktum o2) {
+                        DateTimeFormatter dt = DateTimeFormat.forPattern("yyyy-MM-dd").withLocale(NO_LOCALE);
+                        DateTime fradato = dt.parseDateTime(o1.getProperties().get("fradato"));
+                        DateTime tildato = dt.parseDateTime(o1.getProperties().get("tildato"));
+                        return tildato.compareTo(fradato);
+                    }
+                });
+                if (sortertFaktaEtterDato.isEmpty()) {
+                    return options.inverse(this);
+                } else {
+                    return lagItererbarRespons(options, sortertFaktaEtterDato);
+                }
             }
         };
     }
@@ -535,7 +558,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
 
             @Override
             public CharSequence apply(Object value, Options options) throws IOException {
-                if(!(options.context.model() instanceof Faktum)) {
+                if (!(options.context.model() instanceof Faktum)) {
                     return options.inverse(this);
                 }
 
@@ -553,10 +576,44 @@ public class HandleBarKjoerer implements HtmlGenerator {
         return new Helper<Object>() {
             @Override
             public CharSequence apply(Object value, Options options) throws IOException {
-                if(value != null && getCmsTekst(options.param(0).toString(), new Object[]{}, NO_LOCALE).equalsIgnoreCase(value.toString())) {
+                if (value != null && getCmsTekst(options.param(0).toString(), new Object[]{}, NO_LOCALE).equalsIgnoreCase(value.toString())) {
                     return options.fn(this);
                 }
                 return options.inverse(this);
+            }
+        };
+    }
+
+    private Helper<Object> generateToLowerCaseHelper() {
+        return new Helper<Object>() {
+            @Override
+            public CharSequence apply(Object value, Options options) throws IOException {
+                return value.toString().toLowerCase();
+            }
+        };
+    }
+
+    private Helper<Object> generateHvisKunStudentHelper() {
+        return new Helper<Object>() {
+            @Override
+            public CharSequence apply(Object context, Options options) throws IOException {
+                WebSoknad soknad = finnWebSoknad(options.context);
+
+                Faktum iArbeidFaktum = soknad.getFaktumMedKey("navaerendeSituasjon.iArbeid");
+                Faktum sykmeldtFaktum = soknad.getFaktumMedKey("navaerendeSituasjon.sykmeldt");
+                Faktum arbeidsledigFaktum = soknad.getFaktumMedKey("navaerendeSituasjon.arbeidsledig");
+                Faktum forstegangstjenesteFaktum = soknad.getFaktumMedKey("navaerendeSituasjon.forstegangstjeneste");
+                Faktum annetFaktum = soknad.getFaktumMedKey("navaerendeSituasjon.annet");
+
+                Faktum[] fakta = {iArbeidFaktum, sykmeldtFaktum, arbeidsledigFaktum, forstegangstjenesteFaktum, annetFaktum};
+
+                for (Faktum faktum : fakta) {
+                    if (faktum != null && "true".equals(faktum.getValue())) {
+                        return options.inverse(this);
+                    }
+                }
+
+                return options.fn(this);
             }
         };
     }

@@ -12,10 +12,10 @@ public interface SendSoknadService {
 
     WebSoknad hentSoknad(String behandlingsId);
 
-    WebSoknad hentSoknadMedFaktaOgVedlegg(long soknadId);
+    WebSoknad hentSoknad(long soknadId);
     WebSoknad hentSoknadMedFaktaOgVedlegg(String behandlingsId);
 
-    String hentSoknadEier(Long soknadId);
+    WebSoknad hentSoknadForTilgangskontroll(String behandlingsId);
 
     void sendSoknad(String behandlingsId, byte[] outputStream);
 

@@ -14,6 +14,7 @@ import javax.inject.Named;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static java.lang.String.format;
@@ -70,7 +71,7 @@ public class WebSoknadConfig {
         }
     }
 
-    public List<BolkService> getSoknadBolker (Long soknadId, List<BolkService> alleBolker) {
+    public List<BolkService> getSoknadBolker (Long soknadId, Collection<BolkService> alleBolker) {
         KravdialogInformasjon skjemaConfig = finnSkjemaConfig(soknadId);
         List<String> configBolker = skjemaConfig.getSoknadBolker();
 

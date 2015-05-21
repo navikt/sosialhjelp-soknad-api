@@ -29,3 +29,4 @@ public class ForeldrepengerInformasjon implements KravdialogInformasjon {
         return Arrays.asList(BOLK_PERSONALIA, BOLK_BARN, BOLK_ARBEIDSFORHOLD);
     }
 }
+

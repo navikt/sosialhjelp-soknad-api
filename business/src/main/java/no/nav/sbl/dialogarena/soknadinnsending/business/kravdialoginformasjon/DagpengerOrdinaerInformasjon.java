@@ -1,10 +1,14 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon;
 
-import java.util.Arrays;
 import java.util.List;
+
+import static java.util.Arrays.asList;
 
 
 public class DagpengerOrdinaerInformasjon implements KravdialogInformasjon {
+
+    private static List<String> skjemanummer = asList("NAV 04-01.03", "NAV 04-01.04");
+
     public String getSoknadTypePrefix () {
         return "dagpenger.ordinaer";
     }
@@ -22,10 +26,14 @@ public class DagpengerOrdinaerInformasjon implements KravdialogInformasjon {
     }
 
     public List<String> getSkjemanummer() {
-        return Arrays.asList("NAV 04-01.03", "NAV 04-01.04");
+        return skjemanummer;
     }
 
     public List<String> getSoknadBolker() {
-        return Arrays.asList(BOLK_PERSONALIA, BOLK_BARN);
+        return asList(BOLK_PERSONALIA, BOLK_BARN);
+    }
+
+    public static boolean erDagpengerOrdinaer(String skjema) {
+        return skjemanummer.contains(skjema);
     }
 }
