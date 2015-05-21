@@ -87,6 +87,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
         handlebars.registerHelper("hvisLikCmsTekst", generateHvisLikCmsTekstHelper());
         handlebars.registerHelper("toLowerCase", generateToLowerCaseHelper());
         handlebars.registerHelper("hvisKunStudent", generateHvisKunStudentHelper());
+        handlebars.registerHelper("harBarnetInntekt", generateHarBarnetInntektHelper());
 
         return handlebars;
     }
@@ -614,6 +615,25 @@ public class HandleBarKjoerer implements HtmlGenerator {
                 }
 
                 return options.fn(this);
+            }
+        };
+    }
+
+    private Helper<Object> generateHarBarnetInntektHelper() {
+        return new Helper<Object>() {
+            @Override
+            public CharSequence apply(Object key, Options options) throws IOException {
+                WebSoknad soknad = finnWebSoknad(options.context);
+                Faktum parentFaktum = finnFaktum(options.context);
+
+                Faktum harInntekt = soknad.getFaktaMedKeyOgParentFaktum("barn.harinntekt", parentFaktum.getFaktumId()).get(0);
+                Faktum sumInntekt = soknad.getFaktaMedKeyOgParentFaktum("barn.inntekt", parentFaktum.getFaktumId()).get(0);
+
+                if (sumInntekt != null && harInntekt != null && "true".equals(harInntekt.getValue())) {
+                    return options.fn(sumInntekt);
+                } else {
+                    return options.inverse(this);
+                }
             }
         };
     }
