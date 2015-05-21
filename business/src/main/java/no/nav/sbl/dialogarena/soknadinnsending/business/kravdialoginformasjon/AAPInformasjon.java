@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -29,7 +31,7 @@ public class AAPInformasjon implements KravdialogInformasjon {
         return skjemanummer;
     }
 
-    public List<String> getSoknadBolker() {
+    public List<String> getSoknadBolker(WebSoknad soknad) {
         return asList(BOLK_PERSONALIA, BOLK_BARN);
     }
 

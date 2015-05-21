@@ -125,7 +125,7 @@ public class SoknadServiceTest {
         soknadService.initBolker();
         setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         when(soknadRepository.hentSoknadType(anyLong())).thenReturn(DAGPENGER);
-        when(config.getSoknadBolker(any(Long.class), any(List.class))).thenReturn(new ArrayList());
+        when(config.getSoknadBolker(any(WebSoknad.class), any(List.class))).thenReturn(new ArrayList());
         when(config.hentStruktur(any(Long.class))).thenReturn(new SoknadStruktur());
         when(kravdialogInformasjonHolder.hentAlleSkjemanumre()).thenReturn(new KravdialogInformasjonHolder().hentAlleSkjemanumre());
     }
@@ -354,7 +354,7 @@ public class SoknadServiceTest {
                 .medId(1L);
         when(soknadRepository.hentSoknad("123")).thenReturn(
                 soknad);
-        when(config.getSoknadBolker(any(Long.class), anyListOf(BolkService.class))).thenReturn(asList(personaliaService, barnService));
+        when(config.getSoknadBolker(any(WebSoknad.class), anyListOf(BolkService.class))).thenReturn(asList(personaliaService, barnService));
         when(soknadRepository.hentSoknadMedData(anyString())).thenReturn(soknad);
         soknadService.hentSoknad("123");
         verify(personaliaService, times(1)).genererSystemFakta(anyString(), anyLong());
@@ -370,7 +370,7 @@ public class SoknadServiceTest {
                 .medId(1L);
         when(soknadRepository.hentSoknad("123")).thenReturn(
                 soknad);
-        when(config.getSoknadBolker(any(Long.class), anyListOf(BolkService.class))).thenReturn(asList(personaliaService, barnService));
+        when(config.getSoknadBolker(any(WebSoknad.class), anyListOf(BolkService.class))).thenReturn(asList(personaliaService, barnService));
         when(soknadRepository.hentSoknadMedData(anyString())).thenReturn(soknad);
         soknadService.hentSoknad("123");
         verify(personaliaService, times(1)).genererSystemFakta(anyString(), anyLong());

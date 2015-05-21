@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business;
 
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.KravdialogInformasjon;
 import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.KravdialogInformasjonHolder;
@@ -71,9 +72,9 @@ public class WebSoknadConfig {
         }
     }
 
-    public List<BolkService> getSoknadBolker (Long soknadId, Collection<BolkService> alleBolker) {
-        KravdialogInformasjon skjemaConfig = finnSkjemaConfig(soknadId);
-        List<String> configBolker = skjemaConfig.getSoknadBolker();
+    public List<BolkService> getSoknadBolker (WebSoknad soknad, Collection<BolkService> alleBolker) {
+        KravdialogInformasjon skjemaConfig = kravdialogInformasjonHolder.hentKonfigurasjon(soknad.getskjemaNummer());
+        List<String> configBolker = skjemaConfig.getSoknadBolker(soknad);
 
         List<BolkService> soknadBolker = new ArrayList<>();
         for(BolkService bolk : alleBolker){

@@ -1,11 +1,17 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+
 import java.util.Arrays;
 import java.util.List;
 
 
 public class ForeldrepengerInformasjon implements KravdialogInformasjon {
-    public String getSoknadTypePrefix () {
+
+    public static final String STONADSTYPE_OVERFORING = "overforing";
+
+    public String getSoknadTypePrefix() {
         return "foreldresoknad";
     }
 
@@ -25,8 +31,13 @@ public class ForeldrepengerInformasjon implements KravdialogInformasjon {
         return Arrays.asList("NAV 14-05.06", "NAV 14-05.07", "NAV 14-05.08", "NAV 14-05.09");
     }
 
-    public List<String> getSoknadBolker() {
-        return Arrays.asList(BOLK_PERSONALIA, BOLK_BARN, BOLK_ARBEIDSFORHOLD);
+    public List<String> getSoknadBolker(WebSoknad soknad) {
+        Faktum stonadstype = soknad.getFaktumMedKey("soknadsvalg.stonadstype");
+        if (stonadstype != null && STONADSTYPE_OVERFORING.equals(stonadstype.getValue())) {
+            return Arrays.asList(BOLK_PERSONALIA);
+        } else {
+            return Arrays.asList(BOLK_PERSONALIA, BOLK_BARN, BOLK_ARBEIDSFORHOLD);
+        }
     }
 }
 

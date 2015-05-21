@@ -556,7 +556,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         faktaService.lagreSystemFakta(soknad, bolker.get(PersonaliaService.class.getName()).genererSystemFakta(fodselsnummer, soknad.getSoknadId()));
     }
     private void lagreAllInformasjon(String fodselsnummer, WebSoknad soknad) {
-        List<BolkService> soknadBolker = config.getSoknadBolker(soknad.getSoknadId(), bolker.values());
+        List<BolkService> soknadBolker = config.getSoknadBolker(soknad, bolker.values());
         List<Faktum> systemfaktum = new ArrayList<>();
         for (BolkService bolk : soknadBolker) {
             systemfaktum.addAll(bolk.genererSystemFakta(fodselsnummer, soknad.getSoknadId()));
