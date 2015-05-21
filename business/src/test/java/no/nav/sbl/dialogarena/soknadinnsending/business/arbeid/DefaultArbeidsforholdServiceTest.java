@@ -13,15 +13,17 @@ import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.OrganisasjonV4;
 import org.joda.time.DateTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.List;
+
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -48,21 +50,18 @@ public class DefaultArbeidsforholdServiceTest {
     @Test
     public void skalLagreSystemfakta() throws Exception {
         Arbeidsforhold arbeidsforhold = setup(lagArbeidsforhold());
-        service.lagreArbeidsforhold("123", 11L);
+        List<Faktum> faktums = service.genererArbeidsforhold("123", 11L);
         Mockito.verify(arbeidsforholdWebService).finnArbeidsforholdPrArbeidstaker(any(FinnArbeidsforholdPrArbeidstakerRequest.class));
         verify(transformer).apply(arbeidsforhold);
-        verify(faktaService).lagreSystemFaktum(eq(11L), any(Faktum.class), eq("edagref"));
+        assertThat(faktums.size(), equalTo(1));
     }
 
     @Test
     public void skalSetteAlleFaktumFelter() throws Exception {
         no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.Arbeidsforhold result = lagArbeidsforhold();
         setup(result);
-        service.lagreArbeidsforhold("123", 11L);
-        ArgumentCaptor<Faktum> argCaptor = ArgumentCaptor.forClass(Faktum.class);
-        verify(faktaService).lagreSystemFaktum(eq(11L), argCaptor.capture(), eq("edagref"));
-
-        Faktum faktum = argCaptor.getValue();
+        List<Faktum> faktums = service.genererArbeidsforhold("123", 11L);
+        Faktum faktum = faktums.get(0);
 
         assertThat(faktum.finnEgenskap("orgnr").getValue(), equalTo("12345"));
         assertThat(faktum.finnEgenskap("arbeidsgivernavn").getValue(), equalTo("test"));
@@ -83,11 +82,8 @@ public class DefaultArbeidsforholdServiceTest {
         result.fastStillingsprosent = 0L;
         result.variabelStillingsprosent = true;
         setup(result);
-        service.lagreArbeidsforhold("123", 11L);
-        ArgumentCaptor<Faktum> argCaptor = ArgumentCaptor.forClass(Faktum.class);
-        verify(faktaService).lagreSystemFaktum(eq(11L), argCaptor.capture(), eq("edagref"));
-
-        Faktum faktum = argCaptor.getValue();
+        List<Faktum> faktums = service.genererArbeidsforhold("123", 11L);
+        Faktum faktum = faktums.get(0);
 
         assertThat(faktum.finnEgenskap("stillingstype").getValue(), equalTo("variabel"));
         assertThat(faktum.finnEgenskap("stillingsprosent").getValue(), equalTo("0"));
@@ -98,11 +94,8 @@ public class DefaultArbeidsforholdServiceTest {
         no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.Arbeidsforhold result = lagArbeidsforhold();
         result.variabelStillingsprosent = true;
         setup(result);
-        service.lagreArbeidsforhold("123", 11L);
-        ArgumentCaptor<Faktum> argCaptor = ArgumentCaptor.forClass(Faktum.class);
-        verify(faktaService).lagreSystemFaktum(eq(11L), argCaptor.capture(), eq("edagref"));
-
-        Faktum faktum = argCaptor.getValue();
+        List<Faktum> faktums = service.genererArbeidsforhold("123", 11L);
+        Faktum faktum = faktums.get(0);
 
         assertThat(faktum.finnEgenskap("stillingstype").getValue(), equalTo("fastOgVariabel"));
         assertThat(faktum.finnEgenskap("stillingsprosent").getValue(), equalTo("50"));
@@ -113,11 +106,8 @@ public class DefaultArbeidsforholdServiceTest {
         no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.Arbeidsforhold result = lagArbeidsforhold();
         result.tom = null;
         setup(result);
-        service.lagreArbeidsforhold("123", 11L);
-        ArgumentCaptor<Faktum> argCaptor = ArgumentCaptor.forClass(Faktum.class);
-        verify(faktaService).lagreSystemFaktum(eq(11L), argCaptor.capture(), eq("edagref"));
-
-        Faktum faktum = argCaptor.getValue();
+        List<Faktum> faktums = service.genererArbeidsforhold("123", 11L);
+        Faktum faktum = faktums.get(0);
 
         assertThat(faktum.finnEgenskap("ansatt").getValue(), equalTo("true"));
     }
@@ -128,6 +118,7 @@ public class DefaultArbeidsforholdServiceTest {
         t.getArbeidsforhold().add(arbeidsforhold);
         when(arbeidsforholdWebService.finnArbeidsforholdPrArbeidstaker(any(FinnArbeidsforholdPrArbeidstakerRequest.class))).thenReturn(t);
         when(transformer.apply(any(Arbeidsforhold.class))).thenReturn(result);
+        when(faktaService.hentFaktumMedKey(anyLong(), eq("arbeidsforhold.yrkesaktiv"))).thenReturn(new Faktum().medKey("arbeidsforhold.yrkesaktiv").medValue("false"));
         return arbeidsforhold;
     }
 

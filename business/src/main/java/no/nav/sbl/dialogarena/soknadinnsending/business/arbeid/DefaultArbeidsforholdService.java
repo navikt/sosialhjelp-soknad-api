@@ -12,6 +12,7 @@ import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.P
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Regelverker;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerRequest;
 import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.OrganisasjonV4;
+import org.apache.commons.collections15.Transformer;
 import org.joda.time.DateTime;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -21,8 +22,11 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static no.nav.modig.lang.collections.IterUtils.on;
 
 @Service
 public class DefaultArbeidsforholdService implements ArbeidsforholdService, BolkService {
@@ -37,17 +41,19 @@ public class DefaultArbeidsforholdService implements ArbeidsforholdService, Bolk
     private ArbeidsforholdTransformer transformer;
     private DatatypeFactory datatypeFactory = lagDatatypeFactory();
     private static final Regelverker AA_ORDNINGEN = new Regelverker();
+
     static {
         AA_ORDNINGEN.setValue("A_ORDNINGEN");
     }
 
-    private DatatypeFactory lagDatatypeFactory(){
+    private DatatypeFactory lagDatatypeFactory() {
         try {
             return DatatypeFactory.newInstance();
         } catch (DatatypeConfigurationException e) {
             throw new RuntimeException(e);
         }
     }
+
     @PostConstruct
     public void createTransformer() throws DatatypeConfigurationException {
         transformer = new ArbeidsforholdTransformer(organisasjonWebService);
@@ -62,40 +68,43 @@ public class DefaultArbeidsforholdService implements ArbeidsforholdService, Bolk
         }
     }
 
-    public void lagreArbeidsforhold(String fodselsnummer, Long soknadId) {
-        List<Arbeidsforhold> forhold = hentArbeidsforhold(fodselsnummer);
-        for (Arbeidsforhold arbeidsforhold : forhold) {
-            Faktum arbridsforholdFaktum = new Faktum()
-                    .medSoknadId(soknadId)
-                    .medKey("arbeidsforhold")
-                    .medSystemProperty("orgnr", Objects.toString(arbeidsforhold.orgnr, ""))
-                    .medSystemProperty("arbeidsgivernavn", arbeidsforhold.arbridsgiverNavn)
-                    .medSystemProperty("ansatt", trueFalse(arbeidsforhold.tom == null))
-                    .medSystemProperty("fom", Objects.toString(arbeidsforhold.fom, ""))
-                    .medSystemProperty("tom", Objects.toString(arbeidsforhold.tom, ""))
-                    .medSystemProperty("land", "NO")
-                    .medSystemProperty("stillingstype", finnStillingsType(arbeidsforhold))
-                    .medSystemProperty("stillingsprosent", Objects.toString(arbeidsforhold.fastStillingsprosent, ""))
-                    .medSystemProperty("kilde", "EDAG")
-                    .medSystemProperty("edagref", "" + arbeidsforhold.edagId);
-            arbridsforholdFaktum.setFaktumId(faktaService.lagreSystemFaktum(soknadId, arbridsforholdFaktum, "edagref"));
-        }
-        if(!forhold.isEmpty()){
-            Faktum yrkesaktiv;
-            try {
-                yrkesaktiv = faktaService.hentFaktumMedKey(soknadId, "arbeidsforhold.yrkesaktiv");
-            } catch(Exception ignore){
-                yrkesaktiv =  null;
-            }
-            if(yrkesaktiv == null){
-                yrkesaktiv = new Faktum()
+    public List<Faktum> genererArbeidsforhold(String fodselsnummer, final Long soknadId) {
+        List<Faktum> result =  new ArrayList<>();
+        result.addAll(on(hentArbeidsforhold(fodselsnummer)).map(arbeidsforholdTransformer(soknadId)).collect());
+        if (!result.isEmpty()) {
+            Faktum yrkesaktiv = faktaService.hentFaktumMedKey(soknadId, "arbeidsforhold.yrkesaktiv");
+            if (yrkesaktiv == null) {
+                result.add(new Faktum()
                         .medSoknadId(soknadId)
-                        .medKey("arbeidsforhold.yrkesaktiv");
-                faktaService.lagreSystemFaktum(soknadId, yrkesaktiv.medValue("false"), "");
-            } else if(!"false".equals(yrkesaktiv.getValue())){
-                faktaService.lagreSystemFaktum(soknadId, yrkesaktiv.medValue("false"), "");
+                        .medKey("arbeidsforhold.yrkesaktiv")
+                        .medValue("false"));
+            } else if("true".equals(yrkesaktiv.getValue())){
+                result.add(yrkesaktiv.medValue("false"));
             }
         }
+        return result;
+    }
+
+    private static Transformer<Arbeidsforhold, Faktum> arbeidsforholdTransformer(final Long soknadId) {
+        return new Transformer<Arbeidsforhold, Faktum>() {
+            @Override
+            public Faktum transform(Arbeidsforhold arbeidsforhold) {
+                return new Faktum()
+                        .medSoknadId(soknadId)
+                        .medKey("arbeidsforhold")
+                        .medSystemProperty("orgnr", Objects.toString(arbeidsforhold.orgnr, ""))
+                        .medSystemProperty("arbeidsgivernavn", arbeidsforhold.arbridsgiverNavn)
+                        .medSystemProperty("ansatt", trueFalse(arbeidsforhold.tom == null))
+                        .medSystemProperty("fom", Objects.toString(arbeidsforhold.fom, ""))
+                        .medSystemProperty("tom", Objects.toString(arbeidsforhold.tom, ""))
+                        .medSystemProperty("land", "NO")
+                        .medSystemProperty("stillingstype", finnStillingsType(arbeidsforhold))
+                        .medSystemProperty("stillingsprosent", Objects.toString(arbeidsforhold.fastStillingsprosent, ""))
+                        .medSystemProperty("kilde", "EDAG")
+                        .medSystemProperty("edagref", "" + arbeidsforhold.edagId)
+                        .medUnikProperty("edagref");
+            }
+        };
     }
 
     private FinnArbeidsforholdPrArbeidstakerRequest lagArbeidsforholdRequest(String fodselsnummer) {
@@ -119,11 +128,11 @@ public class DefaultArbeidsforholdService implements ArbeidsforholdService, Bolk
         return periode;
     }
 
-    private String trueFalse(boolean test) {
+    private static String trueFalse(boolean test) {
         return test ? "true" : "false";
     }
 
-    private String finnStillingsType(Arbeidsforhold arbeidsforhold) {
+    private static String finnStillingsType(Arbeidsforhold arbeidsforhold) {
         if (arbeidsforhold.harFastStilling && arbeidsforhold.variabelStillingsprosent) {
             return "fastOgVariabel";
         } else if (arbeidsforhold.harFastStilling) {
@@ -140,7 +149,7 @@ public class DefaultArbeidsforholdService implements ArbeidsforholdService, Bolk
 
     @Override
     @Cacheable("arbeidsforholdCache")
-    public void lagreBolk(String fodselsnummer, Long soknadId) {
-        lagreArbeidsforhold(fodselsnummer, soknadId);
+    public List<Faktum> genererSystemFakta(String fodselsnummer, Long soknadId) {
+        return genererArbeidsforhold(fodselsnummer, soknadId);
     }
 }

@@ -441,7 +441,6 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
         Long soknadId = repository.opprettSoknad(soknad);
         soknad.setSoknadId(soknadId);
-
         Faktum bolkerFaktum = new Faktum().medSoknadId(soknadId).medKey("bolker").medType(BRUKERREGISTRERT);
         repository.lagreFaktum(soknadId, bolkerFaktum);
 
@@ -545,22 +544,24 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         }
     };
 
-    private void oppdaterKjentInformasjon(String fodselsnummer, WebSoknad soknad) {
+    private void oppdaterKjentInformasjon(String fodselsnummer, final WebSoknad soknad) {
+        WebSoknad soknadMedFakta = hentSoknadMedFaktaOgVedlegg(soknad.getBrukerBehandlingId());
         if (soknad.erEttersending()) {
-            lagrePersonalia(fodselsnummer, soknad.getSoknadId());
+            lagrePersonalia(fodselsnummer, soknadMedFakta);
         } else {
-            lagreAllInformasjon(fodselsnummer, soknad.getSoknadId());
+            lagreAllInformasjon(fodselsnummer, soknadMedFakta);
         }
     }
-
-    private void lagrePersonalia(String fodselsnummer, Long soknadId) {
-        bolker.get(PersonaliaService.class.getName()).lagreBolk(fodselsnummer, soknadId);
+    private void lagrePersonalia(String fodselsnummer, WebSoknad soknad) {
+        faktaService.lagreSystemFakta(soknad, bolker.get(PersonaliaService.class.getName()).genererSystemFakta(fodselsnummer, soknad.getSoknadId()));
     }
-
-    private void lagreAllInformasjon(String fodselsnummer, Long soknadId) {
-        List<BolkService> soknadBolker = config.getSoknadBolker(soknadId, bolker.values());
+    private void lagreAllInformasjon(String fodselsnummer, WebSoknad soknad) {
+        List<BolkService> soknadBolker = config.getSoknadBolker(soknad.getSoknadId(), bolker.values());
+        List<Faktum> systemfaktum = new ArrayList<>();
         for (BolkService bolk : soknadBolker) {
-            bolk.lagreBolk(fodselsnummer, soknadId);
+            systemfaktum.addAll(bolk.genererSystemFakta(fodselsnummer, soknad.getSoknadId()));
         }
+        faktaService.lagreSystemFakta(soknad, systemfaktum);
+
     }
 }

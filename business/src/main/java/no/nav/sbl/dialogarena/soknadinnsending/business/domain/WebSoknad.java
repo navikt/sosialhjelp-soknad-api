@@ -336,6 +336,15 @@ public class WebSoknad implements Serializable {
         }).collect();
     }
 
+    public Faktum getFaktaMedKeyOgProperty(final String key, final String property, final String value) {
+        return on(fakta).filter(new Predicate<Faktum>() {
+            @Override
+            public boolean evaluate(Faktum faktum) {
+                return faktum.getKey().equals(key) && faktum.matcherUnikProperty(property, value);
+            }
+        }).head().getOrElse(null);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -433,10 +442,10 @@ public class WebSoknad implements Serializable {
                 .collect()
                 .isEmpty();
     }
-
     public boolean erUnderArbeid() {
         return status.equals(SoknadInnsendingStatus.UNDER_ARBEID);
     }
+
     public boolean erAvbrutt() {
         return status.equals(SoknadInnsendingStatus.AVBRUTT_AV_BRUKER) || status.equals(SoknadInnsendingStatus.AVBRUTT_AUTOMATISK);
     }
@@ -445,13 +454,13 @@ public class WebSoknad implements Serializable {
         soknadPrefix = prefix;
         return this;
     }
-
     public String getSoknadPrefix() {
         return soknadPrefix;
     }
     public String getSoknadUrl() {
         return soknadUrl;
     }
+
     public String getFortsettSoknadUrl() {
         return fortsettSoknadUrl;
     }
@@ -460,5 +469,14 @@ public class WebSoknad implements Serializable {
         if(delstegStatus.erEttersending() && !nyStatus.erEttersending()){
             throw new UgyldigDelstegEndringException(String.format("Kan ikke endre status fra %s til %s", delstegStatus, nyStatus), "soknad.delsteg.endring.ettersending");
         }
+    }
+
+    public Faktum finnFaktum(final Long faktumId) {
+        return on(fakta).filter(new Predicate<Faktum>() {
+            @Override
+            public boolean evaluate(Faktum faktum) {
+                return faktum.getFaktumId().equals(faktumId);
+            }
+        }).head().getOrElse(null);
     }
 }
