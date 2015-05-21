@@ -20,7 +20,7 @@ import static no.nav.modig.lang.collections.PredicateUtils.not;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.ETTERSENDING_OPPRETTET;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.ER_ANNET_VEDLEGG;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.ER_LASTET_OPP;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.AAPInformasjon.erAap;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.AAPOrdinaerInformasjon.erAap;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.DagpengerGjenopptakInformasjon.erDagpengerGjenopptak;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.DagpengerOrdinaerInformasjon.erDagpengerOrdinaer;
 
