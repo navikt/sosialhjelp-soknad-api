@@ -6,10 +6,6 @@ import java.util.List;
 public enum DelstegStatus {
     OPPRETTET, UTFYLLING, SKJEMA_VALIDERT, VEDLEGG_VALIDERT, SAMTYKKET, ETTERSENDING_OPPRETTET, ETTERSENDING_UTFYLLING;
 
-    public static boolean isEttersendingStatus(DelstegStatus status) {
-        List<DelstegStatus> ettersendingStatuses = Arrays.asList(ETTERSENDING_UTFYLLING, ETTERSENDING_OPPRETTET);
-        return ettersendingStatuses.contains(status);
-    }
     private static List<DelstegStatus> ETTERSENDING = Arrays.asList(ETTERSENDING_OPPRETTET, ETTERSENDING_UTFYLLING);
     public boolean erEttersending() {
         return ETTERSENDING.contains(this);
