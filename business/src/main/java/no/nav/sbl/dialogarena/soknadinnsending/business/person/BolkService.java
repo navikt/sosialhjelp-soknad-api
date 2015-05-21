@@ -1,7 +1,12 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+
+import java.util.List;
+
 public interface BolkService {
     String tilbyrBolk();
-    void lagreBolk(String fodselsnummer, Long soknadId);
+
+    List<Faktum> genererSystemFakta(String fodselsnummer, Long soknadId);
 
 }

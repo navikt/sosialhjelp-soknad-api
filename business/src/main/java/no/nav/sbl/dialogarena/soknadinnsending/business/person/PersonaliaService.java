@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.StatsborgerskapType;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.IkkeFunnetException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
@@ -20,13 +19,15 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.ws.WebServiceException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.*;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.SEKUNDARADRESSE_GYLDIGTIL_KEY;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
-public class PersonaliaService implements BolkService{
+public class PersonaliaService implements BolkService {
 
     private static final Logger logger = getLogger(PersonaliaService.class);
     private static final String BOLKNAVN = "Personalia";
@@ -38,8 +39,6 @@ public class PersonaliaService implements BolkService{
     private PersonService personService;
     @Inject
     private Kodeverk kodeverk;
-    @Inject
-    private FaktaService faktaService;
 
 
     public Personalia hentPersonalia(String fodselsnummer) {
@@ -68,7 +67,7 @@ public class PersonaliaService implements BolkService{
     }
 
     @Override
-    public void lagreBolk(String fodselsnummer, Long soknadId) {
+    public List<Faktum> genererSystemFakta(String fodselsnummer, Long soknadId) {
         XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse;
         HentKjerneinformasjonResponse kjerneinformasjonResponse;
 
@@ -77,7 +76,7 @@ public class PersonaliaService implements BolkService{
             preferanserResponse = brukerProfil.hentKontaktinformasjonOgPreferanser(lagXMLRequestPreferanser(fodselsnummer));
 
             Personalia personalia = PersonaliaTransform.mapTilPersonalia(preferanserResponse, kjerneinformasjonResponse, kodeverk);
-            lagrePersonalia(soknadId, personalia);
+            return genererPersonaliaFaktum(soknadId, personalia);
 
         } catch (IkkeFunnetException e) {
             logger.warn("Ikke funnet person i TPS");
@@ -88,12 +87,12 @@ public class PersonaliaService implements BolkService{
         } catch (WebServiceException e) {
             logger.error("Ingen kontakt med TPS.", e);
         }
+        return new ArrayList<>();
     }
 
-    private void lagrePersonalia(Long soknadId, Personalia personalia) {
+    private List<Faktum> genererPersonaliaFaktum(Long soknadId, Personalia personalia) {
         String statsborgerskap = personalia.getStatsborgerskap();
-
-        Faktum personaliaFaktum = new Faktum().medSoknadId(soknadId).medKey("personalia")
+        return Arrays.asList(new Faktum().medSoknadId(soknadId).medKey("personalia")
                 .medSystemProperty(FNR_KEY, personalia.getFnr())
                 .medSystemProperty(KONTONUMMER_KEY, personalia.getKontonummer())
                 .medSystemProperty(ER_UTENLANDSK_BANKKONTO, personalia.getErUtenlandskBankkonto().toString())
@@ -113,9 +112,8 @@ public class PersonaliaService implements BolkService{
                 .medSystemProperty(SEKUNDARADRESSE_KEY, personalia.getSekundarAdresse().getAdresse())
                 .medSystemProperty(SEKUNDARADRESSE_TYPE_KEY, personalia.getSekundarAdresse().getAdressetype())
                 .medSystemProperty(SEKUNDARADRESSE_GYLDIGFRA_KEY, personalia.getSekundarAdresse().getGyldigFra())
-                .medSystemProperty(SEKUNDARADRESSE_GYLDIGTIL_KEY, personalia.getSekundarAdresse().getGyldigTil());
-
-        faktaService.lagreSystemFaktum(soknadId, personaliaFaktum, "fnr");
+                .medSystemProperty(SEKUNDARADRESSE_GYLDIGTIL_KEY, personalia.getSekundarAdresse().getGyldigTil())
+                .medUnikProperty(FNR_KEY));
     }
 
     private XMLHentKontaktinformasjonOgPreferanserRequest lagXMLRequestPreferanser(String ident) {
