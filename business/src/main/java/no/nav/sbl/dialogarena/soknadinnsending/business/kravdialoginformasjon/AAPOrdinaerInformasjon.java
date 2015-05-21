@@ -7,7 +7,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 
 
-public class AAPInformasjon implements KravdialogInformasjon {
+public class AAPOrdinaerInformasjon implements KravdialogInformasjon {
 
     private static List<String> skjemanummer = asList("NAV 11-13.05");
 
