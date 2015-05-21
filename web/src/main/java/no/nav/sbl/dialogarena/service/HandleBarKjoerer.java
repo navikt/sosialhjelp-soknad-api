@@ -440,7 +440,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
                     @Override
                     public int compare(Faktum o1, Faktum o2) {
                         DateTimeFormatter dt = DateTimeFormat.forPattern("yyyy-MM-dd").withLocale(NO_LOCALE);
-                        DateTime fradato = dt.parseDateTime(o1.getProperties().get("fradato"));
+                        DateTime fradato = dt.parseDateTime(o2.getProperties().get("fradato"));
                         DateTime tildato = dt.parseDateTime(o1.getProperties().get("tildato"));
                         return tildato.compareTo(fradato);
                     }
