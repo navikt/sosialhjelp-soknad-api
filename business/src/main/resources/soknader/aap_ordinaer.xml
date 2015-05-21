@@ -1,5 +1,22 @@
 <soknad skjemaNummer="NAV 11-13.05" temaKode="AAP">
 
+    <!-- Ny periode -->
+    <faktum>
+        <id>nyPeriode.gjenopptagelsesdato</id>
+    </faktum>
+    <faktum>
+        <id>nyPeriode.grunn.arbeid</id>
+    </faktum>
+    <faktum>
+        <id>nyPeriode.grunn.fodselspermisjon</id>
+    </faktum>
+    <faktum>
+        <id>nyPeriode.grunn.annet</id>
+    </faktum>
+    <faktum>
+        <id>nyPeriode.grunn.annet.fritekst</id>
+    </faktum>
+
     <!-- Fastlege -->
     <faktum>
         <id>fastlege.navn</id>
