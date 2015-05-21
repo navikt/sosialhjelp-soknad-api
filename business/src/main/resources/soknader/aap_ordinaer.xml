@@ -1,5 +1,22 @@
 <soknad skjemaNummer="NAV 11-13.05" temaKode="AAP">
 
+    <!-- Ny periode -->
+    <faktum>
+        <id>nyPeriode.gjenopptagelsesdato</id>
+    </faktum>
+    <faktum>
+        <id>nyPeriode.grunn.arbeid</id>
+    </faktum>
+    <faktum>
+        <id>nyPeriode.grunn.fodselspermisjon</id>
+    </faktum>
+    <faktum>
+        <id>nyPeriode.grunn.annet</id>
+    </faktum>
+    <faktum>
+        <id>nyPeriode.grunn.annet.fritekst</id>
+    </faktum>
+
     <!-- Fastlege -->
     <faktum>
         <id>fastlege.navn</id>
@@ -8,7 +25,7 @@
         <id>fastlege.tlfnr</id>
     </faktum>
     <faktum>
-        <id>fastlege.harfastlege</id>
+        <id>fastlege.harIkkeFastlege</id>
     </faktum>
     <faktum>
         <id>fastlege.annen.behandlende.navn</id>
@@ -22,7 +39,6 @@
         <id>barn</id>
         <flereTillatt>true</flereTillatt>
     </faktum>
-
 
     <!-- Systemfakta -->
     <faktum>
@@ -159,13 +175,13 @@
 
     <!-- Andre ytelser -->
     <faktum>
-        <id>andreytelser.yterserfraNAV.kvalifiseringsstonad</id>
+        <id>andreytelser.ytelserfraNAV.kvalifiseringsstonad</id>
     </faktum>
     <faktum>
-        <id>andreytelser.yterserfraNAV.okonomisksosialhjelp</id>
+        <id>andreytelser.ytelserfraNAV.okonomisksosialhjelp</id>
     </faktum>
     <faktum>
-        <id>andreytelser.yterserfraNAV.ikkemottattellersokt</id>
+        <id>andreytelser.ytelserfraNAV.ikkemottattellersokt</id>
     </faktum>
     <faktum>
         <id>andreytelser.utbetalinger.fraarbeidsgiver</id>
@@ -247,7 +263,9 @@
     <vedlegg>
         <id>8</id>
         <faktum>andreytelser.utbetalinger.fraarbeidsgiver</faktum>
+        <onValues>
+            <value>false</value>
+        </onValues>
         <skjemaNummer>V5</skjemaNummer>
-        <forSystemfaktum>false</forSystemfaktum>
     </vedlegg>
 </soknad>

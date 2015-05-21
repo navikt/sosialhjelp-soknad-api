@@ -2,6 +2,10 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.modig.core.context.ThreadLocalSubjectHandler;
+import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Adresse;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
@@ -17,14 +21,19 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.Locale;
 import java.util.Map;
 
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InformasjonRessursTest {
+
+    public static final String SOKNADSTYPE = "type";
+    public static final String TEMAKODE = "TEMAKODE";
 
     @Spy
     InformasjonService informasjonService;
@@ -38,15 +47,27 @@ public class InformasjonRessursTest {
     PersonInfoService personInfoService;
     @Mock
     ThreadLocalSubjectHandler subjectHandler;
+    @Mock
+    NavMessageSource messageSource;
+    @Mock
+    WebSoknadConfig soknadConfig;
 
     @InjectMocks
     InformasjonRessurs ressurs;
+
+    Locale norskBokmaal = new Locale("nb", "NO");
+    SoknadStruktur struktur;
 
     @Before
     public void setUp() {
         System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", StaticSubjectHandler.class.getName());
         when(personInfoService.hentArbeidssokerStatus(anyString())).thenReturn("ARBS");
         when(personaliaService.hentPersonalia(anyString())).thenReturn(personalia());
+
+        struktur = new SoknadStruktur();
+        struktur.setTemaKode(TEMAKODE);
+        struktur.setFakta(singletonList(new SoknadFaktum()));
+        when(soknadConfig.hentStruktur(anyString())).thenReturn(struktur);
     }
 
     @Test
@@ -82,6 +103,35 @@ public class InformasjonRessursTest {
         assertThat(utslagskriterier.containsKey("registrertAdresse")).isTrue();
         assertThat(utslagskriterier.containsKey("registrertAdresseGyldigFra")).isTrue();
         assertThat(utslagskriterier.containsKey("registrertAdresseGyldigTil")).isTrue();
+        assertThat(utslagskriterier.containsKey("erBosattIEOSLand")).isTrue();
+
+        assertThat(utslagskriterier.size()).isEqualTo(8);
+    }
+
+    @Test
+    public void spraakDefaulterTilNorskBokmaalHvisIkkeSatt() {
+        ressurs.hentTekster(SOKNADSTYPE, null);
+        ressurs.hentTekster(SOKNADSTYPE, " ");
+        verify(messageSource, times(2)).getBundleFor(SOKNADSTYPE, norskBokmaal);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void kastExceptionHvisIkkeSpraakErPaaRiktigFormat() {
+        ressurs.hentTekster(SOKNADSTYPE, "NORSK");
+    }
+
+    @Test
+    public void returnerFullStrukturHvisIkkeFilterErSatt() {
+        SoknadStruktur struktur = ressurs.hentSoknadStruktur("NAV123", null);
+        assertThat(struktur.getTemaKode()).isEqualTo(TEMAKODE);
+        assertThat(struktur.getFakta()).isNotEmpty();
+    }
+
+    @Test
+    public void returnerStrukturMedBareTemakodeHvisFilterErSattTilTemakode() {
+        SoknadStruktur struktur = ressurs.hentSoknadStruktur("NAV123", "temakode");
+        assertThat(struktur.getTemaKode()).isEqualTo(TEMAKODE);
+        assertThat(struktur.getFakta()).isEmpty();
     }
 
     private Personalia personalia() {

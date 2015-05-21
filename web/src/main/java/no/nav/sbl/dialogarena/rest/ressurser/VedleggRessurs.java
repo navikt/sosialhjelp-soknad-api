@@ -38,7 +38,7 @@ public class VedleggRessurs {
     @Inject
     private SendSoknadService soknadService;
 
-    private static final Integer MAKS_TOTAL_FILSTORRELSE = 1024 * 1024 * 10;
+    public static final Integer MAKS_TOTAL_FILSTORRELSE = 1024 * 1024 * 10;
 
     @GET
     @SjekkTilgangTilSoknad(type = Vedlegg)
@@ -91,14 +91,13 @@ public class VedleggRessurs {
     @SjekkTilgangTilSoknad(sjekkXsrf = false, type = Vedlegg) // sjekkXsrf er false fordi IE9 ikke kan sende xsrf-token i header, kan fjernes en vakker dag når vi ikke skal støtte IE9
     public List<Vedlegg> lastOppFiler(@PathParam("vedleggId") final Long vedleggId, @QueryParam("behandlingsId") String behandlingsId,
                                           @FormDataParam("X-XSRF-TOKEN") final String xsrfToken, @FormDataParam("files[]") final List<FormDataBodyPart> files) {
-       XsrfGenerator.sjekkXsrfToken(xsrfToken, behandlingsId);
+        XsrfGenerator.sjekkXsrfToken(xsrfToken, behandlingsId);
 
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId);
         Vedlegg forventning = vedleggService.hentVedlegg(vedleggId, false);
 
         if (erFilForStor(behandlingsId, files, forventning)) {
-            throw new OpplastingException("Kunne ikke lagre fil fordi total filstørrelse er for stor", null,
-                    "vedlegg.opplasting.feil.forStor");
+            throw new OpplastingException("Kunne ikke lagre fil fordi total filstørrelse er for stor", null, "vedlegg.opplasting.feil.forStor");
         }
 
         List<Vedlegg> res = new ArrayList<>();

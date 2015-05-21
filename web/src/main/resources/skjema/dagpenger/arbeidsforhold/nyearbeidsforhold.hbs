@@ -18,6 +18,15 @@
                         </td>
                     </tr>
                 {{/forFaktum}}
+                {{#forFaktum "nyearbeidsforhold.datogjenopptak"}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>
+                            <span>{{ hentTekst "nyearbeidsforhold.datogjenopptak.oppsummering" }}</span>
+                            <span>{{ formatterLangDato value}}</span>
+                        </td>
+                    </tr>
+                {{/forFaktum}}
             </table>
             {{> skjema/dagpenger/arbeidsforhold/grensearbeider }}
         {{else}}
@@ -37,6 +46,16 @@
                         </td>
                     </tr>
                 {{/forFaktum}}
+                {{#forFaktum "nyearbeidsforhold.datogjenopptak"}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>
+                            <span>{{ hentTekst "nyearbeidsforhold.datogjenopptak.oppsummering" }}</span>
+                            <span>{{ formatterLangDato value}}</span>
+                        </td>
+                    </tr>
+                {{/forFaktum}}
+
             </table>
 
             {{> skjema/dagpenger/arbeidsforhold/grensearbeider }}

@@ -20,10 +20,14 @@ import static no.nav.modig.lang.collections.PredicateUtils.not;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.ETTERSENDING_OPPRETTET;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.ER_ANNET_VEDLEGG;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.ER_LASTET_OPP;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.AAPInformasjon.erAap;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.DagpengerGjenopptakInformasjon.erDagpengerGjenopptak;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.DagpengerOrdinaerInformasjon.erDagpengerOrdinaer;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@SuppressWarnings("PMD.TooManyMethods")
 public class WebSoknad implements Serializable {
     private Long soknadId;
     private String skjemaNummer;
@@ -420,11 +424,15 @@ public class WebSoknad implements Serializable {
     }
 
     public boolean erOrdinaerDagpengeSoknad() {
-        return this.skjemaNummer != null && (this.skjemaNummer.equals("NAV 04-01.03") || this.skjemaNummer.equals("NAV 04-01.04"));
+        return this.skjemaNummer != null && erDagpengerOrdinaer(this.skjemaNummer);
     }
 
     public boolean erGjenopptak() {
-        return this.skjemaNummer != null && (this.skjemaNummer.equals("NAV 04-16.03") || this.skjemaNummer.equals("NAV 04-16.04"));
+        return this.skjemaNummer != null && erDagpengerGjenopptak(this.skjemaNummer);
+    }
+
+    public boolean erAapSoknad() {
+        return this.skjemaNummer != null && erAap(this.skjemaNummer);
     }
 
     public boolean harAnnetVedleggSomIkkeErLastetOpp() {

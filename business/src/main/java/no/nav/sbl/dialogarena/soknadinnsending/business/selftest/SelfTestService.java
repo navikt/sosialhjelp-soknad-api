@@ -4,8 +4,10 @@ import no.aetat.arena.fodselsnr.Fodselsnr;
 import no.nav.arena.tjenester.person.v1.PersonInfoServiceSoap;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
+import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
+import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.OrganisasjonV4;
 import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
 import org.slf4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -49,6 +51,12 @@ public class SelfTestService  {
     @Inject
     @Named("brukerProfilEndpoint")
     private BrukerprofilPortType brukerProfilEndpoint;
+    @Inject
+    @Named("arbeidSelftestEndpoint")
+    private ArbeidsforholdV3 arbeidsforhold;
+    @Inject
+    @Named("organisasjonSelftestEndpoint")
+    private OrganisasjonV4 organisasjon;
 
     @Inject
     private PersonInfoServiceSoap personInfoServiceSoap;
@@ -65,6 +73,8 @@ public class SelfTestService  {
                 getPersonStatus(),
                 getBrukerProfilStatus(),
                 getPersonInfoStatus(),
+                getArbeidtatus(),
+                getOrganisasjonStatus(),
                 getLokalDatabaseStatus()
         );
     }
@@ -167,6 +177,30 @@ public class SelfTestService  {
         }
         String beskrivelse = "Web service for Personinfo (i Arena)";
         return new AvhengighetStatus("ARENA_PERSONINFO_PING", status, currentTimeMillis() - start, beskrivelse);
+    }
+    private AvhengighetStatus getArbeidtatus() {
+        long start = currentTimeMillis();
+        String status = STATUS_ERROR;
+        try {
+            arbeidsforhold.ping();
+            status = STATUS_OK;
+        } catch (Exception exception) {
+            logger.warn("<<<<<<Error Contacting Arbeidsforhold_v3", exception);
+        }
+        String beskrivelse = "Web service virksomhet:Arbeidsforhold_v3";
+        return new AvhengighetStatus("Arbeidsforhold_v3", status, currentTimeMillis() - start, beskrivelse);
+    }
+    private AvhengighetStatus getOrganisasjonStatus() {
+        long start = currentTimeMillis();
+        String status = STATUS_ERROR;
+        try {
+            organisasjon.ping();
+            status = STATUS_OK;
+        } catch (Exception exception) {
+            logger.warn("<<<<<<Error Contacting Organisasjon_v4", exception);
+        }
+        String beskrivelse = "Web service virksomhet:organisasjon_v4";
+        return new AvhengighetStatus("Organisasjon_v4", status, currentTimeMillis() - start, beskrivelse);
     }
 
     private AvhengighetStatus getLokalDatabaseStatus() {

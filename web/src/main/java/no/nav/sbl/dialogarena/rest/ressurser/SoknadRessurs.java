@@ -1,7 +1,9 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.modig.core.exception.ApplicationException;
+import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
+import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
@@ -10,9 +12,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.EttersendingServ
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
-import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
-import no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator;
-import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
@@ -28,11 +27,14 @@ import java.util.Map;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
+import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.generateXsrfToken;
 
 @Controller
 @Path("/soknader")
 @Produces(APPLICATION_JSON)
 public class SoknadRessurs {
+
+    public static final String XSRF_TOKEN = "XSRF-TOKEN-SOKNAD-API";
 
     @Inject
     private FaktaService faktaService;
@@ -99,15 +101,15 @@ public class SoknadRessurs {
                                @QueryParam("delsteg") String delsteg,
                                @QueryParam("journalforendeenhet") String journalforendeenhet) {
 
-        if(delsteg == null && journalforendeenhet == null) {
+        if (delsteg == null && journalforendeenhet == null) {
             throw new BadRequestException("Ingen queryparametre ble sendt inn.");
         }
 
-        if(delsteg != null) {
+        if (delsteg != null) {
             settDelstegStatus(behandlingsId, delsteg);
         }
 
-        if(journalforendeenhet != null) {
+        if (journalforendeenhet != null) {
             settJournalforendeEnhet(behandlingsId, journalforendeenhet);
         }
     }
@@ -158,7 +160,7 @@ public class SoknadRessurs {
     }
 
     private static Cookie xsrfCookie(String behandlingId) {
-        Cookie xsrfCookie = new Cookie("XSRF-TOKEN-SOKNAD-API", XsrfGenerator.generateXsrfToken(behandlingId));
+        Cookie xsrfCookie = new Cookie(XSRF_TOKEN, generateXsrfToken(behandlingId));
         xsrfCookie.setPath("/");
         xsrfCookie.setSecure(true);
         return xsrfCookie;

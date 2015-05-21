@@ -13,6 +13,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.NotFoundException;
 
 import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.sjekkXsrfToken;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -54,6 +55,10 @@ public class SikkerhetsAspect {
                 break;
             default:
                 behandlingsId = (String) id;
+        }
+
+        if(behandlingsId == null) {
+            throw new NotFoundException("Fant ikke ressurs.");
         }
 
         logger.info("Sjekker tilgang til ressurs med behandlingsId {} og type {}", behandlingsId, tilgang.type());

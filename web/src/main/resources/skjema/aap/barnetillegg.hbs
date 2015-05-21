@@ -1,0 +1,45 @@
+<h2>{{ hentTekst "barnetillegg.tittel" }}</h2>
+<table>
+    {{#forFakta "barn"}}
+
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <p>
+                    <span class="barn-navn">{{ properties.sammensattnavn }},</span>
+                    <span>{{ hentTekst "oppsummering.fodt" }}</span>
+                    {{#hvisLik type "SYSTEMREGISTRERT"}}
+                        <span>{{ formatterFodelsDato properties.fnr }},</span>
+                    {{ else }}
+                        <span>{{ formatterFodelsDato properties.fodselsdato }},</span>
+                    {{/hvisLik}}
+
+                    <span>{{ hentTekst "oppsummering.bor" }}</span>
+                    <span>{{ hentLand properties.land }}</span></p>
+
+
+                <div class="kulepunkt">
+
+
+                    {{#forBarnefakta "barn.harinntekt"}}
+                        {{#hvisSant value}}
+                            <span>{{ hentTekst "barnetillegg.barn.harInntekt"}}. </span>
+                            {{#forFaktum "barn.inntekt"}}
+                                <span>{{ hentTekst "barnetillegg.inntekt.oppsummering.prefix"}} {{value}} kr</span>
+                            {{/forFaktum}}
+
+                        {{else}}
+                            <span>{{ hentTekst "barnetillegg.barn.harIkkeInntekt"}}</span>
+
+                        {{/hvisSant}}
+
+                    {{/forBarnefakta}}
+
+
+                </div>
+
+            </td>
+        </tr>
+
+    {{/forFakta}}
+</table>
