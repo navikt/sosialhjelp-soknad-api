@@ -1,7 +1,6 @@
 <h2>{{ hentTekst "barnetillegg.tittel" }}</h2>
 <table>
     {{#forFakta "barn"}}
-
         <tr>
             <td class="sjekket"></td>
             <td>
@@ -15,31 +14,18 @@
                     {{/hvisLik}}
 
                     <span>{{ hentTekst "oppsummering.bor" }}</span>
-                    <span>{{ hentLand properties.land }}</span></p>
-
+                    <span>{{ hentLand properties.land }}</span>
+                </p>
 
                 <div class="kulepunkt">
-
-
-                    {{#forBarnefakta "barn.harinntekt"}}
-                        {{#hvisSant value}}
-                            <span>{{ hentTekst "barnetillegg.barn.harInntekt"}}. </span>
-                            {{#forFaktum "barn.inntekt"}}
-                                <span>{{ hentTekst "barnetillegg.inntekt.oppsummering.prefix"}} {{value}} kr</span>
-                            {{/forFaktum}}
-
-                        {{else}}
-                            <span>{{ hentTekst "barnetillegg.barn.harIkkeInntekt"}}</span>
-
-                        {{/hvisSant}}
-
-                    {{/forBarnefakta}}
-
-
+                    {{#harBarnetInntekt}}
+                        <span>{{ hentTekst "barnetillegg.barn.harInntekt"}}. </span>
+                        <span>{{ hentTekst "barnetillegg.inntekt.oppsummering.prefix"}} {{value}} kr.</span>
+                    {{else}}
+                        <span>{{ hentTekst "barnetillegg.barn.harIkkeInntekt"}}</span>
+                    {{/harBarnetInntekt}}
                 </div>
-
             </td>
         </tr>
-
     {{/forFakta}}
 </table>
