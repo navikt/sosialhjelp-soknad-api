@@ -1,5 +1,5 @@
-<h2>{{ hentTekst "samtalen.tittel" }}</h2>
 {{#forFaktum "navaerendeSituasjon.student"}}
+    <h2>{{ hentTekst "samtalen.tittel" }}</h2>
     {{#hvisSant value}}
         {{#hvisKunStudent}}
             {{! Søkeren er kun student. }}
@@ -38,6 +38,7 @@
         {{/forFaktum}}
     {{/hvisSant}}
 {{else}}
+    <h2>{{ hentTekst "samtalen.tittel" }}</h2>
     {{! Søkeren har ikke rørt studentvalget (faktum.value = null). }}
     {{#forFaktum "samtalen.samtalemedNAV"}}
         {{> skjema/aap/samtalen/hovedvisning }}
