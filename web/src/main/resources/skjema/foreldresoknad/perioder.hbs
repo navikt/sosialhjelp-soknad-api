@@ -6,12 +6,18 @@
         <th>{{hentTekst "perioder.oppsummering.tabell.periode"}}</th>
     </tr>
     </thead>
-    <tbody>
     {{#forPerioder}}
+    <tbody>
         <tr>
             <td>{{properties.beskrivelse}}</td>
             <td>{{formatterFodelsDato properties.fradato}} - {{formatterFodelsDato properties.tildato}}</td>
         </tr>
-    {{/forPerioder}}
+        {{#forBarnefakta "perioder.morsaktivitet"}}
+            <tr>
+                <td>{{properties.beskrivelse}}</td>
+                <td>{{formatterFodelsDato properties.fradato}} - {{formatterFodelsDato properties.tildato}}</td>
+            </tr>
+        {{/forBarnefakta}}
     </tbody>
+    {{/forPerioder}}
 </table>
