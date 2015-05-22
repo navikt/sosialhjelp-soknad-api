@@ -441,9 +441,9 @@ public class HandleBarKjoerer implements HtmlGenerator {
                     @Override
                     public int compare(Faktum o1, Faktum o2) {
                         DateTimeFormatter dt = DateTimeFormat.forPattern("yyyy-MM-dd").withLocale(NO_LOCALE);
-                        DateTime fradato = dt.parseDateTime(o2.getProperties().get("fradato"));
-                        DateTime tildato = dt.parseDateTime(o1.getProperties().get("fradato"));
-                        return tildato.compareTo(fradato);
+                        DateTime fradatoForstePeriode = dt.parseDateTime(o2.getProperties().get("fradato"));
+                        DateTime fradatoAndrePeriode = dt.parseDateTime(o1.getProperties().get("fradato"));
+                        return fradatoAndrePeriode.compareTo(fradatoForstePeriode);
                     }
                 });
                 if (sortertFaktaEtterDato.isEmpty()) {
@@ -456,7 +456,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
     }
 
     private Helper<String> generateForFaktaHelper() {
-        return new Helper<String>() {
+        return new Helper<String>() {g
             @Override
             public CharSequence apply(String key, Options options) throws IOException {
                 WebSoknad soknad = finnWebSoknad(options.context);
