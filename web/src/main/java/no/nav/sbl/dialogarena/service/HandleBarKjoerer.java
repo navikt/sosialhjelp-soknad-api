@@ -33,7 +33,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 
 @Service
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.ExcessiveClassLength"})
 public class HandleBarKjoerer implements HtmlGenerator {
 
     public static final Locale NO_LOCALE = new Locale("nb", "no");
