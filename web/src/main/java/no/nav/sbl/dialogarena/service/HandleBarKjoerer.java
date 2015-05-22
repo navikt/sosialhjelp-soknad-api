@@ -456,7 +456,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
     }
 
     private Helper<String> generateForFaktaHelper() {
-        return new Helper<String>() {g
+        return new Helper<String>() {
             @Override
             public CharSequence apply(String key, Options options) throws IOException {
                 WebSoknad soknad = finnWebSoknad(options.context);
