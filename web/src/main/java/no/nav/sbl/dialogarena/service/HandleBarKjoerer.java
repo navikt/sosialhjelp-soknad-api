@@ -627,9 +627,9 @@ public class HandleBarKjoerer implements HtmlGenerator {
                 Faktum parentFaktum = finnFaktum(options.context);
 
                 Faktum harInntekt = soknad.getFaktaMedKeyOgParentFaktum("barn.harinntekt", parentFaktum.getFaktumId()).get(0);
-                Faktum sumInntekt = soknad.getFaktaMedKeyOgParentFaktum("barn.inntekt", parentFaktum.getFaktumId()).get(0);
 
-                if (sumInntekt != null && harInntekt != null && "true".equals(harInntekt.getValue())) {
+                if (harInntekt != null && "true".equals(harInntekt.getValue())) {
+                    Faktum sumInntekt = soknad.getFaktaMedKeyOgParentFaktum("barn.inntekt", parentFaktum.getFaktumId()).get(0);
                     return options.fn(sumInntekt);
                 } else {
                     return options.inverse(this);
