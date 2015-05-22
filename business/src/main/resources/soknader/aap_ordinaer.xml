@@ -131,7 +131,7 @@
         <id>ungufor</id>
     </faktum>
 
-    <!-- Samtalen -->
+    <!-- Samtale med NAV -->
     <!-- Hovedvisning -->
     <faktum>
         <id>samtalen.samtalemedNAV</id>
@@ -152,8 +152,8 @@
         <id>samtalen.andreforhold</id>
     </faktum>
 
-    <!-- Samtalen -->
-    <!-- Studenter-->
+    <!-- Samtale med NAV -->
+    <!-- Studenter -->
     <faktum>
         <id>samtalen.student.tilbaketilstudiet.samtalemedNAV</id>
     </faktum>
@@ -232,6 +232,47 @@
         <id>andreytelser.utbetalinger.fraandre.ikkemottattellersokt</id>
     </faktum>
 
+    <!-- Vedlegg -->
+
+    <!-- Bekreftelse på flyktningstatus -->
+    <vedlegg>
+        <id>1</id>
+        <faktum>utenlandsopphold.oppholdINorgeSisteTreAar.false.registrertFlyktning</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>P2</skjemaNummer>
+    </vedlegg>
+
+    <!-- Spesialisterklæring -->
+    <vedlegg>
+        <id>2</id>
+        <faktum>ungufor</faktum>
+        <onValues>
+            <value>false</value>
+        </onValues>
+        <skjemaNummer>V1</skjemaNummer>
+    </vedlegg>
+
+    <!-- Kopi av avtaler om ytelser -->
+    <vedlegg>
+        <id>3</id>
+        <faktum>andreytelser.utbetalinger.fraarbeidsgiver</faktum>
+        <onValues>
+            <value>false</value>
+        </onValues>
+        <skjemaNummer>V5</skjemaNummer>
+    </vedlegg>
+
+    <!-- Fødselsattest/bostedsbevis for barn under 18 år -->
+    <vedlegg>
+        <id>4</id>
+        <faktum>barn</faktum>
+        <skjemaNummer>X8</skjemaNummer>
+        <forSystemfaktum>false</forSystemfaktum>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
     <!-- Ekstra vedlegg -->
     <faktum>
         <id>ekstraVedlegg</id>
@@ -239,33 +280,11 @@
     </faktum>
     <vedlegg>
         <id>5</id>
-        <faktum>utenlandsopphold.oppholdINorgeSisteTreAar.false.registrertFlyktning</faktum>
+        <faktum>ekstraVedlegg</faktum>
         <onValues>
             <value>true</value>
         </onValues>
-        <skjemaNummer>P2</skjemaNummer>
-    </vedlegg>
-    <vedlegg>
-        <id>6</id>
-        <faktum>ungufor</faktum>
-        <onValues>
-            <value>false</value>
-        </onValues>
-        <skjemaNummer>V1</skjemaNummer>
-    </vedlegg>
-    <vedlegg>
-        <id>7</id>
-        <faktum>barn</faktum>
-        <skjemaNummer>X8</skjemaNummer>
-        <forSystemfaktum>false</forSystemfaktum>
+        <skjemaNummer>N6</skjemaNummer>
         <flereTillatt>true</flereTillatt>
-    </vedlegg>
-    <vedlegg>
-        <id>8</id>
-        <faktum>andreytelser.utbetalinger.fraarbeidsgiver</faktum>
-        <onValues>
-            <value>false</value>
-        </onValues>
-        <skjemaNummer>V5</skjemaNummer>
     </vedlegg>
 </soknad>
