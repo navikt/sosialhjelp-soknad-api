@@ -35,7 +35,7 @@ public class AAPOrdinaerInformasjon implements KravdialogInformasjon {
         return asList(BOLK_PERSONALIA, BOLK_BARN);
     }
 
-    public static boolean erAap(String skjema) {
+    public static boolean erAapOrdinaer(String skjema) {
         return skjemanummer.contains(skjema);
     }
 }

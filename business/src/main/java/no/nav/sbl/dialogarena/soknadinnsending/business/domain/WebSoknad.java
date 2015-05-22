@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigDelstegEndringException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.AAPGjenopptakInformasjon;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -20,7 +21,8 @@ import static no.nav.modig.lang.collections.PredicateUtils.not;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.ETTERSENDING_OPPRETTET;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.ER_ANNET_VEDLEGG;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.ER_LASTET_OPP;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.AAPOrdinaerInformasjon.erAap;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.AAPGjenopptakInformasjon.erAapGjenopptak;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.AAPOrdinaerInformasjon.erAapOrdinaer;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.DagpengerGjenopptakInformasjon.erDagpengerGjenopptak;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.DagpengerOrdinaerInformasjon.erDagpengerOrdinaer;
 
@@ -432,7 +434,7 @@ public class WebSoknad implements Serializable {
     }
 
     public boolean erAapSoknad() {
-        return this.skjemaNummer != null && erAap(this.skjemaNummer);
+        return this.skjemaNummer != null && (erAapOrdinaer(this.skjemaNummer) || erAapGjenopptak(this.skjemaNummer));
     }
 
     public boolean harAnnetVedleggSomIkkeErLastetOpp() {
