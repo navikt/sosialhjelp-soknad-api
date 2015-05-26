@@ -3,8 +3,12 @@
     <table>
         <tr>
             <td class="sjekket"></td>
-            <td>
-                <span>{{ value }}{{ hentTekst "oppsummering.dekningsgrad.tekst" }}</span>
+            <td>{{#hvisLik value "hundre"}}
+                <span>{{ hentTekst "oppsummering.dekningsgrad.hundre" }}{{ hentTekst "oppsummering.dekningsgrad.tekst" }}</span>
+                {{/hvisLik}}
+                {{#hvisLik value "aatti"}}
+                    <span>{{ hentTekst "oppsummering.dekningsgrad.aatti" }}{{ hentTekst "oppsummering.dekningsgrad.tekst" }}</span>
+                {{/hvisLik}}
             </td>
         </tr>
     </table>
