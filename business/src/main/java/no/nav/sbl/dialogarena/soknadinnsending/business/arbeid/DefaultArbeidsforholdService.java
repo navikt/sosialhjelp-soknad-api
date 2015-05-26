@@ -78,11 +78,15 @@ public class DefaultArbeidsforholdService implements ArbeidsforholdService, Bolk
                         .medSoknadId(soknadId)
                         .medKey("arbeidsforhold.yrkesaktiv")
                         .medValue("false"));
-            } else if("true".equals(yrkesaktiv.getValue())){
+            } else if(maSetteYrkesaktiv(yrkesaktiv)){
                 result.add(yrkesaktiv.medValue("false"));
             }
         }
         return result;
+    }
+
+    private boolean maSetteYrkesaktiv(Faktum yrkesaktiv) {
+        return yrkesaktiv.getValue() == null || "true".equals(yrkesaktiv.getValue());
     }
 
     private static Transformer<Arbeidsforhold, Faktum> arbeidsforholdTransformer(final Long soknadId) {
