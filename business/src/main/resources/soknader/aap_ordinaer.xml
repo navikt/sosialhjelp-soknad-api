@@ -1,5 +1,10 @@
 <soknad skjemaNummer="NAV 11-13.05" temaKode="AAP">
 
+    <!-- Søknadstype -->
+    <faktum>
+        <id>soknadstype</id>
+    </faktum>
+
     <!-- Ny periode -->
     <faktum>
         <id>nyPeriode.gjenopptagelsesdato</id>
@@ -233,6 +238,16 @@
     </faktum>
 
     <!-- Vedlegg -->
+
+    <!-- Legeerklæring, skal komme på ordinærsøknaden uansett hvilke valg som blir gjort -->
+    <vedlegg>
+        <id>2</id>
+        <faktum>soknadstype</faktum>
+        <onValues>
+            <value>ordinaer</value>
+        </onValues>
+        <skjemaNummer>L9</skjemaNummer>
+    </vedlegg>
 
     <!-- Bekreftelse på flyktningstatus -->
     <vedlegg>
