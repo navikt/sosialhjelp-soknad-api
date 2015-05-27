@@ -39,6 +39,9 @@
         <id>infofar.opplysninger.personinfo</id>
     </faktum>
     <faktum>
+        <id>infofar.opplysninger.kanikkeoppgi</id>
+    </faktum>
+    <faktum>
         <id>rettigheter.omsorg</id>
     </faktum>
     <faktum>
