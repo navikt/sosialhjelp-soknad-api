@@ -16,6 +16,7 @@ import org.apache.commons.collections15.Closure;
 import org.slf4j.Logger;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -55,6 +56,7 @@ public class FaktaService {
         return repository.hentBehandlingsIdTilFaktum(faktumId);
     }
 
+    @Transactional
     public Faktum lagreSoknadsFelt(String behandlingsId, Faktum faktum) {
         WebSoknad soknad = repository.hentSoknad(behandlingsId);
         faktum.setSoknadId(soknad.getSoknadId());
@@ -62,6 +64,7 @@ public class FaktaService {
         return lagreSoknadsFelt(faktum);
     }
 
+    @Transactional
     public Faktum lagreSoknadsFelt(Faktum faktum) {
         Long soknadId = faktum.getSoknadId();
         faktum.setType(BRUKERREGISTRERT);
@@ -77,12 +80,13 @@ public class FaktaService {
         return resultat;
     }
 
+    @Transactional
     public void lagreSystemFakta(final WebSoknad soknad, List<Faktum> fakta) {
         on(fakta).forEach(new Closure<Faktum>() {
             @Override
             public void execute(Faktum faktum) {
                 Faktum existing = soknad.getFaktaMedKeyOgProperty(faktum.getKey(), faktum.getUnikProperty(), faktum.getProperties().get(faktum.getUnikProperty()));
-                if(existing != null) {
+                if (existing != null) {
                     faktum.setFaktumId(existing.getFaktumId());
                     faktum.kopierBrukerlagrede(existing);
                 }
@@ -93,6 +97,7 @@ public class FaktaService {
         });
     }
 
+    @Transactional
     public Long lagreSystemFaktum(Long soknadId, Faktum f, String uniqueProperty) {
         logger.debug("*** Lagrer systemfaktum ***: " + f.getKey());
         f.setType(SYSTEMREGISTRERT);
@@ -117,6 +122,8 @@ public class FaktaService {
         return lagretFaktumId;
     }
 
+
+    @Transactional
     public void slettBrukerFaktum(Long faktumId) {
         final Faktum faktum;
         try {
@@ -227,14 +234,14 @@ public class FaktaService {
     }
 
     private boolean parentValueErLikEnAvVerdieneIDependOnValues(SoknadFaktum faktum, Faktum parent) {
-        if(faktum.getDependOn() == null) {
+        if (faktum.getDependOn() == null) {
             return true;
         }
 
         String parentVerdi = hentVerdiFaktumErAvhengigAvPaaParent(faktum, parent);
         List<String> dependOnValues = faktum.getDependOnValues();
-        for(String dependOnValue : dependOnValues) {
-            if(dependOnValue.equalsIgnoreCase(parentVerdi)) {
+        for (String dependOnValue : dependOnValues) {
+            if (dependOnValue.equalsIgnoreCase(parentVerdi)) {
                 return true;
             }
         }
@@ -263,12 +270,12 @@ public class FaktaService {
     private String hentVerdiFaktumErAvhengigAvPaaParent(SoknadFaktum faktum, Faktum parent) {
         String dependOnPropertyName = faktum.getDependOnProperty();
         String verdiManErAvhengigAv;
-        if(dependOnPropertyName != null) {
+        if (dependOnPropertyName != null) {
             verdiManErAvhengigAv = parent.getProperties().get(dependOnPropertyName);
         } else {
             verdiManErAvhengigAv = parent.getValue();
         }
-        return verdiManErAvhengigAv == null ? "false"  : verdiManErAvhengigAv;
+        return verdiManErAvhengigAv == null ? "false" : verdiManErAvhengigAv;
     }
 
     public Faktum hentFaktumMedKey(Long soknadId, String key) {

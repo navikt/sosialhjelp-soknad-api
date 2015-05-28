@@ -10,7 +10,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.EttersendingService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import org.springframework.stereotype.Controller;
 
@@ -43,7 +43,7 @@ public class SoknadRessurs {
     private VedleggService vedleggService;
 
     @Inject
-    private SoknadService soknadService;
+    private SendSoknadService soknadService;
 
     @Inject
     private EttersendingService ettersendingService;

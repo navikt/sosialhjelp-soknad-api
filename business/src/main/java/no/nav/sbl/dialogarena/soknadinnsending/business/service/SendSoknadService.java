@@ -28,4 +28,5 @@ public interface SendSoknadService {
 
     Map<String,String> hentInnsendtDatoOgSisteInnsending(String behandlingsId);
 
+    void settJournalforendeEnhet(String behandlingsId, String delsteg);
 }

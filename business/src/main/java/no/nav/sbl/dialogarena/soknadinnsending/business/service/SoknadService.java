@@ -31,6 +31,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -316,6 +317,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     }
 
     @Override
+    @Transactional
     public void sendSoknad(String behandlingsId, byte[] pdf) {
         WebSoknad soknad = hentSoknadMedFaktaOgVedlegg(behandlingsId);
         sendSoknad(soknad, pdf);
@@ -411,6 +413,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     }
 
     @Override
+    @Transactional
     public void avbrytSoknad(String behandlingsId) {
         WebSoknad soknad = repository.hentSoknad(behandlingsId);
 
@@ -426,6 +429,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     }
 
     @Override
+    @Transactional
     public String startSoknad(String navSoknadId, String fodselsnummer) {
         validerSkjemanummer(navSoknadId);
         String mainUid = randomUUID().toString();
@@ -511,7 +515,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
             }
             vedlegg.setTittel(koder.get(Kodeverk.Nokkel.TITTEL));
         } catch (Exception ignore) {
-            logger.debug("ignored exception");
+            logger.debug("ignored exception", ignore);
         }
     }
 
