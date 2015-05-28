@@ -77,8 +77,8 @@ public class VedleggRessurs {
     }
 
     @GET
-    @Path("/fil")
-    @Produces("image/*")
+    @Path("/fil.png")
+    @Produces("image/png")
     @SjekkTilgangTilSoknad(type = Vedlegg)
     public byte[] lagForhandsvisningForVedlegg(@PathParam("vedleggId") final Long vedleggId, @QueryParam("side") final int side) {
         return vedleggService.lagForhandsvisning(vedleggId, side);
