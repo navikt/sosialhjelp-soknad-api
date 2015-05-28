@@ -14,6 +14,8 @@ import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforhold
 import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.OrganisasjonV4;
 import org.apache.commons.collections15.Transformer;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,7 @@ import javax.inject.Named;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -41,6 +44,7 @@ public class DefaultArbeidsforholdService implements ArbeidsforholdService, Bolk
     private ArbeidsforholdTransformer transformer;
     private DatatypeFactory datatypeFactory = lagDatatypeFactory();
     private static final Regelverker AA_ORDNINGEN = new Regelverker();
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultArbeidsforholdService.class);
 
     static {
         AA_ORDNINGEN.setValue("A_ORDNINGEN");
@@ -154,6 +158,11 @@ public class DefaultArbeidsforholdService implements ArbeidsforholdService, Bolk
     @Override
     @Cacheable("arbeidsforholdCache")
     public List<Faktum> genererSystemFakta(String fodselsnummer, Long soknadId) {
-        return genererArbeidsforhold(fodselsnummer, soknadId);
+        try {
+            return genererArbeidsforhold(fodselsnummer, soknadId);
+        } catch (Exception e) {
+            LOG.warn("Kunne ikke hente arbeidsforhold: " + e, e);
+            return Arrays.asList();
+        }
     }
 }
