@@ -29,6 +29,7 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.util.Splitter;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -73,6 +74,7 @@ public class DefaultVedleggService implements VedleggService {
     private PdfWatermarker watermarker = new PdfWatermarker();
 
     @Override
+    @Transactional
     public List<Long> splitOgLagreVedlegg(Vedlegg vedlegg, InputStream inputStream) {
         List<Long> resultat = new ArrayList<>();
         try {
@@ -162,6 +164,7 @@ public class DefaultVedleggService implements VedleggService {
     }
 
     @Override
+    @Transactional
     public void slettVedlegg(Long vedleggId) {
         Vedlegg vedlegg = hentVedlegg(vedleggId, false);
         WebSoknad soknad = soknadService.hentSoknad(vedlegg.getSoknadId());
@@ -180,6 +183,7 @@ public class DefaultVedleggService implements VedleggService {
     }
 
     @Override
+    @Transactional
     public Long genererVedleggFaktum(String behandlingsId, Long vedleggId) {
         Vedlegg forventning = vedleggRepository.hentVedlegg(vedleggId);
         WebSoknad soknad = repository.hentSoknad(behandlingsId);
@@ -231,6 +235,7 @@ public class DefaultVedleggService implements VedleggService {
     }
 
     @Override
+    @Transactional
     public void lagreVedlegg(Long vedleggId, Vedlegg vedlegg) {
         if (nedgradertEllerForLavtInnsendingsValg(vedlegg)) {
             throw new ApplicationException("Ugyldig innsendingsstatus, opprinnelig innsendingstatus kan aldri nedgraderes");
@@ -251,6 +256,7 @@ public class DefaultVedleggService implements VedleggService {
     }
 
     @Override
+    @Transactional
     public void lagreKvitteringSomVedlegg(String behandlingsId, byte[] kvittering) {
         WebSoknad soknad = repository.hentSoknad(behandlingsId);
         Vedlegg kvitteringVedlegg = vedleggRepository.hentVedleggForskjemaNummer(soknad.getSoknadId(), null, KVITTERING);

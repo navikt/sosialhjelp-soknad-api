@@ -9,7 +9,7 @@ import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.utils.PDFFabrikk;
 import org.slf4j.Logger;
@@ -18,7 +18,12 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import java.io.File;
 import java.io.IOException;
@@ -41,7 +46,7 @@ public class SoknadActions {
     private VedleggService vedleggService;
 
     @Inject
-    private SoknadService soknadService;
+    private SendSoknadService soknadService;
 
     @Inject
     private HtmlGenerator pdfTemplate;
