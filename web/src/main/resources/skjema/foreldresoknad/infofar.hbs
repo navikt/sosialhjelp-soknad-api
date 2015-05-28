@@ -3,11 +3,20 @@
     <tr>
         <td class="sjekket"></td>
         <td>
-            <span>{{hentFaktumValue "infofar.opplysninger.fornavn"}} {{hentFaktumValue "infofar.opplysninger.etternavn"}},
-                {{#forFaktum "infofar.opplysninger.personinfo"}}
-                    {{#hvisLik "fodselsdato" properties.valg}}{{formatterLangDato properties.fodselsdato}}{{/hvisLik}}
-                    {{#hvisLik "personnummer" properties.valg}}{{properties.personnummer}}{{/hvisLik}}
-                {{/forFaktum}}
+            <span>
+            {{#forFaktum "infofar.opplysninger.kanIkkeOppgi"}}
+                {{#hvisLik "true" value }}
+                    {{hentTekst "foreldresoknad.infofar.opplysninger.kanIkkeOppgi.label"}}
+                {{/hvisLik}}
+
+                {{#hvisLik "false" value }}
+                    {{hentFaktumValue "infofar.opplysninger.fornavn"}} {{hentFaktumValue "infofar.opplysninger.etternavn"}},
+                    {{#forFaktum "infofar.opplysninger.personinfo"}}
+                        {{#hvisLik "fodselsdato" properties.valg}}{{formatterLangDato properties.fodselsdato}}{{/hvisLik}}
+                        {{#hvisLik "personnummer" properties.valg}}{{properties.personnummer}}{{/hvisLik}}
+                    {{/forFaktum}}
+                {{/hvisLik}}
+            {{/forFaktum}}
             </span>
         </td>
     </tr>
