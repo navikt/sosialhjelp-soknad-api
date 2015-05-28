@@ -1,5 +1,10 @@
 <soknad skjemaNummer="NAV 11-13.05" temaKode="AAP">
 
+    <!-- Søknadstype -->
+    <faktum>
+        <id>soknadstype</id>
+    </faktum>
+
     <!-- Ny periode -->
     <faktum>
         <id>nyPeriode.gjenopptagelsesdato</id>
@@ -234,6 +239,16 @@
 
     <!-- Vedlegg -->
 
+    <!-- Legeerklæring, skal komme på ordinærsøknaden uansett hvilke valg som blir gjort -->
+    <vedlegg>
+        <id>2</id>
+        <faktum>soknadstype</faktum>
+        <onValues>
+            <value>ordinaer</value>
+        </onValues>
+        <skjemaNummer>L9</skjemaNummer>
+    </vedlegg>
+
     <!-- Bekreftelse på flyktningstatus -->
     <vedlegg>
         <id>1</id>
@@ -264,9 +279,35 @@
         <skjemaNummer>V5</skjemaNummer>
     </vedlegg>
 
-    <!-- Fødselsattest/bostedsbevis for barn under 18 år -->
+    <!-- Mottar eller har søkt om andre ytelser fra spesifikke kilder -->
     <vedlegg>
         <id>4</id>
+        <faktum>andreytelser.utbetalinger.fraandre.omsorgslonn</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>K1</skjemaNummer>
+    </vedlegg>
+    <vedlegg>
+        <id>5</id>
+        <faktum>andreytelser.utbetalinger.fraandre.fosterhjemsgodtgjorelse</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>K1</skjemaNummer>
+    </vedlegg>
+    <vedlegg>
+        <id>6</id>
+        <faktum>andreytelser.utbetalinger.fraandre.utenlandsketrygdemyndigheter</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>K1</skjemaNummer>
+    </vedlegg>
+
+    <!-- Fødselsattest/bostedsbevis for barn under 18 år -->
+    <vedlegg>
+        <id>7</id>
         <faktum>barn</faktum>
         <skjemaNummer>X8</skjemaNummer>
         <forSystemfaktum>false</forSystemfaktum>
@@ -279,7 +320,7 @@
         <flereTillatt>true</flereTillatt>
     </faktum>
     <vedlegg>
-        <id>5</id>
+        <id>8</id>
         <faktum>ekstraVedlegg</faktum>
         <onValues>
             <value>true</value>
@@ -287,4 +328,7 @@
         <skjemaNummer>N6</skjemaNummer>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
+
+
+
 </soknad>
