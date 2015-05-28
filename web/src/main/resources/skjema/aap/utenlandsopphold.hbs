@@ -13,21 +13,21 @@
 
                         {{#forFaktum "utenlandsopphold.oppholdINorgeSisteTreAar.false.boddINorgeSisteAaret"}}
                             {{#hvisSant value}}
-                                <li class="kulepunkt">
+                                <li>
                                     <span>{{ hentTekst "aap.ordinaer.utenlandsopphold.oppholdINorgeSisteTreAar.false.boddINorgeSisteAaret"}}</span>
                                 </li>
                             {{/hvisSant}}
                         {{/forFaktum}}
                         {{#forFaktum "utenlandsopphold.oppholdINorgeSisteTreAar.false.boddIEOSLandSisteTreAar"}}
                             {{#hvisSant value}}
-                                <li class="kulepunkt">
+                                <li>
                                     <span>{{ hentTekst "utenlandsopphold.oppholdINorgeSisteTreAar.false.boddIEOSLandSisteTreAar"}}</span>
                                 </li>
                             {{/hvisSant}}
                         {{/forFaktum}}
                         {{#forFaktum "utenlandsopphold.oppholdINorgeSisteTreAar.false.registrertFlyktning"}}
                             {{#hvisSant value}}
-                                <li class="kulepunkt">
+                                <li>
                                     <span>{{ hentTekst "utenlandsopphold.oppholdINorgeSisteTreAar.false.registrertFlyktning"}}</span>
                                 </li>
                             {{/hvisSant}}
@@ -51,7 +51,7 @@
                         <span>{{ hentTekst "utenlandsopphold.EOSLand.false" }}</span>
 
                         {{#forFakta "utenlandsopphold.EOSLand.periode"}}
-                            <li class="kulepunkt">
+                            <li>
                                 <span>Land: {{ hentLand properties.eosLand }},</span>
                                 <span>fra {{ toLowerCase properties.fraMaaned }} {{ properties.fraAar }}</span>
                                 <span>til {{ toLowerCase properties.tilMaaned }} {{ properties.tilAar }}</span>
