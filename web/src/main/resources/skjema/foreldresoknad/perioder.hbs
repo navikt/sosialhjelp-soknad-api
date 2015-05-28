@@ -10,12 +10,12 @@
     <tbody>
         <tr>
             <td>{{properties.beskrivelse}}</td>
-            <td>{{formatterFodelsDato properties.fradato}} - {{formatterFodelsDato properties.tildato}}</td>
+            <td>{{formatterLangDato properties.fradato}} - {{formatterLangDato properties.tildato}}</td>
         </tr>
         {{#forBarnefakta "perioder.morsaktivitet"}}
             <tr>
                 <td>{{properties.beskrivelse}}</td>
-                <td>{{formatterFodelsDato properties.fradato}} - {{formatterFodelsDato properties.tildato}}</td>
+                <td>{{formatterLangDato properties.fradato}} - {{formatterLangDato properties.tildato}}</td>
             </tr>
         {{/forBarnefakta}}
     </tbody>
