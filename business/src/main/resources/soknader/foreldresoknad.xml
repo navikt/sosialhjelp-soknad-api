@@ -39,7 +39,7 @@
         <id>infofar.opplysninger.personinfo</id>
     </faktum>
     <faktum>
-        <id>infofar.opplysninger.kanikkeoppgi</id>
+        <id>infofar.opplysninger.kanIkkeOppgi</id>
     </faktum>
     <faktum>
         <id>rettigheter.omsorg</id>
