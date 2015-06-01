@@ -51,20 +51,12 @@
             </tr>
         {{/hvisSant}}
     {{/forFaktum}}
-
     {{#forFaktum "ytelser.sluttpakke"}}
         {{#hvisSant value}}
             <tr>
                 <td class="sjekket"></td>
                 <td>
-                    <span>{{ hentTekst "andreytelser.sluttpakke.true" }}</span>
-                </td>
-            </tr>
-        {{else}}
-            <tr>
-                <td class="sjekket"></td>
-                <td>
-                    <span>{{ hentTekst "andreytelser.sluttpakke.false" }}</span>
+                    <span>{{ hentTekst "ytelser.sluttpakke.label" }}</span>
                 </td>
             </tr>
         {{/hvisSant}}
