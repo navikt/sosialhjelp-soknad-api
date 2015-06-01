@@ -154,9 +154,12 @@
             <value>false</value>
         </dependOnValues>
     </faktum>
-
     <faktum>
         <id>ytelser.sluttpakke</id>
+        <dependOn>ytelser.ingenYtelse</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
 
     <!-- Fedrekvote -->
@@ -225,7 +228,7 @@
         <id>3</id>
         <faktum>ytelser.sluttpakke</faktum>
         <onValues>
-            <value>false</value>
+            <value>true</value>
         </onValues>
         <skjemaNummer>V6</skjemaNummer>
     </vedlegg>
