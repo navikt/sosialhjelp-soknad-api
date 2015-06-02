@@ -196,7 +196,7 @@
         <onValues>
             <value>true</value>
         </onValues>
-        <skjemaNummer>K1</skjemaNummer>
+        <skjemaNummer>T7</skjemaNummer>
         <flereTillatt>true</flereTillatt>
         <oversetting>${key}</oversetting>
     </vedlegg>
@@ -206,7 +206,7 @@
         <onValues>
             <value>true</value>
         </onValues>
-        <skjemaNummer>T3</skjemaNummer>
+        <skjemaNummer>O5</skjemaNummer>
     </vedlegg>
     <vedlegg>
         <id>3</id>
@@ -214,7 +214,7 @@
         <onValues>
             <value>true</value>
         </onValues>
-        <skjemaNummer>V6</skjemaNummer>
+        <skjemaNummer>Y4</skjemaNummer>
     </vedlegg>
 
     <!-- vedlegg barn/barnet -->
