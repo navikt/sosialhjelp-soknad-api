@@ -132,38 +132,18 @@
     </faktum>
     <faktum>
         <id>ytelser.ventelonn</id>
-        <dependOn>ytelser.ingenYtelse</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
     </faktum>
     <faktum>
         <id>ytelser.lonnarbeidsgiver</id>
-        <dependOn>ytelser.ingenYtelse</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
     </faktum>
     <faktum>
         <id>ytelser.vartpenger</id>
-        <dependOn>ytelser.ingenYtelse</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
     </faktum>
     <faktum>
         <id>ytelser.avtjening</id>
-        <dependOn>ytelser.ingenYtelse</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
     </faktum>
     <faktum>
         <id>ytelser.sluttpakke</id>
-        <dependOn>ytelser.ingenYtelse</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
     </faktum>
 
     <!-- Fedrekvote -->
