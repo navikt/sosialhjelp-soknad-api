@@ -186,7 +186,7 @@
         <onValues>
             <value>true</value>
         </onValues>
-        <skjemaNummer>K1</skjemaNummer>
+        <skjemaNummer>T7</skjemaNummer>
         <flereTillatt>true</flereTillatt>
         <oversetting>${key}</oversetting>
     </vedlegg>
@@ -196,7 +196,7 @@
         <onValues>
             <value>true</value>
         </onValues>
-        <skjemaNummer>T7</skjemaNummer>
+        <skjemaNummer>K1</skjemaNummer>
         <flereTillatt>true</flereTillatt>
         <oversetting>${key}</oversetting>
     </vedlegg>
