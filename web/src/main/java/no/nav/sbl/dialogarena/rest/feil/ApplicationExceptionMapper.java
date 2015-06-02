@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.rest.feil;
 
 import no.nav.modig.core.exception.AuthorizationException;
 import no.nav.modig.core.exception.ModigException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.IkkeFunnetException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigOpplastingTypeException;
 import org.slf4j.Logger;
@@ -35,6 +36,9 @@ public class ApplicationExceptionMapper implements ExceptionMapper<ModigExceptio
             response = status(FORBIDDEN);
             logger.warn("Ikke tilgang til ressurs", e);
             return response.type(APPLICATION_JSON).entity(new Feilmelding(e.getId(), "Ikke tilgang til ressurs")).build();
+        } else if (e instanceof IkkeFunnetException) {
+            response = status(NOT_FOUND);
+            logger.warn("Fant ikke ressurs", e);
         } else {
             response = serverError().header(NO_BIGIP_5XX_REDIRECT, true);
             logger.error("REST-kall feilet", e);

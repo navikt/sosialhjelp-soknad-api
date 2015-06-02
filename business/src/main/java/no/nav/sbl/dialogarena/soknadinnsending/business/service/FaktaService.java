@@ -7,6 +7,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.IkkeFunnetException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
@@ -123,14 +124,14 @@ public class FaktaService {
     }
 
 
-    @Transactional
+    @Transactional()
     public void slettBrukerFaktum(Long faktumId) {
         final Faktum faktum;
         try {
             faktum = repository.hentFaktum(faktumId);
         } catch (IncorrectResultSizeDataAccessException e) {
             logger.info("Skipped delete because faktum does not exist.");
-            return;
+            throw new IkkeFunnetException("Faktum ikke funnet", e, "faktum.exception.ikkefunnet");
         }
         Long soknadId = faktum.getSoknadId();
 
