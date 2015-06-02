@@ -9,6 +9,10 @@
         </dependOnValues>
     </faktum>
 
+    <faktum>
+        <id>vedlegg.hjelpefaktum</id>
+    </faktum>
+
     <!-- Søknadsvalg -->
     <faktum>
         <id>soknadsvalg.stonadstype</id>
@@ -338,5 +342,17 @@
             <value>overtattOmsorgInnen53UkerAdopsjon</value>
         </onValues>
         <skjemaNummer>O7</skjemaNummer>
+    </vedlegg>
+
+    <!-- Vedlegg perioder -->
+    <vedlegg>
+        <id>7</id>
+        <faktum>vedlegg.hjelpefaktum</faktum>
+        <onProperty>graderingsskjema</onProperty>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>Y3</skjemaNummer>
+        <flereTillatt>false</flereTillatt>
     </vedlegg>
 </soknad>
