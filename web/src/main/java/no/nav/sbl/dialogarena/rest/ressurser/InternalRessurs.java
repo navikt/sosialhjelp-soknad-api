@@ -1,18 +1,18 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
-import no.nav.sbl.dialogarena.selftest.SelfTest;
+import no.nav.sbl.dialogarena.config.ContentConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
-import no.nav.sbl.dialogarena.config.ContentConfig;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import java.util.Map;
 
 @Controller
 @Path("/internal")
@@ -25,22 +25,6 @@ public class InternalRessurs {
     private CacheManager cacheManager;
     @Inject
     private NavMessageSource messageSource;
-    @Inject
-    private SelfTest selfTest;
-
-    @GET
-    @Path("/selftest")
-    @Produces(MediaType.TEXT_HTML)
-    public String selftest(@Context HttpServletRequest request) {
-        return selfTest.asHtml(request.getServletContext());
-    }
-
-    @GET
-    @Path("/selftest.json")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Map<String, Object> selftestJSON(@Context HttpServletRequest request) {
-        return selfTest.asJson(request.getServletContext());
-    }
 
     @GET
     @Path("/isAlive")

@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
+import no.aetat.arena.sokperson.SokPerson;
 import no.nav.arena.tjenester.person.v1.PersonInfoServiceSoap;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadata;
@@ -15,6 +16,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService;
+import no.nav.sbl.dialogarena.types.Pingable;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSSoknadsdata;
@@ -104,6 +106,20 @@ public class ConsumerConfig {
         public SendSoknadPortType sendSoknadSelftestEndpoint() {
             return factory().withSystemSecurity().get();
         }
+        @Bean
+        Pingable henvendelsePing() {
+            return new Pingable() {
+                @Override
+                public Ping ping() {
+                    try {
+                        sendSoknadSelftestEndpoint().ping();
+                        return Ping.lyktes("Henvendelse");
+                    } catch (Exception e) {
+                        return Ping.feilet("Henvendelse", e);
+                    }
+                }
+            };
+        }
     }
 
     @Configuration
@@ -128,6 +144,21 @@ public class ConsumerConfig {
         @Bean
         public FilLagerPortType fillagerSelftestEndpoint() {
             return factory().withSystemSecurity().get();
+        }
+
+        @Bean
+        public Pingable fillagerPing() {
+            return new Pingable() {
+                @Override
+                public Ping ping() {
+                    try {
+                        fillagerSelftestEndpoint().ping();
+                        return Ping.lyktes("Fillager");
+                    } catch (Exception ex) {
+                        return Ping.feilet("Fillager", ex);
+                    }
+                }
+            };
         }
     }
 
@@ -170,6 +201,21 @@ public class ConsumerConfig {
             return factoryBean.create(PersonInfoServiceSoap.class);
         }
 
+        @Bean
+        public Pingable personInfoPing() {
+            return new Pingable() {
+                @Override
+                public Ping ping() {
+                    try {
+                        personInfoEndpoint().sokPerson(new SokPerson().withId("ping"));
+                        return Ping.lyktes("ARENA_PERSONINFO");
+                    } catch (Exception ex) {
+                        return Ping.feilet("ARENA_PERSONINFO", ex);
+                    }
+                }
+            };
+        }
+
     }
 
     @Configuration
@@ -200,6 +246,21 @@ public class ConsumerConfig {
         @Bean
         public PersonPortType personSelftestEndpoint() {
             return factory().withSystemSecurity().get();
+        }
+
+        @Bean
+        public Pingable personPingable() {
+            return new Pingable() {
+                @Override
+                public Ping ping() {
+                    try {
+                        personSelftestEndpoint().ping();
+                        return Ping.lyktes("TPS_PERSON");
+                    } catch (Exception ex) {
+                        return Ping.feilet("TPS_PERSON", ex);
+                    }
+                }
+            };
         }
 
     }
@@ -236,7 +297,23 @@ public class ConsumerConfig {
             return factory().withSystemSecurity().get();
         }
 
+        @Bean
+        Pingable arbeidPing() {
+            return new Pingable() {
+                @Override
+                public Ping ping() {
+                    try {
+                        arbeidSelftestEndpoint().ping();
+                        return Ping.lyktes("Arbeidsforhold_v3");
+                    } catch (Exception e) {
+                        return Ping.feilet("Arbeidsforhold_v3", e);
+                    }
+                }
+            };
+        }
+
     }
+
     @Configuration
     public static class OrganisasjonWSConfig {
 
@@ -268,7 +345,20 @@ public class ConsumerConfig {
         public OrganisasjonV4 organisasjonSelftestEndpoint() {
             return factory().withSystemSecurity().get();
         }
-
+        @Bean
+        Pingable organisasjonPing() {
+            return new Pingable() {
+                @Override
+                public Ping ping() {
+                    try {
+                        organisasjonEndpoint().ping();
+                        return Ping.lyktes("Organisasjon_v4");
+                    } catch (Exception e) {
+                        return Ping.feilet("Organisasjon_v4", e);
+                    }
+                }
+            };
+        }
     }
 
     @Configuration
@@ -298,6 +388,20 @@ public class ConsumerConfig {
         @Bean
         public KodeverkPortType kodeverkSelftestEndpoint() {
             return factory().withSystemSecurity().get();
+        }
+        @Bean
+        Pingable kodeverkPing() {
+            return new Pingable() {
+                @Override
+                public Ping ping() {
+                    try {
+                        kodeverkSelftestEndpoint().ping();
+                        return Ping.lyktes("Kodeverk_v2");
+                    } catch (Exception e) {
+                        return Ping.feilet("Kodeverk_v2", e);
+                    }
+                }
+            };
         }
     }
 
@@ -329,6 +433,21 @@ public class ConsumerConfig {
         @Bean
         public BrukerprofilPortType brukerProfilSelftestEndpoint() {
             return factory().withSystemSecurity().get();
+        }
+
+        @Bean
+        Pingable brukerprofilPing() {
+            return new Pingable() {
+                @Override
+                public Ping ping() {
+                    try {
+                        brukerProfilSelftestEndpoint().ping();
+                        return Ping.lyktes("Brukerprofil");
+                    } catch (Exception e) {
+                        return Ping.feilet("Brukerprofil", e);
+                    }
+                }
+            };
         }
     }
 }

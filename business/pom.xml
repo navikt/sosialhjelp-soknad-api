@@ -70,10 +70,6 @@
         </dependency>
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>arena-personinfo-tjenestespesifikasjon</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>kodeverk-tjenestespesifikasjon</artifactId>
         </dependency>
 
@@ -150,6 +146,10 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.sbl.dialogarena</groupId>
+            <artifactId>common-types</artifactId>
         </dependency>
 
         <!-- Avhengigheter med runtime-scope -->

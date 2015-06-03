@@ -1,10 +1,8 @@
 package no.nav.sbl.dialogarena.config;
 
-import no.nav.sbl.dialogarena.selftest.SelfTest;
 import no.nav.sbl.dialogarena.service.EmailService;
 import no.nav.sbl.dialogarena.service.HandleBarKjoerer;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
-import no.nav.sbl.dialogarena.soknadinnsending.business.selftest.SelfTestService;
 import no.nav.sbl.dialogarena.utils.InnloggetBruker;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -85,18 +83,8 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public HtmlGenerator handleBarKjoerer(){
+    public HtmlGenerator handleBarKjoerer() {
         return new HandleBarKjoerer();
-    }
-
-    @Bean
-    public SelfTestService selfTestService() {
-        return new SelfTestService();
-    }
-
-    @Bean
-    public SelfTest selfTest(){
-        return new SelfTest();
     }
 
 }
