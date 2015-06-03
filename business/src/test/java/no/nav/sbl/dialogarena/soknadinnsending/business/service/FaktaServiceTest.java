@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.IkkeFunnetException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import org.junit.Before;
@@ -16,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 
 import java.util.Arrays;
 
@@ -82,7 +84,11 @@ public class FaktaServiceTest {
         verify(soknadRepository).lagreFaktum(soknadId, faktum);
 
     }
-
+    @Test(expected = IkkeFunnetException.class)
+    public void skalKasteExceptionOmEnProverAaSletteNoeSomIkkeFinnes(){
+        when(soknadRepository.hentFaktum(1L)).thenThrow(new IncorrectResultSizeDataAccessException(1, 0));
+        faktaService.slettBrukerFaktum(1L);
+    }
     @Test
     public void skalSletteBrukerfaktum() {
         Vedlegg vedlegg = new Vedlegg().medVedleggId(111L).medSkjemaNummer("a1").medFaktumId(111L);
