@@ -8,8 +8,8 @@ import org.apache.commons.collections15.Predicate;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.PreparedStatementSetter;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.AbstractLobCreatingPreparedStatementCallback;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.jdbc.support.lob.DefaultLobHandler;
@@ -170,9 +170,10 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
     @Override
     public String hentBehandlingsIdTilVedlegg(Long vedleggId) {
         final String sql = "select brukerbehandlingId from soknad where soknad_id = (select soknad_id from vedlegg where vedlegg_id = ?)";
-        try {
-            return getJdbcTemplate().queryForObject(sql, String.class, vedleggId);
-        } catch (EmptyResultDataAccessException e) {
+        List<String> strings = getJdbcTemplate().queryForList(sql, String.class, vedleggId);
+        if (strings.size() > 0) {
+            return strings.get(0);
+        } else {
             logger.debug("Fant ikke behandlingsId for vedleggId {}", vedleggId);
             return null;
         }
@@ -191,25 +192,21 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
 
     @Override
     public Vedlegg hentVedleggForskjemaNummer(Long soknadId, Long faktumId, String skjemaNummer) {
-        try {
-            if (faktumId == null) {
-                return getJdbcTemplate().queryForObject("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, opprinneliginnsendingsvalg, storrelse, antallsider," +
-                                " fillagerReferanse, opprettetdato, aarsak from Vedlegg where soknad_id = ? and faktum is null and skjemaNummer = ? and innsendingsvalg != 'UnderBehandling'",
-                        new VedleggRowMapper(false), soknadId, skjemaNummer);
-            } else {
-                return getJdbcTemplate().queryForObject("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, opprinneliginnsendingsvalg, storrelse, antallsider," +
-                                " fillagerReferanse, opprettetdato, aarsak from Vedlegg where soknad_id = ? and faktum = ? and skjemaNummer = ? and innsendingsvalg != 'UnderBehandling'",
-                        new VedleggRowMapper(false), soknadId, faktumId, skjemaNummer);
-            }
-
-        } catch (EmptyResultDataAccessException e) {
-            return null;
+        if (faktumId == null) {
+            return hentEtObjectAv("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, opprinneliginnsendingsvalg, storrelse, antallsider," +
+                            " fillagerReferanse, opprettetdato, aarsak from Vedlegg where soknad_id = ? and faktum is null and skjemaNummer = ? and innsendingsvalg != 'UnderBehandling'",
+                    new VedleggRowMapper(false), soknadId, skjemaNummer);
+        } else {
+            return hentEtObjectAv("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, opprinneliginnsendingsvalg, storrelse, antallsider," +
+                            " fillagerReferanse, opprettetdato, aarsak from Vedlegg where soknad_id = ? and faktum = ? and skjemaNummer = ? and innsendingsvalg != 'UnderBehandling'",
+                    new VedleggRowMapper(false), soknadId, faktumId, skjemaNummer);
         }
+
     }
 
     @Override
     public Vedlegg hentVedleggForskjemaNummerMedTillegg(Long soknadId, Long faktumId, String skjemaNummer, String skjemanummerTillegg) {
-        if(skjemanummerTillegg == null || skjemanummerTillegg.isEmpty()) {
+        if (skjemanummerTillegg == null || skjemanummerTillegg.isEmpty()) {
             return hentVedleggForskjemaNummer(soknadId, faktumId, skjemaNummer);
         } else {
             return hentVedleggForskjemaNummer(soknadId, faktumId, skjemaNummer + "|" + skjemanummerTillegg);
@@ -240,9 +237,17 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
         String skjemanummerMedTillegg = vedlegg.getSkjemaNummer();
         String tillegg = vedlegg.getSkjemanummerTillegg();
 
-        if(tillegg != null && !tillegg.isEmpty()) {
+        if (tillegg != null && !tillegg.isEmpty()) {
             skjemanummerMedTillegg = skjemanummerMedTillegg + "|" + vedlegg.getSkjemanummerTillegg();
         }
         return skjemanummerMedTillegg;
+    }
+
+    private <T> T hentEtObjectAv(String sql, RowMapper<T> mapper, Object... args) {
+        List<T> objekter = getJdbcTemplate().query(sql, mapper, args);
+        if (objekter.size() > 0) {
+            return objekter.get(0);
+        }
+        return null;
     }
 }

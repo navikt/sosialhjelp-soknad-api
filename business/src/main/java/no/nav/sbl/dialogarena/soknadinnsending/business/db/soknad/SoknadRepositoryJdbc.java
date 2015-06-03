@@ -15,7 +15,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVed
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -145,25 +144,25 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     public Faktum hentFaktumMedKey(Long soknadId, String faktumKey) {
         final String sql = "select * from SOKNADBRUKERDATA where soknad_id = ? and key = ?";
-        return getJdbcTemplate().queryForObject(sql, faktumRowMapper, soknadId, faktumKey);
+        return hentEtObjectAv(sql, faktumRowMapper, soknadId, faktumKey);
     }
 
     public WebSoknad hentSoknad(Long id) {
         String sql = "select * from SOKNAD where soknad_id = ?";
-        try {
-            return getJdbcTemplate().queryForObject(sql, new SoknadRowMapper(), id);
-        } catch (EmptyResultDataAccessException ignore) {
-            return null;
-        }
+        return hentEtObjectAv(sql, new SoknadRowMapper(), id);
     }
 
     public WebSoknad hentSoknad(String behandlingsId) {
         String sql = "select * from SOKNAD where brukerbehandlingid = ?";
-        try {
-            return getJdbcTemplate().queryForObject(sql, new SoknadRowMapper(), behandlingsId);
-        } catch (EmptyResultDataAccessException ignore) {
-            return null;
+        return hentEtObjectAv(sql, new SoknadRowMapper(), behandlingsId);
+    }
+
+    private <T> T hentEtObjectAv(String sql, RowMapper<T> mapper, Object... args) {
+        List<T> objekter = getJdbcTemplate().query(sql, mapper, args);
+        if (objekter.size() > 0) {
+            return objekter.get(0);
         }
+        return null;
     }
 
     public Optional<WebSoknad> plukkSoknadTilMellomlagring() {
@@ -228,9 +227,10 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     @Override
     public String hentBehandlingsIdTilFaktum(Long faktumId) {
         final String sql = "select brukerbehandlingId from soknad where soknad_id = (select soknad_id from soknadbrukerdata where soknadbrukerdata_id = ?)";
-        try {
-            return getJdbcTemplate().queryForObject(sql, String.class, faktumId);
-        } catch (EmptyResultDataAccessException e) {
+        List<String> strings = getJdbcTemplate().queryForList(sql, String.class, faktumId);
+        if (strings.size() > 0) {
+            return strings.get(0);
+        } else {
             logger.debug("Fant ikke behandlingsId for faktumId {}", faktumId);
             return null;
         }
