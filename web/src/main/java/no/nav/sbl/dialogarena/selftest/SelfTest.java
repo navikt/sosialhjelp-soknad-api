@@ -57,7 +57,7 @@ public class SelfTest {
         html.appendToBody("h3", getHost());
         html.appendToBody(statusList);
         html.appendToBody("h5", "Siden generert: " + LocalDateTime.now().toString(DATE_FORMAT));
-        html.appendToBody("h6", message);
+        html.appendToBody("h6", "driftMelding", message);
 
         return html.buildPage();
     }
@@ -149,6 +149,13 @@ public class SelfTest {
             String str = "<%tag%>%text%</%tag%>".
                     replace("%tag%", tag).
                     replace("%text%", text);
+            body = body.concat(str + newLine);
+        }
+        public void appendToBody(String tag, String id, String text) {
+            String str = "<%tag% id=\"%id%\">%text%</%tag%>".
+                    replace("%tag%", tag).
+                    replace("%text%", text).
+                    replace("%id%", id);
             body = body.concat(str + newLine);
         }
 
