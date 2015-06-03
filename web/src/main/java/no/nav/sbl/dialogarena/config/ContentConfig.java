@@ -4,7 +4,9 @@ import no.nav.modig.content.Content;
 import no.nav.modig.content.ContentRetriever;
 import no.nav.modig.content.enonic.HttpContentRetriever;
 import no.nav.modig.content.enonic.innholdstekst.Innholdstekst;
+import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
+import no.nav.sbl.dialogarena.types.Pingable;
 import no.nav.sbl.dialogarena.utils.StripPTagsPropertyPersister;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -18,8 +20,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URL;
 import java.util.Map;
+
+import static java.net.HttpURLConnection.HTTP_OK;
 
 @Configuration
 public class ContentConfig {
@@ -71,6 +77,34 @@ public class ContentConfig {
             logger.warn("Feilet under henting av enonic innholdstekster: " + e, e);
         }
         navMessageSource().clearCache();
+    }
+
+    @Bean
+    public Pingable cmsPing() {
+        return new Pingable() {
+            @Override
+            public Ping ping() {
+                String url = "";
+                HttpURLConnection connection = null;
+                try {
+                    url = System.getProperty("dialogarena.cms.url");
+                    connection = (HttpURLConnection) new URL(url).openConnection();
+                    connection.setConnectTimeout(10000);
+                    if (connection.getResponseCode() == HTTP_OK) {
+                        return Ping.lyktes("APPRES_CMS");
+                    } else {
+                        throw new ApplicationException("Fill feilkode fra cms: " + connection.getResponseCode() + ": " + connection.getResponseMessage());
+                    }
+                } catch (IOException e) {
+                    logger.warn("CMS not reachable on " + url, e);
+                    return Ping.feilet("APPRES_CMS", e);
+                } finally {
+                    if (connection != null) {
+                        connection.disconnect();
+                    }
+                }
+            }
+        };
     }
 
     private void clearContentCache() {
