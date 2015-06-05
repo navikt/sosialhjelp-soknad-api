@@ -340,6 +340,11 @@
 
     <vedlegg>
         <faktum>perioder.tidsrom.utsettelse</faktum>
+        <onProperty>type</onProperty>
+        <onValues>
+            <value>ferie</value>
+            <value>arbeid</value>
+        </onValues>
         <filterProperty>type</filterProperty>
         <filterValues>
             <value>ferie</value>
@@ -350,6 +355,10 @@
 
     <vedlegg>
         <faktum>perioder.tidsrom.utsettelse</faktum>
+        <onProperty>type</onProperty>
+        <onValues>
+            <value>sykdom</value>
+        </onValues>
         <filterProperty>type</filterProperty>
         <filterValues>
             <value>sykdom</value>
@@ -359,6 +368,11 @@
 
     <vedlegg>
         <faktum>perioder.tidsrom.utsettelse</faktum>
+        <onProperty>type</onProperty>
+        <onValues>
+            <value>innlagt</value>
+            <value>barninnlagt</value>
+        </onValues>
         <filterProperty>type</filterProperty>
         <filterValues>
             <value>innlagt</value>
