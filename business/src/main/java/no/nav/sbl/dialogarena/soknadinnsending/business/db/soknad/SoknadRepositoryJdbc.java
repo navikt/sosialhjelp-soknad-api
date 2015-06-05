@@ -159,7 +159,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     private <T> T hentEtObjectAv(String sql, RowMapper<T> mapper, Object... args) {
         List<T> objekter = getJdbcTemplate().query(sql, mapper, args);
-        if (objekter.size() > 0) {
+        if (!objekter.isEmpty()) {
             return objekter.get(0);
         }
         return null;
@@ -228,7 +228,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     public String hentBehandlingsIdTilFaktum(Long faktumId) {
         final String sql = "select brukerbehandlingId from soknad where soknad_id = (select soknad_id from soknadbrukerdata where soknadbrukerdata_id = ?)";
         List<String> strings = getJdbcTemplate().queryForList(sql, String.class, faktumId);
-        if (strings.size() > 0) {
+        if (!strings.isEmpty()) {
             return strings.get(0);
         } else {
             logger.debug("Fant ikke behandlingsId for faktumId {}", faktumId);

@@ -171,7 +171,7 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
     public String hentBehandlingsIdTilVedlegg(Long vedleggId) {
         final String sql = "select brukerbehandlingId from soknad where soknad_id = (select soknad_id from vedlegg where vedlegg_id = ?)";
         List<String> strings = getJdbcTemplate().queryForList(sql, String.class, vedleggId);
-        if (strings.size() > 0) {
+        if (!strings.isEmpty()) {
             return strings.get(0);
         } else {
             logger.debug("Fant ikke behandlingsId for vedleggId {}", vedleggId);
@@ -245,7 +245,7 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
 
     private <T> T hentEtObjectAv(String sql, RowMapper<T> mapper, Object... args) {
         List<T> objekter = getJdbcTemplate().query(sql, mapper, args);
-        if (objekter.size() > 0) {
+        if (!objekter.isEmpty()) {
             return objekter.get(0);
         }
         return null;
