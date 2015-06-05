@@ -321,7 +321,6 @@
         <id>6</id>
         <faktum>rettigheter.overtak</faktum>
         <onValues>
-            <value>fattTildeltForeldreansvar</value>
             <value>overtattOmsorgInnen53UkerFodsel</value>
             <value>overtattOmsorgInnen53UkerAdopsjon</value>
         </onValues>
