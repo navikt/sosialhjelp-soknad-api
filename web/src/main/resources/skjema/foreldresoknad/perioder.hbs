@@ -1,23 +1,23 @@
 <h2>{{ hentTekst "foreldresoknad.perioder.tittel" }}</h2>
-<table>
+<table class="perioder">
     <thead>
     <tr>
         <th>{{hentTekst "perioder.oppsummering.tabell.permisjon"}}</th>
         <th>{{hentTekst "perioder.oppsummering.tabell.periode"}}</th>
     </tr>
     </thead>
-    {{#forPerioder}}
     <tbody>
-        <tr>
-            <td>{{properties.beskrivelse}}</td>
-            <td>{{formatterLangDato properties.fradato}} - {{formatterLangDato properties.tildato}}</td>
-        </tr>
-        {{#forBarnefakta "perioder.morsaktivitet"}}
+        {{#forPerioder}}
             <tr>
                 <td>{{properties.beskrivelse}}</td>
                 <td>{{formatterLangDato properties.fradato}} - {{formatterLangDato properties.tildato}}</td>
             </tr>
-        {{/forBarnefakta}}
+            {{#forBarnefakta "perioder.morsaktivitet"}}
+                <tr>
+                    <td>{{properties.beskrivelse}}</td>
+                    <td>{{formatterLangDato properties.fradato}} - {{formatterLangDato properties.tildato}}</td>
+                </tr>
+            {{/forBarnefakta}}
+        {{/forPerioder}}
     </tbody>
-    {{/forPerioder}}
 </table>
