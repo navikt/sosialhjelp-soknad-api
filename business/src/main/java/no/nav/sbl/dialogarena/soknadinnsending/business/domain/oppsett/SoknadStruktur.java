@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import org.apache.commons.collections15.Predicate;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -63,11 +64,16 @@ public class SoknadStruktur implements Serializable {
                 .toString();
     }
 
-    public List<SoknadVedlegg> vedleggFor(final String felt) {
+    public List<SoknadVedlegg> vedleggFor(final Faktum faktum) {
         return on(vedlegg).filter(new Predicate<SoknadVedlegg>() {
             @Override
             public boolean evaluate(SoknadVedlegg soknadVedlegg) {
-                return soknadVedlegg.getFaktum().getId().equals(felt);
+                return soknadVedlegg.getFaktum().getId().equals(faktum.getKey());
+            }
+        }).filter(new Predicate<SoknadVedlegg>() {
+            @Override
+            public boolean evaluate(SoknadVedlegg soknadVedlegg) {
+                return soknadVedlegg.harFilterProperty(faktum);
             }
         }).collect();
 

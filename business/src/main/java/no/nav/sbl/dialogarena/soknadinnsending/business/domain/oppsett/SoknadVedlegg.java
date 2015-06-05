@@ -25,6 +25,8 @@ public class SoknadVedlegg implements Serializable {
     private String oversetting;
     private List<String> ekstraValg = new ArrayList<>();
     private List<String> values = new ArrayList<>();
+    private String filterKey;
+    private List<String> filterValues = new ArrayList<>();
 
     @XmlIDREF
     public SoknadFaktum getFaktum() {
@@ -108,6 +110,22 @@ public class SoknadVedlegg implements Serializable {
         return StringUtils.isNotEmpty(this.oversetting);
     }
 
+    public String getFilterKey() {
+        return filterKey;
+    }
+
+    public void setFilterKey(String filterKey) {
+        this.filterKey = filterKey;
+    }
+
+    public List<String> getFilterValues() {
+        return filterValues;
+    }
+
+    public void setFilterValues(List<String> filterValues) {
+        this.filterValues = filterValues;
+    }
+
     public boolean trengerVedlegg(Faktum value) {
         String valToCheck;
         if (forSystemfaktum == null || forSystemfaktum || value.er(FaktumType.BRUKERREGISTRERT)) {
@@ -180,5 +198,11 @@ public class SoknadVedlegg implements Serializable {
                 .append("oversetting", oversetting)
                 .append("values", values)
                 .toString();
+    }
+
+    public boolean harFilterProperty(Faktum faktum) {
+        return filterKey == null ||
+                filterValues.contains(faktum.getProperties().get(filterKey));
+
     }
 }

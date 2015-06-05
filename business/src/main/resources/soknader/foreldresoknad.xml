@@ -159,6 +159,10 @@
         <id>perioder.permisjon</id>
     </faktum>
 
+    <faktum>
+        <id>perioder.tidsrom.utsettelse</id>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
     <!-- Perioder -->
     <faktum>
         <id>dekningsgrad</id>
@@ -333,5 +337,34 @@
             <value>true</value>
         </onValues>
         <skjemaNummer>H1</skjemaNummer>
+    </vedlegg>
+
+    <vedlegg>
+        <faktum>perioder.tidsrom.utsettelse</faktum>
+        <filterProperty>type</filterProperty>
+        <filterValues>
+            <value>ferie</value>
+            <value>arbeid</value>
+        </filterValues>
+        <skjemaNummer>Z6</skjemaNummer>
+    </vedlegg>
+
+    <vedlegg>
+        <faktum>perioder.tidsrom.utsettelse</faktum>
+        <filterProperty>type</filterProperty>
+        <filterValues>
+            <value>sykdom</value>
+        </filterValues>
+        <skjemaNummer>L9</skjemaNummer>
+    </vedlegg>
+
+    <vedlegg>
+        <faktum>perioder.tidsrom.utsettelse</faktum>
+        <filterProperty>type</filterProperty>
+        <filterValues>
+            <value>innlagt</value>
+            <value>barninnlagt</value>
+        </filterValues>
+        <skjemaNummer>N9</skjemaNummer>
     </vedlegg>
 </soknad>
