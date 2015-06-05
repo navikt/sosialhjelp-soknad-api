@@ -43,7 +43,7 @@ public class SoknadVedleggTest {
     @Test
     public void testConfigForArbeidsforhold(){
         SoknadStruktur struktur = hentStruktur("dagpenger_ordinaer");
-        List<SoknadVedlegg> arbeidsforhold = struktur.vedleggFor("arbeidsforhold");
+        List<SoknadVedlegg> arbeidsforhold = struktur.vedleggFor(new Faktum().medKey("arbeidsforhold"));
         assertThat(arbeidsforhold.get(0).trengerVedlegg(sagtOppAvArbeidsgiver), is(true));
         assertThat(arbeidsforhold.get(1).trengerVedlegg(kontraktUtgaat), is(true));
         assertThat(arbeidsforhold.get(2).trengerVedlegg(sagtOppSelv), is(true));

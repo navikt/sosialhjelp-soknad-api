@@ -157,7 +157,7 @@ public class FaktaService {
 
     private void genererVedleggForFaktum(Faktum faktum) {
         SoknadStruktur struktur = hentSoknadStruktur(faktum.getSoknadId());
-        List<SoknadVedlegg> aktuelleVedlegg = struktur.vedleggFor(faktum.getKey());
+        List<SoknadVedlegg> aktuelleVedlegg = struktur.vedleggFor(faktum);
         for (SoknadVedlegg soknadVedlegg : aktuelleVedlegg) {
             oppdaterOgLagreVedlegg(struktur, soknadVedlegg, faktum);
         }
