@@ -120,30 +120,10 @@ public class ContentConfig {
         Map<String, Innholdstekst> innhold = content.toMap(Innholdstekst.KEY);
         if (!innhold.isEmpty()) {
             for (Map.Entry<String, Innholdstekst> entry : innhold.entrySet()) {
-                data.append(entry.getValue().key).append('=').append(formatText(entry.getValue().value)).append(System.lineSeparator());
+                data.append(entry.getValue().key).append('=').append(removeNewline(entry.getValue().value)).append(System.lineSeparator());
             }
             FileUtils.write(file, data, "UTF-8");
         }
-    }
-
-    private String formatText(String value) {
-        String resultValue;
-        resultValue = stripParagraphTags(value);
-        resultValue = removeNewline(resultValue);
-        return resultValue;
-    }
-
-    private String stripParagraphTags(String value) {
-        String res = value;
-        if (value != null) {
-            if (res.startsWith("<p>")) {
-                res = res.substring(3);
-            }
-            if (res.endsWith("</p>")) {
-                res = res.substring(0, res.length() - 4);
-            }
-        }
-        return res;
     }
 
     private String removeNewline(String value) {
