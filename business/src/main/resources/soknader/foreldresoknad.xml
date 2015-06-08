@@ -163,6 +163,12 @@
         <id>perioder.tidsrom.utsettelse</id>
         <flereTillatt>true</flereTillatt>
     </faktum>
+
+    <faktum>
+        <id>perioder.morsaktivitet</id>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
     <!-- Perioder -->
     <faktum>
         <id>dekningsgrad</id>
@@ -340,12 +346,8 @@
 
     <vedlegg>
         <faktum>perioder.tidsrom.utsettelse</faktum>
-        <onProperty>type</onProperty>
-        <onValues>
-            <value>ferie</value>
-            <value>arbeid</value>
-        </onValues>
-        <filterProperty>type</filterProperty>
+        <skjemanummerTillegg>arbeid</skjemanummerTillegg>
+        <filterKey>type</filterKey>
         <filterValues>
             <value>ferie</value>
             <value>arbeid</value>
@@ -355,11 +357,8 @@
 
     <vedlegg>
         <faktum>perioder.tidsrom.utsettelse</faktum>
-        <onProperty>type</onProperty>
-        <onValues>
-            <value>sykdom</value>
-        </onValues>
-        <filterProperty>type</filterProperty>
+        <skjemanummerTillegg>sykdom</skjemanummerTillegg>
+        <filterKey>type</filterKey>
         <filterValues>
             <value>sykdom</value>
         </filterValues>
@@ -368,16 +367,72 @@
 
     <vedlegg>
         <faktum>perioder.tidsrom.utsettelse</faktum>
-        <onProperty>type</onProperty>
-        <onValues>
-            <value>innlagt</value>
-            <value>barninnlagt</value>
-        </onValues>
-        <filterProperty>type</filterProperty>
+        <skjemanummerTillegg>innlagt</skjemanummerTillegg>
+        <filterKey>type</filterKey>
         <filterValues>
             <value>innlagt</value>
             <value>barninnlagt</value>
         </filterValues>
         <skjemaNummer>N9</skjemaNummer>
+    </vedlegg>
+
+    <!-- Vedlegg mors aktivitet -->
+    <vedlegg>
+        <faktum>perioder.morsaktivitet</faktum>
+        <skjemanummerTillegg>morarbeid</skjemanummerTillegg>
+        <property>beskrivelse</property>
+        <filterKey>type</filterKey>
+        <filterValues>
+            <value>arbeid</value>
+        </filterValues>
+        <skjemaNummer>Z6</skjemaNummer>
+    </vedlegg>
+
+    <vedlegg>
+        <faktum>perioder.morsaktivitet</faktum>
+        <property>beskrivelse</property>
+        <filterKey>type</filterKey>
+        <filterValues>
+            <value>studier</value>
+        </filterValues>
+        <skjemaNummer>O9</skjemaNummer>
+    </vedlegg>
+
+    <vedlegg>
+        <faktum>perioder.morsaktivitet</faktum>
+        <skjemanummerTillegg>morsyk</skjemanummerTillegg>
+        <property>beskrivelse</property>
+        <filterKey>type</filterKey>
+        <filterValues>
+            <value>syk</value>
+        </filterValues>
+        <skjemaNummer>U2</skjemaNummer>
+    </vedlegg>
+    <vedlegg>
+        <faktum>perioder.morsaktivitet</faktum>
+        <skjemanummerTillegg>morinnlagt</skjemanummerTillegg>
+        <property>beskrivelse</property>
+        <filterKey>type</filterKey>
+        <filterValues>
+            <value>innlagt</value>
+        </filterValues>
+        <skjemaNummer>N9</skjemaNummer>
+    </vedlegg>
+    <vedlegg>
+        <faktum>perioder.morsaktivitet</faktum>
+        <property>beskrivelse</property>
+        <filterKey>type</filterKey>
+        <filterValues>
+            <value>introduksjonsprogram</value>
+        </filterValues>
+        <skjemaNummer>T1</skjemaNummer>
+    </vedlegg>
+    <vedlegg>
+        <faktum>perioder.morsaktivitet</faktum>
+        <filterKey>type</filterKey>
+        <filterValues>
+            <value>kvalifiseringsprogram</value>
+        </filterValues>
+        <skjemaNummer>K3</skjemaNummer>
     </vedlegg>
 </soknad>

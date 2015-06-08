@@ -118,6 +118,8 @@ public class SoknadVedlegg implements Serializable {
         this.filterKey = filterKey;
     }
 
+    @XmlElementWrapper(name = "filterValues")
+    @XmlElement(name = "value")
     public List<String> getFilterValues() {
         return filterValues;
     }
