@@ -56,35 +56,35 @@
         <id>tilleggsopplysninger.fritekst</id>
     </faktum>
 
-    <!-- Utenlandsopphold -->
+    <!-- Tilknytning Norge -->
     <!-- Opphold i Norge siste tre år -->
     <faktum>
-        <id>utenlandsopphold.oppholdINorgeSisteTreAar</id>
+        <id>tilknytningNorge.oppholdINorgeSisteTreAar</id>
     </faktum>
     <faktum>
-        <id>utenlandsopphold.oppholdINorgeSisteTreAar.false.boddINorgeSisteAaret</id>
+        <id>tilknytningNorge.oppholdINorgeSisteTreAar.false.boddINorgeSisteAaret</id>
     </faktum>
     <faktum>
-        <id>utenlandsopphold.oppholdINorgeSisteTreAar.false.boddIEOSLandSisteTreAar</id>
+        <id>tilknytningNorge.oppholdINorgeSisteTreAar.false.boddIEOSLandSisteTreAar</id>
     </faktum>
     <faktum>
-        <id>utenlandsopphold.oppholdINorgeSisteTreAar.false.registrertFlyktning</id>
-        <dependOn>utenlandsopphold.oppholdINorgeSisteTreAar</dependOn>
+        <id>tilknytningNorge.oppholdINorgeSisteTreAar.false.registrertFlyktning</id>
+        <dependOn>tilknytningNorge.oppholdINorgeSisteTreAar</dependOn>
         <dependOnValues>
             <value>false</value>
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>utenlandsopphold.oppholdINorgeSisteTreAar.false.ingenPassendeSituasjoner</id>
+        <id>tilknytningNorge.oppholdINorgeSisteTreAar.false.ingenPassendeSituasjoner</id>
     </faktum>
 
-    <!-- Utenlandsopphold -->
-    <!-- Arbeid i EØS-land før sykdom -->
+    <!-- Tilknytning Norge -->
+    <!-- Arbeid i utlandet før sykdom -->
     <faktum>
-        <id>utenlandsopphold.EOSLand</id>
+        <id>tilknytningNorge.arbeidIUtlandet</id>
     </faktum>
     <faktum>
-        <id>utenlandsopphold.EOSLand.periode</id>
+        <id>tilknytningNorge.arbeidIUtlandet.periode</id>
         <flereTillatt>true</flereTillatt>
     </faktum>
 
@@ -252,7 +252,7 @@
     <!-- Bekreftelse på flyktningstatus -->
     <vedlegg>
         <id>1</id>
-        <faktum>utenlandsopphold.oppholdINorgeSisteTreAar.false.registrertFlyktning</faktum>
+        <faktum>tilknytningNorge.oppholdINorgeSisteTreAar.false.registrertFlyktning</faktum>
         <onValues>
             <value>true</value>
         </onValues>
