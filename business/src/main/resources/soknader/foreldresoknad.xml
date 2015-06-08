@@ -186,6 +186,22 @@
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
+    <!-- Vedlegg overføring av fedrekvote -->
+    <vedlegg>
+        <faktum>fedrekvote</faktum>
+        <onValues>
+            <value>sykdom</value>
+        </onValues>
+        <skjemaNummer>U2</skjemaNummer>
+    </vedlegg>
+    <vedlegg>
+        <faktum>fedrekvote</faktum>
+        <onValues>
+            <value>helseinstitusjon</value>
+        </onValues>
+        <skjemaNummer>N9</skjemaNummer>
+    </vedlegg>
+
     <!-- Vedlegg Ytelse -->
     <vedlegg>
         <id>3</id>
