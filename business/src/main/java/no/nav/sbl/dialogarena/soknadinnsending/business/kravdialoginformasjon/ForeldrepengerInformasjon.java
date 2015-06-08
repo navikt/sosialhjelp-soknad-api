@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ForeldrepengerInformasjon implements KravdialogInformasjon {
 
-    public static final String STONADSTYPE_OVERFORING = "overforing";
+    public static final List<String> STONADSTYPER_PERSONALIA = Arrays.asList("overforing", "engangsstonadMor", "engangsstonadFar");
 
     public String getSoknadTypePrefix() {
         return "foreldresoknad";
@@ -33,7 +33,7 @@ public class ForeldrepengerInformasjon implements KravdialogInformasjon {
 
     public List<String> getSoknadBolker(WebSoknad soknad) {
         Faktum stonadstype = soknad.getFaktumMedKey("soknadsvalg.stonadstype");
-        if (stonadstype != null && STONADSTYPE_OVERFORING.equals(stonadstype.getValue())) {
+        if (stonadstype != null && STONADSTYPER_PERSONALIA.contains(stonadstype.getValue())) {
             return Arrays.asList(BOLK_PERSONALIA);
         } else {
             return Arrays.asList(BOLK_PERSONALIA, BOLK_BARN, BOLK_ARBEIDSFORHOLD);
