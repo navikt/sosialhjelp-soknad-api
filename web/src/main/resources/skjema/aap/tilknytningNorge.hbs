@@ -7,14 +7,14 @@
                 <td class="sjekket"></td>
                 <td>
                     {{#hvisSant value}}
-                        <span>{{ hentTekst "aap.ordinaer.tilknytningNorge.oppholdINorgeSisteTreAar.true" }}</span>
+                        <span>{{ hentTekst "tilknytningNorge.oppholdINorgeSisteTreAar.true" }}</span>
                     {{else}}
-                        <span>{{ hentTekst "aap.ordinaer.tilknytningNorge.oppholdINorgeSisteTreAar.false" }}</span>
+                        <span>{{ hentTekst "tilknytningNorge.oppholdINorgeSisteTreAar.false" }}</span>
 
                         {{#forFaktum "tilknytningNorge.oppholdINorgeSisteTreAar.false.boddINorgeSisteAaret"}}
                             {{#hvisSant value}}
                                 <li>
-                                    <span>{{ hentTekst "aap.ordinaer.tilknytningNorge.oppholdINorgeSisteTreAar.false.boddINorgeSisteAaret"}}</span>
+                                    <span>{{ hentTekst "tilknytningNorge.oppholdINorgeSisteTreAar.false.boddINorgeSisteAaret"}}</span>
                                 </li>
                             {{/hvisSant}}
                         {{/forFaktum}}
