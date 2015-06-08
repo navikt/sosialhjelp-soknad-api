@@ -1,0 +1,65 @@
+{{#forFaktum "tilknytningNorge.oppholdINorgeSisteTreAar"}}
+    {{#hvisIkkeTom value}}
+        <h2>{{ hentTekst "oppsummering.tilknytningNorge.tittel" }}</h2>
+        <h3>{{ hentTekst "tilknytningNorge.oppholdINorgeSisteTreAar.overskrift" }}</h3>
+        <table>
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    {{#hvisSant value}}
+                        <span>{{ hentTekst "aap.ordinaer.tilknytningNorge.oppholdINorgeSisteTreAar.true" }}</span>
+                    {{else}}
+                        <span>{{ hentTekst "aap.ordinaer.tilknytningNorge.oppholdINorgeSisteTreAar.false" }}</span>
+
+                        {{#forFaktum "tilknytningNorge.oppholdINorgeSisteTreAar.false.boddINorgeSisteAaret"}}
+                            {{#hvisSant value}}
+                                <li>
+                                    <span>{{ hentTekst "aap.ordinaer.tilknytningNorge.oppholdINorgeSisteTreAar.false.boddINorgeSisteAaret"}}</span>
+                                </li>
+                            {{/hvisSant}}
+                        {{/forFaktum}}
+                        {{#forFaktum "tilknytningNorge.oppholdINorgeSisteTreAar.false.boddIEOSLandSisteTreAar"}}
+                            {{#hvisSant value}}
+                                <li>
+                                    <span>{{ hentTekst "tilknytningNorge.oppholdINorgeSisteTreAar.false.boddIEOSLandSisteTreAar"}}</span>
+                                </li>
+                            {{/hvisSant}}
+                        {{/forFaktum}}
+                        {{#forFaktum "tilknytningNorge.oppholdINorgeSisteTreAar.false.registrertFlyktning"}}
+                            {{#hvisSant value}}
+                                <li>
+                                    <span>{{ hentTekst "tilknytningNorge.oppholdINorgeSisteTreAar.false.registrertFlyktning"}}</span>
+                                </li>
+                            {{/hvisSant}}
+                        {{/forFaktum}}
+                    {{/hvisSant}}
+                </td>
+            </tr>
+        </table>
+    {{/hvisIkkeTom}}
+{{/forFaktum}}
+{{#forFaktum "tilknytningNorge.arbeidIUtlandet"}}
+    {{#hvisIkkeTom value}}
+        <h3>{{ hentTekst "tilknytningNorge.arbeidIUtlandet.overskrift" }}</h3>
+        <table>
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    {{#hvisSant value}}
+                        <span>{{ hentTekst "tilknytningNorge.arbeidIUtlandet.true" }}</span>
+                    {{else}}
+                        <span>{{ hentTekst "tilknytningNorge.arbeidIUtlandet.false" }}</span>
+
+                        {{#forFakta "tilknytningNorge.arbeidIUtlandet.periode"}}
+                            <li>
+                                <span>Land: {{ hentLand properties.land }},</span>
+                                <span>fra {{ toLowerCase properties.fraMaaned }} {{ properties.fraAar }}</span>
+                                <span>til {{ toLowerCase properties.tilMaaned }} {{ properties.tilAar }}</span>
+                            </li>
+                        {{/forFakta}}
+                    {{/hvisSant}}
+                </td>
+            </tr>
+        </table>
+    {{/hvisIkkeTom}}
+{{/forFaktum}}
