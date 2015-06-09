@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
-import no.aetat.arena.sokperson.SokPerson;
+import no.aetat.arena.fodselsnr.Fodselsnr;
 import no.nav.arena.tjenester.person.v1.PersonInfoServiceSoap;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadata;
@@ -106,6 +106,7 @@ public class ConsumerConfig {
         public SendSoknadPortType sendSoknadSelftestEndpoint() {
             return factory().withSystemSecurity().get();
         }
+
         @Bean
         Pingable henvendelsePing() {
             return new Pingable() {
@@ -206,9 +207,11 @@ public class ConsumerConfig {
             return new Pingable() {
                 @Override
                 public Ping ping() {
+                    Fodselsnr fodselsnr = new Fodselsnr().withFodselsnummer("01034128789");
                     try {
-                        personInfoEndpoint().sokPerson(new SokPerson().withId("ping"));
+                        personInfoEndpoint().hentPersonStatus(fodselsnr);
                         return Ping.lyktes("ARENA_PERSONINFO");
+
                     } catch (Exception ex) {
                         return Ping.feilet("ARENA_PERSONINFO", ex);
                     }
@@ -345,6 +348,7 @@ public class ConsumerConfig {
         public OrganisasjonV4 organisasjonSelftestEndpoint() {
             return factory().withSystemSecurity().get();
         }
+
         @Bean
         Pingable organisasjonPing() {
             return new Pingable() {
@@ -389,6 +393,7 @@ public class ConsumerConfig {
         public KodeverkPortType kodeverkSelftestEndpoint() {
             return factory().withSystemSecurity().get();
         }
+
         @Bean
         Pingable kodeverkPing() {
             return new Pingable() {
