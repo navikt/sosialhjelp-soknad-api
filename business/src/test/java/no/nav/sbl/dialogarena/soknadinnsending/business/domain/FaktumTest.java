@@ -53,7 +53,7 @@ public class FaktumTest {
     @Test
     public void skalKopiereBrukerlagrede(){
         Faktum faktum = new Faktum().medSystemProperty("system1", "sysVerdi1");
-        faktum.kopierBrukerlagrede(lagFaktum());
+        faktum.kopierFaktumegenskaper(lagFaktum());
         assertThat(faktum.finnEgenskap("system1").getValue(), is("sysVerdi1"));
         assertThat(faktum.finnEgenskap("system2"), is(nullValue()));
         assertThat(faktum.finnEgenskap("key1").getValue(), is("value1"));
