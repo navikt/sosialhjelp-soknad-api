@@ -3,10 +3,6 @@
     <faktum>
         <id>personalia</id>
         <erSystemFaktum>true</erSystemFaktum>
-        <dependOn>veiledning.mor.terminbekreftelse</dependOn>
-        <dependOnValues>
-            <value>fodt</value>
-        </dependOnValues>
     </faktum>
 
     <faktum>
@@ -24,6 +20,12 @@
     <!-- Veiledning -->
     <faktum>
         <id>veiledning.mor.terminbekreftelse</id>
+        <dependOn>personalia</dependOn>
+        <dependOnProperty>gjeldendeAdresseType</dependOnProperty>
+        <dependOnValues>
+            <value>UTENLANDSK_ADRESSE</value>
+            <value>MIDLERTIDIG_POSTADRESSE_UTLAND</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>veiledning.adopsjon.overtakelse</id>
@@ -240,12 +242,10 @@
     <!-- vedlegg barn/barnet -->
     <vedlegg>
         <id>4</id>
-        <faktum>personalia</faktum>
+        <faktum>veiledning.mor.terminbekreftelse</faktum>
         <skjemaNummer>R4</skjemaNummer>
-        <onProperty>gjeldendeAdresseType</onProperty>
         <onValues>
-            <value>UTENLANDSK_ADRESSE</value>
-            <value>MIDLERTIDIG_POSTADRESSE_UTLAND</value>
+            <value>fodt</value>
         </onValues>
     </vedlegg>
     <vedlegg>
