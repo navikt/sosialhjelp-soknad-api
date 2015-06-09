@@ -273,7 +273,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     }
 
     private Integer finnAntallFaktumMedGittKeyOgEnAvFlereValues(Long soknadId, String key, List<String> values) {
-        if (values == null) {
+        if (values == null || values.isEmpty()) {
             return 0;
         }
         String sql = "SELECT count(*) FROM soknadbrukerdata WHERE soknad_id=:soknadid AND key=:faktumkey AND value IN (:dependonvalues)";
