@@ -299,7 +299,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
                 .medKey("soknadInnsendingsDato")
                 .medValue(String.valueOf(innsendtDato.getMillis()))
                 .medType(SYSTEMREGISTRERT);
-        faktaService.lagreSystemFaktum(soknadId, soknadInnsendingsDato, "");
+        faktaService.lagreSystemFaktum(soknadId, soknadInnsendingsDato);
         soknad.setFakta(repository.hentAlleBrukerData(soknadId));
 
         soknad.setVedlegg(hentVedleggOgPersister(new XMLMetadataListe(filtrertXmlVedleggListe), soknadId));
@@ -448,9 +448,18 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         Faktum bolkerFaktum = new Faktum().medSoknadId(soknadId).medKey("bolker").medType(BRUKERREGISTRERT);
         repository.lagreFaktum(soknadId, bolkerFaktum);
 
+        opprettFaktumForPersonalia(soknadId);
         prepopulerSoknadsFakta(soknadId);
         opprettFaktumForLonnsOgTrekkoppgave(soknadId);
         return behandlingsId;
+    }
+
+    private void opprettFaktumForPersonalia(Long soknadId) {
+        Faktum personalia = new Faktum()
+                .medSoknadId(soknadId)
+                .medType(SYSTEMREGISTRERT)
+                .medKey("personalia");
+        faktaService.lagreSystemFaktum(soknadId, personalia);
     }
 
     private void opprettFaktumForLonnsOgTrekkoppgave(Long soknadId) {
@@ -459,7 +468,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
                 .medKey("lonnsOgTrekkOppgave")
                 .medType(SYSTEMREGISTRERT)
                 .medValue(startDatoService.erJanuarEllerFebruar().toString());
-        faktaService.lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum, "");
+        faktaService.lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum);
     }
 
     private void prepopulerSoknadsFakta(Long soknadId) {

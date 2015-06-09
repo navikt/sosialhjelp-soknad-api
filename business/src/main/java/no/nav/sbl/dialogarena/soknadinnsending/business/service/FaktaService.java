@@ -86,35 +86,42 @@ public class FaktaService {
         on(fakta).forEach(new Closure<Faktum>() {
             @Override
             public void execute(Faktum faktum) {
-                Faktum existing = soknad.getFaktaMedKeyOgProperty(faktum.getKey(), faktum.getUnikProperty(), faktum.getProperties().get(faktum.getUnikProperty()));
+                Faktum existing;
+
+                if(faktum.getUnikProperty() == null) {
+                    existing = soknad.getFaktumMedKey(faktum.getKey());
+                } else {
+                    existing = soknad.getFaktaMedKeyOgProperty(faktum.getKey(), faktum.getUnikProperty(), faktum.getProperties().get(faktum.getUnikProperty()));
+                }
+
                 if (existing != null) {
                     faktum.setFaktumId(existing.getFaktumId());
                     faktum.kopierBrukerlagrede(existing);
                 }
                 faktum.setType(SYSTEMREGISTRERT);
-                faktum.setFaktumId(repository.lagreFaktum(soknad.getSoknadId(), faktum, true));
+                Long faktumId = repository.lagreFaktum(soknad.getSoknadId(), faktum, true);
+                if(faktum.getFaktumId() == null) {
+                    faktum.setFaktumId(faktumId);
+                }
                 genererVedleggForFaktum(faktum);
             }
         });
     }
 
     @Transactional
-    public Long lagreSystemFaktum(Long soknadId, Faktum f, String uniqueProperty) {
+    public Long lagreSystemFaktum(Long soknadId, Faktum f) {
         logger.debug("*** Lagrer systemfaktum ***: " + f.getKey());
         f.setType(SYSTEMREGISTRERT);
         List<Faktum> fakta = repository.hentSystemFaktumList(soknadId, f.getKey());
 
-        if (!uniqueProperty.isEmpty()) {
-            for (Faktum faktum : fakta) {
-                if (faktum.matcherUnikProperty(uniqueProperty, f)) {
-                    f.setFaktumId(faktum.getFaktumId());
-                    Long lagretFaktumId = repository.lagreFaktum(soknadId, f, true);
-                    Faktum hentetFaktum = repository.hentFaktum(lagretFaktumId);
-                    genererVedleggForFaktum(hentetFaktum);
-                    return lagretFaktumId;
-                }
+
+        for (Faktum faktum : fakta) {
+            if(faktum.getKey().equals(f.getKey())) {
+                f.setFaktumId(faktum.getFaktumId());
+                break;
             }
         }
+
         Long lagretFaktumId = repository.lagreFaktum(soknadId, f, true);
         Faktum hentetFaktum = repository.hentFaktum(lagretFaktumId);
         genererVedleggForFaktum(hentetFaktum);

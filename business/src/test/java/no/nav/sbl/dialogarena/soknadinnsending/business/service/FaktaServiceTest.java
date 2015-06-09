@@ -14,14 +14,17 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static java.lang.System.setProperty;
+import static junit.framework.Assert.assertEquals;
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.OPPRETTET;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.DAGPENGER;
@@ -121,7 +124,7 @@ public class FaktaServiceTest {
     }
 
     @Test
-    public void skalLagreSystemfaktummedUniqueSomFinnes() {
+    public void skalLagreSystemFaktum() {
         Faktum faktum = new Faktum().medKey("personalia").medSystemProperty("fno", "123").medSoknadId(1L);
         Faktum faktumSjekk = new Faktum().medKey("personalia").medSystemProperty("fno", "123").medSoknadId(1L).medType(Faktum.FaktumType.SYSTEMREGISTRERT);
 
@@ -130,16 +133,37 @@ public class FaktaServiceTest {
         when(soknadRepository.hentSystemFaktumList(1L, faktum.getKey())).thenReturn(Arrays.asList(
                 new Faktum().medFaktumId(5L).medKey("personalia").medSystemProperty("fno", "123"),
                 new Faktum().medFaktumId(6L).medKey("personalia").medSystemProperty("fno", "124")));
-        faktaService.lagreSystemFaktum(1L, faktum, "fno");
+        faktaService.lagreSystemFaktum(1L, faktum);
         verify(soknadRepository).lagreFaktum(1L, faktumSjekk.medFaktumId(5L), true);
     }
 
     @Test
-    public void skalLagreSystemfaktumUtenUnique() {
-        Faktum faktum = new Faktum().medKey("personalia").medValue("tester").medSoknadId(1L);
-        when(soknadRepository.lagreFaktum(anyLong(), any(Faktum.class), anyBoolean())).thenReturn(2L);
-        when(soknadRepository.hentFaktum(2L)).thenReturn(faktum);
-        faktaService.lagreSystemFaktum(1L, faktum, "");
-        verify(soknadRepository).lagreFaktum(1L, faktum, true);
+    public void skalOppdatereFaktaMedSammeUnikProperty() {
+        WebSoknad soknad = new WebSoknad().medId(1L).medFaktum(lagFaktumMedUnikProperty("123").medValue("gammel").medFaktumId(5L));
+        List<Faktum> fakta = Arrays.asList(lagFaktumMedUnikProperty("123").medValue("ny"));
+
+        ArgumentCaptor<Faktum> argument = ArgumentCaptor.forClass(Faktum.class);
+        faktaService.lagreSystemFakta(soknad, fakta);
+        verify(soknadRepository).lagreFaktum(anyLong(), argument.capture(), anyBoolean());
+        assertEquals(new Long(5L), argument.getValue().getFaktumId());
+    }
+
+    @Test
+    public void skalOppdatereFaktaMedSammeKeyOgUtenUnikProperty() {
+        WebSoknad soknad = new WebSoknad().medId(1L).medFaktum(new Faktum().medKey("personalia").medSoknadId(1L).medValue("gammel").medFaktumId(5L));
+        List<Faktum> fakta = Arrays.asList(new Faktum().medKey("personalia").medSoknadId(1L).medValue("ny"));
+
+        ArgumentCaptor<Faktum> argument = ArgumentCaptor.forClass(Faktum.class);
+        faktaService.lagreSystemFakta(soknad, fakta);
+        verify(soknadRepository).lagreFaktum(anyLong(), argument.capture(), anyBoolean());
+        assertEquals(new Long(5L), argument.getValue().getFaktumId());
+    }
+
+    private Faktum lagFaktumMedUnikProperty(String value) {
+        return new Faktum()
+                .medSoknadId(1L)
+                .medKey("personalia")
+                .medUnikProperty("unik")
+                .medProperty("unik", value);
     }
 }
