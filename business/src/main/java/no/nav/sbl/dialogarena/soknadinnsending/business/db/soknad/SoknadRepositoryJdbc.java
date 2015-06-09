@@ -354,7 +354,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     private void lagreAlleEgenskaper(Faktum faktum, Boolean systemLagring) {
         Faktum lagretFaktum = hentFaktum(faktum.getFaktumId());
         if (systemLagring) {
-            faktum.kopierBrukerlagrede(lagretFaktum);
+            faktum.kopierFaktumegenskaper(lagretFaktum);
         } else {
             faktum.kopierFraProperies();
             if (lagretFaktum.er(SYSTEMREGISTRERT)) {

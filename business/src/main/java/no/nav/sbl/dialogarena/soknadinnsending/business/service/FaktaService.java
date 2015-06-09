@@ -96,13 +96,11 @@ public class FaktaService {
 
                 if (existing != null) {
                     faktum.setFaktumId(existing.getFaktumId());
-                    faktum.kopierBrukerlagrede(existing);
+                    faktum.kopierFaktumegenskaper(existing);
                 }
                 faktum.setType(SYSTEMREGISTRERT);
-                Long faktumId = repository.lagreFaktum(soknad.getSoknadId(), faktum, true);
-                if(faktum.getFaktumId() == null) {
-                    faktum.setFaktumId(faktumId);
-                }
+                repository.lagreFaktum(soknad.getSoknadId(), faktum, true);
+
                 genererVedleggForFaktum(faktum);
             }
         });
