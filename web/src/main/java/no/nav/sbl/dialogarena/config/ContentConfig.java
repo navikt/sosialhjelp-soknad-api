@@ -7,7 +7,6 @@ import no.nav.modig.content.enonic.innholdstekst.Innholdstekst;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.types.Pingable;
-import no.nav.sbl.dialogarena.utils.StripPTagsPropertyPersister;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +58,6 @@ public class ContentConfig {
 
         //Sjekk for nye filer en gang hvert 30. minutt.
         messageSource.setCacheSeconds(60 * 30);
-        messageSource.setPropertiesPersister(new StripPTagsPropertyPersister());
         return messageSource;
     }
 
