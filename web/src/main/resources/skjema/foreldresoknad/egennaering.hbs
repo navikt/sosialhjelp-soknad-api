@@ -16,14 +16,12 @@
                     <td>
                         <span class="strong">{{properties.navn}}</span>
                         <ul>
-                            {{#hvisIkkeTom properties.orgnummer}}
-                                {{#hvisSant properties.registrertnorge}}
-                            <li class="kulepunkt"><span>{{hentTekst "foreldresoknad.egennaering.oppsummering.registrerti.tittel"}} {{hentLand 'NOR'}}</span></li>
-                                {{/hvisSant}}
-                            <li class="kulepunkt"><span>{{hentTekst "foreldresoknad.oppsummering.egennaering.orgnummer"}} {{properties.orgnummer}}</span></li>
+                            {{#hvisSant properties.registrertnorge}}
+                                <li class="kulepunkt"><span>{{hentTekst "foreldresoknad.egennaering.oppsummering.registrerti.tittel"}} {{hentLand 'NOR'}}</span></li>
+                                <li class="kulepunkt"><span>{{hentTekst "foreldresoknad.oppsummering.egennaering.orgnummer"}} {{properties.orgnummer}}</span></li>
                                 {{else}}
-                            <li class="kulepunkt"><span>{{hentTekst "foreldresoknad.egennaering.oppsummering.registrerti.tittel"}} {{hentLand properties.foretakland}}</span></li>
-                            {{/hvisIkkeTom}}
+                                <li class="kulepunkt"><span>{{hentTekst "foreldresoknad.egennaering.oppsummering.registrerti.tittel"}} {{hentLand properties.foretakland}}</span></li>
+                            {{/hvisSant}}
                         {{#hvisIkkeTom properties.jobberandel}}
                             <li class="kulepunkt"><span>{{hentTekst "foreldresoknad.egennaering.oppsummering.landogprosent.1"}} {{properties.jobberandel}}
                                 {{hentTekst "foreldresoknad.egennaering.oppsummering.landogprosent.2"}} {{hentLand properties.jobberland}}</span></li>
