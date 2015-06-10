@@ -146,6 +146,9 @@
     <faktum>
         <id>fedrekvote</id>
     </faktum>
+    <faktum>
+        <id>fedrekvote.ikkerett.fritekst</id>
+    </faktum>
 
     <!-- Perioder -->
     <faktum>
