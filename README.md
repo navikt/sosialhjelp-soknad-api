@@ -21,3 +21,11 @@ Tidligere har det kun vært admin på FSS som er åpen for modig-content-sync.
 
 
 
+Dette kan også løses med en kombinasjon av alias og funksjoner for å forenkle prosessen, spesielt om man ikke ønsker å måtte skrive inn passordet hver gang. Husk å endre til riktig brukernavn og passord i funksjonen under.
+
+    function syncEnonic() {
+	    mvn modig-content:sync -Denonic.username={{BRUKERNAVN}} -Denonic.password={{PASSORD}} -Denonic.url=http://$1:8080
+    }
+
+    alias esync='syncEnonic'
+    alias esynct8='esync 10.51.9.185'
