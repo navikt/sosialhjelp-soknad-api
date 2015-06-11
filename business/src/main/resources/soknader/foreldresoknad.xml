@@ -235,6 +235,16 @@
     </vedlegg>
     <vedlegg>
         <id>3</id>
+        <faktum>ytelser.ventelonn</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>K1</skjemaNummer>
+        <flereTillatt>true</flereTillatt>
+        <oversetting>${key}</oversetting>
+    </vedlegg>
+    <vedlegg>
+        <id>3</id>
         <faktum>ytelser.avtjening</faktum>
         <onValues>
             <value>true</value>
