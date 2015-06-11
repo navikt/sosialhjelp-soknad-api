@@ -85,11 +85,13 @@ public class FaktaServiceTest {
         verify(soknadRepository).lagreFaktum(soknadId, faktum);
 
     }
+
     @Test(expected = IkkeFunnetException.class)
-    public void skalKasteExceptionOmEnProverAaSletteNoeSomIkkeFinnes(){
+    public void skalKasteExceptionOmEnProverAaSletteNoeSomIkkeFinnes() {
         when(soknadRepository.hentFaktum(1L)).thenThrow(new IncorrectResultSizeDataAccessException(1, 0));
         faktaService.slettBrukerFaktum(1L);
     }
+
     @Test
     public void skalSletteBrukerfaktum() {
         Vedlegg vedlegg = new Vedlegg().medVedleggId(111L).medSkjemaNummer("a1").medFaktumId(111L);
