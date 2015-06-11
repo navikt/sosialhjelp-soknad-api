@@ -30,7 +30,7 @@ public class ApplicationExceptionMapper implements ExceptionMapper<ModigExceptio
             response = status(UNSUPPORTED_MEDIA_TYPE);
             logger.warn("Feilet opplasting", e);
         } else if (e instanceof OpplastingException) {
-            response = status(NOT_ACCEPTABLE);
+            response = status(REQUEST_ENTITY_TOO_LARGE);
             logger.warn("Feilet opplasting", e);
         } else if (e instanceof AuthorizationException) {
             response = status(FORBIDDEN);
