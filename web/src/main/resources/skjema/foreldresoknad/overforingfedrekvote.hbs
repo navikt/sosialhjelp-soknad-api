@@ -12,5 +12,13 @@
                 </span>
             </td>
         </tr>
+        {{#hvisLik value "ikkerett"}}
+            <td class="sjekket"></td>
+            <td>
+                {{#forFaktum "fedrekvote.ikkerett.fritekst"}}
+                    <span>{{value}}</span>
+                {{/forFaktum}}
+            </td>
+        {{/hvisLik}}
     {{/forFaktum}}
 </table>
