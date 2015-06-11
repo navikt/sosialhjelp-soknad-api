@@ -25,9 +25,9 @@ public class ApplicationExceptionMapperTest {
     }
 
     @Test
-    public void skalGi406NotAcceptableVedOpplastingException() {
+    public void skalGi413RequestTooLongVedOpplastingException() {
         Response response = mapper.toResponse(new OpplastingException("feil", new RuntimeException(), "id"));
-        assertThat(response.getStatus()).isEqualTo(406);
+        assertThat(response.getStatus()).isEqualTo(413);
     }
 
     @Test
