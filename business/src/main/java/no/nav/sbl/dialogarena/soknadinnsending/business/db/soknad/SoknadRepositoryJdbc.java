@@ -273,7 +273,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     }
 
     private Integer finnAntallFaktumMedGittKeyOgEnAvFlereValues(Long soknadId, String key, List<String> values) {
-        if (values == null) {
+        if (values == null || values.isEmpty()) {
             return 0;
         }
         String sql = "SELECT count(*) FROM soknadbrukerdata WHERE soknad_id=:soknadid AND key=:faktumkey AND value IN (:dependonvalues)";
@@ -354,7 +354,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     private void lagreAlleEgenskaper(Faktum faktum, Boolean systemLagring) {
         Faktum lagretFaktum = hentFaktum(faktum.getFaktumId());
         if (systemLagring) {
-            faktum.kopierBrukerlagrede(lagretFaktum);
+            faktum.kopierFaktumegenskaper(lagretFaktum);
         } else {
             faktum.kopierFraProperies();
             if (lagretFaktum.er(SYSTEMREGISTRERT)) {

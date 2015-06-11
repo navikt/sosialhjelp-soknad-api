@@ -342,7 +342,7 @@ public class SoknadServiceTest {
         when(soknadRepository.hentSoknadMedData(soknadId)).thenReturn(new WebSoknad().medId(soknadId));
         soknadService.startSoknad(DAGPENGER, "***REMOVED***");
 
-        verify(faktaService, times(1)).lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum, "");
+        verify(faktaService, times(1)).lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum);
         DateTimeUtils.setCurrentMillisSystem();
     }
 
@@ -395,7 +395,7 @@ public class SoknadServiceTest {
         when(soknadRepository.hentSoknadMedData(soknadId)).thenReturn(new WebSoknad().medId(soknadId));
         soknadService.startSoknad(DAGPENGER, "***REMOVED***");
 
-        verify(faktaService, times(1)).lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum, "");
+        verify(faktaService, times(1)).lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum);
         DateTimeUtils.setCurrentMillisSystem();
     }
 
@@ -444,7 +444,7 @@ public class SoknadServiceTest {
         when(soknadRepository.hentSoknadMedData(soknadId)).thenReturn(new WebSoknad().medId(soknadId));
 
         String ettersendingBehandlingsId = soknadService.startEttersending(behandlingsId, "***REMOVED***");
-        verify(faktaService).lagreSystemFaktum(anyLong(), any(Faktum.class), anyString());
+        verify(faktaService).lagreSystemFaktum(anyLong(), any(Faktum.class));
         assertNotNull(ettersendingBehandlingsId);
     }
 

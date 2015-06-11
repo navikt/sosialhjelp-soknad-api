@@ -236,7 +236,7 @@ public class Faktum implements Serializable {
      *
      * @param lagretFaktum det afktumet properties skal hentes fra
      */
-    public void kopierBrukerlagrede(Faktum lagretFaktum) {
+    public void kopierFaktumegenskaper(Faktum lagretFaktum) {
         for (FaktumEgenskap egenskap : lagretFaktum.getFaktumEgenskaper()) {
             if (egenskap.getSystemEgenskap().equals(0) && !this.hasEgenskap(egenskap.getKey())) {
                 medEgenskap(egenskap);
