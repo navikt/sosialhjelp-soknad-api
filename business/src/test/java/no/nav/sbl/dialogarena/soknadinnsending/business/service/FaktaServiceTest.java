@@ -21,20 +21,18 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static java.lang.System.setProperty;
-import static junit.framework.Assert.assertEquals;
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.OPPRETTET;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.DAGPENGER;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FaktaServiceTest {
@@ -81,7 +79,7 @@ public class FaktaServiceTest {
         when(soknadRepository.hentFaktum(2L)).thenReturn(faktum);
         faktaService.lagreSoknadsFelt(behandlingsId, faktum);
         verify(soknadRepository).settSistLagretTidspunkt(soknadId);
-        when(soknadRepository.hentBarneFakta(soknadId, faktum.getFaktumId())).thenReturn(Arrays.asList(new Faktum().medKey("subkey")));
+        when(soknadRepository.hentBarneFakta(soknadId, faktum.getFaktumId())).thenReturn(Collections.singletonList(new Faktum().medKey("subkey")));
 
         //Verifiser vedlegg sjekker.
         verify(soknadRepository).lagreFaktum(soknadId, faktum);
@@ -96,7 +94,7 @@ public class FaktaServiceTest {
     public void skalSletteBrukerfaktum() {
         Vedlegg vedlegg = new Vedlegg().medVedleggId(111L).medSkjemaNummer("a1").medFaktumId(111L);
         when(soknadRepository.hentSoknad(1L)).thenReturn(new WebSoknad().medId(1L).medDelstegStatus(DelstegStatus.UTFYLLING));
-        when(vedleggRepository.hentVedleggForFaktum(1L, 1L)).thenReturn(Arrays.asList(vedlegg));
+        when(vedleggRepository.hentVedleggForFaktum(1L, 1L)).thenReturn(Collections.singletonList(vedlegg));
         when(soknadRepository.hentFaktum(1L)).thenReturn(new Faktum().medKey("key").medSoknadId(1L));
         faktaService.slettBrukerFaktum(1L);
         verify(vedleggRepository).slettVedleggOgData(1L, vedlegg);
@@ -140,7 +138,7 @@ public class FaktaServiceTest {
     @Test
     public void skalOppdatereFaktaMedSammeUnikProperty() {
         WebSoknad soknad = new WebSoknad().medId(1L).medFaktum(lagFaktumMedUnikProperty("123").medValue("gammel").medFaktumId(5L));
-        List<Faktum> fakta = Arrays.asList(lagFaktumMedUnikProperty("123").medValue("ny"));
+        List<Faktum> fakta = Collections.singletonList(lagFaktumMedUnikProperty("123").medValue("ny"));
 
         ArgumentCaptor<Faktum> argument = ArgumentCaptor.forClass(Faktum.class);
         faktaService.lagreSystemFakta(soknad, fakta);
@@ -151,7 +149,7 @@ public class FaktaServiceTest {
     @Test
     public void skalOppdatereFaktaMedSammeKeyOgUtenUnikProperty() {
         WebSoknad soknad = new WebSoknad().medId(1L).medFaktum(new Faktum().medKey("personalia").medSoknadId(1L).medValue("gammel").medFaktumId(5L));
-        List<Faktum> fakta = Arrays.asList(new Faktum().medKey("personalia").medSoknadId(1L).medValue("ny"));
+        List<Faktum> fakta = Collections.singletonList(new Faktum().medKey("personalia").medSoknadId(1L).medValue("ny"));
 
         ArgumentCaptor<Faktum> argument = ArgumentCaptor.forClass(Faktum.class);
         faktaService.lagreSystemFakta(soknad, fakta);
