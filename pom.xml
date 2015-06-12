@@ -21,7 +21,7 @@
     <description>Innsending av elektronisk søknad.</description>
     <groupId>no.nav.sbl.dialogarena</groupId>
     <artifactId>sendsoknad</artifactId>
-    <version>5.15-SNAPSHOT</version>
+    <version>5.15</version>
     <packaging>pom</packaging>
 
     <properties>
