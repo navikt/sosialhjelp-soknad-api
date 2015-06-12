@@ -345,18 +345,10 @@
         <id>6</id>
         <faktum>rettigheter.overtak</faktum>
         <onValues>
-            <value>adoptererAlene</value>
-        </onValues>
-        <skjemaNummer>P5</skjemaNummer>
-    </vedlegg>
-    <vedlegg>
-        <id>6</id>
-        <faktum>rettigheter.overtak</faktum>
-        <onValues>
             <value>overtattOmsorgInnen53UkerFodsel</value>
             <value>overtattOmsorgInnen53UkerAdopsjon</value>
         </onValues>
-        <skjemaNummer>O7</skjemaNummer>
+        <skjemaNummer>P5</skjemaNummer>
     </vedlegg>
 
     <!-- Vedlegg perioder -->
