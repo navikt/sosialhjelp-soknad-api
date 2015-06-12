@@ -20,12 +20,6 @@
     <!-- Veiledning -->
     <faktum>
         <id>veiledning.mor.terminbekreftelse</id>
-        <dependOn>personalia</dependOn>
-        <dependOnProperty>gjeldendeAdresseType</dependOnProperty>
-        <dependOnValues>
-            <value>UTENLANDSK_ADRESSE</value>
-            <value>MIDLERTIDIG_POSTADRESSE_UTLAND</value>
-        </dependOnValues>
     </faktum>
     <faktum>
         <id>veiledning.adopsjon.overtakelse</id>
@@ -265,8 +259,9 @@
         <id>4</id>
         <faktum>veiledning.mor.terminbekreftelse</faktum>
         <skjemaNummer>R4</skjemaNummer>
+        <onProperty>skalHaFodselsattest</onProperty>
         <onValues>
-            <value>fodt</value>
+            <value>true</value>
         </onValues>
     </vedlegg>
     <vedlegg>
