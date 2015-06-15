@@ -34,10 +34,10 @@
     {{/forFaktum}}
 </table>
 
-<table>
-    {{#forFaktum "andreytelser.utbetalinger.fraarbeidsgiver"}}
-        {{#hvisIkkeTom value}}
-            <h3>{{ hentTekst "andreytelser.utbetalinger.fraarbeidsgiver.overskrift" }}</h3>
+{{#forFaktum "andreytelser.utbetalinger.fraarbeidsgiver"}}
+    {{#hvisIkkeTom value}}
+        <h3>{{ hentTekst "andreytelser.utbetalinger.fraarbeidsgiver.overskrift" }}</h3>
+        <table>
             <tr>
                 <td class="sjekket"></td>
                 <td>
@@ -53,7 +53,8 @@
                                         {{#forFaktum "andreytelser.utbetalinger.fraarbeidsgiver.engangsbelop.belop"}}
                                             {{#hvisIkkeTom value}}
 
-                                                <span>{{hentTekst "andreytelser.utbetalinger.fraarbeidsgiver.utbetalingen.engangsbelop.belop.label"}}: {{ value }} kr</span>
+                                                <span>{{hentTekst "andreytelser.utbetalinger.fraarbeidsgiver.utbetalingen.engangsbelop.belop.label"}}
+                                                    : {{ value }} kr</span>
 
                                             {{/hvisIkkeTom}}
                                         {{/forFaktum}}
@@ -87,9 +88,10 @@
                     {{/hvisSant}}
                 </td>
             </tr>
-        {{/hvisIkkeTom}}
-    {{/forFaktum}}
-</table>
+        </table>
+    {{/hvisIkkeTom}}
+{{/forFaktum}}
+
 
 <h3>{{ hentTekst "andreytelser.utbetalinger.fraandre.overskrift" }}</h3>
 <table>

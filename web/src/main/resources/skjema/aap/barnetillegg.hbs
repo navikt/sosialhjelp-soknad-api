@@ -1,12 +1,14 @@
 <h2>{{ hentTekst "barnetillegg.tittel" }}</h2>
-<table>
+<table class="fakta-rad-oppsett">
     {{#forFakta "barn"}}
         <tr>
             <td class="sjekket"></td>
             <td>
-                <p>
-                    <span class="barn-navn">{{ properties.sammensattnavn }},</span>
-                    <span>{{ hentTekst "oppsummering.fodt" }}</span>
+                <div class="faktum-felt">
+                    <span class="barn-navn">{{ properties.sammensattnavn }}</span>
+                </div>
+                <div class="faktum-felt">
+                    <span>{{ hentTekst "oppsummering.barnetillegg.fodt" }}</span>
                     {{#hvisLik type "SYSTEMREGISTRERT"}}
                         <span>{{ formatterFodelsDato properties.fnr }},</span>
                     {{ else }}
@@ -15,9 +17,9 @@
 
                     <span>{{ hentTekst "oppsummering.bor" }}</span>
                     <span>{{ hentLand properties.land }}</span>
-                </p>
+                </div>
 
-                <div class="kulepunkt">
+                <div class="kulepunkt faktum-felt">
                     {{#harBarnetInntekt}}
                         <span>{{ hentTekst "barnetillegg.barn.harInntekt"}}. </span>
                         <span>{{ hentTekst "oppsummering.barnetillegg.inntekt.prefix"}} {{value}} kr</span>

@@ -1,7 +1,7 @@
 {{#forFaktum "nyPeriode.gjenopptagelsesdato"}}
     {{#hvisIkkeTom value}}
         <h2>{{ hentTekst "nyPeriode.tittel" }}</h2>
-        <span>{{ hentTekst "nyPeriode.gjenopptagelsesdato.sporsmal" }}</span>
+        <h3>{{ hentTekst "nyPeriode.gjenopptagelsesdato.sporsmal" }}</h3>
         <table>
             <tr>
                 <td class="sjekket"></td>
@@ -10,7 +10,7 @@
                 </td>
             </tr>
         </table>
-        <span>{{ hentTekst "oppsummering.nyPeriode.grunn.overskrift" }}</span>
+        <h3>{{ hentTekst "oppsummering.nyPeriode.grunn.overskrift" }}</h3>
         <table>
             {{#forFaktum "nyPeriode.grunn.arbeid"}}
                 {{#hvisSant value}}
