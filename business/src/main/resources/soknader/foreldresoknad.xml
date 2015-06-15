@@ -58,6 +58,10 @@
     <!-- Rettigheter -->
     <faktum>
         <id>rettigheter.overtak</id>
+        <dependOn>soknadsvalg.fodselelleradopsjon</dependOn>
+        <dependOnValues>
+            <value>fodsel</value>
+        </dependOnValues>
     </faktum>
     
     <!-- Tilknytning til Norge-->
@@ -277,6 +281,7 @@
         <id>4</id>
         <faktum>soknadsvalg.fodselelleradopsjon</faktum>
         <skjemaNummer>P5</skjemaNummer>
+        <skjemanummerTillegg>adopsjon</skjemanummerTillegg>
         <onValues>
             <value>adopsjon</value>
         </onValues>
@@ -349,6 +354,7 @@
             <value>overtattOmsorgInnen53UkerAdopsjon</value>
         </onValues>
         <skjemaNummer>P5</skjemaNummer>
+        <skjemanummerTillegg>overtatt</skjemanummerTillegg>
     </vedlegg>
 
     <!-- Vedlegg perioder -->
