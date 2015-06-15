@@ -276,7 +276,7 @@
         <onValues>
             <value>false</value>
         </onValues>
-        <skjemaNummer>V5</skjemaNummer>
+        <skjemaNummer>K6</skjemaNummer>
     </vedlegg>
 
     <!-- Mottar eller har søkt om andre ytelser fra spesifikke kilder -->
@@ -286,6 +286,7 @@
         <onValues>
             <value>true</value>
         </onValues>
+        <skjemanummerTillegg>omsorgslonn</skjemanummerTillegg>
         <skjemaNummer>K5</skjemaNummer>
     </vedlegg>
     <vedlegg>
@@ -294,6 +295,7 @@
         <onValues>
             <value>true</value>
         </onValues>
+        <skjemanummerTillegg>fosterhjemsgodtgjorelse</skjemanummerTillegg>
         <skjemaNummer>K5</skjemaNummer>
     </vedlegg>
     <vedlegg>
