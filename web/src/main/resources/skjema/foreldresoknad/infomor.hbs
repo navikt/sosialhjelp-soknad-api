@@ -50,10 +50,7 @@
                     <td class="sjekket"></td>
                     <td>
                         {{#hvisLik "true" value}}<span>{{hentTekst "foreldresoknad.infomor.informert.true"}}</span>{{/hvisLik}}
-                        {{#hvisLik "false" value}}
-                            <span>{{hentTekst "foreldresoknad.infomor.informert.false"}}</span>
-                            <div>{{hentTekst "foreldresoknad.infomor.informert.fritekst.label"}}: <em>{{hentFaktumValue "infomor.informert.fritekst"}}</em></div>
-                        {{/hvisLik}}
+                        {{#hvisLik "false" value}}<span>{{hentTekst "foreldresoknad.infomor.informert.false"}}</span>{{/hvisLik}}
                     </td>
                 </tr>
             {{/hvisIkkeTom}}
