@@ -10,28 +10,29 @@
                         <span>{{ hentTekst "tilknytningNorge.oppholdINorgeSisteTreAar.true" }}</span>
                     {{else}}
                         <span>{{ hentTekst "tilknytningNorge.oppholdINorgeSisteTreAar.false" }}</span>
-
-                        {{#forFaktum "tilknytningNorge.oppholdINorgeSisteTreAar.false.boddINorgeSisteAaret"}}
-                            {{#hvisSant value}}
-                                <li>
-                                    <span>{{ hentTekst "tilknytningNorge.oppholdINorgeSisteTreAar.false.boddINorgeSisteAaret"}}</span>
-                                </li>
-                            {{/hvisSant}}
-                        {{/forFaktum}}
-                        {{#forFaktum "tilknytningNorge.oppholdINorgeSisteTreAar.false.boddIEOSLandSisteTreAar"}}
-                            {{#hvisSant value}}
-                                <li>
-                                    <span>{{ hentTekst "tilknytningNorge.oppholdINorgeSisteTreAar.false.boddIEOSLandSisteTreAar"}}</span>
-                                </li>
-                            {{/hvisSant}}
-                        {{/forFaktum}}
-                        {{#forFaktum "tilknytningNorge.oppholdINorgeSisteTreAar.false.registrertFlyktning"}}
-                            {{#hvisSant value}}
-                                <li>
-                                    <span>{{ hentTekst "tilknytningNorge.oppholdINorgeSisteTreAar.false.registrertFlyktning"}}</span>
-                                </li>
-                            {{/hvisSant}}
-                        {{/forFaktum}}
+                        <ul>
+                            {{#forFaktum "tilknytningNorge.oppholdINorgeSisteTreAar.false.boddINorgeSisteAaret"}}
+                                {{#hvisSant value}}
+                                    <li class="kulepunkt">
+                                        <span>{{ hentTekst "tilknytningNorge.oppholdINorgeSisteTreAar.false.boddINorgeSisteAaret"}}</span>
+                                    </li>
+                                {{/hvisSant}}
+                            {{/forFaktum}}
+                            {{#forFaktum "tilknytningNorge.oppholdINorgeSisteTreAar.false.boddIEOSLandSisteTreAar"}}
+                                {{#hvisSant value}}
+                                    <li class="kulepunkt">
+                                        <span>{{ hentTekst "tilknytningNorge.oppholdINorgeSisteTreAar.false.boddIEOSLandSisteTreAar"}}</span>
+                                    </li>
+                                {{/hvisSant}}
+                            {{/forFaktum}}
+                            {{#forFaktum "tilknytningNorge.oppholdINorgeSisteTreAar.false.registrertFlyktning"}}
+                                {{#hvisSant value}}
+                                    <li class="kulepunkt">
+                                        <span>{{ hentTekst "tilknytningNorge.oppholdINorgeSisteTreAar.false.registrertFlyktning"}}</span>
+                                    </li>
+                                {{/hvisSant}}
+                            {{/forFaktum}}
+                        </ul>
                     {{/hvisSant}}
                 </td>
             </tr>
@@ -50,13 +51,15 @@
                     {{else}}
                         <span>{{ hentTekst "tilknytningNorge.arbeidIUtlandet.false" }}</span>
 
-                        {{#forFakta "tilknytningNorge.arbeidIUtlandet.periode"}}
-                            <li>
-                                <span>Land: {{ hentLand properties.land }},</span>
-                                <span>fra {{ toLowerCase properties.fraMaaned }} {{ properties.fraAar }}</span>
-                                <span>til {{ toLowerCase properties.tilMaaned }} {{ properties.tilAar }}</span>
-                            </li>
-                        {{/forFakta}}
+                        <ul>
+                            {{#forFakta "tilknytningNorge.arbeidIUtlandet.periode"}}
+                                <li class="kulepunkt">
+                                    <span>Land: {{ hentLand properties.land }},</span>
+                                    <span>fra {{ toLowerCase properties.fraMaaned }} {{ properties.fraAar }}</span>
+                                    <span>til {{ toLowerCase properties.tilMaaned }} {{ properties.tilAar }}</span>
+                                </li>
+                            {{/forFakta}}
+                        </ul>
                     {{/hvisSant}}
                 </td>
             </tr>

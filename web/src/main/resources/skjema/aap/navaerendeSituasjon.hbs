@@ -59,30 +59,28 @@
                                     <span>{{ hentTekst "navaerendeSituasjon.student.studererFortsatt.true"}}</span>
                                 {{else}}
                                     <span>{{ hentTekst "navaerendeSituasjon.student.studererFortsatt.false"}}</span>
-                                    {{#forFaktum "navaerendeSituasjon.student.avbruttStudie.ikkeTilbake"}}
-                                        <ul>
-                                            <li class="kulepunkt">
-                                                {{#hvisSant value}}
-                                                    <span>{{ hentTekst "navaerendeSituasjon.student.avbruttStudie.ikkeTilbake.true"}}</span>
-                                                {{else}}
-                                                    <span>{{ hentTekst "navaerendeSituasjon.student.avbruttStudie.ikkeTilbake.false"}}</span>
-                                                    {{#forFaktum "navaerendeSituasjon.student.avbruttStudie.vilFortsette.mottarSykestipend"}}
-                                                        <ul>
-                                                            <li class="kulepunkt">
-                                                                {{#hvisSant value}}
-                                                                    <span>{{ hentTekst "navaerendeSituasjon.student.avbruttStudie.vilFortsette.mottarSykestipend.true"}}</span>
-                                                                {{else}}
-                                                                    <span>{{ hentTekst "navaerendeSituasjon.student.avbruttStudie.vilFortsette.mottarSykestipend.false"}}</span>
-                                                                {{/hvisSant}}
-                                                            </li>
-                                                        </ul>
-                                                    {{/forFaktum}}
-                                                {{/hvisSant}}
-                                            </li>
-                                        </ul>
-                                    {{/forFaktum}}
                                 {{/hvisSant}}
                             </li>
+                            {{#forFaktum "navaerendeSituasjon.student.avbruttStudie.ikkeTilbake"}}
+                                <li class="kulepunkt">
+                                    {{#hvisSant value}}
+                                        <span>{{ hentTekst "navaerendeSituasjon.student.avbruttStudie.ikkeTilbake.true"}}</span>
+                                    {{else}}
+                                        <span>{{ hentTekst "navaerendeSituasjon.student.avbruttStudie.ikkeTilbake.false"}}</span>
+                                    {{/hvisSant}}
+                                </li>
+                                {{#forFaktum "navaerendeSituasjon.student.avbruttStudie.vilFortsette.mottarSykestipend"}}
+
+                                    <li class="kulepunkt">
+                                        {{#hvisSant value}}
+                                            <span>{{ hentTekst "navaerendeSituasjon.student.avbruttStudie.vilFortsette.mottarSykestipend.true"}}</span>
+                                        {{else}}
+                                            <span>{{ hentTekst "navaerendeSituasjon.student.avbruttStudie.vilFortsette.mottarSykestipend.false"}}</span>
+                                        {{/hvisSant}}
+                                    </li>
+
+                                {{/forFaktum}}
+                            {{/forFaktum}}
                         {{/forFaktum}}
                     </ul>
                 </td>
