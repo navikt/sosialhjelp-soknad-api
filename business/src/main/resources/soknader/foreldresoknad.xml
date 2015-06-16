@@ -293,8 +293,12 @@
     <vedlegg>
         <id>5</id>
         <faktum>arbeidsforhold</faktum>
-        <skjemaNummer>T7</skjemaNummer>
+        <skjemaNummer>K4</skjemaNummer>
         <property>arbeidsgivernavn</property>
+        <onProperty>ansatt</onProperty>
+        <onValues>
+            <value>true</value>
+        </onValues>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
@@ -302,12 +306,16 @@
         <faktum>arbeidsforhold</faktum>
         <skjemaNummer>T8</skjemaNummer>
         <property>arbeidsgivernavn</property>
-        <flereTillatt>true</flereTillatt>
+        <filterKey>ansatt</filterKey>
+        <filterValues>
+            <value>false</value>
+        </filterValues>
         <onProperty>kilde</onProperty>
         <onValues>
             <value>EDAG</value>
         </onValues>
         <inverted>true</inverted>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
 
     <vedlegg>
@@ -315,6 +323,10 @@
         <faktum>arbeidsforhold</faktum>
         <skjemaNummer>M6</skjemaNummer>
         <property>arbeidsgivernavn</property>
+        <filterKey>ansatt</filterKey>
+        <filterValues>
+            <value>true</value>
+        </filterValues>
         <onProperty>stillingstype</onProperty>
         <onValues>
             <value>fastOgVariabel</value>
@@ -327,6 +339,10 @@
         <faktum>arbeidsforhold</faktum>
         <skjemaNummer>L4</skjemaNummer>
         <property>arbeidsgivernavn</property>
+        <filterKey>ansatt</filterKey>
+        <filterValues>
+            <value>true</value>
+        </filterValues>
         <onProperty>stillingstype</onProperty>
         <onValues>
             <value>fastOgVariabel</value>
