@@ -228,6 +228,7 @@
             <value>true</value>
         </onValues>
         <skjemaNummer>K1</skjemaNummer>
+        <skjemanummerTillegg>vartpenger</skjemanummerTillegg>
         <flereTillatt>true</flereTillatt>
         <oversetting>${key}</oversetting>
     </vedlegg>
@@ -238,6 +239,7 @@
             <value>true</value>
         </onValues>
         <skjemaNummer>K1</skjemaNummer>
+        <skjemanummerTillegg>ventelonn</skjemanummerTillegg>
         <flereTillatt>true</flereTillatt>
         <oversetting>${key}</oversetting>
     </vedlegg>
@@ -340,8 +342,26 @@
         <id>7</id>
         <faktum>naeringsvirksomhet</faktum>
         <skjemaNummer>T7</skjemaNummer>
+        <skjemanummerTillegg>regnskapsforer</skjemanummerTillegg>
         <property>navn</property>
         <onProperty>regnskapsforer</onProperty>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
+
+    <vedlegg>
+        <id>7</id>
+        <faktum>naeringsvirksomhet</faktum>
+        <skjemaNummer>T7</skjemaNummer>
+        <skjemanummerTillegg>ikkeregnskapsforer</skjemanummerTillegg>
+        <property>navn</property>
+        <onProperty>regnskapsforer</onProperty>
+        <onValues>
+            <value>false</value>
+        </onValues>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
