@@ -426,11 +426,18 @@
         <filterKey>type</filterKey>
         <filterValues>
             <value>ferie</value>
+        </filterValues>
+        <skjemaNummer>Z6</skjemaNummer>
+    </vedlegg>
+    <vedlegg>
+        <faktum>perioder.tidsrom.utsettelse</faktum>
+        <skjemanummerTillegg>ferie</skjemanummerTillegg>
+        <filterKey>type</filterKey>
+        <filterValues>
             <value>arbeid</value>
         </filterValues>
         <skjemaNummer>Z6</skjemaNummer>
     </vedlegg>
-
     <vedlegg>
         <faktum>perioder.tidsrom.utsettelse</faktum>
         <skjemanummerTillegg>sykdom</skjemanummerTillegg>
