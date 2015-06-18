@@ -40,6 +40,10 @@
     </faktum>
     <faktum>
         <id>rettigheter.omsorg</id>
+        <dependOn>soknadsvalg.stonadstype</dependOn>
+        <dependOnValues>
+            <value>foreldrepengerFar</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>infofar.aleneomsorg.fritekst</id>
@@ -391,6 +395,16 @@
         </onValues>
         <skjemaNummer>P5</skjemaNummer>
         <skjemanummerTillegg>overtatt</skjemanummerTillegg>
+    </vedlegg>
+
+    <vedlegg>
+        <id>6</id>
+        <faktum>rettigheter.omsorg</faktum>
+        <onValues>
+            <value>aleneomsorg</value>
+        </onValues>
+        <skjemaNummer>P5</skjemaNummer>
+        <skjemanummerTillegg>aleneomsorg</skjemanummerTillegg>
     </vedlegg>
 
     <!-- Vedlegg perioder -->
