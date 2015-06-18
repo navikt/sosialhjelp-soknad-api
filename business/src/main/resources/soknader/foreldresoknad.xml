@@ -213,6 +213,7 @@
             <value>helseinstitusjon</value>
         </onValues>
         <skjemaNummer>N9</skjemaNummer>
+        <skjemanummerTillegg>fedrekvote</skjemanummerTillegg>
     </vedlegg>
 
     <!-- Vedlegg Ytelse -->
@@ -443,13 +444,21 @@
 
     <vedlegg>
         <faktum>perioder.tidsrom.utsettelse</faktum>
-        <skjemanummerTillegg>innlagt</skjemanummerTillegg>
         <filterKey>type</filterKey>
         <filterValues>
             <value>innlagt</value>
+        </filterValues>
+        <skjemaNummer>N9</skjemaNummer>
+        <skjemanummerTillegg>innlagt</skjemanummerTillegg>
+    </vedlegg>
+    <vedlegg>
+        <faktum>perioder.tidsrom.utsettelse</faktum>
+        <filterKey>type</filterKey>
+        <filterValues>
             <value>barninnlagt</value>
         </filterValues>
         <skjemaNummer>N9</skjemaNummer>
+        <skjemanummerTillegg>barninnlagt</skjemanummerTillegg>
     </vedlegg>
 
     <!-- Vedlegg mors aktivitet -->
