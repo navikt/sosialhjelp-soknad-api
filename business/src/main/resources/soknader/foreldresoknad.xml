@@ -205,6 +205,7 @@
             <value>sykdom</value>
         </onValues>
         <skjemaNummer>U2</skjemaNummer>
+        <skjemanummerTillegg>fedrekvote</skjemanummerTillegg>
     </vedlegg>
     <vedlegg>
         <faktum>fedrekvote</faktum>
@@ -437,6 +438,7 @@
             <value>sykdom</value>
         </filterValues>
         <skjemaNummer>U2</skjemaNummer>
+        <skjemanummerTillegg>utsettelse</skjemanummerTillegg>
     </vedlegg>
 
     <vedlegg>
@@ -480,6 +482,7 @@
             <value>true</value>
         </onValues>
         <skjemaNummer>U2</skjemaNummer>
+        <skjemanummerTillegg>aktivitetskrav</skjemanummerTillegg>
     </vedlegg>
     <vedlegg>
         <faktum>vedlegg.hjelpefaktum</faktum>
