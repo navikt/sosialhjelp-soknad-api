@@ -1,0 +1,14 @@
+<soknad skjemaNummer="NAV 11-22.33" temaKode="STF">
+    <!-- Systemfakta -->
+    <faktum>
+        <id>personalia</id>
+        <erSystemFaktum>true</erSystemFaktum>
+    </faktum>
+
+    <!-- Tilleggsopplysninger -->
+    <faktum>
+        <id>tilleggsopplysninger.fritekst</id>
+        <type>java.lang.String</type>
+        <panel>Tilleggsopplysninger</panel>
+    </faktum>
+</soknad>
