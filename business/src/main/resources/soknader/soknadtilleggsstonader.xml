@@ -5,10 +5,13 @@
         <erSystemFaktum>true</erSystemFaktum>
     </faktum>
 
+    <!-- Flytting -->
+    <faktum>
+        <id>flytting.hvorforflytte</id>
+    </faktum>
+
     <!-- Tilleggsopplysninger -->
     <faktum>
         <id>tilleggsopplysninger.fritekst</id>
-        <type>java.lang.String</type>
-        <panel>Tilleggsopplysninger</panel>
     </faktum>
 </soknad>
