@@ -17,7 +17,7 @@ public class BilstonadInformasjon implements KravdialogInformasjon {
     }
 
     public String getFortsettSoknadUrlKey() {
-        return "bilstonad.fortsett.path";
+        return "bilstonad.path";
     }
 
     public List<String> getSoknadBolker(WebSoknad soknad) {
