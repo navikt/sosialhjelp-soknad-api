@@ -10,6 +10,26 @@
         <id>flytting.hvorforflytte</id>
     </faktum>
 
+    <!-- informasjonsside -->
+    <faktum>
+        <id>informasjonsside.stonad.reise</id>
+    </faktum>
+    <faktum>
+        <id>informasjonsside.stonad.flytting</id>
+    </faktum>
+    <faktum>
+        <id>informasjonsside.stonad.bostotte</id>
+    </faktum>
+    <faktum>
+        <id>informasjonsside.stonad.laeremidler</id>
+    </faktum>
+    <faktum>
+        <id>informasjonsside.stonad.barn</id>
+    </faktum>
+    <faktum>
+        <id>informasjonsside.stonad.familie</id>
+    </faktum>
+
     <!-- Tilleggsopplysninger -->
     <faktum>
         <id>tilleggsopplysninger.fritekst</id>
