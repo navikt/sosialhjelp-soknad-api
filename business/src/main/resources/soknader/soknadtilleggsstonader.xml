@@ -9,6 +9,9 @@
     <faktum>
         <id>flytting.hvorforflytte</id>
     </faktum>
+    <faktum>
+        <id>flytting.nyjobb.startdato</id>
+    </faktum>
 
     <!-- informasjonsside -->
     <faktum>
