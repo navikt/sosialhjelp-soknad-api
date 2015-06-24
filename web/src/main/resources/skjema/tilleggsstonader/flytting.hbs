@@ -1,0 +1,33 @@
+<h2>{{hentTekst "soknad.flytting.tittel"}}</h2>
+<table>
+    <tr>
+        <td class="sjekket"></td>
+        <td>
+            {{#forFaktum "flytting.hvorforflytte"}}
+                {{#hvisLik value "nyjobb"}}
+                    <span>{{ hentTekst "soknad.flytting.hvorforflytte.nyjobb" }}</span>
+                {{/hvisLik}}
+                {{#hvisLik value "aktivitet"}}
+                    <span>{{ hentTekst "soknad.flytting.hvorforflytte.aktivitet" }}</span>
+                {{/hvisLik}}
+            {{/forFaktum}}
+        </td>
+    </tr>
+
+    {{#forFaktum "flytting.hvorforflytte"}}
+        {{#hvisLik value "nyjobb"}}
+            <tr>
+                {{#forFaktum "flytting.nyjobb.startdato"}}
+                    <td class="sjekket"></td>
+                    <td>{{hentTekst "soknad.flytting.nyjobb.startdato.label"}}: {{formatterLangDato value}}</td>
+                {{/forFaktum}}
+            </tr>
+            <tr>
+                {{#forFaktum "flytting.nyjobb.flyttedato"}}
+                    <td class="sjekket"></td>
+                    <td>{{hentTekst "soknad.flytting.nyjobb.flyttedato.label"}}: {{formatterLangDato value}}</td>
+                {{/forFaktum}}
+            </tr>
+        {{/hvisLik}}
+    {{/forFaktum}}
+</table>

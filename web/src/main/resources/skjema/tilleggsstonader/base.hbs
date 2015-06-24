@@ -27,8 +27,8 @@
         <div id="soknad">
             <img class="logo" src="img/nav-logo.gif"/>
             <div class="hode">
-                {{> skjema/tilleggstonader/tittel }}
-                {{> skjema/tilleggstonader/personalia }}
+                <h1>{{ hentTekst "soknadtilleggsstonader.oppsummering.tittel" }}</h1>
+                {{> skjema/tilleggsstonader/personalia }}
             </div>
 
             {{#block "content" }}{{/block}}
