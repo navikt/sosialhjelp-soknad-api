@@ -1,4 +1,36 @@
 <soknad skjemaNummer="NAV 10-07.40" temaKode="BIL">
+
+    <!-- Informasjonssiden -->
+    <faktum>
+        <id>informasjonsside.bilformal</id>
+    </faktum>
+
+    <!-- Bilen -->
+    <faktum>
+        <id>bilen.eierBilenAllerede</id>
+    </faktum>
+    <faktum>
+        <id>bilen.eierBilenAllerede.true.registreringsnummer</id>
+    </faktum>
+    <faktum>
+        <id>bilen.eierBilenAllerede.true.bilmerke</id>
+    </faktum>
+    <faktum>
+        <id>bilen.eierBilenAllerede.true.registreringsnummer</id>
+    </faktum>
+    <faktum>
+        <id>bilen.eierBilenAllerede.true.arsmodell</id>
+    </faktum>
+    <faktum>
+        <id>bilen.eierBilenAllerede.false.bilmerke</id>
+    </faktum>
+    <faktum>
+        <id>bilen.eierBilenAllerede.false.registreringsnummer</id>
+    </faktum>
+    <faktum>
+        <id>bilen.eierBilenAllerede.false.arsmodell</id>
+    </faktum>
+
     <!-- Fastlege -->
     <faktum>
         <id>fastlege.navn</id>

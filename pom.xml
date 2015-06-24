@@ -21,7 +21,7 @@
     <description>Innsending av elektronisk søknad.</description>
     <groupId>no.nav.sbl.dialogarena</groupId>
     <artifactId>sendsoknad</artifactId>
-    <version>6.13-SNAPSHOT</version>
+    <version>7.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -768,12 +768,16 @@
                             <ssnb>sendsoknad_nb_NO.properties</ssnb>
                             <dpnb>dagpenger_nb_NO.properties</dpnb>
                             <fpnb>foreldrepenger_nb_NO.properties</fpnb>
+                            <bsnb>bilstonad_nb_NO.properties</bsnb>
+                            <tsnb>tilleggsstonader_nb_NO.properties</tsnb>
                         </propertiesFiler>
                         <menyPunktPaths>
                             <aapnb>/site/18/app/AAP/nb_NO/tekster</aapnb>
                             <ssnb>/site/18/app/sendsoknad/nb_NO/tekster</ssnb>
                             <dpnb>/site/18/app/dagpenger/nb_NO/tekster</dpnb>
                             <fpnb>/site/18/app/foreldrepenger/nb_NO/tekster</fpnb>
+                            <bsnb>/site/18/app/bilstonad/nb_NO/tekster</bsnb>
+                            <tsnb>/site/18/app/tilleggsstonader/nb_NO/tekster</tsnb>
                         </menyPunktPaths>
                     </configuration>
                 </plugin>
