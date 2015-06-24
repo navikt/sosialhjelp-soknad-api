@@ -12,6 +12,10 @@
     <!-- Søknadsvalg -->
     <faktum>
         <id>soknadsvalg.stonadstype</id>
+        <dependOn>soknadsvalg.fodselelleradopsjon</dependOn>
+        <dependOnValues>
+            <value>fodsel</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>soknadsvalg.fodselelleradopsjon</id>
@@ -205,6 +209,7 @@
             <value>sykdom</value>
         </onValues>
         <skjemaNummer>U2</skjemaNummer>
+        <skjemanummerTillegg>fedrekvote</skjemanummerTillegg>
     </vedlegg>
     <vedlegg>
         <faktum>fedrekvote</faktum>
@@ -212,6 +217,7 @@
             <value>helseinstitusjon</value>
         </onValues>
         <skjemaNummer>N9</skjemaNummer>
+        <skjemanummerTillegg>fedrekvote</skjemanummerTillegg>
     </vedlegg>
 
     <!-- Vedlegg Ytelse -->
@@ -424,11 +430,18 @@
         <filterKey>type</filterKey>
         <filterValues>
             <value>ferie</value>
+        </filterValues>
+        <skjemaNummer>Z6</skjemaNummer>
+    </vedlegg>
+    <vedlegg>
+        <faktum>perioder.tidsrom.utsettelse</faktum>
+        <skjemanummerTillegg>ferie</skjemanummerTillegg>
+        <filterKey>type</filterKey>
+        <filterValues>
             <value>arbeid</value>
         </filterValues>
         <skjemaNummer>Z6</skjemaNummer>
     </vedlegg>
-
     <vedlegg>
         <faktum>perioder.tidsrom.utsettelse</faktum>
         <skjemanummerTillegg>sykdom</skjemanummerTillegg>
@@ -437,17 +450,26 @@
             <value>sykdom</value>
         </filterValues>
         <skjemaNummer>U2</skjemaNummer>
+        <skjemanummerTillegg>utsettelse</skjemanummerTillegg>
     </vedlegg>
 
     <vedlegg>
         <faktum>perioder.tidsrom.utsettelse</faktum>
-        <skjemanummerTillegg>innlagt</skjemanummerTillegg>
         <filterKey>type</filterKey>
         <filterValues>
             <value>innlagt</value>
+        </filterValues>
+        <skjemaNummer>N9</skjemaNummer>
+        <skjemanummerTillegg>innlagt</skjemanummerTillegg>
+    </vedlegg>
+    <vedlegg>
+        <faktum>perioder.tidsrom.utsettelse</faktum>
+        <filterKey>type</filterKey>
+        <filterValues>
             <value>barninnlagt</value>
         </filterValues>
         <skjemaNummer>N9</skjemaNummer>
+        <skjemanummerTillegg>barninnlagt</skjemanummerTillegg>
     </vedlegg>
 
     <!-- Vedlegg mors aktivitet -->
@@ -480,6 +502,7 @@
             <value>true</value>
         </onValues>
         <skjemaNummer>U2</skjemaNummer>
+        <skjemanummerTillegg>aktivitetskrav</skjemanummerTillegg>
     </vedlegg>
     <vedlegg>
         <faktum>vedlegg.hjelpefaktum</faktum>

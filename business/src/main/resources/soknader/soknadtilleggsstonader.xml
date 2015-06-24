@@ -1,0 +1,43 @@
+<soknad skjemaNummer="NAV 08-14.01" temaKode="STF">
+    <!-- Systemfakta -->
+    <faktum>
+        <id>personalia</id>
+        <erSystemFaktum>true</erSystemFaktum>
+    </faktum>
+
+    <!-- Flytting -->
+    <faktum>
+        <id>flytting.hvorforflytte</id>
+    </faktum>
+    <faktum>
+        <id>flytting.nyjobb.startdato</id>
+    </faktum>
+    <faktum>
+        <id>flytting.nyjobb.flyttedato</id>
+    </faktum>
+
+    <!-- informasjonsside -->
+    <faktum>
+        <id>informasjonsside.stonad.reise</id>
+    </faktum>
+    <faktum>
+        <id>informasjonsside.stonad.flytting</id>
+    </faktum>
+    <faktum>
+        <id>informasjonsside.stonad.bostotte</id>
+    </faktum>
+    <faktum>
+        <id>informasjonsside.stonad.laeremidler</id>
+    </faktum>
+    <faktum>
+        <id>informasjonsside.stonad.barn</id>
+    </faktum>
+    <faktum>
+        <id>informasjonsside.stonad.familie</id>
+    </faktum>
+
+    <!-- Tilleggsopplysninger -->
+    <faktum>
+        <id>tilleggsopplysninger.fritekst</id>
+    </faktum>
+</soknad>
