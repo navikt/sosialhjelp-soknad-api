@@ -30,4 +30,24 @@
             </tr>
         {{/hvisLik}}
     {{/forFaktum}}
+
+
+    {{#forFaktum "flytting.selvellerbistand"}}
+        {{#hvisIkkeTom value}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    {{#hvisLik value "flytterselv"}}
+                        <span>{{ hentTekst "soknad.flytting.spm.selvellerbistand.flytterselv" }}</span>
+                    {{/hvisLik}}
+                    {{#hvisLik value "flyttebyraa"}}
+                        <span>{{ hentTekst "soknad.flytting.spm.selvellerbistand.flyttebyraa" }}</span>
+                    {{/hvisLik}}
+                    {{#hvisLik value "tilbudmenflytterselv"}}
+                        <span>{{ hentTekst "soknad.flytting.spm.selvellerbistand.tilbudmenflytterselv" }}</span>
+                    {{/hvisLik}}
+                </td>
+            </tr>
+        {{/hvisIkkeTom}}
+    {{/forFaktum}}
 </table>
