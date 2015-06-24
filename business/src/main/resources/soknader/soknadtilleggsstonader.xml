@@ -1,4 +1,4 @@
-<soknad skjemaNummer="NAV 11-12.12" temaKode="TSO">
+<soknad skjemaNummer="NAV 08-14.01" temaKode="STF">
     <!-- Systemfakta -->
     <faktum>
         <id>personalia</id>
@@ -8,6 +8,12 @@
     <!-- Flytting -->
     <faktum>
         <id>flytting.hvorforflytte</id>
+    </faktum>
+    <faktum>
+        <id>flytting.nyjobb.startdato</id>
+    </faktum>
+    <faktum>
+        <id>flytting.nyjobb.flyttedato</id>
     </faktum>
 
     <!-- informasjonsside -->
