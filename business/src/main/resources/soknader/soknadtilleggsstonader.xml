@@ -16,6 +16,11 @@
         <id>flytting.nyjobb.flyttedato</id>
     </faktum>
 
+    <!-- Bostotte-->
+    <faktum>
+        <id>bostotte.medisinskearsaker</id>
+    </faktum>
+
     <!-- informasjonsside -->
     <faktum>
         <id>informasjonsside.stonad.reise</id>
@@ -40,4 +45,16 @@
     <faktum>
         <id>tilleggsopplysninger.fritekst</id>
     </faktum>
-</soknad>
+
+
+
+    <!-- Vedlegg bostotte -->
+    <vedlegg>
+        <faktum>bostotte.medisinskearsaker</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>N6</skjemaNummer>
+        <property>bolk</property>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg></soknad>
