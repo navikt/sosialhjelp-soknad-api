@@ -36,6 +36,9 @@
         <id>fastlege.navn</id>
     </faktum>
     <faktum>
+        <id>fastlege.arbeidsstedadresse</id>
+    </faktum>
+    <faktum>
         <id>fastlege.tlfnr</id>
     </faktum>
     <faktum>

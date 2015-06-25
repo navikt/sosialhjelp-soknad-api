@@ -1,0 +1,17 @@
+{{#forFaktum "fastlege.annen.behandlende.navn"}}
+    {{#hvisIkkeTom value}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                {{ hentTekst "oppsummering.fastlege.behandlende.navn" }}: {{ hentFaktumValue "fastlege.annen.behandlende.navn" }},
+                {{ hentTekst "oppsummering.fastlege.behandlende.stilling" }}: {{ hentFaktumValue "fastlege.annen.behandlende.stilling" }},
+                {{ hentTekst "oppsummering.fastlege.behandlende.arbeidssted" }}: {{ hentFaktumValue "fastlege.annen.behandlende.arbeidssted" }},
+                {{#forFaktum "fastlege.annen.behandlende.tlfnr"}}
+                    {{#hvisIkkeTom value}}
+                        {{ hentTekst "oppsummering.fastlege.telefonnummer" }}: {{ hentFaktumValue "fastlege.annen.behandlende.tlfnr" }}
+                    {{/hvisIkkeTom}}
+                {{/forFaktum}}
+            </td>
+        </tr>
+    {{/hvisIkkeTom}}
+{{/forFaktum}}

@@ -1,0 +1,41 @@
+{{#forFaktum "fastlege.harIkkeFastlege"}}
+    <h2>{{ hentTekst "fastlege.tittel" }}</h2>
+    <table>
+        {{#hvisSant value}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{ hentTekst "oppsummering.fastlege.behandlende.navn" }}: {{ hentFaktumValue "fastlege.annen.behandlende.navn" }},
+                          {{ hentTekst "oppsummering.fastlege.behandlende.stilling" }}: {{ hentFaktumValue "fastlege.annen.behandlende.stilling" }},
+                          {{ hentTekst "oppsummering.fastlege.behandlende.arbeidssted" }}: {{ hentFaktumValue "fastlege.annen.behandlende.arbeidssted" }},
+                          {{ hentTekst "oppsummering.fastlege.telefonnummer" }}: {{ hentFaktumValue "fastlege.annen.behandlende.tlfnr" }}
+                    </span>
+                </td>
+            </tr>
+        {{else}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{ hentTekst "oppsummering.fastlege.navn" }}: {{ hentFaktumValue "fastlege.navn" }},
+                        {{ hentTekst "oppsummering.fastlege.telefonnummer" }}: {{ hentFaktumValue "fastlege.tlfnr" }}
+                    </span>
+                </td>
+            </tr>
+            {{> skjema/bilstonad/fastlege/behandlendeLege }}
+        {{/hvisSant}}
+    </table>
+{{else}}
+    <h2>{{ hentTekst "fastlege.tittel" }}</h2>
+    <table>
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>{{ hentTekst "oppsummering.fastlege.navn" }}: {{ hentFaktumValue "fastlege.navn" }},
+                      {{ hentTekst "oppsummering.fastlege.arbeidsstedadresse" }}: {{ hentFaktumValue "fastlege.arbeidsstedadresse" }},
+                      {{ hentTekst "oppsummering.fastlege.telefonnummer" }}: {{ hentFaktumValue "fastlege.tlfnr" }}
+                </span>
+            </td>
+        </tr>
+        {{> skjema/bilstonad/fastlege/behandlendeLege }}
+    </table>
+{{/forFaktum}}
