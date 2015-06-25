@@ -56,4 +56,9 @@
     <faktum>
         <id>fastlege.annen.behandlende.tlfnr</id>
     </faktum>
+
+    <!-- Tilleggsopplysninger -->
+    <faktum>
+        <id>tilleggsopplysninger.fritekst</id>
+    </faktum>
 </soknad>
