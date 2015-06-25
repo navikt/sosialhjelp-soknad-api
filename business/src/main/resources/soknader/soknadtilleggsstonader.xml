@@ -57,4 +57,34 @@
         <skjemaNummer>N6</skjemaNummer>
         <property>bolk</property>
         <flereTillatt>true</flereTillatt>
-    </vedlegg></soknad>
+    </vedlegg>
+    <vedlegg>
+        <faktum>bostotte.adresseutgifter.aktivitetsadresse</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>N6</skjemaNummer>
+        <property>bolk</property>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <faktum>bostotte.adresseutgifter.hjemstedsaddresse</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>N6</skjemaNummer>
+        <property>bolk</property>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <faktum>bostotte.adresseutgifter.opphorte</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>N6</skjemaNummer>
+        <property>bolk</property>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
+
+</soknad>
