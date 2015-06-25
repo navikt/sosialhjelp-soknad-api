@@ -61,4 +61,9 @@
     <faktum>
         <id>tilleggsopplysninger.fritekst</id>
     </faktum>
+
+    <!-- Bosatt utenfor Norge -->
+    <faktum>
+        <id>bosattUtenforNorge</id>
+    </faktum>
 </soknad>
