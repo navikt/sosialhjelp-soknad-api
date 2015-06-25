@@ -31,4 +31,26 @@
         <id>bilen.eierBilenAllerede.false.arsmodell</id>
     </faktum>
 
+    <!-- Fastlege -->
+    <faktum>
+        <id>fastlege.navn</id>
+    </faktum>
+    <faktum>
+        <id>fastlege.tlfnr</id>
+    </faktum>
+    <faktum>
+        <id>fastlege.harIkkeFastlege</id>
+    </faktum>
+    <faktum>
+        <id>fastlege.annen.behandlende.navn</id>
+    </faktum>
+    <faktum>
+        <id>fastlege.annen.behandlende.stilling</id>
+    </faktum>
+    <faktum>
+        <id>fastlege.annen.behandlende.arbeidssted</id>
+    </faktum>
+    <faktum>
+        <id>fastlege.annen.behandlende.tlfnr</id>
+    </faktum>
 </soknad>
