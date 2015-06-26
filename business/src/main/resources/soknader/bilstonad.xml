@@ -9,6 +9,12 @@
     <faktum>
         <id>utstyrtilbilen.spesialutstyr</id>
     </faktum>
+    <faktum>
+        <id>utstyrtilbilen.hjelpemidler</id>
+    </faktum>
+    <faktum>
+        <id>utstyrtilbilen.hjelpemidler.beskrivelse</id>
+    </faktum>
 
     <!-- Bilen -->
     <faktum>
