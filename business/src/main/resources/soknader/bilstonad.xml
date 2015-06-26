@@ -75,6 +75,14 @@
 
     <!-- Bosatt utenfor Norge -->
     <faktum>
-        <id>bosattUtenforNorge</id>
+        <id>utstyrtilbilen.vedlegg</id>
     </faktum>
+    <!-- Vedlegg -->
+    <faktum>
+        <id>utstyrtilbilen.vedlegg</id>
+    </faktum>
+    <vedlegg>
+        <faktum>utstyrtilbilen.vedlegg</faktum>
+        <skjemaNummer></skjemaNummer>
+    </vedlegg>
 </soknad>
