@@ -15,6 +15,12 @@
     <faktum>
         <id>flytting.nyjobb.flyttedato</id>
     </faktum>
+    <faktum>
+        <id>flytting.nyadresse.gateadresse</id>
+    </faktum>
+    <faktum>
+        <id>flytting.nyadresse.postnummer</id>
+    </faktum>
 
     <!-- Bostotte-->
     <faktum>

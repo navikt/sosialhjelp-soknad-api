@@ -32,6 +32,18 @@
     {{/forFaktum}}
 
 
+    <tr>
+        {{#forFaktum "flytting.nyadresse.gateadresse"}}
+            <td class="sjekket"></td>
+            <td><span>{{hentTekst "soknad.flytting.nyadresse.gateadresse.label"}}: {{value}}</span></td>
+        {{/forFaktum}}
+        {{#forFaktum "flytting.nyadresse.postnummer"}}
+            <td class="sjekket"></td>
+            <td><span>{{hentTekst "soknad.flytting.nyadresse.postnummer.label"}}: {{value}}</span></td>
+        {{/forFaktum}}
+    </tr>
+
+
     {{#forFaktum "flytting.selvellerbistand"}}
         {{#hvisIkkeTom value}}
             <tr>
