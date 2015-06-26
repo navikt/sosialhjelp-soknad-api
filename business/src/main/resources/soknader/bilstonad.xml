@@ -5,6 +5,11 @@
         <id>informasjonsside.bilformal</id>
     </faktum>
 
+    <!-- Utstyr til bilen -->
+    <faktum>
+        <id>utstyrtilbilen.spesialutstyr</id>
+    </faktum>
+
     <!-- Bilen -->
     <faktum>
         <id>bilen.eierBilenAllerede</id>
