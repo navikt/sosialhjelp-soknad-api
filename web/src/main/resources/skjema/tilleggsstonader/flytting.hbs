@@ -33,16 +33,32 @@
 
 
     <tr>
-        {{#forFaktum "flytting.nyadresse.gateadresse"}}
-            <td class="sjekket"></td>
-            <td><span>{{hentTekst "soknad.flytting.nyadresse.gateadresse.label"}}: {{value}}</span></td>
-        {{/forFaktum}}
-        {{#forFaktum "flytting.nyadresse.postnummer"}}
-            <td class="sjekket"></td>
-            <td><span>{{hentTekst "soknad.flytting.nyadresse.postnummer.label"}}: {{value}}</span></td>
-        {{/forFaktum}}
+        <td class="sjekket"></td>
+        <td>
+            <span>{{hentTekst "soknad.flytting.tidligere.overskrift"}}:</span>
+            {{#forFaktum "personalia"}}<span>{{{properties.gjeldendeAdresse}}}}</span>{{/forFaktum}}
+        </td>
     </tr>
 
+    {{#forFaktum "flytting.tidligere.riktigadresse"}}
+        {{#hvisSant value}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>{{hentTekst "soknad.flytting.tidligere.riktigadresse.label"}}</td>
+            </tr>
+        {{else}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{hentTekst "oppsummering.flytting.nyadresse.overskrift"}}:</span>
+                    <span>
+                        {{#forFaktum "flytting.nyadresse.gateadresse"}}<span>{{value}},</span>{{/forFaktum}}
+                        {{#forFaktum "flytting.nyadresse.postnummer"}}<span>{{value}}</span>{{/forFaktum}}
+                    </span>
+                </td>
+            </tr>
+        {{/hvisSant}}
+    {{/forFaktum}}
 
     {{#forFaktum "flytting.selvellerbistand"}}
         {{#hvisIkkeTom value}}
