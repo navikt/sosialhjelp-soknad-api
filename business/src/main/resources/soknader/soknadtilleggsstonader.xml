@@ -24,6 +24,9 @@
     <faktum>
         <id>flytting.nyadresse.postnummer</id>
     </faktum>
+    <faktum>
+        <id>flytting.tidligere.riktigadresse</id>
+    </faktum>
 
     <!-- Bostotte-->
     <faktum>
