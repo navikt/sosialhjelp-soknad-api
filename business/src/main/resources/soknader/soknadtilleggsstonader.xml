@@ -16,6 +16,9 @@
         <id>flytting.nyjobb.flyttedato</id>
     </faktum>
     <faktum>
+        <id>flytting.selvellerbistand</id>
+    </faktum>
+    <faktum>
         <id>flytting.nyadresse.gateadresse</id>
     </faktum>
     <faktum>
@@ -60,6 +63,25 @@
     <faktum>
         <id>tilleggsopplysninger.fritekst</id>
     </faktum>
+
+    <vedlegg>
+        <faktum>flytting.selvellerbistand</faktum>
+        <onValues>
+            <value>flyttebyraa</value>
+            <value>tilbudmenflytterselv</value>
+        </onValues>
+        <skjemaNummer>K3</skjemaNummer>
+    </vedlegg>
+
+    <vedlegg>
+        <faktum>flytting.selvellerbistand</faktum>
+        <onValues>
+            <value>flytterselv</value>
+            <value>tilbudmenflytterselv</value>
+        </onValues>
+        <skjemaNummer>T7</skjemaNummer>
+    </vedlegg>
+
 
 
     <!-- Vedlegg bostotte -->
