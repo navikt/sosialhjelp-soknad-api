@@ -20,6 +20,15 @@
     <faktum>
         <id>bostotte.medisinskearsaker</id>
     </faktum>
+    <faktum>
+        <id>bostotte.adresseutgifter.aktivitetsadresse</id>
+    </faktum>
+    <faktum>
+        <id>bostotte.adresseutgifter.hjemstedsaddresse</id>
+    </faktum>
+    <faktum>
+        <id>bostotte.adresseutgifter.opphorte</id>
+    </faktum>
 
     <!-- informasjonsside -->
     <faktum>
@@ -45,7 +54,6 @@
     <faktum>
         <id>tilleggsopplysninger.fritekst</id>
     </faktum>
-
 
 
     <!-- Vedlegg bostotte -->
