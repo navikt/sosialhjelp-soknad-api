@@ -4,6 +4,7 @@
         <id>personalia</id>
         <erSystemFaktum>true</erSystemFaktum>
     </faktum>
+    <!-- bolker -->
 
     <!-- Flytting -->
     <faktum>
@@ -46,6 +47,27 @@
     <faktum>
         <id>informasjonsside.stonad.reise</id>
     </faktum>
+    <faktum>
+        <id>informasjonsside.stonad.reiseaktivitet</id>
+        <dependOn>informasjonsside.stonad.reise</dependOn>
+        <dependOnValue>true</dependOnValue>
+    </faktum>
+    <faktum>
+        <id>informasjonsside.stonad.reisesamling</id>
+        <dependOn>informasjonsside.stonad.reise</dependOn>
+        <dependOnValue>true</dependOnValue>
+    </faktum>
+    <faktum>
+        <id>informasjonsside.stonad.reisemidlertidig</id>
+        <dependOn>informasjonsside.stonad.reise</dependOn>
+        <dependOnValue>true</dependOnValue>
+    </faktum>
+    <faktum>
+        <id>informasjonsside.stonad.reisearbeidssøker</id>
+        <dependOn>informasjonsside.stonad.reise</dependOn>
+        <dependOnValue>true</dependOnValue>
+    </faktum>
+
     <faktum>
         <id>informasjonsside.stonad.flytting</id>
     </faktum>
