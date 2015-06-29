@@ -85,7 +85,14 @@
         <skjemaNummer>T7</skjemaNummer>
     </vedlegg>
 
-
+    <!-- vedlegg for flytting -->
+    <vedlegg>
+        <skjemaNummer>J7</skjemaNummer>
+        <faktum>flytting.hvorforflytte</faktum>
+        <onValues>
+            <value>nyjobb</value>
+        </onValues>
+    </vedlegg>
 
     <!-- Vedlegg bostotte -->
     <vedlegg>
