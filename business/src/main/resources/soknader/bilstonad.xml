@@ -5,6 +5,17 @@
         <id>informasjonsside.bilformal</id>
     </faktum>
 
+    <!-- Utstyr til bilen -->
+    <faktum>
+        <id>utstyrtilbilen.spesialutstyr</id>
+    </faktum>
+    <faktum>
+        <id>utstyrtilbilen.hjelpemidler</id>
+    </faktum>
+    <faktum>
+        <id>utstyrtilbilen.hjelpemidler.beskrivelse</id>
+    </faktum>
+
     <!-- Bilen -->
     <faktum>
         <id>bilen.eierBilenAllerede</id>
@@ -61,4 +72,17 @@
     <faktum>
         <id>tilleggsopplysninger.fritekst</id>
     </faktum>
+
+    <!-- Bosatt utenfor Norge -->
+    <faktum>
+        <id>utstyrtilbilen.vedlegg</id>
+    </faktum>
+    <!-- Vedlegg -->
+    <faktum>
+        <id>utstyrtilbilen.vedlegg</id>
+    </faktum>
+    <vedlegg>
+        <faktum>utstyrtilbilen.vedlegg</faktum>
+        <skjemaNummer></skjemaNummer>
+    </vedlegg>
 </soknad>
