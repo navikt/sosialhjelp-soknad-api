@@ -28,7 +28,7 @@ public class PersonaliaTransform {
         XMLBruker xmlBruker = (XMLBruker) response.getPerson();
         Person xmlPerson = kjerneinformasjonResponse.getPerson();
         Diskresjonskoder diskresjonskode = kjerneinformasjonResponse.getPerson().getDiskresjonskode();
-        String diskresjonskodeString = diskresjonskode == null ? null : diskresjonskode.toString();
+        String diskresjonskodeString = diskresjonskode == null ? null : diskresjonskode.getValue();
 
         return PersonaliaBuilder.
                 with()
