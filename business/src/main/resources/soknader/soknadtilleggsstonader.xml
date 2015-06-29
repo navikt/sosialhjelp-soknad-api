@@ -4,6 +4,7 @@
         <id>personalia</id>
         <erSystemFaktum>true</erSystemFaktum>
     </faktum>
+    <!-- bolker -->
 
     <!-- Flytting -->
     <faktum>
@@ -15,11 +16,58 @@
     <faktum>
         <id>flytting.nyjobb.flyttedato</id>
     </faktum>
+    <faktum>
+        <id>flytting.selvellerbistand</id>
+    </faktum>
+    <faktum>
+        <id>flytting.nyadresse.gateadresse</id>
+    </faktum>
+    <faktum>
+        <id>flytting.nyadresse.postnummer</id>
+    </faktum>
+    <faktum>
+        <id>flytting.tidligere.riktigadresse</id>
+    </faktum>
+
+    <!-- Bostotte-->
+    <faktum>
+        <id>bostotte.medisinskearsaker</id>
+    </faktum>
+    <faktum>
+        <id>bostotte.adresseutgifter.aktivitetsadresse</id>
+    </faktum>
+    <faktum>
+        <id>bostotte.adresseutgifter.hjemstedsaddresse</id>
+    </faktum>
+    <faktum>
+        <id>bostotte.adresseutgifter.opphorte</id>
+    </faktum>
 
     <!-- informasjonsside -->
     <faktum>
         <id>informasjonsside.stonad.reise</id>
     </faktum>
+    <faktum>
+        <id>informasjonsside.stonad.reiseaktivitet</id>
+        <dependOn>informasjonsside.stonad.reise</dependOn>
+        <dependOnValue>true</dependOnValue>
+    </faktum>
+    <faktum>
+        <id>informasjonsside.stonad.reisesamling</id>
+        <dependOn>informasjonsside.stonad.reise</dependOn>
+        <dependOnValue>true</dependOnValue>
+    </faktum>
+    <faktum>
+        <id>informasjonsside.stonad.reisemidlertidig</id>
+        <dependOn>informasjonsside.stonad.reise</dependOn>
+        <dependOnValue>true</dependOnValue>
+    </faktum>
+    <faktum>
+        <id>informasjonsside.stonad.reisearbeidssøker</id>
+        <dependOn>informasjonsside.stonad.reise</dependOn>
+        <dependOnValue>true</dependOnValue>
+    </faktum>
+
     <faktum>
         <id>informasjonsside.stonad.flytting</id>
     </faktum>
@@ -40,4 +88,71 @@
     <faktum>
         <id>tilleggsopplysninger.fritekst</id>
     </faktum>
+
+    <vedlegg>
+        <faktum>flytting.selvellerbistand</faktum>
+        <onValues>
+            <value>flyttebyraa</value>
+            <value>tilbudmenflytterselv</value>
+        </onValues>
+        <skjemaNummer>K3</skjemaNummer>
+    </vedlegg>
+
+    <vedlegg>
+        <faktum>flytting.selvellerbistand</faktum>
+        <onValues>
+            <value>flytterselv</value>
+            <value>tilbudmenflytterselv</value>
+        </onValues>
+        <skjemaNummer>T7</skjemaNummer>
+    </vedlegg>
+
+    <!-- vedlegg for flytting -->
+    <vedlegg>
+        <skjemaNummer>J7</skjemaNummer>
+        <faktum>flytting.hvorforflytte</faktum>
+        <onValues>
+            <value>nyjobb</value>
+        </onValues>
+    </vedlegg>
+
+    <!-- Vedlegg bostotte -->
+    <vedlegg>
+        <faktum>bostotte.medisinskearsaker</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>N6</skjemaNummer>
+        <property>bolk</property>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <faktum>bostotte.adresseutgifter.aktivitetsadresse</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>N6</skjemaNummer>
+        <property>bolk</property>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <faktum>bostotte.adresseutgifter.hjemstedsaddresse</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>N6</skjemaNummer>
+        <property>bolk</property>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <faktum>bostotte.adresseutgifter.opphorte</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>N6</skjemaNummer>
+        <property>bolk</property>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
+
 </soknad>
