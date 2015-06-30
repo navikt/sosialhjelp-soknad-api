@@ -810,8 +810,8 @@
         </pluginManagement>
     </build>
     <scm>
-        <developerConnection>scm:git:http://stash.devillo.no/scm/sbl/sendsoknad.git</developerConnection>
-        <url>http://stash.devillo.no:7990/scm/sbl/sendsoknad.git</url>
+        <developerConnection>scm:git:http://stash.devillo.no/scm/sokd/soknadsapi.git</developerConnection>
+        <url>http://stash.devillo.no/scm/sokd/soknadsapi.git</url>
         <tag>HEAD</tag>
     </scm>
 
