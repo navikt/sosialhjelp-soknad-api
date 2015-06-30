@@ -101,10 +101,20 @@
         <id>tilleggsopplysninger.fritekst</id>
     </faktum>
 
+    <!-- vedlegg for flytting -->
+    <vedlegg>
+        <skjemaNummer>J7</skjemaNummer>
+        <faktum>flytting.hvorforflytte</faktum>
+        <onValues>
+            <value>nyjobb</value>
+        </onValues>
+    </vedlegg>
+
     <vedlegg>
         <faktum>flytting.selvellerbistand</faktum>
         <onValues>
             <value>flyttebyraa</value>
+            <value>tilbudmenflytterselv</value>
         </onValues>
         <skjemaNummer>J5</skjemaNummer>
     </vedlegg>
@@ -116,15 +126,6 @@
             <value>tilbudmenflytterselv</value>
         </onValues>
         <skjemaNummer>J6</skjemaNummer>
-    </vedlegg>
-
-    <!-- vedlegg for flytting -->
-    <vedlegg>
-        <skjemaNummer>J7</skjemaNummer>
-        <faktum>flytting.hvorforflytte</faktum>
-        <onValues>
-            <value>nyjobb</value>
-        </onValues>
     </vedlegg>
 
     <!-- Vedlegg bostotte -->
