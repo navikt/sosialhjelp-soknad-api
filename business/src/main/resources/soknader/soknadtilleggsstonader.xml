@@ -28,6 +28,18 @@
     <faktum>
         <id>flytting.tidligere.riktigadresse</id>
     </faktum>
+    <faktum>
+        <id>flytting.flyttebyraa.forste.navn</id>
+    </faktum>
+    <faktum>
+        <id>flytting.flyttebyraa.andre.navn</id>
+    </faktum>
+    <faktum>
+        <id>flytting.flyttebyraa.forste.belop</id>
+    </faktum>
+    <faktum>
+        <id>flytting.flyttebyraa.andre.belop</id>
+    </faktum>
 
     <!-- Bostotte-->
     <faktum>
@@ -93,9 +105,8 @@
         <faktum>flytting.selvellerbistand</faktum>
         <onValues>
             <value>flyttebyraa</value>
-            <value>tilbudmenflytterselv</value>
         </onValues>
-        <skjemaNummer>K3</skjemaNummer>
+        <skjemaNummer>J5</skjemaNummer>
     </vedlegg>
 
     <vedlegg>
@@ -104,7 +115,7 @@
             <value>flytterselv</value>
             <value>tilbudmenflytterselv</value>
         </onValues>
-        <skjemaNummer>T7</skjemaNummer>
+        <skjemaNummer>J6</skjemaNummer>
     </vedlegg>
 
     <!-- vedlegg for flytting -->
