@@ -40,6 +40,9 @@
     <faktum>
         <id>flytting.flyttebyraa.andre.belop</id>
     </faktum>
+    <faktum>
+        <id>flytting.flytteselv.hvorlangt</id>
+    </faktum>
 
     <!-- Bostotte-->
     <faktum>
