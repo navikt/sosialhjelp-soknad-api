@@ -1,0 +1,22 @@
+{{#hvisKode6Eller7}}
+{{else}}
+    {{#forFaktum "flytting.tidligere.riktigadresse"}}
+        {{#hvisSant value}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>{{hentTekst "soknad.flytting.tidligere.riktigadresse.label"}}</td>
+            </tr>
+        {{else}}
+            {{> skjema/tilleggsstonader/flytting/nyadresse }}
+        {{/hvisSant}}
+    {{else}}
+        {{> skjema/tilleggsstonader/flytting/nyadresse }}
+    {{/forFaktum}}
+    <tr>
+        <td class="sjekket"></td>
+        <td>
+            <span>{{hentTekst "soknad.flytting.tidligere.overskrift"}}:</span>
+            {{#forFaktum "personalia"}}<span>{{{properties.gjeldendeAdresse}}}}</span>{{/forFaktum}}
+        </td>
+    </tr>
+{{/hvisKode6Eller7}}
