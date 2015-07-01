@@ -43,6 +43,21 @@
     <faktum>
         <id>flytting.flytteselv.hvorlangt</id>
     </faktum>
+    <faktum>
+        <id>flytting.flytteselv.hengerleie</id>
+    </faktum>
+    <faktum>
+        <id>flytting.flytteselv.bom</id>
+    </faktum>
+    <faktum>
+        <id>flytting.flytteselv.parkering</id>
+    </faktum>
+    <faktum>
+        <id>flytting.flytteselv.ferge</id>
+    </faktum>
+    <faktum>
+        <id>flytting.flytteselv.annet</id>
+    </faktum>
 
     <!-- Bostotte-->
     <faktum>
