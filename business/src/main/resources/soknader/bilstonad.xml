@@ -72,5 +72,8 @@
         <faktum>utstyrtilbilen.hjelpemidler</faktum>
         <skjemaNummer>Z3</skjemaNummer>
     </vedlegg>
->>>>>>> 1f59cbaff56c082a708448ff2de0a1afc6139772
+    <vedlegg>
+        <faktum>informasjonsside.bilformal</faktum>
+        <skjemaNummer>U2</skjemaNummer>
+    </vedlegg>
 </soknad>
