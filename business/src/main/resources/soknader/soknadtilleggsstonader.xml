@@ -58,6 +58,9 @@
     <faktum>
         <id>flytting.flytteselv.annet</id>
     </faktum>
+    <faktum>
+        <id>flytting.flytteselv.hjelpefaktum.vedlegg</id>
+    </faktum>
 
     <!-- Bostotte-->
     <faktum>
@@ -141,10 +144,9 @@
     </vedlegg>
 
     <vedlegg>
-        <faktum>flytting.selvellerbistand</faktum>
+        <faktum>flytting.flytteselv.hjelpefaktum.vedlegg</faktum>
         <onValues>
-            <value>flytterselv</value>
-            <value>tilbudmenflytterselv</value>
+            <value>true</value>
         </onValues>
         <skjemaNummer>J6</skjemaNummer>
     </vedlegg>
