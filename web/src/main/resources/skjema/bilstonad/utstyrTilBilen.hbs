@@ -1,0 +1,24 @@
+<h2>{{ hentTekst "utstyrtilbilen.tittel" }}</h2>
+<table>
+    <tr>
+        <td class="sjekket"></td>
+        <td>
+            <div>{{hentTekst "utstyrtilbilen.spesialutstyr.sporsmal"}}:
+                <em>{{hentFaktumValue "utstyrtilbilen.spesialutstyr"}}</em></div>
+        </td>
+    </tr>
+
+    {{#forFaktum "utstyrtilbilen.hjelpemidler"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                {{#hvisLik "false" value}}
+                    <span>{{hentTekst "utstyrtilbilen.hjelpemidler.false"}}</span>
+                {{/hvisLik}}
+                {{#hvisLik "true" value}}
+                    <span>{{hentTekst "utstyrtilbilen.hjelpemidler.true"}}</span>
+                {{/hvisLik}}
+            </td>
+        </tr>
+    {{/forFaktum}}
+</table>

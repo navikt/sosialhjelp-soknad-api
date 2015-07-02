@@ -8,6 +8,7 @@ public class PersonaliaBuilder {
     private String alder;
     private String navn;
     private String epost;
+    private String diskresjonskode;
     private String statsborgerskap;
     private String kjonn;
     private Adresse gjeldendeAdresse;
@@ -28,6 +29,11 @@ public class PersonaliaBuilder {
 
     public PersonaliaBuilder fodselsdato(LocalDate fodselsdato) {
         this.fodselsdato = fodselsdato;
+        return this;
+    }
+
+    public PersonaliaBuilder diskresjonskode(String diskresjonskode) {
+        this.diskresjonskode = diskresjonskode;
         return this;
     }
 
@@ -97,6 +103,7 @@ public class PersonaliaBuilder {
         personalia.setKjonn(kjonn);
         personalia.setGjeldendeAdresse(gjeldendeAdresse);
         personalia.setSekundarAdresse(sekundarAdresse);
+        personalia.setDiskresjonskode(diskresjonskode);
         personalia.setAlder(alder);
         personalia.setKontonummer(kontonummer);
         personalia.setErUtenlandskBankkonto(erUtenlandskBankkonto);
