@@ -5,6 +5,9 @@
             {{> skjema/tilleggsstonader/bostotte/aarsak}}
             {{> skjema/tilleggsstonader/bostotte/periode}}
             {{> skjema/tilleggsstonader/bostotte/medisinskeutgifter}}
+            {{#hvisLik value "fasteboutgifter"}}
+                {{> skjema/tilleggsstonader/bostotte/utbetalingsmaned}}
+            {{/hvisLik}}
         </table>
     {{/hvisIkkeTom}}
 {{/forFaktum}}
