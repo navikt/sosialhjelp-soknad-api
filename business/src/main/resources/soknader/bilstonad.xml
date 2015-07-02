@@ -10,25 +10,16 @@
         <id>bilen.eierBilenAllerede</id>
     </faktum>
     <faktum>
-        <id>bilen.eierBilenAllerede.true.registreringsnummer</id>
+        <id>bilen.registreringsnummer</id>
     </faktum>
     <faktum>
-        <id>bilen.eierBilenAllerede.true.bilmerke</id>
+        <id>bilen.bilmerke</id>
     </faktum>
     <faktum>
-        <id>bilen.eierBilenAllerede.true.registreringsnummer</id>
+        <id>bilen.bilmodell</id>
     </faktum>
     <faktum>
-        <id>bilen.eierBilenAllerede.true.arsmodell</id>
-    </faktum>
-    <faktum>
-        <id>bilen.eierBilenAllerede.false.bilmerke</id>
-    </faktum>
-    <faktum>
-        <id>bilen.eierBilenAllerede.false.registreringsnummer</id>
-    </faktum>
-    <faktum>
-        <id>bilen.eierBilenAllerede.false.arsmodell</id>
+        <id>bilen.arsmodell</id>
     </faktum>
 
     <!-- Fastlege -->
