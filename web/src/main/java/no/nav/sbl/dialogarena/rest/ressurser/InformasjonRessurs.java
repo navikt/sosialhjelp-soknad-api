@@ -76,6 +76,7 @@ public class InformasjonRessurs {
 
     @GET
     @Path("/poststed")
+    @Produces("text/plain")
     public String hentPoststed(@QueryParam("postnummer") String postnummer) {
         return kodeverk.getPoststed(postnummer);
     }

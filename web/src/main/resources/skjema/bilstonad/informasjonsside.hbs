@@ -1,0 +1,13 @@
+{{#forFaktum "informasjonsside.bilformal"}}
+    {{#hvisIkkeTom value}}
+        <h2>{{ hentTekst "informasjonsside.overskrift" }}</h2>
+        <table>
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <em>{{ hentTekst value }}</em>
+                </td>
+            </tr>
+        </table>
+    {{/hvisIkkeTom}}
+{{/forFaktum}}

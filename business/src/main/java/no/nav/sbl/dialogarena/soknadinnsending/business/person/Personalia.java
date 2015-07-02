@@ -22,6 +22,7 @@ public class Personalia {
     public static final String NAVN_KEY = "navn";
     public static final String KJONN_KEY = "kjonn";
     public static final String GJELDENDEADRESSE_KEY = "gjeldendeAdresse";
+    public static final String DISKRESJONSKODE = "diskresjonskode";
     public static final String GJELDENDEADRESSE_TYPE_KEY = "gjeldendeAdresseType";
     public static final String GJELDENDEADRESSE_GYLDIGFRA_KEY = "gjeldendeAdresseGyldigFra";
     public static final String GJELDENDEADRESSE_GYLDIGTIL_KEY = "gjeldendeAdresseGyldigTil";
@@ -42,6 +43,7 @@ public class Personalia {
     private Adresse gjeldendeAdresse;
     private Adresse sekundarAdresse;
     private String kontonummer;
+    private String diskresjonskode;
     private Boolean erUtenlandskBankkonto;
     private String utenlandskKontoBanknavn;
     private String utenlandskKontoLand;
@@ -79,6 +81,14 @@ public class Personalia {
 
     public void setNavn(String navn) {
         this.navn = navn;
+    }
+
+    public String getDiskresjonskode() {
+        return diskresjonskode;
+    }
+
+    public void setDiskresjonskode(String diskresjonskode) {
+        this.diskresjonskode = diskresjonskode;
     }
 
     public String getEpost() {
