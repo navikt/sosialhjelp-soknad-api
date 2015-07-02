@@ -74,15 +74,11 @@
     </faktum>
 
     <!-- Bosatt utenfor Norge -->
-    <faktum>
-        <id>utstyrtilbilen.vedlegg</id>
-    </faktum>
+
     <!-- Vedlegg -->
-    <faktum>
-        <id>utstyrtilbilen.vedlegg</id>
-    </faktum>
+
     <vedlegg>
-        <faktum>utstyrtilbilen.vedlegg</faktum>
-        <skjemaNummer></skjemaNummer>
+        <faktum>utstyrtilbilen.hjelpemidler</faktum>
+        <skjemaNummer>Z3</skjemaNummer>
     </vedlegg>
 </soknad>
