@@ -151,11 +151,20 @@
 
     <!-- Vedlegg bostotte -->
     <vedlegg>
+        <faktum>bostotte.aarsak</faktum>
+        <onValues>
+            <value>samling</value>
+        </onValues>
+        <skjemaNummer>K7</skjemaNummer>
+        <property>bolk</property>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+    <vedlegg>
         <faktum>bostotte.medisinskearsaker</faktum>
         <onValues>
             <value>true</value>
         </onValues>
-        <skjemaNummer>P5</skjemaNummer>
+        <skjemaNummer>V2</skjemaNummer>
         <property>bolk</property>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
@@ -164,7 +173,7 @@
         <onValues>
             <value>true</value>
         </onValues>
-        <skjemaNummer>P5</skjemaNummer>
+        <skjemaNummer>U4</skjemaNummer>
         <property>bolk</property>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
@@ -173,7 +182,7 @@
         <onValues>
             <value>true</value>
         </onValues>
-        <skjemaNummer>P5</skjemaNummer>
+        <skjemaNummer>U4</skjemaNummer>
         <property>bolk</property>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
@@ -182,7 +191,7 @@
         <onValues>
             <value>true</value>
         </onValues>
-        <skjemaNummer>P5</skjemaNummer>
+        <skjemaNummer>U4</skjemaNummer>
         <property>bolk</property>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
