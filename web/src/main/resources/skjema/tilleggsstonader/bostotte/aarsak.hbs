@@ -1,0 +1,13 @@
+<tr>
+    <td class="sjekket"></td>
+    <td>
+        {{#forFaktum "bostotte.aarsak"}}
+            {{#hvisLik value "fasteboutgifter"}}
+                <span>{{ hentTekst "soknad.bostotte.aarsak.fasteboutgifter.oppsummering" }}</span>
+            {{/hvisLik}}
+            {{#hvisLik value "samling"}}
+                <span>{{ hentTekst "soknad.bostotte.aarsak.samling.oppsummering" }}</span>
+            {{/hvisLik}}
+        {{/forFaktum}}
+    </td>
+</tr>
