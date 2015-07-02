@@ -64,6 +64,9 @@
 
     <!-- Bostotte-->
     <faktum>
+        <id>bostotte.aarsak</id>
+    </faktum>
+    <faktum>
         <id>bostotte.medisinskearsaker</id>
     </faktum>
     <faktum>
