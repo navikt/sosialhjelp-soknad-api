@@ -1,12 +1,6 @@
 {{#hvisKode6Eller7}}
 {{else}}
-    {{#forFaktum "flytting.tidligere.riktigadresse"}}
-        {{#hvisLik value "false"}}
-            {{> skjema/tilleggsstonader/flytting/nyadresse }}
-        {{/hvisLik}}
-    {{else}}
-        {{> skjema/tilleggsstonader/flytting/nyadresse }}
-    {{/forFaktum}}
+
     <tr>
         <td class="sjekket"></td>
         <td>
@@ -21,5 +15,12 @@
                 <td>{{hentTekst "soknad.flytting.tidligere.riktigadresse.label"}}</td>
             </tr>
         {{/hvisSant}}
+    {{/forFaktum}}
+    {{#forFaktum "flytting.tidligere.riktigadresse"}}
+        {{#hvisLik value "false"}}
+            {{> skjema/tilleggsstonader/flytting/nyadresse }}
+        {{/hvisLik}}
+    {{else}}
+        {{> skjema/tilleggsstonader/flytting/nyadresse }}
     {{/forFaktum}}
 {{/hvisKode6Eller7}}
