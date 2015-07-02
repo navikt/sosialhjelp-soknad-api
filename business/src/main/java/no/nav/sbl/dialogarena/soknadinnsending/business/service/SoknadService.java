@@ -87,7 +87,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     private FaktaService faktaService;
 
     @Inject
-    public ApplicationContext applicationContex;
+    public ApplicationContext applicationContext;
 
     @Inject
     private WebSoknadConfig config;
@@ -99,7 +99,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
     @PostConstruct
     public void initBolker() {
-        bolker = applicationContex.getBeansOfType(BolkService.class);
+        bolker = applicationContext.getBeansOfType(BolkService.class);
     }
 
 
