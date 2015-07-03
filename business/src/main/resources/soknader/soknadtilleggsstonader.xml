@@ -197,6 +197,7 @@
     </vedlegg>
     <vedlegg>
         <faktum>bostotte.adresseutgifter.aktivitetsadresse</faktum>
+        <skjemanummerTillegg>aktivitetsadresse</skjemanummerTillegg>
         <onValues>
             <value>true</value>
         </onValues>
@@ -206,6 +207,7 @@
     </vedlegg>
     <vedlegg>
         <faktum>bostotte.adresseutgifter.hjemstedsaddresse</faktum>
+        <skjemanummerTillegg>hjemstedsaddresse</skjemanummerTillegg>
         <onValues>
             <value>true</value>
         </onValues>
@@ -215,6 +217,7 @@
     </vedlegg>
     <vedlegg>
         <faktum>bostotte.adresseutgifter.opphorte</faktum>
+        <skjemanummerTillegg>opphorte</skjemanummerTillegg>
         <onValues>
             <value>true</value>
         </onValues>
