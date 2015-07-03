@@ -5,20 +5,19 @@
             <tr>
                 <td class="sjekket"></td>
                 <td>
-                    <span>{{ hentTekst "oppsummering.fastlege.behandlende.navn" }}: {{ hentFaktumValue "fastlege.annen.behandlende.navn" }},
-                          {{ hentTekst "oppsummering.fastlege.behandlende.stilling" }}: {{ hentFaktumValue "fastlege.annen.behandlende.stilling" }},
-                          {{ hentTekst "oppsummering.fastlege.behandlende.arbeidssted" }}: {{ hentFaktumValue "fastlege.annen.behandlende.arbeidssted" }},
-                          {{ hentTekst "oppsummering.fastlege.telefonnummer" }}: {{ hentFaktumValue "fastlege.annen.behandlende.tlfnr" }}
-                    </span>
+                    <div>{{ hentTekst "oppsummering.fastlege.behandlende.navn" }}: {{ hentFaktumValue "fastlege.annen.behandlende.navn" }}</div>
+                    <div>{{ hentTekst "oppsummering.fastlege.behandlende.stilling" }}: {{ hentFaktumValue "fastlege.annen.behandlende.stilling" }}</div>
+                    <div>{{ hentTekst "oppsummering.fastlege.behandlende.arbeidssted" }}: {{ hentFaktumValue "fastlege.annen.behandlende.arbeidssted" }}</div>
+                    <div>{{ hentTekst "oppsummering.fastlege.telefonnummer" }}: {{ hentFaktumValue "fastlege.annen.behandlende.tlfnr" }}</div>
                 </td>
             </tr>
         {{else}}
             <tr>
                 <td class="sjekket"></td>
                 <td>
-                    <span>{{ hentTekst "oppsummering.fastlege.navn" }}: {{ hentFaktumValue "fastlege.navn" }},
-                        {{ hentTekst "oppsummering.fastlege.telefonnummer" }}: {{ hentFaktumValue "fastlege.tlfnr" }}
-                    </span>
+                    <div>{{ hentTekst "oppsummering.fastlege.navn" }}: {{ hentFaktumValue "fastlege.navn" }}</div>
+                    <div>{{ hentTekst "oppsummering.fastlege.arbeidsstedadresse" }}: {{ hentFaktumValue "fastlege.arbeidsstedadresse" }}</div>
+                    <div>{{ hentTekst "oppsummering.fastlege.telefonnummer" }}: {{ hentFaktumValue "fastlege.tlfnr" }}</div>
                 </td>
             </tr>
             {{> skjema/bilstonad/fastlege/behandlendeLege }}
@@ -30,10 +29,9 @@
         <tr>
             <td class="sjekket"></td>
             <td>
-                <span>{{ hentTekst "oppsummering.fastlege.navn" }}: {{ hentFaktumValue "fastlege.navn" }},
-                      {{ hentTekst "oppsummering.fastlege.arbeidsstedadresse" }}: {{ hentFaktumValue "fastlege.arbeidsstedadresse" }},
-                      {{ hentTekst "oppsummering.fastlege.telefonnummer" }}: {{ hentFaktumValue "fastlege.tlfnr" }}
-                </span>
+                <div>{{ hentTekst "oppsummering.fastlege.navn" }}: {{ hentFaktumValue "fastlege.navn" }}</div>
+                <div>{{ hentTekst "oppsummering.fastlege.arbeidsstedadresse" }}: {{ hentFaktumValue "fastlege.arbeidsstedadresse" }}</div>
+                <div>{{ hentTekst "oppsummering.fastlege.telefonnummer" }}: {{ hentFaktumValue "fastlege.tlfnr" }}</div>
             </td>
         </tr>
         {{> skjema/bilstonad/fastlege/behandlendeLege }}

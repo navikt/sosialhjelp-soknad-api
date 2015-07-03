@@ -16,7 +16,11 @@
                     <span>{{hentTekst "utstyrtilbilen.hjelpemidler.false"}}</span>
                 {{/hvisLik}}
                 {{#hvisLik "true" value}}
-                    <span>{{hentTekst "utstyrtilbilen.hjelpemidler.true"}}</span>
+                    <span>{{hentTekst "utstyrtilbilen.hjelpemidler.true"}}.</span>
+                    <div class="kulepunkt faktum-felt">
+                        <span>{{hentTekst "oppsummering.utstyrtilbilen.beskrivelse.label"}}</span>
+                        <span>{{ hentFaktumValue "utstyrtilbilen.spesialutstyr.beskrivelse"}}</span>
+                    </div>
                 {{/hvisLik}}
             </td>
         </tr>
