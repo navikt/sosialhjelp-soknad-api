@@ -5,7 +5,9 @@
         {{#forFaktum "bostotte.aarsak"}}
             {{> skjema/tilleggsstonader/bostotte/aarsak}}
             {{> skjema/tilleggsstonader/bostotte/periode}}
-            {{> skjema/tilleggsstonader/bostotte/kommunestotte}}
+            {{#hvisLik value "fasteboutgifter"}}
+                {{> skjema/tilleggsstonader/bostotte/kommunestotte}}
+            {{/hvisLik}}
             {{#hvisLik value "samling"}}
                 {{> skjema/tilleggsstonader/bostotte/samling}}
             {{/hvisLik}}
