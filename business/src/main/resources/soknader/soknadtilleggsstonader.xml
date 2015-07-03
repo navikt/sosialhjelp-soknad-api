@@ -172,6 +172,7 @@
         <onValues>
             <value>true</value>
         </onValues>
+        <property>bolk</property>
         <skjemaNummer>J6</skjemaNummer>
     </vedlegg>
 
