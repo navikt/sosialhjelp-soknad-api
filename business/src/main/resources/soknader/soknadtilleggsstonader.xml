@@ -179,6 +179,7 @@
     <!-- Vedlegg bostotte -->
     <vedlegg>
         <faktum>bostotte.aarsak</faktum>
+        <skjemanummerTillegg>samling</skjemanummerTillegg>
         <onValues>
             <value>samling</value>
         </onValues>
