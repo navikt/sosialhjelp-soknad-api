@@ -59,6 +59,27 @@
         <id>flytting.flytteselv.annet</id>
     </faktum>
     <faktum>
+        <id>flytting.flyttebyraa.velgandre</id>
+    </faktum>
+    <faktum>
+        <id>flytting.flyttebyraa.velgforste</id>
+    </faktum>
+    <faktum>
+        <id>flytting.flyttebyraa.forste.navn</id>
+    </faktum>
+    <faktum>
+        <id>flytting.flyttebyraa.andre.navn</id>
+    </faktum>
+    <faktum>
+        <id>flytting.flyttebyraa.forste.belop</id>
+    </faktum>
+    <faktum>
+        <id>flytting.flyttebyraa.forste.belop</id>
+    </faktum>
+    <faktum>
+        <id>flytting.flyttebyraa.andre.belop</id>
+    </faktum>
+    <faktum>
         <id>flytting.flytteselv.hjelpefaktum.vedlegg</id>
     </faktum>
 
