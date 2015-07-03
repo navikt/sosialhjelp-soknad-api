@@ -152,6 +152,7 @@
     <!-- vedlegg for flytting -->
     <vedlegg>
         <skjemaNummer>J7</skjemaNummer>
+        <property>bolk</property>
         <faktum>flytting.hvorforflytte</faktum>
         <onValues>
             <value>nyjobb</value>
@@ -164,6 +165,7 @@
             <value>flyttebyraa</value>
             <value>tilbudmenflytterselv</value>
         </onValues>
+        <property>bolk</property>
         <skjemaNummer>J5</skjemaNummer>
     </vedlegg>
 
