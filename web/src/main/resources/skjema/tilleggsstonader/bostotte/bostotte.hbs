@@ -1,0 +1,20 @@
+{{#forFaktum "informasjonsside.stonad.bostotte"}}
+    {{#hvisSant value}}
+        <h2>{{hentTekst "soknad.bostottebolk.tittel"}}</h2>
+        <table>
+        {{#forFaktum "bostotte.aarsak"}}
+            {{> skjema/tilleggsstonader/bostotte/aarsak}}
+            {{> skjema/tilleggsstonader/bostotte/periode}}
+            {{> skjema/tilleggsstonader/bostotte/kommunestotte}}
+            {{#hvisLik value "samling"}}
+                {{> skjema/tilleggsstonader/bostotte/samling}}
+            {{/hvisLik}}
+            {{> skjema/tilleggsstonader/bostotte/adresseutgifter}}
+            {{> skjema/tilleggsstonader/bostotte/medisinskeutgifter}}
+            {{#hvisLik value "fasteboutgifter"}}
+                {{> skjema/tilleggsstonader/bostotte/utbetalingsmaned}}
+            {{/hvisLik}}
+        {{/forFaktum}}
+        </table>
+    {{/hvisSant}}
+{{/forFaktum}}

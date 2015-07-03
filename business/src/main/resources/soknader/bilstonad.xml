@@ -72,5 +72,24 @@
         <faktum>utstyrtilbilen.hjelpemidler</faktum>
         <skjemaNummer>Z3</skjemaNummer>
     </vedlegg>
->>>>>>> 1f59cbaff56c082a708448ff2de0a1afc6139772
+    <vedlegg>
+        <faktum>informasjonsside.bilformal</faktum>
+        <skjemaNummer>U2</skjemaNummer>
+    </vedlegg>
+
+    <!-- Ekstra vedlegg -->
+    <faktum>
+        <id>ekstraVedlegg</id>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <id>1</id>
+        <faktum>ekstraVedlegg</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>N6</skjemaNummer>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
 </soknad>
