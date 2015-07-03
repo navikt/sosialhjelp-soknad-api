@@ -3,12 +3,13 @@
         <tr>
             <td class="sjekket"></td>
             <td>
-                {{ hentTekst "oppsummering.fastlege.behandlende.navn" }}: {{ hentFaktumValue "fastlege.annen.behandlende.navn" }},
-                {{ hentTekst "oppsummering.fastlege.behandlende.stilling" }}: {{ hentFaktumValue "fastlege.annen.behandlende.stilling" }},
-                {{ hentTekst "oppsummering.fastlege.behandlende.arbeidssted" }}: {{ hentFaktumValue "fastlege.annen.behandlende.arbeidssted" }},
+                <div>{{ hentTekst "oppsummering.fastlege.behandlende.navn" }}</div>
+                <div><span class="avsnitt">{{ hentFaktumValue "fastlege.annen.behandlende.navn" }}</span></div>
+                <div>{{ hentFaktumValue "fastlege.annen.behandlende.stilling" }}</div>
+                <div>{{ hentFaktumValue "fastlege.annen.behandlende.arbeidssted" }}</div>
                 {{#forFaktum "fastlege.annen.behandlende.tlfnr"}}
                     {{#hvisIkkeTom value}}
-                        {{ hentTekst "oppsummering.fastlege.telefonnummer" }}: {{ hentFaktumValue "fastlege.annen.behandlende.tlfnr" }}
+                        <div>{{ hentFaktumValue "fastlege.annen.behandlende.tlfnr" }}</div>
                     {{/hvisIkkeTom}}
                 {{/forFaktum}}
             </td>
