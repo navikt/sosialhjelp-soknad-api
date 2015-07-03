@@ -38,21 +38,6 @@
         <id>flytting.flytteselv.hvorlangt</id>
     </faktum>
     <faktum>
-        <id>flytting.flytteselv.hengerleie</id>
-    </faktum>
-    <faktum>
-        <id>flytting.flytteselv.bom</id>
-    </faktum>
-    <faktum>
-        <id>flytting.flytteselv.parkering</id>
-    </faktum>
-    <faktum>
-        <id>flytting.flytteselv.ferge</id>
-    </faktum>
-    <faktum>
-        <id>flytting.flytteselv.annet</id>
-    </faktum>
-    <faktum>
         <id>flytting.flyttebyraa.velgandre</id>
     </faktum>
     <faktum>
@@ -73,8 +58,29 @@
     <faktum>
         <id>flytting.flyttebyraa.andre.belop</id>
     </faktum>
+
     <faktum>
-        <id>flytting.flytteselv.hjelpefaktum.vedlegg</id>
+        <id>flytting.flytteselv.andreutgifter</id>
+    </faktum>
+    <faktum>
+        <id>flytting.flytteselv.andreutgifter.hengerleie</id>
+        <dependOn>flytting.flytteselv.andreutgifter</dependOn>
+    </faktum>
+    <faktum>
+        <id>flytting.flytteselv.andreutgifter.bom</id>
+        <dependOn>flytting.flytteselv.andreutgifter</dependOn>
+    </faktum>
+    <faktum>
+        <id>flytting.flytteselv.andreutgifter.parkering</id>
+        <dependOn>flytting.flytteselv.andreutgifter</dependOn>
+    </faktum>
+    <faktum>
+        <id>flytting.flytteselv.andreutgifter.ferge</id>
+        <dependOn>flytting.flytteselv.andreutgifter</dependOn>
+    </faktum>
+    <faktum>
+        <id>flytting.flytteselv.andreutgifter.annet</id>
+        <dependOn>flytting.flytteselv.andreutgifter</dependOn>
     </faktum>
 
     <!-- Bostotte-->
@@ -162,7 +168,7 @@
     </vedlegg>
 
     <vedlegg>
-        <faktum>flytting.flytteselv.hjelpefaktum.vedlegg</faktum>
+        <faktum>flytting.flytteselv.andreutgifter</faktum>
         <onValues>
             <value>true</value>
         </onValues>
