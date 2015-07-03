@@ -21,7 +21,7 @@
     <description>Innsending av elektronisk søknad.</description>
     <groupId>no.nav.sbl.dialogarena</groupId>
     <artifactId>sendsoknad</artifactId>
-    <version>7.2</version>
+    <version>7.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -812,7 +812,7 @@
     <scm>
         <developerConnection>scm:git:http://stash.devillo.no/scm/sokd/soknadsapi.git</developerConnection>
         <url>http://stash.devillo.no/scm/sokd/soknadsapi.git</url>
-        <tag>sendsoknad-7.2</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <profiles>
