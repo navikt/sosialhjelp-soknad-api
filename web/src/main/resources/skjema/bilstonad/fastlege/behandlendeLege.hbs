@@ -7,11 +7,7 @@
                 <div><span class="avsnitt">{{ hentFaktumValue "fastlege.annen.behandlende.navn" }}</span></div>
                 <div>{{ hentFaktumValue "fastlege.annen.behandlende.stilling" }}</div>
                 <div>{{ hentFaktumValue "fastlege.annen.behandlende.arbeidssted" }}</div>
-                {{#forFaktum "fastlege.annen.behandlende.tlfnr"}}
-                    {{#hvisIkkeTom value}}
-                        <div>{{ hentFaktumValue "fastlege.annen.behandlende.tlfnr" }}</div>
-                    {{/hvisIkkeTom}}
-                {{/forFaktum}}
+                <div>{{ hentFaktumValue "fastlege.annen.behandlende.tlfnr" }}</div>
             </td>
         </tr>
     {{/hvisIkkeTom}}
