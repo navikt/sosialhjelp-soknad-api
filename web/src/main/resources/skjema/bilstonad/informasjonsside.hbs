@@ -1,13 +1,16 @@
 {{#forFaktum "informasjonsside.bilformal"}}
-    {{#hvisIkkeTom value}}
-        <h2>{{ hentTekst "informasjonsside.overskrift" }}</h2>
+
+        <h2>{{ hentTekst "oppsummering.informasjonsside.tittel" }}</h2>
         <table>
             <tr>
                 <td class="sjekket"></td>
-                <td>
-                    <em>{{ hentTekst value }}</em>
-                </td>
+                {{#hvisLik value "arbeidutdanning"}}
+                    <td>{{ hentTekst "oppsummering.informasjonsside.arbeidutdanning"}}</td>
+                {{/hvisLik}}
+                {{#hvisLik value "dagliglivet"}}
+                    <td>{{ hentTekst "oppsummering.informasjonsside.dagliglivet"}}</td>
+                {{/hvisLik}}
             </tr>
         </table>
-    {{/hvisIkkeTom}}
+
 {{/forFaktum}}
