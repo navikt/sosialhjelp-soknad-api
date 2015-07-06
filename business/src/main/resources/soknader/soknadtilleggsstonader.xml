@@ -9,6 +9,11 @@
     <faktum>
         <id>reise.aktivitet.dagligreiseavstand</id>
     </faktum>
+    <faktum>
+        <id>reise.aktivitet.medisinskeaarsaker</id>
+        <dependOn>informasjonsside.stonad.reiseaktivitet</dependOn>
+        <dependOnValue>true</dependOnValue>
+    </faktum>
 
     <!-- Flytting -->
     <faktum>
@@ -152,6 +157,14 @@
     <faktum>
         <id>tilleggsopplysninger.fritekst</id>
     </faktum>
+
+    <!-- vedlegg for reise aktivitet -->
+    <vedlegg>
+        <skjemaNummer>V2</skjemaNummer>
+        <faktum>reise.aktivitet.medisinskeaarsaker</faktum>
+        <property>bolk</property>
+        <onValues>true</onValues>
+    </vedlegg>
 
     <!-- vedlegg for flytting -->
     <vedlegg>
