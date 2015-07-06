@@ -5,6 +5,11 @@
         <id>informasjonsside.bilformal</id>
     </faktum>
 
+    <!-- Bruker over 70 år -->
+    <faktum>
+        <id>brukeroversytti.vedlegg</id>
+    </faktum>
+
     <!-- Utstyr til bilen -->
     <faktum>
         <id>utstyrtilbilen.spesialutstyr</id>
@@ -67,7 +72,10 @@
     <!-- Bosatt utenfor Norge -->
 
     <!-- Vedlegg -->
-
+    <vedlegg>
+        <faktum>brukeroversytti.vedlegg</faktum>
+        <skjemaNummer>U2</skjemaNummer>
+    </vedlegg>
     <vedlegg>
         <faktum>utstyrtilbilen.hjelpemidler</faktum>
         <skjemaNummer>Z3</skjemaNummer>
