@@ -5,6 +5,10 @@
         <erSystemFaktum>true</erSystemFaktum>
     </faktum>
     <!-- bolker -->
+    <!-- reiseaktivitet-->
+    <faktum>
+        <id>reise.aktivitet.dagligreiseavstand</id>
+    </faktum>
 
     <!-- Flytting -->
     <faktum>
