@@ -155,6 +155,8 @@
     <faktum>
         <id>bostotte.periode</id>
     </faktum>
+
+    <!-- Laeremidler -->
     <faktum>
         <id>laeremidler.utdanningstype</id>
         <dependOn>informasjonsside.stonad.laeremidler</dependOn>
