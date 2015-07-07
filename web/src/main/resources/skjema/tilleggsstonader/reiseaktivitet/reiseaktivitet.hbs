@@ -1,0 +1,14 @@
+{{#forFaktum "informasjonsside.stonad.reiseaktivitet"}}
+    {{#hvisSant value}}
+        <h2>{{hentTekst "soknad.reise.aktivitet.tittel"}}</h2>
+        <table>
+            {{> skjema/tilleggsstonader/reiseaktivitet/avstand}}
+            {{#forFaktum "reise.aktivitet.periode"}}
+                {{> skjema/tilleggsstonader/felles/aktivitetsperiode}}
+            {{/forFaktum}}
+            {{> skjema/tilleggsstonader/reiseaktivitet/medisinskeaarsaker}}
+            {{> skjema/tilleggsstonader/reiseaktivitet/adresse}}
+
+        </table>
+    {{/hvisSant}}
+{{/forFaktum}}
