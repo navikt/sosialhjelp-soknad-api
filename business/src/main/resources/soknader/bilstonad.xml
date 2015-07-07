@@ -16,6 +16,20 @@
         <id>utstyrtilbilen.hjelpemidler.beskrivelse</id>
     </faktum>
 
+    <!-- Førerkort -->
+    <faktum>
+        <id>forerkort.erGyldigINorge</id>
+    </faktum>
+    <faktum>
+        <id>forerkort.skalTaForerkort</id>
+    </faktum>
+    <faktum>
+        <id>forerkort.sokerOmKjoreopplaering</id>
+    </faktum>
+    <faktum>
+        <id>forerkort.andreKanKjore</id>
+    </faktum>
+
     <!-- Bilen -->
     <faktum>
         <id>bilen.eierBilenAllerede</id>
