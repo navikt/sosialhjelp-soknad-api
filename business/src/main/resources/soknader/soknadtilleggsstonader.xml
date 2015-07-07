@@ -15,30 +15,30 @@
     <faktum>
         <id>informasjonsside.stonad.reiseaktivitet</id>
         <dependOn>informasjonsside.stonad.reise</dependOn>
-        <dependOnValue>
+        <dependOnValues>
             <value>true</value>
-        </dependOnValue>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>informasjonsside.stonad.reisesamling</id>
         <dependOn>informasjonsside.stonad.reise</dependOn>
-        <dependOnValue>
+        <dependOnValues>
             <value>true</value>
-        </dependOnValue>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>informasjonsside.stonad.reisemidlertidig</id>
         <dependOn>informasjonsside.stonad.reise</dependOn>
-        <dependOnValue>
+        <dependOnValues>
             <value>true</value>
-        </dependOnValue>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>informasjonsside.stonad.reisearbeidssøker</id>
         <dependOn>informasjonsside.stonad.reise</dependOn>
-        <dependOnValue>
+        <dependOnValues>
             <value>true</value>
-        </dependOnValue>
+        </dependOnValues>
     </faktum>
 
     <faktum>
@@ -64,9 +64,9 @@
     <faktum>
         <id>reise.aktivitet.medisinskeaarsaker</id>
         <dependOn>informasjonsside.stonad.reise</dependOn>
-        <dependOnValue>
+        <dependOnValues>
             <value>true</value>
-        </dependOnValue>
+        </dependOnValues>
     </faktum>
 
     <!-- Flytting -->
