@@ -68,6 +68,37 @@
             <value>true</value>
         </dependOnValues>
     </faktum>
+    <faktum>
+        <id>reise.aktivitet.offentligtransport</id>
+    </faktum>
+    <faktum>
+        <id>reise.aktivitet.offentligtransport.false.aarsak.helse</id>
+        <dependOn>reise.aktivitet.offentligtransport</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.aktivitet.offentligtransport.false.aarsak.transport</id>
+        <dependOn>reise.aktivitet.offentligtransport</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.aktivitet.offentligtransport.false.aarsak.henting</id>
+        <dependOn>reise.aktivitet.offentligtransport</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.aktivitet.offentligtransport.false.aarsak.annet</id>
+        <dependOn>reise.aktivitet.offentligtransport</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
 
     <!-- Flytting -->
     <faktum>
@@ -165,7 +196,7 @@
 
     <!-- vedlegg for reise aktivitet -->
     <vedlegg>
-        <skjemaNummer></skjemaNummer>
+        <skjemaNummer>TEMP1</skjemaNummer>
         <faktum>reise.aktivitet.medisinskeaarsaker</faktum>
         <property>bolk</property>
         <onValues>true</onValues>
