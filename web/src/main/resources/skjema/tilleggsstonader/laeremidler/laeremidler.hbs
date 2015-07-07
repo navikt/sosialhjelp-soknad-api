@@ -2,6 +2,9 @@
     {{#hvisSant value}}
         <h2>{{hentTekst "soknad.laeremidler.tittel"}}</h2>
         <table>
+            {{#forFaktum "laeremidler.periode"}}
+                {{> skjema/tilleggsstonader/felles/aktivitetsperiode}}
+            {{/forFaktum}}
             {{> skjema/tilleggsstonader/laeremidler/utdanningstype}}
         </table>
     {{/hvisSant}}
