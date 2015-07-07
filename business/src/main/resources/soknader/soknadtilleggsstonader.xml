@@ -56,7 +56,9 @@
     <faktum>
         <id>reise.aktivitet.medisinskeaarsaker</id>
         <dependOn>informasjonsside.stonad.reise</dependOn>
-        <dependOnValue>true</dependOnValue>
+        <dependOnValue>
+            <value>true</value>
+        </dependOnValue>
     </faktum>
 
     <!-- Flytting -->
