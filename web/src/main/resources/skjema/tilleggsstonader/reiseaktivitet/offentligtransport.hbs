@@ -1,0 +1,24 @@
+{{#forFaktum "reise.aktivitet.offentligtransport"}}
+    <tr>
+        <td class="sjekket"></td>
+        <td>
+            {{#hvisSant value}}
+                <span>{{ hentTekst "soknad.reise.aktivitet.offentligtransport.true.oppsummering" }}</span>
+            {{else}}
+                <span>{{ hentTekst "soknad.reise.aktivitet.offentligtransport.false.oppsummering" }}</span>
+            {{/hvisSant}}
+        </td>
+    </tr>
+    {{#hvisSant value}}
+        <tr>
+            {{#forFaktum "reise.aktivitet.offentligtransport.utgift"}}
+                <td class="sjekket"></td><td><span>{{ hentTekst "soknad.reise.aktivitet.offentligtransport.utgift.oppsummering" }}: {{value}} {{hentTekst "soknad.krmnd"}}</span></td>
+            {{/forFaktum}}
+        </tr>
+        <tr>
+            {{#forFaktum "reise.aktivitet.utbetalingsdato"}}
+                <td class="sjekket"></td><td><span>{{ hentTekst "soknad.felles.utbetalingsdato.velgdato.oppsummering" }} {{value}}{{ hentTekst "soknad.felles.utbetalingsdato.velgdato.oppsummering.postfix" }}</span></td>
+            {{/forFaktum}}
+        </tr>
+    {{/hvisSant}}
+{{/forFaktum}}
