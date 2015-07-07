@@ -4,7 +4,70 @@
         <id>personalia</id>
         <erSystemFaktum>true</erSystemFaktum>
     </faktum>
+
+
+
     <!-- bolker -->
+    <!-- informasjonsside -->
+    <faktum>
+        <id>informasjonsside.stonad.reise</id>
+    </faktum>
+    <faktum>
+        <id>informasjonsside.stonad.reiseaktivitet</id>
+        <dependOn>informasjonsside.stonad.reise</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>informasjonsside.stonad.reisesamling</id>
+        <dependOn>informasjonsside.stonad.reise</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>informasjonsside.stonad.reisemidlertidig</id>
+        <dependOn>informasjonsside.stonad.reise</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>informasjonsside.stonad.reisearbeidssøker</id>
+        <dependOn>informasjonsside.stonad.reise</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+
+    <faktum>
+        <id>informasjonsside.stonad.flytting</id>
+    </faktum>
+    <faktum>
+        <id>informasjonsside.stonad.bostotte</id>
+    </faktum>
+    <faktum>
+        <id>informasjonsside.stonad.laeremidler</id>
+    </faktum>
+    <faktum>
+        <id>informasjonsside.stonad.barn</id>
+    </faktum>
+    <faktum>
+        <id>informasjonsside.stonad.familie</id>
+    </faktum>
+
+    <!-- reiseaktivitet-->
+    <faktum>
+        <id>reise.aktivitet.dagligreiseavstand</id>
+    </faktum>
+    <faktum>
+        <id>reise.aktivitet.medisinskeaarsaker</id>
+        <dependOn>informasjonsside.stonad.reise</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
 
     <!-- Flytting -->
     <faktum>
@@ -29,58 +92,48 @@
         <id>flytting.tidligere.riktigadresse</id>
     </faktum>
     <faktum>
-        <id>flytting.flyttebyraa.forste.navn</id>
-    </faktum>
-    <faktum>
-        <id>flytting.flyttebyraa.andre.navn</id>
-    </faktum>
-    <faktum>
-        <id>flytting.flyttebyraa.forste.belop</id>
-    </faktum>
-    <faktum>
-        <id>flytting.flyttebyraa.andre.belop</id>
-    </faktum>
-    <faktum>
         <id>flytting.flytteselv.hvorlangt</id>
-    </faktum>
-    <faktum>
-        <id>flytting.flytteselv.hengerleie</id>
-    </faktum>
-    <faktum>
-        <id>flytting.flytteselv.bom</id>
-    </faktum>
-    <faktum>
-        <id>flytting.flytteselv.parkering</id>
-    </faktum>
-    <faktum>
-        <id>flytting.flytteselv.ferge</id>
-    </faktum>
-    <faktum>
-        <id>flytting.flytteselv.annet</id>
-    </faktum>
-    <faktum>
-        <id>flytting.flyttebyraa.velgandre</id>
     </faktum>
     <faktum>
         <id>flytting.flyttebyraa.velgforste</id>
     </faktum>
     <faktum>
+        <id>flytting.flyttebyraa.velgandre</id>
+    </faktum>
+    <faktum>
         <id>flytting.flyttebyraa.forste.navn</id>
+    </faktum>
+    <faktum>
+        <id>flytting.flyttebyraa.forste.belop</id>
     </faktum>
     <faktum>
         <id>flytting.flyttebyraa.andre.navn</id>
     </faktum>
     <faktum>
-        <id>flytting.flyttebyraa.forste.belop</id>
-    </faktum>
-    <faktum>
-        <id>flytting.flyttebyraa.forste.belop</id>
-    </faktum>
-    <faktum>
         <id>flytting.flyttebyraa.andre.belop</id>
     </faktum>
     <faktum>
-        <id>flytting.flytteselv.hjelpefaktum.vedlegg</id>
+        <id>flytting.flytteselv.andreutgifter</id>
+    </faktum>
+    <faktum>
+        <id>flytting.flytteselv.andreutgifter.hengerleie</id>
+        <dependOn>flytting.flytteselv.andreutgifter</dependOn>
+    </faktum>
+    <faktum>
+        <id>flytting.flytteselv.andreutgifter.bom</id>
+        <dependOn>flytting.flytteselv.andreutgifter</dependOn>
+    </faktum>
+    <faktum>
+        <id>flytting.flytteselv.andreutgifter.parkering</id>
+        <dependOn>flytting.flytteselv.andreutgifter</dependOn>
+    </faktum>
+    <faktum>
+        <id>flytting.flytteselv.andreutgifter.ferge</id>
+        <dependOn>flytting.flytteselv.andreutgifter</dependOn>
+    </faktum>
+    <faktum>
+        <id>flytting.flytteselv.andreutgifter.annet</id>
+        <dependOn>flytting.flytteselv.andreutgifter</dependOn>
     </faktum>
 
     <!-- Bostotte-->
@@ -103,55 +156,25 @@
         <id>bostotte.periode</id>
     </faktum>
 
-    <!-- informasjonsside -->
-    <faktum>
-        <id>informasjonsside.stonad.reise</id>
-    </faktum>
-    <faktum>
-        <id>informasjonsside.stonad.reiseaktivitet</id>
-        <dependOn>informasjonsside.stonad.reise</dependOn>
-        <dependOnValue>true</dependOnValue>
-    </faktum>
-    <faktum>
-        <id>informasjonsside.stonad.reisesamling</id>
-        <dependOn>informasjonsside.stonad.reise</dependOn>
-        <dependOnValue>true</dependOnValue>
-    </faktum>
-    <faktum>
-        <id>informasjonsside.stonad.reisemidlertidig</id>
-        <dependOn>informasjonsside.stonad.reise</dependOn>
-        <dependOnValue>true</dependOnValue>
-    </faktum>
-    <faktum>
-        <id>informasjonsside.stonad.reisearbeidssøker</id>
-        <dependOn>informasjonsside.stonad.reise</dependOn>
-        <dependOnValue>true</dependOnValue>
-    </faktum>
 
-    <faktum>
-        <id>informasjonsside.stonad.flytting</id>
-    </faktum>
-    <faktum>
-        <id>informasjonsside.stonad.bostotte</id>
-    </faktum>
-    <faktum>
-        <id>informasjonsside.stonad.laeremidler</id>
-    </faktum>
-    <faktum>
-        <id>informasjonsside.stonad.barn</id>
-    </faktum>
-    <faktum>
-        <id>informasjonsside.stonad.familie</id>
-    </faktum>
 
     <!-- Tilleggsopplysninger -->
     <faktum>
         <id>tilleggsopplysninger.fritekst</id>
     </faktum>
 
+    <!-- vedlegg for reise aktivitet -->
+    <vedlegg>
+        <skjemaNummer></skjemaNummer>
+        <faktum>reise.aktivitet.medisinskeaarsaker</faktum>
+        <property>bolk</property>
+        <onValues>true</onValues>
+    </vedlegg>
+
     <!-- vedlegg for flytting -->
     <vedlegg>
         <skjemaNummer>J7</skjemaNummer>
+        <property>bolk</property>
         <faktum>flytting.hvorforflytte</faktum>
         <onValues>
             <value>nyjobb</value>
@@ -164,20 +187,23 @@
             <value>flyttebyraa</value>
             <value>tilbudmenflytterselv</value>
         </onValues>
+        <property>bolk</property>
         <skjemaNummer>J5</skjemaNummer>
     </vedlegg>
 
     <vedlegg>
-        <faktum>flytting.flytteselv.hjelpefaktum.vedlegg</faktum>
+        <faktum>flytting.flytteselv.andreutgifter</faktum>
         <onValues>
             <value>true</value>
         </onValues>
+        <property>bolk</property>
         <skjemaNummer>J6</skjemaNummer>
     </vedlegg>
 
     <!-- Vedlegg bostotte -->
     <vedlegg>
         <faktum>bostotte.aarsak</faktum>
+        <skjemanummerTillegg>samling</skjemanummerTillegg>
         <onValues>
             <value>samling</value>
         </onValues>
@@ -196,6 +222,7 @@
     </vedlegg>
     <vedlegg>
         <faktum>bostotte.adresseutgifter.aktivitetsadresse</faktum>
+        <skjemanummerTillegg>aktivitetsadresse</skjemanummerTillegg>
         <onValues>
             <value>true</value>
         </onValues>
@@ -205,6 +232,7 @@
     </vedlegg>
     <vedlegg>
         <faktum>bostotte.adresseutgifter.hjemstedsaddresse</faktum>
+        <skjemanummerTillegg>hjemstedsaddresse</skjemanummerTillegg>
         <onValues>
             <value>true</value>
         </onValues>
@@ -214,6 +242,7 @@
     </vedlegg>
     <vedlegg>
         <faktum>bostotte.adresseutgifter.opphorte</faktum>
+        <skjemanummerTillegg>opphorte</skjemanummerTillegg>
         <onValues>
             <value>true</value>
         </onValues>

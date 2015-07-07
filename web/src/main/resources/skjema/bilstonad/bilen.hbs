@@ -1,50 +1,34 @@
 <h2>{{ hentTekst "bilen.tittel" }}</h2>
 <table>
     {{#forFaktum "bilen.eierBilenAllerede"}}
-        {{#hvisLik "true" value}}
-            <tr>
-                <td class="sjekket"></td>
-                <td>
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                {{#hvisLik "true" value}}
                     <span>{{hentTekst "bilen.eierBilenAllerede.true"}}</span>
-                </td>
-            </tr>
-            <tr>
-                <td class="sjekket"></td>
-                <td>
-                    <div>{{hentTekst "bilen.registreringsnummer"}}:
-                        <em>{{hentFaktumValue "bilen.registreringsnummer"}}</em></div>
-                </td>
-            </tr>
-        {{/hvisLik}}
-        {{#hvisLik "false" value}}
-            <tr>
-                <td class="sjekket"></td>
-                <td>
+                    <ul>
+                        <li class="kulepunkt faktum-felt">
+                            {{hentTekst "bilen.registreringsnummer"}}:
+                            <em>{{ hentFaktumValue "bilen.registreringsnummer"}}</em>
+                        </li>
+                {{/hvisLik}}
+                {{#hvisLik "false" value}}
                     <span>{{hentTekst "bilen.eierBilenAllerede.false"}}</span>
-                </td>
-            </tr>
-        {{/hvisLik}}
-
+                {{/hvisLik}}
+                        <li class="kulepunkt faktum-felt">
+                            {{hentTekst "bilen.bilmerke"}}:
+                            <em>{{ hentFaktumValue "bilen.bilmerke"}}</em>
+                        </li>
+                        <li class="kulepunkt faktum-felt">
+                            {{hentTekst "bilen.bilmodell"}}:
+                            <em>{{ hentFaktumValue "bilen.bilmodell"}}</em>
+                        </li>
+                        <li class="kulepunkt faktum-felt">
+                            {{hentTekst "bilen.arsmodell"}}:
+                            <em>{{ hentFaktumValue "bilen.arsmodell"}}</em>
+                        </li>
+                    </ul>
+            </td>
+        </tr>
     {{/forFaktum}}
-    <tr>
-        <td class="sjekket"></td>
-        <td>
-            <div>{{hentTekst "bilen.bilmerke"}}:
-                <em>{{hentFaktumValue "bilen.bilmerke"}}</em></div>
-        </td>
-    </tr>
-    <tr>
-        <td class="sjekket"></td>
-        <td>
-            <div>{{hentTekst "bilen.bilmodell"}}:
-                <em>{{hentFaktumValue "bilen.bilmodell"}}</em></div>
-        </td>
-    </tr>
-    <tr>
-        <td class="sjekket"></td>
-        <td>
-            <div>{{hentTekst "bilen.arsmodell"}}:
-                <em>{{hentFaktumValue "bilen.arsmodell"}}</em></div>
-        </td>
-    </tr>
 </table>

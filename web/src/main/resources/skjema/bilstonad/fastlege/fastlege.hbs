@@ -5,19 +5,20 @@
             <tr>
                 <td class="sjekket"></td>
                 <td>
-                    <div>{{ hentTekst "oppsummering.fastlege.behandlende.navn" }}</div>
-                    <div><span class="avsnitt">{{ hentFaktumValue "fastlege.annen.behandlende.navn" }}</span></div>
+                    {{ hentTekst "oppsummering.fastlege.behandlende.navn" }}
+                    <span class="avsnitt">{{ hentFaktumValue "fastlege.annen.behandlende.navn" }}</span>
                     <div>{{ hentFaktumValue "fastlege.annen.behandlende.stilling" }}</div>
                     <div>{{ hentFaktumValue "fastlege.annen.behandlende.arbeidssted" }}</div>
                     <div>{{ hentFaktumValue "fastlege.annen.behandlende.tlfnr" }}</div>
                 </td>
             </tr>
+            {{> skjema/bilstonad/fastlege/behandlendeLege }}
         {{else}}
             <tr>
                 <td class="sjekket"></td>
                 <td>
-                    <div>{{ hentTekst "oppsummering.fastlege.navn" }}</div>
-                    <div><span class="avsnitt">{{ hentFaktumValue "fastlege.navn" }}</span></div>
+                    {{ hentTekst "oppsummering.fastlege.navn" }}
+                    <<span class="avsnitt">{{ hentFaktumValue "fastlege.navn" }}</span>
                     <div>{{ hentFaktumValue "fastlege.arbeidsstedadresse" }}</div>
                     <div>{{ hentFaktumValue "fastlege.tlfnr" }}</div>
                 </td>
@@ -31,8 +32,8 @@
         <tr>
             <td class="sjekket"></td>
             <td>
-                <div>{{ hentTekst "oppsummering.fastlege.navn" }}</div>
-                <div><span class="avsnitt">{{ hentFaktumValue "fastlege.navn" }}</span></div>
+                {{ hentTekst "oppsummering.fastlege.navn" }}
+                <span class="avsnitt">{{ hentFaktumValue "fastlege.navn" }}</span>
                 <div>{{ hentFaktumValue "fastlege.arbeidsstedadresse" }}</div>
                 <div>{{ hentFaktumValue "fastlege.tlfnr" }}</div>
             </td>
