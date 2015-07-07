@@ -38,36 +38,23 @@
         <id>flytting.tidligere.riktigadresse</id>
     </faktum>
     <faktum>
-        <id>flytting.flyttebyraa.forste.belop</id>
-    </faktum>
-    <faktum>
-        <id>flytting.flyttebyraa.andre.belop</id>
-    </faktum>
-    <faktum>
         <id>flytting.flytteselv.hvorlangt</id>
     </faktum>
     <faktum>
         <id>flytting.flyttebyraa.velgandre</id>
     </faktum>
     <faktum>
-        <id>flytting.flyttebyraa.velgforste</id>
+        <id>flytting.flyttebyraa.forste.navn</id>
     </faktum>
     <faktum>
-        <id>flytting.flyttebyraa.forste.navn</id>
+        <id>flytting.flyttebyraa.forste.belop</id>
     </faktum>
     <faktum>
         <id>flytting.flyttebyraa.andre.navn</id>
     </faktum>
     <faktum>
-        <id>flytting.flyttebyraa.forste.belop</id>
-    </faktum>
-    <faktum>
-        <id>flytting.flyttebyraa.forste.belop</id>
-    </faktum>
-    <faktum>
         <id>flytting.flyttebyraa.andre.belop</id>
     </faktum>
-
     <faktum>
         <id>flytting.flytteselv.andreutgifter</id>
     </faktum>
