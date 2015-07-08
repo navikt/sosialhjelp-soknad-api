@@ -118,7 +118,8 @@
         <onValues>
             <value>true</value>
         </onValues>
-        <skjemaNummer>Z1</skjemaNummer>
+        <skjemaNummer>Z4</skjemaNummer>
+        <skjemanummerTillegg>samtykkeFraAnnenSjafor</skjemanummerTillegg>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
