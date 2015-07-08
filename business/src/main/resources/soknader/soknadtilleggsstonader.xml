@@ -103,6 +103,21 @@
             <value>false</value>
         </dependOnValues>
     </faktum>
+    <!-- reise arbeidssøker-->
+    <faktum>
+        <id>reise.arbeidssoker.reisedekket</id>
+        <dependOn>informasjonsside.stonad.reisearbeidssoker</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.arbeidssoker.hvorforreise</id>
+        <dependOn>informasjonsside.stonad.reisearbeidssoker</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
 
     <!-- Flytting -->
     <faktum>
@@ -283,7 +298,28 @@
         <property>bolk</property>
         <onValues>true</onValues>
     </vedlegg>
-
+    <!-- vedlegg for reise arbeidssøker -->
+    <vedlegg>
+        <skjemaNummer>J7</skjemaNummer>
+        <faktum>reise.arbeidssoker.hvorforreise</faktum>
+        <property>bolk</property>
+        <onValues>jobbintervju</onValues>
+    </vedlegg>
+    <vedlegg>
+        <skjemaNummer>J7</skjemaNummer>
+        <faktum>reise.arbeidssoker.hvorforreise</faktum>
+        <property>bolk</property>
+        <onValues>
+            <value>jobbintervju</value>
+            <value>tiltraa</value>
+        </onValues>
+    </vedlegg>
+    <vedlegg>
+        <skjemaNummer>U8</skjemaNummer>
+        <faktum>reise.arbeidssoker.reisedekket</faktum>
+        <property>bolk</property>
+        <onValues>true</onValues>
+    </vedlegg>
     <!-- vedlegg for flytting -->
     <vedlegg>
         <skjemaNummer>J7</skjemaNummer>
