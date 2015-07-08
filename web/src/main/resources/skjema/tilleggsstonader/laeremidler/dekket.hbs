@@ -2,15 +2,7 @@
     <td class="sjekket"></td>
     <td>
         {{#forFaktum "laeremidler.dekket"}}
-            {{#hvisLik value "ja"}}
-                <span>{{ hentTekst "soknad.laeremidler.dekket.ja" }}</span>
-            {{/hvisLik}}
-            {{#hvisLik value "nei"}}
-                <span>{{ hentTekst "soknad.laeremidler.dekket.nei" }}</span>
-            {{/hvisLik}}
-            {{#hvisLik value "delvis"}}
-                <span>{{ hentTekst "soknad.laeremidler.dekket.delvis" }}</span>
-            {{/hvisLik}}
+            <span>{{ hentTekst (concat "soknad.laeremidler.dekket." value)}}</span>
         {{/forFaktum}}
     </td>
 </tr>
