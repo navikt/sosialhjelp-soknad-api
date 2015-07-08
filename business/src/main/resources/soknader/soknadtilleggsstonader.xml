@@ -118,6 +118,48 @@
             <value>true</value>
         </dependOnValues>
     </faktum>
+    <faktum>
+        <id>reise.aktivitet.offentligtransport.aarsak.annet.tekst</id>
+        <dependOn>reise.aktivitet.offentligtransport.aarsak.annet</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.aktivitet.offentligtransport.egenbil</id>
+        <dependOn>reise.aktivitet.offentligtransport</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.aktivitet.offentligtransport.egenbil.aarsak.helse</id>
+        <dependOn>reise.aktivitet.offentligtransport</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.aktivitet.offentligtransport.egenbil.aarsak.ikkebil</id>
+        <dependOn>reise.aktivitet.offentligtransport</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.aktivitet.offentligtransport.egenbil.aarsak.annet</id>
+        <dependOn>reise.aktivitet.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.aktivitet.offentligtransport.egenbil.aarsak.annet.tekst</id>
+        <dependOn>reise.aktivitet.offentligtransport.egenbil.aarsak.annet</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
 
     <!-- Flytting -->
     <faktum>
@@ -272,8 +314,7 @@
         <dependOn>informasjonsside.stonad.laeremidler</dependOn>
     </faktum>
 
-
-
+    
     <!-- Tilleggsopplysninger -->
     <faktum>
         <id>tilleggsopplysninger.fritekst</id>
@@ -282,28 +323,37 @@
     <!-- vedlegg for reise aktivitet -->
     <vedlegg>
         <skjemaNummer>TEMP1</skjemaNummer>
+        <skjemanummerTillegg>reiseaktivitet</skjemanummerTillegg>
         <faktum>reise.aktivitet.medisinskeaarsaker</faktum>
         <property>bolk</property>
         <onValues>true</onValues>
+        <flereTillatt>false</flereTillatt>
     </vedlegg>
     <vedlegg>
         <skjemaNummer>V2</skjemaNummer>
+        <skjemanummerTillegg>reiseaktivitet</skjemanummerTillegg>
         <faktum>reise.aktivitet.offentligtransport.aarsak.helse</faktum>
         <property>bolk</property>
         <onValues>true</onValues>
+        <flereTillatt>false</flereTillatt>
     </vedlegg>
     <vedlegg>
         <skjemaNummer>J8</skjemaNummer>
+        <skjemanummerTillegg>reiseaktivitet</skjemanummerTillegg>
         <faktum>reise.aktivitet.offentligtransport.aarsak.henting</faktum>
         <property>bolk</property>
         <onValues>true</onValues>
+        <flereTillatt>false</flereTillatt>
     </vedlegg>
     <vedlegg>
         <skjemaNummer>M4</skjemaNummer><!-- skal byttes!! -->
+        <skjemanummerTillegg>reiseaktivitet</skjemanummerTillegg>
         <faktum>reise.aktivitet.offentligtransport.aarsak.annet</faktum>
         <property>bolk</property>
         <onValues>true</onValues>
+        <flereTillatt>false</flereTillatt>
     </vedlegg>
+    
     <!-- vedlegg for reise arbeidssøker -->
     <vedlegg>
         <skjemaNummer>J7</skjemaNummer>
@@ -326,6 +376,7 @@
         <property>bolk</property>
         <onValues>true</onValues>
     </vedlegg>
+    
     <!-- vedlegg for flytting -->
     <vedlegg>
         <skjemaNummer>J7</skjemaNummer>
