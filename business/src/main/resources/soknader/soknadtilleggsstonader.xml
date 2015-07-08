@@ -329,6 +329,11 @@
         <dependOn>informasjonsside.stonad.laeremidler</dependOn>
         <dependOnValue>true</dependOnValue>
     </faktum>
+    <faktum>
+        <id>laeremidler.dekket</id>
+        <dependOn>informasjonsside.stonad.laeremidler</dependOn>
+        <dependOnValue>true</dependOnValue>
+    </faktum>
 
 
     
