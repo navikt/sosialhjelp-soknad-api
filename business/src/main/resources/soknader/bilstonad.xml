@@ -27,12 +27,20 @@
     </faktum>
     <faktum>
         <id>forerkort.skalTaForerkort</id>
+        <dependOn>forerkort.erGyldigINorge</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>forerkort.sokerOmKjoreopplaering</id>
     </faktum>
     <faktum>
         <id>forerkort.andreKanKjore</id>
+        <dependOn>forerkort.skalTaForerkort</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
 
     <!-- Bilen -->
@@ -110,7 +118,7 @@
         <onValues>
             <value>true</value>
         </onValues>
-        <skjemaNummer>Z4</skjemaNummer>
+        <skjemaNummer>Z1</skjemaNummer>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
