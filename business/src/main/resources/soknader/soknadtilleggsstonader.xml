@@ -286,6 +286,9 @@
     <faktum>
         <id>laeremidler.dekket</id>
         <dependOn>informasjonsside.stonad.laeremidler</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
 
 
