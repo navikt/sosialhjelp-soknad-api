@@ -34,7 +34,7 @@
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>informasjonsside.stonad.reisearbeidssøker</id>
+        <id>informasjonsside.stonad.reisearbeidssoker</id>
         <dependOn>informasjonsside.stonad.reise</dependOn>
         <dependOnValues>
             <value>true</value>
