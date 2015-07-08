@@ -1,10 +1,18 @@
-{{#partial "content"}}
+{{#partial "contentbil"}}
+    {{> skjema/bilstonad/informasjonsside }}
+    {{> skjema/bilstonad/bosattUtenforNorge }}
+    {{> skjema/bilstonad/forerkort }}
+    {{> skjema/bilstonad/fastlege/fastlege }}
+    {{> skjema/bilstonad/tilleggsopplysninger }}
+{{/partial}}
+
+{{#partial "contentspesialutstyr"}}
     {{> skjema/bilstonad/informasjonsside }}
     {{> skjema/bilstonad/bosattUtenforNorge }}
     {{> skjema/bilstonad/utstyrTilBilen }}
-    {{> skjema/bilstonad/forerkort }}
     {{> skjema/bilstonad/bilen }}
     {{> skjema/bilstonad/fastlege/fastlege }}
     {{> skjema/bilstonad/tilleggsopplysninger }}
 {{/partial}}
+
 {{> skjema/bilstonad/base }}
