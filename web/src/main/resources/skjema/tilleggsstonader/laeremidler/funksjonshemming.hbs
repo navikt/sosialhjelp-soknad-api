@@ -2,11 +2,7 @@
     <td class="sjekket"></td>
     <td>
         {{#forFaktum "laeremidler.funksjonshemming"}}
-            {{#hvisSant value}}
-                <span>{{ hentTekst "soknad.laeremidler.funksjonshemming.true" }}</span>
-                {{else}}
-                <span>{{ hentTekst "soknad.laeremidler.funksjonshemming.false" }}</span>
-            {{/hvisSant}}
+            <span>{{ hentTekst (concat "soknad.laeremidler.funksjonshemming." value) }}</span>
         {{/forFaktum}}
     </td>
 </tr>
