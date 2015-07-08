@@ -70,6 +70,10 @@
     </faktum>
     <faktum>
         <id>reise.aktivitet.offentligtransport</id>
+        <dependOn>informasjonsside.stonad.reise</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reise.aktivitet.offentligtransport.aarsak.helse</id>
@@ -103,48 +107,108 @@
     <!-- Flytting -->
     <faktum>
         <id>flytting.hvorforflytte</id>
+        <dependOn>informasjonsside.stonad.flytting</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>flytting.nyjobb.startdato</id>
+        <dependOn>informasjonsside.stonad.flytting</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>flytting.nyjobb.flyttedato</id>
+        <dependOn>informasjonsside.stonad.flytting</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>flytting.selvellerbistand</id>
+        <dependOn>informasjonsside.stonad.flytting</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>flytting.nyadresse.gateadresse</id>
+        <dependOn>informasjonsside.stonad.flytting</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>flytting.nyadresse.postnummer</id>
+        <dependOn>informasjonsside.stonad.flytting</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>flytting.tidligere.riktigadresse</id>
+        <dependOn>informasjonsside.stonad.flytting</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>flytting.flytteselv.hvorlangt</id>
+        <dependOn>informasjonsside.stonad.flytting</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>flytting.flyttebyraa.velgforste</id>
+        <dependOn>informasjonsside.stonad.flytting</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>flytting.flyttebyraa.velgandre</id>
+        <dependOn>informasjonsside.stonad.flytting</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>flytting.flyttebyraa.forste.navn</id>
+        <dependOn>informasjonsside.stonad.flytting</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>flytting.flyttebyraa.forste.belop</id>
+        <dependOn>informasjonsside.stonad.flytting</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>flytting.flyttebyraa.andre.navn</id>
+        <dependOn>informasjonsside.stonad.flytting</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>flytting.flyttebyraa.andre.belop</id>
+        <dependOn>informasjonsside.stonad.flytting</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>flytting.flytteselv.andreutgifter</id>
+        <dependOn>informasjonsside.stonad.flytting</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>flytting.flytteselv.andreutgifter.hengerleie</id>
@@ -198,6 +262,24 @@
     <vedlegg>
         <skjemaNummer>TEMP1</skjemaNummer>
         <faktum>reise.aktivitet.medisinskeaarsaker</faktum>
+        <property>bolk</property>
+        <onValues>true</onValues>
+    </vedlegg>
+    <vedlegg>
+        <skjemaNummer>V2</skjemaNummer>
+        <faktum>reise.aktivitet.offentligtransport.aarsak.helse</faktum>
+        <property>bolk</property>
+        <onValues>true</onValues>
+    </vedlegg>
+    <vedlegg>
+        <skjemaNummer>J8</skjemaNummer>
+        <faktum>reise.aktivitet.offentligtransport.aarsak.henting</faktum>
+        <property>bolk</property>
+        <onValues>true</onValues>
+    </vedlegg>
+    <vedlegg>
+        <skjemaNummer>M4</skjemaNummer><!-- skal byttes!! -->
+        <faktum>reise.aktivitet.offentligtransport.aarsak.annet</faktum>
         <property>bolk</property>
         <onValues>true</onValues>
     </vedlegg>
