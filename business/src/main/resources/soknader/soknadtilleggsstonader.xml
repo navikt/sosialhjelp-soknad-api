@@ -283,6 +283,10 @@
         <id>laeremidler.funksjonshemming</id>
         <dependOn>informasjonsside.stonad.laeremidler</dependOn>
     </faktum>
+    <faktum>
+        <id>laeremidler.dekket</id>
+        <dependOn>informasjonsside.stonad.laeremidler</dependOn>
+    </faktum>
 
 
 
