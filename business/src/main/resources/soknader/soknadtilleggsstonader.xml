@@ -5,8 +5,6 @@
         <erSystemFaktum>true</erSystemFaktum>
     </faktum>
 
-
-
     <!-- bolker -->
     <!-- informasjonsside -->
     <faktum>
@@ -312,27 +310,37 @@
     <faktum>
         <id>laeremidler.periode</id>
         <dependOn>informasjonsside.stonad.laeremidler</dependOn>
-        <dependOnValue>true</dependOnValue>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>laeremidler.utdanningstype</id>
         <dependOn>informasjonsside.stonad.laeremidler</dependOn>
-        <dependOnValue>true</dependOnValue>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>laeremidler.deltidsstudent</id>
         <dependOn>informasjonsside.stonad.laeremidler</dependOn>
-        <dependOnValue>true</dependOnValue>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>laeremidler.funksjonshemming</id>
         <dependOn>informasjonsside.stonad.laeremidler</dependOn>
-        <dependOnValue>true</dependOnValue>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>laeremidler.dekket</id>
         <dependOn>informasjonsside.stonad.laeremidler</dependOn>
-        <dependOnValue>true</dependOnValue>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
 
 
@@ -356,7 +364,19 @@
         <skjemanummerTillegg>reiseaktivitet</skjemanummerTillegg>
         <faktum>reise.aktivitet.offentligtransport.aarsak.helse</faktum>
         <property>bolk</property>
-        <onValues>true</onValues>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <flereTillatt>false</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <skjemaNummer>V2</skjemaNummer>
+        <skjemanummerTillegg>reiseaktivitet</skjemanummerTillegg>
+        <faktum>reise.aktivitet.offentligtransport.egenbil.aarsak.helse</faktum>
+        <property>bolk</property>
+        <onValues>
+            <value>true</value>
+        </onValues>
         <flereTillatt>false</flereTillatt>
     </vedlegg>
     <vedlegg>
@@ -364,7 +384,9 @@
         <skjemanummerTillegg>reiseaktivitet</skjemanummerTillegg>
         <faktum>reise.aktivitet.offentligtransport.aarsak.henting</faktum>
         <property>bolk</property>
-        <onValues>true</onValues>
+        <onValues>
+            <value>true</value>
+        </onValues>
         <flereTillatt>false</flereTillatt>
     </vedlegg>
     <vedlegg>
@@ -372,7 +394,19 @@
         <skjemanummerTillegg>reiseaktivitet</skjemanummerTillegg>
         <faktum>reise.aktivitet.offentligtransport.aarsak.annet</faktum>
         <property>bolk</property>
-        <onValues>true</onValues>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <flereTillatt>false</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <skjemaNummer>M4</skjemaNummer><!-- skal byttes!! -->
+        <skjemanummerTillegg>reiseaktivitet</skjemanummerTillegg>
+        <faktum>reise.aktivitet.offentligtransport.egenbil.aarsak.annet</faktum>
+        <property>bolk</property>
+        <onValues>
+            <value>true</value>
+        </onValues>
         <flereTillatt>false</flereTillatt>
     </vedlegg>
     
@@ -381,7 +415,9 @@
         <skjemaNummer>J7</skjemaNummer>
         <faktum>reise.arbeidssoker.hvorforreise</faktum>
         <property>bolk</property>
-        <onValues>jobbintervju</onValues>
+        <onValues>
+            <value>jobbintervju</value>
+        </onValues>
     </vedlegg>
     <vedlegg>
         <skjemaNummer>J7</skjemaNummer>
@@ -396,7 +432,9 @@
         <skjemaNummer>U8</skjemaNummer>
         <faktum>reise.arbeidssoker.reisedekket</faktum>
         <property>bolk</property>
-        <onValues>true</onValues>
+        <onValues>
+            <value>true</value>
+        </onValues>
     </vedlegg>
     
     <!-- vedlegg for flytting -->
@@ -478,6 +516,4 @@
         <property>bolk</property>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
-
-
 </soknad>
