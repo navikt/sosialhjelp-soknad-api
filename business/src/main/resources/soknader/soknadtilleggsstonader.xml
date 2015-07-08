@@ -270,18 +270,22 @@
     <faktum>
         <id>laeremidler.periode</id>
         <dependOn>informasjonsside.stonad.laeremidler</dependOn>
+        <dependOnValue>true</dependOnValue>
     </faktum>
     <faktum>
         <id>laeremidler.utdanningstype</id>
         <dependOn>informasjonsside.stonad.laeremidler</dependOn>
+        <dependOnValue>true</dependOnValue>
     </faktum>
     <faktum>
         <id>laeremidler.deltidsstudent</id>
         <dependOn>informasjonsside.stonad.laeremidler</dependOn>
+        <dependOnValue>true</dependOnValue>
     </faktum>
     <faktum>
         <id>laeremidler.funksjonshemming</id>
         <dependOn>informasjonsside.stonad.laeremidler</dependOn>
+        <dependOnValue>true</dependOnValue>
     </faktum>
 
 
