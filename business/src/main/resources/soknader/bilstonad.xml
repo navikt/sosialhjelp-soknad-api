@@ -94,6 +94,26 @@
         <faktum>utstyrtilbilen.hjelpemidler</faktum>
         <skjemaNummer>Z3</skjemaNummer>
     </vedlegg>
+
+    <!-- Vedlegg // Førerkort -->
+    <vedlegg>
+        <id>2</id>
+        <faktum>forerkort.erGyldigINorge</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>Z4</skjemaNummer>
+    </vedlegg>
+    <vedlegg>
+        <id>3</id>
+        <faktum>forerkort.andreKanKjore</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>Z4</skjemaNummer>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
     <vedlegg>
         <faktum>informasjonsside.bilformal</faktum>
         <skjemaNummer>U2</skjemaNummer>
