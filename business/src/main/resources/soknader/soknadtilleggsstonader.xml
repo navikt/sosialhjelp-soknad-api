@@ -72,28 +72,28 @@
         <id>reise.aktivitet.offentligtransport</id>
     </faktum>
     <faktum>
-        <id>reise.aktivitet.offentligtransport.false.aarsak.helse</id>
+        <id>reise.aktivitet.offentligtransport.aarsak.helse</id>
         <dependOn>reise.aktivitet.offentligtransport</dependOn>
         <dependOnValues>
             <value>false</value>
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>reise.aktivitet.offentligtransport.false.aarsak.transport</id>
+        <id>reise.aktivitet.offentligtransport.aarsak.transport</id>
         <dependOn>reise.aktivitet.offentligtransport</dependOn>
         <dependOnValues>
             <value>false</value>
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>reise.aktivitet.offentligtransport.false.aarsak.henting</id>
+        <id>reise.aktivitet.offentligtransport.aarsak.henting</id>
         <dependOn>reise.aktivitet.offentligtransport</dependOn>
         <dependOnValues>
             <value>false</value>
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>reise.aktivitet.offentligtransport.false.aarsak.annet</id>
+        <id>reise.aktivitet.offentligtransport.aarsak.annet</id>
         <dependOn>reise.aktivitet.offentligtransport</dependOn>
         <dependOnValues>
             <value>false</value>
