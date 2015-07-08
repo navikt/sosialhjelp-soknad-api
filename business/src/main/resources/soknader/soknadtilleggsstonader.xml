@@ -336,6 +336,13 @@
         </dependOnValues>
     </faktum>
     <faktum>
+        <id>laeremidler.funksjonshemming.belop</id>
+        <dependOn>laeremidler.funksjonshemming</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
         <id>laeremidler.dekket</id>
         <dependOn>informasjonsside.stonad.laeremidler</dependOn>
         <dependOnValues>
@@ -518,4 +525,15 @@
         <property>bolk</property>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
+
+    <!-- vedlegg for laremidler -->
+    <vedlegg>
+        <faktum>laeremidler.funksjonshemming</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>V2</skjemaNummer>
+        <property>bolk</property>
+    </vedlegg>
+
 </soknad>
