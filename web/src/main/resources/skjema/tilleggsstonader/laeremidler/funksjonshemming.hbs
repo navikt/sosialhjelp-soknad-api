@@ -1,0 +1,12 @@
+<tr>
+    <td class="sjekket"></td>
+    <td>
+        {{#forFaktum "laeremidler.funksjonshemming"}}
+            {{#hvisSant value}}
+                <span>{{ hentTekst "soknad.laeremidler.funksjonshemming.true" }}</span>
+                {{else}}
+                <span>{{ hentTekst "soknad.laeremidler.funksjonshemming.false" }}</span>
+            {{/hvisSant}}
+        {{/forFaktum}}
+    </td>
+</tr>
