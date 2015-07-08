@@ -268,9 +268,22 @@
 
     <!-- Laeremidler -->
     <faktum>
+        <id>laeremidler.periode</id>
+        <dependOn>informasjonsside.stonad.laeremidler</dependOn>
+    </faktum>
+    <faktum>
         <id>laeremidler.utdanningstype</id>
         <dependOn>informasjonsside.stonad.laeremidler</dependOn>
     </faktum>
+    <faktum>
+        <id>laeremidler.deltidsstudent</id>
+        <dependOn>informasjonsside.stonad.laeremidler</dependOn>
+    </faktum>
+    <faktum>
+        <id>laeremidler.funksjonshemming</id>
+        <dependOn>informasjonsside.stonad.laeremidler</dependOn>
+    </faktum>
+
 
 
 
