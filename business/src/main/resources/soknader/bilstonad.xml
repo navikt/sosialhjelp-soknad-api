@@ -15,6 +15,44 @@
         <id>brukeroversytti.vedlegg</id>
     </faktum>
 
+    <!-- Behov for bil -->
+    <faktum>
+        <id>behovforbil.reisealene</id>
+    </faktum>
+    <faktum>
+        <id>behovforbil.reisemedfolge</id>
+    </faktum>
+    <faktum>
+        <id>behovforbil.belastende.avellerpakollektivtransport</id>
+    </faktum>
+    <faktum>
+        <id>behovforbil.belastende.ingenholdeplasser</id>
+    </faktum>
+    <faktum>
+        <id>behovforbil.belastende.langttilholdeplasser</id>
+    </faktum>
+    <faktum>
+        <id>behovforbil.belastende.langttilholdeplasser.buss</id>
+    </faktum>
+    <faktum>
+        <id>behovforbil.belastende.langttilholdeplasser.trikk</id>
+    </faktum>
+    <faktum>
+        <id>behovforbil.belastende.langttilholdeplasser.bane</id>
+    </faktum>
+    <faktum>
+        <id>behovforbil.belastende.langttilholdeplasser.tog</id>
+    </faktum>
+    <faktum>
+        <id>behovforbil.belastende.langttilholdeplasser.bat</id>
+    </faktum>
+
+    <faktum>
+        <id>behovforbil.belastende.andrearsaker</id>
+    </faktum>
+    <faktum>
+        <id>behovforbil.belastende.andrearsaker.beskrivelse</id>
+    </faktum>
     <!-- Utstyr til bilen -->
     <faktum>
         <id>utstyrtilbilen.spesialutstyr</id>
