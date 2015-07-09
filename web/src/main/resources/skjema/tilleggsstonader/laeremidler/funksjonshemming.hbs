@@ -1,8 +1,20 @@
-<tr>
-    <td class="sjekket"></td>
-    <td>
-        {{#forFaktum "laeremidler.funksjonshemming"}}
+{{#forFaktum "laeremidler.funksjonshemming"}}
+    <tr>
+        <td class="sjekket"></td>
+        <td>
             <span>{{ hentTekst (concat "soknad.laeremidler.funksjonshemming." value) }}</span>
-        {{/forFaktum}}
-    </td>
-</tr>
+            {{#hvisSant value}}
+                <span>{{ hentTekst (concat "soknad.laeremidler.funksjonshemming." value) }}</span>
+            {{/hvisSant}}
+        </td>
+    </tr>
+    <tr>
+        <td class="sjekket"></td>
+        <td>
+            <span>{{ hentTekst (concat "soknad.laeremidler.funksjonshemming." value) }}</span>
+            {{#hvisSant value}}
+                <span>{{ hentTekst "soknad.laeremidler.funksjonshemming.utgift.oppsummering" }} {{properties.utgift}} </span>
+            {{/hvisSant}}
+        </td>
+    </tr>
+{{/forFaktum}}
