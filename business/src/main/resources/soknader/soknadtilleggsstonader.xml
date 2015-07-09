@@ -474,6 +474,15 @@
         </onValues>
         <property>bolk</property>
     </vedlegg>
+    <vedlegg>
+        <skjemaNummer>U8</skjemaNummer>
+        <skjemanummerTillegg>reiseaktivitet</skjemanummerTillegg>
+        <faktum>reise.aktivitet.offentligtransport.drosje</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <property>bolk</property>
+    </vedlegg>
     
     <!-- vedlegg for reise arbeidssøker -->
     <vedlegg>
