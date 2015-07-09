@@ -158,6 +158,27 @@
             <value>true</value>
         </dependOnValues>
     </faktum>
+    <faktum>
+        <id>reise.aktivitet.offentligtransport.drosje</id>
+        <dependOn>reise.aktivitet.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.aktivitet.offentligtransport.drosje.tekst</id>
+        <dependOn>reise.aktivitet.offentligtransport.drosje</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.aktivitet.offentligtransport.drosje.belop</id>
+        <dependOn>reise.aktivitet.offentligtransport.drosje</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
 
     <!-- Flytting -->
     <faktum>
