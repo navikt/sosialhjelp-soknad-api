@@ -179,6 +179,13 @@
             <value>true</value>
         </dependOnValues>
     </faktum>
+    <faktum>
+        <id>reise.aktivitet.offentligtransport.egenbil.kostnader</id>
+        <dependOn>reise.aktivitet.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
 
     <!-- Flytting -->
     <faktum>
@@ -370,8 +377,6 @@
             <value>true</value>
         </dependOnValues>
     </faktum>
-
-
     
     <!-- Tilleggsopplysninger -->
     <faktum>
@@ -439,6 +444,15 @@
         </onValues>
         <flereTillatt>false</flereTillatt>
     </vedlegg>
+    <vedlegg>
+        <skjemaNummer>J6</skjemaNummer>
+        <skjemanummerTillegg>reiseaktivitet</skjemanummerTillegg>
+        <faktum>reise.aktivitet.offentligtransport.egenbil</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <property>bolk</property>
+    </vedlegg>
     
     <!-- vedlegg for reise arbeidssøker -->
     <vedlegg>
@@ -476,7 +490,6 @@
             <value>nyjobb</value>
         </onValues>
     </vedlegg>
-
     <vedlegg>
         <faktum>flytting.selvellerbistand</faktum>
         <onValues>
@@ -486,7 +499,6 @@
         <property>bolk</property>
         <skjemaNummer>J5</skjemaNummer>
     </vedlegg>
-
     <vedlegg>
         <faktum>flytting.flytteselv.andreutgifter</faktum>
         <onValues>
