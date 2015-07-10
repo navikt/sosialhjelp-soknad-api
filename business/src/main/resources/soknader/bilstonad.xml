@@ -80,6 +80,22 @@
     <faktum>
         <id>behovforbil.hjelpemidler.beskrivelse</id>
     </faktum>
+
+    <!-- Inntekt -->
+    <faktum>
+        <id>inntekt.egen</id>
+    </faktum>
+    <faktum>
+        <id>inntekt.partner</id>
+        <dependOn>inntekt.egen</dependOn>
+        <dependOnValues>
+            <value>nei</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>inntekt.felles</id>
+    </faktum>
+
     <!-- Utstyr til bilen -->
     <faktum>
         <id>utstyrtilbilen.spesialutstyr</id>
@@ -173,6 +189,14 @@
         <skjemaNummer>Z3</skjemaNummer>
     </vedlegg>
 
+    <vedlegg>
+        <faktum>inntekt.partner</faktum>
+        <onValues>
+            <value>ja</value>
+            <value>nei</value>
+        </onValues>
+        <skjemaNummer>X3</skjemaNummer>
+    </vedlegg>
     <!-- Vedlegg // Førerkort -->
     <vedlegg>
         <id>2</id>
