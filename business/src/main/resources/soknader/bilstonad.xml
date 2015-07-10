@@ -15,6 +15,23 @@
         <id>brukeroversytti.vedlegg</id>
     </faktum>
 
+    <!-- Bil og utstyr -->
+    <faktum>
+        <id>bilogutstyr.hvaSlagsBil</id>
+    </faktum>
+    <faktum>
+        <id>bilogutstyr.spesialutstyr.beskrivelse</id>
+    </faktum>
+    <faktum>
+        <id>bilogutstyr.hjelpemidler</id>
+    </faktum>
+    <faktum>
+        <id>bilogutstyr.hjelpemidler.harBehov.beskrivelse</id>
+    </faktum>
+    <faktum>
+        <id>bilogutstyr.firehjulstrekk</id>
+    </faktum>
+
     <!-- Behov for bil -->
     <faktum>
         <id>behovforbil.reisealene</id>
@@ -220,6 +237,15 @@
     <vedlegg>
         <faktum>informasjonsside.bilformal</faktum>
         <skjemaNummer>U2</skjemaNummer>
+    </vedlegg>
+
+    <vedlegg>
+        <id>4</id>
+        <faktum>bilogutstyr.firehjulstrekk</faktum>
+        <onValues>
+            <value>harBehov</value>
+        </onValues>
+        <skjemaNummer>Y9</skjemaNummer>
     </vedlegg>
 
     <!-- Ekstra vedlegg -->
