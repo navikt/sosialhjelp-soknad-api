@@ -53,6 +53,18 @@
     <faktum>
         <id>behovforbil.belastende.andrearsaker.beskrivelse</id>
     </faktum>
+    <faktum>
+        <id>behovforbil.behovforegenbil</id>
+    </faktum>
+    <faktum>
+        <id>behovforbil.stotteordninger.harttkort</id>
+    </faktum>
+    <faktum>
+        <id>behovforbil.stotteordninger.grunnstonad</id>
+    </faktum>
+    <faktum>
+        <id>behovforbil.stotteordninger.soktttkort</id>
+    </faktum>
     <!-- Utstyr til bilen -->
     <faktum>
         <id>utstyrtilbilen.spesialutstyr</id>
