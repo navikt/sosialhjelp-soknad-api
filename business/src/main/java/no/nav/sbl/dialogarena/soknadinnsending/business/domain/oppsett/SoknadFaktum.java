@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
+import static org.apache.commons.lang3.StringUtils.countMatches;
 public class SoknadFaktum implements Serializable {
 
     private String id;
@@ -121,7 +122,7 @@ public class SoknadFaktum implements Serializable {
                     return -1;
                 }
                 else {
-                    return 0;
+                  return countMatches(sf1.getDependOn().getId(), ".") - countMatches(sf2.getDependOn().getId(), ".");
                 }
             }
         };
