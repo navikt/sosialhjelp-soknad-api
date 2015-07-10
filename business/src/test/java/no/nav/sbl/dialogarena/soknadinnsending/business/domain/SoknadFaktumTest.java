@@ -30,13 +30,11 @@ public class SoknadFaktumTest {
     @Test
     public void faktumMedDependencySorteresEtterNivaa() {
         SoknadFaktum sf1 = new SoknadFaktum();
-        sf1.setId("faktum");
         SoknadFaktum dependencySf1 = new SoknadFaktum();
         dependencySf1.setId("faktum");
         sf1.setDependOn(dependencySf1);
 
         SoknadFaktum sf2 = new SoknadFaktum();
-        sf2.setId("faktum");
         SoknadFaktum dependencySf2 = new SoknadFaktum();
         dependencySf2.setId("faktum.dependency");
         sf2.setDependOn(dependencySf2);
