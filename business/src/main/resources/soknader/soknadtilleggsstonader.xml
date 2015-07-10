@@ -187,6 +187,22 @@
         </dependOnValues>
     </faktum>
     <faktum>
+        <id>reise.aktivitet.offentligtransport.egenbil.kostnader.bompenger</id>
+        <dependOn>reise.aktivitet.offentligtransport.egenbil.kostnader</dependOn>
+    </faktum>
+    <faktum>
+        <id>reise.aktivitet.offentligtransport.egenbil.kostnader.piggdekk</id>
+        <dependOn>reise.aktivitet.offentligtransport.egenbil.kostnader</dependOn>
+    </faktum>
+    <faktum>
+        <id>reise.aktivitet.offentligtransport.egenbil.kostnader.ferge</id>
+        <dependOn>reise.aktivitet.offentligtransport.egenbil.kostnader</dependOn>
+    </faktum>
+    <faktum>
+        <id>reise.aktivitet.offentligtransport.egenbil.kostnader.annet</id>
+        <dependOn>reise.aktivitet.offentligtransport.egenbil.kostnader</dependOn>
+    </faktum>
+    <faktum>
         <id>reise.aktivitet.offentligtransport.egenbil.parkering</id>
         <dependOn>reise.aktivitet.offentligtransport.egenbil</dependOn>
         <dependOnValues>
@@ -468,7 +484,7 @@
     <vedlegg>
         <skjemaNummer>J6</skjemaNummer>
         <skjemanummerTillegg>reiseaktivitet</skjemanummerTillegg>
-        <faktum>reise.aktivitet.offentligtransport.egenbil</faktum>
+        <faktum>reise.aktivitet.offentligtransport.egenbil.kostnader</faktum>
         <onValues>
             <value>true</value>
         </onValues>
