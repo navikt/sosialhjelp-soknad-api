@@ -65,6 +65,21 @@
     <faktum>
         <id>behovforbil.stotteordninger.soktttkort</id>
     </faktum>
+    <faktum>
+        <id>behovforbil.antallreisertilfraarbeid</id>
+    </faktum>
+    <faktum>
+        <id>behovforbil.avstandtilarbeidsplass</id>
+    </faktum>
+    <faktum>
+        <id>behovforbil.hvordandekkesbehov.beskrivelse</id>
+    </faktum>
+    <faktum>
+        <id>behovforbil.hjelpemidler</id>
+    </faktum>
+    <faktum>
+        <id>behovforbil.hjelpemidler.beskrivelse</id>
+    </faktum>
     <!-- Utstyr til bilen -->
     <faktum>
         <id>utstyrtilbilen.spesialutstyr</id>
