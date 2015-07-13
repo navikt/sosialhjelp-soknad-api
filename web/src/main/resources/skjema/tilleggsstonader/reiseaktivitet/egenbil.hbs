@@ -39,35 +39,33 @@
         </tr>
     {{/forFaktum}}
 
-    {{#forFaktum "reise.aktivitet.offentligtransport.egenbil.parkering"}}
-        {{#hvisSant value}}
+    {{#forFaktumHvisSant "reise.aktivitet.offentligtransport.egenbil.parkering"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td><span>{{hentTekst "soknad.reise.offentligtransport.egenbil.parkering.true"}}</span></td>
+        </tr>
+        {{#forFaktum "reise.aktivitet.offentligtransport.egenbil.parkering.belop"}}
             <tr>
                 <td class="sjekket"></td>
-                <td><span>{{hentTekst "soknad.reise.offentligtransport.egenbil.parkering.true"}}</span></td>
+                <td>{{value}} {{hentTekst "soknad.krmnd"}}</td>
             </tr>
-            {{#forFaktum "reise.aktivitet.offentligtransport.egenbil.parkering.belop"}}
-                <tr>
-                    <td class="sjekket"></td>
-                    <td>{{value}} {{hentTekst "soknad.krmnd"}}</td>
-                </tr>
-            {{/forFaktum}}
-            {{#forFaktum "reise.aktivitet.offentligtransport.egenbil.sendebekreftelse"}}
-                <tr>
-                    <td class="sjekket"></td>
-                {{#hvisLik value "uke"}}
-                    <td>{{hentTekst "soknad.reise.offentligtransport.egenbil.sendebekreftelse.uke"}}</td>
-                {{else}}
-                    <td>{{hentTekst "soknad.reise.offentligtransport.egenbil.sendebekreftelse.maned"}}</td>
-                {{/hvisLik}}
-                </tr>
-            {{/forFaktum}}
-        {{else}}
+        {{/forFaktum}}
+        {{#forFaktum "reise.aktivitet.offentligtransport.egenbil.sendebekreftelse"}}
             <tr>
                 <td class="sjekket"></td>
-                <td><span>{{hentTekst "soknad.reise.offentligtransport.egenbil.parkering.false"}}</span></td>
+            {{#hvisLik value "uke"}}
+                <td>{{hentTekst "soknad.reise.offentligtransport.egenbil.sendebekreftelse.uke"}}</td>
+            {{else}}
+                <td>{{hentTekst "soknad.reise.offentligtransport.egenbil.sendebekreftelse.maned"}}</td>
+            {{/hvisLik}}
             </tr>
-        {{/hvisSant}}
-    {{/forFaktum}}
+        {{/forFaktum}}
+    {{else}}
+        <tr>
+            <td class="sjekket"></td>
+            <td><span>{{hentTekst "soknad.reise.offentligtransport.egenbil.parkering.false"}}</span></td>
+        </tr>
+    {{/forFaktumHvisSant}}
 {{else}}
     <tr>
         <td class="sjekket"></td>
