@@ -20,5 +20,44 @@
                 <td class="sjekket"></td><td><span>{{ hentTekst "soknad.felles.utbetalingsdato.velgdato.oppsummering" }} {{value}}{{ hentTekst "soknad.felles.utbetalingsdato.velgdato.oppsummering.postfix" }}</span></td>
             {{/forFaktum}}
         </tr>
+    {{else}}
+        <tr>
+            <td></td>
+            <td>
+                <p class="overskrift">{{hentTekst "oppsummering.reise.aktivitet.offentligtransport.aarsak"}}</p>
+                <table>
+                    {{#forFaktum "reise.aktivitet.offentligtransport.aarsak.helse"}}
+                        <tr>
+                            <td class="sjekket"></td>
+                            <td><span>{{hentTekst "soknad.reise.aktivitet.offentligtransport.aarsak.helse"}}</span></td>
+                        </tr>
+                    {{/forFaktum}}
+                    {{#forFaktum "reise.aktivitet.offentligtransport.aarsak.transport"}}
+                        <tr>
+                            <td class="sjekket"></td>
+                            <td><span>{{hentTekst "soknad.reise.aktivitet.offentligtransport.aarsak.transport"}}</span></td>
+                        </tr>
+                    {{/forFaktum}}
+                    {{#forFaktum "reise.aktivitet.offentligtransport.aarsak.henting"}}
+                        <tr>
+                            <td class="sjekket"></td>
+                            <td><span>{{hentTekst "soknad.reise.aktivitet.offentligtransport.aarsak.henting"}}</span></td>
+                        </tr>
+                    {{/forFaktum}}
+                    {{#forFaktum "reise.aktivitet.offentligtransport.aarsak.annet"}}
+                        <tr>
+                            <td class="sjekket"></td>
+                            <td>
+                                <span>{{hentTekst "soknad.reise.aktivitet.offentligtransport.aarsak.annet"}}:</span>
+                                {{#forFaktum "reise.aktivitet.offentligtransport.aarsak.annet.tekst"}}
+                                    <span>{{value}}</span>
+                                {{/forFaktum}}
+                            </td>
+                        </tr>
+                    {{/forFaktum}}
+                </table>
+            </td>
+        </tr>
+        {{> skjema/tilleggsstonader/reiseaktivitet/egenbil}}
     {{/hvisSant}}
 {{/forFaktum}}
