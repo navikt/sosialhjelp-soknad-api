@@ -1,0 +1,61 @@
+<h2>{{ hentTekst "behovforbil.tittel" }}</h2>
+<table>
+    {{#forFaktum "behovforbil.reisealene"}}
+        {{#hvisLik value "nei"}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>{{ hentTekst "behovforbil.reisealene.nei"}}</td>
+            </tr>
+            {{#forFaktum "behovforbil.reisemedfolge"}}
+                {{#hvisLik value "ja"}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>{{ hentTekst "behovforbil.reisemedfolge.ja" }}</td>
+                    </tr>
+                {{/hvisLik}}
+                {{#hvisLik value "nei"}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>{{ hentTekst "behovforbil.reisemedfolge.nei" }}</td>
+                    </tr>
+                {{/hvisLik}}
+            {{/forFaktum}}
+            {{#forFaktumSant "behovforbil.belastende.avellerpakollektivtransport"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td>{{ hentTekst "behovforbil.belastende.avellerpakollektivtransport.label"}}</td>
+                <tr>
+            {{/forFaktumSant}}
+            {{#forFaktumSant "behovforbil.belastende.ingenholdeplasser"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td>{{ hentTekst "behovforbil.belastende.ingenholdeplasser.label"}}</td>
+                <tr>
+            {{/forFaktumSant}}
+            {{#forFaktumSant "behovforbil.belastende.langttilholdeplasser"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td>{{ hentTekst "behovforbil.belastende.langttilholdeplasser.label"}}</td>
+                <tr>
+                {{#forFaktum "behovforbil.belastende.langttilholdeplasser.buss"}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>{{ hentTekst "behovforbil.belastende.langttilholdeplasser.buss.label" }} </td>
+                    <tr>
+                {{/forFaktum}}
+            {{/forFaktumSant}}
+            {{#forFaktumSant "behovforbil.belastende.avellerpakollektivtransport"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td>{{ hentTekst "behovforbil.belastende.avellerpakollektivtransport.label"}}</td>
+                <tr>
+            {{/forFaktumSant}}
+        {{/hvisLik}}
+        {{#hvisLik value "ja"}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>{{ hentTekst "behovforbil.reisealene.ja"}}</td>
+            </tr>
+        {{/hvisLik}}
+    {{/forFaktum}}
+</table>
