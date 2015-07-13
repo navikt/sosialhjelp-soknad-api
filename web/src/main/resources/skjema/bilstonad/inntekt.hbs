@@ -1,0 +1,71 @@
+<table>
+    {{#forFaktum "informasjonsside.bilformal"}}
+        {{#hvisLik "arbeidutdanning" value}}
+            <h2>{{ hentTekst "inntekt.tittel" }}</h2>
+
+            {{#forFaktum "inntekt.egen"}}
+
+                {{#hvisLik "ja" value}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>{{ hentTekst "arbeidutdanning.inntekt.egen.ja" }}</td>
+                    </tr>
+                {{/hvisLik}}
+
+                {{#hvisLik "nei" value}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>{{ hentTekst "arbeidutdanning.inntekt.egen.nei" }}</td>
+                    </tr>
+
+                    {{#forFaktum "inntekt.partner"}}
+
+                        {{#hvisLik "harikke" value}}
+                            <tr>
+                                <td class="sjekket"></td>
+                                <td>{{ hentTekst "arbeidutdanning.inntekt.partner.harikke" }}</td>
+                            </tr>
+                        {{/hvisLik}}
+
+                        {{#hvisLik "nei" value}}
+                            <tr>
+                                <td class="sjekket"></td>
+                                <td>{{ hentTekst "arbeidutdanning.inntekt.partner.nei" }}</td>
+                            </tr>
+
+                            {{#forFaktum "inntekt.felles"}}
+
+                                {{#hvisLik "nei" value}}
+                                    <tr>
+                                        <td class="sjekket"></td>
+                                        <td>{{ hentTekst "arbeidutdanning.inntekt.felles.nei" }}</td>
+                                    </tr>
+                                {{/hvisLik}}
+
+                                {{#hvisLik "ja" value}}
+                                    <tr>
+                                        <td class="sjekket"></td>
+                                        <td>{{ hentTekst "arbeidutdanning.inntekt.felles.ja" }}</td>
+                                    </tr>
+                                {{/hvisLik}}
+
+                            {{/forFaktum}}
+
+                        {{/hvisLik}}
+
+                        {{#hvisLik "ja" value}}
+                            <tr>
+                                <td class="sjekket"></td>
+                                <td>{{ hentTekst "arbeidutdanning.inntekt.partner.ja" }}</td>
+                            </tr>
+                        {{/hvisLik}}
+
+                    {{/forFaktum}}
+
+                {{/hvisLik}}
+
+            {{/forFaktum}}
+
+        {{/hvisLik}}
+    {{/forFaktum}}
+</table>
