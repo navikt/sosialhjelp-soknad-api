@@ -98,7 +98,7 @@
                         <td>
                             <span>{{hentTekst "soknad.reise.offentligtransport.egenbil.aarsak.annet"}}:</span>
                             {{#forFaktum "reise.aktivitet.offentligtransport.egenbil.aarsak.annet.tekst"}}
-                                <span>{{value}}</span>
+                                <em>{{value}}</em>
                             {{/forFaktum}}
                         </td>
                     </tr>
@@ -107,39 +107,37 @@
         </td>
     </tr>
 
-    {{#forFaktum "reise.aktivitet.offentligtransport.drosje"}}
-        {{#hvisSant value}}
-            <tr>
-                <td class="sjekket"></td>
-                <td><span>{{hentTekst "soknad.reise.offentligtransport.egenbil.drosje.true"}}</span></td>
-            </tr>
-            {{#forFaktum "reise.aktivitet.offentligtransport.drosje"}}
-                <tr>
-                    <td class="sjekket"></td>
-                    <td>
-                        <span>{{hentTekst "oppsummering.reise.aktivitet.offentligtransport.drosje.belop"}}</span>
-                        <span>{{value}}</span>
-                        <span>{{hentTekst "soknad.krdag"}}</span>
-                    </td>
-                </tr>
-            {{/forFaktum}}
-        {{else}}
+    {{#forFaktumHvisSant "reise.aktivitet.offentligtransport.drosje"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td><span>{{hentTekst "soknad.reise.offentligtransport.egenbil.drosje.true"}}</span></td>
+        </tr>
+        {{#forFaktum "reise.aktivitet.offentligtransport.drosje"}}
             <tr>
                 <td class="sjekket"></td>
                 <td>
-                    <span>{{hentTekst "soknad.reise.offentligtransport.egenbil.drosje.false"}}</span>
-                    {{#forFaktum "reise.aktivitet.offentligtransport.drosje.tekst"}}
-                        <table>
-                            <tr>
-                                <td class="sjekket"></td>
-                                <td>
-                                    <span>{{value}}</span>
-                                </td>
-                            </tr>
-                        </table>
-                    {{/forFaktum}}
+                    <span>{{hentTekst "oppsummering.reise.aktivitet.offentligtransport.drosje.belop"}}</span>
+                    <span>{{value}}</span>
+                    <span>{{hentTekst "soknad.krdag"}}</span>
                 </td>
             </tr>
-        {{/hvisSant}}
-    {{/forFaktum}}
+        {{/forFaktum}}
+    {{else}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>{{hentTekst "soknad.reise.offentligtransport.egenbil.drosje.false"}}</span>
+                {{#forFaktum "reise.aktivitet.offentligtransport.drosje.tekst"}}
+                    <table>
+                        <tr>
+                            <td class="sjekket"></td>
+                            <td>
+                                <span>{{value}}</span>
+                            </td>
+                        </tr>
+                    </table>
+                {{/forFaktum}}
+            </td>
+        </tr>
+    {{/forFaktumHvisSant}}
 {{/forFaktumHvisSant}}

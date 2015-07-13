@@ -12,7 +12,8 @@
     {{#hvisSant value}}
         <tr>
             {{#forFaktum "reise.aktivitet.offentligtransport.utgift"}}
-                <td class="sjekket"></td><td><span>{{ hentTekst "soknad.reise.aktivitet.offentligtransport.utgift.oppsummering" }}: {{value}} {{hentTekst "soknad.krmnd"}}</span></td>
+                <td class="sjekket"></td>
+                <td><span>{{ hentTekst "soknad.reise.aktivitet.offentligtransport.utgift.oppsummering" }}: {{value}} {{hentTekst "soknad.krmnd"}}</span></td>
             {{/forFaktum}}
         </tr>
         <tr>
@@ -50,7 +51,7 @@
                             <td>
                                 <span>{{hentTekst "soknad.reise.aktivitet.offentligtransport.aarsak.annet"}}:</span>
                                 {{#forFaktum "reise.aktivitet.offentligtransport.aarsak.annet.tekst"}}
-                                    <span>{{value}}</span>
+                                    <em>{{value}}</em>
                                 {{/forFaktum}}
                             </td>
                         </tr>
