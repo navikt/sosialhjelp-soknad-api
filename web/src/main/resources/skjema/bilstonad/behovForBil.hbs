@@ -20,36 +20,54 @@
                     </tr>
                 {{/hvisLik}}
             {{/forFaktum}}
-            {{#forFaktumSant "behovforbil.belastende.avellerpakollektivtransport"}}
+            {{#forFaktumHvisSant "behovforbil.belastende.avellerpakollektivtransport"}}
                 <tr>
                     <td class="sjekket"></td>
                     <td>{{ hentTekst "behovforbil.belastende.avellerpakollektivtransport.label"}}</td>
                 <tr>
-            {{/forFaktumSant}}
-            {{#forFaktumSant "behovforbil.belastende.ingenholdeplasser"}}
+            {{/forFaktumHvisSant}}
+            {{#forFaktumHvisSant "behovforbil.belastende.ingenholdeplasser"}}
                 <tr>
                     <td class="sjekket"></td>
                     <td>{{ hentTekst "behovforbil.belastende.ingenholdeplasser.label"}}</td>
                 <tr>
-            {{/forFaktumSant}}
-            {{#forFaktumSant "behovforbil.belastende.langttilholdeplasser"}}
+            {{/forFaktumHvisSant}}
+            {{#forFaktumHvisSant "behovforbil.belastende.langttilholdeplasser"}}
                 <tr>
                     <td class="sjekket"></td>
-                    <td>{{ hentTekst "behovforbil.belastende.langttilholdeplasser.label"}}</td>
-                <tr>
-                {{#forFaktum "behovforbil.belastende.langttilholdeplasser.buss"}}
-                    <tr>
-                        <td class="sjekket"></td>
-                        <td>{{ hentTekst "behovforbil.belastende.langttilholdeplasser.buss.label" }} </td>
-                    <tr>
-                {{/forFaktum}}
-            {{/forFaktumSant}}
-            {{#forFaktumSant "behovforbil.belastende.avellerpakollektivtransport"}}
+                    <td>
+                        <span>{{ hentTekst "behovforbil.belastende.langttilholdeplasser.label"}}</span>
+                        <ul>
+                            {{#forFaktum "behovforbil.belastende.langttilholdeplasser.buss"}}
+                                <li class="kulepunkt faktum-felt">{{ hentTekst "behovforbil.belastende.langttilholdeplasser.buss.label" }}: {{value}} {{ hentTekst "behovforbil.belastende.langttilholdeplasser.enhet"}}</li>
+                            {{/forFaktum}}
+                            {{#forFaktum "behovforbil.belastende.langttilholdeplasser.trikk"}}
+                                <li class="kulepunkt faktum-felt">{{ hentTekst "behovforbil.belastende.langttilholdeplasser.trikk.label" }}: {{value}} {{ hentTekst "behovforbil.belastende.langttilholdeplasser.enhet"}}</li>
+                            {{/forFaktum}}
+                            {{#forFaktum "behovforbil.belastende.langttilholdeplasser.bane"}}
+                                <li class="kulepunkt faktum-felt">{{ hentTekst "behovforbil.belastende.langttilholdeplasser.bane.label" }}: {{value}} {{ hentTekst "behovforbil.belastende.langttilholdeplasser.enhet"}}</li>
+                            {{/forFaktum}}
+                            {{#forFaktum "behovforbil.belastende.langttilholdeplasser.tog"}}
+                                <li class="kulepunkt faktum-felt">{{ hentTekst "behovforbil.belastende.langttilholdeplasser.tog.label" }}: {{value}} {{ hentTekst "behovforbil.belastende.langttilholdeplasser.enhet"}}</li>
+                            {{/forFaktum}}
+                            {{#forFaktum "behovforbil.belastende.langttilholdeplasser.bat"}}
+                                <li class="kulepunkt faktum-felt">{{ hentTekst "behovforbil.belastende.langttilholdeplasser.bat.label" }}: {{value}} {{ hentTekst "behovforbil.belastende.langttilholdeplasser.enhet"}}</li>
+                            {{/forFaktum}}
+                        </ul>
+                    </td>
+                </tr>
+            {{/forFaktumHvisSant}}
+            {{#forFaktumHvisSant "behovforbil.belastende.andrearsaker"}}
                 <tr>
                     <td class="sjekket"></td>
-                    <td>{{ hentTekst "behovforbil.belastende.avellerpakollektivtransport.label"}}</td>
+                    <td>
+                        <p>{{ hentTekst "behovforbil.belastende.andrearsaker.label"}}</p>
+                        {{#forFaktum "behovforbil.belastende.andrearsaker.beskrivelse"}}
+                            <em>{{ value }}</em>
+                        {{/forFaktum}}
+                    </td>
                 <tr>
-            {{/forFaktumSant}}
+            {{/forFaktumHvisSant}}
         {{/hvisLik}}
         {{#hvisLik value "ja"}}
             <tr>
