@@ -421,6 +421,20 @@
             <value>true</value>
         </dependOnValues>
     </faktum>
+    <faktum>
+        <id>laeremidler.dekket.delvis.annenaktor</id>
+        <dependOn>laeremidler.dekket</dependOn>
+        <dependOnValues>
+            <value>delvis</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>laeremidler.dekket.delvis.nav</id>
+        <dependOn>laeremidler.dekket</dependOn>
+        <dependOnValues>
+            <value>delvis</value>
+        </dependOnValues>
+    </faktum>
     
     <!-- Tilleggsopplysninger -->
     <faktum>
@@ -619,6 +633,15 @@
             <value>true</value>
         </onValues>
         <skjemaNummer>V2</skjemaNummer>
+        <property>bolk</property>
+    </vedlegg>
+    <vedlegg>
+        <faktum>laeremidler.dekket</faktum>
+        <onValues>
+            <value>nei</value>
+            <value>delvis</value>
+        </onValues>
+        <skjemaNummer>Q7</skjemaNummer>
         <property>bolk</property>
     </vedlegg>
 
