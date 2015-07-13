@@ -58,6 +58,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
 
         handlebars.registerHelper("adresse", generateAdresseHelper());
         handlebars.registerHelper("forFaktum", generateForFaktumHelper());
+        handlebars.registerHelper("forFaktumSant", generateForFaktumSantHelper());
         handlebars.registerHelper("forFakta", generateForFaktaHelper());
         handlebars.registerHelper("forBarnefakta", generateForBarnefaktaHelper());
         handlebars.registerHelper("forFaktaMedPropertySattTilTrue", generateForFaktaMedPropTrueHelper());
@@ -498,6 +499,22 @@ public class HandleBarKjoerer implements HtmlGenerator {
                     return options.inverse(this);
                 } else {
                     return options.fn(faktum);
+                }
+            }
+        };
+    }
+
+    private Helper<String> generateForFaktumSantHelper() {
+        return new Helper<String>() {
+            @Override
+            public CharSequence apply(String o, Options options) throws IOException {
+                WebSoknad soknad = finnWebSoknad(options.context);
+                Faktum faktum = soknad.getFaktumMedKey(o);
+
+                if (faktum != null && faktum.getValue() != null && !faktum.getValue().equals("false")) {
+                    return options.fn(faktum);
+                } else {
+                    return options.inverse(this);
                 }
             }
         };
