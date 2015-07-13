@@ -387,6 +387,13 @@
         </dependOnValues>
     </faktum>
     <faktum>
+        <id>laeremidler.utdanningstype.spesifiser</id>
+        <dependOn>laeremidler.utdanningstype</dependOn>
+        <dependOnValues>
+            <value>annet</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
         <id>laeremidler.deltidsstudent</id>
         <dependOn>informasjonsside.stonad.laeremidler</dependOn>
         <dependOnValues>

@@ -10,6 +10,9 @@
             {{/hvisLik}}
             {{#hvisLik value "annet"}}
                 <span>{{ hentTekst "soknad.laeremidler.utdanningstype.annet.oppsummering" }}</span>
+                {{#forFaktum "laeremidler.utdanningstype.spesifiser"}}
+                    <p><em>{{value}}</em></p>
+                {{/forFaktum}}
             {{/hvisLik}}
         {{/forFaktum}}
     </td>
