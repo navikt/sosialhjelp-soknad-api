@@ -8,32 +8,32 @@
         <tr>
             <td></td>
             <td>
-                <p class="overskrift">{{hentTekst "oppsummering.reise.aktivitet.offentligtransport.egenbil.kostnader"}}</p>
+                <p class="overskrift">{{hentTekst "oppsummering.reise.offentligtransport.egenbil.kostnader"}}</p>
                 <table>
-                    {{#forFaktumHvisSant "reise.aktivitet.offentligtransport.egenbil.kostnader.bompenger"}}
+                    {{#forFaktum "reise.aktivitet.offentligtransport.egenbil.kostnader.bompenger"}}
                         <tr>
                             <td class="sjekket"></td>
                             <td>{{hentTekst "soknad.reise.offentligtransport.egenbil.kostnader.bompenger.label"}}: {{value}} {{hentTekst "soknad.krmnd"}}</td>
                         </tr>
-                    {{/forFaktumHvisSant}}
-                    {{#forFaktumHvisSant "reise.aktivitet.offentligtransport.egenbil.kostnader.piggdekk"}}
+                    {{/forFaktum}}
+                    {{#forFaktum "reise.aktivitet.offentligtransport.egenbil.kostnader.piggdekk"}}
                         <tr>
                             <td class="sjekket"></td>
                             <td>{{hentTekst "soknad.reise.offentligtransport.egenbil.kostnader.piggdekk.label"}}: {{value}} {{hentTekst "soknad.krmnd"}}</td>
                         </tr>
-                    {{/forFaktumHvisSant}}
-                    {{#forFaktumHvisSant "reise.aktivitet.offentligtransport.egenbil.kostnader.ferge"}}
+                    {{/forFaktum}}
+                    {{#forFaktum "reise.aktivitet.offentligtransport.egenbil.kostnader.ferge"}}
                         <tr>
                             <td class="sjekket"></td>
                             <td>{{hentTekst "soknad.reise.offentligtransport.egenbil.kostnader.ferge.label"}}: {{value}} {{hentTekst "soknad.krmnd"}}</td>
                         </tr>
-                    {{/forFaktumHvisSant}}
-                    {{#forFaktumHvisSant "reise.aktivitet.offentligtransport.egenbil.kostnader.annet"}}
+                    {{/forFaktum}}
+                    {{#forFaktum "reise.aktivitet.offentligtransport.egenbil.kostnader.annet"}}
                         <tr>
                             <td class="sjekket"></td>
                             <td>{{hentTekst "soknad.reise.offentligtransport.egenbil.kostnader.annet.label"}}: {{value}} {{hentTekst "soknad.krmnd"}}</td>
                         </tr>
-                    {{/forFaktumHvisSant}}
+                    {{/forFaktum}}
                 </table>
             </td>
         </tr>
