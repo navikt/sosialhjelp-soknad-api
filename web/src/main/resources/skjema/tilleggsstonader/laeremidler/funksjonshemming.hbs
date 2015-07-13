@@ -3,18 +3,14 @@
         <td class="sjekket"></td>
         <td>
             <span>{{ hentTekst (concat "soknad.laeremidler.funksjonshemming." value) }}</span>
-            {{#hvisSant value}}
-                <span>{{ hentTekst (concat "soknad.laeremidler.funksjonshemming." value) }}</span>
-            {{/hvisSant}}
         </td>
     </tr>
-    <tr>
-        <td class="sjekket"></td>
-        <td>
-            <span>{{ hentTekst (concat "soknad.laeremidler.funksjonshemming." value) }}</span>
-            {{#hvisSant value}}
+    {{#hvisSant value}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
                 <span>{{ hentTekst "soknad.laeremidler.funksjonshemming.belop.oppsummering" }} {{properties.utgift}} </span>
-            {{/hvisSant}}
-        </td>
-    </tr>
+            </td>
+        </tr>
+    {{/hvisSant}}
 {{/forFaktum}}
