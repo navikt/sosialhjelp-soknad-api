@@ -58,7 +58,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
 
         handlebars.registerHelper("adresse", generateAdresseHelper());
         handlebars.registerHelper("forFaktum", generateForFaktumHelper());
-        handlebars.registerHelper("forFaktumSant", generateForFaktumSantHelper());
+        handlebars.registerHelper("forFaktumHvisSant", generateforFaktumHvisSantHelper());
         handlebars.registerHelper("forFakta", generateForFaktaHelper());
         handlebars.registerHelper("forBarnefakta", generateForBarnefaktaHelper());
         handlebars.registerHelper("forFaktaMedPropertySattTilTrue", generateForFaktaMedPropTrueHelper());
@@ -504,7 +504,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
         };
     }
 
-    private Helper<String> generateForFaktumSantHelper() {
+    private Helper<String> generateforFaktumHvisSantHelper() {
         return new Helper<String>() {
             @Override
             public CharSequence apply(String o, Options options) throws IOException {
