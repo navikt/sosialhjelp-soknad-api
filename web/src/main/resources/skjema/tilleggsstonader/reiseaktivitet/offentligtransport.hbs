@@ -3,9 +3,9 @@
         <td class="sjekket"></td>
         <td>
             {{#hvisSant value}}
-                <span>{{ hentTekst "soknad.reise.aktivitet.offentligtransport.true.oppsummering" }}</span>
+                <span>{{ hentTekst "soknad.reise.offentligtransport.true.oppsummering" }}</span>
             {{else}}
-                <span>{{ hentTekst "soknad.reise.aktivitet.offentligtransport.false.oppsummering" }}</span>
+                <span>{{ hentTekst "soknad.reise.offentligtransport.false.oppsummering" }}</span>
             {{/hvisSant}}
         </td>
     </tr>
@@ -13,7 +13,7 @@
         <tr>
             {{#forFaktum "reise.aktivitet.offentligtransport.utgift"}}
                 <td class="sjekket"></td>
-                <td><span>{{ hentTekst "soknad.reise.aktivitet.offentligtransport.utgift.oppsummering" }}: {{value}} {{hentTekst "soknad.krmnd"}}</span></td>
+                <td><span>{{ hentTekst "soknad.reise.offentligtransport.utgift.oppsummering" }}: {{value}} {{hentTekst "soknad.krmnd"}}</span></td>
             {{/forFaktum}}
         </tr>
         <tr>
@@ -30,26 +30,26 @@
                     {{#forFaktumHvisSant "reise.aktivitet.offentligtransport.aarsak.helse"}}
                         <tr>
                             <td class="sjekket"></td>
-                            <td><span>{{hentTekst "soknad.reise.aktivitet.offentligtransport.aarsak.helse"}}</span></td>
+                            <td><span>{{hentTekst "soknad.reise.offentligtransport.aarsak.helse"}}</span></td>
                         </tr>
                     {{/forFaktumHvisSant}}
                     {{#forFaktumHvisSant "reise.aktivitet.offentligtransport.aarsak.transport"}}
                         <tr>
                             <td class="sjekket"></td>
-                            <td><span>{{hentTekst "soknad.reise.aktivitet.offentligtransport.aarsak.transport"}}</span></td>
+                            <td><span>{{hentTekst "soknad.reise.offentligtransport.aarsak.transport"}}</span></td>
                         </tr>
                     {{/forFaktumHvisSant}}
                     {{#forFaktumHvisSant "reise.aktivitet.offentligtransport.aarsak.henting"}}
                         <tr>
                             <td class="sjekket"></td>
-                            <td><span>{{hentTekst "soknad.reise.aktivitet.offentligtransport.aarsak.henting"}}</span></td>
+                            <td><span>{{hentTekst "soknad.reise.offentligtransport.aarsak.henting"}}</span></td>
                         </tr>
                     {{/forFaktumHvisSant}}
                     {{#forFaktumHvisSant "reise.aktivitet.offentligtransport.aarsak.annet"}}
                         <tr>
                             <td class="sjekket"></td>
                             <td>
-                                <span>{{hentTekst "soknad.reise.aktivitet.offentligtransport.aarsak.annet"}}:</span>
+                                <span>{{hentTekst "soknad.reise.offentligtransport.aarsak.annet"}}:</span>
                                 {{#forFaktum "reise.aktivitet.offentligtransport.aarsak.annet.tekst"}}
                                     <em>{{value}}</em>
                                 {{/forFaktum}}
