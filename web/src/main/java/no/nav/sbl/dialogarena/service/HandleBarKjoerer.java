@@ -511,7 +511,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
                 WebSoknad soknad = finnWebSoknad(options.context);
                 Faktum faktum = soknad.getFaktumMedKey(o);
 
-                if (faktum != null && faktum.getValue() != null && !faktum.getValue().equals("false")) {
+                if (faktum != null && faktum.getValue() != null && faktum.getValue().equals("true")) {
                     return options.fn(faktum);
                 } else {
                     return options.inverse(this);
