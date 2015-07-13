@@ -116,7 +116,7 @@
     </servlet-mapping>
     <servlet>
         <servlet-name>SelftestJsonServlet</servlet-name>
-        <servlet-class>no.nav.sbl.dialogarena.selftest.SelftestServlet</servlet-class>
+        <servlet-class>no.nav.sbl.dialogarena.selftest.SelftestJsonServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>SelftestJsonServlet</servlet-name>
