@@ -98,6 +98,42 @@
         <id>behovforbil.hjelpemidler.beskrivelse</id>
     </faktum>
 
+    <!-- Behov for bil -> Transportbehov (dagligliv) -->
+    <faktum>
+        <id>behovforbil.brukebilentil.butikkbank</id>
+    </faktum>
+    <faktum>
+        <id>behovforbil.brukebilentil.butikkbank.antallreiser</id>
+    </faktum>
+    <faktum>
+        <id>behovforbil.brukebilentil.butikkbank.antallkilometer</id>
+    </faktum>
+    <faktum>
+        <id>behovforbil.brukebilentil.butikkbank.dekkerbehovidag</id>
+    </faktum>
+    <faktum>
+        <id>behovforbil.brukebilentil.familie</id>
+    </faktum>
+    <faktum>
+        <id>behovforbil.brukebilentil.venner</id>
+    </faktum>
+    <faktum>
+        <id>behovforbil.brukebilentil.fritidsaktiviteter</id>
+    </faktum>
+    <faktum>
+        <id>behovforbil.brukebilentil.annetbehov</id>
+    </faktum>
+    <faktum>
+        <id>behovforbil.brukebilentil.annetbehov.beskriv</id>
+    </faktum>
+    <faktum>
+        <id>behovforbil.hjelpemidlertilforflytting</id>
+    </faktum>
+    <faktum>
+        <id>behovforbil.hjelpemidlertilforflytting.beskriv</id>
+    </faktum>
+
+
     <!-- Inntekt -->
     <faktum>
         <id>inntekt.egen</id>
