@@ -101,21 +101,6 @@
             <value>false</value>
         </dependOnValues>
     </faktum>
-    <!-- reise arbeidssøker-->
-    <faktum>
-        <id>reise.arbeidssoker.reisedekket</id>
-        <dependOn>informasjonsside.stonad.reisearbeidssoker</dependOn>
-        <dependOnValues>
-            <value>true</value>
-        </dependOnValues>
-    </faktum>
-    <faktum>
-        <id>reise.arbeidssoker.hvorforreise</id>
-        <dependOn>informasjonsside.stonad.reisearbeidssoker</dependOn>
-        <dependOnValues>
-            <value>true</value>
-        </dependOnValues>
-    </faktum>
     <faktum>
         <id>reise.aktivitet.offentligtransport.aarsak.annet.tekst</id>
         <dependOn>reise.aktivitet.offentligtransport.aarsak.annet</dependOn>
@@ -223,6 +208,168 @@
             <value>true</value>
         </dependOnValues>
     </faktum>
+
+
+
+
+    <!-- reise arbeidssøker-->
+    <faktum>
+        <id>reise.arbeidssoker.reisedekket</id>
+        <dependOn>informasjonsside.stonad.reisearbeidssoker</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.arbeidssoker.hvorforreise</id>
+        <dependOn>informasjonsside.stonad.reisearbeidssoker</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.arbeidssoker.offentligtransport</id>
+        <dependOn>informasjonsside.stonad.reise</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.arbeidssoker.offentligtransport.aarsak.helse</id>
+        <dependOn>reise.arbeidssoker.offentligtransport</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.arbeidssoker.offentligtransport.aarsak.transport</id>
+        <dependOn>reise.arbeidssoker.offentligtransport</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.arbeidssoker.offentligtransport.aarsak.henting</id>
+        <dependOn>reise.arbeidssoker.offentligtransport</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.arbeidssoker.offentligtransport.aarsak.annet</id>
+        <dependOn>reise.arbeidssoker.offentligtransport</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.arbeidssoker.offentligtransport.aarsak.annet.tekst</id>
+        <dependOn>reise.arbeidssoker.offentligtransport.aarsak.annet</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.arbeidssoker.offentligtransport.egenbil</id>
+        <dependOn>reise.arbeidssoker.offentligtransport</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.arbeidssoker.offentligtransport.egenbil.aarsak.helse</id>
+        <dependOn>reise.arbeidssoker.offentligtransport</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.arbeidssoker.offentligtransport.egenbil.aarsak.ikkebil</id>
+        <dependOn>reise.arbeidssoker.offentligtransport</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.arbeidssoker.offentligtransport.egenbil.aarsak.annet</id>
+        <dependOn>reise.arbeidssoker.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.arbeidssoker.offentligtransport.egenbil.aarsak.annet.tekst</id>
+        <dependOn>reise.arbeidssoker.offentligtransport.egenbil.aarsak.annet</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.arbeidssoker.offentligtransport.drosje</id>
+        <dependOn>reise.arbeidssoker.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.arbeidssoker.offentligtransport.drosje.tekst</id>
+        <dependOn>reise.arbeidssoker.offentligtransport.drosje</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.arbeidssoker.offentligtransport.drosje.belop</id>
+        <dependOn>reise.arbeidssoker.offentligtransport.drosje</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.arbeidssoker.offentligtransport.egenbil.kostnader</id>
+        <dependOn>reise.arbeidssoker.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.arbeidssoker.offentligtransport.egenbil.kostnader.bompenger</id>
+        <dependOn>reise.arbeidssoker.offentligtransport.egenbil.kostnader</dependOn>
+    </faktum>
+    <faktum>
+        <id>reise.arbeidssoker.offentligtransport.egenbil.kostnader.piggdekk</id>
+        <dependOn>reise.arbeidssoker.offentligtransport.egenbil.kostnader</dependOn>
+    </faktum>
+    <faktum>
+        <id>reise.arbeidssoker.offentligtransport.egenbil.kostnader.ferge</id>
+        <dependOn>reise.arbeidssoker.offentligtransport.egenbil.kostnader</dependOn>
+    </faktum>
+    <faktum>
+        <id>reise.arbeidssoker.offentligtransport.egenbil.kostnader.annet</id>
+        <dependOn>reise.arbeidssoker.offentligtransport.egenbil.kostnader</dependOn>
+    </faktum>
+    <faktum>
+        <id>reise.arbeidssoker.offentligtransport.egenbil.parkering</id>
+        <dependOn>reise.arbeidssoker.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.arbeidssoker.offentligtransport.egenbil.parkering.belop</id>
+        <dependOn>reise.arbeidssoker.offentligtransport.egenbil.parkering</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.arbeidssoker.offentligtransport.egenbil.sendebekreftelse</id>
+        <dependOn>reise.arbeidssoker.offentligtransport.egenbil.parkering</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    
 
     <!-- Flytting -->
     <faktum>
