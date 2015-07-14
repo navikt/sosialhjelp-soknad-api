@@ -61,7 +61,7 @@
     </faktum>
     <faktum>
         <id>reise.aktivitet.medisinskeaarsaker</id>
-        <dependOn>informasjonsside.stonad.reise</dependOn>
+        <dependOn>informasjonsside.stonad.reiseaktivitet</dependOn>
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
@@ -70,7 +70,7 @@
     <!-- reiseaktivitet offentlig transport-->
     <faktum>
         <id>reise.aktivitet.offentligtransport</id>
-        <dependOn>informasjonsside.stonad.reise</dependOn>
+        <dependOn>informasjonsside.stonad.reiseaktivitet</dependOn>
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
@@ -248,7 +248,7 @@
     <!-- reise arbeidssoker offentlig transport -->
     <faktum>
         <id>reise.arbeidssoker.offentligtransport</id>
-        <dependOn>informasjonsside.stonad.reise</dependOn>
+        <dependOn>informasjonsside.stonad.reisearbeidssoker</dependOn>
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
