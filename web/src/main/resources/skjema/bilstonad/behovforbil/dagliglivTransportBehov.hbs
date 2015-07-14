@@ -1,0 +1,136 @@
+{{#forFaktum "behovforbil.behovforegenbil"}}
+    {{#hvisLik value "ja"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>{{hentTekst (concat cmsPrefiks "behovforbil.behovforegenbil.ja")}}</td>
+        </tr>
+
+        {{#forFaktumHvisSant "behovforbil.stotteordninger.harttkort"}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>{{ hentTekst (concat cmsPrefiks "behovforbil.stotteordninger.harttkort")}}</td>
+            <tr>
+        {{/forFaktumHvisSant}}
+
+        {{#forFaktumHvisSant "behovforbil.stotteordninger.grunnstonad"}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>{{ hentTekst (concat cmsPrefiks "behovforbil.stotteordninger.grunnstonad")}}</td>
+            <tr>
+        {{/forFaktumHvisSant}}
+
+        {{#forFaktumHvisSant "behovforbil.stotteordninger.soktttkort"}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>{{ hentTekst (concat cmsPrefiks "behovforbil.stotteordninger.soktttkort")}}</td>
+            <tr>
+        {{/forFaktumHvisSant}}
+        {{#forFaktumHvisSant "behovforbil.brukebilentil.butikkbank"}}
+            {{#forFaktum "behovforbil.brukebilentil.butikkbank.antallreiser"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td><span>{{ hentTekst (concat cmsPrefiks "behovforbil.brukebilentil.butikkbank.antallreiser" )}}</span><br/><em>{{ value }}</em></td>
+                </tr>
+            {{/forFaktum}}
+
+            {{#forFaktum "behovforbil.brukebilentil.butikkbank.antallkilometer"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td><span>{{ hentTekst (concat cmsPrefiks "behovforbil.brukebilentil.butikkbank.antallkilometer" )}}</span><br/><em>{{ value }}</em></td>
+                </tr>
+            {{/forFaktum}}
+
+            {{#forFaktum "behovforbil.brukebilentil.butikkbank.dekkerbehovidag"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td><span>{{ hentTekst (concat cmsPrefiks "behovforbil.brukebilentil.butikkbank.dekkerbehovidag.sporsmal" )}}</span><br/><em>{{ value }}</em></td>
+                </tr>
+            {{/forFaktum}}
+        {{/forFaktumHvisSant}}
+        {{#forFaktumHvisSant "behovforbil.brukebilentil.familie"}}
+            {{#forFaktum "behovforbil.brukebilentil.familie.antallreiser"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td><span>{{ hentTekst (concat cmsPrefiks "behovforbil.brukebilentil.familie.antallreiser" )}}</span><br/><em>{{ value }}</em></td>
+                </tr>
+            {{/forFaktum}}
+
+            {{#forFaktum "behovforbil.brukebilentil.familie.antallkilometer"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td><span>{{ hentTekst (concat cmsPrefiks "behovforbil.brukebilentil.familie.antallkilometer" )}}</span><br/><em>{{ value }}</em></td>
+                </tr>
+            {{/forFaktum}}
+
+            {{#forFaktum "behovforbil.brukebilentil.familie.dekkerbehovidag"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td><span>{{ hentTekst (concat cmsPrefiks "behovforbil.brukebilentil.familie.dekkerbehovidag.sporsmal" )}}</span><br/><em>{{ value }}</em></td>
+                </tr>
+            {{/forFaktum}}
+        {{/forFaktumHvisSant}}
+        {{#forFaktumHvisSant "behovforbil.brukebilentil.venner"}}
+            {{#forFaktum "behovforbil.brukebilentil.venner.antallreiser"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td><span>{{ hentTekst (concat cmsPrefiks "behovforbil.brukebilentil.venner.antallreiser" )}}</span><br/><em>{{ value }}</em></td>
+                </tr>
+            {{/forFaktum}}
+
+            {{#forFaktum "behovforbil.brukebilentil.venner.antallkilometer"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td><span>{{ hentTekst (concat cmsPrefiks "behovforbil.brukebilentil.venner.antallkilometer" )}}</span><br/><em>{{ value }}</em></td>
+                </tr>
+            {{/forFaktum}}
+
+            {{#forFaktum "behovforbil.brukebilentil.venner.dekkerbehovidag"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td><span>{{ hentTekst (concat cmsPrefiks "behovforbil.brukebilentil.venner.dekkerbehovidag.sporsmal" )}}</span><br/><em>{{ value }}</em></td>
+                </tr>
+            {{/forFaktum}}
+        {{/forFaktumHvisSant}}
+        {{#forFaktumHvisSant "behovforbil.brukebilentil.fritidsaktiviteter"}}
+            {{#forFaktum "behovforbil.brukebilentil.fritidsaktiviteter.antallreiser"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td><span>{{ hentTekst (concat cmsPrefiks "behovforbil.brukebilentil.fritidsaktiviteter.antallreiser" )}}</span><br/><em>{{ value }}</em></td>
+                </tr>
+            {{/forFaktum}}
+
+            {{#forFaktum "behovforbil.brukebilentil.fritidsaktiviteter.antallkilometer"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td><span>{{ hentTekst (concat cmsPrefiks "behovforbil.brukebilentil.fritidsaktiviteter.antallkilometer" )}}</span><br/><em>{{ value }}</em></td>
+                </tr>
+            {{/forFaktum}}
+
+            {{#forFaktum "behovforbil.brukebilentil.fritidsaktiviteter.dekkerbehovidag"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td><span>{{ hentTekst (concat cmsPrefiks "behovforbil.brukebilentil.fritidsaktiviteter.dekkerbehovidag.sporsmal" )}}</span><br/><em>{{ value }}</em></td>
+                </tr>
+            {{/forFaktum}}
+        {{/forFaktumHvisSant}}
+        {{#forFaktumHvisSant "behovforbil.brukebilentil.annetbehov"}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>{{ hentTekst (concat cmsPrefiks "behovforbil.brukebilentil.annetbehov")}}</td>
+            <tr>
+
+            {{#forFaktum "behovforbil.brukebilentil.annetbehov.beskrivelse.sporsmal"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td><span>{{ hentTekst (concat cmsPrefiks "behovforbil.brukebilentil.annetbehov.beskrivelse.sporsmal" )}}</span><br/><em>{{ value }}</em></td>
+                </tr>
+            {{/forFaktum}}
+        {{/forFaktumHvisSant}}
+    {{/hvisLik}}
+    {{#hvisLik value "nei"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>{{hentTekst (concat cmsPrefiks "behovforbil.behovforegenbil.nei")}}</td>
+        </tr>
+    {{/hvisLik}}
+{{/forFaktum}}
