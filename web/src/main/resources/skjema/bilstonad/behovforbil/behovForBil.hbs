@@ -1,0 +1,111 @@
+<h2>{{ hentTekst "arbeidutdanning.behovforbil.tittel" }}</h2>
+<table>
+    {{#forFaktum "behovforbil.reisealene"}}
+        {{#hvisLik value "nei"}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>{{ hentTekst "arbeidutdanning.behovforbil.reisealene.nei"}}</td>
+            </tr>
+            {{#forFaktum "behovforbil.reisemedfolge"}}
+                {{#hvisLik value "ja"}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>{{ hentTekst "arbeidutdanning.behovforbil.reisemedfolge.ja" }}</td>
+                    </tr>
+                {{/hvisLik}}
+                {{#hvisLik value "nei"}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>{{ hentTekst "arbeidutdanning.behovforbil.reisemedfolge.nei" }}</td>
+                    </tr>
+                {{/hvisLik}}
+            {{/forFaktum}}
+            {{#forFaktumHvisSant "behovforbil.belastende.avellerpakollektivtransport"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td>{{ hentTekst "arbeidutdanning.behovforbil.belastende.avellerpakollektivtransport"}}</td>
+                <tr>
+            {{/forFaktumHvisSant}}
+            {{#forFaktumHvisSant "behovforbil.belastende.ingenholdeplasser"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td>{{ hentTekst "arbeidutdanning.behovforbil.belastende.ingenholdeplasser"}}</td>
+                <tr>
+            {{/forFaktumHvisSant}}
+            {{#forFaktumHvisSant "behovforbil.belastende.langttilholdeplasser"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td>
+                        <span>{{ hentTekst "arbeidutdanning.behovforbil.belastende.langttilholdeplasser"}}</span>
+                        <ul>
+                            {{#forFaktum "behovforbil.belastende.langttilholdeplasser.buss"}}
+                                <li class="kulepunkt faktum-felt">{{ hentTekst "arbeidutdanning.behovforbil.belastende.langttilholdeplasser.buss" }}: <em>{{value}}</em> {{ hentTekst "arbeidutdanning.behovforbil.belastende.langttilholdeplasser.enhet"}}</li>
+                            {{/forFaktum}}
+                            {{#forFaktum "behovforbil.belastende.langttilholdeplasser.trikk"}}
+                                <li class="kulepunkt faktum-felt">{{ hentTekst "arbeidutdanning.behovforbil.belastende.langttilholdeplasser.trikk" }}: <em>{{value}}</em> {{ hentTekst "arbeidutdanning.behovforbil.belastende.langttilholdeplasser.enhet"}}</li>
+                            {{/forFaktum}}
+                            {{#forFaktum "behovforbil.belastende.langttilholdeplasser.bane"}}
+                                <li class="kulepunkt faktum-felt">{{ hentTekst "arbeidutdanning.behovforbil.belastende.langttilholdeplasser.bane" }}: <em>{{value}}</em> {{ hentTekst "arbeidutdanning.behovforbil.belastende.langttilholdeplasser.enhet"}}</li>
+                            {{/forFaktum}}
+                            {{#forFaktum "behovforbil.belastende.langttilholdeplasser.tog"}}
+                                <li class="kulepunkt faktum-felt">{{ hentTekst "arbeidutdanning.behovforbil.belastende.langttilholdeplasser.tog" }}: <em>{{value}}</em> {{ hentTekst "arbeidutdanning.behovforbil.belastende.langttilholdeplasser.enhet"}}</li>
+                            {{/forFaktum}}
+                            {{#forFaktum "behovforbil.belastende.langttilholdeplasser.bat"}}
+                                <li class="kulepunkt faktum-felt">{{ hentTekst "arbeidutdanning.behovforbil.belastende.langttilholdeplasser.bat" }}: <em>{{value}}</em> {{ hentTekst "arbeidutdanning.behovforbil.belastende.langttilholdeplasser.enhet"}}</li>
+                            {{/forFaktum}}
+                        </ul>
+                    </td>
+                </tr>
+            {{/forFaktumHvisSant}}
+            {{#forFaktumHvisSant "behovforbil.belastende.andrearsaker"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td>
+                        <span>{{ hentTekst "arbeidutdanning.behovforbil.belastende.andrearsaker"}}</span><br/>
+                        {{#forFaktum "behovforbil.belastende.andrearsaker.beskrivelse"}}
+                            <em>{{ value }}</em>
+                        {{/forFaktum}}
+                    </td>
+                <tr>
+            {{/forFaktumHvisSant}}
+        {{/hvisLik}}
+        {{#hvisLik value "ja"}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>{{ hentTekst "arbeidutdanning.behovforbil.reisealene.ja"}}</td>
+            </tr>
+        {{/hvisLik}}
+    {{/forFaktum}}
+
+    {{#forFaktum "informasjonsside.bilformal"}}
+        {{#hvisLik value "arbeidutdanning"}}
+            {{> skjema/bilstonad/behovforbil/arbeidutdanningTransportBehov }}
+        {{/hvisLik}}
+    {{/forFaktum}}
+
+
+    {{#forFaktum "behovforbil.hjelpemidler"}}
+        {{#hvisLik value "ja"}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>{{hentTekst "arbeidutdanning.behovforbil.hjelpemidler.ja"}}</td>
+            </tr>
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    {{#forFaktum "behovforbil.belastende.andrearsaker.beskrivelse"}}
+                        <span>{{hentTekst "behovforbil.belastende.andrearsaker.beskrivelse.sporsmal"}}</span><br/>
+                            <em>{{ value }}</em>
+                    {{/forFaktum}}
+                </td>
+            </tr>
+        {{/hvisLik}}
+        {{#hvisLik value "nei"}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>{{hentTekst "arbeidutdanning.behovforbil.hjelpemidler.nei"}}</td>
+            </tr>
+        {{/hvisLik}}
+    {{/forFaktum}}
+
+</table>
