@@ -3,13 +3,13 @@
     <td>
         {{#forFaktum "laeremidler.utdanningstype"}}
             {{#hvisLik value "videregaende"}}
-                <span>{{ hentTekst "soknad.laeremidler.utdanningstype.videregaende.oppsummering" }}</span>
+                <span>{{ hentTekst "soknad.laeremidler.utdanningstype.videregaende" }}</span>
             {{/hvisLik}}
             {{#hvisLik value "hoyereutdanning"}}
-                <span>{{ hentTekst "soknad.laeremidler.utdanningstype.hoyereutdanning.oppsummering" }}</span>
+                <span>{{ hentTekst "soknad.laeremidler.utdanningstype.hoyereutdanning" }}</span>
             {{/hvisLik}}
             {{#hvisLik value "annet"}}
-                <span>{{ hentTekst "soknad.laeremidler.utdanningstype.annet.oppsummering" }}</span>
+                <span>{{ hentTekst "soknad.laeremidler.utdanningstype.annet" }}</span>
                 {{#forFaktum "laeremidler.utdanningstype.spesifiser"}}
                     <p><em>{{value}}</em></p>
                 {{/forFaktum}}
