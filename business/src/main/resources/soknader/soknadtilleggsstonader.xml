@@ -66,9 +66,25 @@
             <value>true</value>
         </dependOnValues>
     </faktum>
+
+    <!-- reiseaktivitet offentlig transport-->
     <faktum>
         <id>reise.aktivitet.offentligtransport</id>
         <dependOn>informasjonsside.stonad.reise</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.aktivitet.offentligtransport.utgift</id>
+        <dependOn>reise.aktivitet.offentligtransport</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.aktivitet.utbetalingsdato</id>
+        <dependOn>reise.aktivitet.offentligtransport</dependOn>
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
@@ -227,9 +243,26 @@
             <value>true</value>
         </dependOnValues>
     </faktum>
+
+
+    <!-- reise arbeidssoker offentlig transport -->
     <faktum>
         <id>reise.arbeidssoker.offentligtransport</id>
         <dependOn>informasjonsside.stonad.reise</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.arbeidssoker.offentligtransport.utgift</id>
+        <dependOn>reise.arbeidssoker.offentligtransport</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.arbeidssoker.utbetalingsdato</id>
+        <dependOn>reise.arbeidssoker.offentligtransport</dependOn>
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
