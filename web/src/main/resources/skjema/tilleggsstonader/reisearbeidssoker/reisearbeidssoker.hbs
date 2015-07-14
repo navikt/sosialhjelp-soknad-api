@@ -1,12 +1,14 @@
-{{#forFaktum "informasjonsside.stonad.reisearbeidssoker"}}
-    {{#hvisSant value}}
-        <h2>{{hentTekst "soknad.reise.arbeidssoker.tittel"}}</h2>
-        <table>
-            {{> skjema/tilleggsstonader/reisearbeidssoker/registrert}}
-            {{> skjema/tilleggsstonader/reisearbeidssoker/hvorforreise}}
-            {{> skjema/tilleggsstonader/reisearbeidssoker/dekketavandre}}
-            {{> skjema/tilleggsstonader/reisearbeidssoker/dagpenger}}
-            {{> skjema/tilleggsstonader/reisearbeidssoker/avstand}}
-        </table>
-    {{/hvisSant}}
-{{/forFaktum}}
+{{#forFaktumHvisSant "informasjonsside.stonad.reise"}}
+    {{#forFaktumHvisSant "informasjonsside.stonad.reisearbeidssoker"}}
+        {{#hvisSant value}}
+            <h2>{{hentTekst "soknad.reise.arbeidssoker.tittel"}}</h2>
+            <table>
+                {{> skjema/tilleggsstonader/reisearbeidssoker/registrert}}
+                {{> skjema/tilleggsstonader/reisearbeidssoker/hvorforreise}}
+                {{> skjema/tilleggsstonader/reisearbeidssoker/dekketavandre}}
+                {{> skjema/tilleggsstonader/reisearbeidssoker/dagpenger}}
+                {{> skjema/tilleggsstonader/reisearbeidssoker/avstand}}
+            </table>
+        {{/hvisSant}}
+    {{/forFaktumHvisSant}}
+{{/forFaktumHvisSant}}
