@@ -8,7 +8,9 @@
             {{> skjema/tilleggsstonader/reiseaktivitet/avstand}}
             {{> skjema/tilleggsstonader/reiseaktivitet/medisinskeaarsaker}}
             {{> skjema/tilleggsstonader/reiseaktivitet/adresse}}
-            {{> skjema/tilleggsstonader/reiseaktivitet/offentligtransport}}
+            {{#variabel "faktumPrefiks" "reise.aktivitet."}}
+                {{> skjema/tilleggsstonader/felles/offentligtransport}}
+            {{/variabel}}
         </table>
     {{/forFaktumHvisSant}}
 {{/forFaktumHvisSant}}
