@@ -8,6 +8,9 @@
                 {{> skjema/tilleggsstonader/reisearbeidssoker/dekketavandre}}
                 {{> skjema/tilleggsstonader/reisearbeidssoker/dagpenger}}
                 {{> skjema/tilleggsstonader/reisearbeidssoker/avstand}}
+                {{#variabel "faktumPrefiks" "reise.arbeidssoker."}}
+                    {{> skjema/tilleggsstonader/felles/offentligtransport}}
+                {{/variabel}}
             </table>
         {{/hvisSant}}
     {{/forFaktumHvisSant}}
