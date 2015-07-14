@@ -1,5 +1,5 @@
-{{#forFaktum "informasjonsside.stonad.reiseaktivitet"}}
-    {{#hvisSant value}}
+{{#forFaktumHvisSant "informasjonsside.stonad.reise"}}
+    {{#forFaktumHvisSant "informasjonsside.stonad.reiseaktivitet"}}
         <h2>{{hentTekst "soknad.reise.aktivitet.tittel"}}</h2>
         <table>
             {{> skjema/tilleggsstonader/reiseaktivitet/avstand}}
@@ -10,5 +10,5 @@
             {{> skjema/tilleggsstonader/reiseaktivitet/adresse}}
             {{> skjema/tilleggsstonader/reiseaktivitet/offentligtransport}}
         </table>
-    {{/hvisSant}}
-{{/forFaktum}}
+    {{/forFaktumHvisSant}}
+{{/forFaktumHvisSant}}

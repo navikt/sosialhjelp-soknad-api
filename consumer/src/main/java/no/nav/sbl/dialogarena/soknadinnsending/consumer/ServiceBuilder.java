@@ -4,7 +4,6 @@ import no.nav.modig.cxf.TimeoutFeature;
 import no.nav.modig.jaxws.handlers.MDCOutHandler;
 import no.nav.sbl.dialogarena.common.timing.TimingFeature;
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
-import org.apache.cxf.feature.LoggingFeature;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.transport.http.HTTPConduit;
@@ -70,7 +69,7 @@ final class ServiceBuilder<T> {
     }
 
     public ServiceBuilder<T> withLogging() {
-        factoryBean.getFeatures().add(new LoggingFeature());
+        factoryBean.getFeatures().add(new LoggingFeatureUtenBinaryLogging());
         return this;
     }
 
