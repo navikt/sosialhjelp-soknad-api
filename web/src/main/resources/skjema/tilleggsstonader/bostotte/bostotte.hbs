@@ -1,24 +1,22 @@
-{{#forFaktum "informasjonsside.stonad.bostotte"}}
-    {{#hvisSant value}}
-        <h2>{{hentTekst "soknad.bostottebolk.tittel"}}</h2>
-        <table>
-        {{#forFaktum "bostotte.aarsak"}}
-            {{> skjema/tilleggsstonader/bostotte/aarsak}}
-            {{#forFaktum "bostotte.periode"}}
-                {{> skjema/tilleggsstonader/felles/aktivitetsperiode}}
-            {{/forFaktum}}
-            {{#hvisLik value "fasteboutgifter"}}
-                {{> skjema/tilleggsstonader/bostotte/kommunestotte}}
-            {{/hvisLik}}
-            {{#hvisLik value "samling"}}
-                {{> skjema/tilleggsstonader/bostotte/samling}}
-            {{/hvisLik}}
-            {{> skjema/tilleggsstonader/bostotte/adresseutgifter}}
-            {{> skjema/tilleggsstonader/bostotte/medisinskeutgifter}}
-            {{#hvisLik value "fasteboutgifter"}}
-                {{> skjema/tilleggsstonader/bostotte/utbetalingsmaned}}
-            {{/hvisLik}}
+{{#forFaktumHvisSant "informasjonsside.stonad.bostotte"}}
+    <h2>{{hentTekst "soknad.bostottebolk.tittel"}}</h2>
+    <table>
+    {{#forFaktum "bostotte.aarsak"}}
+        {{> skjema/tilleggsstonader/bostotte/aarsak}}
+        {{#forFaktum "bostotte.periode"}}
+            {{> skjema/tilleggsstonader/felles/aktivitetsperiode}}
         {{/forFaktum}}
-        </table>
-    {{/hvisSant}}
-{{/forFaktum}}
+        {{#hvisLik value "fasteboutgifter"}}
+            {{> skjema/tilleggsstonader/bostotte/kommunestotte}}
+        {{/hvisLik}}
+        {{#hvisLik value "samling"}}
+            {{> skjema/tilleggsstonader/bostotte/samling}}
+        {{/hvisLik}}
+        {{> skjema/tilleggsstonader/bostotte/adresseutgifter}}
+        {{> skjema/tilleggsstonader/bostotte/medisinskeutgifter}}
+        {{#hvisLik value "fasteboutgifter"}}
+            {{> skjema/tilleggsstonader/bostotte/utbetalingsmaned}}
+        {{/hvisLik}}
+    {{/forFaktum}}
+    </table>
+{{/forFaktumHvisSant}}

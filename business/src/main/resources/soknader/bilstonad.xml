@@ -63,7 +63,6 @@
     <faktum>
         <id>behovforbil.belastende.langttilholdeplasser.bat</id>
     </faktum>
-
     <faktum>
         <id>behovforbil.belastende.andrearsaker</id>
     </faktum>
@@ -125,12 +124,6 @@
     </faktum>
     <faktum>
         <id>behovforbil.brukebilentil.annetbehov.beskriv</id>
-    </faktum>
-    <faktum>
-        <id>behovforbil.hjelpemidlertilforflytting</id>
-    </faktum>
-    <faktum>
-        <id>behovforbil.hjelpemidlertilforflytting.beskriv</id>
     </faktum>
 
 
@@ -279,7 +272,7 @@
         <id>4</id>
         <faktum>bilogutstyr.firehjulstrekk</faktum>
         <onValues>
-            <value>harBehov</value>
+            <value>ja</value>
         </onValues>
         <skjemaNummer>Y9</skjemaNummer>
     </vedlegg>
