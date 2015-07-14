@@ -79,11 +79,15 @@ public class SoknadStruktur implements Serializable {
 
     }
 
-    public List<SoknadVedlegg> vedleggForSkjemanr(final String skjemaNr) {
+    public List<SoknadVedlegg> vedleggForSkjemanrMedTillegg(final String skjemaNr, final String tillegg) {
         return on(vedlegg).filter(new Predicate<SoknadVedlegg>() {
             @Override
             public boolean evaluate(SoknadVedlegg soknadVedlegg) {
-                return soknadVedlegg.getSkjemaNummer().equals(skjemaNr);
+                if(soknadVedlegg.getSkjemaNummer().equals(skjemaNr)) {
+                    String skjemaTillegg = soknadVedlegg.getSkjemanummerTillegg();
+                    return skjemaTillegg != null && skjemaTillegg.equals(tillegg);
+                }
+                return false;
             }
         }).collect();
 
