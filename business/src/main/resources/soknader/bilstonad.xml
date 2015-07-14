@@ -279,7 +279,7 @@
         <id>4</id>
         <faktum>bilogutstyr.firehjulstrekk</faktum>
         <onValues>
-            <value>harBehov</value>
+            <value>ja</value>
         </onValues>
         <skjemaNummer>Y9</skjemaNummer>
     </vedlegg>
