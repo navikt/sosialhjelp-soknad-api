@@ -633,7 +633,19 @@
             <value>true</value>
         </onValues>
         <skjemaNummer>V2</skjemaNummer>
+        <skjemanummerTillegg>laeremidler</skjemanummerTillegg>
         <property>bolk</property>
+        <flereTillatt>false</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <faktum>laeremidler.funksjonshemming</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>Q7</skjemaNummer>
+        <skjemanummerTillegg>laeremidler</skjemanummerTillegg>
+        <property>bolk</property>
+        <flereTillatt>false</flereTillatt>
     </vedlegg>
     <vedlegg>
         <faktum>laeremidler.dekket</faktum>
@@ -642,7 +654,8 @@
             <value>delvis</value>
         </onValues>
         <skjemaNummer>Q7</skjemaNummer>
+        <skjemanummerTillegg>laeremidler</skjemanummerTillegg>
         <property>bolk</property>
+        <flereTillatt>false</flereTillatt>
     </vedlegg>
-
 </soknad>
