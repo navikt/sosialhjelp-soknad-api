@@ -694,6 +694,74 @@
             <value>true</value>
         </onValues>
     </vedlegg>
+    <vedlegg>
+        <skjemaNummer>V2</skjemaNummer>
+        <skjemanummerTillegg>reisearbeidssoker</skjemanummerTillegg>
+        <faktum>reise.arbeidssoker.offentligtransport.aarsak.helse</faktum>
+        <property>bolk</property>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <flereTillatt>false</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <skjemaNummer>V2</skjemaNummer>
+        <skjemanummerTillegg>reisearbeidssoker</skjemanummerTillegg>
+        <faktum>reise.arbeidssoker.offentligtransport.egenbil.aarsak.helse</faktum>
+        <property>bolk</property>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <flereTillatt>false</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <skjemaNummer>J8</skjemaNummer>
+        <skjemanummerTillegg>reisearbeidssoker</skjemanummerTillegg>
+        <faktum>reise.arbeidssoker.offentligtransport.aarsak.henting</faktum>
+        <property>bolk</property>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <flereTillatt>false</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <skjemaNummer>M4</skjemaNummer><!-- skal byttes!! -->
+        <skjemanummerTillegg>reisearbeidssoker</skjemanummerTillegg>
+        <faktum>reise.arbeidssoker.offentligtransport.aarsak.annet</faktum>
+        <property>bolk</property>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <flereTillatt>false</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <skjemaNummer>M4</skjemaNummer><!-- skal byttes!! -->
+        <skjemanummerTillegg>reisearbeidssoker</skjemanummerTillegg>
+        <faktum>reise.arbeidssoker.offentligtransport.egenbil.aarsak.annet</faktum>
+        <property>bolk</property>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <flereTillatt>false</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <skjemaNummer>J6</skjemaNummer>
+        <skjemanummerTillegg>reisearbeidssoker</skjemanummerTillegg>
+        <faktum>reise.arbeidssoker.offentligtransport.egenbil.kostnader</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <property>bolk</property>
+    </vedlegg>
+    <vedlegg>
+        <skjemaNummer>U8</skjemaNummer>
+        <skjemanummerTillegg>reisearbeidssoker</skjemanummerTillegg>
+        <faktum>reise.arbeidssoker.offentligtransport.drosje</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <property>bolk</property>
+    </vedlegg>
     
     <!-- vedlegg for flytting -->
     <vedlegg>
