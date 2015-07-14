@@ -1,34 +1,34 @@
-{{#forFaktumHvisSant "reise.aktivitet.offentligtransport.egenbil"}}
+{{#forFaktumHvisSant (concat faktumPrefiks "offentligtransport.egenbil")}}
     <tr>
         <td class="sjekket"></td>
         <td><span>{{hentTekst "soknad.reise.offentligtransport.egenbil.true"}}</span></td>
     </tr>
 
-    {{#forFaktum "reise.aktivitet.offentligtransport.egenbil.kostnader"}}
+    {{#forFaktum (concat faktumPrefiks "offentligtransport.egenbil.kostnader")}}
         <tr>
             <td></td>
             <td>
                 <p class="overskrift">{{hentTekst "oppsummering.reise.offentligtransport.egenbil.kostnader"}}</p>
                 <table>
-                    {{#forFaktum "reise.aktivitet.offentligtransport.egenbil.kostnader.bompenger"}}
+                    {{#forFaktum (concat faktumPrefiks "offentligtransport.egenbil.kostnader.bompenger")}}
                         <tr>
                             <td class="sjekket"></td>
                             <td>{{hentTekst "soknad.reise.offentligtransport.egenbil.kostnader.bompenger.label"}}: {{value}} {{hentTekst "soknad.krmnd"}}</td>
                         </tr>
                     {{/forFaktum}}
-                    {{#forFaktum "reise.aktivitet.offentligtransport.egenbil.kostnader.piggdekk"}}
+                    {{#forFaktum (concat faktumPrefiks "offentligtransport.egenbil.kostnader.piggdekk")}}
                         <tr>
                             <td class="sjekket"></td>
                             <td>{{hentTekst "soknad.reise.offentligtransport.egenbil.kostnader.piggdekk.label"}}: {{value}} {{hentTekst "soknad.krmnd"}}</td>
                         </tr>
                     {{/forFaktum}}
-                    {{#forFaktum "reise.aktivitet.offentligtransport.egenbil.kostnader.ferge"}}
+                    {{#forFaktum (concat faktumPrefiks "offentligtransport.egenbil.kostnader.ferge")}}
                         <tr>
                             <td class="sjekket"></td>
                             <td>{{hentTekst "soknad.reise.offentligtransport.egenbil.kostnader.ferge.label"}}: {{value}} {{hentTekst "soknad.krmnd"}}</td>
                         </tr>
                     {{/forFaktum}}
-                    {{#forFaktum "reise.aktivitet.offentligtransport.egenbil.kostnader.annet"}}
+                    {{#forFaktum (concat faktumPrefiks "offentligtransport.egenbil.kostnader.annet")}}
                         <tr>
                             <td class="sjekket"></td>
                             <td>{{hentTekst "soknad.reise.offentligtransport.egenbil.kostnader.annet.label"}}: {{value}} {{hentTekst "soknad.krmnd"}}</td>
@@ -39,18 +39,18 @@
         </tr>
     {{/forFaktum}}
 
-    {{#forFaktumHvisSant "reise.aktivitet.offentligtransport.egenbil.parkering"}}
+    {{#forFaktumHvisSant (concat faktumPrefiks "offentligtransport.egenbil.parkering")}}
         <tr>
             <td class="sjekket"></td>
             <td><span>{{hentTekst "soknad.reise.offentligtransport.egenbil.parkering.true"}}</span></td>
         </tr>
-        {{#forFaktum "reise.aktivitet.offentligtransport.egenbil.parkering.belop"}}
+        {{#forFaktum (concat faktumPrefiks "offentligtransport.egenbil.parkering.belop")}}
             <tr>
                 <td class="sjekket"></td>
                 <td>{{value}} {{hentTekst "soknad.krmnd"}}</td>
             </tr>
         {{/forFaktum}}
-        {{#forFaktum "reise.aktivitet.offentligtransport.egenbil.sendebekreftelse"}}
+        {{#forFaktum (concat faktumPrefiks "offentligtransport.egenbil.sendebekreftelse")}}
             <tr>
                 <td class="sjekket"></td>
             {{#hvisLik value "uke"}}
@@ -78,24 +78,24 @@
         <td>
             <p class="overskrift">{{hentTekst "oppsummering.reise.offentligtransport.egenbil.aarsak"}}</p>
             <table>
-                {{#forFaktumHvisSant "reise.aktivitet.offentligtransport.egenbil.aarsak.helse"}}
+                {{#forFaktumHvisSant (concat faktumPrefiks "offentligtransport.egenbil.aarsak.helse")}}
                     <tr>
                         <td class="sjekket"></td>
                         <td>{{hentTekst "soknad.reise.offentligtransport.egenbil.aarsak.helse"}}</td>
                     </tr>
                 {{/forFaktumHvisSant}}
-                {{#forFaktumHvisSant "reise.aktivitet.offentligtransport.egenbil.aarsak.ikkebil"}}
+                {{#forFaktumHvisSant (concat faktumPrefiks "offentligtransport.egenbil.aarsak.ikkebil")}}
                     <tr>
                         <td class="sjekket"></td>
                         <td>{{hentTekst "soknad.reise.offentligtransport.egenbil.aarsak.ikkebil"}}</td>
                     </tr>
                 {{/forFaktumHvisSant}}
-                {{#forFaktumHvisSant "reise.aktivitet.offentligtransport.egenbil.aarsak.annet"}}
+                {{#forFaktumHvisSant (concat faktumPrefiks "offentligtransport.egenbil.aarsak.annet")}}
                     <tr>
                         <td class="sjekket"></td>
                         <td>
                             <span>{{hentTekst "soknad.reise.offentligtransport.egenbil.aarsak.annet"}}:</span>
-                            {{#forFaktum "reise.aktivitet.offentligtransport.egenbil.aarsak.annet.tekst"}}
+                            {{#forFaktum (concat faktumPrefiks "offentligtransport.egenbil.aarsak.annet.tekst")}}
                                 <em>{{value}}</em>
                             {{/forFaktum}}
                         </td>
@@ -105,12 +105,12 @@
         </td>
     </tr>
 
-    {{#forFaktumHvisSant "reise.aktivitet.offentligtransport.drosje"}}
+    {{#forFaktumHvisSant (concat faktumPrefiks "offentligtransport.drosje")}}
         <tr>
             <td class="sjekket"></td>
             <td><span>{{hentTekst "soknad.reise.offentligtransport.egenbil.drosje.true"}}</span></td>
         </tr>
-        {{#forFaktum "reise.aktivitet.offentligtransport.drosje"}}
+        {{#forFaktum (concat faktumPrefiks "offentligtransport.drosje")}}
             <tr>
                 <td class="sjekket"></td>
                 <td>
@@ -125,7 +125,7 @@
             <td class="sjekket"></td>
             <td>
                 <span>{{hentTekst "soknad.reise.offentligtransport.egenbil.drosje.false"}}</span>
-                {{#forFaktum "reise.aktivitet.offentligtransport.drosje.tekst"}}
+                {{#forFaktum (concat faktumPrefiks "offentligtransport.drosje.tekst")}}
                     <table>
                         <tr>
                             <td class="sjekket"></td>
