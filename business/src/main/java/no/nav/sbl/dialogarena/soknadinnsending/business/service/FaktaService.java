@@ -236,7 +236,7 @@ public class FaktaService {
     }
 
     private boolean erVedleggKrevdAvAnnetFaktum(Faktum faktum, SoknadStruktur struktur, SoknadVedlegg soknadVedlegg) {
-        return !soknadVedlegg.getFlereTillatt() && annetFaktumHarForventning(faktum.getSoknadId(), soknadVedlegg.getSkjemaNummer(), soknadVedlegg.getOnValues(), struktur);
+        return !soknadVedlegg.getFlereTillatt() && annetFaktumHarForventning(faktum.getSoknadId(), soknadVedlegg.getSkjemaNummer(), soknadVedlegg.getSkjemanummerTillegg(), struktur);
     }
 
     private boolean parentValueErLikEnAvVerdieneIDependOnValues(SoknadFaktum faktum, Faktum parent) {
@@ -263,10 +263,10 @@ public class FaktaService {
      * dersom soknadbrukerdata har et innslag som har riktig onValue, returneres true (et annet faktum trigger vedlegget)
      * ellers returneres false
      */
-    private boolean annetFaktumHarForventning(Long soknadId, String skjemaNummer, List<String> onValues, SoknadStruktur struktur) {
-        List<SoknadVedlegg> vedleggMedGittSkjemanummer = struktur.vedleggForSkjemanr(skjemaNummer);
+    private boolean annetFaktumHarForventning(Long soknadId, String skjemaNummer, String skjemaNrTillegg, SoknadStruktur struktur) {
+        List<SoknadVedlegg> vedleggMedGittSkjemanummer = struktur.vedleggForSkjemanrMedTillegg(skjemaNummer, skjemaNrTillegg);
         for (SoknadVedlegg sv : vedleggMedGittSkjemanummer) {
-            if (repository.isVedleggPaakrevd(soknadId, onValues, sv)) {
+            if (repository.isVedleggPaakrevd(soknadId, sv)) {
                 return true;
             }
         }
