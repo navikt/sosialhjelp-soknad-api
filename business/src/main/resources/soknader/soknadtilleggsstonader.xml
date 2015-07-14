@@ -623,7 +623,7 @@
 
     <!-- vedlegg for reise aktivitet -->
     <vedlegg>
-        <skjemaNummer>TEMP1</skjemaNummer>
+        <skjemaNummer>V2</skjemaNummer>
         <skjemanummerTillegg>reiseaktivitet</skjemanummerTillegg>
         <faktum>reise.aktivitet.medisinskeaarsaker</faktum>
         <property>bolk</property>
