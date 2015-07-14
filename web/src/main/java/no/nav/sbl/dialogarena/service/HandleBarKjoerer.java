@@ -6,6 +6,7 @@ import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import no.bekk.bekkopen.person.Fodselsnummer;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.service.helpers.DiskresjonskodeHelper;
 import no.nav.sbl.dialogarena.service.helpers.VariabelHelper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
@@ -75,7 +76,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
         handlebars.registerHelper("hentTekst", generateHentTekstHelper());
         handlebars.registerHelper("hentTekstMedParameter", generateHentTekstMedParameterHelper());
         handlebars.registerHelper("hentTekstMedFaktumParameter", generateHentTekstMedFaktumParameterHelper());
-        handlebars.registerHelper("hvisKode6Eller7", generateHarDiresjonskode6Eller7Helper());
+        handlebars.registerHelper(DiskresjonskodeHelper.NAME, DiskresjonskodeHelper.INSTANCE);
         handlebars.registerHelper("hentLand", generateHentLandHelper());
         handlebars.registerHelper("forVedlegg", generateForVedleggHelper());
         handlebars.registerHelper("forPerioder", generateHelperForPeriodeTidsromFakta());
@@ -522,7 +523,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
         };
     }
 
-    private static WebSoknad finnWebSoknad(Context context) {
+    public static WebSoknad finnWebSoknad(Context context) {
         if (context == null) {
             return null;
         } else if (context.model() instanceof WebSoknad) {
@@ -651,22 +652,6 @@ public class HandleBarKjoerer implements HtmlGenerator {
                 if (harInntekt != null && "true".equals(harInntekt.getValue())) {
                     Faktum sumInntekt = soknad.getFaktaMedKeyOgParentFaktum("barn.inntekt", parentFaktum.getFaktumId()).get(0);
                     return options.fn(sumInntekt);
-                } else {
-                    return options.inverse(this);
-                }
-            }
-        };
-    }
-
-    private Helper<Object> generateHarDiresjonskode6Eller7Helper() {
-        return new Helper<Object>() {
-            @Override
-            public CharSequence apply(Object key, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-                String kode = soknad.getFaktumMedKey("personalia").getProperties().get("diskresjonskode");
-
-                if (kode != null && (kode.equals("6") || kode.equals("7"))) {
-                    return options.fn(this);
                 } else {
                     return options.inverse(this);
                 }
