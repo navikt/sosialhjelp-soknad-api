@@ -7,9 +7,11 @@ import no.nav.tjeneste.virksomhet.sakogaktivitetinformasjon.v1.FinnAktivitetsinf
 import no.nav.tjeneste.virksomhet.sakogaktivitetinformasjon.v1.FinnAktivitetsinformasjonListeSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.sakogaktivitetinformasjon.v1.SakOgAktivitetInformasjonV1;
 import no.nav.tjeneste.virksomhet.sakogaktivitetinformasjon.v1.informasjon.WSAktivitet;
+import no.nav.tjeneste.virksomhet.sakogaktivitetinformasjon.v1.informasjon.WSPeriode;
 import no.nav.tjeneste.virksomhet.sakogaktivitetinformasjon.v1.meldinger.WSFinnAktivitetsinformasjonListeRequest;
 import no.nav.tjeneste.virksomhet.sakogaktivitetinformasjon.v1.meldinger.WSFinnAktivitetsinformasjonListeResponse;
 import org.apache.commons.collections15.Transformer;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,12 +44,20 @@ public class AktiviteterService {
 
         @Override
         public Faktum apply(WSAktivitet wsAktivitet) {
-            return new Faktum()
+            Faktum faktum = new Faktum()
                     .medKey("aktivitet")
                     .medProperty("id", wsAktivitet.getAktivitetId())
-                    .medProperty("navn", wsAktivitet.getAktivitetsnavn())
-                    .medProperty("fom", wsAktivitet.getPeriode().getFom().toString("yyyy-MM-dd"))
-                    .medProperty("tom", wsAktivitet.getPeriode().getTom().toString("yyyy-MM-dd"));
+                    .medProperty("navn", wsAktivitet.getAktivitetsnavn());
+
+            WSPeriode periode = wsAktivitet.getPeriode();
+            faktum.medProperty("fom", hentDato(periode.getFom()));
+            faktum.medProperty("tom", hentDato(periode.getTom()));
+
+            return faktum;
+        }
+
+        private String hentDato(LocalDate date) {
+            return date != null ? date.toString("yyyy-MM-dd") : "";
         }
     }
 }
