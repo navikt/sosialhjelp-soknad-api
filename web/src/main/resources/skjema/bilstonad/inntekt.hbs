@@ -8,14 +8,14 @@
                 {{#hvisLik "ja" value}}
                     <tr>
                         <td class="sjekket"></td>
-                        <td>{{ hentTekst "arbeidutdanning.inntekt.egen.ja" }}</td>
+                        <td>{{ hentTekst (concat cmsPrefix "inntekt.egen.ja") }}</td>
                     </tr>
                 {{/hvisLik}}
 
                 {{#hvisLik "nei" value}}
                     <tr>
                         <td class="sjekket"></td>
-                        <td>{{ hentTekst "arbeidutdanning.inntekt.egen.nei" }}</td>
+                        <td>{{  hentTekst (concat cmsPrefix "inntekt.egen.nei") }}</td>
                     </tr>
 
                     {{#forFaktum "inntekt.partner"}}
@@ -23,14 +23,14 @@
                         {{#hvisLik "harikke" value}}
                             <tr>
                                 <td class="sjekket"></td>
-                                <td>{{ hentTekst "arbeidutdanning.inntekt.partner.harikke" }}</td>
+                                <td>{{ hentTekst (concat cmsPrefix "arbeidutdanning.inntekt.partner.harikke") }}</td>
                             </tr>
                         {{/hvisLik}}
 
                         {{#hvisLik "nei" value}}
                             <tr>
                                 <td class="sjekket"></td>
-                                <td>{{ hentTekst "arbeidutdanning.inntekt.partner.nei" }}</td>
+                                <td>{{ hentTekst (concat cmsPrefix "inntekt.partner.nei") }}</td>
                             </tr>
 
                             {{#forFaktum "inntekt.felles"}}
@@ -38,14 +38,14 @@
                                 {{#hvisLik "nei" value}}
                                     <tr>
                                         <td class="sjekket"></td>
-                                        <td>{{ hentTekst "arbeidutdanning.inntekt.felles.nei" }}</td>
+                                        <td>{{ hentTekst (concat cmsPrefix "inntekt.felles.nei") }}</td>
                                     </tr>
                                 {{/hvisLik}}
 
                                 {{#hvisLik "ja" value}}
                                     <tr>
                                         <td class="sjekket"></td>
-                                        <td>{{ hentTekst "arbeidutdanning.inntekt.felles.ja" }}</td>
+                                        <td>{{ hentTekst (concat cmsPrefix "inntekt.felles.ja") }}</td>
                                     </tr>
                                 {{/hvisLik}}
 
@@ -56,7 +56,7 @@
                         {{#hvisLik "ja" value}}
                             <tr>
                                 <td class="sjekket"></td>
-                                <td>{{ hentTekst "arbeidutdanning.inntekt.partner.ja" }}</td>
+                                <td>{{ hentTekst (concat cmsPrefix "inntekt.partner.ja") }}</td>
                             </tr>
                         {{/hvisLik}}
 
