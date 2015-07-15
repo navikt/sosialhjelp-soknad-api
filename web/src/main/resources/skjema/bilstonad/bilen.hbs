@@ -4,16 +4,16 @@
         <tr>
             <td class="sjekket"></td>
             <td>
-                {{#hvisLik "true" value}}
-                    <span>{{hentTekst "bilen.eierBilenAllerede.true"}}</span>
+                {{#hvisLik "ja" value}}
+                    <span>{{hentTekst "bilen.eierBilenAllerede.ja"}}</span>
                     <ul>
                         <li class="kulepunkt faktum-felt">
                             {{hentTekst "bilen.registreringsnummer"}}:
                             <em>{{ hentFaktumValue "bilen.registreringsnummer"}}</em>
                         </li>
                 {{/hvisLik}}
-                {{#hvisLik "false" value}}
-                    <span>{{hentTekst "bilen.eierBilenAllerede.false"}}</span>
+                {{#hvisLik "nei" value}}
+                    <span>{{hentTekst "bilen.eierBilenAllerede.nei"}}</span>
                     <ul>
                 {{/hvisLik}}
                         <li class="kulepunkt faktum-felt">
