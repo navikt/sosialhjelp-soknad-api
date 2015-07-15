@@ -19,4 +19,9 @@ public class TjenesterRessursTest {
     public void skalHenteAktiviteter() throws Exception {
         assertThat(ressurs.hentAktiviteter()).hasSize(2);
     }
+
+    @Test
+    public void skalHenteMaalgrupper() throws Exception {
+        assertThat(ressurs.hentMaalgrupper()).hasSize(2);
+    }
 }
