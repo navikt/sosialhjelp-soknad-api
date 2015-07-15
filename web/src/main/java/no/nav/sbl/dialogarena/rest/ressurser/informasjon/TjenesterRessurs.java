@@ -19,8 +19,18 @@ public class TjenesterRessurs {
     @GET
     @Path("/aktiviteter")
     public List<Faktum> hentAktiviteter() {
+        //TODO Fjernes når arenatjenesten er klar
         return Arrays.asList(
                 new Faktum().medKey("aktivitet").medProperty("fom", "2015-01-15").medProperty("tom", "2015-02-15").medProperty("id", "9999").medProperty("navn", "Arbeidspraksis i ordinær virksomhet"),
                 new Faktum().medKey("aktivitet").medProperty("fom", "2015-02-31").medProperty("tom", "").medProperty("id", "8888").medProperty("navn", "Arbeid med bistand"));
+    }
+
+    @GET
+    @Path("/maalgrupper")
+    public List<Faktum> hentMaalgrupper() {
+        //TODO Fjernes når arenatjenesten er klar
+        return Arrays.asList(
+                new Faktum().medKey("maalgruppe").medProperty("fom", "2015-01-15").medProperty("tom", "2015-02-15").medProperty("navn", "Arbeidssøker"),
+                new Faktum().medKey("maalgruppe").medProperty("fom", "2015-02-31").medProperty("tom", "").medProperty("navn", "Enslig forsørger arbeidssøker"));
     }
 }
