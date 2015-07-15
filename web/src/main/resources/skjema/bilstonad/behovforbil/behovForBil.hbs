@@ -1,12 +1,5 @@
 {{#forFaktum "informasjonsside.bilformal"}}
-    {{#hvisLik value "arbeidutdanning"}}
-        {{#variabel "cmsPrefiks" "arbeidutdanning."}}
-            {{> skjema/bilstonad/behovforbil/kollektivTransport}}
-        {{/variabel}}
-    {{/hvisLik}}
-    {{#hvisLik value "dagliglivet"}}
-        {{#variabel "cmsPrefiks" "dagligliv."}}
-            {{> skjema/bilstonad/behovforbil/kollektivTransport}}
-        {{/variabel}}
-    {{/hvisLik}}
+    {{#variabel "cmsPrefiks" (concat value ".")}}
+        {{>skjema/bilstonad/behovforbil/kollektivTransport}}
+    {{/variabel}}
 {{/forFaktum}}
