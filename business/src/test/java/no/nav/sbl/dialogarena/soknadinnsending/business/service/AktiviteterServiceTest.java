@@ -71,5 +71,34 @@ public class AktiviteterServiceTest {
         assertThat(faktum.getProperties()).containsEntry("tom", tom);
     }
 
+    @Test
+    public void skalReturnereFaktumUtenTom() throws FinnAktivitetsinformasjonListePersonIkkeFunnet, FinnAktivitetsinformasjonListeSikkerhetsbegrensning {
+        String fom = "2015-02-15";
+
+        WSPeriode periode = new WSPeriode().withFom(new LocalDate(fom));
+        WSFinnAktivitetsinformasjonListeResponse response = new WSFinnAktivitetsinformasjonListeResponse();
+        response.withAktivitetListe(new WSAktivitet().withPeriode(periode));
+
+        when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(response);
+
+        List<Faktum> fakta = aktiviteterService.hentAktiviteter("01010111111");
+
+        Faktum faktum = fakta.get(0);
+        assertThat(faktum.getProperties()).containsEntry("fom", fom);
+        assertThat(faktum.getProperties()).containsEntry("tom", "");
+    }
+
+    @Test
+    public void skalReturnereFaktumUtenNoenPeriodedatoer() throws FinnAktivitetsinformasjonListePersonIkkeFunnet, FinnAktivitetsinformasjonListeSikkerhetsbegrensning {
+        WSFinnAktivitetsinformasjonListeResponse response = new WSFinnAktivitetsinformasjonListeResponse();
+        response.withAktivitetListe(new WSAktivitet().withPeriode(new WSPeriode()));
+
+        when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(response);
+
+        List<Faktum> fakta = aktiviteterService.hentAktiviteter("01010111111");
+
+        Faktum faktum = fakta.get(0);
+        assertThat(faktum.getProperties()).containsEntry("fom", "");
+    }
 
 }
