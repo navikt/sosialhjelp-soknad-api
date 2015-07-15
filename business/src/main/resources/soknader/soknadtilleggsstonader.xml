@@ -402,6 +402,16 @@
             <value>true</value>
         </dependOnValues>
     </faktum>
+
+
+    <!-- Reise midlertidig -->
+    <faktum>
+        <id>reise.midlertidig.periode</id>
+        <dependOn>informasjonsside.stonad.reisemidlertidig</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
     
 
     <!-- Flytting -->
