@@ -419,6 +419,13 @@
             <value>true</value>
         </dependOnValues>
     </faktum>
+    <faktum>
+        <id>reise.midlertidig.sarskiltebehov</id>
+        <dependOn>informasjonsside.stonad.reisemidlertidig</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
 
     <!-- reise midlertidig offentlig transport -->
     <faktum>
@@ -973,8 +980,18 @@
 
     <!-- vedlegg for reise midlertidig -->
     <vedlegg>
+        <skjemaNummer>K8</skjemaNummer>
+        <skjemanummerTillegg>midlertidig</skjemanummerTillegg>
+        <faktum>reise.midlertidig.sarskiltebehov</faktum>
+        <property>bolk</property>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <flereTillatt>false</flereTillatt>
+    </vedlegg>
+    <vedlegg>
         <skjemaNummer>V2</skjemaNummer>
-        <skjemanummerTillegg>reiseaktivitet</skjemanummerTillegg>
+        <skjemanummerTillegg>midlertidig</skjemanummerTillegg>
         <faktum>reise.midlertidig.offentligtransport.aarsak.helse</faktum>
         <property>bolk</property>
         <onValues>
@@ -984,7 +1001,7 @@
     </vedlegg>
     <vedlegg>
         <skjemaNummer>V2</skjemaNummer>
-        <skjemanummerTillegg>reiseaktivitet</skjemanummerTillegg>
+        <skjemanummerTillegg>midlertidig</skjemanummerTillegg>
         <faktum>reise.midlertidig.offentligtransport.egenbil.aarsak.helse</faktum>
         <property>bolk</property>
         <onValues>
@@ -994,7 +1011,7 @@
     </vedlegg>
     <vedlegg>
         <skjemaNummer>J8</skjemaNummer>
-        <skjemanummerTillegg>reiseaktivitet</skjemanummerTillegg>
+        <skjemanummerTillegg>midlertidig</skjemanummerTillegg>
         <faktum>reise.midlertidig.offentligtransport.aarsak.henting</faktum>
         <property>bolk</property>
         <onValues>
@@ -1004,7 +1021,7 @@
     </vedlegg>
     <vedlegg>
         <skjemaNummer>M4</skjemaNummer><!-- skal byttes!! -->
-        <skjemanummerTillegg>reiseaktivitet</skjemanummerTillegg>
+        <skjemanummerTillegg>midlertidig</skjemanummerTillegg>
         <faktum>reise.midlertidig.offentligtransport.aarsak.annet</faktum>
         <property>bolk</property>
         <onValues>
@@ -1014,7 +1031,7 @@
     </vedlegg>
     <vedlegg>
         <skjemaNummer>M4</skjemaNummer><!-- skal byttes!! -->
-        <skjemanummerTillegg>reiseaktivitet</skjemanummerTillegg>
+        <skjemanummerTillegg>midlertidig</skjemanummerTillegg>
         <faktum>reise.midlertidig.offentligtransport.egenbil.aarsak.annet</faktum>
         <property>bolk</property>
         <onValues>
@@ -1024,7 +1041,7 @@
     </vedlegg>
     <vedlegg>
         <skjemaNummer>J6</skjemaNummer>
-        <skjemanummerTillegg>reiseaktivitet</skjemanummerTillegg>
+        <skjemanummerTillegg>midlertidig</skjemanummerTillegg>
         <faktum>reise.midlertidig.offentligtransport.egenbil.kostnader</faktum>
         <onValues>
             <value>true</value>
@@ -1033,7 +1050,7 @@
     </vedlegg>
     <vedlegg>
         <skjemaNummer>U8</skjemaNummer>
-        <skjemanummerTillegg>reiseaktivitet</skjemanummerTillegg>
+        <skjemanummerTillegg>midlertidig</skjemanummerTillegg>
         <faktum>reise.midlertidig.offentligtransport.drosje</faktum>
         <onValues>
             <value>true</value>
