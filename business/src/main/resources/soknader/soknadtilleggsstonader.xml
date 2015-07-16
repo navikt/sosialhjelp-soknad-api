@@ -433,6 +433,13 @@
             <value>true</value>
         </dependOnValues>
     </faktum>
+    <faktum>
+        <id>reise.midlertidig.hjemmeboende</id>
+        <dependOn>informasjonsside.stonad.reisemidlertidig</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
 
     <!-- reise midlertidig offentlig transport -->
     <faktum>
