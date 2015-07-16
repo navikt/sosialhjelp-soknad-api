@@ -14,11 +14,13 @@ public class DiskresjonskodeHelper extends RegistryAwareHelper<Object> {
     public static final Helper<Object> INSTANCE = new DiskresjonskodeHelper();
 
     public static final String NAME = "hvisKode6Eller7";
+    public static final String DISKRESJONSKODE_PROPERTY = "diskresjonskode";
+    public static final String PERSONALIA_FAKTUM_KEY = "personalia";
 
     @Override
     public CharSequence apply(Object key, Options options) throws IOException {
         WebSoknad soknad = HandleBarKjoerer.finnWebSoknad(options.context);
-        String kode = soknad.getFaktumMedKey("personalia").getProperties().get("diskresjonskode");
+        String kode = soknad.getFaktumMedKey(PERSONALIA_FAKTUM_KEY).getProperties().get(DISKRESJONSKODE_PROPERTY);
 
         if (kode != null && (kode.equals("6") || kode.equals("7"))) {
             return options.fn(this);
