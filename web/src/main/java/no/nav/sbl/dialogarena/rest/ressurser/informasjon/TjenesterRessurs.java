@@ -2,8 +2,6 @@ package no.nav.sbl.dialogarena.rest.ressurser.informasjon;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.AktiviteterService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
@@ -22,7 +20,7 @@ import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 public class TjenesterRessurs {
 
     @Inject
-    AktiviteterService aktiviteterService;
+    private AktiviteterService aktiviteterService;
 
     @GET
     @Path("/aktiviteter")

@@ -9,18 +9,15 @@ import no.nav.tjeneste.virksomhet.sakogaktivitetinformasjon.v1.SakOgAktivitetInf
 import no.nav.tjeneste.virksomhet.sakogaktivitetinformasjon.v1.informasjon.WSAktivitet;
 import no.nav.tjeneste.virksomhet.sakogaktivitetinformasjon.v1.informasjon.WSPeriode;
 import no.nav.tjeneste.virksomhet.sakogaktivitetinformasjon.v1.meldinger.WSFinnAktivitetsinformasjonListeRequest;
-import no.nav.tjeneste.virksomhet.sakogaktivitetinformasjon.v1.meldinger.WSFinnAktivitetsinformasjonListeResponse;
-import org.apache.commons.collections15.Transformer;
 import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.List;
 
+@Service
 public class AktiviteterService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AktiviteterService.class);
 
     @Inject
     @Named("sakOgAktivitetInformasjonEndpoint")
@@ -37,7 +34,8 @@ public class AktiviteterService {
     }
 
     private WSFinnAktivitetsinformasjonListeRequest lagAktivitetsRequest(String fodselnummer) {
-        return new WSFinnAktivitetsinformasjonListeRequest().withPersonident(fodselnummer);
+        return new WSFinnAktivitetsinformasjonListeRequest()
+                .withPersonident(fodselnummer);
     }
 
     private class AktiviteterTransformer implements Function<WSAktivitet, Faktum> {
