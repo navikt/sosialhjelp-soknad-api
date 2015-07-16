@@ -1,7 +1,5 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.tjenester;
 
-import no.nav.tjeneste.virksomhet.sakogaktivitetinformasjon.v1.FinnAktivitetsinformasjonListePersonIkkeFunnet;
-import no.nav.tjeneste.virksomhet.sakogaktivitetinformasjon.v1.FinnAktivitetsinformasjonListeSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.sakogaktivitetinformasjon.v1.SakOgAktivitetInformasjonV1;
 import no.nav.tjeneste.virksomhet.sakogaktivitetinformasjon.v1.informasjon.WSAktivitet;
 import no.nav.tjeneste.virksomhet.sakogaktivitetinformasjon.v1.informasjon.WSPeriode;
@@ -26,7 +24,7 @@ public class AktiviteterMock {
                     .withAktivitetsnavn("Arbeidspraksis i ordinær virksomhet")
                     .withPeriode(periode);
 
-            WSPeriode periode2 = new WSPeriode().withFom(new LocalDate("2015-02-31"));
+            WSPeriode periode2 = new WSPeriode().withFom(new LocalDate("2015-02-28"));
             WSAktivitet aktivitet2 = new WSAktivitet()
                     .withAktivitetId("8888")
                     .withAktivitetsnavn("Arbeid med bistand")
