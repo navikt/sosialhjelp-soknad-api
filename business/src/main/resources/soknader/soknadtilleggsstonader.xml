@@ -6,6 +6,7 @@
     </faktum>
     <faktum>
         <id>barn</id>
+        <flereTillatt>true</flereTillatt>
     </faktum>
 
     <!-- bolker -->
