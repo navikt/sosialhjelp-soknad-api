@@ -43,6 +43,8 @@ public class HandleBarKjoerer implements HtmlGenerator {
     @Inject
     private Kodeverk kodeverk;
 
+    private Map<String, Helper> helpers = new HashMap<>();
+
     @Inject
     @Named("navMessageSource")
     private MessageSource navMessageSource;
@@ -55,11 +57,19 @@ public class HandleBarKjoerer implements HtmlGenerator {
 
     }
 
+    public void registrerHelper(String name, Helper helper){
+        helpers.put(name, helper);
+    }
+
+
     private Handlebars getHandlebars() {
         Handlebars handlebars = new Handlebars();
 
+        for (Map.Entry<String, Helper> helper : helpers.entrySet()) {
+            handlebars.registerHelper(helper.getKey(), helper.getValue());
+        }
+
         handlebars.registerHelper("adresse", generateAdresseHelper());
-        handlebars.registerHelper(VariabelHelper.NAME, VariabelHelper.INSTANCE);
         handlebars.registerHelper("forFaktum", generateForFaktumHelper());
         handlebars.registerHelper("forFaktumHvisSant", generateforFaktumHvisSantHelper());
         handlebars.registerHelper("forFakta", generateForFaktaHelper());
@@ -76,7 +86,6 @@ public class HandleBarKjoerer implements HtmlGenerator {
         handlebars.registerHelper("hentTekst", generateHentTekstHelper());
         handlebars.registerHelper("hentTekstMedParameter", generateHentTekstMedParameterHelper());
         handlebars.registerHelper("hentTekstMedFaktumParameter", generateHentTekstMedFaktumParameterHelper());
-        handlebars.registerHelper(DiskresjonskodeHelper.NAME, DiskresjonskodeHelper.INSTANCE);
         handlebars.registerHelper("hentLand", generateHentLandHelper());
         handlebars.registerHelper("forVedlegg", generateForVedleggHelper());
         handlebars.registerHelper("forPerioder", generateHelperForPeriodeTidsromFakta());
