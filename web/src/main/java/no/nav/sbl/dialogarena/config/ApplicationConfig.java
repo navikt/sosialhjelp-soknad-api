@@ -3,11 +3,9 @@ package no.nav.sbl.dialogarena.config;
 import no.nav.sbl.dialogarena.service.EmailService;
 import no.nav.sbl.dialogarena.service.HandleBarKjoerer;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
-import no.nav.sbl.dialogarena.service.helpers.RegistryAwareHelper;
 import no.nav.sbl.dialogarena.utils.InnloggetBruker;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.task.TaskExecutor;
@@ -21,7 +19,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
  * Applikasjonskontekst for ear-modulen.
  */
 @Configuration
-@ComponentScan(basePackageClasses = RegistryAwareHelper.class)
 public class ApplicationConfig {
 
     @Value("${dialogarena.navnolink.url}")
