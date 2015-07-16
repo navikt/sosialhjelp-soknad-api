@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class SoknadTilleggsstonader implements KravdialogInformasjon {
@@ -21,7 +20,7 @@ public class SoknadTilleggsstonader implements KravdialogInformasjon {
     }
 
     public List<String> getSoknadBolker(WebSoknad soknad) {
-        return Collections.singletonList(BOLK_PERSONALIA);
+        return Arrays.asList(BOLK_PERSONALIA, BOLK_BARN);
     }
 
     public String getStrukturFilnavn() {
