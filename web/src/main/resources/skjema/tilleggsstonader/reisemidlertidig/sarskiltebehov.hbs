@@ -1,0 +1,12 @@
+{{#forFaktum "reise.midlertidig.sarskiltebehov"}}
+    <tr>
+        <td class="sjekket"></td>
+        <td>
+            {{#hvisSant value}}
+                <span>{{ hentTekst "soknad.reise.midlertidig.sarskiltebehov.true" }}</span>
+            {{else}}
+                <span>{{ hentTekst "soknad.reise.midlertidig.sarskiltebehov.false" }}</span>
+            {{/hvisSant}}
+        </td>
+    </tr>
+{{/forFaktum}}
