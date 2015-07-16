@@ -4,6 +4,9 @@
         <id>personalia</id>
         <erSystemFaktum>true</erSystemFaktum>
     </faktum>
+    <faktum>
+        <id>barn</id>
+    </faktum>
 
     <!-- bolker -->
     <!-- informasjonsside -->
