@@ -6,8 +6,6 @@ import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import no.bekk.bekkopen.person.Fodselsnummer;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.service.helpers.DiskresjonskodeHelper;
-import no.nav.sbl.dialogarena.service.helpers.VariabelHelper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
@@ -19,7 +17,6 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
-import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -34,9 +31,8 @@ import static org.apache.commons.lang3.StringUtils.split;
 import static org.slf4j.LoggerFactory.getLogger;
 
 
-@Service
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.ExcessiveClassLength"})
-public class HandleBarKjoerer implements HtmlGenerator {
+public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
 
     public static final Locale NO_LOCALE = new Locale("nb", "no");
 
@@ -57,6 +53,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
 
     }
 
+    @Override
     public void registrerHelper(String name, Helper helper){
         helpers.put(name, helper);
     }
@@ -667,4 +664,5 @@ public class HandleBarKjoerer implements HtmlGenerator {
             }
         };
     }
+
 }
