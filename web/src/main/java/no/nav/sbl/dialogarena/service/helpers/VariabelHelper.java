@@ -3,10 +3,12 @@ package no.nav.sbl.dialogarena.service.helpers;
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-public class VariabelHelper implements Helper<String> {
+@Component
+public class VariabelHelper extends RegistryAwareHelper<String> {
 
     public static final Helper<String> INSTANCE = new VariabelHelper();
 
@@ -18,4 +20,11 @@ public class VariabelHelper implements Helper<String> {
                 .combine(variableName, options.param(0));
         return options.fn(contextMedVariabel.build());
     }
+
+    @Override
+    public String getName() { return NAME; }
+
+    @Override
+    public Helper getHelper() { return INSTANCE; }
+
 }

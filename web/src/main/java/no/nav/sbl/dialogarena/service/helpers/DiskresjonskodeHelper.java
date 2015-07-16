@@ -4,10 +4,12 @@ import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import no.nav.sbl.dialogarena.service.HandleBarKjoerer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-public class DiskresjonskodeHelper implements Helper<Object> {
+@Component
+public class DiskresjonskodeHelper extends RegistryAwareHelper<Object> {
 
     public static final Helper<Object> INSTANCE = new DiskresjonskodeHelper();
 
@@ -24,4 +26,10 @@ public class DiskresjonskodeHelper implements Helper<Object> {
             return options.inverse(this);
         }
     }
+
+    @Override
+    public String getName() { return NAME; }
+
+    @Override
+    public Helper<Object> getHelper() { return INSTANCE; }
 }
