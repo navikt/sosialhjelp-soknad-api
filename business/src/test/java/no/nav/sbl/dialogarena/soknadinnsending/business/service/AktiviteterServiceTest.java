@@ -101,4 +101,11 @@ public class AktiviteterServiceTest {
         assertThat(faktum.getProperties()).containsEntry("fom", "");
     }
 
+    @Test(expected = RuntimeException.class)
+    public void skalKasteRuntimeExceptionVedWsFeil() throws FinnAktivitetsinformasjonListePersonIkkeFunnet, FinnAktivitetsinformasjonListeSikkerhetsbegrensning {
+        when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenThrow(new FinnAktivitetsinformasjonListeSikkerhetsbegrensning());
+
+        aktiviteterService.hentAktiviteter("");
+    }
+
 }
