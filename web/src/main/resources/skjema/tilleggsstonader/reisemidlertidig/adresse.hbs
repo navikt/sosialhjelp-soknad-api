@@ -1,0 +1,11 @@
+{{#hvisKode6Eller7}}
+{{else}}
+    <tr>
+        <td class="sjekket"></td>
+        <td>
+            {{#forFaktum "reise.midlertidig.reisemaal"}}
+                <span>{{ hentTekst "soknad.reise.reisemaal.oppsummering" }} {{properties.adresse}}, {{properties.postnr}}</span>
+            {{/forFaktum}}
+        </td>
+    </tr>
+{{/hvisKode6Eller7}}
