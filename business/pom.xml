@@ -72,6 +72,10 @@
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>kodeverk-tjenestespesifikasjon</artifactId>
         </dependency>
+        <dependency>
+            <groupId>no.nav.sbl</groupId>
+            <artifactId>arena-sakOgAktivitetInformasjon_v1</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>no.nav.tjenester.fim</groupId>

@@ -12,6 +12,7 @@ import no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil.BrukerprofilMock
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.kodeverk.KodeverkMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.personinfo.PersonInfoMock;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.tjenester.AktiviteterMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
@@ -26,6 +27,7 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
 import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.OrganisasjonV4;
 import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
+import no.nav.tjeneste.virksomhet.sakogaktivitetinformasjon.v1.SakOgAktivitetInformasjonV1;
 import org.apache.cxf.feature.LoggingFeature;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor;
@@ -75,7 +77,8 @@ public class ConsumerConfig {
             OrganisasjonWSConfig.class,
             BrukerProfilWSConfig.class,
             KodeverkWSConfig.class,
-            PersonWSConfig.class})
+            PersonWSConfig.class,
+            SakOgAktivitetInformasjonWSConfig.class})
     public static class WsServices {
 
     }
@@ -454,5 +457,15 @@ public class ConsumerConfig {
                 }
             };
         }
+    }
+
+    @Configuration
+    public static class SakOgAktivitetInformasjonWSConfig {
+
+        @Bean
+        public SakOgAktivitetInformasjonV1 sakOgAktivitetInformasjonEndpoint() {
+            return new AktiviteterMock().sakOgAktivitetInformasjonV1Mock();
+        }
+
     }
 }
