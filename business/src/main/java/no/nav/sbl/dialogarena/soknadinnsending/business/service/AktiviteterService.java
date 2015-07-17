@@ -23,7 +23,7 @@ public class AktiviteterService {
     @Named("sakOgAktivitetInformasjonEndpoint")
     private SakOgAktivitetInformasjonV1 aktivitetWebService;
 
-    AktiviteterTransformer transformer = new AktiviteterTransformer();
+    private AktiviteterTransformer transformer = new AktiviteterTransformer();
 
     public List<Faktum> hentAktiviteter(String fodselnummer) {
         try {
