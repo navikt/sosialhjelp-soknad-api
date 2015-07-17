@@ -32,6 +32,71 @@
         <id>bilogutstyr.firehjulstrekk</id>
     </faktum>
 
+    <!-- bileierskap -->
+    <faktum>
+        <id>bileierskap.eierdubil</id>
+    </faktum>
+    <faktum>
+        <id>bileierskap.bilsisteaar</id>
+    </faktum>
+    <faktum>
+        <id>bileierskap.bilsisteaar.regnr</id>
+    </faktum>
+    <faktum>
+        <id>bileierskap.bilsisteaar.solgtarsak</id>
+    </faktum>
+    <faktum>
+        <id>bileierskap.kilometerstand</id>
+    </faktum>
+    <faktum>
+        <id>bileierskap.andreharbil</id>
+    </faktum>
+    <faktum>
+        <id>bileierskap.andreharbil.ektefelle</id>
+    </faktum>
+    <faktum>
+        <id>bileierskap.andreharbil.ektefelle.regnr</id>
+    </faktum>
+    <faktum>
+        <id>bileierskap.andreharbil.samboer</id>
+    </faktum>
+    <faktum>
+        <id>bileierskap.andreharbil.samboer.regnr</id>
+    </faktum>
+    <faktum>
+        <id>bileierskap.andreharbil.forelder</id>
+    </faktum>
+    <faktum>
+        <id>bileierskap.andreharbil.forelder.regnr</id>
+    </faktum>
+    <faktum>
+        <id>bileierskap.andreharbil.barn</id>
+    </faktum>
+    <faktum>
+        <id>bileierskap.andreharbil.barn.regnr</id>
+    </faktum>
+    <faktum>
+        <id>bileierskap.andreharbil.annen</id>
+    </faktum>
+    <faktum>
+        <id>bileierskap.andreharbil.annen.regnr</id>
+    </faktum>
+    <faktum>
+        <id>bileierskap.kanbrukeselv</id>
+    </faktum>
+    <faktum>
+        <id>bileierskap.kanbrukeselv.nei.arsak</id>
+    </faktum>
+    <faktum>
+        <id>bileierskap.andreharbil.sistear</id>
+    </faktum>
+    <faktum>
+        <id>bileierskap.andreharbil.sistear.ja.regnr</id>
+    </faktum>
+    <faktum>
+        <id>bileierskap.andreharbil.sistear.ja.arsak</id>
+    </faktum>
+
     <!-- Behov for bil -->
     <faktum>
         <id>behovforbil.reisealene</id>
@@ -275,6 +340,15 @@
             <value>ja</value>
         </onValues>
         <skjemaNummer>Y9</skjemaNummer>
+    </vedlegg>
+
+    <vedlegg>
+        <faktum>bileierskap.eierdubil</faktum>
+        <onValues>
+            <value>mellom8og11ar</value>
+            <value>merenn11ar</value>
+        </onValues>
+        <skjemaNummer>Z2</skjemaNummer>
     </vedlegg>
 
     <!-- Ekstra vedlegg -->
