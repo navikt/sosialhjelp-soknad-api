@@ -1,27 +1,25 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
+import com.github.jknack.handlebars.Handlebars;
 import no.nav.sbl.dialogarena.config.HandlebarsHelperConfig;
 import no.nav.sbl.dialogarena.service.HandlebarRegistry;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.inject.Inject;
-import java.util.List;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.util.*;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {RegistryAwareHelperTest.HandlebarsHelperTestConfig.class, HandlebarsHelperConfig.class})
@@ -40,6 +38,23 @@ public class RegistryAwareHelperTest {
         for (RegistryAwareHelper helper : helpers) {
             LOG.info("Helper: "+ helper.getName());
         }
+    }
+
+    @Test
+    public void skrivRegisterteHelpersTilReadme() throws Exception {
+        List<String> list = new ArrayList<>();
+        for (RegistryAwareHelper helper : helpers) {
+            list.add(helper.getName());
+        }
+        Collections.sort(list);
+        Map<String, List> map = new HashMap();
+        map.put("helpers", list);
+        Handlebars handlebars = new Handlebars();
+        String apply = handlebars.compile("/readme/Handlebars-helpers").apply(map);
+
+        OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream("Handlebars-helpers.md"), "UTF-8");
+        writer.write(apply);
+        writer.close();
     }
 
     @Test
