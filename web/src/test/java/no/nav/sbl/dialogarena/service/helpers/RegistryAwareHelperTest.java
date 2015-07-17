@@ -42,18 +42,26 @@ public class RegistryAwareHelperTest {
 
     @Test
     public void skrivRegisterteHelpersTilReadme() throws Exception {
-        List<Map<String, String>> list = new ArrayList<>();
+        List<Map<String, String>> helpersList = new ArrayList<>();
 
         for (RegistryAwareHelper helper : helpers) {
-            HashMap<String, String> map = new HashMap<>();
-            map.put("navn", helper.getName());
-            map.put("beskrivelse", helper.getDescription());
-            list.add(map);
+            HashMap<String, String> helperInfo = new HashMap<>();
+            helperInfo.put("navn", helper.getName());
+            helperInfo.put("beskrivelse", helper.getDescription());
+            helpersList.add(helperInfo);
         }
-        Map<String, List> map = new HashMap();
-        map.put("helpers", list);
+
+        Collections.sort(helpersList, new Comparator<Map<String, String>>() {
+            @Override
+            public int compare(Map<String, String> o1, Map<String, String> o2) {
+                return o1.get("navn").compareTo(o2.get("navn"));
+            }
+        });
+
+        Map<String, List> handlebarsObject = new HashMap();
+        handlebarsObject.put("helpers", helpersList);
         Handlebars handlebars = new Handlebars();
-        String apply = handlebars.compile("/readme/Handlebars-helpers").apply(map);
+        String apply = handlebars.compile("/readme/Handlebars-helpers").apply(handlebarsObject);
 
         OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream("Handlebars-helpers.md"), "UTF-8");
         writer.write(apply);
