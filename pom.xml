@@ -245,6 +245,11 @@
                 <version>0.0.1</version>
             </dependency>
             <dependency>
+                <groupId>no.nav.sbl</groupId>
+                <artifactId>arena-sakOgAktivitetInformasjon_v1</artifactId>
+                <version>1.0</version>
+            </dependency>
+            <dependency>
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
                 <version>2.7</version>
