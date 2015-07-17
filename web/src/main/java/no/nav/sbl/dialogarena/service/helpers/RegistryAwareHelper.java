@@ -18,5 +18,6 @@ public abstract class RegistryAwareHelper<T> implements Helper<T>{
 
     public abstract String getName();
     public abstract Helper<T> getHelper();
+    public abstract String getDescription();
 
 }

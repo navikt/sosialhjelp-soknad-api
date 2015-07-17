@@ -34,4 +34,10 @@ public class DiskresjonskodeHelper extends RegistryAwareHelper<Object> {
 
     @Override
     public Helper<Object> getHelper() { return INSTANCE; }
+
+    @Override
+    public String getDescription() {
+        return "Viser innhold avhengig av om " +
+                "personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)";
+    }
 }

@@ -42,11 +42,14 @@ public class RegistryAwareHelperTest {
 
     @Test
     public void skrivRegisterteHelpersTilReadme() throws Exception {
-        List<String> list = new ArrayList<>();
+        List<Map<String, String>> list = new ArrayList<>();
+
         for (RegistryAwareHelper helper : helpers) {
-            list.add(helper.getName());
+            HashMap<String, String> map = new HashMap<>();
+            map.put("navn", helper.getName());
+            map.put("beskrivelse", helper.getDescription());
+            list.add(map);
         }
-        Collections.sort(list);
         Map<String, List> map = new HashMap();
         map.put("helpers", list);
         Handlebars handlebars = new Handlebars();

@@ -17,7 +17,7 @@ men kjører også automatisk sammen med det vanlige testoppsettet.
 
 For å registere ny helpers må man opprette en spring-annoterte klasse `***Helper.java` 
 i pakken `no.nav.sbl.dialogarena.service.helpers` og arve fra klassen `RegistryAwareHelper<T>`. 
-Parent-klassen vil selv sørge for å registere alle helpers til handlebarskjøreren med navnet fra `getName`.
+Parent-klassen vil selv sørge for å registere alle helpers til handlebarskjøreren med helpernavn fra `getName`.
 
 ### Eksisterende helpers
 
@@ -63,5 +63,5 @@ men dette er gått bort i fra.
 
 #### Dynamisk liste over helpers på nytt registeringsformat
 
-* hvisKode6Eller7 
-* variabel 
+* hvisKode6Eller7 - Viser innhold avhengig av om personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)
+* variabel - Lager en variabel med en bestemt verdi som kun er tilgjengelig innenfor helperen

@@ -27,4 +27,9 @@ public class VariabelHelper extends RegistryAwareHelper<String> {
     @Override
     public Helper getHelper() { return INSTANCE; }
 
+    @Override
+    public String getDescription() {
+        return "Lager en variabel med en bestemt verdi som kun er tilgjengelig innenfor helperen";
+    }
+
 }
