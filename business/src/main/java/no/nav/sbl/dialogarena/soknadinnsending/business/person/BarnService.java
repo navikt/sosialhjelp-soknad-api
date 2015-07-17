@@ -36,7 +36,6 @@ public class BarnService implements BolkService {
     }
 
     @Override
-    @Cacheable("barnCache")
     public List<Faktum> genererSystemFakta(String fodselsnummer, Long soknadId) {
         HentKjerneinformasjonResponse kjerneinformasjonResponse;
 
