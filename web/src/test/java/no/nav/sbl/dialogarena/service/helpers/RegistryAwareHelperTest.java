@@ -1,8 +1,10 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
 import com.github.jknack.handlebars.Handlebars;
+import junit.framework.TestFailure;
 import no.nav.sbl.dialogarena.config.HandlebarsHelperConfig;
 import no.nav.sbl.dialogarena.service.HandlebarRegistry;
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -12,10 +14,16 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.inject.Inject;
+import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.*;
 
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -49,6 +57,7 @@ public class RegistryAwareHelperTest {
             HashMap<String, String> helperInformasjon = new HashMap<>();
             helperInformasjon.put(NAVN, helper.getNavn());
             helperInformasjon.put("beskrivelse", helper.getBeskrivelse());
+            helperInformasjon.put("eksempel", hentEksempelfil(helper.getNavn()));
             helpersListe.add(helperInformasjon);
         }
 
@@ -67,6 +76,16 @@ public class RegistryAwareHelperTest {
         OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream("Handlebars-helpers.md"), "UTF-8");
         writer.write(apply);
         writer.close();
+    }
+
+    private String hentEksempelfil(String name){
+        URL url = this.getClass().getResource("/readme/" + name + ".hbs");
+        try {
+            return FileUtils.readFileToString(new File(url.toURI()));
+        } catch (Exception e) {
+            fail("Helperen " + name + " har ingen eksempelfil under /readme. Det må finnes en hbs-fil med dette navnet her.");
+        }
+        return "";
     }
 
     @Test
