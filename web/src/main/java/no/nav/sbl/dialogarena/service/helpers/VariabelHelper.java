@@ -10,9 +10,9 @@ import java.io.IOException;
 @Component
 public class VariabelHelper extends RegistryAwareHelper<String> {
 
-    public static final Helper<String> INSTANCE = new VariabelHelper();
+    public static final Helper<String> INSTANS = new VariabelHelper();
 
-    public static final String NAME = "variabel";
+    public static final String NAVN = "variabel";
 
     @Override
     public CharSequence apply(final String variableName, final Options options) throws IOException {
@@ -22,13 +22,13 @@ public class VariabelHelper extends RegistryAwareHelper<String> {
     }
 
     @Override
-    public String getName() { return NAME; }
+    public String getNavn() { return NAVN; }
 
     @Override
-    public Helper getHelper() { return INSTANCE; }
+    public Helper getHelper() { return INSTANS; }
 
     @Override
-    public String getDescription() {
+    public String getBeskrivelse() {
         return "Lager en variabel med en bestemt verdi som kun er tilgjengelig innenfor helperen";
     }
 
