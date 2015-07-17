@@ -26,6 +26,7 @@ import static org.mockito.Mockito.*;
 public class RegistryAwareHelperTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(RegistryAwareHelperTest.class);
+    public static final String NAVN = "navn";
 
     @Inject
     List<RegistryAwareHelper> helpers;
@@ -36,30 +37,30 @@ public class RegistryAwareHelperTest {
     @Test
     public void listUtRegisterteHelpers() throws Exception {
         for (RegistryAwareHelper helper : helpers) {
-            LOG.info("Helper: "+ helper.getName());
+            LOG.info("Helper: "+ helper.getNavn());
         }
     }
 
     @Test
     public void skrivRegisterteHelpersTilReadme() throws Exception {
-        List<Map<String, String>> helpersList = new ArrayList<>();
+        List<Map<String, String>> helpersListe = new ArrayList<>();
 
         for (RegistryAwareHelper helper : helpers) {
-            HashMap<String, String> helperInfo = new HashMap<>();
-            helperInfo.put("navn", helper.getName());
-            helperInfo.put("beskrivelse", helper.getDescription());
-            helpersList.add(helperInfo);
+            HashMap<String, String> helperInformasjon = new HashMap<>();
+            helperInformasjon.put(NAVN, helper.getNavn());
+            helperInformasjon.put("beskrivelse", helper.getBeskrivelse());
+            helpersListe.add(helperInformasjon);
         }
 
-        Collections.sort(helpersList, new Comparator<Map<String, String>>() {
+        Collections.sort(helpersListe, new Comparator<Map<String, String>>() {
             @Override
             public int compare(Map<String, String> o1, Map<String, String> o2) {
-                return o1.get("navn").compareTo(o2.get("navn"));
+                return o1.get(NAVN).compareTo(o2.get(NAVN));
             }
         });
 
         Map<String, List> handlebarsObject = new HashMap();
-        handlebarsObject.put("helpers", helpersList);
+        handlebarsObject.put("helpers", helpersListe);
         Handlebars handlebars = new Handlebars();
         String apply = handlebars.compile("/readme/Handlebars-helpers").apply(handlebarsObject);
 
@@ -70,7 +71,7 @@ public class RegistryAwareHelperTest {
 
     @Test
     public void registryKalltMedHelper() throws Exception {
-        verify(registry, atLeastOnce()).registrerHelper(eq(VariabelHelper.NAME), any(VariabelHelper.class));
+        verify(registry, atLeastOnce()).registrerHelper(eq(VariabelHelper.NAVN), any(VariabelHelper.class));
         verify(registry, atLeastOnce()).registrerHelper(anyString(), any(RegistryAwareHelper.class));
     }
 
@@ -79,7 +80,7 @@ public class RegistryAwareHelperTest {
     public static class HandlebarsHelperTestConfig {
 
         @Bean
-        public HandlebarRegistry handleBarKjoerer(){
+        public HandlebarRegistry register(){
             return mock(HandlebarRegistry.class);
         }
 

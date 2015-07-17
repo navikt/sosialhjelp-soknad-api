@@ -34,7 +34,7 @@ public class DiskresjonskodeHelperTest {
     @Before
     public void setup(){
         handlebars = new Handlebars();
-        handlebars.registerHelper(diskresjonskodeHelper.getName(), diskresjonskodeHelper.getHelper());
+        handlebars.registerHelper(diskresjonskodeHelper.getNavn(), diskresjonskodeHelper.getHelper());
         personaliaFaktum = new Faktum();
         when(webSoknad.getFaktumMedKey(PERSONALIA_FAKTUM_KEY)).thenReturn(personaliaFaktum);
     }
@@ -42,44 +42,44 @@ public class DiskresjonskodeHelperTest {
     @Test
     public void skalViseInnholdVedDiskresjonskode6() throws IOException {
         personaliaFaktum.medProperty(DISKRESJONSKODE_PROPERTY, "6");
-        String result = handlebars
+        String innhold = handlebars
                 .compileInline("{{#hvisKode6Eller7}}diskresjonskode6eller7{{/hvisKode6Eller7}}")
                 .apply(webSoknad);
-        assertThat(result).isEqualTo("diskresjonskode6eller7");
+        assertThat(innhold).isEqualTo("diskresjonskode6eller7");
     }
 
     @Test
     public void skalViseInnholdVedDiskresjonskode7() throws IOException {
         personaliaFaktum.medProperty(DISKRESJONSKODE_PROPERTY, "7");
-        String result = handlebars
+        String innhold = handlebars
                 .compileInline("{{#hvisKode6Eller7}}diskresjonskode6eller7{{/hvisKode6Eller7}}")
                 .apply(webSoknad);
-        assertThat(result).isEqualTo("diskresjonskode6eller7");
+        assertThat(innhold).isEqualTo("diskresjonskode6eller7");
     }
 
     @Test
     public void skalIkkeViseInnholdVedTomDiskresjonskode() throws IOException {
         personaliaFaktum.medProperty(DISKRESJONSKODE_PROPERTY, "");
-        String result = handlebars
+        String innhold = handlebars
                 .compileInline("{{#hvisKode6Eller7}}diskresjonskode6eller7{{/hvisKode6Eller7}}")
                 .apply(webSoknad);
-        assertThat(result).isNotEqualTo("diskresjonskode6eller7");
+        assertThat(innhold).isNotEqualTo("diskresjonskode6eller7");
     }
 
     @Test
     public void skalViseElseInnholdVedTomDiskresjonskode() throws IOException {
         personaliaFaktum.medProperty(DISKRESJONSKODE_PROPERTY, "");
-        String result = handlebars
+        String innhold = handlebars
                 .compileInline("{{#hvisKode6Eller7}}{{else}}ikkediskresjonskode6eller7{{/hvisKode6Eller7}}")
                 .apply(webSoknad);
-        assertThat(result).isEqualTo("ikkediskresjonskode6eller7");
+        assertThat(innhold).isEqualTo("ikkediskresjonskode6eller7");
     }
 
     public void skalIkkeFeileUtenDiskresjonskodeProperty() throws IOException {
-        String result = handlebars
+        String innhold = handlebars
                 .compileInline("{{#hvisKode6Eller7}}{{else}}ikkediskresjonskode6eller7{{/hvisKode6Eller7}}")
                 .apply(webSoknad);
-        assertThat(result).isEqualTo("ikkediskresjonskode6eller7");
+        assertThat(innhold).isEqualTo("ikkediskresjonskode6eller7");
     }
 
 }

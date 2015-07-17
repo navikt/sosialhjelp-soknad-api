@@ -13,11 +13,11 @@ public abstract class RegistryAwareHelper<T> implements Helper<T>{
 
     @PostConstruct
     public void registrer(){
-        handlebarsRegistry.registrerHelper(getName(), getHelper());
+        handlebarsRegistry.registrerHelper(getNavn(), getHelper());
     };
 
-    public abstract String getName();
+    public abstract String getNavn();
     public abstract Helper<T> getHelper();
-    public abstract String getDescription();
+    public abstract String getBeskrivelse();
 
 }

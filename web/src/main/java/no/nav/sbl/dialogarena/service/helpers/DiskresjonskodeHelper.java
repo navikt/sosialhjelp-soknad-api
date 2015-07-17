@@ -11,9 +11,9 @@ import java.io.IOException;
 @Component
 public class DiskresjonskodeHelper extends RegistryAwareHelper<Object> {
 
-    public static final Helper<Object> INSTANCE = new DiskresjonskodeHelper();
+    public static final Helper<Object> INSTANS = new DiskresjonskodeHelper();
 
-    public static final String NAME = "hvisKode6Eller7";
+    public static final String NAVN = "hvisKode6Eller7";
     public static final String DISKRESJONSKODE_PROPERTY = "diskresjonskode";
     public static final String PERSONALIA_FAKTUM_KEY = "personalia";
 
@@ -30,13 +30,13 @@ public class DiskresjonskodeHelper extends RegistryAwareHelper<Object> {
     }
 
     @Override
-    public String getName() { return NAME; }
+    public String getNavn() { return NAVN; }
 
     @Override
-    public Helper<Object> getHelper() { return INSTANCE; }
+    public Helper<Object> getHelper() { return INSTANS; }
 
     @Override
-    public String getDescription() {
+    public String getBeskrivelse() {
         return "Viser innhold avhengig av om " +
                 "personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)";
     }
