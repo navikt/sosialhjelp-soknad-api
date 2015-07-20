@@ -35,13 +35,19 @@ public class MaalgrupperService {
     }
 
     private static class MaalgruppeTilFaktum implements Function<WSMaalgruppe, Faktum> {
+        public static final String DATOFORMAT = "yyyy-MM-dd";
+
         @Override
         public Faktum apply(WSMaalgruppe maalgruppe) {
-
             return new Faktum()
                     .medKey("maalgruppe")
                     .medProperty("navn", maalgruppe.getMaalgruppenavn())
-                    .medProperty("fom", maalgruppe.getGyldighetsperiode().getFom().toString("yyyy-MM-dd"));
+                    .medProperty("fom", maalgruppe.getGyldighetsperiode().getFom().toString(DATOFORMAT))
+                    .medProperty("tom", datoTilString(maalgruppe.getGyldighetsperiode().getTom()));
+        }
+
+        private String datoTilString(LocalDate date) {
+            return date != null ? date.toString(DATOFORMAT) : "";
         }
     }
 }

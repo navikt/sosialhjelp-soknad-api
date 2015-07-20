@@ -19,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
@@ -81,8 +82,8 @@ public class MaalgrupperServiceTest {
 
     @Test
     public void skalReturnereListeAvMaalgruppeFakta() throws Exception {
-        WSMaalgruppe maalgruppe = lagMaalgruppe("", new LocalDate());
-        WSMaalgruppe maalgruppe2 = lagMaalgruppe("", new LocalDate());
+        WSMaalgruppe maalgruppe = lagMaalgruppe("", new LocalDate(), new LocalDate());
+        WSMaalgruppe maalgruppe2 = lagMaalgruppe("", new LocalDate(), new LocalDate());
         when(webservice.finnMaalgruppeinformasjonListe(any(WSFinnMaalgruppeinformasjonListeRequest.class)))
                 .thenReturn(lagMaalgruppeRequest(maalgruppe, maalgruppe2));
 
@@ -96,19 +97,38 @@ public class MaalgrupperServiceTest {
     @Test
     public void skalReturnereListeAvFaktumMedRettInnhold() throws Exception {
         String arbeidssoker = "Arbeidssøker";
+        String fomArbeidssoker = "2015-02-02";
+        String tomArbeidssoker = "2015-07-20";
+        WSMaalgruppe arbeidssokerMaalgruppe = lagMaalgruppe(arbeidssoker, fomArbeidssoker, tomArbeidssoker);
+
         String ensligForsorger = "Enslig forsørger arbeidssøker";
-        WSMaalgruppe maalgruppe = lagMaalgruppe(arbeidssoker, new LocalDate("2015-02-02"));
-        WSMaalgruppe maalgruppe2 = lagMaalgruppe(ensligForsorger, new LocalDate("2015-03-02"));
+        String fomEnsligForsorger = "2015-03-02";
+        String tomEnsligForsorger = "2015-07-22";
+        WSMaalgruppe ensligForsorgerMaalgruppe = lagMaalgruppe(ensligForsorger, fomEnsligForsorger, tomEnsligForsorger);
 
         when(webservice.finnMaalgruppeinformasjonListe(any(WSFinnMaalgruppeinformasjonListeRequest.class)))
-                .thenReturn(lagMaalgruppeRequest(maalgruppe, maalgruppe2));
+                .thenReturn(lagMaalgruppeRequest(arbeidssokerMaalgruppe, ensligForsorgerMaalgruppe));
 
         List<Faktum> fakta = maalgrupperService.hentMaalgrupper(FODSELSNUMMER);
-        assertThat(fakta.get(0).getProperties()).containsEntry("navn", arbeidssoker);
-        assertThat(fakta.get(0).getProperties()).containsEntry("fom", "2015-02-02");
+        Map<String, String> arbeidssokerProperties = fakta.get(0).getProperties();
+        assertThat(arbeidssokerProperties).containsEntry("navn", arbeidssoker);
+        assertThat(arbeidssokerProperties).containsEntry("fom", fomArbeidssoker);
+        assertThat(arbeidssokerProperties).containsEntry("tom", tomArbeidssoker);
 
-        assertThat(fakta.get(1).getProperties()).containsEntry("navn", ensligForsorger);
-        assertThat(fakta.get(1).getProperties()).containsEntry("fom", "2015-03-02");
+        Map<String, String> ensligForsorgerProperties = fakta.get(1).getProperties();
+        assertThat(ensligForsorgerProperties).containsEntry("navn", ensligForsorger);
+        assertThat(ensligForsorgerProperties).containsEntry("fom", fomEnsligForsorger);
+        assertThat(ensligForsorgerProperties).containsEntry("tom", tomEnsligForsorger);
+    }
+
+    @Test
+    public void trengerIkkeTilOgMedDatoForMaalgruppe() throws Exception {
+        WSMaalgruppe maalgruppe = lagMaalgruppe("", new LocalDate());
+        when(webservice.finnMaalgruppeinformasjonListe(any(WSFinnMaalgruppeinformasjonListeRequest.class)))
+                .thenReturn(lagMaalgruppeRequest(maalgruppe));
+
+        List<Faktum> fakta = maalgrupperService.hentMaalgrupper(FODSELSNUMMER);
+        assertThat(fakta.get(0).getProperties()).containsEntry("tom", "");
     }
 
     private WSFinnMaalgruppeinformasjonListeResponse lagMaalgruppeRequest(WSMaalgruppe... maalgrupper) {
@@ -116,9 +136,21 @@ public class MaalgrupperServiceTest {
                 .withMaalgruppeListe(maalgrupper);
     }
 
-    private WSMaalgruppe lagMaalgruppe(String maalgruppenavn, LocalDate fom) {
+    private WSMaalgruppe lagMaalgruppe(String maalgruppenavn, String fom, String tom) {
+        LocalDate fomDate = new LocalDate(fom);
+        LocalDate tomDate = new LocalDate(tom);
+        return lagMaalgruppe(maalgruppenavn, fomDate, tomDate);
+    }
+
+    private WSMaalgruppe lagMaalgruppe(String maalgruppenavn, LocalDate fomDate) {
         return new WSMaalgruppe()
                 .withMaalgruppenavn(maalgruppenavn)
-                .withGyldighetsperiode(new WSPeriode().withFom(fom));
+                .withGyldighetsperiode(new WSPeriode().withFom(fomDate));
+    }
+
+    private WSMaalgruppe lagMaalgruppe(String maalgruppenavn, LocalDate fomDate, LocalDate tomDate) {
+        return new WSMaalgruppe()
+                .withMaalgruppenavn(maalgruppenavn)
+                .withGyldighetsperiode(new WSPeriode().withFom(fomDate).withTom(tomDate));
     }
 }
