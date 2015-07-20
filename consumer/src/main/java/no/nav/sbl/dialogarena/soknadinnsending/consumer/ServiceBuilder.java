@@ -30,14 +30,14 @@ import static org.apache.cxf.ws.security.SecurityConstants.MUST_UNDERSTAND;
  *
  * @param <T> klassen det lages for
  */
-final class ServiceBuilder<T> {
+public final class ServiceBuilder<T> {
 
     public static final int RECEIVE_TIMEOUT = 30000;
     public static final int CONNECTION_TIMEOUT = 10000;
     public Class<T> resultClass;
     private JaxWsProxyFactoryBean factoryBean;
 
-    ServiceBuilder(Class<T> resultClass) {
+    public ServiceBuilder(Class<T> resultClass) {
         factoryBean = new JaxWsProxyFactoryBean();
         factoryBean.setServiceClass(resultClass);
         this.resultClass = resultClass;
