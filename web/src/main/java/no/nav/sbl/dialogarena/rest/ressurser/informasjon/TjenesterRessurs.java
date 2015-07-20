@@ -22,6 +22,8 @@ public class TjenesterRessurs {
 
     @Inject
     private AktiviteterService aktiviteterService;
+
+    @Inject
     private MaalgrupperService maalgrupperService;
 
     @GET

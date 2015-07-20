@@ -11,11 +11,17 @@ import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.informasjon.WSPeriode
 import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.meldinger.WSFinnMaalgruppeinformasjonListeRequest;
 import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.meldinger.WSFinnMaalgruppeinformasjonListeResponse;
 import org.joda.time.LocalDate;
+import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.List;
 
+@Service
 public class MaalgrupperService {
 
+    @Inject
+    @Named("maalgruppeinformasjonEndpoint")
     private MaalgruppeinformasjonV1 maalgruppeinformasjon;
     private MaalgruppeTilFaktum maalgruppeTilFaktum = new MaalgruppeTilFaktum();
 

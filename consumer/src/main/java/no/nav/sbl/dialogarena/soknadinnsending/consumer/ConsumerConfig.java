@@ -38,7 +38,9 @@ public class ConsumerConfig {
             BrukerProfilWSConfig.class,
             KodeverkWSConfig.class,
             PersonWSConfig.class,
-            SakOgAktivitetInformasjonWSConfig.class})
+            MaalgruppeinformasjonWSConfig.class,
+            SakOgAktivitetInformasjonWSConfig.class
+    })
     public static class WsServices {
     }
 
