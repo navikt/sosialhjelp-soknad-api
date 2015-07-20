@@ -6,7 +6,6 @@ import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import no.bekk.bekkopen.person.Fodselsnummer;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.service.helpers.VariabelHelper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
@@ -18,7 +17,6 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
-import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -33,14 +31,15 @@ import static org.apache.commons.lang3.StringUtils.split;
 import static org.slf4j.LoggerFactory.getLogger;
 
 
-@Service
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.ExcessiveClassLength"})
-public class HandleBarKjoerer implements HtmlGenerator {
+public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
 
     public static final Locale NO_LOCALE = new Locale("nb", "no");
 
     @Inject
     private Kodeverk kodeverk;
+
+    private Map<String, Helper> helpers = new HashMap<>();
 
     @Inject
     @Named("navMessageSource")
@@ -54,11 +53,20 @@ public class HandleBarKjoerer implements HtmlGenerator {
 
     }
 
+    @Override
+    public void registrerHelper(String name, Helper helper){
+        helpers.put(name, helper);
+    }
+
+
     private Handlebars getHandlebars() {
         Handlebars handlebars = new Handlebars();
 
+        for (Map.Entry<String, Helper> helper : helpers.entrySet()) {
+            handlebars.registerHelper(helper.getKey(), helper.getValue());
+        }
+
         handlebars.registerHelper("adresse", generateAdresseHelper());
-        handlebars.registerHelper(VariabelHelper.NAME, VariabelHelper.INSTANCE);
         handlebars.registerHelper("forFaktum", generateForFaktumHelper());
         handlebars.registerHelper("forFaktumHvisSant", generateforFaktumHvisSantHelper());
         handlebars.registerHelper("forFakta", generateForFaktaHelper());
@@ -75,7 +83,6 @@ public class HandleBarKjoerer implements HtmlGenerator {
         handlebars.registerHelper("hentTekst", generateHentTekstHelper());
         handlebars.registerHelper("hentTekstMedParameter", generateHentTekstMedParameterHelper());
         handlebars.registerHelper("hentTekstMedFaktumParameter", generateHentTekstMedFaktumParameterHelper());
-        handlebars.registerHelper("hvisKode6Eller7", generateHarDiresjonskode6Eller7Helper());
         handlebars.registerHelper("hentLand", generateHentLandHelper());
         handlebars.registerHelper("forVedlegg", generateForVedleggHelper());
         handlebars.registerHelper("forPerioder", generateHelperForPeriodeTidsromFakta());
@@ -522,7 +529,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
         };
     }
 
-    private static WebSoknad finnWebSoknad(Context context) {
+    public static WebSoknad finnWebSoknad(Context context) {
         if (context == null) {
             return null;
         } else if (context.model() instanceof WebSoknad) {
@@ -658,19 +665,4 @@ public class HandleBarKjoerer implements HtmlGenerator {
         };
     }
 
-    private Helper<Object> generateHarDiresjonskode6Eller7Helper() {
-        return new Helper<Object>() {
-            @Override
-            public CharSequence apply(Object key, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-                String kode = soknad.getFaktumMedKey("personalia").getProperties().get("diskresjonskode");
-
-                if (kode != null && (kode.equals("6") || kode.equals("7"))) {
-                    return options.fn(this);
-                } else {
-                    return options.inverse(this);
-                }
-            }
-        };
-    }
 }

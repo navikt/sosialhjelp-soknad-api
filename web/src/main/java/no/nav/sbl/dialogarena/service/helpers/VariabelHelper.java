@@ -3,14 +3,16 @@ package no.nav.sbl.dialogarena.service.helpers;
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-public class VariabelHelper implements Helper<String> {
+@Component
+public class VariabelHelper extends RegistryAwareHelper<String> {
 
-    public static final Helper<String> INSTANCE = new VariabelHelper();
+    public static final Helper<String> INSTANS = new VariabelHelper();
 
-    public static final String NAME = "variabel";
+    public static final String NAVN = "variabel";
 
     @Override
     public CharSequence apply(final String variableName, final Options options) throws IOException {
@@ -18,4 +20,16 @@ public class VariabelHelper implements Helper<String> {
                 .combine(variableName, options.param(0));
         return options.fn(contextMedVariabel.build());
     }
+
+    @Override
+    public String getNavn() { return NAVN; }
+
+    @Override
+    public Helper getHelper() { return INSTANS; }
+
+    @Override
+    public String getBeskrivelse() {
+        return "Lager en variabel med en bestemt verdi som kun er tilgjengelig innenfor helperen";
+    }
+
 }
