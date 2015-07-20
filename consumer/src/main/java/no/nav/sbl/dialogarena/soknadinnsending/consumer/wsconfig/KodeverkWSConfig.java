@@ -8,16 +8,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static java.lang.System.setProperty;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.util.InstanceSwitcher.createSwitcher;
 
 @Configuration
 public class KodeverkWSConfig {
-
-    //Må godta så store xml-payloads pga Kodeverk postnr
-    static {
-        setProperty("org.apache.cxf.staxutils.innerElementCountThreshold", "70000");
-    }
 
     public static final String KODEVERK_KEY = "start.kodeverk.withmock";
 
