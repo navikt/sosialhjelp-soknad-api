@@ -82,19 +82,19 @@
         <id>bileierskap.andreharbil.annen.regnr</id>
     </faktum>
     <faktum>
-        <id>bileierskap.kanbrukeselv</id>
+        <id>bileierskap.andreharbil.kanbrukeselv</id>
     </faktum>
     <faktum>
-        <id>bileierskap.kanbrukeselv.nei.arsak</id>
+        <id>bileierskap.andreharbil.kanbrukeselv.nei.arsak</id>
     </faktum>
     <faktum>
         <id>bileierskap.andreharbil.sistear</id>
     </faktum>
     <faktum>
-        <id>bileierskap.andreharbil.sistear.ja.regnr</id>
+        <id>bileierskap.andreharbil.sistear.regnr</id>
     </faktum>
     <faktum>
-        <id>bileierskap.andreharbil.sistear.ja.arsak</id>
+        <id>bileierskap.andreharbil.sistear.solgtarsak</id>
     </faktum>
 
     <!-- Behov for bil -->
