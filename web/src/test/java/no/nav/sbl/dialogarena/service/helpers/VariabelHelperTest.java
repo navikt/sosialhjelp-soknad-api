@@ -15,26 +15,26 @@ public class VariabelHelperTest {
     @Before
     public void setup(){
         handlebars = new Handlebars();
-        handlebars.registerHelper(VariabelHelper.NAME, VariabelHelper.INSTANCE);
+        handlebars.registerHelper(VariabelHelper.NAVN, VariabelHelper.INSTANS);
     }
 
     @Test
     public void skalInterpolereVariabel() throws IOException {
-        String result = handlebars.compileInline("{{#variabel \"envar\" \"variabel.verdi\"}}{{envar}}{{/variabel}}").apply(new Object());
-        assertThat(result).isEqualTo("variabel.verdi");
+        String innhold = handlebars.compileInline("{{#variabel \"envar\" \"variabel.verdi\"}}{{envar}}{{/variabel}}").apply(new Object());
+        assertThat(innhold).isEqualTo("variabel.verdi");
     }
 
     @Test
     public void skalKunInterpolereInneforBlokk() throws IOException {
-        String result = handlebars.compileInline("{{envar}}{{#variabel \"envar\" \"variabel.verdi\"}}{{/variabel}}{{envar}}").apply(new Object());
-        assertThat(result).isNotEqualTo("variabel.verdi");
+        String innhold = handlebars.compileInline("{{envar}}{{#variabel \"envar\" \"variabel.verdi\"}}{{/variabel}}{{envar}}").apply(new Object());
+        assertThat(innhold).isNotEqualTo("variabel.verdi");
     }
 
     @Test
     public void skalIkkeDeleVariable() throws IOException {
-        String result = handlebars.compileInline("{{#variabel \"envar\" \"variabel.verdi\"}}{{envar}}{{/variabel}}{{#variabel \"envar\" \"variabel.verdi2\"}}{{envar}}{{/variabel}}").apply(new Object());
-        assertThat(result).contains("variabel.verdi");
-        assertThat(result).contains("variabel.verdi2");
+        String innhold = handlebars.compileInline("{{#variabel \"envar\" \"variabel.verdi\"}}{{envar}}{{/variabel}}{{#variabel \"envar\" \"variabel.verdi2\"}}{{envar}}{{/variabel}}").apply(new Object());
+        assertThat(innhold).contains("variabel.verdi");
+        assertThat(innhold).contains("variabel.verdi2");
     }
 
 }
