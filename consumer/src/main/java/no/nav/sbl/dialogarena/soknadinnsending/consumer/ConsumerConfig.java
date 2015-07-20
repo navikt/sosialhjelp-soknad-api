@@ -9,6 +9,8 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+import static java.lang.System.setProperty;
+
 @Configuration
 @EnableCaching
 @Import({
@@ -20,6 +22,11 @@ import org.springframework.context.annotation.Import;
 })
 
 public class ConsumerConfig {
+
+    //Må godta så store xml-payloads pga Kodeverk postnr
+    static {
+        setProperty("org.apache.cxf.staxutils.innerElementCountThreshold", "70000");
+    }
 
     @Configuration
     @Import({
