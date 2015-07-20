@@ -43,14 +43,19 @@ public class RegistryAwareHelperTest {
     HandlebarRegistry registry;
 
     @Test
-    public void listUtRegisterteHelpers() throws Exception {
+    public void listUtRegistrerteHelpers() throws Exception {
         for (RegistryAwareHelper helper : helpers) {
             LOG.info("Helper: "+ helper.getNavn());
         }
     }
 
+    /*
+    * Denne testen har ingen assertions, men genererer fila Handlebars-helpers.md.
+    * Se beskrivelse i Handlebars-helpers.md for å få bakgrunn for testen.
+    * */
+
     @Test
-    public void skrivRegisterteHelpersTilReadme() throws Exception {
+    public void skrivRegistrerteHelpersTilReadme() throws Exception {
         List<Map<String, String>> helpersListe = new ArrayList<>();
 
         for (RegistryAwareHelper helper : helpers) {
@@ -89,7 +94,7 @@ public class RegistryAwareHelperTest {
     }
 
     @Test
-    public void registryKalltMedHelper() throws Exception {
+    public void registryKaltMedHelper() throws Exception {
         verify(registry, atLeastOnce()).registrerHelper(eq(VariabelHelper.NAVN), any(VariabelHelper.class));
         verify(registry, atLeastOnce()).registrerHelper(anyString(), any(RegistryAwareHelper.class));
     }
