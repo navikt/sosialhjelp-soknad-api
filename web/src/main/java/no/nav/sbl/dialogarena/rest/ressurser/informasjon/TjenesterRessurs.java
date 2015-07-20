@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.rest.ressurser.informasjon;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.AktiviteterService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.MaalgrupperService;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
@@ -21,6 +22,7 @@ public class TjenesterRessurs {
 
     @Inject
     private AktiviteterService aktiviteterService;
+    private MaalgrupperService maalgrupperService;
 
     @GET
     @Path("/aktiviteter")
@@ -31,9 +33,6 @@ public class TjenesterRessurs {
     @GET
     @Path("/maalgrupper")
     public List<Faktum> hentMaalgrupper() {
-        //TODO Fjernes når arenatjenesten er klar
-        return Arrays.asList(
-                new Faktum().medKey("maalgruppe").medProperty("fom", "2015-01-15").medProperty("tom", "2015-02-15").medProperty("navn", "Arbeidssøker"),
-                new Faktum().medKey("maalgruppe").medProperty("fom", "2015-02-31").medProperty("tom", "").medProperty("navn", "Enslig forsørger arbeidssøker"));
+        return maalgrupperService.hentMaalgrupper(getSubjectHandler().getUid());
     }
 }
