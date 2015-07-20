@@ -1,19 +1,28 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.FinnMaalgruppeinformasjonListePersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.FinnMaalgruppeinformasjonListeSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.MaalgruppeinformasjonV1;
+import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.informasjon.WSMaalgruppe;
 import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.informasjon.WSPeriode;
 import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.meldinger.WSFinnMaalgruppeinformasjonListeRequest;
+import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.meldinger.WSFinnMaalgruppeinformasjonListeResponse;
 import org.joda.time.LocalDate;
+
+import java.util.List;
 
 public class MaalgrupperService {
 
     private MaalgruppeinformasjonV1 maalgruppeinformasjon;
+    private MaalgruppeTilFaktum maalgruppeTilFaktum = new MaalgruppeTilFaktum();
 
-    public void hentMaalgrupper(String fodselsnummer) {
+    public List<Faktum> hentMaalgrupper(String fodselsnummer) {
         try {
-            maalgruppeinformasjon.finnMaalgruppeinformasjonListe(lagRequest(fodselsnummer));
+            WSFinnMaalgruppeinformasjonListeResponse maalgrupper = maalgruppeinformasjon.finnMaalgruppeinformasjonListe(lagRequest(fodselsnummer));
+            return Lists.transform(maalgrupper.getMaalgruppeListe(), maalgruppeTilFaktum);
         } catch (FinnMaalgruppeinformasjonListePersonIkkeFunnet | FinnMaalgruppeinformasjonListeSikkerhetsbegrensning e) {
             throw new RuntimeException(e);
         }
@@ -23,5 +32,16 @@ public class MaalgrupperService {
         WSFinnMaalgruppeinformasjonListeRequest request = new WSFinnMaalgruppeinformasjonListeRequest();
         WSPeriode periode = new WSPeriode().withFom(new LocalDate("2015-01-01"));
         return request.withPersonident(fodselsnummer).withPeriode(periode);
+    }
+
+    private static class MaalgruppeTilFaktum implements Function<WSMaalgruppe, Faktum> {
+        @Override
+        public Faktum apply(WSMaalgruppe maalgruppe) {
+
+            return new Faktum()
+                    .medKey("maalgruppe")
+                    .medProperty("navn", maalgruppe.getMaalgruppenavn())
+                    .medProperty("fom", maalgruppe.getGyldighetsperiode().getFom().toString("yyyy-MM-dd"));
+        }
     }
 }
