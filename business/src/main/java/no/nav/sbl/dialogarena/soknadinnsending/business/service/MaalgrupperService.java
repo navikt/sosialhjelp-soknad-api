@@ -49,7 +49,8 @@ public class MaalgrupperService {
                     .medKey("maalgruppe")
                     .medProperty("navn", maalgruppe.getMaalgruppenavn())
                     .medProperty("fom", maalgruppe.getGyldighetsperiode().getFom().toString(DATOFORMAT))
-                    .medProperty("tom", datoTilString(maalgruppe.getGyldighetsperiode().getTom()));
+                    .medProperty("tom", datoTilString(maalgruppe.getGyldighetsperiode().getTom()))
+                    .medProperty("kodeverkVerdi", maalgruppe.getMaalgruppetype().getValue());
         }
 
         private String datoTilString(LocalDate date) {
