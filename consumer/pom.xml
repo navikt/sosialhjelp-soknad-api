@@ -65,6 +65,10 @@
             <artifactId>arena-sakOgAktivitetInformasjon_v1</artifactId>
         </dependency>
         <dependency>
+            <groupId>no.nav.sbl</groupId>
+            <artifactId>arena-maalgruppeinformasjon_v1</artifactId>
+        </dependency>
+        <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>common-timing</artifactId>
         </dependency>
