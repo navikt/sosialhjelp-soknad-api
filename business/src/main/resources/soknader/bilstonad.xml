@@ -329,7 +329,23 @@
     </vedlegg>
 
     <vedlegg>
-        <faktum>informasjonsside.bilformal</faktum>
+        <faktum>soknadsvalg.stonadstype</faktum>
+        <skjemaNummer>Z3</skjemaNummer>
+    </vedlegg>
+
+    <vedlegg>
+        <faktum>soknadsvalg.stonadstype</faktum>
+        <onValues>
+            <value>stonadBil</value>
+        </onValues>
+        <skjemaNummer>T7</skjemaNummer>
+    </vedlegg>
+
+    <vedlegg>
+        <faktum>soknadsvalg.stonadstype</faktum>
+        <onValues>
+            <value>stonadBil</value>
+        </onValues>
         <skjemaNummer>U2</skjemaNummer>
     </vedlegg>
 
