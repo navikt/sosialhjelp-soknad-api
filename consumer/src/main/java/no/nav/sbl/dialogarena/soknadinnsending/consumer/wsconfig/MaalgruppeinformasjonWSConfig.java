@@ -5,8 +5,6 @@ import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.Maalgruppeinformasjon
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static org.mockito.Mockito.mock;
-
 @Configuration
 public class MaalgruppeinformasjonWSConfig {
 
