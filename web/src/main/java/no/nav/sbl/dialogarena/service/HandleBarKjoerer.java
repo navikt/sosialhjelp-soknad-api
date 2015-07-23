@@ -293,9 +293,12 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         try {
             return navMessageSource.getMessage(soknadTypePrefix + "." + key, parameters, locale);
         } catch (NoSuchMessageException e) {
-            return navMessageSource.getMessage(key, parameters, locale);
+            try {
+                return navMessageSource.getMessage(key, parameters, locale);
+            } catch (NoSuchMessageException e2) {
+                return String.format("KEY MANGLER: [%s]", key);
+            }
         }
-
     }
 
     private Helper<Object> generateHvisIkkeTomHelper() {
