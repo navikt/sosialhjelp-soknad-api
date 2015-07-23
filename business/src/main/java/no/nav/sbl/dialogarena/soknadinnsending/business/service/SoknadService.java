@@ -364,8 +364,16 @@ public class SoknadService implements SendSoknadService, EttersendingService {
                 .withUuid(soknad.getUuid())
                 .withJournalforendeEnhet(journalforendeEnhet(soknad));
 
+        hovedskjema.withAlternativRepresentasjonListe(opprettAlternativRepresentasjoner(soknad));
+
+        henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, Transformers.convertToXmlVedleggListe(vedleggForventninger));
+        repository.slettSoknad(soknadId);
+    }
+
+    private XMLAlternativRepresentasjonListe opprettAlternativRepresentasjoner(WebSoknad soknad) {
         List<Transformer<WebSoknad, AlternativRepresentasjon>> transformers = kravdialogInformasjonHolder.hentKonfigurasjon(soknad.getskjemaNummer()).getTransformers();
         XMLAlternativRepresentasjonListe xmlAlternativRepresentasjonListe = new XMLAlternativRepresentasjonListe();
+
         List<XMLAlternativRepresentasjon> alternativRepresentasjonListe = xmlAlternativRepresentasjonListe.getAlternativRepresentasjon();
 
         for (Transformer<WebSoknad, AlternativRepresentasjon> transformer : transformers) {
@@ -381,11 +389,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
                     .withMimetype(altrep.getMimetype())
                     .withUuid(altrep.getUuid()));
         }
-
-        hovedskjema.withAlternativRepresentasjonListe(xmlAlternativRepresentasjonListe);
-
-        henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, Transformers.convertToXmlVedleggListe(vedleggForventninger));
-        repository.slettSoknad(soknadId);
+        return xmlAlternativRepresentasjonListe;
     }
 
     private String skjemanummer(WebSoknad soknad) {
