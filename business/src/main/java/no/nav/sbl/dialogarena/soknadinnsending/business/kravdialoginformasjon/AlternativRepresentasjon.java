@@ -1,11 +1,24 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon;
 
-public interface AlternativRepresentasjon {
-    String getFilnavn();
+import static java.util.UUID.randomUUID;
 
-    String getMimetype();
+public class AlternativRepresentasjon {
+    private String uuid = randomUUID().toString();
 
-    String getUuid();
+    public String getFilnavn() {
+        return "Tilleggstonader.xml";
+    }
 
-    byte[] getContent();
+    public String getMimetype() {
+        return "application/xml";
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public byte[] getContent() {
+        String xml = "<soknad><content>Innhold soknad tillegsstonad</content></soknad>";
+        return xml.getBytes();
+    }
 }
