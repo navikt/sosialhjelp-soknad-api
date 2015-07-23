@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class ForeldrepengerInformasjon extends KravdialogInformasjon.KravdialogInformasjonHelper {
+public class ForeldrepengerInformasjon extends KravdialogInformasjon.KravdialogInformasjonUtenAlternativRepresentasjon {
 
     public static final List<String> STONADSTYPER_PERSONALIA = Arrays.asList("overforing", "engangsstonadMor", "engangsstonadFar");
 

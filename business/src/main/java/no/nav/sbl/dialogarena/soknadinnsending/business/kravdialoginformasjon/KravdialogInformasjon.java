@@ -26,7 +26,7 @@ public interface KravdialogInformasjon {
 
     List<Transformer<WebSoknad, AlternativRepresentasjon>> getTransformers();
 
-    public abstract class KravdialogInformasjonHelper implements KravdialogInformasjon {
+    public abstract class KravdialogInformasjonUtenAlternativRepresentasjon implements KravdialogInformasjon {
         @Override
         public List<Transformer<WebSoknad, AlternativRepresentasjon>> getTransformers() {
             return new ArrayList<>();
