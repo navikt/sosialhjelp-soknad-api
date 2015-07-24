@@ -7,11 +7,11 @@ import java.util.List;
 import static java.util.Arrays.asList;
 
 
-public class DagpengerGjenopptakInformasjon implements KravdialogInformasjon {
+public class DagpengerGjenopptakInformasjon extends KravdialogInformasjon.KravdialogInformasjonUtenAlternativRepresentasjon {
 
     private static List<String> skjemanummer = asList("NAV 04-16.03", "NAV 04-16.04");
 
-    public String getSoknadTypePrefix () {
+    public String getSoknadTypePrefix() {
         return "dagpenger.gjenopptak";
     }
 
