@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -298,6 +299,14 @@ public class Faktum implements Serializable {
 
     public Faktum medUnikProperty(String unikRef) {
         return medSystemProperty(UNIQUE_KEY, unikRef);
+    }
+
+    public boolean harPropertySomMatcher(String dependOnProperty, List<String> dependOnValues) {
+        return harEgenskap(dependOnProperty) && dependOnValues.contains(properties.get(dependOnProperty));
+    }
+
+    public boolean harValueSomMatcher(List<String> dependOnValues) {
+        return getValue() != null && dependOnValues.contains(getValue());
     }
 
     public enum FaktumType {SYSTEMREGISTRERT, BRUKERREGISTRERT}

@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface VedleggRepository {
 
-    Long opprettVedlegg(final Vedlegg vedlegg, byte[] content);
+    Long opprettEllerEndreVedlegg(final Vedlegg vedlegg, byte[] content);
 
     void slettVedlegg(Long soknadId, Long vedleggId);
 
@@ -29,7 +29,13 @@ public interface VedleggRepository {
     void lagreVedlegg(Long soknadId, Long vedleggId, Vedlegg vedlegg);
 
     List<Vedlegg> hentPaakrevdeVedlegg(Long faktumId);
-    List<Vedlegg> hentPaakrevdeVedlegg(String behandlingsId);
+
+    /**
+     * Henter alle vedlegg for en behandlingsid uavnehgig av status på vedlegget.
+     * @param behandlingsId behandlingsid
+     * @return liste med alle vedlegg til behandlingenuavhengig av status
+     */
+    List<Vedlegg> hentVedlegg(String behandlingsId);
 
     List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktumId);
 
@@ -39,4 +45,9 @@ public interface VedleggRepository {
 
     String hentBehandlingsIdTilVedlegg(Long vedleggId);
 
+    /**
+     * Lagrer eller oppdaterer et vedlegg, uten å endre opplastet innhold.
+     * @param vedlegg Nytt eller endret vedlegg.
+     */
+    void opprettEllerLagreVedleggUtenEndingAvData(Vedlegg vedlegg);
 }

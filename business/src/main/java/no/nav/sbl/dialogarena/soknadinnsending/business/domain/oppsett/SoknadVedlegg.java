@@ -1,7 +1,10 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett;
 
+import com.sun.org.apache.bcel.internal.util.Objects;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
+import org.apache.commons.collections15.Predicate;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -167,7 +170,7 @@ public class SoknadVedlegg implements Serializable {
     }
 
     public Boolean getFlereTillatt() {
-        return flereTillatt;
+        return flereTillatt != null && flereTillatt;
     }
 
     public void setFlereTillatt(Boolean flereTillatt) {
@@ -186,9 +189,17 @@ public class SoknadVedlegg implements Serializable {
         this.setFaktum(faktum);
         return this;
     }
+    public SoknadVedlegg medOnProperty(String property){
+        this.onProperty = property;
+        return this;
+    }
 
     public SoknadVedlegg medOnValues(List<String> dependOnValues) {
         this.setOnValues(dependOnValues);
+        return this;
+    }
+    public SoknadVedlegg medSkjemanummer(String skjemaNummer){
+        this.skjemaNummer = skjemaNummer;
         return this;
     }
 
@@ -210,5 +221,26 @@ public class SoknadVedlegg implements Serializable {
     public boolean harFilterProperty(Faktum faktum) {
         return filterKey == null ||
                 filterValues.contains(faktum.getProperties().get(filterKey));
+    }
+
+    public boolean matcherVedlegg(Vedlegg vedlegg) {
+        return MATCHER_VEDLEGG.evaluate(vedlegg);
+    }
+    public transient Predicate<Vedlegg> MATCHER_VEDLEGG = new Predicate<Vedlegg>() {
+        @Override
+        public boolean evaluate(Vedlegg vedlegg) {
+            return (vedlegg.getFaktumId() == null && !flereTillatt  || vedlegg.getFaktumId() != null && flereTillatt)
+                    && vedlegg.getSkjemaNummer().equals(getSkjemaNummer())
+                    && Objects.equals(vedlegg.getSkjemanummerTillegg(), skjemanummerTillegg);
+        }
+    };
+
+    public Vedlegg genererVedlegg(Faktum faktum) {
+        return new Vedlegg()
+                .medSoknadId(faktum.getSoknadId())
+                .medFaktumId(getFlereTillatt() ? faktum.getFaktumId() : null)
+                .medSkjemaNummer(getSkjemaNummer())
+                .medSkjemanummerTillegg(getSkjemanummerTillegg())
+                .medInnsendingsvalg(Vedlegg.Status.VedleggKreves);
     }
 }

@@ -348,6 +348,7 @@ public class Vedlegg {
         }
     };
 
+
     /**
      * SendesIkke er en legacy-status som ikke lengre skal være mulig å velge.
      */

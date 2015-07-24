@@ -30,16 +30,23 @@ import java.util.Map;
 import static java.lang.System.setProperty;
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.detect.Detect.IS_PDF;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.ETTERSENDING_OPPRETTET;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.OPPRETTET;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.SKJEMA_VALIDERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.DAGPENGER;
 import static no.nav.sbl.dialogarena.test.match.Matchers.match;
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class VedleggServiceTest {
@@ -79,7 +86,7 @@ public class VedleggServiceTest {
                 .medInnsendingsvalg(Vedlegg.Status.VedleggKreves);
 
         ArgumentCaptor<byte[]> captor = ArgumentCaptor.forClass(byte[].class);
-        when(vedleggRepository.opprettVedlegg(any(Vedlegg.class), captor.capture())).thenReturn(11L);
+        when(vedleggRepository.opprettEllerEndreVedlegg(any(Vedlegg.class), captor.capture())).thenReturn(11L);
 
         ByteArrayInputStream bais = new ByteArrayInputStream(getBytesFromFile("/images/bilde.jpg"));
         List<Long> ids = vedleggService.splitOgLagreVedlegg(vedlegg, bais);
@@ -111,7 +118,7 @@ public class VedleggServiceTest {
                 .medInnsendingsvalg(Vedlegg.Status.VedleggKreves);
 
         ArgumentCaptor<byte[]> captor = ArgumentCaptor.forClass(byte[].class);
-        when(vedleggRepository.opprettVedlegg(any(Vedlegg.class), captor.capture())).thenReturn(10L, 11L, 12L, 13L, 14L);
+        when(vedleggRepository.opprettEllerEndreVedlegg(any(Vedlegg.class), captor.capture())).thenReturn(10L, 11L, 12L, 13L, 14L);
 
         ByteArrayInputStream bais = new ByteArrayInputStream(getBytesFromFile("/pdfs/navskjema.pdf"));
         List<Long> ids = vedleggService.splitOgLagreVedlegg(vedlegg, bais);
@@ -162,7 +169,7 @@ public class VedleggServiceTest {
         Vedlegg vedlegg = new Vedlegg().medSkjemaNummer("L6");
         Vedlegg vedleggSjekk = new Vedlegg().medSkjemaNummer("L6").medTittel("tittel").medUrl("URL", "url")
                 .medFillagerReferanse(vedlegg.getFillagerReferanse());
-        when(vedleggRepository.hentPaakrevdeVedlegg(anyString())).thenReturn(Arrays.asList(vedlegg));
+        when(vedleggRepository.hentVedlegg(anyString())).thenReturn(Arrays.asList(vedlegg));
         List<Vedlegg> vedleggs = vedleggService.hentPaakrevdeVedlegg("10000000ABC");
         assertThat(vedleggs.get(0), is(equalTo(vedleggSjekk)));
     }

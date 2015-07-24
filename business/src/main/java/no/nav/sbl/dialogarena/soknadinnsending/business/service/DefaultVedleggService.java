@@ -21,7 +21,12 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigOpplastingTypeException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.Vedleggsgrunnlag;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
+import org.apache.commons.collections15.Closure;
+import org.apache.commons.collections15.Predicate;
+import org.apache.commons.collections15.Transformer;
 import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -45,13 +50,21 @@ import java.util.Map;
 
 import static java.util.Collections.sort;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
+import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.KVITTERING;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.IkkeVedlegg;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.LastetOpp;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
 public class DefaultVedleggService implements VedleggService {
     private static final Logger logger = getLogger(DefaultVedleggService.class);
+    public static final Predicate<Vedlegg> PAAKREVDE_VEDLEGG = new Predicate<Vedlegg>() {
+        @Override
+        public boolean evaluate(Vedlegg vedlegg) {
+            return vedlegg != null && !vedlegg.getInnsendingsvalg().equals(IkkeVedlegg);
+        }
+    };
 
     @Inject
     @Named("soknadInnsendingRepository")
@@ -84,7 +97,7 @@ public class DefaultVedleggService implements VedleggService {
 
                 Vedlegg sideVedlegg = opprettVedlegg(vedlegg, (long) bytes.length);
 
-                resultat.add(vedleggRepository.opprettVedlegg(sideVedlegg,
+                resultat.add(vedleggRepository.opprettEllerEndreVedlegg(sideVedlegg,
                         bytes));
 
             } else if (Detect.isPdf(bytes)) {
@@ -103,7 +116,7 @@ public class DefaultVedleggService implements VedleggService {
 
                     Vedlegg sideVedlegg = opprettVedlegg(vedlegg, (long) finalBaos.size());
 
-                    resultat.add(vedleggRepository.opprettVedlegg(sideVedlegg,
+                    resultat.add(vedleggRepository.opprettEllerEndreVedlegg(sideVedlegg,
                             finalBaos.toByteArray()));
                 }
                 document.close();
@@ -229,9 +242,29 @@ public class DefaultVedleggService implements VedleggService {
 
     @Override
     public List<Vedlegg> hentPaakrevdeVedlegg(String behandlingsId) {
-        List<Vedlegg> paakrevdeVedlegg = vedleggRepository.hentPaakrevdeVedlegg(behandlingsId);
+        List<Vedlegg> paakrevdeVedlegg = on(vedleggRepository.hentVedlegg(behandlingsId)).filter(PAAKREVDE_VEDLEGG).collect();
         leggTilKodeverkFelter(paakrevdeVedlegg);
         return paakrevdeVedlegg;
+    }
+
+    @Override
+    public List<Vedlegg> hentPaakrevdeVedleggMedGenerering(String behandlingsId) {
+        WebSoknad soknad = soknadService.hentSoknadMedFaktaOgVedlegg(behandlingsId);
+        SoknadStruktur struktur = soknadService.hentSoknadStruktur(soknad.getskjemaNummer());
+        final List<Vedleggsgrunnlag> alleMuligeVedlegg = struktur.hentAlleMuligeVedlegg(soknad);
+
+        on(alleMuligeVedlegg).forEach(new Closure<Vedleggsgrunnlag>() {
+            @Override
+            public void execute(Vedleggsgrunnlag vedleggsgrunnlag) {
+                vedleggsgrunnlag.oppdaterInnsendingsvalg(vedleggRepository);
+            }
+        });
+        return on(alleMuligeVedlegg).map(new Transformer<Vedleggsgrunnlag, Vedlegg>() {
+            @Override
+            public Vedlegg transform(Vedleggsgrunnlag vedleggsgrunnlag) {
+                return vedleggsgrunnlag.getVedlegg();
+            }
+        }).filter(PAAKREVDE_VEDLEGG).collect();
     }
 
     @Override
@@ -263,7 +296,7 @@ public class DefaultVedleggService implements VedleggService {
         if (kvitteringVedlegg == null) {
             kvitteringVedlegg = new Vedlegg(soknad.getSoknadId(), null, KVITTERING, LastetOpp);
             oppdaterInnholdIKvittering(kvitteringVedlegg, kvittering);
-            vedleggRepository.opprettVedlegg(kvitteringVedlegg, kvittering);
+            vedleggRepository.opprettEllerEndreVedlegg(kvitteringVedlegg, kvittering);
         } else {
             oppdaterInnholdIKvittering(kvitteringVedlegg, kvittering);
             vedleggRepository.lagreVedleggMedData(soknad.getSoknadId(), kvitteringVedlegg.getVedleggId(), kvitteringVedlegg);
