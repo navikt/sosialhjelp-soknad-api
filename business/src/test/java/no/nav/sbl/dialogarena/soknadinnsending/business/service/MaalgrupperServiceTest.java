@@ -5,6 +5,7 @@ import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.FinnMaalgruppeinforma
 import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.FinnMaalgruppeinformasjonListeSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.MaalgruppeinformasjonV1;
 import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.informasjon.WSMaalgruppe;
+import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.informasjon.WSMaalgruppetyper;
 import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.informasjon.WSPeriode;
 import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.meldinger.WSFinnMaalgruppeinformasjonListeRequest;
 import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.meldinger.WSFinnMaalgruppeinformasjonListeResponse;
@@ -82,8 +83,8 @@ public class MaalgrupperServiceTest {
 
     @Test
     public void skalReturnereListeAvMaalgruppeFakta() throws Exception {
-        WSMaalgruppe maalgruppe = lagMaalgruppe("", new LocalDate(), new LocalDate());
-        WSMaalgruppe maalgruppe2 = lagMaalgruppe("", new LocalDate(), new LocalDate());
+        WSMaalgruppe maalgruppe = lagMaalgruppe("", "", new LocalDate(), new LocalDate());
+        WSMaalgruppe maalgruppe2 = lagMaalgruppe("", "", new LocalDate(), new LocalDate());
         when(webservice.finnMaalgruppeinformasjonListe(any(WSFinnMaalgruppeinformasjonListeRequest.class)))
                 .thenReturn(lagMaalgruppeRequest(maalgruppe, maalgruppe2));
 
@@ -97,14 +98,16 @@ public class MaalgrupperServiceTest {
     @Test
     public void skalReturnereListeAvFaktumMedRettInnhold() throws Exception {
         String arbeidssoker = "Arbeidssøker";
+        String arbeidssokerKodeverkVerdi = "ARBSOKERE";
         String fomArbeidssoker = "2015-02-02";
         String tomArbeidssoker = "2015-07-20";
-        WSMaalgruppe arbeidssokerMaalgruppe = lagMaalgruppe(arbeidssoker, fomArbeidssoker, tomArbeidssoker);
+        WSMaalgruppe arbeidssokerMaalgruppe = lagMaalgruppe(arbeidssoker, arbeidssokerKodeverkVerdi, fomArbeidssoker, tomArbeidssoker);
 
         String ensligForsorger = "Enslig forsørger arbeidssøker";
+        String ensligForsorgerKodeverVerdi = "ENSFORARBS";
         String fomEnsligForsorger = "2015-03-02";
         String tomEnsligForsorger = "2015-07-22";
-        WSMaalgruppe ensligForsorgerMaalgruppe = lagMaalgruppe(ensligForsorger, fomEnsligForsorger, tomEnsligForsorger);
+        WSMaalgruppe ensligForsorgerMaalgruppe = lagMaalgruppe(ensligForsorger, ensligForsorgerKodeverVerdi, fomEnsligForsorger, tomEnsligForsorger);
 
         when(webservice.finnMaalgruppeinformasjonListe(any(WSFinnMaalgruppeinformasjonListeRequest.class)))
                 .thenReturn(lagMaalgruppeRequest(arbeidssokerMaalgruppe, ensligForsorgerMaalgruppe));
@@ -114,16 +117,18 @@ public class MaalgrupperServiceTest {
         assertThat(arbeidssokerProperties).containsEntry("navn", arbeidssoker);
         assertThat(arbeidssokerProperties).containsEntry("fom", fomArbeidssoker);
         assertThat(arbeidssokerProperties).containsEntry("tom", tomArbeidssoker);
+        assertThat(arbeidssokerProperties).containsEntry("kodeverkVerdi", arbeidssokerKodeverkVerdi);
 
         Map<String, String> ensligForsorgerProperties = fakta.get(1).getProperties();
         assertThat(ensligForsorgerProperties).containsEntry("navn", ensligForsorger);
         assertThat(ensligForsorgerProperties).containsEntry("fom", fomEnsligForsorger);
         assertThat(ensligForsorgerProperties).containsEntry("tom", tomEnsligForsorger);
+        assertThat(ensligForsorgerProperties).containsEntry("kodeverkVerdi", ensligForsorgerKodeverVerdi);
     }
 
     @Test
     public void trengerIkkeTilOgMedDatoForMaalgruppe() throws Exception {
-        WSMaalgruppe maalgruppe = lagMaalgruppe("", new LocalDate());
+        WSMaalgruppe maalgruppe = lagMaalgruppe("", "", new LocalDate());
         when(webservice.finnMaalgruppeinformasjonListe(any(WSFinnMaalgruppeinformasjonListeRequest.class)))
                 .thenReturn(lagMaalgruppeRequest(maalgruppe));
 
@@ -136,21 +141,23 @@ public class MaalgrupperServiceTest {
                 .withMaalgruppeListe(maalgrupper);
     }
 
-    private WSMaalgruppe lagMaalgruppe(String maalgruppenavn, String fom, String tom) {
+    private WSMaalgruppe lagMaalgruppe(String maalgruppenavn, String kodeverkVerdi, String fom, String tom) {
         LocalDate fomDate = new LocalDate(fom);
         LocalDate tomDate = new LocalDate(tom);
-        return lagMaalgruppe(maalgruppenavn, fomDate, tomDate);
+        return lagMaalgruppe(maalgruppenavn, kodeverkVerdi, fomDate, tomDate);
     }
 
-    private WSMaalgruppe lagMaalgruppe(String maalgruppenavn, LocalDate fomDate) {
+    private WSMaalgruppe lagMaalgruppe(String maalgruppenavn, String kodeverkVerdi, LocalDate fomDate, LocalDate tomDate) {
         return new WSMaalgruppe()
                 .withMaalgruppenavn(maalgruppenavn)
-                .withGyldighetsperiode(new WSPeriode().withFom(fomDate));
+                .withGyldighetsperiode(new WSPeriode().withFom(fomDate).withTom(tomDate))
+                .withMaalgruppetype(new WSMaalgruppetyper().withValue(kodeverkVerdi));
     }
 
-    private WSMaalgruppe lagMaalgruppe(String maalgruppenavn, LocalDate fomDate, LocalDate tomDate) {
+    private WSMaalgruppe lagMaalgruppe(String maalgruppenavn, String kodeverkVerdi, LocalDate fomDate) {
         return new WSMaalgruppe()
                 .withMaalgruppenavn(maalgruppenavn)
-                .withGyldighetsperiode(new WSPeriode().withFom(fomDate).withTom(tomDate));
+                .withGyldighetsperiode(new WSPeriode().withFom(fomDate))
+                .withMaalgruppetype(new WSMaalgruppetyper().withValue(kodeverkVerdi));
     }
 }
