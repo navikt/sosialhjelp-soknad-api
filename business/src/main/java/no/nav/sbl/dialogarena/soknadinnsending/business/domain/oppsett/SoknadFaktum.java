@@ -1,6 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett;
 
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -84,6 +86,10 @@ public class SoknadFaktum implements Serializable {
         this.dependOn = parent;
         return this;
     }
+    public SoknadFaktum medDependOnProperty(String dependOnProperty) {
+        this.dependOnProperty = dependOnProperty;
+        return this;
+    }
 
     public SoknadFaktum medId(String id) {
         this.setId(id);
@@ -97,7 +103,7 @@ public class SoknadFaktum implements Serializable {
                 .append("type", type)
                 .append("dependOn", dependOn)
                 .append("dependOnProperty", dependOnProperty)
-                .append("dependOnValues", dependOnValues.toString())
+                .append("dependOnValues", dependOnValues != null? dependOnValues.toString(): "[]")
                 .append("flereTillatt", flereTillatt)
                 .append("erSystemFaktum", erSystemFaktum)
                 .toString();
@@ -124,5 +130,23 @@ public class SoknadFaktum implements Serializable {
                 }
             }
         };
+    }
+
+    public boolean erSynlig(WebSoknad soknad) {
+        SoknadFaktum parent = getDependOn();
+        return parent == null || ( parent.erSynlig(soknad) && this.oppfyllerParentKriterier(soknad) );
+    }
+
+    private boolean oppfyllerParentKriterier(WebSoknad soknad) {
+        Faktum parent = soknad.getFaktumMedKey(getDependOn().getId());
+        return parent != null && (harDependOnProperty(parent) || harDependOnValue(parent));
+    }
+
+    private boolean harDependOnValue(Faktum parent) {
+        return dependOnProperty == null && parent.harValueSomMatcher(dependOnValues);
+    }
+
+    private boolean harDependOnProperty(Faktum parent) {
+        return dependOnProperty != null && parent.harPropertySomMatcher(dependOnProperty, dependOnValues);
     }
 }

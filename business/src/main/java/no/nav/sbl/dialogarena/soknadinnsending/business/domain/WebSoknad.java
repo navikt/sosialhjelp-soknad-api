@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigDelstegEndringException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -9,10 +10,15 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.joda.time.DateTime;
 
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
@@ -253,6 +259,10 @@ public class WebSoknad implements Serializable {
         this.vedlegg = new ArrayList<>(vedlegg);
         return this;
     }
+    public WebSoknad medVedlegg(Vedlegg... vedlegg) {
+        getVedlegg().addAll(Arrays.asList(vedlegg));
+        return this;
+    }
 
     public WebSoknad medDelstegStatus(DelstegStatus delstegStatus) {
         setDelstegStatus(delstegStatus);
@@ -479,5 +489,12 @@ public class WebSoknad implements Serializable {
                 return faktum.getFaktumId().equals(faktumId);
             }
         }).head().getOrElse(null);
+    }
+
+    public Vedlegg finnVedleggSomMatcherForventning(SoknadVedlegg soknadVedlegg) {
+        return on(vedlegg).filter(soknadVedlegg.MATCHER_VEDLEGG).head().getOrElse(null);
+    }
+    public List<Vedlegg> finnAlleVedleggSomMatcher(SoknadVedlegg soknadVedlegg) {
+        return on(vedlegg).filter(soknadVedlegg.MATCHER_VEDLEGG).collect();
     }
 }

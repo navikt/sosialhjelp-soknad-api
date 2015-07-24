@@ -25,6 +25,8 @@ public interface VedleggService {
     List<Vedlegg> hentPaakrevdeVedlegg(Long faktumId);
     List<Vedlegg> hentPaakrevdeVedlegg(String behandlingsId);
 
+    List<Vedlegg> hentPaakrevdeVedleggMedGenerering(String behandlingsId);
+
     void lagreVedlegg(Long vedleggId, Vedlegg vedlegg);
 
     void leggTilKodeverkFelter(List<Vedlegg> vedlegg);
