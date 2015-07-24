@@ -35,6 +35,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
@@ -62,9 +63,8 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Fak
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.DAGPENGER;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.RUTES_I_BRUT;
-import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
@@ -104,6 +104,9 @@ public class SoknadServiceTest {
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
     @Mock
     ApplicationContext applicationContex;
+
+    @Captor
+    ArgumentCaptor <XMLHovedskjema> argument;
 
     @InjectMocks
     private SoknadService soknadService;
@@ -172,7 +175,7 @@ public class SoknadServiceTest {
         soknadService.hentSoknad("123");
         verify(soknadRepository, atMost(1)).populerFraStruktur(eq(soknadCheck));
         verify(vedleggRepository).lagreVedleggMedData(11L, 4L, vedleggCheck);
-        assertThat(webSoknad.getSoknadId(), is(equalTo(11L)));
+        assertThat(webSoknad.getSoknadId()).isEqualTo(11L);
     }
 
     @Test
@@ -211,14 +214,8 @@ public class SoknadServiceTest {
                 );
 
         soknadService.sendSoknad(behandlingsId, new byte[]{1, 2, 3});
-        verify(henvendelsesConnector).avsluttSoknad(eq(behandlingsId), refEq(new XMLHovedskjema()
-                        .withUuid("uidHovedskjema")
-                        .withInnsendingsvalg(XMLInnsendingsvalg.LASTET_OPP.toString())
-                        .withJournalforendeEnhet(RUTES_I_BRUT)
-                        .withFilnavn(DAGPENGER)
-                        .withFilstorrelse("3")
-                        .withMimetype("application/pdf")
-                        .withSkjemanummer(DAGPENGER)),
+
+        verify(henvendelsesConnector).avsluttSoknad(eq(behandlingsId), argument.capture(),
                 refEq(
                         new XMLVedlegg()
                                 .withUuid("uidVedlegg1")
@@ -246,6 +243,15 @@ public class SoknadServiceTest {
                                 .withMimetype("application/pdf")
                                 .withSkjemanummer(Kodeverk.KVITTERING))
         );
+
+        XMLHovedskjema xmlHovedskjema = argument.getValue();
+        assertThat(xmlHovedskjema.getJournalforendeEnhet()).isEqualTo(RUTES_I_BRUT);
+        assertThat(xmlHovedskjema.getUuid()).isEqualTo("uidHovedskjema");
+        assertThat(xmlHovedskjema.getInnsendingsvalg()).isEqualTo(XMLInnsendingsvalg.LASTET_OPP.toString());
+        assertThat(xmlHovedskjema.getFilnavn()).isEqualTo(DAGPENGER);
+        assertThat(xmlHovedskjema.getFilstorrelse()).isEqualTo("3");
+        assertThat(xmlHovedskjema.getMimetype()).isEqualTo("application/pdf");
+        assertThat(xmlHovedskjema.getSkjemanummer()).isEqualTo(DAGPENGER);
     }
 
     @Test(expected = ApplicationException.class)
@@ -293,7 +299,7 @@ public class SoknadServiceTest {
     public void skalHenteSoknad() {
         when(soknadRepository.hentSoknad(1L)).thenReturn(new WebSoknad().medId(1L).medskjemaNummer("NAV 04-01.03"));
         when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(new ArrayList<Vedlegg>());
-        assertThat(soknadService.hentSoknad(1L), is(equalTo(new WebSoknad().medId(1L).medskjemaNummer("NAV 04-01.03"))));
+        assertThat(soknadService.hentSoknad(1L)).isEqualTo(new WebSoknad().medId(1L).medskjemaNummer("NAV 04-01.03"));
     }
 
     @Test
@@ -481,7 +487,7 @@ public class SoknadServiceTest {
 
         WebSoknad webSoknad = soknadService.hentEttersendingForBehandlingskjedeId("123");
 
-        assertThat(webSoknad.getSoknadId(), is(1L));
+        assertThat(webSoknad.getSoknadId()).isEqualTo(1L);
     }
 
     @Test
@@ -492,6 +498,6 @@ public class SoknadServiceTest {
 
         WebSoknad webSoknad = soknadService.hentEttersendingForBehandlingskjedeId("123");
 
-        assertThat(webSoknad, is(nullValue()));
+        assertThat(webSoknad).isNull();
     }
 }
