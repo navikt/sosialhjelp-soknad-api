@@ -12,31 +12,31 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Vedleggsgrunnlag {
+public class VedleggsGrunnlag {
     public List<Pair<SoknadVedlegg, List<Faktum>>> grunnlag = new ArrayList<>();
     private WebSoknad soknad;
     private Vedlegg vedlegg;
 
-    public Vedleggsgrunnlag(WebSoknad soknad, Vedlegg vedlegg) {
+    public VedleggsGrunnlag(WebSoknad soknad, Vedlegg vedlegg) {
         this.soknad = soknad;
         this.vedlegg = vedlegg;
     }
 
-    Vedleggsgrunnlag medGrunnlag(SoknadVedlegg vedlegg, List<Faktum> faktum) {
+    VedleggsGrunnlag medGrunnlag(SoknadVedlegg vedlegg, List<Faktum> faktum) {
         grunnlag.add(new ImmutablePair<>(vedlegg, faktum));
         return this;
     }
 
-    Vedleggsgrunnlag medGrunnlag(SoknadVedlegg vedlegg, Faktum... faktum) {
+    VedleggsGrunnlag medGrunnlag(SoknadVedlegg vedlegg, Faktum... faktum) {
         return medGrunnlag(vedlegg, Arrays.asList(faktum));
     }
 
 
     public boolean oppdaterInnsendingsvalg(boolean erPaakrevd) {
 
-        if (vedlegg == null && !erPaakrevd){
+        if (vedlegg == null && !erPaakrevd) {
             return false;
-        } else if (vedlegg == null){
+        } else if (vedlegg == null) {
             vedlegg = grunnlag.get(0).getLeft().genererVedlegg(finnForsteFaktum());
         }
 
@@ -52,18 +52,21 @@ public class Vedleggsgrunnlag {
 
     public boolean kreverVedleggsEndring() {
         Faktum forsteFaktum = finnForsteFaktum();
-        boolean kreverVedlegg = false;
         if (forsteFaktum != null) {
             for (Pair<SoknadVedlegg, List<Faktum>> pair : grunnlag) {
-                for (Faktum faktum : pair.getRight()) {
-                    SoknadVedlegg forventning = pair.getLeft();
-                    if (forventning.getFaktum().erSynlig(soknad) && forventning.trengerVedlegg(faktum)) {
-                        kreverVedlegg = true;
-                    }
-                }
+                if (matcherEtAvFaktumeneKravTilVedlegg(pair.getRight(), pair.getLeft())) return true;
             }
         }
-        return kreverVedlegg;
+        return false;
+    }
+
+    private boolean matcherEtAvFaktumeneKravTilVedlegg(List<Faktum> fakta, SoknadVedlegg soknadVedlegg) {
+        for (Faktum faktum : fakta) {
+            if (soknadVedlegg.getFaktum().erSynlig(soknad) && soknadVedlegg.trengerVedlegg(faktum)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private Faktum finnForsteFaktum() {
@@ -89,7 +92,7 @@ public class Vedleggsgrunnlag {
 
     public void oppdaterInnsendingsvalg(VedleggRepository vedleggRepository) {
         Boolean kreverDbOppdatering = oppdaterInnsendingsvalg(kreverVedleggsEndring());
-        if(kreverDbOppdatering){
+        if (kreverDbOppdatering) {
             vedleggRepository.opprettEllerLagreVedleggUtenEndingAvData(vedlegg);
         }
     }
