@@ -104,20 +104,20 @@ public class SoknadStruktur implements Serializable {
         }
         return null;
     }
-    public List<Vedleggsgrunnlag> hentAlleMuligeVedlegg(WebSoknad soknad) {
-        Map<String, Vedleggsgrunnlag> muligeVedlegg = new HashMap<>();
+    public List<VedleggsGrunnlag> hentAlleMuligeVedlegg(WebSoknad soknad) {
+        Map<String, VedleggsGrunnlag> muligeVedlegg = new HashMap<>();
         for (SoknadVedlegg vedleggsforventning : getVedlegg()) {
             List<Faktum> faktaSomTriggerVedlegg = soknad.getFaktaMedKey(vedleggsforventning.getFaktum().getId());
 
             if (vedleggsforventning.getFlereTillatt()) {
                 for (Faktum faktum : faktaSomTriggerVedlegg) {
                     String key = vedleggsforventning.getSkjemaNummer() + vedleggsforventning.getSkjemanummerTillegg() + faktum.getFaktumId();
-                    muligeVedlegg.put(key, new Vedleggsgrunnlag(soknad, soknad.finnVedleggSomMatcherForventning(vedleggsforventning)).medGrunnlag(vedleggsforventning, faktum));
+                    muligeVedlegg.put(key, new VedleggsGrunnlag(soknad, soknad.finnVedleggSomMatcherForventning(vedleggsforventning)).medGrunnlag(vedleggsforventning, faktum));
                 }
             } else {
                 String key = vedleggsforventning.getSkjemaNummer() + vedleggsforventning.getSkjemanummerTillegg();
                 if (!muligeVedlegg.containsKey(key)) {
-                    muligeVedlegg.put(key, new Vedleggsgrunnlag(soknad, soknad.finnVedleggSomMatcherForventning(vedleggsforventning)));
+                    muligeVedlegg.put(key, new VedleggsGrunnlag(soknad, soknad.finnVedleggSomMatcherForventning(vedleggsforventning)));
                 }
                 muligeVedlegg.get(key).medGrunnlag(vedleggsforventning, faktaSomTriggerVedlegg);
             }

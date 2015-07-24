@@ -22,7 +22,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigOpplastingTypeException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.Vedleggsgrunnlag;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.VedleggsGrunnlag;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import org.apache.commons.collections15.Closure;
 import org.apache.commons.collections15.Predicate;
@@ -251,17 +251,17 @@ public class DefaultVedleggService implements VedleggService {
     public List<Vedlegg> hentPaakrevdeVedleggMedGenerering(String behandlingsId) {
         WebSoknad soknad = soknadService.hentSoknadMedFaktaOgVedlegg(behandlingsId);
         SoknadStruktur struktur = soknadService.hentSoknadStruktur(soknad.getskjemaNummer());
-        final List<Vedleggsgrunnlag> alleMuligeVedlegg = struktur.hentAlleMuligeVedlegg(soknad);
+        final List<VedleggsGrunnlag> alleMuligeVedlegg = struktur.hentAlleMuligeVedlegg(soknad);
 
-        on(alleMuligeVedlegg).forEach(new Closure<Vedleggsgrunnlag>() {
+        on(alleMuligeVedlegg).forEach(new Closure<VedleggsGrunnlag>() {
             @Override
-            public void execute(Vedleggsgrunnlag vedleggsgrunnlag) {
+            public void execute(VedleggsGrunnlag vedleggsgrunnlag) {
                 vedleggsgrunnlag.oppdaterInnsendingsvalg(vedleggRepository);
             }
         });
-        return on(alleMuligeVedlegg).map(new Transformer<Vedleggsgrunnlag, Vedlegg>() {
+        return on(alleMuligeVedlegg).map(new Transformer<VedleggsGrunnlag, Vedlegg>() {
             @Override
-            public Vedlegg transform(Vedleggsgrunnlag vedleggsgrunnlag) {
+            public Vedlegg transform(VedleggsGrunnlag vedleggsgrunnlag) {
                 return vedleggsgrunnlag.getVedlegg();
             }
         }).filter(PAAKREVDE_VEDLEGG).collect();
