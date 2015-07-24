@@ -50,19 +50,16 @@ public class VedleggsGrunnlag {
     }
 
 
-    public boolean kreverVedleggsEndring() {
-        Faktum forsteFaktum = finnForsteFaktum();
-        if (forsteFaktum != null) {
-            for (Pair<SoknadVedlegg, List<Faktum>> pair : grunnlag) {
-                if (matcherEtAvFaktumeneKravTilVedlegg(pair.getRight(), pair.getLeft())) return true;
-            }
+    public boolean erVedleggPaakrevd() {
+        for (Pair<SoknadVedlegg, List<Faktum>> pair : grunnlag) {
+            if (matcherEtAvFaktumeneKravTilVedlegg(pair.getRight(), pair.getLeft())) return true;
         }
         return false;
     }
 
     private boolean matcherEtAvFaktumeneKravTilVedlegg(List<Faktum> fakta, SoknadVedlegg soknadVedlegg) {
         for (Faktum faktum : fakta) {
-            if (soknadVedlegg.getFaktum().erSynlig(soknad) && soknadVedlegg.trengerVedlegg(faktum)) {
+            if (soknadVedlegg.getFaktum().erSynlig(soknad) && soknadVedlegg.trengerVedlegg(faktum) && /**Fremdeles veldig usikker på denne her */soknadVedlegg.harFilterProperty(faktum)) {
                 return true;
             }
         }
@@ -91,7 +88,7 @@ public class VedleggsGrunnlag {
     }
 
     public void oppdaterInnsendingsvalg(VedleggRepository vedleggRepository) {
-        Boolean kreverDbOppdatering = oppdaterInnsendingsvalg(kreverVedleggsEndring());
+        Boolean kreverDbOppdatering = oppdaterInnsendingsvalg(erVedleggPaakrevd());
         if (kreverDbOppdatering) {
             vedleggRepository.opprettEllerLagreVedleggUtenEndingAvData(vedlegg);
         }
