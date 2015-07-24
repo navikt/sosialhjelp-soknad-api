@@ -76,6 +76,7 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class SoknadServiceTest {
 
+    public static final String SKJEMA_NUMMER = "NAV 04-01.03";
     @Mock
     private SoknadRepository soknadRepository;
     @Mock
@@ -131,15 +132,16 @@ public class SoknadServiceTest {
         when(config.getSoknadBolker(any(WebSoknad.class), any(List.class))).thenReturn(new ArrayList());
         when(config.hentStruktur(any(Long.class))).thenReturn(new SoknadStruktur());
         when(kravdialogInformasjonHolder.hentAlleSkjemanumre()).thenReturn(new KravdialogInformasjonHolder().hentAlleSkjemanumre());
+
     }
 
     @Test
     public void skalPopulereFraHenvendelseNaarSoknadIkkeFinnes() throws IOException {
         Vedlegg vedlegg = new Vedlegg().medVedleggId(4L).medFillagerReferanse("uidVedlegg");
         Vedlegg vedleggCheck = new Vedlegg().medVedleggId(4L).medFillagerReferanse("uidVedlegg").medData(new byte[]{1, 2, 3});
-        WebSoknad soknad = new WebSoknad().medBehandlingId("123").medskjemaNummer("NAV 04-01.03").medId(11L)
+        WebSoknad soknad = new WebSoknad().medBehandlingId("123").medskjemaNummer(SKJEMA_NUMMER).medId(11L)
                 .medVedlegg(asList(vedlegg)).medStatus(UNDER_ARBEID);
-        WebSoknad soknadCheck = new WebSoknad().medBehandlingId("123").medskjemaNummer("NAV 04-01.03").medId(11L)
+        WebSoknad soknadCheck = new WebSoknad().medBehandlingId("123").medskjemaNummer(SKJEMA_NUMMER).medId(11L)
                 .medVedlegg(asList(vedleggCheck));
 
         when(henvendelsesConnector.hentSoknad("123")).thenReturn(
@@ -213,6 +215,7 @@ public class SoknadServiceTest {
                                 .medAntallSider(1)
                 );
 
+        when(kravdialogInformasjonHolder.hentKonfigurasjon(SKJEMA_NUMMER)).thenReturn(new KravdialogInformasjonHolder().hentKonfigurasjon("NAV 04-01.03"));
         soknadService.sendSoknad(behandlingsId, new byte[]{1, 2, 3});
 
         verify(henvendelsesConnector).avsluttSoknad(eq(behandlingsId), argument.capture(),
