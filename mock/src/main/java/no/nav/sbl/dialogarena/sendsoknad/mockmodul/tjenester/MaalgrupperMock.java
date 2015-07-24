@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.sendsoknad.mockmodul.tjenester;
 
 import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.MaalgruppeinformasjonV1;
 import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.informasjon.WSMaalgruppe;
+import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.informasjon.WSMaalgruppetyper;
 import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.informasjon.WSPeriode;
 import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.meldinger.WSFinnMaalgruppeinformasjonListeRequest;
 import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.meldinger.WSFinnMaalgruppeinformasjonListeResponse;
@@ -20,7 +21,8 @@ public class MaalgrupperMock {
             WSFinnMaalgruppeinformasjonListeResponse response = new WSFinnMaalgruppeinformasjonListeResponse();
             response.withMaalgruppeListe(new WSMaalgruppe()
                     .withMaalgruppenavn("Arbeidssøker")
-                    .withGyldighetsperiode(new WSPeriode().withFom(new LocalDate("2015-01-01"))));
+                    .withGyldighetsperiode(new WSPeriode().withFom(new LocalDate("2015-01-01")))
+                    .withMaalgruppetype(new WSMaalgruppetyper().withValue("ARBSOKERE")));
 
             when(maalgruppeMock.finnMaalgruppeinformasjonListe(any(WSFinnMaalgruppeinformasjonListeRequest.class)))
                 .thenReturn(response);
