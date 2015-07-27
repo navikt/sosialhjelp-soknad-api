@@ -68,20 +68,20 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 
 #### Helpers på nytt registeringsformat
 
-* hvisKode6Eller7 - Viser innhold avhengig av om personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)
+* hvisHarDiskresjonskode - Viser innhold avhengig av om personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)
 * variabel - Lager en variabel med en bestemt verdi som kun er tilgjengelig innenfor helperen
 
 
 #### Eksempler
 
-##### hvisKode6Eller7
+##### hvisHarDiskresjonskode
 
 ```
-{{#hvisKode6Eller7}}
+{{#hvisHarDiskresjonskode}}
     Jeg har diskresjonskode
     {{else}}
     jeg har IKKE noen diskresjonskode
-{{/hvisKode6Eller7}}
+{{/hvisHarDiskresjonskode}}
 ```
 
 
