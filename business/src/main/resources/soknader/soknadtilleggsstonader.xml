@@ -821,6 +821,21 @@
         <id>tilleggsopplysninger.fritekst</id>
     </faktum>
 
+    <!-- Ekstra vedlegg -->
+    <faktum>
+        <id>ekstraVedlegg</id>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <id>3</id>
+        <faktum>ekstraVedlegg</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>N6</skjemaNummer>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
     <!-- vedlegg for reise aktivitet -->
     <vedlegg>
         <skjemaNummer>V2</skjemaNummer>
