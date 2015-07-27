@@ -43,7 +43,7 @@ public class DiskresjonskodeHelperTest {
     public void skalViseInnholdVedDiskresjonskode6() throws IOException {
         personaliaFaktum.medProperty(DISKRESJONSKODE_PROPERTY, "6");
         String innhold = handlebars
-                .compileInline("{{#hvisKode6Eller7}}diskresjonskode6eller7{{/hvisKode6Eller7}}")
+                .compileInline("{{#hvisHarDiskresjonskode}}diskresjonskode6eller7{{/hvisHarDiskresjonskode}}")
                 .apply(webSoknad);
         assertThat(innhold).isEqualTo("diskresjonskode6eller7");
     }
@@ -52,7 +52,7 @@ public class DiskresjonskodeHelperTest {
     public void skalViseInnholdVedDiskresjonskode7() throws IOException {
         personaliaFaktum.medProperty(DISKRESJONSKODE_PROPERTY, "7");
         String innhold = handlebars
-                .compileInline("{{#hvisKode6Eller7}}diskresjonskode6eller7{{/hvisKode6Eller7}}")
+                .compileInline("{{#hvisHarDiskresjonskode}}diskresjonskode6eller7{{/hvisHarDiskresjonskode}}")
                 .apply(webSoknad);
         assertThat(innhold).isEqualTo("diskresjonskode6eller7");
     }
@@ -61,7 +61,7 @@ public class DiskresjonskodeHelperTest {
     public void skalIkkeViseInnholdVedTomDiskresjonskode() throws IOException {
         personaliaFaktum.medProperty(DISKRESJONSKODE_PROPERTY, "");
         String innhold = handlebars
-                .compileInline("{{#hvisKode6Eller7}}diskresjonskode6eller7{{/hvisKode6Eller7}}")
+                .compileInline("{{#hvisHarDiskresjonskode}}diskresjonskode6eller7{{/hvisHarDiskresjonskode}}")
                 .apply(webSoknad);
         assertThat(innhold).isNotEqualTo("diskresjonskode6eller7");
     }
@@ -70,14 +70,14 @@ public class DiskresjonskodeHelperTest {
     public void skalViseElseInnholdVedTomDiskresjonskode() throws IOException {
         personaliaFaktum.medProperty(DISKRESJONSKODE_PROPERTY, "");
         String innhold = handlebars
-                .compileInline("{{#hvisKode6Eller7}}{{else}}ikkediskresjonskode6eller7{{/hvisKode6Eller7}}")
+                .compileInline("{{#hvisHarDiskresjonskode}}{{else}}ikkediskresjonskode6eller7{{/hvisHarDiskresjonskode}}")
                 .apply(webSoknad);
         assertThat(innhold).isEqualTo("ikkediskresjonskode6eller7");
     }
 
     public void skalIkkeFeileUtenDiskresjonskodeProperty() throws IOException {
         String innhold = handlebars
-                .compileInline("{{#hvisKode6Eller7}}{{else}}ikkediskresjonskode6eller7{{/hvisKode6Eller7}}")
+                .compileInline("{{#hvisHarDiskresjonskode}}{{else}}ikkediskresjonskode6eller7{{/hvisHarDiskresjonskode}}")
                 .apply(webSoknad);
         assertThat(innhold).isEqualTo("ikkediskresjonskode6eller7");
     }
