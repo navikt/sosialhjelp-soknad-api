@@ -45,16 +45,17 @@ import static no.nav.modig.lang.collections.PredicateUtils.where;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.FERDIG;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum.sammenlignEtterDependOn;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil.SORTER_INNSENDT_DATO;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil.STATUS;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil.erIkkeSystemfaktumOgKunEtErTillatt;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil.hentFraHenvendelse;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil.hentOrginalInnsendtDato;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil.hentSisteIkkeAvbrutteSoknadIBehandlingskjede;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil.hentSoknadFraDbEllerHenvendelse;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil.lagEttersendingFraWsSoknad;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil.opprettFaktumForLonnsOgTrekkoppgave;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil.opprettFaktumForPersonalia;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil.validerSkjemanummer;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.SORTER_INNSENDT_DATO;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.STATUS;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.erIkkeSystemfaktumOgKunEtErTillatt;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.hentOrginalInnsendtDato;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -118,7 +119,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
     @Override
     public WebSoknad hentSoknad(String behandlingsId) {
-        WebSoknad soknad = SoknadServiceUtil.hentSoknadFraDbEllerHenvendelse(behandlingsId, repository, henvendelseService, fillagerService, vedleggRepository);
+        WebSoknad soknad = hentSoknadFraDbEllerHenvendelse(behandlingsId, repository, henvendelseService, fillagerService, vedleggRepository);
         soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknad.getSoknadId()))
                 .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
                 .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
@@ -130,7 +131,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
     @Override
     public WebSoknad hentSoknadForTilgangskontroll(String behandlingsId) {
-        return SoknadServiceUtil.hentSoknadFraDbEllerHenvendelse(behandlingsId, repository, henvendelseService, fillagerService, vedleggRepository);
+        return hentSoknadFraDbEllerHenvendelse(behandlingsId, repository, henvendelseService, fillagerService, vedleggRepository);
     }
 
     @Override

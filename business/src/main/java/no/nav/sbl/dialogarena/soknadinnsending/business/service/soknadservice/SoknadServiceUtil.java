@@ -17,7 +17,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
@@ -27,7 +26,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseS
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
-import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -55,14 +53,13 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInns
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.convertToXmlVedleggListe;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.toInnsendingsvalg;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.getJournalforendeEnhet;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.getSkjemanummer;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.util.PersonaliaUtils.adresserOgStatsborgerskap;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.STATUS;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.journalforendeEnhet;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.kvittering;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.skjemanummer;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class SoknadServiceUtil {
-
-    private static final String AAP_INTERNASJONAL = "2101";
 
     public static void validerSkjemanummer(String navSoknadId, KravdialogInformasjonHolder kravdialogInformasjonHolder) {
         if (!kravdialogInformasjonHolder.hentAlleSkjemanumre().contains(navSoknadId)) {
@@ -90,10 +87,6 @@ public class SoknadServiceUtil {
                     .withUuid(altrep.getUuid()));
         }
         return xmlAlternativRepresentasjonListe;
-    }
-
-    public static String skjemanummer(WebSoknad soknad) {
-        return soknad.erDagpengeSoknad() ? getSkjemanummer(soknad) : soknad.getskjemaNummer();
     }
 
     public static List<Vedlegg> hentVedleggOgKvittering(WebSoknad soknad, VedleggRepository vedleggRepository) {
@@ -138,48 +131,6 @@ public class SoknadServiceUtil {
         henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, convertToXmlVedleggListe(vedleggForventninger));
         repository.slettSoknad(soknadId);
     }
-
-    private static String journalforendeEnhet(WebSoknad soknad) {
-        String journalforendeEnhet;
-
-        if (soknad.erDagpengeSoknad()) {
-            journalforendeEnhet = getJournalforendeEnhet(soknad);
-        } else if (soknad.erAapSoknad() && adresserOgStatsborgerskap(soknad).harUtenlandskAdresse()) {
-            journalforendeEnhet = AAP_INTERNASJONAL;
-        } else {
-            journalforendeEnhet = soknad.getJournalforendeEnhet();
-        }
-        return journalforendeEnhet;
-    }
-
-    public static final Comparator<WSBehandlingskjedeElement> SORTER_INNSENDT_DATO = new Comparator<WSBehandlingskjedeElement>() {
-        @Override
-        public int compare(WSBehandlingskjedeElement o1, WSBehandlingskjedeElement o2) {
-            DateTime dato1 = o1.getInnsendtDato();
-            DateTime dato2 = o2.getInnsendtDato();
-
-            if (dato1 == null && dato2 == null) {
-                return 0;
-            } else if (dato1 == null) {
-                return 1;
-            } else if (dato2 == null) {
-                return -1;
-            }
-            return dato1.compareTo(dato2);
-        }
-    };
-
-    public static final Transformer<WSBehandlingskjedeElement, SoknadInnsendingStatus> STATUS = new Transformer<WSBehandlingskjedeElement, SoknadInnsendingStatus>() {
-        public SoknadInnsendingStatus transform(WSBehandlingskjedeElement input) {
-            return SoknadInnsendingStatus.valueOf(input.getStatus());
-        }
-    };
-
-    public static final Transformer<WSBehandlingskjedeElement, String> BEHANDLINGS_ID = new Transformer<WSBehandlingskjedeElement, String>() {
-        public String transform(WSBehandlingskjedeElement input) {
-            return input.getBehandlingsId();
-        }
-    };
 
     public static WSHentSoknadResponse hentSisteIkkeAvbrutteSoknadIBehandlingskjede(List<WSBehandlingskjedeElement> behandlingskjede, HenvendelseService henvendelseService) {
         List<WSBehandlingskjedeElement> sorterteBehandlinger = on(behandlingskjede).filter(where(STATUS, not(equalTo(AVBRUTT_AV_BRUKER))))
@@ -240,12 +191,6 @@ public class SoknadServiceUtil {
         populerVedleggMedDataFraHenvendelse(soknad, innhold, vedleggRepository);
     }
 
-    public static boolean erIkkeSystemfaktumOgKunEtErTillatt(SoknadFaktum faktum) {
-        String flereTillatt = faktum.getFlereTillatt();
-        String erSystemFaktum = faktum.getErSystemFaktum();
-        return !((flereTillatt != null && flereTillatt.equals("true")) || (erSystemFaktum != null && erSystemFaktum.equals("true")));
-    }
-
     public static void opprettFaktumForLonnsOgTrekkoppgave(Long soknadId, StartDatoService startDatoService, FaktaService faktaService) {
         Faktum lonnsOgTrekkoppgaveFaktum = new Faktum()
                 .medSoknadId(soknadId)
@@ -292,15 +237,6 @@ public class SoknadServiceUtil {
             soknadVedlegg.add(v);
         }
         return soknadVedlegg;
-    }
-
-    public static Predicate<XMLMetadata> kvittering() {
-        return new Predicate<XMLMetadata>() {
-            @Override
-            public boolean evaluate(XMLMetadata xmlMetadata) {
-                return xmlMetadata instanceof XMLVedlegg && KVITTERING.equals(((XMLVedlegg) xmlMetadata).getSkjemanummer());
-            }
-        };
     }
 
     public static WebSoknad lagEttersendingFraWsSoknad(WSHentSoknadResponse opprinneligInnsending, DateTime innsendtDato,
@@ -371,14 +307,6 @@ public class SoknadServiceUtil {
             soknad = new WebSoknad().medBehandlingId(behandlingsId).medStatus(status).medskjemaNummer(hovedskjema.getSkjemanummer());
         }
         return soknad;
-    }
-
-    public static DateTime hentOrginalInnsendtDato(List<WSBehandlingskjedeElement> behandlingskjede, String behandlingsId) {
-        return on(behandlingskjede)
-                .filter(where(BEHANDLINGS_ID, equalTo(behandlingsId)))
-                .head()
-                .get()
-                .getInnsendtDato();
     }
 
     public static WebSoknad hentSoknadFraDbEllerHenvendelse(String behandlingsId, SoknadRepository repository, HenvendelseService henvendelseService, FillagerService fillagerService, VedleggRepository vedleggRepository) {
