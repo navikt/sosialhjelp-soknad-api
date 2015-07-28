@@ -25,13 +25,13 @@
                 <tr>
                     <td class="sjekket"></td>
                     <td>{{ hentTekst (concat cmsPrefiks "behovforbil.belastende.avellerpakollektivtransport")}}</td>
-                <tr>
+                </tr>
             {{/forFaktumHvisSant}}
             {{#forFaktumHvisSant "behovforbil.belastende.ingenholdeplasser"}}
                 <tr>
                     <td class="sjekket"></td>
                     <td>{{ hentTekst (concat cmsPrefiks "behovforbil.belastende.ingenholdeplasser")}}</td>
-                <tr>
+                </tr>
             {{/forFaktumHvisSant}}
             {{#forFaktumHvisSant "behovforbil.belastende.langttilholdeplasser"}}
                 <tr>
@@ -67,7 +67,7 @@
                             <em>{{ value }}</em>
                         {{/forFaktum}}
                     </td>
-                <tr>
+                </tr>
             {{/forFaktumHvisSant}}
         {{/hvisLik}}
         {{#hvisLik value "ja"}}
@@ -99,7 +99,7 @@
                 <td>
                     {{#forFaktum "behovforbil.hjelpemidler.beskrivelse"}}
                         <span>{{hentTekst "behovforbil.hjelpemidler.beskrivelse.sporsmal"}}</span><br/>
-                            <em>{{ value }}</em>
+                        <em>{{ value }}</em>
                     {{/forFaktum}}
                 </td>
             </tr>
