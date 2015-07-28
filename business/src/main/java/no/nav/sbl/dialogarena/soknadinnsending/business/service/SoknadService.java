@@ -26,7 +26,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.Al
 import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
@@ -48,13 +47,13 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import static java.util.Collections.sort;
 import static java.util.UUID.randomUUID;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.LASTET_OPP;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
@@ -63,10 +62,16 @@ import static no.nav.modig.lang.collections.PredicateUtils.equalTo;
 import static no.nav.modig.lang.collections.PredicateUtils.not;
 import static no.nav.modig.lang.collections.PredicateUtils.where;
 import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.KVITTERING;
+import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.Nokkel.TITTEL;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.AVBRUTT_AV_BRUKER;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.UNDER_ARBEID;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum.sammenlignEtterDependOn;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.convertToXmlVedleggListe;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.toInnsendingsvalg;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.getJournalforendeEnhet;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.getSkjemanummer;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.PersonaliaUtils.adresserOgStatsborgerskap;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -116,19 +121,22 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         bolker = applicationContext.getBeansOfType(BolkService.class);
     }
 
-
+    @Override
     public void settDelsteg(String behandlingsId, DelstegStatus delstegStatus) {
         repository.settDelstegstatus(behandlingsId, delstegStatus);
     }
 
+    @Override
     public void settJournalforendeEnhet(String behandlingsId, String journalforendeEnhet) {
         repository.settJournalforendeEnhet(behandlingsId, journalforendeEnhet);
     }
 
+    @Override
     public WebSoknad hentSoknad(long soknadId) {
         return repository.hentSoknad(soknadId);
     }
 
+    @Override
     public WebSoknad hentSoknad(String behandlingsId) {
         WebSoknad soknad = hentSoknadFraDbEllerHenvendelse(behandlingsId);
         soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknad.getSoknadId()))
@@ -140,11 +148,12 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         return soknad;
     }
 
+    @Override
     public WebSoknad hentSoknadForTilgangskontroll(String behandlingsId) {
         return hentSoknadFraDbEllerHenvendelse(behandlingsId);
     }
 
-    //to do: bare ta inn behandlingsid videre
+    @Override
     public WebSoknad hentSoknadMedFaktaOgVedlegg(String behandlingsId) {
         WebSoknad soknad = repository.hentSoknadMedData(behandlingsId);
         if (soknad == null) {
@@ -154,62 +163,6 @@ public class SoknadService implements SendSoknadService, EttersendingService {
                 .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
                 .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
         return soknad;
-    }
-
-    private WebSoknad hentSoknadFraDbEllerHenvendelse(String behandlingsId) {
-        WebSoknad soknad = repository.hentSoknad(behandlingsId);
-        if (soknad == null) {
-            soknad = hentFraHenvendelse(behandlingsId, false);
-        }
-        return soknad;
-    }
-
-    private WebSoknad hentFraHenvendelse(String behandlingsId, boolean medFaktumOgVedlegg) {
-        WSHentSoknadResponse wsSoknadsdata = henvendelseService.hentSoknad(behandlingsId);
-
-        XMLMetadataListe vedleggListe = (XMLMetadataListe) wsSoknadsdata.getAny();
-        Optional<XMLMetadata> hovedskjemaOptional = on(vedleggListe.getMetadata()).filter(new InstanceOf<XMLMetadata>(XMLHovedskjema.class)).head();
-        XMLHovedskjema hovedskjema = (XMLHovedskjema) hovedskjemaOptional.getOrThrow(new ApplicationException("Kunne ikke hente opp søknad"));
-
-        WebSoknad soknad;
-        SoknadInnsendingStatus status = SoknadInnsendingStatus.valueOf(wsSoknadsdata.getStatus());
-        if (status.equals(UNDER_ARBEID)) {
-            populerSoknadFraHenvendelse(hovedskjema);
-            if (medFaktumOgVedlegg) {
-                soknad = repository.hentSoknadMedData(behandlingsId);
-            } else {
-                soknad = repository.hentSoknad(behandlingsId);
-            }
-        } else {
-            // søkndadsdata er slettet i henvendelse, har kun metadata
-            soknad = new WebSoknad().medBehandlingId(behandlingsId).medStatus(status).medskjemaNummer(hovedskjema.getSkjemanummer());
-        }
-
-        return soknad;
-    }
-
-    private void populerSoknadFraHenvendelse(XMLHovedskjema hovedskjema) {
-        byte[] bytes = fillagerService.hentFil(hovedskjema.getUuid());
-        WebSoknad soknad = JAXB.unmarshal(new ByteArrayInputStream(bytes), WebSoknad.class);
-        repository.populerFraStruktur(soknad);
-        List<WSInnhold> innhold = fillagerService.hentFiler(soknad.getBrukerBehandlingId());
-        populerVedleggMedDataFraHenvendelse(soknad, innhold);
-    }
-
-    private void populerVedleggMedDataFraHenvendelse(WebSoknad soknad, List<WSInnhold> innhold) {
-        for (WSInnhold wsInnhold : innhold) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            try {
-                wsInnhold.getInnhold().writeTo(baos);
-            } catch (IOException e) {
-                throw new ApplicationException("Kunne ikke hente opp soknaddata", e);
-            }
-            Vedlegg vedlegg = soknad.hentVedleggMedUID(wsInnhold.getUuid());
-            if (vedlegg != null) {
-                vedlegg.setData(baos.toByteArray());
-                vedleggRepository.lagreVedleggMedData(soknad.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
-            }
-        }
     }
 
     @Override
@@ -227,12 +180,8 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
     @Override
     public WebSoknad hentEttersendingForBehandlingskjedeId(String behandlingsId) {
-        Optional<WebSoknad> soknadOptional = repository.hentEttersendingMedBehandlingskjedeId(behandlingsId);
-        if (soknadOptional.isSome()) {
-            return soknadOptional.get();
-        } else {
-            return null;
-        }
+        Optional<WebSoknad> soknad = repository.hentEttersendingMedBehandlingskjedeId(behandlingsId);
+        return soknad.isSome() ? soknad.get() : null;
     }
 
     @Override
@@ -248,6 +197,144 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         return ettersending.getBrukerBehandlingId();
     }
 
+    @Override
+    @Transactional
+    public void avbrytSoknad(String behandlingsId) {
+        WebSoknad soknad = repository.hentSoknad(behandlingsId);
+
+        /**
+         * Sletter alle vedlegg til søknader som blir avbrutt.
+         * Dette burde egentlig gjøres i henvendelse, siden vi uansett skal slette alle vedlegg på avbrutte søknader.
+         * I tillegg blir det liggende igjen mange vedlegg for søknader som er avbrutt før dette kallet ble lagt til.
+         * */
+
+        fillagerService.slettAlle(soknad.getBrukerBehandlingId());
+        henvendelseService.avbrytSoknad(soknad.getBrukerBehandlingId());
+        repository.slettSoknad(soknad.getSoknadId());
+    }
+
+    @Override
+    public SoknadStruktur hentSoknadStruktur(Long soknadId) {
+        return config.hentStruktur(soknadId);
+    }
+
+    @Override
+    public SoknadStruktur hentSoknadStruktur(String skjemanummer) {
+        return config.hentStruktur(skjemanummer);
+    }
+
+    @Override
+    @Transactional
+    public String startSoknad(String navSoknadId, String fodselsnummer) {
+        validerSkjemanummer(navSoknadId);
+        String mainUid = randomUUID().toString();
+        String behandlingsId = henvendelseService.startSoknad(getSubjectHandler().getUid(), navSoknadId, mainUid);
+
+        WebSoknad soknad = WebSoknad.startSoknad()
+                .medBehandlingId(behandlingsId)
+                .medskjemaNummer(navSoknadId)
+                .medUuid(mainUid)
+                .medAktorId(getSubjectHandler().getUid())
+                .medOppretteDato(DateTime.now());
+
+        Long soknadId = repository.opprettSoknad(soknad);
+        soknad.setSoknadId(soknadId);
+        Faktum bolkerFaktum = new Faktum().medSoknadId(soknadId).medKey("bolker").medType(BRUKERREGISTRERT);
+        repository.lagreFaktum(soknadId, bolkerFaktum);
+
+        opprettFaktumForPersonalia(soknadId);
+        prepopulerSoknadsFakta(soknadId);
+        opprettFaktumForLonnsOgTrekkoppgave(soknadId);
+        return behandlingsId;
+    }
+
+    @Override
+    @Transactional
+    public void sendSoknad(String behandlingsId, byte[] pdf) {
+        sendSoknad(hentSoknadMedFaktaOgVedlegg(behandlingsId), pdf);
+    }
+
+    private void sendSoknad(WebSoknad soknad, byte[] pdf) {
+        long soknadId = soknad.getSoknadId();
+        if (soknad.erEttersending() && soknad.getOpplastedeVedlegg().size() <= 0) {
+            logger.error("Kan ikke sende inn ettersendingen med ID {0} uten å ha lastet opp vedlegg", soknad.getBrukerBehandlingId());
+            throw new ApplicationException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg");
+        }
+
+        if (soknad.harAnnetVedleggSomIkkeErLastetOpp()) {
+            logger.error("Kan ikke sende inn behandling (ID: {0}) med Annet vedlegg (skjemanummer N6) som ikke er lastet opp", soknad.getBrukerBehandlingId());
+            throw new ApplicationException("Kan ikke sende inn behandling uten å ha lastet opp alle  vedlegg med skjemanummer N6");
+        }
+
+        logger.info("Lagrer søknad som fil til henvendelse for behandling {}", soknad.getBrukerBehandlingId());
+        fillagerService.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(pdf));
+
+        List<Vedlegg> vedleggForventninger = hentVedleggOgKvittering(soknad);
+
+        String skjemanummer = skjemanummer(soknad);
+        XMLHovedskjema hovedskjema = new XMLHovedskjema()
+                .withInnsendingsvalg(LASTET_OPP.toString())
+                .withSkjemanummer(skjemanummer)
+                .withFilnavn(skjemanummer)
+                .withMimetype("application/pdf")
+                .withFilstorrelse("" + pdf.length)
+                .withUuid(soknad.getUuid())
+                .withJournalforendeEnhet(journalforendeEnhet(soknad));
+
+        hovedskjema.withAlternativRepresentasjonListe(opprettAlternativRepresentasjoner(soknad));
+
+        henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, convertToXmlVedleggListe(vedleggForventninger));
+        repository.slettSoknad(soknadId);
+    }
+
+    private XMLAlternativRepresentasjonListe opprettAlternativRepresentasjoner(WebSoknad soknad) {
+        List<Transformer<WebSoknad, AlternativRepresentasjon>> transformers = kravdialogInformasjonHolder.hentKonfigurasjon(soknad.getskjemaNummer()).getTransformers();
+        XMLAlternativRepresentasjonListe xmlAlternativRepresentasjonListe = new XMLAlternativRepresentasjonListe();
+
+        List<XMLAlternativRepresentasjon> alternativRepresentasjonListe = xmlAlternativRepresentasjonListe.getAlternativRepresentasjon();
+
+        for (Transformer<WebSoknad, AlternativRepresentasjon> transformer : transformers) {
+            AlternativRepresentasjon altrep = transformer.transform(soknad);
+            fillagerService.lagreFil(soknad.getBrukerBehandlingId(),
+                    altrep.getUuid(),
+                    soknad.getAktoerId(),
+                    new ByteArrayInputStream(altrep.getContent()));
+
+            alternativRepresentasjonListe.add(new XMLAlternativRepresentasjon()
+                    .withFilnavn(altrep.getFilnavn())
+                    .withFilstorrelse(altrep.getContent().length + "")
+                    .withMimetype(altrep.getMimetype())
+                    .withUuid(altrep.getUuid()));
+        }
+        return xmlAlternativRepresentasjonListe;
+    }
+
+    private String skjemanummer(WebSoknad soknad) {
+        return soknad.erDagpengeSoknad() ? getSkjemanummer(soknad) : soknad.getskjemaNummer();
+    }
+
+    private String journalforendeEnhet(WebSoknad soknad) {
+        String journalforendeEnhet;
+
+        if (soknad.erDagpengeSoknad()) {
+            journalforendeEnhet = getJournalforendeEnhet(soknad);
+        } else if (soknad.erAapSoknad() && adresserOgStatsborgerskap(soknad).harUtenlandskAdresse()) {
+            journalforendeEnhet = AAP_INTERNASJONAL;
+        } else {
+            journalforendeEnhet = soknad.getJournalforendeEnhet();
+        }
+        return journalforendeEnhet;
+    }
+
+    private List<Vedlegg> hentVedleggOgKvittering(WebSoknad soknad) {
+        List<Vedlegg> vedleggForventninger = soknad.getVedlegg();
+        Vedlegg kvittering = vedleggRepository.hentVedleggForskjemaNummer(soknad.getSoknadId(), null, KVITTERING);
+        if (kvittering != null) {
+            vedleggForventninger.add(kvittering);
+        }
+        return vedleggForventninger;
+    }
+
     private DateTime hentOrginalInnsendtDato(List<WSBehandlingskjedeElement> behandlingskjede, String behandlingsId) {
         return on(behandlingskjede)
                 .filter(where(BEHANDLINGS_ID, equalTo(behandlingsId)))
@@ -256,8 +343,39 @@ public class SoknadService implements SendSoknadService, EttersendingService {
                 .getInnsendtDato();
     }
 
+    private WebSoknad hentSoknadFraDbEllerHenvendelse(String behandlingsId) {
+        WebSoknad soknad = repository.hentSoknad(behandlingsId);
+        if (soknad == null) {
+            soknad = hentFraHenvendelse(behandlingsId, false);
+        }
+        return soknad;
+    }
+
+    private WebSoknad hentFraHenvendelse(String behandlingsId, boolean hentFaktumOgVedlegg) {
+        WSHentSoknadResponse wsSoknadsdata = henvendelseService.hentSoknad(behandlingsId);
+
+        XMLMetadataListe vedleggListe = (XMLMetadataListe) wsSoknadsdata.getAny();
+        Optional<XMLMetadata> hovedskjemaOptional = on(vedleggListe.getMetadata()).filter(new InstanceOf<XMLMetadata>(XMLHovedskjema.class)).head();
+        XMLHovedskjema hovedskjema = (XMLHovedskjema) hovedskjemaOptional.getOrThrow(new ApplicationException("Kunne ikke hente opp søknad"));
+
+        WebSoknad soknad;
+        SoknadInnsendingStatus status = SoknadInnsendingStatus.valueOf(wsSoknadsdata.getStatus());
+        if (status.equals(UNDER_ARBEID)) {
+            populerSoknadFraHenvendelse(hovedskjema);
+            if (hentFaktumOgVedlegg) {
+                soknad = repository.hentSoknadMedData(behandlingsId);
+            } else {
+                soknad = repository.hentSoknad(behandlingsId);
+            }
+        } else {
+            // søkndadsdata er slettet i henvendelse, har kun metadata
+            soknad = new WebSoknad().medBehandlingId(behandlingsId).medStatus(status).medskjemaNummer(hovedskjema.getSkjemanummer());
+        }
+        return soknad;
+    }
+
     private WSHentSoknadResponse hentSisteIkkeAvbrutteSoknadIBehandlingskjede(List<WSBehandlingskjedeElement> behandlingskjede) {
-        List<WSBehandlingskjedeElement> sorterteBehandlinger = on(behandlingskjede).filter(where(STATUS, not(equalTo(SoknadInnsendingStatus.AVBRUTT_AV_BRUKER))))
+        List<WSBehandlingskjedeElement> sorterteBehandlinger = on(behandlingskjede).filter(where(STATUS, not(equalTo(AVBRUTT_AV_BRUKER))))
                 .collect(new Comparator<WSBehandlingskjedeElement>() {
                     @Override
                     public int compare(WSBehandlingskjedeElement o1, WSBehandlingskjedeElement o2) {
@@ -330,95 +448,6 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         };
     }
 
-    @Override
-    @Transactional
-    public void sendSoknad(String behandlingsId, byte[] pdf) {
-        WebSoknad soknad = hentSoknadMedFaktaOgVedlegg(behandlingsId);
-        sendSoknad(soknad, pdf);
-    }
-
-    private void sendSoknad(WebSoknad soknad, byte[] pdf) {
-        long soknadId = soknad.getSoknadId();
-        if (soknad.erEttersending() && soknad.getOpplastedeVedlegg().size() <= 0) {
-            logger.error("Kan ikke sende inn ettersendingen med ID {0} uten å ha lastet opp vedlegg", soknad.getBrukerBehandlingId());
-            throw new ApplicationException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg");
-        }
-
-        if (soknad.harAnnetVedleggSomIkkeErLastetOpp()) {
-            logger.error("Kan ikke sende inn behandling (ID: {0}) med Annet vedlegg (skjemanummer N6) som ikke er lastet opp", soknad.getBrukerBehandlingId());
-            throw new ApplicationException("Kan ikke sende inn behandling uten å ha lastet opp alle  vedlegg med skjemanummer N6");
-        }
-
-        logger.info("Lagrer søknad som fil til henvendelse for behandling {}", soknad.getBrukerBehandlingId());
-        fillagerService.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(pdf));
-
-        List<Vedlegg> vedleggForventninger = hentVedleggOgKvittering(soknad);
-
-        String skjemanummer = skjemanummer(soknad);
-        XMLHovedskjema hovedskjema = new XMLHovedskjema()
-                .withInnsendingsvalg(LASTET_OPP.toString())
-                .withSkjemanummer(skjemanummer)
-                .withFilnavn(skjemanummer)
-                .withMimetype("application/pdf")
-                .withFilstorrelse("" + pdf.length)
-                .withUuid(soknad.getUuid())
-                .withJournalforendeEnhet(journalforendeEnhet(soknad));
-
-        hovedskjema.withAlternativRepresentasjonListe(opprettAlternativRepresentasjoner(soknad));
-
-        henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, Transformers.convertToXmlVedleggListe(vedleggForventninger));
-        repository.slettSoknad(soknadId);
-    }
-
-    private XMLAlternativRepresentasjonListe opprettAlternativRepresentasjoner(WebSoknad soknad) {
-        List<Transformer<WebSoknad, AlternativRepresentasjon>> transformers = kravdialogInformasjonHolder.hentKonfigurasjon(soknad.getskjemaNummer()).getTransformers();
-        XMLAlternativRepresentasjonListe xmlAlternativRepresentasjonListe = new XMLAlternativRepresentasjonListe();
-
-        List<XMLAlternativRepresentasjon> alternativRepresentasjonListe = xmlAlternativRepresentasjonListe.getAlternativRepresentasjon();
-
-        for (Transformer<WebSoknad, AlternativRepresentasjon> transformer : transformers) {
-            AlternativRepresentasjon altrep = transformer.transform(soknad);
-            fillagerService.lagreFil(soknad.getBrukerBehandlingId(),
-                    altrep.getUuid(),
-                    soknad.getAktoerId(),
-                    new ByteArrayInputStream(altrep.getContent()));
-
-            alternativRepresentasjonListe.add(new XMLAlternativRepresentasjon()
-                    .withFilnavn(altrep.getFilnavn())
-                    .withFilstorrelse(altrep.getContent().length + "")
-                    .withMimetype(altrep.getMimetype())
-                    .withUuid(altrep.getUuid()));
-        }
-        return xmlAlternativRepresentasjonListe;
-    }
-
-    private String skjemanummer(WebSoknad soknad) {
-        return soknad.erDagpengeSoknad() ? DagpengerUtils.getSkjemanummer(soknad) : soknad.getskjemaNummer();
-    }
-
-    private String journalforendeEnhet(WebSoknad soknad) {
-        String journalforendeEnhet;
-
-        if (soknad.erDagpengeSoknad()) {
-            journalforendeEnhet = DagpengerUtils.getJournalforendeEnhet(soknad);
-        } else if (soknad.erAapSoknad() && adresserOgStatsborgerskap(soknad).harUtenlandskAdresse()) {
-            journalforendeEnhet = AAP_INTERNASJONAL;
-        } else {
-            journalforendeEnhet = soknad.getJournalforendeEnhet();
-        }
-
-        return journalforendeEnhet;
-    }
-
-    private List<Vedlegg> hentVedleggOgKvittering(WebSoknad soknad) {
-        List<Vedlegg> vedleggForventninger = soknad.getVedlegg();
-        Vedlegg kvittering = vedleggRepository.hentVedleggForskjemaNummer(soknad.getSoknadId(), null, KVITTERING);
-        if (kvittering != null) {
-            vedleggForventninger.add(kvittering);
-        }
-        return vedleggForventninger;
-    }
-
     private List<Vedlegg> hentVedleggOgPersister(XMLMetadataListe xmlVedleggListe, Long soknadId) {
         PreparedIterable<XMLMetadata> vedlegg = on(xmlVedleggListe.getMetadata()).filter(new InstanceOf<XMLMetadata>(XMLVedlegg.class));
         List<Vedlegg> soknadVedlegg = new ArrayList<>();
@@ -450,48 +479,6 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         return soknadVedlegg;
     }
 
-    @Override
-    @Transactional
-    public void avbrytSoknad(String behandlingsId) {
-        WebSoknad soknad = repository.hentSoknad(behandlingsId);
-
-        /**
-         * Sletter alle vedlegg til søknader som blir avbrutt.
-         * Dette burde egentlig gjøres i henvendelse, siden vi uansett skal slette alle vedlegg på avbrutte søknader.
-         * I tillegg blir det liggende igjen mange vedlegg for søknader som er avbrutt før dette kallet ble lagt til.
-         * */
-
-        fillagerService.slettAlle(soknad.getBrukerBehandlingId());
-        henvendelseService.avbrytSoknad(soknad.getBrukerBehandlingId());
-        repository.slettSoknad(soknad.getSoknadId());
-    }
-
-    @Override
-    @Transactional
-    public String startSoknad(String navSoknadId, String fodselsnummer) {
-        validerSkjemanummer(navSoknadId);
-        String mainUid = randomUUID().toString();
-        String behandlingsId = henvendelseService
-                .startSoknad(getSubjectHandler().getUid(), navSoknadId, mainUid);
-
-        WebSoknad soknad = WebSoknad.startSoknad()
-                .medBehandlingId(behandlingsId)
-                .medskjemaNummer(navSoknadId)
-                .medUuid(mainUid)
-                .medAktorId(getSubjectHandler().getUid())
-                .medOppretteDato(DateTime.now());
-
-        Long soknadId = repository.opprettSoknad(soknad);
-        soknad.setSoknadId(soknadId);
-        Faktum bolkerFaktum = new Faktum().medSoknadId(soknadId).medKey("bolker").medType(BRUKERREGISTRERT);
-        repository.lagreFaktum(soknadId, bolkerFaktum);
-
-        opprettFaktumForPersonalia(soknadId);
-        prepopulerSoknadsFakta(soknadId);
-        opprettFaktumForLonnsOgTrekkoppgave(soknadId);
-        return behandlingsId;
-    }
-
     private void opprettFaktumForPersonalia(Long soknadId) {
         Faktum personalia = new Faktum()
                 .medSoknadId(soknadId)
@@ -512,14 +499,14 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     private void prepopulerSoknadsFakta(Long soknadId) {
         SoknadStruktur soknadStruktur = hentSoknadStruktur(soknadId);
         List<SoknadFaktum> fakta = soknadStruktur.getFakta();
-        Collections.sort(fakta, SoknadFaktum.sammenlignEtterDependOn());
+        sort(fakta, sammenlignEtterDependOn());
 
         for (SoknadFaktum soknadFaktum : fakta) {
             if (erIkkeSystemfaktumOgKunEtErTillatt(soknadFaktum)) {
                 Faktum f = new Faktum()
                         .medKey(soknadFaktum.getId())
                         .medValue("")
-                        .medType(Faktum.FaktumType.BRUKERREGISTRERT);
+                        .medType(BRUKERREGISTRERT);
 
                 if (soknadFaktum.getDependOn() != null) {
                     Faktum parentFaktum = repository.hentFaktumMedKey(soknadId, soknadFaktum.getDependOn().getId());
@@ -536,20 +523,34 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         return !((flereTillatt != null && flereTillatt.equals("true")) || (erSystemFaktum != null && erSystemFaktum.equals("true")));
     }
 
+    private void populerSoknadFraHenvendelse(XMLHovedskjema hovedskjema) {
+        byte[] bytes = fillagerService.hentFil(hovedskjema.getUuid());
+        WebSoknad soknad = JAXB.unmarshal(new ByteArrayInputStream(bytes), WebSoknad.class);
+        repository.populerFraStruktur(soknad);
+        List<WSInnhold> innhold = fillagerService.hentFiler(soknad.getBrukerBehandlingId());
+        populerVedleggMedDataFraHenvendelse(soknad, innhold);
+    }
+
+    private void populerVedleggMedDataFraHenvendelse(WebSoknad soknad, List<WSInnhold> innhold) {
+        for (WSInnhold wsInnhold : innhold) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            try {
+                wsInnhold.getInnhold().writeTo(baos);
+            } catch (IOException e) {
+                throw new ApplicationException("Kunne ikke hente opp soknaddata", e);
+            }
+            Vedlegg vedlegg = soknad.hentVedleggMedUID(wsInnhold.getUuid());
+            if (vedlegg != null) {
+                vedlegg.setData(baos.toByteArray());
+                vedleggRepository.lagreVedleggMedData(soknad.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
+            }
+        }
+    }
+
     private void validerSkjemanummer(String navSoknadId) {
         if (!kravdialogInformasjonHolder.hentAlleSkjemanumre().contains(navSoknadId)) {
             throw new ApplicationException("Ikke gyldig skjemanummer " + navSoknadId);
         }
-    }
-
-    @Override
-    public SoknadStruktur hentSoknadStruktur(Long soknadId) {
-        return config.hentStruktur(soknadId);
-    }
-
-    @Override
-    public SoknadStruktur hentSoknadStruktur(String skjemanummer) {
-        return config.hentStruktur(skjemanummer);
     }
 
     private void medKodeverk(Vedlegg vedlegg) {
@@ -560,7 +561,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
                     vedlegg.leggTilURL(nokkelEntry.getKey().toString(), koder.get(nokkelEntry.getKey()));
                 }
             }
-            vedlegg.setTittel(koder.get(Kodeverk.Nokkel.TITTEL));
+            vedlegg.setTittel(koder.get(TITTEL));
         } catch (Exception ignore) {
             logger.debug("ignored exception", ignore);
         }
