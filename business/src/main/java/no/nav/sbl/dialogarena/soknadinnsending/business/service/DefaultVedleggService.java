@@ -28,6 +28,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigOpplastingTypeException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
+import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
 import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -393,4 +394,22 @@ public class DefaultVedleggService implements VedleggService {
         leggTilKodeverkFelter(soknadVedlegg);
         return soknadVedlegg;
     }
+
+    @Override
+    public void populerVedleggMedDataFraHenvendelse(WebSoknad soknad, List<WSInnhold> innhold) {
+        for (WSInnhold wsInnhold : innhold) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            try {
+                wsInnhold.getInnhold().writeTo(baos);
+            } catch (IOException e) {
+                throw new ApplicationException("Kunne ikke hente opp soknaddata", e);
+            }
+            Vedlegg vedlegg = soknad.hentVedleggMedUID(wsInnhold.getUuid());
+            if (vedlegg != null) {
+                vedlegg.setData(baos.toByteArray());
+                vedleggRepository.lagreVedleggMedData(soknad.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
+            }
+        }
+    }
+
 }

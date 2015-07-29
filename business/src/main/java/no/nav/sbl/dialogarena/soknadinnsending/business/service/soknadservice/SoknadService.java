@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.modig.lang.option.Optional;
-import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
@@ -80,9 +79,6 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     private FillagerService fillagerService;
 
     @Inject
-    private Kodeverk kodeverk;
-
-    @Inject
     private StartDatoService startDatoService;
 
     @Inject
@@ -124,7 +120,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
     @Override
     public WebSoknad hentSoknad(String behandlingsId) {
-        WebSoknad soknad = hentSoknadFraDbEllerHenvendelse(behandlingsId, repository, henvendelseService, fillagerService, vedleggRepository);
+        WebSoknad soknad = hentSoknadFraDbEllerHenvendelse(behandlingsId, repository, henvendelseService, fillagerService, vedleggService);
         soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknad.getSoknadId()))
                 .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
                 .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
@@ -136,14 +132,14 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
     @Override
     public WebSoknad hentSoknadForTilgangskontroll(String behandlingsId) {
-        return hentSoknadFraDbEllerHenvendelse(behandlingsId, repository, henvendelseService, fillagerService, vedleggRepository);
+        return hentSoknadFraDbEllerHenvendelse(behandlingsId, repository, henvendelseService, fillagerService, vedleggService);
     }
 
     @Override
     public WebSoknad hentSoknadMedFaktaOgVedlegg(String behandlingsId) {
         WebSoknad soknad = repository.hentSoknadMedData(behandlingsId);
         if (soknad == null) {
-            soknad = hentFraHenvendelse(behandlingsId, true, henvendelseService, fillagerService, repository, vedleggRepository);
+            soknad = hentFraHenvendelse(behandlingsId, true, henvendelseService, fillagerService, repository, vedleggService);
         }
         soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknad.getSoknadId()))
                 .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))

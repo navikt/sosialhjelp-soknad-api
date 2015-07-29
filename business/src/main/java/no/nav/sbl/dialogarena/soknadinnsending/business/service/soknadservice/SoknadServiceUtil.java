@@ -28,8 +28,6 @@ import org.slf4j.Logger;
 
 import javax.xml.bind.JAXB;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.List;
 
 import static java.util.UUID.randomUUID;
@@ -109,28 +107,12 @@ public class SoknadServiceUtil {
         repository.slettSoknad(soknadId);
     }
 
-    public static void populerVedleggMedDataFraHenvendelse(WebSoknad soknad, List<WSInnhold> innhold, VedleggRepository vedleggRepository) {
-        for (WSInnhold wsInnhold : innhold) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            try {
-                wsInnhold.getInnhold().writeTo(baos);
-            } catch (IOException e) {
-                throw new ApplicationException("Kunne ikke hente opp soknaddata", e);
-            }
-            Vedlegg vedlegg = soknad.hentVedleggMedUID(wsInnhold.getUuid());
-            if (vedlegg != null) {
-                vedlegg.setData(baos.toByteArray());
-                vedleggRepository.lagreVedleggMedData(soknad.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
-            }
-        }
-    }
-
-    public static void populerSoknadFraHenvendelse(XMLHovedskjema hovedskjema, FillagerService fillagerService, SoknadRepository repository, VedleggRepository vedleggRepository) {
+    public static void populerSoknadFraHenvendelse(XMLHovedskjema hovedskjema, FillagerService fillagerService, SoknadRepository repository, VedleggService vedleggService) {
         byte[] bytes = fillagerService.hentFil(hovedskjema.getUuid());
         WebSoknad soknad = JAXB.unmarshal(new ByteArrayInputStream(bytes), WebSoknad.class);
         repository.populerFraStruktur(soknad);
         List<WSInnhold> innhold = fillagerService.hentFiler(soknad.getBrukerBehandlingId());
-        populerVedleggMedDataFraHenvendelse(soknad, innhold, vedleggRepository);
+        vedleggService.populerVedleggMedDataFraHenvendelse(soknad, innhold);
     }
 
     public static WebSoknad lagEttersendingFraWsSoknad(WSHentSoknadResponse opprinneligInnsending, DateTime innsendtDato,
@@ -180,7 +162,7 @@ public class SoknadServiceUtil {
     }
 
     public static WebSoknad hentFraHenvendelse(String behandlingsId, boolean hentFaktumOgVedlegg,
-                                               HenvendelseService henvendelseService, FillagerService fillagerService, SoknadRepository repository, VedleggRepository vedleggRepository) {
+                                               HenvendelseService henvendelseService, FillagerService fillagerService, SoknadRepository repository, VedleggService vedleggService) {
         WSHentSoknadResponse wsSoknadsdata = henvendelseService.hentSoknad(behandlingsId);
 
         XMLMetadataListe vedleggListe = (XMLMetadataListe) wsSoknadsdata.getAny();
@@ -190,7 +172,7 @@ public class SoknadServiceUtil {
         WebSoknad soknad;
         SoknadInnsendingStatus status = SoknadInnsendingStatus.valueOf(wsSoknadsdata.getStatus());
         if (status.equals(UNDER_ARBEID)) {
-            populerSoknadFraHenvendelse(hovedskjema, fillagerService, repository, vedleggRepository);
+            populerSoknadFraHenvendelse(hovedskjema, fillagerService, repository, vedleggService);
             if (hentFaktumOgVedlegg) {
                 soknad = repository.hentSoknadMedData(behandlingsId);
             } else {
@@ -203,10 +185,10 @@ public class SoknadServiceUtil {
         return soknad;
     }
 
-    public static WebSoknad hentSoknadFraDbEllerHenvendelse(String behandlingsId, SoknadRepository repository, HenvendelseService henvendelseService, FillagerService fillagerService, VedleggRepository vedleggRepository) {
+    public static WebSoknad hentSoknadFraDbEllerHenvendelse(String behandlingsId, SoknadRepository repository, HenvendelseService henvendelseService, FillagerService fillagerService, VedleggService vedleggService) {
         WebSoknad soknad = repository.hentSoknad(behandlingsId);
         if (soknad == null) {
-            soknad = hentFraHenvendelse(behandlingsId, false, henvendelseService, fillagerService, repository, vedleggRepository);
+            soknad = hentFraHenvendelse(behandlingsId, false, henvendelseService, fillagerService, repository, vedleggService);
         }
         return soknad;
     }
