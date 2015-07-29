@@ -44,6 +44,7 @@ import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.modig.lang.collections.PredicateUtils.equalTo;
 import static no.nav.modig.lang.collections.PredicateUtils.where;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.FERDIG;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum.sammenlignEtterDependOn;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil.hentFraHenvendelse;
@@ -51,7 +52,6 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadser
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil.hentSoknadFraDbEllerHenvendelse;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil.lagEttersendingFraWsSoknad;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil.opprettFaktumForLonnsOgTrekkoppgave;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil.opprettFaktumForPersonalia;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil.validerSkjemanummer;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.SORTER_INNSENDT_DATO;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.STATUS;
@@ -228,7 +228,12 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         Faktum bolkerFaktum = new Faktum().medSoknadId(soknadId).medKey("bolker").medType(BRUKERREGISTRERT);
         repository.lagreFaktum(soknadId, bolkerFaktum);
 
-        opprettFaktumForPersonalia(soknadId, faktaService);
+        Faktum personalia = new Faktum()
+                .medSoknadId(soknadId)
+                .medType(SYSTEMREGISTRERT)
+                .medKey("personalia");
+        faktaService.lagreSystemFaktum(soknadId, personalia);
+
         prepopulerSoknadsFakta(soknadId);
         opprettFaktumForLonnsOgTrekkoppgave(soknadId, startDatoService, faktaService);
         return behandlingsId;
