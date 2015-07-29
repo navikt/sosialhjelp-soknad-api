@@ -51,7 +51,6 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadser
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil.hentSisteIkkeAvbrutteSoknadIBehandlingskjede;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil.hentSoknadFraDbEllerHenvendelse;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil.lagEttersendingFraWsSoknad;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil.opprettFaktumForLonnsOgTrekkoppgave;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil.validerSkjemanummer;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.SORTER_INNSENDT_DATO;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.STATUS;
@@ -235,7 +234,13 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         faktaService.lagreSystemFaktum(soknadId, personalia);
 
         prepopulerSoknadsFakta(soknadId);
-        opprettFaktumForLonnsOgTrekkoppgave(soknadId, startDatoService, faktaService);
+        Faktum lonnsOgTrekkoppgaveFaktum = new Faktum()
+                .medSoknadId(soknadId)
+                .medKey("lonnsOgTrekkOppgave")
+                .medType(SYSTEMREGISTRERT)
+                .medValue(startDatoService.erJanuarEllerFebruar().toString());
+        faktaService.lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum);
+
         return behandlingsId;
     }
 

@@ -17,7 +17,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.StartDatoService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
@@ -169,15 +168,6 @@ public class SoknadServiceUtil {
         repository.populerFraStruktur(soknad);
         List<WSInnhold> innhold = fillagerService.hentFiler(soknad.getBrukerBehandlingId());
         populerVedleggMedDataFraHenvendelse(soknad, innhold, vedleggRepository);
-    }
-
-    public static void opprettFaktumForLonnsOgTrekkoppgave(Long soknadId, StartDatoService startDatoService, FaktaService faktaService) {
-        Faktum lonnsOgTrekkoppgaveFaktum = new Faktum()
-                .medSoknadId(soknadId)
-                .medKey("lonnsOgTrekkOppgave")
-                .medType(SYSTEMREGISTRERT)
-                .medValue(startDatoService.erJanuarEllerFebruar().toString());
-        faktaService.lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum);
     }
 
     public static WebSoknad lagEttersendingFraWsSoknad(WSHentSoknadResponse opprinneligInnsending, DateTime innsendtDato,
