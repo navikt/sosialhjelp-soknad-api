@@ -83,6 +83,17 @@ public class DefaultVedleggService implements VedleggService {
     private PdfWatermarker watermarker = new PdfWatermarker();
 
     @Override
+    public List<Vedlegg> hentVedleggOgKvittering(WebSoknad soknad) {
+        List<Vedlegg> vedleggForventninger = soknad.getVedlegg();
+        Vedlegg kvittering = vedleggRepository.hentVedleggForskjemaNummer(soknad.getSoknadId(), null, KVITTERING);
+        if (kvittering != null) {
+            vedleggForventninger.add(kvittering);
+        }
+        return vedleggForventninger;
+    }
+
+
+    @Override
     @Transactional
     public List<Long> splitOgLagreVedlegg(Vedlegg vedlegg, InputStream inputStream) {
         List<Long> resultat = new ArrayList<>();
@@ -128,6 +139,8 @@ public class DefaultVedleggService implements VedleggService {
         repository.settSistLagretTidspunkt(vedlegg.getSoknadId());
         return resultat;
     }
+
+
 
     private static Vedlegg opprettVedlegg(Vedlegg vedlegg, long size) {
         return new Vedlegg()
