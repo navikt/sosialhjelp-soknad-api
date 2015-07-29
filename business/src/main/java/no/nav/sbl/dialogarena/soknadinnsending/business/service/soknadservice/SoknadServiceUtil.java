@@ -5,12 +5,9 @@ import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLAlternati
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadata;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.core.exception.ApplicationException;
-import no.nav.modig.lang.collections.iter.PreparedIterable;
 import no.nav.modig.lang.collections.predicate.InstanceOf;
 import no.nav.modig.lang.option.Optional;
-import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
@@ -21,6 +18,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.Al
 import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.StartDatoService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
@@ -34,10 +32,8 @@ import javax.xml.bind.JAXB;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 import static java.util.UUID.randomUUID;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.LASTET_OPP;
@@ -47,17 +43,14 @@ import static no.nav.modig.lang.collections.PredicateUtils.equalTo;
 import static no.nav.modig.lang.collections.PredicateUtils.not;
 import static no.nav.modig.lang.collections.PredicateUtils.where;
 import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.KVITTERING;
-import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.Nokkel.TITTEL;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.AVBRUTT_AV_BRUKER;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.convertToXmlVedleggListe;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.toInnsendingsvalg;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.STATUS;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.journalforendeEnhet;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.kvittering;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.skjemanummer;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class SoknadServiceUtil {
 
@@ -153,19 +146,6 @@ public class SoknadServiceUtil {
         return henvendelseService.hentSoknad(sorterteBehandlinger.get(0).getBehandlingsId());
     }
 
-    public static void medKodeverk(Vedlegg vedlegg, Kodeverk kodeverk, Logger logger) {
-        try {
-            Map<Kodeverk.Nokkel, String> koder = kodeverk.getKoder(vedlegg.getSkjemaNummer());
-            for (Map.Entry<Kodeverk.Nokkel, String> nokkelEntry : koder.entrySet()) {
-                if (nokkelEntry.getKey().toString().contains("URL")) {
-                    vedlegg.leggTilURL(nokkelEntry.getKey().toString(), koder.get(nokkelEntry.getKey()));
-                }
-            }
-            vedlegg.setTittel(koder.get(TITTEL));
-        } catch (Exception ignore) {
-            logger.debug("ignored exception", ignore);
-        }
-    }
 
     public static void populerVedleggMedDataFraHenvendelse(WebSoknad soknad, List<WSInnhold> innhold, VedleggRepository vedleggRepository) {
         for (WSInnhold wsInnhold : innhold) {
@@ -208,40 +188,11 @@ public class SoknadServiceUtil {
         faktaService.lagreSystemFaktum(soknadId, personalia);
     }
 
-    public static List<Vedlegg> hentVedleggOgPersister(XMLMetadataListe xmlVedleggListe, Long soknadId, VedleggRepository vedleggRepository, Kodeverk kodeverk, Logger logger) {
-        PreparedIterable<XMLMetadata> vedlegg = on(xmlVedleggListe.getMetadata()).filter(new InstanceOf<XMLMetadata>(XMLVedlegg.class));
-        List<Vedlegg> soknadVedlegg = new ArrayList<>();
-        for (XMLMetadata xmlMetadata : vedlegg) {
-            if (xmlMetadata instanceof XMLHovedskjema) {
-                continue;
-            }
-            XMLVedlegg xmlVedlegg = (XMLVedlegg) xmlMetadata;
 
-            Integer antallSider = xmlVedlegg.getSideantall() != null ? xmlVedlegg.getSideantall() : 0;
-
-            Vedlegg v = new Vedlegg()
-                    .medSkjemaNummer(xmlVedlegg.getSkjemanummer())
-                    .medAntallSider(antallSider)
-                    .medInnsendingsvalg(toInnsendingsvalg(xmlVedlegg.getInnsendingsvalg()))
-                    .medOpprinneligInnsendingsvalg(toInnsendingsvalg(xmlVedlegg.getInnsendingsvalg()))
-                    .medSoknadId(soknadId)
-                    .medNavn(xmlVedlegg.getTilleggsinfo());
-
-            String skjemanummerTillegg = xmlVedlegg.getSkjemanummerTillegg();
-            if (isNotBlank(skjemanummerTillegg)) {
-                v.setSkjemaNummer(v.getSkjemaNummer() + "|" + skjemanummerTillegg);
-            }
-
-            medKodeverk(v, kodeverk, logger);
-            vedleggRepository.opprettVedlegg(v, null);
-            soknadVedlegg.add(v);
-        }
-        return soknadVedlegg;
-    }
 
     public static WebSoknad lagEttersendingFraWsSoknad(WSHentSoknadResponse opprinneligInnsending, DateTime innsendtDato,
                                                  HenvendelseService henvendelseService, SoknadRepository repository, FaktaService faktaService, VedleggRepository vedleggRepository,
-                                                 Kodeverk kodeverk, Logger logger) {
+                                                 VedleggService vedleggService) {
         String ettersendingsBehandlingId = henvendelseService.startEttersending(opprinneligInnsending);
         WSHentSoknadResponse wsEttersending = henvendelseService.hentSoknad(ettersendingsBehandlingId);
 
@@ -280,7 +231,7 @@ public class SoknadServiceUtil {
         faktaService.lagreSystemFaktum(soknadId, soknadInnsendingsDato);
         soknad.setFakta(repository.hentAlleBrukerData(soknadId));
 
-        soknad.setVedlegg(hentVedleggOgPersister(new XMLMetadataListe(filtrertXmlVedleggListe), soknadId, vedleggRepository, kodeverk, logger));
+        soknad.setVedlegg(vedleggService.hentVedleggOgPersister(new XMLMetadataListe(filtrertXmlVedleggListe), soknadId));
 
         return soknad;
     }

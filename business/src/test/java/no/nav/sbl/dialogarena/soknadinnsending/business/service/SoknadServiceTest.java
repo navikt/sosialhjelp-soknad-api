@@ -89,6 +89,8 @@ public class SoknadServiceTest {
     @Mock
     private Kodeverk kodeverk;
     @Mock
+    private VedleggService vedleggService;
+    @Mock
     private NavMessageSource navMessageSource;
     @Mock
     private StartDatoService startDatoService;
