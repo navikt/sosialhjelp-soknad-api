@@ -251,7 +251,7 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         return new Helper<String>() {
             @Override
             public CharSequence apply(String key, Options options) throws IOException {
-                return getCmsTekst(key, new Object[]{options.param(0)}, NO_LOCALE);
+                return getCmsTekst(key, options.params, NO_LOCALE);
             }
         };
     }

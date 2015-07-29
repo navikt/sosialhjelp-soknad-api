@@ -1,0 +1,19 @@
+{{#forFaktum "aktivitet"}}
+    <h2>{{hentTekst "soknad.felles.aktivitet.tittel"}}</h2>
+    <table>
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>{{ properties.navn }}</span>
+            </td>
+        </tr>
+        {{#hvisIkkeTom properties.fom}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>{{ hentTekstMedParameter "soknad.felles.aktivitet.periode" (formatterFodelsDato properties.fom) (formatterFodelsDato properties.tom) }}</span>
+            </td>
+        </tr>
+        {{/hvisIkkeTom}}
+    </table>
+{{/forFaktum}}
