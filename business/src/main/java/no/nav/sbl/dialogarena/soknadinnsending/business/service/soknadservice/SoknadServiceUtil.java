@@ -41,7 +41,6 @@ import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.modig.lang.collections.PredicateUtils.equalTo;
 import static no.nav.modig.lang.collections.PredicateUtils.not;
 import static no.nav.modig.lang.collections.PredicateUtils.where;
-import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.KVITTERING;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.AVBRUTT_AV_BRUKER;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.UNDER_ARBEID;
@@ -81,16 +80,8 @@ public class SoknadServiceUtil {
         return xmlAlternativRepresentasjonListe;
     }
 
-    public static List<Vedlegg> hentVedleggOgKvittering(WebSoknad soknad, VedleggRepository vedleggRepository) {
-        List<Vedlegg> vedleggForventninger = soknad.getVedlegg();
-        Vedlegg kvittering = vedleggRepository.hentVedleggForskjemaNummer(soknad.getSoknadId(), null, KVITTERING);
-        if (kvittering != null) {
-            vedleggForventninger.add(kvittering);
-        }
-        return vedleggForventninger;
-    }
 
-    public static void sendSoknad(WebSoknad soknad, byte[] pdf, FillagerService fillagerService, VedleggRepository vedleggRepository,
+    public static void sendSoknad(WebSoknad soknad, byte[] pdf, FillagerService fillagerService, VedleggService vedleggService,
                                   KravdialogInformasjonHolder kravdialogInformasjonHolder, HenvendelseService henvendelseService, SoknadRepository repository, Logger logger) {
         long soknadId = soknad.getSoknadId();
         if (soknad.erEttersending() && soknad.getOpplastedeVedlegg().size() <= 0) {
@@ -106,7 +97,7 @@ public class SoknadServiceUtil {
         logger.info("Lagrer søknad som fil til henvendelse for behandling {}", soknad.getBrukerBehandlingId());
         fillagerService.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(pdf));
 
-        List<Vedlegg> vedleggForventninger = hentVedleggOgKvittering(soknad, vedleggRepository);
+        List<Vedlegg> vedleggForventninger = vedleggService.hentVedleggOgKvittering(soknad);
 
         String skjemanummer = skjemanummer(soknad);
         XMLHovedskjema hovedskjema = new XMLHovedskjema()
@@ -171,8 +162,8 @@ public class SoknadServiceUtil {
     }
 
     public static WebSoknad lagEttersendingFraWsSoknad(WSHentSoknadResponse opprinneligInnsending, DateTime innsendtDato,
-                                                 HenvendelseService henvendelseService, SoknadRepository repository, FaktaService faktaService, VedleggRepository vedleggRepository,
-                                                 VedleggService vedleggService) {
+                                                       HenvendelseService henvendelseService, SoknadRepository repository, FaktaService faktaService, VedleggRepository vedleggRepository,
+                                                       VedleggService vedleggService) {
         String ettersendingsBehandlingId = henvendelseService.startEttersending(opprinneligInnsending);
         WSHentSoknadResponse wsEttersending = henvendelseService.hentSoknad(ettersendingsBehandlingId);
 

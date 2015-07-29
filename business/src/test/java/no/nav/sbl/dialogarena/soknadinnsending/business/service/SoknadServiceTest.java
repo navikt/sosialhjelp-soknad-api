@@ -78,6 +78,12 @@ import static org.mockito.Mockito.*;
 public class SoknadServiceTest {
 
     public static final String SKJEMA_NUMMER = "NAV 04-01.03";
+    private static final Vedlegg KVITTERING_REF = new Vedlegg()
+            .medFillagerReferanse("kvitteringRef")
+            .medSkjemaNummer(Kodeverk.KVITTERING)
+            .medInnsendingsvalg(Vedlegg.Status.LastetOpp)
+            .medStorrelse(3L)
+            .medAntallSider(1);
     @Mock
     private SoknadRepository soknadRepository;
     @Mock
@@ -110,7 +116,7 @@ public class SoknadServiceTest {
     ApplicationContext applicationContex;
 
     @Captor
-    ArgumentCaptor <XMLHovedskjema> argument;
+    ArgumentCaptor<XMLHovedskjema> argument;
 
     @InjectMocks
     private SoknadService soknadService;
@@ -198,25 +204,22 @@ public class SoknadServiceTest {
                         .medInnsendingsvalg(Vedlegg.Status.SendesIkke));
 
         String behandlingsId = "123";
+        WebSoknad webSoknad = new WebSoknad().medId(1L)
+                .medAktorId("123456")
+                .medBehandlingId(behandlingsId)
+                .medUuid("uidHovedskjema")
+                .medskjemaNummer(DAGPENGER)
+                .medFaktum(new Faktum().medKey("personalia"))
+                .medVedlegg(vedlegg);
         when(soknadRepository.hentSoknadMedData(behandlingsId)).thenReturn(
-                new WebSoknad().medId(1L)
-                        .medAktorId("123456")
-                        .medBehandlingId(behandlingsId)
-                        .medUuid("uidHovedskjema")
-                        .medskjemaNummer(DAGPENGER)
-                        .medFaktum(new Faktum().medKey("personalia"))
-                        .medVedlegg(vedlegg));
+                webSoknad);
 
         when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(vedlegg);
 
         when(vedleggRepository.hentVedleggForskjemaNummer(1L, null, Kodeverk.KVITTERING))
-                .thenReturn(new Vedlegg()
-                                .medFillagerReferanse("kvitteringRef")
-                                .medSkjemaNummer(Kodeverk.KVITTERING)
-                                .medInnsendingsvalg(Vedlegg.Status.LastetOpp)
-                                .medStorrelse(3L)
-                                .medAntallSider(1)
+                .thenReturn(KVITTERING_REF
                 );
+        when(vedleggService.hentVedleggOgKvittering(webSoknad)).thenReturn(mockHentVedleggForventninger(webSoknad));
 
         when(kravdialogInformasjonHolder.hentKonfigurasjon(SKJEMA_NUMMER)).thenReturn(new KravdialogInformasjonHolder().hentKonfigurasjon("NAV 04-01.03"));
         soknadService.sendSoknad(behandlingsId, new byte[]{1, 2, 3});
@@ -505,5 +508,15 @@ public class SoknadServiceTest {
         WebSoknad webSoknad = soknadService.hentEttersendingForBehandlingskjedeId("123");
 
         assertThat(webSoknad).isNull();
+    }
+
+    private static List<Vedlegg> mockHentVedleggForventninger(WebSoknad soknad) {
+
+        List<Vedlegg> vedleggForventninger = soknad.getVedlegg();
+        Vedlegg kvittering = KVITTERING_REF;
+        if (kvittering != null) {
+            vedleggForventninger.add(kvittering);
+        }
+        return vedleggForventninger;
     }
 }

@@ -248,7 +248,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     @Transactional
     public void sendSoknad(String behandlingsId, byte[] pdf) {
         SoknadServiceUtil.sendSoknad(hentSoknadMedFaktaOgVedlegg(behandlingsId), pdf,
-                fillagerService, vedleggRepository, kravdialogInformasjonHolder, henvendelseService, repository, logger);
+                fillagerService, vedleggService, kravdialogInformasjonHolder, henvendelseService, repository, logger);
     }
 
     private void oppdaterKjentInformasjon(String fodselsnummer, final WebSoknad soknad) {

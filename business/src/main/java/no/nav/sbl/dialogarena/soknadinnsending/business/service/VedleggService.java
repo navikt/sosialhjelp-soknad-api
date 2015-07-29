@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 
 import java.io.InputStream;
 import java.util.List;
@@ -13,6 +14,7 @@ public interface VedleggService {
     List<Vedlegg> hentVedleggUnderBehandling(String behandlingsId, String fillagerReferanse);
 
     Vedlegg hentVedlegg(Long vedleggId);
+
     Vedlegg hentVedlegg(Long vedleggId, boolean medInnhold);
 
     String hentBehandlingsId(Long vedleggId);
@@ -24,6 +26,7 @@ public interface VedleggService {
     Long genererVedleggFaktum(String behandlingsId, Long vedleggId);
 
     List<Vedlegg> hentPaakrevdeVedlegg(Long faktumId);
+
     List<Vedlegg> hentPaakrevdeVedlegg(String behandlingsId);
 
     void lagreVedlegg(Long vedleggId, Vedlegg vedlegg);
@@ -33,5 +36,8 @@ public interface VedleggService {
     void lagreKvitteringSomVedlegg(String behandlingsId, byte[] kvittering);
 
     List<Vedlegg> hentVedleggOgPersister(XMLMetadataListe xmlVedleggListe, Long soknadId);
+
+    List<Vedlegg> hentVedleggOgKvittering(WebSoknad soknad);
+
 
 }
