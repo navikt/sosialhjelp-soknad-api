@@ -180,16 +180,6 @@ public class SoknadServiceUtil {
         faktaService.lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum);
     }
 
-    public static void opprettFaktumForPersonalia(Long soknadId, FaktaService faktaService) {
-        Faktum personalia = new Faktum()
-                .medSoknadId(soknadId)
-                .medType(SYSTEMREGISTRERT)
-                .medKey("personalia");
-        faktaService.lagreSystemFaktum(soknadId, personalia);
-    }
-
-
-
     public static WebSoknad lagEttersendingFraWsSoknad(WSHentSoknadResponse opprinneligInnsending, DateTime innsendtDato,
                                                  HenvendelseService henvendelseService, SoknadRepository repository, FaktaService faktaService, VedleggRepository vedleggRepository,
                                                  VedleggService vedleggService) {
