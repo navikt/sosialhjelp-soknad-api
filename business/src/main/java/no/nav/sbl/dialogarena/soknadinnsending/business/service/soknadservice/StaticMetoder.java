@@ -94,4 +94,20 @@ public class StaticMetoder {
                 .getInnsendtDato();
     }
 
+    public static final Comparator<WSBehandlingskjedeElement> NYESTE_FORST = new Comparator<WSBehandlingskjedeElement>() {
+        @Override
+        public int compare(WSBehandlingskjedeElement o1, WSBehandlingskjedeElement o2) {
+            DateTime dato1 = o1.getInnsendtDato();
+            DateTime dato2 = o2.getInnsendtDato();
+            if (dato1 == null && dato2 == null) {
+                return 0;
+            } else if (dato1 == null) {
+                return -1;
+            } else if (dato2 == null) {
+                return 1;
+            }
+            return dato2.compareTo(dato1);
+        }
+    };
+
 }

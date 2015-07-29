@@ -42,16 +42,18 @@ import static java.util.UUID.randomUUID;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.modig.lang.collections.PredicateUtils.equalTo;
+import static no.nav.modig.lang.collections.PredicateUtils.not;
 import static no.nav.modig.lang.collections.PredicateUtils.where;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.AVBRUTT_AV_BRUKER;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.FERDIG;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum.sammenlignEtterDependOn;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil.hentFraHenvendelse;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil.hentSisteIkkeAvbrutteSoknadIBehandlingskjede;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil.hentSoknadFraDbEllerHenvendelse;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil.lagEttersendingFraWsSoknad;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil.validerSkjemanummer;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.NYESTE_FORST;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.SORTER_INNSENDT_DATO;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.STATUS;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.erIkkeSystemfaktumOgKunEtErTillatt;
@@ -171,7 +173,11 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     @Override
     public String startEttersending(String behandlingsIdSoknad, String fodselsnummer) {
         List<WSBehandlingskjedeElement> behandlingskjede = henvendelseService.hentBehandlingskjede(behandlingsIdSoknad);
-        WSHentSoknadResponse wsSoknadsdata = hentSisteIkkeAvbrutteSoknadIBehandlingskjede(behandlingskjede, henvendelseService);
+
+        List<WSBehandlingskjedeElement> sorterteBehandlinger = on(behandlingskjede)
+                .filter(where(STATUS, not(equalTo(AVBRUTT_AV_BRUKER))))
+                .collect(NYESTE_FORST);
+        WSHentSoknadResponse wsSoknadsdata = henvendelseService.hentSoknad(sorterteBehandlinger.get(0).getBehandlingsId());
 
         if (wsSoknadsdata.getInnsendtDato() == null) {
             throw new ApplicationException("Kan ikke starte ettersending på en ikke fullfort soknad");

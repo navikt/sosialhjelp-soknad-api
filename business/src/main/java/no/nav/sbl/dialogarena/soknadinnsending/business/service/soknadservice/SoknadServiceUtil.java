@@ -21,7 +21,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
 import org.apache.commons.collections15.Transformer;
 import org.joda.time.DateTime;
@@ -31,21 +30,16 @@ import javax.xml.bind.JAXB;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Comparator;
 import java.util.List;
 
 import static java.util.UUID.randomUUID;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.LASTET_OPP;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.modig.lang.collections.IterUtils.on;
-import static no.nav.modig.lang.collections.PredicateUtils.equalTo;
 import static no.nav.modig.lang.collections.PredicateUtils.not;
-import static no.nav.modig.lang.collections.PredicateUtils.where;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.AVBRUTT_AV_BRUKER;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.convertToXmlVedleggListe;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.STATUS;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.journalforendeEnhet;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.kvittering;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.skjemanummer;
@@ -114,28 +108,6 @@ public class SoknadServiceUtil {
         henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, convertToXmlVedleggListe(vedleggForventninger));
         repository.slettSoknad(soknadId);
     }
-
-    public static WSHentSoknadResponse hentSisteIkkeAvbrutteSoknadIBehandlingskjede(List<WSBehandlingskjedeElement> behandlingskjede, HenvendelseService henvendelseService) {
-        List<WSBehandlingskjedeElement> sorterteBehandlinger = on(behandlingskjede).filter(where(STATUS, not(equalTo(AVBRUTT_AV_BRUKER))))
-                .collect(new Comparator<WSBehandlingskjedeElement>() {
-                    @Override
-                    public int compare(WSBehandlingskjedeElement o1, WSBehandlingskjedeElement o2) {
-                        DateTime dato1 = o1.getInnsendtDato();
-                        DateTime dato2 = o2.getInnsendtDato();
-                        if (dato1 == null && dato2 == null) {
-                            return 0;
-                        } else if (dato1 == null) {
-                            return -1;
-                        } else if (dato2 == null) {
-                            return 1;
-                        }
-                        return dato2.compareTo(dato1);
-                    }
-                });
-
-        return henvendelseService.hentSoknad(sorterteBehandlinger.get(0).getBehandlingsId());
-    }
-
 
     public static void populerVedleggMedDataFraHenvendelse(WebSoknad soknad, List<WSInnhold> innhold, VedleggRepository vedleggRepository) {
         for (WSInnhold wsInnhold : innhold) {
