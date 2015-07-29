@@ -6,7 +6,13 @@ import com.lowagie.text.PageSize;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
 import com.lowagie.text.pdf.PdfWriter;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadata;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.core.exception.ApplicationException;
+import no.nav.modig.lang.collections.iter.PreparedIterable;
+import no.nav.modig.lang.collections.predicate.InstanceOf;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.detect.Detect;
 import no.nav.sbl.dialogarena.detect.pdf.PdfDetector;
@@ -45,8 +51,11 @@ import java.util.Map;
 
 import static java.util.Collections.sort;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
+import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.KVITTERING;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.LastetOpp;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.toInnsendingsvalg;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -339,5 +348,36 @@ public class DefaultVedleggService implements VedleggService {
         stamper.close();
         pdfReader.close();
         return returnBaos;
+    }
+
+    public List<Vedlegg> hentVedleggOgPersister(XMLMetadataListe xmlVedleggListe, Long soknadId) {
+        PreparedIterable<XMLMetadata> vedlegg = on(xmlVedleggListe.getMetadata()).filter(new InstanceOf<XMLMetadata>(XMLVedlegg.class));
+        List<Vedlegg> soknadVedlegg = new ArrayList<>();
+        for (XMLMetadata xmlMetadata : vedlegg) {
+            if (xmlMetadata instanceof XMLHovedskjema) {
+                continue;
+            }
+            XMLVedlegg xmlVedlegg = (XMLVedlegg) xmlMetadata;
+
+            Integer antallSider = xmlVedlegg.getSideantall() != null ? xmlVedlegg.getSideantall() : 0;
+
+            Vedlegg v = new Vedlegg()
+                    .medSkjemaNummer(xmlVedlegg.getSkjemanummer())
+                    .medAntallSider(antallSider)
+                    .medInnsendingsvalg(toInnsendingsvalg(xmlVedlegg.getInnsendingsvalg()))
+                    .medOpprinneligInnsendingsvalg(toInnsendingsvalg(xmlVedlegg.getInnsendingsvalg()))
+                    .medSoknadId(soknadId)
+                    .medNavn(xmlVedlegg.getTilleggsinfo());
+
+            String skjemanummerTillegg = xmlVedlegg.getSkjemanummerTillegg();
+            if (isNotBlank(skjemanummerTillegg)) {
+                v.setSkjemaNummer(v.getSkjemaNummer() + "|" + skjemanummerTillegg);
+            }
+
+            vedleggRepository.opprettVedlegg(v, null);
+            soknadVedlegg.add(v);
+        }
+        leggTilKodeverkFelter(soknadVedlegg);
+        return soknadVedlegg;
     }
 }

@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 
 import java.io.InputStream;
@@ -30,5 +31,7 @@ public interface VedleggService {
     void leggTilKodeverkFelter(List<Vedlegg> vedlegg);
 
     void lagreKvitteringSomVedlegg(String behandlingsId, byte[] kvittering);
+
+    List<Vedlegg> hentVedleggOgPersister(XMLMetadataListe xmlVedleggListe, Long soknadId);
 
 }

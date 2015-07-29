@@ -18,6 +18,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.EttersendingServ
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.StartDatoService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
@@ -97,6 +98,9 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
     private Map<String, BolkService> bolker;
 
+    @Inject
+    private VedleggService vedleggService;
+
     @PostConstruct
     public void initBolker() {
         bolker = applicationContext.getBeansOfType(BolkService.class);
@@ -175,7 +179,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         }
         DateTime innsendtDato = hentOrginalInnsendtDato(behandlingskjede, behandlingsIdSoknad);
         WebSoknad ettersending = lagEttersendingFraWsSoknad(wsSoknadsdata, innsendtDato,
-                henvendelseService, repository, faktaService, vedleggRepository, kodeverk, logger);
+                henvendelseService, repository, faktaService, vedleggRepository, vedleggService);
         return ettersending.getBrukerBehandlingId();
     }
 
@@ -236,8 +240,6 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         SoknadServiceUtil.sendSoknad(hentSoknadMedFaktaOgVedlegg(behandlingsId), pdf,
                 fillagerService, vedleggRepository, kravdialogInformasjonHolder, henvendelseService, repository, logger);
     }
-
-    //** **//
 
     private void oppdaterKjentInformasjon(String fodselsnummer, final WebSoknad soknad) {
         WebSoknad soknadMedFakta = hentSoknadMedFaktaOgVedlegg(soknad.getBrukerBehandlingId());
