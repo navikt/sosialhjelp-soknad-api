@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
 
 import java.io.InputStream;
 import java.util.List;
@@ -39,5 +40,6 @@ public interface VedleggService {
 
     List<Vedlegg> hentVedleggOgKvittering(WebSoknad soknad);
 
+    void populerVedleggMedDataFraHenvendelse(WebSoknad soknad, List<WSInnhold> innhold);
 
 }
