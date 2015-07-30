@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception;
 
-import no.nav.modig.lang.collections.iter.PreparedIterable;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.VedleggsgenereringUtil;
 import org.apache.commons.collections15.Predicate;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -20,14 +20,14 @@ public class VedleggGenereringMismatch extends Throwable {
         final List<Vedlegg> vedleggSomMangler = on(orginaleVedlegg).filter(new Predicate<Vedlegg>() {
             @Override
             public boolean evaluate(Vedlegg vedlegg) {
-                return !nyVedleggslogikk.contains(vedlegg);
+                return !VedleggsgenereringUtil.likeVedlegg(nyVedleggslogikk, vedlegg);
             }
         }).collect();
 
         List<Vedlegg> vedleggGenerertEkstra = on(nyVedleggslogikk).filter(new Predicate<Vedlegg>() {
             @Override
             public boolean evaluate(Vedlegg vedlegg) {
-                return !orginaleVedlegg.contains(vedlegg);
+                return !VedleggsgenereringUtil.likeVedlegg(orginaleVedlegg,vedlegg);
             }
         }).collect();
 

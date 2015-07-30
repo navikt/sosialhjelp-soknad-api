@@ -1,15 +1,12 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception;
 
-import no.nav.modig.lang.collections.iter.PreparedIterable;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import org.junit.Test;
 
-import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 
 public class VedleggGenereringMismatchTest {
 
@@ -23,7 +20,6 @@ public class VedleggGenereringMismatchTest {
 
         assertThat(mismatch.getVedleggSomMangler()).contains(vedlegg);
         assertThat(mismatch.getVedleggGenerertEkstra()).isEmpty();
-
     }
 
     @Test
@@ -38,6 +34,4 @@ public class VedleggGenereringMismatchTest {
         assertThat(mismatch.getVedleggGenerertEkstra()).contains(nyttVedlegg);
 
     }
-
-
 }

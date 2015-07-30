@@ -24,6 +24,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.Ugyldig
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.VedleggGenereringMismatch;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.VedleggsGrunnlag;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.VedleggsgenereringUtil;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import org.apache.commons.collections15.Closure;
 import org.apache.commons.collections15.Predicate;
@@ -254,14 +255,11 @@ public class DefaultVedleggService implements VedleggService {
 
         List<Vedlegg> paakrevdeVedleggVedNyUthenting = hentPaakrevdeVedleggMedGenerering(behandlingsId);
         leggTilKodeverkFelter(paakrevdeVedleggVedNyUthenting);
-        if (paakrevdeVedleggVedNyUthenting.size() == paakrevdeVedlegg.size() &&
-                paakrevdeVedleggVedNyUthenting.containsAll(paakrevdeVedlegg)) {
+        if (VedleggsgenereringUtil.likeVedlegg(paakrevdeVedlegg, paakrevdeVedleggVedNyUthenting)) {
                 return paakrevdeVedlegg;
         }else {
             throw new VedleggGenereringMismatch(paakrevdeVedlegg, paakrevdeVedleggVedNyUthenting);
         }
-
-
     }
 
     @Override
