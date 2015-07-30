@@ -10,7 +10,6 @@ import no.nav.modig.lang.collections.predicate.InstanceOf;
 import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
@@ -76,11 +75,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
     @Inject
     @Named("soknadInnsendingRepository")
-    private SoknadRepository repository;
-
-    @Inject
-    @Named("vedleggRepository")
-    private VedleggRepository vedleggRepository;
+    private SoknadRepository lokalDb;
 
     @Inject
     private HenvendelseService henvendelseService;
@@ -118,58 +113,49 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
     @Override
     public void settDelsteg(String behandlingsId, DelstegStatus delstegStatus) {
-        repository.settDelstegstatus(behandlingsId, delstegStatus);
+        lokalDb.settDelstegstatus(behandlingsId, delstegStatus);
     }
 
     @Override
     public void settJournalforendeEnhet(String behandlingsId, String journalforendeEnhet) {
-        repository.settJournalforendeEnhet(behandlingsId, journalforendeEnhet);
+        lokalDb.settJournalforendeEnhet(behandlingsId, journalforendeEnhet);
     }
 
     @Override
-    public WebSoknad hentSoknad(long soknadId) {
-        return repository.hentSoknad(soknadId);
+    public WebSoknad hentSoknadFraLokalDb(long soknadId) {
+        return lokalDb.hentSoknad(soknadId);
     }
 
     @Override
-    public WebSoknad hentSoknad(String behandlingsId) {
-        WebSoknad soknadFraLokalDb = repository.hentSoknad(behandlingsId);
-        WebSoknad soknad = soknadFraLokalDb != null ? soknadFraLokalDb : soknadServiceUtil.hentFraHenvendelse(behandlingsId, false);
-        soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknad.getSoknadId()))
-                .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
-                .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
+    public WebSoknad hentSoknad(String behandlingsId, boolean medData, boolean medVedlegg) {
+        WebSoknad soknadFraLokalDb;
 
-        String fodselsnummer = getSubjectHandler().getUid();
-        WebSoknad soknadMedFakta = hentSoknadMedFaktaOgVedlegg(soknad.getBrukerBehandlingId());
-        if (soknad.erEttersending()) {
-            faktaService.lagreSystemFakta(soknadMedFakta, bolker.get(PersonaliaService.class.getName()).genererSystemFakta(fodselsnummer, soknadMedFakta.getSoknadId()));
+        if (medVedlegg) {
+            soknadFraLokalDb = lokalDb.hentSoknadMedVedlegg(behandlingsId);
         } else {
-            List<BolkService> soknadBolker = config.getSoknadBolker(soknadMedFakta, bolker.values());
-            List<Faktum> systemfaktum = new ArrayList<>();
-            for (BolkService bolk : soknadBolker) {
-                systemfaktum.addAll(bolk.genererSystemFakta(fodselsnummer, soknadMedFakta.getSoknadId()));
+            soknadFraLokalDb = lokalDb.hentSoknad(behandlingsId);
+        }
+
+        WebSoknad soknad = soknadFraLokalDb != null ? soknadFraLokalDb : soknadServiceUtil.hentFraHenvendelse(behandlingsId, false);
+
+        if (medData) {
+            soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknad.getSoknadId()))
+                    .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
+                    .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
+
+            String fodselsnummer = getSubjectHandler().getUid();
+            if (soknad.erEttersending()) {
+                faktaService.lagreSystemFakta(soknad, bolker.get(PersonaliaService.class.getName()).genererSystemFakta(fodselsnummer, soknad.getSoknadId()));
+            } else {
+                List<BolkService> soknadBolker = config.getSoknadBolker(soknad, bolker.values());
+                List<Faktum> systemfaktum = new ArrayList<>();
+                for (BolkService bolk : soknadBolker) {
+                    systemfaktum.addAll(bolk.genererSystemFakta(fodselsnummer, soknad.getSoknadId()));
+                }
+                faktaService.lagreSystemFakta(soknad, systemfaktum);
+
             }
-            faktaService.lagreSystemFakta(soknadMedFakta, systemfaktum);
-
         }
-        return soknad;
-    }
-
-    @Override
-    public WebSoknad hentSoknadForTilgangskontroll(String behandlingsId) {
-        WebSoknad soknadFraLokalDb = repository.hentSoknad(behandlingsId);
-        return soknadFraLokalDb != null ? soknadFraLokalDb : soknadServiceUtil.hentFraHenvendelse(behandlingsId, false);
-    }
-
-    @Override
-    public WebSoknad hentSoknadMedFaktaOgVedlegg(String behandlingsId) {
-        WebSoknad soknad = repository.hentSoknadMedData(behandlingsId);
-        if (soknad == null) {
-            soknad = soknadServiceUtil.hentFraHenvendelse(behandlingsId, false);
-        }
-        soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknad.getSoknadId()))
-                .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
-                .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
         return soknad;
     }
 
@@ -188,7 +174,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
     @Override
     public WebSoknad hentEttersendingForBehandlingskjedeId(String behandlingsId) {
-        Optional<WebSoknad> soknad = repository.hentEttersendingMedBehandlingskjedeId(behandlingsId);
+        Optional<WebSoknad> soknad = lokalDb.hentEttersendingMedBehandlingskjedeId(behandlingsId);
         return soknad.isSome() ? soknad.get() : null;
     }
 
@@ -232,7 +218,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
                 .medBehandlingskjedeId(behandlingskjedeId)
                 .medJournalforendeEnhet(xmlHovedskjema.getJournalforendeEnhet());
 
-        Long soknadId = repository.opprettSoknad(soknad);
+        Long soknadId = lokalDb.opprettSoknad(soknad);
         soknad.setSoknadId(soknadId);
 
         Faktum soknadInnsendingsDato = new Faktum()
@@ -241,7 +227,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
                 .medValue(String.valueOf(innsendtDato.getMillis()))
                 .medType(SYSTEMREGISTRERT);
         faktaService.lagreSystemFaktum(soknadId, soknadInnsendingsDato);
-        soknad.setFakta(repository.hentAlleBrukerData(soknadId));
+        soknad.setFakta(lokalDb.hentAlleBrukerData(soknadId));
 
         soknad.setVedlegg(vedleggService.hentVedleggOgPersister(new XMLMetadataListe(filtrertXmlVedleggListe), soknadId));
 
@@ -252,7 +238,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     @Override
     @Transactional
     public void avbrytSoknad(String behandlingsId) {
-        WebSoknad soknad = repository.hentSoknad(behandlingsId);
+        WebSoknad soknad = lokalDb.hentSoknad(behandlingsId);
 
         /**
          * Sletter alle vedlegg til søknader som blir avbrutt.
@@ -262,7 +248,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
 
         fillagerService.slettAlle(soknad.getBrukerBehandlingId());
         henvendelseService.avbrytSoknad(soknad.getBrukerBehandlingId());
-        repository.slettSoknad(soknad.getSoknadId());
+        lokalDb.slettSoknad(soknad.getSoknadId());
     }
 
     @Override
@@ -291,10 +277,10 @@ public class SoknadService implements SendSoknadService, EttersendingService {
                 .medAktorId(getSubjectHandler().getUid())
                 .medOppretteDato(DateTime.now());
 
-        Long soknadId = repository.opprettSoknad(soknad);
+        Long soknadId = lokalDb.opprettSoknad(soknad);
         soknad.setSoknadId(soknadId);
         Faktum bolkerFaktum = new Faktum().medSoknadId(soknadId).medKey("bolker").medType(BRUKERREGISTRERT);
-        repository.lagreFaktum(soknadId, bolkerFaktum);
+        lokalDb.lagreFaktum(soknadId, bolkerFaktum);
 
         Faktum personalia = new Faktum()
                 .medSoknadId(soknadId)
@@ -314,10 +300,10 @@ public class SoknadService implements SendSoknadService, EttersendingService {
                         .medType(BRUKERREGISTRERT);
 
                 if (soknadFaktum.getDependOn() != null) {
-                    Faktum parentFaktum = repository.hentFaktumMedKey(soknadId, soknadFaktum.getDependOn().getId());
+                    Faktum parentFaktum = lokalDb.hentFaktumMedKey(soknadId, soknadFaktum.getDependOn().getId());
                     f.setParrentFaktum(parentFaktum.getFaktumId());
                 }
-                repository.lagreFaktum(soknadId, f);
+                lokalDb.lagreFaktum(soknadId, f);
             }
         }
         Faktum lonnsOgTrekkoppgaveFaktum = new Faktum()
@@ -333,7 +319,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     @Override
     @Transactional
     public void sendSoknad(String behandlingsId, byte[] pdf) {
-        WebSoknad soknad = hentSoknadMedFaktaOgVedlegg(behandlingsId);
+        WebSoknad soknad = hentSoknad(behandlingsId, true, true);
         if (soknad.erEttersending() && soknad.getOpplastedeVedlegg().size() <= 0) {
             logger.error("Kan ikke sende inn ettersendingen med ID {0} uten å ha lastet opp vedlegg", soknad.getBrukerBehandlingId());
             throw new ApplicationException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg");
@@ -377,7 +363,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         hovedskjema.withAlternativRepresentasjonListe(xmlAlternativRepresentasjonListe);
 
         henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, convertToXmlVedleggListe(vedleggService.hentVedleggOgKvittering(soknad)));
-        repository.slettSoknad(soknad.getSoknadId());
+        lokalDb.slettSoknad(soknad.getSoknadId());
     }
 
 }

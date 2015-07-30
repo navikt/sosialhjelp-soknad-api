@@ -190,7 +190,7 @@ public class DefaultVedleggService implements VedleggService {
     @Transactional
     public void slettVedlegg(Long vedleggId) {
         Vedlegg vedlegg = hentVedlegg(vedleggId, false);
-        WebSoknad soknad = soknadService.hentSoknad(vedlegg.getSoknadId());
+        WebSoknad soknad = soknadService.hentSoknadFraLokalDb(vedlegg.getSoknadId());
         Long soknadId = soknad.getSoknadId();
 
         vedleggRepository.slettVedlegg(soknadId, vedleggId);
@@ -266,7 +266,7 @@ public class DefaultVedleggService implements VedleggService {
         vedleggRepository.lagreVedlegg(vedlegg.getSoknadId(), vedleggId, vedlegg);
         repository.settSistLagretTidspunkt(vedlegg.getSoknadId());
 
-        if (!soknadService.hentSoknad(vedlegg.getSoknadId()).erEttersending()) {
+        if (!soknadService.hentSoknadFraLokalDb(vedlegg.getSoknadId()).erEttersending()) {
             repository.settDelstegstatus(vedlegg.getSoknadId(), DelstegStatus.SKJEMA_VALIDERT);
         }
     }

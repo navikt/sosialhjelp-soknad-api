@@ -56,7 +56,7 @@ public class SoknadRessurs {
     @SjekkTilgangTilSoknad
     public WebSoknad hentSoknadData(@PathParam("behandlingsId") String behandlingsId, @Context HttpServletResponse response) {
         response.addCookie(xsrfCookie(behandlingsId));
-        return soknadService.hentSoknad(behandlingsId);
+        return soknadService.hentSoknad(behandlingsId, true, false);
     }
 
     @GET
@@ -64,7 +64,7 @@ public class SoknadRessurs {
     @Produces(TEXT_HTML)
     @SjekkTilgangTilSoknad
     public String hentOppsummering(@PathParam("behandlingsId") String behandlingsId) throws IOException {
-        WebSoknad soknad = soknadService.hentSoknadMedFaktaOgVedlegg(behandlingsId);
+        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
         vedleggService.leggTilKodeverkFelter(soknad.getVedlegg());
 
         String oppsummeringSti = "/skjema/" + soknad.getSoknadPrefix();

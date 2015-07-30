@@ -72,7 +72,7 @@ public class SoknadActions {
     @Path("/send")
     @SjekkTilgangTilSoknad
     public void sendSoknad(@PathParam("behandlingsId") String behandlingsId) {
-        WebSoknad soknad = soknadService.hentSoknadMedFaktaOgVedlegg(behandlingsId);
+        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
 
         byte[] kvittering = genererPdfMedKodeverksverdier(soknad, "/skjema/kvittering");
         vedleggService.lagreKvitteringSomVedlegg(behandlingsId, kvittering);

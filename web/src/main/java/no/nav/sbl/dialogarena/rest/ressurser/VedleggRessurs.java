@@ -93,7 +93,7 @@ public class VedleggRessurs {
                                           @FormDataParam("X-XSRF-TOKEN") final String xsrfToken, @FormDataParam("files[]") final List<FormDataBodyPart> files) {
         XsrfGenerator.sjekkXsrfToken(xsrfToken, behandlingsId);
 
-        WebSoknad soknad = soknadService.hentSoknad(behandlingsId);
+        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, false);
         Vedlegg forventning = vedleggService.hentVedlegg(vedleggId, false);
 
         if (erFilForStor(behandlingsId, files, forventning)) {
