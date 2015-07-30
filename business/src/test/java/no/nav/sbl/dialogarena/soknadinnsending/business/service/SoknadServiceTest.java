@@ -23,6 +23,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
@@ -114,6 +115,9 @@ public class SoknadServiceTest {
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
     @Mock
     ApplicationContext applicationContex;
+    @Mock
+    SoknadServiceUtil soknadServiceUtil;
+
 
     @Captor
     ArgumentCaptor<XMLHovedskjema> argument;
@@ -162,6 +166,7 @@ public class SoknadServiceTest {
                                         new XMLHovedskjema().withUuid("uidHovedskjema"),
                                         new XMLVedlegg().withUuid("uidVedlegg")))
         );
+        when(soknadServiceUtil.hentFraHenvendelse("123", false)).thenReturn(soknad);
         when(soknadRepository.hentSoknad("123")).thenReturn(null, soknad, soknad);
         when(soknadRepository.hentSoknadMedData("123")).thenReturn(soknad, soknad);
 
