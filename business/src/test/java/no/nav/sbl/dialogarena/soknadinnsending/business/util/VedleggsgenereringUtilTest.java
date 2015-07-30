@@ -1,12 +1,20 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.util;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status;
 import org.assertj.core.api.AbstractBooleanAssert;
 import org.junit.Before;
 import org.junit.Test;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.IkkeVedlegg;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.LastetOpp;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.SendesIkke;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.SendesSenere;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.VedleggAlleredeSendt;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.VedleggKreves;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.VedleggSendesAvAndre;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -116,7 +124,6 @@ public class VedleggsgenereringUtilTest {
         assertVedleggUlike(nyttVedlegg, vedlegg);
     }
 
-
     @Test
     public void skalVaereLikeVedleggIkkeVedlegg() throws Exception {
         Vedlegg nyttVedlegg = new Vedlegg(SOKNAD_ID, FAKTUM_ID, SKJEMA_NUMMER, IkkeVedlegg);
@@ -124,6 +131,115 @@ public class VedleggsgenereringUtilTest {
 
         vedlegg.setInnsendingsvalg(IkkeVedlegg);
         assertVedleggLike(nyttVedlegg, vedlegg);
+    }
+
+    @Test
+    public void skalVaereLikeForListeMedGamleVedleggHvorEttErliktDetNye() throws Exception {
+        List<Vedlegg> gamleVedlegg = new ArrayList<>();
+
+        Vedlegg gammeltVedleggTo = new Vedlegg(10L, 10L, SKJEMA_NUMMER, IkkeVedlegg);
+        gammeltVedleggTo.setVedleggId(4L);
+
+        gamleVedlegg.add(gammeltVedleggTo);
+        gamleVedlegg.add(vedlegg);
+
+        Vedlegg nyttVedlegg = new Vedlegg(SOKNAD_ID, FAKTUM_ID, SKJEMA_NUMMER, VedleggKreves);
+        nyttVedlegg.setVedleggId(4L);
+
+        assertThat(VedleggsgenereringUtil.likeVedlegg(gamleVedlegg, nyttVedlegg)).isEqualTo(true);
+    }
+
+    @Test
+    public void skalVaereUlikeForListeMedGamleVedleggHvorIngenErLikNye() throws Exception {
+        List<Vedlegg> gamleVedlegg = new ArrayList<>();
+
+        Vedlegg gammeltVedleggTo = new Vedlegg(10L, 10L, SKJEMA_NUMMER, IkkeVedlegg);
+        gammeltVedleggTo.setVedleggId(4L);
+
+        gamleVedlegg.add(gammeltVedleggTo);
+        gamleVedlegg.add(vedlegg);
+
+        Vedlegg nyttVedlegg = new Vedlegg(SOKNAD_ID, 111L, SKJEMA_NUMMER, IkkeVedlegg);
+        nyttVedlegg.setVedleggId(4L);
+
+        assertThat(VedleggsgenereringUtil.likeVedlegg(gamleVedlegg, nyttVedlegg)).isEqualTo(false);
+    }
+
+    @Test
+    public void skalVaereLikeVedLikeVedleggslister() throws Exception {
+        List<Vedlegg> gamleVedlegg = new ArrayList<>();
+        List<Vedlegg> nyeVedlegg = new ArrayList<>();
+
+        Vedlegg gammeltVedleggTo = new Vedlegg(10L, 10L, SKJEMA_NUMMER, IkkeVedlegg);
+        gammeltVedleggTo.setVedleggId(4L);
+
+        gamleVedlegg.add(gammeltVedleggTo);
+        gamleVedlegg.add(vedlegg);
+
+
+        Vedlegg nyttVedleggLikSomVedlegg = new Vedlegg(SOKNAD_ID, FAKTUM_ID, SKJEMA_NUMMER, VedleggKreves);
+        nyttVedleggLikSomVedlegg.setVedleggId(3L);
+
+        Vedlegg nyttVedleggToLikSomGammeltTo = new Vedlegg(10L, 10L, SKJEMA_NUMMER, IkkeVedlegg);
+        gammeltVedleggTo.setVedleggId(4L);
+
+        nyeVedlegg.add(nyttVedleggLikSomVedlegg);
+        nyeVedlegg.add(nyttVedleggToLikSomGammeltTo);
+
+        assertVedleggListerLike(gamleVedlegg, nyeVedlegg);
+    }
+
+
+    @Test
+    public void skalVaereUlikForUlikeVedleggslister() throws Exception {
+        List<Vedlegg> gamleVedlegg = new ArrayList<>();
+        List<Vedlegg> nyeVedlegg = new ArrayList<>();
+
+        Vedlegg gammeltVedleggTo = new Vedlegg(10L, 10L, SKJEMA_NUMMER, IkkeVedlegg);
+        gammeltVedleggTo.setVedleggId(4L);
+
+        gamleVedlegg.add(gammeltVedleggTo);
+        gamleVedlegg.add(vedlegg);
+
+
+        Vedlegg nyttVedlegg = new Vedlegg(SOKNAD_ID, FAKTUM_ID, SKJEMA_NUMMER, VedleggKreves);
+        nyttVedlegg.setVedleggId(3L);
+
+        Vedlegg nyttVedleggToUlikDeGamle = new Vedlegg(10L, 100L, SKJEMA_NUMMER, IkkeVedlegg);
+        gammeltVedleggTo.setVedleggId(4L);
+
+        nyeVedlegg.add(nyttVedleggToUlikDeGamle);
+        nyeVedlegg.add(nyttVedlegg);
+
+        assertVedleggListerUlike(gamleVedlegg, nyeVedlegg);
+    }
+
+    @Test
+    public void skalVaereULikeVedleggForListeMedUlikStorrelse() throws Exception {
+        List<Vedlegg> gamleVedlegg = new ArrayList<>();
+        List<Vedlegg> nyeVedlegg = new ArrayList<>();
+
+        Vedlegg gammeltVedleggTo = new Vedlegg(10L, 10L, SKJEMA_NUMMER, IkkeVedlegg);
+        gammeltVedleggTo.setVedleggId(4L);
+
+        gamleVedlegg.add(gammeltVedleggTo);
+        gamleVedlegg.add(vedlegg);
+
+
+        Vedlegg nyttVedlegg = new Vedlegg(SOKNAD_ID, FAKTUM_ID, SKJEMA_NUMMER, VedleggKreves);
+        nyttVedlegg.setVedleggId(3L);
+
+        Vedlegg nyttVedleggToUlikDeGamle = new Vedlegg(10L, 10L, SKJEMA_NUMMER, IkkeVedlegg);
+        gammeltVedleggTo.setVedleggId(4L);
+
+        Vedlegg nyttVedleggTre = new Vedlegg(10L, 200L, SKJEMA_NUMMER, IkkeVedlegg);
+        nyttVedleggTre.setVedleggId(4L);
+
+        nyeVedlegg.add(nyttVedleggToUlikDeGamle);
+        nyeVedlegg.add(nyttVedlegg);
+        nyeVedlegg.add(nyttVedleggTre);
+
+        assertVedleggListerUlike(gamleVedlegg, nyeVedlegg);
     }
 
     private AbstractBooleanAssert<?> assertVedleggLike(Vedlegg nyttVedlegg, Vedlegg vedlegg) {
@@ -134,4 +250,11 @@ public class VedleggsgenereringUtilTest {
         return assertThat(VedleggsgenereringUtil.likeVedlegg(vedlegg, nyttVedlegg)).isEqualTo(false);
     }
 
+    private AbstractBooleanAssert<?> assertVedleggListerLike(List<Vedlegg> gamleVedlegg, List<Vedlegg> nyeVedlegg) {
+        return assertThat(VedleggsgenereringUtil.likeVedlegg(gamleVedlegg, nyeVedlegg)).isEqualTo(true);
+    }
+
+    private AbstractBooleanAssert<?> assertVedleggListerUlike(List<Vedlegg> gamleVedlegg, List<Vedlegg> nyeVedlegg) {
+        return assertThat(VedleggsgenereringUtil.likeVedlegg(gamleVedlegg, nyeVedlegg)).isEqualTo(false);
+    }
 }
