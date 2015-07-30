@@ -63,7 +63,7 @@ public class InformasjonService {
     }
 
     public Map<String,String> hentVedleggsskjemaForBehandlingsId(String behandlingsId) {
-        WebSoknad soknad = soknadService.hentSoknad(behandlingsId);
+        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, false);
         return hentVedleggsskjema(soknad.getskjemaNummer());
     }
 

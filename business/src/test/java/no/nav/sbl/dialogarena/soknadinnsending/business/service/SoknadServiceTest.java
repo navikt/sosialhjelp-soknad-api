@@ -168,7 +168,7 @@ public class SoknadServiceTest {
         );
         when(soknadServiceUtil.hentFraHenvendelse("123", false)).thenReturn(soknad);
         when(soknadRepository.hentSoknad("123")).thenReturn(null, soknad, soknad);
-        when(soknadRepository.hentSoknadMedData("123")).thenReturn(soknad, soknad);
+        when(soknadRepository.hentSoknadMedVedlegg("123")).thenReturn(soknad, soknad);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         JAXB.marshal(soknad, baos);
@@ -187,8 +187,8 @@ public class SoknadServiceTest {
                 return null;
             }
         }).when(handler).writeTo(any(OutputStream.class));
-        WebSoknad webSoknad = soknadService.hentSoknad("123");
-        soknadService.hentSoknad("123");
+        WebSoknad webSoknad = soknadService.hentSoknad("123", true, false);
+        soknadService.hentSoknad("123", true, false);
         verify(soknadRepository, atMost(1)).populerFraStruktur(eq(soknadCheck));
         assertThat(webSoknad.getSoknadId()).isEqualTo(11L);
     }
@@ -215,7 +215,7 @@ public class SoknadServiceTest {
                 .medskjemaNummer(DAGPENGER)
                 .medFaktum(new Faktum().medKey("personalia"))
                 .medVedlegg(vedlegg);
-        when(soknadRepository.hentSoknadMedData(behandlingsId)).thenReturn(
+        when(soknadRepository.hentSoknadMedVedlegg(behandlingsId)).thenReturn(
                 webSoknad);
 
         when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(vedlegg);
@@ -282,7 +282,7 @@ public class SoknadServiceTest {
                         .medSkjemaNummer("L7")
                         .medInnsendingsvalg(Vedlegg.Status.SendesIkke));
 
-        when(soknadRepository.hentSoknadMedData(behandlingsId)).thenReturn(
+        when(soknadRepository.hentSoknadMedVedlegg(behandlingsId)).thenReturn(
                 new WebSoknad().medAktorId("123456")
                         .medBehandlingId(behandlingsId)
                         .medUuid("uidHovedskjema")
@@ -312,7 +312,7 @@ public class SoknadServiceTest {
     public void skalHenteSoknad() {
         when(soknadRepository.hentSoknad(1L)).thenReturn(new WebSoknad().medId(1L).medskjemaNummer("NAV 04-01.03"));
         when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(new ArrayList<Vedlegg>());
-        assertThat(soknadService.hentSoknad(1L)).isEqualTo(new WebSoknad().medId(1L).medskjemaNummer("NAV 04-01.03"));
+        assertThat(soknadService.hentSoknadFraLokalDb(1L)).isEqualTo(new WebSoknad().medId(1L).medskjemaNummer("NAV 04-01.03"));
     }
 
     @Test
@@ -374,8 +374,8 @@ public class SoknadServiceTest {
         when(soknadRepository.hentSoknad("123")).thenReturn(
                 soknad);
         when(config.getSoknadBolker(any(WebSoknad.class), anyListOf(BolkService.class))).thenReturn(asList(personaliaService, barnService));
-        when(soknadRepository.hentSoknadMedData(anyString())).thenReturn(soknad);
-        soknadService.hentSoknad("123");
+        when(soknadRepository.hentSoknadMedVedlegg(anyString())).thenReturn(soknad);
+        soknadService.hentSoknad("123", true, true);
         verify(personaliaService, times(1)).genererSystemFakta(anyString(), anyLong());
         verify(barnService, times(1)).genererSystemFakta(anyString(), anyLong());
         verify(arbeidsforholdService, never()).genererSystemFakta(anyString(), anyLong());
@@ -390,8 +390,8 @@ public class SoknadServiceTest {
         when(soknadRepository.hentSoknad("123")).thenReturn(
                 soknad);
         when(config.getSoknadBolker(any(WebSoknad.class), anyListOf(BolkService.class))).thenReturn(asList(personaliaService, barnService));
-        when(soknadRepository.hentSoknadMedData(anyString())).thenReturn(soknad);
-        soknadService.hentSoknad("123");
+        when(soknadRepository.hentSoknadMedVedlegg(anyString())).thenReturn(soknad);
+        soknadService.hentSoknad("123", true, true);
         verify(personaliaService, times(1)).genererSystemFakta(anyString(), anyLong());
         verify(barnService, never()).genererSystemFakta(anyString(), anyLong());
     }

@@ -10,12 +10,9 @@ public interface SendSoknadService {
 
     String startSoknad(String navSoknadId, String fnr);
 
-    WebSoknad hentSoknad(String behandlingsId);
+    WebSoknad hentSoknad(String behandlingsId, boolean medData, boolean medVedlegg);
 
-    WebSoknad hentSoknad(long soknadId);
-    WebSoknad hentSoknadMedFaktaOgVedlegg(String behandlingsId);
-
-    WebSoknad hentSoknadForTilgangskontroll(String behandlingsId);
+    WebSoknad hentSoknadFraLokalDb(long soknadId);
 
     void sendSoknad(String behandlingsId, byte[] outputStream);
 

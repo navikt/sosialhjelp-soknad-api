@@ -56,7 +56,7 @@ public class SoknadServiceUtil {
             vedleggService = vedleggService;
             vedleggService.populerVedleggMedDataFraHenvendelse(soknadFraFillager, innhold);
             if (hentFaktumOgVedlegg) {
-                return repository.hentSoknadMedData(behandlingsId);
+                return repository.hentSoknadMedVedlegg(behandlingsId);
             } else {
                 return repository.hentSoknad(behandlingsId);
             }

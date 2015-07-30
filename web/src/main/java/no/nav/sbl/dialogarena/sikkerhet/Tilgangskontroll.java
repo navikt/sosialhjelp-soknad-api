@@ -46,7 +46,7 @@ public class Tilgangskontroll {
         Long soknadId = null;
         String aktoerId = "undefined";
         try {
-            WebSoknad soknad = soknadService.hentSoknadForTilgangskontroll(behandlingsId);
+            WebSoknad soknad = soknadService.hentSoknad(behandlingsId, false, false);
             soknadId = soknad.getSoknadId();
             aktoerId = soknad.getAktoerId();
         } catch (Exception e) {

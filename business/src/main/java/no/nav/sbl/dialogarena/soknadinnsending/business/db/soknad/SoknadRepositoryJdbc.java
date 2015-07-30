@@ -198,7 +198,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         return soknad;
     }
 
-    public WebSoknad hentSoknadMedData(String behandlingsId) {
+    public WebSoknad hentSoknadMedVedlegg(String behandlingsId) {
         WebSoknad soknad = hentSoknad(behandlingsId);
         if (soknad != null) {
             leggTilBrukerdataOgVedleggPaaSoknad(soknad, behandlingsId);
