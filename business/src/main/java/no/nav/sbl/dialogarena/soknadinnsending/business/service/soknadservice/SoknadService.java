@@ -51,7 +51,6 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.So
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil.hentFraHenvendelse;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil.hentSoknadFraDbEllerHenvendelse;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil.lagEttersendingFraWsSoknad;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil.validerSkjemanummer;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.NYESTE_FORST;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.SORTER_INNSENDT_DATO;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.STATUS;
@@ -125,8 +124,19 @@ public class SoknadService implements SendSoknadService, EttersendingService {
                 .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
                 .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
 
-        oppdaterKjentInformasjon(getSubjectHandler().getUid(), soknad);
+        String fodselsnummer = getSubjectHandler().getUid();
+        WebSoknad soknadMedFakta = hentSoknadMedFaktaOgVedlegg(soknad.getBrukerBehandlingId());
+        if (soknad.erEttersending()) {
+            faktaService.lagreSystemFakta(soknadMedFakta, bolker.get(PersonaliaService.class.getName()).genererSystemFakta(fodselsnummer, soknadMedFakta.getSoknadId()));
+        } else {
+            List<BolkService> soknadBolker = config.getSoknadBolker(soknadMedFakta, bolker.values());
+            List<Faktum> systemfaktum = new ArrayList<>();
+            for (BolkService bolk : soknadBolker) {
+                systemfaktum.addAll(bolk.genererSystemFakta(fodselsnummer, soknadMedFakta.getSoknadId()));
+            }
+            faktaService.lagreSystemFakta(soknadMedFakta, systemfaktum);
 
+        }
         return soknad;
     }
 
@@ -213,7 +223,9 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     @Override
     @Transactional
     public String startSoknad(String navSoknadId, String fodselsnummer) {
-        validerSkjemanummer(navSoknadId, kravdialogInformasjonHolder);
+        if (!kravdialogInformasjonHolder.hentAlleSkjemanumre().contains(navSoknadId)) {
+            throw new ApplicationException("Ikke gyldig skjemanummer " + navSoknadId);
+        }
         String mainUid = randomUUID().toString();
         String behandlingsId = henvendelseService.startSoknad(getSubjectHandler().getUid(), navSoknadId, mainUid);
 
@@ -235,48 +247,6 @@ public class SoknadService implements SendSoknadService, EttersendingService {
                 .medKey("personalia");
         faktaService.lagreSystemFaktum(soknadId, personalia);
 
-        prepopulerSoknadsFakta(soknadId);
-        Faktum lonnsOgTrekkoppgaveFaktum = new Faktum()
-                .medSoknadId(soknadId)
-                .medKey("lonnsOgTrekkOppgave")
-                .medType(SYSTEMREGISTRERT)
-                .medValue(startDatoService.erJanuarEllerFebruar().toString());
-        faktaService.lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum);
-
-        return behandlingsId;
-    }
-
-    @Override
-    @Transactional
-    public void sendSoknad(String behandlingsId, byte[] pdf) {
-        SoknadServiceUtil.sendSoknad(hentSoknadMedFaktaOgVedlegg(behandlingsId), pdf,
-                fillagerService, vedleggService, kravdialogInformasjonHolder, henvendelseService, repository, logger);
-    }
-
-    private void oppdaterKjentInformasjon(String fodselsnummer, final WebSoknad soknad) {
-        WebSoknad soknadMedFakta = hentSoknadMedFaktaOgVedlegg(soknad.getBrukerBehandlingId());
-        if (soknad.erEttersending()) {
-            lagrePersonalia(fodselsnummer, soknadMedFakta);
-        } else {
-            lagreAllInformasjon(fodselsnummer, soknadMedFakta);
-        }
-    }
-
-    private void lagrePersonalia(String fodselsnummer, WebSoknad soknad) {
-        faktaService.lagreSystemFakta(soknad, bolker.get(PersonaliaService.class.getName()).genererSystemFakta(fodselsnummer, soknad.getSoknadId()));
-    }
-
-    private void lagreAllInformasjon(String fodselsnummer, WebSoknad soknad) {
-        List<BolkService> soknadBolker = config.getSoknadBolker(soknad, bolker.values());
-        List<Faktum> systemfaktum = new ArrayList<>();
-        for (BolkService bolk : soknadBolker) {
-            systemfaktum.addAll(bolk.genererSystemFakta(fodselsnummer, soknad.getSoknadId()));
-        }
-        faktaService.lagreSystemFakta(soknad, systemfaktum);
-
-    }
-
-    private void prepopulerSoknadsFakta(Long soknadId) {
         SoknadStruktur soknadStruktur = hentSoknadStruktur(soknadId);
         List<SoknadFaktum> fakta = soknadStruktur.getFakta();
         sort(fakta, sammenlignEtterDependOn());
@@ -295,5 +265,21 @@ public class SoknadService implements SendSoknadService, EttersendingService {
                 repository.lagreFaktum(soknadId, f);
             }
         }
+        Faktum lonnsOgTrekkoppgaveFaktum = new Faktum()
+                .medSoknadId(soknadId)
+                .medKey("lonnsOgTrekkOppgave")
+                .medType(SYSTEMREGISTRERT)
+                .medValue(startDatoService.erJanuarEllerFebruar().toString());
+        faktaService.lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum);
+
+        return behandlingsId;
     }
+
+    @Override
+    @Transactional
+    public void sendSoknad(String behandlingsId, byte[] pdf) {
+        SoknadServiceUtil.sendSoknad(hentSoknadMedFaktaOgVedlegg(behandlingsId), pdf,
+                fillagerService, vedleggService, kravdialogInformasjonHolder, henvendelseService, repository, logger);
+    }
+
 }
