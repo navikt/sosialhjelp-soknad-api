@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.VedleggGenereringMismatch;
 
 import java.io.InputStream;
 import java.util.List;
@@ -23,7 +24,7 @@ public interface VedleggService {
     Long genererVedleggFaktum(String behandlingsId, Long vedleggId);
 
     List<Vedlegg> hentPaakrevdeVedlegg(Long faktumId);
-    List<Vedlegg> hentPaakrevdeVedlegg(String behandlingsId);
+    List<Vedlegg> hentPaakrevdeVedlegg(String behandlingsId) throws VedleggGenereringMismatch;
 
     List<Vedlegg> hentPaakrevdeVedleggMedGenerering(String behandlingsId);
 
