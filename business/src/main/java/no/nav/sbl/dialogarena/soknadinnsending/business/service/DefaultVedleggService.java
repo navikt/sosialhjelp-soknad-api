@@ -21,6 +21,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigOpplastingTypeException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.VedleggGenereringMismatch;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.VedleggsGrunnlag;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
@@ -241,10 +242,26 @@ public class DefaultVedleggService implements VedleggService {
     }
 
     @Override
-    public List<Vedlegg> hentPaakrevdeVedlegg(String behandlingsId) {
+    public List<Vedlegg> hentPaakrevdeVedlegg(String behandlingsId) throws VedleggGenereringMismatch {
         List<Vedlegg> paakrevdeVedlegg = on(vedleggRepository.hentVedlegg(behandlingsId)).filter(PAAKREVDE_VEDLEGG).collect();
         leggTilKodeverkFelter(paakrevdeVedlegg);
-        return paakrevdeVedlegg;
+
+        // I TEST/UTV/QA??
+
+        for (Vedlegg vedlegg : paakrevdeVedlegg) {
+            vedleggRepository.slettVedleggMedVedleggId(vedlegg.getVedleggId());
+        }
+
+        List<Vedlegg> paakrevdeVedleggVedNyUthenting = hentPaakrevdeVedleggMedGenerering(behandlingsId);
+        leggTilKodeverkFelter(paakrevdeVedleggVedNyUthenting);
+        if (paakrevdeVedleggVedNyUthenting.size() == paakrevdeVedlegg.size() &&
+                paakrevdeVedleggVedNyUthenting.containsAll(paakrevdeVedlegg)) {
+                return paakrevdeVedlegg;
+        }else {
+            throw new VedleggGenereringMismatch(paakrevdeVedlegg, paakrevdeVedleggVedNyUthenting);
+        }
+
+
     }
 
     @Override
