@@ -185,7 +185,6 @@ public class SoknadServiceTest {
         WebSoknad webSoknad = soknadService.hentSoknad("123");
         soknadService.hentSoknad("123");
         verify(soknadRepository, atMost(1)).populerFraStruktur(eq(soknadCheck));
-        verify(vedleggRepository).lagreVedleggMedData(11L, 4L, vedleggCheck);
         assertThat(webSoknad.getSoknadId()).isEqualTo(11L);
     }
 
