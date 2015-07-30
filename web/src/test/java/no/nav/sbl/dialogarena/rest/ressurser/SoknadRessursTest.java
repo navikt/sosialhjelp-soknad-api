@@ -5,7 +5,6 @@ import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
 import no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.EttersendingService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +22,10 @@ import static no.nav.sbl.dialogarena.rest.ressurser.SoknadRessurs.XSRF_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SoknadRessursTest {
@@ -32,9 +34,6 @@ public class SoknadRessursTest {
 
     @Mock
     SoknadService soknadService;
-
-    @Mock
-    EttersendingService ettersendingService;
 
     @Mock
     XsrfGenerator xsrfGenerator;
@@ -76,16 +75,16 @@ public class SoknadRessursTest {
 
     @Test
     public void opprettSoknadMedBehandlingsidSomIkkeHarEttersendingSkalStarteNyEttersending() {
-        when(ettersendingService.hentEttersendingForBehandlingskjedeId(BEHANDLINGSID)).thenReturn(null);
+        when(soknadService.hentEttersendingForBehandlingskjedeId(BEHANDLINGSID)).thenReturn(null);
         ressurs.opprettSoknad(BEHANDLINGSID, type, mock(HttpServletResponse.class));
-        verify(ettersendingService).startEttersending(eq(BEHANDLINGSID), anyString());
+        verify(soknadService).startEttersending(eq(BEHANDLINGSID), anyString());
     }
 
     @Test
     public void opprettSoknadMedBehandlingsidSomHarEttersendingSkalIkkeStarteNyEttersending() {
-        when(ettersendingService.hentEttersendingForBehandlingskjedeId(BEHANDLINGSID)).thenReturn(new WebSoknad());
+        when(soknadService.hentEttersendingForBehandlingskjedeId(BEHANDLINGSID)).thenReturn(new WebSoknad());
         ressurs.opprettSoknad(BEHANDLINGSID, type, mock(HttpServletResponse.class));
-        verify(ettersendingService, never()).startEttersending(eq(BEHANDLINGSID), anyString());
+        verify(soknadService, never()).startEttersending(eq(BEHANDLINGSID), anyString());
     }
 
     @Test(expected = BadRequestException.class)

@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggReposi
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
@@ -30,16 +31,23 @@ import java.util.Map;
 import static java.lang.System.setProperty;
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.detect.Detect.IS_PDF;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.ETTERSENDING_OPPRETTET;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.OPPRETTET;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.SKJEMA_VALIDERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.DAGPENGER;
 import static no.nav.sbl.dialogarena.test.match.Matchers.match;
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class VedleggServiceTest {
@@ -48,7 +56,7 @@ public class VedleggServiceTest {
     @Mock
     private VedleggRepository vedleggRepository;
     @Mock
-    private SendSoknadService soknadService;
+    private SoknadService soknadService;
     @Mock
     private FillagerService fillagerService;
     @Mock

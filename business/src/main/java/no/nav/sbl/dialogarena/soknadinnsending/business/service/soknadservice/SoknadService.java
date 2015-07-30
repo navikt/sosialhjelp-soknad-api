@@ -19,9 +19,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.Al
 import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.EttersendingService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.StartDatoService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
@@ -69,7 +67,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadser
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
-public class SoknadService implements SendSoknadService, EttersendingService {
+public class SoknadService {
 
     private static final Logger logger = getLogger(SoknadService.class);
 
@@ -111,22 +109,22 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         bolker = applicationContext.getBeansOfType(BolkService.class);
     }
 
-    @Override
+
     public void settDelsteg(String behandlingsId, DelstegStatus delstegStatus) {
         lokalDb.settDelstegstatus(behandlingsId, delstegStatus);
     }
 
-    @Override
+
     public void settJournalforendeEnhet(String behandlingsId, String journalforendeEnhet) {
         lokalDb.settJournalforendeEnhet(behandlingsId, journalforendeEnhet);
     }
 
-    @Override
+
     public WebSoknad hentSoknadFraLokalDb(long soknadId) {
         return lokalDb.hentSoknad(soknadId);
     }
 
-    @Override
+
     public WebSoknad hentSoknad(String behandlingsId, boolean medData, boolean medVedlegg) {
         WebSoknad soknadFraLokalDb;
 
@@ -159,7 +157,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         return soknad;
     }
 
-    @Override
+
     public Map<String, String> hentInnsendtDatoOgSisteInnsending(String behandlingsId) {
         Map<String, String> result = new HashMap<>();
         List<WSBehandlingskjedeElement> wsBehandlingskjedeElements = henvendelseService.hentBehandlingskjede(behandlingsId);
@@ -172,13 +170,13 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         return result;
     }
 
-    @Override
+
     public WebSoknad hentEttersendingForBehandlingskjedeId(String behandlingsId) {
         Optional<WebSoknad> soknad = lokalDb.hentEttersendingMedBehandlingskjedeId(behandlingsId);
         return soknad.isSome() ? soknad.get() : null;
     }
 
-    @Override
+
     public String startEttersending(String behandlingsIdSoknad, String fodselsnummer) {
         List<WSBehandlingskjedeElement> behandlingskjede = henvendelseService.hentBehandlingskjede(behandlingsIdSoknad);
 
@@ -235,7 +233,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         return ettersending.getBrukerBehandlingId();
     }
 
-    @Override
+
     @Transactional
     public void avbrytSoknad(String behandlingsId) {
         WebSoknad soknad = lokalDb.hentSoknad(behandlingsId);
@@ -251,17 +249,17 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         lokalDb.slettSoknad(soknad.getSoknadId());
     }
 
-    @Override
+
     public SoknadStruktur hentSoknadStruktur(Long soknadId) {
         return config.hentStruktur(soknadId);
     }
 
-    @Override
+
     public SoknadStruktur hentSoknadStruktur(String skjemanummer) {
         return config.hentStruktur(skjemanummer);
     }
 
-    @Override
+
     @Transactional
     public String startSoknad(String navSoknadId, String fodselsnummer) {
         if (!kravdialogInformasjonHolder.hentAlleSkjemanumre().contains(navSoknadId)) {
@@ -316,7 +314,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         return behandlingsId;
     }
 
-    @Override
+
     @Transactional
     public void sendSoknad(String behandlingsId, byte[] pdf) {
         WebSoknad soknad = hentSoknad(behandlingsId, true, true);
