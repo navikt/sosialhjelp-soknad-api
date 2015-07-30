@@ -81,7 +81,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         handlebars.registerHelper("hvisLik", generateHvisLikHelper());
         handlebars.registerHelper("hvisIkkeTom", generateHvisIkkeTomHelper());
         handlebars.registerHelper("hentTekst", generateHentTekstHelper());
-        handlebars.registerHelper("hentTekstMedParameter", generateHentTekstMedParameterHelper());
         handlebars.registerHelper("hentTekstMedFaktumParameter", generateHentTekstMedFaktumParameterHelper());
         handlebars.registerHelper("hentLand", generateHentLandHelper());
         handlebars.registerHelper("forVedlegg", generateForVedleggHelper());
@@ -243,15 +242,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
             @Override
             public CharSequence apply(String landKode, Options options) throws IOException {
                 return kodeverk.getLand(landKode);
-            }
-        };
-    }
-
-    private Helper<String> generateHentTekstMedParameterHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String key, Options options) throws IOException {
-                return getCmsTekst(key, options.params, NO_LOCALE);
             }
         };
     }
