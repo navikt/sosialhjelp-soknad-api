@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLAlternativRepresentasjon;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLAlternativRepresentasjonListe;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadata;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
@@ -13,7 +15,10 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingS
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.KravdialogInformasjonHolder;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.BolkService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.StartDatoService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
@@ -21,18 +26,26 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
+import org.apache.commons.collections15.Transformer;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Collections.sort;
 import static java.util.UUID.randomUUID;
 import static javax.xml.bind.JAXB.unmarshal;
+import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.LASTET_OPP;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.modig.lang.collections.PredicateUtils.equalTo;
@@ -41,16 +54,24 @@ import static no.nav.modig.lang.collections.PredicateUtils.where;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.AVBRUTT_AV_BRUKER;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.FERDIG;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum.sammenlignEtterDependOn;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.convertToXmlVedleggListe;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.NYESTE_FORST;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.SORTER_INNSENDT_DATO;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.STATUS;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.erIkkeSystemfaktumOgKunEtErTillatt;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.hentOrginalInnsendtDato;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.journalforendeEnhet;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.kvittering;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.skjemanummer;
+import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
 public class SoknadServiceUtil {
+
+    private static final Logger logger = getLogger(SoknadServiceUtil.class);
 
     @Inject
     private HenvendelseService henvendelseService;
@@ -72,10 +93,20 @@ public class SoknadServiceUtil {
     private WebSoknadConfig config;
 
     @Inject
+    public ApplicationContext applicationContext;
+
+    @Inject
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
 
     @Inject
     private StartDatoService startDatoService;
+
+    private Map<String, BolkService> bolker;
+
+    @PostConstruct
+    public void initBolker() {
+        bolker = applicationContext.getBeansOfType(BolkService.class);
+    }
 
     public SoknadStruktur hentSoknadStruktur(Long soknadId) {
         return config.hentStruktur(soknadId);
@@ -156,6 +187,18 @@ public class SoknadServiceUtil {
         return ettersending.getBrukerBehandlingId();
     }
 
+    public Map<String, String> hentInnsendtDatoOgSisteInnsending(String behandlingsId) {
+        Map<String, String> result = new HashMap<>();
+        List<WSBehandlingskjedeElement> wsBehandlingskjedeElements = henvendelseService.hentBehandlingskjede(behandlingsId);
+        List<WSBehandlingskjedeElement> sorterteBehandlinger =
+                on(wsBehandlingskjedeElements).filter(where(STATUS, (equalTo(FERDIG)))).collect(SORTER_INNSENDT_DATO);
+
+        WSBehandlingskjedeElement innsendtSoknad = sorterteBehandlinger.get(0);
+        result.put("innsendtdatoSoknad", String.valueOf(innsendtSoknad.getInnsendtDato().getMillis()));
+        result.put("sistInnsendteBehandlingsId", sorterteBehandlinger.get(sorterteBehandlinger.size() - 1).getBehandlingsId());
+        return result;
+    }
+
     @Transactional
     public String startSoknad(String navSoknadId) {
         if (!kravdialogInformasjonHolder.hentAlleSkjemanumre().contains(navSoknadId)) {
@@ -206,6 +249,82 @@ public class SoknadServiceUtil {
         faktaService.lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum);
 
         return behandlingsId;
+    }
+
+    public WebSoknad hentSoknad(String behandlingsId, boolean medData, boolean medVedlegg) {
+        WebSoknad soknadFraLokalDb;
+
+        if (medVedlegg) {
+            soknadFraLokalDb = lokalDb.hentSoknadMedVedlegg(behandlingsId);
+        } else {
+            soknadFraLokalDb = lokalDb.hentSoknad(behandlingsId);
+        }
+
+        WebSoknad soknad = soknadFraLokalDb != null ? soknadFraLokalDb : hentFraHenvendelse(behandlingsId, false);
+
+        if (medData) {
+            soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknad.getSoknadId()))
+                    .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
+                    .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
+            if (soknad.erEttersending()) {
+                faktaService.lagreSystemFakta(soknad, bolker.get(PersonaliaService.class.getName()).genererSystemFakta(getSubjectHandler().getUid(), soknad.getSoknadId()));
+            } else {
+                List<Faktum> systemfaktum = new ArrayList<>();
+                for (BolkService bolk : config.getSoknadBolker(soknad, bolker.values())) {
+                    systemfaktum.addAll(bolk.genererSystemFakta(getSubjectHandler().getUid(), soknad.getSoknadId()));
+                }
+                faktaService.lagreSystemFakta(soknad, systemfaktum);
+            }
+        }
+        return soknad;
+    }
+
+    public void sendSoknad(String behandlingsId, byte[] pdf) {
+        WebSoknad soknad = hentSoknad(behandlingsId, true, true);
+        if (soknad.erEttersending() && soknad.getOpplastedeVedlegg().size() <= 0) {
+            logger.error("Kan ikke sende inn ettersendingen med ID {0} uten å ha lastet opp vedlegg", soknad.getBrukerBehandlingId());
+            throw new ApplicationException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg");
+        }
+
+        if (soknad.harAnnetVedleggSomIkkeErLastetOpp()) {
+            logger.error("Kan ikke sende inn behandling (ID: {0}) med Annet vedlegg (skjemanummer N6) som ikke er lastet opp", soknad.getBrukerBehandlingId());
+            throw new ApplicationException("Kan ikke sende inn behandling uten å ha lastet opp alle  vedlegg med skjemanummer N6");
+        }
+
+        logger.info("Lagrer søknad som fil til henvendelse for behandling {}", soknad.getBrukerBehandlingId());
+        fillagerService.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(pdf));
+
+        XMLHovedskjema hovedskjema = new XMLHovedskjema()
+                .withInnsendingsvalg(LASTET_OPP.toString())
+                .withSkjemanummer(skjemanummer(soknad))
+                .withFilnavn(skjemanummer(soknad))
+                .withMimetype("application/pdf")
+                .withFilstorrelse("" + pdf.length)
+                .withUuid(soknad.getUuid())
+                .withJournalforendeEnhet(journalforendeEnhet(soknad));
+
+        List<Transformer<WebSoknad, AlternativRepresentasjon>> transformers = kravdialogInformasjonHolder.hentKonfigurasjon(soknad.getskjemaNummer()).getTransformers();
+        XMLAlternativRepresentasjonListe xmlAlternativRepresentasjonListe = new XMLAlternativRepresentasjonListe();
+
+        List<XMLAlternativRepresentasjon> alternativRepresentasjonListe = xmlAlternativRepresentasjonListe.getAlternativRepresentasjon();
+
+        for (Transformer<WebSoknad, AlternativRepresentasjon> transformer : transformers) {
+            AlternativRepresentasjon altrep = transformer.transform(soknad);
+            fillagerService.lagreFil(soknad.getBrukerBehandlingId(),
+                    altrep.getUuid(),
+                    soknad.getAktoerId(),
+                    new ByteArrayInputStream(altrep.getContent()));
+
+            alternativRepresentasjonListe.add(new XMLAlternativRepresentasjon()
+                    .withFilnavn(altrep.getFilnavn())
+                    .withFilstorrelse(altrep.getContent().length + "")
+                    .withMimetype(altrep.getMimetype())
+                    .withUuid(altrep.getUuid()));
+        }
+        hovedskjema.withAlternativRepresentasjonListe(xmlAlternativRepresentasjonListe);
+
+        henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, convertToXmlVedleggListe(vedleggService.hentVedleggOgKvittering(soknad)));
+        lokalDb.slettSoknad(soknad.getSoknadId());
     }
 
 }
