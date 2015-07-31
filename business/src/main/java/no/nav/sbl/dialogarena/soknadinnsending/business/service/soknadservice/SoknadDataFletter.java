@@ -260,9 +260,15 @@ public class SoknadDataFletter {
             soknadFraLokalDb = lokalDb.hentSoknad(behandlingsId);
         }
 
-        WebSoknad soknad = soknadFraLokalDb != null ? soknadFraLokalDb : hentFraHenvendelse(behandlingsId, false);
+        WebSoknad soknad;
+        if(medData) {
+            soknad = soknadFraLokalDb != null ? lokalDb.hentSoknadMedData(soknadFraLokalDb.getSoknadId()) : hentFraHenvendelse(behandlingsId, true);
+        } else {
+            soknad = soknadFraLokalDb != null ? soknadFraLokalDb : hentFraHenvendelse(behandlingsId, false);
+        }
 
         if (medData) {
+            soknad = lokalDb.hentSoknadMedData(soknad.getSoknadId());
             soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknad.getSoknadId()))
                     .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
                     .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
