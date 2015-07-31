@@ -2,18 +2,13 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.core.context.StaticSubjectHandler;
-import no.nav.modig.core.exception.ApplicationException;
 import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.DefaultArbeidsforholdService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
@@ -26,9 +21,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.So
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
-import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStatus;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,42 +29,24 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
 import org.springframework.context.ApplicationContext;
 
-import javax.activation.DataHandler;
-import javax.xml.bind.JAXB;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static java.lang.System.setProperty;
-import static java.util.Arrays.asList;
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.ETTERSENDING_OPPRETTET;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.OPPRETTET;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.DAGPENGER;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.RUTES_I_BRUT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.refEq;
-import static org.mockito.Mockito.anyListOf;
-import static org.mockito.Mockito.atMost;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -119,7 +93,6 @@ public class SoknadServiceTest {
     @Mock
     SoknadServiceUtil soknadServiceUtil;
 
-
     @Captor
     ArgumentCaptor<XMLHovedskjema> argument;
 
@@ -140,161 +113,11 @@ public class SoknadServiceTest {
         bolker.put(DefaultArbeidsforholdService.class.getName(), arbeidsforholdService);
         when(applicationContex.getBeansOfType(BolkService.class)).thenReturn(bolker);
 
-        soknadService.initBolker();
         setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         when(soknadRepository.hentSoknadType(anyLong())).thenReturn(DAGPENGER);
         when(config.getSoknadBolker(any(WebSoknad.class), any(List.class))).thenReturn(new ArrayList());
         when(config.hentStruktur(any(Long.class))).thenReturn(new SoknadStruktur());
         when(kravdialogInformasjonHolder.hentAlleSkjemanumre()).thenReturn(new KravdialogInformasjonHolder().hentAlleSkjemanumre());
-
-    }
-
-    @Test
-    public void skalPopulereFraHenvendelseNaarSoknadIkkeFinnes() throws IOException {
-        Vedlegg vedlegg = new Vedlegg().medVedleggId(4L).medFillagerReferanse("uidVedlegg");
-        Vedlegg vedleggCheck = new Vedlegg().medVedleggId(4L).medFillagerReferanse("uidVedlegg").medData(new byte[]{1, 2, 3});
-        WebSoknad soknad = new WebSoknad().medBehandlingId("123").medskjemaNummer(SKJEMA_NUMMER).medId(11L)
-                .medVedlegg(asList(vedlegg)).medStatus(UNDER_ARBEID);
-        WebSoknad soknadCheck = new WebSoknad().medBehandlingId("123").medskjemaNummer(SKJEMA_NUMMER).medId(11L)
-                .medVedlegg(asList(vedleggCheck));
-
-        when(henvendelsesConnector.hentSoknad("123")).thenReturn(
-                new WSHentSoknadResponse()
-                        .withBehandlingsId("123")
-                        .withStatus(WSStatus.UNDER_ARBEID.toString())
-                        .withAny(new XMLMetadataListe()
-                                .withMetadata(
-                                        new XMLHovedskjema().withUuid("uidHovedskjema"),
-                                        new XMLVedlegg().withUuid("uidVedlegg")))
-        );
-        when(soknadServiceUtil.hentFraHenvendelse("123", false)).thenReturn(soknad);
-        when(soknadRepository.hentSoknad("123")).thenReturn(null, soknad, soknad);
-        when(soknadRepository.hentSoknadMedVedlegg("123")).thenReturn(soknad, soknad);
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        JAXB.marshal(soknad, baos);
-        DataHandler handler = mock(DataHandler.class);
-        when(fillagerService.hentFil("uidHovedskjema"))
-                .thenReturn(baos.toByteArray());
-        when(fillagerService.hentFiler("123"))
-                .thenReturn(asList(
-                        new WSInnhold().withUuid("uidVedlegg").withInnhold(handler)
-                ));
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                OutputStream os = (OutputStream) invocation.getArguments()[0];
-                os.write(new byte[]{1, 2, 3});
-                return null;
-            }
-        }).when(handler).writeTo(any(OutputStream.class));
-        WebSoknad webSoknad = soknadService.hentSoknad("123", true, false);
-        soknadService.hentSoknad("123", true, false);
-        verify(soknadRepository, atMost(1)).populerFraStruktur(eq(soknadCheck));
-        assertThat(webSoknad.getSoknadId()).isEqualTo(11L);
-    }
-
-    @Test
-    public void skalSendeSoknad() {
-        List<Vedlegg> vedlegg = asList(
-                new Vedlegg()
-                        .medSkjemaNummer("N6")
-                        .medFillagerReferanse("uidVedlegg1")
-                        .medInnsendingsvalg(Vedlegg.Status.LastetOpp)
-                        .medStorrelse(2L)
-                        .medNavn("Test Annet vedlegg")
-                        .medAntallSider(3),
-                new Vedlegg()
-                        .medSkjemaNummer("L8")
-                        .medInnsendingsvalg(Vedlegg.Status.SendesIkke));
-
-        String behandlingsId = "123";
-        WebSoknad webSoknad = new WebSoknad().medId(1L)
-                .medAktorId("123456")
-                .medBehandlingId(behandlingsId)
-                .medUuid("uidHovedskjema")
-                .medskjemaNummer(DAGPENGER)
-                .medFaktum(new Faktum().medKey("personalia"))
-                .medVedlegg(vedlegg);
-        when(soknadRepository.hentSoknadMedVedlegg(behandlingsId)).thenReturn(
-                webSoknad);
-
-        when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(vedlegg);
-
-        when(vedleggRepository.hentVedleggForskjemaNummer(1L, null, Kodeverk.KVITTERING))
-                .thenReturn(KVITTERING_REF
-                );
-        when(vedleggService.hentVedleggOgKvittering(webSoknad)).thenReturn(mockHentVedleggForventninger(webSoknad));
-
-        when(kravdialogInformasjonHolder.hentKonfigurasjon(SKJEMA_NUMMER)).thenReturn(new KravdialogInformasjonHolder().hentKonfigurasjon("NAV 04-01.03"));
-        soknadService.sendSoknad(behandlingsId, new byte[]{1, 2, 3});
-
-        verify(henvendelsesConnector).avsluttSoknad(eq(behandlingsId), argument.capture(),
-                refEq(
-                        new XMLVedlegg()
-                                .withUuid("uidVedlegg1")
-                                .withInnsendingsvalg(XMLInnsendingsvalg.LASTET_OPP.toString())
-                                .withFilnavn("Test Annet vedlegg")
-                                .withTilleggsinfo("Test Annet vedlegg")
-                                .withFilstorrelse("2")
-                                .withSideantall(3)
-                                .withMimetype("application/pdf")
-                                .withSkjemanummer("N6")),
-                refEq(
-                        new XMLVedlegg()
-                                .withInnsendingsvalg(XMLInnsendingsvalg.SENDES_IKKE.toString())
-                                .withTilleggsinfo("")
-                                .withSkjemanummer("L8")
-                                .withFilnavn("L8")),
-                refEq(
-                        new XMLVedlegg()
-                                .withUuid("kvitteringRef")
-                                .withInnsendingsvalg(XMLInnsendingsvalg.LASTET_OPP.toString())
-                                .withFilnavn(Kodeverk.KVITTERING)
-                                .withTilleggsinfo("")
-                                .withFilstorrelse("3")
-                                .withSideantall(1)
-                                .withMimetype("application/pdf")
-                                .withSkjemanummer(Kodeverk.KVITTERING))
-        );
-
-        XMLHovedskjema xmlHovedskjema = argument.getValue();
-        assertThat(xmlHovedskjema.getJournalforendeEnhet()).isEqualTo(RUTES_I_BRUT);
-        assertThat(xmlHovedskjema.getUuid()).isEqualTo("uidHovedskjema");
-        assertThat(xmlHovedskjema.getInnsendingsvalg()).isEqualTo(XMLInnsendingsvalg.LASTET_OPP.toString());
-        assertThat(xmlHovedskjema.getFilnavn()).isEqualTo(DAGPENGER);
-        assertThat(xmlHovedskjema.getFilstorrelse()).isEqualTo("3");
-        assertThat(xmlHovedskjema.getMimetype()).isEqualTo("application/pdf");
-        assertThat(xmlHovedskjema.getSkjemanummer()).isEqualTo(DAGPENGER);
-    }
-
-    @Test(expected = ApplicationException.class)
-    public void skalIkkeSendeSoknadMedN6VedleggSomIkkeErSendtInn() {
-        String behandlingsId = "10000000ABC";
-        List<Vedlegg> vedlegg = asList(
-                new Vedlegg()
-                        .medSkjemaNummer("N6")
-                        .medFillagerReferanse("uidVedlegg1")
-                        .medInnsendingsvalg(Vedlegg.Status.VedleggKreves)
-                        .medStorrelse(0L)
-                        .medNavn("Test Annet vedlegg")
-                        .medAntallSider(3),
-                new Vedlegg()
-                        .medSkjemaNummer("L7")
-                        .medInnsendingsvalg(Vedlegg.Status.SendesIkke));
-
-        when(soknadRepository.hentSoknadMedVedlegg(behandlingsId)).thenReturn(
-                new WebSoknad().medAktorId("123456")
-                        .medBehandlingId(behandlingsId)
-                        .medUuid("uidHovedskjema")
-                        .medskjemaNummer(DAGPENGER)
-                        .medFaktum(new Faktum().medKey("personalia"))
-                        .medVedlegg(vedlegg)
-                        .medId(1L));
-
-        when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(vedlegg);
-
-        soknadService.sendSoknad(behandlingsId, new byte[]{1, 2, 3});
     }
 
     @Test
@@ -314,37 +137,6 @@ public class SoknadServiceTest {
         when(soknadRepository.hentSoknad(1L)).thenReturn(new WebSoknad().medId(1L).medskjemaNummer("NAV 04-01.03"));
         when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(new ArrayList<Vedlegg>());
         assertThat(soknadService.hentSoknadFraLokalDb(1L)).isEqualTo(new WebSoknad().medId(1L).medskjemaNummer("NAV 04-01.03"));
-    }
-
-    @Test
-    public void skalLagreSystemfakumSomDefinertForSoknadVedHenting() {
-        WebSoknad soknad = new WebSoknad()
-                .medBehandlingId("123")
-                .medskjemaNummer(DAGPENGER)
-                .medId(1L);
-        when(soknadRepository.hentSoknad("123")).thenReturn(
-                soknad);
-        when(config.getSoknadBolker(any(WebSoknad.class), anyListOf(BolkService.class))).thenReturn(asList(personaliaService, barnService));
-        when(soknadRepository.hentSoknadMedVedlegg(anyString())).thenReturn(soknad);
-        soknadService.hentSoknad("123", true, true);
-        verify(personaliaService, times(1)).genererSystemFakta(anyString(), anyLong());
-        verify(barnService, times(1)).genererSystemFakta(anyString(), anyLong());
-        verify(arbeidsforholdService, never()).genererSystemFakta(anyString(), anyLong());
-    }
-
-    @Test
-    public void skalKunLagreSystemfakumPersonaliaForEttersendingerVedHenting() {
-        WebSoknad soknad = new WebSoknad().medBehandlingId("123")
-                .medskjemaNummer(DAGPENGER)
-                .medDelstegStatus(ETTERSENDING_OPPRETTET)
-                .medId(1L);
-        when(soknadRepository.hentSoknad("123")).thenReturn(
-                soknad);
-        when(config.getSoknadBolker(any(WebSoknad.class), anyListOf(BolkService.class))).thenReturn(asList(personaliaService, barnService));
-        when(soknadRepository.hentSoknadMedVedlegg(anyString())).thenReturn(soknad);
-        soknadService.hentSoknad("123", true, true);
-        verify(personaliaService, times(1)).genererSystemFakta(anyString(), anyLong());
-        verify(barnService, never()).genererSystemFakta(anyString(), anyLong());
     }
 
     @Test
