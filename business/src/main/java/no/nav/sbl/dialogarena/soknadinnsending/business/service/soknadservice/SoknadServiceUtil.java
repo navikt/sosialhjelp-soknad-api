@@ -19,7 +19,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.StartDatoService
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
-import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
 import org.joda.time.DateTime;
@@ -75,10 +74,8 @@ public class SoknadServiceUtil {
     @Inject
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
 
-
     @Inject
     private StartDatoService startDatoService;
-
 
     public SoknadStruktur hentSoknadStruktur(Long soknadId) {
         return config.hentStruktur(soknadId);
@@ -93,18 +90,19 @@ public class SoknadServiceUtil {
 
         SoknadInnsendingStatus status = SoknadInnsendingStatus.valueOf(wsSoknadsdata.getStatus());
         if (status.equals(UNDER_ARBEID)) {
-            WebSoknad soknadFraFillager = unmarshal(new ByteArrayInputStream(this.fillagerService.hentFil(hovedskjema.getUuid())), WebSoknad.class);
+            WebSoknad soknadFraFillager = unmarshal(new ByteArrayInputStream(fillagerService.hentFil(hovedskjema.getUuid())), WebSoknad.class);
             lokalDb.populerFraStruktur(soknadFraFillager);
-            List<WSInnhold> innhold = fillagerService.hentFiler(soknadFraFillager.getBrukerBehandlingId());
-            vedleggService.populerVedleggMedDataFraHenvendelse(soknadFraFillager, innhold);
+            vedleggService.populerVedleggMedDataFraHenvendelse(soknadFraFillager, fillagerService.hentFiler(soknadFraFillager.getBrukerBehandlingId()));
             if (hentFaktumOgVedlegg) {
                 return lokalDb.hentSoknadMedVedlegg(behandlingsId);
-            } else {
-                return lokalDb.hentSoknad(behandlingsId);
             }
+            return lokalDb.hentSoknad(behandlingsId);
         } else {
             // søkndadsdata er slettet i henvendelse, har kun metadata
-            return new WebSoknad().medBehandlingId(behandlingsId).medStatus(status).medskjemaNummer(hovedskjema.getSkjemanummer());
+            return new WebSoknad()
+                    .medBehandlingId(behandlingsId)
+                    .medStatus(status)
+                    .medskjemaNummer(hovedskjema.getSkjemanummer());
         }
     }
 
@@ -119,48 +117,42 @@ public class SoknadServiceUtil {
         if (wsSoknadsdata.getInnsendtDato() == null) {
             throw new ApplicationException("Kan ikke starte ettersending på en ikke fullfort soknad");
         }
-        DateTime innsendtDato = hentOrginalInnsendtDato(behandlingskjede, behandlingsIdSoknad);
         String ettersendingsBehandlingId = henvendelseService.startEttersending(wsSoknadsdata);
-        WSHentSoknadResponse wsEttersending = henvendelseService.hentSoknad(ettersendingsBehandlingId);
 
-        String behandlingskjedeId;
+        String behandlingskjedeId = wsSoknadsdata.getBehandlingsId();
         if (wsSoknadsdata.getBehandlingskjedeId() != null) {
             behandlingskjedeId = wsSoknadsdata.getBehandlingskjedeId();
-        } else {
-            behandlingskjedeId = wsSoknadsdata.getBehandlingsId();
         }
 
-        WebSoknad soknad = WebSoknad.startEttersending(ettersendingsBehandlingId);
-        String mainUid = randomUUID().toString();
-        List<XMLMetadata> xmlVedleggListe = ((XMLMetadataListe) wsEttersending.getAny()).getMetadata();
+        WebSoknad ettersending = WebSoknad.startEttersending(ettersendingsBehandlingId);
+        List<XMLMetadata> xmlVedleggListe = ((XMLMetadataListe) henvendelseService.hentSoknad(ettersendingsBehandlingId).getAny()).getMetadata();
         List<XMLMetadata> filtrertXmlVedleggListe = on(xmlVedleggListe).filter(not(kvittering())).collect();
 
-        Optional<XMLMetadata> hovedskjema = on(filtrertXmlVedleggListe).filter(new InstanceOf<XMLMetadata>(XMLHovedskjema.class)).head();
+        Optional<XMLMetadata> hovedskjema = on(filtrertXmlVedleggListe)
+                .filter(new InstanceOf<XMLMetadata>(XMLHovedskjema.class)).head();
         if (!hovedskjema.isSome()) {
             throw new ApplicationException("Kunne ikke hente opp hovedskjema for søknad");
         }
         XMLHovedskjema xmlHovedskjema = (XMLHovedskjema) hovedskjema.get();
 
-        soknad.medUuid(mainUid)
+        ettersending.medUuid(randomUUID().toString())
                 .medAktorId(getSubjectHandler().getUid())
                 .medskjemaNummer(xmlHovedskjema.getSkjemanummer())
                 .medBehandlingskjedeId(behandlingskjedeId)
                 .medJournalforendeEnhet(xmlHovedskjema.getJournalforendeEnhet());
 
-        Long soknadId = lokalDb.opprettSoknad(soknad);
-        soknad.setSoknadId(soknadId);
+        Long soknadId = lokalDb.opprettSoknad(ettersending);
+        ettersending.setSoknadId(soknadId);
 
         Faktum soknadInnsendingsDato = new Faktum()
                 .medSoknadId(soknadId)
                 .medKey("soknadInnsendingsDato")
-                .medValue(String.valueOf(innsendtDato.getMillis()))
+                .medValue(String.valueOf(hentOrginalInnsendtDato(behandlingskjede, behandlingsIdSoknad).getMillis()))
                 .medType(SYSTEMREGISTRERT);
         faktaService.lagreSystemFaktum(soknadId, soknadInnsendingsDato);
-        soknad.setFakta(lokalDb.hentAlleBrukerData(soknadId));
+        ettersending.setFakta(lokalDb.hentAlleBrukerData(soknadId));
+        ettersending.setVedlegg(vedleggService.hentVedleggOgPersister(new XMLMetadataListe(filtrertXmlVedleggListe), soknadId));
 
-        soknad.setVedlegg(vedleggService.hentVedleggOgPersister(new XMLMetadataListe(filtrertXmlVedleggListe), soknadId));
-
-        WebSoknad ettersending = soknad;
         return ettersending.getBrukerBehandlingId();
     }
 
@@ -172,17 +164,16 @@ public class SoknadServiceUtil {
         String mainUid = randomUUID().toString();
         String behandlingsId = henvendelseService.startSoknad(getSubjectHandler().getUid(), navSoknadId, mainUid);
 
-        WebSoknad soknad = WebSoknad.startSoknad()
+        WebSoknad nySoknad = WebSoknad.startSoknad()
                 .medBehandlingId(behandlingsId)
                 .medskjemaNummer(navSoknadId)
                 .medUuid(mainUid)
                 .medAktorId(getSubjectHandler().getUid())
                 .medOppretteDato(DateTime.now());
 
-        Long soknadId = lokalDb.opprettSoknad(soknad);
-        soknad.setSoknadId(soknadId);
-        Faktum bolkerFaktum = new Faktum().medSoknadId(soknadId).medKey("bolker").medType(BRUKERREGISTRERT);
-        lokalDb.lagreFaktum(soknadId, bolkerFaktum);
+        Long soknadId = lokalDb.opprettSoknad(nySoknad);
+        nySoknad.setSoknadId(soknadId);
+        lokalDb.lagreFaktum(soknadId, new Faktum().medSoknadId(soknadId).medKey("bolker").medType(BRUKERREGISTRERT));
 
         Faktum personalia = new Faktum()
                 .medSoknadId(soknadId)
@@ -190,8 +181,7 @@ public class SoknadServiceUtil {
                 .medKey("personalia");
         faktaService.lagreSystemFaktum(soknadId, personalia);
 
-        SoknadStruktur soknadStruktur = hentSoknadStruktur(soknadId);
-        List<SoknadFaktum> fakta = soknadStruktur.getFakta();
+        List<SoknadFaktum> fakta = hentSoknadStruktur(soknadId).getFakta();
         sort(fakta, sammenlignEtterDependOn());
 
         for (SoknadFaktum soknadFaktum : fakta) {
