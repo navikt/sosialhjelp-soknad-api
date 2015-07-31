@@ -90,7 +90,7 @@ public class VedleggsGrunnlag {
     public void oppdaterInnsendingsvalg(VedleggRepository vedleggRepository) {
         Boolean kreverDbOppdatering = oppdaterInnsendingsvalg(erVedleggPaakrevd());
         if (kreverDbOppdatering) {
-            vedleggRepository.opprettEllerLagreVedleggUtenEndingAvData(vedlegg);
+            vedleggRepository.opprettEllerLagreVedleggVedNyGenereringUtenEndringAvData(vedlegg);
         }
     }
 }

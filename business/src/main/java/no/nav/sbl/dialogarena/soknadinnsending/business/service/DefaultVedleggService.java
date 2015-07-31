@@ -249,10 +249,6 @@ public class DefaultVedleggService implements VedleggService {
 
         // I TEST/UTV/QA??
 
-        for (Vedlegg vedlegg : paakrevdeVedlegg) {
-            vedleggRepository.slettVedleggMedVedleggId(vedlegg.getVedleggId());
-        }
-
         List<Vedlegg> paakrevdeVedleggVedNyUthenting = hentPaakrevdeVedleggMedGenerering(behandlingsId);
         leggTilKodeverkFelter(paakrevdeVedleggVedNyUthenting);
         if (VedleggsgenereringUtil.likeVedlegg(paakrevdeVedlegg, paakrevdeVedleggVedNyUthenting)) {
