@@ -69,9 +69,9 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadser
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
-public class SoknadServiceUtil {
+public class SoknadDataFletter {
 
-    private static final Logger logger = getLogger(SoknadServiceUtil.class);
+    private static final Logger logger = getLogger(SoknadDataFletter.class);
 
     @Inject
     private HenvendelseService henvendelseService;

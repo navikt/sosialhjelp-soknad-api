@@ -79,7 +79,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class SoknadServiceUtilTest {
+public class SoknadDataFletterTest {
 
     public static final String SKJEMA_NUMMER = "NAV 04-01.03";
     private static final Vedlegg KVITTERING_REF = new Vedlegg()
@@ -120,7 +120,7 @@ public class SoknadServiceUtilTest {
     ArgumentCaptor<XMLHovedskjema> argument;
 
     @InjectMocks
-    private SoknadServiceUtil soknadServiceUtil;
+    private SoknadDataFletter soknadServiceUtil;
 
     @SuppressWarnings("unchecked")
     @Before

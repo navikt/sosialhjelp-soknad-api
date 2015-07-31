@@ -32,7 +32,7 @@ public class SoknadService {
     private WebSoknadConfig config;
 
     @Inject
-    private SoknadServiceUtil soknadServiceUtil;
+    private SoknadDataFletter soknadServiceUtil;
 
     public void settDelsteg(String behandlingsId, DelstegStatus delstegStatus) {
         lokalDb.settDelstegstatus(behandlingsId, delstegStatus);
