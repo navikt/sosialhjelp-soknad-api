@@ -18,7 +18,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadServiceUtil;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import org.apache.commons.io.IOUtils;
@@ -91,7 +91,7 @@ public class SoknadServiceTest {
     @Mock
     ApplicationContext applicationContex;
     @Mock
-    SoknadServiceUtil soknadServiceUtil;
+    SoknadDataFletter soknadServiceUtil;
 
     @Captor
     ArgumentCaptor<XMLHovedskjema> argument;
