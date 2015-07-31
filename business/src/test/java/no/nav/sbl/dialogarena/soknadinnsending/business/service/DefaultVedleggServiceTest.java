@@ -232,7 +232,7 @@ public class DefaultVedleggServiceTest {
         assertThat(vedlegg).hasSize(1);
         assertThat(vedlegg).contains(vedleggForFaktum);
         assertThat(vedleggForFaktum.getInnsendingsvalg()).isEqualTo(Vedlegg.Status.VedleggKreves);
-        verify(vedleggRepository).opprettEllerLagreVedleggUtenEndingAvData(eq(vedleggForFaktum));
+        verify(vedleggRepository).opprettEllerLagreVedleggVedNyGenereringUtenEndringAvData(eq(vedleggForFaktum));
     }
 
     @Test
@@ -246,7 +246,7 @@ public class DefaultVedleggServiceTest {
         List<Vedlegg> vedlegg = vedleggService.hentPaakrevdeVedleggMedGenerering("123");
         assertThat(vedlegg).hasSize(0);
         assertThat(vedleggForFaktum.getInnsendingsvalg()).isEqualTo(Vedlegg.Status.IkkeVedlegg);
-        verify(vedleggRepository).opprettEllerLagreVedleggUtenEndingAvData(eq(vedleggForFaktum));
+        verify(vedleggRepository).opprettEllerLagreVedleggVedNyGenereringUtenEndringAvData(eq(vedleggForFaktum));
     }
 
 
