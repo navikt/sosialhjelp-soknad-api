@@ -32,7 +32,6 @@ import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadR
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStatus;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -65,15 +64,21 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Fak
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.DAGPENGER;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.RUTES_I_BRUT;
-import static org.junit.Assert.assertNotNull;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.refEq;
 import static org.mockito.Mockito.anyListOf;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.atMost;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SoknadServiceTest {
@@ -316,56 +321,6 @@ public class SoknadServiceTest {
     }
 
     @Test
-    public void skalStarteSoknad() {
-        final long soknadId = 69L;
-        DateTimeUtils.setCurrentMillisFixed(System.currentTimeMillis());
-        when(henvendelsesConnector.startSoknad(anyString(), anyString(), anyString())).thenReturn("123");
-        when(soknadRepository.hentFaktumMedKey(anyLong(), anyString())).thenReturn(new Faktum().medFaktumId(1L));
-        when(soknadRepository.hentFaktum(anyLong())).thenReturn(new Faktum().medFaktumId(1L));
-        when(soknadRepository.opprettSoknad(any(WebSoknad.class))).thenReturn(soknadId);
-        when(soknadRepository.hentSoknadMedData(soknadId)).thenReturn(new WebSoknad().medId(soknadId));
-        soknadService.startSoknad(DAGPENGER, "01019012345");
-
-        ArgumentCaptor<String> uid = ArgumentCaptor.forClass(String.class);
-        String bruker = StaticSubjectHandler.getSubjectHandler().getUid();
-        verify(henvendelsesConnector).startSoknad(eq(bruker), eq(DAGPENGER), uid.capture());
-        WebSoknad soknad = new WebSoknad()
-                .medId(soknadId)
-                .medBehandlingId("123")
-                .medUuid(uid.getValue())
-                .medskjemaNummer(DAGPENGER)
-                .medAktorId(bruker)
-                .medOppretteDato(new DateTime())
-                .medStatus(UNDER_ARBEID)
-                .medDelstegStatus(OPPRETTET);
-        verify(soknadRepository).opprettSoknad(soknad);
-        verify(soknadRepository, atLeastOnce()).lagreFaktum(anyLong(), any(Faktum.class));
-        DateTimeUtils.setCurrentMillisSystem();
-    }
-
-    @Test
-    public void skalLagreFaktumForLonnsOgTrekkoppgaveMedValueFalseDersomSoknadStartesIJanuarEllerFebruar() {
-        Long soknadId = 0L;
-        Faktum lonnsOgTrekkoppgaveFaktum = new Faktum()
-                .medSoknadId(soknadId)
-                .medKey("lonnsOgTrekkOppgave")
-                .medType(SYSTEMREGISTRERT)
-                .medValue("false");
-
-        DateTimeUtils.setCurrentMillisFixed(System.currentTimeMillis());
-        when(henvendelsesConnector.startSoknad(anyString(), anyString(), anyString())).thenReturn("123");
-        when(soknadRepository.hentFaktumMedKey(anyLong(), anyString())).thenReturn(new Faktum().medFaktumId(1L));
-        when(soknadRepository.hentFaktum(anyLong())).thenReturn(new Faktum().medFaktumId(1L));
-        when(startDatoService.erJanuarEllerFebruar()).thenReturn(false);
-        when(soknadRepository.opprettSoknad(any(WebSoknad.class))).thenReturn(soknadId);
-        when(soknadRepository.hentSoknadMedData(soknadId)).thenReturn(new WebSoknad().medId(soknadId));
-        soknadService.startSoknad(DAGPENGER, "01019012345");
-
-        verify(faktaService, times(1)).lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum);
-        DateTimeUtils.setCurrentMillisSystem();
-    }
-
-    @Test
     public void skalLagreSystemfakumSomDefinertForSoknadVedHenting() {
         WebSoknad soknad = new WebSoknad()
                 .medBehandlingId("123")
@@ -394,94 +349,6 @@ public class SoknadServiceTest {
         soknadService.hentSoknad("123", true, true);
         verify(personaliaService, times(1)).genererSystemFakta(anyString(), anyLong());
         verify(barnService, never()).genererSystemFakta(anyString(), anyLong());
-    }
-
-    @Test
-    public void skalLagreFaktumForLonnsOgTrekkoppgaveMedValueTrueDersomSoknadStartesIJanuarEllerFebruar() {
-        Long soknadId = 0L;
-        Faktum lonnsOgTrekkoppgaveFaktum = new Faktum()
-                .medSoknadId(soknadId)
-                .medKey("lonnsOgTrekkOppgave")
-                .medType(SYSTEMREGISTRERT)
-                .medValue("true");
-
-        DateTimeUtils.setCurrentMillisFixed(System.currentTimeMillis());
-        when(henvendelsesConnector.startSoknad(anyString(), anyString(), anyString())).thenReturn("123");
-        when(soknadRepository.hentFaktumMedKey(anyLong(), anyString())).thenReturn(new Faktum().medFaktumId(1L));
-        when(soknadRepository.hentFaktum(anyLong())).thenReturn(new Faktum().medFaktumId(1L));
-        when(startDatoService.erJanuarEllerFebruar()).thenReturn(true);
-        when(soknadRepository.opprettSoknad(any(WebSoknad.class))).thenReturn(soknadId);
-        when(soknadRepository.hentSoknadMedData(soknadId)).thenReturn(new WebSoknad().medId(soknadId));
-        soknadService.startSoknad(DAGPENGER, "01019012345");
-
-        verify(faktaService, times(1)).lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum);
-        DateTimeUtils.setCurrentMillisSystem();
-    }
-
-    @Test
-    public void skalStarteForsteEttersending() {
-        String behandlingsId = "soknadBehandlingId";
-        String ettersendingsBehandlingId = "ettersendingBehandlingId";
-
-        DateTime innsendingsDato = DateTime.now();
-
-        WSBehandlingskjedeElement behandlingsKjedeElement = new WSBehandlingskjedeElement()
-                .withBehandlingsId(behandlingsId)
-                .withInnsendtDato(innsendingsDato)
-                .withStatus(WSStatus.FERDIG.toString());
-
-        WSHentSoknadResponse orginalInnsending = new WSHentSoknadResponse()
-                .withBehandlingsId(behandlingsId)
-                .withStatus(WSStatus.FERDIG.toString())
-                .withInnsendtDato(innsendingsDato)
-                .withAny(new XMLMetadataListe()
-                        .withMetadata(
-                                new XMLHovedskjema().withUuid("uidHovedskjema"),
-                                new XMLVedlegg().withSkjemanummer("MittSkjemaNummer")));
-
-        WSHentSoknadResponse ettersendingResponse = new WSHentSoknadResponse()
-                .withBehandlingsId(ettersendingsBehandlingId)
-                .withStatus(WSStatus.UNDER_ARBEID.toString())
-                .withAny(new XMLMetadataListe()
-                        .withMetadata(
-                                new XMLHovedskjema().withUuid("uidHovedskjema"),
-                                new XMLVedlegg().withSkjemanummer("MittSkjemaNummer").withInnsendingsvalg(Vedlegg.Status.SendesSenere.name())));
-
-        when(henvendelsesConnector.hentSoknad(ettersendingsBehandlingId)).thenReturn(ettersendingResponse);
-        when(henvendelsesConnector.hentSoknad(behandlingsId)).thenReturn(orginalInnsending);
-        when(henvendelsesConnector.hentBehandlingskjede(behandlingsId)).thenReturn(asList(behandlingsKjedeElement));
-        when(henvendelsesConnector.startEttersending(orginalInnsending)).thenReturn(ettersendingsBehandlingId);
-
-        Long soknadId = 11L;
-        Faktum soknadInnsendingsDatoFaktum = new Faktum()
-                .medSoknadId(soknadId)
-                .medKey("soknadInnsendingsDato")
-                .medValue(String.valueOf(innsendingsDato.getMillis()))
-                .medType(SYSTEMREGISTRERT);
-        when(soknadRepository.hentFaktum(anyLong())).thenReturn(soknadInnsendingsDatoFaktum);
-        when(soknadRepository.opprettSoknad(any(WebSoknad.class))).thenReturn(soknadId);
-        when(soknadRepository.hentSoknadMedData(soknadId)).thenReturn(new WebSoknad().medId(soknadId));
-
-        String ettersendingBehandlingsId = soknadService.startEttersending(behandlingsId, "01019012345");
-        verify(faktaService).lagreSystemFaktum(anyLong(), any(Faktum.class));
-        assertNotNull(ettersendingBehandlingsId);
-    }
-
-    @Test(expected = ApplicationException.class)
-    public void skalIkkeKunneStarteEttersendingPaaUferdigSoknad() {
-        String behandlingsId = "UferdigSoknadBehandlingId";
-
-        WSBehandlingskjedeElement behandlingskjedeElement = new WSBehandlingskjedeElement()
-                .withBehandlingsId(behandlingsId)
-                .withStatus(WSStatus.UNDER_ARBEID.toString());
-
-        WSHentSoknadResponse orginalInnsending = new WSHentSoknadResponse()
-                .withBehandlingsId(behandlingsId)
-                .withStatus(WSStatus.UNDER_ARBEID.toString());
-        when(henvendelsesConnector.hentBehandlingskjede(behandlingsId)).thenReturn(asList(behandlingskjedeElement));
-        when(henvendelsesConnector.hentSoknad(behandlingsId)).thenReturn(orginalInnsending);
-
-        soknadService.startEttersending(behandlingsId, "01019012345");
     }
 
     @Test

@@ -170,8 +170,8 @@ public class SoknadService {
     }
 
     @Transactional
-    public String startSoknad(String navSoknadId, String fodselsnummer) {
-        return soknadServiceUtil.startSoknad(navSoknadId, fodselsnummer);
+    public String startSoknad(String navSoknadId) {
+        return soknadServiceUtil.startSoknad(navSoknadId);
     }
 
     @Transactional
@@ -223,8 +223,8 @@ public class SoknadService {
         lokalDb.slettSoknad(soknad.getSoknadId());
     }
 
-    public String startEttersending(String behandlingsIdSoknad, String fodselsnummer) {
-        return soknadServiceUtil.startEttersending(behandlingsIdSoknad, fodselsnummer);
+    public String startEttersending(String behandlingsIdSoknad) {
+        return soknadServiceUtil.startEttersending(behandlingsIdSoknad);
     }
 
     }
