@@ -63,7 +63,7 @@ public class VedleggServiceTest {
     private Kodeverk kodeverk;
 
     @InjectMocks
-    private DefaultVedleggService vedleggService;
+    private VedleggService vedleggService;
 
     @Before
     public void before() {
