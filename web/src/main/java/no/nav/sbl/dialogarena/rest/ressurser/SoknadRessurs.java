@@ -34,7 +34,6 @@ import java.util.Map;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
-import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.generateXsrfToken;
 
 @Controller
@@ -81,15 +80,14 @@ public class SoknadRessurs {
     @Consumes(APPLICATION_JSON)
     public Map<String, String> opprettSoknad(@QueryParam("ettersendTil") String behandlingsId, StartSoknad soknadType, @Context HttpServletResponse response) {
         Map<String, String> result = new HashMap<>();
-        String fodselsnummer = getSubjectHandler().getUid();
 
         String opprettetBehandlingsId;
         if (behandlingsId == null) {
-            opprettetBehandlingsId = soknadService.startSoknad(soknadType.getSoknadType(), fodselsnummer);
+            opprettetBehandlingsId = soknadService.startSoknad(soknadType.getSoknadType());
         } else {
             WebSoknad soknad = soknadService.hentEttersendingForBehandlingskjedeId(behandlingsId);
             if (soknad == null) {
-                opprettetBehandlingsId = soknadService.startEttersending(behandlingsId, fodselsnummer);
+                opprettetBehandlingsId = soknadService.startEttersending(behandlingsId);
             } else {
                 opprettetBehandlingsId = soknad.getBrukerBehandlingId();
             }

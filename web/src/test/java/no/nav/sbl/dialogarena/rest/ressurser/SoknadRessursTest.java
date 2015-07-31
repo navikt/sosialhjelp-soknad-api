@@ -70,21 +70,21 @@ public class SoknadRessursTest {
     @Test
     public void opprettSoknadUtenBehandlingsidSkalStarteNySoknad() {
         ressurs.opprettSoknad(null, type, mock(HttpServletResponse.class));
-        verify(soknadService).startSoknad(anyString(), anyString());
+        verify(soknadService).startSoknad(anyString());
     }
 
     @Test
     public void opprettSoknadMedBehandlingsidSomIkkeHarEttersendingSkalStarteNyEttersending() {
         when(soknadService.hentEttersendingForBehandlingskjedeId(BEHANDLINGSID)).thenReturn(null);
         ressurs.opprettSoknad(BEHANDLINGSID, type, mock(HttpServletResponse.class));
-        verify(soknadService).startEttersending(eq(BEHANDLINGSID), anyString());
+        verify(soknadService).startEttersending(eq(BEHANDLINGSID));
     }
 
     @Test
     public void opprettSoknadMedBehandlingsidSomHarEttersendingSkalIkkeStarteNyEttersending() {
         when(soknadService.hentEttersendingForBehandlingskjedeId(BEHANDLINGSID)).thenReturn(new WebSoknad());
         ressurs.opprettSoknad(BEHANDLINGSID, type, mock(HttpServletResponse.class));
-        verify(soknadService, never()).startEttersending(eq(BEHANDLINGSID), anyString());
+        verify(soknadService, never()).startEttersending(eq(BEHANDLINGSID));
     }
 
     @Test(expected = BadRequestException.class)

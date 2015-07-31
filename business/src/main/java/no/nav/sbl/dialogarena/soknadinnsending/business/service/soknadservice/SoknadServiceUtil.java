@@ -60,9 +60,6 @@ public class SoknadServiceUtil {
     private FillagerService fillagerService;
 
     @Inject
-    private SoknadRepository repository;
-
-    @Inject
     private VedleggService vedleggService;
 
     @Inject
@@ -96,17 +93,14 @@ public class SoknadServiceUtil {
 
         SoknadInnsendingStatus status = SoknadInnsendingStatus.valueOf(wsSoknadsdata.getStatus());
         if (status.equals(UNDER_ARBEID)) {
-            fillagerService = fillagerService;
             WebSoknad soknadFraFillager = unmarshal(new ByteArrayInputStream(this.fillagerService.hentFil(hovedskjema.getUuid())), WebSoknad.class);
-            repository = repository;
-            repository.populerFraStruktur(soknadFraFillager);
+            lokalDb.populerFraStruktur(soknadFraFillager);
             List<WSInnhold> innhold = fillagerService.hentFiler(soknadFraFillager.getBrukerBehandlingId());
-            vedleggService = vedleggService;
             vedleggService.populerVedleggMedDataFraHenvendelse(soknadFraFillager, innhold);
             if (hentFaktumOgVedlegg) {
-                return repository.hentSoknadMedVedlegg(behandlingsId);
+                return lokalDb.hentSoknadMedVedlegg(behandlingsId);
             } else {
-                return repository.hentSoknad(behandlingsId);
+                return lokalDb.hentSoknad(behandlingsId);
             }
         } else {
             // søkndadsdata er slettet i henvendelse, har kun metadata
@@ -114,7 +108,7 @@ public class SoknadServiceUtil {
         }
     }
 
-    public String startEttersending(String behandlingsIdSoknad, String fodselsnummer) {
+    public String startEttersending(String behandlingsIdSoknad) {
         List<WSBehandlingskjedeElement> behandlingskjede = henvendelseService.hentBehandlingskjede(behandlingsIdSoknad);
 
         List<WSBehandlingskjedeElement> sorterteBehandlinger = on(behandlingskjede)
@@ -171,7 +165,7 @@ public class SoknadServiceUtil {
     }
 
     @Transactional
-    public String startSoknad(String navSoknadId, String fodselsnummer) {
+    public String startSoknad(String navSoknadId) {
         if (!kravdialogInformasjonHolder.hentAlleSkjemanumre().contains(navSoknadId)) {
             throw new ApplicationException("Ikke gyldig skjemanummer " + navSoknadId);
         }
