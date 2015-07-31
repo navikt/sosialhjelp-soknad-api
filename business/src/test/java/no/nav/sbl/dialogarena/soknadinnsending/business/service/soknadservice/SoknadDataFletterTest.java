@@ -8,7 +8,7 @@ import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.DefaultArbeidsforholdService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.ArbeidsforholdService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
@@ -112,7 +112,7 @@ public class SoknadDataFletterTest {
     @Mock
     private BarnService barnService;
     @Mock
-    private DefaultArbeidsforholdService arbeidsforholdService;
+    private ArbeidsforholdService arbeidsforholdService;
     @Mock
     ApplicationContext applicationContex;
 
@@ -128,7 +128,7 @@ public class SoknadDataFletterTest {
         Map<String, BolkService> bolker = new HashMap<>();
         bolker.put(PersonaliaService.class.getName(), personaliaService);
         bolker.put(BarnService.class.getName(), barnService);
-        bolker.put(DefaultArbeidsforholdService.class.getName(), arbeidsforholdService);
+        bolker.put(ArbeidsforholdService.class.getName(), arbeidsforholdService);
         when(applicationContex.getBeansOfType(BolkService.class)).thenReturn(bolker);
 
         soknadServiceUtil.initBolker();

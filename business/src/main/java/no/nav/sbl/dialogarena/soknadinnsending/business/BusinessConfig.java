@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.DefaultArbeidsforholdService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.ArbeidsforholdService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.KravdialogInformasjonHolder;
@@ -22,7 +22,7 @@ import org.springframework.context.annotation.Import;
         PersonaliaService.class,
         BarnService.class,
         ConsumerConfig.class,
-        DefaultArbeidsforholdService.class,
+        ArbeidsforholdService.class,
         ServiceConfig.class,
         ServicesApplicationConfig.class,
         KravdialogInformasjonHolder.class,
