@@ -292,14 +292,15 @@ public class SoknadDataFletterTest {
                         .medSkjemaNummer("L7")
                         .medInnsendingsvalg(Vedlegg.Status.SendesIkke));
 
-        when(lokalDb.hentSoknadMedVedlegg(behandlingsId)).thenReturn(
-                new WebSoknad().medAktorId("123456")
-                        .medBehandlingId(behandlingsId)
-                        .medUuid("uidHovedskjema")
-                        .medskjemaNummer(DAGPENGER)
-                        .medFaktum(new Faktum().medKey("personalia"))
-                        .medVedlegg(vedlegg)
-                        .medId(1L));
+        WebSoknad soknad = new WebSoknad().medAktorId("123456")
+                .medBehandlingId(behandlingsId)
+                .medUuid("uidHovedskjema")
+                .medskjemaNummer(DAGPENGER)
+                .medFaktum(new Faktum().medKey("personalia"))
+                .medVedlegg(vedlegg)
+                .medId(1L);
+        when(lokalDb.hentSoknadMedVedlegg(behandlingsId)).thenReturn(soknad);
+        when(lokalDb.hentSoknadMedData(1L)).thenReturn(soknad);
 
         when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(vedlegg);
 
@@ -330,6 +331,7 @@ public class SoknadDataFletterTest {
                 .medVedlegg(vedlegg);
         when(lokalDb.hentSoknadMedVedlegg(behandlingsId)).thenReturn(
                 webSoknad);
+        when(lokalDb.hentSoknadMedData(1L)).thenReturn(webSoknad);
 
         when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(vedlegg);
 
@@ -389,6 +391,7 @@ public class SoknadDataFletterTest {
                 soknad);
         when(config.getSoknadBolker(any(WebSoknad.class), anyListOf(BolkService.class))).thenReturn(asList(personaliaService, barnService));
         when(lokalDb.hentSoknadMedVedlegg(anyString())).thenReturn(soknad);
+        when(lokalDb.hentSoknadMedData(1L)).thenReturn(soknad);
         soknadServiceUtil.hentSoknad("123", true, true);
         verify(personaliaService, times(1)).genererSystemFakta(anyString(), anyLong());
         verify(barnService, never()).genererSystemFakta(anyString(), anyLong());
@@ -414,6 +417,7 @@ public class SoknadDataFletterTest {
         );
         when(lokalDb.hentSoknad("123")).thenReturn(null, soknad, soknad);
         when(lokalDb.hentSoknadMedVedlegg("123")).thenReturn(soknad, soknad);
+        when(lokalDb.hentSoknadMedData(11L)).thenReturn(soknad);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         JAXB.marshal(soknad, baos);
@@ -454,8 +458,9 @@ public class SoknadDataFletterTest {
                 .medBehandlingId("123")
                 .medskjemaNummer(DAGPENGER)
                 .medId(1L);
-        when(lokalDb.hentSoknad("123")).thenReturn(
-                soknad);
+        when(lokalDb.hentSoknad("123")).thenReturn(soknad);
+        when(lokalDb.hentSoknadMedData(1L)).thenReturn(soknad);
+
         when(config.getSoknadBolker(any(WebSoknad.class), anyListOf(BolkService.class))).thenReturn(asList(personaliaService, barnService));
         when(lokalDb.hentSoknadMedVedlegg(anyString())).thenReturn(soknad);
         soknadServiceUtil.hentSoknad("123", true, true);
