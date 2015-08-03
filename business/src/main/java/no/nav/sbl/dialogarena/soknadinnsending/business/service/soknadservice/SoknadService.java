@@ -32,7 +32,7 @@ public class SoknadService {
     private WebSoknadConfig config;
 
     @Inject
-    private SoknadDataFletter soknadServiceUtil;
+    private SoknadDataFletter soknadDataFletter;
 
     public void settDelsteg(String behandlingsId, DelstegStatus delstegStatus) {
         lokalDb.settDelstegstatus(behandlingsId, delstegStatus);
@@ -57,7 +57,7 @@ public class SoknadService {
 
     @Transactional
     public String startSoknad(String navSoknadId) {
-        return soknadServiceUtil.startSoknad(navSoknadId);
+        return soknadDataFletter.startSoknad(navSoknadId);
     }
 
     @Transactional
@@ -75,20 +75,20 @@ public class SoknadService {
     }
 
     public String startEttersending(String behandlingsIdSoknad) {
-        return soknadServiceUtil.startEttersending(behandlingsIdSoknad);
+        return soknadDataFletter.startEttersending(behandlingsIdSoknad);
     }
 
     public WebSoknad hentSoknad(String behandlingsId, boolean medData, boolean medVedlegg) {
-        return soknadServiceUtil.hentSoknad(behandlingsId, medData, medVedlegg);
+        return soknadDataFletter.hentSoknad(behandlingsId, medData, medVedlegg);
     }
 
     public Map<String, String> hentInnsendtDatoOgSisteInnsending(String behandlingsId) {
-        return soknadServiceUtil.hentInnsendtDatoOgSisteInnsending(behandlingsId);
+        return soknadDataFletter.hentInnsendtDatoOgSisteInnsending(behandlingsId);
     }
 
     @Transactional
     public void sendSoknad(String behandlingsId, byte[] pdf) {
-        soknadServiceUtil.sendSoknad(behandlingsId, pdf);
+        soknadDataFletter.sendSoknad(behandlingsId, pdf);
     }
 
 }
