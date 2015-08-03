@@ -261,7 +261,7 @@ public class SoknadDataFletter {
         }
 
         WebSoknad soknad;
-        if(medData) {
+        if (medData) {
             soknad = soknadFraLokalDb != null ? lokalDb.hentSoknadMedData(soknadFraLokalDb.getSoknadId()) : hentFraHenvendelse(behandlingsId, true);
         } else {
             soknad = soknadFraLokalDb != null ? soknadFraLokalDb : hentFraHenvendelse(behandlingsId, false);
