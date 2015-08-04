@@ -18,7 +18,7 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = SoknadDataFletterIntegrationTestContext.class)
-public class SoknadDataFletterSpringTest {
+public class SoknadServiceIntegrasjonsTest {
     WebSoknad soknad;
     String uuid = "uid";
     String skjemaNummer = "";
@@ -28,13 +28,13 @@ public class SoknadDataFletterSpringTest {
     private SoknadRepository lokalDb;
 
     @Inject
-    private SoknadDataFletter soknadDataFletter;
+    private SoknadService soknadService;
 
     @Test
     public void henterTemakode_FOR_forForeldrepenger() {
         skjemaNummer = "NAV 14-05.06";
         opprettOgPersisterSoknad("behId", "aktor");
-        SoknadStruktur soknadStruktur = soknadDataFletter.hentSoknadStruktur(soknadId);
+        SoknadStruktur soknadStruktur = soknadService.hentSoknadStruktur(skjemaNummer);
         assertThat(soknadStruktur.getTemaKode(), equalTo("FOR"));
     }
 
