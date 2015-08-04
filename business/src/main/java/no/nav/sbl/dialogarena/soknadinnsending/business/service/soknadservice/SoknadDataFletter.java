@@ -200,18 +200,19 @@ public class SoknadDataFletter {
     }
 
     @Transactional
-    public String startSoknad(String navSoknadId) {
-        if (!kravdialogInformasjonHolder.hentAlleSkjemanumre().contains(navSoknadId)) {
-            throw new ApplicationException("Ikke gyldig skjemanummer " + navSoknadId);
+    public String startSoknad(String skjemanummer) {
+        if (!kravdialogInformasjonHolder.hentAlleSkjemanumre().contains(skjemanummer)) {
+            throw new ApplicationException("Ikke gyldig skjemanummer " + skjemanummer);
         }
         String mainUid = randomUUID().toString();
-        String behandlingsId = henvendelseService.startSoknad(getSubjectHandler().getUid(), navSoknadId, mainUid);
+        String aktorId = getSubjectHandler().getUid();
+        String behandlingsId = henvendelseService.startSoknad(aktorId, skjemanummer, mainUid);
 
         WebSoknad nySoknad = WebSoknad.startSoknad()
                 .medBehandlingId(behandlingsId)
-                .medskjemaNummer(navSoknadId)
+                .medskjemaNummer(skjemanummer)
                 .medUuid(mainUid)
-                .medAktorId(getSubjectHandler().getUid())
+                .medAktorId(aktorId)
                 .medOppretteDato(DateTime.now());
 
         Long soknadId = lokalDb.opprettSoknad(nySoknad);

@@ -43,8 +43,8 @@ public class HenvendelseService {
         logger.info("Starter søknad");
         XMLHovedskjema xmlSkjema = createXMLSkjema(skjema, uid);
         XMLMetadataListe xmlMetadataListe = new XMLMetadataListe().withMetadata(xmlSkjema);
-        WSStartSoknadRequest xmlStartSoknadRequest = createXMLStartSoknadRequest(fnr, SEND_SOKNAD, xmlMetadataListe);
-        return startSoknadEllerEttersending(xmlStartSoknadRequest);
+        WSStartSoknadRequest startSoknadRequest = createStartSoknadRequest(fnr, SEND_SOKNAD, xmlMetadataListe);
+        return opprettSoknadIHenvendelse(startSoknadRequest);
     }
 
     public String startEttersending(WSHentSoknadResponse soknadResponse) {
@@ -58,9 +58,9 @@ public class HenvendelseService {
         } else {
             behandlingskjedeId = soknadResponse.getBehandlingsId();
         }
-        WSStartSoknadRequest xmlStartSoknadRequest = createXMLStartEttersendingRequest(fnr, SEND_SOKNAD_ETTERSENDING, xmlMetadataListe, behandlingskjedeId);
+        WSStartSoknadRequest startSoknadRequest = createStartEttersendingRequest(fnr, SEND_SOKNAD_ETTERSENDING, xmlMetadataListe, behandlingskjedeId);
 
-        return startSoknadEllerEttersending(xmlStartSoknadRequest);
+        return opprettSoknadIHenvendelse(startSoknadRequest);
     }
 
     public List<WSBehandlingskjedeElement> hentBehandlingskjede(String behandlingskjedeId) {
@@ -116,20 +116,20 @@ public class HenvendelseService {
         }
     }
 
-    private WSStartSoknadRequest createXMLStartEttersendingRequest(String fnr, SoknadType type, XMLMetadataListe xmlMetadataListe, String behandlingsId) {
-        return createXMLStartSoknadRequest(fnr, type, xmlMetadataListe).withBehandlingskjedeId(behandlingsId);
+    private WSStartSoknadRequest createStartEttersendingRequest(String fnr, SoknadType type, XMLMetadataListe xmlMetadataListe, String behandlingsId) {
+        return createStartSoknadRequest(fnr, type, xmlMetadataListe).withBehandlingskjedeId(behandlingsId);
     }
 
-    private String startSoknadEllerEttersending(WSStartSoknadRequest xmlStartSoknadRequest) {
+    private String opprettSoknadIHenvendelse(WSStartSoknadRequest startSoknadRequest) {
         try {
-            return sendSoknadEndpoint.startSoknad(xmlStartSoknadRequest).getBehandlingsId();
+            return sendSoknadEndpoint.startSoknad(startSoknadRequest).getBehandlingsId();
         } catch (SOAPFaultException e) {
-            logger.error("Feil ved start søknad for bruker " + xmlStartSoknadRequest.getFodselsnummer(), e);
+            logger.error("Feil ved start søknad for bruker " + startSoknadRequest.getFodselsnummer(), e);
             throw new SystemException("Kunne ikke opprette ny søknad", e, "exception.system.baksystem");
         }
     }
 
-    private WSStartSoknadRequest createXMLStartSoknadRequest(String fnr, SoknadType soknadType, XMLMetadataListe xmlMetadataListe) {
+    private WSStartSoknadRequest createStartSoknadRequest(String fnr, SoknadType soknadType, XMLMetadataListe xmlMetadataListe) {
         return new WSStartSoknadRequest()
                 .withFodselsnummer(fnr)
                 .withType(soknadType.name())
