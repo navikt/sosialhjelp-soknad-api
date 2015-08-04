@@ -393,11 +393,7 @@
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>reise.arbeidssoker.offentligtransport.egenbil.parkering.belop</id>
-        <dependOn>reise.arbeidssoker.offentligtransport.egenbil.parkering</dependOn>
-        <dependOnValues>
-            <value>true</value>
-        </dependOnValues>
+        <id>reise.arbeidssoker.offentligtransport.egenbil.kostnader.parkering</id>
     </faktum>
     <faktum>
         <id>reise.arbeidssoker.offentligtransport.egenbil.sendebekreftelse</id>
@@ -589,11 +585,7 @@
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>reise.midlertidig.offentligtransport.egenbil.parkering.belop</id>
-        <dependOn>reise.midlertidig.offentligtransport.egenbil.parkering</dependOn>
-        <dependOnValues>
-            <value>true</value>
-        </dependOnValues>
+        <id>reise.midlertidig.offentligtransport.egenbil.kostnader.parkering</id>
     </faktum>
     <faktum>
         <id>reise.midlertidig.offentligtransport.egenbil.sendebekreftelse</id>
