@@ -71,13 +71,13 @@ public class SoknadServiceIntegrasjonsTest {
     }
 
     @Test
-    public void startSomething() {
-        Subject subject = getSubject();
-        ((ThreadLocalSubjectHandler) getSubjectHandler()).setSubject(subject);
+    public void startSoknadHenterBehandlingsIdFraHenvendelse() {
+        ((ThreadLocalSubjectHandler) getSubjectHandler()).setSubject(getSubject());
         WSBehandlingsId wsBehandlingsId = new WSBehandlingsId().withBehandlingsId("bhid");
         when(sendSoknadEndpoint.startSoknad(any(WSStartSoknadRequest.class))).thenReturn(wsBehandlingsId);
-        skjemaNummer = "NAV 14-05.06";
-        String behandlingsId = soknadService.startSoknad(skjemaNummer);
+
+        String behandlingsId = soknadService.startSoknad("NAV 14-05.06");
+
         assertThat(behandlingsId, equalTo("bhid"));
     }
 
