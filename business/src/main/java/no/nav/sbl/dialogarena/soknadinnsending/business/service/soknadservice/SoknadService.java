@@ -56,8 +56,8 @@ public class SoknadService {
     }
 
     @Transactional
-    public String startSoknad(String navSoknadId) {
-        return soknadDataFletter.startSoknad(navSoknadId);
+    public String startSoknad(String skjemanummer) {
+        return soknadDataFletter.startSoknad(skjemanummer);
     }
 
     @Transactional
