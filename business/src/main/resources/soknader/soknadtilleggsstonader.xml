@@ -245,6 +245,20 @@
             <value>true</value>
         </dependOnValues>
     </faktum>
+    <faktum>
+        <id>reise.samling.fleresamlinger</id>
+        <dependOn>informasjonsside.stonad.reisesamling</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.samling.aktivitetsperiode</id>
+        <dependOn>reise.samling.fleresamlinger</dependOn>
+        <dependOnValues>
+            <value>en</value>
+        </dependOnValues>
+    </faktum>
 
     <!-- reiseaktivitet samling transport-->
     <faktum>
@@ -1265,6 +1279,17 @@
     </vedlegg>
 
     <!-- vedlegg for reise samling -->
+    <vedlegg>
+        <skjemaNummer>K7</skjemaNummer>
+        <skjemanummerTillegg>samling</skjemanummerTillegg>
+        <faktum>reise.samling.fleresamlinger</faktum>
+        <property>bolk</property>
+        <onValues>
+            <value>en</value>
+            <value>flere</value>
+        </onValues>
+        <flereTillatt>false</flereTillatt>
+    </vedlegg>
     <vedlegg>
         <skjemaNummer>V2</skjemaNummer>
         <skjemanummerTillegg>samling</skjemanummerTillegg>
