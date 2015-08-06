@@ -231,6 +231,13 @@
 
 
     <!-- reise samling -->
+    <faktum>
+        <id>reise.samling.reiselengde</id>
+        <dependOn>informasjonsside.stonad.reisesamling</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
 
 
     <!-- reiseaktivitet samling transport-->
