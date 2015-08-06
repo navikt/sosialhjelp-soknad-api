@@ -1,115 +1,15 @@
 <h2>{{ hentTekst (concat cmsPrefiks "behovforbil.tittel") }}</h2>
 <table>
-    {{#forFaktum "behovforbil.reisealene"}}
-        {{#hvisLik value "nei"}}
-            <tr>
-                <td class="sjekket"></td>
-                <td>{{ hentTekst (concat cmsPrefiks "behovforbil.reisealene.nei")}}</td>
-            </tr>
-
-            {{#forFaktum "behovforbil.reisemedfolge"}}
-                {{#hvisLik value "ja"}}
-                    <tr>
-                        <td class="sjekket"></td>
-                        <td>{{ hentTekst (concat cmsPrefiks "behovforbil.reisemedfolge.ja") }}</td>
-                    </tr>
-                {{/hvisLik}}
-                {{#hvisLik value "nei"}}
-                    <tr>
-                        <td class="sjekket"></td>
-                        <td>{{ hentTekst (concat cmsPrefiks "behovforbil.reisemedfolge.nei") }}</td>
-                    </tr>
-                {{/hvisLik}}
-            {{/forFaktum}}
-            {{#forFaktumHvisSant "behovforbil.belastende.avellerpakollektivtransport"}}
-                <tr>
-                    <td class="sjekket"></td>
-                    <td>{{ hentTekst (concat cmsPrefiks "behovforbil.belastende.avellerpakollektivtransport")}}</td>
-                </tr>
-            {{/forFaktumHvisSant}}
-            {{#forFaktumHvisSant "behovforbil.belastende.ingenholdeplasser"}}
-                <tr>
-                    <td class="sjekket"></td>
-                    <td>{{ hentTekst (concat cmsPrefiks "behovforbil.belastende.ingenholdeplasser")}}</td>
-                </tr>
-            {{/forFaktumHvisSant}}
-            {{#forFaktumHvisSant "behovforbil.belastende.langttilholdeplasser"}}
-                <tr>
-                    <td class="sjekket"></td>
-                    <td>
-                        <span>{{ hentTekst (concat cmsPrefiks "behovforbil.belastende.langttilholdeplasser")}}</span>
-                        <ul>
-                            {{#forFaktum "behovforbil.belastende.langttilholdeplasser.buss"}}
-                                <li class="kulepunkt faktum-felt">{{ hentTekst (concat cmsPrefiks "behovforbil.belastende.langttilholdeplasser.buss") }}: <em>{{value}}</em> {{ hentTekst (concat cmsPrefiks "behovforbil.belastende.langttilholdeplasser.enhet")}}</li>
-                            {{/forFaktum}}
-                            {{#forFaktum "behovforbil.belastende.langttilholdeplasser.trikk"}}
-                                <li class="kulepunkt faktum-felt">{{ hentTekst (concat cmsPrefiks "behovforbil.belastende.langttilholdeplasser.trikk") }}: <em>{{value}}</em> {{ hentTekst (concat cmsPrefiks "behovforbil.belastende.langttilholdeplasser.enhet")}}</li>
-                            {{/forFaktum}}
-                            {{#forFaktum "behovforbil.belastende.langttilholdeplasser.bane"}}
-                                <li class="kulepunkt faktum-felt">{{ hentTekst (concat cmsPrefiks "behovforbil.belastende.langttilholdeplasser.bane") }}: <em>{{value}}</em> {{ hentTekst (concat cmsPrefiks "behovforbil.belastende.langttilholdeplasser.enhet")}}</li>
-                            {{/forFaktum}}
-                            {{#forFaktum "behovforbil.belastende.langttilholdeplasser.tog"}}
-                                <li class="kulepunkt faktum-felt">{{ hentTekst (concat cmsPrefiks "behovforbil.belastende.langttilholdeplasser.tog" )}}: <em>{{value}}</em> {{ hentTekst (concat cmsPrefiks "behovforbil.belastende.langttilholdeplasser.enhet")}}</li>
-                            {{/forFaktum}}
-                            {{#forFaktum "behovforbil.belastende.langttilholdeplasser.bat"}}
-                                <li class="kulepunkt faktum-felt">{{ hentTekst (concat cmsPrefiks "behovforbil.belastende.langttilholdeplasser.bat") }}: <em>{{value}}</em> {{ hentTekst (concat cmsPrefiks "behovforbil.belastende.langttilholdeplasser.enhet")}}</li>
-                            {{/forFaktum}}
-                        </ul>
-                    </td>
-                </tr>
-            {{/forFaktumHvisSant}}
-            {{#forFaktumHvisSant "behovforbil.belastende.andrearsaker"}}
-                <tr>
-                    <td class="sjekket"></td>
-                    <td>
-                        <span>{{ hentTekst (concat cmsPrefiks "behovforbil.belastende.andrearsaker")}}</span><br/>
-                        {{#forFaktum "behovforbil.belastende.andrearsaker.beskrivelse"}}
-                            <em>{{ value }}</em>
-                        {{/forFaktum}}
-                    </td>
-                </tr>
-            {{/forFaktumHvisSant}}
-        {{/hvisLik}}
-        {{#hvisLik value "ja"}}
-            <tr>
-                <td class="sjekket"></td>
-                <td>{{ hentTekst (concat cmsPrefiks "behovforbil.reisealene.ja")}}</td>
-            </tr>
-        {{/hvisLik}}
-    {{/forFaktum}}
+    {{> skjema/bilstonad/behovforbil/kollektivtransport }}
 
     {{#forFaktum "informasjonsside.bilformal"}}
         {{#hvisLik value "arbeidutdanning"}}
-            {{> skjema/bilstonad/behovforbil/arbeidutdanningTransportBehov }}
+            {{> skjema/bilstonad/behovforbil/transportbehovArbeidutdanning }}
         {{/hvisLik}}
         {{#hvisLik value "dagligliv"}}
-            {{> skjema/bilstonad/behovforbil/dagliglivTransportBehov }}
+            {{> skjema/bilstonad/behovforbil/transportbehovDagligliv }}
         {{/hvisLik}}
     {{/forFaktum}}
 
-
-    {{#forFaktum "behovforbil.hjelpemidler"}}
-        {{#hvisLik value "ja"}}
-            <tr>
-                <td class="sjekket"></td>
-                <td>{{hentTekst (concat cmsPrefiks "behovforbil.hjelpemidler.ja")}}</td>
-            </tr>
-            <tr>
-                <td class="sjekket"></td>
-                <td>
-                    {{#forFaktum "behovforbil.hjelpemidler.beskrivelse"}}
-                        <span>{{hentTekst "behovforbil.hjelpemidler.beskrivelse.sporsmal"}}</span><br/>
-                        <em>{{ value }}</em>
-                    {{/forFaktum}}
-                </td>
-            </tr>
-        {{/hvisLik}}
-        {{#hvisLik value "nei"}}
-            <tr>
-                <td class="sjekket"></td>
-                <td>{{hentTekst (concat cmsPrefiks "behovforbil.hjelpemidler.nei")}}</td>
-            </tr>
-        {{/hvisLik}}
-    {{/forFaktum}}
-
+    {{> skjema/bilstonad/behovforbil/hjelpemidler }}
 </table>
