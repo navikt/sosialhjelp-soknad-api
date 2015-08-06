@@ -2,6 +2,7 @@
     {{#forFaktumHvisSant "informasjonsside.stonad.reisesamling"}}
         <h2>{{hentTekst "soknad.reise.samling.tittel"}}</h2>
         <table>
+            {{> skjema/tilleggsstonader/reisemidlertidig/avstand}}
             {{#variabel "faktumPrefiks" "reise.samling."}}
                 {{> skjema/tilleggsstonader/felles/offentligtransport}}
             {{/variabel}}
