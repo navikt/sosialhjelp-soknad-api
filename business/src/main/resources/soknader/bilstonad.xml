@@ -20,13 +20,22 @@
         <id>bilogutstyr.hvaslagsbil</id>
     </faktum>
     <faktum>
-        <id>bilogutstyr.spesialutstyr.beskrivelse</id>
+        <id>bilogutstyr.kassebil.spesialutstyr.beskrivelse</id>
     </faktum>
     <faktum>
-        <id>bilogutstyr.hjelpemidler</id>
+        <id>bilogutstyr.kassebil.hjelpemidler</id>
     </faktum>
     <faktum>
-        <id>bilogutstyr.hjelpemidler.ja.beskrivelse</id>
+        <id>bilogutstyr.kassebil.hjelpemidler.ja.beskrivelse</id>
+    </faktum>
+    <faktum>
+        <id>bilogutstyr.personbiltilpasninger.spesialutstyr.beskrivelse</id>
+    </faktum>
+    <faktum>
+        <id>bilogutstyr.personbiltilpasninger.hjelpemidler</id>
+    </faktum>
+    <faktum>
+        <id>bilogutstyr.personbiltilpasninger.hjelpemidler.ja.beskrivelse</id>
     </faktum>
     <faktum>
         <id>bilogutstyr.firehjulstrekk</id>
