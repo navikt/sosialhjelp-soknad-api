@@ -242,19 +242,28 @@
 
     <!-- Bilen -->
     <faktum>
-        <id>bilen.eierBilenAllerede</id>
+        <id>bilen</id>
     </faktum>
     <faktum>
-        <id>bilen.registreringsnummer</id>
+        <id>bilen.eierBilenAllerede.registreringsnummer</id>
     </faktum>
     <faktum>
-        <id>bilen.bilmerke</id>
+        <id>bilen.eierBilenAllerede.bilmerke</id>
     </faktum>
     <faktum>
-        <id>bilen.bilmodell</id>
+        <id>bilen.eierBilenAllerede.bilmodell</id>
     </faktum>
     <faktum>
-        <id>bilen.arsmodell</id>
+        <id>bilen.eierBilenAllerede.arsmodell</id>
+    </faktum>
+    <faktum>
+        <id>bilen.skalAnskaffeNyBil.bilmerke</id>
+    </faktum>
+    <faktum>
+        <id>bilen.skalAnskaffeNyBil.bilmodell</id>
+    </faktum>
+    <faktum>
+        <id>bilen.skalAnskaffeNyBil.arsmodell</id>
     </faktum>
 
     <!-- Fastlege -->
