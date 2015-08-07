@@ -83,14 +83,6 @@ public class SoknadService {
         return soknadDataFletter.hentSoknad(behandlingsId, medData, medVedlegg);
     }
 
-    @Deprecated
-    public Map<String, String> hentInnsendtDatoOgSisteInnsending(String behandlingsId) {
-        Map<String, String> innsendtdatoOgSisteInnsending = new HashMap<>();
-        innsendtdatoOgSisteInnsending.put("innsendtdatoSoknad", hentOpprinneligInnsendtDato(behandlingsId).toString());
-        innsendtdatoOgSisteInnsending.put("sistInnsendteBehandlingsId", hentSisteInnsendteBehandlingsId(behandlingsId));
-        return innsendtdatoOgSisteInnsending;
-    }
-
     public Long hentOpprinneligInnsendtDato(String behandlingsId) {
         return soknadDataFletter.hentOpprinneligInnsendtDato(behandlingsId);
     }
