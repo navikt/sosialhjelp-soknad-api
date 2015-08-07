@@ -17,7 +17,7 @@
 
     <!-- Bil og utstyr -->
     <faktum>
-        <id>bilogutstyr.hvaslagsbil</id>
+        <id>bilogutstyr</id>
     </faktum>
     <faktum>
         <id>bilogutstyr.kassebil.spesialutstyr.beskrivelse</id>
