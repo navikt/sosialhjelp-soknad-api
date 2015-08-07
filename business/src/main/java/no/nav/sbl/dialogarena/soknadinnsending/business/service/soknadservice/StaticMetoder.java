@@ -42,23 +42,6 @@ public class StaticMetoder {
         return journalforendeEnhet;
     }
 
-    public static final Comparator<WSBehandlingskjedeElement> SORTER_INNSENDT_DATO = new Comparator<WSBehandlingskjedeElement>() {
-        @Override
-        public int compare(WSBehandlingskjedeElement o1, WSBehandlingskjedeElement o2) {
-            DateTime dato1 = o1.getInnsendtDato();
-            DateTime dato2 = o2.getInnsendtDato();
-
-            if (dato1 == null && dato2 == null) {
-                return 0;
-            } else if (dato1 == null) {
-                return 1;
-            } else if (dato2 == null) {
-                return -1;
-            }
-            return dato1.compareTo(dato2);
-        }
-    };
-
     public static final Transformer<WSBehandlingskjedeElement, SoknadInnsendingStatus> STATUS = new Transformer<WSBehandlingskjedeElement, SoknadInnsendingStatus>() {
         public SoknadInnsendingStatus transform(WSBehandlingskjedeElement input) {
             return SoknadInnsendingStatus.valueOf(input.getStatus());
@@ -93,6 +76,23 @@ public class StaticMetoder {
                 .get()
                 .getInnsendtDato();
     }
+
+    public static final Comparator<WSBehandlingskjedeElement> ELDSTE_FORST = new Comparator<WSBehandlingskjedeElement>() {
+        @Override
+        public int compare(WSBehandlingskjedeElement o1, WSBehandlingskjedeElement o2) {
+            DateTime dato1 = o1.getInnsendtDato();
+            DateTime dato2 = o2.getInnsendtDato();
+
+            if (dato1 == null && dato2 == null) {
+                return 0;
+            } else if (dato1 == null) {
+                return 1;
+            } else if (dato2 == null) {
+                return -1;
+            }
+            return dato1.compareTo(dato2);
+        }
+    };
 
     public static final Comparator<WSBehandlingskjedeElement> NYESTE_FORST = new Comparator<WSBehandlingskjedeElement>() {
         @Override
