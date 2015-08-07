@@ -59,7 +59,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInns
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum.sammenlignEtterDependOn;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.convertToXmlVedleggListe;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.NYESTE_FORST;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.SORTER_INNSENDT_DATO;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.ELDSTE_FORST;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.STATUS;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.erIkkeSystemfaktumOgKunEtErTillatt;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.hentOrginalInnsendtDato;
@@ -185,18 +185,6 @@ public class SoknadDataFletter {
         ettersending.setVedlegg(vedleggService.hentVedleggOgPersister(new XMLMetadataListe(filtrertXmlVedleggListe), soknadId));
 
         return ettersending.getBrukerBehandlingId();
-    }
-
-    public Map<String, String> hentInnsendtDatoOgSisteInnsending(String behandlingsId) {
-        Map<String, String> result = new HashMap<>();
-        List<WSBehandlingskjedeElement> wsBehandlingskjedeElements = henvendelseService.hentBehandlingskjede(behandlingsId);
-        List<WSBehandlingskjedeElement> sorterteBehandlinger =
-                on(wsBehandlingskjedeElements).filter(where(STATUS, (equalTo(FERDIG)))).collect(SORTER_INNSENDT_DATO);
-
-        WSBehandlingskjedeElement innsendtSoknad = sorterteBehandlinger.get(0);
-        result.put("innsendtdatoSoknad", String.valueOf(innsendtSoknad.getInnsendtDato().getMillis()));
-        result.put("sistInnsendteBehandlingsId", sorterteBehandlinger.get(sorterteBehandlinger.size() - 1).getBehandlingsId());
-        return result;
     }
 
     @Transactional
@@ -334,4 +322,20 @@ public class SoknadDataFletter {
         lokalDb.slettSoknad(soknad.getSoknadId());
     }
 
+    public Long hentOpprinneligInnsendtDato(String behandlingsId) {
+        return on(henvendelseService.hentBehandlingskjede(behandlingsId))
+                .filter(where(STATUS, equalTo(FERDIG)))
+                .collect(ELDSTE_FORST)
+                .get(0)
+                .getInnsendtDato()
+                .getMillis();
+    }
+
+    public String hentSisteInnsendteBehandlingsId(String behandlingsId) {
+        return on(henvendelseService.hentBehandlingskjede(behandlingsId))
+                .filter(where(STATUS, equalTo(FERDIG)))
+                .collect(NYESTE_FORST)
+                .get(0)
+                .getBehandlingsId();
+    }
 }
