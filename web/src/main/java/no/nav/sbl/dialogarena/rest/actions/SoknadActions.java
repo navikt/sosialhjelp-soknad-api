@@ -121,14 +121,6 @@ public class SoknadActions {
     }
 
     @GET
-    @Path("/sisteinnsending")
-    @SjekkTilgangTilSoknad
-    @Deprecated
-    public Map<String, String> finnSisteInnsending(@PathParam("behandlingsId") String behandlingsId) {
-        return soknadService.hentInnsendtDatoOgSisteInnsending(behandlingsId);
-    }
-
-    @GET
     @Path("/opprinneliginnsendtdato")
     @SjekkTilgangTilSoknad
     public Long finnOpprinneligInnsendtDato(@PathParam("behandlingsId") String behandlingsId) {
