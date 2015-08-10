@@ -13,6 +13,7 @@ import java.util.List;
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.NYESTE_FORST;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.ELDSTE_FORST;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class StaticMetoderTest extends TestCase {
@@ -29,9 +30,9 @@ public class StaticMetoderTest extends TestCase {
         usortert.add(new WSBehandlingskjedeElement().withInnsendtDato(dato3));
 
         List<WSBehandlingskjedeElement> sortert = on(usortert).collect(NYESTE_FORST);
-        assertEquals(dato2, sortert.get(0).getInnsendtDato());
-        assertEquals(dato3, sortert.get(1).getInnsendtDato());
-        assertEquals(dato1, sortert.get(2).getInnsendtDato());
+        assertThat(sortert.get(0).getInnsendtDato()).isEqualTo(dato2);
+        assertThat(sortert.get(1).getInnsendtDato()).isEqualTo(dato3);
+        assertThat(sortert.get(2).getInnsendtDato()).isEqualTo(dato1);
     }
 
     @Test
@@ -46,8 +47,9 @@ public class StaticMetoderTest extends TestCase {
         usortert.add(new WSBehandlingskjedeElement().withInnsendtDato(dato3));
 
         List<WSBehandlingskjedeElement> sortert = on(usortert).collect(ELDSTE_FORST);
-        assertEquals(dato1, sortert.get(0).getInnsendtDato());
-        assertEquals(dato3, sortert.get(1).getInnsendtDato());
-        assertEquals(dato2, sortert.get(2).getInnsendtDato());
+
+        assertThat(sortert.get(0).getInnsendtDato()).isEqualTo(dato1);
+        assertThat(sortert.get(1).getInnsendtDato()).isEqualTo(dato3);
+        assertThat(sortert.get(2).getInnsendtDato()).isEqualTo(dato2);
     }
 }
