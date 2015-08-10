@@ -11,21 +11,26 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
+import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingsId;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStartSoknadRequest;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.activation.DataHandler;
 import javax.inject.Inject;
 import javax.naming.NamingException;
 import javax.security.auth.Subject;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -34,8 +39,7 @@ import static org.joda.time.DateTime.now;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = SoknadDataFletterIntegrationTestContext.class)
@@ -56,8 +60,7 @@ public class SoknadServiceIntegrasjonsTest {
     private SendSoknadPortType sendSoknadEndpoint;
 
     @Inject
-    private SendSoknadPortType sendSoknadSelftestEndpoint;
-
+    private FilLagerPortType fillagerEndpoint;
 
     @Inject
     private FillagerService fillagerService;
@@ -76,6 +79,12 @@ public class SoknadServiceIntegrasjonsTest {
 //        builder.activate();
     }
 
+    @Before
+    public void beforeEach() {
+        WSBehandlingsId wsBehandlingsId = new WSBehandlingsId().withBehandlingsId(EN_BEHANDLINGSID);
+        when(sendSoknadEndpoint.startSoknad(any(WSStartSoknadRequest.class))).thenReturn(wsBehandlingsId);
+    }
+
     @Test
     public void henterTemakode_FOR_forForeldrepenger() {
         skjemaNummer = "NAV 14-05.06";
@@ -87,8 +96,6 @@ public class SoknadServiceIntegrasjonsTest {
     @Test
     public void startSoknadHenterBehandlingsIdFraHenvendelse() {
         ((ThreadLocalSubjectHandler) getSubjectHandler()).setSubject(getSubject());
-        WSBehandlingsId wsBehandlingsId = new WSBehandlingsId().withBehandlingsId(EN_BEHANDLINGSID);
-        when(sendSoknadEndpoint.startSoknad(any(WSStartSoknadRequest.class))).thenReturn(wsBehandlingsId);
 
         String behandlingsId = soknadService.startSoknad("NAV 14-05.06");
 
@@ -145,18 +152,42 @@ public class SoknadServiceIntegrasjonsTest {
 
         soknadService.avbrytSoknad(EN_BEHANDLINGSID);
 
-        List<WSInnhold> filer = fillagerService.hentFiler("bhid");
+        List<WSInnhold> filer = fillagerService.hentFiler(EN_BEHANDLINGSID);
         assertTrue(filer.isEmpty());
     }
 
     @Test
     public void avbrytSoknadAvbryterSoknadenIHenvendelse(){
+        String behandlnigsId = nyBehandlnigsId();
+        opprettOgPersisterSoknad(behandlnigsId, "aktor");
+
+        soknadService.avbrytSoknad(behandlnigsId);
+
+        verify(sendSoknadEndpoint).avbrytSoknad(behandlnigsId);
+    }
+
+    @Test
+    public void sendSoknadSkalLagreEnFilTilHenvendelseHvisForeldrepenger() {
         ((ThreadLocalSubjectHandler) getSubjectHandler()).setSubject(getSubject());
-        opprettOgPersisterSoknad(EN_BEHANDLINGSID, "aktor");
+        skjemaNummer = "NAV 14-05.06";
+        String behandlingsId = nyBehandlnigsId();
+        opprettOgPersisterSoknad(behandlingsId, "aktor");
 
-        soknadService.avbrytSoknad(EN_BEHANDLINGSID);
+        soknadService.sendSoknad(behandlingsId, new byte[]{});
 
-        verify(sendSoknadEndpoint).avbrytSoknad(EN_BEHANDLINGSID);
+        verify(fillagerEndpoint, times(1)).lagre(eq(behandlingsId), any(String.class), any(String.class), any(DataHandler.class));
+    }
+
+    @Test
+    public void sendSoknadSkalLagreToFilerTilHenvendelseHvisTilleggsstonader() {
+        ((ThreadLocalSubjectHandler) getSubjectHandler()).setSubject(getSubject());
+        skjemaNummer = "NAV 08-14.01";
+        String behandlingsId = nyBehandlnigsId();
+        opprettOgPersisterSoknad(behandlingsId, "aktor");
+
+        soknadService.sendSoknad(behandlingsId, new byte[]{});
+
+        verify(fillagerEndpoint, times(2)).lagre(eq(behandlingsId), any(String.class), any(String.class), any(DataHandler.class));
     }
 
     private Subject getSubject() {
@@ -166,6 +197,10 @@ public class SoknadServiceIntegrasjonsTest {
         subject.getPublicCredentials().add(new OpenAmTokenCredential("98989898989-4"));
         subject.getPublicCredentials().add(new AuthenticationLevelCredential(4));
         return subject;
+    }
+
+    private String nyBehandlnigsId() {
+        return UUID.randomUUID().toString();
     }
 
     private Long opprettOgPersisterSoknad(String behId, String aktor) {
@@ -178,6 +213,11 @@ public class SoknadServiceIntegrasjonsTest {
         soknadId = lokalDb.opprettSoknad(soknad);
         soknad.setSoknadId(soknadId);
         return soknadId;
+    }
+
+    @After
+    public void afterEach(){
+        lokalDb.slettSoknad(soknadId);
     }
 
 }
