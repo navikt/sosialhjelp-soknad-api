@@ -80,34 +80,28 @@ public class StaticMetoder {
     public static final Comparator<WSBehandlingskjedeElement> ELDSTE_FORST = new Comparator<WSBehandlingskjedeElement>() {
         @Override
         public int compare(WSBehandlingskjedeElement o1, WSBehandlingskjedeElement o2) {
-            DateTime dato1 = o1.getInnsendtDato();
-            DateTime dato2 = o2.getInnsendtDato();
-
-            if (dato1 == null && dato2 == null) {
-                return 0;
-            } else if (dato1 == null) {
-                return 1;
-            } else if (dato2 == null) {
-                return -1;
-            }
-            return dato1.compareTo(dato2);
+            return sammenlignBehandlingBasertPaaDato(o1, o2);
         }
     };
 
     public static final Comparator<WSBehandlingskjedeElement> NYESTE_FORST = new Comparator<WSBehandlingskjedeElement>() {
         @Override
         public int compare(WSBehandlingskjedeElement o1, WSBehandlingskjedeElement o2) {
-            DateTime dato1 = o1.getInnsendtDato();
-            DateTime dato2 = o2.getInnsendtDato();
-            if (dato1 == null && dato2 == null) {
-                return 0;
-            } else if (dato1 == null) {
-                return -1;
-            } else if (dato2 == null) {
-                return 1;
-            }
-            return dato2.compareTo(dato1);
+            return sammenlignBehandlingBasertPaaDato(o2, o1);
         }
     };
 
+    private static int sammenlignBehandlingBasertPaaDato(WSBehandlingskjedeElement forst, WSBehandlingskjedeElement sist) {
+        DateTime dato1 = forst.getInnsendtDato();
+        DateTime dato2 = sist.getInnsendtDato();
+
+        if (dato1 == null && dato2 == null) {
+            return 0;
+        } else if (dato1 == null) {
+            return 1;
+        } else if (dato2 == null) {
+            return -1;
+        }
+        return dato1.compareTo(dato2);
+    }
 }
