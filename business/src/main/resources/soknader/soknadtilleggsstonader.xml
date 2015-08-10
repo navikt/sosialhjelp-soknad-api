@@ -1106,6 +1106,7 @@
     <!-- vedlegg for reise arbeidssøker -->
     <vedlegg>
         <skjemaNummer>J7</skjemaNummer>
+        <skjemanummerTillegg>reisearbeidssoker</skjemanummerTillegg>
         <faktum>reise.arbeidssoker.hvorforreise</faktum>
         <property>bolk</property>
         <onValues>
@@ -1114,6 +1115,7 @@
     </vedlegg>
     <vedlegg>
         <skjemaNummer>J7</skjemaNummer>
+        <skjemanummerTillegg>reisearbeidssoker</skjemanummerTillegg>
         <faktum>reise.arbeidssoker.hvorforreise</faktum>
         <property>bolk</property>
         <onValues>
@@ -1123,6 +1125,7 @@
     </vedlegg>
     <vedlegg>
         <skjemaNummer>U8</skjemaNummer>
+        <skjemanummerTillegg>reisearbeidssoker</skjemanummerTillegg>
         <faktum>reise.arbeidssoker.reisedekket</faktum>
         <property>bolk</property>
         <onValues>
