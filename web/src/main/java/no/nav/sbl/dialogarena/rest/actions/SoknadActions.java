@@ -28,9 +28,9 @@ import javax.ws.rs.core.Context;
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
-import java.util.Map;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 import static no.nav.sbl.dialogarena.utils.UrlUtils.getEttersendelseUrl;
 import static no.nav.sbl.dialogarena.utils.UrlUtils.getFortsettUrl;
 
@@ -122,6 +122,7 @@ public class SoknadActions {
 
     @GET
     @Path("/opprinneliginnsendtdato")
+    @Produces(TEXT_PLAIN)
     @SjekkTilgangTilSoknad
     public Long finnOpprinneligInnsendtDato(@PathParam("behandlingsId") String behandlingsId) {
         return soknadService.hentOpprinneligInnsendtDato(behandlingsId);
@@ -129,6 +130,7 @@ public class SoknadActions {
 
     @GET
     @Path("/sistinnsendtebehandlingsid")
+    @Produces(TEXT_PLAIN)
     @SjekkTilgangTilSoknad
     public String finnSisteInnsendteBehandlingsId(@PathParam("behandlingsId") String behandlingsId) {
         return soknadService.hentSisteInnsendteBehandlingsId(behandlingsId);
