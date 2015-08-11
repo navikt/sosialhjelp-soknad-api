@@ -15,7 +15,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingS
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.AlternativRepresentasjon;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
