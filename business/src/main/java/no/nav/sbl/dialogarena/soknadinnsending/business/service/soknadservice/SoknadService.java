@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -82,8 +83,12 @@ public class SoknadService {
         return soknadDataFletter.hentSoknad(behandlingsId, medData, medVedlegg);
     }
 
-    public Map<String, String> hentInnsendtDatoOgSisteInnsending(String behandlingsId) {
-        return soknadDataFletter.hentInnsendtDatoOgSisteInnsending(behandlingsId);
+    public Long hentOpprinneligInnsendtDato(String behandlingsId) {
+        return soknadDataFletter.hentOpprinneligInnsendtDato(behandlingsId);
+    }
+
+    public String hentSisteInnsendteBehandlingsId(String behandlingsId) {
+        return soknadDataFletter.hentSisteInnsendteBehandlingsId(behandlingsId);
     }
 
     @Transactional
