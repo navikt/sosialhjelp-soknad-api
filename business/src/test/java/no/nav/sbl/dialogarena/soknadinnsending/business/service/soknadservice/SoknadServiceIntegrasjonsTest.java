@@ -33,11 +33,8 @@ import java.util.List;
 import java.util.UUID;
 
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.joda.time.DateTime.now;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -90,7 +87,7 @@ public class SoknadServiceIntegrasjonsTest {
         skjemaNummer = "NAV 14-05.06";
         opprettOgPersisterSoknad("behId", "aktor");
         SoknadStruktur soknadStruktur = soknadService.hentSoknadStruktur(skjemaNummer);
-        assertThat(soknadStruktur.getTemaKode(), equalTo("FOR"));
+        assertThat(soknadStruktur.getTemaKode()).isEqualTo("FOR");
     }
 
     @Test
@@ -99,7 +96,7 @@ public class SoknadServiceIntegrasjonsTest {
 
         String behandlingsId = soknadService.startSoknad("NAV 14-05.06");
 
-        assertThat(behandlingsId, equalTo(EN_BEHANDLINGSID));
+        assertThat(behandlingsId).isEqualTo(EN_BEHANDLINGSID);
     }
 
     @Test
@@ -109,11 +106,11 @@ public class SoknadServiceIntegrasjonsTest {
 
         WebSoknad webSoknad = soknadService.hentSoknadFraLokalDb(soknadId);
 
-        assertThat(webSoknad.getBrukerBehandlingId(), equalTo(EN_BEHANDLINGSID));
-        assertThat(webSoknad.getAktoerId(), equalTo("aktor"));
-        assertThat(webSoknad.getUuid(), equalTo(uuid));
-        assertThat(webSoknad.getDelstegStatus(), equalTo(DelstegStatus.OPPRETTET));
-        assertThat(webSoknad.getskjemaNummer(), equalTo(skjemaNummer));
+        assertThat(webSoknad.getBrukerBehandlingId()).isEqualTo(EN_BEHANDLINGSID);
+        assertThat(webSoknad.getAktoerId()).isEqualTo("aktor");
+        assertThat(webSoknad.getUuid()).isEqualTo(uuid);
+        assertThat(webSoknad.getDelstegStatus()).isEqualTo(DelstegStatus.OPPRETTET);
+        assertThat(webSoknad.getskjemaNummer()).isEqualTo(skjemaNummer);
     }
 
     @Test
@@ -123,7 +120,7 @@ public class SoknadServiceIntegrasjonsTest {
         soknadService.settDelsteg(EN_BEHANDLINGSID, DelstegStatus.SAMTYKKET);
 
         WebSoknad webSoknad = soknadService.hentSoknadFraLokalDb(soknadId);
-        assertThat(webSoknad.getDelstegStatus(), equalTo(DelstegStatus.SAMTYKKET));
+        assertThat(webSoknad.getDelstegStatus()).isEqualTo(DelstegStatus.SAMTYKKET);
     }
 
     @Test
@@ -133,7 +130,7 @@ public class SoknadServiceIntegrasjonsTest {
         soknadService.settJournalforendeEnhet(EN_BEHANDLINGSID, "NAV UTLAND");
 
         WebSoknad webSoknad = soknadService.hentSoknadFraLokalDb(soknadId);
-        assertThat(webSoknad.getJournalforendeEnhet(), equalTo("NAV UTLAND"));
+        assertThat(webSoknad.getJournalforendeEnhet()).isEqualTo("NAV UTLAND");
     }
 
     @Test
@@ -143,7 +140,7 @@ public class SoknadServiceIntegrasjonsTest {
         soknadService.avbrytSoknad(EN_BEHANDLINGSID);
 
         WebSoknad webSoknad = soknadService.hentSoknadFraLokalDb(soknadId);
-        assertThat(webSoknad, nullValue());
+        assertThat(webSoknad).isNull();
     }
 
     @Test
@@ -153,7 +150,7 @@ public class SoknadServiceIntegrasjonsTest {
         soknadService.avbrytSoknad(EN_BEHANDLINGSID);
 
         List<WSInnhold> filer = fillagerService.hentFiler(EN_BEHANDLINGSID);
-        assertTrue(filer.isEmpty());
+        assertThat(filer).isEmpty();
     }
 
     @Test
