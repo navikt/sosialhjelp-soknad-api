@@ -127,7 +127,7 @@ public class SoknadServiceIntegrasjonsTest {
     }
 
     @Test
-    public void settJournalforendeEnhetPerisistererNyJournalforendeEnhetTilDb(){
+    public void settJournalforendeEnhetPersistererNyJournalforendeEnhetTilDb(){
         Long soknadId = opprettOgPersisterSoknad(EN_BEHANDLINGSID, "aktor");
 
         soknadService.settJournalforendeEnhet(EN_BEHANDLINGSID, "NAV UTLAND");
@@ -158,12 +158,12 @@ public class SoknadServiceIntegrasjonsTest {
 
     @Test
     public void avbrytSoknadAvbryterSoknadenIHenvendelse(){
-        String behandlnigsId = nyBehandlnigsId();
-        opprettOgPersisterSoknad(behandlnigsId, "aktor");
+        String behandlingsId = nyBehandlnigsId();
+        opprettOgPersisterSoknad(behandlingsId, "aktor");
 
-        soknadService.avbrytSoknad(behandlnigsId);
+        soknadService.avbrytSoknad(behandlingsId);
 
-        verify(sendSoknadEndpoint).avbrytSoknad(behandlnigsId);
+        verify(sendSoknadEndpoint).avbrytSoknad(behandlingsId);
     }
 
     @Test
