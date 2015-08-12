@@ -36,6 +36,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class AdresseTransform {
     private final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd");
+    private final String C_O = "C/O";
     private Kodeverk kodeverk;
 
     private static final Logger logger = getLogger(AdresseTransform.class);
@@ -277,22 +278,21 @@ public class AdresseTransform {
         adresse.setGyldigTil(DATE_TIME_FORMATTER.print(gyldigTil));
 
         StringBuilder stringBuilder = new StringBuilder();
+
         if (xmlPostboksAdresse.getTilleggsadresse() != null) {
-            stringBuilder.append(xmlPostboksAdresse.getTilleggsadresse());
-            stringBuilder.append(", ");
+            stringBuilder.append(C_O).append(" ").append(xmlPostboksAdresse.getTilleggsadresse()).append(", ");
         }
+
+        String postboksanlegg = xmlPostboksAdresse.getPostboksanlegg();
+        if (postboksanlegg != null && !postboksanlegg.isEmpty()) {
+            stringBuilder.append("Postboks ").append(xmlPostboksAdresse.getPostboksnummer()).append(" ").append(postboksanlegg).append(", ");
+        }
+
         stringBuilder.append(getPostnummerString(xmlPostboksAdresse));
         stringBuilder.append(' ');
         stringBuilder.append(kodeverk.getPoststed(getPostnummerString(xmlPostboksAdresse)));
-        stringBuilder.append(", ");
-        String postboksanlegg = xmlPostboksAdresse.getPostboksanlegg();
-        if (postboksanlegg != null && !postboksanlegg.isEmpty()) {
-            stringBuilder.append(postboksanlegg);
-            stringBuilder.append(' ');
-        }
-        stringBuilder.append(xmlPostboksAdresse.getPostboksnummer());
-        adresse.setAdresse(stringBuilder.toString());
 
+        adresse.setAdresse(stringBuilder.toString());
         return adresse;
     }
 
@@ -305,13 +305,11 @@ public class AdresseTransform {
         StringBuilder stringBuilder = new StringBuilder();
 
         if (xmlMatrikkelAdresse.getTilleggsadresse() != null) {
-            stringBuilder.append(xmlMatrikkelAdresse.getTilleggsadresse());
-            stringBuilder.append(", ");
+            stringBuilder.append(C_O).append(" ").append(xmlMatrikkelAdresse.getTilleggsadresse()).append(", ");
         }
 
         if (xmlMatrikkelAdresse.getEiendomsnavn() != null) {
-            stringBuilder.append(xmlMatrikkelAdresse.getEiendomsnavn());
-            stringBuilder.append(", ");
+            stringBuilder.append(xmlMatrikkelAdresse.getEiendomsnavn()).append(", ");
         }
 
         stringBuilder.append(getPostnummerString(xmlMatrikkelAdresse));
@@ -329,8 +327,7 @@ public class AdresseTransform {
         adresse.setGyldigTil(DATE_TIME_FORMATTER.print(gyldigTil));
         StringBuilder stringBuilder = new StringBuilder();
         if(xmlGateAdresse.getTilleggsadresse() != null) {
-            stringBuilder.append(xmlGateAdresse.getTilleggsadresse());
-            stringBuilder.append(", ");
+            stringBuilder.append(C_O).append(" ").append(xmlGateAdresse.getTilleggsadresse()).append(", ");
         }
         stringBuilder.append(xmlGateAdresse.getGatenavn());
         stringBuilder.append(' ');
