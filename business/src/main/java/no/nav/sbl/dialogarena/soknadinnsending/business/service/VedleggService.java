@@ -27,9 +27,17 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigOpplastingTypeException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.VedleggGenereringMismatch;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.VedleggsGrunnlag;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.VedleggsgenereringUtil;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
+import org.apache.commons.collections15.Closure;
+import org.apache.commons.collections15.Predicate;
+import org.apache.commons.collections15.Transformer;
 import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -55,6 +63,7 @@ import static java.util.Collections.sort;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.KVITTERING;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.IkkeVedlegg;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.LastetOpp;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.toInnsendingsvalg;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -63,6 +72,12 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Component
 public class VedleggService {
     private static final Logger logger = getLogger(VedleggService.class);
+    public static final Predicate<Vedlegg> PAAKREVDE_VEDLEGG = new Predicate<Vedlegg>() {
+        @Override
+        public boolean evaluate(Vedlegg vedlegg) {
+            return vedlegg != null && !vedlegg.getInnsendingsvalg().equals(IkkeVedlegg);
+        }
+    };
 
     @Inject
     @Named("soknadInnsendingRepository")
@@ -77,6 +92,9 @@ public class VedleggService {
 
     @Inject
     private SoknadService soknadService;
+
+    @Inject
+    private SoknadDataFletter soknadDataFletter;
 
     @Inject
     private FillagerService fillagerService;
@@ -103,7 +121,7 @@ public class VedleggService {
 
                 Vedlegg sideVedlegg = opprettVedlegg(vedlegg, (long) bytes.length);
 
-                resultat.add(vedleggRepository.opprettVedlegg(sideVedlegg,
+                resultat.add(vedleggRepository.opprettEllerEndreVedlegg(sideVedlegg,
                         bytes));
 
             } else if (Detect.isPdf(bytes)) {
@@ -122,7 +140,7 @@ public class VedleggService {
 
                     Vedlegg sideVedlegg = opprettVedlegg(vedlegg, (long) finalBaos.size());
 
-                    resultat.add(vedleggRepository.opprettVedlegg(sideVedlegg,
+                    resultat.add(vedleggRepository.opprettEllerEndreVedlegg(sideVedlegg,
                             finalBaos.toByteArray()));
                 }
                 document.close();
@@ -238,10 +256,38 @@ public class VedleggService {
         return paakrevdeVedlegg;
     }
 
-    public List<Vedlegg> hentPaakrevdeVedlegg(String behandlingsId) {
-        List<Vedlegg> paakrevdeVedlegg = vedleggRepository.hentPaakrevdeVedlegg(behandlingsId);
+    public List<Vedlegg> hentPaakrevdeVedlegg(String behandlingsId) throws VedleggGenereringMismatch {
+        List<Vedlegg> paakrevdeVedlegg = on(vedleggRepository.hentVedlegg(behandlingsId)).filter(PAAKREVDE_VEDLEGG).collect();
         leggTilKodeverkFelter(paakrevdeVedlegg);
-        return paakrevdeVedlegg;
+
+        // I TEST/UTV/QA??
+
+        List<Vedlegg> paakrevdeVedleggVedNyUthenting = hentPaakrevdeVedleggMedGenerering(behandlingsId);
+        leggTilKodeverkFelter(paakrevdeVedleggVedNyUthenting);
+        if (VedleggsgenereringUtil.likeVedlegg(paakrevdeVedlegg, paakrevdeVedleggVedNyUthenting)) {
+                return paakrevdeVedlegg;
+        }else {
+            throw new VedleggGenereringMismatch(paakrevdeVedlegg, paakrevdeVedleggVedNyUthenting);
+        }
+    }
+
+    public List<Vedlegg> hentPaakrevdeVedleggMedGenerering(String behandlingsId) {
+        WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true);
+        SoknadStruktur struktur = soknadService.hentSoknadStruktur(soknad.getskjemaNummer());
+        final List<VedleggsGrunnlag> alleMuligeVedlegg = struktur.hentAlleMuligeVedlegg(soknad);
+
+        on(alleMuligeVedlegg).forEach(new Closure<VedleggsGrunnlag>() {
+            @Override
+            public void execute(VedleggsGrunnlag vedleggsgrunnlag) {
+                vedleggsgrunnlag.oppdaterInnsendingsvalg(vedleggRepository);
+            }
+        });
+        return on(alleMuligeVedlegg).map(new Transformer<VedleggsGrunnlag, Vedlegg>() {
+            @Override
+            public Vedlegg transform(VedleggsGrunnlag vedleggsgrunnlag) {
+                return vedleggsgrunnlag.getVedlegg();
+            }
+        }).filter(PAAKREVDE_VEDLEGG).collect();
     }
 
     @Transactional
@@ -270,7 +316,7 @@ public class VedleggService {
         if (kvitteringVedlegg == null) {
             kvitteringVedlegg = new Vedlegg(soknad.getSoknadId(), null, KVITTERING, LastetOpp);
             oppdaterInnholdIKvittering(kvitteringVedlegg, kvittering);
-            vedleggRepository.opprettVedlegg(kvitteringVedlegg, kvittering);
+            vedleggRepository.opprettEllerEndreVedlegg(kvitteringVedlegg, kvittering);
         } else {
             oppdaterInnholdIKvittering(kvitteringVedlegg, kvittering);
             vedleggRepository.lagreVedleggMedData(soknad.getSoknadId(), kvitteringVedlegg.getVedleggId(), kvitteringVedlegg);
@@ -372,7 +418,7 @@ public class VedleggService {
                 v.setSkjemaNummer(v.getSkjemaNummer() + "|" + skjemanummerTillegg);
             }
 
-            vedleggRepository.opprettVedlegg(v, null);
+            vedleggRepository.opprettEllerEndreVedlegg(v, null);
             soknadVedlegg.add(v);
         }
         leggTilKodeverkFelter(soknadVedlegg);
