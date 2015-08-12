@@ -1,0 +1,15 @@
+<h2>{{ hentTekst "inntekt.tittel" }}</h2>
+<table>
+    {{#forFaktum "informasjonsside.bilformal"}}
+        {{#hvisLik "dagligliv" value}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>{{ hentTekst (concat cmsPrefiks "inntekt.egenandel") }}</td>
+            </tr>
+        {{/hvisLik}}
+
+        {{#hvisLik "arbeidutdanning" value}}
+            {{>skjema/bilstonad/inntekt/inntektArbeidutdanning}}
+        {{/hvisLik}}
+    {{/forFaktum}}
+</table>

@@ -230,6 +230,201 @@
     </faktum>
 
 
+    <!-- reise samling -->
+    <faktum>
+        <id>reise.samling.reiselengde</id>
+        <dependOn>informasjonsside.stonad.reisesamling</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.samling.reisemaal</id>
+        <dependOn>informasjonsside.stonad.reisesamling</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.samling.fleresamlinger</id>
+        <dependOn>informasjonsside.stonad.reisesamling</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.samling.aktivitetsperiode</id>
+        <dependOn>reise.samling.fleresamlinger</dependOn>
+        <dependOnValues>
+            <value>en</value>
+        </dependOnValues>
+    </faktum>
+
+    <!-- reiseaktivitet samling transport-->
+    <faktum>
+        <id>reise.samling.offentligtransport</id>
+        <dependOn>informasjonsside.stonad.reisesamling</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.samling.offentligtransport.aarsak.helse</id>
+        <dependOn>reise.samling.offentligtransport</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.samling.offentligtransport.utgift</id>
+        <dependOn>reise.samling.offentligtransport</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.samling.utbetalingsdato</id>
+        <dependOn>reise.samling.offentligtransport</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.aktivitet.offentligtransport.aarsak.helse</id>
+        <dependOn>reise.samling.offentligtransport</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.samling.offentligtransport.aarsak.transport</id>
+        <dependOn>reise.samling.offentligtransport</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.samling.offentligtransport.aarsak.henting</id>
+        <dependOn>reise.samling.offentligtransport</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.samling.offentligtransport.aarsak.annet</id>
+        <dependOn>reise.samling.offentligtransport</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.samling.offentligtransport.aarsak.annet.tekst</id>
+        <dependOn>reise.samling.offentligtransport.aarsak.annet</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.samling.offentligtransport.egenbil</id>
+        <dependOn>reise.samling.offentligtransport</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.samling.offentligtransport.egenbil.aarsak.helse</id>
+        <dependOn>reise.samling.offentligtransport</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.samling.offentligtransport.egenbil.aarsak.ikkebil</id>
+        <dependOn>reise.aktivitet.offentligtransport</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.samling.offentligtransport.egenbil.aarsak.annet</id>
+        <dependOn>reise.samling.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.samling.offentligtransport.egenbil.aarsak.annet.tekst</id>
+        <dependOn>reise.samling.offentligtransport.egenbil.aarsak.annet</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.samling.offentligtransport.drosje</id>
+        <dependOn>reise.samling.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.samling.offentligtransport.drosje.tekst</id>
+        <dependOn>reise.samling.offentligtransport.drosje</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.samling.offentligtransport.drosje.belop</id>
+        <dependOn>reise.samling.offentligtransport.drosje</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.samling.offentligtransport.egenbil.kostnader</id>
+        <dependOn>reise.samling.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.samling.offentligtransport.egenbil.kostnader.bompenger</id>
+        <dependOn>reise.samling.offentligtransport.egenbil.kostnader</dependOn>
+    </faktum>
+    <faktum>
+        <id>reise.samling.offentligtransport.egenbil.kostnader.piggdekk</id>
+        <dependOn>reise.samling.offentligtransport.egenbil.kostnader</dependOn>
+    </faktum>
+    <faktum>
+        <id>reise.samling.offentligtransport.egenbil.kostnader.ferge</id>
+        <dependOn>reise.samling.offentligtransport.egenbil.kostnader</dependOn>
+    </faktum>
+    <faktum>
+        <id>reise.samling.offentligtransport.egenbil.kostnader.annet</id>
+        <dependOn>reise.samling.offentligtransport.egenbil.kostnader</dependOn>
+    </faktum>
+    <faktum>
+        <id>reise.samling.offentligtransport.egenbil.parkering</id>
+        <dependOn>reise.samling.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.samling.offentligtransport.egenbil.parkering.belop</id>
+        <dependOn>reise.samling.offentligtransport.egenbil.parkering</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.samling.offentligtransport.egenbil.sendebekreftelse</id>
+        <dependOn>reise.samling.offentligtransport.egenbil.parkering</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+
 
 
     <!-- reise arbeidssøker-->
@@ -393,11 +588,7 @@
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>reise.arbeidssoker.offentligtransport.egenbil.parkering.belop</id>
-        <dependOn>reise.arbeidssoker.offentligtransport.egenbil.parkering</dependOn>
-        <dependOnValues>
-            <value>true</value>
-        </dependOnValues>
+        <id>reise.arbeidssoker.offentligtransport.egenbil.kostnader.parkering</id>
     </faktum>
     <faktum>
         <id>reise.arbeidssoker.offentligtransport.egenbil.sendebekreftelse</id>
@@ -589,11 +780,7 @@
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>reise.midlertidig.offentligtransport.egenbil.parkering.belop</id>
-        <dependOn>reise.midlertidig.offentligtransport.egenbil.parkering</dependOn>
-        <dependOnValues>
-            <value>true</value>
-        </dependOnValues>
+        <id>reise.midlertidig.offentligtransport.egenbil.kostnader.parkering</id>
     </faktum>
     <faktum>
         <id>reise.midlertidig.offentligtransport.egenbil.sendebekreftelse</id>
@@ -821,6 +1008,21 @@
         <id>tilleggsopplysninger.fritekst</id>
     </faktum>
 
+    <!-- Ekstra vedlegg -->
+    <faktum>
+        <id>ekstraVedlegg</id>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <id>3</id>
+        <faktum>ekstraVedlegg</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>N6</skjemaNummer>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
     <!-- vedlegg for reise aktivitet -->
     <vedlegg>
         <skjemaNummer>V2</skjemaNummer>
@@ -904,14 +1106,7 @@
     <!-- vedlegg for reise arbeidssøker -->
     <vedlegg>
         <skjemaNummer>J7</skjemaNummer>
-        <faktum>reise.arbeidssoker.hvorforreise</faktum>
-        <property>bolk</property>
-        <onValues>
-            <value>jobbintervju</value>
-        </onValues>
-    </vedlegg>
-    <vedlegg>
-        <skjemaNummer>J7</skjemaNummer>
+        <skjemanummerTillegg>reisearbeidssoker</skjemanummerTillegg>
         <faktum>reise.arbeidssoker.hvorforreise</faktum>
         <property>bolk</property>
         <onValues>
@@ -921,6 +1116,7 @@
     </vedlegg>
     <vedlegg>
         <skjemaNummer>U8</skjemaNummer>
+        <skjemanummerTillegg>reisearbeidssoker</skjemanummerTillegg>
         <faktum>reise.arbeidssoker.reisedekket</faktum>
         <property>bolk</property>
         <onValues>
@@ -1075,10 +1271,92 @@
         </onValues>
         <property>bolk</property>
     </vedlegg>
+
+    <!-- vedlegg for reise samling -->
+    <vedlegg>
+        <skjemaNummer>K7</skjemaNummer>
+        <skjemanummerTillegg>samling</skjemanummerTillegg>
+        <faktum>reise.samling.fleresamlinger</faktum>
+        <property>bolk</property>
+        <onValues>
+            <value>en</value>
+            <value>flere</value>
+        </onValues>
+        <flereTillatt>false</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <skjemaNummer>V2</skjemaNummer>
+        <skjemanummerTillegg>samling</skjemanummerTillegg>
+        <faktum>reise.samling.offentligtransport.aarsak.helse</faktum>
+        <property>bolk</property>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <flereTillatt>false</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <skjemaNummer>V2</skjemaNummer>
+        <skjemanummerTillegg>samling</skjemanummerTillegg>
+        <faktum>reise.samling.offentligtransport.egenbil.aarsak.helse</faktum>
+        <property>bolk</property>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <flereTillatt>false</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <skjemaNummer>J8</skjemaNummer>
+        <skjemanummerTillegg>samling</skjemanummerTillegg>
+        <faktum>reise.samling.offentligtransport.aarsak.henting</faktum>
+        <property>bolk</property>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <flereTillatt>false</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <skjemaNummer>M4</skjemaNummer><!-- skal byttes!! -->
+        <skjemanummerTillegg>samling</skjemanummerTillegg>
+        <faktum>reise.samling.offentligtransport.aarsak.annet</faktum>
+        <property>bolk</property>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <flereTillatt>false</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <skjemaNummer>M4</skjemaNummer><!-- skal byttes!! -->
+        <skjemanummerTillegg>samling</skjemanummerTillegg>
+        <faktum>reise.samling.offentligtransport.egenbil.aarsak.annet</faktum>
+        <property>bolk</property>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <flereTillatt>false</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <skjemaNummer>J6</skjemaNummer>
+        <skjemanummerTillegg>samling</skjemanummerTillegg>
+        <faktum>reise.samling.offentligtransport.egenbil.kostnader</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <property>bolk</property>
+    </vedlegg>
+    <vedlegg>
+        <skjemaNummer>U8</skjemaNummer>
+        <skjemanummerTillegg>samling</skjemanummerTillegg>
+        <faktum>reise.samling.offentligtransport.drosje</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <property>bolk</property>
+    </vedlegg>
     
     <!-- vedlegg for flytting -->
     <vedlegg>
         <skjemaNummer>J7</skjemaNummer>
+        <skjemanummerTillegg>flytting</skjemanummerTillegg>
         <property>bolk</property>
         <faktum>flytting.hvorforflytte</faktum>
         <onValues>
@@ -1087,6 +1365,7 @@
     </vedlegg>
     <vedlegg>
         <faktum>flytting.selvellerbistand</faktum>
+        <skjemanummerTillegg>flytting</skjemanummerTillegg>
         <onValues>
             <value>flyttebyraa</value>
             <value>tilbudmenflytterselv</value>
@@ -1096,6 +1375,7 @@
     </vedlegg>
     <vedlegg>
         <faktum>flytting.flytteselv.andreutgifter</faktum>
+        <skjemanummerTillegg>flytting</skjemanummerTillegg>
         <onValues>
             <value>true</value>
         </onValues>
@@ -1116,6 +1396,7 @@
     </vedlegg>
     <vedlegg>
         <faktum>bostotte.medisinskearsaker</faktum>
+        <skjemanummerTillegg>samling</skjemanummerTillegg>
         <onValues>
             <value>true</value>
         </onValues>
