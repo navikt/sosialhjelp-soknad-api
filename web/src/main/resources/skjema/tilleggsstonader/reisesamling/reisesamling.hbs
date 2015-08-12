@@ -1,0 +1,13 @@
+{{#forFaktumHvisSant "informasjonsside.stonad.reise"}}
+    {{#forFaktumHvisSant "informasjonsside.stonad.reisesamling"}}
+        <h2>{{hentTekst "soknad.reise.samling.tittel"}}</h2>
+        <table>
+            {{> skjema/tilleggsstonader/reisesamling/fleresamlinger}}
+            {{> skjema/tilleggsstonader/reisesamling/avstand}}
+            {{> skjema/tilleggsstonader/reisesamling/adresse}}
+            {{#variabel "faktumPrefiks" "reise.samling."}}
+                {{> skjema/tilleggsstonader/felles/offentligtransport}}
+            {{/variabel}}
+        </table>
+    {{/forFaktumHvisSant}}
+{{/forFaktumHvisSant}}

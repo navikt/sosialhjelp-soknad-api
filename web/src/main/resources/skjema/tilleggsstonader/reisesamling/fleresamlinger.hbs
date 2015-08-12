@@ -1,0 +1,18 @@
+{{#forFaktum "reise.samling.fleresamlinger"}}
+    {{#hvisLik value "flere"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td><span>{{hentTekst "soknad.reise.samling.fleresamlinger.flere"}}</span></td>
+        </tr>
+    {{else}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>{{hentTekst "soknad.reise.samling.fleresamlinger.en"}}</span>
+            </td>
+        </tr>
+        {{#forFaktum "reise.samling.periode"}}
+            {{> skjema/tilleggsstonader/felles/aktivitetsperiode}}
+        {{/forFaktum}}
+    {{/hvisLik}}
+{{/forFaktum}}

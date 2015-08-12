@@ -48,13 +48,13 @@ public class AktiviteterService {
                     .medProperty("navn", wsAktivitet.getAktivitetsnavn());
 
             WSPeriode periode = wsAktivitet.getPeriode();
-            faktum.medProperty("fom", hentDato(periode.getFom()));
-            faktum.medProperty("tom", hentDato(periode.getTom()));
+            faktum.medProperty("fom", datoTilString(periode.getFom()));
+            faktum.medProperty("tom", datoTilString(periode.getTom()));
 
             return faktum;
         }
 
-        private String hentDato(LocalDate date) {
+        private String datoTilString(LocalDate date) {
             return date != null ? date.toString("yyyy-MM-dd") : "";
         }
     }

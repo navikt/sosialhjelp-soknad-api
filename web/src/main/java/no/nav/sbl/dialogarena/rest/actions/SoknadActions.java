@@ -9,8 +9,8 @@ import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.utils.PDFFabrikk;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,9 +28,9 @@ import javax.ws.rs.core.Context;
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
-import java.util.Map;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 import static no.nav.sbl.dialogarena.utils.UrlUtils.getEttersendelseUrl;
 import static no.nav.sbl.dialogarena.utils.UrlUtils.getFortsettUrl;
 
@@ -46,7 +46,7 @@ public class SoknadActions {
     private VedleggService vedleggService;
 
     @Inject
-    private SendSoknadService soknadService;
+    private SoknadService soknadService;
 
     @Inject
     private HtmlGenerator pdfTemplate;
@@ -72,7 +72,7 @@ public class SoknadActions {
     @Path("/send")
     @SjekkTilgangTilSoknad
     public void sendSoknad(@PathParam("behandlingsId") String behandlingsId) {
-        WebSoknad soknad = soknadService.hentSoknadMedFaktaOgVedlegg(behandlingsId);
+        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
 
         byte[] kvittering = genererPdfMedKodeverksverdier(soknad, "/skjema/kvittering");
         vedleggService.lagreKvitteringSomVedlegg(behandlingsId, kvittering);
@@ -121,10 +121,19 @@ public class SoknadActions {
     }
 
     @GET
-    @Path("/sisteinnsending")
+    @Path("/opprinneliginnsendtdato")
+    @Produces(TEXT_PLAIN)
     @SjekkTilgangTilSoknad
-    public Map<String, String> finnSisteInnsending(@PathParam("behandlingsId") String behandlingsId) {
-        return soknadService.hentInnsendtDatoOgSisteInnsending(behandlingsId);
+    public Long finnOpprinneligInnsendtDato(@PathParam("behandlingsId") String behandlingsId) {
+        return soknadService.hentOpprinneligInnsendtDato(behandlingsId);
+    }
+
+    @GET
+    @Path("/sistinnsendtebehandlingsid")
+    @Produces(TEXT_PLAIN)
+    @SjekkTilgangTilSoknad
+    public String finnSisteInnsendteBehandlingsId(@PathParam("behandlingsId") String behandlingsId) {
+        return soknadService.hentSisteInnsendteBehandlingsId(behandlingsId);
     }
 
     private byte[] genererPdfMedKodeverksverdier(WebSoknad soknad, String hbsSkjemaPath) {

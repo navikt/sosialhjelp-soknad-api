@@ -48,7 +48,7 @@ public class DefaultVedleggServiceTest {
     FillagerService fillagerConnector;
 
     @InjectMocks
-    VedleggService vedleggService = new DefaultVedleggService();
+    VedleggService vedleggService = new VedleggService();
 
     @Before
     public void setup() {
