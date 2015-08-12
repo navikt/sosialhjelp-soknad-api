@@ -3,12 +3,32 @@
 
     {{#hvisLik cmsPrefiks "dagligliv."}}
 
-        {{>skjema/bilstonad/bilogutstyr/spesialutstyr}}
-        {{>skjema/bilstonad/bilogutstyr/hjelpemidler}}
+        {{#forFaktum "bilogutstyr.spesialutstyr.beskrivelse"}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>{{hentTekst (concat cmsPrefiks "bilogutstyr.spesialutstyr.beskrivelse.oppsummering")}}: <em>{{value}}</em></td>
+            </tr>
+        {{/forFaktum}}
+
+        {{#forFaktum "bilogutstyr.hjelpemidler"}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    {{hentTekst (concat cmsPrefiks (concat "bilogutstyr.hjelpemidler." value))}}
+
+                    {{#hvisLik value "ja"}}
+                        {{#forFaktum "bilogutstyr.hjelpemidler.ja.beskrivelse"}}
+                            <div>{{hentTekst (concat cmsPrefiks "bilogutstyr.hjelpemidler.ja.beskrivelse.oppsummering")}}: <em>{{value}}</em></div>
+                        {{/forFaktum}}
+                    {{/hvisLik}}
+
+                </td>
+            </tr>
+        {{/forFaktum}}
+
         {{>skjema/bilstonad/bilogutstyr/firehjulstrekk}}
 
     {{/hvisLik}}
-
 
     {{#hvisLik cmsPrefiks "arbeidutdanning."}}
 
@@ -20,14 +40,59 @@
             </tr>
 
             {{#hvisLik value "kassebil"}}
-                {{>skjema/bilstonad/bilogutstyr/spesialutstyr}}
-                {{>skjema/bilstonad/bilogutstyr/hjelpemidler}}
+
+                {{#forFaktum "bilogutstyr.kassebil.spesialutstyr.beskrivelse"}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>{{hentTekst (concat cmsPrefiks "bilogutstyr.spesialutstyr.beskrivelse.oppsummering")}}: <em>{{value}}</em></td>
+                    </tr>
+                {{/forFaktum}}
+
+                {{#forFaktum "bilogutstyr.kassebil.hjelpemidler"}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>
+                            {{hentTekst (concat cmsPrefiks (concat "bilogutstyr.kassebil.hjelpemidler." value))}}
+
+                            {{#hvisLik value "ja"}}
+
+                                {{#forFaktum "bilogutstyr.kassebil.hjelpemidler.ja.beskrivelse"}}
+                                    <div>{{hentTekst (concat cmsPrefiks "bilogutstyr.hjelpemidler.ja.beskrivelse.oppsummering")}}: <em>{{value}}</em></div>
+                                {{/forFaktum}}
+
+                            {{/hvisLik}}
+
+                        </td>
+                    </tr>
+                {{/forFaktum}}
+
                 {{>skjema/bilstonad/bilogutstyr/firehjulstrekk}}
             {{/hvisLik}}
 
             {{#hvisLik value "personbiltilpasninger"}}
-                {{>skjema/bilstonad/bilogutstyr/spesialutstyr}}
-                {{>skjema/bilstonad/bilogutstyr/hjelpemidler}}
+
+                {{#forFaktum "bilogutstyr.personbiltilpasninger.spesialutstyr.beskrivelse"}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>{{hentTekst (concat cmsPrefiks "bilogutstyr.spesialutstyr.beskrivelse.oppsummering")}}: <em>{{value}}</em></td>
+                    </tr>
+                {{/forFaktum}}
+
+                {{#forFaktum "bilogutstyr.personbiltilpasninger.hjelpemidler"}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>
+                            {{hentTekst (concat cmsPrefiks (concat "bilogutstyr.personbiltilpasninger.hjelpemidler." value))}}
+
+                            {{#hvisLik value "ja"}}
+                                {{#forFaktum "bilogutstyr.personbiltilpasninger.hjelpemidler.ja.beskrivelse"}}
+                                    <div>{{hentTekst (concat cmsPrefiks "bilogutstyr.hjelpemidler.ja.beskrivelse.oppsummering")}}: <em>{{value}}</em></div>
+                                {{/forFaktum}}
+                            {{/hvisLik}}
+
+                        </td>
+                    </tr>
+                {{/forFaktum}}
             {{/hvisLik}}
 
         {{/forFaktum}}
