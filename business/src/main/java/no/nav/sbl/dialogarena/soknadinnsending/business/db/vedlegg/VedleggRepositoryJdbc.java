@@ -78,44 +78,11 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
     @Override
     public void opprettEllerLagreVedleggVedNyGenereringUtenEndringAvData(Vedlegg vedlegg) {
         if(vedlegg.getVedleggId() == null) {
-            opprettEllerEndreVedleggVedNyGenerering(vedlegg, null);
+            opprettEllerEndreVedlegg(vedlegg, null);
         } else {
-            lagreVedleggVedNyGenerering(vedlegg.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
+            lagreVedlegg(vedlegg.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
         }
-    }
 
-    public void lagreVedleggVedNyGenerering(Long soknadId, Long vedleggId, Vedlegg vedlegg) {
-        getJdbcTemplate().update("update " + "vedlegg_ny_generering" + " set navn = ?, innsendingsvalg = ?, aarsak = ? where soknad_id = ? and vedlegg_id = ?",
-                vedlegg.getNavn(), vedlegg.getInnsendingsvalg().toString(), vedlegg.getAarsak(), soknadId, vedleggId);
-    }
-
-    public Long opprettEllerEndreVedleggVedNyGenerering(final Vedlegg vedlegg, final byte[] content) {
-        if (vedlegg.getVedleggId() == null) {
-            vedlegg.setVedleggId(getJdbcTemplate().queryForObject(SQLUtils.selectNextSequenceValue("VEDLEGG_ID_SEQ"), Long.class));
-        }
-        getJdbcTemplate().execute("insert into vedlegg_ny_generering(vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, opprinneliginnsendingsvalg, storrelse, antallsider," +
-                        " fillagerReferanse, data, opprettetdato, aarsak) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, sysdate, ?)",
-
-                new AbstractLobCreatingPreparedStatementCallback(lobHandler) {
-                    @Override
-                    protected void setValues(PreparedStatement ps, LobCreator lobCreator) throws SQLException {
-                        Vedlegg.Status opprinneligInnsendingsvalg = vedlegg.getOpprinneligInnsendingsvalg();
-
-                        ps.setLong(1, vedlegg.getVedleggId());
-                        ps.setLong(2, vedlegg.getSoknadId());
-                        ps.setObject(3, vedlegg.getFaktumId());
-                        ps.setString(4, getSkjemanummerMedTillegg(vedlegg));
-                        ps.setString(5, vedlegg.getNavn());
-                        ps.setString(6, vedlegg.getInnsendingsvalg().toString());
-                        ps.setString(7, opprinneligInnsendingsvalg != null ? opprinneligInnsendingsvalg.toString() : null);
-                        ps.setLong(8, vedlegg.getStorrelse());
-                        ps.setLong(9, vedlegg.getAntallSider());
-                        ps.setString(10, vedlegg.getFillagerReferanse());
-                        lobCreator.setBlobAsBytes(ps, 11, content);
-                        ps.setString(12, vedlegg.getAarsak());
-                    }
-                });
-        return vedlegg.getVedleggId();
     }
 
     @Override

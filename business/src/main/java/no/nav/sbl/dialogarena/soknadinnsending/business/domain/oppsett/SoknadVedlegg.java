@@ -236,7 +236,6 @@ public class SoknadVedlegg implements Serializable {
     };
 
     public Vedlegg genererVedlegg(Faktum faktum) {
-        // TODO: Denne bør sjekke i databasen om faktumet allerede er opprettet
         return new Vedlegg()
                 .medSoknadId(faktum.getSoknadId())
                 .medFaktumId(getFlereTillatt() ? faktum.getFaktumId() : 0L)
