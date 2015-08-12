@@ -12,7 +12,7 @@ public class AAPOrdinaerInformasjon extends KravdialogInformasjon.KravdialogInfo
     private static List<String> skjemanummer = asList("NAV 11-13.05");
 
     public String getSoknadTypePrefix() {
-        return "soknadaap";
+        return "aap.ordinaer";
     }
 
     public String getSoknadUrlKey() {

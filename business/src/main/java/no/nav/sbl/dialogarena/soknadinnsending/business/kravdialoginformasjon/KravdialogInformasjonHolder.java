@@ -11,6 +11,12 @@ import static java.util.Arrays.asList;
 @Component
 public class KravdialogInformasjonHolder {
 
+
+    //TODO: Generelt for alle søknadsdialoger gjelder det at SoknadPrefix brukes både for å hente navnet på hbs-fil, og for å finne prefixet på CMSnøkler. Dette bør
+    //være to ulike parametere, da cms-tekster ikke nødvendigvis trenger å være knyttet til en søknadstype, noe det legges opp til i dag.
+    // Endringer er gjort i AAPGjenopptakInformasjon og AAPOrdinaerInformasjon som følge av dette.
+
+
     private List<KravdialogInformasjon> soknadsKonfigurasjoner = new ArrayList<>();
 
     public KravdialogInformasjonHolder() {

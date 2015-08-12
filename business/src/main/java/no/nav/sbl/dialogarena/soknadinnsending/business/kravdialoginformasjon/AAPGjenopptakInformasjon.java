@@ -11,7 +11,7 @@ public class AAPGjenopptakInformasjon extends KravdialogInformasjon.KravdialogIn
     private static List<String> skjemanummer = asList("NAV 11-13.06");
 
     public String getSoknadTypePrefix() {
-        return "soknadaap";
+        return "aap.gjenopptak";
     }
 
     public String getSoknadUrlKey() {
