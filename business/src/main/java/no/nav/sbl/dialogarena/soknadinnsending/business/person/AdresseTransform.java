@@ -303,19 +303,22 @@ public class AdresseTransform {
         adresse.setGyldigTil(DATE_TIME_FORMATTER.print(gyldigTil));
 
         StringBuilder stringBuilder = new StringBuilder();
+
         if (xmlMatrikkelAdresse.getTilleggsadresse() != null) {
             stringBuilder.append(xmlMatrikkelAdresse.getTilleggsadresse());
             stringBuilder.append(", ");
         }
+
+        if (xmlMatrikkelAdresse.getEiendomsnavn() != null) {
+            stringBuilder.append(xmlMatrikkelAdresse.getEiendomsnavn());
+            stringBuilder.append(", ");
+        }
+
         stringBuilder.append(getPostnummerString(xmlMatrikkelAdresse));
         stringBuilder.append(' ');
         stringBuilder.append(kodeverk.getPoststed(getPostnummerString(xmlMatrikkelAdresse)));
-        stringBuilder.append(", ");
-        if (xmlMatrikkelAdresse.getEiendomsnavn() != null) {
-            stringBuilder.append(xmlMatrikkelAdresse.getEiendomsnavn());
-        }
-        adresse.setAdresse(stringBuilder.toString());
 
+        adresse.setAdresse(stringBuilder.toString());
         return adresse;
     }
 

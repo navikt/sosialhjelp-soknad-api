@@ -269,7 +269,7 @@ public class PersonaliaServiceTest {
     @SuppressWarnings("unchecked")
     @Test
     public void skalStotteMidlertidigOmrodeAdresseNorge() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
-        String forventetsekundarAdresse = EN_ADRESSE_POSTNUMMER + " " + EN_ADRESSE_POSTSTED + ", " + ET_EIEDOMSNAVN;
+        String forventetsekundarAdresse = ET_EIEDOMSNAVN + ", " + EN_ADRESSE_POSTNUMMER + " " + EN_ADRESSE_POSTSTED;
         mockGyldigPersonMedMidlertidigOmrodeAdresse();
         Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
 
