@@ -16,7 +16,7 @@ public class MaalgruppeTilXml implements Transformer<Faktum, Maalgruppeinformasj
         Map<String, String> properties = faktum.getProperties();
 
         Maalgruppeinformasjon informasjon = new Maalgruppeinformasjon();
-        informasjon.setPeriode(lagPeiode(properties));
+        informasjon.setPeriode(lagPeriode(properties));
         informasjon.setMaalgruppetype(lagType(properties));
         informasjon.setKilde(faktum.getType().toString()); //TODO: Usikker på om jeg har tolket kilde riktig.
 
@@ -29,7 +29,7 @@ public class MaalgruppeTilXml implements Transformer<Faktum, Maalgruppeinformasj
         return type;
     }
 
-    private Periode lagPeiode(Map<String, String> properties) {
+    private Periode lagPeriode(Map<String, String> properties) {
         Periode periode = new Periode();
         periode.setFom(new XMLGregorianCalendarImpl(DateTime.parse(properties.get("fom")).toGregorianCalendar()));
         String tom = properties.get("tom");
