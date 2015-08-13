@@ -178,7 +178,7 @@ public class SoknadServiceIntegrasjonsTest {
     @Test
     public void sendSoknadSkalLagreToFilerTilHenvendelseHvisTilleggsstonader() {
         ((ThreadLocalSubjectHandler) getSubjectHandler()).setSubject(getSubject());
-        skjemaNummer = "NAV 08-14.01";
+        skjemaNummer = "NAV 11-12.12";
         String behandlingsId = nyBehandlnigsId();
         opprettOgPersisterSoknad(behandlingsId, "aktor");
 
