@@ -90,7 +90,8 @@ public class VedleggsGrunnlag {
     public void oppdaterInnsendingsvalg(VedleggRepository vedleggRepository) {
         Boolean kreverDbOppdatering = oppdaterInnsendingsvalg(erVedleggPaakrevd());
         if (kreverDbOppdatering) {
-            vedleggRepository.opprettEllerLagreVedleggVedNyGenereringUtenEndringAvData(vedlegg);
+            //TODO fiks exception håndtering her
+//            vedleggRepository.opprettEllerLagreVedleggVedNyGenereringUtenEndringAvData(vedlegg);
         }
     }
 }
