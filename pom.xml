@@ -786,6 +786,7 @@
                             <fpnb>foreldrepenger_nb_NO.properties</fpnb>
                             <bsnb>bilstonad_nb_NO.properties</bsnb>
                             <tsnb>tilleggsstonader_nb_NO.properties</tsnb>
+                            <tsnb>tiltakspenger_nb_NO.properties</tsnb>
                         </propertiesFiler>
                         <menyPunktPaths>
                             <aapnb>/site/18/app/AAP/nb_NO/tekster</aapnb>
@@ -794,6 +795,7 @@
                             <fpnb>/site/18/app/foreldrepenger/nb_NO/tekster</fpnb>
                             <bsnb>/site/18/app/bilstonad/nb_NO/tekster</bsnb>
                             <tsnb>/site/18/app/tilleggsstonader/nb_NO/tekster</tsnb>
+                            <tsnb>/site/18/app/tiltakspenger/nb_NO/tekster</tsnb>
                         </menyPunktPaths>
                     </configuration>
                 </plugin>

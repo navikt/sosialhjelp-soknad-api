@@ -27,7 +27,8 @@ public class KravdialogInformasjonHolder {
                 new DagpengerOrdinaerInformasjon(),
                 new ForeldrepengerInformasjon(),
                 new BilstonadInformasjon(),
-                new SoknadTilleggsstonader()
+                new SoknadTilleggsstonader(),
+                new TiltakspengerInformasjon()
                 //new ForeldrepengerOverforingInformasjon()
         ));
     }
