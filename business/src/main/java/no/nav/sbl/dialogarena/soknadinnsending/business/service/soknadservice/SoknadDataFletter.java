@@ -1,21 +1,17 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLAlternativRepresentasjon;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLAlternativRepresentasjonListe;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadata;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.*;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.modig.lang.collections.predicate.InstanceOf;
 import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
@@ -47,30 +43,21 @@ import static javax.xml.bind.JAXB.unmarshal;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.LASTET_OPP;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.modig.lang.collections.IterUtils.on;
-import static no.nav.modig.lang.collections.PredicateUtils.equalTo;
-import static no.nav.modig.lang.collections.PredicateUtils.not;
-import static no.nav.modig.lang.collections.PredicateUtils.where;
+import static no.nav.modig.lang.collections.PredicateUtils.*;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.AVBRUTT_AV_BRUKER;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.FERDIG;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.UNDER_ARBEID;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.*;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum.sammenlignEtterDependOn;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.convertToXmlVedleggListe;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.NYESTE_FORST;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.ELDSTE_FORST;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.STATUS;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.erIkkeSystemfaktumOgKunEtErTillatt;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.hentOrginalInnsendtDato;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.journalforendeEnhet;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.kvittering;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.skjemanummer;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
 public class SoknadDataFletter {
 
     private static final Logger logger = getLogger(SoknadDataFletter.class);
+    private final boolean MED_DATA = true;
+    private final boolean MED_VEDLEGG = true;
 
     @Inject
     private HenvendelseService henvendelseService;
@@ -274,7 +261,7 @@ public class SoknadDataFletter {
     }
 
     public void sendSoknad(String behandlingsId, byte[] pdf) {
-        WebSoknad soknad = hentSoknad(behandlingsId, true, true);
+        WebSoknad soknad = hentSoknad(behandlingsId, MED_DATA, MED_VEDLEGG);
         if (soknad.erEttersending() && soknad.getOpplastedeVedlegg().size() <= 0) {
             logger.error("Kan ikke sende inn ettersendingen med ID {0} uten å ha lastet opp vedlegg", soknad.getBrukerBehandlingId());
             throw new ApplicationException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg");
@@ -288,19 +275,26 @@ public class SoknadDataFletter {
         logger.info("Lagrer søknad som fil til henvendelse for behandling {}", soknad.getBrukerBehandlingId());
         fillagerService.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(pdf));
 
-        XMLHovedskjema hovedskjema = new XMLHovedskjema()
+        henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), lagXmlHovedskjemaMedAlternativRepresentasjon(pdf, soknad), convertToXmlVedleggListe(vedleggService.hentVedleggOgKvittering(soknad)));
+        lokalDb.slettSoknad(soknad.getSoknadId());
+    }
+
+    private XMLHovedskjema lagXmlHovedskjemaMedAlternativRepresentasjon(byte[] pdf, WebSoknad soknad) {
+        return new XMLHovedskjema()
                 .withInnsendingsvalg(LASTET_OPP.toString())
                 .withSkjemanummer(skjemanummer(soknad))
                 .withFilnavn(skjemanummer(soknad))
                 .withMimetype("application/pdf")
                 .withFilstorrelse("" + pdf.length)
                 .withUuid(soknad.getUuid())
-                .withJournalforendeEnhet(journalforendeEnhet(soknad));
+                .withJournalforendeEnhet(journalforendeEnhet(soknad))
+                .withAlternativRepresentasjonListe(new XMLAlternativRepresentasjonListe()
+                        .withAlternativRepresentasjon(lagListeMedXMLAlternativeRepresentasjoner(soknad)));
+    }
 
+    private List<XMLAlternativRepresentasjon> lagListeMedXMLAlternativeRepresentasjoner(WebSoknad soknad) {
+        List<XMLAlternativRepresentasjon> alternativRepresentasjonListe = new ArrayList<>();
         List<Transformer<WebSoknad, AlternativRepresentasjon>> transformers = kravdialogInformasjonHolder.hentKonfigurasjon(soknad.getskjemaNummer()).getTransformers();
-        XMLAlternativRepresentasjonListe xmlAlternativRepresentasjonListe = new XMLAlternativRepresentasjonListe();
-
-        List<XMLAlternativRepresentasjon> alternativRepresentasjonListe = xmlAlternativRepresentasjonListe.getAlternativRepresentasjon();
 
         for (Transformer<WebSoknad, AlternativRepresentasjon> transformer : transformers) {
             AlternativRepresentasjon altrep = transformer.transform(soknad);
@@ -315,10 +309,7 @@ public class SoknadDataFletter {
                     .withMimetype(altrep.getMimetype())
                     .withUuid(altrep.getUuid()));
         }
-        hovedskjema.withAlternativRepresentasjonListe(xmlAlternativRepresentasjonListe);
-
-        henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, convertToXmlVedleggListe(vedleggService.hentVedleggOgKvittering(soknad)));
-        lokalDb.slettSoknad(soknad.getSoknadId());
+        return alternativRepresentasjonListe;
     }
 
     public Long hentOpprinneligInnsendtDato(String behandlingsId) {
