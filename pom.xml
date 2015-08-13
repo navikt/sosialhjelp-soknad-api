@@ -255,6 +255,12 @@
                 <version>1.0</version>
             </dependency>
             <dependency>
+                <groupId>no.nav.meldinger.virksomhet</groupId>
+                <artifactId>nav-virksomhet-soeknadsskjema-v1-meldingsdefinisjon</artifactId>
+                <version>1.0.1</version>
+                <classifier>jaxb</classifier>
+            </dependency>
+            <dependency>
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
                 <version>2.7</version>
