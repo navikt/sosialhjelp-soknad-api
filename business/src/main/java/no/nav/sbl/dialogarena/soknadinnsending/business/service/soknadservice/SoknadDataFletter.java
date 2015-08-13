@@ -1,7 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLAlternativRepresentasjon;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLAlternativRepresentasjonListe;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadata;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
@@ -15,7 +13,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingS
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
@@ -26,7 +23,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
-import org.apache.commons.collections15.Transformer;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.context.ApplicationContext;
@@ -48,24 +44,13 @@ import static javax.xml.bind.JAXB.unmarshal;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.LASTET_OPP;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.modig.lang.collections.IterUtils.on;
-import static no.nav.modig.lang.collections.PredicateUtils.equalTo;
-import static no.nav.modig.lang.collections.PredicateUtils.not;
-import static no.nav.modig.lang.collections.PredicateUtils.where;
+import static no.nav.modig.lang.collections.PredicateUtils.*;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.AVBRUTT_AV_BRUKER;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.FERDIG;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.UNDER_ARBEID;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.*;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum.sammenlignEtterDependOn;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.convertToXmlVedleggListe;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.NYESTE_FORST;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.SORTER_INNSENDT_DATO;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.STATUS;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.erIkkeSystemfaktumOgKunEtErTillatt;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.hentOrginalInnsendtDato;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.journalforendeEnhet;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.kvittering;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.skjemanummer;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -310,7 +295,7 @@ public class SoknadDataFletter {
                 .withUuid(soknad.getUuid())
                 .withJournalforendeEnhet(journalforendeEnhet(soknad));
 
-        List<Transformer<WebSoknad, AlternativRepresentasjon>> transformers = kravdialogInformasjonHolder.hentKonfigurasjon(soknad.getskjemaNummer()).getTransformers();
+        /*List<Transformer<WebSoknad, AlternativRepresentasjon>> transformers = kravdialogInformasjonHolder.hentKonfigurasjon(soknad.getskjemaNummer()).getTransformers();
         XMLAlternativRepresentasjonListe xmlAlternativRepresentasjonListe = new XMLAlternativRepresentasjonListe();
 
         List<XMLAlternativRepresentasjon> alternativRepresentasjonListe = xmlAlternativRepresentasjonListe.getAlternativRepresentasjon();
@@ -328,7 +313,7 @@ public class SoknadDataFletter {
                     .withMimetype(altrep.getMimetype())
                     .withUuid(altrep.getUuid()));
         }
-        hovedskjema.withAlternativRepresentasjonListe(xmlAlternativRepresentasjonListe);
+        hovedskjema.withAlternativRepresentasjonListe(xmlAlternativRepresentasjonListe);*/
 
         henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, convertToXmlVedleggListe(vedleggService.hentVedleggOgKvittering(soknad)));
         lokalDb.slettSoknad(soknad.getSoknadId());
