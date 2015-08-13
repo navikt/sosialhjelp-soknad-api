@@ -8,6 +8,7 @@ import no.nav.modig.core.domain.SluttBruker;
 import no.nav.sbl.dialogarena.soknadinnsending.business.SoknadDataFletterIntegrationTestContext;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
@@ -181,6 +182,7 @@ public class SoknadServiceIntegrasjonsTest {
         skjemaNummer = "NAV 11-12.12";
         String behandlingsId = nyBehandlnigsId();
         opprettOgPersisterSoknad(behandlingsId, "aktor");
+        lokalDb.lagreFaktum(soknadId, maalgruppeFaktum(), true);
 
         soknadService.sendSoknad(behandlingsId, new byte[]{});
 
@@ -210,6 +212,14 @@ public class SoknadServiceIntegrasjonsTest {
         soknadId = lokalDb.opprettSoknad(soknad);
         soknad.setSoknadId(soknadId);
         return soknadId;
+    }
+
+    private Faktum maalgruppeFaktum() {
+        return new Faktum()
+                .medType(Faktum.FaktumType.SYSTEMREGISTRERT)
+                .medKey("maalgruppe")
+                .medProperty("kodeverkVerdi", "ARBSOKER")
+                .medProperty("fom", "2015-01-01");
     }
 
     @After
