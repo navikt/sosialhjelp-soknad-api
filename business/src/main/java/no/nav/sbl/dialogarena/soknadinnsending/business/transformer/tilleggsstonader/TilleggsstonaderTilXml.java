@@ -26,7 +26,9 @@ public class TilleggsstonaderTilXml implements Transformer<WebSoknad, Alternativ
 
     private static Tilleggsstoenadsskjema tilTilleggsstoenadSkjema(WebSoknad webSoknad) {
         Tilleggsstoenadsskjema skjema = new Tilleggsstoenadsskjema();
-        skjema.setMaalgruppeinformasjon(new MaalgruppeTilXml().transform(webSoknad.getFaktumMedKey("maalgruppe")));
+        if(!webSoknad.erEttersending()) {
+            skjema.setMaalgruppeinformasjon(new MaalgruppeTilXml().transform(webSoknad.getFaktumMedKey("maalgruppe")));
+        }
         return skjema;
     }
 }
