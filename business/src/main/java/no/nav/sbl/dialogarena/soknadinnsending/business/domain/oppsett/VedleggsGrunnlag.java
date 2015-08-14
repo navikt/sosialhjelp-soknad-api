@@ -7,12 +7,16 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 public class VedleggsGrunnlag {
+    private static final Logger logger = getLogger(VedleggsGrunnlag.class);
     public List<Pair<SoknadVedlegg, List<Faktum>>> grunnlag = new ArrayList<>();
     private WebSoknad soknad;
     private Vedlegg vedlegg;
@@ -90,7 +94,8 @@ public class VedleggsGrunnlag {
     public void oppdaterInnsendingsvalg(VedleggRepository vedleggRepository) {
         Boolean kreverDbOppdatering = oppdaterInnsendingsvalg(erVedleggPaakrevd());
         if (kreverDbOppdatering) {
-            //TODO fiks exception håndtering her
+            logger.warn("\n ########### VEDLEGGSFEIL - Feil i ny vedleggsgenereringslogikk ################# \n" + "Lagrer vedlegg: \n" + vedlegg);
+
 //            vedleggRepository.opprettEllerLagreVedleggVedNyGenereringUtenEndringAvData(vedlegg);
         }
     }
