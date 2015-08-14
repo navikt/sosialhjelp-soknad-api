@@ -14,11 +14,11 @@
             <tr>
                 <td class="sjekket"></td>
                 <td>
-                    {{hentTekst (concat cmsPrefiks (concat "bilogutstyr.hjelpemidler." value))}}
+                    <span>{{hentTekst (concat cmsPrefiks (concat "bilogutstyr.hjelpemidler." value))}}. </span>
 
                     {{#hvisLik value "ja"}}
                         {{#forFaktum "bilogutstyr.hjelpemidler.ja.beskrivelse"}}
-                            <div>{{hentTekst (concat cmsPrefiks "bilogutstyr.hjelpemidler.ja.beskrivelse.oppsummering")}}: <em>{{value}}</em></div>
+                            <span>{{hentTekst "oppsummering.bilogutstyr.hjelpemidler.ja.beskrivelse"}}: <em>{{value}}</em></span>
                         {{/forFaktum}}
                     {{/hvisLik}}
 
@@ -52,12 +52,12 @@
                     <tr>
                         <td class="sjekket"></td>
                         <td>
-                            {{hentTekst (concat cmsPrefiks (concat "bilogutstyr.kassebil.hjelpemidler." value))}}
+                            <span>{{hentTekst (concat cmsPrefiks (concat "bilogutstyr.kassebil.hjelpemidler." value))}}. </span>
 
                             {{#hvisLik value "ja"}}
 
                                 {{#forFaktum "bilogutstyr.kassebil.hjelpemidler.ja.beskrivelse"}}
-                                    <div>{{hentTekst (concat cmsPrefiks "bilogutstyr.hjelpemidler.ja.beskrivelse.oppsummering")}}: <em>{{value}}</em></div>
+                                    <span>{{hentTekst "oppsummering.bilogutstyr.hjelpemidler.ja.beskrivelse"}}: <em>{{value}}</em></span>
                                 {{/forFaktum}}
 
                             {{/hvisLik}}
@@ -86,7 +86,7 @@
 
                             {{#hvisLik value "ja"}}
                                 {{#forFaktum "bilogutstyr.personbiltilpasninger.hjelpemidler.ja.beskrivelse"}}
-                                    <div>{{hentTekst (concat cmsPrefiks "bilogutstyr.hjelpemidler.ja.beskrivelse.oppsummering")}}: <em>{{value}}</em></div>
+                                    <div>{{hentTekst "oppsummering.bilogutstyr.hjelpemidler.ja.beskrivelse"}}: <em>{{value}}</em></div>
                                 {{/forFaktum}}
                             {{/hvisLik}}
 
