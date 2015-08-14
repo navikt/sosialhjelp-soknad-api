@@ -39,7 +39,7 @@
 
         <modig.frontend>1.1.96</modig.frontend>
         <spring.version>3.2.9.RELEASE</spring.version>
-        <jersey.version>2.16</jersey.version>
+        <jersey.version>2.20</jersey.version>
         <cxf.version>2.7.9</cxf.version>
         <modig-security.version>1.0.24</modig-security.version>
         <sendsoknad.tjenestespec.version>0.0.23</sendsoknad.tjenestespec.version>
