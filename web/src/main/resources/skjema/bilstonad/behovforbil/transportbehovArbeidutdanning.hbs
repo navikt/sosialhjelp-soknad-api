@@ -29,7 +29,7 @@
         {{#forFaktum "behovforbil.antallreisertilfraarbeid"}}
             <tr>
                 <td class="sjekket"></td>
-                <td><span>{{ hentTekst (concat cmsPrefiks "behovforbil.antallreisertilfraarbeid" )}}</span><br/><em>{{ value }}</em></td>
+                <td><span>{{ hentTekst "oppsummering.behovforbil.antallreisertilfraarbeid"}}</span>: <em>{{ value }}</em></td>
             </tr>
 
         {{/forFaktum}}
@@ -37,7 +37,7 @@
         {{#forFaktum "behovforbil.avstandtilarbeidsplass"}}
             <tr>
                 <td class="sjekket"></td>
-                <td><span>{{ hentTekst (concat cmsPrefiks "behovforbil.avstandtilarbeidsplass") }}</span><br/><em>{{ value }}</em> {{ hentTekst "enhet.kilometer"}}</td>
+                <td><span>{{ hentTekst "oppsummering.behovforbil.avstandtilarbeidsplass"}}</span>: <em>{{ value }}</em> {{ hentTekst "enhet.kilometer"}}</td>
             </tr>
 
         {{/forFaktum}}
@@ -45,7 +45,7 @@
         {{#forFaktum "behovforbil.hvordandekkesbehov.beskrivelse"}}
             <tr>
                 <td class="sjekket"></td>
-                <td><span>{{ hentTekst (concat cmsPrefiks "behovforbil.hvordandekkesbehov.beskrivelse.sporsmal") }}</span><br/><em>{{ value }}</em></td>
+                <td><span>{{ hentTekst "oppsummering.behovforbil.hvordandekkesbehov.beskrivelse"}}</span>: <em>{{ value }}</em></td>
             </tr>
         {{/forFaktum}}
     {{/hvisLik}}

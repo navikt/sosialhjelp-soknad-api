@@ -60,9 +60,9 @@
             <tr>
                 <td class="sjekket"></td>
                 <td>
-                    <span>{{ hentTekst (concat cmsPrefiks "behovforbil.belastende.andrearsaker")}}</span><br/>
+                    <span>{{ hentTekst (concat cmsPrefiks "behovforbil.belastende.andrearsaker")}}. </span>
                     {{#forFaktum "behovforbil.belastende.andrearsaker.beskrivelse"}}
-                        <em>{{ value }}</em>
+                        <span>{{hentTekst "oppsummering.behovforbil.belastende.andrearsaker.beskrivelse.label"}}: <em>{{ value }}</em> kr</span>
                     {{/forFaktum}}
                 </td>
             </tr>
