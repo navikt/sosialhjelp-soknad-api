@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
@@ -50,8 +49,7 @@ public class SoknadService {
     }
 
     public WebSoknad hentEttersendingForBehandlingskjedeId(String behandlingsId) {
-        Optional<WebSoknad> soknad = lokalDb.hentEttersendingMedBehandlingskjedeId(behandlingsId);
-        return soknad.isSome() ? soknad.get() : null;
+        return lokalDb.hentEttersendingMedBehandlingskjedeId(behandlingsId).orNull();
     }
 
     @Transactional
