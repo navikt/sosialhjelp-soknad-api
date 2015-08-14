@@ -8,7 +8,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggReposi
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.VedleggGenereringMismatch;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import org.apache.commons.io.IOUtils;
@@ -163,7 +162,7 @@ public class VedleggServiceTest {
     }
 
     @Test
-    public void skalHentePaakrevdeVedlegg() throws VedleggGenereringMismatch {
+    public void skalHentePaakrevdeVedlegg() {
         Map<Kodeverk.Nokkel, String> map = new HashMap<>();
         map.put(Kodeverk.Nokkel.TITTEL, "tittel");
         map.put(Kodeverk.Nokkel.URL, "url");

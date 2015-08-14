@@ -27,7 +27,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigOpplastingTypeException;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.VedleggGenereringMismatch;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.VedleggsGrunnlag;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
@@ -256,19 +255,31 @@ public class VedleggService {
         return paakrevdeVedlegg;
     }
 
-    public List<Vedlegg> hentPaakrevdeVedlegg(String behandlingsId) throws VedleggGenereringMismatch {
+    public List<Vedlegg> hentPaakrevdeVedlegg(String behandlingsId) {
         List<Vedlegg> paakrevdeVedlegg = on(vedleggRepository.hentVedlegg(behandlingsId)).filter(PAAKREVDE_VEDLEGG).collect();
         leggTilKodeverkFelter(paakrevdeVedlegg);
-
-        // I TEST/UTV/QA??
 
         List<Vedlegg> paakrevdeVedleggVedNyUthenting = hentPaakrevdeVedleggMedGenerering(behandlingsId);
         leggTilKodeverkFelter(paakrevdeVedleggVedNyUthenting);
         if (VedleggsgenereringUtil.likeVedlegg(paakrevdeVedlegg, paakrevdeVedleggVedNyUthenting)) {
-                return paakrevdeVedlegg;
-        }else {
-            throw new VedleggGenereringMismatch(paakrevdeVedlegg, paakrevdeVedleggVedNyUthenting);
+            return paakrevdeVedlegg;
+        } else {
+            String feilmelding = "\n ########### VEDLEGGSFEIL - Feil i ny vedleggsgenereringslogikk ################# \n";
+            feilmelding +=  "Gammel metode: \n" + getVedleggfeilMessage(paakrevdeVedlegg);
+            feilmelding +=   "Ny metode: \n" + getVedleggfeilMessage(paakrevdeVedleggVedNyUthenting);
+            logger.warn(feilmelding);
+
+            return paakrevdeVedlegg;
         }
+    }
+
+    private String getVedleggfeilMessage(List<Vedlegg> vedleggList) {
+        String melding = "";
+        for (Vedlegg vedlegg : vedleggList) {
+            melding += vedlegg + "\n";
+        }
+
+        return melding +  "Antall vedlegg: " + vedleggList.size() + "\n";
     }
 
     public List<Vedlegg> hentPaakrevdeVedleggMedGenerering(String behandlingsId) {
