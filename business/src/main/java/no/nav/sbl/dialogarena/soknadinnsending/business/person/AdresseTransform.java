@@ -15,6 +15,7 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostadresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostboksadresseNorsk;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLStrukturertAdresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLUstrukturertAdresse;
+import org.apache.commons.collections15.Transformer;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static no.nav.modig.lang.option.Optional.optional;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.BOSTEDSADRESSE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND;
@@ -33,6 +35,8 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetyp
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class AdresseTransform {
+    private final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd");
+    private final String C_O = "C/O";
     private Kodeverk kodeverk;
 
     private static final Logger logger = getLogger(AdresseTransform.class);
@@ -158,32 +162,39 @@ public class AdresseTransform {
     }
 
     private Adresse finnMidlertidigAdresse(XMLMidlertidigPostadresseNorge xmlMidlPostAdrNorge, XMLStrukturertAdresse strukturertAdresse) {
+        XMLGyldighetsperiode periode = xmlMidlPostAdrNorge.getPostleveringsPeriode();
         if (strukturertAdresse instanceof XMLGateadresse) {
             return getMidlertidigPostadresseNorge(
-                    retrieveGyldigFra(xmlMidlPostAdrNorge.getPostleveringsPeriode()),
-                    retrieveGyldigTil(xmlMidlPostAdrNorge.getPostleveringsPeriode()),
+                    optional(periode).map(FRA_DATO).orNull(),
+                    optional(periode).map(TIL_DATO).orNull(),
                     (XMLGateadresse) strukturertAdresse);
         } else if (strukturertAdresse instanceof XMLPostboksadresseNorsk) {
             return getMidlertidigPostboksadresseNorge(
-                    retrieveGyldigFra(xmlMidlPostAdrNorge.getPostleveringsPeriode()),
-                    retrieveGyldigTil(xmlMidlPostAdrNorge.getPostleveringsPeriode()),
+                    optional(periode).map(FRA_DATO).orNull(),
+                    optional(periode).map(TIL_DATO).orNull(),
                     (XMLPostboksadresseNorsk) strukturertAdresse);
         } else if (strukturertAdresse instanceof XMLMatrikkeladresse) {
             return getMidlertidigOmrodeAdresse(
-                    retrieveGyldigFra(xmlMidlPostAdrNorge.getPostleveringsPeriode()),
-                    retrieveGyldigTil(xmlMidlPostAdrNorge.getPostleveringsPeriode()),
+                    optional(periode).map(FRA_DATO).orNull(),
+                    optional(periode).map(TIL_DATO).orNull(),
                     (XMLMatrikkeladresse) strukturertAdresse);
         }
         throw new ApplicationException("ukjent adressetype med klassenavn: " + strukturertAdresse.getClass().getCanonicalName());
     }
 
-    private DateTime retrieveGyldigTil(XMLGyldighetsperiode postleveringsPeriode) {
-        return postleveringsPeriode != null ? postleveringsPeriode.getTom() : null;
-    }
+    private Transformer<XMLGyldighetsperiode, DateTime> TIL_DATO = new Transformer<XMLGyldighetsperiode, DateTime>() {
+        @Override
+        public DateTime transform(XMLGyldighetsperiode xmlGyldighetsperiode) {
+            return xmlGyldighetsperiode.getTom();
+        }
+    };
 
-    private DateTime retrieveGyldigFra(XMLGyldighetsperiode postleveringsPeriode) {
-        return postleveringsPeriode != null ? postleveringsPeriode.getFom() : null;
-    }
+    private Transformer<XMLGyldighetsperiode, DateTime> FRA_DATO = new Transformer<XMLGyldighetsperiode, DateTime>() {
+        @Override
+        public DateTime transform(XMLGyldighetsperiode xmlGyldighetsperiode) {
+            return xmlGyldighetsperiode.getFom();
+        }
+    };
 
     private Adresse finnPostAdresse(XMLPostadresse postadresse) {
         XMLUstrukturertAdresse ustrukturertAdresse = postadresse.getUstrukturertAdresse();
@@ -229,9 +240,8 @@ public class AdresseTransform {
     }
 
     private void setGyldigFraOgTil(Adresse midlertidigAdresse, XMLGyldighetsperiode postleveringsPeriode) {
-        DateTimeFormatter dateTimeFormat = DateTimeFormat.forPattern("yyyy-MM-dd");
-        midlertidigAdresse.setGyldigFra(postleveringsPeriode != null ? dateTimeFormat.print(postleveringsPeriode.getFom()) : "");
-        midlertidigAdresse.setGyldigTil(postleveringsPeriode != null ? dateTimeFormat.print(postleveringsPeriode.getTom()) : "");
+        midlertidigAdresse.setGyldigFra(postleveringsPeriode != null ? DATE_TIME_FORMATTER.print(postleveringsPeriode.getFom()) : "");
+        midlertidigAdresse.setGyldigTil(postleveringsPeriode != null ? DATE_TIME_FORMATTER.print(postleveringsPeriode.getTom()) : "");
     }
 
     private void setLandkode(Adresse midlertidigAdresse, XMLUstrukturertAdresse ustrukturertAdresse) {
@@ -262,66 +272,62 @@ public class AdresseTransform {
     }
 
     private Adresse getMidlertidigPostboksadresseNorge(DateTime gyldigFra, DateTime gyldigTil, XMLPostboksadresseNorsk xmlPostboksAdresse) {
-        DateTimeFormatter dateTimeFormat = DateTimeFormat.forPattern("yyyy-MM-dd");
         Adresse adresse = new Adresse();
         adresse.setAdressetype(MIDLERTIDIG_POSTADRESSE_NORGE.name());
-        adresse.setGyldigFra(dateTimeFormat.print(gyldigFra));
-        adresse.setGyldigTil(dateTimeFormat.print(gyldigTil));
+        adresse.setGyldigFra(DATE_TIME_FORMATTER.print(gyldigFra));
+        adresse.setGyldigTil(DATE_TIME_FORMATTER.print(gyldigTil));
 
         StringBuilder stringBuilder = new StringBuilder();
+
         if (xmlPostboksAdresse.getTilleggsadresse() != null) {
-            stringBuilder.append(xmlPostboksAdresse.getTilleggsadresse());
-            stringBuilder.append(", ");
+            stringBuilder.append(C_O).append(" ").append(xmlPostboksAdresse.getTilleggsadresse()).append(", ");
         }
+
+        String postboksanlegg = xmlPostboksAdresse.getPostboksanlegg();
+        if (postboksanlegg != null && !postboksanlegg.isEmpty()) {
+            stringBuilder.append("Postboks ").append(xmlPostboksAdresse.getPostboksnummer()).append(" ").append(postboksanlegg).append(", ");
+        }
+
         stringBuilder.append(getPostnummerString(xmlPostboksAdresse));
         stringBuilder.append(' ');
         stringBuilder.append(kodeverk.getPoststed(getPostnummerString(xmlPostboksAdresse)));
-        stringBuilder.append(", ");
-        String postboksanlegg = xmlPostboksAdresse.getPostboksanlegg();
-        if (postboksanlegg != null && !postboksanlegg.isEmpty()) {
-            stringBuilder.append(postboksanlegg);
-            stringBuilder.append(' ');
-        }
-        stringBuilder.append(xmlPostboksAdresse.getPostboksnummer());
-        adresse.setAdresse(stringBuilder.toString());
 
+        adresse.setAdresse(stringBuilder.toString());
         return adresse;
     }
 
     private Adresse getMidlertidigOmrodeAdresse(DateTime gyldigFra, DateTime gyldigTil, XMLMatrikkeladresse xmlMatrikkelAdresse) {
-        DateTimeFormatter dateTimeFormat = DateTimeFormat.forPattern("yyyy-MM-dd");
         Adresse adresse = new Adresse();
         adresse.setAdressetype(MIDLERTIDIG_POSTADRESSE_NORGE.name());
-        adresse.setGyldigFra(dateTimeFormat.print(gyldigFra));
-        adresse.setGyldigTil(dateTimeFormat.print(gyldigTil));
+        adresse.setGyldigFra(DATE_TIME_FORMATTER.print(gyldigFra));
+        adresse.setGyldigTil(DATE_TIME_FORMATTER.print(gyldigTil));
 
         StringBuilder stringBuilder = new StringBuilder();
+
         if (xmlMatrikkelAdresse.getTilleggsadresse() != null) {
-            stringBuilder.append(xmlMatrikkelAdresse.getTilleggsadresse());
-            stringBuilder.append(", ");
+            stringBuilder.append(C_O).append(" ").append(xmlMatrikkelAdresse.getTilleggsadresse()).append(", ");
         }
+
+        if (xmlMatrikkelAdresse.getEiendomsnavn() != null) {
+            stringBuilder.append(xmlMatrikkelAdresse.getEiendomsnavn()).append(", ");
+        }
+
         stringBuilder.append(getPostnummerString(xmlMatrikkelAdresse));
         stringBuilder.append(' ');
         stringBuilder.append(kodeverk.getPoststed(getPostnummerString(xmlMatrikkelAdresse)));
-        stringBuilder.append(", ");
-        if (xmlMatrikkelAdresse.getEiendomsnavn() != null) {
-            stringBuilder.append(xmlMatrikkelAdresse.getEiendomsnavn());
-        }
-        adresse.setAdresse(stringBuilder.toString());
 
+        adresse.setAdresse(stringBuilder.toString());
         return adresse;
     }
 
     private Adresse getMidlertidigPostadresseNorge(DateTime gyldigFra, DateTime gyldigTil, XMLGateadresse xmlGateAdresse) {
-        DateTimeFormatter dateTimeFormat = DateTimeFormat.forPattern("yyyy-MM-dd");
         Adresse adresse = new Adresse();
         adresse.setAdressetype(MIDLERTIDIG_POSTADRESSE_NORGE.name());
-        adresse.setGyldigFra(dateTimeFormat.print(gyldigFra));
-        adresse.setGyldigTil(dateTimeFormat.print(gyldigTil));
+        adresse.setGyldigFra(DATE_TIME_FORMATTER.print(gyldigFra));
+        adresse.setGyldigTil(DATE_TIME_FORMATTER.print(gyldigTil));
         StringBuilder stringBuilder = new StringBuilder();
         if(xmlGateAdresse.getTilleggsadresse() != null) {
-            stringBuilder.append(xmlGateAdresse.getTilleggsadresse());
-            stringBuilder.append(", ");
+            stringBuilder.append(C_O).append(" ").append(xmlGateAdresse.getTilleggsadresse()).append(", ");
         }
         stringBuilder.append(xmlGateAdresse.getGatenavn());
         stringBuilder.append(' ');
