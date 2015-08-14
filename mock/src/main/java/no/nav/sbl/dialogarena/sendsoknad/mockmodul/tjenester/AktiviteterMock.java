@@ -1,10 +1,10 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.tjenester;
 
-import no.nav.tjeneste.virksomhet.sakogaktivitetinformasjon.v1.SakOgAktivitetInformasjonV1;
-import no.nav.tjeneste.virksomhet.sakogaktivitetinformasjon.v1.informasjon.WSAktivitet;
-import no.nav.tjeneste.virksomhet.sakogaktivitetinformasjon.v1.informasjon.WSPeriode;
-import no.nav.tjeneste.virksomhet.sakogaktivitetinformasjon.v1.meldinger.WSFinnAktivitetsinformasjonListeRequest;
-import no.nav.tjeneste.virksomhet.sakogaktivitetinformasjon.v1.meldinger.WSFinnAktivitetsinformasjonListeResponse;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.SakOgAktivitetV1;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSAktivitet;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSPeriode;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetsinformasjonListeRequest;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetsinformasjonListeResponse;
 import org.joda.time.LocalDate;
 
 import static org.mockito.Matchers.any;
@@ -13,8 +13,8 @@ import static org.mockito.Mockito.when;
 
 public class AktiviteterMock {
 
-    public SakOgAktivitetInformasjonV1 sakOgAktivitetInformasjonV1Mock() {
-        SakOgAktivitetInformasjonV1 mock = mock(SakOgAktivitetInformasjonV1.class);
+    public SakOgAktivitetV1 sakOgAktivitetInformasjonV1Mock() {
+        SakOgAktivitetV1 mock = mock(SakOgAktivitetV1.class);
 
         try {
             WSFinnAktivitetsinformasjonListeResponse response = new WSFinnAktivitetsinformasjonListeResponse();
