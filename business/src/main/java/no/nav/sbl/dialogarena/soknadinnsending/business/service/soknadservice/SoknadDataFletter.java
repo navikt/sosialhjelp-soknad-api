@@ -297,25 +297,9 @@ public class SoknadDataFletter {
                 .withUuid(soknad.getUuid())
                 .withJournalforendeEnhet(journalforendeEnhet(soknad));
 
-        List<Transformer<WebSoknad, AlternativRepresentasjon>> transformers = kravdialogInformasjonHolder.hentKonfigurasjon(soknad.getskjemaNummer()).getTransformers();
-        XMLAlternativRepresentasjonListe xmlAlternativRepresentasjonListe = new XMLAlternativRepresentasjonListe();
-
-        List<XMLAlternativRepresentasjon> alternativRepresentasjonListe = xmlAlternativRepresentasjonListe.getAlternativRepresentasjon();
-
-        for (Transformer<WebSoknad, AlternativRepresentasjon> transformer : transformers) {
-            AlternativRepresentasjon altrep = transformer.transform(soknad);
-            fillagerService.lagreFil(soknad.getBrukerBehandlingId(),
-                    altrep.getUuid(),
-                    soknad.getAktoerId(),
-                    new ByteArrayInputStream(altrep.getContent()));
-
-            alternativRepresentasjonListe.add(new XMLAlternativRepresentasjon()
-                    .withFilnavn(altrep.getFilnavn())
-                    .withFilstorrelse(altrep.getContent().length + "")
-                    .withMimetype(altrep.getMimetype())
-                    .withUuid(altrep.getUuid()));
+        if(!soknad.erEttersending()) {
+            hovedskjema.withAlternativRepresentasjonListe(getAlternativRepresentasjonListeForSoknad(soknad));
         }
-        hovedskjema.withAlternativRepresentasjonListe(xmlAlternativRepresentasjonListe);
 
         henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, convertToXmlVedleggListe(vedleggService.hentVedleggOgKvittering(soknad)));
         lokalDb.slettSoknad(soknad.getSoknadId());
@@ -336,5 +320,28 @@ public class SoknadDataFletter {
                 .collect(NYESTE_FORST)
                 .get(0)
                 .getBehandlingsId();
+    }
+
+    // TODO: Denne koden burde ligge en annen plass
+    private XMLAlternativRepresentasjonListe getAlternativRepresentasjonListeForSoknad(WebSoknad soknad) {
+        XMLAlternativRepresentasjonListe xmlAlternativRepresentasjonListe = new XMLAlternativRepresentasjonListe();
+
+        List<XMLAlternativRepresentasjon> alternativRepresentasjonListe = xmlAlternativRepresentasjonListe.getAlternativRepresentasjon();
+        List<Transformer<WebSoknad, AlternativRepresentasjon>> transformers = kravdialogInformasjonHolder.hentKonfigurasjon(soknad.getskjemaNummer()).getTransformers();
+
+        for (Transformer<WebSoknad, AlternativRepresentasjon> transformer : transformers) {
+            AlternativRepresentasjon altrep = transformer.transform(soknad);
+            fillagerService.lagreFil(soknad.getBrukerBehandlingId(),
+                    altrep.getUuid(),
+                    soknad.getAktoerId(),
+                    new ByteArrayInputStream(altrep.getContent()));
+
+            alternativRepresentasjonListe.add(new XMLAlternativRepresentasjon()
+                .withFilnavn(altrep.getFilnavn())
+                .withFilstorrelse(altrep.getContent().length + "")
+                .withMimetype(altrep.getMimetype())
+                .withUuid(altrep.getUuid()));
+        }
+        return xmlAlternativRepresentasjonListe;
     }
 }
