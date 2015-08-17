@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
 public class AlternativRepresentasjon {
     private String filnavn;
-    private String memetype;
+    private String mimetype;
     private String uuid;
     private byte[] content;
 
@@ -16,11 +16,11 @@ public class AlternativRepresentasjon {
     }
 
     public String getMimetype() {
-        return memetype;
+        return mimetype;
     }
 
-    public AlternativRepresentasjon medMemetype(String memetype) {
-        this.memetype = memetype;
+    public AlternativRepresentasjon medMimetype(String memetype) {
+        this.mimetype = memetype;
         return this;
     }
 
