@@ -2,101 +2,11 @@
 <table>
 
     {{#hvisLik cmsPrefiks "dagligliv."}}
-
-        {{#forFaktum "bilogutstyr.spesialutstyr.beskrivelse"}}
-            <tr>
-                <td class="sjekket"></td>
-                <td>{{hentTekst (concat cmsPrefiks "bilogutstyr.spesialutstyr.beskrivelse.oppsummering")}}: <em>{{value}}</em></td>
-            </tr>
-        {{/forFaktum}}
-
-        {{#forFaktum "bilogutstyr.hjelpemidler"}}
-            <tr>
-                <td class="sjekket"></td>
-                <td>
-                    <span>{{hentTekst (concat cmsPrefiks (concat "bilogutstyr.hjelpemidler." value))}}. </span>
-
-                    {{#hvisLik value "ja"}}
-                        {{#forFaktum "bilogutstyr.hjelpemidler.ja.beskrivelse"}}
-                            <span>{{hentTekst "oppsummering.bilogutstyr.hjelpemidler.ja.beskrivelse"}}: <em>{{value}}</em></span>
-                        {{/forFaktum}}
-                    {{/hvisLik}}
-
-                </td>
-            </tr>
-        {{/forFaktum}}
-
-        {{>skjema/bilstonad/bilogutstyr/firehjulstrekk}}
-
+        {{> skjema/bilstonad/bilogutstyr/bilogutstyrDagligliv }}
     {{/hvisLik}}
 
     {{#hvisLik cmsPrefiks "arbeidutdanning."}}
-
-        {{#forFaktum "bilogutstyr"}}
-
-            <tr>
-                <td class="sjekket"></td>
-                <td>{{hentTekst (concat cmsPrefiks (concat "bilogutstyr." value))}}</td>
-            </tr>
-
-            {{#hvisLik value "kassebil"}}
-
-                {{#forFaktum "bilogutstyr.kassebil.spesialutstyr.beskrivelse"}}
-                    <tr>
-                        <td class="sjekket"></td>
-                        <td>{{hentTekst (concat cmsPrefiks "bilogutstyr.spesialutstyr.beskrivelse.oppsummering")}}: <em>{{value}}</em></td>
-                    </tr>
-                {{/forFaktum}}
-
-                {{#forFaktum "bilogutstyr.kassebil.hjelpemidler"}}
-                    <tr>
-                        <td class="sjekket"></td>
-                        <td>
-                            <span>{{hentTekst (concat cmsPrefiks (concat "bilogutstyr.kassebil.hjelpemidler." value))}}. </span>
-
-                            {{#hvisLik value "ja"}}
-
-                                {{#forFaktum "bilogutstyr.kassebil.hjelpemidler.ja.beskrivelse"}}
-                                    <span>{{hentTekst "oppsummering.bilogutstyr.hjelpemidler.ja.beskrivelse"}}: <em>{{value}}</em></span>
-                                {{/forFaktum}}
-
-                            {{/hvisLik}}
-
-                        </td>
-                    </tr>
-                {{/forFaktum}}
-
-                {{>skjema/bilstonad/bilogutstyr/firehjulstrekk}}
-            {{/hvisLik}}
-
-            {{#hvisLik value "personbiltilpasninger"}}
-
-                {{#forFaktum "bilogutstyr.personbiltilpasninger.spesialutstyr.beskrivelse"}}
-                    <tr>
-                        <td class="sjekket"></td>
-                        <td>{{hentTekst (concat cmsPrefiks "bilogutstyr.spesialutstyr.beskrivelse.oppsummering")}}: <em>{{value}}</em></td>
-                    </tr>
-                {{/forFaktum}}
-
-                {{#forFaktum "bilogutstyr.personbiltilpasninger.hjelpemidler"}}
-                    <tr>
-                        <td class="sjekket"></td>
-                        <td>
-                            {{hentTekst (concat cmsPrefiks (concat "bilogutstyr.personbiltilpasninger.hjelpemidler." value))}}
-
-                            {{#hvisLik value "ja"}}
-                                {{#forFaktum "bilogutstyr.personbiltilpasninger.hjelpemidler.ja.beskrivelse"}}
-                                    <div>{{hentTekst "oppsummering.bilogutstyr.hjelpemidler.ja.beskrivelse"}}: <em>{{value}}</em></div>
-                                {{/forFaktum}}
-                            {{/hvisLik}}
-
-                        </td>
-                    </tr>
-                {{/forFaktum}}
-            {{/hvisLik}}
-
-        {{/forFaktum}}
-
+        {{> skjema/bilstonad/bilogutstyr/bilogutstyrArbeidutdanning }}
     {{/hvisLik}}
 
 </table>
