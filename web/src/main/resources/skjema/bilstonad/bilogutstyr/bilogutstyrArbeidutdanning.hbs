@@ -41,21 +41,21 @@
 
                     {{#forFaktum "bilogutstyr.personbiltilpasninger.spesialutstyr.beskrivelse"}}
                         <li class="kulepunkt faktum-felt">
-                                <span>{{hentTekst (concat cmsPrefiks "bilogutstyr.spesialutstyr.beskrivelse.oppsummering")}}:
-                                    <em>{{value}}</em>
-                                </span>
+                            <span>{{hentTekst (concat cmsPrefiks "bilogutstyr.spesialutstyr.beskrivelse.oppsummering")}}:
+                                <em>{{value}}</em>
+                            </span>
                         </li>
                     {{/forFaktum}}
 
                     {{#forFaktum "bilogutstyr.personbiltilpasninger.hjelpemidler"}}
                         <li class="kulepunkt faktum-felt">
-                            {{hentTekst (concat cmsPrefiks (concat "bilogutstyr.personbiltilpasninger.hjelpemidler." value))}}
+                            <span>{{hentTekst (concat cmsPrefiks (concat "bilogutstyr.personbiltilpasninger.hjelpemidler." value))}}</span>
 
                             {{#hvisLik value "ja"}}
                                 {{#forFaktum "bilogutstyr.personbiltilpasninger.hjelpemidler.ja.beskrivelse"}}
-                                    <span>{{hentTekst "oppsummering.bilogutstyr.hjelpemidler.ja.beskrivelse"}}:
-                                            <em>{{value}}</em>
-                                        </span>
+                                    <span>. {{hentTekst "oppsummering.bilogutstyr.hjelpemidler.ja.beskrivelse"}}:
+                                        <em>{{value}}</em>
+                                    </span>
                                 {{/forFaktum}}
                             {{/hvisLik}}
                         </li>
