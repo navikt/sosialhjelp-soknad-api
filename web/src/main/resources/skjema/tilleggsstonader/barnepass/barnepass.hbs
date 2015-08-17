@@ -1,5 +1,10 @@
 {{#forFaktum "informasjonsside.stonad.barn"}}
     {{#hvisSant value}}
         <h2>{{hentTekst "soknad.barn.tittel"}}</h2>
+        <table>
+        {{#forFaktum "barn.periode"}}
+            {{> skjema/tilleggsstonader/felles/aktivitetsperiode}}
+        {{/forFaktum}}
+        </table>
     {{/hvisSant}}
 {{/forFaktum}}
