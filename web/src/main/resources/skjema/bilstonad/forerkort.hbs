@@ -11,58 +11,56 @@
         {{#hvisLik value "false"}}
             <tr>
                 <td class="sjekket"></td>
-                <td>{{ hentTekst "forerkort.erIkkeGyldigINorge.label"}}</td>
+                <td>{{ hentTekst "forerkort.erIkkeGyldigINorge.label"}}
+
+                    {{#forFaktum "forerkort.skalTaForerkort"}}
+
+                        <ul>
+                            {{#hvisLik value "true"}}
+                                <li class="kulepunkt faktum-felt">
+                                    {{ hentTekst "forerkort.skalTaForerkort.label"}}
+                                </li>
+
+                                {{#forFaktum "forerkort.sokerOmKjoreopplaering"}}
+                                    {{#hvisLik value "true"}}
+                                        <li class="kulepunkt faktum-felt">
+                                            {{ hentTekst "forerkort.sokerOmKjoreopplaering.label"}}
+                                        </li>
+                                    {{/hvisLik}}
+
+                                    {{#hvisLik value "false"}}
+                                        <li class="kulepunkt faktum-felt">
+                                            {{ hentTekst "forerkort.sokerIkkeOmKjoreopplaering.label"}}
+                                        </li>
+                                    {{/hvisLik}}
+
+                                {{/forFaktum}}
+                            {{/hvisLik}}
+
+                            {{#hvisLik value "false"}}
+                                <li class="kulepunkt faktum-felt">
+                                    {{ hentTekst "forerkort.skalIkkeTaForerkort.label"}}
+                                </li>
+
+                                {{#forFaktum "forerkort.andreKanKjore"}}
+                                    {{#hvisLik value "true"}}
+                                        <li class="kulepunkt faktum-felt">
+                                            {{ hentTekst "forerkort.andreKanKjore.label"}}
+                                        </li>
+                                    {{/hvisLik}}
+
+                                    {{#hvisLik value "false"}}
+                                        <li class="kulepunkt faktum-felt">
+                                            {{ hentTekst "forerkort.andreKanIkkeKjore.label"}}
+                                        </li>
+                                    {{/hvisLik}}
+
+                                {{/forFaktum}}
+                            {{/hvisLik}}
+                        </ul>
+                    {{/forFaktum}}
+                </td>
             </tr>
-
-            {{#forFaktum "forerkort.skalTaForerkort"}}
-                {{#hvisLik value "true"}}
-                    <tr>
-                        <td class="sjekket"></td>
-                        <td>{{ hentTekst "forerkort.skalTaForerkort.label"}}</td>
-                    </tr>
-
-                    {{#forFaktum "forerkort.sokerOmKjoreopplaering"}}
-                        {{#hvisLik value "true"}}
-                            <tr>
-                                <td class="sjekket"></td>
-                                <td>{{ hentTekst "forerkort.sokerOmKjoreopplaering.label"}}</td>
-                            </tr>
-                        {{/hvisLik}}
-
-                        {{#hvisLik value "false"}}
-                            <tr>
-                                <td class="sjekket"></td>
-                                <td>{{ hentTekst "forerkort.sokerIkkeOmKjoreopplaering.label"}}</td>
-                            </tr>
-                        {{/hvisLik}}
-
-                    {{/forFaktum}}
-                {{/hvisLik}}
-
-                {{#hvisLik value "false"}}
-                    <tr>
-                        <td class="sjekket"></td>
-                        <td>{{ hentTekst "forerkort.skalIkkeTaForerkort.label"}}</td>
-                    </tr>
-
-                    {{#forFaktum "forerkort.andreKanKjore"}}
-                        {{#hvisLik value "true"}}
-                            <tr>
-                                <td class="sjekket"></td>
-                                <td>{{ hentTekst "forerkort.andreKanKjore.label"}}</td>
-                            </tr>
-                        {{/hvisLik}}
-
-                        {{#hvisLik value "false"}}
-                            <tr>
-                                <td class="sjekket"></td>
-                                <td>{{ hentTekst "forerkort.andreKanIkkeKjore.label"}}</td>
-                            </tr>
-                        {{/hvisLik}}
-
-                    {{/forFaktum}}
-                {{/hvisLik}}
-            {{/forFaktum}}
         {{/hvisLik}}
     {{/forFaktum}}
 </table>
