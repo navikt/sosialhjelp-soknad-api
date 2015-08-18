@@ -60,15 +60,12 @@
                     {{#forFaktumHvisSant "behovforbil.belastende.andrearsaker"}}
                         <li class="kulepunkt faktum-felt">
                             <span>{{ hentTekst (concat cmsPrefiks "behovforbil.belastende.andrearsaker")}}. </span>
-
-                            {{#forFaktum "behovforbil.belastende.andrearsaker.beskrivelse"}}
-                                <ul>
-                                    <li class="kulepunkt faktum-felt">
-                                        <span>{{hentTekst "oppsummering.behovforbil.belastende.andrearsaker.beskrivelse.label"}}: <em>{{ value }}</em> kr</span>
-                                    </li>
-                                </ul>
-                            {{/forFaktum}}
-
+                            <ul>
+                                <li class="kulepunkt faktum-felt">
+                                    <span>{{hentTekst "oppsummering.behovforbil.belastende.andrearsaker.beskrivelse.label"}}</span>:
+                                    <em>{{ hentFaktumValue "behovforbil.belastende.andrearsaker.beskrivelse" }}</em>
+                                </li>
+                            </ul>
                         </li>
                     {{/forFaktumHvisSant}}
 
