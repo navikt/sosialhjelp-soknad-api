@@ -33,21 +33,23 @@
                                     {{#hvisLik "nei" value}}
                                         <li class="kulepunkt faktum-felt">
                                             {{ hentTekst (concat cmsPrefiks "inntekt.partner.nei") }}
+
+                                            {{#forFaktum "inntekt.felles"}}
+                                                <ul>
+                                                    {{#hvisLik "nei" value}}
+                                                        <li class="kulepunkt faktum-felt">
+                                                            {{ hentTekst (concat cmsPrefiks "inntekt.felles.nei") }}
+                                                        </li>
+                                                    {{/hvisLik}}
+
+                                                    {{#hvisLik "ja" value}}
+                                                        <li class="kulepunkt faktum-felt">
+                                                            {{ hentTekst (concat cmsPrefiks "inntekt.felles.ja") }}
+                                                        </li>
+                                                    {{/hvisLik}}
+                                                </ul>
+                                            {{/forFaktum}}
                                         </li>
-
-                                        {{#forFaktum "inntekt.felles"}}
-                                            {{#hvisLik "nei" value}}
-                                                <li class="kulepunkt faktum-felt">
-                                                    {{ hentTekst (concat cmsPrefiks "inntekt.felles.nei") }}
-                                                </li>
-                                            {{/hvisLik}}
-
-                                            {{#hvisLik "ja" value}}
-                                                <li class="kulepunkt faktum-felt">
-                                                    {{ hentTekst (concat cmsPrefiks "inntekt.felles.ja") }}
-                                                </li>
-                                            {{/hvisLik}}
-                                        {{/forFaktum}}
                                     {{/hvisLik}}
 
                                     {{#hvisLik "ja" value}}
