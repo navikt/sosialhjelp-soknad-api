@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.*;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.modig.lang.collections.predicate.InstanceOf;
+import no.nav.modig.lang.collections.transform.Cast;
 import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
@@ -44,6 +45,7 @@ import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLIn
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.modig.lang.collections.PredicateUtils.*;
+import static no.nav.modig.lang.option.Optional.optional;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.*;
@@ -129,11 +131,10 @@ public class SoknadDataFletter {
         List<WSBehandlingskjedeElement> sorterteBehandlinger = on(behandlingskjede)
                 .filter(where(STATUS, not(equalTo(AVBRUTT_AV_BRUKER))))
                 .collect(NYESTE_FORST);
-        WSHentSoknadResponse wsSoknadsdata = henvendelseService.hentSoknad(sorterteBehandlinger.get(0).getBehandlingsId());
 
-        if (wsSoknadsdata.getInnsendtDato() == null) {
-            throw new ApplicationException("Kan ikke starte ettersending på en ikke fullfort soknad");
-        }
+        WSHentSoknadResponse wsSoknadsdata = henvendelseService.hentSoknad(sorterteBehandlinger.get(0).getBehandlingsId());
+        optional(wsSoknadsdata.getInnsendtDato()).getOrThrow(new ApplicationException("Kan ikke starte ettersending på en ikke fullfort soknad"));
+
         String ettersendingsBehandlingId = henvendelseService.startEttersending(wsSoknadsdata);
 
         String behandlingskjedeId = wsSoknadsdata.getBehandlingsId();
@@ -145,18 +146,18 @@ public class SoknadDataFletter {
         List<XMLMetadata> xmlVedleggListe = ((XMLMetadataListe) henvendelseService.hentSoknad(ettersendingsBehandlingId).getAny()).getMetadata();
         List<XMLMetadata> filtrertXmlVedleggListe = on(xmlVedleggListe).filter(not(kvittering())).collect();
 
-        Optional<XMLMetadata> hovedskjema = on(filtrertXmlVedleggListe)
-                .filter(new InstanceOf<XMLMetadata>(XMLHovedskjema.class)).head();
-        if (!hovedskjema.isSome()) {
-            throw new ApplicationException("Kunne ikke hente opp hovedskjema for søknad");
-        }
-        XMLHovedskjema xmlHovedskjema = (XMLHovedskjema) hovedskjema.get();
+        XMLHovedskjema hovedskjema =
+                on(filtrertXmlVedleggListe)
+                        .filter(new InstanceOf<XMLMetadata>(XMLHovedskjema.class))
+                        .map(new Cast<>(XMLHovedskjema.class))
+                        .head()
+                        .getOrThrow(new ApplicationException("Kunne ikke hente opp hovedskjema for søknad"));
 
         ettersending.medUuid(randomUUID().toString())
                 .medAktorId(getSubjectHandler().getUid())
-                .medskjemaNummer(xmlHovedskjema.getSkjemanummer())
+                .medskjemaNummer(hovedskjema.getSkjemanummer())
                 .medBehandlingskjedeId(behandlingskjedeId)
-                .medJournalforendeEnhet(xmlHovedskjema.getJournalforendeEnhet());
+                .medJournalforendeEnhet(hovedskjema.getJournalforendeEnhet());
 
         Long soknadId = lokalDb.opprettSoknad(ettersending);
         ettersending.setSoknadId(soknadId);
