@@ -18,44 +18,47 @@
                         <ul>
                             {{#hvisLik value "true"}}
                                 <li class="kulepunkt faktum-felt">
-                                    {{ hentTekst "forerkort.skalTaForerkort.label"}}
+                                    <span>{{ hentTekst "forerkort.skalTaForerkort.label"}}</span>
+
+                                    {{#forFaktum "forerkort.sokerOmKjoreopplaering"}}
+                                        <ul>
+                                            {{#hvisLik value "true"}}
+                                                <li class="kulepunkt faktum-felt">
+                                                    <span>{{ hentTekst "forerkort.sokerOmKjoreopplaering.label"}}</span>
+                                                </li>
+                                            {{/hvisLik}}
+
+                                            {{#hvisLik value "false"}}
+                                                <li class="kulepunkt faktum-felt">
+                                                    <span>{{ hentTekst "forerkort.sokerIkkeOmKjoreopplaering.label"}}</span>
+                                                </li>
+                                            {{/hvisLik}}
+                                        </ul>
+                                    {{/forFaktum}}
                                 </li>
-
-                                {{#forFaktum "forerkort.sokerOmKjoreopplaering"}}
-                                    {{#hvisLik value "true"}}
-                                        <li class="kulepunkt faktum-felt">
-                                            {{ hentTekst "forerkort.sokerOmKjoreopplaering.label"}}
-                                        </li>
-                                    {{/hvisLik}}
-
-                                    {{#hvisLik value "false"}}
-                                        <li class="kulepunkt faktum-felt">
-                                            {{ hentTekst "forerkort.sokerIkkeOmKjoreopplaering.label"}}
-                                        </li>
-                                    {{/hvisLik}}
-
-                                {{/forFaktum}}
                             {{/hvisLik}}
 
                             {{#hvisLik value "false"}}
                                 <li class="kulepunkt faktum-felt">
-                                    {{ hentTekst "forerkort.skalIkkeTaForerkort.label"}}
+                                    <span>{{ hentTekst "forerkort.skalIkkeTaForerkort.label"}}</span>
+
+                                    {{#forFaktum "forerkort.andreKanKjore"}}
+                                        <ul>
+                                            {{#hvisLik value "true"}}
+                                                <li class="kulepunkt faktum-felt">
+                                                     <span>{{ hentTekst "forerkort.andreKanKjore.label"}}</span>
+                                                </li>
+                                            {{/hvisLik}}
+
+                                            {{#hvisLik value "false"}}
+                                                <li class="kulepunkt faktum-felt">
+                                                    <span>{{ hentTekst "forerkort.andreKanIkkeKjore.label"}}</span>
+                                                </li>
+                                            {{/hvisLik}}
+                                        </ul>
+                                    {{/forFaktum}}
+
                                 </li>
-
-                                {{#forFaktum "forerkort.andreKanKjore"}}
-                                    {{#hvisLik value "true"}}
-                                        <li class="kulepunkt faktum-felt">
-                                            {{ hentTekst "forerkort.andreKanKjore.label"}}
-                                        </li>
-                                    {{/hvisLik}}
-
-                                    {{#hvisLik value "false"}}
-                                        <li class="kulepunkt faktum-felt">
-                                            {{ hentTekst "forerkort.andreKanIkkeKjore.label"}}
-                                        </li>
-                                    {{/hvisLik}}
-
-                                {{/forFaktum}}
                             {{/hvisLik}}
                         </ul>
                     {{/forFaktum}}
