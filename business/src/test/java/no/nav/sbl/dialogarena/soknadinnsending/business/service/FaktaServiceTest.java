@@ -63,7 +63,7 @@ public class FaktaServiceTest {
         Faktum faktum = new Faktum().medKey("epost").medValue("false").medFaktumId(soknadId);
         when(soknadRepository.hentSoknad(behandlingsId)).thenReturn(new WebSoknad().medId(soknadId).medDelstegStatus(DelstegStatus.UTFYLLING));
         when(soknadRepository.hentSoknad(soknadId)).thenReturn(new WebSoknad().medId(soknadId).medDelstegStatus(DelstegStatus.UTFYLLING));
-        when(soknadRepository.lagreFaktum(soknadId, faktum)).thenReturn(2L);
+        when(soknadRepository.opprettFaktum(soknadId, faktum)).thenReturn(2L);
         when(soknadRepository.hentFaktum(2L)).thenReturn(faktum);
         faktaService.opprettSoknadsFelt(behandlingsId, faktum);
         verify(soknadRepository, never()).settDelstegstatus(anyLong(), any(DelstegStatus.class));
@@ -75,14 +75,14 @@ public class FaktaServiceTest {
         String behandlingsId = "1000000ABC";
         Faktum faktum = new Faktum().medKey("ikkeavtjentverneplikt").medValue("false").medFaktumId(soknadId);
         when(soknadRepository.hentSoknad(behandlingsId)).thenReturn(new WebSoknad().medId(soknadId));
-        when(soknadRepository.lagreFaktum(soknadId, faktum)).thenReturn(2L);
+        when(soknadRepository.opprettFaktum(soknadId, faktum)).thenReturn(2L);
         when(soknadRepository.hentFaktum(2L)).thenReturn(faktum);
         faktaService.opprettSoknadsFelt(behandlingsId, faktum);
         verify(soknadRepository).settSistLagretTidspunkt(soknadId);
         when(soknadRepository.hentBarneFakta(soknadId, faktum.getFaktumId())).thenReturn(Collections.singletonList(new Faktum().medKey("subkey")));
 
         //Verifiser vedlegg sjekker.
-        verify(soknadRepository).lagreFaktum(soknadId, faktum);
+        verify(soknadRepository).opprettFaktum(soknadId, faktum);
 
     }
 
