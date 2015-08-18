@@ -311,6 +311,10 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         }
     }
 
+    public Long opprettFaktum(long soknadId, Faktum faktum) {
+        return lagreFaktum(soknadId, faktum, false);
+    }
+
     public Long lagreFaktum(long soknadId, Faktum faktum) {
         return lagreFaktum(soknadId, faktum, false);
     }
