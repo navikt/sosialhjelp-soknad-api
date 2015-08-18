@@ -70,9 +70,6 @@ public class SoknadDataFletter {
     private VedleggService vedleggService;
 
     @Inject
-    private EttersendingService ettersendingService;
-
-    @Inject
     private FaktaService faktaService;
 
     @Inject
