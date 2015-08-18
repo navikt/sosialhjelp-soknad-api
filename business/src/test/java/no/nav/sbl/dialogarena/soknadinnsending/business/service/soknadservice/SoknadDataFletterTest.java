@@ -157,7 +157,7 @@ public class SoknadDataFletterTest {
         when(lokalDb.hentSoknadMedData(soknadId)).thenReturn(new WebSoknad().medId(soknadId));
         soknadServiceUtil.startSoknad(DAGPENGER);
 
-        verify(faktaService, times(1)).lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum);
+        verify(faktaService, times(1)).opprettSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum);
         DateTimeUtils.setCurrentMillisSystem();
     }
 
@@ -206,7 +206,7 @@ public class SoknadDataFletterTest {
         when(lokalDb.hentSoknadMedData(soknadId)).thenReturn(new WebSoknad().medId(soknadId));
 
         String ettersendingBehandlingsId = soknadServiceUtil.startEttersending(behandlingsId);
-        verify(faktaService).lagreSystemFaktum(anyLong(), any(Faktum.class));
+        verify(faktaService).opprettSystemFaktum(anyLong(), any(Faktum.class));
         assertNotNull(ettersendingBehandlingsId);
     }
 
@@ -256,7 +256,7 @@ public class SoknadDataFletterTest {
         when(lokalDb.hentSoknadMedData(soknadId)).thenReturn(new WebSoknad().medId(soknadId));
         soknadServiceUtil.startSoknad(DAGPENGER);
 
-        verify(faktaService, times(1)).lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum);
+        verify(faktaService, times(1)).opprettSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum);
         DateTimeUtils.setCurrentMillisSystem();
     }
 

@@ -166,7 +166,7 @@ public class SoknadDataFletter {
                 .medKey("soknadInnsendingsDato")
                 .medValue(String.valueOf(hentOrginalInnsendtDato(behandlingskjede, behandlingsIdSoknad).getMillis()))
                 .medType(SYSTEMREGISTRERT);
-        faktaService.lagreSystemFaktum(soknadId, soknadInnsendingsDato);
+        faktaService.opprettSystemFaktum(soknadId, soknadInnsendingsDato);
         ettersending.setFakta(lokalDb.hentAlleBrukerData(soknadId));
         ettersending.setVedlegg(vedleggService.hentVedleggOgPersister(new XMLMetadataListe(filtrertXmlVedleggListe), soknadId));
 
@@ -197,7 +197,7 @@ public class SoknadDataFletter {
                 .medSoknadId(soknadId)
                 .medType(SYSTEMREGISTRERT)
                 .medKey("personalia");
-        faktaService.lagreSystemFaktum(soknadId, personalia);
+        faktaService.opprettSystemFaktum(soknadId, personalia);
 
         List<SoknadFaktum> fakta = hentSoknadStruktur(soknadId).getFakta();
         sort(fakta, sammenlignEtterDependOn());
@@ -221,7 +221,7 @@ public class SoknadDataFletter {
                 .medKey("lonnsOgTrekkOppgave")
                 .medType(SYSTEMREGISTRERT)
                 .medValue(startDatoService.erJanuarEllerFebruar().toString());
-        faktaService.lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum);
+        faktaService.opprettSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum);
 
         return behandlingsId;
     }
