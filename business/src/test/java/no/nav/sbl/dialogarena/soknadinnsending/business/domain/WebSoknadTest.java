@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.VedleggForFaktumStruktur;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -125,7 +125,7 @@ public class WebSoknadTest {
     public void skalReturnereVedleggSomMatcherForventningMedFlereTillattOgLikFaktumid() {
         Long faktumId = 123456L;
         String skjemanummer = "M6";
-        SoknadVedlegg forventning = new SoknadVedlegg()
+        VedleggForFaktumStruktur forventning = new VedleggForFaktumStruktur()
                 .medSkjemanummer(skjemanummer);
         forventning.setFlereTillatt(true);
 
@@ -138,7 +138,7 @@ public class WebSoknadTest {
     @Test
     public void skalReturnereVedleggSomMatcherForventningMedIkkeFlereTillattOgIkkeFaktumid() {
         String skjemanummer = "M6";
-        SoknadVedlegg forventning = new SoknadVedlegg()
+        VedleggForFaktumStruktur forventning = new VedleggForFaktumStruktur()
                 .medSkjemanummer(skjemanummer);
         forventning.setFlereTillatt(false);
 
@@ -151,7 +151,7 @@ public class WebSoknadTest {
     @Test
     public void skalIkkeReturnereVedleggSomIkkeHarFaktumIdOgFlereTillatt() {
         String skjemanummer = "M6";
-        SoknadVedlegg forventning = new SoknadVedlegg()
+        VedleggForFaktumStruktur forventning = new VedleggForFaktumStruktur()
                 .medSkjemanummer(skjemanummer);
         forventning.setFlereTillatt(true);
 
@@ -165,7 +165,7 @@ public class WebSoknadTest {
     public void skalIkkeReturnereVedleggSomHarUlikeFaktumIdFraForventning() {
         Long faktumId = 123456L;
         String skjemanummer = "M6";
-        SoknadVedlegg forventning = new SoknadVedlegg()
+        VedleggForFaktumStruktur forventning = new VedleggForFaktumStruktur()
                 .medSkjemanummer(skjemanummer);
         forventning.setFlereTillatt(true);
 
@@ -179,7 +179,7 @@ public class WebSoknadTest {
     public void skalIkkeReturnereVedleggSomIkkeMatcherForventningPaSkjemanummer() {
         Long faktumId = 123456L;
         String skjemanummer = "M6";
-        SoknadVedlegg forventning = new SoknadVedlegg()
+        VedleggForFaktumStruktur forventning = new VedleggForFaktumStruktur()
                 .medSkjemanummer(skjemanummer);
         forventning.setFlereTillatt(true);
 
@@ -193,7 +193,7 @@ public class WebSoknadTest {
     public void skalIkkeReturnereVedleggSomIkkeMatcherForventningPaSkjemanummertillegg() {
         Long faktumId = 123456L;
         String skjemanummer = "M6";
-        SoknadVedlegg forventning = new SoknadVedlegg()
+        VedleggForFaktumStruktur forventning = new VedleggForFaktumStruktur()
                 .medSkjemanummer(skjemanummer);
 
         forventning.setFlereTillatt(true);

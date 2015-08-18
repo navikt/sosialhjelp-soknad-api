@@ -17,7 +17,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class VedleggsGrunnlag {
     private static final Logger logger = getLogger(VedleggsGrunnlag.class);
-    public List<Pair<SoknadVedlegg, List<Faktum>>> grunnlag = new ArrayList<>();
+    public List<Pair<VedleggForFaktumStruktur, List<Faktum>>> grunnlag = new ArrayList<>();
     private WebSoknad soknad;
     private Vedlegg vedlegg;
 
@@ -26,12 +26,12 @@ public class VedleggsGrunnlag {
         this.vedlegg = vedlegg;
     }
 
-    VedleggsGrunnlag medGrunnlag(SoknadVedlegg vedlegg, List<Faktum> faktum) {
+    VedleggsGrunnlag medGrunnlag(VedleggForFaktumStruktur vedlegg, List<Faktum> faktum) {
         grunnlag.add(new ImmutablePair<>(vedlegg, faktum));
         return this;
     }
 
-    VedleggsGrunnlag medGrunnlag(SoknadVedlegg vedlegg, Faktum... faktum) {
+    VedleggsGrunnlag medGrunnlag(VedleggForFaktumStruktur vedlegg, Faktum... faktum) {
         return medGrunnlag(vedlegg, Arrays.asList(faktum));
     }
 
@@ -55,15 +55,15 @@ public class VedleggsGrunnlag {
 
 
     public boolean erVedleggPaakrevd() {
-        for (Pair<SoknadVedlegg, List<Faktum>> pair : grunnlag) {
+        for (Pair<VedleggForFaktumStruktur, List<Faktum>> pair : grunnlag) {
             if (matcherEtAvFaktumeneKravTilVedlegg(pair.getRight(), pair.getLeft())) return true;
         }
         return false;
     }
 
-    private boolean matcherEtAvFaktumeneKravTilVedlegg(List<Faktum> fakta, SoknadVedlegg soknadVedlegg) {
+    private boolean matcherEtAvFaktumeneKravTilVedlegg(List<Faktum> fakta, VedleggForFaktumStruktur vedleggForFaktumStruktur) {
         for (Faktum faktum : fakta) {
-            if (soknadVedlegg.getFaktum().erSynlig(soknad) && soknadVedlegg.trengerVedlegg(faktum) && /**Fremdeles veldig usikker på denne her */soknadVedlegg.harFilterProperty(faktum)) {
+            if (vedleggForFaktumStruktur.getFaktum().erSynlig(soknad) && vedleggForFaktumStruktur.trengerVedlegg(faktum) && /**Fremdeles veldig usikker på denne her */vedleggForFaktumStruktur.harFilterProperty(faktum)) {
                 return true;
             }
         }
@@ -71,7 +71,7 @@ public class VedleggsGrunnlag {
     }
 
     private Faktum finnForsteFaktum() {
-        for (Pair<SoknadVedlegg, List<Faktum>> pair : grunnlag) {
+        for (Pair<VedleggForFaktumStruktur, List<Faktum>> pair : grunnlag) {
             if (!pair.getRight().isEmpty()) {
                 return pair.getRight().get(0);
             }
