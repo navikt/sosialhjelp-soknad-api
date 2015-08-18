@@ -65,7 +65,7 @@ public class FaktaServiceTest {
         when(soknadRepository.hentSoknad(soknadId)).thenReturn(new WebSoknad().medId(soknadId).medDelstegStatus(DelstegStatus.UTFYLLING));
         when(soknadRepository.lagreFaktum(soknadId, faktum)).thenReturn(2L);
         when(soknadRepository.hentFaktum(2L)).thenReturn(faktum);
-        faktaService.lagreSoknadsFelt(behandlingsId, faktum);
+        faktaService.opprettSoknadsFelt(behandlingsId, faktum);
         verify(soknadRepository, never()).settDelstegstatus(anyLong(), any(DelstegStatus.class));
     }
 
@@ -77,7 +77,7 @@ public class FaktaServiceTest {
         when(soknadRepository.hentSoknad(behandlingsId)).thenReturn(new WebSoknad().medId(soknadId));
         when(soknadRepository.lagreFaktum(soknadId, faktum)).thenReturn(2L);
         when(soknadRepository.hentFaktum(2L)).thenReturn(faktum);
-        faktaService.lagreSoknadsFelt(behandlingsId, faktum);
+        faktaService.opprettSoknadsFelt(behandlingsId, faktum);
         verify(soknadRepository).settSistLagretTidspunkt(soknadId);
         when(soknadRepository.hentBarneFakta(soknadId, faktum.getFaktumId())).thenReturn(Collections.singletonList(new Faktum().medKey("subkey")));
 
