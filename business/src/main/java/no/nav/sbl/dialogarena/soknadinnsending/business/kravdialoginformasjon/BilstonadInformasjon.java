@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class BilstonadInformasjon implements KravdialogInformasjon {
+public class BilstonadInformasjon extends KravdialogInformasjon.KravdialogInformasjonUtenAlternativRepresentasjon {
 
     public String getSoknadTypePrefix() {
         return "bilstonad";

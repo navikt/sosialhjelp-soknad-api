@@ -112,12 +112,12 @@ public class SoknadStruktur implements Serializable {
             if (vedleggsforventning.getFlereTillatt()) {
                 for (Faktum faktum : faktaSomTriggerVedlegg) {
                     String key = vedleggsforventning.getSkjemaNummer() + vedleggsforventning.getSkjemanummerTillegg() + faktum.getFaktumId();
-                    muligeVedlegg.put(key, new VedleggsGrunnlag(soknad, soknad.finnVedleggSomMatcherForventning(vedleggsforventning)).medGrunnlag(vedleggsforventning, faktum));
+                    muligeVedlegg.put(key, new VedleggsGrunnlag(soknad, soknad.finnVedleggSomMatcherForventning(vedleggsforventning, faktum.getFaktumId())).medGrunnlag(vedleggsforventning, faktum));
                 }
             } else {
                 String key = vedleggsforventning.getSkjemaNummer() + vedleggsforventning.getSkjemanummerTillegg();
                 if (!muligeVedlegg.containsKey(key)) {
-                    muligeVedlegg.put(key, new VedleggsGrunnlag(soknad, soknad.finnVedleggSomMatcherForventning(vedleggsforventning)));
+                    muligeVedlegg.put(key, new VedleggsGrunnlag(soknad, soknad.finnVedleggSomMatcherForventning(vedleggsforventning, null)));
                 }
                 muligeVedlegg.get(key).medGrunnlag(vedleggsforventning, faktaSomTriggerVedlegg);
             }

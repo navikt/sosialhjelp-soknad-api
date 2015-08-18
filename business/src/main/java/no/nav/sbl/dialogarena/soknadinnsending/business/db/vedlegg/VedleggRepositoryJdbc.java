@@ -76,7 +76,7 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
     }
 
     @Override
-    public void opprettEllerLagreVedleggUtenEndingAvData(Vedlegg vedlegg) {
+    public void opprettEllerLagreVedleggVedNyGenereringUtenEndringAvData(Vedlegg vedlegg) {
         if(vedlegg.getVedleggId() == null) {
             opprettEllerEndreVedlegg(vedlegg, null);
         } else {

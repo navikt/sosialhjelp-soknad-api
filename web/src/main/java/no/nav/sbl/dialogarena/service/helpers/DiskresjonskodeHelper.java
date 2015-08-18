@@ -13,7 +13,7 @@ public class DiskresjonskodeHelper extends RegistryAwareHelper<Object> {
 
     public static final Helper<Object> INSTANS = new DiskresjonskodeHelper();
 
-    public static final String NAVN = "hvisKode6Eller7";
+    public static final String NAVN = "hvisHarDiskresjonskode";
     public static final String DISKRESJONSKODE_PROPERTY = "diskresjonskode";
     public static final String PERSONALIA_FAKTUM_KEY = "personalia";
 

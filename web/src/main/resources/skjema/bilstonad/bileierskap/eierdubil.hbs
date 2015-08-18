@@ -1,0 +1,38 @@
+{{#forFaktum "bileierskap.eierdubil"}}
+    <tr>
+        <td class="sjekket"></td>
+        <td>{{hentTekst (concat cmsPrefiks (concat "bileierskap.eierdubil." value))}}</td>
+    </tr>
+
+    {{#hvisLik value "nei"}}
+        {{#forFaktum "bileierskap.bilsisteaar"}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>{{hentTekst (concat cmsPrefiks (concat "bileierskap.bilsisteaar." value))}}
+
+                    {{#hvisLik value "ja"}}
+                        <ul>
+                            <li class="kulepunkt faktum-felt">
+                                {{hentTekst "arbeidutdanning.bileierskap.bilsisteaar.regnr"}}<br/>
+                                <em>{{hentFaktumValue "bileierskap.bilsisteaar.regnr"}}</em>
+                            </li>
+                            <li class="kulepunkt faktum-felt">
+                                {{hentTekst "arbeidutdanning.bileierskap.bilsisteaar.solgtarsak.sporsmal"}}<br/>
+                                <em>{{hentFaktumValue "bileierskap.bilsisteaar.solgtarsak"}}</em>
+                            </li>
+                        </ul>
+                    {{/hvisLik}}
+
+                </td>
+            </tr>
+        {{/forFaktum}}
+    {{/hvisLik}}
+
+    {{#hvisLik value "mellom8og11ar"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>{{hentTekst (concat (concat cmsPrefiks "bileierskap.kilometerstand.") (hentFaktumValue "bileierskap.kilometerstand"))}}</td>
+        </tr>
+    {{/hvisLik}}
+
+{{/forFaktum}}

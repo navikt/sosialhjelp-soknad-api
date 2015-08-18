@@ -81,7 +81,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         handlebars.registerHelper("hvisLik", generateHvisLikHelper());
         handlebars.registerHelper("hvisIkkeTom", generateHvisIkkeTomHelper());
         handlebars.registerHelper("hentTekst", generateHentTekstHelper());
-        handlebars.registerHelper("hentTekstMedParameter", generateHentTekstMedParameterHelper());
         handlebars.registerHelper("hentTekstMedFaktumParameter", generateHentTekstMedFaktumParameterHelper());
         handlebars.registerHelper("hentLand", generateHentLandHelper());
         handlebars.registerHelper("forVedlegg", generateForVedleggHelper());
@@ -247,15 +246,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         };
     }
 
-    private Helper<String> generateHentTekstMedParameterHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String key, Options options) throws IOException {
-                return getCmsTekst(key, new Object[]{options.param(0)}, NO_LOCALE);
-            }
-        };
-    }
-
     private Helper<String> generateHentTekstMedFaktumParameterHelper() {
         return new Helper<String>() {
             @Override
@@ -293,9 +283,12 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         try {
             return navMessageSource.getMessage(soknadTypePrefix + "." + key, parameters, locale);
         } catch (NoSuchMessageException e) {
-            return navMessageSource.getMessage(key, parameters, locale);
+            try {
+                return navMessageSource.getMessage(key, parameters, locale);
+            } catch (NoSuchMessageException e2) {
+                return String.format("KEY MANGLER: [%s]", key);
+            }
         }
-
     }
 
     private Helper<Object> generateHvisIkkeTomHelper() {
