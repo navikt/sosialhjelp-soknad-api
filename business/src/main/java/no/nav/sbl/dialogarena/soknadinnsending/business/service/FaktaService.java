@@ -58,11 +58,18 @@ public class FaktaService {
     }
 
     @Transactional
-    public Faktum lagreSoknadsFelt(String behandlingsId, Faktum faktum) {
-        WebSoknad soknad = repository.hentSoknad(behandlingsId);
-        faktum.setSoknadId(soknad.getSoknadId());
+    public Faktum opprettSoknadsFelt(String behandlingsId, Faktum faktum) {
+        Long soknadId = repository.hentSoknad(behandlingsId).getSoknadId();
+        faktum.setSoknadId(soknadId);
+        faktum.setType(BRUKERREGISTRERT);
+        Long faktumId = repository.lagreFaktum(soknadId, faktum);
 
-        return lagreSoknadsFelt(faktum);
+        repository.settSistLagretTidspunkt(soknadId);
+        settDelstegStatus(soknadId, faktum.getKey());
+
+        Faktum resultat = repository.hentFaktum(faktumId);
+        genererVedleggForFaktum(resultat);
+        return resultat;
     }
 
     @Transactional

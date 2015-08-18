@@ -33,7 +33,7 @@ public class FaktaRessurs {
     @Consumes(APPLICATION_JSON)
     @SjekkTilgangTilSoknad
     public Faktum opprettFaktum(@QueryParam("behandlingsId") final String behandlingsId, Faktum faktum) {
-        return faktaService.lagreSoknadsFelt(behandlingsId, faktum);
+        return faktaService.opprettSoknadsFelt(behandlingsId, faktum);
     }
 
     @GET
