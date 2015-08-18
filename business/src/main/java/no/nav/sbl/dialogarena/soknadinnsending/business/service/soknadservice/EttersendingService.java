@@ -84,8 +84,7 @@ public class EttersendingService {
         DateTime originalInnsendtDato = hentOrginalInnsendtDato(behandlingskjede, originalBehandlingsId);
         faktaService.lagreSystemFaktum(soknadId, soknadInnsendingsDato(soknadId, originalInnsendtDato));
 
-        ettersending.setFakta(lokalDb.hentAlleBrukerData(soknadId));
-        ettersending.setVedlegg(vedleggService.hentVedleggOgPersister(new XMLMetadataListe(vedleggBortsettFraKvittering), soknadId));
+        vedleggService.hentVedleggOgPersister(new XMLMetadataListe(vedleggBortsettFraKvittering), soknadId);
         return ettersending;
     }
 
