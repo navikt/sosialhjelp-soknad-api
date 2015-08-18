@@ -13,6 +13,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.StartDatoService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EttersendingService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
@@ -128,4 +129,7 @@ public class SoknadDataFletterIntegrationTestContext {
     public StartDatoService startDatoService(){
         return new StartDatoService();
     }
+
+    @Bean
+    public EttersendingService ettersendingService() { return new EttersendingService(); }
 }
