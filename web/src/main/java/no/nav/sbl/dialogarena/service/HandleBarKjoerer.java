@@ -95,7 +95,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         handlebars.registerHelper("concat", generateConcatStringHelper());
         handlebars.registerHelper("skalViseRotasjonTurnusSporsmaal", generateSkalViseRotasjonTurnusSporsmaalHelper());
         handlebars.registerHelper("hvisLikCmsTekst", generateHvisLikCmsTekstHelper());
-        handlebars.registerHelper("toLowerCase", generateToLowerCaseHelper());
         handlebars.registerHelper("hvisKunStudent", generateHvisKunStudentHelper());
         handlebars.registerHelper("harBarnetInntekt", generateHarBarnetInntektHelper());
 
@@ -605,14 +604,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         };
     }
 
-    private Helper<Object> generateToLowerCaseHelper() {
-        return new Helper<Object>() {
-            @Override
-            public CharSequence apply(Object value, Options options) throws IOException {
-                return value.toString().toLowerCase();
-            }
-        };
-    }
 
     private Helper<Object> generateHvisKunStudentHelper() {
         return new Helper<Object>() {
