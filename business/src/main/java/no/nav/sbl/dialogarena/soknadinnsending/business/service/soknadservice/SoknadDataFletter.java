@@ -96,11 +96,9 @@ public class SoknadDataFletter {
         bolker = applicationContext.getBeansOfType(BolkService.class);
     }
 
-    public SoknadStruktur hentSoknadStruktur(Long soknadId) {
-        return config.hentStruktur(soknadId);
-    }
+    private SoknadStruktur hentSoknadStruktur(Long soknadId) { return config.hentStruktur(soknadId); }
 
-    public WebSoknad hentFraHenvendelse(String behandlingsId, boolean hentFaktumOgVedlegg) {
+    private WebSoknad hentFraHenvendelse(String behandlingsId, boolean hentFaktumOgVedlegg) {
         WSHentSoknadResponse wsSoknadsdata = henvendelseService.hentSoknad(behandlingsId);
 
         Optional<XMLMetadata> hovedskjemaOptional = on(((XMLMetadataListe) wsSoknadsdata.getAny()).getMetadata())
