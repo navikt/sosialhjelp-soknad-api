@@ -127,12 +127,11 @@ public class SoknadDataFletter {
 
     public String startEttersending(String behandlingsIdSoknad) {
         List<WSBehandlingskjedeElement> behandlingskjede = henvendelseService.hentBehandlingskjede(behandlingsIdSoknad);
-
-        List<WSBehandlingskjedeElement> sorterteBehandlinger = on(behandlingskjede)
+        List<WSBehandlingskjedeElement> nyesteForstBehandlinger = on(behandlingskjede)
                 .filter(where(STATUS, not(equalTo(AVBRUTT_AV_BRUKER))))
                 .collect(NYESTE_FORST);
 
-        WSHentSoknadResponse wsSoknadsdata = henvendelseService.hentSoknad(sorterteBehandlinger.get(0).getBehandlingsId());
+        WSHentSoknadResponse wsSoknadsdata = henvendelseService.hentSoknad(nyesteForstBehandlinger.get(0).getBehandlingsId());
         optional(wsSoknadsdata.getInnsendtDato()).getOrThrow(new ApplicationException("Kan ikke starte ettersending på en ikke fullfort soknad"));
 
         String ettersendingsBehandlingId = henvendelseService.startEttersending(wsSoknadsdata);
@@ -140,11 +139,11 @@ public class SoknadDataFletter {
         String behandlingskjedeId = optional(wsSoknadsdata.getBehandlingskjedeId()).getOrElse(wsSoknadsdata.getBehandlingsId());
 
         WebSoknad ettersending = WebSoknad.startEttersending(ettersendingsBehandlingId);
-        List<XMLMetadata> xmlVedleggListe = ((XMLMetadataListe) henvendelseService.hentSoknad(ettersendingsBehandlingId).getAny()).getMetadata();
-        List<XMLMetadata> filtrertXmlVedleggListe = on(xmlVedleggListe).filter(not(kvittering())).collect();
+        List<XMLMetadata> alleVedlegg = ((XMLMetadataListe) henvendelseService.hentSoknad(ettersendingsBehandlingId).getAny()).getMetadata();
+        List<XMLMetadata> vedleggBortsettFraKvittering = on(alleVedlegg).filter(not(kvittering())).collect();
 
         XMLHovedskjema hovedskjema =
-                on(filtrertXmlVedleggListe)
+                on(vedleggBortsettFraKvittering)
                         .filter(new InstanceOf<XMLMetadata>(XMLHovedskjema.class))
                         .map(new Cast<>(XMLHovedskjema.class))
                         .head()
@@ -166,7 +165,7 @@ public class SoknadDataFletter {
                 .medType(SYSTEMREGISTRERT);
         faktaService.lagreSystemFaktum(soknadId, soknadInnsendingsDato);
         ettersending.setFakta(lokalDb.hentAlleBrukerData(soknadId));
-        ettersending.setVedlegg(vedleggService.hentVedleggOgPersister(new XMLMetadataListe(filtrertXmlVedleggListe), soknadId));
+        ettersending.setVedlegg(vedleggService.hentVedleggOgPersister(new XMLMetadataListe(vedleggBortsettFraKvittering), soknadId));
 
         return ettersending.getBrukerBehandlingId();
     }
