@@ -137,10 +137,7 @@ public class SoknadDataFletter {
 
         String ettersendingsBehandlingId = henvendelseService.startEttersending(wsSoknadsdata);
 
-        String behandlingskjedeId = wsSoknadsdata.getBehandlingsId();
-        if (wsSoknadsdata.getBehandlingskjedeId() != null) {
-            behandlingskjedeId = wsSoknadsdata.getBehandlingskjedeId();
-        }
+        String behandlingskjedeId = optional(wsSoknadsdata.getBehandlingskjedeId()).getOrElse(wsSoknadsdata.getBehandlingsId());
 
         WebSoknad ettersending = WebSoknad.startEttersending(ettersendingsBehandlingId);
         List<XMLMetadata> xmlVedleggListe = ((XMLMetadataListe) henvendelseService.hentSoknad(ettersendingsBehandlingId).getAny()).getMetadata();
