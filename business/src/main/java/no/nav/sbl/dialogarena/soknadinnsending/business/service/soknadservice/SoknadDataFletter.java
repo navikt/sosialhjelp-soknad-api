@@ -129,14 +129,10 @@ public class SoknadDataFletter {
                 .filter(where(STATUS, not(equalTo(AVBRUTT_AV_BRUKER))))
                 .collect(NYESTE_FORST);
 
-        WSHentSoknadResponse wsSoknadsdata = henvendelseService.hentSoknad(nyesteForstBehandlinger.get(0).getBehandlingsId());
-        optional(wsSoknadsdata.getInnsendtDato()).getOrThrow(new ApplicationException("Kan ikke starte ettersending på en ikke fullfort soknad"));
+        WSHentSoknadResponse nyesteSoknad = henvendelseService.hentSoknad(nyesteForstBehandlinger.get(0).getBehandlingsId());
+        optional(nyesteSoknad.getInnsendtDato()).getOrThrow(new ApplicationException("Kan ikke starte ettersending på en ikke fullfort soknad"));
 
-        String ettersendingsBehandlingId = henvendelseService.startEttersending(wsSoknadsdata);
-
-        String behandlingskjedeId = optional(wsSoknadsdata.getBehandlingskjedeId()).getOrElse(wsSoknadsdata.getBehandlingsId());
-
-        WebSoknad ettersending = WebSoknad.startEttersending(ettersendingsBehandlingId);
+        String ettersendingsBehandlingId = henvendelseService.startEttersending(nyesteSoknad);
         List<XMLMetadata> alleVedlegg = ((XMLMetadataListe) henvendelseService.hentSoknad(ettersendingsBehandlingId).getAny()).getMetadata();
         List<XMLMetadata> vedleggBortsettFraKvittering = on(alleVedlegg).filter(not(kvittering())).collect();
 
@@ -147,7 +143,9 @@ public class SoknadDataFletter {
                         .head()
                         .getOrThrow(new ApplicationException("Kunne ikke hente opp hovedskjema for søknad"));
 
-        ettersending.medUuid(randomUUID().toString())
+        String behandlingskjedeId = optional(nyesteSoknad.getBehandlingskjedeId()).getOrElse(nyesteSoknad.getBehandlingsId());
+        WebSoknad ettersending = WebSoknad.startEttersending(ettersendingsBehandlingId)
+                .medUuid(randomUUID().toString())
                 .medAktorId(getSubjectHandler().getUid())
                 .medskjemaNummer(hovedskjema.getSkjemanummer())
                 .medBehandlingskjedeId(behandlingskjedeId)
