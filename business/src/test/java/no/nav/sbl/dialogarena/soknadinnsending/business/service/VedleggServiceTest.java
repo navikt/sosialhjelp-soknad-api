@@ -87,7 +87,7 @@ public class VedleggServiceTest {
                 .medInnsendingsvalg(Vedlegg.Status.VedleggKreves);
 
         ArgumentCaptor<byte[]> captor = ArgumentCaptor.forClass(byte[].class);
-        when(vedleggRepository.opprettVedlegg(any(Vedlegg.class), captor.capture())).thenReturn(11L);
+        when(vedleggRepository.opprettEllerEndreVedlegg(any(Vedlegg.class), captor.capture())).thenReturn(11L);
 
         ByteArrayInputStream bais = new ByteArrayInputStream(getBytesFromFile("/images/bilde.jpg"));
         List<Long> ids = vedleggService.splitOgLagreVedlegg(vedlegg, bais);
@@ -119,7 +119,7 @@ public class VedleggServiceTest {
                 .medInnsendingsvalg(Vedlegg.Status.VedleggKreves);
 
         ArgumentCaptor<byte[]> captor = ArgumentCaptor.forClass(byte[].class);
-        when(vedleggRepository.opprettVedlegg(any(Vedlegg.class), captor.capture())).thenReturn(10L, 11L, 12L, 13L, 14L);
+        when(vedleggRepository.opprettEllerEndreVedlegg(any(Vedlegg.class), captor.capture())).thenReturn(10L, 11L, 12L, 13L, 14L);
 
         ByteArrayInputStream bais = new ByteArrayInputStream(getBytesFromFile("/pdfs/navskjema.pdf"));
         List<Long> ids = vedleggService.splitOgLagreVedlegg(vedlegg, bais);
@@ -170,7 +170,7 @@ public class VedleggServiceTest {
         Vedlegg vedlegg = new Vedlegg().medSkjemaNummer("L6");
         Vedlegg vedleggSjekk = new Vedlegg().medSkjemaNummer("L6").medTittel("tittel").medUrl("URL", "url")
                 .medFillagerReferanse(vedlegg.getFillagerReferanse());
-        when(vedleggRepository.hentPaakrevdeVedlegg(anyString())).thenReturn(Arrays.asList(vedlegg));
+        when(vedleggRepository.hentVedlegg(anyString())).thenReturn(Arrays.asList(vedlegg));
         List<Vedlegg> vedleggs = vedleggService.hentPaakrevdeVedlegg("10000000ABC");
         assertThat(vedleggs.get(0), is(equalTo(vedleggSjekk)));
     }

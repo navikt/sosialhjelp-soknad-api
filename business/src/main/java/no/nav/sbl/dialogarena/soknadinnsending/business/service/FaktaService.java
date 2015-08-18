@@ -220,7 +220,7 @@ public class FaktaService {
                     .medSkjemaNummer(soknadVedlegg.getSkjemaNummer())
                     .medSkjemanummerTillegg(soknadVedlegg.getSkjemanummerTillegg())
                     .medInnsendingsvalg(Vedlegg.Status.VedleggKreves);
-            vedlegg.setVedleggId(vedleggRepository.opprettVedlegg(vedlegg, null));
+            vedlegg.setVedleggId(vedleggRepository.opprettEllerEndreVedlegg(vedlegg, null));
         }
 
         if (faktum.getType().equals(Faktum.FaktumType.BRUKERREGISTRERT)) {

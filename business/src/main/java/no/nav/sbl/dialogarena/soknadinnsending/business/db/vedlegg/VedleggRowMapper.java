@@ -34,9 +34,9 @@ public class VedleggRowMapper implements RowMapper<Vedlegg> {
         }
 
         Vedlegg result = new Vedlegg()
-                .medVedleggId(rs.getLong("vedlegg_id"))
-                .medSoknadId(rs.getLong("soknad_id"))
-                .medFaktumId(rs.getLong("faktum"))
+                .medVedleggId(getLong(rs, "vedlegg_id"))
+                .medSoknadId(getLong(rs, "soknad_id"))
+                .medFaktumId(getLong(rs, "faktum"))
                 .medNavn(rs.getString("navn"))
                 .medStorrelse(rs.getLong("storrelse"))
                 .medAntallSider(rs.getInt("antallsider"))
@@ -54,6 +54,11 @@ public class VedleggRowMapper implements RowMapper<Vedlegg> {
         }
 
         return result;
+    }
+
+    private Long getLong(ResultSet rs, String felt) throws SQLException {
+        long result = rs.getLong(felt);
+        return rs.wasNull()? null: result;
     }
 
 }
