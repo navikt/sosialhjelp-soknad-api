@@ -77,6 +77,7 @@ public class VedleggService {
             return vedlegg != null && !vedlegg.getInnsendingsvalg().equals(IkkeVedlegg);
         }
     };
+    public static final String FEATURE_NY_VEDLEGGENERERING = "vedlegg.ny.generering";
 
     @Inject
     @Named("soknadInnsendingRepository")
@@ -259,18 +260,18 @@ public class VedleggService {
         List<Vedlegg> paakrevdeVedlegg = on(vedleggRepository.hentVedlegg(behandlingsId)).filter(PAAKREVDE_VEDLEGG).collect();
         leggTilKodeverkFelter(paakrevdeVedlegg);
 
-        List<Vedlegg> paakrevdeVedleggVedNyUthenting = hentPaakrevdeVedleggMedGenerering(behandlingsId);
-        leggTilKodeverkFelter(paakrevdeVedleggVedNyUthenting);
-        if (VedleggsgenereringUtil.likeVedlegg(paakrevdeVedlegg, paakrevdeVedleggVedNyUthenting)) {
-            return paakrevdeVedlegg;
-        } else {
-            String feilmelding = "\n ########### VEDLEGGSFEIL - Feil i ny vedleggsgenereringslogikk ################# \n";
-            feilmelding +=  "Gammel metode: \n" + getVedleggfeilMessage(paakrevdeVedlegg);
-            feilmelding +=   "Ny metode: \n" + getVedleggfeilMessage(paakrevdeVedleggVedNyUthenting);
-            logger.warn(feilmelding);
-
-            return paakrevdeVedlegg;
+        if("true".equals(System.getProperty(FEATURE_NY_VEDLEGGENERERING))){
+            List<Vedlegg> paakrevdeVedleggVedNyUthenting = hentPaakrevdeVedleggMedGenerering(behandlingsId);
+            leggTilKodeverkFelter(paakrevdeVedleggVedNyUthenting);
+            if (!VedleggsgenereringUtil.likeVedlegg(paakrevdeVedlegg, paakrevdeVedleggVedNyUthenting)) {
+                String feilmelding = "\n ########### VEDLEGGSFEIL - Feil i ny vedleggsgenereringslogikk ################# \n";
+                feilmelding +=  "Gammel metode: \n" + getVedleggfeilMessage(paakrevdeVedlegg);
+                feilmelding +=   "Ny metode: \n" + getVedleggfeilMessage(paakrevdeVedleggVedNyUthenting);
+                logger.warn(feilmelding);
+            }
         }
+        return paakrevdeVedlegg;
+
     }
 
     private String getVedleggfeilMessage(List<Vedlegg> vedleggList) {

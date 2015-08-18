@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggReposi
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import org.apache.commons.io.IOUtils;
@@ -41,9 +42,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -57,6 +56,8 @@ public class VedleggServiceTest {
     private VedleggRepository vedleggRepository;
     @Mock
     private SoknadService soknadService;
+    @Mock
+    private SoknadDataFletter soknadDataFletter;
     @Mock
     private FillagerService fillagerService;
     @Mock
@@ -163,11 +164,12 @@ public class VedleggServiceTest {
 
     @Test
     public void skalHentePaakrevdeVedlegg() {
+        System.setProperty(VedleggService.FEATURE_NY_VEDLEGGENERERING, "false");
         Map<Kodeverk.Nokkel, String> map = new HashMap<>();
         map.put(Kodeverk.Nokkel.TITTEL, "tittel");
         map.put(Kodeverk.Nokkel.URL, "url");
         when(kodeverk.getKoder("L6")).thenReturn(map);
-        Vedlegg vedlegg = new Vedlegg().medSkjemaNummer("L6");
+        Vedlegg vedlegg = new Vedlegg().medSkjemaNummer("L6").medInnsendingsvalg(Vedlegg.Status.VedleggKreves);
         Vedlegg vedleggSjekk = new Vedlegg().medSkjemaNummer("L6").medTittel("tittel").medUrl("URL", "url")
                 .medFillagerReferanse(vedlegg.getFillagerReferanse());
         when(vedleggRepository.hentVedlegg(anyString())).thenReturn(Arrays.asList(vedlegg));
