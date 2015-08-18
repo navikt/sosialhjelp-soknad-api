@@ -25,7 +25,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStatus;
 import org.joda.time.DateTime;
@@ -62,21 +61,13 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInns
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.DAGPENGER;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.RUTES_I_BRUT;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.refEq;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.atMost;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SoknadDataFletterTest {
@@ -162,55 +153,6 @@ public class SoknadDataFletterTest {
     }
 
     @Test
-    public void skalStarteForsteEttersending() {
-        String behandlingsId = "soknadBehandlingId";
-        String ettersendingsBehandlingId = "ettersendingBehandlingId";
-
-        DateTime innsendingsDato = DateTime.now();
-
-        WSBehandlingskjedeElement behandlingsKjedeElement = new WSBehandlingskjedeElement()
-                .withBehandlingsId(behandlingsId)
-                .withInnsendtDato(innsendingsDato)
-                .withStatus(WSStatus.FERDIG.toString());
-
-        WSHentSoknadResponse orginalInnsending = new WSHentSoknadResponse()
-                .withBehandlingsId(behandlingsId)
-                .withStatus(WSStatus.FERDIG.toString())
-                .withInnsendtDato(innsendingsDato)
-                .withAny(new XMLMetadataListe()
-                        .withMetadata(
-                                new XMLHovedskjema().withUuid("uidHovedskjema"),
-                                new XMLVedlegg().withSkjemanummer("MittSkjemaNummer")));
-
-        WSHentSoknadResponse ettersendingResponse = new WSHentSoknadResponse()
-                .withBehandlingsId(ettersendingsBehandlingId)
-                .withStatus(WSStatus.UNDER_ARBEID.toString())
-                .withAny(new XMLMetadataListe()
-                        .withMetadata(
-                                new XMLHovedskjema().withUuid("uidHovedskjema"),
-                                new XMLVedlegg().withSkjemanummer("MittSkjemaNummer").withInnsendingsvalg(Vedlegg.Status.SendesSenere.name())));
-
-        when(henvendelsesConnector.hentSoknad(ettersendingsBehandlingId)).thenReturn(ettersendingResponse);
-        when(henvendelsesConnector.hentSoknad(behandlingsId)).thenReturn(orginalInnsending);
-        when(henvendelsesConnector.hentBehandlingskjede(behandlingsId)).thenReturn(asList(behandlingsKjedeElement));
-        when(henvendelsesConnector.startEttersending(orginalInnsending)).thenReturn(ettersendingsBehandlingId);
-
-        Long soknadId = 11L;
-        Faktum soknadInnsendingsDatoFaktum = new Faktum()
-                .medSoknadId(soknadId)
-                .medKey("soknadInnsendingsDato")
-                .medValue(String.valueOf(innsendingsDato.getMillis()))
-                .medType(SYSTEMREGISTRERT);
-        when(lokalDb.hentFaktum(anyLong())).thenReturn(soknadInnsendingsDatoFaktum);
-        when(lokalDb.opprettSoknad(any(WebSoknad.class))).thenReturn(soknadId);
-        when(lokalDb.hentSoknadMedData(soknadId)).thenReturn(new WebSoknad().medId(soknadId));
-
-        String ettersendingBehandlingsId = soknadServiceUtil.startEttersending(behandlingsId);
-        verify(faktaService).lagreSystemFaktum(anyLong(), any(Faktum.class));
-        assertNotNull(ettersendingBehandlingsId);
-    }
-
-    @Test
     public void skalStarteSoknad() {
         final long soknadId = 69L;
         DateTimeUtils.setCurrentMillisFixed(System.currentTimeMillis());
@@ -258,23 +200,6 @@ public class SoknadDataFletterTest {
 
         verify(faktaService, times(1)).lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum);
         DateTimeUtils.setCurrentMillisSystem();
-    }
-
-    @Test(expected = ApplicationException.class)
-    public void skalIkkeKunneStarteEttersendingPaaUferdigSoknad() {
-        String behandlingsId = "UferdigSoknadBehandlingId";
-
-        WSBehandlingskjedeElement behandlingskjedeElement = new WSBehandlingskjedeElement()
-                .withBehandlingsId(behandlingsId)
-                .withStatus(WSStatus.UNDER_ARBEID.toString());
-
-        WSHentSoknadResponse orginalInnsending = new WSHentSoknadResponse()
-                .withBehandlingsId(behandlingsId)
-                .withStatus(WSStatus.UNDER_ARBEID.toString());
-        when(henvendelsesConnector.hentBehandlingskjede(behandlingsId)).thenReturn(asList(behandlingskjedeElement));
-        when(henvendelsesConnector.hentSoknad(behandlingsId)).thenReturn(orginalInnsending);
-
-        soknadServiceUtil.startEttersending(behandlingsId);
     }
 
     @Test(expected = ApplicationException.class)
