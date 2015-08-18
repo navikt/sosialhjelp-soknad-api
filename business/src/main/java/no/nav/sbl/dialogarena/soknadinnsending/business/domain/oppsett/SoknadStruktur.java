@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.collections15.Predicate;
 
@@ -98,22 +99,44 @@ public class SoknadStruktur implements Serializable {
 
     public List<VedleggsGrunnlag> hentAlleMuligeVedlegg(WebSoknad soknad) {
         Map<String, VedleggsGrunnlag> muligeVedlegg = new HashMap<>();
-        for (VedleggForFaktumStruktur vedleggForFaktumStruktur : getVedlegg()) {
-            List<Faktum> faktaSomTriggerVedlegg = soknad.getFaktaMedKey(vedleggForFaktumStruktur.getFaktum().getId());
 
-            if (vedleggForFaktumStruktur.getFlereTillatt()) {
+        for (VedleggForFaktumStruktur vedleggStruktur : getVedlegg()) {
+            List<Faktum> faktaSomTriggerVedlegg = soknad.getFaktaMedKey(vedleggStruktur.getFaktum().getId());
+
+            if (vedleggStruktur.getFlereTillatt()) {
+
                 for (Faktum faktum : faktaSomTriggerVedlegg) {
-                    String key = vedleggForFaktumStruktur.getSkjemaNummer() + vedleggForFaktumStruktur.getSkjemanummerTillegg() + faktum.getFaktumId();
-                    muligeVedlegg.put(key, new VedleggsGrunnlag(soknad, soknad.finnVedleggSomMatcherForventning(vedleggForFaktumStruktur, faktum.getFaktumId())).medGrunnlag(vedleggForFaktumStruktur, faktum));
+                    Vedlegg vedlegg = soknad.finnVedleggSomMatcherForventning(vedleggStruktur, faktum.getFaktumId());
+
+                    VedleggsGrunnlag vedleggsgrunnlag = new VedleggsGrunnlag(soknad, vedlegg)
+                            .medGrunnlag(vedleggStruktur, faktum);
+
+                    muligeVedlegg.put(createVedleggKey(vedleggStruktur, faktum), vedleggsgrunnlag);
                 }
             } else {
-                String key = vedleggForFaktumStruktur.getSkjemaNummer() + vedleggForFaktumStruktur.getSkjemanummerTillegg();
-                if (!muligeVedlegg.containsKey(key)) {
-                    muligeVedlegg.put(key, new VedleggsGrunnlag(soknad, soknad.finnVedleggSomMatcherForventning(vedleggForFaktumStruktur, null)));
+                String key = createVedleggKey(vedleggStruktur);
+                if (vedleggsgrunnlagFinnesIkke(muligeVedlegg, key)) {
+
+                    Vedlegg vedlegg = soknad.finnVedleggSomMatcherForventning(vedleggStruktur, null);
+                    VedleggsGrunnlag vedleggsgrunnlag = new VedleggsGrunnlag(soknad, vedlegg);
+
+                    muligeVedlegg.put(key, vedleggsgrunnlag);
                 }
-                muligeVedlegg.get(key).medGrunnlag(vedleggForFaktumStruktur, faktaSomTriggerVedlegg);
+                muligeVedlegg.get(key).medGrunnlag(vedleggStruktur, faktaSomTriggerVedlegg);
             }
         }
         return new ArrayList<>(muligeVedlegg.values());
+    }
+
+    private boolean vedleggsgrunnlagFinnesIkke(Map<String, VedleggsGrunnlag> muligeVedlegg, String key) {
+        return !muligeVedlegg.containsKey(key);
+    }
+
+    private String createVedleggKey(VedleggForFaktumStruktur vedleggStruktur) {
+        return vedleggStruktur.getSkjemaNummer() + vedleggStruktur.getSkjemanummerTillegg();
+    }
+
+    private String createVedleggKey(VedleggForFaktumStruktur vedleggStruktur, Faktum faktum) {
+        return vedleggStruktur.getSkjemaNummer() + vedleggStruktur.getSkjemanummerTillegg() + faktum.getFaktumId();
     }
 }
