@@ -76,7 +76,7 @@ public class EttersendingService {
         List<XMLMetadata> alleVedlegg = ((XMLMetadataListe) henvendelseService.hentSoknad(ettersendingsBehandlingId).getAny()).getMetadata();
         List<XMLMetadata> vedleggBortsettFraKvittering = on(alleVedlegg).filter(not(kvittering())).collect();
 
-        WebSoknad ettersending = lagEttersendingWebSoknad(ettersendingsBehandlingId, finnHovedskjema(vedleggBortsettFraKvittering), behandlingskjedeId);
+        WebSoknad ettersending = lagSoknad(ettersendingsBehandlingId, behandlingskjedeId, finnHovedskjema(vedleggBortsettFraKvittering));
 
         Long soknadId = lokalDb.opprettSoknad(ettersending);
         ettersending.setSoknadId(soknadId);
@@ -96,8 +96,8 @@ public class EttersendingService {
                 .medType(SYSTEMREGISTRERT);
     }
 
-    private WebSoknad lagEttersendingWebSoknad(String originalBehandlingId, XMLHovedskjema hovedskjema, String behandlingskjedeId) {
-        return WebSoknad.startEttersending(originalBehandlingId)
+    private WebSoknad lagSoknad(String behandlingsId, String behandlingskjedeId, XMLHovedskjema hovedskjema) {
+        return WebSoknad.startEttersending(behandlingsId)
                 .medUuid(randomUUID().toString())
                 .medAktorId(getSubjectHandler().getUid())
                 .medskjemaNummer(hovedskjema.getSkjemanummer())
