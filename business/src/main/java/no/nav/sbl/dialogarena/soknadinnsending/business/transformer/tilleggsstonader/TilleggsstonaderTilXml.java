@@ -18,7 +18,7 @@ public class TilleggsstonaderTilXml implements Transformer<WebSoknad, Alternativ
         JAXB.marshal(tilleggsstoenadsskjema, xml);
 
         return new AlternativRepresentasjon()
-                .medMemetype("application/xml")
+                .medMimetype("application/xml")
                 .medFilnavn("Tilleggsstonader.xml")
                 .medUuid(UUID.randomUUID().toString())
                 .medContent(xml.toString().getBytes());

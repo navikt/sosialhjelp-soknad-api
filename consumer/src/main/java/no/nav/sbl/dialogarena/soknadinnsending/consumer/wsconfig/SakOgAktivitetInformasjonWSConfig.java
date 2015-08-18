@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig;
 
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.tjenester.AktiviteterMock;
-import no.nav.tjeneste.virksomhet.sakogaktivitetinformasjon.v1.SakOgAktivitetInformasjonV1;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.SakOgAktivitetV1;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 public class SakOgAktivitetInformasjonWSConfig {
 
     @Bean
-    public SakOgAktivitetInformasjonV1 sakOgAktivitetInformasjonEndpoint() {
+    public SakOgAktivitetV1 sakOgAktivitetInformasjonEndpoint() {
         return new AktiviteterMock().sakOgAktivitetInformasjonV1Mock();
     }
 }

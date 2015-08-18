@@ -69,7 +69,7 @@ public final class StartSoknadJetty {
 
     private void configureSecurity() {
         setProperty("no.nav.modig.security.sts.url", "http://e34jbsl00713.devillo.no:8080/SecurityTokenServiceProvider/"); // Microscopium U1
-        setProperty("no.nav.modig.security.systemuser.username", "BD05");
+        setProperty("no.nav.modig.security.systemuser.username", "srvSendsoknad");
         setProperty("no.nav.modig.security.systemuser.password", "test");
         setProperty("org.apache.cxf.stax.allowInsecureParser", "true");
     }

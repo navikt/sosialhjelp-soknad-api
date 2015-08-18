@@ -31,7 +31,7 @@ public class SoknadTilleggsstonader implements KravdialogInformasjon {
     }
 
     public List<String> getSkjemanummer() {
-        return Arrays.asList("NAV 11-12.12");
+        return Arrays.asList("NAV 11-12.12", "NAV 11-12.13");
     }
 
     @Override

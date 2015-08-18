@@ -1,16 +1,20 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import javax.xml.bind.JAXB;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.Is.is;
 
@@ -115,5 +119,90 @@ public class WebSoknadTest {
         String xml = output.toString();
         assertThat(xml, containsString("<fakta>"));
         assertThat(xml, not(containsString("<faktaListe>")));
+    }
+
+    @Test
+    public void skalReturnereVedleggSomMatcherForventningMedFlereTillattOgLikFaktumid() {
+        Long faktumId = 123456L;
+        String skjemanummer = "M6";
+        SoknadVedlegg forventning = new SoknadVedlegg()
+                .medSkjemanummer(skjemanummer);
+        forventning.setFlereTillatt(true);
+
+        Vedlegg vedlegg = new Vedlegg(1L, faktumId, skjemanummer, Vedlegg.Status.UnderBehandling);
+
+        WebSoknad webSoknad = new WebSoknad().medVedlegg(vedlegg);
+        assertThat(webSoknad.finnVedleggSomMatcherForventning(forventning, faktumId), equalTo(vedlegg));
+    }
+
+    @Test
+    public void skalReturnereVedleggSomMatcherForventningMedIkkeFlereTillattOgIkkeFaktumid() {
+        String skjemanummer = "M6";
+        SoknadVedlegg forventning = new SoknadVedlegg()
+                .medSkjemanummer(skjemanummer);
+        forventning.setFlereTillatt(false);
+
+        Vedlegg vedlegg = new Vedlegg(1L, null, skjemanummer, Vedlegg.Status.UnderBehandling);
+
+        WebSoknad webSoknad = new WebSoknad().medVedlegg(vedlegg);
+        assertThat(webSoknad.finnVedleggSomMatcherForventning(forventning, null), equalTo(vedlegg));
+    }
+
+    @Test
+    public void skalIkkeReturnereVedleggSomIkkeHarFaktumIdOgFlereTillatt() {
+        String skjemanummer = "M6";
+        SoknadVedlegg forventning = new SoknadVedlegg()
+                .medSkjemanummer(skjemanummer);
+        forventning.setFlereTillatt(true);
+
+        Vedlegg vedlegg = new Vedlegg(1L, faktumId, skjemanummer, Vedlegg.Status.UnderBehandling);
+        WebSoknad webSoknad = new WebSoknad().medVedlegg(vedlegg);
+
+        assertThat(webSoknad.finnVedleggSomMatcherForventning(forventning, null), not(equalTo(vedlegg)));
+    }
+
+    @Test
+    public void skalIkkeReturnereVedleggSomHarUlikeFaktumIdFraForventning() {
+        Long faktumId = 123456L;
+        String skjemanummer = "M6";
+        SoknadVedlegg forventning = new SoknadVedlegg()
+                .medSkjemanummer(skjemanummer);
+        forventning.setFlereTillatt(true);
+
+        Vedlegg vedlegg = new Vedlegg(1L, faktumId, skjemanummer, Vedlegg.Status.UnderBehandling);
+        WebSoknad webSoknad = new WebSoknad().medVedlegg(vedlegg);
+        long ulikFaktumid = 1L;
+        assertThat(webSoknad.finnVedleggSomMatcherForventning(forventning, ulikFaktumid), not(equalTo(vedlegg)));
+    }
+
+    @Test
+    public void skalIkkeReturnereVedleggSomIkkeMatcherForventningPaSkjemanummer() {
+        Long faktumId = 123456L;
+        String skjemanummer = "M6";
+        SoknadVedlegg forventning = new SoknadVedlegg()
+                .medSkjemanummer(skjemanummer);
+        forventning.setFlereTillatt(true);
+
+        Vedlegg vedlegg = new Vedlegg(1L, faktumId, "K4", Vedlegg.Status.UnderBehandling);
+
+        WebSoknad webSoknad = new WebSoknad().medVedlegg(vedlegg);
+        assertThat(webSoknad.finnVedleggSomMatcherForventning(forventning, faktumId), not(equalTo(vedlegg)));
+    }
+
+    @Test
+    public void skalIkkeReturnereVedleggSomIkkeMatcherForventningPaSkjemanummertillegg() {
+        Long faktumId = 123456L;
+        String skjemanummer = "M6";
+        SoknadVedlegg forventning = new SoknadVedlegg()
+                .medSkjemanummer(skjemanummer);
+
+        forventning.setFlereTillatt(true);
+        forventning.setSkjemanummerTillegg("skjemanummertillegg");
+
+        Vedlegg vedlegg = new Vedlegg(1L, faktumId, "K4", Vedlegg.Status.UnderBehandling);
+        vedlegg.medSkjemanummerTillegg("annetSkjemanummertillegg");
+
+        WebSoknad webSoknad = new WebSoknad().medVedlegg(vedlegg);
+        assertThat(webSoknad.finnVedleggSomMatcherForventning(forventning, faktumId), not(equalTo(vedlegg)));
     }
 }

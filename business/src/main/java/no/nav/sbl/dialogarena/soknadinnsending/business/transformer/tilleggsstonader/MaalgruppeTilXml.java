@@ -36,6 +36,6 @@ public class MaalgruppeTilXml implements Transformer<Faktum, Maalgruppeinformasj
         if (tom != null) {
             periode.setTom(new XMLGregorianCalendarImpl(DateTime.parse(tom).toGregorianCalendar()));
         }
-        return new Periode();
+        return periode;
     }
 }

@@ -3,12 +3,12 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.tjeneste.virksomhet.sakogaktivitetinformasjon.v1.FinnAktivitetsinformasjonListePersonIkkeFunnet;
-import no.nav.tjeneste.virksomhet.sakogaktivitetinformasjon.v1.FinnAktivitetsinformasjonListeSikkerhetsbegrensning;
-import no.nav.tjeneste.virksomhet.sakogaktivitetinformasjon.v1.SakOgAktivitetInformasjonV1;
-import no.nav.tjeneste.virksomhet.sakogaktivitetinformasjon.v1.informasjon.WSAktivitet;
-import no.nav.tjeneste.virksomhet.sakogaktivitetinformasjon.v1.informasjon.WSPeriode;
-import no.nav.tjeneste.virksomhet.sakogaktivitetinformasjon.v1.meldinger.WSFinnAktivitetsinformasjonListeRequest;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetsinformasjonListePersonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetsinformasjonListeSikkerhetsbegrensning;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.SakOgAktivitetV1;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSAktivitet;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSPeriode;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetsinformasjonListeRequest;
 import org.joda.time.LocalDate;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +21,7 @@ public class AktiviteterService {
 
     @Inject
     @Named("sakOgAktivitetInformasjonEndpoint")
-    private SakOgAktivitetInformasjonV1 aktivitetWebService;
+    private SakOgAktivitetV1 aktivitetWebService;
 
     private AktiviteterTransformer transformer = new AktiviteterTransformer();
 

@@ -50,6 +50,7 @@ public class PersonTest {
         Assert.assertEquals(false, personalia.harUtenlandskAdresse());
     }
 
+    @Test
     public void skalReturnereFalseForFolkeregistrertAdresseNorge() {
         Personalia personalia = new Personalia();
         Adresse gjeldendeAdresse = new Adresse();
