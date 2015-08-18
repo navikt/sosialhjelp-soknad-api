@@ -44,6 +44,7 @@ public class FaktaService {
     private NavMessageSource navMessageSource;
 
     @Inject
+    @Deprecated
     private WebSoknadConfig config;
 
     private static final String EKSTRA_VEDLEGG_KEY = "ekstraVedlegg";
