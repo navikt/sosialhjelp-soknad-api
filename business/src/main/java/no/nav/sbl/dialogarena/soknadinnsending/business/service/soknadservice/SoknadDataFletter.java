@@ -280,16 +280,22 @@ public class SoknadDataFletter {
     }
 
     private XMLHovedskjema lagXmlHovedskjemaMedAlternativRepresentasjon(byte[] pdf, WebSoknad soknad) {
-        return new XMLHovedskjema()
+        XMLHovedskjema hovedskjema = new XMLHovedskjema()
                 .withInnsendingsvalg(LASTET_OPP.toString())
                 .withSkjemanummer(skjemanummer(soknad))
                 .withFilnavn(skjemanummer(soknad))
                 .withMimetype("application/pdf")
                 .withFilstorrelse("" + pdf.length)
                 .withUuid(soknad.getUuid())
-                .withJournalforendeEnhet(journalforendeEnhet(soknad))
-                .withAlternativRepresentasjonListe(new XMLAlternativRepresentasjonListe()
-                        .withAlternativRepresentasjon(lagListeMedXMLAlternativeRepresentasjoner(soknad)));
+                .withJournalforendeEnhet(journalforendeEnhet(soknad));
+
+        if(!soknad.erEttersending()) {
+            hovedskjema = hovedskjema.withAlternativRepresentasjonListe(
+                    new XMLAlternativRepresentasjonListe()
+                            .withAlternativRepresentasjon(lagListeMedXMLAlternativeRepresentasjoner(soknad)));
+        }
+
+        return hovedskjema;
     }
 
     private List<XMLAlternativRepresentasjon> lagListeMedXMLAlternativeRepresentasjoner(WebSoknad soknad) {

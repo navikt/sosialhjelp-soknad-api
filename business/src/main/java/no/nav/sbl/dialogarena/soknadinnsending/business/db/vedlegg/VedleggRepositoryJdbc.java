@@ -68,16 +68,25 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
     }
 
     @Override
-    public List<Vedlegg> hentPaakrevdeVedlegg(String behandlingsId) {
+    public List<Vedlegg> hentVedlegg(String behandlingsId) {
         List<Vedlegg> vedlegg = getJdbcTemplate().query("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, opprinneliginnsendingsvalg, storrelse, opprettetdato," +
-                " antallsider, fillagerReferanse, aarsak from Vedlegg where soknad_id = (select soknad_id from SOKNAD where brukerbehandlingid = ?) " +
-                "and innsendingsvalg in ('VedleggKreves', 'VedleggSendesIkke', 'VedleggSendesAvAndre'," +
-                " 'VedleggAlleredeSendt', 'LastetOpp', 'SendesSenere','SendesIkke') ", new VedleggRowMapper(false), behandlingsId);
+                " antallsider, fillagerReferanse, aarsak from Vedlegg where soknad_id = (select soknad_id from SOKNAD where brukerbehandlingid = ?) ",
+                new VedleggRowMapper(false), behandlingsId);
         return on(vedlegg).filter(not(ER_KVITTERING)).collect();
     }
 
     @Override
-    public Long opprettVedlegg(final Vedlegg vedlegg, final byte[] content) {
+    public void opprettEllerLagreVedleggVedNyGenereringUtenEndringAvData(Vedlegg vedlegg) {
+        if(vedlegg.getVedleggId() == null) {
+            opprettEllerEndreVedlegg(vedlegg, null);
+        } else {
+            lagreVedlegg(vedlegg.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
+        }
+
+    }
+
+    @Override
+    public Long opprettEllerEndreVedlegg(final Vedlegg vedlegg, final byte[] content) {
         if (vedlegg.getVedleggId() == null) {
             vedlegg.setVedleggId(getJdbcTemplate().queryForObject(SQLUtils.selectNextSequenceValue("VEDLEGG_ID_SEQ"), Long.class));
         }

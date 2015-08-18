@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.collections15.Predicate;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -8,7 +9,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
 
@@ -100,5 +103,25 @@ public class SoknadStruktur implements Serializable {
             }
         }
         return null;
+    }
+    public List<VedleggsGrunnlag> hentAlleMuligeVedlegg(WebSoknad soknad) {
+        Map<String, VedleggsGrunnlag> muligeVedlegg = new HashMap<>();
+        for (SoknadVedlegg vedleggsforventning : getVedlegg()) {
+            List<Faktum> faktaSomTriggerVedlegg = soknad.getFaktaMedKey(vedleggsforventning.getFaktum().getId());
+
+            if (vedleggsforventning.getFlereTillatt()) {
+                for (Faktum faktum : faktaSomTriggerVedlegg) {
+                    String key = vedleggsforventning.getSkjemaNummer() + vedleggsforventning.getSkjemanummerTillegg() + faktum.getFaktumId();
+                    muligeVedlegg.put(key, new VedleggsGrunnlag(soknad, soknad.finnVedleggSomMatcherForventning(vedleggsforventning, faktum.getFaktumId())).medGrunnlag(vedleggsforventning, faktum));
+                }
+            } else {
+                String key = vedleggsforventning.getSkjemaNummer() + vedleggsforventning.getSkjemanummerTillegg();
+                if (!muligeVedlegg.containsKey(key)) {
+                    muligeVedlegg.put(key, new VedleggsGrunnlag(soknad, soknad.finnVedleggSomMatcherForventning(vedleggsforventning, null)));
+                }
+                muligeVedlegg.get(key).medGrunnlag(vedleggsforventning, faktaSomTriggerVedlegg);
+            }
+        }
+        return new ArrayList<>(muligeVedlegg.values());
     }
 }

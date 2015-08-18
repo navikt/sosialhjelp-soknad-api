@@ -6,11 +6,11 @@
     <parent>
         <groupId>no.nav.sbl.dialogarena</groupId>
         <artifactId>sendsoknad</artifactId>
-        <version>7.9-SNAPSHOT</version>
+        <version>7.11-SNAPSHOT</version>
     </parent>
 
     <artifactId>sendsoknad-mock</artifactId>
-    <version>7.9-SNAPSHOT</version>
+    <version>7.11-SNAPSHOT</version>
     <name>${project.artifactId}</name>
 
     <dependencies>
@@ -37,7 +37,7 @@
         </dependency>
         <dependency>
             <groupId>no.nav.sbl</groupId>
-            <artifactId>arena-sakOgAktivitetInformasjon_v1</artifactId>
+            <artifactId>arena-sakOgAktivitet_v1</artifactId>
         </dependency>
         <dependency>
             <groupId>no.nav.sbl</groupId>

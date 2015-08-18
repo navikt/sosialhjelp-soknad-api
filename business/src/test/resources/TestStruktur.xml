@@ -1,0 +1,127 @@
+<soknad skjemaNummer="NAV 08-14.01" temaKode="STF">
+    <!-- Systemfakta -->
+    <faktum>
+        <id>parentSinParent</id>
+    </faktum>
+    <faktum>
+        <id>parent</id>
+        <dependOn>parentSinParent</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>parent.faktumMedParentPaaTrue</id>
+        <dependOn>parent</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>parent.faktumMedParentPropPaaTrue</id>
+        <dependOn>parent</dependOn>
+        <dependOnProperty>parentProp</dependOnProperty>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <vedlegg>
+        <skjemaNummer>v1</skjemaNummer>
+        <faktum>parent.faktumMedParentPaaTrue</faktum>
+    </vedlegg>
+    <vedlegg>
+        <skjemaNummer>v2</skjemaNummer>
+        <faktum>parent.faktumMedParentPropPaaTrue</faktum>
+    </vedlegg>
+
+
+    <faktum>
+        <id>faktumMedToOnValue</id>
+    </faktum>
+    <vedlegg>
+        <skjemaNummer>v3</skjemaNummer>
+        <faktum>faktumMedToOnValue</faktum>
+        <onValues>
+            <value>riktigVerdi1</value>
+            <value>riktigVerdi2</value>
+        </onValues>
+    </vedlegg>
+
+    <faktum>
+        <id>toFaktumMedSammeVedlegg1</id>
+    </faktum>
+    <faktum>
+        <id>toFaktumMedSammeVedlegg2</id>
+    </faktum>
+    <faktum>
+        <id>toFaktumMedSammeVedleggTillegg</id>
+    </faktum>
+    <vedlegg>
+        <skjemaNummer>v4</skjemaNummer>
+        <faktum>toFaktumMedSammeVedlegg1</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+    </vedlegg>
+    <vedlegg>
+        <skjemaNummer>v4</skjemaNummer>
+        <faktum>toFaktumMedSammeVedlegg2</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+    </vedlegg>
+
+    <vedlegg>
+        <skjemaNummer>v4</skjemaNummer>
+        <skjemanummerTillegg>tillegg</skjemanummerTillegg>
+        <faktum>toFaktumMedSammeVedleggTillegg</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+    </vedlegg>
+
+    <faktum>
+        <id>toFaktumMedSammeVedlegg1Unik</id>
+    </faktum>
+    <faktum>
+        <id>toFaktumMedSammeVedlegg2Unik</id>
+    </faktum>
+    <vedlegg>
+        <skjemaNummer>v5</skjemaNummer>
+        <faktum>toFaktumMedSammeVedlegg1Unik</faktum>
+        <flereTillatt>true</flereTillatt>
+        <onValues>
+            <value>true</value>
+        </onValues>
+    </vedlegg>
+    <vedlegg>
+        <skjemaNummer>v5</skjemaNummer>
+        <flereTillatt>true</flereTillatt>
+        <faktum>toFaktumMedSammeVedlegg2Unik</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+    </vedlegg>
+
+    <faktum>
+        <id>faktumMedVedleggOnTrue</id>
+    </faktum>
+    <vedlegg>
+        <skjemaNummer>v6</skjemaNummer>
+        <faktum>faktumMedVedleggOnTrue</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+    </vedlegg>
+
+
+
+
+
+
+
+
+</soknad>
+
+
+
