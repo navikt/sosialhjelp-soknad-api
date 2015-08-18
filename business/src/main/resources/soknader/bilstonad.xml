@@ -17,16 +17,25 @@
 
     <!-- Bil og utstyr -->
     <faktum>
-        <id>bilogutstyr.hvaslagsbil</id>
+        <id>bilogutstyr</id>
     </faktum>
     <faktum>
-        <id>bilogutstyr.spesialutstyr.beskrivelse</id>
+        <id>bilogutstyr.kassebil.spesialutstyr.beskrivelse</id>
     </faktum>
     <faktum>
-        <id>bilogutstyr.hjelpemidler</id>
+        <id>bilogutstyr.kassebil.hjelpemidler</id>
     </faktum>
     <faktum>
-        <id>bilogutstyr.hjelpemidler.ja.beskrivelse</id>
+        <id>bilogutstyr.kassebil.hjelpemidler.ja.beskrivelse</id>
+    </faktum>
+    <faktum>
+        <id>bilogutstyr.personbiltilpasninger.spesialutstyr.beskrivelse</id>
+    </faktum>
+    <faktum>
+        <id>bilogutstyr.personbiltilpasninger.hjelpemidler</id>
+    </faktum>
+    <faktum>
+        <id>bilogutstyr.personbiltilpasninger.hjelpemidler.ja.beskrivelse</id>
     </faktum>
     <faktum>
         <id>bilogutstyr.firehjulstrekk</id>
@@ -242,19 +251,28 @@
 
     <!-- Bilen -->
     <faktum>
-        <id>bilen.eierBilenAllerede</id>
+        <id>bilen</id>
     </faktum>
     <faktum>
-        <id>bilen.registreringsnummer</id>
+        <id>bilen.eierBilenAllerede.registreringsnummer</id>
     </faktum>
     <faktum>
-        <id>bilen.bilmerke</id>
+        <id>bilen.eierBilenAllerede.bilmerke</id>
     </faktum>
     <faktum>
-        <id>bilen.bilmodell</id>
+        <id>bilen.eierBilenAllerede.bilmodell</id>
     </faktum>
     <faktum>
-        <id>bilen.arsmodell</id>
+        <id>bilen.eierBilenAllerede.arsmodell</id>
+    </faktum>
+    <faktum>
+        <id>bilen.skalAnskaffeNyBil.bilmerke</id>
+    </faktum>
+    <faktum>
+        <id>bilen.skalAnskaffeNyBil.bilmodell</id>
+    </faktum>
+    <faktum>
+        <id>bilen.skalAnskaffeNyBil.arsmodell</id>
     </faktum>
 
     <!-- Fastlege -->
@@ -329,7 +347,23 @@
     </vedlegg>
 
     <vedlegg>
-        <faktum>informasjonsside.bilformal</faktum>
+        <faktum>soknadsvalg.stonadstype</faktum>
+        <skjemaNummer>Z3</skjemaNummer>
+    </vedlegg>
+
+    <vedlegg>
+        <faktum>soknadsvalg.stonadstype</faktum>
+        <onValues>
+            <value>stonadBil</value>
+        </onValues>
+        <skjemaNummer>T7</skjemaNummer>
+    </vedlegg>
+
+    <vedlegg>
+        <faktum>soknadsvalg.stonadstype</faktum>
+        <onValues>
+            <value>stonadBil</value>
+        </onValues>
         <skjemaNummer>U2</skjemaNummer>
     </vedlegg>
 
@@ -346,7 +380,7 @@
         <faktum>bileierskap.eierdubil</faktum>
         <onValues>
             <value>mellom8og11ar</value>
-            <value>merenn11ar</value>
+            <value>eldreenn11ar</value>
         </onValues>
         <skjemaNummer>Z2</skjemaNummer>
     </vedlegg>

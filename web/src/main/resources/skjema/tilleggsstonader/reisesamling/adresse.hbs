@@ -1,0 +1,11 @@
+{{#hvisHarDiskresjonskode}}
+{{else}}
+    {{#forFaktum "reise.samling.reisemaal"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>{{ hentTekst "soknad.reise.reisemaal.oppsummering" }} {{properties.adresse}}, {{properties.postnr}}</span>
+            </td>
+        </tr>
+    {{/forFaktum}}
+{{/hvisHarDiskresjonskode}}

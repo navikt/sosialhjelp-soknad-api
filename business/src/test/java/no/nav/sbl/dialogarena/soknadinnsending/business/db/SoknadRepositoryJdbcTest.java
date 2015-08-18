@@ -369,7 +369,7 @@ public class SoknadRepositoryJdbcTest {
     @Test
     public void skalReturnereNullOmSoknadMedBehandlingsIdIkkeFinnes() {
         opprettOgPersisterSoknad();
-        WebSoknad soknadMedData = soknadRepository.hentSoknadMedData("soknadSomIkkeFinnes");
+        WebSoknad soknadMedData = soknadRepository.hentSoknadMedVedlegg("soknadSomIkkeFinnes");
         assertThat(soknadMedData, nullValue());
     }
 

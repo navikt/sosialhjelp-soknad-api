@@ -238,7 +238,8 @@ public class SoknadVedlegg implements Serializable {
     public Vedlegg genererVedlegg(Faktum faktum) {
         return new Vedlegg()
                 .medSoknadId(faktum.getSoknadId())
-                .medFaktumId(getFlereTillatt() ? faktum.getFaktumId() : null)
+                .medFaktumId(getFlereTillatt() ? faktum.getFaktumId() : 0L)
+                .medNavn(faktum.getProperties().get("bolk")) //Fikse flere tillatt
                 .medSkjemaNummer(getSkjemaNummer())
                 .medSkjemanummerTillegg(getSkjemanummerTillegg())
                 .medInnsendingsvalg(Vedlegg.Status.VedleggKreves);

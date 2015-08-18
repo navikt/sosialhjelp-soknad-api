@@ -49,5 +49,5 @@ public interface VedleggRepository {
      * Lagrer eller oppdaterer et vedlegg, uten å endre opplastet innhold.
      * @param vedlegg Nytt eller endret vedlegg.
      */
-    void opprettEllerLagreVedleggUtenEndingAvData(Vedlegg vedlegg);
+    void opprettEllerLagreVedleggVedNyGenereringUtenEndringAvData(Vedlegg vedlegg);
 }
