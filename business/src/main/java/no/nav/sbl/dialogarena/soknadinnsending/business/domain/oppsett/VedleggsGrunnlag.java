@@ -36,23 +36,14 @@ public class VedleggsGrunnlag {
     }
 
 
-    public boolean oppdaterInnsendingsvalg(boolean erPaakrevd) {
-
-        if (vedlegg == null && !erPaakrevd) {
-            return false;
-        } else if (vedlegg == null) {
-            vedlegg = grunnlag.get(0).getLeft().genererVedlegg(finnForsteFaktum());
-        }
-
-        Vedlegg.Status orginalt = vedlegg.getInnsendingsvalg();
-        if (erPaakrevd && vedlegg.getInnsendingsvalg().equals(Vedlegg.Status.IkkeVedlegg)) {
+    public Vedlegg.Status oppdaterInnsendingsvalg(boolean vedleggErPaakrevd) {
+        if (vedleggErPaakrevd && vedlegg.getInnsendingsvalg().equals(Vedlegg.Status.IkkeVedlegg)) {
             vedlegg.oppdatertInnsendtStatus();
-        } else if (!erPaakrevd && !vedlegg.getInnsendingsvalg().equals(Vedlegg.Status.IkkeVedlegg)) {
+        } else if (!vedleggErPaakrevd && !vedlegg.getInnsendingsvalg().equals(Vedlegg.Status.IkkeVedlegg)) {
             vedlegg.setInnsendingsvalg(Vedlegg.Status.IkkeVedlegg);
         }
-        return !vedlegg.getInnsendingsvalg().equals(orginalt) || vedlegg.getVedleggId() == null;
+        return vedlegg.getInnsendingsvalg();
     }
-
 
     public boolean erVedleggPaakrevd() {
         for (Pair<VedleggForFaktumStruktur, List<Faktum>> pair : grunnlag) {
@@ -91,12 +82,35 @@ public class VedleggsGrunnlag {
                 .toString();
     }
 
-    public void oppdaterInnsendingsvalg(VedleggRepository vedleggRepository) {
-        Boolean kreverDbOppdatering = oppdaterInnsendingsvalg(erVedleggPaakrevd());
-        if (kreverDbOppdatering) {
-            logger.warn("\n ########### VEDLEGGSFEIL - Feil i ny vedleggsgenereringslogikk ################# \n" + "Lagrer vedlegg: \n" + vedlegg);
+    public void oppdaterVedlegg(VedleggRepository vedleggRepository) {
+        boolean vedleggErPaakrevd = erVedleggPaakrevd();
 
-//            vedleggRepository.opprettEllerLagreVedleggVedNyGenereringUtenEndringAvData(vedlegg);
+        if(vedleggFinnes() || vedleggErPaakrevd){
+
+            if (vedleggIkkeFinnes()) {
+                opprettVedleggFraFaktum();
+            }
+
+            Vedlegg.Status orginalStatus = vedlegg.getInnsendingsvalg();
+            Vedlegg.Status status = oppdaterInnsendingsvalg(vedleggErPaakrevd);
+
+            if (!status.equals(orginalStatus) || vedlegg.erNyttVedlegg()) {
+                logger.warn("\n ########### VEDLEGGSFEIL - Feil i ny vedleggsgenereringslogikk ################# \n" + "Lagrer vedlegg: \n" + vedlegg);
+            }
         }
+
     }
+
+    private void opprettVedleggFraFaktum() {
+        vedlegg = grunnlag.get(0).getLeft().genererVedlegg(finnForsteFaktum());
+    }
+
+    private boolean vedleggIkkeFinnes() {
+        return !vedleggFinnes();
+    }
+
+    private boolean vedleggFinnes() {
+        return vedlegg != null;
+    }
+
 }

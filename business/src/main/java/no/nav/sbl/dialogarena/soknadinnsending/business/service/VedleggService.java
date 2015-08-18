@@ -291,7 +291,7 @@ public class VedleggService {
         on(alleMuligeVedlegg).forEach(new Closure<VedleggsGrunnlag>() {
             @Override
             public void execute(VedleggsGrunnlag vedleggsgrunnlag) {
-                vedleggsgrunnlag.oppdaterInnsendingsvalg(vedleggRepository);
+                vedleggsgrunnlag.oppdaterVedlegg(vedleggRepository);
             }
         });
         return on(alleMuligeVedlegg).map(new Transformer<VedleggsGrunnlag, Vedlegg>() {
