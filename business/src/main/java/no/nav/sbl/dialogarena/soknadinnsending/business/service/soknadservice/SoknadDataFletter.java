@@ -107,9 +107,6 @@ public class SoknadDataFletter {
         bolker = applicationContext.getBeansOfType(BolkService.class);
     }
 
-    public SoknadStruktur hentSoknadStruktur(Long soknadId) {
-        return config.hentStruktur(soknadId);
-    }
 
     public WebSoknad hentFraHenvendelse(String behandlingsId, boolean hentFaktumOgVedlegg) {
         WSHentSoknadResponse wsSoknadsdata = henvendelseService.hentSoknad(behandlingsId);
@@ -212,7 +209,7 @@ public class SoknadDataFletter {
                 .medKey("personalia");
         faktaService.lagreSystemFaktum(soknadId, personalia);
 
-        List<SoknadFaktum> fakta = hentSoknadStruktur(soknadId).getFakta();
+        List<SoknadFaktum> fakta = config.hentStruktur(skjemanummer).getFakta();
         sort(fakta, sammenlignEtterDependOn());
 
         for (SoknadFaktum soknadFaktum : fakta) {
