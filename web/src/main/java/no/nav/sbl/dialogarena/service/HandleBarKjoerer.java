@@ -74,7 +74,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         handlebars.registerHelper("forFaktaMedPropertySattTilTrue", generateForFaktaMedPropTrueHelper());
         handlebars.registerHelper("formatterFodelsDato", generateFormatterFodselsdatoHelper());
         handlebars.registerHelper("formatterLangDato", generateFormatterLangDatoHelper());
-        handlebars.registerHelper("hvisSant", generateHvisSantHelper());
         handlebars.registerHelper("hvisEttersending", generateHvisEttersendingHelper());
         handlebars.registerHelper("hvisMindre", generateHvisMindreHelper());
         handlebars.registerHelper("hvisMer", generateHvisMerHelper());
@@ -330,19 +329,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
                 Integer grense = Integer.parseInt((String) options.param(0));
                 Integer verdi = Integer.parseInt(value);
                 if (verdi < grense) {
-                    return options.fn(this);
-                } else {
-                    return options.inverse(this);
-                }
-            }
-        };
-    }
-
-    private Helper<String> generateHvisSantHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String value, Options options) throws IOException {
-                if (value != null && value.equals("true")) {
                     return options.fn(this);
                 } else {
                     return options.inverse(this);
