@@ -135,6 +135,12 @@ public class SoknadDataFletter {
         faktaService.lagreSystemFaktum(soknadId, personalia(soknadId));
         faktaService.lagreSystemFaktum(soknadId, lonnsOgTrekkOppgave(soknadId));
 
+        lagreTommeFaktaFraStrukturTilLokalDb(soknadId, skjemanummer);
+
+        return behandlingsId;
+    }
+
+    private void lagreTommeFaktaFraStrukturTilLokalDb(Long soknadId, String skjemanummer) {
         List<FaktumStruktur> fakta = config.hentStruktur(skjemanummer).getFakta();
         sort(fakta, sammenlignEtterDependOn());
 
@@ -152,8 +158,6 @@ public class SoknadDataFletter {
                 lokalDb.lagreFaktum(soknadId, f);
             }
         }
-
-        return behandlingsId;
     }
 
     private WebSoknad lagreSoknadILokalDb(String skjemanummer, String uuid, String aktorId, String behandlingsId) {
