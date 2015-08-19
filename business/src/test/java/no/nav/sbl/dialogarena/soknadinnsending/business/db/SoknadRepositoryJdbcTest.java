@@ -270,7 +270,7 @@ public class SoknadRepositoryJdbcTest {
         FaktumStruktur parentFaktumStruktur = new FaktumStruktur().medId("parent").medDependOn(parentParentFaktumStruktur).medDependOnValues(Arrays.asList("parentParentValue"));
 
         Faktum faktum = new Faktum().medKey("key").medValue("true").medSoknadId(soknad.getSoknadId()).medType(BRUKERREGISTRERT).medParrentFaktumId(parentFaktumId);
-        soknadRepository.oppprettFaktum(soknad.getSoknadId(), faktum);
+        soknadRepository.opprettFaktum(soknad.getSoknadId(), faktum);
         FaktumStruktur faktumStruktur = new FaktumStruktur().medId("key").medDependOn(parentFaktumStruktur).medDependOnValues(Arrays.asList("parentValue"));
         VedleggForFaktumStruktur vedlegg = new VedleggForFaktumStruktur().medFaktum(faktumStruktur).medOnValues(Arrays.asList("true"));
 

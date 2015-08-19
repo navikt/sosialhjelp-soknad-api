@@ -82,7 +82,7 @@ public class EttersendingService {
         ettersending.setSoknadId(soknadId);
 
         DateTime originalInnsendtDato = hentOrginalInnsendtDato(behandlingskjede, originalBehandlingsId);
-        faktaService.lagreSystemFaktum(soknadId, soknadInnsendingsDato(soknadId, originalInnsendtDato));
+        faktaService.opprettSystemFaktum(soknadId, soknadInnsendingsDato(soknadId, originalInnsendtDato));
 
         vedleggService.hentVedleggOgPersister(new XMLMetadataListe(vedleggBortsettFraKvittering), soknadId);
         return ettersending;
