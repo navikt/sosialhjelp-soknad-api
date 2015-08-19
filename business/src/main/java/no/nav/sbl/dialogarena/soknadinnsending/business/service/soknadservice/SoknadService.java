@@ -24,6 +24,9 @@ public class SoknadService {
     private HenvendelseService henvendelseService;
 
     @Inject
+    private EttersendingService ettersendingService;
+
+    @Inject
     private FillagerService fillagerService;
 
     @Inject
@@ -72,7 +75,7 @@ public class SoknadService {
     }
 
     public String startEttersending(String behandlingsIdSoknad) {
-        return soknadDataFletter.startEttersending(behandlingsIdSoknad);
+        return ettersendingService.start(behandlingsIdSoknad);
     }
 
     public WebSoknad hentSoknad(String behandlingsId, boolean medData, boolean medVedlegg) {

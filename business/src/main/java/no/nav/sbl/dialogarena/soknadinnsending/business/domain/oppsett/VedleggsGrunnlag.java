@@ -17,7 +17,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class VedleggsGrunnlag {
     private static final Logger logger = getLogger(VedleggsGrunnlag.class);
-    public List<Pair<SoknadVedlegg, List<Faktum>>> grunnlag = new ArrayList<>();
+    public List<Pair<VedleggForFaktumStruktur, List<Faktum>>> grunnlag = new ArrayList<>();
     private WebSoknad soknad;
     private Vedlegg vedlegg;
 
@@ -26,44 +26,35 @@ public class VedleggsGrunnlag {
         this.vedlegg = vedlegg;
     }
 
-    VedleggsGrunnlag medGrunnlag(SoknadVedlegg vedlegg, List<Faktum> faktum) {
+    VedleggsGrunnlag medGrunnlag(VedleggForFaktumStruktur vedlegg, List<Faktum> faktum) {
         grunnlag.add(new ImmutablePair<>(vedlegg, faktum));
         return this;
     }
 
-    VedleggsGrunnlag medGrunnlag(SoknadVedlegg vedlegg, Faktum... faktum) {
+    VedleggsGrunnlag medGrunnlag(VedleggForFaktumStruktur vedlegg, Faktum... faktum) {
         return medGrunnlag(vedlegg, Arrays.asList(faktum));
     }
 
 
-    public boolean oppdaterInnsendingsvalg(boolean erPaakrevd) {
-
-        if (vedlegg == null && !erPaakrevd) {
-            return false;
-        } else if (vedlegg == null) {
-            vedlegg = grunnlag.get(0).getLeft().genererVedlegg(finnForsteFaktum());
-        }
-
-        Vedlegg.Status orginalt = vedlegg.getInnsendingsvalg();
-        if (erPaakrevd && vedlegg.getInnsendingsvalg().equals(Vedlegg.Status.IkkeVedlegg)) {
+    public Vedlegg.Status oppdaterInnsendingsvalg(boolean vedleggErPaakrevd) {
+        if (vedleggErPaakrevd && vedlegg.getInnsendingsvalg().equals(Vedlegg.Status.IkkeVedlegg)) {
             vedlegg.oppdatertInnsendtStatus();
-        } else if (!erPaakrevd && !vedlegg.getInnsendingsvalg().equals(Vedlegg.Status.IkkeVedlegg)) {
+        } else if (!vedleggErPaakrevd && !vedlegg.getInnsendingsvalg().equals(Vedlegg.Status.IkkeVedlegg)) {
             vedlegg.setInnsendingsvalg(Vedlegg.Status.IkkeVedlegg);
         }
-        return !vedlegg.getInnsendingsvalg().equals(orginalt) || vedlegg.getVedleggId() == null;
+        return vedlegg.getInnsendingsvalg();
     }
 
-
     public boolean erVedleggPaakrevd() {
-        for (Pair<SoknadVedlegg, List<Faktum>> pair : grunnlag) {
-            if (matcherEtAvFaktumeneKravTilVedlegg(pair.getRight(), pair.getLeft())) return true;
+        for (Pair<VedleggForFaktumStruktur, List<Faktum>> pair : grunnlag) {
+            if (matcherEtAvFaktumeneKravTilVedlegg(pair.getRight(), pair.getLeft())) { return true; }
         }
         return false;
     }
 
-    private boolean matcherEtAvFaktumeneKravTilVedlegg(List<Faktum> fakta, SoknadVedlegg soknadVedlegg) {
+    private boolean matcherEtAvFaktumeneKravTilVedlegg(List<Faktum> fakta, VedleggForFaktumStruktur vedleggForFaktumStruktur) {
         for (Faktum faktum : fakta) {
-            if (soknadVedlegg.getFaktum().erSynlig(soknad) && soknadVedlegg.trengerVedlegg(faktum) && /**Fremdeles veldig usikker på denne her */soknadVedlegg.harFilterProperty(faktum)) {
+            if (vedleggForFaktumStruktur.getFaktum().erSynlig(soknad) && vedleggForFaktumStruktur.trengerVedlegg(faktum) && vedleggForFaktumStruktur.harFilterProperty(faktum)) {
                 return true;
             }
         }
@@ -71,7 +62,7 @@ public class VedleggsGrunnlag {
     }
 
     private Faktum finnForsteFaktum() {
-        for (Pair<SoknadVedlegg, List<Faktum>> pair : grunnlag) {
+        for (Pair<VedleggForFaktumStruktur, List<Faktum>> pair : grunnlag) {
             if (!pair.getRight().isEmpty()) {
                 return pair.getRight().get(0);
             }
@@ -91,12 +82,35 @@ public class VedleggsGrunnlag {
                 .toString();
     }
 
-    public void oppdaterInnsendingsvalg(VedleggRepository vedleggRepository) {
-        Boolean kreverDbOppdatering = oppdaterInnsendingsvalg(erVedleggPaakrevd());
-        if (kreverDbOppdatering) {
-            logger.warn("\n ########### VEDLEGGSFEIL - Feil i ny vedleggsgenereringslogikk ################# \n" + "Lagrer vedlegg: \n" + vedlegg);
+    public void oppdaterVedlegg(VedleggRepository vedleggRepository) {
+        boolean vedleggErPaakrevd = erVedleggPaakrevd();
 
-//            vedleggRepository.opprettEllerLagreVedleggVedNyGenereringUtenEndringAvData(vedlegg);
+        if(vedleggFinnes() || vedleggErPaakrevd){
+
+            if (vedleggIkkeFinnes()) {
+                opprettVedleggFraFaktum();
+            }
+
+            Vedlegg.Status orginalStatus = vedlegg.getInnsendingsvalg();
+            Vedlegg.Status status = oppdaterInnsendingsvalg(vedleggErPaakrevd);
+
+            if (!status.equals(orginalStatus) || vedlegg.erNyttVedlegg()) {
+                logger.warn("\n ########### VEDLEGGSFEIL - Feil i ny vedleggsgenereringslogikk ################# \n" + "Lagrer vedlegg: \n" + vedlegg);
+            }
         }
+
     }
+
+    private void opprettVedleggFraFaktum() {
+        vedlegg = grunnlag.get(0).getLeft().genererVedlegg(finnForsteFaktum());
+    }
+
+    private boolean vedleggIkkeFinnes() {
+        return !vedleggFinnes();
+    }
+
+    private boolean vedleggFinnes() {
+        return vedlegg != null;
+    }
+
 }

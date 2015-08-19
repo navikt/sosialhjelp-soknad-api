@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.VedleggForFaktumStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -74,8 +74,8 @@ public class InformasjonService {
 
         SoknadStruktur struktur = soknadService.hentSoknadStruktur(type);
 
-        for (SoknadVedlegg soknadVedlegg : struktur.getVedlegg()) {
-            settInnUrlForSkjema(soknadVedlegg.getSkjemaNummer(), result);
+        for (VedleggForFaktumStruktur vedleggForFaktumStruktur : struktur.getVedlegg()) {
+            settInnUrlForSkjema(vedleggForFaktumStruktur.getSkjemaNummer(), result);
         }
 
         for (String skjemanummer : struktur.getVedleggReferanser()) {
