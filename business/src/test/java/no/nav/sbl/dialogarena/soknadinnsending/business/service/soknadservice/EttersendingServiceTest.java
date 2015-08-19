@@ -141,7 +141,7 @@ public class EttersendingServiceTest {
         when(lokalDb.hentSoknadMedData(soknadId)).thenReturn(new WebSoknad().medId(soknadId));
 
         String ettersendingBehandlingsId = ettersendingService.start(behandlingsId);
-        verify(faktaService).lagreSystemFaktum(anyLong(), any(Faktum.class));
+        verify(faktaService).opprettSystemFaktum(anyLong(), any(Faktum.class));
         assertNotNull(ettersendingBehandlingsId);
     }
 
