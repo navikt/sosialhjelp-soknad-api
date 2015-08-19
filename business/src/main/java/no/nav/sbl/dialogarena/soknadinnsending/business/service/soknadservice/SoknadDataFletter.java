@@ -56,8 +56,8 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class SoknadDataFletter {
 
     private static final Logger logger = getLogger(SoknadDataFletter.class);
-    private final boolean MED_DATA = true;
-    private final boolean MED_VEDLEGG = true;
+    private final boolean MEDDATA = true;
+    private final boolean MEDVEDLEGG = true;
 
     @Inject
     private HenvendelseService henvendelseService;
@@ -208,7 +208,7 @@ public class SoknadDataFletter {
     }
 
     public void sendSoknad(String behandlingsId, byte[] pdf) {
-        WebSoknad soknad = hentSoknad(behandlingsId, MED_DATA, MED_VEDLEGG);
+        WebSoknad soknad = hentSoknad(behandlingsId, MEDDATA, MEDVEDLEGG);
         if (soknad.erEttersending() && soknad.getOpplastedeVedlegg().size() <= 0) {
             logger.error("Kan ikke sende inn ettersendingen med ID {0} uten å ha lastet opp vedlegg", soknad.getBrukerBehandlingId());
             throw new ApplicationException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg");
