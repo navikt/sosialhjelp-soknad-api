@@ -4,7 +4,7 @@ import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadata;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.FaktumStruktur;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
@@ -54,7 +54,7 @@ public class StaticMetoder {
         }
     };
 
-    public static boolean erIkkeSystemfaktumOgKunEtErTillatt(SoknadFaktum faktum) {
+    public static boolean erIkkeSystemfaktumOgKunEtErTillatt(FaktumStruktur faktum) {
         String flereTillatt = faktum.getFlereTillatt();
         String erSystemFaktum = faktum.getErSystemFaktum();
         return !((flereTillatt != null && flereTillatt.equals("true")) || (erSystemFaktum != null && erSystemFaktum.equals("true")));

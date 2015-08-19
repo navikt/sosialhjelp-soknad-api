@@ -10,8 +10,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.FaktumEgenskap;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.FaktumStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.VedleggForFaktumStruktur;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.dao.DataAccessException;
@@ -249,22 +249,22 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         return fakta;
     }
 
-    public Boolean isVedleggPaakrevd(Long soknadId, SoknadVedlegg soknadVedlegg) {
-        SoknadFaktum faktum = soknadVedlegg.getFaktum();
+    public Boolean isVedleggPaakrevd(Long soknadId, VedleggForFaktumStruktur vedleggForFaktumStruktur) {
+        FaktumStruktur faktum = vedleggForFaktumStruktur.getFaktum();
         String key = faktum.getId();
         Integer count = 0;
-        count += finnAntallFaktumMedGittKeyOgEnAvFlereValues(soknadId, key, soknadVedlegg.getOnValues());
+        count += finnAntallFaktumMedGittKeyOgEnAvFlereValues(soknadId, key, vedleggForFaktumStruktur.getOnValues());
         return sjekkOmVedleggErPaakrevd(soknadId, count, faktum);
     }
 
-    private Boolean sjekkOmVedleggErPaakrevd(Long soknadId, Integer antallFunnet, SoknadFaktum faktum) {
+    private Boolean sjekkOmVedleggErPaakrevd(Long soknadId, Integer antallFunnet, FaktumStruktur faktum) {
         if (antallFunnet > 0) {
             return faktum.getDependOn() != null ? isVedleggPaakrevdParent(soknadId, faktum.getDependOn(), faktum) : true;
         }
         return false;
     }
 
-    private Boolean isVedleggPaakrevdParent(Long soknadId, SoknadFaktum faktum, SoknadFaktum barneFaktum) {
+    private Boolean isVedleggPaakrevdParent(Long soknadId, FaktumStruktur faktum, FaktumStruktur barneFaktum) {
         Integer count = 0;
         if (barneFaktum.getDependOnValues() != null) {
             count += finnAntallFaktumMedGittKeyOgEnAvFlereValues(soknadId, faktum.getId(), barneFaktum.getDependOnValues());

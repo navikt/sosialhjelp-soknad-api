@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sun.org.apache.bcel.internal.util.Objects;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigDelstegEndringException;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.VedleggForFaktumStruktur;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -11,11 +11,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.joda.time.DateTime;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -492,20 +488,38 @@ public class WebSoknad implements Serializable {
         }).head().getOrElse(null);
     }
 
-    public Vedlegg finnVedleggSomMatcherForventning(final SoknadVedlegg soknadVedlegg, final Long faktumId) {
+    public Vedlegg finnVedleggSomMatcherForventning(final VedleggForFaktumStruktur vedleggForFaktumStruktur, final Long faktumId) {
         return on(vedlegg).filter(new Predicate<Vedlegg>() {
                                       @Override
                                       public boolean evaluate(Vedlegg vedlegg) {
-                                          return (vedlegg.getFaktumId() == null && !soknadVedlegg.getFlereTillatt()
-                                                  || vedlegg.getFaktumId() != null && soknadVedlegg.getFlereTillatt() && vedlegg.getFaktumId().equals(faktumId))
-                                                  && vedlegg.getSkjemaNummer().equals(soknadVedlegg.getSkjemaNummer())
-                                                  && Objects.equals(vedlegg.getSkjemanummerTillegg(), soknadVedlegg.getSkjemanummerTillegg());
+                                          return liktFaktum(vedlegg) && liktSkjema(vedlegg);
+                                      }
+
+                                      private boolean liktFaktum(Vedlegg vedlegg) {
+                                          return liktFaktumVedEttTillatt(vedlegg) || liktFakutumVedFlereTillatt(vedlegg);
+                                      }
+
+                                      private boolean liktFakutumVedFlereTillatt(Vedlegg vedlegg) {
+                                          return vedlegg.getFaktumId() != null && vedleggForFaktumStruktur.getFlereTillatt() && vedlegg.getFaktumId().equals(faktumId);
+                                      }
+
+                                      private boolean liktFaktumVedEttTillatt(Vedlegg vedlegg) {
+                                          return vedlegg.getFaktumId() == null && !vedleggForFaktumStruktur.getFlereTillatt();
+                                      }
+
+                                      private boolean liktSkjema(Vedlegg vedlegg) {
+                                          return liktSkjemanummer(vedlegg) && liktSkjemanummerTillegg(vedlegg);
+                                      }
+
+                                      private boolean liktSkjemanummer(Vedlegg vedlegg) {
+                                          return vedlegg.getSkjemaNummer().equals(vedleggForFaktumStruktur.getSkjemaNummer());
+                                      }
+
+                                      private boolean liktSkjemanummerTillegg(Vedlegg vedlegg) {
+                                          return Objects.equals(vedlegg.getSkjemanummerTillegg(), vedleggForFaktumStruktur.getSkjemanummerTillegg());
                                       }
                                   }
 
-            ).head().getOrElse(null);
-        }
-        public List<Vedlegg> finnAlleVedleggSomMatcher(SoknadVedlegg soknadVedlegg) {
-        return on(vedlegg).filter(soknadVedlegg.MATCHER_VEDLEGG).collect();
+        ).head().getOrElse(null);
     }
 }
