@@ -280,12 +280,12 @@ public class AdresseTransform {
         StringBuilder stringBuilder = new StringBuilder();
 
         if (xmlPostboksAdresse.getTilleggsadresse() != null) {
-            stringBuilder.append(C_O).append(" ").append(xmlPostboksAdresse.getTilleggsadresse()).append(", ");
+            stringBuilder.append(C_O).append(' ').append(xmlPostboksAdresse.getTilleggsadresse()).append(", ");
         }
 
         String postboksanlegg = xmlPostboksAdresse.getPostboksanlegg();
         if (postboksanlegg != null && !postboksanlegg.isEmpty()) {
-            stringBuilder.append("Postboks ").append(xmlPostboksAdresse.getPostboksnummer()).append(" ").append(postboksanlegg).append(", ");
+            stringBuilder.append("Postboks ").append(xmlPostboksAdresse.getPostboksnummer()).append(' ').append(postboksanlegg).append(", ");
         }
 
         stringBuilder.append(getPostnummerString(xmlPostboksAdresse));
@@ -305,7 +305,7 @@ public class AdresseTransform {
         StringBuilder stringBuilder = new StringBuilder();
 
         if (xmlMatrikkelAdresse.getTilleggsadresse() != null) {
-            stringBuilder.append(C_O).append(" ").append(xmlMatrikkelAdresse.getTilleggsadresse()).append(", ");
+            stringBuilder.append(C_O).append(' ').append(xmlMatrikkelAdresse.getTilleggsadresse()).append(", ");
         }
 
         if (xmlMatrikkelAdresse.getEiendomsnavn() != null) {
@@ -327,7 +327,7 @@ public class AdresseTransform {
         adresse.setGyldigTil(DATE_TIME_FORMATTER.print(gyldigTil));
         StringBuilder stringBuilder = new StringBuilder();
         if(xmlGateAdresse.getTilleggsadresse() != null) {
-            stringBuilder.append(C_O).append(" ").append(xmlGateAdresse.getTilleggsadresse()).append(", ");
+            stringBuilder.append(C_O).append(' ').append(xmlGateAdresse.getTilleggsadresse()).append(", ");
         }
         stringBuilder.append(xmlGateAdresse.getGatenavn());
         stringBuilder.append(' ');
