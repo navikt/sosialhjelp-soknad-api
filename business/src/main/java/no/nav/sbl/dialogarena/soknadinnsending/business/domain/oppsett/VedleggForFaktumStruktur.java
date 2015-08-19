@@ -1,10 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett;
 
-import com.sun.org.apache.bcel.internal.util.Objects;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
-import org.apache.commons.collections15.Predicate;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
