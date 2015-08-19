@@ -59,7 +59,6 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * forInnsendteVedlegg
 * forIkkeInnsendteVedlegg
 * hvisHarIkkeInnsendteDokumenter
-* concat
 * skalViseRotasjonTurnusSporsmaal
 * hvisLikCmsTekst
 * hvisKunStudent
@@ -67,12 +66,20 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 
 #### Helpers på nytt registeringsformat
 
+* concat - Legger sammen alle parametrene til tekststring
 * hvisHarDiskresjonskode - Viser innhold avhengig av om personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)
-* toLowerCase - 
+* toLowerCase - Gjør om en tekst til kun små bokstaver
 * variabel - Lager en variabel med en bestemt verdi som kun er tilgjengelig innenfor helperen
 
 
 #### Eksempler
+
+##### concat
+
+```
+{{ concat "a" "b" "c" "d" }}
+```
+
 
 ##### hvisHarDiskresjonskode
 
