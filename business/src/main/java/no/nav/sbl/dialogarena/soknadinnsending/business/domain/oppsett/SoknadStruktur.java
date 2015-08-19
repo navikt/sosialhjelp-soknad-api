@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.collections15.Predicate;
 
@@ -18,8 +19,8 @@ import static no.nav.modig.lang.collections.IterUtils.on;
 @XmlRootElement(name = "soknad")
 public class SoknadStruktur implements Serializable {
 
-    private List<SoknadFaktum> fakta = new ArrayList<>();
-    private List<SoknadVedlegg> vedlegg = new ArrayList<>();
+    private List<FaktumStruktur> fakta = new ArrayList<>();
+    private List<VedleggForFaktumStruktur> vedlegg = new ArrayList<>();
     private List<String> vedleggReferanser = new ArrayList<>();
     private String temaKode;
 
@@ -33,20 +34,20 @@ public class SoknadStruktur implements Serializable {
     }
 
     @XmlElement(name = "faktum")
-    public List<SoknadFaktum> getFakta() {
+    public List<FaktumStruktur> getFakta() {
         return fakta;
     }
 
-    public void setFakta(List<SoknadFaktum> fakta) {
+    public void setFakta(List<FaktumStruktur> fakta) {
         this.fakta = fakta;
     }
 
     @XmlElement(name = "vedlegg")
-    public List<SoknadVedlegg> getVedlegg() {
+    public List<VedleggForFaktumStruktur> getVedlegg() {
         return vedlegg;
     }
 
-    public void setVedlegg(List<SoknadVedlegg> vedlegg) {
+    public void setVedlegg(List<VedleggForFaktumStruktur> vedlegg) {
         this.vedlegg = vedlegg;
     }
 
@@ -67,27 +68,27 @@ public class SoknadStruktur implements Serializable {
                 .toString();
     }
 
-    public List<SoknadVedlegg> vedleggFor(final Faktum faktum) {
-        return on(vedlegg).filter(new Predicate<SoknadVedlegg>() {
+    public List<VedleggForFaktumStruktur> vedleggFor(final Faktum faktum) {
+        return on(vedlegg).filter(new Predicate<VedleggForFaktumStruktur>() {
             @Override
-            public boolean evaluate(SoknadVedlegg soknadVedlegg) {
-                return soknadVedlegg.getFaktum().getId().equals(faktum.getKey());
+            public boolean evaluate(VedleggForFaktumStruktur vedleggForFaktumStruktur) {
+                return vedleggForFaktumStruktur.getFaktum().getId().equals(faktum.getKey());
             }
-        }).filter(new Predicate<SoknadVedlegg>() {
+        }).filter(new Predicate<VedleggForFaktumStruktur>() {
             @Override
-            public boolean evaluate(SoknadVedlegg soknadVedlegg) {
-                return soknadVedlegg.harFilterProperty(faktum);
+            public boolean evaluate(VedleggForFaktumStruktur vedleggForFaktumStruktur) {
+                return vedleggForFaktumStruktur.harFilterProperty(faktum);
             }
         }).collect();
 
     }
 
-    public List<SoknadVedlegg> vedleggForSkjemanrMedTillegg(final String skjemaNr, final String tillegg) {
-        return on(vedlegg).filter(new Predicate<SoknadVedlegg>() {
+    public List<VedleggForFaktumStruktur> vedleggForSkjemanrMedTillegg(final String skjemaNr, final String tillegg) {
+        return on(vedlegg).filter(new Predicate<VedleggForFaktumStruktur>() {
             @Override
-            public boolean evaluate(SoknadVedlegg soknadVedlegg) {
-                if(soknadVedlegg.getSkjemaNummer().equals(skjemaNr)) {
-                    String skjemaTillegg = soknadVedlegg.getSkjemanummerTillegg();
+            public boolean evaluate(VedleggForFaktumStruktur vedleggForFaktumStruktur) {
+                if(vedleggForFaktumStruktur.getSkjemaNummer().equals(skjemaNr)) {
+                    String skjemaTillegg = vedleggForFaktumStruktur.getSkjemanummerTillegg();
                     return skjemaTillegg != null && skjemaTillegg.equals(tillegg);
                 }
                 return false;
@@ -96,32 +97,46 @@ public class SoknadStruktur implements Serializable {
 
     }
 
-    public SoknadFaktum finnFaktum(final String key) {
-        for (SoknadFaktum soknadFaktum : fakta) {
-            if (soknadFaktum.getId().equals(key)) {
-                return soknadFaktum;
-            }
-        }
-        return null;
-    }
     public List<VedleggsGrunnlag> hentAlleMuligeVedlegg(WebSoknad soknad) {
         Map<String, VedleggsGrunnlag> muligeVedlegg = new HashMap<>();
-        for (SoknadVedlegg vedleggsforventning : getVedlegg()) {
-            List<Faktum> faktaSomTriggerVedlegg = soknad.getFaktaMedKey(vedleggsforventning.getFaktum().getId());
 
-            if (vedleggsforventning.getFlereTillatt()) {
+        for (VedleggForFaktumStruktur vedleggStruktur : getVedlegg()) {
+            List<Faktum> faktaSomTriggerVedlegg = soknad.getFaktaMedKey(vedleggStruktur.getFaktum().getId());
+
+            if (vedleggStruktur.getFlereTillatt()) {
+
                 for (Faktum faktum : faktaSomTriggerVedlegg) {
-                    String key = vedleggsforventning.getSkjemaNummer() + vedleggsforventning.getSkjemanummerTillegg() + faktum.getFaktumId();
-                    muligeVedlegg.put(key, new VedleggsGrunnlag(soknad, soknad.finnVedleggSomMatcherForventning(vedleggsforventning, faktum.getFaktumId())).medGrunnlag(vedleggsforventning, faktum));
+                    Vedlegg vedlegg = soknad.finnVedleggSomMatcherForventning(vedleggStruktur, faktum.getFaktumId());
+
+                    VedleggsGrunnlag vedleggsgrunnlag = new VedleggsGrunnlag(soknad, vedlegg)
+                            .medGrunnlag(vedleggStruktur, faktum);
+
+                    muligeVedlegg.put(createVedleggKey(vedleggStruktur, faktum), vedleggsgrunnlag);
                 }
             } else {
-                String key = vedleggsforventning.getSkjemaNummer() + vedleggsforventning.getSkjemanummerTillegg();
-                if (!muligeVedlegg.containsKey(key)) {
-                    muligeVedlegg.put(key, new VedleggsGrunnlag(soknad, soknad.finnVedleggSomMatcherForventning(vedleggsforventning, null)));
+                String key = createVedleggKey(vedleggStruktur);
+                if (vedleggsgrunnlagFinnesIkke(muligeVedlegg, key)) {
+
+                    Vedlegg vedlegg = soknad.finnVedleggSomMatcherForventning(vedleggStruktur, null);
+                    VedleggsGrunnlag vedleggsgrunnlag = new VedleggsGrunnlag(soknad, vedlegg);
+
+                    muligeVedlegg.put(key, vedleggsgrunnlag);
                 }
-                muligeVedlegg.get(key).medGrunnlag(vedleggsforventning, faktaSomTriggerVedlegg);
+                muligeVedlegg.get(key).medGrunnlag(vedleggStruktur, faktaSomTriggerVedlegg);
             }
         }
         return new ArrayList<>(muligeVedlegg.values());
+    }
+
+    private boolean vedleggsgrunnlagFinnesIkke(Map<String, VedleggsGrunnlag> muligeVedlegg, String key) {
+        return !muligeVedlegg.containsKey(key);
+    }
+
+    private String createVedleggKey(VedleggForFaktumStruktur vedleggStruktur) {
+        return vedleggStruktur.getSkjemaNummer() + vedleggStruktur.getSkjemanummerTillegg();
+    }
+
+    private String createVedleggKey(VedleggForFaktumStruktur vedleggStruktur, Faktum faktum) {
+        return vedleggStruktur.getSkjemaNummer() + vedleggStruktur.getSkjemanummerTillegg() + faktum.getFaktumId();
     }
 }

@@ -329,6 +329,10 @@ public class Vedlegg {
         }
     }
 
+    public boolean erNyttVedlegg(){
+        return vedleggId == null;
+    }
+
     @JsonIgnore
     public String lagFilNavn() {
         return getSkjemaNummer().equals("N6") ? getNavn() : getSkjemaNummer();
