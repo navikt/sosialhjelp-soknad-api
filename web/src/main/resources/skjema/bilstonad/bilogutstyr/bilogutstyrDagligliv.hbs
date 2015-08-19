@@ -9,11 +9,15 @@
     <tr>
         <td class="sjekket"></td>
         <td>
-            <span>{{hentTekst (concat cmsPrefiks (concat "bilogutstyr.hjelpemidler." value))}}. </span>
+            <span>{{hentTekst (concat cmsPrefiks (concat "bilogutstyr.hjelpemidler." value))}}</span>
 
             {{#hvisLik value "ja"}}
                 {{#forFaktum "bilogutstyr.hjelpemidler.ja.beskrivelse"}}
-                    <span>{{hentTekst "oppsummering.bilogutstyr.hjelpemidler.ja.beskrivelse"}}: <em>{{value}}</em></span>
+                    <ul>
+                        <li class="kulepunkt faktum-felt">
+                            <span>{{hentTekst "oppsummering.bilogutstyr.hjelpemidler.ja.beskrivelse"}}: <em>{{value}}</em></span>
+                        </li>
+                    </ul>
                 {{/forFaktum}}
             {{/hvisLik}}
 
