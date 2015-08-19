@@ -11,11 +11,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.joda.time.DateTime;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -496,16 +492,34 @@ public class WebSoknad implements Serializable {
         return on(vedlegg).filter(new Predicate<Vedlegg>() {
                                       @Override
                                       public boolean evaluate(Vedlegg vedlegg) {
-                                          return (vedlegg.getFaktumId() == null && !vedleggForFaktumStruktur.getFlereTillatt()
-                                                  || vedlegg.getFaktumId() != null && vedleggForFaktumStruktur.getFlereTillatt() && vedlegg.getFaktumId().equals(faktumId))
-                                                  && vedlegg.getSkjemaNummer().equals(vedleggForFaktumStruktur.getSkjemaNummer())
-                                                  && Objects.equals(vedlegg.getSkjemanummerTillegg(), vedleggForFaktumStruktur.getSkjemanummerTillegg());
+                                          return liktFaktum(vedlegg) && liktSkjema(vedlegg);
+                                      }
+
+                                      private boolean liktFaktum(Vedlegg vedlegg) {
+                                          return liktFaktumVedEttTillatt(vedlegg) || liktFakutumVedFlereTillatt(vedlegg);
+                                      }
+
+                                      private boolean liktFakutumVedFlereTillatt(Vedlegg vedlegg) {
+                                          return vedlegg.getFaktumId() != null && vedleggForFaktumStruktur.getFlereTillatt() && vedlegg.getFaktumId().equals(faktumId);
+                                      }
+
+                                      private boolean liktFaktumVedEttTillatt(Vedlegg vedlegg) {
+                                          return vedlegg.getFaktumId() == null && !vedleggForFaktumStruktur.getFlereTillatt();
+                                      }
+
+                                      private boolean liktSkjema(Vedlegg vedlegg) {
+                                          return liktSkjemanummer(vedlegg) && liktSkjemanummerTillegg(vedlegg);
+                                      }
+
+                                      private boolean liktSkjemanummer(Vedlegg vedlegg) {
+                                          return vedlegg.getSkjemaNummer().equals(vedleggForFaktumStruktur.getSkjemaNummer());
+                                      }
+
+                                      private boolean liktSkjemanummerTillegg(Vedlegg vedlegg) {
+                                          return Objects.equals(vedlegg.getSkjemanummerTillegg(), vedleggForFaktumStruktur.getSkjemanummerTillegg());
                                       }
                                   }
 
-            ).head().getOrElse(null);
-        }
-        public List<Vedlegg> finnAlleVedleggSomMatcher(VedleggForFaktumStruktur vedleggForFaktumStruktur) {
-        return on(vedlegg).filter(vedleggForFaktumStruktur.MATCHER_VEDLEGG).collect();
+        ).head().getOrElse(null);
     }
 }
