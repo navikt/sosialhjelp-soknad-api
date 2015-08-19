@@ -106,9 +106,9 @@ public class SoknadStruktur implements Serializable {
             if (vedleggStruktur.getFlereTillatt()) {
 
                 for (Faktum faktum : faktaSomTriggerVedlegg) {
-                    Vedlegg vedlegg = soknad.finnVedleggSomMatcherForventning(vedleggStruktur, faktum.getFaktumId());
+                    Vedlegg brukervedlegg = soknad.finnVedleggSomMatcherForventning(vedleggStruktur, faktum.getFaktumId());
 
-                    VedleggsGrunnlag vedleggsgrunnlag = new VedleggsGrunnlag(soknad, vedlegg)
+                    VedleggsGrunnlag vedleggsgrunnlag = new VedleggsGrunnlag(soknad, brukervedlegg)
                             .medGrunnlag(vedleggStruktur, faktum);
 
                     muligeVedlegg.put(createVedleggKey(vedleggStruktur, faktum), vedleggsgrunnlag);
@@ -117,8 +117,8 @@ public class SoknadStruktur implements Serializable {
                 String key = createVedleggKey(vedleggStruktur);
                 if (vedleggsgrunnlagFinnesIkke(muligeVedlegg, key)) {
 
-                    Vedlegg vedlegg = soknad.finnVedleggSomMatcherForventning(vedleggStruktur, null);
-                    VedleggsGrunnlag vedleggsgrunnlag = new VedleggsGrunnlag(soknad, vedlegg);
+                    Vedlegg brukervedlegg = soknad.finnVedleggSomMatcherForventning(vedleggStruktur, null);
+                    VedleggsGrunnlag vedleggsgrunnlag = new VedleggsGrunnlag(soknad, brukervedlegg);
 
                     muligeVedlegg.put(key, vedleggsgrunnlag);
                 }

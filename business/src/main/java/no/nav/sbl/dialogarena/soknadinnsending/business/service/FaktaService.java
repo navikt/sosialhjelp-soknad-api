@@ -237,7 +237,8 @@ public class FaktaService {
     }
 
     private boolean erVedleggKrevdAvAnnetFaktum(Faktum faktum, SoknadStruktur struktur, VedleggForFaktumStruktur vedleggForFaktumStruktur) {
-        return !vedleggForFaktumStruktur.getFlereTillatt() && annetFaktumHarForventning(faktum.getSoknadId(), vedleggForFaktumStruktur.getSkjemaNummer(), vedleggForFaktumStruktur.getSkjemanummerTillegg(), struktur);
+        boolean annetFaktumHarForventning = annetFaktumHarForventning(faktum.getSoknadId(), vedleggForFaktumStruktur.getSkjemaNummer(), vedleggForFaktumStruktur.getSkjemanummerTillegg(), struktur);
+        return !vedleggForFaktumStruktur.getFlereTillatt() && annetFaktumHarForventning;
     }
 
     private boolean parentValueErLikEnAvVerdieneIDependOnValues(FaktumStruktur faktum, Faktum parent) {

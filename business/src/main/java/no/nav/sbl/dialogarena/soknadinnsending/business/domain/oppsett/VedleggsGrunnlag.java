@@ -47,14 +47,14 @@ public class VedleggsGrunnlag {
 
     public boolean erVedleggPaakrevd() {
         for (Pair<VedleggForFaktumStruktur, List<Faktum>> pair : grunnlag) {
-            if (matcherEtAvFaktumeneKravTilVedlegg(pair.getRight(), pair.getLeft())) return true;
+            if (matcherEtAvFaktumeneKravTilVedlegg(pair.getRight(), pair.getLeft())) { return true; }
         }
         return false;
     }
 
     private boolean matcherEtAvFaktumeneKravTilVedlegg(List<Faktum> fakta, VedleggForFaktumStruktur vedleggForFaktumStruktur) {
         for (Faktum faktum : fakta) {
-            if (vedleggForFaktumStruktur.getFaktum().erSynlig(soknad) && vedleggForFaktumStruktur.trengerVedlegg(faktum) && /**Fremdeles veldig usikker på denne her */vedleggForFaktumStruktur.harFilterProperty(faktum)) {
+            if (vedleggForFaktumStruktur.getFaktum().erSynlig(soknad) && vedleggForFaktumStruktur.trengerVedlegg(faktum) && vedleggForFaktumStruktur.harFilterProperty(faktum)) {
                 return true;
             }
         }

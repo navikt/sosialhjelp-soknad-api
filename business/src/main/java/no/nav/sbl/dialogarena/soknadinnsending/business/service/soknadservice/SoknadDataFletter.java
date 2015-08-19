@@ -222,7 +222,9 @@ public class SoknadDataFletter {
         logger.info("Lagrer søknad som fil til henvendelse for behandling {}", soknad.getBrukerBehandlingId());
         fillagerService.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(pdf));
 
-        henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), lagXmlHovedskjemaMedAlternativRepresentasjon(pdf, soknad), convertToXmlVedleggListe(vedleggService.hentVedleggOgKvittering(soknad)));
+        XMLHovedskjema hovedskjema = lagXmlHovedskjemaMedAlternativRepresentasjon(pdf, soknad);
+        XMLVedlegg[] vedlegg = convertToXmlVedleggListe(vedleggService.hentVedleggOgKvittering(soknad));
+        henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, vedlegg);
         lokalDb.slettSoknad(soknad.getSoknadId());
     }
 
