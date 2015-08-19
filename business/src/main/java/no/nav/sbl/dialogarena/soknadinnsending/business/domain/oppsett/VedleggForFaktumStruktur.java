@@ -223,23 +223,11 @@ public class VedleggForFaktumStruktur implements Serializable {
                 filterValues.contains(faktum.getProperties().get(filterKey));
     }
 
-    public boolean matcherVedlegg(Vedlegg vedlegg) {
-        return MATCHER_VEDLEGG.evaluate(vedlegg);
-    }
-    public transient Predicate<Vedlegg> MATCHER_VEDLEGG = new Predicate<Vedlegg>() {
-        @Override
-        public boolean evaluate(Vedlegg vedlegg) {
-            return (vedlegg.getFaktumId() == null && !flereTillatt  || vedlegg.getFaktumId() != null && flereTillatt)
-                    && vedlegg.getSkjemaNummer().equals(getSkjemaNummer())
-                    && Objects.equals(vedlegg.getSkjemanummerTillegg(), skjemanummerTillegg);
-        }
-    };
-
     public Vedlegg genererVedlegg(Faktum faktum) {
         return new Vedlegg()
                 .medSoknadId(faktum.getSoknadId())
                 .medFaktumId(getFlereTillatt() ? faktum.getFaktumId() : null)
-                .medNavn(faktum.getProperties().get("bolk")) //Fikse flere tillatt
+                .medNavn(faktum.getProperties().get("bolk"))
                 .medSkjemaNummer(getSkjemaNummer())
                 .medSkjemanummerTillegg(getSkjemanummerTillegg())
                 .medInnsendingsvalg(Vedlegg.Status.VedleggKreves);
