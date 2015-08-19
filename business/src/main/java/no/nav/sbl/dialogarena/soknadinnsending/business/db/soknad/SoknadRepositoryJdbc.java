@@ -4,23 +4,13 @@ import com.google.common.base.Function;
 import no.nav.modig.lang.collections.iter.ReduceFunction;
 import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.FaktumEgenskap;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.VedleggForFaktumStruktur;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
+import org.springframework.jdbc.core.namedparam.*;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
@@ -45,7 +35,6 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.limit
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.selectNextSequenceValue;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad.startSoknad;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -182,12 +171,6 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     public void leggTilbake(WebSoknad webSoknad) {
         getJdbcTemplate().update("update soknad set batch_status = 'LEDIG' where soknad_id = ?", webSoknad.getSoknadId());
-    }
-
-    public List<WebSoknad> hentListe(String aktorId) {
-        String sql = "select * from soknad where aktorid = ? order by opprettetdato desc";
-        return getJdbcTemplate().query(sql, new String[]{aktorId},
-                new SoknadMapper());
     }
 
     public WebSoknad hentSoknadMedData(Long id) {
@@ -447,20 +430,5 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     private <T> List<T> select(String sql, RowMapper<T> rowMapper, Object... args) {
         return getJdbcTemplate().query(sql, args, rowMapper);
-    }
-
-    private static class SoknadMapper implements RowMapper<WebSoknad> {
-        public WebSoknad mapRow(ResultSet rs, int row) throws SQLException {
-            return startSoknad()
-                    .medId(rs.getLong("soknad_id"))
-                    .medBehandlingId(rs.getString("brukerbehandlingid"))
-                    .medskjemaNummer(rs.getString("navsoknadid"))
-                    .medAktorId(rs.getString("aktorid"))
-                    .medUuid("uuid")
-                    .medOppretteDato(new DateTime(rs.getTimestamp("opprettetdato").getTime()))
-                    .medStatus(SoknadInnsendingStatus.valueOf(rs.getString("status")))
-                    .medDelstegStatus(DelstegStatus.valueOf(rs.getString("delstegstatus")))
-                    .medJournalforendeEnhet(rs.getString("journalforendeenhet"));
-        }
     }
 }

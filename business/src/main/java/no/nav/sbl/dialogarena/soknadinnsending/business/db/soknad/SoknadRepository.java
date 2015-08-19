@@ -26,8 +26,6 @@ public interface SoknadRepository {
 
     void leggTilbake(WebSoknad webSoknad);
 
-    List<WebSoknad> hentListe(String aktorId);
-
     Long lagreFaktum(long soknadId, Faktum faktum);
     Long lagreFaktum(long soknadId, Faktum faktum, Boolean systemFaktum);
 
