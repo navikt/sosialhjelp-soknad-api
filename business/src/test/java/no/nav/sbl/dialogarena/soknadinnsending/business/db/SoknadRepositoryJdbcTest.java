@@ -552,7 +552,7 @@ public class SoknadRepositoryJdbcTest {
 
     private Long lagreData(Long soknadId, String key, Long faktumId, String value) {
         if(faktumId != null){
-            return soknadRepository.lagreFaktum(soknadId, new Faktum().medSoknadId(soknadId).medFaktumId(faktumId).medKey(key).medValue(value).medType(BRUKERREGISTRERT));
+            return soknadRepository.lagreFaktum(new Faktum().medSoknadId(soknadId).medFaktumId(faktumId).medKey(key).medValue(value).medType(BRUKERREGISTRERT));
         }
         return soknadRepository.opprettFaktum(soknadId, new Faktum().medSoknadId(soknadId).medKey(key).medValue(value).medType(BRUKERREGISTRERT));
 

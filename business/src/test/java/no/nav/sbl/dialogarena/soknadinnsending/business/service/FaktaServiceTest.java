@@ -139,12 +139,12 @@ public class FaktaServiceTest {
 
     @Test
     public void skalOppdatereFaktaMedSammeUnikProperty() {
-        WebSoknad soknad = new WebSoknad().medId(1L).medFaktum(lagFaktumMedUnikProperty("123").medValue("gammel").medFaktumId(5L));
+        WebSoknad soknad = new WebSoknad().medId(1L).medFaktum(lagFaktumMedUnikProperty("123").medValue("gammel").medFaktumId(5L).medSoknadId(1L));
         List<Faktum> fakta = Collections.singletonList(lagFaktumMedUnikProperty("123").medValue("ny"));
 
         ArgumentCaptor<Faktum> argument = ArgumentCaptor.forClass(Faktum.class);
         faktaService.lagreSystemFakta(soknad, fakta);
-        verify(soknadRepository).lagreFaktum(anyLong(), argument.capture(), anyBoolean());
+        verify(soknadRepository).lagreFaktum(argument.capture(), anyBoolean());
         assertEquals(new Long(5L), argument.getValue().getFaktumId());
     }
 
@@ -155,7 +155,7 @@ public class FaktaServiceTest {
 
         ArgumentCaptor<Faktum> argument = ArgumentCaptor.forClass(Faktum.class);
         faktaService.lagreSystemFakta(soknad, fakta);
-        verify(soknadRepository).lagreFaktum(anyLong(), argument.capture(), anyBoolean());
+        verify(soknadRepository).lagreFaktum(argument.capture(), anyBoolean());
         assertEquals(new Long(5L), argument.getValue().getFaktumId());
     }
 

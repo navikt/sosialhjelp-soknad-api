@@ -77,7 +77,7 @@ public class FaktaService {
         Long soknadId = faktum.getSoknadId();
         faktum.setType(BRUKERREGISTRERT);
 
-        Long faktumId = repository.lagreFaktum(soknadId, faktum);
+        Long faktumId = repository.lagreFaktum(faktum);
         repository.settSistLagretTidspunkt(soknadId);
 
         settDelstegStatus(soknadId, faktum.getKey());
@@ -106,7 +106,7 @@ public class FaktaService {
                     faktum.kopierFaktumegenskaper(existing);
                 }
                 faktum.setType(SYSTEMREGISTRERT);
-                repository.lagreFaktum(soknad.getSoknadId(), faktum, true);
+                repository.lagreFaktum(faktum, true);
 
                 genererVedleggForFaktum(faktum);
             }
