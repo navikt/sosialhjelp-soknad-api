@@ -146,16 +146,16 @@ public class SoknadDataFletter {
 
         for (FaktumStruktur faktumStruktur : fakta) {
             if (erIkkeSystemfaktumOgKunEtErTillatt(faktumStruktur)) {
-                Faktum f = new Faktum()
+                Faktum faktum = new Faktum()
                         .medKey(faktumStruktur.getId())
                         .medValue("")
                         .medType(BRUKERREGISTRERT);
 
                 if (faktumStruktur.getDependOn() != null) {
                     Faktum parentFaktum = lokalDb.hentFaktumMedKey(soknadId, faktumStruktur.getDependOn().getId());
-                    f.setParrentFaktum(parentFaktum.getFaktumId());
+                    faktum.setParrentFaktum(parentFaktum.getFaktumId());
                 }
-                lokalDb.lagreFaktum(soknadId, f);
+                lokalDb.lagreFaktum(soknadId, faktum);
             }
         }
     }
