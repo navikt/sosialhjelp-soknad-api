@@ -92,7 +92,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         handlebars.registerHelper("forInnsendteVedlegg", generateForInnsendteVedleggHelper());
         handlebars.registerHelper("forIkkeInnsendteVedlegg", generateForIkkeInnsendteVedleggHelper());
         handlebars.registerHelper("hvisHarIkkeInnsendteDokumenter", generateHvisHarIkkeInnsendteDokumenterHelper());
-        handlebars.registerHelper("concat", generateConcatStringHelper());
         handlebars.registerHelper("skalViseRotasjonTurnusSporsmaal", generateSkalViseRotasjonTurnusSporsmaalHelper());
         handlebars.registerHelper("hvisLikCmsTekst", generateHvisLikCmsTekstHelper());
         handlebars.registerHelper("hvisKunStudent", generateHvisKunStudentHelper());
@@ -265,18 +264,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         };
     }
 
-    private Helper<String> generateConcatStringHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String first, Options options) throws IOException {
-                StringBuilder builder = new StringBuilder(first);
-                for (Object string : options.params) {
-                    builder.append(string);
-                }
-                return builder.toString();
-            }
-        };
-    }
 
     private String getCmsTekst(String key, Object[] parameters, Locale locale) {
         try {
