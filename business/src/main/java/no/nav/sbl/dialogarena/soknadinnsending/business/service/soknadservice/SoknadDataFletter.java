@@ -138,13 +138,9 @@ public class SoknadDataFletter {
 
         Long soknadId = lokalDb.opprettSoknad(nySoknad);
         nySoknad.setSoknadId(soknadId);
-        lokalDb.lagreFaktum(soknadId, new Faktum().medSoknadId(soknadId).medKey("bolker").medType(BRUKERREGISTRERT));
+        lokalDb.lagreFaktum(soknadId, bolkerFaktum(soknadId));
 
-        Faktum personalia = new Faktum()
-                .medSoknadId(soknadId)
-                .medType(SYSTEMREGISTRERT)
-                .medKey("personalia");
-        faktaService.lagreSystemFaktum(soknadId, personalia);
+        faktaService.lagreSystemFaktum(soknadId, personalia(soknadId));
 
         List<FaktumStruktur> fakta = config.hentStruktur(skjemanummer).getFakta();
         sort(fakta, sammenlignEtterDependOn());
@@ -163,14 +159,31 @@ public class SoknadDataFletter {
                 lokalDb.lagreFaktum(soknadId, f);
             }
         }
-        Faktum lonnsOgTrekkoppgaveFaktum = new Faktum()
+        faktaService.lagreSystemFaktum(soknadId, lonnsOgTrekkOppgave(soknadId));
+
+        return behandlingsId;
+    }
+
+    private Faktum lonnsOgTrekkOppgave(Long soknadId) {
+        return new Faktum()
                 .medSoknadId(soknadId)
                 .medKey("lonnsOgTrekkOppgave")
                 .medType(SYSTEMREGISTRERT)
                 .medValue(startDatoService.erJanuarEllerFebruar().toString());
-        faktaService.lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum);
+    }
 
-        return behandlingsId;
+    private Faktum bolkerFaktum(Long soknadId) {
+        return new Faktum()
+                .medSoknadId(soknadId)
+                .medKey("bolker")
+                .medType(BRUKERREGISTRERT);
+    }
+
+    private Faktum personalia(Long soknadId) {
+        return new Faktum()
+                .medSoknadId(soknadId)
+                .medType(SYSTEMREGISTRERT)
+                .medKey("personalia");
     }
 
     public WebSoknad hentSoknad(String behandlingsId, boolean medData, boolean medVedlegg) {
