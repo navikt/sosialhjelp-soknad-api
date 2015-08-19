@@ -191,7 +191,7 @@ public class SoknadDataFletter {
 
         Long soknadId = lokalDb.opprettSoknad(nySoknad);
         nySoknad.setSoknadId(soknadId);
-        lokalDb.lagreFaktum(soknadId, new Faktum().medSoknadId(soknadId).medKey("bolker").medType(BRUKERREGISTRERT));
+        lokalDb.opprettFaktum(soknadId, new Faktum().medSoknadId(soknadId).medKey("bolker").medType(BRUKERREGISTRERT));
 
         Faktum personalia = new Faktum()
                 .medSoknadId(soknadId)
@@ -213,7 +213,7 @@ public class SoknadDataFletter {
                     Faktum parentFaktum = lokalDb.hentFaktumMedKey(soknadId, soknadFaktum.getDependOn().getId());
                     f.setParrentFaktum(parentFaktum.getFaktumId());
                 }
-                lokalDb.lagreFaktum(soknadId, f);
+                lokalDb.opprettFaktum(soknadId, f);
             }
         }
         Faktum lonnsOgTrekkoppgaveFaktum = new Faktum()

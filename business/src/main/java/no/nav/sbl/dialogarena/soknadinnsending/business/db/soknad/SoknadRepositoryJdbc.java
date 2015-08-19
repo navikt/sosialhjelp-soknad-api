@@ -317,15 +317,11 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     public Long opprettFaktum(long soknadId, Faktum faktum, Boolean systemLagring) {
         faktum.setSoknadId(soknadId);
-        if (faktum.getFaktumId() == null) {
-            faktum.setFaktumId(getJdbcTemplate().queryForObject(selectNextSequenceValue("SOKNAD_BRUKER_DATA_ID_SEQ"), Long.class));
-            getNamedParameterJdbcTemplate().update(INSERT_FAKTUM, forFaktum(faktum));
-            lagreAlleEgenskaper(faktum, systemLagring);
-            return faktum.getFaktumId();
-        } else {
-            oppdaterBrukerData(soknadId, faktum, systemLagring);
-            return faktum.getFaktumId();
-        }
+        faktum.setFaktumId(getJdbcTemplate().queryForObject(selectNextSequenceValue("SOKNAD_BRUKER_DATA_ID_SEQ"), Long.class));
+        getNamedParameterJdbcTemplate().update(INSERT_FAKTUM, forFaktum(faktum));
+        lagreAlleEgenskaper(faktum, systemLagring);
+        return faktum.getFaktumId();
+
     }
 
     public Long lagreFaktum(long soknadId, Faktum faktum) {
@@ -334,15 +330,8 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     public Long lagreFaktum(long soknadId, Faktum faktum, Boolean systemLagring) {
         faktum.setSoknadId(soknadId);
-        if (faktum.getFaktumId() == null) {
-            faktum.setFaktumId(getJdbcTemplate().queryForObject(selectNextSequenceValue("SOKNAD_BRUKER_DATA_ID_SEQ"), Long.class));
-            getNamedParameterJdbcTemplate().update(INSERT_FAKTUM, forFaktum(faktum));
-            lagreAlleEgenskaper(faktum, systemLagring);
-            return faktum.getFaktumId();
-        } else {
-            oppdaterBrukerData(soknadId, faktum, systemLagring);
-            return faktum.getFaktumId();
-        }
+        oppdaterBrukerData(soknadId, faktum, systemLagring);
+        return faktum.getFaktumId();
     }
 
     private BeanPropertySqlParameterSource forFaktum(Faktum faktum) {
