@@ -106,7 +106,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 ##### toLowerCase
 
 ```
-|{{toLowerCase variabel}}
+{{toLowerCase variabel}}
 {{toLowerCase "MaSSe Case"}}
 ```
 
