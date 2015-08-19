@@ -129,15 +129,8 @@ public class SoknadDataFletter {
         String aktorId = getSubjectHandler().getUid();
         String behandlingsId = henvendelseService.startSoknad(aktorId, skjemanummer, mainUid);
 
-        WebSoknad nySoknad = WebSoknad.startSoknad()
-                .medBehandlingId(behandlingsId)
-                .medskjemaNummer(skjemanummer)
-                .medUuid(mainUid)
-                .medAktorId(aktorId)
-                .medOppretteDato(DateTime.now());
+        Long soknadId = lagreSoknadILokalDb(skjemanummer, mainUid, aktorId, behandlingsId).getSoknadId();
 
-        Long soknadId = lokalDb.opprettSoknad(nySoknad);
-        nySoknad.setSoknadId(soknadId);
         lokalDb.lagreFaktum(soknadId, bolkerFaktum(soknadId));
 
         faktaService.lagreSystemFaktum(soknadId, personalia(soknadId));
@@ -162,6 +155,19 @@ public class SoknadDataFletter {
         faktaService.lagreSystemFaktum(soknadId, lonnsOgTrekkOppgave(soknadId));
 
         return behandlingsId;
+    }
+
+    private WebSoknad lagreSoknadILokalDb(String skjemanummer, String uuid, String aktorId, String behandlingsId) {
+        WebSoknad nySoknad = WebSoknad.startSoknad()
+                .medBehandlingId(behandlingsId)
+                .medskjemaNummer(skjemanummer)
+                .medUuid(uuid)
+                .medAktorId(aktorId)
+                .medOppretteDato(DateTime.now());
+
+        Long soknadId = lokalDb.opprettSoknad(nySoknad);
+        nySoknad.setSoknadId(soknadId);
+        return nySoknad;
     }
 
     private Faktum lonnsOgTrekkOppgave(Long soknadId) {
