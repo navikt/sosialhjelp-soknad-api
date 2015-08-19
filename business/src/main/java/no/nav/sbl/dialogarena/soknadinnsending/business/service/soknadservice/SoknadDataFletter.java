@@ -56,8 +56,8 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class SoknadDataFletter {
 
     private static final Logger logger = getLogger(SoknadDataFletter.class);
-    private final boolean MED_DATA = true;
-    private final boolean MED_VEDLEGG = true;
+    private static final boolean MED_DATA = true;
+    private static final boolean MED_VEDLEGG = true;
 
     @Inject
     private HenvendelseService henvendelseService;
