@@ -40,7 +40,6 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * forFaktaMedPropertySattTilTrue
 * formatterFodelsDato
 * formatterLangDato
-* hvisSant
 * hvisEttersending
 * hvisMindre
 * hvisMer
@@ -68,6 +67,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 
 * concat - Legger sammen alle parametrene til tekststring
 * hvisHarDiskresjonskode - Viser innhold avhengig av om personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)
+* hvisSant - Dersom variabelen er "true" vil innholdet vises
 * toLowerCase - Gjør om en tekst til kun små bokstaver
 * variabel - Lager en variabel med en bestemt verdi som kun er tilgjengelig innenfor helperen
 
@@ -89,6 +89,17 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
     {{else}}
     jeg har IKKE noen diskresjonskode
 {{/hvisHarDiskresjonskode}}
+```
+
+
+##### hvisSant
+
+```
+{{#hvisSant booleanString}}
+    Gitt "true"
+    {{else}}
+    Gitt alt annet enn "true"
+{{/hvisSant}}
 ```
 
 
