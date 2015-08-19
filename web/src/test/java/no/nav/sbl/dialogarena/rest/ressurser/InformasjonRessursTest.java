@@ -4,7 +4,7 @@ import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.modig.core.context.ThreadLocalSubjectHandler;
 import no.nav.sbl.dialogarena.rest.ressurser.informasjon.InformasjonRessurs;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Adresse;
@@ -67,7 +67,7 @@ public class InformasjonRessursTest {
 
         struktur = new SoknadStruktur();
         struktur.setTemaKode(TEMAKODE);
-        struktur.setFakta(singletonList(new SoknadFaktum()));
+        struktur.setFakta(singletonList(new FaktumStruktur()));
         when(soknadConfig.hentStruktur(anyString())).thenReturn(struktur);
     }
 

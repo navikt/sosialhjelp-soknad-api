@@ -10,8 +10,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.AlternativReprese
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
@@ -48,7 +47,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Fak
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.FERDIG;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.UNDER_ARBEID;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum.sammenlignEtterDependOn;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.FaktumStruktur.sammenlignEtterDependOn;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.convertToXmlVedleggListe;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.*;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -95,7 +94,6 @@ public class SoknadDataFletter {
         bolker = applicationContext.getBeansOfType(BolkService.class);
     }
 
-    private SoknadStruktur hentSoknadStruktur(Long soknadId) { return config.hentStruktur(soknadId); }
 
     private WebSoknad hentFraHenvendelse(String behandlingsId, boolean hentFaktumOgVedlegg) {
         WSHentSoknadResponse wsSoknadsdata = henvendelseService.hentSoknad(behandlingsId);
@@ -148,18 +146,18 @@ public class SoknadDataFletter {
                 .medKey("personalia");
         faktaService.lagreSystemFaktum(soknadId, personalia);
 
-        List<SoknadFaktum> fakta = hentSoknadStruktur(soknadId).getFakta();
+        List<FaktumStruktur> fakta = config.hentStruktur(skjemanummer).getFakta();
         sort(fakta, sammenlignEtterDependOn());
 
-        for (SoknadFaktum soknadFaktum : fakta) {
-            if (erIkkeSystemfaktumOgKunEtErTillatt(soknadFaktum)) {
+        for (FaktumStruktur faktumStruktur : fakta) {
+            if (erIkkeSystemfaktumOgKunEtErTillatt(faktumStruktur)) {
                 Faktum f = new Faktum()
-                        .medKey(soknadFaktum.getId())
+                        .medKey(faktumStruktur.getId())
                         .medValue("")
                         .medType(BRUKERREGISTRERT);
 
-                if (soknadFaktum.getDependOn() != null) {
-                    Faktum parentFaktum = lokalDb.hentFaktumMedKey(soknadId, soknadFaktum.getDependOn().getId());
+                if (faktumStruktur.getDependOn() != null) {
+                    Faktum parentFaktum = lokalDb.hentFaktumMedKey(soknadId, faktumStruktur.getDependOn().getId());
                     f.setParrentFaktum(parentFaktum.getFaktumId());
                 }
                 lokalDb.lagreFaktum(soknadId, f);

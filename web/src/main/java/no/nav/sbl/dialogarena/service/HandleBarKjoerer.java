@@ -74,7 +74,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         handlebars.registerHelper("forFaktaMedPropertySattTilTrue", generateForFaktaMedPropTrueHelper());
         handlebars.registerHelper("formatterFodelsDato", generateFormatterFodselsdatoHelper());
         handlebars.registerHelper("formatterLangDato", generateFormatterLangDatoHelper());
-        handlebars.registerHelper("hvisSant", generateHvisSantHelper());
         handlebars.registerHelper("hvisEttersending", generateHvisEttersendingHelper());
         handlebars.registerHelper("hvisMindre", generateHvisMindreHelper());
         handlebars.registerHelper("hvisMer", generateHvisMerHelper());
@@ -92,10 +91,8 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         handlebars.registerHelper("forInnsendteVedlegg", generateForInnsendteVedleggHelper());
         handlebars.registerHelper("forIkkeInnsendteVedlegg", generateForIkkeInnsendteVedleggHelper());
         handlebars.registerHelper("hvisHarIkkeInnsendteDokumenter", generateHvisHarIkkeInnsendteDokumenterHelper());
-        handlebars.registerHelper("concat", generateConcatStringHelper());
         handlebars.registerHelper("skalViseRotasjonTurnusSporsmaal", generateSkalViseRotasjonTurnusSporsmaalHelper());
         handlebars.registerHelper("hvisLikCmsTekst", generateHvisLikCmsTekstHelper());
-        handlebars.registerHelper("toLowerCase", generateToLowerCaseHelper());
         handlebars.registerHelper("hvisKunStudent", generateHvisKunStudentHelper());
         handlebars.registerHelper("harBarnetInntekt", generateHarBarnetInntektHelper());
 
@@ -266,18 +263,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         };
     }
 
-    private Helper<String> generateConcatStringHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String first, Options options) throws IOException {
-                StringBuilder builder = new StringBuilder(first);
-                for (Object string : options.params) {
-                    builder.append(string);
-                }
-                return builder.toString();
-            }
-        };
-    }
 
     private String getCmsTekst(String key, Object[] parameters, Locale locale) {
         try {
@@ -344,19 +329,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
                 Integer grense = Integer.parseInt((String) options.param(0));
                 Integer verdi = Integer.parseInt(value);
                 if (verdi < grense) {
-                    return options.fn(this);
-                } else {
-                    return options.inverse(this);
-                }
-            }
-        };
-    }
-
-    private Helper<String> generateHvisSantHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String value, Options options) throws IOException {
-                if (value != null && value.equals("true")) {
                     return options.fn(this);
                 } else {
                     return options.inverse(this);
@@ -605,14 +577,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         };
     }
 
-    private Helper<Object> generateToLowerCaseHelper() {
-        return new Helper<Object>() {
-            @Override
-            public CharSequence apply(Object value, Options options) throws IOException {
-                return value.toString().toLowerCase();
-            }
-        };
-    }
 
     private Helper<Object> generateHvisKunStudentHelper() {
         return new Helper<Object>() {

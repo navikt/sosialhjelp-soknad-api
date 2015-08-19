@@ -116,7 +116,6 @@ public class SoknadServiceTest {
         setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         when(soknadRepository.hentSoknadType(anyLong())).thenReturn(DAGPENGER);
         when(config.getSoknadBolker(any(WebSoknad.class), any(List.class))).thenReturn(new ArrayList());
-        when(config.hentStruktur(any(Long.class))).thenReturn(new SoknadStruktur());
         when(kravdialogInformasjonHolder.hentAlleSkjemanumre()).thenReturn(new KravdialogInformasjonHolder().hentAlleSkjemanumre());
     }
 
