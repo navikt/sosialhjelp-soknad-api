@@ -95,7 +95,7 @@ public class FaktaService {
             public void execute(Faktum faktum) {
                 Faktum existing;
 
-                if(faktum.getUnikProperty() == null) {
+                if (faktum.getUnikProperty() == null) {
                     existing = soknad.getFaktumMedKey(faktum.getKey());
                 } else {
                     existing = soknad.getFaktaMedKeyOgProperty(faktum.getKey(), faktum.getUnikProperty(), faktum.getProperties().get(faktum.getUnikProperty()));
@@ -106,7 +106,11 @@ public class FaktaService {
                     faktum.kopierFaktumegenskaper(existing);
                 }
                 faktum.setType(SYSTEMREGISTRERT);
-                repository.lagreFaktum(faktum, true);
+                if (faktum.getFaktumId() != null) {
+                    repository.lagreFaktum(faktum, true);
+                } else {
+                    repository.opprettFaktum(soknad.getSoknadId(), faktum, true);
+                }
 
                 genererVedleggForFaktum(faktum);
             }

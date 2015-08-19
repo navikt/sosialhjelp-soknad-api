@@ -124,7 +124,7 @@ public class FaktaServiceTest {
     }
 
     @Test
-    public void skalLagreSystemFaktum() {
+    public void skalOppretteSystemFaktum() {
         Faktum faktum = new Faktum().medKey("personalia").medSystemProperty("fno", "123").medSoknadId(1L);
         Faktum faktumSjekk = new Faktum().medKey("personalia").medSystemProperty("fno", "123").medSoknadId(1L).medType(Faktum.FaktumType.SYSTEMREGISTRERT);
 
@@ -138,8 +138,19 @@ public class FaktaServiceTest {
     }
 
     @Test
+    public void skalLagreSystemFaktumHvisFaktumId() {
+        WebSoknad soknad = new WebSoknad().medId(1L).medFaktum(new Faktum().medKey("personalia").medSoknadId(new Long(1L)).medFaktumId(5L).medValue("gammel"));
+        List<Faktum> fakta = Collections.singletonList(new Faktum().medKey("personalia").medSoknadId(1L).medValue("ny"));
+
+        ArgumentCaptor<Faktum> argument = ArgumentCaptor.forClass(Faktum.class);
+        faktaService.lagreSystemFakta(soknad, fakta);
+        verify(soknadRepository).lagreFaktum(argument.capture(), anyBoolean());
+        assertEquals(new Long(5L), argument.getValue().getFaktumId());
+    }
+
+    @Test
     public void skalOppdatereFaktaMedSammeUnikProperty() {
-        WebSoknad soknad = new WebSoknad().medId(1L).medFaktum(lagFaktumMedUnikProperty("123").medValue("gammel").medFaktumId(5L).medSoknadId(1L));
+        WebSoknad soknad = new WebSoknad().medId(1L).medFaktum(lagFaktumMedUnikProperty("123").medValue("gammel").medFaktumId(5L));
         List<Faktum> fakta = Collections.singletonList(lagFaktumMedUnikProperty("123").medValue("ny"));
 
         ArgumentCaptor<Faktum> argument = ArgumentCaptor.forClass(Faktum.class);
@@ -150,7 +161,7 @@ public class FaktaServiceTest {
 
     @Test
     public void skalOppdatereFaktaMedSammeKeyOgUtenUnikProperty() {
-        WebSoknad soknad = new WebSoknad().medId(1L).medFaktum(new Faktum().medKey("personalia").medSoknadId(1L).medValue("gammel").medFaktumId(5L));
+        WebSoknad soknad = new WebSoknad().medId(1L).medFaktum(new Faktum().medKey("personalia").medSoknadId(new Long(1L)).medFaktumId(5L).medValue("gammel"));
         List<Faktum> fakta = Collections.singletonList(new Faktum().medKey("personalia").medSoknadId(1L).medValue("ny"));
 
         ArgumentCaptor<Faktum> argument = ArgumentCaptor.forClass(Faktum.class);
