@@ -261,7 +261,7 @@ public class VedleggService {
         leggTilKodeverkFelter(paakrevdeVedlegg);
 
         if("true".equals(System.getProperty(FEATURE_NY_VEDLEGGENERERING))){
-            List<Vedlegg> paakrevdeVedleggVedNyUthenting = hentPaakrevdeVedleggMedGenerering(behandlingsId);
+            List<Vedlegg> paakrevdeVedleggVedNyUthenting = genererPaakrevdeVedlegg(behandlingsId);
             leggTilKodeverkFelter(paakrevdeVedleggVedNyUthenting);
             if (!VedleggsgenereringUtil.likeVedlegg(paakrevdeVedlegg, paakrevdeVedleggVedNyUthenting)) {
                 String feilmelding = "\n ########### VEDLEGGSFEIL - Feil i ny vedleggsgenereringslogikk ################# \n";
@@ -283,7 +283,7 @@ public class VedleggService {
         return melding +  "Antall vedlegg: " + vedleggList.size() + "\n";
     }
 
-    public List<Vedlegg> hentPaakrevdeVedleggMedGenerering(String behandlingsId) {
+    public List<Vedlegg> genererPaakrevdeVedlegg(String behandlingsId) {
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true);
         SoknadStruktur struktur = soknadService.hentSoknadStruktur(soknad.getskjemaNummer());
         final List<VedleggsGrunnlag> alleMuligeVedlegg = struktur.hentAlleMuligeVedlegg(soknad);
@@ -291,7 +291,7 @@ public class VedleggService {
         on(alleMuligeVedlegg).forEach(new Closure<VedleggsGrunnlag>() {
             @Override
             public void execute(VedleggsGrunnlag vedleggsgrunnlag) {
-                vedleggsgrunnlag.oppdaterInnsendingsvalg(vedleggRepository);
+                vedleggsgrunnlag.oppdaterVedlegg(vedleggRepository);
             }
         });
         return on(alleMuligeVedlegg).map(new Transformer<VedleggsGrunnlag, Vedlegg>() {

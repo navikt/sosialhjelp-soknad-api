@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sun.org.apache.bcel.internal.util.Objects;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigDelstegEndringException;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.VedleggForFaktumStruktur;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -492,20 +492,20 @@ public class WebSoknad implements Serializable {
         }).head().getOrElse(null);
     }
 
-    public Vedlegg finnVedleggSomMatcherForventning(final SoknadVedlegg soknadVedlegg, final Long faktumId) {
+    public Vedlegg finnVedleggSomMatcherForventning(final VedleggForFaktumStruktur vedleggForFaktumStruktur, final Long faktumId) {
         return on(vedlegg).filter(new Predicate<Vedlegg>() {
                                       @Override
                                       public boolean evaluate(Vedlegg vedlegg) {
-                                          return (vedlegg.getFaktumId() == null && !soknadVedlegg.getFlereTillatt()
-                                                  || vedlegg.getFaktumId() != null && soknadVedlegg.getFlereTillatt() && vedlegg.getFaktumId().equals(faktumId))
-                                                  && vedlegg.getSkjemaNummer().equals(soknadVedlegg.getSkjemaNummer())
-                                                  && Objects.equals(vedlegg.getSkjemanummerTillegg(), soknadVedlegg.getSkjemanummerTillegg());
+                                          return (vedlegg.getFaktumId() == null && !vedleggForFaktumStruktur.getFlereTillatt()
+                                                  || vedlegg.getFaktumId() != null && vedleggForFaktumStruktur.getFlereTillatt() && vedlegg.getFaktumId().equals(faktumId))
+                                                  && vedlegg.getSkjemaNummer().equals(vedleggForFaktumStruktur.getSkjemaNummer())
+                                                  && Objects.equals(vedlegg.getSkjemanummerTillegg(), vedleggForFaktumStruktur.getSkjemanummerTillegg());
                                       }
                                   }
 
             ).head().getOrElse(null);
         }
-        public List<Vedlegg> finnAlleVedleggSomMatcher(SoknadVedlegg soknadVedlegg) {
-        return on(vedlegg).filter(soknadVedlegg.MATCHER_VEDLEGG).collect();
+        public List<Vedlegg> finnAlleVedleggSomMatcher(VedleggForFaktumStruktur vedleggForFaktumStruktur) {
+        return on(vedlegg).filter(vedleggForFaktumStruktur.MATCHER_VEDLEGG).collect();
     }
 }

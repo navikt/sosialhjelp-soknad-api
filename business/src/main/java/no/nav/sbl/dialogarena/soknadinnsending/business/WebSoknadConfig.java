@@ -46,6 +46,7 @@ public class WebSoknadConfig {
         return System.getProperty(skjemaConfig.getFortsettSoknadUrlKey());
     }
 
+    @Deprecated
     public SoknadStruktur hentStruktur(long soknadId) {
         KravdialogInformasjon skjemaConfig = finnSkjemaConfig(soknadId);
         return hentStrukturForSkjemanavn(skjemaConfig);
