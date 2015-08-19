@@ -101,6 +101,14 @@ public class AktiviteterServiceTest {
         Faktum faktum = fakta.get(0);
         assertThat(faktum.getProperties()).containsEntry("fom", "");
     }
+    @Test
+    public void skalGodtaNullListe() throws FinnAktivitetsinformasjonListePersonIkkeFunnet, FinnAktivitetsinformasjonListeSikkerhetsbegrensning {
+
+        when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(null);
+
+        List<Faktum> fakta = aktiviteterService.hentAktiviteter("***REMOVED***");
+        assertThat(fakta).isEmpty();
+    }
 
     @Test(expected = RuntimeException.class)
     public void skalKasteRuntimeExceptionVedWsFeil() throws FinnAktivitetsinformasjonListePersonIkkeFunnet, FinnAktivitetsinformasjonListeSikkerhetsbegrensning {
