@@ -1065,7 +1065,7 @@
         <flereTillatt>false</flereTillatt>
     </vedlegg>
     <vedlegg>
-        <skjemaNummer>M4</skjemaNummer><!-- skal byttes!! -->
+        <skjemaNummer>U8</skjemaNummer>
         <skjemanummerTillegg>reiseaktivitet</skjemanummerTillegg>
         <faktum>reise.aktivitet.offentligtransport.aarsak.annet</faktum>
         <property>bolk</property>
@@ -1075,7 +1075,7 @@
         <flereTillatt>false</flereTillatt>
     </vedlegg>
     <vedlegg>
-        <skjemaNummer>M4</skjemaNummer><!-- skal byttes!! -->
+        <skjemaNummer>U8</skjemaNummer>
         <skjemanummerTillegg>reiseaktivitet</skjemanummerTillegg>
         <faktum>reise.aktivitet.offentligtransport.egenbil.aarsak.annet</faktum>
         <property>bolk</property>
