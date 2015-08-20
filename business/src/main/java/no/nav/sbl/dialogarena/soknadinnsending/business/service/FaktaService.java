@@ -78,7 +78,7 @@ public class FaktaService {
         Long soknadId = faktum.getSoknadId();
         faktum.setType(BRUKERREGISTRERT);
 
-        Long faktumId = repository.lagreFaktum(faktum);
+        Long faktumId = repository.oppdaterFaktum(faktum);
         repository.settSistLagretTidspunkt(soknadId);
 
         settDelstegStatus(soknadId, faktum.getKey());
@@ -108,7 +108,7 @@ public class FaktaService {
                 }
                 faktum.setType(SYSTEMREGISTRERT);
                 if (faktum.getFaktumId() != null) {
-                    repository.lagreFaktum(faktum, true);
+                    repository.oppdaterFaktum(faktum, true);
                 } else {
                     repository.opprettFaktum(soknad.getSoknadId(), faktum, true);
                 }
@@ -134,7 +134,7 @@ public class FaktaService {
 
         Long lagretFaktumId;
         if (f.getFaktumId() != null){
-            lagretFaktumId = repository.lagreFaktum(f, true);
+            lagretFaktumId = repository.oppdaterFaktum(f, true);
         }else{
             lagretFaktumId = repository.opprettFaktum(soknadId, f, true);
         }

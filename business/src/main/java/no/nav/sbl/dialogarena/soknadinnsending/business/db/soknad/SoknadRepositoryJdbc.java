@@ -307,11 +307,11 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     }
 
-    public Long lagreFaktum(Faktum faktum) {
-        return lagreFaktum(faktum, false);
+    public Long oppdaterFaktum(Faktum faktum) {
+        return oppdaterFaktum(faktum, false);
     }
 
-    public Long lagreFaktum(Faktum faktum, Boolean systemLagring) {
+    public Long oppdaterFaktum(Faktum faktum, Boolean systemLagring) {
         oppdaterBrukerData(faktum, systemLagring);
         return faktum.getFaktumId();
     }

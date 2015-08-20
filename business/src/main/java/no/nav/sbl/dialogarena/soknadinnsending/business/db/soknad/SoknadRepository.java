@@ -26,10 +26,10 @@ public interface SoknadRepository {
 
     void leggTilbake(WebSoknad webSoknad);
     
-    Long lagreFaktum(Faktum faktum);
+    Long oppdaterFaktum(Faktum faktum);
     Long opprettFaktum(long soknadId, Faktum faktum, Boolean systemFaktum);
     Long opprettFaktum(long soknadId, Faktum faktum);
-    Long lagreFaktum(Faktum faktum, Boolean systemFaktum);
+    Long oppdaterFaktum(Faktum faktum, Boolean systemFaktum);
 
     Faktum hentFaktum(Long faktumId);
 

@@ -128,13 +128,13 @@ public class FaktaServiceTest {
         Faktum faktum = new Faktum().medKey("personalia").medSystemProperty("fno", "123").medSoknadId(1L);
         Faktum faktumSjekk = new Faktum().medKey("personalia").medSystemProperty("fno", "123").medSoknadId(1L).medType(Faktum.FaktumType.SYSTEMREGISTRERT);
 
-        when(soknadRepository.lagreFaktum(any(Faktum.class), anyBoolean())).thenReturn(2L);
+        when(soknadRepository.oppdaterFaktum(any(Faktum.class), anyBoolean())).thenReturn(2L);
         when(soknadRepository.hentFaktum(2L)).thenReturn(faktum);
         when(soknadRepository.hentSystemFaktumList(1L, faktum.getKey())).thenReturn(Arrays.asList(
                 new Faktum().medFaktumId(5L).medKey("personalia").medSystemProperty("fno", "123").medSoknadId(1L),
                 new Faktum().medFaktumId(6L).medKey("personalia").medSystemProperty("fno", "124").medSoknadId(1L)));
         faktaService.lagreSystemFaktum(1L, faktum);
-        verify(soknadRepository).lagreFaktum(faktumSjekk.medFaktumId(5L), true);
+        verify(soknadRepository).oppdaterFaktum(faktumSjekk.medFaktumId(5L), true);
     }
 
     @Test
@@ -144,7 +144,7 @@ public class FaktaServiceTest {
 
         ArgumentCaptor<Faktum> argument = ArgumentCaptor.forClass(Faktum.class);
         faktaService.lagreSystemFakta(soknad, fakta);
-        verify(soknadRepository).lagreFaktum(argument.capture(), anyBoolean());
+        verify(soknadRepository).oppdaterFaktum(argument.capture(), anyBoolean());
         assertEquals(new Long(5L), argument.getValue().getFaktumId());
     }
 
@@ -155,7 +155,7 @@ public class FaktaServiceTest {
 
         ArgumentCaptor<Faktum> argument = ArgumentCaptor.forClass(Faktum.class);
         faktaService.lagreSystemFakta(soknad, fakta);
-        verify(soknadRepository).lagreFaktum(argument.capture(), anyBoolean());
+        verify(soknadRepository).oppdaterFaktum(argument.capture(), anyBoolean());
         assertEquals(new Long(5L), argument.getValue().getFaktumId());
     }
 
@@ -166,7 +166,7 @@ public class FaktaServiceTest {
 
         ArgumentCaptor<Faktum> argument = ArgumentCaptor.forClass(Faktum.class);
         faktaService.lagreSystemFakta(soknad, fakta);
-        verify(soknadRepository).lagreFaktum(argument.capture(), anyBoolean());
+        verify(soknadRepository).oppdaterFaktum(argument.capture(), anyBoolean());
         assertEquals(new Long(5L), argument.getValue().getFaktumId());
     }
 
