@@ -131,7 +131,7 @@ public class SoknadDataFletter {
 
         Long soknadId = lagreSoknadILokalDb(skjemanummer, mainUid, aktorId, behandlingsId).getSoknadId();
 
-        lokalDb.lagreFaktum(soknadId, bolkerFaktum(soknadId));
+        faktaService.lagreFaktum(soknadId, bolkerFaktum(soknadId));
         faktaService.lagreSystemFaktum(soknadId, personalia(soknadId));
         faktaService.lagreSystemFaktum(soknadId, lonnsOgTrekkOppgave(soknadId));
 
@@ -152,10 +152,10 @@ public class SoknadDataFletter {
                         .medType(BRUKERREGISTRERT);
 
                 if (faktumStruktur.getDependOn() != null) {
-                    Faktum parentFaktum = lokalDb.hentFaktumMedKey(soknadId, faktumStruktur.getDependOn().getId());
+                    Faktum parentFaktum = faktaService.hentFaktumMedKey(soknadId, faktumStruktur.getDependOn().getId());
                     faktum.setParrentFaktum(parentFaktum.getFaktumId());
                 }
-                lokalDb.lagreFaktum(soknadId, faktum);
+                faktaService.lagreFaktum(soknadId, faktum);
             }
         }
     }
