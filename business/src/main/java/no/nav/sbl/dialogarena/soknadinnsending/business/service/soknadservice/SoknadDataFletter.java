@@ -145,7 +145,7 @@ public class SoknadDataFletter {
         sort(fakta, sammenlignEtterDependOn());
 
         for (FaktumStruktur faktumStruktur : fakta) {
-            if (erIkkeSystemfaktumOgKunEtErTillatt(faktumStruktur)) {
+            if (faktumStruktur.ikkeSystemFaktum() && faktumStruktur.ikkeFlereTillatt()) {
                 Faktum faktum = new Faktum()
                         .medKey(faktumStruktur.getId())
                         .medValue("")
