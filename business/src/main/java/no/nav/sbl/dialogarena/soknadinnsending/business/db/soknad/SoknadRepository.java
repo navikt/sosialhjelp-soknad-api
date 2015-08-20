@@ -25,9 +25,7 @@ public interface SoknadRepository {
     Optional<WebSoknad> plukkSoknadTilMellomlagring();
 
     void leggTilbake(WebSoknad webSoknad);
-
-    List<WebSoknad> hentListe(String aktorId);
-
+    
     Long lagreFaktum(Faktum faktum);
     Long opprettFaktum(long soknadId, Faktum faktum, Boolean systemFaktum);
     Long opprettFaktum(long soknadId, Faktum faktum);

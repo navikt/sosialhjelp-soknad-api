@@ -144,20 +144,6 @@ public class SoknadRepositoryJdbcTest {
         Assert.assertNull(soknad);
     }
 
-
-    @Test
-    public void skalKunneHenteListeMedSoknader() {
-        String aId = "2";
-        opprettOgPersisterSoknad(aId);
-        opprettOgPersisterSoknad(aId);
-        opprettOgPersisterSoknad(aId);
-        opprettOgPersisterSoknad(aId);
-
-        List<WebSoknad> soknader = soknadRepository.hentListe("2");
-        assertThat(soknader, notNullValue());
-        assertThat(soknader.size(), is(4));
-    }
-
     @Test
     public void skalKunneLagreBrukerData() {
         String key = "Key";
