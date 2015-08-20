@@ -128,13 +128,13 @@ public class FaktaServiceTest {
         Faktum faktum = new Faktum().medKey("personalia").medSystemProperty("fno", "123").medSoknadId(1L);
         Faktum faktumSjekk = new Faktum().medKey("personalia").medSystemProperty("fno", "123").medSoknadId(1L).medType(Faktum.FaktumType.SYSTEMREGISTRERT);
 
-        when(soknadRepository.opprettFaktum(anyLong(), any(Faktum.class), anyBoolean())).thenReturn(2L);
+        when(soknadRepository.lagreFaktum(any(Faktum.class), anyBoolean())).thenReturn(2L);
         when(soknadRepository.hentFaktum(2L)).thenReturn(faktum);
         when(soknadRepository.hentSystemFaktumList(1L, faktum.getKey())).thenReturn(Arrays.asList(
-                new Faktum().medFaktumId(5L).medKey("personalia").medSystemProperty("fno", "123"),
-                new Faktum().medFaktumId(6L).medKey("personalia").medSystemProperty("fno", "124")));
-        faktaService.opprettSystemFaktum(1L, faktum); //opprett
-        verify(soknadRepository).opprettFaktum(1L, faktumSjekk.medFaktumId(5L), true);
+                new Faktum().medFaktumId(5L).medKey("personalia").medSystemProperty("fno", "123").medSoknadId(1L),
+                new Faktum().medFaktumId(6L).medKey("personalia").medSystemProperty("fno", "124").medSoknadId(1L)));
+        faktaService.lagreSystemFaktum(1L, faktum);
+        verify(soknadRepository).lagreFaktum(faktumSjekk.medFaktumId(5L), true);
     }
 
     @Test

@@ -148,7 +148,7 @@ public class SoknadDataFletterTest {
         when(lokalDb.hentSoknadMedData(soknadId)).thenReturn(new WebSoknad().medId(soknadId));
         soknadServiceUtil.startSoknad(DAGPENGER);
 
-        verify(faktaService, times(1)).opprettSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum);
+        verify(faktaService, times(1)).lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum);
         DateTimeUtils.setCurrentMillisSystem();
     }
 
@@ -198,7 +198,7 @@ public class SoknadDataFletterTest {
         when(lokalDb.hentSoknadMedData(soknadId)).thenReturn(new WebSoknad().medId(soknadId));
         soknadServiceUtil.startSoknad(DAGPENGER);
 
-        verify(faktaService, times(1)).opprettSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum);
+        verify(faktaService, times(1)).lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum);
         DateTimeUtils.setCurrentMillisSystem();
     }
 
