@@ -144,7 +144,7 @@ public class SoknadDataFletter {
                 .medSoknadId(soknadId)
                 .medType(SYSTEMREGISTRERT)
                 .medKey("personalia");
-        faktaService.opprettSystemFaktum(soknadId, personalia);
+        faktaService.lagreSystemFaktum(soknadId, personalia);
 
         List<FaktumStruktur> fakta = config.hentStruktur(skjemanummer).getFakta();
         sort(fakta, sammenlignEtterDependOn());
@@ -168,7 +168,7 @@ public class SoknadDataFletter {
                 .medKey("lonnsOgTrekkOppgave")
                 .medType(SYSTEMREGISTRERT)
                 .medValue(startDatoService.erJanuarEllerFebruar().toString());
-        faktaService.opprettSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum);
+        faktaService.lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum);
 
         return behandlingsId;
     }

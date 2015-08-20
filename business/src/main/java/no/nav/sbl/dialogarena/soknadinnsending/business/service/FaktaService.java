@@ -119,8 +119,8 @@ public class FaktaService {
     }
 
     @Transactional
-    public Long opprettSystemFaktum(Long soknadId, Faktum f) {
-        logger.debug("*** Oppretter systemfaktum ***: " + f.getKey());
+    public Long lagreSystemFaktum(Long soknadId, Faktum f) {
+        logger.debug("*** Lagrer systemfaktum ***: " + f.getKey());
         f.setType(SYSTEMREGISTRERT);
         List<Faktum> fakta = repository.hentSystemFaktumList(soknadId, f.getKey());
 
@@ -132,7 +132,12 @@ public class FaktaService {
             }
         }
 
-        Long lagretFaktumId = repository.opprettFaktum(soknadId, f, true);
+        Long lagretFaktumId;
+        if (f.getFaktumId() != null){
+            lagretFaktumId = repository.lagreFaktum(f, true);
+        }else{
+            lagretFaktumId = repository.opprettFaktum(soknadId, f, true);
+        }
         Faktum hentetFaktum = repository.hentFaktum(lagretFaktumId);
         genererVedleggForFaktum(hentetFaktum);
 
