@@ -258,6 +258,9 @@ public class SoknadDataFletter {
             soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknad.getSoknadId()))
                     .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
                     .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
+        }
+
+        // PRODFIX: Kjører dette alltid slik at Personalia skal funke for Dagpenger i Prod når vi ikke kaller medData
             if (soknad.erEttersending()) {
                 faktaService.lagreSystemFakta(soknad, bolker.get(PersonaliaService.class.getName()).genererSystemFakta(getSubjectHandler().getUid(), soknad.getSoknadId()));
             } else {
@@ -267,7 +270,7 @@ public class SoknadDataFletter {
                 }
                 faktaService.lagreSystemFakta(soknad, systemfaktum);
             }
-        }
+
         return soknad;
     }
 
