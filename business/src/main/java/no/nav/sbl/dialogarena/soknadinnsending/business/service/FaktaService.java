@@ -59,7 +59,7 @@ public class FaktaService {
     }
 
     @Transactional
-    public Faktum opprettSoknadsFelt(String behandlingsId, Faktum faktum) {
+    public Faktum opprettBrukerFaktum(String behandlingsId, Faktum faktum) {
         Long soknadId = repository.hentSoknad(behandlingsId).getSoknadId();
         faktum.setSoknadId(soknadId);
         faktum.setType(BRUKERREGISTRERT);
@@ -74,7 +74,7 @@ public class FaktaService {
     }
 
     @Transactional
-    public Faktum lagreSoknadsFelt(Faktum faktum) {
+    public Faktum lagreBrukerFaktum(Faktum faktum) {
         Long soknadId = faktum.getSoknadId();
         faktum.setType(BRUKERREGISTRERT);
 
