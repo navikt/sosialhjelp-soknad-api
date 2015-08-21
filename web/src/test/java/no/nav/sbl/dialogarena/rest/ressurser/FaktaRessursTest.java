@@ -23,7 +23,7 @@ public class FaktaRessursTest {
     public void faktumSkalLagresHvisInnsendtFaktumMatcherOppgittFaktumId() {
         Faktum faktum = new Faktum().medFaktumId(1L);
         ressurs.lagreFaktum(1L, faktum);
-        verify(faktaService).lagreSoknadsFelt(faktum);
+        verify(faktaService).lagreBrukerFaktum(faktum);
     }
 
     @Test(expected = RuntimeException.class)
