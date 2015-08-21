@@ -255,21 +255,22 @@ public class SoknadDataFletter {
 
         if (medData) {
             soknad = lokalDb.hentSoknadMedData(soknad.getSoknadId());
-            soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknad.getSoknadId()))
-                    .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
-                    .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
         }
 
         // PRODFIX: Kjører dette alltid slik at Personalia skal funke for Dagpenger i Prod når vi ikke kaller medData
-            if (soknad.erEttersending()) {
-                faktaService.lagreSystemFakta(soknad, bolker.get(PersonaliaService.class.getName()).genererSystemFakta(getSubjectHandler().getUid(), soknad.getSoknadId()));
-            } else {
-                List<Faktum> systemfaktum = new ArrayList<>();
-                for (BolkService bolk : config.getSoknadBolker(soknad, bolker.values())) {
-                    systemfaktum.addAll(bolk.genererSystemFakta(getSubjectHandler().getUid(), soknad.getSoknadId()));
-                }
-                faktaService.lagreSystemFakta(soknad, systemfaktum);
+        // Flyttes tilbake inn i "if (medData)" etter oppdatering av Dagpenger
+        soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknad.getSoknadId()))
+                .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
+                .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
+        if (soknad.erEttersending()) {
+            faktaService.lagreSystemFakta(soknad, bolker.get(PersonaliaService.class.getName()).genererSystemFakta(getSubjectHandler().getUid(), soknad.getSoknadId()));
+        } else {
+            List<Faktum> systemfaktum = new ArrayList<>();
+            for (BolkService bolk : config.getSoknadBolker(soknad, bolker.values())) {
+                systemfaktum.addAll(bolk.genererSystemFakta(getSubjectHandler().getUid(), soknad.getSoknadId()));
             }
+            faktaService.lagreSystemFakta(soknad, systemfaktum);
+        }
 
         return soknad;
     }
