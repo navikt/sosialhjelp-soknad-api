@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig;
 
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.tjenester.AktiviteterMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder;
+import no.nav.sbl.dialogarena.types.Pingable;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.SakOgAktivitetV1;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -18,9 +19,9 @@ public class SakOgAktivitetWSConfig {
     private String sakOgAktivitetEndpoint;
 
     @Bean
-    public SakOgAktivitetV1 sakOgAktivitetInformasjonEndpoint() {
-        SakOgAktivitetV1 mock = sakOgAktivitetInformasjonEndpointMock();
-        SakOgAktivitetV1 prod = sakOgAktivitetInformasjonEndpointWS();
+    public SakOgAktivitetV1 sakOgAktivitetEndpoint() {
+        SakOgAktivitetV1 mock = sakOgAktivitetEndpointMock();
+        SakOgAktivitetV1 prod = sakOgAktivitetEndpointWS();
         return createSwitcher(prod, mock, SAKOGAKTIVITET_KEY, SakOgAktivitetV1.class);
     }
     private ServiceBuilder<SakOgAktivitetV1>.PortTypeBuilder<SakOgAktivitetV1> factory() {
@@ -36,11 +37,29 @@ public class SakOgAktivitetWSConfig {
     }
 
     @Bean
-    public SakOgAktivitetV1 sakOgAktivitetInformasjonEndpointMock() {
+    public SakOgAktivitetV1 sakOgAktivitetEndpointMock() {
         return new AktiviteterMock().sakOgAktivitetInformasjonV1Mock();
     }
     @Bean
-    public SakOgAktivitetV1 sakOgAktivitetInformasjonEndpointWS() {
+    public SakOgAktivitetV1 sakOgAktivitetEndpointWS() {
         return factory().withUserSecurity().get();
+    }
+    @Bean
+    public SakOgAktivitetV1 sakOgAktivitetSelftestEndpoint() {
+        return factory().withSystemSecurity().get();
+    }
+    @Bean
+    Pingable sakOgAktivitetPing() {
+        return new Pingable() {
+            @Override
+            public Ping ping() {
+                try {
+                    sakOgAktivitetSelftestEndpoint().ping();
+                    return Ping.lyktes("SakOgAktivitet");
+                } catch (Exception e) {
+                    return Pingable.Ping.feilet("SakOgAktivitet", e);
+                }
+            }
+        };
     }
 }
