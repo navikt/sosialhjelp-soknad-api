@@ -21,7 +21,13 @@ import org.springframework.context.NoSuchMessageException;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import static no.bekk.bekkopen.person.FodselsnummerValidator.getFodselsnummer;
 import static no.nav.modig.lang.collections.IterUtils.on;
@@ -65,9 +71,7 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         for (Map.Entry<String, Helper> helper : helpers.entrySet()) {
             handlebars.registerHelper(helper.getKey(), helper.getValue());
         }
-
         handlebars.registerHelper("adresse", generateAdresseHelper());
-        handlebars.registerHelper("forFaktum", generateForFaktumHelper());
         handlebars.registerHelper("forFaktumHvisSant", generateforFaktumHvisSantHelper());
         handlebars.registerHelper("forFakta", generateForFaktaHelper());
         handlebars.registerHelper("forBarnefakta", generateForBarnefaktaHelper());
@@ -443,22 +447,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
                     return options.inverse(this);
                 } else {
                     return lagItererbarRespons(options, fakta);
-                }
-            }
-        };
-    }
-
-    private Helper<String> generateForFaktumHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String o, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-                Faktum faktum = soknad.getFaktumMedKey(o);
-
-                if (faktum == null || (faktum.getValue() == null && faktum.getProperties().isEmpty())) {
-                    return options.inverse(this);
-                } else {
-                    return options.fn(faktum);
                 }
             }
         };
