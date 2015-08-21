@@ -59,19 +59,26 @@ public class FaktaService {
     }
 
     @Transactional
-    public Faktum lagreSoknadsFelt(String behandlingsId, Faktum faktum) {
-        WebSoknad soknad = repository.hentSoknad(behandlingsId);
-        faktum.setSoknadId(soknad.getSoknadId());
+    public Faktum opprettBrukerFaktum(String behandlingsId, Faktum faktum) {
+        Long soknadId = repository.hentSoknad(behandlingsId).getSoknadId();
+        faktum.setSoknadId(soknadId);
+        faktum.setType(BRUKERREGISTRERT);
+        Long faktumId = repository.opprettFaktum(soknadId, faktum);
 
-        return lagreSoknadsFelt(faktum);
+        repository.settSistLagretTidspunkt(soknadId);
+        settDelstegStatus(soknadId, faktum.getKey());
+
+        Faktum resultat = repository.hentFaktum(faktumId);
+        genererVedleggForFaktum(resultat);
+        return resultat;
     }
 
     @Transactional
-    public Faktum lagreSoknadsFelt(Faktum faktum) {
+    public Faktum lagreBrukerFaktum(Faktum faktum) {
         Long soknadId = faktum.getSoknadId();
         faktum.setType(BRUKERREGISTRERT);
 
-        Long faktumId = repository.lagreFaktum(soknadId, faktum);
+        Long faktumId = repository.oppdaterFaktum(faktum);
         repository.settSistLagretTidspunkt(soknadId);
 
         settDelstegStatus(soknadId, faktum.getKey());
@@ -89,7 +96,7 @@ public class FaktaService {
             public void execute(Faktum faktum) {
                 Faktum existing;
 
-                if(faktum.getUnikProperty() == null) {
+                if (faktum.getUnikProperty() == null) {
                     existing = soknad.getFaktumMedKey(faktum.getKey());
                 } else {
                     existing = soknad.getFaktaMedKeyOgProperty(faktum.getKey(), faktum.getUnikProperty(), faktum.getProperties().get(faktum.getUnikProperty()));
@@ -100,7 +107,11 @@ public class FaktaService {
                     faktum.kopierFaktumegenskaper(existing);
                 }
                 faktum.setType(SYSTEMREGISTRERT);
-                repository.lagreFaktum(soknad.getSoknadId(), faktum, true);
+                if (faktum.getFaktumId() != null) {
+                    repository.oppdaterFaktum(faktum, true);
+                } else {
+                    repository.opprettFaktum(soknad.getSoknadId(), faktum, true);
+                }
 
                 genererVedleggForFaktum(faktum);
             }
@@ -121,7 +132,12 @@ public class FaktaService {
             }
         }
 
-        Long lagretFaktumId = repository.lagreFaktum(soknadId, f, true);
+        Long lagretFaktumId;
+        if (f.getFaktumId() != null){
+            lagretFaktumId = repository.oppdaterFaktum(f, true);
+        }else{
+            lagretFaktumId = repository.opprettFaktum(soknadId, f, true);
+        }
         Faktum hentetFaktum = repository.hentFaktum(lagretFaktumId);
         genererVedleggForFaktum(hentetFaktum);
 
