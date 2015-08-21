@@ -309,4 +309,8 @@ public class FaktaService {
     public Faktum hentFaktum(Long faktumId) {
         return repository.hentFaktum(faktumId);
     }
+
+    public void lagreFaktum(Long soknadId, Faktum faktum) {
+        repository.opprettFaktum(soknadId, faktum);
+    }
 }
