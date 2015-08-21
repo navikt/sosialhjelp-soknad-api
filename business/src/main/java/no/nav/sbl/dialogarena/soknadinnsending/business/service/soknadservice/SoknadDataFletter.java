@@ -56,8 +56,8 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class SoknadDataFletter {
 
     private static final Logger logger = getLogger(SoknadDataFletter.class);
-    private final boolean MED_DATA = true;
-    private final boolean MED_VEDLEGG = true;
+    private static final boolean MED_DATA = true;
+    private static final boolean MED_VEDLEGG = true;
 
     @Inject
     private HenvendelseService henvendelseService;
@@ -129,48 +129,70 @@ public class SoknadDataFletter {
         String aktorId = getSubjectHandler().getUid();
         String behandlingsId = henvendelseService.startSoknad(aktorId, skjemanummer, mainUid);
 
-        WebSoknad nySoknad = WebSoknad.startSoknad()
-                .medBehandlingId(behandlingsId)
-                .medskjemaNummer(skjemanummer)
-                .medUuid(mainUid)
-                .medAktorId(aktorId)
-                .medOppretteDato(DateTime.now());
+        Long soknadId = lagreSoknadILokalDb(skjemanummer, mainUid, aktorId, behandlingsId).getSoknadId();
 
-        Long soknadId = lokalDb.opprettSoknad(nySoknad);
-        nySoknad.setSoknadId(soknadId);
-        lokalDb.lagreFaktum(soknadId, new Faktum().medSoknadId(soknadId).medKey("bolker").medType(BRUKERREGISTRERT));
+        faktaService.lagreFaktum(soknadId, bolkerFaktum(soknadId));
+        faktaService.lagreSystemFaktum(soknadId, personalia(soknadId));
+        faktaService.lagreSystemFaktum(soknadId, lonnsOgTrekkOppgave(soknadId));
 
-        Faktum personalia = new Faktum()
-                .medSoknadId(soknadId)
-                .medType(SYSTEMREGISTRERT)
-                .medKey("personalia");
-        faktaService.lagreSystemFaktum(soknadId, personalia);
+        lagreTommeFaktaFraStrukturTilLokalDb(soknadId, skjemanummer);
 
+        return behandlingsId;
+    }
+
+    private void lagreTommeFaktaFraStrukturTilLokalDb(Long soknadId, String skjemanummer) {
         List<FaktumStruktur> fakta = config.hentStruktur(skjemanummer).getFakta();
         sort(fakta, sammenlignEtterDependOn());
 
         for (FaktumStruktur faktumStruktur : fakta) {
-            if (erIkkeSystemfaktumOgKunEtErTillatt(faktumStruktur)) {
-                Faktum f = new Faktum()
+            if (faktumStruktur.ikkeSystemFaktum() && faktumStruktur.ikkeFlereTillatt()) {
+                Faktum faktum = new Faktum()
                         .medKey(faktumStruktur.getId())
                         .medValue("")
                         .medType(BRUKERREGISTRERT);
 
                 if (faktumStruktur.getDependOn() != null) {
-                    Faktum parentFaktum = lokalDb.hentFaktumMedKey(soknadId, faktumStruktur.getDependOn().getId());
-                    f.setParrentFaktum(parentFaktum.getFaktumId());
+                    Faktum parentFaktum = faktaService.hentFaktumMedKey(soknadId, faktumStruktur.getDependOn().getId());
+                    faktum.setParrentFaktum(parentFaktum.getFaktumId());
                 }
-                lokalDb.lagreFaktum(soknadId, f);
+                faktaService.lagreFaktum(soknadId, faktum);
             }
         }
-        Faktum lonnsOgTrekkoppgaveFaktum = new Faktum()
+    }
+
+    private WebSoknad lagreSoknadILokalDb(String skjemanummer, String uuid, String aktorId, String behandlingsId) {
+        WebSoknad nySoknad = WebSoknad.startSoknad()
+                .medBehandlingId(behandlingsId)
+                .medskjemaNummer(skjemanummer)
+                .medUuid(uuid)
+                .medAktorId(aktorId)
+                .medOppretteDato(DateTime.now());
+
+        Long soknadId = lokalDb.opprettSoknad(nySoknad);
+        nySoknad.setSoknadId(soknadId);
+        return nySoknad;
+    }
+
+    private Faktum lonnsOgTrekkOppgave(Long soknadId) {
+        return new Faktum()
                 .medSoknadId(soknadId)
                 .medKey("lonnsOgTrekkOppgave")
                 .medType(SYSTEMREGISTRERT)
                 .medValue(startDatoService.erJanuarEllerFebruar().toString());
-        faktaService.lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum);
+    }
 
-        return behandlingsId;
+    private Faktum bolkerFaktum(Long soknadId) {
+        return new Faktum()
+                .medSoknadId(soknadId)
+                .medKey("bolker")
+                .medType(BRUKERREGISTRERT);
+    }
+
+    private Faktum personalia(Long soknadId) {
+        return new Faktum()
+                .medSoknadId(soknadId)
+                .medType(SYSTEMREGISTRERT)
+                .medKey("personalia");
     }
 
     public WebSoknad hentSoknad(String behandlingsId, boolean medData, boolean medVedlegg) {

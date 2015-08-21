@@ -149,4 +149,12 @@ public class FaktumStruktur implements Serializable {
     private boolean harDependOnProperty(Faktum parent) {
         return dependOnProperty != null && parent.harPropertySomMatcher(dependOnProperty, dependOnValues);
     }
+
+    public boolean ikkeFlereTillatt() {
+        return !"true".equals(this.getFlereTillatt());
+    }
+
+    public boolean ikkeSystemFaktum() {
+        return !"true".equals(this.getErSystemFaktum());
+    }
 }
