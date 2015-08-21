@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader;
 
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Rettighetstype;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Tilleggsstoenadsskjema;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
@@ -27,6 +28,9 @@ public class TilleggsstonaderTilXml implements Transformer<WebSoknad, Alternativ
     private static Tilleggsstoenadsskjema tilTilleggsstoenadSkjema(WebSoknad webSoknad) {
         Tilleggsstoenadsskjema skjema = new Tilleggsstoenadsskjema();
         skjema.setMaalgruppeinformasjon(new MaalgruppeTilXml().transform(webSoknad.getFaktumMedKey("maalgruppe")));
+        Rettighetstype rettighetstype = new Rettighetstype();
+        rettighetstype.setBoutgifter(new BoutgifterTilXml().transform(webSoknad));
+        skjema.setRettighetstype(rettighetstype);
         return skjema;
     }
 }

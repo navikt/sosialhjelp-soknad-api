@@ -13,6 +13,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import javax.xml.bind.DataBindingException;
 import javax.xml.bind.JAXB;
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -25,11 +27,42 @@ public class TilleggsstonaderTilXmlTest {
 
     @Before
     public void beforeEach(){
-        soknad = new WebSoknad().medFaktum(new Faktum()
+        soknad = new WebSoknad();
+        List<Faktum> fakta = new ArrayList<>();
+        fakta.add(new Faktum()
                 .medKey("maalgruppe")
                 .medType(Faktum.FaktumType.SYSTEMREGISTRERT)
                 .medProperty("kodeverkVerdi", "ARBSOKERE")
                 .medProperty("fom", "2015-01-01"));
+        fakta.add(new Faktum()
+                .medKey("bostotte.aarsak")
+                .medValue("fasteboutgifter"));
+        fakta.add(new Faktum()
+                .medKey("bostotte.periode")
+                .medProperty("fom", "2015-07-22")
+                .medProperty("tom", "2015-10-22"));
+        fakta.add(new Faktum()
+                .medKey("bostotte.kommunestotte")
+                .medValue("true")
+                .medProperty("utgift", "200"));
+        fakta.add(new Faktum()
+                .medKey("bostotte.adresseutgifter.aktivitetsadresse")
+                .medProperty("utgift", "2000"));
+        fakta.add(new Faktum()
+                .medKey("bostotte.adresseutgifter.hjemstedsaddresse")
+                .medProperty("utgift", "3000"));
+        fakta.add(new Faktum()
+                .medKey("bostotte.adresseutgifter.opphorte")
+                .medProperty("utgift", "4000"));
+        fakta.add(new Faktum()
+                .medKey("bostotte.medisinskearsaker")
+                .medValue("true"));
+        fakta.add(new Faktum()
+                .medKey("bostotte.utbetalingsdato")
+                .medValue("20"));
+
+        soknad.setFakta(fakta);
+
     }
 
     @Test
