@@ -63,9 +63,9 @@ public class FaktaServiceTest {
         Faktum faktum = new Faktum().medKey("epost").medValue("false").medFaktumId(soknadId);
         when(soknadRepository.hentSoknad(behandlingsId)).thenReturn(new WebSoknad().medId(soknadId).medDelstegStatus(DelstegStatus.UTFYLLING));
         when(soknadRepository.hentSoknad(soknadId)).thenReturn(new WebSoknad().medId(soknadId).medDelstegStatus(DelstegStatus.UTFYLLING));
-        when(soknadRepository.lagreFaktum(soknadId, faktum)).thenReturn(2L);
+        when(soknadRepository.opprettFaktum(soknadId, faktum)).thenReturn(2L);
         when(soknadRepository.hentFaktum(2L)).thenReturn(faktum);
-        faktaService.lagreSoknadsFelt(behandlingsId, faktum);
+        faktaService.opprettBrukerFaktum(behandlingsId, faktum);
         verify(soknadRepository, never()).settDelstegstatus(anyLong(), any(DelstegStatus.class));
     }
 
@@ -75,14 +75,14 @@ public class FaktaServiceTest {
         String behandlingsId = "1000000ABC";
         Faktum faktum = new Faktum().medKey("ikkeavtjentverneplikt").medValue("false").medFaktumId(soknadId);
         when(soknadRepository.hentSoknad(behandlingsId)).thenReturn(new WebSoknad().medId(soknadId));
-        when(soknadRepository.lagreFaktum(soknadId, faktum)).thenReturn(2L);
+        when(soknadRepository.opprettFaktum(soknadId, faktum)).thenReturn(2L);
         when(soknadRepository.hentFaktum(2L)).thenReturn(faktum);
-        faktaService.lagreSoknadsFelt(behandlingsId, faktum);
+        faktaService.opprettBrukerFaktum(behandlingsId, faktum);
         verify(soknadRepository).settSistLagretTidspunkt(soknadId);
         when(soknadRepository.hentBarneFakta(soknadId, faktum.getFaktumId())).thenReturn(Collections.singletonList(new Faktum().medKey("subkey")));
 
         //Verifiser vedlegg sjekker.
-        verify(soknadRepository).lagreFaktum(soknadId, faktum);
+        verify(soknadRepository).opprettFaktum(soknadId, faktum);
 
     }
 
@@ -124,17 +124,28 @@ public class FaktaServiceTest {
     }
 
     @Test
-    public void skalLagreSystemFaktum() {
+    public void skalOppretteSystemFaktum() {
         Faktum faktum = new Faktum().medKey("personalia").medSystemProperty("fno", "123").medSoknadId(1L);
         Faktum faktumSjekk = new Faktum().medKey("personalia").medSystemProperty("fno", "123").medSoknadId(1L).medType(Faktum.FaktumType.SYSTEMREGISTRERT);
 
-        when(soknadRepository.lagreFaktum(anyLong(), any(Faktum.class), anyBoolean())).thenReturn(2L);
+        when(soknadRepository.oppdaterFaktum(any(Faktum.class), anyBoolean())).thenReturn(2L);
         when(soknadRepository.hentFaktum(2L)).thenReturn(faktum);
         when(soknadRepository.hentSystemFaktumList(1L, faktum.getKey())).thenReturn(Arrays.asList(
-                new Faktum().medFaktumId(5L).medKey("personalia").medSystemProperty("fno", "123"),
-                new Faktum().medFaktumId(6L).medKey("personalia").medSystemProperty("fno", "124")));
+                new Faktum().medFaktumId(5L).medKey("personalia").medSystemProperty("fno", "123").medSoknadId(1L),
+                new Faktum().medFaktumId(6L).medKey("personalia").medSystemProperty("fno", "124").medSoknadId(1L)));
         faktaService.lagreSystemFaktum(1L, faktum);
-        verify(soknadRepository).lagreFaktum(1L, faktumSjekk.medFaktumId(5L), true);
+        verify(soknadRepository).oppdaterFaktum(faktumSjekk.medFaktumId(5L), true);
+    }
+
+    @Test
+    public void skalLagreSystemFaktumHvisFaktumId() {
+        WebSoknad soknad = new WebSoknad().medId(1L).medFaktum(new Faktum().medKey("personalia").medSoknadId(new Long(1L)).medFaktumId(5L).medValue("gammel"));
+        List<Faktum> fakta = Collections.singletonList(new Faktum().medKey("personalia").medSoknadId(1L).medValue("ny"));
+
+        ArgumentCaptor<Faktum> argument = ArgumentCaptor.forClass(Faktum.class);
+        faktaService.lagreSystemFakta(soknad, fakta);
+        verify(soknadRepository).oppdaterFaktum(argument.capture(), anyBoolean());
+        assertEquals(new Long(5L), argument.getValue().getFaktumId());
     }
 
     @Test
@@ -144,18 +155,18 @@ public class FaktaServiceTest {
 
         ArgumentCaptor<Faktum> argument = ArgumentCaptor.forClass(Faktum.class);
         faktaService.lagreSystemFakta(soknad, fakta);
-        verify(soknadRepository).lagreFaktum(anyLong(), argument.capture(), anyBoolean());
+        verify(soknadRepository).oppdaterFaktum(argument.capture(), anyBoolean());
         assertEquals(new Long(5L), argument.getValue().getFaktumId());
     }
 
     @Test
     public void skalOppdatereFaktaMedSammeKeyOgUtenUnikProperty() {
-        WebSoknad soknad = new WebSoknad().medId(1L).medFaktum(new Faktum().medKey("personalia").medSoknadId(1L).medValue("gammel").medFaktumId(5L));
+        WebSoknad soknad = new WebSoknad().medId(1L).medFaktum(new Faktum().medKey("personalia").medSoknadId(new Long(1L)).medFaktumId(5L).medValue("gammel"));
         List<Faktum> fakta = Collections.singletonList(new Faktum().medKey("personalia").medSoknadId(1L).medValue("ny"));
 
         ArgumentCaptor<Faktum> argument = ArgumentCaptor.forClass(Faktum.class);
         faktaService.lagreSystemFakta(soknad, fakta);
-        verify(soknadRepository).lagreFaktum(anyLong(), argument.capture(), anyBoolean());
+        verify(soknadRepository).oppdaterFaktum(argument.capture(), anyBoolean());
         assertEquals(new Long(5L), argument.getValue().getFaktumId());
     }
 

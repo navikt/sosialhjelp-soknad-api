@@ -9,7 +9,6 @@
         <flereTillatt>true</flereTillatt>
     </faktum>
 
-    <!-- bolker -->
     <!-- informasjonsside -->
     <faktum>
         <id>informasjonsside.stonad.reise</id>
@@ -59,6 +58,7 @@
         <id>informasjonsside.stonad.familie</id>
     </faktum>
 
+    <!-- bolker -->
     <!-- reiseaktivitet-->
     <faktum>
         <id>reise.aktivitet.dagligreiseavstand</id>
@@ -1065,7 +1065,7 @@
         <flereTillatt>false</flereTillatt>
     </vedlegg>
     <vedlegg>
-        <skjemaNummer>M4</skjemaNummer><!-- skal byttes!! -->
+        <skjemaNummer>U8</skjemaNummer>
         <skjemanummerTillegg>reiseaktivitet</skjemanummerTillegg>
         <faktum>reise.aktivitet.offentligtransport.aarsak.annet</faktum>
         <property>bolk</property>
@@ -1075,7 +1075,7 @@
         <flereTillatt>false</flereTillatt>
     </vedlegg>
     <vedlegg>
-        <skjemaNummer>M4</skjemaNummer><!-- skal byttes!! -->
+        <skjemaNummer>U8</skjemaNummer>
         <skjemanummerTillegg>reiseaktivitet</skjemanummerTillegg>
         <faktum>reise.aktivitet.offentligtransport.egenbil.aarsak.annet</faktum>
         <property>bolk</property>
@@ -1154,7 +1154,7 @@
         <flereTillatt>false</flereTillatt>
     </vedlegg>
     <vedlegg>
-        <skjemaNummer>M4</skjemaNummer><!-- skal byttes!! -->
+        <skjemaNummer>U8</skjemaNummer>
         <skjemanummerTillegg>reisearbeidssoker</skjemanummerTillegg>
         <faktum>reise.arbeidssoker.offentligtransport.aarsak.annet</faktum>
         <property>bolk</property>
@@ -1164,7 +1164,7 @@
         <flereTillatt>false</flereTillatt>
     </vedlegg>
     <vedlegg>
-        <skjemaNummer>M4</skjemaNummer><!-- skal byttes!! -->
+        <skjemaNummer>U8</skjemaNummer>
         <skjemanummerTillegg>reisearbeidssoker</skjemanummerTillegg>
         <faktum>reise.arbeidssoker.offentligtransport.egenbil.aarsak.annet</faktum>
         <property>bolk</property>
@@ -1234,7 +1234,7 @@
         <flereTillatt>false</flereTillatt>
     </vedlegg>
     <vedlegg>
-        <skjemaNummer>M4</skjemaNummer><!-- skal byttes!! -->
+        <skjemaNummer>U8</skjemaNummer>
         <skjemanummerTillegg>midlertidig</skjemanummerTillegg>
         <faktum>reise.midlertidig.offentligtransport.aarsak.annet</faktum>
         <property>bolk</property>
@@ -1244,7 +1244,7 @@
         <flereTillatt>false</flereTillatt>
     </vedlegg>
     <vedlegg>
-        <skjemaNummer>M4</skjemaNummer><!-- skal byttes!! -->
+        <skjemaNummer>U8</skjemaNummer>
         <skjemanummerTillegg>midlertidig</skjemanummerTillegg>
         <faktum>reise.midlertidig.offentligtransport.egenbil.aarsak.annet</faktum>
         <property>bolk</property>
@@ -1315,7 +1315,7 @@
         <flereTillatt>false</flereTillatt>
     </vedlegg>
     <vedlegg>
-        <skjemaNummer>M4</skjemaNummer><!-- skal byttes!! -->
+        <skjemaNummer>U8</skjemaNummer>
         <skjemanummerTillegg>samling</skjemanummerTillegg>
         <faktum>reise.samling.offentligtransport.aarsak.annet</faktum>
         <property>bolk</property>
@@ -1325,7 +1325,7 @@
         <flereTillatt>false</flereTillatt>
     </vedlegg>
     <vedlegg>
-        <skjemaNummer>M4</skjemaNummer><!-- skal byttes!! -->
+        <skjemaNummer>U8</skjemaNummer>
         <skjemanummerTillegg>samling</skjemanummerTillegg>
         <faktum>reise.samling.offentligtransport.egenbil.aarsak.annet</faktum>
         <property>bolk</property>
