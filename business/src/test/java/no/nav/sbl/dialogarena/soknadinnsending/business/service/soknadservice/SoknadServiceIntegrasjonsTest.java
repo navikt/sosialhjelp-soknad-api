@@ -182,7 +182,7 @@ public class SoknadServiceIntegrasjonsTest {
         skjemaNummer = "NAV 11-12.12";
         String behandlingsId = nyBehandlnigsId();
         opprettOgPersisterSoknad(behandlingsId, "aktor");
-        lokalDb.lagreFaktum(soknadId, maalgruppeFaktum(), true);
+        lokalDb.opprettFaktum(soknadId, maalgruppeFaktum(), true);
 
         soknadService.sendSoknad(behandlingsId, new byte[]{});
 
