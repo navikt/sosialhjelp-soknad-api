@@ -264,9 +264,9 @@ public class VedleggService {
             List<Vedlegg> paakrevdeVedleggVedNyUthenting = genererPaakrevdeVedlegg(behandlingsId);
             leggTilKodeverkFelter(paakrevdeVedleggVedNyUthenting);
             if (!VedleggsgenereringUtil.likeVedlegg(paakrevdeVedlegg, paakrevdeVedleggVedNyUthenting)) {
-                String feilmelding = "\n ########### VEDLEGGSFEIL - Feil i ny vedleggsgenereringslogikk ################# \n";
+                String feilmelding = "\n ######### VEDLEGGSFEIL - Feil i ny vedleggsgenereringslogikk ################# \n";
 
-                feilmelding = "I Ny, ikke gammel: \n";
+                feilmelding += "I Ny, ikke gammel: \n";
                 feilmelding += getVedleggsDiff(paakrevdeVedleggVedNyUthenting, paakrevdeVedlegg);
 
                 feilmelding += "\nI Gammel, ikke ny: \n";

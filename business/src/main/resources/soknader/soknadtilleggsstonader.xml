@@ -137,7 +137,7 @@
     </faktum>
     <faktum>
         <id>reise.aktivitet.offentligtransport.egenbil.aarsak.helse</id>
-        <dependOn>reise.aktivitet.offentligtransport</dependOn>
+        <dependOn>reise.aktivitet.offentligtransport.egenbil</dependOn>
         <dependOnValues>
             <value>false</value>
         </dependOnValues>
@@ -290,13 +290,6 @@
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>reise.aktivitet.offentligtransport.aarsak.helse</id>
-        <dependOn>reise.samling.offentligtransport</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
-    </faktum>
-    <faktum>
         <id>reise.samling.offentligtransport.aarsak.transport</id>
         <dependOn>reise.samling.offentligtransport</dependOn>
         <dependOnValues>
@@ -340,7 +333,7 @@
     </faktum>
     <faktum>
         <id>reise.samling.offentligtransport.egenbil.aarsak.ikkebil</id>
-        <dependOn>reise.aktivitet.offentligtransport</dependOn>
+        <dependOn>reise.samling.offentligtransport</dependOn>
         <dependOnValues>
             <value>false</value>
         </dependOnValues>
