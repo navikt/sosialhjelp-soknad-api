@@ -5,6 +5,9 @@
         {{#forFaktum "barnepass.periode"}}
             {{> skjema/tilleggsstonader/felles/aktivitetsperiode}}
         {{/forFaktum}}
+        {{#forFakta "barn"}}
+            {{> skjema/tilleggsstonader/barnepass/barnepassForBarn}}
+        {{/forFakta}}
         {{#forFaktum "barnepass.utbetalingsdato"}}
             {{> skjema/tilleggsstonader/felles/utbetalingsdato}}
         {{/forFaktum}}
