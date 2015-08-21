@@ -1,3 +1,9 @@
 <soknad skjemaNummer="NAV 76-13.45" temaKode="IND">
 
+    <!-- Tilleggsopplysninger -->
+    <faktum>
+        <id>tilleggsopplysninger.fritekst</id>
+    </faktum>
+
+
 </soknad>
