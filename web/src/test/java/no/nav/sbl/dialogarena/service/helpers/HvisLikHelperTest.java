@@ -30,8 +30,8 @@ public class HvisLikHelperTest {
 
     @Test
     public void viserIkkeInnholdVedToUlikeStrenger() throws IOException {
-        String compiled = handlebars.compileInline("{{#hvisLik \"noe\" \"noe annet\" }}like verdier{{/hvisLik}}").apply(new Object());
-        assertThat(compiled).isNotEqualTo("like verdier");
+        String compiled = handlebars.compileInline("{{#hvisLik \"noe\" \"noe annet\" }}like verdier{{else}}ulike verdier{{/hvisLik}}").apply(new Object());
+        assertThat(compiled).isEqualTo("ulike verdier");
     }
 
 }
