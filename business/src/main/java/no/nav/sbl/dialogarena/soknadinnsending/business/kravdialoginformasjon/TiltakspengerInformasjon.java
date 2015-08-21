@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,6 +28,6 @@ public class TiltakspengerInformasjon extends KravdialogInformasjon.KravdialogIn
     }
 
     public List<String> getSkjemanummer() {
-        return Arrays.asList("SKJEMANUMMER");
+        return Collections.singletonList("NAV 76-13.45");
     }
 }
