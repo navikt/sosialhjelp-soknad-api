@@ -1,0 +1,19 @@
+{{#forFaktum "soknadsvalg.stonadstype"}}
+
+    <h2>{{ hentTekst "oppsummering.stonadstype.tittel" }}</h2>
+    <table>
+        <tr>
+            <td class="sjekket"></td>
+            {{#hvisLik value "stonadBil"}}
+                <td>{{ hentTekst "soknadsvalg.sporsmal.stonad.bil"}}</td>
+            {{/hvisLik}}
+            {{#hvisLik value "stonadBilSpesialutstyr"}}
+                <td>{{ hentTekst "soknadsvalg.sporsmal.stonad.bil.spesialutstyr"}}</td>
+            {{/hvisLik}}
+            {{#hvisLik value "stonadSpesialutstyr"}}
+                <td>{{ hentTekst "soknadsvalg.sporsmal.stonad.spesialutstyr"}}</td>
+            {{/hvisLik}}
+        </tr>
+    </table>
+
+{{/forFaktum}}
