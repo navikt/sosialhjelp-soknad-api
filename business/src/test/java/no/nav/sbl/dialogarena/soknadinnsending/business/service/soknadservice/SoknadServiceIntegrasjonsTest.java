@@ -11,6 +11,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
@@ -63,6 +64,9 @@ public class SoknadServiceIntegrasjonsTest {
     @Inject
     private FillagerService fillagerService;
 
+    @Inject
+    private FaktaService faktaService;
+
     @BeforeClass
     public static void beforeClass() throws IOException, NamingException {
 //        load("/environment-test.properties");
@@ -86,7 +90,7 @@ public class SoknadServiceIntegrasjonsTest {
     @Test
     public void henterTemakode_FOR_forForeldrepenger() {
         skjemaNummer = "NAV 14-05.06";
-        opprettOgPersisterSoknad("behId", "aktor");
+        opprettOgPersisterSoknadMedData("behId", "aktor");
         SoknadStruktur soknadStruktur = soknadService.hentSoknadStruktur(skjemaNummer);
         assertThat(soknadStruktur.getTemaKode()).isEqualTo("FOR");
     }
@@ -125,7 +129,7 @@ public class SoknadServiceIntegrasjonsTest {
     }
 
     @Test
-    public void settJournalforendeEnhetPersistererNyJournalforendeEnhetTilDb(){
+    public void settJournalforendeEnhetPersistererNyJournalforendeEnhetTilDb() {
         Long soknadId = opprettOgPersisterSoknad(EN_BEHANDLINGSID, "aktor");
 
         soknadService.settJournalforendeEnhet(EN_BEHANDLINGSID, "NAV UTLAND");
@@ -135,7 +139,7 @@ public class SoknadServiceIntegrasjonsTest {
     }
 
     @Test
-    public void avbrytSoknadSletterSoknadenFraLokalDb(){
+    public void avbrytSoknadSletterSoknadenFraLokalDb() {
         Long soknadId = opprettOgPersisterSoknad(EN_BEHANDLINGSID, "aktor");
 
         soknadService.avbrytSoknad(EN_BEHANDLINGSID);
@@ -145,7 +149,7 @@ public class SoknadServiceIntegrasjonsTest {
     }
 
     @Test
-    public void avbrytSoknadSletterSoknadenFraHenvendelse(){
+    public void avbrytSoknadSletterSoknadenFraHenvendelse() {
         opprettOgPersisterSoknad(EN_BEHANDLINGSID, "aktor");
 
         soknadService.avbrytSoknad(EN_BEHANDLINGSID);
@@ -155,7 +159,7 @@ public class SoknadServiceIntegrasjonsTest {
     }
 
     @Test
-    public void avbrytSoknadAvbryterSoknadenIHenvendelse(){
+    public void avbrytSoknadAvbryterSoknadenIHenvendelse() {
         String behandlingsId = nyBehandlnigsId();
         opprettOgPersisterSoknad(behandlingsId, "aktor");
 
@@ -181,7 +185,7 @@ public class SoknadServiceIntegrasjonsTest {
         ((ThreadLocalSubjectHandler) getSubjectHandler()).setSubject(getSubject());
         skjemaNummer = "NAV 11-12.12";
         String behandlingsId = nyBehandlnigsId();
-        opprettOgPersisterSoknad(behandlingsId, "aktor");
+        opprettOgPersisterSoknadMedData(behandlingsId, "aktor");
         lokalDb.opprettFaktum(soknadId, maalgruppeFaktum(), true);
 
         soknadService.sendSoknad(behandlingsId, new byte[]{});
@@ -214,6 +218,44 @@ public class SoknadServiceIntegrasjonsTest {
         return soknadId;
     }
 
+    private Long opprettOgPersisterSoknadMedData(String behId, String aktor) {
+        soknad = WebSoknad.startSoknad()
+                .medUuid(uuid)
+                .medAktorId(aktor)
+                .medBehandlingId(behId)
+                .medDelstegStatus(DelstegStatus.OPPRETTET)
+                .medskjemaNummer(skjemaNummer).medOppretteDato(now());
+
+        soknadId = lokalDb.opprettSoknad(soknad);
+        faktaService.opprettBrukerFaktum(behId, new Faktum()
+                .medKey("bostotte.aarsak")
+                .medValue("fasteboutgifter"));
+        faktaService.opprettBrukerFaktum(behId, new Faktum()
+                .medKey("bostotte.periode")
+                .medProperty("fom", "2015-07-22")
+                .medProperty("tom", "2015-10-22"));
+        faktaService.opprettBrukerFaktum(behId, new Faktum()
+                .medKey("bostotte.kommunestotte")
+                .medValue("true")
+                .medProperty("utgift", "200"));
+        faktaService.opprettBrukerFaktum(behId, new Faktum()
+                .medKey("bostotte.adresseutgifter.aktivitetsadresse")
+                .medProperty("utgift", "2000"));
+        faktaService.opprettBrukerFaktum(behId, new Faktum()
+                .medKey("bostotte.adresseutgifter.hjemstedsaddresse")
+                .medProperty("utgift", "3000"));
+        faktaService.opprettBrukerFaktum(behId, new Faktum()
+                .medKey("bostotte.adresseutgifter.opphorte")
+                .medProperty("utgift", "4000"));
+        faktaService.opprettBrukerFaktum(behId, new Faktum()
+                .medKey("bostotte.utbetalingsdato")
+                .medValue("20"));
+
+        soknad.setSoknadId(soknadId);
+
+        return soknadId;
+    }
+
     private Faktum maalgruppeFaktum() {
         return new Faktum()
                 .medType(Faktum.FaktumType.SYSTEMREGISTRERT)
@@ -223,7 +265,7 @@ public class SoknadServiceIntegrasjonsTest {
     }
 
     @After
-    public void afterEach(){
+    public void afterEach() {
         lokalDb.slettSoknad(soknadId);
     }
 
