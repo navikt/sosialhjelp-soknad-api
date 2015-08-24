@@ -41,7 +41,7 @@ public class AktiviteterService {
     private WSFinnAktivitetsinformasjonListeRequest lagAktivitetsRequest(String fodselnummer) {
         return new WSFinnAktivitetsinformasjonListeRequest()
                 .withPersonident(fodselnummer)
-                .withPeriode(new WSPeriode().withFom(LocalDate.now().minusYears(1)));
+                .withPeriode(new WSPeriode().withFom(LocalDate.now().minusYears(1)).withTom(LocalDate.now()));
     }
 
     private class AktiviteterTransformer implements Function<WSAktivitet, Faktum> {
