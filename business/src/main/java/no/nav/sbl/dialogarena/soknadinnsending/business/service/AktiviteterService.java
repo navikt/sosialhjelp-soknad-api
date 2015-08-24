@@ -29,7 +29,10 @@ public class AktiviteterService {
 
     public List<Faktum> hentAktiviteter(String fodselnummer) {
         try {
-            return Lists.transform(Optional.fromNullable(aktivitetWebService.finnAktivitetsinformasjonListe(lagAktivitetsRequest(fodselnummer))).or(new WSFinnAktivitetsinformasjonListeResponse()).getAktivitetListe(), transformer);
+            WSFinnAktivitetsinformasjonListeResponse aktiviteter = aktivitetWebService.finnAktivitetsinformasjonListe(lagAktivitetsRequest(fodselnummer));
+            return Lists.transform(
+                    Optional.fromNullable(aktiviteter).or(new WSFinnAktivitetsinformasjonListeResponse()).getAktivitetListe()
+                    , transformer);
         } catch (FinnAktivitetsinformasjonListePersonIkkeFunnet | FinnAktivitetsinformasjonListeSikkerhetsbegrensning e) {
             throw new RuntimeException(e.getMessage(), e);
         }
