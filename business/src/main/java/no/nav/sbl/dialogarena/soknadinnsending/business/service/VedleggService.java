@@ -270,7 +270,7 @@ public class VedleggService {
                 feilmelding += getVedleggsDiff(paakrevdeVedleggVedNyUthenting, paakrevdeVedlegg);
 
                 feilmelding += "\nI Gammel, ikke ny: \n";
-                feilmelding += getVedleggsDiff(paakrevdeVedleggVedNyUthenting, paakrevdeVedlegg);
+                feilmelding += getVedleggsDiff(paakrevdeVedlegg, paakrevdeVedleggVedNyUthenting);
 
                 logger.warn(feilmelding);
             }
