@@ -235,18 +235,12 @@ public class SoknadServiceIntegrasjonsTest {
                 .medProperty("fom", "2015-07-22")
                 .medProperty("tom", "2015-10-22"));
         faktaService.opprettBrukerFaktum(behId, new Faktum()
-                .medKey("bostotte.kommunestotte")
-                .medValue("true")
-                .medProperty("utgift", "200"));
+                .medKey("bostotte.kommunestotte"));
         faktaService.opprettBrukerFaktum(behId, new Faktum()
                 .medKey("bostotte.adresseutgifter.aktivitetsadresse")
                 .medProperty("utgift", "2000"));
         faktaService.opprettBrukerFaktum(behId, new Faktum()
-                .medKey("bostotte.adresseutgifter.hjemstedsaddresse")
-                .medProperty("utgift", "3000"));
-        faktaService.opprettBrukerFaktum(behId, new Faktum()
-                .medKey("bostotte.adresseutgifter.opphorte")
-                .medProperty("utgift", "4000"));
+                .medKey("bostotte.adresseutgifter.hjemstedsaddresse"));
         faktaService.opprettBrukerFaktum(behId, new Faktum()
                 .medKey("bostotte.utbetalingsdato")
                 .medValue("20"));
