@@ -22,7 +22,7 @@ import java.util.List;
 public class AktiviteterService {
 
     @Inject
-    @Named("sakOgAktivitetInformasjonEndpoint")
+    @Named("sakOgAktivitetEndpoint")
     private SakOgAktivitetV1 aktivitetWebService;
 
     private AktiviteterTransformer transformer = new AktiviteterTransformer();
