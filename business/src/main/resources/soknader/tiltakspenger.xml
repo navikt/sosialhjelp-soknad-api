@@ -1,9 +1,14 @@
 <soknad skjemaNummer="NAV 76-13.45" temaKode="IND">
 
+    <!-- Personalia -->
+    <faktum>
+        <id>personalia</id>
+        <erSystemFaktum>true</erSystemFaktum>
+    </faktum>
+
     <!-- Tilleggsopplysninger -->
     <faktum>
         <id>tilleggsopplysninger.fritekst</id>
     </faktum>
-
 
 </soknad>
