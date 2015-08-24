@@ -33,7 +33,6 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 #### Statisk liste over helpers på gammelt registeringsformat
  
 * adresse
-* forFaktum
 * forFaktumHvisSant
 * forFakta
 * forBarnefakta
@@ -85,7 +84,11 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 ##### forFaktum
 
 ```
-
+{{#forFaktum "faktumNavn"}}
+    Faktum med key {{key}} finnes og kan aksesseres. {{value}} skriver f.eks ut verdien på faktumet. se Faktum klassen.
+{{else}}
+    faktum med key "faktumNavn" er ikke satt
+{{/forFaktum}}
 ```
 
 
