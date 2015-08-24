@@ -33,12 +33,12 @@
 
             {{#forFaktum "soknadsvalg.stonadstype"}}
 
-                {{#hvisLik "stonadBil" value}}
-                    {{#block "contentbil" }}{{/block}}
-                {{/hvisLik}}
-
                 {{#hvisLik "stonadSpesialutstyr" value}}
                     {{#block "contentspesialutstyr" }}{{/block}}
+
+                {{else }}
+                    {{#block "contentbil" }}{{/block}}
+
                 {{/hvisLik}}
 
             {{/forFaktum}}
