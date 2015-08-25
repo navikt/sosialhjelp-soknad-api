@@ -14,6 +14,17 @@ import java.util.Map;
 
 public class BoutgifterTilXml implements Transformer<WebSoknad, Boutgifter> {
 
+    public static final String AKTIVITETSADRESSE = "bostotte.adresseutgifter.aktivitetsadresse";
+    public static final String UTBETALINGSDATO = "bostotte.utbetalingsdato";
+    public static final String HJEMSTEDSADDRESSE = "bostotte.adresseutgifter.hjemstedsaddresse";
+    public static final String OPPHORTE = "bostotte.adresseutgifter.opphorte";
+    public static final String SAMLING = "bostotte.samling";
+    public static final String FOM = "fom";
+    public static final String KOMMUNESTOTTE = "bostotte.kommunestotte";
+    public static final String UTGIFT = "utgift";
+    public static final String AARSAK = "bostotte.aarsak";
+    public static final String PERIODE = "bostotte.periode";
+    public static final String TOM = "tom";
     private Boutgifter boutgifter = new Boutgifter();
 
     @Override
@@ -30,52 +41,52 @@ public class BoutgifterTilXml implements Transformer<WebSoknad, Boutgifter> {
     }
 
     private void utbetalingsdatoTilBoutgifter(WebSoknad webSoknad) {
-        Faktum utbetalingsdatoFaktum = webSoknad.getFaktumMedKey("bostotte.utbetalingsdato");
+        Faktum utbetalingsdatoFaktum = webSoknad.getFaktumMedKey(UTBETALINGSDATO);
         if (utbetalingsdatoFaktum != null && utbetalingsdatoFaktum.hasValue()) {
             boutgifter.setOensketUtbetalingsdag(new BigInteger(utbetalingsdatoFaktum.getValue()));
         }
     }
 
     private void adresseUtgifterTilBoutgifter(WebSoknad webSoknad) {
-        Faktum aktivitetstedFaktum = webSoknad.getFaktumMedKey("bostotte.adresseutgifter.aktivitetsadresse");
+        Faktum aktivitetstedFaktum = webSoknad.getFaktumMedKey(AKTIVITETSADRESSE);
 
-        if (aktivitetstedFaktum != null && aktivitetstedFaktum.hasEgenskap("utgift")) {
-            boutgifter.setBoutgifterAktivitetsted(new BigInteger(aktivitetstedFaktum.getProperties().get("utgift")));
+        if (aktivitetstedFaktum != null && aktivitetstedFaktum.hasEgenskap(UTGIFT)) {
+            boutgifter.setBoutgifterAktivitetsted(new BigInteger(aktivitetstedFaktum.getProperties().get(UTGIFT)));
         }
 
-        Faktum hjemstedsaddresse = webSoknad.getFaktumMedKey("bostotte.adresseutgifter.hjemstedsaddresse");
-        if (hjemstedsaddresse != null && hjemstedsaddresse.hasEgenskap("utgift")) {
-            boutgifter.setBoutgifterHjemstedAktuell(new BigInteger(hjemstedsaddresse.getProperties().get("utgift")));
+        Faktum hjemstedsaddresse = webSoknad.getFaktumMedKey(HJEMSTEDSADDRESSE);
+        if (hjemstedsaddresse != null && hjemstedsaddresse.hasEgenskap(UTGIFT)) {
+            boutgifter.setBoutgifterHjemstedAktuell(new BigInteger(hjemstedsaddresse.getProperties().get(UTGIFT)));
         }
 
-        Faktum opphorte = webSoknad.getFaktumMedKey("bostotte.adresseutgifter.opphorte");
-        if (opphorte != null && opphorte.hasEgenskap("utgift")) {
-            boutgifter.setBoutgifterHjemstedOpphoert(new BigInteger(opphorte.getProperties().get("utgift")));
+        Faktum opphorte = webSoknad.getFaktumMedKey(OPPHORTE);
+        if (opphorte != null && opphorte.hasEgenskap(UTGIFT)) {
+            boutgifter.setBoutgifterHjemstedOpphoert(new BigInteger(opphorte.getProperties().get(UTGIFT)));
         }
     }
 
     private void samlingTilBoutgifter(WebSoknad webSoknad) {
-        List<Faktum> samlingFakta = webSoknad.getFaktaMedKey("bostotte.samling");
+        List<Faktum> samlingFakta = webSoknad.getFaktaMedKey(SAMLING);
         if (samlingFakta != null) {
             for (Faktum samlingFaktum : samlingFakta) {
-                DateTime startDato = DateTime.parse(samlingFaktum.getProperties().get("fom"));
+                DateTime startDato = DateTime.parse(samlingFaktum.getProperties().get(FOM));
                 boutgifter.getSamlingsdato().add(new XMLGregorianCalendarImpl(startDato.toGregorianCalendar()));
             }
         }
     }
 
     private void kommunestotteTilBoutgifter(WebSoknad webSoknad) {
-        Faktum kommunestotteFaktum = webSoknad.getFaktumMedKey("bostotte.kommunestotte");
+        Faktum kommunestotteFaktum = webSoknad.getFaktumMedKey(KOMMUNESTOTTE);
         if (kommunestotteFaktum != null && kommunestotteFaktum.hasValue()) {
             boutgifter.setMottarBostoette(Boolean.valueOf(kommunestotteFaktum.getValue()));
-            if (kommunestotteFaktum.hasEgenskap("utgift")) {
-                boutgifter.setBostoetteBeloep(new BigInteger(kommunestotteFaktum.getProperties().get("utgift")));
+            if (kommunestotteFaktum.hasEgenskap(UTGIFT)) {
+                boutgifter.setBostoetteBeloep(new BigInteger(kommunestotteFaktum.getProperties().get(UTGIFT)));
             }
         }
     }
 
     private void aarsakTilBoutgifter(WebSoknad webSoknad) {
-        Faktum aarsakFaktum = webSoknad.getFaktumMedKey("bostotte.aarsak");
+        Faktum aarsakFaktum = webSoknad.getFaktumMedKey(AARSAK);
         if (aarsakFaktum != null && aarsakFaktum.hasValue()) {
             boutgifter.setHarFasteBoutgifter(aarsakFaktum.getValue() == "fasteboutgifter");
             boutgifter.setHarBoutgifterVedSamling(aarsakFaktum.getValue() == "samling");
@@ -83,13 +94,13 @@ public class BoutgifterTilXml implements Transformer<WebSoknad, Boutgifter> {
     }
 
     private void periodeTilBoutgifter(WebSoknad webSoknad) {
-        Faktum periodeFaktum = webSoknad.getFaktumMedKey("bostotte.periode");
+        Faktum periodeFaktum = webSoknad.getFaktumMedKey(PERIODE);
 
         if (periodeFaktum != null) {
             Map<String, String> properties = periodeFaktum.getProperties();
             Periode periode = new Periode();
-            periode.setFom(new XMLGregorianCalendarImpl(DateTime.parse(properties.get("fom")).toGregorianCalendar()));
-            String tom = properties.get("tom");
+            periode.setFom(new XMLGregorianCalendarImpl(DateTime.parse(properties.get(FOM)).toGregorianCalendar()));
+            String tom = properties.get(TOM);
             if (tom != null) {
                 periode.setTom(new XMLGregorianCalendarImpl(DateTime.parse(tom).toGregorianCalendar()));
             }

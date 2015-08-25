@@ -25,8 +25,8 @@ public class TilleggsstonaderTilXml implements Transformer<WebSoknad, Alternativ
         Tilleggsstoenadsskjema tilleggsstoenadsskjema = tilTilleggsstoenadSkjema(webSoknad);
         ByteArrayOutputStream xml = new ByteArrayOutputStream();
         try {
-            JAXBElement obj = new JAXBElement(new QName("tilleggsstonadsskjema"), Tilleggsstoenadsskjema.class, tilleggsstoenadsskjema);
-            JAXBContext.newInstance(Tilleggsstoenadsskjema.class, Rettighetstype.class).createMarshaller().marshal(obj, xml);
+            JAXBElement tilleggsstonadsskjemaElement = new JAXBElement(new QName("tilleggsstonadsskjema"), Tilleggsstoenadsskjema.class, tilleggsstoenadsskjema);
+            JAXBContext.newInstance(Tilleggsstoenadsskjema.class, Rettighetstype.class).createMarshaller().marshal(tilleggsstonadsskjemaElement, xml);
         } catch (JAXBException e) {
             logger.error("Klarte ikke konvertere tilleggsstonadsskjema til xml", e);
             throw new RuntimeException("Klarte ikke konvertere tilleggsstonadsskjema til xml", e);

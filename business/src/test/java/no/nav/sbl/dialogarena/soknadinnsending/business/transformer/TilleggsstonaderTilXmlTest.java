@@ -19,14 +19,14 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-@RunWith(MockitoJUnitRunner.class)
+
 public class TilleggsstonaderTilXmlTest {
 
     private final TilleggsstonaderTilXml tilXml = new TilleggsstonaderTilXml();
     private WebSoknad soknad;
 
     @Before
-    public void beforeEach(){
+    public void beforeEach() {
         soknad = new WebSoknad();
         List<Faktum> fakta = new ArrayList<>();
         fakta.add(new Faktum()
@@ -66,31 +66,31 @@ public class TilleggsstonaderTilXmlTest {
     }
 
     @Test
-    public void harMemeTypeApplicationXml(){
+    public void harMemeTypeApplicationXml() {
         AlternativRepresentasjon alternativRepresentasjon = tilXml.transform(soknad);
         assertThat(alternativRepresentasjon.getMimetype()).isEqualTo("application/xml");
     }
 
     @Test
-    public void harFilnavn(){
+    public void harFilnavn() {
         AlternativRepresentasjon alternativRepresentasjon = tilXml.transform(soknad);
         assertThat(alternativRepresentasjon.getFilnavn()).isNotNull();
     }
 
     @Test
-    public void harUuid(){
+    public void harUuid() {
         AlternativRepresentasjon alternativRepresentasjon = tilXml.transform(soknad);
         assertThat(alternativRepresentasjon.getUuid()).isNotNull();
     }
 
     @Test
-    public void harContent(){
+    public void harContent() {
         AlternativRepresentasjon alternativRepresentasjon = tilXml.transform(soknad);
         assertThat(alternativRepresentasjon.getContent()).isNotNull();
     }
 
     @Test
-    public void xmlErGyldig(){
+    public void xmlErGyldig() {
         AlternativRepresentasjon alternativRepresentasjon = tilXml.transform(soknad);
         byte[] content = alternativRepresentasjon.getContent();
         ByteArrayInputStream stream = new ByteArrayInputStream(content);
