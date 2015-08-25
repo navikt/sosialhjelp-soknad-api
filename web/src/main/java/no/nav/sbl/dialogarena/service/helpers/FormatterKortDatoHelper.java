@@ -11,7 +11,7 @@ import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.StringUtils.split;
 
 @Component
-public class FormatterKortDatoHelper extends RegistryAwareHelper {
+public class FormatterKortDatoHelper extends RegistryAwareHelper<String> {
     public static final String NAVN = "formatterKortDato";
     public static final FormatterKortDatoHelper INSTANS = new FormatterKortDatoHelper();
 
@@ -31,8 +31,8 @@ public class FormatterKortDatoHelper extends RegistryAwareHelper {
     }
 
     @Override
-    public CharSequence apply(Object value, Options options) throws IOException {
-        String[] datoSplit = split(value.toString(), "-");
+    public CharSequence apply(String value, Options options) throws IOException {
+        String[] datoSplit = split(value, "-");
         reverse(datoSplit);
         return join(datoSplit, ".");
     }

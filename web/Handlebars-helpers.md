@@ -21,7 +21,7 @@ men kjører også automatisk sammen med det vanlige testoppsettet.
     * Navnet på helperen må returneres fra `getNavn`
     * Beskrivelsen fra `getBeskrivelse` vil havne i denne fila som dokumentasjon
 * Lag et eksempel på bruk under `/readme/Helpernavn.hbs`, denne vil også bli inkludert i dokumentasjonen under.
-* Lag tester for helperen
+* Legg til tester
 
 På dette formatet er det superklassen `RegistryAwareHelper` som vil registere helperen som er opprettet på
 Handlebars-instansen som brukes for å generere oppsummeringsdokumenter.
@@ -39,7 +39,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * forFakta
 * forBarnefakta
 * forFaktaMedPropertySattTilTrue
-* formatterFodelsDato (deprecated, erstattes av formatterKortDato og formatterFodselnummerTilKortDato)
+* formatterFodelsDato (deprecated og erstattet av formatterKortDato og formatterFnrTilKortDato)
 * formatterLangDato
 * hvisEttersending
 * hvisMindre
@@ -66,6 +66,8 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 #### Helpers på nytt registeringsformat
 
 * concat - Legger sammen alle parametrene til tekststring
+* formatterFnrTilKortDato - Formatterer et gyldig fødselnummer til dato på formatet dd.mm.aaaa
+* formatterKortDato - Formatterer en datostreng på formatet yyyy-mm-dd til dd.mm.aaaa
 * hvisHarDiskresjonskode - Viser innhold avhengig av om personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)
 * hvisLik - Sjekker om to strenger er like
 * hvisSant - Dersom variabelen er "true" vil innholdet vises
@@ -79,6 +81,20 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 
 ```
 {{ concat "a" "b" "c" "d" }}
+```
+
+
+##### formatterFnrTilKortDato
+
+```
+{{formatterFnrTilKortDato "***REMOVED***"}}
+```
+
+
+##### formatterKortDato
+
+```
+{{formatterKortDato "2015-11-03"}}
 ```
 
 
