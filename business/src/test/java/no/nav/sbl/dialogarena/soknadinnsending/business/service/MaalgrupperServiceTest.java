@@ -78,7 +78,7 @@ public class MaalgrupperServiceTest {
     public void finnMaalgruppeinformasjonListeKallesMedPeriode() throws Exception {
         maalgrupperService.hentMaalgrupper(FODSELSNUMMER);
         verify(webservice).finnMaalgruppeinformasjonListe(argument.capture());
-        assertThat(argument.getValue().getPeriode().getFom()).isEqualTo(new LocalDate("2015-01-01"));
+        assertThat(argument.getValue().getPeriode().getFom().getYear()).isEqualTo(LocalDate.now().minusYears(1).getYear());
     }
 
     @Test
