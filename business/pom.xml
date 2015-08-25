@@ -78,7 +78,7 @@
         </dependency>
         <dependency>
             <groupId>no.nav.sbl</groupId>
-            <artifactId>arena-maalgruppeinformasjon_v1</artifactId>
+            <artifactId>arena-maalgruppe_v1</artifactId>
         </dependency>
 
         <dependency>
