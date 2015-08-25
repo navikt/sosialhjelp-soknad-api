@@ -137,7 +137,7 @@
     </faktum>
     <faktum>
         <id>reise.aktivitet.offentligtransport.egenbil.aarsak.helse</id>
-        <dependOn>reise.aktivitet.offentligtransport</dependOn>
+        <dependOn>reise.aktivitet.offentligtransport.egenbil</dependOn>
         <dependOnValues>
             <value>false</value>
         </dependOnValues>
@@ -290,13 +290,6 @@
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>reise.aktivitet.offentligtransport.aarsak.helse</id>
-        <dependOn>reise.samling.offentligtransport</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
-    </faktum>
-    <faktum>
         <id>reise.samling.offentligtransport.aarsak.transport</id>
         <dependOn>reise.samling.offentligtransport</dependOn>
         <dependOnValues>
@@ -333,14 +326,14 @@
     </faktum>
     <faktum>
         <id>reise.samling.offentligtransport.egenbil.aarsak.helse</id>
-        <dependOn>reise.samling.offentligtransport</dependOn>
+        <dependOn>reise.samling.offentligtransport.egenbil</dependOn>
         <dependOnValues>
             <value>false</value>
         </dependOnValues>
     </faktum>
     <faktum>
         <id>reise.samling.offentligtransport.egenbil.aarsak.ikkebil</id>
-        <dependOn>reise.aktivitet.offentligtransport</dependOn>
+        <dependOn>reise.samling.offentligtransport</dependOn>
         <dependOnValues>
             <value>false</value>
         </dependOnValues>
@@ -892,9 +885,10 @@
     </faktum>
     <faktum>
         <id>flytting.flytteselv.andreutgifter</id>
-        <dependOn>informasjonsside.stonad.flytting</dependOn>
+        <dependOn>flytting.selvellerbistand</dependOn>
         <dependOnValues>
-            <value>true</value>
+            <value>flytterselv</value>
+            <value>tilbudmenflytterselv</value>
         </dependOnValues>
     </faktum>
     <faktum>
@@ -921,18 +915,38 @@
     <!-- Bostotte-->
     <faktum>
         <id>bostotte.aarsak</id>
+        <dependOn>informasjonsside.stonad.bostotte</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>bostotte.medisinskearsaker</id>
+        <dependOn>informasjonsside.stonad.bostotte</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>bostotte.adresseutgifter.aktivitetsadresse</id>
+        <dependOn>informasjonsside.stonad.bostotte</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>bostotte.adresseutgifter.hjemstedsaddresse</id>
+        <dependOn>informasjonsside.stonad.bostotte</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>bostotte.adresseutgifter.opphorte</id>
+        <dependOn>informasjonsside.stonad.bostotte</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>bostotte.periode</id>
@@ -1032,27 +1046,27 @@
         <onValues>
             <value>true</value>
         </onValues>
-        <flereTillatt>false</flereTillatt>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <skjemaNummer>V2</skjemaNummer>
-        <skjemanummerTillegg>reiseaktivitet</skjemanummerTillegg>
+        <skjemanummerTillegg>reiseaktivitetoffentligtransport</skjemanummerTillegg>
         <faktum>reise.aktivitet.offentligtransport.aarsak.helse</faktum>
         <property>bolk</property>
         <onValues>
             <value>true</value>
         </onValues>
-        <flereTillatt>false</flereTillatt>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <skjemaNummer>V2</skjemaNummer>
-        <skjemanummerTillegg>reiseaktivitet</skjemanummerTillegg>
+        <skjemanummerTillegg>reiseaktivitetbil</skjemanummerTillegg>
         <faktum>reise.aktivitet.offentligtransport.egenbil.aarsak.helse</faktum>
         <property>bolk</property>
         <onValues>
             <value>true</value>
         </onValues>
-        <flereTillatt>false</flereTillatt>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <skjemaNummer>J8</skjemaNummer>
@@ -1062,7 +1076,7 @@
         <onValues>
             <value>true</value>
         </onValues>
-        <flereTillatt>false</flereTillatt>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <skjemaNummer>U8</skjemaNummer>
@@ -1072,17 +1086,17 @@
         <onValues>
             <value>true</value>
         </onValues>
-        <flereTillatt>false</flereTillatt>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <skjemaNummer>U8</skjemaNummer>
-        <skjemanummerTillegg>reiseaktivitet</skjemanummerTillegg>
+        <skjemanummerTillegg>reiseaktivitetbil</skjemanummerTillegg>
         <faktum>reise.aktivitet.offentligtransport.egenbil.aarsak.annet</faktum>
         <property>bolk</property>
         <onValues>
             <value>true</value>
         </onValues>
-        <flereTillatt>false</flereTillatt>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <skjemaNummer>J6</skjemaNummer>
@@ -1092,15 +1106,17 @@
             <value>true</value>
         </onValues>
         <property>bolk</property>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <skjemaNummer>U8</skjemaNummer>
-        <skjemanummerTillegg>reiseaktivitet</skjemanummerTillegg>
+        <skjemanummerTillegg>reiseaktivitetdrosje</skjemanummerTillegg>
         <faktum>reise.aktivitet.offentligtransport.drosje</faktum>
         <onValues>
             <value>true</value>
         </onValues>
         <property>bolk</property>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     
     <!-- vedlegg for reise arbeidssøker -->
@@ -1113,6 +1129,7 @@
             <value>jobbintervju</value>
             <value>tiltraa</value>
         </onValues>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <skjemaNummer>U8</skjemaNummer>
@@ -1122,10 +1139,11 @@
         <onValues>
             <value>true</value>
         </onValues>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <skjemaNummer>V2</skjemaNummer>
-        <skjemanummerTillegg>reisearbeidssoker</skjemanummerTillegg>
+        <skjemanummerTillegg>arbeidssokeroffentligtransport</skjemanummerTillegg>
         <faktum>reise.arbeidssoker.offentligtransport.aarsak.helse</faktum>
         <property>bolk</property>
         <onValues>
@@ -1135,7 +1153,7 @@
     </vedlegg>
     <vedlegg>
         <skjemaNummer>V2</skjemaNummer>
-        <skjemanummerTillegg>reisearbeidssoker</skjemanummerTillegg>
+        <skjemanummerTillegg>reisearbeidssokerbil</skjemanummerTillegg>
         <faktum>reise.arbeidssoker.offentligtransport.egenbil.aarsak.helse</faktum>
         <property>bolk</property>
         <onValues>
@@ -1155,7 +1173,7 @@
     </vedlegg>
     <vedlegg>
         <skjemaNummer>U8</skjemaNummer>
-        <skjemanummerTillegg>reisearbeidssoker</skjemanummerTillegg>
+        <skjemanummerTillegg>reisearbeidssokerannet</skjemanummerTillegg>
         <faktum>reise.arbeidssoker.offentligtransport.aarsak.annet</faktum>
         <property>bolk</property>
         <onValues>
@@ -1165,7 +1183,7 @@
     </vedlegg>
     <vedlegg>
         <skjemaNummer>U8</skjemaNummer>
-        <skjemanummerTillegg>reisearbeidssoker</skjemanummerTillegg>
+        <skjemanummerTillegg>reisearbeidssokerbilannet</skjemanummerTillegg>
         <faktum>reise.arbeidssoker.offentligtransport.egenbil.aarsak.annet</faktum>
         <property>bolk</property>
         <onValues>
@@ -1184,7 +1202,7 @@
     </vedlegg>
     <vedlegg>
         <skjemaNummer>U8</skjemaNummer>
-        <skjemanummerTillegg>reisearbeidssoker</skjemanummerTillegg>
+        <skjemanummerTillegg>reisearbeidssokerdrosje</skjemanummerTillegg>
         <faktum>reise.arbeidssoker.offentligtransport.drosje</faktum>
         <onValues>
             <value>true</value>
@@ -1201,27 +1219,27 @@
         <onValues>
             <value>true</value>
         </onValues>
-        <flereTillatt>false</flereTillatt>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <skjemaNummer>V2</skjemaNummer>
-        <skjemanummerTillegg>midlertidig</skjemanummerTillegg>
+        <skjemanummerTillegg>midlertidigoffentligtransport</skjemanummerTillegg>
         <faktum>reise.midlertidig.offentligtransport.aarsak.helse</faktum>
         <property>bolk</property>
         <onValues>
             <value>true</value>
         </onValues>
-        <flereTillatt>false</flereTillatt>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <skjemaNummer>V2</skjemaNummer>
-        <skjemanummerTillegg>midlertidig</skjemanummerTillegg>
+        <skjemanummerTillegg>midlertidigbil</skjemanummerTillegg>
         <faktum>reise.midlertidig.offentligtransport.egenbil.aarsak.helse</faktum>
         <property>bolk</property>
         <onValues>
             <value>true</value>
         </onValues>
-        <flereTillatt>false</flereTillatt>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <skjemaNummer>J8</skjemaNummer>
@@ -1231,27 +1249,27 @@
         <onValues>
             <value>true</value>
         </onValues>
-        <flereTillatt>false</flereTillatt>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <skjemaNummer>U8</skjemaNummer>
-        <skjemanummerTillegg>midlertidig</skjemanummerTillegg>
+        <skjemanummerTillegg>midlertidigoffentligtransport</skjemanummerTillegg>
         <faktum>reise.midlertidig.offentligtransport.aarsak.annet</faktum>
         <property>bolk</property>
         <onValues>
             <value>true</value>
         </onValues>
-        <flereTillatt>false</flereTillatt>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <skjemaNummer>U8</skjemaNummer>
-        <skjemanummerTillegg>midlertidig</skjemanummerTillegg>
+        <skjemanummerTillegg>midlertidigbil</skjemanummerTillegg>
         <faktum>reise.midlertidig.offentligtransport.egenbil.aarsak.annet</faktum>
         <property>bolk</property>
         <onValues>
             <value>true</value>
         </onValues>
-        <flereTillatt>false</flereTillatt>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <skjemaNummer>J6</skjemaNummer>
@@ -1261,15 +1279,17 @@
             <value>true</value>
         </onValues>
         <property>bolk</property>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <skjemaNummer>U8</skjemaNummer>
-        <skjemanummerTillegg>midlertidig</skjemanummerTillegg>
+        <skjemanummerTillegg>midlertidigdrosje</skjemanummerTillegg>
         <faktum>reise.midlertidig.offentligtransport.drosje</faktum>
         <onValues>
             <value>true</value>
         </onValues>
         <property>bolk</property>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
 
     <!-- vedlegg for reise samling -->
@@ -1282,27 +1302,27 @@
             <value>en</value>
             <value>flere</value>
         </onValues>
-        <flereTillatt>false</flereTillatt>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <skjemaNummer>V2</skjemaNummer>
-        <skjemanummerTillegg>samling</skjemanummerTillegg>
+        <skjemanummerTillegg>samlingoffentligtransport</skjemanummerTillegg>
         <faktum>reise.samling.offentligtransport.aarsak.helse</faktum>
         <property>bolk</property>
         <onValues>
             <value>true</value>
         </onValues>
-        <flereTillatt>false</flereTillatt>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <skjemaNummer>V2</skjemaNummer>
-        <skjemanummerTillegg>samling</skjemanummerTillegg>
+        <skjemanummerTillegg>samlingbil</skjemanummerTillegg>
         <faktum>reise.samling.offentligtransport.egenbil.aarsak.helse</faktum>
         <property>bolk</property>
         <onValues>
             <value>true</value>
         </onValues>
-        <flereTillatt>false</flereTillatt>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <skjemaNummer>J8</skjemaNummer>
@@ -1312,27 +1332,37 @@
         <onValues>
             <value>true</value>
         </onValues>
-        <flereTillatt>false</flereTillatt>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <skjemaNummer>U8</skjemaNummer>
-        <skjemanummerTillegg>samling</skjemanummerTillegg>
+        <skjemanummerTillegg>samlingoffentligtransport</skjemanummerTillegg>
         <faktum>reise.samling.offentligtransport.aarsak.annet</faktum>
         <property>bolk</property>
         <onValues>
             <value>true</value>
         </onValues>
-        <flereTillatt>false</flereTillatt>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <skjemaNummer>U8</skjemaNummer>
-        <skjemanummerTillegg>samling</skjemanummerTillegg>
+        <skjemanummerTillegg>samlingbil</skjemanummerTillegg>
         <faktum>reise.samling.offentligtransport.egenbil.aarsak.annet</faktum>
         <property>bolk</property>
         <onValues>
             <value>true</value>
         </onValues>
-        <flereTillatt>false</flereTillatt>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <skjemaNummer>U8</skjemaNummer>
+        <skjemanummerTillegg>samlingdrosje</skjemanummerTillegg>
+        <faktum>reise.samling.offentligtransport.drosje</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <property>bolk</property>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <skjemaNummer>J6</skjemaNummer>
@@ -1342,17 +1372,9 @@
             <value>true</value>
         </onValues>
         <property>bolk</property>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
-    <vedlegg>
-        <skjemaNummer>U8</skjemaNummer>
-        <skjemanummerTillegg>samling</skjemanummerTillegg>
-        <faktum>reise.samling.offentligtransport.drosje</faktum>
-        <onValues>
-            <value>true</value>
-        </onValues>
-        <property>bolk</property>
-    </vedlegg>
-    
+
     <!-- vedlegg for flytting -->
     <vedlegg>
         <skjemaNummer>J7</skjemaNummer>
@@ -1364,107 +1386,107 @@
         </onValues>
     </vedlegg>
     <vedlegg>
-        <faktum>flytting.selvellerbistand</faktum>
+        <skjemaNummer>J5</skjemaNummer>
         <skjemanummerTillegg>flytting</skjemanummerTillegg>
+        <faktum>flytting.selvellerbistand</faktum>
         <onValues>
             <value>flyttebyraa</value>
             <value>tilbudmenflytterselv</value>
         </onValues>
         <property>bolk</property>
-        <skjemaNummer>J5</skjemaNummer>
     </vedlegg>
     <vedlegg>
-        <faktum>flytting.flytteselv.andreutgifter</faktum>
+        <skjemaNummer>J6</skjemaNummer>
         <skjemanummerTillegg>flytting</skjemanummerTillegg>
+        <faktum>flytting.flytteselv.andreutgifter</faktum>
         <onValues>
             <value>true</value>
         </onValues>
         <property>bolk</property>
-        <skjemaNummer>J6</skjemaNummer>
     </vedlegg>
 
     <!-- Vedlegg bostotte -->
     <vedlegg>
+        <skjemaNummer>K7</skjemaNummer>
+        <skjemanummerTillegg>bostotte</skjemanummerTillegg>
         <faktum>bostotte.aarsak</faktum>
-        <skjemanummerTillegg>samling</skjemanummerTillegg>
         <onValues>
             <value>samling</value>
         </onValues>
-        <skjemaNummer>K7</skjemaNummer>
         <property>bolk</property>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
-        <faktum>bostotte.medisinskearsaker</faktum>
-        <skjemanummerTillegg>samling</skjemanummerTillegg>
-        <onValues>
-            <value>true</value>
-        </onValues>
         <skjemaNummer>V2</skjemaNummer>
+        <skjemanummerTillegg>samling</skjemanummerTillegg>
+        <faktum>bostotte.medisinskearsaker</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
         <property>bolk</property>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
-        <faktum>bostotte.adresseutgifter.aktivitetsadresse</faktum>
+        <skjemaNummer>U4</skjemaNummer>
         <skjemanummerTillegg>aktivitetsadresse</skjemanummerTillegg>
+        <faktum>bostotte.adresseutgifter.aktivitetsadresse</faktum>
         <onValues>
             <value>true</value>
         </onValues>
-        <skjemaNummer>U4</skjemaNummer>
         <property>bolk</property>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
-        <faktum>bostotte.adresseutgifter.hjemstedsaddresse</faktum>
+        <skjemaNummer>U4</skjemaNummer>
         <skjemanummerTillegg>hjemstedsaddresse</skjemanummerTillegg>
+        <faktum>bostotte.adresseutgifter.hjemstedsaddresse</faktum>
         <onValues>
             <value>true</value>
         </onValues>
-        <skjemaNummer>U4</skjemaNummer>
         <property>bolk</property>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
-        <faktum>bostotte.adresseutgifter.opphorte</faktum>
+        <skjemaNummer>U4</skjemaNummer>
         <skjemanummerTillegg>opphorte</skjemanummerTillegg>
+        <faktum>bostotte.adresseutgifter.opphorte</faktum>
         <onValues>
             <value>true</value>
         </onValues>
-        <skjemaNummer>U4</skjemaNummer>
         <property>bolk</property>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
     <!-- vedlegg for laremidler -->
     <vedlegg>
-        <faktum>laeremidler.funksjonshemming</faktum>
-        <onValues>
-            <value>true</value>
-        </onValues>
         <skjemaNummer>V2</skjemaNummer>
         <skjemanummerTillegg>laeremidler</skjemanummerTillegg>
-        <property>bolk</property>
-        <flereTillatt>false</flereTillatt>
-    </vedlegg>
-    <vedlegg>
         <faktum>laeremidler.funksjonshemming</faktum>
         <onValues>
             <value>true</value>
         </onValues>
-        <skjemaNummer>Q7</skjemaNummer>
-        <skjemanummerTillegg>laeremidler</skjemanummerTillegg>
         <property>bolk</property>
-        <flereTillatt>false</flereTillatt>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
+        <skjemaNummer>Q7</skjemaNummer>
+        <skjemanummerTillegg>laeremidlerfunksjonshemmet</skjemanummerTillegg>
+        <faktum>laeremidler.funksjonshemming</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <property>bolk</property>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <skjemaNummer>Q7</skjemaNummer>
+        <skjemanummerTillegg>laeremidlerdekket</skjemanummerTillegg>
         <faktum>laeremidler.dekket</faktum>
         <onValues>
             <value>nei</value>
             <value>delvis</value>
         </onValues>
-        <skjemaNummer>Q7</skjemaNummer>
-        <skjemanummerTillegg>laeremidler</skjemanummerTillegg>
         <property>bolk</property>
-        <flereTillatt>false</flereTillatt>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
 </soknad>

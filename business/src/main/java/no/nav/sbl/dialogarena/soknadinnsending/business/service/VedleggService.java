@@ -264,9 +264,14 @@ public class VedleggService {
             List<Vedlegg> paakrevdeVedleggVedNyUthenting = genererPaakrevdeVedlegg(behandlingsId);
             leggTilKodeverkFelter(paakrevdeVedleggVedNyUthenting);
             if (!VedleggsgenereringUtil.likeVedlegg(paakrevdeVedlegg, paakrevdeVedleggVedNyUthenting)) {
-                String feilmelding = "\n ########### VEDLEGGSFEIL - Feil i ny vedleggsgenereringslogikk ################# \n";
-                feilmelding +=  "Gammel metode: \n" + getVedleggfeilMessage(paakrevdeVedlegg);
-                feilmelding +=   "Ny metode: \n" + getVedleggfeilMessage(paakrevdeVedleggVedNyUthenting);
+                String feilmelding = "\n ######### VEDLEGGSFEIL - Feil i ny vedleggsgenereringslogikk ################# \n";
+
+                feilmelding += "I Ny, ikke gammel: \n";
+                feilmelding += getVedleggsDiff(paakrevdeVedleggVedNyUthenting, paakrevdeVedlegg);
+
+                feilmelding += "\nI Gammel, ikke ny: \n";
+                feilmelding += getVedleggsDiff(paakrevdeVedlegg, paakrevdeVedleggVedNyUthenting);
+
                 logger.warn(feilmelding);
             }
         }
@@ -274,14 +279,17 @@ public class VedleggService {
 
     }
 
-    private String getVedleggfeilMessage(List<Vedlegg> vedleggList) {
-        String melding = "";
-        for (Vedlegg vedlegg : vedleggList) {
-            melding += vedlegg + "\n";
+    private String getVedleggsDiff(List<Vedlegg> nyeVedlegg, List<Vedlegg> gammleVedlegg) {
+        String feilmelding = "";
+        for (Vedlegg vedlegg : nyeVedlegg) {
+            if(!gammleVedlegg.contains(vedlegg)){
+                feilmelding += vedlegg+ "\n";
+            }
         }
-
-        return melding +  "Antall vedlegg: " + vedleggList.size() + "\n";
+        return feilmelding;
     }
+
+
 
     public List<Vedlegg> genererPaakrevdeVedlegg(String behandlingsId) {
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true);
