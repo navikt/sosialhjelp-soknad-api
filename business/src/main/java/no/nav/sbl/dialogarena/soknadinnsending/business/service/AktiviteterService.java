@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetsinformasjonListePersonIkkeFunnet;
@@ -9,6 +10,7 @@ import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.SakOgAktivitetV1;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSAktivitet;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSPeriode;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetsinformasjonListeRequest;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetsinformasjonListeResponse;
 import org.joda.time.LocalDate;
 import org.springframework.stereotype.Service;
 
@@ -20,14 +22,17 @@ import java.util.List;
 public class AktiviteterService {
 
     @Inject
-    @Named("sakOgAktivitetInformasjonEndpoint")
+    @Named("sakOgAktivitetEndpoint")
     private SakOgAktivitetV1 aktivitetWebService;
 
     private AktiviteterTransformer transformer = new AktiviteterTransformer();
 
     public List<Faktum> hentAktiviteter(String fodselnummer) {
         try {
-            return Lists.transform(aktivitetWebService.finnAktivitetsinformasjonListe(lagAktivitetsRequest(fodselnummer)).getAktivitetListe(), transformer);
+            WSFinnAktivitetsinformasjonListeResponse aktiviteter = aktivitetWebService.finnAktivitetsinformasjonListe(lagAktivitetsRequest(fodselnummer));
+            return Lists.transform(
+                    Optional.fromNullable(aktiviteter).or(new WSFinnAktivitetsinformasjonListeResponse()).getAktivitetListe()
+                    , transformer);
         } catch (FinnAktivitetsinformasjonListePersonIkkeFunnet | FinnAktivitetsinformasjonListeSikkerhetsbegrensning e) {
             throw new RuntimeException(e.getMessage(), e);
         }
@@ -35,7 +40,8 @@ public class AktiviteterService {
 
     private WSFinnAktivitetsinformasjonListeRequest lagAktivitetsRequest(String fodselnummer) {
         return new WSFinnAktivitetsinformasjonListeRequest()
-                .withPersonident(fodselnummer);
+                .withPersonident(fodselnummer)
+                .withPeriode(new WSPeriode().withFom(LocalDate.now().minusYears(1)).withTom(LocalDate.now()));
     }
 
     private class AktiviteterTransformer implements Function<WSAktivitet, Faktum> {

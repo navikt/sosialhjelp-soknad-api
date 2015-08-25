@@ -33,7 +33,7 @@ public class FaktaRessurs {
     @Consumes(APPLICATION_JSON)
     @SjekkTilgangTilSoknad
     public Faktum opprettFaktum(@QueryParam("behandlingsId") final String behandlingsId, Faktum faktum) {
-        return faktaService.lagreSoknadsFelt(behandlingsId, faktum);
+        return faktaService.opprettBrukerFaktum(behandlingsId, faktum);
     }
 
     @GET
@@ -49,7 +49,7 @@ public class FaktaRessurs {
     @SjekkTilgangTilSoknad(type = Faktum)
     public Faktum lagreFaktum(@PathParam("faktumId") final Long faktumId, Faktum faktum) {
         if (faktumId.equals(faktum.getFaktumId())) {
-            return faktaService.lagreSoknadsFelt(faktum);
+            return faktaService.lagreBrukerFaktum(faktum);
         } else {
             throw new RuntimeException(format("Faktumets ID (%d) matcher ikke faktumId (%d)", faktum.getFaktumId(), faktumId)); // TODO: Kast exception med 400 og Feilmelding?
         }
