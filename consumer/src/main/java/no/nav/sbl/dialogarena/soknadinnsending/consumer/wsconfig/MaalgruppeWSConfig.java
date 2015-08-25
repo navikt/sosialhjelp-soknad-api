@@ -39,7 +39,7 @@ public class MaalgruppeWSConfig {
 
     @Bean
     public MaalgruppeV1 maalgruppeEndpointMock() {
-        return MaalgrupperMock.maalgruppeinformasjonV1();
+        return MaalgrupperMock.maalgruppeV1();
     }
 
     @Bean
@@ -59,9 +59,9 @@ public class MaalgruppeWSConfig {
             public Ping ping() {
                 try {
                     maalgruppeSelftestEndpoint().ping();
-                    return Ping.lyktes("Målgruppeinformasjon");
+                    return Ping.lyktes("ArenaMålgruppe");
                 } catch (Exception e) {
-                    return Ping.feilet("Målgruppeinformasjon", e);
+                    return Ping.feilet("ArenaMålgruppe", e);
                 }
             }
         };

@@ -14,7 +14,7 @@ import static org.mockito.Mockito.when;
 
 public class MaalgrupperMock {
 
-    public static MaalgruppeV1 maalgruppeinformasjonV1() {
+    public static MaalgruppeV1 maalgruppeV1() {
         MaalgruppeV1 maalgruppeMock = mock(MaalgruppeV1.class);
 
         try {
