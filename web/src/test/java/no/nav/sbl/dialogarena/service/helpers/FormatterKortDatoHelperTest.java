@@ -22,8 +22,8 @@ public class FormatterKortDatoHelperTest {
     @Test
     public void skalSkriveUtDatoPaRiktigFormat() throws IOException {
         HashMap<String, String> map = new HashMap<>();
-        map.put("variabel", "2015-01-01");
+        map.put("variabel", "2015-01-31");
         String innhold = handlebars.compileInline("{{formatterKortDato variabel}}").apply(map);
-        assertThat(innhold).isEqualTo("01.01.2015");
+        assertThat(innhold).isEqualTo("31.01.2015");
     }
 }
