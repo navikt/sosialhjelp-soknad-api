@@ -34,7 +34,6 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 #### Statisk liste over helpers på gammelt registeringsformat
  
 * adresse
-* forFaktum
 * forFaktumHvisSant
 * forFakta
 * forBarnefakta
@@ -66,6 +65,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 #### Helpers på nytt registeringsformat
 
 * concat - Legger sammen alle parametrene til tekststring
+* forFaktum - Finner et faktum og setter det som aktiv context. Har også inverse om faktum ikke finnes. 
 * formatterFnrTilKortDato - Formatterer et gyldig fødselnummer til dato på formatet dd.mm.aaaa
 * formatterKortDato - Formatterer en datostreng på formatet yyyy-mm-dd til dd.mm.aaaa
 * hvisHarDiskresjonskode - Viser innhold avhengig av om personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)
@@ -81,6 +81,17 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 
 ```
 {{ concat "a" "b" "c" "d" }}
+```
+
+
+##### forFaktum
+
+```
+{{#forFaktum "faktumNavn"}}
+    Faktum med key {{key}} finnes og kan aksesseres. {{value}} skriver f.eks ut verdien på faktumet. se Faktum klassen.
+{{else}}
+    faktum med key "faktumNavn" er ikke satt
+{{/forFaktum}}
 ```
 
 
