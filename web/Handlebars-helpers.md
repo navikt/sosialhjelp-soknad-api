@@ -21,6 +21,7 @@ men kjører også automatisk sammen med det vanlige testoppsettet.
     * Navnet på helperen må returneres fra `getNavn`
     * Beskrivelsen fra `getBeskrivelse` vil havne i denne fila som dokumentasjon
 * Lag et eksempel på bruk under `/readme/Helpernavn.hbs`, denne vil også bli inkludert i dokumentasjonen under.
+* Lag tester for helperen
 
 På dette formatet er det superklassen `RegistryAwareHelper` som vil registere helperen som er opprettet på
 Handlebars-instansen som brukes for å generere oppsummeringsdokumenter.
@@ -38,7 +39,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * forFakta
 * forBarnefakta
 * forFaktaMedPropertySattTilTrue
-* formatterFodelsDato
+* formatterFodelsDato (deprecated, erstattes av formatterKortDato og formatterFodselnummerTilKortDato)
 * formatterLangDato
 * hvisEttersending
 * hvisMindre
