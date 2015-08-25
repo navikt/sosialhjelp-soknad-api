@@ -351,6 +351,7 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         };
     }
 
+    @Deprecated
     private Helper<String> generateFormatterFodselsdatoHelper() {
         return new Helper<String>() {
             @Override

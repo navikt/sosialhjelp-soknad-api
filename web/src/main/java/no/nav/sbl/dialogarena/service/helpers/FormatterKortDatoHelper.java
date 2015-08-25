@@ -1,0 +1,39 @@
+package no.nav.sbl.dialogarena.service.helpers;
+
+import com.github.jknack.handlebars.Helper;
+import com.github.jknack.handlebars.Options;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+
+import static org.apache.commons.lang3.ArrayUtils.reverse;
+import static org.apache.commons.lang3.StringUtils.join;
+import static org.apache.commons.lang3.StringUtils.split;
+
+@Component
+public class FormatterKortDatoHelper extends RegistryAwareHelper {
+    public static final String NAVN = "formatterKortDato";
+    public static final FormatterKortDatoHelper INSTANS = new FormatterKortDatoHelper();
+
+    @Override
+    public String getNavn() {
+        return NAVN;
+    }
+
+    @Override
+    public Helper getHelper() {
+        return INSTANS;
+    }
+
+    @Override
+    public String getBeskrivelse() {
+        return "Formatterer en datostreng på formatet yyyy-mm-dd til dd.mm.aaaa";
+    }
+
+    @Override
+    public CharSequence apply(Object value, Options options) throws IOException {
+        String[] datoSplit = split(value.toString(), "-");
+        reverse(datoSplit);
+        return join(datoSplit, ".");
+    }
+}
