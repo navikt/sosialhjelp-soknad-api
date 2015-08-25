@@ -5,4 +5,28 @@
         <span>{{ hentTekst "soknad.barnepass.barn.sporsmal.label" properties.fornavn ( hvisIkkeTom properties.mellomnavn ) properties.etternavn}}</span>
     </td>
 </tr>
+    {{#hvisSant properties.barnepassDagmamma}}
+    <tr>
+        <td></td>
+        <td>
+            <span>{{ hentTekst "soknad.barnepass.type.dagmamma"}}</span>
+        </td>
+    </tr>
+    {{/hvisSant}}
+    {{#hvisSant properties.barnepassBarnehage}}
+    <tr>
+        <td></td>
+        <td>
+            <span>{{ hentTekst "soknad.barnepass.type.barnehage"}}</span>
+        </td>
+    </tr>
+    {{/hvisSant}}
+    {{#hvisSant properties.barnepassPrivat}}
+    <tr>
+        <td></td>
+        <td>
+            <span>{{ hentTekst "soknad.barnepass.type.privat"}}</span>
+        </td>
+    </tr>
+    {{/hvisSant}}
 {{/hvisSant}}
