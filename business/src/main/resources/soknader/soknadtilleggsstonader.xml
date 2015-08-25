@@ -1408,7 +1408,7 @@
     <!-- Vedlegg bostotte -->
     <vedlegg>
         <skjemaNummer>K7</skjemaNummer>
-        <skjemanummerTillegg>samling</skjemanummerTillegg>
+        <skjemanummerTillegg>bostotte</skjemanummerTillegg>
         <faktum>bostotte.aarsak</faktum>
         <onValues>
             <value>samling</value>
