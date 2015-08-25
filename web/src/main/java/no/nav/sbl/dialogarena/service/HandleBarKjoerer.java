@@ -97,7 +97,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         handlebars.registerHelper("skalViseRotasjonTurnusSporsmaal", generateSkalViseRotasjonTurnusSporsmaalHelper());
         handlebars.registerHelper("hvisLikCmsTekst", generateHvisLikCmsTekstHelper());
         handlebars.registerHelper("hvisKunStudent", generateHvisKunStudentHelper());
-        handlebars.registerHelper("harBarnetInntekt", generateHarBarnetInntektHelper());
 
         return handlebars;
     }
@@ -478,7 +477,7 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         }
     }
 
-    private static Faktum finnFaktum(Context context) {
+    public static Faktum  finnFaktum(Context context) {
         if (context == null) {
             return null;
         } else if (context.model() instanceof Faktum) {
@@ -577,23 +576,5 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         };
     }
 
-    private Helper<Object> generateHarBarnetInntektHelper() {
-        return new Helper<Object>() {
-            @Override
-            public CharSequence apply(Object key, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-                Faktum parentFaktum = finnFaktum(options.context);
-
-                Faktum harInntekt = soknad.getFaktaMedKeyOgParentFaktum("barn.harinntekt", parentFaktum.getFaktumId()).get(0);
-
-                if (harInntekt != null && "true".equals(harInntekt.getValue())) {
-                    Faktum sumInntekt = soknad.getFaktaMedKeyOgParentFaktum("barn.inntekt", parentFaktum.getFaktumId()).get(0);
-                    return options.fn(sumInntekt);
-                } else {
-                    return options.inverse(this);
-                }
-            }
-        };
-    }
 
 }
