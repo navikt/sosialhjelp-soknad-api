@@ -14,7 +14,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
 public class BoutgifterTilXmlTest {
 
 
@@ -26,7 +25,7 @@ public class BoutgifterTilXmlTest {
     @Before
     public void beforeEach() {
         websoknad = new WebSoknad();
-        fakta = new ArrayList<Faktum>();
+        fakta = new ArrayList<>();
         fakta.add(new Faktum()
                 .medKey("bostotte.aarsak")
                 .medValue("fasteboutgifter"));
