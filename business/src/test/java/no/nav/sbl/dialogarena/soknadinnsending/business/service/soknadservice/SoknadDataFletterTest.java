@@ -176,7 +176,7 @@ public class SoknadDataFletterTest {
                 .medStatus(UNDER_ARBEID)
                 .medDelstegStatus(OPPRETTET);
         verify(lokalDb).opprettSoknad(soknad);
-        verify(lokalDb, atLeastOnce()).lagreFaktum(anyLong(), any(Faktum.class));
+        verify(faktaService, atLeastOnce()).lagreFaktum(anyLong(), any(Faktum.class));
         DateTimeUtils.setCurrentMillisSystem();
     }
 

@@ -273,21 +273,26 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         }
     }
 
-    public Long lagreFaktum(long soknadId, Faktum faktum) {
-        return lagreFaktum(soknadId, faktum, false);
+    public Long opprettFaktum(long soknadId, Faktum faktum) {
+        return opprettFaktum(soknadId, faktum, false);
     }
 
-    public Long lagreFaktum(long soknadId, Faktum faktum, Boolean systemLagring) {
+    public Long opprettFaktum(long soknadId, Faktum faktum, Boolean systemLagring) {
         faktum.setSoknadId(soknadId);
-        if (faktum.getFaktumId() == null) {
-            faktum.setFaktumId(getJdbcTemplate().queryForObject(selectNextSequenceValue("SOKNAD_BRUKER_DATA_ID_SEQ"), Long.class));
-            getNamedParameterJdbcTemplate().update(INSERT_FAKTUM, forFaktum(faktum));
-            lagreAlleEgenskaper(faktum, systemLagring);
-            return faktum.getFaktumId();
-        } else {
-            oppdaterBrukerData(soknadId, faktum, systemLagring);
-            return faktum.getFaktumId();
-        }
+        faktum.setFaktumId(getJdbcTemplate().queryForObject(selectNextSequenceValue("SOKNAD_BRUKER_DATA_ID_SEQ"), Long.class));
+        getNamedParameterJdbcTemplate().update(INSERT_FAKTUM, forFaktum(faktum));
+        lagreAlleEgenskaper(faktum, systemLagring);
+        return faktum.getFaktumId();
+
+    }
+
+    public Long oppdaterFaktum(Faktum faktum) {
+        return oppdaterFaktum(faktum, false);
+    }
+
+    public Long oppdaterFaktum(Faktum faktum, Boolean systemLagring) {
+        oppdaterBrukerData(faktum, systemLagring);
+        return faktum.getFaktumId();
     }
 
     private BeanPropertySqlParameterSource forFaktum(Faktum faktum) {
@@ -296,19 +301,19 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         return parameterSource;
     }
 
-    private void oppdaterBrukerData(long soknadId, Faktum faktum, Boolean systemLagring) {
+    private void oppdaterBrukerData(Faktum faktum, Boolean systemLagring) {
         Faktum lagretFaktum = hentFaktum(faktum.getFaktumId());
         // Siden faktum-value er endret fra CLOB til Varchar må vi få med oss om det skulle oppstå tilfeller
         // hvor dette lager problemer. Logges som kritisk
         if (faktum.getValue() != null && faktum.getValue().length() > 500) {
-            logger.error("Prøver å opppdatere faktum med en value som overstiger 500 tegn. (SøknadID: %s, Faktumkey: %s, Faktumtype: %s) ",
-                    Long.toString(soknadId), faktum.getKey(), faktum.getTypeString());
+            logger.error("Prøver å opppdatere faktum med en value som overstiger 500 tegn. (Faktumkey: %s, Faktumtype: %s) ",
+                    faktum.getKey(), faktum.getTypeString());
             faktum.setValue(faktum.getValue().substring(0, 500));
         }
         if (lagretFaktum.er(BRUKERREGISTRERT) || systemLagring) {
             getJdbcTemplate()
-                    .update("update soknadbrukerdata set value=? where soknadbrukerdata_id = ? and soknad_id = ?",
-                            faktum.getValue(), faktum.getFaktumId(), soknadId);
+                    .update("update soknadbrukerdata set value=? where soknadbrukerdata_id = ? ",
+                            faktum.getValue(), faktum.getFaktumId());
         }
         lagreAlleEgenskaper(faktum, systemLagring);
     }
