@@ -53,7 +53,7 @@ public class MaalgruppeWSConfig {
     }
 
     @Bean
-    Pingable maalgruppeinfromasjonPing() {
+    Pingable maalgruppePing() {
         return new Pingable() {
             @Override
             public Ping ping() {
