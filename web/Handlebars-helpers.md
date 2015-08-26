@@ -65,12 +65,12 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 #### Helpers på nytt registeringsformat
 
 * concat - Legger sammen alle parametrene til tekststring
+* fnrTilKortDato - Formatterer et gyldig fødselnummer til dato på formatet dd.mm.aaaa
 * forFaktum - Finner et faktum og setter det som aktiv context. Har også inverse om faktum ikke finnes. 
-* formatterFnrTilKortDato - Formatterer et gyldig fødselnummer til dato på formatet dd.mm.aaaa
-* formatterKortDato - Formatterer en datostreng på formatet yyyy-mm-dd til dd.mm.aaaa
 * hvisHarDiskresjonskode - Viser innhold avhengig av om personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)
 * hvisLik - Sjekker om to strenger er like
 * hvisSant - Dersom variabelen er "true" vil innholdet vises
+* kortDato - Formatterer en datostreng på formatet yyyy-mm-dd til dd.mm.aaaa
 * toLowerCase - Gjør om en tekst til kun små bokstaver
 * variabel - Lager en variabel med en bestemt verdi som kun er tilgjengelig innenfor helperen
 
@@ -84,6 +84,13 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 ```
 
 
+##### fnrTilKortDato
+
+```
+{{fnrTilKortDato "27108034322"}}
+```
+
+
 ##### forFaktum
 
 ```
@@ -92,20 +99,6 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 {{else}}
     faktum med key "faktumNavn" er ikke satt
 {{/forFaktum}}
-```
-
-
-##### formatterFnrTilKortDato
-
-```
-{{formatterFnrTilKortDato "27108034322"}}
-```
-
-
-##### formatterKortDato
-
-```
-{{formatterKortDato "2015-11-03"}}
 ```
 
 
@@ -139,6 +132,13 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
     {{else}}
     Gitt alt annet enn "true"
 {{/hvisSant}}
+```
+
+
+##### kortDato
+
+```
+{{formatterKortDato "2015-11-03"}}
 ```
 
 
