@@ -64,6 +64,9 @@
         <id>reise.aktivitet.dagligreiseavstand</id>
     </faktum>
     <faktum>
+        <id>reise.aktivitet.periode</id>
+    </faktum>
+    <faktum>
         <id>reise.aktivitet.medisinskeaarsaker</id>
         <dependOn>informasjonsside.stonad.reiseaktivitet</dependOn>
         <dependOnValues>
