@@ -88,8 +88,8 @@ public class BoutgifterTilXml implements Transformer<WebSoknad, Boutgifter> {
     private void aarsakTilBoutgifter(WebSoknad webSoknad) {
         Faktum aarsakFaktum = webSoknad.getFaktumMedKey(AARSAK);
         if (aarsakFaktum != null && aarsakFaktum.hasValue()) {
-            boutgifter.setHarFasteBoutgifter(aarsakFaktum.getValue() == "fasteboutgifter");
-            boutgifter.setHarBoutgifterVedSamling(aarsakFaktum.getValue() == "samling");
+            boutgifter.setHarFasteBoutgifter("fasteboutgifter".equals(aarsakFaktum.getValue()));
+            boutgifter.setHarBoutgifterVedSamling("samling".equals(aarsakFaktum.getValue()));
         }
     }
 
