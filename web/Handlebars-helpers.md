@@ -43,7 +43,6 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hvisEttersending
 * hvisMindre
 * hvisMer
-* hvisIkkeTom
 * hentTekst
 * hentTekstMedParameter
 * hentTekstMedFaktumParameter
@@ -60,14 +59,15 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * skalViseRotasjonTurnusSporsmaal
 * hvisLikCmsTekst
 * hvisKunStudent
-* harBarnetInntekt
 
-#### Helpers på nytt registeringsformat
+#### Helpers på nytt registreringsformat
 
 * concat - Legger sammen alle parametrene til tekststring
 * fnrTilKortDato - Formatterer et gyldig fødselnummer til dato på formatet dd.mm.aaaa
 * forFaktum - Finner et faktum og setter det som aktiv context. Har også inverse om faktum ikke finnes. 
+* harBarnetInntekt - Henter summen hvis barnet har inntekt. Må brukes innenfor en #forFaktum eller #forFakta helper. 
 * hvisHarDiskresjonskode - Viser innhold avhengig av om personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)
+* hvisIkkeTom - Dersom variabelen ikke er tom vil innholdet vises
 * hvisLik - Sjekker om to strenger er like
 * hvisSant - Dersom variabelen er "true" vil innholdet vises
 * kortDato - Formatterer en datostreng på formatet yyyy-mm-dd til dd.mm.aaaa
@@ -102,6 +102,21 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 ```
 
 
+##### harBarnetInntekt
+
+```
+{{#forFaktum "faktumNavn"}}
+    {{#harBarnetInntekt}
+        Gitt at wrapper-faktumet "faktumNavn" har to barnefaktum: "barnet.harinntekt" hvor verdi er "true", og
+        "barnet.inntekt". Sistnevnte er tilgjengelig her slik at {{value}} skriver ut inntekten.
+    {{else}}
+        Barnet har ikke inntekt.
+    {{/harBarnetInntekt}}
+{{/forFaktum}}
+
+```
+
+
 ##### hvisHarDiskresjonskode
 
 ```
@@ -110,6 +125,17 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
     {{else}}
     jeg har IKKE noen diskresjonskode
 {{/hvisHarDiskresjonskode}}
+```
+
+
+##### hvisIkkeTom
+
+```
+{{#hvisIkkeTom "verdi"}}
+    Verdien er ikke tom
+{{else}}
+    Verdien er tom
+{{/hvisIkkeTom}}
 ```
 
 

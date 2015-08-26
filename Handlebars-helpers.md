@@ -21,7 +21,6 @@ men kjører også automatisk sammen med det vanlige testoppsettet.
     * Navnet på helperen må returneres fra `getNavn`
     * Beskrivelsen fra `getBeskrivelse` vil havne i denne fila som dokumentasjon
 * Lag et eksempel på bruk under `/readme/Helpernavn.hbs`, denne vil også bli inkludert i dokumentasjonen under.
-* Legg til tester
 
 På dette formatet er det superklassen `RegistryAwareHelper` som vil registere helperen som er opprettet på
 Handlebars-instansen som brukes for å generere oppsummeringsdokumenter.
@@ -38,7 +37,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * forFakta
 * forBarnefakta
 * forFaktaMedPropertySattTilTrue
-* formatterFodelsDato (deprecated og erstattet av formatterKortDato og formatterFnrTilKortDato)
+* formatterFodelsDato
 * formatterLangDato
 * hvisEttersending
 * hvisMindre
@@ -59,18 +58,97 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * skalViseRotasjonTurnusSporsmaal
 * hvisLikCmsTekst
 * hvisKunStudent
+* harBarnetInntekt
 
-#### Helpers på nytt registreringsformat
-{{#each helpers}}
-* {{navn}} - {{{beskrivelse}}}{{/each}}
+#### Helpers på nytt registeringsformat
+
+* concat - Legger sammen alle parametrene til tekststring
+* forFaktum - Finner et faktum og setter det som aktiv context. Har også inverse om faktum ikke finnes. 
+* hvisHarDiskresjonskode - Viser innhold avhengig av om personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)
+* hvisIkkeTom - Dersom variabelen ikke er tom vil innholdet vises
+* hvisLik - Sjekker om to strenger er like
+* hvisSant - Dersom variabelen er "true" vil innholdet vises
+* toLowerCase - Gjør om en tekst til kun små bokstaver
+* variabel - Lager en variabel med en bestemt verdi som kun er tilgjengelig innenfor helperen
 
 
 #### Eksempler
-{{#each helpers}}
-##### {{navn}}
+
+##### concat
 
 ```
-{{{eksempel}}}
+{{ concat "a" "b" "c" "d" }}
 ```
 
-{{/each}}
+
+##### forFaktum
+
+```
+{{#forFaktum "faktumNavn"}}
+    Faktum med key {{key}} finnes og kan aksesseres. {{value}} skriver f.eks ut verdien på faktumet. se Faktum klassen.
+{{else}}
+    faktum med key "faktumNavn" er ikke satt
+{{/forFaktum}}
+```
+
+
+##### hvisHarDiskresjonskode
+
+```
+{{#hvisHarDiskresjonskode}}
+    Jeg har diskresjonskode
+    {{else}}
+    jeg har IKKE noen diskresjonskode
+{{/hvisHarDiskresjonskode}}
+```
+
+
+##### hvisIkkeTom
+
+```
+{{#hvisIkkeTom "verdi"}}
+    Verdien er ikke tom
+{{else}}
+    Verdien er tom
+{{/hvisIkkeTom}}
+```
+
+
+##### hvisLik
+
+```
+{{#hvisLik "verdi 1" "verdi 2"}}
+    Verdiene er like
+    {{else}}
+    Verdiene er ikke like
+{{/hvisLik}}
+```
+
+
+##### hvisSant
+
+```
+{{#hvisSant booleanString}}
+    Gitt "true"
+    {{else}}
+    Gitt alt annet enn "true"
+{{/hvisSant}}
+```
+
+
+##### toLowerCase
+
+```
+{{toLowerCase variabel}}
+{{toLowerCase "MaSSe Case"}}
+```
+
+
+##### variabel
+
+```
+{{#variabel "minvariabel" "verdi1"}}
+    Forventer verdi1: {{minvariabel}}
+{{/variabel}}
+```
+

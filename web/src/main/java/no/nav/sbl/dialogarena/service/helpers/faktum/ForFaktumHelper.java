@@ -16,32 +16,33 @@ import static no.nav.sbl.dialogarena.service.HandleBarKjoerer.finnWebSoknad;
 public class ForFaktumHelper extends RegistryAwareHelper<String> {
 
 
-        public static final ForFaktumHelper INSTANS = new ForFaktumHelper();
+    public static final ForFaktumHelper INSTANS = new ForFaktumHelper();
+    public static final String NAVN = "forFaktum";
 
-        @Override
-        public CharSequence apply(String o, Options options) throws IOException {
-            WebSoknad soknad = finnWebSoknad(options.context);
-            Faktum faktum = soknad.getFaktumMedKey(o);
+    @Override
+    public CharSequence apply(String o, Options options) throws IOException {
+        WebSoknad soknad = finnWebSoknad(options.context);
+        Faktum faktum = soknad.getFaktumMedKey(o);
 
-            if (faktum == null || (faktum.getValue() == null && faktum.getProperties().isEmpty())) {
-                return options.inverse(this);
-            } else {
-                return options.fn(faktum);
-            }
+        if (faktum == null || (faktum.getValue() == null && faktum.getProperties().isEmpty())) {
+            return options.inverse(this);
+        } else {
+            return options.fn(faktum);
         }
+    }
 
-        @Override
-        public String getNavn() {
-            return "forFaktum";
-        }
+    @Override
+    public String getNavn() {
+        return NAVN;
+    }
 
-        @Override
-        public Helper<String> getHelper() {
-            return INSTANS;
-        }
+    @Override
+    public Helper<String> getHelper() {
+        return INSTANS;
+    }
 
-        @Override
-        public String getBeskrivelse() {
-            return "Finner et faktum og setter det som aktiv context. Har også inverse om faktum ikke finnes. ";
-        }
+    @Override
+    public String getBeskrivelse() {
+        return "Finner et faktum og setter det som aktiv context. Har også inverse om faktum ikke finnes. ";
+    }
 }
