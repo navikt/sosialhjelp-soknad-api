@@ -1019,6 +1019,11 @@
             <value>delvis</value>
         </dependOnValues>
     </faktum>
+
+    <!-- Barnepass -->
+    <faktum>
+        <id>barnepass.periode</id>
+    </faktum>
     
     <!-- Tilleggsopplysninger -->
     <faktum>
