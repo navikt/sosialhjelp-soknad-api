@@ -14,9 +14,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.IkkeVedlegg;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Vedlegg {
+    public static final Predicate<Vedlegg> PAAKREVDE_VEDLEGG = new Predicate<Vedlegg>() {
+        @Override
+        public boolean evaluate(Vedlegg vedlegg) {
+            return vedlegg != null && !vedlegg.getInnsendingsvalg().equals(IkkeVedlegg);
+        }
+    };
     private Long vedleggId;
     private Long soknadId;
     private Long faktumId;

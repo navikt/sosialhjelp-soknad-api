@@ -9,7 +9,6 @@ import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.lang3.StringUtils;
@@ -172,7 +171,7 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
                 DateTimeFormatter dt = DateTimeFormat.forPattern("d. MMMM yyyy', klokken' HH.mm").withLocale(NO_LOCALE);
 
                 infoMap.put("sendtInn", String.valueOf(soknad.getInnsendteVedlegg().size()));
-                infoMap.put("ikkeSendtInn", String.valueOf(soknad.getVedlegg().size()));
+                infoMap.put("ikkeSendtInn", String.valueOf(soknad.hentPaakrevdeVedlegg().size()));
                 infoMap.put("innsendtDato", dt.print(DateTime.now()));
 
                 return options.fn(infoMap);
@@ -225,8 +224,7 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
             @Override
             public CharSequence apply(Object context, Options options) throws IOException {
                 WebSoknad soknad = finnWebSoknad(options.context);
-                List<Vedlegg> vedlegg = on(soknad.getVedlegg()).filter(VedleggService.PAAKREVDE_VEDLEGG).collect();
-
+                List<Vedlegg> vedlegg = soknad.hentPaakrevdeVedlegg();
                 if (vedlegg.isEmpty()) {
                     return options.inverse(this);
                 } else {

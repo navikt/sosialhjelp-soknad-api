@@ -11,7 +11,11 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.joda.time.DateTime;
 
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -127,6 +131,9 @@ public class WebSoknad implements Serializable {
             vedlegg = new ArrayList<>();
         }
         return vedlegg;
+    }
+    public List<Vedlegg> hentPaakrevdeVedlegg(){
+        return on(vedlegg).filter(Vedlegg.PAAKREVDE_VEDLEGG).collect();
     }
 
     public void setVedlegg(List<Vedlegg> vedlegg) {
