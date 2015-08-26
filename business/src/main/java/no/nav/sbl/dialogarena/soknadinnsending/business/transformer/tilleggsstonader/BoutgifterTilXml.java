@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggssto
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Boutgifter;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Periode;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.collections15.Transformer;
@@ -10,7 +9,8 @@ import org.joda.time.DateTime;
 
 import java.math.BigInteger;
 import java.util.List;
-import java.util.Map;
+
+import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTransformers.faktumToPeriode;
 
 public class BoutgifterTilXml implements Transformer<WebSoknad, Boutgifter> {
 
@@ -24,13 +24,13 @@ public class BoutgifterTilXml implements Transformer<WebSoknad, Boutgifter> {
     public static final String UTGIFT = "utgift";
     public static final String AARSAK = "bostotte.aarsak";
     public static final String PERIODE = "bostotte.periode";
-    public static final String TOM = "tom";
     private Boutgifter boutgifter = new Boutgifter();
 
     @Override
     public Boutgifter transform(WebSoknad webSoknad) {
         aarsakTilBoutgifter(webSoknad);
-        periodeTilBoutgifter(webSoknad);
+        boutgifter.setPeriode(faktumToPeriode(webSoknad.getFaktumMedKey(PERIODE)));
+
         kommunestotteTilBoutgifter(webSoknad);
         samlingTilBoutgifter(webSoknad); // TODO: Mangler sluttdato
         adresseUtgifterTilBoutgifter(webSoknad);
@@ -92,21 +92,4 @@ public class BoutgifterTilXml implements Transformer<WebSoknad, Boutgifter> {
             boutgifter.setHarBoutgifterVedSamling("samling".equals(aarsakFaktum.getValue()));
         }
     }
-
-    private void periodeTilBoutgifter(WebSoknad webSoknad) {
-        Faktum periodeFaktum = webSoknad.getFaktumMedKey(PERIODE);
-
-        if (periodeFaktum != null) {
-            Map<String, String> properties = periodeFaktum.getProperties();
-            Periode periode = new Periode();
-            periode.setFom(new XMLGregorianCalendarImpl(DateTime.parse(properties.get(FOM)).toGregorianCalendar()));
-            String tom = properties.get(TOM);
-            if (tom != null) {
-                periode.setTom(new XMLGregorianCalendarImpl(DateTime.parse(tom).toGregorianCalendar()));
-            }
-
-            boutgifter.setPeriode(periode);
-        }
-    }
-
 }

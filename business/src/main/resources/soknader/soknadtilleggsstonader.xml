@@ -196,19 +196,31 @@
     </faktum>
     <faktum>
         <id>reise.aktivitet.offentligtransport.egenbil.kostnader.bompenger</id>
-        <dependOn>reise.aktivitet.offentligtransport.egenbil.kostnader</dependOn>
+        <dependOn>reise.aktivitet.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reise.aktivitet.offentligtransport.egenbil.kostnader.piggdekk</id>
-        <dependOn>reise.aktivitet.offentligtransport.egenbil.kostnader</dependOn>
+        <dependOn>reise.aktivitet.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reise.aktivitet.offentligtransport.egenbil.kostnader.ferge</id>
-        <dependOn>reise.aktivitet.offentligtransport.egenbil.kostnader</dependOn>
+        <dependOn>reise.aktivitet.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reise.aktivitet.offentligtransport.egenbil.kostnader.annet</id>
-        <dependOn>reise.aktivitet.offentligtransport.egenbil.kostnader</dependOn>
+        <dependOn>reise.aktivitet.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reise.aktivitet.offentligtransport.egenbil.parkering</id>
