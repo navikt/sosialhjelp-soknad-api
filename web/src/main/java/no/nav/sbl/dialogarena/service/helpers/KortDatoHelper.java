@@ -11,9 +11,9 @@ import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.StringUtils.split;
 
 @Component
-public class FormatterKortDatoHelper extends RegistryAwareHelper<String> {
-    public static final String NAVN = "formatterKortDato";
-    public static final FormatterKortDatoHelper INSTANS = new FormatterKortDatoHelper();
+public class KortDatoHelper extends RegistryAwareHelper<String> {
+    public static final String NAVN = "kortDato";
+    public static final KortDatoHelper INSTANS = new KortDatoHelper();
 
     @Override
     public String getNavn() {

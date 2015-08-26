@@ -10,9 +10,9 @@ import java.io.IOException;
 import static no.bekk.bekkopen.person.FodselsnummerValidator.getFodselsnummer;
 
 @Component
-public class FormatterFnrTilKortDatoHelper extends RegistryAwareHelper {
-    public static final String NAVN = "formatterFnrTilKortDato";
-    public static final FormatterFnrTilKortDatoHelper INSTANS = new FormatterFnrTilKortDatoHelper();
+public class FnrTilKortDatoHelper extends RegistryAwareHelper {
+    public static final String NAVN = "fnrTilKortDato";
+    public static final FnrTilKortDatoHelper INSTANS = new FnrTilKortDatoHelper();
 
     @Override
     public String getNavn() {

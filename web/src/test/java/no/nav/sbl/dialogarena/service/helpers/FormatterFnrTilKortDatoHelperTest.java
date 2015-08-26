@@ -16,7 +16,7 @@ public class FormatterFnrTilKortDatoHelperTest {
     @Before
     public void setup() {
         handlebars = new Handlebars();
-        handlebars.registerHelper(FormatterFnrTilKortDatoHelper.NAVN, FormatterFnrTilKortDatoHelper.INSTANS);
+        handlebars.registerHelper(FnrTilKortDatoHelper.NAVN, FnrTilKortDatoHelper.INSTANS);
     }
 
     @Test

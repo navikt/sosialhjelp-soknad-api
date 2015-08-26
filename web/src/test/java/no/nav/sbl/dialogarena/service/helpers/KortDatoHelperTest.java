@@ -9,14 +9,14 @@ import java.util.HashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FormatterKortDatoHelperTest {
+public class KortDatoHelperTest {
 
     private Handlebars handlebars;
 
     @Before
     public void setup() {
         handlebars = new Handlebars();
-        handlebars.registerHelper(FormatterKortDatoHelper.NAVN, FormatterKortDatoHelper.INSTANS);
+        handlebars.registerHelper(KortDatoHelper.NAVN, KortDatoHelper.INSTANS);
     }
 
     @Test
