@@ -52,7 +52,7 @@
         <id>informasjonsside.stonad.laeremidler</id>
     </faktum>
     <faktum>
-        <id>informasjonsside.stonad.barn</id>
+        <id>informasjonsside.stonad.barnepass</id>
     </faktum>
     <faktum>
         <id>informasjonsside.stonad.familie</id>
@@ -1002,7 +1002,17 @@
             <value>delvis</value>
         </dependOnValues>
     </faktum>
-    
+
+    <!-- Barnepass -->
+    <faktum>
+        <id>barnepassStonad</id>
+        <dependOn>informasjonsside.stonad.barnepass</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+
+
     <!-- Tilleggsopplysninger -->
     <faktum>
         <id>tilleggsopplysninger.fritekst</id>
@@ -1466,5 +1476,17 @@
         <skjemanummerTillegg>laeremidler</skjemanummerTillegg>
         <property>bolk</property>
         <flereTillatt>false</flereTillatt>
+    </vedlegg>
+    <!-- Vedlegg barnepass-->
+    <vedlegg>
+        <faktum>barnepassStonad</faktum>
+        <skjemaNummer>J8</skjemaNummer>
+        <skjemanummerTillegg>barnepassBarnehage</skjemanummerTillegg>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <onProperty>barnepassBarnehage</onProperty>
+        <flereTillatt>true</flereTillatt>
+        <property>vedleggstittel</property>
     </vedlegg>
 </soknad>
