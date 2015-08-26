@@ -1,0 +1,112 @@
+package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader;
+
+import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Boutgifter;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Periode;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import org.apache.commons.collections15.Transformer;
+import org.joda.time.DateTime;
+
+import java.math.BigInteger;
+import java.util.List;
+import java.util.Map;
+
+public class BoutgifterTilXml implements Transformer<WebSoknad, Boutgifter> {
+
+    public static final String AKTIVITETSADRESSE = "bostotte.adresseutgifter.aktivitetsadresse";
+    public static final String UTBETALINGSDATO = "bostotte.utbetalingsdato";
+    public static final String HJEMSTEDSADDRESSE = "bostotte.adresseutgifter.hjemstedsaddresse";
+    public static final String OPPHORTE = "bostotte.adresseutgifter.opphorte";
+    public static final String SAMLING = "bostotte.samling";
+    public static final String FOM = "fom";
+    public static final String KOMMUNESTOTTE = "bostotte.kommunestotte";
+    public static final String UTGIFT = "utgift";
+    public static final String AARSAK = "bostotte.aarsak";
+    public static final String PERIODE = "bostotte.periode";
+    public static final String TOM = "tom";
+    private Boutgifter boutgifter = new Boutgifter();
+
+    @Override
+    public Boutgifter transform(WebSoknad webSoknad) {
+        aarsakTilBoutgifter(webSoknad);
+        periodeTilBoutgifter(webSoknad);
+        kommunestotteTilBoutgifter(webSoknad);
+        samlingTilBoutgifter(webSoknad); // TODO: Mangler sluttdato
+        adresseUtgifterTilBoutgifter(webSoknad);
+        //medisinskeaarsakerTilBoutgifter(webSoknad); // TODO: Finnes ikke i boutgifter
+        utbetalingsdatoTilBoutgifter(webSoknad);
+
+        return boutgifter;
+    }
+
+    private void utbetalingsdatoTilBoutgifter(WebSoknad webSoknad) {
+        Faktum utbetalingsdatoFaktum = webSoknad.getFaktumMedKey(UTBETALINGSDATO);
+        if (utbetalingsdatoFaktum != null && utbetalingsdatoFaktum.hasValue()) {
+            boutgifter.setOensketUtbetalingsdag(new BigInteger(utbetalingsdatoFaktum.getValue()));
+        }
+    }
+
+    private void adresseUtgifterTilBoutgifter(WebSoknad webSoknad) {
+        Faktum aktivitetstedFaktum = webSoknad.getFaktumMedKey(AKTIVITETSADRESSE);
+
+        if (aktivitetstedFaktum != null && aktivitetstedFaktum.hasEgenskap(UTGIFT)) {
+            boutgifter.setBoutgifterAktivitetsted(new BigInteger(aktivitetstedFaktum.getProperties().get(UTGIFT)));
+        }
+
+        Faktum hjemstedsaddresse = webSoknad.getFaktumMedKey(HJEMSTEDSADDRESSE);
+        if (hjemstedsaddresse != null && hjemstedsaddresse.hasEgenskap(UTGIFT)) {
+            boutgifter.setBoutgifterHjemstedAktuell(new BigInteger(hjemstedsaddresse.getProperties().get(UTGIFT)));
+        }
+
+        Faktum opphorte = webSoknad.getFaktumMedKey(OPPHORTE);
+        if (opphorte != null && opphorte.hasEgenskap(UTGIFT)) {
+            boutgifter.setBoutgifterHjemstedOpphoert(new BigInteger(opphorte.getProperties().get(UTGIFT)));
+        }
+    }
+
+    private void samlingTilBoutgifter(WebSoknad webSoknad) {
+        List<Faktum> samlingFakta = webSoknad.getFaktaMedKey(SAMLING);
+        if (samlingFakta != null) {
+            for (Faktum samlingFaktum : samlingFakta) {
+                DateTime startDato = DateTime.parse(samlingFaktum.getProperties().get(FOM));
+                boutgifter.getSamlingsdato().add(new XMLGregorianCalendarImpl(startDato.toGregorianCalendar()));
+            }
+        }
+    }
+
+    private void kommunestotteTilBoutgifter(WebSoknad webSoknad) {
+        Faktum kommunestotteFaktum = webSoknad.getFaktumMedKey(KOMMUNESTOTTE);
+        if (kommunestotteFaktum != null && kommunestotteFaktum.hasValue()) {
+            boutgifter.setMottarBostoette(Boolean.valueOf(kommunestotteFaktum.getValue()));
+            if (kommunestotteFaktum.hasEgenskap(UTGIFT)) {
+                boutgifter.setBostoetteBeloep(new BigInteger(kommunestotteFaktum.getProperties().get(UTGIFT)));
+            }
+        }
+    }
+
+    private void aarsakTilBoutgifter(WebSoknad webSoknad) {
+        Faktum aarsakFaktum = webSoknad.getFaktumMedKey(AARSAK);
+        if (aarsakFaktum != null && aarsakFaktum.hasValue()) {
+            boutgifter.setHarFasteBoutgifter("fasteboutgifter".equals(aarsakFaktum.getValue()));
+            boutgifter.setHarBoutgifterVedSamling("samling".equals(aarsakFaktum.getValue()));
+        }
+    }
+
+    private void periodeTilBoutgifter(WebSoknad webSoknad) {
+        Faktum periodeFaktum = webSoknad.getFaktumMedKey(PERIODE);
+
+        if (periodeFaktum != null) {
+            Map<String, String> properties = periodeFaktum.getProperties();
+            Periode periode = new Periode();
+            periode.setFom(new XMLGregorianCalendarImpl(DateTime.parse(properties.get(FOM)).toGregorianCalendar()));
+            String tom = properties.get(TOM);
+            if (tom != null) {
+                periode.setTom(new XMLGregorianCalendarImpl(DateTime.parse(tom).toGregorianCalendar()));
+            }
+
+            boutgifter.setPeriode(periode);
+        }
+    }
+
+}

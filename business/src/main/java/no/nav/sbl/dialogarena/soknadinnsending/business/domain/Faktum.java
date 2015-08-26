@@ -49,6 +49,7 @@ public class Faktum implements Serializable {
         this.value = value;
     }
 
+
     public Long getSoknadId() {
         return soknadId;
     }
@@ -307,6 +308,10 @@ public class Faktum implements Serializable {
 
     public boolean harValueSomMatcher(List<String> dependOnValues) {
         return getValue() != null && dependOnValues.contains(getValue());
+    }
+
+    public boolean hasValue() {
+        return getValue() != null;
     }
 
     public enum FaktumType {SYSTEMREGISTRERT, BRUKERREGISTRERT}

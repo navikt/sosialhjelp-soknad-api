@@ -93,7 +93,7 @@ public class RegistryAwareHelperTest {
     private String hentEksempelfil(String name){
         URL url = this.getClass().getResource("/readme/" + name + ".hbs");
         try {
-            return FileUtils.readFileToString(new File(url.toURI()));
+            return FileUtils.readFileToString(new File(url.toURI()), "UTF-8");
         } catch (Exception e) {
             fail("Helperen " + name + " har ingen eksempelfil under /readme. Det må finnes en hbs-fil med dette navnet her.");
         }

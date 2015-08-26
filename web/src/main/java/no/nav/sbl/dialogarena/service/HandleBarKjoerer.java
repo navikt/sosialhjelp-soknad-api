@@ -81,7 +81,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         handlebars.registerHelper("hvisEttersending", generateHvisEttersendingHelper());
         handlebars.registerHelper("hvisMindre", generateHvisMindreHelper());
         handlebars.registerHelper("hvisMer", generateHvisMerHelper());
-        handlebars.registerHelper("hvisIkkeTom", generateHvisIkkeTomHelper());
         handlebars.registerHelper("hentTekst", generateHentTekstHelper());
         handlebars.registerHelper("hentTekstMedFaktumParameter", generateHentTekstMedFaktumParameterHelper());
         handlebars.registerHelper("hentLand", generateHentLandHelper());
@@ -97,7 +96,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         handlebars.registerHelper("skalViseRotasjonTurnusSporsmaal", generateSkalViseRotasjonTurnusSporsmaalHelper());
         handlebars.registerHelper("hvisLikCmsTekst", generateHvisLikCmsTekstHelper());
         handlebars.registerHelper("hvisKunStudent", generateHvisKunStudentHelper());
-        handlebars.registerHelper("harBarnetInntekt", generateHarBarnetInntektHelper());
 
         return handlebars;
     }
@@ -173,7 +171,7 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
                 DateTimeFormatter dt = DateTimeFormat.forPattern("d. MMMM yyyy', klokken' HH.mm").withLocale(NO_LOCALE);
 
                 infoMap.put("sendtInn", String.valueOf(soknad.getInnsendteVedlegg().size()));
-                infoMap.put("ikkeSendtInn", String.valueOf(soknad.getVedlegg().size()));
+                infoMap.put("ikkeSendtInn", String.valueOf(soknad.hentPaakrevdeVedlegg().size()));
                 infoMap.put("innsendtDato", dt.print(DateTime.now()));
 
                 return options.fn(infoMap);
@@ -226,8 +224,7 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
             @Override
             public CharSequence apply(Object context, Options options) throws IOException {
                 WebSoknad soknad = finnWebSoknad(options.context);
-                List<Vedlegg> vedlegg = soknad.getVedlegg();
-
+                List<Vedlegg> vedlegg = soknad.hentPaakrevdeVedlegg();
                 if (vedlegg.isEmpty()) {
                     return options.inverse(this);
                 } else {
@@ -277,19 +274,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
                 return String.format("KEY MANGLER: [%s]", key);
             }
         }
-    }
-
-    private Helper<Object> generateHvisIkkeTomHelper() {
-        return new Helper<Object>() {
-            @Override
-            public CharSequence apply(Object value, Options options) throws IOException {
-                if (value != null && !value.toString().isEmpty()) {
-                    return options.fn(this);
-                } else {
-                    return options.inverse(this);
-                }
-            }
-        };
     }
 
     private Helper<String> generateHvisMerHelper() {
@@ -479,7 +463,7 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         }
     }
 
-    private static Faktum finnFaktum(Context context) {
+    public static Faktum  finnFaktum(Context context) {
         if (context == null) {
             return null;
         } else if (context.model() instanceof Faktum) {
@@ -578,23 +562,5 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         };
     }
 
-    private Helper<Object> generateHarBarnetInntektHelper() {
-        return new Helper<Object>() {
-            @Override
-            public CharSequence apply(Object key, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-                Faktum parentFaktum = finnFaktum(options.context);
-
-                Faktum harInntekt = soknad.getFaktaMedKeyOgParentFaktum("barn.harinntekt", parentFaktum.getFaktumId()).get(0);
-
-                if (harInntekt != null && "true".equals(harInntekt.getValue())) {
-                    Faktum sumInntekt = soknad.getFaktaMedKeyOgParentFaktum("barn.inntekt", parentFaktum.getFaktumId()).get(0);
-                    return options.fn(sumInntekt);
-                } else {
-                    return options.inverse(this);
-                }
-            }
-        };
-    }
 
 }

@@ -1,32 +1,50 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader;
 
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Rettighetstype;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Tilleggsstoenadsskjema;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.collections15.Transformer;
+import org.slf4j.Logger;
 
-import javax.xml.bind.JAXB;
-import java.io.StringWriter;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.namespace.QName;
+import java.io.ByteArrayOutputStream;
 import java.util.UUID;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 public class TilleggsstonaderTilXml implements Transformer<WebSoknad, AlternativRepresentasjon> {
+
+    private static final Logger logger = getLogger(TilleggsstonaderTilXml.class);
 
     @Override
     public AlternativRepresentasjon transform(WebSoknad webSoknad) {
         Tilleggsstoenadsskjema tilleggsstoenadsskjema = tilTilleggsstoenadSkjema(webSoknad);
-        StringWriter xml = new StringWriter();
-        JAXB.marshal(tilleggsstoenadsskjema, xml);
+        ByteArrayOutputStream xml = new ByteArrayOutputStream();
+        try {
+            JAXBElement tilleggsstonadsskjemaElement = new JAXBElement(new QName("tilleggsstonadsskjema"), Tilleggsstoenadsskjema.class, tilleggsstoenadsskjema);
+            JAXBContext.newInstance(Tilleggsstoenadsskjema.class, Rettighetstype.class).createMarshaller().marshal(tilleggsstonadsskjemaElement, xml);
+        } catch (JAXBException e) {
+            logger.error("Klarte ikke konvertere tilleggsstonadsskjema til xml", e);
+            throw new RuntimeException("Klarte ikke konvertere tilleggsstonadsskjema til xml", e);
+        }
 
         return new AlternativRepresentasjon()
                 .medMimetype("application/xml")
                 .medFilnavn("Tilleggsstonader.xml")
                 .medUuid(UUID.randomUUID().toString())
-                .medContent(xml.toString().getBytes());
+                .medContent(xml.toByteArray());
     }
 
     private static Tilleggsstoenadsskjema tilTilleggsstoenadSkjema(WebSoknad webSoknad) {
         Tilleggsstoenadsskjema skjema = new Tilleggsstoenadsskjema();
         skjema.setMaalgruppeinformasjon(new MaalgruppeTilXml().transform(webSoknad.getFaktumMedKey("maalgruppe")));
+        Rettighetstype rettighetstype = new Rettighetstype();
+        rettighetstype.setBoutgifter(new BoutgifterTilXml().transform(webSoknad));
+        skjema.setRettighetstype(rettighetstype);
         return skjema;
     }
 }
