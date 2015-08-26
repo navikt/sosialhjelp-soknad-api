@@ -56,7 +56,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
     public String fyllHtmlMalMedInnhold(WebSoknad soknad, String file) throws IOException {
         this.soknadTypePrefix = soknad.getSoknadPrefix();
         return getHandlebars().compile(file).apply(soknad);
-
     }
 
     @Override
@@ -96,7 +95,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         handlebars.registerHelper("hvisHarIkkeInnsendteDokumenter", generateHvisHarIkkeInnsendteDokumenterHelper());
         handlebars.registerHelper("skalViseRotasjonTurnusSporsmaal", generateSkalViseRotasjonTurnusSporsmaalHelper());
         handlebars.registerHelper("hvisLikCmsTekst", generateHvisLikCmsTekstHelper());
-        handlebars.registerHelper("hvisKunStudent", generateHvisKunStudentHelper());
         handlebars.registerHelper("harBarnetInntekt", generateHarBarnetInntektHelper());
 
         return handlebars;
@@ -547,32 +545,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
                     return options.fn(this);
                 }
                 return options.inverse(this);
-            }
-        };
-    }
-
-
-    private Helper<Object> generateHvisKunStudentHelper() {
-        return new Helper<Object>() {
-            @Override
-            public CharSequence apply(Object context, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-
-                Faktum iArbeidFaktum = soknad.getFaktumMedKey("navaerendeSituasjon.iArbeid");
-                Faktum sykmeldtFaktum = soknad.getFaktumMedKey("navaerendeSituasjon.sykmeldt");
-                Faktum arbeidsledigFaktum = soknad.getFaktumMedKey("navaerendeSituasjon.arbeidsledig");
-                Faktum forstegangstjenesteFaktum = soknad.getFaktumMedKey("navaerendeSituasjon.forstegangstjeneste");
-                Faktum annetFaktum = soknad.getFaktumMedKey("navaerendeSituasjon.annet");
-
-                Faktum[] fakta = {iArbeidFaktum, sykmeldtFaktum, arbeidsledigFaktum, forstegangstjenesteFaktum, annetFaktum};
-
-                for (Faktum faktum : fakta) {
-                    if (faktum != null && "true".equals(faktum.getValue())) {
-                        return options.inverse(this);
-                    }
-                }
-
-                return options.fn(this);
             }
         };
     }

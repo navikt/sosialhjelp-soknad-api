@@ -66,6 +66,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * concat - Legger sammen alle parametrene til tekststring
 * forFaktum - Finner et faktum og setter det som aktiv context. Har også inverse om faktum ikke finnes. 
 * hvisHarDiskresjonskode - Viser innhold avhengig av om personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)
+* hvisKunStudent - Sjekker om brukeren har en annen status enn student (f.eks sykmeldt, i arbeid osv.)
 * hvisLik - Sjekker om to strenger er like
 * hvisSant - Dersom variabelen er "true" vil innholdet vises
 * toLowerCase - Gjør om en tekst til kun små bokstaver
