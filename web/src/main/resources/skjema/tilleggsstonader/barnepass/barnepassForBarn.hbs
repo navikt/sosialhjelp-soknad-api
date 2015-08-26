@@ -1,0 +1,15 @@
+{{#hvisSant properties.sokerOmBarnepass}}
+<tr>
+    <td class="sjekket"></td>
+    <td>
+        <span>{{ hentTekst "soknad.barnepass.barn.sporsmal.label" properties.fornavn ( hvisIkkeTom properties.mellomnavn ) properties.etternavn}}</span>
+    </td>
+</tr>
+<tr>
+    <td class="sjekket"></td>
+    <td>
+        <span>{{ hentTekst "soknad.barnepass.andreforelder.sporsmal" }}:</span>
+        <span>{{ properties.andreforelder }}</span>
+    </td>
+</tr>
+{{/hvisSant}}
