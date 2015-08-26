@@ -9,6 +9,7 @@ import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.lang3.StringUtils;
@@ -224,7 +225,7 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
             @Override
             public CharSequence apply(Object context, Options options) throws IOException {
                 WebSoknad soknad = finnWebSoknad(options.context);
-                List<Vedlegg> vedlegg = soknad.getVedlegg();
+                List<Vedlegg> vedlegg = on(soknad.getVedlegg()).filter(VedleggService.PAAKREVDE_VEDLEGG).collect();
 
                 if (vedlegg.isEmpty()) {
                     return options.inverse(this);
