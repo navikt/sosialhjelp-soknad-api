@@ -81,7 +81,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         handlebars.registerHelper("hvisEttersending", generateHvisEttersendingHelper());
         handlebars.registerHelper("hvisMindre", generateHvisMindreHelper());
         handlebars.registerHelper("hvisMer", generateHvisMerHelper());
-        handlebars.registerHelper("hvisIkkeTom", generateHvisIkkeTomHelper());
         handlebars.registerHelper("hentTekst", generateHentTekstHelper());
         handlebars.registerHelper("hentTekstMedFaktumParameter", generateHentTekstMedFaktumParameterHelper());
         handlebars.registerHelper("hentLand", generateHentLandHelper());
@@ -276,19 +275,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
                 return String.format("KEY MANGLER: [%s]", key);
             }
         }
-    }
-
-    private Helper<Object> generateHvisIkkeTomHelper() {
-        return new Helper<Object>() {
-            @Override
-            public CharSequence apply(Object value, Options options) throws IOException {
-                if (value != null && !value.toString().isEmpty()) {
-                    return options.fn(this);
-                } else {
-                    return options.inverse(this);
-                }
-            }
-        };
     }
 
     private Helper<String> generateHvisMerHelper() {
