@@ -85,7 +85,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 
 ```
 {{#forFaktum "faktumNavn"}}
-    Faktum med key {{key}} finnes og kan aksesseres. {{value}} skriver f.eks ut verdien pÃ¥ faktumet. se Faktum klassen.
+    Faktum med key {{key}} finnes og kan aksesseres. {{value}} skriver f.eks ut verdien på faktumet. se Faktum klassen.
 {{else}}
     faktum med key "faktumNavn" er ikke satt
 {{/forFaktum}}
