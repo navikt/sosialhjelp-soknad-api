@@ -23,7 +23,7 @@ public class KortDatoHelperTest {
     public void skalSkriveUtDatoPaRiktigFormat() throws IOException {
         HashMap<String, String> map = new HashMap<>();
         map.put("variabel", "2015-01-31");
-        String innhold = handlebars.compileInline("{{formatterKortDato variabel}}").apply(map);
+        String innhold = handlebars.compileInline("{{kortDato variabel}}").apply(map);
         assertThat(innhold).isEqualTo("31.01.2015");
     }
 }
