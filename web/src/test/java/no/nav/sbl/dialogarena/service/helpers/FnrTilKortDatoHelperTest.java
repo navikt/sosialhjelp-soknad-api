@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FormatterFnrTilKortDatoHelperTest {
+public class FnrTilKortDatoHelperTest {
 
     private Handlebars handlebars;
 
@@ -23,7 +23,7 @@ public class FormatterFnrTilKortDatoHelperTest {
     public void skalSkriveUtDatoPaRiktigFormat() throws IOException {
         HashMap<String, String> map = new HashMap<>();
         map.put("variabel", "27108034322");
-        String innhold = handlebars.compileInline("{{formatterFnrTilKortDato variabel}}").apply(map);
+        String innhold = handlebars.compileInline("{{fnrTilKortDato variabel}}").apply(map);
         assertThat(innhold).isEqualTo("27.10.1980");
     }
 }
