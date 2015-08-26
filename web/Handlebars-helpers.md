@@ -164,7 +164,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 ##### kortDato
 
 ```
-{{formatterKortDato "2015-11-03"}}
+{{kortDato "2015-11-03"}}
 ```
 
 
