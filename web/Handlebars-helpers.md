@@ -104,6 +104,17 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 ```
 
 
+##### hvisKunStudent
+
+```
+{{#hvisKunStudent}}
+    Bare student
+    {{else}}
+        Ikke bare student
+{{/hvisKunStudent}}
+```
+
+
 ##### hvisLik
 
 ```

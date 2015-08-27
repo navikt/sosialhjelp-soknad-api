@@ -24,9 +24,6 @@ public class HvisKunStudentHelperTest {
     HvisKunStudentHelper hvisKunStudentHelper;
 
     @Mock
-    HandleBarKjoerer handleBarKjoerer;
-
-    @Mock
     WebSoknad webSoknad;
 
     private Faktum iArbeidFaktum;
