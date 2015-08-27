@@ -3,6 +3,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sun.org.apache.bcel.internal.util.Objects;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigDelstegEndringException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.FaktumStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.VedleggForFaktumStruktur;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -20,6 +22,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
@@ -528,5 +531,17 @@ public class WebSoknad implements Serializable {
                                   }
 
         ).head().getOrElse(null);
+    }
+
+    public void fjernFaktaSomIkkeSkalVaereSynligISoknaden(SoknadStruktur struktur) {
+        Iterator<Faktum> iterator = getFakta().iterator();
+        while(iterator.hasNext()){
+            Faktum next = iterator.next();
+            FaktumStruktur faktumStruktur = struktur.finnStrukturForKey(next.getKey());
+
+            if(faktumStruktur != null && !faktumStruktur.erSynlig(this)){
+                iterator.remove();
+            }
+        }
     }
 }

@@ -11,6 +11,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.TilleggsstonaderTilXml;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
 import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.generateXsrfToken;
 
@@ -127,6 +129,16 @@ public class SoknadRessurs {
     @SjekkTilgangTilSoknad
     public List<Vedlegg> hentPaakrevdeVedlegg(@PathParam("behandlingsId") String behandlingsId) {
         return vedleggService.hentPaakrevdeVedlegg(behandlingsId);
+    }
+
+    @GET
+    @Path("/{behandlingsId}/stofo")
+    @Produces(APPLICATION_XML)
+    public byte[] xml(@PathParam("behandlingsId") String behandlingsId) {
+        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, false);
+        soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(soknadService.hentSoknadStruktur(soknad.getskjemaNummer()));
+        return new TilleggsstonaderTilXml().transform(soknad).getContent();
+
     }
 
     private void settJournalforendeEnhet(String behandlingsId, String delsteg) {

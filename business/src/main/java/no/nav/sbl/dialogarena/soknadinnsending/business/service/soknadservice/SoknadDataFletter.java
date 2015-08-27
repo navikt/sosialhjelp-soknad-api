@@ -272,7 +272,7 @@ public class SoknadDataFletter {
     private List<XMLAlternativRepresentasjon> lagListeMedXMLAlternativeRepresentasjoner(WebSoknad soknad) {
         List<XMLAlternativRepresentasjon> alternativRepresentasjonListe = new ArrayList<>();
         List<Transformer<WebSoknad, AlternativRepresentasjon>> transformers = kravdialogInformasjonHolder.hentKonfigurasjon(soknad.getskjemaNummer()).getTransformers();
-
+        soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(config.hentStruktur(soknad.getskjemaNummer()));
         for (Transformer<WebSoknad, AlternativRepresentasjon> transformer : transformers) {
             AlternativRepresentasjon altrep = transformer.transform(soknad);
             fillagerService.lagreFil(soknad.getBrukerBehandlingId(),
