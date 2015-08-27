@@ -17,20 +17,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class HandleBarHelperTest {
 
     @Test
-    public void hvisKunStudentHelperSkalReturnereTrueOmAlleFaktumErFalse() throws IOException {
-        String html = new HandleBarKjoerer().fyllHtmlMalMedInnhold(setupHvisKunStudent(), "/skjema/hvisKunStudent");
-        assertThat(html).contains("hvisKunStudent:true");
-    }
-
-    @Test
-    public void hvisKunStudentHelperSkalReturnereFalseOmEtFaktumErTrue() throws IOException {
-        WebSoknad soknad = setupHvisKunStudent();
-        soknad.getFaktumMedKey("navaerendeSituasjon.forstegangstjeneste").setValue("true");
-        String html = new HandleBarKjoerer().fyllHtmlMalMedInnhold(soknad, "/skjema/hvisKunStudent");
-        assertThat(html).contains("hvisKunStudent:false");
-    }
-
-    @Test
     public void helperForPeriodeTidsromFaktaSkalGiFaktaISortertRekkefolge() throws IOException {
         WebSoknad soknad = new WebSoknad().medBehandlingId("1A");
         soknad.medFaktum(getPeriodeFaktum("perioder.tidsrom.1", "2015-03-03", "2015-03-05", "3"))
@@ -104,17 +90,6 @@ public class HandleBarHelperTest {
         vedlegg.add(new Vedlegg().medInnsendingsvalg(Vedlegg.Status.VedleggKreves).medNavn("ikkeSendtInn2"));
         vedlegg.add(new Vedlegg().medInnsendingsvalg(Vedlegg.Status.VedleggKreves).medNavn("ikkeSendtInn3"));
         soknad.medVedlegg(vedlegg);
-        return soknad;
-    }
-
-    private WebSoknad setupHvisKunStudent() {
-        WebSoknad soknad = new WebSoknad();
-        soknad.medBehandlingId("1A");
-        soknad.medFaktum(new Faktum().medKey("navaerendeSituasjon.iArbeid").medValue("false"))
-                .medFaktum(new Faktum().medKey("navaerendeSituasjon.sykmeldt").medValue("false"))
-                .medFaktum(new Faktum().medKey("navaerendeSituasjon.arbeidsledig").medValue("false"))
-                .medFaktum(new Faktum().medKey("navaerendeSituasjon.forstegangstjeneste").medValue("false"))
-                .medFaktum(new Faktum().medKey("navaerendeSituasjon.annet").medValue("false"));
         return soknad;
     }
 }
