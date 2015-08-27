@@ -58,7 +58,6 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hvisHarIkkeInnsendteDokumenter
 * skalViseRotasjonTurnusSporsmaal
 * hvisLikCmsTekst
-* hvisKunStudent
 
 #### Helpers på nytt registreringsformat
 
@@ -129,17 +128,6 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 ```
 
 
-##### hvisKunStudent
-
-```
-{{#hvisKunStudent}}
-    Bare student
-    {{else}}
-        Ikke bare student
-{{/hvisKunStudent}}
-```
-
-
 ##### hvisIkkeTom
 
 ```
@@ -148,17 +136,6 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 {{else}}
     Verdien er tom
 {{/hvisIkkeTom}}
-```
-
-
-##### hvisKunStudent
-
-```
-{{#hvisKunStudent}}
-    Bare student
-    {{else}}
-        Ikke bare student
-{{/hvisKunStudent}}
 ```
 
 
@@ -206,4 +183,3 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
     Forventer verdi1: {{minvariabel}}
 {{/variabel}}
 ```
-
