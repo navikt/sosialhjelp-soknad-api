@@ -1,8 +1,10 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader;
 
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Reiseutgifter;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Rettighetstype;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Tilleggsstoenadsskjema;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.AlternativRepresentasjon;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.collections15.Transformer;
 import org.slf4j.Logger;
@@ -43,8 +45,27 @@ public class TilleggsstonaderTilXml implements Transformer<WebSoknad, Alternativ
         Tilleggsstoenadsskjema skjema = new Tilleggsstoenadsskjema();
         skjema.setMaalgruppeinformasjon(new MaalgruppeTilXml().transform(webSoknad.getFaktumMedKey("maalgruppe")));
         Rettighetstype rettighetstype = new Rettighetstype();
-        rettighetstype.setBoutgifter(new BoutgifterTilXml().transform(webSoknad));
+        if(aktivBolk("bostotte", webSoknad) ){
+            rettighetstype.setBoutgifter(new BoutgifterTilXml().transform(webSoknad));
+        }
+        rettighetstype.setReiseutgifter(reiseutgifter(webSoknad));
         skjema.setRettighetstype(rettighetstype);
         return skjema;
+    }
+
+    private static boolean aktivBolk(String bolk, WebSoknad webSoknad) {
+        Faktum bolkFaktum = webSoknad.getFaktumMedKey("informasjonsside.stonad." + bolk);
+        return bolkFaktum != null &&"true".equals(bolkFaktum.getValue());
+    }
+
+    private static Reiseutgifter reiseutgifter(WebSoknad webSoknad) {
+        Reiseutgifter reiseutgifter = new Reiseutgifter();
+        if(aktivBolk("reiseaktivitet", webSoknad) ) {
+            reiseutgifter.setDagligReise(new DagligReiseTilXml().transform(webSoknad));
+        }
+        if(aktivBolk("reisearbeidssoker", webSoknad) ) {
+            reiseutgifter.setReisestoenadForArbeidssoeker(new ArbeidReiseTilXml().transform(webSoknad));
+        }
+        return reiseutgifter;
     }
 }

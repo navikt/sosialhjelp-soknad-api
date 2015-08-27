@@ -1,7 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import com.google.common.base.Function;
-import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetsinformasjonListePersonIkkeFunnet;
@@ -21,6 +22,12 @@ import java.util.List;
 @Service
 public class AktiviteterService {
 
+    private static final Predicate<Faktum> BARE_AKTIVITETER_SOM_KAN_HA_STONADER = new Predicate<Faktum>() {
+        @Override
+        public boolean apply(Faktum faktum) {
+            return "true".equals(faktum.getProperties().get("erStoenadsberettiget"));
+        }
+    };
     @Inject
     @Named("sakOgAktivitetEndpoint")
     private SakOgAktivitetV1 aktivitetWebService;
@@ -30,9 +37,11 @@ public class AktiviteterService {
     public List<Faktum> hentAktiviteter(String fodselnummer) {
         try {
             WSFinnAktivitetsinformasjonListeResponse aktiviteter = aktivitetWebService.finnAktivitetsinformasjonListe(lagAktivitetsRequest(fodselnummer));
-            return Lists.transform(
-                    Optional.fromNullable(aktiviteter).or(new WSFinnAktivitetsinformasjonListeResponse()).getAktivitetListe()
-                    , transformer);
+            if(aktiviteter == null){
+                return Lists.newArrayList();
+            }
+            List<Faktum> listeMedAktiviteter = Lists.transform(aktiviteter.getAktivitetListe(), transformer);
+            return Lists.newArrayList(Iterables.filter(listeMedAktiviteter, BARE_AKTIVITETER_SOM_KAN_HA_STONADER));
         } catch (FinnAktivitetsinformasjonListePersonIkkeFunnet | FinnAktivitetsinformasjonListeSikkerhetsbegrensning e) {
             throw new RuntimeException(e.getMessage(), e);
         }
@@ -56,6 +65,7 @@ public class AktiviteterService {
             WSPeriode periode = wsAktivitet.getPeriode();
             faktum.medProperty("fom", datoTilString(periode.getFom()));
             faktum.medProperty("tom", datoTilString(periode.getTom()));
+            faktum.medProperty("erStoenadsberettiget", "" + wsAktivitet.isErStoenadsberettigetAktivitet());
 
             return faktum;
         }
