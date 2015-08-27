@@ -57,7 +57,7 @@ public class AktiviteterServiceTest {
 
         WSPeriode periode = new WSPeriode().withFom(new LocalDate(fom)).withTom(new LocalDate(tom));
         WSFinnAktivitetsinformasjonListeResponse response = new WSFinnAktivitetsinformasjonListeResponse();
-        response.withAktivitetListe(new WSAktivitet().withAktivitetsnavn(aktivitetsnavn).withAktivitetId(id).withPeriode(periode));
+        response.withAktivitetListe(new WSAktivitet().withAktivitetsnavn(aktivitetsnavn).withAktivitetId(id).withPeriode(periode).withErStoenadsberettigetAktivitet(true));
 
         when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(response);
 
@@ -73,12 +73,32 @@ public class AktiviteterServiceTest {
     }
 
     @Test
+    public void skalFiltrereBortAktiviteterSomIkkeErStonadsberettiget() throws FinnAktivitetsinformasjonListePersonIkkeFunnet, FinnAktivitetsinformasjonListeSikkerhetsbegrensning {
+        String fodselnummer = "01010111111";
+        String aktivitetsnavn = "aktivitetsnavn";
+        String id = "9999";
+        String fom = "2015-02-15";
+        String tom = "2015-02-28";
+
+        WSPeriode periode = new WSPeriode().withFom(new LocalDate(fom)).withTom(new LocalDate(tom));
+        WSFinnAktivitetsinformasjonListeResponse response = new WSFinnAktivitetsinformasjonListeResponse();
+        response.withAktivitetListe(new WSAktivitet().withAktivitetsnavn(aktivitetsnavn).withAktivitetId(id).withPeriode(periode).withErStoenadsberettigetAktivitet(true),
+                new WSAktivitet().withAktivitetsnavn(aktivitetsnavn).withAktivitetId("8888").withPeriode(periode).withErStoenadsberettigetAktivitet(false));
+
+        when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(response);
+        List<Faktum> fakta = aktiviteterService.hentAktiviteter(fodselnummer);
+        assertThat(fakta).hasSize(1);
+        assertThat(fakta.get(0).getProperties().get("id")).isEqualToIgnoringCase("9999");
+
+    }
+
+    @Test
     public void skalReturnereFaktumUtenTom() throws FinnAktivitetsinformasjonListePersonIkkeFunnet, FinnAktivitetsinformasjonListeSikkerhetsbegrensning {
         String fom = "2015-02-15";
 
         WSPeriode periode = new WSPeriode().withFom(new LocalDate(fom));
         WSFinnAktivitetsinformasjonListeResponse response = new WSFinnAktivitetsinformasjonListeResponse();
-        response.withAktivitetListe(new WSAktivitet().withPeriode(periode));
+        response.withAktivitetListe(new WSAktivitet().withPeriode(periode).withErStoenadsberettigetAktivitet(true));
 
         when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(response);
 
@@ -92,7 +112,7 @@ public class AktiviteterServiceTest {
     @Test
     public void skalReturnereFaktumUtenNoenPeriodedatoer() throws FinnAktivitetsinformasjonListePersonIkkeFunnet, FinnAktivitetsinformasjonListeSikkerhetsbegrensning {
         WSFinnAktivitetsinformasjonListeResponse response = new WSFinnAktivitetsinformasjonListeResponse();
-        response.withAktivitetListe(new WSAktivitet().withPeriode(new WSPeriode()));
+        response.withAktivitetListe(new WSAktivitet().withPeriode(new WSPeriode()).withErStoenadsberettigetAktivitet(true));
 
         when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(response);
 

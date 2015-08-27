@@ -35,6 +35,8 @@ import static no.nav.sbl.dialogarena.detect.Detect.IS_PDF;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.ETTERSENDING_OPPRETTET;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.OPPRETTET;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.SKJEMA_VALIDERT;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.LastetOpp;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.VedleggKreves;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.DAGPENGER;
 import static no.nav.sbl.dialogarena.test.match.Matchers.match;
 import static org.hamcrest.Matchers.contains;
@@ -42,7 +44,9 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -85,7 +89,7 @@ public class VedleggServiceTest {
                 .medFillagerReferanse(null)
                 .medData(null)
                 .medOpprettetDato(DateTime.now().getMillis())
-                .medInnsendingsvalg(Vedlegg.Status.VedleggKreves);
+                .medInnsendingsvalg(VedleggKreves);
 
         ArgumentCaptor<byte[]> captor = ArgumentCaptor.forClass(byte[].class);
         when(vedleggRepository.opprettEllerEndreVedlegg(any(Vedlegg.class), captor.capture())).thenReturn(11L);
@@ -117,7 +121,7 @@ public class VedleggServiceTest {
                 .medFillagerReferanse(null)
                 .medData(null)
                 .medOpprettetDato(DateTime.now().getMillis())
-                .medInnsendingsvalg(Vedlegg.Status.VedleggKreves);
+                .medInnsendingsvalg(VedleggKreves);
 
         ArgumentCaptor<byte[]> captor = ArgumentCaptor.forClass(byte[].class);
         when(vedleggRepository.opprettEllerEndreVedlegg(any(Vedlegg.class), captor.capture())).thenReturn(10L, 11L, 12L, 13L, 14L);
@@ -132,7 +136,7 @@ public class VedleggServiceTest {
     public void skalGenerereVedleggFaktum() throws IOException {
         Vedlegg vedlegg = new Vedlegg().medSkjemaNummer("L6").medSoknadId(1L).medVedleggId(2L);
         byte[] bytes = getBytesFromFile("/pdfs/minimal.pdf");
-        Vedlegg vedleggSjekk = new Vedlegg().medSkjemaNummer("L6").medSoknadId(1L).medAntallSider(1).medVedleggId(2L).medFillagerReferanse(vedlegg.getFillagerReferanse()).medData(bytes);
+        Vedlegg vedleggSjekk = new Vedlegg().medSkjemaNummer("L6").medInnsendingsvalg(LastetOpp).medSoknadId(1L).medAntallSider(1).medVedleggId(2L).medFillagerReferanse(vedlegg.getFillagerReferanse()).medData(bytes);
         when(vedleggRepository.hentVedlegg(2L)).thenReturn(vedlegg);
         when(vedleggRepository.hentVedleggUnderBehandling("ABC", vedlegg.getFillagerReferanse())).thenReturn(Arrays.asList(new Vedlegg().medVedleggId(10L)));
         when(vedleggRepository.hentVedleggData(10L)).thenReturn(bytes);
@@ -169,9 +173,9 @@ public class VedleggServiceTest {
         map.put(Kodeverk.Nokkel.TITTEL, "tittel");
         map.put(Kodeverk.Nokkel.URL, "url");
         when(kodeverk.getKoder("L6")).thenReturn(map);
-        Vedlegg vedlegg = new Vedlegg().medSkjemaNummer("L6").medInnsendingsvalg(Vedlegg.Status.VedleggKreves);
+        Vedlegg vedlegg = new Vedlegg().medSkjemaNummer("L6").medInnsendingsvalg(VedleggKreves);
         Vedlegg vedleggSjekk = new Vedlegg().medSkjemaNummer("L6").medTittel("tittel").medUrl("URL", "url")
-                .medFillagerReferanse(vedlegg.getFillagerReferanse());
+                .medFillagerReferanse(vedlegg.getFillagerReferanse()).medInnsendingsvalg(VedleggKreves);
         when(vedleggRepository.hentVedlegg(anyString())).thenReturn(Arrays.asList(vedlegg));
         List<Vedlegg> vedleggs = vedleggService.hentPaakrevdeVedlegg("10000000ABC");
         assertThat(vedleggs.get(0), is(equalTo(vedleggSjekk)));
@@ -227,9 +231,9 @@ public class VedleggServiceTest {
 
     @Test(expected=ApplicationException.class)
     public void skalIkkeKunneLagreVedleggMedPrioritetMindreEllerLik1() {
-        Vedlegg vedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(Vedlegg.Status.VedleggKreves);
+        Vedlegg vedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(VedleggKreves);
 
-        vedlegg.setInnsendingsvalg(Vedlegg.Status.VedleggKreves);
+        vedlegg.setInnsendingsvalg(VedleggKreves);
         vedleggService.lagreVedlegg(1L, vedlegg);
         verify(vedleggRepository, never()).lagreVedlegg(11L, 1L, vedlegg);
     }

@@ -137,7 +137,7 @@ public class SoknadActions {
     }
 
     private byte[] genererPdfMedKodeverksverdier(WebSoknad soknad, String hbsSkjemaPath) {
-        vedleggService.leggTilKodeverkFelter(soknad.getVedlegg());
+        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
         return genererPdf(soknad, hbsSkjemaPath);
     }
 
