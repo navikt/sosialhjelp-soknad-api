@@ -103,6 +103,12 @@ public final class StofoTransformers {
                 return formaal;
             }
         });
+        TRANSFORMERS.put(Periode.class, new Transformer<String, Periode>() {
+            @Override
+            public Periode transform(String s) {
+                return null;
+            }
+        });
     }
 
 
@@ -126,7 +132,7 @@ public final class StofoTransformers {
         return clazz.cast(result);
     }
 
-    public static Periode faktumToPeriode(Faktum periodeFaktum) {
+    public static Periode faktumTilPeriode(Faktum periodeFaktum) {
         Periode periode = null;
         if (periodeFaktum != null) {
             Map<String, String> properties = periodeFaktum.getProperties();

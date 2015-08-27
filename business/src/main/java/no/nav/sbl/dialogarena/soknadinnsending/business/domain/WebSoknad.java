@@ -533,11 +533,11 @@ public class WebSoknad implements Serializable {
         ).head().getOrElse(null);
     }
 
-    public void fjernSkjulteFakta(SoknadStruktur struktur) {
+    public void fjernFaktaSomIkkeSkalVaereSynligISoknaden(SoknadStruktur struktur) {
         Iterator<Faktum> iterator = getFakta().iterator();
         while(iterator.hasNext()){
             Faktum next = iterator.next();
-            FaktumStruktur faktumStruktur = struktur.strukturForKey(next.getKey());
+            FaktumStruktur faktumStruktur = struktur.finnStrukturForKey(next.getKey());
 
             if(faktumStruktur != null && !faktumStruktur.erSynlig(this)){
                 iterator.remove();

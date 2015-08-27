@@ -2,14 +2,11 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggssto
 
 
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.AlternativeTransportutgifter;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.DagligReise;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.DrosjeTransportutgifter;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.EgenBilTransportutgifter;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Formaal;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Innsendingsintervaller;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.KollektivTransportutgifter;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.ReisestoenadForArbeidssoeker;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.collections15.Transformer;
 
@@ -17,7 +14,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigInteger;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTransformers.extractValue;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTransformers.faktumToPeriode;
 
 public class ArbeidReiseTilXml implements Transformer<WebSoknad, ReisestoenadForArbeidssoeker> {
     @Override
