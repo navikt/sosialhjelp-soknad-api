@@ -1489,4 +1489,26 @@
         <flereTillatt>true</flereTillatt>
         <property>vedleggstittel</property>
     </vedlegg>
+    <vedlegg>
+        <faktum>barnepassStonad</faktum>
+        <skjemaNummer>J4</skjemaNummer>
+        <skjemanummerTillegg>barnepassPrivat</skjemanummerTillegg>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <onProperty>barnepassPrivat</onProperty>
+        <flereTillatt>true</flereTillatt>
+        <property>vedleggstittel</property>
+    </vedlegg>
+    <vedlegg>
+        <faktum>barnepassStonad</faktum>
+        <skjemaNummer>J4</skjemaNummer>
+        <skjemanummerTillegg>barnepassDagmamma</skjemanummerTillegg>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <onProperty>barnepassDagmamma</onProperty>
+        <flereTillatt>true</flereTillatt>
+        <property>vedleggstittel</property>
+    </vedlegg>
 </soknad>
