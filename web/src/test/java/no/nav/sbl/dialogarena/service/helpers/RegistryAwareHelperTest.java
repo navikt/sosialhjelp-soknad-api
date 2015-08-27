@@ -1,7 +1,9 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
 import com.github.jknack.handlebars.Handlebars;
-import junit.framework.TestFailure;
+import com.github.jknack.handlebars.internal.Files;
+import com.github.jknack.handlebars.io.StringTemplateSource;
+import com.github.jknack.handlebars.io.TemplateSource;
 import no.nav.sbl.dialogarena.config.HandlebarsHelperConfig;
 import no.nav.sbl.dialogarena.service.HandlebarRegistry;
 import org.apache.commons.io.FileUtils;
@@ -16,18 +18,22 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import javax.inject.Inject;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {RegistryAwareHelperTest.HandlebarsHelperTestConfig.class, HandlebarsHelperConfig.class})
@@ -76,7 +82,8 @@ public class RegistryAwareHelperTest {
         Map<String, List> handlebarsObject = new HashMap();
         handlebarsObject.put("helpers", helpersListe);
         Handlebars handlebars = new Handlebars();
-        String apply = handlebars.compile("/readme/Handlebars-helpers").apply(handlebarsObject);
+        TemplateSource utf8TemplateSource = new StringTemplateSource("Handlebars-helpers.hbs", Files.read("/readme/Handlebars-helpers.hbs"));
+        String apply = handlebars.compile(utf8TemplateSource).apply(handlebarsObject);
 
         OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream("Handlebars-helpers.md"), "UTF-8");
         writer.write(apply);
@@ -86,7 +93,7 @@ public class RegistryAwareHelperTest {
     private String hentEksempelfil(String name){
         URL url = this.getClass().getResource("/readme/" + name + ".hbs");
         try {
-            return FileUtils.readFileToString(new File(url.toURI()));
+            return FileUtils.readFileToString(new File(url.toURI()), "UTF-8");
         } catch (Exception e) {
             fail("Helperen " + name + " har ingen eksempelfil under /readme. Det må finnes en hbs-fil med dette navnet her.");
         }

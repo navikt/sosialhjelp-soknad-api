@@ -3,26 +3,30 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.FinnMaalgruppeinformasjonListePersonIkkeFunnet;
-import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.FinnMaalgruppeinformasjonListeSikkerhetsbegrensning;
-import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.MaalgruppeinformasjonV1;
-import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.informasjon.WSMaalgruppe;
-import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.informasjon.WSPeriode;
-import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.meldinger.WSFinnMaalgruppeinformasjonListeRequest;
-import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.meldinger.WSFinnMaalgruppeinformasjonListeResponse;
+import no.nav.tjeneste.virksomhet.maalgruppe.v1.FinnMaalgruppeinformasjonListePersonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.maalgruppe.v1.FinnMaalgruppeinformasjonListeSikkerhetsbegrensning;
+import no.nav.tjeneste.virksomhet.maalgruppe.v1.MaalgruppeV1;
+import no.nav.tjeneste.virksomhet.maalgruppe.v1.informasjon.WSMaalgruppe;
+import no.nav.tjeneste.virksomhet.maalgruppe.v1.informasjon.WSPeriode;
+import no.nav.tjeneste.virksomhet.maalgruppe.v1.meldinger.WSFinnMaalgruppeinformasjonListeRequest;
+import no.nav.tjeneste.virksomhet.maalgruppe.v1.meldinger.WSFinnMaalgruppeinformasjonListeResponse;
 import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.Collections;
 import java.util.List;
 
 @Service
 public class MaalgrupperService {
+    private static Logger LOG = LoggerFactory.getLogger(MaalgrupperService.class);
 
     @Inject
-    @Named("maalgruppeinformasjonEndpoint")
-    private MaalgruppeinformasjonV1 maalgruppeinformasjon;
+    @Named("maalgruppeEndpoint")
+    private MaalgruppeV1 maalgruppeinformasjon;
     private MaalgruppeTilFaktum maalgruppeTilFaktum = new MaalgruppeTilFaktum();
 
     public List<Faktum> hentMaalgrupper(String fodselsnummer) {
@@ -31,13 +35,20 @@ public class MaalgrupperService {
             return Lists.transform(maalgrupper.getMaalgruppeListe(), maalgruppeTilFaktum);
         } catch (FinnMaalgruppeinformasjonListePersonIkkeFunnet | FinnMaalgruppeinformasjonListeSikkerhetsbegrensning e) {
             throw new RuntimeException(e);
+        } catch (Exception ex) {
+            //Maalgruppetjenesten er nede etter kl 8 på kvelden. Om den er nede skal vi bare returnere en tom liste.
+            LOG.debug("Maalgruppetjeneste nede: ", ex);
         }
+        return Collections.emptyList();
     }
 
     private WSFinnMaalgruppeinformasjonListeRequest lagRequest(String fodselsnummer) {
         return new WSFinnMaalgruppeinformasjonListeRequest()
                 .withPersonident(fodselsnummer)
-                .withPeriode(new WSPeriode().withFom(new LocalDate("2015-01-01")));
+                .withPeriode(new WSPeriode()
+                        .withFom(LocalDate.now().minusYears(1))
+                        .withTom(LocalDate.now())
+                );
     }
 
     private static class MaalgruppeTilFaktum implements Function<WSMaalgruppe, Faktum> {
@@ -48,7 +59,7 @@ public class MaalgrupperService {
             return new Faktum()
                     .medKey("maalgruppe")
                     .medProperty("navn", maalgruppe.getMaalgruppenavn())
-                    .medProperty("fom", maalgruppe.getGyldighetsperiode().getFom().toString(DATOFORMAT))
+                    .medProperty("fom", datoTilString(maalgruppe.getGyldighetsperiode().getFom()))
                     .medProperty("tom", datoTilString(maalgruppe.getGyldighetsperiode().getTom()))
                     .medProperty("kodeverkVerdi", maalgruppe.getMaalgruppetype().getValue());
         }
