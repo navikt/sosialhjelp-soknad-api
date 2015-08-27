@@ -17,12 +17,6 @@ public class HvisKunStudentHelperTest {
 
     WebSoknad webSoknad;
 
-    private Faktum iArbeidFaktum;
-    private Faktum sykmeldtFaktum;
-    private Faktum arbeidsledigFaktum;
-    private Faktum forstegangstjenesteFaktum;
-    private Faktum annetFaktum;
-
     private static final String BARE_STUDENT = "bareStudent";
     private static final String IKKE_BARE_STUDENT = "ikkeBareStudent";
 
@@ -33,15 +27,13 @@ public class HvisKunStudentHelperTest {
         handlebars = new Handlebars();
         handlebars.registerHelper(hvisKunStudentHelper.getNavn(), hvisKunStudentHelper.getHelper());
 
-        faktumMock();
-
         webSoknad = new WebSoknad();
         webSoknad
-                .leggTilFaktum(iArbeidFaktum)
-                .leggTilFaktum(sykmeldtFaktum)
-                .leggTilFaktum(arbeidsledigFaktum)
-                .leggTilFaktum(forstegangstjenesteFaktum)
-                .leggTilFaktum(annetFaktum);
+                .leggTilFaktum(nyttFaktum("navaerendeSituasjon.iArbeid"))
+                .leggTilFaktum(nyttFaktum("navaerendeSituasjon.sykmeldt"))
+                .leggTilFaktum(nyttFaktum("navaerendeSituasjon.arbeidsledig"))
+                .leggTilFaktum(nyttFaktum("navaerendeSituasjon.forstegangstjeneste"))
+                .leggTilFaktum(nyttFaktum("navaerendeSituasjon.annet"));
     }
 
     @Test
@@ -51,7 +43,7 @@ public class HvisKunStudentHelperTest {
 
     @Test
     public void brukerHarAnnenStatusEnnStudent() throws IOException {
-        sykmeldtFaktum.setValue("true");
+        webSoknad.getFaktumMedKey("navaerendeSituasjon.sykmeldt").setValue("true");
         assertThat(innholdTilStudentSjekk()).isEqualTo(IKKE_BARE_STUDENT);
     }
 
@@ -61,20 +53,7 @@ public class HvisKunStudentHelperTest {
                 .apply(webSoknad);
     }
 
-    private void faktumMock() {
-        iArbeidFaktum = new Faktum()
-                .medKey("navaerendeSituasjon.iArbeid");
-
-        sykmeldtFaktum = new Faktum()
-                .medKey("navaerendeSituasjon.sykmeldt");
-
-        arbeidsledigFaktum = new Faktum()
-                .medKey("navaerendeSituasjon.arbeidsledig");
-
-        forstegangstjenesteFaktum = new Faktum()
-                .medKey("navaerendeSituasjon.forstegangstjeneste");
-
-        annetFaktum = new Faktum()
-                .medKey("navaerendeSituasjon.annet");
+    private Faktum nyttFaktum(String key) {
+        return new Faktum().medKey(key);
     }
 }
