@@ -574,19 +574,31 @@
     </faktum>
     <faktum>
         <id>reise.arbeidssoker.offentligtransport.egenbil.kostnader.bompenger</id>
-        <dependOn>reise.arbeidssoker.offentligtransport.egenbil.kostnader</dependOn>
+        <dependOn>reise.arbeidssoker.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reise.arbeidssoker.offentligtransport.egenbil.kostnader.piggdekk</id>
-        <dependOn>reise.arbeidssoker.offentligtransport.egenbil.kostnader</dependOn>
+        <dependOn>reise.arbeidssoker.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reise.arbeidssoker.offentligtransport.egenbil.kostnader.ferge</id>
-        <dependOn>reise.arbeidssoker.offentligtransport.egenbil.kostnader</dependOn>
+        <dependOn>reise.arbeidssoker.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reise.arbeidssoker.offentligtransport.egenbil.kostnader.annet</id>
-        <dependOn>reise.arbeidssoker.offentligtransport.egenbil.kostnader</dependOn>
+        <dependOn>reise.arbeidssoker.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reise.arbeidssoker.offentligtransport.egenbil.parkering</id>

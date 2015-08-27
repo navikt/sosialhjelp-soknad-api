@@ -63,6 +63,9 @@ public class TilleggsstonaderTilXml implements Transformer<WebSoknad, Alternativ
         if(aktivBolk("reiseaktivitet", webSoknad) ) {
             reiseutgifter.setDagligReise(new DagligReiseTilXml().transform(webSoknad));
         }
+        if(aktivBolk("reisearbeidssoker", webSoknad) ) {
+            reiseutgifter.setReisestoenadForArbeidssoeker(new ArbeidReiseTilXml().transform(webSoknad));
+        }
         return reiseutgifter;
     }
 }
