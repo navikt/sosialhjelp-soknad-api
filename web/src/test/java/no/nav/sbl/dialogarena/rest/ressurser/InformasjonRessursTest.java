@@ -98,6 +98,7 @@ public class InformasjonRessursTest {
     public void utslagskriterierInneholderAlleKriteriene() {
         Map<String, Object> utslagskriterier = ressurs.hentUtslagskriterier();
         assertThat(utslagskriterier.containsKey("arbeidssokerstatus")).isTrue();
+        assertThat(utslagskriterier.containsKey("ytelsesstatus")).isTrue();
         assertThat(utslagskriterier.containsKey("alder")).isTrue();
         assertThat(utslagskriterier.containsKey("fodselsdato")).isTrue();
         assertThat(utslagskriterier.containsKey("bosattINorge")).isTrue();
@@ -106,7 +107,7 @@ public class InformasjonRessursTest {
         assertThat(utslagskriterier.containsKey("registrertAdresseGyldigTil")).isTrue();
         assertThat(utslagskriterier.containsKey("erBosattIEOSLand")).isTrue();
 
-        assertThat(utslagskriterier.size()).isEqualTo(8);
+        assertThat(utslagskriterier.size()).isEqualTo(9);
     }
 
     @Test
