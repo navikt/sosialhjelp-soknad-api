@@ -64,6 +64,9 @@
         <id>reise.aktivitet.dagligreiseavstand</id>
     </faktum>
     <faktum>
+        <id>reise.aktivitet.periode</id>
+    </faktum>
+    <faktum>
         <id>reise.aktivitet.medisinskeaarsaker</id>
         <dependOn>informasjonsside.stonad.reiseaktivitet</dependOn>
         <dependOnValues>
@@ -193,19 +196,31 @@
     </faktum>
     <faktum>
         <id>reise.aktivitet.offentligtransport.egenbil.kostnader.bompenger</id>
-        <dependOn>reise.aktivitet.offentligtransport.egenbil.kostnader</dependOn>
+        <dependOn>reise.aktivitet.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reise.aktivitet.offentligtransport.egenbil.kostnader.piggdekk</id>
-        <dependOn>reise.aktivitet.offentligtransport.egenbil.kostnader</dependOn>
+        <dependOn>reise.aktivitet.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reise.aktivitet.offentligtransport.egenbil.kostnader.ferge</id>
-        <dependOn>reise.aktivitet.offentligtransport.egenbil.kostnader</dependOn>
+        <dependOn>reise.aktivitet.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reise.aktivitet.offentligtransport.egenbil.kostnader.annet</id>
-        <dependOn>reise.aktivitet.offentligtransport.egenbil.kostnader</dependOn>
+        <dependOn>reise.aktivitet.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reise.aktivitet.offentligtransport.egenbil.parkering</id>
@@ -559,19 +574,31 @@
     </faktum>
     <faktum>
         <id>reise.arbeidssoker.offentligtransport.egenbil.kostnader.bompenger</id>
-        <dependOn>reise.arbeidssoker.offentligtransport.egenbil.kostnader</dependOn>
+        <dependOn>reise.arbeidssoker.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reise.arbeidssoker.offentligtransport.egenbil.kostnader.piggdekk</id>
-        <dependOn>reise.arbeidssoker.offentligtransport.egenbil.kostnader</dependOn>
+        <dependOn>reise.arbeidssoker.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reise.arbeidssoker.offentligtransport.egenbil.kostnader.ferge</id>
-        <dependOn>reise.arbeidssoker.offentligtransport.egenbil.kostnader</dependOn>
+        <dependOn>reise.arbeidssoker.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reise.arbeidssoker.offentligtransport.egenbil.kostnader.annet</id>
-        <dependOn>reise.arbeidssoker.offentligtransport.egenbil.kostnader</dependOn>
+        <dependOn>reise.arbeidssoker.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reise.arbeidssoker.offentligtransport.egenbil.parkering</id>
@@ -1015,6 +1042,11 @@
         <dependOnValues>
             <value>delvis</value>
         </dependOnValues>
+    </faktum>
+
+    <!-- Barnepass -->
+    <faktum>
+        <id>barnepass.periode</id>
     </faktum>
     
     <!-- Tilleggsopplysninger -->

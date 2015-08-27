@@ -31,14 +31,30 @@ public class ForFaktumHelperTest {
     }
 
     @Test
-    public void skalFinneFaktumOgSettePaaContext() throws IOException {
-        String compiled = handlebars.compileInline("{{#forFaktum \"test\" }}faktum finnes med verdi {{value}}{{else}}finnes ikke{{/forFaktum}}").apply(Context.newContext(new WebSoknad().medFaktum(new Faktum().medKey("test").medValue("testverdi"))));
+    public void skalFinneFaktumMedValueOgSettePaaContext() throws IOException {
+        Context websoknadMedFaktum = Context.newContext(new WebSoknad().medFaktum(new Faktum().medKey("test").medValue("testverdi")));
+        String compiled = handlebars.compileInline("{{#forFaktum \"test\" }}faktum finnes med verdi {{value}}{{else}}finnes ikke{{/forFaktum}}").apply(websoknadMedFaktum);
         assertThat(compiled).isEqualTo("faktum finnes med verdi testverdi");
     }
 
     @Test
+    public void skalFinneFaktumMedPropertyOgSettePaaContext() throws IOException {
+        Context websoknadMedFaktum = Context.newContext(new WebSoknad().medFaktum(new Faktum().medKey("test").medProperty("propertynavn", "propertverdi")));
+        String compiled = handlebars.compileInline("{{#forFaktum \"test\" }}faktum finnes med verdi {{properties.propertynavn}}{{else}}finnes ikke{{/forFaktum}}").apply(websoknadMedFaktum);
+        assertThat(compiled).isEqualTo("faktum finnes med verdi propertverdi");
+    }
+
+    @Test
     public void skalBrukeInverseOmFaktumIkkeFinnes() throws IOException {
-        String compiled = handlebars.compileInline("{{#forFaktum \"test\" }}faktum finnes med verdi {{value}}{{else}}finnes ikke{{/forFaktum}}").apply(Context.newContext(new WebSoknad()));
+        Context tomWebsoknad = Context.newContext(new WebSoknad());
+        String compiled = handlebars.compileInline("{{#forFaktum \"test\" }}faktum finnes med verdi {{value}}{{else}}finnes ikke{{/forFaktum}}").apply(tomWebsoknad);
+        assertThat(compiled).isEqualTo("finnes ikke");
+    }
+
+    @Test
+    public void skalBrukeInverseOmFaktumIkkeHarPropertiesEllerValue() throws IOException {
+        Context websoknadMedFaktum = Context.newContext(new WebSoknad().medFaktum(new Faktum().medKey("test")));
+        String compiled = handlebars.compileInline("{{#forFaktum \"test\" }}faktum finnes med verdi {{value}}{{else}}finnes ikke{{/forFaktum}}").apply(websoknadMedFaktum);
         assertThat(compiled).isEqualTo("finnes ikke");
     }
 

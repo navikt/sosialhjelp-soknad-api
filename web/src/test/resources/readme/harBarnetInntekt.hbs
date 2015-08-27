@@ -1,0 +1,8 @@
+{{#forFaktum "faktumNavn"}}
+    {{#harBarnetInntekt}
+        Gitt at wrapper-faktumet "faktumNavn" har to barnefaktum: "barnet.harinntekt" hvor verdi er "true", og
+        "barnet.inntekt". Sistnevnte er tilgjengelig her slik at {{value}} skriver ut inntekten.
+    {{else}}
+        Barnet har ikke inntekt.
+    {{/harBarnetInntekt}}
+{{/forFaktum}}
