@@ -23,17 +23,34 @@ public class PersonInfoService {
     public String hentArbeidssokerStatus(String fnr) {
         try {
             Personstatus personstatus = personInfoEndpoint.hentPersonStatus(new Fodselsnr().withFodselsnummer(fnr));
-            return mapTilStatus(personstatus);
+            return mapTilArbeidssokerstatus(personstatus);
         } catch (Exception e) {
             logger.error("Feil ved henting av personstatus for fnr {}", fnr, e);
             return UKJENT;
         }
     }
 
-    private static String mapTilStatus(Personstatus personstatus) {
+    public String hentYtelseStatus(String fnr) {
+        try {
+            Personstatus personstatus = personInfoEndpoint.hentPersonStatus(new Fodselsnr().withFodselsnummer(fnr));
+            return mapTilYtelsesstatus(personstatus);
+        } catch (Exception e) {
+            logger.error("Feil ved henting av personstatus for fnr {}", fnr, e);
+            return UKJENT;
+        }
+    }
+
+    private static String mapTilArbeidssokerstatus(Personstatus personstatus) {
         if (personstatus == null || personstatus.getPersonData() == null) {
             return IKKE_REGISTRERT;
         }
         return personstatus.getPersonData().getStatusArbeidsoker();
+    }
+
+    private static String mapTilYtelsesstatus(Personstatus personstatus) {
+        if (personstatus == null || personstatus.getPersonData() == null) {
+            return IKKE_REGISTRERT;
+        }
+        return personstatus.getPersonData().getStatusYtelse();
     }
 }
