@@ -58,7 +58,6 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hvisHarIkkeInnsendteDokumenter
 * skalViseRotasjonTurnusSporsmaal
 * hvisLikCmsTekst
-* hvisKunStudent
 
 #### Helpers på nytt registreringsformat
 
