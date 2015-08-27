@@ -1,29 +1,20 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
 import com.github.jknack.handlebars.Handlebars;
-import no.nav.sbl.dialogarena.service.HandleBarKjoerer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
 public class HvisKunStudentHelperTest {
     private Handlebars handlebars;
 
-    @InjectMocks
     HvisKunStudentHelper hvisKunStudentHelper;
 
-    @Mock
     WebSoknad webSoknad;
 
     private Faktum iArbeidFaktum;
@@ -37,16 +28,20 @@ public class HvisKunStudentHelperTest {
 
     @Before
     public void setup() {
+        hvisKunStudentHelper = new HvisKunStudentHelper();
+
         handlebars = new Handlebars();
         handlebars.registerHelper(hvisKunStudentHelper.getNavn(), hvisKunStudentHelper.getHelper());
 
         faktumMock();
 
-        when(webSoknad.getFaktumMedKey(iArbeidFaktum.getKey())).thenReturn(iArbeidFaktum);
-        when(webSoknad.getFaktumMedKey(sykmeldtFaktum.getKey())).thenReturn(sykmeldtFaktum);
-        when(webSoknad.getFaktumMedKey(arbeidsledigFaktum.getKey())).thenReturn(arbeidsledigFaktum);
-        when(webSoknad.getFaktumMedKey(forstegangstjenesteFaktum.getKey())).thenReturn(forstegangstjenesteFaktum);
-        when(webSoknad.getFaktumMedKey(annetFaktum.getKey())).thenReturn(annetFaktum);
+        webSoknad = new WebSoknad();
+        webSoknad
+                .leggTilFaktum(iArbeidFaktum)
+                .leggTilFaktum(sykmeldtFaktum)
+                .leggTilFaktum(arbeidsledigFaktum)
+                .leggTilFaktum(forstegangstjenesteFaktum)
+                .leggTilFaktum(annetFaktum);
     }
 
     @Test
@@ -62,7 +57,7 @@ public class HvisKunStudentHelperTest {
 
     private String innholdTilStudentSjekk() throws IOException {
         return handlebars
-                .compileInline("{{#hvisKunStudent}}"+ BARE_STUDENT +"{{else}}"+ IKKE_BARE_STUDENT +"{{/hvisKunStudent}}")
+                .compileInline("{{#hvisKunStudent}}" + BARE_STUDENT + "{{else}}" + IKKE_BARE_STUDENT + "{{/hvisKunStudent}}")
                 .apply(webSoknad);
     }
 
