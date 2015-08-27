@@ -778,22 +778,27 @@
     </faktum>
     <faktum>
         <id>reise.midlertidig.offentligtransport.egenbil.kostnader.bompenger</id>
-        <dependOn>reise.midlertidig.offentligtransport.egenbil.kostnader</dependOn>
+        <dependOn>reise.midlertidig.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reise.midlertidig.offentligtransport.egenbil.kostnader.piggdekk</id>
-        <dependOn>reise.midlertidig.offentligtransport.egenbil.kostnader</dependOn>
+        <dependOn>reise.midlertidig.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reise.midlertidig.offentligtransport.egenbil.kostnader.ferge</id>
-        <dependOn>reise.midlertidig.offentligtransport.egenbil.kostnader</dependOn>
+        <dependOn>reise.midlertidig.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reise.midlertidig.offentligtransport.egenbil.kostnader.annet</id>
-        <dependOn>reise.midlertidig.offentligtransport.egenbil.kostnader</dependOn>
-    </faktum>
-    <faktum>
-        <id>reise.midlertidig.offentligtransport.egenbil.parkering</id>
         <dependOn>reise.midlertidig.offentligtransport.egenbil</dependOn>
         <dependOnValues>
             <value>true</value>
@@ -801,6 +806,10 @@
     </faktum>
     <faktum>
         <id>reise.midlertidig.offentligtransport.egenbil.kostnader.parkering</id>
+        <dependOn>reise.midlertidig.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reise.midlertidig.offentligtransport.egenbil.sendebekreftelse</id>
