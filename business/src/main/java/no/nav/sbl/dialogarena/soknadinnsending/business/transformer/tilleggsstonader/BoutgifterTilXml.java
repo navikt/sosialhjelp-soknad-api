@@ -10,7 +10,7 @@ import org.joda.time.DateTime;
 import java.math.BigInteger;
 import java.util.List;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTransformers.faktumToPeriode;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTransformers.faktumTilPeriode;
 
 public class BoutgifterTilXml implements Transformer<WebSoknad, Boutgifter> {
 
@@ -29,7 +29,7 @@ public class BoutgifterTilXml implements Transformer<WebSoknad, Boutgifter> {
     @Override
     public Boutgifter transform(WebSoknad webSoknad) {
         aarsakTilBoutgifter(webSoknad);
-        boutgifter.setPeriode(faktumToPeriode(webSoknad.getFaktumMedKey(PERIODE)));
+        boutgifter.setPeriode(faktumTilPeriode(webSoknad.getFaktumMedKey(PERIODE)));
 
         kommunestotteTilBoutgifter(webSoknad);
         samlingTilBoutgifter(webSoknad); // TODO: Mangler sluttdato

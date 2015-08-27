@@ -136,7 +136,7 @@ public class SoknadRessurs {
     @Produces(APPLICATION_XML)
     public byte[] xml(@PathParam("behandlingsId") String behandlingsId) {
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, false);
-        soknad.fjernSkjulteFakta(soknadService.hentSoknadStruktur(soknad.getskjemaNummer()));
+        soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(soknadService.hentSoknadStruktur(soknad.getskjemaNummer()));
         return new TilleggsstonaderTilXml().transform(soknad).getContent();
 
     }
