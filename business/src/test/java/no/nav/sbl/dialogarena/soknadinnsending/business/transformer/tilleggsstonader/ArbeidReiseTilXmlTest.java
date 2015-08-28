@@ -1,10 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader;
 
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.DagligReise;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.DrosjeTransportutgifter;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.EgenBilTransportutgifter;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Formaal;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Innsendingsintervaller;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.KollektivTransportutgifter;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.ReisestoenadForArbeidssoeker;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
@@ -12,11 +10,10 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.assertj.core.api.Condition;
 import org.junit.Test;
 
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigInteger;
 
+import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTestUtils.periodeMatcher;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
 
 public class ArbeidReiseTilXmlTest {
     @Test
@@ -47,7 +44,7 @@ public class ArbeidReiseTilXmlTest {
 
         assertThat(result.getAdresse()).isEqualTo("adresse, 1256");
         assertThat(result.getAvstand()).isEqualTo(new BigInteger("123"));
-        assertThat(result.getReisedato()).is(new PeriodMatcher(2015, 1, 2));
+        assertThat(result.getReisedato()).is(periodeMatcher(2015, 1, 2));
         assertThat(result.isErUtgifterDekketAvAndre()).isEqualTo(true);
         assertThat(result.isErVentetidForlenget()).isEqualTo(true);
         assertThat(result.isFinnesTidsbegrensetbortfall()).isEqualTo(true);
@@ -85,19 +82,6 @@ public class ArbeidReiseTilXmlTest {
 
     }
 
-    private static class PeriodMatcher extends Condition<XMLGregorianCalendar> {
-        private int year, month, day;
 
-        public PeriodMatcher(int year, int month, int day) {
-            this.year = year;
-            this.month = month;
-            this.day = day;
-        }
-
-        @Override
-        public boolean matches(XMLGregorianCalendar value) {
-            return value.getYear() == year && value.getMonth() == month && value.getDay() == day;
-        }
-    }
 
 }
