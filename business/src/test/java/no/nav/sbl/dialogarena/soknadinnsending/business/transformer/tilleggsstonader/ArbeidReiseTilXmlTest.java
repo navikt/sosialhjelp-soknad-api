@@ -21,7 +21,7 @@ public class ArbeidReiseTilXmlTest {
     public void skalKonvertereFaktumStruktur() {
         WebSoknad soknad = new WebSoknad();
         soknad.getFakta().add(new Faktum().medKey("reise.arbeidssoker.registrert").medValue("2015-01-02"));
-        soknad.getFakta().add(new Faktum().medKey("reise.arbeidssoker.hvorforreise").medValue(oppfolging.kodeverksverdi));
+        soknad.getFakta().add(new Faktum().medKey("reise.arbeidssoker.hvorforreise").medValue(oppfolging.toString()));
         soknad.getFakta().add(new Faktum().medKey("reise.arbeidssoker.reiselengde").medValue("123"));
         soknad.getFakta().add(new Faktum().medKey("reise.arbeidssoker.reisemaal").medProperty("adresse", "adresse").medProperty("postnr", "1256"));
         soknad.getFakta().add(new Faktum().medKey("reise.arbeidssoker.reisedekket").medValue("true"));
