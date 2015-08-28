@@ -1,10 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader;
 
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.DagligReise;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.DrosjeTransportutgifter;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.EgenBilTransportutgifter;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Formaal;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Innsendingsintervaller;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.KollektivTransportutgifter;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.ReisestoenadForArbeidssoeker;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
@@ -15,15 +13,15 @@ import org.junit.Test;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigInteger;
 
+import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoKodeverkVerdier.FormaalKodeverk.oppfolging;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
 
 public class ArbeidReiseTilXmlTest {
     @Test
     public void skalKonvertereFaktumStruktur() {
         WebSoknad soknad = new WebSoknad();
         soknad.getFakta().add(new Faktum().medKey("reise.arbeidssoker.registrert").medValue("2015-01-02"));
-        soknad.getFakta().add(new Faktum().medKey("reise.arbeidssoker.hvorforreise").medValue("oppfolging"));
+        soknad.getFakta().add(new Faktum().medKey("reise.arbeidssoker.hvorforreise").medValue(oppfolging.kodeverksverdi));
         soknad.getFakta().add(new Faktum().medKey("reise.arbeidssoker.reiselengde").medValue("123"));
         soknad.getFakta().add(new Faktum().medKey("reise.arbeidssoker.reisemaal").medProperty("adresse", "adresse").medProperty("postnr", "1256"));
         soknad.getFakta().add(new Faktum().medKey("reise.arbeidssoker.reisedekket").medValue("true"));
@@ -55,8 +53,8 @@ public class ArbeidReiseTilXmlTest {
 
             @Override
             public boolean matches(Formaal value) {
-                as("Formal<%s>", "OPPF");
-                return value.getValue().equals("OPPF");
+                as("Formal<%s>", oppfolging.kodeverksverdi);
+                return value.getValue().equals(oppfolging.kodeverksverdi);
             }
         });
         assertThat(result.getAlternativeTransportutgifter().getDrosjeTransportutgifter()).is(new Condition<DrosjeTransportutgifter>() {

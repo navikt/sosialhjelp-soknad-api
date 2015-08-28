@@ -14,7 +14,7 @@ public class ReiseOppstartOgAvsluttetAktivitetTilXml implements Transformer<WebS
 
     private static final String FAKTUM_REISEMAAL = "reise.midlertidig.reisemaal";
     private static final String FAKTUM_PERIODE = "reise.midlertidig.periode";
-    private static final String FAKTUM_AVSTAND = "reise.midlertidig.dagligreiseavstand";
+    private static final String FAKTUM_AVSTAND = "reise.midlertidig.reiselengde";
     private static final String FAKTUM_HJEMMEBOENDE = "reise.midlertidig.hjemmeboende";
 
     @Override
@@ -22,7 +22,7 @@ public class ReiseOppstartOgAvsluttetAktivitetTilXml implements Transformer<WebS
         ReiseOppstartOgAvsluttetAktivitet reise = new ReiseOppstartOgAvsluttetAktivitet();
         reise.setPeriode(faktumTilPeriode(soknad.getFaktumMedKey(FAKTUM_PERIODE)));
         reise.setAvstand(extractValue(soknad.getFaktumMedKey(FAKTUM_AVSTAND), BigInteger.class));
-        reise.setAktivitetsstedAdresse(extractValue(soknad.getFaktumMedKey(FAKTUM_REISEMAAL), StofoKodeverkVerdier.SammensattAdresse.class).sammensattAdresse);
+        reise.setAktivitetsstedAdresse(StofoUtils.sammensattAdresse(soknad.getFaktumMedKey(FAKTUM_REISEMAAL)));
         reise.setHarBarnUnderFemteklasse(extractValue(soknad.getFaktumMedKey(FAKTUM_HJEMMEBOENDE), Boolean.class));
         reise.setBarnUnderAtten(barnUnder18(soknad));
         reise.setAlternativeTransportutgifter(StofoUtils.alternativeTransportUtgifter(soknad, "midlertidig"));
