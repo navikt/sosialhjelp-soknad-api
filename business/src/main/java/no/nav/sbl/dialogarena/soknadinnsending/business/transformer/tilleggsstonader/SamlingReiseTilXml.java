@@ -17,7 +17,7 @@ public class SamlingReiseTilXml {
         reise.setPeriode(reiseSamlinger(soknad));
         reise.setReiseadresser(StofoUtils.sammensattAdresse(soknad.getFaktumMedKey("reise.samling.reisemaal")));
         reise.setAvstand(extractValue(soknad.getFaktumMedKey("reise.samling.reiselengde"), BigInteger.class)); //TODO har desimaler
-        reise.setAlternativeTransportutgifter(StofoUtils.alternativeTransportUtgifter(soknad, "samling"));
+        reise.setAlternativeTransportutgifter(StofoUtils.alternativeTransportUtgifter(soknad, "samling")); //TODO - kan ikke gjenbruke alternativTransportUtgifter da denne skal ha utgifter per samling
         //TODO legge til samlingsdato når denne blir fikset
 
         return reise;
