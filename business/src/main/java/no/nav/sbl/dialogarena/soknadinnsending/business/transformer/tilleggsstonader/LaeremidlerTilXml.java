@@ -10,7 +10,7 @@ import org.apache.commons.collections15.Transformer;
 import java.math.BigInteger;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTransformers.extractValue;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTransformers.faktumToPeriode;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTransformers.faktumTilPeriode;
 
 public class LaeremidlerTilXml implements Transformer<WebSoknad, Laeremiddelutgifter> {
     @Override
@@ -23,7 +23,7 @@ public class LaeremidlerTilXml implements Transformer<WebSoknad, Laeremiddelutgi
         }
 
         laeremiddel.setErUtgifterDekket(extractValue(soknad.getFaktumMedKey("laeremidler.dekket"), ErUtgifterDekket.class));
-        laeremiddel.setPeriode(faktumToPeriode(soknad.getFaktumMedKey("laeremidler.periode")));
+        laeremiddel.setPeriode(faktumTilPeriode(soknad.getFaktumMedKey("laeremidler.periode")));
         laeremiddel.setProsentandelForUtdanning(extractValue(soknad.getFaktumMedKey("laeremidler.deltidsstudent"), BigInteger.class));
         laeremiddel.setSkolenivaa(extractValue(soknad.getFaktumMedKey("laeremidler.utdanningstype"), Skolenivaaer.class));
 
