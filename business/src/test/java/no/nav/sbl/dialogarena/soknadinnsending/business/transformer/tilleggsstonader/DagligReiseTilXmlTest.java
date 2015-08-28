@@ -12,6 +12,7 @@ import org.junit.Test;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigInteger;
 
+import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoKodeverkVerdier.InnsendingsintervallerKodeverk.uke;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -25,7 +26,7 @@ public class DagligReiseTilXmlTest {
         soknad.getFakta().add(new Faktum().medKey("reise.aktivitet.dagligreiseavstand").medValue("123"));
         soknad.getFakta().add(new Faktum().medKey("reise.aktivitet.reisemaal").medProperty("adresse", "adresse").medProperty("postnr", "1256"));
         soknad.getFakta().add(new Faktum().medKey("reise.aktivitet.offentligtransport.egenbil.parkering").medValue("false"));
-        soknad.getFakta().add(new Faktum().medKey("reise.aktivitet.offentligtransport.egenbil.sendebekreftelse").medValue("uke"));
+        soknad.getFakta().add(new Faktum().medKey("reise.aktivitet.offentligtransport.egenbil.sendebekreftelse").medValue(uke.name()));
 
         soknad.getFakta().add(new Faktum().medKey("reise.aktivitet.offentligtransport.drosje").medValue("true"));
         soknad.getFakta().add(new Faktum().medKey("reise.aktivitet.offentligtransport.drosje.belop").medValue("50"));
@@ -50,7 +51,7 @@ public class DagligReiseTilXmlTest {
         assertThat(result.getInnsendingsintervall()).is(new Condition<Innsendingsintervaller>() {
             @Override
             public boolean matches(Innsendingsintervaller value) {
-                return value.getValue().equals("UKE");
+                return value.getValue().equals(uke.kodeverksverdi);
             }
         });
         assertThat(result.getAlternativeTransportutgifter().getDrosjeTransportutgifter()).is(new Condition<DrosjeTransportutgifter>() {

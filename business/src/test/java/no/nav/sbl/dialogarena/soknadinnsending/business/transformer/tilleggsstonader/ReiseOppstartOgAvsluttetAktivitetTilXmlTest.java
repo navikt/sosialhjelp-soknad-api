@@ -1,9 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader;
 
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.DagligReise;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.DrosjeTransportutgifter;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.EgenBilTransportutgifter;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Innsendingsintervaller;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.ReiseOppstartOgAvsluttetAktivitet;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
@@ -14,14 +12,13 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
 
 public class ReiseOppstartOgAvsluttetAktivitetTilXmlTest {
     @Test
     public void skalKonvertereFaktumStruktur() {
         WebSoknad soknad = new WebSoknad();
         soknad.getFakta().add(new Faktum().medKey("reise.midlertidig.periode").medProperty("fom", "2015-01-02").medProperty("tom", "2015-03-04"));
-        soknad.getFakta().add(new Faktum().medKey("reise.midlertidig.dagligreiseavstand").medValue("123"));
+        soknad.getFakta().add(new Faktum().medKey("reise.midlertidig.reiselengde").medValue("123"));
         soknad.getFakta().add(new Faktum().medKey("reise.midlertidig.reisemaal").medProperty("adresse", "adresse").medProperty("postnr", "1256"));
 
         soknad.getFakta().add(new Faktum().medKey("reise.midlertidig.hjemmeboende").medValue("true"));
