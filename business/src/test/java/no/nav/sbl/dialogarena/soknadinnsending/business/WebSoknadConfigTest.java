@@ -44,7 +44,7 @@ public class WebSoknadConfigTest {
     @Test
     public void testSoknadtypePrefix() {
         String prefix = config.getSoknadTypePrefix(AAP_SOKNAD_ID);
-        assertThat(prefix).isEqualTo("soknadaap");
+        assertThat(prefix).isEqualTo("aap.ordinaer");
     }
 
     @Test
