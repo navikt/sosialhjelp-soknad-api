@@ -6,10 +6,10 @@ import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import no.bekk.bekkopen.person.Fodselsnummer;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.service.helpers.HentSkjemanummerHelper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -84,7 +84,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         handlebars.registerHelper("hentLand", generateHentLandHelper());
         handlebars.registerHelper("forVedlegg", generateForVedleggHelper());
         handlebars.registerHelper("forPerioder", generateHelperForPeriodeTidsromFakta());
-        handlebars.registerHelper("hentSkjemanummer", generateHentSkjemanummerHelper());
         handlebars.registerHelper("hentFaktumValue", generateHentFaktumValueHelper());
         handlebars.registerHelper("hvisFlereErTrue", generateHvisFlereSomStarterMedErTrueHelper());
         handlebars.registerHelper("sendtInnInfo", generateSendtInnInfoHelper());
@@ -199,19 +198,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
                 } else {
                     return options.inverse(this);
                 }
-            }
-        };
-    }
-
-    private Helper<Object> generateHentSkjemanummerHelper() {
-        return new Helper<Object>() {
-            @Override
-            public CharSequence apply(Object context, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-                if (soknad.erDagpengeSoknad()) {
-                    return DagpengerUtils.getSkjemanummer(soknad);
-                }
-                return soknad.getskjemaNummer();
             }
         };
     }
@@ -513,4 +499,5 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
             }
         };
     }
+
 }

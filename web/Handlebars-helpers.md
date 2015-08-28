@@ -48,7 +48,6 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hentLand
 * forVedlegg
 * forPerioder
-* hentSkjemanummer
 * hentFaktumValue
 * hvisFlereErTrue
 * sendtInnInfo
