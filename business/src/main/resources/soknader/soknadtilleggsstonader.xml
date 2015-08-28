@@ -397,19 +397,38 @@
     </faktum>
     <faktum>
         <id>reise.samling.offentligtransport.egenbil.kostnader.bompenger</id>
-        <dependOn>reise.samling.offentligtransport.egenbil.kostnader</dependOn>
+        <dependOn>reise.samling.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reise.samling.offentligtransport.egenbil.kostnader.piggdekk</id>
-        <dependOn>reise.samling.offentligtransport.egenbil.kostnader</dependOn>
+        <dependOn>reise.samling.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reise.samling.offentligtransport.egenbil.kostnader.ferge</id>
-        <dependOn>reise.samling.offentligtransport.egenbil.kostnader</dependOn>
+        <dependOn>reise.samling.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.samling.offentligtransport.egenbil.kostnader.parkering</id>
+        <dependOn>reise.samling.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reise.samling.offentligtransport.egenbil.kostnader.annet</id>
-        <dependOn>reise.samling.offentligtransport.egenbil.kostnader</dependOn>
+        <dependOn>reise.samling.offentligtransport.egenbil</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reise.samling.offentligtransport.egenbil.parkering</id>
