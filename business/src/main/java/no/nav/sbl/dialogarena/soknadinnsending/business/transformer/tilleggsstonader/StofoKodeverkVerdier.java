@@ -1,9 +1,15 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader;
 
 public class StofoKodeverkVerdier {
-    public enum FormaalKodeverk {
-        oppfolging("OPPF"), jobb("JOBB"), arbeid("TILT");
-        public String kodeverksverdi;
+    public static final class SammensattAdresse{
+        public final String sammensattAdresse;
+        public SammensattAdresse(String adresse, String postnr) {
+            sammensattAdresse = String.format("%s, %s", adresse, postnr);
+        }
+    }
+    public enum FormaalKodeverk{
+        oppfolging("OPPF"), jobbintervju("JOBB"), tiltraa("TILT");
+        public  final String kodeverksverdi;
 
         FormaalKodeverk(String kodeverksverdi) {
             this.kodeverksverdi = kodeverksverdi;
@@ -19,7 +25,7 @@ public class StofoKodeverkVerdier {
         }
     }
 
-    public enum ErUtgifterDekketKodeverk{
+    public enum ErUtgifterDekketKodeverk {
         ja("JA"), nei("NEI"), delvis("DEL");
 
         public final String kodeverk;
@@ -27,5 +33,15 @@ public class StofoKodeverkVerdier {
         ErUtgifterDekketKodeverk(String kodeverk) {
             this.kodeverk = kodeverk;
         }
+    }
+    
+    public enum InnsendingsintervallerKodeverk{
+        uke("UKE"), maaned("MND");
+        public final String kodeverksverdi;
+
+        InnsendingsintervallerKodeverk(String kodeverksverdi) {
+            this.kodeverksverdi = kodeverksverdi;
+        }
+
     }
 }

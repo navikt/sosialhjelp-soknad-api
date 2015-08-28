@@ -13,6 +13,7 @@ import org.junit.Test;
 import java.math.BigInteger;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTestUtils.periodeMatcher;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoKodeverkVerdier.FormaalKodeverk.oppfolging;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ArbeidReiseTilXmlTest {
@@ -20,7 +21,7 @@ public class ArbeidReiseTilXmlTest {
     public void skalKonvertereFaktumStruktur() {
         WebSoknad soknad = new WebSoknad();
         soknad.getFakta().add(new Faktum().medKey("reise.arbeidssoker.registrert").medValue("2015-01-02"));
-        soknad.getFakta().add(new Faktum().medKey("reise.arbeidssoker.hvorforreise").medValue("oppfolging"));
+        soknad.getFakta().add(new Faktum().medKey("reise.arbeidssoker.hvorforreise").medValue(oppfolging.toString()));
         soknad.getFakta().add(new Faktum().medKey("reise.arbeidssoker.reiselengde").medValue("123"));
         soknad.getFakta().add(new Faktum().medKey("reise.arbeidssoker.reisemaal").medProperty("adresse", "adresse").medProperty("postnr", "1256"));
         soknad.getFakta().add(new Faktum().medKey("reise.arbeidssoker.reisedekket").medValue("true"));
@@ -52,8 +53,8 @@ public class ArbeidReiseTilXmlTest {
 
             @Override
             public boolean matches(Formaal value) {
-                as("Formal<%s>", "oppfolging");
-                return value.getValue().equals("oppfolging");
+                as("Formal<%s>", oppfolging.kodeverksverdi);
+                return value.getValue().equals(oppfolging.kodeverksverdi);
             }
         });
         assertThat(result.getAlternativeTransportutgifter().getDrosjeTransportutgifter()).is(new Condition<DrosjeTransportutgifter>() {
