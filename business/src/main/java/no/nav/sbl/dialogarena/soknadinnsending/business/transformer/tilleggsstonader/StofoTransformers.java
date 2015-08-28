@@ -105,6 +105,14 @@ public final class StofoTransformers {
                 return faktumTilPeriode(faktum);
             }
         });
+        FAKTUM_TRANSFORMERS.put(StofoKodeverkVerdier.SammensattAdresse.class, new Transformer<Faktum, StofoKodeverkVerdier.SammensattAdresse>() {
+            @Override
+            public StofoKodeverkVerdier.SammensattAdresse transform(Faktum faktum) {
+                return new StofoKodeverkVerdier.SammensattAdresse(
+                        extractValue(faktum, String.class, "adresse"),
+                        extractValue(faktum, String.class, "postnr"));
+            }
+        });
     }
 
 
