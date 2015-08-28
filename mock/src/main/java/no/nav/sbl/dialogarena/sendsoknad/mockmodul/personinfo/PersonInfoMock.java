@@ -12,15 +12,15 @@ import static org.mockito.Mockito.when;
 
 public class PersonInfoMock {
 
-    public static final String ARBS = "ARBS";
-    public static final String DAGP = "DAGP";
+    public static final String ARBEIDSSOKERSTATUS = "ARBS";
+    public static final String YTELSE = "DAGP";
 
     public PersonInfoServiceSoap personInfoMock() {
         PersonInfoServiceSoap mock = mock(PersonInfoServiceSoap.class);
         Personstatus personstatus = new Personstatus();
         PersonstatusType.PersonData personData = new PersonstatusType.PersonData();
-        personData.setStatusArbeidsoker(ARBS);
-        personData.setStatusYtelse(DAGP);
+        personData.setStatusArbeidsoker(ARBEIDSSOKERSTATUS);
+        personData.setStatusYtelse(YTELSE);
         personstatus.setPersonData(personData);
 
         try {
