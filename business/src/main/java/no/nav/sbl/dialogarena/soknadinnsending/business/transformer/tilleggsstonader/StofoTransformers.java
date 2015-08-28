@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.BarnUnderAtten;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.DrosjeTransportutgifter;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Formaal;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Innsendingsintervaller;
@@ -22,6 +23,7 @@ public final class StofoTransformers {
     public static final String FOM = "fom";
 
     private static Map<Class<?>, Transformer<String, ?>> TRANSFORMERS = new HashMap<>();
+    private static Map<Class<?>, Transformer<Faktum, ?>> FAKTUM_TRANSFORMERS = new HashMap<>();
 
     static {
         TRANSFORMERS.put(String.class, new Transformer<String, String>() {
@@ -65,13 +67,9 @@ public final class StofoTransformers {
         TRANSFORMERS.put(Innsendingsintervaller.class, new Transformer<String, Innsendingsintervaller>() {
             @Override
             public Innsendingsintervaller transform(String s) {
-                //TODO: Reell mapping
                 Innsendingsintervaller innsendingsintervaller = new Innsendingsintervaller();
-                if (s.equals("uke")) {
-                    innsendingsintervaller.setValue("uke");
-                } else if (s.equals("maned")) {
-                    innsendingsintervaller.setValue("maaned");
-                }
+                StofoKodeverkVerdier.InnsendingsintervallerKodeverk kodeverk = StofoKodeverkVerdier.InnsendingsintervallerKodeverk.valueOf(s);
+                innsendingsintervaller.setValue(kodeverk != null? kodeverk.kodeverksverdi: null);
                 return innsendingsintervaller;
             }
         });
@@ -86,27 +84,33 @@ public final class StofoTransformers {
         TRANSFORMERS.put(Formaal.class, new Transformer<String, Formaal>() {
             @Override
             public Formaal transform(String s) {
-                //TODO: Reell mapping
                 Formaal formaal = new Formaal();
                 formaal.setKodeverksRef("");
-                switch (s) {
-                    case "oppfolging":
-                        formaal.setValue("oppfolging");
-                        break;
-                    case "jobbintervju":
-                        formaal.setValue("jobbintervju");
-                        break;
-                    case "tiltraa":
-                        formaal.setValue("tiltraa");
-                        break;
-                }
+                StofoKodeverkVerdier.FormaalKodeverk formaalKodeverk = StofoKodeverkVerdier.FormaalKodeverk.valueOf(s);
+                formaal.setValue(formaalKodeverk != null? formaalKodeverk.kodeverksverdi: null);
                 return formaal;
             }
         });
-        TRANSFORMERS.put(Periode.class, new Transformer<String, Periode>() {
+        TRANSFORMERS.put(BarnUnderAtten.class, new Transformer<String, BarnUnderAtten>() {
             @Override
-            public Periode transform(String s) {
-                return null;
+            public BarnUnderAtten transform(String s) {
+                BarnUnderAtten barn = new BarnUnderAtten();
+                barn.setPersonidentifikator(s);
+                return barn;
+            }
+        });
+        FAKTUM_TRANSFORMERS.put(Periode.class, new Transformer<Faktum, Periode>() {
+            @Override
+            public Periode transform(Faktum faktum) {
+                return faktumTilPeriode(faktum);
+            }
+        });
+        FAKTUM_TRANSFORMERS.put(StofoKodeverkVerdier.SammensattAdresse.class, new Transformer<Faktum, StofoKodeverkVerdier.SammensattAdresse>() {
+            @Override
+            public StofoKodeverkVerdier.SammensattAdresse transform(Faktum faktum) {
+                return new StofoKodeverkVerdier.SammensattAdresse(
+                        extractValue(faktum, String.class, "adresse"),
+                        extractValue(faktum, String.class, "postnr"));
             }
         });
     }
@@ -124,9 +128,11 @@ public final class StofoTransformers {
         }
         String valueToConvert = property == null ? faktum.getValue() : faktum.getProperties().get(property);
         Object result;
-        if (StringUtils.isNotBlank(valueToConvert) && TRANSFORMERS.containsKey(clazz)) {
+        if(FAKTUM_TRANSFORMERS.containsKey(clazz)){
+            result = FAKTUM_TRANSFORMERS.get(clazz).transform(faktum);
+        } else if (StringUtils.isNotBlank(valueToConvert) && TRANSFORMERS.containsKey(clazz)) {
             result = TRANSFORMERS.get(clazz).transform(valueToConvert);
-        } else {
+        }  else {
             result = null;
         }
         return clazz.cast(result);
