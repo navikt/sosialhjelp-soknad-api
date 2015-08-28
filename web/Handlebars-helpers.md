@@ -21,6 +21,7 @@ men kjører også automatisk sammen med det vanlige testoppsettet.
     * Navnet på helperen må returneres fra `getNavn`
     * Beskrivelsen fra `getBeskrivelse` vil havne i denne fila som dokumentasjon
 * Lag et eksempel på bruk under `/readme/Helpernavn.hbs`, denne vil også bli inkludert i dokumentasjonen under.
+* Legg til tester
 
 På dette formatet er det superklassen `RegistryAwareHelper` som vil registere helperen som er opprettet på
 Handlebars-instansen som brukes for å generere oppsummeringsdokumenter.
@@ -37,7 +38,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * forFakta
 * forBarnefakta
 * forFaktaMedPropertySattTilTrue
-* formatterFodelsDato
+* formatterFodelsDato (deprecated og erstattet av formatterKortDato og formatterFnrTilKortDato)
 * formatterLangDato
 * hvisEttersending
 * hvisMindre
@@ -57,17 +58,19 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hvisHarIkkeInnsendteDokumenter
 * skalViseRotasjonTurnusSporsmaal
 * hvisLikCmsTekst
-* hvisKunStudent
 
 #### Helpers på nytt registreringsformat
 
 * concat - Legger sammen alle parametrene til tekststring
+* fnrTilKortDato - Formatterer et gyldig fødselnummer til dato på formatet dd.mm.aaaa
 * forFaktum - Finner et faktum og setter det som aktiv context. Har også inverse om faktum ikke finnes. 
 * harBarnetInntekt - Henter summen hvis barnet har inntekt. Må brukes innenfor en #forFaktum eller #forFakta helper. 
 * hvisHarDiskresjonskode - Viser innhold avhengig av om personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)
 * hvisIkkeTom - Dersom variabelen ikke er tom vil innholdet vises
+* hvisKunStudent - Sjekker om brukeren har en annen status enn student (f.eks sykmeldt, i arbeid osv.)
 * hvisLik - Sjekker om to strenger er like
 * hvisSant - Dersom variabelen er "true" vil innholdet vises
+* kortDato - Formatterer en datostreng på formatet yyyy-mm-dd til dd.mm.aaaa
 * toLowerCase - Gjør om en tekst til kun små bokstaver
 * variabel - Lager en variabel med en bestemt verdi som kun er tilgjengelig innenfor helperen
 
@@ -78,6 +81,13 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 
 ```
 {{ concat "a" "b" "c" "d" }}
+```
+
+
+##### fnrTilKortDato
+
+```
+{{fnrTilKortDato "***REMOVED***"}}
 ```
 
 
@@ -129,6 +139,17 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 ```
 
 
+##### hvisKunStudent
+
+```
+{{#hvisKunStudent}}
+    Bare student
+    {{else}}
+        Ikke bare student
+{{/hvisKunStudent}}
+```
+
+
 ##### hvisLik
 
 ```
@@ -148,6 +169,13 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
     {{else}}
     Gitt alt annet enn "true"
 {{/hvisSant}}
+```
+
+
+##### kortDato
+
+```
+{{kortDato "2015-11-03"}}
 ```
 
 

@@ -52,7 +52,7 @@
         <id>informasjonsside.stonad.laeremidler</id>
     </faktum>
     <faktum>
-        <id>informasjonsside.stonad.barn</id>
+        <id>informasjonsside.stonad.barnepass</id>
     </faktum>
     <faktum>
         <id>informasjonsside.stonad.familie</id>
@@ -1043,6 +1043,20 @@
             <value>delvis</value>
         </dependOnValues>
     </faktum>
+
+    <!-- Barnepass -->
+    <faktum>
+        <id>barnepass.barn</id>
+        <dependOn>informasjonsside.stonad.barnepass</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+
+
+    <faktum>
+        <id>barnepass.periode</id>
+    </faktum>
     
     <!-- Tilleggsopplysninger -->
     <faktum>
@@ -1515,5 +1529,39 @@
         </onValues>
         <property>bolk</property>
         <flereTillatt>true</flereTillatt>
+    </vedlegg>
+    <!-- Vedlegg barnepass-->
+    <vedlegg>
+        <faktum>barnepass.barn</faktum>
+        <skjemaNummer>J8</skjemaNummer>
+        <skjemanummerTillegg>barnepassBarnehage</skjemanummerTillegg>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <onProperty>barnepassBarnehage</onProperty>
+        <flereTillatt>true</flereTillatt>
+        <property>vedleggstittel</property>
+    </vedlegg>
+    <vedlegg>
+        <faktum>barnepass.barn</faktum>
+        <skjemaNummer>J4</skjemaNummer>
+        <skjemanummerTillegg>barnepassPrivat</skjemanummerTillegg>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <onProperty>barnepassPrivat</onProperty>
+        <flereTillatt>true</flereTillatt>
+        <property>vedleggstittel</property>
+    </vedlegg>
+    <vedlegg>
+        <faktum>barnepass.barn</faktum>
+        <skjemaNummer>J4</skjemaNummer>
+        <skjemanummerTillegg>barnepassDagmamma</skjemanummerTillegg>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <onProperty>barnepassDagmamma</onProperty>
+        <flereTillatt>true</flereTillatt>
+        <property>vedleggstittel</property>
     </vedlegg>
 </soknad>
