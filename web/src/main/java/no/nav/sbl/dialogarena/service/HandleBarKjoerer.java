@@ -79,7 +79,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         handlebars.registerHelper("formatterLangDato", generateFormatterLangDatoHelper());
         handlebars.registerHelper("hvisEttersending", generateHvisEttersendingHelper());
         handlebars.registerHelper("hvisMindre", generateHvisMindreHelper());
-        handlebars.registerHelper("hvisMer", generateHvisMerHelper());
         handlebars.registerHelper("hentTekst", generateHentTekstHelper());
         handlebars.registerHelper("hentTekstMedFaktumParameter", generateHentTekstMedFaktumParameterHelper());
         handlebars.registerHelper("hentLand", generateHentLandHelper());
@@ -274,25 +273,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         }
     }
 
-    private Helper<String> generateHvisMerHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String value, Options options) throws IOException {
-                try {
-                    Double grense = Double.parseDouble(((String) options.param(0)).replace(',', '.'));
-                    Double verdi = Double.parseDouble(value.replace(',', '.'));
-                    if (verdi > grense) {
-                        return options.fn(this);
-                    } else {
-                        return options.inverse(this);
-                    }
-                } catch (NumberFormatException e) {
-                    getLogger(HandleBarKjoerer.class).error("Kunne ikke parse input til double", e);
-                    return options.fn(this);
-                }
-            }
-        };
-    }
 
     private Helper<String> generateHvisMindreHelper() {
         return new Helper<String>() {
