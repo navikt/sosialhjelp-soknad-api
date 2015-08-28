@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
+import com.google.common.collect.Lists;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
@@ -95,7 +96,7 @@ public class VedleggService {
     private PdfWatermarker watermarker = new PdfWatermarker();
 
     public List<Vedlegg> hentVedleggOgKvittering(WebSoknad soknad) {
-        List<Vedlegg> vedleggForventninger = soknad.hentPaakrevdeVedlegg();
+        ArrayList<Vedlegg> vedleggForventninger = Lists.newArrayList(soknad.hentPaakrevdeVedlegg());
         Vedlegg kvittering = vedleggRepository.hentVedleggForskjemaNummer(soknad.getSoknadId(), null, KVITTERING);
         if (kvittering != null) {
             vedleggForventninger.add(kvittering);
