@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.service;
 
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.service.helpers.HvisLikHelper;
+import no.nav.sbl.dialogarena.service.helpers.HvisMerHelper;
 import no.nav.sbl.dialogarena.service.helpers.HvisSantHelper;
 import no.nav.sbl.dialogarena.service.helpers.faktum.ForFaktumHelper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
@@ -43,6 +44,7 @@ public class HandleBarKjoererTest {
         handleBarKjoerer.registrerHelper(HvisSantHelper.NAVN, HvisSantHelper.INSTANS);
         handleBarKjoerer.registrerHelper(HvisLikHelper.NAVN, HvisLikHelper.INSTANS);
         handleBarKjoerer.registrerHelper(ForFaktumHelper.NAVN, ForFaktumHelper.INSTANS);
+        handleBarKjoerer.registrerHelper(HvisMerHelper.NAVN, HvisMerHelper.INSTANS);
     }
 
     @Test
