@@ -166,6 +166,8 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 ```
 {{#hvisMer verdi "1"}}
     Verdi er mer enn 1
+    {{else}}
+    Verdi er lik eller mindre enn 1
 {{/hvisMer}}
 ```
 
