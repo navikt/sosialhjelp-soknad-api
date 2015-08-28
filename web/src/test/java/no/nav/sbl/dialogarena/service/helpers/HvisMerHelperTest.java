@@ -42,4 +42,25 @@ public class HvisMerHelperTest {
         String compiles = handlebars.compileInline("{{#hvisMer verdi \"1\"}}Verdien er høyere{{else}}Verdien er lik eller mindre{{/hvisMer}}").apply(Context.newContext(model));
         assertThat(compiles).isEqualTo("Verdien er lik eller mindre");
     }
+
+    @Test
+    public void skalViseHoyereVerdiVedHoyereDesimaltallMedKomma() throws Exception {
+        model.put("verdi", "1,2");
+        String compiles = handlebars.compileInline("{{#hvisMer verdi \"1,1\"}}Verdien er høyere{{else}}Verdien er lik eller mindre{{/hvisMer}}").apply(Context.newContext(model));
+        assertThat(compiles).isEqualTo("Verdien er høyere");
+    }
+
+    @Test
+    public void skalViseElseVedLikDesimaltallMedKomma() throws Exception {
+        model.put("verdi", "1,1");
+        String compiles = handlebars.compileInline("{{#hvisMer verdi \"1,1\"}}Verdien er høyere{{else}}Verdien er lik eller mindre{{/hvisMer}}").apply(Context.newContext(model));
+        assertThat(compiles).isEqualTo("Verdien er lik eller mindre");
+    }
+
+    @Test
+    public void skalViseElseVedMindreDesimaltallMedKomma() throws Exception {
+        model.put("verdi", "1,0");
+        String compiles = handlebars.compileInline("{{#hvisMer verdi \"1,1\"}}Verdien er høyere{{else}}Verdien er lik eller mindre{{/hvisMer}}").apply(Context.newContext(model));
+        assertThat(compiles).isEqualTo("Verdien er lik eller mindre");
+    }
 }
