@@ -1,0 +1,39 @@
+package no.nav.sbl.dialogarena.service.helpers;
+
+import com.github.jknack.handlebars.Helper;
+import com.github.jknack.handlebars.Options;
+import no.nav.sbl.dialogarena.service.HandleBarKjoerer;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils;
+
+import java.io.IOException;
+
+public class HentSkjemanummerHelper extends RegistryAwareHelper<Object> {
+
+    public static final String NAVN = "hentSkjemanummer";
+    public static final HentSkjemanummerHelper INSTANS = new HentSkjemanummerHelper();
+
+    @Override
+    public String getNavn() {
+        return NAVN;
+    }
+
+    @Override
+    public Helper<Object> getHelper() {
+        return INSTANS;
+    }
+
+    @Override
+    public String getBeskrivelse() {
+        return "Setter inn søknadens skjemanummer, også om det er en søknad for dagpenger";
+    }
+
+    @Override
+    public CharSequence apply(Object context, Options options) throws IOException {
+        WebSoknad soknad = HandleBarKjoerer.finnWebSoknad(options.context);
+        if (soknad.erDagpengeSoknad()) {
+            return DagpengerUtils.getSkjemanummer(soknad);
+        }
+        return soknad.getskjemaNummer();
+    }
+}
