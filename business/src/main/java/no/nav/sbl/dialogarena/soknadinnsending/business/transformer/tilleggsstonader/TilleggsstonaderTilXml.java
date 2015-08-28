@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader;
 
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Aktivitetsinformasjon;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Reiseutgifter;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Rettighetstype;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Tilleggsstoenadsskjema;
@@ -16,6 +17,7 @@ import javax.xml.namespace.QName;
 import java.io.ByteArrayOutputStream;
 import java.util.UUID;
 
+import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTransformers.extractValue;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class TilleggsstonaderTilXml implements Transformer<WebSoknad, AlternativRepresentasjon> {
@@ -54,7 +56,14 @@ public class TilleggsstonaderTilXml implements Transformer<WebSoknad, Alternativ
 
         rettighetstype.setReiseutgifter(reiseutgifter(webSoknad));
         skjema.setRettighetstype(rettighetstype);
+        skjema.setAktivitetsinformasjon(aktivitetsInformasjon(webSoknad));
         return skjema;
+    }
+
+    private static Aktivitetsinformasjon aktivitetsInformasjon(WebSoknad webSoknad) {
+        Aktivitetsinformasjon result = new Aktivitetsinformasjon();
+        result.setAktivitetsId(extractValue(webSoknad.getFaktumMedKey("aktivitet"), String.class, "id"));
+        return result;
     }
 
     private static boolean aktivBolk(String bolk, WebSoknad webSoknad) {
