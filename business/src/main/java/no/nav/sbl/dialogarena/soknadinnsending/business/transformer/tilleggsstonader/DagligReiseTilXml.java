@@ -14,7 +14,7 @@ import org.apache.commons.collections15.Transformer;
 import java.math.BigInteger;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTransformers.extractValue;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTransformers.faktumToPeriode;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTransformers.faktumTilPeriode;
 
 public class DagligReiseTilXml implements Transformer<WebSoknad, DagligReise> {
     @Override
@@ -22,7 +22,7 @@ public class DagligReiseTilXml implements Transformer<WebSoknad, DagligReise> {
         DagligReise reise = new DagligReise();
         reise.setAktivitetsadresse(aktivitetsAdresse(soknad));
         reise.setAvstand(extractValue(soknad.getFaktumMedKey("reise.aktivitet.dagligreiseavstand"), Double.class));
-        reise.setPeriode(faktumToPeriode(soknad.getFaktumMedKey("reise.aktivitet.periode")));
+        reise.setPeriode(faktumTilPeriode(soknad.getFaktumMedKey("reise.aktivitet.periode")));
         Faktum harParkering = soknad.getFaktumMedKey("reise.aktivitet.offentligtransport.egenbil.parkering");
         if (harParkering != null) {
             reise.setHarParkeringsutgift(extractValue(harParkering, Boolean.class));

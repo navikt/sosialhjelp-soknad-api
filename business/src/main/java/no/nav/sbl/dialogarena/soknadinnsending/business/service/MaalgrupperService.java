@@ -45,7 +45,10 @@ public class MaalgrupperService {
     private WSFinnMaalgruppeinformasjonListeRequest lagRequest(String fodselsnummer) {
         return new WSFinnMaalgruppeinformasjonListeRequest()
                 .withPersonident(fodselsnummer)
-                .withPeriode(new WSPeriode().withFom(LocalDate.now().minusYears(1)));
+                .withPeriode(new WSPeriode()
+                        .withFom(LocalDate.now().minusYears(1))
+                        .withTom(LocalDate.now())
+                );
     }
 
     private static class MaalgruppeTilFaktum implements Function<WSMaalgruppe, Faktum> {

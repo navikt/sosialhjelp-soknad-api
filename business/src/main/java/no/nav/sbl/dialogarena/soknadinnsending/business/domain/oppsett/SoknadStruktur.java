@@ -140,13 +140,13 @@ public class SoknadStruktur implements Serializable {
         return vedleggStruktur.getSkjemaNummer() + vedleggStruktur.getSkjemanummerTillegg() + faktum.getFaktumId();
     }
 
-    public FaktumStruktur strukturForKey(final String key) {
-        List<FaktumStruktur> res = on(fakta).filter(new Predicate<FaktumStruktur>() {
+    public FaktumStruktur finnStrukturForKey(final String key) {
+        List<FaktumStruktur> strukturListe = on(fakta).filter(new Predicate<FaktumStruktur>() {
             @Override
             public boolean evaluate(FaktumStruktur faktumStruktur) {
                 return faktumStruktur.getId().equals(key);
             }
         }).collect();
-        return res.isEmpty()? null: res.get(0);
+        return strukturListe.isEmpty()? null: strukturListe.get(0);
     }
 }
