@@ -45,10 +45,10 @@ public class TilleggsstonaderTilXml implements Transformer<WebSoknad, Alternativ
         Tilleggsstoenadsskjema skjema = new Tilleggsstoenadsskjema();
         skjema.setMaalgruppeinformasjon(new MaalgruppeTilXml().transform(webSoknad.getFaktumMedKey("maalgruppe")));
         Rettighetstype rettighetstype = new Rettighetstype();
-        if(aktivBolk("bostotte", webSoknad) ){
+        if (aktivBolk("bostotte", webSoknad)) {
             rettighetstype.setBoutgifter(new BoutgifterTilXml().transform(webSoknad));
         }
-        if(aktivBolk("laermidler", webSoknad)) {
+        if (aktivBolk("laermidler", webSoknad)) {
             rettighetstype.setLaeremiddelutgifter(new LaeremidlerTilXml().transform(webSoknad));
         }
 
@@ -59,18 +59,18 @@ public class TilleggsstonaderTilXml implements Transformer<WebSoknad, Alternativ
 
     private static boolean aktivBolk(String bolk, WebSoknad webSoknad) {
         Faktum bolkFaktum = webSoknad.getFaktumMedKey("informasjonsside.stonad." + bolk);
-        return bolkFaktum != null &&"true".equals(bolkFaktum.getValue());
+        return bolkFaktum != null && "true".equals(bolkFaktum.getValue());
     }
 
     private static Reiseutgifter reiseutgifter(WebSoknad webSoknad) {
         Reiseutgifter reiseutgifter = new Reiseutgifter();
-        if(aktivBolk("reiseaktivitet", webSoknad) ) {
+        if (aktivBolk("reiseaktivitet", webSoknad)) {
             reiseutgifter.setDagligReise(new DagligReiseTilXml().transform(webSoknad));
         }
-        if(aktivBolk("reisearbeidssoker", webSoknad) ) {
+        if (aktivBolk("reisearbeidssoker", webSoknad)) {
             reiseutgifter.setReisestoenadForArbeidssoeker(new ArbeidReiseTilXml().transform(webSoknad));
         }
-        if(aktivBolk("reisemidlertidig", webSoknad) ) {
+        if (aktivBolk("reisemidlertidig", webSoknad)) {
             reiseutgifter.setReiseVedOppstartOgAvsluttetAktivitet(new ReiseOppstartOgAvsluttetAktivitetTilXml().transform(webSoknad));
         }
         if(aktivBolk("reisesamling", webSoknad) ) {
