@@ -55,8 +55,8 @@ public class ArbeidReiseTilXmlTest {
 
             @Override
             public boolean matches(Formaal value) {
-                as("Formal<%s>", "oppfolging");
-                return value.getValue().equals("oppfolging");
+                as("Formal<%s>", "OPPF");
+                return value.getValue().equals("OPPF");
             }
         });
         assertThat(result.getAlternativeTransportutgifter().getDrosjeTransportutgifter()).is(new Condition<DrosjeTransportutgifter>() {

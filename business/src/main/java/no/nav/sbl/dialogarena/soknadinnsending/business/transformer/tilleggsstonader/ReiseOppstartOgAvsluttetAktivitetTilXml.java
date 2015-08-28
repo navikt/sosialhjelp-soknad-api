@@ -33,10 +33,8 @@ public class ReiseOppstartOgAvsluttetAktivitetTilXml implements Transformer<WebS
     }
 
     private BarnUnderAtten barnUnder18(WebSoknad soknad) {
-        BarnUnderAtten barnUnderAtten = new BarnUnderAtten();
-        //TODO: Barn under 18 gir ingen mening
-
-        return barnUnderAtten;
+        //TODO: Barn under 18 bør være liste. Støtte heller ikke dato.
+        return StofoTransformers.extractValue(soknad.getFaktumMedKey("barn"), BarnUnderAtten.class, "fno");
     }
 
     private String aktivitetsAdresse(WebSoknad soknad) {

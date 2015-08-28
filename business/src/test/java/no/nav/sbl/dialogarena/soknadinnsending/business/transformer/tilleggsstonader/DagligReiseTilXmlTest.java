@@ -50,7 +50,7 @@ public class DagligReiseTilXmlTest {
         assertThat(result.getInnsendingsintervall()).is(new Condition<Innsendingsintervaller>() {
             @Override
             public boolean matches(Innsendingsintervaller value) {
-                return value.getValue().equals("uke");
+                return value.getValue().equals("UKE");
             }
         });
         assertThat(result.getAlternativeTransportutgifter().getDrosjeTransportutgifter()).is(new Condition<DrosjeTransportutgifter>() {
