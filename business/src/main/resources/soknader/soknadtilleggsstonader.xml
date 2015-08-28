@@ -1532,7 +1532,7 @@
     </vedlegg>
     <!-- Vedlegg barnepass-->
     <vedlegg>
-        <faktum>barnepassStonad</faktum>
+        <faktum>barnepasstonad</faktum>
         <skjemaNummer>J8</skjemaNummer>
         <skjemanummerTillegg>barnepassBarnehage</skjemanummerTillegg>
         <onValues>
