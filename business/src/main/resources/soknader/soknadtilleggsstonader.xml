@@ -1046,7 +1046,7 @@
 
     <!-- Barnepass -->
     <faktum>
-        <id>barnepassStonad</id>
+        <id>barnepass.barn</id>
         <dependOn>informasjonsside.stonad.barnepass</dependOn>
         <dependOnValues>
             <value>true</value>
@@ -1532,7 +1532,7 @@
     </vedlegg>
     <!-- Vedlegg barnepass-->
     <vedlegg>
-        <faktum>barnepasstonad</faktum>
+        <faktum>barnepass.barn</faktum>
         <skjemaNummer>J8</skjemaNummer>
         <skjemanummerTillegg>barnepassBarnehage</skjemanummerTillegg>
         <onValues>
@@ -1543,7 +1543,7 @@
         <property>vedleggstittel</property>
     </vedlegg>
     <vedlegg>
-        <faktum>barnepassStonad</faktum>
+        <faktum>barnepass.barn</faktum>
         <skjemaNummer>J4</skjemaNummer>
         <skjemanummerTillegg>barnepassPrivat</skjemanummerTillegg>
         <onValues>
@@ -1554,7 +1554,7 @@
         <property>vedleggstittel</property>
     </vedlegg>
     <vedlegg>
-        <faktum>barnepassStonad</faktum>
+        <faktum>barnepass.barn</faktum>
         <skjemaNummer>J4</skjemaNummer>
         <skjemanummerTillegg>barnepassDagmamma</skjemanummerTillegg>
         <onValues>
