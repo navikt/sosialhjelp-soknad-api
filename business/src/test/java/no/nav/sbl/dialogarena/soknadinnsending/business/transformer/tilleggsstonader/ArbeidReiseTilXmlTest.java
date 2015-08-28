@@ -10,9 +10,9 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.assertj.core.api.Condition;
 import org.junit.Test;
 
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigInteger;
 
+import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTestUtils.periodeMatcher;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoKodeverkVerdier.FormaalKodeverk.oppfolging;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -45,7 +45,7 @@ public class ArbeidReiseTilXmlTest {
 
         assertThat(result.getAdresse()).isEqualTo("adresse, 1256");
         assertThat(result.getAvstand()).isEqualTo(new BigInteger("123"));
-        assertThat(result.getReisedato()).is(new PeriodMatcher(2015, 1, 2));
+        assertThat(result.getReisedato()).is(periodeMatcher(2015, 1, 2));
         assertThat(result.isErUtgifterDekketAvAndre()).isEqualTo(true);
         assertThat(result.isErVentetidForlenget()).isEqualTo(true);
         assertThat(result.isFinnesTidsbegrensetbortfall()).isEqualTo(true);
@@ -83,19 +83,6 @@ public class ArbeidReiseTilXmlTest {
 
     }
 
-    private static class PeriodMatcher extends Condition<XMLGregorianCalendar> {
-        private int year, month, day;
 
-        public PeriodMatcher(int year, int month, int day) {
-            this.year = year;
-            this.month = month;
-            this.day = day;
-        }
-
-        @Override
-        public boolean matches(XMLGregorianCalendar value) {
-            return value.getYear() == year && value.getMonth() == month && value.getDay() == day;
-        }
-    }
 
 }

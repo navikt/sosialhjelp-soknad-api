@@ -15,6 +15,25 @@ public class StofoKodeverkVerdier {
             this.kodeverksverdi = kodeverksverdi;
         }
     }
+    public enum SkolenivaaerKodeverk{
+        videregaende("VGS"), hoyereutdanning("HGU"), annet("ANN");
+
+        public final String kodeverk;
+
+        SkolenivaaerKodeverk(String kodeverk) {
+            this.kodeverk = kodeverk;
+        }
+    }
+
+    public enum ErUtgifterDekketKodeverk {
+        ja("JA"), nei("NEI"), delvis("DEL");
+
+        public final String kodeverk;
+
+        ErUtgifterDekketKodeverk(String kodeverk) {
+            this.kodeverk = kodeverk;
+        }
+    }
     public enum InnsendingsintervallerKodeverk{
         uke("UKE"), maaned("MND");
         public final String kodeverksverdi;
