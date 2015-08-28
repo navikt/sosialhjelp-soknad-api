@@ -3,10 +3,12 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggssto
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.BarnUnderAtten;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.DrosjeTransportutgifter;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.ErUtgifterDekket;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Formaal;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Innsendingsintervaller;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.KollektivTransportutgifter;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Periode;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Skolenivaaer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import org.apache.commons.collections15.Transformer;
 import org.apache.commons.lang3.StringUtils;
@@ -113,6 +115,35 @@ public final class StofoTransformers {
                         extractValue(faktum, String.class, "postnr"));
             }
         });
+        TRANSFORMERS.put(ErUtgifterDekket.class, new Transformer<String, ErUtgifterDekket>() {
+            @Override
+            public ErUtgifterDekket transform(String faktumVerdi) {
+                ErUtgifterDekket erUtgifterDekket = new ErUtgifterDekket();
+                erUtgifterDekket.setKodeverksRef("");
+                switch (faktumVerdi) {
+                    case "ja":
+                        erUtgifterDekket.setValue("JA");
+                        break;
+                    case "nei":
+                        erUtgifterDekket.setValue("NEI");
+                        break;
+                    case "delvis":
+                        erUtgifterDekket.setValue("DEL");
+                        break;
+                }
+                return erUtgifterDekket;
+            }
+        });
+        TRANSFORMERS.put(Skolenivaaer.class, new Transformer<String, Skolenivaaer>() {
+            @Override
+            public Skolenivaaer transform(String faktumVerdi) {
+                Skolenivaaer skolenivaaer = new Skolenivaaer();
+                skolenivaaer.setKodeverksRef("");
+                skolenivaaer.setValue(StofoKodeverkVerdier.SkolenivaaerKodeverk.valueOf(faktumVerdi).kodeverk);
+                return skolenivaaer;
+            }
+        });
+
     }
 
 
