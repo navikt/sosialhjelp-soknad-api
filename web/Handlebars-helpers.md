@@ -68,7 +68,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hvisIkkeTom - Dersom variabelen ikke er tom vil innholdet vises
 * hvisKunStudent - Sjekker om brukeren har en annen status enn student (f.eks sykmeldt, i arbeid osv.)
 * hvisLik - Sjekker om to strenger er like
-* hvisMer - Evaluerer en string og sjekker om verdien er mer grenseverdien gitt ved andre inputparameter
+* hvisMer - Evaluerer en string til double og sjekker om verdien er mer enn grenseverdien gitt ved andre inputparameter
 * hvisSant - Dersom variabelen er "true" vil innholdet vises
 * kortDato - Formatterer en datostreng på formatet yyyy-mm-dd til dd.mm.aaaa
 * toLowerCase - Gjør om en tekst til kun små bokstaver

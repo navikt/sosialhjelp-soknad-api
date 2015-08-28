@@ -26,7 +26,7 @@ public class HvisMerHelper extends RegistryAwareHelper<String>{
 
     @Override
     public String getBeskrivelse() {
-        return "Evaluerer en string og sjekker om verdien er mer grenseverdien gitt ved andre inputparameter";
+        return "Evaluerer en string til double og sjekker om verdien er mer enn grenseverdien gitt ved andre inputparameter";
     }
 
     @Override
