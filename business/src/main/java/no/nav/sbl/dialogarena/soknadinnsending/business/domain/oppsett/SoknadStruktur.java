@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
 
@@ -85,7 +86,7 @@ public class SoknadStruktur implements Serializable {
             public boolean evaluate(SoknadVedlegg soknadVedlegg) {
                 if(soknadVedlegg.getSkjemaNummer().equals(skjemaNr)) {
                     String skjemaTillegg = soknadVedlegg.getSkjemanummerTillegg();
-                    return skjemaTillegg != null && skjemaTillegg.equals(tillegg);
+                    return Objects.equals(skjemaTillegg, tillegg);
                 }
                 return false;
             }
