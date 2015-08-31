@@ -41,7 +41,6 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * formatterFodelsDato (deprecated og erstattet av formatterKortDato og formatterFnrTilKortDato)
 * formatterLangDato
 * hvisEttersending
-* hvisMindre
 * hentTekst
 * hentTekstMedParameter
 * hentTekstMedFaktumParameter
@@ -69,6 +68,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hvisKunStudent - Sjekker om brukeren har en annen status enn student (f.eks sykmeldt, i arbeid osv.)
 * hvisLik - Sjekker om to strenger er like
 * hvisMer - Evaluerer en string til double og sjekker om verdien er mer enn grenseverdien gitt ved andre inputparameter
+* hvisMindre - Evaluerer en string til integer og sjekker om verdien er mindre enn andre inputparameter
 * hvisSant - Dersom variabelen er "true" vil innholdet vises
 * kortDato - Formatterer en datostreng på formatet yyyy-mm-dd til dd.mm.aaaa
 * toLowerCase - Gjør om en tekst til kun små bokstaver
@@ -169,6 +169,17 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
     {{else}}
     Verdi er lik eller mindre enn 1
 {{/hvisMer}}
+```
+
+
+##### hvisMindre
+
+```
+{{#hvisMindre verdi "50"}}
+    Verdi er mindre enn 50
+    {{else}}
+    Verdi er lik eller større enn 50
+{{/hvisMindre}}
 ```
 
 
