@@ -28,14 +28,13 @@ import static org.assertj.core.api.Assertions.assertThat;
         handlebars.registerHelper(ForFaktumHelper.NAVN, ForFaktumHelper.INSTANS);
 
         handlebarInput= "{{#forFaktum \"barn\"}}{{#harBarnetInntekt }}barnet tjener {{value}}{{else}}barnet har ikke inntekt{{/harBarnetInntekt}}{{/forFaktum}}";
-
     }
 
     @Test
     public void visInnholdHvisBarnetHarInntekt() throws IOException {
-        Faktum harInntekt = new Faktum().medKey("barn.harinntekt").medValue("true").medParrentFaktumId(new Long(1));
-        Faktum inntekt = new Faktum().medKey("barn.inntekt").medValue("5000").medParrentFaktumId(new Long(1));
-        Faktum barn = new Faktum().medFaktumId(new Long(1)).medKey("barn").medValue("Lise");
+        Faktum harInntekt = new Faktum().medKey("barn.harinntekt").medValue("true").medParrentFaktumId((long) 1);
+        Faktum inntekt = new Faktum().medKey("barn.inntekt").medValue("5000").medParrentFaktumId((long) 1);
+        Faktum barn = new Faktum().medFaktumId((long) 1).medKey("barn").medValue("Lise");
         webSoknad = new WebSoknad().medFaktum(harInntekt).medFaktum(inntekt).medFaktum(barn);
 
         String compiled = handlebars.compileInline(handlebarInput).apply(Context.newContext(webSoknad));
@@ -44,11 +43,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
     @Test
     public void brukInverseHvisBarnetIkkeHarInntekt() throws IOException {
-        Faktum harInntekt = new Faktum().medKey("barn.harinntekt").medValue("false").medParrentFaktumId(new Long(1));
-        Faktum barn = new Faktum().medFaktumId(new Long(1)).medKey("barn").medValue("Lise");
+        Faktum harInntekt = new Faktum().medKey("barn.harinntekt").medValue("false").medParrentFaktumId((long) 1);
+        Faktum barn = new Faktum().medFaktumId((long) 1).medKey("barn").medValue("Lise");
         webSoknad = new WebSoknad().medFaktum(harInntekt).medFaktum(barn);
         String compiled = handlebars.compileInline(handlebarInput).apply(Context.newContext(webSoknad));
         assertThat(compiled).isEqualTo("barnet har ikke inntekt");
     }
-
 }
