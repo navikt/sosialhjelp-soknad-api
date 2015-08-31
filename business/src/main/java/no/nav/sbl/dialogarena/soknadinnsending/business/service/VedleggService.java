@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
+import com.google.common.collect.Lists;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
@@ -35,7 +36,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.util.VedleggsgenereringU
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
 import org.apache.commons.collections15.Closure;
-import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
 import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.exceptions.COSVisitorException;
@@ -62,7 +62,6 @@ import static java.util.Collections.sort;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.KVITTERING;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.IkkeVedlegg;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.LastetOpp;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.toInnsendingsvalg;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -71,12 +70,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Component
 public class VedleggService {
     private static final Logger logger = getLogger(VedleggService.class);
-    public static final Predicate<Vedlegg> PAAKREVDE_VEDLEGG = new Predicate<Vedlegg>() {
-        @Override
-        public boolean evaluate(Vedlegg vedlegg) {
-            return vedlegg != null && !vedlegg.getInnsendingsvalg().equals(IkkeVedlegg);
-        }
-    };
     public static final String FEATURE_NY_VEDLEGGENERERING = "vedlegg.ny.generering";
 
     @Inject
@@ -103,7 +96,7 @@ public class VedleggService {
     private PdfWatermarker watermarker = new PdfWatermarker();
 
     public List<Vedlegg> hentVedleggOgKvittering(WebSoknad soknad) {
-        List<Vedlegg> vedleggForventninger = soknad.getVedlegg();
+        ArrayList<Vedlegg> vedleggForventninger = Lists.newArrayList(soknad.hentPaakrevdeVedlegg());
         Vedlegg kvittering = vedleggRepository.hentVedleggForskjemaNummer(soknad.getSoknadId(), null, KVITTERING);
         if (kvittering != null) {
             vedleggForventninger.add(kvittering);
@@ -257,16 +250,21 @@ public class VedleggService {
     }
 
     public List<Vedlegg> hentPaakrevdeVedlegg(String behandlingsId) {
-        List<Vedlegg> paakrevdeVedlegg = on(vedleggRepository.hentVedlegg(behandlingsId)).filter(PAAKREVDE_VEDLEGG).collect();
+        List<Vedlegg> paakrevdeVedlegg = on(vedleggRepository.hentVedlegg(behandlingsId)).filter(Vedlegg.PAAKREVDE_VEDLEGG).collect();
         leggTilKodeverkFelter(paakrevdeVedlegg);
 
         if("true".equals(System.getProperty(FEATURE_NY_VEDLEGGENERERING))){
             List<Vedlegg> paakrevdeVedleggVedNyUthenting = genererPaakrevdeVedlegg(behandlingsId);
             leggTilKodeverkFelter(paakrevdeVedleggVedNyUthenting);
             if (!VedleggsgenereringUtil.likeVedlegg(paakrevdeVedlegg, paakrevdeVedleggVedNyUthenting)) {
-                String feilmelding = "\n ########### VEDLEGGSFEIL - Feil i ny vedleggsgenereringslogikk ################# \n";
-                feilmelding +=  "Gammel metode: \n" + getVedleggfeilMessage(paakrevdeVedlegg);
-                feilmelding +=   "Ny metode: \n" + getVedleggfeilMessage(paakrevdeVedleggVedNyUthenting);
+                String feilmelding = "\n ######### VEDLEGGSFEIL - Feil i ny vedleggsgenereringslogikk ################# \n";
+
+                feilmelding += "I Ny, ikke gammel: \n";
+                feilmelding += getVedleggsDiff(paakrevdeVedleggVedNyUthenting, paakrevdeVedlegg);
+
+                feilmelding += "\nI Gammel, ikke ny: \n";
+                feilmelding += getVedleggsDiff(paakrevdeVedlegg, paakrevdeVedleggVedNyUthenting);
+
                 logger.warn(feilmelding);
             }
         }
@@ -274,14 +272,17 @@ public class VedleggService {
 
     }
 
-    private String getVedleggfeilMessage(List<Vedlegg> vedleggList) {
-        String melding = "";
-        for (Vedlegg vedlegg : vedleggList) {
-            melding += vedlegg + "\n";
+    private String getVedleggsDiff(List<Vedlegg> nyeVedlegg, List<Vedlegg> gammleVedlegg) {
+        String feilmelding = "";
+        for (Vedlegg vedlegg : nyeVedlegg) {
+            if(!gammleVedlegg.contains(vedlegg)){
+                feilmelding += vedlegg+ "\n";
+            }
         }
-
-        return melding +  "Antall vedlegg: " + vedleggList.size() + "\n";
+        return feilmelding;
     }
+
+
 
     public List<Vedlegg> genererPaakrevdeVedlegg(String behandlingsId) {
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true);
@@ -299,7 +300,7 @@ public class VedleggService {
             public Vedlegg transform(VedleggsGrunnlag vedleggsgrunnlag) {
                 return vedleggsgrunnlag.getVedlegg();
             }
-        }).filter(PAAKREVDE_VEDLEGG).collect();
+        }).filter(Vedlegg.PAAKREVDE_VEDLEGG).collect();
     }
 
     @Transactional

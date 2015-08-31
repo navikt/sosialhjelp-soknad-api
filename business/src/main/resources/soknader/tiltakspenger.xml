@@ -1,5 +1,13 @@
 <soknad skjemaNummer="NAV 76-13.45" temaKode="IND">
 
+    <!-- Informasjonsside -->
+    <faktum>
+        <id>mottarDagpenger.vilBytteTilTiltakspenger</id>
+    </faktum>
+    <faktum>
+        <id>informasjonsside.deltarIKvalifiseringsprogram</id>
+    </faktum>
+
     <!-- Trygd og pensjon -->
     <faktum>
         <id>trygdogpensjon</id>

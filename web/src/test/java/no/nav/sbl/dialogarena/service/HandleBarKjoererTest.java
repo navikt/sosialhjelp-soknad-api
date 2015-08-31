@@ -2,7 +2,10 @@ package no.nav.sbl.dialogarena.service;
 
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.service.helpers.HvisLikHelper;
+import no.nav.sbl.dialogarena.service.helpers.HvisMerHelper;
+import no.nav.sbl.dialogarena.service.helpers.HvisMindreHelper;
 import no.nav.sbl.dialogarena.service.helpers.HvisSantHelper;
+import no.nav.sbl.dialogarena.service.helpers.faktum.ForFaktumHelper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
@@ -41,6 +44,9 @@ public class HandleBarKjoererTest {
         when(messageSource.getMessage(any(String.class), any(Object[].class), any(Locale.class))).thenReturn("mock");
         handleBarKjoerer.registrerHelper(HvisSantHelper.NAVN, HvisSantHelper.INSTANS);
         handleBarKjoerer.registrerHelper(HvisLikHelper.NAVN, HvisLikHelper.INSTANS);
+        handleBarKjoerer.registrerHelper(ForFaktumHelper.NAVN, ForFaktumHelper.INSTANS);
+        handleBarKjoerer.registrerHelper(HvisMerHelper.NAVN, HvisMerHelper.INSTANS);
+        handleBarKjoerer.registrerHelper(HvisMindreHelper.NAVN, HvisMindreHelper.INSTANS);
     }
 
     @Test

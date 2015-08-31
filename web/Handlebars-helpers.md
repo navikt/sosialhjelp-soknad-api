@@ -21,6 +21,7 @@ men kjører også automatisk sammen med det vanlige testoppsettet.
     * Navnet på helperen må returneres fra `getNavn`
     * Beskrivelsen fra `getBeskrivelse` vil havne i denne fila som dokumentasjon
 * Lag et eksempel på bruk under `/readme/Helpernavn.hbs`, denne vil også bli inkludert i dokumentasjonen under.
+* Legg til tester
 
 På dette formatet er det superklassen `RegistryAwareHelper` som vil registere helperen som er opprettet på
 Handlebars-instansen som brukes for å generere oppsummeringsdokumenter.
@@ -33,17 +34,13 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 #### Statisk liste over helpers på gammelt registeringsformat
  
 * adresse
-* forFaktum
 * forFaktumHvisSant
 * forFakta
 * forBarnefakta
 * forFaktaMedPropertySattTilTrue
-* formatterFodelsDato
+* formatterFodelsDato (deprecated og erstattet av formatterKortDato og formatterFnrTilKortDato)
 * formatterLangDato
 * hvisEttersending
-* hvisMindre
-* hvisMer
-* hvisIkkeTom
 * hentTekst
 * hentTekstMedParameter
 * hentTekstMedFaktumParameter
@@ -59,15 +56,21 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hvisHarIkkeInnsendteDokumenter
 * skalViseRotasjonTurnusSporsmaal
 * hvisLikCmsTekst
-* hvisKunStudent
-* harBarnetInntekt
 
-#### Helpers på nytt registeringsformat
+#### Helpers på nytt registreringsformat
 
 * concat - Legger sammen alle parametrene til tekststring
+* fnrTilKortDato - Formatterer et gyldig fødselnummer til dato på formatet dd.mm.aaaa
+* forFaktum - Finner et faktum og setter det som aktiv context. Har også inverse om faktum ikke finnes. 
+* harBarnetInntekt - Henter summen hvis barnet har inntekt. Må brukes innenfor en #forFaktum eller #forFakta helper. 
 * hvisHarDiskresjonskode - Viser innhold avhengig av om personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)
+* hvisIkkeTom - Dersom variabelen ikke er tom vil innholdet vises
+* hvisKunStudent - Sjekker om brukeren har en annen status enn student (f.eks sykmeldt, i arbeid osv.)
 * hvisLik - Sjekker om to strenger er like
+* hvisMer - Evaluerer en string til double og sjekker om verdien er mer enn grenseverdien gitt ved andre inputparameter
+* hvisMindre - Evaluerer en string til integer og sjekker om verdien er mindre enn andre inputparameter
 * hvisSant - Dersom variabelen er "true" vil innholdet vises
+* kortDato - Formatterer en datostreng på formatet yyyy-mm-dd til dd.mm.aaaa
 * toLowerCase - Gjør om en tekst til kun små bokstaver
 * variabel - Lager en variabel med en bestemt verdi som kun er tilgjengelig innenfor helperen
 
@@ -78,6 +81,39 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 
 ```
 {{ concat "a" "b" "c" "d" }}
+```
+
+
+##### fnrTilKortDato
+
+```
+{{fnrTilKortDato "***REMOVED***"}}
+```
+
+
+##### forFaktum
+
+```
+{{#forFaktum "faktumNavn"}}
+    Faktum med key {{key}} finnes og kan aksesseres. {{value}} skriver f.eks ut verdien på faktumet. se Faktum klassen.
+{{else}}
+    faktum med key "faktumNavn" er ikke satt
+{{/forFaktum}}
+```
+
+
+##### harBarnetInntekt
+
+```
+{{#forFaktum "faktumNavn"}}
+    {{#harBarnetInntekt}
+        Gitt at wrapper-faktumet "faktumNavn" har to barnefaktum: "barnet.harinntekt" hvor verdi er "true", og
+        "barnet.inntekt". Sistnevnte er tilgjengelig her slik at {{value}} skriver ut inntekten.
+    {{else}}
+        Barnet har ikke inntekt.
+    {{/harBarnetInntekt}}
+{{/forFaktum}}
+
 ```
 
 
@@ -92,6 +128,28 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 ```
 
 
+##### hvisIkkeTom
+
+```
+{{#hvisIkkeTom "verdi"}}
+    Verdien er ikke tom
+{{else}}
+    Verdien er tom
+{{/hvisIkkeTom}}
+```
+
+
+##### hvisKunStudent
+
+```
+{{#hvisKunStudent}}
+    Bare student
+    {{else}}
+        Ikke bare student
+{{/hvisKunStudent}}
+```
+
+
 ##### hvisLik
 
 ```
@@ -103,6 +161,28 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 ```
 
 
+##### hvisMer
+
+```
+{{#hvisMer verdi "1"}}
+    Verdi er mer enn 1
+    {{else}}
+    Verdi er lik eller mindre enn 1
+{{/hvisMer}}
+```
+
+
+##### hvisMindre
+
+```
+{{#hvisMindre verdi "50"}}
+    Verdi er mindre enn 50
+    {{else}}
+    Verdi er lik eller større enn 50
+{{/hvisMindre}}
+```
+
+
 ##### hvisSant
 
 ```
@@ -111,6 +191,13 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
     {{else}}
     Gitt alt annet enn "true"
 {{/hvisSant}}
+```
+
+
+##### kortDato
+
+```
+{{kortDato "2015-11-03"}}
 ```
 
 

@@ -12,13 +12,15 @@ import static org.mockito.Mockito.when;
 
 public class PersonInfoMock {
 
-    public static final String ARBS = "ISERV";
+    public static final String ARBEIDSSOKERSTATUS = "ARBS";
+    public static final String YTELSE = "DAGP";
 
     public PersonInfoServiceSoap personInfoMock() {
         PersonInfoServiceSoap mock = mock(PersonInfoServiceSoap.class);
         Personstatus personstatus = new Personstatus();
         PersonstatusType.PersonData personData = new PersonstatusType.PersonData();
-        personData.setStatusArbeidsoker(ARBS);
+        personData.setStatusArbeidsoker(ARBEIDSSOKERSTATUS);
+        personData.setStatusYtelse(YTELSE);
         personstatus.setPersonData(personData);
 
         try {
@@ -29,5 +31,4 @@ public class PersonInfoMock {
 
         return mock;
     }
-
 }

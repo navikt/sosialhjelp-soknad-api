@@ -21,7 +21,7 @@
     <description>Innsending av elektronisk søknad.</description>
     <groupId>no.nav.sbl.dialogarena</groupId>
     <artifactId>sendsoknad</artifactId>
-    <version>7.11-SNAPSHOT</version>
+    <version>7.14-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -251,8 +251,8 @@
             </dependency>
             <dependency>
                 <groupId>no.nav.sbl</groupId>
-                <artifactId>arena-maalgruppeinformasjon_v1</artifactId>
-                <version>1.0</version>
+                <artifactId>arena-maalgruppe_v1</artifactId>
+                <version>1.0.2</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.meldinger.virksomhet</groupId>

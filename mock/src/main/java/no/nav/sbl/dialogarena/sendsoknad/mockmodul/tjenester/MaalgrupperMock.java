@@ -1,11 +1,11 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.tjenester;
 
-import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.MaalgruppeinformasjonV1;
-import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.informasjon.WSMaalgruppe;
-import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.informasjon.WSMaalgruppetyper;
-import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.informasjon.WSPeriode;
-import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.meldinger.WSFinnMaalgruppeinformasjonListeRequest;
-import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.meldinger.WSFinnMaalgruppeinformasjonListeResponse;
+import no.nav.tjeneste.virksomhet.maalgruppe.v1.MaalgruppeV1;
+import no.nav.tjeneste.virksomhet.maalgruppe.v1.informasjon.WSMaalgruppe;
+import no.nav.tjeneste.virksomhet.maalgruppe.v1.informasjon.WSMaalgruppetyper;
+import no.nav.tjeneste.virksomhet.maalgruppe.v1.informasjon.WSPeriode;
+import no.nav.tjeneste.virksomhet.maalgruppe.v1.meldinger.WSFinnMaalgruppeinformasjonListeRequest;
+import no.nav.tjeneste.virksomhet.maalgruppe.v1.meldinger.WSFinnMaalgruppeinformasjonListeResponse;
 import org.joda.time.LocalDate;
 
 import static org.mockito.Matchers.any;
@@ -14,8 +14,8 @@ import static org.mockito.Mockito.when;
 
 public class MaalgrupperMock {
 
-    public static MaalgruppeinformasjonV1 maalgruppeinformasjonV1() {
-        MaalgruppeinformasjonV1 maalgruppeMock = mock(MaalgruppeinformasjonV1.class);
+    public static MaalgruppeV1 maalgruppeV1() {
+        MaalgruppeV1 maalgruppeMock = mock(MaalgruppeV1.class);
 
         try {
             WSFinnMaalgruppeinformasjonListeResponse response = new WSFinnMaalgruppeinformasjonListeResponse();
@@ -25,7 +25,7 @@ public class MaalgrupperMock {
                     .withMaalgruppetype(new WSMaalgruppetyper().withValue("ARBSOKERE")));
 
             when(maalgruppeMock.finnMaalgruppeinformasjonListe(any(WSFinnMaalgruppeinformasjonListeRequest.class)))
-                .thenReturn(response);
+                    .thenReturn(response);
         } catch (Exception e) {
             e.printStackTrace();
         }

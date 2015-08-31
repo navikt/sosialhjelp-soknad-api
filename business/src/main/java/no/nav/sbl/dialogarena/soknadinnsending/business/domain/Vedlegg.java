@@ -14,9 +14,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.IkkeVedlegg;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Vedlegg {
+    public static final Predicate<Vedlegg> PAAKREVDE_VEDLEGG = new Predicate<Vedlegg>() {
+        @Override
+        public boolean evaluate(Vedlegg vedlegg) {
+            return vedlegg != null && !vedlegg.getInnsendingsvalg().equals(IkkeVedlegg);
+        }
+    };
     private Long vedleggId;
     private Long soknadId;
     private Long faktumId;
@@ -247,13 +255,19 @@ public class Vedlegg {
         return new EqualsBuilder()
                 .append(this.vedleggId, rhs.vedleggId)
                 .append(this.soknadId, rhs.soknadId)
-                .append(this.navn, rhs.navn)
-                .append(this.storrelse, rhs.storrelse)
                 .append(this.faktumId, rhs.faktumId)
                 .append(this.skjemaNummer, rhs.skjemaNummer)
+                .append(this.skjemanummerTillegg, rhs.skjemanummerTillegg)
+                .append(this.innsendingsvalg, rhs.innsendingsvalg)
+                .append(this.opprinneligInnsendingsvalg, rhs.opprinneligInnsendingsvalg)
+                .append(this.navn, rhs.navn)
+                .append(this.storrelse, rhs.storrelse)
                 .append(this.antallSider, rhs.antallSider)
+                .append(this.opprettetDato, rhs.opprettetDato)
                 .append(this.data, rhs.data)
                 .append(this.fillagerReferanse, rhs.fillagerReferanse)
+                .append(this.urls, rhs.urls)
+                .append(this.tittel, rhs.tittel)
                 .append(this.aarsak, rhs.aarsak)
                 .isEquals();
     }
@@ -263,13 +277,19 @@ public class Vedlegg {
         return new HashCodeBuilder()
                 .append(vedleggId)
                 .append(soknadId)
-                .append(navn)
-                .append(storrelse)
                 .append(faktumId)
                 .append(skjemaNummer)
+                .append(skjemanummerTillegg)
+                .append(innsendingsvalg)
+                .append(opprinneligInnsendingsvalg)
+                .append(navn)
+                .append(storrelse)
                 .append(antallSider)
+                .append(opprettetDato)
                 .append(data)
                 .append(fillagerReferanse)
+                .append(urls)
+                .append(tittel)
                 .append(aarsak)
                 .toHashCode();
     }
@@ -279,13 +299,19 @@ public class Vedlegg {
         return new ToStringBuilder(this)
                 .append("vedleggId", vedleggId)
                 .append("soknadId", soknadId)
-                .append("navn", navn)
-                .append("storrelse", storrelse)
                 .append("faktumId", faktumId)
                 .append("skjemaNummer", skjemaNummer)
+                .append("skjemanummerTillegg", skjemanummerTillegg)
+                .append("innsendingsvalg", innsendingsvalg)
+                .append("opprinneligInnsendingsvalg", opprinneligInnsendingsvalg)
+                .append("navn", navn)
+                .append("storrelse", storrelse)
                 .append("antallSider", antallSider)
+                .append("opprettetDato", opprettetDato)
                 .append("data", data)
                 .append("fillagerReferanse", fillagerReferanse)
+                .append("urls", urls)
+                .append("tittel", tittel)
                 .append("aarsak", aarsak)
                 .toString();
     }
