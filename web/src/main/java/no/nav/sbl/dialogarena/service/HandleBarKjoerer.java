@@ -6,6 +6,7 @@ import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import no.bekk.bekkopen.person.Fodselsnummer;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.service.helpers.HvisMindreHelper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
@@ -71,7 +72,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         handlebars.registerHelper("formatterFodelsDato", generateFormatterFodselsdatoHelper());
         handlebars.registerHelper("formatterLangDato", generateFormatterLangDatoHelper());
         handlebars.registerHelper("hvisEttersending", generateHvisEttersendingHelper());
-        handlebars.registerHelper("hvisMindre", generateHvisMindreHelper());
         handlebars.registerHelper("hentTekst", generateHentTekstHelper());
         handlebars.registerHelper("hentTekstMedFaktumParameter", generateHentTekstMedFaktumParameterHelper());
         handlebars.registerHelper("hentLand", generateHentLandHelper());
@@ -264,22 +264,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
                 return String.format("KEY MANGLER: [%s]", key);
             }
         }
-    }
-
-
-    private Helper<String> generateHvisMindreHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String value, Options options) throws IOException {
-                Integer grense = Integer.parseInt((String) options.param(0));
-                Integer verdi = Integer.parseInt(value);
-                if (verdi < grense) {
-                    return options.fn(this);
-                } else {
-                    return options.inverse(this);
-                }
-            }
-        };
     }
 
     private Helper<Object> generateHvisEttersendingHelper() {
@@ -506,4 +490,5 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
             }
         };
     }
+
 }
