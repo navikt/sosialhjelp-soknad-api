@@ -31,16 +31,37 @@ public class PersonInfoServiceTest {
     }
 
     @Test
-    public void skalReturnererIkkeRegistrertHvisTjenestenSvarerMedNull() throws FaultGeneriskMsg {
+    public void skalReturnererYtelseskode() throws FaultGeneriskMsg {
+        when(service.hentPersonStatus(any(Fodselsnr.class))).thenReturn(new Personstatus().withPersonData(new PersonstatusType.PersonData().withStatusYtelse("DAGP")));
+        String status = connector.hentYtelseStatus("12345678910");
+        assertEquals("DAGP", status);
+    }
+
+    @Test
+    public void skalReturnererIkkeRegistrertVedHentingAvArbeidssokerstatusHvisTjenestenSvarerMedNull() throws FaultGeneriskMsg {
         when(service.hentPersonStatus(any(Fodselsnr.class))).thenReturn(null);
         String status = connector.hentArbeidssokerStatus("12345678910");
         assertEquals(IKKE_REGISTRERT, status);
     }
 
     @Test
-    public void returnererUkjentHvisServicekallFeiler() throws FaultGeneriskMsg {
+    public void skalReturnererIkkeRegistrertVedHentingAvYtelsesstatusHvisTjenestenSvarerMedNull() throws FaultGeneriskMsg {
+        when(service.hentPersonStatus(any(Fodselsnr.class))).thenReturn(null);
+        String status = connector.hentYtelseStatus("12345678910");
+        assertEquals(IKKE_REGISTRERT, status);
+    }
+
+    @Test
+    public void returnererUkjentVedHentingAvArbeidssokerstatusHvisServicekallFeiler() throws FaultGeneriskMsg {
         when(service.hentPersonStatus(any(Fodselsnr.class))).thenThrow(new RuntimeException("Tjenesten er nede"));
         String status = connector.hentArbeidssokerStatus("12345678910");
+        assertEquals(UKJENT, status);
+    }
+
+    @Test
+    public void returnererUkjentVedHentingAvYtelsesstatusHvisServicekallFeiler() throws FaultGeneriskMsg {
+        when(service.hentPersonStatus(any(Fodselsnr.class))).thenThrow(new RuntimeException("Tjenesten er nede"));
+        String status = connector.hentYtelseStatus("12345678910");
         assertEquals(UKJENT, status);
     }
 }
