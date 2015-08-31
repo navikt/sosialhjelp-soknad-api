@@ -63,6 +63,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * fnrTilKortDato - Formatterer et gyldig fødselnummer til dato på formatet dd.mm.aaaa
 * forFaktum - Finner et faktum og setter det som aktiv context. Har også inverse om faktum ikke finnes. 
 * harBarnetInntekt - Henter summen hvis barnet har inntekt. Må brukes innenfor en #forFaktum eller #forFakta helper. 
+* hentSkjemanummer - Setter inn søknadens skjemanummer, også om det er en søknad for dagpenger
 * hvisHarDiskresjonskode - Viser innhold avhengig av om personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)
 * hvisIkkeTom - Dersom variabelen ikke er tom vil innholdet vises
 * hvisKunStudent - Sjekker om brukeren har en annen status enn student (f.eks sykmeldt, i arbeid osv.)
@@ -113,6 +114,13 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
     {{/harBarnetInntekt}}
 {{/forFaktum}}
 
+```
+
+
+##### hentSkjemanummer
+
+```
+{{hentSkjemanummer}}
 ```
 
 
