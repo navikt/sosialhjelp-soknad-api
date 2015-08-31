@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
 import com.github.jknack.handlebars.Handlebars;
-import no.nav.sbl.dialogarena.service.HandleBarKjoerer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.junit.Before;
@@ -13,7 +12,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
 
-import static no.nav.sbl.dialogarena.service.helpers.DiskresjonskodeHelper.*;
+import static no.nav.sbl.dialogarena.service.helpers.DiskresjonskodeHelper.DISKRESJONSKODE_PROPERTY;
+import static no.nav.sbl.dialogarena.service.helpers.DiskresjonskodeHelper.PERSONALIA_FAKTUM_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -23,9 +23,6 @@ public class DiskresjonskodeHelperTest {
 
     @InjectMocks
     DiskresjonskodeHelper diskresjonskodeHelper;
-
-    @Mock
-    HandleBarKjoerer handleBarKjoerer;
 
     @Mock
     WebSoknad webSoknad;
