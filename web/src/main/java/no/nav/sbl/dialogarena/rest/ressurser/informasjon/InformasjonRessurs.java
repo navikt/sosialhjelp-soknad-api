@@ -135,6 +135,7 @@ public class InformasjonRessurs {
         String uid = getSubjectHandler().getUid();
         Map<String, Object> utslagskriterierResultat = new HashMap<>();
         utslagskriterierResultat.put("arbeidssokerstatus", personInfoService.hentArbeidssokerStatus(uid));
+        utslagskriterierResultat.put("ytelsesstatus", personInfoService.hentYtelseStatus(uid));
 
         try {
             Personalia personalia = personaliaService.hentPersonalia(uid);
