@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.service;
 
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.service.helpers.HentSkjemanummerHelper;
 import no.nav.sbl.dialogarena.service.helpers.HvisLikHelper;
 import no.nav.sbl.dialogarena.service.helpers.HvisMerHelper;
 import no.nav.sbl.dialogarena.service.helpers.HvisSantHelper;
@@ -45,6 +46,7 @@ public class HandleBarKjoererTest {
         handleBarKjoerer.registrerHelper(HvisLikHelper.NAVN, HvisLikHelper.INSTANS);
         handleBarKjoerer.registrerHelper(ForFaktumHelper.NAVN, ForFaktumHelper.INSTANS);
         handleBarKjoerer.registrerHelper(HvisMerHelper.NAVN, HvisMerHelper.INSTANS);
+        handleBarKjoerer.registrerHelper(HentSkjemanummerHelper.NAVN, HentSkjemanummerHelper.INSTANS);
     }
 
     @Test

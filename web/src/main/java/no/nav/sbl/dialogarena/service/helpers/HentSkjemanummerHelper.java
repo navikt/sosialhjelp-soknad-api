@@ -5,9 +5,11 @@ import com.github.jknack.handlebars.Options;
 import no.nav.sbl.dialogarena.service.HandleBarKjoerer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+@Component
 public class HentSkjemanummerHelper extends RegistryAwareHelper<Object> {
 
     public static final String NAVN = "hentSkjemanummer";
