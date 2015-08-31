@@ -1,5 +1,20 @@
 <soknad skjemaNummer="NAV 76-13.45" temaKode="IND">
 
+    <!-- Trygd og pensjon -->
+    <faktum>
+        <id>trygdogpensjon</id>
+    </faktum>
+    <faktum>
+        <id>trygdogpensjon.utbetalere</id>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+    <!-- Tilleggsopplysninger -->
+    <faktum>
+        <id>tilleggsopplysninger.fritekst</id>
+    </faktum>
+
+
     <!-- Personalia -->
     <faktum>
         <id>personalia</id>
@@ -10,5 +25,14 @@
     <faktum>
         <id>tilleggsopplysninger.fritekst</id>
     </faktum>
+
+    <!-- Vedlegg -->
+    <vedlegg>
+        <faktum>trygdogpensjon</faktum>
+        <onValues>
+            <value>ja</value>
+        </onValues>
+        <skjemaNummer>K5</skjemaNummer>
+    </vedlegg>
 
 </soknad>
