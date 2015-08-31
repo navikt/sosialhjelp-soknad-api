@@ -11,21 +11,13 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.TilleggsstonaderTilXml;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import java.io.IOException;
 import java.util.HashMap;
@@ -33,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
 import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.generateXsrfToken;
 
@@ -69,7 +62,7 @@ public class SoknadRessurs {
     @SjekkTilgangTilSoknad
     public String hentOppsummering(@PathParam("behandlingsId") String behandlingsId) throws IOException {
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
-        vedleggService.leggTilKodeverkFelter(soknad.getVedlegg());
+        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
 
         String oppsummeringSti = "/skjema/" + soknad.getSoknadPrefix();
         return pdfTemplate.fyllHtmlMalMedInnhold(soknad, oppsummeringSti);
@@ -136,6 +129,16 @@ public class SoknadRessurs {
     @SjekkTilgangTilSoknad
     public List<Vedlegg> hentPaakrevdeVedlegg(@PathParam("behandlingsId") String behandlingsId) {
         return vedleggService.hentPaakrevdeVedlegg(behandlingsId);
+    }
+
+    @GET
+    @Path("/{behandlingsId}/stofo")
+    @Produces(APPLICATION_XML)
+    public byte[] xml(@PathParam("behandlingsId") String behandlingsId) {
+        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, false);
+        soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(soknadService.hentSoknadStruktur(soknad.getskjemaNummer()));
+        return new TilleggsstonaderTilXml().transform(soknad).getContent();
+
     }
 
     private void settJournalforendeEnhet(String behandlingsId, String delsteg) {

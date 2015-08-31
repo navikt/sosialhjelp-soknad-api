@@ -132,16 +132,11 @@
         <tr>
             <td class="sjekket"></td>
             <td>
-                <span>{{hentTekst "soknad.reise.offentligtransport.egenbil.drosje.false"}}</span>
+                <span>{{hentTekst "soknad.reise.offentligtransport.egenbil.drosje.false"}}:</span>
                 {{#forFaktum (concat faktumPrefiks "offentligtransport.drosje.tekst")}}
-                    <table>
-                        <tr>
-                            <td class="sjekket"></td>
-                            <td>
-                                <span>{{value}}</span>
-                            </td>
-                        </tr>
-                    </table>
+                    <span>
+                        <em>{{value}}</em>
+                    </span>
                 {{/forFaktum}}
             </td>
         </tr>

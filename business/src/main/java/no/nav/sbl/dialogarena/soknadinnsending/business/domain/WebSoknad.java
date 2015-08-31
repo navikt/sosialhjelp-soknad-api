@@ -1,8 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.sun.org.apache.bcel.internal.util.Objects;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigDelstegEndringException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.FaktumStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.VedleggForFaktumStruktur;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -11,12 +12,18 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.joda.time.DateTime;
 
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.modig.lang.collections.PredicateUtils.not;
@@ -127,6 +134,9 @@ public class WebSoknad implements Serializable {
             vedlegg = new ArrayList<>();
         }
         return vedlegg;
+    }
+    public List<Vedlegg> hentPaakrevdeVedlegg(){
+        return on(vedlegg).filter(Vedlegg.PAAKREVDE_VEDLEGG).collect();
     }
 
     public void setVedlegg(List<Vedlegg> vedlegg) {
@@ -521,5 +531,17 @@ public class WebSoknad implements Serializable {
                                   }
 
         ).head().getOrElse(null);
+    }
+
+    public void fjernFaktaSomIkkeSkalVaereSynligISoknaden(SoknadStruktur struktur) {
+        Iterator<Faktum> iterator = getFakta().iterator();
+        while(iterator.hasNext()){
+            Faktum next = iterator.next();
+            FaktumStruktur faktumStruktur = struktur.finnStrukturForKey(next.getKey());
+
+            if(faktumStruktur != null && !faktumStruktur.erSynlig(this)){
+                iterator.remove();
+            }
+        }
     }
 }

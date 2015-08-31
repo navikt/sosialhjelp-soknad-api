@@ -1,14 +1,14 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.FinnMaalgruppeinformasjonListePersonIkkeFunnet;
-import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.FinnMaalgruppeinformasjonListeSikkerhetsbegrensning;
-import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.MaalgruppeinformasjonV1;
-import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.informasjon.WSMaalgruppe;
-import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.informasjon.WSMaalgruppetyper;
-import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.informasjon.WSPeriode;
-import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.meldinger.WSFinnMaalgruppeinformasjonListeRequest;
-import no.nav.tjeneste.virksomhet.maalgruppeinformasjon.v1.meldinger.WSFinnMaalgruppeinformasjonListeResponse;
+import no.nav.tjeneste.virksomhet.maalgruppe.v1.FinnMaalgruppeinformasjonListePersonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.maalgruppe.v1.FinnMaalgruppeinformasjonListeSikkerhetsbegrensning;
+import no.nav.tjeneste.virksomhet.maalgruppe.v1.MaalgruppeV1;
+import no.nav.tjeneste.virksomhet.maalgruppe.v1.informasjon.WSMaalgruppe;
+import no.nav.tjeneste.virksomhet.maalgruppe.v1.informasjon.WSMaalgruppetyper;
+import no.nav.tjeneste.virksomhet.maalgruppe.v1.informasjon.WSPeriode;
+import no.nav.tjeneste.virksomhet.maalgruppe.v1.meldinger.WSFinnMaalgruppeinformasjonListeRequest;
+import no.nav.tjeneste.virksomhet.maalgruppe.v1.meldinger.WSFinnMaalgruppeinformasjonListeResponse;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 public class MaalgrupperServiceTest {
 
     @Mock
-    private MaalgruppeinformasjonV1 webservice;
+    private MaalgruppeV1 webservice;
 
     @InjectMocks
     private MaalgrupperService maalgrupperService;
@@ -78,7 +78,7 @@ public class MaalgrupperServiceTest {
     public void finnMaalgruppeinformasjonListeKallesMedPeriode() throws Exception {
         maalgrupperService.hentMaalgrupper(FODSELSNUMMER);
         verify(webservice).finnMaalgruppeinformasjonListe(argument.capture());
-        assertThat(argument.getValue().getPeriode().getFom()).isEqualTo(new LocalDate("2015-01-01"));
+        assertThat(argument.getValue().getPeriode().getFom().getYear()).isEqualTo(LocalDate.now().minusYears(1).getYear());
     }
 
     @Test

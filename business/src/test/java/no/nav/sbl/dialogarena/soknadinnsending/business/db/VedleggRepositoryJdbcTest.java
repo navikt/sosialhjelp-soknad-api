@@ -61,6 +61,7 @@ public class VedleggRepositoryJdbcTest {
         List<Vedlegg> vedlegg = vedleggRepository.hentVedleggUnderBehandling(BEHANDLINGS_ID, v.getFillagerReferanse());
         assertThat(vedlegg.size(), is(equalTo(1)));
         v.setVedleggId(vedlegg.get(0).getVedleggId());
+        v.setOpprettetDato(vedlegg.get(0).getOpprettetDato());
         assertThat(vedlegg.get(0), is(equalTo(v)));
     }
 
@@ -104,7 +105,7 @@ public class VedleggRepositoryJdbcTest {
         Long id = vedleggRepository.opprettEllerEndreVedlegg(getVedlegg(), null);
         vedleggRepository.lagreVedleggMedData(soknadId, id, getVedlegg().medData(new byte[]{1, 2, 3}));
         Vedlegg vedlegg = vedleggRepository.hentVedleggMedInnhold(id);
-        assertThat(vedlegg, is(equalTo(getVedlegg().medData(new byte[]{1, 2, 3}).medVedleggId(id))));
+        assertThat(vedlegg, is(equalTo(getVedlegg().medData(new byte[]{1, 2, 3}).medVedleggId(id).medOpprettetDato(vedlegg.getOpprettetDato()))));
     }
 
     @Test
@@ -115,7 +116,8 @@ public class VedleggRepositoryJdbcTest {
         try {
             vedleggRepository.hentVedlegg(id);
             fail("ikke slettet");
-        } catch (Exception e) {
+        } catch (Exception ignore) {
+
         }
         vedleggRepository.hentVedlegg(id2);
     }
