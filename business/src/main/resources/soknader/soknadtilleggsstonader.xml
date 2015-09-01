@@ -1148,13 +1148,7 @@
         <onProperty>annet</onProperty>
         <onValues>true</onValues>
     </vedlegg>
-    <vedlegg>
-        <faktum>tilsynfamilie.typetilsyn</faktum>
-        <skjemaNummer>N6</skjemaNummer>
-        <skjemanummerTillegg>familie</skjemanummerTillegg>
-        <onProperty>annet</onProperty>
-        <onValues>true</onValues>
-    </vedlegg>
+
 
     <!-- Tilleggsopplysninger -->
     <faktum>
