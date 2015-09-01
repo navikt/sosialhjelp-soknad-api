@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader;
 
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Flytteutgifter;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Aktivitetsinformasjon;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Reiseutgifter;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Rettighetstype;
