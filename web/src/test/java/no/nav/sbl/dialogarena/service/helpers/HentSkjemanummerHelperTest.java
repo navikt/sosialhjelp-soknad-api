@@ -4,6 +4,7 @@ import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,17 +47,18 @@ public class HentSkjemanummerHelperTest {
 
 
     @Test
-    public void viserDagpengerSkjemanummer() throws IOException {
-        WebSoknad dagpengeSoknad = lagDagpengeSoknad();
+    public void triggerDagpengerLogikkSomOppdatererSkjemanummer() throws IOException {
+        WebSoknad dagpengeSoknad = lagDagpengeSoknadMedPermittering(DagpengerUtils.DAGPENGER);
 
         String compiled = handlebars.compileInline("Skjemanummer: {{ hentSkjemanummer }}").apply(dagpengeSoknad);
-        assertThat(compiled).isEqualTo("Skjemanummer: NAV 04-01.04");
+        assertThat(compiled).isEqualTo("Skjemanummer: " + DagpengerUtils.DAGPENGER_VED_PERMITTERING);
     }
 
-    private WebSoknad lagDagpengeSoknad() {
+    private WebSoknad lagDagpengeSoknadMedPermittering(String skjemanummer) {
         WebSoknad dagpengeSoknad = new WebSoknad();
-        dagpengeSoknad.setSkjemaNummer("NAV 04-01.03");
+        dagpengeSoknad.setSkjemaNummer(skjemanummer);
 
+        // bruk permitteringsfaktum for å trigge endring av skjemanummer
         Faktum permittering = new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("arbeidsforhold.permitteringsperiode");
         dagpengeSoknad.setFakta(Collections.singletonList(permittering));
 
