@@ -53,7 +53,6 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * sendtInnInfo
 * forInnsendteVedlegg
 * forIkkeInnsendteVedlegg
-* hvisHarIkkeInnsendteDokumenter
 * skalViseRotasjonTurnusSporsmaal
 * hvisLikCmsTekst
 
@@ -64,6 +63,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * forFaktum - Finner et faktum og setter det som aktiv context. Har også inverse om faktum ikke finnes. 
 * harBarnetInntekt - Henter summen hvis barnet har inntekt. Må brukes innenfor en #forFaktum eller #forFakta helper. 
 * hvisHarDiskresjonskode - Viser innhold avhengig av om personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)
+* hvisHarIkkeInnsendteDokumenter - Sjekker om søknaden har ikke-innsendte vedlegg
 * hvisIkkeTom - Dersom variabelen ikke er tom vil innholdet vises
 * hvisKunStudent - Sjekker om brukeren har en annen status enn student (f.eks sykmeldt, i arbeid osv.)
 * hvisLik - Sjekker om to strenger er like
@@ -125,6 +125,17 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
     {{else}}
     jeg har IKKE noen diskresjonskode
 {{/hvisHarDiskresjonskode}}
+```
+
+
+##### hvisHarIkkeInnsendteDokumenter
+
+```
+{{#hvisHarIkkeInnsendteDokumenter}}
+    har ikke-innsendte dokumenter
+{{else}}
+    alt er innsendt
+{{/hvisHarIkkeInnsendteDokumenter}}
 ```
 
 
