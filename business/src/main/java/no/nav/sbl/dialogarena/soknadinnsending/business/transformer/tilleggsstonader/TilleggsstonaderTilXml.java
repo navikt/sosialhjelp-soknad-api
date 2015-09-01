@@ -55,10 +55,14 @@ public class TilleggsstonaderTilXml implements Transformer<WebSoknad, Alternativ
             rettighetstype.setLaeremiddelutgifter(new LaeremidlerTilXml().transform(webSoknad));
         }
 
-        rettighetstype.setTilsynsutgifter(tilsynsutgifter(webSoknad));
+        if (aktivBolk("flytting", webSoknad)) {
+            rettighetstype.setFlytteutgifter(new FlytteutgifterTilXml().transform(webSoknad));
+        }
 
+        rettighetstype.setTilsynsutgifter(tilsynsutgifter(webSoknad));
         rettighetstype.setReiseutgifter(reiseutgifter(webSoknad));
-        rettighetstype.setFlytteutgifter(new FlytteutgifterTilXml().transform(webSoknad));
+
+
         skjema.setRettighetstype(rettighetstype);
         skjema.setAktivitetsinformasjon(aktivitetsInformasjon(webSoknad));
         return skjema;
