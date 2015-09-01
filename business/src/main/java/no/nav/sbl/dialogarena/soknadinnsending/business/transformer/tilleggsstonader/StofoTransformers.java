@@ -71,7 +71,7 @@ public final class StofoTransformers {
             public Innsendingsintervaller transform(String s) {
                 Innsendingsintervaller innsendingsintervaller = new Innsendingsintervaller();
                 StofoKodeverkVerdier.InnsendingsintervallerKodeverk kodeverk = StofoKodeverkVerdier.InnsendingsintervallerKodeverk.valueOf(s);
-                innsendingsintervaller.setValue(kodeverk != null? kodeverk.kodeverksverdi: null);
+                innsendingsintervaller.setValue(kodeverk != null ? kodeverk.kodeverksverdi : null);
                 return innsendingsintervaller;
             }
         });
@@ -89,7 +89,7 @@ public final class StofoTransformers {
                 Formaal formaal = new Formaal();
                 formaal.setKodeverksRef("");
                 StofoKodeverkVerdier.FormaalKodeverk formaalKodeverk = StofoKodeverkVerdier.FormaalKodeverk.valueOf(s);
-                formaal.setValue(formaalKodeverk != null? formaalKodeverk.kodeverksverdi: null);
+                formaal.setValue(formaalKodeverk != null ? formaalKodeverk.kodeverksverdi : null);
                 return formaal;
             }
         });
@@ -159,11 +159,11 @@ public final class StofoTransformers {
         }
         String valueToConvert = property == null ? faktum.getValue() : faktum.getProperties().get(property);
         Object result;
-        if(FAKTUM_TRANSFORMERS.containsKey(clazz)){
+        if (FAKTUM_TRANSFORMERS.containsKey(clazz)) {
             result = FAKTUM_TRANSFORMERS.get(clazz).transform(faktum);
         } else if (StringUtils.isNotBlank(valueToConvert) && TRANSFORMERS.containsKey(clazz)) {
             result = TRANSFORMERS.get(clazz).transform(valueToConvert);
-        }  else {
+        } else {
             result = null;
         }
         return clazz.cast(result);
@@ -174,7 +174,12 @@ public final class StofoTransformers {
         if (periodeFaktum != null) {
             Map<String, String> properties = periodeFaktum.getProperties();
             periode = new no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Periode();
-            periode.setFom(new XMLGregorianCalendarImpl(DateTime.parse(properties.get(FOM)).toGregorianCalendar()));
+
+            String fom = properties.get(FOM);
+            if (fom != null) {
+                periode.setFom(new XMLGregorianCalendarImpl(DateTime.parse(fom).toGregorianCalendar()));
+            }
+
             String tom = properties.get(TOM);
             if (tom != null) {
                 periode.setTom(new XMLGregorianCalendarImpl(DateTime.parse(tom).toGregorianCalendar()));
