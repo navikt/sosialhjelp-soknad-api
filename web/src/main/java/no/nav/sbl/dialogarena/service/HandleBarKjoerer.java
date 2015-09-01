@@ -65,7 +65,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         }
         handlebars.registerHelper("adresse", generateAdresseHelper());
         handlebars.registerHelper("forFaktumHvisSant", generateforFaktumHvisSantHelper());
-        handlebars.registerHelper("forFakta", generateForFaktaHelper());
         handlebars.registerHelper("forBarnefakta", generateForBarnefaktaHelper());
         handlebars.registerHelper("forFaktaMedPropertySattTilTrue", generateForFaktaMedPropTrueHelper());
         handlebars.registerHelper("formatterFodelsDato", generateFormatterFodselsdatoHelper());
@@ -360,20 +359,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         };
     }
 
-    private Helper<String> generateForFaktaHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String key, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-                List<Faktum> fakta = soknad.getFaktaMedKey(key);
-                if (fakta.isEmpty()) {
-                    return options.inverse(this);
-                } else {
-                    return lagItererbarRespons(options, fakta);
-                }
-            }
-        };
-    }
 
     private Helper<String> generateForBarnefaktaHelper() {
         return new Helper<String>() {
@@ -427,7 +412,7 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         }
     }
 
-    private static <T> String lagItererbarRespons(Options options, List<T> liste) throws IOException {
+    public static <T> String lagItererbarRespons(Options options, List<T> liste) throws IOException {
         Context parent = options.context;
         StringBuilder buffer = new StringBuilder();
         int index = 0;
