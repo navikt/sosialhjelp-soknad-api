@@ -25,6 +25,7 @@ import java.util.*;
 
 import static no.bekk.bekkopen.person.FodselsnummerValidator.getFodselsnummer;
 import static no.nav.modig.lang.collections.IterUtils.on;
+import static no.nav.sbl.dialogarena.service.Hjelpemetoder.lagItererbarRespons;
 import static org.apache.commons.lang3.ArrayUtils.reverse;
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.StringUtils.split;
@@ -52,10 +53,9 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
     }
 
     @Override
-    public void registrerHelper(String name, Helper helper){
+    public void registrerHelper(String name, Helper helper) {
         helpers.put(name, helper);
     }
-
 
     private Handlebars getHandlebars() {
         Handlebars handlebars = new Handlebars();
@@ -63,11 +63,11 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         for (Map.Entry<String, Helper> helper : helpers.entrySet()) {
             handlebars.registerHelper(helper.getKey(), helper.getValue());
         }
+
         handlebars.registerHelper("adresse", generateAdresseHelper());
         handlebars.registerHelper("forFaktumHvisSant", generateforFaktumHvisSantHelper());
         handlebars.registerHelper("forFakta", generateForFaktaHelper());
         handlebars.registerHelper("forBarnefakta", generateForBarnefaktaHelper());
-        handlebars.registerHelper("forFaktaMedPropertySattTilTrue", generateForFaktaMedPropTrueHelper());
         handlebars.registerHelper("formatterFodelsDato", generateFormatterFodselsdatoHelper());
         handlebars.registerHelper("formatterLangDato", generateFormatterLangDatoHelper());
         handlebars.registerHelper("hvisEttersending", generateHvisEttersendingHelper());
@@ -252,7 +252,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         };
     }
 
-
     private String getCmsTekst(String key, Object[] parameters, Locale locale) {
         try {
             return navMessageSource.getMessage(soknadTypePrefix + "." + key, parameters, locale);
@@ -305,21 +304,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
                     String[] datoSplit = split(s, "-");
                     reverse(datoSplit);
                     return join(datoSplit, ".");
-                }
-            }
-        };
-    }
-
-    private Helper<String> generateForFaktaMedPropTrueHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String key, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-                List<Faktum> fakta = soknad.getFaktaMedKeyOgPropertyLikTrue(key, (String) options.param(0));
-                if (fakta.isEmpty()) {
-                    return options.inverse(this);
-                } else {
-                    return lagItererbarRespons(options, fakta);
                 }
             }
         };
@@ -417,7 +401,7 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         }
     }
 
-    public static Faktum  finnFaktum(Context context) {
+    public static Faktum finnFaktum(Context context) {
         if (context == null) {
             return null;
         } else if (context.model() instanceof Faktum) {
@@ -425,28 +409,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         } else {
             return finnFaktum(context.parent());
         }
-    }
-
-    private static <T> String lagItererbarRespons(Options options, List<T> liste) throws IOException {
-        Context parent = options.context;
-        StringBuilder buffer = new StringBuilder();
-        int index = 0;
-        Iterator<T> iterator = liste.iterator();
-        while (iterator.hasNext()) {
-            Object element = iterator.next();
-            boolean first = index == 0;
-            boolean even = index % 2 == 0;
-            boolean last = !iterator.hasNext();
-            Context current = Context.newContext(parent, element)
-                    .data("index", index)
-                    .data("first", first ? "first" : "")
-                    .data("last", last ? "last" : "")
-                    .data("odd", even ? "" : "odd")
-                    .data("even", even ? "even" : "");
-            buffer.append(options.fn(current));
-            index++;
-        }
-        return buffer.toString();
     }
 
     private Helper<Object> generateSkalViseRotasjonTurnusSporsmaalHelper() {
@@ -489,5 +451,4 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
             }
         };
     }
-
 }

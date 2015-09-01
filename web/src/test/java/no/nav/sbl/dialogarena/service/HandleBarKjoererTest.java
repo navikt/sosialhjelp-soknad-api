@@ -5,6 +5,7 @@ import no.nav.sbl.dialogarena.service.helpers.HvisLikHelper;
 import no.nav.sbl.dialogarena.service.helpers.HvisMerHelper;
 import no.nav.sbl.dialogarena.service.helpers.HvisMindreHelper;
 import no.nav.sbl.dialogarena.service.helpers.HvisSantHelper;
+import no.nav.sbl.dialogarena.service.helpers.faktum.ForFaktaMedPropertySattTilTrueHelper;
 import no.nav.sbl.dialogarena.service.helpers.faktum.ForFaktumHelper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
@@ -18,7 +19,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.context.MessageSource;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Locale;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
@@ -47,6 +48,7 @@ public class HandleBarKjoererTest {
         handleBarKjoerer.registrerHelper(ForFaktumHelper.NAVN, ForFaktumHelper.INSTANS);
         handleBarKjoerer.registrerHelper(HvisMerHelper.NAVN, HvisMerHelper.INSTANS);
         handleBarKjoerer.registrerHelper(HvisMindreHelper.NAVN, HvisMindreHelper.INSTANS);
+        handleBarKjoerer.registrerHelper(ForFaktaMedPropertySattTilTrueHelper.NAVN, ForFaktaMedPropertySattTilTrueHelper.INSTANS);
     }
 
     @Test
@@ -59,12 +61,12 @@ public class HandleBarKjoererTest {
                 .medFaktum(new Faktum().medKey("reellarbeidssoker.villigflytte").medValue("true"))
                 .medFaktum(new Faktum().medKey("reellarbeidssoker.villigdeltid").medValue("false"))
                 .medFaktum(new Faktum().medKey("reellarbeidssoker.villigdeltid.maksimalarbeidstid").medValue("20"))
-                .medVedlegg(Arrays.asList(new Vedlegg().medSkjemaNummer("L6").medInnsendingsvalg(Vedlegg.Status.LastetOpp)));
+                .medVedlegg(Collections.singletonList(new Vedlegg().medSkjemaNummer("L6").medInnsendingsvalg(Vedlegg.Status.LastetOpp)));
 
         String html = handleBarKjoerer.fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger.ordinaer");
         assertThat(html, containsString("15038000000"));
-
     }
+
     @Test
     public void skalKompilereTilleggstsstonader() throws IOException {
         WebSoknad soknad = new WebSoknad()
@@ -100,7 +102,7 @@ public class HandleBarKjoererTest {
                 .medFaktum(new Faktum().medKey("reellarbeidssoker.villigflytte").medValue("true"))
                 .medFaktum(new Faktum().medKey("reellarbeidssoker.villigdeltid").medValue("false"))
                 .medFaktum(new Faktum().medKey("reellarbeidssoker.villigdeltid.maksimalarbeidstid").medValue("20"))
-                .medVedlegg(Arrays.asList(new Vedlegg().medSkjemaNummer("L6").medInnsendingsvalg(Vedlegg.Status.LastetOpp)));
+                .medVedlegg(Collections.singletonList(new Vedlegg().medSkjemaNummer("L6").medInnsendingsvalg(Vedlegg.Status.LastetOpp)));
         String html = handleBarKjoerer.fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger.ordinaer");
         assertThat(html, containsString("15038000000"));
     }
