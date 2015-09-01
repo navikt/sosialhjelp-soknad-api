@@ -21,20 +21,13 @@ import org.springframework.context.NoSuchMessageException;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import static no.bekk.bekkopen.person.FodselsnummerValidator.getFodselsnummer;
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static org.apache.commons.lang3.ArrayUtils.reverse;
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.StringUtils.split;
-import static org.slf4j.LoggerFactory.getLogger;
 
 
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.ExcessiveClassLength"})
@@ -78,8 +71,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         handlebars.registerHelper("formatterFodelsDato", generateFormatterFodselsdatoHelper());
         handlebars.registerHelper("formatterLangDato", generateFormatterLangDatoHelper());
         handlebars.registerHelper("hvisEttersending", generateHvisEttersendingHelper());
-        handlebars.registerHelper("hvisMindre", generateHvisMindreHelper());
-        handlebars.registerHelper("hvisMer", generateHvisMerHelper());
         handlebars.registerHelper("hentTekst", generateHentTekstHelper());
         handlebars.registerHelper("hentTekstMedFaktumParameter", generateHentTekstMedFaktumParameterHelper());
         handlebars.registerHelper("hentLand", generateHentLandHelper());
@@ -272,41 +263,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
                 return String.format("KEY MANGLER: [%s]", key);
             }
         }
-    }
-
-    private Helper<String> generateHvisMerHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String value, Options options) throws IOException {
-                try {
-                    Double grense = Double.parseDouble(((String) options.param(0)).replace(',', '.'));
-                    Double verdi = Double.parseDouble(value.replace(',', '.'));
-                    if (verdi > grense) {
-                        return options.fn(this);
-                    } else {
-                        return options.inverse(this);
-                    }
-                } catch (NumberFormatException e) {
-                    getLogger(HandleBarKjoerer.class).error("Kunne ikke parse input til double", e);
-                    return options.fn(this);
-                }
-            }
-        };
-    }
-
-    private Helper<String> generateHvisMindreHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String value, Options options) throws IOException {
-                Integer grense = Integer.parseInt((String) options.param(0));
-                Integer verdi = Integer.parseInt(value);
-                if (verdi < grense) {
-                    return options.fn(this);
-                } else {
-                    return options.inverse(this);
-                }
-            }
-        };
     }
 
     private Helper<Object> generateHvisEttersendingHelper() {
@@ -533,4 +489,5 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
             }
         };
     }
+
 }

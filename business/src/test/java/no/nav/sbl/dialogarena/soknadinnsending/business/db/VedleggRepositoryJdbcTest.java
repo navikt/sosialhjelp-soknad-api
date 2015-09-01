@@ -126,7 +126,7 @@ public class VedleggRepositoryJdbcTest {
     public void skalSletteVedleggUnderBehandling() {
         Long id = vedleggRepository.opprettEllerEndreVedlegg(getVedlegg().medInnsendingsvalg(Vedlegg.Status.UnderBehandling), new byte[]{1, 2, 3});
         Long id2 = vedleggRepository.opprettEllerEndreVedlegg(getVedlegg().medInnsendingsvalg(Vedlegg.Status.SendesSenere), new byte[]{1, 2, 3});
-        vedleggRepository.slettVedleggUnderBehandling(soknadId, 10L, "1");
+        vedleggRepository.slettVedleggUnderBehandling(soknadId, 10L, "1", null);
         vedleggRepository.hentVedlegg(id2);
         vedleggRepository.hentVedlegg(id);
     }
