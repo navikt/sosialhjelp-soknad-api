@@ -70,7 +70,7 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
     @Override
     public List<Vedlegg> hentVedlegg(String behandlingsId) {
         List<Vedlegg> vedlegg = getJdbcTemplate().query("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, opprinneliginnsendingsvalg, storrelse, opprettetdato," +
-                " antallsider, fillagerReferanse, aarsak from Vedlegg where soknad_id = (select soknad_id from SOKNAD where brukerbehandlingid = ?) ",
+                " antallsider, fillagerReferanse, aarsak from Vedlegg where soknad_id = (select soknad_id from SOKNAD where brukerbehandlingid = ?) and innsendingsvalg != 'UnderBehandling' ",
                 new VedleggRowMapper(false), behandlingsId);
         return on(vedlegg).filter(not(ER_KVITTERING)).collect();
     }
@@ -189,8 +189,13 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
     }
 
     @Override
-    public void slettVedleggUnderBehandling(Long soknadId, Long faktumId, String skjemaNummer) {
-        getJdbcTemplate().update("delete from vedlegg where soknad_id = ? and faktum = ? and skjemaNummer = ? and innsendingsvalg = 'UnderBehandling'", soknadId, faktumId, skjemaNummer);
+    public void slettVedleggUnderBehandling(Long soknadId, Long faktumId, String skjemaNummer, String skjemanummerTillegg) {
+        String skjermaQuery = skjemaNummer + (skjemanummerTillegg != null? "|" + skjemanummerTillegg: "");
+        if(faktumId == null){
+            getJdbcTemplate().update("delete from vedlegg where soknad_id = ? and faktum  is null and skjemaNummer = ? and innsendingsvalg = 'UnderBehandling'", soknadId, skjermaQuery);
+        } else {
+            getJdbcTemplate().update("delete from vedlegg where soknad_id = ? and faktum = ? and skjemaNummer = ? and innsendingsvalg = 'UnderBehandling'", soknadId, faktumId, skjermaQuery);
+        }
     }
 
     @Override

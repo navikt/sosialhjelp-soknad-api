@@ -156,6 +156,7 @@ public class VedleggService {
                 .medSoknadId(vedlegg.getSoknadId())
                 .medFaktumId(vedlegg.getFaktumId())
                 .medSkjemaNummer(vedlegg.getSkjemaNummer())
+                .medSkjemanummerTillegg(vedlegg.getSkjemanummerTillegg())
                 .medNavn(vedlegg.getNavn())
                 .medStorrelse(size)
                 .medAntallSider(1)
@@ -238,7 +239,7 @@ public class VedleggService {
         logger.info("Lagrer fil til henvendelse for behandling {}, UUID: {}", soknad.getBrukerBehandlingId(), forventning.getFillagerReferanse());
         fillagerService.lagreFil(soknad.getBrukerBehandlingId(), forventning.getFillagerReferanse(), soknad.getAktoerId(), new ByteArrayInputStream(doc));
 
-        vedleggRepository.slettVedleggUnderBehandling(soknadId, forventning.getFaktumId(), forventning.getSkjemaNummer());
+        vedleggRepository.slettVedleggUnderBehandling(soknadId, forventning.getFaktumId(), forventning.getSkjemaNummer(), forventning.getSkjemanummerTillegg());
         vedleggRepository.lagreVedleggMedData(soknadId, vedleggId, forventning);
         return vedleggId;
     }

@@ -1085,7 +1085,71 @@
     <faktum>
         <id>barnepass.periode</id>
     </faktum>
-    
+
+    <!-- Tilsyn av familie -->
+    <faktum>
+        <id>tilsynfamilie.periode</id>
+        <dependOn>informasjonsside.stonad.familie</dependOn>
+        <dependOnValues><value>true</value></dependOnValues>
+    </faktum>
+    <faktum>
+        <id>tilsynfamilie.persontilsyn</id>
+        <dependOn>informasjonsside.stonad.familie</dependOn>
+        <dependOnValues><value>true</value></dependOnValues>
+    </faktum>
+    <faktum>
+        <id>tilsynfamilie.typetilsyn</id>
+        <dependOn>informasjonsside.stonad.familie</dependOn>
+        <dependOnValues><value>true</value></dependOnValues>
+    </faktum>
+    <faktum>
+        <id>tilsynfamilie.deletilsyn</id>
+        <dependOn>informasjonsside.stonad.familie</dependOn>
+        <dependOnValues><value>true</value></dependOnValues>
+    </faktum>
+    <faktum>
+        <id>tilsynfamilie.utbetalingsdato</id>
+        <dependOn>informasjonsside.stonad.familie</dependOn>
+        <dependOnValues><value>true</value></dependOnValues>
+    </faktum>
+
+    <vedlegg>
+        <faktum>tilsynfamilie.typetilsyn</faktum>
+        <skjemaNummer>X1</skjemaNummer>
+        <skjemanummerTillegg>familie</skjemanummerTillegg>
+        <onProperty>offentlig</onProperty>
+        <onValues>true</onValues>
+    </vedlegg>
+    <vedlegg>
+        <faktum>tilsynfamilie.typetilsyn</faktum>
+        <skjemaNummer>X1</skjemaNummer>
+        <skjemanummerTillegg>familie</skjemanummerTillegg>
+        <onProperty>privat</onProperty>
+        <onValues>true</onValues>
+    </vedlegg>
+    <vedlegg>
+        <faktum>tilsynfamilie.typetilsyn</faktum>
+        <skjemaNummer>J4</skjemaNummer>
+        <skjemanummerTillegg>familie</skjemanummerTillegg>
+        <onProperty>offentlig</onProperty>
+        <onValues>true</onValues>
+    </vedlegg>
+    <vedlegg>
+        <faktum>tilsynfamilie.typetilsyn</faktum>
+        <skjemaNummer>J4</skjemaNummer>
+        <skjemanummerTillegg>familie</skjemanummerTillegg>
+        <onProperty>private</onProperty>
+        <onValues>true</onValues>
+    </vedlegg>
+    <vedlegg>
+        <faktum>tilsynfamilie.typetilsyn</faktum>
+        <skjemaNummer>J4</skjemaNummer>
+        <skjemanummerTillegg>familie</skjemanummerTillegg>
+        <onProperty>annet</onProperty>
+        <onValues>true</onValues>
+    </vedlegg>
+
+
     <!-- Tilleggsopplysninger -->
     <faktum>
         <id>tilleggsopplysninger.fritekst</id>
