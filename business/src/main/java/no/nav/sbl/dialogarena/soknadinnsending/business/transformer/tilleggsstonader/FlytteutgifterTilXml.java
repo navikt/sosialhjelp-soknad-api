@@ -6,9 +6,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.collections15.Transformer;
 
 import javax.xml.datatype.XMLGregorianCalendar;
-
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTransformers.extractValue;
@@ -80,8 +78,7 @@ public class FlytteutgifterTilXml implements Transformer<WebSoknad, Flytteutgift
 
     private Boolean hentFlytting(WebSoknad soknad, String type) {
         String aarsak = extractValue(soknad.getFaktumMedKey(AARSAK), String.class);
-        if (aarsak == null) return null;
-        return aarsak.equals(type) ? true : null;
+        return type.equals(aarsak) ? true : null;
     }
 
 }
