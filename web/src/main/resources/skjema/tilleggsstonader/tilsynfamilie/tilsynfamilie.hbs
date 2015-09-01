@@ -14,12 +14,6 @@
                 </tr>
             {{/forFaktum}}
             {{#forFaktum "tilsynfamilie.typetilsyn"}}
-                <tr>
-                    <td class="sjekket"></td>
-                    <td>
-                        <span>{{ hentTekst "soknad.tilsynfamilie.persontilsyn.sporsmal"}} value </span>
-                    </td>
-                </tr>
                 {{#hvisSant properties.offentlig}}
                     <tr>
                         <td></td>
@@ -50,7 +44,7 @@
                     <tr>
                         <td class="sjekket"></td>
                         <td>
-                            <span>{{ hentTekst "soknad.tilsynfamilie.deletilsyn.label.ja"}}: properties.personnummer - properties.navn </span>
+                            <span>{{ hentTekst "soknad.tilsynfamilie.deletilsyn.label.ja"}}: {{properties.personnummer}} - {{properties.navn}} </span>
                         </td>
                     </tr>
                 {{else}}
