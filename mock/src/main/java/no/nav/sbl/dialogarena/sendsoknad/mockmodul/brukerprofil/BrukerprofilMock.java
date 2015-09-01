@@ -82,10 +82,8 @@ public class BrukerprofilMock {
 
         try {
             when(mock.hentKontaktinformasjonOgPreferanser(any(XMLHentKontaktinformasjonOgPreferanserRequest.class))).thenReturn(response);
-        } catch (HentKontaktinformasjonOgPreferanserPersonIkkeFunnet ikkeFunnet) {
-            throw new RuntimeException(ikkeFunnet);
-        } catch (HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning sikkerhetsbegrensning) {
-            throw new RuntimeException(sikkerhetsbegrensning);
+        } catch (HentKontaktinformasjonOgPreferanserPersonIkkeFunnet | HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning e) {
+            throw new RuntimeException(e);
         }
         return mock;
     }

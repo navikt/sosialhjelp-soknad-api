@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
+import com.google.common.collect.Lists;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
@@ -95,7 +96,7 @@ public class VedleggService {
     private PdfWatermarker watermarker = new PdfWatermarker();
 
     public List<Vedlegg> hentVedleggOgKvittering(WebSoknad soknad) {
-        List<Vedlegg> vedleggForventninger = soknad.hentPaakrevdeVedlegg();
+        ArrayList<Vedlegg> vedleggForventninger = Lists.newArrayList(soknad.hentPaakrevdeVedlegg());
         Vedlegg kvittering = vedleggRepository.hentVedleggForskjemaNummer(soknad.getSoknadId(), null, KVITTERING);
         if (kvittering != null) {
             vedleggForventninger.add(kvittering);
@@ -155,6 +156,7 @@ public class VedleggService {
                 .medSoknadId(vedlegg.getSoknadId())
                 .medFaktumId(vedlegg.getFaktumId())
                 .medSkjemaNummer(vedlegg.getSkjemaNummer())
+                .medSkjemanummerTillegg(vedlegg.getSkjemanummerTillegg())
                 .medNavn(vedlegg.getNavn())
                 .medStorrelse(size)
                 .medAntallSider(1)
@@ -237,7 +239,7 @@ public class VedleggService {
         logger.info("Lagrer fil til henvendelse for behandling {}, UUID: {}", soknad.getBrukerBehandlingId(), forventning.getFillagerReferanse());
         fillagerService.lagreFil(soknad.getBrukerBehandlingId(), forventning.getFillagerReferanse(), soknad.getAktoerId(), new ByteArrayInputStream(doc));
 
-        vedleggRepository.slettVedleggUnderBehandling(soknadId, forventning.getFaktumId(), forventning.getSkjemaNummer());
+        vedleggRepository.slettVedleggUnderBehandling(soknadId, forventning.getFaktumId(), forventning.getSkjemaNummer(), forventning.getSkjemanummerTillegg());
         vedleggRepository.lagreVedleggMedData(soknadId, vedleggId, forventning);
         return vedleggId;
     }

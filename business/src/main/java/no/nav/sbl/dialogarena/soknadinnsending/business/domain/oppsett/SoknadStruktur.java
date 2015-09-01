@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
 
@@ -89,7 +90,7 @@ public class SoknadStruktur implements Serializable {
             public boolean evaluate(VedleggForFaktumStruktur vedleggForFaktumStruktur) {
                 if(vedleggForFaktumStruktur.getSkjemaNummer().equals(skjemaNr)) {
                     String skjemaTillegg = vedleggForFaktumStruktur.getSkjemanummerTillegg();
-                    return skjemaTillegg != null && skjemaTillegg.equals(tillegg);
+                    return Objects.equals(skjemaTillegg, tillegg);
                 }
                 return false;
             }

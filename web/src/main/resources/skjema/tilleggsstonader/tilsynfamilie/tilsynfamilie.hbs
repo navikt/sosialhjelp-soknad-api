@@ -1,0 +1,64 @@
+{{#forFaktum "informasjonsside.stonad.familie"}}
+    {{#hvisSant value}}
+        <h2>{{hentTekst "soknad.familie.tittel"}}</h2>
+        <table>
+            {{#forFaktum "tilsynfamilie.periode"}}
+                {{> skjema/tilleggsstonader/felles/aktivitetsperiode}}
+            {{/forFaktum}}
+            {{#forFaktum "tilsynfamilie.persontilsyn"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td>
+                        <span>{{ hentTekst "soknad.tilsynfamilie.typetilsyn.sporsmal"}} </span>
+                    </td>
+                </tr>
+            {{/forFaktum}}
+            {{#forFaktum "tilsynfamilie.typetilsyn"}}
+                {{#hvisSant properties.offentlig}}
+                    <tr>
+                        <td></td>
+                        <td>
+                            <span>{{ hentTekst "soknad.tilsynfamilie.typetilsyn.valg.offentlig"}}</span>
+                        </td>
+                    </tr>
+                {{/hvisSant}}
+                {{#hvisSant properties.privat}}
+                    <tr>
+                        <td></td>
+                        <td>
+                            <span>{{ hentTekst "soknad.tilsynfamilie.typetilsyn.valg.privat"}}</span>
+                        </td>
+                    </tr>
+                {{/hvisSant}}
+                {{#hvisSant properties.annet}}
+                    <tr>
+                        <td></td>
+                        <td>
+                            <span>{{ hentTekst "soknad.tilsynfamilie.typetilsyn.valg.annet"}}</span>
+                        </td>
+                    </tr>
+                {{/hvisSant}}
+            {{/forFaktum}}
+            {{#forFaktum "tilsynfamilie.deletilsyn"}}
+                {{#hvisSant value}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>
+                            <span>{{ hentTekst "soknad.tilsynfamilie.deletilsyn.label.ja"}}: {{properties.personnummer}} - {{properties.navn}} </span>
+                        </td>
+                    </tr>
+                {{else}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>
+                            <span>{{ hentTekst "soknad.tilsynfamilie.deletilsyn.label.nei"}} </span>
+                        </td>
+                    </tr>
+                {{/hvisSant}}
+            {{/forFaktum}}
+            {{#forFaktum "tilsynfamilie.persontilsyn"}}
+                {{> skjema/tilleggsstonader/felles/utbetalingsdato}}
+            {{/forFaktum}}
+        </table>
+    {{/hvisSant}}
+{{/forFaktum}}
