@@ -948,23 +948,43 @@
     </faktum>
     <faktum>
         <id>flytting.flytteselv.andreutgifter.hengerleie</id>
-        <dependOn>flytting.flytteselv.andreutgifter</dependOn>
+        <dependOn>flytting.selvellerbistand</dependOn>
+        <dependOnValues>
+            <value>flytterselv</value>
+            <value>tilbudmenflytterselv</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>flytting.flytteselv.andreutgifter.bom</id>
-        <dependOn>flytting.flytteselv.andreutgifter</dependOn>
+        <dependOn>flytting.selvellerbistand</dependOn>
+        <dependOnValues>
+            <value>flytterselv</value>
+            <value>tilbudmenflytterselv</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>flytting.flytteselv.andreutgifter.parkering</id>
-        <dependOn>flytting.flytteselv.andreutgifter</dependOn>
+        <dependOn>flytting.selvellerbistand</dependOn>
+        <dependOnValues>
+            <value>flytterselv</value>
+            <value>tilbudmenflytterselv</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>flytting.flytteselv.andreutgifter.ferge</id>
-        <dependOn>flytting.flytteselv.andreutgifter</dependOn>
+        <dependOn>flytting.selvellerbistand</dependOn>
+        <dependOnValues>
+            <value>flytterselv</value>
+            <value>tilbudmenflytterselv</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>flytting.flytteselv.andreutgifter.annet</id>
-        <dependOn>flytting.flytteselv.andreutgifter</dependOn>
+        <dependOn>flytting.selvellerbistand</dependOn>
+        <dependOnValues>
+            <value>flytterselv</value>
+            <value>tilbudmenflytterselv</value>
+        </dependOnValues>
     </faktum>
 
     <!-- Bostotte-->
