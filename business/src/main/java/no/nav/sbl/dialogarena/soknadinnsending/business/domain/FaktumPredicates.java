@@ -1,0 +1,25 @@
+package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
+
+import org.apache.commons.collections15.Predicate;
+import org.apache.commons.collections15.Transformer;
+
+import java.util.Map;
+
+public final class FaktumPredicates {
+
+    public static final Transformer<Map.Entry<String,String>,String> KEYS = new Transformer<Map.Entry<String, String>, String>() {
+        @Override
+        public String transform(Map.Entry<String, String> mapEntry) {
+            return mapEntry.getKey();
+        }
+    };
+
+    public static org.apache.commons.collections15.Predicate<? super Map.Entry<String, String>> propertyIsValue(final String expected) {
+        return new Predicate<Map.Entry<String, String>>() {
+            @Override
+            public boolean evaluate(Map.Entry<String, String> mapEntry) {
+                return mapEntry.getValue().equals(expected);
+            }
+        };
+    }
+}
