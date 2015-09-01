@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader;
 
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Flytteutgifter;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Aktivitetsinformasjon;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Reiseutgifter;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Rettighetstype;
@@ -55,6 +56,7 @@ public class TilleggsstonaderTilXml implements Transformer<WebSoknad, Alternativ
         }
 
         rettighetstype.setReiseutgifter(reiseutgifter(webSoknad));
+        rettighetstype.setFlytteutgifter(new FlytteutgifterTilXml().transform(webSoknad));
         skjema.setRettighetstype(rettighetstype);
         skjema.setAktivitetsinformasjon(aktivitetsInformasjon(webSoknad));
         return skjema;
