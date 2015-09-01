@@ -35,7 +35,6 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
  
 * adresse
 * forFaktumHvisSant
-* forFakta
 * forBarnefakta
 * forFaktaMedPropertySattTilTrue
 * formatterFodelsDato (deprecated og erstattet av formatterKortDato og formatterFnrTilKortDato)
@@ -61,6 +60,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 
 * concat - Legger sammen alle parametrene til tekststring
 * fnrTilKortDato - Formatterer et gyldig fødselnummer til dato på formatet dd.mm.aaaa
+* forFakta - Finner alle fakta med en gitt key og setter hvert faktum som aktiv context etter tur. Har inverse ved ingen fakta.
 * forFaktum - Finner et faktum og setter det som aktiv context. Har også inverse om faktum ikke finnes. 
 * harBarnetInntekt - Henter summen hvis barnet har inntekt. Må brukes innenfor en #forFaktum eller #forFakta helper. 
 * hvisHarDiskresjonskode - Viser innhold avhengig av om personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)
@@ -88,6 +88,17 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 
 ```
 {{fnrTilKortDato "27108034322"}}
+```
+
+
+##### forFakta
+
+```
+{{#forFakta "faktumKey"}}
+   Faktum {{index}} med key "faktumKey" har value {{value}}
+{{else}}
+   Faktalisten er tom, det finnes ingen faktum med key "faktumKey".
+{{/forFakta}}
 ```
 
 
