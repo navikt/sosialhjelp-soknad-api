@@ -118,6 +118,7 @@ public class VedleggRessurs {
                     .medSoknadId(soknad.getSoknadId())
                     .medFaktumId(forventning.getFaktumId())
                     .medSkjemaNummer(forventning.getSkjemaNummer())
+                    .medSkjemanummerTillegg(forventning.getSkjemanummerTillegg())
                     .medNavn(forventning.getNavn())
                     .medStorrelse(file.getContentDisposition().getSize())
                     .medAntallSider(1)
