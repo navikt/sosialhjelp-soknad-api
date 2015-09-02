@@ -86,11 +86,12 @@ public class DefaultVedleggServiceTest {
     public void skalSjekkeParentFaktaVedUthenting() {
         Faktum parentSinParent = new Faktum().medFaktumId(1L).medKey("parentSinParent").medValue("true");
         Faktum parent = new Faktum().medFaktumId(2L).medParrentFaktumId(1L).medKey("parent").medValue("true").medProperty("parentProp", "true");
-        Faktum vedlegg1 = new Faktum().medParrentFaktumId(2L).medKey("parent.faktumMedParentPaaTrue").medValue("true");
-        Faktum vedlegg2 = new Faktum().medParrentFaktumId(2L).medKey("parent.faktumMedParentPropPaaTrue").medValue("true");
+        Faktum vedlegg1 = new Faktum().medFaktumId(3L).medParrentFaktumId(2L).medKey("parent.faktumMedParentPaaTrue").medValue("true");
+        Faktum vedlegg2 = new Faktum().medFaktumId(4L).medParrentFaktumId(2L).medKey("parent.faktumMedParentPropPaaTrue").medValue("true");
 
         when(soknadDataFletter.hentSoknad(eq("123"), eq(true), eq(true))).thenReturn(new WebSoknad().medskjemaNummer("nav-1.1.1")
                 .medFaktum(vedlegg1).medFaktum(vedlegg2).medFaktum(parent).medFaktum(parentSinParent));
+
         List<Vedlegg> vedlegg = vedleggService.genererPaakrevdeVedlegg("123");
         assertThat(vedlegg).extracting("skjemaNummer").contains("v1", "v2");
         assertThat(vedlegg).extracting("faktumId").containsNull();
@@ -106,13 +107,12 @@ public class DefaultVedleggServiceTest {
     public void skalSjekkeParentSinParentFaktaVedUthenting() {
         Faktum parentSinParent = new Faktum().medFaktumId(1L).medKey("parentSinParent").medValue("true");
         Faktum parent = new Faktum().medFaktumId(2L).medParrentFaktumId(1L).medKey("parent").medValue("true");
-        Faktum vedlegg1 = new Faktum().medParrentFaktumId(2L).medKey("parent.faktumMedParentPaaTrue").medValue("true");
+        Faktum vedlegg1 = new Faktum().medFaktumId(3L).medParrentFaktumId(2L).medKey("parent.faktumMedParentPaaTrue").medValue("true");
 
         when(soknadDataFletter.hentSoknad(eq("123"), eq(true), eq(true))).thenReturn(new WebSoknad().medskjemaNummer("nav-1.1.1")
                 .medFaktum(vedlegg1).medFaktum(parent).medFaktum(parentSinParent));
         List<Vedlegg> vedlegg = vedleggService.genererPaakrevdeVedlegg("123");
         assertThat(vedlegg).extracting("skjemaNummer").contains("v1");
-        assertThat(vedlegg).extracting("faktumId").containsNull();
         assertThat(vedlegg).hasSize(1);
 
         parentSinParent.setValue("false");

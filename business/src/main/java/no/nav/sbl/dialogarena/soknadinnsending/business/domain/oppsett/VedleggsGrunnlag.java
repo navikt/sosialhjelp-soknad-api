@@ -98,7 +98,6 @@ public class VedleggsGrunnlag {
                 logger.warn("\n ########### VEDLEGGSFEIL - Feil i ny vedleggsgenereringslogikk ################# \n" + "Lagrer vedlegg: \n" + vedlegg + "\n");
             }
         }
-
     }
 
     private void opprettVedleggFraFaktum() {
