@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.service;
 
-import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
@@ -25,7 +24,7 @@ import java.util.*;
 
 import static no.bekk.bekkopen.person.FodselsnummerValidator.getFodselsnummer;
 import static no.nav.modig.lang.collections.IterUtils.on;
-import static no.nav.sbl.dialogarena.service.Hjelpemetoder.lagItererbarRespons;
+import static no.nav.sbl.dialogarena.service.Hjelpemetoder.*;
 import static org.apache.commons.lang3.ArrayUtils.reverse;
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.StringUtils.split;
@@ -80,8 +79,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         handlebars.registerHelper("hentFaktumValue", generateHentFaktumValueHelper());
         handlebars.registerHelper("hvisFlereErTrue", generateHvisFlereSomStarterMedErTrueHelper());
         handlebars.registerHelper("sendtInnInfo", generateSendtInnInfoHelper());
-        handlebars.registerHelper("forInnsendteVedlegg", generateForInnsendteVedleggHelper());
-        handlebars.registerHelper("forIkkeInnsendteVedlegg", generateForIkkeInnsendteVedleggHelper());
         handlebars.registerHelper("skalViseRotasjonTurnusSporsmaal", generateSkalViseRotasjonTurnusSporsmaalHelper());
         handlebars.registerHelper("hvisLikCmsTekst", generateHvisLikCmsTekstHelper());
 
@@ -100,36 +97,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
                 }
 
                 return resultAdresse.toString();
-            }
-        };
-    }
-
-    private Helper<Object> generateForInnsendteVedleggHelper() {
-        return new Helper<Object>() {
-            @Override
-            public CharSequence apply(Object o, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-                List<Vedlegg> vedlegg = soknad.getInnsendteVedlegg();
-                if (vedlegg.isEmpty()) {
-                    return options.inverse(this);
-                } else {
-                    return lagItererbarRespons(options, vedlegg);
-                }
-            }
-        };
-    }
-
-    private Helper<Object> generateForIkkeInnsendteVedleggHelper() {
-        return new Helper<Object>() {
-            @Override
-            public CharSequence apply(Object o, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-                List<Vedlegg> vedlegg = soknad.getIkkeInnsendteVedlegg();
-                if (vedlegg.isEmpty()) {
-                    return options.inverse(this);
-                } else {
-                    return lagItererbarRespons(options, vedlegg);
-                }
             }
         };
     }
@@ -375,26 +342,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         };
     }
 
-    public static WebSoknad finnWebSoknad(Context context) {
-        if (context == null) {
-            return null;
-        } else if (context.model() instanceof WebSoknad) {
-            return (WebSoknad) context.model();
-        } else {
-            return finnWebSoknad(context.parent());
-        }
-    }
-
-    public static Faktum finnFaktum(Context context) {
-        if (context == null) {
-            return null;
-        } else if (context.model() instanceof Faktum) {
-            return (Faktum) context.model();
-        } else {
-            return finnFaktum(context.parent());
-        }
-    }
-
     private Helper<Object> generateSkalViseRotasjonTurnusSporsmaalHelper() {
         return new Helper<Object>() {
             private boolean faktumSkalIkkeHaRotasjonssporsmaal(Faktum faktum) {
@@ -435,4 +382,5 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
             }
         };
     }
+
 }
