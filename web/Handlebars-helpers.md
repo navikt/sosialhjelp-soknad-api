@@ -62,6 +62,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * concat - Legger sammen alle parametrene til tekststring
 * fnrTilKortDato - Formatterer et gyldig fødselnummer til dato på formatet dd.mm.aaaa
 * forFaktum - Finner et faktum og setter det som aktiv context. Har også inverse om faktum ikke finnes. 
+* forFaktumTilknyttetBarn - Returnerer faktumet tilknyttet barnet i parent-context.
 * harBarnetInntekt - Henter summen hvis barnet har inntekt. Må brukes innenfor en #forFaktum eller #forFakta helper. 
 * hvisHarDiskresjonskode - Viser innhold avhengig av om personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)
 * hvisIkkeTom - Dersom variabelen ikke er tom vil innholdet vises
@@ -98,6 +99,20 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
     Faktum med key {{key}} finnes og kan aksesseres. {{value}} skriver f.eks ut verdien på faktumet. se Faktum klassen.
 {{else}}
     faktum med key "faktumNavn" er ikke satt
+{{/forFaktum}}
+```
+
+
+##### forFaktumTilknyttetBarn
+
+```
+{{#forFaktum "barn"}}
+    {{#forFaktumTilknyttetBarn "faktumNavn"}}
+        Her har du faktumet (med gitt key) som er tilknyttet barnet gitt i parent-context (forFaktum).
+        Se forFaktum for å vite med om hvordan faktumobjektet fungerer.
+    {{else}}
+        Om det ikke finnet noe faktum som er tilknyttet barnet vil den gå inn i else-contexten.
+    {{/forFaktumTilknyttetBarn}}
 {{/forFaktum}}
 ```
 

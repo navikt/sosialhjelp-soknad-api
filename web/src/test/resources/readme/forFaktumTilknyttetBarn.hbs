@@ -1,0 +1,8 @@
+{{#forFaktum "barn"}}
+    {{#forFaktumTilknyttetBarn "faktumNavn"}}
+        Her har du faktumet (med gitt key) som er tilknyttet barnet gitt i parent-context (forFaktum).
+        Se forFaktum for å vite med om hvordan faktumobjektet fungerer.
+    {{else}}
+        Om det ikke finnet noe faktum som er tilknyttet barnet vil den gå inn i else-contexten.
+    {{/forFaktumTilknyttetBarn}}
+{{/forFaktum}}
