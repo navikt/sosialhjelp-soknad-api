@@ -1,0 +1,47 @@
+package no.nav.sbl.dialogarena.service.helpers.faktum;
+
+import com.github.jknack.handlebars.Helper;
+import com.github.jknack.handlebars.Options;
+import no.nav.sbl.dialogarena.service.helpers.RegistryAwareHelper;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.util.List;
+
+import static no.nav.sbl.dialogarena.service.HandleBarKjoerer.finnWebSoknad;
+import static no.nav.sbl.dialogarena.service.Hjelpemetoder.lagItererbarRespons;
+
+@Component
+public class ForFaktaMedPropertySattTilTrueHelper extends RegistryAwareHelper<String> {
+
+    public static final String NAVN = "forFaktaMedPropertySattTilTrue";
+    public static final ForFaktaMedPropertySattTilTrueHelper INSTANS = new ForFaktaMedPropertySattTilTrueHelper();
+
+    @Override
+    public String getNavn() {
+        return NAVN;
+    }
+
+    @Override
+    public Helper<String> getHelper() {
+        return INSTANS;
+    }
+
+    @Override
+    public String getBeskrivelse() {
+        return "Finner alle fakta med gitt key som har gitt property satt til true";
+    }
+
+    @Override
+    public CharSequence apply(String key, Options options) throws IOException {
+        WebSoknad soknad = finnWebSoknad(options.context);
+        List<Faktum> fakta = soknad.getFaktaMedKeyOgPropertyLikTrue(key, (String) options.param(0));
+        if (fakta.isEmpty()) {
+            return options.inverse(this);
+        } else {
+            return lagItererbarRespons(options, fakta);
+        }
+    }
+}
