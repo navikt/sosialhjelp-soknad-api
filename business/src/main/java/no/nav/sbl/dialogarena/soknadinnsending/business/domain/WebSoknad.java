@@ -539,7 +539,7 @@ public class WebSoknad implements Serializable {
             Faktum next = iterator.next();
             FaktumStruktur faktumStruktur = struktur.finnStrukturForKey(next.getKey());
 
-            if(faktumStruktur != null && !faktumStruktur.erSynlig(this)){
+            if(faktumStruktur != null && !faktumStruktur.erSynlig(this, next)){
                 iterator.remove();
             }
         }

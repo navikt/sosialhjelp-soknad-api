@@ -227,6 +227,32 @@ public class DefaultVedleggServiceTest {
     }
 
     @Test
+    public void skalGenerereEttVedleggVedFaktumMedRiktigParentfaktumVerdi() {
+        Faktum parentFaktum1 = new Faktum().medKey("parentfaktum").medValue("true").medFaktumId(1L);
+        Faktum parentFaktum2 = new Faktum().medKey("parentfaktum").medValue("false").medFaktumId(2L);
+
+        Faktum barnefaktum1 = new Faktum().medKey("barnefaktum")
+                .medFaktumId(3L)
+                .medValue("true")
+                .medParrentFaktumId(1L);
+
+        Faktum barnefaktum2 = new Faktum().medKey("barnefaktum")
+                .medFaktumId(4L)
+                .medValue("true")
+                .medParrentFaktumId(2L);
+
+        when(soknadDataFletter.hentSoknad(eq("123"), eq(true), eq(true)))
+                .thenReturn(new WebSoknad().medskjemaNummer("nav-1.1.1")
+                        .medFaktum(parentFaktum1)
+                        .medFaktum(parentFaktum2)
+                        .medFaktum(barnefaktum1)
+                        .medFaktum(barnefaktum2));
+
+        List<Vedlegg> vedlegg = vedleggService.genererPaakrevdeVedlegg("123");
+        assertThat(vedlegg).hasSize(1);
+    }
+
+    @Test
     @Ignore("Fjernet fordi vedleggene ikke lagres for øyeblikket")
     public void skalIkkeGenerereNyttVedleggOmEtAlleredeFinnesMenOppdatereDetEksistende(){
         Faktum faktum = new Faktum().medKey("faktumMedVedleggOnTrue").medValue("true").medFaktumId(1L);
