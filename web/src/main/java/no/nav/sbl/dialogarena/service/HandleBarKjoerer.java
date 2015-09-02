@@ -82,7 +82,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         handlebars.registerHelper("sendtInnInfo", generateSendtInnInfoHelper());
         handlebars.registerHelper("forInnsendteVedlegg", generateForInnsendteVedleggHelper());
         handlebars.registerHelper("forIkkeInnsendteVedlegg", generateForIkkeInnsendteVedleggHelper());
-        handlebars.registerHelper("hvisHarIkkeInnsendteDokumenter", generateHvisHarIkkeInnsendteDokumenterHelper());
         handlebars.registerHelper("skalViseRotasjonTurnusSporsmaal", generateSkalViseRotasjonTurnusSporsmaalHelper());
         handlebars.registerHelper("hvisLikCmsTekst", generateHvisLikCmsTekstHelper());
 
@@ -101,21 +100,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
                 }
 
                 return resultAdresse.toString();
-            }
-        };
-    }
-
-    private Helper<Object> generateHvisHarIkkeInnsendteDokumenterHelper() {
-        return new Helper<Object>() {
-            @Override
-            public CharSequence apply(Object o, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-                List<Vedlegg> vedlegg = soknad.getIkkeInnsendteVedlegg();
-                if (vedlegg.isEmpty()) {
-                    return options.inverse(this);
-                } else {
-                    return options.fn(this);
-                }
             }
         };
     }
