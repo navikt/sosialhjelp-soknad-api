@@ -6,49 +6,57 @@
                 <span>{{ hentTekst "soknad.barnepass.barn.sporsmal.label" ../../properties.fornavn ( hvisIkkeTom ../../properties.mellomnavn ) ../../properties.etternavn}}</span>
             </td>
         </tr>
+        <tr>
+            <td></td>
+            <td>
+                <table>
+                    {{#forBarnefakta "barnepass.typer.dagmamma"}}
+                        {{#hvisSant value}}
+                            <tr>
+                                <td class="sjekket"></td>
+                                <td>
+                                    <span>{{ hentTekst "soknad.barnepass.type.dagmamma"}}</span>
+                                </td>
+                            </tr>
+                        {{/hvisSant}}
+                    {{/forBarnefakta}}
 
-        {{#forBarnefakta "barnepass.typer.dagmamma"}}
-            {{#hvisSant value}}
-                <tr>
-                    <td class="sjekket"></td>
-                    <td>
-                        <span>{{ hentTekst "soknad.barnepass.type.dagmamma"}}</span>
-                    </td>
-                </tr>
-            {{/hvisSant}}
-        {{/forBarnefakta}}
+                    {{#forBarnefakta "barnepass.typer.barnehage"}}
+                        {{#hvisSant value}}
+                            <tr>
+                                <td class="sjekket"></td>
+                                <td>
+                                    <span>{{ hentTekst "soknad.barnepass.type.barnehage"}}</span>
+                                </td>
+                            </tr>
+                        {{/hvisSant}}
+                    {{/forBarnefakta}}
 
-        {{#forBarnefakta "barnepass.typer.barnehage"}}
-            {{#hvisSant value}}
-                <tr>
-                    <td class="sjekket"></td>
-                    <td>
-                        <span>{{ hentTekst "soknad.barnepass.type.barnehage"}}</span>
-                    </td>
-                </tr>
-            {{/hvisSant}}
-        {{/forBarnefakta}}
+                    {{#forBarnefakta "barnepass.typer.privat"}}
+                        {{#hvisSant value}}
+                            <tr>
+                                <td class="sjekket"></td>
+                                <td>
+                                    <span>{{ hentTekst "soknad.barnepass.type.privat"}}</span>
+                                </td>
+                            </tr>
+                        {{/hvisSant}}
+                    {{/forBarnefakta}}
 
-        {{#forBarnefakta "barnepass.typer.privat"}}
-            {{#hvisSant value}}
-                <tr>
-                    <td class="sjekket"></td>
-                    <td>
-                        <span>{{ hentTekst "soknad.barnepass.type.privat"}}</span>
-                    </td>
-                </tr>
-            {{/hvisSant}}
-        {{/forBarnefakta}}
+                    {{> skjema/tilleggsstonader/barnepass/barnepassFjerdeklasse }}
 
-        {{#forBarnefakta "barnepass.andreforelder"}}
-            <tr>
-                <td class="sjekket"></td>
-                <td>
-                    <span>{{ hentTekst "soknad.barnepass.andreforelder.sporsmal" }}:
-                        <em>{{value}}</em>
-                    </span>
-                </td>
-            </tr>
-        {{/forBarnefakta}}
+                    {{#forBarnefakta "barnepass.andreforelder"}}
+                        <tr>
+                            <td class="sjekket"></td>
+                            <td>
+                                <span>{{ hentTekst "soknad.barnepass.andreforelder.sporsmal" }}:
+                                    <em>{{value}}</em>
+                                </span>
+                            </td>
+                        </tr>
+                    {{/forBarnefakta}}
+                </table>
+            </td>
+        </tr>
     {{/hvisSant}}
 {{/forFaktumTilknyttetBarn}}
