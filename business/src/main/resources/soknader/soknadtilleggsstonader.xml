@@ -1094,13 +1094,76 @@
 
     <!-- Barnepass -->
     <faktum>
-        <id>barnepass.barn</id>
+        <id>barnepass.sokerbarnepass</id>
         <dependOn>informasjonsside.stonad.barnepass</dependOn>
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
     </faktum>
 
+    <faktum>
+        <id>barnepass.typer.dagmamma</id>
+        <dependOn>barnepass.sokerbarnepass</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+
+    <faktum>
+        <id>barnepass.typer.barnehage</id>
+        <dependOn>barnepass.sokerbarnepass</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+
+    <faktum>
+        <id>barnepass.typer.privat</id>
+        <dependOn>barnepass.sokerbarnepass</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+
+    <faktum>
+        <id>barnepass.fjerdeklasse</id>
+        <dependOn>barnepass.sokerbarnepass</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+
+    <faktum>
+        <id>barnepass.fjerdeklasse.langvarig</id>
+        <dependOn>barnepass.fjerdeklasse</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+
+    <faktum>
+        <id>barnepass.fjerdeklasse.trengertilsyn</id>
+        <dependOn>barnepass.fjerdeklasse</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+
+    <faktum>
+        <id>barnepass.fjerdeklasse.ingen</id>
+        <dependOn>barnepass.fjerdeklasse</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+
+    <faktum>
+        <id>barnepass.andreforelder</id>
+        <dependOn>barnepass.sokerbarnepass</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
 
     <faktum>
         <id>barnepass.periode</id>
@@ -1642,37 +1705,56 @@
         <property>bolk</property>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
+
+
     <!-- Vedlegg barnepass-->
     <vedlegg>
-        <faktum>barnepass.barn</faktum>
+        <faktum>barnepass.typer.barnehage</faktum>
         <skjemaNummer>J8</skjemaNummer>
         <skjemanummerTillegg>barnepassBarnehage</skjemanummerTillegg>
         <onValues>
             <value>true</value>
         </onValues>
-        <onProperty>barnepassBarnehage</onProperty>
         <flereTillatt>true</flereTillatt>
         <property>vedleggstittel</property>
     </vedlegg>
     <vedlegg>
-        <faktum>barnepass.barn</faktum>
+        <faktum>barnepass.typer.privat</faktum>
         <skjemaNummer>J4</skjemaNummer>
         <skjemanummerTillegg>barnepassPrivat</skjemanummerTillegg>
         <onValues>
             <value>true</value>
         </onValues>
-        <onProperty>barnepassPrivat</onProperty>
         <flereTillatt>true</flereTillatt>
         <property>vedleggstittel</property>
     </vedlegg>
     <vedlegg>
-        <faktum>barnepass.barn</faktum>
+        <faktum>barnepass.typer.dagmamma</faktum>
         <skjemaNummer>J4</skjemaNummer>
         <skjemanummerTillegg>barnepassDagmamma</skjemanummerTillegg>
         <onValues>
             <value>true</value>
         </onValues>
-        <onProperty>barnepassDagmamma</onProperty>
+        <flereTillatt>true</flereTillatt>
+        <property>vedleggstittel</property>
+    </vedlegg>
+    <vedlegg>
+        <skjemaNummer>J4</skjemaNummer>
+        <skjemanummerTillegg>barnepassLangvarig</skjemanummerTillegg>
+        <faktum>barnepass.fjerdeklasse.langvarig</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <flereTillatt>true</flereTillatt>
+        <property>vedleggstittel</property>
+    </vedlegg>
+    <vedlegg>
+        <skjemaNummer>J4</skjemaNummer>
+        <skjemanummerTillegg>barnepassTilsyn</skjemanummerTillegg>
+        <faktum>barnepass.fjerdeklasse.trengertilsyn</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
         <flereTillatt>true</flereTillatt>
         <property>vedleggstittel</property>
     </vedlegg>
