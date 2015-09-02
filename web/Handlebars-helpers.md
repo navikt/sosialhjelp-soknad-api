@@ -50,8 +50,6 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hentFaktumValue
 * hvisFlereErTrue
 * sendtInnInfo
-* forInnsendteVedlegg
-* forIkkeInnsendteVedlegg
 * skalViseRotasjonTurnusSporsmaal
 * hvisLikCmsTekst
 
@@ -62,6 +60,8 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * forFaktaMedPropertySattTilTrue - Finner alle fakta med gitt key som har gitt property satt til true
 * forFaktum - Finner et faktum og setter det som aktiv context. Har også inverse om faktum ikke finnes. 
 * forFaktumTilknyttetBarn - Returnerer faktumet tilknyttet barnet i parent-context.
+* forIkkeInnsendteVedlegg - Itererer over vedlegg som ikke er sendt inn
+* forInnsendteVedlegg - Itererer over innsendte vedlegg på søknaden
 * harBarnetInntekt - Henter summen hvis barnet har inntekt. Må brukes innenfor en #forFaktum eller #forFakta helper. 
 * hvisHarDiskresjonskode - Viser innhold avhengig av om personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)
 * hvisHarIkkeInnsendteDokumenter - Sjekker om søknaden har ikke-innsendte vedlegg
@@ -125,6 +125,28 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
         Om det ikke finnet noe faktum som er tilknyttet barnet vil den gå inn i else-contexten.
     {{/forFaktumTilknyttetBarn}}
 {{/forFaktum}}
+```
+
+
+##### forIkkeInnsendteVedlegg
+
+```
+{{#forIkkeInnsendteVedlegg}}
+    ikke innsendt: {{navn}}
+{{else}}
+    Ingen ikke-innsendte vedlegg
+{{/forIkkeInnsendteVedlegg}}
+```
+
+
+##### forInnsendteVedlegg
+
+```
+{{#forInnsendteVedlegg}}
+    innsendt: {{navn}}
+{{else}}
+    Ingen innsendte vedlegg
+{{/forInnsendteVedlegg}}
 ```
 
 

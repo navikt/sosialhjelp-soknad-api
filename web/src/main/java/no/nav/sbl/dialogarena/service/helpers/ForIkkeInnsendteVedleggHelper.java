@@ -20,17 +20,17 @@ public class ForIkkeInnsendteVedleggHelper extends RegistryAwareHelper<Object> {
 
     @Override
     public String getNavn() {
-        return null;
+        return NAVN;
     }
 
     @Override
     public Helper<Object> getHelper() {
-        return null;
+        return INSTANS;
     }
 
     @Override
     public String getBeskrivelse() {
-        return null;
+        return "Itererer over vedlegg som ikke er sendt inn";
     }
 
     @Override
