@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.service;
 
 import com.github.jknack.handlebars.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -25,9 +26,59 @@ public class HjelpemetoderTest {
         strings.add(new Faktum().medValue("Faktum3"));
 
         String generated = Hjelpemetoder.lagItererbarRespons(options, strings);
-        assertThat(generated).contains("Faktum nr. 0: Faktum1 even first\n" +
+        assertThat(generated).isEqualTo("Faktum nr. 0: Faktum1 even first\n" +
                 "Faktum nr. 1: Faktum2 odd \n" +
                 "Faktum nr. 2: Faktum3 even last\n");
     }
 
+    @Test
+    public void finnerWebSoknadIParentContext() throws IOException {
+        WebSoknad webSoknad = new WebSoknad();
+        webSoknad.setSkjemaNummer("123456");
+
+        Context parentContext = Context.newContext(webSoknad);
+        Context middleContext = Context.newContext(parentContext, "noe");
+        Context childContext = Context.newContext(middleContext, "noe annet");
+
+        WebSoknad funnetWebSoknad = Hjelpemetoder.finnWebSoknad(childContext);
+
+        assertThat(funnetWebSoknad.getskjemaNummer()).isEqualTo(webSoknad.getskjemaNummer());
+
+    }
+
+    @Test
+    public void returnererNullOmWebSoknadIkkeIParentContext() throws IOException {
+        Context parentContext = Context.newContext("noe");
+        Context childContext = Context.newContext(parentContext, "noe annet");
+
+        WebSoknad funnetWebSoknad = Hjelpemetoder.finnWebSoknad(childContext);
+
+        assertThat(funnetWebSoknad).isNull();
+    }
+
+
+
+    @Test
+    public void finnerFaktumIParentContext() throws IOException {
+        Faktum faktum = new Faktum().medFaktumId(1234L);
+
+        Context parentContext = Context.newContext(faktum);
+        Context middleContext = Context.newContext(parentContext, "noe");
+        Context childContext = Context.newContext(middleContext, "noe annet");
+
+        Faktum funnetFaktum = Hjelpemetoder.finnFaktum(childContext);
+
+        assertThat(funnetFaktum.getFaktumId()).isEqualTo(faktum.getFaktumId());
+
+    }
+
+    @Test
+    public void returnererNullOmFaktumIkkeIParentContext() throws IOException {
+        Context parentContext = Context.newContext("noe");
+        Context childContext = Context.newContext(parentContext, "noe annet");
+
+        Faktum funnetFaktum = Hjelpemetoder.finnFaktum(childContext);
+
+        assertThat(funnetFaktum).isNull();
+    }
 }
