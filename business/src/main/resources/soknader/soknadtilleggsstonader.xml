@@ -1201,35 +1201,45 @@
         <skjemaNummer>X1</skjemaNummer>
         <skjemanummerTillegg>familie</skjemanummerTillegg>
         <onProperty>offentlig</onProperty>
-        <onValues>true</onValues>
+        <onValues>
+            <value>true</value>
+        </onValues>
     </vedlegg>
     <vedlegg>
         <faktum>tilsynfamilie.typetilsyn</faktum>
         <skjemaNummer>X1</skjemaNummer>
         <skjemanummerTillegg>familie</skjemanummerTillegg>
         <onProperty>privat</onProperty>
-        <onValues>true</onValues>
+        <onValues>
+            <value>true</value>
+        </onValues>
     </vedlegg>
     <vedlegg>
         <faktum>tilsynfamilie.typetilsyn</faktum>
         <skjemaNummer>J4</skjemaNummer>
         <skjemanummerTillegg>familie</skjemanummerTillegg>
         <onProperty>offentlig</onProperty>
-        <onValues>true</onValues>
+        <onValues>
+            <value>true</value>
+        </onValues>
     </vedlegg>
     <vedlegg>
         <faktum>tilsynfamilie.typetilsyn</faktum>
         <skjemaNummer>J4</skjemaNummer>
         <skjemanummerTillegg>familie</skjemanummerTillegg>
         <onProperty>private</onProperty>
-        <onValues>true</onValues>
+        <onValues>
+            <value>true</value>
+        </onValues>
     </vedlegg>
     <vedlegg>
         <faktum>tilsynfamilie.typetilsyn</faktum>
         <skjemaNummer>J4</skjemaNummer>
         <skjemanummerTillegg>familie</skjemanummerTillegg>
         <onProperty>annet</onProperty>
-        <onValues>true</onValues>
+        <onValues>
+            <value>true</value>
+        </onValues>
     </vedlegg>
 
 
