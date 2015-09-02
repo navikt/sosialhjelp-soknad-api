@@ -54,7 +54,7 @@ public class VedleggsGrunnlag {
 
     private boolean matcherEtAvFaktumeneKravTilVedlegg(List<Faktum> fakta, VedleggForFaktumStruktur vedleggForFaktumStruktur) {
         for (Faktum faktum : fakta) {
-            if (vedleggForFaktumStruktur.getFaktum().erSynlig(soknad) && vedleggForFaktumStruktur.trengerVedlegg(faktum) && vedleggForFaktumStruktur.harFilterProperty(faktum)) {
+            if (vedleggForFaktumStruktur.getFaktum().erSynlig(soknad, faktum) && vedleggForFaktumStruktur.trengerVedlegg(faktum) && vedleggForFaktumStruktur.harFilterProperty(faktum)) {
                 return true;
             }
         }

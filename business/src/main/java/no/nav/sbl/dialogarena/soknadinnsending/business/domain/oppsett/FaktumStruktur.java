@@ -132,13 +132,13 @@ public class FaktumStruktur implements Serializable {
         };
     }
 
-    public boolean erSynlig(WebSoknad soknad) {
+    public boolean erSynlig(WebSoknad soknad, Faktum faktum) {
         FaktumStruktur parent = getDependOn();
-        return parent == null || ( parent.erSynlig(soknad) && this.oppfyllerParentKriterier(soknad) );
+        return parent == null || ( parent.erSynlig(soknad, faktum) && this.oppfyllerParentKriterier(soknad, faktum) );
     }
 
-    private boolean oppfyllerParentKriterier(WebSoknad soknad) {
-        Faktum parent = soknad.getFaktumMedKey(getDependOn().getId());
+    private boolean oppfyllerParentKriterier(WebSoknad soknad, Faktum barneFaktum) {
+        Faktum parent = barneFaktum.getParrentFaktum() != null? soknad.finnFaktum(barneFaktum.getParrentFaktum()): soknad.getFaktumMedKey(getDependOn().getId());
         return parent != null && (harDependOnProperty(parent) || harDependOnValue(parent));
     }
 
