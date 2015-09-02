@@ -2,6 +2,8 @@ package no.nav.sbl.dialogarena.service;
 
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Options;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -28,5 +30,26 @@ public class Hjelpemetoder {
             index++;
         }
         return stringBuilder.toString();
+    }
+
+
+    public static WebSoknad finnWebSoknad(Context context) {
+        if (context == null) {
+            return null;
+        } else if (context.model() instanceof WebSoknad) {
+            return (WebSoknad) context.model();
+        } else {
+            return finnWebSoknad(context.parent());
+        }
+    }
+
+    public static Faktum finnFaktum(Context context) {
+        if (context == null) {
+            return null;
+        } else if (context.model() instanceof Faktum) {
+            return (Faktum) context.model();
+        } else {
+            return finnFaktum(context.parent());
+        }
     }
 }

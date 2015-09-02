@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-import static no.nav.sbl.dialogarena.service.HandleBarKjoerer.finnWebSoknad;
+import static no.nav.sbl.dialogarena.service.Hjelpemetoder.finnWebSoknad;
 
 @Component
 public class ForFaktumHelper extends RegistryAwareHelper<String> {

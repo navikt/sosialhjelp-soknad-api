@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-import static no.nav.sbl.dialogarena.service.HandleBarKjoerer.finnFaktum;
-import static no.nav.sbl.dialogarena.service.HandleBarKjoerer.finnWebSoknad;
+import static no.nav.sbl.dialogarena.service.Hjelpemetoder.finnFaktum;
+import static no.nav.sbl.dialogarena.service.Hjelpemetoder.finnWebSoknad;
 
 @Component
 public class HarBarnetInntektHelper extends RegistryAwareHelper<Object> {
