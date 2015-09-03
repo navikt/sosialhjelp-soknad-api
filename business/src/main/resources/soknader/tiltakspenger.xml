@@ -20,6 +20,7 @@
     <!-- Tilleggsopplysninger -->
     <faktum>
         <id>barn</id>
+        <flereTillatt>true</flereTillatt>
     </faktum>
 
     <!-- Tilleggsopplysninger -->
