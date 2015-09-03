@@ -1,14 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.BarnUnderAtten;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.DrosjeTransportutgifter;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.ErUtgifterDekket;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Formaal;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Innsendingsintervaller;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.KollektivTransportutgifter;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Periode;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Skolenivaaer;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import org.apache.commons.collections15.Transformer;
 import org.apache.commons.lang3.StringUtils;
@@ -143,9 +136,35 @@ public final class StofoTransformers {
                 return skolenivaaer;
             }
         });
+        FAKTUM_TRANSFORMERS.put(Tilsynskategorier.class, new Transformer<Faktum, Tilsynskategorier>() {
+            @Override
+            public Tilsynskategorier transform(Faktum faktum) {
+                Tilsynskategorier tilsynskategorier = new Tilsynskategorier();
+                tilsynskategorier.setKodeverksRef("");
 
+                if ("true".equals(faktum.getProperties().get("barnepassBarnehage"))) {
+                    tilsynskategorier.setValue(StofoKodeverkVerdier.TilsynForetasAvKodeverk.kom.kodeverksverdi);
+                }
+                if ("true".equals(faktum.getProperties().get("barnepassDagmamma"))) {
+                    tilsynskategorier.setValue(StofoKodeverkVerdier.TilsynForetasAvKodeverk.kom.kodeverksverdi);
+                }
+                if ("true".equals(faktum.getProperties().get("barnepassPrivat"))) {
+                    tilsynskategorier.setValue(StofoKodeverkVerdier.TilsynForetasAvKodeverk.off.kodeverksverdi);
+                }
+
+                return tilsynskategorier;
+            }
+        });
+        FAKTUM_TRANSFORMERS.put(Barn.class, new Transformer<Faktum, Barn>() {
+            @Override
+            public Barn transform(Faktum faktum) {
+                Barn barn = new Barn();
+                barn.setPersonidentifikator(faktum.getProperties().get("fnr"));
+                barn.setNavn(faktum.getProperties().get("fornavn"));
+                return barn;
+            }
+        });
     }
-
 
     public static <T> T extractValue(Faktum faktum, Class<T> clazz) {
         return extractValue(faktum, clazz, null);
