@@ -43,10 +43,12 @@ public class InformasjonService {
     private String appresUrl;
     @Value("${soknadinnsending.soknad.path}")
     private String soknadinnsendingSoknadPath;
+    @Value("${modia.url}")
+    private String sporsmalsvarUrl;
 
     public Map<String,String> hentMiljovariabler() {
         Map<String, String> result = new HashMap<>();
-        
+
         result.put("saksoversikt.link.url", saksoversiktUrl);
         result.put("dittnav.link.url", dittnavUrl);
         result.put("dialogarena.navnolink.url", navNoUrl);
@@ -57,6 +59,7 @@ public class InformasjonService {
         result.put("soknad.brukerprofil.url", brukerProfilUrl);
         result.put("dialogarena.cms.url", appresUrl);
         result.put("soknadinnsending.soknad.path", soknadinnsendingSoknadPath);
+        result.put("modia.url", sporsmalsvarUrl);
 
         result.put("soknad.ettersending.antalldager", antallDager);
 
