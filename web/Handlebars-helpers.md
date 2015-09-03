@@ -72,6 +72,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hvisMindre - Evaluerer en string til integer og sjekker om verdien er mindre enn andre inputparameter
 * hvisSant - Dersom variabelen er "true" vil innholdet vises
 * kortDato - Formatterer en datostreng på formatet yyyy-mm-dd til dd.mm.aaaa
+* toCapitalized - Gjør om en tekst til at alle ord starter med store bokstaver
 * toLowerCase - Gjør om en tekst til kun små bokstaver
 * variabel - Lager en variabel med en bestemt verdi som kun er tilgjengelig innenfor helperen
 
@@ -235,6 +236,14 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 
 ```
 {{kortDato "2015-11-03"}}
+```
+
+
+##### toCapitalized
+
+```
+{{toCapitalized variabel}}
+{{toCapitalized "mASSe caSe"}}
 ```
 
 
