@@ -30,6 +30,9 @@ public class ToCapitalizedHelper extends RegistryAwareHelper<Object> {
 
     @Override
     public CharSequence apply(Object value, Options options) throws IOException {
+        if (value == null) {
+            return "";
+        }
         return WordUtils.capitalizeFully(value.toString());
     }
 }
