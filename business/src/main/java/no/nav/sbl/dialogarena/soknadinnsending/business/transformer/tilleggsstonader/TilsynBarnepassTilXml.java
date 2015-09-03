@@ -22,14 +22,14 @@ public class TilsynBarnepassTilXml implements Transformer<WebSoknad, Tilsynsutgi
     private static final String BARNEPASS_TYPER_DAGMAMMA = "barnepass.typer.dagmamma";
     private static final String BARNEPASS_TYPER_BARNEHAGE = "barnepass.typer.barnehage";
     private static final String BARNEPASS_TYPER_PRIVAT = "barnepass.typer.privat";
-    private TilsynsutgifterBarn barnepass = new TilsynsutgifterBarn();
+    private TilsynsutgifterBarn tilsynsutgifterBarn = new TilsynsutgifterBarn();
 
     @Override
     public TilsynsutgifterBarn transform(WebSoknad soknad) {
-        barnepass.setPeriode(extractValue(soknad.getFaktumMedKey(PERIODE), Periode.class));
+        tilsynsutgifterBarn.setPeriode(extractValue(soknad.getFaktumMedKey(PERIODE), Periode.class));
         barnSomDetSokesBarnepassOm(soknad);
-        barnepass.setOensketUtbetalingsdag(extractValue(soknad.getFaktumMedKey(UTBETALINGSDATO), BigInteger.class));
-        return barnepass;
+        tilsynsutgifterBarn.setOensketUtbetalingsdag(extractValue(soknad.getFaktumMedKey(UTBETALINGSDATO), BigInteger.class));
+        return tilsynsutgifterBarn;
     }
 
     private void barnSomDetSokesBarnepassOm(WebSoknad soknad) {
@@ -37,8 +37,7 @@ public class TilsynBarnepassTilXml implements Transformer<WebSoknad, Tilsynsutgi
         for (Faktum barnepass : sokerBarnepassBarn) {
             Faktum barn = soknad.finnFaktum(Long.valueOf(barnepass.getProperties().get("tilknyttetbarn")));
             if (barn != null) {
-                barnepass.getProperties().putAll(barn.getProperties());
-                Barn barnOutput = extractValue(barnepass, Barn.class);
+                tilsynsutgifterBarn.getBarn().add(extractValue(barn, Barn.class));
                 String annenForelder = extractValue(soknad.getFaktumMedKeyOgParentFaktum(BARNEPASS_ANDREFORELDER, barnepass.getFaktumId()), String.class);
                 Boolean dagmamma = extractValue(soknad.getFaktumMedKeyOgParentFaktum(BARNEPASS_TYPER_DAGMAMMA, barnepass.getFaktumId()), Boolean.class);
                 Boolean barnehage = extractValue(soknad.getFaktumMedKeyOgParentFaktum(BARNEPASS_TYPER_BARNEHAGE, barnepass.getFaktumId()), Boolean.class);
@@ -46,8 +45,6 @@ public class TilsynBarnepassTilXml implements Transformer<WebSoknad, Tilsynsutgi
                 //Legg på barn når det kommer.
                 //barn.setTilsynskategori(extractValue(barn, Tilsynskategorier.class));  //TODO - er ikke støtte for å sende inn per barn
                 //barn.setAnnenForelder/annenForelder
-
-                this.barnepass.getBarn().add(barnOutput);
             }
         }
     }
