@@ -43,8 +43,7 @@ public class InformasjonService {
     private String appresUrl;
     @Value("${soknadinnsending.soknad.path}")
     private String soknadinnsendingSoknadPath;
-    @Value("${modia.url}")
-    private String sporsmalsvarUrl;
+    private String sporsmalsvarUrl = "";
 
     public Map<String,String> hentMiljovariabler() {
         Map<String, String> result = new HashMap<>();
