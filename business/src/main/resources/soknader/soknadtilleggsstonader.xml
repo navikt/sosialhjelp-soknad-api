@@ -1227,7 +1227,7 @@
         <faktum>tilsynfamilie.typetilsyn</faktum>
         <skjemaNummer>J4</skjemaNummer>
         <skjemanummerTillegg>familie</skjemanummerTillegg>
-        <onProperty>private</onProperty>
+        <onProperty>privat</onProperty>
         <onValues>
             <value>true</value>
         </onValues>
