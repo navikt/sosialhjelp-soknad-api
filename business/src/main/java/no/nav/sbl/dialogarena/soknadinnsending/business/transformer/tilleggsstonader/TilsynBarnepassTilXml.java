@@ -8,7 +8,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.collections15.Transformer;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
@@ -18,44 +17,38 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tille
 public class TilsynBarnepassTilXml implements Transformer<WebSoknad, TilsynsutgifterBarn> {
     private static final String PERIODE = "barnepass.periode";
     private static final String UTBETALINGSDATO = "barnepass.utbetalingsdato";
-    private static final String BARN = "barn";
-    private static final String ANDREFORELDER = "andreforelder";
     private static final String SOKERBARNEPASS = "barnepass.sokerbarnepass";
+    private static final String BARNEPASS_ANDREFORELDER = "barnepass.andreforelder";
+    private static final String BARNEPASS_TYPER_DAGMAMMA = "barnepass.typer.dagmamma";
+    private static final String BARNEPASS_TYPER_BARNEHAGE = "barnepass.typer.barnehage";
+    private static final String BARNEPASS_TYPER_PRIVAT = "barnepass.typer.privat";
     private TilsynsutgifterBarn barnepass = new TilsynsutgifterBarn();
 
     @Override
     public TilsynsutgifterBarn transform(WebSoknad soknad) {
         barnepass.setPeriode(extractValue(soknad.getFaktumMedKey(PERIODE), Periode.class));
         barnSomDetSokesBarnepassOm(soknad);
-        utbetalingsdato(soknad);
-
+        barnepass.setOensketUtbetalingsdag(extractValue(soknad.getFaktumMedKey(UTBETALINGSDATO), BigInteger.class));
         return barnepass;
-    }
-
-    private void utbetalingsdato(WebSoknad soknad) {
-        Faktum utbetalingsdatoFaktum = soknad.getFaktumMedKey(UTBETALINGSDATO);
-
-        if (utbetalingsdatoFaktum != null && utbetalingsdatoFaktum.hasValue()) {
-            barnepass.setOensketUtbetalingsdag(new BigInteger(utbetalingsdatoFaktum.getValue()));
-        }
     }
 
     private void barnSomDetSokesBarnepassOm(WebSoknad soknad) {
         List<Faktum> sokerBarnepassBarn = on(soknad.getFaktaMedKey(SOKERBARNEPASS)).filter(harValue("true")).collect();
-
-        List<Faktum> barnDetSokerBarnepassFor = new ArrayList<>();
-
         for (Faktum barnepass : sokerBarnepassBarn) {
-            barnDetSokerBarnepassFor.addAll(soknad.getFaktaMedKeyOgParentFaktum(BARN, barnepass.getParrentFaktum()));
-        }
+            Faktum barn = soknad.finnFaktum(Long.valueOf(barnepass.getProperties().get("tilknyttetbarn")));
+            if (barn != null) {
+                barnepass.getProperties().putAll(barn.getProperties());
+                Barn barnOutput = extractValue(barnepass, Barn.class);
+                String annenForelder = extractValue(soknad.getFaktumMedKeyOgParentFaktum(BARNEPASS_ANDREFORELDER, barnepass.getFaktumId()), String.class);
+                Boolean dagmamma = extractValue(soknad.getFaktumMedKeyOgParentFaktum(BARNEPASS_TYPER_DAGMAMMA, barnepass.getFaktumId()), Boolean.class);
+                Boolean barnehage = extractValue(soknad.getFaktumMedKeyOgParentFaktum(BARNEPASS_TYPER_BARNEHAGE, barnepass.getFaktumId()), Boolean.class);
+                Boolean privat = extractValue(soknad.getFaktumMedKeyOgParentFaktum(BARNEPASS_TYPER_PRIVAT, barnepass.getFaktumId()), Boolean.class);
+                //Legg på barn når det kommer.
+                //barn.setTilsynskategori(extractValue(barn, Tilsynskategorier.class));  //TODO - er ikke støtte for å sende inn per barn
+                //barn.setAnnenForelder/annenForelder
 
-        for (Faktum barn : barnDetSokerBarnepassFor) {
-            barnepass.getBarn().add(extractValue(barn, Barn.class));
+                this.barnepass.getBarn().add(barnOutput);
+            }
         }
-//            if("true".equals(barn)) {
-//
-//                barnepass.setAnnenForsoergerperson(extractValue(barn, String.class, ANDREFORELDER));//TODO - er ikke støtte for å sende inn per barn
-//                barnepass.setTilsynskategori(extractValue(barn, Tilsynskategorier.class));  //TODO - er ikke støtte for å sende inn per barn
-//            }
     }
 }
