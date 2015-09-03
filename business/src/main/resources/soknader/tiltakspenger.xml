@@ -19,6 +19,11 @@
 
     <!-- Tilleggsopplysninger -->
     <faktum>
+        <id>barn</id>
+    </faktum>
+
+    <!-- Tilleggsopplysninger -->
+    <faktum>
         <id>tilleggsopplysninger.fritekst</id>
     </faktum>
 
