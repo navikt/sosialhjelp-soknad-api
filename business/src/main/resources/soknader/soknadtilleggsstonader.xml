@@ -1197,51 +1197,21 @@
     </faktum>
 
     <vedlegg>
-        <faktum>tilsynfamilie.typetilsyn</faktum>
+        <faktum>informasjonsside.stonad.familie</faktum>
         <skjemaNummer>X1</skjemaNummer>
         <skjemanummerTillegg>familie</skjemanummerTillegg>
-        <onProperty>offentlig</onProperty>
         <onValues>
             <value>true</value>
         </onValues>
     </vedlegg>
     <vedlegg>
-        <faktum>tilsynfamilie.typetilsyn</faktum>
-        <skjemaNummer>X1</skjemaNummer>
-        <skjemanummerTillegg>familie</skjemanummerTillegg>
-        <onProperty>privat</onProperty>
-        <onValues>
-            <value>true</value>
-        </onValues>
-    </vedlegg>
-    <vedlegg>
-        <faktum>tilsynfamilie.typetilsyn</faktum>
+        <faktum>informasjonsside.stonad.familie</faktum>
         <skjemaNummer>J4</skjemaNummer>
         <skjemanummerTillegg>familie</skjemanummerTillegg>
-        <onProperty>offentlig</onProperty>
         <onValues>
             <value>true</value>
         </onValues>
     </vedlegg>
-    <vedlegg>
-        <faktum>tilsynfamilie.typetilsyn</faktum>
-        <skjemaNummer>J4</skjemaNummer>
-        <skjemanummerTillegg>familie</skjemanummerTillegg>
-        <onProperty>privat</onProperty>
-        <onValues>
-            <value>true</value>
-        </onValues>
-    </vedlegg>
-    <vedlegg>
-        <faktum>tilsynfamilie.typetilsyn</faktum>
-        <skjemaNummer>J4</skjemaNummer>
-        <skjemanummerTillegg>familie</skjemanummerTillegg>
-        <onProperty>annet</onProperty>
-        <onValues>
-            <value>true</value>
-        </onValues>
-    </vedlegg>
-
 
     <!-- Tilleggsopplysninger -->
     <faktum>
