@@ -72,21 +72,30 @@ public class TilsynBarnepassTilXmlTest {
         List<Barn> barn = tilsynsutgifterBarnXml.getBarn();
         assertThat(barn.size()).isEqualTo(2);
 
-        assertThat(barn.get(0).getNavn()).isEqualTo(oleNavn);
+        assertThat(barn.get(0).getNavn()).isEqualTo("Ole");
         assertThat(barn.get(0).getPersonidentifikator()).isEqualTo(oleFnr);
+        //assertThat(bar.get(0).getAnnenForsoergerperson()).isEqualTo(oleAnnenForsorger);
+        //assertThat(bar.get(0).getTilsynskategori()).isEqualTo(StofoKodeverkVerdier.TilsynForetasAvKodeverk.kom.kodeverksverdi);
 
-        assertThat(barn.get(1).getNavn()).isEqualTo(doleNavn);
+        assertThat(barn.get(1).getNavn()).isEqualTo("Dole");
         assertThat(barn.get(1).getPersonidentifikator()).isEqualTo(doleFnr);
-
-        assertThat(tilsynsutgifterBarnXml.getAnnenForsoergerperson()).isEqualTo(doleAnnenForsorger);
-        assertThat(tilsynsutgifterBarnXml.getTilsynskategori().getValue()).isEqualTo(StofoKodeverkVerdier.TilsynForetasAvKodeverk.kom.kodeverksverdi);
+        //assertThat(barn.get(1).getAnnenForsoergerperson()).isEqualTo(doleAnnenForsorger);
+        //assertThat(barn.get(1).getTilsynskategori()).isEqualTo(StofoKodeverkVerdier.TilsynForetasAvKodeverk.kom.kodeverksverdi);
 
     }
-
+    long barnId = 10;
     private void leggTilBarn(String fnr, String navn, String sokesOm, String annenForsorger, String barnehage, String dagpmamma, String privat) {
+        long faktumId = barnId++ ;
         soknad.getFakta().add(new Faktum().medKey("barn")
+                .medFaktumId(faktumId)
                 .medProperty("fnr", fnr)
                 .medProperty("sammensattnavn", navn)
+                .medProperty("fornavn", navn.split(" ")[0])
+                .medProperty("etternavn", navn.split(" ")[1]));
+        soknad.getFakta().add(new Faktum()
+                .medKey("barnepass.sokerbarnepass")
+                .medValue(sokesOm)
+                .medProperty("tilknyttetbarn", "" + faktumId)
                 .medProperty("sokerOmBarnepass", sokesOm)
                 .medProperty("andreforelder", annenForsorger)
                 .medProperty("barnepassBarnehage", barnehage)
