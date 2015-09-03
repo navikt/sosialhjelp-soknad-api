@@ -28,7 +28,6 @@
         <id>tilleggsopplysninger.fritekst</id>
     </faktum>
 
-
     <!-- Personalia -->
     <faktum>
         <id>personalia</id>
@@ -44,7 +43,7 @@
     <vedlegg>
         <faktum>trygdogpensjon</faktum>
         <onValues>
-            <value>ja</value>
+            <value>true</value>
         </onValues>
         <skjemaNummer>K5</skjemaNummer>
     </vedlegg>
