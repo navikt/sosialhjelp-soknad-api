@@ -69,4 +69,14 @@ public class StofoKodeverkVerdier {
             }
         };
     }
+
+    public enum TilsynForetasAvKodeverk{
+        kom("KOM"), off("OFF"), priv("PRI");
+        public final String kodeverksverdi;
+
+        TilsynForetasAvKodeverk(String kodeverksverdi) {
+            this.kodeverksverdi = kodeverksverdi;
+        }
+
+    }
 }
