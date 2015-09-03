@@ -411,7 +411,7 @@
     </faktum>
     <faktum>
         <id>reise.samling.offentligtransport.egenbil.kostnader.ferge</id>
-        <dependOn>reise.samling.offentligtransport.egenbil.koastnader</dependOn>
+        <dependOn>reise.samling.offentligtransport.egenbil.kostnader</dependOn>
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
