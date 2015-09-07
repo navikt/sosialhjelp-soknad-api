@@ -45,7 +45,6 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hentLand
 * forVedlegg
 * forPerioder
-* hentSkjemanummer
 * hentFaktumValue
 * hvisFlereErTrue
 * sendtInnInfo
@@ -63,6 +62,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * forFaktum - Finner et faktum og setter det som aktiv context. Har også inverse om faktum ikke finnes. 
 * forFaktumTilknyttetBarn - Returnerer faktumet tilknyttet barnet i parent-context.
 * harBarnetInntekt - Henter summen hvis barnet har inntekt. Må brukes innenfor en #forFaktum eller #forFakta helper. 
+* hentSkjemanummer - Setter inn søknadens skjemanummer, også om det er en søknad for dagpenger
 * hvisHarDiskresjonskode - Viser innhold avhengig av om personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)
 * hvisHarIkkeInnsendteDokumenter - Sjekker om søknaden har ikke-innsendte vedlegg
 * hvisIkkeTom - Dersom variabelen ikke er tom vil innholdet vises
@@ -151,6 +151,13 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
     {{/harBarnetInntekt}}
 {{/forFaktum}}
 
+```
+
+
+##### hentSkjemanummer
+
+```
+{{hentSkjemanummer}}
 ```
 
 
