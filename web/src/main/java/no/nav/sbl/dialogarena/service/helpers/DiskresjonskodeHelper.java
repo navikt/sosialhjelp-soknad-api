@@ -2,11 +2,12 @@ package no.nav.sbl.dialogarena.service.helpers;
 
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
-import no.nav.sbl.dialogarena.service.HandleBarKjoerer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+
+import static no.nav.sbl.dialogarena.service.HandlebarsUtils.finnWebSoknad;
 
 @Component
 public class DiskresjonskodeHelper extends RegistryAwareHelper<Object> {
@@ -19,7 +20,7 @@ public class DiskresjonskodeHelper extends RegistryAwareHelper<Object> {
 
     @Override
     public CharSequence apply(Object key, Options options) throws IOException {
-        WebSoknad soknad = HandleBarKjoerer.finnWebSoknad(options.context);
+        WebSoknad soknad = finnWebSoknad(options.context);
         String kode = soknad.getFaktumMedKey(PERSONALIA_FAKTUM_KEY).getProperties().get(DISKRESJONSKODE_PROPERTY);
 
         if (kode != null && (kode.equals("6") || kode.equals("7"))) {

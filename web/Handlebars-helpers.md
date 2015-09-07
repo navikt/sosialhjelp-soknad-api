@@ -35,7 +35,6 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
  
 * adresse
 * forFaktumHvisSant
-* forFakta
 * forBarnefakta
 * formatterFodelsDato (deprecated og erstattet av formatterKortDato og formatterFnrTilKortDato)
 * formatterLangDato
@@ -46,12 +45,9 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hentLand
 * forVedlegg
 * forPerioder
-* hentSkjemanummer
 * hentFaktumValue
 * hvisFlereErTrue
 * sendtInnInfo
-* forInnsendteVedlegg
-* forIkkeInnsendteVedlegg
 * skalViseRotasjonTurnusSporsmaal
 * hvisLikCmsTekst
 
@@ -59,10 +55,14 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 
 * concat - Legger sammen alle parametrene til tekststring
 * fnrTilKortDato - Formatterer et gyldig fødselnummer til dato på formatet dd.mm.aaaa
+* forFakta - Finner alle fakta med en gitt key og setter hvert faktum som aktiv context etter tur. Har inverse ved ingen fakta.
 * forFaktaMedPropertySattTilTrue - Finner alle fakta med gitt key som har gitt property satt til true
 * forFaktum - Finner et faktum og setter det som aktiv context. Har også inverse om faktum ikke finnes. 
 * forFaktumTilknyttetBarn - Returnerer faktumet tilknyttet barnet i parent-context.
+* forIkkeInnsendteVedlegg - Itererer over vedlegg som ikke er sendt inn
+* forInnsendteVedlegg - Itererer over innsendte vedlegg på søknaden
 * harBarnetInntekt - Henter summen hvis barnet har inntekt. Må brukes innenfor en #forFaktum eller #forFakta helper. 
+* hentSkjemanummer - Setter inn søknadens skjemanummer, også om det er en søknad for dagpenger
 * hvisHarDiskresjonskode - Viser innhold avhengig av om personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)
 * hvisHarIkkeInnsendteDokumenter - Sjekker om søknaden har ikke-innsendte vedlegg
 * hvisIkkeTom - Dersom variabelen ikke er tom vil innholdet vises
@@ -90,6 +90,17 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 
 ```
 {{fnrTilKortDato "***REMOVED***"}}
+```
+
+
+##### forFakta
+
+```
+{{#forFakta "faktumKey"}}
+   Faktum {{index}} med key "faktumKey" har value {{value}}
+{{else}}
+   Faktalisten er tom, det finnes ingen faktum med key "faktumKey".
+{{/forFakta}}
 ```
 
 
@@ -129,6 +140,28 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 ```
 
 
+##### forIkkeInnsendteVedlegg
+
+```
+{{#forIkkeInnsendteVedlegg}}
+    ikke innsendt: {{navn}}
+{{else}}
+    Ingen ikke-innsendte vedlegg
+{{/forIkkeInnsendteVedlegg}}
+```
+
+
+##### forInnsendteVedlegg
+
+```
+{{#forInnsendteVedlegg}}
+    innsendt: {{navn}}
+{{else}}
+    Ingen innsendte vedlegg
+{{/forInnsendteVedlegg}}
+```
+
+
 ##### harBarnetInntekt
 
 ```
@@ -141,6 +174,13 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
     {{/harBarnetInntekt}}
 {{/forFaktum}}
 
+```
+
+
+##### hentSkjemanummer
+
+```
+{{hentSkjemanummer}}
 ```
 
 
