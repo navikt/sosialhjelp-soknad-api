@@ -21,7 +21,7 @@
     <description>Innsending av elektronisk søknad.</description>
     <groupId>no.nav.sbl.dialogarena</groupId>
     <artifactId>sendsoknad</artifactId>
-    <version>7.21-SNAPSHOT</version>
+    <version>7.22-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -786,8 +786,8 @@
                             <fpnb>foreldrepenger_nb_NO.properties</fpnb>
                             <bsnb>bilstonad_nb_NO.properties</bsnb>
                             <tsnb>tilleggsstonader_nb_NO.properties</tsnb>
-                            <tsnb>tiltakspenger_nb_NO.properties</tsnb>
                             <rdrnb>refusjondagligreise_nb_NO.properties</rdrnb>
+                            <tpnb>tiltakspenger_nb_NO.properties</tpnb>
                         </propertiesFiler>
                         <menyPunktPaths>
                             <aapnb>/site/18/app/AAP/nb_NO/tekster</aapnb>
@@ -796,8 +796,8 @@
                             <fpnb>/site/18/app/foreldrepenger/nb_NO/tekster</fpnb>
                             <bsnb>/site/18/app/bilstonad/nb_NO/tekster</bsnb>
                             <tsnb>/site/18/app/tilleggsstonader/nb_NO/tekster</tsnb>
-                            <tsnb>/site/18/app/tiltakspenger/nb_NO/tekster</tsnb>
                             <rdrnb>/site/18/app/refusjondagligreise/nb_NO/tekster</rdrnb>
+                            <tpnb>/site/18/app/tiltakspenger/nb_NO/tekster</tpnb>
                         </menyPunktPaths>
                     </configuration>
                 </plugin>

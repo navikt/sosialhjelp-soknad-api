@@ -10,12 +10,13 @@ import java.io.IOException;
 import java.util.List;
 
 import static no.nav.sbl.dialogarena.service.HandlebarsUtils.finnWebSoknad;
+import static no.nav.sbl.dialogarena.service.HandlebarsUtils.lagItererbarRespons;
 
 @Component
-public class HvisHarIkkeInnsendteDokumenterHelper extends RegistryAwareHelper<Object> {
+public class ForIkkeInnsendteVedleggHelper extends RegistryAwareHelper<Object> {
 
-    public static final HvisHarIkkeInnsendteDokumenterHelper INSTANS = new HvisHarIkkeInnsendteDokumenterHelper();
-    public static final String NAVN = "hvisHarIkkeInnsendteDokumenter";
+    public static final String NAVN = "forIkkeInnsendteVedlegg";
+    public static final ForIkkeInnsendteVedleggHelper INSTANS = new ForIkkeInnsendteVedleggHelper();
 
     @Override
     public String getNavn() {
@@ -29,7 +30,7 @@ public class HvisHarIkkeInnsendteDokumenterHelper extends RegistryAwareHelper<Ob
 
     @Override
     public String getBeskrivelse() {
-        return "Sjekker om søknaden har ikke-innsendte vedlegg";
+        return "Itererer over vedlegg som ikke er sendt inn";
     }
 
     @Override
@@ -39,7 +40,7 @@ public class HvisHarIkkeInnsendteDokumenterHelper extends RegistryAwareHelper<Ob
         if (vedlegg.isEmpty()) {
             return options.inverse(this);
         } else {
-            return options.fn(this);
+            return lagItererbarRespons(options, vedlegg);
         }
     }
 }

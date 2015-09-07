@@ -1,0 +1,46 @@
+<h2>{{ hentTekst "barnetillegg.tittel" }}</h2>
+<table>
+    {{#forFakta "barn"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <div>
+                    <span>{{ properties.fornavn }} {{ properties.etternavn }}</span>
+                </div>
+                <div>
+                    <span>{{ hentTekst "oppsummering.fodt" }}</span>
+                    {{#hvisLik type "SYSTEMREGISTRERT"}}
+                        <span>{{ formatterFodelsDato properties.fnr }},</span>
+                    {{ else }}
+                        <span>{{ formatterFodelsDato properties.fodselsdato }},</span>
+                    {{/hvisLik}}
+
+                    <span>{{ hentTekst "oppsummering.bor" }}</span>
+                    <span>{{ hentLand properties.land }}</span>
+                </div>
+
+                <ul>
+                <li class="kulepunkt faktum-felt">
+                    {{#hvisLik  properties.sokerbarnetillegg "nei"}}
+                        <span>{{ hentTekst "barnetillegg.barn.sokebarnetillegg.nei"}}. </span>
+                    {{ else }}
+                        {{#hvisLik properties.sokerbarnetillegg "ja"}}
+                            <span>{{ hentTekst "barnetillegg.barn.sokebarnetillegg.ja"}}. </span>
+                        {{ else }}
+                            <span>{{ hentTekst "barnetillegg.barn.sokebarnetillegg.vetikke"}}. </span>
+                        {{/hvisLik}}
+                    </li>
+                    <li class="kulepunkt faktum-felt">
+                        {{#hvisLik  properties.harinntekt "ja"}}
+                            <span>{{ hentTekst "barnetillegg.barn.harinntekt.ja"}}. </span><br/>
+                            <em>{{properties.inntekt}} {{ hentTekst "soknad.kr"}}</em>
+                        {{else}}
+                            <span>{{ hentTekst "barnetillegg.barn.harinntekt.nei"}} </span>
+                        {{/hvisLik}}
+                    {{/hvisLik}}
+                </li>
+                </ul>
+            </td>
+        </tr>
+    {{/forFakta}}
+</table>
