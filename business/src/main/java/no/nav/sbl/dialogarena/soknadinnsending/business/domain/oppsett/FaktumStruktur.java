@@ -134,7 +134,8 @@ public class FaktumStruktur implements Serializable {
 
     public boolean erSynlig(WebSoknad soknad, Faktum faktum) {
         FaktumStruktur parent = getDependOn();
-        return parent == null || ( parent.erSynlig(soknad, soknad.finnFaktum(faktum.getParrentFaktum())) && this.oppfyllerParentKriterier(soknad, faktum) );
+        Faktum parentFaktum = soknad.finnFaktum(faktum.getParrentFaktum());
+        return parent == null || ( parentFaktum != null  && parent.erSynlig(soknad, parentFaktum) && this.oppfyllerParentKriterier(soknad, faktum) );
     }
 
     private boolean oppfyllerParentKriterier(WebSoknad soknad, Faktum faktum) {
