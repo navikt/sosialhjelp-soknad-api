@@ -43,6 +43,15 @@
         <skjemaNummer>K5</skjemaNummer>
     </vedlegg>
 
+    <!-- Fødselsattest/bostedsbevis for barn under 16 år -->
+    <vedlegg>
+        <id>7</id>
+        <faktum>barn</faktum>
+        <skjemaNummer>X8</skjemaNummer>
+        <forSystemfaktum>false</forSystemfaktum>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
     <!-- Ekstra vedlegg -->
     <faktum>
         <id>ekstraVedlegg</id>
