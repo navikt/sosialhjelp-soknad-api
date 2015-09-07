@@ -8,7 +8,6 @@ import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -65,7 +64,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
 
         handlebars.registerHelper("adresse", generateAdresseHelper());
         handlebars.registerHelper("forFaktumHvisSant", generateforFaktumHvisSantHelper());
-        handlebars.registerHelper("forFakta", generateForFaktaHelper());
         handlebars.registerHelper("forBarnefakta", generateForBarnefaktaHelper());
         handlebars.registerHelper("formatterFodelsDato", generateFormatterFodselsdatoHelper());
         handlebars.registerHelper("formatterLangDato", generateFormatterLangDatoHelper());
@@ -75,7 +73,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         handlebars.registerHelper("hentLand", generateHentLandHelper());
         handlebars.registerHelper("forVedlegg", generateForVedleggHelper());
         handlebars.registerHelper("forPerioder", generateHelperForPeriodeTidsromFakta());
-        handlebars.registerHelper("hentSkjemanummer", generateHentSkjemanummerHelper());
         handlebars.registerHelper("hentFaktumValue", generateHentFaktumValueHelper());
         handlebars.registerHelper("hvisFlereErTrue", generateHvisFlereSomStarterMedErTrueHelper());
         handlebars.registerHelper("sendtInnInfo", generateSendtInnInfoHelper());
@@ -142,19 +139,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
                 } else {
                     return options.inverse(this);
                 }
-            }
-        };
-    }
-
-    private Helper<Object> generateHentSkjemanummerHelper() {
-        return new Helper<Object>() {
-            @Override
-            public CharSequence apply(Object context, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-                if (soknad.erDagpengeSoknad()) {
-                    return DagpengerUtils.getSkjemanummer(soknad);
-                }
-                return soknad.getskjemaNummer();
             }
         };
     }
@@ -295,20 +279,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         };
     }
 
-    private Helper<String> generateForFaktaHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String key, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-                List<Faktum> fakta = soknad.getFaktaMedKey(key);
-                if (fakta.isEmpty()) {
-                    return options.inverse(this);
-                } else {
-                    return lagItererbarRespons(options, fakta);
-                }
-            }
-        };
-    }
 
     private Helper<String> generateForBarnefaktaHelper() {
         return new Helper<String>() {

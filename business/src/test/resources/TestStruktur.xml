@@ -28,6 +28,10 @@
     <vedlegg>
         <skjemaNummer>v1</skjemaNummer>
         <faktum>parent.faktumMedParentPaaTrue</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <skjemaNummer>v2</skjemaNummer>
@@ -114,13 +118,27 @@
         </onValues>
     </vedlegg>
 
+    <!--Parent vedlegg-->
 
-
-
-
-
-
-
+    <faktum>
+        <id>parentfaktum</id>
+    </faktum>
+    <faktum>
+        <id>barnefaktum</id>
+        <dependOn>parentfaktum</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <vedlegg>
+        <skjemaNummer>v7</skjemaNummer>
+        <skjemanummerTillegg>entest</skjemanummerTillegg>
+        <faktum>barnefaktum</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 </soknad>
 
 
