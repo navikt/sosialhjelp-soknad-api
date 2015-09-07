@@ -31,7 +31,7 @@ public class SoknadRefusjonDagligreise implements KravdialogInformasjon {
     }
 
     public List<String> getSkjemanummer() {
-        return Arrays.asList("NAV 11-12.12", "NAV 11-12.13"); //TODO finn riktig skjemanummer
+        return Arrays.asList("NAV 08-14.01"); //TODO finn riktig skjemanummer
     }
 
     @Override

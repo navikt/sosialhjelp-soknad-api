@@ -1,3 +1,6 @@
-<soknad skjemaNummer="NAV 11-12.12" temaKode="TSO">
+<soknad skjemaNummer="NAV 08-14.01" temaKode="STF">
 
+    <faktum>
+        <id>soknadsvalg.stonadstype</id>
+    </faktum>
 </soknad>
