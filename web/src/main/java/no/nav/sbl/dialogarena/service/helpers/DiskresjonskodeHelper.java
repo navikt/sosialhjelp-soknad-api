@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-import static no.nav.sbl.dialogarena.service.Hjelpemetoder.finnWebSoknad;
+import static no.nav.sbl.dialogarena.service.HandlebarsUtils.finnWebSoknad;
 
 @Component
 public class DiskresjonskodeHelper extends RegistryAwareHelper<Object> {
