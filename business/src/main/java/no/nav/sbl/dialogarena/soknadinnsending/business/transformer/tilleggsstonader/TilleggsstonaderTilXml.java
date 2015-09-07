@@ -54,12 +54,15 @@ public class TilleggsstonaderTilXml implements Transformer<WebSoknad, Alternativ
         if (aktivBolk("laermidler", webSoknad)) {
             rettighetstype.setLaeremiddelutgifter(new LaeremidlerTilXml().transform(webSoknad));
         }
-        if(aktivBolk("familie", webSoknad)){
-            rettighetstype.setTilsynsutgifter(tilsynsutgifter(webSoknad));
+
+        if (aktivBolk("flytting", webSoknad)) {
+            rettighetstype.setFlytteutgifter(new FlytteutgifterTilXml().transform(webSoknad));
         }
 
+        rettighetstype.setTilsynsutgifter(tilsynsutgifter(webSoknad));
         rettighetstype.setReiseutgifter(reiseutgifter(webSoknad));
-        rettighetstype.setFlytteutgifter(new FlytteutgifterTilXml().transform(webSoknad));
+
+
         skjema.setRettighetstype(rettighetstype);
         skjema.setAktivitetsinformasjon(aktivitetsInformasjon(webSoknad));
         return skjema;
@@ -67,7 +70,14 @@ public class TilleggsstonaderTilXml implements Transformer<WebSoknad, Alternativ
 
     private static Tilsynsutgifter tilsynsutgifter(WebSoknad webSoknad) {
         Tilsynsutgifter tilsynsutgifter = new Tilsynsutgifter();
-        tilsynsutgifter.setTilsynsutgifterFamilie(new TilsynFamilieTilXml().transform(webSoknad));
+
+        if(aktivBolk("familie", webSoknad)){
+            tilsynsutgifter.setTilsynsutgifterFamilie(new TilsynFamilieTilXml().transform(webSoknad));
+        }
+        if(aktivBolk("barnepass", webSoknad)) {
+            tilsynsutgifter.setTilsynsutgifterBarn(new TilsynBarnepassTilXml().transform(webSoknad));
+        }
+
         return tilsynsutgifter;
     }
 

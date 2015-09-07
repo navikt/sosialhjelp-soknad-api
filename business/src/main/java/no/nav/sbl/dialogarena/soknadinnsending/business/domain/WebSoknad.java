@@ -353,6 +353,14 @@ public class WebSoknad implements Serializable {
             }
         }).collect();
     }
+    public Faktum getFaktumMedKeyOgParentFaktum(final String key, final Long parentFaktumId) {
+        return on(fakta).filter(new Predicate<Faktum>() {
+            @Override
+            public boolean evaluate(Faktum faktum) {
+                return faktum.getKey().equals(key) && faktum.getParrentFaktum().equals(parentFaktumId);
+            }
+        }).head().getOrElse(null);
+    }
 
     public Faktum getFaktaMedKeyOgProperty(final String key, final String property, final String value) {
         return on(fakta).filter(new Predicate<Faktum>() {
@@ -493,7 +501,7 @@ public class WebSoknad implements Serializable {
         return on(fakta).filter(new Predicate<Faktum>() {
             @Override
             public boolean evaluate(Faktum faktum) {
-                return faktum.getFaktumId().equals(faktumId);
+                return faktum.getFaktumId() != null && faktum.getFaktumId().equals(faktumId);
             }
         }).head().getOrElse(null);
     }
