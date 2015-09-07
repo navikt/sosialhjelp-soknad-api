@@ -21,12 +21,14 @@ public class AktiviteterMock {
             WSPeriode periode = new WSPeriode().withFom(new LocalDate("2015-01-15")).withTom(new LocalDate("2015-02-15"));
             WSAktivitet aktivitet = new WSAktivitet()
                     .withAktivitetId("9999")
+                    .withErStoenadsberettigetAktivitet(true)
                     .withAktivitetsnavn("Arbeidspraksis i ordinær virksomhet")
                     .withPeriode(periode);
 
             WSPeriode periode2 = new WSPeriode().withFom(new LocalDate("2015-02-28"));
             WSAktivitet aktivitet2 = new WSAktivitet()
                     .withAktivitetId("8888")
+                    .withErStoenadsberettigetAktivitet(true)
                     .withAktivitetsnavn("Arbeid med bistand")
                     .withPeriode(periode2);
 

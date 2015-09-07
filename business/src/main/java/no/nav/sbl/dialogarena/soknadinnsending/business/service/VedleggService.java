@@ -32,10 +32,10 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStr
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.VedleggsGrunnlag;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.util.VedleggsgenereringUtil;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
 import org.apache.commons.collections15.Closure;
+import org.apache.commons.collections15.CollectionUtils;
 import org.apache.commons.collections15.Transformer;
 import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.exceptions.COSVisitorException;
@@ -254,23 +254,44 @@ public class VedleggService {
         List<Vedlegg> paakrevdeVedlegg = on(vedleggRepository.hentVedlegg(behandlingsId)).filter(Vedlegg.PAAKREVDE_VEDLEGG).collect();
         leggTilKodeverkFelter(paakrevdeVedlegg);
 
-        if("true".equals(System.getProperty(FEATURE_NY_VEDLEGGENERERING))){
+        //if("true".equals(System.getProperty(FEATURE_NY_VEDLEGGENERERING))){
             List<Vedlegg> paakrevdeVedleggVedNyUthenting = genererPaakrevdeVedlegg(behandlingsId);
             leggTilKodeverkFelter(paakrevdeVedleggVedNyUthenting);
-            if (!VedleggsgenereringUtil.likeVedlegg(paakrevdeVedlegg, paakrevdeVedleggVedNyUthenting)) {
+            if (!CollectionUtils.isEqualCollection(paakrevdeVedlegg, paakrevdeVedleggVedNyUthenting)) {
                 String feilmelding = "\n ######### VEDLEGGSFEIL - Feil i ny vedleggsgenereringslogikk ################# \n";
-
                 feilmelding += "I Ny, ikke gammel: \n";
                 feilmelding += getVedleggsDiff(paakrevdeVedleggVedNyUthenting, paakrevdeVedlegg);
-
                 feilmelding += "\nI Gammel, ikke ny: \n";
                 feilmelding += getVedleggsDiff(paakrevdeVedlegg, paakrevdeVedleggVedNyUthenting);
 
+
+                ArrayList<Vedlegg> kunGammel = new ArrayList<>(paakrevdeVedlegg);
+                ArrayList<Vedlegg> kunNy = new ArrayList<>(paakrevdeVedleggVedNyUthenting);
+                kunGammel.removeAll(paakrevdeVedleggVedNyUthenting);
+                kunNy.removeAll(paakrevdeVedlegg);
+                on(kunNy).forEach(new Closure<Vedlegg>() {
+                    @Override
+                    public void execute(Vedlegg vedlegg) {
+                        vedlegg.setNavn("KunNy: " + vedlegg.getNavn());
+                    }
+                });
+                on(kunGammel).forEach(new Closure<Vedlegg>() {
+                    @Override
+                    public void execute(Vedlegg o) {
+                        o.setNavn("KunGammel:" + o.getNavn());
+                    }
+                });
+                paakrevdeVedlegg = new ArrayList<>(paakrevdeVedlegg);
+                paakrevdeVedlegg.addAll(kunNy);
+
                 logger.warn(feilmelding);
             }
-        }
+        //}
         return paakrevdeVedlegg;
 
+    }
+
+    public static void main(String[] args) {
     }
 
     private String getVedleggsDiff(List<Vedlegg> nyeVedlegg, List<Vedlegg> gammleVedlegg) {

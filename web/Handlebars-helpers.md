@@ -36,7 +36,6 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * adresse
 * forFaktumHvisSant
 * forBarnefakta
-* forFaktaMedPropertySattTilTrue
 * formatterFodelsDato (deprecated og erstattet av formatterKortDato og formatterFnrTilKortDato)
 * formatterLangDato
 * hvisEttersending
@@ -52,7 +51,6 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * sendtInnInfo
 * forInnsendteVedlegg
 * forIkkeInnsendteVedlegg
-* hvisHarIkkeInnsendteDokumenter
 * skalViseRotasjonTurnusSporsmaal
 * hvisLikCmsTekst
 
@@ -61,9 +59,12 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * concat - Legger sammen alle parametrene til tekststring
 * fnrTilKortDato - Formatterer et gyldig fødselnummer til dato på formatet dd.mm.aaaa
 * forFakta - Finner alle fakta med en gitt key og setter hvert faktum som aktiv context etter tur. Har inverse ved ingen fakta.
+* forFaktaMedPropertySattTilTrue - Finner alle fakta med gitt key som har gitt property satt til true
 * forFaktum - Finner et faktum og setter det som aktiv context. Har også inverse om faktum ikke finnes. 
+* forFaktumTilknyttetBarn - Returnerer faktumet tilknyttet barnet i parent-context.
 * harBarnetInntekt - Henter summen hvis barnet har inntekt. Må brukes innenfor en #forFaktum eller #forFakta helper. 
 * hvisHarDiskresjonskode - Viser innhold avhengig av om personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)
+* hvisHarIkkeInnsendteDokumenter - Sjekker om søknaden har ikke-innsendte vedlegg
 * hvisIkkeTom - Dersom variabelen ikke er tom vil innholdet vises
 * hvisKunStudent - Sjekker om brukeren har en annen status enn student (f.eks sykmeldt, i arbeid osv.)
 * hvisLik - Sjekker om to strenger er like
@@ -102,6 +103,17 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 ```
 
 
+##### forFaktaMedPropertySattTilTrue
+
+```
+{{#forFaktaMedPropertySattTilTrue "faktumnavn" "propertyKey"}}
+    Faktumet "faktumnavn" har har propertien "propertyKey" og den satt til true.
+{{else}}
+    Faktumet har ikke property satt til true (enten false eller ikke noe).
+{{/forFaktaMedPropertySattTilTrue}}
+```
+
+
 ##### forFaktum
 
 ```
@@ -109,6 +121,20 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
     Faktum med key {{key}} finnes og kan aksesseres. {{value}} skriver f.eks ut verdien på faktumet. se Faktum klassen.
 {{else}}
     faktum med key "faktumNavn" er ikke satt
+{{/forFaktum}}
+```
+
+
+##### forFaktumTilknyttetBarn
+
+```
+{{#forFaktum "barn"}}
+    {{#forFaktumTilknyttetBarn "faktumNavn"}}
+        Her har du faktumet (med gitt key) som er tilknyttet barnet gitt i parent-context (forFaktum).
+        Se forFaktum for å vite med om hvordan faktumobjektet fungerer.
+    {{else}}
+        Om det ikke finnet noe faktum som er tilknyttet barnet vil den gå inn i else-contexten.
+    {{/forFaktumTilknyttetBarn}}
 {{/forFaktum}}
 ```
 
@@ -136,6 +162,17 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
     {{else}}
     jeg har IKKE noen diskresjonskode
 {{/hvisHarDiskresjonskode}}
+```
+
+
+##### hvisHarIkkeInnsendteDokumenter
+
+```
+{{#hvisHarIkkeInnsendteDokumenter}}
+    har ikke-innsendte dokumenter
+{{else}}
+    alt er innsendt
+{{/hvisHarIkkeInnsendteDokumenter}}
 ```
 
 
