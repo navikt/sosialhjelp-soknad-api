@@ -18,8 +18,17 @@ public final class FaktumPredicates {
         return new Predicate<Map.Entry<String, String>>() {
             @Override
             public boolean evaluate(Map.Entry<String, String> mapEntry) {
-                return mapEntry.getValue().equals(expected);
+                return mapEntry.getValue() != null && mapEntry.getValue().equals(expected);
             }
         };
     }
+    public static Predicate<Faktum> harValue(final String value){
+        return new Predicate<Faktum>() {
+            @Override
+            public boolean evaluate(Faktum faktum) {
+                return value.equals(faktum.getValue());
+            }
+        };
+    }
+
 }

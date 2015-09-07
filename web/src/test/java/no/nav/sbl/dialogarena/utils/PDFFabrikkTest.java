@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.utils;
 
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.service.HandleBarKjoerer;
+import no.nav.sbl.dialogarena.service.helpers.ForFaktaHelper;
 import no.nav.sbl.dialogarena.service.helpers.faktum.ForFaktumHelper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType;
@@ -37,6 +38,8 @@ public class PDFFabrikkTest {
         soknad.leggTilFaktum(new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("liste").medValue("testinnhold4").medType(FaktumType.BRUKERREGISTRERT));
         String html;
         handleBarKjoerer.registrerHelper(ForFaktumHelper.NAVN, ForFaktumHelper.INSTANS);
+        handleBarKjoerer.registrerHelper(ForFaktaHelper.NAVN, ForFaktaHelper.INSTANS);
+
         try {
             html = handleBarKjoerer.fyllHtmlMalMedInnhold(soknad, "/html/WebSoknadHtml");
 

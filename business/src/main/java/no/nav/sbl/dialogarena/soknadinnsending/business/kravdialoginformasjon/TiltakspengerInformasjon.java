@@ -5,6 +5,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import java.util.Collections;
 import java.util.List;
 
+import static java.util.Arrays.asList;
+
 public class TiltakspengerInformasjon extends KravdialogInformasjon.KravdialogInformasjonUtenAlternativRepresentasjon {
 
     public String getSoknadTypePrefix() {
@@ -20,7 +22,7 @@ public class TiltakspengerInformasjon extends KravdialogInformasjon.KravdialogIn
     }
 
     public List<String> getSoknadBolker(WebSoknad soknad) {
-        return Collections.singletonList(BOLK_PERSONALIA);
+        return asList(BOLK_PERSONALIA, BOLK_BARN);
     }
 
     public String getStrukturFilnavn() {
