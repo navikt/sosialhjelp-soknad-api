@@ -3,7 +3,7 @@
         <tr>
             <td class="sjekket"></td>
             <td>
-                <span>{{ properties.fornavn }} {{ properties.mellomnavn}} {{properties.etternavn}}</span>
+                <span>{{toCapitalized properties.sammensattnavn}} </span>
                 {{#hvisLik type "SYSTEMREGISTRERT"}}
                     <span>({{properties.fnr}})</span>
                 {{else}}
