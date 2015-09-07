@@ -18,7 +18,7 @@ public final class FaktumPredicates {
         return new Predicate<Map.Entry<String, String>>() {
             @Override
             public boolean evaluate(Map.Entry<String, String> mapEntry) {
-                return mapEntry.getValue().equals(expected);
+                return mapEntry.getValue() != null && mapEntry.getValue().equals(expected);
             }
         };
     }
