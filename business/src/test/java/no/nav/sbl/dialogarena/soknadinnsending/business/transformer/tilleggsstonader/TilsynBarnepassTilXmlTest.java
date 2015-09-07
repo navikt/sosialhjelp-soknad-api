@@ -51,7 +51,7 @@ public class TilsynBarnepassTilXmlTest {
     }
 
     @Test
-    public void skalLeggeTilBarnSomDetSøkesBarnepassFor() {
+    public void skalLeggeTilBarnSomDetSokesBarnepassFor() {
         String oleNavn = "Ole Mockmann";
         String oleFnr = "***REMOVED***";
         String oleAnnenForsorger = "***REMOVED***";
