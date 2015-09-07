@@ -17,15 +17,10 @@
         <flereTillatt>true</flereTillatt>
     </faktum>
 
-    <!-- Tilleggsopplysninger -->
+    <!-- Barnetillegg -->
     <faktum>
         <id>barn</id>
         <flereTillatt>true</flereTillatt>
-    </faktum>
-
-    <!-- Tilleggsopplysninger -->
-    <faktum>
-        <id>tilleggsopplysninger.fritekst</id>
     </faktum>
 
     <!-- Personalia -->
