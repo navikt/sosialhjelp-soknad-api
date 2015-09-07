@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.List;
 
-import static no.nav.sbl.dialogarena.service.Hjelpemetoder.finnWebSoknad;
+import static no.nav.sbl.dialogarena.service.HandlebarsUtils.finnWebSoknad;
 
 @Component
 public class HvisHarIkkeInnsendteDokumenterHelper extends RegistryAwareHelper<Object> {

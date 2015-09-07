@@ -23,7 +23,7 @@ import java.util.*;
 
 import static no.bekk.bekkopen.person.FodselsnummerValidator.getFodselsnummer;
 import static no.nav.modig.lang.collections.IterUtils.on;
-import static no.nav.sbl.dialogarena.service.Hjelpemetoder.*;
+import static no.nav.sbl.dialogarena.service.HandlebarsUtils.*;
 import static org.apache.commons.lang3.ArrayUtils.reverse;
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.StringUtils.split;
