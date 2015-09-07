@@ -4,6 +4,7 @@ import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Aktivitetsinfo
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Reiseutgifter;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Rettighetstype;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Tilleggsstoenadsskjema;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Tilsynsutgifter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
@@ -54,11 +55,30 @@ public class TilleggsstonaderTilXml implements Transformer<WebSoknad, Alternativ
             rettighetstype.setLaeremiddelutgifter(new LaeremidlerTilXml().transform(webSoknad));
         }
 
+        if (aktivBolk("flytting", webSoknad)) {
+            rettighetstype.setFlytteutgifter(new FlytteutgifterTilXml().transform(webSoknad));
+        }
+
+        rettighetstype.setTilsynsutgifter(tilsynsutgifter(webSoknad));
         rettighetstype.setReiseutgifter(reiseutgifter(webSoknad));
-        rettighetstype.setFlytteutgifter(new FlytteutgifterTilXml().transform(webSoknad));
+
+
         skjema.setRettighetstype(rettighetstype);
         skjema.setAktivitetsinformasjon(aktivitetsInformasjon(webSoknad));
         return skjema;
+    }
+
+    private static Tilsynsutgifter tilsynsutgifter(WebSoknad webSoknad) {
+        Tilsynsutgifter tilsynsutgifter = new Tilsynsutgifter();
+
+        if(aktivBolk("familie", webSoknad)){
+            tilsynsutgifter.setTilsynsutgifterFamilie(new TilsynFamilieTilXml().transform(webSoknad));
+        }
+        if(aktivBolk("barnepass", webSoknad)) {
+            tilsynsutgifter.setTilsynsutgifterBarn(new TilsynBarnepassTilXml().transform(webSoknad));
+        }
+
+        return tilsynsutgifter;
     }
 
     private static Aktivitetsinformasjon aktivitetsInformasjon(WebSoknad webSoknad) {

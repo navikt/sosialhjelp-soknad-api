@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static no.nav.sbl.dialogarena.service.HandleBarKjoerer.finnWebSoknad;
-import static no.nav.sbl.dialogarena.service.HandleBarKjoerer.lagItererbarRespons;
+import static no.nav.sbl.dialogarena.service.Hjelpemetoder.lagItererbarRespons;
 
 @Component
 public class ForFaktaHelper extends RegistryAwareHelper<String> {
