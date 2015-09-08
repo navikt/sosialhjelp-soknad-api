@@ -18,7 +18,6 @@ public class ForFaktaHelper extends RegistryAwareHelper<String> {
     public static final String NAVN = "forFakta";
     public static final ForFaktaHelper INSTANS = new ForFaktaHelper();
 
-
     @Override
     public String getNavn() {
         return NAVN;

@@ -10,7 +10,7 @@ import java.io.IOException;
 import static no.bekk.bekkopen.person.FodselsnummerValidator.getFodselsnummer;
 
 @Component
-public class FnrTilKortDatoHelper extends RegistryAwareHelper {
+public class FnrTilKortDatoHelper extends RegistryAwareHelper<Object> {
     public static final String NAVN = "fnrTilKortDato";
     public static final FnrTilKortDatoHelper INSTANS = new FnrTilKortDatoHelper();
 
@@ -20,7 +20,7 @@ public class FnrTilKortDatoHelper extends RegistryAwareHelper {
     }
 
     @Override
-    public Helper getHelper() {
+    public Helper<Object> getHelper() {
         return INSTANS;
     }
 
