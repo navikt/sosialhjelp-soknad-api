@@ -54,7 +54,8 @@ public class ContentConfig {
                 new NavMessageSource.Bundle("aap", brukerprofilDataDirectoryString + "enonic/aap", "classpath:content/aap"),
                 new NavMessageSource.Bundle("bilstonad", brukerprofilDataDirectoryString + "enonic/bilstonad", "classpath:content/bilstonad"),
                 new NavMessageSource.Bundle("soknadtilleggsstonader", brukerprofilDataDirectoryString + "enonic/tilleggsstonader", "classpath:content/tilleggsstonader"),
-                new NavMessageSource.Bundle("tiltakspenger", brukerprofilDataDirectoryString + "enonic/tiltakspenger", "classpath:content/tiltakspenger")
+                new NavMessageSource.Bundle("tiltakspenger", brukerprofilDataDirectoryString + "enonic/tiltakspenger", "classpath:content/tiltakspenger"),
+                new NavMessageSource.Bundle("soknadrefusjondagligreise", brukerprofilDataDirectoryString + "enonic/soknadrefusjondagligreise", "classpath:content/soknadrefusjondagligreise")
         );
 
         messageSource.setDefaultEncoding("UTF-8");
