@@ -247,7 +247,7 @@
             <dependency>
                 <groupId>no.nav.sbl</groupId>
                 <artifactId>arena-sakOgAktivitet_v1</artifactId>
-                <version>1.0.6</version>
+                <version>1.0.10</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.sbl</groupId>
