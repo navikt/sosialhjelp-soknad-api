@@ -22,7 +22,7 @@ import java.util.List;
 
 @Service
 public class MaalgrupperService {
-    private static Logger LOG = LoggerFactory.getLogger(MaalgrupperService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MaalgrupperService.class);
 
     @Inject
     @Named("maalgruppeEndpoint")
