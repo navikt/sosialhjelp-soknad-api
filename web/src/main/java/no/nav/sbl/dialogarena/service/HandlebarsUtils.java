@@ -8,8 +8,13 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 public class HandlebarsUtils {
+
+    public static final Locale NO_LOCALE = new Locale("nb", "no");
+
+
     public static <T> String lagItererbarRespons(Options options, List<T> liste) throws IOException {
         Context parent = options.context;
         StringBuilder stringBuilder = new StringBuilder();
