@@ -41,7 +41,7 @@ public class StofoKodeverkVerdier {
     }
 
     public enum InnsendingsintervallerKodeverk {
-        uke("UKE"), maaned("MND");
+        uke("UKE"), maned("MND");
         public final String kodeverksverdi;
 
         InnsendingsintervallerKodeverk(String kodeverksverdi) {
