@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.kodeverk;
 
+import static no.nav.sbl.dialogarena.kodeverk.Kodeverk.EksponertKodeverk.*;
 import no.nav.modig.common.MDCOperations;
 import no.nav.modig.core.exception.SystemException;
 import no.nav.modig.lang.option.Optional;
@@ -34,10 +35,8 @@ import java.util.Map;
 import static java.util.Collections.sort;
 import static javax.xml.bind.JAXBContext.newInstance;
 import static no.nav.modig.lang.collections.IterUtils.on;
-import static no.nav.modig.lang.collections.PredicateUtils.equalTo;
 import static no.nav.modig.lang.collections.PredicateUtils.exists;
 import static no.nav.modig.lang.collections.PredicateUtils.fileExists;
-import static no.nav.modig.lang.collections.PredicateUtils.not;
 import static no.nav.modig.lang.collections.PredicateUtils.where;
 import static no.nav.modig.lang.collections.TransformerUtils.appendPathname;
 import static no.nav.modig.lang.collections.TransformerUtils.makeDirs;
@@ -83,12 +82,12 @@ public class StandardKodeverk implements Kodeverk {
 
     @Override
     public String getPoststed(final String postnummer) {
-        return hentFoersteTermnavnFraKodeIKodeverk(postnummer, EksponertKodeverk.POSTNUMMER.toString());
+        return hentFoersteTermnavnFraKodeIKodeverk(postnummer, POSTNUMMER.toString());
     }
 
     @Override
     public String getLand(String landkode) {
-        String landFraKodeverk = hentFoersteTermnavnFraKodeIKodeverk(landkode, EksponertKodeverk.LANDKODE.toString());
+        String landFraKodeverk = hentFoersteTermnavnFraKodeIKodeverk(landkode, LANDKODE.toString());
         return formaterLand(landFraKodeverk);
     }
 
@@ -213,7 +212,7 @@ public class StandardKodeverk implements Kodeverk {
         } else {
             dumpIfPossible(navn, kodeverket);
         }
-        if (!EksponertKodeverk.POSTNUMMER.toString().equals(navn)) {
+        if (!POSTNUMMER.toString().equals(navn)) {
             sort(kodeverket.getKode(), compareBy(TERMNAVN));
         }
         return kodeverket;
