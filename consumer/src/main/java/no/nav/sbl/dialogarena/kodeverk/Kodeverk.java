@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
+import static no.nav.sbl.dialogarena.kodeverk.Kodeverk.EksponertKodeverk.*;
 
 public interface Kodeverk extends Adressekodeverk {
     public enum EksponertKodeverk {
@@ -23,7 +24,7 @@ public interface Kodeverk extends Adressekodeverk {
         }
     }
 
-    List<String> ALLE_KODEVERK = asList(EksponertKodeverk.LANDKODE.toString(), EksponertKodeverk.POSTNUMMER.toString(), EksponertKodeverk.KOMMUNE.toString());
+    List<String> ALLE_KODEVERK = asList(LANDKODE.toString(), POSTNUMMER.toString(), KOMMUNE.toString());
 
     void lastInnNyeKodeverk();
 
