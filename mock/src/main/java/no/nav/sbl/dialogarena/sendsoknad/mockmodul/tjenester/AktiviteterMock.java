@@ -1,44 +1,73 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.tjenester;
 
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetOgVedtakDagligReiseListePersonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetOgVedtakDagligReiseListeSikkerhetsbegrensning;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetsinformasjonListePersonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetsinformasjonListeSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.SakOgAktivitetV1;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSAktivitet;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSAktivitetOgVedtak;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSPeriode;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSSaksinformasjon;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSVedtaksinformasjon;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetOgVedtakDagligReiseListeRequest;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetOgVedtakDagligReiseListeResponse;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetsinformasjonListeRequest;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetsinformasjonListeResponse;
 import org.joda.time.LocalDate;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+public class AktiviteterMock implements SakOgAktivitetV1 {
 
-public class AktiviteterMock {
+    @Override
+    public void ping() {
 
-    public SakOgAktivitetV1 sakOgAktivitetInformasjonV1Mock() {
-        SakOgAktivitetV1 mock = mock(SakOgAktivitetV1.class);
+    }
 
-        try {
-            WSFinnAktivitetsinformasjonListeResponse response = new WSFinnAktivitetsinformasjonListeResponse();
-            WSPeriode periode = new WSPeriode().withFom(new LocalDate("2015-01-15")).withTom(new LocalDate("2015-02-15"));
-            WSAktivitet aktivitet = new WSAktivitet()
-                    .withAktivitetId("9999")
-                    .withErStoenadsberettigetAktivitet(true)
-                    .withAktivitetsnavn("Arbeidspraksis i ordinær virksomhet")
-                    .withPeriode(periode);
+    @Override
+    public WSFinnAktivitetOgVedtakDagligReiseListeResponse finnAktivitetOgVedtakDagligReiseListe(WSFinnAktivitetOgVedtakDagligReiseListeRequest wsFinnAktivitetOgVedtakDagligReiseListeRequest) throws FinnAktivitetOgVedtakDagligReiseListeSikkerhetsbegrensning, FinnAktivitetOgVedtakDagligReiseListePersonIkkeFunnet {
+        WSFinnAktivitetOgVedtakDagligReiseListeResponse response = new WSFinnAktivitetOgVedtakDagligReiseListeResponse();
+        response.withAktivitetOgVedtakListe(new WSAktivitetOgVedtak()
+                .withPeriode(new WSPeriode().withFom(new LocalDate(2015, 1, 1)).withTom(new LocalDate(2015, 12, 31)))
+                .withAktivitetId("100")
+                .withAktivitetsnavn("navn på aktivitet")
+                .withErStoenadsberettigetAktivitet(true)
+                .withSaksinformasjon(new WSSaksinformasjon().withSaksnummerArena("saksnummerarena").withVedtaksinformasjon(
+                        new WSVedtaksinformasjon()
+                                .withPeriode(new WSPeriode().withFom(new LocalDate(2015, 1, 1)).withTom(new LocalDate(2015, 3, 31)))
+                                .withVedtakId("1000")
+                                .withForventetDagligParkeringsutgift(100)
+                                .withTrengerParkering(true)
+                                .withDagsats(555.0))
+                        .withVedtaksinformasjon(
+                                new WSVedtaksinformasjon()
+                                        .withPeriode(new WSPeriode().withFom(new LocalDate(2015, 5, 1)).withTom(new LocalDate(2015, 5, 24)))
+                                        .withVedtakId("1002")
+                                        .withForventetDagligParkeringsutgift(50)
+                                        .withTrengerParkering(false)
+                                        .withDagsats(50.0)
+                        )));
+        return response;
+    }
 
-            WSPeriode periode2 = new WSPeriode().withFom(new LocalDate("2015-02-28"));
-            WSAktivitet aktivitet2 = new WSAktivitet()
-                    .withAktivitetId("8888")
-                    .withErStoenadsberettigetAktivitet(true)
-                    .withAktivitetsnavn("Arbeid med bistand")
-                    .withPeriode(periode2);
+    @Override
+    public WSFinnAktivitetsinformasjonListeResponse finnAktivitetsinformasjonListe(WSFinnAktivitetsinformasjonListeRequest wsFinnAktivitetsinformasjonListeRequest) throws FinnAktivitetsinformasjonListeSikkerhetsbegrensning, FinnAktivitetsinformasjonListePersonIkkeFunnet {
+        WSFinnAktivitetsinformasjonListeResponse response = new WSFinnAktivitetsinformasjonListeResponse();
+        WSPeriode periode = new WSPeriode().withFom(new LocalDate("2015-01-15")).withTom(new LocalDate("2015-02-15"));
+        WSAktivitet aktivitet = new WSAktivitet()
+                .withAktivitetId("9999")
+                .withErStoenadsberettigetAktivitet(true)
+                .withAktivitetsnavn("Arbeidspraksis i ordinær virksomhet")
+                .withPeriode(periode);
+
+        WSPeriode periode2 = new WSPeriode().withFom(new LocalDate("2015-02-28"));
+        WSAktivitet aktivitet2 = new WSAktivitet()
+                .withAktivitetId("8888")
+                .withErStoenadsberettigetAktivitet(true)
+                .withAktivitetsnavn("Arbeid med bistand")
+                .withPeriode(periode2);
 
 
-            response.withAktivitetListe(aktivitet, aktivitet2);
-
-            when(mock.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(response);
-        } catch (Exception e) {
-        }
-
-        return mock;
+        response.withAktivitetListe(aktivitet, aktivitet2);
+        return response;
     }
 }

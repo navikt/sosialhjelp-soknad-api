@@ -15,7 +15,6 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 
 @Controller
-@Path("/")
 @Produces(APPLICATION_JSON)
 public class TjenesterRessurs {
 
@@ -29,6 +28,12 @@ public class TjenesterRessurs {
     @Path("/aktiviteter")
     public List<Faktum> hentAktiviteter() {
         return aktiviteterService.hentAktiviteter(getSubjectHandler().getUid());
+    }
+
+    @GET
+    @Path("/vedtak")
+    public List<Faktum> hentVedtak() {
+        return aktiviteterService.hentVedtak(getSubjectHandler().getUid());
     }
 
     @GET
