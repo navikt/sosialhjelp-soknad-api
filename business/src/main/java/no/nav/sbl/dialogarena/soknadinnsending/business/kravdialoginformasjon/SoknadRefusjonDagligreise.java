@@ -23,7 +23,7 @@ public class SoknadRefusjonDagligreise implements KravdialogInformasjon {
     }
 
     public List<String> getSoknadBolker(WebSoknad soknad) {
-        return Collections.emptyList();
+        return Arrays.asList(BOLK_PERSONALIA, "vedtakperioder");
     }
 
     public String getStrukturFilnavn() {
