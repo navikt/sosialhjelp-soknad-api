@@ -118,6 +118,12 @@ public class InformasjonRessurs {
     }
 
     @GET
+    @Path("/kodeverk")
+    public Map<String, String> hentKodeverk(@QueryParam("kodeverk") Kodeverk.EksponertKodeverk kodeverkKey) {
+        return kodeverk.hentAlleKodenavnMedForsteTerm(kodeverkKey);
+    }
+
+    @GET
     @Path("/soknadstruktur")
     public SoknadStruktur hentSoknadStruktur(@QueryParam("skjemanummer") String skjemanummer, @QueryParam("filter") String filter) {
         SoknadStruktur soknadStruktur = webSoknadConfig.hentStruktur(skjemanummer);
