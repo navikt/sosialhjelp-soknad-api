@@ -2,11 +2,18 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetOgVedtakDagligReiseListePersonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetOgVedtakDagligReiseListeSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetsinformasjonListePersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetsinformasjonListeSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.SakOgAktivitetV1;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSAktivitet;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSAktivitetOgVedtak;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSPeriode;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSSaksinformasjon;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSVedtaksinformasjon;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetOgVedtakDagligReiseListeRequest;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetOgVedtakDagligReiseListeResponse;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetsinformasjonListeRequest;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetsinformasjonListeResponse;
 import org.joda.time.LocalDate;
@@ -121,6 +128,7 @@ public class AktiviteterServiceTest {
         Faktum faktum = fakta.get(0);
         assertThat(faktum.getProperties()).containsEntry("fom", "");
     }
+
     @Test
     public void skalGodtaNullListe() throws FinnAktivitetsinformasjonListePersonIkkeFunnet, FinnAktivitetsinformasjonListeSikkerhetsbegrensning {
 
@@ -135,6 +143,92 @@ public class AktiviteterServiceTest {
         when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenThrow(new FinnAktivitetsinformasjonListeSikkerhetsbegrensning());
 
         aktiviteterService.hentAktiviteter("");
+    }
+
+    @Test
+    public void skalReturnereAktiveVedtak() throws FinnAktivitetOgVedtakDagligReiseListePersonIkkeFunnet, FinnAktivitetOgVedtakDagligReiseListeSikkerhetsbegrensning {
+        WSFinnAktivitetOgVedtakDagligReiseListeResponse response = new WSFinnAktivitetOgVedtakDagligReiseListeResponse();
+        response.withAktivitetOgVedtakListe(
+                lagAktivitetOgVedtak("100", "navn på aktivitet",
+                        lagVedtak(new LocalDate(2015, 1, 1), new LocalDate(2015, 3, 31), "1000", 100, true, 555.0),
+                        lagVedtak(new LocalDate(2015, 4, 1), new LocalDate(2015, 5, 31), "1001", 101, true, 556.0)
+                ),
+                lagAktivitetOgVedtak("101", "navn på aktivitet2",
+                        lagVedtak(new LocalDate(2015, 1, 1), new LocalDate(2015, 3, 31), "1000", null, false, 555.0)
+                ));
+        when(webservice.finnAktivitetOgVedtakDagligReiseListe(any(WSFinnAktivitetOgVedtakDagligReiseListeRequest.class))).thenReturn(response);
+
+        List<Faktum> faktums = aktiviteterService.hentVedtak("12312312345");
+        ArgumentCaptor<WSFinnAktivitetOgVedtakDagligReiseListeRequest> captor = ArgumentCaptor.forClass(WSFinnAktivitetOgVedtakDagligReiseListeRequest.class);
+        verify(webservice).finnAktivitetOgVedtakDagligReiseListe(captor.capture());
+        assertThat(captor.getValue().getPersonident()).isEqualTo("12312312345");
+
+        assertThat(faktums).contains(
+                new Faktum()
+                        .medKey("vedtak")
+                        .medProperty("aktivitetId", "100")
+                        .medProperty("aktivitetNavn", "navn på aktivitet")
+                        .medProperty("aktivitetFom", "2015-01-01")
+                        .medProperty("aktivitetTom", "2015-12-31")
+                        .medProperty("erStoenadsberettiget", "true")
+                        .medProperty("fom", "2015-01-01")
+                        .medProperty("tom", "2015-03-31")
+                        .medProperty("trengerParkering", "true")
+                        .medProperty("forventetDagligParkeringsutgift", "100")
+                        .medProperty("dagsats", "555.0")
+                        .medProperty("id", "1000")
+        );
+
+        assertThat(faktums).contains(
+                new Faktum()
+                        .medKey("vedtak")
+                        .medProperty("aktivitetId", "100")
+                        .medProperty("aktivitetNavn", "navn på aktivitet")
+                        .medProperty("aktivitetFom", "2015-01-01")
+                        .medProperty("aktivitetTom", "2015-12-31")
+                        .medProperty("erStoenadsberettiget", "true")
+                        .medProperty("fom", "2015-04-01")
+                        .medProperty("tom", "2015-05-31")
+                        .medProperty("trengerParkering", "true")
+                        .medProperty("forventetDagligParkeringsutgift", "101")
+                        .medProperty("dagsats", "556.0")
+                        .medProperty("id", "1001")
+        );
+        assertThat(faktums).contains(
+                new Faktum()
+                        .medKey("vedtak")
+                        .medProperty("aktivitetId", "101")
+                        .medProperty("aktivitetNavn", "navn på aktivitet2")
+                        .medProperty("aktivitetFom", "2015-01-01")
+                        .medProperty("aktivitetTom", "2015-12-31")
+                        .medProperty("erStoenadsberettiget", "true")
+                        .medProperty("fom", "2015-01-01")
+                        .medProperty("tom", "2015-03-31")
+                        .medProperty("trengerParkering", "false")
+                        .medProperty("forventetDagligParkeringsutgift", "")
+                        .medProperty("dagsats", "555.0")
+                        .medProperty("id", "1000")
+        );
+    }
+
+    private WSVedtaksinformasjon lagVedtak(LocalDate fom, LocalDate tom, String id, Integer forventetParkUtgift, boolean trengerParkering, double dagsats) {
+        return new WSVedtaksinformasjon()
+                .withPeriode(new WSPeriode().withFom(fom).withTom(tom))
+                .withVedtakId(id)
+                .withForventetDagligParkeringsutgift(forventetParkUtgift)
+                .withTrengerParkering(trengerParkering)
+                .withDagsats(dagsats);
+    }
+
+    private WSAktivitetOgVedtak lagAktivitetOgVedtak(String aktivitetId, String aktivitetNavn, WSVedtaksinformasjon... vedtak) {
+        return new WSAktivitetOgVedtak()
+                .withPeriode(new WSPeriode().withFom(new LocalDate(2015, 1, 1)).withTom(new LocalDate(2015, 12, 31)))
+                .withAktivitetId(aktivitetId)
+                .withAktivitetsnavn(aktivitetNavn)
+                .withErStoenadsberettigetAktivitet(true)
+                .withSaksinformasjon(new WSSaksinformasjon().withSaksnummerArena("saksnummerarena").withVedtaksinformasjon(
+                        vedtak
+                ));
     }
 
 }
