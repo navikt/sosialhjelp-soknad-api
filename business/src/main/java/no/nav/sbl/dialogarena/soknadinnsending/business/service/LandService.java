@@ -41,7 +41,7 @@ public class LandService {
 
     private List<Land> hentAlleLand() {
         List<Land> landliste = new ArrayList<>();
-        List<String> landKoder = kodeverk.getAlleLandkoder();
+        List<String> landKoder = kodeverk.hentAlleKodenavnFraKodeverk(Kodeverk.EksponertKodeverk.LANDKODE);
 
         for (String landkode : landKoder) {
             Land land = new Land();
