@@ -38,7 +38,7 @@ public class SakOgAktivitetWSConfig {
 
     @Bean
     public SakOgAktivitetV1 sakOgAktivitetEndpointMock() {
-        return new AktiviteterMock().sakOgAktivitetInformasjonV1Mock();
+        return new AktiviteterMock();
     }
     @Bean
     public SakOgAktivitetV1 sakOgAktivitetEndpointWS() {
