@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.arena.VedtakService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.collections15.Transformer;
@@ -23,7 +24,7 @@ public class SoknadRefusjonDagligreise implements KravdialogInformasjon {
     }
 
     public List<String> getSoknadBolker(WebSoknad soknad) {
-        return Arrays.asList(BOLK_PERSONALIA, "vedtakperioder");
+        return Arrays.asList(BOLK_PERSONALIA, VedtakService.VEDTAKPERIODER);
     }
 
     public String getStrukturFilnavn() {

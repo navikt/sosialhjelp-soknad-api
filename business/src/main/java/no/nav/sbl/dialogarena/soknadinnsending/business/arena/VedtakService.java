@@ -13,6 +13,7 @@ import java.util.List;
 @Component
 public class VedtakService implements BolkService {
 
+    public static final String VEDTAKPERIODER = "vedtakperioder";
     @Inject
     private FaktaService faktaService;
     @Inject
@@ -20,7 +21,7 @@ public class VedtakService implements BolkService {
 
     @Override
     public String tilbyrBolk() {
-        return "vedtakperioder";
+        return VEDTAKPERIODER;
     }
 
     @Override
