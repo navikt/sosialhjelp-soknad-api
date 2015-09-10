@@ -34,21 +34,21 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AktiviteterServiceTest {
+public class AktivitetServiceTest {
 
     @Mock
     SakOgAktivitetV1 webservice;
     @Captor
     ArgumentCaptor<WSFinnAktivitetsinformasjonListeRequest> argument;
     @InjectMocks
-    private AktiviteterService aktiviteterService;
+    private AktivitetService aktivitetService;
 
     @Test
     public void skalKallePaWebService() throws FinnAktivitetsinformasjonListePersonIkkeFunnet, FinnAktivitetsinformasjonListeSikkerhetsbegrensning {
         String fodselnummer = "***REMOVED***";
 
         when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(new WSFinnAktivitetsinformasjonListeResponse());
-        aktiviteterService.hentAktiviteter(fodselnummer);
+        aktivitetService.hentAktiviteter(fodselnummer);
         verify(webservice).finnAktivitetsinformasjonListe(argument.capture());
         assertThat(argument.getValue().getPersonident()).isEqualTo(fodselnummer);
     }
@@ -67,7 +67,7 @@ public class AktiviteterServiceTest {
 
         when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(response);
 
-        List<Faktum> fakta = aktiviteterService.hentAktiviteter(fodselnummer);
+        List<Faktum> fakta = aktivitetService.hentAktiviteter(fodselnummer);
 
         assertThat(fakta).hasSize(1);
         Faktum faktum = fakta.get(0);
@@ -92,7 +92,7 @@ public class AktiviteterServiceTest {
                 new WSAktivitet().withAktivitetsnavn(aktivitetsnavn).withAktivitetId("8888").withPeriode(periode).withErStoenadsberettigetAktivitet(false));
 
         when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(response);
-        List<Faktum> fakta = aktiviteterService.hentAktiviteter(fodselnummer);
+        List<Faktum> fakta = aktivitetService.hentAktiviteter(fodselnummer);
         assertThat(fakta).hasSize(1);
         assertThat(fakta.get(0).getProperties().get("id")).isEqualToIgnoringCase("9999");
 
@@ -108,7 +108,7 @@ public class AktiviteterServiceTest {
 
         when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(response);
 
-        List<Faktum> fakta = aktiviteterService.hentAktiviteter("***REMOVED***");
+        List<Faktum> fakta = aktivitetService.hentAktiviteter("***REMOVED***");
 
         Faktum faktum = fakta.get(0);
         assertThat(faktum.getProperties()).containsEntry("fom", fom);
@@ -122,7 +122,7 @@ public class AktiviteterServiceTest {
 
         when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(response);
 
-        List<Faktum> fakta = aktiviteterService.hentAktiviteter("***REMOVED***");
+        List<Faktum> fakta = aktivitetService.hentAktiviteter("***REMOVED***");
 
         Faktum faktum = fakta.get(0);
         assertThat(faktum.getProperties()).containsEntry("fom", "");
@@ -133,7 +133,7 @@ public class AktiviteterServiceTest {
 
         when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(null);
 
-        List<Faktum> fakta = aktiviteterService.hentAktiviteter("***REMOVED***");
+        List<Faktum> fakta = aktivitetService.hentAktiviteter("***REMOVED***");
         assertThat(fakta).isEmpty();
     }
 
@@ -141,7 +141,7 @@ public class AktiviteterServiceTest {
     public void skalKasteRuntimeExceptionVedWsFeil() throws FinnAktivitetsinformasjonListePersonIkkeFunnet, FinnAktivitetsinformasjonListeSikkerhetsbegrensning {
         when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenThrow(new FinnAktivitetsinformasjonListeSikkerhetsbegrensning());
 
-        aktiviteterService.hentAktiviteter("");
+        aktivitetService.hentAktiviteter("");
     }
 
     @Test
@@ -157,7 +157,7 @@ public class AktiviteterServiceTest {
                 ));
         when(webservice.finnAktivitetOgVedtakDagligReiseListe(any(WSFinnAktivitetOgVedtakDagligReiseListeRequest.class))).thenReturn(response);
 
-        List<Faktum> faktums = aktiviteterService.hentVedtak("12312312345");
+        List<Faktum> faktums = aktivitetService.hentVedtak("12312312345");
         ArgumentCaptor<WSFinnAktivitetOgVedtakDagligReiseListeRequest> captor = ArgumentCaptor.forClass(WSFinnAktivitetOgVedtakDagligReiseListeRequest.class);
         verify(webservice).finnAktivitetOgVedtakDagligReiseListe(captor.capture());
         assertThat(captor.getValue().getPersonident()).isEqualTo("12312312345");
@@ -210,60 +210,13 @@ public class AktiviteterServiceTest {
         );
     }
 
-    @Test
-    public void skalReturnererBetalingsplaner() throws FinnAktivitetOgVedtakDagligReiseListePersonIkkeFunnet, FinnAktivitetOgVedtakDagligReiseListeSikkerhetsbegrensning {
-        WSFinnAktivitetOgVedtakDagligReiseListeResponse response = new WSFinnAktivitetOgVedtakDagligReiseListeResponse();
-        response.withAktivitetOgVedtakListe(
-                lagAktivitetOgVedtak("100", "navn på aktivitet",
-                        lagVedtak(new LocalDate(2015, 1, 1), new LocalDate(2015, 3, 31), "1000", 100, true, 555.0,
-                                lagBetalingsplan("321123", new LocalDate(2015, 1, 1), new LocalDate(2015, 1, 7), "1232312323"),
-                                lagBetalingsplan("321124", new LocalDate(2015, 1, 7), new LocalDate(2015, 1, 14), null),
-                                lagBetalingsplan("321125", new LocalDate(2015, 1, 14), new LocalDate(2015, 1, 21), null)
-                                ),
-                        lagVedtak(new LocalDate(2015, 4, 1), new LocalDate(2015, 5, 31), "1001", 101, true, 556.0,
-                                lagBetalingsplan("321126", new LocalDate(2015, 1, 14), new LocalDate(2015, 1, 21), null)
-                        )
-                ),
-                lagAktivitetOgVedtak("101", "navn på aktivitet2",
-                        lagVedtak(new LocalDate(2015, 1, 1), new LocalDate(2015, 3, 31), "1000", null, false, 555.0)
-                ));
-        when(webservice.finnAktivitetOgVedtakDagligReiseListe(any(WSFinnAktivitetOgVedtakDagligReiseListeRequest.class))).thenReturn(response);
 
-        List<Faktum> faktums = aktiviteterService.hentBetalingsplanerForVedtak("12312312345", "100", "1000");
-        assertThat(faktums).hasSize(3);
-        assertThat(faktums).contains(new Faktum()
-                .medKey("vedtak.betalingsplan")
-                .medProperty("uniqueKey", "id")
-                .medProperty("id", "321123")
-                .medProperty("fom", "2015-01-01")
-                .medProperty("tom", "2015-01-07")
-                .medProperty("alleredeSokt", "true")
-                .medProperty("sokerForPeriode", "false")
-        );
-        assertThat(faktums).contains(new Faktum()
-                .medKey("vedtak.betalingsplan")
-                .medProperty("uniqueKey", "id")
-                .medProperty("id", "321124")
-                .medProperty("fom", "2015-01-07")
-                .medProperty("tom", "2015-01-14")
-                .medProperty("alleredeSokt", "false")
-        );
-        assertThat(faktums).contains(new Faktum()
-                .medKey("vedtak.betalingsplan")
-                .medProperty("uniqueKey", "id")
-                .medProperty("id", "321125")
-                .medProperty("fom", "2015-01-14")
-                .medProperty("tom", "2015-01-21")
-                .medProperty("alleredeSokt", "false")
-        );
 
-    }
-
-    private WSBetalingsplan lagBetalingsplan(String betPlanId, LocalDate fom, LocalDate tom, String journalpostId) {
+    public static WSBetalingsplan lagBetalingsplan(String betPlanId, LocalDate fom, LocalDate tom, String journalpostId) {
         return new WSBetalingsplan().withJournalpostId(journalpostId).withBetalingsplanId(betPlanId).withUtgiftsperiode(new WSPeriode().withFom(fom).withTom(tom));
     }
 
-    private WSVedtaksinformasjon lagVedtak(LocalDate fom, LocalDate tom, String id, Integer forventetParkUtgift, boolean trengerParkering, double dagsats, WSBetalingsplan... betalingsplans) {
+    public static WSVedtaksinformasjon lagVedtak(LocalDate fom, LocalDate tom, String id, Integer forventetParkUtgift, boolean trengerParkering, double dagsats, WSBetalingsplan... betalingsplans) {
         return new WSVedtaksinformasjon()
                 .withPeriode(new WSPeriode().withFom(fom).withTom(tom))
                 .withVedtakId(id)
@@ -273,7 +226,7 @@ public class AktiviteterServiceTest {
                 .withBetalingsplan(betalingsplans);
     }
 
-    private WSAktivitetOgVedtak lagAktivitetOgVedtak(String aktivitetId, String aktivitetNavn, WSVedtaksinformasjon... vedtak) {
+    public static WSAktivitetOgVedtak lagAktivitetOgVedtak(String aktivitetId, String aktivitetNavn, WSVedtaksinformasjon... vedtak) {
         return new WSAktivitetOgVedtak()
                 .withPeriode(new WSPeriode().withFom(new LocalDate(2015, 1, 1)).withTom(new LocalDate(2015, 12, 31)))
                 .withAktivitetId(aktivitetId)
