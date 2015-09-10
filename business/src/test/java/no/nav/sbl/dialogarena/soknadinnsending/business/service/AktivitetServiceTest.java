@@ -9,6 +9,7 @@ import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetsinformasjonLis
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.SakOgAktivitetV1;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSAktivitet;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSAktivitetOgVedtak;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSBetalingsplan;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSPeriode;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSSaksinformasjon;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSVedtaksinformasjon;
@@ -33,23 +34,21 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AktiviteterServiceTest {
-
-    @InjectMocks
-    private AktiviteterService aktiviteterService;
+public class AktivitetServiceTest {
 
     @Mock
     SakOgAktivitetV1 webservice;
-
     @Captor
     ArgumentCaptor<WSFinnAktivitetsinformasjonListeRequest> argument;
+    @InjectMocks
+    private AktivitetService aktivitetService;
 
     @Test
     public void skalKallePaWebService() throws FinnAktivitetsinformasjonListePersonIkkeFunnet, FinnAktivitetsinformasjonListeSikkerhetsbegrensning {
         String fodselnummer = "***REMOVED***";
 
         when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(new WSFinnAktivitetsinformasjonListeResponse());
-        aktiviteterService.hentAktiviteter(fodselnummer);
+        aktivitetService.hentAktiviteter(fodselnummer);
         verify(webservice).finnAktivitetsinformasjonListe(argument.capture());
         assertThat(argument.getValue().getPersonident()).isEqualTo(fodselnummer);
     }
@@ -68,7 +67,7 @@ public class AktiviteterServiceTest {
 
         when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(response);
 
-        List<Faktum> fakta = aktiviteterService.hentAktiviteter(fodselnummer);
+        List<Faktum> fakta = aktivitetService.hentAktiviteter(fodselnummer);
 
         assertThat(fakta).hasSize(1);
         Faktum faktum = fakta.get(0);
@@ -93,7 +92,7 @@ public class AktiviteterServiceTest {
                 new WSAktivitet().withAktivitetsnavn(aktivitetsnavn).withAktivitetId("8888").withPeriode(periode).withErStoenadsberettigetAktivitet(false));
 
         when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(response);
-        List<Faktum> fakta = aktiviteterService.hentAktiviteter(fodselnummer);
+        List<Faktum> fakta = aktivitetService.hentAktiviteter(fodselnummer);
         assertThat(fakta).hasSize(1);
         assertThat(fakta.get(0).getProperties().get("id")).isEqualToIgnoringCase("9999");
 
@@ -109,7 +108,7 @@ public class AktiviteterServiceTest {
 
         when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(response);
 
-        List<Faktum> fakta = aktiviteterService.hentAktiviteter("***REMOVED***");
+        List<Faktum> fakta = aktivitetService.hentAktiviteter("***REMOVED***");
 
         Faktum faktum = fakta.get(0);
         assertThat(faktum.getProperties()).containsEntry("fom", fom);
@@ -123,7 +122,7 @@ public class AktiviteterServiceTest {
 
         when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(response);
 
-        List<Faktum> fakta = aktiviteterService.hentAktiviteter("***REMOVED***");
+        List<Faktum> fakta = aktivitetService.hentAktiviteter("***REMOVED***");
 
         Faktum faktum = fakta.get(0);
         assertThat(faktum.getProperties()).containsEntry("fom", "");
@@ -134,7 +133,7 @@ public class AktiviteterServiceTest {
 
         when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(null);
 
-        List<Faktum> fakta = aktiviteterService.hentAktiviteter("***REMOVED***");
+        List<Faktum> fakta = aktivitetService.hentAktiviteter("***REMOVED***");
         assertThat(fakta).isEmpty();
     }
 
@@ -142,7 +141,7 @@ public class AktiviteterServiceTest {
     public void skalKasteRuntimeExceptionVedWsFeil() throws FinnAktivitetsinformasjonListePersonIkkeFunnet, FinnAktivitetsinformasjonListeSikkerhetsbegrensning {
         when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenThrow(new FinnAktivitetsinformasjonListeSikkerhetsbegrensning());
 
-        aktiviteterService.hentAktiviteter("");
+        aktivitetService.hentAktiviteter("");
     }
 
     @Test
@@ -158,7 +157,7 @@ public class AktiviteterServiceTest {
                 ));
         when(webservice.finnAktivitetOgVedtakDagligReiseListe(any(WSFinnAktivitetOgVedtakDagligReiseListeRequest.class))).thenReturn(response);
 
-        List<Faktum> faktums = aktiviteterService.hentVedtak("12312312345");
+        List<Faktum> faktums = aktivitetService.hentVedtak("12312312345");
         ArgumentCaptor<WSFinnAktivitetOgVedtakDagligReiseListeRequest> captor = ArgumentCaptor.forClass(WSFinnAktivitetOgVedtakDagligReiseListeRequest.class);
         verify(webservice).finnAktivitetOgVedtakDagligReiseListe(captor.capture());
         assertThat(captor.getValue().getPersonident()).isEqualTo("12312312345");
@@ -211,16 +210,23 @@ public class AktiviteterServiceTest {
         );
     }
 
-    private WSVedtaksinformasjon lagVedtak(LocalDate fom, LocalDate tom, String id, Integer forventetParkUtgift, boolean trengerParkering, double dagsats) {
+
+
+    public static WSBetalingsplan lagBetalingsplan(String betPlanId, LocalDate fom, LocalDate tom, String journalpostId) {
+        return new WSBetalingsplan().withJournalpostId(journalpostId).withBetalingsplanId(betPlanId).withUtgiftsperiode(new WSPeriode().withFom(fom).withTom(tom));
+    }
+
+    public static WSVedtaksinformasjon lagVedtak(LocalDate fom, LocalDate tom, String id, Integer forventetParkUtgift, boolean trengerParkering, double dagsats, WSBetalingsplan... betalingsplans) {
         return new WSVedtaksinformasjon()
                 .withPeriode(new WSPeriode().withFom(fom).withTom(tom))
                 .withVedtakId(id)
                 .withForventetDagligParkeringsutgift(forventetParkUtgift)
                 .withTrengerParkering(trengerParkering)
-                .withDagsats(dagsats);
+                .withDagsats(dagsats)
+                .withBetalingsplan(betalingsplans);
     }
 
-    private WSAktivitetOgVedtak lagAktivitetOgVedtak(String aktivitetId, String aktivitetNavn, WSVedtaksinformasjon... vedtak) {
+    public static WSAktivitetOgVedtak lagAktivitetOgVedtak(String aktivitetId, String aktivitetNavn, WSVedtaksinformasjon... vedtak) {
         return new WSAktivitetOgVedtak()
                 .withPeriode(new WSPeriode().withFom(new LocalDate(2015, 1, 1)).withTom(new LocalDate(2015, 12, 31)))
                 .withAktivitetId(aktivitetId)
