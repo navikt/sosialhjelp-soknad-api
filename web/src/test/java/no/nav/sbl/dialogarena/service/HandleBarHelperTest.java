@@ -1,15 +1,12 @@
 package no.nav.sbl.dialogarena.service;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,23 +24,6 @@ public class HandleBarHelperTest {
         String html = new HandleBarKjoerer().fyllHtmlMalMedInnhold(soknad, "/skjema/periodeTidsrom");
         assertThat(html).contains("1234");
     }
-
-    @Test
-    public void sendtInnInfoSkalViseAntallInnsendteOgIkkeInnsendteVedlegg() throws IOException {
-        WebSoknad soknad = new WebSoknad().medBehandlingId("1A");
-        List<Vedlegg> vedlegg = new ArrayList<>();
-        vedlegg.add(new Vedlegg().medInnsendingsvalg(Vedlegg.Status.LastetOpp));
-        vedlegg.add(new Vedlegg().medInnsendingsvalg(Vedlegg.Status.LastetOpp));
-        vedlegg.add(new Vedlegg().medInnsendingsvalg(Vedlegg.Status.VedleggKreves));
-        vedlegg.add(new Vedlegg().medInnsendingsvalg(Vedlegg.Status.VedleggKreves));
-        vedlegg.add(new Vedlegg().medInnsendingsvalg(Vedlegg.Status.VedleggKreves));
-        soknad.medVedlegg(vedlegg);
-
-        String html = new HandleBarKjoerer().fyllHtmlMalMedInnhold(soknad, "/skjema/sendtInnInfo");
-        assertThat(html).contains("antall:2");
-        assertThat(html).contains("ikkeSendtInn:5");
-    }
-
 
     @Test
     public void hvisFlereStarterMedSkalReturnereTrueOmFlereHarVerdienTrue() throws IOException {

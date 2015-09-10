@@ -32,8 +32,6 @@ import static org.apache.commons.lang3.StringUtils.split;
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.ExcessiveClassLength"})
 public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
 
-    public static final Locale NO_LOCALE = new Locale("nb", "no");
-
     @Inject
     private Kodeverk kodeverk;
 
@@ -75,7 +73,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         handlebars.registerHelper("forPerioder", generateHelperForPeriodeTidsromFakta());
         handlebars.registerHelper("hentFaktumValue", generateHentFaktumValueHelper());
         handlebars.registerHelper("hvisFlereErTrue", generateHvisFlereSomStarterMedErTrueHelper());
-        handlebars.registerHelper("sendtInnInfo", generateSendtInnInfoHelper());
         handlebars.registerHelper("skalViseRotasjonTurnusSporsmaal", generateSkalViseRotasjonTurnusSporsmaalHelper());
         handlebars.registerHelper("hvisLikCmsTekst", generateHvisLikCmsTekstHelper());
 
@@ -94,24 +91,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
                 }
 
                 return resultAdresse.toString();
-            }
-        };
-    }
-
-    private Helper<Object> generateSendtInnInfoHelper() {
-        return new Helper<Object>() {
-            @Override
-            public CharSequence apply(Object o, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-                Map<String, String> infoMap = new HashMap<>();
-
-                DateTimeFormatter dt = DateTimeFormat.forPattern("d. MMMM yyyy', klokken' HH.mm").withLocale(NO_LOCALE);
-
-                infoMap.put("sendtInn", String.valueOf(soknad.getInnsendteVedlegg().size()));
-                infoMap.put("ikkeSendtInn", String.valueOf(soknad.hentPaakrevdeVedlegg().size()));
-                infoMap.put("innsendtDato", dt.print(DateTime.now()));
-
-                return options.fn(infoMap);
             }
         };
     }
