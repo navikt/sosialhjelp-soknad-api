@@ -10,6 +10,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -302,6 +303,9 @@ public class Faktum implements Serializable {
         return medSystemProperty(UNIQUE_KEY, unikRef);
     }
 
+    public boolean harPropertySomMatcher(String dependOnProperty, String... dependOnValues) {
+        return harPropertySomMatcher(dependOnProperty, Arrays.asList(dependOnValues));
+    }
     public boolean harPropertySomMatcher(String dependOnProperty, List<String> dependOnValues) {
         return harEgenskap(dependOnProperty) && dependOnValues.contains(properties.get(dependOnProperty));
     }
