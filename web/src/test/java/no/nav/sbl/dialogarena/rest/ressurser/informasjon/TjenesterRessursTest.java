@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.rest.ressurser.informasjon;
 
 
 import no.nav.modig.core.context.StaticSubjectHandler;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.AktiviteterService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.AktivitetService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.MaalgrupperService;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +23,7 @@ public class TjenesterRessursTest {
     private TjenesterRessurs ressurs;
 
     @Mock
-    private AktiviteterService aktiviteterService;
+    private AktivitetService aktivitetService;
 
     @Mock
     private MaalgrupperService maalgrupperService;
@@ -37,7 +37,7 @@ public class TjenesterRessursTest {
     @Test
     public void skalHenteAktiviteter() throws Exception {
         ressurs.hentAktiviteter();
-        verify(aktiviteterService).hentAktiviteter(fodselsnummer);
+        verify(aktivitetService).hentAktiviteter(fodselsnummer);
     }
 
     @Test
