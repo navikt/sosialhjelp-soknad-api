@@ -70,6 +70,7 @@ public class AktivitetBetalingsplanServiceTest {
                         .medProperty("alleredeSokt", "false")
         );
         assertThat(faktums).contains(new Faktum()
+                        .medSoknadId(10L)
                         .medKey("vedtak.betalingsplan")
                         .medProperty("uniqueKey", "id")
                         .medProperty("id", "321125")
