@@ -3,9 +3,9 @@
     <tr>
         <td class="sjekket"></td>
         <td>
-            <div>{{hentTekst "utstyrtilbilen.spesialutstyr.sporsmal"}}:
+            <span>{{hentTekst "oppsummering.utstyrtilbilen.spesialutstyr.beskrivelse"}}:
                 <em>{{hentFaktumValue "utstyrtilbilen.spesialutstyr"}}</em>
-            </div>
+            </span>
         </td>
     </tr>
 
@@ -17,11 +17,10 @@
                     <span>{{hentTekst "utstyrtilbilen.hjelpemidler.false"}}</span>
                 {{/hvisLik}}
                 {{#hvisLik "true" value}}
-                    <span>{{hentTekst "utstyrtilbilen.hjelpemidler.true"}}</span>
-                    <div class="kulepunkt faktum-felt">
-                        {{hentTekst "oppsummering.utstyrtilbilen.beskrivelse"}}:
+                    <span>{{hentTekst "utstyrtilbilen.hjelpemidler.true"}}. </span>
+                    <span>{{hentTekst "oppsummering.utstyrtilbilen.hjelpemidler.beskrivelse"}}:
                             <em>{{hentFaktumValue "utstyrtilbilen.hjelpemidler.beskrivelse"}}</em>
-                    </div>
+                    </span>
                 {{/hvisLik}}
             </td>
         </tr>

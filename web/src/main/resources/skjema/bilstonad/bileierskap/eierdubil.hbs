@@ -1,38 +1,43 @@
 {{#forFaktum "bileierskap.eierdubil"}}
     <tr>
         <td class="sjekket"></td>
-        <td>{{hentTekst (concat cmsPrefiks (concat "bileierskap.eierdubil." value))}}</td>
+        <td>{{hentTekst (concat cmsPrefiks (concat "bileierskap.eierdubil." value))}}
+
+            {{#hvisLik value "nei"}}
+                <ul>
+                    {{#forFaktum "bileierskap.bilsisteaar"}}
+                        <li class="kulepunkt faktum-felt">
+                            <span>{{hentTekst (concat cmsPrefiks (concat "bileierskap.bilsisteaar." value))}}. </span>
+
+                            {{#hvisLik value "ja"}}
+                                <ul>
+                                    <li class="kulepunkt medstrek faktum-felt">
+                                        <span>{{hentTekst "oppsummering.bileierskap.bilsisteaar.regnr"}}:
+                                            <em>{{hentFaktumValue "bileierskap.bilsisteaar.regnr"}}</em>
+                                        </span>
+                                    </li>
+                                    <li class="kulepunkt medstrek faktum-felt">
+                                        <span>{{hentTekst "oppsummering.bileierskap.bilsisteaar.solgtarsak"}}:
+                                            <em>{{hentFaktumValue "bileierskap.bilsisteaar.solgtarsak"}}</em>
+                                        </span>
+                                    </li>
+                                </ul>
+                            {{/hvisLik}}
+
+                        </li>
+                    {{/forFaktum}}
+                </ul>
+            {{/hvisLik}}
+
+            {{#hvisLik value "mellom8og11ar"}}
+                <ul>
+                    <li class="kulepunkt faktum-felt">
+                        <span>{{hentTekst (concat (concat cmsPrefiks "bileierskap.kilometerstand.") (hentFaktumValue "bileierskap.kilometerstand"))}}</span>
+                    </li>
+                </ul>
+            {{/hvisLik}}
+
+        </td>
     </tr>
-
-    {{#hvisLik value "nei"}}
-        {{#forFaktum "bileierskap.bilsisteaar"}}
-            <tr>
-                <td class="sjekket"></td>
-                <td>{{hentTekst (concat cmsPrefiks (concat "bileierskap.bilsisteaar." value))}}
-
-                    {{#hvisLik value "ja"}}
-                        <ul>
-                            <li class="kulepunkt faktum-felt">
-                                {{hentTekst "arbeidutdanning.bileierskap.bilsisteaar.regnr"}}<br/>
-                                <em>{{hentFaktumValue "bileierskap.bilsisteaar.regnr"}}</em>
-                            </li>
-                            <li class="kulepunkt faktum-felt">
-                                {{hentTekst "arbeidutdanning.bileierskap.bilsisteaar.solgtarsak.sporsmal"}}<br/>
-                                <em>{{hentFaktumValue "bileierskap.bilsisteaar.solgtarsak"}}</em>
-                            </li>
-                        </ul>
-                    {{/hvisLik}}
-
-                </td>
-            </tr>
-        {{/forFaktum}}
-    {{/hvisLik}}
-
-    {{#hvisLik value "mellom8og11ar"}}
-        <tr>
-            <td class="sjekket"></td>
-            <td>{{hentTekst (concat (concat cmsPrefiks "bileierskap.kilometerstand.") (hentFaktumValue "bileierskap.kilometerstand"))}}</td>
-        </tr>
-    {{/hvisLik}}
 
 {{/forFaktum}}
