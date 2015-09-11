@@ -38,21 +38,26 @@ public class AktivitetBetalingsplanService implements BolkService {
             return wsVedtaksinformasjon.getBetalingsplan();
         }
     };
-    private static final Transformer<WSBetalingsplan, Faktum> BETALINGSPLAN_TIL_FAKTUM = new Transformer<WSBetalingsplan, Faktum>() {
-        @Override
-        public Faktum transform(WSBetalingsplan wsVedtaksinformasjon) {
-            Faktum betalingsplan = new Faktum().medKey("vedtak.betalingsplan")
-                    .medUnikProperty("id")
-                    .medProperty("id", wsVedtaksinformasjon.getBetalingsplanId())
-                    .medProperty("fom", datoTilString(wsVedtaksinformasjon.getUtgiftsperiode().getFom()))
-                    .medProperty("tom", datoTilString(wsVedtaksinformasjon.getUtgiftsperiode().getTom()))
-                    .medProperty("alleredeSokt", "" + StringUtils.isNotBlank(wsVedtaksinformasjon.getJournalpostId()));
-            if (StringUtils.isNotBlank(wsVedtaksinformasjon.getJournalpostId())) {
-                betalingsplan.medProperty("sokerForPeriode", "false");
+
+    private static Transformer<WSBetalingsplan, Faktum> betalingplanTilFaktum(final Long soknadId) {
+        return new Transformer<WSBetalingsplan, Faktum>() {
+            @Override
+            public Faktum transform(WSBetalingsplan wsVedtaksinformasjon) {
+                Faktum betalingsplan = new Faktum().medKey("vedtak.betalingsplan")
+                        .medUnikProperty("id")
+                        .medSoknadId(soknadId)
+                        .medProperty("id", wsVedtaksinformasjon.getBetalingsplanId())
+                        .medProperty("fom", datoTilString(wsVedtaksinformasjon.getUtgiftsperiode().getFom()))
+                        .medProperty("tom", datoTilString(wsVedtaksinformasjon.getUtgiftsperiode().getTom()))
+                        .medProperty("alleredeSokt", "" + StringUtils.isNotBlank(wsVedtaksinformasjon.getJournalpostId()));
+                if (StringUtils.isNotBlank(wsVedtaksinformasjon.getJournalpostId())) {
+                    betalingsplan.medProperty("sokerForPeriode", "false");
+                }
+                return betalingsplan;
             }
-            return betalingsplan;
-        }
-    };
+        };
+    }
+
     @Inject
     private FaktaService faktaService;
     @Inject
@@ -86,14 +91,14 @@ public class AktivitetBetalingsplanService implements BolkService {
     public List<Faktum> genererSystemFakta(String fodselsnummer, Long soknadId) {
         Faktum vedtakFaktum = faktaService.hentFaktumMedKey(soknadId, "vedtak");
         if (vedtakFaktum != null) {
-            return hentBetalingsplanerForVedtak(fodselsnummer, vedtakFaktum.getProperties().get("aktivitetId")
+            return hentBetalingsplanerForVedtak(soknadId, fodselsnummer, vedtakFaktum.getProperties().get("aktivitetId")
                     , vedtakFaktum.getProperties().get("id"));
 
         }
         return null;
     }
 
-    public List<Faktum> hentBetalingsplanerForVedtak(String fodselsnummer, final String aktivitetId, final String vedtakId) {
+    public List<Faktum> hentBetalingsplanerForVedtak(Long soknadId, String fodselsnummer, final String aktivitetId, final String vedtakId) {
 
         try {
             WSFinnAktivitetOgVedtakDagligReiseListeRequest request = new WSFinnAktivitetOgVedtakDagligReiseListeRequest().withPersonident(fodselsnummer);
@@ -103,7 +108,7 @@ public class AktivitetBetalingsplanService implements BolkService {
                     .flatmap(AKTIVITET_TIL_VEDTAK)
                     .filter(vedtakMedId(vedtakId))
                     .flatmap(VEDTAK_TIL_BETALINGSPLAN)
-                    .map(BETALINGSPLAN_TIL_FAKTUM).collect();
+                    .map(betalingplanTilFaktum(soknadId)).collect();
 
         } catch (FinnAktivitetOgVedtakDagligReiseListeSikkerhetsbegrensning | FinnAktivitetOgVedtakDagligReiseListePersonIkkeFunnet e) {
             throw new RuntimeException(e.getMessage(), e);

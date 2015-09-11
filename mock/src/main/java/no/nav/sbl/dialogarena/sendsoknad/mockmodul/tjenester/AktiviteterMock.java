@@ -7,6 +7,7 @@ import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetsinformasjonLis
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.SakOgAktivitetV1;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSAktivitet;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSAktivitetOgVedtak;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSBetalingsplan;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSPeriode;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSSaksinformasjon;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSVedtaksinformasjon;
@@ -15,6 +16,10 @@ import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetOgV
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetsinformasjonListeRequest;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetsinformasjonListeResponse;
 import org.joda.time.LocalDate;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class AktiviteterMock implements SakOgAktivitetV1 {
 
@@ -37,16 +42,37 @@ public class AktiviteterMock implements SakOgAktivitetV1 {
                                 .withVedtakId("1000")
                                 .withForventetDagligParkeringsutgift(100)
                                 .withTrengerParkering(true)
-                                .withDagsats(555.0))
+                                .withDagsats(555.0)
+                                .withBetalingsplan(createBetalingsplaner(1, new LocalDate(2015, 1, 1), new LocalDate(2015, 3, 31), 7))
+                )
                         .withVedtaksinformasjon(
                                 new WSVedtaksinformasjon()
-                                        .withPeriode(new WSPeriode().withFom(new LocalDate(2015, 5, 1)).withTom(new LocalDate(2015, 5, 24)))
+                                        .withPeriode(new WSPeriode().withFom(new LocalDate(2015, 5, 1)).withTom(new LocalDate(2015, 12, 24)))
                                         .withVedtakId("1002")
                                         .withForventetDagligParkeringsutgift(50)
                                         .withTrengerParkering(false)
                                         .withDagsats(50.0)
+                                        .withBetalingsplan(createBetalingsplaner(1000, new LocalDate(2015, 5, 1), new LocalDate(2015, 12, 24), 30))
+
                         )));
         return response;
+    }
+
+    private Collection<WSBetalingsplan> createBetalingsplaner(int startId, LocalDate fom, LocalDate tom, int antDagerBetalingsplan) {
+        List<WSBetalingsplan> result = new ArrayList<>();
+        int id = startId;
+        for (int i = 0; ; i += antDagerBetalingsplan) {
+            result.add(new WSBetalingsplan()
+                    .withBetalingsplanId("" + (id++))
+                    .withJournalpostId("" + (id % 5 == 0 ? id : ""))
+                    .withUtgiftsperiode(new WSPeriode()
+                            .withFom(fom.plusDays(i))
+                            .withTom(fom.plusDays(i + antDagerBetalingsplan))));
+
+            if (fom.plusDays(i + antDagerBetalingsplan).isAfter(tom)) {
+                return result;
+            }
+        }
     }
 
     @Override
