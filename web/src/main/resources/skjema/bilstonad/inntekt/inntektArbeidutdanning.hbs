@@ -1,4 +1,4 @@
-{{#forFaktum "bilogutstyr.hvaslagsbil"}}
+{{#forFaktum "bilogutstyr"}}
     {{#hvisLik "kassebil" value}}
         <tr>
             <td class="sjekket"></td>
@@ -20,48 +20,47 @@
                     {{#hvisLik "nei" value}}
                         <tr>
                             <td class="sjekket"></td>
-                            <td>{{  hentTekst (concat cmsPrefiks "inntekt.egen.nei") }}</td>
-                        </tr>
+                            <td>{{  hentTekst (concat cmsPrefiks "inntekt.egen.nei") }}
 
-                        {{#forFaktum "inntekt.partner"}}
-                            {{#hvisLik "harikke" value}}
-                                <tr>
-                                    <td class="sjekket"></td>
-                                    <td>{{ hentTekst (concat cmsPrefiks "inntekt.partner.harikke") }}</td>
-                                </tr>
-                            {{/hvisLik}}
+                            {{#forFaktum "inntekt.partner"}}
+                                <ul>
+                                    {{#hvisLik "harikke" value}}
+                                        <li class="kulepunkt faktum-felt">
+                                            {{ hentTekst (concat cmsPrefiks "inntekt.partner.harikke") }}
+                                        </li>
+                                    {{/hvisLik}}
 
-                            {{#hvisLik "nei" value}}
-                                <tr>
-                                    <td class="sjekket"></td>
-                                    <td>{{ hentTekst (concat cmsPrefiks "inntekt.partner.nei") }}</td>
-                                </tr>
-
-                                {{#forFaktum "inntekt.felles"}}
                                     {{#hvisLik "nei" value}}
-                                        <tr>
-                                            <td class="sjekket"></td>
-                                            <td>{{ hentTekst (concat cmsPrefiks "inntekt.felles.nei") }}</td>
-                                        </tr>
+                                        <li class="kulepunkt faktum-felt">
+                                            {{ hentTekst (concat cmsPrefiks "inntekt.partner.nei") }}
+
+                                            {{#forFaktum "inntekt.felles"}}
+                                                <ul>
+                                                    {{#hvisLik "nei" value}}
+                                                        <li class="kulepunkt medstrek faktum-felt">
+                                                            {{ hentTekst (concat cmsPrefiks "inntekt.felles.nei") }}
+                                                        </li>
+                                                    {{/hvisLik}}
+
+                                                    {{#hvisLik "ja" value}}
+                                                        <li class="kulepunkt medstrek faktum-felt">
+                                                            {{ hentTekst (concat cmsPrefiks "inntekt.felles.ja") }}
+                                                        </li>
+                                                    {{/hvisLik}}
+                                                </ul>
+                                            {{/forFaktum}}
+                                        </li>
                                     {{/hvisLik}}
 
                                     {{#hvisLik "ja" value}}
-                                        <tr>
-                                            <td class="sjekket"></td>
-                                            <td>{{ hentTekst (concat cmsPrefiks "inntekt.felles.ja") }}</td>
-                                        </tr>
+                                        <li class="kulepunkt faktum-felt">
+                                            {{ hentTekst (concat cmsPrefiks "inntekt.partner.ja") }}
+                                        </li>
                                     {{/hvisLik}}
-                                {{/forFaktum}}
-                            {{/hvisLik}}
-
-                            {{#hvisLik "ja" value}}
-                                <tr>
-                                    <td class="sjekket"></td>
-                                    <td>{{ hentTekst (concat cmsPrefiks "inntekt.partner.ja") }}</td>
-                                </tr>
-                            {{/hvisLik}}
-
-                        {{/forFaktum}}
+                                </ul>
+                            {{/forFaktum}}
+                            </td>
+                        </tr>
 
                     {{/hvisLik}}
                 {{/forFaktum}}

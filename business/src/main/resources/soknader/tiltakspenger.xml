@@ -16,6 +16,12 @@
     <faktum>
         <id>informasjonsside.institusjon.ja.hvaslags.annet.soketilleggstonad</id>
     </faktum>
+    <faktum>
+        <id>informasjonsside.deltarIIntroprogram</id>
+    </faktum>
+    <faktum>
+        <id>informasjonsside.deltarIIntroprogram.info</id>
+    </faktum>
 
     <!-- Trygd og pensjon -->
     <faktum>

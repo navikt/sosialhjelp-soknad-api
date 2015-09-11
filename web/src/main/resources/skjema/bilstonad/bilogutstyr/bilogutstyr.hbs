@@ -2,36 +2,11 @@
 <table>
 
     {{#hvisLik cmsPrefiks "dagligliv."}}
-
-        {{>skjema/bilstonad/bilogutstyr/spesialutstyr}}
-        {{>skjema/bilstonad/bilogutstyr/hjelpemidler}}
-        {{>skjema/bilstonad/bilogutstyr/firehjulstrekk}}
-
+        {{> skjema/bilstonad/bilogutstyr/bilogutstyrDagligliv }}
     {{/hvisLik}}
 
-
     {{#hvisLik cmsPrefiks "arbeidutdanning."}}
-
-        {{#forFaktum "bilogutstyr.hvaslagsbil"}}
-
-            <tr>
-                <td class="sjekket"></td>
-                <td>{{hentTekst (concat cmsPrefiks (concat "bilogutstyr.hvaslagsbil." value))}}</td>
-            </tr>
-
-            {{#hvisLik value "kassebil"}}
-                {{>skjema/bilstonad/bilogutstyr/spesialutstyr}}
-                {{>skjema/bilstonad/bilogutstyr/hjelpemidler}}
-                {{>skjema/bilstonad/bilogutstyr/firehjulstrekk}}
-            {{/hvisLik}}
-
-            {{#hvisLik value "personbiltilpasninger"}}
-                {{>skjema/bilstonad/bilogutstyr/spesialutstyr}}
-                {{>skjema/bilstonad/bilogutstyr/hjelpemidler}}
-            {{/hvisLik}}
-
-        {{/forFaktum}}
-
+        {{> skjema/bilstonad/bilogutstyr/bilogutstyrArbeidutdanning }}
     {{/hvisLik}}
 
 </table>

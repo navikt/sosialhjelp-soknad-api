@@ -1,44 +1,99 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.tjenester;
 
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetOgVedtakDagligReiseListePersonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetOgVedtakDagligReiseListeSikkerhetsbegrensning;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetsinformasjonListePersonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetsinformasjonListeSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.SakOgAktivitetV1;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSAktivitet;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSAktivitetOgVedtak;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSBetalingsplan;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSPeriode;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSSaksinformasjon;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSVedtaksinformasjon;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetOgVedtakDagligReiseListeRequest;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetOgVedtakDagligReiseListeResponse;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetsinformasjonListeRequest;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetsinformasjonListeResponse;
 import org.joda.time.LocalDate;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
-public class AktiviteterMock {
+public class AktiviteterMock implements SakOgAktivitetV1 {
 
-    public SakOgAktivitetV1 sakOgAktivitetInformasjonV1Mock() {
-        SakOgAktivitetV1 mock = mock(SakOgAktivitetV1.class);
+    @Override
+    public void ping() {
 
-        try {
-            WSFinnAktivitetsinformasjonListeResponse response = new WSFinnAktivitetsinformasjonListeResponse();
-            WSPeriode periode = new WSPeriode().withFom(new LocalDate("2015-01-15")).withTom(new LocalDate("2015-02-15"));
-            WSAktivitet aktivitet = new WSAktivitet()
-                    .withAktivitetId("9999")
-                    .withErStoenadsberettigetAktivitet(true)
-                    .withAktivitetsnavn("Arbeidspraksis i ordinær virksomhet")
-                    .withPeriode(periode);
+    }
 
-            WSPeriode periode2 = new WSPeriode().withFom(new LocalDate("2015-02-28"));
-            WSAktivitet aktivitet2 = new WSAktivitet()
-                    .withAktivitetId("8888")
-                    .withErStoenadsberettigetAktivitet(true)
-                    .withAktivitetsnavn("Arbeid med bistand")
-                    .withPeriode(periode2);
+    @Override
+    public WSFinnAktivitetOgVedtakDagligReiseListeResponse finnAktivitetOgVedtakDagligReiseListe(WSFinnAktivitetOgVedtakDagligReiseListeRequest wsFinnAktivitetOgVedtakDagligReiseListeRequest) throws FinnAktivitetOgVedtakDagligReiseListeSikkerhetsbegrensning, FinnAktivitetOgVedtakDagligReiseListePersonIkkeFunnet {
+        WSFinnAktivitetOgVedtakDagligReiseListeResponse response = new WSFinnAktivitetOgVedtakDagligReiseListeResponse();
+        response.withAktivitetOgVedtakListe(new WSAktivitetOgVedtak()
+                .withPeriode(new WSPeriode().withFom(new LocalDate(2015, 1, 1)).withTom(new LocalDate(2015, 12, 31)))
+                .withAktivitetId("100")
+                .withAktivitetsnavn("navn på aktivitet")
+                .withErStoenadsberettigetAktivitet(true)
+                .withSaksinformasjon(new WSSaksinformasjon().withSaksnummerArena("saksnummerarena").withVedtaksinformasjon(
+                        new WSVedtaksinformasjon()
+                                .withPeriode(new WSPeriode().withFom(new LocalDate(2015, 1, 1)).withTom(new LocalDate(2015, 3, 31)))
+                                .withVedtakId("1000")
+                                .withForventetDagligParkeringsutgift(100)
+                                .withTrengerParkering(true)
+                                .withDagsats(555.0)
+                                .withBetalingsplan(createBetalingsplaner(1, new LocalDate(2015, 1, 1), new LocalDate(2015, 3, 31), 7))
+                )
+                        .withVedtaksinformasjon(
+                                new WSVedtaksinformasjon()
+                                        .withPeriode(new WSPeriode().withFom(new LocalDate(2015, 5, 1)).withTom(new LocalDate(2015, 12, 24)))
+                                        .withVedtakId("1002")
+                                        .withForventetDagligParkeringsutgift(50)
+                                        .withTrengerParkering(false)
+                                        .withDagsats(50.0)
+                                        .withBetalingsplan(createBetalingsplaner(1000, new LocalDate(2015, 5, 1), new LocalDate(2015, 12, 24), 30))
 
+                        )));
+        return response;
+    }
 
-            response.withAktivitetListe(aktivitet, aktivitet2);
+    private Collection<WSBetalingsplan> createBetalingsplaner(int startId, LocalDate fom, LocalDate tom, int antDagerBetalingsplan) {
+        List<WSBetalingsplan> result = new ArrayList<>();
+        int id = startId;
+        for (int i = 0; ; i += antDagerBetalingsplan) {
+            result.add(new WSBetalingsplan()
+                    .withBetalingsplanId("" + (id++))
+                    .withJournalpostId("" + (id % 5 == 0 ? id : ""))
+                    .withUtgiftsperiode(new WSPeriode()
+                            .withFom(fom.plusDays(i))
+                            .withTom(fom.plusDays(i + antDagerBetalingsplan))));
 
-            when(mock.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(response);
-        } catch (Exception e) {
+            if (fom.plusDays(i + antDagerBetalingsplan).isAfter(tom)) {
+                return result;
+            }
         }
+    }
 
-        return mock;
+    @Override
+    public WSFinnAktivitetsinformasjonListeResponse finnAktivitetsinformasjonListe(WSFinnAktivitetsinformasjonListeRequest wsFinnAktivitetsinformasjonListeRequest) throws FinnAktivitetsinformasjonListeSikkerhetsbegrensning, FinnAktivitetsinformasjonListePersonIkkeFunnet {
+        WSFinnAktivitetsinformasjonListeResponse response = new WSFinnAktivitetsinformasjonListeResponse();
+        WSPeriode periode = new WSPeriode().withFom(new LocalDate("2015-01-15")).withTom(new LocalDate("2015-02-15"));
+        WSAktivitet aktivitet = new WSAktivitet()
+                .withAktivitetId("9999")
+                .withErStoenadsberettigetAktivitet(true)
+                .withAktivitetsnavn("Arbeidspraksis i ordinær virksomhet")
+                .withPeriode(periode);
+
+        WSPeriode periode2 = new WSPeriode().withFom(new LocalDate("2015-02-28"));
+        WSAktivitet aktivitet2 = new WSAktivitet()
+                .withAktivitetId("8888")
+                .withErStoenadsberettigetAktivitet(true)
+                .withAktivitetsnavn("Arbeid med bistand")
+                .withPeriode(periode2);
+
+
+        response.withAktivitetListe(aktivitet, aktivitet2);
+        return response;
     }
 }

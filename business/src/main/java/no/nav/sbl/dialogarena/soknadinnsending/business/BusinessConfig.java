@@ -6,7 +6,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.AktiviteterService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.AktivitetBetalingsplanService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.AktivitetService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.MaalgrupperService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.ServiceConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
@@ -17,9 +18,10 @@ import org.springframework.context.annotation.Import;
 @Import({
         LagringsScheduler.class,
         DbConfig.class,
-        AktiviteterService.class,
+        AktivitetService.class,
         MaalgrupperService.class,
         PersonaliaService.class,
+        AktivitetBetalingsplanService.class,
         BarnService.class,
         ConsumerConfig.class,
         ArbeidsforholdService.class,

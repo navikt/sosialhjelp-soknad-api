@@ -2,12 +2,13 @@ package no.nav.sbl.dialogarena.service.helpers;
 
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
-import no.nav.sbl.dialogarena.service.HandleBarKjoerer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+
+import static no.nav.sbl.dialogarena.service.HandlebarsUtils.finnWebSoknad;
 
 @Component
 public class HentSkjemanummerHelper extends RegistryAwareHelper<Object> {
@@ -32,7 +33,7 @@ public class HentSkjemanummerHelper extends RegistryAwareHelper<Object> {
 
     @Override
     public CharSequence apply(Object context, Options options) throws IOException {
-        WebSoknad soknad = HandleBarKjoerer.finnWebSoknad(options.context);
+        WebSoknad soknad = finnWebSoknad(options.context);
         if (soknad.erDagpengeSoknad()) {
             return DagpengerUtils.getSkjemanummer(soknad);
         }

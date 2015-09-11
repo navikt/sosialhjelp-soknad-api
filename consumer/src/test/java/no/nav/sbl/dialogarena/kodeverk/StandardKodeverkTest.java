@@ -56,25 +56,9 @@ public class StandardKodeverkTest {
     }
 
     @Test
-    public void landkodeKodeverkSkalSorteres() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
-        when(ws.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenReturn(landkodeKodeverkResponse());
-
-        List<String> alleLandkoder = kodeverk.getAlleLandkoder();
-        assertThat(alleLandkoder, contains("ALB", "DNK", "SWE"));
-    }
-
-    @Test
-    public void norgeSkalIkkeFolgeMedRestenAvLandene() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
-        when(ws.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenReturn(landkodeKodeverkResponse());
-        List<String> alleLandkoder = kodeverk.getAlleLandkoder();
-        assertThat(alleLandkoder, not(contains("NOR")));
-    }
-
-    @Test
     public void skalKunneSlaaOppTermBasertPaaKodeOgOmvendt() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
         when(ws.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenReturn(landkodeKodeverkResponse());
         assertThat(kodeverk.getLand("NOR"), is("Norge"));
-        assertThat(kodeverk.getLandkode("Norge"), is("NOR"));
     }
 
     @Test(expected = SystemException.class)

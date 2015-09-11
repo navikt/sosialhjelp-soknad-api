@@ -1,15 +1,12 @@
 package no.nav.sbl.dialogarena.service;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,44 +26,6 @@ public class HandleBarHelperTest {
     }
 
     @Test
-    public void sendtInnInfoSkalViseAntallInnsendteOgIkkeInnsendteVedlegg() throws IOException {
-        WebSoknad soknad = new WebSoknad().medBehandlingId("1A");
-        List<Vedlegg> vedlegg = new ArrayList<>();
-        vedlegg.add(new Vedlegg().medInnsendingsvalg(Vedlegg.Status.LastetOpp));
-        vedlegg.add(new Vedlegg().medInnsendingsvalg(Vedlegg.Status.LastetOpp));
-        vedlegg.add(new Vedlegg().medInnsendingsvalg(Vedlegg.Status.VedleggKreves));
-        vedlegg.add(new Vedlegg().medInnsendingsvalg(Vedlegg.Status.VedleggKreves));
-        vedlegg.add(new Vedlegg().medInnsendingsvalg(Vedlegg.Status.VedleggKreves));
-        soknad.medVedlegg(vedlegg);
-
-        String html = new HandleBarKjoerer().fyllHtmlMalMedInnhold(soknad, "/skjema/sendtInnInfo");
-        assertThat(html).contains("antall:2");
-        assertThat(html).contains("ikkeSendtInn:5");
-    }
-
-    @Test
-    public void forInnsendteVedleggSkalIterereOverAlleInnsendteVedlegg() throws IOException {
-        WebSoknad soknad = setupInnsendtevedlegg();
-        String html = new HandleBarKjoerer().fyllHtmlMalMedInnhold(soknad, "/skjema/forInnsendteVedlegg");
-        assertThat(html).contains("innsendt:sendtInn1");
-        assertThat(html).contains("innsendt:sendtInn2");
-        assertThat(html).doesNotContain("innsendt:ikkeSendtInn1");
-        assertThat(html).doesNotContain("innsendt:ikkeSendtInn2");
-        assertThat(html).doesNotContain("innsendt:ikkeSendtInn3");
-    }
-
-    @Test
-    public void forIkkeInnsendteVedleggSkalIterereOverAlleIkkeInnsendteVedlegg() throws IOException {
-        WebSoknad soknad = setupInnsendtevedlegg();
-        String html = new HandleBarKjoerer().fyllHtmlMalMedInnhold(soknad, "/skjema/forInnsendteVedlegg");
-        assertThat(html).doesNotContain("ikke:sendtInn1");
-        assertThat(html).doesNotContain("ikke:sendtInn2");
-        assertThat(html).contains("ikke:ikkeSendtInn1");
-        assertThat(html).contains("ikke:ikkeSendtInn2");
-        assertThat(html).contains("ikke:ikkeSendtInn3");
-    }
-
-    @Test
     public void hvisFlereStarterMedSkalReturnereTrueOmFlereHarVerdienTrue() throws IOException {
         WebSoknad soknad = new WebSoknad().medBehandlingId("1A");
         soknad.medFaktum(new Faktum().medKey("start.1").medValue("true"));
@@ -81,15 +40,4 @@ public class HandleBarHelperTest {
         return new Faktum().medKey(key).medProperty("fradato", fradato).medProperty("tildato", tildato).medValue(value);
     }
 
-    private WebSoknad setupInnsendtevedlegg() {
-        WebSoknad soknad = new WebSoknad().medBehandlingId("1A");
-        List<Vedlegg> vedlegg = new ArrayList<>();
-        vedlegg.add(new Vedlegg().medInnsendingsvalg(Vedlegg.Status.LastetOpp).medNavn("sendtInn1"));
-        vedlegg.add(new Vedlegg().medInnsendingsvalg(Vedlegg.Status.LastetOpp).medNavn("sendtInn2"));
-        vedlegg.add(new Vedlegg().medInnsendingsvalg(Vedlegg.Status.VedleggKreves).medNavn("ikkeSendtInn1"));
-        vedlegg.add(new Vedlegg().medInnsendingsvalg(Vedlegg.Status.VedleggKreves).medNavn("ikkeSendtInn2"));
-        vedlegg.add(new Vedlegg().medInnsendingsvalg(Vedlegg.Status.VedleggKreves).medNavn("ikkeSendtInn3"));
-        soknad.medVedlegg(vedlegg);
-        return soknad;
-    }
 }

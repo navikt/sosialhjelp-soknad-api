@@ -1,0 +1,78 @@
+{{#forFaktum "bilogutstyr"}}
+
+    <tr>
+        <td class="sjekket"></td>
+        <td>{{hentTekst (concat cmsPrefiks (concat "bilogutstyr." value))}}
+
+            <ul>
+                {{#hvisLik value "kassebil"}}
+
+                    {{#forFaktum "bilogutstyr.kassebil.spesialutstyr.beskrivelse"}}
+                        <li class="kulepunkt faktum-felt">
+                            {{hentTekst (concat cmsPrefiks "bilogutstyr.spesialutstyr.beskrivelse.oppsummering")}}: <em>{{value}}</em>
+                        </li>
+                    {{/forFaktum}}
+
+                    {{#forFaktum "bilogutstyr.kassebil.hjelpemidler"}}
+                        <li class="kulepunkt faktum-felt">
+                            <span>{{hentTekst (concat cmsPrefiks (concat "bilogutstyr.kassebil.hjelpemidler." value))}}</span>
+
+                            {{#hvisLik value "ja"}}
+
+                                {{#forFaktum "bilogutstyr.kassebil.hjelpemidler.ja.beskrivelse"}}
+                                    <ul>
+                                        <li class="kulepunkt medstrek faktum-felt">
+                                            <span>{{hentTekst "oppsummering.bilogutstyr.hjelpemidler.ja.beskrivelse"}}:
+                                                <em>{{value}}</em>
+                                            </span>
+                                        </li>
+                                    </ul>
+                                {{/forFaktum}}
+
+                            {{/hvisLik}}
+                        </li>
+                    {{/forFaktum}}
+
+                    {{#forFaktum "bilogutstyr.firehjulstrekk"}}
+                        <li class="kulepunkt faktum-felt">
+                            <span>{{hentTekst (concat cmsPrefiks (concat "bilogutstyr.firehjulstrekk." value))}}</span>
+                        </li>
+                    {{/forFaktum}}
+
+                {{/hvisLik}}
+
+                {{#hvisLik value "personbiltilpasninger"}}
+
+                    {{#forFaktum "bilogutstyr.personbiltilpasninger.spesialutstyr.beskrivelse"}}
+                        <li class="kulepunkt faktum-felt">
+                            <span>{{hentTekst (concat cmsPrefiks "bilogutstyr.spesialutstyr.beskrivelse.oppsummering")}}:
+                                <em>{{value}}</em>
+                            </span>
+                        </li>
+                    {{/forFaktum}}
+
+                    {{#forFaktum "bilogutstyr.personbiltilpasninger.hjelpemidler"}}
+                        <li class="kulepunkt faktum-felt">
+                            <span>{{hentTekst (concat cmsPrefiks (concat "bilogutstyr.personbiltilpasninger.hjelpemidler." value))}}</span>
+
+                            {{#hvisLik value "ja"}}
+
+                                {{#forFaktum "bilogutstyr.personbiltilpasninger.hjelpemidler.ja.beskrivelse"}}
+                                    <ul>
+                                        <li class="kulepunkt medstrek faktum-felt">
+                                            <span>{{hentTekst "oppsummering.bilogutstyr.hjelpemidler.ja.beskrivelse"}}:
+                                                <em>{{value}}</em>
+                                            </span>
+                                        </li>
+                                    </ul>
+                                {{/forFaktum}}
+                            {{/hvisLik}}
+
+                        </li>
+                    {{/forFaktum}}
+                {{/hvisLik}}
+            </ul>
+        </td>
+    </tr>
+
+{{/forFaktum}}

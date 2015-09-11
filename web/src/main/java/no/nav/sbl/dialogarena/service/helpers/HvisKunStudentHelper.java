@@ -2,12 +2,13 @@ package no.nav.sbl.dialogarena.service.helpers;
 
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
-import no.nav.sbl.dialogarena.service.HandleBarKjoerer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+
+import static no.nav.sbl.dialogarena.service.HandlebarsUtils.finnWebSoknad;
 
 @Component
 public class HvisKunStudentHelper extends RegistryAwareHelper<Object> {
@@ -32,7 +33,7 @@ public class HvisKunStudentHelper extends RegistryAwareHelper<Object> {
 
     @Override
     public CharSequence apply(Object context, Options options) throws IOException {
-        WebSoknad soknad = HandleBarKjoerer.finnWebSoknad(options.context);
+        WebSoknad soknad = finnWebSoknad(options.context);
 
         Faktum iArbeidFaktum = soknad.getFaktumMedKey("navaerendeSituasjon.iArbeid");
         Faktum sykmeldtFaktum = soknad.getFaktumMedKey("navaerendeSituasjon.sykmeldt");

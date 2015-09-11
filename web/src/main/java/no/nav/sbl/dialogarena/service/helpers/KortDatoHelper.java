@@ -21,7 +21,7 @@ public class KortDatoHelper extends RegistryAwareHelper<String> {
     }
 
     @Override
-    public Helper getHelper() {
+    public Helper<String> getHelper() {
         return INSTANS;
     }
 

@@ -6,79 +6,93 @@
             {{#hvisLik value "ja"}}
                 <ul>
                     {{#forFaktumHvisSant "bileierskap.andreharbil.ektefelle"}}
-                        <li class="kulepunkt faktum-felt">{{ hentTekst (concat cmsPrefiks "bileierskap.andreharbil.ja.ektefelle")}}:
-                            <em>{{hentFaktumValue "bileierskap.andreharbil.ektefelle.regnr"}}</em>
+                        <li class="kulepunkt faktum-felt">
+                            <span>{{ hentTekst (concat cmsPrefiks "bileierskap.andreharbil.ja.ektefelle")}}. </span>
+                            <span>{{hentTekst "oppsummering.bileierskap.andreharbil.ja.regnr"}}:
+                                <em>{{hentFaktumValue "bileierskap.andreharbil.ektefelle.regnr"}}</em>
+                            </span>
                         </li>
                     {{/forFaktumHvisSant}}
 
                     {{#forFaktumHvisSant "bileierskap.andreharbil.samboer"}}
-                        <li class="kulepunkt faktum-felt">{{ hentTekst (concat cmsPrefiks "bileierskap.andreharbil.ja.samboer")}}:
-                            <em>{{hentFaktumValue "bileierskap.andreharbil.samboer.regnr"}}</em>
+                        <li class="kulepunkt faktum-felt">
+                            <span>{{ hentTekst (concat cmsPrefiks "bileierskap.andreharbil.ja.samboer")}}. </span>
+                            <span>{{hentTekst "oppsummering.bileierskap.andreharbil.ja.regnr"}}:
+                                <em>{{hentFaktumValue "bileierskap.andreharbil.samboer.regnr"}}</em>
+                            </span>
                         </li>
                     {{/forFaktumHvisSant}}
 
                     {{#forFaktumHvisSant "bileierskap.andreharbil.forelder"}}
-                        <li class="kulepunkt faktum-felt">{{ hentTekst (concat cmsPrefiks "bileierskap.andreharbil.ja.forelder")}}:
-                            <em>{{hentFaktumValue "bileierskap.andreharbil.forelder.regnr"}}</em>
+                        <li class="kulepunkt faktum-felt">
+                            <span>{{ hentTekst (concat cmsPrefiks "bileierskap.andreharbil.ja.forelder")}}. </span>
+                            <span>{{hentTekst "oppsummering.bileierskap.andreharbil.ja.regnr"}}:
+                                <em>{{hentFaktumValue "bileierskap.andreharbil.forelder.regnr"}}</em>
+                            </span>
                         </li>
                     {{/forFaktumHvisSant}}
 
                     {{#forFaktumHvisSant "bileierskap.andreharbil.barn"}}
-                        <li class="kulepunkt faktum-felt">{{ hentTekst (concat cmsPrefiks "bileierskap.andreharbil.ja.barn")}}:
-                            <em>{{hentFaktumValue "bileierskap.andreharbil.barn.regnr"}}</em>
+                        <li class="kulepunkt faktum-felt">
+                            <span>{{ hentTekst (concat cmsPrefiks "bileierskap.andreharbil.ja.barn")}}. </span>
+                            <span>{{hentTekst "oppsummering.bileierskap.andreharbil.ja.regnr"}}:
+                                <em>{{hentFaktumValue "bileierskap.andreharbil.barn.regnr"}}</em>
+                            </span>
                         </li>
                     {{/forFaktumHvisSant}}
 
                     {{#forFaktumHvisSant "bileierskap.andreharbil.annen"}}
-                        <li class="kulepunkt faktum-felt">{{ hentTekst (concat cmsPrefiks "bileierskap.andreharbil.ja.annen")}}:
-                            <em>{{hentFaktumValue "bileierskap.andreharbil.annen.regnr"}}</em>
+                        <li class="kulepunkt faktum-felt">
+                            <span>{{ hentTekst (concat cmsPrefiks "bileierskap.andreharbil.ja.annen")}}. </span>
+                            <span>{{hentTekst "oppsummering.bileierskap.andreharbil.ja.regnr"}}:
+                                <em>{{hentFaktumValue "bileierskap.andreharbil.annen.regnr"}}</em>
+                            </span>
                         </li>
                     {{/forFaktumHvisSant}}
 
+                    {{#forFaktum "bileierskap.andreharbil.kanbrukeselv"}}
+                        <li class="kulepunkt faktum-felt">
+                            <span>{{hentTekst (concat cmsPrefiks (concat "bileierskap.andreharbil.kanbrukeselv." value))}}</span>
+                            {{#hvisLik value "nei"}}
+                                <ul>
+                                    <li class="kulepunkt medstrek faktum-felt">
+                                        <span>{{hentTekst "oppsummering.bileierskap.andreharbil.kanbrukeselv.nei.arsak"}}:
+                                            <em>{{hentFaktumValue "bileierskap.andreharbil.kanbrukeselv.nei.arsak"}}</em>
+                                        </span>
+                                    </li>
+                                </ul>
+                            {{/hvisLik}}
+                        </li>
+                    {{/forFaktum}}
+
                 </ul>
             {{/hvisLik}}
-        </td>
-    </tr>
-
-    {{#hvisLik value "ja"}}
-        {{#forFaktum "bileierskap.andreharbil.kanbrukeselv"}}
-            <tr>
-                <td class="sjekket"></td>
-                <td>{{hentTekst (concat cmsPrefiks (concat "bileierskap.andreharbil.kanbrukeselv." value))}}</td>
-            </tr>
 
             {{#hvisLik value "nei"}}
-                <tr>
-                    <td class="sjekket"></td>
-                    <td>{{hentTekst (concat cmsPrefiks "bileierskap.andreharbil.kanbrukeselv.nei.arsak.sporsmal")}}<br/>
-                        <em>{{hentFaktumValue "bileierskap.andreharbil.kanbrukeselv.nei.arsak"}}</em>
-                    </td>
-                </tr>
+                <ul>
+                    {{#forFaktum "bileierskap.andreharbil.sistear"}}
+                        <li class="kulepunkt faktum-felt">
+                            <span>{{hentTekst (concat cmsPrefiks (concat "bileierskap.andreharbil.sistear." value))}}</span>
+                            {{#hvisLik value "ja"}}
+                                <ul>
+                                    <li class="kulepunkt medstrek faktum-felt">
+                                        <span>{{hentTekst "oppsummering.bileierskap.bilsisteaar.regnr"}}:
+                                            <em>{{hentFaktumValue "bileierskap.andreharbil.sistear.regnr"}}</em>
+                                        </span>
+                                    </li>
+                                    <li class="kulepunkt medstrek faktum-felt">
+                                        <span>{{hentTekst "oppsummering.bileierskap.bilsisteaar.solgtarsak"}}:
+                                            <em>{{hentFaktumValue "bileierskap.andreharbil.sistear.solgtarsak"}}</em>
+                                        </span>
+                                    </li>
+                                </ul>
+                            {{/hvisLik}}
+                        </li>
+                    {{/forFaktum}}
+                </ul>
             {{/hvisLik}}
 
-        {{/forFaktum}}
-    {{/hvisLik}}
-
-    {{#hvisLik value "nei"}}
-        {{#forFaktum "bileierskap.andreharbil.sistear"}}
-            <tr>
-                <td class="sjekket"></td>
-                <td>{{hentTekst (concat cmsPrefiks (concat "bileierskap.andreharbil.sistear." value))}}
-                    {{#hvisLik value "ja"}}
-                        <ul>
-                            <li class="kulepunkt faktum-felt">
-                                {{hentTekst "arbeidutdanning.bileierskap.andreharbil.sistear.regnr"}}<br/>
-                                <em>{{hentFaktumValue "bileierskap.andreharbil.sistear.regnr"}}</em>
-                            </li>
-                            <li class="kulepunkt faktum-felt">
-                                {{hentTekst "arbeidutdanning.bileierskap.andreharbil.sistear.solgtarsak.sporsmal"}}<br/>
-                                <em>{{hentFaktumValue "bileierskap.andreharbil.sistear.solgtarsak"}}</em>
-                            </li>
-                        </ul>
-                    {{/hvisLik}}
-                </td>
-            </tr>
-        {{/forFaktum}}
-    {{/hvisLik}}
+        </td>
+    </tr>
 
 {{/forFaktum}}

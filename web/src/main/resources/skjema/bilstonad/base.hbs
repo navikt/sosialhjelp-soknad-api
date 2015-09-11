@@ -33,32 +33,18 @@
 
             {{#forFaktum "soknadsvalg.stonadstype"}}
 
-                {{#hvisLik "stonadBil" value}}
-                    {{#block "contentbil" }}{{/block}}
-                {{/hvisLik}}
-
                 {{#hvisLik "stonadSpesialutstyr" value}}
                     {{#block "contentspesialutstyr" }}{{/block}}
+
+                {{else }}
+                    {{#block "contentbil" }}{{/block}}
+
                 {{/hvisLik}}
 
             {{/forFaktum}}
 
-
-            {{> skjema/felles/vedlegg }}
-
             <div class="brosjyre-signatur">
-                <table>
-                    <tr>
-                        <td>
-                            <span class="sjekket"></span>
-                        </td>
-                        <td>
-                            {{ hentTekst "informasjonsside.lestbrosjyre.sporsmal" }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" style="height: 6pt;"></td>
-                    </tr>
+                <table >
                     <tr>
                         <td>
                             <span class="sjekket"></span>
@@ -69,6 +55,9 @@
                     </tr>
                 </table>
             </div>
+
+            {{> skjema/felles/vedlegg }}
+
         </div>
     </body>
 </html>

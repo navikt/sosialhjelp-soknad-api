@@ -3,7 +3,7 @@
         <tr>
             <td class="sjekket"></td>
             <td>
-                <span>{{ hentTekst "soknad.barnepass.barn.sporsmal.label" ../../properties.fornavn ( hvisIkkeTom ../../properties.mellomnavn ) ../../properties.etternavn}}</span>
+                <span>{{ hentTekst "soknad.barnepass.barn.sporsmal.label" (toCapitalized ../../properties.sammensattnavn)}}</span>
             </td>
         </tr>
         <tr>

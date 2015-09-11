@@ -21,7 +21,7 @@
     <description>Innsending av elektronisk søknad.</description>
     <groupId>no.nav.sbl.dialogarena</groupId>
     <artifactId>sendsoknad</artifactId>
-    <version>7.22-SNAPSHOT</version>
+    <version>7.23-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -247,7 +247,7 @@
             <dependency>
                 <groupId>no.nav.sbl</groupId>
                 <artifactId>arena-sakOgAktivitet_v1</artifactId>
-                <version>1.0.6</version>
+                <version>1.0.11</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.sbl</groupId>
@@ -786,7 +786,8 @@
                             <fpnb>foreldrepenger_nb_NO.properties</fpnb>
                             <bsnb>bilstonad_nb_NO.properties</bsnb>
                             <tsnb>tilleggsstonader_nb_NO.properties</tsnb>
-                            <tsnb>tiltakspenger_nb_NO.properties</tsnb>
+                            <rdrnb>refusjondagligreise_nb_NO.properties</rdrnb>
+                            <tpnb>tiltakspenger_nb_NO.properties</tpnb>
                         </propertiesFiler>
                         <menyPunktPaths>
                             <aapnb>/site/18/app/AAP/nb_NO/tekster</aapnb>
@@ -795,7 +796,8 @@
                             <fpnb>/site/18/app/foreldrepenger/nb_NO/tekster</fpnb>
                             <bsnb>/site/18/app/bilstonad/nb_NO/tekster</bsnb>
                             <tsnb>/site/18/app/tilleggsstonader/nb_NO/tekster</tsnb>
-                            <tsnb>/site/18/app/tiltakspenger/nb_NO/tekster</tsnb>
+                            <rdrnb>/site/18/app/refusjondagligreise/nb_NO/tekster</rdrnb>
+                            <tpnb>/site/18/app/tiltakspenger/nb_NO/tekster</tpnb>
                         </menyPunktPaths>
                     </configuration>
                 </plugin>
@@ -845,8 +847,8 @@
         </pluginManagement>
     </build>
     <scm>
-        <developerConnection>scm:git:http://stash.devillo.no/scm/sokd/sendsoknad.git</developerConnection>
-        <url>http://stash.devillo.no/scm/sokd/sendsoknad.git</url>
+        <developerConnection>scm:git:http://stash.devillo.no/scm/sokd/soknadsapi.git</developerConnection>
+        <url>http://stash.devillo.no/scm/sokd/soknadsapi.git</url>
         <tag>HEAD</tag>
     </scm>
 

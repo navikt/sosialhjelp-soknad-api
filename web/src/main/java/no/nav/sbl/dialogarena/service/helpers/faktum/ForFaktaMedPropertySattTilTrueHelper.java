@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.List;
 
-import static no.nav.sbl.dialogarena.service.HandleBarKjoerer.finnWebSoknad;
-import static no.nav.sbl.dialogarena.service.Hjelpemetoder.lagItererbarRespons;
+import static no.nav.sbl.dialogarena.service.HandlebarsUtils.finnWebSoknad;
+import static no.nav.sbl.dialogarena.service.HandlebarsUtils.lagItererbarRespons;
 
 @Component
 public class ForFaktaMedPropertySattTilTrueHelper extends RegistryAwareHelper<String> {
