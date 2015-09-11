@@ -7,6 +7,12 @@
     <faktum>
         <id>informasjonsside.deltarIKvalifiseringsprogram</id>
     </faktum>
+    <faktum>
+        <id>informasjonsside.deltarIIntroprogram</id>
+    </faktum>
+    <faktum>
+        <id>informasjonsside.deltarIIntroprogram.info</id>
+    </faktum>
 
     <!-- Trygd og pensjon -->
     <faktum>

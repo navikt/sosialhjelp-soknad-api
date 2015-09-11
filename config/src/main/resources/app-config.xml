@@ -42,7 +42,8 @@
         <baseUrl alias="soknad.lonnskravskjema" mapToProperty="soknad.lonnskravskjema" />
         <baseUrl alias="soknad.permitteringsskjema" mapToProperty="soknad.permitteringsskjema" />
         <baseUrl alias="arena.personinfoservice" mapToProperty="soknad.webservice.arena.personinfo"/>
-        
+        <baseUrl alias="dineutbetalinger.link" mapToProperty="dineutbetalinger.link"/>
+
         <applicationProperties alias="soknad.ettersending.properties"/>
         <applicationProperties alias="soknad.properties"/>
 
