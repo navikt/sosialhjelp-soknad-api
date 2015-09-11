@@ -1,0 +1,26 @@
+{{#forFaktum "bostotte.adresseutgifter.aktivitetsadresse"}}
+    {{#hvisSant value}}
+    <tr>
+        <td class="sjekket"></td>
+        <td><span>{{ hentTekst "soknad.bostotte.adresseutgifter.aktivitetsadresse" }}{{ hentTekst "soknad.bostotte.adresseutgifter.belop.oppsummering" }} {{properties.utgift}}</span></td>
+    </tr>
+    {{/hvisSant}}
+{{/forFaktum}}
+
+{{#forFaktum "bostotte.adresseutgifter.hjemstedsaddresse"}}
+    {{#hvisSant value}}
+    <tr>
+        <td class="sjekket"></td>
+        <td><span>{{ hentTekst "soknad.bostotte.adresseutgifter.hjemstedsaddresse" }}{{ hentTekst "soknad.bostotte.adresseutgifter.belop.oppsummering" }} {{properties.utgift}}</span></td>
+    </tr>
+    {{/hvisSant}}
+{{/forFaktum}}
+
+{{#forFaktum "bostotte.adresseutgifter.opphorte"}}
+    {{#hvisSant value}}
+    <tr>
+        <td class="sjekket"></td>
+        <td><span>{{ hentTekst "soknad.bostotte.adresseutgifter.opphorte" }}{{ hentTekst "soknad.bostotte.adresseutgifter.belop.oppsummering" }} {{properties.utgift}}</span></td>
+    </tr>
+    {{/hvisSant}}
+{{/forFaktum}}

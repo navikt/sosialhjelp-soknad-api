@@ -9,8 +9,8 @@ import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.utils.PDFFabrikk;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +46,7 @@ public class SoknadActions {
     private VedleggService vedleggService;
 
     @Inject
-    private SendSoknadService soknadService;
+    private SoknadService soknadService;
 
     @Inject
     private HtmlGenerator pdfTemplate;
@@ -72,7 +72,7 @@ public class SoknadActions {
     @Path("/send")
     @SjekkTilgangTilSoknad
     public void sendSoknad(@PathParam("behandlingsId") String behandlingsId) {
-        WebSoknad soknad = soknadService.hentSoknadMedFaktaOgVedlegg(behandlingsId);
+        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
 
         byte[] kvittering = genererPdfMedKodeverksverdier(soknad, "/skjema/kvittering");
         vedleggService.lagreKvitteringSomVedlegg(behandlingsId, kvittering);

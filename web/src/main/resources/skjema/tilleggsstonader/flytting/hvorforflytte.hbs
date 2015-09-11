@@ -1,0 +1,13 @@
+<tr>
+    <td class="sjekket"></td>
+    <td>
+        {{#forFaktum "flytting.hvorforflytte"}}
+            {{#hvisLik value "nyjobb"}}
+                <span>{{ hentTekst "soknad.flytting.hvorforflytte.nyjobb" }}</span>
+            {{/hvisLik}}
+            {{#hvisLik value "aktivitet"}}
+                <span>{{ hentTekst "soknad.flytting.hvorforflytte.aktivitet" }}</span>
+            {{/hvisLik}}
+        {{/forFaktum}}
+    </td>
+</tr>

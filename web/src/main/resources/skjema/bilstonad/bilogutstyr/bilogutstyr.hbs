@@ -1,0 +1,12 @@
+<h2>{{ hentTekst "bilogutstyr.tittel" }}</h2>
+<table>
+
+    {{#hvisLik cmsPrefiks "dagligliv."}}
+        {{> skjema/bilstonad/bilogutstyr/bilogutstyrDagligliv }}
+    {{/hvisLik}}
+
+    {{#hvisLik cmsPrefiks "arbeidutdanning."}}
+        {{> skjema/bilstonad/bilogutstyr/bilogutstyrArbeidutdanning }}
+    {{/hvisLik}}
+
+</table>

@@ -236,9 +236,9 @@ public class SoknadRepositoryJdbcTest {
         Faktum faktum = new Faktum().medKey("key2").medValue("true").medSoknadId(soknad.getSoknadId()).medType(BRUKERREGISTRERT).medParrentFaktumId(parentFaktumId);
         soknadRepository.lagreFaktum(soknad.getSoknadId(), faktum);
         SoknadFaktum soknadFaktum = new SoknadFaktum().medId("key2").medDependOn(parentSoknadFaktum).medDependOnValues(Arrays.asList("true", "dependOnValue"));
-        SoknadVedlegg vedlegg = new SoknadVedlegg().medFaktum(soknadFaktum);
+        SoknadVedlegg vedlegg = new SoknadVedlegg().medFaktum(soknadFaktum).medOnValues(Arrays.asList("true"));
 
-        Boolean vedleggPaakrevd = soknadRepository.isVedleggPaakrevd(soknadId, Arrays.asList("true"), vedlegg);
+        Boolean vedleggPaakrevd = soknadRepository.isVedleggPaakrevd(soknadId, vedlegg);
         Assert.assertTrue(vedleggPaakrevd);
     }
 
@@ -254,7 +254,7 @@ public class SoknadRepositoryJdbcTest {
         SoknadFaktum soknadFaktum = new SoknadFaktum().medId("key2").medDependOn(parentSoknadFaktum).medDependOnValues(Arrays.asList("true", "dependOnValue"));
         SoknadVedlegg vedlegg = new SoknadVedlegg().medFaktum(soknadFaktum);
 
-        Boolean vedleggPaakrevd = soknadRepository.isVedleggPaakrevd(soknadId, Arrays.asList("true"), vedlegg);
+        Boolean vedleggPaakrevd = soknadRepository.isVedleggPaakrevd(soknadId, vedlegg);
         assertFalse(vedleggPaakrevd);
     }
 
@@ -272,9 +272,9 @@ public class SoknadRepositoryJdbcTest {
         Faktum faktum = new Faktum().medKey("key").medValue("true").medSoknadId(soknad.getSoknadId()).medType(BRUKERREGISTRERT).medParrentFaktumId(parentFaktumId);
         soknadRepository.lagreFaktum(soknad.getSoknadId(), faktum);
         SoknadFaktum soknadFaktum = new SoknadFaktum().medId("key").medDependOn(parentSoknadFaktum).medDependOnValues(Arrays.asList("parentValue"));
-        SoknadVedlegg vedlegg = new SoknadVedlegg().medFaktum(soknadFaktum);
+        SoknadVedlegg vedlegg = new SoknadVedlegg().medFaktum(soknadFaktum).medOnValues(Arrays.asList("true"));
 
-        Boolean vedleggPaakrevd = soknadRepository.isVedleggPaakrevd(soknadId, Arrays.asList("true"), vedlegg);
+        Boolean vedleggPaakrevd = soknadRepository.isVedleggPaakrevd(soknadId, vedlegg);
         Assert.assertTrue(vedleggPaakrevd);
     }
 
@@ -294,7 +294,7 @@ public class SoknadRepositoryJdbcTest {
         SoknadFaktum soknadFaktum = new SoknadFaktum().medId("key").medDependOn(parentSoknadFaktum).medDependOnValues(Arrays.asList("parentValue"));
         SoknadVedlegg vedlegg = new SoknadVedlegg().medFaktum(soknadFaktum);
 
-        Boolean vedleggPaakrevd = soknadRepository.isVedleggPaakrevd(soknadId, Arrays.asList("true"), vedlegg);
+        Boolean vedleggPaakrevd = soknadRepository.isVedleggPaakrevd(soknadId, vedlegg);
         assertFalse(vedleggPaakrevd);
     }
 
@@ -369,7 +369,7 @@ public class SoknadRepositoryJdbcTest {
     @Test
     public void skalReturnereNullOmSoknadMedBehandlingsIdIkkeFinnes() {
         opprettOgPersisterSoknad();
-        WebSoknad soknadMedData = soknadRepository.hentSoknadMedData("soknadSomIkkeFinnes");
+        WebSoknad soknadMedData = soknadRepository.hentSoknadMedVedlegg("soknadSomIkkeFinnes");
         assertThat(soknadMedData, nullValue());
     }
 

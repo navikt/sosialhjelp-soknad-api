@@ -7,11 +7,11 @@ import java.util.List;
 import static java.util.Arrays.asList;
 
 
-public class AAPOrdinaerInformasjon implements KravdialogInformasjon {
+public class AAPOrdinaerInformasjon extends KravdialogInformasjon.KravdialogInformasjonUtenAlternativRepresentasjon {
 
     private static List<String> skjemanummer = asList("NAV 11-13.05");
 
-    public String getSoknadTypePrefix () {
+    public String getSoknadTypePrefix() {
         return "aap.ordinaer";
     }
 

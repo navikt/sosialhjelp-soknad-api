@@ -8,16 +8,24 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.EttersendingService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.*;
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import java.io.IOException;
 import java.util.HashMap;
@@ -26,7 +34,6 @@ import java.util.Map;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
-import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.generateXsrfToken;
 
 @Controller
@@ -43,10 +50,7 @@ public class SoknadRessurs {
     private VedleggService vedleggService;
 
     @Inject
-    private SendSoknadService soknadService;
-
-    @Inject
-    private EttersendingService ettersendingService;
+    private SoknadService soknadService;
 
     @Inject
     private HtmlGenerator pdfTemplate;
@@ -56,7 +60,7 @@ public class SoknadRessurs {
     @SjekkTilgangTilSoknad
     public WebSoknad hentSoknadData(@PathParam("behandlingsId") String behandlingsId, @Context HttpServletResponse response) {
         response.addCookie(xsrfCookie(behandlingsId));
-        return soknadService.hentSoknad(behandlingsId);
+        return soknadService.hentSoknad(behandlingsId, true, false);
     }
 
     @GET
@@ -64,7 +68,7 @@ public class SoknadRessurs {
     @Produces(TEXT_HTML)
     @SjekkTilgangTilSoknad
     public String hentOppsummering(@PathParam("behandlingsId") String behandlingsId) throws IOException {
-        WebSoknad soknad = soknadService.hentSoknadMedFaktaOgVedlegg(behandlingsId);
+        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
         vedleggService.leggTilKodeverkFelter(soknad.getVedlegg());
 
         String oppsummeringSti = "/skjema/" + soknad.getSoknadPrefix();
@@ -76,15 +80,14 @@ public class SoknadRessurs {
     @Consumes(APPLICATION_JSON)
     public Map<String, String> opprettSoknad(@QueryParam("ettersendTil") String behandlingsId, StartSoknad soknadType, @Context HttpServletResponse response) {
         Map<String, String> result = new HashMap<>();
-        String fodselsnummer = getSubjectHandler().getUid();
 
         String opprettetBehandlingsId;
         if (behandlingsId == null) {
-            opprettetBehandlingsId = soknadService.startSoknad(soknadType.getSoknadType(), fodselsnummer);
+            opprettetBehandlingsId = soknadService.startSoknad(soknadType.getSoknadType());
         } else {
-            WebSoknad soknad = ettersendingService.hentEttersendingForBehandlingskjedeId(behandlingsId);
+            WebSoknad soknad = soknadService.hentEttersendingForBehandlingskjedeId(behandlingsId);
             if (soknad == null) {
-                opprettetBehandlingsId = ettersendingService.startEttersending(behandlingsId, fodselsnummer);
+                opprettetBehandlingsId = soknadService.startEttersending(behandlingsId);
             } else {
                 opprettetBehandlingsId = soknad.getBrukerBehandlingId();
             }

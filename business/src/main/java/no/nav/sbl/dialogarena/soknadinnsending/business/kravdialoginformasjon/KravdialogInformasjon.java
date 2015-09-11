@@ -1,7 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import org.apache.commons.collections15.Transformer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface KravdialogInformasjon {
@@ -21,5 +23,14 @@ public interface KravdialogInformasjon {
     String getStrukturFilnavn();
 
     List<String> getSkjemanummer();
+
+    List<Transformer<WebSoknad, AlternativRepresentasjon>> getTransformers();
+
+    public abstract class KravdialogInformasjonUtenAlternativRepresentasjon implements KravdialogInformasjon {
+        @Override
+        public List<Transformer<WebSoknad, AlternativRepresentasjon>> getTransformers() {
+            return new ArrayList<>();
+        }
+    }
 
 }

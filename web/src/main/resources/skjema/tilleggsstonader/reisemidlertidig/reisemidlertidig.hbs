@@ -1,0 +1,18 @@
+{{#forFaktumHvisSant "informasjonsside.stonad.reise"}}
+    {{#forFaktumHvisSant "informasjonsside.stonad.reisemidlertidig"}}
+        <h2>{{hentTekst "soknad.reise.midlertidig.tittel"}}</h2>
+        <table>
+            {{#forFaktum "reise.midlertidig.periode"}}
+                {{> skjema/tilleggsstonader/felles/aktivitetsperiode}}
+            {{/forFaktum}}
+            {{> skjema/tilleggsstonader/reisemidlertidig/avstand}}
+            {{> skjema/tilleggsstonader/reisemidlertidig/adresse}}
+            {{> skjema/tilleggsstonader/reisemidlertidig/barnsomflyttermed}}
+            {{> skjema/tilleggsstonader/reisemidlertidig/hjemmeboende}}
+            {{> skjema/tilleggsstonader/reisemidlertidig/sarskiltebehov}}
+            {{#variabel "faktumPrefiks" "reise.midlertidig."}}
+                {{> skjema/tilleggsstonader/felles/offentligtransport}}
+            {{/variabel}}
+        </table>
+    {{/forFaktumHvisSant}}
+{{/forFaktumHvisSant}}

@@ -1,0 +1,18 @@
+<h2>{{ hentTekst "fastlege.tittel" }}</h2>
+<table>
+    {{#forFaktumHvisSant "fastlege.harIkkeFastlege"}}
+        {{> skjema/bilstonad/fastlege/behandlendeLege }}
+    {{else}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <div>{{ hentTekst "oppsummering.fastlege.navn" }}</div>
+                <div><span class="avsnitt">{{ hentFaktumValue "fastlege.navn" }}</span></div>
+                <div>{{ hentFaktumValue "fastlege.arbeidsstedadresse" }}</div>
+                <div>{{ hentFaktumValue "fastlege.tlfnr" }}</div>
+            </td>
+        </tr>
+        {{> skjema/bilstonad/fastlege/behandlendeLege }}
+
+    {{/forFaktumHvisSant}}
+</table>

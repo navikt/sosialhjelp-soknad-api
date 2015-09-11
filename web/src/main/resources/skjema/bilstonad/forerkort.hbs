@@ -1,0 +1,69 @@
+<h2>{{ hentTekst "forerkort.tittel" }}</h2>
+<table>
+    {{#forFaktum "forerkort.erGyldigINorge"}}
+        {{#hvisLik value "true"}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>{{ hentTekst "forerkort.erGyldigINorge.label"}}</td>
+            </tr>
+        {{/hvisLik}}
+
+        {{#hvisLik value "false"}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>{{ hentTekst "forerkort.erIkkeGyldigINorge.label"}}
+
+                    {{#forFaktum "forerkort.skalTaForerkort"}}
+
+                        <ul>
+                            {{#hvisLik value "true"}}
+                                <li class="kulepunkt faktum-felt">
+                                    <span>{{ hentTekst "forerkort.skalTaForerkort.label"}}</span>
+
+                                    {{#forFaktum "forerkort.sokerOmKjoreopplaering"}}
+                                        <ul>
+                                            {{#hvisLik value "true"}}
+                                                <li class="kulepunkt medstrek faktum-felt">
+                                                    <span>{{ hentTekst "forerkort.sokerOmKjoreopplaering.label"}}</span>
+                                                </li>
+                                            {{/hvisLik}}
+
+                                            {{#hvisLik value "false"}}
+                                                <li class="kulepunkt medstrek faktum-felt">
+                                                    <span>{{ hentTekst "forerkort.sokerIkkeOmKjoreopplaering.label"}}</span>
+                                                </li>
+                                            {{/hvisLik}}
+                                        </ul>
+                                    {{/forFaktum}}
+                                </li>
+                            {{/hvisLik}}
+
+                            {{#hvisLik value "false"}}
+                                <li class="kulepunkt faktum-felt">
+                                    <span>{{ hentTekst "forerkort.skalIkkeTaForerkort.label"}}</span>
+
+                                    {{#forFaktum "forerkort.andreKanKjore"}}
+                                        <ul>
+                                            {{#hvisLik value "true"}}
+                                                <li class="kulepunkt medstrek faktum-felt">
+                                                     <span>{{ hentTekst "forerkort.andreKanKjore.label"}}</span>
+                                                </li>
+                                            {{/hvisLik}}
+
+                                            {{#hvisLik value "false"}}
+                                                <li class="kulepunkt medstrek faktum-felt">
+                                                    <span>{{ hentTekst "forerkort.andreKanIkkeKjore.label"}}</span>
+                                                </li>
+                                            {{/hvisLik}}
+                                        </ul>
+                                    {{/forFaktum}}
+
+                                </li>
+                            {{/hvisLik}}
+                        </ul>
+                    {{/forFaktum}}
+                </td>
+            </tr>
+        {{/hvisLik}}
+    {{/forFaktum}}
+</table>

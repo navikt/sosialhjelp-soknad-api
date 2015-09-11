@@ -1,0 +1,12 @@
+<tr>
+    <td class="sjekket"></td>
+    <td>
+        {{#forFaktum "reise.aktivitet.medisinskeaarsaker"}}
+            {{#hvisSant value}}
+                <span>{{ hentTekst "soknad.reise.aktivitet.medisinskeaarsaker.true" }}</span>
+            {{else}}
+                <span>{{ hentTekst "soknad.reise.aktivitet.medisinskeaarsaker.false" }}</span>
+            {{/hvisSant}}
+        {{/forFaktum}}
+    </td>
+</tr>

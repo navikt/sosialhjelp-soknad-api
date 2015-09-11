@@ -1,0 +1,16 @@
+{{#forFaktum "flytting.hvorforflytte"}}
+    {{#hvisLik value "nyjobb"}}
+        <tr>
+            {{#forFaktum "flytting.nyjobb.startdato"}}
+                <td class="sjekket"></td>
+                <td>{{hentTekst "soknad.flytting.nyjobb.startdato.label"}}: {{formatterLangDato value}}</td>
+            {{/forFaktum}}
+        </tr>
+        <tr>
+            {{#forFaktum "flytting.nyjobb.flyttedato"}}
+                <td class="sjekket"></td>
+                <td>{{hentTekst "soknad.flytting.nyjobb.flyttedato.label"}}: {{formatterLangDato value}}</td>
+            {{/forFaktum}}
+        </tr>
+    {{/hvisLik}}
+{{/forFaktum}}

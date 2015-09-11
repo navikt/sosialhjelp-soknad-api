@@ -187,6 +187,11 @@ public class SoknadVedlegg implements Serializable {
         return this;
     }
 
+    public SoknadVedlegg medOnValues(List<String> dependOnValues) {
+        this.setOnValues(dependOnValues);
+        return this;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this)
@@ -205,6 +210,5 @@ public class SoknadVedlegg implements Serializable {
     public boolean harFilterProperty(Faktum faktum) {
         return filterKey == null ||
                 filterValues.contains(faktum.getProperties().get(filterKey));
-
     }
 }

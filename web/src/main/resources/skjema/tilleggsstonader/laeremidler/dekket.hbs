@@ -1,0 +1,30 @@
+{{#forFaktum "laeremidler.dekket"}}
+    <tr>
+        <td class="sjekket"></td>
+        <td>
+            <span>{{ hentTekst (concat "soknad.laeremidler.dekket." value)}}</span>
+        </td>
+    </tr>
+    {{#hvisLik value "delvis"}}
+        {{#forFaktum "laeremidler.dekket.delvis.annenaktor"}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{hentTekst "oppsummering.laeremidler.dekket.delvis.annenaktor"}}</span>
+                    <span>{{value}}</span>
+                    <span>{{hentTekst "soknad.kr"}}</span>
+                </td>
+            </tr>
+        {{/forFaktum}}
+        {{#forFaktum "laeremidler.dekket.delvis.nav"}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{hentTekst "oppsummering.laeremidler.dekket.delvis.nav"}}</span>
+                    <span>{{value}}</span>
+                    <span>{{hentTekst "soknad.kr"}}</span>
+                </td>
+            </tr>
+        {{/forFaktum}}
+    {{/hvisLik}}
+{{/forFaktum}}

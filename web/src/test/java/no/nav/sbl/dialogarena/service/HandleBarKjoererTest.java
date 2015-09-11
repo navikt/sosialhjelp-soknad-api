@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.service;
 
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.service.HandleBarKjoerer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
@@ -55,6 +54,18 @@ public class HandleBarKjoererTest {
         String html = handleBarKjoerer.fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger.ordinaer");
         assertThat(html, containsString("15038000000"));
 
+    }
+    @Test
+    public void skalKompilereTilleggstsstonader() throws IOException {
+        WebSoknad soknad = new WebSoknad()
+                .medFaktum(new Faktum().medKey("personalia").medProperty("fnr", "15038000000").medProperty("navn", "Test Nordmann").medProperty("alder", "40").medProperty("statsborgerskap", "NOR"))
+                .medFaktum(new Faktum().medKey("informasjonsside.stonad.reiseaktivitet").medValue("true"))
+                .medFaktum(new Faktum().medKey("reise.aktivitet.periode").medProperty("fom", "2015-01-01").medProperty("tom", "2015-02-02"))
+                .medFaktum(new Faktum().medKey("bostotte.periode").medProperty("fom", "2015-01-01").medProperty("tom", "2015-02-03"))
+                .medFaktum(new Faktum().medKey("reise.aktivitet.medisinskeaarsaker").medValue("false")) ;
+        String html = handleBarKjoerer.fyllHtmlMalMedInnhold(soknad, "/skjema/soknadtilleggsstonader");
+        System.out.println(html);
+        assertThat(html, containsString("15038000000"));
     }
 
     @Test

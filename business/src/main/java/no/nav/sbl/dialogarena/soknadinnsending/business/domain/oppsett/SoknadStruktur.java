@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
 
@@ -79,11 +80,15 @@ public class SoknadStruktur implements Serializable {
 
     }
 
-    public List<SoknadVedlegg> vedleggForSkjemanr(final String skjemaNr) {
+    public List<SoknadVedlegg> vedleggForSkjemanrMedTillegg(final String skjemaNr, final String tillegg) {
         return on(vedlegg).filter(new Predicate<SoknadVedlegg>() {
             @Override
             public boolean evaluate(SoknadVedlegg soknadVedlegg) {
-                return soknadVedlegg.getSkjemaNummer().equals(skjemaNr);
+                if(soknadVedlegg.getSkjemaNummer().equals(skjemaNr)) {
+                    String skjemaTillegg = soknadVedlegg.getSkjemanummerTillegg();
+                    return Objects.equals(skjemaTillegg, tillegg);
+                }
+                return false;
             }
         }).collect();
 

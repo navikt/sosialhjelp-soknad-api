@@ -17,7 +17,7 @@ public interface SoknadRepository {
     WebSoknad hentSoknad(String behandlingsId);
 
     WebSoknad hentSoknadMedData(Long id);
-    WebSoknad hentSoknadMedData(String behandlingsId);
+    WebSoknad hentSoknadMedVedlegg(String behandlingsId);
 
     List<Faktum> hentAlleBrukerData(String behandlingsId);
     List<Faktum> hentAlleBrukerData(Long soknadId);
@@ -45,7 +45,7 @@ public interface SoknadRepository {
 
     String hentSoknadType(Long soknadId);
 
-    Boolean isVedleggPaakrevd(Long soknadId, List<String> values, SoknadVedlegg soknadVedlegg);
+    Boolean isVedleggPaakrevd(Long soknadId, SoknadVedlegg soknadVedlegg);
 
     void settDelstegstatus(Long soknadId, DelstegStatus status);
     void settDelstegstatus(String behandlingsId, DelstegStatus status);

@@ -1,0 +1,77 @@
+{{#forFaktum "behovforbil.reisealene"}}
+    {{#hvisLik value "ja"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>{{ hentTekst (concat cmsPrefiks "behovforbil.reisealene.ja")}}</td>
+        </tr>
+    {{/hvisLik}}
+
+    {{#hvisLik value "nei"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>{{ hentTekst (concat cmsPrefiks "behovforbil.reisealene.nei")}}
+
+                <ul>
+                    {{#forFaktum "behovforbil.reisemedfolge"}}
+                        {{#hvisLik value "ja"}}
+                            <li class="kulepunkt faktum-felt">{{ hentTekst (concat cmsPrefiks "behovforbil.reisemedfolge.ja") }}</li>
+                        {{/hvisLik}}
+
+                        {{#hvisLik value "nei"}}
+                            <li class="kulepunkt faktum-felt">{{ hentTekst (concat cmsPrefiks "behovforbil.reisemedfolge.nei") }}</li>
+                        {{/hvisLik}}
+                    {{/forFaktum}}
+
+                    {{#forFaktumHvisSant "behovforbil.belastende.avellerpakollektivtransport"}}
+                        <li class="kulepunkt faktum-felt">{{ hentTekst (concat cmsPrefiks "behovforbil.belastende.avellerpakollektivtransport")}}</li>
+                    {{/forFaktumHvisSant}}
+
+                    {{#forFaktumHvisSant "behovforbil.belastende.ingenholdeplasser"}}
+                        <li class="kulepunkt faktum-felt">{{ hentTekst (concat cmsPrefiks "behovforbil.belastende.ingenholdeplasser")}}</li>
+                    {{/forFaktumHvisSant}}
+
+                    {{#forFaktumHvisSant "behovforbil.belastende.langttilholdeplasser"}}
+                        <li class="kulepunkt faktum-felt">
+                            <span>{{ hentTekst (concat cmsPrefiks "behovforbil.belastende.langttilholdeplasser")}}</span>
+                            <ul>
+                                {{#forFaktum "behovforbil.belastende.langttilholdeplasser.buss"}}
+                                    <li class="kulepunkt medstrek faktum-felt">{{hentTekst "oppsummering.behovforbil.belastende.langttilholdeplasser.buss"}}: <em>{{value}}</em> {{ hentTekst (concat cmsPrefiks "behovforbil.belastende.langttilholdeplasser.enhet")}}</li>
+                                {{/forFaktum}}
+
+                                {{#forFaktum "behovforbil.belastende.langttilholdeplasser.trikk"}}
+                                    <li class="kulepunkt medstrek faktum-felt">{{hentTekst "oppsummering.behovforbil.belastende.langttilholdeplasser.trikk"}}: <em>{{value}}</em> {{ hentTekst (concat cmsPrefiks "behovforbil.belastende.langttilholdeplasser.enhet")}}</li>
+                                {{/forFaktum}}
+
+                                {{#forFaktum "behovforbil.belastende.langttilholdeplasser.bane"}}
+                                    <li class="kulepunkt medstrek faktum-felt">{{hentTekst "oppsummering.behovforbil.belastende.langttilholdeplasser.bane"}}: <em>{{value}}</em> {{ hentTekst (concat cmsPrefiks "behovforbil.belastende.langttilholdeplasser.enhet")}}</li>
+                                {{/forFaktum}}
+
+                                {{#forFaktum "behovforbil.belastende.langttilholdeplasser.tog"}}
+                                    <li class="kulepunkt medstrek faktum-felt">{{hentTekst "oppsummering.behovforbil.belastende.langttilholdeplasser.tog"}}: <em>{{value}}</em> {{ hentTekst (concat cmsPrefiks "behovforbil.belastende.langttilholdeplasser.enhet")}}</li>
+                                {{/forFaktum}}
+
+                                {{#forFaktum "behovforbil.belastende.langttilholdeplasser.bat"}}
+                                    <li class="kulepunkt medstrek faktum-felt">{{hentTekst "oppsummering.behovforbil.belastende.langttilholdeplasser.bat"}}: <em>{{value}}</em> {{ hentTekst (concat cmsPrefiks "behovforbil.belastende.langttilholdeplasser.enhet")}}</li>
+                                {{/forFaktum}}
+                            </ul>
+                        </li>
+                    {{/forFaktumHvisSant}}
+
+                    {{#forFaktumHvisSant "behovforbil.belastende.andrearsaker"}}
+                        <li class="kulepunkt faktum-felt">
+                            <span>{{ hentTekst (concat cmsPrefiks "behovforbil.belastende.andrearsaker")}}. </span>
+                            <ul>
+                                <li class="kulepunkt medstrek faktum-felt">
+                                    <span>{{hentTekst "oppsummering.behovforbil.belastende.andrearsaker.beskrivelse.label"}}</span>:
+                                    <em>{{ hentFaktumValue "behovforbil.belastende.andrearsaker.beskrivelse" }}</em>
+                                </li>
+                            </ul>
+                        </li>
+                    {{/forFaktumHvisSant}}
+
+                </ul>
+            </td>
+        </tr>
+    {{/hvisLik}}
+
+{{/forFaktum}}

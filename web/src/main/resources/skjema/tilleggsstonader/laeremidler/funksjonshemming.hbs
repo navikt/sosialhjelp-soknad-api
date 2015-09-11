@@ -1,0 +1,16 @@
+{{#forFaktum "laeremidler.funksjonshemming"}}
+    <tr>
+        <td class="sjekket"></td>
+        <td>
+            <span>{{ hentTekst (concat "soknad.laeremidler.funksjonshemming." value) }}</span>
+        </td>
+    </tr>
+    {{#hvisSant value}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>{{ hentTekst "soknad.laeremidler.funksjonshemming.belop.oppsummering" }} {{properties.utgift}}  {{hentTekst "soknad.kr"}} </span>
+            </td>
+        </tr>
+    {{/hvisSant}}
+{{/forFaktum}}

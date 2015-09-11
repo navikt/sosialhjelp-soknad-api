@@ -1,0 +1,17 @@
+{{#forFakta "barn"}}
+    {{#hvisSant properties.skalFlytteMed}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>{{ properties.fornavn }} {{ properties.mellomnavn}} {{properties.etternavn}}</span>
+                {{#hvisLik type "SYSTEMREGISTRERT"}}
+                    <span>({{properties.fnr}})</span>
+                {{else}}
+                    <span>({{formatterFodelsDato properties.fodselsdato}})</span>
+                {{/hvisLik}}
+
+                <span>{{hentTekst "soknad.reise.midlertidig.barnflyttemed.velgbarn.oppsummering"}}</span>
+            </td>
+        </tr>
+    {{/hvisSant}}
+{{/forFakta}}

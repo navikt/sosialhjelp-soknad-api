@@ -9,6 +9,7 @@ import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 import org.slf4j.Logger;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -31,6 +32,8 @@ public class PersonService {
     @Named("personSelftestEndpoint")
     private PersonPortType personSelftestEndpoint;
 
+
+    @Cacheable(value = "barnCache", key = "#request.ident")
     public HentKjerneinformasjonResponse hentKjerneinformasjon(HentKjerneinformasjonRequest request) {
 
         try {

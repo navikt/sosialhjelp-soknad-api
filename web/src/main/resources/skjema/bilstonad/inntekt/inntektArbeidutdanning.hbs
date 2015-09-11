@@ -1,0 +1,72 @@
+{{#forFaktum "bilogutstyr"}}
+    {{#hvisLik "kassebil" value}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>{{ hentTekst (concat cmsPrefiks "inntekt.egenandel") }}</td>
+        </tr>
+
+    {{ else }}
+        {{#forFaktum "informasjonsside.bilformal"}}
+            {{#hvisLik "arbeidutdanning" value}}
+
+                {{#forFaktum "inntekt.egen"}}
+                    {{#hvisLik "ja" value}}
+                        <tr>
+                            <td class="sjekket"></td>
+                            <td>{{ hentTekst (concat cmsPrefiks "inntekt.egen.ja") }}</td>
+                        </tr>
+                    {{/hvisLik}}
+
+                    {{#hvisLik "nei" value}}
+                        <tr>
+                            <td class="sjekket"></td>
+                            <td>{{  hentTekst (concat cmsPrefiks "inntekt.egen.nei") }}
+
+                            {{#forFaktum "inntekt.partner"}}
+                                <ul>
+                                    {{#hvisLik "harikke" value}}
+                                        <li class="kulepunkt faktum-felt">
+                                            {{ hentTekst (concat cmsPrefiks "inntekt.partner.harikke") }}
+                                        </li>
+                                    {{/hvisLik}}
+
+                                    {{#hvisLik "nei" value}}
+                                        <li class="kulepunkt faktum-felt">
+                                            {{ hentTekst (concat cmsPrefiks "inntekt.partner.nei") }}
+
+                                            {{#forFaktum "inntekt.felles"}}
+                                                <ul>
+                                                    {{#hvisLik "nei" value}}
+                                                        <li class="kulepunkt medstrek faktum-felt">
+                                                            {{ hentTekst (concat cmsPrefiks "inntekt.felles.nei") }}
+                                                        </li>
+                                                    {{/hvisLik}}
+
+                                                    {{#hvisLik "ja" value}}
+                                                        <li class="kulepunkt medstrek faktum-felt">
+                                                            {{ hentTekst (concat cmsPrefiks "inntekt.felles.ja") }}
+                                                        </li>
+                                                    {{/hvisLik}}
+                                                </ul>
+                                            {{/forFaktum}}
+                                        </li>
+                                    {{/hvisLik}}
+
+                                    {{#hvisLik "ja" value}}
+                                        <li class="kulepunkt faktum-felt">
+                                            {{ hentTekst (concat cmsPrefiks "inntekt.partner.ja") }}
+                                        </li>
+                                    {{/hvisLik}}
+                                </ul>
+                            {{/forFaktum}}
+                            </td>
+                        </tr>
+
+                    {{/hvisLik}}
+                {{/forFaktum}}
+
+            {{/hvisLik}}
+        {{/forFaktum}}
+
+    {{/hvisLik}}
+{{/forFaktum}}

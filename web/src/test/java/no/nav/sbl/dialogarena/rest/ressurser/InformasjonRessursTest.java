@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.modig.core.context.ThreadLocalSubjectHandler;
+import no.nav.sbl.dialogarena.rest.ressurser.informasjon.InformasjonRessurs;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
@@ -11,7 +12,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.LandService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService;
 import org.junit.Before;
 import org.junit.Test;

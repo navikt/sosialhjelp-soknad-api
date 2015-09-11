@@ -198,7 +198,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         return soknad;
     }
 
-    public WebSoknad hentSoknadMedData(String behandlingsId) {
+    public WebSoknad hentSoknadMedVedlegg(String behandlingsId) {
         WebSoknad soknad = hentSoknad(behandlingsId);
         if (soknad != null) {
             leggTilBrukerdataOgVedleggPaaSoknad(soknad, behandlingsId);
@@ -249,11 +249,11 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         return fakta;
     }
 
-    public Boolean isVedleggPaakrevd(Long soknadId, List<String> values, SoknadVedlegg soknadVedlegg) {
+    public Boolean isVedleggPaakrevd(Long soknadId, SoknadVedlegg soknadVedlegg) {
         SoknadFaktum faktum = soknadVedlegg.getFaktum();
         String key = faktum.getId();
         Integer count = 0;
-        count += finnAntallFaktumMedGittKeyOgEnAvFlereValues(soknadId, key, values);
+        count += finnAntallFaktumMedGittKeyOgEnAvFlereValues(soknadId, key, soknadVedlegg.getOnValues());
         return sjekkOmVedleggErPaakrevd(soknadId, count, faktum);
     }
 

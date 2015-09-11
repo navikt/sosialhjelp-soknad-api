@@ -9,6 +9,7 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBruker;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLEPost;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLElektroniskKommunikasjonskanal;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Diskresjonskoder;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Statsborgerskap;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
@@ -26,12 +27,15 @@ public class PersonaliaTransform {
 
         XMLBruker xmlBruker = (XMLBruker) response.getPerson();
         Person xmlPerson = kjerneinformasjonResponse.getPerson();
+        Diskresjonskoder diskresjonskode = kjerneinformasjonResponse.getPerson().getDiskresjonskode();
+        String diskresjonskodeString = diskresjonskode == null ? null : diskresjonskode.getValue();
 
         return PersonaliaBuilder.
                 with()
                 .fodselsnummer(finnFnr(xmlBruker))
                 .fodselsdato(finnFodselsdato(xmlPerson))
                 .alder(finnAlder(finnFnr(xmlBruker)))
+                .diskresjonskode(diskresjonskodeString)
                 .navn(finnSammensattNavn(xmlBruker))
                 .epost(finnEpost(xmlBruker))
                 .statsborgerskap(finnStatsborgerskap(xmlPerson))

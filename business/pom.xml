@@ -4,11 +4,11 @@
     <parent>
         <groupId>no.nav.sbl.dialogarena</groupId>
         <artifactId>sendsoknad</artifactId>
-        <version>6.12.1</version>
+        <version>7.8.10</version>
     </parent>
 
     <artifactId>sendsoknad-business</artifactId>
-    <version>6.12.1</version>
+    <version>7.8.10</version>
     <name>${project.artifactId}</name>
 
     <properties>
@@ -71,6 +71,14 @@
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>kodeverk-tjenestespesifikasjon</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.sbl</groupId>
+            <artifactId>arena-sakOgAktivitetInformasjon_v1</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.sbl</groupId>
+            <artifactId>arena-maalgruppeinformasjon_v1</artifactId>
         </dependency>
 
         <dependency>
@@ -158,6 +166,12 @@
             <artifactId>ojdbc6</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>1.2</version>
+            <scope>runtime</scope>
+        </dependency>
 
         <!-- Avhengigheter med scope test -->
         <dependency>
@@ -211,6 +225,10 @@
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
         </dependency>
     </dependencies>
 
