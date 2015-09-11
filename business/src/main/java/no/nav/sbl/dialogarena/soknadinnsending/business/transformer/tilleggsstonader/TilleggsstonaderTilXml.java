@@ -5,44 +5,20 @@ import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Reiseutgifter;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Rettighetstype;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Tilleggsstoenadsskjema;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Tilsynsutgifter;
+import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.collections15.Transformer;
-import org.slf4j.Logger;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.namespace.QName;
+import javax.xml.bind.JAXB;
 import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
 import java.util.UUID;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTransformers.extractValue;
-import static org.slf4j.LoggerFactory.getLogger;
 
 public class TilleggsstonaderTilXml implements Transformer<WebSoknad, AlternativRepresentasjon> {
-
-    private static final Logger logger = getLogger(TilleggsstonaderTilXml.class);
-
-    @Override
-    public AlternativRepresentasjon transform(WebSoknad webSoknad) {
-        Tilleggsstoenadsskjema tilleggsstoenadsskjema = tilTilleggsstoenadSkjema(webSoknad);
-        ByteArrayOutputStream xml = new ByteArrayOutputStream();
-        try {
-            JAXBElement tilleggsstonadsskjemaElement = new JAXBElement(new QName("tilleggsstonadsskjema"), Tilleggsstoenadsskjema.class, tilleggsstoenadsskjema);
-            JAXBContext.newInstance(Tilleggsstoenadsskjema.class, Rettighetstype.class).createMarshaller().marshal(tilleggsstonadsskjemaElement, xml);
-        } catch (JAXBException e) {
-            logger.error("Klarte ikke konvertere tilleggsstonadsskjema til xml", e);
-            throw new RuntimeException("Klarte ikke konvertere tilleggsstonadsskjema til xml", e);
-        }
-
-        return new AlternativRepresentasjon()
-                .medMimetype("application/xml")
-                .medFilnavn("Tilleggsstonader.xml")
-                .medUuid(UUID.randomUUID().toString())
-                .medContent(xml.toByteArray());
-    }
 
     private static Tilleggsstoenadsskjema tilTilleggsstoenadSkjema(WebSoknad webSoknad) {
         Tilleggsstoenadsskjema skjema = new Tilleggsstoenadsskjema();
@@ -54,36 +30,37 @@ public class TilleggsstonaderTilXml implements Transformer<WebSoknad, Alternativ
         if (aktivBolk("laermidler", webSoknad)) {
             rettighetstype.setLaeremiddelutgifter(new LaeremidlerTilXml().transform(webSoknad));
         }
-
         if (aktivBolk("flytting", webSoknad)) {
             rettighetstype.setFlytteutgifter(new FlytteutgifterTilXml().transform(webSoknad));
         }
-
         rettighetstype.setTilsynsutgifter(tilsynsutgifter(webSoknad));
         rettighetstype.setReiseutgifter(reiseutgifter(webSoknad));
 
-
         skjema.setRettighetstype(rettighetstype);
         skjema.setAktivitetsinformasjon(aktivitetsInformasjon(webSoknad));
+        skjema.setPersonidentifikator(SubjectHandler.getSubjectHandler().getUid());
         return skjema;
     }
 
     private static Tilsynsutgifter tilsynsutgifter(WebSoknad webSoknad) {
         Tilsynsutgifter tilsynsutgifter = new Tilsynsutgifter();
-
-        if(aktivBolk("familie", webSoknad)){
+        if (aktivBolk("familie", webSoknad)) {
             tilsynsutgifter.setTilsynsutgifterFamilie(new TilsynFamilieTilXml().transform(webSoknad));
         }
-        if(aktivBolk("barnepass", webSoknad)) {
+        if (aktivBolk("barnepass", webSoknad)) {
             tilsynsutgifter.setTilsynsutgifterBarn(new TilsynBarnepassTilXml().transform(webSoknad));
         }
 
-        return tilsynsutgifter;
+        return tilsynsutgifter.getTilsynsutgifterBarn() == null && tilsynsutgifter.getTilsynsutgifterFamilie() == null ? null : tilsynsutgifter;
     }
 
     private static Aktivitetsinformasjon aktivitetsInformasjon(WebSoknad webSoknad) {
         Aktivitetsinformasjon result = new Aktivitetsinformasjon();
-        result.setAktivitetsId(extractValue(webSoknad.getFaktumMedKey("aktivitet"), String.class, "id"));
+        String value = extractValue(webSoknad.getFaktumMedKey("aktivitet"), String.class, "id");
+        if (Arrays.asList(null, "", "ikkeaktuelt", "arbeidssoking").contains(value)) {
+            return null;
+        }
+        result.setAktivitetsId(value);
         return result;
     }
 
@@ -94,18 +71,38 @@ public class TilleggsstonaderTilXml implements Transformer<WebSoknad, Alternativ
 
     private static Reiseutgifter reiseutgifter(WebSoknad webSoknad) {
         Reiseutgifter reiseutgifter = new Reiseutgifter();
+        boolean satt = false;
         if (aktivBolk("reiseaktivitet", webSoknad)) {
             reiseutgifter.setDagligReise(new DagligReiseTilXml().transform(webSoknad));
+            satt = true;
         }
         if (aktivBolk("reisearbeidssoker", webSoknad)) {
             reiseutgifter.setReisestoenadForArbeidssoeker(new ArbeidReiseTilXml().transform(webSoknad));
+            satt = true;
         }
         if (aktivBolk("reisemidlertidig", webSoknad)) {
             reiseutgifter.setReiseVedOppstartOgAvsluttetAktivitet(new ReiseOppstartOgAvsluttetAktivitetTilXml().transform(webSoknad));
+            satt = true;
         }
-        if(aktivBolk("reisesamling", webSoknad) ) {
+        if (aktivBolk("reisesamling", webSoknad)) {
             reiseutgifter.setReiseObligatoriskSamling(new SamlingReiseTilXml().transform(webSoknad));
+            satt = true;
         }
-        return reiseutgifter;
+        if (satt) {
+            return reiseutgifter;
+        }
+        return null;
+    }
+
+    @Override
+    public AlternativRepresentasjon transform(WebSoknad webSoknad) {
+        Tilleggsstoenadsskjema tilleggsstoenadsskjema = tilTilleggsstoenadSkjema(webSoknad);
+        ByteArrayOutputStream xml = new ByteArrayOutputStream();
+        JAXB.marshal(tilleggsstoenadsskjema, xml);
+        return new AlternativRepresentasjon()
+                .medMimetype("application/xml")
+                .medFilnavn("Tilleggsstonader.xml")
+                .medUuid(UUID.randomUUID().toString())
+                .medContent(xml.toByteArray());
     }
 }

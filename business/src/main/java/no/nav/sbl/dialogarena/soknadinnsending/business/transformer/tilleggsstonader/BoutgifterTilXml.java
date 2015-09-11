@@ -1,11 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader;
 
-import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Boutgifter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.collections15.Transformer;
-import org.joda.time.DateTime;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -19,7 +17,6 @@ public class BoutgifterTilXml implements Transformer<WebSoknad, Boutgifter> {
     public static final String HJEMSTEDSADDRESSE = "bostotte.adresseutgifter.hjemstedsaddresse";
     public static final String OPPHORTE = "bostotte.adresseutgifter.opphorte";
     public static final String SAMLING = "bostotte.samling";
-    public static final String FOM = "fom";
     public static final String KOMMUNESTOTTE = "bostotte.kommunestotte";
     public static final String UTGIFT = "utgift";
     public static final String AARSAK = "bostotte.aarsak";
@@ -69,8 +66,7 @@ public class BoutgifterTilXml implements Transformer<WebSoknad, Boutgifter> {
         List<Faktum> samlingFakta = webSoknad.getFaktaMedKey(SAMLING);
         if (samlingFakta != null) {
             for (Faktum samlingFaktum : samlingFakta) {
-                DateTime startDato = DateTime.parse(samlingFaktum.getProperties().get(FOM));
-                boutgifter.getSamlingsdato().add(new XMLGregorianCalendarImpl(startDato.toGregorianCalendar()));
+                boutgifter.getSamlingsperiode().add(faktumTilPeriode(samlingFaktum));
             }
         }
     }
@@ -79,7 +75,7 @@ public class BoutgifterTilXml implements Transformer<WebSoknad, Boutgifter> {
         Faktum kommunestotteFaktum = webSoknad.getFaktumMedKey(KOMMUNESTOTTE);
         if (kommunestotteFaktum != null && kommunestotteFaktum.hasValue()) {
             boutgifter.setMottarBostoette(Boolean.valueOf(kommunestotteFaktum.getValue()));
-            if (kommunestotteFaktum.hasEgenskap(UTGIFT)) {
+            if (boutgifter.isMottarBostoette() != null && boutgifter.isMottarBostoette()) {
                 boutgifter.setBostoetteBeloep(new BigInteger(kommunestotteFaktum.getProperties().get(UTGIFT)));
             }
         }

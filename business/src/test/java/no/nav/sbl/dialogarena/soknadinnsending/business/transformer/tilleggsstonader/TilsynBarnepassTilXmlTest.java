@@ -75,13 +75,13 @@ public class TilsynBarnepassTilXmlTest {
         assertThat(barn.get(0).getNavn()).isEqualTo("Ole");
         assertThat(barn.get(0).getPersonidentifikator()).isEqualTo(oleFnr);
         //assertThat(bar.get(0).getAnnenForsoergerperson()).isEqualTo(oleAnnenForsorger);
-        //assertThat(bar.get(0).getTilsynskategori()).isEqualTo(StofoKodeverkVerdier.TilsynForetasAvKodeverk.kom.kodeverksverdi);
+        assertThat(barn.get(0).getTilsynskategori().getValue()).isEqualTo(StofoKodeverkVerdier.TilsynForetasAvKodeverk.barnehage.kodeverksverdi);
 
         assertThat(barn.get(1).getNavn()).isEqualTo("Dole");
         assertThat(barn.get(1).getPersonidentifikator()).isEqualTo(doleFnr);
         //assertThat(barn.get(1).getAnnenForsoergerperson()).isEqualTo(doleAnnenForsorger);
-        //assertThat(barn.get(1).getTilsynskategori()).isEqualTo(StofoKodeverkVerdier.TilsynForetasAvKodeverk.kom.kodeverksverdi);
-
+        assertThat(barn.get(1).getTilsynskategori().getValue()).isEqualTo(StofoKodeverkVerdier.TilsynForetasAvKodeverk.dagmamma.kodeverksverdi);
+        assertThat(tilsynsutgifterBarnXml.getAnnenForsoergerperson()).isEqualTo("09080745610");
     }
     long barnId = 10;
     private void leggTilBarn(String fnr, String navn, String sokesOm, String annenForsorger, String barnehage, String dagpmamma, String privat) {
@@ -93,6 +93,7 @@ public class TilsynBarnepassTilXmlTest {
                 .medProperty("fornavn", navn.split(" ")[0])
                 .medProperty("etternavn", navn.split(" ")[1]));
         soknad.getFakta().add(new Faktum()
+                .medFaktumId(faktumId + 1000)
                 .medKey("barnepass.sokerbarnepass")
                 .medValue(sokesOm)
                 .medProperty("tilknyttetbarn", "" + faktumId)
@@ -101,5 +102,9 @@ public class TilsynBarnepassTilXmlTest {
                 .medProperty("barnepassBarnehage", barnehage)
                 .medProperty("barnepassDagmamma", dagpmamma)
                 .medProperty("barnepassPrivat", privat));
+        soknad.getFakta().add(new Faktum().medParrentFaktumId(faktumId + 1000).medKey(TilsynBarnepassTilXml.BARNEPASS_TYPER_BARNEHAGE).medValue(barnehage));
+        soknad.getFakta().add(new Faktum().medParrentFaktumId(faktumId + 1000).medKey(TilsynBarnepassTilXml.BARNEPASS_TYPER_DAGMAMMA).medValue(dagpmamma));
+        soknad.getFakta().add(new Faktum().medParrentFaktumId(faktumId + 1000).medKey(TilsynBarnepassTilXml.BARNEPASS_TYPER_PRIVAT).medValue(privat));
+        soknad.getFakta().add(new Faktum().medParrentFaktumId(faktumId + 1000).medKey(TilsynBarnepassTilXml.BARNEPASS_ANDREFORELDER).medValue(annenForsorger));
     }
 }
