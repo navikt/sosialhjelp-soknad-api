@@ -57,9 +57,6 @@ public class MaalgruppeTilXmlTest {
     @Test
     public void tomPeriode() {
         Maalgruppeinformasjon maalgruppeinformasjon = tilXml.transform(maalgruppeFaktum.medProperty("fom", null).medProperty("tom", null));
-        XMLGregorianCalendar fom = maalgruppeinformasjon.getPeriode().getFom();
-        XMLGregorianCalendar tom = maalgruppeinformasjon.getPeriode().getTom();
-        assertThat(fom).isNull();
-        assertThat(tom).isNull();
+        assertThat(maalgruppeinformasjon.getPeriode()).isNull();
     }
 }

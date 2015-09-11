@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggssto
 
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Barn;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Periode;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Tilsynskategorier;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.TilsynsutgifterBarn;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
@@ -18,10 +19,10 @@ public class TilsynBarnepassTilXml implements Transformer<WebSoknad, Tilsynsutgi
     private static final String PERIODE = "barnepass.periode";
     private static final String UTBETALINGSDATO = "barnepass.utbetalingsdato";
     private static final String SOKERBARNEPASS = "barnepass.sokerbarnepass";
-//    private static final String BARNEPASS_ANDREFORELDER = "barnepass.andreforelder";
-//    private static final String BARNEPASS_TYPER_DAGMAMMA = "barnepass.typer.dagmamma";
-//    private static final String BARNEPASS_TYPER_BARNEHAGE = "barnepass.typer.barnehage";
-//    private static final String BARNEPASS_TYPER_PRIVAT = "barnepass.typer.privat";
+    public static final String BARNEPASS_ANDREFORELDER = "barnepass.andreforelder";
+    public static final String BARNEPASS_TYPER_DAGMAMMA = "barnepass.typer.dagmamma";
+    public static final String BARNEPASS_TYPER_BARNEHAGE = "barnepass.typer.barnehage";
+    public static final String BARNEPASS_TYPER_PRIVAT = "barnepass.typer.privat";
     private TilsynsutgifterBarn tilsynsutgifterBarn = new TilsynsutgifterBarn();
 
     @Override
@@ -37,14 +38,18 @@ public class TilsynBarnepassTilXml implements Transformer<WebSoknad, Tilsynsutgi
         for (Faktum barnepass : sokerBarnepassBarn) {
             Faktum barn = soknad.finnFaktum(Long.valueOf(barnepass.getProperties().get("tilknyttetbarn")));
             if (barn != null) {
-                tilsynsutgifterBarn.getBarn().add(extractValue(barn, Barn.class));
-//                String annenForelder = extractValue(soknad.getFaktumMedKeyOgParentFaktum(BARNEPASS_ANDREFORELDER, barnepass.getFaktumId()), String.class);
-//                Boolean dagmamma = extractValue(soknad.getFaktumMedKeyOgParentFaktum(BARNEPASS_TYPER_DAGMAMMA, barnepass.getFaktumId()), Boolean.class);
-//                Boolean barnehage = extractValue(soknad.getFaktumMedKeyOgParentFaktum(BARNEPASS_TYPER_BARNEHAGE, barnepass.getFaktumId()), Boolean.class);
-//                Boolean privat = extractValue(soknad.getFaktumMedKeyOgParentFaktum(BARNEPASS_TYPER_PRIVAT, barnepass.getFaktumId()), Boolean.class);
-                //Legg på barn når det kommer.
-                //barn.setTilsynskategori(extractValue(barn, Tilsynskategorier.class));  //TODO - er ikke støtte for å sende inn per barn
-                //barn.setAnnenForelder/annenForelder
+                Barn stofoBarn = extractValue(barn, Barn.class);
+                tilsynsutgifterBarn.getBarn().add(stofoBarn);
+                String annenForelder = extractValue(soknad.getFaktumMedKeyOgParentFaktum(BARNEPASS_ANDREFORELDER, barnepass.getFaktumId()), String.class);
+                Boolean dagmamma = extractValue(soknad.getFaktumMedKeyOgParentFaktum(BARNEPASS_TYPER_DAGMAMMA, barnepass.getFaktumId()), Boolean.class);
+                Boolean barnehage = extractValue(soknad.getFaktumMedKeyOgParentFaktum(BARNEPASS_TYPER_BARNEHAGE, barnepass.getFaktumId()), Boolean.class);
+                Boolean privat = extractValue(soknad.getFaktumMedKeyOgParentFaktum(BARNEPASS_TYPER_PRIVAT, barnepass.getFaktumId()), Boolean.class);
+                stofoBarn.setTilsynskategori(extractValue(new Faktum()
+                        .medProperty("dagmamma", "" + dagmamma)
+                        .medProperty("barnehage", "" + barnehage)
+                        .medProperty("privat", "" + privat)
+                        , Tilsynskategorier.class));
+                tilsynsutgifterBarn.setAnnenForsoergerperson(annenForelder);
             }
         }
     }
