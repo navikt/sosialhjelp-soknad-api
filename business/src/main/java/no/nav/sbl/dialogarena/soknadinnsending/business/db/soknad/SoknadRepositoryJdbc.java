@@ -112,7 +112,8 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     public Faktum hentFaktumMedKey(Long soknadId, String faktumKey) {
         final String sql = "select * from SOKNADBRUKERDATA where soknad_id = ? and key = ?";
-        return hentEtObjectAv(sql, FAKTUM_ROW_MAPPER, soknadId, faktumKey);
+        Faktum faktum = hentEtObjectAv(sql, FAKTUM_ROW_MAPPER, soknadId, faktumKey);
+        return populerMedProperties(faktum);
     }
 
     public WebSoknad hentSoknad(Long id) {
@@ -177,8 +178,13 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
             return null;
         }
         final String sql = "select * from SOKNADBRUKERDATA where soknadbrukerdata_id = ?";
-        String propertiesSql = "select * from FAKTUMEGENSKAP where soknad_id = ? and faktum_id = ?";
         Faktum faktum = getJdbcTemplate().queryForObject(sql, FAKTUM_ROW_MAPPER, faktumId);
+        populerMedProperties(faktum);
+        return faktum;
+    }
+
+    private Faktum populerMedProperties(Faktum faktum) {
+        String propertiesSql = "select * from FAKTUMEGENSKAP where soknad_id = ? and faktum_id = ?";
         List<FaktumEgenskap> properties = getJdbcTemplate().query(propertiesSql, FAKTUM_EGENSKAP_ROW_MAPPER, faktum.getSoknadId(), faktum.getFaktumId());
         for (FaktumEgenskap faktumEgenskap : properties) {
             faktum.medEgenskap(faktumEgenskap);
