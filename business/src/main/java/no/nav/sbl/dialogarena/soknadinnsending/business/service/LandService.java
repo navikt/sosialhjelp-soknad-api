@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
+import static no.nav.sbl.dialogarena.kodeverk.Kodeverk.EksponertKodeverk.LANDKODE;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.dto.Land;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.StatsborgerskapType;
 import org.springframework.stereotype.Component;
@@ -41,7 +42,7 @@ public class LandService {
 
     private List<Land> hentAlleLand() {
         List<Land> landliste = new ArrayList<>();
-        List<String> landKoder = kodeverk.getAlleLandkoder();
+        List<String> landKoder = kodeverk.hentAlleKodenavnFraKodeverk(LANDKODE);
 
         for (String landkode : landKoder) {
             Land land = new Land();

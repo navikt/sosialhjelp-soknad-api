@@ -43,6 +43,11 @@ public class InformasjonService {
     private String appresUrl;
     @Value("${soknadinnsending.soknad.path}")
     private String soknadinnsendingSoknadPath;
+    @Value("${soknadtilleggsstonader.path}")
+    private String soknadtilleggsstonaderPath;
+    @Value("${dineutbetalinger.link.url}")
+    private String dineUtbetalingerLink;
+
     private String sporsmalsvarUrl = "";
 
     public Map<String,String> hentMiljovariabler() {
@@ -59,6 +64,8 @@ public class InformasjonService {
         result.put("dialogarena.cms.url", appresUrl);
         result.put("soknadinnsending.soknad.path", soknadinnsendingSoknadPath);
         result.put("modia.url", sporsmalsvarUrl);
+        result.put("soknadtilleggsstonader.url", soknadtilleggsstonaderPath);
+        result.put("dineutbetalinger.link.url", dineUtbetalingerLink);
 
         result.put("soknad.ettersending.antalldager", antallDager);
 

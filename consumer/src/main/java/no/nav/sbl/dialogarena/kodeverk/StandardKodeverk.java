@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.kodeverk;
 
+import static no.nav.sbl.dialogarena.kodeverk.Kodeverk.EksponertKodeverk.*;
 import no.nav.modig.common.MDCOperations;
 import no.nav.modig.core.exception.SystemException;
 import no.nav.modig.lang.option.Optional;
@@ -34,10 +35,8 @@ import java.util.Map;
 import static java.util.Collections.sort;
 import static javax.xml.bind.JAXBContext.newInstance;
 import static no.nav.modig.lang.collections.IterUtils.on;
-import static no.nav.modig.lang.collections.PredicateUtils.equalTo;
 import static no.nav.modig.lang.collections.PredicateUtils.exists;
 import static no.nav.modig.lang.collections.PredicateUtils.fileExists;
-import static no.nav.modig.lang.collections.PredicateUtils.not;
 import static no.nav.modig.lang.collections.PredicateUtils.where;
 import static no.nav.modig.lang.collections.TransformerUtils.appendPathname;
 import static no.nav.modig.lang.collections.TransformerUtils.makeDirs;
@@ -83,12 +82,12 @@ public class StandardKodeverk implements Kodeverk {
 
     @Override
     public String getPoststed(final String postnummer) {
-        return hentFoersteTermnavnFraKodeIKodeverk(postnummer, POSTNUMMER);
+        return hentFoersteTermnavnFraKodeIKodeverk(postnummer, POSTNUMMER.toString());
     }
 
     @Override
     public String getLand(String landkode) {
-        String landFraKodeverk = hentFoersteTermnavnFraKodeIKodeverk(landkode, LANDKODE);
+        String landFraKodeverk = hentFoersteTermnavnFraKodeIKodeverk(landkode, LANDKODE.toString());
         return formaterLand(landFraKodeverk);
     }
 
@@ -118,16 +117,6 @@ public class StandardKodeverk implements Kodeverk {
             }
         }
         return sb.toString();
-    }
-
-    @Override
-    public String getLandkode(String landnavn) {
-        return hentKodenavnForTermnavnIKodeverk(landnavn, LANDKODE);
-    }
-
-    @Override
-    public List<String> getAlleLandkoder() {
-        return on(hentAlleKodenavnFraKodeverk(LANDKODE)).filter(not(equalTo(Adressekodeverk.LANDKODE_NORGE))).collect();
     }
 
     @PostConstruct()
@@ -173,17 +162,17 @@ public class StandardKodeverk implements Kodeverk {
         return kodeverk.get(kodeverknavn);
     }
 
-    private List<String> hentAlleKodenavnFraKodeverk(String kodeverknavn) {
-        return on(kodeverkMedNavn(kodeverknavn).getKode()).map(KODENAVN).collect();
+    public List<String> hentAlleKodenavnFraKodeverk(EksponertKodeverk kodeverknavn) {
+        return on(kodeverkMedNavn(kodeverknavn.toString()).getKode()).map(KODENAVN).collect();
     }
 
-    private String hentKodenavnForTermnavnIKodeverk(String termnavn, String kodeverknavn) {
-        for (XMLKode kode : kodeverkMedNavn(kodeverknavn).getKode()) {
-            if (termnavn.equalsIgnoreCase(kode.getTerm().get(0).getNavn())) {
-                return kode.getNavn();
-            }
+    public Map<String, String> hentAlleKodenavnMedForsteTerm(EksponertKodeverk kodeverknavn) {
+        List<String> kodenavn = hentAlleKodenavnFraKodeverk(kodeverknavn);
+        HashMap<String, String> koderTilKodenavnMap = new HashMap<>();
+        for(String kode : kodenavn) {
+            koderTilKodenavnMap.put(kode, hentFoersteTermnavnFraKodeIKodeverk(kode, kodeverknavn.toString()));
         }
-        return null;
+        return koderTilKodenavnMap;
     }
 
     private String hentFoersteTermnavnFraKodeIKodeverk(String kodenavn, String kodeverknavn) {
@@ -223,7 +212,7 @@ public class StandardKodeverk implements Kodeverk {
         } else {
             dumpIfPossible(navn, kodeverket);
         }
-        if (!POSTNUMMER.equals(navn)) {
+        if (!POSTNUMMER.toString().equals(navn)) {
             sort(kodeverket.getKode(), compareBy(TERMNAVN));
         }
         return kodeverket;

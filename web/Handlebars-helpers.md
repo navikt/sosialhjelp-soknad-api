@@ -48,8 +48,6 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hentFaktumValue
 * hvisFlereErTrue
 * sendtInnInfo
-* forInnsendteVedlegg
-* forIkkeInnsendteVedlegg
 * skalViseRotasjonTurnusSporsmaal
 * hvisLikCmsTekst
 
@@ -61,6 +59,8 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * forFaktaMedPropertySattTilTrue - Finner alle fakta med gitt key som har gitt property satt til true
 * forFaktum - Finner et faktum og setter det som aktiv context. Har også inverse om faktum ikke finnes. 
 * forFaktumTilknyttetBarn - Returnerer faktumet tilknyttet barnet i parent-context.
+* forIkkeInnsendteVedlegg - Itererer over vedlegg som ikke er sendt inn
+* forInnsendteVedlegg - Itererer over innsendte vedlegg på søknaden
 * harBarnetInntekt - Henter summen hvis barnet har inntekt. Må brukes innenfor en #forFaktum eller #forFakta helper. 
 * hentSkjemanummer - Setter inn søknadens skjemanummer, også om det er en søknad for dagpenger
 * hvisHarDiskresjonskode - Viser innhold avhengig av om personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)
@@ -72,6 +72,8 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hvisMindre - Evaluerer en string til integer og sjekker om verdien er mindre enn andre inputparameter
 * hvisSant - Dersom variabelen er "true" vil innholdet vises
 * kortDato - Formatterer en datostreng på formatet yyyy-mm-dd til dd.mm.aaaa
+* sendtInnInfo - Tilgjengeliggjør informasjon om søknaden (innsendte vedlegg, ikke-innsendte vedlegg og dato)
+* toCapitalized - Gjør om en tekst til at alle ord starter med store bokstaver
 * toLowerCase - Gjør om en tekst til kun små bokstaver
 * variabel - Lager en variabel med en bestemt verdi som kun er tilgjengelig innenfor helperen
 
@@ -136,6 +138,28 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
         Om det ikke finnet noe faktum som er tilknyttet barnet vil den gå inn i else-contexten.
     {{/forFaktumTilknyttetBarn}}
 {{/forFaktum}}
+```
+
+
+##### forIkkeInnsendteVedlegg
+
+```
+{{#forIkkeInnsendteVedlegg}}
+    ikke innsendt: {{navn}}
+{{else}}
+    Ingen ikke-innsendte vedlegg
+{{/forIkkeInnsendteVedlegg}}
+```
+
+
+##### forInnsendteVedlegg
+
+```
+{{#forInnsendteVedlegg}}
+    innsendt: {{navn}}
+{{else}}
+    Ingen innsendte vedlegg
+{{/forInnsendteVedlegg}}
 ```
 
 
@@ -253,6 +277,25 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 
 ```
 {{kortDato "2015-11-03"}}
+```
+
+
+##### sendtInnInfo
+
+```
+{{#sendtInnInfo}}
+    innsendte: {{sendtInn}}
+    påkrevde: {{ikkeSendtInn}}
+    innsendt dato: {{innsendtDato}}
+{{/sendtInnInfo}}
+```
+
+
+##### toCapitalized
+
+```
+{{toCapitalized variabel}}
+{{toCapitalized "mASSe caSe"}}
 ```
 
 

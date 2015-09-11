@@ -1,59 +1,51 @@
 {{#forFaktum "behovforbil.behovforegenbil"}}
-    {{#hvisLik value "ja"}}
-        <tr>
-            <td class="sjekket"></td>
-            <td>{{hentTekst (concat cmsPrefiks "behovforbil.behovforegenbil.ja")}}</td>
-        </tr>
-
-        {{#forFaktumHvisSant "behovforbil.stotteordninger.harttkort"}}
-            <tr>
-                <td class="sjekket"></td>
-                <td>{{ hentTekst (concat cmsPrefiks "behovforbil.stotteordninger.harttkort")}}</td>
-            </tr>
-        {{/forFaktumHvisSant}}
-
-        {{#forFaktumHvisSant "behovforbil.stotteordninger.grunnstonad"}}
-            <tr>
-                <td class="sjekket"></td>
-                <td>{{ hentTekst (concat cmsPrefiks "behovforbil.stotteordninger.grunnstonad")}}</td>
-            </tr>
-        {{/forFaktumHvisSant}}
-
-        {{#forFaktumHvisSant "behovforbil.stotteordninger.soktttkort"}}
-            <tr>
-                <td class="sjekket"></td>
-                <td>{{ hentTekst (concat cmsPrefiks "behovforbil.stotteordninger.soktttkort")}}</td>
-            </tr>
-        {{/forFaktumHvisSant}}
-
-        {{#forFaktum "behovforbil.antallreisertilfraarbeid"}}
-            <tr>
-                <td class="sjekket"></td>
-                <td><span>{{ hentTekst (concat cmsPrefiks "behovforbil.antallreisertilfraarbeid" )}}</span><br/><em>{{ value }}</em></td>
-            </tr>
-
-        {{/forFaktum}}
-
-        {{#forFaktum "behovforbil.avstandtilarbeidsplass"}}
-            <tr>
-                <td class="sjekket"></td>
-                <td><span>{{ hentTekst (concat cmsPrefiks "behovforbil.avstandtilarbeidsplass") }}</span><br/><em>{{ value }}</em> {{ hentTekst "enhet.kilometer"}}</td>
-            </tr>
-
-        {{/forFaktum}}
-
-        {{#forFaktum "behovforbil.hvordandekkesbehov.beskrivelse"}}
-            <tr>
-                <td class="sjekket"></td>
-                <td><span>{{ hentTekst (concat cmsPrefiks "behovforbil.hvordandekkesbehov.beskrivelse.sporsmal") }}</span><br/><em>{{ value }}</em></td>
-            </tr>
-        {{/forFaktum}}
-    {{/hvisLik}}
-
     {{#hvisLik value "nei"}}
         <tr>
             <td class="sjekket"></td>
             <td>{{hentTekst (concat cmsPrefiks "behovforbil.behovforegenbil.nei")}}</td>
+        </tr>
+    {{/hvisLik}}
+
+    {{#hvisLik value "ja"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>{{hentTekst (concat cmsPrefiks "behovforbil.behovforegenbil.ja")}}
+
+                <ul>
+                    {{#forFaktumHvisSant "behovforbil.stotteordninger.harttkort"}}
+                        <li class="kulepunkt faktum-felt">{{ hentTekst (concat cmsPrefiks "behovforbil.stotteordninger.harttkort")}}</li>
+                    {{/forFaktumHvisSant}}
+
+                    {{#forFaktumHvisSant "behovforbil.stotteordninger.grunnstonad"}}
+                        <li class="kulepunkt faktum-felt">{{ hentTekst (concat cmsPrefiks "behovforbil.stotteordninger.grunnstonad")}}</li>
+                    {{/forFaktumHvisSant}}
+
+                    {{#forFaktumHvisSant "behovforbil.stotteordninger.soktttkort"}}
+                        <li class="kulepunkt faktum-felt">{{ hentTekst (concat cmsPrefiks "behovforbil.stotteordninger.soktttkort")}}</li>
+                    {{/forFaktumHvisSant}}
+
+                    {{#forFaktum "behovforbil.antallreisertilfraarbeid"}}
+                        <li class="kulepunkt faktum-felt">
+                            <span>{{ hentTekst "oppsummering.behovforbil.antallreisertilfraarbeid"}}</span>:
+                                <em>{{ value }}</em>
+                        </li>
+                    {{/forFaktum}}
+
+                    {{#forFaktum "behovforbil.avstandtilarbeidsplass"}}
+                        <li class="kulepunkt faktum-felt">
+                            <span>{{ hentTekst "oppsummering.behovforbil.avstandtilarbeidsplass"}}</span>:
+                            <em>{{ value }}</em> {{ hentTekst "enhet.kilometer"}}
+                        </li>
+                    {{/forFaktum}}
+
+                    {{#forFaktum "behovforbil.hvordandekkesbehov.beskrivelse"}}
+                        <li class="kulepunkt faktum-felt">
+                            <span>{{ hentTekst "oppsummering.behovforbil.hvordandekkesbehov.beskrivelse"}}</span>:
+                            <em>{{ value }}</em>
+                        </li>
+                    {{/forFaktum}}
+                </ul>
+            </td>
         </tr>
     {{/hvisLik}}
 {{/forFaktum}}

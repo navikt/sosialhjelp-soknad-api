@@ -1,14 +1,17 @@
 package no.nav.sbl.dialogarena.service.helpers.tilleggsstonader;
 
-import com.github.jknack.handlebars.*;
-import no.nav.sbl.dialogarena.service.helpers.*;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.*;
-import org.springframework.stereotype.*;
+import com.github.jknack.handlebars.Helper;
+import com.github.jknack.handlebars.Options;
+import no.nav.sbl.dialogarena.service.helpers.RegistryAwareHelper;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import org.springframework.stereotype.Component;
 
-import java.io.*;
+import java.io.IOException;
 
-import static no.nav.sbl.dialogarena.service.HandleBarKjoerer.finnFaktum;
-import static no.nav.sbl.dialogarena.service.HandleBarKjoerer.finnWebSoknad;
+import static no.nav.sbl.dialogarena.service.HandlebarsUtils.finnFaktum;
+import static no.nav.sbl.dialogarena.service.HandlebarsUtils.finnWebSoknad;
+
 
 @Component
 public class ForFaktumTilknyttetBarn extends RegistryAwareHelper<String>{
