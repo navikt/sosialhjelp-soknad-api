@@ -6,11 +6,11 @@
     <parent>
         <groupId>no.nav.sbl.dialogarena</groupId>
         <artifactId>sendsoknad</artifactId>
-        <version>6.12.1</version>
+        <version>7.8.10</version>
     </parent>
 
     <artifactId>sendsoknad-mock</artifactId>
-    <version>6.12.1</version>
+    <version>7.8.10</version>
     <name>${project.artifactId}</name>
 
     <dependencies>
@@ -34,6 +34,14 @@
             <groupId>no.nav.tjenester.fim</groupId>
             <artifactId>nav-fim-person-v1-tjenestespesifikasjon</artifactId>
             <classifier>jaxws</classifier>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.sbl</groupId>
+            <artifactId>arena-sakOgAktivitetInformasjon_v1</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.sbl</groupId>
+            <artifactId>arena-maalgruppeinformasjon_v1</artifactId>
         </dependency>
         <dependency>
             <groupId>no.nav.tjenester.fim</groupId>

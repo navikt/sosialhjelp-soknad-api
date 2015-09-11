@@ -21,7 +21,7 @@
     <description>Innsending av elektronisk søknad.</description>
     <groupId>no.nav.sbl.dialogarena</groupId>
     <artifactId>sendsoknad</artifactId>
-    <version>6.12.1</version>
+    <version>7.8.10</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -180,7 +180,7 @@
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>common-lokalt-kodeverk</artifactId>
-                <version>1.1.5</version>
+                <version>1.1.6.STOFO</version>
             </dependency>
 
             <dependency>
@@ -243,6 +243,16 @@
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>arena-personinfo-tjenestespesifikasjon</artifactId>
                 <version>0.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.sbl</groupId>
+                <artifactId>arena-sakOgAktivitetInformasjon_v1</artifactId>
+                <version>1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.sbl</groupId>
+                <artifactId>arena-maalgruppeinformasjon_v1</artifactId>
+                <version>1.0</version>
             </dependency>
             <dependency>
                 <groupId>joda-time</groupId>
@@ -757,7 +767,7 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <!-- for å synke innhold mot Enonic kjør: mvn modig-content:sync -Denonic.username=XXX -Denonic.password=XXX -Denonic.url=http://<ip-adresse til admin-node>:8080 Se "Enonic Miljøer" på Confluence for IP-adresser -->
+                    <!-- for å synke innhold mot Enonic kjør: mvn modig-content:sync -Denonic.username=XXX -Denonic.password=XXX -Denonic.url=http://<ip-adresse til admin-node i sbs>:8080 Se "Enonic Miljøer" på Confluence for IP-adresser -->
                     <groupId>no.nav.modig</groupId>
                     <artifactId>modig-content-maven-plugin</artifactId>
                     <version>2.0.0</version>
@@ -768,12 +778,16 @@
                             <ssnb>sendsoknad_nb_NO.properties</ssnb>
                             <dpnb>dagpenger_nb_NO.properties</dpnb>
                             <fpnb>foreldrepenger_nb_NO.properties</fpnb>
+                            <bsnb>bilstonad_nb_NO.properties</bsnb>
+                            <tsnb>tilleggsstonader_nb_NO.properties</tsnb>
                         </propertiesFiler>
                         <menyPunktPaths>
                             <aapnb>/site/18/app/AAP/nb_NO/tekster</aapnb>
                             <ssnb>/site/18/app/sendsoknad/nb_NO/tekster</ssnb>
                             <dpnb>/site/18/app/dagpenger/nb_NO/tekster</dpnb>
                             <fpnb>/site/18/app/foreldrepenger/nb_NO/tekster</fpnb>
+                            <bsnb>/site/18/app/bilstonad/nb_NO/tekster</bsnb>
+                            <tsnb>/site/18/app/tilleggsstonader/nb_NO/tekster</tsnb>
                         </menyPunktPaths>
                     </configuration>
                 </plugin>
@@ -806,9 +820,9 @@
         </pluginManagement>
     </build>
     <scm>
-        <developerConnection>scm:git:http://stash.devillo.no/scm/sbl/sendsoknad.git</developerConnection>
-        <url>http://stash.devillo.no:7990/scm/sbl/sendsoknad.git</url>
-        <tag>sendsoknad-6.12.1</tag>
+        <developerConnection>scm:git:http://stash.devillo.no/scm/sokd/sendsoknad.git</developerConnection>
+        <url>http://stash.devillo.no/scm/sokd/sendsoknad.git</url>
+        <tag>7.8.10</tag>
     </scm>
 
     <profiles>

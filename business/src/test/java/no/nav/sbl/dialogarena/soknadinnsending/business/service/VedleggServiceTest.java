@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggReposi
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
@@ -30,16 +31,23 @@ import java.util.Map;
 import static java.lang.System.setProperty;
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.detect.Detect.IS_PDF;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.ETTERSENDING_OPPRETTET;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.OPPRETTET;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.SKJEMA_VALIDERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.DAGPENGER;
 import static no.nav.sbl.dialogarena.test.match.Matchers.match;
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class VedleggServiceTest {
@@ -48,14 +56,14 @@ public class VedleggServiceTest {
     @Mock
     private VedleggRepository vedleggRepository;
     @Mock
-    private SendSoknadService soknadService;
+    private SoknadService soknadService;
     @Mock
     private FillagerService fillagerService;
     @Mock
     private Kodeverk kodeverk;
 
     @InjectMocks
-    private DefaultVedleggService vedleggService;
+    private VedleggService vedleggService;
 
     @Before
     public void before() {
@@ -144,7 +152,7 @@ public class VedleggServiceTest {
 
     @Test
     public void skalSletteVedlegg() {
-        when(soknadService.hentSoknad(1L)).thenReturn(new WebSoknad().medBehandlingId("123").medAktorId("234").medDelstegStatus(DelstegStatus.OPPRETTET).medId(1L));
+        when(soknadService.hentSoknadFraLokalDb(1L)).thenReturn(new WebSoknad().medBehandlingId("123").medAktorId("234").medDelstegStatus(DelstegStatus.OPPRETTET).medId(1L));
         when(vedleggService.hentVedlegg(2L, false)).thenReturn(new Vedlegg().medSoknadId(1L));
 
         vedleggService.slettVedlegg(2L);
@@ -169,7 +177,7 @@ public class VedleggServiceTest {
 
     @Test
     public void skalLagreVedlegg() {
-        when(soknadService.hentSoknad(11L)).thenReturn(new WebSoknad().medDelstegStatus(OPPRETTET));
+        when(soknadService.hentSoknadFraLokalDb(11L)).thenReturn(new WebSoknad().medDelstegStatus(OPPRETTET));
         Vedlegg vedlegg = new Vedlegg().medVedleggId(1L).medSoknadId(11L);
         vedleggService.lagreVedlegg(1L, vedlegg);
         verify(vedleggRepository).lagreVedlegg(11L, 1L, vedlegg);
@@ -186,7 +194,7 @@ public class VedleggServiceTest {
 
     @Test
     public void skalKunneLagreVedleggMedSammeInnsendinsStatus() {
-        when(soknadService.hentSoknad(11L)).thenReturn(new WebSoknad().medDelstegStatus(OPPRETTET));
+        when(soknadService.hentSoknadFraLokalDb(11L)).thenReturn(new WebSoknad().medDelstegStatus(OPPRETTET));
         Vedlegg opplastetVedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(Vedlegg.Status.LastetOpp).medSoknadId(11L);
 
         opplastetVedlegg.setInnsendingsvalg(Vedlegg.Status.LastetOpp);
@@ -196,7 +204,7 @@ public class VedleggServiceTest {
 
     @Test
     public void skalIkkeSetteDelstegDersomVedleggLagresPaaEttersending() {
-        when(soknadService.hentSoknad(11L)).thenReturn(new WebSoknad().medDelstegStatus(ETTERSENDING_OPPRETTET));
+        when(soknadService.hentSoknadFraLokalDb(11L)).thenReturn(new WebSoknad().medDelstegStatus(ETTERSENDING_OPPRETTET));
         Vedlegg opplastetVedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(Vedlegg.Status.LastetOpp).medSoknadId(11L);
 
         opplastetVedlegg.setInnsendingsvalg(Vedlegg.Status.LastetOpp);
@@ -207,7 +215,7 @@ public class VedleggServiceTest {
 
     @Test
     public void skalKunneLagreVedleggMedOppgradertInnsendingsStatus() {
-        when(soknadService.hentSoknad(11L)).thenReturn(new WebSoknad().medDelstegStatus(OPPRETTET));
+        when(soknadService.hentSoknadFraLokalDb(11L)).thenReturn(new WebSoknad().medDelstegStatus(OPPRETTET));
         Vedlegg vedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(Vedlegg.Status.SendesIkke).medSoknadId(11L);
 
         vedlegg.setInnsendingsvalg(Vedlegg.Status.SendesSenere);

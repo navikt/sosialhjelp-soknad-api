@@ -1,0 +1,124 @@
+{{#forFaktum "behovforbil.behovforegenbil"}}
+    {{#hvisLik value "nei"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>{{hentTekst (concat cmsPrefiks "behovforbil.behovforegenbil.nei")}}</td>
+        </tr>
+    {{/hvisLik}}
+
+    {{#hvisLik value "ja"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>{{hentTekst (concat cmsPrefiks "behovforbil.behovforegenbil.ja")}}
+
+                <ul>
+                    {{#forFaktumHvisSant "behovforbil.stotteordninger.harttkort"}}
+                        <li class="kulepunkt faktum-felt">{{ hentTekst (concat cmsPrefiks "behovforbil.stotteordninger.harttkort")}}</li>
+                    {{/forFaktumHvisSant}}
+
+                    {{#forFaktumHvisSant "behovforbil.stotteordninger.grunnstonad"}}
+                        <li class="kulepunkt faktum-felt">{{ hentTekst (concat cmsPrefiks "behovforbil.stotteordninger.grunnstonad")}}</li>
+                    {{/forFaktumHvisSant}}
+
+                    {{#forFaktumHvisSant "behovforbil.stotteordninger.soktttkort"}}
+                        <li class="kulepunkt faktum-felt">{{ hentTekst (concat cmsPrefiks "behovforbil.stotteordninger.soktttkort")}}</li>
+                    {{/forFaktumHvisSant}}
+
+                    {{#forFaktumHvisSant "behovforbil.brukebilentil.butikkbank"}}
+                        <li class="kulepunkt faktum-felt">
+                            <span>{{ hentTekst (concat cmsPrefiks "behovforbil.brukebilentil.butikkbank" )}}</span>
+                            <ul>
+                                <li class="kulepunkt medstrek faktum-felt">
+                                    <span>{{ hentTekst "oppsummering.behovforbil.brukebilentil.butikkbank.antallreiser"}}</span>:
+                                    <em>{{ hentFaktumValue "behovforbil.brukebilentil.butikkbank.antallreiser" }}</em>
+                                </li>
+                                <li class="kulepunkt medstrek faktum-felt">
+                                    <span>{{ hentTekst "oppsummering.behovforbil.brukebilentil.butikkbank.antallkilometer"}}</span>:
+                                    <em>{{ hentFaktumValue "behovforbil.brukebilentil.butikkbank.antallkilometer" }}</em>
+                                </li>
+                                <li class="kulepunkt medstrek faktum-felt">
+                                    <span>{{ hentTekst "oppsummering.behovforbil.brukebilentil.butikkbank.dekkerbehovidag.beskrivelse"}}</span>:
+                                    <em>{{ hentFaktumValue "behovforbil.brukebilentil.butikkbank.dekkerbehovidag" }}</em>
+                                </li>
+                            </ul>
+                        </li>
+                    {{/forFaktumHvisSant}}
+
+                    {{#forFaktumHvisSant "behovforbil.brukebilentil.familie"}}
+                        <li class="kulepunkt faktum-felt">
+                            <span>{{ hentTekst (concat cmsPrefiks "behovforbil.brukebilentil.familie" )}}</span>
+                            <ul>
+                                <li class="kulepunkt medstrek faktum-felt">
+                                    <span>{{ hentTekst "oppsummering.behovforbil.brukebilentil.familie.antallreiser"}}</span>:
+                                    <em>{{ hentFaktumValue "behovforbil.brukebilentil.familie.antallreiser" }}</em>
+                                </li>
+                                <li class="kulepunkt medstrek faktum-felt">
+                                    <span>{{ hentTekst "oppsummering.behovforbil.brukebilentil.familie.antallkilometer"}}</span>:
+                                    <em>{{ hentFaktumValue "behovforbil.brukebilentil.familie.antallkilometer" }}</em>
+                                </li>
+                                <li class="kulepunkt medstrek faktum-felt">
+                                    <span>{{ hentTekst "oppsummering.behovforbil.brukebilentil.familie.dekkerbehovidag.beskrivelse"}}</span>:
+                                    <em>{{ hentFaktumValue "behovforbil.brukebilentil.familie.dekkerbehovidag" }}</em>
+                                </li>
+                            </ul>
+                        </li>
+                    {{/forFaktumHvisSant}}
+
+                    {{#forFaktumHvisSant "behovforbil.brukebilentil.venner"}}
+                        <li class="kulepunkt faktum-felt">
+                            <span>{{ hentTekst (concat cmsPrefiks "behovforbil.brukebilentil.venner" )}}</span>
+                            <ul>
+                                <li class="kulepunkt medstrek faktum-felt">
+                                    <span>{{ hentTekst "oppsummering.behovforbil.brukebilentil.venner.antallreiser"}}</span>:
+                                    <em>{{ hentFaktumValue "behovforbil.brukebilentil.venner.antallreiser" }}</em>
+                                </li>
+                                <li class="kulepunkt medstrek faktum-felt">
+                                    <span>{{ hentTekst "oppsummering.behovforbil.brukebilentil.venner.antallkilometer"}}</span>:
+                                    <em>{{ hentFaktumValue "behovforbil.brukebilentil.venner.antallkilometer" }}</em>
+                                </li>
+                                <li class="kulepunkt medstrek faktum-felt">
+                                    <span>{{ hentTekst "oppsummering.behovforbil.brukebilentil.venner.dekkerbehovidag.beskrivelse"}}</span>:
+                                    <em>{{ hentFaktumValue "behovforbil.brukebilentil.venner.dekkerbehovidag" }}</em>
+                                </li>
+                            </ul>
+                        </li>
+                    {{/forFaktumHvisSant}}
+
+                    {{#forFaktumHvisSant "behovforbil.brukebilentil.fritidsaktiviteter"}}
+                        <li class="kulepunkt faktum-felt">
+                            <span>{{ hentTekst (concat cmsPrefiks "behovforbil.brukebilentil.fritidsaktiviteter" )}}</span>
+                            <ul>
+                                <li class="kulepunkt medstrek faktum-felt">
+                                    <span>{{ hentTekst "oppsummering.behovforbil.brukebilentil.fritidsaktiviteter.antallreiser"}}</span>:
+                                    <em>{{ hentFaktumValue "behovforbil.brukebilentil.fritidsaktiviteter.antallreiser" }}</em>
+                                </li>
+                                <li class="kulepunkt medstrek faktum-felt">
+                                    <span>{{ hentTekst "oppsummering.behovforbil.brukebilentil.fritidsaktiviteter.antallkilometer"}}</span>:
+                                    <em>{{ hentFaktumValue "behovforbil.brukebilentil.fritidsaktiviteter.antallkilometer" }}</em>
+                                </li>
+                                <li class="kulepunkt medstrek faktum-felt">
+                                    <span>{{ hentTekst "oppsummering.behovforbil.brukebilentil.fritidsaktiviteter.dekkerbehovidag.beskrivelse"}}</span>:
+                                    <em>{{ hentFaktumValue "behovforbil.brukebilentil.fritidsaktiviteter.dekkerbehovidag" }}</em>
+                                </li>
+                            </ul>
+                        </li>
+                    {{/forFaktumHvisSant}}
+
+                    {{#forFaktumHvisSant "behovforbil.brukebilentil.annetbehov"}}
+                        <li class="kulepunkt faktum-felt">
+                            <span>{{ hentTekst (concat cmsPrefiks "behovforbil.brukebilentil.annetbehov" )}}</span>
+                            <ul>
+                                <li class="kulepunkt medstrek faktum-felt">
+                                    <span>{{ hentTekst "oppsummering.behovforbil.brukebilentil.annetbehov.beskrivelse"}}</span>:
+                                    <em>{{ hentFaktumValue "behovforbil.brukebilentil.annetbehov.beskrivelse" }}</em>
+                                </li>
+                            </ul>
+                        </li>
+                    {{/forFaktumHvisSant}}
+
+                </ul>
+            </td>
+        </tr>
+    {{/hvisLik}}
+
+{{/forFaktum}}

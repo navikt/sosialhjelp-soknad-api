@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.rest.actions;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.rest.meldinger.SoknadBekreftelse;
 import no.nav.sbl.dialogarena.service.EmailService;
@@ -52,7 +52,7 @@ public class SoknadActionsTest {
 
     @Test
     public void sendSoknadSkalLageDagpengerPdfMedKodeverksverdier() throws Exception{
-        when(soknadService.hentSoknadMedFaktaOgVedlegg(BEHANDLINGS_ID)).thenReturn(soknad().medSoknadPrefix("dagpenger.ordinaer"));
+        when(soknadService.hentSoknad(BEHANDLINGS_ID, true, true)).thenReturn(soknad().medSoknadPrefix("dagpenger.ordinaer"));
         when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyString())).thenReturn("<html></html>");
 
         actions.sendSoknad(BEHANDLINGS_ID);
@@ -62,7 +62,7 @@ public class SoknadActionsTest {
 
     @Test
     public void sendGjenopptakSkalLageGjenopptakPdfMedKodeverksverdier() throws Exception{
-        when(soknadService.hentSoknadMedFaktaOgVedlegg(BEHANDLINGS_ID)).thenReturn(soknad().medSoknadPrefix("dagpenger.gjenopptak"));
+        when(soknadService.hentSoknad(BEHANDLINGS_ID, true, true)).thenReturn(soknad().medSoknadPrefix("dagpenger.gjenopptak"));
         when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyString())).thenReturn("<html></html>");
 
         actions.sendSoknad(BEHANDLINGS_ID);
@@ -72,7 +72,7 @@ public class SoknadActionsTest {
 
     @Test
     public void sendEttersendingSkalLageEttersendingDummyPdf() throws Exception{
-        when(soknadService.hentSoknadMedFaktaOgVedlegg(BEHANDLINGS_ID)).thenReturn(soknad().medDelstegStatus(ETTERSENDING_OPPRETTET));
+        when(soknadService.hentSoknad(BEHANDLINGS_ID, true, true)).thenReturn(soknad().medDelstegStatus(ETTERSENDING_OPPRETTET));
         when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyString())).thenReturn("<html></html>");
 
         actions.sendSoknad(BEHANDLINGS_ID);

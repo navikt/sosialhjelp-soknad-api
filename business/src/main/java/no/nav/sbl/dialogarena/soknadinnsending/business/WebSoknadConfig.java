@@ -31,12 +31,12 @@ public class WebSoknadConfig {
     @Inject
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
 
-    public String getSoknadTypePrefix (long soknadId) {
+    public String getSoknadTypePrefix(long soknadId) {
         KravdialogInformasjon skjemaConfig = finnSkjemaConfig(soknadId);
         return skjemaConfig.getSoknadTypePrefix();
     }
 
-    public String getSoknadUrl (long soknadId) {
+    public String getSoknadUrl(long soknadId) {
         KravdialogInformasjon skjemaConfig = finnSkjemaConfig(soknadId);
         return System.getProperty(skjemaConfig.getSoknadUrlKey());
     }
@@ -46,12 +46,12 @@ public class WebSoknadConfig {
         return System.getProperty(skjemaConfig.getFortsettSoknadUrlKey());
     }
 
-    public SoknadStruktur hentStruktur (long soknadId) {
+    public SoknadStruktur hentStruktur(long soknadId) {
         KravdialogInformasjon skjemaConfig = finnSkjemaConfig(soknadId);
         return hentStrukturForSkjemanavn(skjemaConfig);
     }
 
-    public SoknadStruktur hentStruktur (String skjemaNummer) {
+    public SoknadStruktur hentStruktur(String skjemaNummer) {
         KravdialogInformasjon skjemaConfig = kravdialogInformasjonHolder.hentKonfigurasjon(skjemaNummer);
         return hentStrukturForSkjemanavn(skjemaConfig);
     }
@@ -63,22 +63,20 @@ public class WebSoknadConfig {
         }
 
         try {
-            Unmarshaller unmarshaller = newInstance(SoknadStruktur.class)
-                    .createUnmarshaller();
-            return (SoknadStruktur) unmarshaller.unmarshal(SoknadStruktur.class
-                    .getResourceAsStream(format("/soknader/%s", type)));
+            Unmarshaller unmarshaller = newInstance(SoknadStruktur.class).createUnmarshaller();
+            return (SoknadStruktur) unmarshaller.unmarshal(SoknadStruktur.class.getResourceAsStream(format("/soknader/%s", type)));
         } catch (JAXBException e) {
             throw new RuntimeException("Kunne ikke laste definisjoner. ", e);
         }
     }
 
-    public List<BolkService> getSoknadBolker (WebSoknad soknad, Collection<BolkService> alleBolker) {
+    public List<BolkService> getSoknadBolker(WebSoknad soknad, Collection<BolkService> alleBolker) {
         KravdialogInformasjon skjemaConfig = kravdialogInformasjonHolder.hentKonfigurasjon(soknad.getskjemaNummer());
         List<String> configBolker = skjemaConfig.getSoknadBolker(soknad);
 
         List<BolkService> soknadBolker = new ArrayList<>();
-        for(BolkService bolk : alleBolker){
-            if(configBolker.contains(bolk.tilbyrBolk())){
+        for (BolkService bolk : alleBolker) {
+            if (configBolker.contains(bolk.tilbyrBolk())) {
                 soknadBolker.add(bolk);
             }
         }

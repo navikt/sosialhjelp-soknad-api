@@ -1,0 +1,161 @@
+{{#forFaktum "flytting.selvellerbistand"}}
+    {{#hvisIkkeTom value}}
+        {{#hvisLik value "flytterselv"}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{ hentTekst "soknad.flytting.spm.selvellerbistand.flytterselv" }}</span>
+                </td>
+            </tr>
+        {{/hvisLik}}
+        {{#hvisLik value "flyttebyraa"}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{ hentTekst "soknad.flytting.spm.selvellerbistand.flyttebyraa" }}</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    {{#forFaktum "flytting.flyttebyraa.forste.navn"}}
+                        <span>{{ value }}:</span>
+                    {{/forFaktum}}
+                    {{#forFaktum "flytting.flyttebyraa.forste.belop"}}
+                        <span>{{ value }}</span>
+                    {{/forFaktum}}
+                    <span>{{ hentTekst "soknad.flytting.oppsummering.kr" }}</span>
+                </td>
+            </tr>
+            {{#forFaktum "flytting.flyttebyraa.velgforste"}}
+                {{#hvisSant value}}
+                    <tr>
+                        <td></td>
+                        <td>
+                            <span>{{ hentTekst "soknad.flytting.spm.flyttebyraa.velgforste.label" }}</span>
+                        </td>
+                    </tr>
+                {{/hvisSant}}
+            {{/forFaktum}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    {{#forFaktum "flytting.flyttebyraa.andre.navn"}}
+                        <span>{{ value }}:</span>
+                    {{/forFaktum}}
+                    {{#forFaktum "flytting.flyttebyraa.andre.belop"}}
+                        <span>{{ value }}</span>
+                    {{/forFaktum}}
+                    <span>{{ hentTekst "soknad.flytting.oppsummering.kr" }}</span>
+                </td>
+            </tr>
+            {{#forFaktum "flytting.flyttebyraa.velgandre"}}
+                {{#hvisSant value}}
+                    <tr>
+                        <td></td>
+                        <td>
+                            <span>{{ hentTekst "soknad.flytting.spm.flyttebyraa.velgandre.label" }}</span>
+                        </td>
+                    </tr>
+                {{/hvisSant}}
+            {{/forFaktum}}
+        {{/hvisLik}}
+        {{#hvisLik value "tilbudmenflytterselv"}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{ hentTekst "soknad.flytting.spm.selvellerbistand.tilbudmenflytterselv" }}</span>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    {{#forFaktum "flytting.flyttebyraa.forste.navn"}}
+                        <span>{{ value }}:</span>
+                    {{/forFaktum}}
+                    {{#forFaktum "flytting.flyttebyraa.forste.belop"}}
+                        <span>{{ value }}</span>
+                    {{/forFaktum}}
+                    <span>{{ hentTekst "soknad.flytting.oppsummering.kr" }}</span>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    {{#forFaktum "flytting.flyttebyraa.andre.navn"}}
+                        <span>{{ value }}:</span>
+                    {{/forFaktum}}
+                    {{#forFaktum "flytting.flyttebyraa.andre.belop"}}
+                        <span>{{ value }}</span>
+                    {{/forFaktum}}
+                    <span>{{ hentTekst "soknad.flytting.oppsummering.kr" }}</span>
+                </td>
+            </tr>
+        {{/hvisLik}}
+
+        {{#hvisLik value "flyttebyraa"}}
+        {{else}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    {{#forFaktum "flytting.flytteselv.hvorlangt"}}
+                        <span>{{hentTekst "soknad.flytting.flytteselv.hvorlangt.sporsmal"}}</span>
+                        <span>{{value}} {{hentTekst "soknad.flytting.flytteselv.hvorlangt.enhet"}}</span>
+                    {{/forFaktum}}
+                </td>
+            </tr>
+
+            {{#forFaktum "flytting.flytteselv.andreutgifter.hengerleie"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td>
+                        <span>{{hentTekst "soknad.flytting.flytteselv.henger.label"}}:</span>
+                        <span>{{value}} {{hentTekst "soknad.flytting.flytteselv.kroner"}}</span>
+                    </td>
+                </tr>
+            {{/forFaktum}}
+
+            {{#forFaktum "flytting.flytteselv.andreutgifter.bom"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td>
+                        <span>{{hentTekst "soknad.flytting.flytteselv.bom.label"}}:</span>
+                        <span>{{value}} {{hentTekst "soknad.flytting.flytteselv.kroner"}}</span>
+                    </td>
+                </tr>
+            {{/forFaktum}}
+
+            {{#forFaktum "flytting.flytteselv.andreutgifter.parkering"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td>
+                        <span>{{hentTekst "soknad.flytting.flytteselv.parkering.label"}}:</span>
+                        <span>{{value}} {{hentTekst "soknad.flytting.flytteselv.kroner"}}</span>
+                    </td>
+                </tr>
+            {{/forFaktum}}
+
+            {{#forFaktum "flytting.flytteselv.andreutgifter.ferge"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td>
+                        <span>{{hentTekst "soknad.flytting.flytteselv.ferge.label"}}:</span>
+                        <span>{{value}} {{hentTekst "soknad.flytting.flytteselv.kroner"}}</span>
+                    </td>
+                </tr>
+            {{/forFaktum}}
+
+            {{#forFaktum "flytting.flytteselv.andreutgifter.annet"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td>
+                        <span>{{hentTekst "soknad.flytting.flytteselv.annet.label"}}:</span>
+                        <span>{{value}} {{hentTekst "soknad.flytting.flytteselv.kroner"}}</span>
+                    </td>
+                </tr>
+            {{/forFaktum}}
+        {{/hvisLik}}
+    {{/hvisIkkeTom}}
+{{/forFaktum}}

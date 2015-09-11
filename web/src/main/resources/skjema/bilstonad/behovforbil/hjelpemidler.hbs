@@ -1,0 +1,27 @@
+{{#forFaktum "behovforbil.hjelpemidler"}}
+    {{#hvisLik value "nei"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>{{hentTekst (concat cmsPrefiks "behovforbil.hjelpemidler.nei")}}</td>
+        </tr>
+    {{/hvisLik}}
+
+    {{#hvisLik value "ja"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>{{hentTekst (concat cmsPrefiks "behovforbil.hjelpemidler.ja")}}
+
+                {{#forFaktum "behovforbil.hjelpemidler.beskrivelse"}}
+                    <ul>
+                        <li class="kulepunkt faktum-felt">
+                            <span>{{hentTekst "oppsummering.behovforbil.hjelpemidler.beskrivelse"}}</span>:
+                            <em>{{ value }}</em>
+                        </li>
+                    </ul>
+                {{/forFaktum}}
+
+            </td>
+        </tr>
+    {{/hvisLik}}
+
+{{/forFaktum}}

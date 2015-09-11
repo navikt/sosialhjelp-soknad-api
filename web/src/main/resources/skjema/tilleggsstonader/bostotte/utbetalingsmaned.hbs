@@ -1,0 +1,10 @@
+{{#forFaktum "bostotte.utbetalingsdato"}}
+    {{#hvisIkkeTom value}}
+    <tr>
+        <td class="sjekket"></td>
+        <td>
+                <span>{{ hentTekst "soknad.felles.utbetalingsdato.velgdato.oppsummering" }} {{value}}{{ hentTekst "soknad.felles.utbetalingsdato.velgdato.oppsummering.postfix" }}</span>
+        </td>
+    </tr>
+    {{/hvisIkkeTom}}
+{{/forFaktum}}

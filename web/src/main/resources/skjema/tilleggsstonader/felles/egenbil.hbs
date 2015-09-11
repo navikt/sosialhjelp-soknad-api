@@ -1,0 +1,149 @@
+{{#forFaktumHvisSant (concat faktumPrefiks "offentligtransport.egenbil")}}
+    <tr>
+        <td class="sjekket"></td>
+        <td><span>{{hentTekst "soknad.reise.offentligtransport.egenbil.true"}}</span></td>
+    </tr>
+
+    {{#forFaktum (concat faktumPrefiks "offentligtransport.egenbil.kostnader")}}
+        <tr>
+            <td></td>
+            <td>
+                <p class="overskrift">{{hentTekst "oppsummering.reise.offentligtransport.egenbil.kostnader"}}</p>
+                <table>
+                    {{#forFaktum (concat faktumPrefiks "offentligtransport.egenbil.kostnader.bompenger")}}
+                        <tr>
+                            <td class="sjekket"></td>
+                            <td>{{hentTekst "soknad.reise.offentligtransport.egenbil.kostnader.bompenger.label"}}: {{value}} {{hentTekst "soknad.krdag"}}</td>
+                        </tr>
+                    {{/forFaktum}}
+                    {{#forFaktum (concat faktumPrefiks "offentligtransport.egenbil.kostnader.parkering")}}
+                        <tr>
+                            <td class="sjekket"></td>
+                            <td>{{hentTekst "soknad.reise.offentligtransport.egenbil.kostnader.parkering.label"}}: {{value}} {{hentTekst "soknad.krdag"}}</td>
+                        </tr>
+                    {{/forFaktum}}
+                    {{#forFaktum (concat faktumPrefiks "offentligtransport.egenbil.kostnader.piggdekk")}}
+                        <tr>
+                            <td class="sjekket"></td>
+                            <td>{{hentTekst "soknad.reise.offentligtransport.egenbil.kostnader.piggdekk.label"}}: {{value}} {{hentTekst "soknad.krdag"}}</td>
+                        </tr>
+                    {{/forFaktum}}
+                    {{#forFaktum (concat faktumPrefiks "offentligtransport.egenbil.kostnader.ferge")}}
+                        <tr>
+                            <td class="sjekket"></td>
+                            <td>{{hentTekst "soknad.reise.offentligtransport.egenbil.kostnader.ferge.label"}}: {{value}} {{hentTekst "soknad.krdag"}}</td>
+                        </tr>
+                    {{/forFaktum}}
+                    {{#forFaktum (concat faktumPrefiks "offentligtransport.egenbil.kostnader.annet")}}
+                        <tr>
+                            <td class="sjekket"></td>
+                            <td>{{hentTekst "soknad.reise.offentligtransport.egenbil.kostnader.annet.label"}}: {{value}} {{hentTekst "soknad.krdag"}}</td>
+                        </tr>
+                    {{/forFaktum}}
+                </table>
+            </td>
+        </tr>
+    {{/forFaktum}}
+
+    {{#forFaktum (concat faktumPrefiks "offentligtransport.egenbil.parkering")}}
+        {{#hvisSant value}}
+            <tr>
+                <td class="sjekket"></td>
+                <td><span>{{hentTekst "soknad.reise.offentligtransport.egenbil.parkering.true"}}</span></td>
+            </tr>
+            {{#forFaktum (concat faktumPrefiks "offentligtransport.egenbil.parkering.belop")}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td>{{value}} {{hentTekst "soknad.krdag"}}</td>
+                </tr>
+            {{/forFaktum}}
+            {{#forFaktum (concat faktumPrefiks "offentligtransport.egenbil.sendebekreftelse")}}
+                <tr>
+                    <td class="sjekket"></td>
+                {{#hvisLik value "uke"}}
+                    <td>{{hentTekst "soknad.reise.offentligtransport.egenbil.sendebekreftelse.uke"}}</td>
+                {{else}}
+                    <td>{{hentTekst "soknad.reise.offentligtransport.egenbil.sendebekreftelse.maned"}}</td>
+                {{/hvisLik}}
+            </tr>
+            {{/forFaktum}}
+        {{else}}
+            <tr>
+                <td class="sjekket"></td>
+                <td><span>{{hentTekst "soknad.reise.offentligtransport.egenbil.parkering.false"}}</span></td>
+            </tr>
+        {{/hvisSant}}
+    {{/forFaktum}}
+{{else}}
+    <tr>
+        <td class="sjekket"></td>
+        <td>
+            <span>{{hentTekst "soknad.reise.offentligtransport.egenbil.false"}}</span>
+        </td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>
+            <p class="overskrift">{{hentTekst "oppsummering.reise.offentligtransport.egenbil.aarsak"}}</p>
+            <table>
+                {{#forFaktumHvisSant (concat faktumPrefiks "offentligtransport.egenbil.aarsak.helse")}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>{{hentTekst "soknad.reise.offentligtransport.egenbil.aarsak.helse"}}</td>
+                    </tr>
+                {{/forFaktumHvisSant}}
+                {{#forFaktumHvisSant (concat faktumPrefiks "offentligtransport.egenbil.aarsak.ikkebil")}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>{{hentTekst "soknad.reise.offentligtransport.egenbil.aarsak.ikkebil"}}</td>
+                    </tr>
+                {{/forFaktumHvisSant}}
+                {{#forFaktumHvisSant (concat faktumPrefiks "offentligtransport.egenbil.aarsak.annet")}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>
+                            <span>{{hentTekst "soknad.reise.offentligtransport.egenbil.aarsak.annet"}}:</span>
+                            {{#forFaktum (concat faktumPrefiks "offentligtransport.egenbil.aarsak.annet.tekst")}}
+                                <em>{{value}}</em>
+                            {{/forFaktum}}
+                        </td>
+                    </tr>
+                {{/forFaktumHvisSant}}
+            </table>
+        </td>
+    </tr>
+
+    {{#forFaktumHvisSant (concat faktumPrefiks "offentligtransport.drosje")}}
+        <tr>
+            <td class="sjekket"></td>
+            <td><span>{{hentTekst "soknad.reise.offentligtransport.egenbil.drosje.true"}}</span></td>
+        </tr>
+        {{#forFaktum (concat faktumPrefiks "offentligtransport.drosje.belop")}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{hentTekst "oppsummering.reise.offentligtransport.drosje.belop"}}</span>
+                    <span>{{value}}</span>
+                    <span>{{hentTekst "soknad.krdag"}}</span>
+                </td>
+            </tr>
+        {{/forFaktum}}
+    {{else}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>{{hentTekst "soknad.reise.offentligtransport.egenbil.drosje.false"}}</span>
+                {{#forFaktum (concat faktumPrefiks "offentligtransport.drosje.tekst")}}
+                    <table>
+                        <tr>
+                            <td class="sjekket"></td>
+                            <td>
+                                <span>{{value}}</span>
+                            </td>
+                        </tr>
+                    </table>
+                {{/forFaktum}}
+            </td>
+        </tr>
+    {{/forFaktumHvisSant}}
+{{/forFaktumHvisSant}}

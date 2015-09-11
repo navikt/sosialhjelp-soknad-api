@@ -1,0 +1,20 @@
+<h2>{{ hentTekst (concat cmsPrefiks "behovforbil.tittel") }}</h2>
+
+    <h3>{{ hentTekst (concat cmsPrefiks "behovforbil.kollektiv.overskrift") }}</h3>
+    <table>
+        {{> skjema/bilstonad/behovforbil/kollektivtransport }}
+    </table>
+
+    <h3>{{ hentTekst (concat cmsPrefiks "behovforbil.transportbehov.overskrift") }}</h3>
+    <table>
+        {{#forFaktum "informasjonsside.bilformal"}}
+            {{#hvisLik value "arbeidutdanning"}}
+                {{> skjema/bilstonad/behovforbil/transportbehovArbeidutdanning }}
+            {{/hvisLik}}
+            {{#hvisLik value "dagligliv"}}
+                {{> skjema/bilstonad/behovforbil/transportbehovDagligliv }}
+            {{/hvisLik}}
+        {{/forFaktum}}
+
+        {{> skjema/bilstonad/behovforbil/hjelpemidler }}
+    </table>

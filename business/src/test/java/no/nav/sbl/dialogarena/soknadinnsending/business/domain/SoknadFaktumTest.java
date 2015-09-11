@@ -29,25 +29,24 @@ public class SoknadFaktumTest {
 
     @Test
     public void faktumMedDependencySorteresEtterNivaa() {
-        SoknadFaktum sf1 = new SoknadFaktum();
+        SoknadFaktum sf1 = new SoknadFaktum().medId("sf1");
         SoknadFaktum dependencySf1 = new SoknadFaktum();
-        dependencySf1.setId("faktum");
+        dependencySf1.setId("dep1");
         sf1.setDependOn(dependencySf1);
 
-        SoknadFaktum sf2 = new SoknadFaktum();
+        SoknadFaktum sf2 = new SoknadFaktum().medId("sf2");
         SoknadFaktum dependencySf2 = new SoknadFaktum();
-        dependencySf2.setId("faktum.dependency");
+        dependencySf2.setId("sf1");
         sf2.setDependOn(dependencySf2);
 
-        SoknadFaktum sf3 = new SoknadFaktum();
+        SoknadFaktum sf3 = new SoknadFaktum().medId("sf3");
         SoknadFaktum dependencySf3 = new SoknadFaktum();
-        dependencySf3.setId("faktum.dependency.nivå3");
+        dependencySf3.setId("dep3");
         sf3.setDependOn(dependencySf3);
 
-        List<SoknadFaktum> fakta = asList(sf2, sf3, sf1);
+        List<SoknadFaktum> fakta = asList(sf2, sf1, sf3);
 
         Collections.sort(fakta, sammenlignEtterDependOn());
-
         assertThat(fakta, IsIterableContainingInOrder.contains(sf1, sf2, sf3));
     }
 }

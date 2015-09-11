@@ -1,0 +1,14 @@
+{{#forFaktum "fastlege.annen.behandlende.navn"}}
+    {{#hvisIkkeTom value}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <div>{{ hentTekst "oppsummering.fastlege.behandlende.navn" }}</div>
+                <div><span class="avsnitt">{{ hentFaktumValue "fastlege.annen.behandlende.navn" }}</span></div>
+                <div>{{ hentFaktumValue "fastlege.annen.behandlende.stilling" }}</div>
+                <div>{{ hentFaktumValue "fastlege.annen.behandlende.arbeidssted" }}</div>
+                <div>{{ hentFaktumValue "fastlege.annen.behandlende.tlfnr" }}</div>
+            </td>
+        </tr>
+    {{/hvisIkkeTom}}
+{{/forFaktum}}

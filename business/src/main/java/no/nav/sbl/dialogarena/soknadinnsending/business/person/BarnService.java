@@ -8,7 +8,6 @@ import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonReque
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 import org.apache.commons.collections15.Transformer;
 import org.slf4j.Logger;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -36,7 +35,6 @@ public class BarnService implements BolkService {
     }
 
     @Override
-    @Cacheable("barnCache")
     public List<Faktum> genererSystemFakta(String fodselsnummer, Long soknadId) {
         HentKjerneinformasjonResponse kjerneinformasjonResponse;
 

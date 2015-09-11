@@ -11,8 +11,6 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 
-import static org.apache.commons.lang3.StringUtils.countMatches;
-
 public class SoknadFaktum implements Serializable {
 
     private String id;
@@ -115,12 +113,14 @@ public class SoknadFaktum implements Serializable {
             public int compare(SoknadFaktum sf1, SoknadFaktum sf2) {
                 if (sf1.getDependOn() == null && sf2.getDependOn() == null) {
                     return 0;
-                } else if (sf1.getDependOn() == null && sf2.getDependOn() != null) {
+                } else if (sf1.getDependOn() == null) {
                     return -1;
-                } else if (sf1.getDependOn() != null && sf2.getDependOn() == null) {
+                } else if (sf2.getDependOn() == null) {
                     return 1;
+                } else if (sf1.getId().equals(sf2.getDependOn().getId())) {
+                    return -1;
                 } else {
-                    return countMatches(sf1.getDependOn().getId(), ".") - countMatches(sf2.getDependOn().getId(), ".");
+                    return 0;
                 }
             }
         };

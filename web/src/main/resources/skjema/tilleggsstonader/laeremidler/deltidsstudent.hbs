@@ -1,0 +1,10 @@
+<tr>
+    <td class="sjekket"></td>
+    <td>
+        {{#forFaktum "laeremidler.deltidsstudent"}}
+            {{#hvisIkkeTom value}}
+                <span>{{ hentTekst "soknad.laeremidler.deltidsstudent.oppsummering" }} {{value}}</span>
+            {{/hvisIkkeTom }}
+        {{/forFaktum}}
+    </td>
+</tr>

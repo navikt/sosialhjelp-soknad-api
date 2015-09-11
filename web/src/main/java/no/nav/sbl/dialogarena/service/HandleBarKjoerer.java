@@ -17,7 +17,6 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
-import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -32,14 +31,15 @@ import static org.apache.commons.lang3.StringUtils.split;
 import static org.slf4j.LoggerFactory.getLogger;
 
 
-@Service
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.ExcessiveClassLength"})
-public class HandleBarKjoerer implements HtmlGenerator {
+public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
 
     public static final Locale NO_LOCALE = new Locale("nb", "no");
 
     @Inject
     private Kodeverk kodeverk;
+
+    private Map<String, Helper> helpers = new HashMap<>();
 
     @Inject
     @Named("navMessageSource")
@@ -53,11 +53,22 @@ public class HandleBarKjoerer implements HtmlGenerator {
 
     }
 
+    @Override
+    public void registrerHelper(String name, Helper helper){
+        helpers.put(name, helper);
+    }
+
+
     private Handlebars getHandlebars() {
         Handlebars handlebars = new Handlebars();
 
+        for (Map.Entry<String, Helper> helper : helpers.entrySet()) {
+            handlebars.registerHelper(helper.getKey(), helper.getValue());
+        }
+
         handlebars.registerHelper("adresse", generateAdresseHelper());
         handlebars.registerHelper("forFaktum", generateForFaktumHelper());
+        handlebars.registerHelper("forFaktumHvisSant", generateforFaktumHvisSantHelper());
         handlebars.registerHelper("forFakta", generateForFaktaHelper());
         handlebars.registerHelper("forBarnefakta", generateForBarnefaktaHelper());
         handlebars.registerHelper("forFaktaMedPropertySattTilTrue", generateForFaktaMedPropTrueHelper());
@@ -70,7 +81,6 @@ public class HandleBarKjoerer implements HtmlGenerator {
         handlebars.registerHelper("hvisLik", generateHvisLikHelper());
         handlebars.registerHelper("hvisIkkeTom", generateHvisIkkeTomHelper());
         handlebars.registerHelper("hentTekst", generateHentTekstHelper());
-        handlebars.registerHelper("hentTekstMedParameter", generateHentTekstMedParameterHelper());
         handlebars.registerHelper("hentTekstMedFaktumParameter", generateHentTekstMedFaktumParameterHelper());
         handlebars.registerHelper("hentLand", generateHentLandHelper());
         handlebars.registerHelper("forVedlegg", generateForVedleggHelper());
@@ -236,15 +246,6 @@ public class HandleBarKjoerer implements HtmlGenerator {
         };
     }
 
-    private Helper<String> generateHentTekstMedParameterHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String key, Options options) throws IOException {
-                return getCmsTekst(key, new Object[]{options.param(0)}, NO_LOCALE);
-            }
-        };
-    }
-
     private Helper<String> generateHentTekstMedFaktumParameterHelper() {
         return new Helper<String>() {
             @Override
@@ -282,9 +283,12 @@ public class HandleBarKjoerer implements HtmlGenerator {
         try {
             return navMessageSource.getMessage(soknadTypePrefix + "." + key, parameters, locale);
         } catch (NoSuchMessageException e) {
-            return navMessageSource.getMessage(key, parameters, locale);
+            try {
+                return navMessageSource.getMessage(key, parameters, locale);
+            } catch (NoSuchMessageException e2) {
+                return String.format("KEY MANGLER: [%s]", key);
+            }
         }
-
     }
 
     private Helper<Object> generateHvisIkkeTomHelper() {
@@ -502,7 +506,23 @@ public class HandleBarKjoerer implements HtmlGenerator {
         };
     }
 
-    private static WebSoknad finnWebSoknad(Context context) {
+    private Helper<String> generateforFaktumHvisSantHelper() {
+        return new Helper<String>() {
+            @Override
+            public CharSequence apply(String o, Options options) throws IOException {
+                WebSoknad soknad = finnWebSoknad(options.context);
+                Faktum faktum = soknad.getFaktumMedKey(o);
+
+                if (faktum != null && faktum.getValue() != null && faktum.getValue().equals("true")) {
+                    return options.fn(faktum);
+                } else {
+                    return options.inverse(this);
+                }
+            }
+        };
+    }
+
+    public static WebSoknad finnWebSoknad(Context context) {
         if (context == null) {
             return null;
         } else if (context.model() instanceof WebSoknad) {
@@ -637,4 +657,5 @@ public class HandleBarKjoerer implements HtmlGenerator {
             }
         };
     }
+
 }

@@ -1,0 +1,48 @@
+<h2>{{ hentTekst "bilen.tittel" }}</h2>
+<table>
+    {{#forFaktum "bilen"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                {{#hvisLik "eierBilenAllerede" value}}
+                    <span>{{hentTekst "bilen.eierBilenAllerede"}}</span>
+                    <ul>
+                        <li class="kulepunkt faktum-felt">
+                            {{hentTekst "bilen.registreringsnummer"}}:
+                            <em>{{ hentFaktumValue "bilen.eierBilenAllerede.registreringsnummer"}}</em>
+                        </li>
+                        <li class="kulepunkt faktum-felt">
+                            {{hentTekst "bilen.bilmerke"}}:
+                            <em>{{ hentFaktumValue "bilen.eierBilenAllerede.bilmerke"}}</em>
+                        </li>
+                        <li class="kulepunkt faktum-felt">
+                            {{hentTekst "bilen.bilmodell"}}:
+                            <em>{{ hentFaktumValue "bilen.eierBilenAllerede.bilmodell"}}</em>
+                        </li>
+                        <li class="kulepunkt faktum-felt">
+                            {{hentTekst "bilen.arsmodell"}}:
+                            <em>{{ hentFaktumValue "bilen.eierBilenAllerede.arsmodell"}}</em>
+                        </li>
+                    </ul>
+                {{/hvisLik}}
+                {{#hvisLik "skalAnskaffeNyBil" value}}
+                    <span>{{hentTekst "bilen.skalAnskaffeNyBil"}}</span>
+                    <ul>
+                        <li class="kulepunkt faktum-felt">
+                            {{hentTekst "bilen.bilmerke"}}:
+                            <em>{{ hentFaktumValue "bilen.skalAnskaffeNyBil.bilmerke"}}</em>
+                        </li>
+                        <li class="kulepunkt faktum-felt">
+                            {{hentTekst "bilen.bilmodell"}}:
+                            <em>{{ hentFaktumValue "bilen.skalAnskaffeNyBil.bilmodell"}}</em>
+                        </li>
+                        <li class="kulepunkt faktum-felt">
+                            {{hentTekst "bilen.arsmodell"}}:
+                            <em>{{ hentFaktumValue "bilen.skalAnskaffeNyBil.arsmodell"}}</em>
+                        </li>
+                    </ul>
+                {{/hvisLik}}
+            </td>
+        </tr>
+    {{/forFaktum}}
+</table>

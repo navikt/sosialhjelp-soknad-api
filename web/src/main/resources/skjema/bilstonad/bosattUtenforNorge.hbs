@@ -1,0 +1,17 @@
+{{#forFaktum "bosattUtenforNorge"}}
+    {{#hvisIkkeTom value}}
+        <h2>{{ hentTekst "bosattUtenforNorge.tittel" }}</h2>
+        <table>
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    {{#hvisSant value}}
+                        <span>{{ hentTekst "bosattUtenforNorge.true" }}</span>
+                    {{ else }}
+                        <span>{{ hentTekst "bosattUtenforNorge.false" }}</span>
+                    {{/hvisSant}}
+                </td>
+            </tr>
+        </table>
+    {{/hvisIkkeTom}}
+{{/forFaktum}}

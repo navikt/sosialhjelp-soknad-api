@@ -1,0 +1,28 @@
+{{#partial "contentbil"}}
+    {{> skjema/bilstonad/stonadstype }}
+    {{> skjema/bilstonad/informasjonsside }}
+    {{#forFaktum "informasjonsside.bilformal"}}
+        {{#variabel "cmsPrefiks" (concat value ".")}}
+            {{> skjema/bilstonad/bosattUtenforNorge }}
+            {{> skjema/bilstonad/behovforbil/behovForBil }}
+            {{> skjema/bilstonad/bilogutstyr/bilogutstyr }}
+            {{> skjema/bilstonad/forerkort }}
+            {{> skjema/bilstonad/bileierskap/bileierskap }}
+            {{> skjema/bilstonad/inntekt/inntekt }}
+            {{> skjema/bilstonad/fastlege/fastlege }}
+        {{/variabel}}
+    {{/forFaktum}}
+    {{> skjema/bilstonad/tilleggsopplysninger }}
+{{/partial}}
+
+{{#partial "contentspesialutstyr"}}
+    {{> skjema/bilstonad/stonadstype }}
+    {{> skjema/bilstonad/informasjonsside }}
+    {{> skjema/bilstonad/bosattUtenforNorge }}
+    {{> skjema/bilstonad/utstyrTilBilen }}
+    {{> skjema/bilstonad/bilen }}
+    {{> skjema/bilstonad/fastlege/fastlege }}
+    {{> skjema/bilstonad/tilleggsopplysninger }}
+{{/partial}}
+
+{{> skjema/bilstonad/base }}

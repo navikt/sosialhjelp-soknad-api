@@ -18,7 +18,8 @@ import org.springframework.context.annotation.Import;
         GAConfig.class,
         ConsumerConfig.class,
         ContentConfig.class,
-        SoknadInnsendingDBConfig.class})
+        SoknadInnsendingDBConfig.class,
+        HandlebarsHelperConfig.class})
 @ComponentScan(basePackages = "no.nav.sbl.dialogarena.rest")
 public class SoknadinnsendingConfig {
 }

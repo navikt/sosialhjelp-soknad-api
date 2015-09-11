@@ -3,13 +3,14 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 
 import java.util.List;
+
 import static java.util.Arrays.asList;
 
-public class AAPGjenopptakInformasjon implements KravdialogInformasjon {
+public class AAPGjenopptakInformasjon extends KravdialogInformasjon.KravdialogInformasjonUtenAlternativRepresentasjon {
 
     private static List<String> skjemanummer = asList("NAV 11-13.06");
 
-    public String getSoknadTypePrefix () {
+    public String getSoknadTypePrefix() {
         return "aap.gjenopptak";
     }
 

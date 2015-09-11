@@ -4,6 +4,7 @@ import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +19,7 @@ public class InformasjonService {
     private Kodeverk kodeverk;
 
     @Inject
-    private SendSoknadService soknadService;
+    private SoknadService soknadService;
 
     @Value("${saksoversikt.link.url}")
     private String saksoversiktUrl;
@@ -63,7 +64,7 @@ public class InformasjonService {
     }
 
     public Map<String,String> hentVedleggsskjemaForBehandlingsId(String behandlingsId) {
-        WebSoknad soknad = soknadService.hentSoknad(behandlingsId);
+        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, false);
         return hentVedleggsskjema(soknad.getskjemaNummer());
     }
 
