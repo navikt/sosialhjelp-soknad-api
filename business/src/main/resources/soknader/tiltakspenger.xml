@@ -2,10 +2,19 @@
 
     <!-- Informasjonsside -->
     <faktum>
-        <id>mottarDagpenger.vilBytteTilTiltakspenger</id>
+        <id>informasjonsside.dagpenger</id>
     </faktum>
     <faktum>
-        <id>informasjonsside.deltarIKvalifiseringsprogram</id>
+        <id>informasjonsside.dagpenger.beholde.soketilleggsstonad</id>
+    </faktum>
+    <faktum>
+        <id>informasjonsside.institusjon</id>
+    </faktum>
+    <faktum>
+        <id>informasjonsside.institusjon.ja.hvaslags</id>
+    </faktum>
+    <faktum>
+        <id>informasjonsside.institusjon.ja.hvaslags.annet.soketilleggstonad</id>
     </faktum>
 
     <!-- Trygd og pensjon -->
