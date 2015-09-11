@@ -8,7 +8,7 @@ import org.apache.commons.collections15.Transformer;
 import java.util.Arrays;
 import java.util.List;
 
-public class SoknadTilleggsstonader implements KravdialogInformasjon {
+public class SoknadTilleggsstonader extends KravdialogInformasjon.KravdialogInformasjonUtenAlternativRepresentasjon {
 
     public String getSoknadTypePrefix() {
         return "soknadtilleggsstonader";

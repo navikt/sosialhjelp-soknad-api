@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.AlternativRepresentasjon;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Steg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.collections15.Transformer;
 
@@ -12,6 +13,8 @@ public interface KravdialogInformasjon {
     String BOLK_PERSONALIA = "Personalia";
     String BOLK_BARN = "Barn";
     String BOLK_ARBEIDSFORHOLD = "Arbeidsforhold";
+
+    Steg[] getStegliste();
 
     String getSoknadTypePrefix();
 
@@ -32,6 +35,10 @@ public interface KravdialogInformasjon {
         public List<Transformer<WebSoknad, AlternativRepresentasjon>> getTransformers() {
             return new ArrayList<>();
         }
-    }
 
+        @Override
+        public Steg[] getStegliste() {
+            return new Steg[]{Steg.VEILEDNING, Steg.SOKNAD, Steg.VEDLEGG, Steg.OPPSUMMERING};
+        }
+    }
 }
