@@ -1,0 +1,12 @@
+{{#forVedlegg}}
+    vedlegg: {{navn}}
+
+    {{#hvisLik innsendingsvalg "LastetOpp"}}
+        lastet opp
+    {{ else }}
+        ikke lastet opp
+    {{/hvisLik}}
+    + andre verdier som ligger på vedleggene
+{{else}}
+    Ingen vedlegg
+{{/forVedlegg}}

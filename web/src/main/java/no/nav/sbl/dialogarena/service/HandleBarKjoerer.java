@@ -6,7 +6,6 @@ import com.github.jknack.handlebars.Options;
 import no.bekk.bekkopen.person.Fodselsnummer;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.lang3.StringUtils;
@@ -69,7 +68,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         handlebars.registerHelper("hentTekst", generateHentTekstHelper());
         handlebars.registerHelper("hentTekstMedFaktumParameter", generateHentTekstMedFaktumParameterHelper());
         handlebars.registerHelper("hentLand", generateHentLandHelper());
-        handlebars.registerHelper("forVedlegg", generateForVedleggHelper());
         handlebars.registerHelper("forPerioder", generateHelperForPeriodeTidsromFakta());
         handlebars.registerHelper("hentFaktumValue", generateHentFaktumValueHelper());
         handlebars.registerHelper("hvisFlereErTrue", generateHvisFlereSomStarterMedErTrueHelper());
@@ -117,21 +115,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
                     return options.fn(this);
                 } else {
                     return options.inverse(this);
-                }
-            }
-        };
-    }
-
-    private Helper<Object> generateForVedleggHelper() {
-        return new Helper<Object>() {
-            @Override
-            public CharSequence apply(Object context, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-                List<Vedlegg> vedlegg = soknad.hentPaakrevdeVedlegg();
-                if (vedlegg.isEmpty()) {
-                    return options.inverse(this);
-                } else {
-                    return lagItererbarRespons(options, vedlegg);
                 }
             }
         };
