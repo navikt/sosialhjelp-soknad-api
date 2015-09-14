@@ -215,6 +215,7 @@ public class SoknadDataFletter {
             soknad = lokalDb.hentSoknadMedData(soknad.getSoknadId());
             soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknad.getSoknadId()))
                     .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
+                    .medStegliste(config.getStegliste(soknad.getSoknadId()))
                     .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
             if (soknad.erEttersending()) {
                 faktaService.lagreSystemFakta(soknad, bolker.get(PersonaliaService.class.getName()).genererSystemFakta(getSubjectHandler().getUid(), soknad.getSoknadId()));

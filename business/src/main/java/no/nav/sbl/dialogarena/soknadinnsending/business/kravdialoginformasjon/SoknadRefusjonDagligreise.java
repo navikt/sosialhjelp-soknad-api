@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.AlternativRepresentasjon;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Steg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.AktivitetBetalingsplanService;
 import org.apache.commons.collections15.Transformer;
@@ -9,7 +10,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class SoknadRefusjonDagligreise implements KravdialogInformasjon {
+public class SoknadRefusjonDagligreise extends KravdialogInformasjon.DefaultOppsett {
 
     public String getSoknadTypePrefix() {
         return "soknadrefusjondagligreise";
@@ -39,4 +40,9 @@ public class SoknadRefusjonDagligreise implements KravdialogInformasjon {
     public List<Transformer<WebSoknad, AlternativRepresentasjon>> getTransformers() {
         return Collections.emptyList();
     }
+    @Override
+    public Steg[] getStegliste() {
+        return new Steg[]{Steg.SOKNAD, Steg.OPPSUMMERING};
+    }
+
 }

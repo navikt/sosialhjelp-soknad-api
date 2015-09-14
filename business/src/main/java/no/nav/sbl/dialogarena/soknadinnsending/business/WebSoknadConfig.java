@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business;
 
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Steg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.KravdialogInformasjon;
@@ -87,5 +88,10 @@ public class WebSoknadConfig {
     private KravdialogInformasjon finnSkjemaConfig(Long soknadId) {
         String skjemanummer = repository.hentSoknadType(soknadId);
         return kravdialogInformasjonHolder.hentKonfigurasjon(skjemanummer);
+    }
+
+    public Steg[] getStegliste(Long soknadId) {
+        KravdialogInformasjon skjemaConfig = finnSkjemaConfig(soknadId);
+        return skjemaConfig.getStegliste();
     }
 }
