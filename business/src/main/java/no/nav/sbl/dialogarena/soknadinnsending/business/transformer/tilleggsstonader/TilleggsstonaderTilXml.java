@@ -10,8 +10,20 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.AlternativReprese
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.collections15.Transformer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXB;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.util.JAXBSource;
+import javax.xml.namespace.QName;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.UUID;
@@ -19,6 +31,7 @@ import java.util.UUID;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTransformers.extractValue;
 
 public class TilleggsstonaderTilXml implements Transformer<WebSoknad, AlternativRepresentasjon> {
+    private static final Logger LOG = LoggerFactory.getLogger(TilleggsstonaderTilXml.class);
 
     private static Tilleggsstoenadsskjema tilTilleggsstoenadSkjema(WebSoknad webSoknad) {
         Tilleggsstoenadsskjema skjema = new Tilleggsstoenadsskjema();
@@ -97,6 +110,7 @@ public class TilleggsstonaderTilXml implements Transformer<WebSoknad, Alternativ
     @Override
     public AlternativRepresentasjon transform(WebSoknad webSoknad) {
         Tilleggsstoenadsskjema tilleggsstoenadsskjema = tilTilleggsstoenadSkjema(webSoknad);
+        validerSkjema(tilleggsstoenadsskjema);
         ByteArrayOutputStream xml = new ByteArrayOutputStream();
         JAXB.marshal(tilleggsstoenadsskjema, xml);
         return new AlternativRepresentasjon()
@@ -104,5 +118,25 @@ public class TilleggsstonaderTilXml implements Transformer<WebSoknad, Alternativ
                 .medFilnavn("Tilleggsstonader.xml")
                 .medUuid(UUID.randomUUID().toString())
                 .medContent(xml.toByteArray());
+    }
+
+    private void validerSkjema(Tilleggsstoenadsskjema tilleggsstoenadsskjema) {
+        JAXBElement<Tilleggsstoenadsskjema> skjema = new JAXBElement<>(new QName("http://nav.no/melding/virksomhet/soeknadsskjema/v1/soeknadsskjema", "tilleggsstoenadsskjema"), Tilleggsstoenadsskjema.class, tilleggsstoenadsskjema);
+        try {
+            SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            Schema schema = factory.newSchema(new StreamSource(TilleggsstonaderTilXml.class.getResourceAsStream("/xsd/no/nav/melding/virksomhet/soeknadsskjema/v1/soeknadsskjema/soeknadsskjema.xsd")));
+            Marshaller m = JAXBContext.newInstance(Tilleggsstoenadsskjema.class).createMarshaller();
+            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,true);
+            m.setSchema(schema);
+            Validator validator = schema.newValidator();
+            JAXBSource source = new JAXBSource(m, skjema);
+            System.out.println(source);
+            JAXB.marshal(tilleggsstoenadsskjema, System.out);
+            validator.validate(source);
+        } catch (Exception e) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            JAXB.marshal(skjema, baos);
+            LOG.warn("Validering av skjema feilet: " + e + ". Xml: " + baos.toString(), e);
+        }
     }
 }

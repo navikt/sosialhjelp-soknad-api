@@ -6,14 +6,12 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.AlternativReprese
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.TilleggsstonaderTilXml;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 
 import javax.xml.bind.DataBindingException;
 import javax.xml.bind.JAXB;
 import java.io.ByteArrayInputStream;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,7 +99,6 @@ public class TilleggsstonaderTilXmlTest {
         ByteArrayInputStream stream = new ByteArrayInputStream(content);
 
         try {
-            System.out.println(StringUtils.toEncodedString(content, Charset.defaultCharset()));
             Tilleggsstoenadsskjema soknad = JAXB.unmarshal(stream, Tilleggsstoenadsskjema.class);
             assertThat(soknad.getPersonidentifikator()).isEqualTo(StaticSubjectHandler.getSubjectHandler().getUid());
         } catch (DataBindingException e) {
