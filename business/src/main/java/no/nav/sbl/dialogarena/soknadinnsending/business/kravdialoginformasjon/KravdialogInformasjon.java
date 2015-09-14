@@ -30,7 +30,7 @@ public interface KravdialogInformasjon {
 
     List<Transformer<WebSoknad, AlternativRepresentasjon>> getTransformers();
 
-    public abstract class KravdialogInformasjonUtenAlternativRepresentasjon implements KravdialogInformasjon {
+    public abstract class DefaultOppsett implements KravdialogInformasjon {
         @Override
         public List<Transformer<WebSoknad, AlternativRepresentasjon>> getTransformers() {
             return new ArrayList<>();
