@@ -1,10 +1,10 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
 public class Steg {
-    public final static Steg VEILEDNING = new Steg("informasjon", "veiledning");
-    public final static Steg SOKNAD = new Steg("soknad", "skjema");
-    public final static Steg VEDLEGG = new Steg("vedlegg", "vedlegg");
-    public final static Steg OPPSUMMERING = new Steg("oppsummering", "sendInn");
+    public static final Steg VEILEDNING = new Steg("informasjonsside", "veiledning");
+    public static final Steg SOKNAD = new Steg("soknad", "skjema");
+    public static final Steg VEDLEGG = new Steg("vedlegg", "vedlegg");
+    public static final Steg OPPSUMMERING = new Steg("oppsummering", "sendInn");
 
     public final String url;
     public final String cmstekst;
