@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class SoknadRefusjonDagligreise extends KravdialogInformasjon.KravdialogInformasjonUtenAlternativRepresentasjon {
+public class SoknadRefusjonDagligreise extends KravdialogInformasjon.DefaultOppsett {
 
     public String getSoknadTypePrefix() {
         return "soknadrefusjondagligreise";
