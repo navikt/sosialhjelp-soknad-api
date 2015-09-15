@@ -1,7 +1,15 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.*;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Barn;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.DrosjeTransportutgifter;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.ErUtgifterDekket;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Formaal;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Innsendingsintervaller;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.KollektivTransportutgifter;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Periode;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Skolenivaaer;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Tilsynskategorier;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import org.apache.commons.collections15.Transformer;
 import org.apache.commons.lang3.StringUtils;
@@ -86,14 +94,7 @@ public final class StofoTransformers {
                 return formaal;
             }
         });
-        TRANSFORMERS.put(BarnUnderAtten.class, new Transformer<String, BarnUnderAtten>() {
-            @Override
-            public BarnUnderAtten transform(String s) {
-                BarnUnderAtten barn = new BarnUnderAtten();
-                barn.setPersonidentifikator(s);
-                return barn;
-            }
-        });
+
         FAKTUM_TRANSFORMERS.put(Periode.class, new Transformer<Faktum, Periode>() {
             @Override
             public Periode transform(Faktum faktum) {
@@ -142,14 +143,14 @@ public final class StofoTransformers {
                 Tilsynskategorier tilsynskategorier = new Tilsynskategorier();
                 tilsynskategorier.setKodeverksRef("");
 
-                if ("true".equals(faktum.getProperties().get("barnepassBarnehage"))) {
-                    tilsynskategorier.setValue(StofoKodeverkVerdier.TilsynForetasAvKodeverk.kom.kodeverksverdi);
+                if ("true".equals(faktum.getProperties().get("barnehage"))) {
+                    tilsynskategorier.setValue(StofoKodeverkVerdier.TilsynForetasAvKodeverk.barnehage.kodeverksverdi);
                 }
-                if ("true".equals(faktum.getProperties().get("barnepassDagmamma"))) {
-                    tilsynskategorier.setValue(StofoKodeverkVerdier.TilsynForetasAvKodeverk.kom.kodeverksverdi);
+                if ("true".equals(faktum.getProperties().get("dagmamma"))) {
+                    tilsynskategorier.setValue(StofoKodeverkVerdier.TilsynForetasAvKodeverk.dagmamma.kodeverksverdi);
                 }
-                if ("true".equals(faktum.getProperties().get("barnepassPrivat"))) {
-                    tilsynskategorier.setValue(StofoKodeverkVerdier.TilsynForetasAvKodeverk.off.kodeverksverdi);
+                if ("true".equals(faktum.getProperties().get("privat"))) {
+                    tilsynskategorier.setValue(StofoKodeverkVerdier.TilsynForetasAvKodeverk.privat.kodeverksverdi);
                 }
 
                 return tilsynskategorier;
@@ -198,19 +199,24 @@ public final class StofoTransformers {
             if (fom != null) {
                 periode.setFom(new XMLGregorianCalendarImpl(DateTime.parse(fom).toGregorianCalendar()));
             }
-
             String tom = properties.get(TOM);
             if (tom != null) {
                 periode.setTom(new XMLGregorianCalendarImpl(DateTime.parse(tom).toGregorianCalendar()));
+            }
+            if (periode.getFom() == null && periode.getTom() == null) {
+                return null;
             }
         }
         return periode;
     }
 
-    static Double sumDouble(Faktum... faktumMedKey) {
+    static Double sumDouble(Faktum... fakta) {
+        return sumDouble(null, fakta);
+    }
+    static Double sumDouble(String property, Faktum... fakta) {
         Double sum = 0D;
-        for (Faktum faktum : faktumMedKey) {
-            Double res = extractValue(faktum, Double.class);
+        for (Faktum faktum : fakta) {
+            Double res = property!= null? extractValue(faktum, Double.class, property): extractValue(faktum, Double.class);
             sum += res != null ? res : 0D;
         }
         return sum;

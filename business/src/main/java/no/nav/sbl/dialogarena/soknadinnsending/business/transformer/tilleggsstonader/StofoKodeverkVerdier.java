@@ -71,7 +71,7 @@ public class StofoKodeverkVerdier {
     }
 
     public enum TilsynForetasAvKodeverk{
-        kom("KOM"), off("OFF"), priv("PRI");
+        dagmamma("KOM"), barnehage("OFF"), privat("PRI");
         public final String kodeverksverdi;
 
         TilsynForetasAvKodeverk(String kodeverksverdi) {

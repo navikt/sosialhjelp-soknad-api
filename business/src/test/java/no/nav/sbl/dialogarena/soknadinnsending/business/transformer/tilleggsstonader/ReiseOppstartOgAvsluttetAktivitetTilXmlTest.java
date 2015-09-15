@@ -22,6 +22,7 @@ public class ReiseOppstartOgAvsluttetAktivitetTilXmlTest {
         soknad.getFakta().add(new Faktum().medKey("reise.midlertidig.reisemaal").medProperty("adresse", "adresse").medProperty("postnr", "1256"));
 
         soknad.getFakta().add(new Faktum().medKey("reise.midlertidig.hjemmeboende").medValue("true"));
+        soknad.getFakta().add(new Faktum().medKey("barn").medProperty("skalFlytteMed", "true"));
 
         soknad.getFakta().add(new Faktum().medKey("reise.midlertidig.offentligtransport.drosje").medValue("true"));
         soknad.getFakta().add(new Faktum().medKey("reise.midlertidig.offentligtransport.drosje.belop").medValue("50"));
@@ -40,6 +41,7 @@ public class ReiseOppstartOgAvsluttetAktivitetTilXmlTest {
 
         assertThat(result.getAktivitetsstedAdresse()).isEqualTo("adresse, 1256");
         assertThat(result.getAvstand()).isEqualTo(new BigInteger("123"));
+        assertThat(result.isHarBarnUnderAtten()).isEqualTo(true);
         assertThat(result.getPeriode().getFom()).is(new PeriodMatcher(2015, 1, 2));
         assertThat(result.getPeriode().getTom()).is(new PeriodMatcher(2015, 3, 4));
         assertThat(result.isHarBarnUnderFemteklasse()).isEqualTo(true);
