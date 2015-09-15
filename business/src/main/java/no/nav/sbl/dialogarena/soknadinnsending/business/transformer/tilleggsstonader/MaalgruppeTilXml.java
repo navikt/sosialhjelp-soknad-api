@@ -6,6 +6,7 @@ import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Periode;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import org.apache.commons.collections15.Transformer;
 
+import java.util.Arrays;
 import java.util.Map;
 
 public class MaalgruppeTilXml implements Transformer<Faktum, Maalgruppeinformasjon> {
@@ -16,8 +17,10 @@ public class MaalgruppeTilXml implements Transformer<Faktum, Maalgruppeinformasj
         Maalgruppeinformasjon informasjon = new Maalgruppeinformasjon();
         informasjon.setPeriode(StofoTransformers.extractValue(faktum, Periode.class));
         informasjon.setMaalgruppetype(lagType(properties));
-        informasjon.setKilde(faktum.getType().toString()); //TODO: Usikker på om jeg har tolket kilde riktig.
-
+        informasjon.setKilde(faktum.getType().toString());
+        if(Arrays.asList("", "annet").contains(informasjon.getMaalgruppetype().getValue())){
+            return null;
+        }
         return informasjon;
     }
 

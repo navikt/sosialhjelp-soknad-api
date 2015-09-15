@@ -40,7 +40,7 @@ public class FlytteutgifterTilXml implements Transformer<WebSoknad, Flytteutgift
         flytteutgifter.setFlyttedato(extractValue(soknad.getFaktumMedKey(FLYTTEDATO), XMLGregorianCalendar.class));
         flytteutgifter.setTilflyttingsadresse(hentAdresse(soknad));
         flytteutgifter.setAvstand(extractValue(soknad.getFaktumMedKey(FLYTTEAVSTAND), BigInteger.class));
-        flytteutgifter.setSumTillleggsutgifter(sumDouble(soknad.getFaktumMedKey(HENGERLEIE),
+        flytteutgifter.setSumTilleggsutgifter(sumDouble(soknad.getFaktumMedKey(HENGERLEIE),
                 soknad.getFaktumMedKey(BOM),
                 soknad.getFaktumMedKey(PARKERING),
                 soknad.getFaktumMedKey(FERGE),

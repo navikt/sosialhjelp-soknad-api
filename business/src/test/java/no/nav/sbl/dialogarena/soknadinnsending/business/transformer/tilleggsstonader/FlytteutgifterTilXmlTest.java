@@ -158,7 +158,7 @@ public class FlytteutgifterTilXmlTest {
                 + new Double(FERGE_KR)
                 + new Double(ANNET_KR);
 
-        assertThat(flytteutgifter.getSumTillleggsutgifter()).isEqualTo(sumTilleggsutgifter);
+        assertThat(flytteutgifter.getSumTilleggsutgifter()).isEqualTo(sumTilleggsutgifter);
     }
 
     @Test
