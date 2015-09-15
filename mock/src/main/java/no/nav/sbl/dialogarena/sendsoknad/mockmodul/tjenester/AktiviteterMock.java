@@ -29,7 +29,7 @@ public class AktiviteterMock implements SakOgAktivitetV1 {
                 .withErStoenadsberettigetAktivitet(true)
                 .withSaksinformasjon(new WSSaksinformasjon().withSaksnummerArena("saksnummerarena").withVedtaksinformasjon(
                         new WSVedtaksinformasjon()
-                                .withPeriode(new WSPeriode().withFom(new LocalDate(2015, 1, 1)).withTom(new LocalDate(2015, 3, 31)))
+                                .withPeriode(new WSPeriode().withFom(new LocalDate(2015, 1, 1)).withTom(new LocalDate(2015, 4, 30)))
                                 .withVedtakId("1000")
                                 .withForventetDagligParkeringsutgift(100)
                                 .withTrengerParkering(true)
@@ -55,7 +55,7 @@ public class AktiviteterMock implements SakOgAktivitetV1 {
         for (int i = 0; ; i += antDagerBetalingsplan) {
             result.add(new WSBetalingsplan()
                     .withBetalingsplanId("" + (id++))
-                    .withJournalpostId("" + (id % 3 == 0 ? id : ""))
+                    .withJournalpostId("" + (id % 2 == 0 ? id : ""))
                     .withBeloep(((i + 1) * 300 % 5000))
                     .withUtgiftsperiode(new WSPeriode()
                             .withFom(fom.plusDays(i))
