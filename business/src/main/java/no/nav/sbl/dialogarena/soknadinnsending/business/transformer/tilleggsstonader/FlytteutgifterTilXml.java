@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader;
 
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Anbud;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.FlytterSelv;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Flytteutgifter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.collections15.Transformer;
@@ -11,6 +12,7 @@ import java.util.List;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTransformers.extractValue;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTransformers.sumDouble;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 public class FlytteutgifterTilXml implements Transformer<WebSoknad, Flytteutgifter> {
 
@@ -24,12 +26,12 @@ public class FlytteutgifterTilXml implements Transformer<WebSoknad, Flytteutgift
     public static final String BOM = "flytting.flytteselv.andreutgifter.bom";
     public static final String PARKERING = "flytting.flytteselv.andreutgifter.parkering";
     public static final String FERGE = "flytting.flytteselv.andreutgifter.ferge";
-    private static final String ANNET = "flytting.flytteselv.andreutgifter.annet";
     public static final String NAVN_FLYTTEBYRAA_1 = "flytting.flyttebyraa.forste.navn";
     public static final String BELOEP_FLYTTEBYRAA_1 = "flytting.flyttebyraa.forste.belop";
     public static final String NAVN_FLYTTEBYRAA_2 = "flytting.flyttebyraa.andre.navn";
     public static final String BELOEP_FLYTTEBYRAA_2 = "flytting.flyttebyraa.andre.belop";
-
+    private static final String ANNET = "flytting.flytteselv.andreutgifter.annet";
+    private static final String FLYTTING_FLYTTEBYRAA_VELGFORSTE = "flytting.flyttebyraa.velgforste";
 
     @Override
     public Flytteutgifter transform(WebSoknad soknad) {
@@ -39,8 +41,11 @@ public class FlytteutgifterTilXml implements Transformer<WebSoknad, Flytteutgift
         flytteutgifter.setTiltredelsesdato(extractValue(soknad.getFaktumMedKey(NYJOBB_STARTDATO), XMLGregorianCalendar.class));
         flytteutgifter.setFlyttedato(extractValue(soknad.getFaktumMedKey(FLYTTEDATO), XMLGregorianCalendar.class));
         flytteutgifter.setTilflyttingsadresse(hentAdresse(soknad));
+
+        flytteutgifter.setFlytterSelv(extractValue(soknad.getFaktumMedKey("flytting.selvellerbistand"), FlytterSelv.class));
+
         flytteutgifter.setAvstand(extractValue(soknad.getFaktumMedKey(FLYTTEAVSTAND), BigInteger.class));
-        flytteutgifter.setSumTillleggsutgifter(sumDouble(soknad.getFaktumMedKey(HENGERLEIE),
+        flytteutgifter.setSumTilleggsutgifter(sumDouble(soknad.getFaktumMedKey(HENGERLEIE),
                 soknad.getFaktumMedKey(BOM),
                 soknad.getFaktumMedKey(PARKERING),
                 soknad.getFaktumMedKey(FERGE),
@@ -51,12 +56,18 @@ public class FlytteutgifterTilXml implements Transformer<WebSoknad, Flytteutgift
         return flytteutgifter;
     }
 
+    private String flyttebyraaFaktum(WebSoknad soknad) {
+        Boolean valgtForste = extractValue(soknad.getFaktumMedKey(FLYTTING_FLYTTEBYRAA_VELGFORSTE), Boolean.class);
+        return isTrue(valgtForste) ? NAVN_FLYTTEBYRAA_1 : NAVN_FLYTTEBYRAA_2;
+    }
+
     private void transformAnbud(WebSoknad soknad, Flytteutgifter flytteutgifter) {
         Anbud anbud1 = lagAnbud(soknad, NAVN_FLYTTEBYRAA_1, BELOEP_FLYTTEBYRAA_1);
         Anbud anbud2 = lagAnbud(soknad, NAVN_FLYTTEBYRAA_2, BELOEP_FLYTTEBYRAA_2);
         List<Anbud> anbud = flytteutgifter.getAnbud();
         anbud.add(anbud1);
         anbud.add(anbud2);
+        flytteutgifter.setValgtFlyttebyraa(extractValue(soknad.getFaktumMedKey(flyttebyraaFaktum(soknad)), String.class));
     }
 
     private Anbud lagAnbud(WebSoknad soknad, String key, String key1) {

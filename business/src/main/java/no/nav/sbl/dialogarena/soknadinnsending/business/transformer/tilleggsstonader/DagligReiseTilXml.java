@@ -27,6 +27,7 @@ public class DagligReiseTilXml implements Transformer<WebSoknad, DagligReise> {
         reise.setInnsendingsintervall(extractValue(soknad.getFaktumMedKey("reise.aktivitet.offentligtransport.egenbil.sendebekreftelse"), Innsendingsintervaller.class));
         reise.setOensketUtbetalingsdag(extractValue(soknad.getFaktumMedKey("reise.aktivitet.utbetalingsdato"), BigInteger.class));
         reise.setAlternativeTransportutgifter(StofoUtils.alternativeTransportUtgifter(soknad, "aktivitet"));
+        reise.setHarMedisinskeAarsakerTilTransport(extractValue(soknad.getFaktumMedKey("reise.aktivitet.medisinskeaarsaker"), Boolean.class));
         return reise;
     }
 

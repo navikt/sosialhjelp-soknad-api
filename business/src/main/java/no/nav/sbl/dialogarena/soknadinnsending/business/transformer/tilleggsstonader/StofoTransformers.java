@@ -6,16 +6,21 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import org.apache.commons.collections15.Transformer;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigInteger;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static no.nav.modig.lang.collections.IterUtils.on;
 
 
 public final class StofoTransformers {
     public static final String TOM = "tom";
     public static final String FOM = "fom";
+    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(StofoTransformers.class);
 
     private static Map<Class<?>, Transformer<String, ?>> TRANSFORMERS = new HashMap<>();
     private static Map<Class<?>, Transformer<Faktum, ?>> FAKTUM_TRANSFORMERS = new HashMap<>();
@@ -76,6 +81,14 @@ public final class StofoTransformers {
                 return utgift;
             }
         });
+        TRANSFORMERS.put(FlytterSelv.class, new Transformer<String, FlytterSelv>() {
+            @Override
+            public FlytterSelv transform(String s) {
+                FlytterSelv flytterSelv = new FlytterSelv();
+                flytterSelv.setValue(StofoKodeverkVerdier.FlytterSelv.valueOf(s).kodeverk);
+                return flytterSelv;
+            }
+        });
         TRANSFORMERS.put(Formaal.class, new Transformer<String, Formaal>() {
             @Override
             public Formaal transform(String s) {
@@ -86,14 +99,7 @@ public final class StofoTransformers {
                 return formaal;
             }
         });
-        TRANSFORMERS.put(BarnUnderAtten.class, new Transformer<String, BarnUnderAtten>() {
-            @Override
-            public BarnUnderAtten transform(String s) {
-                BarnUnderAtten barn = new BarnUnderAtten();
-                barn.setPersonidentifikator(s);
-                return barn;
-            }
-        });
+
         FAKTUM_TRANSFORMERS.put(Periode.class, new Transformer<Faktum, Periode>() {
             @Override
             public Periode transform(Faktum faktum) {
@@ -142,14 +148,14 @@ public final class StofoTransformers {
                 Tilsynskategorier tilsynskategorier = new Tilsynskategorier();
                 tilsynskategorier.setKodeverksRef("");
 
-                if ("true".equals(faktum.getProperties().get("barnepassBarnehage"))) {
-                    tilsynskategorier.setValue(StofoKodeverkVerdier.TilsynForetasAvKodeverk.kom.kodeverksverdi);
+                if ("true".equals(faktum.getProperties().get("barnehage"))) {
+                    tilsynskategorier.setValue(StofoKodeverkVerdier.TilsynForetasAvKodeverk.barnehage.kodeverksverdi);
                 }
-                if ("true".equals(faktum.getProperties().get("barnepassDagmamma"))) {
-                    tilsynskategorier.setValue(StofoKodeverkVerdier.TilsynForetasAvKodeverk.kom.kodeverksverdi);
+                if ("true".equals(faktum.getProperties().get("dagmamma"))) {
+                    tilsynskategorier.setValue(StofoKodeverkVerdier.TilsynForetasAvKodeverk.dagmamma.kodeverksverdi);
                 }
-                if ("true".equals(faktum.getProperties().get("barnepassPrivat"))) {
-                    tilsynskategorier.setValue(StofoKodeverkVerdier.TilsynForetasAvKodeverk.off.kodeverksverdi);
+                if ("true".equals(faktum.getProperties().get("privat"))) {
+                    tilsynskategorier.setValue(StofoKodeverkVerdier.TilsynForetasAvKodeverk.privat.kodeverksverdi);
                 }
 
                 return tilsynskategorier;
@@ -168,7 +174,14 @@ public final class StofoTransformers {
 
     public static <T> T extractValue(Faktum faktum, Class<T> clazz) {
         return extractValue(faktum, clazz, null);
-
+    }
+    public static <T> List<T> extractValue(List<Faktum> fakta, final Class<T> clazz) {
+        return on(fakta).map(new Transformer<Faktum, T>() {
+            @Override
+            public T transform(Faktum faktum) {
+                return extractValue(faktum, clazz, null);
+            }
+        }).collect();
     }
 
     @SuppressWarnings("unchecked")
@@ -178,14 +191,19 @@ public final class StofoTransformers {
         }
         String valueToConvert = property == null ? faktum.getValue() : faktum.getProperties().get(property);
         Object result;
-        if (FAKTUM_TRANSFORMERS.containsKey(clazz)) {
-            result = FAKTUM_TRANSFORMERS.get(clazz).transform(faktum);
-        } else if (StringUtils.isNotBlank(valueToConvert) && TRANSFORMERS.containsKey(clazz)) {
-            result = TRANSFORMERS.get(clazz).transform(valueToConvert);
-        } else {
-            result = null;
+        try {
+            if (FAKTUM_TRANSFORMERS.containsKey(clazz)) {
+                result = FAKTUM_TRANSFORMERS.get(clazz).transform(faktum);
+            } else if (StringUtils.isNotBlank(valueToConvert) && TRANSFORMERS.containsKey(clazz)) {
+                result = TRANSFORMERS.get(clazz).transform(valueToConvert);
+            } else {
+                result = null;
+            }
+            return clazz.cast(result);
+        } catch (Exception ex) {
+            LOG.warn("feilet under transformering av faktum " + faktum + " med exception " + ex, ex);
         }
-        return clazz.cast(result);
+        return null;
     }
 
     public static Periode faktumTilPeriode(Faktum periodeFaktum) {
@@ -198,19 +216,25 @@ public final class StofoTransformers {
             if (fom != null) {
                 periode.setFom(new XMLGregorianCalendarImpl(DateTime.parse(fom).toGregorianCalendar()));
             }
-
             String tom = properties.get(TOM);
             if (tom != null) {
                 periode.setTom(new XMLGregorianCalendarImpl(DateTime.parse(tom).toGregorianCalendar()));
+            }
+            if (periode.getFom() == null && periode.getTom() == null) {
+                return null;
             }
         }
         return periode;
     }
 
-    static Double sumDouble(Faktum... faktumMedKey) {
+    static Double sumDouble(Faktum... fakta) {
+        return sumDouble(null, fakta);
+    }
+
+    static Double sumDouble(String property, Faktum... fakta) {
         Double sum = 0D;
-        for (Faktum faktum : faktumMedKey) {
-            Double res = extractValue(faktum, Double.class);
+        for (Faktum faktum : fakta) {
+            Double res = property != null ? extractValue(faktum, Double.class, property) : extractValue(faktum, Double.class);
             sum += res != null ? res : 0D;
         }
         return sum;

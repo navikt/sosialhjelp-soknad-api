@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader;
 
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.BarnUnderAtten;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.ReiseOppstartOgAvsluttetAktivitet;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.collections15.Transformer;
 
@@ -24,15 +24,18 @@ public class ReiseOppstartOgAvsluttetAktivitetTilXml implements Transformer<WebS
         reise.setAvstand(extractValue(soknad.getFaktumMedKey(FAKTUM_AVSTAND), BigInteger.class));
         reise.setAktivitetsstedAdresse(StofoUtils.sammensattAdresse(soknad.getFaktumMedKey(FAKTUM_REISEMAAL)));
         reise.setHarBarnUnderFemteklasse(extractValue(soknad.getFaktumMedKey(FAKTUM_HJEMMEBOENDE), Boolean.class));
-        reise.setBarnUnderAtten(barnUnder18(soknad));
+        reise.setHarBarnUnderAtten(harBarnUnder18(soknad));
         reise.setAlternativeTransportutgifter(StofoUtils.alternativeTransportUtgifter(soknad, "midlertidig"));
         return reise;
     }
 
-    private BarnUnderAtten barnUnder18(WebSoknad soknad) {
-        //TODO: Barn under 18 bør være liste. Støtte heller ikke dato.
-        return StofoTransformers.extractValue(soknad.getFaktumMedKey("barn"), BarnUnderAtten.class, "fno");
+    private Boolean harBarnUnder18(WebSoknad soknad) {
+        for (Faktum faktum : soknad.getFaktaMedKey("barn")) {
+            if (faktum.harPropertySomMatcher("skalFlytteMed", "true")) {
+                return true;
+            }
+        }
+        return false;
     }
-
 
 }

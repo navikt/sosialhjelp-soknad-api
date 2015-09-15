@@ -6,10 +6,10 @@ import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.EgenBilTranspo
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.KollektivTransportutgifter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import org.apache.commons.lang3.BooleanUtils;
 
 import static java.lang.String.format;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTransformers.extractValue;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 public class StofoUtils {
 
@@ -26,30 +26,33 @@ public class StofoUtils {
         utgifter.setDrosjeTransportutgifter(extractValue(soknad.getFaktumMedKey(format(FAKTUM_DROSJE_BELOP, bolk)), DrosjeTransportutgifter.class));
 
         utgifter.setKanEgenBilBrukes(extractValue(soknad.getFaktumMedKey(format(FAKTUM_EGENBIL, bolk)), Boolean.class));
-        if(BooleanUtils.isTrue(utgifter.isKanEgenBilBrukes())) {
+        if (isTrue(utgifter.isKanEgenBilBrukes())) {
             utgifter.setEgenBilTransportutgifter(egenBilUtgifter(soknad, bolk));
         }
 
         utgifter.setKanOffentligTransportBrukes(extractValue(soknad.getFaktumMedKey(format("reise.%s.offentligtransport", bolk)), Boolean.class));
-        utgifter.setKollektivTransportutgifter(extractValue(soknad.getFaktumMedKey(format("reise.%s.offentligtransport.utgift", bolk)), KollektivTransportutgifter.class));
+        if(isTrue(utgifter.isKanOffentligTransportBrukes())) {
+            utgifter.setKollektivTransportutgifter(extractValue(soknad.getFaktumMedKey(format("reise.%s.offentligtransport.utgift", bolk)), KollektivTransportutgifter.class));
+        }
+
         return utgifter;
     }
 
     private static EgenBilTransportutgifter egenBilUtgifter(WebSoknad soknad, String bolk) {
         EgenBilTransportutgifter utgifter = new EgenBilTransportutgifter();
-        utgifter.setSumAndreUtgifter(
-                StofoTransformers.sumDouble(
-                        soknad.getFaktumMedKey(format(FAKTUM_OFFENTLIGTRANSPORT_BOMPENGER, bolk)),
-                        soknad.getFaktumMedKey(format(FAKTUM_OFFENTLIGTRANSPORT_PARKERING, bolk)),
-                        soknad.getFaktumMedKey(format(FAKTUM_OFFENTLIGTRANSPORT_PIGGDEKK, bolk)),
-                        soknad.getFaktumMedKey(format(FAKTUM_OFFENTLIGTRANSPORT_FERGE, bolk)),
-                        soknad.getFaktumMedKey(format(FAKTUM_OFFENTLIGTRANSPORT_ANNET, bolk))
-                ));
+        Faktum[] fakta = new Faktum[]{
+                soknad.getFaktumMedKey(format(FAKTUM_OFFENTLIGTRANSPORT_BOMPENGER, bolk)),
+                soknad.getFaktumMedKey(format(FAKTUM_OFFENTLIGTRANSPORT_PARKERING, bolk)),
+                soknad.getFaktumMedKey(format(FAKTUM_OFFENTLIGTRANSPORT_PIGGDEKK, bolk)),
+                soknad.getFaktumMedKey(format(FAKTUM_OFFENTLIGTRANSPORT_FERGE, bolk)),
+                soknad.getFaktumMedKey(format(FAKTUM_OFFENTLIGTRANSPORT_ANNET, bolk))
+        };
+        utgifter.setSumAndreUtgifter(StofoTransformers.sumDouble(fakta));
         return utgifter;
     }
 
     public static String sammensattAdresse(Faktum faktum) {
         StofoKodeverkVerdier.SammensattAdresse sammensattAdresse = extractValue(faktum, StofoKodeverkVerdier.SammensattAdresse.class);
-        return  sammensattAdresse != null? sammensattAdresse.sammensattAdresse: null;
+        return sammensattAdresse != null ? sammensattAdresse.sammensattAdresse : null;
     }
 }

@@ -4,6 +4,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.AlternativReprese
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.TilleggsstonaderTilXml;
 import org.apache.commons.collections15.Transformer;
+import org.springframework.context.MessageSource;
 
 import java.util.Arrays;
 import java.util.List;
@@ -35,8 +36,8 @@ public class SoknadTilleggsstonader extends KravdialogInformasjon.DefaultOppsett
     }
 
     @Override
-    public List<Transformer<WebSoknad, AlternativRepresentasjon>> getTransformers() {
-        Transformer<WebSoknad, AlternativRepresentasjon> tilleggsstonaderTilXml = new TilleggsstonaderTilXml();
+    public List<Transformer<WebSoknad, AlternativRepresentasjon>> getTransformers(MessageSource messageSource) {
+        Transformer<WebSoknad, AlternativRepresentasjon> tilleggsstonaderTilXml = new TilleggsstonaderTilXml(messageSource);
         return Arrays.asList(tilleggsstonaderTilXml);
     }
 }

@@ -58,7 +58,16 @@ public class SamlingReiseTilXmlTest {
     public void skalKonvertereFaktumStruktur() {
         WebSoknad soknad = new WebSoknad();
         soknad.getFakta().add(new Faktum().medKey("reise.samling.fleresamlinger").medValue("en"));
-        soknad.getFakta().add(new Faktum().medKey("reise.samling.aktivitetsperiode").medProperty("fom", "2016-01-01").medProperty("tom", "2016-01-02"));
+        soknad.getFakta().add(new Faktum().medKey("reise.samling.aktivitetsperiode")
+                .medProperty("fom", "2016-01-01").medProperty("tom", "2016-01-02")
+                .medProperty("utgiftoffentligtransport", "100"));
+        soknad.getFakta().add(new Faktum().medKey("reise.samling.fleresamlinger.samling")
+                .medProperty("fom", "2016-01-01").medProperty("tom", "2016-01-02")
+                .medProperty("utgiftoffentligtransport", "100"));
+        soknad.getFakta().add(new Faktum().medKey("reise.samling.fleresamlinger.samling")
+                .medProperty("fom", "2016-01-01").medProperty("tom", "2016-01-02")
+                .medProperty("utgiftoffentligtransport", "100"));
+
 
         soknad.getFakta().add(new Faktum().medKey("reise.samling.reisemaal").medProperty("adresse", "En adresse").medProperty("postnr", "2233"));
         soknad.getFakta().add(new Faktum().medKey("reise.samling.reiselengde").medValue("100"));
@@ -85,5 +94,13 @@ public class SamlingReiseTilXmlTest {
         assertThat(xml.getAlternativeTransportutgifter().getEgenBilTransportutgifter().getSumAndreUtgifter()).isEqualTo(11d);
         assertThat(xml.getAlternativeTransportutgifter().isKanEgenBilBrukes()).isEqualTo(true);
         assertThat(xml.getAlternativeTransportutgifter().isKanOffentligTransportBrukes()).isEqualTo(false);
+        assertThat(xml.getAlternativeTransportutgifter().getKollektivTransportutgifter()).isEqualTo(null);
+        soknad.getFaktumMedKey("reise.samling.offentligtransport").setValue("true");
+        xml = new SamlingReiseTilXml().transform(soknad);
+        assertThat(xml.getAlternativeTransportutgifter().getKollektivTransportutgifter().getBeloepPerMaaned()).isEqualTo(new BigInteger("100"));
+
+        soknad.getFaktumMedKey("reise.samling.fleresamlinger").setValue("flere");
+        xml = new SamlingReiseTilXml().transform(soknad);
+        assertThat(xml.getAlternativeTransportutgifter().getKollektivTransportutgifter().getBeloepPerMaaned()).isEqualTo(new BigInteger("200"));
     }
 }
