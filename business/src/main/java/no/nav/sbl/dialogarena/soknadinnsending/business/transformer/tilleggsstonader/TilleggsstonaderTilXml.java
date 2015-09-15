@@ -12,6 +12,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.collections15.Transformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSource;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXB;
@@ -32,8 +33,13 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tille
 
 public class TilleggsstonaderTilXml implements Transformer<WebSoknad, AlternativRepresentasjon> {
     private static final Logger LOG = LoggerFactory.getLogger(TilleggsstonaderTilXml.class);
+    private final MessageSource messageSource;
 
-    private static Tilleggsstoenadsskjema tilTilleggsstoenadSkjema(WebSoknad webSoknad) {
+    public TilleggsstonaderTilXml(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
+
+    private static Tilleggsstoenadsskjema tilTilleggsstoenadSkjema(WebSoknad webSoknad, MessageSource messageSource) {
         Tilleggsstoenadsskjema skjema = new Tilleggsstoenadsskjema();
         skjema.setMaalgruppeinformasjon(new MaalgruppeTilXml().transform(webSoknad.getFaktumMedKey("maalgruppe")));
         Rettighetstype rettighetstype = new Rettighetstype();
@@ -46,7 +52,7 @@ public class TilleggsstonaderTilXml implements Transformer<WebSoknad, Alternativ
         if (aktivBolk("flytting", webSoknad)) {
             rettighetstype.setFlytteutgifter(new FlytteutgifterTilXml().transform(webSoknad));
         }
-        rettighetstype.setTilsynsutgifter(tilsynsutgifter(webSoknad));
+        rettighetstype.setTilsynsutgifter(tilsynsutgifter(webSoknad, messageSource));
         rettighetstype.setReiseutgifter(reiseutgifter(webSoknad));
 
         skjema.setRettighetstype(rettighetstype);
@@ -55,13 +61,13 @@ public class TilleggsstonaderTilXml implements Transformer<WebSoknad, Alternativ
         return skjema;
     }
 
-    private static Tilsynsutgifter tilsynsutgifter(WebSoknad webSoknad) {
+    private static Tilsynsutgifter tilsynsutgifter(WebSoknad webSoknad, MessageSource messageSource) {
         Tilsynsutgifter tilsynsutgifter = new Tilsynsutgifter();
         if (aktivBolk("familie", webSoknad)) {
             tilsynsutgifter.setTilsynsutgifterFamilie(new TilsynFamilieTilXml().transform(webSoknad));
         }
         if (aktivBolk("barnepass", webSoknad)) {
-            tilsynsutgifter.setTilsynsutgifterBarn(new TilsynBarnepassTilXml().transform(webSoknad));
+            tilsynsutgifter.setTilsynsutgifterBarn(new TilsynBarnepassTilXml(messageSource).transform(webSoknad));
         }
 
         return tilsynsutgifter.getTilsynsutgifterBarn() == null && tilsynsutgifter.getTilsynsutgifterFamilie() == null ? null : tilsynsutgifter;
@@ -109,7 +115,7 @@ public class TilleggsstonaderTilXml implements Transformer<WebSoknad, Alternativ
 
     @Override
     public AlternativRepresentasjon transform(WebSoknad webSoknad) {
-        Tilleggsstoenadsskjema tilleggsstoenadsskjema = tilTilleggsstoenadSkjema(webSoknad);
+        Tilleggsstoenadsskjema tilleggsstoenadsskjema = tilTilleggsstoenadSkjema(webSoknad, messageSource);
         validerSkjema(tilleggsstoenadsskjema);
         ByteArrayOutputStream xml = new ByteArrayOutputStream();
         JAXB.marshal(tilleggsstoenadsskjema, xml);
@@ -126,12 +132,10 @@ public class TilleggsstonaderTilXml implements Transformer<WebSoknad, Alternativ
             SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             Schema schema = factory.newSchema(new StreamSource(TilleggsstonaderTilXml.class.getResourceAsStream("/xsd/no/nav/melding/virksomhet/soeknadsskjema/v1/soeknadsskjema/soeknadsskjema.xsd")));
             Marshaller m = JAXBContext.newInstance(Tilleggsstoenadsskjema.class).createMarshaller();
-            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,true);
+            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             m.setSchema(schema);
             Validator validator = schema.newValidator();
             JAXBSource source = new JAXBSource(m, skjema);
-            System.out.println(source);
-            JAXB.marshal(tilleggsstoenadsskjema, System.out);
             validator.validate(source);
         } catch (Exception e) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();

@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
@@ -47,6 +48,10 @@ public class SoknadRessurs {
 
     @Inject
     private HtmlGenerator pdfTemplate;
+
+    @Inject
+    private NavMessageSource messageSource;
+
 
     @GET
     @Path("/{behandlingsId}")
@@ -137,7 +142,7 @@ public class SoknadRessurs {
     public byte[] xml(@PathParam("behandlingsId") String behandlingsId) {
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, false);
         soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(soknadService.hentSoknadStruktur(soknad.getskjemaNummer()));
-        return new TilleggsstonaderTilXml().transform(soknad).getContent();
+        return new TilleggsstonaderTilXml(messageSource).transform(soknad).getContent();
 
     }
 
