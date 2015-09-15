@@ -1,16 +1,7 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.tjenester;
 
-import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetOgVedtakDagligReiseListePersonIkkeFunnet;
-import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetOgVedtakDagligReiseListeSikkerhetsbegrensning;
-import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetsinformasjonListePersonIkkeFunnet;
-import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetsinformasjonListeSikkerhetsbegrensning;
-import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.SakOgAktivitetV1;
-import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSAktivitet;
-import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSAktivitetOgVedtak;
-import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSBetalingsplan;
-import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSPeriode;
-import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSSaksinformasjon;
-import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSVedtaksinformasjon;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.*;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetOgVedtakDagligReiseListeRequest;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetOgVedtakDagligReiseListeResponse;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetsinformasjonListeRequest;
@@ -65,6 +56,7 @@ public class AktiviteterMock implements SakOgAktivitetV1 {
             result.add(new WSBetalingsplan()
                     .withBetalingsplanId("" + (id++))
                     .withJournalpostId("" + (id % 5 == 0 ? id : ""))
+                    .withBeloep(((i + 1) * 300 % 5000))
                     .withUtgiftsperiode(new WSPeriode()
                             .withFom(fom.plusDays(i))
                             .withTom(fom.plusDays(i + antDagerBetalingsplan))));
