@@ -308,21 +308,25 @@ public class VedleggService {
 
     public List<Vedlegg> genererPaakrevdeVedlegg(String behandlingsId) {
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true);
-        SoknadStruktur struktur = soknadService.hentSoknadStruktur(soknad.getskjemaNummer());
-        final List<VedleggsGrunnlag> alleMuligeVedlegg = struktur.hentAlleMuligeVedlegg(soknad);
+        if(soknad.erEttersending()){
+            return on(vedleggRepository.hentVedlegg(behandlingsId)).filter(Vedlegg.PAAKREVDE_VEDLEGG).collect();
+        } else {
+            SoknadStruktur struktur = soknadService.hentSoknadStruktur(soknad.getskjemaNummer());
+            final List<VedleggsGrunnlag> alleMuligeVedlegg = struktur.hentAlleMuligeVedlegg(soknad);
 
-        on(alleMuligeVedlegg).forEach(new Closure<VedleggsGrunnlag>() {
-            @Override
-            public void execute(VedleggsGrunnlag vedleggsgrunnlag) {
-                vedleggsgrunnlag.oppdaterVedlegg(vedleggRepository);
-            }
-        });
-        return on(alleMuligeVedlegg).map(new Transformer<VedleggsGrunnlag, Vedlegg>() {
-            @Override
-            public Vedlegg transform(VedleggsGrunnlag vedleggsgrunnlag) {
-                return vedleggsgrunnlag.getVedlegg();
-            }
-        }).filter(Vedlegg.PAAKREVDE_VEDLEGG).collect();
+            on(alleMuligeVedlegg).forEach(new Closure<VedleggsGrunnlag>() {
+                @Override
+                public void execute(VedleggsGrunnlag vedleggsgrunnlag) {
+                    vedleggsgrunnlag.oppdaterVedlegg(vedleggRepository);
+                }
+            });
+            return on(alleMuligeVedlegg).map(new Transformer<VedleggsGrunnlag, Vedlegg>() {
+                @Override
+                public Vedlegg transform(VedleggsGrunnlag vedleggsgrunnlag) {
+                    return vedleggsgrunnlag.getVedlegg();
+                }
+            }).filter(Vedlegg.PAAKREVDE_VEDLEGG).collect();
+        }
     }
 
     @Transactional
