@@ -62,6 +62,7 @@ public class WebSoknad implements Serializable {
     private String soknadPrefix;
     private String soknadUrl;
     private String fortsettSoknadUrl;
+    private Steg[] stegliste;
 
 
     public WebSoknad() {
@@ -221,6 +222,10 @@ public class WebSoknad implements Serializable {
 
     public WebSoknad medSoknadUrl(String url) {
         this.soknadUrl = url;
+        return this;
+    }
+    public WebSoknad medStegliste(Steg[] stegliste){
+        this.stegliste = stegliste;
         return this;
     }
 
@@ -485,6 +490,9 @@ public class WebSoknad implements Serializable {
     }
     public String getSoknadUrl() {
         return soknadUrl;
+    }
+    public Steg[] getStegliste(){
+        return stegliste;
     }
 
     public String getFortsettSoknadUrl() {

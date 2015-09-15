@@ -43,7 +43,6 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hentTekstMedParameter
 * hentTekstMedFaktumParameter
 * hentLand
-* forVedlegg
 * forPerioder
 * hentFaktumValue
 * hvisFlereErTrue
@@ -61,6 +60,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * forFaktumTilknyttetBarn - Returnerer faktumet tilknyttet barnet i parent-context.
 * forIkkeInnsendteVedlegg - Itererer over vedlegg som ikke er sendt inn
 * forInnsendteVedlegg - Itererer over innsendte vedlegg på søknaden
+* forVedlegg - Lar en iterere over alle påkrevde vedlegg på en søknad
 * harBarnetInntekt - Henter summen hvis barnet har inntekt. Må brukes innenfor en #forFaktum eller #forFakta helper. 
 * hentSkjemanummer - Setter inn søknadens skjemanummer, også om det er en søknad for dagpenger
 * hvisHarDiskresjonskode - Viser innhold avhengig av om personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)
@@ -72,7 +72,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hvisMindre - Evaluerer en string til integer og sjekker om verdien er mindre enn andre inputparameter
 * hvisSant - Dersom variabelen er "true" vil innholdet vises
 * kortDato - Formatterer en datostreng på formatet yyyy-mm-dd til dd.mm.aaaa
-* sendtInnInfo - Tilgjengeliggjør informasjon om søknaden (innsendte vedlegg, ikke-innsendte vedlegg og dato)
+* sendtInnInfo - Tilgjengeliggjør informasjon om søknaden (innsendte vedlegg, påkrevde vedlegg og dato)
 * toCapitalized - Gjør om en tekst til at alle ord starter med store bokstaver
 * toLowerCase - Gjør om en tekst til kun små bokstaver
 * variabel - Lager en variabel med en bestemt verdi som kun er tilgjengelig innenfor helperen
@@ -160,6 +160,24 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 {{else}}
     Ingen innsendte vedlegg
 {{/forInnsendteVedlegg}}
+```
+
+
+##### forVedlegg
+
+```
+{{#forVedlegg}}
+    vedlegg: {{navn}}
+
+    {{#hvisLik innsendingsvalg "LastetOpp"}}
+        lastet opp
+    {{ else }}
+        ikke lastet opp
+    {{/hvisLik}}
+    + andre verdier som ligger på vedleggene
+{{else}}
+    Ingen vedlegg
+{{/forVedlegg}}
 ```
 
 
