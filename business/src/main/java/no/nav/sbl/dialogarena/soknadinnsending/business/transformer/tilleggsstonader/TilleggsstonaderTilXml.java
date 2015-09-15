@@ -127,7 +127,8 @@ public class TilleggsstonaderTilXml implements Transformer<WebSoknad, Alternativ
     }
 
     private void validerSkjema(Tilleggsstoenadsskjema tilleggsstoenadsskjema) {
-        JAXBElement<Tilleggsstoenadsskjema> skjema = new JAXBElement<>(new QName("http://nav.no/melding/virksomhet/soeknadsskjema/v1/soeknadsskjema", "tilleggsstoenadsskjema"), Tilleggsstoenadsskjema.class, tilleggsstoenadsskjema);
+        QName qname = new QName("http://nav.no/melding/virksomhet/soeknadsskjema/v1/soeknadsskjema", "tilleggsstoenadsskjema");
+        JAXBElement<Tilleggsstoenadsskjema> skjema = new JAXBElement<>(qname, Tilleggsstoenadsskjema.class, tilleggsstoenadsskjema);
         try {
             SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             Schema schema = factory.newSchema(new StreamSource(TilleggsstonaderTilXml.class.getResourceAsStream("/xsd/no/nav/melding/virksomhet/soeknadsskjema/v1/soeknadsskjema/soeknadsskjema.xsd")));

@@ -22,8 +22,8 @@ public final class StofoTransformers {
     public static final String FOM = "fom";
     private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(StofoTransformers.class);
 
-    private static Map<Class<?>, Transformer<String, ?>> TRANSFORMERS = new HashMap<>();
-    private static Map<Class<?>, Transformer<Faktum, ?>> FAKTUM_TRANSFORMERS = new HashMap<>();
+    private static final Map<Class<?>, Transformer<String, ?>> TRANSFORMERS = new HashMap<>();
+    private static final Map<Class<?>, Transformer<Faktum, ?>> FAKTUM_TRANSFORMERS = new HashMap<>();
 
     static {
         TRANSFORMERS.put(String.class, new Transformer<String, String>() {
