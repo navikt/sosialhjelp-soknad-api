@@ -51,6 +51,8 @@ public class AktivitetServiceTest {
         aktivitetService.hentAktiviteter(fodselnummer);
         verify(webservice).finnAktivitetsinformasjonListe(argument.capture());
         assertThat(argument.getValue().getPersonident()).isEqualTo(fodselnummer);
+        assertThat(argument.getValue().getPeriode().getFom()).isEqualTo(LocalDate.now().minusMonths(6));
+        assertThat(argument.getValue().getPeriode().getTom()).isEqualTo(LocalDate.now().plusMonths(2));
     }
 
     @Test

@@ -46,8 +46,8 @@ public class MaalgrupperService {
         return new WSFinnMaalgruppeinformasjonListeRequest()
                 .withPersonident(fodselsnummer)
                 .withPeriode(new WSPeriode()
-                        .withFom(LocalDate.now().minusYears(1))
-                        .withTom(LocalDate.now())
+                        .withFom(LocalDate.now().minusMonths(6))
+                        .withTom(LocalDate.now().plusMonths(2))
                 );
     }
 
