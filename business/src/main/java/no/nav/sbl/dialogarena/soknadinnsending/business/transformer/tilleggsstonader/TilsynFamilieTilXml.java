@@ -14,7 +14,7 @@ import java.util.List;
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.FaktumPredicates.KEYS;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.FaktumPredicates.propertyIsValue;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTransformers.extractValue;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.StofoTransformers.extractValue;
 
 public class TilsynFamilieTilXml implements Transformer<WebSoknad, TilsynsutgifterFamilie> {
     @Override

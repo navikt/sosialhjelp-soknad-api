@@ -22,6 +22,15 @@ public final class FaktumPredicates {
             }
         };
     }
+
+    public static Predicate<Faktum> harPropertyMedValue(final String key, final String value) {
+         return new Predicate<Faktum>() {
+             @Override
+             public boolean evaluate(Faktum faktum) {
+                 return faktum.harPropertySomMatcher(key, value);
+             }
+         };
+     }
     public static Predicate<Faktum> harValue(final String value){
         return new Predicate<Faktum>() {
             @Override
