@@ -49,6 +49,7 @@ public class AktivitetBetalingsplanService implements BolkService {
                         .medProperty("id", wsVedtaksinformasjon.getBetalingsplanId())
                         .medProperty("fom", datoTilString(wsVedtaksinformasjon.getUtgiftsperiode().getFom()))
                         .medProperty("tom", datoTilString(wsVedtaksinformasjon.getUtgiftsperiode().getTom()))
+                        .medProperty("refunderbartBeloep", "" + wsVedtaksinformasjon.getBeloep())
                         .medProperty("alleredeSokt", "" + StringUtils.isNotBlank(wsVedtaksinformasjon.getJournalpostId()));
                 if (StringUtils.isNotBlank(wsVedtaksinformasjon.getJournalpostId())) {
                     betalingsplan.medProperty("sokerForPeriode", "false");
