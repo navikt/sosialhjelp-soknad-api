@@ -24,6 +24,7 @@ public class TilsynFamilieTilXml implements Transformer<WebSoknad, Tilsynsutgift
         familie.setTilsynsmottaker(extractValue(soknad.getFaktumMedKey("tilsynfamilie.persontilsyn"), String.class));
         familie.setTilsynForetasAv(foretasAv(soknad.getFaktumMedKey("tilsynfamilie.typetilsyn")));
         Boolean deletilsyn = extractValue(soknad.getFaktumMedKey("tilsynfamilie.deletilsyn"), Boolean.class);
+        familie.setDeltTilsyn(deletilsyn);
         if(deletilsyn != null && deletilsyn) {
             familie.setAnnenTilsynsperson(extractValue(soknad.getFaktumMedKey("tilsynfamilie.deletilsyn"), String.class, "personnummer"));
         }

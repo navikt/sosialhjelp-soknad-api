@@ -4,6 +4,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.AlternativReprese
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.AktivitetBetalingsplanService;
 import org.apache.commons.collections15.Transformer;
+import org.springframework.context.MessageSource;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -36,7 +37,7 @@ public class SoknadRefusjonDagligreise implements KravdialogInformasjon {
     }
 
     @Override
-    public List<Transformer<WebSoknad, AlternativRepresentasjon>> getTransformers() {
+    public List<Transformer<WebSoknad, AlternativRepresentasjon>> getTransformers(MessageSource messageSource) {
         return Collections.emptyList();
     }
 }

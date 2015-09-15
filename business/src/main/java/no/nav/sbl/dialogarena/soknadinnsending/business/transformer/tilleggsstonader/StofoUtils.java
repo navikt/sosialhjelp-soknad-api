@@ -34,6 +34,7 @@ public class StofoUtils {
         if(isTrue(utgifter.isKanOffentligTransportBrukes())) {
             utgifter.setKollektivTransportutgifter(extractValue(soknad.getFaktumMedKey(format("reise.%s.offentligtransport.utgift", bolk)), KollektivTransportutgifter.class));
         }
+
         return utgifter;
     }
 
