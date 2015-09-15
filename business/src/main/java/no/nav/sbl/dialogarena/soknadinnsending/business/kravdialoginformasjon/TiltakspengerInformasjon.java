@@ -7,7 +7,7 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 
-public class TiltakspengerInformasjon extends KravdialogInformasjon.KravdialogInformasjonUtenAlternativRepresentasjon {
+public class TiltakspengerInformasjon extends KravdialogInformasjon.DefaultOppsett {
 
     public String getSoknadTypePrefix() {
         return "tiltakspenger";
