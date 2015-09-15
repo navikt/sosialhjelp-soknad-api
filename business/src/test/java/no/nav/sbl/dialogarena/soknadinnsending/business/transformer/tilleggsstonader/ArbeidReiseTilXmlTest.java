@@ -12,8 +12,8 @@ import org.junit.Test;
 
 import java.math.BigInteger;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTestUtils.periodeMatcher;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoKodeverkVerdier.FormaalKodeverk.oppfolging;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTestUtils.periodeMatcher;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ArbeidReiseTilXmlTest {
@@ -73,6 +73,9 @@ public class ArbeidReiseTilXmlTest {
 
         assertThat(result.getAlternativeTransportutgifter().isKanEgenBilBrukes()).isEqualTo(true);
         assertThat(result.getAlternativeTransportutgifter().isKanOffentligTransportBrukes()).isEqualTo(false);
+        assertThat(result.getAlternativeTransportutgifter().getKollektivTransportutgifter()).isNull();
+        soknad.getFaktumMedKey("reise.arbeidssoker.offentligtransport").medValue("true");
+        result = new ArbeidReiseTilXml().transform(soknad);
         assertThat(result.getAlternativeTransportutgifter().getKollektivTransportutgifter()).is(new Condition<KollektivTransportutgifter>() {
             @Override
             public boolean matches(KollektivTransportutgifter value) {

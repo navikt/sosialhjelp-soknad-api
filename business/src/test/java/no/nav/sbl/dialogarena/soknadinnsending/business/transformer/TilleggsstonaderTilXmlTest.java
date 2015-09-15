@@ -1,14 +1,13 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.transformer;
 
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Tilleggsstoenadsskjema;
+import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.TilleggsstonaderTilXml;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import javax.xml.bind.DataBindingException;
 import javax.xml.bind.JAXB;
@@ -16,17 +15,21 @@ import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.System.setProperty;
+import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 
 public class TilleggsstonaderTilXmlTest {
 
-    private final TilleggsstonaderTilXml tilXml = new TilleggsstonaderTilXml();
+    private final TilleggsstonaderTilXml tilXml = new TilleggsstonaderTilXml(null);
     private WebSoknad soknad;
 
     @Before
     public void beforeEach() {
+        setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
+
         soknad = new WebSoknad();
         List<Faktum> fakta = new ArrayList<>();
         fakta.add(new Faktum()
@@ -96,7 +99,8 @@ public class TilleggsstonaderTilXmlTest {
         ByteArrayInputStream stream = new ByteArrayInputStream(content);
 
         try {
-            JAXB.unmarshal(stream, Tilleggsstoenadsskjema.class);
+            Tilleggsstoenadsskjema soknad = JAXB.unmarshal(stream, Tilleggsstoenadsskjema.class);
+            assertThat(soknad.getPersonidentifikator()).isEqualTo(StaticSubjectHandler.getSubjectHandler().getUid());
         } catch (DataBindingException e) {
             fail("Kunne ikke unmarshalle: " + e.getCause().toString());
         }

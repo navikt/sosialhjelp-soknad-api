@@ -4,6 +4,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.AlternativReprese
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Steg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.collections15.Transformer;
+import org.springframework.context.MessageSource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +29,11 @@ public interface KravdialogInformasjon {
 
     List<String> getSkjemanummer();
 
-    List<Transformer<WebSoknad, AlternativRepresentasjon>> getTransformers();
+    List<Transformer<WebSoknad, AlternativRepresentasjon>> getTransformers(MessageSource messageSource);
 
     public abstract class DefaultOppsett implements KravdialogInformasjon {
         @Override
-        public List<Transformer<WebSoknad, AlternativRepresentasjon>> getTransformers() {
+        public List<Transformer<WebSoknad, AlternativRepresentasjon>> getTransformers(MessageSource messageSource) {
             return new ArrayList<>();
         }
 

@@ -5,8 +5,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -122,8 +120,9 @@ public class BoutgifterTilXmlTest {
         websoknad.setFakta(fakta);
         boutgifter = boutgifterTilXml.transform(websoknad);
         assertThat(boutgifter.isHarBoutgifterVedSamling()).isEqualTo(true);
-        assertThat(boutgifter.getSamlingsdato().size()).isEqualTo(2);
-        assertThat(boutgifter.getSamlingsdato().get(0).toString()).isEqualTo("2015-01-01T00:00:00.000+01:00");
+        assertThat(boutgifter.getSamlingsperiode().size()).isEqualTo(2);
+        assertThat(boutgifter.getSamlingsperiode().get(0).getFom().toString()).isEqualTo("2015-01-01T00:00:00.000+01:00");
+        assertThat(boutgifter.getSamlingsperiode().get(0).getTom().toString()).isEqualTo("2015-02-02T00:00:00.000+01:00");
     }
 
 }

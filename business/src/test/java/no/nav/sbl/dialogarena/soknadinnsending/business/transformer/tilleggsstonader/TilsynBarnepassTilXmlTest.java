@@ -6,22 +6,39 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.context.MessageSource;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoKodeverkVerdier.BarnepassAarsak.ingen;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoKodeverkVerdier.BarnepassAarsak.langvarig;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoKodeverkVerdier.BarnepassAarsak.trengertilsyn;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTestUtils.periodeMatcher;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isNull;
+import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class TilsynBarnepassTilXmlTest {
-    private final TilsynBarnepassTilXml tilsynBarnepassTilXml = new TilsynBarnepassTilXml();
+    @Mock
+    MessageSource navMessageSource;
+    long barnId = 10;
+    private TilsynBarnepassTilXml tilsynBarnepassTilXml;
     private TilsynsutgifterBarn tilsynsutgifterBarnXml;
     private WebSoknad soknad;
 
     @Before
     public void beforeEach() {
         soknad = new WebSoknad();
+        tilsynBarnepassTilXml = new TilsynBarnepassTilXml(navMessageSource);
         List<Faktum> fakta = new ArrayList<>();
 
         fakta.add(new Faktum().medKey("barnepass.periode").medProperty("fom", "2015-01-01").medProperty("tom", "2016-01-01"));
@@ -64,28 +81,35 @@ public class TilsynBarnepassTilXmlTest {
         String dagmamma = "true";
         String privat = "true";
 
-        leggTilBarn(oleFnr, oleNavn, "true", oleAnnenForsorger, barnehage, null, null);
-        leggTilBarn(doleFnr, doleNavn, "true", doleAnnenForsorger, null, dagmamma, null);
-        leggTilBarn("12312312312", "Doffen Mockmann", "false", null, null, null, privat);
+        leggTilBarn(oleFnr, oleNavn, "true", oleAnnenForsorger, barnehage, null, null, true, true, false, false);
+        leggTilBarn(doleFnr, doleNavn, "true", doleAnnenForsorger, null, dagmamma, null, false, false, true, false);
+        leggTilBarn("12312312312", "Doffen Mockmann", "false", null, null, null, privat, false, false, false, false);
+
+        when(navMessageSource.getMessage(eq(trengertilsyn.cmsKey), isNull(Object[].class), eq(trengertilsyn.cmsKey), any(Locale.class))).thenReturn("tilsyn");
+        when(navMessageSource.getMessage(eq(langvarig.cmsKey), isNull(Object[].class), eq(langvarig.cmsKey), any(Locale.class))).thenReturn("langvarig");
+        when(navMessageSource.getMessage(eq(ingen.cmsKey), isNull(Object[].class), eq(ingen.cmsKey), any(Locale.class))).thenReturn("ingen");
 
         tilsynsutgifterBarnXml = tilsynBarnepassTilXml.transform(soknad);
         List<Barn> barn = tilsynsutgifterBarnXml.getBarn();
         assertThat(barn.size()).isEqualTo(2);
 
+
         assertThat(barn.get(0).getNavn()).isEqualTo("Ole");
         assertThat(barn.get(0).getPersonidentifikator()).isEqualTo(oleFnr);
-        //assertThat(bar.get(0).getAnnenForsoergerperson()).isEqualTo(oleAnnenForsorger);
-        //assertThat(bar.get(0).getTilsynskategori()).isEqualTo(StofoKodeverkVerdier.TilsynForetasAvKodeverk.kom.kodeverksverdi);
+        assertThat(barn.get(0).getTilsynskategori().getValue()).isEqualTo(StofoKodeverkVerdier.TilsynForetasAvKodeverk.barnehage.kodeverksverdi);
+        assertThat(barn.get(0).isHarFullfoertFjerdeSkoleaar()).isEqualTo(true);
+        assertThat(barn.get(0).getAarsakTilBarnepass().getValue()).isEqualTo("tilsyn");
 
         assertThat(barn.get(1).getNavn()).isEqualTo("Dole");
         assertThat(barn.get(1).getPersonidentifikator()).isEqualTo(doleFnr);
-        //assertThat(barn.get(1).getAnnenForsoergerperson()).isEqualTo(doleAnnenForsorger);
-        //assertThat(barn.get(1).getTilsynskategori()).isEqualTo(StofoKodeverkVerdier.TilsynForetasAvKodeverk.kom.kodeverksverdi);
-
+        assertThat(barn.get(1).getTilsynskategori().getValue()).isEqualTo(StofoKodeverkVerdier.TilsynForetasAvKodeverk.dagmamma.kodeverksverdi);
+        assertThat(barn.get(1).isHarFullfoertFjerdeSkoleaar()).isEqualTo(false);
+        assertThat(tilsynsutgifterBarnXml.getAnnenForsoergerperson()).isEqualTo("***REMOVED***");
+        assertThat(barn.get(1).getAarsakTilBarnepass().getValue()).isEqualTo("langvarig");
     }
-    long barnId = 10;
-    private void leggTilBarn(String fnr, String navn, String sokesOm, String annenForsorger, String barnehage, String dagpmamma, String privat) {
-        long faktumId = barnId++ ;
+
+    private void leggTilBarn(String fnr, String navn, String sokesOm, String annenForsorger, String barnehage, String dagpmamma, String privat, boolean fullortFjerdeSkolear, boolean tilsyn, boolean langvarig, boolean ingen) {
+        long faktumId = barnId++;
         soknad.getFakta().add(new Faktum().medKey("barn")
                 .medFaktumId(faktumId)
                 .medProperty("fnr", fnr)
@@ -93,6 +117,7 @@ public class TilsynBarnepassTilXmlTest {
                 .medProperty("fornavn", navn.split(" ")[0])
                 .medProperty("etternavn", navn.split(" ")[1]));
         soknad.getFakta().add(new Faktum()
+                .medFaktumId(faktumId + 1000)
                 .medKey("barnepass.sokerbarnepass")
                 .medValue(sokesOm)
                 .medProperty("tilknyttetbarn", "" + faktumId)
@@ -101,5 +126,13 @@ public class TilsynBarnepassTilXmlTest {
                 .medProperty("barnepassBarnehage", barnehage)
                 .medProperty("barnepassDagmamma", dagpmamma)
                 .medProperty("barnepassPrivat", privat));
+        soknad.getFakta().add(new Faktum().medParrentFaktumId(faktumId + 1000).medKey(TilsynBarnepassTilXml.BARNEPASS_TYPER_BARNEHAGE).medValue(barnehage));
+        soknad.getFakta().add(new Faktum().medParrentFaktumId(faktumId + 1000).medKey(TilsynBarnepassTilXml.BARNEPASS_TYPER_DAGMAMMA).medValue(dagpmamma));
+        soknad.getFakta().add(new Faktum().medParrentFaktumId(faktumId + 1000).medKey(TilsynBarnepassTilXml.BARNEPASS_TYPER_PRIVAT).medValue(privat));
+        soknad.getFakta().add(new Faktum().medParrentFaktumId(faktumId + 1000).medKey(TilsynBarnepassTilXml.BARNEPASS_ANDREFORELDER).medValue(annenForsorger));
+        soknad.getFakta().add(new Faktum().medParrentFaktumId(faktumId + 1000).medKey(TilsynBarnepassTilXml.BARNEPASS_FOLLFORT_FJERDE).medValue("" + fullortFjerdeSkolear));
+        soknad.getFakta().add(new Faktum().medParrentFaktumId(faktumId + 1000).medKey(TilsynBarnepassTilXml.BARNEPASS_AARSAKER.get(0)).medValue("" + langvarig));
+        soknad.getFakta().add(new Faktum().medParrentFaktumId(faktumId + 1000).medKey(TilsynBarnepassTilXml.BARNEPASS_AARSAKER.get(1)).medValue("" + tilsyn));
+        soknad.getFakta().add(new Faktum().medParrentFaktumId(faktumId + 1000).medKey(TilsynBarnepassTilXml.BARNEPASS_AARSAKER.get(2)).medValue("" + ingen));
     }
 }
