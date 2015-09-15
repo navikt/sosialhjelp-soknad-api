@@ -3,12 +3,13 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggssto
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.ReiseOppstartOgAvsluttetAktivitet;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.transformer.StofoUtils;
 import org.apache.commons.collections15.Transformer;
 
 import java.math.BigInteger;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTransformers.extractValue;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTransformers.faktumTilPeriode;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.StofoTransformers.extractValue;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.StofoTransformers.faktumTilPeriode;
 
 public class ReiseOppstartOgAvsluttetAktivitetTilXml implements Transformer<WebSoknad, ReiseOppstartOgAvsluttetAktivitet> {
 

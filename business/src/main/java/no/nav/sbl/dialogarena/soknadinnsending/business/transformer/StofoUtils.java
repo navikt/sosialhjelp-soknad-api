@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader;
+package no.nav.sbl.dialogarena.soknadinnsending.business.transformer;
 
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.AlternativeTransportutgifter;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.DrosjeTransportutgifter;
@@ -6,9 +6,10 @@ import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.EgenBilTranspo
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.KollektivTransportutgifter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoKodeverkVerdier;
 
 import static java.lang.String.format;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTransformers.extractValue;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.StofoTransformers.extractValue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 public class StofoUtils {

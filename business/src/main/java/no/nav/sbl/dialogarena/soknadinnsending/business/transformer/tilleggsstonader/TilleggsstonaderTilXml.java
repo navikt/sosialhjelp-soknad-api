@@ -28,7 +28,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.UUID;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTransformers.extractValue;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.StofoTransformers.extractValue;
 
 public class TilleggsstonaderTilXml implements Transformer<WebSoknad, AlternativRepresentasjon> {
     private static final Logger LOG = LoggerFactory.getLogger(TilleggsstonaderTilXml.class);

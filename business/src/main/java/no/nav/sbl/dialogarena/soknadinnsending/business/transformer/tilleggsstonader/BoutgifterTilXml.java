@@ -8,7 +8,7 @@ import org.apache.commons.collections15.Transformer;
 import java.math.BigInteger;
 import java.util.List;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTransformers.faktumTilPeriode;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.StofoTransformers.faktumTilPeriode;
 
 public class BoutgifterTilXml implements Transformer<WebSoknad, Boutgifter> {
 

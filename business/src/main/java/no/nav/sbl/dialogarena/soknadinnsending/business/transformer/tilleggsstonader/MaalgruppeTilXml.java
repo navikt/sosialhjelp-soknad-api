@@ -4,6 +4,7 @@ import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Maalgruppeinfo
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Maalgruppetyper;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Periode;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.transformer.StofoTransformers;
 import org.apache.commons.collections15.Transformer;
 
 import java.util.Arrays;
