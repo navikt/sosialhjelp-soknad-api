@@ -82,9 +82,13 @@ public class FlytteutgifterTilXml implements Transformer<WebSoknad, Flytteutgift
     }
 
     private String hentAdresse(WebSoknad soknad) {
-        return String.format("%s, %s",
-                extractValue(soknad.getFaktumMedKey(GATEADRESSE), String.class),
-                extractValue(soknad.getFaktumMedKey(POSTNUMMER), String.class));
+        if(isTrue(extractValue(soknad.getFaktumMedKey("flytting.tidligere.riktigadresse"), Boolean.class))){
+            return soknad.getFaktumMedKey("personalia").getProperties().get("gjeldendeAdresse");
+        } else{
+            return String.format("%s, %s",
+                    extractValue(soknad.getFaktumMedKey(GATEADRESSE), String.class),
+                    extractValue(soknad.getFaktumMedKey(POSTNUMMER), String.class));
+        }
     }
 
     private Boolean hentFlytting(WebSoknad soknad, String type) {

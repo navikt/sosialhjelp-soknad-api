@@ -130,9 +130,9 @@ public class TilsynBarnepassTilXmlTest {
         soknad.getFakta().add(new Faktum().medParrentFaktumId(faktumId + 1000).medKey(TilsynBarnepassTilXml.BARNEPASS_TYPER_DAGMAMMA).medValue(dagpmamma));
         soknad.getFakta().add(new Faktum().medParrentFaktumId(faktumId + 1000).medKey(TilsynBarnepassTilXml.BARNEPASS_TYPER_PRIVAT).medValue(privat));
         soknad.getFakta().add(new Faktum().medParrentFaktumId(faktumId + 1000).medKey(TilsynBarnepassTilXml.BARNEPASS_ANDREFORELDER).medValue(annenForsorger));
-        soknad.getFakta().add(new Faktum().medParrentFaktumId(faktumId + 1000).medKey(TilsynBarnepassTilXml.BARNEPASS_FOLLFORT_FJERDE).medValue("" + fullortFjerdeSkolear));
-        soknad.getFakta().add(new Faktum().medParrentFaktumId(faktumId + 1000).medKey(TilsynBarnepassTilXml.BARNEPASS_AARSAKER.get(0)).medValue("" + langvarig));
-        soknad.getFakta().add(new Faktum().medParrentFaktumId(faktumId + 1000).medKey(TilsynBarnepassTilXml.BARNEPASS_AARSAKER.get(1)).medValue("" + tilsyn));
-        soknad.getFakta().add(new Faktum().medParrentFaktumId(faktumId + 1000).medKey(TilsynBarnepassTilXml.BARNEPASS_AARSAKER.get(2)).medValue("" + ingen));
+        soknad.getFakta().add(new Faktum().medFaktumId(faktumId + 10000).medParrentFaktumId(faktumId + 1000).medKey(TilsynBarnepassTilXml.BARNEPASS_FOLLFORT_FJERDE).medValue("" + fullortFjerdeSkolear));
+        soknad.getFakta().add(new Faktum().medParrentFaktumId(faktumId + 10000).medKey(TilsynBarnepassTilXml.BARNEPASS_AARSAKER.get(0)).medValue("" + langvarig));
+        soknad.getFakta().add(new Faktum().medParrentFaktumId(faktumId + 10000).medKey(TilsynBarnepassTilXml.BARNEPASS_AARSAKER.get(1)).medValue("" + tilsyn));
+        soknad.getFakta().add(new Faktum().medParrentFaktumId(faktumId + 10000).medKey(TilsynBarnepassTilXml.BARNEPASS_AARSAKER.get(2)).medValue("" + ingen));
     }
 }

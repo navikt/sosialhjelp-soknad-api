@@ -48,9 +48,15 @@ public class FlytteutgifterTilXmlTest {
     private Faktum andreAnbudBelop;
     private Faktum valgtForste;
     private Faktum valgtAndre;
+    private Faktum nyeaddresse;
+    private Faktum personalia;
 
     @Before
     public void beforeEach() {
+        personalia = new Faktum()
+        .medKey("personalia")
+        .medProperty("gjeldendeAdresse", "gjeldende adresse");
+        nyeaddresse = new Faktum().medKey("flytting.tidligere.riktigadresse").medValue("false");
         aktivitet = new Faktum()
                 .medKey("flytting.hvorforflytte")
                 .medValue("aktivitet");
@@ -138,9 +144,15 @@ public class FlytteutgifterTilXmlTest {
 
     @Test
     public void settTilFlyttingsadresse() {
-        webSoknad = new WebSoknad().medFaktum(gateadresse).medFaktum(postnummer);
+        webSoknad = new WebSoknad().medFaktum(gateadresse).medFaktum(postnummer).medFaktum(nyeaddresse);
         flytteutgifter = flytteutgifterTilXml.transform(webSoknad);
         assertThat(flytteutgifter.getTilflyttingsadresse()).isEqualTo(GATEADRESSE + ", " + POSTNUMMER);
+    }
+    @Test
+    public void settTilFlyttingsadresseFraPersonalia() {
+        webSoknad = new WebSoknad().medFaktum(gateadresse).medFaktum(postnummer).medFaktum(personalia).medFaktum(nyeaddresse.medValue("true"));
+        flytteutgifter = flytteutgifterTilXml.transform(webSoknad);
+        assertThat(flytteutgifter.getTilflyttingsadresse()).isEqualTo(personalia.getProperties().get("gjeldendeAdresse"));
     }
 
     @Test

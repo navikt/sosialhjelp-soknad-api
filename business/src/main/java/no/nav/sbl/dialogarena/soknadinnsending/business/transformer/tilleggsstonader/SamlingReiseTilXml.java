@@ -18,10 +18,11 @@ public class SamlingReiseTilXml {
     public ReiseObligatoriskSamling transform(WebSoknad soknad) {
         ReiseObligatoriskSamling reise = new ReiseObligatoriskSamling();
         reise.setPeriode(reiseSamlinger(soknad));
+        leggTilSamlinger(soknad, reise);
+
         reise.setReiseadresser(StofoUtils.sammensattAdresse(soknad.getFaktumMedKey("reise.samling.reisemaal")));
         reise.setAvstand(extractValue(soknad.getFaktumMedKey("reise.samling.reiselengde"), BigInteger.class)); //TODO har desimaler
         reise.setAlternativeTransportutgifter(StofoUtils.alternativeTransportUtgifter(soknad, "samling"));
-        leggTilSamlinger(soknad, reise);
         setSpesielleUtgifterForSamlingsreise(soknad, reise);
 
         return reise;
@@ -45,19 +46,24 @@ public class SamlingReiseTilXml {
     }
 
 
-    private void leggTilSamlinger(WebSoknad soknad, ReiseObligatoriskSamling reise) {
-        List<Faktum> periodeFakta = soknad.getFaktaMedKey("reise.samling.fleresamlinger.samling");
-        for (Faktum faktum : periodeFakta) {
-            reise.getSamlingsperiode().add(faktumTilPeriode(faktum));
-        }
-    }
-
     private Periode reiseSamlinger(WebSoknad soknad) {
         String samlingsfaktum = soknad.getFaktumMedKey("reise.samling.fleresamlinger").getValue();
         if (samlingsfaktum != null && samlingsfaktum.equals("en")) {
             return faktumTilPeriode(soknad.getFaktumMedKey("reise.samling.aktivitetsperiode"));
         }
         return faktumTilPeriode(lagPeriodeAvForsteOgSisteSamlingsperiode(soknad));
+    }
+
+    private void leggTilSamlinger(WebSoknad soknad, ReiseObligatoriskSamling reise) {
+        String samlingsfaktum = soknad.getFaktumMedKey("reise.samling.fleresamlinger").getValue();
+        if (samlingsfaktum != null && samlingsfaktum.equals("en")) {
+            reise.getSamlingsperiode().add(reise.getPeriode());
+        } else {
+            List<Faktum> periodeFakta = soknad.getFaktaMedKey("reise.samling.fleresamlinger.samling");
+            for (Faktum faktum : periodeFakta) {
+                reise.getSamlingsperiode().add(faktumTilPeriode(faktum));
+            }
+        }
     }
 
     private Faktum lagPeriodeAvForsteOgSisteSamlingsperiode(WebSoknad soknad) {
