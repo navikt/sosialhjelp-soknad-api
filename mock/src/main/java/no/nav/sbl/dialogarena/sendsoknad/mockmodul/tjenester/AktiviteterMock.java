@@ -55,7 +55,7 @@ public class AktiviteterMock implements SakOgAktivitetV1 {
         for (int i = 0; ; i += antDagerBetalingsplan) {
             result.add(new WSBetalingsplan()
                     .withBetalingsplanId("" + (id++))
-                    .withJournalpostId("" + (id % 5 == 0 ? id : ""))
+                    .withJournalpostId("" + (id % 3 == 0 ? id : ""))
                     .withBeloep(((i + 1) * 300 % 5000))
                     .withUtgiftsperiode(new WSPeriode()
                             .withFom(fom.plusDays(i))
