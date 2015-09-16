@@ -72,7 +72,7 @@ public class AktivitetService {
     private WSFinnAktivitetsinformasjonListeRequest lagAktivitetsRequest(String fodselnummer) {
         return new WSFinnAktivitetsinformasjonListeRequest()
                 .withPersonident(fodselnummer)
-                .withPeriode(new WSPeriode().withFom(LocalDate.now().minusYears(1)).withTom(LocalDate.now()));
+                .withPeriode(new WSPeriode().withFom(LocalDate.now().minusMonths(6)).withTom(LocalDate.now().plusMonths(2)));
     }
 
 

@@ -2,19 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBostedsadresse;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBruker;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLGateadresse;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLGyldighetsperiode;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLLandkoder;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMatrikkeladresse;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresse;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseNorge;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseUtland;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostadresse;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostboksadresseNorsk;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLStrukturertAdresse;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLUstrukturertAdresse;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.*;
 import org.apache.commons.collections15.Transformer;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -182,14 +170,14 @@ public class AdresseTransform {
         throw new ApplicationException("ukjent adressetype med klassenavn: " + strukturertAdresse.getClass().getCanonicalName());
     }
 
-    private static Transformer<XMLGyldighetsperiode, DateTime> TIL_DATO = new Transformer<XMLGyldighetsperiode, DateTime>() {
+    private static final Transformer<XMLGyldighetsperiode, DateTime> TIL_DATO = new Transformer<XMLGyldighetsperiode, DateTime>() {
         @Override
         public DateTime transform(XMLGyldighetsperiode xmlGyldighetsperiode) {
             return xmlGyldighetsperiode.getTom();
         }
     };
 
-    private static Transformer<XMLGyldighetsperiode, DateTime> FRA_DATO = new Transformer<XMLGyldighetsperiode, DateTime>() {
+    private static final Transformer<XMLGyldighetsperiode, DateTime> FRA_DATO = new Transformer<XMLGyldighetsperiode, DateTime>() {
         @Override
         public DateTime transform(XMLGyldighetsperiode xmlGyldighetsperiode) {
             return xmlGyldighetsperiode.getFom();

@@ -106,8 +106,9 @@ public class InformasjonRessursTest {
         assertThat(utslagskriterier.containsKey("registrertAdresseGyldigFra")).isTrue();
         assertThat(utslagskriterier.containsKey("registrertAdresseGyldigTil")).isTrue();
         assertThat(utslagskriterier.containsKey("erBosattIEOSLand")).isTrue();
+        assertThat(utslagskriterier.containsKey("statsborgerskap")).isTrue();
 
-        assertThat(utslagskriterier.size()).isEqualTo(9);
+        assertThat(utslagskriterier.size()).isEqualTo(10);
     }
 
     @Test

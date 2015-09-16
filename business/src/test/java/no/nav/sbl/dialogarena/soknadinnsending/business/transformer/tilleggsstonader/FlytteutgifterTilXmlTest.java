@@ -20,14 +20,14 @@ public class FlytteutgifterTilXmlTest {
     public static final String POSTNUMMER = "1234";
     public static final String AVSTAND_KM = "500";
     public static final String HENGERLEIE_KR = "100";
-    private static final String BOM_KR = "200";
-    private static final String PARKERING_KR = "300";
-    private static final String FERGE_KR = "400";
-    private static final String ANNET_KR = "500";
     public static final String NAVN_FLYTTEBYRAA_1 = "Petters flytting";
     public static final String BELOP_FLYTTEBYRAA_1 = "5000";
     public static final String NAVN_FLYTTEBYRAA_2 = "Siljes flytting";
     public static final String BELOP_FLYTTEBYRAA_2 = "9000";
+    private static final String BOM_KR = "200";
+    private static final String PARKERING_KR = "300";
+    private static final String FERGE_KR = "400";
+    private static final String ANNET_KR = "500";
     private Flytteutgifter flytteutgifter;
     private FlytteutgifterTilXml flytteutgifterTilXml = new FlytteutgifterTilXml();
     private WebSoknad webSoknad;
@@ -46,9 +46,17 @@ public class FlytteutgifterTilXmlTest {
     private Faktum andreAnbudNavn;
     private Faktum forsteAnbudBelop;
     private Faktum andreAnbudBelop;
+    private Faktum valgtForste;
+    private Faktum valgtAndre;
+    private Faktum nyeaddresse;
+    private Faktum personalia;
 
     @Before
-    public void beforeEach(){
+    public void beforeEach() {
+        personalia = new Faktum()
+        .medKey("personalia")
+        .medProperty("gjeldendeAdresse", "gjeldende adresse");
+        nyeaddresse = new Faktum().medKey("flytting.tidligere.riktigadresse").medValue("false");
         aktivitet = new Faktum()
                 .medKey("flytting.hvorforflytte")
                 .medValue("aktivitet");
@@ -64,7 +72,7 @@ public class FlytteutgifterTilXmlTest {
         postnummer = new Faktum()
                 .medKey("flytting.nyadresse.postnummer")
                 .medValue(POSTNUMMER);
-        avstand= new Faktum()
+        avstand = new Faktum()
                 .medKey("flytting.flytteselv.hvorlangt")
                 .medValue(AVSTAND_KM);
         hengerleie = new Faktum()
@@ -94,20 +102,26 @@ public class FlytteutgifterTilXmlTest {
         andreAnbudBelop = new Faktum()
                 .medKey("flytting.flyttebyraa.andre.belop")
                 .medValue(BELOP_FLYTTEBYRAA_2);
+        valgtForste = new Faktum()
+                .medKey("flytting.flyttebyraa.velgforste")
+                .medValue("true");
+        valgtAndre = new Faktum()
+                .medKey("flytting.flyttebyraa.velgandre")
+                .medValue("true");
 
 
     }
 
 
     @Test
-    public void settFlyttingPgaAktivitet(){
+    public void settFlyttingPgaAktivitet() {
         webSoknad = new WebSoknad().medFaktum(aktivitet);
         flytteutgifter = flytteutgifterTilXml.transform(webSoknad);
         assertThat(flytteutgifter.isFlyttingPgaAktivitet().booleanValue()).isEqualTo(true);
     }
 
     @Test
-    public void settFlyttingPgNyStilling(){
+    public void settFlyttingPgNyStilling() {
         aktivitet.setValue("nyjobb");
         webSoknad = new WebSoknad().medFaktum(aktivitet);
         flytteutgifter = flytteutgifterTilXml.transform(webSoknad);
@@ -115,31 +129,51 @@ public class FlytteutgifterTilXmlTest {
     }
 
     @Test
-    public void settTiltredelsesdato(){
+    public void settTiltredelsesdato() {
         webSoknad = new WebSoknad().medFaktum(tiltredelsesdato);
         flytteutgifter = flytteutgifterTilXml.transform(webSoknad);
         assertThat(flytteutgifter.getTiltredelsesdato().toString()).isEqualTo("2015-07-22T00:00:00.000+02:00");
     }
 
     @Test
-    public void settFlyttedato(){
+    public void settFlyttedato() {
         webSoknad = new WebSoknad().medFaktum(flyttedato);
         flytteutgifter = flytteutgifterTilXml.transform(webSoknad);
         assertThat(flytteutgifter.getFlyttedato().toString()).isEqualTo("2015-10-22T00:00:00.000+02:00");
     }
 
     @Test
-    public void settTilFlyttingsadresse(){
-        webSoknad = new WebSoknad().medFaktum(gateadresse).medFaktum(postnummer);
+    public void settTilFlyttingsadresse() {
+        webSoknad = new WebSoknad().medFaktum(gateadresse).medFaktum(postnummer).medFaktum(nyeaddresse);
         flytteutgifter = flytteutgifterTilXml.transform(webSoknad);
-        assertThat(flytteutgifter.getTilflyttingsadresse()).isEqualTo(GATEADRESSE + ", " + POSTNUMMER );
+        assertThat(flytteutgifter.getTilflyttingsadresse()).isEqualTo(GATEADRESSE + ", " + POSTNUMMER);
+    }
+    @Test
+    public void settTilFlyttingsadresseFraPersonalia() {
+        webSoknad = new WebSoknad().medFaktum(gateadresse).medFaktum(postnummer).medFaktum(personalia).medFaktum(nyeaddresse.medValue("true"));
+        flytteutgifter = flytteutgifterTilXml.transform(webSoknad);
+        assertThat(flytteutgifter.getTilflyttingsadresse()).isEqualTo(personalia.getProperties().get("gjeldendeAdresse"));
     }
 
     @Test
-    public void settAvstand(){
+    public void settAvstand() {
         webSoknad = new WebSoknad().medFaktum(avstand);
         flytteutgifter = flytteutgifterTilXml.transform(webSoknad);
         assertThat(flytteutgifter.getAvstand()).isEqualTo(new BigInteger(AVSTAND_KM));
+    }
+    @Test
+    public void settFlytteSelv() {
+        webSoknad = new WebSoknad().medFaktum(new Faktum().medKey("flytting.selvellerbistand").medValue("flytterselv"));
+        flytteutgifter = flytteutgifterTilXml.transform(webSoknad);
+        assertThat(flytteutgifter.getFlytterSelv().getValue()).isEqualTo(StofoKodeverkVerdier.FlytterSelv.flytterselv.kodeverk);
+
+        webSoknad = new WebSoknad().medFaktum(new Faktum().medKey("flytting.selvellerbistand").medValue("flyttebyraa"));
+        flytteutgifter = flytteutgifterTilXml.transform(webSoknad);
+        assertThat(flytteutgifter.getFlytterSelv().getValue()).isEqualTo(StofoKodeverkVerdier.FlytterSelv.flyttebyraa.kodeverk);
+
+        webSoknad = new WebSoknad().medFaktum(new Faktum().medKey("flytting.selvellerbistand").medValue("tilbudmenflytterselv"));
+        flytteutgifter = flytteutgifterTilXml.transform(webSoknad);
+        assertThat(flytteutgifter.getFlytterSelv().getValue()).isEqualTo(StofoKodeverkVerdier.FlytterSelv.tilbudmenflytterselv.kodeverk);
     }
 
     @Test
@@ -162,12 +196,15 @@ public class FlytteutgifterTilXmlTest {
     }
 
     @Test
-    public void settAnbud(){
+    public void settAnbud() {
         webSoknad = new WebSoknad()
                 .medFaktum(forsteAnbudNavn)
                 .medFaktum(forsteAnbudBelop)
                 .medFaktum(andreAnbudNavn)
-                .medFaktum(andreAnbudBelop);
+                .medFaktum(andreAnbudBelop)
+                .medFaktum(valgtForste)
+                .medFaktum(valgtAndre.medValue("false"))
+        ;
 
         flytteutgifter = flytteutgifterTilXml.transform(webSoknad);
 
@@ -179,7 +216,22 @@ public class FlytteutgifterTilXmlTest {
         assertThat(flytteutgifter.getAnbud().get(0).getTilbudsbeloep()).isEqualTo(new BigInteger(BELOP_FLYTTEBYRAA_1));
         assertThat(flytteutgifter.getAnbud().get(1).getFirmanavn()).isEqualTo(NAVN_FLYTTEBYRAA_2);
         assertThat(flytteutgifter.getAnbud().get(1).getTilbudsbeloep()).isEqualTo(new BigInteger(BELOP_FLYTTEBYRAA_2));
+        assertThat(flytteutgifter.getValgtFlyttebyraa()).isEqualTo(NAVN_FLYTTEBYRAA_1);
+    }
 
+    @Test
+    public void settAnbudAndreVvalgt() {
+        webSoknad = new WebSoknad()
+                .medFaktum(forsteAnbudNavn)
+                .medFaktum(forsteAnbudBelop)
+                .medFaktum(andreAnbudNavn)
+                .medFaktum(andreAnbudBelop)
+                .medFaktum(valgtForste.medValue("false"))
+                .medFaktum(valgtAndre)
+        ;
+
+        flytteutgifter = flytteutgifterTilXml.transform(webSoknad);
+        assertThat(flytteutgifter.getValgtFlyttebyraa()).isEqualTo(NAVN_FLYTTEBYRAA_2);
     }
 
     private Anbud lagAnbud(String navn, String belop) {

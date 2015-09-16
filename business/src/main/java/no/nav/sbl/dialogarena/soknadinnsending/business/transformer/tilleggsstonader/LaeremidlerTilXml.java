@@ -19,14 +19,13 @@ public class LaeremidlerTilXml implements Transformer<WebSoknad, Laeremiddelutgi
 
         Faktum funksjonshemmingFaktum = soknad.getFaktumMedKey("laeremidler.funksjonshemming");
         if(funksjonshemmingFaktum != null && "true".equals(funksjonshemmingFaktum.getValue())){
-            laeremiddel.setBeloep(extractValue(funksjonshemmingFaktum, BigInteger.class, "utgift")); //TODO: fikse desimaler
+            laeremiddel.setBeloep(extractValue(funksjonshemmingFaktum, BigInteger.class, "utgift"));
         }
 
         laeremiddel.setErUtgifterDekket(extractValue(soknad.getFaktumMedKey("laeremidler.dekket"), ErUtgifterDekket.class));
         laeremiddel.setPeriode(faktumTilPeriode(soknad.getFaktumMedKey("laeremidler.periode")));
         laeremiddel.setProsentandelForUtdanning(extractValue(soknad.getFaktumMedKey("laeremidler.deltidsstudent"), BigInteger.class));
         laeremiddel.setSkolenivaa(extractValue(soknad.getFaktumMedKey("laeremidler.utdanningstype"), Skolenivaaer.class));
-
         return laeremiddel;
     }
 }

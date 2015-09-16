@@ -1,0 +1,36 @@
+{{#forFaktum "informasjonsside.deltarIIntroprogram"}}
+    {{#hvisIkkeTom value}}
+        <h2>{{ hentTekst "informasjonsside.introprogram.overskrift" }}</h2>
+        <table>
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    {{#hvisLik value "false" }}
+                        <span>{{ hentTekst "informasjonsside.introprogram.false" }}</span>
+                        <ul>
+                            {{#forFaktum "informasjonsside.deltarIIntroprogram.info"}}
+                                <li class="kulepunkt">
+                                    <span>Kommune: {{ properties.kommune}},</span>
+                                    {{#hvisIkkeTom properties.bydel }}
+                                        <span>Bydel: {{ properties.bydel }},</span>
+                                    {{/hvisIkkeTom}}
+                                    {{#hvisIkkeTom properties.kontonummer }}
+                                        <span> Kontonummer: {{ properties.kontonummer }}</span>
+                                    {{/hvisIkkeTom}}
+                                </li>
+                                <li class="kulepunkt">
+                                    <span>Fra {{ formatterLangDato properties.fom }}</span>
+                                    {{#hvisIkkeTom properties.tom }}
+                                        <span> til {{ formatterLangDato properties.tom }}</span>
+                                    {{/hvisIkkeTom}}
+                                </li>
+                            {{/forFaktum}}
+                        </ul>
+                    {{else}}
+                        <span>{{ hentTekst "informasjonsside.introprogram.true" }}</span>
+                    {{/hvisLik}}
+                </td>
+            </tr>
+        </table>
+    {{/hvisIkkeTom}}
+{{/forFaktum}}
