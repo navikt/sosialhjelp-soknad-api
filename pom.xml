@@ -261,6 +261,12 @@
                 <classifier>jaxb</classifier>
             </dependency>
             <dependency>
+                <groupId>no.nav.meldinger.virksomhet</groupId>
+                <artifactId>nav-virksomhet-paaloepteUtgifter-v1-meldingsdefinisjon</artifactId>
+                <version>1.0.2</version>
+                <classifier>jaxb</classifier>
+            </dependency>
+            <dependency>
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
                 <version>2.7</version>

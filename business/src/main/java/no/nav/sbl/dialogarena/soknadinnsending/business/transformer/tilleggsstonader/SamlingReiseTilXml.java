@@ -5,13 +5,14 @@ import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Periode;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.ReiseObligatoriskSamling;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.transformer.StofoUtils;
 
 import java.math.BigInteger;
 import java.util.List;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTransformers.extractValue;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTransformers.faktumTilPeriode;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTransformers.sumDouble;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.StofoTransformers.extractValue;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.StofoTransformers.faktumTilPeriode;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.StofoTransformers.sumDouble;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 public class SamlingReiseTilXml {

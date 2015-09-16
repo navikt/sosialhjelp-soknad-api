@@ -10,10 +10,9 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigInteger;
 import java.util.List;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTransformers.extractValue;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTransformers.sumDouble;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.StofoTransformers.extractValue;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.StofoTransformers.sumDouble;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
-
 public class FlytteutgifterTilXml implements Transformer<WebSoknad, Flytteutgifter> {
 
     public static final String AARSAK = "flytting.hvorforflytte";

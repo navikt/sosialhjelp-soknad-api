@@ -1,8 +1,9 @@
-package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader;
+package no.nav.sbl.dialogarena.soknadinnsending.business.transformer;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoKodeverkVerdier;
 import org.apache.commons.collections15.Transformer;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -227,11 +228,10 @@ public final class StofoTransformers {
         return periode;
     }
 
-    static Double sumDouble(Faktum... fakta) {
+    public static Double sumDouble(Faktum... fakta) {
         return sumDouble(null, fakta);
     }
-
-    static Double sumDouble(String property, Faktum... fakta) {
+    public static Double sumDouble(String property, Faktum... fakta) {
         Double sum = 0D;
         for (Faktum faktum : fakta) {
             Double res = property != null ? extractValue(faktum, Double.class, property) : extractValue(faktum, Double.class);
