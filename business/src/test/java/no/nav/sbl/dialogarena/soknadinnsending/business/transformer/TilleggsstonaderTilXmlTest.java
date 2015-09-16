@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.fail;
 
 public class TilleggsstonaderTilXmlTest {
 
-    private final TilleggsstonaderTilXml tilXml = new TilleggsstonaderTilXml();
+    private final TilleggsstonaderTilXml tilXml = new TilleggsstonaderTilXml(null);
     private WebSoknad soknad;
 
     @Before

@@ -152,6 +152,7 @@ public class InformasjonRessurs {
             utslagskriterierResultat.put("registrertAdresseGyldigFra", personalia.getGjeldendeAdresse().getGyldigFra());
             utslagskriterierResultat.put("registrertAdresseGyldigTil", personalia.getGjeldendeAdresse().getGyldigTil());
             utslagskriterierResultat.put("erBosattIEOSLand", personalia.erBosattIEOSLand());
+            utslagskriterierResultat.put("statsborgerskap", personalia.getStatsborgerskap());
 
         } catch (Exception e) {
             logger.error("Kunne ikke hente personalia", e);

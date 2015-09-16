@@ -78,7 +78,8 @@ public class MaalgrupperServiceTest {
     public void finnMaalgruppeinformasjonListeKallesMedPeriode() throws Exception {
         maalgrupperService.hentMaalgrupper(FODSELSNUMMER);
         verify(webservice).finnMaalgruppeinformasjonListe(argument.capture());
-        assertThat(argument.getValue().getPeriode().getFom().getYear()).isEqualTo(LocalDate.now().minusYears(1).getYear());
+        assertThat(argument.getValue().getPeriode().getFom()).isEqualTo(LocalDate.now().minusMonths(6));
+        assertThat(argument.getValue().getPeriode().getTom()).isEqualTo(LocalDate.now().plusMonths(2));
     }
 
     @Test

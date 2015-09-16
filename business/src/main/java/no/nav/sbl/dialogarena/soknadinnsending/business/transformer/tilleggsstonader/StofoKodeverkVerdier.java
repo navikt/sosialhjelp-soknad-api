@@ -11,6 +11,17 @@ public class StofoKodeverkVerdier {
         }
     }
 
+    public enum BarnepassAarsak{
+        langvarig("soknad.barnepass.fjerdeklasse.aarsak.langvarig"),
+        trengertilsyn("soknad.barnepass.fjerdeklasse.aarsak.tilsyn"),
+        ingen("soknad.barnepass.fjerdeklasse.aarsak.ingen");
+        public final String cmsKey;
+
+        BarnepassAarsak(String cmsKey) {
+            this.cmsKey = cmsKey;
+        }
+    }
+
     public enum FormaalKodeverk {
         oppfolging("OPPF"), jobbintervju("JOBB"), tiltraa("TILT");
         public final String kodeverksverdi;
@@ -48,6 +59,14 @@ public class StofoKodeverkVerdier {
             this.kodeverksverdi = kodeverksverdi;
         }
 
+    }
+    public enum FlytterSelv {
+        flytterselv ("FLYYTESELV"), flyttebyraa("BYRAA"), tilbudmenflytterselv("SELVETTERTILBUD");
+        public final String kodeverk;
+
+        FlytterSelv(String kodeverk) {
+            this.kodeverk = kodeverk;
+        }
     }
 
     public enum TilsynForetasAv {
