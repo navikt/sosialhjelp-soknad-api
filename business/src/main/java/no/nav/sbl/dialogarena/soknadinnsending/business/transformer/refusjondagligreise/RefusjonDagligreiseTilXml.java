@@ -33,7 +33,7 @@ public class RefusjonDagligreiseTilXml implements Transformer<WebSoknad, Alterna
             Utgiftsperioder utgiftsperioder = new Utgiftsperioder();
             utgiftsperioder.setBetalingsplanId(faktum.getProperties().get("id"));
 
-            int totaltParkeringbeløp = 0;
+            int totaltParkeringbelop = 0;
             int totaltAntallDager = 0;
 
             LocalDate fom = new LocalDate(faktum.getProperties().get("fom"));
@@ -49,14 +49,14 @@ public class RefusjonDagligreiseTilXml implements Transformer<WebSoknad, Alterna
 
                     if(trengerParkering && parkeringsUtgift != null) {
                         int utgift = Integer.parseInt(parkeringsUtgift);
-                        totaltParkeringbeløp += utgift;
+                        totaltParkeringbelop += utgift;
                         utgiftsdag.setParkeringsutgift(BigInteger.valueOf(utgift));
                     }
                     utgiftsperioder.getUtgiftsdagerMedParkering().add(utgiftsdag);
                 }
             }
 
-            utgiftsperioder.setTotaltParkeringsbeloep(BigInteger.valueOf(totaltParkeringbeløp));
+            utgiftsperioder.setTotaltParkeringsbeloep(BigInteger.valueOf(totaltParkeringbelop));
             utgiftsperioder.setTotaltAntallDagerKjoert(BigInteger.valueOf(totaltAntallDager));
             return utgiftsperioder;
         }
