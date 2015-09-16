@@ -20,10 +20,12 @@ import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetsin
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetsinformasjonListeResponse;
 import org.apache.commons.collections15.Transformer;
 import org.joda.time.LocalDate;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.Collections;
 import java.util.List;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
@@ -37,6 +39,7 @@ public class AktivitetService {
             return faktum.harPropertySomMatcher("erStoenadsberettiget", "true");
         }
     };
+    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(AktivitetService.class);
     @Inject
     @Named("sakOgAktivitetEndpoint")
     private SakOgAktivitetV1 aktivitetWebService;
@@ -53,7 +56,10 @@ public class AktivitetService {
             }
             List<Faktum> listeMedAktiviteter = Lists.transform(aktiviteter.getAktivitetListe(), transformer);
             return Lists.newArrayList(Iterables.filter(listeMedAktiviteter, BARE_AKTIVITETER_SOM_KAN_HA_STONADER));
-        } catch (FinnAktivitetsinformasjonListePersonIkkeFunnet | FinnAktivitetsinformasjonListeSikkerhetsbegrensning e) {
+        } catch (FinnAktivitetsinformasjonListePersonIkkeFunnet e) {
+            LOG.debug("person ikke funnet i arena: " + fodselnummer + ": " + e, e);
+            return Collections.emptyList();
+        } catch (FinnAktivitetsinformasjonListeSikkerhetsbegrensning e) {
             throw new RuntimeException(e.getMessage(), e);
         }
     }
