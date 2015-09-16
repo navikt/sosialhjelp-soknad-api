@@ -5,6 +5,7 @@ import no.nav.modig.core.context.OpenAmTokenCredential;
 import no.nav.modig.core.context.ThreadLocalSubjectHandler;
 import no.nav.modig.core.domain.ConsumerId;
 import no.nav.modig.core.domain.SluttBruker;
+import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.SoknadDataFletterIntegrationTestContext;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
@@ -38,7 +39,10 @@ import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.joda.time.DateTime.now;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = SoknadDataFletterIntegrationTestContext.class)
@@ -49,6 +53,8 @@ public class SoknadServiceIntegrasjonsTest {
     String skjemaNummer = "";
     long soknadId;
 
+    @Inject
+    Kodeverk kodeverk;
     @Inject
     private SoknadRepository lokalDb;
 
@@ -90,6 +96,7 @@ public class SoknadServiceIntegrasjonsTest {
     @Test
     public void henterTemakode_FOR_forForeldrepenger() {
         skjemaNummer = "NAV 14-05.06";
+        when(kodeverk.getKode("NAV 14-05.06", Kodeverk.Nokkel.TEMA)).thenReturn("FOR");
         opprettOgPersisterSoknadMedData("behId", "aktor");
         SoknadStruktur soknadStruktur = soknadService.hentSoknadStruktur(skjemaNummer);
         assertThat(soknadStruktur.getTemaKode()).isEqualTo("FOR");
