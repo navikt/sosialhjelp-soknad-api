@@ -2,6 +2,12 @@
     {{#hvisSant properties.registrert}}
         <h2>Kjøreliste {{formatterLangDato properties.fom}} - {{formatterLangDato properties.tom}}</h2>
         <h3>{{hentTekst 'oppsummering.dager'}}</h3>
-        {{faktumId}}: {{properties.registrert}}, {{formatterLangDato properties.fom}}, {{formatterLangDato properties.tom}}
+        {{#lagKjorelisteUker properties}}
+            <br>ukenummer: {{ukeNr}}
+            {{#each dager}}
+                    <br>{{formatterLangDato dato}} {{#hvisMer parkering "0"}} belop:{{parkering}}{{/hvisMer}}
+            {{else}}ingen dager
+            {{/each}}
+        {{/lagKjorelisteUker}}
     {{/hvisSant}}
 {{/forFakta}}
