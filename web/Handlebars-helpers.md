@@ -72,9 +72,11 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hvisMindre - Evaluerer en string til integer og sjekker om verdien er mindre enn andre inputparameter
 * hvisSant - Dersom variabelen er "true" vil innholdet vises
 * kortDato - Formatterer en datostreng på formatet yyyy-mm-dd til dd.mm.aaaa
+* lagKjorelisteUker - Bygger en nestet liste over uker for et betalingsvedtak, der ukene inneholder dager det er søkt for refusjon.
 * sendtInnInfo - Tilgjengeliggjør informasjon om søknaden (innsendte vedlegg, påkrevde vedlegg og dato)
 * toCapitalized - Gjør om en tekst til at alle ord starter med store bokstaver
 * toLowerCase - Gjør om en tekst til kun små bokstaver
+* ukedag - Returnerer ukedagen for en dato
 * variabel - Lager en variabel med en bestemt verdi som kun er tilgjengelig innenfor helperen
 
 
@@ -298,6 +300,18 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 ```
 
 
+##### lagKjorelisteUker
+
+```
+{{#lagKjorelisteUker properties}}
+    uke: {{ukeNr}}
+    {{#each dager}}
+        {{dato}}: {{parkering}}
+    {{/each}}
+{{/lagKjorelisteUker}}
+```
+
+
 ##### sendtInnInfo
 
 ```
@@ -322,6 +336,14 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 ```
 {{toLowerCase variabel}}
 {{toLowerCase "MaSSe Case"}}
+```
+
+
+##### ukedag
+
+```
+{{ukedag "2015-09-16"}}
+{{ukedag variabel}}
 ```
 
 
