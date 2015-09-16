@@ -3,11 +3,12 @@
         <h2>Kjøreliste {{formatterLangDato properties.fom}} - {{formatterLangDato properties.tom}}</h2>
         <h3>{{hentTekst 'oppsummering.dager'}}</h3>
         {{#lagKjorelisteUker properties}}
-            <br>ukenummer: {{ukeNr}}
-            {{#each dager}}
-                    <br>{{formatterLangDato dato}} {{#hvisMer parkering "0"}} belop:{{parkering}}{{/hvisMer}}
-            {{else}}ingen dager
-            {{/each}}
+            <h3>Uke: {{ukeNr}}</h3>
+            <ul>
+                {{#each dager}}
+                    <li class="kulepunkt">{{ukedag dato}} {{formatterLangDato dato}} {{#hvisMer parkering "0"}} belop:{{parkering}}{{/hvisMer}}</li>
+                {{/each}}
+            </ul>
         {{/lagKjorelisteUker}}
     {{/hvisSant}}
 {{/forFakta}}
