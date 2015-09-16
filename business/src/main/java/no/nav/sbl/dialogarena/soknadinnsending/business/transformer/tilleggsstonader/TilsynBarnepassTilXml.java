@@ -18,7 +18,7 @@ import java.util.Locale;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.FaktumPredicates.harValue;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTransformers.extractValue;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.StofoTransformers.extractValue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 public class TilsynBarnepassTilXml implements Transformer<WebSoknad, TilsynsutgifterBarn> {

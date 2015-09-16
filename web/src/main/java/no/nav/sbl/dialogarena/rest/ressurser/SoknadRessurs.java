@@ -12,6 +12,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.transformer.refusjondagligreise.RefusjonDagligreiseTilXml;
 import no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.TilleggsstonaderTilXml;
 import org.springframework.stereotype.Controller;
 
@@ -144,6 +145,15 @@ public class SoknadRessurs {
         soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(soknadService.hentSoknadStruktur(soknad.getskjemaNummer()));
         return new TilleggsstonaderTilXml(messageSource).transform(soknad).getContent();
 
+    }
+
+    @GET
+    @Path("/{behandlingsId}/refusjon")
+    @Produces(APPLICATION_XML)
+    public byte[] xmlRefusjon(@PathParam("behandlingsId") String behandlingsId) {
+        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, false);
+        soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(soknadService.hentSoknadStruktur(soknad.getskjemaNummer()));
+        return new RefusjonDagligreiseTilXml().transform(soknad).getContent();
     }
 
     private void settJournalforendeEnhet(String behandlingsId, String delsteg) {
