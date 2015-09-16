@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business;
 
 
 import no.nav.modig.core.exception.ApplicationException;
+import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Steg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
@@ -30,6 +31,9 @@ public class WebSoknadConfig {
     private SoknadRepository repository;
 
     @Inject
+    private Kodeverk lokaltKodeverk;
+
+    @Inject
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
 
     public String getSoknadTypePrefix(long soknadId) {
@@ -49,13 +53,15 @@ public class WebSoknadConfig {
 
     @Deprecated
     public SoknadStruktur hentStruktur(long soknadId) {
-        KravdialogInformasjon skjemaConfig = finnSkjemaConfig(soknadId);
-        return hentStrukturForSkjemanavn(skjemaConfig);
+        return hentStruktur(repository.hentSoknadType(soknadId));
     }
 
     public SoknadStruktur hentStruktur(String skjemaNummer) {
         KravdialogInformasjon skjemaConfig = kravdialogInformasjonHolder.hentKonfigurasjon(skjemaNummer);
-        return hentStrukturForSkjemanavn(skjemaConfig);
+        SoknadStruktur struktur = hentStrukturForSkjemanavn(skjemaConfig);
+        //For å støtte ulikt tema på forskjellige skjema på samme konfigurasjon
+        struktur.setTemaKode(lokaltKodeverk.getKode(skjemaNummer, Kodeverk.Nokkel.TEMA));
+        return struktur;
     }
 
     private SoknadStruktur hentStrukturForSkjemanavn(KravdialogInformasjon skjemaConfig) {
