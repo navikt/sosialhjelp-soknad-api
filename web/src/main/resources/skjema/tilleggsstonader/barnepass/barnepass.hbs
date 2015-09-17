@@ -2,15 +2,25 @@
     {{#hvisSant value}}
         <h2>{{hentTekst "soknad.barnepass.tittel"}}</h2>
         <table>
-        {{#forFaktum "barnepass.periode"}}
-            {{> skjema/tilleggsstonader/felles/aktivitetsperiode}}
-        {{/forFaktum}}
-        {{#forFakta "barn"}}
-            {{> skjema/tilleggsstonader/barnepass/barnepassForBarn}}
-        {{/forFakta}}
-        {{#forFaktum "barnepass.utbetalingsdato"}}
-            {{> skjema/tilleggsstonader/felles/utbetalingsdato}}
-        {{/forFaktum}}
+            {{#forFaktum "barnepass.periode"}}
+                {{> skjema/tilleggsstonader/felles/aktivitetsperiode}}
+            {{/forFaktum}}
+            {{#forFakta "barn"}}
+                {{> skjema/tilleggsstonader/barnepass/barnepassForBarn}}
+            {{/forFakta}}
+            {{#forFaktum "barnepass.andreforelder"}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td>
+                                <span>{{ hentTekst "soknad.barnepass.andreforelder.sporsmal" }}:
+                                    <em>{{value}}</em>
+                                </span>
+                    </td>
+                </tr>
+            {{/forFaktum}}
+            {{#forFaktum "barnepass.utbetalingsdato"}}
+                {{> skjema/tilleggsstonader/felles/utbetalingsdato}}
+            {{/forFaktum}}
         </table>
     {{/hvisSant}}
 {{/forFaktum}}
