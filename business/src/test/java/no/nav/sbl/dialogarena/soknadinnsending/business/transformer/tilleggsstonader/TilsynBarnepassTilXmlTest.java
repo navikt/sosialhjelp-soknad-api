@@ -71,18 +71,19 @@ public class TilsynBarnepassTilXmlTest {
     public void skalLeggeTilBarnSomDetSokesBarnepassFor() {
         String oleNavn = "Ole Mockmann";
         String oleFnr = "***REMOVED***";
-        String oleAnnenForsorger = "***REMOVED***";
+
 
         String doleNavn = "Dole Mockmann";
         String doleFnr = "***REMOVED***";
-        String doleAnnenForsorger = "***REMOVED***";
+
+        String annenForsorger = "***REMOVED***";
 
         String barnehage = "true";
         String dagmamma = "true";
         String privat = "true";
 
-        leggTilBarn(oleFnr, oleNavn, "true", oleAnnenForsorger, barnehage, null, null, true, true, false, false);
-        leggTilBarn(doleFnr, doleNavn, "true", doleAnnenForsorger, null, dagmamma, null, false, false, true, false);
+        leggTilBarn(oleFnr, oleNavn, "true", annenForsorger, barnehage, null, null, true, true, false, false);
+        leggTilBarn(doleFnr, doleNavn, "true", annenForsorger, null, dagmamma, null, false, false, true, false);
         leggTilBarn("12312312312", "Doffen Mockmann", "false", null, null, null, privat, false, false, false, false);
 
         when(navMessageSource.getMessage(eq(trengertilsyn.cmsKey), isNull(Object[].class), eq(trengertilsyn.cmsKey), any(Locale.class))).thenReturn("tilsyn");
@@ -104,7 +105,7 @@ public class TilsynBarnepassTilXmlTest {
         assertThat(barn.get(1).getPersonidentifikator()).isEqualTo(doleFnr);
         assertThat(barn.get(1).getTilsynskategori().getValue()).isEqualTo(StofoKodeverkVerdier.TilsynForetasAvKodeverk.dagmamma.kodeverksverdi);
         assertThat(barn.get(1).isHarFullfoertFjerdeSkoleaar()).isEqualTo(false);
-        assertThat(tilsynsutgifterBarnXml.getAnnenForsoergerperson()).isEqualTo("***REMOVED***");
+        assertThat(tilsynsutgifterBarnXml.getAnnenForsoergerperson()).isEqualTo(annenForsorger);
         assertThat(barn.get(1).getAarsakTilBarnepass().getValue()).isEqualTo("langvarig");
     }
 
@@ -116,13 +117,13 @@ public class TilsynBarnepassTilXmlTest {
                 .medProperty("sammensattnavn", navn)
                 .medProperty("fornavn", navn.split(" ")[0])
                 .medProperty("etternavn", navn.split(" ")[1]));
+        soknad.getFakta().add(new Faktum().medKey("andreforelder").medValue(annenForsorger));
         soknad.getFakta().add(new Faktum()
                 .medFaktumId(faktumId + 1000)
                 .medKey("barnepass.sokerbarnepass")
                 .medValue(sokesOm)
                 .medProperty("tilknyttetbarn", "" + faktumId)
                 .medProperty("sokerOmBarnepass", sokesOm)
-                .medProperty("andreforelder", annenForsorger)
                 .medProperty("barnepassBarnehage", barnehage)
                 .medProperty("barnepassDagmamma", dagpmamma)
                 .medProperty("barnepassPrivat", privat));
