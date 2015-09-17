@@ -1,14 +1,36 @@
 {{#forFakta "vedtak.betalingsplan"}}
     {{#hvisSant properties.registrert}}
-        <h2>{{hentTekst 'oppsummering.kjoreliste'}} {{formatterLangDato properties.fom}} - {{formatterLangDato properties.tom}}</h2>
+        <h2>{{hentTekst 'oppsummering.kjoreliste'}} {{formatterLangDato properties.fom}}
+            - {{formatterLangDato properties.tom}}</h2>
+
         <h3>{{hentTekst 'oppsummering.dager'}}</h3>
         {{#lagKjorelisteUker properties}}
-            <h3>Uke: {{ukeNr}}</h3>
-            <ul>
-                {{#each dager}}
-                    <li class="kulepunkt">{{ukedag dato}} {{formatterLangDato dato}}{{#hvisMer parkering "0"}}, {{hentTekst 'oppsummering.utgifter'}} {{parkering}} {{hentTekst 'soknad.kroner'}}{{/hvisMer}}</li>
-                {{/each}}
-            </ul>
+            <table>
+                <tr>
+                    <td class="tom-sjekket"></td>
+                    <td>
+                        <h4>Uke {{ukeNr}}</h4>
+
+                        <table class="blokk-xs">
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <ul>
+                                        {{#each dager}}
+                                            <li class="kulepunkt faktum-felt">
+                                                {{ukedag dato}} {{formatterLangDato dato}}{{#hvisMer parkering "0"}},
+                                                {{hentTekst 'oppsummering.utgifter'}}
+                                                <i>{{parkering}} {{hentTekst 'soknad.kroner'}}</i>{{/hvisMer}}
+                                            </li>
+                                        {{/each}}
+                                    </ul>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
         {{/lagKjorelisteUker}}
     {{/hvisSant}}
 {{/forFakta}}

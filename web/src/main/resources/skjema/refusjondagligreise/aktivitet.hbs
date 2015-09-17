@@ -1,4 +1,10 @@
 {{#forFaktum "vedtak"}}
     <h2>{{hentTekst 'oppsummering.aktivitet'}}</h2>
-    {{properties.aktivitetNavn}}. Periode {{formatterLangDato properties.fom}}  - {{formatterLangDato properties.tom}}
+    <table>
+        <tr>
+            <td class="sjekket"></td>
+            <td> {{properties.aktivitetNavn}}. Periode {{formatterLangDato properties.fom}}
+                - {{formatterLangDato properties.tom}}</td>
+        </tr>
+    </table>
 {{/forFaktum}}
