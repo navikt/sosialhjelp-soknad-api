@@ -17,6 +17,12 @@
         <id>informasjonsside.institusjon.ja.hvaslags.annet.soketilleggstonad</id>
     </faktum>
     <faktum>
+        <id>informasjonsside.kvalifiseringsprogram</id>
+    </faktum>
+    <faktum>
+        <id>informasjonsside.kvalifiseringsprogram.ja.soketilleggsstonad</id>
+    </faktum>
+    <faktum>
         <id>informasjonsside.deltarIIntroprogram</id>
     </faktum>
     <faktum>
