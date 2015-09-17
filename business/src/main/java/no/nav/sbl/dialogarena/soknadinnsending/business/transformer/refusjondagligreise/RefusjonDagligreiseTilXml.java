@@ -1,8 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.refusjondagligreise;
 
-import meldingsmodell.no.nav.melding.virksomhet.paaloepteutgifter.v1.paaloepteutgifter.PaaloepteUtgifter;
-import meldingsmodell.no.nav.melding.virksomhet.paaloepteutgifter.v1.paaloepteutgifter.Utgiftsdager;
-import meldingsmodell.no.nav.melding.virksomhet.paaloepteutgifter.v1.paaloepteutgifter.Utgiftsperioder;
+import no.nav.melding.virksomhet.paaloepteutgifter.v1.paaloepteutgifter.PaaloepteUtgifter;
+import no.nav.melding.virksomhet.paaloepteutgifter.v1.paaloepteutgifter.Utgiftsdager;
+import no.nav.melding.virksomhet.paaloepteutgifter.v1.paaloepteutgifter.Utgiftsperioder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
