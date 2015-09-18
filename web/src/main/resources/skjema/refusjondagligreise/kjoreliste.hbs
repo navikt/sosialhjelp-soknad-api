@@ -20,8 +20,8 @@
                                         <td>
                                             <ul>
                                                 {{#each dager}}
-                                                    <li class="kulepunkt faktum-felt">l
-                                                        {{ukedag dato}} {{formatterLangDato dato~}}
+                                                    <li class="kulepunkt faktum-felt">
+                                                        {{toCapitalized (formatterDato dato "EEEE")}} {{formatterLangDato dato~}}
                                                         {{#hvisSant trengerParkering~}}
                                                             {{#hvisMer parkering "0"~}}
                                                                 {{hentTekst 'oppsummering.utgifter'}}
