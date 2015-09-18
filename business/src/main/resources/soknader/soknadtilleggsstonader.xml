@@ -1137,7 +1137,7 @@
 
     <faktum>
         <id>barnepass.andreforelder</id>
-        <dependOn>barnepass.sokerbarnepass</dependOn>
+        <dependOn>informasjonsside.stonad.barnepass</dependOn>
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
