@@ -16,7 +16,8 @@ public class HvisHarIkkeInnsendteDokumenterHelperTest {
     @Before
     public void setUp() throws Exception {
         handlebars = new Handlebars();
-        handlebars.registerHelper(HvisHarIkkeInnsendteDokumenterHelper.NAVN, HvisHarIkkeInnsendteDokumenterHelper.INSTANS);
+        HvisHarIkkeInnsendteDokumenterHelper helper = new HvisHarIkkeInnsendteDokumenterHelper();
+        handlebars.registerHelper(helper.getNavn(), helper);
     }
 
     @Test

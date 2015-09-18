@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
-import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
@@ -14,17 +13,11 @@ import static no.nav.sbl.dialogarena.service.HandlebarsUtils.finnWebSoknad;
 @Component
 public class HvisHarIkkeInnsendteDokumenterHelper extends RegistryAwareHelper<Object> {
 
-    public static final HvisHarIkkeInnsendteDokumenterHelper INSTANS = new HvisHarIkkeInnsendteDokumenterHelper();
     public static final String NAVN = "hvisHarIkkeInnsendteDokumenter";
 
     @Override
     public String getNavn() {
         return NAVN;
-    }
-
-    @Override
-    public Helper<Object> getHelper() {
-        return INSTANS;
     }
 
     @Override

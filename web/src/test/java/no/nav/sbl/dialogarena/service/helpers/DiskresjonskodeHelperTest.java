@@ -31,7 +31,7 @@ public class DiskresjonskodeHelperTest {
     @Before
     public void setup(){
         handlebars = new Handlebars();
-        handlebars.registerHelper(diskresjonskodeHelper.getNavn(), diskresjonskodeHelper.getHelper());
+        handlebars.registerHelper(diskresjonskodeHelper.getNavn(), diskresjonskodeHelper);
         personaliaFaktum = new Faktum();
         when(webSoknad.getFaktumMedKey(PERSONALIA_FAKTUM_KEY)).thenReturn(personaliaFaktum);
     }

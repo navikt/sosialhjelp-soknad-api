@@ -18,7 +18,8 @@ public class ForFaktaHelperTest {
     @Before
     public void setup() {
         handlebars = new Handlebars();
-        handlebars.registerHelper(ForFaktaHelper.NAVN, ForFaktaHelper.INSTANS);
+        ForFaktaHelper helper = new ForFaktaHelper();
+        handlebars.registerHelper(helper.getNavn(), helper);
     }
 
     @Test

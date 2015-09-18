@@ -17,7 +17,8 @@ public class HvisSantHelperTest {
     @Before
     public void setUp() throws Exception {
         handlebars = new Handlebars();
-        handlebars.registerHelper(HvisSantHelper.NAVN, HvisSantHelper.INSTANS);
+        HvisSantHelper helper = new HvisSantHelper();
+        handlebars.registerHelper(helper.getNavn(), helper);
     }
 
     @Test

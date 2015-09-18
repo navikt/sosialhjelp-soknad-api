@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
-import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
@@ -13,17 +12,11 @@ import static no.nav.sbl.dialogarena.service.HandlebarsUtils.finnWebSoknad;
 @Component
 public class HvisKunStudentHelper extends RegistryAwareHelper<Object> {
 
-    private static final HvisKunStudentHelper INSTANS = new HvisKunStudentHelper();
     private static final String NAVN = "hvisKunStudent";
 
     @Override
     public String getNavn() {
         return NAVN;
-    }
-
-    @Override
-    public Helper<Object> getHelper() {
-        return INSTANS;
     }
 
     @Override

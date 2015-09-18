@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
-import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import org.springframework.stereotype.Component;
 
@@ -10,16 +9,10 @@ import java.io.IOException;
 public class ConcatHelper extends RegistryAwareHelper<String>{
 
     public static final String NAVN = "concat";
-    public static final ConcatHelper INSTANS = new ConcatHelper();
 
     @Override
     public String getNavn() {
         return NAVN;
-    }
-
-    @Override
-    public Helper<String> getHelper() {
-        return INSTANS;
     }
 
     @Override

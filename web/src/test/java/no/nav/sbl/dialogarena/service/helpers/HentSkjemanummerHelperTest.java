@@ -20,7 +20,8 @@ public class HentSkjemanummerHelperTest {
     @Before
     public void setUp() throws Exception {
         handlebars = new Handlebars();
-        handlebars.registerHelper(HentSkjemanummerHelper.NAVN, HentSkjemanummerHelper.INSTANS);
+        HentSkjemanummerHelper helper = new HentSkjemanummerHelper();
+        handlebars.registerHelper(helper.getNavn(), helper);
     }
 
     @Test

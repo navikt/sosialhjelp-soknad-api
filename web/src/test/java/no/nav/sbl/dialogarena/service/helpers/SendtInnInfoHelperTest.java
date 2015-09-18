@@ -21,7 +21,8 @@ public class SendtInnInfoHelperTest {
     @Before
     public void setup() {
         handlebars = new Handlebars();
-        handlebars.registerHelper(SendtInnInfoHelper.NAVN, SendtInnInfoHelper.INSTANS);
+        SendtInnInfoHelper helper = new SendtInnInfoHelper();
+        handlebars.registerHelper(helper.getNavn(), helper);
     }
 
     @Test

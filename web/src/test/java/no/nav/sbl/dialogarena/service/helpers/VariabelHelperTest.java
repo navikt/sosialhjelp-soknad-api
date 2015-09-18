@@ -15,7 +15,8 @@ public class VariabelHelperTest {
     @Before
     public void setup(){
         handlebars = new Handlebars();
-        handlebars.registerHelper(VariabelHelper.NAVN, VariabelHelper.INSTANS);
+        VariabelHelper helper = new VariabelHelper();
+        handlebars.registerHelper(helper.getNavn(), helper);
     }
 
     @Test
