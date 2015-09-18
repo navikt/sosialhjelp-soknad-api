@@ -10,37 +10,37 @@
             <td></td>
             <td>
                 <table>
-                    {{#forBarnefakta "barnepass.typer.dagmamma"}}
-                        {{#hvisSant value}}
+                    {{#forBarnefakta "barnepass.typer"}}
+                        {{#hvisLik value "dagmamma"}}
                             <tr>
                                 <td class="sjekket"></td>
                                 <td>
                                     <span>{{ hentTekst "soknad.barnepass.type.dagmamma"}}</span>
                                 </td>
                             </tr>
-                        {{/hvisSant}}
+                        {{/hvisLik}}
                     {{/forBarnefakta}}
 
-                    {{#forBarnefakta "barnepass.typer.barnehage"}}
-                        {{#hvisSant value}}
+                    {{#forBarnefakta "barnepass.typer"}}
+                        {{#hvisLik value "barnehage"}}
                             <tr>
                                 <td class="sjekket"></td>
                                 <td>
                                     <span>{{ hentTekst "soknad.barnepass.type.barnehage"}}</span>
                                 </td>
                             </tr>
-                        {{/hvisSant}}
+                        {{/hvisLik}}
                     {{/forBarnefakta}}
 
-                    {{#forBarnefakta "barnepass.typer.privat"}}
-                        {{#hvisSant value}}
+                    {{#forBarnefakta "barnepass.typer"}}
+                        {{#hvisLik value "privat"}}
                             <tr>
                                 <td class="sjekket"></td>
                                 <td>
                                     <span>{{ hentTekst "soknad.barnepass.type.privat"}}</span>
                                 </td>
                             </tr>
-                        {{/hvisSant}}
+                        {{/hvisLik}}
                     {{/forBarnefakta}}
 
                     {{> skjema/tilleggsstonader/barnepass/barnepassFjerdeklasse }}

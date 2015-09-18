@@ -78,13 +78,13 @@ public class TilsynBarnepassTilXmlTest {
 
         String annenForsorger = "09080745610";
 
-        String barnehage = "true";
-        String dagmamma = "true";
-        String privat = "true";
+        String barnehage = "barnehage";
+        String dagmamma = "dagmamma";
+        String privat = "privat";
 
-        leggTilBarn(oleFnr, oleNavn, "true", annenForsorger, barnehage, null, null, true, true, false, false);
-        leggTilBarn(doleFnr, doleNavn, "true", annenForsorger, null, dagmamma, null, false, false, true, false);
-        leggTilBarn("12312312312", "Doffen Mockmann", "false", null, null, null, privat, false, false, false, false);
+        leggTilBarn(oleFnr, oleNavn, "true", annenForsorger, barnehage, true, true, false, false);
+        leggTilBarn(doleFnr, doleNavn, "true", annenForsorger, dagmamma, false, false, true, false);
+        leggTilBarn("12312312312", "Doffen Mockmann", "false", null, privat, false, false, false, false);
 
         when(navMessageSource.getMessage(eq(trengertilsyn.cmsKey), isNull(Object[].class), eq(trengertilsyn.cmsKey), any(Locale.class))).thenReturn("tilsyn");
         when(navMessageSource.getMessage(eq(langvarig.cmsKey), isNull(Object[].class), eq(langvarig.cmsKey), any(Locale.class))).thenReturn("langvarig");
@@ -109,7 +109,7 @@ public class TilsynBarnepassTilXmlTest {
         assertThat(barn.get(1).getAarsakTilBarnepass().getValue()).isEqualTo("langvarig");
     }
 
-    private void leggTilBarn(String fnr, String navn, String sokesOm, String annenForsorger, String barnehage, String dagpmamma, String privat, boolean fullortFjerdeSkolear, boolean tilsyn, boolean langvarig, boolean ingen) {
+    private void leggTilBarn(String fnr, String navn, String sokesOm, String annenForsorger, String type, boolean fullortFjerdeSkolear, boolean tilsyn, boolean langvarig, boolean ingen) {
         long faktumId = barnId++;
         soknad.getFakta().add(new Faktum().medKey("barn")
                 .medFaktumId(faktumId)
@@ -123,13 +123,9 @@ public class TilsynBarnepassTilXmlTest {
                 .medKey("barnepass.sokerbarnepass")
                 .medValue(sokesOm)
                 .medProperty("tilknyttetbarn", "" + faktumId)
-                .medProperty("sokerOmBarnepass", sokesOm)
-                .medProperty("barnepassBarnehage", barnehage)
-                .medProperty("barnepassDagmamma", dagpmamma)
-                .medProperty("barnepassPrivat", privat));
-        soknad.getFakta().add(new Faktum().medParrentFaktumId(faktumId + 1000).medKey(TilsynBarnepassTilXml.BARNEPASS_TYPER_BARNEHAGE).medValue(barnehage));
-        soknad.getFakta().add(new Faktum().medParrentFaktumId(faktumId + 1000).medKey(TilsynBarnepassTilXml.BARNEPASS_TYPER_DAGMAMMA).medValue(dagpmamma));
-        soknad.getFakta().add(new Faktum().medParrentFaktumId(faktumId + 1000).medKey(TilsynBarnepassTilXml.BARNEPASS_TYPER_PRIVAT).medValue(privat));
+                .medProperty("sokerOmBarnepass", sokesOm));
+
+        soknad.getFakta().add(new Faktum().medParrentFaktumId(faktumId + 1000).medKey(TilsynBarnepassTilXml.BARNEPASS_TYPER).medValue(type));
         soknad.getFakta().add(new Faktum().medParrentFaktumId(faktumId + 1000).medKey(TilsynBarnepassTilXml.BARNEPASS_ANDREFORELDER).medValue(annenForsorger));
         soknad.getFakta().add(new Faktum().medFaktumId(faktumId + 10000).medParrentFaktumId(faktumId + 1000).medKey(TilsynBarnepassTilXml.BARNEPASS_FOLLFORT_FJERDE).medValue("" + fullortFjerdeSkolear));
         soknad.getFakta().add(new Faktum().medParrentFaktumId(faktumId + 10000).medKey(TilsynBarnepassTilXml.BARNEPASS_AARSAKER.get(0)).medValue("" + langvarig));

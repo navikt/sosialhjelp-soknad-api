@@ -23,9 +23,7 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 public class TilsynBarnepassTilXml implements Transformer<WebSoknad, TilsynsutgifterBarn> {
     public static final String BARNEPASS_ANDREFORELDER = "barnepass.andreforelder";
-    public static final String BARNEPASS_TYPER_DAGMAMMA = "barnepass.typer.dagmamma";
-    public static final String BARNEPASS_TYPER_BARNEHAGE = "barnepass.typer.barnehage";
-    public static final String BARNEPASS_TYPER_PRIVAT = "barnepass.typer.privat";
+    public static final String BARNEPASS_TYPER = "barnepass.typer";
     public static final String BARNEPASS_FOLLFORT_FJERDE = "barnepass.fjerdeklasse";
     public static final List<String> BARNEPASS_AARSAKER = Arrays.asList("barnepass.fjerdeklasse.langvarig", "barnepass.fjerdeklasse.trengertilsyn", "barnepass.fjerdeklasse.ingen");
     private static final String PERIODE = "barnepass.periode";
@@ -54,19 +52,18 @@ public class TilsynBarnepassTilXml implements Transformer<WebSoknad, Tilsynsutgi
             Faktum barn = soknad.finnFaktum(Long.valueOf(barnepass.getProperties().get("tilknyttetbarn")));
             if (barn != null) {
                 Barn stofoBarn = extractValue(barn, Barn.class);
+
+                Faktum barnepassType = soknad.getFaktumMedKeyOgParentFaktum(BARNEPASS_TYPER, barnepass.getFaktumId());
+                stofoBarn.setTilsynskategori(extractValue(barnepassType, Tilsynskategorier.class));
+
                 Faktum fulfortFjerde = soknad.getFaktumMedKeyOgParentFaktum(BARNEPASS_FOLLFORT_FJERDE, barnepass.getFaktumId());
                 stofoBarn.setHarFullfoertFjerdeSkoleaar(extractValue(fulfortFjerde, Boolean.class));
+
                 List<AarsakTilBarnepass> aarsakTilBarnepasses = aarsaker(soknad, fulfortFjerde.getFaktumId());
                 stofoBarn.setAarsakTilBarnepass(aarsakTilBarnepasses.isEmpty() ? null : aarsakTilBarnepasses.get(0));//TODO: Sttte for flere
                 tilsynsutgifterBarn.getBarn().add(stofoBarn);
-                Boolean dagmamma = extractValue(soknad.getFaktumMedKeyOgParentFaktum(BARNEPASS_TYPER_DAGMAMMA, barnepass.getFaktumId()), Boolean.class);
-                Boolean barnehage = extractValue(soknad.getFaktumMedKeyOgParentFaktum(BARNEPASS_TYPER_BARNEHAGE, barnepass.getFaktumId()), Boolean.class);
-                Boolean privat = extractValue(soknad.getFaktumMedKeyOgParentFaktum(BARNEPASS_TYPER_PRIVAT, barnepass.getFaktumId()), Boolean.class);
-                stofoBarn.setTilsynskategori(extractValue(new Faktum()
-                        .medProperty("dagmamma", "" + dagmamma)
-                        .medProperty("barnehage", "" + barnehage)
-                        .medProperty("privat", "" + privat)
-                        , Tilsynskategorier.class));
+
+
             }
         }
     }
