@@ -6,15 +6,15 @@ import org.joda.time.LocalDate;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Locale;
 
 @Component
-public class UkedagHelper extends RegistryAwareHelper<String>{
-
-    private String[] dager = {"Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"};
+public class FormatterDato extends RegistryAwareHelper<String>{
+    private final Locale locale = new Locale("nb", "NO");
 
     @Override
     public String getNavn() {
-        return "ukedag";
+        return "formatterDato";
     }
 
     @Override
@@ -24,12 +24,14 @@ public class UkedagHelper extends RegistryAwareHelper<String>{
 
     @Override
     public String getBeskrivelse() {
-        return "Returnerer ukedagen for en dato";
+        return "Formatterer en innsendt dato på et gitt format som også sendes inn";
     }
 
     @Override
     public CharSequence apply(String datoStreng, Options options) throws IOException {
         LocalDate date = new LocalDate(datoStreng);
-        return dager[date.getDayOfWeek() - 1];
+        String format = options.param(0);
+
+        return date.toString(format, locale);
     }
 }
