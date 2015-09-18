@@ -9,12 +9,12 @@ import java.io.IOException;
 import java.util.Locale;
 
 @Component
-public class FormatterDato extends RegistryAwareHelper<String>{
+public class FormaterDato extends RegistryAwareHelper<String>{
     private final Locale locale = new Locale("nb", "NO");
 
     @Override
     public String getNavn() {
-        return "formatterDato";
+        return "formaterDato";
     }
 
     @Override
@@ -24,7 +24,7 @@ public class FormatterDato extends RegistryAwareHelper<String>{
 
     @Override
     public String getBeskrivelse() {
-        return "Formatterer en innsendt dato på et gitt format som også sendes inn";
+        return "Formaterer en innsendt dato på et gitt format som også sendes inn";
     }
 
     @Override

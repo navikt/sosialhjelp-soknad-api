@@ -42,7 +42,7 @@ public class LagKjorelisteUker extends RegistryAwareHelper<Map<String, String>> 
     }
 
     private Collection<KjorelisteUke> lagKjorelisteUker(Map<String, String> properties, LocalDate fom, LocalDate tom) {
-        List<LocalDate> sokteDatoer = lagSokteDatoer(properties, fom, tom);
+        List<LocalDate> sokteDatoer = finnSokteDatoer(properties, fom, tom);
 
         Map<Integer, KjorelisteUke> uker = new LinkedHashMap<>();
 
@@ -63,7 +63,7 @@ public class LagKjorelisteUker extends RegistryAwareHelper<Map<String, String>> 
         return uker.values();
     }
 
-    private List<LocalDate> lagSokteDatoer(Map<String, String> properties, LocalDate fom, LocalDate tom) {
+    private List<LocalDate> finnSokteDatoer(Map<String, String> properties, LocalDate fom, LocalDate tom) {
         int totaltAntallDager = 1 + Days.daysBetween(fom, tom).getDays();
 
         List<LocalDate> datoer = new ArrayList<>();
