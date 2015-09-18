@@ -149,13 +149,13 @@ public final class StofoTransformers {
                 Tilsynskategorier tilsynskategorier = new Tilsynskategorier();
                 tilsynskategorier.setKodeverksRef("");
 
-                if ("true".equals(faktum.getProperties().get("barnehage"))) {
+                if ("barnehage".equals(faktum.getValue())) {
                     tilsynskategorier.setValue(StofoKodeverkVerdier.TilsynForetasAvKodeverk.barnehage.kodeverksverdi);
                 }
-                if ("true".equals(faktum.getProperties().get("dagmamma"))) {
+                if ("dagmamma".equals(faktum.getValue())) {
                     tilsynskategorier.setValue(StofoKodeverkVerdier.TilsynForetasAvKodeverk.dagmamma.kodeverksverdi);
                 }
-                if ("true".equals(faktum.getProperties().get("privat"))) {
+                if ("privat".equals(faktum.getValue())) {
                     tilsynskategorier.setValue(StofoKodeverkVerdier.TilsynForetasAvKodeverk.privat.kodeverksverdi);
                 }
 
