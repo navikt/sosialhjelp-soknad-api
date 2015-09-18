@@ -2,13 +2,10 @@ package no.nav.sbl.dialogarena.service.helpers.faktum;
 
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.Helper;
-import no.nav.sbl.dialogarena.service.HandlebarRegistry;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
 
@@ -20,14 +17,9 @@ public class ForFaktumHelperTest {
     @Before
     public void setUp() throws Exception {
         handlebars = new Handlebars();
-        ForFaktumHelper helpers = new ForFaktumHelper();
-        ReflectionTestUtils.setField(helpers, "handlebarsRegistry", new HandlebarRegistry() {
-            @Override
-            public void registrerHelper(String name, Helper helper) {
-                handlebars.registerHelper(name, helper);
-            }
-        });
-        helpers.registrer();
+        ForFaktumHelper helper = new ForFaktumHelper();
+        handlebars.registerHelper(helper.getNavn(), helper);
+
     }
 
     @Test

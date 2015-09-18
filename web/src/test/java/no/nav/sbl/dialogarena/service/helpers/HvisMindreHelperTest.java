@@ -17,7 +17,8 @@ public class HvisMindreHelperTest {
     @Before
     public void setUp() throws Exception {
         handlebars = new Handlebars();
-        handlebars.registerHelper(HvisMindreHelper.NAVN, HvisMindreHelper.INSTANS);
+        HvisMindreHelper helper = new HvisMindreHelper();
+        handlebars.registerHelper(helper.getNavn(), helper);
         model = new HashMap<>();
     }
 

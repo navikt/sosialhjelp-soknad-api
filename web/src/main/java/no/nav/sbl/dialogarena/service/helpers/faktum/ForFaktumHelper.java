@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.service.helpers.faktum;
 
 
-import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import no.nav.sbl.dialogarena.service.helpers.RegistryAwareHelper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
@@ -15,8 +14,6 @@ import static no.nav.sbl.dialogarena.service.HandlebarsUtils.finnWebSoknad;
 @Component
 public class ForFaktumHelper extends RegistryAwareHelper<String> {
 
-
-    public static final ForFaktumHelper INSTANS = new ForFaktumHelper();
     public static final String NAVN = "forFaktum";
 
     @Override
@@ -34,11 +31,6 @@ public class ForFaktumHelper extends RegistryAwareHelper<String> {
     @Override
     public String getNavn() {
         return NAVN;
-    }
-
-    @Override
-    public Helper<String> getHelper() {
-        return INSTANS;
     }
 
     @Override

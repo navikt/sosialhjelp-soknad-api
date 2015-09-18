@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
-import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.joda.time.DateTime;
@@ -19,16 +18,10 @@ import static no.nav.sbl.dialogarena.service.HandlebarsUtils.finnWebSoknad;
 public class SendtInnInfoHelper extends RegistryAwareHelper<Object> {
 
     public static final String NAVN = "sendtInnInfo";
-    public static final SendtInnInfoHelper INSTANS = new SendtInnInfoHelper();
 
     @Override
     public String getNavn() {
         return NAVN;
-    }
-
-    @Override
-    public Helper<Object> getHelper() {
-        return INSTANS;
     }
 
     @Override

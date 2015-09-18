@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.service.helpers;
 
 import com.github.jknack.handlebars.Handlebars;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -17,7 +16,8 @@ public class ConcatHelperTest {
     @Before
     public void setup() {
         handlebars = new Handlebars();
-        handlebars.registerHelper(ConcatHelper.NAVN, ConcatHelper.INSTANS);
+        ConcatHelper helper = new ConcatHelper();
+        handlebars.registerHelper(helper.getNavn(), helper);
     }
 
     @Test
