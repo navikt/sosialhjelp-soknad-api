@@ -93,8 +93,8 @@ public class LagKjorelisteUker extends RegistryAwareHelper<Map<String, String>> 
 
 
     private static class KjorelisteUke {
-        int ukeNr;
-        List<KjorelisteDag> dager = new ArrayList<>();
+        private int ukeNr;
+        private List<KjorelisteDag> dager = new ArrayList<>();
 
         public KjorelisteUke(int ukeNr) {
             this.ukeNr = ukeNr;
@@ -110,8 +110,8 @@ public class LagKjorelisteUker extends RegistryAwareHelper<Map<String, String>> 
     }
 
     private static class KjorelisteDag {
-        String dato;
-        String parkering;
+        private String dato;
+        private String parkering;
 
         public KjorelisteDag(String dato) {
             this.dato = dato;
