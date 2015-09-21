@@ -7,9 +7,16 @@
     </tr>
     {{#hvisSant value}}
         <tr>
-            <td class="sjekket"></td>
+            <td></td>
             <td>
-                <span>{{ hentTekst "soknad.laeremidler.funksjonshemming.belop.oppsummering" }} {{properties.utgift}}  {{hentTekst "soknad.kr"}} </span>
+                <table>
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>
+                            <span>{{ hentTekst "soknad.laeremidler.funksjonshemming.belop.oppsummering" }} {{properties.utgift}}  {{hentTekst "soknad.kr"}} </span>
+                        </td>
+                    </tr>
+                </table>
             </td>
         </tr>
     {{/hvisSant}}
