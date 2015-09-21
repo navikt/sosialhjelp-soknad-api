@@ -1,0 +1,46 @@
+{{#forFaktum "vedtak"}}
+    {{#variabel "trengerParkering" properties.trengerParkering}}
+
+        {{#forFakta "vedtak.betalingsplan"}}
+            {{#hvisSant properties.registrert}}
+                <h2>{{hentTekst 'oppsummering.kjoreliste'}} {{formatterLangDato properties.fom}}
+                    - {{formatterLangDato properties.tom}}</h2>
+
+                <h3>{{hentTekst 'oppsummering.dager'}}</h3>
+                {{#lagKjorelisteUker properties}}
+                    <table>
+                        <tr>
+                            <td class="tom-sjekket"></td>
+                            <td>
+                                <h4>{{hentTekst 'oppsummering.uke'}} {{ukeNr}}</h4>
+
+                                <table class="blokk-xs">
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            <ul>
+                                                {{#each dager}}
+                                                    <li class="kulepunkt faktum-felt">
+                                                        {{toCapitalized (formaterDato dato "EEEE")}} {{formatterLangDato dato~}}
+                                                        {{#hvisSant trengerParkering~}}
+                                                            {{#hvisMer parkering "0"~}}
+                                                                {{hentTekst 'oppsummering.utgifter'}}
+                                                                <i>{{parkering}} {{hentTekst 'soknad.kroner'}}</i>
+                                                            {{/hvisMer}}
+                                                        {{/hvisSant}}
+                                                    </li>
+                                                {{/each}}
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+
+                {{/lagKjorelisteUker}}
+            {{/hvisSant}}
+        {{/forFakta}}
+
+    {{/variabel}}
+{{/forFaktum}}
