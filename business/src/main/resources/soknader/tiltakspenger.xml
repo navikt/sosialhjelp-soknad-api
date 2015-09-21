@@ -29,6 +29,15 @@
         <id>informasjonsside.deltarIIntroprogram.info</id>
     </faktum>
 
+    <!-- Tiltaksliste -->
+    <faktum>
+        <id>tiltaksliste.valgtTiltak</id>
+    </faktum>
+    <faktum>
+        <id>tiltaksliste.tiltak</id>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
     <!-- Trygd og pensjon -->
     <faktum>
         <id>trygdogpensjon</id>
