@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
-import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import org.joda.time.LocalDate;
 import org.springframework.stereotype.Component;
@@ -15,11 +14,6 @@ public class FormaterDato extends RegistryAwareHelper<String>{
     @Override
     public String getNavn() {
         return "formaterDato";
-    }
-
-    @Override
-    public Helper<String> getHelper() {
-        return this;
     }
 
     @Override

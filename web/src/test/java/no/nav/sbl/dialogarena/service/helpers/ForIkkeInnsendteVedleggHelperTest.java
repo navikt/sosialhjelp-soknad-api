@@ -18,7 +18,8 @@ public class ForIkkeInnsendteVedleggHelperTest {
     @Before
     public void setUp() throws Exception {
         handlebars = new Handlebars();
-        handlebars.registerHelper(ForIkkeInnsendteVedleggHelper.NAVN, ForIkkeInnsendteVedleggHelper.INSTANS);
+        ForIkkeInnsendteVedleggHelper helper = new ForIkkeInnsendteVedleggHelper();
+        handlebars.registerHelper(helper.getNavn(), helper);
     }
 
     @Test

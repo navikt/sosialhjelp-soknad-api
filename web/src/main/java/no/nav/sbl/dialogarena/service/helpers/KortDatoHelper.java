@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
-import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import org.springframework.stereotype.Component;
 
@@ -13,16 +12,10 @@ import static org.apache.commons.lang3.StringUtils.split;
 @Component
 public class KortDatoHelper extends RegistryAwareHelper<String> {
     public static final String NAVN = "kortDato";
-    public static final KortDatoHelper INSTANS = new KortDatoHelper();
 
     @Override
     public String getNavn() {
         return NAVN;
-    }
-
-    @Override
-    public Helper<String> getHelper() {
-        return INSTANS;
     }
 
     @Override

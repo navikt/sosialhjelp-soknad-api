@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.service.helpers.tilleggsstonader;
 
-import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import no.nav.sbl.dialogarena.service.helpers.RegistryAwareHelper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
@@ -17,16 +16,10 @@ import static no.nav.sbl.dialogarena.service.HandlebarsUtils.finnWebSoknad;
 public class ForFaktumTilknyttetBarn extends RegistryAwareHelper<String>{
 
     public static final String NAVN = "forFaktumTilknyttetBarn";
-    public static final ForFaktumTilknyttetBarn INSTANS = new ForFaktumTilknyttetBarn();
 
     @Override
     public String getNavn() {
         return NAVN;
-    }
-
-    @Override
-    public Helper<String> getHelper() {
-        return INSTANS;
     }
 
     @Override

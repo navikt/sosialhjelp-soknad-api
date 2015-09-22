@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
-import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import org.springframework.stereotype.Component;
 
@@ -12,16 +11,10 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class HvisMerHelper extends RegistryAwareHelper<String>{
 
     public static final String NAVN = "hvisMer";
-    public static final HvisMerHelper INSTANS = new HvisMerHelper();
 
     @Override
     public String getNavn() {
         return NAVN;
-    }
-
-    @Override
-    public Helper<String> getHelper() {
-        return INSTANS;
     }
 
     @Override

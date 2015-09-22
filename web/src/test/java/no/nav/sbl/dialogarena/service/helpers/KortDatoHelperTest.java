@@ -16,7 +16,8 @@ public class KortDatoHelperTest {
     @Before
     public void setup() {
         handlebars = new Handlebars();
-        handlebars.registerHelper(KortDatoHelper.NAVN, KortDatoHelper.INSTANS);
+        KortDatoHelper helper = new KortDatoHelper();
+        handlebars.registerHelper(helper.getNavn(), helper);
     }
 
     @Test

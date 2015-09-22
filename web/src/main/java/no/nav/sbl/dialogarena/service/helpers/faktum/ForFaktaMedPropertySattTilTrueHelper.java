@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.service.helpers.faktum;
 
-import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import no.nav.sbl.dialogarena.service.helpers.RegistryAwareHelper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
@@ -17,16 +16,10 @@ import static no.nav.sbl.dialogarena.service.HandlebarsUtils.lagItererbarRespons
 public class ForFaktaMedPropertySattTilTrueHelper extends RegistryAwareHelper<String> {
 
     public static final String NAVN = "forFaktaMedPropertySattTilTrue";
-    public static final ForFaktaMedPropertySattTilTrueHelper INSTANS = new ForFaktaMedPropertySattTilTrueHelper();
 
     @Override
     public String getNavn() {
         return NAVN;
-    }
-
-    @Override
-    public Helper<String> getHelper() {
-        return INSTANS;
     }
 
     @Override

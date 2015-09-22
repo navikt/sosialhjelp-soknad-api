@@ -18,7 +18,8 @@ public class HvisIkkeTomTest {
     @Before
     public void setUp() throws Exception {
         handlebars = new Handlebars();
-        handlebars.registerHelper(HvisIkkeTomHelper.NAVN, HvisIkkeTomHelper.INSTANS);
+        HvisIkkeTomHelper helper = new HvisIkkeTomHelper();
+        handlebars.registerHelper(helper.getNavn(), helper);
     }
 
     @Test

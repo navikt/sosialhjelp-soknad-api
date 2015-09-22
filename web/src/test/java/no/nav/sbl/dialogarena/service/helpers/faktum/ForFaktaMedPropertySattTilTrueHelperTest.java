@@ -6,7 +6,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -23,9 +22,6 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ForFaktaMedPropertySattTilTrueHelperTest {
 
-    @InjectMocks
-    ForFaktaMedPropertySattTilTrueHelper forFaktaMedPropertySattTilTrueHelper;
-
     @Mock
     WebSoknad webSoknad;
 
@@ -37,7 +33,8 @@ public class ForFaktaMedPropertySattTilTrueHelperTest {
     @Before
     public void setUp() throws Exception {
         handlebars = new Handlebars();
-        handlebars.registerHelper(forFaktaMedPropertySattTilTrueHelper.getNavn(), forFaktaMedPropertySattTilTrueHelper.getHelper());
+        ForFaktaMedPropertySattTilTrueHelper helper = new ForFaktaMedPropertySattTilTrueHelper();
+        handlebars.registerHelper(helper.getNavn(), helper);
         faktum1 = new Faktum();
         faktum2 = new Faktum();
         fakta = new ArrayList<>();

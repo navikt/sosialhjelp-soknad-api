@@ -18,7 +18,8 @@ public class HvisMerHelperTest {
     @Before
     public void setUp() throws Exception {
         handlebars = new Handlebars();
-        handlebars.registerHelper(HvisMerHelper.NAVN, HvisMerHelper.INSTANS);
+        HvisMerHelper helper = new HvisMerHelper();
+        handlebars.registerHelper(helper.getNavn(), helper);
         model = new HashMap<>();
     }
 
