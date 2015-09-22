@@ -71,21 +71,35 @@ public class AktiviteterMock implements SakOgAktivitetV1 {
     public WSFinnAktivitetsinformasjonListeResponse finnAktivitetsinformasjonListe(WSFinnAktivitetsinformasjonListeRequest wsFinnAktivitetsinformasjonListeRequest) throws FinnAktivitetsinformasjonListeSikkerhetsbegrensning, FinnAktivitetsinformasjonListePersonIkkeFunnet {
         WSFinnAktivitetsinformasjonListeResponse response = new WSFinnAktivitetsinformasjonListeResponse();
         WSPeriode periode = new WSPeriode().withFom(new LocalDate("2015-01-15")).withTom(new LocalDate("2015-02-15"));
+
+        WSAktivitetstyper aktivitetstype = new WSAktivitetstyper().withValue("arbeidspraksis");
         WSAktivitet aktivitet = new WSAktivitet()
                 .withAktivitetId("9999")
                 .withErStoenadsberettigetAktivitet(true)
                 .withAktivitetsnavn("Arbeidspraksis i ordinær virksomhet")
-                .withPeriode(periode);
+                .withPeriode(periode)
+                .withAktivitetstype(aktivitetstype);
 
         WSPeriode periode2 = new WSPeriode().withFom(new LocalDate("2015-02-28"));
+        WSAktivitetstyper aktivitetstype2 = new WSAktivitetstyper().withValue("jobbsøkerkurs");
         WSAktivitet aktivitet2 = new WSAktivitet()
                 .withAktivitetId("8888")
                 .withErStoenadsberettigetAktivitet(true)
                 .withAktivitetsnavn("Arbeid med bistand")
-                .withPeriode(periode2);
+                .withPeriode(periode2)
+                .withAktivitetstype(aktivitetstype2);
+
+        WSPeriode periode3 = new WSPeriode().withFom(new LocalDate("2015-05-28"));
+        WSAktivitetstyper aktivitetstype3 = new WSAktivitetstyper().withValue("amo");
+        WSAktivitet aktivitet3 = new WSAktivitet()
+                .withAktivitetId("7777")
+                .withErStoenadsberettigetAktivitet(true)
+                .withAktivitetsnavn("Arbeid med service")
+                .withPeriode(periode3)
+                .withAktivitetstype(aktivitetstype3);
 
 
-        response.withAktivitetListe(aktivitet, aktivitet2);
+        response.withAktivitetListe(aktivitet, aktivitet2, aktivitet3);
         return response;
     }
 }
