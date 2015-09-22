@@ -90,7 +90,7 @@ public class AktivitetService {
                     .medKey("aktivitet")
                     .medProperty("id", wsAktivitet.getAktivitetId())
                     .medProperty("navn", wsAktivitet.getAktivitetsnavn())
-                    .medProperty("aktivitetstype", wsAktivitet.getAktivitetstype().getValue());
+                    .medProperty("type", wsAktivitet.getAktivitetstype().getValue());
 
             WSPeriode periode = wsAktivitet.getPeriode();
             faktum.medProperty("fom", ServiceUtils.datoTilString(periode.getFom()));
