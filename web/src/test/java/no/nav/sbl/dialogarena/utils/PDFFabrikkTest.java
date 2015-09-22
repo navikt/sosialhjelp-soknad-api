@@ -37,8 +37,10 @@ public class PDFFabrikkTest {
         soknad.leggTilFaktum(new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("liste").medValue("testinnhold3").medType(FaktumType.BRUKERREGISTRERT));
         soknad.leggTilFaktum(new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("liste").medValue("testinnhold4").medType(FaktumType.BRUKERREGISTRERT));
         String html;
-        handleBarKjoerer.registrerHelper(ForFaktumHelper.NAVN, ForFaktumHelper.INSTANS);
-        handleBarKjoerer.registrerHelper(ForFaktaHelper.NAVN, ForFaktaHelper.INSTANS);
+        ForFaktumHelper forFaktumHelper = new ForFaktumHelper();
+        ForFaktaHelper forFaktaHelper = new ForFaktaHelper();
+        handleBarKjoerer.registrerHelper(forFaktumHelper.getNavn(), forFaktumHelper);
+        handleBarKjoerer.registrerHelper(forFaktaHelper.getNavn(), forFaktaHelper);
 
         try {
             html = handleBarKjoerer.fyllHtmlMalMedInnhold(soknad, "/html/WebSoknadHtml");

@@ -13,8 +13,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class HvisKunStudentHelperTest {
     private Handlebars handlebars;
 
-    HvisKunStudentHelper hvisKunStudentHelper;
-
     WebSoknad webSoknad;
 
     private static final String BARE_STUDENT = "bareStudent";
@@ -22,10 +20,10 @@ public class HvisKunStudentHelperTest {
 
     @Before
     public void setup() {
-        hvisKunStudentHelper = new HvisKunStudentHelper();
+        HvisKunStudentHelper helper = new HvisKunStudentHelper();
 
         handlebars = new Handlebars();
-        handlebars.registerHelper(hvisKunStudentHelper.getNavn(), hvisKunStudentHelper.getHelper());
+        handlebars.registerHelper(helper.getNavn(), helper);
 
         webSoknad = new WebSoknad();
         webSoknad

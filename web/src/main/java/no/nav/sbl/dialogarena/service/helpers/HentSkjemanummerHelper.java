@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
-import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils;
@@ -14,16 +13,10 @@ import static no.nav.sbl.dialogarena.service.HandlebarsUtils.finnWebSoknad;
 public class HentSkjemanummerHelper extends RegistryAwareHelper<Object> {
 
     public static final String NAVN = "hentSkjemanummer";
-    public static final HentSkjemanummerHelper INSTANS = new HentSkjemanummerHelper();
 
     @Override
     public String getNavn() {
         return NAVN;
-    }
-
-    @Override
-    public Helper<Object> getHelper() {
-        return INSTANS;
     }
 
     @Override

@@ -16,7 +16,8 @@ public class FnrTilKortDatoHelperTest {
     @Before
     public void setup() {
         handlebars = new Handlebars();
-        handlebars.registerHelper(FnrTilKortDatoHelper.NAVN, FnrTilKortDatoHelper.INSTANS);
+        FnrTilKortDatoHelper helper = new FnrTilKortDatoHelper();
+        handlebars.registerHelper(helper.getNavn(), helper);
     }
 
     @Test

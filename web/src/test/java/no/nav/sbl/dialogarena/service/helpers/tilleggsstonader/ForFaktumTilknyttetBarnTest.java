@@ -1,19 +1,19 @@
 package no.nav.sbl.dialogarena.service.helpers.tilleggsstonader;
 
-import com.github.jknack.handlebars.*;
-import no.nav.sbl.dialogarena.service.helpers.*;
-import no.nav.sbl.dialogarena.service.helpers.faktum.*;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.*;
-import org.junit.*;
-import org.junit.runner.*;
-import org.mockito.*;
-import org.mockito.runners.*;
+import com.github.jknack.handlebars.Handlebars;
+import no.nav.sbl.dialogarena.service.helpers.faktum.ForFaktumHelper;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import java.io.*;
+import java.io.IOException;
 
-import static no.nav.sbl.dialogarena.service.helpers.DiskresjonskodeHelper.*;
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ForFaktumTilknyttetBarnTest {
@@ -33,8 +33,12 @@ public class ForFaktumTilknyttetBarnTest {
     public void setup(){
         webSoknad = new WebSoknad();
         handlebars = new Handlebars();
-        handlebars.registerHelper(forFaktum.getNavn(), forFaktum.getHelper());
-        handlebars.registerHelper(forFaktumTilknyttetBarn.getNavn(), forFaktumTilknyttetBarn.getHelper());
+
+        ForFaktumHelper forFaktumHelper = new ForFaktumHelper();
+        ForFaktumTilknyttetBarn forFaktumTilknyttetBarn = new ForFaktumTilknyttetBarn();
+
+        handlebars.registerHelper(forFaktumHelper.getNavn(), forFaktumHelper);
+        handlebars.registerHelper(forFaktumTilknyttetBarn.getNavn(), forFaktumTilknyttetBarn);
         barneFaktum = new Faktum().medFaktumId(123L).medKey("barn").medValue("en value");
         webSoknad.leggTilFaktum(barneFaktum);
     }

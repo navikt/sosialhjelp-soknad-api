@@ -24,8 +24,10 @@ import static org.assertj.core.api.Assertions.assertThat;
     @Before
     public void setUp() throws Exception {
         handlebars = new Handlebars();
-        handlebars.registerHelper(HarBarnetInntektHelper.NAVN, HarBarnetInntektHelper.INSTANS);
-        handlebars.registerHelper(ForFaktumHelper.NAVN, ForFaktumHelper.INSTANS);
+        HarBarnetInntektHelper harBarnetInntektHelper = new HarBarnetInntektHelper();
+        ForFaktumHelper forFaktumHelper = new ForFaktumHelper();
+        handlebars.registerHelper(harBarnetInntektHelper.getNavn(), harBarnetInntektHelper);
+        handlebars.registerHelper(forFaktumHelper.getNavn(), forFaktumHelper);
 
         handlebarInput= "{{#forFaktum \"barn\"}}{{#harBarnetInntekt }}barnet tjener {{value}}{{else}}barnet har ikke inntekt{{/harBarnetInntekt}}{{/forFaktum}}";
     }

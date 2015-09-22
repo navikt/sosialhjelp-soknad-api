@@ -18,7 +18,8 @@ public class HvisLikHelperTest {
     @Before
     public void setUp() throws Exception {
         handlebars = new Handlebars();
-        handlebars.registerHelper(HvisLikHelper.NAVN, HvisLikHelper.INSTANS);
+        HvisLikHelper helper = new HvisLikHelper();
+        handlebars.registerHelper(helper.getNavn(), helper);
     }
 
     @Test

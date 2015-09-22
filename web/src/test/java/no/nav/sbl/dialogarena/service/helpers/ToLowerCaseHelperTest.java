@@ -16,7 +16,8 @@ public class ToLowerCaseHelperTest {
     @Before
     public void setup() {
         handlebars = new Handlebars();
-        handlebars.registerHelper(ToLowerCaseHelper.NAVN, ToLowerCaseHelper.INSTANS);
+        ToLowerCaseHelper helper = new ToLowerCaseHelper();
+        handlebars.registerHelper(helper.getNavn(), helper);
     }
 
     @Test

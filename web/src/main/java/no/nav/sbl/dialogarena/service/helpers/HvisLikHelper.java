@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
-import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +9,6 @@ import java.io.IOException;
 public class HvisLikHelper extends RegistryAwareHelper<Object>{
 
     public static final String NAVN = "hvisLik";
-    public static final HvisLikHelper INSTANS = new HvisLikHelper();
 
     @Override
     public CharSequence apply(Object key, Options options) throws IOException {
@@ -24,11 +22,6 @@ public class HvisLikHelper extends RegistryAwareHelper<Object>{
     @Override
     public String getNavn() {
         return NAVN;
-    }
-
-    @Override
-    public Helper<Object> getHelper() {
-        return INSTANS;
     }
 
     @Override

@@ -16,7 +16,8 @@ public class ToCapitalizedHelperTest {
     @Before
     public void setup() {
         handlebars = new Handlebars();
-        handlebars.registerHelper(ToCapitalizedHelper.NAVN, ToCapitalizedHelper.INSTANS);
+        ToCapitalizedHelper helper = new ToCapitalizedHelper();
+        handlebars.registerHelper(helper.getNavn(), helper);
     }
 
     @Test

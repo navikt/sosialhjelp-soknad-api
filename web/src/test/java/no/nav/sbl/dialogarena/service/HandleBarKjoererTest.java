@@ -40,13 +40,17 @@ public class HandleBarKjoererTest {
     @Before
     public void setup() {
         when(messageSource.getMessage(any(String.class), any(Object[].class), any(Locale.class))).thenReturn("mock");
-        handleBarKjoerer.registrerHelper(HvisSantHelper.NAVN, HvisSantHelper.INSTANS);
-        handleBarKjoerer.registrerHelper(HvisLikHelper.NAVN, HvisLikHelper.INSTANS);
-        handleBarKjoerer.registrerHelper(ForFaktumHelper.NAVN, ForFaktumHelper.INSTANS);
-        handleBarKjoerer.registrerHelper(HvisMerHelper.NAVN, HvisMerHelper.INSTANS);
-        handleBarKjoerer.registrerHelper(HvisMindreHelper.NAVN, HvisMindreHelper.INSTANS);
-        handleBarKjoerer.registrerHelper(ForFaktaMedPropertySattTilTrueHelper.NAVN, ForFaktaMedPropertySattTilTrueHelper.INSTANS);
-        handleBarKjoerer.registrerHelper(ForFaktaHelper.NAVN, ForFaktaHelper.INSTANS);
+        registerHelper(new HvisSantHelper());
+        registerHelper(new HvisLikHelper());
+        registerHelper(new ForFaktumHelper());
+        registerHelper(new HvisMerHelper());
+        registerHelper(new HvisMindreHelper());
+        registerHelper(new ForFaktaMedPropertySattTilTrueHelper());
+        registerHelper(new ForFaktaHelper());
+    }
+
+    private <T> void registerHelper(RegistryAwareHelper<T> helper) {
+        handleBarKjoerer.registrerHelper(helper.getNavn(), helper);
     }
 
     @Test

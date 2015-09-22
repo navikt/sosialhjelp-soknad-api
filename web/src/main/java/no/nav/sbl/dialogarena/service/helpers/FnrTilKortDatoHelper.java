@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
-import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import no.bekk.bekkopen.person.Fodselsnummer;
 import org.springframework.stereotype.Component;
@@ -12,16 +11,10 @@ import static no.bekk.bekkopen.person.FodselsnummerValidator.getFodselsnummer;
 @Component
 public class FnrTilKortDatoHelper extends RegistryAwareHelper<Object> {
     public static final String NAVN = "fnrTilKortDato";
-    public static final FnrTilKortDatoHelper INSTANS = new FnrTilKortDatoHelper();
 
     @Override
     public String getNavn() {
         return NAVN;
-    }
-
-    @Override
-    public Helper<Object> getHelper() {
-        return INSTANS;
     }
 
     @Override

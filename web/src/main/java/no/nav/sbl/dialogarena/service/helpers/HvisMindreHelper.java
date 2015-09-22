@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
-import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import org.springframework.stereotype.Component;
 
@@ -10,16 +9,10 @@ import java.io.IOException;
 public class HvisMindreHelper extends RegistryAwareHelper<String> {
 
     public static final String NAVN = "hvisMindre";
-    public static final HvisMindreHelper INSTANS = new HvisMindreHelper();
 
     @Override
     public String getNavn() {
         return NAVN;
-    }
-
-    @Override
-    public Helper<String> getHelper() {
-        return INSTANS;
     }
 
     @Override
