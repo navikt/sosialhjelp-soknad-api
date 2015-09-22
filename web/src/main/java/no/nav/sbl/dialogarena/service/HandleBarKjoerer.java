@@ -69,7 +69,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         handlebars.registerHelper("hentTekstMedFaktumParameter", generateHentTekstMedFaktumParameterHelper());
         handlebars.registerHelper("hentLand", generateHentLandHelper());
         handlebars.registerHelper("forPerioder", generateHelperForPeriodeTidsromFakta());
-        handlebars.registerHelper("hentFaktumValue", generateHentFaktumValueHelper());
         handlebars.registerHelper("hvisFlereErTrue", generateHvisFlereSomStarterMedErTrueHelper());
         handlebars.registerHelper("skalViseRotasjonTurnusSporsmaal", generateSkalViseRotasjonTurnusSporsmaalHelper());
         handlebars.registerHelper("hvisLikCmsTekst", generateHvisLikCmsTekstHelper());
@@ -202,17 +201,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
                     reverse(datoSplit);
                     return join(datoSplit, ".");
                 }
-            }
-        };
-    }
-
-    private Helper<String> generateHentFaktumValueHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String key, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-                Faktum faktum = soknad.getFaktumMedKey(key);
-                return faktum.getValue();
             }
         };
     }
