@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.service.helpers.refusjondagligreise;
 
-import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import no.nav.sbl.dialogarena.service.helpers.RegistryAwareHelper;
 import org.joda.time.Days;
@@ -20,11 +19,6 @@ public class LagKjorelisteUker extends RegistryAwareHelper<Map<String, String>> 
     @Override
     public String getNavn() {
         return "lagKjorelisteUker";
-    }
-
-    @Override
-    public Helper<Map<String, String>> getHelper() {
-        return this;
     }
 
     @Override
