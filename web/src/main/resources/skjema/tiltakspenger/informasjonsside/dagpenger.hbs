@@ -1,0 +1,21 @@
+{{#forFaktum "informasjonsside.dagpenger"}}
+    {{#hvisIkkeTom value}}
+        <h3>{{ hentTekst "informasjonsside.dagpenger.tittel" }}</h3>
+        <table>
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    {{#hvisLik value "beholde" }}
+                        <span>{{ hentTekst "informasjonsside.dagpenger.beholde" }}</span>
+                    {{else}}
+                        <span>{{ hentTekst "informasjonsside.dagpenger.utsette" }}</span>
+                    {{/hvisLik}}
+                </td>
+            </tr>
+        </table>
+
+        {{#hvisLik value "utsette" }}
+            {{> skjema/tiltakspenger/informasjonsside/institusjon }}
+        {{/hvisLik}}
+    {{/hvisIkkeTom}}
+{{/forFaktum}}

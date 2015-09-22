@@ -46,7 +46,7 @@ public class TilleggsstonaderTilXml implements Transformer<WebSoknad, Alternativ
         if (aktivBolk("bostotte", webSoknad)) {
             rettighetstype.setBoutgifter(new BoutgifterTilXml().transform(webSoknad));
         }
-        if (aktivBolk("laermidler", webSoknad)) {
+        if (aktivBolk("laeremidler", webSoknad)) {
             rettighetstype.setLaeremiddelutgifter(new LaeremidlerTilXml().transform(webSoknad));
         }
         if (aktivBolk("flytting", webSoknad)) {

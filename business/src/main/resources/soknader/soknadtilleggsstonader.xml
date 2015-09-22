@@ -1080,23 +1080,7 @@
     </faktum>
 
     <faktum>
-        <id>barnepass.typer.dagmamma</id>
-        <dependOn>barnepass.sokerbarnepass</dependOn>
-        <dependOnValues>
-            <value>true</value>
-        </dependOnValues>
-    </faktum>
-
-    <faktum>
-        <id>barnepass.typer.barnehage</id>
-        <dependOn>barnepass.sokerbarnepass</dependOn>
-        <dependOnValues>
-            <value>true</value>
-        </dependOnValues>
-    </faktum>
-
-    <faktum>
-        <id>barnepass.typer.privat</id>
+        <id>barnepass.typer</id>
         <dependOn>barnepass.sokerbarnepass</dependOn>
         <dependOnValues>
             <value>true</value>
@@ -1137,7 +1121,7 @@
 
     <faktum>
         <id>barnepass.andreforelder</id>
-        <dependOn>barnepass.sokerbarnepass</dependOn>
+        <dependOn>informasjonsside.stonad.barnepass</dependOn>
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
@@ -1667,31 +1651,31 @@
 
     <!-- Vedlegg barnepass-->
     <vedlegg>
-        <faktum>barnepass.typer.barnehage</faktum>
+        <faktum>barnepass.typer</faktum>
         <skjemaNummer>J8</skjemaNummer>
         <skjemanummerTillegg>barnepassBarnehage</skjemanummerTillegg>
         <onValues>
-            <value>true</value>
+            <value>barnehage</value>
         </onValues>
         <flereTillatt>true</flereTillatt>
         <property>vedleggstittel</property>
     </vedlegg>
     <vedlegg>
-        <faktum>barnepass.typer.privat</faktum>
+        <faktum>barnepass.typer</faktum>
         <skjemaNummer>J4</skjemaNummer>
         <skjemanummerTillegg>barnepassPrivat</skjemanummerTillegg>
         <onValues>
-            <value>true</value>
+            <value>privat</value>
         </onValues>
         <flereTillatt>true</flereTillatt>
         <property>vedleggstittel</property>
     </vedlegg>
     <vedlegg>
-        <faktum>barnepass.typer.dagmamma</faktum>
+        <faktum>barnepass.typer</faktum>
         <skjemaNummer>J4</skjemaNummer>
         <skjemanummerTillegg>barnepassDagmamma</skjemanummerTillegg>
         <onValues>
-            <value>true</value>
+            <value>dagmamma</value>
         </onValues>
         <flereTillatt>true</flereTillatt>
         <property>vedleggstittel</property>

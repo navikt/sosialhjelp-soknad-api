@@ -9,6 +9,7 @@ import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetsinformasjonLis
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.SakOgAktivitetV1;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSAktivitet;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSAktivitetOgVedtak;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSAktivitetstyper;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSBetalingsplan;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSPeriode;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSSaksinformasjon;
@@ -62,10 +63,12 @@ public class AktivitetServiceTest {
         String id = "9999";
         String fom = "2015-02-15";
         String tom = "2015-02-28";
+        String type = "arbeidspraksiss";
 
         WSPeriode periode = new WSPeriode().withFom(new LocalDate(fom)).withTom(new LocalDate(tom));
+        WSAktivitetstyper aktivitetstype = new WSAktivitetstyper().withValue(type);
         WSFinnAktivitetsinformasjonListeResponse response = new WSFinnAktivitetsinformasjonListeResponse();
-        response.withAktivitetListe(new WSAktivitet().withAktivitetsnavn(aktivitetsnavn).withAktivitetId(id).withPeriode(periode).withErStoenadsberettigetAktivitet(true));
+        response.withAktivitetListe(new WSAktivitet().withAktivitetsnavn(aktivitetsnavn).withAktivitetId(id).withPeriode(periode).withErStoenadsberettigetAktivitet(true).withAktivitetstype(aktivitetstype));
 
         when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(response);
 
@@ -87,11 +90,13 @@ public class AktivitetServiceTest {
         String id = "9999";
         String fom = "2015-02-15";
         String tom = "2015-02-28";
+        String type = "arbeidspraksiss";
 
         WSPeriode periode = new WSPeriode().withFom(new LocalDate(fom)).withTom(new LocalDate(tom));
+        WSAktivitetstyper aktivitetstype = new WSAktivitetstyper().withValue(type);
         WSFinnAktivitetsinformasjonListeResponse response = new WSFinnAktivitetsinformasjonListeResponse();
-        response.withAktivitetListe(new WSAktivitet().withAktivitetsnavn(aktivitetsnavn).withAktivitetId(id).withPeriode(periode).withErStoenadsberettigetAktivitet(true),
-                new WSAktivitet().withAktivitetsnavn(aktivitetsnavn).withAktivitetId("8888").withPeriode(periode).withErStoenadsberettigetAktivitet(false));
+        response.withAktivitetListe(new WSAktivitet().withAktivitetsnavn(aktivitetsnavn).withAktivitetId(id).withPeriode(periode).withErStoenadsberettigetAktivitet(true).withAktivitetstype(aktivitetstype),
+                new WSAktivitet().withAktivitetsnavn(aktivitetsnavn).withAktivitetId("8888").withPeriode(periode).withErStoenadsberettigetAktivitet(false).withAktivitetstype(aktivitetstype));
 
         when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(response);
         List<Faktum> fakta = aktivitetService.hentAktiviteter(fodselnummer);
@@ -103,10 +108,12 @@ public class AktivitetServiceTest {
     @Test
     public void skalReturnereFaktumUtenTom() throws FinnAktivitetsinformasjonListePersonIkkeFunnet, FinnAktivitetsinformasjonListeSikkerhetsbegrensning {
         String fom = "2015-02-15";
+        String type = "arbeidspraksiss";
 
         WSPeriode periode = new WSPeriode().withFom(new LocalDate(fom));
+        WSAktivitetstyper aktivitetstype = new WSAktivitetstyper().withValue(type);
         WSFinnAktivitetsinformasjonListeResponse response = new WSFinnAktivitetsinformasjonListeResponse();
-        response.withAktivitetListe(new WSAktivitet().withPeriode(periode).withErStoenadsberettigetAktivitet(true));
+        response.withAktivitetListe(new WSAktivitet().withPeriode(periode).withErStoenadsberettigetAktivitet(true).withAktivitetstype(aktivitetstype));
 
         when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(response);
 
@@ -119,8 +126,11 @@ public class AktivitetServiceTest {
 
     @Test
     public void skalReturnereFaktumUtenNoenPeriodedatoer() throws FinnAktivitetsinformasjonListePersonIkkeFunnet, FinnAktivitetsinformasjonListeSikkerhetsbegrensning {
+        String type = "arbeidspraksiss";
+
+        WSAktivitetstyper aktivitetstype = new WSAktivitetstyper().withValue(type);
         WSFinnAktivitetsinformasjonListeResponse response = new WSFinnAktivitetsinformasjonListeResponse();
-        response.withAktivitetListe(new WSAktivitet().withPeriode(new WSPeriode()).withErStoenadsberettigetAktivitet(true));
+        response.withAktivitetListe(new WSAktivitet().withPeriode(new WSPeriode()).withErStoenadsberettigetAktivitet(true).withAktivitetstype(aktivitetstype));
 
         when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(response);
 

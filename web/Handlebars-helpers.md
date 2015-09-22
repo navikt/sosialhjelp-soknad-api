@@ -61,6 +61,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * forIkkeInnsendteVedlegg - Itererer over vedlegg som ikke er sendt inn
 * forInnsendteVedlegg - Itererer over innsendte vedlegg på søknaden
 * forVedlegg - Lar en iterere over alle påkrevde vedlegg på en søknad
+* formaterDato - Formaterer en innsendt dato på et gitt format som også sendes inn
 * harBarnetInntekt - Henter summen hvis barnet har inntekt. Må brukes innenfor en #forFaktum eller #forFakta helper. 
 * hentSkjemanummer - Setter inn søknadens skjemanummer, også om det er en søknad for dagpenger
 * hvisHarDiskresjonskode - Viser innhold avhengig av om personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)
@@ -72,6 +73,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hvisMindre - Evaluerer en string til integer og sjekker om verdien er mindre enn andre inputparameter
 * hvisSant - Dersom variabelen er "true" vil innholdet vises
 * kortDato - Formatterer en datostreng på formatet yyyy-mm-dd til dd.mm.aaaa
+* lagKjorelisteUker - Bygger en nestet liste over uker for et betalingsvedtak, der ukene inneholder dager det er søkt for refusjon.
 * sendtInnInfo - Tilgjengeliggjør informasjon om søknaden (innsendte vedlegg, påkrevde vedlegg og dato)
 * toCapitalized - Gjør om en tekst til at alle ord starter med store bokstaver
 * toLowerCase - Gjør om en tekst til kun små bokstaver
@@ -178,6 +180,14 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 {{else}}
     Ingen vedlegg
 {{/forVedlegg}}
+```
+
+
+##### formaterDato
+
+```
+{{ukedag "2015-09-16" "EEEE"}}
+{{ukedag variabel "d. MMMM YYYY"}}
 ```
 
 
@@ -295,6 +305,18 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 
 ```
 {{kortDato "2015-11-03"}}
+```
+
+
+##### lagKjorelisteUker
+
+```
+{{#lagKjorelisteUker properties}}
+    uke: {{ukeNr}}
+    {{#each dager}}
+        {{dato}}: {{parkering}}
+    {{/each}}
+{{/lagKjorelisteUker}}
 ```
 
 

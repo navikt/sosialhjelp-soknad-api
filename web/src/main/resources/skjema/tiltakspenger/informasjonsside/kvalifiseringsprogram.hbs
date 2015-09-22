@@ -1,0 +1,18 @@
+{{#forFaktum "informasjonsside.kvalifiseringsprogram"}}
+    {{#hvisIkkeTom value}}
+        <h3>{{ hentTekst "informasjonsside.kvalifiseringsprogram.tittel" }}</h3>
+        <table>
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    {{#hvisLik value "ja" }}
+                        <span>{{ hentTekst "informasjonsside.kvalifiseringsprogram.ja" }}</span>
+                    {{else}}
+                        <span>{{ hentTekst "informasjonsside.kvalifiseringsprogram.nei" }}</span>
+                    {{/hvisLik}}
+                </td>
+            </tr>
+        </table>
+        {{> skjema/tiltakspenger/informasjonsside/institusjon }}
+    {{/hvisIkkeTom}}
+{{/forFaktum}}

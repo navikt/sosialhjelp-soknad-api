@@ -10,8 +10,8 @@
                         <ul>
                             {{#forFakta "trygdogpensjon.utbetalere"}}
                                 <li class="kulepunkt">
-                                    <span>Utbetaler: {{ properties.utbetaler}},</span>
-                                    <span> {{properties.prosent}}%, </span>
+                                    <span>Utbetaler: <em>{{ properties.utbetaler}}</em>,</span>
+                                    <span> <em>{{properties.prosent}}%</em>, </span>
                                     <span>fra {{ formatterLangDato properties.fom }}</span>
                                     {{#hvisIkkeTom properties.tom }}
                                         <span> til {{ formatterLangDato properties.tom }}</span>
