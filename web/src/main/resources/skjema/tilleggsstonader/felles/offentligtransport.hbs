@@ -11,14 +11,22 @@
     </tr>
     {{#hvisSant value}}
         <tr>
-            {{#forFaktum (concat faktumPrefiks "offentligtransport.utgift")}}
-                <td class="sjekket"></td>
-                <td><span>{{ hentTekst "soknad.reise.offentligtransport.utgift.oppsummering" }}: {{value}} {{hentTekst "soknad.krmnd"}}</span></td>
-            {{/forFaktum}}
+            <td></td>
+            <td>
+                <table>
+                    <tr>
+                        {{#forFaktum (concat faktumPrefiks "offentligtransport.utgift")}}
+                            <td class="sjekket"></td>
+                            <td><span>{{ hentTekst "soknad.reise.offentligtransport.utgift.oppsummering" }}
+                                : {{value}} {{hentTekst "soknad.krmnd"}}</span></td>
+                        {{/forFaktum}}
+                    </tr>
+                    {{#forFaktum (concat faktumPrefiks "utbetalingsdato")}}
+                        {{> skjema/tilleggsstonader/felles/utbetalingsdato}}
+                    {{/forFaktum}}
+                </table>
+            </td>
         </tr>
-        {{#forFaktum (concat faktumPrefiks "utbetalingsdato")}}
-            {{> skjema/tilleggsstonader/felles/utbetalingsdato}}
-        {{/forFaktum}}
     {{else}}
         <tr>
             <td></td>
