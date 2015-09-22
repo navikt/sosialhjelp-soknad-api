@@ -1,4 +1,8 @@
 <soknad skjemaNummer="NAV 76-13.45" temaKode="IND">
+    <!-- Dagpengerside. Brukes kun hvis ARENA er nede -->
+    <faktum>
+        <id>dagpenger</id>
+    </faktum>
 
     <!-- Informasjonsside -->
     <faktum>
