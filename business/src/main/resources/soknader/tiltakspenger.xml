@@ -1,4 +1,8 @@
 <soknad skjemaNummer="NAV 76-13.45" temaKode="IND">
+    <!-- Dagpengerside. Brukes kun hvis ARENA er nede -->
+    <faktum>
+        <id>dagpenger</id>
+    </faktum>
 
     <!-- Informasjonsside -->
     <faktum>
@@ -27,6 +31,15 @@
     </faktum>
     <faktum>
         <id>informasjonsside.deltarIIntroprogram.info</id>
+    </faktum>
+
+    <!-- Tiltaksliste -->
+    <faktum>
+        <id>tiltaksliste.valgtTiltak</id>
+    </faktum>
+    <faktum>
+        <id>tiltaksliste.tiltak</id>
+        <flereTillatt>true</flereTillatt>
     </faktum>
 
     <!-- Trygd og pensjon -->

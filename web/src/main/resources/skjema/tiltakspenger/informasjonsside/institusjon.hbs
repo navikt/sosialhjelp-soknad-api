@@ -1,0 +1,34 @@
+{{#forFaktum "informasjonsside.institusjon"}}
+    {{#hvisIkkeTom value}}
+        <h3>{{ hentTekst "informasjonsside.institusjon.tittel" }}</h3>
+        <table>
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    {{#hvisLik value "ja" }}
+                        <span>{{ hentTekst "informasjonsside.institusjon.ja" }}</span>
+                        <ul>
+                            {{#forFaktum "informasjonsside.institusjon.ja.hvaslags"}}
+                                <li class="kulepunkt">
+                                    {{#hvisIkkeTom value}}
+                                        {{#hvisLik value "barneverninstitusjon" }}
+                                            <span>{{ hentTekst "informasjonsside.institusjon.ja.hvaslags.barneverninstitusjon" }}</span>
+                                        {{/hvisLik}}
+                                        {{#hvisLik value "overgangsbolig" }}
+                                            <span>{{ hentTekst "informasjonsside.institusjon.ja.hvaslags.overgangsbolig" }}</span>
+                                        {{/hvisLik}}
+                                        {{#hvisLik value "annet" }}
+                                            <span>{{ hentTekst "informasjonsside.institusjon.ja.hvaslags.annet" }}</span>
+                                        {{/hvisLik}}
+                                    {{/hvisIkkeTom}}
+                                </li>
+                            {{/forFaktum}}
+                        </ul>
+                    {{else}}
+                        <span>{{ hentTekst "informasjonsside.institusjon.nei" }}</span>
+                    {{/hvisLik}}
+                </td>
+            </tr>
+        </table>
+    {{/hvisIkkeTom}}
+{{/forFaktum}}

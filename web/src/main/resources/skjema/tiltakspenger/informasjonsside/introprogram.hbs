@@ -1,6 +1,6 @@
 {{#forFaktum "informasjonsside.deltarIIntroprogram"}}
     {{#hvisIkkeTom value}}
-        <h2>{{ hentTekst "informasjonsside.introprogram.overskrift" }}</h2>
+        <h3>{{ hentTekst "informasjonsside.introprogram.overskrift" }}</h3>
         <table>
             <tr>
                 <td class="sjekket"></td>
@@ -10,12 +10,12 @@
                         <ul>
                             {{#forFaktum "informasjonsside.deltarIIntroprogram.info"}}
                                 <li class="kulepunkt">
-                                    <span>Kommune: {{ properties.kommune}},</span>
+                                    <span>Kommune: <em>{{ properties.kommune}}</em>,</span>
                                     {{#hvisIkkeTom properties.bydel }}
-                                        <span>Bydel: {{ properties.bydel }},</span>
+                                        <span>Bydel: <em>{{ properties.bydel }}</em>,</span>
                                     {{/hvisIkkeTom}}
                                     {{#hvisIkkeTom properties.kontonummer }}
-                                        <span> Kontonummer: {{ properties.kontonummer }}</span>
+                                        <span> Kontonummer:<em> {{ properties.kontonummer }} </em></span>
                                     {{/hvisIkkeTom}}
                                 </li>
                                 <li class="kulepunkt">
