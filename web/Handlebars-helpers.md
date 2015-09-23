@@ -39,8 +39,6 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * formatterFodelsDato (deprecated og erstattet av formatterKortDato og formatterFnrTilKortDato)
 * formatterLangDato
 * hvisEttersending
-* hentTekstMedParameter
-* hentTekstMedFaktumParameter
 * hentLand
 * forPerioder
 * hvisFlereErTrue
@@ -64,6 +62,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hentFaktumValue - Returnerer verdien til et faktum tilhørende keyen som sendes inn
 * hentSkjemanummer - Setter inn søknadens skjemanummer, også om det er en søknad for dagpenger
 * hentTekst - Henter tekst fra cms, prøver med søknadens prefix + key, før den prøver med bare keyen. Kan sende inn parametere.
+* hentTekstMedFaktumParameter - Henter tekst fra cms for en gitt key, med verdien til et faktum som parameter. Faktumet hentes basert på key
 * hvisHarDiskresjonskode - Viser innhold avhengig av om personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)
 * hvisHarIkkeInnsendteDokumenter - Sjekker om søknaden har ikke-innsendte vedlegg
 * hvisIkkeTom - Dersom variabelen ikke er tom vil innholdet vises
@@ -225,6 +224,13 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 ```
 {{hentTekst "min.key" "param1" "param2"}}
 {{hentTekst "min.key.uten.params"}}
+```
+
+
+##### hentTekstMedFaktumParameter
+
+```
+{{hentTekstMedFaktumParameter "cms.key" "faktum.key"}}
 ```
 
 
