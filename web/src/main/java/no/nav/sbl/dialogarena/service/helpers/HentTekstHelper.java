@@ -21,7 +21,7 @@ public class HentTekstHelper extends RegistryAwareHelper<String> {
 
     @Override
     public String getBeskrivelse() {
-        return "Henter tekst fra cms, prøver med søknadens prefix + key, før den prøver med bare keyen";
+        return "Henter tekst fra cms, prøver med søknadens prefix + key, før den prøver med bare keyen. Kan sende inn parametere.";
     }
 
     @Override

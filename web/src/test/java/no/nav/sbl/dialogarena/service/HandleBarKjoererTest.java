@@ -13,17 +13,16 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.context.MessageSource;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.Locale;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -31,15 +30,18 @@ public class HandleBarKjoererTest {
     @InjectMocks
     private HandleBarKjoerer handleBarKjoerer;
 
+    @InjectMocks
+    private HentTekstHelper hentTekstHelper;
+
     @Mock
-    private MessageSource messageSource;
+    private CmsTekst cmsTekst;
 
     @Mock
     private Kodeverk kodeverk;
 
     @Before
     public void setup() {
-        when(messageSource.getMessage(any(String.class), any(Object[].class), any(Locale.class))).thenReturn("mock");
+        when(cmsTekst.getCmsTekst(any(String.class), any(Object[].class), anyString())).thenReturn("mock");
         registerHelper(new HvisSantHelper());
         registerHelper(new HvisLikHelper());
         registerHelper(new ForFaktumHelper());
@@ -47,6 +49,7 @@ public class HandleBarKjoererTest {
         registerHelper(new HvisMindreHelper());
         registerHelper(new ForFaktaMedPropertySattTilTrueHelper());
         registerHelper(new ForFaktaHelper());
+        registerHelper(hentTekstHelper);
     }
 
     private <T> void registerHelper(RegistryAwareHelper<T> helper) {
