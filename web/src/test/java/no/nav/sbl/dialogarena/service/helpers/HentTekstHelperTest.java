@@ -7,7 +7,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.AdditionalAnswers;
-import org.mockito.AdditionalMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -48,11 +47,10 @@ public class HentTekstHelperTest {
     @Test
     public void senderParametereTilCmsTekst() throws IOException {
         WebSoknad webSoknad = new WebSoknad().medSoknadPrefix("mittprefix");
-        Object[] params = {"param1", "param2"};
 
         handlebars.compileInline("{{hentTekst \"test\" \"param1\" \"param2\"}}").apply(webSoknad);
 
-        verify(cmsTekst, atLeastOnce()).getCmsTekst(eq("test"), AdditionalMatchers.aryEq(params), eq("mittprefix"));
+        verify(cmsTekst, atLeastOnce()).getCmsTekst("test", new Object[]{"param1", "param2"}, "mittprefix");
     }
 
 }
