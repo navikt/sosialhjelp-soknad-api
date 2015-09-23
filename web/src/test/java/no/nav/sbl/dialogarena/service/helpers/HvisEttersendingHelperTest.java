@@ -31,7 +31,7 @@ public class HvisEttersendingHelperTest {
     }
 
     @Test
-    public void erFalseHvisSokandEr() throws IOException {
+    public void erFalseHvisVanligSoknad() throws IOException {
         WebSoknad webSoknad = new WebSoknad();
         webSoknad.setDelstegStatus(DelstegStatus.OPPRETTET);
         String hvisEttersendingKompilert = handlebars.compileInline("{{#hvisEttersending}}Soknad er ettersending{{else}}Søknad er opprinnelig søknad{{/hvisEttersending}}").apply(webSoknad);

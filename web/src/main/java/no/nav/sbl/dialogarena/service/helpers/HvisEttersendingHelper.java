@@ -27,7 +27,7 @@ public class HvisEttersendingHelper extends RegistryAwareHelper<Object>{
             return options.fn(this);
         } else {
             return options.inverse(this);
-        }    }
-
+        }
+    }
 
 }
