@@ -44,7 +44,6 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hentTekstMedFaktumParameter
 * hentLand
 * forPerioder
-* hentFaktumValue
 * hvisFlereErTrue
 * sendtInnInfo
 * skalViseRotasjonTurnusSporsmaal
