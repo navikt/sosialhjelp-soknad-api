@@ -44,7 +44,6 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hentTekstMedFaktumParameter
 * hentLand
 * forPerioder
-* hentFaktumValue
 * hvisFlereErTrue
 * sendtInnInfo
 * skalViseRotasjonTurnusSporsmaal
@@ -63,6 +62,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * forVedlegg - Lar en iterere over alle påkrevde vedlegg på en søknad
 * formaterDato - Formaterer en innsendt dato på et gitt format som også sendes inn
 * harBarnetInntekt - Henter summen hvis barnet har inntekt. Må brukes innenfor en #forFaktum eller #forFakta helper. 
+* hentFaktumValue - Returnerer verdien til et faktum tilhørende keyen som sendes inn
 * hentSkjemanummer - Setter inn søknadens skjemanummer, også om det er en søknad for dagpenger
 * hvisHarDiskresjonskode - Viser innhold avhengig av om personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)
 * hvisHarIkkeInnsendteDokumenter - Sjekker om søknaden har ikke-innsendte vedlegg
@@ -203,6 +203,13 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
     {{/harBarnetInntekt}}
 {{/forFaktum}}
 
+```
+
+
+##### hentFaktumValue
+
+```
+{{hentFaktumValue "faktum.key"}}
 ```
 
 
