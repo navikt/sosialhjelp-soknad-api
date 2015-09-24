@@ -66,7 +66,9 @@ public class AktivitetService {
 
     public List<Faktum> hentVedtak(String fodselsnummer) {
         try {
-            WSFinnAktivitetOgVedtakDagligReiseListeRequest request = new WSFinnAktivitetOgVedtakDagligReiseListeRequest().withPersonident(fodselsnummer);
+            WSFinnAktivitetOgVedtakDagligReiseListeRequest request = new WSFinnAktivitetOgVedtakDagligReiseListeRequest()
+                    .withPersonident(fodselsnummer)
+                    .withPeriode(new WSPeriode().withFom(LocalDate.now().minusMonths(6)).withTom(LocalDate.now().plusMonths(2)));
             WSFinnAktivitetOgVedtakDagligReiseListeResponse response = aktivitetWebService.finnAktivitetOgVedtakDagligReiseListe(request);
             return on(response.getAktivitetOgVedtakListe()).flatmap(vedtakTransformer).collect();
 
