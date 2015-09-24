@@ -17,12 +17,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class hentTekstMedFaktumParameterTest {
+public class hentTekstMedFaktumParameterHelperTest {
 
     private Handlebars handlebars;
 
     @InjectMocks
-    HentTekstMedFaktumParameter hentTekstMedFaktumParameter;
+    HentTekstMedFaktumParameterHelper hentTekstMedFaktumParameterHelper;
 
     @Mock
     CmsTekst cmsTekst;
@@ -30,7 +30,7 @@ public class hentTekstMedFaktumParameterTest {
     @Before
     public void setup() {
         handlebars = new Handlebars();
-        handlebars.registerHelper(hentTekstMedFaktumParameter.getNavn(), hentTekstMedFaktumParameter);
+        handlebars.registerHelper(hentTekstMedFaktumParameterHelper.getNavn(), hentTekstMedFaktumParameterHelper);
     }
 
     @Test

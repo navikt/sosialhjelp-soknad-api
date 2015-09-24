@@ -12,7 +12,7 @@ import java.io.IOException;
 import static no.nav.sbl.dialogarena.service.HandlebarsUtils.finnWebSoknad;
 
 @Component
-public class HentTekstMedFaktumParameter extends RegistryAwareHelper<String> {
+public class HentTekstMedFaktumParameterHelper extends RegistryAwareHelper<String> {
 
     @Inject
     private CmsTekst cmsTekst;
