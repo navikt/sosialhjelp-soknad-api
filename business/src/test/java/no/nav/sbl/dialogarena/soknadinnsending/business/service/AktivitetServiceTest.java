@@ -64,11 +64,12 @@ public class AktivitetServiceTest {
         String fom = "2015-02-15";
         String tom = "2015-02-28";
         String type = "arbeidspraksiss";
+        String arrangoer = "Oslo kommune";
 
         WSPeriode periode = new WSPeriode().withFom(new LocalDate(fom)).withTom(new LocalDate(tom));
         WSAktivitetstyper aktivitetstype = new WSAktivitetstyper().withValue(type);
         WSFinnAktivitetsinformasjonListeResponse response = new WSFinnAktivitetsinformasjonListeResponse();
-        response.withAktivitetListe(new WSAktivitet().withAktivitetsnavn(aktivitetsnavn).withAktivitetId(id).withPeriode(periode).withErStoenadsberettigetAktivitet(true).withAktivitetstype(aktivitetstype));
+        response.withAktivitetListe(new WSAktivitet().withAktivitetsnavn(aktivitetsnavn).withAktivitetId(id).withPeriode(periode).withErStoenadsberettigetAktivitet(true).withAktivitetstype(aktivitetstype).withArrangoer(arrangoer));
 
         when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(response);
 
@@ -91,12 +92,13 @@ public class AktivitetServiceTest {
         String fom = "2015-02-15";
         String tom = "2015-02-28";
         String type = "arbeidspraksiss";
+        String arrangoer = "Oslo kommune";
 
         WSPeriode periode = new WSPeriode().withFom(new LocalDate(fom)).withTom(new LocalDate(tom));
         WSAktivitetstyper aktivitetstype = new WSAktivitetstyper().withValue(type);
         WSFinnAktivitetsinformasjonListeResponse response = new WSFinnAktivitetsinformasjonListeResponse();
-        response.withAktivitetListe(new WSAktivitet().withAktivitetsnavn(aktivitetsnavn).withAktivitetId(id).withPeriode(periode).withErStoenadsberettigetAktivitet(true).withAktivitetstype(aktivitetstype),
-                new WSAktivitet().withAktivitetsnavn(aktivitetsnavn).withAktivitetId("8888").withPeriode(periode).withErStoenadsberettigetAktivitet(false).withAktivitetstype(aktivitetstype));
+        response.withAktivitetListe(new WSAktivitet().withAktivitetsnavn(aktivitetsnavn).withAktivitetId(id).withPeriode(periode).withErStoenadsberettigetAktivitet(true).withAktivitetstype(aktivitetstype).withArrangoer(arrangoer),
+                new WSAktivitet().withAktivitetsnavn(aktivitetsnavn).withAktivitetId("8888").withPeriode(periode).withErStoenadsberettigetAktivitet(false).withAktivitetstype(aktivitetstype).withArrangoer(arrangoer));
 
         when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(response);
         List<Faktum> fakta = aktivitetService.hentAktiviteter(fodselnummer);
@@ -109,11 +111,12 @@ public class AktivitetServiceTest {
     public void skalReturnereFaktumUtenTom() throws FinnAktivitetsinformasjonListePersonIkkeFunnet, FinnAktivitetsinformasjonListeSikkerhetsbegrensning {
         String fom = "2015-02-15";
         String type = "arbeidspraksiss";
+        String arrangoer = "Oslo kommune";
 
         WSPeriode periode = new WSPeriode().withFom(new LocalDate(fom));
         WSAktivitetstyper aktivitetstype = new WSAktivitetstyper().withValue(type);
         WSFinnAktivitetsinformasjonListeResponse response = new WSFinnAktivitetsinformasjonListeResponse();
-        response.withAktivitetListe(new WSAktivitet().withPeriode(periode).withErStoenadsberettigetAktivitet(true).withAktivitetstype(aktivitetstype));
+        response.withAktivitetListe(new WSAktivitet().withPeriode(periode).withErStoenadsberettigetAktivitet(true).withAktivitetstype(aktivitetstype).withArrangoer(arrangoer));
 
         when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(response);
 
@@ -127,10 +130,11 @@ public class AktivitetServiceTest {
     @Test
     public void skalReturnereFaktumUtenNoenPeriodedatoer() throws FinnAktivitetsinformasjonListePersonIkkeFunnet, FinnAktivitetsinformasjonListeSikkerhetsbegrensning {
         String type = "arbeidspraksiss";
+        String arrangoer = "Oslo kommune";
 
         WSAktivitetstyper aktivitetstype = new WSAktivitetstyper().withValue(type);
         WSFinnAktivitetsinformasjonListeResponse response = new WSFinnAktivitetsinformasjonListeResponse();
-        response.withAktivitetListe(new WSAktivitet().withPeriode(new WSPeriode()).withErStoenadsberettigetAktivitet(true).withAktivitetstype(aktivitetstype));
+        response.withAktivitetListe(new WSAktivitet().withPeriode(new WSPeriode()).withErStoenadsberettigetAktivitet(true).withAktivitetstype(aktivitetstype).withArrangoer(arrangoer));
 
         when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenReturn(response);
 
