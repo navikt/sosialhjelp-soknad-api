@@ -1,10 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader;
 
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Anbud;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.FlytterSelv;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Flytteutgifter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import org.apache.commons.collections15.Transformer;
+import org.springframework.context.MessageSource;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigInteger;
@@ -13,7 +12,7 @@ import java.util.List;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.StofoTransformers.extractValue;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.StofoTransformers.sumDouble;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
-public class FlytteutgifterTilXml implements Transformer<WebSoknad, Flytteutgifter> {
+public class FlytteutgifterTilXml extends CmsTransformer<WebSoknad, Flytteutgifter> {
 
     public static final String AARSAK = "flytting.hvorforflytte";
     public static final String NYJOBB_STARTDATO = "flytting.nyjobb.startdato";
@@ -32,6 +31,10 @@ public class FlytteutgifterTilXml implements Transformer<WebSoknad, Flytteutgift
     private static final String ANNET = "flytting.flytteselv.andreutgifter.annet";
     private static final String FLYTTING_FLYTTEBYRAA_VELGFORSTE = "flytting.flyttebyraa.velgforste";
 
+    public FlytteutgifterTilXml(MessageSource navMessageSource) {
+        super(navMessageSource);
+    }
+
     @Override
     public Flytteutgifter transform(WebSoknad soknad) {
         Flytteutgifter flytteutgifter = new Flytteutgifter();
@@ -41,7 +44,7 @@ public class FlytteutgifterTilXml implements Transformer<WebSoknad, Flytteutgift
         flytteutgifter.setFlyttedato(extractValue(soknad.getFaktumMedKey(FLYTTEDATO), XMLGregorianCalendar.class));
         flytteutgifter.setTilflyttingsadresse(hentAdresse(soknad));
 
-        flytteutgifter.setFlytterSelv(extractValue(soknad.getFaktumMedKey("flytting.selvellerbistand"), FlytterSelv.class));
+        flytteutgifter.setFlytterSelv(flytterSelv(soknad));
 
         flytteutgifter.setAvstand(extractValue(soknad.getFaktumMedKey(FLYTTEAVSTAND), BigInteger.class));
         flytteutgifter.setSumTilleggsutgifter(sumDouble(soknad.getFaktumMedKey(HENGERLEIE),
@@ -53,6 +56,15 @@ public class FlytteutgifterTilXml implements Transformer<WebSoknad, Flytteutgift
         transformAnbud(soknad, flytteutgifter);
 
         return flytteutgifter;
+    }
+
+    private String flytterSelv(WebSoknad soknad) {
+        try {
+            StofoKodeverkVerdier.FlytterSelv flytterSelv = StofoKodeverkVerdier.FlytterSelv.valueOf(extractValue(soknad.getFaktumMedKey("flytting.selvellerbistand"), String.class));
+            return cms(flytterSelv.cms);
+        }catch(Exception ignore){
+            return null;
+        }
     }
 
     private String flyttebyraaFaktum(WebSoknad soknad) {
