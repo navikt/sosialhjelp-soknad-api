@@ -70,36 +70,48 @@ public class AktiviteterMock implements SakOgAktivitetV1 {
     @Override
     public WSFinnAktivitetsinformasjonListeResponse finnAktivitetsinformasjonListe(WSFinnAktivitetsinformasjonListeRequest wsFinnAktivitetsinformasjonListeRequest) throws FinnAktivitetsinformasjonListeSikkerhetsbegrensning, FinnAktivitetsinformasjonListePersonIkkeFunnet {
         WSFinnAktivitetsinformasjonListeResponse response = new WSFinnAktivitetsinformasjonListeResponse();
-        WSPeriode periode = new WSPeriode().withFom(new LocalDate("2015-01-15")).withTom(new LocalDate("2015-02-15"));
 
+        WSPeriode periode = new WSPeriode().withFom(new LocalDate("2015-01-15")).withTom(new LocalDate("2015-02-15"));
         WSAktivitetstyper aktivitetstype = new WSAktivitetstyper().withValue("arbeidspraksis");
         WSAktivitet aktivitet = new WSAktivitet()
                 .withAktivitetId("9999")
                 .withErStoenadsberettigetAktivitet(true)
-                .withAktivitetsnavn("Arbeidspraksis i ordinær virksomhet")
+                .withAktivitetsnavn("Arbeidspraksis i ordinær virksomhet med sluttdato fra arena ")
                 .withPeriode(periode)
-                .withAktivitetstype(aktivitetstype);
+                .withAktivitetstype(aktivitetstype)
+                .withArrangoer("Horten kommune");
 
-        WSPeriode periode2 = new WSPeriode().withFom(new LocalDate("2015-02-28"));
+        WSPeriode periode2 = new WSPeriode().withFom(new LocalDate("2015-02-28")).withTom(new LocalDate("2015-04-15"));
         WSAktivitetstyper aktivitetstype2 = new WSAktivitetstyper().withValue("jobbsøkerkurs");
         WSAktivitet aktivitet2 = new WSAktivitet()
                 .withAktivitetId("8888")
                 .withErStoenadsberettigetAktivitet(true)
-                .withAktivitetsnavn("Arbeid med bistand")
+                .withAktivitetsnavn("Arbeid med bistand jobbsøkerkurs med sluttdato fra arena")
                 .withPeriode(periode2)
-                .withAktivitetstype(aktivitetstype2);
+                .withAktivitetstype(aktivitetstype2)
+                .withArrangoer("Oslo kommune, Bydel Ullern");
 
         WSPeriode periode3 = new WSPeriode().withFom(new LocalDate("2015-05-28"));
         WSAktivitetstyper aktivitetstype3 = new WSAktivitetstyper().withValue("amo");
         WSAktivitet aktivitet3 = new WSAktivitet()
                 .withAktivitetId("7777")
                 .withErStoenadsberettigetAktivitet(true)
-                .withAktivitetsnavn("Arbeid med service")
+                .withAktivitetsnavn("Arbeid med service amo uten sluttdato fra arena")
                 .withPeriode(periode3)
-                .withAktivitetstype(aktivitetstype3);
+                .withAktivitetstype(aktivitetstype3)
+                .withArrangoer("Oslo kommune, Bydel Alna");
 
+        WSPeriode periode4 = new WSPeriode().withFom(new LocalDate("2015-01-15"));
+        WSAktivitetstyper aktivitetstype4 = new WSAktivitetstyper().withValue("arbeidspraksis");
+        WSAktivitet aktivitet4 = new WSAktivitet()
+                .withAktivitetId("6666")
+                .withErStoenadsberettigetAktivitet(true)
+                .withAktivitetsnavn("Arbeidspraksis i ordinær virksomhet uten sluttdato fra arena ")
+                .withPeriode(periode4)
+                .withAktivitetstype(aktivitetstype4)
+                .withArrangoer("Ulsteinvik kommune");
 
-        response.withAktivitetListe(aktivitet, aktivitet2, aktivitet3);
+        response.withAktivitetListe(aktivitet, aktivitet2, aktivitet3, aktivitet4);
         return response;
     }
 }
