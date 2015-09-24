@@ -1,27 +1,24 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader;
 
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.AarsakTilBarnepass;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Barn;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Periode;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Tilsynskategorier;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.TilsynsutgifterBarn;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import org.apache.commons.collections15.Transformer;
 import org.springframework.context.MessageSource;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.FaktumPredicates.harValue;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.StofoTransformers.extractValue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
-public class TilsynBarnepassTilXml implements Transformer<WebSoknad, TilsynsutgifterBarn> {
+public class TilsynBarnepassTilXml extends CmsTransformer<WebSoknad, TilsynsutgifterBarn> {
     public static final String BARNEPASS_ANDREFORELDER = "barnepass.andreforelder";
     public static final String BARNEPASS_TYPER = "barnepass.typer";
     public static final String BARNEPASS_FOLLFORT_FJERDE = "barnepass.fjerdeklasse";
@@ -29,11 +26,10 @@ public class TilsynBarnepassTilXml implements Transformer<WebSoknad, Tilsynsutgi
     private static final String PERIODE = "barnepass.periode";
     private static final String UTBETALINGSDATO = "barnepass.utbetalingsdato";
     private static final String SOKERBARNEPASS = "barnepass.sokerbarnepass";
-    private final MessageSource navMessageSource;
     private TilsynsutgifterBarn tilsynsutgifterBarn = new TilsynsutgifterBarn();
 
     public TilsynBarnepassTilXml(MessageSource navMessageSource) {
-        this.navMessageSource = navMessageSource;
+        super(navMessageSource);
     }
 
     @Override
@@ -59,8 +55,8 @@ public class TilsynBarnepassTilXml implements Transformer<WebSoknad, Tilsynsutgi
                 Faktum fulfortFjerde = soknad.getFaktumMedKeyOgParentFaktum(BARNEPASS_FOLLFORT_FJERDE, barnepass.getFaktumId());
                 stofoBarn.setHarFullfoertFjerdeSkoleaar(extractValue(fulfortFjerde, Boolean.class));
 
-                List<AarsakTilBarnepass> aarsakTilBarnepasses = aarsaker(soknad, fulfortFjerde.getFaktumId());
-                stofoBarn.setAarsakTilBarnepass(aarsakTilBarnepasses.isEmpty() ? null : aarsakTilBarnepasses.get(0));//TODO: Sttte for flere
+                List<String> aarsakTilBarnepasses = aarsaker(soknad, fulfortFjerde.getFaktumId());
+                stofoBarn.getAarsakTilBarnepass().addAll(aarsakTilBarnepasses);
                 tilsynsutgifterBarn.getBarn().add(stofoBarn);
 
 
@@ -68,15 +64,12 @@ public class TilsynBarnepassTilXml implements Transformer<WebSoknad, Tilsynsutgi
         }
     }
 
-    private List<AarsakTilBarnepass> aarsaker(WebSoknad soknad, Long parentFaktumId) {
-        List<AarsakTilBarnepass> result = new ArrayList<>();
+    private List<String> aarsaker(WebSoknad soknad, Long parentFaktumId) {
+        List<String> result = new ArrayList<>();
         for (String faktumKey : BARNEPASS_AARSAKER) {
             if (isTrue(extractValue(soknad.getFaktumMedKeyOgParentFaktum(faktumKey, parentFaktumId), Boolean.class))) {
-                AarsakTilBarnepass aarsakTilBarnepass = new AarsakTilBarnepass();
                 String key = StofoKodeverkVerdier.BarnepassAarsak.valueOf(faktumKey.substring(faktumKey.lastIndexOf(".") + 1)).cmsKey;
-                String cms = navMessageSource.getMessage(key, null, key, new Locale("nb", "NO"));
-                aarsakTilBarnepass.setValue(cms);
-                result.add(aarsakTilBarnepass);
+                result.add(cms(key));
             }
         }
         return result;
