@@ -38,7 +38,6 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * forBarnefakta
 * formatterFodelsDato (deprecated og erstattet av formatterKortDato og formatterFnrTilKortDato)
 * formatterLangDato
-* hvisEttersending
 * hentTekst
 * hentTekstMedParameter
 * hentTekstMedFaktumParameter
