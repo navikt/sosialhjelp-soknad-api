@@ -70,8 +70,10 @@ public class AktivitetService {
                     .withPersonident(fodselsnummer)
                     .withPeriode(new WSPeriode().withFom(LocalDate.now().minusMonths(6)).withTom(LocalDate.now().plusMonths(2)));
             WSFinnAktivitetOgVedtakDagligReiseListeResponse response = aktivitetWebService.finnAktivitetOgVedtakDagligReiseListe(request);
+            if (response == null) {
+                return Lists.newArrayList();
+            }
             return on(response.getAktivitetOgVedtakListe()).flatmap(vedtakTransformer).collect();
-
         } catch (FinnAktivitetOgVedtakDagligReiseListeSikkerhetsbegrensning | FinnAktivitetOgVedtakDagligReiseListePersonIkkeFunnet e) {
             throw new RuntimeException(e.getMessage(), e);
         }
