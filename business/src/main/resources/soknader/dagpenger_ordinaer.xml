@@ -575,10 +575,6 @@
         <id>stonadFisker</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ingenYtelse</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
     </faktum>
     <faktum>
         <id>ytelser.stonadFisker.utbetaler</id>
@@ -593,10 +589,6 @@
         <id>garantilott</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ingenYtelse</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
     </faktum>
     <faktum>
         <id>garantilottUtbetaler</id>
@@ -611,10 +603,6 @@
         <id>offentligTjenestepensjon</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ingenYtelse</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
     </faktum>
     <faktum>
         <id>offentligTjenestepensjonUtbetaler</id>
@@ -629,10 +617,6 @@
         <id>privatTjenestepensjon</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ingenYtelse</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
     </faktum>
     <faktum>
         <id>privatTjenestepensjonUtbetaler</id>
@@ -647,10 +631,6 @@
         <id>etterlonn</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ingenYtelse</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
     </faktum>
     <faktum>
         <id>etterlonnUtbetaler</id>
@@ -665,10 +645,6 @@
         <id>vartpenger</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ingenYtelse</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
     </faktum>
     <faktum>
         <id>vartpengerUtbetaler</id>
@@ -683,10 +659,6 @@
         <id>dagpengerEOS</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ingenYtelse</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
     </faktum>
     <faktum>
         <id>dagpengerEOSUtbetalerLand</id>
@@ -701,10 +673,6 @@
         <id>annenYtelse</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ingenYtelse</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
     </faktum>
     <faktum>
         <id>annenYtelseType</id>
@@ -733,55 +701,31 @@
         <id>sykepenger</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ingennavytelser</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
     </faktum>
     <faktum>
         <id>aap</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ingennavytelser</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
     </faktum>
     <faktum>
         <id>uforetrygd</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ingennavytelser</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
     </faktum>
     <faktum>
         <id>svangerskapspenger</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ingennavytelser</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
     </faktum>
     <faktum>
         <id>foreldrepenger</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ingennavytelser</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
     </faktum>
     <faktum>
         <id>ventelonn</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ingennavytelser</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
     </faktum>
     <faktum>
         <id>ingennavytelser</id>
