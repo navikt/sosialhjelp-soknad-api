@@ -38,8 +38,17 @@
         <id>tiltaksliste.valgtTiltak</id>
     </faktum>
     <faktum>
-        <id>tiltaksliste.tiltak</id>
+        <id>tiltaksliste.tiltakFraArena</id>
         <flereTillatt>true</flereTillatt>
+    </faktum>
+    <faktum>
+        <id>tiltaksliste.annetTiltak</id>
+    </faktum>
+    <faktum>
+        <id>tiltaksliste.nyttTiltak</id>
+    </faktum>
+    <faktum>
+        <id>tiltaksliste.annetTiltak.arbeidspraksis.registreringsskjema</id>
     </faktum>
 
     <!-- Trygd og pensjon -->
@@ -69,6 +78,14 @@
     </faktum>
 
     <!-- Vedlegg -->
+    <vedlegg>
+        <faktum>tiltaksliste.annetTiltak.arbeidspraksis.registreringsskjema</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>H8</skjemaNummer>
+    </vedlegg>
+
     <vedlegg>
         <faktum>trygdogpensjon</faktum>
         <onValues>
