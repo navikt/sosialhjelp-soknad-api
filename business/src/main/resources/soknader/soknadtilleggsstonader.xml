@@ -238,7 +238,7 @@
     </faktum>
     <faktum>
         <id>reise.aktivitet.offentligtransport.egenbil.sendebekreftelse</id>
-        <dependOn>reise.aktivitet.offentligtransport.egenbil.parkering</dependOn>
+        <dependOn>reise.aktivitet.offentligtransport.egenbil</dependOn>
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
