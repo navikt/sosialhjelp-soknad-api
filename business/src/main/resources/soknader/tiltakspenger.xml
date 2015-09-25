@@ -35,20 +35,21 @@
 
     <!-- Tiltaksliste -->
     <faktum>
-        <id>tiltaksliste.valgtTiltak</id>
-    </faktum>
-    <faktum>
         <id>tiltaksliste.tiltakFraArena</id>
         <flereTillatt>true</flereTillatt>
     </faktum>
     <faktum>
+        <id>tiltaksliste.valgtTiltak</id>
+    </faktum>
+    <faktum>
         <id>tiltaksliste.annetTiltak</id>
+        <dependOn>tiltaksliste.valgtTiltak</dependOn>
+        <dependOnValues>
+            <value>annetTiltak</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>tiltaksliste.nyttTiltak</id>
-    </faktum>
-    <faktum>
-        <id>tiltaksliste.annetTiltak.arbeidspraksis.registreringsskjema</id>
     </faktum>
 
     <!-- Trygd og pensjon -->
@@ -79,11 +80,11 @@
 
     <!-- Vedlegg -->
     <vedlegg>
-        <faktum>tiltaksliste.annetTiltak.arbeidspraksis.registreringsskjema</faktum>
+        <skjemaNummer>Z4</skjemaNummer>
+        <faktum>tiltaksliste.annetTiltak</faktum>
         <onValues>
-            <value>true</value>
+            <value>PRAKSORD</value>
         </onValues>
-        <skjemaNummer>H8</skjemaNummer>
     </vedlegg>
 
     <vedlegg>
