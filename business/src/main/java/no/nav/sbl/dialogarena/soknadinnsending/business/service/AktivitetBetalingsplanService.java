@@ -112,7 +112,6 @@ public class AktivitetBetalingsplanService implements BolkService {
             if (response == null) {
                 return Lists.newArrayList();
             }
-            WSFinnAktivitetOgVedtakDagligReiseListeResponse response = aktivitetWebService.finnAktivitetOgVedtakDagligReiseListe(request);
             return on(response.getAktivitetOgVedtakListe())
                     .filter(aktivitetMatcherId(aktivitetId))
                     .flatmap(AKTIVITET_TIL_VEDTAK)
