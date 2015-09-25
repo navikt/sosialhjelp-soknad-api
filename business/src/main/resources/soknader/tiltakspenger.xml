@@ -48,9 +48,6 @@
             <value>annetTiltak</value>
         </dependOnValues>
     </faktum>
-    <faktum>
-        <id>tiltaksliste.nyttTiltak</id>
-    </faktum>
 
     <!-- Trygd og pensjon -->
     <faktum>
