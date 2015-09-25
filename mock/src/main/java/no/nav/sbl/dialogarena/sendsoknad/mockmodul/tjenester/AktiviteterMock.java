@@ -72,7 +72,7 @@ public class AktiviteterMock implements SakOgAktivitetV1 {
         WSFinnAktivitetsinformasjonListeResponse response = new WSFinnAktivitetsinformasjonListeResponse();
 
         WSPeriode periode = new WSPeriode().withFom(new LocalDate("2015-01-15")).withTom(new LocalDate("2015-02-15"));
-        WSAktivitetstyper aktivitetstype = new WSAktivitetstyper().withValue("arbeidspraksis");
+        WSAktivitetstyper aktivitetstype = new WSAktivitetstyper().withValue("PRAKSORD");
         WSAktivitet aktivitet = new WSAktivitet()
                 .withAktivitetId("9999")
                 .withErStoenadsberettigetAktivitet(true)
@@ -92,7 +92,7 @@ public class AktiviteterMock implements SakOgAktivitetV1 {
                 .withArrangoer("Oslo kommune, Bydel Ullern");
 
         WSPeriode periode3 = new WSPeriode().withFom(new LocalDate("2015-05-28"));
-        WSAktivitetstyper aktivitetstype3 = new WSAktivitetstyper().withValue("amo");
+        WSAktivitetstyper aktivitetstype3 = new WSAktivitetstyper().withValue("AMO");
         WSAktivitet aktivitet3 = new WSAktivitet()
                 .withAktivitetId("7777")
                 .withErStoenadsberettigetAktivitet(true)
@@ -102,7 +102,7 @@ public class AktiviteterMock implements SakOgAktivitetV1 {
                 .withArrangoer("Oslo kommune, Bydel Alna");
 
         WSPeriode periode4 = new WSPeriode().withFom(new LocalDate("2015-01-15"));
-        WSAktivitetstyper aktivitetstype4 = new WSAktivitetstyper().withValue("arbeidspraksis");
+        WSAktivitetstyper aktivitetstype4 = new WSAktivitetstyper().withValue("PRAKSORD");
         WSAktivitet aktivitet4 = new WSAktivitet()
                 .withAktivitetId("6666")
                 .withErStoenadsberettigetAktivitet(true)
