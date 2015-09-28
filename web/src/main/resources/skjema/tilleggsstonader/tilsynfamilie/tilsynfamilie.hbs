@@ -14,30 +14,37 @@
                 </tr>
             {{/forFaktum}}
             {{#forFaktum "tilsynfamilie.typetilsyn"}}
-                {{#hvisSant properties.offentlig}}
-                    <tr>
-                        <td></td>
-                        <td>
-                            <span>{{ hentTekst "soknad.tilsynfamilie.typetilsyn.valg.offentlig"}}</span>
-                        </td>
-                    </tr>
-                {{/hvisSant}}
-                {{#hvisSant properties.privat}}
-                    <tr>
-                        <td></td>
-                        <td>
-                            <span>{{ hentTekst "soknad.tilsynfamilie.typetilsyn.valg.privat"}}</span>
-                        </td>
-                    </tr>
-                {{/hvisSant}}
-                {{#hvisSant properties.annet}}
-                    <tr>
-                        <td></td>
-                        <td>
-                            <span>{{ hentTekst "soknad.tilsynfamilie.typetilsyn.valg.annet"}}</span>
-                        </td>
-                    </tr>
-                {{/hvisSant}}
+                <tr>
+                    <td></td>
+                    <td>
+                        <table>
+                            {{#hvisSant properties.offentlig}}
+                                <tr>
+                                    <td class="sjekket"></td>
+                                    <td>
+                                        <span>{{ hentTekst "soknad.tilsynfamilie.typetilsyn.valg.offentlig"}}</span>
+                                    </td>
+                                </tr>
+                            {{/hvisSant}}
+                            {{#hvisSant properties.privat}}
+                                <tr>
+                                    <td class="sjekket"></td>
+                                    <td>
+                                        <span>{{ hentTekst "soknad.tilsynfamilie.typetilsyn.valg.privat"}}</span>
+                                    </td>
+                                </tr>
+                            {{/hvisSant}}
+                            {{#hvisSant properties.annet}}
+                                <tr>
+                                    <td class="sjekket"></td>
+                                    <td>
+                                        <span>{{ hentTekst "soknad.tilsynfamilie.typetilsyn.valg.annet"}}</span>
+                                    </td>
+                                </tr>
+                            {{/hvisSant}}
+                        </table>
+                    </td>
+                </tr>
             {{/forFaktum}}
             {{#forFaktum "tilsynfamilie.deletilsyn"}}
                 {{#hvisSant value}}
