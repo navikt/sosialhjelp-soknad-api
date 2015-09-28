@@ -12,10 +12,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.springframework.context.MessageSource;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.io.IOException;
 import java.util.*;
 
@@ -35,14 +33,7 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
 
     private Map<String, Helper> helpers = new HashMap<>();
 
-    @Inject
-    @Named("navMessageSource")
-    private MessageSource navMessageSource;
-
-    private String soknadTypePrefix;
-
     public String fyllHtmlMalMedInnhold(WebSoknad soknad, String file) throws IOException {
-        this.soknadTypePrefix = soknad.getSoknadPrefix();
         return getHandlebars().compile(file).apply(soknad);
     }
 
