@@ -13,7 +13,6 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.context.MessageSource;
-import org.springframework.context.NoSuchMessageException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -122,18 +121,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
                 return kodeverk.getLand(landKode);
             }
         };
-    }
-
-    private String getCmsTekst(String key, Object[] parameters, Locale locale) {
-        try {
-            return navMessageSource.getMessage(soknadTypePrefix + "." + key, parameters, locale);
-        } catch (NoSuchMessageException e) {
-            try {
-                return navMessageSource.getMessage(key, parameters, locale);
-            } catch (NoSuchMessageException e2) {
-                return String.format("KEY MANGLER: [%s]", key);
-            }
-        }
     }
 
     private Helper<String> generateFormatterLangDatoHelper() {
