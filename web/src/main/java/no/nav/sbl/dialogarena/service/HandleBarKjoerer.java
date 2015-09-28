@@ -64,13 +64,10 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         handlebars.registerHelper("forBarnefakta", generateForBarnefaktaHelper());
         handlebars.registerHelper("formatterFodelsDato", generateFormatterFodselsdatoHelper());
         handlebars.registerHelper("formatterLangDato", generateFormatterLangDatoHelper());
-        handlebars.registerHelper("hentTekst", generateHentTekstHelper());
-        handlebars.registerHelper("hentTekstMedFaktumParameter", generateHentTekstMedFaktumParameterHelper());
         handlebars.registerHelper("hentLand", generateHentLandHelper());
         handlebars.registerHelper("forPerioder", generateHelperForPeriodeTidsromFakta());
         handlebars.registerHelper("hvisFlereErTrue", generateHvisFlereSomStarterMedErTrueHelper());
         handlebars.registerHelper("skalViseRotasjonTurnusSporsmaal", generateSkalViseRotasjonTurnusSporsmaalHelper());
-        handlebars.registerHelper("hvisLikCmsTekst", generateHvisLikCmsTekstHelper());
 
         return handlebars;
     }
@@ -123,26 +120,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
             @Override
             public CharSequence apply(String landKode, Options options) throws IOException {
                 return kodeverk.getLand(landKode);
-            }
-        };
-    }
-
-    private Helper<String> generateHentTekstMedFaktumParameterHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String key, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-                Faktum faktum = soknad.getFaktumMedKey(options.param(0).toString());
-                return getCmsTekst(key, new Object[]{faktum.getValue()}, new Locale("nb", "NO"));
-            }
-        };
-    }
-
-    private Helper<String> generateHentTekstHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String key, Options options) throws IOException {
-                return getCmsTekst(key, options.params, NO_LOCALE);
             }
         };
     }
@@ -276,16 +253,5 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         };
     }
 
-    private Helper<Object> generateHvisLikCmsTekstHelper() {
-        return new Helper<Object>() {
-            @Override
-            public CharSequence apply(Object value, Options options) throws IOException {
-                if (value != null && getCmsTekst(options.param(0).toString(), new Object[]{}, NO_LOCALE).equalsIgnoreCase(value.toString())) {
-                    return options.fn(this);
-                }
-                return options.inverse(this);
-            }
-        };
-    }
 
 }
