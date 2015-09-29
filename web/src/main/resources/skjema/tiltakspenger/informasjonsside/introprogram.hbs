@@ -9,7 +9,7 @@
                         <span>{{ hentTekst "informasjonsside.introprogram.false" }}</span>
                         <ul>
                             {{#forFaktum "informasjonsside.deltarIIntroprogram.info"}}
-                                <li class="kulepunkt">
+                                <li class="kulepunkt faktum-felt">
                                     <span>Kommune: <em>{{ properties.kommune}}</em>,</span>
                                     {{#hvisIkkeTom properties.bydel }}
                                         <span>Bydel: <em>{{ properties.bydel }}</em>,</span>
@@ -18,7 +18,7 @@
                                         <span> Kontonummer:<em> {{ properties.kontonummer }} </em></span>
                                     {{/hvisIkkeTom}}
                                 </li>
-                                <li class="kulepunkt">
+                                <li class="kulepunkt faktum-felt">
                                     <span>Fra {{ formatterLangDato properties.fom }}</span>
                                     {{#hvisIkkeTom properties.tom }}
                                         <span> til {{ formatterLangDato properties.tom }}</span>

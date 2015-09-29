@@ -5,10 +5,23 @@
             <tr>
                 <td class="sjekket"></td>
                 <td>
-                    {{#hvisLik value "ja" }}
-                        <span>{{ hentTekst "informasjonsside.kvalifiseringsprogram.ja" }}</span>
-                    {{else}}
+                    {{#hvisLik value "nei" }}
                         <span>{{ hentTekst "informasjonsside.kvalifiseringsprogram.nei" }}</span>
+                    {{else}}
+                        <span>{{ hentTekst "informasjonsside.kvalifiseringsprogram.ja" }}</span>
+                        {{#forFaktum "informasjonsside.kvalifiseringsprogram.ja.soketilleggsstonad"}}
+                            <ul>
+                                {{#hvisLik value "ja" }}
+                                    <li class="kulepunkt faktum-felt">
+                                        <span>{{ hentTekst "informasjonsside.soketilleggsstonad.ja" }}</span>
+                                    </li>
+                                {{else}}
+                                    <li class="kulepunkt faktum-felt">
+                                        <span>{{ hentTekst "informasjonsside.soketilleggsstonad.nei" }}</span>
+                                    </li>
+                                {{/hvisLik}}
+                            </ul>
+                        {{/forFaktum}}
                     {{/hvisLik}}
                 </td>
             </tr>
