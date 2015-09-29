@@ -1,0 +1,17 @@
+{{#hvisHarDiskresjonskode}}
+{{else}}
+    <tr>
+        <td class="sjekket"></td>
+        <td>
+            {{#forFaktum faktumKey}}
+                <span>{{ hentTekst labelKey }}
+                    {{#hvisLik properties.land "Norge"}}
+                        {{properties.adresse}}, {{properties.postnr}}
+                    {{else}}
+                        {{properties.utenlandskadresse}}, {{properties.land}}
+                    {{/hvisLik}}
+                </span>
+            {{/forFaktum}}
+        </td>
+    </tr>
+{{/hvisHarDiskresjonskode}}

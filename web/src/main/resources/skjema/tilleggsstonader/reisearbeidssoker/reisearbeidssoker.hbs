@@ -8,7 +8,11 @@
                 {{> skjema/tilleggsstonader/reisearbeidssoker/dekketavandre}}
                 {{> skjema/tilleggsstonader/reisearbeidssoker/dagpenger}}
                 {{> skjema/tilleggsstonader/reisearbeidssoker/avstand}}
-                {{> skjema/tilleggsstonader/reisearbeidssoker/adresse}}
+
+                {{#variabel "faktumKey" "reise.arbeidssoker.reisemaal"}}
+                    {{> skjema/tilleggsstonader/felles/reisemaladresse}}
+                {{/variabel}}
+
                 {{#variabel "faktumPrefiks" "reise.arbeidssoker."}}
                     {{> skjema/tilleggsstonader/felles/offentligtransport}}
                 {{/variabel}}
