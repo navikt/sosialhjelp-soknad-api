@@ -5,7 +5,7 @@ import org.springframework.context.MessageSource;
 
 import java.util.Locale;
 
-public abstract class CmsTransformer<T, T1> implements Transformer<T,T1>{
+public abstract class CmsTransformer<T, O> implements Transformer<T,O>{
     private static final Locale LOCALE = new Locale("nb", "NO");
     private final MessageSource messageSource;
 
