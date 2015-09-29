@@ -1,7 +1,15 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.transformer;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.*;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Barn;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.DrosjeTransportutgifter;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.ErUtgifterDekket;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Formaal;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Innsendingsintervaller;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.KollektivTransportutgifter;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Periode;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Skolenivaaer;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Tilsynskategorier;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoKodeverkVerdier;
 import org.apache.commons.collections15.Transformer;
@@ -80,14 +88,6 @@ public final class StofoTransformers {
                 KollektivTransportutgifter utgift = new KollektivTransportutgifter();
                 utgift.setBeloepPerMaaned(new BigInteger(s));
                 return utgift;
-            }
-        });
-        TRANSFORMERS.put(FlytterSelv.class, new Transformer<String, FlytterSelv>() {
-            @Override
-            public FlytterSelv transform(String s) {
-                FlytterSelv flytterSelv = new FlytterSelv();
-                flytterSelv.setValue(StofoKodeverkVerdier.FlytterSelv.valueOf(s).kodeverk);
-                return flytterSelv;
             }
         });
         TRANSFORMERS.put(Formaal.class, new Transformer<String, Formaal>() {

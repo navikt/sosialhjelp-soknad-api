@@ -99,14 +99,14 @@ public class TilsynBarnepassTilXmlTest {
         assertThat(barn.get(0).getPersonidentifikator()).isEqualTo(oleFnr);
         assertThat(barn.get(0).getTilsynskategori().getValue()).isEqualTo(StofoKodeverkVerdier.TilsynForetasAvKodeverk.barnehage.kodeverksverdi);
         assertThat(barn.get(0).isHarFullfoertFjerdeSkoleaar()).isEqualTo(true);
-        assertThat(barn.get(0).getAarsakTilBarnepass().getValue()).isEqualTo("tilsyn");
+        assertThat(barn.get(0).getAarsakTilBarnepass()).contains("tilsyn");
 
         assertThat(barn.get(1).getNavn()).isEqualTo("Dole");
         assertThat(barn.get(1).getPersonidentifikator()).isEqualTo(doleFnr);
         assertThat(barn.get(1).getTilsynskategori().getValue()).isEqualTo(StofoKodeverkVerdier.TilsynForetasAvKodeverk.dagmamma.kodeverksverdi);
         assertThat(barn.get(1).isHarFullfoertFjerdeSkoleaar()).isEqualTo(false);
         assertThat(tilsynsutgifterBarnXml.getAnnenForsoergerperson()).isEqualTo(annenForsorger);
-        assertThat(barn.get(1).getAarsakTilBarnepass().getValue()).isEqualTo("langvarig");
+        assertThat(barn.get(1).getAarsakTilBarnepass()).contains("langvarig");
     }
 
     private void leggTilBarn(String fnr, String navn, String sokesOm, String annenForsorger, String type, boolean fullortFjerdeSkolear, boolean tilsyn, boolean langvarig, boolean ingen) {
