@@ -7,6 +7,19 @@
                 <td>
                     {{#hvisLik value "beholde" }}
                         <span>{{ hentTekst "informasjonsside.dagpenger.beholde" }}</span>
+                        {{#forFaktum "informasjonsside.dagpenger.beholde.soketilleggsstonad"}}
+                            <ul>
+                                {{#hvisLik value "ja" }}
+                                    <li class="kulepunkt faktum-felt">
+                                        <span>{{ hentTekst "informasjonsside.soketilleggsstonad.ja" }}</span>
+                                    </li>
+                                {{else}}
+                                    <li class="kulepunkt faktum-felt">
+                                        <span>{{ hentTekst "informasjonsside.soketilleggsstonad.nei" }}</span>
+                                    </li>
+                                {{/hvisLik}}
+                            </ul>
+                        {{/forFaktum}}
                     {{else}}
                         <span>{{ hentTekst "informasjonsside.dagpenger.utsette" }}</span>
                     {{/hvisLik}}
