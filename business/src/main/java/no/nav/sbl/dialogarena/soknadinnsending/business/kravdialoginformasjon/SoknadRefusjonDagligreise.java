@@ -4,11 +4,11 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.AlternativReprese
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Steg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.AktivitetBetalingsplanService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.transformer.refusjondagligreise.RefusjonDagligreiseTilXml;
 import org.apache.commons.collections15.Transformer;
 import org.springframework.context.MessageSource;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class SoknadRefusjonDagligreise extends KravdialogInformasjon.DefaultOppsett {
@@ -39,7 +39,8 @@ public class SoknadRefusjonDagligreise extends KravdialogInformasjon.DefaultOpps
 
     @Override
     public List<Transformer<WebSoknad, AlternativRepresentasjon>> getTransformers(MessageSource messageSource) {
-        return Collections.emptyList();
+        Transformer<WebSoknad, AlternativRepresentasjon> tilleggsstonaderTilXml = new RefusjonDagligreiseTilXml();
+        return Arrays.asList(tilleggsstonaderTilXml);
     }
     @Override
     public Steg[] getStegliste() {
