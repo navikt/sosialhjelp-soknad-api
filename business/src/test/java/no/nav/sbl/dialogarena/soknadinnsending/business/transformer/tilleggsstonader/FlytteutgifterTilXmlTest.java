@@ -7,13 +7,27 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.context.MessageSource;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoKodeverkVerdier.FlytterSelv.flyttebyraa;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoKodeverkVerdier.FlytterSelv.flytterselv;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoKodeverkVerdier.FlytterSelv.tilbudmenflytterselv;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isNull;
+import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class FlytteutgifterTilXmlTest {
 
     public static final String GATEADRESSE = "NAVveien 3";
@@ -31,7 +45,10 @@ public class FlytteutgifterTilXmlTest {
     private static final String FERGE_KR = "400";
     private static final String ANNET_KR = "500";
     private Flytteutgifter flytteutgifter;
-    private FlytteutgifterTilXml flytteutgifterTilXml = new FlytteutgifterTilXml();
+    @Mock
+    MessageSource messageSource;
+    @InjectMocks
+    private FlytteutgifterTilXml flytteutgifterTilXml;
     private WebSoknad webSoknad;
     private Faktum aktivitet;
     private Faktum tiltredelsesdato;
@@ -174,17 +191,21 @@ public class FlytteutgifterTilXmlTest {
     }
     @Test
     public void settFlytteSelv() {
+        when(messageSource.getMessage(eq(flytterselv.cms), isNull(Object[].class), eq(flytterselv.cms), any(Locale.class))).thenReturn("flytterselvcms");
+        when(messageSource.getMessage(eq(flyttebyraa.cms), isNull(Object[].class), eq(flyttebyraa.cms), any(Locale.class))).thenReturn("flyttebyraacms");
+        when(messageSource.getMessage(eq(tilbudmenflytterselv.cms), isNull(Object[].class), eq(tilbudmenflytterselv.cms), any(Locale.class))).thenReturn("tilbudmenflytterselvcms");
+
         webSoknad = new WebSoknad().medFaktum(new Faktum().medKey("flytting.selvellerbistand").medValue("flytterselv"));
         flytteutgifter = flytteutgifterTilXml.transform(webSoknad);
-        assertThat(flytteutgifter.getFlytterSelv().getValue()).isEqualTo(StofoKodeverkVerdier.FlytterSelv.flytterselv.kodeverk);
+        assertThat(flytteutgifter.getFlytterSelv()).isEqualTo("flytterselvcms");
 
         webSoknad = new WebSoknad().medFaktum(new Faktum().medKey("flytting.selvellerbistand").medValue("flyttebyraa"));
         flytteutgifter = flytteutgifterTilXml.transform(webSoknad);
-        assertThat(flytteutgifter.getFlytterSelv().getValue()).isEqualTo(StofoKodeverkVerdier.FlytterSelv.flyttebyraa.kodeverk);
+        assertThat(flytteutgifter.getFlytterSelv()).isEqualTo("flyttebyraacms");
 
         webSoknad = new WebSoknad().medFaktum(new Faktum().medKey("flytting.selvellerbistand").medValue("tilbudmenflytterselv"));
         flytteutgifter = flytteutgifterTilXml.transform(webSoknad);
-        assertThat(flytteutgifter.getFlytterSelv().getValue()).isEqualTo(StofoKodeverkVerdier.FlytterSelv.tilbudmenflytterselv.kodeverk);
+        assertThat(flytteutgifter.getFlytterSelv()).isEqualTo("tilbudmenflytterselvcms");
     }
 
     @Test

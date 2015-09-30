@@ -9,12 +9,11 @@
                         <span>{{ hentTekst "trygdogpensjon.ja" }}</span>
                         <ul>
                             {{#forFakta "trygdogpensjon.utbetalere"}}
-                                <li class="kulepunkt">
+                                <li class="kulepunkt faktum-felt">
                                     <span>Utbetaler: <em>{{ properties.utbetaler}}</em>,</span>
-                                    <span> <em>{{properties.prosent}}%</em>, </span>
-                                    <span>fra {{ formatterLangDato properties.fom }}</span>
+                                    <span> <em>{{properties.prosent}}</em>%, fra <em>{{ formatterLangDato properties.fom }}</em></span>
                                     {{#hvisIkkeTom properties.tom }}
-                                        <span> til {{ formatterLangDato properties.tom }}</span>
+                                        <span> til <em>{{ formatterLangDato properties.tom }}</em></span>
                                     {{/hvisIkkeTom}}
                                 </li>
                             {{/forFakta}}

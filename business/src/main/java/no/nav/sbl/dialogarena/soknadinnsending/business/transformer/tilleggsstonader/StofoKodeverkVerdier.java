@@ -67,11 +67,13 @@ public class StofoKodeverkVerdier {
 
     }
     public enum FlytterSelv {
-        flytterselv ("FLYYTESELV"), flyttebyraa("BYRAA"), tilbudmenflytterselv("SELVETTERTILBUD");
-        public final String kodeverk;
+        flytterselv ("soknad.flytting.spm.selvellerbistand.flytterselv"),
+        flyttebyraa("soknad.flytting.spm.selvellerbistand.flyttebyraa"),
+        tilbudmenflytterselv("soknad.flytting.spm.selvellerbistand.tilbudmenflytterselv");
+        public final String cms;
 
-        FlytterSelv(String kodeverk) {
-            this.kodeverk = kodeverk;
+        FlytterSelv(String cms) {
+            this.cms = cms;
         }
     }
 

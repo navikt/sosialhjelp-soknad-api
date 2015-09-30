@@ -1,0 +1,17 @@
+{{#forFaktum "dagpenger"}}
+    {{#hvisIkkeTom value}}
+        <h2>{{ hentTekst "dagpenger.tittel" }}</h2>
+        <table>
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    {{#hvisLik value "ja"}}
+                        <span>{{ hentTekst "dagpenger.sporsmal.ja" }}</span>
+                    {{else}}
+                        <span>{{ hentTekst "dagpenger.sporsmal.nei" }}</span>
+                    {{/hvisLik}}
+                </td>
+            </tr>
+        </table>
+    {{/hvisIkkeTom}}
+{{/forFaktum}}
