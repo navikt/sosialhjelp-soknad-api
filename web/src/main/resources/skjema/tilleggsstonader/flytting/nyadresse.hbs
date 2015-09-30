@@ -1,10 +1,5 @@
-<tr>
-    <td class="sjekket"></td>
-    <td>
-        <span>{{hentTekst "oppsummering.flytting.nyadresse.overskrift"}}:</span>
-            <span>
-                {{#forFaktum "flytting.nyadresse.gateadresse"}}<span>{{value}},</span>{{/forFaktum}}
-                {{#forFaktum "flytting.nyadresse.postnummer"}}<span>{{value}}</span>{{/forFaktum}}
-            </span>
-    </td>
-</tr>
+{{#variabel "labelKey" "oppsummering.flytting.nyadresse.overskrift"}}
+    {{#variabel "faktumKey" "flytting.nyadresse"}}
+        {{> skjema/tilleggsstonader/felles/adresse}}
+    {{/variabel}}
+{{/variabel}}

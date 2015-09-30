@@ -5,22 +5,22 @@
         <td class="sjekket"></td>
         <td>
             <span>{{hentTekst "soknad.flytting.tidligere.overskrift"}}:</span>
-            {{#forFaktum "personalia"}}<span>{{{properties.gjeldendeAdresse}}}}</span>{{/forFaktum}}
+            {{#forFaktum "personalia"}}<span>{{properties.gjeldendeAdresse}}</span>{{/forFaktum}}
         </td>
     </tr>
+
     {{#forFaktum "flytting.tidligere.riktigadresse"}}
         {{#hvisSant value}}
             <tr>
                 <td class="sjekket"></td>
                 <td>{{hentTekst "soknad.flytting.tidligere.riktigadresse.label"}}</td>
             </tr>
+        {{else}}
+            {{> skjema/tilleggsstonader/flytting/nyadresse}}
         {{/hvisSant}}
-    {{/forFaktum}}
-    {{#forFaktum "flytting.tidligere.riktigadresse"}}
-        {{#hvisLik value "false"}}
-            {{> skjema/tilleggsstonader/flytting/nyadresse }}
-        {{/hvisLik}}
+
     {{else}}
-        {{> skjema/tilleggsstonader/flytting/nyadresse }}
+        {{> skjema/tilleggsstonader/flytting/nyadresse}}
     {{/forFaktum}}
+
 {{/hvisHarDiskresjonskode}}

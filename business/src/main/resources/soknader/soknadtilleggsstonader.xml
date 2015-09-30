@@ -847,14 +847,7 @@
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>flytting.nyadresse.gateadresse</id>
-        <dependOn>informasjonsside.stonad.flytting</dependOn>
-        <dependOnValues>
-            <value>true</value>
-        </dependOnValues>
-    </faktum>
-    <faktum>
-        <id>flytting.nyadresse.postnummer</id>
+        <id>flytting.nyadresse</id>
         <dependOn>informasjonsside.stonad.flytting</dependOn>
         <dependOnValues>
             <value>true</value>
