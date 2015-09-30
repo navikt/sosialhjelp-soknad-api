@@ -299,6 +299,15 @@ public class WebSoknad implements Serializable {
         return null;
     }
 
+    public Faktum getFaktumMedId(final String id) {
+        for (Faktum faktum : fakta) {
+            if (faktum.getFaktumId().toString().equals(id)) {
+                return faktum;
+            }
+        }
+        return null;
+    }
+
     /**
      * Returnerer liste over vedlegg som er lastet opp i denne behandlingen.
      *
