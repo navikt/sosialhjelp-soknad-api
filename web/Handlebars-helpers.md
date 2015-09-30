@@ -1,8 +1,8 @@
 # Handlebars-helpers
-> Denne markdown-filen genereres automatisk og endringer her vil overskrives.
+> Denne Markdown-filen genereres automatisk og endringer her vil overskrives.
 > Oppdater Handlebars-helpers.hbs dersom du ønsker permanente endringer
 
-For å generere oppsummeringerdokumenter som html, pdf eller xml har vi over tid bygget og registert en rekke 
+For å generere oppsummeringerdokumenter som HTML, PDF eller XML har vi over tid bygget og registert en rekke
 helpers til Handlebars som gjør det enklere å jobbe med innholdet i søknaden.
 Denne fila innehoder info dersom man vil lage en ny helper til Handlebars eller lurer på 
 hvilke helpers som er registert i dag.
@@ -15,12 +15,12 @@ men kjører også automatisk sammen med det vanlige testoppsettet.
 
 #### Ny helper
 
-* Opprette en spring-annotert klasse `HelpernavnHelper.java` i pakken `no.nav.sbl.dialogarena.service.helpers`
+* Opprette en Spring-annotert klasse (`@Component`) `HelpernavnHelper.java` i pakken `no.nav.sbl.dialogarena.service.helpers`
 * La klassen arve fra `RegistryAwareHelper<T>`
 * Implementer de abstrakte metodene
     * Navnet på helperen må returneres fra `getNavn`
     * Beskrivelsen fra `getBeskrivelse` vil havne i denne fila som dokumentasjon
-* Lag et eksempel på bruk under `/readme/Helpernavn.hbs`, denne vil også bli inkludert i dokumentasjonen under.
+* Lag et eksempel på bruk under `/readme/helpernavn.hbs`. Denne vil også bli inkludert i dokumentasjonen under.
 * Legg til tester
 
 På dette formatet er det superklassen `RegistryAwareHelper` som vil registere helperen som er opprettet på
@@ -51,6 +51,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * forFakta - Finner alle fakta med en gitt key og setter hvert faktum som aktiv context etter tur. Har inverse ved ingen fakta.
 * forFaktaMedPropertySattTilTrue - Finner alle fakta med gitt key som har gitt property satt til true
 * forFaktum - Finner et faktum og setter det som aktiv context. Har også inverse om faktum ikke finnes. 
+* forFaktumMedId - Returnerer et faktum med den gitte ID-en
 * forFaktumTilknyttetBarn - Returnerer faktumet tilknyttet barnet i parent-context.
 * forIkkeInnsendteVedlegg - Itererer over vedlegg som ikke er sendt inn
 * forInnsendteVedlegg - Itererer over innsendte vedlegg på søknaden
@@ -123,6 +124,17 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 {{else}}
     faktum med key "faktumNavn" er ikke satt
 {{/forFaktum}}
+```
+
+
+##### forFaktumMedId
+
+```
+{{#forFaktumMedId "faktumId"}}
+    Faktum med id {{faktumId}} finnes og kan aksesseres. {{value}} skriver f.eks. ut verdien på faktumet. Se Faktum-klassen.
+{{else}}
+    Faktum med id "faktumId" finnes ikke.
+{{/forFaktumMedId}}
 ```
 
 
