@@ -9,7 +9,7 @@
                         <span>{{ hentTekst "informasjonsside.institusjon.ja" }}</span>
                         <ul>
                             {{#forFaktum "informasjonsside.institusjon.ja.hvaslags"}}
-                                <li class="kulepunkt">
+                                <li class="kulepunkt faktum-felt">
                                     {{#hvisIkkeTom value}}
                                         {{#hvisLik value "barneverninstitusjon" }}
                                             <span>{{ hentTekst "informasjonsside.institusjon.ja.hvaslags.barneverninstitusjon" }}</span>
@@ -19,6 +19,19 @@
                                         {{/hvisLik}}
                                         {{#hvisLik value "annet" }}
                                             <span>{{ hentTekst "informasjonsside.institusjon.ja.hvaslags.annet" }}</span>
+                                            {{#forFaktum "informasjonsside.institusjon.ja.hvaslags.annet.soketilleggstonad"}}
+                                                 <ul>
+                                                    {{#hvisLik value "ja" }}
+                                                        <li class="kulepunkt medstrek faktum-felt">
+                                                            <span>{{ hentTekst "informasjonsside.soketilleggsstonad.ja" }}</span>
+                                                        </li>
+                                                    {{else}}
+                                                        <li class="kulepunkt medstrek faktum-felt">
+                                                            <span>{{ hentTekst "informasjonsside.soketilleggsstonad.nei" }}</span>
+                                                        </li>
+                                                    {{/hvisLik}}
+                                                </ul>
+                                            {{/forFaktum}}
                                         {{/hvisLik}}
                                     {{/hvisIkkeTom}}
                                 </li>

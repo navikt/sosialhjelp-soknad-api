@@ -1,6 +1,6 @@
-<h2>{{ hentTekst "barnetillegg.tittel" }}</h2>
-<table>
-    {{#forFakta "barn"}}
+{{#forFakta "barn"}}
+    <h2>{{ hentTekst "barnetillegg.tittel" }}</h2>
+    <table>
         <tr>
             <td class="sjekket"></td>
             <td>
@@ -14,7 +14,6 @@
                     {{ else }}
                         <span>{{ formatterFodelsDato properties.fodselsdato }},</span>
                     {{/hvisLik}}
-
                     <span>{{ hentTekst "oppsummering.bor" }}</span>
                     <span>{{ hentLand properties.land }}</span>
                 </div>
@@ -33,7 +32,12 @@
                     <li class="kulepunkt faktum-felt">
                         {{#hvisLik  properties.harinntekt "ja"}}
                             <span>{{ hentTekst "barnetillegg.barn.harinntekt.ja"}}. </span><br/>
-                            <em>{{properties.inntekt}} {{ hentTekst "soknad.kr"}}</em>
+                            <ul>
+                                <li class="kulepunkt medstrek faktum-felt">
+                                    <span> {{hentTekst "oppsummering.barnetillegg.inntekt"}}
+                                        : <em>{{properties.inntekt}} </em>{{ hentTekst "soknad.kr"}}</span>
+                                </li>
+                            </ul>
                         {{else}}
                             <span>{{ hentTekst "barnetillegg.barn.harinntekt.nei"}} </span>
                         {{/hvisLik}}
@@ -42,5 +46,5 @@
                 </ul>
             </td>
         </tr>
-    {{/forFakta}}
-</table>
+    </table>
+{{/forFakta}}
