@@ -111,8 +111,10 @@ public final class StofoTransformers {
             @Override
             public StofoKodeverkVerdier.SammensattAdresse transform(Faktum faktum) {
                 return new StofoKodeverkVerdier.SammensattAdresse(
+                        extractValue(faktum, String.class, "land"),
                         extractValue(faktum, String.class, "adresse"),
-                        extractValue(faktum, String.class, "postnr"));
+                        extractValue(faktum, String.class, "postnr"),
+                        extractValue(faktum, String.class, "utenlandskadresse"));
             }
         });
         TRANSFORMERS.put(ErUtgifterDekket.class, new Transformer<String, ErUtgifterDekket>() {

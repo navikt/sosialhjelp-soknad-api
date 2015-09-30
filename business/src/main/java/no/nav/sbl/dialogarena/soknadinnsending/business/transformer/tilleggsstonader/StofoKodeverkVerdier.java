@@ -4,10 +4,16 @@ import org.apache.commons.collections15.Transformer;
 
 public class StofoKodeverkVerdier {
     public static final class SammensattAdresse {
+        private final String NORGE = "Norge";
+
         public final String sammensattAdresse;
 
-        public SammensattAdresse(String adresse, String postnr) {
-            sammensattAdresse = String.format("%s, %s", adresse, postnr);
+        public SammensattAdresse(String land, String adresse, String postnr, String utenlandskAdresse) {
+            if (land == null || land.equals(NORGE)) {
+                sammensattAdresse = String.format("%s, %s", adresse, postnr);
+            } else {
+                sammensattAdresse = String.format("%s, %s", utenlandskAdresse, land);
+            }
         }
     }
 

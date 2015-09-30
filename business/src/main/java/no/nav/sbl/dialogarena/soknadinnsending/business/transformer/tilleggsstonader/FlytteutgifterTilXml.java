@@ -4,6 +4,7 @@ import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Anbud;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.FlytterSelv;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Flytteutgifter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.transformer.StofoUtils;
 import org.apache.commons.collections15.Transformer;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -18,8 +19,7 @@ public class FlytteutgifterTilXml implements Transformer<WebSoknad, Flytteutgift
     public static final String AARSAK = "flytting.hvorforflytte";
     public static final String NYJOBB_STARTDATO = "flytting.nyjobb.startdato";
     public static final String FLYTTEDATO = "flytting.nyjobb.flyttedato";
-    public static final String GATEADRESSE = "flytting.nyadresse.gateadresse";
-    public static final String POSTNUMMER = "flytting.nyadresse.postnummer";
+    public static final String ADRESSE = "flytting.nyadresse";
     public static final String FLYTTEAVSTAND = "flytting.flytteselv.hvorlangt";
     public static final String HENGERLEIE = "flytting.flytteselv.andreutgifter.hengerleie";
     public static final String BOM = "flytting.flytteselv.andreutgifter.bom";
@@ -83,10 +83,8 @@ public class FlytteutgifterTilXml implements Transformer<WebSoknad, Flytteutgift
     private String hentAdresse(WebSoknad soknad) {
         if(isTrue(extractValue(soknad.getFaktumMedKey("flytting.tidligere.riktigadresse"), Boolean.class))){
             return soknad.getFaktumMedKey("personalia").getProperties().get("gjeldendeAdresse");
-        } else{
-            return String.format("%s, %s",
-                    extractValue(soknad.getFaktumMedKey(GATEADRESSE), String.class),
-                    extractValue(soknad.getFaktumMedKey(POSTNUMMER), String.class));
+        } else {
+            return StofoUtils.sammensattAdresse(soknad.getFaktumMedKey(ADRESSE));
         }
     }
 
