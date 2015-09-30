@@ -2,7 +2,7 @@
 <configuration scan="true" scanPeriod="30 seconds">
     <property name="MAIN_APPLICATION" value="sendsoknad" />
 
-    <property name="loggingPattern" value="%d [%-5level] [%thread] %logger{5} %replace(- [%X{consumerId}, %X{callId}, %X{userId}] ){'- \[, , \] ',''}- %m%n"/>
+    <property name="loggingPattern"    value="%d [%-5level] [%thread] %logger{5} %replace(- [%X{consumerId}, %X{callId}, %X{userId}] ){'- \[, , \] ',''}- %m%n"/>
 
     <appender name="exceptionlog" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <File>${APP_LOG_HOME}/${MAIN_APPLICATION}_error.log</File>
