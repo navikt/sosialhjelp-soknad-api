@@ -10,6 +10,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStr
 import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.KravdialogInformasjon;
 import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BolkService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -26,6 +28,7 @@ import static javax.xml.bind.JAXBContext.newInstance;
 @Component
 public class WebSoknadConfig {
 
+    private static final Logger LOG = LoggerFactory.getLogger(WebSoknadConfig.class);
     @Inject
     @Named("soknadInnsendingRepository")
     private SoknadRepository repository;
@@ -60,7 +63,12 @@ public class WebSoknadConfig {
         KravdialogInformasjon skjemaConfig = kravdialogInformasjonHolder.hentKonfigurasjon(skjemaNummer);
         SoknadStruktur struktur = hentStrukturForSkjemanavn(skjemaConfig);
         //For å støtte ulikt tema på forskjellige skjema på samme konfigurasjon
-        struktur.setTemaKode(lokaltKodeverk.getKode(skjemaNummer, Kodeverk.Nokkel.TEMA));
+        try {
+            String kode = lokaltKodeverk.getKode(skjemaNummer, Kodeverk.Nokkel.TEMA);
+            struktur.setTemaKode(kode);
+        } catch (Exception e){
+            LOG.warn("Fant ikke tema for skjema i kodeverk: " + e, e);
+        }
         return struktur;
     }
 
