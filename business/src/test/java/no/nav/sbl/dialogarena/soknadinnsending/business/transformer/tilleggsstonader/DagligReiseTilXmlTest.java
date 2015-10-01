@@ -24,7 +24,7 @@ public class DagligReiseTilXmlTest {
         WebSoknad soknad = new WebSoknad();
         soknad.getFakta().add(new Faktum().medKey("reise.aktivitet.periode").medProperty("fom", "2015-01-02").medProperty("tom", "2015-03-04"));
         soknad.getFakta().add(new Faktum().medKey("reise.aktivitet.dagligreiseavstand").medValue("123"));
-        soknad.getFakta().add(new Faktum().medKey("reise.aktivitet.reisemaal").medProperty("land", "Spania").medProperty("adresse", "adresse").medProperty("postnr", "1256").medProperty("utenlandskadresse", "Sydengata"));
+        soknad.getFakta().add(new Faktum().medKey("reise.aktivitet.reisemaal").medProperty("land", "Spania").medProperty("adresse", "norsk adresse").medProperty("utenlandskadresse", "Sydengata"));
         soknad.getFakta().add(new Faktum().medKey("reise.aktivitet.offentligtransport.egenbil.parkering").medValue("false"));
         soknad.getFakta().add(new Faktum().medKey("reise.aktivitet.offentligtransport.egenbil.sendebekreftelse").medValue(uke.name()));
 
