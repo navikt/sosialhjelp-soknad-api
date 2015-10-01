@@ -1,12 +1,13 @@
 package no.nav.sbl.dialogarena.rest.actions;
 
+import no.nav.modig.core.context.ThreadLocalSubjectHandler;
+import no.nav.sbl.dialogarena.rest.meldinger.SoknadBekreftelse;
+import no.nav.sbl.dialogarena.service.EmailService;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
-import no.nav.sbl.dialogarena.rest.meldinger.SoknadBekreftelse;
-import no.nav.sbl.dialogarena.service.EmailService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +20,9 @@ import javax.servlet.ServletContext;
 import java.util.Locale;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.ETTERSENDING_OPPRETTET;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -46,6 +49,7 @@ public class SoknadActionsTest {
 
     @Before
     public void setUp() {
+        System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
         when(tekster.finnTekst(eq("sendtSoknad.sendEpost.epostSubject"), any(Object[].class), any(Locale.class))).thenReturn("Emne");
         when(servletContext.getRealPath(anyString())).thenReturn("");
     }

@@ -5,6 +5,7 @@ import no.nav.modig.testcertificates.TestCertificates;
 import no.nav.sbl.dialogarena.common.jetty.Jetty;
 import org.eclipse.jetty.jaas.JAASLoginService;
 
+import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
 
@@ -16,14 +17,15 @@ import static no.nav.modig.lang.collections.RunnableUtils.waitFor;
 import static no.nav.modig.test.util.FilesAndDirs.TEST_RESOURCES;
 import static no.nav.modig.test.util.FilesAndDirs.WEBAPP_SOURCE;
 import static no.nav.sbl.dialogarena.common.jetty.Jetty.usingWar;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext.buildDataSource;
 import static no.nav.sbl.dialogarena.config.SystemProperties.setFrom;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext.buildDataSource;
 
 public final class StartSoknadJetty {
 
     public static final int PORT = 8181;
+    public final Jetty jetty;
 
-    private enum Env {
+    public enum Env {
         Intellij("web/src/test/resources/login.conf"),
         Eclipse("src/test/resources/login.conf");
         private final String loginConf;
@@ -37,7 +39,7 @@ public final class StartSoknadJetty {
         }
     }
 
-    private StartSoknadJetty(Env env) throws Exception {
+    public StartSoknadJetty(Env env, File overrideWebXmlFile, DataSource dataSource) throws Exception {
         configureSecurity();
         configureLocalConfig();
         disableBatch();
@@ -47,14 +49,19 @@ public final class StartSoknadJetty {
 
         JAASLoginService jaasLoginService = new JAASLoginService("OpenAM Realm");
         jaasLoginService.setLoginModuleName("openam");
-        Jetty jetty = usingWar(WEBAPP_SOURCE)
+        jetty = usingWar(WEBAPP_SOURCE)
                 .at("/sendsoknad")
                 .withLoginService(jaasLoginService)
-                .overrideWebXml(new File(TEST_RESOURCES, "override-web.xml"))
+                .overrideWebXml(overrideWebXmlFile)
                 .sslPort(8500)
-                .addDatasource(buildDataSource(), "jdbc/SoknadInnsendingDS")
+                .addDatasource(dataSource, "jdbc/SoknadInnsendingDS")
                 .port(PORT).buildJetty();
+    }
+    public void startAndWaitForKeypress(){
         jetty.startAnd(first(waitFor(gotKeypress())).then(jetty.stop));
+    }
+    public void startAndDo(Runnable test){
+        jetty.startAnd(first(test).then(jetty.stop));
     }
 
     private void disableBatch() {
@@ -79,14 +86,16 @@ public final class StartSoknadJetty {
     @SuppressWarnings("unused")
     private static class Intellij {
         public static void main(String[] args) throws Exception {
-            new StartSoknadJetty(Env.Intellij);
+            setFrom("environment-test.properties");
+            new StartSoknadJetty(Env.Intellij, new File(TEST_RESOURCES, "override-web.xml"), buildDataSource()).startAndWaitForKeypress();
         }
     }
 
     @SuppressWarnings("unused")
     private static class Eclipse {
         public static void main(String[] args) throws Exception {
-            new StartSoknadJetty(Env.Eclipse);
+            setFrom("environment-test.properties");
+            new StartSoknadJetty(Env.Eclipse, new File(TEST_RESOURCES, "override-web.xml"), buildDataSource()).startAndWaitForKeypress();;
         }
     }
 }
