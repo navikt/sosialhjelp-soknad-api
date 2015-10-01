@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.*;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
 
 import static java.lang.System.setProperty;
 
@@ -29,6 +30,7 @@ public class ConsumerConfig {
     }
 
     @Configuration
+    @Profile("!integration")
     @Import({
             SendSoknadWSConfig.class,
             FilLagerWSConfig.class,
