@@ -60,7 +60,10 @@ public class WebSoknadConfig {
         KravdialogInformasjon skjemaConfig = kravdialogInformasjonHolder.hentKonfigurasjon(skjemaNummer);
         SoknadStruktur struktur = hentStrukturForSkjemanavn(skjemaConfig);
         //For å støtte ulikt tema på forskjellige skjema på samme konfigurasjon
-        struktur.setTemaKode(lokaltKodeverk.getKode(skjemaNummer, Kodeverk.Nokkel.TEMA));
+        try {
+            String kode = lokaltKodeverk.getKode(skjemaNummer, Kodeverk.Nokkel.TEMA);
+            struktur.setTemaKode(kode);
+        } catch (Exception ignore){}
         return struktur;
     }
 
