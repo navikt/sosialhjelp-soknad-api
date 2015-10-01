@@ -101,7 +101,7 @@ public class ContentConfig {
                     } else {
                         throw new ApplicationException("Fikk feilkode fra CMS: " + connection.getResponseCode() + ": " + connection.getResponseMessage());
                     }
-                } catch (IOException e) {
+                } catch (Exception e) {
                     logger.warn("CMS not reachable on " + url, e);
                     return Ping.feilet("APPRES_CMS", e);
                 } finally {
