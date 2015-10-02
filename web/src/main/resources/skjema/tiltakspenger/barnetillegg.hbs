@@ -1,6 +1,6 @@
-{{#forFakta "barn"}}
-    <h2>{{ hentTekst "barnetillegg.tittel" }}</h2>
-    <table>
+<h2>{{ hentTekst "barnetillegg.tittel" }}</h2>
+<table>
+    {{#forFakta "barn"}}
         <tr>
             <td class="sjekket"></td>
             <td>
@@ -46,5 +46,14 @@
                 </ul>
             </td>
         </tr>
-    </table>
-{{/forFakta}}
+    {{else}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <div class="faktum-felt">
+                    <span>{{hentTekst "oppsummering.barnetillegg.ingenbarn"}}</span>
+                </div>
+            </td>
+        </tr>
+    {{/forFakta}}
+</table>
