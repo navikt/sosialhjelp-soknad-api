@@ -1,4 +1,16 @@
 <h2>Innledningsspørsmål</h2>
-{{> skjema/tiltakspenger/informasjonsside/dagpenger }}
-{{> skjema/tiltakspenger/informasjonsside/kvalifiseringsprogram }}
-{{> skjema/tiltakspenger/informasjonsside/introprogram }}
+{{#forFaktum "dagpenger"}}
+    {{#hvisIkkeTom value}}
+        {{#hvisLik value "ja" }}
+            {{> skjema/tiltakspenger/informasjonsside/dagpenger }}
+        {{/hvisLik}}
+        {{#hvisLik value "nei" }}
+            {{> skjema/tiltakspenger/informasjonsside/kvalifiseringsprogram }}
+            {{> skjema/tiltakspenger/informasjonsside/introprogram }}
+        {{/hvisLik}}
+    {{/hvisIkkeTom}}
+{{else}}
+    {{> skjema/tiltakspenger/informasjonsside/dagpenger }}
+    {{> skjema/tiltakspenger/informasjonsside/kvalifiseringsprogram }}
+    {{> skjema/tiltakspenger/informasjonsside/introprogram }}
+{{/forFaktum}}
