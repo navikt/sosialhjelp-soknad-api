@@ -18,7 +18,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 public class SoknadActionIntegrationTests {
-    private static int PORT = 10001;
+    private static final int PORT = 10001;
     static {
         System.setProperty(TestProperties.CONTAINER_FACTORY, "org.glassfish.jersey.test.external.ExternalTestContainerFactory");
         System.setProperty(TestProperties.CONTAINER_PORT, "" + PORT);
