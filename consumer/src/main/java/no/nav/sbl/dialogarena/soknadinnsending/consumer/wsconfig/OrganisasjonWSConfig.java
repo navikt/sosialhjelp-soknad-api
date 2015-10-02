@@ -35,7 +35,7 @@ public class OrganisasjonWSConfig {
     @Bean
     public OrganisasjonV4 organisasjonEndpoint() {
         OrganisasjonV4 mock = new ArbeidsforholdMock().organisasjonMock();
-        OrganisasjonV4 prod = factory().withSystemSecurity().get();
+        OrganisasjonV4 prod = factory().withUserSecurity().get();
         return createSwitcher(prod, mock, ARBEID_KEY, OrganisasjonV4.class);
     }
 
