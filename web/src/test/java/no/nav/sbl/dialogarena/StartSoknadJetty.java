@@ -25,21 +25,13 @@ public final class StartSoknadJetty {
     public static final int PORT = 8181;
     public final Jetty jetty;
 
-    public enum Env {
-        Intellij("web/src/test/resources/login.conf"),
-        Eclipse("src/test/resources/login.conf");
-        private final String loginConf;
+    public StartSoknadJetty(Env env, File overrideWebXmlFile, DataSource dataSource) throws Exception {
+        this(env, overrideWebXmlFile, dataSource, PORT);
 
-        Env (String loginConf) {
-            this.loginConf = loginConf;
-        }
-
-        String getLoginConf() {
-            return loginConf;
-        }
     }
 
-    public StartSoknadJetty(Env env, File overrideWebXmlFile, DataSource dataSource) throws Exception {
+
+    public StartSoknadJetty(Env env, File overrideWebXmlFile, DataSource dataSource, int port) throws Exception {
         configureSecurity();
         configureLocalConfig();
         disableBatch();
@@ -53,14 +45,16 @@ public final class StartSoknadJetty {
                 .at("/sendsoknad")
                 .withLoginService(jaasLoginService)
                 .overrideWebXml(overrideWebXmlFile)
-                .sslPort(8500)
+                .sslPort(port + 100)
                 .addDatasource(dataSource, "jdbc/SoknadInnsendingDS")
-                .port(PORT).buildJetty();
+                .port(port).buildJetty();
     }
-    public void startAndWaitForKeypress(){
+
+    public void startAndWaitForKeypress() {
         jetty.startAnd(first(waitFor(gotKeypress())).then(jetty.stop));
     }
-    public void startAndDo(Runnable test){
+
+    public void startAndDo(Runnable test) {
         jetty.startAnd(first(test).then(jetty.stop));
     }
 
@@ -81,6 +75,20 @@ public final class StartSoknadJetty {
         setProperty("org.apache.cxf.stax.allowInsecureParser", "true");
     }
 
+    public enum Env {
+        Intellij("web/src/test/resources/login.conf"),
+        Eclipse("src/test/resources/login.conf");
+        private final String loginConf;
+
+        Env(String loginConf) {
+            this.loginConf = loginConf;
+        }
+
+        String getLoginConf() {
+            return loginConf;
+        }
+    }
+
     // For å logge inn lokalt må du sette cookie i selftesten: document.cookie="nav-esso=***REMOVED***-4; path=/sendsoknad/"
 
     @SuppressWarnings("unused")
@@ -95,7 +103,8 @@ public final class StartSoknadJetty {
     private static class Eclipse {
         public static void main(String[] args) throws Exception {
             setFrom("environment-test.properties");
-            new StartSoknadJetty(Env.Eclipse, new File(TEST_RESOURCES, "override-web.xml"), buildDataSource()).startAndWaitForKeypress();;
+            new StartSoknadJetty(Env.Eclipse, new File(TEST_RESOURCES, "override-web.xml"), buildDataSource()).startAndWaitForKeypress();
+            ;
         }
     }
 }

@@ -18,9 +18,10 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 public class SoknadActionIntegrationTests {
+    private static int PORT = 10001;
     static {
         System.setProperty(TestProperties.CONTAINER_FACTORY, "org.glassfish.jersey.test.external.ExternalTestContainerFactory");
-        System.setProperty(TestProperties.CONTAINER_PORT, "8181");
+        System.setProperty(TestProperties.CONTAINER_PORT, "" + PORT);
         System.setProperty(TestProperties.LOG_TRAFFIC, "true");
         System.setProperty("jersey.test.host", "localhost");
     }
@@ -29,7 +30,7 @@ public class SoknadActionIntegrationTests {
     public void fullSoknad() throws Exception {
         System.setProperty("spring.profiles.active", "integration");
         System.setProperty("no.nav.sbl.dialogarena.sendsoknad.hsqldb", "true");
-        StartSoknadJetty jetty = new StartSoknadJetty(StartSoknadJetty.Env.Intellij, new File(TEST_RESOURCES, "override-web-integration.xml"), buildDataSource("hsqldb.properties"));
+        StartSoknadJetty jetty = new StartSoknadJetty(StartSoknadJetty.Env.Intellij, new File(TEST_RESOURCES, "override-web-integration.xml"), buildDataSource("hsqldb.properties"), PORT);
         jetty.jetty.start();
 
         SendSoknadPortType soknad = getMocked("sendSoknadEndpoint");
