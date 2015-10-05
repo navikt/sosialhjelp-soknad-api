@@ -1,10 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader;
 
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.DrosjeTransportutgifter;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.EgenBilTransportutgifter;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Formaal;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.KollektivTransportutgifter;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.ReisestoenadForArbeidssoeker;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.assertj.core.api.Condition;
@@ -23,7 +19,7 @@ public class ArbeidReiseTilXmlTest {
         soknad.getFakta().add(new Faktum().medKey("reise.arbeidssoker.registrert").medValue("2015-01-02"));
         soknad.getFakta().add(new Faktum().medKey("reise.arbeidssoker.hvorforreise").medValue(oppfolging.toString()));
         soknad.getFakta().add(new Faktum().medKey("reise.arbeidssoker.reiselengde").medValue("123"));
-        soknad.getFakta().add(new Faktum().medKey("reise.arbeidssoker.reisemaal").medProperty("adresse", "adresse").medProperty("postnr", "1256"));
+        soknad.getFakta().add(new Faktum().medKey("reise.arbeidssoker.reisemaal").medProperty("land", "Norge").medProperty("adresse", "adresse").medProperty("postnr", "1256").medProperty("utenlandskadresse", "syden"));
         soknad.getFakta().add(new Faktum().medKey("reise.arbeidssoker.reisedekket").medValue("true"));
         soknad.getFakta().add(new Faktum().medKey("reise.arbeidssoker.dagpenger.forlenget").medValue("true"));
         soknad.getFakta().add(new Faktum().medKey("reise.arbeidssoker.dagpenger.bortfall").medValue("true"));

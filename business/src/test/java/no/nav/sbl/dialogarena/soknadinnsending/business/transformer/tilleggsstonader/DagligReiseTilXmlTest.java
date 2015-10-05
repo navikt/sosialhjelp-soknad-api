@@ -24,7 +24,7 @@ public class DagligReiseTilXmlTest {
         WebSoknad soknad = new WebSoknad();
         soknad.getFakta().add(new Faktum().medKey("reise.aktivitet.periode").medProperty("fom", "2015-01-02").medProperty("tom", "2015-03-04"));
         soknad.getFakta().add(new Faktum().medKey("reise.aktivitet.dagligreiseavstand").medValue("123"));
-        soknad.getFakta().add(new Faktum().medKey("reise.aktivitet.reisemaal").medProperty("adresse", "adresse").medProperty("postnr", "1256"));
+        soknad.getFakta().add(new Faktum().medKey("reise.aktivitet.reisemaal").medProperty("land", "Spania").medProperty("adresse", "norsk adresse").medProperty("utenlandskadresse", "Sydengata"));
         soknad.getFakta().add(new Faktum().medKey("reise.aktivitet.offentligtransport.egenbil.parkering").medValue("false"));
         soknad.getFakta().add(new Faktum().medKey("reise.aktivitet.offentligtransport.egenbil.sendebekreftelse").medValue(uke.name()));
 
@@ -42,7 +42,7 @@ public class DagligReiseTilXmlTest {
 
         DagligReise result = new DagligReiseTilXml().transform(soknad);
 
-        assertThat(result.getAktivitetsadresse()).isEqualTo("adresse, 1256");
+        assertThat(result.getAktivitetsadresse()).isEqualTo("Sydengata, Spania");
         assertThat(result.getAvstand()).isEqualTo(123d);
         assertThat(result.getPeriode().getFom()).is(new PeriodMatcher(2015, 1, 2));
         assertThat(result.getPeriode().getTom()).is(new PeriodMatcher(2015, 3, 4));
