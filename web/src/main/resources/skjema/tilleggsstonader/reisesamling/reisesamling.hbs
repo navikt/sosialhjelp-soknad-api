@@ -4,7 +4,12 @@
         <table>
             {{> skjema/tilleggsstonader/reisesamling/fleresamlinger}}
             {{> skjema/tilleggsstonader/reisesamling/avstand}}
-            {{> skjema/tilleggsstonader/reisesamling/adresse}}
+
+
+            {{#variabel "faktumKey" "reise.samling.reisemaal"}}
+                {{> skjema/tilleggsstonader/felles/reisemaladresse}}
+            {{/variabel}}
+
             {{#variabel "faktumPrefiks" "reise.samling."}}
                 {{> skjema/tilleggsstonader/reisesamling/offentligtransport}}
             {{/variabel}}

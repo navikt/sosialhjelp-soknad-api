@@ -32,6 +32,8 @@ public class FlytteutgifterTilXmlTest {
 
     public static final String GATEADRESSE = "NAVveien 3";
     public static final String POSTNUMMER = "1234";
+    public static final String LAND = "Norge";
+    public static final String UTENLANDSK_ADRESSE = "Svenskegata 3, Gøteborg";
     public static final String AVSTAND_KM = "500";
     public static final String HENGERLEIE_KR = "100";
     public static final String NAVN_FLYTTEBYRAA_1 = "Petters flytting";
@@ -51,8 +53,7 @@ public class FlytteutgifterTilXmlTest {
     private Faktum aktivitet;
     private Faktum tiltredelsesdato;
     private Faktum flyttedato;
-    private Faktum gateadresse;
-    private Faktum postnummer;
+    private Faktum adresse;
     private Faktum avstand;
     private Faktum hengerleie;
     private Faktum bom;
@@ -83,12 +84,12 @@ public class FlytteutgifterTilXmlTest {
         flyttedato = new Faktum()
                 .medKey("flytting.nyjobb.flyttedato")
                 .medValue("2015-10-22");
-        gateadresse = new Faktum()
-                .medKey("flytting.nyadresse.gateadresse")
-                .medValue(GATEADRESSE);
-        postnummer = new Faktum()
-                .medKey("flytting.nyadresse.postnummer")
-                .medValue(POSTNUMMER);
+        adresse = new Faktum()
+                .medKey("flytting.nyadresse")
+                .medProperty("land", LAND)
+                .medProperty("adresse", GATEADRESSE)
+                .medProperty("postnr", POSTNUMMER)
+                .medProperty("utenlandskadresse", UTENLANDSK_ADRESSE);
         avstand = new Faktum()
                 .medKey("flytting.flytteselv.hvorlangt")
                 .medValue(AVSTAND_KM);
@@ -160,14 +161,24 @@ public class FlytteutgifterTilXmlTest {
     }
 
     @Test
-    public void settTilFlyttingsadresse() {
-        webSoknad = new WebSoknad().medFaktum(gateadresse).medFaktum(postnummer).medFaktum(nyeaddresse);
+    public void settTilFlyttingsadresseINorge() {
+        webSoknad = new WebSoknad().medFaktum(adresse).medFaktum(nyeaddresse);
         flytteutgifter = flytteutgifterTilXml.transform(webSoknad);
         assertThat(flytteutgifter.getTilflyttingsadresse()).isEqualTo(GATEADRESSE + ", " + POSTNUMMER);
     }
+
+    @Test
+    public void settTilFlyttingsadresseUtland() {
+        webSoknad = new WebSoknad()
+                .medFaktum(adresse.medProperty("land", "Sverige"))
+                .medFaktum(nyeaddresse);
+        flytteutgifter = flytteutgifterTilXml.transform(webSoknad);
+        assertThat(flytteutgifter.getTilflyttingsadresse()).isEqualTo(UTENLANDSK_ADRESSE + ", Sverige");
+    }
+
     @Test
     public void settTilFlyttingsadresseFraPersonalia() {
-        webSoknad = new WebSoknad().medFaktum(gateadresse).medFaktum(postnummer).medFaktum(personalia).medFaktum(nyeaddresse.medValue("true"));
+        webSoknad = new WebSoknad().medFaktum(adresse).medFaktum(personalia).medFaktum(nyeaddresse.medValue("true"));
         flytteutgifter = flytteutgifterTilXml.transform(webSoknad);
         assertThat(flytteutgifter.getTilflyttingsadresse()).isEqualTo(personalia.getProperties().get("gjeldendeAdresse"));
     }

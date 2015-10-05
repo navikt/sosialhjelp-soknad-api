@@ -6,7 +6,11 @@
                 {{> skjema/tilleggsstonader/felles/aktivitetsperiode}}
             {{/forFaktum}}
             {{> skjema/tilleggsstonader/reisemidlertidig/avstand}}
-            {{> skjema/tilleggsstonader/reisemidlertidig/adresse}}
+
+            {{#variabel "faktumKey" "reise.midlertidig.reisemaal"}}
+                {{> skjema/tilleggsstonader/felles/reisemaladresse}}
+            {{/variabel}}
+
             {{> skjema/tilleggsstonader/reisemidlertidig/barnsomflyttermed}}
             {{> skjema/tilleggsstonader/reisemidlertidig/hjemmeboende}}
             {{> skjema/tilleggsstonader/reisemidlertidig/sarskiltebehov}}
