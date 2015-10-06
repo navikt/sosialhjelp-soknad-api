@@ -95,7 +95,7 @@ public class VedleggsGrunnlag {
             Vedlegg.Status status = oppdaterInnsendingsvalg(vedleggErPaakrevd);
 
             if (!status.equals(orginalStatus) || vedlegg.erNyttVedlegg()) {
-                logger.warn("\n ########### VEDLEGGSFEIL - Feil i ny vedleggsgenereringslogikk ################# \n" + "Lagrer vedlegg: \n" + vedlegg + "\n");
+                vedleggRepository.opprettEllerLagreVedleggVedNyGenereringUtenEndringAvData(vedlegg);
             }
         }
     }
