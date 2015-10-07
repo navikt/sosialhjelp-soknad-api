@@ -37,7 +37,6 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * forFaktumHvisSant
 * forBarnefakta
 * formatterFodelsDato (deprecated og erstattet av formatterKortDato og formatterFnrTilKortDato)
-* formatterLangDato
 * hentLand
 * forPerioder
 * hvisFlereErTrue
@@ -57,6 +56,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * forInnsendteVedlegg - Itererer over innsendte vedlegg på søknaden
 * forVedlegg - Lar en iterere over alle påkrevde vedlegg på en søknad
 * formaterDato - Formaterer en innsendt dato på et gitt format som også sendes inn
+* formaterLangDato - Gjør en datostreng om til langt, norsk format. F. eks. '17. januar 2015'
 * harBarnetInntekt - Henter summen hvis barnet har inntekt. Må brukes innenfor en #forFaktum eller #forFakta helper. 
 * hentFaktumValue - Returnerer verdien til et faktum tilhørende keyen som sendes inn
 * hentSkjemanummer - Setter inn søknadens skjemanummer, også om det er en søknad for dagpenger
@@ -195,8 +195,16 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 ##### formaterDato
 
 ```
-{{ukedag "2015-09-16" "EEEE"}}
-{{ukedag variabel "d. MMMM YYYY"}}
+{{formaterDato "2015-09-16" "EEEE"}}
+{{formaterDato variabel "d. MMMM YYYY"}}
+```
+
+
+##### formaterLangDato
+
+```
+{{formaterDato "2015-09-16"}}
+{{formaterDato variabel}}
 ```
 
 
