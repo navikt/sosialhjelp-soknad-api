@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.soknadinnsending.business.FunksjonalitetBryter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
@@ -14,7 +15,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -167,10 +167,10 @@ public class VedleggServiceTest {
         verify(soknadRepository).settDelstegstatus(1L, SKJEMA_VALIDERT);
     }
 
+    //Tester gammel vedleggslogikk
     @Test
-    @Ignore //Ignorerer ettersom vi har lagt på diff med ny logikk
     public void skalHentePaakrevdeVedlegg() {
-//        System.setProperty(VedleggService.FEATURE_NY_VEDLEGGENERERING, "false");
+        System.setProperty(FunksjonalitetBryter.GammelVedleggsLogikk.nokkel, "true");
         Map<Kodeverk.Nokkel, String> map = new HashMap<>();
         map.put(Kodeverk.Nokkel.TITTEL, "tittel");
         map.put(Kodeverk.Nokkel.URL, "url");
