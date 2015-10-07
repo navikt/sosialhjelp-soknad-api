@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<body>
+    <h1>Skru av og på funksjonaliteter</h1>
+    <form method="POST" action="/sendsoknad/internal/funksjon">
+        {{#each this}}
+            <label>{{beskrivelse}}
+                <input type="hidden" name="bryternavn" value="{{name}}">
+                <input type="checkbox" name="status" {{#if erAktiv}}checked{{/if}}>
+            </label>
+        {{/each}}
+
+       <p><input type="submit" name="submit" value="Lagre"></p>
+    </form>
+</body>
