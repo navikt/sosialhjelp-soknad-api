@@ -33,6 +33,19 @@
 
             {{#block "content" }}{{/block}}
 
+            <div class="brosjyre-signatur">
+                <table >
+                    <tr>
+                        <td>
+                            <span class="sjekket"></span>
+                        </td>
+                        <td>
+                            {{ hentTekst "oppsummering.bekreftOpplysninger" }}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
             {{> skjema/felles/vedlegg }}
         </div>
     </body>
