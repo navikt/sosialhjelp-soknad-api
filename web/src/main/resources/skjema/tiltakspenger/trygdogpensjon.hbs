@@ -11,9 +11,9 @@
                             {{#forFakta "trygdogpensjon.utbetalere"}}
                                 <li class="kulepunkt faktum-felt">
                                     <span>Utbetaler: <em>{{ properties.utbetaler}}</em>,</span>
-                                    <span> <em>{{properties.prosent}}</em>%, fra <em>{{ formatterLangDato properties.fom }}</em></span>
+                                    <span> <em>{{properties.prosent}}</em>%, fra <em>{{ formaterLangDato properties.fom }}</em></span>
                                     {{#hvisIkkeTom properties.tom }}
-                                        <span> til <em>{{ formatterLangDato properties.tom }}</em></span>
+                                        <span> til <em>{{ formaterLangDato properties.tom }}</em></span>
                                     {{/hvisIkkeTom}}
                                 </li>
                             {{/forFakta}}
