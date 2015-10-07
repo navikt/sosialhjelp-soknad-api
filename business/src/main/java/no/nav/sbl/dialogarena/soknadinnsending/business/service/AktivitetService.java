@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.xml.ws.soap.SOAPFaultException;
 import java.util.Collections;
 import java.util.List;
 
@@ -56,6 +57,11 @@ public class AktivitetService {
             }
             List<Faktum> listeMedAktiviteter = Lists.transform(aktiviteter.getAktivitetListe(), transformer);
             return Lists.newArrayList(Iterables.filter(listeMedAktiviteter, BARE_AKTIVITETER_SOM_KAN_HA_STONADER));
+        } catch (SOAPFaultException ex) {
+            if (ex.getCause() instanceof FinnAktivitetsinformasjonListePersonIkkeFunnet) {
+                return Collections.emptyList();
+            }
+            throw new RuntimeException(ex.getCause());
         } catch (FinnAktivitetsinformasjonListePersonIkkeFunnet e) {
             LOG.debug("person ikke funnet i arena: " + fodselnummer + ": " + e, e);
             return Collections.emptyList();
@@ -74,7 +80,15 @@ public class AktivitetService {
                 return Lists.newArrayList();
             }
             return on(response.getAktivitetOgVedtakListe()).flatmap(vedtakTransformer).collect();
-        } catch (FinnAktivitetOgVedtakDagligReiseListeSikkerhetsbegrensning | FinnAktivitetOgVedtakDagligReiseListePersonIkkeFunnet e) {
+        } catch (SOAPFaultException ex) {
+            if (ex.getCause() instanceof FinnAktivitetOgVedtakDagligReiseListePersonIkkeFunnet) {
+                return Collections.emptyList();
+            }
+            throw new RuntimeException(ex.getCause());
+        } catch (FinnAktivitetOgVedtakDagligReiseListePersonIkkeFunnet e) {
+            LOG.debug("person ikke funnet i arena: " + fodselsnummer + ": " + e, e);
+            return Collections.emptyList();
+        } catch (FinnAktivitetOgVedtakDagligReiseListeSikkerhetsbegrensning e) {
             throw new RuntimeException(e.getMessage(), e);
         }
     }
