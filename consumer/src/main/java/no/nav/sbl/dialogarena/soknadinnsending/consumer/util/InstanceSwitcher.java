@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.util;
 
 import no.nav.modig.core.exception.ApplicationException;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -12,6 +13,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.consumer.MockUtil.mockSetu
 
 public final class InstanceSwitcher implements InvocationHandler {
 
+    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(InstanceSwitcher.class);
     private final Object defaultInstance;
     private final Object alternative;
     private final String key;
@@ -36,14 +38,17 @@ public final class InstanceSwitcher implements InvocationHandler {
     }
 
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) {
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         method.setAccessible(true);
         try {
             if (getProperty(key, "false").equalsIgnoreCase("true")) {
                 return method.invoke(alternative, args);
             }
             return method.invoke(defaultInstance, args);
-        } catch (IllegalAccessException | InvocationTargetException exception) {
+        } catch(InvocationTargetException exception){
+            LOG.info("invokasjon feiler, kaster reell exception", exception);
+            throw exception.getCause();
+        }catch (IllegalAccessException exception) {
             throw new ApplicationException("Problemer med invokering av metode", exception);
         }
     }

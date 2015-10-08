@@ -16,6 +16,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.util.InstanceSwitcher.createSwitcher;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AktivitetServiceIntegrationTest {
@@ -26,12 +27,18 @@ public class AktivitetServiceIntegrationTest {
     private SakOgAktivitetV1 aktivitetWebService;
     private MockServerClient client;
 
+    public SakOgAktivitetV1 sakOgAktivitetEndpoint(SakOgAktivitetV1 prod) {
+        System.setProperty("test", "false");
+        System.setProperty("tillatmock", "true");
+        return createSwitcher(prod, prod, "test", SakOgAktivitetV1.class);
+    }
+
     @Before
     public void setup() {
         MDCOperations.putToMDC(MDCOperations.MDC_CALL_ID, MDCOperations.generateCallId());
         SakOgAktivitetWSConfig config = new SakOgAktivitetWSConfig();
         ReflectionTestUtils.setField(config, "sakOgAktivitetEndpoint", "http://localhost:" + PORT);
-        aktivitetWebService = config.factory().get();
+        aktivitetWebService = sakOgAktivitetEndpoint(config.factory().get());
         service = new AktivitetService();
         ReflectionTestUtils.setField(service, "aktivitetWebService", aktivitetWebService);
     }
