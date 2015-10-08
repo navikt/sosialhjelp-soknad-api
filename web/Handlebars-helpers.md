@@ -203,8 +203,8 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 ##### formaterLangDato
 
 ```
-{{formaterDato "2015-09-16"}}
-{{formaterDato variabel}}
+{{formaterLangDato "2015-09-16"}}
+{{formaterLangDato variabel}}
 ```
 
 
