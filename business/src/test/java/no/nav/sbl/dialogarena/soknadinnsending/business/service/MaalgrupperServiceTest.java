@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -65,13 +64,7 @@ public class MaalgrupperServiceTest {
     public void skalSendeVidereRuntimeExceptionVedPersonIkkeFunnet() throws Exception {
         when(webservice.finnMaalgruppeinformasjonListe(any(WSFinnMaalgruppeinformasjonListeRequest.class)))
                 .thenThrow(new FinnMaalgruppeinformasjonListePersonIkkeFunnet());
-        try {
-            maalgrupperService.hentMaalgrupper("");
-            fail("Forventet exception");
-        } catch (Exception e) {
-            assertThat(e).isInstanceOf(RuntimeException.class);
-            assertThat(e.getCause()).isInstanceOf(FinnMaalgruppeinformasjonListePersonIkkeFunnet.class);
-        }
+        assertThat(maalgrupperService.hentMaalgrupper("")).isEmpty();
     }
 
     @Test
