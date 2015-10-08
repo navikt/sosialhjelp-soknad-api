@@ -16,10 +16,12 @@ import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetOgV
 import org.apache.commons.collections15.Transformer;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.LocalDate;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.Collections;
 import java.util.List;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
@@ -29,6 +31,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.service.ServiceUt
 public class AktivitetBetalingsplanService implements BolkService {
 
     public static final String VEDTAKPERIODER = "vedtakperioder";
+    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(AktivitetBetalingsplanService.class);
     private static final Transformer<WSAktivitetOgVedtak, Iterable<WSVedtaksinformasjon>> AKTIVITET_TIL_VEDTAK = new Transformer<WSAktivitetOgVedtak, Iterable<WSVedtaksinformasjon>>() {
         @Override
         public Iterable<WSVedtaksinformasjon> transform(WSAktivitetOgVedtak wsAktivitetOgVedtak) {
@@ -41,6 +44,11 @@ public class AktivitetBetalingsplanService implements BolkService {
             return wsVedtaksinformasjon.getBetalingsplan();
         }
     };
+    @Inject
+    private FaktaService faktaService;
+    @Inject
+    @Named("sakOgAktivitetEndpoint")
+    private SakOgAktivitetV1 aktivitetWebService;
 
     private static Transformer<WSBetalingsplan, Faktum> betalingplanTilFaktum(final Long soknadId) {
         return new Transformer<WSBetalingsplan, Faktum>() {
@@ -61,12 +69,6 @@ public class AktivitetBetalingsplanService implements BolkService {
             }
         };
     }
-
-    @Inject
-    private FaktaService faktaService;
-    @Inject
-    @Named("sakOgAktivitetEndpoint")
-    private SakOgAktivitetV1 aktivitetWebService;
 
     private static org.apache.commons.collections15.Predicate<WSVedtaksinformasjon> vedtakMedId(final String vedtakId) {
         return new org.apache.commons.collections15.Predicate<WSVedtaksinformasjon>() {
@@ -119,7 +121,10 @@ public class AktivitetBetalingsplanService implements BolkService {
                     .flatmap(VEDTAK_TIL_BETALINGSPLAN)
                     .map(betalingplanTilFaktum(soknadId)).collect();
 
-        } catch (FinnAktivitetOgVedtakDagligReiseListeSikkerhetsbegrensning | FinnAktivitetOgVedtakDagligReiseListePersonIkkeFunnet e) {
+        } catch (FinnAktivitetOgVedtakDagligReiseListePersonIkkeFunnet e) {
+            LOG.debug("person ikke funnet", e);
+            return Collections.emptyList();
+        } catch (FinnAktivitetOgVedtakDagligReiseListeSikkerhetsbegrensning e) {
             throw new RuntimeException(e.getMessage(), e);
         }
     }
