@@ -184,6 +184,10 @@
                     <groupId>com.google.code.findbugs</groupId>
                     <artifactId>jsr305</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>javax.mail</groupId>
+                    <artifactId>mailapi</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -196,6 +200,10 @@
                     <groupId>com.google.code.findbugs</groupId>
                     <artifactId>jsr305</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>javax.mail</groupId>
+                    <artifactId>mailapi</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -206,6 +214,10 @@
                 <exclusion>
                     <groupId>com.google.code.findbugs</groupId>
                     <artifactId>jsr305</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.mail</groupId>
+                    <artifactId>mailapi</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
