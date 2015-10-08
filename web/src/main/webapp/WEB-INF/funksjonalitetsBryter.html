@@ -2,13 +2,14 @@
 <body>
     <h1>Skru av og på funksjonaliteter</h1>
     <form method="POST" action="/sendsoknad/internal/funksjon">
-        {{#each this}}
-            <label>{{beskrivelse}}
-                <input type="hidden" name="bryternavn" value="{{name}}">
-                <input type="checkbox" name="status" {{#if erAktiv}}checked{{/if}}>
-            </label>
-        {{/each}}
+        {{#this}}
+        <div><label>{{beskrivelse}}
+            <input type="hidden" name="bryternavn" value="{{ordinal}}{{name}}">
+            <input type="checkbox" name="status" value="{{ordinal}}true" {{#if erAktiv}}checked{{/if}}>
+        </label>
+        </div>
+        {{/this}}
 
-       <p><input type="submit" name="submit" value="Lagre"></p>
+        <p><input type="submit" name="submit" value="Lagre"></p>
     </form>
 </body>

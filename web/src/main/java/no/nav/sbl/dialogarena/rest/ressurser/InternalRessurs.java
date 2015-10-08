@@ -24,6 +24,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
+import java.util.List;
 
 @Controller
 @Path("/internal")
@@ -64,11 +65,21 @@ public class InternalRessurs {
                 .build();
         return compile.apply(context);
     }
+
     @POST
     @Path(value = "/funksjon")
-    public Response endreFunksjonalitetBryter(@FormParam("bryternavn") FunksjonalitetBryter bryter, @FormParam("status") String status) throws InterruptedException {
-        System.out.println("setter " + bryter + " til " + status);
-        System.setProperty(bryter.nokkel, "on".equals(status)? "true": "false");
+    public Response endreFunksjonalitetBryter(@FormParam("bryternavn") List<String> brytere, @FormParam("status") List<String> status) throws InterruptedException {
+
+        for (String bryter : brytere) {
+            int index = Character.getNumericValue(bryter.charAt(0));
+
+            FunksjonalitetBryter bryterUtenIndeks = FunksjonalitetBryter.valueOf(brytere.get(index).substring(1));
+            String nyStatus = status.contains(index + "true") ? "true" : "false";
+
+            System.out.println("setter " + bryterUtenIndeks + " til " + nyStatus);
+            System.setProperty(bryterUtenIndeks.nokkel, nyStatus);
+        }
+
         return Response.seeOther(URI.create("/sendsoknad/internal/funksjon")).build();
     }
 
