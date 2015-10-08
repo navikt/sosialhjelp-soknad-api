@@ -10,19 +10,37 @@
         </td>
     </tr>
     {{#hvisSant value}}
-        {{#forFakta "reise.samling.fleresamlinger.samling"}}
-            <tr>
-                <td class="sjekket"></td>
-                <td>
-                    <span>{{ hentTekst "soknad.reise.samling.offentligtransport.utgift.oppsummering" }}</span>
-                    <span>{{ formatterLangDato properties.fom }}</span>
-                    <span>{{ hentTekst "soknad.reise.samling.offentligtransport.utgift.oppsummering.til" }}</span>
-                    <span>{{ formatterLangDato properties.tom }}:</span>
-                    <span>{{ properties.utgiftoffentligtransport }}</span>
-                    <span>{{ hentTekst "soknad.krmnd" }}</span>
-                </td>
-            </tr>
-        {{/forFakta}}
+        {{#forFaktum "reise.samling.fleresamlinger"}}
+            {{#hvisLik value "flere"}}
+                {{#forFakta "reise.samling.fleresamlinger.samling"}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>
+                            <span>{{ hentTekst "soknad.reise.samling.offentligtransport.utgift.oppsummering" }}</span>
+                            <span>{{ formatterLangDato properties.fom }}</span>
+                            <span>{{ hentTekst "soknad.reise.samling.offentligtransport.utgift.oppsummering.til" }}</span>
+                            <span>{{ formatterLangDato properties.tom }}:</span>
+                            <span>{{ properties.utgiftoffentligtransport }}</span>
+                            <span>{{ hentTekst "soknad.krmnd" }}</span>
+                        </td>
+                    </tr>
+                {{/forFakta}}
+            {{else}}
+                {{#forFaktum "reise.samling.aktivitetsperiode"}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>
+                            <span>{{ hentTekst "soknad.reise.samling.offentligtransport.utgift.oppsummering" }}</span>
+                            <span>{{ formatterLangDato properties.fom }}</span>
+                            <span>{{ hentTekst "soknad.reise.samling.offentligtransport.utgift.oppsummering.til" }}</span>
+                            <span>{{ formatterLangDato properties.tom }}:</span>
+                            <span>{{ properties.utgiftoffentligtransport }}</span>
+                            <span>{{ hentTekst "soknad.krmnd" }}</span>
+                        </td>
+                    </tr>
+                {{/forFaktum}}
+            {{/hvisLik}}
+        {{/forFaktum}}
         <tr>
             {{#forFaktum (concat faktumPrefiks "utbetalingsdato")}}
                 <td class="sjekket"></td><td><span>{{ hentTekst "soknad.felles.utbetalingsdato.velgdato.oppsummering" }} {{value}}{{ hentTekst "soknad.felles.utbetalingsdato.velgdato.oppsummering.postfix" }}</span></td>
