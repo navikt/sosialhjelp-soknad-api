@@ -39,15 +39,23 @@
                                 {{hentTekst 'tiltaksliste.oppsummering.dato'}}: <em>{{formaterDato properties.fom "dd.MM.yyyy"}}
                                 -{{formaterDato properties.tom "dd.MM.yyyy"}}</em>
                             </li>
-                            <li class="kulepunkt faktum-felt">
-                                {{hentTekst 'tiltaksliste.annetTiltak.arrangoernavn'}}: <em>{{properties.arrangoernavn}}</em>
-                            </li>
-                            <li class="kulepunkt faktum-felt">
-                                {{hentTekst 'tiltaksliste.annetTiltak.adresse'}}: <em>{{properties.adresse}}</em>
-                            </li>
-                            <li class="kulepunkt faktum-felt">
-                                {{hentTekst 'tiltaksliste.annetTiltak.postnummer'}}: <em>{{properties.postnummer}}</em>
-                            </li>
+                            {{#hvisIkkeTom properties.arrangoernavn}}
+                                <li class="kulepunkt faktum-felt">
+                                    {{hentTekst 'tiltaksliste.annetTiltak.arrangoernavn'}}:
+                                    <em>{{properties.arrangoernavn}}</em>
+                                </li>
+                            {{/hvisIkkeTom}}
+                            {{#hvisIkkeTom properties.adresse}}
+                                <li class="kulepunkt faktum-felt">
+                                    {{hentTekst 'tiltaksliste.annetTiltak.adresse'}}: <em>{{properties.adresse}}</em>
+                                </li>
+                            {{/hvisIkkeTom}}
+                            {{#hvisIkkeTom properties.postnummer}}
+                                <li class="kulepunkt faktum-felt">
+                                    {{hentTekst 'tiltaksliste.annetTiltak.postnummer'}}:
+                                    <em>{{properties.postnummer}}</em>
+                                </li>
+                            {{/hvisIkkeTom}}
                             <li class="kulepunkt faktum-felt">
                                 {{hentTekst 'tiltaksliste.annetTiltak.antallDager'}}: <em>{{properties.antallDager}}</em>
                             </li>

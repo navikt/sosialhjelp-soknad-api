@@ -161,6 +161,13 @@ public class AktivitetServiceTest {
     }
 
     @Test
+    public void skalGodtaPersonIkkeFunnet() throws FinnAktivitetsinformasjonListePersonIkkeFunnet, FinnAktivitetsinformasjonListeSikkerhetsbegrensning {
+        when(webservice.finnAktivitetsinformasjonListe(any(WSFinnAktivitetsinformasjonListeRequest.class))).thenThrow(new FinnAktivitetsinformasjonListePersonIkkeFunnet("person ikke funnet"));
+        List<Faktum> faktums = aktivitetService.hentAktiviteter("");
+        assertThat(faktums).isEmpty();
+    }
+
+    @Test
     public void skalReturnereAktiveVedtak() throws FinnAktivitetOgVedtakDagligReiseListePersonIkkeFunnet, FinnAktivitetOgVedtakDagligReiseListeSikkerhetsbegrensning {
         WSFinnAktivitetOgVedtakDagligReiseListeResponse response = new WSFinnAktivitetOgVedtakDagligReiseListeResponse();
         response.withAktivitetOgVedtakListe(
