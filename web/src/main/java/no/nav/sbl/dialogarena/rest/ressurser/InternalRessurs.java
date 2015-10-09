@@ -72,11 +72,8 @@ public class InternalRessurs {
 
         for (String bryter : brytere) {
             int index = Character.getNumericValue(bryter.charAt(0));
-
             FunksjonalitetBryter bryterUtenIndeks = FunksjonalitetBryter.valueOf(brytere.get(index).substring(1));
             String nyStatus = status.contains(index + "true") ? "true" : "false";
-
-            System.out.println("setter " + bryterUtenIndeks + " til " + nyStatus);
             System.setProperty(bryterUtenIndeks.nokkel, nyStatus);
         }
 
