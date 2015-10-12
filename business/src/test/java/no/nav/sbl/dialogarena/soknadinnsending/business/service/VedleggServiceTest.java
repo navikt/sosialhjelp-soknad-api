@@ -175,11 +175,13 @@ public class VedleggServiceTest {
         map.put(Kodeverk.Nokkel.TITTEL, "tittel");
         map.put(Kodeverk.Nokkel.URL, "url");
         when(kodeverk.getKoder("L6")).thenReturn(map);
-        Vedlegg vedlegg = new Vedlegg().medSkjemaNummer("L6").medInnsendingsvalg(VedleggKreves);
-        Vedlegg vedleggSjekk = new Vedlegg().medSkjemaNummer("L6").medTittel("tittel").medUrl("URL", "url")
+        Vedlegg vedlegg = new Vedlegg().medFaktumId(1L).medSkjemaNummer("L6").medInnsendingsvalg(VedleggKreves);
+        Vedlegg vedleggSjekk = new Vedlegg().medFaktumId(1L).medSkjemaNummer("L6").medTittel("tittel").medUrl("URL", "url")
                 .medFillagerReferanse(vedlegg.getFillagerReferanse()).medInnsendingsvalg(VedleggKreves);
         when(vedleggRepository.hentVedlegg(anyString())).thenReturn(Arrays.asList(vedlegg));
+        when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(Arrays.asList(vedlegg));
         List<Vedlegg> vedleggs = vedleggService.hentPaakrevdeVedlegg("10000000ABC");
+        assertThat(vedleggService.hentPaakrevdeVedlegg(1L).get(0), is(equalTo(vedleggSjekk)));
         assertThat(vedleggs.get(0), is(equalTo(vedleggSjekk)));
     }
 

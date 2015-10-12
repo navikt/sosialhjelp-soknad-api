@@ -52,6 +52,9 @@ public class DefaultVedleggServiceTest {
     @Mock
     FillagerService fillagerConnector;
 
+    @Mock
+    FaktaService faktaService;
+
     @InjectMocks
     VedleggService vedleggService = new VedleggService();
 
@@ -100,6 +103,18 @@ public class DefaultVedleggServiceTest {
         parent.getProperties().put("parentProp", "false");
         vedlegg = vedleggService.genererPaakrevdeVedlegg("123");
         assertThat(vedlegg).hasSize(0);
+    }
+
+    @Test
+    public void skalKjøreNyLogikkVedUthentingAvVedleggForEtFaktum(){
+        Faktum vedlegg1 = new Faktum().medFaktumId(3L).medKey("toFaktumMedSammeVedlegg1Unik").medValue("true");
+        Faktum vedlegg2 = new Faktum().medFaktumId(4L).medKey("toFaktumMedSammeVedlegg2Unik").medValue("true");
+        when(soknadDataFletter.hentSoknad(eq("123"), eq(true), eq(true))).thenReturn(new WebSoknad().medskjemaNummer("nav-1.1.1")
+                .medFaktum(vedlegg1).medFaktum(vedlegg2));
+        when(faktaService.hentBehandlingsId(3L)).thenReturn("123");
+        List<Vedlegg> vedleggs = vedleggService.hentPaakrevdeVedlegg(3L);
+        assertThat(vedleggs).hasSize(1);
+        assertThat(vedleggs.get(0).getFaktumId()).isEqualTo(vedlegg1.getFaktumId());
     }
 
     @Test
