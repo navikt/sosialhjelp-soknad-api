@@ -7,16 +7,12 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
 public class VedleggsGrunnlag {
-    private static final Logger logger = getLogger(VedleggsGrunnlag.class);
     public List<Pair<VedleggForFaktumStruktur, List<Faktum>>> grunnlag = new ArrayList<>();
     private WebSoknad soknad;
     private Vedlegg vedlegg;
@@ -47,7 +43,9 @@ public class VedleggsGrunnlag {
 
     public boolean erVedleggPaakrevd() {
         for (Pair<VedleggForFaktumStruktur, List<Faktum>> pair : grunnlag) {
-            if (matcherEtAvFaktumeneKravTilVedlegg(pair.getRight(), pair.getLeft())) { return true; }
+            if (matcherEtAvFaktumeneKravTilVedlegg(pair.getRight(), pair.getLeft())) {
+                return true;
+            }
         }
         return false;
     }
@@ -85,7 +83,7 @@ public class VedleggsGrunnlag {
     public void oppdaterVedlegg(VedleggRepository vedleggRepository) {
         boolean vedleggErPaakrevd = erVedleggPaakrevd();
 
-        if(vedleggFinnes() || vedleggErPaakrevd){
+        if (vedleggFinnes() || vedleggErPaakrevd) {
 
             if (vedleggIkkeFinnes()) {
                 opprettVedleggFraFaktum();
@@ -95,7 +93,7 @@ public class VedleggsGrunnlag {
             Vedlegg.Status status = oppdaterInnsendingsvalg(vedleggErPaakrevd);
 
             if (!status.equals(orginalStatus) || vedlegg.erNyttVedlegg()) {
-                logger.warn("\n ########### VEDLEGGSFEIL - Feil i ny vedleggsgenereringslogikk ################# \n" + "Lagrer vedlegg: \n" + vedlegg + "\n");
+                vedleggRepository.opprettEllerLagreVedleggVedNyGenereringUtenEndringAvData(vedlegg);
             }
         }
     }
