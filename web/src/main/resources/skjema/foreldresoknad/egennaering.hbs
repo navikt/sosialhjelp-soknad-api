@@ -62,7 +62,7 @@
                         <li class="kulepunkt">
                         {{#hvisSant properties.startetfireaarsiden}}
                             {{hentTekst "foreldresoknad.egennaering.nynaering.startetfireaarsiden.true"}}
-                                <ul><li class="kulepunkt">{{hentTekst "foreldresoknad.oppsummering.egennaering.startetnar.dato"}} {{formatterLangDato properties.startetnar}}</li></ul>
+                                <ul><li class="kulepunkt">{{hentTekst "foreldresoknad.oppsummering.egennaering.startetnar.dato"}} {{formaterLangDato properties.startetnar}}</li></ul>
                         {{else}}
                             <span>{{hentTekst "foreldresoknad.egennaering.nynaering.startetfireaarsiden.false"}}</span>
                         {{/hvisSant}}
@@ -72,7 +72,7 @@
                          {{#hvisSant properties.varigendring}}
                              <span>{{hentTekst "foreldresoknad.egennaering.nynaering.varigendring.true"}}</span>
                             <ul>
-                                <li class="kulepunkt">{{hentTekst "foreldresoknad.oppsummering.egennaering.varigendring.dato"}} {{formatterLangDato properties.datoendring}}</li>
+                                <li class="kulepunkt">{{hentTekst "foreldresoknad.oppsummering.egennaering.varigendring.dato"}} {{formaterLangDato properties.datoendring}}</li>
                                 <li class="kulepunkt">{{hentTekst "foreldresoknad.egennaering.nynaering.varigendring.true.endring.label"}}: <em>{{properties.varigendringbeskrivelse}}</em></li>
                             </ul>
                         {{else}}
@@ -82,8 +82,8 @@
 
                         {{#forBarnefakta "egennaering.oppdragsgiver"}}
                             <li class="kulepunkt">{{hentTekst "foreldresoknad.oppsummering.egennaering.oppdrag.beskrivelse"}} {{properties.navn}}
-                                {{hentTekst "foreldresoknad.oppsummering.egennaering.oppdrag.fra"}} {{formatterLangDato properties.fradato}}
-                                {{hentTekst "foreldresoknad.oppsummering.egennaering.oppdrag.til"}} {{formatterLangDato properties.tildato}}</li>
+                                {{hentTekst "foreldresoknad.oppsummering.egennaering.oppdrag.fra"}} {{formaterLangDato properties.fradato}}
+                                {{hentTekst "foreldresoknad.oppsummering.egennaering.oppdrag.til"}} {{formaterLangDato properties.tildato}}</li>
                         {{/forBarnefakta}}
 
                         <li class="kulepunkt">{{#hvisSant properties.regnskapsforer}}

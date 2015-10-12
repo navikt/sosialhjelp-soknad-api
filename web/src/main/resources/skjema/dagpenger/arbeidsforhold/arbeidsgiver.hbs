@@ -4,7 +4,7 @@
             <td class="sjekket"></td>
             <td>
                 <span>{{ hentTekst "arbeidsforhold.datodagpenger.oppsummering" }}</span>
-                <span>{{ formatterLangDato value}}</span>
+                <span>{{ formaterLangDato value}}</span>
             </td>
         </tr>
     {{/forFaktum}}
@@ -18,14 +18,14 @@
                     , {{ hentLand properties.land }}</span>
 
                 <div class="arbeidsforhold-data">
-                    <span>{{ formatterLangDato properties.datofra }}</span>
+                    <span>{{ formaterLangDato properties.datofra }}</span>
                     {{#if properties.datotil}}
                         <span>{{ hentTekst "oppsummering.datotil" }}</span>
-                        <span>{{ formatterLangDato properties.datotil }}</span>
+                        <span>{{ formaterLangDato properties.datotil }}</span>
                     {{/if}}
                     {{#if properties.konkursdato}}
                         <span>{{ hentTekst "oppsummering.datotil" }}</span>
-                        <span>{{ formatterLangDato properties.konkursdato }}</span>
+                        <span>{{ formaterLangDato properties.konkursdato }}</span>
                     {{/if}}
                 </div>
                 <ul>
@@ -57,7 +57,7 @@
                         </li>
                         <li class="kulepunkt">
                             <span> {{ hentTekst "arbeidsforhold.sluttaarsak.redusertArbeidstid.fraDato.oppsummering" }} </span>
-                            <span>{{ formatterLangDato properties.redusertfra }}</span>
+                            <span>{{ formaterLangDato properties.redusertfra }}</span>
                         </li>
 
                         <li class="kulepunkt">
@@ -149,10 +149,10 @@
                             {{#if properties.lonnspliktigperiodevetikke }}
                                 <span>{{ hentTekst "arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.vetikke" }}</span>
                             {{else}}
-                                <span>{{ formatterLangDato properties.lonnspliktigperiodedatofra }}</span>
+                                <span>{{ formaterLangDato properties.lonnspliktigperiodedatofra }}</span>
                                 {{#if properties.lonnspliktigperiodedatotil}}
                                     <span>{{ hentTekst "oppsummering.datotil" }}</span>
-                                    <span>{{ formatterLangDato properties.lonnspliktigperiodedatotil }}</span>
+                                    <span>{{ formaterLangDato properties.lonnspliktigperiodedatotil }}</span>
                                 {{/if}}
                             {{/if}}
                         </li>
@@ -163,9 +163,9 @@
                                 <li class="kulepunkt">
                                     <div class="permitteringsperiode">
                                         <p>
-                                            <span>{{ formatterLangDato properties.permiteringsperiodedatofra }}</span>
+                                            <span>{{ formaterLangDato properties.permiteringsperiodedatofra }}</span>
                                             <span>{{ hentTekst "oppsummering.datotil" }}</span>
-                                            <span>{{ formatterLangDato properties.permiteringsperiodedatotil }}</span>
+                                            <span>{{ formaterLangDato properties.permiteringsperiodedatotil }}</span>
                                         </p>
 
                                         <p>
