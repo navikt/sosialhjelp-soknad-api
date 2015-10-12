@@ -21,6 +21,7 @@ import no.nav.sbl.dialogarena.pdf.Convert;
 import no.nav.sbl.dialogarena.pdf.ConvertToPng;
 import no.nav.sbl.dialogarena.pdf.PdfMerger;
 import no.nav.sbl.dialogarena.pdf.PdfWatermarker;
+import no.nav.sbl.dialogarena.soknadinnsending.business.FunksjonalitetBryter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
@@ -35,6 +36,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.So
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
 import org.apache.commons.collections15.Closure;
+import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
 import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.exceptions.COSVisitorException;
@@ -90,6 +92,9 @@ public class VedleggService {
 
     @Inject
     private FillagerService fillagerService;
+
+    @Inject
+    private FaktaService faktaService;
 
     private PdfMerger pdfMerger = new PdfMerger();
     private PdfWatermarker watermarker = new PdfWatermarker();
@@ -260,10 +265,21 @@ public class VedleggService {
         return vedleggId;
     }
 
-    public List<Vedlegg> hentPaakrevdeVedlegg(Long faktumId) {
-        List<Vedlegg> paakrevdeVedlegg = vedleggRepository.hentPaakrevdeVedlegg(faktumId);
-        leggTilKodeverkFelter(paakrevdeVedlegg);
-        return paakrevdeVedlegg;
+    public List<Vedlegg> hentPaakrevdeVedlegg(final Long faktumId) {
+        if (FunksjonalitetBryter.GammelVedleggsLogikk.erAktiv()) {
+
+            List<Vedlegg> paakrevdeVedlegg = vedleggRepository.hentPaakrevdeVedlegg(faktumId);
+            leggTilKodeverkFelter(paakrevdeVedlegg);
+            return paakrevdeVedlegg;
+        } else {
+            List<Vedlegg> vedleggs = genererPaakrevdeVedlegg(faktaService.hentBehandlingsId(faktumId));
+            return on(vedleggs).filter(new Predicate<Vedlegg>() {
+                @Override
+                public boolean evaluate(Vedlegg vedlegg) {
+                    return faktumId.equals(vedlegg.getFaktumId());
+                }
+            }).collect();
+        }
     }
 
     public List<Vedlegg> hentPaakrevdeVedlegg(String behandlingsId) {
