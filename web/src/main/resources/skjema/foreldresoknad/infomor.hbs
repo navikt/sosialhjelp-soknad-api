@@ -5,7 +5,7 @@
         <td>
             <span>{{hentFaktumValue "infomor.opplysninger.fornavn"}} {{hentFaktumValue "infomor.opplysninger.etternavn"}},
                 {{#forFaktum "infomor.opplysninger.personinfo"}}
-                    {{#hvisLik "fodselsdato" properties.valg}}{{formatterLangDato properties.fodelsdato}}{{/hvisLik}}
+                    {{#hvisLik "fodselsdato" properties.valg}}{{formaterLangDato properties.fodelsdato}}{{/hvisLik}}
                     {{#hvisLik "personnummer" properties.valg}}{{properties.personnummer}}{{/hvisLik}}
                 {{/forFaktum}}
             </span>
@@ -17,7 +17,7 @@
         {{#hvisLik "aleneomsorg" value}}
             <span>{{hentTekst "foreldresoknad.infomor.aleneomsorg.alternativ.2"}}</span>
                 {{#forFaktum "infomor.aleneomsorg.omsorgfradato"}}
-                    <div>{{hentTekst "foreldresoknad.oppsummering.infomor.aleneomsorg.fradato.tekst"}} {{formatterLangDato value}}</div>
+                    <div>{{hentTekst "foreldresoknad.oppsummering.infomor.aleneomsorg.fradato.tekst"}} {{formaterLangDato value}}</div>
                 {{/forFaktum}}
             {{#forFaktum "infomor.aleneomsorg.fritekst"}}
                 <div>{{hentTekst "foreldresoknad.infomor.aleneomsorg.fritekst.label"}}: <em>{{value}}</em></div>

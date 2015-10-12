@@ -3,8 +3,8 @@
 
         {{#forFakta "vedtak.betalingsplan"}}
             {{#hvisSant properties.registrert}}
-                <h2>{{hentTekst 'oppsummering.kjoreliste'}} {{formatterLangDato properties.fom}}
-                    - {{formatterLangDato properties.tom}}</h2>
+                <h2>{{hentTekst 'oppsummering.kjoreliste'}} {{formaterLangDato properties.fom}}
+                    - {{formaterLangDato properties.tom}}</h2>
 
                 <h3>{{hentTekst 'oppsummering.dager'}}</h3>
                 {{#lagKjorelisteUker properties}}
@@ -21,7 +21,7 @@
                                             <ul>
                                                 {{#each dager}}
                                                     <li class="kulepunkt faktum-felt">
-                                                        {{toCapitalized (formaterDato dato "EEEE")}} {{formatterLangDato dato~}}
+                                                        {{toCapitalized (formaterDato dato "EEEE")}} {{formaterLangDato dato~}}
                                                         {{#hvisSant trengerParkering~}}
                                                             {{#hvisMer parkering "0"~}}
                                                                 {{hentTekst 'oppsummering.utgifter'}}
