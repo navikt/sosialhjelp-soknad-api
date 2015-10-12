@@ -49,6 +49,7 @@ public class HandleBarKjoererTest {
         registerHelper(new HvisMindreHelper());
         registerHelper(new ForFaktaMedPropertySattTilTrueHelper());
         registerHelper(new ForFaktaHelper());
+        registerHelper(new FormaterLangDatoHelper());
         registerHelper(hentTekstHelper);
     }
 

@@ -8,7 +8,6 @@ import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.collections15.Predicate;
-import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -53,7 +52,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         handlebars.registerHelper("forFaktumHvisSant", generateforFaktumHvisSantHelper());
         handlebars.registerHelper("forBarnefakta", generateForBarnefaktaHelper());
         handlebars.registerHelper("formatterFodelsDato", generateFormatterFodselsdatoHelper());
-        handlebars.registerHelper("formatterLangDato", generateFormatterLangDatoHelper());
         handlebars.registerHelper("hentLand", generateHentLandHelper());
         handlebars.registerHelper("forPerioder", generateHelperForPeriodeTidsromFakta());
         handlebars.registerHelper("hvisFlereErTrue", generateHvisFlereSomStarterMedErTrueHelper());
@@ -110,20 +108,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
             @Override
             public CharSequence apply(String landKode, Options options) throws IOException {
                 return kodeverk.getLand(landKode);
-            }
-        };
-    }
-
-    private Helper<String> generateFormatterLangDatoHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String dato, Options options) throws IOException {
-                Locale locale = new Locale("nb", "no");
-                DateTimeFormatter dt = DateTimeFormat.forPattern("d. MMMM yyyy").withLocale(locale);
-                if (StringUtils.isNotEmpty(dato)) {
-                    return dt.print(DateTime.parse(dato));
-                }
-                return "";
             }
         };
     }
