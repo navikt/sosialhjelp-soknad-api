@@ -24,7 +24,7 @@ public class SakOgAktivitetWSConfig {
         SakOgAktivitetV1 prod = sakOgAktivitetEndpointWS();
         return createSwitcher(prod, mock, SAKOGAKTIVITET_KEY, SakOgAktivitetV1.class);
     }
-    private ServiceBuilder<SakOgAktivitetV1>.PortTypeBuilder<SakOgAktivitetV1> factory() {
+    public ServiceBuilder<SakOgAktivitetV1>.PortTypeBuilder<SakOgAktivitetV1> factory() {
         return new ServiceBuilder<>(SakOgAktivitetV1.class)
                 .asStandardService()
                 .withAddress(sakOgAktivitetEndpoint)

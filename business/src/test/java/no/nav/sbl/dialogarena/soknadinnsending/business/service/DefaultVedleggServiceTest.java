@@ -11,7 +11,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.So
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -253,7 +252,6 @@ public class DefaultVedleggServiceTest {
     }
 
     @Test
-    @Ignore("Fjernet fordi vedleggene ikke lagres for øyeblikket")
     public void skalIkkeGenerereNyttVedleggOmEtAlleredeFinnesMenOppdatereDetEksistende(){
         Faktum faktum = new Faktum().medKey("faktumMedVedleggOnTrue").medValue("true").medFaktumId(1L);
         Vedlegg vedleggForFaktum = new Vedlegg().medSkjemaNummer("v6").medInnsendingsvalg(IkkeVedlegg);
@@ -269,7 +267,6 @@ public class DefaultVedleggServiceTest {
     }
 
     @Test
-    @Ignore("Fjernet fordi vedleggene ikke lagres for øyeblikket")
     public void skalSetteVedleggTilIkkeVedleggOmIngenFaktumMatcher(){
         Faktum faktum = new Faktum().medKey("faktumMedVedleggOnTrue").medValue("false").medFaktumId(1L);
         Vedlegg vedleggForFaktum = new Vedlegg().medSkjemaNummer("v6").medInnsendingsvalg(VedleggKreves);
@@ -282,8 +279,6 @@ public class DefaultVedleggServiceTest {
         assertThat(vedleggForFaktum.getInnsendingsvalg()).isEqualTo(Vedlegg.Status.IkkeVedlegg);
         verify(vedleggRepository).opprettEllerLagreVedleggVedNyGenereringUtenEndringAvData(eq(vedleggForFaktum));
     }
-
-
 
     private void settOppStruktur() {
         SoknadStruktur testStruktur = JAXB.unmarshal(this.getClass().getResourceAsStream("/TestStruktur.xml"), SoknadStruktur.class);

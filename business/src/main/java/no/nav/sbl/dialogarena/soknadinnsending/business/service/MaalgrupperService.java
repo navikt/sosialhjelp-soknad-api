@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.xml.ws.soap.SOAPFaultException;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,12 +33,10 @@ public class MaalgrupperService {
         try {
             WSFinnMaalgruppeinformasjonListeResponse maalgrupper = maalgruppeinformasjon.finnMaalgruppeinformasjonListe(lagRequest(fodselsnummer));
             return Lists.transform(maalgrupper.getMaalgruppeListe(), maalgruppeTilFaktum);
-        } catch (SOAPFaultException ex) {
-            if (ex.getCause() instanceof FinnMaalgruppeinformasjonListePersonIkkeFunnet) {
-                return Collections.emptyList();
-            }
-        } catch (FinnMaalgruppeinformasjonListePersonIkkeFunnet | FinnMaalgruppeinformasjonListeSikkerhetsbegrensning e) {
+        } catch (FinnMaalgruppeinformasjonListeSikkerhetsbegrensning e) {
             throw new RuntimeException(e);
+        } catch (FinnMaalgruppeinformasjonListePersonIkkeFunnet e) {
+            LOG.debug("Fant ikke person: " + fodselsnummer, e);
         } catch (Exception ex) {
             //Maalgruppetjenesten er nede etter kl 8 på kvelden. Om den er nede skal vi bare returnere en tom liste.
             LOG.debug("Maalgruppetjeneste nede: ", ex);

@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.FunksjonalitetBryter.GammelVedleggsLogikk;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -126,16 +127,16 @@ public class FaktaService {
 
 
         for (Faktum faktum : fakta) {
-            if(faktum.getKey().equals(f.getKey())) {
+            if (faktum.getKey().equals(f.getKey())) {
                 f.setFaktumId(faktum.getFaktumId());
                 break;
             }
         }
 
         Long lagretFaktumId;
-        if (f.getFaktumId() != null){
+        if (f.getFaktumId() != null) {
             lagretFaktumId = repository.oppdaterFaktum(f, true);
-        }else{
+        } else {
             lagretFaktumId = repository.opprettFaktum(soknadId, f, true);
         }
         Faktum hentetFaktum = repository.hentFaktum(lagretFaktumId);
@@ -178,12 +179,14 @@ public class FaktaService {
     }
 
     private void genererVedleggForFaktum(Faktum faktum) {
-        SoknadStruktur struktur = hentSoknadStruktur(faktum.getSoknadId());
-        List<VedleggForFaktumStruktur> aktuelleVedlegg = struktur.vedleggFor(faktum);
-        for (VedleggForFaktumStruktur vedleggForFaktumStruktur : aktuelleVedlegg) {
-            oppdaterOgLagreVedlegg(struktur, vedleggForFaktumStruktur, faktum);
+        if (GammelVedleggsLogikk.erAktiv()) {
+            SoknadStruktur struktur = hentSoknadStruktur(faktum.getSoknadId());
+            List<VedleggForFaktumStruktur> aktuelleVedlegg = struktur.vedleggFor(faktum);
+            for (VedleggForFaktumStruktur vedleggForFaktumStruktur : aktuelleVedlegg) {
+                oppdaterOgLagreVedlegg(struktur, vedleggForFaktumStruktur, faktum);
+            }
+            genererVedleggForBarnefakta(faktum);
         }
-        genererVedleggForBarnefakta(faktum);
     }
 
     private SoknadStruktur hentSoknadStruktur(Long soknadId) {

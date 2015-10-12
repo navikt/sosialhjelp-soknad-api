@@ -35,7 +35,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.So
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
 import org.apache.commons.collections15.Closure;
-import org.apache.commons.collections15.CollectionUtils;
 import org.apache.commons.collections15.Transformer;
 import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.exceptions.COSVisitorException;
@@ -62,6 +61,7 @@ import static java.util.Collections.sort;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.KVITTERING;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.FunksjonalitetBryter.GammelVedleggsLogikk;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.LastetOpp;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.toInnsendingsvalg;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -70,7 +70,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Component
 public class VedleggService {
     private static final Logger logger = getLogger(VedleggService.class);
-    public static final String FEATURE_NY_VEDLEGGENERERING = "vedlegg.ny.generering";
 
     @Inject
     @Named("soknadInnsendingRepository")
@@ -94,6 +93,39 @@ public class VedleggService {
 
     private PdfMerger pdfMerger = new PdfMerger();
     private PdfWatermarker watermarker = new PdfWatermarker();
+
+    private static Vedlegg opprettVedlegg(Vedlegg vedlegg, long size) {
+        return new Vedlegg()
+                .medVedleggId(null)
+                .medSoknadId(vedlegg.getSoknadId())
+                .medFaktumId(vedlegg.getFaktumId())
+                .medSkjemaNummer(vedlegg.getSkjemaNummer())
+                .medSkjemanummerTillegg(vedlegg.getSkjemanummerTillegg())
+                .medNavn(vedlegg.getNavn())
+                .medStorrelse(size)
+                .medAntallSider(1)
+                .medData(null)
+                .medOpprettetDato(vedlegg.getOpprettetDato())
+                .medFillagerReferanse(vedlegg.getFillagerReferanse())
+                .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
+    }
+
+    private static void sjekkOmPdfErGyldig(PDDocument document) {
+        PdfDetector detector = new PdfDetector(document);
+        if (detector.pdfIsSigned()) {
+            throw new UgyldigOpplastingTypeException(
+                    "PDF kan ikke være signert.", null,
+                    "opplasting.feilmelding.pdf.signert");
+        } else if (detector.pdfIsEncrypted()) {
+            throw new UgyldigOpplastingTypeException(
+                    "PDF kan ikke være krypert.", null,
+                    "opplasting.feilmelding.pdf.krypert");
+        } else if (detector.pdfIsSavedOrExportedWithApplePreview()) {
+            throw new UgyldigOpplastingTypeException(
+                    "PDF kan ikke være lagret med Apple Preview.", null,
+                    "opplasting.feilmelding.pdf.applepreview");
+        }
+    }
 
     public List<Vedlegg> hentVedleggOgKvittering(WebSoknad soknad) {
         ArrayList<Vedlegg> vedleggForventninger = Lists.newArrayList(soknad.hentPaakrevdeVedlegg());
@@ -148,22 +180,6 @@ public class VedleggService {
         }
         repository.settSistLagretTidspunkt(vedlegg.getSoknadId());
         return resultat;
-    }
-
-    private static Vedlegg opprettVedlegg(Vedlegg vedlegg, long size) {
-        return new Vedlegg()
-                .medVedleggId(null)
-                .medSoknadId(vedlegg.getSoknadId())
-                .medFaktumId(vedlegg.getFaktumId())
-                .medSkjemaNummer(vedlegg.getSkjemaNummer())
-                .medSkjemanummerTillegg(vedlegg.getSkjemanummerTillegg())
-                .medNavn(vedlegg.getNavn())
-                .medStorrelse(size)
-                .medAntallSider(1)
-                .medData(null)
-                .medOpprettetDato(vedlegg.getOpprettetDato())
-                .medFillagerReferanse(vedlegg.getFillagerReferanse())
-                .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
     }
 
     public List<Vedlegg> hentVedleggUnderBehandling(String behandlingsId, String fillagerReferanse) {
@@ -251,64 +267,23 @@ public class VedleggService {
     }
 
     public List<Vedlegg> hentPaakrevdeVedlegg(String behandlingsId) {
-        List<Vedlegg> paakrevdeVedlegg = on(vedleggRepository.hentVedlegg(behandlingsId)).filter(Vedlegg.PAAKREVDE_VEDLEGG).collect();
-        leggTilKodeverkFelter(paakrevdeVedlegg);
+        if (GammelVedleggsLogikk.erAktiv()) {
+            List<Vedlegg> paakrevdeVedlegg = on(vedleggRepository.hentVedlegg(behandlingsId)).filter(Vedlegg.PAAKREVDE_VEDLEGG).collect();
+            leggTilKodeverkFelter(paakrevdeVedlegg);
 
-        //if("true".equals(System.getProperty(FEATURE_NY_VEDLEGGENERERING))){
+            return paakrevdeVedlegg;
+
+        } else {
             List<Vedlegg> paakrevdeVedleggVedNyUthenting = genererPaakrevdeVedlegg(behandlingsId);
             leggTilKodeverkFelter(paakrevdeVedleggVedNyUthenting);
-            if (!CollectionUtils.isEqualCollection(paakrevdeVedlegg, paakrevdeVedleggVedNyUthenting)) {
-                String feilmelding = "\n ######### VEDLEGGSFEIL - Feil i ny vedleggsgenereringslogikk ################# \n";
-                feilmelding += "I Ny, ikke gammel: \n";
-                feilmelding += getVedleggsDiff(paakrevdeVedleggVedNyUthenting, paakrevdeVedlegg);
-                feilmelding += "\nI Gammel, ikke ny: \n";
-                feilmelding += getVedleggsDiff(paakrevdeVedlegg, paakrevdeVedleggVedNyUthenting);
 
-
-                ArrayList<Vedlegg> kunGammel = new ArrayList<>(paakrevdeVedlegg);
-                ArrayList<Vedlegg> kunNy = new ArrayList<>(paakrevdeVedleggVedNyUthenting);
-                kunGammel.removeAll(paakrevdeVedleggVedNyUthenting);
-                kunNy.removeAll(paakrevdeVedlegg);
-                on(kunNy).forEach(new Closure<Vedlegg>() {
-                    @Override
-                    public void execute(Vedlegg vedlegg) {
-                        vedlegg.setNavn("KunNy: " + vedlegg.getNavn());
-                    }
-                });
-                on(kunGammel).forEach(new Closure<Vedlegg>() {
-                    @Override
-                    public void execute(Vedlegg o) {
-                        o.setNavn("KunGammel:" + o.getNavn());
-                    }
-                });
-                paakrevdeVedlegg = new ArrayList<>(paakrevdeVedlegg);
-                paakrevdeVedlegg.addAll(kunNy);
-
-                logger.warn(feilmelding);
-            }
-        //}
-        return paakrevdeVedlegg;
-
-    }
-
-    public static void main(String[] args) {
-    }
-
-    private String getVedleggsDiff(List<Vedlegg> nyeVedlegg, List<Vedlegg> gammleVedlegg) {
-        String feilmelding = "";
-        for (Vedlegg vedlegg : nyeVedlegg) {
-            if(!gammleVedlegg.contains(vedlegg)){
-                feilmelding += vedlegg+ "\n";
-            }
+            return paakrevdeVedleggVedNyUthenting;
         }
-        return feilmelding;
     }
-
-
 
     public List<Vedlegg> genererPaakrevdeVedlegg(String behandlingsId) {
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true);
-        if(soknad.erEttersending()){
+        if (soknad.erEttersending()) {
             return on(vedleggRepository.hentVedlegg(behandlingsId)).filter(Vedlegg.PAAKREVDE_VEDLEGG).collect();
         } else {
             SoknadStruktur struktur = soknadService.hentSoknadStruktur(soknad.getskjemaNummer());
@@ -370,23 +345,6 @@ public class VedleggService {
             vedlegg.medAntallSider(new PdfReader(data).getNumberOfPages());
         } catch (IOException e) {
             logger.info("Klarte ikke å finne antall sider i kvittering, vedleggid [{}]. Fortsetter uten sideantall.", vedlegg.getVedleggId(), e);
-        }
-    }
-
-    private static void sjekkOmPdfErGyldig(PDDocument document) {
-        PdfDetector detector = new PdfDetector(document);
-        if (detector.pdfIsSigned()) {
-            throw new UgyldigOpplastingTypeException(
-                    "PDF kan ikke være signert.", null,
-                    "opplasting.feilmelding.pdf.signert");
-        } else if (detector.pdfIsEncrypted()) {
-            throw new UgyldigOpplastingTypeException(
-                    "PDF kan ikke være krypert.", null,
-                    "opplasting.feilmelding.pdf.krypert");
-        } else if (detector.pdfIsSavedOrExportedWithApplePreview()) {
-            throw new UgyldigOpplastingTypeException(
-                    "PDF kan ikke være lagret med Apple Preview.", null,
-                    "opplasting.feilmelding.pdf.applepreview");
         }
     }
 
