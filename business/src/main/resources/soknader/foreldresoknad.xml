@@ -208,7 +208,7 @@
         <onValues>
             <value>sykdom</value>
         </onValues>
-        <skjemaNummer>U2</skjemaNummer>
+        <skjemaNummer>L9</skjemaNummer>
         <skjemanummerTillegg>fedrekvote</skjemanummerTillegg>
     </vedlegg>
     <vedlegg>
@@ -449,7 +449,7 @@
         <filterValues>
             <value>sykdom</value>
         </filterValues>
-        <skjemaNummer>U2</skjemaNummer>
+        <skjemaNummer>L9</skjemaNummer>
         <skjemanummerTillegg>utsettelse</skjemanummerTillegg>
     </vedlegg>
 
@@ -501,7 +501,7 @@
         <onValues>
             <value>true</value>
         </onValues>
-        <skjemaNummer>U2</skjemaNummer>
+        <skjemaNummer>L9</skjemaNummer>
         <skjemanummerTillegg>aktivitetskrav</skjemanummerTillegg>
     </vedlegg>
     <vedlegg>
