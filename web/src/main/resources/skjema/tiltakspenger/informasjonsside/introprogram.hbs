@@ -10,18 +10,18 @@
                         <ul>
                             {{#forFaktum "informasjonsside.deltarIIntroprogram.info"}}
                                 <li class="kulepunkt faktum-felt">
-                                    <span>Kommune: <em>{{ properties.kommune}}</em>,</span>
+                                    <span>{{hentTekst "oppsummering.informasjonsside.introprogram.deltar.kommune"}}: <em>{{ properties.kommune}}</em>,</span>
                                     {{#hvisIkkeTom properties.bydel }}
-                                        <span>Bydel: <em>{{ properties.bydel }}</em>,</span>
+                                        <span>{{hentTekst "oppsummering.informasjonsside.introprogram.deltar.bydel"}}: <em>{{ properties.bydel }}</em>,</span>
                                     {{/hvisIkkeTom}}
                                     {{#hvisIkkeTom properties.kontonummer }}
-                                        <span> Kontonummer:<em> {{ properties.kontonummer }} </em></span>
+                                        <span> {{hentTekst "oppsummering.informasjonsside.introprogram.deltar.kontonummer"}}:<em> {{ properties.kontonummer }} </em></span>
                                     {{/hvisIkkeTom}}
                                 </li>
                                 <li class="kulepunkt faktum-felt">
-                                    <span>Fra {{ formaterLangDato properties.fom }}</span>
+                                    <span>{{hentTekst "oppsummering.informasjonsside.introprogram.deltar.dato"}}: <em>{{ formaterDato properties.fom "dd.MM.yyyy" }}</em></span>
                                     {{#hvisIkkeTom properties.tom }}
-                                        <span> til {{ formaterLangDato properties.tom }}</span>
+                                        <span><em> - {{formaterDato properties.tom "dd.MM.yyyy"}}</em></span>
                                     {{/hvisIkkeTom}}
                                 </li>
                             {{/forFaktum}}
