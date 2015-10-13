@@ -48,7 +48,7 @@ public class DefaultVedleggServiceTest {
 
     @Mock
     SoknadService soknadService;
-    
+
     @Mock
     SoknadDataFletter soknadDataFletter;
 
@@ -110,7 +110,7 @@ public class DefaultVedleggServiceTest {
 
     @Test
     public void skalKjoreNyLogikkVedUthentingAvVedleggForEtFaktum(){
-        System.setProperty(FunksjonalitetBryter.GammelVedleggsLogikk.name(), "false");
+        System.setProperty(FunksjonalitetBryter.GammelVedleggsLogikk.nokkel, "false");
         Faktum vedlegg1 = new Faktum().medFaktumId(3L).medKey("toFaktumMedSammeVedlegg1Unik").medValue("true");
         Faktum vedlegg2 = new Faktum().medFaktumId(4L).medKey("toFaktumMedSammeVedlegg2Unik").medValue("true");
         when(soknadDataFletter.hentSoknad(eq("123"), eq(true), eq(true))).thenReturn(new WebSoknad().medskjemaNummer("nav-1.1.1")
