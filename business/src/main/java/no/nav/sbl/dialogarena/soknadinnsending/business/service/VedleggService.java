@@ -267,11 +267,12 @@ public class VedleggService {
 
     public List<Vedlegg> hentPaakrevdeVedlegg(final Long faktumId) {
         if (FunksjonalitetBryter.GammelVedleggsLogikk.erAktiv()) {
-
+            System.out.println("\n\nBRUKER GAMMEL VEDLEGGSLOGIKK\n\n");
             List<Vedlegg> paakrevdeVedlegg = vedleggRepository.hentPaakrevdeVedlegg(faktumId);
             leggTilKodeverkFelter(paakrevdeVedlegg);
             return paakrevdeVedlegg;
         } else {
+            System.out.println("\n\nBRUKER Ny VEDLEGGSLOGIKK\n\n");
             List<Vedlegg> vedleggs = genererPaakrevdeVedlegg(faktaService.hentBehandlingsId(faktumId));
             return on(vedleggs).filter(new Predicate<Vedlegg>() {
                 @Override
