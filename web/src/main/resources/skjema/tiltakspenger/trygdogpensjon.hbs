@@ -14,9 +14,9 @@
                                     {{#hvisIkkeTom properties.prosent }}
                                         <span> <em>{{properties.prosent}}</em>%, </span>
                                     {{/hvisIkkeTom}}
-                                    <span> fra <em>{{ formaterLangDato properties.fom }}</em></span>
+                                    <span> <em>{{ formaterDato properties.fom "dd.MM.yyyy" }}</em></span>
                                     {{#hvisIkkeTom properties.tom }}
-                                        <span> til <em>{{ formaterLangDato properties.tom }}</em></span>
+                                        <span> - <em>{{ formaterDato properties.tom "dd.MM.yyyy" }}</em></span>
                                     {{/hvisIkkeTom}}
                                 </li>
                             {{/forFakta}}
