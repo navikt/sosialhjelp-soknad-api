@@ -23,7 +23,7 @@ public class MaalgruppeTilXml implements Transformer<Faktum, Maalgruppeinformasj
         informasjon.setPeriode(StofoTransformers.extractValue(faktum, Periode.class));
         informasjon.setMaalgruppetype(lagType(properties));
         informasjon.setKilde(faktum.getType().toString());
-        if(MAALGRUPPER_SOM_IKKE_SKAL_TIL_ARENA.contains(informasjon.getMaalgruppetype().getValue())){
+        if(MAALGRUPPER_SOM_IKKE_SKAL_TIL_ARENA.contains(informasjon.getMaalgruppetype().getValue().toLowerCase())){
             return null;
         }
         return informasjon;
