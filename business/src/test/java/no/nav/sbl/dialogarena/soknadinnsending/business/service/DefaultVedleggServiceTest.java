@@ -109,7 +109,7 @@ public class DefaultVedleggServiceTest {
     }
 
     @Test
-    public void skalKjøreNyLogikkVedUthentingAvVedleggForEtFaktum(){
+    public void skalKjoreNyLogikkVedUthentingAvVedleggForEtFaktum(){
         System.setProperty(FunksjonalitetBryter.GammelVedleggsLogikk.name(), "false");
         Faktum vedlegg1 = new Faktum().medFaktumId(3L).medKey("toFaktumMedSammeVedlegg1Unik").medValue("true");
         Faktum vedlegg2 = new Faktum().medFaktumId(4L).medKey("toFaktumMedSammeVedlegg2Unik").medValue("true");
