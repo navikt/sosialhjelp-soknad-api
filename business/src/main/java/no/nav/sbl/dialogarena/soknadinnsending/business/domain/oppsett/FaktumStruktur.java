@@ -13,6 +13,8 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.ForventningsSjekker.sjekkForventning;
+
 public class FaktumStruktur implements Serializable {
 
     private String id;
@@ -21,6 +23,7 @@ public class FaktumStruktur implements Serializable {
 
     private String dependOnProperty;
     private List<String> dependOnValues;
+    private boolean useExpression = false;
 
     private String flereTillatt;
     private String erSystemFaktum;
@@ -82,6 +85,14 @@ public class FaktumStruktur implements Serializable {
 
     public void setErSystemFaktum(String erSystemFaktum) { this.erSystemFaktum = erSystemFaktum; }
 
+    public boolean isUseExpression() {
+        return useExpression;
+    }
+
+    public void setUseExpression(boolean useExpression) {
+        this.useExpression = useExpression;
+    }
+
     public FaktumStruktur medDependOn(FaktumStruktur parent) {
         this.dependOn = parent;
         return this;
@@ -103,7 +114,7 @@ public class FaktumStruktur implements Serializable {
                 .append("type", type)
                 .append("dependOn", dependOn)
                 .append("dependOnProperty", dependOnProperty)
-                .append("dependOnValues", dependOnValues != null? dependOnValues.toString(): "[]")
+                .append("dependOnValues", dependOnValues)
                 .append("flereTillatt", flereTillatt)
                 .append("erSystemFaktum", erSystemFaktum)
                 .toString();
@@ -135,12 +146,23 @@ public class FaktumStruktur implements Serializable {
     public boolean erSynlig(WebSoknad soknad, Faktum faktum) {
         FaktumStruktur parent = getDependOn();
         Faktum parentFaktum = soknad.finnFaktum(faktum.getParrentFaktum());
-        return parent == null || ( parentFaktum != null  && parent.erSynlig(soknad, parentFaktum) && this.oppfyllerParentKriterier(soknad, faktum) );
+        return parent == null || (parentFaktum != null && parent.erSynlig(soknad, parentFaktum) && this.oppfyllerParentKriterier(soknad, faktum));
     }
 
     private boolean oppfyllerParentKriterier(WebSoknad soknad, Faktum faktum) {
         Faktum parent = faktum.getParrentFaktum() != null ? soknad.finnFaktum(faktum.getParrentFaktum()): soknad.getFaktumMedKey(getDependOn().getId());
-        return parent != null && (harDependOnProperty(parent) || harDependOnValue(parent));
+        if(parent != null){
+            if(!useExpression){
+                return (harDependOnProperty(parent) || harDependOnValue(parent));
+            } else {
+                boolean result = false;
+                for (String dependOnValue : dependOnValues) {
+                    result = result || sjekkForventning(dependOnValue, parent);
+                }
+                return result;
+            }
+        }
+        return true;
     }
 
     private boolean harDependOnValue(Faktum parent) {

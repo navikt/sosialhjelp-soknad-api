@@ -4,6 +4,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.collections15.Predicate;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -61,11 +62,11 @@ public class SoknadStruktur implements Serializable {
 
     @Override
     public String toString() {
-        return new StringBuilder("SoknadStruktur{")
-                .append(", fakta=").append(fakta)
-                .append(", vedlegg=").append(vedlegg)
-                .append(", vedleggreferanser=").append(vedleggReferanser)
-                .append('}')
+        return new ToStringBuilder(this)
+                .append("fakta", fakta)
+                .append("vedlegg", vedlegg)
+                .append("vedleggReferanser", vedleggReferanser)
+                .append("temaKode", temaKode)
                 .toString();
     }
 
