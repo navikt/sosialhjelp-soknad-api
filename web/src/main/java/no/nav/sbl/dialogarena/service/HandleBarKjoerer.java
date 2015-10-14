@@ -53,7 +53,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         handlebars.registerHelper("forBarnefakta", generateForBarnefaktaHelper());
         handlebars.registerHelper("formatterFodelsDato", generateFormatterFodselsdatoHelper());
         handlebars.registerHelper("hentLand", generateHentLandHelper());
-        handlebars.registerHelper("hentPoststed", generateHentPoststedHelper());
         handlebars.registerHelper("forPerioder", generateHelperForPeriodeTidsromFakta());
         handlebars.registerHelper("hvisFlereErTrue", generateHvisFlereSomStarterMedErTrueHelper());
         handlebars.registerHelper("skalViseRotasjonTurnusSporsmaal", generateSkalViseRotasjonTurnusSporsmaalHelper());
@@ -109,15 +108,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
             @Override
             public CharSequence apply(String landKode, Options options) throws IOException {
                 return kodeverk.getLand(landKode);
-            }
-        };
-    }
-
-    private Helper<String> generateHentPoststedHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String postnummer, Options options) throws IOException {
-                return kodeverk.getPoststed(postnummer);
             }
         };
     }
@@ -223,4 +213,5 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
             }
         };
     }
+
 }
