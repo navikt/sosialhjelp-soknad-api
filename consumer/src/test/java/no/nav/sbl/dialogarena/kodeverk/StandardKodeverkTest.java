@@ -56,11 +56,11 @@ public class StandardKodeverkTest {
     }
 
     @Test
-    public void landkodeKodeverkSkalSorteres() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
+    public void landkodeKodeverkSkalSorteresPaaNavn() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
         when(ws.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenReturn(landkodeKodeverkResponse());
 
         List<String> alleLandkoder = kodeverk.getAlleLandkoder();
-        assertThat(alleLandkoder, contains("ALB", "DNK", "SWE"));
+        assertThat(alleLandkoder, contains("ALB", "DNK", "SWE", "OST", "ALA"));
     }
 
     @Test
@@ -105,7 +105,9 @@ public class StandardKodeverkTest {
         XMLKode sverige = new XMLKode().withNavn("SWE").withTerm(new XMLTerm().withNavn("Sverige")).withGyldighetsperiode(new XMLPeriode().withFom(DateMidnight.now().minusDays(1)).withTom(DateMidnight.now().plusDays(1)));
         XMLKode albania = new XMLKode().withNavn("ALB").withTerm(new XMLTerm().withNavn("Albania")).withGyldighetsperiode(new XMLPeriode().withFom(DateMidnight.now().minusDays(1)).withTom(DateMidnight.now().plusDays(1)));
         XMLKode danmark = new XMLKode().withNavn("DNK").withTerm(new XMLTerm().withNavn("Danmark")).withGyldighetsperiode(new XMLPeriode().withFom(DateMidnight.now().minusDays(1)).withTom(DateMidnight.now().plusDays(1)));
+        XMLKode aaland = new XMLKode().withNavn("ALA").withTerm(new XMLTerm().withNavn("Åland")).withGyldighetsperiode(new XMLPeriode().withFom(DateMidnight.now().minusDays(1)).withTom(DateMidnight.now().plusDays(1)));
+        XMLKode oesttemor = new XMLKode().withNavn("OST").withTerm(new XMLTerm().withNavn("Øst-Temor")).withGyldighetsperiode(new XMLPeriode().withFom(DateMidnight.now().minusDays(1)).withTom(DateMidnight.now().plusDays(1)));
 
-        return new XMLHentKodeverkResponse().withKodeverk(new XMLEnkeltKodeverk().withNavn("Landkoder").withKode(norge, sverige, albania, danmark));
+        return new XMLHentKodeverkResponse().withKodeverk(new XMLEnkeltKodeverk().withNavn("Landkoder").withKode(norge, oesttemor, sverige, aaland, albania, danmark));
     }
 }
