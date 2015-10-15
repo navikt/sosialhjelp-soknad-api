@@ -46,7 +46,7 @@ public class RegistryAwareHelperTest {
     @Test
     public void listUtRegistrerteHelpers() throws Exception {
         for (RegistryAwareHelper helper : helpers) {
-            LOG.info("Helper: "+ helper.getNavn());
+            LOG.info("Helper: " + helper.getNavn());
         }
     }
 
@@ -85,7 +85,7 @@ public class RegistryAwareHelperTest {
         writer.close();
     }
 
-    private String hentEksempelfil(String name){
+    private String hentEksempelfil(String name) {
         URL url = this.getClass().getResource("/readme/" + name + ".hbs");
         try {
             return FileUtils.readFileToString(new File(url.toURI()), "UTF-8");
@@ -101,26 +101,22 @@ public class RegistryAwareHelperTest {
         verify(registry, atLeastOnce()).registrerHelper(anyString(), any(RegistryAwareHelper.class));
     }
 
-
-
     public static class HandlebarsHelperTestConfig {
 
         @Bean
-        public HandlebarRegistry register(){
+        public HandlebarRegistry register() {
             return mock(HandlebarRegistry.class);
         }
 
         @Bean(name = "navMessageSource")
-        public MessageSource messageSource(){
+        public MessageSource messageSource() {
             return mock(MessageSource.class);
         }
 
         @Bean()
-        public Kodeverk kodeverk(){
+        public Kodeverk kodeverk() {
             return mock(Kodeverk.class);
         }
 
     }
-
-
 }
