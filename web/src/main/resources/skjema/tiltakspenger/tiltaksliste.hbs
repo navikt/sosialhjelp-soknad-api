@@ -8,16 +8,14 @@
                     {{#hvisIkkeTom properties.navn}}
                         {{properties.navn}}
                     {{/hvisIkkeTom}}
+                    {{#hvisIkkeTom properties.arrangoer}}
+                        - {{properties.arrangoer}}
+                    {{/hvisIkkeTom}}
                     <ul>
                         <li class="kulepunkt faktum-felt">
                             {{hentTekst 'tiltaksliste.oppsummering.dato'}}: <em>{{formaterDato properties.startdato "dd.MM.yyyy"}}
                             -{{formaterDato properties.sluttdato "dd.MM.yyyy"}}</em>
                         </li>
-                        {{#hvisIkkeTom properties.arrangoer}}
-                            <li class="kulepunkt faktum-felt">
-                                {{hentTekst 'oppsummering.tiltaksliste.annetTiltak.arrangoernavn'}}: <em>{{properties.arrangoer}}</em>
-                            </li>
-                        {{/hvisIkkeTom}}
                     </ul>
                 </td>
             {{/forFaktumMedId}}
