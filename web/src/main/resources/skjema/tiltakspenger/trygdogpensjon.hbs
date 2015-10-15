@@ -12,12 +12,13 @@
                                 <li class="kulepunkt faktum-felt">
                                     <span>{{hentTekst "oppsummering.trygdogpensjon.harsokt.utbetaler"}}: <em>{{ properties.utbetaler}}</em>,</span>
                                     {{#hvisIkkeTom properties.prosent }}
-                                        <span> <em>{{properties.prosent}}</em>%, </span>
+                                        <span> {{hentTekst "oppsummering.trygdogpensjon.harsokt.prosent"}}: <em>{{properties.prosent}}</em>%, </span>
                                     {{/hvisIkkeTom}}
-                                    <span> <em>{{ formaterDato properties.fom "dd.MM.yyyy" }}</em></span>
+                                    <span>{{hentTekst "oppsummering.tiltakspenger.dato.startdato.liten"}}: <em>{{formaterDato properties.fom "dd.MM.yyyy"}}</em>
                                     {{#hvisIkkeTom properties.tom }}
-                                        <span><em> - {{ formaterDato properties.tom "dd.MM.yyyy" }}</em></span>
+                                        , {{hentTekst "oppsummering.tiltakspenger.dato.sluttdato.liten"}}: <em>{{formaterDato properties.tom "dd.MM.yyyy"}}</em>
                                     {{/hvisIkkeTom}}
+                                    </span>
                                 </li>
                             {{/forFakta}}
                         </ul>
