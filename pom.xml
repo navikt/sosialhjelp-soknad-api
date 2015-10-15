@@ -257,7 +257,7 @@
             <dependency>
                 <groupId>no.nav.meldinger.virksomhet</groupId>
                 <artifactId>nav-virksomhet-soeknadsskjema-v1-meldingsdefinisjon</artifactId>
-                <version>1.0.4</version>
+                <version>1.0.5</version>
                 <classifier>jaxb</classifier>
             </dependency>
             <dependency>
