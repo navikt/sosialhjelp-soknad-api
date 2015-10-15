@@ -5,13 +5,17 @@
             {{#forFaktum "reise.aktivitet.periode"}}
                 {{> skjema/tilleggsstonader/felles/aktivitetsperiode}}
             {{/forFaktum}}
+
             {{> skjema/tilleggsstonader/reiseaktivitet/avstand}}
 
             {{#variabel "faktumKey" "reise.aktivitet.reisemaal"}}
                 {{> skjema/tilleggsstonader/felles/reisemaladresse}}
             {{/variabel}}
 
-            {{> skjema/tilleggsstonader/reiseaktivitet/medisinskeaarsaker}}
+            {{#forFaktum "reise.aktivitet.medisinskeaarsaker"}}
+                {{> skjema/tilleggsstonader/reiseaktivitet/medisinskeaarsaker}}
+            {{/forFaktum}}
+
             {{#variabel "faktumPrefiks" "reise.aktivitet."}}
                 {{> skjema/tilleggsstonader/felles/offentligtransport}}
             {{/variabel}}
