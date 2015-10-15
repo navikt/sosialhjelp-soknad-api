@@ -37,7 +37,6 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * forFaktumHvisSant
 * forBarnefakta
 * formatterFodelsDato (deprecated og erstattet av formatterKortDato og formatterFnrTilKortDato)
-* hentLand
 * forPerioder
 * hvisFlereErTrue
 * sendtInnInfo
@@ -59,6 +58,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * formaterLangDato - Gjør en datostreng om til langt, norsk format. F. eks. '17. januar 2015'
 * harBarnetInntekt - Henter summen hvis barnet har inntekt. Må brukes innenfor en #forFaktum eller #forFakta helper. 
 * hentFaktumValue - Returnerer verdien til et faktum tilhørende keyen som sendes inn
+* hentLand - Henter land fra Kodeverk basert på landkode.
 * hentPoststed - Henter poststed for et postnummer fra kodeverk
 * hentSkjemanummer - Setter inn søknadens skjemanummer, også om det er en søknad for dagpenger
 * hentTekst - Henter tekst fra cms, prøver med søknadens prefix + key, før den prøver med bare keyen. Kan sende inn parametere.
@@ -228,6 +228,14 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 
 ```
 {{hentFaktumValue "faktum.key"}}
+```
+
+
+##### hentLand
+
+```
+{{hentLand "NOR"}}
+{{hentLand variabel}}
 ```
 
 
