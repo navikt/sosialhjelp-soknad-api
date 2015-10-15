@@ -11,7 +11,7 @@ import java.io.IOException;
 public class HentLandHelper extends RegistryAwareHelper<String> {
 
     @Inject
-    Kodeverk kodeverk;
+    private Kodeverk kodeverk;
 
     @Override
     public String getNavn() {
