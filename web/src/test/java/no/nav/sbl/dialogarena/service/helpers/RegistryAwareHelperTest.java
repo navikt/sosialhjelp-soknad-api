@@ -5,6 +5,7 @@ import com.github.jknack.handlebars.internal.Files;
 import com.github.jknack.handlebars.io.StringTemplateSource;
 import com.github.jknack.handlebars.io.TemplateSource;
 import no.nav.sbl.dialogarena.config.HandlebarsHelperConfig;
+import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.service.HandlebarRegistry;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
@@ -112,6 +113,11 @@ public class RegistryAwareHelperTest {
         @Bean(name = "navMessageSource")
         public MessageSource messageSource(){
             return mock(MessageSource.class);
+        }
+
+        @Bean()
+        public Kodeverk kodeverk(){
+            return mock(Kodeverk.class);
         }
 
     }
