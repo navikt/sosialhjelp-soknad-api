@@ -19,9 +19,8 @@
                                     {{/hvisIkkeTom}}
                                 </li>
                                 <li class="kulepunkt faktum-felt">
-                                    <span>{{hentTekst "oppsummering.tiltakspenger.dato.startdato.stor"}}: <em>{{formaterDato properties.fom "dd.MM.yyyy"}}</em>
-                                    {{#hvisIkkeTom properties.tom }}
-                                        , {{hentTekst "oppsummering.tiltakspenger.dato.sluttdato.liten"}}: <em> {{formaterDato properties.tom "dd.MM.yyyy"}}</em>
+                                    <span>{{hentTekst "oppsummering.tiltakspenger.dato.startdato.stor"}}: <em>{{formaterDato properties.fom "dd.MM.yyyy"}}</em>{{#hvisIkkeTom properties.tom}},
+                                        {{hentTekst "oppsummering.tiltakspenger.dato.sluttdato.liten"}}: <em>{{formaterDato properties.tom "dd.MM.yyyy"}}</em>
                                     {{/hvisIkkeTom}}
                                     </span>
                                 </li>
