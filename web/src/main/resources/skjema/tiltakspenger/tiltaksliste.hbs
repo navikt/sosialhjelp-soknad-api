@@ -26,11 +26,18 @@
                         {{hentTekst 'tiltaksliste.velgTiltak.radiovalgtekst.annet'}}
                         <ul>
                             <li class="kulepunkt faktum-felt">
+                                {{hentTekst 'tiltaksliste.annetTiltak.tiltakstype'}}:
                                 {{#hvisLik value 'PRAKSORD'}}
-                                    {{hentTekst 'tiltaksliste.annetTiltak.tiltakstype'}}:
                                         <em>{{hentTekst "tiltaksliste.annetTiltak.tiltakstype.arbeidspraksis.fulltnavn"}}</em>
-                                {{else}}
-                                    {{hentTekst 'tiltaksliste.annetTiltak.tiltakstype'}}: <em>{{value}}</em>
+                                {{/hvisLik}}
+                                {{#hvisLik value 'Annet'}}
+                                    <em>{{hentTekst "tiltaksliste.tiltakstype.annet"}}</em>
+                                {{/hvisLik}}
+                                {{#hvisLik value 'AMO'}}
+                                    <em>{{hentTekst "tiltaksliste.tiltakstype.amokurs"}}</em>
+                                {{/hvisLik}}
+                                {{#hvisLik value 'JOBSOK'}}
+                                    <em>{{hentTekst "tiltaksliste.tiltakstype.jobbsokekurs"}}</em>
                                 {{/hvisLik}}
                             </li>
                             {{#hvisLik value 'Annet'}}
