@@ -4,7 +4,7 @@ import org.apache.commons.collections15.Transformer;
 
 public class StofoKodeverkVerdier {
     public static final class SammensattAdresse {
-        private final String NORGE = "Norge";
+        private static final String NORGE = "Norge";
 
         public final String sammensattAdresse;
 
@@ -85,7 +85,7 @@ public class StofoKodeverkVerdier {
             this.stofoString = stofoString;
         }
 
-        public static Transformer<String, String> TRANSFORMER = new Transformer<String, String>() {
+        public static final Transformer<String, String> TRANSFORMER = new Transformer<String, String>() {
             @Override
             public String transform(String kodeverk) {
                 try {

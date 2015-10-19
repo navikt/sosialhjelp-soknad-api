@@ -12,19 +12,19 @@ import org.springframework.expression.spel.support.StandardTypeConverter;
 
 
 public class ForventningsSjekker {
-    private static final DefaultConversionService conversionService = new DefaultConversionService();
-    private static final SpelExpressionParser parser = new SpelExpressionParser();
-    private static final StandardEvaluationContext context = new StandardEvaluationContext();
+    private static final DefaultConversionService CONVERSION_SERVICE = new DefaultConversionService();
+    private static final SpelExpressionParser PARSER = new SpelExpressionParser();
+    private static final StandardEvaluationContext CONTEXT = new StandardEvaluationContext();
 
     static {
-        context.setTypeConverter(new StandardTypeConverter(conversionService));
-        context.setTypeComparator(new StandardTypeComparator() {
+        CONTEXT.setTypeConverter(new StandardTypeConverter(CONVERSION_SERVICE));
+        CONTEXT.setTypeComparator(new StandardTypeComparator() {
             @Override
             public int compare(Object left, Object right) throws SpelEvaluationException {
                 if (left.getClass() == String.class && right.getClass() != String.class) {
-                    return super.compare(conversionService.convert(left, right.getClass()), right);
+                    return super.compare(CONVERSION_SERVICE.convert(left, right.getClass()), right);
                 } else if (right.getClass() == String.class && left.getClass() != String.class) {
-                    return super.compare(left, conversionService.convert(right, left.getClass()));
+                    return super.compare(left, CONVERSION_SERVICE.convert(right, left.getClass()));
                 }
                 return super.compare(left, right);
             }
@@ -33,7 +33,7 @@ public class ForventningsSjekker {
 
     public static boolean sjekkForventning(String forventning, Faktum value) {
         try {
-            return parser.parseExpression(forventning).getValue(context, value, Boolean.class);
+            return PARSER.parseExpression(forventning).getValue(CONTEXT, value, Boolean.class);
         } catch (EvaluationException e) {
             return false;
         } catch (ParseException e) {
