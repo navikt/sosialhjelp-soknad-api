@@ -33,7 +33,6 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 
 #### Statisk liste over helpers på gammelt registeringsformat
  
-* forFaktumHvisSant
 * forBarnefakta
 * formatterFodelsDato (deprecated og erstattet av formatterKortDato og formatterFnrTilKortDato)
 * forPerioder
@@ -48,6 +47,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * forFakta - Finner alle fakta med en gitt key og setter hvert faktum som aktiv context etter tur. Har inverse ved ingen fakta.
 * forFaktaMedPropertySattTilTrue - Finner alle fakta med gitt key som har gitt property satt til true
 * forFaktum - Finner et faktum og setter det som aktiv context. Har også inverse om faktum ikke finnes. 
+* forFaktumHvisSant - Sjekker om faktumet til den innsendte keyen er sant eller ikke, setter faktumet som context
 * forFaktumMedId - Returnerer et faktum med den gitte ID-en
 * forFaktumTilknyttetBarn - Returnerer faktumet tilknyttet barnet i parent-context.
 * forIkkeInnsendteVedlegg - Itererer over vedlegg som ikke er sendt inn
@@ -124,6 +124,19 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 {{else}}
     faktum med key "faktumNavn" er ikke satt
 {{/forFaktum}}
+```
+
+
+##### forFaktumHvisSant
+
+```
+{{#forFaktumHvisSant "key2"}}
+    sant, har faktumet som context
+{{else}}
+    ikke sant, har faktumet som context
+    ELLER
+    faktum eller value fantes ikke
+{{/forFaktumHvisSant}}
 ```
 
 

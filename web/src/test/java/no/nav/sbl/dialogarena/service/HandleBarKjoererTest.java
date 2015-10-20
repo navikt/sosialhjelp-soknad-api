@@ -53,6 +53,7 @@ public class HandleBarKjoererTest {
         registerHelper(new ForFaktaMedPropertySattTilTrueHelper());
         registerHelper(new ForFaktaHelper());
         registerHelper(new FormaterLangDatoHelper());
+        registerHelper(new ForFaktumHvisSantHelper());
         registerHelper(hentTekstHelper);
         registerHelper(hentLandHelper);
     }
