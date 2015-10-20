@@ -7,16 +7,16 @@ import no.bekk.bekkopen.person.Fodselsnummer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.collections15.Predicate;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static no.bekk.bekkopen.person.FodselsnummerValidator.getFodselsnummer;
 import static no.nav.modig.lang.collections.IterUtils.on;
-import static no.nav.sbl.dialogarena.service.HandlebarsUtils.*;
+import static no.nav.sbl.dialogarena.service.HandlebarsUtils.finnWebSoknad;
 import static org.apache.commons.lang3.ArrayUtils.reverse;
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.StringUtils.split;
@@ -43,7 +43,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         }
 
         handlebars.registerHelper("formatterFodelsDato", generateFormatterFodselsdatoHelper());
-        handlebars.registerHelper("forPerioder", generateHelperForPeriodeTidsromFakta());
         handlebars.registerHelper("hvisFlereErTrue", generateHvisFlereSomStarterMedErTrueHelper());
         handlebars.registerHelper("skalViseRotasjonTurnusSporsmaal", generateSkalViseRotasjonTurnusSporsmaalHelper());
 
@@ -89,30 +88,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
                     String[] datoSplit = split(s, "-");
                     reverse(datoSplit);
                     return join(datoSplit, ".");
-                }
-            }
-        };
-    }
-
-    private Helper<Object> generateHelperForPeriodeTidsromFakta() {
-        return new Helper<Object>() {
-            @Override
-            public CharSequence apply(Object context, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-                List<Faktum> fakta = soknad.getFaktaSomStarterMed("perioder.tidsrom");
-                List<Faktum> sortertFaktaEtterDato = on(fakta).collect(new Comparator<Faktum>() {
-                    @Override
-                    public int compare(Faktum o1, Faktum o2) {
-                        DateTimeFormatter dt = DateTimeFormat.forPattern("yyyy-MM-dd").withLocale(NO_LOCALE);
-                        DateTime fradatoForstePeriode = dt.parseDateTime(o2.getProperties().get("fradato"));
-                        DateTime fradatoAndrePeriode = dt.parseDateTime(o1.getProperties().get("fradato"));
-                        return fradatoAndrePeriode.compareTo(fradatoForstePeriode);
-                    }
-                });
-                if (sortertFaktaEtterDato.isEmpty()) {
-                    return options.inverse(this);
-                } else {
-                    return lagItererbarRespons(options, sortertFaktaEtterDato);
                 }
             }
         };
