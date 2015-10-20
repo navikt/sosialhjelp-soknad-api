@@ -34,7 +34,6 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 #### Statisk liste over helpers på gammelt registeringsformat
  
 * formatterFodelsDato (deprecated og erstattet av formatterKortDato og formatterFnrTilKortDato)
-* forPerioder
 * hvisFlereErTrue
 * sendtInnInfo
 * skalViseRotasjonTurnusSporsmaal
@@ -52,6 +51,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * forFaktumTilknyttetBarn - Returnerer faktumet tilknyttet barnet i parent-context.
 * forIkkeInnsendteVedlegg - Itererer over vedlegg som ikke er sendt inn
 * forInnsendteVedlegg - Itererer over innsendte vedlegg på søknaden
+* forPerioder - Henter perioder for foreldrepenger og sorterer dem etter fradato
 * forVedlegg - Lar en iterere over alle påkrevde vedlegg på en søknad
 * formaterDato - Formaterer en innsendt dato på et gitt format som også sendes inn
 * formaterLangDato - Gjør en datostreng om til langt, norsk format. F. eks. '17. januar 2015'
@@ -200,6 +200,17 @@ må har et faktum i context, f. eks. via
 {{else}}
     Ingen innsendte vedlegg
 {{/forInnsendteVedlegg}}
+```
+
+
+##### forPerioder
+
+```
+{{#forPerioder}}
+    {{value}},
+{{else}}
+    ingen perioder
+{{/forPerioder}}
 ```
 
 
