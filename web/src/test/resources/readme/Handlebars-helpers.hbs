@@ -33,7 +33,6 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 
 #### Statisk liste over helpers på gammelt registeringsformat
  
-* adresse
 * forFaktumHvisSant
 * forBarnefakta
 * formatterFodelsDato (deprecated og erstattet av formatterKortDato og formatterFnrTilKortDato)
