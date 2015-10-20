@@ -42,7 +42,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
             handlebars.registerHelper(helper.getKey(), helper.getValue());
         }
 
-        handlebars.registerHelper("forBarnefakta", generateForBarnefaktaHelper());
         handlebars.registerHelper("formatterFodelsDato", generateFormatterFodselsdatoHelper());
         handlebars.registerHelper("forPerioder", generateHelperForPeriodeTidsromFakta());
         handlebars.registerHelper("hvisFlereErTrue", generateHvisFlereSomStarterMedErTrueHelper());
@@ -114,22 +113,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
                     return options.inverse(this);
                 } else {
                     return lagItererbarRespons(options, sortertFaktaEtterDato);
-                }
-            }
-        };
-    }
-
-    private Helper<String> generateForBarnefaktaHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String key, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-                Faktum parentFaktum = finnFaktum(options.context);
-                List<Faktum> fakta = soknad.getFaktaMedKeyOgParentFaktum(key, parentFaktum.getFaktumId());
-                if (fakta.isEmpty()) {
-                    return options.inverse(this);
-                } else {
-                    return lagItererbarRespons(options, fakta);
                 }
             }
         };

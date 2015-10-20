@@ -33,7 +33,6 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 
 #### Statisk liste over helpers på gammelt registeringsformat
  
-* forBarnefakta
 * formatterFodelsDato (deprecated og erstattet av formatterKortDato og formatterFnrTilKortDato)
 * forPerioder
 * hvisFlereErTrue
@@ -44,6 +43,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 
 * concat - Legger sammen alle parametrene til tekststring
 * fnrTilKortDato - Formatterer et gyldig fødselnummer til dato på formatet dd.mm.aaaa
+* forBarnefakta - Itererer over alle fakta som har den gitte keyen og parentfaktum satt til nærmeste faktum oppover i context.
 * forFakta - Finner alle fakta med en gitt key og setter hvert faktum som aktiv context etter tur. Har inverse ved ingen fakta.
 * forFaktaMedPropertySattTilTrue - Finner alle fakta med gitt key som har gitt property satt til true
 * forFaktum - Finner et faktum og setter det som aktiv context. Har også inverse om faktum ikke finnes. 
@@ -91,6 +91,22 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 
 ```
 {{fnrTilKortDato "***REMOVED***"}}
+```
+
+
+##### forBarnefakta
+
+```
+må har et faktum i context, f. eks. via
+{{#forFaktum "parentFaktumKey"}}
+
+    {{#forBarnefakta "key"}}
+        itererer over fakta her, {{value}}
+    {{else}}
+        ingen fakta matchet
+    {{/forBarnefakta}}
+
+{{/forFaktum}}
 ```
 
 
