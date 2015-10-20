@@ -6,7 +6,7 @@
                 <td class="sjekket"></td>
                 <td>
                     <div>
-                        <span>{{ properties.fornavn }} {{ properties.etternavn }}</span>
+                        <span class="barn-navn">{{ properties.fornavn }} {{ properties.etternavn }}</span>
                     </div>
                     <div>
                         <span>{{ hentTekst "oppsummering.fodt" }}</span>
@@ -20,30 +20,23 @@
                     </div>
 
                     <ul>
-                    <li class="kulepunkt faktum-felt">
-                        {{#hvisLik  properties.sokerbarnetillegg "nei"}}
-                            <span>{{ hentTekst "barnetillegg.barn.sokebarnetillegg.nei"}}. </span>
-                        {{ else }}
-                            {{#hvisLik properties.sokerbarnetillegg "ja"}}
-                                <span>{{ hentTekst "barnetillegg.barn.sokebarnetillegg.ja"}}. </span>
-                            {{ else }}
-                                <span>{{ hentTekst "barnetillegg.barn.sokebarnetillegg.vetikke"}}. </span>
-                            {{/hvisLik}}
-                        </li>
                         <li class="kulepunkt faktum-felt">
-                            {{#hvisLik  properties.harinntekt "ja"}}
-                                <span>{{ hentTekst "barnetillegg.barn.harinntekt.ja"}}. </span><br/>
+                            {{#hvisLik  properties.sokerbarnetillegg "nei"}}
+                                <span>{{ hentTekst "barnetillegg.barn.sokebarnetillegg.nei"}}. </span>
+                            {{ else }}
+                                <span>{{ hentTekst "barnetillegg.barn.sokebarnetillegg.ja"}}. </span>
                                 <ul>
                                     <li class="kulepunkt medstrek faktum-felt">
-                                    <span> {{hentTekst "oppsummering.barnetillegg.inntekt"}}
-                                        : <em>{{properties.inntekt}} </em>{{ hentTekst "soknad.kr"}}</span>
+                                    {{#hvisLik  properties.harinntekt "ja"}}
+                                        <span>{{ hentTekst "barnetillegg.barn.harinntekt.ja"}}. </span>
+                                        <span> {{hentTekst "oppsummering.barnetillegg.inntekt"}}: <em>{{properties.inntekt}} </em>{{ hentTekst "soknad.kr"}}</span>
+                                    {{else}}
+                                            <span>{{ hentTekst "barnetillegg.barn.harinntekt.nei"}} </span>
+                                    {{/hvisLik}}
                                     </li>
                                 </ul>
-                            {{else}}
-                                <span>{{ hentTekst "barnetillegg.barn.harinntekt.nei"}} </span>
                             {{/hvisLik}}
-                        {{/hvisLik}}
-                    </li>
+                        </li>
                     </ul>
                 </td>
             </tr>
