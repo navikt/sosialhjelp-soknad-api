@@ -42,7 +42,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
             handlebars.registerHelper(helper.getKey(), helper.getValue());
         }
 
-        handlebars.registerHelper("adresse", generateAdresseHelper());
         handlebars.registerHelper("forFaktumHvisSant", generateforFaktumHvisSantHelper());
         handlebars.registerHelper("forBarnefakta", generateForBarnefaktaHelper());
         handlebars.registerHelper("formatterFodelsDato", generateFormatterFodselsdatoHelper());
@@ -51,22 +50,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         handlebars.registerHelper("skalViseRotasjonTurnusSporsmaal", generateSkalViseRotasjonTurnusSporsmaalHelper());
 
         return handlebars;
-    }
-
-    private Helper<String> generateAdresseHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String adresse, Options options) throws IOException {
-                String[] adresselinjer = adresse.split("\n");
-
-                StringBuilder resultAdresse = new StringBuilder();
-                for (String adresselinje : adresselinjer) {
-                    resultAdresse.append("<p>").append(adresselinje).append("</p>");
-                }
-
-                return resultAdresse.toString();
-            }
-        };
     }
 
     private Helper<String> generateHvisFlereSomStarterMedErTrueHelper() {
