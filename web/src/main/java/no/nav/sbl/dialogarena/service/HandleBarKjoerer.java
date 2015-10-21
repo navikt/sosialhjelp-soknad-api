@@ -42,8 +42,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
             handlebars.registerHelper(helper.getKey(), helper.getValue());
         }
 
-        handlebars.registerHelper("adresse", generateAdresseHelper());
-        handlebars.registerHelper("forFaktumHvisSant", generateforFaktumHvisSantHelper());
         handlebars.registerHelper("forBarnefakta", generateForBarnefaktaHelper());
         handlebars.registerHelper("formatterFodelsDato", generateFormatterFodselsdatoHelper());
         handlebars.registerHelper("forPerioder", generateHelperForPeriodeTidsromFakta());
@@ -51,22 +49,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         handlebars.registerHelper("skalViseRotasjonTurnusSporsmaal", generateSkalViseRotasjonTurnusSporsmaalHelper());
 
         return handlebars;
-    }
-
-    private Helper<String> generateAdresseHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String adresse, Options options) throws IOException {
-                String[] adresselinjer = adresse.split("\n");
-
-                StringBuilder resultAdresse = new StringBuilder();
-                for (String adresselinje : adresselinjer) {
-                    resultAdresse.append("<p>").append(adresselinje).append("</p>");
-                }
-
-                return resultAdresse.toString();
-            }
-        };
     }
 
     private Helper<String> generateHvisFlereSomStarterMedErTrueHelper() {
@@ -153,22 +135,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         };
     }
 
-    private Helper<String> generateforFaktumHvisSantHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String o, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-                Faktum faktum = soknad.getFaktumMedKey(o);
-
-                if (faktum != null && faktum.getValue() != null && faktum.getValue().equals("true")) {
-                    return options.fn(faktum);
-                } else {
-                    return options.inverse(this);
-                }
-            }
-        };
-    }
-
     private Helper<Object> generateSkalViseRotasjonTurnusSporsmaalHelper() {
         return new Helper<Object>() {
             private boolean faktumSkalIkkeHaRotasjonssporsmaal(Faktum faktum) {
@@ -197,4 +163,5 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
             }
         };
     }
+
 }
