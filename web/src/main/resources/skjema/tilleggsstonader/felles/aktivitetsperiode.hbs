@@ -1,6 +1,11 @@
 <tr>
     <td class="sjekket"></td>
     <td>
-        <span>{{ hentTekst "soknad.felles.aktivitetsperiode.oppsummering.tekst" }} {{ kortDato properties.fom}} {{ hentTekst "soknad.felles.aktivitetsperiode.oppsummering.til" }} {{ kortDato properties.tom}}</span>
+        <span>
+            {{ hentTekst "soknad.felles.aktivitetsperiode.oppsummering.tekst" }}
+            <em>{{ kortDato properties.fom}}</em>
+            {{ hentTekst "soknad.felles.aktivitetsperiode.oppsummering.til" }}
+            <em>{{ kortDato properties.tom}}</em>
+        </span>
     </td>
 </tr>
