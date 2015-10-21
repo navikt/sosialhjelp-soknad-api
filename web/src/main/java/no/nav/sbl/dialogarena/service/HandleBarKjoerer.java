@@ -6,7 +6,6 @@ import com.github.jknack.handlebars.Options;
 import no.bekk.bekkopen.person.Fodselsnummer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import org.apache.commons.collections15.Predicate;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -15,8 +14,6 @@ import java.util.List;
 import java.util.Map;
 
 import static no.bekk.bekkopen.person.FodselsnummerValidator.getFodselsnummer;
-import static no.nav.modig.lang.collections.IterUtils.on;
-import static no.nav.sbl.dialogarena.service.HandlebarsUtils.finnWebSoknad;
 import static org.apache.commons.lang3.ArrayUtils.reverse;
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.StringUtils.split;
@@ -43,37 +40,9 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         }
 
         handlebars.registerHelper("formatterFodelsDato", generateFormatterFodselsdatoHelper());
-        handlebars.registerHelper("hvisFlereErTrue", generateHvisFlereSomStarterMedErTrueHelper());
         handlebars.registerHelper("skalViseRotasjonTurnusSporsmaal", generateSkalViseRotasjonTurnusSporsmaalHelper());
 
         return handlebars;
-    }
-
-    private Helper<String> generateHvisFlereSomStarterMedErTrueHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String o, Options options) throws IOException {
-                Integer grense = Integer.parseInt((String) options.param(0));
-
-                WebSoknad soknad = finnWebSoknad(options.context);
-                List<Faktum> fakta = soknad.getFaktaSomStarterMed(o);
-
-                int size = on(fakta).filter(new Predicate<Faktum>() {
-                    @Override
-                    public boolean evaluate(Faktum faktum) {
-                        String value = faktum.getValue();
-                        return value != null && value.equals("true");
-                    }
-                }).collect().size();
-
-
-                if (size > grense) {
-                    return options.fn(this);
-                } else {
-                    return options.inverse(this);
-                }
-            }
-        };
     }
 
     @Deprecated
