@@ -3,7 +3,9 @@
     <td>
         {{#forFaktum "bostotte.kommunestotte"}}
             {{#hvisSant value}}
-                <span>{{ hentTekst "soknad.bostotte.kommunestotte.sporsmal.true" }}{{ hentTekst "soknad.bostotte.kommunestotte.belop.oppsummering" }} {{properties.utgift}} </span>
+                <span>{{ hentTekst "soknad.bostotte.kommunestotte.sporsmal.true" }}{{ hentTekst "soknad.bostotte.kommunestotte.belop.oppsummering" }}
+                    <em>{{properties.utgift}}</em>
+                </span>
             {{else}}
                 <span>{{ hentTekst "soknad.bostotte.kommunestotte.sporsmal.false" }}</span>
             {{/hvisSant}}
