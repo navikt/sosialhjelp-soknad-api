@@ -10,14 +10,14 @@
                         <ul>
                             {{#forFakta "trygdogpensjon.utbetalere"}}
                                 <li class="kulepunkt faktum-felt">
-                                    <span>Utbetaler: <em>{{ properties.utbetaler}}</em>,</span>
+                                    <span>{{hentTekst "oppsummering.trygdogpensjon.harsokt.utbetaler"}}: <em>{{ properties.utbetaler}}</em>,</span>
                                     {{#hvisIkkeTom properties.prosent }}
-                                        <span> <em>{{properties.prosent}}</em>%, </span>
+                                        <span> {{hentTekst "oppsummering.trygdogpensjon.harsokt.prosent"}}: <em>{{properties.prosent}}</em>%, </span>
                                     {{/hvisIkkeTom}}
-                                    <span> fra <em>{{ formatterLangDato properties.fom }}</em></span>
-                                    {{#hvisIkkeTom properties.tom }}
-                                        <span> til <em>{{ formatterLangDato properties.tom }}</em></span>
+                                    <span>{{hentTekst "oppsummering.tiltakspenger.dato.startdato.liten"}}: <em>{{formaterLangDato properties.fom }}</em>{{#hvisIkkeTom properties.tom }},
+                                        {{hentTekst "oppsummering.tiltakspenger.dato.sluttdato.liten"}}: <em>{{formaterLangDato properties.tom }}</em>
                                     {{/hvisIkkeTom}}
+                                    </span>
                                 </li>
                             {{/forFakta}}
                         </ul>

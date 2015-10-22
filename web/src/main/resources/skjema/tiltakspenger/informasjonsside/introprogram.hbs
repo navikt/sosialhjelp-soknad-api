@@ -10,19 +10,19 @@
                         <ul>
                             {{#forFaktum "informasjonsside.deltarIIntroprogram.info"}}
                                 <li class="kulepunkt faktum-felt">
-                                    <span>Kommune: <em>{{ properties.kommune}}</em>,</span>
+                                    <span>{{hentTekst "oppsummering.informasjonsside.introprogram.deltar.kommune"}}: <em>{{ properties.kommune}}</em>,</span>
                                     {{#hvisIkkeTom properties.bydel }}
-                                        <span>Bydel: <em>{{ properties.bydel }}</em>,</span>
+                                        <span>{{hentTekst "oppsummering.informasjonsside.introprogram.deltar.bydel"}}: <em>{{ properties.bydel }}</em>,</span>
                                     {{/hvisIkkeTom}}
                                     {{#hvisIkkeTom properties.kontonummer }}
-                                        <span> Kontonummer:<em> {{ properties.kontonummer }} </em></span>
+                                        <span> {{hentTekst "oppsummering.informasjonsside.introprogram.deltar.kontonummer"}}:<em> {{ properties.kontonummer }} </em></span>
                                     {{/hvisIkkeTom}}
                                 </li>
                                 <li class="kulepunkt faktum-felt">
-                                    <span>Fra {{ formatterLangDato properties.fom }}</span>
-                                    {{#hvisIkkeTom properties.tom }}
-                                        <span> til {{ formatterLangDato properties.tom }}</span>
+                                    <span>{{hentTekst "oppsummering.tiltakspenger.dato.startdato.stor"}}: <em>{{formaterLangDato properties.fom }}</em>{{#hvisIkkeTom properties.tom}},
+                                        {{hentTekst "oppsummering.tiltakspenger.dato.sluttdato.liten"}}: <em>{{formaterLangDato properties.tom }}</em>
                                     {{/hvisIkkeTom}}
+                                    </span>
                                 </li>
                             {{/forFaktum}}
                         </ul>

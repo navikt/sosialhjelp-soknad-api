@@ -4,16 +4,13 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import no.bekk.bekkopen.person.Fodselsnummer;
-import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.collections15.Predicate;
-import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.util.*;
 
@@ -24,12 +21,8 @@ import static org.apache.commons.lang3.ArrayUtils.reverse;
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.StringUtils.split;
 
-
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.ExcessiveClassLength"})
 public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
-
-    @Inject
-    private Kodeverk kodeverk;
 
     private Map<String, Helper> helpers = new HashMap<>();
 
@@ -49,33 +42,13 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
             handlebars.registerHelper(helper.getKey(), helper.getValue());
         }
 
-        handlebars.registerHelper("adresse", generateAdresseHelper());
-        handlebars.registerHelper("forFaktumHvisSant", generateforFaktumHvisSantHelper());
         handlebars.registerHelper("forBarnefakta", generateForBarnefaktaHelper());
         handlebars.registerHelper("formatterFodelsDato", generateFormatterFodselsdatoHelper());
-        handlebars.registerHelper("formatterLangDato", generateFormatterLangDatoHelper());
-        handlebars.registerHelper("hentLand", generateHentLandHelper());
         handlebars.registerHelper("forPerioder", generateHelperForPeriodeTidsromFakta());
         handlebars.registerHelper("hvisFlereErTrue", generateHvisFlereSomStarterMedErTrueHelper());
         handlebars.registerHelper("skalViseRotasjonTurnusSporsmaal", generateSkalViseRotasjonTurnusSporsmaalHelper());
 
         return handlebars;
-    }
-
-    private Helper<String> generateAdresseHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String adresse, Options options) throws IOException {
-                String[] adresselinjer = adresse.split("\n");
-
-                StringBuilder resultAdresse = new StringBuilder();
-                for (String adresselinje : adresselinjer) {
-                    resultAdresse.append("<p>").append(adresselinje).append("</p>");
-                }
-
-                return resultAdresse.toString();
-            }
-        };
     }
 
     private Helper<String> generateHvisFlereSomStarterMedErTrueHelper() {
@@ -101,29 +74,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
                 } else {
                     return options.inverse(this);
                 }
-            }
-        };
-    }
-
-    private Helper<String> generateHentLandHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String landKode, Options options) throws IOException {
-                return kodeverk.getLand(landKode);
-            }
-        };
-    }
-
-    private Helper<String> generateFormatterLangDatoHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String dato, Options options) throws IOException {
-                Locale locale = new Locale("nb", "no");
-                DateTimeFormatter dt = DateTimeFormat.forPattern("d. MMMM yyyy").withLocale(locale);
-                if (StringUtils.isNotEmpty(dato)) {
-                    return dt.print(DateTime.parse(dato));
-                }
-                return "";
             }
         };
     }
@@ -169,7 +119,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         };
     }
 
-
     private Helper<String> generateForBarnefaktaHelper() {
         return new Helper<String>() {
             @Override
@@ -181,22 +130,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
                     return options.inverse(this);
                 } else {
                     return lagItererbarRespons(options, fakta);
-                }
-            }
-        };
-    }
-
-    private Helper<String> generateforFaktumHvisSantHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String o, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-                Faktum faktum = soknad.getFaktumMedKey(o);
-
-                if (faktum != null && faktum.getValue() != null && faktum.getValue().equals("true")) {
-                    return options.fn(faktum);
-                } else {
-                    return options.inverse(this);
                 }
             }
         };
@@ -230,6 +163,5 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
             }
         };
     }
-
 
 }

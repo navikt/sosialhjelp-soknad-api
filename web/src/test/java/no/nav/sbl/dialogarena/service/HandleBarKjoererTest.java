@@ -33,6 +33,9 @@ public class HandleBarKjoererTest {
     @InjectMocks
     private HentTekstHelper hentTekstHelper;
 
+    @InjectMocks
+    private HentLandHelper hentLandHelper;
+
     @Mock
     private CmsTekst cmsTekst;
 
@@ -49,7 +52,10 @@ public class HandleBarKjoererTest {
         registerHelper(new HvisMindreHelper());
         registerHelper(new ForFaktaMedPropertySattTilTrueHelper());
         registerHelper(new ForFaktaHelper());
+        registerHelper(new FormaterLangDatoHelper());
+        registerHelper(new ForFaktumHvisSantHelper());
         registerHelper(hentTekstHelper);
+        registerHelper(hentLandHelper);
     }
 
     private <T> void registerHelper(RegistryAwareHelper<T> helper) {
@@ -79,7 +85,7 @@ public class HandleBarKjoererTest {
                 .medFaktum(new Faktum().medKey("informasjonsside.stonad.reiseaktivitet").medValue("true"))
                 .medFaktum(new Faktum().medKey("reise.aktivitet.periode").medProperty("fom", "2015-01-01").medProperty("tom", "2015-02-02"))
                 .medFaktum(new Faktum().medKey("bostotte.periode").medProperty("fom", "2015-01-01").medProperty("tom", "2015-02-03"))
-                .medFaktum(new Faktum().medKey("reise.aktivitet.medisinskeaarsaker").medValue("false")) ;
+                .medFaktum(new Faktum().medKey("reise.aktivitet.medisinskeaarsaker").medValue("false"));
         String html = handleBarKjoerer.fyllHtmlMalMedInnhold(soknad, "/skjema/soknadtilleggsstonader");
         System.out.println(html);
         assertThat(html, containsString("15038000000"));

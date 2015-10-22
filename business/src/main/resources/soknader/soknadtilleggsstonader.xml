@@ -62,15 +62,20 @@
     <!-- reiseaktivitet-->
     <faktum>
         <id>reise.aktivitet.dagligreiseavstand</id>
+        <dependOn>informasjonsside.stonad.reiseaktivitet</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>reise.aktivitet.periode</id>
     </faktum>
     <faktum>
         <id>reise.aktivitet.medisinskeaarsaker</id>
-        <dependOn>informasjonsside.stonad.reiseaktivitet</dependOn>
+        <useExpression>true</useExpression>
+        <dependOn>reise.aktivitet.dagligreiseavstand</dependOn>
         <dependOnValues>
-            <value>true</value>
+            <value>value &lt;= 6</value>
         </dependOnValues>
     </faktum>
 

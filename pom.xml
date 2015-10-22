@@ -21,7 +21,7 @@
     <description>Innsending av elektronisk søknad.</description>
     <groupId>no.nav.sbl.dialogarena</groupId>
     <artifactId>sendsoknad</artifactId>
-    <version>7.36-SNAPSHOT</version>
+    <version>7.41-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -45,6 +45,7 @@
         <sendsoknad.tjenestespec.version>0.0.23</sendsoknad.tjenestespec.version>
         <behandlingsinformasjon.tjenestespec.version>0.0.46</behandlingsinformasjon.tjenestespec.version>
         <fillager.tjenestespec.version>0.0.3</fillager.tjenestespec.version>
+        <lokalt.kodeverk>1.3</lokalt.kodeverk>
         <henvendelse.tjenestespesifikasjon.version.1>2.0.0</henvendelse.tjenestespesifikasjon.version.1>
         <dialogarena.dokumentinnsending.version>2.0.1</dialogarena.dokumentinnsending.version>
         <ojdbc.version>11.2.0.3</ojdbc.version>
@@ -180,7 +181,7 @@
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>common-lokalt-kodeverk</artifactId>
-                <version>1.1.8</version>
+                <version>${lokalt.kodeverk}</version>
             </dependency>
 
             <dependency>
@@ -665,7 +666,7 @@
             <dependency>
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-testcertificates</artifactId>
-                <version>1.1.4</version>
+                <version>1.2.0</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
