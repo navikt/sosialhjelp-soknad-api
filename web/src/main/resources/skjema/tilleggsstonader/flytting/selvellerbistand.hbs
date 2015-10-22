@@ -15,50 +15,7 @@
                     <span>{{ hentTekst "soknad.flytting.spm.selvellerbistand.flyttebyraa" }}</span>
                 </td>
             </tr>
-            <tr>
-                <td class="sjekket"></td>
-                <td>
-                    {{#forFaktum "flytting.flyttebyraa.forste.navn"}}
-                        <span><em>{{value}}</em>:</span>
-                    {{/forFaktum}}
-                    {{#forFaktum "flytting.flyttebyraa.forste.belop"}}
-                        <span><em>{{value}}</em></span>
-                    {{/forFaktum}}
-                    <span>{{ hentTekst "soknad.flytting.oppsummering.kr" }}</span>
-                </td>
-            </tr>
-            {{#forFaktum "flytting.flyttebyraa.velgforste"}}
-                {{#hvisSant value}}
-                    <tr>
-                        <td></td>
-                        <td>
-                            <span>{{ hentTekst "soknad.flytting.spm.flyttebyraa.velgforste.label" }}</span>
-                        </td>
-                    </tr>
-                {{/hvisSant}}
-            {{/forFaktum}}
-            <tr>
-                <td class="sjekket"></td>
-                <td>
-                    {{#forFaktum "flytting.flyttebyraa.andre.navn"}}
-                        <span><em>{{value}}</em>:</span>
-                    {{/forFaktum}}
-                    {{#forFaktum "flytting.flyttebyraa.andre.belop"}}
-                        <span><em>{{value}}</em></span>
-                    {{/forFaktum}}
-                    <span>{{ hentTekst "soknad.flytting.oppsummering.kr" }}</span>
-                </td>
-            </tr>
-            {{#forFaktum "flytting.flyttebyraa.velgandre"}}
-                {{#hvisSant value}}
-                    <tr>
-                        <td></td>
-                        <td>
-                            <span>{{ hentTekst "soknad.flytting.spm.flyttebyraa.velgandre.label" }}</span>
-                        </td>
-                    </tr>
-                {{/hvisSant}}
-            {{/forFaktum}}
+            {{> skjema/tilleggsstonader/flytting/flyttebyraa}}
         {{/hvisLik}}
         {{#hvisLik value "tilbudmenflytterselv"}}
             <tr>
@@ -68,31 +25,8 @@
                 </td>
             </tr>
 
-            <tr>
-                <td class="sjekket"></td>
-                <td>
-                    {{#forFaktum "flytting.flyttebyraa.forste.navn"}}
-                        <span>{{value}}:</span>
-                    {{/forFaktum}}
-                    {{#forFaktum "flytting.flyttebyraa.forste.belop"}}
-                        <span><em>{{value}}</em></span>
-                    {{/forFaktum}}
-                    <span>{{ hentTekst "soknad.flytting.oppsummering.kr" }}</span>
-                </td>
-            </tr>
+            {{> skjema/tilleggsstonader/flytting/flyttebyraa}}
 
-            <tr>
-                <td class="sjekket"></td>
-                <td>
-                    {{#forFaktum "flytting.flyttebyraa.andre.navn"}}
-                        <span>{{value}}:</span>
-                    {{/forFaktum}}
-                    {{#forFaktum "flytting.flyttebyraa.andre.belop"}}
-                        <span><em>{{value}}</em></span>
-                    {{/forFaktum}}
-                    <span>{{ hentTekst "soknad.flytting.oppsummering.kr" }}</span>
-                </td>
-            </tr>
         {{/hvisLik}}
 
         {{#hvisLik value "flyttebyraa"}}
