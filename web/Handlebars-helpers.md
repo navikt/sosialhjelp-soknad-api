@@ -33,12 +33,8 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 
 #### Statisk liste over helpers på gammelt registeringsformat
  
-* adresse
-* forFaktumHvisSant
 * forBarnefakta
 * formatterFodelsDato (deprecated og erstattet av formatterKortDato og formatterFnrTilKortDato)
-* formatterLangDato
-* hentLand
 * forPerioder
 * hvisFlereErTrue
 * sendtInnInfo
@@ -51,14 +47,18 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * forFakta - Finner alle fakta med en gitt key og setter hvert faktum som aktiv context etter tur. Har inverse ved ingen fakta.
 * forFaktaMedPropertySattTilTrue - Finner alle fakta med gitt key som har gitt property satt til true
 * forFaktum - Finner et faktum og setter det som aktiv context. Har også inverse om faktum ikke finnes. 
+* forFaktumHvisSant - Sjekker om faktumet til den innsendte keyen er sant eller ikke, setter faktumet som context
 * forFaktumMedId - Returnerer et faktum med den gitte ID-en
 * forFaktumTilknyttetBarn - Returnerer faktumet tilknyttet barnet i parent-context.
 * forIkkeInnsendteVedlegg - Itererer over vedlegg som ikke er sendt inn
 * forInnsendteVedlegg - Itererer over innsendte vedlegg på søknaden
 * forVedlegg - Lar en iterere over alle påkrevde vedlegg på en søknad
 * formaterDato - Formaterer en innsendt dato på et gitt format som også sendes inn
+* formaterLangDato - Gjør en datostreng om til langt, norsk format. F. eks. '17. januar 2015'
 * harBarnetInntekt - Henter summen hvis barnet har inntekt. Må brukes innenfor en #forFaktum eller #forFakta helper. 
 * hentFaktumValue - Returnerer verdien til et faktum tilhørende keyen som sendes inn
+* hentLand - Henter land fra Kodeverk basert på landkode.
+* hentPoststed - Henter poststed for et postnummer fra kodeverk
 * hentSkjemanummer - Setter inn søknadens skjemanummer, også om det er en søknad for dagpenger
 * hentTekst - Henter tekst fra cms, prøver med søknadens prefix + key, før den prøver med bare keyen. Kan sende inn parametere.
 * hentTekstMedFaktumParameter - Henter tekst fra cms for en gitt key, med verdien til et faktum som parameter. Faktumet hentes basert på key
@@ -124,6 +124,19 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 {{else}}
     faktum med key "faktumNavn" er ikke satt
 {{/forFaktum}}
+```
+
+
+##### forFaktumHvisSant
+
+```
+{{#forFaktumHvisSant "key2"}}
+    sant, har faktumet som context
+{{else}}
+    ikke sant, har faktumet som context
+    ELLER
+    faktum eller value fantes ikke
+{{/forFaktumHvisSant}}
 ```
 
 
@@ -195,8 +208,16 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 ##### formaterDato
 
 ```
-{{ukedag "2015-09-16" "EEEE"}}
-{{ukedag variabel "d. MMMM YYYY"}}
+{{formaterDato "2015-09-16" "EEEE"}}
+{{formaterDato variabel "d. MMMM YYYY"}}
+```
+
+
+##### formaterLangDato
+
+```
+{{formaterLangDato "2015-09-16"}}
+{{formaterLangDato variabel}}
 ```
 
 
@@ -219,6 +240,22 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 
 ```
 {{hentFaktumValue "faktum.key"}}
+```
+
+
+##### hentLand
+
+```
+{{hentLand "NOR"}}
+{{hentLand variabel}}
+```
+
+
+##### hentPoststed
+
+```
+{{hentPoststed "2233"}}
+{{hentPoststed variabel}}
 ```
 
 

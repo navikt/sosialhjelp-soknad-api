@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
+import net.jcip.annotations.NotThreadSafe;
+import no.nav.sbl.dialogarena.soknadinnsending.business.FunksjonalitetBryter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
@@ -32,6 +34,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
+@NotThreadSafe
 public class DefaultVedleggServiceTest {
 
     private static final long SOKNAD_ID = 1L;
@@ -45,12 +48,15 @@ public class DefaultVedleggServiceTest {
 
     @Mock
     SoknadService soknadService;
-    
+
     @Mock
     SoknadDataFletter soknadDataFletter;
 
     @Mock
     FillagerService fillagerConnector;
+
+    @Mock
+    FaktaService faktaService;
 
     @InjectMocks
     VedleggService vedleggService = new VedleggService();
@@ -100,6 +106,19 @@ public class DefaultVedleggServiceTest {
         parent.getProperties().put("parentProp", "false");
         vedlegg = vedleggService.genererPaakrevdeVedlegg("123");
         assertThat(vedlegg).hasSize(0);
+    }
+
+    @Test
+    public void skalKjoreNyLogikkVedUthentingAvVedleggForEtFaktum(){
+        System.setProperty(FunksjonalitetBryter.GammelVedleggsLogikk.nokkel, "false");
+        Faktum vedlegg1 = new Faktum().medFaktumId(3L).medKey("toFaktumMedSammeVedlegg1Unik").medValue("true");
+        Faktum vedlegg2 = new Faktum().medFaktumId(4L).medKey("toFaktumMedSammeVedlegg2Unik").medValue("true");
+        when(soknadDataFletter.hentSoknad(eq("123"), eq(true), eq(true))).thenReturn(new WebSoknad().medskjemaNummer("nav-1.1.1")
+                .medFaktum(vedlegg1).medFaktum(vedlegg2));
+        when(faktaService.hentBehandlingsId(3L)).thenReturn("123");
+        List<Vedlegg> vedleggs = vedleggService.hentPaakrevdeVedlegg(3L);
+        assertThat(vedleggs).hasSize(1);
+        assertThat(vedleggs.get(0).getFaktumId()).isEqualTo(vedlegg1.getFaktumId());
     }
 
     @Test

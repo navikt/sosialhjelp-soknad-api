@@ -2,9 +2,12 @@ package no.nav.sbl.dialogarena.common;
 
 import org.apache.commons.collections15.Transformer;
 
+import java.text.Collator;
 import java.util.Comparator;
+import java.util.Locale;
 
 public final class Comparators {
+    private static Locale norwegianLocale = new Locale("nb", "NO");
 
     public static <T, C extends Comparable<C>> Comparator<T> compareBy(Transformer<T, C> transformer) {
         return new TransformerComparator<T, C>(transformer);
@@ -20,9 +23,7 @@ public final class Comparators {
 
         @Override
         public int compare(T o1, T o2) {
-            return transformer.transform(o1).compareTo(transformer.transform(o2));
+            return Collator.getInstance(norwegianLocale).compare(transformer.transform(o1), transformer.transform(o2));
         }
-
     }
-
 }

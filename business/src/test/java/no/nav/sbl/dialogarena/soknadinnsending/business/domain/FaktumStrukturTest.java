@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.FaktumStruktur;
-import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -9,7 +8,7 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.FaktumStruktur.sammenlignEtterDependOn;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FaktumStrukturTest {
 
@@ -24,7 +23,7 @@ public class FaktumStrukturTest {
 
         Collections.sort(fakta, sammenlignEtterDependOn());
 
-        assertThat(fakta, IsIterableContainingInOrder.contains(sf2, sf1));
+        assertThat(fakta).containsSequence(sf2, sf1);
     }
 
     @Test
@@ -47,6 +46,6 @@ public class FaktumStrukturTest {
         List<FaktumStruktur> fakta = asList(sf2, sf1, sf3);
 
         Collections.sort(fakta, sammenlignEtterDependOn());
-        assertThat(fakta, IsIterableContainingInOrder.contains(sf1, sf2, sf3));
+        assertThat(fakta).containsSequence(sf1, sf2, sf3);
     }
 }

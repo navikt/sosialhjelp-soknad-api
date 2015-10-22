@@ -7,32 +7,45 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.transformer.StofoTransformers;
 import org.apache.commons.collections15.Transformer;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 public class MaalgruppeTilXml implements Transformer<Faktum, Maalgruppeinformasjon> {
-
-    private static final List<String> MAALGRUPPER_SOM_IKKE_SKAL_TIL_ARENA = Arrays.asList("", "annet");
-
     @Override
     public Maalgruppeinformasjon transform(Faktum faktum) {
-        Map<String, String> properties = faktum.getProperties();
+        Maalgrupper maalgruppe = Maalgrupper.toMaalgruppe(faktum.getProperties().get("kodeverkVerdi"));
+        if(maalgruppe == null){
+            return null;
+        }
 
         Maalgruppeinformasjon informasjon = new Maalgruppeinformasjon();
         informasjon.setPeriode(StofoTransformers.extractValue(faktum, Periode.class));
-        informasjon.setMaalgruppetype(lagType(properties));
+        informasjon.setMaalgruppetype(lagType(maalgruppe));
         informasjon.setKilde(faktum.getType().toString());
-        if(MAALGRUPPER_SOM_IKKE_SKAL_TIL_ARENA.contains(informasjon.getMaalgruppetype().getValue())){
-            return null;
-        }
         return informasjon;
     }
 
-    private Maalgruppetyper lagType(Map<String, String> properties) {
+    private Maalgruppetyper lagType(Maalgrupper maalgruppe) {
         Maalgruppetyper type = new Maalgruppetyper();
-        type.setKodeverksRef(properties.get("kodeverkVerdi"));
-        type.setValue(properties.get("kodeverkVerdi"));
+        type.setKodeverksRef(maalgruppe.name());
+        type.setValue(maalgruppe.name());
         return type;
+    }
+
+    private enum Maalgrupper {
+        NEDSARBEVN,
+        ENSFORUTD,
+        ENSFORARBS,
+        TIDLFAMPL,
+        GJENEKUTD,
+        GJENEKARBS,
+        MOTTILTPEN,
+        MOTDAGPEN,
+        ARBSOKERE;
+
+        public static Maalgrupper toMaalgruppe(String kodeverkVerdi) {
+            try {
+                return valueOf(kodeverkVerdi != null? kodeverkVerdi.toUpperCase(): "");
+            } catch (IllegalArgumentException e) {
+                return null;
+            }
+        }
     }
 }

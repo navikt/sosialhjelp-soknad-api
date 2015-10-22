@@ -8,16 +8,14 @@
                     {{#hvisIkkeTom properties.navn}}
                         {{properties.navn}}
                     {{/hvisIkkeTom}}
+                    {{#hvisIkkeTom properties.arrangoer}}
+                        - {{properties.arrangoer}}
+                    {{/hvisIkkeTom}}
                     <ul>
                         <li class="kulepunkt faktum-felt">
-                            {{hentTekst 'tiltaksliste.oppsummering.dato'}}: <em>{{formaterDato properties.startdato "dd.MM.yyyy"}}
-                            -{{formaterDato properties.sluttdato "dd.MM.yyyy"}}</em>
+                            {{hentTekst 'oppsummering.tiltakspenger.dato.startdato.stor'}}: <em>{{formaterLangDato properties.startdato }}, </em>
+                            {{hentTekst 'oppsummering.tiltakspenger.dato.sluttdato.liten'}}: <em>{{formaterLangDato properties.sluttdato }}</em>
                         </li>
-                        {{#hvisIkkeTom properties.arrangoer}}
-                            <li class="kulepunkt faktum-felt">
-                                {{hentTekst 'tiltaksliste.annetTiltak.arrangoernavn'}}: <em>{{properties.arrangoer}}</em>
-                            </li>
-                        {{/hvisIkkeTom}}
                     </ul>
                 </td>
             {{/forFaktumMedId}}
@@ -28,32 +26,44 @@
                         {{hentTekst 'tiltaksliste.velgTiltak.radiovalgtekst.annet'}}
                         <ul>
                             <li class="kulepunkt faktum-felt">
-                                {{hentTekst 'tiltaksliste.annetTiltak.tiltakstype'}}: <em>{{value}}</em>
+                                {{hentTekst 'tiltaksliste.annetTiltak.tiltakstype'}}:
+                                {{#hvisLik value 'PRAKSORD'}}
+                                        <em>{{hentTekst "tiltaksliste.annetTiltak.tiltakstype.arbeidspraksis.fulltnavn"}}</em>
+                                {{/hvisLik}}
+                                {{#hvisLik value 'Annet'}}
+                                    <em>{{hentTekst "tiltaksliste.tiltakstype.annet"}}</em>
+                                {{/hvisLik}}
+                                {{#hvisLik value 'AMO'}}
+                                    <em>{{hentTekst "tiltaksliste.tiltakstype.amokurs"}}</em>
+                                {{/hvisLik}}
+                                {{#hvisLik value 'JOBSOK'}}
+                                    <em>{{hentTekst "tiltaksliste.tiltakstype.jobbsokekurs"}}</em>
+                                {{/hvisLik}}
                             </li>
-                            {{#hvisLik properties.tiltakstype 'annet'}}
+                            {{#hvisLik value 'Annet'}}
                                 <li class="kulepunkt faktum-felt">
                                     {{hentTekst 'tiltaksliste.annetTiltak.beskrivelse'}}: <em>{{properties.beskrivelse}}</em>
                                 </li>
                             {{/hvisLik}}
                             <li class="kulepunkt faktum-felt">
-                                {{hentTekst 'tiltaksliste.oppsummering.dato'}}: <em>{{formaterDato properties.fom "dd.MM.yyyy"}}
-                                -{{formaterDato properties.tom "dd.MM.yyyy"}}</em>
+                                {{hentTekst 'oppsummering.tiltakspenger.dato.startdato.stor'}}: <em>{{formaterLangDato properties.fom }}, </em>
+                                {{hentTekst 'oppsummering.tiltakspenger.dato.sluttdato.liten'}}: <em>{{formaterLangDato properties.tom }}</em>
                             </li>
                             {{#hvisIkkeTom properties.arrangoernavn}}
                                 <li class="kulepunkt faktum-felt">
-                                    {{hentTekst 'tiltaksliste.annetTiltak.arrangoernavn'}}:
+                                    {{hentTekst 'oppsummering.tiltaksliste.annetTiltak.arrangoernavn'}}:
                                     <em>{{properties.arrangoernavn}}</em>
                                 </li>
                             {{/hvisIkkeTom}}
                             {{#hvisIkkeTom properties.adresse}}
                                 <li class="kulepunkt faktum-felt">
-                                    {{hentTekst 'tiltaksliste.annetTiltak.adresse'}}: <em>{{properties.adresse}}</em>
+                                    {{hentTekst 'oppsummering.tiltaksliste.annetTiltak.adresse'}}: <em>{{properties.adresse}}</em>
                                 </li>
                             {{/hvisIkkeTom}}
                             {{#hvisIkkeTom properties.postnummer}}
                                 <li class="kulepunkt faktum-felt">
-                                    {{hentTekst 'tiltaksliste.annetTiltak.postnummer'}}:
-                                    <em>{{properties.postnummer}}</em>
+                                    {{hentTekst 'tiltaksliste.oppsummering.annetTiltak.postnummerOgSted'}}:
+                                    <em>{{properties.postnummer}}</em> <em>{{hentPoststed properties.postnummer}}</em>
                                 </li>
                             {{/hvisIkkeTom}}
                             <li class="kulepunkt faktum-felt">

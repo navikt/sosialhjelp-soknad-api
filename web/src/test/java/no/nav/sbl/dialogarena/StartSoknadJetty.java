@@ -36,8 +36,7 @@ public final class StartSoknadJetty {
         configureLocalConfig();
         disableBatch();
         setProperty("java.security.auth.login.config", env.getLoginConf());
-        TestCertificates.setupTemporaryKeyStore(this.getClass().getResourceAsStream("/keystore.jks"), "devillokeystore1234");
-        TestCertificates.setupTemporaryTrustStore(this.getClass().getResourceAsStream("/truststore.jts"), "changeit");
+        TestCertificates.setupKeyAndTrustStore();
 
         JAASLoginService jaasLoginService = new JAASLoginService("OpenAM Realm");
         jaasLoginService.setLoginModuleName("openam");

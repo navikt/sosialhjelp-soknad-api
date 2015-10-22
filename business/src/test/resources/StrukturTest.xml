@@ -1,0 +1,28 @@
+<soknad skjemaNummer="NAV 08-14.01" temaKode="STF">
+    <faktum>
+        <id>parent</id>
+    </faktum>
+    <faktum>
+        <id>parent2</id>
+    </faktum>
+    <faktum>
+        <id>child</id>
+        <isSpEl>true</isSpEl>
+        <faktaAvhengigheter>
+            <faktumAvhengighet>
+                <faktum>parent</faktum>
+                <betingelser>
+                    <betingelse>value==true</betingelse>
+                    <betingelse>value==false</betingelse>
+                </betingelser>
+            </faktumAvhengighet>
+            <faktumAvhengighet>
+                <faktum>parent2</faktum>
+                <betingelser>
+                    <betingelse>value==true</betingelse>
+                    <betingelse>value==false</betingelse>
+                </betingelser>
+            </faktumAvhengighet>
+        </faktaAvhengigheter>
+    </faktum>
+</soknad>

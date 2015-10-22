@@ -328,7 +328,7 @@
     <!-- Vedlegg -->
     <vedlegg>
         <faktum>brukeroversytti.vedlegg</faktum>
-        <skjemaNummer>U2</skjemaNummer>
+        <skjemaNummer>L9</skjemaNummer>
     </vedlegg>
     <vedlegg>
         <faktum>utstyrtilbilen.hjelpemidler</faktum>
@@ -381,7 +381,7 @@
         <onValues>
             <value>stonadBil</value>
         </onValues>
-        <skjemaNummer>U2</skjemaNummer>
+        <skjemaNummer>L9</skjemaNummer>
     </vedlegg>
 
     <vedlegg>
