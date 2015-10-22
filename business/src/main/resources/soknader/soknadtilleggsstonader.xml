@@ -644,6 +644,13 @@
         </dependOnValues>
     </faktum>
     <faktum>
+        <id>reise.midlertidig.antallreiser</id>
+        <dependOn>informasjonsside.stonad.reisemidlertidig</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
         <id>reise.midlertidig.sarskiltebehov</id>
         <dependOn>informasjonsside.stonad.reisemidlertidig</dependOn>
         <dependOnValues>
