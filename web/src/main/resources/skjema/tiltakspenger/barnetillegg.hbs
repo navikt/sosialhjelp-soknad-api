@@ -26,14 +26,17 @@
                             {{ else }}
                                 <span>{{ hentTekst "barnetillegg.barn.sokebarnetillegg.ja"}}. </span>
                                 <ul>
-                                    <li class="kulepunkt medstrek faktum-felt">
                                     {{#hvisLik  properties.harinntekt "ja"}}
-                                        <span>{{ hentTekst "barnetillegg.barn.harinntekt.ja"}}. </span>
-                                        <span> {{hentTekst "oppsummering.barnetillegg.inntekt"}}: <em>{{properties.inntekt}} </em>{{ hentTekst "soknad.kr"}}</span>
-                                    {{else}}
-                                            <span>{{ hentTekst "barnetillegg.barn.harinntekt.nei"}} </span>
+                                        <li class="kulepunkt medstrek faktum-felt">
+                                            <span>{{ hentTekst "barnetillegg.barn.harinntekt.ja"}}. </span>
+                                            <span> {{hentTekst "oppsummering.barnetillegg.inntekt"}}: <em>{{properties.inntekt}} </em>{{ hentTekst "soknad.kr"}}</span>
+                                        </li>
                                     {{/hvisLik}}
-                                    </li>
+                                    {{#hvisLik  properties.harinntekt "nei"}}
+                                        <li class="kulepunkt medstrek faktum-felt">
+                                            <span>{{ hentTekst "barnetillegg.barn.harinntekt.nei"}} </span>
+                                        </li>
+                                    {{/hvisLik}}
                                 </ul>
                             {{/hvisLik}}
                         </li>
