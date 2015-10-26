@@ -66,8 +66,9 @@ public class InformasjonService {
         result.put("modia.url", sporsmalsvarUrl);
         result.put("soknadtilleggsstonader.url", soknadtilleggsstonaderPath);
         result.put("dineutbetalinger.link.url", dineUtbetalingerLink);
-
         result.put("soknad.ettersending.antalldager", antallDager);
+
+        result.putAll(getTestSpesifikkConfig());
 
         return result;
     }
@@ -92,6 +93,17 @@ public class InformasjonService {
         }
 
         return result;
+    }
+
+    private Map<String, String> getTestSpesifikkConfig() {
+        Map<String, String> testEnvVars = new HashMap<>();
+
+        for(String envVar : System.getProperties().stringPropertyNames()) {
+            if(envVar.startsWith("testconfig.")) {
+                testEnvVars.put(envVar, System.getProperty(envVar));
+            }
+        }
+        return testEnvVars;
     }
 
     private void settInnUrlForSkjema(String skjemanummer, Map<String, String> resultMap) {
