@@ -8,20 +8,18 @@ import java.io.IOException;
 @Component
 public class HvisIkkeTomHelper extends RegistryAwareHelper<Object> {
 
-    public static final String NAVN = "hvisIkkeTom";
-
     @Override
     public CharSequence apply(Object key, Options options) throws IOException {
         if (key != null && !key.toString().isEmpty()) {
-            return options.fn(this);
+            return options.fn();
         } else {
-            return options.inverse(this);
+            return options.inverse();
         }
     }
 
     @Override
     public String getNavn() {
-        return NAVN;
+        return "hvisIkkeTom";
     }
 
     @Override

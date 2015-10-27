@@ -36,12 +36,15 @@ public class BoutgifterTilXmlTest {
                 .medValue("true")
                 .medProperty("utgift", "200"));
         fakta.add(new Faktum()
+                .medValue("true")
                 .medKey("bostotte.adresseutgifter.aktivitetsadresse")
                 .medProperty("utgift", "2000"));
         fakta.add(new Faktum()
+                .medValue("true")
                 .medKey("bostotte.adresseutgifter.hjemstedsaddresse")
                 .medProperty("utgift", "3000"));
         fakta.add(new Faktum()
+                .medValue("true")
                 .medKey("bostotte.adresseutgifter.opphorte")
                 .medProperty("utgift", "4000"));
         fakta.add(new Faktum()
@@ -87,16 +90,26 @@ public class BoutgifterTilXmlTest {
     @Test
     public void settBoutgifterAktivitetsted() {
         assertThat(boutgifter.getBoutgifterAktivitetsted()).isEqualTo(BigInteger.valueOf(2000));
+        websoknad.getFaktumMedKey("bostotte.adresseutgifter.aktivitetsadresse").setValue("false");
+        System.out.println(websoknad.getFaktumMedKey("bostotte.adresseutgifter.aktivitetsadresse"));
+        boutgifter = new BoutgifterTilXml().transform(websoknad);
+        assertThat(boutgifter.getBoutgifterAktivitetsted()).isNull();
     }
 
     @Test
     public void settBoutgifterHjemstedAktuell() {
         assertThat(boutgifter.getBoutgifterHjemstedAktuell()).isEqualTo(BigInteger.valueOf(3000));
+        websoknad.getFaktumMedKey("bostotte.adresseutgifter.hjemstedsaddresse").setValue("false");
+        boutgifter = new BoutgifterTilXml().transform(websoknad);
+        assertThat(boutgifter.getBoutgifterHjemstedAktuell()).isNull();
     }
 
     @Test
     public void settBoutgifterHjemstedOpphoert() {
         assertThat(boutgifter.getBoutgifterHjemstedOpphoert()).isEqualTo(BigInteger.valueOf(4000));
+        websoknad.getFaktumMedKey("bostotte.adresseutgifter.opphorte").setValue("false");
+        boutgifter = new BoutgifterTilXml().transform(websoknad);
+        assertThat(boutgifter.getBoutgifterHjemstedOpphoert()).isNull();
     }
 
     @Test

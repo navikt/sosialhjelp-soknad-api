@@ -55,9 +55,7 @@ public class SoknadActionIntegrationTests {
                 .skalHaVedlegg("v1", "v3")
                 .soknad()
                 .settDelstegstatus("vedlegg")
-                .sendInn()
-
-        ;
+                .sendInn();
 
 
         jetty.jetty.stop.run();
