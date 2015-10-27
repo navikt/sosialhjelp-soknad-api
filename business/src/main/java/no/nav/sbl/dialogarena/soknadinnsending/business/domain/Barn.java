@@ -28,7 +28,7 @@ public class Barn {
         this.fornavn = getNavnNotNull(fornavn);
         this.mellomnavn = getNavnNotNull(mellomnavn);
         this.etternavn = getNavnNotNull(etternavn);
-        this.sammensattnavn = setSammenSattNavn(fornavn, mellomnavn, etternavn);
+        this.sammensattnavn = setSammenSattNavn(this.fornavn, this.mellomnavn, this.etternavn);
         this.kjonn = bestemKjonn();
         this.alder = bestemAlder();
     }
