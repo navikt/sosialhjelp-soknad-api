@@ -17,8 +17,7 @@
                     <tr>
                         {{#forFaktum (concat faktumPrefiks "offentligtransport.utgift")}}
                             <td class="sjekket"></td>
-                            <td><span>{{ hentTekst "soknad.reise.offentligtransport.utgift.oppsummering" }}
-                                : {{value}} {{hentTekst "soknad.krmnd"}}</span></td>
+                            <td><span>{{ hentTekst "soknad.reise.offentligtransport.utgift.oppsummering" }} {{value}} {{hentTekst "soknad.krmnd"}}</span></td>
                         {{/forFaktum}}
                     </tr>
                     {{#forFaktum (concat faktumPrefiks "utbetalingsdato")}}
@@ -55,7 +54,7 @@
                         <tr>
                             <td class="sjekket"></td>
                             <td>
-                                <span>{{hentTekst "soknad.reise.offentligtransport.aarsak.annet"}}:</span>
+                                <span>{{hentTekst "soknad.reise.offentligtransport.aarsak.annet"}}</span>
                                 {{#forFaktum (concat faktumPrefiks "offentligtransport.aarsak.annet.tekst")}}
                                     <em>{{value}}</em>
                                 {{/forFaktum}}
