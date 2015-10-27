@@ -47,17 +47,17 @@ public class BoutgifterTilXml implements Transformer<WebSoknad, Boutgifter> {
     private void adresseUtgifterTilBoutgifter(WebSoknad webSoknad) {
         Faktum aktivitetstedFaktum = webSoknad.getFaktumMedKey(AKTIVITETSADRESSE);
 
-        if (aktivitetstedFaktum != null && aktivitetstedFaktum.hasEgenskap(UTGIFT)) {
+        if (aktivitetstedFaktum != null && aktivitetstedFaktum.hasEgenskap(UTGIFT) && "true".equals(aktivitetstedFaktum.getValue())) {
             boutgifter.setBoutgifterAktivitetsted(new BigInteger(aktivitetstedFaktum.getProperties().get(UTGIFT)));
         }
 
         Faktum hjemstedsaddresse = webSoknad.getFaktumMedKey(HJEMSTEDSADDRESSE);
-        if (hjemstedsaddresse != null && hjemstedsaddresse.hasEgenskap(UTGIFT)) {
+        if (hjemstedsaddresse != null && hjemstedsaddresse.hasEgenskap(UTGIFT) && "true".equals(hjemstedsaddresse.getValue())) {
             boutgifter.setBoutgifterHjemstedAktuell(new BigInteger(hjemstedsaddresse.getProperties().get(UTGIFT)));
         }
 
         Faktum opphorte = webSoknad.getFaktumMedKey(OPPHORTE);
-        if (opphorte != null && opphorte.hasEgenskap(UTGIFT)) {
+        if (opphorte != null && opphorte.hasEgenskap(UTGIFT) && "true".equals(opphorte.getValue())) {
             boutgifter.setBoutgifterHjemstedOpphoert(new BigInteger(opphorte.getProperties().get(UTGIFT)));
         }
     }

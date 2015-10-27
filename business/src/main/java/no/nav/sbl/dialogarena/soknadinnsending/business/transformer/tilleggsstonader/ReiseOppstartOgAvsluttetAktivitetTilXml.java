@@ -17,6 +17,7 @@ public class ReiseOppstartOgAvsluttetAktivitetTilXml implements Transformer<WebS
     private static final String FAKTUM_PERIODE = "reise.midlertidig.periode";
     private static final String FAKTUM_AVSTAND = "reise.midlertidig.reiselengde";
     private static final String FAKTUM_HJEMMEBOENDE = "reise.midlertidig.hjemmeboende";
+    private static final String FAKTUM_ANTALL_REISER = "reise.midlertidig.antallreiser";
 
     @Override
     public ReiseOppstartOgAvsluttetAktivitet transform(WebSoknad soknad) {
@@ -27,6 +28,7 @@ public class ReiseOppstartOgAvsluttetAktivitetTilXml implements Transformer<WebS
         reise.setHarBarnUnderFemteklasse(extractValue(soknad.getFaktumMedKey(FAKTUM_HJEMMEBOENDE), Boolean.class));
         reise.setHarBarnUnderAtten(harBarnUnder18(soknad));
         reise.setAlternativeTransportutgifter(StofoUtils.alternativeTransportUtgifter(soknad, "midlertidig"));
+        reise.setAntallReiser(extractValue(soknad.getFaktumMedKey(FAKTUM_ANTALL_REISER), BigInteger.class));
         return reise;
     }
 

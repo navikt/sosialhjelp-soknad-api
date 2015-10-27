@@ -4,6 +4,11 @@
             <td class="sjekket"></td>
             <td>
                 <span>{{ hentTekst "soknad.barnepass.barn.sporsmal.label" (toCapitalized ../../properties.sammensattnavn)}}</span>
+                {{#hvisLik ../../type "SYSTEMREGISTRERT"}}
+                    <span>({{../../../properties.fnr}})</span>
+                {{else}}
+                    <span>({{kortDato ../../../properties.fodselsdato}})</span>
+                {{/hvisLik}}
             </td>
         </tr>
         <tr>
