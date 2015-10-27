@@ -25,9 +25,9 @@ public class Barn {
         this.doedsdato = doedsdato;
         this.personstatus = personstatus;
         this.fnr = fnr;
-        this.fornavn = fornavn;
-        this.mellomnavn = mellomnavn;
-        this.etternavn = etternavn;
+        this.fornavn = getNavnNotNull(fornavn);
+        this.mellomnavn = getNavnNotNull(mellomnavn);
+        this.etternavn = getNavnNotNull(etternavn);
         this.sammensattnavn = setSammenSattNavn(fornavn, mellomnavn, etternavn);
         this.kjonn = bestemKjonn();
         this.alder = bestemAlder();
@@ -61,6 +61,10 @@ public class Barn {
         } else {
             return fornavn + " " + mellomnavn + " " + etternavn;
         }
+    }
+
+    private String getNavnNotNull(String navn) {
+        return navn == null ? "" : navn;
     }
 
     public String getFnr() {
