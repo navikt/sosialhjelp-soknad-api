@@ -1,12 +1,32 @@
-<tr>
-    <td class="sjekket"></td>
-    <td>
-        {{#forFaktum "bostotte.kommunestotte"}}
-            {{#hvisSant value}}
-                <span>{{ hentTekst "soknad.bostotte.kommunestotte.sporsmal.true" }}{{ hentTekst "soknad.bostotte.kommunestotte.belop.oppsummering" }} {{properties.utgift}} </span>
-            {{else}}
+{{#forFaktum "bostotte.kommunestotte"}}
+    {{#hvisSant value}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>{{ hentTekst "soknad.bostotte.kommunestotte.sporsmal.true" }} </span>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <table>
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>
+                            <span>{{ hentTekst "soknad.bostotte.kommunestotte.belop.oppsummering" }}
+                                <em>{{properties.utgift}}</em> {{toLowerCase (hentTekst "soknad.krmnd")}} </span>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+    {{else}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
                 <span>{{ hentTekst "soknad.bostotte.kommunestotte.sporsmal.false" }}</span>
-            {{/hvisSant}}
-        {{/forFaktum}}
-    </td>
-</tr>
+            </td>
+        </tr>
+    {{/hvisSant}}
+{{/forFaktum}}
