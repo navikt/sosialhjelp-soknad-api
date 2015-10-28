@@ -28,7 +28,6 @@ public class TilsynFamilieTilXml implements Transformer<WebSoknad, Tilsynsutgift
         if(deletilsyn != null && deletilsyn) {
             familie.setAnnenTilsynsperson(extractValue(soknad.getFaktumMedKey("tilsynfamilie.deletilsyn"), String.class, "personnummer"));
         }
-        familie.setOensketUtbetalingsdag(extractValue(soknad.getFaktumMedKey("tilsynfamilie.utbetalingsdato"), BigInteger.class));
 
         return familie;
     }

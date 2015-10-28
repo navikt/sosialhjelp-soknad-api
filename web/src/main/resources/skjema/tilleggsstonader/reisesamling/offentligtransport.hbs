@@ -42,9 +42,6 @@
             {{/hvisLik}}
         {{/forFaktum}}
         <tr>
-            {{#forFaktum (concat faktumPrefiks "utbetalingsdato")}}
-                <td class="sjekket"></td><td><span>{{ hentTekst "soknad.felles.utbetalingsdato.velgdato.oppsummering" }} {{value}}{{ hentTekst "soknad.felles.utbetalingsdato.velgdato.oppsummering.postfix" }}</span></td>
-            {{/forFaktum}}
         </tr>
     {{else}}
         <tr>

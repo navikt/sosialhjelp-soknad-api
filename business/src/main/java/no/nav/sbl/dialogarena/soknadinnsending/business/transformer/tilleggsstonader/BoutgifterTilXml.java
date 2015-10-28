@@ -13,7 +13,6 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.Stofo
 public class BoutgifterTilXml implements Transformer<WebSoknad, Boutgifter> {
 
     public static final String AKTIVITETSADRESSE = "bostotte.adresseutgifter.aktivitetsadresse";
-    public static final String UTBETALINGSDATO = "bostotte.utbetalingsdato";
     public static final String HJEMSTEDSADDRESSE = "bostotte.adresseutgifter.hjemstedsaddresse";
     public static final String OPPHORTE = "bostotte.adresseutgifter.opphorte";
     public static final String SAMLING = "bostotte.samling";
@@ -29,19 +28,11 @@ public class BoutgifterTilXml implements Transformer<WebSoknad, Boutgifter> {
         boutgifter.setPeriode(faktumTilPeriode(webSoknad.getFaktumMedKey(PERIODE)));
 
         kommunestotteTilBoutgifter(webSoknad);
-        samlingTilBoutgifter(webSoknad); // TODO: Mangler sluttdato
+        samlingTilBoutgifter(webSoknad);
         adresseUtgifterTilBoutgifter(webSoknad);
         //medisinskeaarsakerTilBoutgifter(webSoknad); // TODO: Finnes ikke i boutgifter
-        utbetalingsdatoTilBoutgifter(webSoknad);
 
         return boutgifter;
-    }
-
-    private void utbetalingsdatoTilBoutgifter(WebSoknad webSoknad) {
-        Faktum utbetalingsdatoFaktum = webSoknad.getFaktumMedKey(UTBETALINGSDATO);
-        if (utbetalingsdatoFaktum != null && utbetalingsdatoFaktum.hasValue()) {
-            boutgifter.setOensketUtbetalingsdag(new BigInteger(utbetalingsdatoFaktum.getValue()));
-        }
     }
 
     private void adresseUtgifterTilBoutgifter(WebSoknad webSoknad) {

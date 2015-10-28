@@ -60,9 +60,6 @@ public class TilleggsstonaderTilXmlTest {
         fakta.add(new Faktum()
                 .medKey("bostotte.medisinskearsaker")
                 .medValue("true"));
-        fakta.add(new Faktum()
-                .medKey("bostotte.utbetalingsdato")
-                .medValue("20"));
 
         soknad.setFakta(fakta);
 

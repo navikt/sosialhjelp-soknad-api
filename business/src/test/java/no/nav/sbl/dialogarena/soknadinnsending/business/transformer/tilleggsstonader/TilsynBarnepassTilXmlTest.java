@@ -54,20 +54,6 @@ public class TilsynBarnepassTilXmlTest {
     }
 
     @Test
-    public void skalLeggeTilUtbetalingsdato() {
-        soknad.getFakta().add(new Faktum().medKey("barnepass.utbetalingsdato").medValue("1"));
-
-        tilsynsutgifterBarnXml = tilsynBarnepassTilXml.transform(soknad);
-        assertThat(tilsynsutgifterBarnXml.getOensketUtbetalingsdag()).isEqualTo(new BigInteger("1"));
-    }
-
-    @Test
-    public void skalIkkeLeggeTilUtbetalingsdato() {
-        tilsynsutgifterBarnXml = tilsynBarnepassTilXml.transform(soknad);
-        assertThat(tilsynsutgifterBarnXml.getOensketUtbetalingsdag()).isNotEqualTo(new BigInteger("1"));
-    }
-
-    @Test
     public void skalLeggeTilBarnSomDetSokesBarnepassFor() {
         String oleNavn = "Ole Mockmann";
         String oleFnr = "***REMOVED***";

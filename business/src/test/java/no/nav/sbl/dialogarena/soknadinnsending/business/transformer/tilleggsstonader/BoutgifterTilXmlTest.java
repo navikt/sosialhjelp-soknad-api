@@ -50,9 +50,6 @@ public class BoutgifterTilXmlTest {
         fakta.add(new Faktum()
                 .medKey("bostotte.medisinskearsaker")
                 .medValue("true"));
-        fakta.add(new Faktum()
-                .medKey("bostotte.utbetalingsdato")
-                .medValue("20"));
 
         websoknad.setFakta(fakta);
 
