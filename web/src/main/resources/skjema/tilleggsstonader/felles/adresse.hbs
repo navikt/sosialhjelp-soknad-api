@@ -6,9 +6,9 @@
             {{#forFaktum faktumKey}}
                 <span>{{ hentTekst labelKey }}
                     {{#hvisLik properties.land "Norge"}}
-                        {{properties.adresse}}, {{properties.postnr}} {{hentPoststed properties.postnr}}
+                        <em>{{properties.adresse}}, {{properties.postnr}} {{hentPoststed properties.postnr}}</em>
                     {{else}}
-                        {{properties.utenlandskadresse}}, {{properties.land}}
+                        <em>{{properties.utenlandskadresse}}, {{properties.land}}</em>
                     {{/hvisLik}}
                 </span>
             {{/forFaktum}}
