@@ -33,17 +33,14 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 
 #### Statisk liste over helpers på gammelt registeringsformat
  
-* forBarnefakta
 * formatterFodelsDato (deprecated og erstattet av formatterKortDato og formatterFnrTilKortDato)
-* forPerioder
-* hvisFlereErTrue
-* sendtInnInfo
 * skalViseRotasjonTurnusSporsmaal
 
 #### Helpers på nytt registreringsformat
 
 * concat - Legger sammen alle parametrene til tekststring
 * fnrTilKortDato - Formatterer et gyldig fødselnummer til dato på formatet dd.mm.aaaa
+* forBarnefakta - Itererer over alle fakta som har den gitte keyen og parentfaktum satt til nærmeste faktum oppover i context.
 * forFakta - Finner alle fakta med en gitt key og setter hvert faktum som aktiv context etter tur. Har inverse ved ingen fakta.
 * forFaktaMedPropertySattTilTrue - Finner alle fakta med gitt key som har gitt property satt til true
 * forFaktum - Finner et faktum og setter det som aktiv context. Har også inverse om faktum ikke finnes. 
@@ -52,6 +49,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * forFaktumTilknyttetBarn - Returnerer faktumet tilknyttet barnet i parent-context.
 * forIkkeInnsendteVedlegg - Itererer over vedlegg som ikke er sendt inn
 * forInnsendteVedlegg - Itererer over innsendte vedlegg på søknaden
+* forPerioder - Henter perioder for foreldrepenger og sorterer dem etter fradato
 * forVedlegg - Lar en iterere over alle påkrevde vedlegg på en søknad
 * formaterDato - Formaterer en innsendt dato på et gitt format som også sendes inn
 * formaterLangDato - Gjør en datostreng om til langt, norsk format. F. eks. '17. januar 2015'
@@ -62,6 +60,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hentSkjemanummer - Setter inn søknadens skjemanummer, også om det er en søknad for dagpenger
 * hentTekst - Henter tekst fra cms, prøver med søknadens prefix + key, før den prøver med bare keyen. Kan sende inn parametere.
 * hentTekstMedFaktumParameter - Henter tekst fra cms for en gitt key, med verdien til et faktum som parameter. Faktumet hentes basert på key
+* hvisFlereErTrue - Finner alle fakta med key som begynner med teksten som sendes inn og teller om antallet med verdien true er større enn tallet som sendes inn.
 * hvisHarDiskresjonskode - Viser innhold avhengig av om personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)
 * hvisHarIkkeInnsendteDokumenter - Sjekker om søknaden har ikke-innsendte vedlegg
 * hvisIkkeTom - Dersom variabelen ikke er tom vil innholdet vises
@@ -91,6 +90,22 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 
 ```
 {{fnrTilKortDato "***REMOVED***"}}
+```
+
+
+##### forBarnefakta
+
+```
+må ha et faktum i context, f. eks. via
+{{#forFaktum "parentFaktumKey"}}
+
+    {{#forBarnefakta "key"}}
+        itererer over fakta her, {{value}}
+    {{else}}
+        ingen fakta matchet
+    {{/forBarnefakta}}
+
+{{/forFaktum}}
 ```
 
 
@@ -187,6 +202,17 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 ```
 
 
+##### forPerioder
+
+```
+{{#forPerioder}}
+    {{value}},
+{{else}}
+    ingen perioder
+{{/forPerioder}}
+```
+
+
 ##### forVedlegg
 
 ```
@@ -278,6 +304,17 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 
 ```
 {{hentTekstMedFaktumParameter "cms.key" "faktum.key"}}
+```
+
+
+##### hvisFlereErTrue
+
+```
+{{#hvisFlereErTrue "min.key" "2" }}
+    flere enn 2 er true
+{{else}}
+    ikke nok true
+{{/hvisFlereErTrue}}
 ```
 
 

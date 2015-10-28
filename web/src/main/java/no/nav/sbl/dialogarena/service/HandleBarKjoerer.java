@@ -6,17 +6,14 @@ import com.github.jknack.handlebars.Options;
 import no.bekk.bekkopen.person.Fodselsnummer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import org.apache.commons.collections15.Predicate;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static no.bekk.bekkopen.person.FodselsnummerValidator.getFodselsnummer;
-import static no.nav.modig.lang.collections.IterUtils.on;
-import static no.nav.sbl.dialogarena.service.HandlebarsUtils.*;
 import static org.apache.commons.lang3.ArrayUtils.reverse;
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.StringUtils.split;
@@ -42,40 +39,10 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
             handlebars.registerHelper(helper.getKey(), helper.getValue());
         }
 
-        handlebars.registerHelper("forBarnefakta", generateForBarnefaktaHelper());
         handlebars.registerHelper("formatterFodelsDato", generateFormatterFodselsdatoHelper());
-        handlebars.registerHelper("forPerioder", generateHelperForPeriodeTidsromFakta());
-        handlebars.registerHelper("hvisFlereErTrue", generateHvisFlereSomStarterMedErTrueHelper());
         handlebars.registerHelper("skalViseRotasjonTurnusSporsmaal", generateSkalViseRotasjonTurnusSporsmaalHelper());
 
         return handlebars;
-    }
-
-    private Helper<String> generateHvisFlereSomStarterMedErTrueHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String o, Options options) throws IOException {
-                Integer grense = Integer.parseInt((String) options.param(0));
-
-                WebSoknad soknad = finnWebSoknad(options.context);
-                List<Faktum> fakta = soknad.getFaktaSomStarterMed(o);
-
-                int size = on(fakta).filter(new Predicate<Faktum>() {
-                    @Override
-                    public boolean evaluate(Faktum faktum) {
-                        String value = faktum.getValue();
-                        return value != null && value.equals("true");
-                    }
-                }).collect().size();
-
-
-                if (size > grense) {
-                    return options.fn(this);
-                } else {
-                    return options.inverse(this);
-                }
-            }
-        };
     }
 
     @Deprecated
@@ -90,46 +57,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
                     String[] datoSplit = split(s, "-");
                     reverse(datoSplit);
                     return join(datoSplit, ".");
-                }
-            }
-        };
-    }
-
-    private Helper<Object> generateHelperForPeriodeTidsromFakta() {
-        return new Helper<Object>() {
-            @Override
-            public CharSequence apply(Object context, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-                List<Faktum> fakta = soknad.getFaktaSomStarterMed("perioder.tidsrom");
-                List<Faktum> sortertFaktaEtterDato = on(fakta).collect(new Comparator<Faktum>() {
-                    @Override
-                    public int compare(Faktum o1, Faktum o2) {
-                        DateTimeFormatter dt = DateTimeFormat.forPattern("yyyy-MM-dd").withLocale(NO_LOCALE);
-                        DateTime fradatoForstePeriode = dt.parseDateTime(o2.getProperties().get("fradato"));
-                        DateTime fradatoAndrePeriode = dt.parseDateTime(o1.getProperties().get("fradato"));
-                        return fradatoAndrePeriode.compareTo(fradatoForstePeriode);
-                    }
-                });
-                if (sortertFaktaEtterDato.isEmpty()) {
-                    return options.inverse(this);
-                } else {
-                    return lagItererbarRespons(options, sortertFaktaEtterDato);
-                }
-            }
-        };
-    }
-
-    private Helper<String> generateForBarnefaktaHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String key, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-                Faktum parentFaktum = finnFaktum(options.context);
-                List<Faktum> fakta = soknad.getFaktaMedKeyOgParentFaktum(key, parentFaktum.getFaktumId());
-                if (fakta.isEmpty()) {
-                    return options.inverse(this);
-                } else {
-                    return lagItererbarRespons(options, fakta);
                 }
             }
         };
