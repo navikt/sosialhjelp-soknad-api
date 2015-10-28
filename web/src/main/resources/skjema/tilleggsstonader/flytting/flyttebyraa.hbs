@@ -14,16 +14,18 @@
         <span></span>
     </td>
 </tr>
-{{#forFaktum "flytting.flyttebyraa.velgforste"}}
-    {{#hvisSant value}}
-        <tr>
-            <td></td>
-            <td>
-                <span>{{ hentTekst "soknad.flytting.spm.flyttebyraa.velgforste.label" }}</span>
-            </td>
-        </tr>
-    {{/hvisSant}}
-{{/forFaktum}}
+{{#hvisLik value "flyttebyraa"}}
+    {{#forFaktum "flytting.flyttebyraa.velgforste"}}
+        {{#hvisSant value}}
+            <tr>
+                <td></td>
+                <td>
+                    <span>{{ hentTekst "soknad.flytting.spm.flyttebyraa.velgforste.label" }}</span>
+                </td>
+            </tr>
+        {{/hvisSant}}
+    {{/forFaktum}}
+{{/hvisLik}}
 <tr>
     <td class="sjekket"></td>
     <td>
@@ -38,13 +40,15 @@
         {{/forFaktum}}
     </td>
 </tr>
-{{#forFaktum "flytting.flyttebyraa.velgandre"}}
-    {{#hvisSant value}}
-        <tr>
-            <td></td>
-            <td>
-                <span>{{ hentTekst "soknad.flytting.spm.flyttebyraa.velgandre.label" }}</span>
-            </td>
-        </tr>
-    {{/hvisSant}}
-{{/forFaktum}}
+{{#hvisLik value "flyttebyraa"}}
+    {{#forFaktum "flytting.flyttebyraa.velgandre"}}
+        {{#hvisSant value}}
+            <tr>
+                <td></td>
+                <td>
+                    <span>{{ hentTekst "soknad.flytting.spm.flyttebyraa.velgandre.label" }}</span>
+                </td>
+            </tr>
+        {{/hvisSant}}
+    {{/forFaktum}}
+{{/hvisLik}}
