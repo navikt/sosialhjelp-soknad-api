@@ -24,7 +24,6 @@ public class TilsynBarnepassTilXml extends CmsTransformer<WebSoknad, Tilsynsutgi
     public static final String BARNEPASS_FOLLFORT_FJERDE = "barnepass.fjerdeklasse";
     public static final List<String> BARNEPASS_AARSAKER = Arrays.asList("barnepass.fjerdeklasse.langvarig", "barnepass.fjerdeklasse.trengertilsyn", "barnepass.fjerdeklasse.ingen");
     private static final String PERIODE = "barnepass.periode";
-    private static final String UTBETALINGSDATO = "barnepass.utbetalingsdato";
     private static final String SOKERBARNEPASS = "barnepass.sokerbarnepass";
     private TilsynsutgifterBarn tilsynsutgifterBarn = new TilsynsutgifterBarn();
 
@@ -36,7 +35,6 @@ public class TilsynBarnepassTilXml extends CmsTransformer<WebSoknad, Tilsynsutgi
     public TilsynsutgifterBarn transform(WebSoknad soknad) {
         tilsynsutgifterBarn.setPeriode(extractValue(soknad.getFaktumMedKey(PERIODE), Periode.class));
         barnSomDetSokesBarnepassOm(soknad);
-        tilsynsutgifterBarn.setOensketUtbetalingsdag(extractValue(soknad.getFaktumMedKey(UTBETALINGSDATO), BigInteger.class));
         tilsynsutgifterBarn.setAnnenForsoergerperson(extractValue(soknad.getFaktumMedKey(BARNEPASS_ANDREFORELDER), String.class));
 
         return tilsynsutgifterBarn;

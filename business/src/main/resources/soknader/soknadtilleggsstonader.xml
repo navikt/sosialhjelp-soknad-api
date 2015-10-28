@@ -95,13 +95,6 @@
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>reise.aktivitet.utbetalingsdato</id>
-        <dependOn>reise.aktivitet.offentligtransport</dependOn>
-        <dependOnValues>
-            <value>true</value>
-        </dependOnValues>
-    </faktum>
-    <faktum>
         <id>reise.aktivitet.offentligtransport.aarsak.helse</id>
         <dependOn>reise.aktivitet.offentligtransport</dependOn>
         <dependOnValues>
@@ -303,13 +296,6 @@
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>reise.samling.utbetalingsdato</id>
-        <dependOn>reise.samling.offentligtransport</dependOn>
-        <dependOnValues>
-            <value>true</value>
-        </dependOnValues>
-    </faktum>
-    <faktum>
         <id>reise.samling.offentligtransport.aarsak.transport</id>
         <dependOn>reise.samling.offentligtransport</dependOn>
         <dependOnValues>
@@ -464,13 +450,6 @@
     </faktum>
     <faktum>
         <id>reise.arbeidssoker.offentligtransport.utgift</id>
-        <dependOn>reise.arbeidssoker.offentligtransport</dependOn>
-        <dependOnValues>
-            <value>true</value>
-        </dependOnValues>
-    </faktum>
-    <faktum>
-        <id>reise.arbeidssoker.utbetalingsdato</id>
         <dependOn>reise.arbeidssoker.offentligtransport</dependOn>
         <dependOnValues>
             <value>true</value>
@@ -675,13 +654,6 @@
     </faktum>
     <faktum>
         <id>reise.midlertidig.offentligtransport.utgift</id>
-        <dependOn>reise.midlertidig.offentligtransport</dependOn>
-        <dependOnValues>
-            <value>true</value>
-        </dependOnValues>
-    </faktum>
-    <faktum>
-        <id>reise.midlertidig.utbetalingsdato</id>
         <dependOn>reise.midlertidig.offentligtransport</dependOn>
         <dependOnValues>
             <value>true</value>
@@ -1152,12 +1124,6 @@
         <dependOn>informasjonsside.stonad.familie</dependOn>
         <dependOnValues><value>true</value></dependOnValues>
     </faktum>
-    <faktum>
-        <id>tilsynfamilie.utbetalingsdato</id>
-        <dependOn>informasjonsside.stonad.familie</dependOn>
-        <dependOnValues><value>true</value></dependOnValues>
-    </faktum>
-
     <vedlegg>
         <faktum>informasjonsside.stonad.familie</faktum>
         <skjemaNummer>X1</skjemaNummer>
