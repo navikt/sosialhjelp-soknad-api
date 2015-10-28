@@ -5,6 +5,7 @@ public enum FunksjonalitetBryter {
 
     public final String nokkel;
     public final String beskrivelse;
+
     FunksjonalitetBryter(String nokkel, String beskrivelse) {
         this.nokkel = nokkel;
         this.beskrivelse = beskrivelse;

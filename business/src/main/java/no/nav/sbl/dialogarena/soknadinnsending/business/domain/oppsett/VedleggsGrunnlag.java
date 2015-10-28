@@ -27,7 +27,7 @@ public class VedleggsGrunnlag {
         return this;
     }
 
-    VedleggsGrunnlag medGrunnlag(VedleggForFaktumStruktur vedlegg, Faktum... faktum) {
+    public VedleggsGrunnlag medGrunnlag(VedleggForFaktumStruktur vedlegg, Faktum... faktum) {
         return medGrunnlag(vedlegg, Arrays.asList(faktum));
     }
 
