@@ -23,7 +23,7 @@ public class HvisFlereErTrueHelper extends RegistryAwareHelper<String> {
 
     @Override
     public String getBeskrivelse() {
-        return "Finner alle fakta med key som begynner med teksten som sendes inn og teller om antallet med veriden true er større enn tallet som sendes inn.";
+        return "Finner alle fakta med key som begynner med teksten som sendes inn og teller om antallet med verdien true er større enn tallet som sendes inn.";
     }
 
     @Override
