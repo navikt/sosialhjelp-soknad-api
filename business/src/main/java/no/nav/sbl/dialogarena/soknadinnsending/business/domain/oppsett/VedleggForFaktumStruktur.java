@@ -230,4 +230,9 @@ public class VedleggForFaktumStruktur implements Serializable {
                 .medSkjemanummerTillegg(getSkjemanummerTillegg())
                 .medInnsendingsvalg(Vedlegg.Status.VedleggKreves);
     }
+
+    public VedleggForFaktumStruktur medFlereTillatt(boolean flereTillatt) {
+        this.setFlereTillatt(true);
+        return this;
+    }
 }

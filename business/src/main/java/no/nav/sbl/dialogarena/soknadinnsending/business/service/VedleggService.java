@@ -25,11 +25,14 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.FunksjonalitetBryter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigOpplastingTypeException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.VedleggForFaktumStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.VedleggsGrunnlag;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
@@ -54,10 +57,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 import static java.util.Collections.sort;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
@@ -295,28 +296,48 @@ public class VedleggService {
             return paakrevdeVedleggVedNyUthenting;
         }
     }
+    private static final VedleggForFaktumStruktur N6_FORVENTNING = new VedleggForFaktumStruktur()
+            .medFaktum(new FaktumStruktur().medId("ekstraVedlegg"))
+            .medSkjemanummer("N6")
+            .medOnValues(Arrays.asList("true"))
+            .medFlereTillatt(true);
 
     public List<Vedlegg> genererPaakrevdeVedlegg(String behandlingsId) {
-        WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true);
+        final WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true);
         if (soknad.erEttersending()) {
-            return on(vedleggRepository.hentVedlegg(behandlingsId)).filter(Vedlegg.PAAKREVDE_VEDLEGG).collect();
+
+            List<VedleggsGrunnlag> ekstraVedlegg = on(soknad.getFaktaMedKey("ekstraVedlegg"))
+                    .map(new Transformer<Faktum, VedleggsGrunnlag>() {
+                @Override
+                public VedleggsGrunnlag transform(Faktum faktum) {
+                    Vedlegg vedlegg = soknad.finnVedleggSomMatcherForventning(N6_FORVENTNING, faktum.getFaktumId());
+                    return new VedleggsGrunnlag(soknad, vedlegg).medGrunnlag(N6_FORVENTNING, faktum);
+                }
+            }).collect();
+            ArrayList<Vedlegg> resultat = new ArrayList<>(on(vedleggRepository.hentVedlegg(behandlingsId)).filter(Vedlegg.PAAKREVDE_VEDLEGG).collect());
+            resultat.addAll(hentPaakrevdeVedleggGittForventninger(ekstraVedlegg));
+            return resultat;
         } else {
             SoknadStruktur struktur = soknadService.hentSoknadStruktur(soknad.getskjemaNummer());
             final List<VedleggsGrunnlag> alleMuligeVedlegg = struktur.hentAlleMuligeVedlegg(soknad);
 
-            on(alleMuligeVedlegg).forEach(new Closure<VedleggsGrunnlag>() {
-                @Override
-                public void execute(VedleggsGrunnlag vedleggsgrunnlag) {
-                    vedleggsgrunnlag.oppdaterVedlegg(vedleggRepository);
-                }
-            });
-            return on(alleMuligeVedlegg).map(new Transformer<VedleggsGrunnlag, Vedlegg>() {
-                @Override
-                public Vedlegg transform(VedleggsGrunnlag vedleggsgrunnlag) {
-                    return vedleggsgrunnlag.getVedlegg();
-                }
-            }).filter(Vedlegg.PAAKREVDE_VEDLEGG).collect();
+            return hentPaakrevdeVedleggGittForventninger(alleMuligeVedlegg);
         }
+    }
+
+    private List<Vedlegg> hentPaakrevdeVedleggGittForventninger(List<VedleggsGrunnlag> alleMuligeVedlegg) {
+        on(alleMuligeVedlegg).forEach(new Closure<VedleggsGrunnlag>() {
+            @Override
+            public void execute(VedleggsGrunnlag vedleggsgrunnlag) {
+                vedleggsgrunnlag.oppdaterVedlegg(vedleggRepository);
+            }
+        });
+        return on(alleMuligeVedlegg).map(new Transformer<VedleggsGrunnlag, Vedlegg>() {
+            @Override
+            public Vedlegg transform(VedleggsGrunnlag vedleggsgrunnlag) {
+                return vedleggsgrunnlag.getVedlegg();
+            }
+        }).filter(Vedlegg.PAAKREVDE_VEDLEGG).collect();
     }
 
     @Transactional
