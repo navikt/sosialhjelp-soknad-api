@@ -839,9 +839,9 @@
     </faktum>
     <faktum>
         <id>flytting.nyjobb.startdato</id>
-        <dependOn>informasjonsside.stonad.flytting</dependOn>
+        <dependOn>flytting.hvorforflytte</dependOn>
         <dependOnValues>
-            <value>true</value>
+            <value>nyjobb</value>
         </dependOnValues>
     </faktum>
     <faktum>
