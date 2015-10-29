@@ -9,10 +9,12 @@
                 <span>{{ hentTekst "soknad.laeremidler.utdanningstype.hoyereutdanning" }}</span>
             {{/hvisLik}}
             {{#hvisLik value "annet"}}
-                <span>{{ hentTekst "soknad.laeremidler.utdanningstype.annet" }}</span>
-                {{#forFaktum "laeremidler.utdanningstype.spesifiser"}}
-                    <p><em>{{value}}</em></p>
-                {{/forFaktum}}
+                <span>
+                    {{ hentTekst "soknad.laeremidler.utdanningstype.annet.oppsummering" }}
+                    {{#forFaktum "laeremidler.utdanningstype.spesifiser"}}
+                        <em>{{value}}</em>
+                    {{/forFaktum}}
+                </span>
             {{/hvisLik}}
         {{/forFaktum}}
     </td>

@@ -3,7 +3,9 @@
     <td>
         {{#forFaktum "laeremidler.deltidsstudent"}}
             {{#hvisIkkeTom value}}
-                <span>{{ hentTekst "soknad.laeremidler.deltidsstudent.oppsummering" }} {{value}} {{hentTekst "soknad.laeremidler.deltidsstudent.oppsummering.prosent"}}</span>
+                <span>{{ hentTekst "soknad.laeremidler.deltidsstudent.oppsummering" }}
+                    <em>{{value}}</em> {{hentTekst "soknad.laeremidler.deltidsstudent.oppsummering.prosent"}}
+                </span>
             {{/hvisIkkeTom }}
         {{/forFaktum}}
     </td>
