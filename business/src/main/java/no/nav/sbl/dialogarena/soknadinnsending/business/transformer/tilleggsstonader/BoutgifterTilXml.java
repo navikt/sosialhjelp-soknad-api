@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader;
 
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Boutgifter;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Periode;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.collections15.Transformer;
@@ -66,7 +67,10 @@ public class BoutgifterTilXml implements Transformer<WebSoknad, Boutgifter> {
         List<Faktum> samlingFakta = webSoknad.getFaktaMedKey(SAMLING);
         if (samlingFakta != null) {
             for (Faktum samlingFaktum : samlingFakta) {
-                boutgifter.getSamlingsperiode().add(faktumTilPeriode(samlingFaktum));
+                Periode periode = faktumTilPeriode(samlingFaktum);
+                if(periode != null) {
+                    boutgifter.getSamlingsperiode().add(periode);
+                }
             }
         }
     }
