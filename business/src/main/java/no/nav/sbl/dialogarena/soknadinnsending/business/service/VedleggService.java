@@ -34,6 +34,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.FaktumStr
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.VedleggForFaktumStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.VedleggsGrunnlag;
+import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
@@ -57,8 +58,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Collections.sort;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
@@ -96,6 +100,9 @@ public class VedleggService {
 
     @Inject
     private FaktaService faktaService;
+
+    @Inject
+    private NavMessageSource navMessageSource;
 
     private PdfMerger pdfMerger = new PdfMerger();
     private PdfWatermarker watermarker = new PdfWatermarker();
@@ -308,18 +315,18 @@ public class VedleggService {
 
             List<VedleggsGrunnlag> ekstraVedlegg = on(soknad.getFaktaMedKey("ekstraVedlegg"))
                     .map(new Transformer<Faktum, VedleggsGrunnlag>() {
-                @Override
-                public VedleggsGrunnlag transform(Faktum faktum) {
-                    Vedlegg vedlegg = soknad.finnVedleggSomMatcherForventning(N6_FORVENTNING, faktum.getFaktumId());
-                    return new VedleggsGrunnlag(soknad, vedlegg).medGrunnlag(N6_FORVENTNING, faktum);
-                }
-            }).collect();
+                        @Override
+                        public VedleggsGrunnlag transform(Faktum faktum) {
+                            Vedlegg vedlegg = soknad.finnVedleggSomMatcherForventning(N6_FORVENTNING, faktum.getFaktumId());
+                            return new VedleggsGrunnlag(soknad, vedlegg, navMessageSource).medGrunnlag(N6_FORVENTNING, faktum);
+                        }
+                    }).collect();
             ArrayList<Vedlegg> resultat = new ArrayList<>(on(vedleggRepository.hentVedlegg(behandlingsId)).filter(Vedlegg.PAAKREVDE_VEDLEGG).collect());
             resultat.addAll(hentPaakrevdeVedleggGittForventninger(ekstraVedlegg));
             return resultat;
         } else {
             SoknadStruktur struktur = soknadService.hentSoknadStruktur(soknad.getskjemaNummer());
-            final List<VedleggsGrunnlag> alleMuligeVedlegg = struktur.hentAlleMuligeVedlegg(soknad);
+            final List<VedleggsGrunnlag> alleMuligeVedlegg = struktur.hentAlleMuligeVedlegg(soknad, navMessageSource);
 
             return hentPaakrevdeVedleggGittForventninger(alleMuligeVedlegg);
         }
