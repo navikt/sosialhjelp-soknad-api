@@ -6,11 +6,11 @@
                 <td>{{hentTekst "soknad.flytting.nyjobb.startdato.label"}}: <em>{{formaterLangDato value}}</em></td>
             {{/forFaktum}}
         </tr>
-        <tr>
-            {{#forFaktum "flytting.nyjobb.flyttedato"}}
-                <td class="sjekket"></td>
-                <td>{{hentTekst "soknad.flytting.nyjobb.flyttedato.label"}}: <em>{{formaterLangDato value}}</em></td>
-            {{/forFaktum}}
-        </tr>
     {{/hvisLik}}
+    <tr>
+        {{#forFaktum "flytting.nyjobb.flyttedato"}}
+            <td class="sjekket"></td>
+            <td>{{hentTekst "soknad.flytting.nyjobb.flyttedato.label"}}: <em>{{formaterLangDato value}}</em></td>
+        {{/forFaktum}}
+    </tr>
 {{/forFaktum}}
