@@ -4,6 +4,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggReposi
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -11,15 +12,18 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class VedleggsGrunnlag {
     public List<Pair<VedleggForFaktumStruktur, List<Faktum>>> grunnlag = new ArrayList<>();
     private WebSoknad soknad;
     private Vedlegg vedlegg;
+    private NavMessageSource navMessageSource;
 
-    public VedleggsGrunnlag(WebSoknad soknad, Vedlegg vedlegg) {
+    public VedleggsGrunnlag(WebSoknad soknad, Vedlegg vedlegg, NavMessageSource navMessageSource) {
         this.soknad = soknad;
         this.vedlegg = vedlegg;
+        this.navMessageSource = navMessageSource;
     }
 
     VedleggsGrunnlag medGrunnlag(VedleggForFaktumStruktur vedlegg, List<Faktum> faktum) {
@@ -91,6 +95,13 @@ public class VedleggsGrunnlag {
 
             Vedlegg.Status orginalStatus = vedlegg.getInnsendingsvalg();
             Vedlegg.Status status = oppdaterInnsendingsvalg(vedleggErPaakrevd);
+            VedleggForFaktumStruktur vedleggForFaktumStruktur = grunnlag.get(0).getLeft();
+            Faktum faktum = grunnlag.get(0).getRight().get(0);
+            if (vedleggHarTittelFraProperty(vedleggForFaktumStruktur, faktum)) {
+                vedlegg.setNavn(faktum.getProperties().get(vedleggForFaktumStruktur.getProperty()));
+            } else if (vedleggForFaktumStruktur.harOversetting()) {
+                vedlegg.setNavn(navMessageSource.getMessage(vedleggForFaktumStruktur.getOversetting().replace("${key}", faktum.getKey()), new Object[0], new Locale("nb", "NO")));
+            }
 
             if (!status.equals(orginalStatus) || vedlegg.erNyttVedlegg()) {
                 vedleggRepository.opprettEllerLagreVedleggVedNyGenereringUtenEndringAvData(vedlegg);
@@ -98,6 +109,9 @@ public class VedleggsGrunnlag {
         }
     }
 
+    private boolean vedleggHarTittelFraProperty(VedleggForFaktumStruktur vedlegg, Faktum faktum) {
+        return vedlegg.getProperty() != null && faktum.getProperties().containsKey(vedlegg.getProperty());
+    }
     private void opprettVedleggFraFaktum() {
         vedlegg = grunnlag.get(0).getLeft().genererVedlegg(finnForsteFaktum());
     }

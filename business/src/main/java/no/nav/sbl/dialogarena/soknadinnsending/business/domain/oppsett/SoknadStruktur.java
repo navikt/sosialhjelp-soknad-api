@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -99,7 +100,7 @@ public class SoknadStruktur implements Serializable {
 
     }
 
-    public List<VedleggsGrunnlag> hentAlleMuligeVedlegg(WebSoknad soknad) {
+    public List<VedleggsGrunnlag> hentAlleMuligeVedlegg(WebSoknad soknad, NavMessageSource navMessageSource) {
         Map<String, VedleggsGrunnlag> muligeVedlegg = new HashMap<>();
 
         for (VedleggForFaktumStruktur vedleggStruktur : getVedlegg()) {
@@ -110,7 +111,7 @@ public class SoknadStruktur implements Serializable {
                 for (Faktum faktum : faktaSomTriggerVedlegg) {
                     Vedlegg brukervedlegg = soknad.finnVedleggSomMatcherForventning(vedleggStruktur, faktum.getFaktumId());
 
-                    VedleggsGrunnlag vedleggsgrunnlag = new VedleggsGrunnlag(soknad, brukervedlegg)
+                    VedleggsGrunnlag vedleggsgrunnlag = new VedleggsGrunnlag(soknad, brukervedlegg, navMessageSource)
                             .medGrunnlag(vedleggStruktur, faktum);
 
                     muligeVedlegg.put(createVedleggKey(vedleggStruktur, faktum), vedleggsgrunnlag);
@@ -120,7 +121,7 @@ public class SoknadStruktur implements Serializable {
                 if (vedleggsgrunnlagFinnesIkke(muligeVedlegg, key)) {
 
                     Vedlegg brukervedlegg = soknad.finnVedleggSomMatcherForventning(vedleggStruktur, null);
-                    VedleggsGrunnlag vedleggsgrunnlag = new VedleggsGrunnlag(soknad, brukervedlegg);
+                    VedleggsGrunnlag vedleggsgrunnlag = new VedleggsGrunnlag(soknad, brukervedlegg, navMessageSource);
 
                     muligeVedlegg.put(key, vedleggsgrunnlag);
                 }
