@@ -1,54 +1,62 @@
 <tr>
-    <td class="sjekket"></td>
+    <td></td>
     <td>
-        {{#forFaktum "flytting.flyttebyraa.forste.navn"}}
-            <span>
+        <table>
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    {{#forFaktum "flytting.flyttebyraa.forste.navn"}}
+                        <span>
                 {{ hentTekst "soknad.flytting.spm.flyttebyraa.navn.oppsummering" }}
-                <em>{{value}}</em>{{ hentTekst "soknad.flytting.spm.flyttebyraa.belop.oppsummering" }}
-                {{#forFaktum "flytting.flyttebyraa.forste.belop"}}
-                    <em>{{value}}</em> {{ hentTekst "soknad.flytting.oppsummering.kr" }}
-                {{/forFaktum}}
+                            <em>{{value}}</em>{{ hentTekst "soknad.flytting.spm.flyttebyraa.belop.oppsummering" }}
+                            {{#forFaktum "flytting.flyttebyraa.forste.belop"}}
+                                <em>{{value}}</em> {{ hentTekst "soknad.flytting.oppsummering.kr" }}
+                            {{/forFaktum}}
             </span>
-        {{/forFaktum}}
+                    {{/forFaktum}}
 
-        <span></span>
-    </td>
-</tr>
-{{#hvisLik value "flyttebyraa"}}
-    {{#forFaktum "flytting.flyttebyraa.velgforste"}}
-        {{#hvisSant value}}
-            <tr>
-                <td></td>
-                <td>
-                    <span>{{ hentTekst "soknad.flytting.spm.flyttebyraa.velgforste.label" }}</span>
+                    <span></span>
                 </td>
             </tr>
-        {{/hvisSant}}
-    {{/forFaktum}}
-{{/hvisLik}}
-<tr>
-    <td class="sjekket"></td>
-    <td>
-        {{#forFaktum "flytting.flyttebyraa.andre.navn"}}
-            <span>
-                {{ hentTekst "soknad.flytting.spm.flyttebyraa.navn.oppsummering" }}
-                <em>{{value}}</em>{{ hentTekst "soknad.flytting.spm.flyttebyraa.belop.oppsummering" }}
-                {{#forFaktum "flytting.flyttebyraa.andre.belop"}}
-                    <em>{{value}}</em> {{ hentTekst "soknad.flytting.oppsummering.kr" }}
+            {{#hvisLik value "flyttebyraa"}}
+                {{#forFaktum "flytting.flyttebyraa.velgforste"}}
+                    {{#hvisSant value}}
+                        <tr>
+                            <td></td>
+                            <td>
+                                <span>{{ hentTekst "soknad.flytting.spm.flyttebyraa.velgforste.label" }}</span>
+                            </td>
+                        </tr>
+                    {{/hvisSant}}
                 {{/forFaktum}}
-            </span>
-        {{/forFaktum}}
-    </td>
-</tr>
-{{#hvisLik value "flyttebyraa"}}
-    {{#forFaktum "flytting.flyttebyraa.velgandre"}}
-        {{#hvisSant value}}
+            {{/hvisLik}}
             <tr>
-                <td></td>
+                <td class="sjekket"></td>
                 <td>
-                    <span>{{ hentTekst "soknad.flytting.spm.flyttebyraa.velgandre.label" }}</span>
+                    {{#forFaktum "flytting.flyttebyraa.andre.navn"}}
+                        <span>
+                {{ hentTekst "soknad.flytting.spm.flyttebyraa.navn.oppsummering" }}
+                            <em>{{value}}</em>{{ hentTekst "soknad.flytting.spm.flyttebyraa.belop.oppsummering" }}
+                            {{#forFaktum "flytting.flyttebyraa.andre.belop"}}
+                                <em>{{value}}</em> {{ hentTekst "soknad.flytting.oppsummering.kr" }}
+                            {{/forFaktum}}
+            </span>
+                    {{/forFaktum}}
                 </td>
             </tr>
-        {{/hvisSant}}
-    {{/forFaktum}}
-{{/hvisLik}}
+            {{#hvisLik value "flyttebyraa"}}
+                {{#forFaktum "flytting.flyttebyraa.velgandre"}}
+                    {{#hvisSant value}}
+                        <tr>
+                            <td></td>
+                            <td>
+                                <span>{{ hentTekst "soknad.flytting.spm.flyttebyraa.velgandre.label" }}</span>
+                            </td>
+                        </tr>
+                    {{/hvisSant}}
+                {{/forFaktum}}
+            {{/hvisLik}}
+
+        </table>
+    </td>
+</tr>
