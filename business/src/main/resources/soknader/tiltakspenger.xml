@@ -75,6 +75,21 @@
         <id>tilleggsopplysninger.fritekst</id>
     </faktum>
 
+    <!-- Ekstra vedlegg -->
+    <faktum>
+        <id>ekstraVedlegg</id>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <id>3</id>
+        <faktum>ekstraVedlegg</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>N6</skjemaNummer>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
     <!-- Vedlegg -->
     <vedlegg>
         <skjemaNummer>H8</skjemaNummer>
@@ -92,27 +107,10 @@
         <skjemaNummer>K5</skjemaNummer>
     </vedlegg>
 
-    <!-- Fødselsattest/bostedsbevis for barn under 16 år -->
     <vedlegg>
-        <id>7</id>
         <faktum>barn</faktum>
         <skjemaNummer>X8</skjemaNummer>
         <forSystemfaktum>false</forSystemfaktum>
-        <flereTillatt>true</flereTillatt>
-    </vedlegg>
-
-    <!-- Ekstra vedlegg -->
-    <faktum>
-        <id>ekstraVedlegg</id>
-        <flereTillatt>true</flereTillatt>
-    </faktum>
-    <vedlegg>
-        <id>1</id>
-        <faktum>ekstraVedlegg</faktum>
-        <onValues>
-            <value>true</value>
-        </onValues>
-        <skjemaNummer>N6</skjemaNummer>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
