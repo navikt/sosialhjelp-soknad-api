@@ -279,8 +279,9 @@ public class VedleggService {
             leggTilKodeverkFelter(paakrevdeVedlegg);
             return paakrevdeVedlegg;
         } else {
-            List<Vedlegg> vedleggs = genererPaakrevdeVedlegg(faktaService.hentBehandlingsId(faktumId));
-            return on(vedleggs).filter(new Predicate<Vedlegg>() {
+            List<Vedlegg> paakrevdeVedlegg = genererPaakrevdeVedlegg(faktaService.hentBehandlingsId(faktumId));
+            leggTilKodeverkFelter(paakrevdeVedlegg);
+            return on(paakrevdeVedlegg).filter(new Predicate<Vedlegg>() {
                 @Override
                 public boolean evaluate(Vedlegg vedlegg) {
                     return faktumId.equals(vedlegg.getFaktumId());
