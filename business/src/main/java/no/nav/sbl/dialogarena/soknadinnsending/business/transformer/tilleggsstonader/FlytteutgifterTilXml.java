@@ -12,6 +12,7 @@ import java.util.List;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.StofoTransformers.extractValue;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.StofoTransformers.sumDouble;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoKodeverkVerdier.FlytterSelv.flytterselv;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 public class FlytteutgifterTilXml extends CmsTransformer<WebSoknad, Flytteutgifter> {
 
@@ -52,8 +53,9 @@ public class FlytteutgifterTilXml extends CmsTransformer<WebSoknad, Flytteutgift
                 soknad.getFaktumMedKey(PARKERING),
                 soknad.getFaktumMedKey(FERGE),
                 soknad.getFaktumMedKey(ANNET)));
-
-        transformAnbud(soknad, flytteutgifter);
+        if(!flytterselv.cms.equals(flytteutgifter.getFlytterSelv())) {
+            transformAnbud(soknad, flytteutgifter);
+        }
 
         return flytteutgifter;
     }
