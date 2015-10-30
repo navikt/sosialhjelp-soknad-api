@@ -2,20 +2,26 @@
     <tr>
         <td class="sjekket"></td>
         <td>{{hentTekst (concat "soknad.reise.arbeidssoker.dagpenger." value) }}</td>
-
-
+    </tr>
     {{#hvisLik value "true"}}
-        {{#forFaktum "reise.arbeidssoker.dagpenger.forlenget"}}
-            <tr>
-                <td class="sjekket"></td>
-                <td>{{hentTekst (concat "soknad.reise.arbeidssoker.dagpenger.forlenget." value ".label") }}</td>
-            </tr>
-        {{/forFaktum}}
-        {{#forFaktum "reise.arbeidssoker.dagpenger.bortfall"}}
-            <tr>
-                <td class="sjekket"></td>
-                <td>{{hentTekst (concat "soknad.reise.arbeidssoker.dagpenger.bortfall." value ".label")}}</td>
-            </tr>
-        {{/forFaktum}}
+        <tr>
+            <td></td>
+            <td>
+                <table>
+                    {{#forFaktum "reise.arbeidssoker.dagpenger.forlenget"}}
+                        <tr>
+                            <td class="sjekket"></td>
+                            <td>{{hentTekst (concat "soknad.reise.arbeidssoker.dagpenger.forlenget." value ".label") }}</td>
+                        </tr>
+                    {{/forFaktum}}
+                    {{#forFaktum "reise.arbeidssoker.dagpenger.bortfall"}}
+                        <tr>
+                            <td class="sjekket"></td>
+                            <td>{{hentTekst (concat "soknad.reise.arbeidssoker.dagpenger.bortfall." value ".label")}}</td>
+                        </tr>
+                    {{/forFaktum}}
+                </table>
+            </td>
+        </tr>
     {{/hvisLik}}
 {{/forFaktum}}
