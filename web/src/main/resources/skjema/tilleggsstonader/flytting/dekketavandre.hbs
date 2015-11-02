@@ -1,0 +1,13 @@
+{{#forFaktum "flytting.dekket"}}
+    <tr>
+        <td class="sjekket"></td>
+        <td>
+            {{#hvisLik value "true"}}
+                <span>{{ hentTekst "soknad.flytting.dekket.true" }}</span>
+            {{/hvisLik}}
+            {{#hvisLik value "false"}}
+                <span>{{ hentTekst "soknad.flytting.dekket.false" }}</span>
+            {{/hvisLik}}
+        </td>
+    </tr>
+{{/forFaktum}}
