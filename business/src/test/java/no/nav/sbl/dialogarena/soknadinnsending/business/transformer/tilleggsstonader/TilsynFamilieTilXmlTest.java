@@ -55,7 +55,6 @@ public class TilsynFamilieTilXmlTest {
 
         assertThat(transform.getTilsynsmottaker()).isEqualToIgnoringCase("12312312345");
         assertThat(transform.getAnnenTilsynsperson()).isEqualTo("12332112345");
-        assertThat(transform.getOensketUtbetalingsdag()).isEqualTo(new BigInteger("15"));
         assertThat(transform.getTilsynForetasAv()).contains("Offentlig", "Privat", "Annet");
     }
     @Test
