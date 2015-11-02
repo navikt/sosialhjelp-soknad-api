@@ -110,11 +110,6 @@ public class BoutgifterTilXmlTest {
     }
 
     @Test
-    public void settOensketUtbetalingsdag() {
-        assertThat(boutgifter.getOensketUtbetalingsdag()).isEqualTo(new BigInteger("20"));
-    }
-
-    @Test
     public void settSamling() {
         fakta.set(0, new Faktum()
                 .medKey("bostotte.aarsak")
