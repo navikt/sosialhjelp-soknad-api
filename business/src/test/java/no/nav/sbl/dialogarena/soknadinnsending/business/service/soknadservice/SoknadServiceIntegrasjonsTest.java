@@ -248,9 +248,6 @@ public class SoknadServiceIntegrasjonsTest {
                 .medProperty("utgift", "2000"));
         faktaService.opprettBrukerFaktum(behId, new Faktum()
                 .medKey("bostotte.adresseutgifter.hjemstedsaddresse"));
-        faktaService.opprettBrukerFaktum(behId, new Faktum()
-                .medKey("bostotte.utbetalingsdato")
-                .medValue("20"));
 
         soknad.setSoknadId(soknadId);
 
