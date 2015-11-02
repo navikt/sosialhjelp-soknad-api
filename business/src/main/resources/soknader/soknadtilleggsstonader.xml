@@ -438,6 +438,27 @@
             <value>true</value>
         </dependOnValues>
     </faktum>
+    <faktum>
+        <id>reise.arbeidssoker.dagpenger</id>
+        <dependOn>informasjonsside.stonad.reisearbeidssoker</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.arbeidssoker.dagpenger.forlenget</id>
+        <dependOn>reise.arbeidssoker.dagpenger</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.arbeidssoker.dagpenger.bortfall</id>
+        <dependOn>reise.arbeidssoker.dagpenger</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
 
 
     <!-- reise arbeidssoker offentlig transport -->
