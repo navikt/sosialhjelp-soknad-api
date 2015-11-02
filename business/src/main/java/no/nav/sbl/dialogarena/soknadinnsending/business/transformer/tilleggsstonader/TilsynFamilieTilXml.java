@@ -8,7 +8,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsston
 import org.apache.commons.collections15.Transformer;
 import org.apache.commons.lang3.StringUtils;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
