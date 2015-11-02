@@ -810,10 +810,17 @@
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>flytting.nyjobb.startdato</id>
+        <id>flytting.dekket</id>
         <dependOn>informasjonsside.stonad.flytting</dependOn>
         <dependOnValues>
             <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>flytting.nyjobb.startdato</id>
+        <dependOn>flytting.hvorforflytte</dependOn>
+        <dependOnValues>
+            <value>nyjobb</value>
         </dependOnValues>
     </faktum>
     <faktum>
