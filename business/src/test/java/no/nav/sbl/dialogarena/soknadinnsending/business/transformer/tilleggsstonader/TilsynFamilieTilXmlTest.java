@@ -42,10 +42,6 @@ public class TilsynFamilieTilXmlTest {
                 .medValue("true")
                 .medProperty("personnummer", "12332112345")
                 .medProperty("nav", "test testesen"));
-        fakta.add(new Faktum()
-                .medKey("tilsynfamilie.utbetalingsdato")
-                .medValue("15"));
-
 
         websoknad.setFakta(fakta);
 

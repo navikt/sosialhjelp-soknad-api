@@ -20,9 +20,6 @@
                             <td><span>{{ hentTekst "soknad.reise.offentligtransport.utgift.oppsummering" }} <em>{{value}}</em> {{hentTekst "soknad.krmnd"}}</span></td>
                         {{/forFaktum}}
                     </tr>
-                    {{#forFaktum (concat faktumPrefiks "utbetalingsdato")}}
-                        {{> skjema/tilleggsstonader/felles/utbetalingsdato}}
-                    {{/forFaktum}}
                 </table>
             </td>
         </tr>
