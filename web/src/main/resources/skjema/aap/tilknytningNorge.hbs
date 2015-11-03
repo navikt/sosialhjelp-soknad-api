@@ -54,9 +54,9 @@
                         <ul>
                             {{#forFakta "tilknytningNorge.arbeidIUtlandet.periode"}}
                                 <li class="kulepunkt">
-                                    <span>Land: {{ hentLand properties.land }},</span>
-                                    <span>fra {{ toLowerCase properties.fraMaaned }} {{ properties.fraAar }}</span>
-                                    <span>til {{ toLowerCase properties.tilMaaned }} {{ properties.tilAar }}</span>
+                                    <span>{{hentTekst "oppsummering.tiltakspenger.tilknytningNorge.land"}}: {{ hentLand properties.land }},</span>
+                                    <span>{{hentTekst "oppsummering.tiltakspenger.tilknytningNorge.fra"}} {{ toLowerCase properties.fraMaaned }} {{ properties.fraAar }}</span>
+                                    <span>{{hentTekst "oppsummering.tiltakspenger.tilknytningNorge.til"}} {{ toLowerCase properties.tilMaaned }} {{ properties.tilAar }}</span>
                                 </li>
                             {{/forFakta}}
                         </ul>
