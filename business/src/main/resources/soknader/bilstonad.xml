@@ -372,6 +372,7 @@
         <faktum>soknadsvalg.stonadstype</faktum>
         <onValues>
             <value>stonadBil</value>
+            <value>stonadBilSpesialutstyr</value>
         </onValues>
         <skjemaNummer>T7</skjemaNummer>
     </vedlegg>
@@ -380,6 +381,7 @@
         <faktum>soknadsvalg.stonadstype</faktum>
         <onValues>
             <value>stonadBil</value>
+            <value>stonadBilSpesialutstyr</value>
         </onValues>
         <skjemaNummer>U2</skjemaNummer>
     </vedlegg>
