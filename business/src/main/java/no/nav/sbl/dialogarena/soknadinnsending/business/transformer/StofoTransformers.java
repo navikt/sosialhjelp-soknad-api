@@ -1,15 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.transformer;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Barn;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.DrosjeTransportutgifter;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.ErUtgifterDekket;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Formaal;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Innsendingsintervaller;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.KollektivTransportutgifter;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Periode;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Skolenivaaer;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Tilsynskategorier;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoKodeverkVerdier;
 import org.apache.commons.collections15.Transformer;
@@ -24,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 
 
 public final class StofoTransformers {
@@ -168,8 +161,14 @@ public final class StofoTransformers {
             @Override
             public Barn transform(Faktum faktum) {
                 Barn barn = new Barn();
-                barn.setPersonidentifikator(faktum.getProperties().get("fnr"));
                 barn.setNavn(faktum.getProperties().get("fornavn"));
+
+                if (faktum.getType() == BRUKERREGISTRERT) {
+                    barn.setPersonidentifikator(faktum.getProperties().get("fodselsdato"));
+                } else {
+                    barn.setPersonidentifikator(faktum.getProperties().get("fnr"));
+                }
+
                 return barn;
             }
         });
