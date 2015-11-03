@@ -68,6 +68,7 @@ public class FlytteutgifterTilXmlTest {
     private Faktum valgtAndre;
     private Faktum nyeaddresse;
     private Faktum personalia;
+    private Faktum flyttingDekket;
 
     @Before
     public void beforeEach() {
@@ -126,6 +127,10 @@ public class FlytteutgifterTilXmlTest {
         valgtAndre = new Faktum()
                 .medKey("flytting.flyttebyraa.velgandre")
                 .medValue("true");
+        flyttingDekket = new Faktum()
+                .medKey("flytting.dekket")
+                .medValue("true");
+
 
 
     }
@@ -189,6 +194,14 @@ public class FlytteutgifterTilXmlTest {
         flytteutgifter = flytteutgifterTilXml.transform(webSoknad);
         assertThat(flytteutgifter.getAvstand()).isEqualTo(new BigInteger(AVSTAND_KM));
     }
+
+    @Test
+    public void settFlyttingDekket() {
+        webSoknad = new WebSoknad().medFaktum(flyttingDekket);
+        flytteutgifter = flytteutgifterTilXml.transform(webSoknad);
+        assertThat(flytteutgifter.isErUtgifterTilFlyttingDekketAvAndreEnnNAV().booleanValue()).isEqualTo(true);
+    }
+
     @Test
     public void settFlytteSelv() {
         when(messageSource.getMessage(eq(flytterselv.cms), isNull(Object[].class), eq(flytterselv.cms), any(Locale.class))).thenReturn("flytterselvcms");
