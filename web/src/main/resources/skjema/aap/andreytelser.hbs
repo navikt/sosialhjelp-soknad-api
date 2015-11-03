@@ -66,14 +66,14 @@
                                             {{#forFaktum "andreytelser.utbetalinger.fraarbeidsgiver.lopendeutbetaling.belop"}}
                                                 {{#hvisIkkeTom value}}
                                                     <li class="kulepunkt">
-                                                        <span>Beløp per måned: {{ value }} kr</span>
+                                                        <span>{{hentTekst "oppsummering.andreYtelser.beloepPerMaaned"}}: {{ value }} kr</span>
                                                     </li>
                                                 {{/hvisIkkeTom}}
                                             {{/forFaktum}}
                                             {{#forFaktum "andreytelser.utbetalinger.fraarbeidsgiver.lopendeutbetaling.opphorer"}}
                                                 {{#hvisIkkeTom properties}}
                                                     <li class="kulepunkt">
-                                                        <span>Opphører: {{ toLowerCase properties.maaned }} {{ properties.aar }}</span>
+                                                        <span>{{hentTekst "oppsummering.andreYtelser.opphoerer"}}: {{ toLowerCase properties.maaned }} {{ properties.aar }}</span>
                                                     </li>
                                                 {{/hvisIkkeTom}}
                                             {{/forFaktum}}
@@ -132,14 +132,14 @@
                         {{#forFaktum "andreytelser.utbetalinger.fraandre.utenlandsketrygdemyndigheter.ytelse"}}
                             {{#hvisIkkeTom value}}
                                 <li class="kulepunkt">
-                                    <span>Ytelse: {{ value }}</span>
+                                    <span>{{hentTekst "oppsummering.andreYtelser.ytelse"}}: {{ value }}</span>
                                 </li>
                             {{/hvisIkkeTom}}
                         {{/forFaktum}}
                         {{#forFaktum "andreytelser.utbetalinger.fraandre.utenlandsketrygdemyndigheter.land"}}
                             {{#hvisIkkeTom value}}
                                 <li class="kulepunkt">
-                                    <span>Land: {{ value }}</span>
+                                    <span>{{hentTekst "oppsummering.andreYtelser.land"}}: {{ value }}</span>
                                 </li>
                             {{/hvisIkkeTom}}
                         {{/forFaktum}}
@@ -158,14 +158,14 @@
                         {{#forFaktum "andreytelser.utbetalinger.fraandre.annet.ytelse"}}
                             {{#hvisIkkeTom value}}
                                 <li class="kulepunkt">
-                                    <span>Ytelse: {{ value }}</span>
+                                    <span>{{hentTekst "oppsummering.andreYtelser.ytelse"}}: {{ value }}</span>
                                 </li>
                             {{/hvisIkkeTom}}
                         {{/forFaktum}}
                         {{#forFaktum "andreytelser.utbetalinger.fraandre.annet.utbetaler"}}
                             {{#hvisIkkeTom value}}
                                 <li class="kulepunkt">
-                                    <span>Utbetaler: {{ value }}</span>
+                                    <span>{{hentTekst "oppsummering.andreYtelser.utbetaler"}}: {{ value }}</span>
                                 </li>
                             {{/hvisIkkeTom}}
                         {{/forFaktum}}
