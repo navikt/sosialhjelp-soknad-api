@@ -24,6 +24,7 @@ public class ArbeidReiseTilXml implements Transformer<WebSoknad, ReisestoenadFor
         reise.setErVentetidForlenget(extractValue(soknad.getFaktumMedKey("reise.arbeidssoker.dagpenger.forlenget"), Boolean.class));
         reise.setFinnesTidsbegrensetbortfall(extractValue(soknad.getFaktumMedKey("reise.arbeidssoker.dagpenger.bortfall"), Boolean.class));
         reise.setAlternativeTransportutgifter(StofoUtils.alternativeTransportUtgifter(soknad, "arbeidssoker"));
+        reise.setHarMottattDagpengerSisteSeksMaaneder(extractValue(soknad.getFaktumMedKey("reise.arbeidssoker.dagpenger"), Boolean.class));
         return reise;
     }
 }
