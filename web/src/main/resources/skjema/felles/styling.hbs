@@ -29,6 +29,9 @@
     .footer span { display: inline-block; margin: 0 10px; }
     .logo      { position: absolute; left: 77mm; top: 0; width: 17mm; }
     .sjekket   { display: inline-block; background: url(img/hake_sort.gif) no-repeat center bottom; width: 10px; height: 12px; background-size: 8px; }
+    table table .sjekket { background: none; width: 5px; }
+    table table .sjekket::before { content: '•'; }
+    table table table .sjekket::before { content: '-'; font-weight: bold; }
     .usjekket  { display: inline-block; background: url(img/minus_sort.gif) no-repeat center; width: 10px; height: 10px; }
     .hode      { text-align: center; margin: 15mm 0 9.5mm; padding-bottom: 9.5mm; border-bottom: .2pt solid #ccc; }
     .hode hr   { border: none; border-top: .2pt solid #ccc; width: 8mm; margin: 7mm auto 5mm; }
