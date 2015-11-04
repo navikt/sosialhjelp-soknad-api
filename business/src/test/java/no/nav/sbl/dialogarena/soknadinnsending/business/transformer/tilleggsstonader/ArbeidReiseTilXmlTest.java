@@ -23,6 +23,7 @@ public class ArbeidReiseTilXmlTest {
         soknad.getFakta().add(new Faktum().medKey("reise.arbeidssoker.reisedekket").medValue("true"));
         soknad.getFakta().add(new Faktum().medKey("reise.arbeidssoker.dagpenger.forlenget").medValue("true"));
         soknad.getFakta().add(new Faktum().medKey("reise.arbeidssoker.dagpenger.bortfall").medValue("true"));
+        soknad.getFakta().add(new Faktum().medKey("reise.arbeidssoker.dagpenger").medValue("true"));
 
         soknad.getFakta().add(new Faktum().medKey("reise.arbeidssoker.offentligtransport.drosje").medValue("true"));
         soknad.getFakta().add(new Faktum().medKey("reise.arbeidssoker.offentligtransport.drosje.belop").medValue("50"));
@@ -45,6 +46,7 @@ public class ArbeidReiseTilXmlTest {
         assertThat(result.isErUtgifterDekketAvAndre()).isEqualTo(true);
         assertThat(result.isErVentetidForlenget()).isEqualTo(true);
         assertThat(result.isFinnesTidsbegrensetbortfall()).isEqualTo(true);
+        assertThat(result.isHarMottattDagpengerSisteSeksMaaneder()).isEqualTo(true);
         assertThat(result.getFormaal()).is(new Condition<Formaal>() {
 
             @Override

@@ -31,6 +31,7 @@ public class FlytteutgifterTilXml extends CmsTransformer<WebSoknad, Flytteutgift
     public static final String BELOEP_FLYTTEBYRAA_2 = "flytting.flyttebyraa.andre.belop";
     private static final String ANNET = "flytting.flytteselv.andreutgifter.annet";
     private static final String FLYTTING_FLYTTEBYRAA_VELGFORSTE = "flytting.flyttebyraa.velgforste";
+    private static final String FLYTTING_DEKKET = "flytting.dekket";
 
     public FlytteutgifterTilXml(MessageSource navMessageSource) {
         super(navMessageSource);
@@ -53,6 +54,7 @@ public class FlytteutgifterTilXml extends CmsTransformer<WebSoknad, Flytteutgift
                 soknad.getFaktumMedKey(PARKERING),
                 soknad.getFaktumMedKey(FERGE),
                 soknad.getFaktumMedKey(ANNET)));
+        flytteutgifter.setErUtgifterTilFlyttingDekketAvAndreEnnNAV(extractValue(soknad.getFaktumMedKey(FLYTTING_DEKKET), Boolean.class));
         if(!flytterselv.cms.equals(flytteutgifter.getFlytterSelv())) {
             transformAnbud(soknad, flytteutgifter);
         }
