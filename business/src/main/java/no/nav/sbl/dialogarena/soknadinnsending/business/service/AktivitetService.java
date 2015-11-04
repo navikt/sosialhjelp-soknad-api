@@ -13,6 +13,7 @@ import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.SakOgAktivitetV1;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSAktivitet;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSAktivitetOgVedtak;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSPeriode;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSSakstyper;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSVedtaksinformasjon;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetOgVedtakDagligReiseListeRequest;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetOgVedtakDagligReiseListeResponse;
@@ -130,6 +131,7 @@ public class AktivitetService {
                     .medKey("vedtak")
                     .medProperty("aktivitetId", aktivitet.getAktivitetId())
                     .medProperty("aktivitetNavn", aktivitet.getAktivitetsnavn())
+                    .medProperty("tema", hentTema())
                     .medProperty("erStoenadsberettiget", "" + aktivitet.isErStoenadsberettigetAktivitet())
                     .medProperty("forventetDagligParkeringsutgift", ServiceUtils.nullToBlank(input.getForventetDagligParkeringsutgift()))
                     .medProperty("dagsats", ServiceUtils.nullToBlank(input.getDagsats()))
@@ -144,6 +146,14 @@ public class AktivitetService {
             faktum.medProperty("tom", ServiceUtils.datoTilString(periode.getTom()));
 
             return faktum;
+        }
+
+        private String hentTema() {
+            if(aktivitet.getSaksinformasjon() != null && aktivitet.getSaksinformasjon().getSakstype() != null) {
+                WSSakstyper sakstype = aktivitet.getSaksinformasjon().getSakstype();
+                return (sakstype != null && sakstype.getValue() != null) ? sakstype.getValue() : "TSO";
+            }
+            return "TSO";
         }
     }
 }
