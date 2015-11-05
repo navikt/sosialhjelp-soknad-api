@@ -13,6 +13,7 @@ import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSAktivitetstype
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSBetalingsplan;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSPeriode;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSSaksinformasjon;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSSakstyper;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSVedtaksinformasjon;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetOgVedtakDagligReiseListeRequest;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetOgVedtakDagligReiseListeResponse;
@@ -188,6 +189,7 @@ public class AktivitetServiceTest {
         assertThat(faktums).contains(
                 new Faktum()
                         .medKey("vedtak")
+                        .medProperty("tema", "TSO")
                         .medProperty("aktivitetId", "100")
                         .medProperty("aktivitetNavn", "navn på aktivitet")
                         .medProperty("aktivitetFom", "2015-01-01")
@@ -204,6 +206,7 @@ public class AktivitetServiceTest {
         assertThat(faktums).contains(
                 new Faktum()
                         .medKey("vedtak")
+                        .medProperty("tema", "TSO")
                         .medProperty("aktivitetId", "100")
                         .medProperty("aktivitetNavn", "navn på aktivitet")
                         .medProperty("aktivitetFom", "2015-01-01")
@@ -219,6 +222,7 @@ public class AktivitetServiceTest {
         assertThat(faktums).contains(
                 new Faktum()
                         .medKey("vedtak")
+                        .medProperty("tema", "TSO")
                         .medProperty("aktivitetId", "101")
                         .medProperty("aktivitetNavn", "navn på aktivitet2")
                         .medProperty("aktivitetFom", "2015-01-01")
@@ -255,7 +259,9 @@ public class AktivitetServiceTest {
                 .withAktivitetId(aktivitetId)
                 .withAktivitetsnavn(aktivitetNavn)
                 .withErStoenadsberettigetAktivitet(true)
-                .withSaksinformasjon(new WSSaksinformasjon().withSaksnummerArena("saksnummerarena").withVedtaksinformasjon(
+                .withSaksinformasjon(new WSSaksinformasjon().withSaksnummerArena("saksnummerarena")
+                        .withSakstype(new WSSakstyper().withValue("TSO"))
+                        .withVedtaksinformasjon(
                         vedtak
                 ));
     }
