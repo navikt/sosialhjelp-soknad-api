@@ -80,8 +80,12 @@ public class FlytteutgifterTilXml extends CmsTransformer<WebSoknad, Flytteutgift
         Anbud anbud1 = lagAnbud(soknad, NAVN_FLYTTEBYRAA_1, BELOEP_FLYTTEBYRAA_1);
         Anbud anbud2 = lagAnbud(soknad, NAVN_FLYTTEBYRAA_2, BELOEP_FLYTTEBYRAA_2);
         List<Anbud> anbud = flytteutgifter.getAnbud();
-        anbud.add(anbud1);
-        anbud.add(anbud2);
+        if(anbud1 != null) {
+            anbud.add(anbud1);
+        }
+        if(anbud2 != null) {
+            anbud.add(anbud2);
+        }
         flytteutgifter.setValgtFlyttebyraa(extractValue(soknad.getFaktumMedKey(flyttebyraaFaktum(soknad)), String.class));
     }
 
