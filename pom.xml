@@ -45,7 +45,7 @@
         <sendsoknad.tjenestespec.version>0.0.23</sendsoknad.tjenestespec.version>
         <behandlingsinformasjon.tjenestespec.version>0.0.46</behandlingsinformasjon.tjenestespec.version>
         <fillager.tjenestespec.version>0.0.3</fillager.tjenestespec.version>
-        <lokalt.kodeverk>1.3</lokalt.kodeverk>
+        <lokalt.kodeverk>1.6</lokalt.kodeverk>
         <henvendelse.tjenestespesifikasjon.version.1>2.0.0</henvendelse.tjenestespesifikasjon.version.1>
         <dialogarena.dokumentinnsending.version>2.0.1</dialogarena.dokumentinnsending.version>
         <ojdbc.version>11.2.0.3</ojdbc.version>
