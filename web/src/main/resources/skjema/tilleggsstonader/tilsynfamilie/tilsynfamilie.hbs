@@ -9,10 +9,16 @@
                 <tr>
                     <td class="sjekket"></td>
                     <td>
-                        <span>{{ hentTekst "soknad.tilsynfamilie.typetilsyn.sporsmal"}} </span>
+                        <span>{{ hentTekst "soknadtilleggsstonader.oppsummering.tilsynfamilie.familiemedlem"}} <em>{{value}}</em></span>
                     </td>
                 </tr>
             {{/forFaktum}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{ hentTekst "soknad.tilsynfamilie.typetilsyn.sporsmal"}}</span>
+                </td>
+            </tr>
             {{#forFaktum "tilsynfamilie.typetilsyn"}}
                 <tr>
                     <td></td>
