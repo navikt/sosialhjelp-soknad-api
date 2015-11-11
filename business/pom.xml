@@ -61,6 +61,10 @@
             <artifactId>fillager-tjenestespesifikasjon</artifactId>
         </dependency>
         <dependency>
+            <groupId>no.nav.sbl</groupId>
+            <artifactId>dkif-tjenestespesifikasjon</artifactId>
+        </dependency>
+        <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>dialogarena-behandlingsinformasjon</artifactId>
         </dependency>
