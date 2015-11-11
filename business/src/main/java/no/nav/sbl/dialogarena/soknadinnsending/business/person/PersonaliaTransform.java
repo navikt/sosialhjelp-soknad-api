@@ -9,6 +9,7 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBruker;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLEPost;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLElektroniskKommunikasjonskanal;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentDigitalKontaktinformasjonResponse;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Diskresjonskoder;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Statsborgerskap;
@@ -20,7 +21,7 @@ public class PersonaliaTransform {
     private static final String KJONN_MANN = "m";
     private static final String KJONN_KVINNE = "k";
 
-    public static Personalia mapTilPersonalia(XMLHentKontaktinformasjonOgPreferanserResponse response, HentKjerneinformasjonResponse kjerneinformasjonResponse, Kodeverk kodeverk) {
+    public static Personalia mapTilPersonalia(XMLHentKontaktinformasjonOgPreferanserResponse response, HentKjerneinformasjonResponse kjerneinformasjonResponse, Kodeverk kodeverk, WSHentDigitalKontaktinformasjonResponse dkifResponse) {
         if (response == null) {
             return new Personalia();
         }
@@ -37,7 +38,7 @@ public class PersonaliaTransform {
                 .alder(finnAlder(finnFnr(xmlBruker)))
                 .diskresjonskode(diskresjonskodeString)
                 .navn(finnSammensattNavn(xmlBruker))
-                .epost(finnEpost(xmlBruker))
+                .epost(finnEpost(dkifResponse))
                 .statsborgerskap(finnStatsborgerskap(xmlPerson))
                 .kjonn(finnKjonn(xmlBruker))
                 .gjeldendeAdresse(finnGjeldendeAdresse(xmlBruker, kodeverk))
@@ -49,10 +50,18 @@ public class PersonaliaTransform {
                 .build();
     }
 
+    private static String finnEpost(WSHentDigitalKontaktinformasjonResponse dkifResponse) {
+        try {
+            return dkifResponse.getDigitalKontaktinformasjon().getEpostadresse().getValue();
+        } catch (RuntimeException e) {
+            return "";
+        }
+    }
+
     private static String finnUtenlandskKontoLand(XMLBruker xmlBruker, Kodeverk kodeverk) {
         XMLBankkonto bankkonto = xmlBruker.getBankkonto();
 
-        if (bankkonto == null  || bankkonto instanceof XMLBankkontoNorge) {
+        if (bankkonto == null || bankkonto instanceof XMLBankkontoNorge) {
             return "";
         }
         String landkode = ((XMLBankkontoUtland) bankkonto).getBankkontoUtland().getLandkode().getValue();
@@ -95,7 +104,7 @@ public class PersonaliaTransform {
     }
 
     private static String finnStatsborgerskap(Person xmlPerson) {
-        if(xmlPerson.getStatsborgerskap() != null) {
+        if (xmlPerson.getStatsborgerskap() != null) {
             Statsborgerskap statsborgerskap = xmlPerson.getStatsborgerskap();
             return statsborgerskap.getLand().getValue();
         } else {
