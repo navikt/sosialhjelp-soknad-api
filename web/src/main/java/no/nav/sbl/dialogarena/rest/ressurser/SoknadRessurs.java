@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
+import no.nav.sbl.dialogarena.rest.utils.PDFService;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
@@ -19,7 +20,16 @@ import org.springframework.stereotype.Controller;
 import javax.inject.Inject;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.*;
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import java.io.IOException;
 import java.util.HashMap;
@@ -53,6 +63,8 @@ public class SoknadRessurs {
     @Inject
     private NavMessageSource messageSource;
 
+    @Inject
+    private PDFService pdfService;
 
     @GET
     @Path("/{behandlingsId}")
@@ -144,7 +156,13 @@ public class SoknadRessurs {
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, false);
         soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(soknadService.hentSoknadStruktur(soknad.getskjemaNummer()));
         return new TilleggsstonaderTilXml(messageSource).transform(soknad).getContent();
+    }
 
+    @GET
+    @Path("/{behandlingsId}/pdf")
+    @Produces("application/pdf")
+    public byte[] pdf(@PathParam("behandlingsId") String behandlingsId) {
+        return pdfService.genererPdfMedKodeverksverdier(soknadService.hentSoknad(behandlingsId, true, true), "/skjema/kvittering");
     }
 
     @GET
