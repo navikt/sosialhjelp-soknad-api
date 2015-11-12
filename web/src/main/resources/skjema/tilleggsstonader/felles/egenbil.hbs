@@ -1,14 +1,18 @@
 {{#forFaktumHvisSant (concat faktumPrefiks "offentligtransport.egenbil")}}
     <tr>
         <td class="sjekket"></td>
-        <td><span>{{hentTekst "soknad.reise.offentligtransport.egenbil.true"}}</span></td>
+        <td>
+            <span>
+                {{hentTekst "soknad.reise.offentligtransport.egenbil.true"}}.
+                {{hentTekst "oppsummering.reise.offentligtransport.egenbil.kostnader"}}
+            </span>
+        </td>
     </tr>
 
     {{#forFaktum (concat faktumPrefiks "offentligtransport.egenbil.kostnader")}}
         <tr>
             <td></td>
             <td>
-                <p class="overskrift">{{hentTekst "oppsummering.reise.offentligtransport.egenbil.kostnader"}}</p>
                 <table>
                     {{#forFaktum (concat faktumPrefiks "offentligtransport.egenbil.kostnader.bompenger")}}
                         <tr>
@@ -105,13 +109,15 @@
     <tr>
         <td class="sjekket"></td>
         <td>
-            <span>{{hentTekst "soknad.reise.offentligtransport.egenbil.false"}}</span>
+            <span>
+                {{hentTekst "soknad.reise.offentligtransport.egenbil.false"}}.
+                {{hentTekst "oppsummering.reise.offentligtransport.egenbil.aarsak"}}
+            </span>
         </td>
     </tr>
     <tr>
         <td></td>
         <td>
-            <p class="overskrift">{{hentTekst "oppsummering.reise.offentligtransport.egenbil.aarsak"}}</p>
             <table>
                 {{#forFaktumHvisSant (concat faktumPrefiks "offentligtransport.egenbil.aarsak.helse")}}
                     <tr>

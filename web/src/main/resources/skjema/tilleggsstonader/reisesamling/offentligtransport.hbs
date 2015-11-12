@@ -5,7 +5,10 @@
             {{#hvisSant value}}
                 <span>{{ hentTekst "soknad.reise.offentligtransport.true" }}</span>
             {{else}}
-                <span>{{ hentTekst "soknad.reise.offentligtransport.false" }}</span>
+                <span>
+                    {{ hentTekst "soknad.reise.offentligtransport.false" }}.
+                    {{hentTekst "oppsummering.reise.offentligtransport.aarsak"}}
+                </span>
             {{/hvisSant}}
         </td>
     </tr>
@@ -47,7 +50,6 @@
         <tr>
             <td></td>
             <td>
-                <p class="overskrift">{{hentTekst "oppsummering.reise.offentligtransport.aarsak"}}</p>
                 <table>
                     {{#forFaktumHvisSant (concat faktumPrefiks "offentligtransport.aarsak.helse")}}
                         <tr>
