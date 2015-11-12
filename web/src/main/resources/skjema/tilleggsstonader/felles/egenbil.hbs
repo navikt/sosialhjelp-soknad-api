@@ -66,16 +66,6 @@
                                             <td><em>{{value}}</em> {{hentTekst "soknad.krdag"}}</td>
                                         </tr>
                                     {{/forFaktum}}
-                                    {{#forFaktum (concat faktumPrefiks "offentligtransport.egenbil.sendebekreftelse")}}
-                                        <tr>
-                                            <td class="sjekket"></td>
-                                            {{#hvisLik value "uke"}}
-                                                <td>{{hentTekst "soknad.reise.offentligtransport.egenbil.sendebekreftelse.uke"}}</td>
-                                            {{else}}
-                                                <td>{{hentTekst "soknad.reise.offentligtransport.egenbil.sendebekreftelse.maned"}}</td>
-                                            {{/hvisLik}}
-                                        </tr>
-                                    {{/forFaktum}}
                                 </table>
                             </td>
                         </tr>
@@ -86,6 +76,27 @@
                             </td>
                         </tr>
                     {{/hvisSant}}
+                </table>
+            </td>
+        </tr>
+    {{/forFaktum}}
+
+    {{#forFaktum (concat faktumPrefiks "offentligtransport.egenbil.sendebekreftelse")}}
+        <tr>
+            <td></td>
+            <td>
+                <table>
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>
+                            {{hentTekst "soknadtilleggsstonader.oppsummering.dagligreise.kjorelisteperiode"}}
+                            {{#hvisLik value "uke"}}
+                                {{hentTekst "soknad.reise.offentligtransport.egenbil.sendebekreftelse.uke"}}
+                            {{else}}
+                                {{hentTekst "soknad.reise.offentligtransport.egenbil.sendebekreftelse.maned"}}
+                            {{/hvisLik}}
+                        </td>
+                    </tr>
                 </table>
             </td>
         </tr>
