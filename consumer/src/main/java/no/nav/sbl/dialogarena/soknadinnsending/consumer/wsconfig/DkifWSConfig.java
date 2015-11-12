@@ -1,19 +1,19 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig;
 
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder;
+import no.nav.sbl.dialogarena.types.Pingable;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.DigitalKontaktinformasjonV1;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import java.net.URL;
 
 @Configuration
 public class DkifWSConfig {
 
     @Value("${dkif.webservice.url}")
-    private URL dkifEndpoint;
+    private String dkifEndpoint;
 
-    private static final String DKIF_WSDL_URL = "classpath:dkif/dkif/no/nav/tjeneste/virksomhet/digitalKontaktinformasjon/v1/DigitalKontaktinformasjon.wsdl";
+    private static final String DKIF_WSDL= "classpath:dkif/dkif/no/nav/tjeneste/virksomhet/digitalKontaktinformasjon/v1/DigitalKontaktinformasjon.wsdl";
 
     @Bean
     public DigitalKontaktinformasjonV1 dkifService() {
@@ -25,11 +25,26 @@ public class DkifWSConfig {
         return factory().withSystemSecurity().get();
     }
 
+    @Bean
+    public Pingable dkifPing() {
+        return new Pingable() {
+            @Override
+            public Ping ping() {
+                try {
+                    dkifServiceSelftest().ping();
+                    return Ping.lyktes("Dkif");
+                } catch (Exception ex) {
+                    return Ping.feilet("Dkif", ex);
+                }
+            }
+        };
+    }
+
     private ServiceBuilder<DigitalKontaktinformasjonV1>.PortTypeBuilder<DigitalKontaktinformasjonV1> factory() {
         return new ServiceBuilder<>(DigitalKontaktinformasjonV1.class)
                 .asStandardService()
-                .withAddress(dkifEndpoint.toString())
-                .withWsdl(DKIF_WSDL_URL)
+                .withAddress(dkifEndpoint)
+                .withWsdl("classpath:dkif/dkif/no/nav/tjeneste/virksomhet/digitalKontaktinformasjon/v1/DigitalKontaktinformasjon.wsdl")
                 .build()
                 .withHttpsMock()
                 .withMDC();
