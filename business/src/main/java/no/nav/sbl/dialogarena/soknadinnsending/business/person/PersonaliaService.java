@@ -88,33 +88,12 @@ public class PersonaliaService implements BolkService {
 
     @Override
     public List<Faktum> genererSystemFakta(String fodselsnummer, Long soknadId) {
-        XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse;
-        HentKjerneinformasjonResponse kjerneinformasjonResponse;
-        WSHentDigitalKontaktinformasjonResponse dkifResponse;
-
         try {
-            kjerneinformasjonResponse = personService.hentKjerneinformasjon(lagXMLRequestKjerneinformasjon(fodselsnummer));
-            preferanserResponse = brukerProfil.hentKontaktinformasjonOgPreferanser(lagXMLRequestPreferanser(fodselsnummer));
-            dkifResponse = hentInfoFraDKIF(fodselsnummer);
-            Personalia personalia = PersonaliaTransform.mapTilPersonalia(preferanserResponse, kjerneinformasjonResponse, kodeverk, dkifResponse);
+            Personalia personalia = hentPersonalia(fodselsnummer);
             return genererPersonaliaFaktum(soknadId, personalia);
-
-        } catch (IkkeFunnetException e) {
-            logger.warn("Ikke funnet person i TPS");
-        } catch (HentKontaktinformasjonOgPreferanserPersonIkkeFunnet e) {
-            logger.error("Fant ikke bruker i TPS.", e);
-        } catch (HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning e) {
-            logger.error("Kunne ikke hente bruker fra TPS.", e);
-        } catch (WebServiceException e) {
-            logger.error("Ingen kontakt med TPS.", e);
-        } catch (HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet e) {
-
-        } catch (HentDigitalKontaktinformasjonPersonIkkeFunnet e) {
-
-        } catch (HentDigitalKontaktinformasjonSikkerhetsbegrensing e) {
-
+        } catch (ApplicationException e) {
+            return new ArrayList<>();
         }
-        return new ArrayList<>();
     }
 
     private List<Faktum> genererPersonaliaFaktum(Long soknadId, Personalia personalia) {
