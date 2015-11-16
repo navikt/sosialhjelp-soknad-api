@@ -17,9 +17,9 @@ public class DkifMock {
     private static final String EN_EPOST = "test@epost.com";
     private static final String ET_TELEFONNUMMER = "98765432";
 
-    public DigitalKontaktinformasjon_v1PortType dkifMock(){
+    public DigitalKontaktinformasjonV1 dkifMock(){
 
-        DigitalKontaktinformasjon_v1PortType mock = mock(DigitalKontaktinformasjon_v1PortType.class);
+        DigitalKontaktinformasjonV1 mock = mock(DigitalKontaktinformasjonV1.class);
         WSHentDigitalKontaktinformasjonResponse response = new WSHentDigitalKontaktinformasjonResponse();
 
         WSKontaktinformasjon kontaktinformasjon = new WSKontaktinformasjon()

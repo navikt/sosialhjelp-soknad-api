@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.dkif.DkifMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder;
 import no.nav.sbl.dialogarena.types.Pingable;
-import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.DigitalKontaktinformasjon_v1PortType;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.DigitalKontaktinformasjonV1;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,14 +19,14 @@ public class DkifWSConfig {
     private String dkifEndpoint;
 
     @Bean
-    public DigitalKontaktinformasjon_v1PortType dkifService() {
-        DigitalKontaktinformasjon_v1PortType mock = new DkifMock().dkifMock();
-        DigitalKontaktinformasjon_v1PortType prod = factory().withMDC().withUserSecurity().get();
-        return createSwitcher(prod, mock, DKIF_KEY, DigitalKontaktinformasjon_v1PortType.class);
+    public DigitalKontaktinformasjonV1 dkifService() {
+        DigitalKontaktinformasjonV1 mock = new DkifMock().dkifMock();
+        DigitalKontaktinformasjonV1 prod = factory().withMDC().withUserSecurity().get();
+        return createSwitcher(prod, mock, DKIF_KEY, DigitalKontaktinformasjonV1.class);
     }
 
     @Bean
-    public DigitalKontaktinformasjon_v1PortType dkifServiceSelftest() {
+    public DigitalKontaktinformasjonV1 dkifServiceSelftest() {
         return factory().withSystemSecurity().get();
     }
 
@@ -45,8 +45,8 @@ public class DkifWSConfig {
         };
     }
 
-    private ServiceBuilder<DigitalKontaktinformasjon_v1PortType>.PortTypeBuilder<DigitalKontaktinformasjon_v1PortType> factory() {
-        return new ServiceBuilder<>(DigitalKontaktinformasjon_v1PortType.class)
+    private ServiceBuilder<DigitalKontaktinformasjonV1>.PortTypeBuilder<DigitalKontaktinformasjonV1> factory() {
+        return new ServiceBuilder<>(DigitalKontaktinformasjonV1.class)
                 .asStandardService()
                 .withAddress(dkifEndpoint)
                 .build()
