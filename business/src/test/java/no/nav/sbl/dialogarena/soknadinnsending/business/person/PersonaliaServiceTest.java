@@ -11,13 +11,20 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPrefer
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserRequest;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
-import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.DigitalKontaktinformasjonV1;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.DigitalKontaktinformasjon_v1PortType;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.HentDigitalKontaktinformasjonPersonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.HentDigitalKontaktinformasjonSikkerhetsbegrensing;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSEpostadresse;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSKontaktinformasjon;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSMobiltelefonnummer;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentDigitalKontaktinformasjonRequest;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentDigitalKontaktinformasjonResponse;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
-import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.junit.Assert;
@@ -28,10 +35,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
 import javax.xml.ws.WebServiceException;
-import java.math.BigInteger;
 import java.util.List;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.LagMockData.*;
@@ -39,50 +43,12 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
 
 @RunWith(value = MockitoJUnitRunner.class)
 public class PersonaliaServiceTest {
 
-//
-//    private static final String RIKTIG_IDENT = "56128349974";
-//    private static final String BARN_IDENT = "01010091736";
-//    private static final String BARN_FORNAVN = "Bjarne";
-//    private static final String BARN_ETTERNAVN = "Barnet";
-//
-//    private static final String FEIL_IDENT = "54321012345";
-//    private static final String ET_FORNAVN = "Ola";
-//    private static final String ET_MELLOMNAVN = "Johan";
-//    private static final String ET_ETTERNAVN = "Normann";
-//    private static final String FOLKEREGISTRERT_ADRESSE_VALUE = "BOSTEDSADRESSE";
-//    private static final String EN_ADRESSE_GATE = "Grepalida";
-//    private static final String EN_ADRESSE_HUSNUMMER = "44";
-//    private static final String EN_ADRESSE_HUSBOKSTAV = "B";
-//    private static final String EN_ADRESSE_POSTNUMMER = "0560";
-//    private static final String EN_ADRESSE_POSTSTED = "Oslo";
-//
-//    private static final Long EN_ANNEN_ADRESSE_GYLDIG_FRA = new DateTime(2012, 10, 11, 14, 44).getMillis();
-//    private static final Long EN_ANNEN_ADRESSE_GYLDIG_TIL = new DateTime(2012, 11, 12, 15, 55).getMillis();
-//    private static final String EN_ANNEN_ADRESSE_GATE = "Vegvegen";
-//    private static final String EN_ANNEN_ADRESSE_HUSNUMMER = "44";
-//    private static final String EN_ANNEN_ADRESSE_HUSBOKSTAV = "D";
-//    private static final String EN_ANNEN_ADRESSE_POSTNUMMER = "0565";
-//
-//    private static final String EN_POSTBOKS_ADRESSEEIER = "Per Conradi";
-//    private static final String ET_POSTBOKS_NAVN = "Postboksstativet";
-//    private static final String EN_POSTBOKS_NUMMER = "66";
-//
-//    private static final String EN_ADRESSELINJE = "Poitigatan 55";
-//    private static final String EN_ANNEN_ADRESSELINJE = "Nord-Poiti";
-//    private static final String EN_TREDJE_ADRESSELINJE = "1111";
-//    private static final String EN_FJERDE_ADRESSELINJE = "Helsinki";
-//    private static final String ET_LAND = "Finland";
-//    private static final String EN_LANDKODE = "FIN";
-//    private static final String ET_EIEDOMSNAVN = "Villastrøket";
-//    private static final String EN_EPOST = "test@epost.com";
-//
-//    private static final String NORGE = "Norge";
-//    private static final String NORGE_KODE = "NOR";
 
     @InjectMocks
     private PersonaliaService personaliaService;
@@ -98,16 +64,15 @@ public class PersonaliaServiceTest {
     private BrukerprofilPortType brukerProfilMock;
 
     @Mock
-    private DigitalKontaktinformasjonV1 dkif;
+    private DigitalKontaktinformasjon_v1PortType dkif;
 
     @Mock
     private Kodeverk kodeverkMock;
-//    private XMLBruker xmlBruker;
     private Person person;
     private DateTimeFormatter dateTimeFormat;
 
     @Before
-    public void setup() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
+    public void setup() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet, HentDigitalKontaktinformasjonSikkerhetsbegrensing, HentDigitalKontaktinformasjonPersonIkkeFunnet {
         when(kodeverkMock.getPoststed(EN_ADRESSE_POSTNUMMER)).thenReturn(EN_ADRESSE_POSTSTED);
         when(kodeverkMock.getPoststed(EN_ANNEN_ADRESSE_POSTNUMMER)).thenReturn(EN_ADRESSE_POSTSTED);
         when(kodeverkMock.getLand(NORGE_KODE)).thenReturn(NORGE);
@@ -133,12 +98,19 @@ public class PersonaliaServiceTest {
         when(personMock.hentKjerneinformasjon(org.mockito.Matchers.any(HentKjerneinformasjonRequest.class))).thenReturn(response);
 
         XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse = new XMLHentKontaktinformasjonOgPreferanserResponse();
-        xmlBruker = new XMLBruker().withElektroniskKommunikasjonskanal(lagElektroniskKommunikasjonskanal());
+        xmlBruker = new XMLBruker(); //.withElektroniskKommunikasjonskanal(lagElektroniskKommunikasjonskanal());
         XMLNorskIdent xmlNorskIdent = new XMLNorskIdent();
         xmlNorskIdent.setIdent(RIKTIG_IDENT);
         xmlBruker.setIdent(xmlNorskIdent);
         preferanserResponse.setPerson(xmlBruker);
         when(brukerProfilMock.hentKontaktinformasjonOgPreferanser(org.mockito.Matchers.any(XMLHentKontaktinformasjonOgPreferanserRequest.class))).thenReturn(preferanserResponse);
+
+
+        WSHentDigitalKontaktinformasjonResponse digitalKontaktinformasjonResponse = new WSHentDigitalKontaktinformasjonResponse();
+        digitalKontaktinformasjonResponse.setDigitalKontaktinformasjon(genererDigitalKontaktinformasjonMedEpost());
+
+        when(dkif.hentDigitalKontaktinformasjon(org.mockito.Matchers.any(WSHentDigitalKontaktinformasjonRequest.class)))
+                .thenReturn(digitalKontaktinformasjonResponse);
     }
 
 
@@ -171,7 +143,7 @@ public class PersonaliaServiceTest {
     }
 
     @Test
-    public void returnererPersonObjektMedStatsborgerskapUtenEpostOgBarn() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
+    public void returnererPersonObjektMedStatsborgerskapUtenEpostOgBarn() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet, HentDigitalKontaktinformasjonSikkerhetsbegrensing, HentDigitalKontaktinformasjonPersonIkkeFunnet {
         XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse = new XMLHentKontaktinformasjonOgPreferanserResponse();
         xmlBruker = new XMLBruker();
         XMLNorskIdent xmlNorskIdent = new XMLNorskIdent();
@@ -179,6 +151,11 @@ public class PersonaliaServiceTest {
         xmlBruker.setIdent(xmlNorskIdent);
         preferanserResponse.setPerson(xmlBruker);
         when(brukerProfilMock.hentKontaktinformasjonOgPreferanser(org.mockito.Matchers.any(XMLHentKontaktinformasjonOgPreferanserRequest.class))).thenReturn(preferanserResponse);
+
+        WSHentDigitalKontaktinformasjonResponse digitalKontaktinformasjonResponse = new WSHentDigitalKontaktinformasjonResponse();
+        digitalKontaktinformasjonResponse.setDigitalKontaktinformasjon(genererDigitalKontaktinformasjonUtenEpost());
+
+        when(dkif.hentDigitalKontaktinformasjon(org.mockito.Matchers.any(WSHentDigitalKontaktinformasjonRequest.class))).thenReturn(digitalKontaktinformasjonResponse);
 
         mockGyldigPerson();
 
@@ -288,7 +265,7 @@ public class PersonaliaServiceTest {
     @SuppressWarnings("unchecked")
     @Test
     public void skalStotteMidlertidigPostboksAdresseNorge() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
-        String forventetgjeldendeAdresse = "C/O " + EN_POSTBOKS_ADRESSEEIER + ", Postboks " + EN_POSTBOKS_NUMMER  + " " + ET_POSTBOKS_NAVN + ", " + EN_ANNEN_ADRESSE_POSTNUMMER + " " + EN_ADRESSE_POSTSTED;
+        String forventetgjeldendeAdresse = "C/O " + EN_POSTBOKS_ADRESSEEIER + ", Postboks " + EN_POSTBOKS_NUMMER + " " + ET_POSTBOKS_NAVN + ", " + EN_ANNEN_ADRESSE_POSTNUMMER + " " + EN_ADRESSE_POSTSTED;
 
         mockGyldigPersonMedMidlertidigPostboksAdresse();
         Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
@@ -402,4 +379,33 @@ public class PersonaliaServiceTest {
         assertThat(systemFaktaliste.size(), is(1));
     }
 
+    @Test
+    public void returnererTomEpostHvisHentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnetBlirKastet() throws HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet, HentDigitalKontaktinformasjonSikkerhetsbegrensing, HentDigitalKontaktinformasjonPersonIkkeFunnet {
+        String fnr = "12345612345";
+        when(personaliaService.hentInfoFraDKIF(fnr)).thenThrow(new HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet());
+
+        Personalia personalia = personaliaService.hentPersonalia(fnr);
+
+        assertThat(personalia.getEpost(), is(""));
+    }
+
+    @Test
+    public void returnererTomListeHvisHvisFeilmeldingIkkeBlirKastet() throws HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet, HentDigitalKontaktinformasjonSikkerhetsbegrensing, HentDigitalKontaktinformasjonPersonIkkeFunnet {
+        String fnr = "12345612345";
+        when(personaliaService.hentInfoFraDKIF(fnr)).thenThrow(new HentDigitalKontaktinformasjonSikkerhetsbegrensing());
+
+        List<Faktum> systemfaktaListe = personaliaService.genererSystemFakta(fnr, any(Long.class));
+
+        assertThat(systemfaktaListe.size(), is(0));
+    }
+
+    @Test
+    public void returnererIkkeTomEpostHvisHentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnetBlirKastet() throws HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet, HentDigitalKontaktinformasjonSikkerhetsbegrensing, HentDigitalKontaktinformasjonPersonIkkeFunnet {
+        String fnr = "12345612345";
+        when(personaliaService.hentInfoFraDKIF(fnr)).thenThrow(new HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet());
+
+        List<Faktum> systemfaktaListe = personaliaService.genererSystemFakta(fnr, any(Long.class));
+
+        assertThat(systemfaktaListe.size(), is(not(0)));
+    }
 }
