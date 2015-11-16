@@ -11,7 +11,7 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPrefer
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserRequest;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
-import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.DigitalKontaktinformasjonV1;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.DigitalKontaktinformasjon_v1PortType;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.HentDigitalKontaktinformasjonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.HentDigitalKontaktinformasjonSikkerhetsbegrensing;
@@ -43,7 +43,7 @@ public class PersonaliaService implements BolkService {
     private BrukerprofilPortType brukerProfil;
     @Inject
     @Named("dkifService")
-    private DigitalKontaktinformasjonV1 dkif;
+    private DigitalKontaktinformasjon_v1PortType dkif;
     @Inject
     private PersonService personService;
     @Inject
@@ -51,9 +51,9 @@ public class PersonaliaService implements BolkService {
 
 
     public Personalia hentPersonalia(String fodselsnummer) {
-        XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse;
-        HentKjerneinformasjonResponse kjerneinformasjonResponse;
-        WSHentDigitalKontaktinformasjonResponse dkifResponse;
+        XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse = null;
+        HentKjerneinformasjonResponse kjerneinformasjonResponse = null;
+        WSHentDigitalKontaktinformasjonResponse dkifResponse = new WSHentDigitalKontaktinformasjonResponse();
 
         try {
             kjerneinformasjonResponse = personService.hentKjerneinformasjon(lagXMLRequestKjerneinformasjon(fodselsnummer));
@@ -69,13 +69,13 @@ public class PersonaliaService implements BolkService {
         } catch (WebServiceException e) {
             logger.error("Ingen kontakt med TPS.", e);
             throw new ApplicationException("TPS:webserviceException", e);
-        } catch (HentDigitalKontaktinformasjonSikkerhetsbegrensing e) {
-            throw new ApplicationException("TPS:webserviceException", e);
+        } catch (HentDigitalKontaktinformasjonSikkerhetsbegrensing | HentDigitalKontaktinformasjonPersonIkkeFunnet e) {
+            logger.error("Person ikke tilgjengelig i dkif", e);
+            throw new ApplicationException("Dkif:webserviceException", e);
         } catch (HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet e) {
-            throw new ApplicationException("TPS:webserviceException", e);
-        } catch (HentDigitalKontaktinformasjonPersonIkkeFunnet e) {
-            throw new ApplicationException("TPS:webserviceException", e);
+           logger.info("Kunne ikke hente kontaktinformasjon fra dkif");
         }
+
         return PersonaliaTransform.mapTilPersonalia(preferanserResponse, kjerneinformasjonResponse, kodeverk, dkifResponse);
     }
 
@@ -132,7 +132,7 @@ public class PersonaliaService implements BolkService {
         return request;
     }
 
-    private WSHentDigitalKontaktinformasjonResponse hentInfoFraDKIF(String ident) throws HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet, HentDigitalKontaktinformasjonSikkerhetsbegrensing, HentDigitalKontaktinformasjonPersonIkkeFunnet {
+    protected WSHentDigitalKontaktinformasjonResponse hentInfoFraDKIF(String ident) throws HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet, HentDigitalKontaktinformasjonSikkerhetsbegrensing, HentDigitalKontaktinformasjonPersonIkkeFunnet {
         return dkif.hentDigitalKontaktinformasjon(makeDKIFRequest(ident));
     }
 
