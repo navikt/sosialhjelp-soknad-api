@@ -9,6 +9,7 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBruker;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLEPost;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLElektroniskKommunikasjonskanal;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSKontaktinformasjon;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentDigitalKontaktinformasjonResponse;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Diskresjonskoder;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
@@ -51,11 +52,11 @@ public class PersonaliaTransform {
     }
 
     private static String finnEpost(WSHentDigitalKontaktinformasjonResponse dkifResponse) {
-        try {
-            return dkifResponse.getDigitalKontaktinformasjon().getEpostadresse().getValue();
-        } catch (RuntimeException e) {
+        WSKontaktinformasjon digitalKontaktinformasjon = dkifResponse.getDigitalKontaktinformasjon();
+        if (digitalKontaktinformasjon == null || digitalKontaktinformasjon.getEpostadresse() == null) {
             return "";
         }
+        return digitalKontaktinformasjon.getEpostadresse().getValue();
     }
 
     private static String finnUtenlandskKontoLand(XMLBruker xmlBruker, Kodeverk kodeverk) {
