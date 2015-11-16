@@ -1,9 +1,11 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
-import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.*;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSEpostadresse;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSKontaktinformasjon;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSMobiltelefonnummer;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Foedselsdato;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.NorskIdent;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
@@ -52,7 +54,6 @@ public class LagMockData {
     static final String ET_LAND = "Finland";
     static final String EN_LANDKODE = "FIN";
     static final String ET_EIEDOMSNAVN = "Villastrøket";
-    static final String EN_EPOST = "test@epost.com";
 
     static final String NORGE = "Norge";
     static final String NORGE_KODE = "NOR";
@@ -244,14 +245,6 @@ public class LagMockData {
         return ustrukturertAdresse;
     }
 
-    static XMLElektroniskKommunikasjonskanal lagElektroniskKommunikasjonskanal() {
-        return new XMLElektroniskKommunikasjonskanal().withElektroniskAdresse(lagElektroniskAdresse());
-    }
-
-    static XMLElektroniskAdresse lagElektroniskAdresse() {
-        return new XMLEPost().withIdentifikator(EN_EPOST);
-    }
-
     static XMLLandkoder lagLandkode() {
         return new XMLLandkoder().withValue(NORGE);
     }
@@ -297,6 +290,23 @@ public class LagMockData {
             throw new RuntimeException("Klarte ikke å sette fødselsdato", e);
         }
         return foedselsdato;
+    }
+
+    static WSKontaktinformasjon genererDigitalKontaktinformasjonMedEpost() {
+        WSKontaktinformasjon kontaktinformasjon = new WSKontaktinformasjon()
+                .withPersonident(RIKTIG_IDENT)
+                .withEpostadresse(new WSEpostadresse().withValue("test@test.com"))
+                .withMobiltelefonnummer(new WSMobiltelefonnummer().withValue("12345678"))
+                .withReservasjon("");
+        return kontaktinformasjon;
+    }
+
+    static WSKontaktinformasjon genererDigitalKontaktinformasjonUtenEpost() {
+        WSKontaktinformasjon kontaktinformasjon = new WSKontaktinformasjon()
+                .withPersonident(RIKTIG_IDENT)
+                .withMobiltelefonnummer(new WSMobiltelefonnummer().withValue("12345678"))
+                .withReservasjon("");
+        return kontaktinformasjon;
     }
 }
 
