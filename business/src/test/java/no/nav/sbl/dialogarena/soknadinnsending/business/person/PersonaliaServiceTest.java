@@ -95,7 +95,7 @@ public class PersonaliaServiceTest {
         when(personMock.hentKjerneinformasjon(org.mockito.Matchers.any(HentKjerneinformasjonRequest.class))).thenReturn(response);
 
         XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse = new XMLHentKontaktinformasjonOgPreferanserResponse();
-        xmlBruker = new XMLBruker(); //.withElektroniskKommunikasjonskanal(lagElektroniskKommunikasjonskanal());
+        xmlBruker = new XMLBruker();
         XMLNorskIdent xmlNorskIdent = new XMLNorskIdent();
         xmlNorskIdent.setIdent(RIKTIG_IDENT);
         xmlBruker.setIdent(xmlNorskIdent);
