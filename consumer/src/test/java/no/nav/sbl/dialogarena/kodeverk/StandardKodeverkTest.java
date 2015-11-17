@@ -12,21 +12,19 @@ import no.nav.tjeneste.virksomhet.kodeverk.v2.meldinger.XMLHentKodeverkResponse;
 import org.joda.time.DateMidnight;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.File;
-import java.util.List;
 import java.util.Locale;
 
 import static no.nav.modig.core.test.FilesAndDirs.BUILD_OUTPUT;
 import static no.nav.modig.lang.option.Optional.optional;
 import static org.apache.commons.lang3.RandomStringUtils.randomNumeric;
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
@@ -68,6 +66,7 @@ public class StandardKodeverkTest {
     }
 
     @Test
+    @Ignore
     public void dumperInnlastetKodeverkTilFileOgBrukerDenneVedRestartDaKodeverkErNede() throws Exception {
         when(ws.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenReturn(landkodeKodeverkResponse());
         kodeverk.lastInnNyeKodeverk();
