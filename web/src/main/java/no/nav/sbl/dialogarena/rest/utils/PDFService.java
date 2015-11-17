@@ -8,8 +8,6 @@ import no.nav.sbl.dialogarena.utils.PDFFabrikk;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import javax.servlet.ServletContext;
-import javax.ws.rs.core.Context;
 import java.io.File;
 import java.io.IOException;
 
@@ -22,15 +20,12 @@ public class PDFService {
     @Inject
     private VedleggService vedleggService;
 
-    @Context
-    private ServletContext servletContext;
-
-    public byte[] genererPdfMedKodeverksverdier(WebSoknad soknad, String hbsSkjemaPath) {
+    public byte[] genererPdfMedKodeverksverdier(WebSoknad soknad, String hbsSkjemaPath, String servletPath) {
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
-        return genererPdf(soknad, hbsSkjemaPath);
+        return genererPdf(soknad, hbsSkjemaPath, servletPath);
     }
 
-    public byte[] genererPdf(WebSoknad soknad, String hbsSkjemaPath) {
+    public byte[] genererPdf(WebSoknad soknad, String hbsSkjemaPath, String servletPath) {
         String pdfMarkup;
         try {
             pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(soknad, hbsSkjemaPath);
@@ -38,10 +33,9 @@ public class PDFService {
             throw new ApplicationException("Kunne ikke lage markup for skjema " + hbsSkjemaPath, e);
         }
 
-        String skjemaPath = new File(servletContext.getRealPath("/")).toURI().toString();
+        String skjemaPath = new File(servletPath).toURI().toString();
 
         return PDFFabrikk.lagPdfFil(pdfMarkup, skjemaPath);
     }
-
 
 }

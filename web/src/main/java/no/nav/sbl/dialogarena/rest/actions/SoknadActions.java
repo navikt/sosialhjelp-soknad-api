@@ -70,16 +70,16 @@ public class SoknadActions {
     public void sendSoknad(@PathParam("behandlingsId") String behandlingsId) {
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
 
-        byte[] kvittering = pdfService.genererPdfMedKodeverksverdier(soknad, "/skjema/kvittering");
+        byte[] kvittering = pdfService.genererPdfMedKodeverksverdier(soknad, "/skjema/kvittering", servletContext.getRealPath("/"));
         vedleggService.lagreKvitteringSomVedlegg(behandlingsId, kvittering);
 
         if (soknad.erEttersending()) {
-            byte[] dummyPdfSomHovedskjema = pdfService.genererPdf(soknad, "skjema/ettersending/dummy");
+            byte[] dummyPdfSomHovedskjema = pdfService.genererPdf(soknad, "skjema/ettersending/dummy", servletContext.getRealPath("/"));
             soknadService.sendSoknad(behandlingsId, dummyPdfSomHovedskjema);
         } else {
             byte[] soknadPdf;
             String oppsummeringSti = "/skjema/" + soknad.getSoknadPrefix();
-            soknadPdf = pdfService.genererPdfMedKodeverksverdier(soknad, oppsummeringSti);
+            soknadPdf = pdfService.genererPdfMedKodeverksverdier(soknad, oppsummeringSti, servletContext.getRealPath("/"));
             soknadService.sendSoknad(behandlingsId, soknadPdf);
         }
     }

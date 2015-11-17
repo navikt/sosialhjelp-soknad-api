@@ -15,9 +15,9 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.transformer.refusjondagligreise.RefusjonDagligreiseTilXml;
 import no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.TilleggsstonaderTilXml;
-import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.BadRequestException;
@@ -41,7 +41,6 @@ import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
 import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.generateXsrfToken;
 
-@Controller
 @Path("/soknader")
 @Produces(APPLICATION_JSON)
 public class SoknadRessurs {
@@ -65,6 +64,9 @@ public class SoknadRessurs {
 
     @Inject
     private PDFService pdfService;
+
+    @Context
+    private ServletContext servletContext;
 
     @GET
     @Path("/{behandlingsId}")
@@ -162,7 +164,10 @@ public class SoknadRessurs {
     @Path("/{behandlingsId}/pdf")
     @Produces("application/pdf")
     public byte[] pdf(@PathParam("behandlingsId") String behandlingsId) {
-        return pdfService.genererPdfMedKodeverksverdier(soknadService.hentSoknad(behandlingsId, true, true), "/skjema/kvittering");
+        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
+        String realPath = servletContext.getRealPath("/");
+        String soknadPrefix = soknad.getSoknadPrefix();
+        return pdfService.genererPdfMedKodeverksverdier(soknad, "/skjema/" + soknadPrefix, realPath);
     }
 
     @GET
