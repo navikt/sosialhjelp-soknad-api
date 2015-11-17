@@ -22,7 +22,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.db.config.Databas
 
 public final class StartSoknadJetty {
 
-    public static final int PORT = 8181;
+    public static final int PORT = 8182;
     public final Jetty jetty;
 
     public StartSoknadJetty(Env env, File overrideWebXmlFile, DataSource dataSource) throws Exception {

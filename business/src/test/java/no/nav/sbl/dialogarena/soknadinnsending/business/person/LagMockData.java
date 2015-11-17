@@ -6,16 +6,14 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSEpostadresse;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSKontaktinformasjon;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSMobiltelefonnummer;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Foedselsdato;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.NorskIdent;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personnavn;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.*;
 import org.joda.time.DateTime;
 import org.mockito.Mock;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import java.math.BigInteger;
+import java.util.List;
 
 public class LagMockData {
 
@@ -61,6 +59,32 @@ public class LagMockData {
     @Mock
     static XMLBruker xmlBruker;
 
+    static Person lagStandardPerson() {
+        Person person = genererPersonMedGyldigIdentOgNavn(RIKTIG_IDENT, ET_FORNAVN, ET_ETTERNAVN);
+        person.setFoedselsdato(fodseldato(1983, 12, 16));
+        List<Familierelasjon> familieRelasjoner = person.getHarFraRolleI();
+        Familierelasjon familierelasjon = new Familierelasjon();
+        Person barn1 = genererPersonMedGyldigIdentOgNavn(BARN_IDENT, BARN_FORNAVN, BARN_ETTERNAVN);
+
+        familierelasjon.setTilPerson(barn1);
+        Familierelasjoner familieRelasjonRolle = new Familierelasjoner();
+
+        familieRelasjonRolle.setValue("BARN");
+        familierelasjon.setTilRolle(familieRelasjonRolle);
+
+        familieRelasjoner.add(familierelasjon);
+
+        return person;
+    }
+
+    static XMLBruker lagStandardXMLBrukerMedNorskIdent() {
+        xmlBruker = new XMLBruker();
+        XMLNorskIdent xmlNorskIdent = new XMLNorskIdent();
+        xmlNorskIdent.setIdent(RIKTIG_IDENT);
+        xmlBruker.setIdent(xmlNorskIdent);
+
+        return xmlBruker;
+    }
 
     static void mockGyldigPersonMedMidlertidigUtenlandskAdresse(int adresselinjer) {
         XMLMidlertidigPostadresseUtland xmlMidlertidigPostadresseUtland = new XMLMidlertidigPostadresseUtland();
@@ -293,20 +317,18 @@ public class LagMockData {
     }
 
     static WSKontaktinformasjon genererDigitalKontaktinformasjonMedEpost() {
-        WSKontaktinformasjon kontaktinformasjon = new WSKontaktinformasjon()
+        return new WSKontaktinformasjon()
                 .withPersonident(RIKTIG_IDENT)
                 .withEpostadresse(new WSEpostadresse().withValue("test@test.com"))
                 .withMobiltelefonnummer(new WSMobiltelefonnummer().withValue("12345678"))
                 .withReservasjon("");
-        return kontaktinformasjon;
     }
 
     static WSKontaktinformasjon genererDigitalKontaktinformasjonUtenEpost() {
-        WSKontaktinformasjon kontaktinformasjon = new WSKontaktinformasjon()
+        return new WSKontaktinformasjon()
                 .withPersonident(RIKTIG_IDENT)
                 .withMobiltelefonnummer(new WSMobiltelefonnummer().withValue("12345678"))
                 .withReservasjon("");
-        return kontaktinformasjon;
     }
 }
 

@@ -77,37 +77,22 @@ public class PersonaliaServiceTest {
 
         dateTimeFormat = DateTimeFormat.forPattern("yyyy-MM-dd");
 
+        person = lagStandardPerson();
         HentKjerneinformasjonResponse response = new HentKjerneinformasjonResponse();
-        person = genererPersonMedGyldigIdentOgNavn(RIKTIG_IDENT, ET_FORNAVN, ET_ETTERNAVN);
-        person.setFoedselsdato(fodseldato(1983, 12, 16));
-        List<Familierelasjon> familieRelasjoner = person.getHarFraRolleI();
-        Familierelasjon familierelasjon = new Familierelasjon();
-        Person barn1 = genererPersonMedGyldigIdentOgNavn(BARN_IDENT, BARN_FORNAVN, BARN_ETTERNAVN);
-
-        familierelasjon.setTilPerson(barn1);
-        Familierelasjoner familieRelasjonRolle = new Familierelasjoner();
-
-        familieRelasjonRolle.setValue("BARN");
-        familierelasjon.setTilRolle(familieRelasjonRolle);
-
-        familieRelasjoner.add(familierelasjon);
         response.setPerson(person);
+
         when(personMock.hentKjerneinformasjon(org.mockito.Matchers.any(HentKjerneinformasjonRequest.class))).thenReturn(response);
 
+        xmlBruker = lagStandardXMLBrukerMedNorskIdent();
         XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse = new XMLHentKontaktinformasjonOgPreferanserResponse();
-        xmlBruker = new XMLBruker();
-        XMLNorskIdent xmlNorskIdent = new XMLNorskIdent();
-        xmlNorskIdent.setIdent(RIKTIG_IDENT);
-        xmlBruker.setIdent(xmlNorskIdent);
         preferanserResponse.setPerson(xmlBruker);
-        when(brukerProfilMock.hentKontaktinformasjonOgPreferanser(org.mockito.Matchers.any(XMLHentKontaktinformasjonOgPreferanserRequest.class))).thenReturn(preferanserResponse);
 
+        when(brukerProfilMock.hentKontaktinformasjonOgPreferanser(org.mockito.Matchers.any(XMLHentKontaktinformasjonOgPreferanserRequest.class))).thenReturn(preferanserResponse);
 
         WSHentDigitalKontaktinformasjonResponse digitalKontaktinformasjonResponse = new WSHentDigitalKontaktinformasjonResponse();
         digitalKontaktinformasjonResponse.setDigitalKontaktinformasjon(genererDigitalKontaktinformasjonMedEpost());
 
-        when(dkif.hentDigitalKontaktinformasjon(org.mockito.Matchers.any(WSHentDigitalKontaktinformasjonRequest.class)))
-                .thenReturn(digitalKontaktinformasjonResponse);
+        when(dkif.hentDigitalKontaktinformasjon(org.mockito.Matchers.any(WSHentDigitalKontaktinformasjonRequest.class))).thenReturn(digitalKontaktinformasjonResponse);
     }
 
 
@@ -142,10 +127,8 @@ public class PersonaliaServiceTest {
     @Test
     public void returnererPersonObjektMedStatsborgerskapUtenEpostOgBarn() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet, HentDigitalKontaktinformasjonSikkerhetsbegrensing, HentDigitalKontaktinformasjonPersonIkkeFunnet {
         XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse = new XMLHentKontaktinformasjonOgPreferanserResponse();
-        xmlBruker = new XMLBruker();
-        XMLNorskIdent xmlNorskIdent = new XMLNorskIdent();
-        xmlNorskIdent.setIdent(RIKTIG_IDENT);
-        xmlBruker.setIdent(xmlNorskIdent);
+        xmlBruker = lagStandardXMLBrukerMedNorskIdent();
+
         preferanserResponse.setPerson(xmlBruker);
         when(brukerProfilMock.hentKontaktinformasjonOgPreferanser(org.mockito.Matchers.any(XMLHentKontaktinformasjonOgPreferanserRequest.class))).thenReturn(preferanserResponse);
 
@@ -360,9 +343,9 @@ public class PersonaliaServiceTest {
     }
 
     @Test
-    public void returnerTomListeOmHentPersonaliaKasterException() {
+    public void returnerTomListeOmHentPersonaliaKasterException() throws HentDigitalKontaktinformasjonSikkerhetsbegrensing, HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet, HentDigitalKontaktinformasjonPersonIkkeFunnet {
         String fnr = "12345612345";
-        when(personaliaService.hentPersonalia(fnr)).thenThrow(new WebServiceException());
+        when(personaliaService.hentPersonalia(fnr)).thenThrow(new ApplicationException(""));
 
         List<Faktum> systemFaktaListe = personaliaService.genererSystemFakta(fnr, any(Long.class));
 
@@ -377,9 +360,9 @@ public class PersonaliaServiceTest {
     }
 
     @Test
-    public void returnererTomEpostHvisHentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnetBlirKastet() throws HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet, HentDigitalKontaktinformasjonSikkerhetsbegrensing, HentDigitalKontaktinformasjonPersonIkkeFunnet {
+    public void returnererPersonaliaMedTomEpostHvisDKIFErNede() throws HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet, HentDigitalKontaktinformasjonSikkerhetsbegrensing, HentDigitalKontaktinformasjonPersonIkkeFunnet {
         String fnr = "12345612345";
-        when(personaliaService.hentInfoFraDKIF(fnr)).thenThrow(new HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet());
+        when(dkif.hentDigitalKontaktinformasjon(any(WSHentDigitalKontaktinformasjonRequest.class))).thenThrow(new HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet());
 
         Personalia personalia = personaliaService.hentPersonalia(fnr);
 
@@ -387,19 +370,9 @@ public class PersonaliaServiceTest {
     }
 
     @Test
-    public void returnererTomListeHvisHvisFeilmeldingIkkeBlirKastet() throws HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet, HentDigitalKontaktinformasjonSikkerhetsbegrensing, HentDigitalKontaktinformasjonPersonIkkeFunnet {
+    public void returnererIkkeTomListeHvisDKIFErNedeOgTPSErOppe() throws HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet, HentDigitalKontaktinformasjonSikkerhetsbegrensing, HentDigitalKontaktinformasjonPersonIkkeFunnet {
         String fnr = "12345612345";
-        when(personaliaService.hentInfoFraDKIF(fnr)).thenThrow(new HentDigitalKontaktinformasjonSikkerhetsbegrensing());
-
-        List<Faktum> systemfaktaListe = personaliaService.genererSystemFakta(fnr, any(Long.class));
-
-        assertThat(systemfaktaListe.size(), is(0));
-    }
-
-    @Test
-    public void returnererIkkeTomEpostHvisHentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnetBlirKastet() throws HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet, HentDigitalKontaktinformasjonSikkerhetsbegrensing, HentDigitalKontaktinformasjonPersonIkkeFunnet {
-        String fnr = "12345612345";
-        when(personaliaService.hentInfoFraDKIF(fnr)).thenThrow(new HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet());
+        when(dkif.hentDigitalKontaktinformasjon(any(WSHentDigitalKontaktinformasjonRequest.class))).thenThrow(new HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet());
 
         List<Faktum> systemfaktaListe = personaliaService.genererSystemFakta(fnr, any(Long.class));
 
