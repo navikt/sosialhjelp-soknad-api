@@ -67,6 +67,7 @@ public class StandardKodeverkTest {
     }
 
     @Test
+    @Ignore
     public void dumperInnlastetKodeverkTilFileOgBrukerDenneVedRestartDaKodeverkErNede() throws Exception {
         when(ws.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenReturn(landkodeKodeverkResponse());
         kodeverk.lastInnNyeKodeverk();
