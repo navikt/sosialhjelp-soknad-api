@@ -51,15 +51,12 @@ public class PersonaliaService implements BolkService {
 
 
     public Personalia hentPersonalia(String fodselsnummer) {
-        XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse = null;
-        HentKjerneinformasjonResponse kjerneinformasjonResponse = null;
-        WSHentDigitalKontaktinformasjonResponse dkifResponse = new WSHentDigitalKontaktinformasjonResponse();
+        XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse;
+        HentKjerneinformasjonResponse kjerneinformasjonResponse;
 
         try {
             kjerneinformasjonResponse = personService.hentKjerneinformasjon(lagXMLRequestKjerneinformasjon(fodselsnummer));
             preferanserResponse = brukerProfil.hentKontaktinformasjonOgPreferanser(lagXMLRequestPreferanser(fodselsnummer));
-            dkifResponse = hentInfoFraDKIF(fodselsnummer);
-
         } catch (IkkeFunnetException | HentKontaktinformasjonOgPreferanserPersonIkkeFunnet e) {
             logger.error("Ikke funnet person i TPS", e);
             throw new ApplicationException("TPS:PersonIkkefunnet", e);
@@ -69,13 +66,9 @@ public class PersonaliaService implements BolkService {
         } catch (WebServiceException e) {
             logger.error("Ingen kontakt med TPS.", e);
             throw new ApplicationException("TPS:webserviceException", e);
-        } catch (HentDigitalKontaktinformasjonSikkerhetsbegrensing | HentDigitalKontaktinformasjonPersonIkkeFunnet e) {
-            logger.error("Person ikke tilgjengelig i dkif", e);
-            throw new ApplicationException("Dkif:webserviceException", e);
-        } catch (HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet e) {
-           logger.info("Kunne ikke hente kontaktinformasjon fra dkif");
         }
 
+        WSHentDigitalKontaktinformasjonResponse dkifResponse = hentInfoFraDKIF(fodselsnummer);
         return PersonaliaTransform.mapTilPersonalia(preferanserResponse, kjerneinformasjonResponse, kodeverk, dkifResponse);
     }
 
@@ -132,8 +125,15 @@ public class PersonaliaService implements BolkService {
         return request;
     }
 
-    protected WSHentDigitalKontaktinformasjonResponse hentInfoFraDKIF(String ident) throws HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet, HentDigitalKontaktinformasjonSikkerhetsbegrensing, HentDigitalKontaktinformasjonPersonIkkeFunnet {
-        return dkif.hentDigitalKontaktinformasjon(makeDKIFRequest(ident));
+    protected WSHentDigitalKontaktinformasjonResponse hentInfoFraDKIF(String ident) {
+        try {
+            return dkif.hentDigitalKontaktinformasjon(makeDKIFRequest(ident));
+        }catch (HentDigitalKontaktinformasjonSikkerhetsbegrensing | HentDigitalKontaktinformasjonPersonIkkeFunnet e) {
+            logger.error("Person ikke tilgjengelig i dkif", e);
+        } catch (HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet e) {
+            logger.info("Kunne ikke hente kontaktinformasjon fra dkif");
+        }
+        return new WSHentDigitalKontaktinformasjonResponse();
     }
 
     private WSHentDigitalKontaktinformasjonRequest makeDKIFRequest(String ident) {

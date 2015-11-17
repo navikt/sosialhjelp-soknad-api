@@ -25,7 +25,6 @@ public class DkifWSConfig {
         return createSwitcher(prod, mock, DKIF_KEY, DigitalKontaktinformasjonV1.class);
     }
 
-    @Bean
     public DigitalKontaktinformasjonV1 dkifServiceSelftest() {
         return factory().withSystemSecurity().get();
     }
