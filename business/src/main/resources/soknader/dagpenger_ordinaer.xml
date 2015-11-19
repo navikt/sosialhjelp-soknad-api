@@ -6,62 +6,60 @@
         <panel>ReelArbeidsoker</panel>
     </faktum>
     <faktum>
-        <id>reellarbeidssoker.villigdeltid.eneansvarbarnopptil18aar</id>
-        <type>java.lang.Boolean</type>
-        <panel>ReelArbeidsoker</panel>
+        <id>reellarbeidssoker.villigdeltid.grunn</id>
+        <type>checkboxGroup</type>
+        <values>
+            <value>eneansvarbarnopptil18aar</value>
+            <value>reduserthelse</value>
+            <value>omsorgansvar</value>
+            <value>annensituasjon</value>
+            <value>omsorgbarnunder1aar</value>
+            <value>eneansvarbarnunder5skoleaar</value>
+        </values>
         <dependOn>reellarbeidssoker.villigdeltid</dependOn>
         <dependOnValues>
             <value>false</value>
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>reellarbeidssoker.villigdeltid.reduserthelse</id>
+        <id>reellarbeidssoker.villigdeltid.grunn.eneansvarbarnopptil18aar</id>
         <type>java.lang.Boolean</type>
         <panel>ReelArbeidsoker</panel>
-        <dependOn>reellarbeidssoker.villigdeltid</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
+        <dependOn>reellarbeidssoker.villigdeltid.grunn</dependOn>
     </faktum>
     <faktum>
-        <id>reellarbeidssoker.villigdeltid.omsorgansvar</id>
+        <id>reellarbeidssoker.villigdeltid.grunn.reduserthelse</id>
         <type>java.lang.Boolean</type>
         <panel>ReelArbeidsoker</panel>
-        <dependOn>reellarbeidssoker.villigdeltid</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
+        <dependOn>reellarbeidssoker.villigdeltid.grunn</dependOn>
     </faktum>
     <faktum>
-        <id>reellarbeidssoker.villigdeltid.annensituasjon</id>
+        <id>reellarbeidssoker.villigdeltid.grunn.omsorgansvar</id>
         <type>java.lang.Boolean</type>
         <panel>ReelArbeidsoker</panel>
-        <dependOn>reellarbeidssoker.villigdeltid</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
+        <dependOn>reellarbeidssoker.villigdeltid.grunn</dependOn>
     </faktum>
     <faktum>
-        <id>reellarbeidssoker.villigdeltid.omsorgbarnunder1aar</id>
+        <id>reellarbeidssoker.villigdeltid.grunn.annensituasjon</id>
         <type>java.lang.Boolean</type>
         <panel>ReelArbeidsoker</panel>
-        <dependOn>reellarbeidssoker.villigdeltid</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
+        <dependOn>reellarbeidssoker.villigdeltid.grunn</dependOn>
     </faktum>
     <faktum>
-        <id>reellarbeidssoker.villigdeltid.eneansvarbarnunder5skoleaar</id>
+        <id>reellarbeidssoker.villigdeltid.grunn.omsorgbarnunder1aar</id>
         <type>java.lang.Boolean</type>
         <panel>ReelArbeidsoker</panel>
-        <dependOn>reellarbeidssoker.villigdeltid</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
+        <dependOn>reellarbeidssoker.villigdeltid.grunn</dependOn>
+    </faktum>
+    <faktum>
+        <id>reellarbeidssoker.villigdeltid.grunn.eneansvarbarnunder5skoleaar</id>
+        <type>java.lang.Boolean</type>
+        <panel>ReelArbeidsoker</panel>
+        <dependOn>reellarbeidssoker.villigdeltid.grunn</dependOn>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigdeltid.maksimalarbeidstid</id>
-        <type>java.lang.Boolean</type>
+        <type>textbox</type>
         <panel>ReelArbeidsoker</panel>
         <dependOn>reellarbeidssoker.villigdeltid</dependOn>
         <dependOnValues>
@@ -152,6 +150,10 @@
         <id>arbeidstilstand</id>
         <type>java.lang.String</type>
         <panel>Arbeidsforhold</panel>
+    </faktum>
+    <faktum>
+        <id>harIkkeJobbet</id>
+        <panel>Arbeisdforhold</panel>
     </faktum>
     <faktum>
         <id>arbeidsforhold</id>

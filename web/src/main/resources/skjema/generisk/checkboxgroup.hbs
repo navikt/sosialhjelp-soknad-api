@@ -1,0 +1,16 @@
+<tr>
+    <td></td>
+    <td>
+        {{ hentTekst (concat faktum.key ".sporsmal") }}
+        <table>
+            {{#each barneFakta}}
+                {{#hvisSant faktum.value}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>{{ hentTekst faktum.key }}</td>
+                    </tr>
+                {{/hvisSant}}
+            {{/each}}
+        </table>
+    </td>
+</tr>

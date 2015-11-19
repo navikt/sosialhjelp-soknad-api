@@ -19,6 +19,7 @@ public class FaktumStruktur implements Serializable {
 
     private String id;
     private String type;
+    private String panel;
     private FaktumStruktur dependOn;
 
     private String dependOnProperty;
@@ -43,6 +44,14 @@ public class FaktumStruktur implements Serializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getPanel() {
+        return panel;
+    }
+
+    public void setPanel(String bolk) {
+        this.panel = bolk;
     }
 
     @XmlIDREF
@@ -112,6 +121,7 @@ public class FaktumStruktur implements Serializable {
         return new ToStringBuilder(this)
                 .append("id", id)
                 .append("type", type)
+                .append("panel", panel)
                 .append("dependOn", dependOn)
                 .append("dependOnProperty", dependOnProperty)
                 .append("dependOnValues", dependOnValues)

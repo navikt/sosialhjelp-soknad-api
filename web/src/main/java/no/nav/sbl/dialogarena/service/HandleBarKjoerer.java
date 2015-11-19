@@ -1,11 +1,18 @@
 package no.nav.sbl.dialogarena.service;
 
+import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
+import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.context.FieldValueResolver;
+import com.github.jknack.handlebars.context.JavaBeanValueResolver;
+import com.github.jknack.handlebars.context.MapValueResolver;
+import com.github.jknack.handlebars.context.MethodValueResolver;
 import no.bekk.bekkopen.person.Fodselsnummer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -24,7 +31,23 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
     private Map<String, Helper> helpers = new HashMap<>();
 
     public String fyllHtmlMalMedInnhold(WebSoknad soknad, String file) throws IOException {
-        return getHandlebars().compile(file).apply(soknad);
+        return getHandlebars()
+                .compile(file)
+                .apply(Context.newBuilder(soknad).build());
+    }
+
+    @Override
+    public String fyllHtmlMalMedInnholdNew(WebSoknad soknad, SoknadStruktur soknadStruktur, String file) throws IOException {
+        return getHandlebars()
+                .infiniteLoops(true)
+                .compile(file)
+                .apply(Context.newBuilder(new OppsummeringsContext(soknad, soknadStruktur))
+                        .resolver(
+                                JavaBeanValueResolver.INSTANCE,
+                                FieldValueResolver.INSTANCE,
+                                MapValueResolver.INSTANCE,
+                                MethodValueResolver.INSTANCE
+                        ).build());
     }
 
     @Override
@@ -41,7 +64,19 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
 
         handlebars.registerHelper("formatterFodelsDato", generateFormatterFodselsdatoHelper());
         handlebars.registerHelper("skalViseRotasjonTurnusSporsmaal", generateSkalViseRotasjonTurnusSporsmaalHelper());
-
+        handlebars.registerHelper("dynamiskPartial", new Helper<OppsummeringsContext.OppsummeringsFaktum>() {
+            @Override
+            public CharSequence apply(OppsummeringsContext.OppsummeringsFaktum context, Options options) throws IOException {
+                options.partial("skjema/generisk/default", options.handlebars.compile("skjema/generisk/default"));
+                options.partial("skjema/generisk/checkboxGroup", options.handlebars.compile("skjema/generisk/checkboxGroup"));
+                Template partial = options.partial("skjema/generisk/" + context.struktur.getType());
+                if(partial != null) {
+                    return partial.apply(context);
+                } else {
+                    return options.partial("skjema/generisk/default").apply(context);
+                }
+            }
+        });
         return handlebars;
     }
 
@@ -90,5 +125,4 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
             }
         };
     }
-
 }

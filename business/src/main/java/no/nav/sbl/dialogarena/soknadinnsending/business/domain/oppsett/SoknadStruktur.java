@@ -152,4 +152,13 @@ public class SoknadStruktur implements Serializable {
         }).collect();
         return strukturListe.isEmpty()? null: strukturListe.get(0);
     }
+
+    public List<FaktumStruktur> finnBarneStrukturer(final String parent) {
+        return on(fakta).filter(new Predicate<FaktumStruktur>() {
+            @Override
+            public boolean evaluate(FaktumStruktur faktumStruktur) {
+                return faktumStruktur.getDependOn() != null && faktumStruktur.getDependOn().getId().equals(parent);
+            }
+        }).collect();
+    }
 }
