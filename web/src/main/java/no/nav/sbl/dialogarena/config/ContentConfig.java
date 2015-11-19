@@ -8,6 +8,7 @@ import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.types.Pingable;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,9 +20,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static java.net.HttpURLConnection.HTTP_OK;
@@ -125,11 +129,48 @@ public class ContentConfig {
         StringBuilder data = new StringBuilder();
         Map<String, Innholdstekst> innhold = content.toMap(Innholdstekst.KEY);
         if (!innhold.isEmpty()) {
+            Map<String, String> cmsChangeMap = getCmsChangeMap(filename);
             for (Map.Entry<String, Innholdstekst> entry : innhold.entrySet()) {
-                data.append(entry.getValue().key).append('=').append(removeNewline(entry.getValue().value)).append(System.lineSeparator());
+                String key = entry.getValue().key;
+                if(cmsChangeMap.containsKey(key)){
+                    key = cmsChangeMap.get(key);
+                }
+                data.append(key).append('=').append(removeNewline(entry.getValue().value)).append(System.lineSeparator());
             }
-            FileUtils.write(file, data, "UTF-8");
+            String finalTeksts = mapChangedCmsTeksts(filename, data.toString());
+            FileUtils.write(file, finalTeksts, "UTF-8");
         }
+    }
+
+    private static Map<String, String> getCmsChangeMap(String filename) throws IOException {
+        InputStream mapping = ContentConfig.class.getResourceAsStream("/" + filename.replaceAll("enonic", "content") + ".mapping");
+        Map<String, String> changes = new HashMap<>();
+        if(mapping != null){
+            List<String> strings = IOUtils.readLines(mapping, "UTF-8");
+            for (String string : strings) {
+                changes.put(string.split("=")[0], string.split("=")[1]);
+            }
+        }
+        return changes;
+    }
+    private static String mapChangedCmsTeksts(String filename, String data) throws IOException {
+        String changedData = data;
+        InputStream mapping = ContentConfig.class.getResourceAsStream("/" + filename.replaceAll("enonic", "content") + ".mapping");
+        if (mapping != null) {
+            List<String> strings = IOUtils.readLines(mapping, "UTF-8");
+            for (String string : strings) {
+                changedData = changedData.replaceFirst("&" + string.split("=")[0] + "=", string.split("=")[1] + "=");
+            }
+        }
+        return changedData;
+    }
+
+    public static void main(String[] args) throws IOException {
+        InputStream cms = ContentConfig.class.getResourceAsStream("/content/dagpenger_nb_NO.properties");
+        String result = mapChangedCmsTeksts("enonic/dagpenger_nb_NO.properties", IOUtils.toString(cms, "UTF-8"));
+        File file = new File("c:/temp/sendsoknad/enonic", "dagpenger_nb_NO.properties");
+        FileUtils.write(file, result, "UTF-8");
+
     }
 
     private String removeNewline(String value) {

@@ -42,6 +42,8 @@ public class HandlebarsUtils {
             return null;
         } else if (context.model() instanceof WebSoknad) {
             return (WebSoknad) context.model();
+        } else if (context.model() instanceof OppsummeringsContext) {
+            return ((OppsummeringsContext) context.model()).soknad;
         } else {
             return finnWebSoknad(context.parent());
         }

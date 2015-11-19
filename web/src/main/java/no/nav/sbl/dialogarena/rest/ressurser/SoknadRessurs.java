@@ -73,6 +73,17 @@ public class SoknadRessurs {
         String oppsummeringSti = "/skjema/" + soknad.getSoknadPrefix();
         return pdfTemplate.fyllHtmlMalMedInnhold(soknad, oppsummeringSti);
     }
+    @GET
+    @Path("/{behandlingsId}/new")
+    @Produces(TEXT_HTML)
+    @SjekkTilgangTilSoknad
+    public String hentOppsummeringNew(@PathParam("behandlingsId") String behandlingsId) throws IOException {
+        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
+        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
+
+        String oppsummeringSti = "/skjema/generisk";
+        return pdfTemplate.fyllHtmlMalMedInnholdNew(soknad, soknadService.hentSoknadStruktur(soknad.getskjemaNummer()), oppsummeringSti);
+    }
 
 
     @POST
@@ -155,6 +166,7 @@ public class SoknadRessurs {
         soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(soknadService.hentSoknadStruktur(soknad.getskjemaNummer()));
         return new RefusjonDagligreiseTilXml().transform(soknad).getContent();
     }
+
 
     private void settJournalforendeEnhet(String behandlingsId, String delsteg) {
         soknadService.settJournalforendeEnhet(behandlingsId, delsteg);
