@@ -13,13 +13,22 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonServi
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.LandService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService;
 import no.nav.sbl.dialogarena.utils.InnloggetBruker;
+import org.apache.commons.lang3.LocaleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
-import javax.ws.rs.*;
-import java.util.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
@@ -94,14 +103,7 @@ public class InformasjonRessurs {
         if (sprak == null || sprak.trim().isEmpty()) {
             sprak = "nb_NO";
         }
-
-        if (!sprak.matches("[a-z][a-z]_[A-Z][A-Z]")) {
-            throw new IllegalArgumentException("Språk må matche xx_XX: " + sprak);
-        }
-
-        String[] split = sprak.split("_");
-        Locale locale = new Locale(split[0], split[1]);
-
+        Locale locale = LocaleUtils.toLocale(sprak);
         return messageSource.getBundleFor(type, locale);
     }
 
