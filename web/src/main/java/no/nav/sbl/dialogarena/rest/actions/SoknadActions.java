@@ -1,38 +1,24 @@
 package no.nav.sbl.dialogarena.rest.actions;
 
-import no.nav.modig.core.exception.ApplicationException;
-import no.nav.sbl.dialogarena.rest.meldinger.FortsettSenere;
-import no.nav.sbl.dialogarena.rest.meldinger.SoknadBekreftelse;
-import no.nav.sbl.dialogarena.service.EmailService;
-import no.nav.sbl.dialogarena.service.HtmlGenerator;
-import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
-import no.nav.sbl.dialogarena.utils.PDFFabrikk;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import no.nav.sbl.dialogarena.rest.meldinger.*;
+import no.nav.sbl.dialogarena.rest.utils.*;
+import no.nav.sbl.dialogarena.service.*;
+import no.nav.sbl.dialogarena.sikkerhet.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.message.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
+import org.slf4j.*;
 
-import javax.inject.Inject;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import java.io.File;
-import java.io.IOException;
-import java.util.Locale;
+import javax.inject.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
+import java.util.*;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
-import static no.nav.sbl.dialogarena.utils.UrlUtils.getEttersendelseUrl;
-import static no.nav.sbl.dialogarena.utils.UrlUtils.getFortsettUrl;
+import static javax.ws.rs.core.MediaType.*;
+import static no.nav.sbl.dialogarena.utils.UrlUtils.*;
 
 @Path("/soknader/{behandlingsId}/actions")
 @Produces(APPLICATION_JSON)
@@ -49,7 +35,7 @@ public class SoknadActions {
     private SoknadService soknadService;
 
     @Inject
-    private HtmlGenerator pdfTemplate;
+    private PDFService pdfService;
 
     @Inject
     private EmailService emailService;
@@ -74,16 +60,16 @@ public class SoknadActions {
     public void sendSoknad(@PathParam("behandlingsId") String behandlingsId) {
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
 
-        byte[] kvittering = genererPdfMedKodeverksverdier(soknad, "/skjema/kvittering");
+        byte[] kvittering = pdfService.genererPdfMedKodeverksverdier(soknad, "/skjema/kvittering", servletContext.getRealPath("/"));
         vedleggService.lagreKvitteringSomVedlegg(behandlingsId, kvittering);
 
         if (soknad.erEttersending()) {
-            byte[] dummyPdfSomHovedskjema = genererPdf(soknad, "skjema/ettersending/dummy");
+            byte[] dummyPdfSomHovedskjema = pdfService.genererPdf(soknad, "skjema/ettersending/dummy", servletContext.getRealPath("/"));
             soknadService.sendSoknad(behandlingsId, dummyPdfSomHovedskjema);
         } else {
             byte[] soknadPdf;
             String oppsummeringSti = "/skjema/" + soknad.getSoknadPrefix();
-            soknadPdf = genererPdfMedKodeverksverdier(soknad, oppsummeringSti);
+            soknadPdf = pdfService.genererPdfMedKodeverksverdier(soknad, oppsummeringSti, servletContext.getRealPath("/"));
             soknadService.sendSoknad(behandlingsId, soknadPdf);
         }
     }
@@ -136,21 +122,8 @@ public class SoknadActions {
         return soknadService.hentSisteInnsendteBehandlingsId(behandlingsId);
     }
 
-    private byte[] genererPdfMedKodeverksverdier(WebSoknad soknad, String hbsSkjemaPath) {
-        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
-        return genererPdf(soknad, hbsSkjemaPath);
+    void setContext(ServletContext context) {
+        servletContext = context;
     }
 
-    private byte[] genererPdf(WebSoknad soknad, String hbsSkjemaPath) {
-        String pdfMarkup;
-        try {
-            pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(soknad, hbsSkjemaPath);
-        } catch (IOException e) {
-            throw new ApplicationException("Kunne ikke lage markup for skjema " + hbsSkjemaPath, e);
-        }
-
-        String skjemaPath = new File(servletContext.getRealPath("/")).toURI().toString();
-
-        return PDFFabrikk.lagPdfFil(pdfMarkup, skjemaPath);
-    }
 }
