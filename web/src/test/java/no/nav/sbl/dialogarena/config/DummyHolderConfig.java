@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.rest.actions;
+package no.nav.sbl.dialogarena.config;
 
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;

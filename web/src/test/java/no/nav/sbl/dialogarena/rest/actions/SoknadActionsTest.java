@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.rest.actions;
 
 import no.nav.modig.core.context.ThreadLocalSubjectHandler;
+import no.nav.sbl.dialogarena.config.SoknadActionsTestConfig;
 import no.nav.sbl.dialogarena.rest.meldinger.SoknadBekreftelse;
 import no.nav.sbl.dialogarena.service.EmailService;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
