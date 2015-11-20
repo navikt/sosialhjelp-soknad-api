@@ -1,5 +1,6 @@
-package no.nav.sbl.dialogarena.rest.actions;
+package no.nav.sbl.dialogarena.config;
 
+import no.nav.sbl.dialogarena.rest.actions.SoknadActions;
 import no.nav.sbl.dialogarena.rest.utils.PDFService;
 import no.nav.sbl.dialogarena.service.EmailService;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
