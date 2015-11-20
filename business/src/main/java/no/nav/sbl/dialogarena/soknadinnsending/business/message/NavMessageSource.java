@@ -42,7 +42,7 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
     }
 
     private String calculateFilenameForLocale(String type, Locale locale) {
-        return type + "_" + locale.getLanguage() + "_" + locale.getCountry();
+        return type + "_" + locale.getLanguage() + ("".equals(locale.getCountry())?"": "_" + locale.getCountry());
     }
 
     public String finnTekst(String code, Object[] args, Locale locale) {
