@@ -132,4 +132,8 @@ public class SoknadActions {
         return soknadService.hentSisteInnsendteBehandlingsId(behandlingsId);
     }
 
+    void setContext(ServletContext context) {
+        servletContext = context;
+    }
+
 }
