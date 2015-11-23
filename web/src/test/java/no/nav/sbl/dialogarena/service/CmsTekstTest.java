@@ -12,6 +12,7 @@ import org.springframework.context.NoSuchMessageException;
 import java.io.IOException;
 import java.util.Locale;
 
+import static org.apache.commons.lang3.LocaleUtils.toLocale;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -34,7 +35,7 @@ public class CmsTekstTest {
 
     @Test
     public void kallerMessageSourceToGangerMedOgUtenPrefixNarKeyIkkeEksisterer() throws IOException {
-        cmsTekst.getCmsTekst("min.key", null, "prefix");
+        cmsTekst.getCmsTekst("min.key", null, "prefix", toLocale("nb_NO"));
 
         verify(messagesourceMock, times(1)).getMessage(eq("prefix.min.key"), any(Object[].class), any(Locale.class));
         verify(messagesourceMock, times(1)).getMessage(eq("min.key"), any(Object[].class), any(Locale.class));
@@ -42,7 +43,7 @@ public class CmsTekstTest {
 
     @Test
     public void getCmsTekstSierAtKeyManglerNarKeyMangler() throws IOException {
-        String tekst = cmsTekst.getCmsTekst("min.key", null, "prefix");
+        String tekst = cmsTekst.getCmsTekst("min.key", null, "prefix", toLocale("nb_NO"));
 
         assertThat(tekst).isEqualTo("KEY MANGLER: [min.key]");
     }
