@@ -1,29 +1,23 @@
 package no.nav.sbl.dialogarena.service;
 
-import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.kodeverk.*;
 import no.nav.sbl.dialogarena.service.helpers.*;
-import no.nav.sbl.dialogarena.service.helpers.faktum.ForFaktaMedPropertySattTilTrueHelper;
-import no.nav.sbl.dialogarena.service.helpers.faktum.ForFaktumHelper;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import no.nav.sbl.dialogarena.service.helpers.faktum.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.*;
+import org.junit.*;
+import org.junit.runner.*;
+import org.mockito.*;
+import org.mockito.runners.*;
 
-import java.io.IOException;
-import java.util.Collections;
+import java.io.*;
+import java.util.*;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertThat;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HandleBarKjoererTest {
@@ -44,7 +38,7 @@ public class HandleBarKjoererTest {
 
     @Before
     public void setup() {
-        when(cmsTekst.getCmsTekst(any(String.class), any(Object[].class), anyString())).thenReturn("mock");
+        when(cmsTekst.getCmsTekst(any(String.class), any(Object[].class), anyString(), any(Locale.class))).thenReturn("mock");
         registerHelper(new HvisSantHelper());
         registerHelper(new HvisLikHelper());
         registerHelper(new ForFaktumHelper());
