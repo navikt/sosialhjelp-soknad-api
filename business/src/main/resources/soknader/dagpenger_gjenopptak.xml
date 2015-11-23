@@ -134,7 +134,7 @@
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villighelse.fritekst</id>
-        <type>java.lang.String</type>
+        <type>textbox</type>
         <panel>ReelArbeidsoker</panel>
         <dependOn>reellarbeidssoker.villighelse</dependOn>
         <dependOnValues>

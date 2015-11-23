@@ -7,15 +7,26 @@ import no.nav.sbl.dialogarena.service.helpers.faktum.ForFaktumHelper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.FaktumStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
+import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
+import javax.xml.bind.JAXB;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
@@ -60,6 +71,88 @@ public class HandleBarKjoererTest {
 
     private <T> void registerHelper(RegistryAwareHelper<T> helper) {
         handleBarKjoerer.registrerHelper(helper.getNavn(), helper);
+    }
+
+    private ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+
+    @Test
+    public void printsoknad() throws IOException {
+        messageSource.setDefaultEncoding("UTF-8");
+        messageSource.setBasenames("content/dagpenger", "content/sendsoknad");
+        SoknadStruktur soknadStruktur = JAXB.unmarshal(HandleBarKjoerer.class.getResourceAsStream("/soknader/dagpenger_ordinaer.xml"), SoknadStruktur.class);
+        WebSoknad soknad = JAXB.unmarshal(HandleBarKjoerer.class.getResourceAsStream("/testsoknaddagpenger.xml"), WebSoknad.class);
+        soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(soknadStruktur);
+        Map<String, List<FaktumStruktur>> bolker = new LinkedHashMap<>();
+        Map<String, List<FaktumStruktur>> underFaktum = new LinkedHashMap<>();
+        StringBuilder output = new StringBuilder();
+        output.append("<html><head><meta charset='utf-8'></head><body><h1>Søknad om dagpenger</h1>");
+        for (FaktumStruktur faktumStruktur : soknadStruktur.getFakta()) {
+            if (faktumStruktur.getDependOn() == null) {
+                if (!bolker.containsKey(faktumStruktur.getPanel())) {
+                    bolker.put(faktumStruktur.getPanel(), new ArrayList<FaktumStruktur>());
+                }
+                bolker.get(faktumStruktur.getPanel()).add(faktumStruktur);
+            } else {
+                if(!underFaktum.containsKey(faktumStruktur.getDependOn().getId())){
+                    underFaktum.put(faktumStruktur.getDependOn().getId(), new ArrayList<FaktumStruktur>());
+                }
+                underFaktum.get(faktumStruktur.getDependOn().getId()).add(faktumStruktur);
+            }
+        }
+        for (String bolk : bolker.keySet()) {
+            System.out.println("\n" + bolk);
+            output.append("<h2> " + bolk + "</h2><ul>");
+            for (FaktumStruktur faktumStruktur : bolker.get(bolk)) {
+                output.append("<li>" + printForFaktum(underFaktum, soknad, faktumStruktur, null, 3) + "</li>");
+            }
+            output.append("</ul>");
+        }
+        output.append("</body></html>");
+
+        FileOutputStream output1 = new FileOutputStream("/testfil.html");
+        IOUtils.write(output, output1);
+        System.out.println(output.toString());
+    }
+
+    private  String printForFaktum(Map<String, List<FaktumStruktur>> underFaktum, WebSoknad soknad, FaktumStruktur faktumStruktur, Long parentId, int level) {
+        StringBuilder builder = new StringBuilder();
+        Faktum faktum = soknad.getFaktumMedKey(faktumStruktur.getId());
+        if(parentId != null){
+            if(soknad.getFaktaMedKeyOgParentFaktum(faktumStruktur.getId(), parentId) != null) {
+                faktum = soknad.getFaktumMedKeyOgParentFaktum(faktumStruktur.getId(), parentId);
+            }
+        }
+
+        if(faktum != null) {
+
+            builder.append("<h" + level + ">" + hentTekst(faktumStruktur.getId() + ".sporsmal", "default") + "</h" + level + ">");
+            builder.append("<div>" + hentTekst(faktumStruktur.getId() + "." + faktum.getValue(), "default") + "</div>");
+            if(hentTekst(faktumStruktur.getId() + ".hjelpetekst.tittel", null) != null){
+                builder.append("<div>").append(hentTekst(faktumStruktur.getId() + ".hjelpetekst.tittel", "default"))
+                        .append(hentTekst(faktumStruktur.getId() + ".hjelpetekst.tekst", "default")).append("</div>");
+            }
+            builder.append( "<div>" + faktumStruktur.getId() + faktum + "<div>");
+            if (underFaktum.containsKey(faktumStruktur.getId())) {
+                builder.append("<ul>");
+                for (FaktumStruktur struktur : underFaktum.get(faktumStruktur.getId())) {
+                    Faktum underfaktum = soknad.getFaktumMedKey(faktumStruktur.getId());
+                    if(parentId != null){
+                        if(soknad.getFaktaMedKeyOgParentFaktum(faktumStruktur.getId(), parentId) != null) {
+                            faktum = soknad.getFaktumMedKeyOgParentFaktum(faktumStruktur.getId(), parentId);
+                        }
+                    }
+                    if(struktur.erSynlig(soknad, underfaktum)) {
+                        builder.append("<li>" + printForFaktum(underFaktum, soknad, struktur, faktum.getFaktumId(), level++) + "</li>");
+                    }
+                }
+                builder.append("</ul>");
+            }
+        }
+        return builder.toString();
+    }
+
+    private String hentTekst(String code, String defaultMessage) {
+        return messageSource.getMessage(code, new String[]{}, defaultMessage, new Locale("nb", "no"));
     }
 
     @Test

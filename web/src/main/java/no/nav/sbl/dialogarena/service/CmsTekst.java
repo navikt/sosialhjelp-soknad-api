@@ -27,4 +27,7 @@ public class CmsTekst {
             }
         }
     }
+    public boolean finnesTekst(String key, String soknadTypePrefix){
+        return !getCmsTekst(key, new Object[0], soknadTypePrefix).startsWith("KEY MANGLER");
+    }
 }
