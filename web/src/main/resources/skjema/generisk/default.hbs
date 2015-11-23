@@ -5,6 +5,7 @@
 <tr>
     <td class="sjekket"></td>
     <td>{{ hentTekst (concat faktum.key "." faktum.value) }}
+        {{> skjema/generisk/infotekst}}
         <table>
             {{#each barneFakta}}
                 {{> skjema/generisk/faktum }}
