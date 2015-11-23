@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.rest.actions;
 
 import no.nav.modig.core.context.ThreadLocalSubjectHandler;
+import no.nav.sbl.dialogarena.config.SoknadActionsTestConfig;
 import no.nav.sbl.dialogarena.rest.meldinger.SoknadBekreftelse;
 import no.nav.sbl.dialogarena.service.EmailService;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
@@ -11,11 +12,11 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.So
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import java.util.Locale;
 
@@ -23,39 +24,41 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegSta
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = {SoknadActionsTestConfig.class})
 public class SoknadActionsTest {
 
     public static final String BEHANDLINGS_ID = "123";
 
-    @Mock
+    @Inject
     NavMessageSource tekster;
-    @Mock
+    @Inject
     EmailService emailService;
-    @Mock
+    @Inject
     SoknadService soknadService;
-    @Mock
+    @Inject
     VedleggService vedleggService;
-    @Mock
+    @Inject
     HtmlGenerator pdfTemplate;
-    @Mock
-    ServletContext servletContext;
-
-    @InjectMocks
+    @Inject
     SoknadActions actions;
+
+    ServletContext context = mock(ServletContext.class);
 
     @Before
     public void setUp() {
         System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
         when(tekster.finnTekst(eq("sendtSoknad.sendEpost.epostSubject"), any(Object[].class), any(Locale.class))).thenReturn("Emne");
-        when(servletContext.getRealPath(anyString())).thenReturn("");
+        when(context.getRealPath(anyString())).thenReturn("");
+        actions.setContext(context);
     }
 
     @Test
-    public void sendSoknadSkalLageDagpengerPdfMedKodeverksverdier() throws Exception{
+    public void sendSoknadSkalLageDagpengerPdfMedKodeverksverdier() throws Exception {
         when(soknadService.hentSoknad(BEHANDLINGS_ID, true, true)).thenReturn(soknad().medSoknadPrefix("dagpenger.ordinaer"));
         when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyString())).thenReturn("<html></html>");
 
@@ -65,7 +68,7 @@ public class SoknadActionsTest {
     }
 
     @Test
-    public void sendGjenopptakSkalLageGjenopptakPdfMedKodeverksverdier() throws Exception{
+    public void sendGjenopptakSkalLageGjenopptakPdfMedKodeverksverdier() throws Exception {
         when(soknadService.hentSoknad(BEHANDLINGS_ID, true, true)).thenReturn(soknad().medSoknadPrefix("dagpenger.gjenopptak"));
         when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyString())).thenReturn("<html></html>");
 
@@ -75,7 +78,7 @@ public class SoknadActionsTest {
     }
 
     @Test
-    public void sendEttersendingSkalLageEttersendingDummyPdf() throws Exception{
+    public void sendEttersendingSkalLageEttersendingDummyPdf() throws Exception {
         when(soknadService.hentSoknad(BEHANDLINGS_ID, true, true)).thenReturn(soknad().medDelstegStatus(ETTERSENDING_OPPRETTET));
         when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyString())).thenReturn("<html></html>");
 
@@ -83,6 +86,7 @@ public class SoknadActionsTest {
 
         verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), eq("skjema/ettersending/dummy"));
     }
+
 
     @Test
     public void soknadBekreftelseEpostSkalInneholdeSoknadbekreftelseTekst() {
@@ -109,4 +113,5 @@ public class SoknadActionsTest {
     private WebSoknad soknad() {
         return new WebSoknad().medBehandlingId(BEHANDLINGS_ID);
     }
+
 }
