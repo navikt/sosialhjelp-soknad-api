@@ -161,7 +161,7 @@ public class FaktumStruktur implements Serializable {
 
     private boolean oppfyllerParentKriterier(WebSoknad soknad, Faktum faktum) {
         Faktum parent = faktum.getParrentFaktum() != null ? soknad.finnFaktum(faktum.getParrentFaktum()): soknad.getFaktumMedKey(getDependOn().getId());
-        if(parent != null){
+        if(parent != null && getDependOnValues() != null && getDependOnValues().size() > 0){
             if(!useExpression){
                 return (harDependOnProperty(parent) || harDependOnValue(parent));
             } else {

@@ -1,0 +1,10 @@
+{{#hvisTekstFinnes (concat faktum.key "." (toLowerCase faktum.value) ".infotekst.tekst")}}
+    <div>
+        {{ hentTekst (concat faktum.key "." (toLowerCase faktum.value) ".infotekst.tekst") }}
+        {{#hvisTekstFinnes (concat faktum.key "." (toLowerCase faktum.value) ".infotekst.tekst2")}}
+            <div>
+                {{ hentTekst (concat faktum.key "." (toLowerCase faktum.value) ".infotekst.tekst2") }}
+            </div>
+        {{/hvisTekstFinnes}}
+    </div>
+{{/hvisTekstFinnes}}

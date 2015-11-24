@@ -138,7 +138,12 @@
 
     <!-- Arbeidsforhold -->
     <faktum>
-        <id>arbeidstilstand</id>
+        <id>arbeidsforhold.datodagpenger</id>
+        <type>textbox</type>
+        <panel>Arbeidsforhold</panel>
+    </faktum>
+    <faktum>
+        <id>arbeidsforhold.arbeidstilstand</id>
         <type>java.lang.String</type>
         <panel>Arbeidsforhold</panel>
     </faktum>
@@ -170,6 +175,28 @@
         <panel>Arbeidsforhold</panel>
         <type>java.lang.Boolean</type>
     </faktum>
+
+    <faktum>
+        <id>arbeidsforhold.grensearbeider.false.adresse</id>
+        <type>inputgroup</type>
+        <panel>Arbeidsforhold</panel>
+        <dependOn>arbeidsforhold.grensearbeider</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>arbeidsforhold.grensearbeider.false.adresse.land</id>
+        <type>textbox</type>
+        <panel>Arbeidsforhold</panel>
+        <dependOn>arbeidsforhold.grensearbeider.false.adresse</dependOn>
+    </faktum>
+    <faktum>
+        <id>arbeidsforhold.grensearbeider.false.adresse.fritekst</id>
+        <type>textbox</type>
+        <panel>Arbeidsforhold</panel>
+        <dependOn>arbeidsforhold.grensearbeider.false.adresse</dependOn>
+    </faktum>
     <faktum>
         <id>arbeidsforhold.grensearbeider.false.oftehjem</id>
         <type>java.lang.String</type>
@@ -179,25 +206,6 @@
             <value>false</value>
         </dependOnValues>
     </faktum>
-    <faktum>
-        <id>arbeidsforhold.grensearbeider.false.adresse.fritekst</id>
-        <type>java.lang.String</type>
-        <panel>Arbeidsforhold</panel>
-        <dependOn>arbeidsforhold.grensearbeider</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
-    </faktum>
-    <faktum>
-        <id>arbeidsforhold.grensearbeider.false.adresse.land</id>
-        <type>java.lang.String</type>
-        <panel>Arbeidsforhold</panel>
-        <dependOn>arbeidsforhold.grensearbeider</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
-    </faktum>
-
     <!-- EgenNaering -->
     <faktum>
         <id>egennaering.driveregennaering</id>
