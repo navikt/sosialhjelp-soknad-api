@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.rest.actions;
 
+import no.nav.modig.core.context.*;
+import no.nav.sbl.dialogarena.pdf.*;
 import no.nav.sbl.dialogarena.rest.meldinger.*;
 import no.nav.sbl.dialogarena.rest.utils.*;
 import no.nav.sbl.dialogarena.service.*;
@@ -46,6 +48,8 @@ public class SoknadActions {
     @Context
     private ServletContext servletContext;
 
+    private PdfWatermarker watermarker = new PdfWatermarker();
+
     @GET
     @Path("/leggved")
     @SjekkTilgangTilSoknad
@@ -61,6 +65,8 @@ public class SoknadActions {
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
 
         byte[] kvittering = pdfService.genererPdfMedKodeverksverdier(soknad, "/skjema/kvittering", servletContext.getRealPath("/"));
+        String fnr = SubjectHandler.getSubjectHandler().getUid();
+        kvittering = watermarker.applyOn(kvittering, fnr, true);
         vedleggService.lagreKvitteringSomVedlegg(behandlingsId, kvittering);
 
         if (soknad.erEttersending()) {
@@ -70,6 +76,7 @@ public class SoknadActions {
             byte[] soknadPdf;
             String oppsummeringSti = "/skjema/" + soknad.getSoknadPrefix();
             soknadPdf = pdfService.genererPdfMedKodeverksverdier(soknad, oppsummeringSti, servletContext.getRealPath("/"));
+            soknadPdf = watermarker.applyOn(soknadPdf, fnr, true);
             soknadService.sendSoknad(behandlingsId, soknadPdf);
         }
     }
