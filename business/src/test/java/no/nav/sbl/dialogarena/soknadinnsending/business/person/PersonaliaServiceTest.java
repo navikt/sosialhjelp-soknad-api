@@ -343,13 +343,13 @@ public class PersonaliaServiceTest {
     }
 
     @Test
-    public void returnerTomListeOmHentPersonaliaKasterException() throws HentDigitalKontaktinformasjonSikkerhetsbegrensing, HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet, HentDigitalKontaktinformasjonPersonIkkeFunnet {
+    public void returnerMedDkifdataDersomHentPersonaliaKasterException() throws HentDigitalKontaktinformasjonSikkerhetsbegrensing, HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet, HentDigitalKontaktinformasjonPersonIkkeFunnet {
         String fnr = "12345612345";
-        when(personaliaService.hentPersonalia(fnr)).thenThrow(new ApplicationException(""));
 
+        when(personaliaService.hentPersonalia(fnr)).thenThrow(new ApplicationException(""));
         List<Faktum> systemFaktaListe = personaliaService.genererSystemFakta(fnr, any(Long.class));
 
-        assertThat(systemFaktaListe.size(), is(0));
+        assertThat(systemFaktaListe.size(), is(1));
     }
 
     @Test
