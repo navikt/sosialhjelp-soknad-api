@@ -19,6 +19,7 @@ import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentD
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentDigitalKontaktinformasjonResponse;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
+import org.apache.cxf.binding.soap.SoapFault;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -132,7 +133,10 @@ public class PersonaliaService implements BolkService {
             logger.error("Person ikke tilgjengelig i dkif", e);
         } catch (HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet e) {
             logger.info("Kunne ikke hente kontaktinformasjon fra dkif");
+        } catch (SoapFault e) {
+            logger.info("Dkif-tjeneste sdvarte med feil", e);
         }
+
         return new WSHentDigitalKontaktinformasjonResponse();
     }
 
