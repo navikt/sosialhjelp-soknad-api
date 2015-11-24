@@ -214,7 +214,7 @@
     </faktum>
     <faktum>
         <id>egennaering.driveregennaering.arbeidsmengde</id>
-        <type>java.lang.String</type>
+        <type>textbox</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.driveregennaering</dependOn>
         <dependOnValues>
@@ -222,8 +222,8 @@
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>egennaering.drivergennaering.orgnummer</id>
-        <type>java.lang.String</type>
+        <id>egennaering.driveregennaering.orgnummer</id>
+        <type>textbox</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.driveregennaering</dependOn>
         <dependOnValues>
@@ -238,7 +238,16 @@
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.organisasjonsnummer</id>
-        <type>java.lang.String</type>
+        <type>textbox</type>
+        <panel>EgenNaering</panel>
+        <dependOn>egennaering.gardsbruk</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>egennaering.gardsbruk.false.type</id>
+        <type>checkboxGroup</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.gardsbruk</dependOn>
         <dependOnValues>
@@ -249,32 +258,29 @@
         <id>egennaering.gardsbruk.false.type.dyr</id>
         <type>java.lang.Boolean</type>
         <panel>EgenNaering</panel>
-        <dependOn>egennaering.gardsbruk</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
+        <dependOn>egennaering.gardsbruk.false.type</dependOn>
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.type.jord</id>
         <type>java.lang.Boolean</type>
         <panel>EgenNaering</panel>
-        <dependOn>egennaering.gardsbruk</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
+        <dependOn>egennaering.gardsbruk.false.type</dependOn>
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.type.skog</id>
         <type>java.lang.Boolean</type>
         <panel>EgenNaering</panel>
-        <dependOn>egennaering.gardsbruk</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
+        <dependOn>egennaering.gardsbruk.false.type</dependOn>
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.type.annet</id>
         <type>java.lang.Boolean</type>
+        <panel>EgenNaering</panel>
+        <dependOn>egennaering.gardsbruk.false.type</dependOn>
+    </faktum>
+    <faktum>
+        <id>egennaering.gardsbruk.false.eier</id>
+        <type>checkboxGroup</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.gardsbruk</dependOn>
         <dependOnValues>
@@ -285,23 +291,23 @@
         <id>egennaering.gardsbruk.false.eier.jeg</id>
         <type>java.lang.Boolean</type>
         <panel>EgenNaering</panel>
-        <dependOn>egennaering.gardsbruk</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
+        <dependOn>egennaering.gardsbruk.false.eier</dependOn>
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.eier.ektefelle</id>
         <type>java.lang.Boolean</type>
         <panel>EgenNaering</panel>
-        <dependOn>egennaering.gardsbruk</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
+        <dependOn>egennaering.gardsbruk.false.eier</dependOn>
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.eier.annet</id>
         <type>java.lang.Boolean</type>
+        <panel>EgenNaering</panel>
+        <dependOn>egennaering.gardsbruk.false.eier</dependOn>
+    </faktum>
+    <faktum>
+        <id>egennaering.gardsbruk.false.eierandel</id>
+        <type>inputgroup</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.gardsbruk</dependOn>
         <dependOnValues>
@@ -310,25 +316,25 @@
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.eierandel.din</id>
-        <type>java.lang.String</type>
+        <type>textbox</type>
         <panel>EgenNaering</panel>
-        <dependOn>egennaering.gardsbruk</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
+        <dependOn>egennaering.gardsbruk.false.eierandel</dependOn>
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.eierandel.ektefelle</id>
-        <type>java.lang.String</type>
+        <type>textbox</type>
         <panel>EgenNaering</panel>
-        <dependOn>egennaering.gardsbruk</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
+        <dependOn>egennaering.gardsbruk.false.eierandel</dependOn>
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.eierandel.annet</id>
-        <type>java.lang.String</type>
+        <type>textbox</type>
+        <panel>EgenNaering</panel>
+        <dependOn>egennaering.gardsbruk.false.eierandel</dependOn>
+    </faktum>
+    <faktum>
+        <id>egennaering.gardsbruk.false.arbeidstimer</id>
+        <type>inputgroup</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.gardsbruk</dependOn>
         <dependOnValues>
@@ -337,30 +343,21 @@
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.timer</id>
-        <type>java.lang.String</type>
+        <type>textbox</type>
         <panel>EgenNaering</panel>
-        <dependOn>egennaering.gardsbruk</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
+        <dependOn>egennaering.gardsbruk.false.arbeidstimer</dependOn>
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.aar</id>
-        <type>java.lang.String</type>
+        <type>textbox</type>
         <panel>EgenNaering</panel>
-        <dependOn>egennaering.gardsbruk</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
+        <dependOn>egennaering.gardsbruk.false.arbeidstimer</dependOn>
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.timeredegjoring</id>
-        <type>java.lang.String</type>
+        <type>textbox</type>
         <panel>EgenNaering</panel>
-        <dependOn>egennaering.gardsbruk</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
+        <dependOn>egennaering.gardsbruk.false.arbeidstimer</dependOn>
     </faktum>
     <faktum>
         <id>egennaering.fangstogfiske</id>

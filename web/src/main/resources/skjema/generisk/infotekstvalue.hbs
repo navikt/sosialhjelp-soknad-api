@@ -6,5 +6,10 @@
                 {{ hentTekst (concat faktum.key "." (toLowerCase faktum.value) ".infotekst.tekst2") }}
             </div>
         {{/hvisTekstFinnes}}
+        {{#hvisTekstFinnes (concat faktum.key "." (toLowerCase faktum.value) ".infotekst.tekst3")}}
+            <div>
+                {{ hentTekst (concat faktum.key "." (toLowerCase faktum.value) ".infotekst.tekst3") }}
+            </div>
+        {{/hvisTekstFinnes}}
     </div>
 {{/hvisTekstFinnes}}
