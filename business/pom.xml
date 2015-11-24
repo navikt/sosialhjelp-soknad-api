@@ -53,10 +53,6 @@
             <artifactId>pdfbox</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-api</artifactId>
-        </dependency>
-        <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>sendsoknad-tjenestespesifikasjon</artifactId>
         </dependency>
