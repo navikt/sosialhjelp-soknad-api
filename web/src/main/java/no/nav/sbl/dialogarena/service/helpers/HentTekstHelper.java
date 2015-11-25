@@ -1,12 +1,14 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
-import com.github.jknack.handlebars.Options;
-import no.nav.sbl.dialogarena.service.CmsTekst;
-import no.nav.sbl.dialogarena.service.HandlebarsUtils;
-import org.springframework.stereotype.Component;
+import com.github.jknack.handlebars.*;
+import no.nav.sbl.dialogarena.service.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.*;
+import org.springframework.stereotype.*;
 
-import javax.inject.Inject;
-import java.io.IOException;
+import javax.inject.*;
+import java.io.*;
+
+import static org.apache.commons.lang3.LocaleUtils.*;
 
 @Component
 public class HentTekstHelper extends RegistryAwareHelper<String> {
@@ -26,7 +28,9 @@ public class HentTekstHelper extends RegistryAwareHelper<String> {
 
     @Override
     public CharSequence apply(String key, Options options) throws IOException {
-        String soknadPrefix = HandlebarsUtils.finnWebSoknad(options.context).getSoknadPrefix();
-        return cmsTekst.getCmsTekst(key, options.params, soknadPrefix);
+        WebSoknad soknad = HandlebarsUtils.finnWebSoknad(options.context);
+        Faktum sprakFaktum = soknad.getFaktumMedKey("skjema.sprak");
+        String sprak = sprakFaktum == null ? "nb_NO" : sprakFaktum.getValue();
+        return cmsTekst.getCmsTekst(key, options.params, soknad.getSoknadPrefix(), toLocale(sprak));
     }
 }
