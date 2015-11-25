@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.xml.namespace.QName;
+
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.util.InstanceSwitcher.createSwitcher;
 
 @Configuration
@@ -48,6 +50,9 @@ public class DkifWSConfig {
         return new ServiceBuilder<>(DigitalKontaktinformasjonV1.class)
                 .asStandardService()
                 .withAddress(dkifEndpoint)
+                .withWsdl("classpath:dkif/no/nav/tjeneste/virksomhet/digitalKontaktinformasjon/v1/Binding.wsdl")
+                .withServiceName(new QName("http://nav.no/tjeneste/virksomhet/digitalKontaktinformasjon/v1/Binding", "DigitalKontaktinformasjon_v1"))
+                .withEndpointName(new QName("http://nav.no/tjeneste/virksomhet/digitalKontaktinformasjon/v1/Binding", "DigitalKontaktinformasjon_v1Port"))
                 .build()
                 .withHttpsMock()
                 .withMDC();
