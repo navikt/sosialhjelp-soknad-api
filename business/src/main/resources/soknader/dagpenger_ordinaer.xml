@@ -388,13 +388,18 @@
         <panel>Utdanning</panel>
     </faktum>
     <faktum>
-        <id>utdanning.kveld</id>
-        <type>java.lang.Boolean</type>
-        <panel>Utdanning</panel>
+        <id>utdanning.underutdanning</id>
+        <type>checkboxGroup</type>
         <dependOn>utdanning</dependOn>
         <dependOnValues>
             <value>underUtdanning</value>
         </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>utdanning.kveld</id>
+        <type>java.lang.Boolean</type>
+        <panel>Utdanning</panel>
+        <dependOn>utdanning.underutdanning</dependOn>
     </faktum>
     <faktum>
         <id>utdanning.kveld.folges</id>
@@ -402,7 +407,7 @@
         <panel>Utdanning</panel>
         <dependOn>utdanning.kveld</dependOn>
         <dependOnValues>
-            <value>false</value>
+            <value>true</value>
         </dependOnValues>
     </faktum>
     <faktum>
@@ -411,7 +416,7 @@
         <panel>Utdanning</panel>
         <dependOn>utdanning.kveld</dependOn>
         <dependOnValues>
-            <value>false</value>
+            <value>true</value>
         </dependOnValues>
     </faktum>
     <faktum>
@@ -420,152 +425,146 @@
         <panel>Utdanning</panel>
         <dependOn>utdanning.kveld</dependOn>
         <dependOnValues>
-            <value>false</value>
+            <value>true</value>
         </dependOnValues>
     </faktum>
     <faktum>
         <id>utdanning.kveld.sted</id>
-        <type>java.lang.String</type>
+        <type>textbox</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.kveld</dependOn>
         <dependOnValues>
-            <value>false</value>
+            <value>true</value>
         </dependOnValues>
     </faktum>
     <faktum>
         <id>utdanning.kveld.navn</id>
-        <type>java.lang.String</type>
+        <type>textbox</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.kveld</dependOn>
         <dependOnValues>
-            <value>false</value>
+            <value>true</value>
         </dependOnValues>
     </faktum>
     <faktum>
         <id>utdanning.kveld.varighet</id>
-        <type>java.lang.String</type>
+        <type>periode</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.kveld</dependOn>
         <dependOnValues>
-            <value>false</value>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>utdanning.semester.avslutning</id>
+        <type>date</type>
+        <panel>Utdanning</panel>
+        <dependOn>utdanning.kveld</dependOn>
+        <dependOnValues>
+            <value>true</value>
         </dependOnValues>
     </faktum>
     <faktum>
         <id>utdanning.kortvarig</id>
         <type>java.lang.Boolean</type>
         <panel>Utdanning</panel>
-        <dependOn>utdanning</dependOn>
-        <dependOnValues>
-            <value>underUtdanning</value>
-        </dependOnValues>
+        <dependOn>utdanning.underutdanning</dependOn>
     </faktum>
     <faktum>
         <id>utdanning.kortvarig.sted</id>
-        <type>java.lang.String</type>
+        <type>textbox</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.kortvarig</dependOn>
         <dependOnValues>
-            <value>false</value>
+            <value>true</value>
         </dependOnValues>
     </faktum>
     <faktum>
         <id>utdanning.kortvarig.navn</id>
-        <type>java.lang.String</type>
+        <type>textbox</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.kortvarig</dependOn>
         <dependOnValues>
-            <value>false</value>
+            <value>true</value>
         </dependOnValues>
     </faktum>
     <faktum>
         <id>utdanning.kortvarig.varighet</id>
-        <type>java.lang.String</type>
+        <type>periode</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.kortvarig</dependOn>
         <dependOnValues>
-            <value>false</value>
+            <value>true</value>
         </dependOnValues>
     </faktum>
     <faktum>
         <id>utdanning.kortvarigflere</id>
         <type>java.lang.Boolean</type>
         <panel>Utdanning</panel>
-        <dependOn>utdanning</dependOn>
-        <dependOnValues>
-            <value>underUtdanning</value>
-        </dependOnValues>
+        <dependOn>utdanning.underutdanning</dependOn>
     </faktum>
     <faktum>
         <id>utdanning.kortvarigflere.sted</id>
-        <type>java.lang.String</type>
+        <type>textbox</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.kortvarigflere</dependOn>
         <dependOnValues>
-            <value>false</value>
+            <value>true</value>
         </dependOnValues>
     </faktum>
     <faktum>
         <id>utdanning.kortvarigflere.navn</id>
-        <type>java.lang.String</type>
+        <type>textbox</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.kortvarigflere</dependOn>
         <dependOnValues>
-            <value>false</value>
+            <value>true</value>
         </dependOnValues>
     </faktum>
     <faktum>
         <id>utdanning.kortvarigflere.varighet</id>
-        <type>java.lang.String</type>
+        <type>periode</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.kortvarigflere</dependOn>
         <dependOnValues>
-            <value>false</value>
+            <value>true</value>
         </dependOnValues>
     </faktum>
     <faktum>
         <id>utdanning.norsk</id>
         <type>java.lang.Boolean</type>
         <panel>Utdanning</panel>
-        <dependOn>utdanning</dependOn>
-        <dependOnValues>
-            <value>underUtdanning</value>
-        </dependOnValues>
+        <dependOn>utdanning.underutdanning</dependOn>
     </faktum>
     <faktum>
         <id>utdanning.norsk.sted</id>
-        <type>java.lang.String</type>
+        <type>textbox</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.norsk</dependOn>
         <dependOnValues>
-            <value>false</value>
+            <value>true</value>
         </dependOnValues>
     </faktum>
     <faktum>
         <id>utdanning.norsk.varighet</id>
-        <type>java.lang.String</type>
+        <type>periode</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.norsk</dependOn>
         <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
-    </faktum>
-    <faktum>
-        <id>underUtdanningAnnet</id>
-        <type>java.lang.Boolean</type>
-        <panel>Utdanning</panel>
-        <dependOn>utdanning</dependOn>
-        <dependOnValues>
-            <value>underUtdanning</value>
+            <value>true</value>
         </dependOnValues>
     </faktum>
     <faktum>
         <id>utdanning.introduksjon</id>
         <type>java.lang.Boolean</type>
         <panel>Utdanning</panel>
-        <dependOn>utdanning</dependOn>
-        <dependOnValues>
-            <value>underUtdanning</value>
-        </dependOnValues>
+        <dependOn>utdanning.underutdanning</dependOn>
+    </faktum>
+    <faktum>
+        <id>utdanning.annet</id>
+        <type>java.lang.Boolean</type>
+        <panel>Utdanning</panel>
+        <dependOn>utdanning.underutdanning</dependOn>
     </faktum>
 
     <!-- Ytelser -->

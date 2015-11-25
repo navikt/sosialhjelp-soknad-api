@@ -2,10 +2,6 @@
     <td></td>
     <td>
         {{ hentTekst (concat faktum.key ".sporsmal") }}
-        <table>
-            {{#each barneFakta}}
-                {{> skjema/generisk/faktum}}
-            {{/each}}
-        </table>
+        {{> skjema/generisk/barnefakta}}
     </td>
 </tr>

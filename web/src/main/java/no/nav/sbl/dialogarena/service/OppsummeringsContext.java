@@ -80,6 +80,12 @@ public class OppsummeringsContext{
             else if("textbox".equals(struktur.getType())){
                 return "skjema/generisk/textbox";
             }
+            else if("periode".equals(struktur.getType())){
+                return "skjema/generisk/periode";
+            }
+            else if("date".equals(struktur.getType())){
+                return "skjema/generisk/date";
+            }
             else if("inputgroup".equals(struktur.getType())){
                 return "skjema/generisk/inputgroup";
             }
