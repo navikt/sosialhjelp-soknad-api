@@ -1,0 +1,15 @@
+<tr>
+    <td></td>
+    <td>
+        {{> skjema/generisk/infotekstvalue}}
+        {{#hvisTekstFinnes (concat (toLowerCase faktum.key) ".sporsmal")}}
+            {{ hentTekst (concat (toLowerCase faktum.key) ".sporsmal") }}
+        {{/hvisTekstFinnes}}
+    </td>
+</tr>
+<tr>
+    <td class="sjekket"></td>
+    <td>
+        {{ hentTekst (concat (toLowerCase faktum.key) ".label") }}: {{formaterLangDato faktum.value}}
+    </td>
+</tr>

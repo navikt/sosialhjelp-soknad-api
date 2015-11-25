@@ -7,17 +7,24 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadReposito
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Steg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.DagpengerOrdinaerInformasjon;
 import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.KravdialogInformasjon;
 import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BolkService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.sax.SAXSource;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -72,7 +79,7 @@ public class WebSoknadConfig {
         return struktur;
     }
 
-    private SoknadStruktur hentStrukturForSkjemanavn(KravdialogInformasjon skjemaConfig) {
+    private static SoknadStruktur hentStrukturForSkjemanavn(KravdialogInformasjon skjemaConfig) {
         String type = skjemaConfig.getStrukturFilnavn();
         if (type == null || type.isEmpty()) {
             throw new ApplicationException("Fant ikke strukturdokument for skjema: " + skjemaConfig.getClass().getSimpleName());
@@ -80,10 +87,21 @@ public class WebSoknadConfig {
 
         try {
             Unmarshaller unmarshaller = newInstance(SoknadStruktur.class).createUnmarshaller();
-            return (SoknadStruktur) unmarshaller.unmarshal(SoknadStruktur.class.getResourceAsStream(format("/soknader/%s", type)));
-        } catch (JAXBException e) {
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            factory.setXIncludeAware(true);
+            factory.setNamespaceAware(true);
+            factory.setFeature("http://apache.org/xml/features/xinclude/fixup-base-uris", false);
+            XMLReader reader = factory.newSAXParser().getXMLReader();
+            SAXSource source = new SAXSource(reader, new InputSource(SoknadStruktur.class.getResourceAsStream(format("/soknader/%s", type))));
+            return (SoknadStruktur) unmarshaller.unmarshal(source);
+        } catch (JAXBException|SAXException|ParserConfigurationException e) {
             throw new RuntimeException("Kunne ikke laste definisjoner. ", e);
         }
+    }
+
+    public static void main(String[] args) {
+        hentStrukturForSkjemanavn(new DagpengerOrdinaerInformasjon());
+
     }
 
     public List<BolkService> getSoknadBolker(WebSoknad soknad, Collection<BolkService> alleBolker) {
