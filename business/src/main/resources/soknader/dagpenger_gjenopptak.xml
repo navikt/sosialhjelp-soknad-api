@@ -610,25 +610,22 @@
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>offentligTjenestepensjon</id>
+        <id>andreytelser.ytelser.offentligtjenestepensjon</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ingenYtelse</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
+        <dependOn>andreytelser.ytelser</dependOn>
     </faktum>
     <faktum>
-        <id>offentligTjenestepensjonUtbetaler</id>
+        <id>andreytelser.ytelser.offentligtjenestepensjon.utbetaler</id>
         <type>java.lang.String</type>
         <panel>AndreYtelser</panel>
-        <dependOn>offentligTjenestepensjon</dependOn>
+        <dependOn>andreytelser.ytelser.offentligtjenestepensjon</dependOn>
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>privatTjenestepensjon</id>
+        <id>andreytelser.ytelser.privattjenestepensjon</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
         <dependOn>ingenYtelse</dependOn>
@@ -637,7 +634,7 @@
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>privatTjenestepensjonUtbetaler</id>
+        <id>andreytelser.ytelser.privattjenestepensjon.utbetaler</id>
         <type>java.lang.String</type>
         <panel>AndreYtelser</panel>
         <dependOn>privatTjenestepensjon</dependOn>
@@ -646,7 +643,7 @@
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>etterlonn</id>
+        <id>andreytelser.ytelser.etterlonn</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
         <dependOn>ingenYtelse</dependOn>
@@ -664,7 +661,7 @@
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>vartpenger</id>
+        <id>andreytelser.ytelser.vartpenger</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
         <dependOn>ingenYtelse</dependOn>
@@ -682,7 +679,7 @@
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>dagpengerEOS</id>
+        <id>andreytelser.ytelser.dagpengereos</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
         <dependOn>ingenYtelse</dependOn>
@@ -700,7 +697,7 @@
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>annenYtelse</id>
+        <id>andreytelser.ytelser.annenytelse</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
         <dependOn>ingenYtelse</dependOn>
@@ -727,7 +724,7 @@
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>ingenYtelse</id>
+        <id>andreytelser.ytelser.ingenytelse</id>
         <type>java.lang.String</type>
         <panel>AndreYtelser</panel>
     </faktum>
@@ -1022,7 +1019,7 @@
 
     <vedlegg>
         <id>3</id>
-        <faktum>offentligTjenestepensjon</faktum>
+        <faktum>andreytelser.ytelser.offentligtjenestepensjon</faktum>
         <onValues>
             <value>true</value>
         </onValues>
