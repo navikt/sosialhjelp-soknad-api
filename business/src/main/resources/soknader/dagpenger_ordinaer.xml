@@ -721,63 +721,64 @@
 
 
     <faktum>
-        <id>andreytelser.navytelse</id>
+        <id>andreytelser.nav</id>
         <type>checkboxGroup</type>
         <panel>AndreYtelser</panel>
     </faktum>
     <faktum>
-        <id>sykepenger</id>
+        <id>andreytelser.nav.
+            sykepenger</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>andreytelser.navytelser</dependOn>
+        <dependOn>andreytelser.nav</dependOn>
     </faktum>
     <faktum>
-        <id>aap</id>
+        <id>andreytelser.nav.aap</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>andreytelser.navytelser</dependOn>
+        <dependOn>andreytelser.nav</dependOn>
 
     </faktum>
     <faktum>
-        <id>uforetrygd</id>
+        <id>andreytelser.nav.uforetrygd</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>andreytelser.navytelser</dependOn>
+        <dependOn>andreytelser.nav</dependOn>
     </faktum>
     <faktum>
-        <id>svangerskapspenger</id>
+        <id>andreytelser.nav.svangerskapspenger</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>andreytelser.navytelser</dependOn>
+        <dependOn>andreytelser.nav</dependOn>
     </faktum>
     <faktum>
-        <id>foreldrepenger</id>
+        <id>andreytelser.nav.foreldrepenger</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>andreytelser.navytelser</dependOn>
+        <dependOn>andreytelser.nav</dependOn>
     </faktum>
     <faktum>
-        <id>ventelonn</id>
+        <id>andreytelser.nav.ventelonn</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>andreytelser.navytelser</dependOn>
+        <dependOn>andreytelser.nav</dependOn>
     </faktum>
     <faktum>
-        <id>ingennavytelser</id>
+        <id>andreytelser.nav.ingennavytelser</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>andreytelser.navytelser</dependOn>
+        <dependOn>andreytelser.nav</dependOn>
     </faktum>
     <faktum>
-        <id>ikkeavtale</id>
+        <id>andreytelser.ikkeavtale</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
     </faktum>
     <faktum>
-        <id>ytelser.ikkeavtale.avtale</id>
-        <type>java.lang.String</type>
+        <id>andreytelser.ikkeavtale.avtale</id>
+        <type>textbox</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ikkeavtale</dependOn>
+        <dependOn>andreytelser.ikkeavtale</dependOn>
         <dependOnValues>
             <value>false</value>
         </dependOnValues>
