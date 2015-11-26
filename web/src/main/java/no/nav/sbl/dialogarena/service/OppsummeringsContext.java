@@ -1,10 +1,13 @@
 
 package no.nav.sbl.dialogarena.service;
 
+import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.VedleggForFaktumStruktur;
 import org.apache.commons.collections15.Transformer;
 
 import java.util.ArrayList;
@@ -16,9 +19,11 @@ import static no.nav.modig.lang.collections.IterUtils.on;
 public class OppsummeringsContext {
     public List<OppsummeringsBolk> bolker = new ArrayList<>();
     WebSoknad soknad;
+    Kodeverk kodeverk;
 
-    public OppsummeringsContext(WebSoknad soknad, SoknadStruktur soknadStruktur) {
+    public OppsummeringsContext(WebSoknad soknad, SoknadStruktur soknadStruktur, Kodeverk kodeverk) {
         this.soknad = soknad;
+        this.kodeverk = kodeverk;
         for (FaktumStruktur faktumStruktur : soknadStruktur.getFakta()) {
             if (faktumStruktur.getDependOn() == null && !"hidden".equals(faktumStruktur.getType())) {
                 OppsummeringsBolk bolk = hentOgOpprettBolkOmIkkeFinnes(faktumStruktur.getPanel());
@@ -37,8 +42,15 @@ public class OppsummeringsContext {
 
         return on(fakta).map(new Transformer<Faktum, OppsummeringsFaktum>() {
             @Override
-            public OppsummeringsFaktum transform(Faktum faktum) {
-                return new OppsummeringsFaktum(faktumStruktur, faktum, finnBarnOppsummering(faktumStruktur, null, soknadStruktur, soknad));
+            public OppsummeringsFaktum transform(final Faktum faktum) {
+                List<VedleggForFaktumStruktur> vedleggForFaktumStrukturs = soknadStruktur.vedleggFor(faktum);
+                List<OppsummeringsVedlegg> vedlegg = on(vedleggForFaktumStrukturs).map(new Transformer<VedleggForFaktumStruktur, OppsummeringsVedlegg>() {
+                    @Override
+                    public OppsummeringsVedlegg transform(VedleggForFaktumStruktur vedleggForFaktumStruktur) {
+                        return new OppsummeringsVedlegg(faktum, soknad.finnVedleggSomMatcherForventning(vedleggForFaktumStruktur, faktum.getFaktumId()), vedleggForFaktumStruktur);
+                    }
+                }).collect();
+                return new OppsummeringsFaktum(faktumStruktur, faktum, finnBarnOppsummering(faktumStruktur, null, soknadStruktur, soknad), vedlegg);
             }
         }).collect();
 
@@ -63,14 +75,16 @@ public class OppsummeringsContext {
     }
 
     public class OppsummeringsFaktum {
-        public Faktum faktum;
-        public FaktumStruktur struktur;
-        public List<OppsummeringsFaktum> barneFakta = new ArrayList<>();
+        public final Faktum faktum;
+        public final FaktumStruktur struktur;
+        public final List<OppsummeringsFaktum> barneFakta;
+        public final List<OppsummeringsVedlegg> vedlegg;
 
-        public OppsummeringsFaktum(FaktumStruktur faktumStruktur, Faktum faktum, List<OppsummeringsFaktum> barnFakta) {
+        public OppsummeringsFaktum(FaktumStruktur faktumStruktur, Faktum faktum, List<OppsummeringsFaktum> barnFakta, List<OppsummeringsVedlegg> vedlegg) {
             this.struktur = faktumStruktur;
             this.faktum = faktum;
             this.barneFakta = barnFakta;
+            this.vedlegg = vedlegg;
         }
 
         public boolean erSynlig() {
@@ -98,6 +112,25 @@ public class OppsummeringsContext {
             return "skjema/generisk/default";
         }
     }
+
+    public class OppsummeringsVedlegg {
+        public Vedlegg vedlegg;
+        public VedleggForFaktumStruktur struktur;
+        private Faktum faktum;
+
+        public OppsummeringsVedlegg(Faktum faktum, Vedlegg vedlegg, VedleggForFaktumStruktur vedleggStruktur) {
+            this.vedlegg = vedlegg;
+            this.struktur = vedleggStruktur;
+            this.faktum = faktum;
+        }
+        public boolean erSynlig(){
+            return struktur.trengerVedlegg(faktum);
+        }
+        public String navn(){
+            return kodeverk.getKode(struktur.getSkjemaNummer(), Kodeverk.Nokkel.TITTEL);
+        }
+    }
+
 
     private OppsummeringsBolk hentOgOpprettBolkOmIkkeFinnes(String panel) {
         String nullsafePanel = panel != null ? panel : "";

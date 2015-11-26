@@ -10,10 +10,12 @@ import com.github.jknack.handlebars.context.JavaBeanValueResolver;
 import com.github.jknack.handlebars.context.MapValueResolver;
 import com.github.jknack.handlebars.context.MethodValueResolver;
 import no.bekk.bekkopen.person.Fodselsnummer;
+import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,6 +31,8 @@ import static org.apache.commons.lang3.StringUtils.split;
 public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
 
     private Map<String, Helper> helpers = new HashMap<>();
+    @Inject
+    private Kodeverk kodeverk;
 
     public String fyllHtmlMalMedInnhold(WebSoknad soknad, String file) throws IOException {
         return getHandlebars()
@@ -41,7 +45,7 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         return getHandlebars()
                 .infiniteLoops(true)
                 .compile(file)
-                .apply(Context.newBuilder(new OppsummeringsContext(soknad, soknadStruktur))
+                .apply(Context.newBuilder(new OppsummeringsContext(soknad, soknadStruktur, kodeverk))
                         .resolver(
                                 JavaBeanValueResolver.INSTANCE,
                                 FieldValueResolver.INSTANCE,
