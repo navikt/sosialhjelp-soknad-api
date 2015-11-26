@@ -13,13 +13,14 @@ import java.util.List;
 import static no.nav.modig.lang.collections.IterUtils.on;
 
 
-public class OppsummeringsContext{
-    public List<OppsummeringsBolk>  bolker = new ArrayList<>();
+public class OppsummeringsContext {
+    public List<OppsummeringsBolk> bolker = new ArrayList<>();
     WebSoknad soknad;
+
     public OppsummeringsContext(WebSoknad soknad, SoknadStruktur soknadStruktur) {
         this.soknad = soknad;
         for (FaktumStruktur faktumStruktur : soknadStruktur.getFakta()) {
-            if (faktumStruktur.getDependOn() == null) {
+            if (faktumStruktur.getDependOn() == null && !"hidden".equals(faktumStruktur.getType())) {
                 OppsummeringsBolk bolk = hentOgOpprettBolkOmIkkeFinnes(faktumStruktur.getPanel());
                 bolk.fakta.addAll(hentOppsummeringForFaktum(faktumStruktur, null, soknadStruktur, soknad));
             }
@@ -27,10 +28,10 @@ public class OppsummeringsContext{
     }
 
     private List<OppsummeringsFaktum> hentOppsummeringForFaktum(final FaktumStruktur faktumStruktur, Faktum parent, final SoknadStruktur soknadStruktur, final WebSoknad soknad) {
-        List<Faktum> fakta = parent != null?
-                soknad.getFaktaMedKeyOgParentFaktum(faktumStruktur.getId(), parent.getFaktumId()):
+        List<Faktum> fakta = parent != null ?
+                soknad.getFaktaMedKeyOgParentFaktum(faktumStruktur.getId(), parent.getFaktumId()) :
                 soknad.getFaktaMedKey(faktumStruktur.getId());
-        if(fakta.size() == 0){
+        if (fakta.size() == 0) {
             return new ArrayList<>();
         }
 
@@ -60,33 +61,38 @@ public class OppsummeringsContext{
             this.navn = panel;
         }
     }
-    public  class OppsummeringsFaktum {
+
+    public class OppsummeringsFaktum {
         public Faktum faktum;
         public FaktumStruktur struktur;
         public List<OppsummeringsFaktum> barneFakta = new ArrayList<>();
 
         public OppsummeringsFaktum(FaktumStruktur faktumStruktur, Faktum faktum, List<OppsummeringsFaktum> barnFakta) {
-            this.struktur= faktumStruktur;
+            this.struktur = faktumStruktur;
             this.faktum = faktum;
             this.barneFakta = barnFakta;
         }
-        public boolean erSynlig(){
+
+        public boolean erSynlig() {
             return struktur.erSynlig(soknad, faktum);
         }
-        public String template(){
-            if("checkboxGroup".equals(struktur.getType())){
+
+        public String template() {
+            if ("checkboxGroup".equals(struktur.getType())) {
                 return "skjema/generisk/checkboxGroup";
-            }
-            else if("textbox".equals(struktur.getType())){
+            } else if ("textbox".equals(struktur.getType())) {
                 return "skjema/generisk/textbox";
-            }
-            else if("periode".equals(struktur.getType())){
+            } else if ("periode".equals(struktur.getType())) {
                 return "skjema/generisk/periode";
-            }
-            else if("date".equals(struktur.getType())){
+            } else if ("date".equals(struktur.getType())) {
                 return "skjema/generisk/date";
-            }
-            else if("inputgroup".equals(struktur.getType())){
+            } else if ("tilleggsopplysninger".equals(struktur.getType())) {
+                return "skjema/generisk/tilleggsopplysninger";
+            } else if ("hidden".equals(struktur.getType())) {
+                return "skjema/generisk/hidden";
+            } else if ("dagpenger-barn".equals(struktur.getType())) {
+                return "skjema/generisk/dagpenger-barn";
+            } else if ("inputgroup".equals(struktur.getType())) {
                 return "skjema/generisk/inputgroup";
             }
             return "skjema/generisk/default";
@@ -96,7 +102,7 @@ public class OppsummeringsContext{
     private OppsummeringsBolk hentOgOpprettBolkOmIkkeFinnes(String panel) {
         String nullsafePanel = panel != null ? panel : "";
         for (OppsummeringsBolk oppsummeringsBolk : bolker) {
-            if(oppsummeringsBolk.navn.equals(nullsafePanel)){
+            if (oppsummeringsBolk.navn.equals(nullsafePanel)) {
                 return oppsummeringsBolk;
             }
         }

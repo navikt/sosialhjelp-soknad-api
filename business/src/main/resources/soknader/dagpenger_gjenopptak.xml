@@ -819,7 +819,7 @@
     <!-- Tilleggsopplysninger -->
     <faktum>
         <id>tilleggsopplysninger.fritekst</id>
-        <type>java.lang.String</type>
+        <type>textbox</type>
         <panel>Tilleggsopplysninger</panel>
     </faktum>
 
