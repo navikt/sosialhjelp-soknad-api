@@ -1,15 +1,17 @@
-{{#hvisTekstFinnes (concat (toLowerCase faktum.key) ".infotekst.tekst")}}
-    <div>
-        {{ hentTekst (concat (toLowerCase faktum.key) ".infotekst.tekst") }}
-        {{#hvisTekstFinnes (concat (toLowerCase faktum.key) ".infotekst.tekst2")}}
-            {{ hentTekst (concat (toLowerCase faktum.key) ".infotekst.tekst2") }}
-        {{/hvisTekstFinnes}}
+{{#if @root.visInfotekst}}
+    {{#hvisTekstFinnes (concat (toLowerCase faktum.key) ".infotekst.tekst")}}
+        <div>
+            {{ hentTekst (concat (toLowerCase faktum.key) ".infotekst.tekst") }}
+            {{#hvisTekstFinnes (concat (toLowerCase faktum.key) ".infotekst.tekst2")}}
+                {{ hentTekst (concat (toLowerCase faktum.key) ".infotekst.tekst2") }}
+            {{/hvisTekstFinnes}}
 
         </div>
-{{/hvisTekstFinnes}}
-{{#hvisTekstFinnes (concat (toLowerCase faktum.key) ".hjelpetekst.tekst")}}
-    <div>
-        <div>        {{ hentTekst (concat (toLowerCase faktum.key) ".hjelpetekst.tittel") }}</div>
-        <div>        {{ hentTekst (concat (toLowerCase faktum.key) ".hjelpetekst.tekst") }}</div>
-    </div>
-{{/hvisTekstFinnes}}
+    {{/hvisTekstFinnes}}
+    {{#hvisTekstFinnes (concat (toLowerCase faktum.key) ".hjelpetekst.tekst")}}
+        <div>
+            <div>        {{ hentTekst (concat (toLowerCase faktum.key) ".hjelpetekst.tittel") }}</div>
+            <div>        {{ hentTekst (concat (toLowerCase faktum.key) ".hjelpetekst.tekst") }}</div>
+        </div>
+    {{/hvisTekstFinnes}}
+{{/if}}
