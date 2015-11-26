@@ -11,6 +11,7 @@
     <td class="sjekket"></td>
     <td>{{ hentTekst (concat (toLowerCase faktum.key) "." (toLowerCase faktum.value)) }}
         {{> skjema/generisk/infotekstvalue}}
+        {{> skjema/generisk/vedlegg}}
         <table>
             {{#each barneFakta}}
                 {{> skjema/generisk/faktum }}

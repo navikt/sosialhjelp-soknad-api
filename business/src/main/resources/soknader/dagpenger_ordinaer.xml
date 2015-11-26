@@ -822,8 +822,7 @@
 
     <vedlegg>
         <id>5</id>
-        <faktum>reellarbeidssoker.villigdeltid.eneansvarbarnopptil18aar
-        </faktum>
+        <faktum>reellarbeidssoker.villigdeltid.grunn.eneansvarbarnopptil18aar</faktum>
         <onValues>
             <value>true</value>
         </onValues>
@@ -831,7 +830,7 @@
     </vedlegg>
     <vedlegg>
         <id>5</id>
-        <faktum>reellarbeidssoker.villigdeltid.reduserthelse</faktum>
+        <faktum>reellarbeidssoker.villigdeltid.grunn.reduserthelse</faktum>
         <onValues>
             <value>true</value>
         </onValues>
@@ -839,7 +838,7 @@
     </vedlegg>
     <vedlegg>
         <id>5</id>
-        <faktum>reellarbeidssoker.villigdeltid.omsorgansvar</faktum>
+        <faktum>reellarbeidssoker.villigdeltid.grunn.omsorgansvar</faktum>
         <onValues>
             <value>true</value>
         </onValues>
@@ -847,7 +846,7 @@
     </vedlegg>
     <vedlegg>
         <id>5</id>
-        <faktum>reellarbeidssoker.villigdeltid.annensituasjon</faktum>
+        <faktum>reellarbeidssoker.villigdeltid.grunn.annensituasjon</faktum>
         <onValues>
             <value>true</value>
         </onValues>
@@ -856,7 +855,7 @@
 
     <vedlegg>
         <id>5</id>
-        <faktum>reellarbeidssoker.villigpendle.eneansvarbarnopptil18aar
+        <faktum>reellarbeidssoker.villigpendle.grunn.eneansvarbarnopptil18aar
         </faktum>
         <onValues>
             <value>true</value>
@@ -865,7 +864,7 @@
     </vedlegg>
     <vedlegg>
         <id>5</id>
-        <faktum>reellarbeidssoker.villigpendle.reduserthelse</faktum>
+        <faktum>reellarbeidssoker.villigpendle.grunn.reduserthelse</faktum>
         <onValues>
             <value>true</value>
         </onValues>
@@ -873,7 +872,7 @@
     </vedlegg>
     <vedlegg>
         <id>5</id>
-        <faktum>reellarbeidssoker.villigpendle.omsorgansvar</faktum>
+        <faktum>reellarbeidssoker.villigpendle.grunn.omsorgansvar</faktum>
         <onValues>
             <value>true</value>
         </onValues>
@@ -881,7 +880,7 @@
     </vedlegg>
     <vedlegg>
         <id>5</id>
-        <faktum>reellarbeidssoker.villigpendle.annensituasjon</faktum>
+        <faktum>reellarbeidssoker.villigpendle.grunn.annensituasjon</faktum>
         <onValues>
             <value>true</value>
         </onValues>
@@ -939,7 +938,7 @@
     </vedlegg>
     <vedlegg>
         <id>8</id>
-        <faktum>underUtdanningAnnet</faktum>
+        <faktum>utdanning.annet</faktum>
         <onValues>
             <value>true</value>
         </onValues>
