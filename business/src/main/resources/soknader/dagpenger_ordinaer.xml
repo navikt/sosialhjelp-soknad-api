@@ -786,7 +786,7 @@
     <!-- Tilleggsopplysninger -->
     <faktum>
         <id>tilleggsopplysninger.fritekst</id>
-        <type>java.lang.String</type>
+        <type>tilleggsopplysninger</type>
         <panel>Tilleggsopplysninger</panel>
     </faktum>
 
@@ -795,6 +795,7 @@
         <id>personalia</id>
         <panel>Personalia</panel>
         <erSystemFaktum>true</erSystemFaktum>
+        <type>hidden</type>
     </faktum>
 
     <!-- Barnetillegg -->
@@ -802,6 +803,7 @@
         <id>barn</id>
         <panel>Barnetillegg</panel>
         <flereTillatt>true</flereTillatt>
+        <type>dagpenger-barn</type>
     </faktum>
 
     <!-- Lønns- og trekk-oppgave -->
