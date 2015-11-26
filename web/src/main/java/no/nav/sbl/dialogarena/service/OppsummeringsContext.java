@@ -31,6 +31,9 @@ public class OppsummeringsContext {
             }
         }
     }
+    public boolean visInfotekst(){
+        return false;
+    }
 
     private List<OppsummeringsFaktum> hentOppsummeringForFaktum(final FaktumStruktur faktumStruktur, Faktum parent, final SoknadStruktur soknadStruktur, final WebSoknad soknad) {
         List<Faktum> fakta = parent != null ?

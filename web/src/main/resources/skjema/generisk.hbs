@@ -39,7 +39,7 @@
 
             <div>
                 {{#each bolker}}
-                    <h2>{{ navn }}</h2>
+                    <h2>{{ hentTekst (concat (toLowerCase navn) ".tittel") }}</h2>
                     <table>
                         {{#each fakta}}
                             {{> skjema/generisk/faktum }}
