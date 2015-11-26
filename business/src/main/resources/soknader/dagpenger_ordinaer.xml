@@ -726,8 +726,7 @@
         <panel>AndreYtelser</panel>
     </faktum>
     <faktum>
-        <id>andreytelser.nav.
-            sykepenger</id>
+        <id>andreytelser.nav.sykepenger</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
         <dependOn>andreytelser.nav</dependOn>
@@ -1053,7 +1052,7 @@
     </vedlegg>
     <vedlegg>
         <id>8</id>
-        <faktum>ikkeavtale</faktum>
+        <faktum>andreytelser.ikkeavtale</faktum>
         <onValues>
             <value>false</value>
         </onValues>
