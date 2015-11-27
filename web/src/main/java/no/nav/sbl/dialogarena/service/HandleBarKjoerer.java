@@ -4,7 +4,6 @@ import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
-import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.context.FieldValueResolver;
 import com.github.jknack.handlebars.context.JavaBeanValueResolver;
 import com.github.jknack.handlebars.context.MapValueResolver;
@@ -45,18 +44,24 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         return getHandlebars()
                 .infiniteLoops(true)
                 .compile(file)
-                .apply(Context.newBuilder(new OppsummeringsContext(soknad, soknadStruktur, kodeverk))
+                .apply(Context.newBuilder(new OppsummeringsContext(soknad, soknadStruktur, kodeverk, true))
                         .resolver(
                                 JavaBeanValueResolver.INSTANCE,
                                 FieldValueResolver.INSTANCE,
                                 MapValueResolver.INSTANCE,
                                 MethodValueResolver.INSTANCE
-                        ).build());
+                        )
+                        .build());
     }
 
     @Override
     public void registrerHelper(String name, Helper helper) {
         helpers.put(name, helper);
+    }
+
+    private Integer finnNivaa(Context context) {
+        if(context == null){return 3;}
+        return (context.get("sporsmal") != null? 1:0) + finnNivaa(context.parent());
     }
 
     private Handlebars getHandlebars() {
@@ -68,17 +73,10 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
 
         handlebars.registerHelper("formatterFodelsDato", generateFormatterFodselsdatoHelper());
         handlebars.registerHelper("skalViseRotasjonTurnusSporsmaal", generateSkalViseRotasjonTurnusSporsmaalHelper());
-        handlebars.registerHelper("dynamiskPartial", new Helper<OppsummeringsContext.OppsummeringsFaktum>() {
+        handlebars.registerHelper("finnNiva", new Helper<Object>() {
             @Override
-            public CharSequence apply(OppsummeringsContext.OppsummeringsFaktum context, Options options) throws IOException {
-                options.partial("skjema/generisk/default", options.handlebars.compile("skjema/generisk/default"));
-                options.partial("skjema/generisk/checkboxGroup", options.handlebars.compile("skjema/generisk/checkboxGroup"));
-                Template partial = options.partial("skjema/generisk/" + context.struktur.getType());
-                if(partial != null) {
-                    return partial.apply(context);
-                } else {
-                    return options.partial("skjema/generisk/default").apply(context);
-                }
+            public CharSequence apply(Object context, Options options) throws IOException {
+                return "" + finnNivaa(options.context.parent());
             }
         });
         return handlebars;

@@ -2,9 +2,11 @@
     <td></td>
     <td>
         {{> skjema/generisk/infotekstvalue}}
+
         {{#hvisTekstFinnes (concat (toLowerCase faktum.key) ".sporsmal")}}
-            {{ hentTekst (concat (toLowerCase faktum.key) ".sporsmal") }}
+            <h{{niva}}> {{ hentTekst (concat (toLowerCase faktum.key) ".sporsmal") }}</h{{niva}}>
         {{/hvisTekstFinnes}}
+
     </td>
 </tr>
 <tr>

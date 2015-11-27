@@ -17,22 +17,21 @@ import static no.nav.modig.lang.collections.IterUtils.on;
 
 
 public class OppsummeringsContext {
+    public final boolean visInfotekst;
     public List<OppsummeringsBolk> bolker = new ArrayList<>();
     WebSoknad soknad;
     Kodeverk kodeverk;
 
-    public OppsummeringsContext(WebSoknad soknad, SoknadStruktur soknadStruktur, Kodeverk kodeverk) {
+    public OppsummeringsContext(WebSoknad soknad, SoknadStruktur soknadStruktur, Kodeverk kodeverk, boolean visInfotekst) {
         this.soknad = soknad;
         this.kodeverk = kodeverk;
+        this.visInfotekst = visInfotekst;
         for (FaktumStruktur faktumStruktur : soknadStruktur.getFakta()) {
             if (faktumStruktur.getDependOn() == null && !"hidden".equals(faktumStruktur.getType())) {
                 OppsummeringsBolk bolk = hentOgOpprettBolkOmIkkeFinnes(faktumStruktur.getPanel());
                 bolk.fakta.addAll(hentOppsummeringForFaktum(faktumStruktur, null, soknadStruktur, soknad));
             }
         }
-    }
-    public boolean visInfotekst(){
-        return false;
     }
 
     private List<OppsummeringsFaktum> hentOppsummeringForFaktum(final FaktumStruktur faktumStruktur, Faktum parent, final SoknadStruktur soknadStruktur, final WebSoknad soknad) {
