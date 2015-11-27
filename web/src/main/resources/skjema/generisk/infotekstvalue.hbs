@@ -1,35 +1,39 @@
-{{#hvisTekstFinnes (concat (toLowerCase faktum.key) "." (toLowerCase faktum.value) ".infotekst.tekst")}}
-    <div>
-        {{ hentTekst (concat (toLowerCase faktum.key) "." (toLowerCase faktum.value) ".infotekst.tekst") }}
-        {{#hvisTekstFinnes (concat (toLowerCase faktum.key) "." (toLowerCase faktum.value) ".infotekst.tekst2")}}
-            <div>
-                {{ hentTekst (concat (toLowerCase faktum.key) "." (toLowerCase faktum.value) ".infotekst.tekst2") }}
-            </div>
-        {{/hvisTekstFinnes}}
-        {{#hvisTekstFinnes (concat (toLowerCase faktum.key) "." (toLowerCase faktum.value) ".infotekst.tekst3")}}
-            <div>
-                {{ hentTekst (concat (toLowerCase faktum.key) "." (toLowerCase faktum.value) ".infotekst.tekst3") }}
-            </div>
-        {{/hvisTekstFinnes}}
-    </div>
-{{/hvisTekstFinnes}}
-{{#hvisTekstFinnes (concat (toLowerCase faktum.key) "." (toLowerCase faktum.value) ".hjelpetekst.tekst")}}
-    <div>
-        <div>
-            {{ hentTekst (concat (toLowerCase faktum.key) "." (toLowerCase faktum.value) ".hjelpetekst.tittel") }}
-        </div>
-        <div>
-            {{ hentTekst (concat (toLowerCase faktum.key) "." (toLowerCase faktum.value) ".hjelpetekst.tekst") }}
-            {{#hvisTekstFinnes (concat (toLowerCase faktum.key) "." (toLowerCase faktum.value) ".hjelpetekst.tekst2")}}
+{{#if @root.visInfotekst}}
+    {{#hvisTekstFinnes (concat (toLowerCase faktum.key) "." (toLowerCase faktum.value) ".infotekst.tekst")}}
+        <fieldset class="infotekst">
+            <legend>Infotekst</legend>
+            {{ hentTekst (concat (toLowerCase faktum.key) "." (toLowerCase faktum.value) ".infotekst.tekst") }}
+            {{#hvisTekstFinnes (concat (toLowerCase faktum.key) "." (toLowerCase faktum.value) ".infotekst.tekst2")}}
                 <div>
-                    {{ hentTekst (concat (toLowerCase faktum.key) "." (toLowerCase faktum.value) ".hjelpetekst.tekst2") }}
+                    {{ hentTekst (concat (toLowerCase faktum.key) "." (toLowerCase faktum.value) ".infotekst.tekst2") }}
                 </div>
             {{/hvisTekstFinnes}}
-            {{#hvisTekstFinnes (concat (toLowerCase faktum.key) "." (toLowerCase faktum.value) ".hjelpetekst.tekst3")}}
+            {{#hvisTekstFinnes (concat (toLowerCase faktum.key) "." (toLowerCase faktum.value) ".infotekst.tekst3")}}
                 <div>
-                    {{ hentTekst (concat (toLowerCase faktum.key) "." (toLowerCase faktum.value) ".hjelpetekst.tekst3") }}
+                    {{ hentTekst (concat (toLowerCase faktum.key) "." (toLowerCase faktum.value) ".infotekst.tekst3") }}
                 </div>
             {{/hvisTekstFinnes}}
-        </div>
-    </div>
-{{/hvisTekstFinnes}}
+        </fieldset>
+    {{/hvisTekstFinnes}}
+    {{#hvisTekstFinnes (concat (toLowerCase faktum.key) "." (toLowerCase faktum.value) ".hjelpetekst.tekst")}}
+        <fieldset class="hjelpetekst">
+            <legend>Hjelpetekst</legend>
+            <div>
+                {{ hentTekst (concat (toLowerCase faktum.key) "." (toLowerCase faktum.value) ".hjelpetekst.tittel") }}
+            </div>
+            <div>
+                {{ hentTekst (concat (toLowerCase faktum.key) "." (toLowerCase faktum.value) ".hjelpetekst.tekst") }}
+                {{#hvisTekstFinnes (concat (toLowerCase faktum.key) "." (toLowerCase faktum.value) ".hjelpetekst.tekst2")}}
+                    <div>
+                        {{ hentTekst (concat (toLowerCase faktum.key) "." (toLowerCase faktum.value) ".hjelpetekst.tekst2") }}
+                    </div>
+                {{/hvisTekstFinnes}}
+                {{#hvisTekstFinnes (concat (toLowerCase faktum.key) "." (toLowerCase faktum.value) ".hjelpetekst.tekst3")}}
+                    <div>
+                        {{ hentTekst (concat (toLowerCase faktum.key) "." (toLowerCase faktum.value) ".hjelpetekst.tekst3") }}
+                    </div>
+                {{/hvisTekstFinnes}}
+            </div>
+        </fieldset>
+    {{/hvisTekstFinnes}}
+{{/if}}

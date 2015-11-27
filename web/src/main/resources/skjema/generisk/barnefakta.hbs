@@ -1,5 +1,7 @@
 <table>
-    {{#each barneFakta}}
-        {{> skjema/generisk/faktum}}
-    {{/each}}
+    {{#variabel "sporsmal" "true"}}
+        {{#each barneFakta}}
+                {{> skjema/generisk/faktum}}
+        {{/each}}
+    {{/variabel}}
 </table>

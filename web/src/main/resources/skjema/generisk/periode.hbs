@@ -3,7 +3,7 @@
     <td>
         {{> skjema/generisk/infotekstvalue}}
         {{#hvisTekstFinnes (concat faktum.key ".sporsmal")}}
-            {{ hentTekst (concat faktum.key ".sporsmal") }}
+            {{>skjema/generisk/sporsmal}}
         {{/hvisTekstFinnes}}
     </td>
 </tr>
