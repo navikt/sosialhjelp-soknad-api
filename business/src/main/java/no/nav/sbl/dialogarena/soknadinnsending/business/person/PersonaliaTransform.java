@@ -22,7 +22,8 @@ public class PersonaliaTransform {
     private static final String KJONN_MANN = "m";
     private static final String KJONN_KVINNE = "k";
 
-    public static Personalia mapTilPersonalia(XMLHentKontaktinformasjonOgPreferanserResponse response, HentKjerneinformasjonResponse kjerneinformasjonResponse, Kodeverk kodeverk, WSHentDigitalKontaktinformasjonResponse dkifResponse) {
+    public static Personalia mapTilPersonalia(XMLHentKontaktinformasjonOgPreferanserResponse response, HentKjerneinformasjonResponse kjerneinformasjonResponse,
+                                              Kodeverk kodeverk, WSHentDigitalKontaktinformasjonResponse dkifResponse) {
         if (response == null) {
             return new Personalia();
         }
