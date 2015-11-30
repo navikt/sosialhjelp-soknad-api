@@ -4,10 +4,10 @@
         {{>skjema/generisk/sporsmal}}
         <table>
             {{#each barneFakta}}
-                {{#hvisSant faktum.value}}
+                {{#hvisSant value}}
                     <tr>
                         <td class="sjekket"></td>
-                        <td>{{ hentTekst (toLowerCase faktum.key) }}
+                        <td>{{ hentTekst key }}
                             {{> skjema/generisk/infotekst}}
                             {{> skjema/generisk/infotekstvalue}}
                             {{> skjema/generisk/vedlegg}}

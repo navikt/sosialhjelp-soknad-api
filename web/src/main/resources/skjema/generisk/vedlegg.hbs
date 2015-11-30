@@ -1,8 +1,12 @@
-{{#each vedlegg}}
-    {{#if erSynlig}}
-        <fieldset>
-            <legend>Vedlegg som må legges ved:</legend>
-            {{navn}}
-        </fieldset>
-    {{/if}}
-{{/each}}
+{{#if vedlegg}}
+    <fieldset>
+        <legend>Vedlegg som må legges ved:</legend>
+        <ul>
+        {{#each vedlegg}}
+            {{#if erSynlig}}
+                <li>{{navn}}</li>
+            {{/if}}
+        {{/each}}
+        </ul>
+    </fieldset>
+{{/if}}

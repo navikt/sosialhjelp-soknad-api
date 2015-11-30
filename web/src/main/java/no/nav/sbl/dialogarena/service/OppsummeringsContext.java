@@ -6,13 +6,16 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.FaktumStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.PropertyStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.VedleggForFaktumStruktur;
 import org.apache.commons.collections15.Transformer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import static java.util.Collections.emptyList;
 import static no.nav.modig.lang.collections.IterUtils.on;
 
 
@@ -66,7 +69,28 @@ public class OppsummeringsContext {
         }
         return result;
     }
-
+    private String resolveView(String type) {
+        if ("checkboxGroup".equals(type)) {
+            return "skjema/generisk/checkboxGroup";
+        } else if ("textbox".equals(type)) {
+            return "skjema/generisk/textbox";
+        } else if ("composite".equals(type)) {
+            return "skjema/generisk/composite";
+        } else if ("periode".equals(type)) {
+            return "skjema/generisk/periode";
+        } else if ("date".equals(type)) {
+            return "skjema/generisk/date";
+        } else if ("tilleggsopplysninger".equals(type)) {
+            return "skjema/generisk/tilleggsopplysninger";
+        } else if ("hidden".equals(type)) {
+            return "skjema/generisk/hidden";
+        } else if ("dagpenger-barn".equals(type)) {
+            return "skjema/generisk/dagpenger-barn";
+        } else if ("inputgroup".equals(type)) {
+            return "skjema/generisk/inputgroup";
+        }
+        return "skjema/generisk/default";
+    }
     private class OppsummeringsBolk {
         public String navn;
         public List<OppsummeringsFaktum> fakta = new ArrayList<>();
@@ -75,11 +99,19 @@ public class OppsummeringsContext {
             this.navn = panel;
         }
     }
+    public abstract class OppsummeringsBase implements PropertyAware{
+        public abstract String key();
+        public abstract String value();
+        public abstract boolean erSynlig();
+        public abstract String property(String configKey);
 
-    public class OppsummeringsFaktum {
+    }
+
+    public class OppsummeringsFaktum extends OppsummeringsBase {
         public final Faktum faktum;
         public final FaktumStruktur struktur;
         public final List<OppsummeringsFaktum> barneFakta;
+        public final List<OppsummeringsProperty> barneProperties;
         public final List<OppsummeringsVedlegg> vedlegg;
 
         public OppsummeringsFaktum(FaktumStruktur faktumStruktur, Faktum faktum, List<OppsummeringsFaktum> barnFakta, List<OppsummeringsVedlegg> vedlegg) {
@@ -87,31 +119,87 @@ public class OppsummeringsContext {
             this.faktum = faktum;
             this.barneFakta = barnFakta;
             this.vedlegg = vedlegg;
+            if(struktur.getProperties() != null) {
+                barneProperties = on(struktur.getProperties()).map(new Transformer<PropertyStruktur, OppsummeringsProperty>() {
+                    @Override
+                    public OppsummeringsProperty transform(PropertyStruktur propertyStruktur) {
+                        return new OppsummeringsProperty(propertyStruktur);
+                    }
+                }).collect();
+            }else {
+                barneProperties = emptyList();
+            }
         }
 
         public boolean erSynlig() {
             return struktur.erSynlig(soknad, faktum);
         }
 
-        public String template() {
-            if ("checkboxGroup".equals(struktur.getType())) {
-                return "skjema/generisk/checkboxGroup";
-            } else if ("textbox".equals(struktur.getType())) {
-                return "skjema/generisk/textbox";
-            } else if ("periode".equals(struktur.getType())) {
-                return "skjema/generisk/periode";
-            } else if ("date".equals(struktur.getType())) {
-                return "skjema/generisk/date";
-            } else if ("tilleggsopplysninger".equals(struktur.getType())) {
-                return "skjema/generisk/tilleggsopplysninger";
-            } else if ("hidden".equals(struktur.getType())) {
-                return "skjema/generisk/hidden";
-            } else if ("dagpenger-barn".equals(struktur.getType())) {
-                return "skjema/generisk/dagpenger-barn";
-            } else if ("inputgroup".equals(struktur.getType())) {
-                return "skjema/generisk/inputgroup";
+        @Override
+        public String property(String configKey) {
+            if(struktur.hasConfig(configKey)){
+                return OppsummeringsFaktum.this.faktum.getProperties().get(struktur.getConfiguration().get(configKey));
             }
-            return "skjema/generisk/default";
+            return OppsummeringsFaktum.this.faktum.getProperties().get(configKey);
+        }
+
+        public String template() {
+            return resolveView(struktur.getType());
+        }
+
+
+
+        @Override
+        public String key() {
+            return struktur.getId().toLowerCase();
+        }
+
+        @Override
+        public String value() {
+            return faktum.getValue() != null? faktum.getValue().toLowerCase(): "";
+        }
+        public class OppsummeringsProperty extends OppsummeringsBase{
+            private final PropertyStruktur struktur;
+            public final List<OppsummeringsVedlegg> vedlegg = new ArrayList<>();
+
+            public OppsummeringsProperty(PropertyStruktur struktur) {
+                this.struktur = struktur;
+            }
+
+            @Override
+            public String key() {
+                return OppsummeringsFaktum.this.key().toLowerCase() + "." + struktur.getId().toLowerCase();
+            }
+
+            @Override
+            public String value() {
+                String value = OppsummeringsFaktum.this.faktum.getProperties().get(struktur.getId());
+                return value != null? value.toLowerCase(): "";
+            }
+
+            @Override
+            public boolean erSynlig() {
+                return struktur.erSynlig(faktum);
+            }
+
+            @Override
+            public String property(String configKey) {
+                if(struktur.hasConfig(configKey)){
+                    return OppsummeringsFaktum.this.faktum.getProperties().get(struktur.getConfiguration().get(configKey));
+                }
+                return OppsummeringsFaktum.this.faktum.getProperties().get(configKey);
+            }
+
+            public List<OppsummeringsFaktum> getBarneProperties(){
+                return Collections.emptyList();
+            }
+            public List<OppsummeringsFaktum> getBarneFakta(){
+                return Collections.emptyList();
+            }
+            public String template() {
+                return resolveView(struktur.getType());
+            }
+
         }
     }
 

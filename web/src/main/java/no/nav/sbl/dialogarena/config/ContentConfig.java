@@ -150,7 +150,9 @@ public class ContentConfig {
         if(mapping != null){
             List<String> strings = IOUtils.readLines(mapping, "UTF-8");
             for (String string : strings) {
-                changes.put(string.split("=")[0], string.split("=")[1]);
+                if(string.split("=").length > 0) {
+                    changes.put(string.split("=")[0], string.split("=")[1]);
+                }
             }
         }
         return changes;

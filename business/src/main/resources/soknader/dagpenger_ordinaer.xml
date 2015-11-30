@@ -154,11 +154,79 @@
     <faktum>
         <id>arbeidsforhold</id>
         <panel>Arbeidsforhold</panel>
-        <dependOn>harIkkeJobbet</dependOn>
+        <!--dependOn>harIkkeJobbet</dependOn>
         <dependOnValues>
             <value>false</value>
-        </dependOnValues>
+        </dependOnValues-->
         <flereTillatt>true</flereTillatt>
+        <type>composite</type>
+        <properties>
+            <property>
+                <id>arbeidsgivernavn</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>land</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>type</id>
+                <type>radio</type>
+            </property>
+            <property>
+                <id>varighet</id>
+                <type>periode</type>
+                <constraints>
+                    <constraint>properties['type'] == 'sagtoppavarbeidsgiver'</constraint>
+                </constraints>
+                <configuration>
+                    <entry>
+                        <key>fom</key>
+                        <value>datofra</value>
+                    </entry>
+                    <entry>
+                        <key>tom</key>
+                        <value>datotil</value>
+                    </entry>
+                </configuration>
+            </property>
+            <property>
+                <id>aarsak</id>
+                <type>textbox</type>
+                <constraints>
+                    <constraint>properties['type'] == 'sagtoppavarbeidsgiver'</constraint>
+                </constraints>
+            </property>
+            <property>
+                <id>sagtoppavarbeidsgiver.tilbudomjobbannetsted</id>
+                <type>java.lang.Boolean</type>
+                <constraints>
+                    <constraint>properties['type'] == 'sagtoppavarbeidsgiver'</constraint>
+                </constraints>
+            </property>
+
+            <property>
+                <id>rotasjonskiftturnus</id>
+                <type>checkboxgroup</type>
+                <constraints>
+                    <constraint>properties['type'] == 'sagtoppavarbeidsgiver'</constraint>
+                </constraints>
+            </property>
+            <property>
+                <id>arbeidsdager</id>
+                <type>textbox</type>
+                <constraints>
+                    <constraint>properties['rotasjonskiftturnus'] == 'jarotasjon'</constraint>
+                </constraints>
+            </property>
+            <property>
+                <id>avspaseringsdager</id>
+                <type>textbox</type>
+                <constraints>
+                    <constraint>properties['rotasjonskiftturnus'] == 'jarotasjon'</constraint>
+                </constraints>
+            </property>
+        </properties>
     </faktum>
     <faktum>
         <id>arbeidsforhold.permitteringsperiode</id>
@@ -1073,7 +1141,7 @@
         <property>arbeidsgivernavn</property>
         <onProperty>type</onProperty>
         <onValues>
-            <value>Sagt opp av arbeidsgiver</value>
+            <value>sagtoppavarbeidsgiver</value>
         </onValues>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
@@ -1085,7 +1153,7 @@
         <property>arbeidsgivernavn</property>
         <onProperty>type</onProperty>
         <onValues>
-            <value>Kontrakt utgått</value>
+            <value>kontraktutgaatt</value>
         </onValues>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
@@ -1097,7 +1165,7 @@
         <property>arbeidsgivernavn</property>
         <onProperty>type</onProperty>
         <onValues>
-            <value>Sagt opp selv</value>
+            <value>sagtoppselv</value>
         </onValues>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
@@ -1109,7 +1177,7 @@
         <property>arbeidsgivernavn</property>
         <onProperty>type</onProperty>
         <onValues>
-            <value>Redusert arbeidstid</value>
+            <value>redusertarbeidstid</value>
         </onValues>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
@@ -1121,7 +1189,7 @@
         <property>arbeidsgivernavn</property>
         <onProperty>type</onProperty>
         <onValues>
-            <value>Avskjediget</value>
+            <value>avskjediget</value>
         </onValues>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
