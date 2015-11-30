@@ -1,17 +1,14 @@
 package no.nav.sbl.dialogarena.config;
 
-import no.nav.sbl.dialogarena.rest.actions.SoknadActions;
-import no.nav.sbl.dialogarena.rest.utils.PDFService;
-import no.nav.sbl.dialogarena.service.EmailService;
-import no.nav.sbl.dialogarena.service.HtmlGenerator;
-import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import no.nav.sbl.dialogarena.rest.actions.*;
+import no.nav.sbl.dialogarena.rest.utils.*;
+import no.nav.sbl.dialogarena.service.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.message.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
+import org.springframework.context.annotation.*;
 
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 @Configuration
 @Import(DummyHolderConfig.class)
