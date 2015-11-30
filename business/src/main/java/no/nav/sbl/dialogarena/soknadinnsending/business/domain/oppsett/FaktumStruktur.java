@@ -11,11 +11,13 @@ import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.ForventningsSjekker.sjekkForventning;
 
-public class FaktumStruktur implements Serializable {
+public class FaktumStruktur implements Serializable, StrukturConfigurable {
 
     private String id;
     private String type;
@@ -28,6 +30,7 @@ public class FaktumStruktur implements Serializable {
 
     private String flereTillatt;
     private String erSystemFaktum;
+    private List<PropertyStruktur> properties;
 
     @XmlID()
     public String getId() {
@@ -116,6 +119,16 @@ public class FaktumStruktur implements Serializable {
         return this;
     }
 
+    @XmlElement(name = "property")
+    @XmlElementWrapper(name="properties")
+    public List<PropertyStruktur> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(List<PropertyStruktur> properties) {
+        this.properties = properties;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this)
@@ -125,8 +138,10 @@ public class FaktumStruktur implements Serializable {
                 .append("dependOn", dependOn)
                 .append("dependOnProperty", dependOnProperty)
                 .append("dependOnValues", dependOnValues)
+                .append("useExpression", useExpression)
                 .append("flereTillatt", flereTillatt)
                 .append("erSystemFaktum", erSystemFaktum)
+                .append("properties", properties)
                 .toString();
     }
 
@@ -189,5 +204,14 @@ public class FaktumStruktur implements Serializable {
 
     public boolean ikkeSystemFaktum() {
         return !"true".equals(this.getErSystemFaktum());
+    }
+
+    @Override
+    public Map<String, String> getConfiguration() {
+        return new HashMap<>();
+    }
+
+    public boolean hasConfig(String configKey) {
+        return getConfiguration() != null && getConfiguration().containsKey(configKey);
     }
 }

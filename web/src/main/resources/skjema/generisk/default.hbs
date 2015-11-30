@@ -1,7 +1,7 @@
 <tr>
     <td></td>
     <td>
-        {{#hvisTekstFinnes (concat (toLowerCase faktum.key) ".sporsmal")}}
+        {{#hvisTekstFinnes (concat key ".sporsmal")}}
             {{>skjema/generisk/sporsmal}}
         {{/hvisTekstFinnes}}
         {{> skjema/generisk/infotekst}}
@@ -9,7 +9,7 @@
 </tr>
 <tr>
     <td class="sjekket"></td>
-    <td>{{ hentTekst (concat (toLowerCase faktum.key) "." (toLowerCase faktum.value)) }}
+    <td>{{ hentTekst (concat key "." value) }}
         {{> skjema/generisk/infotekstvalue}}
         {{> skjema/generisk/vedlegg}}
         {{> skjema/generisk/barneFakta}}

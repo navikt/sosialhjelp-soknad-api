@@ -1,16 +1,16 @@
 <tr>
     <td></td>
     <td>
-        {{> skjema/generisk/infotekstvalue}}
         {{#hvisTekstFinnes (concat key ".sporsmal")}}
             {{>skjema/generisk/sporsmal}}
         {{/hvisTekstFinnes}}
+        {{> skjema/generisk/infotekst}}
     </td>
 </tr>
 <tr>
     <td class="sjekket"></td>
     <td>
-        <span>{{ formaterLangDato (property 'fom')}}-</span>
-        <span>{{ formaterLangDato (property 'tom') }}</span>
+        {{> skjema/generisk/barneproperties}}
+        {{> skjema/generisk/vedlegg}}
     </td>
 </tr>
