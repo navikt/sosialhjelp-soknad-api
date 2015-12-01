@@ -178,6 +178,7 @@
                 <type>periode</type>
                 <constraints>
                     <constraint>properties['type'] == 'sagtoppavarbeidsgiver'</constraint>
+                    <constraint>properties['type'] == 'kontraktutgaatt'</constraint>
                 </constraints>
                 <configuration>
                     <entry>
@@ -211,7 +212,12 @@
                     <constraint>properties['type'] == 'sagtoppavarbeidsgiver'</constraint>
                 </constraints>
             </property>
-
+            <property>
+                <id>tilbudomjobbannetsted</id>
+                <constraints>
+                    <constraint>properties['type'] == 'kontraktutgaatt'</constraint>
+                </constraints>
+            </property>
             <property>
                 <id>rotasjonskiftturnus</id>
                 <type>radio</type>
@@ -241,14 +247,18 @@
                 <id>lonnspliktigperiodevetikke</id>
                 <type>checkbox</type>
                 <constraints>
-                    <constraint>properties['type'] == 'permittert' &amp;&amp; properties['lonnspliktigperiodevetikke'] == 'true'</constraint>
+                    <constraint>properties['type'] == 'permittert' &amp;&amp; properties['lonnspliktigperiodevetikke']
+                        == 'true'
+                    </constraint>
                 </constraints>
             </property>
             <property>
                 <id>lonnsplikt</id>
                 <type>periode</type>
                 <constraints>
-                    <constraint>properties['type'] == 'permittert' &amp;&amp; properties['lonnspliktigperiodevetikke'] != 'true'</constraint>
+                    <constraint>properties['type'] == 'permittert' &amp;&amp; properties['lonnspliktigperiodevetikke']
+                        != 'true'
+                    </constraint>
                 </constraints>
                 <configuration>
                     <entry>
@@ -840,7 +850,6 @@
         <panel>AndreYtelser</panel>
         <dependOn>andreytelser.ytelser</dependOn>
     </faktum>
-
 
 
     <faktum>
