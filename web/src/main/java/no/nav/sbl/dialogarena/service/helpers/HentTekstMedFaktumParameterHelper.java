@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import java.io.IOException;
 
 import static no.nav.sbl.dialogarena.service.HandlebarsUtils.finnWebSoknad;
+import static org.apache.commons.lang3.LocaleUtils.*;
 
 @Component
 public class HentTekstMedFaktumParameterHelper extends RegistryAwareHelper<String> {
@@ -32,7 +33,9 @@ public class HentTekstMedFaktumParameterHelper extends RegistryAwareHelper<Strin
         WebSoknad soknad = finnWebSoknad(options.context);
         Faktum faktum = soknad.getFaktumMedKey(options.param(0).toString());
         String prefix = soknad.getSoknadPrefix();
+        Faktum sprakFaktum = soknad.getFaktumMedKey("skjema.sprak");
+        String sprak = sprakFaktum == null ? "nb_NO" : sprakFaktum.getValue();
 
-        return cmsTekst.getCmsTekst(key, new Object[]{faktum.getValue()}, prefix);
+        return cmsTekst.getCmsTekst(key, new Object[]{faktum.getValue()}, prefix, toLocale(sprak));
     }
 }

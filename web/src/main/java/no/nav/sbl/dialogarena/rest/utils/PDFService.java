@@ -1,15 +1,17 @@
 package no.nav.sbl.dialogarena.rest.utils;
 
-import no.nav.modig.core.exception.ApplicationException;
-import no.nav.sbl.dialogarena.service.HtmlGenerator;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
-import no.nav.sbl.dialogarena.utils.PDFFabrikk;
-import org.springframework.stereotype.Component;
+import no.nav.modig.core.context.*;
+import no.nav.modig.core.exception.*;
+import no.nav.sbl.dialogarena.pdf.*;
+import no.nav.sbl.dialogarena.service.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
+import org.springframework.stereotype.*;
 
-import javax.inject.Inject;
-import java.io.File;
-import java.io.IOException;
+import javax.inject.*;
+import java.io.*;
+
+import static no.nav.sbl.dialogarena.utils.PDFFabrikk.*;
 
 @Component
 public class PDFService {
@@ -19,6 +21,8 @@ public class PDFService {
 
     @Inject
     private VedleggService vedleggService;
+
+    private PdfWatermarker watermarker = new PdfWatermarker();
 
     public byte[] genererPdfMedKodeverksverdier(WebSoknad soknad, String hbsSkjemaPath, String servletPath) {
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
@@ -32,10 +36,10 @@ public class PDFService {
         } catch (IOException e) {
             throw new ApplicationException("Kunne ikke lage markup for skjema " + hbsSkjemaPath, e);
         }
-
-        String skjemaPath = new File(servletPath).toURI().toString();
-
-        return PDFFabrikk.lagPdfFil(pdfMarkup, skjemaPath);
+        String fnr = SubjectHandler.getSubjectHandler().getUid();
+        byte[] pdf = lagPdfFil(pdfMarkup, new File(servletPath).toURI().toString());
+        pdf = watermarker.applyOn(pdf, fnr, true);
+        return pdf;
     }
 
 }

@@ -1,13 +1,10 @@
 package no.nav.sbl.dialogarena.service;
 
-import org.springframework.context.MessageSource;
-import org.springframework.context.NoSuchMessageException;
-import org.springframework.stereotype.Component;
+import org.springframework.context.*;
+import org.springframework.stereotype.*;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import static no.nav.sbl.dialogarena.service.HandlebarsUtils.NO_LOCALE;
+import javax.inject.*;
+import java.util.*;
 
 @Component
 public class CmsTekst {
@@ -16,12 +13,12 @@ public class CmsTekst {
     @Named("navMessageSource")
     private MessageSource navMessageSource;
 
-    public String getCmsTekst(String key, Object[] parameters, String soknadTypePrefix) {
+    public String getCmsTekst(String key, Object[] parameters, String soknadTypePrefix, Locale locale) {
         try {
-            return navMessageSource.getMessage(soknadTypePrefix + "." + key, parameters, NO_LOCALE);
+            return navMessageSource.getMessage(soknadTypePrefix + "." + key, parameters, locale);
         } catch (NoSuchMessageException e) {
             try {
-                return navMessageSource.getMessage(key, parameters, NO_LOCALE);
+                return navMessageSource.getMessage(key, parameters, locale);
             } catch (NoSuchMessageException e2) {
                 return String.format("KEY MANGLER: [%s]", key);
             }
