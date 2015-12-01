@@ -180,8 +180,8 @@ arbeidsforhold.rotasjonskiftturnus.rotasjon.avspaseringsdager=arbeidsforhold.avs
 
 arbeidsforhold.sluttaarsak.permittert.informasjon=arbeidsforhold.type.permittert.infotekst.tekst
 arbeidsforhold.arbeidsgiver.permittert.inputform.varighet=arbeidsforhold.permitteringsperiode.periode.label
-arbeidsforhold.arbeidsgiver.varighet.fra=arbeidsforhold.datofra.label
-arbeidsforhold.arbeidsgiver.varighet.til=arbeidsforhold.datotil.label
+arbeidsforhold.arbeidsgiver.varighet.fra=arbeidsforhold.varighet.fra
+arbeidsforhold.arbeidsgiver.varighet.til=arbeidsforhold.varighet.til
 arbeidsforhold.arbeidsgiver.permittert.varighet.fra=arbeidsforhold.permitteringsperiode.periode.fra
 arbeidsforhold.arbeidsgiver.permittert.varighet.til=arbeidsforhold.permitteringsperiode.periode.til
 arbeidsforhold.sluttaarsak.permittert.inputform.permitteringsgrad=arbeidsforhold.permitteringsperiode.permitteringprosent.label
@@ -201,3 +201,10 @@ arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet.fra.feilmelding=arbei
 arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet.til=arbeidsforhold.lonnsplikt.til
 arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet.til.feilmelding=arbeidsforhold.lonnsplikt.til.feilmelding
 arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.vetikke=arbeidsforhold.lonnspliktigperiodevetikke.true
+
+
+arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.false=arbeidsforhold.tilbudomjobbannetsted.false
+arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.true=arbeidsforhold.tilbudomjobbannetsted.true
+arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.sporsmal=arbeidsforhold.tilbudomjobbannetsted.sporsmal
+arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.feilmelding=arbeidsforhold.tilbudomjobbannetsted.feilmelding
+arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.true.informasjon=arbeidsforhold.tilbudomjobbannetsted.true.infotekst.tekst
