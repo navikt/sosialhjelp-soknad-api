@@ -139,8 +139,7 @@ public class ContentConfig {
                 }
                 data.append(key).append('=').append(removeNewline(entry.getValue().value)).append(System.lineSeparator());
             }
-            String finalTeksts = mapChangedCmsTeksts(filename, data.toString());
-            FileUtils.write(file, finalTeksts, "UTF-8");
+            FileUtils.write(file, data.toString(), "UTF-8");
         }
     }
 
@@ -150,7 +149,7 @@ public class ContentConfig {
         if(mapping != null){
             List<String> strings = IOUtils.readLines(mapping, "UTF-8");
             for (String string : strings) {
-                if(string.split("=").length > 0) {
+                if(string.split("=").length == 2) {
                     changes.put(string.split("=")[0], string.split("=")[1]);
                 }
             }

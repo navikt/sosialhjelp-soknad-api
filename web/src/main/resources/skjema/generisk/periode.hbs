@@ -5,11 +5,16 @@
         {{#hvisTekstFinnes (concat key ".sporsmal")}}
             {{>skjema/generisk/sporsmal}}
         {{/hvisTekstFinnes}}
+        {{> skjema/generisk/infotekst}}
     </td>
 </tr>
 <tr>
     <td class="sjekket"></td>
     <td>
+        {{#hvisTekstFinnes (concat key ".label")}}
+            <span>{{ hentTekst (concat key ".label") }}</span>
+        {{/hvisTekstFinnes}}
+
         <span>{{ formaterLangDato (property 'fom')}}-</span>
         <span>{{ formaterLangDato (property 'tom') }}</span>
     </td>
