@@ -197,6 +197,14 @@
                 <type>date</type>
                 <constraints>
                     <constraint>properties['type'] == 'permittert'</constraint>
+                    <constraint>properties['type'] == 'redusertarbeidstid'</constraint>
+                </constraints>
+            </property>
+            <property>
+                <id>redusertfra</id>
+                <type>date</type>
+                <constraints>
+                    <constraint>properties['type'] == 'redusertarbeidstid'</constraint>
                 </constraints>
             </property>
             <property>
@@ -211,6 +219,13 @@
                 <type>textbox</type>
                 <constraints>
                     <constraint>properties['type'] == 'sagtoppselv'</constraint>
+                </constraints>
+            </property>
+            <property>
+                <id>nyttTilbud</id>
+                <type>radio</type>
+                <constraints>
+                    <constraint>properties['type'] == 'redusertarbeidstid'</constraint>
                 </constraints>
             </property>
             <property>
@@ -234,7 +249,7 @@
                     <constraint>properties['type'] == 'permittert'</constraint>
                     <constraint>properties['type'] == 'kontraktutgaatt'</constraint>
                     <constraint>properties['type'] == 'sagtoppselv'</constraint>
-                    <constraint>properties['type'] == 'redusert'</constraint>
+                    <constraint>properties['type'] == 'redusertarbeidstid'</constraint>
                 </constraints>
             </property>
             <property>
