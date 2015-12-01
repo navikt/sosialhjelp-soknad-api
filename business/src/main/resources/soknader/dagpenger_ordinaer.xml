@@ -191,6 +191,13 @@
                 </configuration>
             </property>
             <property>
+                <id>datofra</id>
+                <type>date</type>
+                <constraints>
+                    <constraint>properties['type'] == 'permittert'</constraint>
+                </constraints>
+            </property>
+            <property>
                 <id>aarsak</id>
                 <type>textbox</type>
                 <constraints>
@@ -207,9 +214,13 @@
 
             <property>
                 <id>rotasjonskiftturnus</id>
-                <type>checkboxgroup</type>
+                <type>radio</type>
                 <constraints>
                     <constraint>properties['type'] == 'sagtoppavarbeidsgiver'</constraint>
+                    <constraint>properties['type'] == 'permittert'</constraint>
+                    <constraint>properties['type'] == 'kontraktutgaatt'</constraint>
+                    <constraint>properties['type'] == 'sagtoppselv'</constraint>
+                    <constraint>properties['type'] == 'redusert'</constraint>
                 </constraints>
             </property>
             <property>
@@ -226,17 +237,61 @@
                     <constraint>properties['rotasjonskiftturnus'] == 'jarotasjon'</constraint>
                 </constraints>
             </property>
+            <property>
+                <id>lonnspliktigperiodevetikke</id>
+                <type>checkbox</type>
+                <constraints>
+                    <constraint>properties['type'] == 'permittert' &amp;&amp; properties['lonnspliktigperiodevetikke'] == 'true'</constraint>
+                </constraints>
+            </property>
+            <property>
+                <id>lonnsplikt</id>
+                <type>periode</type>
+                <constraints>
+                    <constraint>properties['type'] == 'permittert' &amp;&amp; properties['lonnspliktigperiodevetikke'] != 'true'</constraint>
+                </constraints>
+                <configuration>
+                    <entry>
+                        <key>fom</key>
+                        <value>lonnspliktigperiodedatofra</value>
+                    </entry>
+                    <entry>
+                        <key>tom</key>
+                        <value>lonnspliktigperiodedatotil</value>
+                    </entry>
+                </configuration>
+            </property>
         </properties>
     </faktum>
     <faktum>
         <id>arbeidsforhold.permitteringsperiode</id>
-        <panel>Arbeidsforhold</panel>
+        <type>composite</type>
         <dependOn>arbeidsforhold</dependOn>
         <dependOnProperty>type</dependOnProperty>
         <dependOnValues>
-            <value>Permittert</value>
+            <value>permittert</value>
         </dependOnValues>
         <flereTillatt>true</flereTillatt>
+        <properties>
+            <property>
+                <id>periode</id>
+                <type>periode</type>
+                <configuration>
+                    <entry>
+                        <key>fom</key>
+                        <value>permiteringsperiodedatofra</value>
+                    </entry>
+                    <entry>
+                        <key>tom</key>
+                        <value>permiteringsperiodedatotil</value>
+                    </entry>
+                </configuration>
+            </property>
+            <property>
+                <id>permitteringProsent</id>
+                <type>textbox</type>
+            </property>
+        </properties>
     </faktum>
     <faktum>
         <id>arbeidsforhold.grensearbeider</id>

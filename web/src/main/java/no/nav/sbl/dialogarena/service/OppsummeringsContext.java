@@ -76,6 +76,8 @@ public class OppsummeringsContext {
             return "skjema/generisk/textbox";
         } else if ("composite".equals(type)) {
             return "skjema/generisk/composite";
+        } else if ("compositelist".equals(type)) {
+            return "skjema/generisk/compositelist";
         } else if ("periode".equals(type)) {
             return "skjema/generisk/periode";
         } else if ("date".equals(type)) {
