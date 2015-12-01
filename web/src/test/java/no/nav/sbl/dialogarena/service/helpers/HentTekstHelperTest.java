@@ -1,19 +1,18 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
-import com.github.jknack.handlebars.Handlebars;
-import no.nav.sbl.dialogarena.service.CmsTekst;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.AdditionalAnswers;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import com.github.jknack.handlebars.*;
+import no.nav.sbl.dialogarena.service.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.*;
+import org.junit.*;
+import org.junit.runner.*;
+import org.mockito.*;
+import org.mockito.runners.*;
 
-import java.io.IOException;
+import java.io.*;
+import java.util.*;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.apache.commons.lang3.LocaleUtils.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
@@ -33,7 +32,7 @@ public class HentTekstHelperTest {
     public void setup() {
         handlebars = new Handlebars();
         handlebars.registerHelper(hentTekstHelper.getNavn(), hentTekstHelper);
-        when(cmsTekst.getCmsTekst(anyString(), any(Object[].class), anyString())).then(AdditionalAnswers.returnsFirstArg());
+        when(cmsTekst.getCmsTekst(anyString(), any(Object[].class), anyString(), any(Locale.class))).then(AdditionalAnswers.returnsFirstArg());
     }
 
     @Test
@@ -50,7 +49,7 @@ public class HentTekstHelperTest {
 
         handlebars.compileInline("{{hentTekst \"test\" \"param1\" \"param2\"}}").apply(webSoknad);
 
-        verify(cmsTekst, atLeastOnce()).getCmsTekst("test", new Object[]{"param1", "param2"}, "mittprefix");
+        verify(cmsTekst, atLeastOnce()).getCmsTekst("test", new Object[]{"param1", "param2"}, "mittprefix", toLocale("nb_NO"));
     }
 
 }
