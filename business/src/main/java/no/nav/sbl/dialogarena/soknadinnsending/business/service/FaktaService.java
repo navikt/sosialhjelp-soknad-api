@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -50,6 +51,7 @@ public class FaktaService {
 
     private static final String EKSTRA_VEDLEGG_KEY = "ekstraVedlegg";
     private static final Logger logger = getLogger(FaktaService.class);
+    private static final List<String> IGNORERTE_KEYS = Arrays.asList(EKSTRA_VEDLEGG_KEY, Personalia.EPOST_KEY, "skjema.sprak");
 
     public List<Faktum> hentFakta(String behandlingsId) {
         return repository.hentAlleBrukerData(behandlingsId);
@@ -171,8 +173,8 @@ public class FaktaService {
 
     private void settDelstegStatus(Long soknadId, String faktumKey) {
         WebSoknad webSoknad = repository.hentSoknad(soknadId);
-        //Sjekker og setter delstegstatus dersom et faktum blir lagret, med mindre det er epost eller ekstra vedlegg. Bør gjøres mer elegant, fremdeles litt quickfix
-        if (!Personalia.EPOST_KEY.equals(faktumKey) && !EKSTRA_VEDLEGG_KEY.equals(faktumKey)) {
+        //Sjekker og setter delstegstatus dersom et faktum blir lagret, med mindre det er visse keys
+        if (!IGNORERTE_KEYS.contains(faktumKey)) {
             webSoknad.validerDelstegEndring(DelstegStatus.UTFYLLING);
             repository.settDelstegstatus(soknadId, DelstegStatus.UTFYLLING);
         }

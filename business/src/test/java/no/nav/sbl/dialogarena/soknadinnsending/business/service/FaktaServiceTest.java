@@ -70,6 +70,19 @@ public class FaktaServiceTest {
     }
 
     @Test
+    public void skalIkkeoppdatereDelstegstatusVedSprakFaktum() {
+        long soknadId = 1L;
+        String behandlingsId = "1000000ABC";
+        Faktum faktum = new Faktum().medKey("skjema.sprak").medValue("nb_NO").medFaktumId(soknadId);
+        when(soknadRepository.hentSoknad(behandlingsId)).thenReturn(new WebSoknad().medId(soknadId).medDelstegStatus(DelstegStatus.UTFYLLING));
+        when(soknadRepository.hentSoknad(soknadId)).thenReturn(new WebSoknad().medId(soknadId).medDelstegStatus(DelstegStatus.UTFYLLING));
+        when(soknadRepository.opprettFaktum(soknadId, faktum)).thenReturn(2L);
+        when(soknadRepository.hentFaktum(2L)).thenReturn(faktum);
+        faktaService.opprettBrukerFaktum(behandlingsId, faktum);
+        verify(soknadRepository, never()).settDelstegstatus(anyLong(), any(DelstegStatus.class));
+    }
+
+    @Test
     public void skalLagreSoknadFelt() {
         long soknadId = 1L;
         String behandlingsId = "1000000ABC";
