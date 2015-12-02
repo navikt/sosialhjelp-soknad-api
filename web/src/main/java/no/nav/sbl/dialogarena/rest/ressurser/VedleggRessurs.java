@@ -101,7 +101,7 @@ public class VedleggRessurs {
     @SjekkTilgangTilSoknad(sjekkXsrf = false, type = Vedlegg) // sjekkXsrf er false fordi IE9 ikke kan sende xsrf-token i header, kan fjernes en vakker dag når vi ikke skal støtte IE9
     public List<Vedlegg> lastOppFiler(@PathParam("vedleggId") final Long vedleggId, @QueryParam("behandlingsId") String behandlingsId,
                                           @FormDataParam("X-XSRF-TOKEN") final String xsrfToken, @FormDataParam("files[]") final List<FormDataBodyPart> files) {
-        //XsrfGenerator.sjekkXsrfToken(xsrfToken, behandlingsId);
+        XsrfGenerator.sjekkXsrfToken(xsrfToken, behandlingsId);
 
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, false);
         Vedlegg forventning = vedleggService.hentVedlegg(vedleggId, false);
