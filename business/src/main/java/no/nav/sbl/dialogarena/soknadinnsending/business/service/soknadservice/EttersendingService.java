@@ -58,8 +58,8 @@ public class EttersendingService {
         optional(nyesteSoknad.getInnsendtDato()).getOrThrow(new ApplicationException("Kan ikke starte ettersending på en ikke fullfort soknad"));
 
         String nyBehandlingsId = henvendelseService.startEttersending(nyesteSoknad);
-
-        WebSoknad ettersending = lagreEttersendingTilLokalDb(behandlingsIdDetEttersendesPaa, behandlingskjede, nyesteSoknad.getBehandlingskjedeId(), nyBehandlingsId);
+        String behandlingskjedeId = optional(nyesteSoknad.getBehandlingskjedeId()).getOrElse(nyesteSoknad.getBehandlingsId());
+        WebSoknad ettersending = lagreEttersendingTilLokalDb(behandlingsIdDetEttersendesPaa, behandlingskjede, behandlingskjedeId, nyBehandlingsId);
 
         return ettersending.getBrukerBehandlingId();
     }
