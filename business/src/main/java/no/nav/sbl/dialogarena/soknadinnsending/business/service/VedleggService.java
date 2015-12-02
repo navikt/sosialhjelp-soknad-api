@@ -301,6 +301,7 @@ public class VedleggService {
             return paakrevdeVedleggVedNyUthenting;
         }
     }
+
     private static final VedleggForFaktumStruktur N6_FORVENTNING = new VedleggForFaktumStruktur()
             .medFaktum(new FaktumStruktur().medId("ekstraVedlegg"))
             .medSkjemanummer("N6")
@@ -310,7 +311,7 @@ public class VedleggService {
     public List<Vedlegg> genererPaakrevdeVedlegg(String behandlingsId) {
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true);
         if (soknad.erEttersending()) {
-            oppdaterVedleggForForventninger(hentForventingForEkstraVedlegg(soknad));
+            oppdaterVedleggForForventninger(hentForventingerForEkstraVedlegg(soknad));
             return on(vedleggRepository.hentVedlegg(behandlingsId)).filter(Vedlegg.PAAKREVDE_VEDLEGG).collect();
         } else {
             SoknadStruktur struktur = soknadService.hentSoknadStruktur(soknad.getskjemaNummer());
@@ -320,7 +321,7 @@ public class VedleggService {
         }
     }
 
-    private List<VedleggsGrunnlag> hentForventingForEkstraVedlegg(final WebSoknad soknad) {
+    private List<VedleggsGrunnlag> hentForventingerForEkstraVedlegg(final WebSoknad soknad) {
         return on(soknad.getFaktaMedKey("ekstraVedlegg"))
                 .map(new Transformer<Faktum, VedleggsGrunnlag>() {
                     @Override
