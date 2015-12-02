@@ -58,11 +58,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 import static java.util.Collections.sort;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
@@ -311,35 +308,39 @@ public class VedleggService {
             .medFlereTillatt(true);
 
     public List<Vedlegg> genererPaakrevdeVedlegg(String behandlingsId) {
-        final WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true);
+        WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true);
         if (soknad.erEttersending()) {
-
-            List<VedleggsGrunnlag> ekstraVedlegg = on(soknad.getFaktaMedKey("ekstraVedlegg"))
-                    .map(new Transformer<Faktum, VedleggsGrunnlag>() {
-                        @Override
-                        public VedleggsGrunnlag transform(Faktum faktum) {
-                            Vedlegg vedlegg = soknad.finnVedleggSomMatcherForventning(N6_FORVENTNING, faktum.getFaktumId());
-                            return new VedleggsGrunnlag(soknad, vedlegg, navMessageSource).medGrunnlag(N6_FORVENTNING, faktum);
-                        }
-                    }).collect();
-            ArrayList<Vedlegg> resultat = new ArrayList<>(on(vedleggRepository.hentVedlegg(behandlingsId)).filter(Vedlegg.PAAKREVDE_VEDLEGG).collect());
-            resultat.addAll(hentPaakrevdeVedleggGittForventninger(ekstraVedlegg));
-            return resultat;
+            oppdaterVedleggForForventninger(hentForventingForEkstraVedlegg(soknad));
+            return on(vedleggRepository.hentVedlegg(behandlingsId)).filter(Vedlegg.PAAKREVDE_VEDLEGG).collect();
         } else {
             SoknadStruktur struktur = soknadService.hentSoknadStruktur(soknad.getskjemaNummer());
-            final List<VedleggsGrunnlag> alleMuligeVedlegg = struktur.hentAlleMuligeVedlegg(soknad, navMessageSource);
-
-            return hentPaakrevdeVedleggGittForventninger(alleMuligeVedlegg);
+            List<VedleggsGrunnlag> alleMuligeVedlegg = struktur.hentAlleMuligeVedlegg(soknad, navMessageSource);
+            oppdaterVedleggForForventninger(alleMuligeVedlegg);
+            return hentPaakrevdeVedleggForForventninger(alleMuligeVedlegg);
         }
     }
 
-    private List<Vedlegg> hentPaakrevdeVedleggGittForventninger(List<VedleggsGrunnlag> alleMuligeVedlegg) {
-        on(alleMuligeVedlegg).forEach(new Closure<VedleggsGrunnlag>() {
+    private List<VedleggsGrunnlag> hentForventingForEkstraVedlegg(final WebSoknad soknad) {
+        return on(soknad.getFaktaMedKey("ekstraVedlegg"))
+                .map(new Transformer<Faktum, VedleggsGrunnlag>() {
+                    @Override
+                    public VedleggsGrunnlag transform(Faktum faktum) {
+                        Vedlegg vedlegg = soknad.finnVedleggSomMatcherForventning(N6_FORVENTNING, faktum.getFaktumId());
+                        return new VedleggsGrunnlag(soknad, vedlegg, navMessageSource).medGrunnlag(N6_FORVENTNING, faktum);
+                    }
+                }).collect();
+    }
+
+    private void oppdaterVedleggForForventninger(List<VedleggsGrunnlag> forventninger) {
+        on(forventninger).forEach(new Closure<VedleggsGrunnlag>() {
             @Override
             public void execute(VedleggsGrunnlag vedleggsgrunnlag) {
                 vedleggsgrunnlag.oppdaterVedlegg(vedleggRepository);
             }
         });
+    }
+
+    private List<Vedlegg> hentPaakrevdeVedleggForForventninger(List<VedleggsGrunnlag> alleMuligeVedlegg) {
         return on(alleMuligeVedlegg).map(new Transformer<VedleggsGrunnlag, Vedlegg>() {
             @Override
             public Vedlegg transform(VedleggsGrunnlag vedleggsgrunnlag) {
