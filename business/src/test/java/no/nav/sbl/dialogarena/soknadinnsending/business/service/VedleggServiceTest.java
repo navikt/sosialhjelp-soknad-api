@@ -7,6 +7,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.FunksjonalitetBryter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
@@ -25,10 +26,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.lang.System.setProperty;
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
@@ -221,6 +219,21 @@ public class VedleggServiceTest {
         vedleggService.lagreVedlegg(1L, opplastetVedlegg);
         verify(vedleggRepository).lagreVedlegg(11L, 1L, opplastetVedlegg);
         verify(soknadRepository, never()).settDelstegstatus(11L, DelstegStatus.SKJEMA_VALIDERT);
+    }
+
+    @Test
+    public void skalIkkeLageDuplikaterAvVedleggPaaEttersending() {
+        Faktum faktum = new Faktum().medKey("ekstraVedlegg").medFaktumId(12L).medValue("true");
+        Vedlegg ekstraVedlegg = new Vedlegg().medVedleggId(1L).medFaktumId(12L).medSkjemaNummer("N6").medInnsendingsvalg(Vedlegg.Status.VedleggKreves);
+        List<Vedlegg> vedlegg = new ArrayList<>();
+        vedlegg.add(ekstraVedlegg);
+
+        when(soknadDataFletter.hentSoknad("123ABC", true, true)).thenReturn(new WebSoknad().medDelstegStatus(ETTERSENDING_OPPRETTET).medFaktum(faktum).medVedlegg(vedlegg));
+        when(vedleggRepository.hentVedlegg("123ABC")).thenReturn(vedlegg);
+
+        List<Vedlegg> paakrevdeVedlegg = vedleggService.genererPaakrevdeVedlegg("123ABC");
+        assertThat(paakrevdeVedlegg.size(), is(1));
+        assertThat(paakrevdeVedlegg.get(0), is(ekstraVedlegg));
     }
 
     @Test
