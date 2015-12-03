@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -168,11 +169,11 @@ public class FaktaService {
         repository.settSistLagretTidspunkt(soknadId);
         settDelstegStatus(soknadId, faktumKey);
     }
-
+    private List<String> IGNORE_FAKTUMS = Arrays.asList(Personalia.EPOST_KEY, EKSTRA_VEDLEGG_KEY, "sprak");
     private void settDelstegStatus(Long soknadId, String faktumKey) {
         WebSoknad webSoknad = repository.hentSoknad(soknadId);
         //Sjekker og setter delstegstatus dersom et faktum blir lagret, med mindre det er epost eller ekstra vedlegg. Bør gjøres mer elegant, fremdeles litt quickfix
-        if (!Personalia.EPOST_KEY.equals(faktumKey) && !EKSTRA_VEDLEGG_KEY.equals(faktumKey)) {
+        if (!IGNORE_FAKTUMS.contains(faktumKey)) {
             webSoknad.validerDelstegEndring(DelstegStatus.UTFYLLING);
             repository.settDelstegstatus(soknadId, DelstegStatus.UTFYLLING);
         }

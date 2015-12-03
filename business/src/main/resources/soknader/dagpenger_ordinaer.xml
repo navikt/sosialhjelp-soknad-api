@@ -193,6 +193,23 @@
                 </configuration>
             </property>
             <property>
+                <id>varighet</id>
+                <type>periode</type>
+                <constraints>
+                    <constraint>properties['type'] == 'arbeidsgivererkonkurs'</constraint>
+                </constraints>
+                <configuration>
+                    <entry>
+                        <key>fom</key>
+                        <value>datofra</value>
+                    </entry>
+                    <entry>
+                        <key>tom</key>
+                        <value>konkursdato</value>
+                    </entry>
+                </configuration>
+            </property>
+            <property>
                 <id>datofra</id>
                 <type>date</type>
                 <constraints>
@@ -215,6 +232,13 @@
                 </constraints>
             </property>
             <property>
+                <id>bostyrernavn</id>
+                <type>textbox</type>
+                <constraints>
+                    <constraint>properties['type'] == 'arbeidsgivererkonkurs'</constraint>
+                </constraints>
+            </property>
+            <property>
                 <id>sagtoppselvAarsak</id>
                 <type>textbox</type>
                 <constraints>
@@ -226,6 +250,27 @@
                 <type>radio</type>
                 <constraints>
                     <constraint>properties['type'] == 'redusertarbeidstid'</constraint>
+                </constraints>
+            </property>
+            <property>
+                <id>lonnsgaranti</id>
+                <type>radio</type>
+                <constraints>
+                    <constraint>properties['type'] == 'arbeidsgivererkonkurs'</constraint>
+                </constraints>
+            </property>
+            <property>
+                <id>lonnsgarantidekker</id>
+                <type>radio</type>
+                <constraints>
+                    <constraint>properties['type'] == 'arbeidsgivererkonkurs' &amp;&amp; properties['lonnsgaranti'] == 'JaHarSokt'</constraint>
+                </constraints>
+            </property>
+            <property>
+                <id>lonnkonkursmaaned</id>
+                <type>radio</type>
+                <constraints>
+                    <constraint>properties['type'] == 'arbeidsgivererkonkurs'</constraint>
                 </constraints>
             </property>
             <property>
@@ -1312,7 +1357,7 @@
         <property>arbeidsgivernavn</property>
         <onProperty>type</onProperty>
         <onValues>
-            <value>Arbeidsgiver er konkurs</value>
+            <value>arbeidsgivererkonkurs</value>
         </onValues>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
@@ -1323,7 +1368,7 @@
         <property>arbeidsgivernavn</property>
         <onProperty>type</onProperty>
         <onValues>
-            <value>Arbeidsgiver er konkurs</value>
+            <value>arbeidsgivererkonkurs</value>
         </onValues>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
