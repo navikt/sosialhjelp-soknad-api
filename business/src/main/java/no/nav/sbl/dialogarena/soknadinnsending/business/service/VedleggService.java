@@ -322,7 +322,9 @@ public class VedleggService {
                             return new VedleggsGrunnlag(soknad, vedlegg, navMessageSource).medGrunnlag(N6_FORVENTNING, faktum);
                         }
                     }).collect();
-            ArrayList<Vedlegg> resultat = new ArrayList<>(on(vedleggRepository.hentVedlegg(behandlingsId)).filter(Vedlegg.PAAKREVDE_VEDLEGG).collect());
+            ArrayList<Vedlegg> resultat = new ArrayList<>(on(vedleggRepository.hentVedlegg(behandlingsId))
+                    .filter(Vedlegg.PAAKREVDE_VEDLEGG)
+                    .collect());
             resultat.addAll(hentPaakrevdeVedleggGittForventninger(ekstraVedlegg));
             return resultat;
         } else {
