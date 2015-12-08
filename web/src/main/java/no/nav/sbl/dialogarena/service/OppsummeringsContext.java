@@ -86,10 +86,10 @@ public class OppsummeringsContext {
             return "skjema/generisk/tilleggsopplysninger";
         } else if ("hidden".equals(type)) {
             return "skjema/generisk/hidden";
-        } else if ("dagpenger-barn".equals(type)) {
-            return "skjema/generisk/dagpenger-barn";
         } else if ("inputgroup".equals(type)) {
             return "skjema/generisk/inputgroup";
+        } else if ("infotekst".equals(type)) {
+            return "skjema/generisk/infotekst";
         }
         return "skjema/generisk/default";
     }
