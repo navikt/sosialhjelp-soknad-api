@@ -104,6 +104,7 @@ public class OppsummeringsContext {
     public abstract class OppsummeringsBase implements PropertyAware{
         public abstract String key();
         public abstract String value();
+        public abstract String originalValue();
         public abstract boolean erSynlig();
         public abstract String property(String configKey);
 
@@ -160,6 +161,12 @@ public class OppsummeringsContext {
         public String value() {
             return faktum.getValue() != null? faktum.getValue().toLowerCase(): "";
         }
+
+        @Override
+        public String originalValue() {
+            return faktum.getValue();
+        }
+
         public class OppsummeringsProperty extends OppsummeringsBase{
             private final PropertyStruktur struktur;
             public final List<OppsummeringsVedlegg> vedlegg = new ArrayList<>();
@@ -175,8 +182,13 @@ public class OppsummeringsContext {
 
             @Override
             public String value() {
-                String value = OppsummeringsFaktum.this.faktum.getProperties().get(struktur.getId());
-                return value != null? value.toLowerCase(): "";
+                String value = originalValue();
+                return value != null ? value.toLowerCase(): "";
+            }
+
+            @Override
+            public String originalValue() {
+                return OppsummeringsFaktum.this.faktum.getProperties().get(struktur.getId());
             }
 
             @Override
