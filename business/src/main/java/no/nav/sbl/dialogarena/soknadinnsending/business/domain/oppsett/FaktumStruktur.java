@@ -31,6 +31,7 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
     private String flereTillatt;
     private String erSystemFaktum;
     private List<PropertyStruktur> properties;
+    private List<String> constraints;
 
     @XmlID()
     public String getId() {
@@ -129,6 +130,16 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
         this.properties = properties;
     }
 
+    @XmlElementWrapper(name="constraints")
+    @XmlElement(name="constraint")
+    public List<String> getConstraints() {
+        return constraints;
+    }
+
+    public void setConstraints(List<String> constraints) {
+        this.constraints = constraints;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this)
@@ -142,6 +153,7 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
                 .append("flereTillatt", flereTillatt)
                 .append("erSystemFaktum", erSystemFaktum)
                 .append("properties", properties)
+                .append("constraints", constraints)
                 .toString();
     }
 
@@ -171,7 +183,7 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
     public boolean erSynlig(WebSoknad soknad, Faktum faktum) {
         FaktumStruktur parent = getDependOn();
         Faktum parentFaktum = soknad.finnFaktum(faktum.getParrentFaktum());
-        return parent == null || (parentFaktum != null && parent.erSynlig(soknad, parentFaktum) && this.oppfyllerParentKriterier(soknad, faktum));
+        return (parent == null || (parentFaktum != null && parent.erSynlig(soknad, parentFaktum) && this.oppfyllerParentKriterier(soknad, faktum))) && oppfyllerConstraints(faktum);
     }
 
     private boolean oppfyllerParentKriterier(WebSoknad soknad, Faktum faktum) {
@@ -188,6 +200,18 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
             }
         }
         return true;
+    }
+
+    private boolean oppfyllerConstraints(Faktum faktum) {
+        if (constraints == null) {
+            return true;
+        }
+
+        boolean result = false;
+        for (String constraint : constraints) {
+            result = result || sjekkForventning(constraint, faktum);
+        }
+        return result;
     }
 
     private boolean harDependOnValue(Faktum parent) {
@@ -214,4 +238,5 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
     public boolean hasConfig(String configKey) {
         return getConfiguration() != null && getConfiguration().containsKey(configKey);
     }
+
 }
