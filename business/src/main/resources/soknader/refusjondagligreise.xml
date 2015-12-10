@@ -1,4 +1,4 @@
-<soknad skjemaNummer="NAV 11-12.10" temaKode="TSO">
+<soknad temaKode="TSO" xmlns="urn:no.nav.sbl">
     <faktum>
         <id>vedtak</id>
     </faktum>

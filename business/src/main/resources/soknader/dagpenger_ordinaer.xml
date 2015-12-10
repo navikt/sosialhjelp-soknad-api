@@ -1,8 +1,5 @@
 <?xml version="1.0" ?>
-<soknad temaKode="DAG"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns="urn:no.nav.sbl"
-        xsi:schemaLocation="urn:no.nav.sbl soknadstruktur.xsd">
+<soknad temaKode="DAG" xmlns="urn:no.nav.sbl">
     <!-- Reell arbeidsoker-->
     <faktum>
         <id>reellarbeidssoker.villigdeltid</id>
