@@ -79,15 +79,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
                 return "" + finnNivaa(options.context.parent());
             }
         });
-        handlebars.registerHelper("property", new Helper<Object>() {
-            @Override
-            public CharSequence apply(Object context, Options options) throws IOException {
-                if(options.context.model() instanceof PropertyAware){
-                    return ((PropertyAware)options.context.model()).property((String)context);
-                }
-                return "";
-            }
-        });
         return handlebars;
     }
 
@@ -136,4 +127,5 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
             }
         };
     }
+
 }
