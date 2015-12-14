@@ -16,19 +16,19 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 public class VedleggForFaktumStrukturTest {
-    Faktum konkurs = new Faktum().medKey("arbeidforhold").medProperty("type", "Arbeidsgiver er konkurs");
-    Faktum permittert = new Faktum().medKey("arbeidforhold").medProperty("type", "Permittert");
-    Faktum sagtOppAvArbeidsgiver = new Faktum().medKey("arbeidforhold").medProperty("type", "Sagt opp av arbeidsgiver");
+    Faktum konkurs = new Faktum().medKey("arbeidforhold").medProperty("type", "arbeidsgivererkonkurs");
+    Faktum permittert = new Faktum().medKey("arbeidforhold").medProperty("type", "permittert");
+    Faktum sagtOppAvArbeidsgiver = new Faktum().medKey("arbeidforhold").medProperty("type", "sagtoppavarbeidsgiver");
 
-    Faktum kontraktUtgaat = new Faktum().medKey("arbeidforhold").medProperty("type", "Kontrakt utgått");
-    Faktum sagtOppSelv = new Faktum().medKey("arbeidforhold").medProperty("type", "Sagt opp selv");
-    Faktum redusertArbeidstid = new Faktum().medKey("arbeidforhold").medProperty("type", "Redusert arbeidstid");
-    Faktum avskjediget = new Faktum().medKey("arbeidforhold").medProperty("type", "Avskjediget");
+    Faktum kontraktUtgaat = new Faktum().medKey("arbeidforhold").medProperty("type", "kontraktutgaatt");
+    Faktum sagtOppSelv = new Faktum().medKey("arbeidforhold").medProperty("type", "sagtoppselv");
+    Faktum redusertArbeidstid = new Faktum().medKey("arbeidforhold").medProperty("type", "redusertarbeidstid");
+    Faktum avskjediget = new Faktum().medKey("arbeidforhold").medProperty("type", "avskjediget");
 
     @Test
     public void skalFikseFlereOnValues(){
         VedleggForFaktumStruktur vedlegg = new VedleggForFaktumStruktur();
-        vedlegg.setOnValues(Arrays.asList("Arbeidsgiver er konkurs", "Permittert"));
+        vedlegg.setOnValues(Arrays.asList("arbeidsgivererkonkurs", "permittert"));
         vedlegg.setOnProperty("type");
         vedlegg.setInverted(true);
         assertThat(vedlegg.trengerVedlegg(konkurs), is(false));
