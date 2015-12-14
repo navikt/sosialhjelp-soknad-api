@@ -45,7 +45,7 @@ public class SoknadActions {
     private NavMessageSource tekster;
 
     @Inject
-    WebSoknadConfig webSoknadConfig;
+    private WebSoknadConfig webSoknadConfig;
 
     @Context
     private ServletContext servletContext;
