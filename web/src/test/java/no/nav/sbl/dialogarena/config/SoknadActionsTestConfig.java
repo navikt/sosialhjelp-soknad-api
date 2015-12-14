@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.config;
 import no.nav.sbl.dialogarena.rest.actions.*;
 import no.nav.sbl.dialogarena.rest.utils.*;
 import no.nav.sbl.dialogarena.service.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
@@ -47,6 +48,11 @@ public class SoknadActionsTestConfig {
     @Bean
     public PDFService pdfService() {
         return new PDFService();
+    }
+
+    @Bean
+    public WebSoknadConfig config() {
+        return mock(WebSoknadConfig.class);
     }
 
 }
