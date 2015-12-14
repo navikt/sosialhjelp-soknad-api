@@ -35,6 +35,11 @@ public class DagpengerOrdinaerInformasjon extends KravdialogInformasjon.DefaultO
         return asList(BOLK_PERSONALIA, BOLK_BARN);
     }
 
+    @Override
+    public boolean brukerNyOppsummering() {
+        return true;
+    }
+
     public static boolean erDagpengerOrdinaer(String skjema) {
         return skjemanummer.contains(skjema);
     }
