@@ -4,8 +4,10 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Component;
 
+import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,6 +17,13 @@ public class XmlService {
     public static final Pattern INCLUDE_PATTERN = Pattern.compile("<xi:include href=\"(.*?)\" .*?>");
     public static final Pattern SOKNAD_PATTERN = Pattern.compile("<soknad .*?>(.*)</soknad>", Pattern.DOTALL);
     public static final String XML_HEADER_PATTERN = "<\\?xml .*? ?>";
+
+    public StreamSource lastXmlFilMedInclude(String fil) throws IOException {
+        String filsti = FilenameUtils.getFullPath(fil);
+        String filNavn = FilenameUtils.getName(fil);
+
+        return new StreamSource(new StringReader(lastXmlFilMedInclude(filsti, filNavn)));
+    }
 
     public String lastXmlFilMedInclude(String filsti, String filNavn) throws IOException {
         String mainFile = hentFilInnhold(filsti + filNavn);
