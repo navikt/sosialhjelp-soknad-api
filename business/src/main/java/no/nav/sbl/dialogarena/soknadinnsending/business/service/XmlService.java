@@ -39,7 +39,7 @@ public class XmlService {
             String includeXml = lastXmlFilMedInclude(includePath, includeFile);
             includeXml = fiksInkludertXml(includeXml);
 
-            matcher.appendReplacement(fullXml, includeXml);
+            matcher.appendReplacement(fullXml, Matcher.quoteReplacement(includeXml));
         }
         matcher.appendTail(fullXml);
 
