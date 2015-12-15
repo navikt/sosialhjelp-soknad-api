@@ -4,11 +4,11 @@
   <xs:element name="soknad" type="tns:soknadStruktur"/>
 
   <xs:complexType name="soknadStruktur">
-    <xs:sequence>
+    <xs:choice maxOccurs="unbounded">
       <xs:element name="faktum" type="tns:faktumStruktur" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="vedlegg" type="tns:vedleggForFaktumStruktur" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="vedleggsreferanse" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
-    </xs:sequence>
+    </xs:choice>
     <xs:attribute name="temaKode" type="xs:string"/>
   </xs:complexType>
 

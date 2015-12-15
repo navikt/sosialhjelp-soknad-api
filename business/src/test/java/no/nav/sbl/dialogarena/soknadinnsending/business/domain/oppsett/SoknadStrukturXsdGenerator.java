@@ -11,11 +11,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SoknadStrukturXsdGenerator {
 
     private String path = "src/main/resources/soknader/";
     private String filNavn = "soknadstruktur.xsd";
+
+    public static final Pattern SOKNAD_SEQUENCE_PATTERN = Pattern.compile("<xs:complexType name=\"soknadStruktur\">(\\s+)<xs:sequence>(.*?)</xs:sequence>", Pattern.DOTALL);
 
     /**
      * Ingen assertions, men genererer ny xsd basert
@@ -24,7 +28,7 @@ public class SoknadStrukturXsdGenerator {
     @Test
     public void genererSkjema() throws JAXBException, IOException {
         String skjemaStreng = lagSkjemaString();
-        skjemaStreng = fiksStreng(skjemaStreng);
+        skjemaStreng = fiksTingDerViErUenigMedJaxbMenFortsattVilHaTingAutogenerert(skjemaStreng);
         skrivTilFil(skjemaStreng);
     }
 
@@ -44,9 +48,17 @@ public class SoknadStrukturXsdGenerator {
         return writer.toString();
     }
 
-    private String fiksStreng(String skjemaStreng) {
+    private String fiksTingDerViErUenigMedJaxbMenFortsattVilHaTingAutogenerert(String skjemaStreng) {
         String fikset = skjemaStreng.replace("<xs:element name=\"configuration\">", "<xs:element name=\"configuration\" minOccurs=\"0\">");
-        fikset = fikset.replace("\n", System.lineSeparator()); // jaxb skjemageneratoren bruker feil lineendings på windows
+
+        StringBuffer sb = new StringBuffer();
+        Matcher matcher = SOKNAD_SEQUENCE_PATTERN.matcher(fikset);
+        matcher.find();
+
+        matcher.appendReplacement(sb, "<xs:complexType name=\"soknadStruktur\">" + matcher.group(1) + "(<xs:choice maxOccurs=\"unbounded\">)" + matcher.group(2) + "</xs:choice>");
+        matcher.appendTail(sb);
+
+        fikset = sb.toString().replace("\n", System.lineSeparator()); // jaxb skjemageneratoren bruker feil lineendings på windows
         return fikset;
     }
 
