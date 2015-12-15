@@ -45,17 +45,15 @@ public class SoknadStrukturXsdGenerator {
     }
 
     private String fiksStreng(String skjemaStreng) {
-        return skjemaStreng.replace("<xs:element name=\"configuration\">", "<xs:element name=\"configuration\" minOccurs=\"0\">");
+        String fikset = skjemaStreng.replace("<xs:element name=\"configuration\">", "<xs:element name=\"configuration\" minOccurs=\"0\">");
+        fikset = fikset.replace("\n", System.lineSeparator()); // jaxb skjemageneratoren bruker feil lineendings på windows
+        return fikset;
     }
 
     private void skrivTilFil(String skjemaStreng) throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(path + filNavn), "UTF-8");
         writer.write(skjemaStreng);
         writer.close();
-    }
-
-    public static void main(String[] args) throws JAXBException, IOException {
-        new SoknadStrukturXsdGenerator().genererSkjema();
     }
 
 }
