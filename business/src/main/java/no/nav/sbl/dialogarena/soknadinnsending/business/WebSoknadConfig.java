@@ -126,4 +126,9 @@ public class WebSoknadConfig {
         KravdialogInformasjon skjemaConfig = finnSkjemaConfig(soknadId);
         return skjemaConfig.getStegliste();
     }
+
+    public boolean brukerNyOppsummering(Long soknadId) {
+        KravdialogInformasjon skjemaConfig = finnSkjemaConfig(soknadId);
+        return skjemaConfig.brukerNyOppsummering();
+    }
 }
