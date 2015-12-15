@@ -35,6 +35,11 @@ public class DagpengerGjenopptakInformasjon extends KravdialogInformasjon.Defaul
         return asList(BOLK_PERSONALIA, BOLK_BARN);
     }
 
+    @Override
+    public boolean brukerNyOppsummering() {
+        return true;
+    }
+
     public static boolean erDagpengerGjenopptak(String skjema) {
         return skjemanummer.contains(skjema);
     }
