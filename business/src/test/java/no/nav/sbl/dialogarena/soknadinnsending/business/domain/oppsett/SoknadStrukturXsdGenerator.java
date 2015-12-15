@@ -55,7 +55,7 @@ public class SoknadStrukturXsdGenerator {
         Matcher matcher = SOKNAD_SEQUENCE_PATTERN.matcher(fikset);
         matcher.find();
 
-        matcher.appendReplacement(sb, "<xs:complexType name=\"soknadStruktur\">" + matcher.group(1) + "(<xs:choice maxOccurs=\"unbounded\">)" + matcher.group(2) + "</xs:choice>");
+        matcher.appendReplacement(sb, "<xs:complexType name=\"soknadStruktur\">" + matcher.group(1) + "<xs:choice maxOccurs=\"unbounded\">" + matcher.group(2) + "</xs:choice>");
         matcher.appendTail(sb);
 
         fikset = sb.toString().replace("\n", System.lineSeparator()); // jaxb skjemageneratoren bruker feil lineendings på windows
