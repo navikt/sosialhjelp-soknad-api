@@ -18,7 +18,7 @@ public class SoknadXmlValiderer {
 
     @Test
     public void testDagpengerGjenopptakXml() throws Exception {
-        test("soknadtilleggsstonader.xml");
+        test("dagpenger/dagpenger_gjenopptak.xml");
     }
 
     @Test

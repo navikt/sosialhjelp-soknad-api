@@ -24,7 +24,7 @@ public class DagpengerGjenopptakInformasjon extends KravdialogInformasjon.Defaul
     }
 
     public String getStrukturFilnavn() {
-        return "dagpenger_gjenopptak.xml";
+        return "dagpenger/dagpenger_gjenopptak.xml";
     }
 
     public List<String> getSkjemanummer() {

@@ -1,0 +1,63 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl">
+    <faktum>
+        <id>tidligerearbeidsforhold.permittert</id>
+        <type>java.lang.String</type>
+        <panel>TidligereArbeidsforhold</panel>
+    </faktum>
+
+    <faktum>
+        <id>tidligerearbeidsforhold.tidligerearbeidsgiver</id>
+        <type>java.lang.String</type>
+        <panel>TidligereArbeidsforhold</panel>
+        <dependOn>tidligerearbeidsforhold.permittert</dependOn>
+        <dependOnValues>
+            <value>permittert</value>
+            <value>permittertFiske</value>
+        </dependOnValues>
+    </faktum>
+
+    <faktum>
+        <id>tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsidensist</id>
+        <type>java.lang.Boolean</type>
+        <panel>TidligereArbeidsforhold</panel>
+        <dependOn>tidligerearbeidsforhold.permittert</dependOn>
+        <dependOnValues>
+            <value>permittert</value>
+            <value>permittertFiske</value>
+        </dependOnValues>
+    </faktum>
+
+    <faktum>
+        <id>tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsammenhengende</id>
+        <type>java.lang.String</type>
+        <panel>TidligereArbeidsforhold</panel>
+        <dependOn>tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsidensist</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+
+    <faktum>
+        <id>tidligerearbeidsforhold.tidligerearbeidsgiver.fortsattansatt</id>
+        <type>java.lang.Boolean</type>
+        <panel>TidligereArbeidsforhold</panel>
+        <dependOn>tidligerearbeidsforhold.permittert</dependOn>
+        <dependOnValues>
+            <value>permittert</value>
+            <value>permittertFiske</value>
+        </dependOnValues>
+    </faktum>
+
+
+    <vedlegg>
+        <faktum>tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsammenhengende</faktum>
+        <property>arbeidsgivernavn</property>
+        <onValues>
+            <value>false</value>
+        </onValues>
+        <skjemaNummer>G2</skjemaNummer>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
+</soknad>
