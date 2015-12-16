@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl" xmlns:xi="http://www.w3.org/2001/XInclude">
+
+    <xi:include href="arbeidsforholdfaktumogvedlegg.xml" />
+
+    <faktum>
+        <id>nyearbeidsforhold.arbeidsidensist</id>
+        <type>java.lang.Boolean</type>
+        <panel>Arbeidsforhold</panel>
+    </faktum>
+
+    <faktum>
+        <id>nyearbeidsforhold.aarsakdagpengerstanset</id>
+        <type>java.lang.String</type>
+        <panel>Arbeidsforhold</panel>
+    </faktum>
+
+
+
+    <!-- todo -->
+    <faktum>
+        <id>reberegning.nyberegning</id>
+        <type>java.lang.Boolean</type>
+        <dependOn>nyearbeidsforhold.arbeidsidensist</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reberegning.nyberegning.startdato</id>
+        <type>java.lang.String</type>
+        <panel>Reberegning</panel>
+        <dependOn>reberegning.nyberegning</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reberegning.nyberegning.arbeidstid</id>
+        <type>java.lang.Boolean</type>
+        <panel>Reberegning</panel>
+        <dependOn>reberegning.nyberegning</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+</soknad>
