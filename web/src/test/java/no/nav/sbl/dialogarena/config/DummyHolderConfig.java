@@ -4,6 +4,7 @@ import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.XmlService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EttersendingService;
@@ -16,6 +17,8 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import javax.inject.Named;
+
+import static org.mockito.Mockito.mock;
 
 @Configuration
 public class DummyHolderConfig {
@@ -59,6 +62,11 @@ public class DummyHolderConfig {
 
     @Bean
     public EttersendingService ettersendingService() {
+        return null;
+    }
+
+    @Bean
+    public KravdialogInformasjonHolder kravdialogInformasjonHolder() {
         return null;
     }
 
