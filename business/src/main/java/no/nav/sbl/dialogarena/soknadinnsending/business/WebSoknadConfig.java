@@ -85,7 +85,7 @@ public class WebSoknadConfig {
         }
 
         try {
-            StreamSource xmlSource = xmlService.lastXmlFilMedInclude("soknader/" + type);
+            StreamSource xmlSource = xmlService.lastXmlFil("soknader/" + type);
 
             Unmarshaller unmarshaller = newInstance(SoknadStruktur.class).createUnmarshaller();
             return unmarshaller.unmarshal(xmlSource, SoknadStruktur.class).getValue();
