@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.FaktumStr
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.VedleggForFaktumStruktur;
 import org.apache.commons.collections15.Predicate;
+import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -159,7 +160,7 @@ public class WebSoknad implements Serializable {
 
     public Locale getSprak() {
         Faktum sprakFaktum = this.getFaktumMedKey("skjema.sprak");
-        return sprakFaktum == null ? new Locale("nb", "NO") : new Locale(sprakFaktum.getValue());
+        return sprakFaktum == null ? new Locale("nb", "NO") : LocaleUtils.toLocale(sprakFaktum.getValue());
     }
 
     public String getBrukerBehandlingId() {
