@@ -5,6 +5,7 @@ import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
 import no.nav.sbl.dialogarena.rest.utils.PDFService;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
@@ -68,6 +69,9 @@ public class SoknadRessurs {
     @Context
     private ServletContext servletContext;
 
+    @Inject
+    private WebSoknadConfig webSoknadConfig;
+
     @GET
     @Path("/{behandlingsId}")
     @SjekkTilgangTilSoknad
@@ -84,19 +88,10 @@ public class SoknadRessurs {
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
 
-        String oppsummeringSti = "/skjema/" + soknad.getSoknadPrefix();
-        return pdfTemplate.fyllHtmlMalMedInnhold(soknad, oppsummeringSti);
-    }
-    @GET
-    @Path("/{behandlingsId}/new")
-    @Produces(TEXT_HTML)
-    @SjekkTilgangTilSoknad
-    public String hentOppsummeringNew(@PathParam("behandlingsId") String behandlingsId) throws IOException {
-        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
-        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
-
-        String oppsummeringSti = "/skjema/generisk";
-        return pdfTemplate.fyllHtmlMalMedInnholdNew(soknad, soknadService.hentSoknadStruktur(soknad.getskjemaNummer()), oppsummeringSti);
+        if(webSoknadConfig.brukerNyOppsummering(soknad.getSoknadId())) {
+            return pdfTemplate.fyllHtmlMalMedInnholdNew(soknad, webSoknadConfig.hentStruktur(soknad.getskjemaNummer()), "/skjema/generisk");
+        }
+        return pdfTemplate.fyllHtmlMalMedInnhold(soknad, "/skjema/" + soknad.getSoknadPrefix());
     }
 
 

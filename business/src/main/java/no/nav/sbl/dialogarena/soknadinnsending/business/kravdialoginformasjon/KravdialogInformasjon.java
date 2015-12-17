@@ -31,7 +31,9 @@ public interface KravdialogInformasjon {
 
     List<Transformer<WebSoknad, AlternativRepresentasjon>> getTransformers(MessageSource messageSource);
 
-    public abstract class DefaultOppsett implements KravdialogInformasjon {
+    boolean brukerNyOppsummering();
+
+    abstract class DefaultOppsett implements KravdialogInformasjon {
         @Override
         public List<Transformer<WebSoknad, AlternativRepresentasjon>> getTransformers(MessageSource messageSource) {
             return new ArrayList<>();
@@ -40,6 +42,11 @@ public interface KravdialogInformasjon {
         @Override
         public Steg[] getStegliste() {
             return new Steg[]{Steg.VEILEDNING, Steg.SOKNAD, Steg.VEDLEGG, Steg.OPPSUMMERING};
+        }
+
+        @Override
+        public boolean brukerNyOppsummering(){
+            return false;
         }
     }
 }

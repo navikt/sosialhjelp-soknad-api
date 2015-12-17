@@ -4,6 +4,7 @@ import no.nav.sbl.dialogarena.rest.meldinger.*;
 import no.nav.sbl.dialogarena.rest.utils.*;
 import no.nav.sbl.dialogarena.service.*;
 import no.nav.sbl.dialogarena.sikkerhet.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
@@ -43,6 +44,9 @@ public class SoknadActions {
     @Inject
     private NavMessageSource tekster;
 
+    @Inject
+    private WebSoknadConfig webSoknadConfig;
+
     @Context
     private ServletContext servletContext;
 
@@ -67,9 +71,8 @@ public class SoknadActions {
             byte[] dummyPdfSomHovedskjema = pdfService.genererPdf(soknad, "skjema/ettersending/dummy", servletContext.getRealPath("/"));
             soknadService.sendSoknad(behandlingsId, dummyPdfSomHovedskjema);
         } else {
-            byte[] soknadPdf;
-            String oppsummeringSti = "/skjema/" + soknad.getSoknadPrefix();
-            soknadPdf = pdfService.genererPdfMedKodeverksverdier(soknad, oppsummeringSti, servletContext.getRealPath("/"));
+            String pdfTemplate = webSoknadConfig.brukerNyOppsummering(soknad.getSoknadId()) ? "generisk" : soknad.getSoknadPrefix();
+            byte[] soknadPdf = pdfService.genererPdfMedKodeverksverdier(soknad, "/skjema/" + pdfTemplate, servletContext.getRealPath("/"));
             soknadService.sendSoknad(behandlingsId, soknadPdf);
         }
     }
