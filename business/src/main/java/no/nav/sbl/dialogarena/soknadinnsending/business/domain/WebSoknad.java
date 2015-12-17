@@ -19,11 +19,7 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.modig.lang.collections.PredicateUtils.not;
@@ -159,6 +155,11 @@ public class WebSoknad implements Serializable {
     public final WebSoknad leggTilFaktum(Faktum faktum) {
         this.fakta.add(faktum);
         return this;
+    }
+
+    public Locale getSprak() {
+        Faktum sprakFaktum = this.getFaktumMedKey("skjema.sprak");
+        return sprakFaktum == null ? new Locale("nb", "NO") : new Locale(sprakFaktum.getValue());
     }
 
     public String getBrukerBehandlingId() {
