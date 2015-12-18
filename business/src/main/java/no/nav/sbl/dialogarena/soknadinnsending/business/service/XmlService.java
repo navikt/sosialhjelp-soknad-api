@@ -18,7 +18,7 @@ public class XmlService {
     public static final Pattern SOKNAD_PATTERN = Pattern.compile("<soknad .*?>(.*)</soknad>", Pattern.DOTALL);
     public static final String XML_HEADER_PATTERN = "<\\?xml .*? ?>";
 
-    public StreamSource lastXmlFilMedInclude(String fil) throws IOException {
+    public StreamSource lastXmlFil(String fil) throws IOException {
         String filsti = FilenameUtils.getFullPath(fil);
         String filNavn = FilenameUtils.getName(fil);
 
@@ -32,18 +32,23 @@ public class XmlService {
         StringBuffer fullXml = new StringBuffer();
 
         while (matcher.find()) {
-            String href = matcher.group(1);
-            String includePath = filsti + FilenameUtils.getFullPath(href);
-            String includeFile = FilenameUtils.getName(href);
-
-            String includeXml = lastXmlFilMedInclude(includePath, includeFile);
-            includeXml = fiksInkludertXml(includeXml);
+            String includeHref = matcher.group(1);
+            String includeXml = hentInkludertXml(filsti, includeHref);
 
             matcher.appendReplacement(fullXml, Matcher.quoteReplacement(includeXml));
         }
         matcher.appendTail(fullXml);
 
         return fullXml.toString();
+    }
+
+    private String hentInkludertXml(String filsti, String href) throws IOException {
+        String includePath = filsti + FilenameUtils.getFullPath(href);
+        String includeFile = FilenameUtils.getName(href);
+
+        String includeXml = lastXmlFilMedInclude(includePath, includeFile);
+        includeXml = fiksInkludertXml(includeXml);
+        return includeXml;
     }
 
     private String hentFilInnhold(String fil) throws IOException {

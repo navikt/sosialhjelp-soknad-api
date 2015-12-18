@@ -72,7 +72,7 @@ public class VedleggForFaktumStrukturTest {
     private SoknadStruktur hentStruktur(String skjema) {
         String type = skjema + ".xml";
         try {
-            StreamSource xmlSource = new XmlService().lastXmlFilMedInclude("soknader/" + type);
+            StreamSource xmlSource = new XmlService().lastXmlFil("soknader/" + type);
 
             Unmarshaller unmarshaller = newInstance(SoknadStruktur.class).createUnmarshaller();
             return unmarshaller.unmarshal(xmlSource, SoknadStruktur.class).getValue();
