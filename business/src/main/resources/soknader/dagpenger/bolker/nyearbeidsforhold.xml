@@ -1,12 +1,11 @@
 <?xml version="1.0" ?>
 <soknad xmlns="urn:no.nav.sbl" xmlns:xi="http://www.w3.org/2001/XInclude">
 
-    <xi:include href="arbeidsforholdfaktumogvedlegg.xml" />
 
     <faktum>
         <id>nyearbeidsforhold.arbeidsidensist</id>
         <type>java.lang.Boolean</type>
-        <panel>Arbeidsforhold</panel>
+        <panel>NyeArbeidsforhold</panel>
     </faktum>
 
     <faktum>
@@ -14,6 +13,21 @@
         <type>java.lang.String</type>
         <panel>Arbeidsforhold</panel>
     </faktum>
+
+    <faktum>
+        <id>arbeidsforhold</id>
+        <panel>NyeArbeidsforhold</panel>
+        <flereTillatt>true</flereTillatt>
+        <type>composite</type>
+        <dependOn>nyearbeidsforhold.arbeidsidensist</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+        <xi:include href="arbeidsforhold/arbeidsforholdproperties.xml" />
+    </faktum>
+    <xi:include href="arbeidsforhold/permitteringsperiode.xml" />
+    <xi:include href="arbeidsforhold/vedlegg.xml" />
+
 
 
 
