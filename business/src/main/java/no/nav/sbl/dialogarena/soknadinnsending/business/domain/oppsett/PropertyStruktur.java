@@ -5,10 +5,12 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+@XmlType(propOrder = {})
 public class PropertyStruktur implements Serializable, StrukturConfigurable {
     private String id;
     private String type;
@@ -51,7 +53,7 @@ public class PropertyStruktur implements Serializable, StrukturConfigurable {
     }
 
     @Override
-    @XmlElement(name = "config")
+    @XmlElement(name = "entry")
     @XmlElementWrapper(name = "configuration")
     public Map<String, String> getConfiguration() {
         return configuration;

@@ -24,7 +24,7 @@ public class DagpengerOrdinaerInformasjon extends KravdialogInformasjon.DefaultO
     }
 
     public String getStrukturFilnavn() {
-        return "dagpenger_ordinaer.xml";
+        return "dagpenger/dagpenger_ordinaer.xml";
     }
 
     public List<String> getSkjemanummer() {

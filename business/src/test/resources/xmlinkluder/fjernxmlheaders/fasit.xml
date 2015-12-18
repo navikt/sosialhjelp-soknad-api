@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl" xmlns:xi="http://www.w3.org/2001/XInclude">
+    <faktum>
+        <id>rootfaktum</id>
+    </faktum>
+
+
+    <faktum>
+        <id>child1faktum1</id>
+    </faktum>
+</soknad>

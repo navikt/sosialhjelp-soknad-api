@@ -1,0 +1,114 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema elementFormDefault="qualified" version="1.0" targetNamespace="urn:no.nav.sbl" xmlns:tns="urn:no.nav.sbl" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="soknad" type="tns:soknadStruktur"/>
+
+  <xs:complexType name="soknadStruktur">
+    <xs:choice maxOccurs="unbounded">
+      <xs:element name="faktum" type="tns:faktumStruktur" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="vedlegg" type="tns:vedleggForFaktumStruktur" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="vedleggsreferanse" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:choice>
+    <xs:attribute name="temaKode" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="faktumStruktur">
+    <xs:all>
+      <xs:element name="constraints" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="constraint" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="dependOn" type="xs:IDREF" minOccurs="0"/>
+      <xs:element name="dependOnProperty" type="xs:string" minOccurs="0"/>
+      <xs:element name="dependOnValues" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="value" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="erSystemFaktum" type="xs:string" minOccurs="0"/>
+      <xs:element name="flereTillatt" type="xs:string" minOccurs="0"/>
+      <xs:element name="id" type="xs:ID" minOccurs="0"/>
+      <xs:element name="panel" type="xs:string" minOccurs="0"/>
+      <xs:element name="properties" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="property" type="tns:propertyStruktur" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="type" type="xs:string" minOccurs="0"/>
+      <xs:element name="useExpression" type="xs:boolean" minOccurs="0"/>
+    </xs:all>
+  </xs:complexType>
+
+  <xs:complexType name="propertyStruktur">
+    <xs:all>
+      <xs:element name="configuration" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="key" minOccurs="0" type="xs:string"/>
+                  <xs:element name="value" minOccurs="0" type="xs:string"/>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="constraints" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="constraint" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="dependOn" type="xs:string" minOccurs="0"/>
+      <xs:element name="id" type="xs:string" minOccurs="0"/>
+      <xs:element name="type" type="xs:string" minOccurs="0"/>
+    </xs:all>
+  </xs:complexType>
+
+  <xs:complexType name="vedleggForFaktumStruktur">
+    <xs:all>
+      <xs:element name="ekstraValg" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="valg" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="faktum" type="xs:IDREF" minOccurs="0"/>
+      <xs:element name="filterKey" type="xs:string" minOccurs="0"/>
+      <xs:element name="filterValues" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="value" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="flereTillatt" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="forSystemfaktum" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="inverted" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="onProperty" type="xs:string" minOccurs="0"/>
+      <xs:element name="onValues" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="value" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="oversetting" type="xs:string" minOccurs="0"/>
+      <xs:element name="property" type="xs:string" minOccurs="0"/>
+      <xs:element name="skjemaNummer" type="xs:string" minOccurs="0"/>
+      <xs:element name="skjemanummerTillegg" type="xs:string" minOccurs="0"/>
+    </xs:all>
+  </xs:complexType>
+</xs:schema>
+
