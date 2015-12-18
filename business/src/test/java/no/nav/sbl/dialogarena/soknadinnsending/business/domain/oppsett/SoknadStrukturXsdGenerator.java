@@ -49,17 +49,29 @@ public class SoknadStrukturXsdGenerator {
     }
 
     private String fiksTingDerViErUenigMedJaxbMenFortsattVilHaTingAutogenerert(String skjemaStreng) {
-        String fikset = skjemaStreng.replace("<xs:element name=\"configuration\">", "<xs:element name=\"configuration\" minOccurs=\"0\">");
+        String fiksetSkjema = gjorConfigOptional(skjemaStreng);
+        fiksetSkjema = gjorAtSoknadElementerKanLiggeIVilkarligRekkefolge(fiksetSkjema);
+        fiksetSkjema = endreLineEndingsFraJaxb(fiksetSkjema);
 
+        return fiksetSkjema;
+    }
+
+    private String gjorConfigOptional(String skjemaStreng) {
+        return skjemaStreng.replace("<xs:element name=\"configuration\">", "<xs:element name=\"configuration\" minOccurs=\"0\">");
+    }
+
+    private String gjorAtSoknadElementerKanLiggeIVilkarligRekkefolge(String skjemaStreng) {
         StringBuffer sb = new StringBuffer();
-        Matcher matcher = SOKNAD_SEQUENCE_PATTERN.matcher(fikset);
+        Matcher matcher = SOKNAD_SEQUENCE_PATTERN.matcher(skjemaStreng);
         matcher.find();
 
         matcher.appendReplacement(sb, "<xs:complexType name=\"soknadStruktur\">" + matcher.group(1) + "<xs:choice maxOccurs=\"unbounded\">" + matcher.group(2) + "</xs:choice>");
         matcher.appendTail(sb);
+        return sb.toString();
+    }
 
-        fikset = sb.toString().replace("\n", System.lineSeparator()); // jaxb skjemageneratoren bruker feil lineendings på windows
-        return fikset;
+    private String endreLineEndingsFraJaxb(String skjemaStreng) {
+        return skjemaStreng.replace("\n", System.lineSeparator());
     }
 
     private void skrivTilFil(String skjemaStreng) throws IOException {

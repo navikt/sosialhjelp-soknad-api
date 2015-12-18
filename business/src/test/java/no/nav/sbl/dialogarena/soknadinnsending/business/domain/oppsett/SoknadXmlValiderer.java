@@ -13,50 +13,50 @@ public class SoknadXmlValiderer {
 
     @Test
     public void testDagpengerXml() throws Exception {
-        test("dagpenger/dagpenger_ordinaer.xml");
+        testOmXmlValiderer("dagpenger/dagpenger_ordinaer.xml");
     }
 
     @Test
     public void testDagpengerGjenopptakXml() throws Exception {
-        test("dagpenger/dagpenger_gjenopptak.xml");
+        testOmXmlValiderer("dagpenger/soknadtilleggsstonader.xml");
     }
 
     @Test
     public void testForeldrepengerXml() throws Exception {
-        test("foreldresoknad.xml");
+        testOmXmlValiderer("foreldresoknad.xml");
     }
 
     @Test
     public void testTilleggStonaderXml() throws Exception {
-        test("soknadtilleggsstonader.xml");
+        testOmXmlValiderer("soknadtilleggsstonader.xml");
     }
 
     @Test
     public void testRefusjonXml() throws Exception {
-        test("refusjondagligreise.xml");
+        testOmXmlValiderer("refusjondagligreise.xml");
     }
 
     @Test
     public void testTiltakspengerXml() throws Exception {
-        test("tiltakspenger.xml");
+        testOmXmlValiderer("tiltakspenger.xml");
     }
 
     @Test
     public void testBilstonadXml() throws Exception {
-        test("bilstonad.xml");
+        testOmXmlValiderer("bilstonad.xml");
     }
 
     @Test
     public void testAapXml() throws Exception {
-        test("aap_ordinaer.xml");
+        testOmXmlValiderer("aap_ordinaer.xml");
     }
 
-    private void test(String xmlFilNavn) throws Exception {
+    private void testOmXmlValiderer(String xmlFilNavn) throws Exception {
         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         Schema schema = schemaFactory.newSchema(new StreamSource(getClass().getClassLoader().getResourceAsStream("soknader/soknadstruktur.xsd")));
         Validator validator = schema.newValidator();
 
-        StreamSource xmlSource = new XmlService().lastXmlFilMedInclude("soknader/" + xmlFilNavn);
+        StreamSource xmlSource = new XmlService().lastXmlFil("soknader/" + xmlFilNavn);
         validator.validate(xmlSource);
     }
 
