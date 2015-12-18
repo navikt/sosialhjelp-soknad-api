@@ -1,0 +1,52 @@
+<?xml version="1.0" ?>
+<soknad temaKode="DAG" xmlns="urn:no.nav.sbl" xmlns:xi="http://www.w3.org/2001/XInclude">
+
+    <!-- Bolker -->
+    <xi:include href="bolker/reellarbeidssoker.xml" />
+    <xi:include href="bolker/arbeidsforhold.xml" />
+    <xi:include href="bolker/egennaering.xml" />
+    <xi:include href="bolker/verneplikt.xml" />
+    <xi:include href="bolker/utdanning.xml" />
+    <xi:include href="bolker/andreytelser.xml" />
+    <xi:include href="bolker/barnetillegg.xml" />
+
+    <!-- Fellesting -->
+    <xi:include href="../felles/personalia.xml" />
+    <xi:include href="../felles/tilleggsopplysninger.xml" />
+    <xi:include href="../felles/ekstravedlegg.xml" />
+
+
+    <faktum>
+        <id>lonnsogtrekkoppgave</id>
+        <panel>Personalia</panel>
+        <erSystemFaktum>true</erSystemFaktum>
+        <type>hidden</type>
+    </faktum>
+
+    <faktum>
+        <id>lonnsOgTrekkOppgave</id>
+        <type>java.lang.Boolean</type>
+        <erSystemFaktum>true</erSystemFaktum>
+    </faktum>
+
+
+
+    <vedlegg>
+        <faktum>personalia</faktum>
+        <skjemaNummer>T4</skjemaNummer>
+        <onProperty>statsborgerskap</onProperty>
+        <onValues>
+            <value>NOR</value>
+            <value>SWE</value>
+            <value>FRO</value>
+            <value>ISL</value>
+            <value>DNK</value>
+            <value>FIN</value>
+        </onValues>
+        <inverted>true</inverted>
+        <forSystemfaktum>true</forSystemfaktum>
+    </vedlegg>
+
+    <vedleggsreferanse>G2</vedleggsreferanse>
+    <vedleggsreferanse>NAV 04-08.03</vedleggsreferanse>
+</soknad>

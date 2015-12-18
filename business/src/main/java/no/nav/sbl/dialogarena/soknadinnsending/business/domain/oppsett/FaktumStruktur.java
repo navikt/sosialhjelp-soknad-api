@@ -5,10 +5,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -17,6 +14,7 @@ import java.util.Map;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.ForventningsSjekker.sjekkForventning;
 
+@XmlType(propOrder = {})
 public class FaktumStruktur implements Serializable, StrukturConfigurable {
 
     private String id;
@@ -26,7 +24,7 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
 
     private String dependOnProperty;
     private List<String> dependOnValues;
-    private boolean useExpression = false;
+    private Boolean useExpression = false;
 
     private String flereTillatt;
     private String erSystemFaktum;
@@ -98,11 +96,11 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
 
     public void setErSystemFaktum(String erSystemFaktum) { this.erSystemFaktum = erSystemFaktum; }
 
-    public boolean isUseExpression() {
+    public Boolean isUseExpression() {
         return useExpression;
     }
 
-    public void setUseExpression(boolean useExpression) {
+    public void setUseExpression(Boolean useExpression) {
         this.useExpression = useExpression;
     }
 

@@ -1,4 +1,4 @@
-<soknad skjemaNummer="NAV 11-12.12" temaKode="TSO">
+<soknad temaKode="TSO" xmlns="urn:no.nav.sbl">
     <!-- Systemfakta -->
     <faktum>
         <id>personalia</id>
@@ -815,7 +815,7 @@
     </faktum>
     <faktum>
         <id>reise.midlertidig.offentligtransport.egenbil.sendebekreftelse</id>
-        <dependOn>reise.midlertidig.offentligtransport.egenbil.parkering</dependOn>
+        <dependOn>reise.midlertidig.offentligtransport.egenbil.kostnader.parkering</dependOn>
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
@@ -1152,6 +1152,18 @@
         <dependOn>informasjonsside.stonad.familie</dependOn>
         <dependOnValues><value>true</value></dependOnValues>
     </faktum>
+
+    <!-- Tilleggsopplysninger -->
+    <faktum>
+        <id>tilleggsopplysninger.fritekst</id>
+    </faktum>
+
+    <!-- Ekstra vedlegg -->
+    <faktum>
+        <id>ekstraVedlegg</id>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
     <vedlegg>
         <faktum>informasjonsside.stonad.familie</faktum>
         <skjemaNummer>X1</skjemaNummer>
@@ -1169,18 +1181,8 @@
         </onValues>
     </vedlegg>
 
-    <!-- Tilleggsopplysninger -->
-    <faktum>
-        <id>tilleggsopplysninger.fritekst</id>
-    </faktum>
 
-    <!-- Ekstra vedlegg -->
-    <faktum>
-        <id>ekstraVedlegg</id>
-        <flereTillatt>true</flereTillatt>
-    </faktum>
     <vedlegg>
-        <id>3</id>
         <faktum>ekstraVedlegg</faktum>
         <onValues>
             <value>true</value>
