@@ -5,6 +5,7 @@ import no.nav.sbl.dialogarena.config.SoknadActionsTestConfig;
 import no.nav.sbl.dialogarena.rest.meldinger.SoknadBekreftelse;
 import no.nav.sbl.dialogarena.service.EmailService;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
@@ -21,9 +22,7 @@ import javax.servlet.ServletContext;
 import java.util.Locale;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.ETTERSENDING_OPPRETTET;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -87,9 +86,10 @@ public class SoknadActionsTest {
         verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), eq("skjema/ettersending/dummy"));
     }
 
-
     @Test
     public void soknadBekreftelseEpostSkalInneholdeSoknadbekreftelseTekst() {
+        Faktum sprakFaktum = new Faktum().medKey("skjema.sprak").medValue("nb_NO");
+        when(soknadService.hentSoknad(anyString(), anyBoolean(), anyBoolean())).thenReturn(new WebSoknad().medFaktum(sprakFaktum));
         SoknadBekreftelse soknadBekreftelse = new SoknadBekreftelse();
         soknadBekreftelse.setEpost("test@nav.no");
         soknadBekreftelse.setErEttersendelse(false);
@@ -97,6 +97,19 @@ public class SoknadActionsTest {
         actions.sendEpost(BEHANDLINGS_ID, soknadBekreftelse, new MockHttpServletRequest());
 
         verify(tekster).finnTekst(eq("sendtSoknad.sendEpost.epostInnhold"), any(Object[].class), any(Locale.class));
+    }
+
+    @Test
+    public void soknadBekreftelseEpostSkalHaRiktigLocale() {
+        Faktum sprakFaktum = new Faktum().medKey("skjema.sprak").medValue("en");
+        when(soknadService.hentSoknad(anyString(), anyBoolean(), anyBoolean())).thenReturn(new WebSoknad().medFaktum(sprakFaktum));
+        SoknadBekreftelse soknadBekreftelse = new SoknadBekreftelse();
+        soknadBekreftelse.setEpost("test@nav.no");
+        soknadBekreftelse.setErEttersendelse(false);
+
+        actions.sendEpost(BEHANDLINGS_ID, soknadBekreftelse, new MockHttpServletRequest());
+
+        verify(tekster).finnTekst(eq("sendtSoknad.sendEpost.epostInnhold"), any(Object[].class), eq(Locale.ENGLISH));
     }
 
     @Test
