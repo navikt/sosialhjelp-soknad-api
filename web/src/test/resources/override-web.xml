@@ -42,7 +42,7 @@
         <filter-class>no.nav.sbl.dialogarena.filter.FakeLoginFilter</filter-class>
         <init-param>
             <param-name>defaultFnr</param-name>
-            <param-value>01015245464</param-value>
+            <param-value>04059545316</param-value>
         </init-param>
     </filter>
     <filter-mapping>

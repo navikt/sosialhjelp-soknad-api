@@ -11,6 +11,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.LandService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeid.ArbeidssokerInfoService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService;
 import no.nav.sbl.dialogarena.utils.InnloggetBruker;
 import org.apache.commons.lang3.LocaleUtils;
@@ -56,6 +57,8 @@ public class InformasjonRessurs {
     private LandService landService;
     @Inject
     private PersonaliaService personaliaService;
+    @Inject
+    private ArbeidssokerInfoService arbeidssokerInfoService;
     @Inject
     private PersonInfoService personInfoService;
     @Inject
@@ -143,6 +146,7 @@ public class InformasjonRessurs {
         String uid = getSubjectHandler().getUid();
         Map<String, Object> utslagskriterierResultat = new HashMap<>();
         utslagskriterierResultat.put("arbeidssokerstatus", personInfoService.hentArbeidssokerStatus(uid));
+        utslagskriterierResultat.put("arbeidssokerRegistreringStatus", arbeidssokerInfoService.getArbeidssokerRegistreringStatus(uid));
         utslagskriterierResultat.put("ytelsesstatus", personInfoService.hentYtelseStatus(uid));
 
         try {
