@@ -46,7 +46,7 @@ public class ArbeidssokerInfoService {
             HttpResponse response = httpclient.execute(httpget);
             return hentStatusFraResponse(responseHandler.handleResponse(response));
         } catch (IOException e) {
-            logger.error("Feil ved henting av status fra SBL Arbeid for fnr {}", fnr, e);
+            logger.error("Feil ved henting av status fra SBL Arbeid for fnr {}: {}", fnr, e);
             return UKJENT;
         }
     }
