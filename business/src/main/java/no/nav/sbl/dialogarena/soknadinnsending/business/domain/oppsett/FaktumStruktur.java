@@ -29,7 +29,7 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
     private String flereTillatt;
     private String erSystemFaktum;
     private List<PropertyStruktur> properties;
-    private List<String> constraints;
+    private List<Constraint> constraints;
 
     @XmlID()
     public String getId() {
@@ -130,11 +130,11 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
 
     @XmlElementWrapper(name="constraints")
     @XmlElement(name="constraint")
-    public List<String> getConstraints() {
+    public List<Constraint> getConstraints() {
         return constraints;
     }
 
-    public void setConstraints(List<String> constraints) {
+    public void setConstraints(List<Constraint> constraints) {
         this.constraints = constraints;
     }
 
@@ -181,7 +181,7 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
     public boolean erSynlig(WebSoknad soknad, Faktum faktum) {
         FaktumStruktur parent = getDependOn();
         Faktum parentFaktum = soknad.finnFaktum(faktum.getParrentFaktum());
-        return (parent == null || (parentFaktum != null && parent.erSynlig(soknad, parentFaktum) && this.oppfyllerParentKriterier(soknad, faktum))) && oppfyllerConstraints(faktum);
+        return (parent == null || (parentFaktum != null && parent.erSynlig(soknad, parentFaktum) && this.oppfyllerParentKriterier(soknad, faktum))) && oppfyllerConstraints(soknad, faktum);
     }
 
     private boolean oppfyllerParentKriterier(WebSoknad soknad, Faktum faktum) {
@@ -200,14 +200,20 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
         return true;
     }
 
-    private boolean oppfyllerConstraints(Faktum faktum) {
+    protected boolean oppfyllerConstraints(WebSoknad soknad, Faktum faktum) {
         if (constraints == null) {
             return true;
         }
 
         boolean result = false;
-        for (String constraint : constraints) {
-            result = result || sjekkForventning(constraint, faktum);
+        for (Constraint constraint : constraints) {
+            Faktum constraintFaktum = faktum;
+
+            if (constraint.faktum != null && !constraint.faktum.isEmpty()) {
+                constraintFaktum = soknad.getFaktumMedKey(constraint.faktum);
+            }
+
+            result = result || sjekkForventning(constraint.expression, constraintFaktum);
         }
         return result;
     }

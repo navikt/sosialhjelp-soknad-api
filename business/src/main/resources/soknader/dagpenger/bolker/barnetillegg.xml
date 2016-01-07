@@ -7,7 +7,9 @@
         <type>composite</type>
 
         <constraints>
-            <constraint>properties['barnetillegg'] == 'true'</constraint>
+            <constraint>
+                <expression>properties['barnetillegg'] == 'true'</expression>
+            </constraint>
         </constraints>
 
         <properties>
