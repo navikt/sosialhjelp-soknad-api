@@ -36,19 +36,19 @@ public class ArbeidssokerInfoServiceTest {
     }
 
     @Test
-    public void testGetArbeidssokerRegistreringStatusSkalReturnereBrukerStatus() throws Exception {
+    public void getArbeidssokerRegistreringStatusSkalReturnereBrukerStatus() throws Exception {
         when(httpclient.execute(any(HttpUriRequest.class))).thenReturn(buildResponse("{\"brukerStatus\": \"PARBS\"}"));
         assertThat(arbeidssokerInfoService.getArbeidssokerRegistreringStatus("***REMOVED***")).isEqualTo("PARBS");
     }
 
     @Test
-    public void testGetArbeidssokerRegistreringStatusSkalReturnereUkjentForTomRespons() throws Exception {
+    public void getArbeidssokerRegistreringStatusSkalReturnereUkjentForTomRespons() throws Exception {
         when(httpclient.execute(any(HttpUriRequest.class))).thenReturn(buildResponse("{}"));
         assertThat(arbeidssokerInfoService.getArbeidssokerRegistreringStatus("***REMOVED***")).isEqualTo("UKJENT");
     }
 
     @Test
-    public void testGetArbeidssokerRegistreringStatusSkalReturnereUkjentVedFeilPaaRestKall() throws Exception {
+    public void getArbeidssokerRegistreringStatusSkalReturnereUkjentVedFeilPaaRestKall() throws Exception {
         when(httpclient.execute(any(HttpUriRequest.class))).thenThrow(new IOException());
         assertThat(arbeidssokerInfoService.getArbeidssokerRegistreringStatus("***REMOVED***")).isEqualTo("UKJENT");
     }
