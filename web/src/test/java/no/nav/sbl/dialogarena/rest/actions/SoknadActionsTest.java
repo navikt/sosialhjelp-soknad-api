@@ -100,6 +100,18 @@ public class SoknadActionsTest {
     }
 
     @Test
+    public void soknadBekreftelseEpostSkalBrukeNorskSomDefaultLocale() {
+        when(soknadService.hentSoknad(anyString(), anyBoolean(), anyBoolean())).thenReturn(new WebSoknad());
+        SoknadBekreftelse soknadBekreftelse = new SoknadBekreftelse();
+        soknadBekreftelse.setEpost("test@nav.no");
+        soknadBekreftelse.setErEttersendelse(false);
+
+        actions.sendEpost(BEHANDLINGS_ID, soknadBekreftelse, new MockHttpServletRequest());
+
+        verify(tekster).finnTekst(eq("sendtSoknad.sendEpost.epostInnhold"), any(Object[].class), eq(new Locale("nb", "NO")));
+    }
+
+    @Test
     public void soknadBekreftelseEpostSkalHaRiktigLocale() {
         Faktum sprakFaktum = new Faktum().medKey("skjema.sprak").medValue("en");
         when(soknadService.hentSoknad(anyString(), anyBoolean(), anyBoolean())).thenReturn(new WebSoknad().medFaktum(sprakFaktum));
