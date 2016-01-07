@@ -13,6 +13,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.LandService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeid.ArbeidssokerInfoService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,6 +23,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import javax.inject.Inject;
 import java.util.Locale;
 import java.util.Map;
 
@@ -52,6 +54,8 @@ public class InformasjonRessursTest {
     NavMessageSource messageSource;
     @Mock
     WebSoknadConfig soknadConfig;
+    @Mock
+    ArbeidssokerInfoService arbeidssokerInfoService;
 
     @InjectMocks
     InformasjonRessurs ressurs;
@@ -96,7 +100,9 @@ public class InformasjonRessursTest {
 
     @Test
     public void utslagskriterierInneholderAlleKriteriene() {
+        when(arbeidssokerInfoService.getArbeidssokerRegistreringStatus(anyString())).thenReturn("ARBS");
         Map<String, Object> utslagskriterier = ressurs.hentUtslagskriterier();
+        assertThat(utslagskriterier.containsKey("arbeidssokerRegistreringStatus")).isTrue();
         assertThat(utslagskriterier.containsKey("arbeidssokerstatus")).isTrue();
         assertThat(utslagskriterier.containsKey("ytelsesstatus")).isTrue();
         assertThat(utslagskriterier.containsKey("alder")).isTrue();
@@ -108,7 +114,7 @@ public class InformasjonRessursTest {
         assertThat(utslagskriterier.containsKey("erBosattIEOSLand")).isTrue();
         assertThat(utslagskriterier.containsKey("statsborgerskap")).isTrue();
 
-        assertThat(utslagskriterier.size()).isEqualTo(10);
+        assertThat(utslagskriterier.size()).isEqualTo(11);
     }
 
     @Test
