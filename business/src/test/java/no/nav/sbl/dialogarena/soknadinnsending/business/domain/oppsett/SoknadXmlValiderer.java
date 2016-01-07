@@ -1,13 +1,18 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett;
 
+import com.google.common.io.CharStreams;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.XmlService;
 import org.junit.Test;
+import org.xml.sax.SAXParseException;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
+import java.util.List;
+
+import static junit.framework.Assert.fail;
 
 public class SoknadXmlValiderer {
 
@@ -57,7 +62,20 @@ public class SoknadXmlValiderer {
         Validator validator = schema.newValidator();
 
         StreamSource xmlSource = new XmlService().lastXmlFil("soknader/" + xmlFilNavn);
-        validator.validate(xmlSource);
+
+        try {
+            validator.validate(xmlSource);
+        } catch (SAXParseException e) {
+            e.printStackTrace();
+
+            List<String> xmlLines = CharStreams.readLines(new XmlService().lastXmlFil("soknader/" + xmlFilNavn).getReader());
+            for (int i = 0; i < xmlLines.size(); i++) {
+                String xmlLine = xmlLines.get(i);
+                System.out.println(String.format("%5d: %s", i, xmlLine));
+            }
+
+            fail();
+        }
     }
 
 }
