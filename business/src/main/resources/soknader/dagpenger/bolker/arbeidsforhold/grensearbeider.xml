@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl">
+
+    <faktum>
+        <id>arbeidsforhold.grensearbeider.false.adresse</id>
+        <type>inputgroup</type>
+        <dependOn>arbeidsforhold.grensearbeider</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>arbeidsforhold.grensearbeider.false.adresse.land</id>
+        <type>textbox</type>
+        <dependOn>arbeidsforhold.grensearbeider.false.adresse</dependOn>
+    </faktum>
+    <faktum>
+        <id>arbeidsforhold.grensearbeider.false.adresse.fritekst</id>
+        <type>textbox</type>
+        <dependOn>arbeidsforhold.grensearbeider.false.adresse</dependOn>
+    </faktum>
+    <faktum>
+        <id>arbeidsforhold.grensearbeider.false.oftehjem</id>
+        <type>java.lang.String</type>
+        <dependOn>arbeidsforhold.grensearbeider</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+
+</soknad>
