@@ -299,3 +299,22 @@ barnetillegg.barnetilegg.barneinntekttall.ugyldig.feilmelding=barn.barneinntektt
 aarstall.feilmelding=egennaering.gardsbruk.false.aar.feilmelding
 
 soknad.laeremidler.funksjonshemming.feilmelding=reellarbeidssoker.villigjobb.feilmelding
+
+nyearbeidsforhold.datogjenopptak=nyearbeidsforhold.datogjenopptak.sporsmal
+nyearbeidsforhold.datogjenopptak.dato=nyearbeidsforhold.datogjenopptak.label
+
+reberegning.infoboks.tekst=nyearbeidsforhold.reberegning.infotekst.tekst
+reberegning.nyberegning.feilmelding=nyearbeidsforhold.reberegning.feilmelding
+reberegning.nyberegning.sporsmal=nyearbeidsforhold.reberegning.sporsmal
+reberegning.nyberegning.false=nyearbeidsforhold.reberegning.false
+reberegning.nyberegning.true=nyearbeidsforhold.reberegning.true
+reberegning.nyberegning.startdato.informasjon=nyearbeidsforhold.reberegning.startdato.infotekst.tekst
+reberegning.nyberegning.startdato.feilmelding=nyearbeidsforhold.reberegning.startdato.feilmelding
+reberegning.nyberegning.startdato.sporsmal=nyearbeidsforhold.reberegning.startdato.sporsmal
+reberegning.nyberegning.startdato.aarskiftet=nyearbeidsforhold.reberegning.startdato.aarskiftet
+reberegning.nyberegning.startdato.soknadsdato=nyearbeidsforhold.reberegning.startdato.soknadsdato
+reberegning.nyberegning.arbeidstid.informasjon=nyearbeidsforhold.reberegning.arbeidstid.informasjon
+reberegning.nyberegning.arbeidstid.feilmelding=nyearbeidsforhold.reberegning.arbeidstid.feilmelding
+reberegning.nyberegning.arbeidstid.false=nyearbeidsforhold.reberegning.arbeidstid.false
+reberegning.nyberegning.arbeidstid.sporsmal=nyearbeidsforhold.reberegning.arbeidstid.sporsmal
+reberegning.nyberegning.arbeidstid.true=nyearbeidsforhold.reberegning.arbeidstid.true

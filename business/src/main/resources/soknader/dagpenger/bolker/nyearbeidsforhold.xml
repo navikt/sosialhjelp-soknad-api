@@ -10,9 +10,24 @@
 
     <faktum>
         <id>nyearbeidsforhold.aarsakdagpengerstanset</id>
-        <type>java.lang.String</type>
-        <panel>Arbeidsforhold</panel>
+        <type>textbox</type>
+        <dependOn>nyearbeidsforhold.arbeidsidensist</dependOn>
+        <dependOnValues>
+            <value>true</value>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
+
+    <faktum>
+        <id>nyearbeidsforhold.datogjenopptak</id>
+        <type>date</type>
+        <dependOn>nyearbeidsforhold.arbeidsidensist</dependOn>
+        <dependOnValues>
+            <value>true</value>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+
 
     <faktum>
         <id>arbeidsforhold</id>
@@ -29,11 +44,8 @@
     <xi:include href="arbeidsforhold/vedlegg.xml" />
 
 
-
-
-    <!-- todo -->
     <faktum>
-        <id>reberegning.nyberegning</id>
+        <id>nyearbeidsforhold.reberegning</id>
         <type>java.lang.Boolean</type>
         <dependOn>nyearbeidsforhold.arbeidsidensist</dependOn>
         <dependOnValues>
@@ -41,21 +53,34 @@
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>reberegning.nyberegning.startdato</id>
+        <id>nyearbeidsforhold.reberegning.startdato</id>
         <type>java.lang.String</type>
-        <panel>Reberegning</panel>
-        <dependOn>reberegning.nyberegning</dependOn>
+        <dependOn>nyearbeidsforhold.reberegning</dependOn>
         <dependOnValues>
             <value>false</value>
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>reberegning.nyberegning.arbeidstid</id>
+        <id>nyearbeidsforhold.reberegning.arbeidstid</id>
         <type>java.lang.Boolean</type>
-        <panel>Reberegning</panel>
-        <dependOn>reberegning.nyberegning</dependOn>
+        <dependOn>nyearbeidsforhold.reberegning</dependOn>
         <dependOnValues>
             <value>false</value>
         </dependOnValues>
     </faktum>
+
+
+    <faktum>
+        <id>arbeidsforhold.grensearbeider</id>
+        <panel>NyeArbeidsforhold</panel>
+        <type>java.lang.Boolean</type>
+        <constraints>
+            <constraint>
+                <faktum>personalia</faktum>
+                <expression>properties['statsborgerskap'] != 'NOR'</expression>
+            </constraint>
+        </constraints>
+    </faktum>
+    <xi:include href="arbeidsforhold/grensearbeider.xml" />
+
 </soknad>
