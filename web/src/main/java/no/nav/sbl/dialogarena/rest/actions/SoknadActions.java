@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
+import org.apache.commons.lang3.LocaleUtils;
 import org.slf4j.*;
 
 import javax.inject.*;
@@ -89,10 +90,12 @@ public class SoknadActions {
     @POST
     @Path("/bekreftinnsending")
     @SjekkTilgangTilSoknad
-    public void sendEpost(@PathParam("behandlingsId") String behandlingsId, SoknadBekreftelse soknadBekreftelse, @Context HttpServletRequest request) {
+    public void sendEpost(@PathParam("behandlingsId") String behandlingsId,
+                          @DefaultValue("nb_NO") @QueryParam("sprak") String sprakkode,
+                          SoknadBekreftelse soknadBekreftelse,
+                          @Context HttpServletRequest request) {
         if (soknadBekreftelse.getEpost() != null && !soknadBekreftelse.getEpost().isEmpty()) {
-            WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, false);
-            Locale sprak = soknad.getSprak();
+            Locale sprak = LocaleUtils.toLocale(sprakkode);
             String subject = tekster.finnTekst("sendtSoknad.sendEpost.epostSubject", null, sprak);
             String ettersendelseUrl = getEttersendelseUrl(request.getRequestURL().toString(), behandlingsId);
             String saksoversiktLink = saksoversiktUrl + "/detaljer/" + soknadBekreftelse.getTemaKode() + "/" + behandlingsId;
