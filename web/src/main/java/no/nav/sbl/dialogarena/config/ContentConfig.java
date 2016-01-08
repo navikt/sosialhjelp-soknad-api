@@ -158,25 +158,6 @@ public class ContentConfig {
         }
         return changes;
     }
-    private static String mapChangedCmsTeksts(String filename, String data) throws IOException {
-        String changedData = data;
-        InputStream mapping = ContentConfig.class.getResourceAsStream("/" + filename.replaceAll("enonic", "content") + ".mapping");
-        if (mapping != null) {
-            List<String> strings = IOUtils.readLines(mapping, "UTF-8");
-            for (String string : strings) {
-                changedData = changedData.replaceFirst("&" + string.split("=")[0] + "=", string.split("=")[1] + "=");
-            }
-        }
-        return changedData;
-    }
-
-    public static void main(String[] args) throws IOException {
-        InputStream cms = ContentConfig.class.getResourceAsStream("/content/dagpenger_nb_NO.properties");
-        String result = mapChangedCmsTeksts("enonic/dagpenger_nb_NO.properties", IOUtils.toString(cms, "UTF-8"));
-        File file = new File("c:/temp/sendsoknad/enonic", "dagpenger_nb_NO.properties");
-        FileUtils.write(file, result, "UTF-8");
-
-    }
 
     private String removeNewline(String value) {
         return value.replaceAll("\n", "");
