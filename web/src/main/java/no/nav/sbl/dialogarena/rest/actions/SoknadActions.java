@@ -100,6 +100,11 @@ public class SoknadActions {
             String ettersendelseUrl = getEttersendelseUrl(request.getRequestURL().toString(), behandlingsId);
             String saksoversiktLink = saksoversiktUrl + "/detaljer/" + soknadBekreftelse.getTemaKode() + "/" + behandlingsId;
 
+            if(!sprak.equals(LocaleUtils.toLocale("nb_NO"))) {
+                ettersendelseUrl += "?sprak=" + sprakkode;
+                saksoversiktLink += "?sprak=" + sprakkode;
+            }
+
             String innhold;
             if (soknadBekreftelse.getErEttersendelse()) {
                 innhold = tekster.finnTekst("sendEttersendelse.sendEpost.epostInnhold", new Object[]{saksoversiktLink}, sprak);
