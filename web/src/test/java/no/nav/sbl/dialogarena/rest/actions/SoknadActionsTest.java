@@ -10,6 +10,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import org.apache.commons.lang.LocaleUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -93,8 +94,7 @@ public class SoknadActionsTest {
         soknadBekreftelse.setEpost("test@nav.no");
         soknadBekreftelse.setErEttersendelse(false);
 
-        actions.sendEpost(BEHANDLINGS_ID, soknadBekreftelse, new MockHttpServletRequest());
-
+        actions.sendEpost(BEHANDLINGS_ID, "nb_NO", soknadBekreftelse, new MockHttpServletRequest());
         verify(tekster).finnTekst(eq("sendtSoknad.sendEpost.epostInnhold"), any(Object[].class), any(Locale.class));
     }
 
@@ -105,22 +105,9 @@ public class SoknadActionsTest {
         soknadBekreftelse.setEpost("test@nav.no");
         soknadBekreftelse.setErEttersendelse(false);
 
-        actions.sendEpost(BEHANDLINGS_ID, soknadBekreftelse, new MockHttpServletRequest());
+        actions.sendEpost(BEHANDLINGS_ID, "nb_NO", soknadBekreftelse, new MockHttpServletRequest());
 
         verify(tekster).finnTekst(eq("sendtSoknad.sendEpost.epostInnhold"), any(Object[].class), eq(new Locale("nb", "NO")));
-    }
-
-    @Test
-    public void soknadBekreftelseEpostSkalHaRiktigLocale() {
-        Faktum sprakFaktum = new Faktum().medKey("skjema.sprak").medValue("en");
-        when(soknadService.hentSoknad(anyString(), anyBoolean(), anyBoolean())).thenReturn(new WebSoknad().medFaktum(sprakFaktum));
-        SoknadBekreftelse soknadBekreftelse = new SoknadBekreftelse();
-        soknadBekreftelse.setEpost("test@nav.no");
-        soknadBekreftelse.setErEttersendelse(false);
-
-        actions.sendEpost(BEHANDLINGS_ID, soknadBekreftelse, new MockHttpServletRequest());
-
-        verify(tekster).finnTekst(eq("sendtSoknad.sendEpost.epostInnhold"), any(Object[].class), eq(Locale.ENGLISH));
     }
 
     @Test
@@ -129,7 +116,7 @@ public class SoknadActionsTest {
         soknadBekreftelse.setEpost("test@nav.no");
         soknadBekreftelse.setErEttersendelse(true);
 
-        actions.sendEpost("123", soknadBekreftelse, new MockHttpServletRequest());
+        actions.sendEpost("123", "nb_NO", soknadBekreftelse, new MockHttpServletRequest());
 
         verify(tekster).finnTekst(eq("sendEttersendelse.sendEpost.epostInnhold"), any(Object[].class), any(Locale.class));
     }
