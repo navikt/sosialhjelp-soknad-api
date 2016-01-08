@@ -78,8 +78,10 @@ public class SoknadActions {
     @Path("/fortsettsenere")
     @SjekkTilgangTilSoknad
     public void sendEpost(@PathParam("behandlingsId") String behandlingsId, FortsettSenere epost, @Context HttpServletRequest request) {
-        String content = tekster.finnTekst("fortsettSenere.sendEpost.epostInnhold", new Object[]{getFortsettUrl(behandlingsId)}, new Locale("nb", "NO"));
-        String subject = tekster.finnTekst("fortsettSenere.sendEpost.epostTittel", null, new Locale("nb", "NO"));
+        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, false);
+        Locale sprak = soknad.getSprak();
+        String content = tekster.finnTekst("fortsettSenere.sendEpost.epostInnhold", new Object[]{getFortsettUrl(behandlingsId)}, sprak);
+        String subject = tekster.finnTekst("fortsettSenere.sendEpost.epostTittel", null, sprak);
 
         emailService.sendEpost(epost.getEpost(), subject, content, behandlingsId);
     }
@@ -89,15 +91,17 @@ public class SoknadActions {
     @SjekkTilgangTilSoknad
     public void sendEpost(@PathParam("behandlingsId") String behandlingsId, SoknadBekreftelse soknadBekreftelse, @Context HttpServletRequest request) {
         if (soknadBekreftelse.getEpost() != null && !soknadBekreftelse.getEpost().isEmpty()) {
-            String subject = tekster.finnTekst("sendtSoknad.sendEpost.epostSubject", null, new Locale("nb", "NO"));
+            WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, false);
+            Locale sprak = soknad.getSprak();
+            String subject = tekster.finnTekst("sendtSoknad.sendEpost.epostSubject", null, sprak);
             String ettersendelseUrl = getEttersendelseUrl(request.getRequestURL().toString(), behandlingsId);
             String saksoversiktLink = saksoversiktUrl + "/detaljer/" + soknadBekreftelse.getTemaKode() + "/" + behandlingsId;
 
             String innhold;
             if (soknadBekreftelse.getErEttersendelse()) {
-                innhold = tekster.finnTekst("sendEttersendelse.sendEpost.epostInnhold", new Object[]{saksoversiktLink}, new Locale("nb", "NO"));
+                innhold = tekster.finnTekst("sendEttersendelse.sendEpost.epostInnhold", new Object[]{saksoversiktLink}, sprak);
             } else {
-                innhold = tekster.finnTekst("sendtSoknad.sendEpost.epostInnhold", new Object[]{saksoversiktLink, ettersendelseUrl}, new Locale("nb", "NO"));
+                innhold = tekster.finnTekst("sendtSoknad.sendEpost.epostInnhold", new Object[]{saksoversiktLink, ettersendelseUrl}, sprak);
             }
 
             emailService.sendEpost(soknadBekreftelse.getEpost(), subject, innhold, behandlingsId);
