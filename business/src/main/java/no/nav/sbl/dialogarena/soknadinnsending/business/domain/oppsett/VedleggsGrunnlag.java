@@ -12,7 +12,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 public class VedleggsGrunnlag {
     public List<Pair<VedleggForFaktumStruktur, List<Faktum>>> grunnlag = new ArrayList<>();
@@ -100,7 +99,8 @@ public class VedleggsGrunnlag {
             if (vedleggHarTittelFraProperty(vedleggForFaktumStruktur, faktum)) {
                 vedlegg.setNavn(faktum.getProperties().get(vedleggForFaktumStruktur.getProperty()));
             } else if (vedleggForFaktumStruktur.harOversetting()) {
-                vedlegg.setNavn(navMessageSource.getMessage(vedleggForFaktumStruktur.getOversetting().replace("${key}", faktum.getKey()), new Object[0], new Locale("nb", "NO")));
+                String cmsnokkel = vedleggForFaktumStruktur.getOversetting().replace("${key}", faktum.getKey());
+                vedlegg.setNavn(navMessageSource.getMessage(cmsnokkel, new Object[0], soknad.getSprak()));
             }
 
             if (!status.equals(orginalStatus) || vedlegg.erNyttVedlegg()) {
