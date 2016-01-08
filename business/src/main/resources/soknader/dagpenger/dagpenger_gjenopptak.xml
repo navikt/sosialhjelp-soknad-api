@@ -17,15 +17,6 @@
     <xi:include href="../felles/tilleggsopplysninger.xml" />
     <xi:include href="../felles/ekstravedlegg.xml" />
 
-
-    <!-- Lønns- og trekk-oppgave -->
-    <faktum>
-        <id>lonnsOgTrekkOppgave</id>
-        <type>java.lang.Boolean</type>
-        <erSystemFaktum>true</erSystemFaktum>
-    </faktum>
-
-
     <vedleggsreferanse>G2</vedleggsreferanse>
     <vedleggsreferanse>NAV 04-08.03</vedleggsreferanse>
 </soknad>

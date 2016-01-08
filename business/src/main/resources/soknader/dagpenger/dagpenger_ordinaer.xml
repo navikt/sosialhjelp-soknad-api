@@ -17,21 +17,6 @@
     <xi:include href="../felles/ekstravedlegg.xml" />
 
 
-    <faktum>
-        <id>lonnsogtrekkoppgave</id>
-        <panel>Personalia</panel>
-        <erSystemFaktum>true</erSystemFaktum>
-        <type>hidden</type>
-    </faktum>
-
-    <faktum>
-        <id>lonnsOgTrekkOppgave</id>
-        <type>java.lang.Boolean</type>
-        <erSystemFaktum>true</erSystemFaktum>
-    </faktum>
-
-
-
 
     <vedleggsreferanse>G2</vedleggsreferanse>
     <vedleggsreferanse>NAV 04-08.03</vedleggsreferanse>
