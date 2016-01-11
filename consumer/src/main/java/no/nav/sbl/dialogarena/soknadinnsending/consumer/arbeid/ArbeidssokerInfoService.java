@@ -39,7 +39,7 @@ public class ArbeidssokerInfoService {
         String encodedAuth = encodeBase64String(authString.getBytes());
 
         ResponseHandler<String> responseHandler = new BasicResponseHandler();
-        HttpGet httpget = new HttpGet(sblArbeidBaseUrl + "bruker/fnr/" + fnr);
+        HttpGet httpget = new HttpGet(sblArbeidBaseUrl + "personer/" + fnr + "/status");
         httpget.setHeader("Authorization", String.format("Basic %s", encodedAuth));
 
         try {
