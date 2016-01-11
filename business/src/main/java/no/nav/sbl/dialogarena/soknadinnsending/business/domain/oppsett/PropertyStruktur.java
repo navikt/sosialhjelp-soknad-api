@@ -79,7 +79,7 @@ public class PropertyStruktur implements Serializable, StrukturConfigurable {
     }
 
     public boolean erSynlig(Faktum faktum) {
-        if(constraints != null && constraints.size() >0) {
+        if(constraints != null && !constraints.isEmpty()) {
             boolean result = false;
             for (String constraint : constraints) {
                 result = result || ForventningsSjekker.sjekkForventning(constraint, faktum);
