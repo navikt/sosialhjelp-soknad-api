@@ -37,12 +37,12 @@ public class ArbeidssokerInfoServiceTest {
 
     @Test
     public void getArbeidssokerArenaStatusSkalReturnereBrukerStatus() throws Exception {
-        when(httpclient.execute(any(HttpUriRequest.class))).thenReturn(buildResponse("{\"brukerStatus\": \"PARBS\"}"));
+        when(httpclient.execute(any(HttpUriRequest.class))).thenReturn(buildResponse("{\"arenaStatusKode\": \"PARBS\"}"));
         assertThat(arbeidssokerInfoService.getArbeidssokerArenaStatus("***REMOVED***")).isEqualTo("PARBS");
     }
 
     @Test
-    public void getArbeidssokerArenaStatusSkalReturnereUkjentForTomRespons() throws Exception {
+    public void getArbeidssokerStatusSkalReturnereUkjentForTomRespons() throws Exception {
         when(httpclient.execute(any(HttpUriRequest.class))).thenReturn(buildResponse("{}"));
         assertThat(arbeidssokerInfoService.getArbeidssokerArenaStatus("***REMOVED***")).isEqualTo("UKJENT");
     }
