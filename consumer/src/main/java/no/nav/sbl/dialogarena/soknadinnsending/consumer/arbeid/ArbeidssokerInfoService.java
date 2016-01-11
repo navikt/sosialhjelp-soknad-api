@@ -47,8 +47,6 @@ public class ArbeidssokerInfoService {
         } catch (IOException e) {
             logger.error("Feil ved henting av status fra SBL Arbeid for fnr {}: {}", fnr, e);
             return UKJENT;
-        } finally {
-            httpget.releaseConnection();
         }
     }
 
