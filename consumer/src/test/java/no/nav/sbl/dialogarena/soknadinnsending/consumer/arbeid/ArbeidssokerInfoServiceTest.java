@@ -36,21 +36,21 @@ public class ArbeidssokerInfoServiceTest {
     }
 
     @Test
-    public void getArbeidssokerRegistreringStatusSkalReturnereBrukerStatus() throws Exception {
+    public void getArbeidssokerArenaStatusSkalReturnereBrukerStatus() throws Exception {
         when(httpclient.execute(any(HttpUriRequest.class))).thenReturn(buildResponse("{\"brukerStatus\": \"PARBS\"}"));
-        assertThat(arbeidssokerInfoService.getArbeidssokerRegistreringStatus("***REMOVED***")).isEqualTo("PARBS");
+        assertThat(arbeidssokerInfoService.getArbeidssokerArenaStatus("***REMOVED***")).isEqualTo("PARBS");
     }
 
     @Test
-    public void getArbeidssokerRegistreringStatusSkalReturnereUkjentForTomRespons() throws Exception {
+    public void getArbeidssokerArenaStatusSkalReturnereUkjentForTomRespons() throws Exception {
         when(httpclient.execute(any(HttpUriRequest.class))).thenReturn(buildResponse("{}"));
-        assertThat(arbeidssokerInfoService.getArbeidssokerRegistreringStatus("***REMOVED***")).isEqualTo("UKJENT");
+        assertThat(arbeidssokerInfoService.getArbeidssokerArenaStatus("***REMOVED***")).isEqualTo("UKJENT");
     }
 
     @Test
     public void getArbeidssokerRegistreringStatusSkalReturnereUkjentVedFeilPaaRestKall() throws Exception {
         when(httpclient.execute(any(HttpUriRequest.class))).thenThrow(new IOException());
-        assertThat(arbeidssokerInfoService.getArbeidssokerRegistreringStatus("***REMOVED***")).isEqualTo("UKJENT");
+        assertThat(arbeidssokerInfoService.getArbeidssokerArenaStatus("***REMOVED***")).isEqualTo("UKJENT");
     }
 
     public HttpResponse buildResponse(String content) {

@@ -23,7 +23,6 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import javax.inject.Inject;
 import java.util.Locale;
 import java.util.Map;
 
@@ -100,9 +99,9 @@ public class InformasjonRessursTest {
 
     @Test
     public void utslagskriterierInneholderAlleKriteriene() {
-        when(arbeidssokerInfoService.getArbeidssokerRegistreringStatus(anyString())).thenReturn("ARBS");
+        when(arbeidssokerInfoService.getArbeidssokerArenaStatus(anyString())).thenReturn("ARBS");
         Map<String, Object> utslagskriterier = ressurs.hentUtslagskriterier();
-        assertThat(utslagskriterier.containsKey("arbeidssokerRegistreringStatus")).isTrue();
+        assertThat(utslagskriterier.containsKey("arbeidssokerArenaStatus")).isTrue();
         assertThat(utslagskriterier.containsKey("arbeidssokerstatus")).isTrue();
         assertThat(utslagskriterier.containsKey("ytelsesstatus")).isTrue();
         assertThat(utslagskriterier.containsKey("alder")).isTrue();
