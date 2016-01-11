@@ -22,8 +22,8 @@ import static no.nav.modig.lang.collections.IterUtils.on;
 public class OppsummeringsContext {
     public final boolean visInfotekst;
     public List<OppsummeringsBolk> bolker = new ArrayList<>();
-    WebSoknad soknad;
-    Kodeverk kodeverk;
+    public WebSoknad soknad;
+    public Kodeverk kodeverk;
 
     public OppsummeringsContext(WebSoknad soknad, SoknadStruktur soknadStruktur, Kodeverk kodeverk, boolean visInfotekst) {
         this.soknad = soknad;

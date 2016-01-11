@@ -4,8 +4,8 @@ import javax.xml.bind.annotation.XmlType;
 
 @XmlType(propOrder = {})
 public class Constraint {
-    String faktum;
-    String expression;
+    private String faktum;
+    private String expression;
 
     public Constraint() {
     }

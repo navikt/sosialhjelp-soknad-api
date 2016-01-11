@@ -5,7 +5,11 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -179,9 +183,16 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
     }
 
     public boolean erSynlig(WebSoknad soknad, Faktum faktum) {
+        return parentErAktiv(soknad, faktum)
+                && oppfyllerConstraints(soknad, faktum);
+    }
+
+    private boolean parentErAktiv(WebSoknad soknad, Faktum faktum) {
         FaktumStruktur parent = getDependOn();
         Faktum parentFaktum = soknad.finnFaktum(faktum.getParrentFaktum());
-        return (parent == null || (parentFaktum != null && parent.erSynlig(soknad, parentFaktum) && this.oppfyllerParentKriterier(soknad, faktum))) && oppfyllerConstraints(soknad, faktum);
+        return parent == null || (parentFaktum != null &&
+                parent.erSynlig(soknad, parentFaktum)
+                && this.oppfyllerParentKriterier(soknad, faktum));
     }
 
     private boolean oppfyllerParentKriterier(WebSoknad soknad, Faktum faktum) {
@@ -209,11 +220,11 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
         for (Constraint constraint : constraints) {
             Faktum constraintFaktum = faktum;
 
-            if (constraint.faktum != null && !constraint.faktum.isEmpty()) {
-                constraintFaktum = soknad.getFaktumMedKey(constraint.faktum);
+            if (constraint.getFaktum() != null && !constraint.getFaktum().isEmpty()) {
+                constraintFaktum = soknad.getFaktumMedKey(constraint.getFaktum());
             }
 
-            result = result || sjekkForventning(constraint.expression, constraintFaktum);
+            result = result || sjekkForventning(constraint.getExpression(), constraintFaktum);
         }
         return result;
     }
