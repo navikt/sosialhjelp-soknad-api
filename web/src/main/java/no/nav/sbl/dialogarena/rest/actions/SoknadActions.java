@@ -5,7 +5,6 @@ import no.nav.sbl.dialogarena.rest.meldinger.SoknadBekreftelse;
 import no.nav.sbl.dialogarena.rest.utils.PDFService;
 import no.nav.sbl.dialogarena.service.EmailService;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
@@ -22,10 +21,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import java.util.Locale;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
-import static no.nav.sbl.dialogarena.utils.UrlUtils.getEttersendelseUrl;
-import static no.nav.sbl.dialogarena.utils.UrlUtils.getFortsettUrl;
+import static javax.ws.rs.core.MediaType.*;
+import static no.nav.sbl.dialogarena.utils.UrlUtils.*;
 
 @Path("/soknader/{behandlingsId}/actions")
 @Produces(APPLICATION_JSON)
@@ -49,9 +46,6 @@ public class SoknadActions {
 
     @Inject
     private NavMessageSource tekster;
-
-    @Inject
-    private WebSoknadConfig webSoknadConfig;
 
     @Context
     private ServletContext servletContext;
