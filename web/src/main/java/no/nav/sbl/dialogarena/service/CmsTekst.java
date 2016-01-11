@@ -1,10 +1,12 @@
 package no.nav.sbl.dialogarena.service;
 
-import org.springframework.context.*;
-import org.springframework.stereotype.*;
+import org.springframework.context.MessageSource;
+import org.springframework.context.NoSuchMessageException;
+import org.springframework.stereotype.Component;
 
-import javax.inject.*;
-import java.util.*;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.Locale;
 
 @Component
 public class CmsTekst {
@@ -23,5 +25,8 @@ public class CmsTekst {
                 return String.format("KEY MANGLER: [%s]", key);
             }
         }
+    }
+    public boolean finnesTekst(String key, String soknadTypePrefix, Locale locale){
+        return !getCmsTekst(key, new Object[0], soknadTypePrefix, locale).startsWith("KEY MANGLER");
     }
 }

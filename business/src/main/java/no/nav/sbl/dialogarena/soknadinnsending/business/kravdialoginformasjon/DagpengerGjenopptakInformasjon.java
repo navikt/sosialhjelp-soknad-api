@@ -24,7 +24,7 @@ public class DagpengerGjenopptakInformasjon extends KravdialogInformasjon.Defaul
     }
 
     public String getStrukturFilnavn() {
-        return "dagpenger_gjenopptak.xml";
+        return "dagpenger/dagpenger_gjenopptak.xml";
     }
 
     public List<String> getSkjemanummer() {
@@ -33,6 +33,11 @@ public class DagpengerGjenopptakInformasjon extends KravdialogInformasjon.Defaul
 
     public List<String> getSoknadBolker(WebSoknad soknad) {
         return asList(BOLK_PERSONALIA, BOLK_BARN);
+    }
+
+    @Override
+    public boolean brukerNyOppsummering() {
+        return true;
     }
 
     public static boolean erDagpengerGjenopptak(String skjema) {

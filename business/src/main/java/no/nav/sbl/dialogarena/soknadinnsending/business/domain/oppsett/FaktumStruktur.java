@@ -5,28 +5,31 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.ForventningsSjekker.sjekkForventning;
 
-public class FaktumStruktur implements Serializable {
+@XmlType(propOrder = {})
+public class FaktumStruktur implements Serializable, StrukturConfigurable {
 
     private String id;
     private String type;
+    private String panel;
     private FaktumStruktur dependOn;
 
     private String dependOnProperty;
     private List<String> dependOnValues;
-    private boolean useExpression = false;
+    private Boolean useExpression = false;
 
     private String flereTillatt;
     private String erSystemFaktum;
+    private List<PropertyStruktur> properties;
+    private List<Constraint> constraints;
 
     @XmlID()
     public String getId() {
@@ -43,6 +46,14 @@ public class FaktumStruktur implements Serializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getPanel() {
+        return panel;
+    }
+
+    public void setPanel(String bolk) {
+        this.panel = bolk;
     }
 
     @XmlIDREF
@@ -85,11 +96,11 @@ public class FaktumStruktur implements Serializable {
 
     public void setErSystemFaktum(String erSystemFaktum) { this.erSystemFaktum = erSystemFaktum; }
 
-    public boolean isUseExpression() {
+    public Boolean isUseExpression() {
         return useExpression;
     }
 
-    public void setUseExpression(boolean useExpression) {
+    public void setUseExpression(Boolean useExpression) {
         this.useExpression = useExpression;
     }
 
@@ -107,16 +118,40 @@ public class FaktumStruktur implements Serializable {
         return this;
     }
 
+    @XmlElement(name = "property")
+    @XmlElementWrapper(name="properties")
+    public List<PropertyStruktur> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(List<PropertyStruktur> properties) {
+        this.properties = properties;
+    }
+
+    @XmlElementWrapper(name="constraints")
+    @XmlElement(name="constraint")
+    public List<Constraint> getConstraints() {
+        return constraints;
+    }
+
+    public void setConstraints(List<Constraint> constraints) {
+        this.constraints = constraints;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this)
                 .append("id", id)
                 .append("type", type)
+                .append("panel", panel)
                 .append("dependOn", dependOn)
                 .append("dependOnProperty", dependOnProperty)
                 .append("dependOnValues", dependOnValues)
+                .append("useExpression", useExpression)
                 .append("flereTillatt", flereTillatt)
                 .append("erSystemFaktum", erSystemFaktum)
+                .append("properties", properties)
+                .append("constraints", constraints)
                 .toString();
     }
 
@@ -146,12 +181,12 @@ public class FaktumStruktur implements Serializable {
     public boolean erSynlig(WebSoknad soknad, Faktum faktum) {
         FaktumStruktur parent = getDependOn();
         Faktum parentFaktum = soknad.finnFaktum(faktum.getParrentFaktum());
-        return parent == null || (parentFaktum != null && parent.erSynlig(soknad, parentFaktum) && this.oppfyllerParentKriterier(soknad, faktum));
+        return (parent == null || (parentFaktum != null && parent.erSynlig(soknad, parentFaktum) && this.oppfyllerParentKriterier(soknad, faktum))) && oppfyllerConstraints(soknad, faktum);
     }
 
     private boolean oppfyllerParentKriterier(WebSoknad soknad, Faktum faktum) {
         Faktum parent = faktum.getParrentFaktum() != null ? soknad.finnFaktum(faktum.getParrentFaktum()): soknad.getFaktumMedKey(getDependOn().getId());
-        if(parent != null){
+        if(parent != null && getDependOnValues() != null && getDependOnValues().size() > 0){
             if(!useExpression){
                 return (harDependOnProperty(parent) || harDependOnValue(parent));
             } else {
@@ -163,6 +198,24 @@ public class FaktumStruktur implements Serializable {
             }
         }
         return true;
+    }
+
+    protected boolean oppfyllerConstraints(WebSoknad soknad, Faktum faktum) {
+        if (constraints == null) {
+            return true;
+        }
+
+        boolean result = false;
+        for (Constraint constraint : constraints) {
+            Faktum constraintFaktum = faktum;
+
+            if (constraint.faktum != null && !constraint.faktum.isEmpty()) {
+                constraintFaktum = soknad.getFaktumMedKey(constraint.faktum);
+            }
+
+            result = result || sjekkForventning(constraint.expression, constraintFaktum);
+        }
+        return result;
     }
 
     private boolean harDependOnValue(Faktum parent) {
@@ -180,4 +233,14 @@ public class FaktumStruktur implements Serializable {
     public boolean ikkeSystemFaktum() {
         return !"true".equals(this.getErSystemFaktum());
     }
+
+    @Override
+    public Map<String, String> getConfiguration() {
+        return new HashMap<>();
+    }
+
+    public boolean hasConfig(String configKey) {
+        return getConfiguration() != null && getConfiguration().containsKey(configKey);
+    }
+
 }
