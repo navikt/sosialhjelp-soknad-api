@@ -41,7 +41,7 @@ public class OppsummeringsContext {
         List<Faktum> fakta = parent != null ?
                 soknad.getFaktaMedKeyOgParentFaktum(faktumStruktur.getId(), parent.getFaktumId()) :
                 soknad.getFaktaMedKey(faktumStruktur.getId());
-        if (fakta.size() == 0) {
+        if (fakta.isEmpty()) {
             return new ArrayList<>();
         }
 
