@@ -1,61 +1,71 @@
 package no.nav.sbl.dialogarena.rest.actions;
 
 import no.nav.modig.core.context.ThreadLocalSubjectHandler;
+import no.nav.sbl.dialogarena.config.SoknadActionsTestConfig;
 import no.nav.sbl.dialogarena.rest.meldinger.SoknadBekreftelse;
 import no.nav.sbl.dialogarena.service.EmailService;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
+import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import org.apache.commons.lang.LocaleUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import java.util.Locale;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.ETTERSENDING_OPPRETTET;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = {SoknadActionsTestConfig.class})
 public class SoknadActionsTest {
 
     public static final String BEHANDLINGS_ID = "123";
 
-    @Mock
+    @Inject
     NavMessageSource tekster;
-    @Mock
+    @Inject
     EmailService emailService;
-    @Mock
+    @Inject
     SoknadService soknadService;
-    @Mock
+    @Inject
     VedleggService vedleggService;
-    @Mock
+    @Inject
     HtmlGenerator pdfTemplate;
-    @Mock
-    ServletContext servletContext;
-
-    @InjectMocks
+    @Inject
     SoknadActions actions;
+    @Inject
+    WebSoknadConfig webSoknadConfig;
+
+    ServletContext context = mock(ServletContext.class);
 
     @Before
     public void setUp() {
         System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
+        reset(tekster);
         when(tekster.finnTekst(eq("sendtSoknad.sendEpost.epostSubject"), any(Object[].class), any(Locale.class))).thenReturn("Emne");
-        when(servletContext.getRealPath(anyString())).thenReturn("");
+        when(context.getRealPath(anyString())).thenReturn("");
+        when(webSoknadConfig.brukerNyOppsummering(anyLong())).thenReturn(false);
+        actions.setContext(context);
     }
 
     @Test
-    public void sendSoknadSkalLageDagpengerPdfMedKodeverksverdier() throws Exception{
+    public void sendSoknadSkalLageDagpengerPdfMedKodeverksverdier() throws Exception {
         when(soknadService.hentSoknad(BEHANDLINGS_ID, true, true)).thenReturn(soknad().medSoknadPrefix("dagpenger.ordinaer"));
         when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyString())).thenReturn("<html></html>");
 
@@ -65,7 +75,18 @@ public class SoknadActionsTest {
     }
 
     @Test
-    public void sendGjenopptakSkalLageGjenopptakPdfMedKodeverksverdier() throws Exception{
+    public void sendSoknadSkalBrukeNyPdfLogikkOmDetErSattPaaConfig() throws Exception {
+        when(soknadService.hentSoknad(BEHANDLINGS_ID, true, true)).thenReturn(soknad().medSoknadPrefix("dagpenger.ordinaer"));
+        when(pdfTemplate.fyllHtmlMalMedInnholdNew(any(WebSoknad.class), any(SoknadStruktur.class), anyString())).thenReturn("<html></html>");
+        when(webSoknadConfig.brukerNyOppsummering(anyLong())).thenReturn(true);
+
+        actions.sendSoknad(BEHANDLINGS_ID);
+
+        verify(pdfTemplate).fyllHtmlMalMedInnholdNew(any(WebSoknad.class), any(SoknadStruktur.class), eq("/skjema/generisk"));
+    }
+
+    @Test
+    public void sendGjenopptakSkalLageGjenopptakPdfMedKodeverksverdier() throws Exception {
         when(soknadService.hentSoknad(BEHANDLINGS_ID, true, true)).thenReturn(soknad().medSoknadPrefix("dagpenger.gjenopptak"));
         when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyString())).thenReturn("<html></html>");
 
@@ -75,7 +96,7 @@ public class SoknadActionsTest {
     }
 
     @Test
-    public void sendEttersendingSkalLageEttersendingDummyPdf() throws Exception{
+    public void sendEttersendingSkalLageEttersendingDummyPdf() throws Exception {
         when(soknadService.hentSoknad(BEHANDLINGS_ID, true, true)).thenReturn(soknad().medDelstegStatus(ETTERSENDING_OPPRETTET));
         when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyString())).thenReturn("<html></html>");
 
@@ -86,13 +107,26 @@ public class SoknadActionsTest {
 
     @Test
     public void soknadBekreftelseEpostSkalInneholdeSoknadbekreftelseTekst() {
+        Faktum sprakFaktum = new Faktum().medKey("skjema.sprak").medValue("nb_NO");
+        when(soknadService.hentSoknad(anyString(), anyBoolean(), anyBoolean())).thenReturn(new WebSoknad().medFaktum(sprakFaktum));
         SoknadBekreftelse soknadBekreftelse = new SoknadBekreftelse();
         soknadBekreftelse.setEpost("test@nav.no");
         soknadBekreftelse.setErEttersendelse(false);
 
-        actions.sendEpost(BEHANDLINGS_ID, soknadBekreftelse, new MockHttpServletRequest());
-
+        actions.sendEpost(BEHANDLINGS_ID, "nb_NO", soknadBekreftelse, new MockHttpServletRequest());
         verify(tekster).finnTekst(eq("sendtSoknad.sendEpost.epostInnhold"), any(Object[].class), any(Locale.class));
+    }
+
+    @Test
+    public void soknadBekreftelseEpostSkalBrukeNorskSomDefaultLocale() {
+        when(soknadService.hentSoknad(anyString(), anyBoolean(), anyBoolean())).thenReturn(new WebSoknad());
+        SoknadBekreftelse soknadBekreftelse = new SoknadBekreftelse();
+        soknadBekreftelse.setEpost("test@nav.no");
+        soknadBekreftelse.setErEttersendelse(false);
+
+        actions.sendEpost(BEHANDLINGS_ID, "nb_NO", soknadBekreftelse, new MockHttpServletRequest());
+
+        verify(tekster).finnTekst(eq("sendtSoknad.sendEpost.epostInnhold"), any(Object[].class), eq(new Locale("nb", "NO")));
     }
 
     @Test
@@ -101,7 +135,7 @@ public class SoknadActionsTest {
         soknadBekreftelse.setEpost("test@nav.no");
         soknadBekreftelse.setErEttersendelse(true);
 
-        actions.sendEpost("123", soknadBekreftelse, new MockHttpServletRequest());
+        actions.sendEpost("123", "nb_NO", soknadBekreftelse, new MockHttpServletRequest());
 
         verify(tekster).finnTekst(eq("sendEttersendelse.sendEpost.epostInnhold"), any(Object[].class), any(Locale.class));
     }
@@ -109,4 +143,5 @@ public class SoknadActionsTest {
     private WebSoknad soknad() {
         return new WebSoknad().medBehandlingId(BEHANDLINGS_ID);
     }
+
 }

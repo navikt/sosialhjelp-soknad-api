@@ -69,8 +69,10 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hvisMer - Evaluerer en string til double og sjekker om verdien er mer enn grenseverdien gitt ved andre inputparameter
 * hvisMindre - Evaluerer en string til integer og sjekker om verdien er mindre enn andre inputparameter
 * hvisSant - Dersom variabelen er "true" vil innholdet vises
+* hvisTekstFinnes - Henter tekst fra cms, prøver med søknadens prefix + key, før den prøver med bare keyen. Kan sende inn parametere.
 * kortDato - Formatterer en datostreng på formatet yyyy-mm-dd til dd.mm.aaaa
 * lagKjorelisteUker - Bygger en nestet liste over uker for et betalingsvedtak, der ukene inneholder dager det er søkt for refusjon.
+* property - Returnerer verdien til gitt property på modellen i context, gitt at den er propertyaware
 * sendtInnInfo - Tilgjengeliggjør informasjon om søknaden (innsendte vedlegg, påkrevde vedlegg og dato)
 * toCapitalized - Gjør om en tekst til at alle ord starter med store bokstaver
 * toLowerCase - Gjør om en tekst til kun små bokstaver
@@ -406,6 +408,17 @@ må ha et faktum i context, f. eks. via
 ```
 
 
+##### hvisTekstFinnes
+
+```
+{{#hvisTekstFinnes "cms.key"}}
+    true
+{{else}}
+    false
+{{/hvisTekstFinnes}}
+```
+
+
 ##### kortDato
 
 ```
@@ -422,6 +435,15 @@ må ha et faktum i context, f. eks. via
         {{dato}}: {{parkering}}
     {{/each}}
 {{/lagKjorelisteUker}}
+```
+
+
+##### property
+
+```
+Leser fra model på context
+{{property 'navnPåProperty'}}
+{{property 'fom'}}
 ```
 
 

@@ -1,0 +1,18 @@
+<tr>
+    <td></td>
+    <td>
+        {{#hvisTekstFinnes (concat key ".sporsmal")}}
+            {{>skjema/generisk/sporsmal}}
+        {{/hvisTekstFinnes}}
+        {{> skjema/generisk/infotekst}}
+    </td>
+</tr>
+<tr>
+    <td class="sjekket"></td>
+    <td>{{ hentTekst (concat key "." value) }}
+        {{> skjema/generisk/infotekstvalue}}
+        {{> skjema/generisk/vedlegg}}
+        {{> skjema/generisk/barneFakta}}
+
+    </td>
+</tr>

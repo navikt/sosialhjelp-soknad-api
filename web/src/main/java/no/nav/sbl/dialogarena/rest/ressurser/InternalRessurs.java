@@ -6,9 +6,13 @@ import com.github.jknack.handlebars.context.FieldValueResolver;
 import com.github.jknack.handlebars.context.MethodValueResolver;
 import com.github.jknack.handlebars.io.URLTemplateSource;
 import no.nav.sbl.dialogarena.config.ContentConfig;
+import no.nav.sbl.dialogarena.service.HtmlGenerator;
 import no.nav.sbl.dialogarena.soknadinnsending.business.FunksjonalitetBryter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Controller;
 
@@ -21,6 +25,7 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
+import static javax.ws.rs.core.MediaType.*;
 
 @Controller
 @Path("/internal")
@@ -33,6 +38,12 @@ public class InternalRessurs {
     private CacheManager cacheManager;
     @Inject
     private NavMessageSource messageSource;
+    @Inject
+    private SoknadService soknadService;
+    @Inject
+    private VedleggService vedleggService;
+    @Inject
+    private HtmlGenerator pdfTemplate;
     @Context
     private ServletContext servletContext;
 
@@ -74,6 +85,17 @@ public class InternalRessurs {
         }
 
         return Response.seeOther(URI.create("/sendsoknad/internal/funksjon")).build();
+    }
+
+    @GET
+    @Path("/{behandlingsId}/nyoppsummering")
+    @Produces(TEXT_HTML)
+    public String hentOppsummeringNew(@PathParam("behandlingsId") String behandlingsId) throws IOException {
+        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
+        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
+
+        String oppsummeringSti = "/skjema/generisk";
+        return pdfTemplate.fyllHtmlMalMedInnholdNew(soknad, soknadService.hentSoknadStruktur(soknad.getskjemaNummer()), oppsummeringSti);
     }
 
     @GET

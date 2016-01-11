@@ -22,6 +22,6 @@ public class ToLowerCaseHelper extends RegistryAwareHelper<Object> {
 
     @Override
     public CharSequence apply(Object value, Options options) throws IOException {
-        return value.toString().toLowerCase();
+        return value != null? value.toString().toLowerCase(): "";
     }
 }

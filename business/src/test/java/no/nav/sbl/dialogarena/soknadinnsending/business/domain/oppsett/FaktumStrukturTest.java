@@ -1,8 +1,10 @@
-package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
+package no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.FaktumStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,4 +50,25 @@ public class FaktumStrukturTest {
         Collections.sort(fakta, sammenlignEtterDependOn());
         assertThat(fakta).containsSequence(sf1, sf2, sf3);
     }
+
+    @Test
+    public void testConstraintsPaSegSelv() {
+        FaktumStruktur struktur = new FaktumStruktur();
+        struktur.setConstraints(Arrays.asList(new Constraint("", "properties['testprop'] == 'true'")));
+
+        WebSoknad webSoknad = new WebSoknad();
+        boolean oppfyllerConstraints = struktur.oppfyllerConstraints(webSoknad, new Faktum().medProperty("testprop", "true"));
+        assertThat(oppfyllerConstraints).isTrue();
+    }
+
+    @Test
+    public void testConstraintsPaAnnetFaktum() {
+        FaktumStruktur struktur = new FaktumStruktur();
+        struktur.setConstraints(Arrays.asList(new Constraint("annet.faktum.key", "value == 'abcd'")));
+        WebSoknad webSoknad = new WebSoknad().medFaktum(new Faktum().medKey("annet.faktum.key").medValue("abcd"));
+
+        boolean oppfyllerConstraints = struktur.oppfyllerConstraints(webSoknad, new Faktum());
+        assertThat(oppfyllerConstraints).isTrue();
+    }
+
 }

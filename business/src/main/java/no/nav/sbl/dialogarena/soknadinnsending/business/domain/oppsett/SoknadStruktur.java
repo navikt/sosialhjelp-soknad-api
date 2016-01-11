@@ -11,11 +11,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
 
@@ -151,5 +147,14 @@ public class SoknadStruktur implements Serializable {
             }
         }).collect();
         return strukturListe.isEmpty()? null: strukturListe.get(0);
+    }
+
+    public List<FaktumStruktur> finnBarneStrukturer(final String parent) {
+        return on(fakta).filter(new Predicate<FaktumStruktur>() {
+            @Override
+            public boolean evaluate(FaktumStruktur faktumStruktur) {
+                return faktumStruktur.getDependOn() != null && faktumStruktur.getDependOn().getId().equals(parent);
+            }
+        }).collect();
     }
 }

@@ -24,7 +24,7 @@ public class DagpengerOrdinaerInformasjon extends KravdialogInformasjon.DefaultO
     }
 
     public String getStrukturFilnavn() {
-        return "dagpenger_ordinaer.xml";
+        return "dagpenger/dagpenger_ordinaer.xml";
     }
 
     public List<String> getSkjemanummer() {
@@ -33,6 +33,11 @@ public class DagpengerOrdinaerInformasjon extends KravdialogInformasjon.DefaultO
 
     public List<String> getSoknadBolker(WebSoknad soknad) {
         return asList(BOLK_PERSONALIA, BOLK_BARN);
+    }
+
+    @Override
+    public boolean brukerNyOppsummering() {
+        return true;
     }
 
     public static boolean erDagpengerOrdinaer(String skjema) {

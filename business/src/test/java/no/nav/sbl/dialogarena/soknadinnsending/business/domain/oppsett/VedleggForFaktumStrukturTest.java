@@ -2,33 +2,35 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett;
 
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.XmlService;
 import org.apache.commons.collections15.Predicate;
 import org.junit.Test;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.lang.String.format;
 import static javax.xml.bind.JAXBContext.newInstance;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 public class VedleggForFaktumStrukturTest {
-    Faktum konkurs = new Faktum().medKey("arbeidforhold").medProperty("type", "Arbeidsgiver er konkurs");
-    Faktum permittert = new Faktum().medKey("arbeidforhold").medProperty("type", "Permittert");
-    Faktum sagtOppAvArbeidsgiver = new Faktum().medKey("arbeidforhold").medProperty("type", "Sagt opp av arbeidsgiver");
+    Faktum konkurs = new Faktum().medKey("arbeidforhold").medProperty("type", "arbeidsgivererkonkurs");
+    Faktum permittert = new Faktum().medKey("arbeidforhold").medProperty("type", "permittert");
+    Faktum sagtOppAvArbeidsgiver = new Faktum().medKey("arbeidforhold").medProperty("type", "sagtoppavarbeidsgiver");
 
-    Faktum kontraktUtgaat = new Faktum().medKey("arbeidforhold").medProperty("type", "Kontrakt utgått");
-    Faktum sagtOppSelv = new Faktum().medKey("arbeidforhold").medProperty("type", "Sagt opp selv");
-    Faktum redusertArbeidstid = new Faktum().medKey("arbeidforhold").medProperty("type", "Redusert arbeidstid");
-    Faktum avskjediget = new Faktum().medKey("arbeidforhold").medProperty("type", "Avskjediget");
+    Faktum kontraktUtgaat = new Faktum().medKey("arbeidforhold").medProperty("type", "kontraktutgaatt");
+    Faktum sagtOppSelv = new Faktum().medKey("arbeidforhold").medProperty("type", "sagtoppselv");
+    Faktum redusertArbeidstid = new Faktum().medKey("arbeidforhold").medProperty("type", "redusertarbeidstid");
+    Faktum avskjediget = new Faktum().medKey("arbeidforhold").medProperty("type", "avskjediget");
 
     @Test
     public void skalFikseFlereOnValues(){
         VedleggForFaktumStruktur vedlegg = new VedleggForFaktumStruktur();
-        vedlegg.setOnValues(Arrays.asList("Arbeidsgiver er konkurs", "Permittert"));
+        vedlegg.setOnValues(Arrays.asList("arbeidsgivererkonkurs", "permittert"));
         vedlegg.setOnProperty("type");
         vedlegg.setInverted(true);
         assertThat(vedlegg.trengerVedlegg(konkurs), is(false));
@@ -42,7 +44,7 @@ public class VedleggForFaktumStrukturTest {
 
     @Test
     public void testConfigForArbeidsforhold(){
-        SoknadStruktur struktur = hentStruktur("dagpenger_ordinaer");
+        SoknadStruktur struktur = hentStruktur("dagpenger/dagpenger_ordinaer");
         List<VedleggForFaktumStruktur> arbeidsforhold = struktur.vedleggFor(new Faktum().medKey("arbeidsforhold"));
         assertThat(arbeidsforhold.get(0).trengerVedlegg(sagtOppAvArbeidsgiver), is(true));
         assertThat(arbeidsforhold.get(1).trengerVedlegg(kontraktUtgaat), is(true));
@@ -70,11 +72,11 @@ public class VedleggForFaktumStrukturTest {
     private SoknadStruktur hentStruktur(String skjema) {
         String type = skjema + ".xml";
         try {
-            Unmarshaller unmarshaller = newInstance(SoknadStruktur.class)
-                    .createUnmarshaller();
-            return (SoknadStruktur) unmarshaller.unmarshal(SoknadStruktur.class
-                    .getResourceAsStream(format("/soknader/%s", type)));
-        } catch (JAXBException e) {
+            StreamSource xmlSource = new XmlService().lastXmlFil("soknader/" + type);
+
+            Unmarshaller unmarshaller = newInstance(SoknadStruktur.class).createUnmarshaller();
+            return unmarshaller.unmarshal(xmlSource, SoknadStruktur.class).getValue();
+        } catch (JAXBException | IOException e) {
             throw new RuntimeException("Kunne ikke laste definisjoner. ", e);
         }
     }

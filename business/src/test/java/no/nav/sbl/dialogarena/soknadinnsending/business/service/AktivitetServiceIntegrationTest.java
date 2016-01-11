@@ -20,7 +20,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.consumer.util.InstanceSwit
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AktivitetServiceIntegrationTest {
-    private static int PORT = 10010;
+    private static int PORT = 10000 + (int)(Math.random()*1000);
     @Rule
     public MockServerRule mockServerRule = new MockServerRule(PORT, this);
     AktivitetService service;

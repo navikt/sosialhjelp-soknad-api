@@ -1,12 +1,20 @@
 package no.nav.sbl.dialogarena.service;
 
+import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
+import com.github.jknack.handlebars.context.FieldValueResolver;
+import com.github.jknack.handlebars.context.JavaBeanValueResolver;
+import com.github.jknack.handlebars.context.MapValueResolver;
+import com.github.jknack.handlebars.context.MethodValueResolver;
 import no.bekk.bekkopen.person.Fodselsnummer;
+import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -22,14 +30,38 @@ import static org.apache.commons.lang3.StringUtils.split;
 public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
 
     private Map<String, Helper> helpers = new HashMap<>();
+    @Inject
+    private Kodeverk kodeverk;
 
     public String fyllHtmlMalMedInnhold(WebSoknad soknad, String file) throws IOException {
-        return getHandlebars().compile(file).apply(soknad);
+        return getHandlebars()
+                .compile(file)
+                .apply(Context.newBuilder(soknad).build());
+    }
+
+    @Override
+    public String fyllHtmlMalMedInnholdNew(WebSoknad soknad, SoknadStruktur soknadStruktur, String file) throws IOException {
+        return getHandlebars()
+                .infiniteLoops(true)
+                .compile(file)
+                .apply(Context.newBuilder(new OppsummeringsContext(soknad, soknadStruktur, kodeverk, true))
+                        .resolver(
+                                JavaBeanValueResolver.INSTANCE,
+                                FieldValueResolver.INSTANCE,
+                                MapValueResolver.INSTANCE,
+                                MethodValueResolver.INSTANCE
+                        )
+                        .build());
     }
 
     @Override
     public void registrerHelper(String name, Helper helper) {
         helpers.put(name, helper);
+    }
+
+    private Integer finnNivaa(Context context) {
+        if(context == null){return 3;}
+        return (context.get("sporsmal") != null? 1:0) + finnNivaa(context.parent());
     }
 
     private Handlebars getHandlebars() {
@@ -41,7 +73,12 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
 
         handlebars.registerHelper("formatterFodelsDato", generateFormatterFodselsdatoHelper());
         handlebars.registerHelper("skalViseRotasjonTurnusSporsmaal", generateSkalViseRotasjonTurnusSporsmaalHelper());
-
+        handlebars.registerHelper("finnNiva", new Helper<Object>() {
+            @Override
+            public CharSequence apply(Object context, Options options) throws IOException {
+                return "" + finnNivaa(options.context.parent());
+            }
+        });
         return handlebars;
     }
 
