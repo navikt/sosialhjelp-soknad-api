@@ -29,7 +29,7 @@ public class ArbeidssokerInfoService {
     @Value("${arbeidservice.password}")
     private String password;
 
-    final String UKJENT = "UKJENT";
+    private final String UKJENT = "UKJENT";
 
     private final Logger logger = getLogger(ArbeidssokerInfoService.class);
     private CloseableHttpClient httpclient = HttpClients.createDefault();
