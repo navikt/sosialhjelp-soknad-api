@@ -1,4 +1,4 @@
-<soknad skjemaNummer="NAV 14-05.00" temaKode="FOR" >
+<soknad temaKode="FOR" xmlns="urn:no.nav.sbl">
     <!-- Systemfakta -->
     <faktum>
         <id>personalia</id>
@@ -193,7 +193,6 @@
         <flereTillatt>true</flereTillatt>
     </faktum>
     <vedlegg>
-        <id>3</id>
         <faktum>ekstraVedlegg</faktum>
         <onValues>
             <value>true</value>
@@ -222,7 +221,6 @@
 
     <!-- Vedlegg Ytelse -->
     <vedlegg>
-        <id>3</id>
         <faktum>ytelser.lonnarbeidsgiver</faktum>
         <onValues>
             <value>true</value>
@@ -232,7 +230,6 @@
         <oversetting>${key}</oversetting>
     </vedlegg>
     <vedlegg>
-        <id>3</id>
         <faktum>ytelser.vartpenger</faktum>
         <onValues>
             <value>true</value>
@@ -243,7 +240,6 @@
         <oversetting>${key}</oversetting>
     </vedlegg>
     <vedlegg>
-        <id>3</id>
         <faktum>ytelser.ventelonn</faktum>
         <onValues>
             <value>true</value>
@@ -254,7 +250,6 @@
         <oversetting>${key}</oversetting>
     </vedlegg>
     <vedlegg>
-        <id>3</id>
         <faktum>ytelser.avtjening</faktum>
         <onValues>
             <value>true</value>
@@ -262,7 +257,6 @@
         <skjemaNummer>O5</skjemaNummer>
     </vedlegg>
     <vedlegg>
-        <id>3</id>
         <faktum>ytelser.sluttpakke</faktum>
         <onValues>
             <value>true</value>
@@ -272,7 +266,6 @@
 
     <!-- vedlegg barn/barnet -->
     <vedlegg>
-        <id>4</id>
         <faktum>veiledning.mor.terminbekreftelse</faktum>
         <skjemaNummer>R4</skjemaNummer>
         <onProperty>skalHaFodselsattest</onProperty>
@@ -281,7 +274,6 @@
         </onValues>
     </vedlegg>
     <vedlegg>
-        <id>4</id>
         <faktum>veiledning.mor.terminbekreftelse</faktum>
         <skjemaNummer>P3</skjemaNummer>
         <onValues>
@@ -290,7 +282,6 @@
         </onValues>
     </vedlegg>
     <vedlegg>
-        <id>4</id>
         <faktum>soknadsvalg.fodselelleradopsjon</faktum>
         <skjemaNummer>P5</skjemaNummer>
         <skjemanummerTillegg>adopsjon</skjemanummerTillegg>
@@ -301,7 +292,6 @@
 
     <!-- vedlegg for arbeidsforhold -->
     <vedlegg>
-        <id>5</id>
         <faktum>arbeidsforhold</faktum>
         <skjemaNummer>K4</skjemaNummer>
         <property>arbeidsgivernavn</property>
@@ -312,7 +302,6 @@
         <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
-        <id>5</id>
         <faktum>arbeidsforhold</faktum>
         <skjemaNummer>T8</skjemaNummer>
         <property>arbeidsgivernavn</property>
@@ -329,7 +318,6 @@
     </vedlegg>
 
     <vedlegg>
-        <id>5</id>
         <faktum>arbeidsforhold</faktum>
         <skjemaNummer>M6</skjemaNummer>
         <property>arbeidsgivernavn</property>
@@ -345,7 +333,6 @@
         <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
-        <id>5</id>
         <faktum>arbeidsforhold</faktum>
         <skjemaNummer>L4</skjemaNummer>
         <property>arbeidsgivernavn</property>
@@ -365,7 +352,6 @@
     <!-- Vedlegg Egen Næring -->
 
     <vedlegg>
-        <id>7</id>
         <faktum>naeringsvirksomhet</faktum>
         <skjemaNummer>T7</skjemaNummer>
         <skjemanummerTillegg>regnskapsforer</skjemanummerTillegg>
@@ -379,7 +365,6 @@
 
 
     <vedlegg>
-        <id>7</id>
         <faktum>naeringsvirksomhet</faktum>
         <skjemaNummer>T7</skjemaNummer>
         <skjemanummerTillegg>ikkeregnskapsforer</skjemanummerTillegg>
@@ -393,7 +378,6 @@
 
     <!-- Vedlegg rettigheter -->
     <vedlegg>
-        <id>6</id>
         <faktum>rettigheter.overtak</faktum>
         <onValues>
             <value>overtattOmsorgInnen53UkerFodsel</value>
@@ -404,7 +388,6 @@
     </vedlegg>
 
     <vedlegg>
-        <id>6</id>
         <faktum>rettigheter.omsorg</faktum>
         <onValues>
             <value>aleneomsorg</value>
@@ -415,7 +398,6 @@
 
     <!-- Vedlegg perioder -->
     <vedlegg>
-        <id>7</id>
         <faktum>vedlegg.hjelpefaktum</faktum>
         <onProperty>graderingsskjema</onProperty>
         <onValues>
@@ -444,7 +426,6 @@
     </vedlegg>
     <vedlegg>
         <faktum>perioder.tidsrom.utsettelse</faktum>
-        <skjemanummerTillegg>sykdom</skjemanummerTillegg>
         <filterKey>type</filterKey>
         <filterValues>
             <value>sykdom</value>
@@ -495,7 +476,6 @@
     </vedlegg>
     <vedlegg>
         <faktum>vedlegg.hjelpefaktum</faktum>
-        <skjemanummerTillegg>morsyk</skjemanummerTillegg>
         <property>morsykVedleggtittel</property>
         <onProperty>morsyk</onProperty>
         <onValues>

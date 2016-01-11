@@ -173,6 +173,7 @@ public class FaktaService {
 
     private void settDelstegStatus(Long soknadId, String faktumKey) {
         WebSoknad webSoknad = repository.hentSoknad(soknadId);
+
         //Sjekker og setter delstegstatus dersom et faktum blir lagret, med mindre det er visse keys
         if (!IGNORERTE_KEYS.contains(faktumKey)) {
             webSoknad.validerDelstegEndring(DelstegStatus.UTFYLLING);

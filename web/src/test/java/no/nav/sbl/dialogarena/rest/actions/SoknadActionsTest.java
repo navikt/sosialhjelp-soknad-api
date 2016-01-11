@@ -5,8 +5,10 @@ import no.nav.sbl.dialogarena.config.SoknadActionsTestConfig;
 import no.nav.sbl.dialogarena.rest.meldinger.SoknadBekreftelse;
 import no.nav.sbl.dialogarena.service.EmailService;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
+import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
@@ -24,6 +26,9 @@ import java.util.Locale;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.ETTERSENDING_OPPRETTET;
 import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -44,6 +49,8 @@ public class SoknadActionsTest {
     HtmlGenerator pdfTemplate;
     @Inject
     SoknadActions actions;
+    @Inject
+    WebSoknadConfig webSoknadConfig;
 
     ServletContext context = mock(ServletContext.class);
 
@@ -53,6 +60,7 @@ public class SoknadActionsTest {
         reset(tekster);
         when(tekster.finnTekst(eq("sendtSoknad.sendEpost.epostSubject"), any(Object[].class), any(Locale.class))).thenReturn("Emne");
         when(context.getRealPath(anyString())).thenReturn("");
+        when(webSoknadConfig.brukerNyOppsummering(anyLong())).thenReturn(false);
         actions.setContext(context);
     }
 
@@ -64,6 +72,17 @@ public class SoknadActionsTest {
         actions.sendSoknad(BEHANDLINGS_ID);
 
         verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), eq("/skjema/dagpenger.ordinaer"));
+    }
+
+    @Test
+    public void sendSoknadSkalBrukeNyPdfLogikkOmDetErSattPaaConfig() throws Exception {
+        when(soknadService.hentSoknad(BEHANDLINGS_ID, true, true)).thenReturn(soknad().medSoknadPrefix("dagpenger.ordinaer"));
+        when(pdfTemplate.fyllHtmlMalMedInnholdNew(any(WebSoknad.class), any(SoknadStruktur.class), anyString())).thenReturn("<html></html>");
+        when(webSoknadConfig.brukerNyOppsummering(anyLong())).thenReturn(true);
+
+        actions.sendSoknad(BEHANDLINGS_ID);
+
+        verify(pdfTemplate).fyllHtmlMalMedInnholdNew(any(WebSoknad.class), any(SoknadStruktur.class), eq("/skjema/generisk"));
     }
 
     @Test
