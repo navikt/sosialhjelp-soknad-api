@@ -10,6 +10,7 @@ import com.github.jknack.handlebars.context.MapValueResolver;
 import com.github.jknack.handlebars.context.MethodValueResolver;
 import no.bekk.bekkopen.person.Fodselsnummer;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
@@ -33,6 +34,9 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
     @Inject
     private Kodeverk kodeverk;
 
+    @Inject
+    private WebSoknadConfig webSoknadConfig;
+
     public String fyllHtmlMalMedInnhold(WebSoknad soknad, String file) throws IOException {
         return getHandlebars()
                 .compile(file)
@@ -40,10 +44,11 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
     }
 
     @Override
-    public String fyllHtmlMalMedInnholdNew(WebSoknad soknad, SoknadStruktur soknadStruktur, String file) throws IOException {
+    public String fyllHtmlMalMedInnhold(WebSoknad soknad) throws IOException {
+        SoknadStruktur soknadStruktur = webSoknadConfig.hentStruktur(soknad.getskjemaNummer());
         return getHandlebars()
                 .infiniteLoops(true)
-                .compile(file)
+                .compile("/skjema/generisk")
                 .apply(Context.newBuilder(new OppsummeringsContext(soknad, soknadStruktur, kodeverk, true))
                         .resolver(
                                 JavaBeanValueResolver.INSTANCE,

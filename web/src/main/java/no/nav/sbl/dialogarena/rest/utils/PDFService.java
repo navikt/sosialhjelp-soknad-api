@@ -1,18 +1,19 @@
 package no.nav.sbl.dialogarena.rest.utils;
 
-import no.nav.modig.core.context.*;
-import no.nav.modig.core.exception.*;
-import no.nav.sbl.dialogarena.pdf.*;
-import no.nav.sbl.dialogarena.service.*;
+import no.nav.modig.core.context.SubjectHandler;
+import no.nav.modig.core.exception.ApplicationException;
+import no.nav.sbl.dialogarena.pdf.PdfWatermarker;
+import no.nav.sbl.dialogarena.service.HtmlGenerator;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.*;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
-import org.springframework.stereotype.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import org.springframework.stereotype.Component;
 
-import javax.inject.*;
-import java.io.*;
+import javax.inject.Inject;
+import java.io.File;
+import java.io.IOException;
 
-import static no.nav.sbl.dialogarena.utils.PDFFabrikk.*;
+import static no.nav.sbl.dialogarena.utils.PDFFabrikk.lagPdfFil;
 
 @Component
 public class PDFService {
@@ -28,22 +29,48 @@ public class PDFService {
 
     private PdfWatermarker watermarker = new PdfWatermarker();
 
-    public byte[] genererPdfMedKodeverksverdier(WebSoknad soknad, String hbsSkjemaPath, String servletPath) {
+
+    public byte[] genererKvitteringPdf(WebSoknad soknad, String servletPath) {
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
-        return genererPdf(soknad, hbsSkjemaPath, servletPath);
+        return lagPdfFraSkjema(soknad, "/skjema/kvittering", servletPath);
     }
 
-    public byte[] genererPdf(WebSoknad soknad, String hbsSkjemaPath, String servletPath) {
+    public byte[] genererEttersendingPdf(WebSoknad soknad, String servletPath) {
+        return lagPdfFraSkjema(soknad, "skjema/ettersending/dummy", servletPath);
+    }
+
+    public byte[] genererOppsummeringPdf(WebSoknad soknad, String servletPath) {
+        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
+
+        if (webSoknadConfig.brukerNyOppsummering(soknad.getSoknadId())) {
+            return lagPdf(soknad, servletPath);
+        } else {
+            return lagPdfFraSkjema(soknad, "/skjema/" + soknad.getSoknadPrefix(), servletPath);
+        }
+    }
+
+
+    private byte[] lagPdf(WebSoknad soknad, String servletPath) {
         String pdfMarkup;
         try {
-            if(webSoknadConfig.brukerNyOppsummering(soknad.getSoknadId())){
-                pdfMarkup = pdfTemplate.fyllHtmlMalMedInnholdNew(soknad, webSoknadConfig.hentStruktur(soknad.getskjemaNummer()), hbsSkjemaPath);
-            } else {
-                pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(soknad, hbsSkjemaPath);
-            }
+            pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(soknad);
+        } catch (IOException e) {
+            throw new ApplicationException("Kunne ikke lage markup for skjema", e);
+        }
+        return lagPdfFraMarkup(pdfMarkup, servletPath);
+    }
+
+    private byte[] lagPdfFraSkjema(WebSoknad soknad, String hbsSkjemaPath, String servletPath) {
+        String pdfMarkup;
+        try {
+            pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(soknad, hbsSkjemaPath);
         } catch (IOException e) {
             throw new ApplicationException("Kunne ikke lage markup for skjema " + hbsSkjemaPath, e);
         }
+        return lagPdfFraMarkup(pdfMarkup, servletPath);
+    }
+
+    private byte[] lagPdfFraMarkup(String pdfMarkup, String servletPath) {
         String fnr = SubjectHandler.getSubjectHandler().getUid();
         byte[] pdf = lagPdfFil(pdfMarkup, new File(servletPath).toURI().toString());
         pdf = watermarker.applyOn(pdf, fnr, true);
