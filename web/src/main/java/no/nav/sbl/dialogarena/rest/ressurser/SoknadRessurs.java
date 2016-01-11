@@ -161,7 +161,6 @@ public class SoknadRessurs {
     public byte[] pdf(@PathParam("behandlingsId") String behandlingsId) {
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
         String realPath = servletContext.getRealPath("/");
-        String soknadPrefix = soknad.getSoknadPrefix();
         return pdfService.genererOppsummeringPdf(soknad, realPath);
     }
 

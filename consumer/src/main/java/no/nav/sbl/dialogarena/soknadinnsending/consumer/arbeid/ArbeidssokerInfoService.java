@@ -29,7 +29,7 @@ public class ArbeidssokerInfoService {
     @Value("${arbeidservice.password}")
     private String password;
 
-    private final String UKJENT = "UKJENT";
+    private final String ukjent = "UKJENT";
 
     private final Logger logger = getLogger(ArbeidssokerInfoService.class);
     private CloseableHttpClient httpclient = HttpClients.createDefault();
@@ -46,13 +46,13 @@ public class ArbeidssokerInfoService {
             return hentStatusFraResponse(responseHandler.handleResponse(response));
         } catch (IOException e) {
             logger.error("Feil ved henting av status fra SBL Arbeid for fnr {}: {}", fnr, e);
-            return UKJENT;
+            return ukjent;
         }
     }
 
     private String hentStatusFraResponse(String response) {
         JsonObject jObject = new JsonParser().parse(response).getAsJsonObject();
         JsonElement jArbStatus = jObject.get("arenaStatusKode");
-        return jArbStatus == null ? UKJENT : jArbStatus.getAsString();
+        return jArbStatus == null ? ukjent : jArbStatus.getAsString();
     }
 }
