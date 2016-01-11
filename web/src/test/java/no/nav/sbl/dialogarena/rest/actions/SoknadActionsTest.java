@@ -8,11 +8,9 @@ import no.nav.sbl.dialogarena.service.HtmlGenerator;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
-import org.apache.commons.lang.LocaleUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,10 +23,11 @@ import javax.servlet.ServletContext;
 import java.util.Locale;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.ETTERSENDING_OPPRETTET;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -77,12 +76,14 @@ public class SoknadActionsTest {
     @Test
     public void sendSoknadSkalBrukeNyPdfLogikkOmDetErSattPaaConfig() throws Exception {
         when(soknadService.hentSoknad(BEHANDLINGS_ID, true, true)).thenReturn(soknad().medSoknadPrefix("dagpenger.ordinaer"));
-        when(pdfTemplate.fyllHtmlMalMedInnholdNew(any(WebSoknad.class), any(SoknadStruktur.class), anyString())).thenReturn("<html></html>");
+        when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class))).thenReturn("<html></html>");
+        when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyString())).thenReturn("<html></html>");
         when(webSoknadConfig.brukerNyOppsummering(anyLong())).thenReturn(true);
 
         actions.sendSoknad(BEHANDLINGS_ID);
 
-        verify(pdfTemplate).fyllHtmlMalMedInnholdNew(any(WebSoknad.class), any(SoknadStruktur.class), eq("/skjema/generisk"));
+        verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class));
+        verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), eq("/skjema/kvittering"));
     }
 
     @Test
