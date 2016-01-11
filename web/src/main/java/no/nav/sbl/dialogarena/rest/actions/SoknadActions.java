@@ -1,23 +1,25 @@
 package no.nav.sbl.dialogarena.rest.actions;
 
-import no.nav.sbl.dialogarena.rest.meldinger.*;
-import no.nav.sbl.dialogarena.rest.utils.*;
-import no.nav.sbl.dialogarena.service.*;
-import no.nav.sbl.dialogarena.sikkerhet.*;
-import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.*;
-import no.nav.sbl.dialogarena.soknadinnsending.business.message.*;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
+import no.nav.sbl.dialogarena.rest.meldinger.FortsettSenere;
+import no.nav.sbl.dialogarena.rest.meldinger.SoknadBekreftelse;
+import no.nav.sbl.dialogarena.rest.utils.PDFService;
+import no.nav.sbl.dialogarena.service.EmailService;
+import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import org.apache.commons.lang3.LocaleUtils;
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.inject.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import javax.inject.Inject;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
-import javax.ws.rs.core.*;
-import java.util.*;
+import javax.ws.rs.core.Context;
+import java.util.Locale;
 
 import static javax.ws.rs.core.MediaType.*;
 import static no.nav.sbl.dialogarena.utils.UrlUtils.*;
@@ -45,9 +47,6 @@ public class SoknadActions {
     @Inject
     private NavMessageSource tekster;
 
-    @Inject
-    private WebSoknadConfig webSoknadConfig;
-
     @Context
     private ServletContext servletContext;
 
@@ -64,16 +63,16 @@ public class SoknadActions {
     @SjekkTilgangTilSoknad
     public void sendSoknad(@PathParam("behandlingsId") String behandlingsId) {
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
+        String servletPath = servletContext.getRealPath("/");
 
-        byte[] kvittering = pdfService.genererPdfMedKodeverksverdier(soknad, "/skjema/kvittering", servletContext.getRealPath("/"));
+        byte[] kvittering = pdfService.genererKvitteringPdf(soknad, servletPath);
         vedleggService.lagreKvitteringSomVedlegg(behandlingsId, kvittering);
 
         if (soknad.erEttersending()) {
-            byte[] dummyPdfSomHovedskjema = pdfService.genererPdf(soknad, "skjema/ettersending/dummy", servletContext.getRealPath("/"));
+            byte[] dummyPdfSomHovedskjema = pdfService.genererEttersendingPdf(soknad, servletPath);
             soknadService.sendSoknad(behandlingsId, dummyPdfSomHovedskjema);
         } else {
-            String pdfTemplate = webSoknadConfig.brukerNyOppsummering(soknad.getSoknadId()) ? "generisk" : soknad.getSoknadPrefix();
-            byte[] soknadPdf = pdfService.genererPdfMedKodeverksverdier(soknad, "/skjema/" + pdfTemplate, servletContext.getRealPath("/"));
+            byte[] soknadPdf = pdfService.genererOppsummeringPdf(soknad, servletPath);
             soknadService.sendSoknad(behandlingsId, soknadPdf);
         }
     }
