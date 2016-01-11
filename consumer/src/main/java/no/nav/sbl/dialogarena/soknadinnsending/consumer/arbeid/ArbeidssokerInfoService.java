@@ -34,7 +34,7 @@ public class ArbeidssokerInfoService {
     private final Logger logger = getLogger(ArbeidssokerInfoService.class);
     private HttpClient httpclient = HttpClients.createDefault();
 
-    public String getArbeidssokerRegistreringStatus(String fnr) {
+    public String getArbeidssokerArenaStatus(String fnr) {
         String authString = username + ":" + password;
         String encodedAuth = encodeBase64String(authString.getBytes());
 
@@ -53,7 +53,7 @@ public class ArbeidssokerInfoService {
 
     private String hentStatusFraResponse(String response) {
         JsonObject jObject = new JsonParser().parse(response).getAsJsonObject();
-        JsonElement jArbStatus = jObject.get("brukerStatus");
+        JsonElement jArbStatus = jObject.get("arenaStatusKode");
         return jArbStatus == null ? UKJENT : jArbStatus.getAsString();
     }
 }
