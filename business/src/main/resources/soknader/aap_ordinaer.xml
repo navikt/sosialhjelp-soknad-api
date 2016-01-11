@@ -1,4 +1,4 @@
-<soknad skjemaNummer="NAV 11-13.05" temaKode="AAP">
+<soknad temaKode="AAP" xmlns="urn:no.nav.sbl">
 
     <!-- Søknadstype -->
     <faktum>
@@ -236,13 +236,15 @@
     <faktum>
         <id>andreytelser.utbetalinger.fraandre.ikkemottattellersokt</id>
     </faktum>
-
+    <faktum>
+        <id>ekstraVedlegg</id>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
     <!-- Vedlegg -->
 
     <!-- Legeerklæring, skal komme på ordinærsøknaden uansett hvilke valg som blir gjort -->
     <vedlegg>
-        <id>2</id>
-        <faktum>soknadstype</faktum>
+    <faktum>soknadstype</faktum>
         <onValues>
             <value>ordinaer</value>
         </onValues>
@@ -251,7 +253,6 @@
 
     <!-- Bekreftelse på flyktningstatus -->
     <vedlegg>
-        <id>1</id>
         <faktum>tilknytningNorge.oppholdINorgeSisteTreAar.false.registrertFlyktning</faktum>
         <onValues>
             <value>true</value>
@@ -261,7 +262,6 @@
 
     <!-- Spesialisterklæring -->
     <vedlegg>
-        <id>2</id>
         <faktum>ungufor</faktum>
         <onValues>
             <value>false</value>
@@ -271,7 +271,6 @@
 
     <!-- Kopi av avtaler om ytelser -->
     <vedlegg>
-        <id>3</id>
         <faktum>andreytelser.utbetalinger.fraarbeidsgiver</faktum>
         <onValues>
             <value>false</value>
@@ -281,7 +280,6 @@
 
     <!-- Mottar eller har søkt om andre ytelser fra spesifikke kilder -->
     <vedlegg>
-        <id>4</id>
         <faktum>andreytelser.utbetalinger.fraandre.omsorgslonn</faktum>
         <onValues>
             <value>true</value>
@@ -290,7 +288,6 @@
         <skjemaNummer>K5</skjemaNummer>
     </vedlegg>
     <vedlegg>
-        <id>5</id>
         <faktum>andreytelser.utbetalinger.fraandre.fosterhjemsgodtgjorelse</faktum>
         <onValues>
             <value>true</value>
@@ -299,7 +296,6 @@
         <skjemaNummer>K5</skjemaNummer>
     </vedlegg>
     <vedlegg>
-        <id>6</id>
         <faktum>andreytelser.utbetalinger.fraandre.utenlandsketrygdemyndigheter</faktum>
         <onValues>
             <value>true</value>
@@ -309,7 +305,6 @@
 
     <!-- Fødselsattest/bostedsbevis for barn under 18 år -->
     <vedlegg>
-        <id>7</id>
         <faktum>barn</faktum>
         <skjemaNummer>X8</skjemaNummer>
         <forSystemfaktum>false</forSystemfaktum>
@@ -317,12 +312,8 @@
     </vedlegg>
 
     <!-- Ekstra vedlegg -->
-    <faktum>
-        <id>ekstraVedlegg</id>
-        <flereTillatt>true</flereTillatt>
-    </faktum>
+
     <vedlegg>
-        <id>8</id>
         <faktum>ekstraVedlegg</faktum>
         <onValues>
             <value>true</value>

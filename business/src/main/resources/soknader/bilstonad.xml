@@ -1,4 +1,4 @@
-<soknad skjemaNummer="NAV 10-07.40" temaKode="BIL">
+<soknad temaKode="BIL" xmlns="urn:no.nav.sbl">
 
     <!-- Soknadsvalg -->
     <faktum>
@@ -323,6 +323,11 @@
         <id>tilleggsopplysninger.fritekst</id>
     </faktum>
 
+    <faktum>
+        <id>ekstraVedlegg</id>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
     <!-- Bosatt utenfor Norge -->
 
     <!-- Vedlegg -->
@@ -345,7 +350,6 @@
     </vedlegg>
     <!-- Vedlegg // Førerkort -->
     <vedlegg>
-        <id>2</id>
         <faktum>forerkort.erGyldigINorge</faktum>
         <onValues>
             <value>true</value>
@@ -353,7 +357,6 @@
         <skjemaNummer>Z4</skjemaNummer>
     </vedlegg>
     <vedlegg>
-        <id>3</id>
         <faktum>forerkort.andreKanKjore</faktum>
         <onValues>
             <value>true</value>
@@ -372,6 +375,7 @@
         <faktum>soknadsvalg.stonadstype</faktum>
         <onValues>
             <value>stonadBil</value>
+            <value>stonadBilSpesialutstyr</value>
         </onValues>
         <skjemaNummer>T7</skjemaNummer>
     </vedlegg>
@@ -380,12 +384,12 @@
         <faktum>soknadsvalg.stonadstype</faktum>
         <onValues>
             <value>stonadBil</value>
+            <value>stonadBilSpesialutstyr</value>
         </onValues>
         <skjemaNummer>L9</skjemaNummer>
     </vedlegg>
 
     <vedlegg>
-        <id>4</id>
         <faktum>bilogutstyr.firehjulstrekk</faktum>
         <onValues>
             <value>ja</value>
@@ -403,12 +407,7 @@
     </vedlegg>
 
     <!-- Ekstra vedlegg -->
-    <faktum>
-        <id>ekstraVedlegg</id>
-        <flereTillatt>true</flereTillatt>
-    </faktum>
     <vedlegg>
-        <id>1</id>
         <faktum>ekstraVedlegg</faktum>
         <onValues>
             <value>true</value>

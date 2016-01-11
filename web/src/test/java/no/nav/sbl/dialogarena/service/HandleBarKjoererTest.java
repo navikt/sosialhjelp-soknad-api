@@ -4,6 +4,7 @@ import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.service.helpers.*;
 import no.nav.sbl.dialogarena.service.helpers.faktum.ForFaktaMedPropertySattTilTrueHelper;
 import no.nav.sbl.dialogarena.service.helpers.faktum.ForFaktumHelper;
+import no.nav.sbl.dialogarena.service.helpers.faktum.HvisFlereErTrueHelper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
@@ -13,9 +14,11 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Locale;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
@@ -44,7 +47,7 @@ public class HandleBarKjoererTest {
 
     @Before
     public void setup() {
-        when(cmsTekst.getCmsTekst(any(String.class), any(Object[].class), anyString())).thenReturn("mock");
+        when(cmsTekst.getCmsTekst(any(String.class), any(Object[].class), anyString(), any(Locale.class))).thenReturn("mock");
         registerHelper(new HvisSantHelper());
         registerHelper(new HvisLikHelper());
         registerHelper(new ForFaktumHelper());
@@ -54,6 +57,10 @@ public class HandleBarKjoererTest {
         registerHelper(new ForFaktaHelper());
         registerHelper(new FormaterLangDatoHelper());
         registerHelper(new ForFaktumHvisSantHelper());
+        registerHelper(new VariabelHelper());
+        registerHelper(new ForBarnefaktaHelper());
+        registerHelper(new HvisFlereErTrueHelper());
+        registerHelper(new HvisIkkeTomHelper());
         registerHelper(hentTekstHelper);
         registerHelper(hentLandHelper);
     }
@@ -61,6 +68,8 @@ public class HandleBarKjoererTest {
     private <T> void registerHelper(RegistryAwareHelper<T> helper) {
         handleBarKjoerer.registrerHelper(helper.getNavn(), helper);
     }
+
+    private ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
 
     @Test
     public void skalKompilereDagpenger() throws IOException {
@@ -105,7 +114,7 @@ public class HandleBarKjoererTest {
                 .medFaktum(new Faktum().medKey("utdanning.kveld.progresjonUnder50").medValue("false"))
                 .medFaktum(new Faktum().medKey("utdanning.kveld.navn").medValue("test"))
                 .medFaktum(new Faktum().medKey("utdanning.kveld.PaabegyntUnder6mnd").medValue("true"))
-                .medFaktum(new Faktum().medKey("utdanning.kveld.varighet").medValue(null).medProperty("varighetFra", "2014-02-05"))
+                .medFaktum(new Faktum().medKey("utdanning.kveld.varighet").medValue(null).medProperty("fom", "2014-02-05"))
                 .medFaktum(new Faktum().medKey("utdanning.kveld.folges").medValue("true"))
                 .medFaktum(new Faktum().medKey("utdanning.kveld.sted").medValue("test"))
                 .medFaktum(new Faktum().medKey("barn").medType(SYSTEMREGISTRERT).medProperty("fnr", "***REMOVED***").medProperty("navn", "test barn").medProperty("barnetillegg", "true"))

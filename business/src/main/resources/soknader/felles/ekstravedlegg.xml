@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl">
+    <faktum>
+        <id>ekstraVedlegg</id>
+        <type>java.lang.boolean</type>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+    <vedlegg>
+        <faktum>ekstraVedlegg</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>N6</skjemaNummer>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+</soknad>

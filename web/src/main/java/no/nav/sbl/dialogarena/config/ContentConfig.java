@@ -8,6 +8,7 @@ import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.types.Pingable;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,9 +20,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static java.net.HttpURLConnection.HTTP_OK;
@@ -72,7 +76,9 @@ public class ContentConfig {
         clearContentCache();
         try {
             saveLocal("enonic/sendsoknad_nb_NO.properties", new URI(cmsBaseUrl + "/app/sendsoknad/nb_NO/tekster"));
-            saveLocal("enonic/dagpenger_nb_NO.properties", new URI(cmsBaseUrl + "/app/dagpenger/nb_NO/tekster"));
+            saveLocal("enonic/sendsoknad_en.properties", new URI(cmsBaseUrl + "/app/sendsoknad/en/tekster"));
+            saveLocal("enonic/dagpenger_nb_NO.properties", new URI(cmsBaseUrl + "/app/dagpenger/nb_NO/tekster?dfg"));
+            saveLocal("enonic/dagpenger_en.properties", new URI(cmsBaseUrl + "/app/dagpenger/en/tekster"));
             saveLocal("enonic/foreldrepenger_nb_NO.properties", new URI(cmsBaseUrl + "/app/foreldrepenger/nb_NO/tekster"));
             saveLocal("enonic/aap_nb_NO.properties", new URI(cmsBaseUrl + "/app/AAP/nb_NO/tekster"));
             saveLocal("enonic/bilstonad_nb_NO.properties", new URI(cmsBaseUrl + "/app/bilstonad/nb_NO/tekster"));
@@ -125,11 +131,31 @@ public class ContentConfig {
         StringBuilder data = new StringBuilder();
         Map<String, Innholdstekst> innhold = content.toMap(Innholdstekst.KEY);
         if (!innhold.isEmpty()) {
+            Map<String, String> cmsChangeMap = getCmsChangeMap(filename);
             for (Map.Entry<String, Innholdstekst> entry : innhold.entrySet()) {
-                data.append(entry.getValue().key).append('=').append(removeNewline(entry.getValue().value)).append(System.lineSeparator());
+                String key = entry.getValue().key;
+                if(cmsChangeMap.containsKey(key)){
+                    data.append(key).append("=").append("[BYTTET NAVN] ").append(key).append("->").append(cmsChangeMap.get(key)).append(System.lineSeparator());
+                    key = cmsChangeMap.get(key);
+                }
+                data.append(key).append('=').append(removeNewline(entry.getValue().value)).append(System.lineSeparator());
             }
-            FileUtils.write(file, data, "UTF-8");
+            FileUtils.write(file, data.toString(), "UTF-8");
         }
+    }
+
+    private static Map<String, String> getCmsChangeMap(String filename) throws IOException {
+        InputStream mapping = ContentConfig.class.getResourceAsStream("/" + filename.replaceAll("enonic", "content") + ".mapping");
+        Map<String, String> changes = new HashMap<>();
+        if(mapping != null){
+            List<String> strings = IOUtils.readLines(mapping, "UTF-8");
+            for (String string : strings) {
+                if(string.split("=").length == 2) {
+                    changes.put(string.split("=")[0], string.split("=")[1]);
+                }
+            }
+        }
+        return changes;
     }
 
     private String removeNewline(String value) {

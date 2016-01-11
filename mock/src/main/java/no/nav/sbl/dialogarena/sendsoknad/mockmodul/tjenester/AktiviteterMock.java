@@ -1,7 +1,18 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.tjenester;
 
-import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.*;
-import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.*;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetOgVedtakDagligReiseListePersonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetOgVedtakDagligReiseListeSikkerhetsbegrensning;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetsinformasjonListePersonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetsinformasjonListeSikkerhetsbegrensning;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.SakOgAktivitetV1;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSAktivitet;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSAktivitetOgVedtak;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSAktivitetstyper;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSBetalingsplan;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSPeriode;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSSaksinformasjon;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSSakstyper;
+import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.WSVedtaksinformasjon;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetOgVedtakDagligReiseListeRequest;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetOgVedtakDagligReiseListeResponse;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetsinformasjonListeRequest;
@@ -22,31 +33,38 @@ public class AktiviteterMock implements SakOgAktivitetV1 {
     @Override
     public WSFinnAktivitetOgVedtakDagligReiseListeResponse finnAktivitetOgVedtakDagligReiseListe(WSFinnAktivitetOgVedtakDagligReiseListeRequest wsFinnAktivitetOgVedtakDagligReiseListeRequest) throws FinnAktivitetOgVedtakDagligReiseListeSikkerhetsbegrensning, FinnAktivitetOgVedtakDagligReiseListePersonIkkeFunnet {
         WSFinnAktivitetOgVedtakDagligReiseListeResponse response = new WSFinnAktivitetOgVedtakDagligReiseListeResponse();
-        response.withAktivitetOgVedtakListe(new WSAktivitetOgVedtak()
-                .withPeriode(new WSPeriode().withFom(new LocalDate(2015, 1, 1)).withTom(new LocalDate(2015, 12, 31)))
-                .withAktivitetId("100")
-                .withAktivitetsnavn("navn på aktivitet")
-                .withErStoenadsberettigetAktivitet(true)
-                .withSaksinformasjon(new WSSaksinformasjon().withSaksnummerArena("saksnummerarena").withVedtaksinformasjon(
-                        new WSVedtaksinformasjon()
-                                .withPeriode(new WSPeriode().withFom(new LocalDate(2015, 1, 1)).withTom(new LocalDate(2015, 4, 30)))
-                                .withVedtakId("1000")
-                                .withForventetDagligParkeringsutgift(100)
-                                .withTrengerParkering(true)
-                                .withDagsats(555.0)
-                                .withBetalingsplan(createBetalingsplaner(1, new LocalDate(2015, 1, 1), new LocalDate(2015, 3, 31), 7))
-                )
-                        .withVedtaksinformasjon(
-                                new WSVedtaksinformasjon()
-                                        .withPeriode(new WSPeriode().withFom(new LocalDate(2015, 5, 1)).withTom(new LocalDate(2015, 12, 24)))
-                                        .withVedtakId("1002")
-                                        .withForventetDagligParkeringsutgift(50)
-                                        .withTrengerParkering(false)
-                                        .withDagsats(50.0)
-                                        .withBetalingsplan(createBetalingsplaner(1000, new LocalDate(2015, 5, 1), new LocalDate(2015, 12, 24), 30))
-
-                        )));
+        response.withAktivitetOgVedtakListe(aktivitetOgVedtak("TSO", "aktivitet1 TSO"), aktivitetOgVedtak("TSR", "aktivitet1 TSR"));
         return response;
+    }
+    private static long id;
+    private WSAktivitetOgVedtak aktivitetOgVedtak(String tema, String navn) {
+        return new WSAktivitetOgVedtak()
+                .withPeriode(new WSPeriode().withFom(new LocalDate(2015, 1, 1)).withTom(new LocalDate(2015, 12, 31)))
+                .withAktivitetId("" + id++)
+                .withAktivitetsnavn(navn)
+                .withErStoenadsberettigetAktivitet(true)
+                .withSaksinformasjon(
+                        new WSSaksinformasjon().withSaksnummerArena("saksnummerarena")
+                                .withSakstype(new WSSakstyper().withValue(tema))
+                                .withVedtaksinformasjon(
+                                        new WSVedtaksinformasjon()
+                                                .withPeriode(new WSPeriode().withFom(new LocalDate(2015, 1, 1)).withTom(new LocalDate(2015, 4, 30)))
+                                                .withVedtakId("" + id++)
+                                                .withForventetDagligParkeringsutgift(100)
+                                                .withTrengerParkering(true)
+                                                .withDagsats(555.0)
+                                                .withBetalingsplan(createBetalingsplaner(1, new LocalDate(2015, 1, 1), new LocalDate(2015, 3, 31), 7))
+                                )
+                                .withVedtaksinformasjon(
+                                        new WSVedtaksinformasjon()
+                                                .withPeriode(new WSPeriode().withFom(new LocalDate(2015, 5, 1)).withTom(new LocalDate(2015, 12, 24)))
+                                                .withVedtakId("" + id++)
+                                                .withForventetDagligParkeringsutgift(50)
+                                                .withTrengerParkering(false)
+                                                .withDagsats(50.0)
+                                                .withBetalingsplan(createBetalingsplaner(1000, new LocalDate(2015, 5, 1), new LocalDate(2015, 12, 24), 30))
+
+                                ));
     }
 
     private Collection<WSBetalingsplan> createBetalingsplaner(int startId, LocalDate fom, LocalDate tom, int antDagerBetalingsplan) {
