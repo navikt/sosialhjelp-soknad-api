@@ -3,11 +3,11 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeid;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +32,7 @@ public class ArbeidssokerInfoService {
     final String UKJENT = "UKJENT";
 
     private final Logger logger = getLogger(ArbeidssokerInfoService.class);
-    private HttpClient httpclient = HttpClients.createDefault();
+    private CloseableHttpClient httpclient = HttpClients.createDefault();
 
     public String getArbeidssokerArenaStatus(String fnr) {
         String authString = username + ":" + password;
@@ -42,12 +42,13 @@ public class ArbeidssokerInfoService {
         HttpGet httpget = new HttpGet(sblArbeidBaseUrl + "personer/" + fnr + "/status");
         httpget.setHeader("Authorization", String.format("Basic %s", encodedAuth));
 
-        try {
-            HttpResponse response = httpclient.execute(httpget);
+        try(CloseableHttpResponse response = httpclient.execute(httpget)) {
             return hentStatusFraResponse(responseHandler.handleResponse(response));
         } catch (IOException e) {
             logger.error("Feil ved henting av status fra SBL Arbeid for fnr {}: {}", fnr, e);
             return UKJENT;
+        } finally {
+            httpget.releaseConnection();
         }
     }
 
