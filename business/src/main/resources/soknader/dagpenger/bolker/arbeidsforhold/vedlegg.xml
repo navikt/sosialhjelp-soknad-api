@@ -91,6 +91,16 @@
         </onValues>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
+    <vedlegg>
+        <faktum>arbeidsforhold</faktum>
+        <skjemaNummer>T6</skjemaNummer>
+        <property>arbeidsgivernavn</property>
+        <onProperty>type</onProperty>
+        <onValues>
+            <value>permittert</value>
+        </onValues>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 
     <vedlegg>
         <faktum>arbeidsforhold</faktum>
