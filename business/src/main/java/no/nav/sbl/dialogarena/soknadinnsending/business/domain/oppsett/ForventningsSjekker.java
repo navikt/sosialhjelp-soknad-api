@@ -22,9 +22,20 @@ public class ForventningsSjekker {
             @Override
             public int compare(Object left, Object right) throws SpelEvaluationException {
                 if (left.getClass() == String.class && right.getClass() != String.class) {
-                    return super.compare(CONVERSION_SERVICE.convert(left, right.getClass()), right);
+                    Class<?> clazz = right.getClass();
+                    if(Number.class.isAssignableFrom(right.getClass())) {
+                        clazz = Double.class;
+                        left = left.toString().replace(",", ".");
+                    }
+
+                    return super.compare(CONVERSION_SERVICE.convert(left, clazz), right);
                 } else if (right.getClass() == String.class && left.getClass() != String.class) {
-                    return super.compare(left, CONVERSION_SERVICE.convert(right, left.getClass()));
+                    Class<?> clazz = left.getClass();
+                    if(Number.class.isAssignableFrom(left.getClass())) {
+                        clazz = Double.class;
+                        right = right.toString().replace(",", ".");
+                    }
+                    return super.compare(left, CONVERSION_SERVICE.convert(right, clazz));
                 }
                 return super.compare(left, right);
             }
@@ -35,8 +46,10 @@ public class ForventningsSjekker {
         try {
             return PARSER.parseExpression(forventning).getValue(CONTEXT, value, Boolean.class);
         } catch (EvaluationException e) {
+            e.printStackTrace();
             return false;
         } catch (ParseException e) {
+            e.printStackTrace();
             return false;
         }
     }
