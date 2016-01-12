@@ -101,7 +101,7 @@ public class InformasjonRessursTest {
     public void utslagskriterierInneholderAlleKriteriene() {
         when(arbeidssokerInfoService.getArbeidssokerArenaStatus(anyString())).thenReturn("ARBS");
         Map<String, Object> utslagskriterier = ressurs.hentUtslagskriterier();
-        assertThat(utslagskriterier.containsKey("arbeidssokerArenaStatus")).isTrue();
+        assertThat(utslagskriterier.containsKey("arbeidssokertatusFraSBLArbeid")).isTrue();
         assertThat(utslagskriterier.containsKey("arbeidssokerstatus")).isTrue();
         assertThat(utslagskriterier.containsKey("ytelsesstatus")).isTrue();
         assertThat(utslagskriterier.containsKey("alder")).isTrue();
