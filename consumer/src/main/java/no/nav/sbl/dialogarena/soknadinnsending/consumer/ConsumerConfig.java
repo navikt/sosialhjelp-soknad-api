@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeid.ArbeidssokerInfoService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
@@ -19,6 +20,7 @@ import static java.lang.System.setProperty;
         HenvendelseService.class,
         PersonService.class,
         PersonInfoService.class,
+        ArbeidssokerInfoService.class,
         ConsumerConfig.WsServices.class,
 })
 

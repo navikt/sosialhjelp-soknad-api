@@ -25,7 +25,8 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
-import static javax.ws.rs.core.MediaType.*;
+
+import static javax.ws.rs.core.MediaType.TEXT_HTML;
 
 @Controller
 @Path("/internal")
@@ -94,8 +95,7 @@ public class InternalRessurs {
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
 
-        String oppsummeringSti = "/skjema/generisk";
-        return pdfTemplate.fyllHtmlMalMedInnholdNew(soknad, soknadService.hentSoknadStruktur(soknad.getskjemaNummer()), oppsummeringSti);
+        return pdfTemplate.fyllHtmlMalMedInnhold(soknad);
     }
 
     @GET

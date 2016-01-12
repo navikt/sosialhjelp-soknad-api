@@ -78,6 +78,10 @@
         <appender-ref ref="klientlogg"/>
     </logger>
 
+    <logger name="org.apache.http.impl.client" level="info">
+        <appender-ref ref="infolog" />
+    </logger>
+
     <root level="${ROOT_LOG_LEVEL:-INFO}">
         <appender-ref ref="exceptionlog"/>
         <appender-ref ref="infolog"/>
