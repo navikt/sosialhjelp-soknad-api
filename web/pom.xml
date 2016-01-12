@@ -269,13 +269,13 @@
             <version>2.4</version>
             <scope>runtime</scope>
         </dependency>
-
-        <!-- Avhengigheter med scope test -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <scope>test</scope>
+            <scope>runtime</scope>
         </dependency>
+
+        <!-- Avhengigheter med scope test -->
 
         <dependency>
             <groupId>no.nav.modig</groupId>
