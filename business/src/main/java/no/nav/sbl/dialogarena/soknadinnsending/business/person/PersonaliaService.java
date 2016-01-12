@@ -15,6 +15,7 @@ import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.DigitalKontaktinf
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.HentDigitalKontaktinformasjonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.HentDigitalKontaktinformasjonSikkerhetsbegrensing;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSKontaktinformasjon;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentDigitalKontaktinformasjonRequest;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentDigitalKontaktinformasjonResponse;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
@@ -149,14 +150,14 @@ public class PersonaliaService implements BolkService {
         try {
             return dkif.hentDigitalKontaktinformasjon(makeDKIFRequest(ident));
         }catch (HentDigitalKontaktinformasjonSikkerhetsbegrensing | HentDigitalKontaktinformasjonPersonIkkeFunnet e) {
-            logger.error("Person ikke tilgjengelig i dkif", e);
+            logger.error("Person ikke tilgjengelig i dkif", e.getMessage());
         } catch (HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet e) {
-            logger.info("Kunne ikke hente kontaktinformasjon fra dkif");
+            logger.info("Kunne ikke hente kontaktinformasjon fra dkif", e.getMessage());
         } catch (Exception e) {
-            logger.info("Feil ved henting fra dkif", e);
+            logger.info("Feil ved henting fra dkif", e.getMessage());
         }
 
-        return new WSHentDigitalKontaktinformasjonResponse();
+        return new WSHentDigitalKontaktinformasjonResponse().withDigitalKontaktinformasjon(new WSKontaktinformasjon());
     }
 
     private WSHentDigitalKontaktinformasjonRequest makeDKIFRequest(String ident) {
