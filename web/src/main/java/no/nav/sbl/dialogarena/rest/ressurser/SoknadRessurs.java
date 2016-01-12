@@ -21,25 +21,14 @@ import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.MediaType.APPLICATION_XML;
-import static javax.ws.rs.core.MediaType.TEXT_HTML;
+import static javax.ws.rs.core.MediaType.*;
 import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.generateXsrfToken;
 
 @Path("/soknader")
@@ -89,7 +78,7 @@ public class SoknadRessurs {
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
 
         if(webSoknadConfig.brukerNyOppsummering(soknad.getSoknadId())) {
-            return pdfTemplate.fyllHtmlMalMedInnholdNew(soknad, webSoknadConfig.hentStruktur(soknad.getskjemaNummer()), "/skjema/generisk");
+            return pdfTemplate.fyllHtmlMalMedInnhold(soknad);
         }
         return pdfTemplate.fyllHtmlMalMedInnhold(soknad, "/skjema/" + soknad.getSoknadPrefix());
     }
@@ -172,8 +161,7 @@ public class SoknadRessurs {
     public byte[] pdf(@PathParam("behandlingsId") String behandlingsId) {
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
         String realPath = servletContext.getRealPath("/");
-        String soknadPrefix = soknad.getSoknadPrefix();
-        return pdfService.genererPdfMedKodeverksverdier(soknad, "/skjema/" + soknadPrefix, realPath);
+        return pdfService.genererOppsummeringPdf(soknad, realPath);
     }
 
     @GET
