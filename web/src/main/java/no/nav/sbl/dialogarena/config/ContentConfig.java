@@ -145,7 +145,8 @@ public class ContentConfig {
     }
 
     private static Map<String, String> getCmsChangeMap(String filename) throws IOException {
-        InputStream mapping = ContentConfig.class.getResourceAsStream("/" + filename.replaceAll("enonic", "content") + ".mapping");
+        String mappingFileName = filename.substring(0, filename.indexOf('_')).replaceAll("enonic", "content") + ".properties.mapping";
+        InputStream mapping = ContentConfig.class.getResourceAsStream("/" + mappingFileName);
         Map<String, String> changes = new HashMap<>();
         if(mapping != null){
             List<String> strings = IOUtils.readLines(mapping, "UTF-8");
