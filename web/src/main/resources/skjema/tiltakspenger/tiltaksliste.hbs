@@ -20,11 +20,18 @@
                 </td>
             {{/forFaktumMedId}}
             {{#hvisLik value "annetTiltak"}}
-                {{#forFaktum "tiltaksliste.annetTiltak"}}
+                {{#forFaktum "tiltaksliste.tiltakslistenErTom"}}
+                    {{#hvisLik value "false"}}
                     <td class="sjekket"></td>
                     <td>
                         {{hentTekst 'tiltaksliste.velgTiltak.radiovalgtekst.annet'}}
                         <ul>
+                {{else}}
+                    <td>
+                        <ul class="kulepunktliste-alenestaende">
+                    {{/hvisLik}}
+                {{/forFaktum}}
+                {{#forFaktum "tiltaksliste.annetTiltak"}}
                             <li class="kulepunkt faktum-felt">
                                 {{hentTekst 'tiltaksliste.annetTiltak.tiltakstype'}}:
                                 {{#hvisLik value 'PRAKSORD'}}
