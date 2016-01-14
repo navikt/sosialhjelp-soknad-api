@@ -135,7 +135,7 @@ public class ContentConfig {
             for (Map.Entry<String, Innholdstekst> entry : innhold.entrySet()) {
                 String key = entry.getValue().key;
                 if(cmsChangeMap.containsKey(key)){
-                    data.append(key).append("=").append("[BYTTET NAVN] ").append(key).append("->").append(cmsChangeMap.get(key)).append(System.lineSeparator());
+                    data.append(key).append('=').append("[BYTTET NAVN] ").append(key).append("->").append(cmsChangeMap.get(key)).append(System.lineSeparator());
                     key = cmsChangeMap.get(key);
                 }
                 data.append(key).append('=').append(removeNewline(entry.getValue().value)).append(System.lineSeparator());
