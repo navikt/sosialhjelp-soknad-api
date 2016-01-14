@@ -4,7 +4,6 @@ import no.nav.sbl.dialogarena.rest.actions.*;
 import no.nav.sbl.dialogarena.rest.utils.*;
 import no.nav.sbl.dialogarena.service.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.business.message.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
 import org.springframework.context.annotation.*;

@@ -240,6 +240,31 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
                 new VedleggRowMapper(false), soknadId, faktumId);
     }
 
+    public void oppdaterVedlegg(VedleggRepository vedleggRepository) {
+        boolean vedleggErPaakrevd = erVedleggPaakrevd();
+
+        if (vedleggFinnes() || vedleggErPaakrevd) {
+
+            if (vedleggIkkeFinnes()) {
+                opprettVedleggFraFaktum();
+            }
+
+            Vedlegg.Status orginalStatus = vedlegg.getInnsendingsvalg();
+            Vedlegg.Status status = oppdaterInnsendingsvalg(vedleggErPaakrevd);
+            VedleggForFaktumStruktur vedleggForFaktumStruktur = grunnlag.get(0).getLeft();
+            Faktum faktum = grunnlag.get(0).getRight().get(0);
+            if (vedleggHarTittelFraProperty(vedleggForFaktumStruktur, faktum)) {
+                vedlegg.setNavn(faktum.getProperties().get(vedleggForFaktumStruktur.getProperty()));
+            } else if (vedleggForFaktumStruktur.harOversetting()) {
+                String cmsnokkel = vedleggForFaktumStruktur.getOversetting().replace("${key}", faktum.getKey());
+                vedlegg.setNavn(navMessageSource.getMessage(cmsnokkel, new Object[0], soknad.getSprak()));
+            }
+
+            if (!status.equals(orginalStatus) || vedlegg.erNyttVedlegg()) {
+                vedleggRepository.opprettEllerLagreVedleggVedNyGenereringUtenEndringAvData(vedlegg);
+            }
+        }
+    }
     private static final Predicate<? super Vedlegg> ER_KVITTERING = new Predicate<Vedlegg>() {
         @Override
         public boolean evaluate(Vedlegg vedlegg) {

@@ -5,7 +5,7 @@ import no.nav.modig.content.ContentRetriever;
 import no.nav.modig.content.enonic.HttpContentRetriever;
 import no.nav.modig.content.enonic.innholdstekst.Innholdstekst;
 import no.nav.modig.core.exception.ApplicationException;
-import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
+import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.types.Pingable;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
