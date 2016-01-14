@@ -6,8 +6,6 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBankkonto;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBankkontoNorge;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBankkontoUtland;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBruker;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLEPost;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLElektroniskKommunikasjonskanal;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSKontaktinformasjon;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentDigitalKontaktinformasjonResponse;
@@ -116,15 +114,6 @@ public class PersonaliaTransform {
 
     private static LocalDate finnFodselsdato(Person person) {
         return new LocalDate(person.getFoedselsdato().getFoedselsdato().toGregorianCalendar());
-    }
-
-    private static String finnEpost(XMLBruker xmlBruker) {
-        for (XMLElektroniskKommunikasjonskanal kanal : xmlBruker.getElektroniskKommunikasjonskanal()) {
-            if (kanal.getElektroniskAdresse() instanceof XMLEPost) {
-                return ((XMLEPost) kanal.getElektroniskAdresse()).getIdentifikator();
-            }
-        }
-        return "";
     }
 
     private static String finnFnr(XMLBruker xmlBruker) {

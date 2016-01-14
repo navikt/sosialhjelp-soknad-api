@@ -11,12 +11,6 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPrefer
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserRequest;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
-import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.DigitalKontaktinformasjonV1;
-import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet;
-import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.HentDigitalKontaktinformasjonPersonIkkeFunnet;
-import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.HentDigitalKontaktinformasjonSikkerhetsbegrensing;
-import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSKontaktinformasjon;
-import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentDigitalKontaktinformasjonRequest;
 import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentDigitalKontaktinformasjonResponse;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
@@ -30,27 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.ALDER_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.DISKRESJONSKODE;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.EPOST_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.ER_UTENLANDSK_BANKKONTO;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.FNR_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_GYLDIGFRA_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_GYLDIGTIL_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_LANDKODE;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_TYPE_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.KJONN_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.KONTONUMMER_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.NAVN_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.SEKUNDARADRESSE_GYLDIGFRA_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.SEKUNDARADRESSE_GYLDIGTIL_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.SEKUNDARADRESSE_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.SEKUNDARADRESSE_TYPE_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.STATSBORGERSKAPTYPE_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.STATSBORGERSKAP_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.UTENLANDSK_KONTO_BANKNAVN;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.UTENLANDSK_KONTO_LAND;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
@@ -63,12 +37,11 @@ public class PersonaliaService implements BolkService {
     @Named("brukerProfilEndpoint")
     private BrukerprofilPortType brukerProfil;
     @Inject
-    @Named("dkifService")
-    private DigitalKontaktinformasjonV1 dkif;
-    @Inject
     private PersonService personService;
     @Inject
     private Kodeverk kodeverk;
+    @Inject
+    private EpostService epostService;
 
 
     public Personalia hentPersonalia(String fodselsnummer) {
@@ -89,7 +62,7 @@ public class PersonaliaService implements BolkService {
             throw new ApplicationException("TPS:webserviceException", e);
         }
 
-        WSHentDigitalKontaktinformasjonResponse dkifResponse = hentInfoFraDKIF(fodselsnummer);
+        WSHentDigitalKontaktinformasjonResponse dkifResponse = epostService.hentInfoFraDKIF(fodselsnummer);
         return PersonaliaTransform.mapTilPersonalia(preferanserResponse, kjerneinformasjonResponse, kodeverk, dkifResponse);
     }
 
@@ -97,7 +70,6 @@ public class PersonaliaService implements BolkService {
     public String tilbyrBolk() {
         return BOLKNAVN;
     }
-
 
 
     @Override
@@ -145,23 +117,4 @@ public class PersonaliaService implements BolkService {
         request.setIdent(ident);
         return request;
     }
-
-    protected WSHentDigitalKontaktinformasjonResponse hentInfoFraDKIF(String ident) {
-        try {
-            return dkif.hentDigitalKontaktinformasjon(makeDKIFRequest(ident));
-        }catch (HentDigitalKontaktinformasjonSikkerhetsbegrensing | HentDigitalKontaktinformasjonPersonIkkeFunnet e) {
-            logger.error("Person ikke tilgjengelig i dkif", e.getMessage());
-        } catch (HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet e) {
-            logger.info("Kunne ikke hente kontaktinformasjon fra dkif", e.getMessage());
-        } catch (Exception e) {
-            logger.info("Feil ved henting fra dkif", e.getMessage());
-        }
-
-        return new WSHentDigitalKontaktinformasjonResponse().withDigitalKontaktinformasjon(new WSKontaktinformasjon());
-    }
-
-    private WSHentDigitalKontaktinformasjonRequest makeDKIFRequest(String ident) {
-        return new WSHentDigitalKontaktinformasjonRequest().withPersonident(ident);
-    }
-
 }
