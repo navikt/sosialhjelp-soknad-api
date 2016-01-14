@@ -2,8 +2,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg;
 
 import no.nav.modig.core.exception.SystemException;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -241,7 +241,7 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
     }
 
     public void oppdaterVedlegg(VedleggRepository vedleggRepository) {
-        boolean vedleggErPaakrevd = erVedleggPaakrevd();
+       /* boolean vedleggErPaakrevd = erVedleggPaakrevd();
 
         if (vedleggFinnes() || vedleggErPaakrevd) {
 
@@ -263,7 +263,7 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
             if (!status.equals(orginalStatus) || vedlegg.erNyttVedlegg()) {
                 vedleggRepository.opprettEllerLagreVedleggVedNyGenereringUtenEndringAvData(vedlegg);
             }
-        }
+        }*/
     }
     private static final Predicate<? super Vedlegg> ER_KVITTERING = new Predicate<Vedlegg>() {
         @Override

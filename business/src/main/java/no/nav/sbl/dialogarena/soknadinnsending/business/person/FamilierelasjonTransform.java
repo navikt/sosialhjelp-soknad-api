@@ -1,12 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Doedsdato;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjon;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjoner;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personstatus;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Statsborgerskap;
+
+import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 
 import java.util.ArrayList;

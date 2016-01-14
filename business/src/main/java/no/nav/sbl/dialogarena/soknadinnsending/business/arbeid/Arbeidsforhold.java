@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.arbeid;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.dto.Land;
+
+import no.nav.sbl.dialogarena.sendsoknad.domain.dto.Land;
 
 public class Arbeidsforhold {
     public String orgnr;
