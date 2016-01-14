@@ -64,6 +64,9 @@ public class PersonaliaServiceTest {
     private DigitalKontaktinformasjonV1 dkif;
 
     @Mock
+    private EpostService epostMock;
+
+    @Mock
     private Kodeverk kodeverkMock;
     private Person person;
     private DateTimeFormatter dateTimeFormat;
@@ -92,7 +95,7 @@ public class PersonaliaServiceTest {
         WSHentDigitalKontaktinformasjonResponse digitalKontaktinformasjonResponse = new WSHentDigitalKontaktinformasjonResponse();
         digitalKontaktinformasjonResponse.setDigitalKontaktinformasjon(genererDigitalKontaktinformasjonMedEpost());
 
-        when(dkif.hentDigitalKontaktinformasjon(org.mockito.Matchers.any(WSHentDigitalKontaktinformasjonRequest.class))).thenReturn(digitalKontaktinformasjonResponse);
+        when(epostMock.hentInfoFraDKIF(org.mockito.Matchers.any(String.class))).thenReturn(digitalKontaktinformasjonResponse);
     }
 
 
@@ -135,7 +138,7 @@ public class PersonaliaServiceTest {
         WSHentDigitalKontaktinformasjonResponse digitalKontaktinformasjonResponse = new WSHentDigitalKontaktinformasjonResponse();
         digitalKontaktinformasjonResponse.setDigitalKontaktinformasjon(genererDigitalKontaktinformasjonUtenEpost());
 
-        when(dkif.hentDigitalKontaktinformasjon(org.mockito.Matchers.any(WSHentDigitalKontaktinformasjonRequest.class))).thenReturn(digitalKontaktinformasjonResponse);
+        when(epostMock.hentInfoFraDKIF(org.mockito.Matchers.any(String.class))).thenReturn(digitalKontaktinformasjonResponse);
 
         mockGyldigPerson();
 
@@ -343,30 +346,10 @@ public class PersonaliaServiceTest {
     }
 
     @Test
-    public void returnerMedDkifdataDersomHentPersonaliaKasterException() throws HentDigitalKontaktinformasjonSikkerhetsbegrensing, HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet, HentDigitalKontaktinformasjonPersonIkkeFunnet {
-        String fnr = "12345612345";
-
-        when(personaliaService.hentPersonalia(fnr)).thenThrow(new ApplicationException(""));
-        List<Faktum> systemFaktaListe = personaliaService.genererSystemFakta(fnr, any(Long.class));
-
-        assertThat(systemFaktaListe.size(), is(1));
-    }
-
-    @Test
     public void returnererListeFraHentPersonaliaHvisIngenException() {
         List<Faktum> systemFaktaliste = personaliaService.genererSystemFakta(RIKTIG_IDENT, any(Long.class));
 
         assertThat(systemFaktaliste.size(), is(1));
-    }
-
-    @Test
-    public void returnererPersonaliaMedTomEpostHvisDKIFErNede() throws HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet, HentDigitalKontaktinformasjonSikkerhetsbegrensing, HentDigitalKontaktinformasjonPersonIkkeFunnet {
-        String fnr = "12345612345";
-        when(dkif.hentDigitalKontaktinformasjon(any(WSHentDigitalKontaktinformasjonRequest.class))).thenThrow(new HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet());
-
-        Personalia personalia = personaliaService.hentPersonalia(fnr);
-
-        assertThat(personalia.getEpost(), is(""));
     }
 
     @Test
@@ -378,4 +361,5 @@ public class PersonaliaServiceTest {
 
         assertThat(systemfaktaListe.size(), is(not(0)));
     }
+
 }

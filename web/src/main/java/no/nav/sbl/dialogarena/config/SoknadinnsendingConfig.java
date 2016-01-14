@@ -4,6 +4,7 @@ import no.nav.modig.cache.CacheConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.BusinessConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadInnsendingDBConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -11,6 +12,7 @@ import org.springframework.context.annotation.Import;
 
 @EnableAspectJAutoProxy
 @Configuration
+@EnableCaching
 @Import({
         ApplicationConfig.class,
         BusinessConfig.class,
@@ -22,4 +24,5 @@ import org.springframework.context.annotation.Import;
         HandlebarsHelperConfig.class})
 @ComponentScan(basePackages = "no.nav.sbl.dialogarena.rest")
 public class SoknadinnsendingConfig {
+
 }
