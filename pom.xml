@@ -11,6 +11,7 @@
     <modules>
         <module>config</module>
         <module>business</module>
+        <module>domain</module>
         <module>consumer</module>
         <module>web</module>
         <module>jee</module>
@@ -63,6 +64,12 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>sendsoknad-consumer</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>sendsoknad-domain</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -653,6 +660,14 @@
                 <type>test-jar</type>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>sendsoknad-domain</artifactId>
+                <version>${project.version}</version>
+                <type>test-jar</type>
+                <scope>test</scope>
+            </dependency>
+
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>common-test</artifactId>
