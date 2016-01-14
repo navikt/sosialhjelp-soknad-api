@@ -30,7 +30,6 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.service.ServiceUt
 @Component
 public class AktivitetBetalingsplanService implements BolkService {
 
-    public static final String VEDTAKPERIODER = "vedtakperioder";
     private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(AktivitetBetalingsplanService.class);
     private static final Transformer<WSAktivitetOgVedtak, Iterable<WSVedtaksinformasjon>> AKTIVITET_TIL_VEDTAK = new Transformer<WSAktivitetOgVedtak, Iterable<WSVedtaksinformasjon>>() {
         @Override
