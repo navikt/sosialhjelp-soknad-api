@@ -1,17 +1,17 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.IkkeFunnetException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.IkkeFunnetException;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.FaktumStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.VedleggForFaktumStruktur;
-import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import org.apache.commons.collections15.Closure;
 import org.slf4j.Logger;
@@ -27,8 +27,6 @@ import java.util.Locale;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.FunksjonalitetBryter.GammelVedleggsLogikk;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -65,7 +63,7 @@ public class FaktaService {
     public Faktum opprettBrukerFaktum(String behandlingsId, Faktum faktum) {
         Long soknadId = repository.hentSoknad(behandlingsId).getSoknadId();
         faktum.setSoknadId(soknadId);
-        faktum.setType(BRUKERREGISTRERT);
+        faktum.setType(Faktum.FaktumType.BRUKERREGISTRERT);
         Long faktumId = repository.opprettFaktum(soknadId, faktum);
 
         repository.settSistLagretTidspunkt(soknadId);
@@ -79,7 +77,7 @@ public class FaktaService {
     @Transactional
     public Faktum lagreBrukerFaktum(Faktum faktum) {
         Long soknadId = faktum.getSoknadId();
-        faktum.setType(BRUKERREGISTRERT);
+        faktum.setType(Faktum.FaktumType.BRUKERREGISTRERT);
 
         Long faktumId = repository.oppdaterFaktum(faktum);
         repository.settSistLagretTidspunkt(soknadId);
@@ -109,7 +107,7 @@ public class FaktaService {
                     faktum.setFaktumId(existing.getFaktumId());
                     faktum.kopierFaktumegenskaper(existing);
                 }
-                faktum.setType(SYSTEMREGISTRERT);
+                faktum.setType(Faktum.FaktumType.SYSTEMREGISTRERT);
                 if (faktum.getFaktumId() != null) {
                     repository.oppdaterFaktum(faktum, true);
                 } else {
@@ -124,7 +122,7 @@ public class FaktaService {
     @Transactional
     public Long lagreSystemFaktum(Long soknadId, Faktum f) {
         logger.debug("*** Lagrer systemfaktum ***: " + f.getKey());
-        f.setType(SYSTEMREGISTRERT);
+        f.setType(Faktum.FaktumType.SYSTEMREGISTRERT);
         List<Faktum> fakta = repository.hentSystemFaktumList(soknadId, f.getKey());
 
 

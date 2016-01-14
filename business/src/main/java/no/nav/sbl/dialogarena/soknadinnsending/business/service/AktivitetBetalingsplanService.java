@@ -2,7 +2,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 
 import com.google.common.collect.Lists;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadRefusjonDagligreise;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BolkService;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetOgVedtakDagligReiseListePersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.FinnAktivitetOgVedtakDagligReiseListeSikkerhetsbegrensning;
@@ -25,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.ServiceUtils.datoTilString;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.ServiceUtils.*;
 
 @Component
 public class AktivitetBetalingsplanService implements BolkService {
@@ -89,7 +90,7 @@ public class AktivitetBetalingsplanService implements BolkService {
 
     @Override
     public String tilbyrBolk() {
-        return VEDTAKPERIODER;
+        return SoknadRefusjonDagligreise.VEDTAKPERIODER;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
