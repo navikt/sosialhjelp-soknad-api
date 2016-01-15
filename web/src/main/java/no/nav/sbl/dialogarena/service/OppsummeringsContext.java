@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static java.util.Collections.emptyList;
-import static no.nav.modig.lang.collections.IterUtils.on;
+import static java.util.Collections.*;
+import static no.nav.modig.lang.collections.IterUtils.*;
 
 
 public class OppsummeringsContext {
@@ -76,8 +76,6 @@ public class OppsummeringsContext {
             return "skjema/generisk/textbox";
         } else if ("composite".equals(type)) {
             return "skjema/generisk/composite";
-        } else if ("compositelist".equals(type)) {
-            return "skjema/generisk/compositelist";
         } else if ("periode".equals(type)) {
             return "skjema/generisk/periode";
         } else if ("date".equals(type)) {
