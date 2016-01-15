@@ -53,6 +53,10 @@
             <artifactId>sendsoknad-business</artifactId>
         </dependency>
         <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sendsoknad-domain</artifactId>
+        </dependency>
+        <dependency>
             <groupId>no.bekk.bekkopen</groupId>
             <artifactId>nocommons</artifactId>
         </dependency>
