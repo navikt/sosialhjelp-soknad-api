@@ -1,18 +1,16 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.oppsett;
 
-import com.google.common.io.CharStreams;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.XmlService;
-import org.junit.Test;
-import org.xml.sax.SAXParseException;
+import com.google.common.io.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import org.junit.*;
+import org.xml.sax.*;
 
-import javax.xml.XMLConstants;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
-import java.util.List;
+import javax.xml.*;
+import javax.xml.transform.stream.*;
+import javax.xml.validation.*;
+import java.util.*;
 
-import static junit.framework.Assert.fail;
+import static junit.framework.Assert.*;
 
 public class SoknadXmlValiderer {
 
