@@ -9,6 +9,11 @@ public class Steg {
     public final String url;
     public final String cmstekst;
 
+    public Steg() {
+        this.url = "";
+        this.cmstekst = "";
+    }
+
     private Steg(String url, String cmstekst) {
         this.url = url;
         this.cmstekst = cmstekst;
