@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig;
 
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonPortTypeMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder;
 import no.nav.sbl.dialogarena.types.Pingable;
 import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
@@ -8,12 +9,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.inject.Inject;
+
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.util.InstanceSwitcher.createSwitcher;
 
 @Configuration
 public class PersonWSConfig {
 
     public static final String PERSON_KEY = "start.person.withmock";
+    private PersonMock personMock = PersonMock.getInstance();
 
     @Value("${soknad.webservice.person.personservice.url}")
     private String personEndpoint;
@@ -30,7 +34,7 @@ public class PersonWSConfig {
 
     @Bean
     public PersonPortType personEndpoint() {
-        PersonPortType mock = new PersonMock().personMock();
+        PersonPortTypeMock mock = personMock.personMock();
         PersonPortType prod = factory().withUserSecurity().get();
         return createSwitcher(prod, mock, PERSON_KEY, PersonPortType.class);
     }

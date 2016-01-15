@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<body>
+    <style>
+        form {
+            margin: 1rem 10rem;
+            background: lightgray;
+            display: inline-block;
+            padding: 0 2rem 2rem 2rem;
+        }
+        .lagre {
+            margin-top: 1rem;
+        }
+    </style>
+    <form method="POST" action="/sendsoknad/internal/mockdata">
+        <h1>Endre mockdata</h1>
+        <div>
+            <input type="checkbox" name="utenlandskstatsborger" id="utenlandskstatsborger" value="true"
+                {{#if getUtenlandskStatsborger}}
+                   checked
+                {{/if}}
+            />
+            <label for="utenlandskstatsborger">Utenlandsk statsborger</label>
+        </div>
+        <div>
+            <input type="checkbox" name="kode6" id="kode6" value="true"
+                {{#if getKode6}}
+                   checked
+                {{/if}}
+            />
+            <label for="kode6">Kode6-bruker</label>
+        </div>
+        <button class="lagre" type="submit" name="submit" value="submit">Lagre</button>
+    </form>
+</body>
