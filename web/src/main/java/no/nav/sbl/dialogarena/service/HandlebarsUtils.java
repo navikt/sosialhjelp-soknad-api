@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.service;
 
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Options;
+import no.nav.sbl.dialogarena.service.oppsummering.OppsummeringsContext;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 

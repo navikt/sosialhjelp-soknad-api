@@ -42,8 +42,12 @@ public class HandleBarKjoererTest {
     @Mock
     private CmsTekst cmsTekst;
 
+
     @Mock
     private Kodeverk kodeverk;
+
+
+    private ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
 
     @Before
     public void setup() {
@@ -68,8 +72,6 @@ public class HandleBarKjoererTest {
     private <T> void registerHelper(RegistryAwareHelper<T> helper) {
         handleBarKjoerer.registrerHelper(helper.getNavn(), helper);
     }
-
-    private ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
 
     @Test
     public void skalKompilereDagpenger() throws IOException {
