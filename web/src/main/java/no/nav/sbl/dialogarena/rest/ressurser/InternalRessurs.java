@@ -6,6 +6,8 @@ import com.github.jknack.handlebars.context.FieldValueResolver;
 import com.github.jknack.handlebars.context.MethodValueResolver;
 import com.github.jknack.handlebars.io.URLTemplateSource;
 import no.nav.sbl.dialogarena.config.ContentConfig;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonPortTypeMock;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
 import no.nav.sbl.dialogarena.soknadinnsending.business.FunksjonalitetBryter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
@@ -13,10 +15,13 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.ServletContext;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -27,6 +32,7 @@ import java.net.URI;
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
+import static no.nav.sbl.dialogarena.rest.utils.MockdataUtils.*;
 
 @Controller
 @Path("/internal")
@@ -47,6 +53,12 @@ public class InternalRessurs {
     private HtmlGenerator pdfTemplate;
     @Context
     private ServletContext servletContext;
+
+    private PersonPortTypeMock personPortTypeMock;
+
+    InternalRessurs(){
+        personPortTypeMock = PersonMock.getInstance().personMock();
+    }
 
 
     @GET
@@ -86,6 +98,34 @@ public class InternalRessurs {
         }
 
         return Response.seeOther(URI.create("/sendsoknad/internal/funksjon")).build();
+    }
+
+    @GET
+    @Path(value = "/mockdata")
+    public String endreMockdata() throws IOException {
+        MockdataFields fields = getMockdataFields(personPortTypeMock);
+
+        Handlebars handlebars = new Handlebars();
+        Template compile = handlebars.compile(new URLTemplateSource("endreMockData.hbs", servletContext.getResource("/WEB-INF/endreMockData.hbs")));
+        com.github.jknack.handlebars.Context context = com.github.jknack.handlebars.Context
+                .newBuilder(fields)
+                .resolver(MethodValueResolver.INSTANCE)
+                .build();
+        return compile.apply(context);
+    }
+
+    @POST
+    @Path(value = "/mockdata")
+    public Response endreMockData(@FormParam("utenlandskstatsborger") String utenlandskStatsborger,
+                                  @FormParam("kode6") String kode6,
+                                  @FormParam("submit") String submit) throws InterruptedException {
+        Boolean skalHaKode6 = "true".equalsIgnoreCase(kode6);
+        Boolean erUtenlandskStatsborger = "true".equalsIgnoreCase(utenlandskStatsborger);
+
+        Person person = personPortTypeMock.getPerson();
+        person.setDiskresjonskode(skalHaKode6 ? getDiskresjonskode() : null);
+        setLandPaaStatsborgerskap(person.getStatsborgerskap(), erUtenlandskStatsborger ? "GER" : "NOR");
+        return Response.seeOther(URI.create("/sendsoknad/internal/mockdata")).build();
     }
 
     @GET
