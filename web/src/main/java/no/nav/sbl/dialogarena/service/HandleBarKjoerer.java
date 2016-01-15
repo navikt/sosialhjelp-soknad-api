@@ -9,7 +9,7 @@ import com.github.jknack.handlebars.context.JavaBeanValueResolver;
 import com.github.jknack.handlebars.context.MapValueResolver;
 import com.github.jknack.handlebars.context.MethodValueResolver;
 import no.bekk.bekkopen.person.Fodselsnummer;
-import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.service.oppsummering.OppsummeringsContext;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
@@ -30,8 +30,6 @@ import static org.apache.commons.lang3.StringUtils.*;
 public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
 
     private Map<String, Helper> helpers = new HashMap<>();
-    @Inject
-    private Kodeverk kodeverk;
 
     @Inject
     private WebSoknadConfig webSoknadConfig;
@@ -48,7 +46,7 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         return getHandlebars()
                 .infiniteLoops(true)
                 .compile("/skjema/generisk")
-                .apply(Context.newBuilder(new OppsummeringsContext(soknad, soknadStruktur, kodeverk, false))
+                .apply(Context.newBuilder(new OppsummeringsContext(soknad, soknadStruktur, false))
                         .resolver(
                                 JavaBeanValueResolver.INSTANCE,
                                 FieldValueResolver.INSTANCE,
