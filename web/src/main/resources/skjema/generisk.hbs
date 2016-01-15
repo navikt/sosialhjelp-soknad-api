@@ -46,27 +46,20 @@
     </div>
 
     <div class="brosjyre-signatur">
-        <table>
-            <tr>
-                <td>
-                    <span class="sjekket"></span>
-                </td>
-                <td>
-                    {{ hentTekst "informasjonsside.lestbrosjyre.sporsmal" }}
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" style="height: 6pt;"></td>
-            </tr>
-            <tr>
-                <td>
-                    <span class="sjekket"></span>
-                </td>
-                <td>
-                    {{{ hentTekst "oppsummering.bekreftOpplysninger" }}}
-                </td>
-            </tr>
-        </table>
+
+        <ul class="fakta-liste">
+            <li>
+                <ul class="svar-liste">
+                    <li>
+                        {{ hentTekst "informasjonsside.lestbrosjyre.sporsmal" }}
+                    </li>
+                    <li>
+                        {{{ hentTekst "oppsummering.bekreftOpplysninger" }}}
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
     </div>
 </div>
 </body>
