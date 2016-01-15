@@ -5,7 +5,6 @@ public enum OppsummeringsTyper {
     checkboxGroup("skjema/generisk/checkboxgroup"),
     textbox("skjema/generisk/textbox"),
     composite("skjema/generisk/composite"),
-    compositelist("skjema/generisk/compositelist"),
     periode("skjema/generisk/periode"),
     date("skjema/generisk/date"),
     tilleggsopplysninger("skjema/generisk/tilleggsopplysninger"),
