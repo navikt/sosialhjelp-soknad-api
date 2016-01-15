@@ -135,7 +135,7 @@ public class ContentConfig {
             for (Map.Entry<String, Innholdstekst> entry : innhold.entrySet()) {
                 String key = entry.getValue().key;
                 if(cmsChangeMap.containsKey(key)){
-                    data.append(key).append("=").append("[BYTTET NAVN] ").append(key).append("->").append(cmsChangeMap.get(key)).append(System.lineSeparator());
+                    data.append(key).append('=').append("[BYTTET NAVN] ").append(key).append("->").append(cmsChangeMap.get(key)).append(System.lineSeparator());
                     key = cmsChangeMap.get(key);
                 }
                 data.append(key).append('=').append(removeNewline(entry.getValue().value)).append(System.lineSeparator());
@@ -145,7 +145,8 @@ public class ContentConfig {
     }
 
     private static Map<String, String> getCmsChangeMap(String filename) throws IOException {
-        InputStream mapping = ContentConfig.class.getResourceAsStream("/" + filename.replaceAll("enonic", "content") + ".mapping");
+        String mappingFileName = filename.substring(0, filename.indexOf('_')).replaceAll("enonic", "content") + ".properties.mapping";
+        InputStream mapping = ContentConfig.class.getResourceAsStream("/" + mappingFileName);
         Map<String, String> changes = new HashMap<>();
         if(mapping != null){
             List<String> strings = IOUtils.readLines(mapping, "UTF-8");

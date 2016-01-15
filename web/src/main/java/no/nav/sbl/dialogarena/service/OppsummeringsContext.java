@@ -71,7 +71,7 @@ public class OppsummeringsContext {
     }
     private String resolveView(String type) {
         if ("checkboxGroup".equals(type)) {
-            return "skjema/generisk/checkboxGroup";
+            return "skjema/generisk/checkboxgroup";
         } else if ("textbox".equals(type)) {
             return "skjema/generisk/textbox";
         } else if ("composite".equals(type)) {
