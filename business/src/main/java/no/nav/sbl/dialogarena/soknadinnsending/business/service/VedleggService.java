@@ -415,9 +415,10 @@ public class VedleggService {
                 }
             }
 
-            String sprak = soknadService.hentSprak(vedlegg.getSoknadId()).getValue();
+            Faktum sprakFaktum = soknadService.hentSprak(vedlegg.getSoknadId());
 
-            boolean soknadErEngelsk = "en".equals(sprak);
+            boolean soknadHarSpraak = sprakFaktum != null;
+            boolean soknadErEngelsk = soknadHarSpraak && "en".equals(sprakFaktum.getValue());
             boolean engelskTittelFinnes = !"".equals(koder.get(Kodeverk.Nokkel.TITTEL_EN));
             Kodeverk.Nokkel tittelKey = soknadErEngelsk && engelskTittelFinnes ? Kodeverk.Nokkel.TITTEL_EN : Kodeverk.Nokkel.TITTEL;
 
