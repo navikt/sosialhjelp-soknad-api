@@ -2,16 +2,16 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.refusjondag
 
 import no.nav.melding.virksomhet.paaloepteutgifter.v1.paaloepteutgifter.PaaloepteUtgifter;
 import no.nav.melding.virksomhet.paaloepteutgifter.v1.paaloepteutgifter.Utgiftsperioder;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.AlternativRepresentasjon;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.ServiceUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.refusjondagligreise.RefusjonDagligreiseTilXml;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 
 import java.math.BigInteger;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.ServiceUtils.datoTilString;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.ServiceUtils.stringTilXmldato;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class RefusjonDagligreiseTilXmlTest {
@@ -48,7 +48,7 @@ public class RefusjonDagligreiseTilXmlTest {
         assertThat(utgiftsperiode.getBetalingsplanId()).isEqualTo("1");
         assertThat(utgiftsperiode.getTotaltAntallDagerKjoert()).isEqualTo(BigInteger.valueOf(1));
         assertThat(utgiftsperiode.getUtgiftsdagerMedParkering().size()).isEqualTo(1);
-        assertThat(utgiftsperiode.getUtgiftsdagerMedParkering().get(0).getUtgiftsdag()).isEqualTo(stringTilXmldato("2015-01-01"));
+        assertThat(utgiftsperiode.getUtgiftsdagerMedParkering().get(0).getUtgiftsdag()).isEqualTo(ServiceUtils.stringTilXmldato("2015-01-01"));
     }
 
     @Test
@@ -82,9 +82,9 @@ public class RefusjonDagligreiseTilXmlTest {
         LocalDate tomDato = new LocalDate(tom);
 
         for (LocalDate date = fomDato; date.isBefore(tomDato.plusDays(1)); date = date.plusDays(1)) {
-            faktum.medProperty(datoTilString(date) + ".soker", "true");
+            faktum.medProperty(ServiceUtils.datoTilString(date) + ".soker", "true");
             if(trengerParkering) {
-                faktum.medProperty(datoTilString(date) + ".parkering", "100");
+                faktum.medProperty(ServiceUtils.datoTilString(date) + ".parkering", "100");
             }
         }
     }

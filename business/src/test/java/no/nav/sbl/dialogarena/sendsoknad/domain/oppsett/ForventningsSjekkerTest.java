@@ -1,17 +1,9 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.oppsett;
 
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import org.apache.commons.collections15.Predicate;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import org.junit.Test;
 
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.util.Arrays;
-import java.util.List;
-
-import static java.lang.String.format;
-import static javax.xml.bind.JAXBContext.newInstance;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 

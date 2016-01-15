@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.util;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import org.assertj.core.api.AbstractBooleanAssert;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,13 +8,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.IkkeVedlegg;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.LastetOpp;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.SendesIkke;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.SendesSenere;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.VedleggAlleredeSendt;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.VedleggKreves;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.VedleggSendesAvAndre;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 

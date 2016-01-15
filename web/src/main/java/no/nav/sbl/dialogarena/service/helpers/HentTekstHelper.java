@@ -1,14 +1,16 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
-import com.github.jknack.handlebars.*;
-import no.nav.sbl.dialogarena.service.*;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.*;
-import org.springframework.stereotype.*;
+import com.github.jknack.handlebars.Options;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.service.CmsTekst;
+import no.nav.sbl.dialogarena.service.HandlebarsUtils;
+import org.springframework.stereotype.Component;
 
-import javax.inject.*;
-import java.io.*;
+import javax.inject.Inject;
+import java.io.IOException;
 
-import static org.apache.commons.lang3.LocaleUtils.*;
+import static org.apache.commons.lang3.LocaleUtils.toLocale;
 
 @Component
 public class HentTekstHelper extends RegistryAwareHelper<String> {

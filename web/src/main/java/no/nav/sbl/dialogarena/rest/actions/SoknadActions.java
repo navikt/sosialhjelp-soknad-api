@@ -3,11 +3,11 @@ package no.nav.sbl.dialogarena.rest.actions;
 import no.nav.sbl.dialogarena.rest.meldinger.FortsettSenere;
 import no.nav.sbl.dialogarena.rest.meldinger.SoknadBekreftelse;
 import no.nav.sbl.dialogarena.rest.utils.PDFService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.service.EmailService;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import org.apache.commons.lang3.LocaleUtils;
@@ -21,8 +21,10 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import java.util.Locale;
 
-import static javax.ws.rs.core.MediaType.*;
-import static no.nav.sbl.dialogarena.utils.UrlUtils.*;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
+import static no.nav.sbl.dialogarena.utils.UrlUtils.getEttersendelseUrl;
+import static no.nav.sbl.dialogarena.utils.UrlUtils.getFortsettUrl;
 
 @Path("/soknader/{behandlingsId}/actions")
 @Produces(APPLICATION_JSON)

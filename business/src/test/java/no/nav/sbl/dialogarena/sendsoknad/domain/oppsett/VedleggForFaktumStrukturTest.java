@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.oppsett;
 
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.XmlService;
 import org.apache.commons.collections15.Predicate;
 import org.junit.Test;
