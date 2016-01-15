@@ -2,7 +2,10 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg;
 
 import no.nav.modig.core.exception.SystemException;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggsGrunnlag;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.io.IOUtils;
@@ -240,30 +243,30 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
                 new VedleggRowMapper(false), soknadId, faktumId);
     }
 
-    public void oppdaterVedlegg(VedleggRepository vedleggRepository) {
-       /* boolean vedleggErPaakrevd = erVedleggPaakrevd();
+    public void oppdaterVedlegg(VedleggsGrunnlag vedleggsgrunnlag) {
+       boolean vedleggErPaakrevd = vedleggsgrunnlag.erVedleggPaakrevd();
 
-        if (vedleggFinnes() || vedleggErPaakrevd) {
+        if (vedleggsgrunnlag.vedleggFinnes() || vedleggErPaakrevd) {
 
-            if (vedleggIkkeFinnes()) {
-                opprettVedleggFraFaktum();
+            if (vedleggsgrunnlag.vedleggIkkeFinnes()) {
+                vedleggsgrunnlag.opprettVedleggFraFaktum();
             }
 
-            Vedlegg.Status orginalStatus = vedlegg.getInnsendingsvalg();
-            Vedlegg.Status status = oppdaterInnsendingsvalg(vedleggErPaakrevd);
-            VedleggForFaktumStruktur vedleggForFaktumStruktur = grunnlag.get(0).getLeft();
-            Faktum faktum = grunnlag.get(0).getRight().get(0);
-            if (vedleggHarTittelFraProperty(vedleggForFaktumStruktur, faktum)) {
-                vedlegg.setNavn(faktum.getProperties().get(vedleggForFaktumStruktur.getProperty()));
+            Vedlegg.Status orginalStatus = vedleggsgrunnlag.vedlegg.getInnsendingsvalg();
+            Vedlegg.Status status = vedleggsgrunnlag.oppdaterInnsendingsvalg(vedleggErPaakrevd);
+            VedleggForFaktumStruktur vedleggForFaktumStruktur = vedleggsgrunnlag.grunnlag.get(0).getLeft();
+            Faktum faktum = vedleggsgrunnlag.grunnlag.get(0).getRight().get(0);
+            if (vedleggsgrunnlag.vedleggHarTittelFraProperty(vedleggForFaktumStruktur, faktum)) {
+                vedleggsgrunnlag.vedlegg.setNavn(faktum.getProperties().get(vedleggForFaktumStruktur.getProperty()));
             } else if (vedleggForFaktumStruktur.harOversetting()) {
                 String cmsnokkel = vedleggForFaktumStruktur.getOversetting().replace("${key}", faktum.getKey());
-                vedlegg.setNavn(navMessageSource.getMessage(cmsnokkel, new Object[0], soknad.getSprak()));
+                vedleggsgrunnlag.vedlegg.setNavn(vedleggsgrunnlag.navMessageSource.getMessage(cmsnokkel, new Object[0], vedleggsgrunnlag.soknad.getSprak()));
             }
 
-            if (!status.equals(orginalStatus) || vedlegg.erNyttVedlegg()) {
-                vedleggRepository.opprettEllerLagreVedleggVedNyGenereringUtenEndringAvData(vedlegg);
+            if (!status.equals(orginalStatus) || vedleggsgrunnlag.vedlegg.erNyttVedlegg()) {
+                opprettEllerLagreVedleggVedNyGenereringUtenEndringAvData(vedleggsgrunnlag.vedlegg);
             }
-        }*/
+        }
     }
     private static final Predicate<? super Vedlegg> ER_KVITTERING = new Predicate<Vedlegg>() {
         @Override

@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.service;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 
 import java.io.IOException;
 

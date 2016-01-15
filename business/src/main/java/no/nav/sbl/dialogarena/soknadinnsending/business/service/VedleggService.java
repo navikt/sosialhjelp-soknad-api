@@ -335,7 +335,7 @@ public class VedleggService {
         on(forventninger).forEach(new Closure<VedleggsGrunnlag>() {
             @Override
             public void execute(VedleggsGrunnlag vedleggsgrunnlag) {
-                vedleggsgrunnlag.oppdaterVedlegg(vedleggRepository);
+                vedleggRepository.oppdaterVedlegg(vedleggsgrunnlag);
             }
         });
     }

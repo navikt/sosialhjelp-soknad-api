@@ -14,9 +14,9 @@ import java.util.List;
 
 public class VedleggsGrunnlag {
     public List<Pair<VedleggForFaktumStruktur, List<Faktum>>> grunnlag = new ArrayList<>();
-    private WebSoknad soknad;
-    private Vedlegg vedlegg;
-    private NavMessageSource navMessageSource;
+    public WebSoknad soknad;
+    public Vedlegg vedlegg;
+    public NavMessageSource navMessageSource;
 
     public VedleggsGrunnlag(WebSoknad soknad, Vedlegg vedlegg, NavMessageSource navMessageSource) {
         this.soknad = soknad;
@@ -84,18 +84,18 @@ public class VedleggsGrunnlag {
 
 
 
-    private boolean vedleggHarTittelFraProperty(VedleggForFaktumStruktur vedlegg, Faktum faktum) {
+    public boolean vedleggHarTittelFraProperty(VedleggForFaktumStruktur vedlegg, Faktum faktum) {
         return vedlegg.getProperty() != null && faktum.getProperties().containsKey(vedlegg.getProperty());
     }
-    private void opprettVedleggFraFaktum() {
+    public void opprettVedleggFraFaktum() {
         vedlegg = grunnlag.get(0).getLeft().genererVedlegg(finnForsteFaktum());
     }
 
-    private boolean vedleggIkkeFinnes() {
+    public boolean vedleggIkkeFinnes() {
         return !vedleggFinnes();
     }
 
-    private boolean vedleggFinnes() {
+    public boolean vedleggFinnes() {
         return vedlegg != null;
     }
 

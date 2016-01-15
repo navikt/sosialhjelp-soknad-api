@@ -1,14 +1,14 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import net.jcip.annotations.NotThreadSafe;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.FunksjonalitetBryter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
@@ -24,9 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.KVITTERING;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.IkkeVedlegg;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.LastetOpp;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.VedleggKreves;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -281,7 +279,7 @@ public class DefaultVedleggServiceTest {
         List<Vedlegg> vedlegg = vedleggService.genererPaakrevdeVedlegg("123");
         assertThat(vedlegg).hasSize(1);
         assertThat(vedlegg).contains(vedleggForFaktum);
-        assertThat(vedleggForFaktum.getInnsendingsvalg()).isEqualTo(Vedlegg.Status.VedleggKreves);
+        assertThat(vedleggForFaktum.getInnsendingsvalg()).isEqualTo(VedleggKreves);
         verify(vedleggRepository).opprettEllerLagreVedleggVedNyGenereringUtenEndringAvData(eq(vedleggForFaktum));
     }
 
@@ -295,7 +293,7 @@ public class DefaultVedleggServiceTest {
                         .medVedlegg(vedleggForFaktum));
         List<Vedlegg> vedlegg = vedleggService.genererPaakrevdeVedlegg("123");
         assertThat(vedlegg).hasSize(0);
-        assertThat(vedleggForFaktum.getInnsendingsvalg()).isEqualTo(Vedlegg.Status.IkkeVedlegg);
+        assertThat(vedleggForFaktum.getInnsendingsvalg()).isEqualTo(IkkeVedlegg);
         verify(vedleggRepository).opprettEllerLagreVedleggVedNyGenereringUtenEndringAvData(eq(vedleggForFaktum));
     }
 

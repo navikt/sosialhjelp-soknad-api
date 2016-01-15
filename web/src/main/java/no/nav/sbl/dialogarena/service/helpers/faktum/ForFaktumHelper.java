@@ -2,9 +2,9 @@ package no.nav.sbl.dialogarena.service.helpers.faktum;
 
 
 import com.github.jknack.handlebars.Options;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.service.helpers.RegistryAwareHelper;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
