@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.soknadinnsending.business.service;
+package no.nav.sbl.dialogarena.sendsoknad.domain;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;

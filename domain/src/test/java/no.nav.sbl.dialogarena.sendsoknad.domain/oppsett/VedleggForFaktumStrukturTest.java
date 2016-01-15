@@ -1,21 +1,18 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.oppsett;
 
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.XmlService;
-import org.apache.commons.collections15.Predicate;
-import org.junit.Test;
+import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import org.apache.commons.collections15.*;
+import org.junit.*;
 
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.stream.StreamSource;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
+import javax.xml.bind.*;
+import javax.xml.transform.stream.*;
+import java.io.*;
+import java.util.*;
 
-import static javax.xml.bind.JAXBContext.newInstance;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static javax.xml.bind.JAXBContext.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 public class VedleggForFaktumStrukturTest {
     Faktum konkurs = new Faktum().medKey("arbeidforhold").medProperty("type", "arbeidsgivererkonkurs");
