@@ -6,11 +6,11 @@
     <parent>
         <groupId>no.nav.sbl.dialogarena</groupId>
         <artifactId>sendsoknad</artifactId>
-        <version>8.9-SNAPSHOT</version>
+        <version>8.10-SNAPSHOT</version>
     </parent>
 
     <artifactId>sendsoknad-web</artifactId>
-    <version>8.9-SNAPSHOT</version>
+    <version>8.10-SNAPSHOT</version>
     <name>${project.artifactId}</name>
     <packaging>war</packaging>
 
@@ -42,10 +42,6 @@
         <dependency>
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-security-authorization</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>common-lokalt-kodeverk</artifactId>
         </dependency>
 
         <dependency>
@@ -273,13 +269,13 @@
             <version>2.4</version>
             <scope>runtime</scope>
         </dependency>
-
-        <!-- Avhengigheter med scope test -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <scope>test</scope>
+            <scope>runtime</scope>
         </dependency>
+
+        <!-- Avhengigheter med scope test -->
 
         <dependency>
             <groupId>no.nav.modig</groupId>
@@ -351,7 +347,6 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
@@ -475,6 +470,22 @@
             <plugin>
                 <groupId>org.jboss.as.plugins</groupId>
                 <artifactId>jboss-as-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>analyze</id>
+                        <goals>
+                            <goal>analyze-only</goal>
+                        </goals>
+                        <configuration>
+                            <usedDependencies>
+                                <usedDependency>org.apache.httpcomponents:httpclient</usedDependency>
+                            </usedDependencies>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
