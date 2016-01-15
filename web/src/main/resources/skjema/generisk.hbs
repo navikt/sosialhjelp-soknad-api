@@ -1,72 +1,73 @@
 <html>
-    <head>
-        <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-        {{> skjema/felles/styling }}
-    </head>
-    <body>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    {{> skjema/generisk/generisk-styling }}
+</head>
+<body>
 
-        <div class="header">
-            <img class="header-logo" src="img/nav-logo.gif"/>
-            {{#forFaktum "personalia"}}
-                <span class="navn">{{properties.navn}}</span>
-                <span class="fnr">{{properties.fnr}}</span>
-            {{/forFaktum}}
-            <span class="headerSider">
-                {{ hentTekst "oppsummering.sideAvTotal" }}
-            </span>
-        </div>
+<div class="header">
+    <img class="header-logo" src="img/nav-logo.gif"/>
+    {{#forFaktum "personalia"}}
+        <span class="navn">{{properties.navn}}</span>
+        <span class="fnr">{{properties.fnr}}</span>
+    {{/forFaktum}}
+    <span class="headerSider">
+        {{ hentTekst "oppsummering.sideAvTotal" }}
+    </span>
+</div>
 
-        <div class="footer">
+<div class="footer">
             <span>
                 <span>{{ hentSkjemanummer }} {{ hentTekst "oppsummering.eSoknad" }}</span>
                 <span>|</span>
                 <span>{{ hentTekst "oppsummering.fastsattDato" }}</span>
             </span>
-        </div>
+</div>
 
-        <div id="soknad">
-            <img class="logo" src="img/nav-logo.gif"/>
-            <div class="hode">
-                <h1>{{ hentTekst "skjema.tittel" }}</h1>
-                {{> skjema/dagpenger/personalia }}
-            </div>
+<div id="soknad" class="generisk-oppsummering">
+    <img class="logo" src="img/nav-logo.gif"/>
 
-            <div>
-                {{#each bolker}}
-                    <h2>{{ hentTekst (concat (toLowerCase navn) ".tittel") }}</h2>
-                    {{#variabel "niva" 2}}
-                        <table>
-                            {{#each fakta}}
-                                {{> skjema/generisk/faktum }}
-                            {{/each}}
-                        </table>
-                    {{/variabel}}
-                {{/each}}
-            </div>
+    <div class="hode">
+        <h1>{{ hentTekst "skjema.tittel" }}</h1>
+        {{> skjema/dagpenger/personalia }}
+    </div>
 
-            <div class="brosjyre-signatur">
-                <table >
-                    <tr>
-                        <td>
-                            <span class="sjekket"></span>
-                        </td>
-                        <td>
-                            {{ hentTekst "informasjonsside.lestbrosjyre.sporsmal" }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" style="height: 6pt;"></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="sjekket"></span>
-                        </td>
-                        <td>
-                            {{{ hentTekst "oppsummering.bekreftOpplysninger" }}}
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-    </body>
+    <div>
+        {{#each bolker}}
+            <h2>{{ hentTekst (concat (toLowerCase navn) ".tittel") }}</h2>
+            {{#variabel "niva" 2}}
+                <ul class="fakta-liste">
+                    {{#each fakta}}
+                        {{> skjema/generisk/faktum }}
+                    {{/each}}
+                </ul>
+            {{/variabel}}
+        {{/each}}
+    </div>
+
+    <div class="brosjyre-signatur">
+        <table>
+            <tr>
+                <td>
+                    <span class="sjekket"></span>
+                </td>
+                <td>
+                    {{ hentTekst "informasjonsside.lestbrosjyre.sporsmal" }}
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="height: 6pt;"></td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="sjekket"></span>
+                </td>
+                <td>
+                    {{{ hentTekst "oppsummering.bekreftOpplysninger" }}}
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
 </html>
