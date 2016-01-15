@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.service;
 
+import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.service.helpers.*;
 import no.nav.sbl.dialogarena.service.helpers.faktum.ForFaktaMedPropertySattTilTrueHelper;
 import no.nav.sbl.dialogarena.service.helpers.faktum.ForFaktumHelper;
@@ -40,6 +41,12 @@ public class HandleBarKjoererTest {
 
     @Mock
     private CmsTekst cmsTekst;
+
+
+    @Mock
+    private Kodeverk kodeverk;
+
+
     private ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
 
     @Before
