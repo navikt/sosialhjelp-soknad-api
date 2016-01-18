@@ -28,6 +28,10 @@
             <artifactId>common-lokalt-kodeverk</artifactId>
         </dependency>
         <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sendsoknad-mock</artifactId>
+        </dependency>
+        <dependency>
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-content</artifactId>
         </dependency>
