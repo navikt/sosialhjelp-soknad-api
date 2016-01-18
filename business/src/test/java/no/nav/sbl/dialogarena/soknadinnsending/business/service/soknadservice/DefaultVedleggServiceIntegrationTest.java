@@ -1,7 +1,50 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
+import org.junit.*;
+import org.junit.runner.*;
+import org.mockito.*;
+import org.springframework.test.context.*;
+import org.springframework.test.context.junit4.*;
+
+import javax.inject.*;
+import javax.xml.bind.*;
+import java.util.*;
+
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.*;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = {BatmansConfig.class})
 public class DefaultVedleggServiceIntegrationTest {
-    /*
+
+    @Inject
+    private SoknadDataFletter soknadDataFletter;
+
+    @Inject
+    private VedleggService vedleggService;
+
+    @Inject
+    private VedleggRepository vedleggRepository;
+
+    @Inject
+    private FaktaService faktaService;
+
+    @Inject
+    private SoknadService soknadService;
+
+    @Before
+    public void setup() {
+        settOppStruktur();
+    }
+
+
     @Test
     public void skalGenerereEttVedleggOmFlereTillattErFalse() {
         Faktum faktum = new Faktum().medKey("toFaktumMedSammeVedlegg1").medValue("true").medFaktumId(1L);
@@ -77,7 +120,7 @@ public class DefaultVedleggServiceIntegrationTest {
         assertThat(vedlegg).hasSize(1);
         assertThat(vedlegg).contains(vedleggForFaktum);
         assertThat(vedleggForFaktum.getInnsendingsvalg()).isEqualTo(VedleggKreves);
-        verify(vedleggRepository).opprettEllerLagreVedleggVedNyGenereringUtenEndringAvData(eq(vedleggForFaktum));
+        Mockito.verify(vedleggRepository).opprettEllerLagreVedleggVedNyGenereringUtenEndringAvData(eq(vedleggForFaktum));
     }
 
     @Test
@@ -182,5 +225,9 @@ public class DefaultVedleggServiceIntegrationTest {
         vedlegg = vedleggService.genererPaakrevdeVedlegg("123");
         assertThat(vedlegg).hasSize(0);
     }
-    */
+
+    private void settOppStruktur() {
+        SoknadStruktur testStruktur = JAXB.unmarshal(this.getClass().getResourceAsStream("/TestStruktur.xml"), SoknadStruktur.class);
+        when(soknadService.hentSoknadStruktur(eq("nav-1.1.1"))).thenReturn(testStruktur);
+    }
 }
