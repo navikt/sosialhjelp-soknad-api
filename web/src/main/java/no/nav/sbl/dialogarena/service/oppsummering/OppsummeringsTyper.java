@@ -23,10 +23,12 @@ public enum OppsummeringsTyper {
     }
 
     public static String resolve(String type) {
-        try {
-            return valueOf(type).template;
-        } catch(IllegalArgumentException | NullPointerException e) {
-            logger.info("Ukjent oppsumeringsstype, bruker default", e);
+        if(type != null) {
+            try {
+                return valueOf(type).template;
+            } catch(IllegalArgumentException | NullPointerException e) {
+                logger.info("Ukjent oppsumeringsstype {}, bruker default", type);
+            }
         }
         return radio.template;
     }
