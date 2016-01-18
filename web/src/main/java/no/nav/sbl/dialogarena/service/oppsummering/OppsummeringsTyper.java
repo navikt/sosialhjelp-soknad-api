@@ -17,7 +17,7 @@ public enum OppsummeringsTyper {
 
     public final String template;
     private static final Logger logger = getLogger(OppsummeringsTyper.class);
-    
+
     OppsummeringsTyper(String template) {
         this.template = template;
     }
@@ -25,7 +25,7 @@ public enum OppsummeringsTyper {
     public static String resolve(String type) {
         try {
             return valueOf(type).template;
-        } catch(IllegalArgumentException e) {
+        } catch(IllegalArgumentException | NullPointerException e) {
             logger.info("Ukjent oppsumeringsstype, bruker default", e);
         }
         return radio.template;
