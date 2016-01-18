@@ -1,18 +1,12 @@
-<tr>
-    <td></td>
-    <td>
-        {{#hvisTekstFinnes (concat key ".sporsmal")}}
-            {{>skjema/generisk/sporsmal}}
-        {{/hvisTekstFinnes}}
-        {{> skjema/generisk/infotekst}}
-    </td>
-</tr>
-<tr>
-    <td class="sjekket"></td>
-    <td>{{ hentTekst (concat key "." value) }}
-        {{> skjema/generisk/infotekstvalue}}
-        {{> skjema/generisk/vedlegg}}
-        {{> skjema/generisk/barnefakta}}
+{{> skjema/generisk/sporsmal}}
+{{> skjema/generisk/infotekst}}
 
-    </td>
-</tr>
+<ul class="svar-liste">
+    <li>
+        {{ hentTekst (concat key "." value) }}
+        {{> skjema/generisk/barneFakta}}
+    </li>
+</ul>
+
+{{> skjema/generisk/infotekstvalue}}
+{{> skjema/generisk/vedlegg}}

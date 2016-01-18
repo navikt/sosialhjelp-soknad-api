@@ -1,7 +1,7 @@
-<tr>
-    <td></td>
-    <td>
-        {{>skjema/generisk/sporsmal}}
-        {{> skjema/generisk/barnefakta}}
-    </td>
-</tr>
+{{>skjema/generisk/sporsmal}}
+
+<ul class="fakta-liste">
+    {{#each barneFakta}}
+        {{> skjema/generisk/faktum}}
+    {{/each}}
+</ul>
