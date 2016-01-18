@@ -55,20 +55,7 @@
 
   <xs:complexType name="propertyStruktur">
     <xs:all>
-      <xs:element name="configuration" minOccurs="0">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
-              <xs:complexType>
-                <xs:sequence>
-                  <xs:element name="key" minOccurs="0" type="xs:string"/>
-                  <xs:element name="value" minOccurs="0" type="xs:string"/>
-                </xs:sequence>
-              </xs:complexType>
-            </xs:element>
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
+      <xs:element name="configuration" type="tns:configuration" minOccurs="0"/>
       <xs:element name="constraints" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
@@ -80,6 +67,19 @@
       <xs:element name="id" type="xs:string" minOccurs="0"/>
       <xs:element name="type" type="xs:string" minOccurs="0"/>
     </xs:all>
+  </xs:complexType>
+
+  <xs:complexType name="configuration">
+    <xs:sequence>
+      <xs:element name="entry" type="tns:configurationEntry" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="configurationEntry">
+    <xs:sequence>
+      <xs:element name="key" type="xs:string" minOccurs="0"/>
+      <xs:element name="value" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
   </xs:complexType>
 
   <xs:complexType name="vedleggForFaktumStruktur">

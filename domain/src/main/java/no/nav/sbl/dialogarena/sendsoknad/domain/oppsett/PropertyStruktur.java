@@ -8,7 +8,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
 @XmlType(propOrder = {})
 public class PropertyStruktur implements Serializable, StrukturConfigurable {
@@ -16,7 +15,7 @@ public class PropertyStruktur implements Serializable, StrukturConfigurable {
     private String type;
     private String dependOn;
     private List<String> constraints;
-    private Map<String, String> configuration;
+    private Configuration configuration;
 
     public String getId() {
         return id;
@@ -53,13 +52,11 @@ public class PropertyStruktur implements Serializable, StrukturConfigurable {
     }
 
     @Override
-    @XmlElement(name = "entry")
-    @XmlElementWrapper(name = "configuration")
-    public Map<String, String> getConfiguration() {
+    public Configuration getConfiguration() {
         return configuration;
     }
 
-    public void setConfiguration(Map<String, String> configuration) {
+    public void setConfiguration(Configuration configuration) {
         this.configuration = configuration;
     }
 
@@ -88,4 +85,6 @@ public class PropertyStruktur implements Serializable, StrukturConfigurable {
         }
         return true;
     }
+
+
 }
