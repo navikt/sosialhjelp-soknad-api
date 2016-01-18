@@ -1,21 +1,15 @@
-<tr>
-    <td></td>
-    <td>
-        {{>skjema/generisk/sporsmal}}
-        <table>
-            {{#each barneFakta}}
-                {{#hvisSant value}}
-                    <tr>
-                        <td class="sjekket"></td>
-                        <td>{{ hentTekst key }}
-                            {{> skjema/generisk/infotekst}}
-                            {{> skjema/generisk/infotekstvalue}}
-                            {{> skjema/generisk/vedlegg}}
-                            {{> skjema/generisk/barnefakta}}
-                        </td>
-                    </tr>
-                {{/hvisSant}}
-            {{/each}}
-        </table>
-    </td>
-</tr>
+{{>skjema/generisk/sporsmal}}
+
+<ul class="svar-liste">
+    {{#each barneFakta}}
+        {{#hvisSant value}}
+            <li>
+                {{ hentTekst key }}
+                {{> skjema/generisk/infotekst}}
+                {{> skjema/generisk/infotekstvalue}}
+                {{> skjema/generisk/vedlegg}}
+                {{> skjema/generisk/barnefakta}}
+            </li>
+        {{/hvisSant}}
+    {{/each}}
+</ul>

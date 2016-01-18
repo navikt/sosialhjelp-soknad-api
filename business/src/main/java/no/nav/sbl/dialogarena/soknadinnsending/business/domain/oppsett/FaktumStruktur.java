@@ -5,18 +5,12 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.ForventningsSjekker.sjekkForventning;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.ForventningsSjekker.*;
 
 @XmlType(propOrder = {})
 public class FaktumStruktur implements Serializable, StrukturConfigurable {
@@ -246,8 +240,8 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
     }
 
     @Override
-    public Map<String, String> getConfiguration() {
-        return new HashMap<>();
+    public Configuration getConfiguration() {
+        return new Configuration();
     }
 
     public boolean hasConfig(String configKey) {

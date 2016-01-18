@@ -22,10 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static no.bekk.bekkopen.person.FodselsnummerValidator.getFodselsnummer;
+import static no.bekk.bekkopen.person.FodselsnummerValidator.*;
 import static org.apache.commons.lang3.ArrayUtils.reverse;
-import static org.apache.commons.lang3.StringUtils.join;
-import static org.apache.commons.lang3.StringUtils.split;
+import static org.apache.commons.lang3.StringUtils.*;
 
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.ExcessiveClassLength"})
 public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
@@ -47,7 +46,7 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         return getHandlebars()
                 .infiniteLoops(true)
                 .compile("/skjema/generisk")
-                .apply(Context.newBuilder(new OppsummeringsContext(soknad, soknadStruktur, true))
+                .apply(Context.newBuilder(new OppsummeringsContext(soknad, soknadStruktur, false))
                         .resolver(
                                 JavaBeanValueResolver.INSTANCE,
                                 FieldValueResolver.INSTANCE,
