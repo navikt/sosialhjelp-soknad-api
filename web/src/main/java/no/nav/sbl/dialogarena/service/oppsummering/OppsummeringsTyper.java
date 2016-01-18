@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.service.oppsummering;
 
+import org.slf4j.Logger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 public enum OppsummeringsTyper {
     checkboxGroup("skjema/generisk/checkboxgroup"),
@@ -14,15 +16,19 @@ public enum OppsummeringsTyper {
     radio("skjema/generisk/default");
 
     public final String template;
+    private static final Logger logger = getLogger(OppsummeringsTyper.class);
 
     OppsummeringsTyper(String template) {
         this.template = template;
     }
 
     public static String resolve(String type) {
-        try {
-            return valueOf(type).template;
-        } catch (Exception ignore) {
+        if(type != null) {
+            try {
+                return valueOf(type).template;
+            } catch(IllegalArgumentException e) {
+                logger.info("Ukjent oppsumeringsstype {}, bruker default", type);
+            }
         }
         return radio.template;
     }
