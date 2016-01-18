@@ -7,16 +7,12 @@ import org.joda.time.LocalDate;
 
 import java.util.List;
 
-import static java.util.Collections.reverseOrder;
-import static no.nav.modig.lang.collections.ComparatorUtils.compareWith;
-import static no.nav.modig.lang.collections.IterUtils.on;
-import static no.nav.modig.lang.collections.PredicateUtils.equalTo;
-import static no.nav.modig.lang.collections.PredicateUtils.not;
-import static no.nav.modig.lang.collections.PredicateUtils.where;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.DATO_TIL;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.DATO_TIL_PERMITTERING;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.TYPE;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.util.PersonaliaUtils.adresserOgStatsborgerskap;
+import static java.util.Collections.*;
+import static no.nav.modig.lang.collections.ComparatorUtils.*;
+import static no.nav.modig.lang.collections.IterUtils.*;
+import static no.nav.modig.lang.collections.PredicateUtils.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.util.PersonaliaUtils.*;
 
 public class DagpengerUtils {
     public static final String DAGPENGER = "NAV 04-01.03";
@@ -25,8 +21,8 @@ public class DagpengerUtils {
     public static final String GJENOPPTAK_VED_PERMITTERING = "NAV 04-16.04";
     public static final String EOS_DAGPENGER = "4304";
     public static final String RUTES_I_BRUT = "";
-    public static final String PERMITTERT = "Permittert";
-    public static final String REDUSERT_ARBEIDSTID = "Redusert arbeidstid";
+    public static final String PERMITTERT = "permittert";
+    public static final String REDUSERT_ARBEIDSTID = "redusertarbeidstid";
     public static final String ANNEN_AARSAK = "Annen årsak";
 
     public static String getSkjemanummer(WebSoknad soknad) {

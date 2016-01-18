@@ -10,13 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.LASTET_OPP;
-import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.SENDES_IKKE;
-import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.SEND_SENERE;
-import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.VEDLEGG_SENDES_AV_ANDRE;
-import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.VEDLEGG_SENDES_IKKE;
-import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.VEDLEGG_ALLEREDE_SENDT;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.*;
+import static org.apache.commons.lang3.StringUtils.*;
 
 public class Transformers {
 
@@ -33,17 +28,17 @@ public class Transformers {
         public LocalDate transform(Faktum faktum) {
             Map<String, String> properties = faktum.getProperties();
             switch (TYPE.transform(faktum)) {
-                case "Kontrakt utgått":
+                case "kontraktutgaatt":
                     return new LocalDate(properties.get("datotil"));
-                case "Avskjediget":
+                case "avskjediget":
                     return new LocalDate(properties.get("datotil"));
-                case "Redusert arbeidstid":
+                case "redusertarbeidstid":
                     return new LocalDate(properties.get("redusertfra"));
-                case "Arbeidsgiver er konkurs":
+                case "arbeidsgivererkonkurs":
                     return new LocalDate(properties.get("konkursdato"));
-                case "Sagt opp av arbeidsgiver":
+                case "sagtoppavarbeidsgiver":
                     return new LocalDate(properties.get("datotil"));
-                case "Sagt opp selv":
+                case "sagtoppselv":
                     return new LocalDate(properties.get("datotil"));
                 default:
                     return null;
