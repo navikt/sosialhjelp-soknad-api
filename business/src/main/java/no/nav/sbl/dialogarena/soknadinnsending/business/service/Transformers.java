@@ -15,6 +15,14 @@ import static org.apache.commons.lang3.StringUtils.*;
 
 public class Transformers {
 
+    public static final String KONTRAKT_UTGAATT = "kontraktutgaatt";
+    public static final String AVSKJEDIGET = "avskjediget";
+    public static final String REDUSERT_ARBEIDSTID = "redusertarbeidstid";
+    public static final String ARBEIDSGIVER_ERKONKURS = "arbeidsgivererkonkurs";
+    public static final String SAGTOPP_AV_ARBEIDSGIVER = "sagtoppavarbeidsgiver";
+    public static final String SAGTOPP_SELV = "sagtoppselv";
+
+
     public static final Transformer<Faktum, LocalDate> DATO_TIL_PERMITTERING = new Transformer<Faktum, LocalDate>() {
         @Override
         public LocalDate transform(Faktum faktum) {
@@ -22,23 +30,22 @@ public class Transformers {
             return new LocalDate(properties.get("permiteringsperiodedatofra"));
         }
     };
-
     public static final Transformer<Faktum, LocalDate> DATO_TIL = new Transformer<Faktum, LocalDate>() {
         @Override
         public LocalDate transform(Faktum faktum) {
             Map<String, String> properties = faktum.getProperties();
             switch (TYPE.transform(faktum)) {
-                case "kontraktutgaatt":
+                case KONTRAKT_UTGAATT:
                     return new LocalDate(properties.get("datotil"));
-                case "avskjediget":
+                case AVSKJEDIGET:
                     return new LocalDate(properties.get("datotil"));
-                case "redusertarbeidstid":
+                case REDUSERT_ARBEIDSTID:
                     return new LocalDate(properties.get("redusertfra"));
-                case "arbeidsgivererkonkurs":
+                case ARBEIDSGIVER_ERKONKURS:
                     return new LocalDate(properties.get("konkursdato"));
-                case "sagtoppavarbeidsgiver":
+                case SAGTOPP_AV_ARBEIDSGIVER:
                     return new LocalDate(properties.get("datotil"));
-                case "sagtoppselv":
+                case SAGTOPP_SELV:
                     return new LocalDate(properties.get("datotil"));
                 default:
                     return null;

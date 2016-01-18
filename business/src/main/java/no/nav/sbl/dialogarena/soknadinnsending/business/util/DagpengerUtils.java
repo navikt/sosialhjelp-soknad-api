@@ -22,7 +22,6 @@ public class DagpengerUtils {
     public static final String EOS_DAGPENGER = "4304";
     public static final String RUTES_I_BRUT = "";
     public static final String PERMITTERT = "permittert";
-    public static final String REDUSERT_ARBEIDSTID = "redusertarbeidstid";
     public static final String ANNEN_AARSAK = "Annen årsak";
 
     public static String getSkjemanummer(WebSoknad soknad) {
