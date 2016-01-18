@@ -26,7 +26,7 @@ public enum OppsummeringsTyper {
         if(type != null) {
             try {
                 return valueOf(type).template;
-            } catch(IllegalArgumentException | NullPointerException e) {
+            } catch(IllegalArgumentException e) {
                 logger.info("Ukjent oppsumeringsstype {}, bruker default", type);
             }
         }
