@@ -1,0 +1,9 @@
+<soknad temaKode="TSO" xmlns="urn:no.nav.sbl">
+    <faktum>
+        <id>vedtak</id>
+    </faktum>
+    <faktum>
+        <id>vedtak.betalingsplan</id>
+        <erSystemFaktum>true</erSystemFaktum>
+    </faktum>
+</soknad>
