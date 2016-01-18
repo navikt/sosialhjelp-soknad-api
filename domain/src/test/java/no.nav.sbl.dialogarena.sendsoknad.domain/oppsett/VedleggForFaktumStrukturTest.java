@@ -39,7 +39,6 @@ public class VedleggForFaktumStrukturTest {
         assertThat(vedlegg.trengerVedlegg(sagtOppAvArbeidsgiver), is(false));
     }
 
-    @Ignore
     @Test
     public void testConfigForArbeidsforhold(){
         SoknadStruktur struktur = hentStruktur("dagpenger/dagpenger_ordinaer");
