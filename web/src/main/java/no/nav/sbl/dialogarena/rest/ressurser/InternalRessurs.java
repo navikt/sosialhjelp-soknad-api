@@ -15,13 +15,11 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
-import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.servlet.ServletContext;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
