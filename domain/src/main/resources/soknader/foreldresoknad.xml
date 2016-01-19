@@ -1,0 +1,515 @@
+<soknad temaKode="FOR" xmlns="urn:no.nav.sbl">
+    <!-- Systemfakta -->
+    <faktum>
+        <id>personalia</id>
+        <erSystemFaktum>true</erSystemFaktum>
+    </faktum>
+
+    <faktum>
+        <id>vedlegg.hjelpefaktum</id>
+    </faktum>
+
+    <!-- Søknadsvalg -->
+    <faktum>
+        <id>soknadsvalg.stonadstype</id>
+        <dependOn>soknadsvalg.fodselelleradopsjon</dependOn>
+        <dependOnValues>
+            <value>fodsel</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>soknadsvalg.fodselelleradopsjon</id>
+    </faktum>
+
+    <!-- Veiledning -->
+    <faktum>
+        <id>veiledning.mor.terminbekreftelse</id>
+    </faktum>
+    <faktum>
+        <id>veiledning.adopsjon.overtakelse</id>
+    </faktum>
+
+    <!-- Opplysninger om Far -->
+    <faktum>
+        <id>infofar.opplysninger.fornavn</id>
+    </faktum>
+    <faktum>
+        <id>infofar.opplysninger.etternavn</id>
+    </faktum>
+    <faktum>
+        <id>infofar.opplysninger.personinfo</id>
+    </faktum>
+    <faktum>
+        <id>infofar.opplysninger.kanIkkeOppgi</id>
+    </faktum>
+    <faktum>
+        <id>rettigheter.omsorg</id>
+        <dependOn>soknadsvalg.stonadstype</dependOn>
+        <dependOnValues>
+            <value>foreldrepengerFar</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>infofar.aleneomsorg.fritekst</id>
+    </faktum>
+    <faktum>
+        <id>rettighet.harrett</id>
+    </faktum>
+    <faktum>
+        <id>infofar.farrett.fritekst</id>
+    </faktum>
+    <faktum>
+        <id>infofar.informert</id>
+    </faktum>
+
+    <!-- Soknad -->
+    <!-- Rettigheter -->
+    <faktum>
+        <id>rettigheter.overtak</id>
+        <dependOn>soknadsvalg.fodselelleradopsjon</dependOn>
+        <dependOnValues>
+            <value>fodsel</value>
+        </dependOnValues>
+    </faktum>
+    
+    <!-- Tilknytning til Norge-->
+    <faktum>
+        <id>tilknytningnorge.tidligere</id>
+    </faktum>
+    <faktum>
+        <id>tilknytningnorge.tidligere.periode</id>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <faktum>
+        <id>tilknytningnorge.fremtidig</id>
+    </faktum>
+    <faktum>
+        <id>tilknytningnorge.fremtidig.periode</id>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+    <!-- Arbeidsforhold -->
+    <faktum>
+        <id>arbeidsforhold.yrkesaktiv</id>
+    </faktum>
+    <faktum>
+        <id>arbeidsforhold</id>
+        <dependOn>arbeidsforhold.yrkesaktiv</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+    <!-- Barnet-bolk -->
+    <faktum>
+        <id>barnet.dato</id>
+    </faktum>
+    <faktum>
+        <id>barnet.antall</id>
+    </faktum>
+
+    <!-- Tilleggsopplysninger -->
+    <faktum>
+        <id>tilleggsopplysninger.fritekst</id>
+    </faktum>
+
+    <!-- Egen næring -->
+    <faktum>
+        <id>egennaering.arbeidegennaering</id>
+    </faktum>
+
+    <faktum>
+        <id>naeringsvirksomhet</id>
+        <dependOn>egennaering.arbeidegennaering</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+    <!-- Andre ytelser -->
+    <faktum>
+        <id>ytelser.ingenYtelse</id>
+    </faktum>
+    <faktum>
+        <id>ytelser.ventelonn</id>
+    </faktum>
+    <faktum>
+        <id>ytelser.lonnarbeidsgiver</id>
+    </faktum>
+    <faktum>
+        <id>ytelser.vartpenger</id>
+    </faktum>
+    <faktum>
+        <id>ytelser.avtjening</id>
+    </faktum>
+    <faktum>
+        <id>ytelser.sluttpakke</id>
+    </faktum>
+
+    <!-- Fedrekvote -->
+    <faktum>
+        <id>fedrekvote</id>
+    </faktum>
+    <faktum>
+        <id>fedrekvote.ikkerett.fritekst</id>
+    </faktum>
+
+    <!-- Perioder -->
+    <faktum>
+        <id>perioder.startdato</id>
+    </faktum>
+    <faktum>
+        <id>perioder.permisjon</id>
+    </faktum>
+
+    <faktum>
+        <id>perioder.tidsrom.utsettelse</id>
+        <flereTillatt>true</flereTillatt>
+        <dependOn>perioder.opphold</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>perioder.opphold</id>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+    <faktum>
+        <id>perioder.morsaktivitet</id>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+    <!-- Perioder -->
+    <faktum>
+        <id>dekningsgrad</id>
+    </faktum>
+
+    <!-- Ekstra vedlegg -->
+    <faktum>
+        <id>ekstraVedlegg</id>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>ekstraVedlegg</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>N6</skjemaNummer>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
+    <!-- Vedlegg overføring av fedrekvote -->
+    <vedlegg>
+        <faktum>fedrekvote</faktum>
+        <onValues>
+            <value>sykdom</value>
+        </onValues>
+        <skjemaNummer>L9</skjemaNummer>
+        <skjemanummerTillegg>fedrekvote</skjemanummerTillegg>
+    </vedlegg>
+    <vedlegg>
+        <faktum>fedrekvote</faktum>
+        <onValues>
+            <value>helseinstitusjon</value>
+        </onValues>
+        <skjemaNummer>N9</skjemaNummer>
+        <skjemanummerTillegg>fedrekvote</skjemanummerTillegg>
+    </vedlegg>
+
+    <!-- Vedlegg Ytelse -->
+    <vedlegg>
+        <faktum>ytelser.lonnarbeidsgiver</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>T7</skjemaNummer>
+        <flereTillatt>true</flereTillatt>
+        <oversetting>${key}</oversetting>
+    </vedlegg>
+    <vedlegg>
+        <faktum>ytelser.vartpenger</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>K1</skjemaNummer>
+        <skjemanummerTillegg>vartpenger</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+        <oversetting>${key}</oversetting>
+    </vedlegg>
+    <vedlegg>
+        <faktum>ytelser.ventelonn</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>K1</skjemaNummer>
+        <skjemanummerTillegg>ventelonn</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+        <oversetting>${key}</oversetting>
+    </vedlegg>
+    <vedlegg>
+        <faktum>ytelser.avtjening</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>O5</skjemaNummer>
+    </vedlegg>
+    <vedlegg>
+        <faktum>ytelser.sluttpakke</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>Y4</skjemaNummer>
+    </vedlegg>
+
+    <!-- vedlegg barn/barnet -->
+    <vedlegg>
+        <faktum>veiledning.mor.terminbekreftelse</faktum>
+        <skjemaNummer>R4</skjemaNummer>
+        <onProperty>skalHaFodselsattest</onProperty>
+        <onValues>
+            <value>true</value>
+        </onValues>
+    </vedlegg>
+    <vedlegg>
+        <faktum>veiledning.mor.terminbekreftelse</faktum>
+        <skjemaNummer>P3</skjemaNummer>
+        <onValues>
+            <value>merEnn26Uker</value>
+            <value>mindreEnn26Uker</value>
+        </onValues>
+    </vedlegg>
+    <vedlegg>
+        <faktum>soknadsvalg.fodselelleradopsjon</faktum>
+        <skjemaNummer>P5</skjemaNummer>
+        <skjemanummerTillegg>adopsjon</skjemanummerTillegg>
+        <onValues>
+            <value>adopsjon</value>
+        </onValues>
+    </vedlegg>
+
+    <!-- vedlegg for arbeidsforhold -->
+    <vedlegg>
+        <faktum>arbeidsforhold</faktum>
+        <skjemaNummer>K4</skjemaNummer>
+        <property>arbeidsgivernavn</property>
+        <onProperty>ansatt</onProperty>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <faktum>arbeidsforhold</faktum>
+        <skjemaNummer>T8</skjemaNummer>
+        <property>arbeidsgivernavn</property>
+        <filterKey>ansatt</filterKey>
+        <filterValues>
+            <value>false</value>
+        </filterValues>
+        <onProperty>kilde</onProperty>
+        <onValues>
+            <value>EDAG</value>
+        </onValues>
+        <inverted>true</inverted>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
+    <vedlegg>
+        <faktum>arbeidsforhold</faktum>
+        <skjemaNummer>M6</skjemaNummer>
+        <property>arbeidsgivernavn</property>
+        <filterKey>ansatt</filterKey>
+        <filterValues>
+            <value>true</value>
+        </filterValues>
+        <onProperty>stillingstype</onProperty>
+        <onValues>
+            <value>fastOgVariabel</value>
+            <value>variabel</value>
+        </onValues>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <faktum>arbeidsforhold</faktum>
+        <skjemaNummer>L4</skjemaNummer>
+        <property>arbeidsgivernavn</property>
+        <filterKey>ansatt</filterKey>
+        <filterValues>
+            <value>true</value>
+        </filterValues>
+        <onProperty>stillingstype</onProperty>
+        <onValues>
+            <value>fastOgVariabel</value>
+            <value>variabel</value>
+        </onValues>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
+
+    <!-- Vedlegg Egen Næring -->
+
+    <vedlegg>
+        <faktum>naeringsvirksomhet</faktum>
+        <skjemaNummer>T7</skjemaNummer>
+        <skjemanummerTillegg>regnskapsforer</skjemanummerTillegg>
+        <property>navn</property>
+        <onProperty>regnskapsforer</onProperty>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
+
+    <vedlegg>
+        <faktum>naeringsvirksomhet</faktum>
+        <skjemaNummer>T7</skjemaNummer>
+        <skjemanummerTillegg>ikkeregnskapsforer</skjemanummerTillegg>
+        <property>navn</property>
+        <onProperty>regnskapsforer</onProperty>
+        <onValues>
+            <value>false</value>
+        </onValues>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
+    <!-- Vedlegg rettigheter -->
+    <vedlegg>
+        <faktum>rettigheter.overtak</faktum>
+        <onValues>
+            <value>overtattOmsorgInnen53UkerFodsel</value>
+            <value>overtattOmsorgInnen53UkerAdopsjon</value>
+        </onValues>
+        <skjemaNummer>P5</skjemaNummer>
+        <skjemanummerTillegg>overtatt</skjemanummerTillegg>
+    </vedlegg>
+
+    <vedlegg>
+        <faktum>rettigheter.omsorg</faktum>
+        <onValues>
+            <value>aleneomsorg</value>
+        </onValues>
+        <skjemaNummer>P5</skjemaNummer>
+        <skjemanummerTillegg>aleneomsorg</skjemanummerTillegg>
+    </vedlegg>
+
+    <!-- Vedlegg perioder -->
+    <vedlegg>
+        <faktum>vedlegg.hjelpefaktum</faktum>
+        <onProperty>graderingsskjema</onProperty>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>H1</skjemaNummer>
+    </vedlegg>
+
+    <vedlegg>
+        <faktum>perioder.tidsrom.utsettelse</faktum>
+        <skjemanummerTillegg>arbeid</skjemanummerTillegg>
+        <filterKey>type</filterKey>
+        <filterValues>
+            <value>ferie</value>
+        </filterValues>
+        <skjemaNummer>Z6</skjemaNummer>
+    </vedlegg>
+    <vedlegg>
+        <faktum>perioder.tidsrom.utsettelse</faktum>
+        <skjemanummerTillegg>ferie</skjemanummerTillegg>
+        <filterKey>type</filterKey>
+        <filterValues>
+            <value>arbeid</value>
+        </filterValues>
+        <skjemaNummer>Z6</skjemaNummer>
+    </vedlegg>
+    <vedlegg>
+        <faktum>perioder.tidsrom.utsettelse</faktum>
+        <filterKey>type</filterKey>
+        <filterValues>
+            <value>sykdom</value>
+        </filterValues>
+        <skjemaNummer>L9</skjemaNummer>
+        <skjemanummerTillegg>utsettelse</skjemanummerTillegg>
+    </vedlegg>
+
+    <vedlegg>
+        <faktum>perioder.tidsrom.utsettelse</faktum>
+        <filterKey>type</filterKey>
+        <filterValues>
+            <value>innlagt</value>
+        </filterValues>
+        <skjemaNummer>N9</skjemaNummer>
+        <skjemanummerTillegg>innlagt</skjemanummerTillegg>
+    </vedlegg>
+    <vedlegg>
+        <faktum>perioder.tidsrom.utsettelse</faktum>
+        <filterKey>type</filterKey>
+        <filterValues>
+            <value>barninnlagt</value>
+        </filterValues>
+        <skjemaNummer>N9</skjemaNummer>
+        <skjemanummerTillegg>barninnlagt</skjemanummerTillegg>
+    </vedlegg>
+
+    <!-- Vedlegg mors aktivitet -->
+    <vedlegg>
+        <faktum>vedlegg.hjelpefaktum</faktum>
+        <skjemanummerTillegg>morarbeid</skjemanummerTillegg>
+        <property>morarbeidVedleggtittel</property>
+        <onProperty>morarbeid</onProperty>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>Z6</skjemaNummer>
+    </vedlegg>
+
+    <vedlegg>
+        <faktum>vedlegg.hjelpefaktum</faktum>
+        <property>morstudierVedleggtittel</property>
+        <onProperty>morstudier</onProperty>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>O9</skjemaNummer>
+    </vedlegg>
+    <vedlegg>
+        <faktum>vedlegg.hjelpefaktum</faktum>
+        <property>morsykVedleggtittel</property>
+        <onProperty>morsyk</onProperty>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>L9</skjemaNummer>
+        <skjemanummerTillegg>aktivitetskrav</skjemanummerTillegg>
+    </vedlegg>
+    <vedlegg>
+        <faktum>vedlegg.hjelpefaktum</faktum>
+        <skjemanummerTillegg>morinnlagt</skjemanummerTillegg>
+        <property>morinnlagtVedleggtittel</property>
+        <onProperty>morinnlagt</onProperty>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>N9</skjemaNummer>
+    </vedlegg>
+    <vedlegg>
+        <faktum>vedlegg.hjelpefaktum</faktum>
+        <property>introduksjonsprogramVedleggtittel</property>
+        <onProperty>introduksjonsprogram</onProperty>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>T1</skjemaNummer>
+    </vedlegg>
+    <vedlegg>
+        <faktum>vedlegg.hjelpefaktum</faktum>
+        <property>kvalifiseringsprogramVedleggtittel</property>
+        <onProperty>kvalifiseringsprogram</onProperty>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>K3</skjemaNummer>
+    </vedlegg>
+</soknad>

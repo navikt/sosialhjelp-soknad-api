@@ -1,9 +1,9 @@
 package no.nav.sbl.dialogarena.service.helpers.tilleggsstonader;
 
 import com.github.jknack.handlebars.Handlebars;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.service.helpers.faktum.ForFaktumHelper;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,14 +1,14 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader;
 
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Laeremiddelutgifter;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.tilleggsstonader.LaeremidlerTilXml;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.tilleggsstonader.StofoKodeverkVerdier;
 import org.junit.Test;
 
 import java.math.BigInteger;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoKodeverkVerdier.ErUtgifterDekketKodeverk;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoKodeverkVerdier.SkolenivaaerKodeverk;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTestUtils.periodeMatcher;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,11 +27,11 @@ public class LaeremidlerTilXmlTest {
 
         assertThat(xml.getBeloep()).isEqualTo(new BigInteger("100"));
         assertThat(xml.getBeloep()).isEqualTo(new BigInteger("100"));
-        assertThat(xml.getErUtgifterDekket().getValue()).isEqualTo(ErUtgifterDekketKodeverk.ja.kodeverk);
+        assertThat(xml.getErUtgifterDekket().getValue()).isEqualTo(StofoKodeverkVerdier.ErUtgifterDekketKodeverk.ja.kodeverk);
         assertThat(xml.getPeriode().getFom()).is(periodeMatcher(2015, 1, 1));
         assertThat(xml.getPeriode().getTom()).is(periodeMatcher(2015, 2, 1));
         assertThat(xml.getProsentandelForUtdanning()).isEqualTo(new BigInteger("50"));
-        assertThat(xml.getSkolenivaa().getValue()).isEqualTo(SkolenivaaerKodeverk.videregaende.kodeverk);
+        assertThat(xml.getSkolenivaa().getValue()).isEqualTo(StofoKodeverkVerdier.SkolenivaaerKodeverk.videregaende.kodeverk);
     }
 
     @Test
@@ -49,7 +49,7 @@ public class LaeremidlerTilXmlTest {
         soknad.getFakta().add(new Faktum().medKey("laeremidler.dekket").medValue("nei"));
         Laeremiddelutgifter xml = new LaeremidlerTilXml().transform(soknad);
 
-        assertThat(xml.getErUtgifterDekket().getValue()).isEqualTo(ErUtgifterDekketKodeverk.nei.kodeverk);
+        assertThat(xml.getErUtgifterDekket().getValue()).isEqualTo(StofoKodeverkVerdier.ErUtgifterDekketKodeverk.nei.kodeverk);
     }
 
     @Test
@@ -59,7 +59,7 @@ public class LaeremidlerTilXmlTest {
 
         Laeremiddelutgifter xml = new LaeremidlerTilXml().transform(soknad);
 
-        assertThat(xml.getErUtgifterDekket().getValue()).isEqualTo(ErUtgifterDekketKodeverk.delvis.kodeverk);
+        assertThat(xml.getErUtgifterDekket().getValue()).isEqualTo(StofoKodeverkVerdier.ErUtgifterDekketKodeverk.delvis.kodeverk);
     }
 
     @Test
@@ -68,7 +68,7 @@ public class LaeremidlerTilXmlTest {
         soknad.getFakta().add(new Faktum().medKey("laeremidler.utdanningstype").medValue("hoyereutdanning"));
         Laeremiddelutgifter xml = new LaeremidlerTilXml().transform(soknad);
 
-        assertThat(xml.getSkolenivaa().getValue()).isEqualTo(SkolenivaaerKodeverk.hoyereutdanning.kodeverk);
+        assertThat(xml.getSkolenivaa().getValue()).isEqualTo(StofoKodeverkVerdier.SkolenivaaerKodeverk.hoyereutdanning.kodeverk);
     }
 
     @Test
@@ -77,6 +77,6 @@ public class LaeremidlerTilXmlTest {
         soknad.getFakta().add(new Faktum().medKey("laeremidler.utdanningstype").medValue("annet"));
         Laeremiddelutgifter xml = new LaeremidlerTilXml().transform(soknad);
 
-        assertThat(xml.getSkolenivaa().getValue()).isEqualTo(SkolenivaaerKodeverk.annet.kodeverk);
+        assertThat(xml.getSkolenivaa().getValue()).isEqualTo(StofoKodeverkVerdier.SkolenivaaerKodeverk.annet.kodeverk);
     }
 }

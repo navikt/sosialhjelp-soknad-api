@@ -1,0 +1,95 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl">
+    <faktum>
+        <id>tidligerearbeidsforhold.permittert</id>
+        <type>radiobox</type>
+        <panel>TidligereArbeidsforhold</panel>
+    </faktum>
+
+    <faktum>
+        <id>tidligerearbeidsforhold.tidligerearbeidsgiver</id>
+        <type>textbox</type>
+        <panel>TidligereArbeidsforhold</panel>
+        <dependOn>tidligerearbeidsforhold.permittert</dependOn>
+        <dependOnValues>
+            <value>permittert</value>
+            <value>permittertFiske</value>
+        </dependOnValues>
+    </faktum>
+
+    <faktum>
+        <id>tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsidensist</id>
+        <type>radiobox</type>
+        <panel>TidligereArbeidsforhold</panel>
+        <dependOn>tidligerearbeidsforhold.permittert</dependOn>
+        <dependOnValues>
+            <value>permittert</value>
+            <value>permittertFiske</value>
+        </dependOnValues>
+    </faktum>
+
+    <faktum>
+        <id>tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsammenhengende</id>
+        <type>radiobox</type>
+        <panel>TidligereArbeidsforhold</panel>
+        <dependOn>tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsidensist</dependOn>
+        <useExpression>true</useExpression>
+        <dependOnValues>
+            <value>value == 'false'</value>
+        </dependOnValues>
+        <constraints>
+            <constraint>
+                <faktum>tidligerearbeidsforhold.permittert</faktum>
+                <expression>value == 'permittert'</expression>
+            </constraint>
+        </constraints>
+    </faktum>
+    <faktum>
+        <id>tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsammenhengende.fiske</id>
+        <type>radiobox</type>
+        <panel>TidligereArbeidsforhold</panel>
+        <dependOn>tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsidensist</dependOn>
+        <useExpression>true</useExpression>
+        <dependOnValues>
+            <value>value == 'false'</value>
+        </dependOnValues>
+        <constraints>
+            <constraint>
+                <faktum>tidligerearbeidsforhold.permittert</faktum>
+                <expression>value == 'permittertFiske'</expression>
+            </constraint>
+        </constraints>
+    </faktum>
+
+    <faktum>
+        <id>tidligerearbeidsforhold.tidligerearbeidsgiver.fortsattansatt</id>
+        <type>radiobox</type>
+        <panel>TidligereArbeidsforhold</panel>
+        <dependOn>tidligerearbeidsforhold.permittert</dependOn>
+        <dependOnValues>
+            <value>permittert</value>
+            <value>permittertFiske</value>
+        </dependOnValues>
+    </faktum>
+
+
+    <vedlegg>
+        <faktum>tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsammenhengende</faktum>
+        <property>arbeidsgivernavn</property>
+        <onValues>
+            <value>false</value>
+        </onValues>
+        <skjemaNummer>G2</skjemaNummer>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <faktum>tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsammenhengende.fiske</faktum>
+        <property>arbeidsgivernavn</property>
+        <onValues>
+            <value>false</value>
+        </onValues>
+        <skjemaNummer>G2</skjemaNummer>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
+</soknad>
