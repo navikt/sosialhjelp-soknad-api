@@ -1,10 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg;
 
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggsGrunnlag;
+import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 
-import java.util.List;
+import java.util.*;
 
 public interface VedleggRepository {
 

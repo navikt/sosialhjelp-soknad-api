@@ -32,7 +32,6 @@ public class PersonService {
     @Named("personSelftestEndpoint")
     private PersonPortType personSelftestEndpoint;
 
-
     @Cacheable(value = "barnCache", key = "#request.ident")
     public HentKjerneinformasjonResponse hentKjerneinformasjon(HentKjerneinformasjonRequest request) {
 
@@ -48,7 +47,6 @@ public class PersonService {
             logger.error("Ingen kontakt med TPS (Person-servicen).", e);
             throw new TjenesteUtilgjengeligException("Person", e);
         }
-
     }
     
     public void ping() {

@@ -22,7 +22,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Service
 public class BarnService implements BolkService {
 
-
     private static final Logger logger = getLogger(BarnService.class);
     private static final String BOLKNAVN = "Barn";
 
@@ -50,7 +49,6 @@ public class BarnService implements BolkService {
         }
         return new ArrayList<>();
     }
-
 
     private List<Faktum> genererBarnFakta(final Long soknadId, List<Barn> barneliste) {
         return on(barneliste).map(new Transformer<Barn, Faktum>() {

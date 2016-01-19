@@ -1,14 +1,14 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon;
 
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.tilleggsstonader.TilleggsstonaderTilXml;
-import org.apache.commons.collections15.Transformer;
-import org.springframework.context.MessageSource;
+import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.tilleggsstonader.*;
+import org.apache.commons.collections15.*;
+import org.springframework.context.*;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+
+import static java.util.Arrays.*;
 
 public class SoknadTilleggsstonader extends KravdialogInformasjon.DefaultOppsett {
 
@@ -25,7 +25,7 @@ public class SoknadTilleggsstonader extends KravdialogInformasjon.DefaultOppsett
     }
 
     public List<String> getSoknadBolker(WebSoknad soknad) {
-        return Arrays.asList(BOLK_PERSONALIA, BOLK_BARN);
+        return asList(BOLK_PERSONALIA, BOLK_BARN);
     }
 
     public String getStrukturFilnavn() {
@@ -33,12 +33,12 @@ public class SoknadTilleggsstonader extends KravdialogInformasjon.DefaultOppsett
     }
 
     public List<String> getSkjemanummer() {
-        return Arrays.asList("NAV 11-12.12", "NAV 11-12.13");
+        return asList("NAV 11-12.12", "NAV 11-12.13");
     }
 
     @Override
     public List<Transformer<WebSoknad, AlternativRepresentasjon>> getTransformers(MessageSource messageSource) {
         Transformer<WebSoknad, AlternativRepresentasjon> tilleggsstonaderTilXml = new TilleggsstonaderTilXml(messageSource);
-        return Arrays.asList(tilleggsstonaderTilXml);
+        return asList(tilleggsstonaderTilXml);
     }
 }
