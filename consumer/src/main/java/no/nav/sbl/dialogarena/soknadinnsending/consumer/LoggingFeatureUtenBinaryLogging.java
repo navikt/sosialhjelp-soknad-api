@@ -10,6 +10,7 @@ import org.apache.cxf.interceptor.LoggingOutInterceptor;
 
 
 public class LoggingFeatureUtenBinaryLogging extends AbstractFeature {
+
     private static final int DEFAULT_LIMIT = 64 * 1024;
     private static final LoggingInInterceptor IN = new LoggingInInterceptor(DEFAULT_LIMIT);
     private static final LoggingOutInterceptor OUT = new LoggingOutInterceptor(DEFAULT_LIMIT);
