@@ -1,18 +1,16 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.tilleggsstonader;
 
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Periode;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.TilsynsutgifterFamilie;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.FaktumPredicates;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import org.apache.commons.collections15.Transformer;
-import org.apache.commons.lang3.StringUtils;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import org.apache.commons.collections15.*;
+import org.apache.commons.lang3.*;
 
-import java.util.List;
+import java.util.*;
 
-import static no.nav.modig.lang.collections.IterUtils.on;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.FaktumPredicates.propertyIsValue;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.StofoTransformers.extractValue;
+import static no.nav.modig.lang.collections.IterUtils.*;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.FaktumPredicates.*;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.StofoTransformers.*;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.tilleggsstonader.StofoKodeverkVerdier.TilsynForetasAv.TRANSFORMER;
 
 public class TilsynFamilieTilXml implements Transformer<WebSoknad, TilsynsutgifterFamilie> {
     @Override
@@ -23,7 +21,7 @@ public class TilsynFamilieTilXml implements Transformer<WebSoknad, Tilsynsutgift
         familie.setTilsynForetasAv(foretasAv(soknad.getFaktumMedKey("tilsynfamilie.typetilsyn")));
         Boolean deletilsyn = extractValue(soknad.getFaktumMedKey("tilsynfamilie.deletilsyn"), Boolean.class);
         familie.setDeltTilsyn(deletilsyn);
-        if(deletilsyn != null && deletilsyn) {
+        if (deletilsyn != null && deletilsyn) {
             familie.setAnnenTilsynsperson(extractValue(soknad.getFaktumMedKey("tilsynfamilie.deletilsyn"), String.class, "personnummer"));
         }
 
@@ -31,7 +29,7 @@ public class TilsynFamilieTilXml implements Transformer<WebSoknad, Tilsynsutgift
     }
 
     private String foretasAv(final Faktum faktum) {
-        List<String> tilsyn = on(faktum.getProperties()).filter(propertyIsValue("true")).map(FaktumPredicates.KEYS).map(StofoKodeverkVerdier.TilsynForetasAv.TRANSFORMER).collect();
+        List<String> tilsyn = on(faktum.getProperties()).filter(propertyIsValue("true")).map(KEYS).map(TRANSFORMER).collect();
         return StringUtils.join(tilsyn, ",");
     }
 }

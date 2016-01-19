@@ -9,6 +9,11 @@ import org.springframework.context.MessageSource;
 import java.util.ArrayList;
 import java.util.List;
 
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Steg.OPPSUMMERING;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Steg.SOKNAD;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Steg.VEDLEGG;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Steg.VEILEDNING;
+
 public interface KravdialogInformasjon {
 
     String BOLK_PERSONALIA = "Personalia";
@@ -41,7 +46,7 @@ public interface KravdialogInformasjon {
 
         @Override
         public Steg[] getStegliste() {
-            return new Steg[]{Steg.VEILEDNING, Steg.SOKNAD, Steg.VEDLEGG, Steg.OPPSUMMERING};
+            return new Steg[]{VEILEDNING, SOKNAD, VEDLEGG, OPPSUMMERING};
         }
 
         @Override

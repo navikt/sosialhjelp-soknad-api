@@ -33,6 +33,7 @@ import static no.nav.modig.lang.collections.IterUtils.on;
 
 @Service
 public class ArbeidsforholdService implements BolkService {
+
     @Inject
     @Named("arbeidEndpoint")
     private ArbeidsforholdV3 arbeidsforholdWebWervice;

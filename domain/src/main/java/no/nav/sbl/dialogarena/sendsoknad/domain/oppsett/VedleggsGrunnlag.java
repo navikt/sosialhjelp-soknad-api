@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.IkkeVedlegg;
+
 public class VedleggsGrunnlag {
     public List<Pair<VedleggForFaktumStruktur, List<Faktum>>> grunnlag = new ArrayList<>();
     public WebSoknad soknad;
@@ -35,10 +37,10 @@ public class VedleggsGrunnlag {
 
 
     public Vedlegg.Status oppdaterInnsendingsvalg(boolean vedleggErPaakrevd) {
-        if (vedleggErPaakrevd && vedlegg.getInnsendingsvalg().equals(Vedlegg.Status.IkkeVedlegg)) {
+        if (vedleggErPaakrevd && vedlegg.getInnsendingsvalg().equals(IkkeVedlegg)) {
             vedlegg.oppdatertInnsendtStatus();
-        } else if (!vedleggErPaakrevd && !vedlegg.getInnsendingsvalg().equals(Vedlegg.Status.IkkeVedlegg)) {
-            vedlegg.setInnsendingsvalg(Vedlegg.Status.IkkeVedlegg);
+        } else if (!vedleggErPaakrevd && !vedlegg.getInnsendingsvalg().equals(IkkeVedlegg)) {
+            vedlegg.setInnsendingsvalg(IkkeVedlegg);
         }
         return vedlegg.getInnsendingsvalg();
     }

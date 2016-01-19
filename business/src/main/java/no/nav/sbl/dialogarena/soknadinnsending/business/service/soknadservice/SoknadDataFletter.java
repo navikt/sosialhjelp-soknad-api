@@ -44,6 +44,10 @@ import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.modig.lang.collections.PredicateUtils.equalTo;
 import static no.nav.modig.lang.collections.PredicateUtils.where;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERREGISTRERT;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.FERDIG;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur.sammenlignEtterDependOn;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.convertToXmlVedleggListe;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.*;
@@ -103,7 +107,7 @@ public class SoknadDataFletter {
         XMLHovedskjema hovedskjema = (XMLHovedskjema) hovedskjemaOptional.getOrThrow(new ApplicationException("Kunne ikke hente opp søknad"));
 
         SoknadInnsendingStatus status = SoknadInnsendingStatus.valueOf(wsSoknadsdata.getStatus());
-        if (status.equals(SoknadInnsendingStatus.UNDER_ARBEID)) {
+        if (status.equals(UNDER_ARBEID)) {
             WebSoknad soknadFraFillager = unmarshal(new ByteArrayInputStream(fillagerService.hentFil(hovedskjema.getUuid())), WebSoknad.class);
             lokalDb.populerFraStruktur(soknadFraFillager);
             vedleggService.populerVedleggMedDataFraHenvendelse(soknadFraFillager, fillagerService.hentFiler(soknadFraFillager.getBrukerBehandlingId()));
@@ -149,7 +153,7 @@ public class SoknadDataFletter {
                 Faktum faktum = new Faktum()
                         .medKey(faktumStruktur.getId())
                         .medValue("")
-                        .medType(Faktum.FaktumType.BRUKERREGISTRERT);
+                        .medType(BRUKERREGISTRERT);
 
                 if (faktumStruktur.getDependOn() != null) {
                     Faktum parentFaktum = faktaService.hentFaktumMedKey(soknadId, faktumStruktur.getDependOn().getId());
@@ -177,7 +181,7 @@ public class SoknadDataFletter {
         return new Faktum()
                 .medSoknadId(soknadId)
                 .medKey("lonnsOgTrekkOppgave")
-                .medType(Faktum.FaktumType.SYSTEMREGISTRERT)
+                .medType(SYSTEMREGISTRERT)
                 .medValue(startDatoService.erJanuarEllerFebruar().toString());
     }
 
@@ -185,13 +189,13 @@ public class SoknadDataFletter {
         return new Faktum()
                 .medSoknadId(soknadId)
                 .medKey("bolker")
-                .medType(Faktum.FaktumType.BRUKERREGISTRERT);
+                .medType(BRUKERREGISTRERT);
     }
 
     private Faktum personalia(Long soknadId) {
         return new Faktum()
                 .medSoknadId(soknadId)
-                .medType(Faktum.FaktumType.SYSTEMREGISTRERT)
+                .medType(SYSTEMREGISTRERT)
                 .medKey("personalia");
     }
 
@@ -292,7 +296,7 @@ public class SoknadDataFletter {
 
     public Long hentOpprinneligInnsendtDato(String behandlingsId) {
         return on(henvendelseService.hentBehandlingskjede(behandlingsId))
-                .filter(where(STATUS, equalTo(SoknadInnsendingStatus.FERDIG)))
+                .filter(where(STATUS, equalTo(FERDIG)))
                 .collect(ELDSTE_FORST)
                 .get(0)
                 .getInnsendtDato()
@@ -301,7 +305,7 @@ public class SoknadDataFletter {
 
     public String hentSisteInnsendteBehandlingsId(String behandlingsId) {
         return on(henvendelseService.hentBehandlingskjede(behandlingsId))
-                .filter(where(STATUS, equalTo(SoknadInnsendingStatus.FERDIG)))
+                .filter(where(STATUS, equalTo(FERDIG)))
                 .collect(NYESTE_FORST)
                 .get(0)
                 .getBehandlingsId();
