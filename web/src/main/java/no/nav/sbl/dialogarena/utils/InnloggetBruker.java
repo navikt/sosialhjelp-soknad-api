@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.utils;
 
 import no.nav.modig.core.context.SubjectHandler;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
 import org.slf4j.Logger;
 

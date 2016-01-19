@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.Personalia;
 import org.joda.time.LocalDate;
 
 public class PersonaliaBuilder {

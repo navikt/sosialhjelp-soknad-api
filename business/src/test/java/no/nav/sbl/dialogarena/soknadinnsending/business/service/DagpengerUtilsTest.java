@@ -2,15 +2,15 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.Adresse;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import org.joda.time.DateTimeUtils;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 
 import java.util.*;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.*;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.*;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Adressetype.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.Personalia.*;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.*;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.*;
 import static org.junit.Assert.*;
