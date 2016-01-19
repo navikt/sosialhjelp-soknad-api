@@ -12,7 +12,7 @@ public class PersonMock {
     private static PersonMock personMock = new PersonMock();
     private PersonPortTypeMock personPortTypeMock;
 
-    PersonMock(){
+    private PersonMock(){
         personPortTypeMock = new PersonPortTypeMock();
         Person person = genererPersonMedGyldigIdentOgNavn("03076321565", "person", "mock");
         person.setFoedselsdato(fodseldato(1963, 7, 3));
@@ -38,7 +38,7 @@ public class PersonMock {
         return personMock;
     }
 
-    public PersonPortTypeMock personMock() {
+    public PersonPortTypeMock getPersonPortTypeMock() {
         return personPortTypeMock;
     }
 

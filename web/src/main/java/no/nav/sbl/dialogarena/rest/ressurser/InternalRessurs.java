@@ -53,11 +53,7 @@ public class InternalRessurs {
     @Context
     private ServletContext servletContext;
 
-    private PersonPortTypeMock personPortTypeMock;
-
-    InternalRessurs(){
-        personPortTypeMock = PersonMock.getInstance().personMock();
-    }
+    private PersonPortTypeMock personPortTypeMock = PersonMock.getInstance().getPersonPortTypeMock();
 
 
     @GET

@@ -32,7 +32,7 @@ public class PersonWSConfig {
 
     @Bean
     public PersonPortType personEndpoint() {
-        PersonPortTypeMock mock = personMock.personMock();
+        PersonPortTypeMock mock = personMock.getPersonPortTypeMock();
         PersonPortType prod = factory().withUserSecurity().get();
         return createSwitcher(prod, mock, PERSON_KEY, PersonPortType.class);
     }
