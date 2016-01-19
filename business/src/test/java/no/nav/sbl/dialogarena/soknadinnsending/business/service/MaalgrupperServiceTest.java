@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.MaalgrupperService;
 import no.nav.tjeneste.virksomhet.maalgruppe.v1.FinnMaalgruppeinformasjonListePersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.maalgruppe.v1.FinnMaalgruppeinformasjonListeSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.maalgruppe.v1.MaalgruppeV1;
