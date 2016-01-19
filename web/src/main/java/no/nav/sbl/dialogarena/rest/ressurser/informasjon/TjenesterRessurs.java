@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser.informasjon;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.AktivitetService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.AktivitetService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.MaalgrupperService;
 import org.springframework.stereotype.Controller;
 
