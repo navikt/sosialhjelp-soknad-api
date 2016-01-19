@@ -50,9 +50,7 @@ public class BrukerprofilMock {
         return new XMLEPost().withIdentifikator(EPOST);
     }
 
-    private BrukerprofilMock(){
-
-    }
+    private BrukerprofilMock(){ }
 
     public static BrukerprofilMock getInstance(){
         return brukerprofilMock;
@@ -86,15 +84,6 @@ public class BrukerprofilMock {
         return xmlGyldighetsperiode;
     }
 
-    public void settBostedsadresse(XMLBruker xmlBruker) {
-        xmlBruker.setBostedsadresse(lagBostedsAdresse());
-        xmlBruker.getGjeldendePostadresseType().setValue("BOSTEDSADRESSE");
-    }
-
-    public void slettBostedsadresse(XMLBruker xmlBruker) {
-        xmlBruker.setBostedsadresse(null);
-    }
-
     public void settPostadresse(XMLBruker xmlBruker, Adressetyper adressetype) {
         XMLPostadressetyper postAdresseType = xmlBruker.getGjeldendePostadresseType();
         if (adressetype.equals(Adressetyper.NORSK)) {
@@ -103,8 +92,6 @@ public class BrukerprofilMock {
         } else if (adressetype.equals(Adressetyper.UTENLANDSK)) {
             xmlBruker.setPostadresse(lagPostadresse(4, true));
             postAdresseType.setValue("UTENLANDSK_ADRESSE");
-        } else {
-            xmlBruker.setPostadresse(null);
         }
     }
 
@@ -116,12 +103,6 @@ public class BrukerprofilMock {
         } else {
             xmlBruker.setPostadresse(null);
         }
-    }
-
-    private XMLBostedsadresse lagBostedsAdresse() {
-        XMLBostedsadresse xmlBostedsadresse = new XMLBostedsadresse();
-        xmlBostedsadresse.setStrukturertAdresse(lagStrukturertGateAdresse());
-        return xmlBostedsadresse;
     }
 
     private XMLMidlertidigPostadresseNorge lagMidlertidigNorskPostadresse() {
@@ -175,16 +156,6 @@ public class BrukerprofilMock {
             xmlUstrukturertAdresse.setAdresselinje4(ADRESSELINJE4);
         }
         return xmlUstrukturertAdresse;
-    }
-
-    private XMLGateadresse lagStrukturertGateAdresse() {
-        XMLGateadresse xmlGateadresse = new XMLGateadresse();
-        xmlGateadresse.setGatenavn(GATENAVN);
-        xmlGateadresse.setHusnummer(new BigInteger(HUSNUMMER));
-        xmlGateadresse.setHusbokstav(HUSBOKSTAV);
-        xmlGateadresse.setPoststed(lagPostnummer(POSTNUMMER));
-        xmlGateadresse.setLandkode(lagLandkode(LANDKODE));
-        return xmlGateadresse;
     }
 
     private XMLPostnummer lagPostnummer(String postnummer) {
