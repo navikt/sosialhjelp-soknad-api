@@ -1,0 +1,70 @@
+<h2>{{ hentTekst "oppsummering.vedlegg.tittel" }} lalala</h2>
+
+<ul class="vedlegg-liste">
+    {{#forVedlegg}}
+
+        <li
+            {{#hvisLik innsendingsvalg "LastetOpp"}}
+            class="lastet-opp"
+            {{ else }}
+            class="ikke-lastet-opp"
+            {{/hvisLik}}
+        >
+            <div>
+                <p class="tittel">{{ tittel }}</p>
+                {{#if navn}}
+                    <p class="navn">{{ navn }}</p>
+                {{/if}}
+
+                {{#hvisLik innsendingsvalg "LastetOpp"}}
+                    <span class="lastetOpp">
+                                <span class="vedleggSymbol"></span>
+                                <span class="antallSider">
+                                    <span>{{ antallSider }}</span>
+                                    {{#hvisLik antallSider "1"}}
+                                        <span>{{ hentTekst "oppsummering.side" }}</span>
+                                    {{ else }}
+                                        <span>{{ hentTekst "oppsummering.sider" }}</span>
+                                    {{/hvisLik}}
+
+                                </span>
+                                <a href="#/visVedlegg/{{ vedleggId }}"
+                                   class="seVedlegg">{{ hentTekst "oppsummering.seVedlegg" }}</a>
+                            </span>
+                {{/hvisLik}}
+
+                {{#hvisLik innsendingsvalg "SendesSenere"}}
+                    <span class="status">{{ hentTekst "oppsummering.sendesSenere" }}</span>
+                {{/hvisLik}}
+
+                {{#hvisLik innsendingsvalg "SendesIkke"}}
+                    <span class="status">{{ hentTekst "oppsummering.sendesIkkeSendesAvAndre" }}</span>
+                {{/hvisLik}}
+
+                {{#hvisLik innsendingsvalg "VedleggSendesIkke"}}
+                    <span class="status">{{ hentTekst "oppsummering.sendesIkke" }}</span>
+                {{/hvisLik}}
+
+                {{#hvisLik innsendingsvalg "VedleggSendesAvAndre"}}
+                    <span class="status">{{ hentTekst "oppsummering.sendesAvAndre" }}</span>
+                {{/hvisLik}}
+
+                {{#hvisLik innsendingsvalg "VedleggAlleredeSendt"}}
+                    <span class="status">{{ hentTekst "oppsummering.vedleggAlleredeSendt" }}</span>
+                {{/hvisLik}}
+
+                {{#hvisLik innsendingsvalg "VedleggSendesIkke"}}
+                    <p class="aarsak">{{ aarsak }}</p>
+                {{/hvisLik}}
+
+                {{#hvisLik innsendingsvalg "VedleggAlleredeSendt"}}
+                    <p class="aarsak">{{ aarsak }}</p>
+                {{/hvisLik}}
+            </div>
+
+        </li>
+
+    {{else}}
+        <li class="lastet-opp">{{ hentTekst "oppsummering.vedlegg.ingen" }}</li>
+    {{/forVedlegg}}
+</ul>
