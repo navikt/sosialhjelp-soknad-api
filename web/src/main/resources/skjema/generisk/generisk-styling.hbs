@@ -1,11 +1,10 @@
 <style type="text/css">
-    .testclass {background: #f00;}
     @page   { size: A4; margin: 3.5cm 2cm 2.5cm; @top-center { content: element(header, last-except) }; @bottom-center { content: element(footer) }; }
     @page:first { margin: 1.5cm 2cm 2.5cm; }
     *       { box-sizing: border-box; }
     body    { font-family: Arial, sans-serif; font-size: 10pt; line-height: 1.4em; margin: 0; color: #3e3832; word-break: break-word; }
     h1      { font-family: Modus, Arial, sans-serif; font-size: 24pt; }
-    h2, h3, h4, h5, h6 { font-family: Modus, Arial, sans-serif; font-size: 13pt; }
+    h2 { font-family: Modus, Arial, sans-serif; font-size: 13pt; }
     h2 {margin-top: 10mm;}
     h2 { page-break-after: avoid; }
 
@@ -29,21 +28,27 @@
     .hode .adr { margin-top: 2mm; }
 
 
-    .stor { text-transform: uppercase; font-size: 1rem; }
     .brosjyre-signatur { border-top: .2pt solid #ccc; margin-top: 10mm; padding-top: 10mm; page-break-inside: avoid; }
-    .vedlegg .container{ margin-bottom: 16px; padding: 0; }
-    .vedlegg .lastetOpp .vedleggSymbol { display: none; }
-    .vedlegg .lastetOpp a { font-size: 0.85rem; }
-    .vedlegg .aarsak { font-weight: normal; display: block; }
-    .vedlegg .status { margin-right: 5px; }
-    .vedlegg .tittel { font-weight: bold; }
-    .vedlegg .seVedlegg { display: none; }
-    .vedlegg p { margin: 0 0 5px 0; }
     .personalia p { margin: 0; }
 
-    ul.fakta-liste, ul.svar-liste { margin: 0; padding: 0; list-style: none; }
+    .generisk-oppsummering h3, .generisk-oppsummering h4, .generisk-oppsummering h5, .generisk-oppsummering h6 {
+        font-size: 10pt;
+        margin: 0 0 8pt 0;
+        padding: 0;
+    }
+
+    ul.vedlegg-liste, ul.fakta-liste, ul.svar-liste { margin: 0; padding: 0; list-style: none; }
+    ul.fakta-liste > li, ul.svar-liste > li { margin: 8pt 0 }
     ul.svar-liste > li { position: relative; margin-left: 20px;}
-    ul.svar-liste > li::before { content: "v"; font-weight: bold; position: absolute; left: -20px;}
-    ul.svar-liste ul.svar-liste > li::before { content: "•"; padding-left: 5px;}
+    ul.svar-liste > li::before, ul.vedlegg-liste > li.lastet-opp::before {display: inline-block; content:" "; font-weight: bold; background: url(img/hake_sort.gif) no-repeat center bottom; width: 10px; height:12px; background-size: 8px; position: absolute; left: -20px;}
+    ul.svar-liste ul.svar-liste > li::before { content: "•"; padding-left: 5px; background: none}
+    ul.vedlegg-liste > li.ikke-lastet-opp::before {display: inline-block; content: "-";  position: absolute; left: -20px; }
+
+    ul.vedlegg-liste > li { position: relative; margin: 12pt 0 12pt 20px;}
+    ul.vedlegg-liste p { margin: 0 0 5pt 0}
+    ul.vedlegg-liste .seVedlegg { display: none;}
+    ul.vedlegg-liste .aarsak { font-weight: normal;}
+    ul.vedlegg-liste .tittel { font-weight: bold;}
+    ul.vedlegg-liste .navn { font-weight: normal;}
 
 </style>
