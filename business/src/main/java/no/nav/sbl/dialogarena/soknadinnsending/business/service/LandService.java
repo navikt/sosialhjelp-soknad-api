@@ -1,13 +1,14 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
-import static no.nav.sbl.dialogarena.kodeverk.Kodeverk.EksponertKodeverk.LANDKODE;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.dto.Land;
+import no.nav.sbl.dialogarena.sendsoknad.domain.dto.Land;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.StatsborgerskapType;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import java.util.*;
+
+import static no.nav.sbl.dialogarena.kodeverk.Kodeverk.EksponertKodeverk.LANDKODE;
 
 /**
  * Kilde: https://www.nav.no/1073751655.cms (Arkivert innhold. Søk opp nøkkelen 1073751655 i Enonic Admin

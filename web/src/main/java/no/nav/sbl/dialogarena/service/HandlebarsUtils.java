@@ -1,14 +1,10 @@
 package no.nav.sbl.dialogarena.service;
 
-import com.github.jknack.handlebars.Context;
-import com.github.jknack.handlebars.Options;
-import no.nav.sbl.dialogarena.service.oppsummering.OppsummeringsContext;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import com.github.jknack.handlebars.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.Locale;
+import java.io.*;
+import java.util.*;
 
 public class HandlebarsUtils {
 

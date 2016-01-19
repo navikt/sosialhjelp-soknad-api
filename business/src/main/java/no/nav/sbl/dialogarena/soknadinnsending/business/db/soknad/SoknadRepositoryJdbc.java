@@ -3,10 +3,10 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad;
 import com.google.common.base.Function;
 import no.nav.modig.lang.collections.iter.ReduceFunction;
 import no.nav.modig.lang.option.Optional;
+import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.*;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.FaktumStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.VedleggForFaktumStruktur;
 import org.slf4j.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
@@ -28,10 +28,9 @@ import static com.google.common.collect.Maps.uniqueIndex;
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.modig.lang.option.Optional.none;
 import static no.nav.modig.lang.option.Optional.optional;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.limit;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.selectNextSequenceValue;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -316,7 +315,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
                     faktum.getKey(), faktum.getTypeString());
             faktum.setValue(faktum.getValue().substring(0, 500));
         }
-        if (lagretFaktum.er(BRUKERREGISTRERT) || systemLagring) {
+        if (lagretFaktum.er(Faktum.FaktumType.BRUKERREGISTRERT) || systemLagring) {
             getJdbcTemplate()
                     .update("update soknadbrukerdata set value=? where soknadbrukerdata_id = ? ",
                             faktum.getValue(), faktum.getFaktumId());

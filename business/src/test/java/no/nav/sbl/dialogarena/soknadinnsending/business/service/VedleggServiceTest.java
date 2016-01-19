@@ -3,13 +3,12 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.FunksjonalitetBryter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
@@ -31,25 +30,19 @@ import java.util.*;
 import static java.lang.System.setProperty;
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.detect.Detect.IS_PDF;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.ETTERSENDING_OPPRETTET;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.OPPRETTET;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.SKJEMA_VALIDERT;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.LastetOpp;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.VedleggKreves;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus.*;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.LastetOpp;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.VedleggKreves;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.DAGPENGER;
 import static no.nav.sbl.dialogarena.test.match.Matchers.match;
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class VedleggServiceTest {
@@ -157,7 +150,7 @@ public class VedleggServiceTest {
 
     @Test
     public void skalSletteVedlegg() {
-        when(soknadService.hentSoknadFraLokalDb(1L)).thenReturn(new WebSoknad().medBehandlingId("123").medAktorId("234").medDelstegStatus(DelstegStatus.OPPRETTET).medId(1L));
+        when(soknadService.hentSoknadFraLokalDb(1L)).thenReturn(new WebSoknad().medBehandlingId("123").medAktorId("234").medDelstegStatus(OPPRETTET).medId(1L));
         when(vedleggService.hentVedlegg(2L, false)).thenReturn(new Vedlegg().medSoknadId(1L));
 
         vedleggService.slettVedlegg(2L);
@@ -194,7 +187,7 @@ public class VedleggServiceTest {
 
     @Test(expected=ApplicationException.class)
     public void skalIkkeKunneLagreVedleggMedNegradertInnsendingsStatus() {
-        Vedlegg opplastetVedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(Vedlegg.Status.LastetOpp);
+        Vedlegg opplastetVedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(LastetOpp);
 
         opplastetVedlegg.setInnsendingsvalg(Vedlegg.Status.SendesIkke);
         vedleggService.lagreVedlegg(1L, opplastetVedlegg);
@@ -204,9 +197,9 @@ public class VedleggServiceTest {
     @Test
     public void skalKunneLagreVedleggMedSammeInnsendinsStatus() {
         when(soknadService.hentSoknadFraLokalDb(11L)).thenReturn(new WebSoknad().medDelstegStatus(OPPRETTET));
-        Vedlegg opplastetVedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(Vedlegg.Status.LastetOpp).medSoknadId(11L);
+        Vedlegg opplastetVedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(LastetOpp).medSoknadId(11L);
 
-        opplastetVedlegg.setInnsendingsvalg(Vedlegg.Status.LastetOpp);
+        opplastetVedlegg.setInnsendingsvalg(LastetOpp);
         vedleggService.lagreVedlegg(1L, opplastetVedlegg);
         verify(vedleggRepository).lagreVedlegg(11L, 1L, opplastetVedlegg);
     }
@@ -214,18 +207,18 @@ public class VedleggServiceTest {
     @Test
     public void skalIkkeSetteDelstegDersomVedleggLagresPaaEttersending() {
         when(soknadService.hentSoknadFraLokalDb(11L)).thenReturn(new WebSoknad().medDelstegStatus(ETTERSENDING_OPPRETTET));
-        Vedlegg opplastetVedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(Vedlegg.Status.LastetOpp).medSoknadId(11L);
+        Vedlegg opplastetVedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(LastetOpp).medSoknadId(11L);
 
-        opplastetVedlegg.setInnsendingsvalg(Vedlegg.Status.LastetOpp);
+        opplastetVedlegg.setInnsendingsvalg(LastetOpp);
         vedleggService.lagreVedlegg(1L, opplastetVedlegg);
         verify(vedleggRepository).lagreVedlegg(11L, 1L, opplastetVedlegg);
-        verify(soknadRepository, never()).settDelstegstatus(11L, DelstegStatus.SKJEMA_VALIDERT);
+        verify(soknadRepository, never()).settDelstegstatus(11L, SKJEMA_VALIDERT);
     }
 
     @Test
     public void skalIkkeLageDuplikaterAvVedleggPaaEttersending() {
         Faktum faktum = new Faktum().medKey("ekstraVedlegg").medFaktumId(12L).medValue("true");
-        Vedlegg ekstraVedlegg = new Vedlegg().medVedleggId(1L).medFaktumId(12L).medSkjemaNummer("N6").medInnsendingsvalg(Vedlegg.Status.VedleggKreves);
+        Vedlegg ekstraVedlegg = new Vedlegg().medVedleggId(1L).medFaktumId(12L).medSkjemaNummer("N6").medInnsendingsvalg(VedleggKreves);
         List<Vedlegg> vedlegg = new ArrayList<>();
         vedlegg.add(ekstraVedlegg);
 

@@ -1,23 +1,18 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLAlternativRepresentasjon;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLAlternativRepresentasjonListe;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadata;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.*;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.modig.lang.collections.predicate.InstanceOf;
 import no.nav.modig.lang.option.Optional;
+import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
+import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.AlternativRepresentasjon;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.FaktumStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
@@ -49,17 +44,9 @@ import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.modig.lang.collections.PredicateUtils.equalTo;
 import static no.nav.modig.lang.collections.PredicateUtils.where;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.FERDIG;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.UNDER_ARBEID;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.FaktumStruktur.sammenlignEtterDependOn;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur.sammenlignEtterDependOn;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.convertToXmlVedleggListe;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.ELDSTE_FORST;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.NYESTE_FORST;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.STATUS;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.journalforendeEnhet;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.skjemanummer;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -116,7 +103,7 @@ public class SoknadDataFletter {
         XMLHovedskjema hovedskjema = (XMLHovedskjema) hovedskjemaOptional.getOrThrow(new ApplicationException("Kunne ikke hente opp søknad"));
 
         SoknadInnsendingStatus status = SoknadInnsendingStatus.valueOf(wsSoknadsdata.getStatus());
-        if (status.equals(UNDER_ARBEID)) {
+        if (status.equals(SoknadInnsendingStatus.UNDER_ARBEID)) {
             WebSoknad soknadFraFillager = unmarshal(new ByteArrayInputStream(fillagerService.hentFil(hovedskjema.getUuid())), WebSoknad.class);
             lokalDb.populerFraStruktur(soknadFraFillager);
             vedleggService.populerVedleggMedDataFraHenvendelse(soknadFraFillager, fillagerService.hentFiler(soknadFraFillager.getBrukerBehandlingId()));
@@ -162,7 +149,7 @@ public class SoknadDataFletter {
                 Faktum faktum = new Faktum()
                         .medKey(faktumStruktur.getId())
                         .medValue("")
-                        .medType(BRUKERREGISTRERT);
+                        .medType(Faktum.FaktumType.BRUKERREGISTRERT);
 
                 if (faktumStruktur.getDependOn() != null) {
                     Faktum parentFaktum = faktaService.hentFaktumMedKey(soknadId, faktumStruktur.getDependOn().getId());
@@ -190,7 +177,7 @@ public class SoknadDataFletter {
         return new Faktum()
                 .medSoknadId(soknadId)
                 .medKey("lonnsOgTrekkOppgave")
-                .medType(SYSTEMREGISTRERT)
+                .medType(Faktum.FaktumType.SYSTEMREGISTRERT)
                 .medValue(startDatoService.erJanuarEllerFebruar().toString());
     }
 
@@ -198,13 +185,13 @@ public class SoknadDataFletter {
         return new Faktum()
                 .medSoknadId(soknadId)
                 .medKey("bolker")
-                .medType(BRUKERREGISTRERT);
+                .medType(Faktum.FaktumType.BRUKERREGISTRERT);
     }
 
     private Faktum personalia(Long soknadId) {
         return new Faktum()
                 .medSoknadId(soknadId)
-                .medType(SYSTEMREGISTRERT)
+                .medType(Faktum.FaktumType.SYSTEMREGISTRERT)
                 .medKey("personalia");
     }
 
@@ -305,7 +292,7 @@ public class SoknadDataFletter {
 
     public Long hentOpprinneligInnsendtDato(String behandlingsId) {
         return on(henvendelseService.hentBehandlingskjede(behandlingsId))
-                .filter(where(STATUS, equalTo(FERDIG)))
+                .filter(where(STATUS, equalTo(SoknadInnsendingStatus.FERDIG)))
                 .collect(ELDSTE_FORST)
                 .get(0)
                 .getInnsendtDato()
@@ -314,7 +301,7 @@ public class SoknadDataFletter {
 
     public String hentSisteInnsendteBehandlingsId(String behandlingsId) {
         return on(henvendelseService.hentBehandlingskjede(behandlingsId))
-                .filter(where(STATUS, equalTo(FERDIG)))
+                .filter(where(STATUS, equalTo(SoknadInnsendingStatus.FERDIG)))
                 .collect(NYESTE_FORST)
                 .get(0)
                 .getBehandlingsId();
