@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.soknadinnsending.business.person;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
