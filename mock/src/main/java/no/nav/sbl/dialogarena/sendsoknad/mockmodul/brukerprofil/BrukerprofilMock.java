@@ -24,8 +24,9 @@ public class BrukerprofilMock {
     private static final String HUSNUMMER = "44";
     private static final String HUSBOKSTAV = "B";
     private static final String POSTNUMMER = "0560";
+    private static final String POSTSTED = "Oslo";
     private static final String LANDKODE = "NOR";
-    private static final String UTENLANDSK_LANDKODE = "FIN";
+    private static final String LANDKODE_UTENLANDSK = "FIN";
     private static final String ADRESSELINJE1 = "Poitigatan 55";
     private static final String ADRESSELINJE2 = "Nord-Poiti";
     private static final String ADRESSELINJE3 = "1111 Helsinki";
@@ -137,20 +138,29 @@ public class BrukerprofilMock {
 
     private XMLMidlertidigPostadresseUtland lagMidlertidigUtenlandskPostadresse() {
         XMLMidlertidigPostadresseUtland postadresse = new XMLMidlertidigPostadresseUtland();
-        postadresse.setUstrukturertAdresse(lagUstrukturertPostadresse(4, true));
+        postadresse.setUstrukturertAdresse(lagUstrukturertUtenlandskPostadresse(4));
         postadresse.setPostleveringsPeriode(lagGyldighetsperiode(false));
         return postadresse;
     }
 
     private XMLPostadresse lagPostadresse(int antallLinjer, boolean utenlandsk) {
         XMLPostadresse xmlPostadresse = new XMLPostadresse();
-        xmlPostadresse.setUstrukturertAdresse(lagUstrukturertPostadresse(antallLinjer, utenlandsk));
+        XMLUstrukturertAdresse adresse = utenlandsk ? lagUstrukturertUtenlandskPostadresse(antallLinjer) : lagUstrukturertPostadresse();
+        xmlPostadresse.setUstrukturertAdresse(adresse);
         return xmlPostadresse;
     }
 
-    private XMLUstrukturertAdresse lagUstrukturertPostadresse(int antallLinjer, boolean utenlandsk) {
+    private XMLUstrukturertAdresse lagUstrukturertPostadresse() {
         XMLUstrukturertAdresse xmlUstrukturertAdresse = new XMLUstrukturertAdresse();
-        xmlUstrukturertAdresse.setLandkode(lagLandkode(utenlandsk ? UTENLANDSK_LANDKODE : LANDKODE));
+        xmlUstrukturertAdresse.setAdresselinje1(String.format("%s %s%s", GATENAVN, HUSNUMMER, HUSBOKSTAV));
+        xmlUstrukturertAdresse.setAdresselinje2(String.format("%s %s", POSTNUMMER, POSTSTED));
+        xmlUstrukturertAdresse.setLandkode(lagLandkode(LANDKODE));
+        return xmlUstrukturertAdresse;
+    }
+
+    private XMLUstrukturertAdresse lagUstrukturertUtenlandskPostadresse(int antallLinjer) {
+        XMLUstrukturertAdresse xmlUstrukturertAdresse = new XMLUstrukturertAdresse();
+        xmlUstrukturertAdresse.setLandkode(lagLandkode(LANDKODE_UTENLANDSK));
 
         if (antallLinjer >= 1) {
             xmlUstrukturertAdresse.setAdresselinje1(ADRESSELINJE1);
