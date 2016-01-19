@@ -4,6 +4,7 @@ import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.Personalia;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.PersonaliaTransform;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.StatsborgerskapType;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.IkkeFunnetException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
