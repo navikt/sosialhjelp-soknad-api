@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.*;
 import org.apache.commons.collections15.Transformer;
 import org.apache.commons.lang3.StringUtils;
@@ -15,11 +16,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import static no.nav.modig.lang.option.Optional.optional;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.BOSTEDSADRESSE;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.POSTADRESSE;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.UTENLANDSK_ADRESSE;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Adressetype.BOSTEDSADRESSE;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Adressetype.POSTADRESSE;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Adressetype.UTENLANDSK_ADRESSE;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class AdresseTransform {

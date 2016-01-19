@@ -1,7 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.PersonAlder;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.Personalia;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Diskresjonskoder;
