@@ -56,23 +56,16 @@ public class BrukerprofilMock {
         return brukerprofilMock;
     }
 
-    public BrukerprofilPortType getBrukerprofilPortTypeMock() {
-        BrukerprofilPortType mock = mock(BrukerprofilPortType.class);
-        XMLHentKontaktinformasjonOgPreferanserResponse response = new XMLHentKontaktinformasjonOgPreferanserResponse();
+    public BrukerprofilPortTypeMock getBrukerprofilPortTypeMock() {
+        BrukerprofilPortTypeMock brukerprofilPortTypeMock = new BrukerprofilPortTypeMock();
         XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(true);
         xmlBruker.setGjeldendePostadresseType(new XMLPostadressetyper());
 
         settPostadresse(xmlBruker, Adressetyper.NORSK);
         settSekundarAdresse(xmlBruker, Adressetyper.UTENLANDSK);
 
-        response.setPerson(xmlBruker);
-
-        try {
-            when(mock.hentKontaktinformasjonOgPreferanser(any(XMLHentKontaktinformasjonOgPreferanserRequest.class))).thenReturn(response);
-        } catch (HentKontaktinformasjonOgPreferanserPersonIkkeFunnet | HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning e) {
-            throw new RuntimeException(e);
-        }
-        return mock;
+        brukerprofilPortTypeMock.setPerson(xmlBruker);
+        return brukerprofilPortTypeMock;
     }
 
     private XMLGyldighetsperiode lagGyldighetsperiode(boolean harFraDato) {
