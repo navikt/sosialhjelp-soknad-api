@@ -98,7 +98,7 @@ public class InternalRessurs {
     @GET
     @Path(value = "/mockdata")
     public String endreMockdata() throws IOException {
-        MockdataFields fields = getMockdataFields(personPortTypeMock);
+        MockdataFields fields = getMockdataFields();
 
         Handlebars handlebars = new Handlebars();
         handlebars.registerHelper(HvisLikHelper.NAVN, new HvisLikHelper());
@@ -121,6 +121,9 @@ public class InternalRessurs {
         Person person = personPortTypeMock.getPerson();
         person.setDiskresjonskode(skalHaKode6 ? getDiskresjonskode() : null);
         person.getStatsborgerskap().getLand().setValue(statsborgerskap.toUpperCase());
+        settPostadressetype(primarAdressetype);
+        settSekundarAdressetype(sekundarAdressetype);
+
         return Response.seeOther(URI.create("/sendsoknad/internal/mockdata")).build();
     }
 
