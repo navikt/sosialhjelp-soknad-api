@@ -8,7 +8,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.AktivitetBetalingsplanService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.AktivitetService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.MaalgrupperService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.MaalgrupperService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.ServiceConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
 import org.springframework.context.annotation.Configuration;
