@@ -1,18 +1,7 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil;
 
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.*;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserRequest;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
 import org.joda.time.DateTime;
-
-import java.math.BigInteger;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class BrukerprofilMock {
     private static final String FODSELSNUMMER = "03076321565";
@@ -41,6 +30,7 @@ public class BrukerprofilMock {
     public enum Adressetyper {INGEN, NORSK, UTENLANDSK;}
 
     private static BrukerprofilMock brukerprofilMock = new BrukerprofilMock();
+    private BrukerprofilPortTypeMock brukerprofilPortTypeMock = new BrukerprofilPortTypeMock();
 
     private static XMLElektroniskKommunikasjonskanal lagElektroniskKommunikasjonskanal() {
         return new XMLElektroniskKommunikasjonskanal().withElektroniskAdresse(lagElektroniskAdresse());
@@ -50,14 +40,7 @@ public class BrukerprofilMock {
         return new XMLEPost().withIdentifikator(EPOST);
     }
 
-    private BrukerprofilMock(){ }
-
-    public static BrukerprofilMock getInstance(){
-        return brukerprofilMock;
-    }
-
-    public BrukerprofilPortTypeMock getBrukerprofilPortTypeMock() {
-        BrukerprofilPortTypeMock brukerprofilPortTypeMock = new BrukerprofilPortTypeMock();
+    private BrukerprofilMock(){
         XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(true);
         xmlBruker.setGjeldendePostadresseType(new XMLPostadressetyper());
 
@@ -65,6 +48,13 @@ public class BrukerprofilMock {
         settSekundarAdresse(xmlBruker, Adressetyper.UTENLANDSK);
 
         brukerprofilPortTypeMock.setPerson(xmlBruker);
+    }
+
+    public static BrukerprofilMock getInstance(){
+        return brukerprofilMock;
+    }
+
+    public BrukerprofilPortTypeMock getBrukerprofilPortTypeMock() {
         return brukerprofilPortTypeMock;
     }
 
@@ -94,7 +84,7 @@ public class BrukerprofilMock {
         } else if (adressetype.equals(Adressetyper.UTENLANDSK)) {
             xmlBruker.setMidlertidigPostadresse(lagMidlertidigUtenlandskPostadresse());
         } else {
-            xmlBruker.setPostadresse(null);
+            xmlBruker.setMidlertidigPostadresse(null);
         }
     }
 
