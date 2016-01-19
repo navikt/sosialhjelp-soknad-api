@@ -374,22 +374,6 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         return fakta;
     }
 
-    public List<Faktum> hentAlleBrukerData(Long soknadId) {
-        List<Faktum> fakta = select("select * from SOKNADBRUKERDATA where soknad_id = ? order by soknadbrukerdata_id asc", FAKTUM_ROW_MAPPER, soknadId);
-        List<FaktumEgenskap> egenskaper = select("select * from FAKTUMEGENSKAP where soknad_id = ?", FAKTUM_EGENSKAP_ROW_MAPPER, soknadId);
-        Map<Long, Faktum> faktaMap = uniqueIndex(fakta, new Function<Faktum, Long>() {
-            public Long apply(Faktum input) {
-                return input.getFaktumId();
-            }
-        });
-        for (FaktumEgenskap faktumEgenskap : egenskaper) {
-            if (faktaMap.containsKey(faktumEgenskap.getFaktumId())) {
-                faktaMap.get(faktumEgenskap.getFaktumId()).medEgenskap(faktumEgenskap);
-            }
-        }
-        return fakta;
-    }
-
     public void slettSoknad(long soknadId) {
         logger.debug("Sletter søknad med ID: " + soknadId);
         getJdbcTemplate().update("delete from faktumegenskap where soknad_id = ?", soknadId);

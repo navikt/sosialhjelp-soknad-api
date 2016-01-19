@@ -31,7 +31,6 @@ public class BoutgifterTilXml implements Transformer<WebSoknad, Boutgifter> {
         kommunestotteTilBoutgifter(webSoknad);
         samlingTilBoutgifter(webSoknad);
         adresseUtgifterTilBoutgifter(webSoknad);
-        //medisinskeaarsakerTilBoutgifter(webSoknad); // TODO: Finnes ikke i boutgifter
 
         return boutgifter;
     }

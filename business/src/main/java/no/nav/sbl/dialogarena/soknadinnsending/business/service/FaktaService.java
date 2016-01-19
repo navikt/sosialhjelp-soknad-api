@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Locale;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERREGISTRERT;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.FunksjonalitetBryter.GammelVedleggsLogikk;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -63,7 +65,7 @@ public class FaktaService {
     public Faktum opprettBrukerFaktum(String behandlingsId, Faktum faktum) {
         Long soknadId = repository.hentSoknad(behandlingsId).getSoknadId();
         faktum.setSoknadId(soknadId);
-        faktum.setType(Faktum.FaktumType.BRUKERREGISTRERT);
+        faktum.setType(BRUKERREGISTRERT);
         Long faktumId = repository.opprettFaktum(soknadId, faktum);
 
         repository.settSistLagretTidspunkt(soknadId);
@@ -77,7 +79,7 @@ public class FaktaService {
     @Transactional
     public Faktum lagreBrukerFaktum(Faktum faktum) {
         Long soknadId = faktum.getSoknadId();
-        faktum.setType(Faktum.FaktumType.BRUKERREGISTRERT);
+        faktum.setType(BRUKERREGISTRERT);
 
         Long faktumId = repository.oppdaterFaktum(faktum);
         repository.settSistLagretTidspunkt(soknadId);
@@ -107,7 +109,7 @@ public class FaktaService {
                     faktum.setFaktumId(existing.getFaktumId());
                     faktum.kopierFaktumegenskaper(existing);
                 }
-                faktum.setType(Faktum.FaktumType.SYSTEMREGISTRERT);
+                faktum.setType(SYSTEMREGISTRERT);
                 if (faktum.getFaktumId() != null) {
                     repository.oppdaterFaktum(faktum, true);
                 } else {
@@ -122,7 +124,7 @@ public class FaktaService {
     @Transactional
     public Long lagreSystemFaktum(Long soknadId, Faktum f) {
         logger.debug("*** Lagrer systemfaktum ***: " + f.getKey());
-        f.setType(Faktum.FaktumType.SYSTEMREGISTRERT);
+        f.setType(SYSTEMREGISTRERT);
         List<Faktum> fakta = repository.hentSystemFaktumList(soknadId, f.getKey());
 
 
@@ -244,7 +246,7 @@ public class FaktaService {
             vedlegg.setVedleggId(vedleggRepository.opprettEllerEndreVedlegg(vedlegg, null));
         }
 
-        if (faktum.getType().equals(Faktum.FaktumType.BRUKERREGISTRERT)) {
+        if (faktum.getType().equals(BRUKERREGISTRERT)) {
             vedlegg.oppdatertInnsendtStatus();
         }
 
