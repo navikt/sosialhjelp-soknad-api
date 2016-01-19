@@ -201,15 +201,16 @@ public class VedleggService {
     }
 
     public Vedlegg hentVedlegg(Long vedleggId, boolean medInnhold) {
+        Vedlegg vedlegg;
+
         if (medInnhold) {
-            Vedlegg vedlegg = vedleggRepository.hentVedleggMedInnhold(vedleggId);
-            medKodeverk(vedlegg);
-            return vedlegg;
+            vedlegg = vedleggRepository.hentVedleggMedInnhold(vedleggId);
         } else {
-            Vedlegg vedlegg = vedleggRepository.hentVedlegg(vedleggId);
-            medKodeverk(vedlegg);
-            return vedlegg;
+            vedlegg = vedleggRepository.hentVedlegg(vedleggId);
         }
+
+        medKodeverk(vedlegg);
+        return vedlegg;
     }
 
     public String hentBehandlingsId(Long vedleggId) {
@@ -363,9 +364,9 @@ public class VedleggService {
         }
     }
 
-    public void leggTilKodeverkFelter(List<Vedlegg> vedlegg) {
-        for (Vedlegg v : vedlegg) {
-            medKodeverk(v);
+    public void leggTilKodeverkFelter(List<Vedlegg> vedleggListe) {
+        for (Vedlegg vedlegg : vedleggListe) {
+            medKodeverk(vedlegg);
         }
     }
 
@@ -413,7 +414,15 @@ public class VedleggService {
                     vedlegg.leggTilURL(nokkelEntry.getKey().toString(), koder.get(nokkelEntry.getKey()));
                 }
             }
-            vedlegg.setTittel(koder.get(Kodeverk.Nokkel.TITTEL));
+
+            Faktum sprakFaktum = soknadService.hentSprak(vedlegg.getSoknadId());
+
+            boolean soknadHarSpraak = sprakFaktum != null;
+            boolean soknadErEngelsk = soknadHarSpraak && "en".equals(sprakFaktum.getValue());
+            boolean engelskTittelFinnes = !"".equals(koder.get(Kodeverk.Nokkel.TITTEL_EN));
+            Kodeverk.Nokkel tittelKey = soknadErEngelsk && engelskTittelFinnes ? Kodeverk.Nokkel.TITTEL_EN : Kodeverk.Nokkel.TITTEL;
+
+            vedlegg.setTittel(koder.get(tittelKey));
         } catch (Exception ignore) {
             logger.debug("ignored exception");
 

@@ -73,6 +73,7 @@ public class VedleggServiceTest {
     public void before() {
         setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         when(soknadRepository.hentSoknadType(anyLong())).thenReturn(DAGPENGER);
+        when(soknadService.hentSprak(anyLong())).thenReturn(new Faktum().medValue("nb_NO"));
     }
 
     @Test
@@ -173,9 +174,9 @@ public class VedleggServiceTest {
         map.put(Kodeverk.Nokkel.TITTEL, "tittel");
         map.put(Kodeverk.Nokkel.URL, "url");
         when(kodeverk.getKoder("L6")).thenReturn(map);
-        Vedlegg vedlegg = new Vedlegg().medFaktumId(1L).medSkjemaNummer("L6").medInnsendingsvalg(VedleggKreves);
+        Vedlegg vedlegg = new Vedlegg().medFaktumId(1L).medSkjemaNummer("L6").medInnsendingsvalg(VedleggKreves).medSoknadId(2L);
         Vedlegg vedleggSjekk = new Vedlegg().medFaktumId(1L).medSkjemaNummer("L6").medTittel("tittel").medUrl("URL", "url")
-                .medFillagerReferanse(vedlegg.getFillagerReferanse()).medInnsendingsvalg(VedleggKreves);
+                .medFillagerReferanse(vedlegg.getFillagerReferanse()).medInnsendingsvalg(VedleggKreves).medSoknadId(2L);
         when(vedleggRepository.hentVedlegg(anyString())).thenReturn(Arrays.asList(vedlegg));
         when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(Arrays.asList(vedlegg));
         List<Vedlegg> vedleggs = vedleggService.hentPaakrevdeVedlegg("10000000ABC");

@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
@@ -80,6 +81,10 @@ public class SoknadService {
 
     public WebSoknad hentSoknad(String behandlingsId, boolean medData, boolean medVedlegg) {
         return soknadDataFletter.hentSoknad(behandlingsId, medData, medVedlegg);
+    }
+
+    public Faktum hentSprak(long soknadId) {
+        return lokalDb.hentFaktumMedKey(soknadId, "skjema.sprak");
     }
 
     public Long hentOpprinneligInnsendtDato(String behandlingsId) {
