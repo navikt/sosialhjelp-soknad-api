@@ -21,7 +21,7 @@
     <description>Innsending av elektronisk søknad.</description>
     <groupId>no.nav.sbl.dialogarena</groupId>
     <artifactId>sendsoknad</artifactId>
-    <version>9.1</version>
+    <version>9.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -867,7 +867,7 @@
     <scm>
         <developerConnection>scm:git:http://stash.devillo.no/scm/sokd/sendsoknad.git</developerConnection>
         <url>http://stash.devillo.no/scm/sokd/sendsoknad.git</url>
-        <tag>9.1</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <profiles>
