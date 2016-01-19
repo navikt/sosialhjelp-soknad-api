@@ -9,11 +9,11 @@ import org.junit.Test;
 
 import java.util.*;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.UTENLANDSK_ADRESSE;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.*;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.*;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.*;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class DagpengerUtilsTest {
 
@@ -187,18 +187,18 @@ public class DagpengerUtilsTest {
 
     private static Faktum lagPermittert() {
         Map<String, String> properties = new HashMap<>();
-        properties.put("type", "Permittert");
+        properties.put("type", PERMITTERT);
         Faktum faktum = new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("arbeidsforhold");
         faktum.setProperties(properties);
         return faktum;
     }
 
     private static Faktum lagAvskjediget(String dato) {
-        return lagFaktum("Avskjediget", "datotil", dato);
+        return lagFaktum(AVSKJEDIGET, "datotil", dato);
     }
 
     private static Faktum lagRedusertArbeidstid(String dato) {
-        return lagFaktum("Redusert arbeidstid", "redusertfra", dato);
+        return lagFaktum(REDUSERT_ARBEIDSTID, "redusertfra", dato);
     }
 
     private static Adresse lagUtenlandskAdresse() {
