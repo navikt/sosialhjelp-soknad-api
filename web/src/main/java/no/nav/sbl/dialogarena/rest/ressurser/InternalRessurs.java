@@ -114,7 +114,8 @@ public class InternalRessurs {
     @Path(value = "/mockdata")
     public Response endreMockData(@FormParam("statsborgerskap") String statsborgerskap,
                                   @FormParam("kode6") String kode6,
-                                  @FormParam("submit") String submit) throws InterruptedException {
+                                  @FormParam("primar_adressetype") String primarAdressetype,
+                                  @FormParam("sekundar_adressetype") String sekundarAdressetype) throws InterruptedException {
         Boolean skalHaKode6 = "true".equalsIgnoreCase(kode6);
 
         Person person = personPortTypeMock.getPerson();

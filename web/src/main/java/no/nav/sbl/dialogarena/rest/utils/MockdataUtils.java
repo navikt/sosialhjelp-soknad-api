@@ -25,6 +25,7 @@ public class MockdataUtils {
 
     public static class MockdataFields {
         private Boolean kode6;
+        private Boolean harSekundarAdresse;
         private String statsborgerskap;
 
         public Boolean getKode6() {
