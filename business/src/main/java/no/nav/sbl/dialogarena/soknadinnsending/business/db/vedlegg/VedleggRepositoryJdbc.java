@@ -1,40 +1,28 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg;
 
-import no.nav.modig.core.exception.SystemException;
-import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggsGrunnlag;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils;
-import org.apache.commons.collections15.Predicate;
-import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.PreparedStatementSetter;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.support.AbstractLobCreatingPreparedStatementCallback;
-import org.springframework.jdbc.core.support.JdbcDaoSupport;
-import org.springframework.jdbc.support.lob.DefaultLobHandler;
-import org.springframework.jdbc.support.lob.LobCreator;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import no.nav.modig.core.exception.*;
+import no.nav.sbl.dialogarena.common.kodeverk.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.*;
+import org.apache.commons.collections15.*;
+import org.apache.commons.io.*;
+import org.slf4j.*;
+import org.springframework.dao.*;
+import org.springframework.jdbc.core.*;
+import org.springframework.jdbc.core.support.*;
+import org.springframework.jdbc.support.lob.*;
+import org.springframework.stereotype.*;
+import org.springframework.transaction.annotation.*;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.sql.DataSource;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.List;
+import javax.inject.*;
+import javax.sql.*;
+import java.io.*;
+import java.sql.*;
+import java.util.*;
 
-import static no.nav.modig.lang.collections.IterUtils.on;
-import static no.nav.modig.lang.collections.PredicateUtils.not;
-import static org.slf4j.LoggerFactory.getLogger;
+import static no.nav.modig.lang.collections.IterUtils.*;
+import static no.nav.modig.lang.collections.PredicateUtils.*;
+import static org.slf4j.LoggerFactory.*;
 
 @Named("vedleggRepository")
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
@@ -243,31 +231,6 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
                 new VedleggRowMapper(false), soknadId, faktumId);
     }
 
-    public void oppdaterVedlegg(VedleggsGrunnlag vedleggsgrunnlag) {
-       boolean vedleggErPaakrevd = vedleggsgrunnlag.erVedleggPaakrevd();
-
-        if (vedleggsgrunnlag.vedleggFinnes() || vedleggErPaakrevd) {
-
-            if (vedleggsgrunnlag.vedleggIkkeFinnes()) {
-                vedleggsgrunnlag.opprettVedleggFraFaktum();
-            }
-
-            Vedlegg.Status orginalStatus = vedleggsgrunnlag.vedlegg.getInnsendingsvalg();
-            Vedlegg.Status status = vedleggsgrunnlag.oppdaterInnsendingsvalg(vedleggErPaakrevd);
-            VedleggForFaktumStruktur vedleggForFaktumStruktur = vedleggsgrunnlag.grunnlag.get(0).getLeft();
-            Faktum faktum = vedleggsgrunnlag.grunnlag.get(0).getRight().get(0);
-            if (vedleggsgrunnlag.vedleggHarTittelFraProperty(vedleggForFaktumStruktur, faktum)) {
-                vedleggsgrunnlag.vedlegg.setNavn(faktum.getProperties().get(vedleggForFaktumStruktur.getProperty()));
-            } else if (vedleggForFaktumStruktur.harOversetting()) {
-                String cmsnokkel = vedleggForFaktumStruktur.getOversetting().replace("${key}", faktum.getKey());
-                vedleggsgrunnlag.vedlegg.setNavn(vedleggsgrunnlag.navMessageSource.getMessage(cmsnokkel, new Object[0], vedleggsgrunnlag.soknad.getSprak()));
-            }
-
-            if (!status.equals(orginalStatus) || vedleggsgrunnlag.vedlegg.erNyttVedlegg()) {
-                opprettEllerLagreVedleggVedNyGenereringUtenEndringAvData(vedleggsgrunnlag.vedlegg);
-            }
-        }
-    }
     private static final Predicate<? super Vedlegg> ER_KVITTERING = new Predicate<Vedlegg>() {
         @Override
         public boolean evaluate(Vedlegg vedlegg) {

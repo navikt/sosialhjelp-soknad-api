@@ -1,10 +1,11 @@
-package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
+package no.nav.sbl.dialogarena.soknadinnsending.business.service.vedleggservice;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
 import org.junit.*;
 import org.junit.runner.*;
 import org.mockito.*;
@@ -21,8 +22,8 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {BatmansConfig.class})
-public class DefaultVedleggServiceIntegrationTest {
+@ContextConfiguration(classes = {VedleggServiceIntegrationContext.class})
+public class VedleggServiceIntegrationTest {
 
     @Inject
     private SoknadDataFletter soknadDataFletter;
@@ -44,7 +45,6 @@ public class DefaultVedleggServiceIntegrationTest {
         settOppStruktur();
     }
 
-
     @Test
     public void skalGenerereEttVedleggOmFlereTillattErFalse() {
         Faktum faktum = new Faktum().medKey("toFaktumMedSammeVedlegg1").medValue("true").medFaktumId(1L);
@@ -57,7 +57,6 @@ public class DefaultVedleggServiceIntegrationTest {
         assertThat(vedlegg).extracting("faktumId").containsNull();
         assertThat(vedlegg).extracting("skjemaNummer").contains("v4");
     }
-
 
     @Test
     public void skalGenerereVedleggNaarVerdiStemmer() {
@@ -136,7 +135,6 @@ public class DefaultVedleggServiceIntegrationTest {
         assertThat(vedleggs.get(0).getFaktumId()).isEqualTo(vedlegg1.getFaktumId());
     }
 
-
     @Test
     public void skalGenerereToVedleggOmSkjemanummerTilleggErSatt(){
         Faktum faktum = new Faktum().medKey("toFaktumMedSammeVedlegg1").medValue("true").medFaktumId(1L);
@@ -163,8 +161,6 @@ public class DefaultVedleggServiceIntegrationTest {
         assertThat(vedlegg).extracting("faktumId").doesNotContainNull();
         assertThat(vedlegg).extracting("skjemaNummer").contains("v5", "v5");
     }
-
-
 
     @Test
     public void skalGenerereEttVedleggVedFaktumMedRiktigParentfaktumVerdi() {

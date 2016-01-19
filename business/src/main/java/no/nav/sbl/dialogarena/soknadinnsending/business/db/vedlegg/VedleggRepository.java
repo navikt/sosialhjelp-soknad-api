@@ -32,9 +32,6 @@ public interface VedleggRepository {
 
     List<Vedlegg> hentPaakrevdeVedlegg(Long faktumId);
 
-    void oppdaterVedlegg(VedleggsGrunnlag vedleggsgrunnlag);
-
-
     /**
      * Henter alle vedlegg for en behandlingsid uavnehgig av status på vedlegget.
      * @param behandlingsId behandlingsid

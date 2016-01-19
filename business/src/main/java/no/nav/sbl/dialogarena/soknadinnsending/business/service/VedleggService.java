@@ -335,9 +335,35 @@ public class VedleggService {
         on(forventninger).forEach(new Closure<VedleggsGrunnlag>() {
             @Override
             public void execute(VedleggsGrunnlag vedleggsgrunnlag) {
-                vedleggRepository.oppdaterVedlegg(vedleggsgrunnlag);
+                oppdaterVedlegg(vedleggsgrunnlag);
             }
         });
+    }
+
+    private void oppdaterVedlegg(VedleggsGrunnlag vedleggsgrunnlag) {
+        boolean vedleggErPaakrevd = vedleggsgrunnlag.erVedleggPaakrevd();
+
+        if (vedleggsgrunnlag.vedleggFinnes() || vedleggErPaakrevd) {
+
+            if (vedleggsgrunnlag.vedleggIkkeFinnes()) {
+                vedleggsgrunnlag.opprettVedleggFraFaktum();
+            }
+
+            Vedlegg.Status orginalStatus = vedleggsgrunnlag.vedlegg.getInnsendingsvalg();
+            Vedlegg.Status status = vedleggsgrunnlag.oppdaterInnsendingsvalg(vedleggErPaakrevd);
+            VedleggForFaktumStruktur vedleggForFaktumStruktur = vedleggsgrunnlag.grunnlag.get(0).getLeft();
+            Faktum faktum = vedleggsgrunnlag.grunnlag.get(0).getRight().get(0);
+            if (vedleggsgrunnlag.vedleggHarTittelFraProperty(vedleggForFaktumStruktur, faktum)) {
+                vedleggsgrunnlag.vedlegg.setNavn(faktum.getProperties().get(vedleggForFaktumStruktur.getProperty()));
+            } else if (vedleggForFaktumStruktur.harOversetting()) {
+                String cmsnokkel = vedleggForFaktumStruktur.getOversetting().replace("${key}", faktum.getKey());
+                vedleggsgrunnlag.vedlegg.setNavn(vedleggsgrunnlag.navMessageSource.getMessage(cmsnokkel, new Object[0], vedleggsgrunnlag.soknad.getSprak()));
+            }
+
+            if (!status.equals(orginalStatus) || vedleggsgrunnlag.vedlegg.erNyttVedlegg()) {
+                vedleggRepository.opprettEllerLagreVedleggVedNyGenereringUtenEndringAvData(vedleggsgrunnlag.vedlegg);
+            }
+        }
     }
 
     private List<Vedlegg> hentPaakrevdeVedleggForForventninger(List<VedleggsGrunnlag> alleMuligeVedlegg) {
