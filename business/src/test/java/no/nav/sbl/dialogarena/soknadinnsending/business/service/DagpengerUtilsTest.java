@@ -10,7 +10,7 @@ import org.junit.Test;
 import java.util.*;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Adressetype.*;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.Personalia.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.Personalia.*;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.*;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.*;
 import static org.junit.Assert.*;

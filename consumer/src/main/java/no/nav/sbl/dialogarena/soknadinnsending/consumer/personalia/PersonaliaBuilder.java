@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.soknadinnsending.consumer;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import org.joda.time.LocalDate;
