@@ -3,25 +3,7 @@ package no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBankkonto;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBankkontoUtland;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBankkontonummerUtland;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBostedsadresse;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBruker;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLEPost;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLElektroniskAdresse;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLElektroniskKommunikasjonskanal;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLGateadresse;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLGyldighetsperiode;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLLandkoder;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseNorge;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLNorskIdent;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPersonnavn;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostadresse;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostadressetyper;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostboksadresseNorsk;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostnummer;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLUstrukturertAdresse;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserRequest;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
 import org.joda.time.DateTime;
@@ -33,50 +15,56 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class BrukerprofilMock {
+    private static final String FODSELSNUMMER = "03076321565";
+    private static final String FORNAVN = "Donald";
+    private static final String MELLOMNAVN = "D.";
+    private static final String ETTERNAVN = "Mockmann";
+    private static final String EPOST = "test@epost.com";
+    private static final String GATENAVN = "Grepalida";
+    private static final String HUSNUMMER = "44";
+    private static final String HUSBOKSTAV = "B";
+    private static final String POSTNUMMER = "0560";
+    private static final String LANDKODE = "NOR";
+    private static final String UTENLANDSK_LANDKODE = "FIN";
+    private static final String ADRESSELINJE1 = "Poitigatan 55";
+    private static final String ADRESSELINJE2 = "Nord-Poiti";
+    private static final String ADRESSELINJE3 = "1111 Helsinki";
+    private static final String ADRESSELINJE4 = "Finland";
 
-    private static final String RIKTIG_IDENT = "03076321565";
-    private static final String ET_FORNAVN = "Donald";
-    private static final String ET_MELLOMNAVN = "D.";
-    private static final String ET_ETTERNAVN = "Mockmann";
-    private static final String EN_EPOST = "test@epost.com";
-    private static final String EN_ADRESSE_GATE = "Grepalida";
-    private static final String EN_ADRESSE_HUSNUMMER = "44";
-    private static final String EN_ADRESSE_HUSBOKSTAV = "B";
-    private static final String EN_ADRESSE_POSTNUMMER = "0560";
-    private static final String EN_ADRESSELINJE = "Poitigatan 55";
-    private static final String EN_ANNEN_ADRESSELINJE = "Nord-Poiti";
-    private static final String EN_TREDJE_ADRESSELINJE = "1111 Helsinki";
-    private static final String EN_FJERDE_ADRESSELINJE = "Finland";
+    private static final String POSTBOKS_ADRESSEEIER = "Per Conradi";
+    private static final String POSTBOKS_NAVN = "Postboksstativet";
+    private static final String POSTBOKS_NUMMER = "66";
+    private static final Long ADRESSE_GYLDIG_FRA = new DateTime(2012, 10, 11, 14, 44).getMillis();
+    private static final Long ADRESSE_GYLDIG_TIL = new DateTime(2012, 11, 12, 15, 55).getMillis();
 
-    private static final String EN_POSTBOKS_ADRESSEEIER = "Per Conradi";
-    private static final String ET_POSTBOKS_NAVN = "Postboksstativet";
-    private static final String EN_POSTBOKS_NUMMER = "66";
-    private static final String EN_ANNEN_ADRESSE_POSTNUMMER = "0565";
-    private static final Long EN_ANNEN_ADRESSE_GYLDIG_FRA = new DateTime(2012, 10, 11, 14, 44).getMillis();
-    private static final Long EN_ANNEN_ADRESSE_GYLDIG_TIL = new DateTime(2012, 11, 12, 15, 55).getMillis();
+    public enum Adressetyper {INGEN, NORSK, UTENLANDSK;}
 
+    private static BrukerprofilMock brukerprofilMock = new BrukerprofilMock();
 
     private static XMLElektroniskKommunikasjonskanal lagElektroniskKommunikasjonskanal() {
         return new XMLElektroniskKommunikasjonskanal().withElektroniskAdresse(lagElektroniskAdresse());
     }
 
     private static XMLElektroniskAdresse lagElektroniskAdresse() {
-        return new XMLEPost().withIdentifikator(EN_EPOST);
+        return new XMLEPost().withIdentifikator(EPOST);
     }
 
-    private static XMLLandkoder lagLandkode(String landkode) {
-        XMLLandkoder xmlLandkode = new XMLLandkoder();
-        xmlLandkode.setValue(landkode);
-        return xmlLandkode;
+    private BrukerprofilMock(){
+
     }
 
-    public BrukerprofilPortType brukerprofilMock() {
+    public static BrukerprofilMock getInstance(){
+        return brukerprofilMock;
+    }
+
+    public BrukerprofilPortType getBrukerprofilPortTypeMock() {
         BrukerprofilPortType mock = mock(BrukerprofilPortType.class);
         XMLHentKontaktinformasjonOgPreferanserResponse response = new XMLHentKontaktinformasjonOgPreferanserResponse();
         XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(true);
+        xmlBruker.setGjeldendePostadresseType(new XMLPostadressetyper());
 
-        settAdresse(xmlBruker, "BOSTEDSADRESSE");
-        settSekundarAdresse(xmlBruker);
+        settPostadresse(xmlBruker, Adressetyper.NORSK);
+        settSekundarAdresse(xmlBruker, Adressetyper.UTENLANDSK);
 
         response.setPerson(xmlBruker);
 
@@ -88,126 +76,134 @@ public class BrukerprofilMock {
         return mock;
     }
 
-    private void settSekundarAdresse(XMLBruker xmlBruker) {
-        XMLMidlertidigPostadresseNorge midlertidigPostboksAdresseNorge = generateMidlertidigPostboksAdresseNorge();
-        xmlBruker.setMidlertidigPostadresse(midlertidigPostboksAdresseNorge);
-        XMLPostadressetyper xmlPostadresseType = new XMLPostadressetyper();
-        xmlPostadresseType.setValue("MIDLERTIDIG_POSTADRESSE_NORGE");
-
-        xmlBruker.setMidlertidigPostadresse(midlertidigPostboksAdresseNorge);
-    }
-
-    private XMLMidlertidigPostadresseNorge generateMidlertidigPostboksAdresseNorge() {
-        XMLMidlertidigPostadresseNorge xmlMidlertidigNorge = new XMLMidlertidigPostadresseNorge();
-        XMLGyldighetsperiode xmlGyldighetsperiode = generateGyldighetsperiode(true);
-        xmlMidlertidigNorge.setPostleveringsPeriode(xmlGyldighetsperiode);
-
-        XMLPostboksadresseNorsk xmlPostboksAdresse = new XMLPostboksadresseNorsk();
-        xmlPostboksAdresse.setPostboksanlegg(ET_POSTBOKS_NAVN);
-        xmlPostboksAdresse.setPostboksnummer(EN_POSTBOKS_NUMMER);
-        xmlPostboksAdresse.setTilleggsadresse(EN_POSTBOKS_ADRESSEEIER);
-        XMLPostnummer xmlpostnummer = new XMLPostnummer();
-        xmlpostnummer.setValue(EN_ANNEN_ADRESSE_POSTNUMMER);
-        xmlPostboksAdresse.setPoststed(xmlpostnummer);
-        xmlMidlertidigNorge.setStrukturertAdresse(xmlPostboksAdresse);
-        return xmlMidlertidigNorge;
-    }
-
-    private XMLGyldighetsperiode generateGyldighetsperiode(boolean harFraDato) {
+    private XMLGyldighetsperiode lagGyldighetsperiode(boolean harFraDato) {
         XMLGyldighetsperiode xmlGyldighetsperiode = new XMLGyldighetsperiode();
         if (harFraDato) {
-            xmlGyldighetsperiode.setFom(new DateTime(
-                    EN_ANNEN_ADRESSE_GYLDIG_FRA));
+            xmlGyldighetsperiode.setFom(new DateTime(ADRESSE_GYLDIG_FRA));
         }
-        xmlGyldighetsperiode.setTom(new DateTime(EN_ANNEN_ADRESSE_GYLDIG_TIL));
+        xmlGyldighetsperiode.setTom(new DateTime(ADRESSE_GYLDIG_TIL));
         return xmlGyldighetsperiode;
     }
 
-    private void settAdresse(XMLBruker xmlBruker, String type) {
-        if ("BOSTEDSADRESSE".equals(type)) {
-            XMLBostedsadresse bostedsadresse = genererXMLFolkeregistrertAdresse(true);
-            xmlBruker.setBostedsadresse(bostedsadresse);
+    public void settBostedsadresse(XMLBruker xmlBruker) {
+        xmlBruker.setBostedsadresse(lagBostedsAdresse());
+        xmlBruker.getGjeldendePostadresseType().setValue("BOSTEDSADRESSE");
+    }
 
-            XMLPostadressetyper postadressetyper = new XMLPostadressetyper();
-            postadressetyper.setValue("BOSTEDSADRESSE");
-            xmlBruker.setGjeldendePostadresseType(postadressetyper);
-        } else if ("UTENLANDSK_ADRESSE".equals(type)) {
-            XMLPostadresse xmlPostadresseUtland = new XMLPostadresse();
-            XMLUstrukturertAdresse utenlandskUstrukturertAdresse = generateUstrukturertAdresseMedXAntallAdersseLinjer(4);
+    public void slettBostedsadresse(XMLBruker xmlBruker) {
+        xmlBruker.setBostedsadresse(null);
+    }
 
-            utenlandskUstrukturertAdresse.setLandkode(lagLandkode("FIN"));
-
-            xmlPostadresseUtland.setUstrukturertAdresse(utenlandskUstrukturertAdresse);
-            xmlBruker.setPostadresse(xmlPostadresseUtland);
-
-            XMLPostadressetyper postadressetyper = new XMLPostadressetyper();
-            postadressetyper.setValue("POSTADRESSE");
-            xmlBruker.setGjeldendePostadresseType(postadressetyper);
+    public void settPostadresse(XMLBruker xmlBruker, Adressetyper adressetype) {
+        XMLPostadressetyper postAdresseType = xmlBruker.getGjeldendePostadresseType();
+        if (adressetype.equals(Adressetyper.NORSK)) {
+            xmlBruker.setPostadresse(lagPostadresse(3, false));
+            postAdresseType.setValue("POSTADRESSE");
+        } else if (adressetype.equals(Adressetyper.UTENLANDSK)) {
+            xmlBruker.setPostadresse(lagPostadresse(4, true));
+            postAdresseType.setValue("UTENLANDSK_ADRESSE");
+        } else {
+            xmlBruker.setPostadresse(null);
         }
     }
 
-    private XMLUstrukturertAdresse generateUstrukturertAdresseMedXAntallAdersseLinjer(
-            int antallAdresseLinjer) {
-        XMLUstrukturertAdresse ustrukturertAdresse = new XMLUstrukturertAdresse();
-        switch (antallAdresseLinjer) {
-            case 0:
-                break;
-            case 1:
-                ustrukturertAdresse.setAdresselinje1(EN_ADRESSELINJE);
-                break;
-            case 2:
-                ustrukturertAdresse.setAdresselinje1(EN_ADRESSELINJE);
-                ustrukturertAdresse.setAdresselinje2(EN_ANNEN_ADRESSELINJE);
-                break;
-            case 3:
-                ustrukturertAdresse.setAdresselinje1(EN_ADRESSELINJE);
-                ustrukturertAdresse.setAdresselinje2(EN_ANNEN_ADRESSELINJE);
-                ustrukturertAdresse.setAdresselinje3(EN_TREDJE_ADRESSELINJE);
-                break;
-            case 4:
-                ustrukturertAdresse.setAdresselinje1(EN_ADRESSELINJE);
-                ustrukturertAdresse.setAdresselinje2(EN_ANNEN_ADRESSELINJE);
-                ustrukturertAdresse.setAdresselinje3(EN_TREDJE_ADRESSELINJE);
-                ustrukturertAdresse.setAdresselinje4(EN_FJERDE_ADRESSELINJE);
-                break;
-            default:
-                break;
+    public void settSekundarAdresse(XMLBruker xmlBruker, Adressetyper adressetype) {
+        if (adressetype.equals(Adressetyper.NORSK)) {
+            xmlBruker.setMidlertidigPostadresse(lagMidlertidigNorskPostadresse());
+        } else if (adressetype.equals(Adressetyper.UTENLANDSK)) {
+            xmlBruker.setMidlertidigPostadresse(lagMidlertidigUtenlandskPostadresse());
+        } else {
+            xmlBruker.setPostadresse(null);
         }
-
-        return ustrukturertAdresse;
     }
 
-    private XMLBostedsadresse genererXMLFolkeregistrertAdresse(boolean medData) {
-        XMLBostedsadresse bostedsadresse = new XMLBostedsadresse();
-        XMLGateadresse gateadresse = new XMLGateadresse();
-        XMLPostnummer xmlpostnummer = new XMLPostnummer();
-        if (medData) {
-            gateadresse.setGatenavn(EN_ADRESSE_GATE);
-            gateadresse.setHusnummer(new BigInteger(EN_ADRESSE_HUSNUMMER));
-            gateadresse.setHusbokstav(EN_ADRESSE_HUSBOKSTAV);
-            xmlpostnummer.setValue(EN_ADRESSE_POSTNUMMER);
+    private XMLBostedsadresse lagBostedsAdresse() {
+        XMLBostedsadresse xmlBostedsadresse = new XMLBostedsadresse();
+        xmlBostedsadresse.setStrukturertAdresse(lagStrukturertGateAdresse());
+        return xmlBostedsadresse;
+    }
+
+    private XMLMidlertidigPostadresseNorge lagMidlertidigNorskPostadresse() {
+        XMLPostboksadresseNorsk postboks = new XMLPostboksadresseNorsk();
+        postboks.setPostboksanlegg(POSTBOKS_NAVN);
+        postboks.setPostboksnummer(POSTBOKS_NUMMER);
+        postboks.setTilleggsadresse(POSTBOKS_ADRESSEEIER);
+        postboks.setPoststed(lagPostnummer(POSTNUMMER));
+
+        return new XMLMidlertidigPostadresseNorge()
+                .withStrukturertAdresse(postboks)
+                .withPostleveringsPeriode(lagGyldighetsperiode(false));
+    }
+
+    private XMLMidlertidigPostadresseUtland lagMidlertidigUtenlandskPostadresse() {
+        XMLMidlertidigPostadresseUtland postadresse = new XMLMidlertidigPostadresseUtland();
+        postadresse.setUstrukturertAdresse(lagUstrukturertPostadresse(4, true));
+        postadresse.setPostleveringsPeriode(lagGyldighetsperiode(false));
+        return postadresse;
+    }
+
+    private XMLPostadresse lagPostadresse(int antallLinjer, boolean utenlandsk) {
+        XMLPostadresse xmlPostadresse = new XMLPostadresse();
+        xmlPostadresse.setUstrukturertAdresse(lagUstrukturertPostadresse(antallLinjer, utenlandsk));
+        return xmlPostadresse;
+    }
+
+    private XMLUstrukturertAdresse lagUstrukturertPostadresse(int antallLinjer, boolean utenlandsk) {
+        XMLUstrukturertAdresse xmlUstrukturertAdresse = new XMLUstrukturertAdresse();
+        xmlUstrukturertAdresse.setLandkode(lagLandkode(utenlandsk ? UTENLANDSK_LANDKODE : LANDKODE));
+
+        if (antallLinjer >= 1) {
+            xmlUstrukturertAdresse.setAdresselinje1(ADRESSELINJE1);
         }
-        gateadresse.setPoststed(xmlpostnummer);
-        bostedsadresse.setStrukturertAdresse(gateadresse);
-        gateadresse.setLandkode(lagLandkode("NOR"));
-        return bostedsadresse;
+        if (antallLinjer >= 2) {
+            xmlUstrukturertAdresse.setAdresselinje2(ADRESSELINJE2);
+        }
+        if (antallLinjer >= 3) {
+            xmlUstrukturertAdresse.setAdresselinje3(ADRESSELINJE3);
+        }
+        if (antallLinjer >= 4) {
+            xmlUstrukturertAdresse.setAdresselinje4(ADRESSELINJE4);
+        }
+        return xmlUstrukturertAdresse;
+    }
+
+    private XMLGateadresse lagStrukturertGateAdresse() {
+        XMLGateadresse xmlGateadresse = new XMLGateadresse();
+        xmlGateadresse.setGatenavn(GATENAVN);
+        xmlGateadresse.setHusnummer(new BigInteger(HUSNUMMER));
+        xmlGateadresse.setHusbokstav(HUSBOKSTAV);
+        xmlGateadresse.setPoststed(lagPostnummer(POSTNUMMER));
+        xmlGateadresse.setLandkode(lagLandkode(LANDKODE));
+        return xmlGateadresse;
+    }
+
+    private XMLPostnummer lagPostnummer(String postnummer) {
+        XMLPostnummer xmlPostnummer = new XMLPostnummer();
+        xmlPostnummer.setValue(postnummer);
+        return xmlPostnummer;
+    }
+
+    private XMLLandkoder lagLandkode(String landkode) {
+        XMLLandkoder xmlLandkode = new XMLLandkoder();
+        xmlLandkode.setValue(landkode);
+        return xmlLandkode;
     }
 
     private XMLBruker genererXmlBrukerMedGyldigIdentOgNavn(boolean medMellomnavn) {
         XMLBruker xmlBruker = new XMLBruker().withElektroniskKommunikasjonskanal(lagElektroniskKommunikasjonskanal());
         XMLPersonnavn personNavn = new XMLPersonnavn();
-        personNavn.setFornavn(ET_FORNAVN);
+        personNavn.setFornavn(FORNAVN);
         if (medMellomnavn) {
-            personNavn.setMellomnavn(ET_MELLOMNAVN);
-            personNavn.setSammensattNavn(ET_FORNAVN + " " + ET_MELLOMNAVN + " " + ET_ETTERNAVN);
+            personNavn.setMellomnavn(MELLOMNAVN);
+            personNavn.setSammensattNavn(FORNAVN + " " + MELLOMNAVN + " " + ETTERNAVN);
         } else {
             personNavn.setMellomnavn("");
-            personNavn.setSammensattNavn(ET_FORNAVN + " " + ET_ETTERNAVN);
+            personNavn.setSammensattNavn(FORNAVN + " " + ETTERNAVN);
         }
-        personNavn.setEtternavn(ET_ETTERNAVN);
+        personNavn.setEtternavn(ETTERNAVN);
         xmlBruker.setPersonnavn(personNavn);
         XMLNorskIdent xmlNorskIdent = new XMLNorskIdent();
-        xmlNorskIdent.setIdent(RIKTIG_IDENT);
+        xmlNorskIdent.setIdent(FODSELSNUMMER);
         xmlBruker.setIdent(xmlNorskIdent);
 
         xmlBruker.setBankkonto(utenlandskBankkonto());
@@ -229,5 +225,4 @@ public class BrukerprofilMock {
 
         return bankkonto;
     }
-
 }
