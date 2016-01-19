@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 
 public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold, Arbeidsforhold>,
         Function<no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold, Arbeidsforhold> {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ArbeidsforholdTransformer.class);
     public static final String KODEVERK_AVLONNING_FAST = "fast";
     private final OrganisasjonV4 organisasjonV4;

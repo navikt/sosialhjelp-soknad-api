@@ -1,21 +1,16 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.tilleggsstonader;
 
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Barn;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Periode;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Tilsynskategorier;
-import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.TilsynsutgifterBarn;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import org.springframework.context.MessageSource;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import org.springframework.context.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
-import static no.nav.modig.lang.collections.IterUtils.on;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.FaktumPredicates.harValue;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.StofoTransformers.extractValue;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static no.nav.modig.lang.collections.IterUtils.*;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.FaktumPredicates.*;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.StofoTransformers.*;
+import static org.apache.commons.lang3.BooleanUtils.*;
 
 public class TilsynBarnepassTilXml extends CmsTransformer<WebSoknad, TilsynsutgifterBarn> {
     public static final String BARNEPASS_ANDREFORELDER = "barnepass.andreforelder";
@@ -55,8 +50,6 @@ public class TilsynBarnepassTilXml extends CmsTransformer<WebSoknad, Tilsynsutgi
                 List<String> aarsakTilBarnepasses = aarsaker(soknad, fulfortFjerde.getFaktumId());
                 stofoBarn.getAarsakTilBarnepass().addAll(aarsakTilBarnepasses);
                 tilsynsutgifterBarn.getBarn().add(stofoBarn);
-
-
             }
         }
     }

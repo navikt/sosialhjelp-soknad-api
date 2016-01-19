@@ -11,7 +11,7 @@ public class MaalgruppeTilXml implements Transformer<Faktum, Maalgruppeinformasj
     @Override
     public Maalgruppeinformasjon transform(Faktum faktum) {
         Maalgrupper maalgruppe = Maalgrupper.toMaalgruppe(faktum.getProperties().get("kodeverkVerdi"));
-        if(maalgruppe == null){
+        if (maalgruppe == null) {
             return null;
         }
 
@@ -42,7 +42,7 @@ public class MaalgruppeTilXml implements Transformer<Faktum, Maalgruppeinformasj
 
         public static Maalgrupper toMaalgruppe(String kodeverkVerdi) {
             try {
-                return valueOf(kodeverkVerdi != null? kodeverkVerdi.toUpperCase(): "");
+                return valueOf(kodeverkVerdi != null ? kodeverkVerdi.toUpperCase() : "");
             } catch (IllegalArgumentException e) {
                 return null;
             }

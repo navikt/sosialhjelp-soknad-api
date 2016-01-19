@@ -15,9 +15,7 @@ public class FamilierelasjonTransform {
             return new ArrayList<>();
         }
 
-        Person person = response.getPerson();
-
-        return finnBarn(person, 0L);
+        return finnBarn(response.getPerson(), 0L);
     }
 
     private static List<Barn> finnBarn(Person xmlperson, Long soknadId) {
@@ -27,7 +25,7 @@ public class FamilierelasjonTransform {
         if (familierelasjoner.isEmpty()) {
             return result;
         }
-        for (no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjon familierelasjon : familierelasjoner) {
+        for (Familierelasjon familierelasjon : familierelasjoner) {
             Familierelasjoner familierelasjonType = familierelasjon.getTilRolle();
             if (familierelasjonType.getValue().equals("BARN")) {
                 no.nav.tjeneste.virksomhet.person.v1.informasjon.Person tilPerson = familierelasjon.getTilPerson();
@@ -59,7 +57,7 @@ public class FamilierelasjonTransform {
 
     private static String finnPersonStatus(Person xmlperson) {
         Personstatus personstatus = xmlperson.getPersonstatus();
-        if(personstatus != null && personstatus.getPersonstatus() != null) {
+        if (personstatus != null && personstatus.getPersonstatus() != null) {
             return personstatus.getPersonstatus().getValue();
         }
         return "";
@@ -67,8 +65,8 @@ public class FamilierelasjonTransform {
 
     private static String finnDoedsDato(Person xmlperson) {
         Doedsdato doedsdato = xmlperson.getDoedsdato();
-        if(doedsdato != null && doedsdato.getDoedsdato() != null) {
-           return  doedsdato.getDoedsdato().toString();
+        if (doedsdato != null && doedsdato.getDoedsdato() != null) {
+            return doedsdato.getDoedsdato().toString();
         }
         return null;
     }

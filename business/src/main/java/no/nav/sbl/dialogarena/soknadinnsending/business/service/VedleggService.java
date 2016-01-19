@@ -1,74 +1,54 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import com.google.common.collect.Lists;
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfStamper;
-import com.lowagie.text.pdf.PdfWriter;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadata;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
-import no.nav.modig.core.exception.ApplicationException;
-import no.nav.modig.lang.collections.iter.PreparedIterable;
-import no.nav.modig.lang.collections.predicate.InstanceOf;
-import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.detect.Detect;
-import no.nav.sbl.dialogarena.detect.pdf.PdfDetector;
-import no.nav.sbl.dialogarena.pdf.Convert;
-import no.nav.sbl.dialogarena.pdf.ConvertToPng;
-import no.nav.sbl.dialogarena.pdf.PdfMerger;
-import no.nav.sbl.dialogarena.pdf.PdfWatermarker;
-import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigOpplastingTypeException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggsGrunnlag;
-import no.nav.sbl.dialogarena.soknadinnsending.business.FunksjonalitetBryter;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
-import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
-import org.apache.commons.collections15.Closure;
-import org.apache.commons.collections15.Predicate;
-import org.apache.commons.collections15.Transformer;
-import org.apache.commons.io.IOUtils;
-import org.apache.pdfbox.exceptions.COSVisitorException;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.util.Splitter;
-import org.slf4j.Logger;
+import com.google.common.collect.*;
+import com.lowagie.text.*;
+import com.lowagie.text.pdf.*;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.*;
+import no.nav.modig.core.exception.*;
+import no.nav.modig.lang.collections.iter.*;
+import no.nav.modig.lang.collections.predicate.*;
+import no.nav.sbl.dialogarena.common.kodeverk.*;
+import no.nav.sbl.dialogarena.detect.*;
+import no.nav.sbl.dialogarena.detect.pdf.*;
+import no.nav.sbl.dialogarena.pdf.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.message.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.*;
+import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.*;
+import org.apache.commons.collections15.*;
+import org.apache.commons.io.*;
+import org.apache.pdfbox.exceptions.*;
+import org.apache.pdfbox.pdmodel.*;
+import org.apache.pdfbox.util.*;
+import org.slf4j.*;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.*;
 
-import javax.inject.Inject;
-import javax.inject.Named;
+import javax.inject.*;
 import java.awt.*;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
 import java.util.List;
 
-import static java.util.Collections.sort;
-import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
-import static no.nav.modig.lang.collections.IterUtils.on;
-import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.KVITTERING;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.FunksjonalitetBryter.GammelVedleggsLogikk;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.toInnsendingsvalg;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.slf4j.LoggerFactory.getLogger;
+import static java.util.Collections.*;
+import static no.nav.modig.core.context.SubjectHandler.*;
+import static no.nav.modig.lang.collections.IterUtils.*;
+import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.*;
+import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.Nokkel.TITTEL;
+import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.Nokkel.TITTEL_EN;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus.*;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.PAAKREVDE_VEDLEGG;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.FunksjonalitetBryter.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.*;
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.slf4j.LoggerFactory.*;
 
 @Component
 public class VedleggService {
@@ -116,7 +96,7 @@ public class VedleggService {
                 .medData(null)
                 .medOpprettetDato(vedlegg.getOpprettetDato())
                 .medFillagerReferanse(vedlegg.getFillagerReferanse())
-                .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
+                .medInnsendingsvalg(UnderBehandling);
     }
 
     private static void sjekkOmPdfErGyldig(PDDocument document) {
@@ -225,7 +205,7 @@ public class VedleggService {
         vedleggRepository.slettVedlegg(soknadId, vedleggId);
         repository.settSistLagretTidspunkt(soknadId);
         if (!soknad.erEttersending()) {
-            repository.settDelstegstatus(soknadId, DelstegStatus.SKJEMA_VALIDERT);
+            repository.settDelstegstatus(soknadId, SKJEMA_VALIDERT);
         }
     }
 
@@ -289,7 +269,7 @@ public class VedleggService {
 
     public List<Vedlegg> hentPaakrevdeVedlegg(String behandlingsId) {
         if (GammelVedleggsLogikk.erAktiv()) {
-            List<Vedlegg> paakrevdeVedlegg = on(vedleggRepository.hentVedlegg(behandlingsId)).filter(Vedlegg.PAAKREVDE_VEDLEGG).collect();
+            List<Vedlegg> paakrevdeVedlegg = on(vedleggRepository.hentVedlegg(behandlingsId)).filter(PAAKREVDE_VEDLEGG).collect();
             leggTilKodeverkFelter(paakrevdeVedlegg);
 
             return paakrevdeVedlegg;
@@ -312,7 +292,7 @@ public class VedleggService {
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true);
         if (soknad.erEttersending()) {
             oppdaterVedleggForForventninger(hentForventingerForEkstraVedlegg(soknad));
-            return on(vedleggRepository.hentVedlegg(behandlingsId)).filter(Vedlegg.PAAKREVDE_VEDLEGG).collect();
+            return on(vedleggRepository.hentVedlegg(behandlingsId)).filter(PAAKREVDE_VEDLEGG).collect();
         } else {
             SoknadStruktur struktur = soknadService.hentSoknadStruktur(soknad.getskjemaNummer());
             List<VedleggsGrunnlag> alleMuligeVedlegg = struktur.hentAlleMuligeVedlegg(soknad, navMessageSource);
@@ -373,7 +353,7 @@ public class VedleggService {
             public Vedlegg transform(VedleggsGrunnlag vedleggsgrunnlag) {
                 return vedleggsgrunnlag.getVedlegg();
             }
-        }).filter(Vedlegg.PAAKREVDE_VEDLEGG).collect();
+        }).filter(PAAKREVDE_VEDLEGG).collect();
     }
 
     @Transactional
@@ -385,7 +365,7 @@ public class VedleggService {
         repository.settSistLagretTidspunkt(vedlegg.getSoknadId());
 
         if (!soknadService.hentSoknadFraLokalDb(vedlegg.getSoknadId()).erEttersending()) {
-            repository.settDelstegstatus(vedlegg.getSoknadId(), DelstegStatus.SKJEMA_VALIDERT);
+            repository.settDelstegstatus(vedlegg.getSoknadId(), SKJEMA_VALIDERT);
         }
     }
 
@@ -400,7 +380,7 @@ public class VedleggService {
         WebSoknad soknad = repository.hentSoknad(behandlingsId);
         Vedlegg kvitteringVedlegg = vedleggRepository.hentVedleggForskjemaNummer(soknad.getSoknadId(), null, KVITTERING);
         if (kvitteringVedlegg == null) {
-            kvitteringVedlegg = new Vedlegg(soknad.getSoknadId(), null, KVITTERING, Vedlegg.Status.LastetOpp);
+            kvitteringVedlegg = new Vedlegg(soknad.getSoknadId(), null, KVITTERING, LastetOpp);
             oppdaterInnholdIKvittering(kvitteringVedlegg, kvittering);
             vedleggRepository.opprettEllerEndreVedlegg(kvitteringVedlegg, kvittering);
         } else {
@@ -444,8 +424,8 @@ public class VedleggService {
 
             boolean soknadHarSpraak = sprakFaktum != null;
             boolean soknadErEngelsk = soknadHarSpraak && "en".equals(sprakFaktum.getValue());
-            boolean engelskTittelFinnes = !"".equals(koder.get(Kodeverk.Nokkel.TITTEL_EN));
-            Kodeverk.Nokkel tittelKey = soknadErEngelsk && engelskTittelFinnes ? Kodeverk.Nokkel.TITTEL_EN : Kodeverk.Nokkel.TITTEL;
+            boolean engelskTittelFinnes = !"".equals(koder.get(TITTEL_EN));
+            Kodeverk.Nokkel tittelKey = soknadErEngelsk && engelskTittelFinnes ? TITTEL_EN : TITTEL;
 
             vedlegg.setTittel(koder.get(tittelKey));
         } catch (Exception ignore) {

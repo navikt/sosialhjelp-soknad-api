@@ -56,7 +56,7 @@ public class VedleggsgenereringUtil {
     }
 
     public static boolean likeVedlegg(List<Vedlegg> gamleVedlegg, List<Vedlegg> nyeVedlegg) {
-        if(gamleVedlegg.size() == nyeVedlegg.size()) {
+        if (gamleVedlegg.size() == nyeVedlegg.size()) {
             boolean erLikeVedlegg = true;
 
             int i = 0;

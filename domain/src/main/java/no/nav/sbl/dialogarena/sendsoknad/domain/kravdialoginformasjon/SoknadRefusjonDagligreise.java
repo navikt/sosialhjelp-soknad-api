@@ -11,6 +11,9 @@ import org.springframework.context.MessageSource;
 import java.util.Arrays;
 import java.util.List;
 
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Steg.OPPSUMMERING;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Steg.SOKNAD;
+
 public class SoknadRefusjonDagligreise extends KravdialogInformasjon.DefaultOppsett {
     public static final String VEDTAKPERIODER = "vedtakperioder";
 
@@ -45,7 +48,7 @@ public class SoknadRefusjonDagligreise extends KravdialogInformasjon.DefaultOpps
     }
     @Override
     public Steg[] getStegliste() {
-        return new Steg[]{Steg.SOKNAD, Steg.OPPSUMMERING};
+        return new Steg[]{SOKNAD, OPPSUMMERING};
     }
 
 }
