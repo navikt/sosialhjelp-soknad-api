@@ -78,7 +78,11 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         handlebars.registerHelper("finnNiva", new Helper<Object>() {
             @Override
             public CharSequence apply(Object context, Options options) throws IOException {
-                return "" + finnNivaa(options.context.parent());
+                Integer nivaa = finnNivaa(options.context.parent());
+                if (nivaa > 6) {
+                    nivaa = 6;
+                }
+                return "" + nivaa;
             }
         });
         return handlebars;
