@@ -9,6 +9,7 @@ import no.nav.sbl.dialogarena.config.ContentConfig;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonPortTypeMock;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
+import no.nav.sbl.dialogarena.service.helpers.HvisLikHelper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.FunksjonalitetBryter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
@@ -104,6 +105,7 @@ public class InternalRessurs {
         MockdataFields fields = getMockdataFields(personPortTypeMock);
 
         Handlebars handlebars = new Handlebars();
+        handlebars.registerHelper(HvisLikHelper.NAVN, new HvisLikHelper());
         Template compile = handlebars.compile(new URLTemplateSource("endreMockData.hbs", servletContext.getResource("/WEB-INF/endreMockData.hbs")));
         com.github.jknack.handlebars.Context context = com.github.jknack.handlebars.Context
                 .newBuilder(fields)
@@ -114,15 +116,14 @@ public class InternalRessurs {
 
     @POST
     @Path(value = "/mockdata")
-    public Response endreMockData(@FormParam("utenlandskstatsborger") String utenlandskStatsborger,
+    public Response endreMockData(@FormParam("statsborgerskap") String statsborgerskap,
                                   @FormParam("kode6") String kode6,
                                   @FormParam("submit") String submit) throws InterruptedException {
         Boolean skalHaKode6 = "true".equalsIgnoreCase(kode6);
-        Boolean erUtenlandskStatsborger = "true".equalsIgnoreCase(utenlandskStatsborger);
 
         Person person = personPortTypeMock.getPerson();
         person.setDiskresjonskode(skalHaKode6 ? getDiskresjonskode() : null);
-        setLandPaaStatsborgerskap(person.getStatsborgerskap(), erUtenlandskStatsborger ? "GER" : "NOR");
+        person.getStatsborgerskap().getLand().setValue(statsborgerskap.toUpperCase());
         return Response.seeOther(URI.create("/sendsoknad/internal/mockdata")).build();
     }
 
