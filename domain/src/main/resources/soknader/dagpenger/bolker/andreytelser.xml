@@ -221,7 +221,7 @@
         </onValues>
         <skjemaNummer>K1</skjemaNummer>
         <flereTillatt>true</flereTillatt>
-        <oversetting>ytelser.${key}</oversetting>
+        <oversetting>${key}</oversetting>
     </vedlegg>
     <vedlegg>
         <faktum>andreytelser.ytelser.privattjenestepensjon</faktum>
@@ -230,7 +230,7 @@
         </onValues>
         <skjemaNummer>K1</skjemaNummer>
         <flereTillatt>true</flereTillatt>
-        <oversetting>ytelser.${key}</oversetting>
+        <oversetting>${key}</oversetting>
     </vedlegg>
     <vedlegg>
         <faktum>andreytelser.ytelser.stonadfisker</faktum>
@@ -239,7 +239,7 @@
         </onValues>
         <skjemaNummer>K1</skjemaNummer>
         <flereTillatt>true</flereTillatt>
-        <oversetting>ytelser.${key}</oversetting>
+        <oversetting>${key}</oversetting>
     </vedlegg>
     <vedlegg>
         <faktum>andreytelser.ytelser.garantilott</faktum>
@@ -248,7 +248,7 @@
         </onValues>
         <skjemaNummer>K1</skjemaNummer>
         <flereTillatt>true</flereTillatt>
-        <oversetting>ytelser.${key}</oversetting>
+        <oversetting>${key}</oversetting>
     </vedlegg>
     <vedlegg>
         <faktum>andreytelser.ytelser.etterlonn</faktum>
@@ -257,7 +257,7 @@
         </onValues>
         <skjemaNummer>K1</skjemaNummer>
         <flereTillatt>true</flereTillatt>
-        <oversetting>ytelser.${key}</oversetting>
+        <oversetting>${key}</oversetting>
     </vedlegg>
     <vedlegg>
         <faktum>andreytelser.ytelser.vartpenger</faktum>
@@ -266,7 +266,7 @@
         </onValues>
         <skjemaNummer>K1</skjemaNummer>
         <flereTillatt>true</flereTillatt>
-        <oversetting>ytelser.${key}</oversetting>
+        <oversetting>${key}</oversetting>
     </vedlegg>
     <vedlegg>
         <faktum>andreytelser.ytelser.dagpengereos</faktum>
@@ -274,7 +274,7 @@
             <value>true</value>
         </onValues>
         <skjemaNummer>K1</skjemaNummer>
-        <oversetting>ytelser.${key}</oversetting>
+        <oversetting>${key}</oversetting>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
@@ -283,7 +283,7 @@
             <value>true</value>
         </onValues>
         <skjemaNummer>K1</skjemaNummer>
-        <oversetting>ytelser.${key}</oversetting>
+        <oversetting>${key}</oversetting>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
