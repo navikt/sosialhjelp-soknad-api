@@ -110,7 +110,7 @@
     </faktum>
     <faktum>
         <id>andreytelser.ytelser.dagpengereos.utbetaler</id>
-        <type>textbox</type>
+        <type>country</type>
         <panel>AndreYtelser</panel>
         <dependOn>andreytelser.ytelser.dagpengereos</dependOn>
         <dependOnValues>

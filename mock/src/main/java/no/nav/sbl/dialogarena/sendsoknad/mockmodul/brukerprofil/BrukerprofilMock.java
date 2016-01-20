@@ -27,8 +27,8 @@ public class BrukerprofilMock {
     private static final Long ADRESSE_GYLDIG_FRA = new DateTime(2012, 10, 11, 14, 44).getMillis();
     private static final Long ADRESSE_GYLDIG_TIL = new DateTime(2012, 11, 12, 15, 55).getMillis();
 
-    private static final String BANKKONTO_LANDKODE = "";
-    private static final String BANKKONTO_BANK = "Nodea";
+    private static final String BANKKONTO_LANDKODE = "NOR";
+    private static final String BANKKONTO_BANK = "Nordea";
     private static final String BANKKONTO_KONTONUMMER = "9876 98 98765";
 
     public static final String POSTTYPE_NORSK = "POSTADRESSE";
