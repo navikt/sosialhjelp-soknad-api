@@ -31,7 +31,7 @@ import java.net.URI;
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
-import static no.nav.sbl.dialogarena.rest.utils.MockdataUtils.*;
+import static no.nav.sbl.dialogarena.rest.utils.MocksetupUtils.*;
 
 @Controller
 @Path("/internal")
@@ -96,13 +96,13 @@ public class InternalRessurs {
     }
 
     @GET
-    @Path(value = "/mockdata")
-    public String endreMockdata() throws IOException {
-        MockdataFields fields = getMockdataFields();
+    @Path(value = "/mocksetup")
+    public String mocksetup() throws IOException {
+        MocksetupFields fields = getMocksetupFields();
 
         Handlebars handlebars = new Handlebars();
         handlebars.registerHelper(HvisLikHelper.NAVN, new HvisLikHelper());
-        Template compile = handlebars.compile(new URLTemplateSource("endreMockData.hbs", servletContext.getResource("/WEB-INF/endreMockData.hbs")));
+        Template compile = handlebars.compile(new URLTemplateSource("mocksetup.hbs", servletContext.getResource("/WEB-INF/mocksetup.hbs")));
         com.github.jknack.handlebars.Context context = com.github.jknack.handlebars.Context
                 .newBuilder(fields)
                 .resolver(MethodValueResolver.INSTANCE)
@@ -111,8 +111,8 @@ public class InternalRessurs {
     }
 
     @POST
-    @Path(value = "/mockdata")
-    public Response endreMockData(@FormParam("statsborgerskap") String statsborgerskap,
+    @Path(value = "/mocksetup")
+    public Response mocksetup(@FormParam("statsborgerskap") String statsborgerskap,
                                   @FormParam("kode6") String kode6,
                                   @FormParam("primar_adressetype") String primarAdressetype,
                                   @FormParam("sekundar_adressetype") String sekundarAdressetype) throws InterruptedException {
@@ -124,7 +124,7 @@ public class InternalRessurs {
         settPostadressetype(primarAdressetype);
         settSekundarAdressetype(sekundarAdressetype);
 
-        return Response.seeOther(URI.create("/sendsoknad/internal/mockdata")).build();
+        return Response.seeOther(URI.create("/sendsoknad/internal/mocksetup")).build();
     }
 
     @GET

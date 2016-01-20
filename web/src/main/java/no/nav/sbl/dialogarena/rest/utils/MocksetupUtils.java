@@ -14,7 +14,7 @@ import static no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil.Brukerpro
 import static no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil.BrukerprofilMock.POSTTYPE_UTENLANDSK;
 
 
-public class MockdataUtils {
+public class MocksetupUtils {
     private final static String VALG_UTENLANDSK = "UTENLANDSK";
     private final static String VALG_NORSK = "NORSK";
     private final static String VALG_INGEN = "INGEN";
@@ -28,8 +28,8 @@ public class MockdataUtils {
         return diskresjonskoder;
     }
 
-    public static MockdataFields getMockdataFields() {
-        MockdataFields fields = new MockdataFields();
+    public static MocksetupFields getMocksetupFields() {
+        MocksetupFields fields = new MocksetupFields();
 
         Person person = personPortTypeMock.getPerson();
         fields.setKode6(person.getDiskresjonskode() != null);
@@ -76,7 +76,7 @@ public class MockdataUtils {
         }
     }
 
-    public static class MockdataFields {
+    public static class MocksetupFields {
         private Boolean kode6;
         private String statsborgerskap;
         private String primarAdressetype;

@@ -5,6 +5,7 @@
             text-align: center;
         }
         form {
+            min-width: 250px;
             margin-top: 1rem;
             text-align: left;
             background: lightgray;
@@ -22,8 +23,8 @@
         }
     </style>
 
-    <form method="POST" action="/sendsoknad/internal/mockdata">
-        <h1>Endre mockdata</h1>
+    <form method="POST" action="/sendsoknad/internal/mocksetup">
+        <h1>Mocksetup</h1>
         <div class="field">
             <label class="blokk" for="statsborgerskap">Statsborgerskap</label>
             <select name="statsborgerskap" id="statsborgerskap">
