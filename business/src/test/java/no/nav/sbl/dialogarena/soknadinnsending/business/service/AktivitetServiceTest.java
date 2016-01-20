@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.AktivitetService;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.*;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetOgVedtakDagligReiseListeRequest;

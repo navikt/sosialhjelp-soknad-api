@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.soknadinnsending.business.service;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
