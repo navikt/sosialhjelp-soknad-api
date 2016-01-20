@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.service;
 
 import com.github.jknack.handlebars.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.service.oppsummering.*;
 
 import java.io.*;
 import java.util.*;

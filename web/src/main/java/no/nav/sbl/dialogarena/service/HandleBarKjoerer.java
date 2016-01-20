@@ -6,6 +6,7 @@ import no.bekk.bekkopen.person.*;
 import no.nav.sbl.dialogarena.common.kodeverk.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.*;
+import no.nav.sbl.dialogarena.service.oppsummering.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.*;
 
 import javax.inject.*;
@@ -38,7 +39,7 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         return getHandlebars()
                 .infiniteLoops(true)
                 .compile("/skjema/generisk")
-                .apply(Context.newBuilder(new OppsummeringsContext(soknad, soknadStruktur, kodeverk, true))
+                .apply(Context.newBuilder(new OppsummeringsContext(soknad, soknadStruktur, false))
                         .resolver(
                                 JavaBeanValueResolver.INSTANCE,
                                 FieldValueResolver.INSTANCE,
