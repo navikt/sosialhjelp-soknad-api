@@ -27,6 +27,13 @@ public class BrukerprofilMock {
     private static final Long ADRESSE_GYLDIG_FRA = new DateTime(2012, 10, 11, 14, 44).getMillis();
     private static final Long ADRESSE_GYLDIG_TIL = new DateTime(2012, 11, 12, 15, 55).getMillis();
 
+    private static final String BANKKONTO_LANDKODE = "";
+    private static final String BANKKONTO_BANK = "Nodea";
+    private static final String BANKKONTO_KONTONUMMER = "9876 98 98765";
+
+    private static final String POSTTYPE_NORSK = "POSTADRESSE";
+    private static final String POSTTYPE_UTENLANDSK = "UTENLANDSK_ADRESSE";
+
     public enum Adressetyper {INGEN, NORSK, UTENLANDSK;}
 
     private static BrukerprofilMock brukerprofilMock = new BrukerprofilMock();
@@ -70,11 +77,12 @@ public class BrukerprofilMock {
     public void settPostadresse(XMLBruker xmlBruker, Adressetyper adressetype) {
         XMLPostadressetyper postAdresseType = xmlBruker.getGjeldendePostadresseType();
         if (adressetype.equals(Adressetyper.NORSK)) {
-            xmlBruker.setPostadresse(lagPostadresse(3, false));
-            postAdresseType.setValue("POSTADRESSE");
+            XMLPostadresse postadresse = new XMLPostadresse().withUstrukturertAdresse(lagUstrukturertPostadresse())
+            xmlBruker.setPostadresse(postadresse);
+            postAdresseType.setValue(POSTTYPE_NORSK);
         } else if (adressetype.equals(Adressetyper.UTENLANDSK)) {
-            xmlBruker.setPostadresse(lagPostadresse(4, true));
-            postAdresseType.setValue("UTENLANDSK_ADRESSE");
+            xmlBruker.setPostadresse(lagUtenlandskPostadresse(4));
+            postAdresseType.setValue(POSTTYPE_UTENLANDSK);
         }
     }
 
@@ -107,11 +115,9 @@ public class BrukerprofilMock {
         return postadresse;
     }
 
-    private XMLPostadresse lagPostadresse(int antallLinjer, boolean utenlandsk) {
-        XMLPostadresse xmlPostadresse = new XMLPostadresse();
-        XMLUstrukturertAdresse adresse = utenlandsk ? lagUstrukturertUtenlandskPostadresse(antallLinjer) : lagUstrukturertPostadresse();
-        xmlPostadresse.setUstrukturertAdresse(adresse);
-        return xmlPostadresse;
+    private XMLPostadresse lagUtenlandskPostadresse(int antallLinjer) {
+        XMLUstrukturertAdresse adresse = lagUstrukturertUtenlandskPostadresse(antallLinjer);
+        return new XMLPostadresse().withUstrukturertAdresse(adresse);
     }
 
     private XMLUstrukturertAdresse lagUstrukturertPostadresse() {
@@ -177,11 +183,11 @@ public class BrukerprofilMock {
 
     private XMLBankkonto utenlandskBankkonto() {
         XMLLandkoder landkoder = new XMLLandkoder();
-        landkoder.setValue("DNK");
+        landkoder.setValue(BANKKONTO_LANDKODE);
 
         XMLBankkontonummerUtland bankkontonummer = new XMLBankkontonummerUtland();
-        bankkontonummer.setBanknavn("Nordea");
-        bankkontonummer.setBankkontonummer("9876 98 98765");
+        bankkontonummer.setBanknavn(BANKKONTO_BANK);
+        bankkontonummer.setBankkontonummer(BANKKONTO_KONTONUMMER);
         bankkontonummer.setLandkode(landkoder);
 
         XMLBankkontoUtland bankkonto = new XMLBankkontoUtland();
