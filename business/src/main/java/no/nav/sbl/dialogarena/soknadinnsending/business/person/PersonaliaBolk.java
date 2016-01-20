@@ -29,9 +29,9 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
-public class PersonaliaService implements BolkService {
+public class PersonaliaBolk implements BolkService {
 
-    private static final Logger logger = getLogger(PersonaliaService.class);
+    private static final Logger logger = getLogger(PersonaliaBolk.class);
     private static final String BOLKNAVN = "Personalia";
 
     @Inject
