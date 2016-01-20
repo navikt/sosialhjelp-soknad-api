@@ -1,8 +1,8 @@
 package no.nav.sbl.dialogarena.utils;
 
 import no.nav.modig.core.context.SubjectHandler;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.Personalia;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
@@ -12,7 +12,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class InnloggetBruker {
 
     @Inject
-    private PersonaliaService personaliaService;
+    private PersonaliaBolk personaliaBolk;
 
     private static final Logger logger = getLogger(InnloggetBruker.class);
 
@@ -20,7 +20,7 @@ public class InnloggetBruker {
         String fnr = SubjectHandler.getSubjectHandler().getUid();
         Personalia personalia = null;
         try {
-            personalia = personaliaService.hentPersonalia(fnr);
+            personalia = personaliaBolk.hentPersonalia(fnr);
         } catch (Exception e) {
             logger.error("Kunne ikke hente personalia");
         }

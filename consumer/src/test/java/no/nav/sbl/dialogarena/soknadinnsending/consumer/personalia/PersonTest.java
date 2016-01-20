@@ -4,6 +4,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adressetype;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
+import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import org.junit.Assert;
 import org.junit.Test;
 
