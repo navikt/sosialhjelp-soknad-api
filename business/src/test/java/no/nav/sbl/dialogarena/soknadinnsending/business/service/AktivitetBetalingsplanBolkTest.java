@@ -21,11 +21,11 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AktivitetBetalingsplanServiceTest {
+public class AktivitetBetalingsplanBolkTest {
     @Mock
     SakOgAktivitetV1 webservice;
     @InjectMocks
-    private AktivitetBetalingsplanService aktivitetService;
+    private AktivitetBetalingsplanBolk aktivitetService;
 
     @Test
     public void skalReturnererBetalingsplaner() throws FinnAktivitetOgVedtakDagligReiseListePersonIkkeFunnet, FinnAktivitetOgVedtakDagligReiseListeSikkerhetsbegrensning {

@@ -8,7 +8,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.LandService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeid.ArbeidssokerInfoService;
@@ -48,7 +48,7 @@ public class InformasjonRessurs {
     @Inject
     private LandService landService;
     @Inject
-    private PersonaliaService personaliaService;
+    private PersonaliaBolk personaliaBolk;
     @Inject
     private ArbeidssokerInfoService arbeidssokerInfoService;
     @Inject
@@ -142,7 +142,7 @@ public class InformasjonRessurs {
         utslagskriterierResultat.put("ytelsesstatus", personInfoService.hentYtelseStatus(uid));
 
         try {
-            Personalia personalia = personaliaService.hentPersonalia(uid);
+            Personalia personalia = personaliaBolk.hentPersonalia(uid);
             utslagskriterierResultat.put("alder", Integer.toString(new PersonAlder(uid).getAlder()));
             utslagskriterierResultat.put("fodselsdato", personalia.getFodselsdato());
             utslagskriterierResultat.put("bosattINorge", ((Boolean) !personalia.harUtenlandskAdresse()).toString());
