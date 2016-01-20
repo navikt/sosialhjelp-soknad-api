@@ -26,12 +26,12 @@ import java.util.Collections;
 import java.util.List;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.ServiceUtils.*;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.*;
 
 @Component
-public class AktivitetBetalingsplanService implements BolkService {
+public class AktivitetBetalingsplanBolk implements BolkService {
 
-    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(AktivitetBetalingsplanService.class);
+    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(AktivitetBetalingsplanBolk.class);
     private static final Transformer<WSAktivitetOgVedtak, Iterable<WSVedtaksinformasjon>> AKTIVITET_TIL_VEDTAK = new Transformer<WSAktivitetOgVedtak, Iterable<WSVedtaksinformasjon>>() {
         @Override
         public Iterable<WSVedtaksinformasjon> transform(WSAktivitetOgVedtak wsAktivitetOgVedtak) {

@@ -1,12 +1,11 @@
-package no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia;
+package no.nav.sbl.dialogarena.sendsoknad.domain.personalia;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.LandService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.StatsborgerskapType;
-import org.joda.time.LocalDate;
+import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.*;
+import org.joda.time.*;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Adressetype.*;
-
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.LandListe.*;
 
 public class Personalia {
 
@@ -166,7 +165,7 @@ public class Personalia {
             return false;
         }
 
-        if ((harUtenlandsAdressekode(adressetype)) && (StatsborgerskapType.get(landkode).equals(LandService.EOS))) {
+        if ((harUtenlandsAdressekode(adressetype)) && (StatsborgerskapType.get(landkode).equals(EOS))) {
             return true;
         }
         return false;

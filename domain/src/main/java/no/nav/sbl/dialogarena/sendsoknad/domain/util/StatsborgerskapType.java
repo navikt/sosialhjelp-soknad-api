@@ -1,6 +1,6 @@
-package no.nav.sbl.dialogarena.soknadinnsending.consumer;
+package no.nav.sbl.dialogarena.sendsoknad.domain.util;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.LandService.EOS_LAND;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.LandListe.EOS_LAND;
 
 public class StatsborgerskapType {
 

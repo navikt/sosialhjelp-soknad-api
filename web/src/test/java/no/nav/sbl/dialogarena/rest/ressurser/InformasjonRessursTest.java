@@ -8,8 +8,8 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.Personalia;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.LandService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
@@ -44,7 +44,7 @@ public class InformasjonRessursTest {
     @Spy
     LandService landService;
     @Mock
-    PersonaliaService personaliaService;
+    PersonaliaBolk personaliaBolk;
     @Mock
     PersonInfoService personInfoService;
     @Mock
@@ -66,7 +66,7 @@ public class InformasjonRessursTest {
     public void setUp() {
         System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", StaticSubjectHandler.class.getName());
         when(personInfoService.hentArbeidssokerStatus(anyString())).thenReturn("ARBS");
-        when(personaliaService.hentPersonalia(anyString())).thenReturn(personalia());
+        when(personaliaBolk.hentPersonalia(anyString())).thenReturn(personalia());
 
         struktur = new SoknadStruktur();
         struktur.setTemaKode(TEMAKODE);

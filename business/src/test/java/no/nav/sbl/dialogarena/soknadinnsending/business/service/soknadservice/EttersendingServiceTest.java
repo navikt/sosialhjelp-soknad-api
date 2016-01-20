@@ -13,9 +13,9 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.ArbeidsforholdService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BolkService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
@@ -65,9 +65,9 @@ public class EttersendingServiceTest {
     @Mock
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
     @Mock
-    private PersonaliaService personaliaService;
+    private PersonaliaBolk personaliaBolk;
     @Mock
-    private BarnService barnService;
+    private BarnBolk barnBolk;
     @Mock
     private ArbeidsforholdService arbeidsforholdService;
     @Mock
@@ -83,8 +83,8 @@ public class EttersendingServiceTest {
     @Before
     public void before() {
         Map<String, BolkService> bolker = new HashMap<>();
-        bolker.put(PersonaliaService.class.getName(), personaliaService);
-        bolker.put(BarnService.class.getName(), barnService);
+        bolker.put(PersonaliaBolk.class.getName(), personaliaBolk);
+        bolker.put(BarnBolk.class.getName(), barnBolk);
         bolker.put(ArbeidsforholdService.class.getName(), arbeidsforholdService);
         when(applicationContex.getBeansOfType(BolkService.class)).thenReturn(bolker);
 
@@ -170,11 +170,11 @@ public class EttersendingServiceTest {
                 .medId(1L);
         when(lokalDb.hentSoknad("123")).thenReturn(
                 soknad);
-        when(config.getSoknadBolker(any(WebSoknad.class), anyListOf(BolkService.class))).thenReturn(asList(personaliaService, barnService));
+        when(config.getSoknadBolker(any(WebSoknad.class), anyListOf(BolkService.class))).thenReturn(asList(personaliaBolk, barnBolk));
         when(lokalDb.hentSoknadMedVedlegg(anyString())).thenReturn(soknad);
         when(lokalDb.hentSoknadMedData(1L)).thenReturn(soknad);
         soknadServiceUtil.hentSoknad("123", true, true);
-        verify(personaliaService, times(1)).genererSystemFakta(anyString(), anyLong());
-        verify(barnService, never()).genererSystemFakta(anyString(), anyLong());
+        verify(personaliaBolk, times(1)).genererSystemFakta(anyString(), anyLong());
+        verify(barnBolk, never()).genererSystemFakta(anyString(), anyLong());
     }
 }

@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.util;
 
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.StatsborgerskapType;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.StatsborgerskapType;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.equalTo;

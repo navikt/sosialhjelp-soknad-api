@@ -13,9 +13,9 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.ArbeidsforholdService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BolkService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
@@ -76,9 +76,9 @@ public class SoknadServiceTest {
     @Mock
     private FaktaService faktaService;
     @Mock
-    private PersonaliaService personaliaService;
+    private PersonaliaBolk personaliaBolk;
     @Mock
-    private BarnService barnService;
+    private BarnBolk barnBolk;
     @Mock
     private ArbeidsforholdService arbeidsforholdService;
     @Mock
@@ -105,8 +105,8 @@ public class SoknadServiceTest {
     @Before
     public void before() {
         Map<String, BolkService> bolker = new HashMap<>();
-        bolker.put(PersonaliaService.class.getName(), personaliaService);
-        bolker.put(BarnService.class.getName(), barnService);
+        bolker.put(PersonaliaBolk.class.getName(), personaliaBolk);
+        bolker.put(BarnBolk.class.getName(), barnBolk);
         bolker.put(ArbeidsforholdService.class.getName(), arbeidsforholdService);
         when(applicationContex.getBeansOfType(BolkService.class)).thenReturn(bolker);
 

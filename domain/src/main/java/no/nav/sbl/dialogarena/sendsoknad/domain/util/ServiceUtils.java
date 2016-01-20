@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.sendsoknad.domain;
+package no.nav.sbl.dialogarena.sendsoknad.domain.util;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 import org.joda.time.DateTime;

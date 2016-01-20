@@ -5,7 +5,7 @@ import no.nav.melding.virksomhet.paaloepteutgifter.v1.paaloepteutgifter.Utgiftsd
 import no.nav.melding.virksomhet.paaloepteutgifter.v1.paaloepteutgifter.Utgiftsperioder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.ServiceUtils;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import org.apache.commons.collections15.Transformer;
 import org.joda.time.LocalDate;

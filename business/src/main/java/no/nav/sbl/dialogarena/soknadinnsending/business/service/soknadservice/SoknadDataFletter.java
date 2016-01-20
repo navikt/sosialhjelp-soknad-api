@@ -14,7 +14,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BolkService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.StartDatoService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
@@ -222,7 +222,7 @@ public class SoknadDataFletter {
                     .medStegliste(config.getStegliste(soknad.getSoknadId()))
                     .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
             if (soknad.erEttersending()) {
-                faktaService.lagreSystemFakta(soknad, bolker.get(PersonaliaService.class.getName()).genererSystemFakta(getSubjectHandler().getUid(), soknad.getSoknadId()));
+                faktaService.lagreSystemFakta(soknad, bolker.get(PersonaliaBolk.class.getName()).genererSystemFakta(getSubjectHandler().getUid(), soknad.getSoknadId()));
             } else {
                 List<Faktum> systemfaktum = new ArrayList<>();
                 for (BolkService bolk : config.getSoknadBolker(soknad, bolker.values())) {
