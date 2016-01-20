@@ -19,9 +19,8 @@ public class MockdataUtils {
     private final static String VALG_NORSK = "NORSK";
     private final static String VALG_INGEN = "INGEN";
 
-
-    static PersonPortTypeMock personPortTypeMock = PersonMock.getInstance().getPersonPortTypeMock();
-    static BrukerprofilMock brukerprofilMock = BrukerprofilMock.getInstance();
+    private static PersonPortTypeMock personPortTypeMock = PersonMock.getInstance().getPersonPortTypeMock();
+    private static BrukerprofilMock brukerprofilMock = BrukerprofilMock.getInstance();
 
     public static Diskresjonskoder getDiskresjonskode() {
         Diskresjonskoder diskresjonskoder = new Diskresjonskoder();
