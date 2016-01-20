@@ -142,14 +142,22 @@
         <id>arbeidsdager</id>
         <type>textbox</type>
         <constraints>
-            <constraint>properties['rotasjonskiftturnus'] == 'jarotasjon'</constraint>
+            <constraint>properties['rotasjonskiftturnus'] == 'jarotasjon' &amp;&amp; properties['type'] == 'sagtoppavarbeidsgiver'</constraint>
+            <constraint>properties['rotasjonskiftturnus'] == 'jarotasjon' &amp;&amp; properties['type'] == 'permittert'</constraint>
+            <constraint>properties['rotasjonskiftturnus'] == 'jarotasjon' &amp;&amp; properties['type'] == 'kontraktutgaatt'</constraint>
+            <constraint>properties['rotasjonskiftturnus'] == 'jarotasjon' &amp;&amp; properties['type'] == 'sagtoppselv'</constraint>
+            <constraint>properties['rotasjonskiftturnus'] == 'jarotasjon' &amp;&amp; properties['type'] == 'redusertarbeidstid'</constraint>
         </constraints>
     </property>
     <property>
         <id>avspaseringsdager</id>
         <type>textbox</type>
         <constraints>
-            <constraint>properties['rotasjonskiftturnus'] == 'jarotasjon'</constraint>
+            <constraint>properties['rotasjonskiftturnus'] == 'jarotasjon' &amp;&amp; properties['type'] == 'sagtoppavarbeidsgiver'</constraint>
+            <constraint>properties['rotasjonskiftturnus'] == 'jarotasjon' &amp;&amp; properties['type'] == 'permittert'</constraint>
+            <constraint>properties['rotasjonskiftturnus'] == 'jarotasjon' &amp;&amp; properties['type'] == 'kontraktutgaatt'</constraint>
+            <constraint>properties['rotasjonskiftturnus'] == 'jarotasjon' &amp;&amp; properties['type'] == 'sagtoppselv'</constraint>
+            <constraint>properties['rotasjonskiftturnus'] == 'jarotasjon' &amp;&amp; properties['type'] == 'redusertarbeidstid'</constraint>
         </constraints>
     </property>
     <property>
