@@ -3,9 +3,9 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.Personalia;
+import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaTransform;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.StatsborgerskapType;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.StatsborgerskapType;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.IkkeFunnetException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.Personalia.*;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
