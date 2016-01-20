@@ -98,7 +98,7 @@ public class InternalRessurs {
     @GET
     @Path(value = "/mockdata")
     public String endreMockdata() throws IOException {
-        MockdataFields fields = getMockdataFields(personPortTypeMock);
+        MockdataFields fields = getMockdataFields();
 
         Handlebars handlebars = new Handlebars();
         handlebars.registerHelper(HvisLikHelper.NAVN, new HvisLikHelper());
@@ -114,12 +114,16 @@ public class InternalRessurs {
     @Path(value = "/mockdata")
     public Response endreMockData(@FormParam("statsborgerskap") String statsborgerskap,
                                   @FormParam("kode6") String kode6,
-                                  @FormParam("submit") String submit) throws InterruptedException {
+                                  @FormParam("primar_adressetype") String primarAdressetype,
+                                  @FormParam("sekundar_adressetype") String sekundarAdressetype) throws InterruptedException {
         Boolean skalHaKode6 = "true".equalsIgnoreCase(kode6);
 
         Person person = personPortTypeMock.getPerson();
         person.setDiskresjonskode(skalHaKode6 ? getDiskresjonskode() : null);
         person.getStatsborgerskap().getLand().setValue(statsborgerskap.toUpperCase());
+        settPostadressetype(primarAdressetype);
+        settSekundarAdressetype(sekundarAdressetype);
+
         return Response.seeOther(URI.create("/sendsoknad/internal/mockdata")).build();
     }
 
