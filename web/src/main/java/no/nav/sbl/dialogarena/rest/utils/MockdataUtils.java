@@ -11,9 +11,15 @@ import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 
 import static no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil.BrukerprofilMock.Adressetyper;
 import static no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil.BrukerprofilMock.Adressetyper.*;
+import static no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil.BrukerprofilMock.POSTTYPE_UTENLANDSK;
 
 
 public class MockdataUtils {
+    private final static String VALG_UTENLANDSK = "UTENLANDSK";
+    private final static String VALG_NORSK = "NORSK";
+    private final static String VALG_INGEN = "INGEN";
+
+
     static PersonPortTypeMock personPortTypeMock = PersonMock.getInstance().getPersonPortTypeMock();
     static BrukerprofilMock brukerprofilMock = BrukerprofilMock.getInstance();
 
@@ -33,15 +39,15 @@ public class MockdataUtils {
 
         XMLBruker bruker = getBrukerFraBrukerprofil();
         String primarType = bruker.getGjeldendePostadresseType().getValue();
-        fields.setPrimarAdressetype(primarType.equalsIgnoreCase("UTENLANDSK_ADRESSE") ? "UTENLANDSK" : "NORSK");
+        fields.setPrimarAdressetype(primarType.equalsIgnoreCase(POSTTYPE_UTENLANDSK) ? VALG_UTENLANDSK : VALG_NORSK);
 
         XMLMidlertidigPostadresse postadresse = bruker.getMidlertidigPostadresse();
         if(postadresse == null) {
-            fields.setSekundarAdressetype("INGEN");
+            fields.setSekundarAdressetype(VALG_INGEN);
         } else if(XMLMidlertidigPostadresseUtland.class.isAssignableFrom(postadresse.getClass())) {
-            fields.setSekundarAdressetype("UTENLANDSK");
+            fields.setSekundarAdressetype(VALG_UTENLANDSK);
         } else {
-            fields.setSekundarAdressetype("NORSK");
+            fields.setSekundarAdressetype(VALG_NORSK);
         }
 
         return fields;
@@ -62,9 +68,9 @@ public class MockdataUtils {
     }
 
     private static Adressetyper mapValueTilAdressetype(String type){
-        if(type.equals("NORSK")){
+        if(type.equals(VALG_NORSK)){
             return NORSK;
-        } else if(type.equals("UTENLANDSK")) {
+        } else if(type.equals(VALG_UTENLANDSK)) {
             return UTENLANDSK;
         } else {
             return INGEN;

@@ -31,8 +31,8 @@ public class BrukerprofilMock {
     private static final String BANKKONTO_BANK = "Nodea";
     private static final String BANKKONTO_KONTONUMMER = "9876 98 98765";
 
-    private static final String POSTTYPE_NORSK = "POSTADRESSE";
-    private static final String POSTTYPE_UTENLANDSK = "UTENLANDSK_ADRESSE";
+    public static final String POSTTYPE_NORSK = "POSTADRESSE";
+    public static final String POSTTYPE_UTENLANDSK = "UTENLANDSK_ADRESSE";
 
     public enum Adressetyper {INGEN, NORSK, UTENLANDSK;}
 
