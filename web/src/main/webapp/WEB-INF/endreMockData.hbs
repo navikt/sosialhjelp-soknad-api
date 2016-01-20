@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <body>
     <style type="text/css">
+        body {
+            text-align: center;
+        }
         form {
-            margin: 1rem 10rem;
+            margin-top: 1rem;
+            text-align: left;
             background: lightgray;
             display: inline-block;
             padding: 0 2rem 2rem 2rem;
@@ -30,6 +34,25 @@
                     <option value="ENG" {{#hvisLik this "ENG"}}selected{{/hvisLik}}>Engelsk</option>
                     <option value="GER" {{#hvisLik this "GER"}}selected{{/hvisLik}}>Tysk</option>
                 {{/getStatsborgerskap}}
+            </select>
+        </div>
+        <div class="field">
+            <label class="blokk" for="postadressetype">Postadressetype</label>
+            <select name="primar_adressetype" id="postadressetype">
+                {{#getPrimarAdressetype}}
+                    <option value="NORSK" {{#hvisLik this "NORSK"}}selected{{/hvisLik}}>Norsk</option>
+                    <option value="UTENLANDSK" {{#hvisLik this "UTENLANDSK"}}selected{{/hvisLik}}>Utenlandsk</option>
+                {{/getPrimarAdressetype}}
+            </select>
+        </div>
+        <div class="field">
+            <label class="blokk" for="sekundartype">Sekundær adressetype</label>
+            <select name="sekundar_adressetype" id="sekundartype">
+                {{#getSekundarAdressetype}}
+                    <option value="NORSK" {{#hvisLik this "NORSK"}}selected{{/hvisLik}}>Norsk</option>
+                    <option value="UTENLANDSK" {{#hvisLik this "UTENLANDSK"}}selected{{/hvisLik}}>Utenlandsk</option>
+                    <option value="INGEN" {{#hvisLik this "INGEN"}}selected{{/hvisLik}}>Ingen</option>
+                {{/getSekundarAdressetype}}
             </select>
         </div>
         <div class="field">
