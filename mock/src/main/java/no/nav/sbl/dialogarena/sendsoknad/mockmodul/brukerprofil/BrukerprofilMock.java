@@ -77,7 +77,7 @@ public class BrukerprofilMock {
     public void settPostadresse(XMLBruker xmlBruker, Adressetyper adressetype) {
         XMLPostadressetyper postAdresseType = xmlBruker.getGjeldendePostadresseType();
         if (adressetype.equals(Adressetyper.NORSK)) {
-            XMLPostadresse postadresse = new XMLPostadresse().withUstrukturertAdresse(lagUstrukturertPostadresse())
+            XMLPostadresse postadresse = new XMLPostadresse().withUstrukturertAdresse(lagUstrukturertPostadresse());
             xmlBruker.setPostadresse(postadresse);
             postAdresseType.setValue(POSTTYPE_NORSK);
         } else if (adressetype.equals(Adressetyper.UTENLANDSK)) {
