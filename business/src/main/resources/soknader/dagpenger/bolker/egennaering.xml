@@ -6,15 +6,6 @@
         <panel>EgenNaering</panel>
     </faktum>
     <faktum>
-        <id>egennaering.driveregennaering.arbeidsmengde</id>
-        <type>textbox</type>
-        <panel>EgenNaering</panel>
-        <dependOn>egennaering.driveregennaering</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
-    </faktum>
-    <faktum>
         <id>egennaering.driveregennaering.orgnummer</id>
         <type>textbox</type>
         <panel>EgenNaering</panel>
@@ -23,6 +14,15 @@
             <value>false</value>
         </dependOnValues>
         <flereTillatt>true</flereTillatt>
+    </faktum>
+    <faktum>
+        <id>egennaering.driveregennaering.arbeidsmengde</id>
+        <type>textbox</type>
+        <panel>EgenNaering</panel>
+        <dependOn>egennaering.driveregennaering</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
 
 
