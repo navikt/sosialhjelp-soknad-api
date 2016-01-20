@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.ServiceUtils.*;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.*;
 
 @Component
 public class AktivitetBetalingsplanService implements BolkService {

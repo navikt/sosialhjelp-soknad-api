@@ -23,14 +23,13 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class BarnService implements BolkService {
 
     private static final Logger logger = getLogger(BarnService.class);
-    private static final String BOLKNAVN = "Barn";
 
     @Inject
     private PersonService personService;
 
     @Override
     public String tilbyrBolk() {
-        return BOLKNAVN;
+        return "Barn";
     }
 
     @Override

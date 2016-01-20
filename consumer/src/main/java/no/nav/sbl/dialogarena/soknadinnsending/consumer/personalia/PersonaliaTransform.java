@@ -1,16 +1,14 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia;
 
-import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
-import no.nav.sbl.dialogarena.sendsoknad.domain.PersonAlder;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.AdresseTransform;
+import no.nav.sbl.dialogarena.kodeverk.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.*;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.*;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.*;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Diskresjonskoder;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Statsborgerskap;
-import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
-import org.joda.time.LocalDate;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.*;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.*;
+import no.nav.tjeneste.virksomhet.person.v1.meldinger.*;
+import org.joda.time.*;
 
 public class PersonaliaTransform {
 
