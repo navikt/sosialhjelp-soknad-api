@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.service;
 import com.github.jknack.handlebars.*;
 import com.github.jknack.handlebars.context.*;
 import no.bekk.bekkopen.person.*;
-import no.nav.sbl.dialogarena.common.kodeverk.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.*;
 import no.nav.sbl.dialogarena.service.oppsummering.*;
@@ -21,8 +20,6 @@ import static org.apache.commons.lang3.StringUtils.*;
 public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
 
     private Map<String, Helper> helpers = new HashMap<>();
-    @Inject
-    private Kodeverk kodeverk;
 
     @Inject
     private WebSoknadConfig webSoknadConfig;
