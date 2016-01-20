@@ -1,6 +1,8 @@
-package no.nav.sbl.dialogarena.soknadinnsending.consumer;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.LandService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.StatsborgerskapType;
 import org.joda.time.LocalDate;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Adressetype.*;

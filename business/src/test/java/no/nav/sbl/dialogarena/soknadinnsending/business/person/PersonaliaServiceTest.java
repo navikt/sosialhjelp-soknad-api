@@ -4,7 +4,7 @@ import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adressetype;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.Personalia;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;

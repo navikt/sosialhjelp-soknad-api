@@ -7,7 +7,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.dto.Land;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.Personalia;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.LandService;
