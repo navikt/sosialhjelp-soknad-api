@@ -1,16 +1,26 @@
 package no.nav.sbl.dialogarena.service;
 
-import com.github.jknack.handlebars.*;
-import com.github.jknack.handlebars.context.*;
-import no.bekk.bekkopen.person.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.*;
-import no.nav.sbl.dialogarena.service.oppsummering.*;
-import no.nav.sbl.dialogarena.soknadinnsending.business.*;
+import com.github.jknack.handlebars.Context;
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Helper;
+import com.github.jknack.handlebars.Options;
+import com.github.jknack.handlebars.context.FieldValueResolver;
+import com.github.jknack.handlebars.context.JavaBeanValueResolver;
+import com.github.jknack.handlebars.context.MapValueResolver;
+import com.github.jknack.handlebars.context.MethodValueResolver;
+import no.bekk.bekkopen.person.Fodselsnummer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.service.oppsummering.OppsummeringsContext;
+import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 
-import javax.inject.*;
-import java.io.*;
-import java.util.*;
+import javax.inject.Inject;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static no.bekk.bekkopen.person.FodselsnummerValidator.*;
 import static org.apache.commons.lang3.ArrayUtils.reverse;
@@ -33,10 +43,11 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
     @Override
     public String fyllHtmlMalMedInnhold(WebSoknad soknad) throws IOException {
         SoknadStruktur soknadStruktur = webSoknadConfig.hentStruktur(soknad.getskjemaNummer());
+        OppsummeringsContext context = new OppsummeringsContext(soknad, soknadStruktur, false);
         return getHandlebars()
                 .infiniteLoops(true)
                 .compile("/skjema/generisk")
-                .apply(Context.newBuilder(new OppsummeringsContext(soknad, soknadStruktur, false))
+                .apply(Context.newBuilder(context)
                         .resolver(
                                 JavaBeanValueResolver.INSTANCE,
                                 FieldValueResolver.INSTANCE,
@@ -51,11 +62,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
         helpers.put(name, helper);
     }
 
-    private Integer finnNivaa(Context context) {
-        if(context == null){return 3;}
-        return (context.get("sporsmal") != null? 1:0) + finnNivaa(context.parent());
-    }
-
     private Handlebars getHandlebars() {
         Handlebars handlebars = new Handlebars();
 
@@ -65,16 +71,13 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
 
         handlebars.registerHelper("formatterFodelsDato", generateFormatterFodselsdatoHelper());
         handlebars.registerHelper("skalViseRotasjonTurnusSporsmaal", generateSkalViseRotasjonTurnusSporsmaalHelper());
-        handlebars.registerHelper("finnNiva", new Helper<Object>() {
+        handlebars.registerHelper("inc", new Helper<String>() {
             @Override
-            public CharSequence apply(Object context, Options options) throws IOException {
-                Integer nivaa = finnNivaa(options.context.parent());
-                if (nivaa > 6) {
-                    nivaa = 6;
-                }
-                return "" + nivaa;
+            public CharSequence apply(String counter, Options options) throws IOException {
+                return "" + (Integer.parseInt(counter) + 1);
             }
         });
+
         return handlebars;
     }
 

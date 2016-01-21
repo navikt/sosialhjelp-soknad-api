@@ -36,9 +36,11 @@
         {{#each bolker}}
             <h2>{{ hentTekst (concat (toLowerCase navn) ".tittel") }}</h2>
             <ul class="fakta-liste">
-                {{#each fakta}}
-                    {{> skjema/generisk/faktum }}
-                {{/each}}
+                {{#variabel "niva" "3"}}
+                    {{#each fakta}}
+                        {{> skjema/generisk/faktum }}
+                    {{/each}}
+                {{/variabel}}
             </ul>
         {{/each}}
 
