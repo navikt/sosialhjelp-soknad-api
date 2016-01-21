@@ -1,11 +1,10 @@
-package no.nav.sbl.dialogarena.soknadinnsending.business.person;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia;
 
 import no.nav.modig.core.exception.*;
 import no.nav.sbl.dialogarena.kodeverk.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.*;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.*;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.*;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.*;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.*;
