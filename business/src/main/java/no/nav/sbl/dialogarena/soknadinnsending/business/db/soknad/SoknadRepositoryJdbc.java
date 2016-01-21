@@ -112,6 +112,9 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     public Faktum hentFaktumMedKey(Long soknadId, String faktumKey) {
         final String sql = "select * from SOKNADBRUKERDATA where soknad_id = ? and key = ?";
         Faktum faktum = hentEtObjectAv(sql, FAKTUM_ROW_MAPPER, soknadId, faktumKey);
+        if (faktum == null) {
+            return null;
+        }
         return populerMedProperties(faktum);
     }
 
