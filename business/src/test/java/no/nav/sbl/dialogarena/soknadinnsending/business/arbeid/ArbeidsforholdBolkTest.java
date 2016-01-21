@@ -10,7 +10,6 @@ import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.FinnArbeidsforholdPr
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerRequest;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerResponse;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.OrganisasjonV4;
 import org.joda.time.DateTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,12 +32,15 @@ public class ArbeidsforholdBolkTest {
 
     @Mock
     ArbeidsforholdV3 arbeidsforholdWebService;
-    @Mock
-    private OrganisasjonV4 organisasjonWebService;
+
     @Mock
     private FaktaService faktaService;
+
     @Mock
     private ArbeidsforholdTransformer transformer;
+
+    @InjectMocks
+    private ArbeidsforholdBolk arbeidsforholdService = new ArbeidsforholdBolk();
 
     private String tom = new DateTime().toString("yyyy-MM-dd");
     private String fom = new DateTime().minusYears(1).toString("yyyy-MM-dd");
@@ -49,17 +51,17 @@ public class ArbeidsforholdBolkTest {
     @Test
     public void skalLagreSystemfakta() throws Exception {
         Arbeidsforhold arbeidsforhold = setup(lagArbeidsforhold());
-        List<Faktum> faktums = service.genererArbeidsforhold("123", 11L);
+        List<Faktum> arbeidsforholdFakta = arbeidsforholdService.genererArbeidsforhold("123", 11L);
         Mockito.verify(arbeidsforholdWebService).finnArbeidsforholdPrArbeidstaker(any(FinnArbeidsforholdPrArbeidstakerRequest.class));
         verify(transformer).apply(arbeidsforhold);
-        assertThat(faktums.size(), equalTo(1));
+        assertThat(arbeidsforholdFakta.size(), equalTo(1));
     }
 
     @Test
     public void skalSetteAlleFaktumFelter() throws Exception {
         no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold result = lagArbeidsforhold();
         setup(result);
-        List<Faktum> faktums = service.genererArbeidsforhold("123", 11L);
+        List<Faktum> faktums = arbeidsforholdService.genererArbeidsforhold("123", 11L);
         Faktum faktum = faktums.get(0);
 
         assertThat(faktum.finnEgenskap("orgnr").getValue(), equalTo("12345"));
@@ -81,7 +83,7 @@ public class ArbeidsforholdBolkTest {
         result.fastStillingsprosent = 0L;
         result.variabelStillingsprosent = true;
         setup(result);
-        List<Faktum> faktums = service.genererArbeidsforhold("123", 11L);
+        List<Faktum> faktums = arbeidsforholdService.genererArbeidsforhold("123", 11L);
         Faktum faktum = faktums.get(0);
 
         assertThat(faktum.finnEgenskap("stillingstype").getValue(), equalTo("variabel"));
@@ -93,7 +95,7 @@ public class ArbeidsforholdBolkTest {
         no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold result = lagArbeidsforhold();
         result.variabelStillingsprosent = true;
         setup(result);
-        List<Faktum> faktums = service.genererArbeidsforhold("123", 11L);
+        List<Faktum> faktums = arbeidsforholdService.genererArbeidsforhold("123", 11L);
         Faktum faktum = faktums.get(0);
 
         assertThat(faktum.finnEgenskap("stillingstype").getValue(), equalTo("fastOgVariabel"));
@@ -105,7 +107,7 @@ public class ArbeidsforholdBolkTest {
         no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold result = lagArbeidsforhold();
         result.tom = null;
         setup(result);
-        List<Faktum> faktums = service.genererArbeidsforhold("123", 11L);
+        List<Faktum> faktums = arbeidsforholdService.genererArbeidsforhold("123", 11L);
         Faktum faktum = faktums.get(0);
 
         assertThat(faktum.finnEgenskap("ansatt").getValue(), equalTo("true"));

@@ -1,14 +1,16 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.*;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.*;
-import org.apache.commons.collections15.*;
-import org.springframework.stereotype.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
+import org.apache.commons.collections15.Transformer;
+import org.springframework.stereotype.Service;
 
-import javax.inject.*;
-import java.util.*;
+import javax.inject.Inject;
+import java.util.List;
 
-import static no.nav.modig.lang.collections.IterUtils.*;
+import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 
 @Service

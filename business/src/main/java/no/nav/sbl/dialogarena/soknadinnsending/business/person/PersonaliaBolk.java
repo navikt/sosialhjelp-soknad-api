@@ -1,13 +1,15 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.*;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.*;
-import org.springframework.stereotype.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.StatsborgerskapType;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFletter;
+import org.springframework.stereotype.Service;
 
-import javax.inject.*;
-import java.util.*;
+import javax.inject.Inject;
+import java.util.Arrays;
+import java.util.List;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia.*;
 
