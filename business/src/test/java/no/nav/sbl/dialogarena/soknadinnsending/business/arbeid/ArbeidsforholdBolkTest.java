@@ -28,7 +28,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ArbeidsforholdServiceTest {
+public class ArbeidsforholdBolkTest {
 
 
     @Mock
@@ -44,7 +44,7 @@ public class ArbeidsforholdServiceTest {
     private String fom = new DateTime().minusYears(1).toString("yyyy-MM-dd");
 
     @InjectMocks
-    private ArbeidsforholdService service = new ArbeidsforholdService();
+    private ArbeidsforholdBolk service = new ArbeidsforholdBolk();
 
     @Test
     public void skalLagreSystemfakta() throws Exception {

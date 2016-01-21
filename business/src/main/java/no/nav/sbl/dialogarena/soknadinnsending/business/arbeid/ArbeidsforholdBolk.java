@@ -34,7 +34,7 @@ import java.util.Objects;
 import static no.nav.modig.lang.collections.IterUtils.on;
 
 @Service
-public class ArbeidsforholdService implements BolkService {
+public class ArbeidsforholdBolk implements BolkService {
 
     @Inject
     @Named("arbeidEndpoint")
@@ -47,7 +47,7 @@ public class ArbeidsforholdService implements BolkService {
     private ArbeidsforholdTransformer transformer;
     private DatatypeFactory datatypeFactory = lagDatatypeFactory();
     private static final Regelverker AA_ORDNINGEN = new Regelverker();
-    private static final Logger LOG = LoggerFactory.getLogger(ArbeidsforholdService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ArbeidsforholdBolk.class);
 
     static {
         AA_ORDNINGEN.setValue("A_ORDNINGEN");

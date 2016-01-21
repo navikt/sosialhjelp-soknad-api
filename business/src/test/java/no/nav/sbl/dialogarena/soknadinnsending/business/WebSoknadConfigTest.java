@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.ArbeidsforholdService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.ArbeidsforholdBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BolkService;
@@ -51,7 +51,7 @@ public class WebSoknadConfigTest {
     public void testAtRiktigeSoknadBolkerErInkludert() {
         BolkService personalia = new PersonaliaBolk();
         BolkService barn = new BarnBolk();
-        BolkService arbeidsforhold = new ArbeidsforholdService();
+        BolkService arbeidsforhold = new ArbeidsforholdBolk();
 
         List<BolkService> bolker = config.getSoknadBolker(new WebSoknad().medskjemaNummer(AAP_SKJEMANUMMER), asList(personalia, barn, arbeidsforhold));
         assertThat(bolker.contains(personalia)).isTrue();
