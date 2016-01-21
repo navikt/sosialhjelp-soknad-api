@@ -1,18 +1,18 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.util;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.LastetOpp;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.SendesIkke;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.SendesSenere;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.VedleggAlleredeSendt;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.VedleggKreves;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.Status.VedleggSendesAvAndre;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.LastetOpp;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.SendesIkke;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.SendesSenere;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.VedleggAlleredeSendt;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.VedleggKreves;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.VedleggSendesAvAndre;
+
 
 public class VedleggsgenereringUtil {
     public static boolean likeVedlegg(Vedlegg gammeltVedlegg, Vedlegg nyttVedlegg) {
@@ -31,7 +31,7 @@ public class VedleggsgenereringUtil {
     }
 
     private static boolean erInnsendingsvalgPaakrevd(Vedlegg gammeltVedlegg, Vedlegg nyttVedlegg) {
-        List<Status> paakrevdeVedleggsstatuser = Arrays.asList(
+        List<Vedlegg.Status> paakrevdeVedleggsstatuser = Arrays.asList(
                 LastetOpp,
                 SendesIkke,
                 SendesSenere,
@@ -56,7 +56,7 @@ public class VedleggsgenereringUtil {
     }
 
     public static boolean likeVedlegg(List<Vedlegg> gamleVedlegg, List<Vedlegg> nyeVedlegg) {
-        if(gamleVedlegg.size() == nyeVedlegg.size()) {
+        if (gamleVedlegg.size() == nyeVedlegg.size()) {
             boolean erLikeVedlegg = true;
 
             int i = 0;

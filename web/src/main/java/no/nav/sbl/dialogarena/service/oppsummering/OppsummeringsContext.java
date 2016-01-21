@@ -1,16 +1,12 @@
 package no.nav.sbl.dialogarena.service.oppsummering;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.FaktumStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.VedleggForFaktumStruktur;
-import org.apache.commons.collections15.Transformer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.*;
+import org.apache.commons.collections15.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-import static no.nav.modig.lang.collections.IterUtils.on;
+import static no.nav.modig.lang.collections.IterUtils.*;
 
 
 public class OppsummeringsContext {

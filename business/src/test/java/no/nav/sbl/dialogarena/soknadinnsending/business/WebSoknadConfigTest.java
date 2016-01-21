@@ -1,12 +1,12 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.ArbeidsforholdService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BolkService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,8 +49,8 @@ public class WebSoknadConfigTest {
 
     @Test
     public void testAtRiktigeSoknadBolkerErInkludert() {
-        BolkService personalia = new PersonaliaService();
-        BolkService barn = new BarnService();
+        BolkService personalia = new PersonaliaBolk();
+        BolkService barn = new BarnBolk();
         BolkService arbeidsforhold = new ArbeidsforholdService();
 
         List<BolkService> bolker = config.getSoknadBolker(new WebSoknad().medskjemaNummer(AAP_SKJEMANUMMER), asList(personalia, barn, arbeidsforhold));

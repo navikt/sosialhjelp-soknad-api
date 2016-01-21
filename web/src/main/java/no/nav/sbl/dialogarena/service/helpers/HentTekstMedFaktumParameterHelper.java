@@ -1,16 +1,16 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
 import com.github.jknack.handlebars.Options;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.service.CmsTekst;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import java.io.IOException;
 
 import static no.nav.sbl.dialogarena.service.HandlebarsUtils.finnWebSoknad;
-import static org.apache.commons.lang3.LocaleUtils.*;
+import static org.apache.commons.lang3.LocaleUtils.toLocale;
 
 @Component
 public class HentTekstMedFaktumParameterHelper extends RegistryAwareHelper<String> {

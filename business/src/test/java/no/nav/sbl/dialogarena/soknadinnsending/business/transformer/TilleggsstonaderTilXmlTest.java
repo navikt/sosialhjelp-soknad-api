@@ -2,10 +2,10 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.transformer;
 
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Tilleggsstoenadsskjema;
 import no.nav.modig.core.context.StaticSubjectHandler;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.AlternativRepresentasjon;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.TilleggsstonaderTilXml;
+import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.tilleggsstonader.TilleggsstonaderTilXml;
 import org.junit.Before;
 import org.junit.Test;
 

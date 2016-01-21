@@ -1,17 +1,15 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.*;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.*;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.*;
+import org.springframework.stereotype.*;
+import org.springframework.transaction.annotation.*;
 
-import javax.inject.Inject;
-import javax.inject.Named;
+import javax.inject.*;
 
 @Component
 public class SoknadService {
@@ -80,6 +78,10 @@ public class SoknadService {
 
     public WebSoknad hentSoknad(String behandlingsId, boolean medData, boolean medVedlegg) {
         return soknadDataFletter.hentSoknad(behandlingsId, medData, medVedlegg);
+    }
+
+    public Faktum hentSprak(long soknadId) {
+        return lokalDb.hentFaktumMedKey(soknadId, "skjema.sprak");
     }
 
     public Long hentOpprinneligInnsendtDato(String behandlingsId) {

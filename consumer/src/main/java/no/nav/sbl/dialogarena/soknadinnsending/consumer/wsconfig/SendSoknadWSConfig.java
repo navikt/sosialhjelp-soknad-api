@@ -24,7 +24,6 @@ public class SendSoknadWSConfig {
                 .asStandardService()
                 .withAddress(soknadServiceEndpoint)
                 .withWsdl("classpath:SendSoknad.wsdl")
-                        //.withServiceName(new QName("http://nav.no/tjeneste/domene/brukerdialog/sendsoknad/v1", "SendSoknadPortType"))
                 .withExtraClasses(new Class[]{XMLMetadataListe.class, WSSoknadsdata.class, WSStartSoknadRequest.class, XMLMetadata.class, XMLVedlegg.class, XMLHovedskjema.class})
                 .build()
                 .withHttpsMock()

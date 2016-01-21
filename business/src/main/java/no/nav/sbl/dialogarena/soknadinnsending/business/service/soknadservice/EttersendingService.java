@@ -1,34 +1,28 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadata;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
-import no.nav.modig.core.exception.ApplicationException;
-import no.nav.modig.lang.collections.predicate.InstanceOf;
-import no.nav.modig.lang.collections.transform.Cast;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
-import org.joda.time.DateTime;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.*;
+import no.nav.modig.core.exception.*;
+import no.nav.modig.lang.collections.predicate.*;
+import no.nav.modig.lang.collections.transform.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.*;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.*;
+import org.joda.time.*;
+import org.springframework.context.*;
+import org.springframework.stereotype.*;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.List;
+import javax.inject.*;
+import java.util.*;
 
-import static java.util.UUID.randomUUID;
-import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
-import static no.nav.modig.lang.collections.IterUtils.on;
+import static java.util.UUID.*;
+import static no.nav.modig.core.context.SubjectHandler.*;
+import static no.nav.modig.lang.collections.IterUtils.*;
 import static no.nav.modig.lang.collections.PredicateUtils.*;
-import static no.nav.modig.lang.option.Optional.optional;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.AVBRUTT_AV_BRUKER;
+import static no.nav.modig.lang.option.Optional.*;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.*;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.*;
 
 @Component
@@ -49,7 +43,6 @@ public class EttersendingService {
 
     @Inject
     public ApplicationContext applicationContext;
-
 
     public String start(String behandlingsIdDetEttersendesPaa) {
         List<WSBehandlingskjedeElement> behandlingskjede = henvendelseService.hentBehandlingskjede(behandlingsIdDetEttersendesPaa);

@@ -6,11 +6,11 @@
     <parent>
         <groupId>no.nav.sbl.dialogarena</groupId>
         <artifactId>sendsoknad</artifactId>
-        <version>8.11-SNAPSHOT</version>
+        <version>8.12-SNAPSHOT</version>
     </parent>
 
     <artifactId>sendsoknad-web</artifactId>
-    <version>8.11-SNAPSHOT</version>
+    <version>8.12-SNAPSHOT</version>
     <name>${project.artifactId}</name>
     <packaging>war</packaging>
 
@@ -28,6 +28,10 @@
             <artifactId>common-lokalt-kodeverk</artifactId>
         </dependency>
         <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sendsoknad-mock</artifactId>
+        </dependency>
+        <dependency>
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-content</artifactId>
         </dependency>
@@ -43,7 +47,11 @@
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-security-authorization</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>no.nav.tjenester.fim</groupId>
+            <artifactId>nav-fim-person-v1-tjenestespesifikasjon</artifactId>
+            <classifier>jaxws</classifier>
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>sendsoknad-consumer</artifactId>
@@ -51,6 +59,10 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>sendsoknad-business</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sendsoknad-domain</artifactId>
         </dependency>
         <dependency>
             <groupId>no.bekk.bekkopen</groupId>
@@ -63,6 +75,10 @@
         <dependency>
             <groupId>net.sourceforge.collections</groupId>
             <artifactId>collections-generic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.sbl.dialogarena</groupId>
+            <artifactId>brukerprofil-tjenestespesifikasjon</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

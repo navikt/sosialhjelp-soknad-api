@@ -1,8 +1,8 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
 import com.github.jknack.handlebars.Options;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.service.HandlebarsUtils;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;

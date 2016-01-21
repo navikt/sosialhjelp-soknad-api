@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeid;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -44,7 +45,7 @@ public class ArbeidssokerInfoService {
 
         try(CloseableHttpResponse response = httpclient.execute(httpget)) {
             return hentStatusFraResponse(responseHandler.handleResponse(response));
-        } catch (IOException e) {
+        } catch (IOException | JsonSyntaxException e) {
             logger.error("Feil ved henting av status fra SBL Arbeid for fnr {}: {}", fnr, e);
             return ukjent;
         }

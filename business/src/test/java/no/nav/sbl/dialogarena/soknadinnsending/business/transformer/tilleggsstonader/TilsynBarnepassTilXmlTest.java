@@ -2,9 +2,10 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggssto
 
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Barn;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.TilsynsutgifterBarn;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.tilleggsstonader.StofoKodeverkVerdier;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.tilleggsstonader.TilsynBarnepassTilXml;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,14 +13,13 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.context.MessageSource;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoKodeverkVerdier.BarnepassAarsak.*;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERREGISTRERT;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.tilleggsstonader.StofoKodeverkVerdier.BarnepassAarsak.*;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTestUtils.periodeMatcher;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.*;
@@ -94,7 +94,7 @@ public class TilsynBarnepassTilXmlTest {
         assertThat(barn.get(1).getAarsakTilBarnepass()).contains("langvarig");
     }
 
-    private void leggTilBarn(String identifikatorType, String identifikator, String navn, String sokesOm, String annenForsorger, String type, boolean fullortFjerdeSkolear, boolean tilsyn, boolean langvarig, boolean ingen, FaktumType barnefaktumType) {
+    private void leggTilBarn(String identifikatorType, String identifikator, String navn, String sokesOm, String annenForsorger, String type, boolean fullortFjerdeSkolear, boolean tilsyn, boolean langvarig, boolean ingen, Faktum.FaktumType barnefaktumType) {
         long faktumId = barnId++;
         soknad.getFakta().add(new Faktum().medKey("barn")
                 .medFaktumId(faktumId)
