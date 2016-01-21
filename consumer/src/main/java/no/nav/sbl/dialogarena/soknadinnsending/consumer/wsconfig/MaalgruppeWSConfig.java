@@ -14,6 +14,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.consumer.util.InstanceSwit
 
 @Configuration
 public class MaalgruppeWSConfig {
+
     public static final String MAALGRUPPE_KEY = "start.maalgruppe.withmock";
     @Value("${soknad.webservice.arena.maalgruppe.url}")
     private String maalgruppeEndpoint;

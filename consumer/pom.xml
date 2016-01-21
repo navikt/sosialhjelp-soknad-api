@@ -6,11 +6,11 @@
     <parent>
         <groupId>no.nav.sbl.dialogarena</groupId>
         <artifactId>sendsoknad</artifactId>
-        <version>8.11-SNAPSHOT</version>
+        <version>8.12-SNAPSHOT</version>
     </parent>
 
     <artifactId>sendsoknad-consumer</artifactId>
-    <version>8.11-SNAPSHOT</version>
+    <version>8.12-SNAPSHOT</version>
     <name>${project.artifactId}</name>
 
     <properties>
@@ -23,6 +23,10 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>sendsoknad-mock</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sendsoknad-domain</artifactId>
         </dependency>
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
@@ -71,6 +75,10 @@
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>common-timing</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
         </dependency>
 
 

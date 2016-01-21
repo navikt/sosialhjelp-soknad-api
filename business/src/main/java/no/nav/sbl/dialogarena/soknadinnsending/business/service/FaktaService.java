@@ -1,18 +1,18 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.IkkeFunnetException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.IkkeFunnetException;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.FaktumStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.VedleggForFaktumStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
+import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import org.apache.commons.collections15.Closure;
 import org.slf4j.Logger;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -26,9 +26,9 @@ import java.util.List;
 import java.util.Locale;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERREGISTRERT;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.FunksjonalitetBryter.GammelVedleggsLogikk;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -246,7 +246,7 @@ public class FaktaService {
             vedlegg.setVedleggId(vedleggRepository.opprettEllerEndreVedlegg(vedlegg, null));
         }
 
-        if (faktum.getType().equals(Faktum.FaktumType.BRUKERREGISTRERT)) {
+        if (faktum.getType().equals(BRUKERREGISTRERT)) {
             vedlegg.oppdatertInnsendtStatus();
         }
 

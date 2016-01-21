@@ -5,20 +5,19 @@ import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskje
 import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
+import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.ArbeidsforholdService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BolkService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import org.apache.commons.io.IOUtils;
@@ -41,12 +40,10 @@ import java.util.Map;
 
 import static java.lang.System.setProperty;
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.OPPRETTET;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus.OPPRETTET;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.DAGPENGER;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -79,9 +76,9 @@ public class SoknadServiceTest {
     @Mock
     private FaktaService faktaService;
     @Mock
-    private PersonaliaService personaliaService;
+    private PersonaliaBolk personaliaBolk;
     @Mock
-    private BarnService barnService;
+    private BarnBolk barnBolk;
     @Mock
     private ArbeidsforholdService arbeidsforholdService;
     @Mock
@@ -108,8 +105,8 @@ public class SoknadServiceTest {
     @Before
     public void before() {
         Map<String, BolkService> bolker = new HashMap<>();
-        bolker.put(PersonaliaService.class.getName(), personaliaService);
-        bolker.put(BarnService.class.getName(), barnService);
+        bolker.put(PersonaliaBolk.class.getName(), personaliaBolk);
+        bolker.put(BarnBolk.class.getName(), barnBolk);
         bolker.put(ArbeidsforholdService.class.getName(), arbeidsforholdService);
         when(applicationContex.getBeansOfType(BolkService.class)).thenReturn(bolker);
 

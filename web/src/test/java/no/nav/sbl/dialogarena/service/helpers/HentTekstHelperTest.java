@@ -1,18 +1,21 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
-import com.github.jknack.handlebars.*;
-import no.nav.sbl.dialogarena.service.*;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.*;
-import org.junit.*;
-import org.junit.runner.*;
-import org.mockito.*;
-import org.mockito.runners.*;
+import com.github.jknack.handlebars.Handlebars;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.service.CmsTekst;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.AdditionalAnswers;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.Locale;
 
-import static org.apache.commons.lang3.LocaleUtils.*;
-import static org.assertj.core.api.Assertions.*;
+import static org.apache.commons.lang3.LocaleUtils.toLocale;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;

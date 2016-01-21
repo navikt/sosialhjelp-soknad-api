@@ -1,8 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import org.apache.commons.collections15.Transformer;
 import org.joda.time.LocalDate;
 
@@ -11,7 +11,14 @@ import java.util.List;
 import java.util.Map;
 
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.*;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.LastetOpp;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.SendesIkke;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.SendesSenere;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.VedleggAlleredeSendt;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.VedleggSendesAvAndre;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.VedleggSendesIkke;
 import static org.apache.commons.lang3.StringUtils.*;
+
 
 public class Transformers {
 
@@ -64,7 +71,7 @@ public class Transformers {
         List<XMLVedlegg> resultat = new ArrayList<>();
         for (Vedlegg vedlegg : vedleggForventnings) {
             XMLVedlegg xmlVedlegg;
-            if (vedlegg.getInnsendingsvalg().er(Vedlegg.Status.LastetOpp)) {
+            if (vedlegg.getInnsendingsvalg().er(LastetOpp)) {
                 xmlVedlegg = new XMLVedlegg()
                         .withFilnavn(vedlegg.lagFilNavn())
                         .withSideantall(vedlegg.getAntallSider())
@@ -113,19 +120,19 @@ public class Transformers {
     public static Vedlegg.Status toInnsendingsvalg(String xmlInnsendingsvalg) {
         switch (xmlInnsendingsvalg) {
             case "LASTET_OPP":
-                return Vedlegg.Status.LastetOpp;
+                return LastetOpp;
             case "SEND_SENERE":
-                return Vedlegg.Status.SendesSenere;
+                return SendesSenere;
             case "SENDES_IKKE":
-                return Vedlegg.Status.SendesIkke;
+                return SendesIkke;
             case "VEDLEGG_SENDES_IKKE":
-                return Vedlegg.Status.VedleggSendesIkke;
+                return VedleggSendesIkke;
             case "VEDLEGG_SENDES_AV_ANDRE":
-                return Vedlegg.Status.VedleggSendesAvAndre;
+                return VedleggSendesAvAndre;
             case "VEDLEGG_ALLEREDE_SENDT":
-                return Vedlegg.Status.VedleggAlleredeSendt;
+                return VedleggAlleredeSendt;
             default:
-                return Vedlegg.Status.SendesIkke;
+                return SendesIkke;
         }
     }
 }

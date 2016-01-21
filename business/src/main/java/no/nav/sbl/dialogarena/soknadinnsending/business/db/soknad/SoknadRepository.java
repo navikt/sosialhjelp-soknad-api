@@ -2,10 +2,10 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad;
 
 
 import no.nav.modig.lang.option.Optional;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.VedleggForFaktumStruktur;
+import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
 
 import java.util.List;
 
@@ -20,7 +20,6 @@ public interface SoknadRepository {
     WebSoknad hentSoknadMedVedlegg(String behandlingsId);
 
     List<Faktum> hentAlleBrukerData(String behandlingsId);
-    List<Faktum> hentAlleBrukerData(Long soknadId);
 
     Optional<WebSoknad> plukkSoknadTilMellomlagring();
 
