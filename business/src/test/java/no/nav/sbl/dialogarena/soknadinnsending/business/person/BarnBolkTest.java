@@ -46,8 +46,8 @@ public class BarnBolkTest {
 
     private static final String EN_ANNEN_ADRESSE_POSTNUMMER = "0565";
 
-    private static final String ET_LAND = "Finland";
-    private static final String EN_LANDKODE = "FIN";
+    private static final String ET_LAND = "Tyskland";
+    private static final String EN_LANDKODE = "GER";
     private static final String EN_EPOST = "test@epost.com";
 
     private static final String NORGE = "Norge";
