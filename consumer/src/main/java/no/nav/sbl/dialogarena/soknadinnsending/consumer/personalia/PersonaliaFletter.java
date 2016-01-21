@@ -1,26 +1,69 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia;
 
+import no.nav.modig.core.exception.*;
 import no.nav.sbl.dialogarena.kodeverk.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.*;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.*;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.*;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.*;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.*;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.*;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.*;
 import org.joda.time.*;
+import org.slf4j.*;
+import org.springframework.stereotype.*;
 
-public class PersonaliaTransform {
+import javax.inject.*;
+import javax.xml.ws.*;
+
+import static org.slf4j.LoggerFactory.getLogger;
+
+/**
+ * Denne klassen fletter sammen data fra 2 forskjellige endepunkter for å populere
+ * domeneobjektet
+ */
+@Component
+public class PersonaliaFletter {
+
+    private static final Logger logger = getLogger(PersonaliaFletter.class);
+
+    @Inject
+    private PersonService personService;
+
+    @Inject
+    @Named("brukerProfilEndpoint")
+    private BrukerprofilPortType brukerProfil;
+
+    @Inject
+    private Kodeverk kodeverk;
 
     private static final String KJONN_MANN = "m";
     private static final String KJONN_KVINNE = "k";
 
-    public static Personalia mapTilPersonalia(XMLHentKontaktinformasjonOgPreferanserResponse response, HentKjerneinformasjonResponse kjerneinformasjonResponse, Kodeverk kodeverk) {
-        if (response == null) {
+    public Personalia mapTilPersonalia(String fodselsnummer) {
+        XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse;
+        HentKjerneinformasjonResponse kjerneinformasjonResponse;
+        try {
+            preferanserResponse = brukerProfil.hentKontaktinformasjonOgPreferanser(lagXMLRequestPreferanser(fodselsnummer));
+            kjerneinformasjonResponse = personService.hentKjerneinformasjon(fodselsnummer);
+        } catch (IkkeFunnetException | HentKontaktinformasjonOgPreferanserPersonIkkeFunnet e) {
+            logger.error("Ikke funnet person i TPS", e);
+            throw new ApplicationException("TPS:PersonIkkefunnet", e);
+        } catch (HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning e) {
+            logger.error("Kunne ikke hente bruker fra TPS.", e);
+            throw new ApplicationException("TPS:Sikkerhetsbegrensing", e);
+        } catch (WebServiceException e) {
+            logger.error("Ingen kontakt med TPS.", e);
+            throw new ApplicationException("TPS:webserviceException", e);
+        }
+        if (preferanserResponse == null) {
             return new Personalia();
         }
 
-        XMLBruker xmlBruker = (XMLBruker) response.getPerson();
+        XMLBruker xmlBruker = (XMLBruker) preferanserResponse.getPerson();
         Person xmlPerson = kjerneinformasjonResponse.getPerson();
         Diskresjonskoder diskresjonskode = kjerneinformasjonResponse.getPerson().getDiskresjonskode();
         String diskresjonskodeString = diskresjonskode == null ? null : diskresjonskode.getValue();
@@ -47,7 +90,7 @@ public class PersonaliaTransform {
     private static String finnUtenlandskKontoLand(XMLBruker xmlBruker, Kodeverk kodeverk) {
         XMLBankkonto bankkonto = xmlBruker.getBankkonto();
 
-        if (bankkonto == null  || bankkonto instanceof XMLBankkontoNorge) {
+        if (bankkonto == null || bankkonto instanceof XMLBankkontoNorge) {
             return "";
         }
         String landkode = ((XMLBankkontoUtland) bankkonto).getBankkontoUtland().getLandkode().getValue();
@@ -90,7 +133,7 @@ public class PersonaliaTransform {
     }
 
     private static String finnStatsborgerskap(Person xmlPerson) {
-        if(xmlPerson.getStatsborgerskap() != null) {
+        if (xmlPerson.getStatsborgerskap() != null) {
             Statsborgerskap statsborgerskap = xmlPerson.getStatsborgerskap();
             return statsborgerskap.getLand().getValue();
         } else {
@@ -154,4 +197,9 @@ public class PersonaliaTransform {
     private static boolean etternavnExists(XMLBruker xmlBruker) {
         return xmlBruker.getPersonnavn() != null && xmlBruker.getPersonnavn().getEtternavn() != null;
     }
+
+    private XMLHentKontaktinformasjonOgPreferanserRequest lagXMLRequestPreferanser(String ident) {
+        return new XMLHentKontaktinformasjonOgPreferanserRequest().withIdent(ident);
+    }
+
 }

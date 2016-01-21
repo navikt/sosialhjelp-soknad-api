@@ -18,6 +18,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.*;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import org.apache.commons.io.IOUtils;
@@ -72,7 +73,7 @@ public class SoknadServiceTest {
     @Mock
     private NavMessageSource navMessageSource;
     @Mock
-    private StartDatoService startDatoService;
+    private StartDatoUtil startDatoUtil;
     @Mock
     private FaktaService faktaService;
     @Mock
