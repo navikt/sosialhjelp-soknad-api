@@ -31,8 +31,8 @@ public class PersonService {
     private PersonPortType personSelftestEndpoint;
 
     @Cacheable(value = "barnCache", key = "#request.ident")
-    public HentKjerneinformasjonResponse hentKjerneinformasjon(HentKjerneinformasjonRequest request) {
-
+    public HentKjerneinformasjonResponse hentKjerneinformasjon(String fodselsnummer) {
+        HentKjerneinformasjonRequest request = lagXMLRequestKjerneinformasjon(fodselsnummer);
         try {
             return personEndpoint.hentKjerneinformasjon(request);
         } catch (HentKjerneinformasjonPersonIkkeFunnet e) {
@@ -49,7 +49,7 @@ public class PersonService {
 
     public List<Barn> hentBarn(String fodselsnummer) {
         try {
-            return mapFamilierelasjon(hentKjerneinformasjon(lagXMLRequestKjerneinformasjon(fodselsnummer)));
+            return mapFamilierelasjon(hentKjerneinformasjon(fodselsnummer));
         } catch (IkkeFunnetException e) {
             logger.warn("Ikke funnet person i TPS");
         } catch (WebServiceException e) {
@@ -62,9 +62,9 @@ public class PersonService {
         personSelftestEndpoint.ping();
     }
 
-    private HentKjerneinformasjonRequest lagXMLRequestKjerneinformasjon(String ident) {
+    private HentKjerneinformasjonRequest lagXMLRequestKjerneinformasjon(String fodselsnummer) {
         HentKjerneinformasjonRequest request = new HentKjerneinformasjonRequest();
-        request.setIdent(ident);
+        request.setIdent(fodselsnummer);
         return request;
     }
 
