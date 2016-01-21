@@ -10,6 +10,7 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -27,12 +28,14 @@ public class ArbeidsforholdTransformerTest {
     public static final String ORGNUMMER = "1234567";
     @Mock
     private OrganisasjonV4 organisasjon;
-    private ArbeidsforholdTransformer transformer;
+
+    @InjectMocks
+    private ArbeidsforholdTransformer arbeidsforholdTransformer;
+
     private DatatypeFactory datatypeFactory;
 
     @Before
     public void setup() throws Exception {
-        transformer = new ArbeidsforholdTransformer(organisasjon);
         datatypeFactory = DatatypeFactory.newInstance();
         when(organisasjon.hentOrganisasjon(any(HentOrganisasjonRequest.class))).thenReturn(createOrgResponse());
     }
@@ -50,18 +53,18 @@ public class ArbeidsforholdTransformerTest {
 
     @Test
     public void skalTransformereFastArbeidsforhold() {
-        Arbeidsforhold result = transformer.transform(lagArbeidsforhold("fast"));
-        assertThat(result.harFastStilling, equalTo(true));
-        assertThat(result.fastStillingsprosent, equalTo(100L));
-        assertThat(result.variabelStillingsprosent, equalTo(false));
-        assertThat(result.fom, equalTo("2015-01-01"));
-        assertThat(result.tom, equalTo(null));
-        assertThat(result.arbridsgiverNavn, equalTo("Testesen A/S, andre linje"));
+        Arbeidsforhold arbeidsforhold = arbeidsforholdTransformer.transform(lagArbeidsforhold("fast"));
+        assertThat(arbeidsforhold.harFastStilling, equalTo(true));
+        assertThat(arbeidsforhold.fastStillingsprosent, equalTo(100L));
+        assertThat(arbeidsforhold.variabelStillingsprosent, equalTo(false));
+        assertThat(arbeidsforhold.fom, equalTo("2015-01-01"));
+        assertThat(arbeidsforhold.tom, equalTo(null));
+        assertThat(arbeidsforhold.arbridsgiverNavn, equalTo("Testesen A/S, andre linje"));
     }
 
     @Test
     public void skalTransformereVariabeltArbeidsforhold() {
-        Arbeidsforhold result = transformer.transform(lagArbeidsforhold("time"));
+        Arbeidsforhold result = arbeidsforholdTransformer.transform(lagArbeidsforhold("time"));
         assertThat(result.harFastStilling, equalTo(false));
         assertThat(result.fastStillingsprosent, equalTo(0L));
         assertThat(result.variabelStillingsprosent, equalTo(true));
@@ -69,7 +72,7 @@ public class ArbeidsforholdTransformerTest {
 
     @Test
     public void skalTransformereMixedArbeidsforhold() {
-        Arbeidsforhold result = transformer.transform(lagArbeidsforhold("time", "fast"));
+        Arbeidsforhold result = arbeidsforholdTransformer.transform(lagArbeidsforhold("time", "fast"));
         assertThat(result.harFastStilling, equalTo(true));
         assertThat(result.fastStillingsprosent, equalTo(100L));
         assertThat(result.variabelStillingsprosent, equalTo(true));

@@ -14,20 +14,24 @@ import org.apache.commons.collections15.Transformer;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 
+@Service
 public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold, Arbeidsforhold>,
         Function<no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold, Arbeidsforhold> {
 
+    @Inject
+    @Named("organisasjonEndpoint")
+    private OrganisasjonV4 organisasjonWebService;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ArbeidsforholdTransformer.class);
     public static final String KODEVERK_AVLONNING_FAST = "fast";
-    private final OrganisasjonV4 organisasjonV4;
 
-    public ArbeidsforholdTransformer(OrganisasjonV4 organisasjonV4) {
-        this.organisasjonV4 = organisasjonV4;
-    }
 
     @Override
     public Arbeidsforhold transform(no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold arbeidsforhold) {
@@ -80,7 +84,7 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
             HentOrganisasjonRequest hentOrganisasjonRequest = lagOrgRequest(orgnr);
             try {
                 //Kan bare være ustrukturert navn.
-                return Joiner.on(", ").join(((UstrukturertNavn) organisasjonV4.hentOrganisasjon(hentOrganisasjonRequest).getOrganisasjon().getNavn()).getNavnelinje());
+                return Joiner.on(", ").join(((UstrukturertNavn) organisasjonWebService.hentOrganisasjon(hentOrganisasjonRequest).getOrganisasjon().getNavn()).getNavnelinje());
             } catch (Exception ex) {
                 LOGGER.warn("Kunne ikke hente orgnr: " + orgnr, ex);
                 return "";

@@ -1,31 +1,17 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.arbeid;
 
-import com.google.common.collect.Lists;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdTransformer;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.FinnArbeidsforholdPrArbeidstakerSikkerhetsbegrensning;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.FinnArbeidsforholdPrArbeidstakerUgyldigInput;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.NorskIdent;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Periode;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Regelverker;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerRequest;
-import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.OrganisasjonV4;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdBatman;
 import org.apache.commons.collections15.Transformer;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.inject.Named;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -37,46 +23,16 @@ import static no.nav.modig.lang.collections.IterUtils.on;
 public class ArbeidsforholdBolk implements BolkService {
 
     @Inject
-    @Named("arbeidEndpoint")
-    private ArbeidsforholdV3 arbeidsforholdWebWervice;
-    @Inject
-    @Named("organisasjonEndpoint")
-    private OrganisasjonV4 organisasjonWebService;
-    @Inject
     private FaktaService faktaService;
-    private ArbeidsforholdTransformer transformer;
-    private DatatypeFactory datatypeFactory = lagDatatypeFactory();
-    private static final Regelverker AA_ORDNINGEN = new Regelverker();
+
+    @Inject ArbeidsforholdBatman arbeidsforholdBatman;
+
     private static final Logger LOG = LoggerFactory.getLogger(ArbeidsforholdBolk.class);
 
-    static {
-        AA_ORDNINGEN.setValue("A_ORDNINGEN");
-    }
-
-    private DatatypeFactory lagDatatypeFactory() {
-        try {
-            return DatatypeFactory.newInstance();
-        } catch (DatatypeConfigurationException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @PostConstruct
-    public void createTransformer() throws DatatypeConfigurationException {
-        transformer = new ArbeidsforholdTransformer(organisasjonWebService);
-    }
-
-    public List<Arbeidsforhold> hentArbeidsforhold(String fodselsnummer) {
-        try {
-            return Lists.transform(arbeidsforholdWebWervice.finnArbeidsforholdPrArbeidstaker(lagArbeidsforholdRequest(fodselsnummer)).getArbeidsforhold(), transformer);
-        } catch (FinnArbeidsforholdPrArbeidstakerSikkerhetsbegrensning | FinnArbeidsforholdPrArbeidstakerUgyldigInput e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-    }
 
     public List<Faktum> genererArbeidsforhold(String fodselsnummer, final Long soknadId) {
         List<Faktum> result =  new ArrayList<>();
-        result.addAll(on(hentArbeidsforhold(fodselsnummer)).map(arbeidsforholdTransformer(soknadId)).collect());
+        result.addAll(on(arbeidsforholdBatman.hentArbeidsforhold(fodselsnummer)).map(arbeidsforholdTransformer(soknadId)).collect());
         if (!result.isEmpty()) {
             Faktum yrkesaktiv = faktaService.hentFaktumMedKey(soknadId, "arbeidsforhold.yrkesaktiv");
             if (yrkesaktiv == null) {
@@ -117,26 +73,9 @@ public class ArbeidsforholdBolk implements BolkService {
         };
     }
 
-    private FinnArbeidsforholdPrArbeidstakerRequest lagArbeidsforholdRequest(String fodselsnummer) {
-        FinnArbeidsforholdPrArbeidstakerRequest request = new FinnArbeidsforholdPrArbeidstakerRequest();
-        request.setArbeidsforholdIPeriode(lagSporrePeriode());
-        request.setRapportertSomRegelverk(AA_ORDNINGEN);
-        request.setIdent(lagIdent(fodselsnummer));
-        return request;
-    }
 
-    private NorskIdent lagIdent(String fodselsnummer) {
-        NorskIdent ident = new NorskIdent();
-        ident.setIdent(fodselsnummer);
-        return ident;
-    }
 
-    private Periode lagSporrePeriode() {
-        Periode periode = new Periode();
-        periode.setFom(datatypeFactory.newXMLGregorianCalendar(new DateTime().minusMonths(10).toGregorianCalendar()));
-        periode.setTom(datatypeFactory.newXMLGregorianCalendar(new DateTime().toGregorianCalendar()));
-        return periode;
-    }
+
 
     private static String trueFalse(boolean test) {
         return test ? "true" : "false";
