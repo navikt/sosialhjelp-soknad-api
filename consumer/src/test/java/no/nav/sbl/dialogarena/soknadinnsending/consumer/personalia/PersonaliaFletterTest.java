@@ -38,7 +38,6 @@ public class PersonaliaFletterTest {
     private static final String BARN_FORNAVN = "Bjarne";
     private static final String BARN_ETTERNAVN = "Barnet";
 
-    private static final String FEIL_IDENT = "54321012345";
     private static final String ET_FORNAVN = "Ola";
     private static final String ET_MELLOMNAVN = "Johan";
     private static final String ET_ETTERNAVN = "Normann";

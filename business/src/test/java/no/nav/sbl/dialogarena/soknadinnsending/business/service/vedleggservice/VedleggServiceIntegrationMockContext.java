@@ -10,6 +10,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.*;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.*;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.*;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.*;
@@ -67,8 +68,8 @@ public class VedleggServiceIntegrationMockContext {
     }
 
     @Bean
-    public StartDatoService startDatoService() {
-        return mock(StartDatoService.class);
+    public StartDatoUtil startDatoService() {
+        return mock(StartDatoUtil.class);
     }
 
     @Bean
