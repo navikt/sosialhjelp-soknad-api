@@ -9,6 +9,7 @@ public enum OppsummeringsTyper {
     composite("skjema/generisk/composite"),
     periode("skjema/generisk/periode"),
     date("skjema/generisk/date"),
+    country("skjema/generisk/country"),
     tilleggsopplysninger("skjema/generisk/tilleggsopplysninger"),
     hidden("skjema/generisk/hidden"),
     inputgroup("skjema/generisk/inputgroup"),

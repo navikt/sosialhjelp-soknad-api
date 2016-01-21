@@ -11,7 +11,7 @@
     </faktum>
     <faktum>
         <id>arbeidsforhold.grensearbeider.false.adresse.land</id>
-        <type>textbox</type>
+        <type>country</type>
         <dependOn>arbeidsforhold.grensearbeider.false.adresse</dependOn>
     </faktum>
     <faktum>

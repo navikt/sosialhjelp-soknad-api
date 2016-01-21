@@ -81,7 +81,11 @@ public class SoknadService {
     }
 
     public Faktum hentSprak(long soknadId) {
-        return lokalDb.hentFaktumMedKey(soknadId, "skjema.sprak");
+        try {
+            return lokalDb.hentFaktumMedKey(soknadId, "skjema.sprak");
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
 
     public Long hentOpprinneligInnsendtDato(String behandlingsId) {
