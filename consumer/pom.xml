@@ -196,6 +196,10 @@
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-library</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
