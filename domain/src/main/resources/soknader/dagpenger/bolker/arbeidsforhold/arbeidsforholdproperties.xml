@@ -71,7 +71,7 @@
         </constraints>
     </property>
     <property>
-        <id>bostyrernavn</id>
+        <id>bostyrersnavn</id>
         <type>textbox</type>
         <constraints>
             <constraint>properties['type'] == 'arbeidsgivererkonkurs'</constraint>
