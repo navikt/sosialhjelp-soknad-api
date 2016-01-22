@@ -22,11 +22,11 @@ public class CmsTekst {
             try {
                 return navMessageSource.getMessage(key, parameters, locale);
             } catch (NoSuchMessageException e2) {
-                return String.format("KEY MANGLER: [%s]", key);
+                return "";
             }
         }
     }
     public boolean finnesTekst(String key, String soknadTypePrefix, Locale locale){
-        return !getCmsTekst(key, new Object[0], soknadTypePrefix, locale).startsWith("KEY MANGLER");
+        return !getCmsTekst(key, new Object[0], soknadTypePrefix, locale).isEmpty();
     }
 }
