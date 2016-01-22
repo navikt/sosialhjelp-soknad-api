@@ -21,8 +21,7 @@ import static java.lang.System.*;
         PersonInfoService.class,
         ArbeidssokerInfoService.class,
         ConsumerConfig.WsServices.class,
-        PersonaliaFletter.class,
-        ArbeidsforholdService.class
+        PersonaliaFletter.class
 })
 
 public class ConsumerConfig {

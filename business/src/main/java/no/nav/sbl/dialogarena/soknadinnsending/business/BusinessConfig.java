@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.aktivitetbetalingsplan.AktivitetBetalingsplanBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.AktivitetService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.MaalgrupperService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.ServiceConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
@@ -28,7 +29,8 @@ import org.springframework.context.annotation.Import;
         ServiceConfig.class,
         ServicesApplicationConfig.class,
         KravdialogInformasjonHolder.class,
-        WebSoknadConfig.class
+        WebSoknadConfig.class,
+        ArbeidsforholdService.class
 })
 public class BusinessConfig {
 
