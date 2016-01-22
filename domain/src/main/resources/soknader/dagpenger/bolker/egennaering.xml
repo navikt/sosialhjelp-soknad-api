@@ -6,15 +6,6 @@
         <panel>EgenNaering</panel>
     </faktum>
     <faktum>
-        <id>egennaering.driveregennaering.arbeidsmengde</id>
-        <type>textbox</type>
-        <panel>EgenNaering</panel>
-        <dependOn>egennaering.driveregennaering</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
-    </faktum>
-    <faktum>
         <id>egennaering.driveregennaering.orgnummer</id>
         <type>textbox</type>
         <panel>EgenNaering</panel>
@@ -23,6 +14,15 @@
             <value>false</value>
         </dependOnValues>
         <flereTillatt>true</flereTillatt>
+    </faktum>
+    <faktum>
+        <id>egennaering.driveregennaering.arbeidsmengde</id>
+        <type>textbox</type>
+        <panel>EgenNaering</panel>
+        <dependOn>egennaering.driveregennaering</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
 
 
@@ -114,18 +114,36 @@
         <type>textbox</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.gardsbruk.false.eierandel</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>egennaering.gardsbruk.false.eier.jeg</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.eierandel.ektefelle</id>
         <type>textbox</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.gardsbruk.false.eierandel</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>egennaering.gardsbruk.false.eier.ektefelle</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.eierandel.annet</id>
         <type>textbox</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.gardsbruk.false.eierandel</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>egennaering.gardsbruk.false.eier.annet</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.arbeidstimer</id>

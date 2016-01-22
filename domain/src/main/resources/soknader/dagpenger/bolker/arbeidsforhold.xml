@@ -1,16 +1,6 @@
 <?xml version="1.0" ?>
 <soknad xmlns="urn:no.nav.sbl" xmlns:xi="http://www.w3.org/2001/XInclude">
 
-    <faktum>
-        <id>arbeidsforhold</id>
-        <panel>Arbeidsforhold</panel>
-        <flereTillatt>true</flereTillatt>
-        <type>composite</type>
-        <xi:include href="arbeidsforhold/arbeidsforholdproperties.xml" />
-    </faktum>
-    <xi:include href="arbeidsforhold/permitteringsperiode.xml" />
-    <xi:include href="arbeidsforhold/vedlegg.xml" />
-
 
     <faktum>
         <id>arbeidsforhold.datodagpenger</id>
@@ -22,10 +12,20 @@
         <type>java.lang.String</type>
         <panel>Arbeidsforhold</panel>
     </faktum>
+
+
+
     <faktum>
-        <id>harIkkeJobbet</id>
+        <id>arbeidsforhold</id>
         <panel>Arbeidsforhold</panel>
+        <flereTillatt>true</flereTillatt>
+        <type>composite</type>
+        <xi:include href="arbeidsforhold/arbeidsforholdproperties.xml" />
     </faktum>
+    <xi:include href="arbeidsforhold/permitteringsperiode.xml" />
+    <xi:include href="arbeidsforhold/vedlegg.xml" />
+
+
 
     <faktum>
         <id>arbeidsforhold.grensearbeider</id>
