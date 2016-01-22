@@ -6,7 +6,7 @@
     </property>
     <property>
         <id>land</id>
-        <type>textbox</type>
+        <type>country</type>
     </property>
     <property>
         <id>type</id>

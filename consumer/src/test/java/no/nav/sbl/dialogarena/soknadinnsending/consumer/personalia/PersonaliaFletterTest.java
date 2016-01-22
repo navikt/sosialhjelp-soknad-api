@@ -1,56 +1,43 @@
-package no.nav.sbl.dialogarena.soknadinnsending.business.person;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia;
 
-import no.nav.modig.core.exception.ApplicationException;
-import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Adressetype;
-import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
+import no.nav.modig.core.exception.*;
+import no.nav.sbl.dialogarena.kodeverk.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.*;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.*;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.*;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.*;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserRequest;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
-import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonPersonIkkeFunnet;
-import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonSikkerhetsbegrensning;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.*;
+import no.nav.tjeneste.virksomhet.person.v1.*;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.*;
-import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.joda.time.*;
+import org.joda.time.format.*;
+import org.junit.*;
+import org.junit.runner.*;
+import org.mockito.*;
+import org.mockito.runners.*;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.ws.WebServiceException;
-import java.math.BigInteger;
-import java.util.List;
+import javax.xml.datatype.*;
+import javax.xml.ws.*;
+import java.math.*;
+import java.util.*;
 
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(value = MockitoJUnitRunner.class)
-public class PersonaliaBolkTest {
-
+public class PersonaliaFletterTest {
 
     private static final String RIKTIG_IDENT = "56128349974";
     private static final String BARN_IDENT = "01010091736";
     private static final String BARN_FORNAVN = "Bjarne";
     private static final String BARN_ETTERNAVN = "Barnet";
 
-    private static final String FEIL_IDENT = "54321012345";
     private static final String ET_FORNAVN = "Ola";
     private static final String ET_MELLOMNAVN = "Johan";
     private static final String ET_ETTERNAVN = "Normann";
@@ -84,15 +71,11 @@ public class PersonaliaBolkTest {
     private static final String NORGE = "Norge";
     private static final String NORGE_KODE = "NOR";
 
-    @InjectMocks
-    private PersonaliaBolk personaliaBolk;
-
     @Mock
     private PersonService personMock;
 
-    @Mock
-    @SuppressWarnings("PMD")
-    private FaktaService faktaService;
+    @InjectMocks
+    private PersonaliaFletter personaliaFletter;
 
     @Mock
     private BrukerprofilPortType brukerProfilMock;
@@ -127,7 +110,7 @@ public class PersonaliaBolkTest {
 
         familieRelasjoner.add(familierelasjon);
         response.setPerson(person);
-        when(personMock.hentKjerneinformasjon(org.mockito.Matchers.any(HentKjerneinformasjonRequest.class))).thenReturn(response);
+        when(personMock.hentKjerneinformasjon(any(String.class))).thenReturn(response);
 
         XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse = new XMLHentKontaktinformasjonOgPreferanserResponse();
         xmlBruker = new XMLBruker().withElektroniskKommunikasjonskanal(lagElektroniskKommunikasjonskanal());
@@ -135,24 +118,7 @@ public class PersonaliaBolkTest {
         xmlNorskIdent.setIdent(RIKTIG_IDENT);
         xmlBruker.setIdent(xmlNorskIdent);
         preferanserResponse.setPerson(xmlBruker);
-        when(brukerProfilMock.hentKontaktinformasjonOgPreferanser(org.mockito.Matchers.any(XMLHentKontaktinformasjonOgPreferanserRequest.class))).thenReturn(preferanserResponse);
-    }
-
-
-    @SuppressWarnings("unchecked")
-    @Test
-    public void returnerPersonaliaUtenDataHvisPersonenSomReturneresHarFeilIdent() throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning {
-        HentKjerneinformasjonRequest request = new HentKjerneinformasjonRequest();
-        request.setIdent(FEIL_IDENT);
-        when(personMock.hentKjerneinformasjon(request)).thenThrow(HentKjerneinformasjonPersonIkkeFunnet.class);
-        Personalia personalia = null;
-        try {
-            personalia = personaliaBolk.hentPersonalia(FEIL_IDENT);
-        } catch (Exception e) {
-
-        }
-
-        assertThat(personalia, is(not(nullValue())));
+        when(brukerProfilMock.hentKontaktinformasjonOgPreferanser(any(XMLHentKontaktinformasjonOgPreferanserRequest.class))).thenReturn(preferanserResponse);
     }
 
     @SuppressWarnings("unchecked")
@@ -160,7 +126,7 @@ public class PersonaliaBolkTest {
     public void returnererPersonaliaObjektDersomPersonenSomReturneresHarRiktigIdent() throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
         mockGyldigPerson();
 
-        Personalia personalia = personaliaBolk.hentPersonalia(RIKTIG_IDENT);
+        Personalia personalia = personaliaFletter.mapTilPersonalia(RIKTIG_IDENT);
 
         assertThat(personalia, is(not(nullValue())));
         assertThat(personalia.getFnr(), is(RIKTIG_IDENT));
@@ -175,7 +141,7 @@ public class PersonaliaBolkTest {
         xmlNorskIdent.setIdent(RIKTIG_IDENT);
         xmlBruker.setIdent(xmlNorskIdent);
         preferanserResponse.setPerson(xmlBruker);
-        when(brukerProfilMock.hentKontaktinformasjonOgPreferanser(org.mockito.Matchers.any(XMLHentKontaktinformasjonOgPreferanserRequest.class))).thenReturn(preferanserResponse);
+        when(brukerProfilMock.hentKontaktinformasjonOgPreferanser(any(XMLHentKontaktinformasjonOgPreferanserRequest.class))).thenReturn(preferanserResponse);
 
         mockGyldigPerson();
 
@@ -194,7 +160,7 @@ public class PersonaliaBolkTest {
         List<Familierelasjon> familierelasjoner = person.getHarFraRolleI();
         familierelasjoner.clear();
 
-        Personalia personalia = personaliaBolk.hentPersonalia(RIKTIG_IDENT);
+        Personalia personalia = personaliaFletter.mapTilPersonalia(RIKTIG_IDENT);
 
         assertThat(personalia, is(not(nullValue())));
         assertThat(personalia.getFnr(), is(RIKTIG_IDENT));
@@ -209,7 +175,7 @@ public class PersonaliaBolkTest {
     public void skalStottePersonerUtenMellomnavn() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
         mockGyldigPersonUtenMellomnavn();
 
-        Personalia personalia = personaliaBolk.hentPersonalia(RIKTIG_IDENT);
+        Personalia personalia = personaliaFletter.mapTilPersonalia(RIKTIG_IDENT);
 
         assertThat(personalia, is(not(nullValue())));
         assertThat(personalia.getNavn(), is(ET_FORNAVN + " " + ET_ETTERNAVN));
@@ -219,7 +185,7 @@ public class PersonaliaBolkTest {
     public void skalStottePersonerUtenNavn() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
         mockGyldigPersonUtenNavn();
 
-        Personalia personalia = personaliaBolk.hentPersonalia(RIKTIG_IDENT);
+        Personalia personalia = personaliaFletter.mapTilPersonalia(RIKTIG_IDENT);
 
         assertThat(personalia, is(not(nullValue())));
         assertThat(personalia.getNavn(), is(""));
@@ -233,7 +199,7 @@ public class PersonaliaBolkTest {
 
         mockGyldigPersonMedAdresse();
 
-        Personalia personalia = personaliaBolk.hentPersonalia(RIKTIG_IDENT);
+        Personalia personalia = personaliaFletter.mapTilPersonalia(RIKTIG_IDENT);
         assertThat(personalia, is(not(nullValue())));
 
         Adresse gjeldendeAdresse = personalia.getGjeldendeAdresse();
@@ -259,7 +225,7 @@ public class PersonaliaBolkTest {
         mockGyldigPersonMedAdresse();
         xmlBruker.setDiskresjonskode(new XMLDiskresjonskoder().withValue("6"));
 
-        Personalia personalia = personaliaBolk.hentPersonalia(RIKTIG_IDENT);
+        Personalia personalia = personaliaFletter.mapTilPersonalia(RIKTIG_IDENT);
         assertThat(personalia, is(not(nullValue())));
 
         Adresse gjeldendeAdresse = personalia.getGjeldendeAdresse();
@@ -274,7 +240,7 @@ public class PersonaliaBolkTest {
     public void skalStotteMidlertidigOmrodeAdresseNorge() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
         String forventetsekundarAdresse = ET_EIEDOMSNAVN + ", " + EN_ADRESSE_POSTNUMMER + " " + EN_ADRESSE_POSTSTED;
         mockGyldigPersonMedMidlertidigOmrodeAdresse();
-        Personalia personalia = personaliaBolk.hentPersonalia(RIKTIG_IDENT);
+        Personalia personalia = personaliaFletter.mapTilPersonalia(RIKTIG_IDENT);
 
         Adresse gjeldendeAdresse = personalia.getGjeldendeAdresse();
 
@@ -288,7 +254,7 @@ public class PersonaliaBolkTest {
         String forventetgjeldendeAdresse = "C/O " + EN_POSTBOKS_ADRESSEEIER + ", Postboks " + EN_POSTBOKS_NUMMER  + " " + ET_POSTBOKS_NAVN + ", " + EN_ANNEN_ADRESSE_POSTNUMMER + " " + EN_ADRESSE_POSTSTED;
 
         mockGyldigPersonMedMidlertidigPostboksAdresse();
-        Personalia personalia = personaliaBolk.hentPersonalia(RIKTIG_IDENT);
+        Personalia personalia = personaliaFletter.mapTilPersonalia(RIKTIG_IDENT);
 
         Adresse gjeldendeAdresse = personalia.getGjeldendeAdresse();
 
@@ -303,7 +269,7 @@ public class PersonaliaBolkTest {
 
         mockGyldigPersonMedUtenlandskFolkeregistrertAdresse();
 
-        Personalia personalia = personaliaBolk.hentPersonalia(RIKTIG_IDENT);
+        Personalia personalia = personaliaFletter.mapTilPersonalia(RIKTIG_IDENT);
 
         Adresse gjeldendeAdresse = personalia.getGjeldendeAdresse();
 
@@ -321,7 +287,7 @@ public class PersonaliaBolkTest {
         String forventetAdresse = EN_ADRESSELINJE + ", " + ET_LAND;
 
         mockGyldigPersonMedMidlertidigUtenlandskAdresse(1);
-        Personalia personalia = personaliaBolk.hentPersonalia(RIKTIG_IDENT);
+        Personalia personalia = personaliaFletter.mapTilPersonalia(RIKTIG_IDENT);
         Adresse sekundarAdresse = personalia.getGjeldendeAdresse();
 
         Assert.assertNotNull(sekundarAdresse.getAdresse());
@@ -334,7 +300,7 @@ public class PersonaliaBolkTest {
         String forventetAdresse = EN_ADRESSELINJE + ", " + EN_ANNEN_ADRESSELINJE + ", " + ET_LAND;
 
         mockGyldigPersonMedMidlertidigUtenlandskAdresse(2);
-        Personalia personalia = personaliaBolk.hentPersonalia(RIKTIG_IDENT);
+        Personalia personalia = personaliaFletter.mapTilPersonalia(RIKTIG_IDENT);
         Adresse sekundarAdresse = personalia.getGjeldendeAdresse();
 
         Assert.assertNotNull(sekundarAdresse.getAdresse());
@@ -347,7 +313,7 @@ public class PersonaliaBolkTest {
         String forventetAdresse = EN_ADRESSELINJE + ", " + EN_ANNEN_ADRESSELINJE + ", " + EN_TREDJE_ADRESSELINJE + ", " + ET_LAND;
 
         mockGyldigPersonMedMidlertidigUtenlandskAdresse(3);
-        Personalia personalia = personaliaBolk.hentPersonalia(RIKTIG_IDENT);
+        Personalia personalia = personaliaFletter.mapTilPersonalia(RIKTIG_IDENT);
         Adresse sekundarAdresse = personalia.getGjeldendeAdresse();
 
         Assert.assertNotNull(sekundarAdresse.getAdresse());
@@ -356,32 +322,31 @@ public class PersonaliaBolkTest {
 
     @Test(expected = ApplicationException.class)
     public void kasterExceptionVedTpsFeil() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
-        when(brukerProfilMock.hentKontaktinformasjonOgPreferanser(org.mockito.Matchers.any(XMLHentKontaktinformasjonOgPreferanserRequest.class))).thenThrow(new WebServiceException());
+        when(brukerProfilMock.hentKontaktinformasjonOgPreferanser(any(XMLHentKontaktinformasjonOgPreferanserRequest.class))).thenThrow(new WebServiceException());
 
-        personaliaBolk.hentPersonalia(RIKTIG_IDENT);
+        personaliaFletter.mapTilPersonalia(RIKTIG_IDENT);
     }
 
     @Test(expected = ApplicationException.class)
     public void kasterExceptionVedManglendePerson() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
-        when(brukerProfilMock.hentKontaktinformasjonOgPreferanser(org.mockito.Matchers.any(XMLHentKontaktinformasjonOgPreferanserRequest.class))).thenThrow(new HentKontaktinformasjonOgPreferanserPersonIkkeFunnet());
+        when(brukerProfilMock.hentKontaktinformasjonOgPreferanser(any(XMLHentKontaktinformasjonOgPreferanserRequest.class))).thenThrow(new HentKontaktinformasjonOgPreferanserPersonIkkeFunnet());
 
-        personaliaBolk.hentPersonalia(RIKTIG_IDENT);
+        personaliaFletter.mapTilPersonalia(RIKTIG_IDENT);
     }
 
     @Test(expected = ApplicationException.class)
     public void kasterExceptionVedSikkerhetsbegrensing() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
-        when(brukerProfilMock.hentKontaktinformasjonOgPreferanser(org.mockito.Matchers.any(XMLHentKontaktinformasjonOgPreferanserRequest.class))).thenThrow(new HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning());
+        when(brukerProfilMock.hentKontaktinformasjonOgPreferanser(any(XMLHentKontaktinformasjonOgPreferanserRequest.class))).thenThrow(new HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning());
 
-        personaliaBolk.hentPersonalia(RIKTIG_IDENT);
+        personaliaFletter.mapTilPersonalia(RIKTIG_IDENT);
     }
 
     @Test(expected = ApplicationException.class)
     public void kasterExceptionVedWebserviceFeilIPersonTjeneste() throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
-        when(personMock.hentKjerneinformasjon(org.mockito.Matchers.any(HentKjerneinformasjonRequest.class))).thenThrow(new WebServiceException());
+        when(personMock.hentKjerneinformasjon(any(String.class))).thenThrow(new WebServiceException());
 
-        personaliaBolk.hentPersonalia(RIKTIG_IDENT);
+        personaliaFletter.mapTilPersonalia(RIKTIG_IDENT);
     }
-
 
     private void mockGyldigPersonMedMidlertidigUtenlandskAdresse(int adresselinjer) {
         XMLMidlertidigPostadresseUtland xmlMidlertidigPostadresseUtland = new XMLMidlertidigPostadresseUtland();
