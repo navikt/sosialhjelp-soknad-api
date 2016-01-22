@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig;
 
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.arbeid.ArbeidsforholdMock;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder;
 import no.nav.sbl.dialogarena.types.Pingable;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
@@ -31,11 +30,6 @@ public class ArbeidWSConfig {
                 .build()
                 .withHttpsMock()
                 .withMDC();
-    }
-
-    @Bean
-    public ArbeidsforholdService arbeidsforholdService(){
-        return new ArbeidsforholdService();
     }
 
     @Bean
