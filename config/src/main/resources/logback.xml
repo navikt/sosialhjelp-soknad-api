@@ -82,6 +82,10 @@
         <appender-ref ref="infolog" />
     </logger>
 
+    <logger name="org.apache.cxf" level="OFF">
+        <appender-ref ref="infolog" />
+    </logger>
+
     <root level="${ROOT_LOG_LEVEL:-INFO}">
         <appender-ref ref="exceptionlog"/>
         <appender-ref ref="infolog"/>
