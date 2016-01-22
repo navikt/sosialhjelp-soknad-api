@@ -10,7 +10,7 @@ import org.apache.commons.collections15.Transformer;
 import java.util.ArrayList;
 import java.util.List;
 
-import static no.nav.modig.lang.collections.IterUtils.on;
+import static no.nav.modig.lang.collections.IterUtils.*;
 
 
 public class OppsummeringsContext {
@@ -74,7 +74,7 @@ public class OppsummeringsContext {
         return bolk;
     }
 
-    private class OppsummeringsBolk {
+    public class OppsummeringsBolk {
         public String navn;
         public List<OppsummeringsFaktum> fakta = new ArrayList<>();
 
