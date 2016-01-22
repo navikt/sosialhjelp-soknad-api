@@ -22,11 +22,8 @@ public class CmsTekst {
             try {
                 return navMessageSource.getMessage(key, parameters, locale);
             } catch (NoSuchMessageException e2) {
-                return "";
+                return null;
             }
         }
-    }
-    public boolean finnesTekst(String key, String soknadTypePrefix, Locale locale){
-        return !getCmsTekst(key, new Object[0], soknadTypePrefix, locale).isEmpty();
     }
 }
