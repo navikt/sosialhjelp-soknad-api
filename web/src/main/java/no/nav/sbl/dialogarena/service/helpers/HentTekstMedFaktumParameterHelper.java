@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import java.io.IOException;
 
-import static no.nav.sbl.dialogarena.service.HandlebarsUtils.finnWebSoknad;
-import static org.apache.commons.lang3.LocaleUtils.toLocale;
+import static no.nav.sbl.dialogarena.service.HandlebarsUtils.*;
+import static org.apache.commons.lang3.LocaleUtils.*;
 
 @Component
 public class HentTekstMedFaktumParameterHelper extends RegistryAwareHelper<String> {
@@ -36,6 +36,7 @@ public class HentTekstMedFaktumParameterHelper extends RegistryAwareHelper<Strin
         Faktum sprakFaktum = soknad.getFaktumMedKey("skjema.sprak");
         String sprak = sprakFaktum == null ? "nb_NO" : sprakFaktum.getValue();
 
-        return cmsTekst.getCmsTekst(key, new Object[]{faktum.getValue()}, prefix, toLocale(sprak));
+        String tekst = this.cmsTekst.getCmsTekst(key, new Object[]{faktum.getValue()}, prefix, toLocale(sprak));
+        return tekst != null ? tekst : "";
     }
 }

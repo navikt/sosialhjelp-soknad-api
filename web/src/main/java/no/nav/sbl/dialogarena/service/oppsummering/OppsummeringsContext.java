@@ -1,12 +1,16 @@
 package no.nav.sbl.dialogarena.service.oppsummering;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.*;
-import org.apache.commons.collections15.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
+import org.apache.commons.collections15.Transformer;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import static no.nav.modig.lang.collections.IterUtils.*;
+import static no.nav.modig.lang.collections.IterUtils.on;
 
 
 public class OppsummeringsContext {
@@ -43,7 +47,7 @@ public class OppsummeringsContext {
                         return new OppsummeringsFaktum.OppsummeringsVedlegg(faktum, soknad.finnVedleggSomMatcherForventning(vedleggForFaktumStruktur, faktum.getFaktumId()), vedleggForFaktumStruktur);
                     }
                 }).collect();
-                return new OppsummeringsFaktum(soknad, faktumStruktur, faktum, finnBarnOppsummering(faktumStruktur, null, soknadStruktur, soknad), vedlegg);
+                return new OppsummeringsFaktum(soknad, faktumStruktur, faktum, finnBarnOppsummering(faktumStruktur, faktum, soknadStruktur, soknad), vedlegg);
             }
         }).collect();
 

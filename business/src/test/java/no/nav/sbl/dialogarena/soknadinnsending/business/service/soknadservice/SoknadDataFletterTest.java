@@ -21,7 +21,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.StartDatoService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
@@ -95,7 +95,7 @@ public class SoknadDataFletterTest {
     @Mock
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
     @Mock
-    private StartDatoService startDatoService;
+    private StartDatoUtil startDatoUtil;
     @Mock
     private VedleggRepository vedleggRepository;
     @Mock
@@ -143,7 +143,7 @@ public class SoknadDataFletterTest {
         when(henvendelsesConnector.startSoknad(anyString(), anyString(), anyString())).thenReturn("123");
         when(lokalDb.hentFaktumMedKey(anyLong(), anyString())).thenReturn(new Faktum().medFaktumId(1L));
         when(lokalDb.hentFaktum(anyLong())).thenReturn(new Faktum().medFaktumId(1L));
-        when(startDatoService.erJanuarEllerFebruar()).thenReturn(true);
+        when(startDatoUtil.erJanuarEllerFebruar()).thenReturn(true);
         when(lokalDb.opprettSoknad(any(WebSoknad.class))).thenReturn(soknadId);
         when(lokalDb.hentSoknadMedData(soknadId)).thenReturn(new WebSoknad().medId(soknadId));
         soknadServiceUtil.startSoknad(DAGPENGER);
@@ -193,7 +193,7 @@ public class SoknadDataFletterTest {
         when(henvendelsesConnector.startSoknad(anyString(), anyString(), anyString())).thenReturn("123");
         when(lokalDb.hentFaktumMedKey(anyLong(), anyString())).thenReturn(new Faktum().medFaktumId(1L));
         when(lokalDb.hentFaktum(anyLong())).thenReturn(new Faktum().medFaktumId(1L));
-        when(startDatoService.erJanuarEllerFebruar()).thenReturn(false);
+        when(startDatoUtil.erJanuarEllerFebruar()).thenReturn(false);
         when(lokalDb.opprettSoknad(any(WebSoknad.class))).thenReturn(soknadId);
         when(lokalDb.hentSoknadMedData(soknadId)).thenReturn(new WebSoknad().medId(soknadId));
         soknadServiceUtil.startSoknad(DAGPENGER);

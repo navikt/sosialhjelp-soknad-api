@@ -30,7 +30,7 @@ public class PersonService {
     @Named("personSelftestEndpoint")
     private PersonPortType personSelftestEndpoint;
 
-    @Cacheable(value = "barnCache", key = "#request.ident")
+    @Cacheable(value = "barnCache", key = "#fodselsnummer")
     public HentKjerneinformasjonResponse hentKjerneinformasjon(String fodselsnummer) {
         HentKjerneinformasjonRequest request = lagXMLRequestKjerneinformasjon(fodselsnummer);
         try {
