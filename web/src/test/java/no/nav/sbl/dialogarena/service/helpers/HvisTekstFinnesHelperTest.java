@@ -13,10 +13,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.io.IOException;
 import java.util.Locale;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HvisTekstFinnesHelperTest {
@@ -37,14 +37,14 @@ public class HvisTekstFinnesHelperTest {
 
     @Test
     public void trueOmTekstFinnes() throws IOException {
-        when(cmsTekst.finnesTekst(anyString(), anyString(), any(Locale.class))).thenReturn(true);
+        when(cmsTekst.getCmsTekst(anyString(), any(Object[].class), anyString(), any(Locale.class))).thenReturn("hei hei");
         WebSoknad webSoknad = new WebSoknad().medSoknadPrefix("mittprefix");
         String compiled = handlebars.compileInline("{{#hvisTekstFinnes \"test\"}}true{{else}}false{{/hvisTekstFinnes}}").apply(webSoknad);
         assertThat(compiled).isEqualTo("true");
     }
     @Test
     public void falseOmTekstIkkeFinnes() throws IOException {
-        when(cmsTekst.finnesTekst(anyString(), anyString(), any(Locale.class))).thenReturn(false);
+        when(cmsTekst.getCmsTekst(anyString(), any(Object[].class), anyString(), any(Locale.class))).thenReturn(null);
         WebSoknad webSoknad = new WebSoknad().medSoknadPrefix("mittprefix");
         String compiled = handlebars.compileInline("{{#hvisTekstFinnes \"test\"}}true{{else}}false{{/hvisTekstFinnes}}").apply(webSoknad);
         assertThat(compiled).isEqualTo("false");
