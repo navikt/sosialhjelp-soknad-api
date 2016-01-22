@@ -14,7 +14,9 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.service.oppsummering.OppsummeringsContext;
+import no.nav.sbl.dialogarena.service.oppsummering.OppsummeringsFaktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
+import org.apache.commons.collections15.Predicate;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -24,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import static no.bekk.bekkopen.person.FodselsnummerValidator.*;
+import static no.nav.modig.lang.collections.IterUtils.*;
 import static org.apache.commons.lang3.ArrayUtils.reverse;
 import static org.apache.commons.lang3.StringUtils.*;
 
@@ -77,6 +80,28 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
             @Override
             public CharSequence apply(String counter, Options options) throws IOException {
                 return "" + (Integer.parseInt(counter) + 1);
+            }
+        });
+        handlebars.registerHelper("harIkkeBarneFakta", new Helper<Object>() {
+
+            Predicate<OppsummeringsFaktum> faktaErSynlig = new Predicate<OppsummeringsFaktum>() {
+                @Override
+                public boolean evaluate(OppsummeringsFaktum oppsummeringsFaktum) {
+                    return oppsummeringsFaktum.erSynlig();
+                }
+            };
+
+
+            @Override
+            public CharSequence apply(Object context, Options options) throws IOException {
+                if (!(options.context.model() instanceof OppsummeringsContext.OppsummeringsBolk)) {
+                    return options.inverse();
+                }
+
+                List<OppsummeringsFaktum> fakta = ((OppsummeringsContext.OppsummeringsBolk) options.context.model()).fakta;
+                boolean erTom = on(fakta).filter(faktaErSynlig).isEmpty();
+
+                return erTom ? options.fn() : options.inverse();
             }
         });
 
