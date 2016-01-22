@@ -74,7 +74,7 @@ public class OppsummeringsContext {
         return bolk;
     }
 
-    public class OppsummeringsBolk {
+    private class OppsummeringsBolk {
         public String navn;
         public List<OppsummeringsFaktum> fakta = new ArrayList<>();
 
