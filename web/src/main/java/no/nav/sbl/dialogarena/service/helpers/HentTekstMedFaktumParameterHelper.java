@@ -36,7 +36,7 @@ public class HentTekstMedFaktumParameterHelper extends RegistryAwareHelper<Strin
         Faktum sprakFaktum = soknad.getFaktumMedKey("skjema.sprak");
         String sprak = sprakFaktum == null ? "nb_NO" : sprakFaktum.getValue();
 
-        String cmsTekst = this.cmsTekst.getCmsTekst(key, new Object[]{faktum.getValue()}, prefix, toLocale(sprak));
-        return cmsTekst != null ? cmsTekst : "";
+        String tekst = this.cmsTekst.getCmsTekst(key, new Object[]{faktum.getValue()}, prefix, toLocale(sprak));
+        return tekst != null ? tekst : "";
     }
 }
