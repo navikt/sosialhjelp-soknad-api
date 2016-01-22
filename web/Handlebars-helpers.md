@@ -70,6 +70,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hvisMindre - Evaluerer en string til integer og sjekker om verdien er mindre enn andre inputparameter
 * hvisSant - Dersom variabelen er "true" vil innholdet vises
 * hvisTekstFinnes - Henter tekst fra cms, prøver med søknadens prefix + key, før den prøver med bare keyen. Kan sende inn parametere.
+* ikkeSynligeFakta - For bruk i generisk oppsummering, undersøker innsendt liste over fakta og ser om alle er skjult.
 * kortDato - Formatterer en datostreng på formatet yyyy-mm-dd til dd.mm.aaaa
 * lagKjorelisteUker - Bygger en nestet liste over uker for et betalingsvedtak, der ukene inneholder dager det er søkt for refusjon.
 * property - Returnerer verdien til gitt property på modellen i context, gitt at den er propertyaware
@@ -416,6 +417,16 @@ må ha et faktum i context, f. eks. via
 {{else}}
     false
 {{/hvisTekstFinnes}}
+```
+
+
+##### ikkeSynligeFakta
+
+```
+{{#ikkeSynligeFakta fakta}}
+    Ingen synlige fakta
+{{/ikkeSynligeFakta}}
+
 ```
 
 
