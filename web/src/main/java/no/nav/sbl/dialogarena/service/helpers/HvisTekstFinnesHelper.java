@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import java.io.IOException;
 
-import static org.apache.commons.lang3.LocaleUtils.toLocale;
+import static org.apache.commons.lang3.LocaleUtils.*;
 
 @Component
 public class HvisTekstFinnesHelper extends RegistryAwareHelper<String> {
@@ -35,7 +35,7 @@ public class HvisTekstFinnesHelper extends RegistryAwareHelper<String> {
         Faktum sprakFaktum = soknad.getFaktumMedKey("skjema.sprak");
         String sprak = sprakFaktum == null ? "nb_NO" : sprakFaktum.getValue();
 
-        if(cmsTekst.finnesTekst(key, soknadPrefix, toLocale(sprak))){
+        if(cmsTekst.getCmsTekst(key, new Object[0], soknadPrefix, toLocale(sprak)) != null){
             return options.fn();
         } else {
             return options.inverse();

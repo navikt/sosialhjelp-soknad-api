@@ -16,7 +16,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadReposito
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.StartDatoService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
@@ -86,7 +86,7 @@ public class SoknadDataFletter {
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
 
     @Inject
-    private StartDatoService startDatoService;
+    private StartDatoUtil startDatoUtil;
 
     @Inject
     private NavMessageSource messageSource;
@@ -182,7 +182,7 @@ public class SoknadDataFletter {
                 .medSoknadId(soknadId)
                 .medKey("lonnsOgTrekkOppgave")
                 .medType(SYSTEMREGISTRERT)
-                .medValue(startDatoService.erJanuarEllerFebruar().toString());
+                .medValue(startDatoUtil.erJanuarEllerFebruar().toString());
     }
 
     private Faktum bolkerFaktum(Long soknadId) {

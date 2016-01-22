@@ -47,10 +47,13 @@
     <faktum>
         <id>nyearbeidsforhold.reberegning</id>
         <type>java.lang.Boolean</type>
-        <dependOn>nyearbeidsforhold.arbeidsidensist</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
+        <panel>NyeArbeidsforhold</panel>
+        <constraints>
+            <constraint>
+                <faktum>nyearbeidsforhold.arbeidsidensist</faktum>
+                <expression>value == 'false'</expression>
+            </constraint>
+        </constraints>
     </faktum>
     <faktum>
         <id>nyearbeidsforhold.reberegning.startdato</id>

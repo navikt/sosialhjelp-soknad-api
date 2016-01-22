@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import java.io.IOException;
 
-import static org.apache.commons.lang3.LocaleUtils.toLocale;
+import static org.apache.commons.lang3.LocaleUtils.*;
 
 @Component
 public class HentTekstHelper extends RegistryAwareHelper<String> {
@@ -33,6 +33,8 @@ public class HentTekstHelper extends RegistryAwareHelper<String> {
         WebSoknad soknad = HandlebarsUtils.finnWebSoknad(options.context);
         Faktum sprakFaktum = soknad.getFaktumMedKey("skjema.sprak");
         String sprak = sprakFaktum == null ? "nb_NO" : sprakFaktum.getValue();
-        return cmsTekst.getCmsTekst(key, options.params, soknad.getSoknadPrefix(), toLocale(sprak));
+
+        String tekst = this.cmsTekst.getCmsTekst(key, options.params, soknad.getSoknadPrefix(), toLocale(sprak));
+        return tekst != null ? tekst : "";
     }
 }
