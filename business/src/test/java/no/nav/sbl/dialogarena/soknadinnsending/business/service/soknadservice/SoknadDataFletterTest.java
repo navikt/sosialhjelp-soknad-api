@@ -7,16 +7,19 @@ import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.ArbeidsforholdService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.ArbeidsforholdBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnBolk;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
@@ -100,7 +103,7 @@ public class SoknadDataFletterTest {
     @Mock
     private BarnBolk barnBolk;
     @Mock
-    private ArbeidsforholdService arbeidsforholdService;
+    private ArbeidsforholdBolk arbeidsforholdBolk;
     @Mock
     ApplicationContext applicationContex;
 
@@ -116,7 +119,7 @@ public class SoknadDataFletterTest {
         Map<String, BolkService> bolker = new HashMap<>();
         bolker.put(PersonaliaBolk.class.getName(), personaliaBolk);
         bolker.put(BarnBolk.class.getName(), barnBolk);
-        bolker.put(ArbeidsforholdService.class.getName(), arbeidsforholdService);
+        bolker.put(ArbeidsforholdBolk.class.getName(), arbeidsforholdBolk);
         when(applicationContex.getBeansOfType(BolkService.class)).thenReturn(bolker);
 
         soknadServiceUtil.initBolker();
@@ -388,7 +391,7 @@ public class SoknadDataFletterTest {
         soknadServiceUtil.hentSoknad("123", true, true);
         verify(personaliaBolk, times(1)).genererSystemFakta(anyString(), anyLong());
         verify(barnBolk, times(1)).genererSystemFakta(anyString(), anyLong());
-        verify(arbeidsforholdService, never()).genererSystemFakta(anyString(), anyLong());
+        verify(arbeidsforholdBolk, never()).genererSystemFakta(anyString(), anyLong());
     }
 
 }
