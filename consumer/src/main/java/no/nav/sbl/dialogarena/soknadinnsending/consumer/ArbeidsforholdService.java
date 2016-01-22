@@ -19,7 +19,7 @@ import javax.xml.datatype.DatatypeFactory;
 import java.util.List;
 
 @Service
-public class ArbeidsforholdBatman {
+public class ArbeidsforholdService {
 
 
     @Inject
