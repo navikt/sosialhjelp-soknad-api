@@ -4,7 +4,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdBatman;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService;
 import org.apache.commons.collections15.Transformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,26 +25,27 @@ public class ArbeidsforholdBolk implements BolkService {
     @Inject
     private FaktaService faktaService;
 
-    @Inject ArbeidsforholdBatman arbeidsforholdBatman;
+    @Inject
+    ArbeidsforholdService arbeidsforholdService;
 
     private static final Logger LOG = LoggerFactory.getLogger(ArbeidsforholdBolk.class);
 
 
     public List<Faktum> genererArbeidsforhold(String fodselsnummer, final Long soknadId) {
-        List<Faktum> result =  new ArrayList<>();
-        result.addAll(on(arbeidsforholdBatman.hentArbeidsforhold(fodselsnummer)).map(arbeidsforholdTransformer(soknadId)).collect());
-        if (!result.isEmpty()) {
+        List<Faktum> arbeidsforholdFakta =  new ArrayList<>();
+        arbeidsforholdFakta.addAll(on(arbeidsforholdService.hentArbeidsforhold(fodselsnummer)).map(arbeidsforholdTransformer(soknadId)).collect());
+        if (!arbeidsforholdFakta.isEmpty()) {
             Faktum yrkesaktiv = faktaService.hentFaktumMedKey(soknadId, "arbeidsforhold.yrkesaktiv");
             if (yrkesaktiv == null) {
-                result.add(new Faktum()
+                arbeidsforholdFakta.add(new Faktum()
                         .medSoknadId(soknadId)
                         .medKey("arbeidsforhold.yrkesaktiv")
                         .medValue("false"));
             } else if(maSetteYrkesaktiv(yrkesaktiv)){
-                result.add(yrkesaktiv.medValue("false"));
+                arbeidsforholdFakta.add(yrkesaktiv.medValue("false"));
             }
         }
-        return result;
+        return arbeidsforholdFakta;
     }
 
     private boolean maSetteYrkesaktiv(Faktum yrkesaktiv) {
