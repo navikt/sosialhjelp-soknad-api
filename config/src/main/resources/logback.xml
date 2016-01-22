@@ -6,7 +6,7 @@
 
     <appender name="exceptionlog" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <File>${APP_LOG_HOME}/${MAIN_APPLICATION}_error.log</File>
-        <encoder>
+        <encoder class="RemoveWsSecurityPattern">
             <pattern>${loggingPattern}</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
