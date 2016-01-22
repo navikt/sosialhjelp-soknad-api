@@ -35,14 +35,16 @@
     <div>
         {{#each bolker}}
             <h2>{{ hentTekst (concat (toLowerCase navn) ".tittel") }}</h2>
-            {{#variabel "niva" 2}}
-                <ul class="fakta-liste">
+            <ul class="fakta-liste">
+                {{#variabel "niva" "3"}}
                     {{#each fakta}}
                         {{> skjema/generisk/faktum }}
                     {{/each}}
-                </ul>
-            {{/variabel}}
+                {{/variabel}}
+            </ul>
         {{/each}}
+
+        {{> skjema/generisk/generiskvedlegg }}
     </div>
 
     <div class="brosjyre-signatur">

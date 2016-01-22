@@ -2,7 +2,7 @@
 <soknad xmlns="urn:no.nav.sbl">
     <faktum>
         <id>ekstraVedlegg</id>
-        <type>java.lang.boolean</type>
+        <type>hidden</type>
         <flereTillatt>true</flereTillatt>
     </faktum>
 
