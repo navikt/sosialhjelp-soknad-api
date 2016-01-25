@@ -26,7 +26,7 @@ public class ArbeidsforholdBolk implements BolkService {
     private FaktaService faktaService;
 
     @Inject
-    ArbeidsforholdService arbeidsforholdService;
+    private ArbeidsforholdService arbeidsforholdService;
 
     private static final Logger LOG = LoggerFactory.getLogger(ArbeidsforholdBolk.class);
 
