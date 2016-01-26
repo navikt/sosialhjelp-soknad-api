@@ -11,7 +11,7 @@ import java.util.List;
 import static no.nav.modig.lang.collections.IterUtils.*;
 
 @Component
-public class IkkeSynligeFaktaHelper extends RegistryAwareHelper<List<? extends OppsummeringsFaktum>> {
+public class HvisIngenSynligeBarneFaktaHelper extends RegistryAwareHelper<List<? extends OppsummeringsFaktum>> {
 
     private Predicate<OppsummeringsFaktum> faktaErSynligPredicate = new Predicate<OppsummeringsFaktum>() {
         @Override
@@ -23,7 +23,7 @@ public class IkkeSynligeFaktaHelper extends RegistryAwareHelper<List<? extends O
 
     @Override
     public String getNavn() {
-        return "ikkeSynligeFakta";
+        return "hvisIngenSynligeBarneFakta";
     }
 
     @Override

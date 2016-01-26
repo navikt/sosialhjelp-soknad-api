@@ -13,7 +13,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class IkkeSynligeFaktaHelperTest {
+public class HvisIngenSynligeBarneFaktaHelperTest {
 
     private Handlebars handlebars;
 
@@ -23,7 +23,7 @@ public class IkkeSynligeFaktaHelperTest {
     @Before
     public void setup() {
         handlebars = new Handlebars();
-        IkkeSynligeFaktaHelper helper = new IkkeSynligeFaktaHelper();
+        HvisIngenSynligeBarneFaktaHelper helper = new HvisIngenSynligeBarneFaktaHelper();
         handlebars.registerHelper(helper.getNavn(), helper);
 
 
@@ -56,7 +56,7 @@ public class IkkeSynligeFaktaHelperTest {
         Context context = Context.newContext(null);
         context.data("fakta", fakta);
 
-        String forFaktaCompiled = handlebars.compileInline("{{#ikkeSynligeFakta fakta}}Ingen synlige fakta{{/ikkeSynligeFakta}}").apply(context);
+        String forFaktaCompiled = handlebars.compileInline("{{#hvisIngenSynligeBarneFakta fakta}}Ingen synlige fakta{{/hvisIngenSynligeBarneFakta}}").apply(context);
         assertThat(forFaktaCompiled).isEqualTo(forventetResultat);
     }
 
