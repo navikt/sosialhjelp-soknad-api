@@ -48,6 +48,7 @@
         <fillager.tjenestespec.version>0.0.3</fillager.tjenestespec.version>
         <lokalt.kodeverk>1.11</lokalt.kodeverk>
         <henvendelse.tjenestespesifikasjon.version.1>2.0.0</henvendelse.tjenestespesifikasjon.version.1>
+        <henvendelse-informasjon-v2.version>0.6</henvendelse-informasjon-v2.version>
         <dialogarena.dokumentinnsending.version>2.0.1</dialogarena.dokumentinnsending.version>
         <ojdbc.version>11.2.0.3</ojdbc.version>
         <flying.saucer.version>9.0.4</flying.saucer.version>
