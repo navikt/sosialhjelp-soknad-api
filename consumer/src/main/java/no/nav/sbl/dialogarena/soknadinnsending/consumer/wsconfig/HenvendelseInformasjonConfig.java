@@ -28,7 +28,7 @@ public class HenvendelseInformasjonConfig {
     private ServiceBuilder<HenvendelsePortType>.PortTypeBuilder<HenvendelsePortType> factory() {
         return new ServiceBuilder<>(HenvendelsePortType.class)
                 .asStandardService()
-                .withAddress(System.getProperty("henvendelser.ws.url"))
+                .withAddress(System.getProperty("soknad.webservice.henvendelse.informasjonservice.url"))
                 .withWsdl("classpath:Henvendelse.wsdl")
                 .withExtraClasses(new Class[]{
                         XMLHenvendelse.class,
