@@ -1,19 +1,33 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.*;
-import no.nav.sbl.dialogarena.soknadinnsending.business.*;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.*;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.*;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.*;
-import org.springframework.stereotype.*;
-import org.springframework.transaction.annotation.*;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHenvendelse;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadata;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
+import org.apache.commons.collections15.Predicate;
+import org.apache.commons.collections15.Transformer;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.*;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.List;
+
+import static no.nav.modig.lang.collections.IterUtils.on;
 
 @Component
 public class SoknadService {
 
+    public static final String SKJEMANUMMER_KVITTERING = "L7";
     @Inject
     @Named("soknadInnsendingRepository")
     private SoknadRepository lokalDb;
@@ -97,4 +111,27 @@ public class SoknadService {
         soknadDataFletter.sendSoknad(behandlingsId, pdf);
     }
 
+    public WebSoknad hentFerdigSoknad(String behandlingsId) {
+        final XMLHenvendelse xmlHenvendelse = henvendelseService.hentInformasjonOmAvsluttetSoknad(behandlingsId);
+
+        List<Vedlegg> vedlegg = on(xmlHenvendelse.getMetadataListe().getMetadata()).map(new Transformer<XMLMetadata, Vedlegg>() {
+            @Override
+            public Vedlegg transform(XMLMetadata xmlMetadata) {
+                XMLVedlegg xmlVedlegg = (XMLVedlegg) xmlMetadata;
+                return new Vedlegg()
+                        .medInnsendingsvalg(Transformers.toInnsendingsvalg(xmlVedlegg.getInnsendingsvalg()))
+                        .medSkjemaNummer(xmlVedlegg.getSkjemanummer())
+                        .medSkjemanummerTillegg(xmlVedlegg.getSkjemanummerTillegg());
+            }
+        }).filter(new Predicate<Vedlegg>() {
+            @Override
+            public boolean evaluate(Vedlegg vedlegg) {
+                return !SKJEMANUMMER_KVITTERING.equalsIgnoreCase(vedlegg.getSkjemaNummer());
+            }
+        }).collect();
+
+        return new WebSoknad()
+                .medBehandlingId(xmlHenvendelse.getBehandlingsId())
+                .medVedlegg(vedlegg);
+    }
 }

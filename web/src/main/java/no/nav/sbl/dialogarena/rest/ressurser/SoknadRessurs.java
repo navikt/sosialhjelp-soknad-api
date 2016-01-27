@@ -70,6 +70,18 @@ public class SoknadRessurs {
     }
 
     @GET
+    @Path("/{behandlingsId}/kvittering")
+    @Produces(TEXT_HTML)
+    @SjekkTilgangTilSoknad
+    public String hentKvittering(@PathParam("behandlingsId") String behandlingsId) throws IOException {
+        WebSoknad soknad = soknadService.hentFerdigSoknad(behandlingsId);
+        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
+
+        return pdfTemplate.fyllHtmlMalMedInnhold(soknad, "/skjema/kvittering");
+    }
+
+
+    @GET
     @Path("/{behandlingsId}")
     @Produces(TEXT_HTML)
     @SjekkTilgangTilSoknad
