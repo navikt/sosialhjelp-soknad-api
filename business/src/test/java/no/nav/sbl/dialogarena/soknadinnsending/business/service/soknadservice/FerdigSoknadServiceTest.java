@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.FerdigSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import org.assertj.core.api.Condition;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,10 +34,11 @@ public class FerdigSoknadServiceTest {
     @InjectMocks
     private FerdigSoknadService service;
     private XMLMetadataListe xmlMetadataListe;
+    private XMLHenvendelse xmlHenvendelse;
 
     @Before
     public void setUp() throws Exception {
-        XMLHenvendelse xmlHenvendelse = new XMLHenvendelse();
+        xmlHenvendelse = new XMLHenvendelse();
         xmlMetadataListe = new XMLMetadataListe();
         when(henvendelseService.hentInformasjonOmAvsluttetSoknad(anyString())).thenReturn(
                 xmlHenvendelse.withMetadataListe(xmlMetadataListe));
@@ -64,6 +66,17 @@ public class FerdigSoknadServiceTest {
         FerdigSoknad soknad = service.hentFerdigSoknad("ID01");
         assertThat(soknad.getInnsendteVedlegg()).are(liktSkjemanummer(skjemanummer));
         assertThat(soknad.getIkkeInnsendteVedlegg()).hasSize(0);
+    }
+
+    @Test
+    public void skalMappeDetaljerFraHenvendelse() throws Exception {
+        xmlHenvendelse
+                .withAvsluttetDato(new DateTime(2016, 01, 01, 12, 00))
+                .withTema("TSO");
+
+        FerdigSoknad soknad = service.hentFerdigSoknad("ID01");
+        assertThat(soknad.getDato()).isEqualToIgnoringCase("1. januar 2016 klokken 12.00");
+        assertThat(soknad.getTemakode()).isEqualToIgnoringCase("TSO");
     }
 
     @Test

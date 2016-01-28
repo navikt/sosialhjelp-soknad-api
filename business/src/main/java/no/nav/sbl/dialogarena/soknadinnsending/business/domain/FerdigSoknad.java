@@ -22,9 +22,15 @@ public class FerdigSoknad {
     private DateTime dato;
     private List<Vedlegg> innsendteVedlegg;
     private List<Vedlegg> ikkeInnsendteVedlegg;
+    private String temakode;
 
     public FerdigSoknad medBehandlingId(String behandlingsId) {
         this.behandlingsId = behandlingsId;
+        return this;
+    }
+
+    public FerdigSoknad medTemakode(String temakode) {
+        this.temakode = temakode;
         return this;
     }
 
@@ -57,5 +63,9 @@ public class FerdigSoknad {
 
     public List<Vedlegg> getInnsendteVedlegg() {
         return innsendteVedlegg;
+    }
+
+    public String getTemakode() {
+        return temakode;
     }
 }

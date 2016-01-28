@@ -65,6 +65,7 @@ public class FerdigSoknadService {
 
         return new FerdigSoknad()
                 .medBehandlingId(xmlHenvendelse.getBehandlingsId())
+                .medTemakode(xmlHenvendelse.getTema())
                 .medInnsendteVedlegg(innsendteVedlegg)
                 .medIkkeInnsendteVedlegg(ikkeInnsendteVedlegg)
                 .medDato(xmlHenvendelse.getAvsluttetDato());
