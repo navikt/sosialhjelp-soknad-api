@@ -13,6 +13,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.tilleggsstonader.Til
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.FerdigSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
@@ -71,13 +72,9 @@ public class SoknadRessurs {
 
     @GET
     @Path("/{behandlingsId}/kvittering")
-    @Produces(TEXT_HTML)
     @SjekkTilgangTilSoknad
-    public String hentKvittering(@PathParam("behandlingsId") String behandlingsId) throws IOException {
-        WebSoknad soknad = soknadService.hentFerdigSoknad(behandlingsId);
-        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
-
-        return pdfTemplate.fyllHtmlMalMedInnhold(soknad, "/skjema/kvittering");
+        public FerdigSoknad hentFerdigSoknad(@PathParam("behandlingsId") String behandlingsId) throws IOException {
+            return soknadService.hentFerdigSoknad(behandlingsId);
     }
 
 

@@ -1,0 +1,51 @@
+package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
+
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.util.List;
+import java.util.Locale;
+
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+
+public class FerdigSoknad {
+
+    private DateTimeFormatter dt = DateTimeFormat.forPattern("d. MMMM yyyy' klokken' HH.mm").withLocale(new Locale("nb", "no"));
+
+    private String behandlingsId;
+    private List<Vedlegg> vedlegg;
+    private DateTime dato;
+
+    public FerdigSoknad medBehandlingId(String behandlingsId) {
+        this.behandlingsId = behandlingsId;
+        return this;
+    }
+
+    public FerdigSoknad medVedlegg(List<Vedlegg> vedlegg) {
+        this.vedlegg = vedlegg;
+        return this;
+    }
+
+    public FerdigSoknad medDato(DateTime avsluttetDato) {
+        this.dato = avsluttetDato;
+        return this;
+    }
+
+    public String getBehandlingsId() {
+        return behandlingsId;
+    }
+
+    public List<Vedlegg> getVedlegg() {
+        return vedlegg;
+    }
+
+    public String getDato() {
+        return dt.print(this.dato);
+    }
+}
