@@ -64,6 +64,19 @@ public class FerdigSoknadServiceTest {
         FerdigSoknad soknad = service.hentFerdigSoknad("ID01");
         assertThat(soknad.getInnsendteVedlegg()).are(liktSkjemanummer(skjemanummer));
         assertThat(soknad.getIkkeInnsendteVedlegg()).hasSize(0);
+    }
+
+    @Test
+    public void skalPlassereIkkeOpplastetVedleggUnderIkkeInnsendteVedlegg() throws Exception {
+        xmlMetadataListe.withMetadata(
+                new XMLVedlegg().withInnsendingsvalg("VEDLEGG_SENDES_AV_ANDRE"),
+                new XMLVedlegg().withInnsendingsvalg("SEND_SENERE"),
+                new XMLVedlegg().withInnsendingsvalg("VEDLEGG_ALLEREDE_SENDT"),
+                new XMLVedlegg().withInnsendingsvalg("VEDLEGG_SENDES_IKKE"));
+
+        FerdigSoknad soknad = service.hentFerdigSoknad("ID01");
+        assertThat(soknad.getInnsendteVedlegg()).hasSize(0);
+        assertThat(soknad.getIkkeInnsendteVedlegg()).hasSameSizeAs(xmlMetadataListe.getMetadata());
 
     }
 
