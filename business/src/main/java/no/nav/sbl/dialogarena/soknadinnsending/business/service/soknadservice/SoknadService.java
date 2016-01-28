@@ -15,29 +15,14 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
-import org.apache.commons.collections15.Predicate;
-import org.apache.commons.collections15.PredicateUtils;
-import org.apache.commons.collections15.Transformer;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.List;
-
-import static no.nav.modig.lang.collections.IterUtils.on;
 
 @Component
 public class SoknadService {
-
-    public static final String SKJEMANUMMER_KVITTERING = "L7";
-    public static final Predicate<Vedlegg> LASTET_OPP = new Predicate<Vedlegg>() {
-        @Override
-        public boolean evaluate(Vedlegg v) {
-            return Vedlegg.Status.LastetOpp.equals(v.getInnsendingsvalg());
-        }
-    };
-    public static final Predicate<Vedlegg> IKKE_LASTET_OPP = PredicateUtils.notPredicate(LASTET_OPP);
 
     @Inject
     @Named("soknadInnsendingRepository")
@@ -57,16 +42,6 @@ public class SoknadService {
 
     @Inject
     private SoknadDataFletter soknadDataFletter;
-
-    @Inject
-    private VedleggService vedleggService;
-
-    private final Predicate<Vedlegg> IKKE_KVITTERING = new Predicate<Vedlegg>() {
-        @Override
-        public boolean evaluate(Vedlegg vedlegg) {
-            return !SKJEMANUMMER_KVITTERING.equalsIgnoreCase(vedlegg.getSkjemaNummer());
-        }
-    };;
 
     public void settDelsteg(String behandlingsId, DelstegStatus delstegStatus) {
         lokalDb.settDelstegstatus(behandlingsId, delstegStatus);
@@ -132,29 +107,5 @@ public class SoknadService {
         soknadDataFletter.sendSoknad(behandlingsId, pdf);
     }
 
-    public FerdigSoknad hentFerdigSoknad(String behandlingsId) {
-        final XMLHenvendelse xmlHenvendelse = henvendelseService.hentInformasjonOmAvsluttetSoknad(behandlingsId);
 
-        List<Vedlegg> vedlegg = on(xmlHenvendelse.getMetadataListe().getMetadata()).map(new Transformer<XMLMetadata, Vedlegg>() {
-            @Override
-            public Vedlegg transform(XMLMetadata xmlMetadata) {
-                XMLVedlegg xmlVedlegg = (XMLVedlegg) xmlMetadata;
-                return  new Vedlegg()
-                        .medInnsendingsvalg(Transformers.toInnsendingsvalg(xmlVedlegg.getInnsendingsvalg()))
-                        .medSkjemaNummer(xmlVedlegg.getSkjemanummer())
-                        .medSkjemanummerTillegg(xmlVedlegg.getSkjemanummerTillegg());
-            }
-        }).filter(IKKE_KVITTERING).collect();
-
-        vedleggService.leggTilKodeverkFelter(vedlegg);
-
-        List<Vedlegg> innsendteVedlegg = on(vedlegg).filter(LASTET_OPP).collect();
-        List<Vedlegg> ikkeInnsendteVedlegg = on(vedlegg).filter(IKKE_LASTET_OPP).collect();
-
-        return new FerdigSoknad()
-                .medBehandlingId(xmlHenvendelse.getBehandlingsId())
-                .medInnsendteVedlegg(innsendteVedlegg)
-                .medIkkeInnsendteVedlegg(ikkeInnsendteVedlegg)
-                .medDato(xmlHenvendelse.getAvsluttetDato());
-    }
 }
