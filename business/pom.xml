@@ -162,6 +162,12 @@
 
         <!-- Avhengigheter med scope test -->
         <dependency>
+            <groupId>no.nav.sbl.dialogarena</groupId>
+            <artifactId>henvendelse-informasjon-v2</artifactId>
+            <version>${henvendelse-informasjon-v2.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>net.jcip</groupId>
             <artifactId>jcip-annotations</artifactId>
             <version>1.0</version>
