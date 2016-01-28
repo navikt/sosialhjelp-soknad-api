@@ -16,6 +16,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.FerdigSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.FerdigSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 
 import javax.inject.Inject;
@@ -48,6 +49,9 @@ public class SoknadRessurs {
     private SoknadService soknadService;
 
     @Inject
+    private FerdigSoknadService ferdigSoknadService;
+
+    @Inject
     private HtmlGenerator pdfTemplate;
 
     @Inject
@@ -73,8 +77,8 @@ public class SoknadRessurs {
     @GET
     @Path("/{behandlingsId}/kvittering")
     @SjekkTilgangTilSoknad
-        public FerdigSoknad hentFerdigSoknad(@PathParam("behandlingsId") String behandlingsId) throws IOException {
-            return soknadService.hentFerdigSoknad(behandlingsId);
+    public FerdigSoknad hentFerdigSoknad(@PathParam("behandlingsId") String behandlingsId) throws IOException {
+        return ferdigSoknadService.hentFerdigSoknad(behandlingsId);
     }
 
 
