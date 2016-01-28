@@ -16,6 +16,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import org.apache.commons.collections15.Predicate;
+import org.apache.commons.collections15.PredicateUtils;
 import org.apache.commons.collections15.Transformer;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +31,14 @@ import static no.nav.modig.lang.collections.IterUtils.on;
 public class SoknadService {
 
     public static final String SKJEMANUMMER_KVITTERING = "L7";
+    public static final Predicate<Vedlegg> LASTET_OPP = new Predicate<Vedlegg>() {
+        @Override
+        public boolean evaluate(Vedlegg v) {
+            return Vedlegg.Status.LastetOpp.equals(v.getInnsendingsvalg());
+        }
+    };
+    public static final Predicate<Vedlegg> IKKE_LASTET_OPP = PredicateUtils.notPredicate(LASTET_OPP);
+
     @Inject
     @Named("soknadInnsendingRepository")
     private SoknadRepository lokalDb;
@@ -139,9 +148,13 @@ public class SoknadService {
 
         vedleggService.leggTilKodeverkFelter(vedlegg);
 
+        List<Vedlegg> innsendteVedlegg = on(vedlegg).filter(LASTET_OPP).collect();
+        List<Vedlegg> ikkeInnsendteVedlegg = on(vedlegg).filter(IKKE_LASTET_OPP).collect();
+
         return new FerdigSoknad()
                 .medBehandlingId(xmlHenvendelse.getBehandlingsId())
-                .medVedlegg(vedlegg)
+                .medInnsendteVedlegg(innsendteVedlegg)
+                .medIkkeInnsendteVedlegg(ikkeInnsendteVedlegg)
                 .medDato(xmlHenvendelse.getAvsluttetDato());
     }
 }
