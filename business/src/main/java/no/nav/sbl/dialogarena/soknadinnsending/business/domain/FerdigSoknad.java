@@ -19,16 +19,12 @@ public class FerdigSoknad {
     private DateTimeFormatter dt = DateTimeFormat.forPattern("d. MMMM yyyy' klokken' HH.mm").withLocale(new Locale("nb", "no"));
 
     private String behandlingsId;
-    private List<Vedlegg> vedlegg;
     private DateTime dato;
+    private List<Vedlegg> innsendteVedlegg;
+    private List<Vedlegg> ikkeInnsendteVedlegg;
 
     public FerdigSoknad medBehandlingId(String behandlingsId) {
         this.behandlingsId = behandlingsId;
-        return this;
-    }
-
-    public FerdigSoknad medVedlegg(List<Vedlegg> vedlegg) {
-        this.vedlegg = vedlegg;
         return this;
     }
 
@@ -37,15 +33,29 @@ public class FerdigSoknad {
         return this;
     }
 
+    public FerdigSoknad medInnsendteVedlegg(List<Vedlegg> innsendteVedlegg) {
+        this.innsendteVedlegg = innsendteVedlegg;
+        return this;
+    }
+
+    public FerdigSoknad medIkkeInnsendteVedlegg(List<Vedlegg> ikkeInnsendteVedlegg) {
+        this.ikkeInnsendteVedlegg = ikkeInnsendteVedlegg;
+        return this;
+    }
+
     public String getBehandlingsId() {
         return behandlingsId;
     }
 
-    public List<Vedlegg> getVedlegg() {
-        return vedlegg;
-    }
-
     public String getDato() {
         return dt.print(this.dato);
+    }
+
+    public List<Vedlegg> getIkkeInnsendteVedlegg() {
+        return ikkeInnsendteVedlegg;
+    }
+
+    public List<Vedlegg> getInnsendteVedlegg() {
+        return innsendteVedlegg;
     }
 }
