@@ -20,6 +20,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.So
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
+import no.nav.tjeneste.domene.brukerdialog.henvendelse.v2.henvendelse.HenvendelsePortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -59,6 +60,13 @@ public class SoknadDataFletterIntegrationTestContext {
         SendSoknadPortType portType = mock(SendSoknadPortType.class);
         return portType;
     }
+
+    @Bean
+    public HenvendelsePortType henvendelseEndpoint() {
+        HenvendelsePortType portType = mock(HenvendelsePortType.class);
+        return portType;
+    }
+
 
     @Bean
     public FillagerService fillagerService() {
