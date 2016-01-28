@@ -60,4 +60,26 @@ public class FerdigSoknadServiceTest {
 
 
     }
+
+    @Test
+    public void skalPlassereOpplastetVedleggUnderInnsendteVedlegg() throws Exception {
+        when(henvendelseService.hentInformasjonOmAvsluttetSoknad(anyString())).thenReturn(
+                new XMLHenvendelse()
+                        .withMetadataListe(
+                                new XMLMetadataListe()
+                                        .withMetadata(
+                                                new XMLVedlegg()
+                                                        .withInnsendingsvalg("LASTET_OPP")
+                                                        .withSkjemanummer("NAV 10-07.40"))));
+
+        FerdigSoknad soknad = service.hentFerdigSoknad("ID01");
+        assertThat(soknad.getInnsendteVedlegg()).are(new Condition<Vedlegg>() {
+            @Override
+            public boolean matches(Vedlegg vedlegg) {
+                return "NAV 10-07.40".equals(vedlegg.getSkjemaNummer());
+            }
+        });
+        assertThat(soknad.getIkkeInnsendteVedlegg()).hasSize(0);
+
+    }
 }
