@@ -115,8 +115,7 @@ public class HenvendelseService {
         WSHentHenvendelseResponse wsHentHenvendelseResponse = henvendelseInformasjonEndpoint.hentHenvendelse(
                 new WSHentHenvendelseRequest()
                         .withBehandlingsId(behandlingsId));
-        Object any = wsHentHenvendelseResponse.getAny();
-        return (XMLHenvendelse) any;
+        return (XMLHenvendelse) wsHentHenvendelseResponse.getAny();
 
 
     }
