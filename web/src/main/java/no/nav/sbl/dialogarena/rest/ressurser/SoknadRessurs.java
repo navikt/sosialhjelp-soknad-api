@@ -77,7 +77,7 @@ public class SoknadRessurs {
     @GET
     @Path("/{behandlingsId}/kvittering")
     @SjekkTilgangTilSoknad
-    public FerdigSoknad hentFerdigSoknad(@PathParam("behandlingsId") String behandlingsId) throws IOException {
+    public FerdigSoknad hentFerdigSoknad(@PathParam("behandlingsId") String behandlingsId) {
         return ferdigSoknadService.hentFerdigSoknad(behandlingsId);
     }
 
