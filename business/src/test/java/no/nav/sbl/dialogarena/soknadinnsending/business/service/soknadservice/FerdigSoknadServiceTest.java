@@ -25,6 +25,9 @@ public class FerdigSoknadServiceTest {
 
     public static final String SKJEMANUMMER_KVITTERING = FerdigSoknadService.SKJEMANUMMER_KVITTERING;
 
+    private XMLMetadataListe xmlMetadataListe;
+    private XMLHenvendelse xmlHenvendelse;
+
     @Mock
     private HenvendelseService henvendelseService;
 
@@ -33,8 +36,6 @@ public class FerdigSoknadServiceTest {
 
     @InjectMocks
     private FerdigSoknadService service;
-    private XMLMetadataListe xmlMetadataListe;
-    private XMLHenvendelse xmlHenvendelse;
 
     @Before
     public void setUp() throws Exception {

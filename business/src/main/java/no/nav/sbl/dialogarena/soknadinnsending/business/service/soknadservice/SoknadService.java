@@ -106,6 +106,4 @@ public class SoknadService {
     public void sendSoknad(String behandlingsId, byte[] pdf) {
         soknadDataFletter.sendSoknad(behandlingsId, pdf);
     }
-
-
 }

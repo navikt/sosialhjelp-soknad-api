@@ -67,7 +67,6 @@ public class SoknadDataFletterIntegrationTestContext {
         return portType;
     }
 
-
     @Bean
     public FillagerService fillagerService() {
         return new FillagerService();
