@@ -23,9 +23,15 @@ public class FerdigSoknad {
     private List<Vedlegg> innsendteVedlegg;
     private List<Vedlegg> ikkeInnsendteVedlegg;
     private String temakode;
+    private String soknadPrefix;
 
     public FerdigSoknad medBehandlingId(String behandlingsId) {
         this.behandlingsId = behandlingsId;
+        return this;
+    }
+
+    public FerdigSoknad medSoknadPrefix(String prefix) {
+        this.soknadPrefix = prefix;
         return this;
     }
 
@@ -67,5 +73,9 @@ public class FerdigSoknad {
 
     public String getTemakode() {
         return temakode;
+    }
+
+    public String getSoknadPrefix() {
+        return soknadPrefix;
     }
 }
