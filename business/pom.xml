@@ -4,11 +4,11 @@
     <parent>
         <groupId>no.nav.sbl.dialogarena</groupId>
         <artifactId>sendsoknad</artifactId>
-        <version>8.23-SNAPSHOT</version>
+        <version>8.23</version>
     </parent>
 
     <artifactId>sendsoknad-business</artifactId>
-    <version>8.23-SNAPSHOT</version>
+    <version>8.23</version>
     <name>${project.artifactId}</name>
 
     <properties>
