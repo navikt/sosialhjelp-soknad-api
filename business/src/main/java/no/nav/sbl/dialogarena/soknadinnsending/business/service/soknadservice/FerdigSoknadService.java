@@ -68,7 +68,8 @@ public class FerdigSoknadService {
                 return new Vedlegg()
                         .medInnsendingsvalg(Transformers.toInnsendingsvalg(xmlVedlegg.getInnsendingsvalg()))
                         .medSkjemaNummer(xmlVedlegg.getSkjemanummer())
-                        .medSkjemanummerTillegg(xmlVedlegg.getSkjemanummerTillegg());
+                        .medSkjemanummerTillegg(xmlVedlegg.getSkjemanummerTillegg())
+                        .medNavn(xmlVedlegg.getTilleggsinfo());
             }
         }).filter(IKKE_KVITTERING).collect();
 
