@@ -75,7 +75,7 @@ public class SoknadRessurs {
     }
 
     @GET
-    @Path("/{behandlingsId}/ferdig")
+    @Path("/{behandlingsId}/innsendt")
     @SjekkTilgangTilSoknad
     public FerdigSoknad hentFerdigSoknad(@PathParam("behandlingsId") String behandlingsId) {
         return ferdigSoknadService.hentFerdigSoknad(behandlingsId);
