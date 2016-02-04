@@ -14,7 +14,7 @@ import java.util.Locale;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 
-public class FerdigSoknad {
+public class InnsendtSoknad {
 
     private DateTimeFormatter dt = DateTimeFormat.forPattern("d. MMMM yyyy' klokken' HH.mm").withLocale(new Locale("nb", "no"));
 
@@ -25,32 +25,32 @@ public class FerdigSoknad {
     private String temakode;
     private String soknadPrefix;
 
-    public FerdigSoknad medBehandlingId(String behandlingsId) {
+    public InnsendtSoknad medBehandlingId(String behandlingsId) {
         this.behandlingsId = behandlingsId;
         return this;
     }
 
-    public FerdigSoknad medSoknadPrefix(String prefix) {
+    public InnsendtSoknad medSoknadPrefix(String prefix) {
         this.soknadPrefix = prefix;
         return this;
     }
 
-    public FerdigSoknad medTemakode(String temakode) {
+    public InnsendtSoknad medTemakode(String temakode) {
         this.temakode = temakode;
         return this;
     }
 
-    public FerdigSoknad medDato(DateTime avsluttetDato) {
+    public InnsendtSoknad medDato(DateTime avsluttetDato) {
         this.dato = avsluttetDato;
         return this;
     }
 
-    public FerdigSoknad medInnsendteVedlegg(List<Vedlegg> innsendteVedlegg) {
+    public InnsendtSoknad medInnsendteVedlegg(List<Vedlegg> innsendteVedlegg) {
         this.innsendteVedlegg = innsendteVedlegg;
         return this;
     }
 
-    public FerdigSoknad medIkkeInnsendteVedlegg(List<Vedlegg> ikkeInnsendteVedlegg) {
+    public InnsendtSoknad medIkkeInnsendteVedlegg(List<Vedlegg> ikkeInnsendteVedlegg) {
         this.ikkeInnsendteVedlegg = ikkeInnsendteVedlegg;
         return this;
     }

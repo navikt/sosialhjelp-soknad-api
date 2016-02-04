@@ -4,7 +4,7 @@ import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.FerdigSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.InnsendtSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import org.assertj.core.api.Condition;
@@ -24,9 +24,9 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class FerdigSoknadServiceTest {
+public class InnsendtSoknadServiceTest {
 
-    public static final String SKJEMANUMMER_KVITTERING = FerdigSoknadService.SKJEMANUMMER_KVITTERING;
+    public static final String SKJEMANUMMER_KVITTERING = InnsendSoknadService.SKJEMANUMMER_KVITTERING;
     public static final String SOKNAD_PREFIX = "kravdialog.prefix";
     public static final XMLHovedskjema HOVEDSKJEMA = new XMLHovedskjema()
             .withSkjemanummer("NAV 11-12.12")
@@ -48,7 +48,7 @@ public class FerdigSoknadServiceTest {
     private KravdialogInformasjon kravdialogInformasjon;
 
     @InjectMocks
-    private FerdigSoknadService service;
+    private InnsendSoknadService service;
 
     @Before
     public void setUp() throws Exception {
@@ -69,7 +69,7 @@ public class FerdigSoknadServiceTest {
                 .withInnsendingsvalg("LASTET_OPP")
                 .withSkjemanummer(SKJEMANUMMER_KVITTERING));
 
-        FerdigSoknad soknad = service.hentFerdigSoknad("ID01");
+        InnsendtSoknad soknad = service.hentInnsendtSoknad("ID01");
         assertThat(soknad.getIkkeInnsendteVedlegg()).areNot(liktSkjemanummer(SKJEMANUMMER_KVITTERING));
         assertThat(soknad.getInnsendteVedlegg()).areNot(liktSkjemanummer(SKJEMANUMMER_KVITTERING));
     }
@@ -77,7 +77,7 @@ public class FerdigSoknadServiceTest {
     @Test
     public void skalPlassereOpplastetVedleggUnderInnsendteVedlegg() throws Exception {
         xmlMetadataListe.withMetadata(HOVEDSKJEMA);
-        FerdigSoknad soknad = service.hentFerdigSoknad("ID01");
+        InnsendtSoknad soknad = service.hentInnsendtSoknad("ID01");
         assertThat(soknad.getInnsendteVedlegg()).are(liktSkjemanummer(HOVEDSKJEMA.getSkjemanummer()));
         assertThat(soknad.getIkkeInnsendteVedlegg()).hasSize(0);
     }
@@ -89,7 +89,7 @@ public class FerdigSoknadServiceTest {
                 .withAvsluttetDato(new DateTime(2016, 01, 01, 12, 00))
                 .withTema("TSO");
 
-        FerdigSoknad soknad = service.hentFerdigSoknad("ID01");
+        InnsendtSoknad soknad = service.hentInnsendtSoknad("ID01");
         assertThat(soknad.getDato()).isEqualToIgnoringCase("1. januar 2016 klokken 12.00");
         assertThat(soknad.getTemakode()).isEqualToIgnoringCase("TSO");
     }
@@ -100,7 +100,7 @@ public class FerdigSoknadServiceTest {
                 HOVEDSKJEMA,
                 new XMLVedlegg().withInnsendingsvalg("SEND_SENERE").withSkjemanummer(SKJEMANUMMER_KVITTERING));
 
-        FerdigSoknad soknad = service.hentFerdigSoknad("ID01");
+        InnsendtSoknad soknad = service.hentInnsendtSoknad("ID01");
         assertThat(soknad.getSoknadPrefix()).isEqualToIgnoringCase(SOKNAD_PREFIX);
     }
 
@@ -114,7 +114,7 @@ public class FerdigSoknadServiceTest {
         xmlMetadataListe.withMetadata(HOVEDSKJEMA);
         xmlMetadataListe.withMetadata(ikkeInnsendteVedlegg);
 
-        FerdigSoknad soknad = service.hentFerdigSoknad("ID01");
+        InnsendtSoknad soknad = service.hentInnsendtSoknad("ID01");
         assertThat(soknad.getInnsendteVedlegg()).hasSize(1);
         assertThat(soknad.getIkkeInnsendteVedlegg()).hasSameSizeAs(ikkeInnsendteVedlegg);
 

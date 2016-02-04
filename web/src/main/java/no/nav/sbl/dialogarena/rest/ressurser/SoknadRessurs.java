@@ -13,10 +13,10 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.tilleggsstonader.Til
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.FerdigSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.InnsendtSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.FerdigSoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.InnsendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 
 import javax.inject.Inject;
@@ -49,7 +49,7 @@ public class SoknadRessurs {
     private SoknadService soknadService;
 
     @Inject
-    private FerdigSoknadService ferdigSoknadService;
+    private InnsendSoknadService innsendtSoknadService;
 
     @Inject
     private HtmlGenerator pdfTemplate;
@@ -75,10 +75,11 @@ public class SoknadRessurs {
     }
 
     @GET
-    @Path("/{behandlingsId}/innsendt")
+    @Path("/{behandlingsId}")
+    @Produces("application/vnd.kvitteringforinnsendtsoknad+json")
     @SjekkTilgangTilSoknad
-    public FerdigSoknad hentFerdigSoknad(@PathParam("behandlingsId") String behandlingsId) {
-        return ferdigSoknadService.hentFerdigSoknad(behandlingsId);
+    public InnsendtSoknad hentInnsendtSoknad(@PathParam("behandlingsId") String behandlingsId) {
+        return innsendtSoknadService.hentInnsendtSoknad(behandlingsId);
     }
 
 
