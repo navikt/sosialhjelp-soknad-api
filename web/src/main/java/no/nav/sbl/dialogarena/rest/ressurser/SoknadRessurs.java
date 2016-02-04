@@ -25,12 +25,14 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static javax.ws.rs.core.MediaType.*;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.generateXsrfToken;
 
 @Path("/soknader")
@@ -82,10 +84,24 @@ public class SoknadRessurs {
         return innsendtSoknadService.hentInnsendtSoknad(behandlingsId);
     }
 
+    /*
+    * Denne metoden er deprecated og erstattet av en lik metode med egen mediatype.
+    * I utgangspunktet skal den nye mediatypen i produksjon i HL2-2016.
+    * Etter en stund i prod (feks en måned) kan man sjekke accesslogger og se om dette endepunktet med mediatype text/html fortsatt er i bruk
+    * Dersom man ser at det ikke er i bruk, kan denne metoden slettes.
+    * */
+    @Deprecated
+    @GET
+    @Path("/{behandlingsId}")
+    @Produces(MediaType.TEXT_HTML)
+    @SjekkTilgangTilSoknad
+    public String hentOppsummeringMedStandardMediatype(@PathParam("behandlingsId") String behandlingsId) throws IOException {
+        return hentOppsummering(behandlingsId);
+    }
 
     @GET
     @Path("/{behandlingsId}")
-    @Produces(TEXT_HTML)
+    @Produces("application/vnd.oppsummering+html")
     @SjekkTilgangTilSoknad
     public String hentOppsummering(@PathParam("behandlingsId") String behandlingsId) throws IOException {
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
