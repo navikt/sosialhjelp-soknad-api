@@ -9,7 +9,7 @@ import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.FerdigSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.InnsendtSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
@@ -25,7 +25,7 @@ import java.util.List;
 import static no.nav.modig.lang.collections.IterUtils.on;
 
 @Component
-public class FerdigSoknadService {
+public class InnsendSoknadService {
 
     public static final String SKJEMANUMMER_KVITTERING = "L7";
 
@@ -53,7 +53,7 @@ public class FerdigSoknadService {
     public static final Predicate<Vedlegg> IKKE_LASTET_OPP = PredicateUtils.notPredicate(LASTET_OPP);
 
 
-    public FerdigSoknad hentFerdigSoknad(String behandlingsId) {
+    public InnsendtSoknad hentInnsendtSoknad(String behandlingsId) {
         final XMLHenvendelse xmlHenvendelse = henvendelseService.hentInformasjonOmAvsluttetSoknad(behandlingsId);
 
         Optional<XMLMetadata> head = on(xmlHenvendelse.getMetadataListe().getMetadata()).filter(new InstanceofPredicate(XMLHovedskjema.class)).head();
@@ -78,7 +78,7 @@ public class FerdigSoknadService {
         List<Vedlegg> innsendteVedlegg = on(vedlegg).filter(LASTET_OPP).collect();
         List<Vedlegg> ikkeInnsendteVedlegg = on(vedlegg).filter(IKKE_LASTET_OPP).collect();
 
-        return new FerdigSoknad()
+        return new InnsendtSoknad()
                 .medSoknadPrefix(konfigurasjon.getSoknadTypePrefix())
                 .medBehandlingId(xmlHenvendelse.getBehandlingsId())
                 .medTemakode(xmlHenvendelse.getTema())
