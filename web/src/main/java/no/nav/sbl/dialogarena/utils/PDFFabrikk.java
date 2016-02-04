@@ -39,6 +39,9 @@ public class PDFFabrikk {
             renderer.getFontResolver().addFont("/fonts/modus/ModusLight.ttf", "Modus", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
             renderer.getFontResolver().addFont("/fonts/modus/ModusBold.ttf", "Modus", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
             renderer.getFontResolver().addFont("/fonts/modus/ModusSemiBold.ttf", "Modus", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
+            renderer.getFontResolver().addFont("/fonts/arial/arial.ttf", "ArialSystem", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
+            renderer.getFontResolver().addFont("/fonts/arial/arialbd.ttf", "ArialSystem", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
+            renderer.getFontResolver().addFont("/org/apache/pdfbox/resources/ttf/ArialMT.ttf", "Arial", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
             renderer.getFontResolver().addFont("/org/apache/pdfbox/resources/ttf/ArialMT.ttf", "Arial", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
             renderer.getFontResolver().addFont("/org/apache/pdfbox/resources/ttf/Arial-BoldMT.ttf", "Arial", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
             renderer.getFontResolver().addFont("/org/apache/pdfbox/resources/ttf/Arial-BoldItalicMT.ttf", "Arial", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
