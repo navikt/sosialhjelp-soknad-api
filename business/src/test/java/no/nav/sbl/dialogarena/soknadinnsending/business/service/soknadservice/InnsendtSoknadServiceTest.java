@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class InnsendtSoknadServiceTest {
 
-    public static final String SKJEMANUMMER_KVITTERING = InnsendSoknadService.SKJEMANUMMER_KVITTERING;
+    public static final String SKJEMANUMMER_KVITTERING = InnsendtSoknadService.SKJEMANUMMER_KVITTERING;
     public static final String SOKNAD_PREFIX = "kravdialog.prefix";
     public static final XMLHovedskjema HOVEDSKJEMA = new XMLHovedskjema()
             .withSkjemanummer("NAV 11-12.12")
@@ -48,7 +48,7 @@ public class InnsendtSoknadServiceTest {
     private KravdialogInformasjon kravdialogInformasjon;
 
     @InjectMocks
-    private InnsendSoknadService service;
+    private InnsendtSoknadService service;
 
     @Before
     public void setUp() throws Exception {
