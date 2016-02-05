@@ -16,7 +16,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.InnsendtSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.InnsendSoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.InnsendtSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 
 import javax.inject.Inject;
@@ -51,7 +51,7 @@ public class SoknadRessurs {
     private SoknadService soknadService;
 
     @Inject
-    private InnsendSoknadService innsendtSoknadService;
+    private InnsendtSoknadService innsendtSoknadService;
 
     @Inject
     private HtmlGenerator pdfTemplate;

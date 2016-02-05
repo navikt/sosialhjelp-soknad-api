@@ -25,7 +25,7 @@ import java.util.List;
 import static no.nav.modig.lang.collections.IterUtils.on;
 
 @Component
-public class InnsendSoknadService {
+public class InnsendtSoknadService {
 
     public static final String SKJEMANUMMER_KVITTERING = "L7";
 

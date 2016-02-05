@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EttersendingService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.InnsendSoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.InnsendtSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.*;
@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Import;
         VedleggService.class,
         LandService.class,
         SoknadService.class,
-        InnsendSoknadService.class,
+        InnsendtSoknadService.class,
         StartDatoUtil.class,
         FaktaService.class,
         SoknadDataFletter.class,
