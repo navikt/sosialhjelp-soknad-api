@@ -7,6 +7,7 @@ import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.InnsendtSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers;
@@ -59,6 +60,19 @@ public class InnsendtSoknadService {
 
         final XMLHovedskjema hovedskjema = (XMLHovedskjema) head.getOrThrow(new ApplicationException(String.format("Soknaden %s har ikke noe hovedskjema", behandlingsId)));
 
+        InnsendtSoknad innsendtSoknad = new InnsendtSoknad();
+
+        try{
+            KravdialogInformasjon konfigurasjon = kravdialogInformasjonHolder.hentKonfigurasjon(hovedskjema.getSkjemanummer());
+            String prefix = konfigurasjon.getSoknadTypePrefix();
+            innsendtSoknad.medSoknadTittelCmsKey(prefix.concat(".").concat("skjema.tittel"));
+        }catch (ApplicationException e){
+            /*Dersom vi får en ApplicationException betyr det at soknaden ikke har noen konfigurasjon i sendsoknad.
+            * Det er mest sannsynlig fordi soknaden er sendt inn via dokumentinnsending. I dette tilfellet bruker vi tittelen
+            * på hoveddokumentet som skjematittel. Denne finnes for alle soknader.ø
+            * */
+        }
+
         List<Vedlegg> vedlegg = on(xmlHenvendelse.getMetadataListe().getMetadata()).map(new Transformer<XMLMetadata, Vedlegg>() {
             @Override
             public Vedlegg transform(XMLMetadata xmlMetadata) {
@@ -83,7 +97,8 @@ public class InnsendtSoknadService {
         List<Vedlegg> innsendteVedlegg = on(vedlegg).filter(LASTET_OPP).collect();
         List<Vedlegg> ikkeInnsendteVedlegg = on(vedlegg).filter(IKKE_LASTET_OPP).collect();
 
-        return new InnsendtSoknad()
+
+        return innsendtSoknad
                 .medSoknadTittel(hovedskjemaVedlegg.getOrElse(new Vedlegg()).getTittel())
                 .medBehandlingId(xmlHenvendelse.getBehandlingsId())
                 .medTemakode(xmlHenvendelse.getTema())
