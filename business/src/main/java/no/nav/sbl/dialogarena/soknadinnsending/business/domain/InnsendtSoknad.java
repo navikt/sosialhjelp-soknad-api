@@ -23,21 +23,21 @@ public class InnsendtSoknad {
     private List<Vedlegg> innsendteVedlegg;
     private List<Vedlegg> ikkeInnsendteVedlegg;
     private String temakode;
-    private String soknadTittel;
-    private String soknadTittelCmsKey;
+    private String tittel;
+    private String tittelCmsKey;
 
     public InnsendtSoknad medBehandlingId(String behandlingsId) {
         this.behandlingsId = behandlingsId;
         return this;
     }
 
-    public InnsendtSoknad medSoknadTittelCmsKey(String soknadTittelCmsKey) {
-        this.soknadTittelCmsKey = soknadTittelCmsKey;
+    public InnsendtSoknad medTittelCmsKey(String tittelCmsKey) {
+        this.tittelCmsKey = tittelCmsKey;
         return this;
     }
 
-    public InnsendtSoknad medSoknadTittel(String soknadTittel) {
-        this.soknadTittel = soknadTittel;
+    public InnsendtSoknad medTittel(String tittel) {
+        this.tittel = tittel;
         return this;
     }
 
@@ -81,11 +81,11 @@ public class InnsendtSoknad {
         return temakode;
     }
 
-    public String getSoknadTittel() {
-        return soknadTittel;
+    public String getTittel() {
+        return tittel;
     }
 
-    public String getSoknadTittelCmsKey() {
-        return soknadTittelCmsKey;
+    public String getTittelCmsKey() {
+        return tittelCmsKey;
     }
 }
