@@ -18,6 +18,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.InnsendtSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
@@ -40,6 +42,7 @@ import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.generateXsrfToken;
 public class SoknadRessurs {
 
     public static final String XSRF_TOKEN = "XSRF-TOKEN-SOKNAD-API";
+    private final Logger LOG = LoggerFactory.getLogger(SoknadRessurs.class);
 
     @Inject
     private FaktaService faktaService;
@@ -88,7 +91,8 @@ public class SoknadRessurs {
     * Denne metoden er deprecated og erstattet av en lik metode med egen mediatype.
     * I utgangspunktet skal den nye mediatypen i produksjon i HL2-2016.
     * Etter en stund i prod (feks en måned) kan man sjekke accesslogger og se om dette endepunktet med mediatype text/html fortsatt er i bruk
-    * Dersom man ser at det ikke er i bruk, kan denne metoden slettes.
+    * Som fallback ettersom vi er usikre på om accessloggene indekseres, har jeg lagt inn et logstatment med en warning.
+    * Dersom man ser at metoden ikke er i bruk, kan denne den slettes.
     * */
     @Deprecated
     @GET
@@ -96,6 +100,7 @@ public class SoknadRessurs {
     @Produces(MediaType.TEXT_HTML)
     @SjekkTilgangTilSoknad
     public String hentOppsummeringMedStandardMediatype(@PathParam("behandlingsId") String behandlingsId) throws IOException {
+        LOG.warn("Bruk av deprecated metode for å hente oppsummering");
         return hentOppsummering(behandlingsId);
     }
 
