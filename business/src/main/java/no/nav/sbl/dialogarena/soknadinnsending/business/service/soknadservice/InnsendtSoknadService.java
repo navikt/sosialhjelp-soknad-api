@@ -65,7 +65,7 @@ public class InnsendtSoknadService {
         try{
             KravdialogInformasjon konfigurasjon = kravdialogInformasjonHolder.hentKonfigurasjon(hovedskjema.getSkjemanummer());
             String prefix = konfigurasjon.getSoknadTypePrefix();
-            innsendtSoknad.medSoknadTittelCmsKey(prefix.concat(".").concat("skjema.tittel"));
+            innsendtSoknad.medTittelCmsKey(prefix.concat(".").concat("skjema.tittel"));
         }catch (ApplicationException e){
             /*Dersom vi får en ApplicationException betyr det at soknaden ikke har noen konfigurasjon i sendsoknad.
             * Det er mest sannsynlig fordi soknaden er sendt inn via dokumentinnsending. I dette tilfellet bruker vi tittelen
@@ -99,7 +99,7 @@ public class InnsendtSoknadService {
 
 
         return innsendtSoknad
-                .medSoknadTittel(hovedskjemaVedlegg.getOrElse(new Vedlegg()).getTittel())
+                .medTittel(hovedskjemaVedlegg.getOrElse(new Vedlegg()).getTittel())
                 .medBehandlingId(xmlHenvendelse.getBehandlingsId())
                 .medTemakode(xmlHenvendelse.getTema())
                 .medInnsendteVedlegg(innsendteVedlegg)
