@@ -95,16 +95,6 @@ public class InnsendtSoknadServiceTest {
     }
 
     @Test
-    public void skalHenteUtSoknadprefixFraHovedskjema() throws Exception {
-        xmlMetadataListe.withMetadata(
-                HOVEDSKJEMA,
-                new XMLVedlegg().withInnsendingsvalg("SEND_SENERE").withSkjemanummer(SKJEMANUMMER_KVITTERING));
-
-        InnsendtSoknad soknad = service.hentInnsendtSoknad("ID01");
-        assertThat(soknad.getSoknadPrefix()).isEqualToIgnoringCase(SOKNAD_PREFIX);
-    }
-
-    @Test
     public void skalPlassereIkkeOpplastetVedleggUnderIkkeInnsendteVedlegg() throws Exception {
         Collection<XMLMetadata> ikkeInnsendteVedlegg = Arrays.asList(
                 (XMLMetadata) new XMLVedlegg().withInnsendingsvalg("VEDLEGG_SENDES_AV_ANDRE"),

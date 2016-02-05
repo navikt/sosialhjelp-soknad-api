@@ -7,7 +7,6 @@ import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.InnsendtSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers;
@@ -58,8 +57,7 @@ public class InnsendtSoknadService {
 
         Optional<XMLMetadata> head = on(xmlHenvendelse.getMetadataListe().getMetadata()).filter(new InstanceofPredicate(XMLHovedskjema.class)).head();
 
-        XMLHovedskjema hovedskjema = (XMLHovedskjema) head.getOrThrow(new ApplicationException(String.format("Soknaden %s har ikke noe hovedskjema", behandlingsId)));
-        KravdialogInformasjon konfigurasjon = kravdialogInformasjonHolder.hentKonfigurasjon(hovedskjema.getSkjemanummer());
+        final XMLHovedskjema hovedskjema = (XMLHovedskjema) head.getOrThrow(new ApplicationException(String.format("Soknaden %s har ikke noe hovedskjema", behandlingsId)));
 
         List<Vedlegg> vedlegg = on(xmlHenvendelse.getMetadataListe().getMetadata()).map(new Transformer<XMLMetadata, Vedlegg>() {
             @Override
@@ -75,11 +73,18 @@ public class InnsendtSoknadService {
 
         vedleggService.leggTilKodeverkFelter(vedlegg);
 
+        Optional<Vedlegg> hovedskjemaVedlegg = on(vedlegg).filter(new Predicate<Vedlegg>() {
+            @Override
+            public boolean evaluate(Vedlegg vedlegg) {
+                return vedlegg.getSkjemaNummer().equalsIgnoreCase(hovedskjema.getSkjemanummer());
+            }
+        }).head();
+
         List<Vedlegg> innsendteVedlegg = on(vedlegg).filter(LASTET_OPP).collect();
         List<Vedlegg> ikkeInnsendteVedlegg = on(vedlegg).filter(IKKE_LASTET_OPP).collect();
 
         return new InnsendtSoknad()
-                .medSoknadPrefix(konfigurasjon.getSoknadTypePrefix())
+                .medSoknadTittel(hovedskjemaVedlegg.getOrElse(new Vedlegg()).getTittel())
                 .medBehandlingId(xmlHenvendelse.getBehandlingsId())
                 .medTemakode(xmlHenvendelse.getTema())
                 .medInnsendteVedlegg(innsendteVedlegg)

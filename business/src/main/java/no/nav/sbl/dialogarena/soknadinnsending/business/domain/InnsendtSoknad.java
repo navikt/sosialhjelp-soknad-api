@@ -23,15 +23,15 @@ public class InnsendtSoknad {
     private List<Vedlegg> innsendteVedlegg;
     private List<Vedlegg> ikkeInnsendteVedlegg;
     private String temakode;
-    private String soknadPrefix;
+    private String soknadTittel;
 
     public InnsendtSoknad medBehandlingId(String behandlingsId) {
         this.behandlingsId = behandlingsId;
         return this;
     }
 
-    public InnsendtSoknad medSoknadPrefix(String prefix) {
-        this.soknadPrefix = prefix;
+    public InnsendtSoknad medSoknadTittel(String soknadTittel) {
+        this.soknadTittel = soknadTittel;
         return this;
     }
 
@@ -75,7 +75,7 @@ public class InnsendtSoknad {
         return temakode;
     }
 
-    public String getSoknadPrefix() {
-        return soknadPrefix;
+    public String getSoknadTittel() {
+        return soknadTittel;
     }
 }
