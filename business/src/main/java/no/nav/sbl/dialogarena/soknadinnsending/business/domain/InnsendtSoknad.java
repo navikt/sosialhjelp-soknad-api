@@ -24,9 +24,15 @@ public class InnsendtSoknad {
     private List<Vedlegg> ikkeInnsendteVedlegg;
     private String temakode;
     private String soknadTittel;
+    private String soknadTittelCmsKey;
 
     public InnsendtSoknad medBehandlingId(String behandlingsId) {
         this.behandlingsId = behandlingsId;
+        return this;
+    }
+
+    public InnsendtSoknad medSoknadTittelCmsKey(String soknadTittelCmsKey) {
+        this.soknadTittelCmsKey = soknadTittelCmsKey;
         return this;
     }
 
@@ -77,5 +83,9 @@ public class InnsendtSoknad {
 
     public String getSoknadTittel() {
         return soknadTittel;
+    }
+
+    public String getSoknadTittelCmsKey() {
+        return soknadTittelCmsKey;
     }
 }
