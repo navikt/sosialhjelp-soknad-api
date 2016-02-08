@@ -62,14 +62,14 @@ public class InnsendtSoknadService {
 
         InnsendtSoknad innsendtSoknad = new InnsendtSoknad();
 
-        try{
+        try {
             KravdialogInformasjon konfigurasjon = kravdialogInformasjonHolder.hentKonfigurasjon(hovedskjema.getSkjemanummer());
             String prefix = konfigurasjon.getSoknadTypePrefix();
             innsendtSoknad.medTittelCmsKey(prefix.concat(".").concat("skjema.tittel"));
-        }catch (ApplicationException e){
+        } catch (ApplicationException e) {
             /*Dersom vi får en ApplicationException betyr det at soknaden ikke har noen konfigurasjon i sendsoknad.
             * Det er mest sannsynlig fordi soknaden er sendt inn via dokumentinnsending. I dette tilfellet bruker vi tittelen
-            * på hoveddokumentet som skjematittel. Denne finnes for alle soknader.ø
+            * på hoveddokumentet som skjematittel. Denne finnes for alle soknader.
             * */
         }
 
@@ -87,12 +87,9 @@ public class InnsendtSoknadService {
 
         vedleggService.leggTilKodeverkFelter(vedlegg);
 
-        Optional<Vedlegg> hovedskjemaVedlegg = on(vedlegg).filter(new Predicate<Vedlegg>() {
-            @Override
-            public boolean evaluate(Vedlegg vedlegg) {
-                return vedlegg.getSkjemaNummer().equalsIgnoreCase(hovedskjema.getSkjemanummer());
-            }
-        }).head();
+        Optional<Vedlegg> hovedskjemaVedlegg = on(vedlegg)
+                .filter(medSkjemanummer(hovedskjema.getSkjemanummer()))
+                .head();
 
         List<Vedlegg> innsendteVedlegg = on(vedlegg).filter(LASTET_OPP).collect();
         List<Vedlegg> ikkeInnsendteVedlegg = on(vedlegg).filter(IKKE_LASTET_OPP).collect();
@@ -105,5 +102,14 @@ public class InnsendtSoknadService {
                 .medInnsendteVedlegg(innsendteVedlegg)
                 .medIkkeInnsendteVedlegg(ikkeInnsendteVedlegg)
                 .medDato(xmlHenvendelse.getAvsluttetDato());
+    }
+
+    private Predicate<Vedlegg> medSkjemanummer(final String skjemanummer) {
+        return new Predicate<Vedlegg>() {
+            @Override
+            public boolean evaluate(Vedlegg vedlegg) {
+                return vedlegg.getSkjemaNummer().equalsIgnoreCase(skjemanummer);
+            }
+        };
     }
 }
