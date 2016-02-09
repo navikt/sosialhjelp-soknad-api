@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 public class SendtInnInfoHelperTest {
 
@@ -38,8 +38,8 @@ public class SendtInnInfoHelperTest {
         WebSoknad webSoknad = new WebSoknad();
         DateTimeUtils.setCurrentMillisFixed(new DateTime(2015, 7, 13, 18, 30).getMillis());
 
-        String innhold = handlebars.compileInline("{{#sendtInnInfo}}innsendt dato: {{innsendtDato}}{{/sendtInnInfo}}").apply(webSoknad);
-        assertThat(innhold).isEqualTo("innsendt dato: 13. juli 2015, klokken 18.30");
+        String innhold = handlebars.compileInline("{{#sendtInnInfo}}innsendt dato: {{innsendtDato}}, klokkeslett: {{innsendtKlokkeslett}}{{/sendtInnInfo}}").apply(webSoknad);
+        assertThat(innhold).isEqualTo("innsendt dato: 13. juli 2015, klokkeslett: 18.30");
     }
 
     private WebSoknad lagSoknadMedVedlegg() {
