@@ -102,7 +102,7 @@ public class SoknadActions {
             Locale sprak = LocaleUtils.toLocale(sprakkode);
             String subject = tekster.finnTekst("sendtSoknad.sendEpost.epostSubject", null, sprak);
             String ettersendelseUrl = getEttersendelseUrl(request.getRequestURL().toString(), behandlingsId);
-            String saksoversiktLink = saksoversiktUrl + "/detaljer/" + soknadBekreftelse.getTemaKode() + "/" + behandlingsId;
+            String saksoversiktLink = saksoversiktUrl + "/app#/tema/" + soknadBekreftelse.getTemaKode();
 
             if(!sprak.equals(LocaleUtils.toLocale("nb_NO"))) {
                 ettersendelseUrl += "?sprak=" + sprakkode;
