@@ -36,12 +36,12 @@ public class ArbeidsforholdBolk implements BolkService {
         arbeidsforholdFakta.addAll(on(arbeidsforholdService.hentArbeidsforhold(fodselsnummer)).map(arbeidsforholdTransformer(soknadId)).collect());
         if (!arbeidsforholdFakta.isEmpty()) {
             Faktum yrkesaktiv = faktaService.hentFaktumMedKey(soknadId, "arbeidsforhold.yrkesaktiv");
-            if (yrkesaktiv == null) {
-                arbeidsforholdFakta.add(new Faktum()
-                        .medSoknadId(soknadId)
-                        .medKey("arbeidsforhold.yrkesaktiv")
-                        .medValue("false"));
-            } else if(maSetteYrkesaktiv(yrkesaktiv)){
+
+            for (Faktum faktum : arbeidsforholdFakta) {
+                faktum.setParrentFaktum(yrkesaktiv.getFaktumId());
+            }
+
+            if(maSetteYrkesaktiv(yrkesaktiv)){
                 arbeidsforholdFakta.add(yrkesaktiv.medValue("false"));
             }
         }
