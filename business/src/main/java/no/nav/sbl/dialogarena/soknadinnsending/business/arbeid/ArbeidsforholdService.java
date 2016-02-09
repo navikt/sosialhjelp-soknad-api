@@ -72,18 +72,17 @@ public class ArbeidsforholdService implements BolkService {
     }
 
     public List<Faktum> genererArbeidsforhold(String fodselsnummer, final Long soknadId) {
-        List<Faktum> result =  new ArrayList<>();
+        List<Faktum> result = new ArrayList<>();
         result.addAll(on(hentArbeidsforhold(fodselsnummer)).map(arbeidsforholdTransformer(soknadId)).collect());
         if (!result.isEmpty()) {
             Faktum yrkesaktiv = faktaService.hentFaktumMedKey(soknadId, "arbeidsforhold.yrkesaktiv");
-            if (yrkesaktiv == null) {
-                result.add(new Faktum()
-                        .medSoknadId(soknadId)
-                        .medKey("arbeidsforhold.yrkesaktiv")
-                        .medValue("false"));
-            } else if(maSetteYrkesaktiv(yrkesaktiv)){
+            for (Faktum faktum : result) {
+                faktum.setParrentFaktum(yrkesaktiv.getFaktumId());
+            }
+            if(maSetteYrkesaktiv(yrkesaktiv)){
                 result.add(yrkesaktiv.medValue("false"));
             }
+
         }
         return result;
     }
