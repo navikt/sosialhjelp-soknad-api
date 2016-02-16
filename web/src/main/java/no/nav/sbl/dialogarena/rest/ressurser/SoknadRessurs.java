@@ -83,8 +83,8 @@ public class SoknadRessurs {
     @Path("/{behandlingsId}")
     @Produces("application/vnd.kvitteringforinnsendtsoknad+json")
     @SjekkTilgangTilSoknad
-    public InnsendtSoknad hentInnsendtSoknad(@PathParam("behandlingsId") String behandlingsId) {
-        return innsendtSoknadService.hentInnsendtSoknad(behandlingsId);
+    public InnsendtSoknad hentInnsendtSoknad(@PathParam("behandlingsId") String behandlingsId, @QueryParam("sprak") String sprak) {
+        return innsendtSoknadService.hentInnsendtSoknad(behandlingsId, sprak);
     }
 
     /*

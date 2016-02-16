@@ -31,6 +31,7 @@ public class InnsendtSoknadServiceTest {
     public static final XMLHovedskjema HOVEDSKJEMA = new XMLHovedskjema()
             .withSkjemanummer("NAV 11-12.12")
             .withInnsendingsvalg("LASTET_OPP");
+    public static final String SPRAK = "no_NB";
 
     private XMLMetadataListe xmlMetadataListe;
     private XMLHenvendelse xmlHenvendelse;
@@ -69,7 +70,7 @@ public class InnsendtSoknadServiceTest {
                 .withInnsendingsvalg("LASTET_OPP")
                 .withSkjemanummer(SKJEMANUMMER_KVITTERING));
 
-        InnsendtSoknad soknad = service.hentInnsendtSoknad("ID01");
+        InnsendtSoknad soknad = service.hentInnsendtSoknad("ID01", SPRAK);
         assertThat(soknad.getIkkeInnsendteVedlegg()).areNot(liktSkjemanummer(SKJEMANUMMER_KVITTERING));
         assertThat(soknad.getInnsendteVedlegg()).areNot(liktSkjemanummer(SKJEMANUMMER_KVITTERING));
     }
@@ -77,7 +78,7 @@ public class InnsendtSoknadServiceTest {
     @Test
     public void skalPlassereOpplastetVedleggUnderInnsendteVedlegg() throws Exception {
         xmlMetadataListe.withMetadata(HOVEDSKJEMA);
-        InnsendtSoknad soknad = service.hentInnsendtSoknad("ID01");
+        InnsendtSoknad soknad = service.hentInnsendtSoknad("ID01", SPRAK);
         assertThat(soknad.getInnsendteVedlegg()).are(liktSkjemanummer(HOVEDSKJEMA.getSkjemanummer()));
         assertThat(soknad.getIkkeInnsendteVedlegg()).hasSize(0);
     }
@@ -89,7 +90,7 @@ public class InnsendtSoknadServiceTest {
                 .withAvsluttetDato(new DateTime(2016, 01, 01, 12, 00))
                 .withTema("TSO");
 
-        InnsendtSoknad soknad = service.hentInnsendtSoknad("ID01");
+        InnsendtSoknad soknad = service.hentInnsendtSoknad("ID01", SPRAK);
         assertThat(soknad.getDato()).isEqualToIgnoringCase("1. januar 2016 klokken 12.00");
         assertThat(soknad.getTemakode()).isEqualToIgnoringCase("TSO");
     }
@@ -104,7 +105,7 @@ public class InnsendtSoknadServiceTest {
         xmlMetadataListe.withMetadata(HOVEDSKJEMA);
         xmlMetadataListe.withMetadata(ikkeInnsendteVedlegg);
 
-        InnsendtSoknad soknad = service.hentInnsendtSoknad("ID01");
+        InnsendtSoknad soknad = service.hentInnsendtSoknad("ID01", SPRAK);
         assertThat(soknad.getInnsendteVedlegg()).hasSize(1);
         assertThat(soknad.getIkkeInnsendteVedlegg()).hasSameSizeAs(ikkeInnsendteVedlegg);
 
