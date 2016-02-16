@@ -17,6 +17,7 @@ import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.PredicateUtils;
 import org.apache.commons.collections15.Transformer;
 import org.apache.commons.collections15.functors.InstanceofPredicate;
+import org.apache.commons.lang3.LocaleUtils;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -53,14 +54,14 @@ public class InnsendtSoknadService {
     public static final Predicate<Vedlegg> IKKE_LASTET_OPP = PredicateUtils.notPredicate(LASTET_OPP);
 
 
-    public InnsendtSoknad hentInnsendtSoknad(String behandlingsId) {
+    public InnsendtSoknad hentInnsendtSoknad(String behandlingsId, String sprak) {
         final XMLHenvendelse xmlHenvendelse = henvendelseService.hentInformasjonOmAvsluttetSoknad(behandlingsId);
 
         Optional<XMLMetadata> head = on(xmlHenvendelse.getMetadataListe().getMetadata()).filter(new InstanceofPredicate(XMLHovedskjema.class)).head();
 
         final XMLHovedskjema hovedskjema = (XMLHovedskjema) head.getOrThrow(new ApplicationException(String.format("Soknaden %s har ikke noe hovedskjema", behandlingsId)));
 
-        InnsendtSoknad innsendtSoknad = new InnsendtSoknad();
+        InnsendtSoknad innsendtSoknad = new InnsendtSoknad(LocaleUtils.toLocale(sprak));
 
         try {
             KravdialogInformasjon konfigurasjon = kravdialogInformasjonHolder.hentKonfigurasjon(hovedskjema.getSkjemanummer());
