@@ -91,8 +91,21 @@ public class InnsendtSoknadServiceTest {
                 .withTema("TSO");
 
         InnsendtSoknad soknad = service.hentInnsendtSoknad("ID01", SPRAK);
-        assertThat(soknad.getDato()).isEqualToIgnoringCase("1. januar 2016 klokken 12.00");
+        assertThat(soknad.getDato()).isEqualTo("1. januar 2016");
+        assertThat(soknad.getKlokkeslett()).isEqualTo("12.00");
         assertThat(soknad.getTemakode()).isEqualToIgnoringCase("TSO");
+    }
+
+    @Test
+    public void skalMappeDetaljerFraHenvendelsePaEngelsk() throws Exception {
+        xmlMetadataListe.withMetadata(HOVEDSKJEMA);
+        xmlHenvendelse
+                .withAvsluttetDato(new DateTime(2016, 01, 01, 12, 00))
+                .withTema("TSO");
+
+        InnsendtSoknad soknad = service.hentInnsendtSoknad("ID01", "en");
+        assertThat(soknad.getDato()).isEqualTo("1. January 2016");
+        assertThat(soknad.getKlokkeslett()).isEqualTo("12.00");
     }
 
     @Test
