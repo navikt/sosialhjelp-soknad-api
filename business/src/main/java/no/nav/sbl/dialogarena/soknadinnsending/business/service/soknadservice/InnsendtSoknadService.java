@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Locale;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
 
@@ -61,7 +62,8 @@ public class InnsendtSoknadService {
 
         final XMLHovedskjema hovedskjema = (XMLHovedskjema) head.getOrThrow(new ApplicationException(String.format("Soknaden %s har ikke noe hovedskjema", behandlingsId)));
 
-        InnsendtSoknad innsendtSoknad = new InnsendtSoknad(LocaleUtils.toLocale(sprak));
+        final Locale locale = LocaleUtils.toLocale(sprak);
+        InnsendtSoknad innsendtSoknad = new InnsendtSoknad(locale);
 
         try {
             KravdialogInformasjon konfigurasjon = kravdialogInformasjonHolder.hentKonfigurasjon(hovedskjema.getSkjemanummer());
@@ -74,19 +76,19 @@ public class InnsendtSoknadService {
             * */
         }
 
-        List<Vedlegg> vedlegg = on(xmlHenvendelse.getMetadataListe().getMetadata()).map(new Transformer<XMLMetadata, Vedlegg>() {
+        final List<Vedlegg> vedlegg = on(xmlHenvendelse.getMetadataListe().getMetadata()).map(new Transformer<XMLMetadata, Vedlegg>() {
             @Override
             public Vedlegg transform(XMLMetadata xmlMetadata) {
                 XMLVedlegg xmlVedlegg = (XMLVedlegg) xmlMetadata;
-                return new Vedlegg()
+                Vedlegg v = new Vedlegg()
                         .medInnsendingsvalg(Transformers.toInnsendingsvalg(xmlVedlegg.getInnsendingsvalg()))
                         .medSkjemaNummer(xmlVedlegg.getSkjemanummer())
                         .medSkjemanummerTillegg(xmlVedlegg.getSkjemanummerTillegg())
                         .medNavn(xmlVedlegg.getTilleggsinfo());
+                vedleggService.medKodeverk(v, locale);
+                return v;
             }
         }).filter(IKKE_KVITTERING).collect();
-
-        vedleggService.leggTilKodeverkFelter(vedlegg);
 
         Optional<Vedlegg> hovedskjemaVedlegg = on(vedlegg)
                 .filter(medSkjemanummer(hovedskjema.getSkjemanummer()))
