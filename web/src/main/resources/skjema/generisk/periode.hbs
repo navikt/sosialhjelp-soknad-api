@@ -1,0 +1,15 @@
+{{> skjema/generisk/infotekstvalue}}
+{{> skjema/generisk/sporsmal}}
+{{> skjema/generisk/infotekst}}
+
+{{#hvisTekstFinnes (concat key ".label")}}
+    <span>{{ hentTekst (concat key ".label") }}</span>
+{{/hvisTekstFinnes}}
+
+<ul class="svar-liste">
+    <li>
+
+        <span>{{ formaterLangDato (property 'fom')}} -</span>
+        <span>{{ formaterLangDato (property 'tom') }}</span>
+    </li>
+</ul>

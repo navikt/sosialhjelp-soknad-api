@@ -6,9 +6,17 @@ import com.github.jknack.handlebars.context.FieldValueResolver;
 import com.github.jknack.handlebars.context.MethodValueResolver;
 import com.github.jknack.handlebars.io.URLTemplateSource;
 import no.nav.sbl.dialogarena.config.ContentConfig;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonPortTypeMock;
+import no.nav.sbl.dialogarena.service.HtmlGenerator;
+import no.nav.sbl.dialogarena.service.helpers.HvisLikHelper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.FunksjonalitetBryter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
-import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Controller;
 
@@ -22,6 +30,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 
+import static javax.ws.rs.core.MediaType.TEXT_HTML;
+import static no.nav.sbl.dialogarena.rest.utils.MocksetupUtils.*;
+
 @Controller
 @Path("/internal")
 public class InternalRessurs {
@@ -33,8 +44,16 @@ public class InternalRessurs {
     private CacheManager cacheManager;
     @Inject
     private NavMessageSource messageSource;
+    @Inject
+    private SoknadService soknadService;
+    @Inject
+    private VedleggService vedleggService;
+    @Inject
+    private HtmlGenerator pdfTemplate;
     @Context
     private ServletContext servletContext;
+
+    private PersonPortTypeMock personPortTypeMock = PersonMock.getInstance().getPersonPortTypeMock();
 
 
     @GET
@@ -74,6 +93,48 @@ public class InternalRessurs {
         }
 
         return Response.seeOther(URI.create("/sendsoknad/internal/funksjon")).build();
+    }
+
+    @GET
+    @Path(value = "/mocksetup")
+    public String mocksetup() throws IOException {
+        MocksetupFields fields = getMocksetupFields();
+
+        Handlebars handlebars = new Handlebars();
+        handlebars.registerHelper(HvisLikHelper.NAVN, new HvisLikHelper());
+        Template compile = handlebars.compile(new URLTemplateSource("mocksetup.hbs", servletContext.getResource("/WEB-INF/mocksetup.hbs")));
+        com.github.jknack.handlebars.Context context = com.github.jknack.handlebars.Context
+                .newBuilder(fields)
+                .resolver(MethodValueResolver.INSTANCE)
+                .build();
+        return compile.apply(context);
+    }
+
+    @POST
+    @Path(value = "/mocksetup")
+    public Response mocksetup(@FormParam("statsborgerskap") String statsborgerskap,
+                                  @FormParam("kode6") String kode6,
+                                  @FormParam("primar_adressetype") String primarAdressetype,
+                                  @FormParam("sekundar_adressetype") String sekundarAdressetype) throws InterruptedException {
+        Boolean skalHaKode6 = "true".equalsIgnoreCase(kode6);
+
+        Person person = personPortTypeMock.getPerson();
+        person.setDiskresjonskode(skalHaKode6 ? getDiskresjonskode() : null);
+        person.getStatsborgerskap().getLand().setValue(statsborgerskap.toUpperCase());
+        settPostadressetype(primarAdressetype);
+        settSekundarAdressetype(sekundarAdressetype);
+
+        return Response.seeOther(URI.create("/sendsoknad/internal/mocksetup")).build();
+    }
+
+    @GET
+    @Path("/{behandlingsId}/nyoppsummering")
+    @Produces(TEXT_HTML)
+    public String hentOppsummeringNew(@PathParam("behandlingsId") String behandlingsId) throws IOException {
+        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
+        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
+
+        return pdfTemplate.fyllHtmlMalMedInnhold(soknad);
     }
 
     @GET

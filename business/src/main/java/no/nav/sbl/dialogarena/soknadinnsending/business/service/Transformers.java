@@ -1,8 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import org.apache.commons.collections15.Transformer;
 import org.joda.time.LocalDate;
 
@@ -10,15 +10,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.LASTET_OPP;
-import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.SENDES_IKKE;
-import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.SEND_SENERE;
-import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.VEDLEGG_SENDES_AV_ANDRE;
-import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.VEDLEGG_SENDES_IKKE;
-import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.VEDLEGG_ALLEREDE_SENDT;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.*;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.LastetOpp;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.SendesIkke;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.SendesSenere;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.VedleggAlleredeSendt;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.VedleggSendesAvAndre;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.VedleggSendesIkke;
+import static org.apache.commons.lang3.StringUtils.*;
+
 
 public class Transformers {
+
+    public static final String KONTRAKT_UTGAATT = "kontraktutgaatt";
+    public static final String AVSKJEDIGET = "avskjediget";
+    public static final String REDUSERT_ARBEIDSTID = "redusertarbeidstid";
+    public static final String ARBEIDSGIVER_ERKONKURS = "arbeidsgivererkonkurs";
+    public static final String SAGTOPP_AV_ARBEIDSGIVER = "sagtoppavarbeidsgiver";
+    public static final String SAGTOPP_SELV = "sagtoppselv";
+
 
     public static final Transformer<Faktum, LocalDate> DATO_TIL_PERMITTERING = new Transformer<Faktum, LocalDate>() {
         @Override
@@ -27,23 +37,22 @@ public class Transformers {
             return new LocalDate(properties.get("permiteringsperiodedatofra"));
         }
     };
-
     public static final Transformer<Faktum, LocalDate> DATO_TIL = new Transformer<Faktum, LocalDate>() {
         @Override
         public LocalDate transform(Faktum faktum) {
             Map<String, String> properties = faktum.getProperties();
             switch (TYPE.transform(faktum)) {
-                case "Kontrakt utgått":
+                case KONTRAKT_UTGAATT:
                     return new LocalDate(properties.get("datotil"));
-                case "Avskjediget":
+                case AVSKJEDIGET:
                     return new LocalDate(properties.get("datotil"));
-                case "Redusert arbeidstid":
+                case REDUSERT_ARBEIDSTID:
                     return new LocalDate(properties.get("redusertfra"));
-                case "Arbeidsgiver er konkurs":
+                case ARBEIDSGIVER_ERKONKURS:
                     return new LocalDate(properties.get("konkursdato"));
-                case "Sagt opp av arbeidsgiver":
+                case SAGTOPP_AV_ARBEIDSGIVER:
                     return new LocalDate(properties.get("datotil"));
-                case "Sagt opp selv":
+                case SAGTOPP_SELV:
                     return new LocalDate(properties.get("datotil"));
                 default:
                     return null;
@@ -62,7 +71,7 @@ public class Transformers {
         List<XMLVedlegg> resultat = new ArrayList<>();
         for (Vedlegg vedlegg : vedleggForventnings) {
             XMLVedlegg xmlVedlegg;
-            if (vedlegg.getInnsendingsvalg().er(Vedlegg.Status.LastetOpp)) {
+            if (vedlegg.getInnsendingsvalg().er(LastetOpp)) {
                 xmlVedlegg = new XMLVedlegg()
                         .withFilnavn(vedlegg.lagFilNavn())
                         .withSideantall(vedlegg.getAntallSider())
@@ -111,19 +120,19 @@ public class Transformers {
     public static Vedlegg.Status toInnsendingsvalg(String xmlInnsendingsvalg) {
         switch (xmlInnsendingsvalg) {
             case "LASTET_OPP":
-                return Vedlegg.Status.LastetOpp;
+                return LastetOpp;
             case "SEND_SENERE":
-                return Vedlegg.Status.SendesSenere;
+                return SendesSenere;
             case "SENDES_IKKE":
-                return Vedlegg.Status.SendesIkke;
+                return SendesIkke;
             case "VEDLEGG_SENDES_IKKE":
-                return Vedlegg.Status.VedleggSendesIkke;
+                return VedleggSendesIkke;
             case "VEDLEGG_SENDES_AV_ANDRE":
-                return Vedlegg.Status.VedleggSendesAvAndre;
+                return VedleggSendesAvAndre;
             case "VEDLEGG_ALLEREDE_SENDT":
-                return Vedlegg.Status.VedleggAlleredeSendt;
+                return VedleggAlleredeSendt;
             default:
-                return Vedlegg.Status.SendesIkke;
+                return SendesIkke;
         }
     }
 }

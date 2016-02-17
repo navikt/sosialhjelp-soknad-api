@@ -1,0 +1,7 @@
+<ul class="fakta-liste">
+    {{#variabel "niva" (inc niva)}}
+        {{#each barneProperties}}
+            {{> skjema/generisk/faktum}}
+        {{/each}}
+    {{/variabel}}
+</ul>

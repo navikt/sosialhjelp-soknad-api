@@ -1,16 +1,16 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeid.*;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.*;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.*;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.*;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.*;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.*;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.*;
-import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Profile;
+import org.springframework.cache.annotation.*;
+import org.springframework.context.annotation.*;
 
-import static java.lang.System.setProperty;
+import static java.lang.System.*;
 
 @Configuration
 @EnableCaching
@@ -19,7 +19,9 @@ import static java.lang.System.setProperty;
         HenvendelseService.class,
         PersonService.class,
         PersonInfoService.class,
+        ArbeidssokerInfoService.class,
         ConsumerConfig.WsServices.class,
+        PersonaliaFletter.class
 })
 
 public class ConsumerConfig {

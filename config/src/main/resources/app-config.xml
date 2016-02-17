@@ -31,6 +31,7 @@
         <baseUrl alias="appres.cms" mapToProperty="dialogarena.cms"/>
         <baseUrl alias="dialogarena.navnolink" mapToProperty="dialogarena.navnolink" />
         <baseUrl alias="soknadinnsending.link" mapToProperty="soknadinnsending.link"/>
+        <baseUrl alias="arbeid.rest" mapToProperty="arbeid.rest"/>
 
         <baseUrl alias="soknad.skjemaveileder" mapToProperty="soknad.skjemaveileder"/>
         <baseUrl alias="soknad.alderspensjon" mapToProperty="soknad.alderspensjon"/>
@@ -51,6 +52,7 @@
         <localFiles name="sendsoknad" mapToProperty="sendsoknad.datadir"/>
         <applicationCertificate alias="srvSendsoknad"/>
         <credential alias="arena.personInfoService" mapToProperty="arena.personInfoService"/>
+        <credential alias="arbeidservice" mapToProperty="arbeidservice"/>
     </resources>
     <security serviceUserResourceAlias="srvSendsoknad">
         <logins>

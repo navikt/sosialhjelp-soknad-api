@@ -2,8 +2,8 @@ package no.nav.sbl.dialogarena.rest.ressurser.informasjon;
 
 
 import no.nav.modig.core.context.StaticSubjectHandler;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.AktivitetService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.MaalgrupperService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.AktivitetService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.MaalgrupperService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

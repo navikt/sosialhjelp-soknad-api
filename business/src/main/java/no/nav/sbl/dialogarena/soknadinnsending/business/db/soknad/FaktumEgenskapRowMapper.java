@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.FaktumEgenskap;
+
+import no.nav.sbl.dialogarena.sendsoknad.domain.FaktumEgenskap;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

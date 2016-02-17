@@ -1,14 +1,13 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.util;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.Adresse;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBuilder;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
+import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
+import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.PersonaliaBuilder;
 
 import java.util.Map;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.*;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.STATSBORGERSKAP_KEY;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia.*;
 
 public class PersonaliaUtils {
 

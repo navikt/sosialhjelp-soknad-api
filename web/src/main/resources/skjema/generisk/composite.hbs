@@ -1,0 +1,14 @@
+{{>skjema/generisk/sporsmal}}
+{{> skjema/generisk/infotekst}}
+
+{{ hentTekst (concat key ".label") }}
+<ul class="svar-liste">
+
+    <li class="ikke-stylet">
+        {{> skjema/generisk/barneproperties}}
+        {{> skjema/generisk/barnefakta}}
+    </li>
+
+</ul>
+
+{{> skjema/generisk/vedlegg}}

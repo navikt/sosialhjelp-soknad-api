@@ -1,8 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.arbeid;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.dto.Land;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.dto.Land;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdTransformer;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.FinnArbeidsforholdPrArbeidstakerSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.FinnArbeidsforholdPrArbeidstakerUgyldigInput;
@@ -22,9 +23,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -62,7 +61,7 @@ public class ArbeidsforholdServiceTest {
 
     @Test
     public void skalSetteAlleFaktumFelter() throws Exception {
-        no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.Arbeidsforhold result = lagArbeidsforhold();
+        no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold result = lagArbeidsforhold();
         setup(result);
         List<Faktum> faktums = service.genererArbeidsforhold("123", soknadId);
         Faktum faktum = faktums.get(0);
@@ -81,7 +80,7 @@ public class ArbeidsforholdServiceTest {
 
     @Test
     public void skalSetteVariabel() throws Exception {
-        no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.Arbeidsforhold result = lagArbeidsforhold();
+        no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold result = lagArbeidsforhold();
         result.harFastStilling = false;
         result.fastStillingsprosent = 0L;
         result.variabelStillingsprosent = true;
@@ -95,7 +94,7 @@ public class ArbeidsforholdServiceTest {
 
     @Test
     public void skalSetteMixed() throws Exception {
-        no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.Arbeidsforhold result = lagArbeidsforhold();
+        no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold result = lagArbeidsforhold();
         result.variabelStillingsprosent = true;
         setup(result);
         List<Faktum> faktums = service.genererArbeidsforhold("123", soknadId);
@@ -107,7 +106,7 @@ public class ArbeidsforholdServiceTest {
 
     @Test
     public void skalSettePagaende() throws Exception {
-        no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.Arbeidsforhold result = lagArbeidsforhold();
+        no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold result = lagArbeidsforhold();
         result.tom = null;
         setup(result);
         List<Faktum> faktums = service.genererArbeidsforhold("123", soknadId);
@@ -118,7 +117,7 @@ public class ArbeidsforholdServiceTest {
 
     @Test
     public void arbeidsforholdSkalHaRiktigParrentFaktum() throws FinnArbeidsforholdPrArbeidstakerSikkerhetsbegrensning, FinnArbeidsforholdPrArbeidstakerUgyldigInput {
-        no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.Arbeidsforhold result = lagArbeidsforhold();
+        no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold result = lagArbeidsforhold();
         setup(result);
         List<Faktum> faktums = service.genererArbeidsforhold("123", soknadId);
         Faktum faktum = faktums.get(0);
@@ -126,7 +125,7 @@ public class ArbeidsforholdServiceTest {
         assertThat(faktum.getParrentFaktum(), equalTo(yrkesAktivFaktumId));
 
     }
-    private Arbeidsforhold setup(no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.Arbeidsforhold result) throws FinnArbeidsforholdPrArbeidstakerSikkerhetsbegrensning, FinnArbeidsforholdPrArbeidstakerUgyldigInput {
+    private Arbeidsforhold setup(no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold result) throws FinnArbeidsforholdPrArbeidstakerSikkerhetsbegrensning, FinnArbeidsforholdPrArbeidstakerUgyldigInput {
         FinnArbeidsforholdPrArbeidstakerResponse t = new FinnArbeidsforholdPrArbeidstakerResponse();
         Arbeidsforhold arbeidsforhold = new Arbeidsforhold();
         t.getArbeidsforhold().add(arbeidsforhold);
@@ -136,8 +135,8 @@ public class ArbeidsforholdServiceTest {
         return arbeidsforhold;
     }
 
-    private no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.Arbeidsforhold lagArbeidsforhold() {
-        no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.Arbeidsforhold arbeidsforhold = new no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.Arbeidsforhold();
+    private no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold lagArbeidsforhold() {
+        no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold arbeidsforhold = new no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold();
         arbeidsforhold.orgnr = "12345";
         arbeidsforhold.arbridsgiverNavn = "test";
         arbeidsforhold.harFastStilling = true;
