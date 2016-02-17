@@ -1,9 +1,9 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
 import com.github.jknack.handlebars.Handlebars;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.service.CmsTekst;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,6 +13,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
 
+import static org.apache.commons.lang3.LocaleUtils.toLocale;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -43,7 +44,7 @@ public class hentTekstMedFaktumParameterHelperTest {
 
         handlebars.compileInline("{{hentTekstMedFaktumParameter \"cms.key\" \"faktum.key\"}}").apply(webSoknad);
 
-        verify(cmsTekst, times(1)).getCmsTekst("cms.key", new Object[]{"faktumValue"}, "mittprefix");
+        verify(cmsTekst, times(1)).getCmsTekst("cms.key", new Object[]{"faktumValue"}, "mittprefix", toLocale("nb_NO"));
     }
 
 

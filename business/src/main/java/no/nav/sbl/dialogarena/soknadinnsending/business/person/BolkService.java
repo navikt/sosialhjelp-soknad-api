@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 
 import java.util.List;
 

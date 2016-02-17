@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl" xmlns:xi="http://www.w3.org/2001/XInclude">
+
+    <xi:include href="../../felles/personalia.xml" />
+
+    <faktum>
+        <id>lonnsOgTrekkOppgave</id>
+        <panel>Personalia</panel>
+        <type>hidden</type>
+        <erSystemFaktum>true</erSystemFaktum>
+    </faktum>
+
+
+    <vedlegg>
+        <faktum>personalia</faktum>
+        <skjemaNummer>T4</skjemaNummer>
+        <onProperty>statsborgerskap</onProperty>
+        <onValues>
+            <value>NOR</value>
+            <value>SWE</value>
+            <value>FRO</value>
+            <value>ISL</value>
+            <value>DNK</value>
+            <value>FIN</value>
+        </onValues>
+        <inverted>true</inverted>
+        <forSystemfaktum>true</forSystemfaktum>
+    </vedlegg>
+</soknad>

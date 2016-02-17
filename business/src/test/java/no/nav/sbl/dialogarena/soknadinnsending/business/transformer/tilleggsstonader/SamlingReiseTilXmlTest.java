@@ -1,13 +1,14 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader;
 
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.ReiseObligatoriskSamling;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.tilleggsstonader.SamlingReiseTilXml;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.tilleggsstonader.StofoKodeverkVerdier;
 import org.junit.Test;
 
 import java.math.BigInteger;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoKodeverkVerdier.InnsendingsintervallerKodeverk.uke;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.transformer.tilleggsstonader.StofoTestUtils.periodeMatcher;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -73,7 +74,7 @@ public class SamlingReiseTilXmlTest {
         soknad.getFakta().add(new Faktum().medKey("reise.samling.reiselengde").medValue("100"));
 
         soknad.getFakta().add(new Faktum().medKey("reise.samling.offentligtransport.egenbil.parkering").medValue("false"));
-        soknad.getFakta().add(new Faktum().medKey("reise.samling.offentligtransport.egenbil.sendebekreftelse").medValue(uke.name()));
+        soknad.getFakta().add(new Faktum().medKey("reise.samling.offentligtransport.egenbil.sendebekreftelse").medValue(StofoKodeverkVerdier.InnsendingsintervallerKodeverk.uke.name()));
         soknad.getFakta().add(new Faktum().medKey("reise.samling.offentligtransport.drosje").medValue("true"));
         soknad.getFakta().add(new Faktum().medKey("reise.samling.offentligtransport.drosje.belop").medValue("50"));
         soknad.getFakta().add(new Faktum().medKey("reise.samling.offentligtransport").medValue("false"));

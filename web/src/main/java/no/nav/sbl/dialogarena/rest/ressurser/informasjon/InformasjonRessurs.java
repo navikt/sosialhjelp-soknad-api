@@ -2,17 +2,19 @@ package no.nav.sbl.dialogarena.rest.ressurser.informasjon;
 
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.rest.Logg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.PersonAlder;
+import no.nav.sbl.dialogarena.sendsoknad.domain.dto.Land;
+import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.PersonAlder;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.dto.Land;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.LandService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.LandService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeid.ArbeidssokerInfoService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService;
 import no.nav.sbl.dialogarena.utils.InnloggetBruker;
+import org.apache.commons.lang3.LocaleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -46,7 +48,9 @@ public class InformasjonRessurs {
     @Inject
     private LandService landService;
     @Inject
-    private PersonaliaService personaliaService;
+    private PersonaliaBolk personaliaBolk;
+    @Inject
+    private ArbeidssokerInfoService arbeidssokerInfoService;
     @Inject
     private PersonInfoService personInfoService;
     @Inject
@@ -94,14 +98,7 @@ public class InformasjonRessurs {
         if (sprak == null || sprak.trim().isEmpty()) {
             sprak = "nb_NO";
         }
-
-        if (!sprak.matches("[a-z][a-z]_[A-Z][A-Z]")) {
-            throw new IllegalArgumentException("Språk må matche xx_XX: " + sprak);
-        }
-
-        String[] split = sprak.split("_");
-        Locale locale = new Locale(split[0], split[1]);
-
+        Locale locale = LocaleUtils.toLocale(sprak);
         return messageSource.getBundleFor(type, locale);
     }
 
@@ -141,10 +138,11 @@ public class InformasjonRessurs {
         String uid = getSubjectHandler().getUid();
         Map<String, Object> utslagskriterierResultat = new HashMap<>();
         utslagskriterierResultat.put("arbeidssokerstatus", personInfoService.hentArbeidssokerStatus(uid));
+        utslagskriterierResultat.put("arbeidssokertatusFraSBLArbeid", arbeidssokerInfoService.getArbeidssokerArenaStatus(uid));
         utslagskriterierResultat.put("ytelsesstatus", personInfoService.hentYtelseStatus(uid));
 
         try {
-            Personalia personalia = personaliaService.hentPersonalia(uid);
+            Personalia personalia = personaliaBolk.hentPersonalia(uid);
             utslagskriterierResultat.put("alder", Integer.toString(new PersonAlder(uid).getAlder()));
             utslagskriterierResultat.put("fodselsdato", personalia.getFodselsdato());
             utslagskriterierResultat.put("bosattINorge", ((Boolean) !personalia.harUtenlandskAdresse()).toString());

@@ -1,0 +1,9 @@
+{{> skjema/generisk/infotekstvalue}}
+{{> skjema/generisk/sporsmal}}
+
+{{ hentTekst (concat key ".label") }}
+<ul class="svar-liste">
+    <li>
+        {{formaterLangDato value}}
+    </li>
+</ul>

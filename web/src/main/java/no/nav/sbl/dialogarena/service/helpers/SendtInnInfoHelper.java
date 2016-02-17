@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
 import com.github.jknack.handlebars.Options;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
-import static no.nav.sbl.dialogarena.service.HandlebarsUtils.NO_LOCALE;
-import static no.nav.sbl.dialogarena.service.HandlebarsUtils.finnWebSoknad;
+import static no.nav.sbl.dialogarena.service.HandlebarsUtils.*;
 
 @Component
 public class SendtInnInfoHelper extends RegistryAwareHelper<Object> {
@@ -34,11 +34,16 @@ public class SendtInnInfoHelper extends RegistryAwareHelper<Object> {
         WebSoknad soknad = finnWebSoknad(options.context);
         Map<String, String> infoMap = new HashMap<>();
 
-        DateTimeFormatter dt = DateTimeFormat.forPattern("d. MMMM yyyy', klokken' HH.mm").withLocale(NO_LOCALE);
+        Locale sprak = soknad.getSprak();
+        DateTime now = DateTime.now();
+
+        DateTimeFormatter datoFormatter = DateTimeFormat.forPattern("d. MMMM yyyy").withLocale(sprak);
+        DateTimeFormatter klokkeslettFormatter = DateTimeFormat.forPattern("HH.mm").withLocale(sprak);
 
         infoMap.put("sendtInn", String.valueOf(soknad.getInnsendteVedlegg().size()));
         infoMap.put("ikkeSendtInn", String.valueOf(soknad.hentPaakrevdeVedlegg().size()));
-        infoMap.put("innsendtDato", dt.print(DateTime.now()));
+        infoMap.put("innsendtDato", datoFormatter.print(now));
+        infoMap.put("innsendtKlokkeslett", klokkeslettFormatter.print(now));
 
         return options.fn(infoMap);
     }

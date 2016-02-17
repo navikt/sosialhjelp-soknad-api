@@ -2,9 +2,9 @@ package no.nav.sbl.dialogarena.rest.feil;
 
 import no.nav.modig.core.exception.AuthorizationException;
 import no.nav.modig.core.exception.ModigException;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.IkkeFunnetException;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.OpplastingException;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigOpplastingTypeException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.IkkeFunnetException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigOpplastingTypeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

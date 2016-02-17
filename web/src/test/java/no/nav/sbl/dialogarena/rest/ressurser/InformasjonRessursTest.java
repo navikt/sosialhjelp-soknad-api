@@ -3,16 +3,17 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.modig.core.context.ThreadLocalSubjectHandler;
 import no.nav.sbl.dialogarena.rest.ressurser.informasjon.InformasjonRessurs;
+import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.FaktumStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.Adresse;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
+import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.LandService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.LandService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeid.ArbeidssokerInfoService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +44,7 @@ public class InformasjonRessursTest {
     @Spy
     LandService landService;
     @Mock
-    PersonaliaService personaliaService;
+    PersonaliaBolk personaliaBolk;
     @Mock
     PersonInfoService personInfoService;
     @Mock
@@ -52,6 +53,8 @@ public class InformasjonRessursTest {
     NavMessageSource messageSource;
     @Mock
     WebSoknadConfig soknadConfig;
+    @Mock
+    ArbeidssokerInfoService arbeidssokerInfoService;
 
     @InjectMocks
     InformasjonRessurs ressurs;
@@ -63,7 +66,7 @@ public class InformasjonRessursTest {
     public void setUp() {
         System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", StaticSubjectHandler.class.getName());
         when(personInfoService.hentArbeidssokerStatus(anyString())).thenReturn("ARBS");
-        when(personaliaService.hentPersonalia(anyString())).thenReturn(personalia());
+        when(personaliaBolk.hentPersonalia(anyString())).thenReturn(personalia());
 
         struktur = new SoknadStruktur();
         struktur.setTemaKode(TEMAKODE);
@@ -96,7 +99,9 @@ public class InformasjonRessursTest {
 
     @Test
     public void utslagskriterierInneholderAlleKriteriene() {
+        when(arbeidssokerInfoService.getArbeidssokerArenaStatus(anyString())).thenReturn("ARBS");
         Map<String, Object> utslagskriterier = ressurs.hentUtslagskriterier();
+        assertThat(utslagskriterier.containsKey("arbeidssokertatusFraSBLArbeid")).isTrue();
         assertThat(utslagskriterier.containsKey("arbeidssokerstatus")).isTrue();
         assertThat(utslagskriterier.containsKey("ytelsesstatus")).isTrue();
         assertThat(utslagskriterier.containsKey("alder")).isTrue();
@@ -108,7 +113,7 @@ public class InformasjonRessursTest {
         assertThat(utslagskriterier.containsKey("erBosattIEOSLand")).isTrue();
         assertThat(utslagskriterier.containsKey("statsborgerskap")).isTrue();
 
-        assertThat(utslagskriterier.size()).isEqualTo(10);
+        assertThat(utslagskriterier.size()).isEqualTo(11);
     }
 
     @Test

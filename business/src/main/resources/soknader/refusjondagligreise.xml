@@ -1,9 +1,0 @@
-<soknad skjemaNummer="NAV 11-12.10" temaKode="TSO">
-    <faktum>
-        <id>vedtak</id>
-    </faktum>
-    <faktum>
-        <id>vedtak.betalingsplan</id>
-        <erSystemFaktum>true</erSystemFaktum>
-    </faktum>
-</soknad>

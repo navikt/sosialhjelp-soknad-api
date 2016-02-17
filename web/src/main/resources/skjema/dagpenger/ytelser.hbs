@@ -1,13 +1,13 @@
 <h2>{{ hentTekst "ytelser.tittel" }}</h2>
 <table>
-{{#forFaktum "offentligTjenestepensjon"}}
+{{#forFaktum "andreytelser.ytelser.offentligtjenestepensjon"}}
     {{#hvisSant value}}
         <tr>
             <td class="sjekket"></td>
             <td>
                 <span>{{ hentTekst "ytelser.offentligTjenestepensjon" }}</span>
                 <ul>
-                    {{#forFaktum "offentligTjenestepensjonUtbetaler"}}
+                    {{#forFaktum "andreytelser.ytelser.offentligtjenestepensjon.utbetaler"}}
                         <li class="kulepunkt">
                             <span>{{ hentTekst "ytelser.offentligTjenestepensjonUtbetaler" }}</span>
                             <span>{{ value }}</span>
@@ -19,14 +19,14 @@
     {{/hvisSant}}
 {{/forFaktum}}
 
-{{#forFaktum "privatTjenestepensjon"}}
+{{#forFaktum "andreytelser.ytelser.privattjenestepensjon"}}
     {{#hvisSant value}}
         <tr>
             <td class="sjekket"></td>
             <td>
-                <span>{{ hentTekst "ytelser.privatTjenestepensjon" }}</span>
+                <span>{{ hentTekst "andreytelser.ytelser.privattjenestepensjon" }}</span>
                 <ul>
-                    {{#forFaktum "privatTjenestepensjonUtbetaler"}}
+                    {{#forFaktum "andreytelser.ytelser.privattjenestepensjon"}}
                         <li class="kulepunkt">
                             <span>{{ hentTekst "ytelser.privatTjenestepensjonUtbetaler" }}</span>
                             <span>{{ value }}</span>
@@ -38,7 +38,7 @@
     {{/hvisSant}}
 {{/forFaktum}}
 
-{{#forFaktum "stonadFisker"}}
+{{#forFaktum "andreytelser.ytelser.stonadfisker"}}
     {{#hvisSant value}}
         <tr>
             <td class="sjekket"></td>
@@ -57,7 +57,7 @@
     {{/hvisSant}}
 {{/forFaktum}}
 
-{{#forFaktum "garantilott"}}
+{{#forFaktum "andreytelser.ytelser.garantilott"}}
     {{#hvisSant value}}
         <tr>
             <td class="sjekket"></td>
@@ -76,7 +76,7 @@
     {{/hvisSant}}
 {{/forFaktum}}
 
-{{#forFaktum "etterlonn"}}
+{{#forFaktum "andreytelser.ytelser.etterlonn"}}
     {{#hvisSant value}}
         <tr>
             <td class="sjekket"></td>
@@ -95,7 +95,7 @@
     {{/hvisSant}}
 {{/forFaktum}}
 
-{{#forFaktum "vartpenger"}}
+{{#forFaktum "andreytelser.ytelser.vartpenger"}}
     {{#hvisSant value}}
         <tr>
             <td class="sjekket"></td>
@@ -114,7 +114,7 @@
     {{/hvisSant}}
 {{/forFaktum}}
 
-{{#forFaktum "dagpengerEOS"}}
+{{#forFaktum "andreytelser.ytelser.dagpengereos"}}
     {{#hvisSant value}}
         <tr>
             <td class="sjekket"></td>
@@ -133,7 +133,7 @@
     {{/hvisSant}}
 {{/forFaktum}}
 
-{{#forFaktum "annenYtelse"}}
+{{#forFaktum "andreytelser.ytelser.annenytelse"}}
     {{#hvisSant value}}
         <tr>
             <td class="sjekket"></td>
@@ -159,7 +159,7 @@
     {{/hvisSant}}
 {{/forFaktum}}
 
-{{#forFaktum "ingenYtelse"}}
+{{#forFaktum "andreytelser.ytelser.ingenytelse"}}
     {{#hvisSant value}}
         <tr>
             <td class="sjekket"></td>

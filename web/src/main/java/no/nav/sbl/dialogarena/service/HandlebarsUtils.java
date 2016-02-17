@@ -1,13 +1,11 @@
 package no.nav.sbl.dialogarena.service;
 
-import com.github.jknack.handlebars.Context;
-import com.github.jknack.handlebars.Options;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import com.github.jknack.handlebars.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.service.oppsummering.*;
 
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.Locale;
+import java.io.*;
+import java.util.*;
 
 public class HandlebarsUtils {
 
@@ -42,6 +40,8 @@ public class HandlebarsUtils {
             return null;
         } else if (context.model() instanceof WebSoknad) {
             return (WebSoknad) context.model();
+        } else if (context.model() instanceof OppsummeringsContext) {
+            return ((OppsummeringsContext) context.model()).soknad;
         } else {
             return finnWebSoknad(context.parent());
         }

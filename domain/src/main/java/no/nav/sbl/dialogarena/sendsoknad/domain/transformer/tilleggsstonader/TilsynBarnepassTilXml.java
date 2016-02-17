@@ -1,0 +1,67 @@
+package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.tilleggsstonader;
+
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Barn;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import org.springframework.context.*;
+
+import java.util.*;
+
+import static no.nav.modig.lang.collections.IterUtils.*;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.FaktumPredicates.*;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.StofoTransformers.*;
+import static org.apache.commons.lang3.BooleanUtils.*;
+
+public class TilsynBarnepassTilXml extends CmsTransformer<WebSoknad, TilsynsutgifterBarn> {
+    public static final String BARNEPASS_ANDREFORELDER = "barnepass.andreforelder";
+    public static final String BARNEPASS_TYPER = "barnepass.typer";
+    public static final String BARNEPASS_FOLLFORT_FJERDE = "barnepass.fjerdeklasse";
+    public static final List<String> BARNEPASS_AARSAKER = Arrays.asList("barnepass.fjerdeklasse.langvarig", "barnepass.fjerdeklasse.trengertilsyn", "barnepass.fjerdeklasse.ingen");
+    private static final String PERIODE = "barnepass.periode";
+    private static final String SOKERBARNEPASS = "barnepass.sokerbarnepass";
+    private TilsynsutgifterBarn tilsynsutgifterBarn = new TilsynsutgifterBarn();
+
+    public TilsynBarnepassTilXml(MessageSource navMessageSource) {
+        super(navMessageSource);
+    }
+
+    @Override
+    public TilsynsutgifterBarn transform(WebSoknad soknad) {
+        tilsynsutgifterBarn.setPeriode(extractValue(soknad.getFaktumMedKey(PERIODE), Periode.class));
+        barnSomDetSokesBarnepassOm(soknad);
+        tilsynsutgifterBarn.setAnnenForsoergerperson(extractValue(soknad.getFaktumMedKey(BARNEPASS_ANDREFORELDER), String.class));
+
+        return tilsynsutgifterBarn;
+    }
+
+    private void barnSomDetSokesBarnepassOm(WebSoknad soknad) {
+        List<Faktum> sokerBarnepassBarn = on(soknad.getFaktaMedKey(SOKERBARNEPASS)).filter(harValue("true")).collect();
+        for (Faktum barnepass : sokerBarnepassBarn) {
+            Faktum barn = soknad.finnFaktum(Long.valueOf(barnepass.getProperties().get("tilknyttetbarn")));
+            if (barn != null) {
+                Barn stofoBarn = extractValue(barn, Barn.class);
+
+                Faktum barnepassType = soknad.getFaktumMedKeyOgParentFaktum(BARNEPASS_TYPER, barnepass.getFaktumId());
+                stofoBarn.setTilsynskategori(extractValue(barnepassType, Tilsynskategorier.class));
+
+                Faktum fulfortFjerde = soknad.getFaktumMedKeyOgParentFaktum(BARNEPASS_FOLLFORT_FJERDE, barnepass.getFaktumId());
+                stofoBarn.setHarFullfoertFjerdeSkoleaar(extractValue(fulfortFjerde, Boolean.class));
+
+                List<String> aarsakTilBarnepasses = aarsaker(soknad, fulfortFjerde.getFaktumId());
+                stofoBarn.getAarsakTilBarnepass().addAll(aarsakTilBarnepasses);
+                tilsynsutgifterBarn.getBarn().add(stofoBarn);
+            }
+        }
+    }
+
+    private List<String> aarsaker(WebSoknad soknad, Long parentFaktumId) {
+        List<String> result = new ArrayList<>();
+        for (String faktumKey : BARNEPASS_AARSAKER) {
+            if (isTrue(extractValue(soknad.getFaktumMedKeyOgParentFaktum(faktumKey, parentFaktumId), Boolean.class))) {
+                String key = StofoKodeverkVerdier.BarnepassAarsak.valueOf(faktumKey.substring(faktumKey.lastIndexOf(".") + 1)).cmsKey;
+                result.add(cms(key));
+            }
+        }
+        return result;
+    }
+}

@@ -10,7 +10,7 @@ public final class Comparators {
     private static Locale norwegianLocale = new Locale("nb", "NO");
 
     public static <T, C extends Comparable<C>> Comparator<T> compareBy(Transformer<T, C> transformer) {
-        return new TransformerComparator<T, C>(transformer);
+        return new TransformerComparator<>(transformer);
     }
 
     private static class TransformerComparator<T, C extends Comparable<C>> implements Comparator<T> {

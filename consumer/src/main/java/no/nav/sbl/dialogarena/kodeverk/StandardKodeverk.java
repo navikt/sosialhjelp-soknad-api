@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.kodeverk;
 
-import static no.nav.sbl.dialogarena.kodeverk.Kodeverk.EksponertKodeverk.*;
 import no.nav.modig.common.MDCOperations;
 import no.nav.modig.core.exception.SystemException;
 import no.nav.modig.lang.option.Optional;
@@ -43,6 +42,8 @@ import static no.nav.modig.lang.collections.TransformerUtils.makeDirs;
 import static no.nav.modig.lang.option.Optional.none;
 import static no.nav.modig.lang.option.Optional.optional;
 import static no.nav.sbl.dialogarena.common.Comparators.compareBy;
+import static no.nav.sbl.dialogarena.kodeverk.Kodeverk.EksponertKodeverk.LANDKODE;
+import static no.nav.sbl.dialogarena.kodeverk.Kodeverk.EksponertKodeverk.POSTNUMMER;
 import static org.joda.time.DateTime.now;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -88,6 +89,9 @@ public class StandardKodeverk implements Kodeverk {
     @Override
     public String getLand(String landkode) {
         String landFraKodeverk = hentFoersteTermnavnFraKodeIKodeverk(landkode, LANDKODE.toString());
+        if (landFraKodeverk == null) {
+            return "[Fant ikke "+landkode+" i kodeverk LANDKODE]";
+        }
         return formaterLand(landFraKodeverk);
     }
 

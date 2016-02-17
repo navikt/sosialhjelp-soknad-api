@@ -3,10 +3,10 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad;
 import com.google.common.base.Function;
 import no.nav.modig.lang.collections.iter.ReduceFunction;
 import no.nav.modig.lang.option.Optional;
+import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.*;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.FaktumStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.VedleggForFaktumStruktur;
 import org.slf4j.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
@@ -28,10 +28,9 @@ import static com.google.common.collect.Maps.uniqueIndex;
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.modig.lang.option.Optional.none;
 import static no.nav.modig.lang.option.Optional.optional;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.limit;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.selectNextSequenceValue;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -113,6 +112,9 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     public Faktum hentFaktumMedKey(Long soknadId, String faktumKey) {
         final String sql = "select * from SOKNADBRUKERDATA where soknad_id = ? and key = ?";
         Faktum faktum = hentEtObjectAv(sql, FAKTUM_ROW_MAPPER, soknadId, faktumKey);
+        if (faktum == null) {
+            return null;
+        }
         return populerMedProperties(faktum);
     }
 
@@ -316,7 +318,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
                     faktum.getKey(), faktum.getTypeString());
             faktum.setValue(faktum.getValue().substring(0, 500));
         }
-        if (lagretFaktum.er(BRUKERREGISTRERT) || systemLagring) {
+        if (lagretFaktum.er(Faktum.FaktumType.BRUKERREGISTRERT) || systemLagring) {
             getJdbcTemplate()
                     .update("update soknadbrukerdata set value=? where soknadbrukerdata_id = ? ",
                             faktum.getValue(), faktum.getFaktumId());
@@ -362,22 +364,6 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
                 "select * from FAKTUMEGENSKAP where soknad_id = (select soknad_id from SOKNAD where brukerbehandlingid = ?)",
                 FAKTUM_EGENSKAP_ROW_MAPPER,
                 behandlingsId);
-        Map<Long, Faktum> faktaMap = uniqueIndex(fakta, new Function<Faktum, Long>() {
-            public Long apply(Faktum input) {
-                return input.getFaktumId();
-            }
-        });
-        for (FaktumEgenskap faktumEgenskap : egenskaper) {
-            if (faktaMap.containsKey(faktumEgenskap.getFaktumId())) {
-                faktaMap.get(faktumEgenskap.getFaktumId()).medEgenskap(faktumEgenskap);
-            }
-        }
-        return fakta;
-    }
-
-    public List<Faktum> hentAlleBrukerData(Long soknadId) {
-        List<Faktum> fakta = select("select * from SOKNADBRUKERDATA where soknad_id = ? order by soknadbrukerdata_id asc", FAKTUM_ROW_MAPPER, soknadId);
-        List<FaktumEgenskap> egenskaper = select("select * from FAKTUMEGENSKAP where soknad_id = ?", FAKTUM_EGENSKAP_ROW_MAPPER, soknadId);
         Map<Long, Faktum> faktaMap = uniqueIndex(fakta, new Function<Faktum, Long>() {
             public Long apply(Faktum input) {
                 return input.getFaktumId();

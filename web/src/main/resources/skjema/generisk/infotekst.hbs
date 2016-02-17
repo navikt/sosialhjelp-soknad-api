@@ -1,0 +1,19 @@
+{{#if @root.visInfotekst}}
+    {{#hvisTekstFinnes (concat key ".infotekst.tekst")}}
+        <fieldset class="infotekst">
+            <legend>Infotekst</legend>
+            {{ hentTekst (concat key ".infotekst.tekst") }}
+            {{#hvisTekstFinnes (concat key ".infotekst.tekst2")}}
+                {{ hentTekst (concat key ".infotekst.tekst2") }}
+            {{/hvisTekstFinnes}}
+
+        </fieldset>
+    {{/hvisTekstFinnes}}
+    {{#hvisTekstFinnes (concat key ".hjelpetekst.tekst")}}
+        <fieldset class="hjelpetekst">
+            <legend>Hjelpetekst</legend>
+            <div>        {{ hentTekst (concat key ".hjelpetekst.tittel") }}</div>
+            <div>        {{ hentTekst (concat key ".hjelpetekst.tekst") }}</div>
+        </fieldset>
+    {{/hvisTekstFinnes}}
+{{/if}}

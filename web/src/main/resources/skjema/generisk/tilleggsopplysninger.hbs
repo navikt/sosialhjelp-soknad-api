@@ -1,0 +1,9 @@
+{{hentTekst "fritekst.informasjon"}}
+
+<ul class="svar-liste">
+    {{#hvisIkkeTom value}}
+        <li>{{originalValue}}</li>
+    {{else}}
+        <li><i>{{hentTekst "fritekst.informasjon.ingen"}}</i></li>
+    {{/hvisIkkeTom}}
+</ul>

@@ -1,0 +1,15 @@
+{{>skjema/generisk/sporsmal}}
+
+<ul class="svar-liste">
+    {{#each barneFakta}}
+        {{#hvisSant value}}
+            <li>
+                {{ hentTekst key }}
+                {{> skjema/generisk/infotekst}}
+                {{> skjema/generisk/infotekstvalue}}
+                {{> skjema/generisk/vedlegg}}
+                {{> skjema/generisk/barnefakta}}
+            </li>
+        {{/hvisSant}}
+    {{/each}}
+</ul>

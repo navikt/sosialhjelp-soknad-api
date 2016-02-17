@@ -1,15 +1,16 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
 import com.github.jknack.handlebars.Options;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.service.CmsTekst;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import java.io.IOException;
 
-import static no.nav.sbl.dialogarena.service.HandlebarsUtils.finnWebSoknad;
+import static no.nav.sbl.dialogarena.service.HandlebarsUtils.*;
+import static org.apache.commons.lang3.LocaleUtils.*;
 
 @Component
 public class HentTekstMedFaktumParameterHelper extends RegistryAwareHelper<String> {
@@ -32,7 +33,10 @@ public class HentTekstMedFaktumParameterHelper extends RegistryAwareHelper<Strin
         WebSoknad soknad = finnWebSoknad(options.context);
         Faktum faktum = soknad.getFaktumMedKey(options.param(0).toString());
         String prefix = soknad.getSoknadPrefix();
+        Faktum sprakFaktum = soknad.getFaktumMedKey("skjema.sprak");
+        String sprak = sprakFaktum == null ? "nb_NO" : sprakFaktum.getValue();
 
-        return cmsTekst.getCmsTekst(key, new Object[]{faktum.getValue()}, prefix);
+        String tekst = this.cmsTekst.getCmsTekst(key, new Object[]{faktum.getValue()}, prefix, toLocale(sprak));
+        return tekst != null ? tekst : "";
     }
 }

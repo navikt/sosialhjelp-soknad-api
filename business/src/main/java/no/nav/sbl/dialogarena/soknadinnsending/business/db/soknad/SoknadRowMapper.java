@@ -1,15 +1,16 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
+import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import org.joda.time.DateTime;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad.startSoknad;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad.startSoknad;
+
 
 public class SoknadRowMapper implements RowMapper<WebSoknad> {
 

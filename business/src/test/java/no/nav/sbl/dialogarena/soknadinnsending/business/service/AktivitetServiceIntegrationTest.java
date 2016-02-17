@@ -2,7 +2,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 
 import no.nav.modig.common.MDCOperations;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.AktivitetService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.SakOgAktivitetWSConfig;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.SakOgAktivitetV1;
 import org.junit.Before;
@@ -20,7 +21,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.consumer.util.InstanceSwit
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AktivitetServiceIntegrationTest {
-    private static int PORT = 10010;
+    private static int PORT = 10000 + (int)(Math.random()*1000);
     @Rule
     public MockServerRule mockServerRule = new MockServerRule(PORT, this);
     AktivitetService service;
