@@ -42,6 +42,10 @@ public class ArbeidsforholdServiceTest {
 
     private String tom = new DateTime().toString("yyyy-MM-dd");
     private String fom = new DateTime().minusYears(1).toString("yyyy-MM-dd");
+    private long soknadId = 11L;
+    private long yrkesAktivFaktumId = 345L;
+
+
 
     @InjectMocks
     private ArbeidsforholdService service = new ArbeidsforholdService();
@@ -49,7 +53,7 @@ public class ArbeidsforholdServiceTest {
     @Test
     public void skalLagreSystemfakta() throws Exception {
         Arbeidsforhold arbeidsforhold = setup(lagArbeidsforhold());
-        List<Faktum> faktums = service.genererArbeidsforhold("123", 11L);
+        List<Faktum> faktums = service.genererArbeidsforhold("123", soknadId);
         Mockito.verify(arbeidsforholdWebService).finnArbeidsforholdPrArbeidstaker(any(FinnArbeidsforholdPrArbeidstakerRequest.class));
         verify(transformer).apply(arbeidsforhold);
         assertThat(faktums.size(), equalTo(1));
@@ -59,7 +63,7 @@ public class ArbeidsforholdServiceTest {
     public void skalSetteAlleFaktumFelter() throws Exception {
         no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold result = lagArbeidsforhold();
         setup(result);
-        List<Faktum> faktums = service.genererArbeidsforhold("123", 11L);
+        List<Faktum> faktums = service.genererArbeidsforhold("123", soknadId);
         Faktum faktum = faktums.get(0);
 
         assertThat(faktum.finnEgenskap("orgnr").getValue(), equalTo("12345"));
@@ -81,7 +85,7 @@ public class ArbeidsforholdServiceTest {
         result.fastStillingsprosent = 0L;
         result.variabelStillingsprosent = true;
         setup(result);
-        List<Faktum> faktums = service.genererArbeidsforhold("123", 11L);
+        List<Faktum> faktums = service.genererArbeidsforhold("123", soknadId);
         Faktum faktum = faktums.get(0);
 
         assertThat(faktum.finnEgenskap("stillingstype").getValue(), equalTo("variabel"));
@@ -93,7 +97,7 @@ public class ArbeidsforholdServiceTest {
         no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold result = lagArbeidsforhold();
         result.variabelStillingsprosent = true;
         setup(result);
-        List<Faktum> faktums = service.genererArbeidsforhold("123", 11L);
+        List<Faktum> faktums = service.genererArbeidsforhold("123", soknadId);
         Faktum faktum = faktums.get(0);
 
         assertThat(faktum.finnEgenskap("stillingstype").getValue(), equalTo("fastOgVariabel"));
@@ -105,19 +109,29 @@ public class ArbeidsforholdServiceTest {
         no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold result = lagArbeidsforhold();
         result.tom = null;
         setup(result);
-        List<Faktum> faktums = service.genererArbeidsforhold("123", 11L);
+        List<Faktum> faktums = service.genererArbeidsforhold("123", soknadId);
         Faktum faktum = faktums.get(0);
 
         assertThat(faktum.finnEgenskap("ansatt").getValue(), equalTo("true"));
     }
 
+    @Test
+    public void arbeidsforholdSkalHaRiktigParrentFaktum() throws FinnArbeidsforholdPrArbeidstakerSikkerhetsbegrensning, FinnArbeidsforholdPrArbeidstakerUgyldigInput {
+        no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold result = lagArbeidsforhold();
+        setup(result);
+        List<Faktum> faktums = service.genererArbeidsforhold("123", soknadId);
+        Faktum faktum = faktums.get(0);
+
+        assertThat(faktum.getParrentFaktum(), equalTo(yrkesAktivFaktumId));
+
+    }
     private Arbeidsforhold setup(no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold result) throws FinnArbeidsforholdPrArbeidstakerSikkerhetsbegrensning, FinnArbeidsforholdPrArbeidstakerUgyldigInput {
         FinnArbeidsforholdPrArbeidstakerResponse t = new FinnArbeidsforholdPrArbeidstakerResponse();
         Arbeidsforhold arbeidsforhold = new Arbeidsforhold();
         t.getArbeidsforhold().add(arbeidsforhold);
         when(arbeidsforholdWebService.finnArbeidsforholdPrArbeidstaker(any(FinnArbeidsforholdPrArbeidstakerRequest.class))).thenReturn(t);
         when(transformer.apply(any(Arbeidsforhold.class))).thenReturn(result);
-        when(faktaService.hentFaktumMedKey(anyLong(), eq("arbeidsforhold.yrkesaktiv"))).thenReturn(new Faktum().medKey("arbeidsforhold.yrkesaktiv").medValue("false"));
+        when(faktaService.hentFaktumMedKey(anyLong(), eq("arbeidsforhold.yrkesaktiv"))).thenReturn(new Faktum().medKey("arbeidsforhold.yrkesaktiv").medValue("false").medFaktumId(yrkesAktivFaktumId));
         return arbeidsforhold;
     }
 
