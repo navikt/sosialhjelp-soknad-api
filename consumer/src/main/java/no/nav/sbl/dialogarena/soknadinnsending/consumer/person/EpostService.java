@@ -30,11 +30,11 @@ public class EpostService {
         try {
             return dkif.hentDigitalKontaktinformasjon(makeDKIFRequest(ident));
         }catch (HentDigitalKontaktinformasjonSikkerhetsbegrensing | HentDigitalKontaktinformasjonPersonIkkeFunnet e) {
-            logger.error("Person ikke tilgjengelig i dkif", e.getMessage());
+            logger.error("Person ikke tilgjengelig i dkif: {}", e.getMessage());
         } catch (HentDigitalKontaktinformasjonKontaktinformasjonIkkeFunnet e) {
-            logger.info("Kunne ikke hente kontaktinformasjon fra dkif", e.getMessage());
+            logger.info("Kunne ikke hente kontaktinformasjon fra dkif: {}", e.getMessage());
         } catch (Exception e) {
-            logger.info("Feil ved henting fra dkif", e.getMessage());
+            logger.info("Feil ved henting fra dkif: {}", e.getMessage());
         }
 
         return new WSHentDigitalKontaktinformasjonResponse().withDigitalKontaktinformasjon(new WSKontaktinformasjon());
