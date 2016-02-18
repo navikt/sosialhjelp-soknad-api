@@ -26,6 +26,7 @@
     <cache name="aktorCache" maxElementsInMemory="1000000" overflowToDisk="true" eternal="true"/>
     <cache name="arbeidsforholdCache" maxElementsInMemory="1000" overflowToDisk="false" timeToLiveSeconds="3600"  />
     <cache name="barnCache" maxElementsInMemory="1000" overflowToDisk="false" timeToLiveSeconds="3600"  />
+    <cache name="dkifCache" maxElementsInMemory="100" overflowToDisk="false" timeToLiveSeconds="1800"  />
 
 
 </ehcache>
