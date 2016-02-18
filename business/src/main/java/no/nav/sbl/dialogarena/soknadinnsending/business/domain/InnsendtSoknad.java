@@ -16,8 +16,6 @@ import java.util.Locale;
 
 public class InnsendtSoknad {
 
-    private DateTimeFormatter dt = DateTimeFormat.forPattern("d. MMMM yyyy' klokken' HH.mm").withLocale(new Locale("nb", "no"));
-
     private String behandlingsId;
     private DateTime dato;
     private List<Vedlegg> innsendteVedlegg;
@@ -25,6 +23,13 @@ public class InnsendtSoknad {
     private String temakode;
     private String tittel;
     private String tittelCmsKey;
+    private final DateTimeFormatter datoFormatter;
+    private final DateTimeFormatter klokkeslettFormatter;
+
+    public InnsendtSoknad(Locale sprak) {
+        datoFormatter = DateTimeFormat.forPattern("d. MMMM yyyy").withLocale(sprak);
+        klokkeslettFormatter = DateTimeFormat.forPattern("HH.mm").withLocale(sprak);
+    }
 
     public InnsendtSoknad medBehandlingId(String behandlingsId) {
         this.behandlingsId = behandlingsId;
@@ -66,7 +71,11 @@ public class InnsendtSoknad {
     }
 
     public String getDato() {
-        return dt.print(this.dato);
+        return datoFormatter.print(this.dato);
+    }
+
+    public String getKlokkeslett() {
+        return klokkeslettFormatter.print(this.dato);
     }
 
     public List<Vedlegg> getIkkeInnsendteVedlegg() {
