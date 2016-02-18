@@ -18,7 +18,11 @@
                 <type>hidden</type>
             </property>
             <property>
-                <id>sammensattnavn</id>
+                <id>fornavn</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>etternavn</id>
                 <type>textbox</type>
             </property>
             <property>

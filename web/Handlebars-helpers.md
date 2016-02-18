@@ -64,6 +64,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hvisHarDiskresjonskode - Viser innhold avhengig av om personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)
 * hvisHarIkkeInnsendteDokumenter - Sjekker om søknaden har ikke-innsendte vedlegg
 * hvisIkkeTom - Dersom variabelen ikke er tom vil innholdet vises
+* hvisIngenSynligeBarneFakta - For bruk i generisk oppsummering, undersøker innsendt liste over fakta og ser om alle er skjult.
 * hvisKunStudent - Sjekker om brukeren har en annen status enn student (f.eks sykmeldt, i arbeid osv.)
 * hvisLik - Sjekker om to strenger er like
 * hvisMer - Evaluerer en string til double og sjekker om verdien er mer enn grenseverdien gitt ved andre inputparameter
@@ -350,6 +351,16 @@ må ha et faktum i context, f. eks. via
 {{else}}
     Verdien er tom
 {{/hvisIkkeTom}}
+```
+
+
+##### hvisIngenSynligeBarneFakta
+
+```
+{{#hvisIngenSynligeBarneFakta fakta}}
+    Ingen synlige fakta
+{{/hvisIngenSynligeBarneFakta}}
+
 ```
 
 

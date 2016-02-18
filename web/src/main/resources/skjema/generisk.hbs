@@ -41,6 +41,12 @@
                         {{> skjema/generisk/faktum }}
                     {{/each}}
                 {{/variabel}}
+
+                {{#hvisIngenSynligeBarneFakta fakta}}
+                    {{#variabel "key" (toLowerCase navn)}}
+                        {{> skjema/generisk/harikkebarn }}
+                    {{/variabel}}
+                {{/hvisIngenSynligeBarneFakta}}
             </ul>
         {{/each}}
 

@@ -66,6 +66,10 @@
         <appender-ref ref="infolog"/>
     </logger>
 
+    <logger name="no.nav.sbl.dialogarena.config" level="info">
+        <appender-ref ref="infolog"/>
+    </logger>
+
     <logger name="org.apache.pdfbox" level="error">
         <appender-ref ref="exceptionlog"/>
     </logger>
@@ -79,6 +83,10 @@
     </logger>
 
     <logger name="org.apache.http.impl.client" level="info">
+        <appender-ref ref="infolog" />
+    </logger>
+
+    <logger name="org.apache.cxf" level="OFF">
         <appender-ref ref="infolog" />
     </logger>
 

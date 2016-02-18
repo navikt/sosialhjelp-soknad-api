@@ -4,6 +4,7 @@ import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
+import com.github.jknack.handlebars.cache.ConcurrentMapTemplateCache;
 import com.github.jknack.handlebars.context.FieldValueResolver;
 import com.github.jknack.handlebars.context.JavaBeanValueResolver;
 import com.github.jknack.handlebars.context.MapValueResolver;
@@ -63,7 +64,8 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
     }
 
     private Handlebars getHandlebars() {
-        Handlebars handlebars = new Handlebars();
+        Handlebars handlebars = new Handlebars()
+                .with(new ConcurrentMapTemplateCache());
 
         for (Map.Entry<String, Helper> helper : helpers.entrySet()) {
             handlebars.registerHelper(helper.getKey(), helper.getValue());
