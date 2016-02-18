@@ -64,20 +64,20 @@ public class ContentConfig {
 
         messageSource.setDefaultEncoding("UTF-8");
 
-        //Sjekk for nye filer en gang hvert 30. minutt.
-        messageSource.setCacheSeconds(60 * 30);
+        //Sjekk for nye filer en gang hvert 10. minutt.
+        messageSource.setCacheSeconds(60 * 10);
         return messageSource;
     }
 
-    //Hent innholdstekster på nytt hver time
-    @Scheduled(cron = "0 0 * * * *")
+    //Hent innholdstekster på nytt hvert tiende minutt
+    @Scheduled(cron = "* */10 * * * *")
     public void lastInnNyeInnholdstekster() {
-        logger.debug("Leser inn innholdstekster fra enonic");
+        logger.info("Leser inn innholdstekster fra enonic");
         clearContentCache();
         try {
             saveLocal("enonic/sendsoknad_nb_NO.properties", new URI(cmsBaseUrl + "/app/sendsoknad/nb_NO/tekster"));
             saveLocal("enonic/sendsoknad_en.properties", new URI(cmsBaseUrl + "/app/sendsoknad/en/tekster"));
-            saveLocal("enonic/dagpenger_nb_NO.properties", new URI(cmsBaseUrl + "/app/dagpenger/nb_NO/tekster?dfg"));
+            saveLocal("enonic/dagpenger_nb_NO.properties", new URI(cmsBaseUrl + "/app/dagpenger/nb_NO/tekster"));
             saveLocal("enonic/dagpenger_en.properties", new URI(cmsBaseUrl + "/app/dagpenger/en/tekster"));
             saveLocal("enonic/foreldrepenger_nb_NO.properties", new URI(cmsBaseUrl + "/app/foreldrepenger/nb_NO/tekster"));
             saveLocal("enonic/aap_nb_NO.properties", new URI(cmsBaseUrl + "/app/AAP/nb_NO/tekster"));
@@ -126,7 +126,7 @@ public class ContentConfig {
 
     private void saveLocal(String filename, URI uri) throws IOException {
         File file = new File(brukerprofilDataDirectory, filename);
-        logger.debug("Leser inn innholdstekster fra " + uri + " til: " + file.toString());
+        logger.info("Leser inn innholdstekster fra " + uri + " til: " + file.toString());
         Content<Innholdstekst> content = enonicContentRetriever().getContent(uri);
         StringBuilder data = new StringBuilder();
         Map<String, Innholdstekst> innhold = content.toMap(Innholdstekst.KEY);
