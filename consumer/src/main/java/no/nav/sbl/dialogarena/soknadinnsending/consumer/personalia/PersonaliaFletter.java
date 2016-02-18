@@ -10,6 +10,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.*;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.*;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.*;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.*;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.*;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.*;
 import org.joda.time.*;
@@ -40,6 +42,9 @@ public class PersonaliaFletter {
     @Inject
     private Kodeverk kodeverk;
 
+    @Inject
+    private EpostService epostService;
+
     private static final String KJONN_MANN = "m";
     private static final String KJONN_KVINNE = "k";
 
@@ -68,6 +73,8 @@ public class PersonaliaFletter {
         Diskresjonskoder diskresjonskode = kjerneinformasjonResponse.getPerson().getDiskresjonskode();
         String diskresjonskodeString = diskresjonskode == null ? null : diskresjonskode.getValue();
 
+        WSHentDigitalKontaktinformasjonResponse dkifResponse = epostService.hentInfoFraDKIF(fodselsnummer);
+
         return PersonaliaBuilder.
                 with()
                 .fodselsnummer(finnFnr(xmlBruker))
@@ -75,7 +82,7 @@ public class PersonaliaFletter {
                 .alder(finnAlder(finnFnr(xmlBruker)))
                 .diskresjonskode(diskresjonskodeString)
                 .navn(finnSammensattNavn(xmlBruker))
-                .epost(finnEpost(xmlBruker))
+                .epost(finnEpost(dkifResponse))
                 .statsborgerskap(finnStatsborgerskap(xmlPerson))
                 .kjonn(finnKjonn(xmlBruker))
                 .gjeldendeAdresse(finnGjeldendeAdresse(xmlBruker, kodeverk))
@@ -145,14 +152,12 @@ public class PersonaliaFletter {
         return new LocalDate(person.getFoedselsdato().getFoedselsdato().toGregorianCalendar());
     }
 
-    private static String finnEpost(XMLBruker xmlBruker) {
-        for (XMLElektroniskKommunikasjonskanal kanal : xmlBruker.getElektroniskKommunikasjonskanal()) {
-            if (kanal.getElektroniskAdresse() instanceof XMLEPost) {
-                return ((XMLEPost) kanal.getElektroniskAdresse()).getIdentifikator();
-            }
+    private static String finnEpost(WSHentDigitalKontaktinformasjonResponse dkifResponse) {
+        WSKontaktinformasjon digitalKontaktinformasjon = dkifResponse.getDigitalKontaktinformasjon();
+        if (digitalKontaktinformasjon == null || digitalKontaktinformasjon.getEpostadresse() == null) {
+            return "";
         }
-        return "";
-    }
+        return digitalKontaktinformasjon.getEpostadresse().getValue();    }
 
     private static String finnFnr(XMLBruker xmlBruker) {
         return xmlBruker.getIdent().getIdent();
