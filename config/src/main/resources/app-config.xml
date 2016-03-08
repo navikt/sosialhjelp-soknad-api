@@ -17,6 +17,7 @@
             <pool maxPoolSize="300" minPoolSize="0"/>
         </datasource>
         <webservice alias="virksomhet:Brukerprofil_v1" mapToProperty="soknad.webservice.brukerprofil.brukerprofilservice"/>
+        <webservice alias="virksomhet:DigitalKontakinformasjon_v1" mapToProperty="dkif.webservice"/>
         <webservice alias="virksomhet:Person_v1" mapToProperty="soknad.webservice.person.personservice"/>
         <webservice alias="virksomhet:Arbeidsforhold_v3" mapToProperty="soknad.webservice.arbeid.arbeidsforhold"/>
         <webservice alias="virksomhet:Organisasjon_v4" mapToProperty="soknad.webservice.arbeid.organisasjon"/>
