@@ -10,11 +10,10 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.ArbeidsforholdService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.ArbeidsforholdBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnBolk;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
@@ -81,7 +80,7 @@ public class SoknadServiceTest {
     @Mock
     private BarnBolk barnBolk;
     @Mock
-    private ArbeidsforholdService arbeidsforholdService;
+    private ArbeidsforholdBolk arbeidsforholdBolk;
     @Mock
     private WebSoknadConfig config;
     @Mock
@@ -108,7 +107,7 @@ public class SoknadServiceTest {
         Map<String, BolkService> bolker = new HashMap<>();
         bolker.put(PersonaliaBolk.class.getName(), personaliaBolk);
         bolker.put(BarnBolk.class.getName(), barnBolk);
-        bolker.put(ArbeidsforholdService.class.getName(), arbeidsforholdService);
+        bolker.put(ArbeidsforholdBolk.class.getName(), arbeidsforholdBolk);
         when(applicationContex.getBeansOfType(BolkService.class)).thenReturn(bolker);
 
         setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());

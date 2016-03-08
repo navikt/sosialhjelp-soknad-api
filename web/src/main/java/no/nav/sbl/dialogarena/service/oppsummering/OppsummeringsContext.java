@@ -10,7 +10,7 @@ import org.apache.commons.collections15.Transformer;
 import java.util.ArrayList;
 import java.util.List;
 
-import static no.nav.modig.lang.collections.IterUtils.*;
+import static no.nav.modig.lang.collections.IterUtils.on;
 
 
 public class OppsummeringsContext {

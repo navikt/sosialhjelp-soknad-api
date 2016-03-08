@@ -8,6 +8,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.*;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.*;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.*;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.*;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.*;
 import no.nav.tjeneste.virksomhet.person.v1.*;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
@@ -82,6 +84,10 @@ public class PersonaliaFletterTest {
 
     @Mock
     private Kodeverk kodeverkMock;
+
+    @Mock
+    private EpostService epostMock;
+
     private XMLBruker xmlBruker;
     private Person person;
     private DateTimeFormatter dateTimeFormat;
@@ -119,6 +125,11 @@ public class PersonaliaFletterTest {
         xmlBruker.setIdent(xmlNorskIdent);
         preferanserResponse.setPerson(xmlBruker);
         when(brukerProfilMock.hentKontaktinformasjonOgPreferanser(any(XMLHentKontaktinformasjonOgPreferanserRequest.class))).thenReturn(preferanserResponse);
+
+        WSHentDigitalKontaktinformasjonResponse digitalKontaktinformasjonResponse = new WSHentDigitalKontaktinformasjonResponse();
+        digitalKontaktinformasjonResponse.setDigitalKontaktinformasjon(genererDigitalKontaktinformasjonMedEpost());
+
+        when(epostMock.hentInfoFraDKIF(org.mockito.Matchers.any(String.class))).thenReturn(digitalKontaktinformasjonResponse);
     }
 
     @SuppressWarnings("unchecked")
@@ -142,6 +153,10 @@ public class PersonaliaFletterTest {
         xmlBruker.setIdent(xmlNorskIdent);
         preferanserResponse.setPerson(xmlBruker);
         when(brukerProfilMock.hentKontaktinformasjonOgPreferanser(any(XMLHentKontaktinformasjonOgPreferanserRequest.class))).thenReturn(preferanserResponse);
+
+        WSHentDigitalKontaktinformasjonResponse digitalKontaktinformasjonResponse = new WSHentDigitalKontaktinformasjonResponse();
+        digitalKontaktinformasjonResponse.setDigitalKontaktinformasjon(genererDigitalKontaktinformasjonUtenEpost());
+        when(epostMock.hentInfoFraDKIF(org.mockito.Matchers.any(String.class))).thenReturn(digitalKontaktinformasjonResponse);
 
         mockGyldigPerson();
 
@@ -584,5 +599,20 @@ public class PersonaliaFletterTest {
             throw new RuntimeException("Klarte ikke å sette fødselsdato", e);
         }
         return foedselsdato;
+    }
+
+    private static WSKontaktinformasjon genererDigitalKontaktinformasjonMedEpost() {
+        return new WSKontaktinformasjon()
+                .withPersonident(RIKTIG_IDENT)
+                .withEpostadresse(new WSEpostadresse().withValue("test@test.com"))
+                .withMobiltelefonnummer(new WSMobiltelefonnummer().withValue("12345678"))
+                .withReservasjon("");
+    }
+
+    private static WSKontaktinformasjon genererDigitalKontaktinformasjonUtenEpost() {
+        return new WSKontaktinformasjon()
+                .withPersonident(RIKTIG_IDENT)
+                .withMobiltelefonnummer(new WSMobiltelefonnummer().withValue("12345678"))
+                .withReservasjon("");
     }
 }

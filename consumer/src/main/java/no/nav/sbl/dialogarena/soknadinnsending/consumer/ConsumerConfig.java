@@ -19,6 +19,7 @@ import static java.lang.System.*;
         HenvendelseService.class,
         PersonService.class,
         PersonInfoService.class,
+        EpostService.class,
         ArbeidssokerInfoService.class,
         ConsumerConfig.WsServices.class,
         PersonaliaFletter.class
@@ -40,6 +41,7 @@ public class ConsumerConfig {
             ArbeidWSConfig.class,
             OrganisasjonWSConfig.class,
             BrukerProfilWSConfig.class,
+            DkifWSConfig.class,
             KodeverkWSConfig.class,
             PersonWSConfig.class,
             MaalgruppeWSConfig.class,
