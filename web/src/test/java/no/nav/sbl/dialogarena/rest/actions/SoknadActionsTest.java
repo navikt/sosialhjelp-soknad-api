@@ -110,9 +110,7 @@ public class SoknadActionsTest {
     public void soknadBekreftelseEpostSkalInneholdeSoknadbekreftelseTekst() {
         Faktum sprakFaktum = new Faktum().medKey("skjema.sprak").medValue("nb_NO");
         when(soknadService.hentSoknad(anyString(), anyBoolean(), anyBoolean())).thenReturn(new WebSoknad().medFaktum(sprakFaktum));
-        SoknadBekreftelse soknadBekreftelse = new SoknadBekreftelse();
-        soknadBekreftelse.setEpost("test@nav.no");
-        soknadBekreftelse.setErEttersendelse(false);
+        SoknadBekreftelse soknadBekreftelse = lagSoknadBekreftelse(false, true);
 
         actions.sendEpost(BEHANDLINGS_ID, "nb_NO", soknadBekreftelse, new MockHttpServletRequest());
         verify(tekster).finnTekst(eq("sendtSoknad.sendEpost.epostInnhold"), any(Object[].class), any(Locale.class));
@@ -121,9 +119,7 @@ public class SoknadActionsTest {
     @Test
     public void soknadBekreftelseEpostSkalBrukeNorskSomDefaultLocale() {
         when(soknadService.hentSoknad(anyString(), anyBoolean(), anyBoolean())).thenReturn(new WebSoknad());
-        SoknadBekreftelse soknadBekreftelse = new SoknadBekreftelse();
-        soknadBekreftelse.setEpost("test@nav.no");
-        soknadBekreftelse.setErEttersendelse(false);
+        SoknadBekreftelse soknadBekreftelse = lagSoknadBekreftelse(false, true);
 
         actions.sendEpost(BEHANDLINGS_ID, "nb_NO", soknadBekreftelse, new MockHttpServletRequest());
 
@@ -132,13 +128,19 @@ public class SoknadActionsTest {
 
     @Test
     public void ettersendingBekreftelseEpostSkalInneholdeEttersendingbekreftelseTekst() {
-        SoknadBekreftelse soknadBekreftelse = new SoknadBekreftelse();
-        soknadBekreftelse.setEpost("test@nav.no");
-        soknadBekreftelse.setErEttersendelse(true);
+        SoknadBekreftelse soknadBekreftelse = lagSoknadBekreftelse(true, true);
 
         actions.sendEpost("123", "nb_NO", soknadBekreftelse, new MockHttpServletRequest());
 
         verify(tekster).finnTekst(eq("sendEttersendelse.sendEpost.epostInnhold"), any(Object[].class), any(Locale.class));
+    }
+
+    private SoknadBekreftelse lagSoknadBekreftelse(boolean erEttersendelse, boolean erSoknadsdialog) {
+        SoknadBekreftelse soknadBekreftelse = new SoknadBekreftelse();
+        soknadBekreftelse.setEpost("test@nav.no");
+        soknadBekreftelse.setErEttersendelse(erEttersendelse);
+        soknadBekreftelse.setErSoknadsdialog(erSoknadsdialog);
+        return soknadBekreftelse;
     }
 
     private WebSoknad soknad() {
