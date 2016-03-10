@@ -104,16 +104,18 @@ public class SoknadActions {
             String ettersendelseUrl = getEttersendelseUrl(request.getRequestURL().toString(), behandlingsId);
             String saksoversiktLink = saksoversiktUrl + "/app/tema/" + soknadBekreftelse.getTemaKode();
 
-            if(!sprak.equals(LocaleUtils.toLocale("nb_NO"))) {
+            if (!sprak.equals(LocaleUtils.toLocale("nb_NO"))) {
                 ettersendelseUrl += "?sprak=" + sprakkode;
                 saksoversiktLink += "?sprak=" + sprakkode;
             }
 
             String innhold;
-            if (soknadBekreftelse.getErEttersendelse()) {
+            if (soknadBekreftelse.isErSoknadsdialog() && soknadBekreftelse.getErEttersendelse()) {
                 innhold = tekster.finnTekst("sendEttersendelse.sendEpost.epostInnhold", new Object[]{saksoversiktLink}, sprak);
-            } else {
+            } else if (soknadBekreftelse.isErSoknadsdialog()) {
                 innhold = tekster.finnTekst("sendtSoknad.sendEpost.epostInnhold", new Object[]{saksoversiktLink, ettersendelseUrl}, sprak);
+            } else {
+                innhold = "";
             }
 
             emailService.sendEpost(soknadBekreftelse.getEpost(), subject, innhold, behandlingsId);
