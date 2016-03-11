@@ -159,7 +159,7 @@ public class SoknadActionsTest {
         actions.sendEpost(BEHANDLINGS_ID, "nb_NO", soknadBekreftelse, new MockHttpServletRequest());
 
         verify(tekster).finnTekst(eq("sendtSoknad.sendEpost.epostInnhold"), captor.capture(), eq(new Locale("nb", "NO")));
-        assertThat(captor.getValue()).containsSequence("null/app/tema/KON", "null/ettersending");
+        assertThat(captor.getValue()).containsSequence("null/app/tema/KON", "null/app/ettersending");
 
     }
 
