@@ -134,7 +134,7 @@ public class SoknadActionsTest {
 
 
     @Test
-    public void soknadBekreftelseEpostSkalSendeRettParametreTilEpostSoknadsdialoger() {
+    public void soknadBekreftelseEpostSkalSendeRettParametreTilEpostForTypeSoknadsdialoger() {
         ArgumentCaptor<Object[]> captor = ArgumentCaptor.forClass(Object[].class);
 
         when(soknadService.hentSoknad(anyString(), anyBoolean(), anyBoolean())).thenReturn(new WebSoknad());
@@ -145,6 +145,21 @@ public class SoknadActionsTest {
 
         verify(tekster).finnTekst(eq("sendtSoknad.sendEpost.epostInnhold"), captor.capture(), eq(new Locale("nb", "NO")));
         assertThat(captor.getValue()).containsSequence("null/app/tema/DAG", "/soknadinnsending/ettersending/123");
+
+    }
+
+    @Test
+    public void soknadBekreftelseEpostSkalSendeRettParametreTilEpostForTypeDokumentinnsending() {
+        ArgumentCaptor<Object[]> captor = ArgumentCaptor.forClass(Object[].class);
+
+        when(soknadService.hentSoknad(anyString(), anyBoolean(), anyBoolean())).thenReturn(new WebSoknad());
+        SoknadBekreftelse soknadBekreftelse = lagSoknadBekreftelse(false, false);
+        soknadBekreftelse.setTemaKode("KON");
+
+        actions.sendEpost(BEHANDLINGS_ID, "nb_NO", soknadBekreftelse, new MockHttpServletRequest());
+
+        verify(tekster).finnTekst(eq("sendtSoknad.sendEpost.epostInnhold"), captor.capture(), eq(new Locale("nb", "NO")));
+        assertThat(captor.getValue()).containsSequence("null/app/tema/KON", "null/ettersending");
 
     }
 

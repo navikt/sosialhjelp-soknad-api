@@ -101,7 +101,9 @@ public class SoknadActions {
         if (soknadBekreftelse.getEpost() != null && !soknadBekreftelse.getEpost().isEmpty()) {
             Locale sprak = LocaleUtils.toLocale(sprakkode);
             String subject = tekster.finnTekst("sendtSoknad.sendEpost.epostSubject", null, sprak);
-            String ettersendelseUrl = getEttersendelseUrl(request.getRequestURL().toString(), behandlingsId);
+            String ettersendelseUrl = soknadBekreftelse.isErSoknadsdialog() ?
+                    getEttersendelseUrl(request.getRequestURL().toString(), behandlingsId) :
+                    saksoversiktUrl + "/ettersending";
             String saksoversiktLink = saksoversiktUrl + "/app/tema/" + soknadBekreftelse.getTemaKode();
 
             if (!sprak.equals(LocaleUtils.toLocale("nb_NO"))) {
@@ -110,12 +112,10 @@ public class SoknadActions {
             }
 
             String innhold;
-            if (soknadBekreftelse.isErSoknadsdialog() && soknadBekreftelse.getErEttersendelse()) {
+            if (soknadBekreftelse.getErEttersendelse()) {
                 innhold = tekster.finnTekst("sendEttersendelse.sendEpost.epostInnhold", new Object[]{saksoversiktLink}, sprak);
-            } else if (soknadBekreftelse.isErSoknadsdialog()) {
-                innhold = tekster.finnTekst("sendtSoknad.sendEpost.epostInnhold", new Object[]{saksoversiktLink, ettersendelseUrl}, sprak);
             } else {
-                innhold = "";
+                innhold = tekster.finnTekst("sendtSoknad.sendEpost.epostInnhold", new Object[]{saksoversiktLink, ettersendelseUrl}, sprak);
             }
 
             emailService.sendEpost(soknadBekreftelse.getEpost(), subject, innhold, behandlingsId);
