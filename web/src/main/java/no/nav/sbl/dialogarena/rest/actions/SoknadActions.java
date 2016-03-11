@@ -103,7 +103,7 @@ public class SoknadActions {
             String subject = tekster.finnTekst("sendtSoknad.sendEpost.epostSubject", null, sprak);
             String ettersendelseUrl = soknadBekreftelse.isErSoknadsdialog() ?
                     getEttersendelseUrl(request.getRequestURL().toString(), behandlingsId) :
-                    saksoversiktUrl + "/ettersending";
+                    saksoversiktUrl + "/app/ettersending";
             String saksoversiktLink = saksoversiktUrl + "/app/tema/" + soknadBekreftelse.getTemaKode();
 
             if (!sprak.equals(LocaleUtils.toLocale("nb_NO"))) {
