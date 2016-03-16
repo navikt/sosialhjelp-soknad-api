@@ -17,6 +17,11 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.db.config.Databas
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
+/**
+ * Denne testen har en tendens til å feile i IntelliJ, men kjøre ok på mvn clean install :(
+ *
+ * Tidligst dokumentert 4.feb 2016
+ * */
 public class SoknadActionIntegrationTests {
     private static final int PORT = 10001;
     static {
