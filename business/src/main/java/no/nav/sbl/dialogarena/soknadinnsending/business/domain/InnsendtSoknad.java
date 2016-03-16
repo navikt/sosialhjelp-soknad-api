@@ -23,11 +23,8 @@ public class InnsendtSoknad {
     private String temakode;
     private String tittel;
     private String tittelCmsKey;
-    private DateTimeFormatter datoFormatter;
-    private DateTimeFormatter klokkeslettFormatter;
-
-    public InnsendtSoknad() {
-    }
+    private final DateTimeFormatter datoFormatter;
+    private final DateTimeFormatter klokkeslettFormatter;
 
     public InnsendtSoknad(Locale sprak) {
         datoFormatter = DateTimeFormat.forPattern("d. MMMM yyyy").withLocale(sprak);
