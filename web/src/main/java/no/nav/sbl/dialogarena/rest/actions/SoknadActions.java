@@ -32,7 +32,6 @@ public class SoknadActions {
 
     private static Logger logger = LoggerFactory.getLogger(SoknadActions.class);
 
-    private String saksoversiktUrl = System.getProperty("saksoversikt.link.url");
 
     @Inject
     private VedleggService vedleggService;
@@ -99,6 +98,7 @@ public class SoknadActions {
                           SoknadBekreftelse soknadBekreftelse,
                           @Context HttpServletRequest request) {
         if (soknadBekreftelse.getEpost() != null && !soknadBekreftelse.getEpost().isEmpty()) {
+            String saksoversiktUrl = System.getProperty("saksoversikt.link.url");
             Locale sprak = LocaleUtils.toLocale(sprakkode);
             String subject = tekster.finnTekst("sendtSoknad.sendEpost.epostSubject", null, sprak);
             String ettersendelseUrl = soknadBekreftelse.isErSoknadsdialog() ?

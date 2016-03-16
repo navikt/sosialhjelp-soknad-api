@@ -62,6 +62,7 @@ public class SoknadActionsTest {
     public void setUp() {
         System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
         System.setProperty("soknadinnsending.ettersending.path", SOKNADINNSENDING_ETTERSENDING_URL);
+        System.setProperty("saksoversikt.link.url", SAKSOVERSIKT_URL);
         reset(tekster);
         when(tekster.finnTekst(eq("sendtSoknad.sendEpost.epostSubject"), any(Object[].class), any(Locale.class))).thenReturn("Emne");
         when(context.getRealPath(anyString())).thenReturn("");
@@ -144,7 +145,7 @@ public class SoknadActionsTest {
         actions.sendEpost(BEHANDLINGS_ID, "nb_NO", soknadBekreftelse, new MockHttpServletRequest());
 
         verify(tekster).finnTekst(eq("sendtSoknad.sendEpost.epostInnhold"), captor.capture(), eq(new Locale("nb", "NO")));
-        assertThat(captor.getValue()).containsSequence("null/app/tema/DAG", "/soknadinnsending/ettersending/123");
+        assertThat(captor.getValue()).containsSequence("/saksoversikt/app/tema/DAG", "/soknadinnsending/ettersending/123");
 
     }
 
@@ -159,7 +160,7 @@ public class SoknadActionsTest {
         actions.sendEpost(BEHANDLINGS_ID, "nb_NO", soknadBekreftelse, new MockHttpServletRequest());
 
         verify(tekster).finnTekst(eq("sendtSoknad.sendEpost.epostInnhold"), captor.capture(), eq(new Locale("nb", "NO")));
-        assertThat(captor.getValue()).containsSequence("null/app/tema/KON", "null/app/ettersending");
+        assertThat(captor.getValue()).containsSequence("/saksoversikt/app/tema/KON", "/saksoversikt/app/ettersending");
 
     }
 
@@ -174,7 +175,7 @@ public class SoknadActionsTest {
         actions.sendEpost(BEHANDLINGS_ID, "nb_NO", soknadBekreftelse, new MockHttpServletRequest());
 
         verify(tekster).finnTekst(eq("sendEttersendelse.sendEpost.epostInnhold"), captor.capture(), eq(new Locale("nb", "NO")));
-        assertThat(captor.getValue()).containsSequence("null/app/tema/DAG");
+        assertThat(captor.getValue()).containsSequence("/saksoversikt/app/tema/DAG");
 
     }
 
