@@ -36,7 +36,7 @@ public class SoknadBekreftelse implements Serializable {
         this.erEttersendelse = erEttersendelse;
     }
 
-    public boolean isErSoknadsdialog() {
+    public boolean getErSoknadsdialog() {
         return erSoknadsdialog;
     }
 

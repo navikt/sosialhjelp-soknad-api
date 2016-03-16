@@ -101,7 +101,7 @@ public class SoknadActions {
             String saksoversiktUrl = System.getProperty("saksoversikt.link.url");
             Locale sprak = LocaleUtils.toLocale(sprakkode);
             String subject = tekster.finnTekst("sendtSoknad.sendEpost.epostSubject", null, sprak);
-            String ettersendelseUrl = soknadBekreftelse.isErSoknadsdialog() ?
+            String ettersendelseUrl = soknadBekreftelse.getErSoknadsdialog() ?
                     getEttersendelseUrl(request.getRequestURL().toString(), behandlingsId) :
                     saksoversiktUrl + "/app/ettersending";
             String saksoversiktLink = saksoversiktUrl + "/app/tema/" + soknadBekreftelse.getTemaKode();
