@@ -6,7 +6,6 @@
         <panel>Utdanning</panel>
     </faktum>
 
-
     <faktum>
         <id>utdanning.underutdanning</id>
         <type>checkboxGroup</type>
@@ -154,7 +153,6 @@
         </dependOnValues>
     </faktum>
 
-
     <faktum>
         <id>utdanning.norsk</id>
         <type>java.lang.Boolean</type>
@@ -180,7 +178,6 @@
         </dependOnValues>
     </faktum>
 
-
     <faktum>
         <id>utdanning.introduksjon</id>
         <type>java.lang.Boolean</type>
@@ -188,16 +185,12 @@
         <dependOn>utdanning.underutdanning</dependOn>
     </faktum>
 
-
     <faktum>
         <id>utdanning.annet</id>
         <type>java.lang.Boolean</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.underutdanning</dependOn>
     </faktum>
-
-
-
 
     <vedlegg>
         <faktum>utdanning</faktum>
@@ -207,13 +200,15 @@
         <skjemaNummer>T2</skjemaNummer>
     </vedlegg>
 
-
     <vedlegg>
         <faktum>utdanning.kveld</faktum>
         <onValues>
             <value>true</value>
         </onValues>
         <skjemaNummer>T1</skjemaNummer>
+        <skjemanummerTillegg>kveld</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+        <oversetting>${key}</oversetting>
     </vedlegg>
     <vedlegg>
         <faktum>utdanning.kortvarig</faktum>
@@ -221,6 +216,9 @@
             <value>true</value>
         </onValues>
         <skjemaNummer>T1</skjemaNummer>
+        <skjemanummerTillegg>kortvarig</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+        <oversetting>${key}</oversetting>
     </vedlegg>
     <vedlegg>
         <faktum>utdanning.kortvarigflere</faktum>
@@ -228,6 +226,9 @@
             <value>true</value>
         </onValues>
         <skjemaNummer>T1</skjemaNummer>
+        <skjemanummerTillegg>kortvarigflere</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+        <oversetting>${key}</oversetting>
     </vedlegg>
     <vedlegg>
         <faktum>utdanning.norsk</faktum>
@@ -235,13 +236,18 @@
             <value>true</value>
         </onValues>
         <skjemaNummer>T1</skjemaNummer>
+        <skjemanummerTillegg>norsk</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+        <oversetting>${key}</oversetting>
     </vedlegg>
     <vedlegg>
         <faktum>utdanning.annet</faktum>
+        <property>arbeidsgivernavn</property>
         <onValues>
             <value>true</value>
         </onValues>
         <skjemaNummer>T1</skjemaNummer>
+        <skjemanummerTillegg>annet</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
-
 </soknad>
