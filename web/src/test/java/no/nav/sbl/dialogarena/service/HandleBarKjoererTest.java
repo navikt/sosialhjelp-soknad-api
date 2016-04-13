@@ -117,7 +117,6 @@ public class HandleBarKjoererTest {
                 .medFaktum(new Faktum().medKey("utdanning.kveld.navn").medValue("test"))
                 .medFaktum(new Faktum().medKey("utdanning.kveld.PaabegyntUnder6mnd").medValue("true"))
                 .medFaktum(new Faktum().medKey("utdanning.kveld.varighet").medValue(null).medProperty("fom", "2014-02-05"))
-                .medFaktum(new Faktum().medKey("utdanning.kveld.folges").medValue("true"))
                 .medFaktum(new Faktum().medKey("utdanning.kveld.sted").medValue("test"))
                 .medFaktum(new Faktum().medKey("barn").medType(SYSTEMREGISTRERT).medProperty("fnr", "***REMOVED***").medProperty("navn", "test barn").medProperty("barnetillegg", "true"))
                 .medFaktum(new Faktum().medKey("barn").medType(BRUKERREGISTRERT).medProperty("fodselsdato", "2013-01-01").medProperty("navn", "test barn").medProperty("barnetillegg", "true"))

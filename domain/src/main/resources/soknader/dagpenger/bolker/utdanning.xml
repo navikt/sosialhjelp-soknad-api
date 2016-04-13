@@ -22,15 +22,6 @@
         <dependOn>utdanning.underutdanning</dependOn>
     </faktum>
     <faktum>
-        <id>utdanning.kveld.folges</id>
-        <type>java.lang.Boolean</type>
-        <panel>Utdanning</panel>
-        <dependOn>utdanning.kveld</dependOn>
-        <dependOnValues>
-            <value>true</value>
-        </dependOnValues>
-    </faktum>
-    <faktum>
         <id>utdanning.kveld.progresjonUnder50</id>
         <type>java.lang.Boolean</type>
         <panel>Utdanning</panel>
@@ -40,12 +31,12 @@
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>utdanning.kveld.PaabegyntUnder6mnd</id>
+        <id>utdanning.kveld.paabegyntUnder6mnd</id>
         <type>java.lang.Boolean</type>
         <panel>Utdanning</panel>
-        <dependOn>utdanning.kveld</dependOn>
+        <dependOn>utdanning.kveld.progresjonUnder50</dependOn>
         <dependOnValues>
-            <value>true</value>
+            <value>false</value>
         </dependOnValues>
     </faktum>
     <faktum>
