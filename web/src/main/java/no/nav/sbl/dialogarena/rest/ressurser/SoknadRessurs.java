@@ -2,14 +2,10 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
-import no.nav.sbl.dialogarena.rest.utils.PDFService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
-import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.refusjondagligreise.RefusjonDagligreiseTilXml;
-import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.tilleggsstonader.TilleggsstonaderTilXml;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
@@ -34,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.generateXsrfToken;
 
 @Path("/soknader")
@@ -58,12 +53,6 @@ public class SoknadRessurs {
 
     @Inject
     private HtmlGenerator pdfTemplate;
-
-    @Inject
-    private NavMessageSource messageSource;
-
-    @Inject
-    private PDFService pdfService;
 
     @Context
     private ServletContext servletContext;
@@ -180,34 +169,6 @@ public class SoknadRessurs {
     public List<Vedlegg> hentPaakrevdeVedlegg(@PathParam("behandlingsId") String behandlingsId) {
         return vedleggService.hentPaakrevdeVedlegg(behandlingsId);
     }
-
-    @GET
-    @Path("/{behandlingsId}/stofo")
-    @Produces(APPLICATION_XML)
-    public byte[] xml(@PathParam("behandlingsId") String behandlingsId) {
-        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, false);
-        soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(soknadService.hentSoknadStruktur(soknad.getskjemaNummer()));
-        return new TilleggsstonaderTilXml(messageSource).transform(soknad).getContent();
-    }
-
-    @GET
-    @Path("/{behandlingsId}/pdf")
-    @Produces("application/pdf")
-    public byte[] pdf(@PathParam("behandlingsId") String behandlingsId) {
-        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
-        String realPath = servletContext.getRealPath("/");
-        return pdfService.genererOppsummeringPdf(soknad, realPath);
-    }
-
-    @GET
-    @Path("/{behandlingsId}/refusjon")
-    @Produces(APPLICATION_XML)
-    public byte[] xmlRefusjon(@PathParam("behandlingsId") String behandlingsId) {
-        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, false);
-        soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(soknadService.hentSoknadStruktur(soknad.getskjemaNummer()));
-        return new RefusjonDagligreiseTilXml().transform(soknad).getContent();
-    }
-
 
     private void settJournalforendeEnhet(String behandlingsId, String delsteg) {
         soknadService.settJournalforendeEnhet(behandlingsId, delsteg);
