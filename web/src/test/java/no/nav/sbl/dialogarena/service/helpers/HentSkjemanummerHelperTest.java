@@ -9,7 +9,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -60,8 +62,10 @@ public class HentSkjemanummerHelperTest {
         dagpengeSoknad.setSkjemaNummer(skjemanummer);
 
         // bruk permitteringsfaktum for å trigge endring av skjemanummer
-        Faktum permittering = new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("arbeidsforhold.permitteringsperiode");
-        dagpengeSoknad.setFakta(Collections.singletonList(permittering));
+        List<Faktum> fakta = new ArrayList<>();
+        fakta.add(new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("arbeidsforhold").medProperty("type", "permittert"));
+        fakta.add(new Faktum().medSoknadId(1L).medFaktumId(2L).medParrentFaktumId(1L).medKey("arbeidsforhold.permitteringsperiode"));
+        dagpengeSoknad.setFakta(Collections.unmodifiableList(fakta));
 
         return dagpengeSoknad;
     }
