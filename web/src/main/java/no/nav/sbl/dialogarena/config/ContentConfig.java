@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.inject.Inject;
@@ -31,7 +32,9 @@ import java.util.Map;
 import static java.net.HttpURLConnection.HTTP_OK;
 
 @Configuration
+@EnableScheduling
 public class ContentConfig {
+    private final static int TI_MINUTTER = 1000 * 60 * 10;
 
     @Value("${dialogarena.cms.url}")
     private String cmsBaseUrl;
@@ -70,7 +73,7 @@ public class ContentConfig {
     }
 
     //Hent innholdstekster på nytt hvert tiende minutt
-    @Scheduled(cron = "* */10 * * * *")
+    @Scheduled(fixedRate=TI_MINUTTER)
     public void lastInnNyeInnholdstekster() {
         logger.info("Leser inn innholdstekster fra enonic");
         clearContentCache();
