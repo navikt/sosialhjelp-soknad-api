@@ -89,9 +89,7 @@ public class StandardKodeverk implements Kodeverk {
     @Override
     public String getLand(String landkode) {
         String landFraKodeverk = hentFoersteTermnavnFraKodeIKodeverk(landkode, LANDKODE.toString());
-        if (landFraKodeverk == null) {
-            return "[Fant ikke "+landkode+" i kodeverk LANDKODE]";
-        }
+
         return formaterLand(landFraKodeverk);
     }
 
