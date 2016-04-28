@@ -67,8 +67,8 @@ public class ContentConfig {
 
         messageSource.setDefaultEncoding("UTF-8");
 
-        //Sjekk for nye filer en gang hvert 10. minutt.
-        messageSource.setCacheSeconds(60 * 10);
+        //Sjekk for nye filer en gang hvert 15. sekund.
+        messageSource.setCacheSeconds(15);
         return messageSource;
     }
 
