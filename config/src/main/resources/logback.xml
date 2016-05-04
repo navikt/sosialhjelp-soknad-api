@@ -4,7 +4,7 @@
 
     <property name="loggingPattern"    value="%d [%-5level] [%thread] %logger{5} %replace(- [%X{consumerId}, %X{callId}, %X{userId}] ){'- \[, , \] ',''}- %m%n"/>
 
-    <appender name="exceptionlog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="exceptionlog-sync" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <File>${APP_LOG_HOME}/${MAIN_APPLICATION}_error.log</File>
         <encoder class="RemoveWsSecurityPattern">
             <pattern>${loggingPattern}</pattern>
@@ -15,7 +15,11 @@
         </rollingPolicy>
     </appender>
 
-    <appender name="infolog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="exceptionlog" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref name="exceptionlog-sync" />
+    </appender>
+
+    <appender name="infolog-sync" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <File>${APP_LOG_HOME}/${MAIN_APPLICATION}.log</File>
         <encoder>
             <pattern>${loggingPattern}</pattern>
@@ -26,7 +30,11 @@
         </rollingPolicy>
     </appender>
 
-    <appender name="batchlog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="infolog" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref name="infolog-sync" />
+    </appender>
+
+    <appender name="batchlog-sync" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <File>${APP_LOG_HOME}/${MAIN_APPLICATION}-batch.log</File>
         <encoder>
             <pattern>${loggingPattern}</pattern>
@@ -37,7 +45,11 @@
         </rollingPolicy>
     </appender>
 
-    <appender name="klientlogg" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="batchlog" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref name="batchlog-sync" />
+    </appender>
+
+    <appender name="klientlogg-sync" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <File>${APP_LOG_HOME}/${MAIN_APPLICATION}-klient.log</File>
         <encoder>
             <pattern>${loggingPattern}</pattern>
@@ -48,7 +60,11 @@
         </rollingPolicy>
     </appender>
 
-    <appender name="SYSLOG" class="ch.qos.logback.classic.net.SyslogAppender">
+    <appender name="klientlogg" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref name="klientlogg-sync" />
+    </appender>
+
+    <appender name="SYSLOG-SYNC" class="ch.qos.logback.classic.net.SyslogAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>${syslog.filter.level:-INFO}</level>
         </filter>
@@ -56,6 +72,10 @@
         <facility>LOCAL1</facility>
         <suffixPattern>${MAIN_APPLICATION} %mdc %logger{30} %m %n%rEx</suffixPattern>
         <throwableExcluded>true</throwableExcluded>
+    </appender>
+
+    <appender name="SYSLOG" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref name="SYSLOG-SYNC" />
     </appender>
 
     <logger name="org.springframework" level="warn">
