@@ -157,9 +157,9 @@
                 <version>0.0.1</version>
             </dependency>
             <dependency>
-                <groupId>no.nav.modig</groupId>
-                <artifactId>modig-cxf</artifactId>
-                <version>1.0.1</version>
+                <groupId>no.nav.sbl.dialogarena</groupId>
+                <artifactId>common-cxf</artifactId>
+                <version>2.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>
@@ -361,6 +361,12 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>1.7.7</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jsoup</groupId>
+                <artifactId>jsoup</artifactId>
+                <version>1.7.2</version>
+                <scope>runtime</scope>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>

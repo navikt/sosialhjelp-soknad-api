@@ -106,6 +106,14 @@
         <appender-ref ref="infolog" />
     </logger>
 
+    <logger name="no.nav.modig.security.sts.client.NAVSTSClient" level="OFF">
+        <appender-ref ref="infolog" />
+    </logger>
+
+    <logger name="no.nav.sbl.dialogarena.soknadinnsending.consumer.MaskerSAMLTokenLoggingOutInterceptor" level="OFF">
+        <appender-ref ref="infolog" />
+    </logger>
+
     <logger name="org.apache.cxf" level="OFF">
         <appender-ref ref="infolog" />
     </logger>
