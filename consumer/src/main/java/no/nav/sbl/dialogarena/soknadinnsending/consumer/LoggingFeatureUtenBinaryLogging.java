@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
+import no.nav.sbl.dialogarena.common.cxf.CXFMaskSAMLTokenLoggingOutInterceptor;
 import org.apache.cxf.Bus;
 import org.apache.cxf.feature.AbstractFeature;
 import org.apache.cxf.interceptor.AttachmentInInterceptor;
@@ -13,7 +14,7 @@ public class LoggingFeatureUtenBinaryLogging extends AbstractFeature {
 
     private static final int DEFAULT_LIMIT = 64 * 1024;
     private static final LoggingInInterceptor IN = new LoggingInInterceptor(DEFAULT_LIMIT);
-    private static final LoggingOutInterceptor OUT = new LoggingOutInterceptor(DEFAULT_LIMIT);
+    private static final LoggingOutInterceptor OUT = new CXFMaskSAMLTokenLoggingOutInterceptor(DEFAULT_LIMIT);
     static {
         IN.addAfter(AttachmentInInterceptor.class.getName());
         OUT.addAfter(AttachmentOutInterceptor.class.getName());

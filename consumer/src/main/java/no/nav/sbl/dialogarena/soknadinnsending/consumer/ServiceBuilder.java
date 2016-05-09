@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
-import no.nav.modig.cxf.TimeoutFeature;
 import no.nav.modig.jaxws.handlers.MDCOutHandler;
+import no.nav.sbl.dialogarena.common.cxf.TimeoutFeature;
 import no.nav.sbl.dialogarena.common.timing.TimingFeature;
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
 import org.apache.cxf.frontend.ClientProxy;
