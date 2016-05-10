@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
 import no.nav.modig.jaxws.handlers.MDCOutHandler;
+import no.nav.sbl.dialogarena.common.cxf.LoggingFeatureUtenBinaryOgUtenSamlTokenLogging;
 import no.nav.sbl.dialogarena.common.cxf.TimeoutFeature;
 import no.nav.sbl.dialogarena.common.timing.TimingFeature;
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
@@ -69,7 +70,7 @@ public final class ServiceBuilder<T> {
     }
 
     public ServiceBuilder<T> withLogging() {
-        factoryBean.getFeatures().add(new LoggingFeatureUtenBinaryLogging());
+        factoryBean.getFeatures().add(new LoggingFeatureUtenBinaryOgUtenSamlTokenLogging());
         return this;
     }
 
