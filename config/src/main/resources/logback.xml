@@ -110,7 +110,7 @@
         <appender-ref ref="infolog" />
     </logger>
 
-    <logger name="no.nav.sbl.dialogarena.soknadinnsending.consumer.MaskerSAMLTokenLoggingOutInterceptor" level="OFF">
+    <logger name="no.nav.sbl.dialogarena.common.cxf.CXFMaskSAMLTokenLoggingOutInterceptor" level="info">
         <appender-ref ref="infolog" />
     </logger>
 
