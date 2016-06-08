@@ -2,20 +2,20 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
-import no.nav.sbl.dialogarena.rest.utils.PDFService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
-import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.refusjondagligreise.RefusjonDagligreiseTilXml;
-import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.tilleggsstonader.TilleggsstonaderTilXml;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.InnsendtSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.InnsendtSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
@@ -23,12 +23,13 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static javax.ws.rs.core.MediaType.*;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.generateXsrfToken;
 
 @Path("/soknader")
@@ -36,6 +37,7 @@ import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.generateXsrfToken;
 public class SoknadRessurs {
 
     public static final String XSRF_TOKEN = "XSRF-TOKEN-SOKNAD-API";
+    private final Logger LOG = LoggerFactory.getLogger(SoknadRessurs.class);
 
     @Inject
     private FaktaService faktaService;
@@ -47,13 +49,10 @@ public class SoknadRessurs {
     private SoknadService soknadService;
 
     @Inject
+    private InnsendtSoknadService innsendtSoknadService;
+
+    @Inject
     private HtmlGenerator pdfTemplate;
-
-    @Inject
-    private NavMessageSource messageSource;
-
-    @Inject
-    private PDFService pdfService;
 
     @Context
     private ServletContext servletContext;
@@ -71,7 +70,32 @@ public class SoknadRessurs {
 
     @GET
     @Path("/{behandlingsId}")
-    @Produces(TEXT_HTML)
+    @Produces("application/vnd.kvitteringforinnsendtsoknad+json")
+    @SjekkTilgangTilSoknad
+    public InnsendtSoknad hentInnsendtSoknad(@PathParam("behandlingsId") String behandlingsId, @QueryParam("sprak") String sprak) {
+        return innsendtSoknadService.hentInnsendtSoknad(behandlingsId, sprak);
+    }
+
+    /*
+    * Denne metoden er deprecated og erstattet av en lik metode med egen mediatype.
+    * I utgangspunktet skal den nye mediatypen i produksjon i HL2-2016.
+    * Etter en stund i prod (feks en måned) kan man sjekke accesslogger og se om dette endepunktet med mediatype text/html fortsatt er i bruk
+    * Som fallback ettersom vi er usikre på om accessloggene indekseres, har jeg lagt inn et logstatment med en warning.
+    * Dersom man ser at metoden ikke er i bruk, kan denne den slettes.
+    * */
+    @Deprecated
+    @GET
+    @Path("/{behandlingsId}")
+    @Produces(MediaType.TEXT_HTML)
+    @SjekkTilgangTilSoknad
+    public String hentOppsummeringMedStandardMediatype(@PathParam("behandlingsId") String behandlingsId) throws IOException {
+        LOG.warn("Bruk av deprecated metode for å hente oppsummering");
+        return hentOppsummering(behandlingsId);
+    }
+
+    @GET
+    @Path("/{behandlingsId}")
+    @Produces("application/vnd.oppsummering+html")
     @SjekkTilgangTilSoknad
     public String hentOppsummering(@PathParam("behandlingsId") String behandlingsId) throws IOException {
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
@@ -145,34 +169,6 @@ public class SoknadRessurs {
     public List<Vedlegg> hentPaakrevdeVedlegg(@PathParam("behandlingsId") String behandlingsId) {
         return vedleggService.hentPaakrevdeVedlegg(behandlingsId);
     }
-
-    @GET
-    @Path("/{behandlingsId}/stofo")
-    @Produces(APPLICATION_XML)
-    public byte[] xml(@PathParam("behandlingsId") String behandlingsId) {
-        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, false);
-        soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(soknadService.hentSoknadStruktur(soknad.getskjemaNummer()));
-        return new TilleggsstonaderTilXml(messageSource).transform(soknad).getContent();
-    }
-
-    @GET
-    @Path("/{behandlingsId}/pdf")
-    @Produces("application/pdf")
-    public byte[] pdf(@PathParam("behandlingsId") String behandlingsId) {
-        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
-        String realPath = servletContext.getRealPath("/");
-        return pdfService.genererOppsummeringPdf(soknad, realPath);
-    }
-
-    @GET
-    @Path("/{behandlingsId}/refusjon")
-    @Produces(APPLICATION_XML)
-    public byte[] xmlRefusjon(@PathParam("behandlingsId") String behandlingsId) {
-        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, false);
-        soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(soknadService.hentSoknadStruktur(soknad.getskjemaNummer()));
-        return new RefusjonDagligreiseTilXml().transform(soknad).getContent();
-    }
-
 
     private void settJournalforendeEnhet(String behandlingsId, String delsteg) {
         soknadService.settJournalforendeEnhet(behandlingsId, delsteg);

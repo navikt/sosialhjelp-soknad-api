@@ -23,6 +23,7 @@
         <webservice alias="virksomhet:Organisasjon_v4" mapToProperty="soknad.webservice.arbeid.organisasjon"/>
         <webservice alias="virksomhet:SakOgAktivitet_v1" mapToProperty="soknad.webservice.arena.sakogaktivitet"/>
         <webservice alias="virksomhet:Maalgruppe_v1" mapToProperty="soknad.webservice.arena.maalgruppe"/>
+        <webservice alias="domene.Brukerdialog:Henvendelse_v2" mapToProperty="soknad.webservice.henvendelse.informasjonservice"/>
         <webservice alias="domene.Brukerdialog:sendsoknadservice_v1" mapToProperty="soknad.webservice.henvendelse.sendsoknadservice"/>
         <webservice alias="domene.Brukerdialog:fillagerservice_v1" mapToProperty="soknad.webservice.henvendelse.fillager"/>
         <webservice alias="virksomhet:Kodeverk_v2" mapToProperty="sendsoknad.webservice.kodeverk"/>

@@ -1,15 +1,18 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.*;
-import no.nav.sbl.dialogarena.soknadinnsending.business.*;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.*;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.*;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.*;
-import org.springframework.stereotype.*;
-import org.springframework.transaction.annotation.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.*;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 @Component
 public class SoknadService {
@@ -96,5 +99,4 @@ public class SoknadService {
     public void sendSoknad(String behandlingsId, byte[] pdf) {
         soknadDataFletter.sendSoknad(behandlingsId, pdf);
     }
-
 }
