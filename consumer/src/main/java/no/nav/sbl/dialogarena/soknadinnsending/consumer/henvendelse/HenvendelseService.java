@@ -1,17 +1,17 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse;
 
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHenvendelse;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.modig.core.exception.SystemException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.SoknadType;
+import no.nav.tjeneste.domene.brukerdialog.henvendelse.v2.henvendelse.HenvendelsePortType;
+import no.nav.tjeneste.domene.brukerdialog.henvendelse.v2.meldinger.WSHentHenvendelseRequest;
+import no.nav.tjeneste.domene.brukerdialog.henvendelse.v2.meldinger.WSHentHenvendelseResponse;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingsId;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSSoknadsdata;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStartSoknadRequest;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.*;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -39,6 +39,9 @@ public class HenvendelseService {
     @Inject
     @Named("sendSoknadSelftestEndpoint")
     private SendSoknadPortType sendSoknadSelftestEndpoint;
+
+    @Inject
+    private HenvendelsePortType henvendelseInformasjonEndpoint;
 
     public String startSoknad(String fnr, String skjema, String uid) {
         logger.info("Starter søknad");
@@ -106,6 +109,15 @@ public class HenvendelseService {
             logger.error("Feil ved start søknad for bruker " + startSoknadRequest.getFodselsnummer(), e);
             throw new SystemException("Kunne ikke opprette ny søknad", e, "exception.system.baksystem");
         }
+    }
+
+    public XMLHenvendelse hentInformasjonOmAvsluttetSoknad(String behandlingsId) {
+        WSHentHenvendelseResponse wsHentHenvendelseResponse = henvendelseInformasjonEndpoint.hentHenvendelse(
+                new WSHentHenvendelseRequest()
+                        .withBehandlingsId(behandlingsId));
+        return (XMLHenvendelse) wsHentHenvendelseResponse.getAny();
+
+
     }
 
     private WSStartSoknadRequest lagOpprettSoknadRequest(String fnr, SoknadType soknadType, XMLMetadataListe xmlMetadataListe) {

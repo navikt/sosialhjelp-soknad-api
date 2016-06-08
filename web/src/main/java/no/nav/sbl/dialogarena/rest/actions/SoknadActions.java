@@ -32,7 +32,6 @@ public class SoknadActions {
 
     private static Logger logger = LoggerFactory.getLogger(SoknadActions.class);
 
-    private String saksoversiktUrl = System.getProperty("saksoversikt.link.url");
 
     @Inject
     private VedleggService vedleggService;
@@ -99,12 +98,15 @@ public class SoknadActions {
                           SoknadBekreftelse soknadBekreftelse,
                           @Context HttpServletRequest request) {
         if (soknadBekreftelse.getEpost() != null && !soknadBekreftelse.getEpost().isEmpty()) {
+            String saksoversiktUrl = System.getProperty("saksoversikt.link.url");
             Locale sprak = LocaleUtils.toLocale(sprakkode);
             String subject = tekster.finnTekst("sendtSoknad.sendEpost.epostSubject", null, sprak);
-            String ettersendelseUrl = getEttersendelseUrl(request.getRequestURL().toString(), behandlingsId);
-            String saksoversiktLink = saksoversiktUrl + "/detaljer/" + soknadBekreftelse.getTemaKode() + "/" + behandlingsId;
+            String ettersendelseUrl = soknadBekreftelse.getErSoknadsdialog() ?
+                    getEttersendelseUrl(request.getRequestURL().toString(), behandlingsId) :
+                    saksoversiktUrl + "/app/ettersending";
+            String saksoversiktLink = saksoversiktUrl + "/app/tema/" + soknadBekreftelse.getTemaKode();
 
-            if(!sprak.equals(LocaleUtils.toLocale("nb_NO"))) {
+            if (!sprak.equals(LocaleUtils.toLocale("nb_NO"))) {
                 ettersendelseUrl += "?sprak=" + sprakkode;
                 saksoversiktLink += "?sprak=" + sprakkode;
             }

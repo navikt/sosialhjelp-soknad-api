@@ -7,6 +7,7 @@ public class SoknadBekreftelse implements Serializable {
     private String temaKode;
 
     private Boolean erEttersendelse;
+    private boolean erSoknadsdialog;
 
     public SoknadBekreftelse() {
     }
@@ -35,4 +36,11 @@ public class SoknadBekreftelse implements Serializable {
         this.erEttersendelse = erEttersendelse;
     }
 
+    public boolean getErSoknadsdialog() {
+        return erSoknadsdialog;
+    }
+
+    public void setErSoknadsdialog(boolean erSoknadsdialog) {
+        this.erSoknadsdialog = erSoknadsdialog;
+    }
 }
