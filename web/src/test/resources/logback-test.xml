@@ -11,6 +11,7 @@
     <logger name="no.nav.sbl" level="debug" />
     <logger name="no.nav.sbl.dialogarena.filter.FakeLoginFilter" level="info" />
     <logger name="org.apache.cxf" level="info" />
+    <logger name="no.nav.sbl.dialogarena.common.cxf.CXFMaskSAMLTokenLoggingOutInterceptor" level="info" />
     <logger name="org.apache.http.impl.client" level="info" />
 
     <root level="info">

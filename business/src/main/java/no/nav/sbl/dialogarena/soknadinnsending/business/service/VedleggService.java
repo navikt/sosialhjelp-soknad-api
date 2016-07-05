@@ -135,10 +135,6 @@ public class VedleggService {
             throw new UgyldigOpplastingTypeException(
                     "PDF kan ikke være krypert.", null,
                     "opplasting.feilmelding.pdf.krypert");
-        } else if (detector.pdfIsSavedOrExportedWithApplePreview()) {
-            throw new UgyldigOpplastingTypeException(
-                    "PDF kan ikke være lagret med Apple Preview.", null,
-                    "opplasting.feilmelding.pdf.applepreview");
         }
     }
 
