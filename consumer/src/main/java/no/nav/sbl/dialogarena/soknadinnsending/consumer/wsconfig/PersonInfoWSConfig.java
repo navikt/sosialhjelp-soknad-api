@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig;
 
 import no.aetat.arena.fodselsnr.Fodselsnr;
 import no.nav.arena.tjenester.person.v1.PersonInfoServiceSoap;
-import no.nav.modig.cxf.TimeoutFeature;
+import no.nav.sbl.dialogarena.common.cxf.TimeoutFeature;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.personinfo.PersonInfoMock;
 import no.nav.sbl.dialogarena.types.Pingable;
 import org.apache.cxf.feature.LoggingFeature;

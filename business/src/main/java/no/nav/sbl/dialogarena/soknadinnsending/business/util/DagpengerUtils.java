@@ -77,6 +77,7 @@ public class DagpengerUtils {
 
     private static LocalDate getSluttdatoForSistePermitteringsperiode(WebSoknad soknad) {
         List<Faktum> permitteringsperioder = on(soknad.getFaktaMedKey("arbeidsforhold.permitteringsperiode"))
+                .filter(where(parentFaktumType(soknad), equalTo(PERMITTERT)))
                 .collect(reverseOrder(compareWith(DATO_TIL_PERMITTERING)));
         return on(permitteringsperioder).map(DATO_TIL_PERMITTERING).head().getOrElse(null);
     }

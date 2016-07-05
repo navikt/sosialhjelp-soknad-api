@@ -158,8 +158,8 @@
             <artifactId>modig-security-sts</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-cxf</artifactId>
+            <groupId>no.nav.sbl.dialogarena</groupId>
+            <artifactId>common-cxf</artifactId>
         </dependency>
         <dependency>
             <groupId>no.nav.modig</groupId>

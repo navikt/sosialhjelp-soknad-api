@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import org.apache.commons.collections15.Transformer;
 import org.joda.time.LocalDate;
 
@@ -66,6 +67,18 @@ public class Transformers {
             return faktum.getProperties().get("type");
         }
     };
+
+    public static Transformer<Faktum, String> parentFaktumType(final WebSoknad soknad) {
+        return new Transformer<Faktum, String>() {
+            @Override
+            public String transform(Faktum faktum) {
+                if(faktum.getParrentFaktum() == null) {
+                    return null;
+                }
+                return soknad.getFaktumMedId(faktum.getParrentFaktum().toString()).getProperties().get("type");
+            }
+        };
+    }
 
     public static XMLVedlegg[] convertToXmlVedleggListe(List<Vedlegg> vedleggForventnings) {
         List<XMLVedlegg> resultat = new ArrayList<>();

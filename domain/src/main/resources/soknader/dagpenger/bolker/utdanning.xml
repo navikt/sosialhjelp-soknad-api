@@ -232,8 +232,17 @@
         <oversetting>${key}</oversetting>
     </vedlegg>
     <vedlegg>
+        <faktum>utdanning.introduksjon</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>T1</skjemaNummer>
+        <skjemanummerTillegg>introduksjon</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+        <oversetting>${key}</oversetting>
+    </vedlegg>
+    <vedlegg>
         <faktum>utdanning.annet</faktum>
-        <property>arbeidsgivernavn</property>
         <onValues>
             <value>true</value>
         </onValues>

@@ -29,14 +29,14 @@ public class DagpengerUtilsTest {
     @Test
     public void harSkjemanummerDagpengerHvisNyesteArbeidsforholdIkkeErPermittering() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagPermittert(), lagPermitteringsperiode("2014-1-1"), lagAvskjediget("2014-2-1"));
+        WebSoknad soknad = lagSoknad(lagPermittert(3L), lagPermitteringsperiode(3L, "2014-1-1"), lagAvskjediget("2014-2-1"));
         assertEquals(DAGPENGER, getSkjemanummer(soknad));
     }
 
     @Test
     public void harSkjemanummerDagpengerVedPermitteringHvisNyesteArbeidsforholdErPermittering() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagPermittert(), lagPermitteringsperiode("2014-1-1"), lagAvskjediget("2014-1-1"));
+        WebSoknad soknad = lagSoknad(lagPermittert(3L), lagPermitteringsperiode(3L, "2014-1-1"), lagAvskjediget("2014-1-1"));
         assertEquals(DAGPENGER_VED_PERMITTERING, getSkjemanummer(soknad));
     }
 
@@ -50,34 +50,33 @@ public class DagpengerUtilsTest {
     @Test
     public void testCornerCase(){
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagPermittert(), lagPermitteringsperiode("2014-1-1"), lagAvskjediget("2014-1-1"));
+        WebSoknad soknad = lagSoknad(lagPermittert(3L), lagPermitteringsperiode(3L, "2014-1-1"), lagAvskjediget("2014-1-1"));
         assertEquals(DAGPENGER_VED_PERMITTERING, getSkjemanummer(soknad));
-
     }
 
     @Test
     public void harSkjemanummerDagpengerVedPermitteringHvisToArbeidsforholdPaaSammeDagOgMinstEnErPermittering() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagAvskjediget("2014-1-1"), lagPermittert(), lagPermitteringsperiode("2014-1-1"), lagAvskjediget("2014-1-1"));
+        WebSoknad soknad = lagSoknad(lagAvskjediget("2014-1-1"), lagPermittert(3L), lagPermitteringsperiode(3L, "2014-1-1"), lagAvskjediget("2014-1-1"));
         assertEquals(DAGPENGER_VED_PERMITTERING, getSkjemanummer(soknad));
+    }
+
+    @Test
+    public void harSkjemanummerDagpengerOmManHarArbeidsforholdSomIkkeErPermitteringMenHarPermitteringsperiodeFaktum() {
+        DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
+        Faktum arbeidsforholdIkkePermittert = lagAvskjediget("2015-1-1");
+        arbeidsforholdIkkePermittert.setFaktumId(1234L);
+        Faktum permitteringsperiode = lagPermitteringsperiode(3L, "2015-2-2");
+        permitteringsperiode.setParrentFaktum(arbeidsforholdIkkePermittert.getFaktumId());
+        WebSoknad soknad = lagSoknad(arbeidsforholdIkkePermittert, permitteringsperiode);
+
+        assertEquals(DAGPENGER, getSkjemanummer(soknad));
     }
 
     @Test
     public void harSkjemanummer0000DerMinstEnErPermitteringOgBrukerBorInnenlands() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagAvskjediget("2014-1-1"), lagPermittert(), lagPermitteringsperiode("2014-1-1"), lagAvskjediget("2014-1-1"));
-
-        Faktum personalia = getPersonaliaFaktum(soknad);
-        setGjeldendeAdressePaaPersonaliaFaktum(personalia, lagUtenlandskEOSAdresse());
-        setSekundarAdressePaaPersonaliaFaktum(personalia, lagSekundarAdresseNorge());
-
-        assertEquals(RUTES_I_BRUT, getJournalforendeEnhet(soknad));
-    }
-
-    @Test
-    public void harSkjemanummer0000DerMinstEnErPermitteringOgBrukerBorIUtlandetOgHarNorskMidlertidigAdresse() {
-        DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagAvskjediget("2014-1-1"), lagPermittert(), lagPermitteringsperiode("2014-1-1"), lagAvskjediget("2014-1-1"));
+        WebSoknad soknad = lagSoknad(lagAvskjediget("2014-1-1"), lagPermittert(3L), lagPermitteringsperiode(3L, "2014-1-1"), lagAvskjediget("2014-1-1"));
 
         Faktum personalia = getPersonaliaFaktum(soknad);
         setGjeldendeAdressePaaPersonaliaFaktum(personalia, lagUtenlandskEOSAdresse());
@@ -89,7 +88,7 @@ public class DagpengerUtilsTest {
     @Test
     public void skalRuteSoknadTilEosLand() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagPermittert(), lagPermitteringsperiode("2014-1-1"));
+        WebSoknad soknad = lagSoknad(lagPermittert(3L), lagPermitteringsperiode(3L, "2014-1-1"));
         Adresse utlandeos = lagUtenlandskEOSAdresse();
         Faktum personalia = getPersonaliaFaktum(soknad);
         setGjeldendeAdressePaaPersonaliaFaktum(personalia, utlandeos);
@@ -100,7 +99,7 @@ public class DagpengerUtilsTest {
     @Test
     public void skalRuteSoknadTilEosLandHvisBrukerErUtenlandskOgGrensearbeider() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagPermittert(), lagPermitteringsperiode("2014-1-1"), lagGrensearbeiderFaktum());
+        WebSoknad soknad = lagSoknad(lagPermittert(3L), lagPermitteringsperiode(3L, "2014-1-1"), lagGrensearbeiderFaktum());
         Faktum personalia = getPersonaliaFaktum(soknad);
         setUtenlanskEOSStatsborger(personalia);
         setBrukerTilAVaereGrensearbeider(soknad.getFaktumMedKey("arbeidsforhold.grensearbeider"));
@@ -111,7 +110,7 @@ public class DagpengerUtilsTest {
     @Test
     public void skalRuteSoknadNormaltHvisBrukerErUtenlandskMenIkkeGrensearbeider() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagPermittert(), lagPermitteringsperiode("2014-1-1"), lagGrensearbeiderFaktum());
+        WebSoknad soknad = lagSoknad(lagPermittert(3L), lagPermitteringsperiode(3L, "2014-1-1"), lagGrensearbeiderFaktum());
         Faktum personalia = getPersonaliaFaktum(soknad);
         setUtenlanskEOSStatsborger(personalia);
         setBrukerTilIkkeGrensearbeider(soknad.getFaktumMedKey("arbeidsforhold.grensearbeider"));
@@ -122,7 +121,7 @@ public class DagpengerUtilsTest {
     @Test
     public void skalRuteSoknadNormaltHvisBrukerErGrensearbeiderOgNorskStatsborger() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagPermittert(), lagPermitteringsperiode("2014-1-1"), lagGrensearbeiderFaktum());
+        WebSoknad soknad = lagSoknad(lagPermittert(3L), lagPermitteringsperiode(3L, "2014-1-1"), lagGrensearbeiderFaktum());
         Faktum personalia = getPersonaliaFaktum(soknad);
         setNorskStatsborger(personalia);
         setBrukerTilAVaereGrensearbeider(soknad.getFaktumMedKey("arbeidsforhold.grensearbeider"));
@@ -151,8 +150,8 @@ public class DagpengerUtilsTest {
         WebSoknad soknad = lagSoknad(
                 lagRedusertArbeidstid("2014-01-01"),
                 lagAvskjediget("2014-03-06"),
-                lagPermittert(),
-                lagPermitteringsperiode("2014-1-1"));
+                lagPermittert(3L),
+                lagPermitteringsperiode(3L, "2014-1-1"));
         Adresse utlandeos = lagUtenlandskEOSAdresse();
         Faktum personalia = getPersonaliaFaktum(soknad);
         setGjeldendeAdressePaaPersonaliaFaktum(personalia, utlandeos);
@@ -163,7 +162,7 @@ public class DagpengerUtilsTest {
     @Test
     public void harSkjemanummerDagpengerVedPermitteringHvisDetIkkeErSattDatoTilForPermittering() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagPermittert(), lagPermitteringsperiode("2014-1-1"), lagAvskjediget("2014-1-1"));
+        WebSoknad soknad = lagSoknad(lagPermittert(3L), lagPermitteringsperiode(3L, "2014-1-1"), lagAvskjediget("2014-1-1"));
         assertEquals(DAGPENGER_VED_PERMITTERING, getSkjemanummer(soknad));
     }
 
@@ -177,18 +176,18 @@ public class DagpengerUtilsTest {
         return soknad;
     }
 
-    private Faktum lagPermitteringsperiode(String dato) {
+    private Faktum lagPermitteringsperiode(Long parentFaktum, String dato) {
         Map<String, String> properties = new HashMap<>();
         properties.put("permiteringsperiodedatofra", dato);
-        Faktum faktum = new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("arbeidsforhold.permitteringsperiode");
+        Faktum faktum = new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("arbeidsforhold.permitteringsperiode").medParrentFaktumId(parentFaktum);
         faktum.setProperties(properties);
         return faktum;
     }
 
-    private static Faktum lagPermittert() {
+    private static Faktum lagPermittert(Long faktumId) {
         Map<String, String> properties = new HashMap<>();
         properties.put("type", PERMITTERT);
-        Faktum faktum = new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("arbeidsforhold");
+        Faktum faktum = new Faktum().medSoknadId(1L).medFaktumId(faktumId).medKey("arbeidsforhold");
         faktum.setProperties(properties);
         return faktum;
     }
