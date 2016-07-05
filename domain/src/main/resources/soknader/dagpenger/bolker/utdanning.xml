@@ -111,40 +111,6 @@
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>utdanning.kortvarigflere</id>
-        <type>java.lang.Boolean</type>
-        <panel>Utdanning</panel>
-        <dependOn>utdanning.underutdanning</dependOn>
-    </faktum>
-    <faktum>
-        <id>utdanning.kortvarigflere.sted</id>
-        <type>textbox</type>
-        <panel>Utdanning</panel>
-        <dependOn>utdanning.kortvarigflere</dependOn>
-        <dependOnValues>
-            <value>true</value>
-        </dependOnValues>
-    </faktum>
-    <faktum>
-        <id>utdanning.kortvarigflere.navn</id>
-        <type>textbox</type>
-        <panel>Utdanning</panel>
-        <dependOn>utdanning.kortvarigflere</dependOn>
-        <dependOnValues>
-            <value>true</value>
-        </dependOnValues>
-    </faktum>
-    <faktum>
-        <id>utdanning.kortvarigflere.varighet</id>
-        <type>periode</type>
-        <panel>Utdanning</panel>
-        <dependOn>utdanning.kortvarigflere</dependOn>
-        <dependOnValues>
-            <value>true</value>
-        </dependOnValues>
-    </faktum>
-
-    <faktum>
         <id>utdanning.norsk</id>
         <type>java.lang.Boolean</type>
         <panel>Utdanning</panel>
@@ -208,16 +174,6 @@
         </onValues>
         <skjemaNummer>T1</skjemaNummer>
         <skjemanummerTillegg>kortvarig</skjemanummerTillegg>
-        <flereTillatt>true</flereTillatt>
-        <oversetting>${key}</oversetting>
-    </vedlegg>
-    <vedlegg>
-        <faktum>utdanning.kortvarigflere</faktum>
-        <onValues>
-            <value>true</value>
-        </onValues>
-        <skjemaNummer>T1</skjemaNummer>
-        <skjemanummerTillegg>kortvarigflere</skjemanummerTillegg>
         <flereTillatt>true</flereTillatt>
         <oversetting>${key}</oversetting>
     </vedlegg>
