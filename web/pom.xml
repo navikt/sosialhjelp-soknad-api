@@ -6,11 +6,11 @@
     <parent>
         <groupId>no.nav.sbl.dialogarena</groupId>
         <artifactId>sendsoknad</artifactId>
-        <version>12.1-2016-HL3-SNAPSHOT</version>
+        <version>12.1</version>
     </parent>
 
     <artifactId>sendsoknad-web</artifactId>
-    <version>12.1-2016-HL3-SNAPSHOT</version>
+    <version>12.1</version>
     <name>${project.artifactId}</name>
     <packaging>war</packaging>
 
