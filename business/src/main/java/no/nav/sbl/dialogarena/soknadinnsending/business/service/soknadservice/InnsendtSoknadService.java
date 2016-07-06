@@ -54,7 +54,7 @@ public class InnsendtSoknadService {
     };
     public static final Predicate<Vedlegg> IKKE_LASTET_OPP = PredicateUtils.notPredicate(LASTET_OPP);
 
-
+    @SuppressWarnings({"emptyCatchBlock", "emptyBlockCheck"})
     public InnsendtSoknad hentInnsendtSoknad(String behandlingsId, String sprak) {
         final XMLHenvendelse xmlHenvendelse = henvendelseService.hentInformasjonOmAvsluttetSoknad(behandlingsId);
 
