@@ -54,7 +54,6 @@ public class InnsendtSoknadService {
     };
     public static final Predicate<Vedlegg> IKKE_LASTET_OPP = PredicateUtils.notPredicate(LASTET_OPP);
 
-    @SuppressWarnings({"emptyCatchBlock", "emptyBlockCheck"})
     public InnsendtSoknad hentInnsendtSoknad(String behandlingsId, String sprak) {
         final XMLHenvendelse xmlHenvendelse = henvendelseService.hentInformasjonOmAvsluttetSoknad(behandlingsId);
 
@@ -69,7 +68,7 @@ public class InnsendtSoknadService {
             KravdialogInformasjon konfigurasjon = kravdialogInformasjonHolder.hentKonfigurasjon(hovedskjema.getSkjemanummer());
             String prefix = konfigurasjon.getSoknadTypePrefix();
             innsendtSoknad.medTittelCmsKey(prefix.concat(".").concat("skjema.tittel"));
-        } catch (ApplicationException e) {
+        } catch (ApplicationException e) {//NOSONAR
             /*Dersom vi får en ApplicationException betyr det at soknaden ikke har noen konfigurasjon i sendsoknad.
             * Det er mest sannsynlig fordi soknaden er sendt inn via dokumentinnsending. I dette tilfellet bruker vi tittelen
             * på hoveddokumentet som skjematittel. Denne finnes for alle soknader.
