@@ -70,7 +70,7 @@
         <id>utdanning.semester.avslutning</id>
         <type>date</type>
         <panel>Utdanning</panel>
-        <dependOn>utdanning.kveld</dependOn>
+        <dependOn>utdanning.kveld.progresjonUnder50</dependOn>
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
