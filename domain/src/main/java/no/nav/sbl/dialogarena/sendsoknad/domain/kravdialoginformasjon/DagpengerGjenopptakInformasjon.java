@@ -41,6 +41,11 @@ public class DagpengerGjenopptakInformasjon extends KravdialogInformasjon.Defaul
         return true;
     }
 
+    @Override
+    public boolean skalSendeMedFullSoknad() {
+        return true;
+    }
+
     public static boolean erDagpengerGjenopptak(String skjema) {
         return skjemanummer.contains(skjema);
     }
