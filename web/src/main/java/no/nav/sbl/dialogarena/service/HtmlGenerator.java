@@ -10,4 +10,6 @@ public interface HtmlGenerator {
     String fyllHtmlMalMedInnhold(WebSoknad soknad, String file) throws IOException;
 
     String fyllHtmlMalMedInnhold(WebSoknad soknad) throws IOException;
+
+    String fyllHtmlMalMedInnhold(WebSoknad soknad, boolean visHjelpetekster) throws IOException;
 }

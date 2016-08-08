@@ -41,10 +41,14 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
                 .apply(Context.newBuilder(soknad).build());
     }
 
-    @Override
     public String fyllHtmlMalMedInnhold(WebSoknad soknad) throws IOException {
+        return fyllHtmlMalMedInnhold(soknad, false);
+    }
+
+    @Override
+    public String fyllHtmlMalMedInnhold(WebSoknad soknad, boolean visHjelpetekster) throws IOException {
         SoknadStruktur soknadStruktur = webSoknadConfig.hentStruktur(soknad.getskjemaNummer());
-        OppsummeringsContext context = new OppsummeringsContext(soknad, soknadStruktur, false);
+        OppsummeringsContext context = new OppsummeringsContext(soknad, soknadStruktur, visHjelpetekster);
         return getHandlebars()
                 .infiniteLoops(true)
                 .compile("/skjema/generisk")
