@@ -232,7 +232,7 @@ public class VedleggForFaktumStruktur implements Serializable {
                 .medInnsendingsvalg(Vedlegg.Status.VedleggKreves);
     }
 
-    public VedleggForFaktumStruktur medFlereTillatt(boolean flereTillatt) {
+    public VedleggForFaktumStruktur medFlereTillatt() {
         this.setFlereTillatt(true);
         return this;
     }
