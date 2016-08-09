@@ -91,11 +91,7 @@ public class LagringsScheduler {
         try {
             henvendelseService.avbrytSoknad(soknad.getBrukerBehandlingId());
 
-            try {
-                fillagerService.slettAlle(soknad.getBrukerBehandlingId());
-            } catch (Exception e) {
-                logger.error("Sletting av filer feilet for ettersending {}. Henvendelsen de hører til er satt til avbrutt, og ettersendingen slettes i sendsøknad.", soknad.getSoknadId(), e);
-            }
+            slettFiler(soknad);
 
             soknadRepository.slettSoknad(soknad.getSoknadId());
             vellykket++;
@@ -107,6 +103,14 @@ public class LagringsScheduler {
             return false;
         }
         return true;
+    }
+
+    private void slettFiler(WebSoknad soknad) {
+        try {
+            fillagerService.slettAlle(soknad.getBrukerBehandlingId());
+        } catch (Exception e) {
+            logger.error("Sletting av filer feilet for ettersending {}. Henvendelsen de hører til er satt til avbrutt, og ettersendingen slettes i sendsøknad.", soknad.getSoknadId(), e);
+        }
     }
 
     private boolean isPaabegyntEttersendelse(Optional<WebSoknad> ws) {
