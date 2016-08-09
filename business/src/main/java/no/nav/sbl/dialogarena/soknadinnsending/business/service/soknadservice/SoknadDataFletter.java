@@ -236,7 +236,7 @@ public class SoknadDataFletter {
 
     public void sendSoknad(String behandlingsId, byte[] pdf) {
         WebSoknad soknad = hentSoknad(behandlingsId, MED_DATA, MED_VEDLEGG);
-        if (soknad.erEttersending() && soknad.getOpplastedeVedlegg().size() <= 0) {
+        if (soknad.erEttersending() && soknad.getOpplastedeVedlegg().isEmpty()) {
             logger.error("Kan ikke sende inn ettersendingen med ID {0} uten å ha lastet opp vedlegg", soknad.getBrukerBehandlingId());
             throw new ApplicationException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg");
         }

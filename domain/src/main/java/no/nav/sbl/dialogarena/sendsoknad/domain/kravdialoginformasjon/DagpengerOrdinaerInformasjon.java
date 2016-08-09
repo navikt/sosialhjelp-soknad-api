@@ -9,6 +9,7 @@ import static java.util.Arrays.asList;
 
 
 public class DagpengerOrdinaerInformasjon extends KravdialogInformasjon.DefaultOppsett {
+    private static final String FORTSETT_PATH = "soknad.dagpenger.fortsett.path";
 
     private static List<String> skjemanummer = asList("NAV 04-01.03", "NAV 04-01.04");
 
@@ -21,7 +22,7 @@ public class DagpengerOrdinaerInformasjon extends KravdialogInformasjon.DefaultO
     }
 
     public String getFortsettSoknadUrlKey() {
-        return "soknad.dagpenger.fortsett.path";
+        return FORTSETT_PATH;
     }
 
     public String getStrukturFilnavn() {
