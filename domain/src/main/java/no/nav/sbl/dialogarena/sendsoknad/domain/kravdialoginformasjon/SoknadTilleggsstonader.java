@@ -12,16 +12,19 @@ import static java.util.Arrays.*;
 
 public class SoknadTilleggsstonader extends KravdialogInformasjon.DefaultOppsett {
 
+    private static final String FORTSETT_PATH = "soknadtilleggsstonader.path";
+    private static final String SOKNAD_PATH = "soknadtilleggsstonader.path";
+
     public String getSoknadTypePrefix() {
         return "soknadtilleggsstonader";
     }
 
     public String getSoknadUrlKey() {
-        return "soknadtilleggsstonader.path";
+        return SOKNAD_PATH;
     }
 
     public String getFortsettSoknadUrlKey() {
-        return "soknadtilleggsstonader.path";
+        return FORTSETT_PATH;
     }
 
     public List<String> getSoknadBolker(WebSoknad soknad) {

@@ -26,6 +26,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class AdresseTransform {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd");
     private static final String C_O = "C/O";
+    private static final String MIDLERTIDIG = "midlertidig";
     private Kodeverk kodeverk;
 
     private static final Logger logger = getLogger(AdresseTransform.class);
@@ -71,7 +72,7 @@ public class AdresseTransform {
     private boolean harMidlertidigAdresseSomErGjeldendeAdresse(XMLBruker soapPerson) {
         if (soapPerson.getMidlertidigPostadresse() != null) {
             String gjeldendeAdressetype = finnGjeldendeAdressetype(soapPerson);
-            if (gjeldendeAdressetype.toLowerCase().startsWith("midlertidig")) {
+            if (gjeldendeAdressetype.toLowerCase().startsWith(MIDLERTIDIG)) {
                 return true;
             }
         }
@@ -101,7 +102,7 @@ public class AdresseTransform {
     private boolean harMidlertidigAdresseSomIkkeErGjeldendeAdresse(XMLBruker soapPerson) {
         if (soapPerson.getMidlertidigPostadresse() != null) {
             String gjeldendeAdressetype = finnGjeldendeAdressetype(soapPerson);
-            if (!gjeldendeAdressetype.toLowerCase().startsWith("midlertidig")) {
+            if (!gjeldendeAdressetype.toLowerCase().startsWith(MIDLERTIDIG)) {
                 return true;
             }
         }

@@ -9,17 +9,18 @@ import java.util.List;
 import static java.util.Arrays.asList;
 
 public class TiltakspengerInformasjon extends KravdialogInformasjon.DefaultOppsett {
-
+    private static final String FORTSETT_PATH = "tiltakspenger.path";
+    private static final String SOKNAD_PATH = "tiltakspenger.path";
     public String getSoknadTypePrefix() {
         return "tiltakspenger";
     }
 
     public String getSoknadUrlKey() {
-        return "tiltakspenger.path";
+        return SOKNAD_PATH;
     }
 
     public String getFortsettSoknadUrlKey() {
-        return "tiltakspenger.path";
+        return FORTSETT_PATH;
     }
 
     public List<String> getSoknadBolker(WebSoknad soknad) {
