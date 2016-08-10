@@ -84,13 +84,13 @@ public class SoknadActionsTest {
     @Test
     public void sendSoknadSkalBrukeNyPdfLogikkOmDetErSattPaaConfig() throws Exception {
         when(soknadService.hentSoknad(BEHANDLINGS_ID, true, true)).thenReturn(soknad().medSoknadPrefix("dagpenger.ordinaer"));
-        when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class))).thenReturn("<html></html>");
+        when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyBoolean())).thenReturn("<html></html>");
         when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyString())).thenReturn("<html></html>");
         when(webSoknadConfig.brukerNyOppsummering(anyLong())).thenReturn(true);
 
         actions.sendSoknad(BEHANDLINGS_ID);
 
-        verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class));
+        verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), anyBoolean());
         verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), eq("/skjema/kvittering"));
     }
 
