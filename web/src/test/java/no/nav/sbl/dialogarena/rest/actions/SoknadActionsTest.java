@@ -67,6 +67,7 @@ public class SoknadActionsTest {
         when(tekster.finnTekst(eq("sendtSoknad.sendEpost.epostSubject"), any(Object[].class), any(Locale.class))).thenReturn("Emne");
         when(context.getRealPath(anyString())).thenReturn("");
         when(webSoknadConfig.brukerNyOppsummering(anyLong())).thenReturn(false);
+        when(webSoknadConfig.skalSendeMedFullSoknad(anyLong())).thenReturn(false);
         actions.setContext(context);
     }
 
