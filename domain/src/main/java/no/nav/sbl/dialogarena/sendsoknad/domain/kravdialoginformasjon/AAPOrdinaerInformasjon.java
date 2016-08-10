@@ -7,8 +7,8 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 
+
 public class AAPOrdinaerInformasjon extends KravdialogInformasjon.DefaultOppsett {
-    private static final String FORTSETT_PATH = "soknad.aap.fortsett.path";
 
     private static List<String> skjemanummer = asList("NAV 11-13.05");
 
@@ -21,7 +21,7 @@ public class AAPOrdinaerInformasjon extends KravdialogInformasjon.DefaultOppsett
     }
 
     public String getFortsettSoknadUrlKey() {
-        return FORTSETT_PATH;
+        return "soknad.aap.fortsett.path";
     }
 
     public String getStrukturFilnavn() {
