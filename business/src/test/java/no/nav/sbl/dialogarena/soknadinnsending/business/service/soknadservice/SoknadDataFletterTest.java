@@ -21,8 +21,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
@@ -229,7 +229,7 @@ public class SoknadDataFletterTest {
 
         when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(vedlegg);
 
-        soknadServiceUtil.sendSoknad(behandlingsId, new byte[]{1, 2, 3});
+        soknadServiceUtil.sendSoknad(behandlingsId, new byte[]{1, 2, 3}, null);
     }
 
     @Test
@@ -265,7 +265,7 @@ public class SoknadDataFletterTest {
         when(vedleggService.hentVedleggOgKvittering(webSoknad)).thenReturn(mockHentVedleggForventninger(webSoknad));
 
         when(kravdialogInformasjonHolder.hentKonfigurasjon(SKJEMA_NUMMER)).thenReturn(new KravdialogInformasjonHolder().hentKonfigurasjon("NAV 04-01.03"));
-        soknadServiceUtil.sendSoknad(behandlingsId, new byte[]{1, 2, 3});
+        soknadServiceUtil.sendSoknad(behandlingsId, new byte[]{1, 2, 3}, null);
 
         verify(henvendelsesConnector).avsluttSoknad(eq(behandlingsId), argument.capture(),
                 refEq(
