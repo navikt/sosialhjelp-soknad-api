@@ -95,6 +95,18 @@ public class SoknadActionsTest {
     }
 
     @Test
+    public void sendSoknadSkalSendeMedUtvidetSoknadOmDetErSattPaaConfig()throws Exception{
+        when(soknadService.hentSoknad(BEHANDLINGS_ID, true, true)).thenReturn(soknad().medSoknadPrefix("dagpenger.ordinaer"));
+        when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyBoolean())).thenReturn("<html></html>");
+        when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyString())).thenReturn("<html></html>");
+        when(webSoknadConfig.brukerNyOppsummering(anyLong())).thenReturn(true);
+        when(webSoknadConfig.skalSendeMedFullSoknad(anyLong())).thenReturn(true);
+        actions.sendSoknad(BEHANDLINGS_ID);
+
+        verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), eq("/skjema/kvittering"));
+        verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), eq(true));
+    }
+    @Test
     public void sendGjenopptakSkalLageGjenopptakPdfMedKodeverksverdier() throws Exception {
         when(soknadService.hentSoknad(BEHANDLINGS_ID, true, true)).thenReturn(soknad().medSoknadPrefix("dagpenger.gjenopptak"));
         when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyString())).thenReturn("<html></html>");
