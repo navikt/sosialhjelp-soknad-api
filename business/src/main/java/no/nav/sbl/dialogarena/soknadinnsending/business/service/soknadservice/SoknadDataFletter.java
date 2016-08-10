@@ -35,6 +35,7 @@ import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static java.util.Collections.sort;
 import static java.util.UUID.randomUUID;
@@ -272,10 +273,11 @@ public class SoknadDataFletter {
                             .withAlternativRepresentasjon(lagListeMedXMLAlternativeRepresentasjoner(soknad)));
             if(fullSoknad != null){
                 XMLAlternativRepresentasjon fullSoknadRepr = new XMLAlternativRepresentasjon()
-                        .withUuid(soknad.getUuid())
+                        .withUuid(UUID.randomUUID().toString())
                         .withFilnavn(skjemanummer(soknad))
                         .withMimetype("application/pdf-fullversjon")
                         .withFilstorrelse("" + fullSoknad.length);
+                fillagerService.lagreFil(soknad.getBrukerBehandlingId(), fullSoknadRepr.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(fullSoknad));
                 xmlAlternativRepresentasjonListe.withAlternativRepresentasjon(fullSoknadRepr);
             }
         }
