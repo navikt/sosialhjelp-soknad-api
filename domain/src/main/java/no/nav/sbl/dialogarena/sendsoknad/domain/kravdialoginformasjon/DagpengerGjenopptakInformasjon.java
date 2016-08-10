@@ -7,9 +7,8 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 
-
+@SuppressWarnings("squid:")
 public class DagpengerGjenopptakInformasjon extends KravdialogInformasjon.DefaultOppsett {
-    private static final String FORTSETT_PATH = "soknad.dagpenger.fortsett.path";
 
     private static List<String> skjemanummer = asList("NAV 04-16.03", "NAV 04-16.04");
 
@@ -22,7 +21,7 @@ public class DagpengerGjenopptakInformasjon extends KravdialogInformasjon.Defaul
     }
 
     public String getFortsettSoknadUrlKey() {
-        return FORTSETT_PATH;
+        return "soknad.dagpenger.fortsett.path";
     }
 
     public String getStrukturFilnavn() {

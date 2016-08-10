@@ -20,7 +20,7 @@ public class ForventningsSjekker {
         CONTEXT.setTypeConverter(new StandardTypeConverter(CONVERSION_SERVICE));
         CONTEXT.setTypeComparator(new StandardTypeComparator() {
             @Override
-            public int compare(Object left, Object right) throws SpelEvaluationException {
+            public int compare(Object left, Object right) {
                 if (left.getClass() == String.class && right.getClass() != String.class) {
                     Class<?> clazz = right.getClass();
                     if(Number.class.isAssignableFrom(right.getClass())) {
