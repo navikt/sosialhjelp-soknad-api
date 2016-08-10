@@ -4,7 +4,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.expression.EvaluationException;
 import org.springframework.expression.ParseException;
-import org.springframework.expression.spel.SpelEvaluationException;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.expression.spel.support.StandardTypeComparator;
@@ -20,10 +19,10 @@ public class ForventningsSjekker {
         CONTEXT.setTypeConverter(new StandardTypeConverter(CONVERSION_SERVICE));
         CONTEXT.setTypeComparator(new StandardTypeComparator() {
             @Override
-            public int compare(Object left, Object right) throws SpelEvaluationException {
+            public int compare(Object left, Object right) {
                 if (left.getClass() == String.class && right.getClass() != String.class) {
                     Class<?> clazz = right.getClass();
-                    if(Number.class.isAssignableFrom(right.getClass())) {
+                    if (Number.class.isAssignableFrom(right.getClass())) {
                         clazz = Double.class;
                         left = left.toString().replace(",", ".");
                     }
@@ -31,7 +30,7 @@ public class ForventningsSjekker {
                     return super.compare(CONVERSION_SERVICE.convert(left, clazz), right);
                 } else if (right.getClass() == String.class && left.getClass() != String.class) {
                     Class<?> clazz = left.getClass();
-                    if(Number.class.isAssignableFrom(left.getClass())) {
+                    if (Number.class.isAssignableFrom(left.getClass())) {
                         clazz = Double.class;
                         right = right.toString().replace(",", ".");
                     }
