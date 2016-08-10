@@ -308,7 +308,7 @@ public class VedleggService {
             .medFaktum(new FaktumStruktur().medId("ekstraVedlegg"))
             .medSkjemanummer("N6")
             .medOnValues(Arrays.asList("true"))
-            .medFlereTillatt(true);
+            .medFlereTillatt();
 
     public List<Vedlegg> genererPaakrevdeVedlegg(String behandlingsId) {
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true);
