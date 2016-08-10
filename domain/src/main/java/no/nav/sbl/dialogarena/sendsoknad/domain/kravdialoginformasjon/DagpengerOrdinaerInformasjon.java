@@ -41,6 +41,11 @@ public class DagpengerOrdinaerInformasjon extends KravdialogInformasjon.DefaultO
         return true;
     }
 
+    @Override
+    public boolean skalSendeMedFullSoknad() {
+        return true;
+    }
+
     public static boolean erDagpengerOrdinaer(String skjema) {
         return skjemanummer.contains(skjema);
     }

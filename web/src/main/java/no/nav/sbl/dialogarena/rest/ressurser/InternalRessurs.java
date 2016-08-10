@@ -149,4 +149,14 @@ public class InternalRessurs {
         }
         return "OK";
     }
+
+    @GET
+    @Path("/{behandlingsId}/fullsoknad")
+    @Produces(TEXT_HTML)
+    public String fullSoknad(@PathParam("behandlingsId") String behandlingsId) throws IOException {
+        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
+        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
+
+        return pdfTemplate.fyllHtmlMalMedInnhold(soknad, true);
+    }
 }
