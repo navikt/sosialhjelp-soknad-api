@@ -38,6 +38,8 @@ public interface KravdialogInformasjon {
 
     boolean brukerNyOppsummering();
 
+    boolean skalSendeMedFullSoknad();
+
     abstract class DefaultOppsett implements KravdialogInformasjon {
         @Override
         public List<Transformer<WebSoknad, AlternativRepresentasjon>> getTransformers(MessageSource messageSource) {
@@ -51,6 +53,9 @@ public interface KravdialogInformasjon {
 
         @Override
         public boolean brukerNyOppsummering(){
+            return false;
+        }
+        public boolean skalSendeMedFullSoknad(){
             return false;
         }
     }
