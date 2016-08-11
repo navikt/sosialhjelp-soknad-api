@@ -5,12 +5,12 @@ import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Steg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.XmlService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.XmlService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -121,5 +121,9 @@ public class WebSoknadConfig {
     public boolean brukerNyOppsummering(Long soknadId) {
         KravdialogInformasjon skjemaConfig = finnSkjemaConfig(soknadId);
         return skjemaConfig.brukerNyOppsummering();
+    }
+
+    public boolean skalSendeMedFullSoknad(Long soknadId) {
+        return finnSkjemaConfig(soknadId).skalSendeMedFullSoknad();
     }
 }

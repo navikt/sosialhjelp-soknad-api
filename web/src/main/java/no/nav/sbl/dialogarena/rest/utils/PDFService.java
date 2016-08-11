@@ -39,21 +39,21 @@ public class PDFService {
         return lagPdfFraSkjema(soknad, "skjema/ettersending/dummy", servletPath);
     }
 
-    public byte[] genererOppsummeringPdf(WebSoknad soknad, String servletPath) {
+    public byte[] genererOppsummeringPdf(WebSoknad soknad, String servletPath, boolean fullSoknad) {
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
 
         if (webSoknadConfig.brukerNyOppsummering(soknad.getSoknadId())) {
-            return lagPdf(soknad, servletPath);
+            return lagPdf(soknad, servletPath, fullSoknad);
         } else {
             return lagPdfFraSkjema(soknad, "/skjema/" + soknad.getSoknadPrefix(), servletPath);
         }
     }
 
 
-    private byte[] lagPdf(WebSoknad soknad, String servletPath) {
+    private byte[] lagPdf(WebSoknad soknad, String servletPath, boolean fullSoknad) {
         String pdfMarkup;
         try {
-            pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(soknad);
+            pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(soknad, fullSoknad);
         } catch (IOException e) {
             throw new ApplicationException("Kunne ikke lage markup for skjema", e);
         }
