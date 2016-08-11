@@ -16,8 +16,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadReposito
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
@@ -35,6 +35,7 @@ import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static java.util.Collections.sort;
 import static java.util.UUID.randomUUID;
@@ -234,7 +235,7 @@ public class SoknadDataFletter {
         return soknad;
     }
 
-    public void sendSoknad(String behandlingsId, byte[] pdf) {
+    public void sendSoknad(String behandlingsId, byte[] pdf, byte[] fullSoknad) {
         WebSoknad soknad = hentSoknad(behandlingsId, MED_DATA, MED_VEDLEGG);
         if (soknad.erEttersending() && soknad.getOpplastedeVedlegg().isEmpty()) {
             logger.error("Kan ikke sende inn ettersendingen med ID {0} uten å ha lastet opp vedlegg", soknad.getBrukerBehandlingId());
@@ -249,13 +250,13 @@ public class SoknadDataFletter {
         logger.info("Lagrer søknad som fil til henvendelse for behandling {}", soknad.getBrukerBehandlingId());
         fillagerService.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(pdf));
 
-        XMLHovedskjema hovedskjema = lagXmlHovedskjemaMedAlternativRepresentasjon(pdf, soknad);
+        XMLHovedskjema hovedskjema = lagXmlHovedskjemaMedAlternativRepresentasjon(pdf, soknad, fullSoknad);
         XMLVedlegg[] vedlegg = convertToXmlVedleggListe(vedleggService.hentVedleggOgKvittering(soknad));
         henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, vedlegg);
         lokalDb.slettSoknad(soknad.getSoknadId());
     }
 
-    private XMLHovedskjema lagXmlHovedskjemaMedAlternativRepresentasjon(byte[] pdf, WebSoknad soknad) {
+    private XMLHovedskjema lagXmlHovedskjemaMedAlternativRepresentasjon(byte[] pdf, WebSoknad soknad, byte[] fullSoknad) {
         XMLHovedskjema hovedskjema = new XMLHovedskjema()
                 .withInnsendingsvalg(LASTET_OPP.toString())
                 .withSkjemanummer(skjemanummer(soknad))
@@ -266,9 +267,19 @@ public class SoknadDataFletter {
                 .withJournalforendeEnhet(journalforendeEnhet(soknad));
 
         if(!soknad.erEttersending()) {
+            XMLAlternativRepresentasjonListe xmlAlternativRepresentasjonListe = new XMLAlternativRepresentasjonListe();
             hovedskjema = hovedskjema.withAlternativRepresentasjonListe(
-                    new XMLAlternativRepresentasjonListe()
+                    xmlAlternativRepresentasjonListe
                             .withAlternativRepresentasjon(lagListeMedXMLAlternativeRepresentasjoner(soknad)));
+            if(fullSoknad != null){
+                XMLAlternativRepresentasjon fullSoknadRepr = new XMLAlternativRepresentasjon()
+                        .withUuid(UUID.randomUUID().toString())
+                        .withFilnavn(skjemanummer(soknad))
+                        .withMimetype("application/pdf-fullversjon")
+                        .withFilstorrelse("" + fullSoknad.length);
+                fillagerService.lagreFil(soknad.getBrukerBehandlingId(), fullSoknadRepr.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(fullSoknad));
+                xmlAlternativRepresentasjonListe.withAlternativRepresentasjon(fullSoknadRepr);
+            }
         }
 
         return hovedskjema;

@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.service.EmailService;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import org.apache.commons.lang3.LocaleUtils;
@@ -50,6 +51,9 @@ public class SoknadActions {
 
     @Context
     private ServletContext servletContext;
+    @Inject
+    private WebSoknadConfig webSoknadConfig;
+
 
     @GET
     @Path("/leggved")
@@ -73,8 +77,13 @@ public class SoknadActions {
             byte[] dummyPdfSomHovedskjema = pdfService.genererEttersendingPdf(soknad, servletPath);
             soknadService.sendSoknad(behandlingsId, dummyPdfSomHovedskjema);
         } else {
-            byte[] soknadPdf = pdfService.genererOppsummeringPdf(soknad, servletPath);
-            soknadService.sendSoknad(behandlingsId, soknadPdf);
+            byte[] soknadPdf = pdfService.genererOppsummeringPdf(soknad, servletPath, false);
+            byte[] fullSoknad = null;
+            if(webSoknadConfig.skalSendeMedFullSoknad(soknad.getSoknadId())){
+                fullSoknad = pdfService.genererOppsummeringPdf(soknad, servletPath, true);
+            }
+
+            soknadService.sendSoknad(behandlingsId, soknadPdf, fullSoknad);
         }
     }
 
