@@ -63,7 +63,7 @@ public class SoknadActionsTest {
         System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
         System.setProperty("soknadinnsending.ettersending.path", SOKNADINNSENDING_ETTERSENDING_URL);
         System.setProperty("saksoversikt.link.url", SAKSOVERSIKT_URL);
-        reset(tekster);
+        reset(tekster, webSoknadConfig, pdfTemplate);
         when(tekster.finnTekst(eq("sendtSoknad.sendEpost.epostSubject"), any(Object[].class), any(Locale.class))).thenReturn("Emne");
         when(context.getRealPath(anyString())).thenReturn("");
         when(webSoknadConfig.brukerNyOppsummering(anyLong())).thenReturn(false);
@@ -97,14 +97,15 @@ public class SoknadActionsTest {
     @Test
     public void sendSoknadSkalSendeMedUtvidetSoknadOmDetErSattPaaConfig()throws Exception{
         when(soknadService.hentSoknad(BEHANDLINGS_ID, true, true)).thenReturn(soknad().medSoknadPrefix("dagpenger.ordinaer"));
-        when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyBoolean())).thenReturn("<html></html>");
+        when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyBoolean())).thenReturn("<html></html>").thenReturn("<html></html>");
         when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyString())).thenReturn("<html></html>");
         when(webSoknadConfig.brukerNyOppsummering(anyLong())).thenReturn(true);
         when(webSoknadConfig.skalSendeMedFullSoknad(anyLong())).thenReturn(true);
         actions.sendSoknad(BEHANDLINGS_ID);
 
-        verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), eq("/skjema/kvittering"));
+        verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), eq(false));
         verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), eq(true));
+        verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), eq("/skjema/kvittering"));
     }
     @Test
     public void sendGjenopptakSkalLageGjenopptakPdfMedKodeverksverdier() throws Exception {
