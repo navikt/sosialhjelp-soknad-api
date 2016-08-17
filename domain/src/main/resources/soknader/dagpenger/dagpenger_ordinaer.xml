@@ -1,6 +1,17 @@
 <?xml version="1.0" ?>
 <soknad temaKode="DAG" xmlns="urn:no.nav.sbl" xmlns:xi="http://www.w3.org/2001/XInclude">
 
+    <faktum kunUtvidet="true">
+        <id>utslagskriterier.fortsettlikevel</id>
+        <type>tekster</type>
+        <panel>Utslagskriterier</panel>
+    </faktum>
+    <faktum kunUtvidet="true">
+        <id>utslagskriterier.dagpenger.utbetaling</id>
+        <panel>Veiledning</panel>
+        <type>radiobox</type>
+    </faktum>
+
     <!-- Bolker -->
     <xi:include href="bolker/reellarbeidssoker.xml" />
     <xi:include href="bolker/arbeidsforhold.xml" />

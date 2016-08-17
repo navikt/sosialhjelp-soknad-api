@@ -23,9 +23,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static no.bekk.bekkopen.person.FodselsnummerValidator.*;
+import static no.bekk.bekkopen.person.FodselsnummerValidator.getFodselsnummer;
 import static org.apache.commons.lang3.ArrayUtils.reverse;
-import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.join;
+import static org.apache.commons.lang3.StringUtils.split;
 
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.ExcessiveClassLength"})
 public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
@@ -46,9 +47,9 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
     }
 
     @Override
-    public String fyllHtmlMalMedInnhold(WebSoknad soknad, boolean visHjelpetekster) throws IOException {
+    public String fyllHtmlMalMedInnhold(WebSoknad soknad, boolean utvidetSoknad) throws IOException {
         SoknadStruktur soknadStruktur = webSoknadConfig.hentStruktur(soknad.getskjemaNummer());
-        OppsummeringsContext context = new OppsummeringsContext(soknad, soknadStruktur, visHjelpetekster);
+        OppsummeringsContext context = new OppsummeringsContext(soknad, soknadStruktur, utvidetSoknad);
         return getHandlebars()
                 .infiniteLoops(true)
                 .compile("/skjema/generisk")

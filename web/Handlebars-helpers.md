@@ -50,6 +50,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * forIkkeInnsendteVedlegg - Itererer over vedlegg som ikke er sendt inn
 * forInnsendteVedlegg - Itererer over innsendte vedlegg på søknaden
 * forPerioder - Henter perioder for foreldrepenger og sorterer dem etter fradato
+* forSortertProperties - Itererer over alle properties sortert
 * forVedlegg - Lar en iterere over alle påkrevde vedlegg på en søknad
 * formaterDato - Formaterer en innsendt dato på et gitt format som også sendes inn
 * formaterLangDato - Gjør en datostreng om til langt, norsk format. F. eks. '17. januar 2015'
@@ -213,6 +214,17 @@ må ha et faktum i context, f. eks. via
 {{else}}
     ingen perioder
 {{/forPerioder}}
+```
+
+
+##### forSortertProperties
+
+```
+{{#forSortertProperties faktum}}
+    {{key}}: {{values}}
+{{else}}
+    Ingen properties
+{{/forSortertProperties}}
 ```
 
 

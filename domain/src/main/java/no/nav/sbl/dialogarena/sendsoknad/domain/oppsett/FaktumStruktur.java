@@ -21,6 +21,7 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
     private String dependOnProperty;
     private List<String> dependOnValues;
     private Boolean useExpression = false;
+    private Boolean kunUtvidet=false;
 
     private String flereTillatt;
     private String erSystemFaktum;
@@ -132,6 +133,15 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
 
     public void setConstraints(List<Constraint> constraints) {
         this.constraints = constraints;
+    }
+
+    @XmlAttribute(name="kunUtvidet")
+    public boolean getKunUtvidet() {
+        return kunUtvidet;
+    }
+
+    public void setKunUtvidet(boolean kunUtvidet) {
+        this.kunUtvidet = kunUtvidet;
     }
 
     @Override
