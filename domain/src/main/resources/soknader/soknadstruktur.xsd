@@ -44,6 +44,7 @@
       <xs:element name="type" type="xs:string" minOccurs="0"/>
       <xs:element name="useExpression" type="xs:boolean" minOccurs="0"/>
     </xs:all>
+    <xs:attribute type="xs:boolean" name="kunUtvidet" use="optional"/>
   </xs:complexType>
 
   <xs:complexType name="constraint">
