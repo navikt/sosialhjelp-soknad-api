@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.service.oppsummering;
 
 import org.slf4j.Logger;
+
 import static org.slf4j.LoggerFactory.getLogger;
 
 public enum OppsummeringsTyper {
@@ -14,7 +15,8 @@ public enum OppsummeringsTyper {
     hidden("skjema/generisk/hidden"),
     inputgroup("skjema/generisk/inputgroup"),
     infotekst("skjema/generisk/infotekst"),
-    radio("skjema/generisk/default");
+    radio("skjema/generisk/default"),
+    tekster("skjema/generisk/tekster");
 
     public final String template;
     private static final Logger logger = getLogger(OppsummeringsTyper.class);
