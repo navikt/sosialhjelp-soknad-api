@@ -17,6 +17,12 @@
         <type>date</type>
         <constraints>
             <constraint>properties['type'] == 'permittert'</constraint>
+        </constraints>
+    </property>
+    <property>
+        <id>startperiode</id>
+        <type>date</type>
+        <constraints>
             <constraint>properties['type'] == 'redusertarbeidstid'</constraint>
         </constraints>
     </property>
