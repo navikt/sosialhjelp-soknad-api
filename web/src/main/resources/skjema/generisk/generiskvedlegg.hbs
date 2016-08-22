@@ -1,5 +1,19 @@
 <h2>{{ hentTekst "oppsummering.vedlegg.tittel" }}</h2>
-
+{{#if @root.utvidetSoknad}}
+<p>
+    <ul>
+        <li>
+            {{hentTekst "vedlegg.info1"}}
+        </li>
+        <li>
+            {{hentTekst "vedlegg.info2"}}
+        </li>
+        <li>
+            {{hentTekst "vedlegg.info3"}}
+        </li>
+    </ul>
+</p>
+{{/if}}
 <ul class="vedlegg-liste">
     {{#forVedlegg}}
 
