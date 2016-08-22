@@ -16,7 +16,7 @@ import no.nav.sbl.dialogarena.service.helpers.HvisLikHelper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.FunksjonalitetBryter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Controller;
@@ -46,7 +46,7 @@ public class InternalRessurs {
     @Inject
     private NavMessageSource messageSource;
     @Inject
-    private SoknadService soknadService;
+    private SoknadDataFletter soknadDataFletter;
     @Inject
     private VedleggService vedleggService;
     @Inject
@@ -136,7 +136,7 @@ public class InternalRessurs {
     @Path("/{behandlingsId}/nyoppsummering")
     @Produces(TEXT_HTML)
     public String hentOppsummeringNew(@PathParam("behandlingsId") String behandlingsId) throws IOException {
-        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
+        WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
 
         return pdfTemplate.fyllHtmlMalMedInnhold(soknad);
@@ -159,7 +159,7 @@ public class InternalRessurs {
     @Path("/{behandlingsId}/fullsoknad")
     @Produces(TEXT_HTML)
     public String fullSoknad(@PathParam("behandlingsId") String behandlingsId) throws IOException {
-        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
+        WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
 
         return pdfTemplate.fyllHtmlMalMedInnhold(soknad, true);
@@ -168,7 +168,7 @@ public class InternalRessurs {
     @Path("/{behandlingsId}/fullsoknadpdf")
     @Produces("application/pdf")
     public byte[] fullSoknadPdf(@PathParam("behandlingsId") String behandlingsId) throws IOException {
-        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
+        WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
         String servletPath = servletContext.getRealPath("/");
         return pdfService.genererOppsummeringPdf(soknad, servletPath, true);
