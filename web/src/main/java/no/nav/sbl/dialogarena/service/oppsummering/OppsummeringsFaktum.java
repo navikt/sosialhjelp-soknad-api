@@ -136,7 +136,6 @@ public class OppsummeringsFaktum implements OppsummeringsBase{
         public String navn(){
             return struktur.getSkjemaNummer();
         }
+
     }
-
-
 }

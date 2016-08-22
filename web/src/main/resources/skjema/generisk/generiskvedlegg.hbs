@@ -29,6 +29,9 @@
                 {{#if navn}}
                     <p class="navn">{{ navn }}</p>
                 {{/if}}
+                {{#if @root.utvidetSoknad }}
+                    <p>{{{hentTekst (vedleggCmsNokkel this)}}}</p>
+                {{/if}}
 
                 {{#hvisLik innsendingsvalg "LastetOpp"}}
                     <span class="lastetOpp">
