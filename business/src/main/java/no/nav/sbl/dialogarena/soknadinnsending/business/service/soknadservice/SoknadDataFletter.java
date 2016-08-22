@@ -213,21 +213,26 @@ public class SoknadDataFletter {
         }
 
         if (medData) {
-            soknad = lokalDb.hentSoknadMedData(soknad.getSoknadId());
-            soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknad.getSoknadId()))
-                    .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
-                    .medStegliste(config.getStegliste(soknad.getSoknadId()))
-                    .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
-            if (populerSystemfakta) {
-                if (soknad.erEttersending()) {
-                    faktaService.lagreSystemFakta(soknad, bolker.get(PersonaliaBolk.class.getName()).genererSystemFakta(getSubjectHandler().getUid(), soknad.getSoknadId()));
-                } else {
-                    List<Faktum> systemfaktum = new ArrayList<>();
-                    for (BolkService bolk : config.getSoknadBolker(soknad, bolker.values())) {
-                        systemfaktum.addAll(bolk.genererSystemFakta(getSubjectHandler().getUid(), soknad.getSoknadId()));
-                    }
-                    faktaService.lagreSystemFakta(soknad, systemfaktum);
+            soknad = populerSoknadMedData(populerSystemfakta, soknad);
+        }
+        return soknad;
+    }
+
+    private WebSoknad populerSoknadMedData(boolean populerSystemfakta, WebSoknad soknad) {
+        soknad = lokalDb.hentSoknadMedData(soknad.getSoknadId());
+        soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknad.getSoknadId()))
+                .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
+                .medStegliste(config.getStegliste(soknad.getSoknadId()))
+                .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
+        if (populerSystemfakta) {
+            if (soknad.erEttersending()) {
+                faktaService.lagreSystemFakta(soknad, bolker.get(PersonaliaBolk.class.getName()).genererSystemFakta(getSubjectHandler().getUid(), soknad.getSoknadId()));
+            } else {
+                List<Faktum> systemfaktum = new ArrayList<>();
+                for (BolkService bolk : config.getSoknadBolker(soknad, bolker.values())) {
+                    systemfaktum.addAll(bolk.genererSystemFakta(getSubjectHandler().getUid(), soknad.getSoknadId()));
                 }
+                faktaService.lagreSystemFakta(soknad, systemfaktum);
             }
         }
         return soknad;
