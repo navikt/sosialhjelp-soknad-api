@@ -60,29 +60,21 @@ public class SoknadDataFletter {
     private static final Logger logger = getLogger(SoknadDataFletter.class);
     private static final boolean MED_DATA = true;
     private static final boolean MED_VEDLEGG = true;
-
+    @Inject
+    public ApplicationContext applicationContext;
     @Inject
     private HenvendelseService henvendelseService;
-
     @Inject
     private FillagerService fillagerService;
-
     @Inject
     private VedleggService vedleggService;
-
     @Inject
     private FaktaService faktaService;
-
     @Inject
     @Named("soknadInnsendingRepository")
     private SoknadRepository lokalDb;
-
     @Inject
     private WebSoknadConfig config;
-
-    @Inject
-    public ApplicationContext applicationContext;
-
     @Inject
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
 
@@ -201,6 +193,10 @@ public class SoknadDataFletter {
     }
 
     public WebSoknad hentSoknad(String behandlingsId, boolean medData, boolean medVedlegg) {
+        return this.hentSoknad(behandlingsId, medData, medVedlegg, true);
+    }
+
+    public WebSoknad hentSoknad(String behandlingsId, boolean medData, boolean medVedlegg, boolean populerSystemfakta) {
         WebSoknad soknadFraLokalDb;
 
         if (medVedlegg) {
@@ -222,14 +218,16 @@ public class SoknadDataFletter {
                     .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
                     .medStegliste(config.getStegliste(soknad.getSoknadId()))
                     .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
-            if (soknad.erEttersending()) {
-                faktaService.lagreSystemFakta(soknad, bolker.get(PersonaliaBolk.class.getName()).genererSystemFakta(getSubjectHandler().getUid(), soknad.getSoknadId()));
-            } else {
-                List<Faktum> systemfaktum = new ArrayList<>();
-                for (BolkService bolk : config.getSoknadBolker(soknad, bolker.values())) {
-                    systemfaktum.addAll(bolk.genererSystemFakta(getSubjectHandler().getUid(), soknad.getSoknadId()));
+            if (populerSystemfakta) {
+                if (soknad.erEttersending()) {
+                    faktaService.lagreSystemFakta(soknad, bolker.get(PersonaliaBolk.class.getName()).genererSystemFakta(getSubjectHandler().getUid(), soknad.getSoknadId()));
+                } else {
+                    List<Faktum> systemfaktum = new ArrayList<>();
+                    for (BolkService bolk : config.getSoknadBolker(soknad, bolker.values())) {
+                        systemfaktum.addAll(bolk.genererSystemFakta(getSubjectHandler().getUid(), soknad.getSoknadId()));
+                    }
+                    faktaService.lagreSystemFakta(soknad, systemfaktum);
                 }
-                faktaService.lagreSystemFakta(soknad, systemfaktum);
             }
         }
         return soknad;
@@ -266,12 +264,12 @@ public class SoknadDataFletter {
                 .withUuid(soknad.getUuid())
                 .withJournalforendeEnhet(journalforendeEnhet(soknad));
 
-        if(!soknad.erEttersending()) {
+        if (!soknad.erEttersending()) {
             XMLAlternativRepresentasjonListe xmlAlternativRepresentasjonListe = new XMLAlternativRepresentasjonListe();
             hovedskjema = hovedskjema.withAlternativRepresentasjonListe(
                     xmlAlternativRepresentasjonListe
                             .withAlternativRepresentasjon(lagListeMedXMLAlternativeRepresentasjoner(soknad)));
-            if(fullSoknad != null){
+            if (fullSoknad != null) {
                 XMLAlternativRepresentasjon fullSoknadRepr = new XMLAlternativRepresentasjon()
                         .withUuid(UUID.randomUUID().toString())
                         .withFilnavn(skjemanummer(soknad))
