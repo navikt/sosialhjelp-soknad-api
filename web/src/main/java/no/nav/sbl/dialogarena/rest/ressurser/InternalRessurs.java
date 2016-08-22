@@ -6,6 +6,7 @@ import com.github.jknack.handlebars.context.FieldValueResolver;
 import com.github.jknack.handlebars.context.MethodValueResolver;
 import com.github.jknack.handlebars.io.URLTemplateSource;
 import no.nav.sbl.dialogarena.config.ContentConfig;
+import no.nav.sbl.dialogarena.rest.utils.PDFService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
@@ -52,6 +53,9 @@ public class InternalRessurs {
     private HtmlGenerator pdfTemplate;
     @Context
     private ServletContext servletContext;
+    @Inject
+    private PDFService pdfService;
+
 
     private PersonPortTypeMock personPortTypeMock = PersonMock.getInstance().getPersonPortTypeMock();
 
@@ -127,6 +131,7 @@ public class InternalRessurs {
         return Response.seeOther(URI.create("/sendsoknad/internal/mocksetup")).build();
     }
 
+
     @GET
     @Path("/{behandlingsId}/nyoppsummering")
     @Produces(TEXT_HTML)
@@ -158,5 +163,14 @@ public class InternalRessurs {
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
 
         return pdfTemplate.fyllHtmlMalMedInnhold(soknad, true);
+    }
+    @GET
+    @Path("/{behandlingsId}/fullsoknadpdf")
+    @Produces("application/pdf")
+    public byte[] fullSoknadPdf(@PathParam("behandlingsId") String behandlingsId) throws IOException {
+        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
+        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
+        String servletPath = servletContext.getRealPath("/");
+        return pdfService.genererOppsummeringPdf(soknad, servletPath, true);
     }
 }

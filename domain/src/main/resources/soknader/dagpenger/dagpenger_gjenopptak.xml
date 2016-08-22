@@ -1,6 +1,8 @@
 <?xml version="1.0" ?>
 <soknad temaKode="DAG" xmlns="urn:no.nav.sbl" xmlns:xi="http://www.w3.org/2001/XInclude">
-    
+
+    <xi:include href="utvidet.xml" />
+
     <!-- Bolker -->
     <xi:include href="bolker/reellarbeidssoker.xml" />
     <xi:include href="bolker/nyearbeidsforhold.xml" />

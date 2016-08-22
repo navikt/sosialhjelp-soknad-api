@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl">
+    <faktum kunUtvidet="true">
+        <id>utslagskriterier.fortsettlikevel</id>
+        <type>tekster</type>
+        <panel>Utslagskriterier</panel>
+    </faktum>
+    <faktum kunUtvidet="true">
+        <id>utslagskriterier.dagpenger.utbetaling</id>
+        <panel>Utslagskriterier</panel>
+        <type>radiobox</type>
+    </faktum>
+    <faktum kunUtvidet="true">
+        <id>informasjonsside</id>
+        <panel>Veiledning</panel>
+        <type>tekster</type>
+    </faktum>
+    <faktum kunUtvidet="true">
+        <id>informasjonsside.lestbrosjyre</id>
+        <panel>Veiledning</panel>
+        <type>checkbox</type>
+    </faktum>
+</soknad>
