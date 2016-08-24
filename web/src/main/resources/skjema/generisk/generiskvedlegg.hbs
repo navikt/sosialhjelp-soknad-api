@@ -30,7 +30,10 @@
                     <p class="navn">{{ navn }}</p>
                 {{/if}}
                 {{#if @root.utvidetSoknad }}
-                    <p>{{{hentTekst (vedleggCmsNokkel this)}}}</p>
+                   <div class="hjelpeInfotekst">
+                        <h3>Hjelpetekst</h3>
+                        <p>{{{hentTekst (vedleggCmsNokkel this)}}}</p>
+                    </div>
                 {{/if}}
 
                 {{#hvisLik innsendingsvalg "LastetOpp"}}
