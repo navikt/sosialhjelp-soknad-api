@@ -67,12 +67,12 @@
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>utdanning.semester.avslutning</id>
+        <id>utdanning.kveld.avslutning</id>
         <type>date</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.kveld.progresjonUnder50</dependOn>
         <dependOnValues>
-            <value>true</value>
+            <value>false</value>
         </dependOnValues>
     </faktum>
 
