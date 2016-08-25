@@ -74,7 +74,7 @@ public class SoknadRepositoryJdbcTest {
         WebSoknad endret = soknadRepository.hentSoknad(soknadId);
         System.out.println(new DateTime());
         System.out.println(new DateTime(endret.getSistLagret()));
-        Interval endretIntervall = new Interval(new DateTime().minusMillis(100), new DateTime().plusMillis(100));
+        Interval endretIntervall = new Interval(new DateTime().minusMillis(1000), new DateTime().plusMillis(1000));
         assertThat(endretIntervall.contains(endret.getSistLagret()), is(true));
     }
 
