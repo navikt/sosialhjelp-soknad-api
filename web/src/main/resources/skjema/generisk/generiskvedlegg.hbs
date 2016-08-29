@@ -72,7 +72,9 @@
                 {{#hvisLik innsendingsvalg "VedleggAlleredeSendt"}}
                     <span class="status">{{ hentTekst "oppsummering.vedleggAlleredeSendt" }}</span>
                     {{#variabel "key" "vedlegg.faktum.vedleggalleredesendt"}}
-                        {{> skjema/generisk/infotekst}}
+                        {{#variabel "niva" "3"}}
+                            {{> skjema/generisk/infotekst}}
+                        {{/variabel}}
                     {{/variabel}}
 
                 {{/hvisLik}}
