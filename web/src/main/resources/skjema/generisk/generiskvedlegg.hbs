@@ -53,6 +53,10 @@
                             </span>
                 {{/hvisLik}}
 
+                {{#if @root.utvidetSoknad }}
+                    <h3>{{ hentTekst "vedlegg.faktum.andreInnsendingsvalg" }}</h3>
+                {{/if}}
+
                 {{#hvisLik innsendingsvalg "SendesSenere"}}
                     <span class="status">{{ hentTekst "oppsummering.sendesSenere" }}</span>
                 {{/hvisLik}}
@@ -71,13 +75,25 @@
 
                 {{#hvisLik innsendingsvalg "VedleggAlleredeSendt"}}
                     <span class="status">{{ hentTekst "oppsummering.vedleggAlleredeSendt" }}</span>
+                    {{#variabel "key" "vedlegg.faktum.vedleggalleredesendt"}}
+                        {{#variabel "niva" "3"}}
+                            {{> skjema/generisk/infotekst}}
+                        {{/variabel}}
+                    {{/variabel}}
+
                 {{/hvisLik}}
 
                 {{#hvisLik innsendingsvalg "VedleggSendesIkke"}}
+                    {{#if @root.utvidetSoknad }}
+                        <h4>{{ hentTekst "vedlegg.behandlet.vedleggSendesIkke.fritekst.sporsmal" }}</h4>
+                    {{/if}}
                     <p class="aarsak">{{ aarsak }}</p>
                 {{/hvisLik}}
 
                 {{#hvisLik innsendingsvalg "VedleggAlleredeSendt"}}
+                    {{#if @root.utvidetSoknad }}
+                        <h4>{{ hentTekst "vedlegg.behandlet.vedleggAlleredeSendt.fritekst.sporsmal" }}</h4>
+                    {{/if}}
                     <p class="aarsak">{{ aarsak }}</p>
                 {{/hvisLik}}
             </div>
