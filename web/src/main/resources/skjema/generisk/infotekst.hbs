@@ -1,16 +1,16 @@
 {{#if @root.utvidetSoknad}}
 <div class="hjelpeInfotekst">
-    {{#hvisTekstFinnes (concat key ".infotekst.tekst")}}
-        <h{{niva}}>Infotekst:</h{{niva}}>
-            {{{ hentTekst (concat key ".infotekst.tekst") }}}
-            {{#hvisTekstFinnes (concat key ".infotekst.tekst2")}}
-                {{{ hentTekst (concat key ".infotekst.tekst2") }}}
-            {{/hvisTekstFinnes}}
-    {{/hvisTekstFinnes}}
     {{#hvisTekstFinnes (concat key ".hjelpetekst.tekst")}}
         <h{{niva}}>Hjelpetekst</h{{niva}}>
         <div>        {{{ hentTekst (concat key ".hjelpetekst.tittel") }}}</div>
         <div>        {{{ hentTekst (concat key ".hjelpetekst.tekst") }}}</div>
     {{/hvisTekstFinnes}}
+     {{#hvisTekstFinnes (concat key ".infotekst.tekst")}}
+            <h{{niva}}>Infotekst:</h{{niva}}>
+                {{{ hentTekst (concat key ".infotekst.tekst") }}}
+                {{#hvisTekstFinnes (concat key ".infotekst.tekst2")}}
+                    {{{ hentTekst (concat key ".infotekst.tekst2") }}}
+                {{/hvisTekstFinnes}}
+        {{/hvisTekstFinnes}}
 </div>
 {{/if}}
