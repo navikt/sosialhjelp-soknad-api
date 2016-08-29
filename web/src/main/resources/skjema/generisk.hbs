@@ -36,6 +36,15 @@
     <div>
         {{#each bolker}}
             <h2>{{ hentTekst (concat (toLowerCase navn) ".tittel") }}</h2>
+            {{#if @root.utvidetSoknad}}
+            <div class="hjelpeInfotekst">
+                {{#hvisTekstFinnes (concat (toLowerCase navn) ".informasjon")}}
+                <h3>Ingress:</h3>
+                <div>{{{ hentTekst (concat (toLowerCase navn) ".informasjon") }}}</div>
+                {{/hvisTekstFinnes}}
+            </div>
+            {{/if}}
+
             <ul class="fakta-liste">
                 {{#variabel "niva" "3"}}
                     {{#each fakta}}
