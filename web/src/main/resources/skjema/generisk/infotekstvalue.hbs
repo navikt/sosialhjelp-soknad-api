@@ -1,19 +1,5 @@
 {{#if @root.utvidetSoknad}}
 <div class="hjelpeInfotekst">
-    {{#hvisTekstFinnes (concat key "." value ".infotekst.tekst")}}
-        <h{{niva}}>Infotekst:</h{{niva}}>
-            {{{ hentTekst (concat key "." value ".infotekst.tekst") }}}
-            {{#hvisTekstFinnes (concat key "." value ".infotekst.tekst2")}}
-                <div>
-                    {{{ hentTekst (concat key "." value ".infotekst.tekst2") }}}
-                </div>
-            {{/hvisTekstFinnes}}
-            {{#hvisTekstFinnes (concat key "." value ".infotekst.tekst3")}}
-                <div>
-                    {{{ hentTekst (concat key "." value ".infotekst.tekst3") }}}
-                </div>
-            {{/hvisTekstFinnes}}
-    {{/hvisTekstFinnes}}
     {{#hvisTekstFinnes (concat key "." value ".hjelpetekst.tekst")}}
         <h{{niva}}>Hjelpetekst</h{{niva}}>
         <div>
@@ -33,5 +19,19 @@
             {{/hvisTekstFinnes}}
         </div>
     {{/hvisTekstFinnes}}
+     {{#hvisTekstFinnes (concat key "." value ".infotekst.tekst")}}
+            <h{{niva}}>Infotekst:</h{{niva}}>
+                {{{ hentTekst (concat key "." value ".infotekst.tekst") }}}
+                {{#hvisTekstFinnes (concat key "." value ".infotekst.tekst2")}}
+                    <div>
+                        {{{ hentTekst (concat key "." value ".infotekst.tekst2") }}}
+                    </div>
+                {{/hvisTekstFinnes}}
+                {{#hvisTekstFinnes (concat key "." value ".infotekst.tekst3")}}
+                    <div>
+                        {{{ hentTekst (concat key "." value ".infotekst.tekst3") }}}
+                    </div>
+                {{/hvisTekstFinnes}}
+        {{/hvisTekstFinnes}}
     </div>
 {{/if}}
