@@ -71,6 +71,10 @@
 
                 {{#hvisLik innsendingsvalg "VedleggAlleredeSendt"}}
                     <span class="status">{{ hentTekst "oppsummering.vedleggAlleredeSendt" }}</span>
+                    {{#variabel "key" "vedlegg.faktum.vedleggalleredesendt"}}
+                        {{> skjema/generisk/infotekst}}
+                    {{/variabel}}
+
                 {{/hvisLik}}
 
                 {{#hvisLik innsendingsvalg "VedleggSendesIkke"}}
