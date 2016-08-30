@@ -79,6 +79,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * toCapitalized - Gjør om en tekst til at alle ord starter med store bokstaver
 * toLowerCase - Gjør om en tekst til kun små bokstaver
 * variabel - Lager en variabel med en bestemt verdi som kun er tilgjengelig innenfor helperen
+* vedleggCmsNokkel - Henter teksten for et vedlegg
 
 
 #### Eksempler
@@ -503,5 +504,14 @@ Leser fra model på context
 {{#variabel "minvariabel" "verdi1"}}
     Forventer verdi1: {{minvariabel}}
 {{/variabel}}
+```
+
+
+##### vedleggCmsNokkel
+
+```
+{{#forVedlegg}}
+    {{{hentTekst (vedleggCmsNokkel this)}}}
+{{/forVedlegg}}
 ```
 
