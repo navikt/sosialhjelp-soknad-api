@@ -75,13 +75,21 @@ public class ContentConfig {
     @Bean
     public NavMessageWrapper navMessageBundles(){
         NavMessageWrapper messages = new NavMessageWrapper();
+        messages.put("aap.gjenopptak", bundleFor("aap"));
+        messages.put("aap.ordinaer", bundleFor("aap"));
+        messages.put("bilstonad", bundleFor("bilstonad"));
         messages.put("dagpenger.gjenopptak", bundleFor("dagpenger"));
         messages.put("dagpenger.ordinaer", bundleFor("dagpenger"));
+        messages.put("foreldresoknad", bundleFor("foreldrepenger"));
+        messages.put("soknadrefusjondagligreise", bundleFor("refusjondagligreise"));
+        messages.put("soknadtilleggsstonader", bundleFor("tilleggsstonader"));
+        messages.put("tiltakspenger", bundleFor("tiltakspenger"));
+
         return messages;
     }
-    public static class NavMessageWrapper extends HashMap<String, NavMessageSource>{
 
-    }
+    public static class NavMessageWrapper extends HashMap<String, NavMessageSource> {}
+
     private NavMessageSource bundleFor(String bundle) {
         NavMessageSource messageSource = new NavMessageSource();
 
