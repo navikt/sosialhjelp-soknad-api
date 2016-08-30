@@ -1,15 +1,12 @@
 package no.nav.sbl.dialogarena.service;
 
 import no.nav.sbl.dialogarena.config.ContentConfig;
-import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
-import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.Locale;
-import java.util.Map;
 
 @Component
 public class CmsTekst {
