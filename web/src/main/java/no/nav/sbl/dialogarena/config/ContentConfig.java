@@ -72,6 +72,28 @@ public class ContentConfig {
         return messageSource;
     }
 
+    @Bean
+    public NavMessageWrapper navMessageBundles(){
+        NavMessageWrapper messages = new NavMessageWrapper();
+        messages.put("dagpenger.gjenopptak", bundleFor("dagpenger"));
+        messages.put("dagpenger.ordinaer", bundleFor("dagpenger"));
+        return messages;
+    }
+    public static class NavMessageWrapper extends HashMap<String, NavMessageSource>{
+
+    }
+    private NavMessageSource bundleFor(String bundle) {
+        NavMessageSource messageSource = new NavMessageSource();
+
+        String brukerprofilDataDirectoryString = brukerprofilDataDirectory.toURI().toString();
+        messageSource.setBasenames(
+                new NavMessageSource.Bundle("sendsoknad", brukerprofilDataDirectoryString + "enonic/sendsoknad", "classpath:content/sendsoknad"),
+                new NavMessageSource.Bundle(bundle, brukerprofilDataDirectoryString + "enonic/" + bundle, "classpath:content/" + bundle)
+                );
+        messageSource.setDefaultEncoding("UTF-8");
+        return messageSource;
+    }
+
     //Hent innholdstekster på nytt hvert tiende minutt
     @Scheduled(fixedRate=TI_MINUTTER)
     public void lastInnNyeInnholdstekster() {
