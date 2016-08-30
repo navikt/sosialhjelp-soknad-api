@@ -5,18 +5,7 @@
         <panel>Barnetillegg</panel>
         <flereTillatt>true</flereTillatt>
         <type>composite</type>
-
-        <constraints>
-            <constraint>
-                <expression>properties['barnetillegg'] == 'true'</expression>
-            </constraint>
-        </constraints>
-
         <properties>
-            <property>
-                <id>barnetillegg</id>
-                <type>hidden</type>
-            </property>
             <property>
                 <id>fornavn</id>
                 <type>textbox</type>
@@ -44,14 +33,21 @@
                 <type>country</type>
             </property>
             <property>
+                <id>barnetillegg</id>
+                <type>checkbox</type>
+            </property>
+            <property>
                 <id>ikkebarneinntekt</id>
                 <type>java.lang.Boolean</type>
+                <constraints>
+                    <constraint>properties['barnetillegg'] == 'true'</constraint>
+                </constraints>
             </property>
             <property>
                 <id>barneinntekttall</id>
                 <type>textbox</type>
                 <constraints>
-                    <constraint>properties['ikkebarneinntekt'] == 'false'</constraint>
+                    <constraint>properties['barnetillegg'] == 'true' &amp;&amp; properties['ikkebarneinntekt'] == 'false'</constraint>
                 </constraints>
             </property>
             <property>
@@ -70,8 +66,6 @@
             </property>
         </properties>
     </faktum>
-
-
 
     <vedlegg>
         <faktum>barn</faktum>
