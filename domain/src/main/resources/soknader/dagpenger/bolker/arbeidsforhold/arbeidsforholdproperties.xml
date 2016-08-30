@@ -165,7 +165,9 @@
     <property>
         <id>avskjedigetGrunn</id>
         <type>textbox</type>
-        <constraints>properties['type'] == 'avskjediget'</constraints>
+        <constraints>
+            <constraint>properties['type'] == 'avskjediget'</constraint>
+        </constraints>
     </property>
     <property>
         <id>rotasjonskiftturnus</id>
