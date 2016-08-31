@@ -7,6 +7,7 @@ import com.github.jknack.handlebars.io.TemplateSource;
 import no.nav.sbl.dialogarena.config.HandlebarsHelperConfig;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.service.HandlebarRegistry;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.Miljovariabler;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -116,6 +117,11 @@ public class RegistryAwareHelperTest {
         @Bean()
         public Kodeverk kodeverk() {
             return mock(Kodeverk.class);
+        }
+
+        @Bean()
+        public Miljovariabler informasjonService() {
+            return mock(Miljovariabler.class);
         }
 
     }
