@@ -57,6 +57,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * harBarnetInntekt - Henter summen hvis barnet har inntekt. Må brukes innenfor en #forFaktum eller #forFakta helper. 
 * hentFaktumValue - Returnerer verdien til et faktum tilhørende keyen som sendes inn
 * hentLand - Henter land fra Kodeverk basert på landkode.
+* hentMiljovariabel - Finner miljovariabel fra key
 * hentPoststed - Henter poststed for et postnummer fra kodeverk
 * hentSkjemanummer - Setter inn søknadens skjemanummer, også om det er en søknad for dagpenger
 * hentTekst - Henter tekst fra cms, prøver med søknadens prefix + key, før den prøver med bare keyen. Kan sende inn parametere.
@@ -79,6 +80,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * toCapitalized - Gjør om en tekst til at alle ord starter med store bokstaver
 * toLowerCase - Gjør om en tekst til kun små bokstaver
 * variabel - Lager en variabel med en bestemt verdi som kun er tilgjengelig innenfor helperen
+* vedleggCmsNokkel - Henter teksten for et vedlegg
 
 
 #### Eksempler
@@ -289,6 +291,15 @@ må ha et faktum i context, f. eks. via
 ```
 {{hentLand "NOR"}}
 {{hentLand variabel}}
+```
+
+
+##### hentMiljovariabel
+
+```
+ {{hentTekst "personalia.intro" (hentMiljovariabel "soknad.brukerprofil.url")}}
+
+ {{hentMiljovariabel "soknad.brukerprofil.url"}}
 ```
 
 
@@ -503,5 +514,14 @@ Leser fra model på context
 {{#variabel "minvariabel" "verdi1"}}
     Forventer verdi1: {{minvariabel}}
 {{/variabel}}
+```
+
+
+##### vedleggCmsNokkel
+
+```
+{{#forVedlegg}}
+    {{{hentTekst (vedleggCmsNokkel this)}}}
+{{/forVedlegg}}
 ```
 
