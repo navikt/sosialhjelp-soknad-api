@@ -9,10 +9,12 @@
                 <h3>{{properties.navn}}</h3>
                 <p class="fnr">{{properties.fnr}}</p>
             </li>
+            {{#if properties.gjeldendeAdresse}}
             <li>
                 <h3>{{hentTekst "personalia.folkeregistrertadresse"}}</h3>
                 <p class="adr">{{properties.gjeldendeAdresse}}</p>
             </li>
+            {{/if}}
             {{#if properties.sekundarAdresse}}
                 <li>
                     {{#hvisLik properties.sekundarAdresseType "MIDLERTIDIG_POSTADRESSE_UTLAND"}}

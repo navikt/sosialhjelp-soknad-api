@@ -6,6 +6,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public enum OppsummeringsTyper {
     checkboxGroup("skjema/generisk/checkboxgroup"),
+    checkbox("skjema/generisk/checkbox"),
     textbox("skjema/generisk/textbox"),
     composite("skjema/generisk/composite"),
     periode("skjema/generisk/periode"),
@@ -17,6 +18,7 @@ public enum OppsummeringsTyper {
     infotekst("skjema/generisk/infotekst"),
     radio("skjema/generisk/default"),
     tekster("skjema/generisk/tekster");
+
 
     public final String template;
     private static final Logger logger = getLogger(OppsummeringsTyper.class);
