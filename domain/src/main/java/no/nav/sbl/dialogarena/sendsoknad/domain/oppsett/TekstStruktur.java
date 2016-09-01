@@ -9,8 +9,8 @@ import java.util.List;
 @XmlType(propOrder = {})
 public class TekstStruktur implements Serializable, StrukturConfigurable {
 
-    public static String INFOTEKST = "infotekst";
-    public static String HJELPETEKST = "hjelpetekst";
+    static final String INFOTEKST = "infotekst";
+    static final String HJELPETEKST = "hjelpetekst";
 
     private String type;
     private List<String> dependOnValues;
