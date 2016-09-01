@@ -204,7 +204,7 @@ må ha et faktum i context, f. eks. via
 ```
 {{ forInfotekst }}
     {{{ hentTekst key }}}
-[[ forInfotekst }}
+{{ forInfotekst }}
 
 ```
 

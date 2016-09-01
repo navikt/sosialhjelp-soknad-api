@@ -13,6 +13,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.TekstStruktur.HJELPETEKST;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.TekstStruktur.INFOTEKST;
 
 @XmlType(propOrder = {})
 public class FaktumStruktur implements Serializable, StrukturConfigurable {
@@ -249,7 +251,7 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
         return on(tekster)
                 .filter(tekstOppfyllerDependOn(faktum))
                 .filter(tekstStrukturOppfyllerConstraints(soknad, faktum))
-                .filter(tekstErType("infotekst"))
+                .filter(tekstErType(INFOTEKST))
                 .collect();
     }
 
@@ -259,8 +261,9 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
         }
 
         return on(tekster)
+                .filter(tekstOppfyllerDependOn(faktum))
                 .filter(tekstStrukturOppfyllerConstraints(soknad, faktum))
-                .filter(tekstErType("hjelpetekst"))
+                .filter(tekstErType(HJELPETEKST))
                 .collect();
     }
 
