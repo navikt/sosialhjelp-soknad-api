@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class InformasjonService {
+public class InformasjonService implements Miljovariabler {
 
     @Inject
     private Kodeverk kodeverk;
