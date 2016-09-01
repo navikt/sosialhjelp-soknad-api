@@ -12,11 +12,6 @@
                     {{{ hentTekst (concat key) }}}
                 {{/hvisTekstFinnes}}
         {{/forInfotekst}}
-        {{#forHjelpetekst}}
-            <h{{niva}}>Hjelpetekst</h{{niva}}>
-            <div>        {{{ hentTekst (concat key ".tittel") }}}</div>
-            <div>        {{{ hentTekst (concat key ".tekst") }}}</div>
-        {{/forHjelpetekst}}
     {{else}}
         {{#hvisTekstFinnes (concat key ".infotekst.tekst")}}
             <h{{niva}}>Infotekst:</h{{niva}}>
