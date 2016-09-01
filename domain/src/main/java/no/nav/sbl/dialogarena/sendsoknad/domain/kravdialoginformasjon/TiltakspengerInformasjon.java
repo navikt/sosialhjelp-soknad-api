@@ -33,4 +33,9 @@ public class TiltakspengerInformasjon extends KravdialogInformasjon.DefaultOppse
     public List<String> getSkjemanummer() {
         return Collections.singletonList("NAV 76-13.45");
     }
+
+    @Override
+    public String getBundleName() {
+        return "tiltakspenger";
+    }
 }
