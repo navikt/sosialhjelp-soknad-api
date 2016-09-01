@@ -5,6 +5,8 @@ import no.nav.modig.content.ContentRetriever;
 import no.nav.modig.content.enonic.HttpContentRetriever;
 import no.nav.modig.content.enonic.innholdstekst.Innholdstekst;
 import no.nav.modig.core.exception.ApplicationException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.types.Pingable;
 import org.apache.commons.io.FileUtils;
@@ -46,6 +48,9 @@ public class ContentConfig {
     @Inject
     private CacheManager cacheManager;
 
+    @Inject
+    private KravdialogInformasjonHolder kravdialogInformasjonHolder;
+
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Bean
@@ -76,16 +81,9 @@ public class ContentConfig {
     @Bean
     public NavMessageWrapper navMessageBundles(){
         NavMessageWrapper messages = new NavMessageWrapper();
-        messages.put("aap.gjenopptak", bundleFor("aap"));
-        messages.put("aap.ordinaer", bundleFor("aap"));
-        messages.put("bilstonad", bundleFor("bilstonad"));
-        messages.put("dagpenger.gjenopptak", bundleFor("dagpenger"));
-        messages.put("dagpenger.ordinaer", bundleFor("dagpenger"));
-        messages.put("foreldresoknad", bundleFor("foreldrepenger"));
-        messages.put("soknadrefusjondagligreise", bundleFor("refusjondagligreise"));
-        messages.put("soknadtilleggsstonader", bundleFor("tilleggsstonader"));
-        messages.put("tiltakspenger", bundleFor("tiltakspenger"));
-
+        for (KravdialogInformasjon kravdialogInformasjon: kravdialogInformasjonHolder.getSoknadsKonfigurasjoner()){
+            messages.put(kravdialogInformasjon.getSoknadTypePrefix(), bundleFor(kravdialogInformasjon.getBundleName()));
+        }
         return messages;
     }
 

@@ -32,4 +32,9 @@ public class BilstonadInformasjon extends KravdialogInformasjon.DefaultOppsett {
     public List<String> getSkjemanummer() {
         return Arrays.asList("NAV 10-07.40", "NAV 10-07.41");
     }
+
+    @Override
+    public String getBundleName() {
+        return "bilstonad";
+    }
 }

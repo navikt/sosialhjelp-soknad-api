@@ -37,4 +37,9 @@ public class IntegrationTestInformasjon extends KravdialogInformasjon.DefaultOpp
     public List<String> getSkjemanummer() {
         return Arrays.asList("INTEGRATION-1");
     }
+
+    @Override
+    public String getBundleName() {
+        return "integration-1";
+    }
 }
