@@ -3,12 +3,14 @@ package no.nav.sbl.dialogarena.service;
 import com.github.jknack.handlebars.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.service.oppsummering.OppsummeringsFaktum;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 public class HandlebarsUtilsTest {
 
@@ -78,6 +80,29 @@ public class HandlebarsUtilsTest {
         Context childContext = Context.newContext(parentContext, "noe annet");
 
         Faktum funnetFaktum = HandlebarsUtils.finnFaktum(childContext);
+
+        assertThat(funnetFaktum).isNull();
+    }
+
+    @Test
+    public void finnerOppsummeringsFaktumetSomLiggerPaaNaermesteContext() throws IOException {
+        OppsummeringsFaktum faktum = mock(OppsummeringsFaktum.class);
+
+        Context parentContext = Context.newContext(faktum);
+        Context middleContext = Context.newContext(parentContext, "middle");
+        Context childContext = Context.newContext(middleContext, "child");
+
+        OppsummeringsFaktum funnetFaktum = HandlebarsUtils.getOppsummeringsFaktum(childContext);
+
+        assertThat(funnetFaktum).isEqualTo(faktum);
+    }
+
+    @Test
+    public void returnerNullOmDetIkkeErNoenOppsummeringsfaktumPaaNoenParentContext() throws IOException {
+        Context parentContext = Context.newContext("noe");
+        Context childContext = Context.newContext(parentContext, "noe annet");
+
+        OppsummeringsFaktum funnetFaktum = HandlebarsUtils.getOppsummeringsFaktum(childContext);
 
         assertThat(funnetFaktum).isNull();
     }

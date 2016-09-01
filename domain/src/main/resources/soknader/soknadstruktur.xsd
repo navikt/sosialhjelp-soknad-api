@@ -43,6 +43,42 @@
       </xs:element>
       <xs:element name="type" type="xs:string" minOccurs="0"/>
       <xs:element name="useExpression" type="xs:boolean" minOccurs="0"/>
+
+      <xs:element name="tekster" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="tekst" minOccurs="1" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:all>
+                  <xs:element name="type" type="xs:string" />
+                  <xs:element name="key" type="xs:string" />
+                  <xs:element name="dependOnValues" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="value" type="xs:string" />
+                        </xs:sequence>
+                    </xs:complexType>
+                  </xs:element>
+                  <xs:element name="constraints" minOccurs="0">
+                    <xs:complexType>
+                      <xs:all>
+                        <xs:element name="constraint">
+                          <xs:complexType>
+                            <xs:all>
+                              <xs:element name="expression" type="xs:string" minOccurs="0"/>
+                              <xs:element name="faktum" type="xs:IDREF" minOccurs="0"/>
+                            </xs:all>
+                          </xs:complexType>
+                        </xs:element>
+                      </xs:all>
+                    </xs:complexType>
+                  </xs:element>
+                </xs:all>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
     </xs:all>
     <xs:attribute type="xs:boolean" name="kunUtvidet" use="optional"/>
   </xs:complexType>
