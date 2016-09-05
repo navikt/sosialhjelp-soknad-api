@@ -48,6 +48,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * forFaktumMedId - Returnerer et faktum med den gitte ID-en
 * forFaktumTilknyttetBarn - Returnerer faktumet tilknyttet barnet i parent-context.
 * forIkkeInnsendteVedlegg - Itererer over vedlegg som ikke er sendt inn
+* forInfotekst - Itererer over alle infotekster med gyldig constraint på faktumstrukturen
 * forInnsendteVedlegg - Itererer over innsendte vedlegg på søknaden
 * forPerioder - Henter perioder for foreldrepenger og sorterer dem etter fradato
 * forSortertProperties - Itererer over alle properties sortert
@@ -62,6 +63,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hentSkjemanummer - Setter inn søknadens skjemanummer, også om det er en søknad for dagpenger
 * hentTekst - Henter tekst fra cms, prøver med søknadens prefix + key, før den prøver med bare keyen. Kan sende inn parametere.
 * hentTekstMedFaktumParameter - Henter tekst fra cms for en gitt key, med verdien til et faktum som parameter. Faktumet hentes basert på key
+* hvisFaktumstrukturHarInfotekster - Sjekker om man har definert infotekster på faktumstrukturen for faktum på context
 * hvisFlereErTrue - Finner alle fakta med key som begynner med teksten som sendes inn og teller om antallet med verdien true er større enn tallet som sendes inn.
 * hvisHarDiskresjonskode - Viser innhold avhengig av om personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)
 * hvisHarIkkeInnsendteDokumenter - Sjekker om søknaden har ikke-innsendte vedlegg
@@ -194,6 +196,16 @@ må ha et faktum i context, f. eks. via
 {{else}}
     Ingen ikke-innsendte vedlegg
 {{/forIkkeInnsendteVedlegg}}
+```
+
+
+##### forInfotekst
+
+```
+{{ forInfotekst }}
+    {{{ hentTekst key }}}
+{{ forInfotekst }}
+
 ```
 
 
@@ -330,6 +342,19 @@ må ha et faktum i context, f. eks. via
 
 ```
 {{hentTekstMedFaktumParameter "cms.key" "faktum.key"}}
+```
+
+
+##### hvisFaktumstrukturHarInfotekster
+
+```
+{{#forFaktum "faktumNavn"}}
+    {{#hvisFaktumstrukturHarInfotekster}}
+        Hvis faktumstrukturen definerer en infotekst kommer man inn i denne blokken
+    {{else}}
+        Hvis ikke kommer vi inn hit
+    {{/hvisFaktumstrukturHarInfotekster}}
+{{/forFaktum}}
 ```
 
 
