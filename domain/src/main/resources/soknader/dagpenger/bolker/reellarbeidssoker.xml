@@ -4,6 +4,21 @@
         <id>reellarbeidssoker.villigdeltid</id>
         <type>java.lang.Boolean</type>
         <panel>ReellArbeidssoker</panel>
+        <tekster>
+            <tekst>
+                <type>infotekst</type>
+                <key>reellarbeidssoker.villigdeltid.false.informasjon.over60</key>
+                <dependOnValues>
+                    <value>false</value>
+                </dependOnValues>
+                <constraints>
+                    <constraint>
+                        <faktum>personalia</faktum>
+                        <expression>properties['alder'] ge 60</expression>
+                    </constraint>
+                </constraints>
+            </tekst>
+        </tekster>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigdeltid.grunn</id>
@@ -12,6 +27,12 @@
         <dependOnValues>
             <value>false</value>
         </dependOnValues>
+        <constraints>
+            <constraint>
+                <faktum>personalia</faktum>
+                <expression>properties['alder'] lt 60</expression>
+            </constraint>
+        </constraints>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigdeltid.grunn.reduserthelse</id>
@@ -57,6 +78,18 @@
         <dependOnValues>
             <value>false</value>
         </dependOnValues>
+        <tekster>
+            <tekst>
+                <type>infotekst</type>
+                <key>reellarbeidssoker.villigdeltid.maksimalarbeidstid.infotekst.tekst</key>
+                <constraints>
+                    <constraint>
+                        <faktum>personalia</faktum>
+                        <expression>properties['alder'] lt 60</expression>
+                    </constraint>
+                </constraints>
+            </tekst>
+        </tekster>
     </faktum>
 
 
@@ -64,6 +97,21 @@
         <id>reellarbeidssoker.villigpendle</id>
         <type>java.lang.Boolean</type>
         <panel>ReellArbeidssoker</panel>
+        <tekster>
+            <tekst>
+                <type>infotekst</type>
+                <key>reellarbeidssoker.villigpendle.false.informasjon.over60</key>
+                <dependOnValues>
+                    <value>false</value>
+                </dependOnValues>
+                <constraints>
+                    <constraint>
+                        <faktum>personalia</faktum>
+                        <expression>properties['alder'] ge 60</expression>
+                    </constraint>
+                </constraints>
+            </tekst>
+        </tekster>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigpendle.grunn</id>
@@ -72,6 +120,12 @@
         <dependOnValues>
             <value>false</value>
         </dependOnValues>
+        <constraints>
+            <constraint>
+                <faktum>personalia</faktum>
+                <expression>properties['alder'] lt 60</expression>
+            </constraint>
+        </constraints>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigpendle.grunn.reduserthelse</id>
