@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.rest.providers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
@@ -32,7 +31,7 @@ public class JsonToTextPlainBodyWriter implements MessageBodyWriter<Object> {
 
     @Override
     public void writeTo(Object object, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
-            throws IOException, WebApplicationException {
+            throws IOException {
         entityStream.write(JSON_MAPPER.writeValueAsBytes(object));
     }
 

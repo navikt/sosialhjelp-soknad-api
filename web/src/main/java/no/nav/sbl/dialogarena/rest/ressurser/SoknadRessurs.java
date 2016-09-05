@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import javax.servlet.ServletContext;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
@@ -37,7 +36,7 @@ import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.generateXsrfToken;
 public class SoknadRessurs {
 
     public static final String XSRF_TOKEN = "XSRF-TOKEN-SOKNAD-API";
-    private final Logger LOG = LoggerFactory.getLogger(SoknadRessurs.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SoknadRessurs.class);
 
     @Inject
     private FaktaService faktaService;
@@ -53,9 +52,6 @@ public class SoknadRessurs {
 
     @Inject
     private HtmlGenerator pdfTemplate;
-
-    @Context
-    private ServletContext servletContext;
 
     @Inject
     private WebSoknadConfig webSoknadConfig;
@@ -101,7 +97,7 @@ public class SoknadRessurs {
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
 
-        if(webSoknadConfig.brukerNyOppsummering(soknad.getSoknadId())) {
+        if (webSoknadConfig.brukerNyOppsummering(soknad.getSoknadId())) {
             return pdfTemplate.fyllHtmlMalMedInnhold(soknad);
         }
         return pdfTemplate.fyllHtmlMalMedInnhold(soknad, "/skjema/" + soknad.getSoknadPrefix());

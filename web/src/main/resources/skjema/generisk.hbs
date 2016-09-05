@@ -1,6 +1,7 @@
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <base href="/sendsoknad/"></base>
     {{> skjema/generisk/generisk-styling }}
 </head>
 <body>
@@ -33,8 +34,22 @@
     </div>
 
     <div>
+    {{#if @root.utvidetSoknad}}
+        <div class="personalia">
+            {{> skjema/dagpenger/personaliaBolk}}
+      </div>
+    {{/if}}
         {{#each bolker}}
             <h2>{{ hentTekst (concat (toLowerCase navn) ".tittel") }}</h2>
+            {{#if @root.utvidetSoknad}}
+            <div class="hjelpeInfotekst">
+                {{#hvisTekstFinnes (concat (toLowerCase navn) ".informasjon")}}
+                <h3>Ingress:</h3>
+                <div>{{{ hentTekst (concat (toLowerCase navn) ".informasjon") }}}</div>
+                {{/hvisTekstFinnes}}
+            </div>
+            {{/if}}
+
             <ul class="fakta-liste">
                 {{#variabel "niva" "3"}}
                     {{#each fakta}}

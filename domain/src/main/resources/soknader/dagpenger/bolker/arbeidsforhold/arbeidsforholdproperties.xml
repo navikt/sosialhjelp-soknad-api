@@ -17,6 +17,12 @@
         <type>date</type>
         <constraints>
             <constraint>properties['type'] == 'permittert'</constraint>
+        </constraints>
+    </property>
+    <property>
+        <id>startperiode</id>
+        <type>date</type>
+        <constraints>
             <constraint>properties['type'] == 'redusertarbeidstid'</constraint>
         </constraints>
     </property>
@@ -34,6 +40,7 @@
             <constraint>properties['type'] == 'sagtoppavarbeidsgiver'</constraint>
             <constraint>properties['type'] == 'kontraktutgaatt'</constraint>
             <constraint>properties['type'] == 'sagtoppselv'</constraint>
+            <constraint>properties['type'] == 'avskjediget'</constraint>
         </constraints>
         <configuration>
             <entry>
@@ -154,6 +161,13 @@
                 <value>lonnspliktigperiodedatotil</value>
             </entry>
         </configuration>
+    </property>
+    <property>
+        <id>avskjedigetGrunn</id>
+        <type>textbox</type>
+        <constraints>
+            <constraint>properties['type'] == 'avskjediget'</constraint>
+        </constraints>
     </property>
     <property>
         <id>rotasjonskiftturnus</id>

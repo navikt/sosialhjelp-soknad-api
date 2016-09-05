@@ -26,6 +26,9 @@ public class InnsendtSoknad {
     private final DateTimeFormatter datoFormatter;
     private final DateTimeFormatter klokkeslettFormatter;
 
+    public InnsendtSoknad(){
+        this(new Locale("nb_NO"));
+    }
     public InnsendtSoknad(Locale sprak) {
         datoFormatter = DateTimeFormat.forPattern("d. MMMM yyyy").withLocale(sprak);
         klokkeslettFormatter = DateTimeFormat.forPattern("HH.mm").withLocale(sprak);

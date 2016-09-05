@@ -1,9 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.*;
 import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
@@ -21,8 +18,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
@@ -229,7 +226,7 @@ public class SoknadDataFletterTest {
 
         when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(vedlegg);
 
-        soknadServiceUtil.sendSoknad(behandlingsId, new byte[]{1, 2, 3});
+        soknadServiceUtil.sendSoknad(behandlingsId, new byte[]{1, 2, 3}, null);
     }
 
     @Test
@@ -265,7 +262,7 @@ public class SoknadDataFletterTest {
         when(vedleggService.hentVedleggOgKvittering(webSoknad)).thenReturn(mockHentVedleggForventninger(webSoknad));
 
         when(kravdialogInformasjonHolder.hentKonfigurasjon(SKJEMA_NUMMER)).thenReturn(new KravdialogInformasjonHolder().hentKonfigurasjon("NAV 04-01.03"));
-        soknadServiceUtil.sendSoknad(behandlingsId, new byte[]{1, 2, 3});
+        soknadServiceUtil.sendSoknad(behandlingsId, new byte[]{1, 2, 3}, new byte[]{4,5,6});
 
         verify(henvendelsesConnector).avsluttSoknad(eq(behandlingsId), argument.capture(),
                 refEq(
@@ -304,6 +301,15 @@ public class SoknadDataFletterTest {
         assertThat(xmlHovedskjema.getFilstorrelse()).isEqualTo("3");
         assertThat(xmlHovedskjema.getMimetype()).isEqualTo("application/pdf");
         assertThat(xmlHovedskjema.getSkjemanummer()).isEqualTo(DAGPENGER);
+        assertThat(xmlHovedskjema.getAlternativRepresentasjonListe().getAlternativRepresentasjon().get(0))
+                .isEqualToComparingFieldByField(
+                        new XMLAlternativRepresentasjon()
+                        .withFilnavn(DAGPENGER)
+                        .withFilstorrelse("3")
+                        .withMimetype("application/pdf-fullversjon")
+                        .withUuid(xmlHovedskjema.getAlternativRepresentasjonListe().getAlternativRepresentasjon().get(0).getUuid())
+                );
+        assertThat(xmlHovedskjema.getAlternativRepresentasjonListe().getAlternativRepresentasjon().get(0)).isNotEqualTo(xmlHovedskjema.getUuid());
     }
 
     @Test
