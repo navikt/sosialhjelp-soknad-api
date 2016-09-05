@@ -49,9 +49,8 @@
                 {{/sendtInnInfo }}
             </div>
             <h3 class="typo-element blokk-s">{{ hentTekst "kvittering.innsendt.tittel" }}</h3>
-            {{#forInnsendteVedlegg }}
                 <ul class="innsendt blokk-m">
-
+                    {{#forInnsendteVedlegg }}
                         <li class="blokk-xxs">
                             <span>
                                 {{ tittel ~}}
@@ -60,8 +59,8 @@
                                 {{/hvisIkkeTom}}
                             </span>
                         </li>
+                    {{/forInnsendteVedlegg }}
                 </ul>
-            {{/forInnsendteVedlegg }}
 
             {{#hvisHarIkkeInnsendteDokumenter }}
                 <h3 class="typo-element blokk-s">{{ hentTekst "kvittering.ikkeInnsendt.tittel" }}</h3>
