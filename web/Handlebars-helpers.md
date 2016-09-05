@@ -48,18 +48,22 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * forFaktumMedId - Returnerer et faktum med den gitte ID-en
 * forFaktumTilknyttetBarn - Returnerer faktumet tilknyttet barnet i parent-context.
 * forIkkeInnsendteVedlegg - Itererer over vedlegg som ikke er sendt inn
+* forInfotekst - Itererer over alle infotekster med gyldig constraint på faktumstrukturen
 * forInnsendteVedlegg - Itererer over innsendte vedlegg på søknaden
 * forPerioder - Henter perioder for foreldrepenger og sorterer dem etter fradato
+* forSortertProperties - Itererer over alle properties sortert
 * forVedlegg - Lar en iterere over alle påkrevde vedlegg på en søknad
 * formaterDato - Formaterer en innsendt dato på et gitt format som også sendes inn
 * formaterLangDato - Gjør en datostreng om til langt, norsk format. F. eks. '17. januar 2015'
 * harBarnetInntekt - Henter summen hvis barnet har inntekt. Må brukes innenfor en #forFaktum eller #forFakta helper. 
 * hentFaktumValue - Returnerer verdien til et faktum tilhørende keyen som sendes inn
 * hentLand - Henter land fra Kodeverk basert på landkode.
+* hentMiljovariabel - Finner miljovariabel fra key
 * hentPoststed - Henter poststed for et postnummer fra kodeverk
 * hentSkjemanummer - Setter inn søknadens skjemanummer, også om det er en søknad for dagpenger
 * hentTekst - Henter tekst fra cms, prøver med søknadens prefix + key, før den prøver med bare keyen. Kan sende inn parametere.
 * hentTekstMedFaktumParameter - Henter tekst fra cms for en gitt key, med verdien til et faktum som parameter. Faktumet hentes basert på key
+* hvisFaktumstrukturHarInfotekster - Sjekker om man har definert infotekster på faktumstrukturen for faktum på context
 * hvisFlereErTrue - Finner alle fakta med key som begynner med teksten som sendes inn og teller om antallet med verdien true er større enn tallet som sendes inn.
 * hvisHarDiskresjonskode - Viser innhold avhengig av om personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)
 * hvisHarIkkeInnsendteDokumenter - Sjekker om søknaden har ikke-innsendte vedlegg
@@ -78,6 +82,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * toCapitalized - Gjør om en tekst til at alle ord starter med store bokstaver
 * toLowerCase - Gjør om en tekst til kun små bokstaver
 * variabel - Lager en variabel med en bestemt verdi som kun er tilgjengelig innenfor helperen
+* vedleggCmsNokkel - Henter teksten for et vedlegg
 
 
 #### Eksempler
@@ -194,6 +199,16 @@ må ha et faktum i context, f. eks. via
 ```
 
 
+##### forInfotekst
+
+```
+{{ forInfotekst }}
+    {{{ hentTekst key }}}
+{{ forInfotekst }}
+
+```
+
+
 ##### forInnsendteVedlegg
 
 ```
@@ -213,6 +228,17 @@ må ha et faktum i context, f. eks. via
 {{else}}
     ingen perioder
 {{/forPerioder}}
+```
+
+
+##### forSortertProperties
+
+```
+{{#forSortertProperties faktum}}
+    {{key}}: {{values}}
+{{else}}
+    Ingen properties
+{{/forSortertProperties}}
 ```
 
 
@@ -280,6 +306,15 @@ må ha et faktum i context, f. eks. via
 ```
 
 
+##### hentMiljovariabel
+
+```
+ {{hentTekst "personalia.intro" (hentMiljovariabel "soknad.brukerprofil.url")}}
+
+ {{hentMiljovariabel "soknad.brukerprofil.url"}}
+```
+
+
 ##### hentPoststed
 
 ```
@@ -307,6 +342,19 @@ må ha et faktum i context, f. eks. via
 
 ```
 {{hentTekstMedFaktumParameter "cms.key" "faktum.key"}}
+```
+
+
+##### hvisFaktumstrukturHarInfotekster
+
+```
+{{#forFaktum "faktumNavn"}}
+    {{#hvisFaktumstrukturHarInfotekster}}
+        Hvis faktumstrukturen definerer en infotekst kommer man inn i denne blokken
+    {{else}}
+        Hvis ikke kommer vi inn hit
+    {{/hvisFaktumstrukturHarInfotekster}}
+{{/forFaktum}}
 ```
 
 
@@ -491,5 +539,14 @@ Leser fra model på context
 {{#variabel "minvariabel" "verdi1"}}
     Forventer verdi1: {{minvariabel}}
 {{/variabel}}
+```
+
+
+##### vedleggCmsNokkel
+
+```
+{{#forVedlegg}}
+    {{{hentTekst (vedleggCmsNokkel this)}}}
+{{/forVedlegg}}
 ```
 

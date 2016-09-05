@@ -6,6 +6,7 @@ import com.github.jknack.handlebars.context.FieldValueResolver;
 import com.github.jknack.handlebars.context.MethodValueResolver;
 import com.github.jknack.handlebars.io.URLTemplateSource;
 import no.nav.sbl.dialogarena.config.ContentConfig;
+import no.nav.sbl.dialogarena.rest.utils.PDFService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
@@ -15,7 +16,7 @@ import no.nav.sbl.dialogarena.service.helpers.HvisLikHelper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.FunksjonalitetBryter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Controller;
@@ -45,13 +46,16 @@ public class InternalRessurs {
     @Inject
     private NavMessageSource messageSource;
     @Inject
-    private SoknadService soknadService;
+    private SoknadDataFletter soknadDataFletter;
     @Inject
     private VedleggService vedleggService;
     @Inject
     private HtmlGenerator pdfTemplate;
     @Context
     private ServletContext servletContext;
+    @Inject
+    private PDFService pdfService;
+
 
     private PersonPortTypeMock personPortTypeMock = PersonMock.getInstance().getPersonPortTypeMock();
 
@@ -127,11 +131,12 @@ public class InternalRessurs {
         return Response.seeOther(URI.create("/sendsoknad/internal/mocksetup")).build();
     }
 
+
     @GET
     @Path("/{behandlingsId}/nyoppsummering")
     @Produces(TEXT_HTML)
     public String hentOppsummeringNew(@PathParam("behandlingsId") String behandlingsId) throws IOException {
-        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
+        WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
 
         return pdfTemplate.fyllHtmlMalMedInnhold(soknad);
@@ -148,5 +153,24 @@ public class InternalRessurs {
             return "CACHE RESET OK";
         }
         return "OK";
+    }
+
+    @GET
+    @Path("/{behandlingsId}/fullsoknad")
+    @Produces(TEXT_HTML)
+    public String fullSoknad(@PathParam("behandlingsId") String behandlingsId) throws IOException {
+        WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
+        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
+
+        return pdfTemplate.fyllHtmlMalMedInnhold(soknad, true);
+    }
+    @GET
+    @Path("/{behandlingsId}/fullsoknadpdf")
+    @Produces("application/pdf")
+    public byte[] fullSoknadPdf(@PathParam("behandlingsId") String behandlingsId) throws IOException {
+        WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
+        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
+        String servletPath = servletContext.getRealPath("/");
+        return pdfService.genererOppsummeringPdf(soknad, servletPath, true);
     }
 }
