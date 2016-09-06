@@ -45,6 +45,11 @@ public class DagpengerGjenopptakInformasjon extends KravdialogInformasjon.Defaul
         return true;
     }
 
+    @Override
+    public String getBundleName() {
+        return "dagpenger";
+    }
+
     public static boolean erDagpengerGjenopptak(String skjema) {
         return skjemanummer.contains(skjema);
     }

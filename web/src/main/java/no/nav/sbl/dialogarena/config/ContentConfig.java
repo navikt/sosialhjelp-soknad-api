@@ -5,6 +5,8 @@ import no.nav.modig.content.ContentRetriever;
 import no.nav.modig.content.enonic.HttpContentRetriever;
 import no.nav.modig.content.enonic.innholdstekst.Innholdstekst;
 import no.nav.modig.core.exception.ApplicationException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.types.Pingable;
 import org.apache.commons.io.FileUtils;
@@ -13,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -45,6 +48,9 @@ public class ContentConfig {
     @Inject
     private CacheManager cacheManager;
 
+    @Inject
+    private KravdialogInformasjonHolder kravdialogInformasjonHolder;
+
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Bean
@@ -69,6 +75,29 @@ public class ContentConfig {
 
         //Sjekk for nye filer en gang hvert 15. sekund.
         messageSource.setCacheSeconds(15);
+        return messageSource;
+    }
+
+    @Bean
+    public NavMessageWrapper navMessageBundles(){
+        NavMessageWrapper messages = new NavMessageWrapper();
+        for (KravdialogInformasjon kravdialogInformasjon: kravdialogInformasjonHolder.getSoknadsKonfigurasjoner()){
+            messages.put(kravdialogInformasjon.getSoknadTypePrefix(), bundleFor(kravdialogInformasjon.getBundleName()));
+        }
+        return messages;
+    }
+
+    public static class NavMessageWrapper extends HashMap<String, MessageSource>{}
+
+    private NavMessageSource bundleFor(String bundle) {
+        NavMessageSource messageSource = new NavMessageSource();
+
+        String brukerprofilDataDirectoryString = brukerprofilDataDirectory.toURI().toString();
+        messageSource.setBasenames(
+                new NavMessageSource.Bundle("sendsoknad", brukerprofilDataDirectoryString + "enonic/sendsoknad", "classpath:content/sendsoknad"),
+                new NavMessageSource.Bundle(bundle, brukerprofilDataDirectoryString + "enonic/" + bundle, "classpath:content/" + bundle)
+                );
+        messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
     }
 

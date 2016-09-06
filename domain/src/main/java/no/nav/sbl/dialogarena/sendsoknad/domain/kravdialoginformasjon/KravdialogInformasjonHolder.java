@@ -52,4 +52,7 @@ public class KravdialogInformasjonHolder {
         return skjemanumre;
     }
 
+    public List<KravdialogInformasjon> getSoknadsKonfigurasjoner() {
+        return soknadsKonfigurasjoner;
+    }
 }

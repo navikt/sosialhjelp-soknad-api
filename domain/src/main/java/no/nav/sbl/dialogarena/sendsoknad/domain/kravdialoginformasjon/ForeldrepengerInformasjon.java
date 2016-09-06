@@ -32,6 +32,11 @@ public class ForeldrepengerInformasjon extends KravdialogInformasjon.DefaultOpps
         return Arrays.asList("NAV 14-05.06", "NAV 14-05.07", "NAV 14-05.08", "NAV 14-05.09");
     }
 
+    @Override
+    public String getBundleName() {
+        return "foreldrepenger";
+    }
+
     public List<String> getSoknadBolker(WebSoknad soknad) {
         Faktum stonadstype = soknad.getFaktumMedKey("soknadsvalg.stonadstype");
         if (stonadstype != null && STONADSTYPER_PERSONALIA.contains(stonadstype.getValue())) {
