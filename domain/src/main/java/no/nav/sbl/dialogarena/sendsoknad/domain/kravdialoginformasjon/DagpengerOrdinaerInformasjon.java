@@ -46,6 +46,11 @@ public class DagpengerOrdinaerInformasjon extends KravdialogInformasjon.DefaultO
         return true;
     }
 
+    @Override
+    public String getBundleName() {
+        return "dagpenger";
+    }
+
     public static boolean erDagpengerOrdinaer(String skjema) {
         return skjemanummer.contains(skjema);
     }

@@ -41,4 +41,9 @@ public class SoknadTilleggsstonader extends KravdialogInformasjon.DefaultOppsett
         Transformer<WebSoknad, AlternativRepresentasjon> tilleggsstonaderTilXml = new TilleggsstonaderTilXml(messageSource);
         return asList(tilleggsstonaderTilXml);
     }
+
+    @Override
+    public String getBundleName() {
+        return "tilleggsstonader";
+    }
 }
