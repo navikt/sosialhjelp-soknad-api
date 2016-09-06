@@ -4,9 +4,11 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.internal.Files;
 import com.github.jknack.handlebars.io.StringTemplateSource;
 import com.github.jknack.handlebars.io.TemplateSource;
+import no.nav.sbl.dialogarena.config.ContentConfig;
 import no.nav.sbl.dialogarena.config.HandlebarsHelperConfig;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.service.HandlebarRegistry;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.Miljovariabler;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -108,14 +110,21 @@ public class RegistryAwareHelperTest {
             return mock(HandlebarRegistry.class);
         }
 
-        @Bean(name = "navMessageSource")
-        public MessageSource messageSource() {
-            return mock(MessageSource.class);
+        @Bean(name = "navMessageBundles")
+        public ContentConfig.NavMessageWrapper navMessageBundles() {
+            ContentConfig.NavMessageWrapper wrapper = new ContentConfig.NavMessageWrapper();
+            wrapper.put("", mock(MessageSource.class));
+            return wrapper;
         }
 
         @Bean()
         public Kodeverk kodeverk() {
             return mock(Kodeverk.class);
+        }
+
+        @Bean()
+        public Miljovariabler informasjonService() {
+            return mock(Miljovariabler.class);
         }
 
     }

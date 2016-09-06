@@ -40,7 +40,7 @@ public class InnsendtSoknadService {
     @Inject
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
 
-    private final Predicate<Vedlegg> IKKE_KVITTERING = new Predicate<Vedlegg>() {
+    private static final Predicate<Vedlegg> IKKE_KVITTERING = new Predicate<Vedlegg>() {
         @Override
         public boolean evaluate(Vedlegg vedlegg) {
             return !SKJEMANUMMER_KVITTERING.equalsIgnoreCase(vedlegg.getSkjemaNummer());

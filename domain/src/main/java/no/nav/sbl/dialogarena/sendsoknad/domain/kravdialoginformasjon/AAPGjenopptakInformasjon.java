@@ -37,6 +37,11 @@ public class AAPGjenopptakInformasjon extends KravdialogInformasjon.DefaultOppse
         return skjemanummer;
     }
 
+    @Override
+    public String getBundleName() {
+        return "aap";
+    }
+
     public static boolean erAapGjenopptak(String skjema) {
         return skjemanummer.contains(skjema);
     }

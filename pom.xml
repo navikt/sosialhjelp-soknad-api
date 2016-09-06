@@ -22,7 +22,7 @@
     <description>Innsending av elektronisk søknad.</description>
     <groupId>no.nav.sbl.dialogarena</groupId>
     <artifactId>sendsoknad</artifactId>
-    <version>12.0</version>
+    <version>13.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -42,12 +42,12 @@
         <spring.version>3.2.9.RELEASE</spring.version>
         <jersey.version>2.20</jersey.version>
         <cxf.version>2.7.9</cxf.version>
-        <modig-security.version>1.0.24</modig-security.version>
+        <modig-security.version>1.0.30</modig-security.version>
         <sendsoknad.tjenestespec.version>0.0.23</sendsoknad.tjenestespec.version>
         <behandlingsinformasjon.tjenestespec.version>0.0.46</behandlingsinformasjon.tjenestespec.version>
         <fillager.tjenestespec.version>0.0.3</fillager.tjenestespec.version>
         <dkif-tjenestespesifikasjon.version>1.2</dkif-tjenestespesifikasjon.version>
-        <lokalt.kodeverk>1.11</lokalt.kodeverk>
+        <lokalt.kodeverk>1.12.8</lokalt.kodeverk>
         <henvendelse.tjenestespesifikasjon.version.1>2.0.0</henvendelse.tjenestespesifikasjon.version.1>
         <henvendelse-informasjon-v2.version>0.6</henvendelse-informasjon-v2.version>
         <dialogarena.dokumentinnsending.version>2.0.1</dialogarena.dokumentinnsending.version>
@@ -310,7 +310,7 @@
             <dependency>
                 <groupId>org.apache.pdfbox</groupId>
                 <artifactId>pdfbox</artifactId>
-                <version>1.8.2</version>
+                <version>1.8.12</version>
                 <exclusions>
                     <exclusion>
                         <groupId>commons-logging</groupId>

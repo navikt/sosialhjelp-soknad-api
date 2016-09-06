@@ -32,6 +32,11 @@ public class AAPOrdinaerInformasjon extends KravdialogInformasjon.DefaultOppsett
         return skjemanummer;
     }
 
+    @Override
+    public String getBundleName() {
+        return "aap";
+    }
+
     public List<String> getSoknadBolker(WebSoknad soknad) {
         return asList(BOLK_PERSONALIA, BOLK_BARN);
     }

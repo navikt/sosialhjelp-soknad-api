@@ -14,15 +14,17 @@ import static no.nav.modig.lang.collections.IterUtils.on;
 
 
 public class OppsummeringsContext {
-    public final boolean visInfotekst;
+    public final boolean utvidetSoknad;
     public List<OppsummeringsBolk> bolker = new ArrayList<>();
     public WebSoknad soknad;
 
-    public OppsummeringsContext(WebSoknad soknad, SoknadStruktur soknadStruktur, boolean visInfotekst) {
+    public OppsummeringsContext(WebSoknad soknad, SoknadStruktur soknadStruktur, boolean utvidetSoknad) {
         this.soknad = soknad;
-        this.visInfotekst = visInfotekst;
+        this.utvidetSoknad = utvidetSoknad;
         for (FaktumStruktur faktumStruktur : soknadStruktur.getFakta()) {
-            if (faktumStruktur.getDependOn() == null && !"hidden".equals(faktumStruktur.getType())) {
+            if (faktumStruktur.getDependOn() == null
+                    && !"hidden".equals(faktumStruktur.getType())
+                    && ( utvidetSoknad || !faktumStruktur.getKunUtvidet())) {
                 OppsummeringsBolk bolk = hentOgOpprettBolkOmIkkeFinnes(faktumStruktur.getPanel());
                 bolk.fakta.addAll(hentOppsummeringForFaktum(faktumStruktur, null, soknadStruktur, soknad));
             }

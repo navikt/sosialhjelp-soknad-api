@@ -1,0 +1,46 @@
+{{#forFaktum "personalia"}}
+    <div class="personalia">
+        <h2>{{hentTekst "personalia.tittel"}}</h2>
+        <p class="skjema-infotekst ng-binding">
+        {{hentTekst "personalia.intro" (hentMiljovariabel "soknad.brukerprofil.url")}}
+        </p>
+        <ul class="fakta-liste">
+            <li>
+                <h3>{{properties.navn}}</h3>
+                <p class="fnr">{{properties.fnr}}</p>
+            </li>
+            {{#if properties.gjeldendeAdresse}}
+            <li>
+                <h3>{{hentTekst "personalia.folkeregistrertadresse"}}</h3>
+                <p class="adr">{{properties.gjeldendeAdresse}}</p>
+            </li>
+            {{/if}}
+            {{#if properties.sekundarAdresse}}
+                <li>
+                    {{#hvisLik properties.sekundarAdresseType "MIDLERTIDIG_POSTADRESSE_UTLAND"}}
+                        <h3>{{hentTekst "personalia.midlertidigAdresseUtland"}}</h3>
+                    {{/hvisLik}}
+                   {{#hvisLik properties.sekundarAdresseType "MIDLERTIDIG_POSTADRESSE_NORGE"}}
+                        <h3>{{hentTekst "personalia.midlertidigAdresseNorge"}}</h3>
+                    {{/hvisLik}}
+                    <p class="adr">{{properties.sekundarAdresse}} </p>
+                    {{#if properties.sekundarAdresseGyldigTil}}
+                        <p class="adr">{{hentTekst "personalia.gyldigTil"}} {{properties.sekundarAdresseGyldigTil}} </p>
+                    {{/if}}
+                </li>
+            {{/if}}
+            {{#if properties.kontonummer }}
+                <li>
+                    <div>
+                        <h3>{{ hentTekst "personalia.kontonummer" }}</h3>
+                        <span>{{ properties.kontonummer ~}}</span>
+                        {{~#hvisSant properties.erUtenlandskBankkonto ~}}
+                             , <span>{{ properties.utenlandskKontoBanknavn }}</span>,
+                            <span>{{ properties.utenlandskKontoLand ~}}</span>
+                        {{/hvisSant}}
+                    </div>
+                </li>
+            {{/if}}
+        </ul>
+    </div>
+{{/forFaktum}}
