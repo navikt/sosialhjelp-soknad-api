@@ -68,12 +68,28 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
         setBasenames(basenameStrings.toArray(new String[basenameStrings.size()]));
     }
 
-    private static class FileTuple {
+    public Map<String, FileTuple> getBasenames() {
+        return basenames;
+    }
+
+    public FileTuple getFellesBasename() {
+        return fellesBasename;
+    }
+
+    public static class FileTuple {
         private String remoteFile;
         private String localFile;
         FileTuple(String remoteFile, String localFile) {
             this.remoteFile = remoteFile;
             this.localFile = localFile;
+        }
+
+        public String getRemoteFile() {
+            return remoteFile;
+        }
+
+        public String getLocalFile() {
+            return localFile;
         }
     }
 

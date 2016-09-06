@@ -40,6 +40,8 @@ public interface KravdialogInformasjon {
 
     boolean skalSendeMedFullSoknad();
 
+    String getBundleName();
+
     abstract class DefaultOppsett implements KravdialogInformasjon {
         @Override
         public List<Transformer<WebSoknad, AlternativRepresentasjon>> getTransformers(MessageSource messageSource) {
