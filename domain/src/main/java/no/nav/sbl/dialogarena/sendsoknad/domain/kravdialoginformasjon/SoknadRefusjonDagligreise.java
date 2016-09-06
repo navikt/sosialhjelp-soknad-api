@@ -46,6 +46,12 @@ public class SoknadRefusjonDagligreise extends KravdialogInformasjon.DefaultOpps
         Transformer<WebSoknad, AlternativRepresentasjon> tilleggsstonaderTilXml = new RefusjonDagligreiseTilXml();
         return Arrays.asList(tilleggsstonaderTilXml);
     }
+
+    @Override
+    public String getBundleName() {
+        return "refusjondagligreise";
+    }
+
     @Override
     public Steg[] getStegliste() {
         return new Steg[]{SOKNAD, OPPSUMMERING};

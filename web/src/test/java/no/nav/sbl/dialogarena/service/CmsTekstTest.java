@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.service;
 
+import no.nav.sbl.dialogarena.config.ContentConfig;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,11 +13,10 @@ import org.springframework.context.NoSuchMessageException;
 import java.io.IOException;
 import java.util.Locale;
 
-import static org.apache.commons.lang3.LocaleUtils.*;
-import static org.assertj.core.api.Assertions.*;
+import static org.apache.commons.lang3.LocaleUtils.toLocale;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -26,11 +26,16 @@ public class CmsTekstTest {
     CmsTekst cmsTekst;
 
     @Mock
-    MessageSource messagesourceMock;
+    ContentConfig.NavMessageWrapper navMessageBundles;
 
+
+    private MessageSource messagesourceMock;
 
     @Before
     public void setup() {
+        messagesourceMock = mock(MessageSource.class);
+
+        when(navMessageBundles.get(anyString())).thenReturn(messagesourceMock);
         when(messagesourceMock.getMessage(anyString(), any(Object[].class), any(Locale.class))).thenThrow(new NoSuchMessageException(""));
     }
 
