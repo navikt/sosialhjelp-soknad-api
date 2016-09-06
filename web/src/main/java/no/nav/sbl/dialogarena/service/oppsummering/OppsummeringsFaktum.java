@@ -1,12 +1,18 @@
 package no.nav.sbl.dialogarena.service.oppsummering;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.*;
-import org.apache.commons.collections15.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.PropertyStruktur;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
+import org.apache.commons.collections15.Transformer;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import static java.util.Collections.*;
+import static java.util.Collections.emptyList;
 import static no.nav.modig.lang.collections.IterUtils.on;
 
 public class OppsummeringsFaktum implements OppsummeringsBase{
@@ -63,6 +69,8 @@ public class OppsummeringsFaktum implements OppsummeringsBase{
     public String originalValue() {
         return faktum.getValue();
     }
+
+
 
 
     private class OppsummeringsProperty  implements OppsummeringsBase{
@@ -126,10 +134,8 @@ public class OppsummeringsFaktum implements OppsummeringsBase{
             return struktur.trengerVedlegg(faktum);
         }
         public String navn(){
-            //return kodeverk.getKode(struktur.getSkjemaNummer(), Kodeverk.Nokkel.TITTEL);
             return struktur.getSkjemaNummer();
         }
+
     }
-
-
 }

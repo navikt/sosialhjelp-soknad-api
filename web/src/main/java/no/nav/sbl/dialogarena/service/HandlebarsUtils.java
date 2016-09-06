@@ -56,4 +56,14 @@ public class HandlebarsUtils {
             return finnFaktum(context.parent());
         }
     }
+
+    public static OppsummeringsFaktum getOppsummeringsFaktum(Context context) {
+        if(context == null || context.model() == null) {
+            return null;
+        }
+        if(context.model() instanceof OppsummeringsFaktum) {
+            return (OppsummeringsFaktum) context.model();
+        }
+        return getOppsummeringsFaktum(context.parent());
+    }
 }

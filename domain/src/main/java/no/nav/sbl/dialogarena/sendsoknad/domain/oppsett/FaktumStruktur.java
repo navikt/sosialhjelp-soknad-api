@@ -3,12 +3,18 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.oppsett;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import org.apache.commons.collections15.Predicate;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.xml.bind.annotation.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
+import static no.nav.modig.lang.collections.IterUtils.on;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.TekstStruktur.HJELPETEKST;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.TekstStruktur.INFOTEKST;
 
 @XmlType(propOrder = {})
 public class FaktumStruktur implements Serializable, StrukturConfigurable {
@@ -21,11 +27,13 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
     private String dependOnProperty;
     private List<String> dependOnValues;
     private Boolean useExpression = false;
+    private Boolean kunUtvidet=false;
 
     private String flereTillatt;
     private String erSystemFaktum;
     private List<PropertyStruktur> properties;
     private List<Constraint> constraints;
+    private List<TekstStruktur> tekster;
 
     @XmlID()
     public String getId() {
@@ -104,11 +112,11 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
         this.dependOn = parent;
         return this;
     }
+
     public FaktumStruktur medDependOnProperty(String dependOnProperty) {
         this.dependOnProperty = dependOnProperty;
         return this;
     }
-
     public FaktumStruktur medId(String id) {
         this.setId(id);
         return this;
@@ -132,6 +140,25 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
 
     public void setConstraints(List<Constraint> constraints) {
         this.constraints = constraints;
+    }
+
+    @XmlElementWrapper(name="tekster")
+    @XmlElement(name="tekst")
+    public List<TekstStruktur> getTekster() {
+        return tekster;
+    }
+
+    public void setTekster(List<TekstStruktur> tekster) {
+        this.tekster = tekster;
+    }
+
+    @XmlAttribute(name="kunUtvidet")
+    public boolean getKunUtvidet() {
+        return kunUtvidet;
+    }
+
+    public void setKunUtvidet(boolean kunUtvidet) {
+        this.kunUtvidet = kunUtvidet;
     }
 
     @Override
@@ -189,7 +216,7 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
 
     private boolean oppfyllerParentKriterier(WebSoknad soknad, Faktum faktum) {
         Faktum parent = faktum.getParrentFaktum() != null ? soknad.finnFaktum(faktum.getParrentFaktum()): soknad.getFaktumMedKey(getDependOn().getId());
-        if(parent != null && getDependOnValues() != null && getDependOnValues().size() > 0){
+        if(parent != null && getDependOnValues() != null && !getDependOnValues().isEmpty()){
             if(!useExpression){
                 return (harDependOnProperty(parent) || harDependOnValue(parent));
             } else {
@@ -210,15 +237,79 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
 
         boolean result = false;
         for (Constraint constraint : constraints) {
-            Faktum constraintFaktum = faktum;
-
-            if (constraint.getFaktum() != null && !constraint.getFaktum().isEmpty()) {
-                constraintFaktum = soknad.getFaktumMedKey(constraint.getFaktum());
-            }
-
+            Faktum constraintFaktum = getConstraintFaktum(constraint, soknad, faktum);
             result = result || ForventningsSjekker.sjekkForventning(constraint.getExpression(), constraintFaktum);
         }
         return result;
+    }
+
+    public List<TekstStruktur> getInfotekster(WebSoknad soknad, Faktum faktum) {
+        if (tekster == null) {
+            return new ArrayList<>();
+        }
+
+        return on(tekster)
+                .filter(tekstOppfyllerDependOn(faktum))
+                .filter(tekstStrukturOppfyllerConstraints(soknad, faktum))
+                .filter(tekstErType(INFOTEKST))
+                .collect();
+    }
+
+    public List<TekstStruktur> getHjelpetekster(WebSoknad soknad, Faktum faktum) {
+        if (tekster == null) {
+            return new ArrayList<>();
+        }
+
+        return on(tekster)
+                .filter(tekstOppfyllerDependOn(faktum))
+                .filter(tekstStrukturOppfyllerConstraints(soknad, faktum))
+                .filter(tekstErType(HJELPETEKST))
+                .collect();
+    }
+
+    private Predicate<TekstStruktur> tekstStrukturOppfyllerConstraints(final WebSoknad soknad, final Faktum faktum) {
+        return new Predicate<TekstStruktur>() {
+            @Override
+            public boolean evaluate(TekstStruktur tekst) {
+                for(Constraint constraint: tekst.getConstraints()) {
+                    Faktum constraintFaktum = getConstraintFaktum(constraint, soknad, faktum);
+                    if(!ForventningsSjekker.sjekkForventning(constraint.getExpression(), constraintFaktum)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        };
+    }
+
+    private Predicate<TekstStruktur> tekstOppfyllerDependOn(final Faktum faktum) {
+        return new Predicate<TekstStruktur>() {
+            @Override
+            public boolean evaluate(TekstStruktur tekst) {
+                List<String> tekstDependOnValues = tekst.getDependOnValues();
+                if (tekstDependOnValues == null || tekstDependOnValues.isEmpty()) {
+                    return true;
+                }
+                return tekstDependOnValues.contains(faktum.getValue());
+            }
+        };
+    }
+
+    private Predicate<TekstStruktur> tekstErType(final String type) {
+        return new Predicate<TekstStruktur>() {
+            @Override
+            public boolean evaluate(TekstStruktur tekst) {
+                return tekst.getType().equals(type);
+            }
+        };
+    }
+
+    private Faktum getConstraintFaktum(Constraint constraint, WebSoknad soknad, Faktum faktum) {
+        Faktum constraintFaktum = faktum;
+        if (constraint.getFaktum() != null && !constraint.getFaktum().isEmpty()) {
+            constraintFaktum = soknad.getFaktumMedKey(constraint.getFaktum());
+        }
+        return constraintFaktum;
     }
 
     private boolean harDependOnValue(Faktum parent) {
