@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.service.helpers;
 
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +21,7 @@ public class HvisHarIkkeInnsendteDokumenterHelperTest {
 
     @Test
     public void skalViseAtSoknadenIkkeHarInnsendteDokumenter() throws Exception {
-        WebSoknad webSoknad = lagSoknadMedVedleggStatus(Vedlegg.Status.VedleggKreves);
+        WebSoknad webSoknad = SoknadTestHelper.soknadMedIkkeInnsendtVedlegg();
 
         String compiled = handlebars.compileInline("{{#hvisHarIkkeInnsendteDokumenter}}har ikke-innsendte dokumenter{{/hvisHarIkkeInnsendteDokumenter}}").apply(Context.newContext(webSoknad));
         assertThat(compiled).isEqualTo("har ikke-innsendte dokumenter");
@@ -30,7 +29,7 @@ public class HvisHarIkkeInnsendteDokumenterHelperTest {
 
     @Test
     public void skalViseAtSoknadenHarInnsendteDokumenter() throws Exception {
-        WebSoknad webSoknad = lagSoknadMedVedleggStatus(Vedlegg.Status.LastetOpp);
+        WebSoknad webSoknad = SoknadTestHelper.soknadMedInnsendtVedlegg();
 
         String compiled = handlebars.compileInline("{{#hvisHarIkkeInnsendteDokumenter}}har ikke-innsendte dokumenter{{else}}alt er innsendt{{/hvisHarIkkeInnsendteDokumenter}}").apply(Context.newContext(webSoknad));
         assertThat(compiled).isEqualTo("alt er innsendt");
@@ -39,7 +38,7 @@ public class HvisHarIkkeInnsendteDokumenterHelperTest {
 
     @Test
     public void viserOmInnsendteDokumenterSelvOmWebSoknadIParentContext() throws Exception {
-        WebSoknad webSoknad = lagSoknadMedVedleggStatus(Vedlegg.Status.VedleggKreves);
+        WebSoknad webSoknad = SoknadTestHelper.soknadMedIkkeInnsendtVedlegg();
 
         Context parentContext = Context.newContext(webSoknad);
         Context childContext = Context.newContext(parentContext, "random");
@@ -48,14 +47,5 @@ public class HvisHarIkkeInnsendteDokumenterHelperTest {
         assertThat(compiled).isEqualTo("har ikke-innsendte dokumenter");
     }
 
-    private WebSoknad lagSoknadMedVedleggStatus(Vedlegg.Status status) {
-        WebSoknad webSoknad = new WebSoknad();
-
-        Vedlegg vedlegg = new Vedlegg();
-        vedlegg.setInnsendingsvalg(status);
-        webSoknad.medVedlegg(vedlegg);
-
-        return webSoknad;
-    }
 
 }
