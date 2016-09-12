@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.service.helpers;
 
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +21,7 @@ public class HvisHarInnsendteDokumenterHelperTest {
 
     @Test
     public void skalViseAtSoknadenHarInnsendteDokumenter() throws Exception {
-        WebSoknad webSoknad = lagSoknadMedVedleggStatus(Vedlegg.Status.LastetOpp);
+        WebSoknad webSoknad = SoknadTestHelper.soknadMedInnsendtVedlegg();
 
         String compiled = handlebars.compileInline("{{#hvisHarInnsendteDokumenter}}har noen innsendte dokumenter{{/hvisHarInnsendteDokumenter}}").apply(Context.newContext(webSoknad));
         assertThat(compiled).isEqualTo("har noen innsendte dokumenter");
@@ -30,7 +29,7 @@ public class HvisHarInnsendteDokumenterHelperTest {
 
     @Test
     public void skalViseAtSoknadenHarIkkeInnsendteDokumenter() throws Exception {
-        WebSoknad webSoknad = lagSoknadMedVedleggStatus(Vedlegg.Status.VedleggKreves);
+        WebSoknad webSoknad = SoknadTestHelper.soknadMedIkkeInnsendtVedlegg();
 
         String compiled = handlebars.compileInline("{{#hvisHarInnsendteDokumenter}}har noen innsendte dokumenter{{else}}har ingen innsendte dokumenter{{/hvisHarInnsendteDokumenter}}").apply(Context.newContext(webSoknad));
         assertThat(compiled).isEqualTo("har ingen innsendte dokumenter");
@@ -39,23 +38,13 @@ public class HvisHarInnsendteDokumenterHelperTest {
 
     @Test
     public void viserOmInnsendteDokumenterSelvOmWebSoknadIParentContext() throws Exception {
-        WebSoknad webSoknad = lagSoknadMedVedleggStatus(Vedlegg.Status.LastetOpp);
+        WebSoknad webSoknad = SoknadTestHelper.soknadMedInnsendtVedlegg();
 
         Context parentContext = Context.newContext(webSoknad);
         Context childContext = Context.newContext(parentContext, "random");
 
         String compiled = handlebars.compileInline("{{#hvisHarInnsendteDokumenter}}har noen innsendte dokumenter{{/hvisHarInnsendteDokumenter}}").apply(childContext);
         assertThat(compiled).isEqualTo("har noen innsendte dokumenter");
-    }
-
-    private WebSoknad lagSoknadMedVedleggStatus(Vedlegg.Status status) {
-        WebSoknad webSoknad = new WebSoknad();
-
-        Vedlegg vedlegg = new Vedlegg();
-        vedlegg.setInnsendingsvalg(status);
-        webSoknad.medVedlegg(vedlegg);
-
-        return webSoknad;
     }
 
 }
