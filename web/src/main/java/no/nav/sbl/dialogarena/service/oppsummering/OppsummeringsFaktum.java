@@ -126,7 +126,6 @@ public class OppsummeringsFaktum implements OppsummeringsBase{
             return struktur.trengerVedlegg(faktum);
         }
         public String navn(){
-            //return kodeverk.getKode(struktur.getSkjemaNummer(), Kodeverk.Nokkel.TITTEL);
             return struktur.getSkjemaNummer();
         }
     }

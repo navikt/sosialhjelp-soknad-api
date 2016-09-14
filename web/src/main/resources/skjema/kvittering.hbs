@@ -48,6 +48,7 @@
                     <span>{{ hentTekst "kvittering.erSendt" sendtInn ikkeSendtInn innsendtDato innsendtKlokkeslett}}</span>
                 {{/sendtInnInfo }}
             </div>
+            {{#hvisHarInnsendteDokumenter }}
             <h3 class="typo-element blokk-s">{{ hentTekst "kvittering.innsendt.tittel" }}</h3>
                 <ul class="innsendt blokk-m">
                     {{#forInnsendteVedlegg }}
@@ -61,6 +62,7 @@
                         </li>
                     {{/forInnsendteVedlegg }}
                 </ul>
+            {{/hvisHarInnsendteDokumenter }}
 
             {{#hvisHarIkkeInnsendteDokumenter }}
                 <h3 class="typo-element blokk-s">{{ hentTekst "kvittering.ikkeInnsendt.tittel" }}</h3>
