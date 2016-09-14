@@ -20,7 +20,7 @@ public class AAPGjenopptakInformasjon extends KravdialogInformasjon.DefaultOppse
     }
 
     public String getFortsettSoknadUrlKey() {
-        return "soknad.aap.fortsett.path";
+        return  "soknad.aap.fortsett.path";
     }
 
     @Override
