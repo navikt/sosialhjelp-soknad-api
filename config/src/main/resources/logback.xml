@@ -16,7 +16,7 @@
     </appender>
 
     <appender name="exceptionlog" class="ch.qos.logback.classic.AsyncAppender">
-        <appender-ref name="exceptionlog-sync" />
+        <appender-ref ref="exceptionlog-sync" />
     </appender>
 
     <appender name="infolog-sync" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -31,7 +31,7 @@
     </appender>
 
     <appender name="infolog" class="ch.qos.logback.classic.AsyncAppender">
-        <appender-ref name="infolog-sync" />
+        <appender-ref ref="infolog-sync" />
     </appender>
 
     <appender name="batchlog-sync" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -46,7 +46,7 @@
     </appender>
 
     <appender name="batchlog" class="ch.qos.logback.classic.AsyncAppender">
-        <appender-ref name="batchlog-sync" />
+        <appender-ref ref="batchlog-sync" />
     </appender>
 
     <appender name="klientlogg-sync" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -61,7 +61,7 @@
     </appender>
 
     <appender name="klientlogg" class="ch.qos.logback.classic.AsyncAppender">
-        <appender-ref name="klientlogg-sync" />
+        <appender-ref ref="klientlogg-sync" />
     </appender>
 
     <appender name="SYSLOG-SYNC" class="ch.qos.logback.classic.net.SyslogAppender">
@@ -75,7 +75,7 @@
     </appender>
 
     <appender name="SYSLOG" class="ch.qos.logback.classic.AsyncAppender">
-        <appender-ref name="SYSLOG-SYNC" />
+        <appender-ref ref="SYSLOG-SYNC" />
     </appender>
 
     <logger name="org.springframework" level="warn">
