@@ -67,6 +67,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hvisFlereErTrue - Finner alle fakta med key som begynner med teksten som sendes inn og teller om antallet med verdien true er større enn tallet som sendes inn.
 * hvisHarDiskresjonskode - Viser innhold avhengig av om personalia indikerer diskresjonskode 6 (fortrolig) eller 7 (strengt fortrolig)
 * hvisHarIkkeInnsendteDokumenter - Sjekker om søknaden har ikke-innsendte vedlegg
+* hvisHarInnsendteDokumenter - Sjekker om søknaden har ett eller flere innsendte dokumenter
 * hvisIkkeTom - Dersom variabelen ikke er tom vil innholdet vises
 * hvisIngenSynligeBarneFakta - For bruk i generisk oppsummering, undersøker innsendt liste over fakta og ser om alle er skjult.
 * hvisKunStudent - Sjekker om brukeren har en annen status enn student (f.eks sykmeldt, i arbeid osv.)
@@ -388,6 +389,17 @@ må ha et faktum i context, f. eks. via
 {{else}}
     alt er innsendt
 {{/hvisHarIkkeInnsendteDokumenter}}
+```
+
+
+##### hvisHarInnsendteDokumenter
+
+```
+{{#hvisHarInnsendteDokumenter}}
+    har ett eller flere innsendte dokumenter
+{{else}}
+    har ikke sendt inn noen dokumenter
+{{/hvisHarInnsendteDokumenter}}
 ```
 
 
