@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static java.lang.System.getProperty;
-import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createSwitcher;
+import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder.CONNECTION_TIMEOUT;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder.RECEIVE_TIMEOUT;
 
@@ -38,7 +38,7 @@ public class PersonInfoWSConfig {
     public PersonInfoServiceSoap personInfoEndpoint() {
         PersonInfoServiceSoap mock = new PersonInfoMock().personInfoMock();
         PersonInfoServiceSoap prod = opprettPersonInfoEndpoint();
-        return createSwitcher(prod, mock, PERSONINFO_KEY, PersonInfoServiceSoap.class);
+        return createMetricsProxyWithInstanceSwitcher("Personinfo", prod, mock, PERSONINFO_KEY, PersonInfoServiceSoap.class);
     }
 
     private PersonInfoServiceSoap opprettPersonInfoEndpoint() {

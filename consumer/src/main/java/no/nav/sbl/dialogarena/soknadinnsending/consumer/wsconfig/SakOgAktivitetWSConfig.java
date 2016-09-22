@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.xml.namespace.QName;
 
-import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createSwitcher;
+import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
 
 @Configuration
 public class SakOgAktivitetWSConfig {
@@ -22,7 +22,7 @@ public class SakOgAktivitetWSConfig {
     public SakOgAktivitetV1 sakOgAktivitetEndpoint() {
         SakOgAktivitetV1 mock = sakOgAktivitetEndpointMock();
         SakOgAktivitetV1 prod = sakOgAktivitetEndpointWS();
-        return createSwitcher(prod, mock, SAKOGAKTIVITET_KEY, SakOgAktivitetV1.class);
+        return createMetricsProxyWithInstanceSwitcher("SakOgAktivitet", prod, mock, SAKOGAKTIVITET_KEY, SakOgAktivitetV1.class);
     }
     public ServiceBuilder<SakOgAktivitetV1>.PortTypeBuilder<SakOgAktivitetV1> factory() {
         return new ServiceBuilder<>(SakOgAktivitetV1.class)

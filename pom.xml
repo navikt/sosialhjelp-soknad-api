@@ -160,7 +160,7 @@
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>common-cxf</artifactId>
-                <version>3.1.8</version>
+                <version>3.1.16</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>
