@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createSwitcher;
+import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
 
 @Configuration
 public class KodeverkWSConfig {
@@ -31,7 +31,7 @@ public class KodeverkWSConfig {
     public KodeverkPortType kodeverkEndpoint() {
         KodeverkPortType prod = factory().withSystemSecurity().get();
         KodeverkPortType mock = new KodeverkMock().kodeverkMock();
-        return createSwitcher(prod, mock, KODEVERK_KEY, KodeverkPortType.class);
+        return createMetricsProxyWithInstanceSwitcher("Kodeverk", prod, mock, KODEVERK_KEY, KodeverkPortType.class);
     }
 
     @Bean
