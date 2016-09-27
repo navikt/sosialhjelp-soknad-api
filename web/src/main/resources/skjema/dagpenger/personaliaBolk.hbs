@@ -32,18 +32,22 @@
                     {{/if}}
                 </li>
             {{/if}}
-            {{#if properties.kontonummer }}
-                <li>
-                    <div>
-                        <h3>{{ hentTekst "personalia.kontonummer" }}</h3>
+
+            <li>
+                <div>
+                    <h3>{{ hentTekst "personalia.kontonummer" }}</h3>
+                    {{#if properties.kontonummer }}
                         <span>{{ properties.kontonummer ~}}</span>
                         {{~#hvisSant properties.erUtenlandskBankkonto ~}}
                              , <span>{{ properties.utenlandskKontoBanknavn }}</span>,
                             <span>{{ properties.utenlandskKontoLand ~}}</span>
                         {{/hvisSant}}
-                    </div>
-                </li>
-            {{/if}}
+                    {{else}}
+                    <span>{{ hentTekst "personalia.kontonummer.ikkeRegistrert" }}</span>
+                    {{/if}}
+                </div>
+            </li>
+
         </ul>
     </div>
 {{/forFaktum}}
