@@ -11,18 +11,21 @@
             </li>
             {{#if properties.gjeldendeAdresse}}
             <li>
-                <h3>{{hentTekst "personalia.folkeregistrertadresse"}}</h3>
+                {{#variabel "adressetype" properties.gjeldendeAdresseType }}
+                    {{> skjema/dagpenger/adressetype }}
+                {{/variabel}}
                 <p class="adr">{{properties.gjeldendeAdresse}}</p>
+                {{#if properties.gjeldendeAdresseGyldigTil}}
+                    <p class="adr">{{hentTekst "personalia.gyldigTil"}} {{properties.gjeldendeAdresseGyldigTil}} </p>
+                {{/if}}
             </li>
             {{/if}}
             {{#if properties.sekundarAdresse}}
                 <li>
-                    {{#hvisLik properties.sekundarAdresseType "MIDLERTIDIG_POSTADRESSE_UTLAND"}}
-                        <h3>{{hentTekst "personalia.midlertidigAdresseUtland"}}</h3>
-                    {{/hvisLik}}
-                   {{#hvisLik properties.sekundarAdresseType "MIDLERTIDIG_POSTADRESSE_NORGE"}}
-                        <h3>{{hentTekst "personalia.midlertidigAdresseNorge"}}</h3>
-                    {{/hvisLik}}
+                    {{#variabel "adressetype" properties.sekundarAdresseType }}
+                        {{> skjema/dagpenger/adressetype }}
+                    {{/variabel}}
+
                     <p class="adr">{{properties.sekundarAdresse}} </p>
                     {{#if properties.sekundarAdresseGyldigTil}}
                         <p class="adr">{{hentTekst "personalia.gyldigTil"}} {{properties.sekundarAdresseGyldigTil}} </p>
