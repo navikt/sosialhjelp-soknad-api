@@ -16,8 +16,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadReposito
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
@@ -91,6 +91,9 @@ public class SoknadDataFletter {
     @Inject
     private NavMessageSource messageSource;
 
+    @Inject
+    private SoknadMetricsService soknadMetricsService;
+
     private Map<String, BolkService> bolker;
 
     @PostConstruct
@@ -140,6 +143,8 @@ public class SoknadDataFletter {
         faktaService.lagreSystemFaktum(soknadId, lonnsOgTrekkOppgave(soknadId));
 
         lagreTommeFaktaFraStrukturTilLokalDb(soknadId, skjemanummer);
+
+        soknadMetricsService.startetSoknad(skjemanummer, false);
 
         return behandlingsId;
     }
@@ -253,6 +258,8 @@ public class SoknadDataFletter {
         XMLVedlegg[] vedlegg = convertToXmlVedleggListe(vedleggService.hentVedleggOgKvittering(soknad));
         henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, vedlegg);
         lokalDb.slettSoknad(soknad.getSoknadId());
+
+        soknadMetricsService.sendtSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
     }
 
     private XMLHovedskjema lagXmlHovedskjemaMedAlternativRepresentasjon(byte[] pdf, WebSoknad soknad) {
