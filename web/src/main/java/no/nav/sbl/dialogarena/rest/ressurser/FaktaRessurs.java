@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
+import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
@@ -21,6 +22,7 @@ import static no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad.Type.Faktum
  */
 @Controller
 @Path("/fakta")
+@Timed
 @Produces(APPLICATION_JSON)
 public class FaktaRessurs {
 
