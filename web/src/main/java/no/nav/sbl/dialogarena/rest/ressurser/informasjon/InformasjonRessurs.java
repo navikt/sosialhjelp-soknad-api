@@ -1,13 +1,14 @@
 package no.nav.sbl.dialogarena.rest.ressurser.informasjon;
 
+import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.rest.Logg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.PersonAlder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.dto.Land;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
+import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.LandService;
@@ -32,6 +33,7 @@ import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 @Controller
 @Path("/informasjon")
 @Produces(APPLICATION_JSON)
+@Timed
 public class InformasjonRessurs {
 
     private static final Logger logger = LoggerFactory.getLogger(InformasjonRessurs.class);
