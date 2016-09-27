@@ -36,6 +36,9 @@ public class SoknadService {
     @Inject
     private SoknadDataFletter soknadDataFletter;
 
+    @Inject
+    private SoknadMetricsService soknadMetricsService;
+
     public void settDelsteg(String behandlingsId, DelstegStatus delstegStatus) {
         lokalDb.settDelstegstatus(behandlingsId, delstegStatus);
     }
@@ -73,6 +76,8 @@ public class SoknadService {
         fillagerService.slettAlle(soknad.getBrukerBehandlingId());
         henvendelseService.avbrytSoknad(soknad.getBrukerBehandlingId());
         lokalDb.slettSoknad(soknad.getSoknadId());
+
+        soknadMetricsService.avbruttSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
     }
 
     public String startEttersending(String behandlingsIdSoknad) {

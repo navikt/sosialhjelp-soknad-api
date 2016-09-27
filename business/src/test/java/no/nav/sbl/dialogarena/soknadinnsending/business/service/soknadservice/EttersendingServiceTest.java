@@ -72,6 +72,8 @@ public class EttersendingServiceTest {
     private ArbeidsforholdBolk arbeidsforholdBolk;
     @Mock
     ApplicationContext applicationContex;
+    @Mock
+    SoknadMetricsService soknadMetricsService;
 
     @InjectMocks
     private SoknadDataFletter soknadServiceUtil;
