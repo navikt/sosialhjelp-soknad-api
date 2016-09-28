@@ -42,7 +42,4 @@ public class AAPGjenopptakInformasjon extends KravdialogInformasjon.DefaultOppse
         return "aap";
     }
 
-    public static boolean erAapGjenopptak(String skjema) {
-        return skjemanummer.contains(skjema);
-    }
 }

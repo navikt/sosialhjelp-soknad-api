@@ -18,11 +18,8 @@ import static no.nav.modig.lang.collections.PredicateUtils.where;
 import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.KVITTERING;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.getJournalforendeEnhet;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.getSkjemanummer;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.util.PersonaliaUtils.adresserOgStatsborgerskap;
 
 public class StaticMetoder {
-
-    private static final String AAP_INTERNASJONAL = "2101";
 
     public static String skjemanummer(WebSoknad soknad) {
         return soknad.erDagpengeSoknad() ? getSkjemanummer(soknad) : soknad.getskjemaNummer();
@@ -33,8 +30,6 @@ public class StaticMetoder {
 
         if (soknad.erDagpengeSoknad()) {
             journalforendeEnhet = getJournalforendeEnhet(soknad);
-        } else if (soknad.erAapSoknad() && adresserOgStatsborgerskap(soknad).harUtenlandskAdresse()) {
-            journalforendeEnhet = AAP_INTERNASJONAL;
         } else {
             journalforendeEnhet = soknad.getJournalforendeEnhet();
         }

@@ -41,7 +41,4 @@ public class AAPOrdinaerInformasjon extends KravdialogInformasjon.DefaultOppsett
         return asList(BOLK_PERSONALIA, BOLK_BARN);
     }
 
-    public static boolean erAapOrdinaer(String skjema) {
-        return skjemanummer.contains(skjema);
-    }
 }
