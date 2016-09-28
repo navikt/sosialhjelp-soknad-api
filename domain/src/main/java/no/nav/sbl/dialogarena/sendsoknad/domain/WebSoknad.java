@@ -2,22 +2,13 @@ package no.nav.sbl.dialogarena.sendsoknad.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigDelstegEndringException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.*;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.lang3.LocaleUtils;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import org.apache.commons.lang3.builder.*;
 import org.joda.time.DateTime;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.*;
@@ -26,8 +17,6 @@ import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.modig.lang.collections.PredicateUtils.not;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.ER_ANNET_VEDLEGG;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.ER_LASTET_OPP;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.AAPGjenopptakInformasjon.erAapGjenopptak;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.AAPOrdinaerInformasjon.erAapOrdinaer;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.DagpengerGjenopptakInformasjon.erDagpengerGjenopptak;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.DagpengerOrdinaerInformasjon.erDagpengerOrdinaer;
 
@@ -470,10 +459,6 @@ public class WebSoknad implements Serializable {
 
     public boolean erGjenopptak() {
         return this.skjemaNummer != null && erDagpengerGjenopptak(this.skjemaNummer);
-    }
-
-    public boolean erAapSoknad() {
-        return this.skjemaNummer != null && (erAapOrdinaer(this.skjemaNummer) || erAapGjenopptak(this.skjemaNummer));
     }
 
     public boolean harAnnetVedleggSomIkkeErLastetOpp() {
