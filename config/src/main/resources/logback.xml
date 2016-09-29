@@ -113,7 +113,7 @@
         <appender-ref ref="infolog" />
     </logger>
 
-    <logger name="no.nav.sbl.dialogarena.common.cxf.CXFMaskSAMLTokenLoggingOutInterceptor" level="info">
+    <logger name="no.nav.sbl.dialogarena.common.cxf.CXFMaskSAMLTokenLoggingOutInterceptor" level="OFF">
         <appender-ref ref="infolog" />
     </logger>
 
