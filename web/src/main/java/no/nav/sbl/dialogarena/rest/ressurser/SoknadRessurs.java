@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
-import javax.servlet.ServletContext;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
@@ -51,9 +50,6 @@ public class SoknadRessurs {
 
     @Inject
     private HtmlGenerator pdfTemplate;
-
-    @Context
-    private ServletContext servletContext;
 
     @Inject
     private WebSoknadConfig webSoknadConfig;
