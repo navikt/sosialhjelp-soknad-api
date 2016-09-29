@@ -524,39 +524,47 @@ public class WebSoknad implements Serializable {
         }).head().getOrElse(null);
     }
 
+    private static class VedleggSomMatcherForventningPredicate implements Predicate<Vedlegg> {
+        private final VedleggForFaktumStruktur vedleggForFaktumStruktur;
+        private final Long faktumId;
+
+        public VedleggSomMatcherForventningPredicate(VedleggForFaktumStruktur vedleggForFaktumStruktur, Long faktumId) {
+            this.vedleggForFaktumStruktur = vedleggForFaktumStruktur;
+            this.faktumId = faktumId;
+        }
+
+        @Override
+        public boolean evaluate(Vedlegg vedlegg) {
+            return liktFaktum(vedlegg) && liktSkjema(vedlegg);
+        }
+
+        private boolean liktFaktum(Vedlegg vedlegg) {
+            return liktFaktumVedEttTillatt(vedlegg) || liktFakutumVedFlereTillatt(vedlegg);
+        }
+
+        private boolean liktFakutumVedFlereTillatt(Vedlegg vedlegg) {
+            return vedlegg.getFaktumId() != null && vedleggForFaktumStruktur.getFlereTillatt() && vedlegg.getFaktumId().equals(faktumId);
+        }
+
+        private boolean liktFaktumVedEttTillatt(Vedlegg vedlegg) {
+            return vedlegg.getFaktumId() == null && !vedleggForFaktumStruktur.getFlereTillatt();
+        }
+
+        private boolean liktSkjema(Vedlegg vedlegg) {
+            return liktSkjemanummer(vedlegg) && liktSkjemanummerTillegg(vedlegg);
+        }
+
+        private boolean liktSkjemanummer(Vedlegg vedlegg) {
+            return vedlegg.getSkjemaNummer().equals(vedleggForFaktumStruktur.getSkjemaNummer());
+        }
+
+        private boolean liktSkjemanummerTillegg(Vedlegg vedlegg) {
+            return Objects.equals(vedlegg.getSkjemanummerTillegg(), vedleggForFaktumStruktur.getSkjemanummerTillegg());
+        }
+    }
+
     public Vedlegg finnVedleggSomMatcherForventning(final VedleggForFaktumStruktur vedleggForFaktumStruktur, final Long faktumId) {
-        return on(vedlegg).filter(new Predicate<Vedlegg>() {
-                                      @Override
-                                      public boolean evaluate(Vedlegg vedlegg) {
-                                          return liktFaktum(vedlegg) && liktSkjema(vedlegg);
-                                      }
-
-                                      private boolean liktFaktum(Vedlegg vedlegg) {
-                                          return liktFaktumVedEttTillatt(vedlegg) || liktFakutumVedFlereTillatt(vedlegg);
-                                      }
-
-                                      private boolean liktFakutumVedFlereTillatt(Vedlegg vedlegg) {
-                                          return vedlegg.getFaktumId() != null && vedleggForFaktumStruktur.getFlereTillatt() && vedlegg.getFaktumId().equals(faktumId);
-                                      }
-
-                                      private boolean liktFaktumVedEttTillatt(Vedlegg vedlegg) {
-                                          return vedlegg.getFaktumId() == null && !vedleggForFaktumStruktur.getFlereTillatt();
-                                      }
-
-                                      private boolean liktSkjema(Vedlegg vedlegg) {
-                                          return liktSkjemanummer(vedlegg) && liktSkjemanummerTillegg(vedlegg);
-                                      }
-
-                                      private boolean liktSkjemanummer(Vedlegg vedlegg) {
-                                          return vedlegg.getSkjemaNummer().equals(vedleggForFaktumStruktur.getSkjemaNummer());
-                                      }
-
-                                      private boolean liktSkjemanummerTillegg(Vedlegg vedlegg) {
-                                          return Objects.equals(vedlegg.getSkjemanummerTillegg(), vedleggForFaktumStruktur.getSkjemanummerTillegg());
-                                      }
-                                  }
-
-        ).head().getOrElse(null);
+        return on(vedlegg).filter(new VedleggSomMatcherForventningPredicate(vedleggForFaktumStruktur, faktumId)).head().getOrElse(null);
     }
 
     public void fjernFaktaSomIkkeSkalVaereSynligISoknaden(SoknadStruktur struktur) {
