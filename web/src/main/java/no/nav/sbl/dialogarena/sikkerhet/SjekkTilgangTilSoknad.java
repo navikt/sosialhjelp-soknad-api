@@ -17,6 +17,6 @@ public @interface SjekkTilgangTilSoknad {
     boolean sjekkXsrf() default true;
     Type type() default Type.Behandling;
     public enum Type {
-        Behandling, Vedlegg, Faktum, Soknad
+        Behandling, Vedlegg, Faktum, Henvendelse, Soknad
     }
 }
