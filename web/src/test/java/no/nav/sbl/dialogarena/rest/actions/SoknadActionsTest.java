@@ -98,7 +98,7 @@ public class SoknadActionsTest {
         when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyString())).thenReturn("<html></html>");
         when(webSoknadConfig.brukerNyOppsummering(anyLong())).thenReturn(true);
         when(webSoknadConfig.skalSendeMedFullSoknad(anyLong())).thenReturn(true);
-        actions.sendSoknad(BEHANDLINGS_ID);
+        actions.sendSoknad(BEHANDLINGS_ID, context);
 
         verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), eq(false));
         verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), eq(true));
