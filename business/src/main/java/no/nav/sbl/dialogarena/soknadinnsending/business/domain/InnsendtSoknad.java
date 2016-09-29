@@ -5,9 +5,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 import java.util.List;
 import java.util.Locale;
 
@@ -25,6 +23,10 @@ public class InnsendtSoknad {
     private String tittelCmsKey;
     private final DateTimeFormatter datoFormatter;
     private final DateTimeFormatter klokkeslettFormatter;
+
+    public InnsendtSoknad() {
+        this(new Locale("nb", "NO"));
+    }
 
     public InnsendtSoknad(Locale sprak) {
         datoFormatter = DateTimeFormat.forPattern("d. MMMM yyyy").withLocale(sprak);
