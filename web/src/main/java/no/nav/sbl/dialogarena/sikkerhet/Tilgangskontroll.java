@@ -32,6 +32,8 @@ public class Tilgangskontroll {
 
     private static final Logger logger = getLogger(Tilgangskontroll.class);
 
+    public static final String URN_ENDEPUNKT = "urn:nav:ikt:tilgangskontroll:xacml:resource:endepunkt";
+
     private final EnforcementPoint pep;
     @Inject
     private SoknadService soknadService;
@@ -53,6 +55,19 @@ public class Tilgangskontroll {
             logger.warn("Kunne ikke avgjøre hvem som eier søknad med behandlingsId {} -> Ikke tilgang.", behandlingsId, e);
         }
         verifiserBrukerHarTilgangTilSoknad(aktoerId, soknadId);
+    }
+
+    public void verifiserBrukerHarTilgangTilHenvendelse(String behandlingsId) {
+        String aktorId = getSubjectHandler().getUid();
+
+        SubjectAttribute aktorSubjectId = new SubjectAttribute(new URN("urn:nav:ikt:tilgangskontroll:xacml:subject:aktor-id"), new StringValue(aktorId));
+
+        pep.assertAccess(
+                forRequest(resourceType("HENVENDELSE"),
+                        resourceId(behandlingsId),
+                        ownerId(aktorId),
+                        resourceAttribute(URN_ENDEPUNKT, "Ekstern"),
+                        actionId("Read"), aktorSubjectId));
     }
 
     public void verifiserBrukerHarTilgangTilSoknad(String eier, Long soknadId) {

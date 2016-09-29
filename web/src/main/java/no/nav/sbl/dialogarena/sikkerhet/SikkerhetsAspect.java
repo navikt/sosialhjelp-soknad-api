@@ -3,9 +3,7 @@ package no.nav.sbl.dialogarena.sikkerhet;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.annotation.*;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -65,7 +63,13 @@ public class SikkerhetsAspect {
         if (tilgang.sjekkXsrf() && skrivOperasjon(request)) {
             sjekkXsrfToken(request.getHeader("X-XSRF-TOKEN"), behandlingsId);
         }
-        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId);
+
+        if (tilgang.type() == SjekkTilgangTilSoknad.Type.Henvendelse) {
+            tilgangskontroll.verifiserBrukerHarTilgangTilHenvendelse(behandlingsId);
+        } else {
+            tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId);
+        }
+
     }
 
     private static boolean skrivOperasjon(HttpServletRequest request) {

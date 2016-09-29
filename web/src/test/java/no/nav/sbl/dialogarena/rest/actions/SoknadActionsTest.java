@@ -3,9 +3,7 @@ package no.nav.sbl.dialogarena.rest.actions;
 import no.nav.modig.core.context.ThreadLocalSubjectHandler;
 import no.nav.sbl.dialogarena.config.SoknadActionsTestConfig;
 import no.nav.sbl.dialogarena.rest.meldinger.SoknadBekreftelse;
-import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.service.EmailService;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
@@ -67,7 +65,6 @@ public class SoknadActionsTest {
         when(tekster.finnTekst(eq("sendtSoknad.sendEpost.epostSubject"), any(Object[].class), any(Locale.class))).thenReturn("Emne");
         when(context.getRealPath(anyString())).thenReturn("");
         when(webSoknadConfig.brukerNyOppsummering(anyLong())).thenReturn(false);
-        actions.setContext(context);
     }
 
     @Test
@@ -75,7 +72,7 @@ public class SoknadActionsTest {
         when(soknadService.hentSoknad(BEHANDLINGS_ID, true, true)).thenReturn(soknad().medSoknadPrefix("dagpenger.ordinaer"));
         when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyString())).thenReturn("<html></html>");
 
-        actions.sendSoknad(BEHANDLINGS_ID);
+        actions.sendSoknad(BEHANDLINGS_ID, context);
 
         verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), eq("/skjema/dagpenger.ordinaer"));
     }
@@ -87,7 +84,7 @@ public class SoknadActionsTest {
         when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyString())).thenReturn("<html></html>");
         when(webSoknadConfig.brukerNyOppsummering(anyLong())).thenReturn(true);
 
-        actions.sendSoknad(BEHANDLINGS_ID);
+        actions.sendSoknad(BEHANDLINGS_ID, context);
 
         verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class));
         verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), eq("/skjema/kvittering"));
@@ -98,7 +95,7 @@ public class SoknadActionsTest {
         when(soknadService.hentSoknad(BEHANDLINGS_ID, true, true)).thenReturn(soknad().medSoknadPrefix("dagpenger.gjenopptak"));
         when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyString())).thenReturn("<html></html>");
 
-        actions.sendSoknad(BEHANDLINGS_ID);
+        actions.sendSoknad(BEHANDLINGS_ID, context);
 
         verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), eq("/skjema/dagpenger.gjenopptak"));
     }
@@ -108,7 +105,7 @@ public class SoknadActionsTest {
         when(soknadService.hentSoknad(BEHANDLINGS_ID, true, true)).thenReturn(soknad().medDelstegStatus(DelstegStatus.ETTERSENDING_OPPRETTET));
         when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyString())).thenReturn("<html></html>");
 
-        actions.sendSoknad(BEHANDLINGS_ID);
+        actions.sendSoknad(BEHANDLINGS_ID, context);
 
         verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), eq("skjema/ettersending/dummy"));
     }
