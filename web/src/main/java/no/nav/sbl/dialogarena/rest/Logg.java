@@ -72,6 +72,6 @@ public class Logg {
     }
 
     public String melding() {
-        return format("%s at %s", message, url);
+        return format("%s i fil %s:%s:%s fra URL %s for userAgent %s", message, jsFileUrl, lineNumber, columnNumber, url, userAgent);
     }
 }
