@@ -14,6 +14,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.So
 import org.apache.commons.lang3.LocaleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
@@ -27,12 +28,12 @@ import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 import static no.nav.sbl.dialogarena.utils.UrlUtils.getEttersendelseUrl;
 import static no.nav.sbl.dialogarena.utils.UrlUtils.getFortsettUrl;
 
+@Controller
 @Path("/soknader/{behandlingsId}/actions")
 @Produces(APPLICATION_JSON)
 public class SoknadActions {
 
     private static Logger logger = LoggerFactory.getLogger(SoknadActions.class);
-
 
     @Inject
     private VedleggService vedleggService;
@@ -49,11 +50,8 @@ public class SoknadActions {
     @Inject
     private NavMessageSource tekster;
 
-    @Context
-    private ServletContext servletContext;
     @Inject
     private WebSoknadConfig webSoknadConfig;
-
 
     @GET
     @Path("/leggved")
@@ -66,7 +64,7 @@ public class SoknadActions {
     @POST
     @Path("/send")
     @SjekkTilgangTilSoknad
-    public void sendSoknad(@PathParam("behandlingsId") String behandlingsId) {
+    public void sendSoknad(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext) {
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
         String servletPath = servletContext.getRealPath("/");
 
@@ -147,10 +145,6 @@ public class SoknadActions {
     @SjekkTilgangTilSoknad
     public String finnSisteInnsendteBehandlingsId(@PathParam("behandlingsId") String behandlingsId) {
         return soknadService.hentSisteInnsendteBehandlingsId(behandlingsId);
-    }
-
-    void setContext(ServletContext context) {
-        servletContext = context;
     }
 
 }
