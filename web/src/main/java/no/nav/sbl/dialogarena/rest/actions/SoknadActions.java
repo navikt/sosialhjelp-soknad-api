@@ -91,7 +91,7 @@ public class SoknadActions {
 
     @POST
     @Path("/bekreftinnsending")
-    @SjekkTilgangTilSoknad
+    @SjekkTilgangTilSoknad(type = Henvendelse)
     public void sendEpost(@PathParam("behandlingsId") String behandlingsId,
                           @DefaultValue("nb_NO") @QueryParam("sprak") String sprakkode,
                           SoknadBekreftelse soknadBekreftelse,
