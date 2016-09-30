@@ -6,7 +6,10 @@
 
     <name>sendsoknad</name>
 
-    <selftestPagePath>sendsoknad/internal/selftest</selftestPagePath>
+    <selftest>
+        <path>/sendsoknad/internal/selftest.json</path>
+        <humanReadablePath>/sendsoknad/internal/selftest</humanReadablePath>
+    </selftest>
 
     <artifacts>
         <ear groupId="no.nav.sbl.dialogarena" artifactId="sendsoknad-jee"/>
@@ -51,7 +54,7 @@
         <applicationProperties alias="soknad.properties"/>
 
         <smtpServer alias="dokumentinnsending.smtpServer" mapToProperty="dokumentinnsending.smtpServer"/>
-        <localFiles name="sendsoknad" mapToProperty="sendsoknad.datadir"/>
+        <directory name="sendsoknad" temporary="true" mapToProperty="sendsoknad.datadir"/>
         <applicationCertificate alias="srvSendsoknad"/>
         <credential alias="arena.personInfoService" mapToProperty="arena.personInfoService"/>
         <credential alias="arbeidservice" mapToProperty="arbeidservice"/>
@@ -67,6 +70,5 @@
     <loadBalancer>
         <contextRoot>sendsoknad</contextRoot>
         <lbHealthMonitor type="HTTPS" isAliveUrl="internal/isAlive" interval="5" timeout="16"/>
-        <lbPool slowRampTime="30" loadBalancingMethod="LEAST_CONNECTIONS" connectionLimit="900"/>
     </loadBalancer>
 </application>
