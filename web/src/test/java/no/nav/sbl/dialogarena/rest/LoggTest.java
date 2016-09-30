@@ -1,23 +1,22 @@
 package no.nav.sbl.dialogarena.rest;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class LoggTest {
-
-    public static final String MELDING = "Melding";
-    public static final String URL = "http://nav.no/url";
 
     @Test
     public void testMeldingOutput() {
         Logg logg = new Logg();
-        logg.setMessage(MELDING);
-        logg.setUrl(URL);
+        logg.setMessage("Cannot read blabla of undefined");
+        logg.setUrl("http://nav.no/url");
+        logg.setJsFileUrl("minFil.js");
+        logg.setLineNumber("100");
+        logg.setColumnNumber("99");
+        logg.setUserAgent("IE ROCKS");
 
-        Assertions.assertThat(logg.melding()).isEqualTo(MELDING + " at " + URL);
+        assertThat(logg.melding()).isEqualTo("Cannot read blabla of undefined i fil minFil.js:100:99 fra URL http://nav.no/url for userAgent IE ROCKS");
     }
 
 }
