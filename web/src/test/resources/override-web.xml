@@ -16,7 +16,7 @@
 
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>no.nav.sbl.dialogarena.config.SoknadinnsendingConfig,no.nav.sbl.dialogarena.config.SikkerhetsConfig</param-value>
+        <param-value>no.nav.sbl.dialogarena.config.SoknadinnsendingConfig</param-value>
     </context-param>
 
     <servlet>
