@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import static java.lang.Integer.parseInt;
 import static no.nav.sbl.dialogarena.service.HandlebarsUtils.lagItererbarRespons;
 
 @Component
@@ -32,11 +33,14 @@ public class ForSorterteProperties extends RegistryAwareHelper<Faktum> {
         if (properties.isEmpty()) {
             return options.inverse();
         } else {
-
             SortedSet<Map.Entry<String, String>> propSet = new TreeSet<>(new Comparator<Map.Entry<String, String>>() {
                 @Override
                 public int compare(Map.Entry<String, String> o1, Map.Entry<String, String> o2) {
-                    return o1.getKey().compareTo(o2.getKey());
+                    try {
+                        return parseInt(o1.getKey()) - parseInt(o2.getKey());
+                    } catch (NumberFormatException e) {
+                        return o1.getKey().compareTo(o2.getKey());
+                    }
                 }
             });
             propSet.addAll(properties.entrySet());
