@@ -7,8 +7,9 @@
     <name>sendsoknad</name>
 
     <selftest>
-        <path>/sendsoknad/internal/selftest</path>
+        <path>/sendsoknad/internal/selftest.json</path>
         <humanReadablePath>/sendsoknad/internal/selftest</humanReadablePath>
+    </selftest>
 
     </selftest>
     <artifacts>
