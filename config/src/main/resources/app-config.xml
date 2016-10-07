@@ -10,8 +10,6 @@
         <path>/sendsoknad/internal/selftest.json</path>
         <humanReadablePath>/sendsoknad/internal/selftest</humanReadablePath>
     </selftest>
-
-    </selftest>
     <artifacts>
         <ear groupId="no.nav.sbl.dialogarena" artifactId="sendsoknad-jee"/>
     </artifacts>
