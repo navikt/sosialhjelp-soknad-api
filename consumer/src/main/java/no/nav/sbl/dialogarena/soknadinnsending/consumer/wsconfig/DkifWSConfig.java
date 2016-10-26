@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.xml.namespace.QName;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.util.InstanceSwitcher.createSwitcher;
+import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
 
 @Configuration
 public class DkifWSConfig {
@@ -24,7 +24,7 @@ public class DkifWSConfig {
     public DigitalKontaktinformasjonV1 dkifService() {
         DigitalKontaktinformasjonV1 mock = new DkifMock().dkifMock();
         DigitalKontaktinformasjonV1 prod = factory().withMDC().withUserSecurity().get();
-        return createSwitcher(prod, mock, DKIF_KEY, DigitalKontaktinformasjonV1.class);
+        return createMetricsProxyWithInstanceSwitcher("Dkif", prod, mock, DKIF_KEY, DigitalKontaktinformasjonV1.class);
     }
 
     public DigitalKontaktinformasjonV1 dkifServiceSelftest() {

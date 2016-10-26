@@ -85,6 +85,10 @@
             <artifactId>common-timing</artifactId>
         </dependency>
         <dependency>
+            <groupId>no.nav</groupId>
+            <artifactId>metrics</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>

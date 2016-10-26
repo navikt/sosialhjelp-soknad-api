@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.xml.namespace.QName;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.util.InstanceSwitcher.createSwitcher;
+import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
 
 @Configuration
 public class MaalgruppeWSConfig {
@@ -23,7 +23,7 @@ public class MaalgruppeWSConfig {
     public MaalgruppeV1 maalgruppeEndpoint() {
         MaalgruppeV1 mock = maalgruppeEndpointMock();
         MaalgruppeV1 prod = maalgruppeEndpointWS();
-        return createSwitcher(prod, mock, MAALGRUPPE_KEY, MaalgruppeV1.class);
+        return createMetricsProxyWithInstanceSwitcher("Maalgruppe", prod, mock, MAALGRUPPE_KEY, MaalgruppeV1.class);
     }
 
     private ServiceBuilder<MaalgruppeV1>.PortTypeBuilder<MaalgruppeV1> factory() {
