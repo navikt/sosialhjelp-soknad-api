@@ -17,7 +17,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.util.InstanceSwitcher.createSwitcher;
+import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createSwitcher;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AktivitetServiceIntegrationTest {

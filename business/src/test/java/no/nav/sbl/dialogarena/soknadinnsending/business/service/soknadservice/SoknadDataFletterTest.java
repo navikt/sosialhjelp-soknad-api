@@ -103,6 +103,8 @@ public class SoknadDataFletterTest {
     private ArbeidsforholdBolk arbeidsforholdBolk;
     @Mock
     ApplicationContext applicationContex;
+    @Mock
+    SoknadMetricsService soknadMetricsService;
 
     @Captor
     ArgumentCaptor<XMLHovedskjema> argument;

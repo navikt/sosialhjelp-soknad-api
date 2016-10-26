@@ -55,6 +55,7 @@
         <flying.saucer.version>9.0.4</flying.saucer.version>
         <handlebars.version>4.0.6</handlebars.version>
         <jackson.version>2.4.4</jackson.version>
+        <metrics.version>3.1.1</metrics.version>
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
@@ -160,7 +161,7 @@
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>common-cxf</artifactId>
-                <version>3.1.8</version>
+                <version>3.2.18</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>
@@ -186,6 +187,11 @@
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
                 <version>1.10</version>
+            </dependency>
+            <dependency>
+                <groupId>no.nav</groupId>
+                <artifactId>metrics</artifactId>
+                <version>${metrics.version}</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
