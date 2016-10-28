@@ -19,6 +19,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Controller;
 
@@ -58,23 +60,27 @@ public class InternalRessurs {
 
     private PersonPortTypeMock personPortTypeMock = PersonMock.getInstance().getPersonPortTypeMock();
 
+    private static final Logger LOG = LoggerFactory.getLogger(InternalRessurs.class);
 
     @GET
     @Path("/isAlive")
     @Produces(MediaType.APPLICATION_JSON)
     public String isAlive() {
+        logAccess("isAlive");
         return "{status: \"ok\", message: \"soknadsapiet fungerer\"}";
     }
 
     @POST
     @Path(value = "/lagre")
     public void kjorLagring() throws InterruptedException {
+        logAccess("kjorLagring");
         lagringsScheduler.mellomlagreSoknaderOgNullstillLokalDb();
     }
 
     @GET
     @Path(value = "/funksjon")
     public String endreFunksjonalitet(@Context ServletContext servletContext) throws IOException {
+        logAccess("endreFunksjonalitet");
         Handlebars handlebars = new Handlebars();
         Template compile = handlebars.compile(new URLTemplateSource("funksjonalitetsBryter.html", servletContext.getResource("/WEB-INF/funksjonalitetsBryter.html")));
         com.github.jknack.handlebars.Context context = com.github.jknack.handlebars.Context
@@ -87,7 +93,7 @@ public class InternalRessurs {
     @POST
     @Path(value = "/funksjon")
     public Response endreFunksjonalitetBryter(@FormParam("bryternavn") List<String> brytere, @FormParam("status") List<String> status) throws InterruptedException {
-
+        logAccess("endreFunksjonalitetBryter");
         for (String bryter : brytere) {
             int index = Character.getNumericValue(bryter.charAt(0));
             FunksjonalitetBryter bryterUtenIndeks = FunksjonalitetBryter.valueOf(brytere.get(index).substring(1));
@@ -101,6 +107,7 @@ public class InternalRessurs {
     @GET
     @Path(value = "/mocksetup")
     public String mocksetup(@Context ServletContext servletContext) throws IOException {
+        logAccess("mocksetup");
         MocksetupFields fields = getMocksetupFields();
 
         Handlebars handlebars = new Handlebars();
@@ -119,6 +126,7 @@ public class InternalRessurs {
                                   @FormParam("kode6") String kode6,
                                   @FormParam("primar_adressetype") String primarAdressetype,
                                   @FormParam("sekundar_adressetype") String sekundarAdressetype) throws InterruptedException {
+        logAccess("mocksetupPost");
         Boolean skalHaKode6 = "true".equalsIgnoreCase(kode6);
 
         Person person = personPortTypeMock.getPerson();
@@ -134,6 +142,7 @@ public class InternalRessurs {
     @GET
     @Path(value = "/resetcache")
     public String resetCache(@QueryParam("type") String type) {
+        logAccess("resetCache");
         if ("cms".equals(type)) {
             cacheManager.getCache("cms.content").clear();
             cacheManager.getCache("cms.article").clear();
@@ -149,6 +158,7 @@ public class InternalRessurs {
     @Produces(TEXT_HTML)
     @SjekkTilgangTilSoknad
     public String hentOppsummeringNew(@PathParam("behandlingsId") String behandlingsId) throws IOException {
+        logAccess("hentOppsummeringNew");
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
 
@@ -160,6 +170,7 @@ public class InternalRessurs {
     @Produces(TEXT_HTML)
     @SjekkTilgangTilSoknad
     public String fullSoknad(@PathParam("behandlingsId") String behandlingsId) throws IOException {
+        logAccess("fullSoknad");
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
 
@@ -170,9 +181,14 @@ public class InternalRessurs {
     @Produces("application/pdf")
     @SjekkTilgangTilSoknad
     public byte[] fullSoknadPdf(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext) throws IOException {
+        logAccess("fullSoknadPdf");
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
         String servletPath = servletContext.getRealPath("/");
         return pdfService.genererOppsummeringPdf(soknad, servletPath, true);
+    }
+
+    private void logAccess(String metode) {
+        LOG.warn("InternalRessurs metode {} ble aksessert", metode);
     }
 }
