@@ -9,10 +9,10 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
+import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
-import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import org.apache.commons.collections15.Closure;
 import org.slf4j.Logger;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -28,7 +28,6 @@ import java.util.Locale;
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.FunksjonalitetBryter.GammelVedleggsLogikk;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -182,14 +181,7 @@ public class FaktaService {
     }
 
     private void genererVedleggForFaktum(Faktum faktum) {
-        if (GammelVedleggsLogikk.erAktiv()) {
-            SoknadStruktur struktur = hentSoknadStruktur(faktum.getSoknadId());
-            List<VedleggForFaktumStruktur> aktuelleVedlegg = struktur.vedleggFor(faktum);
-            for (VedleggForFaktumStruktur vedleggForFaktumStruktur : aktuelleVedlegg) {
-                oppdaterOgLagreVedlegg(struktur, vedleggForFaktumStruktur, faktum);
-            }
-            genererVedleggForBarnefakta(faktum);
-        }
+
     }
 
     private SoknadStruktur hentSoknadStruktur(Long soknadId) {
