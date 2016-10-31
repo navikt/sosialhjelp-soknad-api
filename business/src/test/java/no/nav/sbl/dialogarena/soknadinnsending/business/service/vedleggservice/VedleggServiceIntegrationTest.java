@@ -1,25 +1,31 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.vedleggservice;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.*;
-import no.nav.sbl.dialogarena.soknadinnsending.business.*;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.*;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
-import org.junit.*;
-import org.junit.runner.*;
-import org.mockito.*;
-import org.springframework.test.context.*;
-import org.springframework.test.context.junit4.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import javax.inject.*;
-import javax.xml.bind.*;
-import java.util.*;
+import javax.inject.Inject;
+import javax.xml.bind.JAXB;
+import java.util.List;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.*;
-import static org.assertj.core.api.Assertions.*;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.IkkeVedlegg;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.VedleggKreves;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {VedleggServiceIntegrationContext.class})
@@ -124,7 +130,6 @@ public class VedleggServiceIntegrationTest {
 
     @Test
     public void skalKjoreNyLogikkVedUthentingAvVedleggForEtFaktum(){
-        System.setProperty(FunksjonalitetBryter.GammelVedleggsLogikk.nokkel, "false");
         Faktum vedlegg1 = new Faktum().medFaktumId(3L).medKey("toFaktumMedSammeVedlegg1Unik").medValue("true");
         Faktum vedlegg2 = new Faktum().medFaktumId(4L).medKey("toFaktumMedSammeVedlegg2Unik").medValue("true");
         when(soknadDataFletter.hentSoknad(eq("123"), eq(true), eq(true))).thenReturn(new WebSoknad().medskjemaNummer("nav-1.1.1")
