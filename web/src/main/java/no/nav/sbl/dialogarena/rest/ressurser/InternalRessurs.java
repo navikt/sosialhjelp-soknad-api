@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
-import com.github.jknack.handlebars.context.FieldValueResolver;
 import com.github.jknack.handlebars.context.MethodValueResolver;
 import com.github.jknack.handlebars.io.URLTemplateSource;
 import no.nav.sbl.dialogarena.config.ContentConfig;
@@ -14,7 +13,6 @@ import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonPortTypeMock;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
 import no.nav.sbl.dialogarena.service.helpers.HvisLikHelper;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.FunksjonalitetBryter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
@@ -32,7 +30,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.URI;
-import java.util.List;
 
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
 import static no.nav.sbl.dialogarena.rest.utils.MocksetupUtils.*;
@@ -75,33 +72,6 @@ public class InternalRessurs {
     public void kjorLagring() throws InterruptedException {
         logAccess("kjorLagring");
         lagringsScheduler.mellomlagreSoknaderOgNullstillLokalDb();
-    }
-
-    @GET
-    @Path(value = "/funksjon")
-    public String endreFunksjonalitet(@Context ServletContext servletContext) throws IOException {
-        logAccess("endreFunksjonalitet");
-        Handlebars handlebars = new Handlebars();
-        Template compile = handlebars.compile(new URLTemplateSource("funksjonalitetsBryter.html", servletContext.getResource("/WEB-INF/funksjonalitetsBryter.html")));
-        com.github.jknack.handlebars.Context context = com.github.jknack.handlebars.Context
-                .newBuilder(FunksjonalitetBryter.values())
-                .resolver(FieldValueResolver.INSTANCE, MethodValueResolver.INSTANCE)
-                .build();
-        return compile.apply(context);
-    }
-
-    @POST
-    @Path(value = "/funksjon")
-    public Response endreFunksjonalitetBryter(@FormParam("bryternavn") List<String> brytere, @FormParam("status") List<String> status) throws InterruptedException {
-        logAccess("endreFunksjonalitetBryter");
-        for (String bryter : brytere) {
-            int index = Character.getNumericValue(bryter.charAt(0));
-            FunksjonalitetBryter bryterUtenIndeks = FunksjonalitetBryter.valueOf(brytere.get(index).substring(1));
-            String nyStatus = status.contains(index + "true") ? "true" : "false";
-            System.setProperty(bryterUtenIndeks.nokkel, nyStatus);
-        }
-
-        return Response.seeOther(URI.create("/sendsoknad/internal/funksjon")).build();
     }
 
     @GET

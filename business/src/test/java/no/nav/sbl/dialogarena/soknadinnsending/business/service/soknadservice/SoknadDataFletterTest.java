@@ -226,8 +226,6 @@ public class SoknadDataFletterTest {
         when(lokalDb.hentSoknadMedVedlegg(behandlingsId)).thenReturn(soknad);
         when(lokalDb.hentSoknadMedData(1L)).thenReturn(soknad);
 
-        when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(vedlegg);
-
         soknadServiceUtil.sendSoknad(behandlingsId, new byte[]{1, 2, 3}, null);
     }
 
@@ -256,8 +254,6 @@ public class SoknadDataFletterTest {
         when(lokalDb.hentSoknadMedVedlegg(behandlingsId)).thenReturn(
                 webSoknad);
         when(lokalDb.hentSoknadMedData(1L)).thenReturn(webSoknad);
-
-        when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(vedlegg);
 
         when(vedleggRepository.hentVedleggForskjemaNummer(1L, null, Kodeverk.KVITTERING))
                 .thenReturn(KVITTERING_REF);
