@@ -6,7 +6,6 @@ import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.FunksjonalitetBryter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
@@ -25,7 +24,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static java.lang.System.setProperty;
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
@@ -41,7 +42,6 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -157,24 +157,6 @@ public class VedleggServiceTest {
 
         verify(vedleggRepository).slettVedlegg(1L, 2L);
         verify(soknadRepository).settDelstegstatus(1L, SKJEMA_VALIDERT);
-    }
-
-    //Tester gammel vedleggslogikk
-    @Test
-    public void skalHentePaakrevdeVedlegg() {
-        System.setProperty(FunksjonalitetBryter.GammelVedleggsLogikk.nokkel, "true");
-        Map<Kodeverk.Nokkel, String> map = new HashMap<>();
-        map.put(Kodeverk.Nokkel.TITTEL, "tittel");
-        map.put(Kodeverk.Nokkel.URL, "url");
-        when(kodeverk.getKoder("L6")).thenReturn(map);
-        Vedlegg vedlegg = new Vedlegg().medFaktumId(1L).medSkjemaNummer("L6").medInnsendingsvalg(VedleggKreves).medSoknadId(2L);
-        Vedlegg vedleggSjekk = new Vedlegg().medFaktumId(1L).medSkjemaNummer("L6").medTittel("tittel").medUrl("URL", "url")
-                .medFillagerReferanse(vedlegg.getFillagerReferanse()).medInnsendingsvalg(VedleggKreves).medSoknadId(2L);
-        when(vedleggRepository.hentVedlegg(anyString())).thenReturn(Arrays.asList(vedlegg));
-        when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(Arrays.asList(vedlegg));
-        List<Vedlegg> vedleggs = vedleggService.hentPaakrevdeVedlegg("10000000ABC");
-        assertThat(vedleggService.hentPaakrevdeVedlegg(1L).get(0), is(equalTo(vedleggSjekk)));
-        assertThat(vedleggs.get(0), is(equalTo(vedleggSjekk)));
     }
 
     @Test
