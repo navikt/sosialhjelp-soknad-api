@@ -1,9 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg;
 
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 
-import java.util.*;
+import java.util.List;
 
 public interface VedleggRepository {
 
@@ -28,8 +28,6 @@ public interface VedleggRepository {
     Vedlegg hentVedleggMedInnhold(Long vedleggId);
 
     void lagreVedlegg(Long soknadId, Long vedleggId, Vedlegg vedlegg);
-
-    List<Vedlegg> hentPaakrevdeVedlegg(Long faktumId);
 
     /**
      * Henter alle vedlegg for en behandlingsid uavnehgig av status på vedlegget.
