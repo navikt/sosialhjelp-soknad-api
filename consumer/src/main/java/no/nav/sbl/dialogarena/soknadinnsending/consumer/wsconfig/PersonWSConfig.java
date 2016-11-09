@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.util.InstanceSwitcher.createSwitcher;
+import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
 
 @Configuration
 public class PersonWSConfig {
@@ -34,7 +34,7 @@ public class PersonWSConfig {
     public PersonPortType personEndpoint() {
         PersonPortTypeMock mock = personMock.getPersonPortTypeMock();
         PersonPortType prod = factory().withUserSecurity().get();
-        return createSwitcher(prod, mock, PERSON_KEY, PersonPortType.class);
+        return createMetricsProxyWithInstanceSwitcher("Person", prod, mock, PERSON_KEY, PersonPortType.class);
     }
 
     @Bean

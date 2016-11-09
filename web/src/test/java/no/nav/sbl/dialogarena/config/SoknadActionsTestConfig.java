@@ -7,6 +7,7 @@ import no.nav.sbl.dialogarena.service.EmailService;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadMetricsService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -58,4 +59,8 @@ public class SoknadActionsTestConfig {
         return mock(WebSoknadConfig.class);
     }
 
+    @Bean
+    public SoknadMetricsService soknadMetricsService() {
+        return mock(SoknadMetricsService.class);
+    }
 }

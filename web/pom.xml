@@ -72,6 +72,11 @@
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-lang</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>no.nav</groupId>
+            <artifactId>metrics</artifactId>
+        </dependency>
         <dependency>
             <groupId>net.sourceforge.collections</groupId>
             <artifactId>collections-generic</artifactId>

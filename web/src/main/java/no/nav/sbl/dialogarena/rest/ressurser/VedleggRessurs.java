@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
+import no.nav.metrics.aspects.Timed;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
@@ -10,7 +12,6 @@ import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.stereotype.Controller;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -31,6 +32,7 @@ import static no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad.Type.Vedleg
 @Controller
 @Path("/vedlegg/{vedleggId}")
 @Produces(APPLICATION_JSON)
+@Timed
 public class VedleggRessurs {
 
     @Inject
