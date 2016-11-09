@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.xml.namespace.QName;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.util.InstanceSwitcher.createSwitcher;
+import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
 
 @Configuration
 public class ArbeidWSConfig {
@@ -36,7 +36,7 @@ public class ArbeidWSConfig {
     public ArbeidsforholdV3 arbeidEndpoint() {
         ArbeidsforholdV3 mock = new ArbeidsforholdMock().arbeidMock();
         ArbeidsforholdV3 prod = factory().withUserSecurity().get();
-        return createSwitcher(prod, mock, ARBEID_KEY, ArbeidsforholdV3.class);
+        return createMetricsProxyWithInstanceSwitcher("Arbeidsforhold", prod, mock, ARBEID_KEY, ArbeidsforholdV3.class);
     }
 
     @Bean

@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.rest.actions;
 
+import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.rest.meldinger.FortsettSenere;
 import no.nav.sbl.dialogarena.rest.meldinger.SoknadBekreftelse;
 import no.nav.sbl.dialogarena.rest.utils.PDFService;
@@ -32,6 +33,7 @@ import static no.nav.sbl.dialogarena.utils.UrlUtils.getFortsettUrl;
 @Controller
 @Path("/soknader/{behandlingsId}/actions")
 @Produces(APPLICATION_JSON)
+@Timed(name = "SoknadActionsRessurs")
 public class SoknadActions {
 
     private static Logger logger = LoggerFactory.getLogger(SoknadActions.class);

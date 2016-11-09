@@ -84,6 +84,9 @@ public class SoknadDataFletter {
     @Inject
     private NavMessageSource messageSource;
 
+    @Inject
+    private SoknadMetricsService soknadMetricsService;
+
     private Map<String, BolkService> bolker;
 
     @PostConstruct
@@ -133,6 +136,8 @@ public class SoknadDataFletter {
         faktaService.lagreSystemFaktum(soknadId, lonnsOgTrekkOppgave(soknadId));
 
         lagreTommeFaktaFraStrukturTilLokalDb(soknadId, skjemanummer);
+
+        soknadMetricsService.startetSoknad(skjemanummer, false);
 
         return behandlingsId;
     }
@@ -257,6 +262,8 @@ public class SoknadDataFletter {
         XMLVedlegg[] vedlegg = convertToXmlVedleggListe(vedleggService.hentVedleggOgKvittering(soknad));
         henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, vedlegg);
         lokalDb.slettSoknad(soknad.getSoknadId());
+
+        soknadMetricsService.sendtSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
     }
 
     private XMLHovedskjema lagXmlHovedskjemaMedAlternativRepresentasjon(byte[] pdf, WebSoknad soknad, byte[] fullSoknad) {
