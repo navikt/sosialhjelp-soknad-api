@@ -39,6 +39,9 @@
                 {{#hvisLik innsendingsvalg "LastetOpp"}}
                     <span class="lastetOpp">
                                 <span class="vedleggSymbol"></span>
+                                {{#if @root.utvidetSoknad}}
+                                    <span>{{ hentTekst "oppsummering.vedlegg.dokument"}}</span>
+                                {{/if }}
                                 <span class="antallSider">
                                     <span>{{ antallSider }}</span>
                                     {{#hvisLik antallSider "1"}}

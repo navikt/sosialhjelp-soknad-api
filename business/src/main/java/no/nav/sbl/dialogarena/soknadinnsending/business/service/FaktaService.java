@@ -5,14 +5,9 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.IkkeFunnetException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
+import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
-import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import org.apache.commons.collections15.Closure;
 import org.slf4j.Logger;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -23,12 +18,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.FunksjonalitetBryter.GammelVedleggsLogikk;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -41,13 +34,6 @@ public class FaktaService {
     @Inject
     @Named("vedleggRepository")
     private VedleggRepository vedleggRepository;
-
-    @Inject
-    private NavMessageSource navMessageSource;
-
-    @Inject
-    @Deprecated
-    private WebSoknadConfig config;
 
     private static final String EKSTRA_VEDLEGG_KEY = "ekstraVedlegg";
     private static final Logger logger = getLogger(FaktaService.class);
@@ -71,9 +57,7 @@ public class FaktaService {
         repository.settSistLagretTidspunkt(soknadId);
         settDelstegStatus(soknadId, faktum.getKey());
 
-        Faktum resultat = repository.hentFaktum(faktumId);
-        genererVedleggForFaktum(resultat);
-        return resultat;
+        return repository.hentFaktum(faktumId);
     }
 
     @Transactional
@@ -86,10 +70,7 @@ public class FaktaService {
 
         settDelstegStatus(soknadId, faktum.getKey());
 
-        Faktum resultat = repository.hentFaktum(faktumId);
-        genererVedleggForFaktum(resultat);
-
-        return resultat;
+        return repository.hentFaktum(faktumId);
     }
 
     @Transactional
@@ -115,8 +96,6 @@ public class FaktaService {
                 } else {
                     repository.opprettFaktum(soknad.getSoknadId(), faktum, true);
                 }
-
-                genererVedleggForFaktum(faktum);
             }
         });
     }
@@ -141,8 +120,6 @@ public class FaktaService {
         } else {
             lagretFaktumId = repository.opprettFaktum(soknadId, f, true);
         }
-        Faktum hentetFaktum = repository.hentFaktum(lagretFaktumId);
-        genererVedleggForFaktum(hentetFaktum);
 
         repository.settSistLagretTidspunkt(soknadId);
         return lagretFaktumId;
@@ -179,133 +156,6 @@ public class FaktaService {
             webSoknad.validerDelstegEndring(DelstegStatus.UTFYLLING);
             repository.settDelstegstatus(soknadId, DelstegStatus.UTFYLLING);
         }
-    }
-
-    private void genererVedleggForFaktum(Faktum faktum) {
-        if (GammelVedleggsLogikk.erAktiv()) {
-            SoknadStruktur struktur = hentSoknadStruktur(faktum.getSoknadId());
-            List<VedleggForFaktumStruktur> aktuelleVedlegg = struktur.vedleggFor(faktum);
-            for (VedleggForFaktumStruktur vedleggForFaktumStruktur : aktuelleVedlegg) {
-                oppdaterOgLagreVedlegg(struktur, vedleggForFaktumStruktur, faktum);
-            }
-            genererVedleggForBarnefakta(faktum);
-        }
-    }
-
-    private SoknadStruktur hentSoknadStruktur(Long soknadId) {
-        return config.hentStruktur(soknadId);
-    }
-
-    private void oppdaterOgLagreVedlegg(SoknadStruktur struktur, VedleggForFaktumStruktur vedleggForFaktumStruktur, Faktum faktum) {
-        Long faktumId = vedleggForFaktumStruktur.getFlereTillatt() ? faktum.getFaktumId() : null;
-        Vedlegg vedlegg = vedleggRepository.hentVedleggForskjemaNummerMedTillegg(
-                faktum.getSoknadId(), faktumId, vedleggForFaktumStruktur.getSkjemaNummer(), vedleggForFaktumStruktur.getSkjemanummerTillegg()
-        );
-        Faktum parentFaktum = repository.hentFaktum(faktum.getParrentFaktum());
-
-        if (vedleggForFaktumStruktur.trengerVedlegg(faktum) && erParentAktiv(vedleggForFaktumStruktur.getFaktum(), parentFaktum)) {
-            lagrePaakrevdVedlegg(faktum, vedleggForFaktumStruktur, vedlegg);
-        } else if (vedlegg != null && !erVedleggKrevdAvAnnetFaktum(faktum, struktur, vedleggForFaktumStruktur)) {
-            vedlegg.setInnsendingsvalg(Vedlegg.Status.IkkeVedlegg);
-            vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
-        }
-    }
-
-    private void genererVedleggForBarnefakta(Faktum parentFaktum) {
-        on(repository.hentBarneFakta(parentFaktum.getSoknadId(), parentFaktum.getFaktumId())).forEach(new Closure<Faktum>() {
-            @Override
-            public void execute(Faktum faktum) {
-                genererVedleggForFaktum(faktum);
-            }
-        });
-    }
-
-    private boolean erParentAktiv(FaktumStruktur faktum, Faktum parent) {
-        if (parent == null) {
-            return true;
-        }
-
-        if (parentValueErLikEnAvVerdieneIDependOnValues(faktum, parent)) {
-            Faktum parentParentFaktum = repository.hentFaktum(parent.getParrentFaktum());
-            FaktumStruktur parentFaktumStruktur = faktum.getDependOn();
-            return erParentAktiv(parentFaktumStruktur, parentParentFaktum);
-        }
-        return false;
-    }
-
-    private void lagrePaakrevdVedlegg(Faktum faktum, VedleggForFaktumStruktur vedleggForFaktumStruktur, Vedlegg v) {
-        Vedlegg vedlegg = v;
-        if (vedlegg == null) {
-            Long faktumId = vedleggForFaktumStruktur.getFlereTillatt() ? faktum.getFaktumId() : null;
-            vedlegg = new Vedlegg()
-                    .medSoknadId(faktum.getSoknadId())
-                    .medFaktumId(faktumId)
-                    .medSkjemaNummer(vedleggForFaktumStruktur.getSkjemaNummer())
-                    .medSkjemanummerTillegg(vedleggForFaktumStruktur.getSkjemanummerTillegg())
-                    .medInnsendingsvalg(Vedlegg.Status.VedleggKreves);
-            vedlegg.setVedleggId(vedleggRepository.opprettEllerEndreVedlegg(vedlegg, null));
-        }
-
-        if (faktum.getType().equals(BRUKERREGISTRERT)) {
-            vedlegg.oppdatertInnsendtStatus();
-        }
-
-        if (vedleggHarTittelFraProperty(vedleggForFaktumStruktur, faktum)) {
-            vedlegg.setNavn(faktum.getProperties().get(vedleggForFaktumStruktur.getProperty()));
-        } else if (vedleggForFaktumStruktur.harOversetting()) {
-            vedlegg.setNavn(navMessageSource.getMessage(vedleggForFaktumStruktur.getOversetting().replace("${key}", faktum.getKey()), new Object[0], new Locale("nb", "NO")));
-        }
-        vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
-    }
-
-    private boolean erVedleggKrevdAvAnnetFaktum(Faktum faktum, SoknadStruktur struktur, VedleggForFaktumStruktur vedleggForFaktumStruktur) {
-        boolean annetFaktumHarForventning = annetFaktumHarForventning(faktum.getSoknadId(), vedleggForFaktumStruktur.getSkjemaNummer(), vedleggForFaktumStruktur.getSkjemanummerTillegg(), struktur);
-        return !vedleggForFaktumStruktur.getFlereTillatt() && annetFaktumHarForventning;
-    }
-
-    private boolean parentValueErLikEnAvVerdieneIDependOnValues(FaktumStruktur faktum, Faktum parent) {
-        if (faktum.getDependOn() == null) {
-            return true;
-        }
-
-        String parentVerdi = hentVerdiFaktumErAvhengigAvPaaParent(faktum, parent);
-        List<String> dependOnValues = faktum.getDependOnValues();
-        for (String dependOnValue : dependOnValues) {
-            if (dependOnValue.equalsIgnoreCase(parentVerdi)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean vedleggHarTittelFraProperty(VedleggForFaktumStruktur vedlegg, Faktum faktum) {
-        return vedlegg.getProperty() != null && faktum.getProperties().containsKey(vedlegg.getProperty());
-    }
-
-    /**
-     * Looper alle mulige vedleggsforventinger for gitt skjemanummer,
-     * dersom soknadbrukerdata har et innslag som har riktig onValue, returneres true (et annet faktum trigger vedlegget)
-     * ellers returneres false
-     */
-    private boolean annetFaktumHarForventning(Long soknadId, String skjemaNummer, String skjemaNrTillegg, SoknadStruktur struktur) {
-        List<VedleggForFaktumStruktur> vedleggMedGittSkjemanummer = struktur.vedleggForSkjemanrMedTillegg(skjemaNummer, skjemaNrTillegg);
-        for (VedleggForFaktumStruktur sv : vedleggMedGittSkjemanummer) {
-            if (repository.isVedleggPaakrevd(soknadId, sv)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private String hentVerdiFaktumErAvhengigAvPaaParent(FaktumStruktur faktum, Faktum parent) {
-        String dependOnPropertyName = faktum.getDependOnProperty();
-        String verdiManErAvhengigAv;
-        if (dependOnPropertyName != null) {
-            verdiManErAvhengigAv = parent.getProperties().get(dependOnPropertyName);
-        } else {
-            verdiManErAvhengigAv = parent.getValue();
-        }
-        return verdiManErAvhengigAv == null ? "false" : verdiManErAvhengigAv;
     }
 
     public Faktum hentFaktumMedKey(Long soknadId, String key) {
