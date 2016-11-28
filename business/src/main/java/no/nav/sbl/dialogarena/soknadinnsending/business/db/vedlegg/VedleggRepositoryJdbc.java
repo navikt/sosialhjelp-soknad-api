@@ -1,28 +1,37 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg;
 
-import no.nav.modig.core.exception.*;
-import no.nav.sbl.dialogarena.common.kodeverk.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.*;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.*;
-import org.apache.commons.collections15.*;
-import org.apache.commons.io.*;
-import org.slf4j.*;
-import org.springframework.dao.*;
-import org.springframework.jdbc.core.*;
-import org.springframework.jdbc.core.support.*;
-import org.springframework.jdbc.support.lob.*;
-import org.springframework.stereotype.*;
-import org.springframework.transaction.annotation.*;
+import no.nav.modig.core.exception.SystemException;
+import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils;
+import org.apache.commons.collections15.Predicate;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.PreparedStatementSetter;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.support.AbstractLobCreatingPreparedStatementCallback;
+import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import org.springframework.jdbc.support.lob.DefaultLobHandler;
+import org.springframework.jdbc.support.lob.LobCreator;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.*;
-import javax.sql.*;
-import java.io.*;
-import java.sql.*;
-import java.util.*;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.sql.DataSource;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.List;
 
-import static no.nav.modig.lang.collections.IterUtils.*;
-import static no.nav.modig.lang.collections.PredicateUtils.*;
-import static org.slf4j.LoggerFactory.*;
+import static no.nav.modig.lang.collections.IterUtils.on;
+import static no.nav.modig.lang.collections.PredicateUtils.not;
+import static org.slf4j.LoggerFactory.getLogger;
 
 @Named("vedleggRepository")
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
@@ -48,14 +57,6 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
                         "antallsider, fillagerReferanse, aarsak from Vedlegg where soknad_id = (select soknad_id from SOKNAD where brukerbehandlingid = ?) " +
                         "and fillagerreferanse = ? and innsendingsvalg = 'UnderBehandling'",
                 new VedleggRowMapper(false), behandlingsId, fillagerReferanse);
-    }
-
-    @Override
-    public List<Vedlegg> hentPaakrevdeVedlegg(Long faktumId) {
-        List<Vedlegg> vedlegg = getJdbcTemplate().query("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, opprinneliginnsendingsvalg, storrelse, opprettetdato," +
-                " antallsider, fillagerReferanse, aarsak from Vedlegg where faktum = ? and innsendingsvalg in ('VedleggKreves', 'VedleggSendesIkke', 'VedleggSendesAvAndre'," +
-                " 'VedleggAlleredeSendt', 'LastetOpp', 'SendesSenere','SendesIkke') ", new VedleggRowMapper(false), faktumId);
-        return on(vedlegg).filter(not(ER_KVITTERING)).collect();
     }
 
     @Override

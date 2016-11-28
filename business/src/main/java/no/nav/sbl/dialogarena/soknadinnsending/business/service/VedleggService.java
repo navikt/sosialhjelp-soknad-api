@@ -31,7 +31,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggsGrunnlag;
-import no.nav.sbl.dialogarena.soknadinnsending.business.FunksjonalitetBryter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
@@ -71,7 +70,6 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus.SKJEMA_VALI
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.PAAKREVDE_VEDLEGG;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.LastetOpp;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.UnderBehandling;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.FunksjonalitetBryter.GammelVedleggsLogikk;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.toInnsendingsvalg;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -273,35 +271,21 @@ public class VedleggService {
     }
 
     public List<Vedlegg> hentPaakrevdeVedlegg(final Long faktumId) {
-        if (FunksjonalitetBryter.GammelVedleggsLogikk.erAktiv()) {
-            List<Vedlegg> paakrevdeVedlegg = vedleggRepository.hentPaakrevdeVedlegg(faktumId);
-            leggTilKodeverkFelter(paakrevdeVedlegg);
-            return paakrevdeVedlegg;
-        } else {
-            List<Vedlegg> paakrevdeVedlegg = genererPaakrevdeVedlegg(faktaService.hentBehandlingsId(faktumId));
-            leggTilKodeverkFelter(paakrevdeVedlegg);
-            return on(paakrevdeVedlegg).filter(new Predicate<Vedlegg>() {
-                @Override
-                public boolean evaluate(Vedlegg vedlegg) {
-                    return faktumId.equals(vedlegg.getFaktumId());
-                }
-            }).collect();
-        }
+        List<Vedlegg> paakrevdeVedlegg = genererPaakrevdeVedlegg(faktaService.hentBehandlingsId(faktumId));
+        leggTilKodeverkFelter(paakrevdeVedlegg);
+        return on(paakrevdeVedlegg).filter(new Predicate<Vedlegg>() {
+            @Override
+            public boolean evaluate(Vedlegg vedlegg) {
+                return faktumId.equals(vedlegg.getFaktumId());
+            }
+        }).collect();
     }
 
     public List<Vedlegg> hentPaakrevdeVedlegg(String behandlingsId) {
-        if (GammelVedleggsLogikk.erAktiv()) {
-            List<Vedlegg> paakrevdeVedlegg = on(vedleggRepository.hentVedlegg(behandlingsId)).filter(PAAKREVDE_VEDLEGG).collect();
-            leggTilKodeverkFelter(paakrevdeVedlegg);
+        List<Vedlegg> paakrevdeVedleggVedNyUthenting = genererPaakrevdeVedlegg(behandlingsId);
+        leggTilKodeverkFelter(paakrevdeVedleggVedNyUthenting);
 
-            return paakrevdeVedlegg;
-
-        } else {
-            List<Vedlegg> paakrevdeVedleggVedNyUthenting = genererPaakrevdeVedlegg(behandlingsId);
-            leggTilKodeverkFelter(paakrevdeVedleggVedNyUthenting);
-
-            return paakrevdeVedleggVedNyUthenting;
-        }
+        return paakrevdeVedleggVedNyUthenting;
     }
 
     private static final VedleggForFaktumStruktur N6_FORVENTNING = new VedleggForFaktumStruktur()

@@ -1,7 +1,7 @@
 {{#if @root.utvidetSoknad}}
 <div class="hjelpeInfotekst">
     {{#hvisTekstFinnes (concat key "." value ".hjelpetekst.tekst")}}
-        <h{{niva}}>Hjelpetekst</h{{niva}}>
+        <h{{niva}}>{{{ hentTekst "hjelpetekst.oppsummering.tittel" }}}</h{{niva}}>
         <div>
             {{ hentTekst (concat key "." value ".hjelpetekst.tittel") }}
         </div>
@@ -20,7 +20,7 @@
         </div>
     {{/hvisTekstFinnes}}
      {{#hvisTekstFinnes (concat key "." value ".infotekst.tekst")}}
-            <h{{niva}}>Infotekst:</h{{niva}}>
+            <h{{niva}}>{{{ hentTekst "infotekst.oppsummering.tittel" }}}</h{{niva}}>
                 {{{ hentTekst (concat key "." value ".infotekst.tekst") }}}
                 {{#hvisTekstFinnes (concat key "." value ".infotekst.tekst2")}}
                     <div>
