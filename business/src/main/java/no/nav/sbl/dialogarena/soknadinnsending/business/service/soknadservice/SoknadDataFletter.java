@@ -1,6 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.*;
+import no.nav.metrics.MetricsFactory;
+import no.nav.metrics.Timer;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.modig.lang.collections.predicate.InstanceOf;
 import no.nav.modig.lang.option.Optional;
@@ -125,27 +127,51 @@ public class SoknadDataFletter {
         if (!kravdialogInformasjonHolder.hentAlleSkjemanumre().contains(skjemanummer)) {
             throw new ApplicationException("Ikke gyldig skjemanummer " + skjemanummer);
         }
+        String soknadsType = kravdialogInformasjonHolder.hentKonfigurasjon(skjemanummer).getSoknadTypePrefix();
         String mainUid = randomUUID().toString();
+
+        Timer startTimer = createDebugTimer("startTimer", soknadsType, mainUid);
+
         String aktorId = getSubjectHandler().getUid();
+        Timer henvendelseTimer = createDebugTimer("startHenvendelse", soknadsType, mainUid);
         String behandlingsId = henvendelseService.startSoknad(aktorId, skjemanummer, mainUid);
+        henvendelseTimer.stop();
+        henvendelseTimer.report();
 
+
+        Timer oprettIDbTimer = createDebugTimer("oprettIDb", soknadsType, mainUid);
         Long soknadId = lagreSoknadILokalDb(skjemanummer, mainUid, aktorId, behandlingsId).getSoknadId();
-
         faktaService.lagreFaktum(soknadId, bolkerFaktum(soknadId));
         faktaService.lagreSystemFaktum(soknadId, personalia(soknadId));
         faktaService.lagreSystemFaktum(soknadId, lonnsOgTrekkOppgave(soknadId));
+        oprettIDbTimer.stop();
+        oprettIDbTimer.report();
 
-        lagreTommeFaktaFraStrukturTilLokalDb(soknadId, skjemanummer);
+        lagreTommeFaktaFraStrukturTilLokalDb(soknadId, skjemanummer, soknadsType, mainUid);
 
         soknadMetricsService.startetSoknad(skjemanummer, false);
 
+        startTimer.stop();
+        startTimer.report();
         return behandlingsId;
     }
 
-    private void lagreTommeFaktaFraStrukturTilLokalDb(Long soknadId, String skjemanummer) {
+    private Timer createDebugTimer(String name, String soknadsType, String id) {
+        Timer timer = MetricsFactory.createTimer("debug.startsoknad." + name);
+        timer.addFieldToReport("soknadstype", soknadsType);
+        timer.addFieldToReport("randomid", id);
+        timer.start();
+        return timer;
+    }
+
+    private void lagreTommeFaktaFraStrukturTilLokalDb(Long soknadId, String skjemanummer, String soknadsType, String id) {
+        Timer strukturTimer = createDebugTimer("lagStruktur", soknadsType, id);
         List<FaktumStruktur> fakta = config.hentStruktur(skjemanummer).getFakta();
         sort(fakta, sammenlignEtterDependOn());
+        strukturTimer.stop();
+        strukturTimer.report();
 
+        Timer lagreTimer = createDebugTimer("lagreTommeFakta", soknadsType, id);
         for (FaktumStruktur faktumStruktur : fakta) {
             if (faktumStruktur.ikkeSystemFaktum() && faktumStruktur.ikkeFlereTillatt()) {
                 Faktum faktum = new Faktum()
@@ -160,6 +186,8 @@ public class SoknadDataFletter {
                 faktaService.lagreFaktum(soknadId, faktum);
             }
         }
+        lagreTimer.stop();
+        lagreTimer.report();
     }
 
     private WebSoknad lagreSoknadILokalDb(String skjemanummer, String uuid, String aktorId, String behandlingsId) {
