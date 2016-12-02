@@ -72,6 +72,9 @@ public class Logg {
     }
 
     public String melding() {
-        return format("%s i fil %s:%s:%s fra URL %s for userAgent %s", message, jsFileUrl, lineNumber, columnNumber, url, userAgent);
+        String useragentWithoutSpace = userAgent.replaceAll(" ", "_");
+        String useragentWithoutSpaceAndComma = useragentWithoutSpace.replaceAll(",", "_");
+
+        return format("jsmessagehash=%s, fileUrl=%s:%s:%s, url=%s, userAgent=%s, melding: %s", message.hashCode(), jsFileUrl, lineNumber, columnNumber, url, useragentWithoutSpaceAndComma, message);
     }
 }
