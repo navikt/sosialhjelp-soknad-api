@@ -322,10 +322,11 @@ public class WebSoknad implements Serializable {
     }
 
     public List<Vedlegg> getIkkeInnsendteVedlegg() {
-        return on(vedlegg).filter(new Predicate<Vedlegg>() {
+        List<Vedlegg> paakrevdeVedlegg = hentPaakrevdeVedlegg();
+        return on(paakrevdeVedlegg).filter(new Predicate<Vedlegg>() {
             @Override
             public boolean evaluate(Vedlegg vedlegg) {
-                return vedlegg.getInnsendingsvalg().erIkke(Vedlegg.Status.LastetOpp);
+                return vedlegg.getInnsendingsvalg().erIkke(Vedlegg.Status.LastetOpp) && vedlegg.getInnsendingsvalg().erIkke(Vedlegg.Status.IkkeVedlegg);
             }
         }).collect();
     }
