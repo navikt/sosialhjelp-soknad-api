@@ -42,6 +42,8 @@ public interface KravdialogInformasjon {
 
     String getBundleName();
 
+    boolean brukerEnonic();
+
     abstract class DefaultOppsett implements KravdialogInformasjon {
         @Override
         public List<Transformer<WebSoknad, AlternativRepresentasjon>> getTransformers(MessageSource messageSource) {
@@ -59,6 +61,9 @@ public interface KravdialogInformasjon {
         }
         public boolean skalSendeMedFullSoknad(){
             return false;
+        }
+        public boolean brukerEnonic(){
+            return true;
         }
     }
 }
