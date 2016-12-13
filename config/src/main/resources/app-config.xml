@@ -58,7 +58,7 @@
         <credential alias="arena.personInfoService" mapToProperty="arena.personInfoService"/>
         <credential alias="arbeidservice" mapToProperty="arbeidservice"/>
 
-        <fileLibrary alias="soknadforeldrepenger.ledetekster.v1" mapToProperty="folder.foreldrepenger" />
+        <fileLibrary alias="soknadforeldrepenger.ledetekster" mapToProperty="folder.foreldrepenger" />
     </resources>
     <security serviceUserResourceAlias="srvSendsoknad">
         <logins>
