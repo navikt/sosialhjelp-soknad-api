@@ -29,8 +29,7 @@ import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.modig.lang.option.Optional.none;
 import static no.nav.modig.lang.option.Optional.optional;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.limit;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.selectNextSequenceValue;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -305,7 +304,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     @Override
     public List<Long> hentLedigeFaktumIder(int antall) {
-        return getJdbcTemplate().queryForList(selectNextSequenceValue("SOKNAD_BRUKER_DATA_ID_SEQ") + " connect by level <= ?", Long.class, antall);
+        return getJdbcTemplate().queryForList(selectMultipleNextSequenceValues("SOKNAD_BRUKER_DATA_ID_SEQ"), Long.class, antall);
     }
 
     @Override
