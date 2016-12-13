@@ -71,9 +71,11 @@ public class LagringsSchedulerTest {
     @Test
     public void leggerTilbakeSoknadenHvisNoeFeiler() throws InterruptedException {
         WebSoknad webSoknad = new WebSoknad();
-        when(soknadRepository.plukkSoknadTilMellomlagring()).thenReturn(optional(webSoknad));
+        when(soknadRepository.plukkSoknadTilMellomlagring())
+                .thenReturn(optional(webSoknad))
+                .thenReturn(Optional.<WebSoknad>none());
         doThrow(new RuntimeException("NEI!")).when(fillagerService).lagreFil(anyString(), anyString(), anyString(), any(InputStream.class));
-        scheduler.lagreFilTilHenvendelseOgSlettILokalDb(optional(webSoknad));
+        scheduler.mellomlagreSoknaderOgNullstillLokalDb();
         verify(soknadRepository).leggTilbake(webSoknad);
     }
 
