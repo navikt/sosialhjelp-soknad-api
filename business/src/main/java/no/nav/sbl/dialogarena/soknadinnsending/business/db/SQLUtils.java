@@ -22,4 +22,12 @@ public class SQLUtils {
 		}
 	}
 
+	public static String selectMultipleNextSequenceValues(String sequence) {
+		if ("hsqldb".equals(getProperty(DIALECT_PROPERTY))) {
+			return "select next value for " + sequence + " from unnest(sequence_array(1,?,1))";
+		} else {
+			return "select " + sequence + ".nextval from dual connect by level <= ?";
+		}
+	}
+
 }
