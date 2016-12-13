@@ -35,7 +35,11 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
         Properties properties = getProperties(localFile).getProperties();
         Properties remoteProperties = getProperties(remoteFile).getProperties();
         if (remoteProperties != null) {
-            properties.putAll(remoteProperties);
+            if(properties == null) {
+                return remoteProperties;
+            } else {
+                properties.putAll(remoteProperties);
+            }
         }
 
         return properties;
@@ -62,7 +66,9 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
         for (Bundle bundle : bundlesList) {
             basenames.put(bundle.type, bundle.tuple);
             basenameStrings.add(bundle.tuple.remoteFile);
-            basenameStrings.add(bundle.tuple.localFile);
+            if (bundle.tuple.localFile != null) {
+                basenameStrings.add(bundle.tuple.localFile);
+            }
         }
 
         setBasenames(basenameStrings.toArray(new String[basenameStrings.size()]));

@@ -45,6 +45,9 @@ public class ContentConfig {
     @Value("${sendsoknad.datadir}")
     private File brukerprofilDataDirectory;
 
+    @Value("${folder.foreldrepenger.path}")
+    private String foreldrepengerteksterPath;
+
     @Inject
     private CacheManager cacheManager;
 
@@ -63,7 +66,7 @@ public class ContentConfig {
         messageSource.setBasenames(
                 new NavMessageSource.Bundle("sendsoknad", brukerprofilDataDirectoryString + "enonic/sendsoknad", "classpath:content/sendsoknad"),
                 new NavMessageSource.Bundle("dagpenger", brukerprofilDataDirectoryString + "enonic/dagpenger", "classpath:content/dagpenger"),
-                new NavMessageSource.Bundle("foreldrepenger", brukerprofilDataDirectoryString + "enonic/foreldrepenger", "classpath:content/foreldrepenger"),
+                new NavMessageSource.Bundle("foreldrepenger", foreldrepengerteksterPath + "/tekster/foreldrepenger", null),
                 new NavMessageSource.Bundle("aap", brukerprofilDataDirectoryString + "enonic/aap", "classpath:content/aap"),
                 new NavMessageSource.Bundle("bilstonad", brukerprofilDataDirectoryString + "enonic/bilstonad", "classpath:content/bilstonad"),
                 new NavMessageSource.Bundle("soknadtilleggsstonader", brukerprofilDataDirectoryString + "enonic/tilleggsstonader", "classpath:content/tilleggsstonader"),
@@ -82,20 +85,27 @@ public class ContentConfig {
     public NavMessageWrapper navMessageBundles(){
         NavMessageWrapper messages = new NavMessageWrapper();
         for (KravdialogInformasjon kravdialogInformasjon: kravdialogInformasjonHolder.getSoknadsKonfigurasjoner()){
-            messages.put(kravdialogInformasjon.getSoknadTypePrefix(), bundleFor(kravdialogInformasjon.getBundleName()));
+            messages.put(kravdialogInformasjon.getSoknadTypePrefix(), bundleFor(kravdialogInformasjon.getBundleName(), kravdialogInformasjon.brukerEnonic()));
         }
         return messages;
     }
 
     public static class NavMessageWrapper extends HashMap<String, MessageSource>{}
 
-    private NavMessageSource bundleFor(String bundle) {
+    private NavMessageSource bundleFor(String bundleName, boolean brukerEnonic) {
         NavMessageSource messageSource = new NavMessageSource();
 
         String brukerprofilDataDirectoryString = brukerprofilDataDirectory.toURI().toString();
+        NavMessageSource.Bundle dialogBundle;
+
+        if (brukerEnonic) {
+            dialogBundle = new NavMessageSource.Bundle(bundleName, brukerprofilDataDirectoryString + "enonic/" + bundleName, "classpath:content/" + bundleName);
+        } else {
+            dialogBundle = new NavMessageSource.Bundle(bundleName, System.getProperty("folder." + bundleName) + "/" + bundleName + "/tekster", null);
+        }
         messageSource.setBasenames(
                 new NavMessageSource.Bundle("sendsoknad", brukerprofilDataDirectoryString + "enonic/sendsoknad", "classpath:content/sendsoknad"),
-                new NavMessageSource.Bundle(bundle, brukerprofilDataDirectoryString + "enonic/" + bundle, "classpath:content/" + bundle)
+                dialogBundle
                 );
         messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
@@ -111,7 +121,6 @@ public class ContentConfig {
             saveLocal("enonic/sendsoknad_en.properties", new URI(cmsBaseUrl + "/app/sendsoknad/en/tekster"));
             saveLocal("enonic/dagpenger_nb_NO.properties", new URI(cmsBaseUrl + "/app/dagpenger/nb_NO/tekster"));
             saveLocal("enonic/dagpenger_en.properties", new URI(cmsBaseUrl + "/app/dagpenger/en/tekster"));
-            saveLocal("enonic/foreldrepenger_nb_NO.properties", new URI(cmsBaseUrl + "/app/foreldrepenger/nb_NO/tekster"));
             saveLocal("enonic/aap_nb_NO.properties", new URI(cmsBaseUrl + "/app/AAP/nb_NO/tekster"));
             saveLocal("enonic/bilstonad_nb_NO.properties", new URI(cmsBaseUrl + "/app/bilstonad/nb_NO/tekster"));
             saveLocal("enonic/tilleggsstonader_nb_NO.properties", new URI(cmsBaseUrl + "/app/tilleggsstonader/nb_NO/tekster"));
