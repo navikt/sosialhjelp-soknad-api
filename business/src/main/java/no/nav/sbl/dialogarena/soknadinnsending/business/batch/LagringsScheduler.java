@@ -45,10 +45,8 @@ public class LagringsScheduler {
         feilet = 0;
         if (Boolean.valueOf(System.getProperty("sendsoknad.batch.enabled", "true"))) {
             logger.info("---- Starter flytting av søknader til henvendelse-jobb ----");
-            if (mellomlagre(feilListe)) {
-                return;
-            }
 
+            mellomlagre(feilListe);
             leggTilbakeFeilende(feilListe);
 
             logger.info("---- Jobb fullført: {} vellykket, {} feilet ----", vellykket, feilet);
@@ -68,41 +66,41 @@ public class LagringsScheduler {
         }
     }
 
-    private boolean mellomlagre(List<Optional<WebSoknad>> feilListe) throws InterruptedException {
+    private void mellomlagre(List<Optional<WebSoknad>> feilListe) throws InterruptedException {
         for (Optional<WebSoknad> ws = soknadRepository.plukkSoknadTilMellomlagring(); ws.isSome(); ws = soknadRepository.plukkSoknadTilMellomlagring()) {
             if (isPaabegyntEttersendelse(ws)) {
                 if (!avbrytOgSlettEttersendelse(ws)) {
                     feilListe.add(ws);
                 }
             } else {
-                lagreFilTilHenvendelseOgSlettILokalDb(ws);
+                if (!lagreFilTilHenvendelseOgSlettILokalDb(ws)) {
+                    feilListe.add(ws);
+                }
             }
             // Avslutt prosessen hvis det er gått for lang tid. Tyder på at noe er nede.
             if (harGaattForLangTid()) {
                 logger.warn("---- Jobben har kjørt i mer enn {} ms. Den blir derfor terminert ----", SCHEDULE_INTERRUPT_MS);
-                return true;
+                return;
             }
         }
-        return false;
     }
 
     private boolean avbrytOgSlettEttersendelse(Optional<WebSoknad> ws) throws InterruptedException {
         WebSoknad soknad = ws.get();
         try {
             henvendelseService.avbrytSoknad(soknad.getBrukerBehandlingId());
-
             slettFiler(soknad);
-
             soknadRepository.slettSoknad(soknad.getSoknadId());
+
             vellykket++;
+            return true;
         } catch (Exception e) {
             feilet++;
-            logger.error("Avbryt feilet for ettersending {}. Setter tilbake til LEDIG", soknad.getSoknadId(), e);
+            logger.error("Avbryt feilet for ettersending {}.", soknad.getSoknadId(), e);
             Thread.sleep(1000); // Så loggen ikke blir fylt opp
 
             return false;
         }
-        return true;
     }
 
     private void slettFiler(WebSoknad soknad) {
@@ -118,7 +116,7 @@ public class LagringsScheduler {
         return soknad.erEttersending();
     }
 
-    protected void lagreFilTilHenvendelseOgSlettILokalDb(Optional<WebSoknad> ws) throws InterruptedException {
+    protected boolean lagreFilTilHenvendelseOgSlettILokalDb(Optional<WebSoknad> ws) throws InterruptedException {
         WebSoknad soknad = ws.get();
         try {
             if (soknad.getStatus().equals(SoknadInnsendingStatus.UNDER_ARBEID) && !soknad.erEttersending()) {
@@ -127,17 +125,16 @@ public class LagringsScheduler {
                 fillagerService.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(xml.toString().getBytes()));
             }
             soknadRepository.slettSoknad(soknad.getSoknadId());
-            vellykket++;
+
             logger.info("---- Lagret soknad til henvendelse og slettet lokalt. Soknadsid: " + soknad.getSoknadId() + "----");
+            vellykket++;
+            return true;
         } catch (Exception e) {
             feilet++;
-            logger.error("Lagring eller sletting feilet for soknad {}. Setter tilbake til LEDIG", soknad.getSoknadId(), e);
-            try {
-                soknadRepository.leggTilbake(soknad);
-            } catch (Exception e1) {
-                logger.error("Klarte ikke å legge tilbake søknad {}", soknad.getSoknadId(), e1);
-            }
+            logger.error("Lagring eller sletting feilet for soknad {}", soknad.getSoknadId(), e);
+
             Thread.sleep(1000); // Så loggen ikke blir fylt opp
+            return false;
         }
     }
 
