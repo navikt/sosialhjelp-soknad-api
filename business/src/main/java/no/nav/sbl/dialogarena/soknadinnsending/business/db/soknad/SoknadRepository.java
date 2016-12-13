@@ -30,6 +30,9 @@ public interface SoknadRepository {
     Long opprettFaktum(long soknadId, Faktum faktum);
     Long oppdaterFaktum(Faktum faktum, Boolean systemFaktum);
 
+    void batchOpprettTommeFakta(List<Faktum> fakta);
+    List<Long> hentLedigeFaktumIder(int antall);
+
     Faktum hentFaktum(Long faktumId);
 
     String hentBehandlingsIdTilFaktum(Long faktumId);

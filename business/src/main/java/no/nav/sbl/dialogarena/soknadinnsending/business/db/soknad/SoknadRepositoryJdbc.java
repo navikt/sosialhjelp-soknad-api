@@ -303,6 +303,16 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         return faktum.getFaktumId();
     }
 
+    @Override
+    public List<Long> hentLedigeFaktumIder(int antall) {
+        return getJdbcTemplate().queryForList(selectNextSequenceValue("SOKNAD_BRUKER_DATA_ID_SEQ") + " connect by level <= ?", Long.class, antall);
+    }
+
+    @Override
+    public void batchOpprettTommeFakta(List<Faktum> fakta) {
+        getNamedParameterJdbcTemplate().batchUpdate(INSERT_FAKTUM, SqlParameterSourceUtils.createBatch(fakta.toArray()));
+    }
+
     private BeanPropertySqlParameterSource forFaktum(Faktum faktum) {
         BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(faktum);
         parameterSource.registerSqlType("type", Types.VARCHAR);
