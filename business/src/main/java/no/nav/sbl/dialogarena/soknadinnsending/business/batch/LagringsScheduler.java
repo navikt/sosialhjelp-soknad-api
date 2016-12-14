@@ -44,12 +44,12 @@ public class LagringsScheduler {
         vellykket = 0;
         feilet = 0;
         if (Boolean.valueOf(System.getProperty("sendsoknad.batch.enabled", "true"))) {
-            logger.info("---- Starter flytting av søknader til henvendelse-jobb ----");
+            logger.info("Starter flytting av søknader til henvendelse-jobb");
 
             mellomlagre(feilListe);
             leggTilbakeFeilende(feilListe);
 
-            logger.info("---- Jobb fullført: {} vellykket, {} feilet ----", vellykket, feilet);
+            logger.info("Jobb fullført: {} vellykket, {} feilet", vellykket, feilet);
         } else {
             logger.warn("Batch disabled. Må sette environment property sendsoknad.batch.enabled til true for å sette den på igjen");
         }
@@ -79,7 +79,7 @@ public class LagringsScheduler {
             }
             // Avslutt prosessen hvis det er gått for lang tid. Tyder på at noe er nede.
             if (harGaattForLangTid()) {
-                logger.warn("---- Jobben har kjørt i mer enn {} ms. Den blir derfor terminert ----", SCHEDULE_INTERRUPT_MS);
+                logger.warn("Jobben har kjørt i mer enn {} ms. Den blir derfor terminert", SCHEDULE_INTERRUPT_MS);
                 return;
             }
         }
@@ -126,7 +126,7 @@ public class LagringsScheduler {
             }
             soknadRepository.slettSoknad(soknad.getSoknadId());
 
-            logger.info("---- Lagret soknad til henvendelse og slettet lokalt. Soknadsid: " + soknad.getSoknadId() + "----");
+            logger.info("Lagret soknad til henvendelse og slettet lokalt. Soknadsid: {}", soknad.getSoknadId());
             vellykket++;
             return true;
         } catch (Exception e) {
