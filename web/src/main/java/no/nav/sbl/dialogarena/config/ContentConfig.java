@@ -45,9 +45,6 @@ public class ContentConfig {
     @Value("${sendsoknad.datadir}")
     private File brukerprofilDataDirectory;
 
-    @Value("${folder.foreldrepenger.path}")
-    private String foreldrepengerteksterPath;
-
     @Inject
     private CacheManager cacheManager;
 
