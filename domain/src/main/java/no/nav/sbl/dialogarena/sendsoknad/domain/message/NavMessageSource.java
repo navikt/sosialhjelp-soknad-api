@@ -35,7 +35,7 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
         Properties properties = getProperties(localFile).getProperties();
         Properties remoteProperties = getProperties(remoteFile).getProperties();
         if (remoteProperties != null) {
-            if(properties == null) {
+            if (properties == null) {
                 return remoteProperties;
             } else {
                 properties.putAll(remoteProperties);
@@ -46,7 +46,7 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
     }
 
     private String calculateFilenameForLocale(String type, Locale locale) {
-        return type + "_" + locale.getLanguage() + ("".equals(locale.getCountry())?"": "_" + locale.getCountry());
+        return type + "_" + locale.getLanguage() + ("".equals(locale.getCountry()) ? "" : "_" + locale.getCountry());
     }
 
     public String finnTekst(String code, Object[] args, Locale locale) {
@@ -59,7 +59,9 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
         List<String> basenameStrings = new ArrayList<>();
 
         basenameStrings.add(fellesBasename.remoteFile);
-        basenameStrings.add(fellesBasename.localFile);
+        if (fellesBasename.localFile != null) {
+            basenameStrings.add(fellesBasename.localFile);
+        }
 
         List<Bundle> bundlesList = Arrays.asList(soknadBundles);
 
