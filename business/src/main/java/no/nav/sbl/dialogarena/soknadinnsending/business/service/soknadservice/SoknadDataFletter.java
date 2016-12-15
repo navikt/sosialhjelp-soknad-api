@@ -172,7 +172,7 @@ public class SoknadDataFletter {
 
         List<Faktum> fakta = new ArrayList<>();
         List<Long> faktumIder = lokalDb.hentLedigeFaktumIder(faktaStruktur.size());
-        Map<String, Long> parentKeyTilId = new HashMap<>();
+        Map<String, Long> faktumKeyTilFaktumId = new HashMap<>();
         int idNr = 0;
 
         for (FaktumStruktur faktumStruktur : faktaStruktur) {
@@ -186,10 +186,10 @@ public class SoknadDataFletter {
                         .medValue("")
                         .medType(BRUKERREGISTRERT);
 
-                parentKeyTilId.put(faktumStruktur.getId(), faktumId);
+                faktumKeyTilFaktumId.put(faktumStruktur.getId(), faktumId);
 
                 if (faktumStruktur.getDependOn() != null) {
-                    Long parentId = parentKeyTilId.get(faktumStruktur.getDependOn().getId());
+                    Long parentId = faktumKeyTilFaktumId.get(faktumStruktur.getDependOn().getId());
                     faktum.setParrentFaktum(parentId);
                 }
 
