@@ -42,7 +42,7 @@ public interface KravdialogInformasjon {
 
     String getBundleName();
 
-    boolean brukerEnonic();
+    boolean brukerEnonicLedetekster();
 
     abstract class DefaultOppsett implements KravdialogInformasjon {
         @Override
@@ -62,7 +62,7 @@ public interface KravdialogInformasjon {
         public boolean skalSendeMedFullSoknad(){
             return false;
         }
-        public boolean brukerEnonic(){
+        public boolean brukerEnonicLedetekster(){
             return true;
         }
     }

@@ -66,7 +66,7 @@ public class ContentConfig {
         NavMessageSource.Bundle[] bundles = new NavMessageSource.Bundle[kravdialogInformasjonHolder.getSoknadsKonfigurasjoner().size()];
         int index = 0;
         for (KravdialogInformasjon kravdialogInformasjon : kravdialogInformasjonHolder.getSoknadsKonfigurasjoner()) {
-            bundles[index++] = (getBundle(kravdialogInformasjon.getBundleName(), kravdialogInformasjon.brukerEnonic(), brukerprofilDataDirectoryString));
+            bundles[index++] = (getBundle(kravdialogInformasjon.getBundleName(), kravdialogInformasjon.brukerEnonicLedetekster(), brukerprofilDataDirectoryString));
         }
 
         NavMessageSource.Bundle fellesBundle = new NavMessageSource.Bundle("sendsoknad", brukerprofilDataDirectoryString + "enonic/sendsoknad", "classpath:content/sendsoknad");
@@ -83,7 +83,7 @@ public class ContentConfig {
     public NavMessageWrapper navMessageBundles() {
         NavMessageWrapper messages = new NavMessageWrapper();
         for (KravdialogInformasjon kravdialogInformasjon : kravdialogInformasjonHolder.getSoknadsKonfigurasjoner()) {
-            messages.put(kravdialogInformasjon.getSoknadTypePrefix(), bundleFor(kravdialogInformasjon.getBundleName(), kravdialogInformasjon.brukerEnonic()));
+            messages.put(kravdialogInformasjon.getSoknadTypePrefix(), bundleFor(kravdialogInformasjon.getBundleName(), kravdialogInformasjon.brukerEnonicLedetekster()));
         }
         return messages;
     }
