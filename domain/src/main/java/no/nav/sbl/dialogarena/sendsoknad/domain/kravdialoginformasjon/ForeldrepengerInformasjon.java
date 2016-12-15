@@ -47,7 +47,7 @@ public class ForeldrepengerInformasjon extends KravdialogInformasjon.DefaultOpps
     }
 
     @Override
-    public boolean brukerEnonic() {
+    public boolean brukerEnonicLedetekster() {
         return false;
     }
 }
