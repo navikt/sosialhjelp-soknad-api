@@ -52,7 +52,7 @@ public class ContentConfig {
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
-    final String delstiTilbundlefilPaaDisk = "/tekster";
+    final static String delstiTilbundlefilPaaDisk = "/tekster";
 
     @Bean
     public NavMessageSource navMessageSource() {
