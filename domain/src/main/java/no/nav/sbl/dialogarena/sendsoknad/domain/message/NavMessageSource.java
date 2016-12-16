@@ -21,7 +21,6 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
     public Properties getBundleFor(String type, Locale locale) {
         if (basenames.containsKey(type)) {
             Properties properties = new Properties();
-            LOG.info("Basenames - lokasjon til propertiefil. Type: " + type + " basenames: " + basenames.get(type).getRemoteFile());
 
             properties.putAll(hentRemoteEllerLocal(fellesBasename, locale));
             properties.putAll(hentRemoteEllerLocal(basenames.get(type), locale));

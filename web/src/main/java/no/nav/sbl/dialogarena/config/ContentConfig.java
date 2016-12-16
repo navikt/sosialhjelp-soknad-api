@@ -52,7 +52,7 @@ public class ContentConfig {
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
-    final static String delstiTilbundlefilPaaDisk = "/tekster";
+    final static String delstiTilbundlefilPaaDisk = "tekster";
 
     @Bean
     public NavMessageSource navMessageSource() {
@@ -113,7 +113,7 @@ public class ContentConfig {
         if (brukerEnonic) {
             dialogBundle = new NavMessageSource.Bundle(bundleName, brukerprofilDataDirectoryString + "enonic/" + bundleName, "classpath:content/" + bundleName);
         } else {
-            dialogBundle = new NavMessageSource.Bundle(bundleName, System.getProperty("folder." + bundleName + ".path") + delstiTilbundlefilPaaDisk + "/" + bundleName, null);
+            dialogBundle = new NavMessageSource.Bundle(bundleName, new File(System.getProperty("folder." + bundleName + ".path")).toURI().toString() + delstiTilbundlefilPaaDisk + "/" + bundleName, null);
         }
         return dialogBundle;
     }
