@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.message;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
 import java.util.ArrayList;
@@ -11,6 +13,7 @@ import java.util.Map;
 import java.util.Properties;
 
 public class NavMessageSource extends ReloadableResourceBundleMessageSource {
+    private static final Logger LOG = LoggerFactory.getLogger(NavMessageSource.class);
 
     private Map<String, FileTuple> basenames = new HashMap<>();
     private FileTuple fellesBasename;
@@ -18,6 +21,7 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
     public Properties getBundleFor(String type, Locale locale) {
         if (basenames.containsKey(type)) {
             Properties properties = new Properties();
+            LOG.info("Basenames - lokasjon til propertiefil", basenames.get(type).remoteFile );
 
             properties.putAll(hentRemoteEllerLocal(fellesBasename, locale));
             properties.putAll(hentRemoteEllerLocal(basenames.get(type), locale));
