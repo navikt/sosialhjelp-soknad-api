@@ -13,8 +13,6 @@ import java.util.Map;
 import java.util.Properties;
 
 public class NavMessageSource extends ReloadableResourceBundleMessageSource {
-    private static final Logger LOG = LoggerFactory.getLogger(NavMessageSource.class);
-
     private Map<String, FileTuple> basenames = new HashMap<>();
     private FileTuple fellesBasename;
 

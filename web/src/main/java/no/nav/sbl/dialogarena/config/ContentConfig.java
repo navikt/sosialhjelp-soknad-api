@@ -113,7 +113,8 @@ public class ContentConfig {
         if (brukerEnonic) {
             dialogBundle = new NavMessageSource.Bundle(bundleName, brukerprofilDataDirectoryString + "enonic/" + bundleName, "classpath:content/" + bundleName);
         } else {
-            dialogBundle = new NavMessageSource.Bundle(bundleName, new File(System.getProperty("folder." + bundleName + ".path")).toURI().toString() + delstiTilbundlefilPaaDisk + "/" + bundleName, null);
+            final String remoteFile = new File(System.getProperty("folder." + bundleName + ".path")).toURI().toString() + delstiTilbundlefilPaaDisk + "/" + bundleName;
+            dialogBundle = new NavMessageSource.Bundle(bundleName, remoteFile, null);
         }
         return dialogBundle;
     }
