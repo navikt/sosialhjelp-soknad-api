@@ -1,7 +1,5 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.message;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
 import java.util.ArrayList;
@@ -88,6 +86,7 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
     public static class FileTuple {
         private String remoteFile;
         private String localFile;
+
         FileTuple(String remoteFile, String localFile) {
             this.remoteFile = remoteFile;
             this.localFile = localFile;
@@ -105,6 +104,7 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
     public static class Bundle {
         public String type;
         public FileTuple tuple;
+
         public Bundle(String type, String remoteFile, String localFile) {
             this.type = type;
             this.tuple = new FileTuple(remoteFile, localFile);
