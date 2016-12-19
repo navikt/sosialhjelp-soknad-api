@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.config;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import org.assertj.core.api.Condition;
 import org.junit.Before;
@@ -26,9 +27,13 @@ public class ContentConfigTest {
     @InjectMocks
     ContentConfig contentConfig;
 
+    @Mock
+    KravdialogInformasjonHolder kravdialogInformasjonHolder;
+
     @Before
     public void setup() throws URISyntaxException {
         when(brukerprofilDataDirectory.toURI()).thenReturn(new URI("uri/"));
+        when(kravdialogInformasjonHolder.getSoknadsKonfigurasjoner()).thenReturn(new KravdialogInformasjonHolder().getSoknadsKonfigurasjoner());
     }
 
     @Test
@@ -43,7 +48,7 @@ public class ContentConfigTest {
                         && fileTuple.getLocalFile().equals("classpath:content/sendsoknad");
             }
         });
-        assertThat(basenames).hasSize(7);
+        assertThat(basenames).hasSize(8);
     }
 
 }
