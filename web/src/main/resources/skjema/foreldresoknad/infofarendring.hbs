@@ -1,0 +1,43 @@
+<h2>{{hentTekst "infofar.tittel"}}</h2>
+<table>
+    {{#forFaktum "rettigheter.endring"}}
+    <tr>
+        <td class="sjekket"></td>
+        {{#hvisLik "true" value}}
+            <td>
+                <span>{{hentTekst "retigheter.endring.mor.infofar.true"}}</span>
+            </td>
+        {{/hvisLik}}
+
+        {{#hvisLik "false" value}}
+            <td>
+                <span>{{hentTekst "retigheter.endring.mor.infofar.false"}}</span>
+            </td>
+        {{/hvisLik}}
+
+        {{#hvisLik "aleneomsorg" value}}
+            <td>
+                <span>{{hentTekst "rettigheter.endring.aleneomsorg"}}</span>
+            </td>
+        {{/hvisLik}}
+    </tr>
+    {{/forFaktum}}
+
+    {{#forFaktum "infofar.informert"}}
+            <tr>
+                <td class="sjekket"></td>
+
+                {{#hvisLik "true" value}}
+                    <td>
+                        <span>{{hentTekst "infofar.informert.true"}}</span>
+                    </td>
+                {{/hvisLik}}
+
+                {{#hvisLik "false" value}}
+                    <td>
+                        <span>{{hentTekst "infofar.informert.false"}}</span>
+                    </td>
+                {{/hvisLik}}
+            </tr>
+    {{/forFaktum}}
+</table>
