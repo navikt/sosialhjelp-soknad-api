@@ -13,6 +13,9 @@
     <faktum>
         <id>rettighet.harrett</id>
     </faktum>
+    <faktum>
+        <id>rettighet.endring</id>
+    </faktum>
 
     <vedlegg>
         <faktum>rettigheter.overtak</faktum>
