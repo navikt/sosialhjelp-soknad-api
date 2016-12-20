@@ -25,7 +25,7 @@ public class ForeldrepengerInformasjon extends KravdialogInformasjon.DefaultOpps
     }
 
     public String getStrukturFilnavn() {
-        return "foreldresoknad.xml";
+        return "foreldrepenger/foreldrepenger.xml";
     }
 
     public List<String> getSkjemanummer() {

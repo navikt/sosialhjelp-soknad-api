@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl">
+    <faktum>
+        <id>rettigheter.overtak</id>
+        <dependOn>soknadsvalg.fodselelleradopsjon</dependOn>
+        <dependOnValues>
+            <value>fodsel</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>rettigheter.omsorg</id>
+    </faktum>
+    <faktum>
+        <id>rettighet.harrett</id>
+    </faktum>
+
+    <vedlegg>
+        <faktum>rettigheter.overtak</faktum>
+        <onValues>
+            <value>overtattOmsorgInnen53UkerFodsel</value>
+            <value>overtattOmsorgInnen53UkerAdopsjon</value>
+        </onValues>
+        <skjemaNummer>P5</skjemaNummer>
+        <skjemanummerTillegg>overtatt</skjemanummerTillegg>
+    </vedlegg>
+
+    <vedlegg>
+        <faktum>rettigheter.omsorg</faktum>
+        <onValues>
+            <value>aleneomsorg</value>
+        </onValues>
+        <skjemaNummer>P5</skjemaNummer>
+        <skjemanummerTillegg>aleneomsorg</skjemanummerTillegg>
+    </vedlegg>
+</soknad>

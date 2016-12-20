@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl">
+    <faktum>
+        <id>tilknytningnorge.tidligere</id>
+    </faktum>
+    <faktum>
+        <id>tilknytningnorge.tidligere.periode</id>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <faktum>
+        <id>tilknytningnorge.fremtidig</id>
+    </faktum>
+    <faktum>
+        <id>tilknytningnorge.fremtidig.periode</id>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+</soknad>
