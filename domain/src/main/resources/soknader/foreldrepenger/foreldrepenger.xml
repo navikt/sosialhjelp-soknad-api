@@ -1,0 +1,68 @@
+<?xml version="1.0" ?>
+<soknad temaKode="FOR" xmlns="urn:no.nav.sbl" xmlns:xi="http://www.w3.org/2001/XInclude">
+    <!-- Systemfakta -->
+    <faktum>
+        <id>personalia</id>
+        <erSystemFaktum>true</erSystemFaktum>
+    </faktum>
+
+    <faktum>
+        <id>vedlegg.hjelpefaktum</id>
+    </faktum>
+
+    <!-- Søknadsvalg -->
+    <faktum>
+        <id>soknadsvalg.stonadstype</id>
+        <dependOn>soknadsvalg.fodselelleradopsjon</dependOn>
+        <dependOnValues>
+            <value>fodsel</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>soknadsvalg.fodselelleradopsjon</id>
+    </faktum>
+
+    <!-- Veiledning -->
+    <faktum>
+        <id>veiledning.mor.terminbekreftelse</id>
+    </faktum>
+    <faktum>
+        <id>veiledning.adopsjon.overtakelse</id>
+    </faktum>
+
+    <!-- Bolker -->
+    <xi:include href="bolker/arbeidsforhold.xml" />
+    <xi:include href="bolker/barnet.xml" />
+    <xi:include href="bolker/dekningsgrad.xml" />
+    <xi:include href="bolker/egennaering.xml" />
+    <xi:include href="bolker/opplysning-far.xml" />
+    <xi:include href="bolker/opplysning-mor.xml" />
+    <xi:include href="bolker/overforing-fedrekvote.xml" />
+    <xi:include href="bolker/perioder.xml" />
+    <xi:include href="bolker/rettigheter.xml" />
+    <xi:include href="bolker/tilknytning.xml" />
+    <xi:include href="bolker/ytelser.xml" />
+
+
+    <!-- Fellesting -->
+    <xi:include href="../felles/tilleggsopplysninger.xml" />
+    <xi:include href="../felles/ekstravedlegg.xml" />
+
+    <!-- Ekstra vedlegg -->
+    <faktum>
+        <id>ekstraVedlegg</id>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>ekstraVedlegg</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>N6</skjemaNummer>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
+
+    <vedleggsreferanse>G2</vedleggsreferanse>
+    <vedleggsreferanse>NAV 04-08.03</vedleggsreferanse>
+</soknad>
