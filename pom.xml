@@ -22,7 +22,7 @@
     <description>Innsending av elektronisk søknad.</description>
     <groupId>no.nav.sbl.dialogarena</groupId>
     <artifactId>sendsoknad</artifactId>
-    <version>16.1.0-SNAPSHOT</version>
+    <version>16.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
