@@ -45,5 +45,10 @@ public class ForeldrepengerInformasjon extends KravdialogInformasjon.DefaultOpps
             return Arrays.asList(BOLK_PERSONALIA, BOLK_BARN, BOLK_ARBEIDSFORHOLD);
         }
     }
+
+    @Override
+    public boolean brukerEnonicLedetekster() {
+        return false;
+    }
 }
 
