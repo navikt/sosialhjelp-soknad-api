@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.tilleggsstonader.TilleggsstonaderTilXml;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Component;
@@ -52,6 +53,8 @@ public class XmlService {
     }
 
     private String hentFilInnhold(String fil) throws IOException {
+        fil = FilenameUtils.normalize(fil);
+        fil = FilenameUtils.separatorsToUnix(fil);
         InputStream stream = getClass().getClassLoader().getResourceAsStream(fil);
         return IOUtils.toString(stream);
     }
