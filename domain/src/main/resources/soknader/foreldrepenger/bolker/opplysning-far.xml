@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl">
+    <faktum>
+        <id>infofar.opplysninger.fornavn</id>
+    </faktum>
+    <faktum>
+        <id>infofar.opplysninger.etternavn</id>
+    </faktum>
+    <faktum>
+        <id>infofar.opplysninger.personinfo</id>
+    </faktum>
+    <faktum>
+        <id>infofar.opplysninger.kanIkkeOppgi</id>
+    </faktum>
+    <faktum>
+        <id>infofar.aleneomsorg.fritekst</id>
+    </faktum>
+    <faktum>
+        <id>infofar.farrett.fritekst</id>
+    </faktum>
+    <faktum>
+        <id>infofar.informert</id>
+    </faktum>
+</soknad>
