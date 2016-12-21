@@ -161,6 +161,9 @@
 
     <!-- Perioder -->
     <faktum>
+        <id>perioder.endring.omsorg</id>
+    </faktum>
+    <faktum>
         <id>perioder.startdato</id>
     </faktum>
     <faktum>
