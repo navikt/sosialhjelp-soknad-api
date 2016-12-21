@@ -1,17 +1,23 @@
-<h2>{{hentTekst "infofar.tittel"}}</h2>
+<h2>{{hentTekst "infomor.tittel"}}</h2>
 <table>
     {{#forFaktum "rettigheter.endring"}}
     <tr>
         <td class="sjekket"></td>
         {{#hvisLik "true" value}}
             <td>
-                <span>{{hentTekst "rettigheter.endring.mor.infofar.true"}}</span>
+                <span>{{hentTekst "rettigheter.endring.far.infomor.true"}}</span>
             </td>
         {{/hvisLik}}
 
         {{#hvisLik "false" value}}
             <td>
-                <span>{{hentTekst "rettigheter.endring.mor.infofar.false"}}</span>
+                <span>{{hentTekst "rettigheter.endring.far.infomor.false"}}</span>
+            </td>
+        {{/hvisLik}}
+
+        {{#hvisLik "ufore" value}}
+            <td>
+                <span>{{hentTekst "rettigheter.endring.far.infomor.ufore"}}</span>
             </td>
         {{/hvisLik}}
 
@@ -23,19 +29,19 @@
     </tr>
     {{/forFaktum}}
 
-    {{#forFaktum "infofar.informert"}}
+    {{#forFaktum "infomor.informert"}}
             <tr>
                 <td class="sjekket"></td>
 
                 {{#hvisLik "true" value}}
                     <td>
-                        <span>{{hentTekst "infofar.informert.true"}}</span>
+                        <span>{{hentTekst "infomor.informert.true"}}</span>
                     </td>
                 {{/hvisLik}}
 
                 {{#hvisLik "false" value}}
                     <td>
-                        <span>{{hentTekst "infofar.informert.false"}}</span>
+                        <span>{{hentTekst "infomor.informert.false"}}</span>
                     </td>
                 {{/hvisLik}}
             </tr>
