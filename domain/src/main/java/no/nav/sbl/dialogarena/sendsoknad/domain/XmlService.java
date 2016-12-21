@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.tilleggsstonader.TilleggsstonaderTilXml;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Component;
