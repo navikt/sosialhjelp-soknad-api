@@ -6,6 +6,9 @@
     <faktum>
         <id>perioder.permisjon</id>
     </faktum>
+    <faktum>
+        <id>perioder.endring.omsorg</id>
+    </faktum>
 
     <faktum>
         <id>perioder.tidsrom.utsettelse</id>
