@@ -27,8 +27,10 @@
         <faktum>soknadsvalg.fodselelleradopsjon</faktum>
         <skjemaNummer>P5</skjemaNummer>
         <skjemanummerTillegg>adopsjon</skjemanummerTillegg>
+        <onProperty>skalHaAdopsjonDokumentasjon</onProperty>
         <onValues>
-            <value>adopsjon</value>
+            <value>true</value>
         </onValues>
     </vedlegg>
+
 </soknad>
