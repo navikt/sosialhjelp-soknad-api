@@ -24,11 +24,13 @@
         </onValues>
     </vedlegg>
     <vedlegg>
-        <faktum>soknadsvalg.fodselelleradopsjon</faktum>
+        <faktum>veiledning.adopsjon.overtakelse</faktum>
         <skjemaNummer>P5</skjemaNummer>
         <skjemanummerTillegg>adopsjon</skjemanummerTillegg>
         <onValues>
-            <value>adopsjon</value>
+            <value>ja</value>
+            <value>nei</value>
         </onValues>
     </vedlegg>
+
 </soknad>
