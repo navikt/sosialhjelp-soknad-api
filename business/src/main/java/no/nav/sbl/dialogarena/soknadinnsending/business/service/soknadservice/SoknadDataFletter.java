@@ -34,10 +34,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static java.util.Collections.sort;
 import static java.util.UUID.randomUUID;
@@ -166,26 +163,42 @@ public class SoknadDataFletter {
 
     private void lagreTommeFaktaFraStrukturTilLokalDb(Long soknadId, String skjemanummer, String soknadsType, String id) {
         Timer strukturTimer = createDebugTimer("lagStruktur", soknadsType, id);
-        List<FaktumStruktur> fakta = config.hentStruktur(skjemanummer).getFakta();
-        sort(fakta, sammenlignEtterDependOn());
+        List<FaktumStruktur> faktaStruktur = config.hentStruktur(skjemanummer).getFakta();
+        sort(faktaStruktur, sammenlignEtterDependOn());
         strukturTimer.stop();
         strukturTimer.report();
 
         Timer lagreTimer = createDebugTimer("lagreTommeFakta", soknadsType, id);
-        for (FaktumStruktur faktumStruktur : fakta) {
+
+        List<Faktum> fakta = new ArrayList<>();
+        List<Long> faktumIder = lokalDb.hentLedigeFaktumIder(faktaStruktur.size());
+        Map<String, Long> faktumKeyTilFaktumId = new HashMap<>();
+        int idNr = 0;
+
+        for (FaktumStruktur faktumStruktur : faktaStruktur) {
             if (faktumStruktur.ikkeSystemFaktum() && faktumStruktur.ikkeFlereTillatt()) {
+                Long faktumId = faktumIder.get(idNr++);
+
                 Faktum faktum = new Faktum()
+                        .medFaktumId(faktumId)
+                        .medSoknadId(soknadId)
                         .medKey(faktumStruktur.getId())
                         .medValue("")
                         .medType(BRUKERREGISTRERT);
 
+                faktumKeyTilFaktumId.put(faktumStruktur.getId(), faktumId);
+
                 if (faktumStruktur.getDependOn() != null) {
-                    Faktum parentFaktum = faktaService.hentFaktumMedKey(soknadId, faktumStruktur.getDependOn().getId());
-                    faktum.setParrentFaktum(parentFaktum.getFaktumId());
+                    Long parentId = faktumKeyTilFaktumId.get(faktumStruktur.getDependOn().getId());
+                    faktum.setParrentFaktum(parentId);
                 }
-                faktaService.lagreFaktum(soknadId, faktum);
+
+                fakta.add(faktum);
             }
         }
+
+        lokalDb.batchOpprettTommeFakta(fakta);
+
         lagreTimer.stop();
         lagreTimer.report();
     }
