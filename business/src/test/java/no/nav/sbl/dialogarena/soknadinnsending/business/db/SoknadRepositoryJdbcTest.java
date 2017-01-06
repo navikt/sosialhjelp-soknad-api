@@ -419,7 +419,7 @@ public class SoknadRepositoryJdbcTest {
     }
 
     @Test
-    public void skalRepopulereDatabase() {
+    public void skalRepopulereDatabaseOgSetteSistLagret() {
         soknad = WebSoknad.startSoknad()
                 .medId(101L)
                 .medUuid(uuid)
@@ -433,8 +433,12 @@ public class SoknadRepositoryJdbcTest {
 
         soknadRepository.populerFraStruktur(soknad);
         WebSoknad res = soknadRepository.hentSoknadMedData(soknad.getSoknadId());
+
         soknad.getVedlegg().get(0).setOpprettetDato(res.getVedlegg().get(0).getOpprettetDato());
+        soknad.setSistLagret(res.getSistLagret());
+
         assertThat(res, is(equalTo(soknad)));
+        assertNotNull(res.getSistLagret());
     }
 
     @Test
