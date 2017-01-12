@@ -2,9 +2,7 @@ package no.nav.sbl.dialogarena.sendsoknad.mockmodul.arbeid;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.AnsettelsesPeriode;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Gyldighetsperiode;
+import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.*;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerRequest;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerResponse;
 import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.HentOrganisasjonOrganisasjonIkkeFunnet;
@@ -17,6 +15,8 @@ import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.HentOrganisasjonRequ
 import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.HentOrganisasjonResponse;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+
+import java.math.BigDecimal;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -33,6 +33,7 @@ public class ArbeidsforholdMock {
                     FinnArbeidsforholdPrArbeidstakerResponse response = new FinnArbeidsforholdPrArbeidstakerResponse();
                     Arbeidsforhold arbeidsforhold = new Arbeidsforhold();
                     arbeidsforhold.setAnsettelsesPeriode(hentPeriode());
+                    arbeidsforhold.getArbeidsavtale().add(lagArbeidsavtale());
                     response.getArbeidsforhold().add(arbeidsforhold);
                     return response;
                 }
@@ -46,9 +47,18 @@ public class ArbeidsforholdMock {
         AnsettelsesPeriode periode = new AnsettelsesPeriode();
         Gyldighetsperiode gperiode = new Gyldighetsperiode();
         gperiode.setFom(XMLGregorianCalendarImpl.createDate(2014, 1, 1, 0));
-        gperiode.setTom(XMLGregorianCalendarImpl.createDate(2015, 1, 1, 0));
+//        gperiode.setTom(XMLGregorianCalendarImpl.createDate(2015, 1, 1, 0)); // Denne avgjør om man er ansatt eller ikke for øyeblikket
         periode.setPeriode(gperiode);
         return periode;
+    }
+
+    private Arbeidsavtale lagArbeidsavtale() {
+        Arbeidsavtale avtale = new Arbeidsavtale();
+        avtale.setStillingsprosent(BigDecimal.valueOf(100));
+        Avloenningstyper avloenningstyper = new Avloenningstyper();
+        avloenningstyper.setKodeRef("fast");
+        avtale.setAvloenningstype(avloenningstyper);
+        return avtale;
     }
 
 
