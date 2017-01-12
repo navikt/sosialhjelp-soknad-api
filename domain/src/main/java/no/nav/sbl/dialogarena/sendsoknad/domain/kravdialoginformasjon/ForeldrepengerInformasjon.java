@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ForeldrepengerInformasjon extends KravdialogInformasjon.DefaultOppsett {
 
-    public static final List<String> STONADSTYPER_PERSONALIA = Arrays.asList("overforing", "engangsstonadMor", "engangsstonadFar");
+    public static final List<String> STONADSTYPER_PERSONALIA = Arrays.asList("overforing", "engangsstonadMor", "engangsstonadFar", "endringMor", "endringFar");
 
     public String getSoknadTypePrefix() {
         return "foreldresoknad";
