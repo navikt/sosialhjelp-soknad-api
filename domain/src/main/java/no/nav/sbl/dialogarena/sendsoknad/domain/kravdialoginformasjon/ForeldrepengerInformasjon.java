@@ -29,7 +29,7 @@ public class ForeldrepengerInformasjon extends KravdialogInformasjon.DefaultOpps
     }
 
     public List<String> getSkjemanummer() {
-        return Arrays.asList("NAV 14-05.06", "NAV 14-05.07", "NAV 14-05.08", "NAV 14-05.09");
+        return Arrays.asList("NAV 14-05.06", "NAV 14-05.07", "NAV 14-05.08", "NAV 14-05.09", "NAV 14-05.10");
     }
 
     @Override
