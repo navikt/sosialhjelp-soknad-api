@@ -161,6 +161,14 @@ public class InformasjonRessurs {
         return utslagskriterierResultat;
     }
 
+    @GET
+    @Path("/utslagskriterier/alder")
+    public int hentAlder() {
+        String uid = getSubjectHandler().getUid();
+
+        return new PersonAlder(uid).getAlder();
+    }
+
     @POST
     @Path("/actions/logg")
     public void loggFraKlient(Logg logg) {
