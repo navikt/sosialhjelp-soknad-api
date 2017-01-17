@@ -25,6 +25,25 @@
         </td>
     </tr>
 
+    {{#forFaktum "infofar.opplysninger.kanIkkeOppgi.true.arsak"}}
+        {{#hvisLik "utenlandsk" value}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{hentTekst "infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk"}}</span>
+                    <br/>
+                    <span>{{hentTekst "infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.land"}}: <i>{{hentLand properties.land}}</i></span>
+                    <br/>
+                    {{#forFaktum "infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.fodselsnummer"}}
+                        {{#hvisIkkeTom value}}
+                            <span>{{hentTekst "infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.fodselsnummer"}}: {{value}}</span>
+                        {{/hvisIkkeTom}}
+                    {{/forFaktum}}
+                </td>
+            </tr>
+         {{/hvisLik}}
+    {{/forFaktum}}
+
     {{#forFaktum "rettigheter.omsorg"}}
     <tr>
         <td class="sjekket"></td>
