@@ -10,6 +10,18 @@
         <id>infomor.opplysninger.personinfo</id>
     </faktum>
     <faktum>
+        <id>infomor.opplysninger.kanIkkeOppgi</id>
+    </faktum>
+    <faktum>
+        <id>infofar.opplysninger.kanIkkeOppgi.true.arsak.ukjent</id>
+    </faktum>
+    <faktum>
+        <id>infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.fodselsnummer</id>
+    </faktum>
+    <faktum>
+        <id>infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.land</id>
+    </faktum>
+    <faktum>
         <id>infomor.aleneomsorg.omsorgfradato</id>
         <dependOn>rettigheter.omsorg</dependOn>
         <dependOnValues>
