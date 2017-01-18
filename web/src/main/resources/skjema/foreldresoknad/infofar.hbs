@@ -10,14 +10,12 @@
                 {{else}}
                     {{hentFaktumValue "infofar.opplysninger.fornavn"}} {{hentFaktumValue "infofar.opplysninger.etternavn"}},
                     {{#forFaktum "infofar.opplysninger.personinfo"}}
-                        {{#hvisLik "fodselsdato" properties.valg}}{{formaterLangDato properties.fodselsdato}}{{/hvisLik}}
                         {{#hvisLik "personnummer" properties.valg}}{{properties.personnummer}}{{/hvisLik}}
                     {{/forFaktum}}
                 {{/hvisSant}}
             {{else}}
                 {{hentFaktumValue "infofar.opplysninger.fornavn"}} {{hentFaktumValue "infofar.opplysninger.etternavn"}},
                 {{#forFaktum "infofar.opplysninger.personinfo"}}
-                    {{#hvisLik "fodselsdato" properties.valg}}{{formaterLangDato properties.fodselsdato}}{{/hvisLik}}
                     {{#hvisLik "personnummer" properties.valg}}{{properties.personnummer}}{{/hvisLik}}
                 {{/forFaktum}}
             {{/forFaktum}}
