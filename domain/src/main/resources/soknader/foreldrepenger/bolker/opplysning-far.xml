@@ -13,6 +13,15 @@
         <id>infofar.opplysninger.kanIkkeOppgi</id>
     </faktum>
     <faktum>
+        <id>infofar.opplysninger.kanIkkeOppgi.true.arsak.ukjent</id>
+    </faktum>
+    <faktum>
+        <id>infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.fodselsnummer</id>
+    </faktum>
+    <faktum>
+        <id>infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.land</id>
+    </faktum>
+    <faktum>
         <id>infofar.aleneomsorg.fritekst</id>
     </faktum>
     <faktum>
