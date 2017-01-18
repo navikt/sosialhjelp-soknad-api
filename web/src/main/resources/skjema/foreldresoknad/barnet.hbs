@@ -37,6 +37,22 @@
             </td>
         </tr>
     {{/forFaktum}}
+    {{#forFaktum "barnet.termindatering"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+               <span>{{hentTekst "oppsummering.barnet.termindatering"}} {{ formaterLangDato value}}</span>
+            </td>
+        </tr>
+    {{/forFaktum}}
+    {{#forFaktum "barnet.signertterminbekreftelse"}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                   <span>{{value}} {{hentTekst "oppsummering.barnet.signertterminbekreftelse"}} </span>
+                </td>
+            </tr>
+    {{/forFaktum}}
     {{#forFaktum "barnet.antall"}}
         <tr>
             <td class="sjekket"></td>
