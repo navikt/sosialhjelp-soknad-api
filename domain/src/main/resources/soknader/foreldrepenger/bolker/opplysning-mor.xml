@@ -14,12 +14,24 @@
     </faktum>
     <faktum>
         <id>infofar.opplysninger.kanIkkeOppgi.true.arsak.ukjent</id>
+        <dependOn>infomor.opplysninger.kanIkkeOppgi</dependOn>
+        <dependOnValues>
+            <value>ukjent</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.fodselsnummer</id>
+        <dependOn>infomor.opplysninger.kanIkkeOppgi</dependOn>
+        <dependOnValues>
+            <value>utenlandsk</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.land</id>
+        <dependOn>infomor.opplysninger.kanIkkeOppgi</dependOn>
+        <dependOnValues>
+            <value>utenlandsk</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>infomor.aleneomsorg.omsorgfradato</id>
