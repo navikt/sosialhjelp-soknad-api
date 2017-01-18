@@ -6,6 +6,22 @@
     <faktum>
         <id>barnet.antall</id>
     </faktum>
+    <faktum>
+        <id>barnet.termindatering</id>
+        <dependOn>veiledning.mor.terminbekreftelse</dependOn>
+        <dependOnValues>
+            <value>merEnn26Uker</value>
+            <value>mindreEnn26Uker</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>barnet.signertterminbekreftelse</id>
+        <dependOn>veiledning.mor.terminbekreftelse</dependOn>
+        <dependOnValues>
+            <value>merEnn26Uker</value>
+            <value>mindreEnn26Uker</value>
+        </dependOnValues>
+    </faktum>
 
     <vedlegg>
         <faktum>veiledning.mor.terminbekreftelse</faktum>
