@@ -13,22 +13,29 @@
         <id>infofar.opplysninger.kanIkkeOppgi</id>
     </faktum>
     <faktum>
-        <id>infofar.opplysninger.kanIkkeOppgi.true.arsak.ukjent</id>
+        <id>infofar.opplysninger.kanIkkeOppgi.true.arsak</id>
         <dependOn>infofar.opplysninger.kanIkkeOppgi</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>infofar.opplysninger.kanIkkeOppgi.true.arsak.ukjent</id>
+        <dependOn>infofar.opplysninger.kanIkkeOppgi.true.arsak</dependOn>
         <dependOnValues>
             <value>ukjent</value>
         </dependOnValues>
     </faktum>
     <faktum>
         <id>infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.fodselsnummer</id>
-        <dependOn>infofar.opplysninger.kanIkkeOppgi</dependOn>
+        <dependOn>infofar.opplysninger.kanIkkeOppgi.true.arsak</dependOn>
         <dependOnValues>
             <value>utenlandsk</value>
         </dependOnValues>
     </faktum>
     <faktum>
         <id>infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.land</id>
-        <dependOn>infofar.opplysninger.kanIkkeOppgi</dependOn>
+        <dependOn>infofar.opplysninger.kanIkkeOppgi.true.arsak</dependOn>
         <dependOnValues>
             <value>utenlandsk</value>
         </dependOnValues>
