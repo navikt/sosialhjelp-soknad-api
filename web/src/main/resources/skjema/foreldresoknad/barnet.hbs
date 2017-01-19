@@ -61,4 +61,15 @@
             </td>
         </tr>
     {{/forFaktum}}
+    {{#forFaktum "barnet.forsensoknad.fritekst"}}
+    <tr>
+        <td class="sjekket"></td>
+        <td>
+            <span>{{hentTekst "foreldresoknad.barnetbolk.forsensoknad.sporsmal"}}</span>
+            <p><em>{{value}}</em></p>
+        </td>
+    </tr>
+    {{/forFaktum}}
+
+
 </table>
