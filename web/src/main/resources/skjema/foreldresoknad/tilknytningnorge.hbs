@@ -1,5 +1,15 @@
 <h2>{{ hentTekst "tilknytningnorge.tittel" }}</h2>
 <table>
+
+    {{#forFaktum "tilknytningnorge.oppholder"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>{{ hentTekst (concat "tilknytningnorge.oppholder." value)}}</span>
+            </td>
+        </tr>
+    {{/forFaktum}}
+
     {{#forFaktum "tilknytningnorge.tidligere"}}
         {{#hvisSant value}}
             <tr>
