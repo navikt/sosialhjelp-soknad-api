@@ -23,6 +23,14 @@
         </dependOnValues>
     </faktum>
 
+    <faktum>
+        <id>barnet.alder</id>
+        <dependOn>soknadsvalg.fodselelleradopsjon</dependOn>
+        <dependOnValues>
+            <value>adopsjon</value>
+        </dependOnValues>
+    </faktum>
+
     <vedlegg>
         <faktum>veiledning.mor.terminbekreftelse</faktum>
         <skjemaNummer>R4</skjemaNummer>
