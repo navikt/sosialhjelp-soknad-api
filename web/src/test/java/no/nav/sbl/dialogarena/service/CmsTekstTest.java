@@ -1,23 +1,22 @@
 package no.nav.sbl.dialogarena.service;
 
-import no.nav.sbl.dialogarena.config.ContentConfig;
+import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.context.MessageSource;
-import org.springframework.context.NoSuchMessageException;
 
 import java.io.IOException;
 import java.util.Locale;
+import java.util.Properties;
 
 import static org.apache.commons.lang3.LocaleUtils.toLocale;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CmsTekstTest {
@@ -26,30 +25,30 @@ public class CmsTekstTest {
     CmsTekst cmsTekst;
 
     @Mock
-    ContentConfig.NavMessageWrapper navMessageBundles;
+    NavMessageSource navMessageSource;
 
-
-    private MessageSource messagesourceMock;
+    Properties properties = new Properties();
 
     @Before
     public void setup() {
-        messagesourceMock = mock(MessageSource.class);
-
-        when(navMessageBundles.get(anyString())).thenReturn(messagesourceMock);
-        when(messagesourceMock.getMessage(anyString(), any(Object[].class), any(Locale.class))).thenThrow(new NoSuchMessageException(""));
+        when(navMessageSource.getBundleFor(anyString(), any(Locale.class))).thenReturn(properties);
     }
 
     @Test
     public void kallerMessageSourceToGangerMedOgUtenPrefixNarKeyIkkeEksisterer() throws IOException {
-        cmsTekst.getCmsTekst("min.key", null, "prefix", toLocale("nb_NO"));
+        properties.put("min.key", "jegFinnes");
 
-        verify(messagesourceMock, times(1)).getMessage(eq("prefix.min.key"), any(Object[].class), any(Locale.class));
-        verify(messagesourceMock, times(1)).getMessage(eq("min.key"), any(Object[].class), any(Locale.class));
+        String tekst = this.cmsTekst.getCmsTekst("min.key", null, "prefix", "bundlename", toLocale("nb_NO"));
+        assertThat(tekst).isEqualTo("jegFinnes");
+
+        properties.put("prefikset.kul.key", "finnesOgså");
+        String prefiksTekst = this.cmsTekst.getCmsTekst("kul.key", null, "prefikset", "bundlename", toLocale("nb_NO"));
+        assertThat(prefiksTekst).isEqualTo("finnesOgså");
     }
 
     @Test
     public void getCmsTekstReturnererNullNarKeyMangler() throws IOException {
-        String tekst = cmsTekst.getCmsTekst("min.key", null, "prefix", toLocale("nb_NO"));
+        String tekst = cmsTekst.getCmsTekst("min.key", null, "prefix", "bundlename", toLocale("nb_NO"));
 
         assertThat(tekst).isEqualTo(null);
     }
