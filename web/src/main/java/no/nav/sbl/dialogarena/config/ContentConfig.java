@@ -79,35 +79,6 @@ public class ContentConfig {
         return messageSource;
     }
 
-    @Bean
-    public NavMessageWrapper navMessageBundles() {
-        NavMessageWrapper messages = new NavMessageWrapper();
-        for (KravdialogInformasjon kravdialogInformasjon : kravdialogInformasjonHolder.getSoknadsKonfigurasjoner()) {
-            messages.put(kravdialogInformasjon.getSoknadTypePrefix(), bundleFor(kravdialogInformasjon.getBundleName(), kravdialogInformasjon.brukerEnonicLedetekster()));
-        }
-        return messages;
-    }
-
-    public static class NavMessageWrapper extends HashMap<String, MessageSource>{}
-
-    private NavMessageSource bundleFor(String bundleName, boolean brukerEnonic) {
-        NavMessageSource messageSource = new NavMessageSource();
-
-        String brukerprofilDataDirectoryString = brukerprofilDataDirectory.toURI().toString();
-        NavMessageSource.Bundle dialogBundle;
-
-        dialogBundle = getBundle(bundleName, brukerEnonic, brukerprofilDataDirectoryString);
-
-        NavMessageSource.Bundle fellesBundle = new NavMessageSource.Bundle("sendsoknad", brukerprofilDataDirectoryString + "enonic/sendsoknad", "classpath:content/sendsoknad");
-
-        messageSource.setBasenames(
-                fellesBundle,
-                dialogBundle
-        );
-        messageSource.setDefaultEncoding("UTF-8");
-        return messageSource;
-    }
-
     private NavMessageSource.Bundle getBundle(String bundleName, boolean brukerEnonic, String brukerprofilDataDirectoryString) {
         NavMessageSource.Bundle dialogBundle;
         if (brukerEnonic) {
