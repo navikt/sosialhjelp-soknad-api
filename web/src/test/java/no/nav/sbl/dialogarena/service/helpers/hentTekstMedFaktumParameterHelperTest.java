@@ -15,7 +15,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
 
-import static org.apache.commons.lang.LocaleUtils.toLocale;
+import static org.apache.commons.lang3.LocaleUtils.toLocale;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
