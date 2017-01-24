@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -62,7 +61,6 @@ public class ContentConfig {
         String brukerprofilDataDirectoryString = brukerprofilDataDirectory.toURI().toString();
 
 
-
         NavMessageSource.Bundle[] bundles = new NavMessageSource.Bundle[kravdialogInformasjonHolder.getSoknadsKonfigurasjoner().size()];
         int index = 0;
         for (KravdialogInformasjon kravdialogInformasjon : kravdialogInformasjonHolder.getSoknadsKonfigurasjoner()) {
@@ -76,35 +74,6 @@ public class ContentConfig {
 
         //Sjekk for nye filer en gang hvert 15. sekund.
         messageSource.setCacheSeconds(15);
-        return messageSource;
-    }
-
-    @Bean
-    public NavMessageWrapper navMessageBundles() {
-        NavMessageWrapper messages = new NavMessageWrapper();
-        for (KravdialogInformasjon kravdialogInformasjon : kravdialogInformasjonHolder.getSoknadsKonfigurasjoner()) {
-            messages.put(kravdialogInformasjon.getSoknadTypePrefix(), bundleFor(kravdialogInformasjon.getBundleName(), kravdialogInformasjon.brukerEnonicLedetekster()));
-        }
-        return messages;
-    }
-
-    public static class NavMessageWrapper extends HashMap<String, MessageSource>{}
-
-    private NavMessageSource bundleFor(String bundleName, boolean brukerEnonic) {
-        NavMessageSource messageSource = new NavMessageSource();
-
-        String brukerprofilDataDirectoryString = brukerprofilDataDirectory.toURI().toString();
-        NavMessageSource.Bundle dialogBundle;
-
-        dialogBundle = getBundle(bundleName, brukerEnonic, brukerprofilDataDirectoryString);
-
-        NavMessageSource.Bundle fellesBundle = new NavMessageSource.Bundle("sendsoknad", brukerprofilDataDirectoryString + "enonic/sendsoknad", "classpath:content/sendsoknad");
-
-        messageSource.setBasenames(
-                fellesBundle,
-                dialogBundle
-        );
-        messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
     }
 
