@@ -27,11 +27,11 @@ public class CmsTekst {
             tekst = bundle.getProperty(key);
         }
 
-        try {
-            return MessageFormat.format(tekst, parameters);
-        } catch (NullPointerException e) {
+        if (tekst == null) {
             LOG.warn(String.format("Fant ikke tekst til oppsummering for nokkel %s i bundelen %s", key, bundleName));
+            return tekst;
+        } else {
+            return MessageFormat.format(tekst, parameters);
         }
-        return tekst;
     }
 }
