@@ -29,8 +29,7 @@ import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.modig.lang.option.Optional.none;
 import static no.nav.modig.lang.option.Optional.optional;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.limit;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.selectNextSequenceValue;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -71,8 +70,8 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     private void insertSoknad(WebSoknad soknad, Long databasenokkel) {
         getJdbcTemplate()
-                .update("insert into soknad (soknad_id, uuid, brukerbehandlingid, navsoknadid, aktorid, opprettetdato, status, delstegstatus, behandlingskjedeid, journalforendeEnhet)" +
-                                " values (?,?,?,?,?,?,?,?,?,?)",
+                .update("insert into soknad (soknad_id, uuid, brukerbehandlingid, navsoknadid, aktorid, opprettetdato, status, delstegstatus, behandlingskjedeid, journalforendeEnhet, sistlagret)" +
+                                " values (?,?,?,?,?,?,?,?,?,?, CURRENT_TIMESTAMP)",
                         databasenokkel,
                         soknad.getUuid(),
                         soknad.getBrukerBehandlingId(),
@@ -301,6 +300,16 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     public Long oppdaterFaktum(Faktum faktum, Boolean systemLagring) {
         oppdaterBrukerData(faktum, systemLagring);
         return faktum.getFaktumId();
+    }
+
+    @Override
+    public List<Long> hentLedigeFaktumIder(int antall) {
+        return getJdbcTemplate().queryForList(selectMultipleNextSequenceValues("SOKNAD_BRUKER_DATA_ID_SEQ"), Long.class, antall);
+    }
+
+    @Override
+    public void batchOpprettTommeFakta(List<Faktum> fakta) {
+        getNamedParameterJdbcTemplate().batchUpdate(INSERT_FAKTUM, SqlParameterSourceUtils.createBatch(fakta.toArray()));
     }
 
     private BeanPropertySqlParameterSource forFaktum(Faktum faktum) {
