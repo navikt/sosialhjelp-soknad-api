@@ -44,6 +44,13 @@ public class CmsTekstTest {
         properties.put("prefikset.kul.key", "finnesOgså");
         String prefiksTekst = this.cmsTekst.getCmsTekst("kul.key", null, "prefikset", "bundlename", toLocale("nb_NO"));
         assertThat(prefiksTekst).isEqualTo("finnesOgså");
+
+        properties.put("key.med.parameter", "{0} av {1}");
+        Object[] paramtere = new Object[2];
+        paramtere[0] = "tekst0";
+        paramtere[1] = "tekst1";
+        String paramterTekst = this.cmsTekst.getCmsTekst("key.med.parameter", paramtere, "prefikset", "bundlename", toLocale("nb_NO"));
+        assertThat(paramterTekst).isEqualTo("tekst0 av tekst1");
     }
 
     @Test
