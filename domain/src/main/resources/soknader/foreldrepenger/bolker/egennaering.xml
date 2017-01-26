@@ -5,6 +5,14 @@
     </faktum>
 
     <faktum>
+        <id>egennaering.arbeidegennaering.relasjon</id>
+        <dependOn>egennaering.arbeidegennaering</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+
+    <faktum>
         <id>naeringsvirksomhet</id>
         <dependOn>egennaering.arbeidegennaering</dependOn>
         <dependOnValues>
