@@ -65,6 +65,11 @@
             </openAm>
         </logins>
     </security>
+    
+    <serverOptions>
+        <memoryParameters resourceAlias="brukerdialog-memparams"/>
+    </serverOptions>
+
 
     <loadBalancer isAlive="/sendsoknad/internal/isAlive"/>
 </application>
