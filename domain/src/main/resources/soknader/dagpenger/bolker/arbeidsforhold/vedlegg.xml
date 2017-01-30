@@ -104,17 +104,6 @@
 
     <vedlegg>
         <faktum>arbeidsforhold</faktum>
-        <skjemaNummer>M1</skjemaNummer>
-        <property>arbeidsgivernavn</property>
-        <onProperty>startetForrigeAar</onProperty>
-        <onValues>
-            <value>true</value>
-        </onValues>
-        <flereTillatt>true</flereTillatt>
-    </vedlegg>
-
-    <vedlegg>
-        <faktum>arbeidsforhold</faktum>
         <skjemaNummer>M6</skjemaNummer>
         <property>arbeidsgivernavn</property>
         <onProperty>rotasjonskiftturnus</onProperty>
