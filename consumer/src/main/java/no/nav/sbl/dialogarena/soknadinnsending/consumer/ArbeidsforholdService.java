@@ -26,6 +26,9 @@ public class ArbeidsforholdService {
     @Named("arbeidEndpoint")
     private ArbeidsforholdV3 arbeidsforholdWebWervice;
 
+    @Inject
+    private ArbeidsforholdTransformer arbeidsforholdTransformer;
+
     private static final Regelverker AA_ORDNINGEN = new Regelverker();
     static {
         AA_ORDNINGEN.setValue("A_ORDNINGEN");
@@ -40,7 +43,7 @@ public class ArbeidsforholdService {
 
             List<no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold> arbeidsforhold
                     = arbeidsforholdWebWervice.finnArbeidsforholdPrArbeidstaker(finnArbeidsforholdPrArbeidstakerRequest).getArbeidsforhold();
-            return Lists.transform(arbeidsforhold, new ArbeidsforholdTransformer());
+            return Lists.transform(arbeidsforhold, arbeidsforholdTransformer);
         } catch (FinnArbeidsforholdPrArbeidstakerSikkerhetsbegrensning | FinnArbeidsforholdPrArbeidstakerUgyldigInput e) {
             throw new RuntimeException(e.getMessage(), e);
         }
