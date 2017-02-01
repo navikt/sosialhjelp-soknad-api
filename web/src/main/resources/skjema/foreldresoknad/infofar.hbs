@@ -1,101 +1,51 @@
 <h2>{{hentTekst "infofar.tittel"}}</h2>
 <table>
-    <tr>
-        <td class="sjekket"></td>
-        <td>
-            <span>
-            {{#forFaktum "infofar.opplysninger.kanIkkeOppgi"}}
-                {{#hvisSant value }}
-                    {{hentTekst "foreldresoknad.infofar.opplysninger.kanIkkeOppgi.label"}}
-                {{else}}
-                    {{hentFaktumValue "infofar.opplysninger.fornavn"}} {{hentFaktumValue "infofar.opplysninger.etternavn"}},
-                    {{#forFaktum "infofar.opplysninger.personinfo"}}
-                        {{#hvisLik "personnummer" properties.valg}}{{properties.personnummer}}{{/hvisLik}}
-                    {{/forFaktum}}
-                {{/hvisSant}}
-            {{else}}
-                {{hentFaktumValue "infofar.opplysninger.fornavn"}} {{hentFaktumValue "infofar.opplysninger.etternavn"}},
-                {{#forFaktum "infofar.opplysninger.personinfo"}}
-                    {{#hvisLik "personnummer" properties.valg}}{{properties.personnummer}}{{/hvisLik}}
-                {{/forFaktum}}
-            {{/forFaktum}}
-            </span>
-        </td>
-    </tr>
+    {{#forFaktumHvisSant "infofar.opplysninger.kanIkkeOppgi"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td> <span>{{hentTekst "foreldresoknad.infofar.opplysninger.kanIkkeOppgi.label"}}</span></td>
+        </tr>
 
-    {{#forFaktum "infofar.opplysninger.kanIkkeOppgi"}}
-        {{#hvisSant value }}
-            {{#forFaktum "infofar.opplysninger.kanIkkeOppgi.true.arsak"}}
-                {{#hvisLik "utenlandsk" value}}
-                    <tr>
-                        <td class="sjekket"></td>
-                        <td>
-                            <span>{{hentTekst "infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk"}}</span>
-                            <br/>
-                            <span>{{hentTekst "infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.land"}}: </span> <i>{{hentLand properties.land}}</i>
-                            <br/>
-                            {{#forFaktum "infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.fodselsnummer"}}
-                                {{#hvisIkkeTom value}}
-                                    <span>{{hentTekst "infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.fodselsnummer"}}: </span><i>{{value}}</i>
-                                {{/hvisIkkeTom}}
-                            {{/forFaktum}}
-                        </td>
-                    </tr>
-                 {{/hvisLik}}
-                 {{#hvisLik "ukjent" value}}
-                    <tr>
-                        <td class="sjekket"></td>
-                        <td>
-                            <span>{{hentTekst "infofar.opplysninger.kanIkkeOppgi.true.arsak.ukjent"}}</span>
-                        </td>
-                    </tr>
-                 {{/hvisLik}}
-            {{/forFaktum}}
-        {{/hvisSant}}
-    {{/forFaktum}}
+        {{#forFaktum "infofar.opplysninger.kanIkkeOppgi.true.arsak"}}
+            {{#hvisLik "ukjent" value}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td><span>{{hentTekst "infofar.opplysninger.kanIkkeOppgi.true.arsak.ukjent"}}</span></td>
+                </tr>
+            {{/hvisLik}}
+            {{#hvisLik "utenlandsk" value}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td>
+                        <span>{{hentTekst "infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk"}}</span>
+                        <br/>
+                        <span>{{hentTekst "infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.land"}}: </span> <i>{{hentLand properties.land}}</i>
+                        <br/>
+                        {{#forFaktum "infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.fodselsnummer"}}
+                            {{#hvisIkkeTom value}}
+                                <span>{{hentTekst "infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.fodselsnummer"}}: </span><i>{{value}}</i>
+                            {{/hvisIkkeTom}}
+                        {{/forFaktum}}
+                    </td>
+                </tr>
 
-    {{#forFaktum "rettigheter.omsorg"}}
-    <tr>
-        <td class="sjekket"></td>
-    <td>{{#hvisLik "aleneomsorg" value}}
-        <span>{{hentTekst "infofar.aleneomsorg.alternativ.2"}}</span>
+                {{> skjema/foreldresoknad/kjentfar }}
 
-        <div>{{hentTekst "foreldresoknad.infofar.aleneomsorg.fritekst.label"}}: <em>{{hentFaktumValue "infofar.aleneomsorg.fritekst"}}</em></div>
-    </td>
-    </tr>
-    {{/hvisLik}}
+            {{/hvisLik}}
 
-        {{#hvisLik "morfarborsammen" value}}
-            <span>{{hentTekst "infofar.aleneomsorg.alternativ.1"}}</span>
+        {{/forFaktum}}
+    {{else}}
+         <tr>
+            <td class="sjekket"></td>
+            <td>
+              <span>
+                  {{hentFaktumValue "infofar.opplysninger.fornavn"}} {{hentFaktumValue "infofar.opplysninger.etternavn"}},
+                       {{#forFaktum "infofar.opplysninger.personinfo"}}
+                          {{properties.personnummer}}
+                       {{/forFaktum}}
+              </span>
             </td>
-            </tr>
-            {{#forFaktum "rettighet.harrett"}}
-                {{#hvisIkkeTom value}}
-                    <tr>
-                        <td class="sjekket"></td>
-                        <td>
-                            {{#hvisLik "true" value}}<span>{{hentTekst "infofar.farrett.true"}}</span>{{/hvisLik}}
-                            {{#hvisLik "vetikke" value}}<span>{{hentTekst "infofar.farrett.vetikke"}}</span>{{/hvisLik}}
-                            {{#hvisLik "false" value}}
-                                <span>{{hentTekst "infofar.farrett.false"}}: <em>{{hentFaktumValue "infofar.farrett.fritekst"}}</em></span>
-                            {{/hvisLik}}
-                        </td>
-                    </tr>
-                {{/hvisIkkeTom}}
-            {{/forFaktum}}
-            {{#forFaktum "infofar.informert"}}
-                {{#hvisIkkeTom value}}
-                    <tr>
-                        <td class="sjekket"></td>
-                        <td>
-                            {{#hvisLik "true" value}}<span>{{hentTekst "infofar.informert.true"}}</span>{{/hvisLik}}
-                            {{#hvisLik "false" value}}
-                                <span>{{hentTekst "infofar.informert.false"}}</span>
-                            {{/hvisLik}}
-                        </td>
-                    </tr>
-                {{/hvisIkkeTom}}
-            {{/forFaktum}}
-        {{/hvisLik}}
-    {{/forFaktum}}
+         </tr>
+        {{> skjema/foreldresoknad/kjentfar }}
+    {{/forFaktumHvisSant}}
 </table>
