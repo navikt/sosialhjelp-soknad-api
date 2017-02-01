@@ -1,38 +1,43 @@
 <h2>{{hentTekst "infofar.tittel"}}</h2>
 <table>
     {{#forFaktumHvisSant "infofar.opplysninger.kanIkkeOppgi"}}
-        <tr>
-            <td class="sjekket"></td>
-            <td> <span>{{hentTekst "foreldresoknad.infofar.opplysninger.kanIkkeOppgi.label"}}</span></td>
-        </tr>
-
         {{#forFaktum "infofar.opplysninger.kanIkkeOppgi.true.arsak"}}
+            {{#hvisLik "utenlandsk" value}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td><span>{{hentFaktumValue "infofar.opplysninger.fornavn"}} {{hentFaktumValue "infofar.opplysninger.etternavn"}} </span></td>
+                </tr>
+                <tr>
+                    <td class="sjekket"></td>
+                    <td> <span>{{hentTekst "foreldresoknad.infofar.opplysninger.kanIkkeOppgi.label"}}</span></td>
+                </tr>
+                 <tr>
+                    <td class="sjekket"></td>
+                    <td>
+                        <span>{{hentTekst "infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk"}}</span>
+                        <br/>
+                           {{#forFaktum "infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.fodselsnummer"}}
+                                {{#hvisIkkeTom value}}
+                                      <span>{{hentTekst "infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.fodselsnummer"}}: </span><i>{{value}}</i>
+                                {{/hvisIkkeTom}}
+                           {{/forFaktum}}
+                        <br/>
+                        <span>{{hentTekst "infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.land"}}: </span> <i>{{hentLand properties.land}}</i>
+                    </td>
+                </tr>
+
+                {{> skjema/foreldresoknad/kjentfar }}
+            {{/hvisLik}}
             {{#hvisLik "ukjent" value}}
+                  <tr>
+                            <td class="sjekket"></td>
+                            <td> <span>{{hentTekst "foreldresoknad.infofar.opplysninger.kanIkkeOppgi.label"}}</span></td>
+                        </tr>
                 <tr>
                     <td class="sjekket"></td>
                     <td><span>{{hentTekst "infofar.opplysninger.kanIkkeOppgi.true.arsak.ukjent"}}</span></td>
                 </tr>
             {{/hvisLik}}
-            {{#hvisLik "utenlandsk" value}}
-                <tr>
-                    <td class="sjekket"></td>
-                    <td>
-                        <span>{{hentTekst "infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk"}}</span>
-                        <br/>
-                        <span>{{hentTekst "infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.land"}}: </span> <i>{{hentLand properties.land}}</i>
-                        <br/>
-                        {{#forFaktum "infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.fodselsnummer"}}
-                            {{#hvisIkkeTom value}}
-                                <span>{{hentTekst "infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.fodselsnummer"}}: </span><i>{{value}}</i>
-                            {{/hvisIkkeTom}}
-                        {{/forFaktum}}
-                    </td>
-                </tr>
-
-                {{> skjema/foreldresoknad/kjentfar }}
-
-            {{/hvisLik}}
-
         {{/forFaktum}}
     {{else}}
          <tr>
