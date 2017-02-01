@@ -1,43 +1,42 @@
-<h2>{{hentTekst "foreldresoknad.infomor.tittel"}}</h2>
+<h2>{{hentTekst "infomor.tittel"}}</h2>
 <table>
     {{#forFaktumHvisSant "infomor.opplysninger.kanIkkeOppgi"}}
-        <tr>
-            <td class="sjekket"></td>
-            <td> <span>{{hentTekst "foreldresoknad.infomor.opplysninger.kanIkkeOppgi.label"}}</span></td>
-        </tr>
-
         {{#forFaktum "infomor.opplysninger.kanIkkeOppgi.true.arsak"}}
-            {{#hvisLik "ukjent" value}}
-                <tr>
-                    <td class="sjekket"></td>
-                    <td>
-                        <span>{{hentTekst "infomor.opplysninger.kanIkkeOppgi.true.arsak.ukjent"}}</span>
-
-                        {{#forFaktum 'infomor.opplysninger.kanIkkeOppgi.true.arsak.ukjent.begrunnelse'}}
-                            <br/>
-                            <span>{{hentTekst "infomor.opplysninger.kanIkkeOppgi.true.arsak.ukjent.begrunnelse.sporsmal"}}: <em>{{value}}</em></span>
-                        {{/forFaktum}}
-                    </td>
-                </tr>
-            {{/hvisLik}}
             {{#hvisLik "utenlandsk" value}}
                 <tr>
+                    <td class="sjekket"></td>
+                    <td><span>{{hentFaktumValue "infomor.opplysninger.fornavn"}} {{hentFaktumValue "infomor.opplysninger.etternavn"}} </span></td>
+                </tr>
+                <tr>
+                    <td class="sjekket"></td>
+                    <td> <span>{{hentTekst "infomor.opplysninger.kanIkkeOppgi.label"}}</span></td>
+                </tr>
+                 <tr>
                     <td class="sjekket"></td>
                     <td>
                         <span>{{hentTekst "infomor.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk"}}</span>
                         <br/>
-                        <span>{{hentTekst "infomor.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.land"}}: </span> <i>{{hentLand properties.land}}</i>
+                           {{#forFaktum "infomor.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.fodselsnummer"}}
+                                {{#hvisIkkeTom value}}
+                                      <span>{{hentTekst "infomor.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.fodselsnummer"}}: </span><i>{{value}}</i>
+                                {{/hvisIkkeTom}}
+                           {{/forFaktum}}
                         <br/>
-                        {{#forFaktum "infomor.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.fodselsnummer"}}
-                            {{#hvisIkkeTom value}}
-                                <span>{{hentTekst "infomor.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.fodselsnummer"}}: </span><i>{{value}}</i>
-                            {{/hvisIkkeTom}}
-                        {{/forFaktum}}
+                        <span>{{hentTekst "infomor.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.land"}}: </span> <i>{{hentLand properties.land}}</i>
                     </td>
                 </tr>
 
                 {{> skjema/foreldresoknad/kjentmor }}
-
+            {{/hvisLik}}
+            {{#hvisLik "ukjent" value}}
+                  <tr>
+                            <td class="sjekket"></td>
+                            <td> <span>{{hentTekst "foreldresoknad.infomor.opplysninger.kanIkkeOppgi.label"}}</span></td>
+                        </tr>
+                <tr>
+                    <td class="sjekket"></td>
+                    <td><span>{{hentTekst "infomor.opplysninger.kanIkkeOppgi.true.arsak.ukjent"}}</span></td>
+                </tr>
             {{/hvisLik}}
 
         {{/forFaktum}}
