@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Properties;
 
 public class NavMessageSource extends ReloadableResourceBundleMessageSource {
-
     private Map<String, FileTuple> basenames = new HashMap<>();
     private FileTuple fellesBasename;
 
@@ -35,14 +34,18 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
         Properties properties = getProperties(localFile).getProperties();
         Properties remoteProperties = getProperties(remoteFile).getProperties();
         if (remoteProperties != null) {
-            properties.putAll(remoteProperties);
+            if (properties == null) {
+                return remoteProperties;
+            } else {
+                properties.putAll(remoteProperties);
+            }
         }
 
         return properties;
     }
 
     private String calculateFilenameForLocale(String type, Locale locale) {
-        return type + "_" + locale.getLanguage() + ("".equals(locale.getCountry())?"": "_" + locale.getCountry());
+        return type + "_" + locale.getLanguage() + ("".equals(locale.getCountry()) ? "" : "_" + locale.getCountry());
     }
 
     public String finnTekst(String code, Object[] args, Locale locale) {
@@ -55,14 +58,18 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
         List<String> basenameStrings = new ArrayList<>();
 
         basenameStrings.add(fellesBasename.remoteFile);
-        basenameStrings.add(fellesBasename.localFile);
+        if (fellesBasename.localFile != null) {
+            basenameStrings.add(fellesBasename.localFile);
+        }
 
         List<Bundle> bundlesList = Arrays.asList(soknadBundles);
 
         for (Bundle bundle : bundlesList) {
             basenames.put(bundle.type, bundle.tuple);
             basenameStrings.add(bundle.tuple.remoteFile);
-            basenameStrings.add(bundle.tuple.localFile);
+            if (bundle.tuple.localFile != null) {
+                basenameStrings.add(bundle.tuple.localFile);
+            }
         }
 
         setBasenames(basenameStrings.toArray(new String[basenameStrings.size()]));
@@ -79,6 +86,7 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
     public static class FileTuple {
         private String remoteFile;
         private String localFile;
+
         FileTuple(String remoteFile, String localFile) {
             this.remoteFile = remoteFile;
             this.localFile = localFile;
@@ -96,6 +104,7 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
     public static class Bundle {
         public String type;
         public FileTuple tuple;
+
         public Bundle(String type, String remoteFile, String localFile) {
             this.type = type;
             this.tuple = new FileTuple(remoteFile, localFile);

@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -52,6 +51,7 @@ public class ContentConfig {
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
+    final static String delstiTilbundlefilPaaDisk = "tekster";
 
     @Bean
     public NavMessageSource navMessageSource() {
@@ -60,17 +60,16 @@ public class ContentConfig {
 
         String brukerprofilDataDirectoryString = brukerprofilDataDirectory.toURI().toString();
 
-        messageSource.setBasenames(
-                new NavMessageSource.Bundle("sendsoknad", brukerprofilDataDirectoryString + "enonic/sendsoknad", "classpath:content/sendsoknad"),
-                new NavMessageSource.Bundle("dagpenger", brukerprofilDataDirectoryString + "enonic/dagpenger", "classpath:content/dagpenger"),
-                new NavMessageSource.Bundle("foreldrepenger", brukerprofilDataDirectoryString + "enonic/foreldrepenger", "classpath:content/foreldrepenger"),
-                new NavMessageSource.Bundle("aap", brukerprofilDataDirectoryString + "enonic/aap", "classpath:content/aap"),
-                new NavMessageSource.Bundle("bilstonad", brukerprofilDataDirectoryString + "enonic/bilstonad", "classpath:content/bilstonad"),
-                new NavMessageSource.Bundle("soknadtilleggsstonader", brukerprofilDataDirectoryString + "enonic/tilleggsstonader", "classpath:content/tilleggsstonader"),
-                new NavMessageSource.Bundle("tiltakspenger", brukerprofilDataDirectoryString + "enonic/tiltakspenger", "classpath:content/tiltakspenger"),
-                new NavMessageSource.Bundle("refusjondagligreise", brukerprofilDataDirectoryString + "enonic/refusjondagligreise", "classpath:content/refusjondagligreise")
-        );
 
+        NavMessageSource.Bundle[] bundles = new NavMessageSource.Bundle[kravdialogInformasjonHolder.getSoknadsKonfigurasjoner().size()];
+        int index = 0;
+        for (KravdialogInformasjon kravdialogInformasjon : kravdialogInformasjonHolder.getSoknadsKonfigurasjoner()) {
+            bundles[index++] = (getBundle(kravdialogInformasjon.getBundleName(), kravdialogInformasjon.brukerEnonicLedetekster(), brukerprofilDataDirectoryString));
+        }
+
+        NavMessageSource.Bundle fellesBundle = new NavMessageSource.Bundle("sendsoknad", brukerprofilDataDirectoryString + "enonic/sendsoknad", "classpath:content/sendsoknad");
+
+        messageSource.setBasenames(fellesBundle, bundles);
         messageSource.setDefaultEncoding("UTF-8");
 
         //Sjekk for nye filer en gang hvert 15. sekund.
@@ -78,31 +77,19 @@ public class ContentConfig {
         return messageSource;
     }
 
-    @Bean
-    public NavMessageWrapper navMessageBundles(){
-        NavMessageWrapper messages = new NavMessageWrapper();
-        for (KravdialogInformasjon kravdialogInformasjon: kravdialogInformasjonHolder.getSoknadsKonfigurasjoner()){
-            messages.put(kravdialogInformasjon.getSoknadTypePrefix(), bundleFor(kravdialogInformasjon.getBundleName()));
+    private NavMessageSource.Bundle getBundle(String bundleName, boolean brukerEnonic, String brukerprofilDataDirectoryString) {
+        NavMessageSource.Bundle dialogBundle;
+        if (brukerEnonic) {
+            dialogBundle = new NavMessageSource.Bundle(bundleName, brukerprofilDataDirectoryString + "enonic/" + bundleName, "classpath:content/" + bundleName);
+        } else {
+            final String remoteFile = new File(System.getProperty("folder." + bundleName + ".path")).toURI().toString() + delstiTilbundlefilPaaDisk + "/" + bundleName;
+            dialogBundle = new NavMessageSource.Bundle(bundleName, remoteFile, null);
         }
-        return messages;
-    }
-
-    public static class NavMessageWrapper extends HashMap<String, MessageSource>{}
-
-    private NavMessageSource bundleFor(String bundle) {
-        NavMessageSource messageSource = new NavMessageSource();
-
-        String brukerprofilDataDirectoryString = brukerprofilDataDirectory.toURI().toString();
-        messageSource.setBasenames(
-                new NavMessageSource.Bundle("sendsoknad", brukerprofilDataDirectoryString + "enonic/sendsoknad", "classpath:content/sendsoknad"),
-                new NavMessageSource.Bundle(bundle, brukerprofilDataDirectoryString + "enonic/" + bundle, "classpath:content/" + bundle)
-                );
-        messageSource.setDefaultEncoding("UTF-8");
-        return messageSource;
+        return dialogBundle;
     }
 
     //Hent innholdstekster på nytt hvert tiende minutt
-    @Scheduled(fixedRate=TI_MINUTTER)
+    @Scheduled(fixedRate = TI_MINUTTER)
     public void lastInnNyeInnholdstekster() {
         logger.info("Leser inn innholdstekster fra enonic");
         clearContentCache();
@@ -111,7 +98,6 @@ public class ContentConfig {
             saveLocal("enonic/sendsoknad_en.properties", new URI(cmsBaseUrl + "/app/sendsoknad/en/tekster"));
             saveLocal("enonic/dagpenger_nb_NO.properties", new URI(cmsBaseUrl + "/app/dagpenger/nb_NO/tekster"));
             saveLocal("enonic/dagpenger_en.properties", new URI(cmsBaseUrl + "/app/dagpenger/en/tekster"));
-            saveLocal("enonic/foreldrepenger_nb_NO.properties", new URI(cmsBaseUrl + "/app/foreldrepenger/nb_NO/tekster"));
             saveLocal("enonic/aap_nb_NO.properties", new URI(cmsBaseUrl + "/app/AAP/nb_NO/tekster"));
             saveLocal("enonic/bilstonad_nb_NO.properties", new URI(cmsBaseUrl + "/app/bilstonad/nb_NO/tekster"));
             saveLocal("enonic/tilleggsstonader_nb_NO.properties", new URI(cmsBaseUrl + "/app/tilleggsstonader/nb_NO/tekster"));
@@ -166,7 +152,7 @@ public class ContentConfig {
             Map<String, String> cmsChangeMap = getCmsChangeMap(filename);
             for (Map.Entry<String, Innholdstekst> entry : innhold.entrySet()) {
                 String key = entry.getValue().key;
-                if(cmsChangeMap.containsKey(key)){
+                if (cmsChangeMap.containsKey(key)) {
                     data.append(key).append('=').append("[BYTTET NAVN] ").append(key).append("->").append(cmsChangeMap.get(key)).append(System.lineSeparator());
                     key = cmsChangeMap.get(key);
                 }
@@ -180,10 +166,10 @@ public class ContentConfig {
         String mappingFileName = filename.substring(0, filename.indexOf('_')).replaceAll("enonic", "content") + ".properties.mapping";
         InputStream mapping = ContentConfig.class.getResourceAsStream("/" + mappingFileName);
         Map<String, String> changes = new HashMap<>();
-        if(mapping != null){
+        if (mapping != null) {
             List<String> strings = IOUtils.readLines(mapping, "UTF-8");
             for (String string : strings) {
-                if(string.split("=").length == 2) {
+                if (string.split("=").length == 2) {
                     changes.put(string.split("=")[0], string.split("=")[1]);
                 }
             }

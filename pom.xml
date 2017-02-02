@@ -892,7 +892,7 @@
     <scm>
         <developerConnection>scm:git:http://stash.devillo.no/scm/sokd/sendsoknad.git</developerConnection>
         <url>http://stash.devillo.no/scm/sokd/sendsoknad.git</url>
-        <tag>15.2.2</tag>
+        <tag>16.1.0</tag>
     </scm>
 
     <profiles>

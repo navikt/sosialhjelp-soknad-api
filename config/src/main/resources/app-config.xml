@@ -57,7 +57,13 @@
         <applicationCertificate alias="srvSendsoknad"/>
         <credential alias="arena.personInfoService" mapToProperty="arena.personInfoService"/>
         <credential alias="arbeidservice" mapToProperty="arbeidservice"/>
+
+        <fileLibrary alias="soknadforeldrepenger.ledetekster" mapToProperty="folder.foreldrepenger" />
     </resources>
+    <serverOptions>
+        <memoryParameters resourceAlias="brukerdialog-memparams"/>
+    </serverOptions>
+
     <security serviceUserResourceAlias="srvSendsoknad">
         <logins>
             <openAm>
