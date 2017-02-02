@@ -10,6 +10,7 @@
         <path>/sendsoknad/internal/selftest.json</path>
         <humanReadablePath>/sendsoknad/internal/selftest</humanReadablePath>
     </selftest>
+    
     <artifacts>
         <ear groupId="no.nav.sbl.dialogarena" artifactId="sendsoknad-jee"/>
     </artifacts>
@@ -60,6 +61,7 @@
 
         <fileLibrary alias="soknadforeldrepenger.ledetekster" mapToProperty="folder.foreldrepenger" />
     </resources>
+
     <serverOptions>
         <memoryParameters resourceAlias="brukerdialog-memparams"/>
     </serverOptions>
@@ -71,11 +73,6 @@
             </openAm>
         </logins>
     </security>
-    
-    <serverOptions>
-        <memoryParameters resourceAlias="brukerdialog-memparams"/>
-    </serverOptions>
-
 
     <loadBalancer isAlive="/sendsoknad/internal/isAlive"/>
 </application>
