@@ -2,6 +2,8 @@ package no.nav.sbl.dialogarena.service.helpers;
 
 import com.github.jknack.handlebars.Handlebars;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.service.CmsTekst;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,11 +33,18 @@ public class HentTekstHelperTest {
     @Mock
     CmsTekst cmsTekst;
 
+    @Mock
+    private KravdialogInformasjonHolder kravdialogInformasjonHolder;
+
     @Before
     public void setup() {
+        KravdialogInformasjon kravdialogInformasjon = mock(KravdialogInformasjon.class);
+        when(kravdialogInformasjonHolder.hentKonfigurasjon(anyString())).thenReturn(kravdialogInformasjon);
+        when(kravdialogInformasjon.getBundleName()).thenReturn("bundlename");
+
         handlebars = new Handlebars();
         handlebars.registerHelper(hentTekstHelper.getNavn(), hentTekstHelper);
-        when(cmsTekst.getCmsTekst(anyString(), any(Object[].class), anyString(), any(Locale.class))).then(AdditionalAnswers.returnsFirstArg());
+        when(cmsTekst.getCmsTekst(anyString(), any(Object[].class), anyString(), anyString(), any(Locale.class))).then(AdditionalAnswers.returnsFirstArg());
     }
 
     @Test
@@ -52,7 +61,7 @@ public class HentTekstHelperTest {
 
         handlebars.compileInline("{{hentTekst \"test\" \"param1\" \"param2\"}}").apply(webSoknad);
 
-        verify(cmsTekst, atLeastOnce()).getCmsTekst("test", new Object[]{"param1", "param2"}, "mittprefix", toLocale("nb_NO"));
+        verify(cmsTekst, atLeastOnce()).getCmsTekst("test", new Object[]{"param1", "param2"}, "mittprefix", "bundlename", toLocale("nb_NO"));
     }
 
 }
