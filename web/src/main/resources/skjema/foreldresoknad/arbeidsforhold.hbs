@@ -56,6 +56,20 @@
                                 {{/hvisSant}}
                             {{/hvisSant}}
                         {{/unless}}
+
+                        {{#forBarnefakta "arbeidsforhold.relasjon"}}
+                            {{#hvisSant value}}
+                                <div>{{hentTekst "arbeidsforhold.relasjon.true"}}</div>
+                            {{else}}
+                                <div>{{hentTekst "arbeidsforhold.relasjon.false"}}</div>
+                               {{#forBarnefakta "arbeidsforhold.relasjon.true.fritekst"}}
+                                    <div>{{hentTekst "arbeidsforhold.relasjon.true.infotekst"}}:<em>{{value}}</em></div>
+                               {{/forBarnefakta}}
+                            {{/hvisSant}}
+                        {{/forBarnefakta}}
+
+
+                        </div>
                     </td>
                 </tr>
             {{/forFakta}}
