@@ -4,6 +4,8 @@ import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.service.helpers.*;
 import no.nav.sbl.dialogarena.service.helpers.faktum.ForFaktaMedPropertySattTilTrueHelper;
 import no.nav.sbl.dialogarena.service.helpers.faktum.ForFaktumHelper;
@@ -14,7 +16,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -26,6 +27,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -42,16 +44,20 @@ public class HandleBarKjoererTest {
     @Mock
     private CmsTekst cmsTekst;
 
+    @Mock
+    private KravdialogInformasjonHolder kravdialogInformasjonHolder;
+
 
     @Mock
     private Kodeverk kodeverk;
 
-
-    private ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-
     @Before
     public void setup() {
-        when(cmsTekst.getCmsTekst(any(String.class), any(Object[].class), anyString(), any(Locale.class))).thenReturn("mock");
+        when(cmsTekst.getCmsTekst(any(String.class), any(Object[].class), anyString(), anyString(), any(Locale.class))).thenReturn("mock");
+        KravdialogInformasjon kravdialogInformasjon = mock(KravdialogInformasjon.class);
+        when(kravdialogInformasjonHolder.hentKonfigurasjon(anyString())).thenReturn(kravdialogInformasjon);
+        when(kravdialogInformasjon.getBundleName()).thenReturn("bundlename");
+
         registerHelper(new HvisSantHelper());
         registerHelper(new HvisLikHelper());
         registerHelper(new ForFaktumHelper());

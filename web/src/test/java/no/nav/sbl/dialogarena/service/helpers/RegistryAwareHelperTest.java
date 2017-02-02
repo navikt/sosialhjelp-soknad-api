@@ -7,6 +7,8 @@ import com.github.jknack.handlebars.io.TemplateSource;
 import no.nav.sbl.dialogarena.config.ContentConfig;
 import no.nav.sbl.dialogarena.config.HandlebarsHelperConfig;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
+import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.service.HandlebarRegistry;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.Miljovariabler;
 import org.apache.commons.io.FileUtils;
@@ -110,11 +112,14 @@ public class RegistryAwareHelperTest {
             return mock(HandlebarRegistry.class);
         }
 
-        @Bean(name = "navMessageBundles")
-        public ContentConfig.NavMessageWrapper navMessageBundles() {
-            ContentConfig.NavMessageWrapper wrapper = new ContentConfig.NavMessageWrapper();
-            wrapper.put("", mock(MessageSource.class));
-            return wrapper;
+        @Bean
+        public NavMessageSource navMessageSource() {
+          return mock(NavMessageSource.class);
+        }
+
+        @Bean()
+        public KravdialogInformasjonHolder kravdialogInformasjonHolder() {
+            return mock(KravdialogInformasjonHolder.class);
         }
 
         @Bean()
