@@ -12,6 +12,25 @@
         <flereTillatt>true</flereTillatt>
     </faktum>
 
+    <faktum>
+        <id>arbeidsforhold.relasjon</id>
+        <dependOn>arbeidsforhold</dependOn>
+        <dependOnValues>
+            <value>true</value>
+            <value>false</value>
+        </dependOnValues>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+    <faktum>
+        <id>arbeidsforhold.relasjon.false.fritekst</id>
+        <dependOn>arbeidsforhold.relasjon</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
     <vedlegg>
         <faktum>arbeidsforhold</faktum>
         <skjemaNummer>K4</skjemaNummer>
