@@ -29,13 +29,22 @@
                 {{> skjema/foreldresoknad/kjentmor }}
             {{/hvisLik}}
             {{#hvisLik "ukjent" value}}
-                  <tr>
-                            <td class="sjekket"></td>
-                            <td> <span>{{hentTekst "foreldresoknad.infomor.opplysninger.kanIkkeOppgi.label"}}</span></td>
-                        </tr>
                 <tr>
                     <td class="sjekket"></td>
-                    <td><span>{{hentTekst "infomor.opplysninger.kanIkkeOppgi.true.arsak.ukjent"}}</span></td>
+                    <td> <span>{{hentTekst "foreldresoknad.infomor.opplysninger.kanIkkeOppgi.label"}}</span></td>
+                </tr>
+                <tr>
+                    <td class="sjekket"></td>
+                    <td><span>{{hentTekst "infomor.opplysninger.kanIkkeOppgi.true.arsak.ukjent"}}</span>
+                        {{#forFaktum 'infomor.opplysninger.kanIkkeOppgi.true.arsak.ukjent.begrunnelse'}}
+                            <br/>
+                            <span>
+                                {{hentTekst "infomor.opplysninger.kanIkkeOppgi.true.arsak.ukjent.begrunnelse.sporsmal"}}
+                                <br/>
+                                <em>{{value}}</em>
+                            </span>
+                        {{/forFaktum}}
+                    </td>
                 </tr>
             {{/hvisLik}}
 
