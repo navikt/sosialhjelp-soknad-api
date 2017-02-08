@@ -70,7 +70,6 @@ public class VedleggServiceTest {
         when(soknadService.hentSprak(anyLong())).thenReturn(new Faktum().medValue("nb_NO"));
     }
 
-    @Ignore
     @Test
     public void skalAKonvertereFilerVedOpplasting() throws IOException {
         Vedlegg vedlegg = new Vedlegg()
