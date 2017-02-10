@@ -3,14 +3,6 @@
 
     <xi:include href="../../felles/personalia.xml" />
 
-    <faktum>
-        <id>lonnsOgTrekkOppgave</id>
-        <panel>Personalia</panel>
-        <type>hidden</type>
-        <erSystemFaktum>true</erSystemFaktum>
-    </faktum>
-
-
     <vedlegg>
         <faktum>personalia</faktum>
         <skjemaNummer>T4</skjemaNummer>
