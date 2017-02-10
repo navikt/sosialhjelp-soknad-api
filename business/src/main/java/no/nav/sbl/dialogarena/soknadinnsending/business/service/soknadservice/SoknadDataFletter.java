@@ -140,7 +140,6 @@ public class SoknadDataFletter {
         Long soknadId = lagreSoknadILokalDb(skjemanummer, mainUid, aktorId, behandlingsId).getSoknadId();
         faktaService.lagreFaktum(soknadId, bolkerFaktum(soknadId));
         faktaService.lagreSystemFaktum(soknadId, personalia(soknadId));
-        faktaService.lagreSystemFaktum(soknadId, lonnsOgTrekkOppgave(soknadId));
         oprettIDbTimer.stop();
         oprettIDbTimer.report();
 
@@ -214,14 +213,6 @@ public class SoknadDataFletter {
         Long soknadId = lokalDb.opprettSoknad(nySoknad);
         nySoknad.setSoknadId(soknadId);
         return nySoknad;
-    }
-
-    private Faktum lonnsOgTrekkOppgave(Long soknadId) {
-        return new Faktum()
-                .medSoknadId(soknadId)
-                .medKey("lonnsOgTrekkOppgave")
-                .medType(SYSTEMREGISTRERT)
-                .medValue(startDatoUtil.erJanuarEllerFebruar().toString());
     }
 
     private Faktum bolkerFaktum(Long soknadId) {
