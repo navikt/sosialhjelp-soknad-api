@@ -4,10 +4,7 @@ import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.*;
 import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
@@ -16,9 +13,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadReposito
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
@@ -30,10 +25,7 @@ import org.joda.time.DateTimeUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
@@ -41,19 +33,13 @@ import org.springframework.context.ApplicationContext;
 
 import javax.activation.DataHandler;
 import javax.xml.bind.JAXB;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 import static java.lang.System.setProperty;
 import static java.util.Arrays.asList;
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus.OPPRETTET;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.DAGPENGER;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.RUTES_I_BRUT;
@@ -131,28 +117,6 @@ public class SoknadDataFletterTest {
     }
 
     @Test
-    public void skalLagreFaktumForLonnsOgTrekkoppgaveMedValueTrueDersomSoknadStartesIJanuarEllerFebruar() {
-        Long soknadId = 0L;
-        Faktum lonnsOgTrekkoppgaveFaktum = new Faktum()
-                .medSoknadId(soknadId)
-                .medKey("lonnsOgTrekkOppgave")
-                .medType(SYSTEMREGISTRERT)
-                .medValue("true");
-
-        DateTimeUtils.setCurrentMillisFixed(System.currentTimeMillis());
-        when(henvendelsesConnector.startSoknad(anyString(), anyString(), anyString())).thenReturn("123");
-        when(lokalDb.hentFaktumMedKey(anyLong(), anyString())).thenReturn(new Faktum().medFaktumId(1L));
-        when(lokalDb.hentFaktum(anyLong())).thenReturn(new Faktum().medFaktumId(1L));
-        when(startDatoUtil.erJanuarEllerFebruar()).thenReturn(true);
-        when(lokalDb.opprettSoknad(any(WebSoknad.class))).thenReturn(soknadId);
-        when(lokalDb.hentSoknadMedData(soknadId)).thenReturn(new WebSoknad().medId(soknadId));
-        soknadServiceUtil.startSoknad(DAGPENGER);
-
-        verify(faktaService, times(1)).lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum);
-        DateTimeUtils.setCurrentMillisSystem();
-    }
-
-    @Test
     public void skalStarteSoknad() {
         final long soknadId = 69L;
         DateTimeUtils.setCurrentMillisFixed(System.currentTimeMillis());
@@ -177,28 +141,6 @@ public class SoknadDataFletterTest {
                 .medDelstegStatus(OPPRETTET);
         verify(lokalDb).opprettSoknad(soknad);
         verify(faktaService, atLeastOnce()).lagreFaktum(anyLong(), any(Faktum.class));
-        DateTimeUtils.setCurrentMillisSystem();
-    }
-
-    @Test
-    public void skalLagreFaktumForLonnsOgTrekkoppgaveMedValueFalseDersomSoknadStartesIJanuarEllerFebruar() {
-        Long soknadId = 0L;
-        Faktum lonnsOgTrekkoppgaveFaktum = new Faktum()
-                .medSoknadId(soknadId)
-                .medKey("lonnsOgTrekkOppgave")
-                .medType(SYSTEMREGISTRERT)
-                .medValue("false");
-
-        DateTimeUtils.setCurrentMillisFixed(System.currentTimeMillis());
-        when(henvendelsesConnector.startSoknad(anyString(), anyString(), anyString())).thenReturn("123");
-        when(lokalDb.hentFaktumMedKey(anyLong(), anyString())).thenReturn(new Faktum().medFaktumId(1L));
-        when(lokalDb.hentFaktum(anyLong())).thenReturn(new Faktum().medFaktumId(1L));
-        when(startDatoUtil.erJanuarEllerFebruar()).thenReturn(false);
-        when(lokalDb.opprettSoknad(any(WebSoknad.class))).thenReturn(soknadId);
-        when(lokalDb.hentSoknadMedData(soknadId)).thenReturn(new WebSoknad().medId(soknadId));
-        soknadServiceUtil.startSoknad(DAGPENGER);
-
-        verify(faktaService, times(1)).lagreSystemFaktum(soknadId, lonnsOgTrekkoppgaveFaktum);
         DateTimeUtils.setCurrentMillisSystem();
     }
 
