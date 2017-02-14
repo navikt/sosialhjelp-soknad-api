@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
 
 import java.util.List;
+import java.util.Map;
 
 public interface SoknadRepository {
 
@@ -61,4 +62,6 @@ public interface SoknadRepository {
     Optional<WebSoknad> hentEttersendingMedBehandlingskjedeId(String behandlingsId);
 
     Faktum hentFaktumMedKey(Long soknadId, String faktumKey);
+
+    Map<String, String> hentDatabaseStatus();
 }
