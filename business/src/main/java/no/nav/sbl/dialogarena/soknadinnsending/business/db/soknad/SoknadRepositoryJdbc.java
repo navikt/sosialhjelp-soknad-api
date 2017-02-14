@@ -21,6 +21,7 @@ import javax.inject.Named;
 import javax.sql.DataSource;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -415,5 +416,17 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     private <T> List<T> select(String sql, RowMapper<T> rowMapper, Object... args) {
         return getJdbcTemplate().query(sql, args, rowMapper);
+    }
+
+    @Override
+    public Map<String, String> hentDatabaseStatus() {
+        Map<String, String> statuser = new HashMap<>();
+
+        statuser.put("soknader", getJdbcTemplate().queryForObject("select count(*) from soknad", String.class));
+        statuser.put("faktum", getJdbcTemplate().queryForObject("select count(*) from soknadbrukerdata", String.class));
+        statuser.put("faktumegenskaper", getJdbcTemplate().queryForObject("select count(*) from faktumegenskap", String.class));
+        statuser.put("vedlegg", getJdbcTemplate().queryForObject("select count(*) from vedlegg", String.class));
+
+        return statuser;
     }
 }
