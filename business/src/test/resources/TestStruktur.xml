@@ -46,6 +46,9 @@
         <id>faktumMedVedleggOnTrue</id>
     </faktum>
     <faktum>
+        <id>medSammeKey</id>
+    </faktum>
+    <faktum>
         <id>parentfaktum</id>
     </faktum>
     <faktum>
@@ -131,5 +134,27 @@
             <value>true</value>
         </onValues>
         <flereTillatt>true</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <faktum>medSammeKey</faktum>
+        <skjemanummerTillegg>verdiEn</skjemanummerTillegg>
+        <filterKey>type</filterKey>
+        <filterValues>
+            <value>verdiEn</value>
+        </filterValues>
+        <skjemaNummer>v8</skjemaNummer>
+        <property>type</property>
+        <onProperty>verdiEn</onProperty>
+    </vedlegg>
+    <vedlegg>
+        <faktum>medSammeKey</faktum>
+        <skjemanummerTillegg>verdiTo</skjemanummerTillegg>
+        <filterKey>type</filterKey>
+        <filterValues>
+            <value>verdiTo</value>
+        </filterValues>
+        <skjemaNummer>v8</skjemaNummer>
+        <property>type</property>
+        <onProperty>verdiTo</onProperty>
     </vedlegg>
 </soknad>
