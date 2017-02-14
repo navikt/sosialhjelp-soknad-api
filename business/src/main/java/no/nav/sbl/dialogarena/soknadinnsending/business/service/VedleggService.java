@@ -362,7 +362,7 @@ public class VedleggService {
             }
         }).collect();
 
-        return filtrertFakta.size() > 0 ? filtrertFakta.get(0) : fakta.get(0);
+        return filtrertFakta.isEmpty() ? fakta.get(0) : filtrertFakta.get(0);
     }
 
     private List<Vedlegg> hentPaakrevdeVedleggForForventninger(List<VedleggsGrunnlag> alleMuligeVedlegg) {
