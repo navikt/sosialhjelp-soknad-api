@@ -340,7 +340,7 @@ public class VedleggService {
             Vedlegg.Status status = vedleggsgrunnlag.oppdaterInnsendingsvalg(vedleggErPaakrevd);
             VedleggForFaktumStruktur vedleggForFaktumStruktur = vedleggsgrunnlag.grunnlag.get(0).getLeft();
             List<Faktum> fakta = vedleggsgrunnlag.grunnlag.get(0).getRight();
-            Faktum faktum =  fakta.size() > 1 ? getFaktum(fakta, vedleggsgrunnlag.grunnlag.get(0).getLeft()) : fakta.get(0);
+            Faktum faktum =  fakta.size() > 1 ? getFaktumBasertPaProperties(fakta, vedleggsgrunnlag.grunnlag.get(0).getLeft()) : fakta.get(0);
             if (vedleggsgrunnlag.vedleggHarTittelFraProperty(vedleggForFaktumStruktur, faktum)) {
                 vedleggsgrunnlag.vedlegg.setNavn(faktum.getProperties().get(vedleggForFaktumStruktur.getProperty()));
             } else if (vedleggForFaktumStruktur.harOversetting()) {
@@ -354,15 +354,13 @@ public class VedleggService {
         }
     }
 
-    private Faktum getFaktum(List<Faktum> fakta, final VedleggForFaktumStruktur vedleggFaktumStruktur) {
-        List<Faktum> filtrertFakta = on(fakta).filter(new Predicate<Faktum>() {
+    private Faktum getFaktumBasertPaProperties(List<Faktum> fakta, final VedleggForFaktumStruktur vedleggFaktumStruktur) {
+        return on(fakta).filter(new Predicate<Faktum>() {
             @Override
             public boolean evaluate(Faktum faktum) {
                 return  vedleggFaktumStruktur.getOnProperty().equals(faktum.getProperties().get(vedleggFaktumStruktur.getProperty()));
             }
-        }).collect();
-
-        return filtrertFakta.isEmpty() ? fakta.get(0) : filtrertFakta.get(0);
+        }).head().getOrElse(fakta.get(0));
     }
 
     private List<Vedlegg> hentPaakrevdeVedleggForForventninger(List<VedleggsGrunnlag> alleMuligeVedlegg) {
