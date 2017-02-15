@@ -151,6 +151,21 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         }
     }
 
+    public Optional<WebSoknad> plukkFeillagretSoknadTilSletting() {
+        while (true) {
+            String select = "select * from soknad where sistlagret is null and batch_status = 'LEDIG'" + limit(1);
+            Optional<WebSoknad> soknad = on(getJdbcTemplate().query(select, new SoknadRowMapper())).head();
+            if (!soknad.isSome()) {
+                return none();
+            }
+            String update = "update soknad set batch_status ='TATT' where soknad_id = ? and batch_status = 'LEDIG'";
+            int rowsAffected = getJdbcTemplate().update(update, soknad.get().getSoknadId());
+            if (rowsAffected == 1) {
+                return optional(hentSoknadMedData(soknad.get().getSoknadId()));
+            }
+        }
+    }
+
     public void leggTilbake(WebSoknad webSoknad) {
         getJdbcTemplate().update("update soknad set batch_status = 'LEDIG' where soknad_id = ?", webSoknad.getSoknadId());
     }
