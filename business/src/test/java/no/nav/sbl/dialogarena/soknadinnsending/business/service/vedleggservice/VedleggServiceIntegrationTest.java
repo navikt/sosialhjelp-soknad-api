@@ -227,6 +227,19 @@ public class VedleggServiceIntegrationTest {
         assertThat(vedlegg).hasSize(0);
     }
 
+    @Test
+    public void skalGenerereVedleggMedUliktNavnMedToFaktumSomDependerPaaSammeVedleggtype() {
+        Faktum faktum = new Faktum().medKey("medSammeKey").medProperty("type", "verdiEn");
+        Faktum faktum2 = new Faktum().medKey("medSammeKey").medProperty("type", "verdiTo");
+
+        when(soknadDataFletter.hentSoknad(eq("123"), eq(true), eq(true)))
+                .thenReturn(new WebSoknad().medskjemaNummer("nav-1.1.1")
+                        .medFaktum(faktum).medFaktum(faktum2));
+        List<Vedlegg> vedlegg = vedleggService.genererPaakrevdeVedlegg("123");
+        assertThat(vedlegg).hasSize(2);
+        assertThat(vedlegg).extracting("skjemaNummer").contains("v8", "v8");
+        assertThat(vedlegg).extracting("navn").contains("verdiTo", "verdiEn");
+    }
     private void settOppStruktur() {
         SoknadStruktur testStruktur = JAXB.unmarshal(this.getClass().getResourceAsStream("/TestStruktur.xml"), SoknadStruktur.class);
         when(soknadService.hentSoknadStruktur(eq("nav-1.1.1"))).thenReturn(testStruktur);

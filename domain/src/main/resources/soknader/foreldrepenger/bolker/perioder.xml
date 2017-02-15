@@ -40,21 +40,25 @@
 
     <vedlegg>
         <faktum>perioder.tidsrom.utsettelse</faktum>
-        <skjemanummerTillegg>arbeid</skjemanummerTillegg>
+        <skjemanummerTillegg>ferie</skjemanummerTillegg>
         <filterKey>type</filterKey>
         <filterValues>
             <value>ferie</value>
         </filterValues>
         <skjemaNummer>Z6</skjemaNummer>
+        <property>type</property>
+        <onProperty>ferie</onProperty>
     </vedlegg>
     <vedlegg>
         <faktum>perioder.tidsrom.utsettelse</faktum>
-        <skjemanummerTillegg>ferie</skjemanummerTillegg>
+        <skjemanummerTillegg>arbeid</skjemanummerTillegg>
         <filterKey>type</filterKey>
         <filterValues>
             <value>arbeid</value>
         </filterValues>
         <skjemaNummer>Z6</skjemaNummer>
+        <property>type</property>
+        <onProperty>arbeid</onProperty>
     </vedlegg>
     <vedlegg>
         <faktum>perioder.tidsrom.utsettelse</faktum>
@@ -64,6 +68,8 @@
         </filterValues>
         <skjemaNummer>L9</skjemaNummer>
         <skjemanummerTillegg>utsettelse</skjemanummerTillegg>
+        <property>type</property>
+        <onProperty>sykdom</onProperty>
     </vedlegg>
 
     <vedlegg>
@@ -74,6 +80,8 @@
         </filterValues>
         <skjemaNummer>N9</skjemaNummer>
         <skjemanummerTillegg>innlagt</skjemanummerTillegg>
+        <property>type</property>
+        <onProperty>innlagt</onProperty>
     </vedlegg>
     <vedlegg>
         <faktum>perioder.tidsrom.utsettelse</faktum>
@@ -83,6 +91,8 @@
         </filterValues>
         <skjemaNummer>N9</skjemaNummer>
         <skjemanummerTillegg>barninnlagt</skjemanummerTillegg>
+        <property>type</property>
+        <onProperty>barninnlagt</onProperty>
     </vedlegg>
 
     <!-- Vedlegg mors aktivitet -->
