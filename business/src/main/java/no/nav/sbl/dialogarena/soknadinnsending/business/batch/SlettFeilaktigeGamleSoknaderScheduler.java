@@ -59,7 +59,8 @@ public class SlettFeilaktigeGamleSoknaderScheduler {
             mellomlagreEllerSlettGamleSoknader(feilListe);
             leggTilbake(feilListe);
 
-            logger.info("Jobb fullført: {} søknader ble slettet fra sendsøknad, av dem ble {} mellomlagret i henvendelse, {} feilet og ble lagt tilbake", slettetFraSendsoknad, mellomlagretIHenvendelse, feilListe.size());
+            logger.info("Jobb fullført: {} søknader ble slettet fra sendsøknad, av dem ble {} mellomlagret i henvendelse, {} feilet og ble lagt tilbake",
+                    slettetFraSendsoknad, mellomlagretIHenvendelse, feilListe.size());
         }
 
     }
