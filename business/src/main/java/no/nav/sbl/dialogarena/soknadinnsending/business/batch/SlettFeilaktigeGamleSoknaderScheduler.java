@@ -101,7 +101,7 @@ public class SlettFeilaktigeGamleSoknaderScheduler {
             sendSoknadEndpoint.ping();
             return true;
         } catch (Exception e) {
-            logger.error("Feilet å pinge henvendelse", e);
+            logger.warn("Feilet å pinge henvendelse", e);
             return false;
         }
     }
