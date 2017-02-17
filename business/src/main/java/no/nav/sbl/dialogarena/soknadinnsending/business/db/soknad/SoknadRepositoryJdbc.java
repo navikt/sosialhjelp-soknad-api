@@ -434,13 +434,13 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     }
 
     @Override
-    public Map<String, String> hentDatabaseStatus() {
-        Map<String, String> statuser = new HashMap<>();
+    public Map<String, Integer> hentDatabaseStatus() {
+        Map<String, Integer> statuser = new HashMap<>();
 
-        statuser.put("soknader", getJdbcTemplate().queryForObject("select count(*) from soknad", String.class));
-        statuser.put("faktum", getJdbcTemplate().queryForObject("select count(*) from soknadbrukerdata", String.class));
-        statuser.put("faktumegenskaper", getJdbcTemplate().queryForObject("select count(*) from faktumegenskap", String.class));
-        statuser.put("vedlegg", getJdbcTemplate().queryForObject("select count(*) from vedlegg", String.class));
+        statuser.put("soknader", getJdbcTemplate().queryForObject("select count(*) from soknad", Integer.class));
+        statuser.put("faktum", getJdbcTemplate().queryForObject("select count(*) from soknadbrukerdata", Integer.class));
+        statuser.put("faktumegenskaper", getJdbcTemplate().queryForObject("select count(*) from faktumegenskap", Integer.class));
+        statuser.put("vedlegg", getJdbcTemplate().queryForObject("select count(*) from vedlegg", Integer.class));
 
         return statuser;
     }

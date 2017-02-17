@@ -65,5 +65,5 @@ public interface SoknadRepository {
 
     Optional<WebSoknad> plukkFeillagretSoknadTilSletting();
 
-    Map<String, String> hentDatabaseStatus();
+    Map<String, Integer> hentDatabaseStatus();
 }
