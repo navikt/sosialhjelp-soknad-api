@@ -1,18 +1,22 @@
 {{#forFaktum "rettigheter.omsorg"}}
     <tr>
         <td class="sjekket"></td>
-         <td>
+
         {{#hvisLik "aleneomsorg" value}}
-            <span>{{hentTekst "foreldresoknad.infomor.aleneomsorg.alternativ.2"}}</span>
-                {{#forFaktum "infomor.aleneomsorg.omsorgfradato"}}
-                    <div>{{hentTekst "foreldresoknad.oppsummering.infomor.aleneomsorg.fradato.tekst"}} {{formaterLangDato value}}</div>
+            <td>
+                <span>{{hentTekst "foreldresoknad.infomor.aleneomsorg.alternativ.2"}}</span>
+                    {{#forFaktum "infomor.aleneomsorg.omsorgfradato"}}
+                        <div>{{hentTekst "foreldresoknad.oppsummering.infomor.aleneomsorg.fradato.tekst"}} {{formaterLangDato value}}</div>
+                    {{/forFaktum}}
+                {{#forFaktum "infomor.aleneomsorg.fritekst"}}
+                    <div>{{hentTekst "foreldresoknad.infomor.aleneomsorg.fritekst.sporsmal"}}: <em>{{value}}</em></div>
                 {{/forFaktum}}
-            {{#forFaktum "infomor.aleneomsorg.fritekst"}}
-                <div>{{hentTekst "foreldresoknad.infomor.aleneomsorg.fritekst.sporsmal"}}: <em>{{value}}</em></div>
-            {{/forFaktum}}
+            </td>
+            </tr>
         {{/hvisLik}}
 
         {{#hvisLik "morfarborsammen" value}}
+        <td>
             <span>{{hentTekst "foreldresoknad.infomor.aleneomsorg.alternativ.1"}}</span>
         </td>
         </tr>
