@@ -66,7 +66,7 @@ public class SlettFeilaktigeGamleSoknaderScheduler {
     }
 
     private void mellomlagreEllerSlettGamleSoknader(List<WebSoknad> feilListe) {
-        for (Optional<WebSoknad> ws = soknadRepository.plukkFeillagretSoknadTilSletting(); ws.isSome(); ws = soknadRepository.plukkSoknadTilMellomlagring()) {
+        for (Optional<WebSoknad> ws = soknadRepository.plukkFeillagretSoknadTilSletting(); ws.isSome(); ws = soknadRepository.plukkFeillagretSoknadTilSletting()) {
 
             WebSoknad soknad = ws.get();
 
