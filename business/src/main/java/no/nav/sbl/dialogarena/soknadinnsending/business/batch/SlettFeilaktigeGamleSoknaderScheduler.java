@@ -17,8 +17,6 @@ import javax.inject.Named;
 import javax.xml.bind.JAXB;
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -48,8 +46,6 @@ public class SlettFeilaktigeGamleSoknaderScheduler {
 
     @Scheduled(fixedRate = SCHEDULE_RATE_MS)
     public void startBatchJobb() {
-        List<WebSoknad> feilListe = new ArrayList<>();
-
         batchStartTime = DateTime.now();
         mellomlagretIHenvendelse = 0;
         slettetFraSendsoknad = 0;
