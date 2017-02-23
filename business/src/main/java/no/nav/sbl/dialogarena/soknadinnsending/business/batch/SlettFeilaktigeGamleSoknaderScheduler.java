@@ -31,6 +31,7 @@ public class SlettFeilaktigeGamleSoknaderScheduler {
     private DateTime batchStartTime;
     private int mellomlagretIHenvendelse;
     private int slettetFraSendsoknad;
+    private int feiletHenvendelse;
 
 
 
@@ -52,20 +53,20 @@ public class SlettFeilaktigeGamleSoknaderScheduler {
         batchStartTime = DateTime.now();
         mellomlagretIHenvendelse = 0;
         slettetFraSendsoknad = 0;
+        feiletHenvendelse = 0;
 
         if (Boolean.valueOf(System.getProperty("sendsoknad.batch.enabled", "true"))) {
             logger.info("Starter jobb for å mellomlagre eller slette søknader som har blitt stuck i databasen");
 
-            mellomlagreEllerSlettGamleSoknader(feilListe);
-            leggTilbake(feilListe);
+            mellomlagreEllerSlettGamleSoknader();
 
-            logger.info("Jobb fullført: {} søknader ble slettet fra sendsøknad, av dem ble {} mellomlagret i henvendelse, {} feilet og ble lagt tilbake",
-                    slettetFraSendsoknad, mellomlagretIHenvendelse, feilListe.size());
+            logger.info("Jobb fullført: {} søknader ble slettet fra sendsøknad, av dem ble {} mellomlagret i henvendelse, {} feilet mellomlagring",
+                    slettetFraSendsoknad, mellomlagretIHenvendelse, feiletHenvendelse);
         }
 
     }
 
-    private void mellomlagreEllerSlettGamleSoknader(List<WebSoknad> feilListe) {
+    private void mellomlagreEllerSlettGamleSoknader() {
         for (Optional<WebSoknad> ws = soknadRepository.plukkFeillagretSoknadTilSletting(); ws.isSome(); ws = soknadRepository.plukkFeillagretSoknadTilSletting()) {
 
             WebSoknad soknad = ws.get();
@@ -73,19 +74,14 @@ public class SlettFeilaktigeGamleSoknaderScheduler {
             // Klarer ikke å skille på om Henvendelse er nede eller om søknaden bare ikke finnes når vi etterspør en søknad,
             // da begge deler gir en SOAPException, så pinger Henvendelse først for å kunne vite hva som er tilfelle
             if (!henvendelseErOppe()) {
-                feilListe.add(soknad);
+                soknadRepository.leggTilbake(soknad);
                 return;
             }
 
             if (soknadEksistererIHenvendelse(soknad)) {
-                if (lagreTilHenvendelse(soknad)) {
-                    slettFraLokalDb(soknad);
-                } else {
-                    feilListe.add(soknad);
-                }
-            } else {
-                slettFraLokalDb(soknad);
+                lagreTilHenvendelse(soknad);
             }
+            slettFraLokalDb(soknad);
 
 
             // Avslutt prosessen hvis det er gått for lang tid
@@ -106,11 +102,6 @@ public class SlettFeilaktigeGamleSoknaderScheduler {
         }
     }
 
-    private void leggTilbake(List<WebSoknad> feilliste) {
-        for (WebSoknad soknad : feilliste) {
-            soknadRepository.leggTilbake(soknad);
-        }
-    }
 
     private boolean soknadEksistererIHenvendelse(WebSoknad soknad) {
         try {
@@ -123,17 +114,16 @@ public class SlettFeilaktigeGamleSoknaderScheduler {
         }
     }
 
-    private boolean lagreTilHenvendelse(WebSoknad soknad) {
+    private void lagreTilHenvendelse(WebSoknad soknad) {
         try {
             StringWriter xml = new StringWriter();
             JAXB.marshal(soknad, xml);
             fillagerService.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(xml.toString().getBytes()));
             mellomlagretIHenvendelse++;
             logger.info("Lagret søknad {} i henvendelse", soknad.getBrukerBehandlingId());
-            return true;
         } catch (Exception e) {
+            feiletHenvendelse++;
             logger.error("Lagring i henvendelse feilet for søknad {}", soknad.getBrukerBehandlingId(), e);
-            return false;
         }
     }
 
