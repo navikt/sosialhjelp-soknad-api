@@ -1,20 +1,23 @@
 {{#forFaktum "rettigheter.omsorg"}}
-    <tr>
-        <td class="sjekket"></td>
-         <td>
-        {{#hvisLik "aleneomsorg" value}}
-            <span>{{hentTekst "foreldresoknad.infofar.aleneomsorg.alternativ.2"}}</span>
+    {{#hvisLik "aleneomsorg" value}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>{{hentTekst "foreldresoknad.infofar.aleneomsorg.alternativ.2"}}</span>
                 {{#forFaktum "infofar.aleneomsorg.omsorgfradato"}}
                     <div>{{hentTekst "foreldresoknad.oppsummering.infofar.aleneomsorg.fradato.tekst"}} {{formaterLangDato value}}</div>
                 {{/forFaktum}}
-            {{#forFaktum "infofar.aleneomsorg.fritekst"}}
-                <div>{{hentTekst "foreldresoknad.infofar.aleneomsorg.fritekst.sporsmal"}}: <em>{{value}}</em></div>
-            {{/forFaktum}}
-        {{/hvisLik}}
+                {{#forFaktum "infofar.aleneomsorg.fritekst"}}
+                    <div>{{hentTekst "foreldresoknad.infofar.aleneomsorg.fritekst.sporsmal"}}: <em>{{value}}</em></div>
+                {{/forFaktum}}
+            </td>
+        </tr>
+    {{/hvisLik}}
 
-        {{#hvisLik "morfarborsammen" value}}
-            <span>{{hentTekst "foreldresoknad.infofar.aleneomsorg.alternativ.1"}}</span>
-        </td>
+    {{#hvisLik "morfarborsammen" value}}
+        <tr>
+            <td class="sjekket"></td>
+            <td><span>{{hentTekst "foreldresoknad.infofar.aleneomsorg.alternativ.1"}}</span></td>
         </tr>
         {{#forFaktum "rettighet.harrett"}}
             {{#hvisIkkeTom value}}
