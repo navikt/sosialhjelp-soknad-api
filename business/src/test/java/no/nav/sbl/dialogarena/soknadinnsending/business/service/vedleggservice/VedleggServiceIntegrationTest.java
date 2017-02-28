@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.vedleggservice;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
@@ -19,10 +20,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import javax.inject.Inject;
 import javax.xml.bind.JAXB;
 import java.util.List;
+import java.util.Locale;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.IkkeVedlegg;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.VedleggKreves;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -45,6 +48,9 @@ public class VedleggServiceIntegrationTest {
 
     @Inject
     private SoknadService soknadService;
+
+    @Inject
+    private NavMessageSource navMessageSource;
 
     @Before
     public void setup() {
@@ -83,7 +89,7 @@ public class VedleggServiceIntegrationTest {
     }
 
     @Test
-    public void skalSetteVedleggTilIkkeVedleggOmIngenFaktumMatcher(){
+    public void skalSetteVedleggTilIkkeVedleggOmIngenFaktumMatcher() {
         Faktum faktum = new Faktum().medKey("faktumMedVedleggOnTrue").medValue("false").medFaktumId(1L);
         Vedlegg vedleggForFaktum = new Vedlegg().medSkjemaNummer("v6").medInnsendingsvalg(VedleggKreves);
         when(soknadDataFletter.hentSoknad(eq("123"), eq(true), eq(true)))
@@ -114,7 +120,7 @@ public class VedleggServiceIntegrationTest {
     }
 
     @Test
-    public void skalIkkeGenerereNyttVedleggOmEtAlleredeFinnesMenOppdatereDetEksistende(){
+    public void skalIkkeGenerereNyttVedleggOmEtAlleredeFinnesMenOppdatereDetEksistende() {
         Faktum faktum = new Faktum().medKey("faktumMedVedleggOnTrue").medValue("true").medFaktumId(1L);
         Vedlegg vedleggForFaktum = new Vedlegg().medSkjemaNummer("v6").medInnsendingsvalg(IkkeVedlegg);
         when(soknadDataFletter.hentSoknad(eq("123"), eq(true), eq(true)))
@@ -129,7 +135,7 @@ public class VedleggServiceIntegrationTest {
     }
 
     @Test
-    public void skalKjoreNyLogikkVedUthentingAvVedleggForEtFaktum(){
+    public void skalKjoreNyLogikkVedUthentingAvVedleggForEtFaktum() {
         Faktum vedlegg1 = new Faktum().medFaktumId(3L).medKey("toFaktumMedSammeVedlegg1Unik").medValue("true");
         Faktum vedlegg2 = new Faktum().medFaktumId(4L).medKey("toFaktumMedSammeVedlegg2Unik").medValue("true");
         when(soknadDataFletter.hentSoknad(eq("123"), eq(true), eq(true))).thenReturn(new WebSoknad().medskjemaNummer("nav-1.1.1")
@@ -141,7 +147,7 @@ public class VedleggServiceIntegrationTest {
     }
 
     @Test
-    public void skalGenerereToVedleggOmSkjemanummerTilleggErSatt(){
+    public void skalGenerereToVedleggOmSkjemanummerTilleggErSatt() {
         Faktum faktum = new Faktum().medKey("toFaktumMedSammeVedlegg1").medValue("true").medFaktumId(1L);
         Faktum faktum2 = new Faktum().medKey("toFaktumMedSammeVedleggTillegg").medValue("true").medFaktumId(2L);
         when(soknadDataFletter.hentSoknad(eq("123"), eq(true), eq(true)))
@@ -155,7 +161,7 @@ public class VedleggServiceIntegrationTest {
     }
 
     @Test
-    public void skalGenerereToVedleggOmFlereTillattErTrueOgEtVedlegg(){
+    public void skalGenerereToVedleggOmFlereTillattErTrueOgEtVedlegg() {
         Faktum faktum = new Faktum().medKey("toFaktumMedSammeVedlegg1Unik").medValue("true").medFaktumId(1L);
         Faktum faktum2 = new Faktum().medKey("toFaktumMedSammeVedlegg2Unik").medValue("true").medFaktumId(2L);
         when(soknadDataFletter.hentSoknad(eq("123"), eq(true), eq(true)))
@@ -240,6 +246,25 @@ public class VedleggServiceIntegrationTest {
         assertThat(vedlegg).extracting("skjemaNummer").contains("v8", "v8");
         assertThat(vedlegg).extracting("navn").contains("verdiTo", "verdiEn");
     }
+
+    @Test
+    public void skalSettNavnPaVedleggNaarVedleggHarVedleggsTittel() {
+        String vedleggstittel = "Tittel til vedlegget";
+
+        when(navMessageSource.finnTekst(eq("en.test.nokkel"), any(Object[].class), any(Locale.class))).thenReturn(vedleggstittel);
+
+        Faktum faktum = new Faktum().medKey("faktumMedVedleggTittel").medProperty("enproperty", "enverdi");
+        Faktum faktum2 = new Faktum().medKey("faktumMedVedleggTittel").medProperty("enproperty", "toverdi");
+
+        when(soknadDataFletter.hentSoknad(eq("123"), eq(true), eq(true)))
+                .thenReturn(new WebSoknad().medskjemaNummer("nav-1.1.1")
+                        .medFaktum(faktum).medFaktum(faktum2));
+        List<Vedlegg> vedlegg = vedleggService.genererPaakrevdeVedlegg("123");
+        assertThat(vedlegg).hasSize(1);
+        assertThat(vedlegg).extracting("skjemaNummer").contains("v9");
+        assertThat(vedlegg).extracting("navn").contains(vedleggstittel);
+    }
+
     private void settOppStruktur() {
         SoknadStruktur testStruktur = JAXB.unmarshal(this.getClass().getResourceAsStream("/TestStruktur.xml"), SoknadStruktur.class);
         when(soknadService.hentSoknadStruktur(eq("nav-1.1.1"))).thenReturn(testStruktur);

@@ -58,7 +58,9 @@
             <value>true</value>
         </dependOnValues>
     </faktum>
-
+    <faktum>
+        <id>faktumMedVedleggTittel</id>
+    </faktum>
 
 
     <vedlegg>
@@ -156,5 +158,13 @@
         <skjemaNummer>v8</skjemaNummer>
         <property>type</property>
         <onProperty>verdiTo</onProperty>
+    </vedlegg>
+    <vedlegg>
+        <faktum>faktumMedVedleggTittel</faktum>
+        <skjemanummerTillegg>enverdi</skjemanummerTillegg>
+        <skjemaNummer>v9</skjemaNummer>
+        <property>enproperty</property>
+        <onProperty>enverdi</onProperty>
+        <vedleggTittel>en.test.nokkel</vedleggTittel>
     </vedlegg>
 </soknad>
