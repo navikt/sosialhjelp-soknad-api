@@ -58,6 +58,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import static java.util.Collections.sort;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
@@ -340,12 +342,16 @@ public class VedleggService {
             Vedlegg.Status status = vedleggsgrunnlag.oppdaterInnsendingsvalg(vedleggErPaakrevd);
             VedleggForFaktumStruktur vedleggForFaktumStruktur = vedleggsgrunnlag.grunnlag.get(0).getLeft();
             List<Faktum> fakta = vedleggsgrunnlag.grunnlag.get(0).getRight();
-            Faktum faktum =  fakta.size() > 1 ? getFaktumBasertPaProperties(fakta, vedleggsgrunnlag.grunnlag.get(0).getLeft()) : fakta.get(0);
-            if (vedleggsgrunnlag.vedleggHarTittelFraProperty(vedleggForFaktumStruktur, faktum)) {
+            Faktum faktum = fakta.size() > 1 ? getFaktumBasertPaProperties(fakta, vedleggsgrunnlag.grunnlag.get(0).getLeft()) : fakta.get(0);
+
+            if (vedleggsgrunnlag.vedleggHarTittelFraVedleggTittelProperty(vedleggForFaktumStruktur)) {
+                String cmsnokkel = vedleggForFaktumStruktur.getVedleggTittel();
+                vedleggsgrunnlag.vedlegg.setNavn(vedleggsgrunnlag.navMessageSource.finnTekst(cmsnokkel, new Object[0], vedleggsgrunnlag.soknad.getSprak()));
+            } else if (vedleggsgrunnlag.vedleggHarTittelFraProperty(vedleggForFaktumStruktur, faktum)) {
                 vedleggsgrunnlag.vedlegg.setNavn(faktum.getProperties().get(vedleggForFaktumStruktur.getProperty()));
             } else if (vedleggForFaktumStruktur.harOversetting()) {
                 String cmsnokkel = vedleggForFaktumStruktur.getOversetting().replace("${key}", faktum.getKey());
-                vedleggsgrunnlag.vedlegg.setNavn(vedleggsgrunnlag.navMessageSource.getMessage(cmsnokkel, new Object[0], vedleggsgrunnlag.soknad.getSprak()));
+                vedleggsgrunnlag.vedlegg.setNavn(vedleggsgrunnlag.navMessageSource.finnTekst(cmsnokkel, new Object[0], vedleggsgrunnlag.soknad.getSprak()));
             }
 
             if (!status.equals(orginalStatus) || vedleggsgrunnlag.vedlegg.erNyttVedlegg()) {
@@ -358,7 +364,7 @@ public class VedleggService {
         return on(fakta).filter(new Predicate<Faktum>() {
             @Override
             public boolean evaluate(Faktum faktum) {
-                return  vedleggFaktumStruktur.getOnProperty().equals(faktum.getProperties().get(vedleggFaktumStruktur.getProperty()));
+                return vedleggFaktumStruktur.getOnProperty().equals(faktum.getProperties().get(vedleggFaktumStruktur.getProperty()));
             }
         }).head().getOrElse(fakta.get(0));
     }
