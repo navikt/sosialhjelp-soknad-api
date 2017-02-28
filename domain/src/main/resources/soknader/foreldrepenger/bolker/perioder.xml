@@ -103,6 +103,11 @@
     <!-- Vedlegg mors aktivitet -->
     <vedlegg>
         <faktum>perioder.morsaktivitet</faktum>
+        <filterKey>type</filterKey>
+        <filterValues>
+            <value>arbeid</value>
+            <value>deltid</value>
+        </filterValues>
         <skjemanummerTillegg>morarbeid</skjemanummerTillegg>
         <property>type</property>
         <onProperty>arbeid</onProperty>
@@ -111,6 +116,11 @@
     </vedlegg>
     <vedlegg>
         <faktum>perioder.morsaktivitet</faktum>
+        <filterKey>type</filterKey>
+        <filterValues>
+            <value>studier</value>
+            <value>deltid</value>
+        </filterValues>
         <property>type</property>
         <onProperty>studier</onProperty>
         <skjemaNummer>O9</skjemaNummer>
@@ -118,6 +128,10 @@
     </vedlegg>
     <vedlegg>
         <faktum>perioder.morsaktivitet</faktum>
+        <filterKey>type</filterKey>
+        <filterValues>
+            <value>syk</value>
+        </filterValues>
         <property>type</property>
         <onProperty>syk</onProperty>
         <skjemaNummer>L9</skjemaNummer>
@@ -126,6 +140,10 @@
     </vedlegg>
     <vedlegg>
         <faktum>perioder.morsaktivitet</faktum>
+        <filterKey>type</filterKey>
+        <filterValues>
+            <value>innlagt</value>
+        </filterValues>
         <skjemanummerTillegg>morinnlagt</skjemanummerTillegg>
         <property>type</property>
         <onProperty>innlagt</onProperty>
@@ -134,6 +152,10 @@
     </vedlegg>
     <vedlegg>
         <faktum>perioder.morsaktivitet</faktum>
+        <filterKey>type</filterKey>
+        <filterValues>
+            <value>introduksjonsprogram</value>
+        </filterValues>
         <property>type</property>
         <onProperty>introduksjonsprogram</onProperty>
         <skjemaNummer>T1</skjemaNummer>
@@ -141,10 +163,14 @@
     </vedlegg>
     <vedlegg>
         <faktum>perioder.morsaktivitet</faktum>
+        <filterKey>type</filterKey>
+        <filterValues>
+            <value>kvalifiseringsprogram</value>
+        </filterValues>
         <property>type</property>
         <onProperty>kvalifiseringsprogram</onProperty>
         <skjemaNummer>K3</skjemaNummer>
-        <vedleggTittel>perioder.morsaktivitet.introduksjonsprogram.vedleggtittel</vedleggTittel>
+        <vedleggTittel>perioder.morsaktivitet.kvalifiseringsprogram.vedleggtittel</vedleggTittel>
     </vedlegg>
 
 </soknad>
