@@ -5,6 +5,8 @@ import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.rest.Logg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.PersonAlder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.dto.Land;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
@@ -15,6 +17,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.LandService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeid.ArbeidssokerInfoService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService;
 import no.nav.sbl.dialogarena.utils.InnloggetBruker;
+import org.apache.commons.collections15.Transformer;
 import org.apache.commons.lang3.LocaleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +29,9 @@ import java.util.*;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
+import static no.nav.modig.lang.collections.IterUtils.on;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
 
 /**
  * Klassen håndterer rest kall for å hente informasjon
@@ -59,6 +65,9 @@ public class InformasjonRessurs {
     private WebSoknadConfig webSoknadConfig;
     @Inject
     private TjenesterRessurs tjenesterRessurs;
+    @Inject
+    private KravdialogInformasjonHolder kravdialogInformasjonHolder;
+
 
     @Path("/tjenester")
     public Object getTjenesterRessurs(){
@@ -100,6 +109,23 @@ public class InformasjonRessurs {
         if (sprak == null || sprak.trim().isEmpty()) {
             sprak = "nb_NO";
         }
+        List<KravdialogInformasjon> allKravdialogInformasjon = kravdialogInformasjonHolder.getSoknadsKonfigurasjoner();
+
+        List<String> bundleNames = on(allKravdialogInformasjon).map(new Transformer<KravdialogInformasjon, String>() {
+            @Override
+            public String transform(KravdialogInformasjon kravdialogInformasjon) {
+                return kravdialogInformasjon.getBundleName();
+            }
+        }).collect();
+
+        if(isNotEmpty(type) && !bundleNames.contains(type.toLowerCase())){
+            String prefiksetType = new StringBuilder("soknad").append(type.toLowerCase()).toString();
+            logger.warn("Type {} matcher ikke et bundlename - forsøker med prefiks {}", type, prefiksetType);
+            if(bundleNames.contains(prefiksetType)){
+                type = prefiksetType;
+            }
+        }
+
         Locale locale = LocaleUtils.toLocale(sprak);
         return messageSource.getBundleFor(type, locale);
     }
