@@ -6,11 +6,11 @@
     <parent>
         <groupId>no.nav.sbl.dialogarena</groupId>
         <artifactId>sendsoknad</artifactId>
-        <version>16.1.9</version>
+        <version>16.1.10-SNAPSHOT</version>
     </parent>
 
     <artifactId>sendsoknad-mock</artifactId>
-    <version>16.1.9</version>
+    <version>16.1.10-SNAPSHOT</version>
     <name>${project.artifactId}</name>
 
     <dependencies>
