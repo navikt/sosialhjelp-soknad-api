@@ -60,6 +60,7 @@
         <credential alias="arbeidservice" mapToProperty="arbeidservice"/>
 
         <fileLibrary alias="soknadforeldrepenger.ledetekster" mapToProperty="folder.foreldrepenger" />
+        <fileLibrary alias="soknadaap.ledetekster" mapToProperty="folder.soknadaap" />
     </resources>
 
     <serverOptions>
