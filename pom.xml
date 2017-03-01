@@ -818,7 +818,6 @@
                     <configuration>
                         <propertiesFilesRoot>${project.basedir}/web/src/main/resources/content</propertiesFilesRoot>
                         <propertiesFiler>
-                            <aapnb>aap_nb_NO.properties</aapnb>
                             <ssnb>sendsoknad_nb_NO.properties</ssnb>
                             <ssen>sendsoknad_en.properties</ssen>
                             <dpnb>dagpenger_nb_NO.properties</dpnb>
@@ -829,7 +828,6 @@
                             <tpnb>tiltakspenger_nb_NO.properties</tpnb>
                         </propertiesFiler>
                         <menyPunktPaths>
-                            <aapnb>/site/18/app/AAP/nb_NO/tekster</aapnb>
                             <ssnb>/site/18/app/sendsoknad/nb_NO/tekster</ssnb>
                             <ssen>/site/18/app/sendsoknad/en/tekster</ssen>
                             <dpnb>/site/18/app/dagpenger/nb_NO/tekster</dpnb>
