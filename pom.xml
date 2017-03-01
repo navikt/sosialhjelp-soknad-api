@@ -823,7 +823,6 @@
                             <ssen>sendsoknad_en.properties</ssen>
                             <dpnb>dagpenger_nb_NO.properties</dpnb>
                             <dpen>dagpenger_en.properties</dpen>
-                            <fpnb>foreldrepenger_nb_NO.properties</fpnb>
                             <bsnb>bilstonad_nb_NO.properties</bsnb>
                             <tsnb>tilleggsstonader_nb_NO.properties</tsnb>
                             <rdrnb>refusjondagligreise_nb_NO.properties</rdrnb>
@@ -835,7 +834,6 @@
                             <ssen>/site/18/app/sendsoknad/en/tekster</ssen>
                             <dpnb>/site/18/app/dagpenger/nb_NO/tekster</dpnb>
                             <dpen>/site/18/app/dagpenger/en/tekster</dpen>
-                            <fpnb>/site/18/app/foreldrepenger/nb_NO/tekster</fpnb>
                             <bsnb>/site/18/app/bilstonad/nb_NO/tekster</bsnb>
                             <tsnb>/site/18/app/tilleggsstonader/nb_NO/tekster</tsnb>
                             <rdrnb>/site/18/app/refusjondagligreise/nb_NO/tekster</rdrnb>

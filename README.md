@@ -34,7 +34,7 @@ Dette kan også løses med en kombinasjon av alias og funksjoner for å forenkle
 * Endre dialogen sin kravdialogInformasjon implementasjon slik at brukerEnonic returnerer false
 * Lag et nytt git-repo hvor tekstene skal ligge - se soknadforeldrepenger-tekster for eksempel. Les gjerne readme for fremgangsmåte
 * I app-config legges til fileLibrary som refererer til hvor det ble satt i tekster-appen at tekstene skal legges på disk
-* Slett tekster-property-filen tilhørende dialogen
+* Slett tekster-property-filen tilhørende dialogen og menypunkt-path i hovedpom'en
 * Legg til ny property i environment-test.properties-fil som peker til propertiesfilene som blir bygget i tekster-appen (blir brukt i contentConfig for å finne tekstbundlene, se folder.foreldrepenger.path for eks)
 * Hvis det er den siste teksten, vurder og bytte ut NavMessageSource med utave-biblioteket
 
