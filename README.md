@@ -37,5 +37,6 @@ Dette kan også løses med en kombinasjon av alias og funksjoner for å forenkle
 * Slett tekster-property-filen tilhørende dialogen og menypunkt-path i hovedpom'en
 * Legg til ny property i environment-test.properties-fil som peker til propertiesfilene som blir bygget i tekster-appen (blir brukt i contentConfig for å finne tekstbundlene, se folder.foreldrepenger.path for eks)
 * Hvis det er den siste teksten, vurder og bytte ut NavMessageSource med utave-biblioteket
+* Fjern referanse til property fil fra ContentConfig (lastInnNyeInnholdstekster metoden)
 
 
