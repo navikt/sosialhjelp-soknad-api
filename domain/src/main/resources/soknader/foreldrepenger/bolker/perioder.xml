@@ -48,6 +48,7 @@
         <skjemaNummer>Z6</skjemaNummer>
         <property>type</property>
         <onProperty>ferie</onProperty>
+        <vedleggTittel>perioder.leggtil.utsettelse.ferie.vedleggtittel</vedleggTittel>
     </vedlegg>
     <vedlegg>
         <faktum>perioder.tidsrom.utsettelse</faktum>
@@ -59,6 +60,7 @@
         <skjemaNummer>Z6</skjemaNummer>
         <property>type</property>
         <onProperty>arbeid</onProperty>
+        <vedleggTittel>perioder.leggtil.utsettelse.arbeid.vedleggtittel</vedleggTittel>
     </vedlegg>
     <vedlegg>
         <faktum>perioder.tidsrom.utsettelse</faktum>
@@ -70,6 +72,7 @@
         <skjemanummerTillegg>utsettelse</skjemanummerTillegg>
         <property>type</property>
         <onProperty>sykdom</onProperty>
+        <vedleggTittel>perioder.leggtil.utsettelse.sykdom.vedleggtittel</vedleggTittel>
     </vedlegg>
 
     <vedlegg>
@@ -82,6 +85,7 @@
         <skjemanummerTillegg>innlagt</skjemanummerTillegg>
         <property>type</property>
         <onProperty>innlagt</onProperty>
+        <vedleggTittel>perioder.leggtil.utsettelse.innlagt.vedleggtittel</vedleggTittel>
     </vedlegg>
     <vedlegg>
         <faktum>perioder.tidsrom.utsettelse</faktum>
@@ -93,66 +97,80 @@
         <skjemanummerTillegg>barninnlagt</skjemanummerTillegg>
         <property>type</property>
         <onProperty>barninnlagt</onProperty>
+        <vedleggTittel>perioder.leggtil.utsettelse.barninnlagt.vedleggtittel</vedleggTittel>
     </vedlegg>
 
     <!-- Vedlegg mors aktivitet -->
     <vedlegg>
-        <faktum>vedlegg.hjelpefaktum</faktum>
+        <faktum>perioder.morsaktivitet</faktum>
+        <filterKey>type</filterKey>
+        <filterValues>
+            <value>arbeid</value>
+            <value>deltid</value>
+        </filterValues>
         <skjemanummerTillegg>morarbeid</skjemanummerTillegg>
-        <property>morarbeidVedleggtittel</property>
-        <onProperty>morarbeid</onProperty>
-        <onValues>
-            <value>true</value>
-        </onValues>
+        <property>type</property>
+        <onProperty>arbeid</onProperty>
         <skjemaNummer>Z6</skjemaNummer>
+        <vedleggTittel>perioder.morsaktivitet.arbeid.vedleggtittel</vedleggTittel>
     </vedlegg>
-
     <vedlegg>
-        <faktum>vedlegg.hjelpefaktum</faktum>
-        <property>morstudierVedleggtittel</property>
-        <onProperty>morstudier</onProperty>
-        <onValues>
-            <value>true</value>
-        </onValues>
+        <faktum>perioder.morsaktivitet</faktum>
+        <filterKey>type</filterKey>
+        <filterValues>
+            <value>studier</value>
+            <value>deltid</value>
+        </filterValues>
+        <property>type</property>
+        <onProperty>studier</onProperty>
         <skjemaNummer>O9</skjemaNummer>
+        <vedleggTittel>perioder.morsaktivitet.studier.vedleggtittel</vedleggTittel>
     </vedlegg>
     <vedlegg>
-        <faktum>vedlegg.hjelpefaktum</faktum>
-        <property>morsykVedleggtittel</property>
-        <onProperty>morsyk</onProperty>
-        <onValues>
-            <value>true</value>
-        </onValues>
+        <faktum>perioder.morsaktivitet</faktum>
+        <filterKey>type</filterKey>
+        <filterValues>
+            <value>syk</value>
+        </filterValues>
+        <property>type</property>
+        <onProperty>syk</onProperty>
         <skjemaNummer>L9</skjemaNummer>
         <skjemanummerTillegg>aktivitetskrav</skjemanummerTillegg>
+        <vedleggTittel>perioder.morsaktivitet.morsyk.vedleggtittel</vedleggTittel>
     </vedlegg>
     <vedlegg>
-        <faktum>vedlegg.hjelpefaktum</faktum>
+        <faktum>perioder.morsaktivitet</faktum>
+        <filterKey>type</filterKey>
+        <filterValues>
+            <value>innlagt</value>
+        </filterValues>
         <skjemanummerTillegg>morinnlagt</skjemanummerTillegg>
-        <property>morinnlagtVedleggtittel</property>
-        <onProperty>morinnlagt</onProperty>
-        <onValues>
-            <value>true</value>
-        </onValues>
+        <property>type</property>
+        <onProperty>innlagt</onProperty>
         <skjemaNummer>N9</skjemaNummer>
+        <vedleggTittel>perioder.morsaktivitet.morinnlagt.vedleggtittel</vedleggTittel>
     </vedlegg>
     <vedlegg>
-        <faktum>vedlegg.hjelpefaktum</faktum>
-        <property>introduksjonsprogramVedleggtittel</property>
+        <faktum>perioder.morsaktivitet</faktum>
+        <filterKey>type</filterKey>
+        <filterValues>
+            <value>introduksjonsprogram</value>
+        </filterValues>
+        <property>type</property>
         <onProperty>introduksjonsprogram</onProperty>
-        <onValues>
-            <value>true</value>
-        </onValues>
         <skjemaNummer>T1</skjemaNummer>
+        <vedleggTittel>perioder.morsaktivitet.introduksjonsprogram.vedleggtittel</vedleggTittel>
     </vedlegg>
     <vedlegg>
-        <faktum>vedlegg.hjelpefaktum</faktum>
-        <property>kvalifiseringsprogramVedleggtittel</property>
+        <faktum>perioder.morsaktivitet</faktum>
+        <filterKey>type</filterKey>
+        <filterValues>
+            <value>kvalifiseringsprogram</value>
+        </filterValues>
+        <property>type</property>
         <onProperty>kvalifiseringsprogram</onProperty>
-        <onValues>
-            <value>true</value>
-        </onValues>
         <skjemaNummer>K3</skjemaNummer>
+        <vedleggTittel>perioder.morsaktivitet.kvalifiseringsprogram.vedleggtittel</vedleggTittel>
     </vedlegg>
 
 </soknad>
