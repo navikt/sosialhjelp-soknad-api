@@ -3,12 +3,27 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import org.springframework.stereotype.Component;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
+import org.slf4j.Logger;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.Map;
 
-@Component
+import static org.slf4j.LoggerFactory.getLogger;
+
+@Service
 public class SoknadMetricsService {
+
+    private static final Logger logger = getLogger(SoknadMetricsService.class);
+
+    private static final long RAPPORTERINGS_RATE = 15 * 60 * 1000; // hvert kvarter
+
+    @Inject
+    @Named("soknadInnsendingRepository")
+    private SoknadRepository lokalDb;
 
     @Inject
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
@@ -36,5 +51,18 @@ public class SoknadMetricsService {
     private String getSoknadstype(String skjemanummer, boolean erEttersending) {
         String type = kravdialogInformasjonHolder.hentKonfigurasjon(skjemanummer).getSoknadTypePrefix();
         return (erEttersending ? "ettersending." : "") + type;
+    }
+
+    @Scheduled(fixedRate = RAPPORTERINGS_RATE)
+    public void rapporterSoknadDatabaseStatus() {
+        logger.info("Henter databasestatus for å rapportere metrics");
+        Map<String, Integer> statuser = lokalDb.hentDatabaseStatus();
+
+        for (Map.Entry<String, Integer> entry : statuser.entrySet()) {
+            logger.info("Databasestatus for {} er {}", entry.getKey(), entry.getValue());
+            Event event = MetricsFactory.createEvent("status.database." + entry.getKey());
+            event.addFieldToReport("antall", entry.getValue());
+            event.report();
+        }
     }
 }
