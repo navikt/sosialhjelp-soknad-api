@@ -63,7 +63,5 @@ public interface SoknadRepository {
 
     Faktum hentFaktumMedKey(Long soknadId, String faktumKey);
 
-    Optional<WebSoknad> plukkFeillagretSoknadTilSletting();
-
     Map<String, Integer> hentDatabaseStatus();
 }
