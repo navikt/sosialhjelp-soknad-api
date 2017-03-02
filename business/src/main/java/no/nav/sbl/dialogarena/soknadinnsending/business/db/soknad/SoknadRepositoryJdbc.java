@@ -21,6 +21,7 @@ import javax.inject.Named;
 import javax.sql.DataSource;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -138,6 +139,21 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     public Optional<WebSoknad> plukkSoknadTilMellomlagring() {
         while (true) {
             String select = "select * from soknad where sistlagret < CURRENT_TIMESTAMP - (INTERVAL '1' HOUR) and batch_status = 'LEDIG'" + limit(1);
+            Optional<WebSoknad> soknad = on(getJdbcTemplate().query(select, new SoknadRowMapper())).head();
+            if (!soknad.isSome()) {
+                return none();
+            }
+            String update = "update soknad set batch_status ='TATT' where soknad_id = ? and batch_status = 'LEDIG'";
+            int rowsAffected = getJdbcTemplate().update(update, soknad.get().getSoknadId());
+            if (rowsAffected == 1) {
+                return optional(hentSoknadMedData(soknad.get().getSoknadId()));
+            }
+        }
+    }
+
+    public Optional<WebSoknad> plukkFeillagretSoknadTilSletting() {
+        while (true) {
+            String select = "select * from soknad where sistlagret is null and batch_status = 'LEDIG'" + limit(1);
             Optional<WebSoknad> soknad = on(getJdbcTemplate().query(select, new SoknadRowMapper())).head();
             if (!soknad.isSome()) {
                 return none();
@@ -415,5 +431,17 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     private <T> List<T> select(String sql, RowMapper<T> rowMapper, Object... args) {
         return getJdbcTemplate().query(sql, args, rowMapper);
+    }
+
+    @Override
+    public Map<String, Integer> hentDatabaseStatus() {
+        Map<String, Integer> statuser = new HashMap<>();
+
+        statuser.put("soknader", getJdbcTemplate().queryForObject("select count(*) from soknad", Integer.class));
+        statuser.put("faktum", getJdbcTemplate().queryForObject("select count(*) from soknadbrukerdata", Integer.class));
+        statuser.put("faktumegenskaper", getJdbcTemplate().queryForObject("select count(*) from faktumegenskap", Integer.class));
+        statuser.put("vedlegg", getJdbcTemplate().queryForObject("select count(*) from vedlegg", Integer.class));
+
+        return statuser;
     }
 }
