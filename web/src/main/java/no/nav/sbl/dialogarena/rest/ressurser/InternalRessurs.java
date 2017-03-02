@@ -14,6 +14,7 @@ import no.nav.sbl.dialogarena.service.HtmlGenerator;
 import no.nav.sbl.dialogarena.service.helpers.HvisLikHelper;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
+import no.nav.sbl.dialogarena.soknadinnsending.business.batch.SlettFeilaktigeGamleSoknaderScheduler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
@@ -42,6 +43,8 @@ public class InternalRessurs {
     @Inject
     private LagringsScheduler lagringsScheduler;
     @Inject
+    private SlettFeilaktigeGamleSoknaderScheduler slettFeilaktigeGamleSoknaderScheduler;
+    @Inject
     private CacheManager cacheManager;
     @Inject
     private NavMessageSource messageSource;
@@ -54,7 +57,6 @@ public class InternalRessurs {
     @Inject
     private PDFService pdfService;
 
-
     private PersonPortTypeMock personPortTypeMock = PersonMock.getInstance().getPersonPortTypeMock();
 
     private static final Logger LOG = LoggerFactory.getLogger(InternalRessurs.class);
@@ -63,7 +65,6 @@ public class InternalRessurs {
     @Path("/isAlive")
     @Produces(MediaType.APPLICATION_JSON)
     public String isAlive() {
-        logAccess("isAlive");
         return "{status: \"ok\", message: \"soknadsapiet fungerer\"}";
     }
 
@@ -72,6 +73,13 @@ public class InternalRessurs {
     public void kjorLagring() throws InterruptedException {
         logAccess("kjorLagring");
         lagringsScheduler.mellomlagreSoknaderOgNullstillLokalDb();
+    }
+
+    @POST
+    @Path(value = "/slettgamle")
+    public void slettgamle() throws InterruptedException {
+        logAccess("slettgamle");
+        slettFeilaktigeGamleSoknaderScheduler.startBatchJobb();
     }
 
     @GET
