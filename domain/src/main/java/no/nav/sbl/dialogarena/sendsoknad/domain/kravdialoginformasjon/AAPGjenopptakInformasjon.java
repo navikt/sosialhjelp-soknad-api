@@ -39,7 +39,11 @@ public class AAPGjenopptakInformasjon extends KravdialogInformasjon.DefaultOppse
 
     @Override
     public String getBundleName() {
-        return "aap";
+        return "soknadaap";
     }
 
+    @Override
+    public boolean brukerEnonicLedetekster() {
+        return false;
+    }
 }
