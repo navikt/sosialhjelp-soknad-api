@@ -52,8 +52,13 @@ public class SoknadXmlValiderer {
     }
 
     @Test
-    public void testAapXml() throws Exception {
+    public void testAapOrdinaerXml() throws Exception {
         testOmXmlValiderer("aap/aap_ordinaer.xml");
+    }
+
+    @Test
+    public void testAapGjenopptakXml() throws Exception {
+        testOmXmlValiderer("aap/aap_gjenopptak.xml");
     }
 
     private void testOmXmlValiderer(String xmlFilNavn) throws Exception {
