@@ -1,9 +1,14 @@
-<soknad temaKode="AAP" xmlns="urn:no.nav.sbl">
+<soknad temaKode="AAP" xmlns="urn:no.nav.sbl" xmlns:xi="http://www.w3.org/2001/XInclude">
 
     <!-- Søknadstype -->
     <faktum>
         <id>soknadstype</id>
     </faktum>
+
+
+
+    <!-- Bolker -->
+    <xi:include href="bolker/tilknytningnorge.xml" />
 
     <!-- Ny periode -->
     <faktum>
@@ -56,37 +61,7 @@
         <id>tilleggsopplysninger.fritekst</id>
     </faktum>
 
-    <!-- Tilknytning Norge -->
-    <!-- Opphold i Norge siste tre år -->
-    <faktum>
-        <id>tilknytningNorge.oppholdINorgeSisteTreAar</id>
-    </faktum>
-    <faktum>
-        <id>tilknytningNorge.oppholdINorgeSisteTreAar.false.boddINorgeSisteAaret</id>
-    </faktum>
-    <faktum>
-        <id>tilknytningNorge.oppholdINorgeSisteTreAar.false.boddIEOSLandSisteTreAar</id>
-    </faktum>
-    <faktum>
-        <id>tilknytningNorge.oppholdINorgeSisteTreAar.false.registrertFlyktning</id>
-        <dependOn>tilknytningNorge.oppholdINorgeSisteTreAar</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
-    </faktum>
-    <faktum>
-        <id>tilknytningNorge.oppholdINorgeSisteTreAar.false.ingenPassendeSituasjoner</id>
-    </faktum>
 
-    <!-- Tilknytning Norge -->
-    <!-- Arbeid i utlandet før sykdom -->
-    <faktum>
-        <id>tilknytningNorge.arbeidIUtlandet</id>
-    </faktum>
-    <faktum>
-        <id>tilknytningNorge.arbeidIUtlandet.periode</id>
-        <flereTillatt>true</flereTillatt>
-    </faktum>
 
     <!-- Nåværende situasjon -->
     <faktum>
@@ -251,14 +226,6 @@
         <skjemaNummer>L9</skjemaNummer>
     </vedlegg>
 
-    <!-- Bekreftelse på flyktningstatus -->
-    <vedlegg>
-        <faktum>tilknytningNorge.oppholdINorgeSisteTreAar.false.registrertFlyktning</faktum>
-        <onValues>
-            <value>true</value>
-        </onValues>
-        <skjemaNummer>P2</skjemaNummer>
-    </vedlegg>
 
     <!-- Spesialisterklæring -->
     <vedlegg>
