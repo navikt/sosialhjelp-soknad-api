@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl">
+    <faktum>
+        <id>fastlege.navn</id>
+    </faktum>
+    <faktum>
+        <id>fastlege.tlfnr</id>
+    </faktum>
+    <faktum>
+        <id>fastlege.harIkkeFastlege</id>
+    </faktum>
+    <faktum>
+        <id>fastlege.annen.behandlende.navn</id>
+    </faktum>
+    <faktum>
+        <id>fastlege.annen.behandlende.tlfnr</id>
+    </faktum>
+</soknad>
