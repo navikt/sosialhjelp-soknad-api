@@ -1,9 +1,6 @@
 <soknad temaKode="AAP" xmlns="urn:no.nav.sbl" xmlns:xi="http://www.w3.org/2001/XInclude">
 
-    <!-- Søknadstype -->
-    <faktum>
-        <id>soknadstype</id>
-    </faktum>
+    <xi:include href="soknadstype.xml" />
 
     <!-- Bolker -->
     <xi:include href="bolker/tilknytningnorge.xml" />
@@ -25,19 +22,6 @@
         <id>barn</id>
         <flereTillatt>true</flereTillatt>
     </faktum>
-
-
-
-    <!-- Legeerklæring, skal komme på ordinærsøknaden uansett hvilke valg som blir gjort -->
-    <vedlegg>
-    <faktum>soknadstype</faktum>
-        <onValues>
-            <value>ordinaer</value>
-        </onValues>
-        <skjemaNummer>L9</skjemaNummer>
-    </vedlegg>
-
-
 
     <!-- Fødselsattest/bostedsbevis for barn under 18 år -->
     <vedlegg>
