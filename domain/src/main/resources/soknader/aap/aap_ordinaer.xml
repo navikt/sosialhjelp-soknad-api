@@ -11,6 +11,7 @@
     <xi:include href="bolker/tilknytningnorge.xml" />
     <xi:include href="bolker/navaerendesituasjon.xml" />
     <xi:include href="bolker/samtalemednav.xml" />
+    <xi:include href="bolker/yrkesskade.xml" />
 
     <!-- Ny periode -->
     <faktum>
@@ -63,12 +64,6 @@
         <id>tilleggsopplysninger.fritekst</id>
     </faktum>
 
-
-
-    <!-- Yrkesskade -->
-    <faktum>
-        <id>yrkesskade.soeknadsgrunn</id>
-    </faktum>
 
     <!-- Ung ufør -->
     <faktum>
