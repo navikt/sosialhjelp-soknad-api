@@ -9,6 +9,7 @@
 
     <!-- Bolker -->
     <xi:include href="bolker/tilknytningnorge.xml" />
+    <xi:include href="bolker/navaerendesituasjon.xml" />
 
     <!-- Ny periode -->
     <faktum>
@@ -62,44 +63,6 @@
     </faktum>
 
 
-
-    <!-- Nåværende situasjon -->
-    <faktum>
-        <id>navaerendeSituasjon.iArbeid</id>
-    </faktum>
-    <faktum>
-        <id>navaerendeSituasjon.iArbeid.ansatt</id>
-    </faktum>
-    <faktum>
-        <id>navaerendeSituasjon.iArbeid.selvstendigNaeringsdrivende</id>
-    </faktum>
-    <faktum>
-        <id>navaerendeSituasjon.sykmeldt</id>
-    </faktum>
-    <faktum>
-        <id>navaerendeSituasjon.arbeidsledig</id>
-    </faktum>
-    <faktum>
-        <id>navaerendeSituasjon.student</id>
-    </faktum>
-    <faktum>
-        <id>navaerendeSituasjon.student.studererFortsatt</id>
-    </faktum>
-    <faktum>
-        <id>navaerendeSituasjon.student.avbruttStudie.ikkeTilbake</id>
-    </faktum>
-    <faktum>
-        <id>navaerendeSituasjon.student.avbruttStudie.vilFortsette.mottarSykestipend</id>
-    </faktum>
-    <faktum>
-        <id>navaerendeSituasjon.forstegangstjeneste</id>
-    </faktum>
-    <faktum>
-        <id>navaerendeSituasjon.annet</id>
-    </faktum>
-    <faktum>
-        <id>navaerendeSituasjon.annet.fritekst</id>
-    </faktum>
 
     <!-- Yrkesskade -->
     <faktum>
