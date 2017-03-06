@@ -1,16 +1,18 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.oppsett;
 
-import com.google.common.io.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.*;
-import org.junit.*;
-import org.xml.sax.*;
+import com.google.common.io.CharStreams;
+import no.nav.sbl.dialogarena.sendsoknad.domain.XmlService;
+import org.junit.Test;
+import org.xml.sax.SAXParseException;
 
-import javax.xml.*;
-import javax.xml.transform.stream.*;
-import javax.xml.validation.*;
-import java.util.*;
+import javax.xml.XMLConstants;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+import java.util.List;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.fail;
 
 public class SoknadXmlValiderer {
 
@@ -51,7 +53,7 @@ public class SoknadXmlValiderer {
 
     @Test
     public void testAapXml() throws Exception {
-        testOmXmlValiderer("aap_ordinaer.xml");
+        testOmXmlValiderer("aap/aap_ordinaer.xml");
     }
 
     private void testOmXmlValiderer(String xmlFilNavn) throws Exception {
