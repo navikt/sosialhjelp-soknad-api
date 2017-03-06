@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl">
+    <!-- Hovedvisning -->
+    <faktum>
+        <id>samtalen.samtalemedNAV</id>
+    </faktum>
+    <faktum>
+        <id>samtalen.arbeidsmuligheter</id>
+    </faktum>
+    <faktum>
+        <id>samtalen.arbeidserfaring</id>
+    </faktum>
+    <faktum>
+        <id>samtalen.kunnskapogegenskaper</id>
+    </faktum>
+    <faktum>
+        <id>samtalen.helsesituasjon</id>
+    </faktum>
+    <faktum>
+        <id>samtalen.andreforhold</id>
+    </faktum>
+
+    <!-- Studenter -->
+    <faktum>
+        <id>samtalen.student.tilbaketilstudiet.samtalemedNAV</id>
+    </faktum>
+    <faktum>
+        <id>samtalen.student.ikketilbaketilstudiet.samtalemedNAV</id>
+    </faktum>
+    <faktum>
+        <id>samtalen.student.arbeidserfaring</id>
+    </faktum>
+    <faktum>
+        <id>samtalen.student.kunnskapogegenskaper</id>
+    </faktum>
+    <faktum>
+        <id>samtalen.student.helsesituasjon</id>
+    </faktum>
+    <faktum>
+        <id>samtalen.student.andreforhold</id>
+    </faktum>
+</soknad>

@@ -1,0 +1,45 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl">
+
+    <!-- Opphold i Norge siste tre år -->
+    <faktum>
+        <id>tilknytningNorge.oppholdINorgeSisteTreAar</id>
+    </faktum>
+    <faktum>
+        <id>tilknytningNorge.oppholdINorgeSisteTreAar.false.boddINorgeSisteAaret</id>
+    </faktum>
+    <faktum>
+        <id>tilknytningNorge.oppholdINorgeSisteTreAar.false.boddIEOSLandSisteTreAar</id>
+    </faktum>
+    <faktum>
+        <id>tilknytningNorge.oppholdINorgeSisteTreAar.false.registrertFlyktning</id>
+        <dependOn>tilknytningNorge.oppholdINorgeSisteTreAar</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>tilknytningNorge.oppholdINorgeSisteTreAar.false.ingenPassendeSituasjoner</id>
+    </faktum>
+
+    <!-- Arbeid i utlandet før sykdom -->
+    <faktum>
+        <id>tilknytningNorge.arbeidIUtlandet</id>
+    </faktum>
+    <faktum>
+        <id>tilknytningNorge.arbeidIUtlandet.periode</id>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+
+    <!-- Bekreftelse på flyktningstatus -->
+    <vedlegg>
+        <faktum>tilknytningNorge.oppholdINorgeSisteTreAar.false.registrertFlyktning</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>P2</skjemaNummer>
+    </vedlegg>
+
+
+</soknad>
