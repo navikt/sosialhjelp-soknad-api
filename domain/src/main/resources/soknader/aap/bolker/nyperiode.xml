@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl">
+
+    <faktum>
+        <id>nyPeriode.gjenopptagelsesdato</id>
+    </faktum>
+    <faktum>
+        <id>nyPeriode.grunn.arbeid</id>
+    </faktum>
+    <faktum>
+        <id>nyPeriode.grunn.fodselspermisjon</id>
+    </faktum>
+    <faktum>
+        <id>nyPeriode.grunn.annet</id>
+    </faktum>
+    <faktum>
+        <id>nyPeriode.grunn.annet.fritekst</id>
+    </faktum>
+
+</soknad>
