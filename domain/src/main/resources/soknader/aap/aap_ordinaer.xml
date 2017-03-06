@@ -14,24 +14,7 @@
     <xi:include href="bolker/yrkesskade.xml" />
     <xi:include href="bolker/ungufor.xml" />
     <xi:include href="bolker/andreytelser.xml" />
-
-    <!-- Ny periode -->
-    <faktum>
-        <id>nyPeriode.gjenopptagelsesdato</id>
-    </faktum>
-    <faktum>
-        <id>nyPeriode.grunn.arbeid</id>
-    </faktum>
-    <faktum>
-        <id>nyPeriode.grunn.fodselspermisjon</id>
-    </faktum>
-    <faktum>
-        <id>nyPeriode.grunn.annet</id>
-    </faktum>
-    <faktum>
-        <id>nyPeriode.grunn.annet.fritekst</id>
-    </faktum>
-
+    <xi:include href="bolker/nyperiode.xml" />
 
 
     <!-- Barnetillegg -->
