@@ -3,13 +3,9 @@
     <xi:include href="soknadstype.xml" />
 
     <!-- Bolker -->
-    <xi:include href="bolker/tilknytningnorge.xml" />
+    <xi:include href="bolker/nyperiode.xml" />
     <xi:include href="bolker/navaerendesituasjon.xml" />
-    <xi:include href="bolker/samtalemednav.xml" />
-    <xi:include href="bolker/yrkesskade.xml" />
-    <xi:include href="bolker/ungufor.xml" />
     <xi:include href="bolker/andreytelser.xml" />
-    <xi:include href="bolker/fastlege.xml" />
     <xi:include href="bolker/barnetillegg.xml" />
 
     <!-- Fellesting -->
