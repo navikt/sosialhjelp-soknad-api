@@ -12,6 +12,7 @@
     <xi:include href="bolker/navaerendesituasjon.xml" />
     <xi:include href="bolker/samtalemednav.xml" />
     <xi:include href="bolker/yrkesskade.xml" />
+    <xi:include href="bolker/ungufor.xml" />
 
     <!-- Ny periode -->
     <faktum>
@@ -65,10 +66,7 @@
     </faktum>
 
 
-    <!-- Ung ufør -->
-    <faktum>
-        <id>ungufor</id>
-    </faktum>
+
 
 
 
@@ -145,15 +143,6 @@
         <skjemaNummer>L9</skjemaNummer>
     </vedlegg>
 
-
-    <!-- Spesialisterklæring -->
-    <vedlegg>
-        <faktum>ungufor</faktum>
-        <onValues>
-            <value>false</value>
-        </onValues>
-        <skjemaNummer>V1</skjemaNummer>
-    </vedlegg>
 
     <!-- Kopi av avtaler om ytelser -->
     <vedlegg>
