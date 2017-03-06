@@ -13,6 +13,7 @@
     <xi:include href="bolker/samtalemednav.xml" />
     <xi:include href="bolker/yrkesskade.xml" />
     <xi:include href="bolker/ungufor.xml" />
+    <xi:include href="bolker/andreytelser.xml" />
 
     <!-- Ny periode -->
     <faktum>
@@ -67,67 +68,6 @@
 
 
 
-
-
-
-    <!-- Andre ytelser -->
-    <faktum>
-        <id>andreytelser.ytelserfraNAV.kvalifiseringsstonad</id>
-    </faktum>
-    <faktum>
-        <id>andreytelser.ytelserfraNAV.okonomisksosialhjelp</id>
-    </faktum>
-    <faktum>
-        <id>andreytelser.ytelserfraNAV.ikkemottattellersokt</id>
-    </faktum>
-    <faktum>
-        <id>andreytelser.utbetalinger.fraarbeidsgiver</id>
-    </faktum>
-    <faktum>
-        <id>andreytelser.utbetalinger.fraarbeidsgiver.utbetalingen.engangsbelop</id>
-    </faktum>
-    <faktum>
-        <id>andreytelser.utbetalinger.fraarbeidsgiver.engangsbelop.belop</id>
-    </faktum>
-    <faktum>
-        <id>andreytelser.utbetalinger.fraarbeidsgiver.utbetalingen.lopendeutbetaling</id>
-    </faktum>
-    <faktum>
-        <id>andreytelser.utbetalinger.fraarbeidsgiver.lopendeutbetaling.belop</id>
-    </faktum>
-    <faktum>
-        <id>andreytelser.utbetalinger.fraarbeidsgiver.lopendeutbetaling.opphorer</id>
-    </faktum>
-    <faktum>
-        <id>andreytelser.utbetalinger.fraandre.omsorgslonn</id>
-    </faktum>
-    <faktum>
-        <id>andreytelser.utbetalinger.fraandre.fosterhjemsgodtgjorelse</id>
-    </faktum>
-    <faktum>
-        <id>andreytelser.utbetalinger.fraandre.verv</id>
-    </faktum>
-    <faktum>
-        <id>andreytelser.utbetalinger.fraandre.utenlandsketrygdemyndigheter</id>
-    </faktum>
-    <faktum>
-        <id>andreytelser.utbetalinger.fraandre.utenlandsketrygdemyndigheter.ytelse</id>
-    </faktum>
-    <faktum>
-        <id>andreytelser.utbetalinger.fraandre.utenlandsketrygdemyndigheter.land</id>
-    </faktum>
-    <faktum>
-        <id>andreytelser.utbetalinger.fraandre.annet</id>
-    </faktum>
-    <faktum>
-        <id>andreytelser.utbetalinger.fraandre.annet.ytelse</id>
-    </faktum>
-    <faktum>
-        <id>andreytelser.utbetalinger.fraandre.annet.utbetaler</id>
-    </faktum>
-    <faktum>
-        <id>andreytelser.utbetalinger.fraandre.ikkemottattellersokt</id>
-    </faktum>
     <faktum>
         <id>ekstraVedlegg</id>
         <flereTillatt>true</flereTillatt>
@@ -144,39 +84,6 @@
     </vedlegg>
 
 
-    <!-- Kopi av avtaler om ytelser -->
-    <vedlegg>
-        <faktum>andreytelser.utbetalinger.fraarbeidsgiver</faktum>
-        <onValues>
-            <value>false</value>
-        </onValues>
-        <skjemaNummer>K6</skjemaNummer>
-    </vedlegg>
-
-    <!-- Mottar eller har søkt om andre ytelser fra spesifikke kilder -->
-    <vedlegg>
-        <faktum>andreytelser.utbetalinger.fraandre.omsorgslonn</faktum>
-        <onValues>
-            <value>true</value>
-        </onValues>
-        <skjemanummerTillegg>omsorgslonn</skjemanummerTillegg>
-        <skjemaNummer>K5</skjemaNummer>
-    </vedlegg>
-    <vedlegg>
-        <faktum>andreytelser.utbetalinger.fraandre.fosterhjemsgodtgjorelse</faktum>
-        <onValues>
-            <value>true</value>
-        </onValues>
-        <skjemanummerTillegg>fosterhjemsgodtgjorelse</skjemanummerTillegg>
-        <skjemaNummer>K5</skjemaNummer>
-    </vedlegg>
-    <vedlegg>
-        <faktum>andreytelser.utbetalinger.fraandre.utenlandsketrygdemyndigheter</faktum>
-        <onValues>
-            <value>true</value>
-        </onValues>
-        <skjemaNummer>K1</skjemaNummer>
-    </vedlegg>
 
     <!-- Fødselsattest/bostedsbevis for barn under 18 år -->
     <vedlegg>
