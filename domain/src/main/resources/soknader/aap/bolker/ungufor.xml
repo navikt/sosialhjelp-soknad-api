@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl">
+    <faktum>
+        <id>ungufor</id>
+    </faktum>
+
+    <!-- Spesialisterklæring -->
+    <vedlegg>
+        <faktum>ungufor</faktum>
+        <onValues>
+            <value>false</value>
+        </onValues>
+        <skjemaNummer>V1</skjemaNummer>
+    </vedlegg>
+
+</soknad>
