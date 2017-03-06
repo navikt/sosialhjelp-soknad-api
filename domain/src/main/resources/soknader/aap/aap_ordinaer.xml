@@ -10,25 +10,11 @@
     <xi:include href="bolker/ungufor.xml" />
     <xi:include href="bolker/andreytelser.xml" />
     <xi:include href="bolker/nyperiode.xml" />
+    <xi:include href="bolker/barnetillegg.xml" />
 
     <!-- Fellesting -->
     <xi:include href="../felles/personalia.xml" />
     <xi:include href="../felles/tilleggsopplysninger.xml" />
     <xi:include href="../felles/ekstravedlegg.xml" />
-
-
-    <!-- Barnetillegg -->
-    <faktum>
-        <id>barn</id>
-        <flereTillatt>true</flereTillatt>
-    </faktum>
-
-    <!-- Fødselsattest/bostedsbevis for barn under 18 år -->
-    <vedlegg>
-        <faktum>barn</faktum>
-        <skjemaNummer>X8</skjemaNummer>
-        <forSystemfaktum>false</forSystemfaktum>
-        <flereTillatt>true</flereTillatt>
-    </vedlegg>
 
 </soknad>
