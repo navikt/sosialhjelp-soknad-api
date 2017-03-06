@@ -9,6 +9,7 @@
     <xi:include href="bolker/yrkesskade.xml" />
     <xi:include href="bolker/ungufor.xml" />
     <xi:include href="bolker/andreytelser.xml" />
+    <xi:include href="bolker/fastlege.xml" />
     <xi:include href="bolker/nyperiode.xml" />
     <xi:include href="bolker/barnetillegg.xml" />
 
