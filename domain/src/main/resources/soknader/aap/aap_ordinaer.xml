@@ -10,6 +10,7 @@
     <!-- Bolker -->
     <xi:include href="bolker/tilknytningnorge.xml" />
     <xi:include href="bolker/navaerendesituasjon.xml" />
+    <xi:include href="bolker/samtalemednav.xml" />
 
     <!-- Ny periode -->
     <faktum>
@@ -74,47 +75,7 @@
         <id>ungufor</id>
     </faktum>
 
-    <!-- Samtale med NAV -->
-    <!-- Hovedvisning -->
-    <faktum>
-        <id>samtalen.samtalemedNAV</id>
-    </faktum>
-    <faktum>
-        <id>samtalen.arbeidsmuligheter</id>
-    </faktum>
-    <faktum>
-        <id>samtalen.arbeidserfaring</id>
-    </faktum>
-    <faktum>
-        <id>samtalen.kunnskapogegenskaper</id>
-    </faktum>
-    <faktum>
-        <id>samtalen.helsesituasjon</id>
-    </faktum>
-    <faktum>
-        <id>samtalen.andreforhold</id>
-    </faktum>
 
-    <!-- Samtale med NAV -->
-    <!-- Studenter -->
-    <faktum>
-        <id>samtalen.student.tilbaketilstudiet.samtalemedNAV</id>
-    </faktum>
-    <faktum>
-        <id>samtalen.student.ikketilbaketilstudiet.samtalemedNAV</id>
-    </faktum>
-    <faktum>
-        <id>samtalen.student.arbeidserfaring</id>
-    </faktum>
-    <faktum>
-        <id>samtalen.student.kunnskapogegenskaper</id>
-    </faktum>
-    <faktum>
-        <id>samtalen.student.helsesituasjon</id>
-    </faktum>
-    <faktum>
-        <id>samtalen.student.andreforhold</id>
-    </faktum>
 
     <!-- Andre ytelser -->
     <faktum>
