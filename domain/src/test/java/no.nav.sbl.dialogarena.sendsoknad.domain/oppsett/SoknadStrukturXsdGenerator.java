@@ -1,7 +1,5 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.oppsett;
 
-import org.junit.Test;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.SchemaOutputResolver;
@@ -21,12 +19,11 @@ public class SoknadStrukturXsdGenerator {
 
     public static final Pattern SOKNAD_SEQUENCE_PATTERN = Pattern.compile("<xs:complexType name=\"soknadStruktur\">(\\s+)<xs:sequence>(.*?)</xs:sequence>", Pattern.DOTALL);
 
-    /**
-     * Ingen assertions, men genererer ny xsd basert
-     * på SoknadStruktur og dens medlemmer
-     */
-    @Test
-    public void genererSkjema() throws JAXBException, IOException {
+    public static void genererSkjema() throws JAXBException, IOException {
+        new SoknadStrukturXsdGenerator().genererOgSkrivTilFil();
+    }
+
+    private void genererOgSkrivTilFil() throws JAXBException, IOException {
         String skjemaStreng = lagSkjemaString();
         skjemaStreng = fiksTingDerViErUenigMedJaxbMenFortsattVilHaTingAutogenerert(skjemaStreng);
         skrivTilFil(skjemaStreng);
