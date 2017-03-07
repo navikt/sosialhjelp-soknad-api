@@ -153,7 +153,7 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
     }
 
     @XmlAttribute(name="kunUtvidet")
-    public boolean getKunUtvidet() {
+    public Boolean getKunUtvidet() {
         return kunUtvidet;
     }
 
