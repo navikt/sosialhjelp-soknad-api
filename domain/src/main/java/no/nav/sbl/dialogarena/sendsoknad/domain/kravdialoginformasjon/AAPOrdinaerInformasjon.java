@@ -38,6 +38,11 @@ public class AAPOrdinaerInformasjon extends KravdialogInformasjon.DefaultOppsett
     }
 
     @Override
+    public boolean skalSendeMedFullSoknad() {
+        return true;
+    }
+
+    @Override
     public String getBundleName() {
         return "soknadaap";
     }
