@@ -26,7 +26,21 @@ public class SoknadStrukturXsdGenerator {
     private void genererOgSkrivTilFil() throws JAXBException, IOException {
         String skjemaStreng = lagSkjemaString();
         skjemaStreng = fiksTingDerViErUenigMedJaxbMenFortsattVilHaTingAutogenerert(skjemaStreng);
+        skjemaStreng = leggPaFeitAdvarselOmAtFilenErGenerert(skjemaStreng);
         skrivTilFil(skjemaStreng);
+    }
+
+    private String leggPaFeitAdvarselOmAtFilenErGenerert(String skjemaStreng) {
+        String[] split = skjemaStreng.split("\n", 2);
+
+        String advarsel = "\n" +
+                "<!-- ##############################\n" +
+                "     #   DENNE FILEN ER GENERERT  #\n" +
+                "     #     ALLE ENDRINGER BLIR    #\n" +
+                "     #        OVERSKREVET!!       #\n" +
+                "     ############################## -->\n";
+
+        return split[0] + advarsel + split[1];
     }
 
     private String lagSkjemaString() throws JAXBException, IOException {
