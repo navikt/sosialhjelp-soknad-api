@@ -33,6 +33,16 @@ public class AAPGjenopptakInformasjon extends KravdialogInformasjon.DefaultOppse
     }
 
     @Override
+    public boolean brukerNyOppsummering() {
+        return true;
+    }
+
+    @Override
+    public boolean skalSendeMedFullSoknad() {
+        return true;
+    }
+
+    @Override
     public List<String> getSkjemanummer() {
         return skjemanummer;
     }
