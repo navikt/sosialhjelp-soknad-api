@@ -2,16 +2,27 @@
 <soknad xmlns="urn:no.nav.sbl">
 
     <faktum>
-        <id>andreytelser.ytelserfraNAV.kvalifiseringsstonad</id>
+        <id>andreytelser.ytelserfranav</id>
         <panel>AndreYtelser</panel>
+        <type>checkboxGroup</type>
     </faktum>
     <faktum>
-        <id>andreytelser.ytelserfraNAV.okonomisksosialhjelp</id>
+        <id>andreytelser.ytelserfranav.kvalifiseringsstonad</id>
         <panel>AndreYtelser</panel>
+        <type>java.lang.Boolean</type>
+        <dependOn>andreytelser.ytelserfranav</dependOn>
     </faktum>
     <faktum>
-        <id>andreytelser.ytelserfraNAV.ikkemottattellersokt</id>
+        <id>andreytelser.ytelserfranav.okonomisksosialhjelp</id>
         <panel>AndreYtelser</panel>
+        <type>java.lang.Boolean</type>
+        <dependOn>andreytelser.ytelserfranav</dependOn>
+    </faktum>
+    <faktum>
+        <id>andreytelser.ytelserfranav.ikkemottattellersokt</id>
+        <panel>AndreYtelser</panel>
+        <type>java.lang.Boolean</type>
+        <dependOn>andreytelser.ytelserfranav</dependOn>
     </faktum>
     <faktum>
         <id>andreytelser.utbetalinger.fraarbeidsgiver</id>
