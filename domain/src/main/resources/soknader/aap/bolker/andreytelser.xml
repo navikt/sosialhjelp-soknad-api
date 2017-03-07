@@ -3,60 +3,79 @@
 
     <faktum>
         <id>andreytelser.ytelserfraNAV.kvalifiseringsstonad</id>
+        <panel>AndreYtelser</panel>
     </faktum>
     <faktum>
         <id>andreytelser.ytelserfraNAV.okonomisksosialhjelp</id>
+        <panel>AndreYtelser</panel>
     </faktum>
     <faktum>
         <id>andreytelser.ytelserfraNAV.ikkemottattellersokt</id>
+        <panel>AndreYtelser</panel>
     </faktum>
     <faktum>
         <id>andreytelser.utbetalinger.fraarbeidsgiver</id>
+        <panel>AndreYtelser</panel>
     </faktum>
     <faktum>
         <id>andreytelser.utbetalinger.fraarbeidsgiver.utbetalingen.engangsbelop</id>
+        <panel>AndreYtelser</panel>
     </faktum>
     <faktum>
         <id>andreytelser.utbetalinger.fraarbeidsgiver.engangsbelop.belop</id>
+        <panel>AndreYtelser</panel>
     </faktum>
     <faktum>
         <id>andreytelser.utbetalinger.fraarbeidsgiver.utbetalingen.lopendeutbetaling</id>
+        <panel>AndreYtelser</panel>
     </faktum>
     <faktum>
         <id>andreytelser.utbetalinger.fraarbeidsgiver.lopendeutbetaling.belop</id>
+        <panel>AndreYtelser</panel>
     </faktum>
     <faktum>
         <id>andreytelser.utbetalinger.fraarbeidsgiver.lopendeutbetaling.opphorer</id>
+        <panel>AndreYtelser</panel>
     </faktum>
     <faktum>
         <id>andreytelser.utbetalinger.fraandre.omsorgslonn</id>
+        <panel>AndreYtelser</panel>
     </faktum>
     <faktum>
         <id>andreytelser.utbetalinger.fraandre.fosterhjemsgodtgjorelse</id>
+        <panel>AndreYtelser</panel>
     </faktum>
     <faktum>
         <id>andreytelser.utbetalinger.fraandre.verv</id>
+        <panel>AndreYtelser</panel>
     </faktum>
     <faktum>
         <id>andreytelser.utbetalinger.fraandre.utenlandsketrygdemyndigheter</id>
+        <panel>AndreYtelser</panel>
     </faktum>
     <faktum>
         <id>andreytelser.utbetalinger.fraandre.utenlandsketrygdemyndigheter.ytelse</id>
+        <panel>AndreYtelser</panel>
     </faktum>
     <faktum>
         <id>andreytelser.utbetalinger.fraandre.utenlandsketrygdemyndigheter.land</id>
+        <panel>AndreYtelser</panel>
     </faktum>
     <faktum>
         <id>andreytelser.utbetalinger.fraandre.annet</id>
+        <panel>AndreYtelser</panel>
     </faktum>
     <faktum>
         <id>andreytelser.utbetalinger.fraandre.annet.ytelse</id>
+        <panel>AndreYtelser</panel>
     </faktum>
     <faktum>
         <id>andreytelser.utbetalinger.fraandre.annet.utbetaler</id>
+        <panel>AndreYtelser</panel>
     </faktum>
     <faktum>
         <id>andreytelser.utbetalinger.fraandre.ikkemottattellersokt</id>
+        <panel>AndreYtelser</panel>
     </faktum>
 
 
