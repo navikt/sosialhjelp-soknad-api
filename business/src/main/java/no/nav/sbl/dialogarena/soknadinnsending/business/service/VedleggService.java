@@ -342,7 +342,7 @@ public class VedleggService {
             Vedlegg.Status status = vedleggsgrunnlag.oppdaterInnsendingsvalg(vedleggErPaakrevd);
             VedleggForFaktumStruktur vedleggForFaktumStruktur = vedleggsgrunnlag.grunnlag.get(0).getLeft();
             List<Faktum> fakta = vedleggsgrunnlag.grunnlag.get(0).getRight();
-            if (fakta.size() >  0) {
+            if (!fakta.isEmpty()) {
                 Faktum faktum = fakta.size() > 1 ? getFaktumBasertPaProperties(fakta, vedleggsgrunnlag.grunnlag.get(0).getLeft()) : fakta.get(0);
 
                 if (vedleggsgrunnlag.vedleggHarTittelFraVedleggTittelProperty(vedleggForFaktumStruktur)) {
