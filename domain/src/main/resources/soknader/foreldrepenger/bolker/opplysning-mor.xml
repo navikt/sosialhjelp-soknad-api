@@ -34,7 +34,7 @@
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>informor.rettigheter.omsorg</id>
+        <id>infomor.rettigheter.omsorg</id>
         <constraints>
             <constraint>
                 <faktum>infomor.opplysninger.kanIkkeOppgi.true.arsak</faktum>
@@ -48,7 +48,7 @@
     </faktum>
     <faktum>
         <id>infomor.aleneomsorg.omsorgfradato</id>
-        <dependOn>informor.rettigheter.omsorg</dependOn>
+        <dependOn>infomor.rettigheter.omsorg</dependOn>
         <dependOnValues>
             <value>aleneomsorg</value>
         </dependOnValues>
@@ -78,7 +78,7 @@
         </dependOnValues>
     </faktum>
     <vedlegg>
-        <faktum>informor.rettigheter.omsorg</faktum>
+        <faktum>infomor.rettigheter.omsorg</faktum>
         <onValues>
             <value>aleneomsorg</value>
         </onValues>
