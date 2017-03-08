@@ -8,19 +8,6 @@
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>rettigheter.omsorg</id>
-        <constraints>
-            <constraint>
-                <faktum>infofar.opplysninger.kanIkkeOppgi.true.arsak</faktum>
-                <expression>value != 'ukjent' </expression>
-            </constraint>
-            <constraint>
-                <faktum>infofar.opplysninger.kanIkkeOppgi</faktum>
-                <expression>value == 'false' </expression>
-            </constraint>
-        </constraints>
-    </faktum>
-    <faktum>
         <id>rettighet.harrett</id>
     </faktum>
     <faktum>
@@ -35,14 +22,5 @@
         </onValues>
         <skjemaNummer>P5</skjemaNummer>
         <skjemanummerTillegg>overtatt</skjemanummerTillegg>
-    </vedlegg>
-
-    <vedlegg>
-        <faktum>rettigheter.omsorg</faktum>
-        <onValues>
-            <value>aleneomsorg</value>
-        </onValues>
-        <skjemaNummer>P5</skjemaNummer>
-        <skjemanummerTillegg>aleneomsorg</skjemanummerTillegg>
     </vedlegg>
 </soknad>

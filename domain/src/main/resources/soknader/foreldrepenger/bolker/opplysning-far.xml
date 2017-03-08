@@ -41,6 +41,19 @@
         </dependOnValues>
     </faktum>
     <faktum>
+        <id>infofar.rettigheter.omsorg</id>
+        <constraints>
+            <constraint>
+                <faktum>infofar.opplysninger.kanIkkeOppgi.true.arsak</faktum>
+                <expression>value != 'ukjent' </expression>
+            </constraint>
+            <constraint>
+                <faktum>infofar.opplysninger.kanIkkeOppgi</faktum>
+                <expression>value == 'false' </expression>
+            </constraint>
+        </constraints>
+    </faktum>
+    <faktum>
         <id>infofar.aleneomsorg.fritekst</id>
     </faktum>
     <faktum>
