@@ -40,16 +40,37 @@
         <id>fastlege.annen.behandlende</id>
         <panel>Fastlege</panel>
         <type>inputgroup</type>
-
+        <constraints>
+            <constraint>
+                <faktum>fastlege.annen.behandlende.navn</faktum>
+                <expression>value != null &amp;&amp; value != ''</expression>
+            </constraint>
+            <constraint>
+                <faktum>fastlege.annen.behandlende.tlfnr</faktum>
+                <expression>value != null &amp;&amp; value != ''</expression>
+            </constraint>
+        </constraints>
     </faktum>
     <faktum>
         <id>fastlege.annen.behandlende.navn</id>
         <type>textbox</type>
         <dependOn>fastlege.annen.behandlende</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>fastlege.annen.behandlende.navn</faktum>
+                <expression>value != null &amp;&amp; value != ''</expression>
+            </constraint>
+        </constraints>
     </faktum>
     <faktum>
         <id>fastlege.annen.behandlende.tlfnr</id>
         <type>textbox</type>
         <dependOn>fastlege.annen.behandlende</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>fastlege.annen.behandlende.tlfnr</faktum>
+                <expression>value != null &amp;&amp; value != ''</expression>
+            </constraint>
+        </constraints>
     </faktum>
 </soknad>
