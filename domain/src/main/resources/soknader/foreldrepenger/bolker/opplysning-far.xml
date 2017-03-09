@@ -62,12 +62,4 @@
     <faktum>
         <id>infofar.informert</id>
     </faktum>
-    <vedlegg>
-        <faktum>infofar.rettigheter.omsorg</faktum>
-        <onValues>
-            <value>aleneomsorg</value>
-        </onValues>
-        <skjemaNummer>P5</skjemaNummer>
-        <skjemanummerTillegg>aleneomsorg</skjemanummerTillegg>
-    </vedlegg>
 </soknad>
