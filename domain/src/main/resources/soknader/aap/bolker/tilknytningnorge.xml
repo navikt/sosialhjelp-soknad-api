@@ -4,6 +4,8 @@
     <!-- Opphold i Norge siste tre år -->
     <faktum>
         <id>tilknytningNorge.oppholdINorgeSisteTreAar</id>
+        <type>radio</type>
+        <panel>Tilknytningnorge</panel>
     </faktum>
     <faktum>
         <id>tilknytningNorge.oppholdINorgeSisteTreAar.false.boddINorgeSisteAaret</id>
