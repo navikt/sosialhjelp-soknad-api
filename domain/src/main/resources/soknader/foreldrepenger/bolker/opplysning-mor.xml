@@ -34,15 +34,28 @@
         </dependOnValues>
     </faktum>
     <faktum>
+        <id>infomor.rettigheter.omsorg</id>
+        <constraints>
+            <constraint>
+                <faktum>infomor.opplysninger.kanIkkeOppgi.true.arsak</faktum>
+                <expression>value != 'ukjent' </expression>
+            </constraint>
+            <constraint>
+                <faktum>infomor.opplysninger.kanIkkeOppgi</faktum>
+                <expression>value == 'false' </expression>
+            </constraint>
+        </constraints>
+    </faktum>
+    <faktum>
         <id>infomor.aleneomsorg.omsorgfradato</id>
-        <dependOn>rettigheter.omsorg</dependOn>
+        <dependOn>infomor.rettigheter.omsorg</dependOn>
         <dependOnValues>
             <value>aleneomsorg</value>
         </dependOnValues>
     </faktum>
     <faktum>
         <id>infomor.aleneomsorg.fritekst</id>
-        <dependOn>rettigheter.omsorg</dependOn>
+        <dependOn>infomor.rettigheter.omsorg</dependOn>
         <dependOnValues>
             <value>aleneomsorg</value>
         </dependOnValues>
@@ -64,4 +77,12 @@
             <value>ukjent</value>
         </dependOnValues>
     </faktum>
+    <vedlegg>
+        <faktum>infomor.rettigheter.omsorg</faktum>
+        <onValues>
+            <value>aleneomsorg</value>
+        </onValues>
+        <skjemaNummer>P5</skjemaNummer>
+        <skjemanummerTillegg>aleneomsorg</skjemanummerTillegg>
+    </vedlegg>
 </soknad>
