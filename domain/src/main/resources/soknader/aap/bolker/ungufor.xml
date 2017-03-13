@@ -2,6 +2,8 @@
 <soknad xmlns="urn:no.nav.sbl">
     <faktum>
         <id>ungufor</id>
+        <type>java.lang.Boolean</type>
+        <panel>ungufor</panel>
     </faktum>
 
     <!-- Spesialisterklæring -->
@@ -12,5 +14,4 @@
         </onValues>
         <skjemaNummer>V1</skjemaNummer>
     </vedlegg>
-
 </soknad>
