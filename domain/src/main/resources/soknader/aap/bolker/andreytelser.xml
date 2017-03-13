@@ -25,27 +25,28 @@
         <dependOn>andreytelser.ytelserfranav</dependOn>
     </faktum>
     <faktum>
-        <id>andreytelser.utbetalinger.fraarbeidsgiver</id>
+        <id>andreytelser.fraarbeidsgiver</id>
+        <panel>AndreYtelser</panel>
+        <type>java.lang.Boolean</type>
+    </faktum>
+    <faktum>
+        <id>andreytelser.fraarbeidsgiver.false.mottarutbetaling</id>
         <panel>AndreYtelser</panel>
     </faktum>
     <faktum>
-        <id>andreytelser.utbetalinger.fraarbeidsgiver.utbetalingen.engangsbelop</id>
+        <id>andreytelser.fraarbeidsgiver.engangsbelop.belop</id>
         <panel>AndreYtelser</panel>
     </faktum>
     <faktum>
-        <id>andreytelser.utbetalinger.fraarbeidsgiver.engangsbelop.belop</id>
+        <id>andreytelser.fraarbeidsgiver.utbetalingen.lopendeutbetaling</id>
         <panel>AndreYtelser</panel>
     </faktum>
     <faktum>
-        <id>andreytelser.utbetalinger.fraarbeidsgiver.utbetalingen.lopendeutbetaling</id>
+        <id>andreytelser.fraarbeidsgiver.lopendeutbetaling.belop</id>
         <panel>AndreYtelser</panel>
     </faktum>
     <faktum>
-        <id>andreytelser.utbetalinger.fraarbeidsgiver.lopendeutbetaling.belop</id>
-        <panel>AndreYtelser</panel>
-    </faktum>
-    <faktum>
-        <id>andreytelser.utbetalinger.fraarbeidsgiver.lopendeutbetaling.opphorer</id>
+        <id>andreytelser.fraarbeidsgiver.lopendeutbetaling.opphorer</id>
         <panel>AndreYtelser</panel>
     </faktum>
     <faktum>
@@ -93,7 +94,7 @@
 
     <!-- Kopi av avtaler om ytelser -->
     <vedlegg>
-        <faktum>andreytelser.utbetalinger.fraarbeidsgiver</faktum>
+        <faktum>andreytelser.fraarbeidsgiver</faktum>
         <onValues>
             <value>false</value>
         </onValues>
