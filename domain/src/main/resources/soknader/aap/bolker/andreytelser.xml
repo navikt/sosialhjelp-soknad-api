@@ -30,24 +30,44 @@
         <type>java.lang.Boolean</type>
     </faktum>
     <faktum>
-        <id>andreytelser.fraarbeidsgiver.false.mottarutbetaling</id>
+        <id>andreytelser.fraarbeidsgiver.false.utbetalingsmetode</id>
         <panel>AndreYtelser</panel>
+        <type>checkboxGroup</type>
     </faktum>
     <faktum>
-        <id>andreytelser.fraarbeidsgiver.engangsbelop.belop</id>
+        <id>andreytelser.fraarbeidsgiver.false.utbetalingsmetode.engangsbelop</id>
         <panel>AndreYtelser</panel>
+        <type>java.lang.Boolean</type>
     </faktum>
     <faktum>
-        <id>andreytelser.fraarbeidsgiver.utbetalingen.lopendeutbetaling</id>
+        <id>andreytelser.fraarbeidsgiver.false.utbetalingsmetode.engangsbelop.true.belop</id>
         <panel>AndreYtelser</panel>
+        <type>textbox</type>
     </faktum>
     <faktum>
-        <id>andreytelser.fraarbeidsgiver.lopendeutbetaling.belop</id>
+        <id>andreytelser.fraarbeidsgiver.false.utbetalingsmetode.lopendeutbetaling</id>
         <panel>AndreYtelser</panel>
+        <type>java.lang.Boolean</type>
     </faktum>
     <faktum>
-        <id>andreytelser.fraarbeidsgiver.lopendeutbetaling.opphorer</id>
+        <id>andreytelser.fraarbeidsgiver.false.utbetalingsmetode.lopendeutbetaling.true.belop</id>
         <panel>AndreYtelser</panel>
+        <type>textbox</type>
+    </faktum>
+    <faktum>
+        <id>andreytelser.fraarbeidsgiver.false.utbetalingsmetode.lopendeutbetaling.true.opphorer</id>
+        <panel>AndreYtelser</panel>
+        <type>inlineproperties</type>
+        <properties>
+            <property>
+                <id>maaned</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>aar</id>
+                <type>textbox</type>
+            </property>
+        </properties>
     </faktum>
     <faktum>
         <id>andreytelser.utbetalinger.fraandre.omsorgslonn</id>
@@ -89,7 +109,6 @@
         <id>andreytelser.utbetalinger.fraandre.ikkemottattellersokt</id>
         <panel>AndreYtelser</panel>
     </faktum>
-
 
 
     <!-- Kopi av avtaler om ytelser -->
