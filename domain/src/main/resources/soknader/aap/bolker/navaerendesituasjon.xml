@@ -64,6 +64,9 @@
         <panel>navaerendesituasjon</panel>
         <type>textbox</type>
         <dependOn>navaerendesituasjon.annet</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
 
 </soknad>
