@@ -22,8 +22,8 @@ import java.io.IOException;
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
 
 @Controller
-@Path("/oppsummering")
-public class OppsummeringRessurs {
+@Path("/fulloppsummering")
+public class FullOppsummeringRessurs {
 
     @Inject
     private SoknadDataFletter soknadDataFletter;
@@ -33,9 +33,9 @@ public class OppsummeringRessurs {
     private HtmlGenerator pdfTemplate;
     @Inject
     private PDFService pdfService;
-    private static final Logger LOG = LoggerFactory.getLogger(OppsummeringRessurs.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FullOppsummeringRessurs.class);
 
-
+    @Deprecated
     @GET
     @Path("/{behandlingsId}/nyoppsummering")
     @Produces(TEXT_HTML)
@@ -48,6 +48,7 @@ public class OppsummeringRessurs {
         return pdfTemplate.fyllHtmlMalMedInnhold(soknad);
     }
 
+    @Deprecated
     @GET
     @Path("/{behandlingsId}/fullsoknad")
     @Produces(TEXT_HTML)
@@ -59,7 +60,7 @@ public class OppsummeringRessurs {
 
         return pdfTemplate.fyllHtmlMalMedInnhold(soknad, true);
     }
-
+    @Deprecated
     @GET
     @Path("/{behandlingsId}/fullsoknadpdf")
     @Produces("application/pdf")
