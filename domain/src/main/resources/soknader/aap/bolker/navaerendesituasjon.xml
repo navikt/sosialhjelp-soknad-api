@@ -59,8 +59,12 @@
     </faktum>
 
     <faktum>
-        <id>navaerendesituasjon.student.avbruttStudie.vilFortsette.mottarSykestipend</id>
+        <id>navaerendesituasjon.student.avbruttstudie.mottarlaan</id>
         <panel>navaerendesituasjon</panel>
+        <dependOn>navaerendesituasjon.student.avbruttstudie.ikketilbake</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>navaerendesituasjon.forstegangstjeneste</id>
