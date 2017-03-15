@@ -49,9 +49,15 @@
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>navaerendesituasjon.student.avbruttStudie.ikkeTilbake</id>
+        <id>navaerendesituasjon.student.avbruttstudie.ikketilbake</id>
+        <type>java.lang.Boolean</type>
         <panel>navaerendesituasjon</panel>
+        <dependOn>navaerendesituasjon.student.studererfortsatt</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
+
     <faktum>
         <id>navaerendesituasjon.student.avbruttStudie.vilFortsette.mottarSykestipend</id>
         <panel>navaerendesituasjon</panel>
