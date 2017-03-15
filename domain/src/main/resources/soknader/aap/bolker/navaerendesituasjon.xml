@@ -2,40 +2,68 @@
 <soknad xmlns="urn:no.nav.sbl">
 
     <faktum>
-        <id>navaerendeSituasjon.iArbeid</id>
+        <id>navaerendesituasjon</id>
+        <panel>navaerendesituasjon</panel>
+        <type>checkboxGroup</type>
+    </faktum>
+
+    <faktum>
+        <id>navaerendesituasjon.iArbeid</id>
+        <panel>navaerendesituasjon</panel>
+        <type>java.lang.Boolean</type>
+        <dependOn>navaerendesituasjon</dependOn>
     </faktum>
     <faktum>
-        <id>navaerendeSituasjon.iArbeid.ansatt</id>
+        <id>navaerendesituasjon.iArbeid.ansatt</id>
+        <type>java.lang.Boolean</type>
+        <panel>navaerendesituasjon</panel>
+        <dependOn>navaerendesituasjon.iArbeid</dependOn>
     </faktum>
     <faktum>
-        <id>navaerendeSituasjon.iArbeid.selvstendigNaeringsdrivende</id>
+        <id>navaerendesituasjon.iArbeid.selvstendigNaeringsdrivende</id>
+        <type>java.lang.Boolean</type>
+        <panel>navaerendesituasjon</panel>
+        <dependOn>navaerendesituasjon.iArbeid</dependOn>
     </faktum>
     <faktum>
-        <id>navaerendeSituasjon.sykmeldt</id>
+        <id>navaerendesituasjon.sykmeldt</id>
+        <type>java.lang.Boolean</type>
+        <panel>navaerendesituasjon</panel>
     </faktum>
     <faktum>
-        <id>navaerendeSituasjon.arbeidsledig</id>
+        <id>navaerendesituasjon.arbeidsledig</id>
+        <type>java.lang.Boolean</type>
+        <panel>navaerendesituasjon</panel>
     </faktum>
     <faktum>
-        <id>navaerendeSituasjon.student</id>
+        <id>navaerendesituasjon.student</id>
+        <panel>navaerendesituasjon</panel>
     </faktum>
     <faktum>
-        <id>navaerendeSituasjon.student.studererFortsatt</id>
+        <id>navaerendesituasjon.student.studererFortsatt</id>
+        <panel>navaerendesituasjon</panel>
     </faktum>
     <faktum>
-        <id>navaerendeSituasjon.student.avbruttStudie.ikkeTilbake</id>
+        <id>navaerendesituasjon.student.avbruttStudie.ikkeTilbake</id>
+        <panel>navaerendesituasjon</panel>
     </faktum>
     <faktum>
-        <id>navaerendeSituasjon.student.avbruttStudie.vilFortsette.mottarSykestipend</id>
+        <id>navaerendesituasjon.student.avbruttStudie.vilFortsette.mottarSykestipend</id>
+        <panel>navaerendesituasjon</panel>
     </faktum>
     <faktum>
-        <id>navaerendeSituasjon.forstegangstjeneste</id>
+        <id>navaerendesituasjon.forstegangstjeneste</id>
+        <panel>navaerendesituasjon</panel>
     </faktum>
     <faktum>
-        <id>navaerendeSituasjon.annet</id>
+        <id>navaerendesituasjon.annet</id>
+        <panel>navaerendesituasjon</panel>
     </faktum>
     <faktum>
-        <id>navaerendeSituasjon.annet.fritekst</id>
+        <id>navaerendesituasjon.annet.fritekst</id>
+        <panel>navaerendesituasjon</panel>
+        <type>textbox</type>
+        <dependOn>navaerendesituasjon.annet</dependOn>
     </faktum>
 
 </soknad>
