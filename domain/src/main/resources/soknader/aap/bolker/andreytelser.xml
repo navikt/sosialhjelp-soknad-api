@@ -28,6 +28,10 @@
         <id>andreytelser.fraarbeidsgiver</id>
         <panel>AndreYtelser</panel>
         <type>java.lang.Boolean</type>
+        <dependOn>soknadstype</dependOn>
+        <dependOnValues>
+            <value>ordinaer</value>
+        </dependOnValues>
     </faktum>
     <faktum>
         <id>andreytelser.fraarbeidsgiver.false.utbetalingsmetode</id>
