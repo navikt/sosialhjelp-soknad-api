@@ -9,14 +9,12 @@
 
     <faktum>
         <id>navaerendesituasjon.iarbeid</id>
-        <panel>navaerendesituasjon</panel>
         <type>java.lang.Boolean</type>
         <dependOn>navaerendesituasjon</dependOn>
     </faktum>
 
     <faktum>
         <id>navaerendesituasjon.iarbeid.arbeidsforhold</id>
-        <panel>navaerendesituasjon</panel>
         <type>checkboxGroup</type>
         <dependOn>navaerendesituasjon.iarbeid</dependOn>
         <dependOnValues>
@@ -27,36 +25,30 @@
     <faktum>
         <id>navaerendesituasjon.iarbeid.arbeidsforhold.ansatt</id>
         <type>java.lang.Boolean</type>
-        <panel>navaerendesituasjon</panel>
         <dependOn>navaerendesituasjon.iarbeid.arbeidsforhold</dependOn>
     </faktum>
     <faktum>
         <id>navaerendesituasjon.iarbeid.arbeidsforhold.selvstendig</id>
         <type>java.lang.Boolean</type>
-        <panel>navaerendesituasjon</panel>
         <dependOn>navaerendesituasjon.iarbeid.arbeidsforhold</dependOn>
     </faktum>
     <faktum>
         <id>navaerendesituasjon.sykmeldt</id>
         <type>java.lang.Boolean</type>
-        <panel>navaerendesituasjon</panel>
         <dependOn>navaerendesituasjon</dependOn>
     </faktum>
     <faktum>
         <id>navaerendesituasjon.arbeidsledig</id>
         <type>java.lang.Boolean</type>
-        <panel>navaerendesituasjon</panel>
         <dependOn>navaerendesituasjon</dependOn>
     </faktum>
     <faktum>
         <id>navaerendesituasjon.student</id>
-        <panel>navaerendesituasjon</panel>
         <dependOn>navaerendesituasjon</dependOn>
     </faktum>
     <faktum>
         <id>navaerendesituasjon.student.studererfortsatt</id>
         <type>java.lang.Boolean</type>
-        <panel>navaerendesituasjon</panel>
         <dependOn>navaerendesituasjon.student</dependOn>
         <dependOnValues>
             <value>true</value>
@@ -65,7 +57,6 @@
     <faktum>
         <id>navaerendesituasjon.student.avbruttstudie.ikketilbake</id>
         <type>java.lang.Boolean</type>
-        <panel>navaerendesituasjon</panel>
         <dependOn>navaerendesituasjon.student.studererfortsatt</dependOn>
         <dependOnValues>
             <value>false</value>
@@ -74,7 +65,6 @@
 
     <faktum>
         <id>navaerendesituasjon.student.avbruttstudie.mottarlaan</id>
-        <panel>navaerendesituasjon</panel>
         <dependOn>navaerendesituasjon.student.avbruttstudie.ikketilbake</dependOn>
         <dependOnValues>
             <value>false</value>
@@ -82,17 +72,14 @@
     </faktum>
     <faktum>
         <id>navaerendesituasjon.forstegangstjeneste</id>
-        <panel>navaerendesituasjon</panel>
         <dependOn>navaerendesituasjon</dependOn>
     </faktum>
     <faktum>
         <id>navaerendesituasjon.annet</id>
-        <panel>navaerendesituasjon</panel>
         <dependOn>navaerendesituasjon</dependOn>
     </faktum>
     <faktum>
         <id>navaerendesituasjon.annet.fritekst</id>
-        <panel>navaerendesituasjon</panel>
         <type>textbox</type>
         <dependOn>navaerendesituasjon.annet</dependOn>
         <dependOnValues>
