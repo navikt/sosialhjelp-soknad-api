@@ -2,68 +2,171 @@
 <soknad xmlns="urn:no.nav.sbl">
 
     <faktum>
-        <id>andreytelser.ytelserfraNAV.kvalifiseringsstonad</id>
+        <id>andreytelser.ytelserfranav</id>
+        <panel>AndreYtelser</panel>
+        <type>checkboxGroup</type>
     </faktum>
     <faktum>
-        <id>andreytelser.ytelserfraNAV.okonomisksosialhjelp</id>
+        <id>andreytelser.ytelserfranav.kvalifiseringsstonad</id>
+        <panel>AndreYtelser</panel>
+        <type>java.lang.Boolean</type>
+        <dependOn>andreytelser.ytelserfranav</dependOn>
     </faktum>
     <faktum>
-        <id>andreytelser.ytelserfraNAV.ikkemottattellersokt</id>
+        <id>andreytelser.ytelserfranav.okonomisksosialhjelp</id>
+        <panel>AndreYtelser</panel>
+        <type>java.lang.Boolean</type>
+        <dependOn>andreytelser.ytelserfranav</dependOn>
     </faktum>
     <faktum>
-        <id>andreytelser.utbetalinger.fraarbeidsgiver</id>
+        <id>andreytelser.ytelserfranav.ikkemottattellersokt</id>
+        <panel>AndreYtelser</panel>
+        <type>java.lang.Boolean</type>
+        <dependOn>andreytelser.ytelserfranav</dependOn>
     </faktum>
     <faktum>
-        <id>andreytelser.utbetalinger.fraarbeidsgiver.utbetalingen.engangsbelop</id>
+        <id>andreytelser.fraarbeidsgiver</id>
+        <panel>AndreYtelser</panel>
+        <type>java.lang.Boolean</type>
+        <dependOn>soknadstype</dependOn>
+        <dependOnValues>
+            <value>ordinaer</value>
+        </dependOnValues>
     </faktum>
     <faktum>
-        <id>andreytelser.utbetalinger.fraarbeidsgiver.engangsbelop.belop</id>
+        <id>andreytelser.fraarbeidsgiver.false.utbetalingsmetode</id>
+        <panel>AndreYtelser</panel>
+        <type>checkboxGroup</type>
+        <dependOn>andreytelser.fraarbeidsgiver</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
-        <id>andreytelser.utbetalinger.fraarbeidsgiver.utbetalingen.lopendeutbetaling</id>
+        <id>andreytelser.fraarbeidsgiver.false.utbetalingsmetode.engangsbelop</id>
+        <panel>AndreYtelser</panel>
+        <type>java.lang.Boolean</type>
+        <dependOn>andreytelser.fraarbeidsgiver.false.utbetalingsmetode</dependOn>
     </faktum>
     <faktum>
-        <id>andreytelser.utbetalinger.fraarbeidsgiver.lopendeutbetaling.belop</id>
+        <id>andreytelser.fraarbeidsgiver.false.utbetalingsmetode.engangsbelop.true.belop</id>
+        <panel>AndreYtelser</panel>
+        <type>textbox</type>
+        <dependOn>andreytelser.fraarbeidsgiver.false.utbetalingsmetode.engangsbelop</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
-        <id>andreytelser.utbetalinger.fraarbeidsgiver.lopendeutbetaling.opphorer</id>
+        <id>andreytelser.fraarbeidsgiver.false.utbetalingsmetode.lopendeutbetaling</id>
+        <panel>AndreYtelser</panel>
+        <type>java.lang.Boolean</type>
+        <dependOn>andreytelser.fraarbeidsgiver.false.utbetalingsmetode</dependOn>
     </faktum>
     <faktum>
-        <id>andreytelser.utbetalinger.fraandre.omsorgslonn</id>
+        <id>andreytelser.fraarbeidsgiver.false.utbetalingsmetode.lopendeutbetaling.true.belop</id>
+        <panel>AndreYtelser</panel>
+        <type>textbox</type>
+        <dependOn>andreytelser.fraarbeidsgiver.false.utbetalingsmetode.lopendeutbetaling</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
-        <id>andreytelser.utbetalinger.fraandre.fosterhjemsgodtgjorelse</id>
+        <id>andreytelser.fraarbeidsgiver.false.utbetalingsmetode.lopendeutbetaling.true.opphorer</id>
+        <panel>AndreYtelser</panel>
+        <type>inlineproperties</type>
+        <properties>
+            <property>
+                <id>maaned</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>aar</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+        <dependOn>andreytelser.fraarbeidsgiver.false.utbetalingsmetode.lopendeutbetaling</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
-        <id>andreytelser.utbetalinger.fraandre.verv</id>
+        <id>andreytelser.fraandre</id>
+        <panel>AndreYtelser</panel>
+        <type>checkboxGroup</type>
     </faktum>
     <faktum>
-        <id>andreytelser.utbetalinger.fraandre.utenlandsketrygdemyndigheter</id>
+        <id>andreytelser.fraandre.omsorgslonn</id>
+        <panel>AndreYtelser</panel>
+        <type>java.lang.Boolean</type>
     </faktum>
     <faktum>
-        <id>andreytelser.utbetalinger.fraandre.utenlandsketrygdemyndigheter.ytelse</id>
+        <id>andreytelser.fraandre.fosterhjemsgodtgjorelse</id>
+        <panel>AndreYtelser</panel>
+        <type>java.lang.Boolean</type>
     </faktum>
     <faktum>
-        <id>andreytelser.utbetalinger.fraandre.utenlandsketrygdemyndigheter.land</id>
+        <id>andreytelser.fraandre.verv</id>
+        <panel>AndreYtelser</panel>
+        <type>java.lang.Boolean</type>
     </faktum>
     <faktum>
-        <id>andreytelser.utbetalinger.fraandre.annet</id>
+        <id>andreytelser.fraandre.utenlandsketrygdemyndigheter</id>
+        <panel>AndreYtelser</panel>
+        <type>java.lang.Boolean</type>
     </faktum>
     <faktum>
-        <id>andreytelser.utbetalinger.fraandre.annet.ytelse</id>
+        <id>andreytelser.fraandre.utenlandsketrygdemyndigheter.true.ytelse</id>
+        <panel>AndreYtelser</panel>
+        <type>textbox</type>
+        <dependOn>andreytelser.fraandre.utenlandsketrygdemyndigheter</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
-        <id>andreytelser.utbetalinger.fraandre.annet.utbetaler</id>
+        <id>andreytelser.fraandre.utenlandsketrygdemyndigheter.true.land</id>
+        <panel>AndreYtelser</panel>
+        <type>textbox</type>
+        <dependOn>andreytelser.fraandre.utenlandsketrygdemyndigheter</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
     <faktum>
-        <id>andreytelser.utbetalinger.fraandre.ikkemottattellersokt</id>
+        <id>andreytelser.fraandre.annet</id>
+        <panel>AndreYtelser</panel>
+        <type>java.lang.Boolean</type>
     </faktum>
-
+    <faktum>
+        <id>andreytelser.fraandre.annet.true.ytelse</id>
+        <panel>AndreYtelser</panel>
+        <type>textbox</type>
+        <dependOn>andreytelser.fraandre.annet</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>andreytelser.fraandre.annet.true.utbetaler</id>
+        <panel>AndreYtelser</panel>
+        <type>textbox</type>
+        <dependOn>andreytelser.fraandre.annet</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>andreytelser.fraandre.ikkemottattellersokt</id>
+        <panel>AndreYtelser</panel>
+        <type>java.lang.Boolean</type>
+    </faktum>
 
 
     <!-- Kopi av avtaler om ytelser -->
     <vedlegg>
-        <faktum>andreytelser.utbetalinger.fraarbeidsgiver</faktum>
+        <faktum>andreytelser.fraarbeidsgiver</faktum>
         <onValues>
             <value>false</value>
         </onValues>
@@ -72,7 +175,7 @@
 
     <!-- Mottar eller har søkt om andre ytelser fra spesifikke kilder -->
     <vedlegg>
-        <faktum>andreytelser.utbetalinger.fraandre.omsorgslonn</faktum>
+        <faktum>andreytelser.fraandre.omsorgslonn</faktum>
         <onValues>
             <value>true</value>
         </onValues>
@@ -80,7 +183,7 @@
         <skjemaNummer>K5</skjemaNummer>
     </vedlegg>
     <vedlegg>
-        <faktum>andreytelser.utbetalinger.fraandre.fosterhjemsgodtgjorelse</faktum>
+        <faktum>andreytelser.fraandre.fosterhjemsgodtgjorelse</faktum>
         <onValues>
             <value>true</value>
         </onValues>
@@ -88,7 +191,7 @@
         <skjemaNummer>K5</skjemaNummer>
     </vedlegg>
     <vedlegg>
-        <faktum>andreytelser.utbetalinger.fraandre.utenlandsketrygdemyndigheter</faktum>
+        <faktum>andreytelser.fraandre.utenlandsketrygdemyndigheter</faktum>
         <onValues>
             <value>true</value>
         </onValues>
