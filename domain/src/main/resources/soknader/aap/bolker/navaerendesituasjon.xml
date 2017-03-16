@@ -8,36 +8,50 @@
     </faktum>
 
     <faktum>
-        <id>navaerendesituasjon.iArbeid</id>
+        <id>navaerendesituasjon.iarbeid</id>
         <panel>navaerendesituasjon</panel>
         <type>java.lang.Boolean</type>
         <dependOn>navaerendesituasjon</dependOn>
     </faktum>
+
     <faktum>
-        <id>navaerendesituasjon.iArbeid.ansatt</id>
+        <id>navaerendesituasjon.iarbeid.arbeidsforhold</id>
+        <panel>navaerendesituasjon</panel>
+        <type>checkboxGroup</type>
+        <dependOn>navaerendesituasjon.iarbeid</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+
+    <faktum>
+        <id>navaerendesituasjon.iarbeid.arbeidsforhold.ansatt</id>
         <type>java.lang.Boolean</type>
         <panel>navaerendesituasjon</panel>
-        <dependOn>navaerendesituasjon.iArbeid</dependOn>
+        <dependOn>navaerendesituasjon.iarbeid.arbeidsforhold</dependOn>
     </faktum>
     <faktum>
-        <id>navaerendesituasjon.iArbeid.selvstendigNaeringsdrivende</id>
+        <id>navaerendesituasjon.iarbeid.arbeidsforhold.selvstendig</id>
         <type>java.lang.Boolean</type>
         <panel>navaerendesituasjon</panel>
-        <dependOn>navaerendesituasjon.iArbeid</dependOn>
+        <dependOn>navaerendesituasjon.iarbeid.arbeidsforhold</dependOn>
     </faktum>
     <faktum>
         <id>navaerendesituasjon.sykmeldt</id>
         <type>java.lang.Boolean</type>
         <panel>navaerendesituasjon</panel>
+        <dependOn>navaerendesituasjon</dependOn>
     </faktum>
     <faktum>
         <id>navaerendesituasjon.arbeidsledig</id>
         <type>java.lang.Boolean</type>
         <panel>navaerendesituasjon</panel>
+        <dependOn>navaerendesituasjon</dependOn>
     </faktum>
     <faktum>
         <id>navaerendesituasjon.student</id>
         <panel>navaerendesituasjon</panel>
+        <dependOn>navaerendesituasjon</dependOn>
     </faktum>
     <faktum>
         <id>navaerendesituasjon.student.studererfortsatt</id>
@@ -69,10 +83,12 @@
     <faktum>
         <id>navaerendesituasjon.forstegangstjeneste</id>
         <panel>navaerendesituasjon</panel>
+        <dependOn>navaerendesituasjon</dependOn>
     </faktum>
     <faktum>
         <id>navaerendesituasjon.annet</id>
         <panel>navaerendesituasjon</panel>
+        <dependOn>navaerendesituasjon</dependOn>
     </faktum>
     <faktum>
         <id>navaerendesituasjon.annet.fritekst</id>
