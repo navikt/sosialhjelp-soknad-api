@@ -5,13 +5,13 @@
     <faktum>
         <id>tilknytningnorge.oppholdinorgesistetreaar</id>
         <type>radio</type>
-        <panel>tilknytningnorge</panel>
+        <panel>Tilknytningnorge</panel>
     </faktum>
 
 
     <faktum>
         <id>tilknytningnorge.oppholdinorgesistetreaar.false</id>
-        <type>chekboxgorup</type>
+        <type>checkboxGroup</type>
         <dependOn>tilknytningnorge.oppholdinorgesistetreaar</dependOn>
         <dependOnValues>
             <value>false</value>
@@ -20,10 +20,12 @@
 
     <faktum>
         <id>tilknytningnorge.oppholdinorgesistetreaar.false.boddinorgesisteaaret</id>
+        <type>checkbox</type>
         <dependOn>tilknytningnorge.oppholdinorgesistetreaar.false</dependOn>
     </faktum>
     <faktum>
         <id>tilknytningnorge.oppholdinorgesistetreaar.false.boddieoslandsistetreaar</id>
+        <type>checkbox</type>
         <dependOn>tilknytningnorge.oppholdinorgesistetreaar.false</dependOn>
     </faktum>
     <faktum>
@@ -33,6 +35,7 @@
     </faktum>
     <faktum>
         <id>tilknytningnorge.oppholdinorgesistetreaar.false.ingenpassendesituasjoner</id>
+        <type>checkbox</type>
         <dependOn>tilknytningnorge.oppholdinorgesistetreaar.false</dependOn>
     </faktum>
 
