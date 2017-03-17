@@ -3,40 +3,52 @@
 
     <!-- Opphold i Norge siste tre år -->
     <faktum>
-        <id>tilknytningNorge.oppholdINorgeSisteTreAar</id>
+        <id>tilknytningnorge.oppholdinorgesistetreaar</id>
         <type>radio</type>
-        <panel>Tilknytningnorge</panel>
+        <panel>tilknytningnorge</panel>
     </faktum>
+
+
     <faktum>
-        <id>tilknytningNorge.oppholdINorgeSisteTreAar.false.boddINorgeSisteAaret</id>
-    </faktum>
-    <faktum>
-        <id>tilknytningNorge.oppholdINorgeSisteTreAar.false.boddIEOSLandSisteTreAar</id>
-    </faktum>
-    <faktum>
-        <id>tilknytningNorge.oppholdINorgeSisteTreAar.false.registrertFlyktning</id>
-        <dependOn>tilknytningNorge.oppholdINorgeSisteTreAar</dependOn>
+        <id>tilknytningnorge.oppholdinorgesistetreaar.false</id>
+        <type>chekboxgorup</type>
+        <dependOn>tilknytningnorge.oppholdinorgesistetreaar</dependOn>
         <dependOnValues>
             <value>false</value>
         </dependOnValues>
     </faktum>
+
     <faktum>
-        <id>tilknytningNorge.oppholdINorgeSisteTreAar.false.ingenPassendeSituasjoner</id>
+        <id>tilknytningnorge.oppholdinorgesistetreaar.false.boddinorgesisteaaret</id>
+        <dependOn>tilknytningnorge.oppholdinorgesistetreaar.false</dependOn>
+    </faktum>
+    <faktum>
+        <id>tilknytningnorge.oppholdinorgesistetreaar.false.boddieoslandsistetreaar</id>
+        <dependOn>tilknytningnorge.oppholdinorgesistetreaar.false</dependOn>
+    </faktum>
+    <faktum>
+        <id>tilknytningnorge.oppholdinorgesistetreaar.false.registrertflyktning</id>
+        <type>checkbox</type>
+        <dependOn>tilknytningnorge.oppholdinorgesistetreaar.false</dependOn>
+    </faktum>
+    <faktum>
+        <id>tilknytningnorge.oppholdinorgesistetreaar.false.ingenpassendesituasjoner</id>
+        <dependOn>tilknytningnorge.oppholdinorgesistetreaar.false</dependOn>
     </faktum>
 
     <!-- Arbeid i utlandet før sykdom -->
     <faktum>
-        <id>tilknytningNorge.arbeidIUtlandet</id>
+        <id>tilknytningnorge.arbeidiutlandet</id>
     </faktum>
     <faktum>
-        <id>tilknytningNorge.arbeidIUtlandet.periode</id>
+        <id>tilknytningnorge.arbeidiutlandet.periode</id>
         <flereTillatt>true</flereTillatt>
     </faktum>
 
 
     <!-- Bekreftelse på flyktningstatus -->
     <vedlegg>
-        <faktum>tilknytningNorge.oppholdINorgeSisteTreAar.false.registrertFlyktning</faktum>
+        <faktum>tilknytningnorge.oppholdinorgesistetreaar.false.registrertflyktning</faktum>
         <onValues>
             <value>true</value>
         </onValues>
