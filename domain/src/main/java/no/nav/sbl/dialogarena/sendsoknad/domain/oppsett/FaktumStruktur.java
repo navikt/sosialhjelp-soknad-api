@@ -27,7 +27,8 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
     private String dependOnProperty;
     private List<String> dependOnValues;
     private Boolean useExpression = false;
-    private Boolean kunUtvidet=false;
+    private Boolean kunUtvidet = false;
+    private Boolean optional = false;
 
     private String flereTillatt;
     private String erSystemFaktum;
@@ -108,6 +109,14 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
         this.useExpression = useExpression;
     }
 
+    public Boolean isOptional() {
+        return optional;
+    }
+
+    public void setOptional(Boolean optional) {
+        this.optional = optional;
+    }
+
     public FaktumStruktur medDependOn(FaktumStruktur parent) {
         this.dependOn = parent;
         return this;
@@ -172,6 +181,7 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
                 .append("dependOnValues", dependOnValues)
                 .append("useExpression", useExpression)
                 .append("flereTillatt", flereTillatt)
+                .append("optional", optional)
                 .append("erSystemFaktum", erSystemFaktum)
                 .append("properties", properties)
                 .append("constraints", constraints)
