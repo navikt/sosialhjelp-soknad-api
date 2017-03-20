@@ -17,7 +17,8 @@ public enum OppsummeringsTyper {
     inputgroup("skjema/generisk/inputgroup"),
     infotekst("skjema/generisk/infotekst"),
     radio("skjema/generisk/default"),
-    tekster("skjema/generisk/tekster");
+    tekster("skjema/generisk/tekster"),
+    inlineproperties("skjema/generisk/inlineproperties");
 
 
     public final String template;
