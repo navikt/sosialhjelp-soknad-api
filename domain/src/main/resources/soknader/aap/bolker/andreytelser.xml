@@ -31,7 +31,7 @@
         <constraints>
             <constraint>
                 <faktum>soknadstype</faktum>
-                <expression>value == 'ordinaer'</expression>
+                <expression>value == "ordinaer"</expression>
             </constraint>
         </constraints>
     </faktum>
