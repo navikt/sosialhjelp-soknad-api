@@ -19,7 +19,7 @@ public class DagpengerUtils {
     public static final String DAGPENGER_VED_PERMITTERING = "NAV 04-01.04";
     public static final String GJENOPPTAK = "NAV 04-16.03";
     public static final String GJENOPPTAK_VED_PERMITTERING = "NAV 04-16.04";
-    public static final String EOS_DAGPENGER = "4304";
+    public static final String EOS_DAGPENGER = "4465";
     public static final String RUTES_I_BRUT = "";
     public static final String PERMITTERT = "permittert";
     public static final String ANNEN_AARSAK = "Annen årsak";
