@@ -13,12 +13,12 @@ node {
     commonLib.setupTools("Maven 3.3.3", "java7")
 
     stage('Checkout') {
-        checkout([$class: 'GitSCM', branches: [[name: "*/release/2017-HL1"]], doGenerateSubmoduleConfigurations: false, extensions: [], gitTool: 'Default', submoduleCfg: [], userRemoteConfigs: [[url: 'ssh://git@stash.devillo.no:7999/sokd/sendsoknad.git']]])
+        checkout([$class: 'GitSCM', branches: [[name: "*/release/2017-ukjent-fulloppsummering-aap"]], doGenerateSubmoduleConfigurations: false, extensions: [], gitTool: 'Default', submoduleCfg: [], userRemoteConfigs: [[url: 'ssh://git@stash.devillo.no:7999/sokd/sendsoknad.git']]])
         pom = readMavenPom file: 'pom.xml'
         if (useSnapshot == 'true') {
-            version = pom.version.replace(/\d-SNAPSHOT/, ".${currentBuild.number}-SNAPSHOT")
+            version = pom.version.replaceAll(/.\d-SNAPSHOT/, ".${currentBuild.number}-SNAPSHOT")
         } else {
-            version = pom.version.replace(/\d-SNAPSHOT/, ".${currentBuild.number}")
+            version = pom.version.replaceAll(/.\d-SNAPSHOT/, ".${currentBuild.number}")
         }
         sh "mvn versions:set -DnewVersion=${version}"
     }
@@ -44,9 +44,11 @@ node {
         try {
             sh "mvn -B deploy -DskipTests -P pipeline"
             currentBuild.description = "Version: ${version}"
-            sh "mvn versions:set -DnewVersion=${pom.version}"
             if (useSnapshot != 'true') {
                 sh "git tag -a ${version} -m ${version} HEAD && git push --tags"
+            }
+            else {
+                sh "mvn versions:set -DnewVersion=${pom.version}"
             }
         } catch(Exception e) {
             notifyFailed("Deploy av artifakt til nexus feilet", e)
