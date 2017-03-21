@@ -102,4 +102,28 @@
             {{/forFakta}}
         {{/hvisSant}}
     {{/forFaktum}}
+
+    {{#forFaktum "egennaering.arbeidegennaering.relasjon"}}
+        {{#hvisSant value}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{hentTekst "egennaering.arbeidegennaering.relasjon.true"}}</span>
+                </td>
+            </tr>
+        {{else}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                    <span>{{hentTekst "egennaering.arbeidegennaering.relasjon.false"}}</span>
+                    <br/>
+                    {{#forFaktum "egennaering.arbeidegennaering.relasjon.true.fritekst"}}
+                        {{#hvisIkkeTom value}}
+                            <span>{{hentTekst "egennaering.arbeidegennaering.relasjon.true.infotekst"}}</span>: <i>{{value}}</i>
+                        {{/hvisIkkeTom}}
+                    {{/forFaktum}}
+                </td>
+            </tr>
+        {{/hvisSant}}
+    {{/forFaktum}}
 </table>

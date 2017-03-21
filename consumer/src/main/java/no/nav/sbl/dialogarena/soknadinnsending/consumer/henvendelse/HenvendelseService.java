@@ -76,6 +76,7 @@ public class HenvendelseService {
             WSSoknadsdata parameters = new WSSoknadsdata().withBehandlingsId(behandlingsId).withAny(new XMLMetadataListe()
                     .withMetadata(hovedskjema)
                     .withMetadata(vedlegg));
+            logger.info("Søknad avsluttet " + behandlingsId + " " + hovedskjema.getSkjemanummer() + " (" + hovedskjema.getJournalforendeEnhet() + ") " + vedlegg.length + " vedlegg");
             sendSoknadEndpoint.sendSoknad(parameters);
         } catch (SOAPFaultException e) {
             logger.error("Feil ved innsending av søknad: " + e, e);

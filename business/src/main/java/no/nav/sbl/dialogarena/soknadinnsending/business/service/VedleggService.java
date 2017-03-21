@@ -58,6 +58,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import static java.util.Collections.sort;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
@@ -339,18 +341,34 @@ public class VedleggService {
             Vedlegg.Status orginalStatus = vedleggsgrunnlag.vedlegg.getInnsendingsvalg();
             Vedlegg.Status status = vedleggsgrunnlag.oppdaterInnsendingsvalg(vedleggErPaakrevd);
             VedleggForFaktumStruktur vedleggForFaktumStruktur = vedleggsgrunnlag.grunnlag.get(0).getLeft();
-            Faktum faktum = vedleggsgrunnlag.grunnlag.get(0).getRight().get(0);
-            if (vedleggsgrunnlag.vedleggHarTittelFraProperty(vedleggForFaktumStruktur, faktum)) {
-                vedleggsgrunnlag.vedlegg.setNavn(faktum.getProperties().get(vedleggForFaktumStruktur.getProperty()));
-            } else if (vedleggForFaktumStruktur.harOversetting()) {
-                String cmsnokkel = vedleggForFaktumStruktur.getOversetting().replace("${key}", faktum.getKey());
-                vedleggsgrunnlag.vedlegg.setNavn(vedleggsgrunnlag.navMessageSource.getMessage(cmsnokkel, new Object[0], vedleggsgrunnlag.soknad.getSprak()));
-            }
+            List<Faktum> fakta = vedleggsgrunnlag.grunnlag.get(0).getRight();
+            if (!fakta.isEmpty()) {
+                Faktum faktum = fakta.size() > 1 ? getFaktumBasertPaProperties(fakta, vedleggsgrunnlag.grunnlag.get(0).getLeft()) : fakta.get(0);
 
-            if (!status.equals(orginalStatus) || vedleggsgrunnlag.vedlegg.erNyttVedlegg()) {
-                vedleggRepository.opprettEllerLagreVedleggVedNyGenereringUtenEndringAvData(vedleggsgrunnlag.vedlegg);
+                if (vedleggsgrunnlag.vedleggHarTittelFraVedleggTittelProperty(vedleggForFaktumStruktur)) {
+                    String cmsnokkel = vedleggForFaktumStruktur.getVedleggTittel();
+                    vedleggsgrunnlag.vedlegg.setNavn(vedleggsgrunnlag.navMessageSource.finnTekst(cmsnokkel, new Object[0], vedleggsgrunnlag.soknad.getSprak()));
+                } else if (vedleggsgrunnlag.vedleggHarTittelFraProperty(vedleggForFaktumStruktur, faktum)) {
+                    vedleggsgrunnlag.vedlegg.setNavn(faktum.getProperties().get(vedleggForFaktumStruktur.getProperty()));
+                } else if (vedleggForFaktumStruktur.harOversetting()) {
+                    String cmsnokkel = vedleggForFaktumStruktur.getOversetting().replace("${key}", faktum.getKey());
+                    vedleggsgrunnlag.vedlegg.setNavn(vedleggsgrunnlag.navMessageSource.finnTekst(cmsnokkel, new Object[0], vedleggsgrunnlag.soknad.getSprak()));
+                }
+
+                if (!status.equals(orginalStatus) || vedleggsgrunnlag.vedlegg.erNyttVedlegg()) {
+                    vedleggRepository.opprettEllerLagreVedleggVedNyGenereringUtenEndringAvData(vedleggsgrunnlag.vedlegg);
+                }
             }
         }
+    }
+
+    private Faktum getFaktumBasertPaProperties(List<Faktum> fakta, final VedleggForFaktumStruktur vedleggFaktumStruktur) {
+        return on(fakta).filter(new Predicate<Faktum>() {
+            @Override
+            public boolean evaluate(Faktum faktum) {
+                return vedleggFaktumStruktur.getOnProperty().equals(faktum.getProperties().get(vedleggFaktumStruktur.getProperty()));
+            }
+        }).head().getOrElse(fakta.get(0));
     }
 
     private List<Vedlegg> hentPaakrevdeVedleggForForventninger(List<VedleggsGrunnlag> alleMuligeVedlegg) {

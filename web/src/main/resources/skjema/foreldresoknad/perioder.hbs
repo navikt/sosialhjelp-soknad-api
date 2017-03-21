@@ -1,4 +1,24 @@
 <h2>{{ hentTekst "foreldresoknad.perioder.tittel" }}</h2>
+<table>
+    {{#forFaktum "perioder.endring.omsorg"}}
+        <tr>
+            <td class="sjekket"></td>
+            {{#hvisLik "true" value}}
+                <td>
+                    <span>{{hentTekst "perioder.endring.omsorg.true"}}</span>
+                </td>
+            {{/hvisLik}}
+
+            {{#hvisLik "false" value}}
+                <td>
+                    <span>{{hentTekst "perioder.endring.omsorg.false"}}</span>
+                </td>
+            {{/hvisLik}}
+        </tr>
+    {{/forFaktum}}
+</table>
+<br/>
+<br/>
 <table class="perioder">
     <thead>
     <tr>

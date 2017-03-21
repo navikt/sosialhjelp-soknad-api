@@ -7,10 +7,12 @@
         <groupId>no.nav.sbl.dialogarena</groupId>
         <artifactId>sendsoknad</artifactId>
         <version>17.0.0-SNAPSHOT</version>
+        <version>16.2.22-SNAPSHOT</version>
     </parent>
 
     <artifactId>sendsoknad-mock</artifactId>
     <version>17.0.0-SNAPSHOT</version>
+    <version>16.2.22-SNAPSHOT</version>
     <name>${project.artifactId}</name>
 
     <dependencies>
