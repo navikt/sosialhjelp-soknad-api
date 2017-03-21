@@ -81,10 +81,6 @@
             <artifactId>arena-maalgruppe_v1</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>common-timing</artifactId>
-        </dependency>
-        <dependency>
             <groupId>no.nav</groupId>
             <artifactId>metrics</artifactId>
         </dependency>
