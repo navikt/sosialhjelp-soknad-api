@@ -38,6 +38,8 @@
     ul.svar-liste > li { position: relative; margin-left: 20px;}
     ul.svar-liste > li::before, ul.vedlegg-liste > li.lastet-opp::before {display: inline-block; content:" "; font-weight: bold; background: url(img/hake_sort.gif) no-repeat center bottom; width: 10px; height:12px; background-size: 8px; position: absolute; left: -20px;}
     ul.svar-liste ul.svar-liste > li::before { content: "•"; padding-left: 5px; background: none}
+    ul.svar-liste > li.ikke-stylet::before { background: none; }
+    ul.svar-liste ul.svar-liste > li.ikke-stylet::before { content: " ";}
 
     li.inline ul {display: inline; }
     li.inline li {display: inline;  margin-left:0; }
@@ -45,7 +47,6 @@
     li.inline ul.svar-liste > li::before {content:'';}
 
     ul.vedlegg-liste > li.ikke-lastet-opp::before {display: inline-block; content: "-";  position: absolute; left: -20px; }
-
     ul.vedlegg-liste > li { position: relative; margin: 12pt 0 12pt 20px;}
     ul.vedlegg-liste p { margin: 0 0 5pt 0}
     ul.vedlegg-liste .seVedlegg { display: none;}
