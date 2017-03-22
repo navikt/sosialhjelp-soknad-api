@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl">
+    <faktum kunUtvidet="true">
+        <id>informasjonsside</id>
+        <panel>Veiledning</panel>
+        <type>tekster</type>
+    </faktum>
+    <faktum kunUtvidet="true">
+        <id>informasjonsside.haroppdatertcv</id>
+        <panel>Veiledning</panel>
+        <type>checkbox</type>
+    </faktum>
+    <faktum kunUtvidet="true">
+        <id>informasjonsside.trengerikkeoppdaterecv</id>
+        <panel>Veiledning</panel>
+        <type>checkbox</type>
+    </faktum>
+</soknad>
