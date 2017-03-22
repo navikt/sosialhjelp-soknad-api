@@ -37,14 +37,12 @@
     <faktum>
         <id>barn.harinntekt</id>
         <type>java.lang.Boolean</type>
-        <panel>Barnetillegg</panel>
         <dependOn>barn</dependOn>
         <flereTillatt>true</flereTillatt>
     </faktum>
     <faktum>
         <id>barn.harinntekt.inntekt</id>
         <type>textbox</type>
-        <panel>Barnetillegg</panel>
         <dependOn>barn.harinntekt</dependOn>
         <dependOnValues>
             <value>true</value>
