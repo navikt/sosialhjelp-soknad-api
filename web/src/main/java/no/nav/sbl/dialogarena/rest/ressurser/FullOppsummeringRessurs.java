@@ -40,7 +40,7 @@ public class FullOppsummeringRessurs {
     @Produces(TEXT_HTML)
     @SjekkTilgangTilSoknad
     public String hentOppsummeringNew(@PathParam("behandlingsId") String behandlingsId) throws IOException {
-        sjekkTilgang("hentOppsummeringNew");
+        sjekkOmFullOppsummeringErAktivert("hentOppsummeringNew");
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
 
@@ -53,7 +53,7 @@ public class FullOppsummeringRessurs {
     @Produces(TEXT_HTML)
     @SjekkTilgangTilSoknad
     public String fullSoknad(@PathParam("behandlingsId") String behandlingsId) throws IOException {
-        sjekkTilgang("fullSoknad");
+        sjekkOmFullOppsummeringErAktivert("fullSoknad");
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
 
@@ -66,14 +66,14 @@ public class FullOppsummeringRessurs {
     @Produces("application/pdf")
     @SjekkTilgangTilSoknad
     public byte[] fullSoknadPdf(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext) throws IOException {
-        sjekkTilgang("fullSoknadPdf");
+        sjekkOmFullOppsummeringErAktivert("fullSoknadPdf");
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
         String servletPath = servletContext.getRealPath("/");
         return pdfService.genererOppsummeringPdf(soknad, servletPath, true);
     }
 
-    private void sjekkTilgang(String metode) {
+    private void sjekkOmFullOppsummeringErAktivert(String metode) {
         LOG.warn("OppsummeringRessurs metode {} forsøkt aksessert", metode);
         if (!FULLOPPSUMMERING_AKTIVERT) {
             throw new NotFoundException("Ikke aktivert fulloppsummering");
