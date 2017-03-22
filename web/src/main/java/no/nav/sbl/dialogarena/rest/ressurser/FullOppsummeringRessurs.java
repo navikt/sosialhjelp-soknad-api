@@ -12,10 +12,7 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import java.io.IOException;
 
@@ -35,13 +32,15 @@ public class FullOppsummeringRessurs {
     private PDFService pdfService;
     private static final Logger LOG = LoggerFactory.getLogger(FullOppsummeringRessurs.class);
 
+    private static final boolean FULLOPPSUMMERING_AKTIVERT = Boolean.valueOf(System.getProperty("soknad.fulloppsummering.enabled", "false"));
+
     @Deprecated
     @GET
     @Path("/{behandlingsId}/nyoppsummering")
     @Produces(TEXT_HTML)
     @SjekkTilgangTilSoknad
     public String hentOppsummeringNew(@PathParam("behandlingsId") String behandlingsId) throws IOException {
-        logAccess("hentOppsummeringNew");
+        sjekkTilgang("hentOppsummeringNew");
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
 
@@ -54,27 +53,31 @@ public class FullOppsummeringRessurs {
     @Produces(TEXT_HTML)
     @SjekkTilgangTilSoknad
     public String fullSoknad(@PathParam("behandlingsId") String behandlingsId) throws IOException {
-        logAccess("fullSoknad");
+        sjekkTilgang("fullSoknad");
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
 
         return pdfTemplate.fyllHtmlMalMedInnhold(soknad, true);
     }
+
     @Deprecated
     @GET
     @Path("/{behandlingsId}/fullsoknadpdf")
     @Produces("application/pdf")
     @SjekkTilgangTilSoknad
     public byte[] fullSoknadPdf(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext) throws IOException {
-        logAccess("fullSoknadPdf");
+        sjekkTilgang("fullSoknadPdf");
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
         String servletPath = servletContext.getRealPath("/");
         return pdfService.genererOppsummeringPdf(soknad, servletPath, true);
     }
 
-    private void logAccess(String metode) {
-        LOG.warn("OppsummeringREssurs metode {} ble aksessert", metode);
+    private void sjekkTilgang(String metode) {
+        LOG.warn("OppsummeringRessurs metode {} forsøkt aksessert", metode);
+        if (!FULLOPPSUMMERING_AKTIVERT) {
+            throw new NotFoundException("Ikke aktivert fulloppsummering");
+        }
     }
 
 }
