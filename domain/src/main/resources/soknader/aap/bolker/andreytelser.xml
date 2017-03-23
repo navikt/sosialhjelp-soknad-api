@@ -100,27 +100,26 @@
     </faktum>
     <faktum>
         <id>andreytelser.fraandre.omsorgslonn</id>
-        <panel>AndreYtelser</panel>
         <type>java.lang.Boolean</type>
+        <dependOn>andreytelser.fraandre</dependOn>
     </faktum>
     <faktum>
         <id>andreytelser.fraandre.fosterhjemsgodtgjorelse</id>
-        <panel>AndreYtelser</panel>
         <type>java.lang.Boolean</type>
+        <dependOn>andreytelser.fraandre</dependOn>
     </faktum>
     <faktum>
         <id>andreytelser.fraandre.verv</id>
-        <panel>AndreYtelser</panel>
         <type>java.lang.Boolean</type>
+        <dependOn>andreytelser.fraandre</dependOn>
     </faktum>
     <faktum>
         <id>andreytelser.fraandre.utenlandsketrygdemyndigheter</id>
-        <panel>AndreYtelser</panel>
         <type>java.lang.Boolean</type>
+        <dependOn>andreytelser.fraandre</dependOn>
     </faktum>
     <faktum>
         <id>andreytelser.fraandre.utenlandsketrygdemyndigheter.true.ytelse</id>
-        <panel>AndreYtelser</panel>
         <type>textbox</type>
         <dependOn>andreytelser.fraandre.utenlandsketrygdemyndigheter</dependOn>
         <dependOnValues>
@@ -129,7 +128,6 @@
     </faktum>
     <faktum>
         <id>andreytelser.fraandre.utenlandsketrygdemyndigheter.true.land</id>
-        <panel>AndreYtelser</panel>
         <type>textbox</type>
         <dependOn>andreytelser.fraandre.utenlandsketrygdemyndigheter</dependOn>
         <dependOnValues>
@@ -138,12 +136,11 @@
     </faktum>
     <faktum>
         <id>andreytelser.fraandre.annet</id>
-        <panel>AndreYtelser</panel>
         <type>java.lang.Boolean</type>
+        <dependOn>andreytelser.fraandre</dependOn>
     </faktum>
     <faktum>
         <id>andreytelser.fraandre.annet.true.ytelse</id>
-        <panel>AndreYtelser</panel>
         <type>textbox</type>
         <dependOn>andreytelser.fraandre.annet</dependOn>
         <dependOnValues>
@@ -152,7 +149,6 @@
     </faktum>
     <faktum>
         <id>andreytelser.fraandre.annet.true.utbetaler</id>
-        <panel>AndreYtelser</panel>
         <type>textbox</type>
         <dependOn>andreytelser.fraandre.annet</dependOn>
         <dependOnValues>
@@ -161,8 +157,8 @@
     </faktum>
     <faktum>
         <id>andreytelser.fraandre.ikkemottattellersokt</id>
-        <panel>AndreYtelser</panel>
         <type>java.lang.Boolean</type>
+        <dependOn>andreytelser.fraandre</dependOn>
     </faktum>
 
 
