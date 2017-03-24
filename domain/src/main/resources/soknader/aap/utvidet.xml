@@ -6,13 +6,18 @@
         <type>tekster</type>
     </faktum>
     <faktum kunUtvidet="true">
-        <id>informasjonsside.haroppdatertcv</id>
+        <id>informasjonsside.cv</id>
         <panel>Veiledning</panel>
-        <type>checkbox</type>
+        <type>checkboxGroup</type>
     </faktum>
     <faktum kunUtvidet="true">
-        <id>informasjonsside.trengerikkeoppdaterecv</id>
-        <panel>Veiledning</panel>
+        <id>informasjonsside.cv.haroppdatertcv</id>
         <type>checkbox</type>
+        <dependOn>informasjonsside.cv</dependOn>
+    </faktum>
+    <faktum kunUtvidet="true">
+        <id>informasjonsside.cv.trengerikkeoppdaterecv</id>
+        <type>checkbox</type>
+        <dependOn>informasjonsside.cv</dependOn>
     </faktum>
 </soknad>
