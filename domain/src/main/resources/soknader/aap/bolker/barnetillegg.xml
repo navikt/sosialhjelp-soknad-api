@@ -9,10 +9,23 @@
             <property>
                 <id>fornavn</id>
                 <type>textbox</type>
+                <constraints>
+                    <constraint>type == 'BRUKERREGISTRERT'</constraint>
+                </constraints>
             </property>
             <property>
                 <id>etternavn</id>
                 <type>textbox</type>
+                <constraints>
+                    <constraint>type == 'BRUKERREGISTRERT'</constraint>
+                </constraints>
+            </property>
+            <property>
+                <id>sammensattnavn</id>
+                <type>textbox</type>
+                <constraints>
+                    <constraint>type == 'SYSTEMREGISTRERT'</constraint>
+                </constraints>
             </property>
             <property>
                 <id>fnr</id>
