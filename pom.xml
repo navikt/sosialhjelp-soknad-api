@@ -55,7 +55,7 @@
         <flying.saucer.version>9.0.4</flying.saucer.version>
         <handlebars.version>4.0.6</handlebars.version>
         <jackson.version>2.4.4</jackson.version>
-        <metrics.version>3.1.1</metrics.version>
+        <metrics.version>3.2.0</metrics.version>
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
