@@ -1,5 +1,6 @@
 <soknad temaKode="AAP" xmlns="urn:no.nav.sbl" xmlns:xi="http://www.w3.org/2001/XInclude">
 
+    <xi:include href="informasjonsside.xml" />
     <xi:include href="soknadstype.xml" />
 
     <!-- Bolker -->
