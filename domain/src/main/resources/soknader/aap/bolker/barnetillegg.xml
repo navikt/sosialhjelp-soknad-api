@@ -68,9 +68,6 @@
         <skjemaNummer>X8</skjemaNummer>
         <property>sammensattnavn</property>
         <onProperty>vedlegg</onProperty>
-        <onValues>
-            <value>true</value>
-        </onValues>
         <forSystemfaktum>false</forSystemfaktum>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
