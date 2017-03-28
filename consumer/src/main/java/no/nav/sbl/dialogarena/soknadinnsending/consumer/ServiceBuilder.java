@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 import no.nav.modig.jaxws.handlers.MDCOutHandler;
 import no.nav.sbl.dialogarena.common.cxf.LoggingFeatureUtenBinaryOgUtenSamlTokenLogging;
 import no.nav.sbl.dialogarena.common.cxf.TimeoutFeature;
-import no.nav.sbl.dialogarena.common.timing.TimingFeature;
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
@@ -74,11 +73,6 @@ public final class ServiceBuilder<T> {
         return this;
     }
 
-    public ServiceBuilder<T> withTiming() {
-        factoryBean.getFeatures().add(new TimingFeature(resultClass.getSimpleName()));
-        return this;
-    }
-
     public ServiceBuilder<T> withAddressing() {
         factoryBean.getFeatures().add(new WSAddressingFeature());
         return this;
@@ -117,7 +111,6 @@ public final class ServiceBuilder<T> {
         return this.withAddressing()
                 .withLogging()
                 .withTimeout()
-                .withTiming()
                 .withProperties();
     }
 
