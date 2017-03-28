@@ -19,7 +19,7 @@ import java.util.List;
 
 import static junit.framework.Assert.fail;
 
-public class SoknadXmlValiderer {
+public class SoknadXmlValidererTest {
 
     @BeforeClass
     public static void genererXsd() throws JAXBException, IOException {
@@ -38,7 +38,7 @@ public class SoknadXmlValiderer {
 
     @Test
     public void testForeldrepengerXml() throws Exception {
-        testOmXmlValiderer("foreldresoknad.xml");
+        testOmXmlValiderer("foreldrepenger/foreldrepenger.xml");
     }
 
     @Test

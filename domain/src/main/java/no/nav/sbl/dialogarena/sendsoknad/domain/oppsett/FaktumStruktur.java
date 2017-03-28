@@ -166,7 +166,7 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
         return kunUtvidet;
     }
 
-    public void setKunUtvidet(boolean kunUtvidet) {
+    public void setKunUtvidet(Boolean kunUtvidet) {
         this.kunUtvidet = kunUtvidet;
     }
 
