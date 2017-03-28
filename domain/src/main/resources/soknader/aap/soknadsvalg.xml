@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl">
+    <faktum kunUtvidet="true">
+        <id>soknadsvalg.mottattsisteuker</id>
+        <panel>Soknadsvalg</panel>
+        <type>radio</type>
+    </faktum>
+
+    <faktum>
+        <id>soknadsvalg.mottattsisteuker.ja</id>
+        <type>checkboxGroup</type>
+        <dependOn>soknadsvalg.mottattsisteuker</dependOn>
+        <dependOnValues>
+            <value>ja</value>
+        </dependOnValues>
+    </faktum>
+
+    <faktum>
+        <id>soknadsvalg.mottattsisteuker.ja.sakavsluttet</id>
+        <type>checkbox</type>
+        <dependOn>soknadsvalg.mottattsisteuker.ja</dependOn>
+    </faktum>
+
+    <faktum>
+        <id>soknadsvalg.mottattsisteuker.ja.innvilget</id>
+        <type>checkbox</type>
+        <dependOn>soknadsvalg.mottattsisteuker.ja</dependOn>
+    </faktum>
+
+    <faktum>
+        <id>soknadsvalg.mottattsisteuker.ja.ingensituasjon</id>
+        <type>checkbox</type>
+        <dependOn>soknadsvalg.mottattsisteuker.ja</dependOn>
+    </faktum>
+</soknad>
