@@ -2,13 +2,62 @@
 <soknad xmlns="urn:no.nav.sbl">
     <!-- Hovedvisning -->
     <faktum>
-        <id>samtalen.samtalemedNAV</id>
+        <id>samtalemednav</id>
+        <type>java.lang.String</type>
+        <panel>samtalemednav</panel>
     </faktum>
     <faktum>
-        <id>samtalen.arbeidsmuligheter</id>
+        <id>samtalemednav.arbeidsmuligheter</id>
+        <type>java.lang.String</type>
+        <dependOn>samtalemednav</dependOn>
+        <dependOnValues>
+            <value>harikkehattsamtale</value>
+        </dependOnValues>
     </faktum>
     <faktum>
-        <id>samtalen.arbeidserfaring</id>
+        <id>samtalemednav.arbeidserfaring.godearbeidssituasjoner</id>
+        <type>textbox</type>
+        <dependOn>samtalemednav.arbeidsmuligheter</dependOn>
+        <dependOnValues>
+            <value>harikkejobb</value>
+            <value>ikketilbaketilnavaerendejobb</value>
+        </dependOnValues>
+        <constraints>
+            <constraint>
+                <faktum>samtalemednav</faktum>
+                <expression>value == "harikkehattsamtale"</expression>
+            </constraint>
+        </constraints>
+    </faktum>
+    <faktum>
+        <id>samtalemednav.arbeidserfaring.arbeidsoppgaver</id>
+        <type>textbox</type>
+        <dependOn>samtalemednav.arbeidsmuligheter</dependOn>
+        <dependOnValues>
+            <value>harikkejobb</value>
+            <value>ikketilbaketilnavaerendejobb</value>
+        </dependOnValues>
+        <constraints>
+            <constraint>
+                <faktum>samtalemednav</faktum>
+                <expression>value == "harikkehattsamtale"</expression>
+            </constraint>
+        </constraints>
+    </faktum>
+    <faktum>
+        <id>samtalemednav.arbeidserfaring.fremtidigjobb</id>
+        <type>textbox</type>
+        <dependOn>samtalemednav.arbeidsmuligheter</dependOn>
+        <dependOnValues>
+            <value>harikkejobb</value>
+            <value>ikketilbaketilnavaerendejobb</value>
+        </dependOnValues>
+        <constraints>
+            <constraint>
+                <faktum>samtalemednav</faktum>
+                <expression>value == "harikkehattsamtale"</expression>
+            </constraint>
+        </constraints>
     </faktum>
     <faktum>
         <id>samtalen.kunnskapogegenskaper</id>
@@ -22,10 +71,10 @@
 
     <!-- Studenter -->
     <faktum>
-        <id>samtalen.student.tilbaketilstudiet.samtalemedNAV</id>
+        <id>samtalen.student.tilbaketilstudiet.samtalemednav</id>
     </faktum>
     <faktum>
-        <id>samtalen.student.ikketilbaketilstudiet.samtalemedNAV</id>
+        <id>samtalen.student.ikketilbaketilstudiet.samtalemednav</id>
     </faktum>
     <faktum>
         <id>samtalen.student.arbeidserfaring</id>
