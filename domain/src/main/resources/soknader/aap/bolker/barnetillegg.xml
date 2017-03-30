@@ -63,6 +63,12 @@
         <flereTillatt>true</flereTillatt>
     </faktum>
 
+    <faktum kunUtvidet="true">
+        <id>barn.leggtil</id>
+        <type>infotekst</type>
+        <panel>Barnetillegg</panel>
+    </faktum>
+
     <vedlegg>
         <faktum>barn</faktum>
         <skjemaNummer>X8</skjemaNummer>
