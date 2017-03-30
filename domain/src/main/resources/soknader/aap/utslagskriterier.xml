@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl">
+    <faktum kunUtvidet="true">
+        <id>utslagskriterier</id>
+        <panel>Utslagskriterier</panel>
+        <type>tekster</type>
+    </faktum>
+</soknad>
