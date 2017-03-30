@@ -3,7 +3,6 @@
     <xi:include href="utslagskriterier.xml" />
     <xi:include href="soknadsvalg.xml" />
     <xi:include href="informasjonsside.xml" />
-    <xi:include href="soknadstype.xml" />
 
     <!-- Bolker -->
     <xi:include href="bolker/tilknytningnorge.xml" />
