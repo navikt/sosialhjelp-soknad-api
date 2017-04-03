@@ -1,0 +1,60 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl">
+    <faktum>
+        <id>barnet.dato</id>
+    </faktum>
+    <faktum>
+        <id>barnet.antall</id>
+    </faktum>
+    <faktum>
+        <id>barnet.termindatering</id>
+        <dependOn>veiledning.mor.terminbekreftelse</dependOn>
+        <dependOnValues>
+            <value>merEnn26Uker</value>
+            <value>mindreEnn26Uker</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>barnet.signertterminbekreftelse</id>
+        <dependOn>veiledning.mor.terminbekreftelse</dependOn>
+        <dependOnValues>
+            <value>merEnn26Uker</value>
+            <value>mindreEnn26Uker</value>
+        </dependOnValues>
+    </faktum>
+
+    <faktum>
+        <id>barnet.alder</id>
+        <dependOn>soknadsvalg.fodselelleradopsjon</dependOn>
+        <dependOnValues>
+            <value>adopsjon</value>
+        </dependOnValues>
+    </faktum>
+
+    <vedlegg>
+        <faktum>veiledning.mor.terminbekreftelse</faktum>
+        <skjemaNummer>R4</skjemaNummer>
+        <onProperty>skalHaFodselsattest</onProperty>
+        <onValues>
+            <value>true</value>
+        </onValues>
+    </vedlegg>
+    <vedlegg>
+        <faktum>veiledning.mor.terminbekreftelse</faktum>
+        <skjemaNummer>P3</skjemaNummer>
+        <onValues>
+            <value>merEnn26Uker</value>
+            <value>mindreEnn26Uker</value>
+        </onValues>
+    </vedlegg>
+    <vedlegg>
+        <faktum>veiledning.adopsjon.overtakelse</faktum>
+        <skjemaNummer>P5</skjemaNummer>
+        <skjemanummerTillegg>adopsjon</skjemanummerTillegg>
+        <onValues>
+            <value>ja</value>
+            <value>nei</value>
+        </onValues>
+    </vedlegg>
+
+</soknad>

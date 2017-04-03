@@ -89,6 +89,11 @@ public class VedleggsGrunnlag {
     public boolean vedleggHarTittelFraProperty(VedleggForFaktumStruktur vedlegg, Faktum faktum) {
         return vedlegg.getProperty() != null && faktum.getProperties().containsKey(vedlegg.getProperty());
     }
+
+    public boolean vedleggHarTittelFraVedleggTittelProperty(VedleggForFaktumStruktur vedlegg) {
+        return vedlegg.getVedleggTittel() != null;
+    }
+
     public void opprettVedleggFraFaktum() {
         vedlegg = grunnlag.get(0).getLeft().genererVedlegg(finnForsteFaktum());
     }

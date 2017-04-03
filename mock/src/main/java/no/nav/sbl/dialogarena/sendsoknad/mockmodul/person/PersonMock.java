@@ -14,6 +14,8 @@ public class PersonMock {
 
     private PersonMock(){
         personPortTypeMock = new PersonPortTypeMock();
+
+        // Endre også i override-web.xml sin defaultFnr, da det er den som ligger på getSubjectHandler().getUid()
         Person person = genererPersonMedGyldigIdentOgNavn("***REMOVED***", "person", "mock");
         person.setFoedselsdato(fodseldato(1963, 7, 3));
 

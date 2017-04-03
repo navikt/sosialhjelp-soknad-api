@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl">
+    <faktum>
+        <id>egennaering.arbeidegennaering</id>
+    </faktum>
+
+    <faktum>
+        <id>egennaering.arbeidegennaering.relasjon</id>
+        <dependOn>egennaering.arbeidegennaering</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+
+    <faktum>
+        <id>naeringsvirksomhet</id>
+        <dependOn>egennaering.arbeidegennaering</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+    <vedlegg>
+        <faktum>naeringsvirksomhet</faktum>
+        <skjemaNummer>T7</skjemaNummer>
+        <skjemanummerTillegg>regnskapsforer</skjemanummerTillegg>
+        <property>navn</property>
+        <onProperty>regnskapsforer</onProperty>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
+    <vedlegg>
+        <faktum>naeringsvirksomhet</faktum>
+        <skjemaNummer>T7</skjemaNummer>
+        <skjemanummerTillegg>ikkeregnskapsforer</skjemanummerTillegg>
+        <property>navn</property>
+        <onProperty>regnskapsforer</onProperty>
+        <onValues>
+            <value>false</value>
+        </onValues>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+</soknad>

@@ -47,7 +47,7 @@
         <behandlingsinformasjon.tjenestespec.version>0.0.46</behandlingsinformasjon.tjenestespec.version>
         <fillager.tjenestespec.version>0.0.3</fillager.tjenestespec.version>
         <dkif-tjenestespesifikasjon.version>1.2</dkif-tjenestespesifikasjon.version>
-        <lokalt.kodeverk>1.12.9</lokalt.kodeverk>
+        <lokalt.kodeverk>1.12.10</lokalt.kodeverk>
         <henvendelse.tjenestespesifikasjon.version.1>2.0.0</henvendelse.tjenestespesifikasjon.version.1>
         <henvendelse-informasjon-v2.version>0.6</henvendelse-informasjon-v2.version>
         <dialogarena.dokumentinnsending.version>2.0.1</dialogarena.dokumentinnsending.version>
@@ -238,11 +238,6 @@
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>common-types</artifactId>
                 <version>1.2</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>common-timing</artifactId>
-                <version>0.0.1</version>
             </dependency>
 
             <dependency>
@@ -897,8 +892,8 @@
     <scm>
         <developerConnection>scm:git:http://stash.devillo.no/scm/sokd/sendsoknad.git</developerConnection>
         <url>http://stash.devillo.no/scm/sokd/sendsoknad.git</url>
-        <tag>16.1.9</tag>
-    </scm>
+      <tag>HEAD</tag>
+  </scm>
 
     <profiles>
         <profile>

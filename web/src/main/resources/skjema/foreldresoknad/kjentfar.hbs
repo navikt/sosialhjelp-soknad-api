@@ -1,0 +1,48 @@
+{{#forFaktum "infofar.rettigheter.omsorg"}}
+    {{#hvisLik "aleneomsorg" value}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+                <span>{{hentTekst "foreldresoknad.infofar.aleneomsorg.alternativ.2"}}</span>
+                {{#forFaktum "infofar.aleneomsorg.omsorgfradato"}}
+                    <div>{{hentTekst "foreldresoknad.oppsummering.infofar.aleneomsorg.fradato.tekst"}} {{formaterLangDato value}}</div>
+                {{/forFaktum}}
+                {{#forFaktum "infofar.aleneomsorg.fritekst"}}
+                    <div>{{hentTekst "foreldresoknad.infofar.aleneomsorg.fritekst.sporsmal"}}: <em>{{value}}</em></div>
+                {{/forFaktum}}
+            </td>
+        </tr>
+    {{/hvisLik}}
+
+    {{#hvisLik "morfarborsammen" value}}
+        <tr>
+            <td class="sjekket"></td>
+            <td><span>{{hentTekst "foreldresoknad.infofar.aleneomsorg.alternativ.1"}}</span></td>
+        </tr>
+        {{#forFaktum "rettighet.harrett"}}
+            {{#hvisIkkeTom value}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td>
+                        {{#hvisLik "true" value}}<span>{{hentTekst "foreldresoknad.infofar.farrett.true"}}</span>{{/hvisLik}}
+                        {{#hvisLik "ufore" value}}<span>{{hentTekst "foreldresoknad.infofar.farrett.ufore"}}</span>{{/hvisLik}}
+                        {{#hvisLik "false" value}}
+                            <span>{{hentTekst "foreldresoknad.infofar.farrett.false"}}</span>
+                        {{/hvisLik}}
+                    </td>
+                </tr>
+            {{/hvisIkkeTom}}
+        {{/forFaktum}}
+        {{#forFaktum "infofar.informert"}}
+            {{#hvisIkkeTom value}}
+                <tr>
+                    <td class="sjekket"></td>
+                    <td>
+                        {{#hvisLik "true" value}}<span>{{hentTekst "foreldresoknad.infofar.informert.true"}}</span>{{/hvisLik}}
+                        {{#hvisLik "false" value}}<span>{{hentTekst "foreldresoknad.infofar.informert.false"}}</span>{{/hvisLik}}
+                    </td>
+                </tr>
+            {{/hvisIkkeTom}}
+        {{/forFaktum}}
+    {{/hvisLik}}
+{{/forFaktum}}

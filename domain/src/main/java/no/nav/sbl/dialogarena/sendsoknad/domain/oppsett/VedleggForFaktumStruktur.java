@@ -30,6 +30,7 @@ public class VedleggForFaktumStruktur implements Serializable {
     private List<String> values = new ArrayList<>();
     private String filterKey;
     private List<String> filterValues = new ArrayList<>();
+    private String vedleggTittel;
 
     @XmlIDREF
     public FaktumStruktur getFaktum() {
@@ -80,6 +81,14 @@ public class VedleggForFaktumStruktur implements Serializable {
 
     public void setProperty(String property) {
         this.property = property;
+    }
+
+    public String getVedleggTittel() {
+        return vedleggTittel;
+    }
+
+    public void setVedleggTittel(String vedleggTittel) {
+        this.vedleggTittel = vedleggTittel;
     }
 
     //Sett denne om en skal sjekke om verdien ikke er lik det som står i onValues
@@ -215,6 +224,7 @@ public class VedleggForFaktumStruktur implements Serializable {
                 .append("inverted", inverted)
                 .append("oversetting", oversetting)
                 .append("values", values)
+                .append("vedleggTittel", vedleggTittel)
                 .toString();
     }
 

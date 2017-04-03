@@ -20,6 +20,12 @@
                                 {{#hvisLik value "foreldrepengerFar"}}
                                     {{hentTekst "oppsummering.barnet.fodselsdato"}}
                                 {{/hvisLik}}
+                                {{#hvisLik value "endringMor"}}
+                                    {{hentTekst "oppsummering.barnet.fodselsdato"}}
+                                {{/hvisLik}}
+                                {{#hvisLik value "endringFar"}}
+                                    {{hentTekst "oppsummering.barnet.fodselsdato"}}
+                                {{/hvisLik}}
                             {{/forFaktum}}
 
                         {{/hvisLik}}
@@ -31,6 +37,22 @@
             </td>
         </tr>
     {{/forFaktum}}
+    {{#forFaktum "barnet.termindatering"}}
+        <tr>
+            <td class="sjekket"></td>
+            <td>
+               <span>{{hentTekst "oppsummering.barnet.termindatering"}} {{ formaterLangDato value}}</span>
+            </td>
+        </tr>
+    {{/forFaktum}}
+    {{#forFaktum "barnet.signertterminbekreftelse"}}
+            <tr>
+                <td class="sjekket"></td>
+                <td>
+                   <span>{{value}} {{hentTekst "oppsummering.barnet.signertterminbekreftelse"}} </span>
+                </td>
+            </tr>
+    {{/forFaktum}}
     {{#forFaktum "barnet.antall"}}
         <tr>
             <td class="sjekket"></td>
@@ -39,4 +61,30 @@
             </td>
         </tr>
     {{/forFaktum}}
+    {{#forFaktum "barnet.alder"}}
+        <tr>
+             <td class="sjekket"></td>
+             <td>
+                <span> {{ hentTekst "oppsummering.barnet.adopsjon.fodseldato"}} </span>
+                 <ul>
+                     {{#forFakta "barnet.alder"}}
+                         <li>
+                              <span> {{ formaterLangDato value}}</span>
+                         </li>
+                     {{/forFakta}}
+                 </ul>
+             </td>
+        </tr>
+    {{/forFaktum}}
+    {{#forFaktum "barnet.forsensoknad.fritekst"}}
+    <tr>
+        <td class="sjekket"></td>
+        <td>
+            <span>{{hentTekst "foreldresoknad.barnetbolk.forsensoknad.sporsmal"}}</span>
+            <p><em>{{value}}</em></p>
+        </td>
+    </tr>
+    {{/forFaktum}}
+
+
 </table>

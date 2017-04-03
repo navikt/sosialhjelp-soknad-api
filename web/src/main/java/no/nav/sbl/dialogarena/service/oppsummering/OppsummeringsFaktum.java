@@ -70,6 +70,10 @@ public class OppsummeringsFaktum implements OppsummeringsBase{
         return faktum.getValue();
     }
 
+    public boolean optional() {
+        return struktur.isOptional();
+    }
+
 
 
 

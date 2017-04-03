@@ -39,4 +39,8 @@ Dette kan også løses med en kombinasjon av alias og funksjoner for å forenkle
 * Hvis det er den siste teksten, vurder og bytte ut NavMessageSource med utave-biblioteket
 * Fjern referanse til property fil fra ContentConfig (lastInnNyeInnholdstekster metoden)
 
+#### Lokal bruk
+
+Sjekk ut det aktuelle tekstprosjektet og se README der. 
+
 

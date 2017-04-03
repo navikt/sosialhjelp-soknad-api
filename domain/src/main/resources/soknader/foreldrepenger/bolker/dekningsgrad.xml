@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl">
+    <faktum>
+        <id>dekningsgrad</id>
+    </faktum>
+</soknad>
