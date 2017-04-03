@@ -52,6 +52,8 @@ public class XmlService {
     }
 
     private String hentFilInnhold(String fil) throws IOException {
+        fil = FilenameUtils.normalize(fil);
+        fil = FilenameUtils.separatorsToUnix(fil);
         InputStream stream = getClass().getClassLoader().getResourceAsStream(fil);
         return IOUtils.toString(stream);
     }

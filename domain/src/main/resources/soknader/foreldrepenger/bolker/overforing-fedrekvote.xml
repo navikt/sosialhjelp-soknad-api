@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl">
+    <faktum>
+        <id>fedrekvote</id>
+    </faktum>
+
+    <faktum>
+        <id>fedrekvote.ikkerett.fritekst</id>
+    </faktum>
+
+    <vedlegg>
+        <faktum>fedrekvote</faktum>
+        <onValues>
+            <value>sykdom</value>
+        </onValues>
+        <skjemaNummer>L9</skjemaNummer>
+        <skjemanummerTillegg>fedrekvote</skjemanummerTillegg>
+    </vedlegg>
+    <vedlegg>
+        <faktum>fedrekvote</faktum>
+        <onValues>
+            <value>helseinstitusjon</value>
+        </onValues>
+        <skjemaNummer>N9</skjemaNummer>
+        <skjemanummerTillegg>fedrekvote</skjemanummerTillegg>
+    </vedlegg>
+</soknad>

@@ -1,18 +1,62 @@
 <?xml version="1.0" ?>
 <soknad xmlns="urn:no.nav.sbl">
+
+    <faktum>
+        <id>fastlege</id>
+        <panel>Fastlege</panel>
+        <type>inputgroup</type>
+    </faktum>
+
     <faktum>
         <id>fastlege.navn</id>
+        <type>textbox</type>
+        <dependOn>fastlege</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>fastlege.harIkkeFastlege</faktum>
+                <expression>value != 'true'</expression>
+            </constraint>
+        </constraints>
     </faktum>
     <faktum>
         <id>fastlege.tlfnr</id>
+        <type>textbox</type>
+        <dependOn>fastlege</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>fastlege.harIkkeFastlege</faktum>
+                <expression>value != 'true'</expression>
+            </constraint>
+        </constraints>
     </faktum>
+
     <faktum>
         <id>fastlege.harIkkeFastlege</id>
+        <type>checkbox</type>
+        <dependOn>fastlege</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>fastlege.harIkkeFastlege</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+    </faktum>
+
+    <faktum>
+        <id>fastlege.annen.behandlende</id>
+        <panel>Fastlege</panel>
+        <type>inputgroup</type>
     </faktum>
     <faktum>
         <id>fastlege.annen.behandlende.navn</id>
+        <type>textbox</type>
+        <optional>true</optional>
+        <dependOn>fastlege.annen.behandlende</dependOn>
     </faktum>
     <faktum>
         <id>fastlege.annen.behandlende.tlfnr</id>
+        <type>textbox</type>
+        <optional>true</optional>
+        <dependOn>fastlege.annen.behandlende</dependOn>
     </faktum>
 </soknad>

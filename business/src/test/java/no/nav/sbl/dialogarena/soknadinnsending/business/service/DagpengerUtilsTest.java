@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
 
 public class DagpengerUtilsTest {
 
-    public static final String EOS_DAGPENGER = "4304";
+    public static final String EOS_DAGPENGER = "4465";
     public static final String RUTES_I_BRUT = "";
 
     @Test

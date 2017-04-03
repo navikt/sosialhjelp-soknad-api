@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ForeldrepengerInformasjon extends KravdialogInformasjon.DefaultOppsett {
 
-    public static final List<String> STONADSTYPER_PERSONALIA = Arrays.asList("overforing", "engangsstonadMor", "engangsstonadFar");
+    public static final List<String> STONADSTYPER_PERSONALIA = Arrays.asList("overforing", "engangsstonadMor", "engangsstonadFar", "endringMor", "endringFar");
 
     public String getSoknadTypePrefix() {
         return "foreldresoknad";
@@ -25,11 +25,11 @@ public class ForeldrepengerInformasjon extends KravdialogInformasjon.DefaultOpps
     }
 
     public String getStrukturFilnavn() {
-        return "foreldresoknad.xml";
+        return "foreldrepenger/foreldrepenger.xml";
     }
 
     public List<String> getSkjemanummer() {
-        return Arrays.asList("NAV 14-05.06", "NAV 14-05.07", "NAV 14-05.08", "NAV 14-05.09");
+        return Arrays.asList("NAV 14-05.06", "NAV 14-05.07", "NAV 14-05.08", "NAV 14-05.09", "NAV 14-05.10");
     }
 
     @Override
