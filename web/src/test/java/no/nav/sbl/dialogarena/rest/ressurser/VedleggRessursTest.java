@@ -17,7 +17,6 @@ import java.util.Collections;
 
 import static java.util.Collections.singletonList;
 import static no.nav.sbl.dialogarena.rest.ressurser.VedleggRessurs.MAKS_TOTAL_FILSTORRELSE;
-import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.generateXsrfToken;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
@@ -48,6 +47,6 @@ public class VedleggRessursTest {
 
     @Test(expected = OpplastingException.class)
     public void opplastingSkalKasteExceptionHvisVedleggeneErForStore() {
-        ressurs.lastOppFiler(VEDLEGGSID, BEHANDLINGSID, generateXsrfToken(BEHANDLINGSID), Collections.<FormDataBodyPart>emptyList());
+        ressurs.lastOppFiler(VEDLEGGSID, BEHANDLINGSID, Collections.<FormDataBodyPart>emptyList());
     }
 }
