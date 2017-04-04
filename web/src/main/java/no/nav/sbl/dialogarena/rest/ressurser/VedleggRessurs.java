@@ -5,7 +5,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
-import no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import org.apache.commons.io.IOUtils;
@@ -90,12 +89,8 @@ public class VedleggRessurs {
     @POST
     @Path("/fil")
     @Consumes(MULTIPART_FORM_DATA)
-    @Produces("text/plain;charset=utf-8") // må være slik for at det skal fungere i IE9 sier Wang
-    @SjekkTilgangTilSoknad(sjekkXsrf = false, type = Vedlegg) // sjekkXsrf er false fordi IE9 ikke kan sende xsrf-token i header, kan fjernes en vakker dag når vi ikke skal støtte IE9
-    public List<Vedlegg> lastOppFiler(@PathParam("vedleggId") final Long vedleggId, @QueryParam("behandlingsId") String behandlingsId,
-                                          @FormDataParam("X-XSRF-TOKEN") final String xsrfToken, @FormDataParam("files[]") final List<FormDataBodyPart> files) {
-        XsrfGenerator.sjekkXsrfToken(xsrfToken, behandlingsId);
-
+    @SjekkTilgangTilSoknad(type = Vedlegg)
+    public List<Vedlegg> lastOppFiler(@PathParam("vedleggId") final Long vedleggId, @QueryParam("behandlingsId") String behandlingsId, @FormDataParam("files[]") final List<FormDataBodyPart> files) {
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, false);
         Vedlegg forventning = vedleggService.hentVedlegg(vedleggId, false);
 
