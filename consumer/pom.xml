@@ -6,11 +6,11 @@
     <parent>
         <groupId>no.nav.sbl.dialogarena</groupId>
         <artifactId>sendsoknad</artifactId>
-        <version>16.2.22-SNAPSHOT</version>
+        <version>17.1.1</version>
     </parent>
 
     <artifactId>sendsoknad-consumer</artifactId>
-    <version>16.2.22-SNAPSHOT</version>
+    <version>17.1.1</version>
     <name>${project.artifactId}</name>
 
     <properties>
@@ -79,10 +79,6 @@
         <dependency>
             <groupId>no.nav.sbl</groupId>
             <artifactId>arena-maalgruppe_v1</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>common-timing</artifactId>
         </dependency>
         <dependency>
             <groupId>no.nav</groupId>
