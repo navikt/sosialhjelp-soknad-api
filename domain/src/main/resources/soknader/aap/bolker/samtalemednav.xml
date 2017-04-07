@@ -222,18 +222,75 @@
         <dependOn>samtalemednav.student.ikkevissporsmaal</dependOn>
     </faktum>
     <faktum>
-        <id>samtalen.student.ikketilbaketilstudiet.samtalemednav</id>
+        <id>samtalemednav.student.arbeidserfaring.godearbeidssituasjoner</id>
+        <type>textbox</type>
+        <dependOn>samtalemednav.student.ikketilbaketilstudiet</dependOn>
+        <dependOnValues>
+            <value>harikkehattsamtale</value>
+        </dependOnValues>
     </faktum>
     <faktum>
-        <id>samtalen.student.arbeidserfaring</id>
+        <id>samtalemednav.student.arbeidserfaring.arbeidsoppgaver</id>
+        <type>textbox</type>
+        <dependOn>samtalemednav.student.ikketilbaketilstudiet</dependOn>
+        <dependOnValues>
+            <value>harikkehattsamtale</value>
+        </dependOnValues>
     </faktum>
     <faktum>
-        <id>samtalen.student.kunnskapogegenskaper</id>
+        <id>samtalemednav.student.arbeidserfaring.fremtidigjobb</id>
+        <type>textbox</type>
+        <dependOn>samtalemednav.student.ikketilbaketilstudiet</dependOn>
+        <dependOnValues>
+            <value>harikkehattsamtale</value>
+        </dependOnValues>
     </faktum>
     <faktum>
-        <id>samtalen.student.helsesituasjon</id>
+        <id>samtalemednav.student.kunnskapogegenskaper.annenkunnskap</id>
+        <type>textbox</type>
+        <dependOn>samtalemednav.student.ikketilbaketilstudiet</dependOn>
+        <dependOnValues>
+            <value>harikkehattsamtale</value>
+        </dependOnValues>
     </faktum>
     <faktum>
-        <id>samtalen.student.andreforhold</id>
+        <id>samtalemednav.student.kunnskapogegenskaper.egenskaper</id>
+        <type>textbox</type>
+        <dependOn>samtalemednav.student.ikketilbaketilstudiet</dependOn>
+        <dependOnValues>
+            <value>harikkehattsamtale</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>samtalemednav.student.helsesituasjon.typearbeidforhelse</id>
+        <type>textbox</type>
+        <dependOn>samtalemednav.student.ikketilbaketilstudiet</dependOn>
+        <dependOnValues>
+            <value>harikkehattsamtale</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>samtalemednav.student.helsesituasjon.tilrettelegging</id>
+        <type>textbox</type>
+        <dependOn>samtalemednav.student.ikketilbaketilstudiet</dependOn>
+        <dependOnValues>
+            <value>harikkehattsamtale</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>samtalemednav.student.andreforhold.faktorersompaavirkerjobbmuligheter</id>
+        <type>textbox</type>
+        <dependOn>samtalemednav.student.ikketilbaketilstudiet</dependOn>
+        <dependOnValues>
+            <value>harikkehattsamtale</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>samtalemednav.student.andreforhold.jobbviabekjent</id>
+        <type>textbox</type>
+        <dependOn>samtalemednav.student.ikketilbaketilstudiet</dependOn>
+        <dependOnValues>
+            <value>harikkehattsamtale</value>
+        </dependOnValues>
     </faktum>
 </soknad>
