@@ -228,7 +228,7 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
         Faktum parent = faktum.getParrentFaktum() != null ? soknad.finnFaktum(faktum.getParrentFaktum()): soknad.getFaktumMedKey(getDependOn().getId());
         if(parent != null && getDependOnValues() != null && !getDependOnValues().isEmpty()){
             if(!useExpression){
-                return (harDependOnProperty(parent) || harDependOnValue(parent));
+                return harDependOnProperty(parent) || harDependOnValue(parent);
             } else {
                 boolean result = false;
                 for (String dependOnValue : dependOnValues) {
