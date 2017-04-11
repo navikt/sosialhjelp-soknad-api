@@ -8,6 +8,12 @@
     </faktum>
 
     <faktum>
+        <id>navaerendesituasjon.huketavforflere</id>
+        <type>java.lang.Boolean</type>
+        <dependOn>navaerendesituasjon</dependOn>
+    </faktum>
+
+    <faktum>
         <id>navaerendesituasjon.iarbeid</id>
         <type>java.lang.Boolean</type>
         <dependOn>navaerendesituasjon</dependOn>
