@@ -9,10 +9,23 @@
             <property>
                 <id>fornavn</id>
                 <type>textbox</type>
+                <constraints>
+                    <constraint>type == 'BRUKERREGISTRERT'</constraint>
+                </constraints>
             </property>
             <property>
                 <id>etternavn</id>
                 <type>textbox</type>
+                <constraints>
+                    <constraint>type == 'BRUKERREGISTRERT'</constraint>
+                </constraints>
+            </property>
+            <property>
+                <id>sammensattnavn</id>
+                <type>textbox</type>
+                <constraints>
+                    <constraint>type == 'SYSTEMREGISTRERT'</constraint>
+                </constraints>
             </property>
             <property>
                 <id>fnr</id>
@@ -50,14 +63,17 @@
         <flereTillatt>true</flereTillatt>
     </faktum>
 
+    <faktum kunUtvidet="true">
+        <id>barn.leggtil</id>
+        <type>infotekst</type>
+        <panel>Barnetillegg</panel>
+    </faktum>
+
     <vedlegg>
         <faktum>barn</faktum>
         <skjemaNummer>X8</skjemaNummer>
         <property>sammensattnavn</property>
         <onProperty>vedlegg</onProperty>
-        <onValues>
-            <value>true</value>
-        </onValues>
         <forSystemfaktum>false</forSystemfaktum>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
