@@ -20,7 +20,7 @@
     <faktum>
         <id>samtalemednav.arbeidsmuligheter</id>
         <type>java.lang.String</type>
-        <dependOn>samtalemednav</dependOn>
+        <panel>samtalemednav</panel>
         <constraints>
             <constraint>
                 <faktum>samtalemednav</faktum>
@@ -31,82 +31,100 @@
     <faktum>
         <id>samtalemednav.arbeidserfaring.godearbeidssituasjoner</id>
         <type>textbox</type>
-        <dependOn>samtalemednav.arbeidsmuligheter</dependOn>
-        <dependOnValues>
-            <value>harikkejobb</value>
-            <value>ikketilbaketilnavaerendejobb</value>
-        </dependOnValues>
+        <panel>samtalemednav</panel>
+        <constraints>
+            <constraint>
+                <faktum>samtalemednav.arbeidsmuligheter</faktum>
+                <expression>value == "harikkejobb" || value == "ikketilbaketilnavaerendejobb" </expression>
+            </constraint>
+        </constraints>
     </faktum>
     <faktum>
         <id>samtalemednav.arbeidserfaring.arbeidsoppgaver</id>
         <type>textbox</type>
-        <dependOn>samtalemednav.arbeidsmuligheter</dependOn>
-        <dependOnValues>
-            <value>harikkejobb</value>
-            <value>ikketilbaketilnavaerendejobb</value>
-        </dependOnValues>
+        <panel>samtalemednav</panel>
+        <constraints>
+            <constraint>
+                <faktum>samtalemednav.arbeidsmuligheter</faktum>
+                <expression>value == "harikkejobb" || value == "ikketilbaketilnavaerendejobb" </expression>
+            </constraint>
+        </constraints>
     </faktum>
     <faktum>
         <id>samtalemednav.arbeidserfaring.fremtidigjobb</id>
         <type>textbox</type>
-        <dependOn>samtalemednav.arbeidsmuligheter</dependOn>
-        <dependOnValues>
-            <value>harikkejobb</value>
-            <value>ikketilbaketilnavaerendejobb</value>
-        </dependOnValues>
+        <panel>samtalemednav</panel>
+        <constraints>
+            <constraint>
+                <faktum>samtalemednav.arbeidsmuligheter</faktum>
+                <expression>value == "harikkejobb" || value == "ikketilbaketilnavaerendejobb" </expression>
+            </constraint>
+        </constraints>
     </faktum>
     <faktum>
         <id>samtalemednav.kunnskapogegenskaper.annenkunnskap</id>
         <type>textbox</type>
-        <dependOn>samtalemednav.arbeidsmuligheter</dependOn>
-        <dependOnValues>
-            <value>harikkejobb</value>
-            <value>ikketilbaketilnavaerendejobb</value>
-        </dependOnValues>
+        <panel>samtalemednav</panel>
+        <constraints>
+            <constraint>
+                <faktum>samtalemednav.arbeidsmuligheter</faktum>
+                <expression>value == "harikkejobb" || value == "ikketilbaketilnavaerendejobb" </expression>
+            </constraint>
+        </constraints>
     </faktum>
     <faktum>
         <id>samtalemednav.kunnskapogegenskaper.egenskaper</id>
         <type>textbox</type>
-        <dependOn>samtalemednav.arbeidsmuligheter</dependOn>
-        <dependOnValues>
-            <value>harikkejobb</value>
-            <value>ikketilbaketilnavaerendejobb</value>
-        </dependOnValues>
+        <panel>samtalemednav</panel>
+        <constraints>
+            <constraint>
+                <faktum>samtalemednav.arbeidsmuligheter</faktum>
+                <expression>value == "harikkejobb" || value == "ikketilbaketilnavaerendejobb" </expression>
+            </constraint>
+        </constraints>
     </faktum>
     <faktum>
         <id>samtalemednav.helsesituasjon.typearbeidforhelse</id>
         <type>textbox</type>
-        <dependOn>samtalemednav.arbeidsmuligheter</dependOn>
-        <dependOnValues>
-            <value>harikkejobb</value>
-            <value>ikketilbaketilnavaerendejobb</value>
-        </dependOnValues>
+        <panel>samtalemednav</panel>
+        <constraints>
+            <constraint>
+                <faktum>samtalemednav.arbeidsmuligheter</faktum>
+                <expression>value == "harikkejobb" || value == "ikketilbaketilnavaerendejobb" </expression>
+            </constraint>
+        </constraints>
     </faktum>
     <faktum>
         <id>samtalemednav.helsesituasjon.tilrettelegging</id>
         <type>textbox</type>
-        <dependOn>samtalemednav.arbeidsmuligheter</dependOn>
-        <dependOnValues>
-            <value>harikkejobb</value>
-            <value>ikketilbaketilnavaerendejobb</value>
-        </dependOnValues>
+        <panel>samtalemednav</panel>
+        <constraints>
+            <constraint>
+                <faktum>samtalemednav.arbeidsmuligheter</faktum>
+                <expression>value == "harikkejobb" || value == "ikketilbaketilnavaerendejobb" </expression>
+            </constraint>
+        </constraints>
     </faktum>
     <faktum>
         <id>samtalemednav.andreforhold.faktorersompaavirkerjobbmuligheter</id>
         <type>textbox</type>
-        <dependOn>samtalemednav.arbeidsmuligheter</dependOn>
-        <dependOnValues>
-            <value>harikkejobb</value>
-            <value>ikketilbaketilnavaerendejobb</value>
-        </dependOnValues>
+        <panel>samtalemednav</panel>
+        <constraints>
+            <constraint>
+                <faktum>samtalemednav.arbeidsmuligheter</faktum>
+                <expression>value == "harikkejobb" || value == "ikketilbaketilnavaerendejobb" </expression>
+            </constraint>
+        </constraints>
     </faktum>
     <faktum>
         <id>samtalemednav.andreforhold.jobbviabekjent</id>
         <type>textbox</type>
-        <dependOn>samtalemednav.arbeidsmuligheter</dependOn>
-        <dependOnValues>
-            <value>harikkejobb</value>
-            <value>ikketilbaketilnavaerendejobb</value>
-        </dependOnValues>
+        <panel>samtalemednav</panel>
+        <constraints>
+            <constraint>
+                <faktum>samtalemednav.arbeidsmuligheter</faktum>
+                <expression>value == "harikkejobb" || value == "ikketilbaketilnavaerendejobb" </expression>
+            </constraint>
+        </constraints>
     </faktum>
 </soknad>
