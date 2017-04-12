@@ -2,47 +2,31 @@
 <soknad xmlns="urn:no.nav.sbl">
     <!-- Hovedvisning -->
     <faktum>
+        <id>hjelpefaktum</id>
+        <type>hidden</type>
+    </faktum>
+    <faktum>
         <id>samtalemednav</id>
         <type>java.lang.String</type>
         <panel>samtalemednav</panel>
         <constraints>
             <constraint>
-                <faktum>navaerendesituasjon.huketavforflere</faktum>
-                <expression>value == "true"</expression>
-            </constraint>
-            <constraint>
-                <faktum>navaerendesituasjon.student</faktum>
-                <expression>value == "false"</expression>
-            </constraint>
-            <constraint>
-                <faktum>navaerendesituasjon.iarbeid</faktum>
-                <expression>value == "true"</expression>
-            </constraint>
-            <constraint>
-                <faktum>navaerendesituasjon.sykmeldt</faktum>
-                <expression>value == "true"</expression>
-            </constraint>
-            <constraint>
-                <faktum>navaerendesituasjon.arbeidsledig</faktum>
-                <expression>value == "true"</expression>
-            </constraint>
-            <constraint>
-                <faktum>navaerendesituasjon.annet</faktum>
-                <expression>value == "true"</expression>
-            </constraint>
-            <constraint>
-                <faktum>navaerendesituasjon.forstegangstjeneste</faktum>
-                <expression>value == "true"</expression>
+                <faktum>hjelpefaktum</faktum>
+                <expression>value == 'visarbeidsmuligheter'</expression>
             </constraint>
         </constraints>
     </faktum>
+
     <faktum>
         <id>samtalemednav.arbeidsmuligheter</id>
         <type>java.lang.String</type>
         <dependOn>samtalemednav</dependOn>
-        <dependOnValues>
-            <value>harikkehattsamtale</value>
-        </dependOnValues>
+        <constraints>
+            <constraint>
+                <faktum>samtalemednav</faktum>
+                <expression>value == "harikkehattsamtale"</expression>
+            </constraint>
+        </constraints>
     </faktum>
     <faktum>
         <id>samtalemednav.arbeidserfaring.godearbeidssituasjoner</id>
@@ -52,12 +36,6 @@
             <value>harikkejobb</value>
             <value>ikketilbaketilnavaerendejobb</value>
         </dependOnValues>
-        <constraints>
-            <constraint>
-                <faktum>samtalemednav</faktum>
-                <expression>value == "harikkehattsamtale"</expression>
-            </constraint>
-        </constraints>
     </faktum>
     <faktum>
         <id>samtalemednav.arbeidserfaring.arbeidsoppgaver</id>
@@ -67,12 +45,6 @@
             <value>harikkejobb</value>
             <value>ikketilbaketilnavaerendejobb</value>
         </dependOnValues>
-        <constraints>
-            <constraint>
-                <faktum>samtalemednav</faktum>
-                <expression>value == "harikkehattsamtale"</expression>
-            </constraint>
-        </constraints>
     </faktum>
     <faktum>
         <id>samtalemednav.arbeidserfaring.fremtidigjobb</id>
@@ -82,12 +54,6 @@
             <value>harikkejobb</value>
             <value>ikketilbaketilnavaerendejobb</value>
         </dependOnValues>
-        <constraints>
-            <constraint>
-                <faktum>samtalemednav</faktum>
-                <expression>value == "harikkehattsamtale"</expression>
-            </constraint>
-        </constraints>
     </faktum>
     <faktum>
         <id>samtalemednav.kunnskapogegenskaper.annenkunnskap</id>
@@ -97,12 +63,6 @@
             <value>harikkejobb</value>
             <value>ikketilbaketilnavaerendejobb</value>
         </dependOnValues>
-        <constraints>
-            <constraint>
-                <faktum>samtalemednav</faktum>
-                <expression>value == "harikkehattsamtale"</expression>
-            </constraint>
-        </constraints>
     </faktum>
     <faktum>
         <id>samtalemednav.kunnskapogegenskaper.egenskaper</id>
@@ -112,12 +72,6 @@
             <value>harikkejobb</value>
             <value>ikketilbaketilnavaerendejobb</value>
         </dependOnValues>
-        <constraints>
-            <constraint>
-                <faktum>samtalemednav</faktum>
-                <expression>value == "harikkehattsamtale"</expression>
-            </constraint>
-        </constraints>
     </faktum>
     <faktum>
         <id>samtalemednav.helsesituasjon.typearbeidforhelse</id>
@@ -127,12 +81,6 @@
             <value>harikkejobb</value>
             <value>ikketilbaketilnavaerendejobb</value>
         </dependOnValues>
-        <constraints>
-            <constraint>
-                <faktum>samtalemednav</faktum>
-                <expression>value == "harikkehattsamtale"</expression>
-            </constraint>
-        </constraints>
     </faktum>
     <faktum>
         <id>samtalemednav.helsesituasjon.tilrettelegging</id>
@@ -142,12 +90,6 @@
             <value>harikkejobb</value>
             <value>ikketilbaketilnavaerendejobb</value>
         </dependOnValues>
-        <constraints>
-            <constraint>
-                <faktum>samtalemednav</faktum>
-                <expression>value == "harikkehattsamtale"</expression>
-            </constraint>
-        </constraints>
     </faktum>
     <faktum>
         <id>samtalemednav.andreforhold.faktorersompaavirkerjobbmuligheter</id>
@@ -157,12 +99,6 @@
             <value>harikkejobb</value>
             <value>ikketilbaketilnavaerendejobb</value>
         </dependOnValues>
-        <constraints>
-            <constraint>
-                <faktum>samtalemednav</faktum>
-                <expression>value == "harikkehattsamtale"</expression>
-            </constraint>
-        </constraints>
     </faktum>
     <faktum>
         <id>samtalemednav.andreforhold.jobbviabekjent</id>
@@ -171,140 +107,6 @@
         <dependOnValues>
             <value>harikkejobb</value>
             <value>ikketilbaketilnavaerendejobb</value>
-        </dependOnValues>
-        <constraints>
-            <constraint>
-                <faktum>samtalemednav</faktum>
-                <expression>value == "harikkehattsamtale"</expression>
-            </constraint>
-        </constraints>
-    </faktum>
-
-    <!-- Studenter -->
-    <faktum>
-        <id>samtalemednav.student.ikkevistilbakesporsmaal</id>
-        <type>java.lang.Boolean</type>
-        <panel>samtalemednav</panel>
-        <constraints>
-            <constraint>
-                <faktum>navaerendesituasjon.huketavforflere</faktum>
-                <expression>value == 'false'</expression>
-            </constraint>
-            <constraint>
-                <faktum>navaerendesituasjon.student.studererfortsatt</faktum>
-                <expression>value == 'false'</expression>
-            </constraint>
-        </constraints>
-    </faktum>
-    <faktum>
-        <id>samtalemednav.student.ikkevissporsmaal</id>
-        <type>java.lang.Boolean</type>
-        <panel>samtalemednav</panel>
-        <constraints>
-            <constraint>
-                <faktum>navaerendesituasjon.huketavforflere</faktum>
-                <expression>value == 'false'</expression>
-            </constraint>
-        </constraints>
-    </faktum>
-    <faktum>
-        <id>samtalemednav.student.tilbaketilstudiet</id>
-        <type>java.lang.String</type>
-        <panel>samtalemednav</panel>
-        <constraints>
-            <constraint>
-                <faktum>navaerendesituasjon.student.avbruttstudie.ikketilbake</faktum>
-                <expression>value == 'false'</expression>
-            </constraint>
-        </constraints>
-        <dependOn>samtalemednav.student.ikkevistilbakesporsmaal</dependOn>
-    </faktum>
-    <faktum>
-        <id>samtalemednav.student.ikketilbaketilstudiet</id>
-        <type>java.lang.String</type>
-        <panel>samtalemednav</panel>
-        <constraints>
-            <constraint>
-                <faktum>navaerendesituasjon.student.avbruttstudie.ikketilbake</faktum>
-                <expression>value == 'true'</expression>
-            </constraint>
-            <constraint>
-                <faktum>navaerendesituasjon.student.studererfortsatt</faktum>
-                <expression>value == 'true'</expression>
-            </constraint>
-        </constraints>
-        <dependOn>samtalemednav.student.ikkevissporsmaal</dependOn>
-    </faktum>
-    <faktum>
-        <id>samtalemednav.student.arbeidserfaring.godearbeidssituasjoner</id>
-        <type>textbox</type>
-        <dependOn>samtalemednav.student.ikketilbaketilstudiet</dependOn>
-        <dependOnValues>
-            <value>harikkehattsamtale</value>
-        </dependOnValues>
-    </faktum>
-    <faktum>
-        <id>samtalemednav.student.arbeidserfaring.arbeidsoppgaver</id>
-        <type>textbox</type>
-        <dependOn>samtalemednav.student.ikketilbaketilstudiet</dependOn>
-        <dependOnValues>
-            <value>harikkehattsamtale</value>
-        </dependOnValues>
-    </faktum>
-    <faktum>
-        <id>samtalemednav.student.arbeidserfaring.fremtidigjobb</id>
-        <type>textbox</type>
-        <dependOn>samtalemednav.student.ikketilbaketilstudiet</dependOn>
-        <dependOnValues>
-            <value>harikkehattsamtale</value>
-        </dependOnValues>
-    </faktum>
-    <faktum>
-        <id>samtalemednav.student.kunnskapogegenskaper.annenkunnskap</id>
-        <type>textbox</type>
-        <dependOn>samtalemednav.student.ikketilbaketilstudiet</dependOn>
-        <dependOnValues>
-            <value>harikkehattsamtale</value>
-        </dependOnValues>
-    </faktum>
-    <faktum>
-        <id>samtalemednav.student.kunnskapogegenskaper.egenskaper</id>
-        <type>textbox</type>
-        <dependOn>samtalemednav.student.ikketilbaketilstudiet</dependOn>
-        <dependOnValues>
-            <value>harikkehattsamtale</value>
-        </dependOnValues>
-    </faktum>
-    <faktum>
-        <id>samtalemednav.student.helsesituasjon.typearbeidforhelse</id>
-        <type>textbox</type>
-        <dependOn>samtalemednav.student.ikketilbaketilstudiet</dependOn>
-        <dependOnValues>
-            <value>harikkehattsamtale</value>
-        </dependOnValues>
-    </faktum>
-    <faktum>
-        <id>samtalemednav.student.helsesituasjon.tilrettelegging</id>
-        <type>textbox</type>
-        <dependOn>samtalemednav.student.ikketilbaketilstudiet</dependOn>
-        <dependOnValues>
-            <value>harikkehattsamtale</value>
-        </dependOnValues>
-    </faktum>
-    <faktum>
-        <id>samtalemednav.student.andreforhold.faktorersompaavirkerjobbmuligheter</id>
-        <type>textbox</type>
-        <dependOn>samtalemednav.student.ikketilbaketilstudiet</dependOn>
-        <dependOnValues>
-            <value>harikkehattsamtale</value>
-        </dependOnValues>
-    </faktum>
-    <faktum>
-        <id>samtalemednav.student.andreforhold.jobbviabekjent</id>
-        <type>textbox</type>
-        <dependOn>samtalemednav.student.ikketilbaketilstudiet</dependOn>
-        <dependOnValues>
-            <value>harikkehattsamtale</value>
         </dependOnValues>
     </faktum>
 </soknad>
