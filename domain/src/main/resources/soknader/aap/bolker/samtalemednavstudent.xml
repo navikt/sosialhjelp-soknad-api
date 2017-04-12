@@ -7,7 +7,7 @@
         <panel>samtalemednav</panel>
         <constraints>
             <constraint>
-                <faktum>hjelpefaktum</faktum>
+                <faktum>samtalemednav.hjelpefaktum</faktum>
                 <expression>value == 'tilbaketilstudiet'</expression>
             </constraint>
         </constraints>
@@ -19,7 +19,7 @@
         <panel>samtalemednav</panel>
         <constraints>
             <constraint>
-                <faktum>hjelpefaktum</faktum>
+                <faktum>samtalemednav.hjelpefaktum</faktum>
                 <expression>value == 'ikketilbaketilstudiet'</expression>
             </constraint>
         </constraints>

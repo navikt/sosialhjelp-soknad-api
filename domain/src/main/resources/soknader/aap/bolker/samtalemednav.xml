@@ -2,7 +2,7 @@
 <soknad xmlns="urn:no.nav.sbl">
     <!-- Hovedvisning -->
     <faktum>
-        <id>hjelpefaktum</id>
+        <id>samtalemednav.hjelpefaktum</id>
         <type>hidden</type>
     </faktum>
     <faktum>
@@ -11,7 +11,7 @@
         <panel>samtalemednav</panel>
         <constraints>
             <constraint>
-                <faktum>hjelpefaktum</faktum>
+                <faktum>samtalemednav.hjelpefaktum</faktum>
                 <expression>value == 'visarbeidsmuligheter'</expression>
             </constraint>
         </constraints>
