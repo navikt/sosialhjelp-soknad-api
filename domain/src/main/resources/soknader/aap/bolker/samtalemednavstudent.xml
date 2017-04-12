@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <soknad xmlns="urn:no.nav.sbl">
+    <!--student enkel-->
     <faktum>
         <id>samtalemednav.student.tilbaketilstudiet</id>
         <type>java.lang.String</type>
@@ -11,6 +12,7 @@
             </constraint>
         </constraints>
     </faktum>
+    <!--student fullvisning-->
     <faktum>
         <id>samtalemednav.student.ikketilbaketilstudiet</id>
         <type>java.lang.String</type>
