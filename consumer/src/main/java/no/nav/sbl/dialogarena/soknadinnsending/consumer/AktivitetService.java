@@ -12,7 +12,7 @@ import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetOgV
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetOgVedtakDagligReiseListeResponse;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetsinformasjonListeRequest;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetsinformasjonListeResponse;
-import org.apache.commons.collections15.Transformer;
+
 import org.joda.time.LocalDate;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,8 @@ import javax.inject.Named;
 import java.util.Collections;
 import java.util.List;
 
-import static no.nav.modig.lang.collections.IterUtils.on;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class AktivitetService {
@@ -67,7 +68,7 @@ public class AktivitetService {
             if (response == null) {
                 return Lists.newArrayList();
             }
-            return on(response.getAktivitetOgVedtakListe()).flatmap(vedtakTransformer).collect();
+            return response.getAktivitetOgVedtakListe().stream().flatMap(vedtakTransformer::apply).collect(Collectors.toList());
         } catch (FinnAktivitetOgVedtakDagligReiseListePersonIkkeFunnet e) {
             LOG.debug("person ikke funnet i arena: " + fodselsnummer + ": " + e, e);
             return Collections.emptyList();
@@ -104,10 +105,10 @@ public class AktivitetService {
 
     }
 
-    private static class VedtakTransformer implements Transformer<WSAktivitetOgVedtak, Iterable<Faktum>> {
+    private static class VedtakTransformer implements java.util.function.Function<WSAktivitetOgVedtak, Stream<Faktum>> {
         @Override
-        public Iterable<Faktum> transform(WSAktivitetOgVedtak wsAktivitetOgVedtak) {
-            return Lists.transform(wsAktivitetOgVedtak.getSaksinformasjon().getVedtaksinformasjon(), new VedtakinformasjonTransformer(wsAktivitetOgVedtak));
+        public Stream<Faktum> apply(WSAktivitetOgVedtak wsAktivitetOgVedtak) {
+            return Lists.transform(wsAktivitetOgVedtak.getSaksinformasjon().getVedtaksinformasjon(), new VedtakinformasjonTransformer(wsAktivitetOgVedtak)).stream();
         }
     }
 
