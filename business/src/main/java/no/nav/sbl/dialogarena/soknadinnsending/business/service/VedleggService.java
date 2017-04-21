@@ -37,7 +37,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.So
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
-import org.apache.commons.collections15.Closure;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
 import org.apache.commons.io.IOUtils;
@@ -60,6 +59,7 @@ import java.util.*;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.sort;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
@@ -275,12 +275,10 @@ public class VedleggService {
     public List<Vedlegg> hentPaakrevdeVedlegg(final Long faktumId) {
         List<Vedlegg> paakrevdeVedlegg = genererPaakrevdeVedlegg(faktaService.hentBehandlingsId(faktumId));
         leggTilKodeverkFelter(paakrevdeVedlegg);
-        return on(paakrevdeVedlegg).filter(new Predicate<Vedlegg>() {
-            @Override
-            public boolean evaluate(Vedlegg vedlegg) {
-                return faktumId.equals(vedlegg.getFaktumId());
-            }
-        }).collect();
+        return paakrevdeVedlegg.stream()
+                .filter(vedlegg->
+                        faktumId.equals(vedlegg.getFaktumId())
+                ).collect(Collectors.toList());
     }
 
     public List<Vedlegg> hentPaakrevdeVedlegg(String behandlingsId) {
@@ -321,12 +319,7 @@ public class VedleggService {
     }
 
     private void oppdaterVedleggForForventninger(List<VedleggsGrunnlag> forventninger) {
-        on(forventninger).forEach(new Closure<VedleggsGrunnlag>() {
-            @Override
-            public void execute(VedleggsGrunnlag vedleggsgrunnlag) {
-                oppdaterVedlegg(vedleggsgrunnlag);
-            }
-        });
+        forventninger.forEach(vedleggsgrunnlag->oppdaterVedlegg(vedleggsgrunnlag));
     }
 
     private void oppdaterVedlegg(VedleggsGrunnlag vedleggsgrunnlag) {
