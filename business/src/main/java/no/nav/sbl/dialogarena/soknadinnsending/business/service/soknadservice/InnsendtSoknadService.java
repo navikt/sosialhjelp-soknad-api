@@ -15,7 +15,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.PredicateUtils;
-import org.apache.commons.collections15.Transformer;
 import org.apache.commons.collections15.functors.InstanceofPredicate;
 import org.apache.commons.lang3.LocaleUtils;
 import org.springframework.stereotype.Component;
@@ -23,6 +22,7 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
 
@@ -40,18 +40,15 @@ public class InnsendtSoknadService {
     @Inject
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
 
-    private static final Predicate<Vedlegg> IKKE_KVITTERING = new Predicate<Vedlegg>() {
-        @Override
-        public boolean evaluate(Vedlegg vedlegg) {
-            return !SKJEMANUMMER_KVITTERING.equalsIgnoreCase(vedlegg.getSkjemaNummer());
-        }
-    };
+    private static final java.util.function.Predicate<Vedlegg> IKKE_KVITTERING = vedlegg -> !SKJEMANUMMER_KVITTERING.equalsIgnoreCase(vedlegg.getSkjemaNummer());
+
     public static final Predicate<Vedlegg> LASTET_OPP = new Predicate<Vedlegg>() {
         @Override
         public boolean evaluate(Vedlegg v) {
             return Vedlegg.Status.LastetOpp.equals(v.getInnsendingsvalg());
         }
     };
+
     public static final Predicate<Vedlegg> IKKE_LASTET_OPP = PredicateUtils.notPredicate(LASTET_OPP);
 
     public InnsendtSoknad hentInnsendtSoknad(String behandlingsId, String sprak) {
@@ -75,9 +72,7 @@ public class InnsendtSoknadService {
             * */
         }
 
-        final List<Vedlegg> vedlegg = on(xmlHenvendelse.getMetadataListe().getMetadata()).map(new Transformer<XMLMetadata, Vedlegg>() {
-            @Override
-            public Vedlegg transform(XMLMetadata xmlMetadata) {
+        final List<Vedlegg> vedlegg = xmlHenvendelse.getMetadataListe().getMetadata().stream().map(xmlMetadata -> {
                 XMLVedlegg xmlVedlegg = (XMLVedlegg) xmlMetadata;
                 Vedlegg v = new Vedlegg()
                         .medInnsendingsvalg(Transformers.toInnsendingsvalg(xmlVedlegg.getInnsendingsvalg()))
@@ -86,8 +81,8 @@ public class InnsendtSoknadService {
                         .medNavn(xmlVedlegg.getTilleggsinfo());
                 vedleggService.medKodeverk(v, locale);
                 return v;
-            }
-        }).filter(IKKE_KVITTERING).collect();
+
+        }).filter(IKKE_KVITTERING).collect(Collectors.toList());
 
         Optional<Vedlegg> hovedskjemaVedlegg = on(vedlegg)
                 .filter(medSkjemanummer(hovedskjema.getSkjemanummer()))
