@@ -18,6 +18,7 @@ import javax.inject.Named;
 import java.util.Collections;
 import java.util.List;
 
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -137,11 +138,10 @@ public class AktivitetService {
         }
 
         private String hentTema(WSSaksinformasjon saksinformasjon) {
-            if (saksinformasjon != null && saksinformasjon.getSakstype() != null) {
-                WSSakstyper sakstype = saksinformasjon.getSakstype();
-                return (sakstype != null && sakstype.getValue() != null) ? sakstype.getValue() : "TSO";
-            }
-            return "TSO";
+            return Optional.ofNullable(saksinformasjon)
+                    .map(WSSaksinformasjon::getSakstype)
+                    .map(WSKodeverdi::getValue)
+                    .orElse("TSO");
         }
     }
 
