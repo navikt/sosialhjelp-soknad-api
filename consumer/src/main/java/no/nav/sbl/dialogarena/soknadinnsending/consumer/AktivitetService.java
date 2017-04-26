@@ -35,8 +35,8 @@ public class AktivitetService {
     @Named("sakOgAktivitetEndpoint")
     private SakOgAktivitetV1 aktivitetWebService;
 
-    private AktiviteterTransformer transformer = new AktiviteterTransformer();
-    private VedtakTransformer vedtakTransformer = new VedtakTransformer();
+
+
 
 
     public List<Faktum> hentAktiviteter(String fodselnummer) {
@@ -46,7 +46,7 @@ public class AktivitetService {
                 return Collections.emptyList();
             }
             return aktiviteter.getAktivitetListe().stream()
-                    .map(transformer)
+                    .map(new AktiviteterTransformer())
                     .filter(BARE_AKTIVITETER_SOM_KAN_HA_STONADER)
                     .collect(toList());
 
@@ -68,7 +68,7 @@ public class AktivitetService {
             if (response == null) {
                 return Collections.emptyList();
             }
-            return response.getAktivitetOgVedtakListe().stream().flatMap(vedtakTransformer).collect(toList());
+            return response.getAktivitetOgVedtakListe().stream().flatMap(new VedtakTransformer()).collect(toList());
 
         } catch (FinnAktivitetOgVedtakDagligReiseListePersonIkkeFunnet e) {
             LOG.debug("person ikke funnet i arena: " + fodselsnummer + ": " + e, e);
