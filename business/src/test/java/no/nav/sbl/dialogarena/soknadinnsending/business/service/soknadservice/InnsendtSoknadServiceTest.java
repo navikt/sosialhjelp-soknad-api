@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.*;
+import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
@@ -20,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -121,6 +123,19 @@ public class InnsendtSoknadServiceTest {
         InnsendtSoknad soknad = service.hentInnsendtSoknad("ID01", SPRAK);
         assertThat(soknad.getInnsendteVedlegg()).hasSize(1);
         assertThat(soknad.getIkkeInnsendteVedlegg()).hasSameSizeAs(ikkeInnsendteVedlegg);
+
+    }
+
+    @Test
+    public void skalKasteExceptionOmHovedskjemaMangler() throws Exception {
+        xmlMetadataListe.withMetadata(new XMLMetadata());
+
+        try{
+        service.hentInnsendtSoknad("ID01", SPRAK);
+        fail("Skal kaste exception når Hovedskjema mangler");
+        }catch (Exception e){
+            assertThat(e).isInstanceOf(ApplicationException.class);
+        }
 
     }
 
