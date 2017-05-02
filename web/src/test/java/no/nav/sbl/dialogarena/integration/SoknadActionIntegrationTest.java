@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
  *
  * Tidligst dokumentert 4.feb 2016
  * */
-public class SoknadActionIntegrationTests {
+public class SoknadActionIntegrationTest {
     private static final int PORT = 10001;
     static {
         System.setProperty(TestProperties.CONTAINER_FACTORY, "org.glassfish.jersey.test.external.ExternalTestContainerFactory");
