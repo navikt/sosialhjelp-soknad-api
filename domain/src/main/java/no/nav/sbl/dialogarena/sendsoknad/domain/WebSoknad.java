@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.sendsoknad.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigDelstegEndringException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.*;
-import org.apache.commons.collections15.Predicate;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.builder.*;
 import org.joda.time.DateTime;
@@ -12,9 +11,10 @@ import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
-import static no.nav.modig.lang.collections.IterUtils.on;
-import static no.nav.modig.lang.collections.PredicateUtils.not;
+import static java.util.stream.Collectors.toList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.ER_ANNET_VEDLEGG;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.ER_LASTET_OPP;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.DagpengerGjenopptakInformasjon.erDagpengerGjenopptak;
@@ -122,7 +122,7 @@ public class WebSoknad implements Serializable {
         return vedlegg;
     }
     public List<Vedlegg> hentPaakrevdeVedlegg(){
-        return on(vedlegg).filter(Vedlegg.PAAKREVDE_VEDLEGG).collect();
+        return getVedlegg().stream().filter(Vedlegg.PAAKREVDE_VEDLEGG).collect(toList());
     }
 
     public void setVedlegg(List<Vedlegg> vedlegg) {
@@ -135,6 +135,10 @@ public class WebSoknad implements Serializable {
 
     public List<Faktum> getFakta() {
         return fakta;
+    }
+
+    private List<Faktum> getFaktaNullSafe() {
+        return fakta == null ? new ArrayList<>(): fakta;
     }
 
     public void setFakta(List<Faktum> fakta) {
@@ -272,12 +276,7 @@ public class WebSoknad implements Serializable {
     }
 
     public List<Faktum> getFaktaMedKey(final String key) {
-        return on(fakta).filter(new Predicate<Faktum>() {
-            @Override
-            public boolean evaluate(Faktum faktum) {
-                return faktum.getKey().equals(key);
-            }
-        }).collect();
+        return getFaktaNullSafe().stream().filter(faktum ->  faktum.getKey().equals(key)).collect(toList());
     }
 
     public Faktum getFaktumMedKey(final String key) {
@@ -304,76 +303,54 @@ public class WebSoknad implements Serializable {
      * @return liste over vedlegg som er lastet opp i nåværende behandling
      */
     public List<Vedlegg> getOpplastedeVedlegg() {
-        return on(vedlegg).filter(new Predicate<Vedlegg>() {
-            @Override
-            public boolean evaluate(Vedlegg vedlegg) {
-                return vedlegg.getStorrelse() > 0;
-            }
-        }).collect();
+        return getVedlegg().stream().filter(vedlegg -> vedlegg.getStorrelse() > 0).collect(toList());
     }
 
     public List<Vedlegg> getInnsendteVedlegg() {
-        return on(vedlegg).filter(new Predicate<Vedlegg>() {
-            @Override
-            public boolean evaluate(Vedlegg vedlegg) {
-                return vedlegg.getInnsendingsvalg().er(Vedlegg.Status.LastetOpp);
-            }
-        }).collect();
+        return getVedlegg().stream()
+                .filter(vedlegg -> vedlegg.getInnsendingsvalg().er(Vedlegg.Status.LastetOpp))
+                .collect(toList());
     }
 
     public List<Vedlegg> getIkkeInnsendteVedlegg() {
         List<Vedlegg> paakrevdeVedlegg = hentPaakrevdeVedlegg();
-        return on(paakrevdeVedlegg).filter(new Predicate<Vedlegg>() {
-            @Override
-            public boolean evaluate(Vedlegg vedlegg) {
-                return vedlegg.getInnsendingsvalg().erIkke(Vedlegg.Status.LastetOpp) && vedlegg.getInnsendingsvalg().erIkke(Vedlegg.Status.IkkeVedlegg);
-            }
-        }).collect();
+        return paakrevdeVedlegg.stream()
+                .filter(vedlegg -> vedlegg.getInnsendingsvalg().erIkke(Vedlegg.Status.LastetOpp)
+                        && vedlegg.getInnsendingsvalg().erIkke(Vedlegg.Status.IkkeVedlegg))
+                .collect(toList());
     }
 
     public List<Faktum> getFaktaMedKeyOgPropertyLikTrue(final String key, final String propertyKey) {
-        return on(fakta).filter(new Predicate<Faktum>() {
-            @Override
-            public boolean evaluate(Faktum faktum) {
-                return faktum.getKey().equals(key) && faktum.getProperties().get(propertyKey) != null && faktum.getProperties().get(propertyKey).equals("true");
-            }
-        }).collect();
+        return getFaktaNullSafe().stream().filter(faktum ->
+                faktum.getKey().equals(key)
+                        && faktum.getProperties().get(propertyKey) != null
+                        && faktum.getProperties().get(propertyKey).equals("true"))
+                .collect(toList());
     }
 
     public List<Faktum> getFaktaSomStarterMed(final String key) {
-        return on(fakta).filter(new Predicate<Faktum>() {
-            @Override
-            public boolean evaluate(Faktum faktum) {
-                return faktum.getKey().startsWith(key);
-            }
-        }).collect();
-
+        return getFaktaNullSafe().stream()
+                .filter(faktum -> faktum.getKey().startsWith(key))
+                .collect(toList());
     }
 
     public List<Faktum> getFaktaMedKeyOgParentFaktum(final String key, final Long parentFaktumId) {
-        return on(fakta).filter(new Predicate<Faktum>() {
-            @Override
-            public boolean evaluate(Faktum faktum) {
-                return faktum.getKey().equals(key) && faktum.getParrentFaktum().equals(parentFaktumId);
-            }
-        }).collect();
+        return getFaktaNullSafe().stream()
+                .filter(faktum -> faktum.getKey().equals(key) && faktum.getParrentFaktum().equals(parentFaktumId))
+                .collect(toList());
     }
+
     public Faktum getFaktumMedKeyOgParentFaktum(final String key, final Long parentFaktumId) {
-        return on(fakta).filter(new Predicate<Faktum>() {
-            @Override
-            public boolean evaluate(Faktum faktum) {
-                return faktum.getKey().equals(key) && faktum.getParrentFaktum().equals(parentFaktumId);
-            }
-        }).head().getOrElse(null);
+        return getFaktaNullSafe().stream()
+                .filter(faktum -> faktum.getKey().equals(key) && faktum.getParrentFaktum().equals(parentFaktumId))
+                .findFirst().orElse(null);
     }
 
     public Faktum getFaktaMedKeyOgProperty(final String key, final String property, final String value) {
-        return on(fakta).filter(new Predicate<Faktum>() {
-            @Override
-            public boolean evaluate(Faktum faktum) {
-                return faktum.getKey().equals(key) && faktum.matcherUnikProperty(property, value);
-            }
-        }).head().getOrElse(null);
+        return getFaktaNullSafe().stream()
+                .filter(faktum -> faktum.getKey().equals(key) && faktum.matcherUnikProperty(property, value))
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
@@ -463,10 +440,10 @@ public class WebSoknad implements Serializable {
     }
 
     public boolean harAnnetVedleggSomIkkeErLastetOpp() {
-        return !on(vedlegg)
+        return !getVedlegg().stream()
                 .filter(ER_ANNET_VEDLEGG)
-                .filter(not(ER_LASTET_OPP))
-                .collect()
+                .filter(ER_LASTET_OPP.negate())
+                .collect(toList())
                 .isEmpty();
     }
     public boolean erUnderArbeid() {
@@ -502,12 +479,10 @@ public class WebSoknad implements Serializable {
     }
 
     public Faktum finnFaktum(final Long faktumId) {
-        return on(fakta).filter(new Predicate<Faktum>() {
-            @Override
-            public boolean evaluate(Faktum faktum) {
-                return faktum.getFaktumId() != null && faktum.getFaktumId().equals(faktumId);
-            }
-        }).head().getOrElse(null);
+        return getFaktaNullSafe().stream()
+                .filter(faktum -> faktum.getFaktumId() != null
+                        && faktum.getFaktumId().equals(faktumId))
+                .findFirst().orElse(null);
     }
 
     private static class VedleggSomMatcherForventningPredicate implements Predicate<Vedlegg> {
@@ -520,7 +495,7 @@ public class WebSoknad implements Serializable {
         }
 
         @Override
-        public boolean evaluate(Vedlegg vedlegg) {
+        public boolean test(Vedlegg vedlegg) {
             return liktFaktum(vedlegg) && liktSkjema(vedlegg);
         }
 
@@ -550,7 +525,7 @@ public class WebSoknad implements Serializable {
     }
 
     public Vedlegg finnVedleggSomMatcherForventning(final VedleggForFaktumStruktur vedleggForFaktumStruktur, final Long faktumId) {
-        return on(vedlegg).filter(new VedleggSomMatcherForventningPredicate(vedleggForFaktumStruktur, faktumId)).head().getOrElse(null);
+        return getVedlegg().stream().filter(new VedleggSomMatcherForventningPredicate(vedleggForFaktumStruktur, faktumId)).findFirst().orElse(null);
     }
 
     public void fjernFaktaSomIkkeSkalVaereSynligISoknaden(SoknadStruktur struktur) {
