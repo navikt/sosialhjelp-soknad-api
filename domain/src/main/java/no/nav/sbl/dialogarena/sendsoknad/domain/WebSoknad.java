@@ -321,8 +321,8 @@ public class WebSoknad implements Serializable {
     }
 
     public List<Faktum> getFaktaMedKeyOgPropertyLikTrue(final String key, final String propertyKey) {
-        return getFaktaNullSafe().stream().filter(faktum ->
-                faktum.getKey().equals(key)
+        return getFaktaNullSafe().stream()
+                .filter(faktum -> faktum.getKey().equals(key)
                         && faktum.getProperties().get(propertyKey) != null
                         && faktum.getProperties().get(propertyKey).equals("true"))
                 .collect(toList());
