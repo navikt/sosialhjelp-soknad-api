@@ -1,10 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
-import org.apache.commons.collections15.Transformer;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;

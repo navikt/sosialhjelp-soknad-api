@@ -10,6 +10,7 @@ import org.joda.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.*;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.LastetOpp;
@@ -31,16 +32,14 @@ public class Transformers {
     public static final String SAGTOPP_SELV = "sagtoppselv";
 
 
-    public static final Transformer<Faktum, LocalDate> DATO_TIL_PERMITTERING = new Transformer<Faktum, LocalDate>() {
-        @Override
-        public LocalDate transform(Faktum faktum) {
-            Map<String, String> properties = faktum.getProperties();
-            return new LocalDate(properties.get("permiteringsperiodedatofra"));
-        }
+    public static final Function<Faktum, LocalDate> DATO_TIL_PERMITTERING = faktum -> {
+        Map<String, String> properties = faktum.getProperties();
+        return new LocalDate(properties.get("permiteringsperiodedatofra"));
     };
-    public static final Transformer<Faktum, LocalDate> DATO_TIL = new Transformer<Faktum, LocalDate>() {
+
+    public static final Function<Faktum, LocalDate> DATO_TIL = new Function<Faktum, LocalDate>() {
         @Override
-        public LocalDate transform(Faktum faktum) {
+        public LocalDate apply(Faktum faktum) {
             Map<String, String> properties = faktum.getProperties();
             switch (TYPE.transform(faktum)) {
                 case KONTRAKT_UTGAATT:
@@ -61,23 +60,14 @@ public class Transformers {
         }
 
     };
-    public static final Transformer<Faktum, String> TYPE = new Transformer<Faktum, String>() {
-        @Override
-        public String transform(Faktum faktum) {
-            return faktum.getProperties().get("type");
-        }
-    };
 
-    public static Transformer<Faktum, String> parentFaktumType(final WebSoknad soknad) {
-        return new Transformer<Faktum, String>() {
-            @Override
-            public String transform(Faktum faktum) {
-                if(faktum.getParrentFaktum() == null) {
-                    return null;
-                }
-                return soknad.getFaktumMedId(faktum.getParrentFaktum().toString()).getProperties().get("type");
-            }
-        };
+    public static final Transformer<Faktum, String> TYPE = faktum -> faktum.getProperties().get("type");
+
+    public static String parentFaktumType(final WebSoknad soknad, final Faktum faktum) {
+        if(faktum.getParrentFaktum() == null) {
+            return null;
+        }
+        return soknad.getFaktumMedId(faktum.getParrentFaktum().toString()).getProperties().get("type");
     }
 
     public static XMLVedlegg[] convertToXmlVedleggListe(List<Vedlegg> vedleggForventnings) {

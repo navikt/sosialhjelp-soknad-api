@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.aktivitetbetalingsplan;
 
 
-import com.google.common.collect.Lists;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadRefusjonDagligreise;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
@@ -19,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
@@ -79,7 +79,7 @@ public class AktivitetBetalingsplanBolk implements BolkService {
                     .withPeriode(new WSPeriode().withFom(LocalDate.now().minusMonths(6)).withTom(LocalDate.now().plusMonths(2)));
             WSFinnAktivitetOgVedtakDagligReiseListeResponse response = aktivitetWebService.finnAktivitetOgVedtakDagligReiseListe(request);
             if (response == null) {
-                return Lists.newArrayList();
+                return new ArrayList<>();
             }
             return response.getAktivitetOgVedtakListe().stream()
                     .filter(wsAktivitetOgVedtak -> wsAktivitetOgVedtak.getAktivitetId().equals(aktivitetId))
