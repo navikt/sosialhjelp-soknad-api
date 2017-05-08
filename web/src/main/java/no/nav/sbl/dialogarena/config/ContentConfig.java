@@ -64,7 +64,7 @@ public class ContentConfig {
         NavMessageSource.Bundle[] bundles = new NavMessageSource.Bundle[kravdialogInformasjonHolder.getSoknadsKonfigurasjoner().size()];
         int index = 0;
         for (KravdialogInformasjon kravdialogInformasjon : kravdialogInformasjonHolder.getSoknadsKonfigurasjoner()) {
-            bundles[index++] = (getBundle(kravdialogInformasjon.getBundleName(), kravdialogInformasjon.brukerEnonicLedetekster(), brukerprofilDataDirectoryString));
+            bundles[index++] = getBundle(kravdialogInformasjon.getBundleName(), kravdialogInformasjon.brukerEnonicLedetekster(), brukerprofilDataDirectoryString);
         }
 
         NavMessageSource.Bundle fellesBundle = new NavMessageSource.Bundle("sendsoknad", brukerprofilDataDirectoryString + "enonic/sendsoknad", "classpath:content/sendsoknad");
