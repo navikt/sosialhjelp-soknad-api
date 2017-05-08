@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHenvendelse;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadata;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;

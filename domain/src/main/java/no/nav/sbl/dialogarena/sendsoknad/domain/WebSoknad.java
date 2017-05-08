@@ -12,7 +12,6 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.ER_ANNET_VEDLEGG;
@@ -137,12 +136,12 @@ public class WebSoknad implements Serializable {
         return fakta;
     }
 
-    private List<Faktum> getFaktaNullSafe() {
-        return fakta == null ? new ArrayList<>(): fakta;
-    }
-
-    public void setFakta(List<Faktum> fakta) {
-        this.fakta = fakta;
+    public void setFakta(List<Faktum> nyeFakta) {
+        if(nyeFakta == null){
+            fakta = new ArrayList<>();
+        }else{
+            fakta = nyeFakta;
+        }
     }
 
     public final WebSoknad leggTilFaktum(Faktum faktum) {
@@ -276,7 +275,7 @@ public class WebSoknad implements Serializable {
     }
 
     public List<Faktum> getFaktaMedKey(final String key) {
-        return getFaktaNullSafe().stream().filter(faktum ->  faktum.getKey().equals(key)).collect(toList());
+        return getFakta().stream().filter(faktum ->  faktum.getKey().equals(key)).collect(toList());
     }
 
     public Faktum getFaktumMedKey(final String key) {
@@ -321,7 +320,7 @@ public class WebSoknad implements Serializable {
     }
 
     public List<Faktum> getFaktaMedKeyOgPropertyLikTrue(final String key, final String propertyKey) {
-        return getFaktaNullSafe().stream()
+        return getFakta().stream()
                 .filter(faktum -> faktum.getKey().equals(key)
                         && faktum.getProperties().get(propertyKey) != null
                         && faktum.getProperties().get(propertyKey).equals("true"))
@@ -329,25 +328,25 @@ public class WebSoknad implements Serializable {
     }
 
     public List<Faktum> getFaktaSomStarterMed(final String key) {
-        return getFaktaNullSafe().stream()
+        return getFakta().stream()
                 .filter(faktum -> faktum.getKey().startsWith(key))
                 .collect(toList());
     }
 
     public List<Faktum> getFaktaMedKeyOgParentFaktum(final String key, final Long parentFaktumId) {
-        return getFaktaNullSafe().stream()
+        return getFakta().stream()
                 .filter(faktum -> faktum.getKey().equals(key) && faktum.getParrentFaktum().equals(parentFaktumId))
                 .collect(toList());
     }
 
     public Faktum getFaktumMedKeyOgParentFaktum(final String key, final Long parentFaktumId) {
-        return getFaktaNullSafe().stream()
+        return getFakta().stream()
                 .filter(faktum -> faktum.getKey().equals(key) && faktum.getParrentFaktum().equals(parentFaktumId))
                 .findFirst().orElse(null);
     }
 
     public Faktum getFaktaMedKeyOgProperty(final String key, final String property, final String value) {
-        return getFaktaNullSafe().stream()
+        return getFakta().stream()
                 .filter(faktum -> faktum.getKey().equals(key) && faktum.matcherUnikProperty(property, value))
                 .findFirst()
                 .orElse(null);
@@ -479,7 +478,7 @@ public class WebSoknad implements Serializable {
     }
 
     public Faktum finnFaktum(final Long faktumId) {
-        return getFaktaNullSafe().stream()
+        return getFakta().stream()
                 .filter(faktum -> faktum.getFaktumId() != null
                         && faktum.getFaktumId().equals(faktumId))
                 .findFirst().orElse(null);
