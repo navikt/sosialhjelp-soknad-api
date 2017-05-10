@@ -149,55 +149,6 @@
         <dependOn>andreytelser.ytelser</dependOn>
     </faktum>
 
-
-    <faktum>
-        <id>andreytelser.nav</id>
-        <type>checkboxGroup</type>
-        <panel>AndreYtelser</panel>
-    </faktum>
-    <faktum>
-        <id>andreytelser.nav.sykepenger</id>
-        <type>java.lang.Boolean</type>
-        <panel>AndreYtelser</panel>
-        <dependOn>andreytelser.nav</dependOn>
-    </faktum>
-    <faktum>
-        <id>andreytelser.nav.aap</id>
-        <type>java.lang.Boolean</type>
-        <panel>AndreYtelser</panel>
-        <dependOn>andreytelser.nav</dependOn>
-
-    </faktum>
-    <faktum>
-        <id>andreytelser.nav.uforetrygd</id>
-        <type>java.lang.Boolean</type>
-        <panel>AndreYtelser</panel>
-        <dependOn>andreytelser.nav</dependOn>
-    </faktum>
-    <faktum>
-        <id>andreytelser.nav.svangerskapspenger</id>
-        <type>java.lang.Boolean</type>
-        <panel>AndreYtelser</panel>
-        <dependOn>andreytelser.nav</dependOn>
-    </faktum>
-    <faktum>
-        <id>andreytelser.nav.foreldrepenger</id>
-        <type>java.lang.Boolean</type>
-        <panel>AndreYtelser</panel>
-        <dependOn>andreytelser.nav</dependOn>
-    </faktum>
-    <faktum>
-        <id>andreytelser.nav.ventelonn</id>
-        <type>java.lang.Boolean</type>
-        <panel>AndreYtelser</panel>
-        <dependOn>andreytelser.nav</dependOn>
-    </faktum>
-    <faktum>
-        <id>andreytelser.nav.ingennavytelser</id>
-        <type>java.lang.Boolean</type>
-        <panel>AndreYtelser</panel>
-        <dependOn>andreytelser.nav</dependOn>
-    </faktum>
     <faktum>
         <id>andreytelser.ikkeavtale</id>
         <type>java.lang.Boolean</type>
