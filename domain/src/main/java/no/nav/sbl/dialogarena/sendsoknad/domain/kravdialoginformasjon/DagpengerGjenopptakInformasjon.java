@@ -51,6 +51,11 @@ public class DagpengerGjenopptakInformasjon extends KravdialogInformasjon.Defaul
         return "dagpenger";
     }
 
+    @Override
+    public boolean brukerEnonicLedetekster() {
+        return false;
+    }
+
     public static boolean erDagpengerGjenopptak(String skjema) {
         return skjemanummer.contains(skjema);
     }
