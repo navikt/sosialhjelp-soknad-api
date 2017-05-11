@@ -104,6 +104,7 @@
 
     <logger name="klientlogger" level="debug" additivity="false">
         <appender-ref ref="klientlogg"/>
+        <appender-ref ref="SYSLOG"/>
     </logger>
 
     <logger name="org.apache.http.impl.client" level="info">
