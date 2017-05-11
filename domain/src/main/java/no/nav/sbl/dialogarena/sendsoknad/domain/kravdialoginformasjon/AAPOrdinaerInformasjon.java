@@ -25,11 +25,21 @@ public class AAPOrdinaerInformasjon extends KravdialogInformasjon.DefaultOppsett
     }
 
     public String getStrukturFilnavn() {
-        return "aap_ordinaer.xml";
+        return "aap/aap_ordinaer.xml";
     }
 
     public List<String> getSkjemanummer() {
         return skjemanummer;
+    }
+
+    @Override
+    public boolean brukerNyOppsummering() {
+        return true;
+    }
+
+    @Override
+    public boolean skalSendeMedFullSoknad() {
+        return true;
     }
 
     @Override

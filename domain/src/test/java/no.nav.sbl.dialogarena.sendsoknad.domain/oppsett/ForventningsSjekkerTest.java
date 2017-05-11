@@ -26,4 +26,12 @@ public class ForventningsSjekkerTest {
         assertThat(ForventningsSjekker.sjekkForventning("value == 'en'", new Faktum().medValue("en")), is(true));
         assertThat(ForventningsSjekker.sjekkForventning("value == 'en'", new Faktum().medValue("to")), is(false));
     }
+
+    @Test
+    public void skalKunneSammenligneNull(){
+        assertThat(ForventningsSjekker.sjekkForventning("value != null && value != 'en'", new Faktum().medValue("to")), is(true));
+        assertThat(ForventningsSjekker.sjekkForventning("value != null && value != 'en'", new Faktum().medValue("")), is(true));
+        assertThat(ForventningsSjekker.sjekkForventning("value != null && value != 'en'", new Faktum().medValue(null)), is(false));
+        assertThat(ForventningsSjekker.sjekkForventning("value != null && value != ''", new Faktum().medValue("")), is(false));
+    }
 }

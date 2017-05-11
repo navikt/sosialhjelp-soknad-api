@@ -4,7 +4,13 @@
 {{ hentTekst (concat key ".label") }}
 <ul class="svar-liste">
     <li>
-        {{originalValue}}
+        {{#hvisIkkeTom originalValue}}
+            {{originalValue}}
+        {{else}}
+            {{#if optional}}
+                <i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+            {{/if}}
+        {{/hvisIkkeTom}}
         {{#hvisTekstFinnes (concat key ".enhet")}}
             {{ hentTekst (concat key ".enhet") }}
         {{/hvisTekstFinnes}}
