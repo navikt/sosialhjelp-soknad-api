@@ -5,17 +5,11 @@ import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.context.MethodValueResolver;
 import com.github.jknack.handlebars.io.URLTemplateSource;
 import no.nav.sbl.dialogarena.config.ContentConfig;
-import no.nav.sbl.dialogarena.rest.utils.PDFService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonPortTypeMock;
-import no.nav.sbl.dialogarena.service.HtmlGenerator;
 import no.nav.sbl.dialogarena.service.helpers.HvisLikHelper;
-import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,15 +18,23 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
-import javax.ws.rs.*;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.URI;
 
-import static javax.ws.rs.core.MediaType.TEXT_HTML;
-import static no.nav.sbl.dialogarena.rest.utils.MocksetupUtils.*;
+import static no.nav.sbl.dialogarena.rest.utils.MocksetupUtils.MocksetupFields;
+import static no.nav.sbl.dialogarena.rest.utils.MocksetupUtils.getDiskresjonskode;
+import static no.nav.sbl.dialogarena.rest.utils.MocksetupUtils.getMocksetupFields;
+import static no.nav.sbl.dialogarena.rest.utils.MocksetupUtils.settPostadressetype;
+import static no.nav.sbl.dialogarena.rest.utils.MocksetupUtils.settSekundarAdressetype;
 
 @Controller
 @Path("/internal")
@@ -45,14 +47,6 @@ public class InternalRessurs {
     private CacheManager cacheManager;
     @Inject
     private NavMessageSource messageSource;
-    @Inject
-    private SoknadDataFletter soknadDataFletter;
-    @Inject
-    private VedleggService vedleggService;
-    @Inject
-    private HtmlGenerator pdfTemplate;
-    @Inject
-    private PDFService pdfService;
 
     private PersonPortTypeMock personPortTypeMock = PersonMock.getInstance().getPersonPortTypeMock();
 
@@ -119,41 +113,6 @@ public class InternalRessurs {
             return "CACHE RESET OK";
         }
         return "OK";
-    }
-
-    @GET
-    @Path("/{behandlingsId}/nyoppsummering")
-    @Produces(TEXT_HTML)
-    @SjekkTilgangTilSoknad
-    public String hentOppsummeringNew(@PathParam("behandlingsId") String behandlingsId) throws IOException {
-        logAccess("hentOppsummeringNew");
-        WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
-        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
-
-        return pdfTemplate.fyllHtmlMalMedInnhold(soknad);
-    }
-
-    @GET
-    @Path("/{behandlingsId}/fullsoknad")
-    @Produces(TEXT_HTML)
-    @SjekkTilgangTilSoknad
-    public String fullSoknad(@PathParam("behandlingsId") String behandlingsId) throws IOException {
-        logAccess("fullSoknad");
-        WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
-        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
-
-        return pdfTemplate.fyllHtmlMalMedInnhold(soknad, true);
-    }
-    @GET
-    @Path("/{behandlingsId}/fullsoknadpdf")
-    @Produces("application/pdf")
-    @SjekkTilgangTilSoknad
-    public byte[] fullSoknadPdf(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext) throws IOException {
-        logAccess("fullSoknadPdf");
-        WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
-        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
-        String servletPath = servletContext.getRealPath("/");
-        return pdfService.genererOppsummeringPdf(soknad, servletPath, true);
     }
 
     private void logAccess(String metode) {

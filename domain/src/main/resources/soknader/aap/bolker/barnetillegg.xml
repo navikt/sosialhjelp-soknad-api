@@ -1,0 +1,80 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl">
+    <faktum>
+        <id>barn</id>
+        <panel>Barnetillegg</panel>
+        <flereTillatt>true</flereTillatt>
+        <type>composite</type>
+        <properties>
+            <property>
+                <id>fornavn</id>
+                <type>textbox</type>
+                <constraints>
+                    <constraint>type == 'BRUKERREGISTRERT'</constraint>
+                </constraints>
+            </property>
+            <property>
+                <id>etternavn</id>
+                <type>textbox</type>
+                <constraints>
+                    <constraint>type == 'BRUKERREGISTRERT'</constraint>
+                </constraints>
+            </property>
+            <property>
+                <id>sammensattnavn</id>
+                <type>textbox</type>
+                <constraints>
+                    <constraint>type == 'SYSTEMREGISTRERT'</constraint>
+                </constraints>
+            </property>
+            <property>
+                <id>fnr</id>
+                <type>textbox</type>
+                <constraints>
+                    <constraint>type == 'SYSTEMREGISTRERT'</constraint>
+                </constraints>
+            </property>
+            <property>
+                <id>fodselsdato</id>
+                <type>date</type>
+                <constraints>
+                    <constraint>type == 'BRUKERREGISTRERT'</constraint>
+                </constraints>
+            </property>
+            <property>
+                <id>land</id>
+                <type>country</type>
+            </property>
+        </properties>
+    </faktum>
+    <faktum>
+        <id>barn.harinntekt</id>
+        <type>java.lang.Boolean</type>
+        <dependOn>barn</dependOn>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <faktum>
+        <id>barn.harinntekt.inntekt</id>
+        <type>textbox</type>
+        <dependOn>barn.harinntekt</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+    <faktum kunUtvidet="true">
+        <id>barn.leggtil</id>
+        <type>infotekst</type>
+        <panel>Barnetillegg</panel>
+    </faktum>
+
+    <vedlegg>
+        <faktum>barn</faktum>
+        <skjemaNummer>X8</skjemaNummer>
+        <property>sammensattnavn</property>
+        <onProperty>vedlegg</onProperty>
+        <forSystemfaktum>false</forSystemfaktum>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+</soknad>

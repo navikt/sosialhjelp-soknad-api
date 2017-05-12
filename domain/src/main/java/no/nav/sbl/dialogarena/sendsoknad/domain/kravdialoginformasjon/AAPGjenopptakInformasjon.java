@@ -29,7 +29,17 @@ public class AAPGjenopptakInformasjon extends KravdialogInformasjon.DefaultOppse
     }
 
     public String getStrukturFilnavn() {
-        return "aap_ordinaer.xml";
+        return "aap/aap_gjenopptak.xml";
+    }
+
+    @Override
+    public boolean brukerNyOppsummering() {
+        return true;
+    }
+
+    @Override
+    public boolean skalSendeMedFullSoknad() {
+        return true;
     }
 
     @Override

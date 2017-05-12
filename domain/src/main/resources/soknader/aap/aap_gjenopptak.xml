@@ -1,0 +1,19 @@
+<soknad temaKode="AAP" xmlns="urn:no.nav.sbl" xmlns:xi="http://www.w3.org/2001/XInclude">
+
+    <xi:include href="utslagskriterier.xml" />
+    <xi:include href="registreringsside.xml" />
+    <xi:include href="soknadsvalg.xml" />
+    <xi:include href="informasjonsside.xml" />
+
+    <!-- Bolker -->
+    <xi:include href="bolker/nyperiode.xml" />
+    <xi:include href="bolker/navaerendesituasjon.xml" />
+    <xi:include href="bolker/andreytelser.xml" />
+    <xi:include href="bolker/barnetillegg.xml" />
+
+    <!-- Fellesting -->
+    <xi:include href="../felles/personalia.xml" />
+    <xi:include href="../felles/tilleggsopplysninger.xml" />
+    <xi:include href="../felles/ekstravedlegg.xml" />
+
+</soknad>

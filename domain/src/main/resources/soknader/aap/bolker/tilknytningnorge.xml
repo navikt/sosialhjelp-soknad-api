@@ -1,0 +1,92 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl">
+
+    <!-- Opphold i Norge siste tre år -->
+    <faktum>
+        <id>tilknytningnorge.oppholdinorgesistetreaar</id>
+        <type>radio</type>
+        <panel>Tilknytningnorge</panel>
+    </faktum>
+
+
+    <faktum>
+        <id>tilknytningnorge.oppholdinorgesistetreaar.false</id>
+        <type>checkboxGroup</type>
+        <dependOn>tilknytningnorge.oppholdinorgesistetreaar</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+
+    <faktum>
+        <id>tilknytningnorge.oppholdinorgesistetreaar.false.boddinorgesisteaaret</id>
+        <type>checkbox</type>
+        <dependOn>tilknytningnorge.oppholdinorgesistetreaar.false</dependOn>
+    </faktum>
+    <faktum>
+        <id>tilknytningnorge.oppholdinorgesistetreaar.false.boddieoslandsistetreaar</id>
+        <type>checkbox</type>
+        <dependOn>tilknytningnorge.oppholdinorgesistetreaar.false</dependOn>
+    </faktum>
+    <faktum>
+        <id>tilknytningnorge.oppholdinorgesistetreaar.false.registrertflyktning</id>
+        <type>checkbox</type>
+        <dependOn>tilknytningnorge.oppholdinorgesistetreaar.false</dependOn>
+    </faktum>
+    <faktum>
+        <id>tilknytningnorge.oppholdinorgesistetreaar.false.ingenpassendesituasjoner</id>
+        <type>checkbox</type>
+        <dependOn>tilknytningnorge.oppholdinorgesistetreaar.false</dependOn>
+    </faktum>
+
+    <!-- Arbeid i utlandet før sykdom -->
+    <faktum>
+        <id>tilknytningnorge.arbeidiutlandet</id>
+        <type>radio</type>
+        <panel>Tilknytningnorge</panel>
+    </faktum>
+
+    <faktum>
+        <id>tilknytningnorge.arbeidiutlandet.periode</id>
+        <flereTillatt>true</flereTillatt>
+        <dependOn>tilknytningnorge.arbeidiutlandet</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+        <type>composite</type>
+        <properties>
+            <property>
+                <id>land</id>
+                <type>country</type>
+            </property>
+            <property>
+                <id>fraMaaned</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>fraAar</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>tilMaaned</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>tilAar</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+    </faktum>
+
+
+    <!-- Bekreftelse på flyktningstatus -->
+    <vedlegg>
+        <faktum>tilknytningnorge.oppholdinorgesistetreaar.false.registrertflyktning</faktum>
+        <onValues>
+            <value>true</value>
+        </onValues>
+        <skjemaNummer>P2</skjemaNummer>
+    </vedlegg>
+
+
+</soknad>
