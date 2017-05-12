@@ -3,6 +3,7 @@
     <property name="MAIN_APPLICATION" value="sendsoknad" />
 
     <property name="loggingPattern" value="%d [%-5level] [%thread] %logger{5} %replace(- [%X{consumerId}, %X{callId}, %X{userId}] ){'- \[, , \] ',''}- %m%n"/>
+    <property name="loggingPattern-klientlogg" value="%d [%-5level] [%thread] klientlogger=klientlogger %replace(- [%X{consumerId}, %X{callId}, %X{userId}] ){'- \[, , \] ',''}- %m%n"/>
 
     <appender name="exceptionlog-sync" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <File>${APP_LOG_HOME}/${MAIN_APPLICATION}_error.log</File>
@@ -55,7 +56,7 @@
     <appender name="klientlogg-sync" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <File>${APP_LOG_HOME}/${MAIN_APPLICATION}-klient.log</File>
         <encoder>
-            <pattern>${loggingPattern}</pattern>
+            <pattern>${loggingPattern-klientlogg}</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <maxHistory>90</maxHistory>
@@ -101,8 +102,9 @@
         <appender-ref ref="batchlog"/>
     </logger>
 
-    <logger name="klientlogger" level="debug">
+    <logger name="klientlogger" level="debug" additivity="false">
         <appender-ref ref="klientlogg"/>
+        <appender-ref ref="SYSLOG"/>
     </logger>
 
     <logger name="org.apache.http.impl.client" level="info">
