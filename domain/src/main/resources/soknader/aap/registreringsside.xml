@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl">
+    <faktum kunUtvidet="true">
+        <id>registreringsside</id>
+        <panel>Registrering</panel>
+        <type>tekster</type>
+        <constraints>
+            <constraint>
+                <faktum>registreringsside</faktum>
+                <expression>properties != null &amp;&amp; properties.size() != 0</expression>
+            </constraint>
+        </constraints>
+    </faktum>
+</soknad>
