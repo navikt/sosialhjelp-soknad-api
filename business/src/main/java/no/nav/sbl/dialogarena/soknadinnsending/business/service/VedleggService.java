@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import com.google.common.collect.Lists;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
@@ -12,8 +11,6 @@ import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadata;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.core.exception.ApplicationException;
-import no.nav.modig.lang.collections.iter.PreparedIterable;
-import no.nav.modig.lang.collections.predicate.InstanceOf;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.detect.Detect;
 import no.nav.sbl.dialogarena.detect.pdf.PdfDetector;
@@ -37,9 +34,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.So
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
-import org.apache.commons.collections15.Closure;
-import org.apache.commons.collections15.Predicate;
-import org.apache.commons.collections15.Transformer;
 import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -60,10 +54,10 @@ import java.util.*;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.sort;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
-import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.KVITTERING;
 import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.Nokkel;
 import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.Nokkel.TITTEL;
@@ -139,7 +133,7 @@ public class VedleggService {
     }
 
     public List<Vedlegg> hentVedleggOgKvittering(WebSoknad soknad) {
-        ArrayList<Vedlegg> vedleggForventninger = Lists.newArrayList(soknad.hentPaakrevdeVedlegg());
+        ArrayList<Vedlegg> vedleggForventninger = new ArrayList(soknad.hentPaakrevdeVedlegg());
         Vedlegg kvittering = vedleggRepository.hentVedleggForskjemaNummer(soknad.getSoknadId(), null, KVITTERING);
         if (kvittering != null) {
             vedleggForventninger.add(kvittering);
@@ -275,12 +269,10 @@ public class VedleggService {
     public List<Vedlegg> hentPaakrevdeVedlegg(final Long faktumId) {
         List<Vedlegg> paakrevdeVedlegg = genererPaakrevdeVedlegg(faktaService.hentBehandlingsId(faktumId));
         leggTilKodeverkFelter(paakrevdeVedlegg);
-        return on(paakrevdeVedlegg).filter(new Predicate<Vedlegg>() {
-            @Override
-            public boolean evaluate(Vedlegg vedlegg) {
-                return faktumId.equals(vedlegg.getFaktumId());
-            }
-        }).collect();
+        return paakrevdeVedlegg.stream()
+                .filter(vedlegg->
+                        faktumId.equals(vedlegg.getFaktumId())
+                ).collect(Collectors.toList());
     }
 
     public List<Vedlegg> hentPaakrevdeVedlegg(String behandlingsId) {
@@ -300,7 +292,8 @@ public class VedleggService {
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true);
         if (soknad.erEttersending()) {
             oppdaterVedleggForForventninger(hentForventingerForEkstraVedlegg(soknad));
-            return on(vedleggRepository.hentVedlegg(behandlingsId)).filter(PAAKREVDE_VEDLEGG).collect();
+            return vedleggRepository.hentVedlegg(behandlingsId).stream().filter(PAAKREVDE_VEDLEGG).collect(Collectors.toList());
+
         } else {
             SoknadStruktur struktur = soknadService.hentSoknadStruktur(soknad.getskjemaNummer());
             List<VedleggsGrunnlag> alleMuligeVedlegg = struktur.hentAlleMuligeVedlegg(soknad, navMessageSource);
@@ -310,23 +303,16 @@ public class VedleggService {
     }
 
     private List<VedleggsGrunnlag> hentForventingerForEkstraVedlegg(final WebSoknad soknad) {
-        return on(soknad.getFaktaMedKey("ekstraVedlegg"))
-                .map(new Transformer<Faktum, VedleggsGrunnlag>() {
-                    @Override
-                    public VedleggsGrunnlag transform(Faktum faktum) {
+        return soknad.getFaktaMedKey("ekstraVedlegg").stream()
+                .map(faktum -> {
                         Vedlegg vedlegg = soknad.finnVedleggSomMatcherForventning(N6_FORVENTNING, faktum.getFaktumId());
                         return new VedleggsGrunnlag(soknad, vedlegg, navMessageSource).medGrunnlag(N6_FORVENTNING, faktum);
                     }
-                }).collect();
+                ).collect(Collectors.toList());
     }
 
     private void oppdaterVedleggForForventninger(List<VedleggsGrunnlag> forventninger) {
-        on(forventninger).forEach(new Closure<VedleggsGrunnlag>() {
-            @Override
-            public void execute(VedleggsGrunnlag vedleggsgrunnlag) {
-                oppdaterVedlegg(vedleggsgrunnlag);
-            }
-        });
+        forventninger.forEach(vedleggsgrunnlag->oppdaterVedlegg(vedleggsgrunnlag));
     }
 
     private void oppdaterVedlegg(VedleggsGrunnlag vedleggsgrunnlag) {
@@ -363,21 +349,19 @@ public class VedleggService {
     }
 
     private Faktum getFaktumBasertPaProperties(List<Faktum> fakta, final VedleggForFaktumStruktur vedleggFaktumStruktur) {
-        return on(fakta).filter(new Predicate<Faktum>() {
-            @Override
-            public boolean evaluate(Faktum faktum) {
-                return vedleggFaktumStruktur.getOnProperty().equals(faktum.getProperties().get(vedleggFaktumStruktur.getProperty()));
-            }
-        }).head().getOrElse(fakta.get(0));
+        return fakta.stream().filter(faktum ->
+                vedleggFaktumStruktur.getOnProperty()
+                        .equals(faktum.getProperties().get(vedleggFaktumStruktur.getProperty())))
+                .findFirst()
+                .orElse(fakta.get(0));
     }
 
     private List<Vedlegg> hentPaakrevdeVedleggForForventninger(List<VedleggsGrunnlag> alleMuligeVedlegg) {
-        return on(alleMuligeVedlegg).map(new Transformer<VedleggsGrunnlag, Vedlegg>() {
-            @Override
-            public Vedlegg transform(VedleggsGrunnlag vedleggsgrunnlag) {
-                return vedleggsgrunnlag.getVedlegg();
-            }
-        }).filter(PAAKREVDE_VEDLEGG).collect();
+        return alleMuligeVedlegg == null? new ArrayList<>():
+                alleMuligeVedlegg.stream()
+                    .map(VedleggsGrunnlag::getVedlegg)
+                    .filter(PAAKREVDE_VEDLEGG)
+                    .collect(Collectors.toList());
     }
 
     @Transactional
@@ -484,7 +468,11 @@ public class VedleggService {
     }
 
     public List<Vedlegg> hentVedleggOgPersister(XMLMetadataListe xmlVedleggListe, Long soknadId) {
-        PreparedIterable<XMLMetadata> vedlegg = on(xmlVedleggListe.getMetadata()).filter(new InstanceOf<XMLMetadata>(XMLVedlegg.class));
+
+        List<XMLMetadata> vedlegg = xmlVedleggListe.getMetadata().stream()
+                        .filter(metadata -> metadata instanceof XMLVedlegg)
+                        .collect(Collectors.toList());
+
         List<Vedlegg> soknadVedlegg = new ArrayList<>();
         for (XMLMetadata xmlMetadata : vedlegg) {
             if (xmlMetadata instanceof XMLHovedskjema) {
@@ -510,6 +498,7 @@ public class VedleggService {
             vedleggRepository.opprettEllerEndreVedlegg(v, null);
             soknadVedlegg.add(v);
         }
+
         leggTilKodeverkFelter(soknadVedlegg);
         return soknadVedlegg;
     }

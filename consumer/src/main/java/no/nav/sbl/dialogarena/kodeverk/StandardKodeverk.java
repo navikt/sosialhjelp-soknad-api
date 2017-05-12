@@ -30,6 +30,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.sort;
 import static javax.xml.bind.JAXBContext.newInstance;
@@ -165,7 +167,7 @@ public class StandardKodeverk implements Kodeverk {
     }
 
     public List<String> hentAlleKodenavnFraKodeverk(EksponertKodeverk kodeverknavn) {
-        return on(kodeverkMedNavn(kodeverknavn.toString()).getKode()).map(KODENAVN).collect();
+        return kodeverkMedNavn(kodeverknavn.toString()).getKode().stream().map(KODENAVN).collect(Collectors.toList());
     }
 
     public Map<String, String> hentAlleKodenavnMedForsteTerm(EksponertKodeverk kodeverknavn) {
@@ -220,12 +222,7 @@ public class StandardKodeverk implements Kodeverk {
         return kodeverket;
     }
 
-    private static final Transformer<XMLKode, String> KODENAVN = new Transformer<XMLKode, String>() {
-        @Override
-        public String transform(XMLKode xmlKode) {
-            return xmlKode.getNavn();
-        }
-    };
+    private static final Function<XMLKode, String> KODENAVN = xmlKode->xmlKode.getNavn();
 
     private static final Transformer<XMLKode, String> TERMNAVN = new Transformer<XMLKode, String>() {
         @Override
