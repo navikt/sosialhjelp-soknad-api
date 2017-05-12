@@ -1,0 +1,90 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl">
+
+    <faktum>
+        <id>navaerendesituasjon</id>
+        <panel>navaerendesituasjon</panel>
+        <type>checkboxGroup</type>
+    </faktum>
+
+    <faktum>
+        <id>navaerendesituasjon.iarbeid</id>
+        <type>java.lang.Boolean</type>
+        <dependOn>navaerendesituasjon</dependOn>
+    </faktum>
+
+    <faktum>
+        <id>navaerendesituasjon.iarbeid.arbeidsforhold</id>
+        <type>checkboxGroup</type>
+        <dependOn>navaerendesituasjon.iarbeid</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+
+    <faktum>
+        <id>navaerendesituasjon.iarbeid.arbeidsforhold.ansatt</id>
+        <type>java.lang.Boolean</type>
+        <dependOn>navaerendesituasjon.iarbeid.arbeidsforhold</dependOn>
+    </faktum>
+    <faktum>
+        <id>navaerendesituasjon.iarbeid.arbeidsforhold.selvstendig</id>
+        <type>java.lang.Boolean</type>
+        <dependOn>navaerendesituasjon.iarbeid.arbeidsforhold</dependOn>
+    </faktum>
+    <faktum>
+        <id>navaerendesituasjon.sykmeldt</id>
+        <type>java.lang.Boolean</type>
+        <dependOn>navaerendesituasjon</dependOn>
+    </faktum>
+    <faktum>
+        <id>navaerendesituasjon.arbeidsledig</id>
+        <type>java.lang.Boolean</type>
+        <dependOn>navaerendesituasjon</dependOn>
+    </faktum>
+    <faktum>
+        <id>navaerendesituasjon.student</id>
+        <dependOn>navaerendesituasjon</dependOn>
+    </faktum>
+    <faktum>
+        <id>navaerendesituasjon.student.studererfortsatt</id>
+        <type>java.lang.Boolean</type>
+        <dependOn>navaerendesituasjon.student</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>navaerendesituasjon.student.avbruttstudie.ikketilbake</id>
+        <type>java.lang.Boolean</type>
+        <dependOn>navaerendesituasjon.student.studererfortsatt</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+
+    <faktum>
+        <id>navaerendesituasjon.student.avbruttstudie.mottarlaan</id>
+        <dependOn>navaerendesituasjon.student.avbruttstudie.ikketilbake</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>navaerendesituasjon.forstegangstjeneste</id>
+        <dependOn>navaerendesituasjon</dependOn>
+    </faktum>
+    <faktum>
+        <id>navaerendesituasjon.annet</id>
+        <dependOn>navaerendesituasjon</dependOn>
+    </faktum>
+    <faktum>
+        <id>navaerendesituasjon.annet.fritekst</id>
+        <type>textbox</type>
+        <dependOn>navaerendesituasjon.annet</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+
+</soknad>

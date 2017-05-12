@@ -1,18 +1,30 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.oppsett;
 
-import com.google.common.io.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.*;
-import org.junit.*;
-import org.xml.sax.*;
+import com.google.common.io.CharStreams;
+import no.nav.sbl.dialogarena.sendsoknad.domain.XmlService;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.xml.sax.SAXParseException;
 
-import javax.xml.*;
-import javax.xml.transform.stream.*;
-import javax.xml.validation.*;
-import java.util.*;
+import javax.xml.XMLConstants;
+import javax.xml.bind.JAXBException;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.List;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.fail;
 
-public class SoknadXmlValiderer {
+public class SoknadXmlValidererTest {
+
+    @BeforeClass
+    public static void genererXsd() throws JAXBException, IOException {
+        SoknadStrukturXsdGenerator.genererSkjema();
+    }
 
     @Test
     public void testDagpengerXml() throws Exception {
@@ -26,7 +38,7 @@ public class SoknadXmlValiderer {
 
     @Test
     public void testForeldrepengerXml() throws Exception {
-        testOmXmlValiderer("foreldresoknad.xml");
+        testOmXmlValiderer("foreldrepenger/foreldrepenger.xml");
     }
 
     @Test
@@ -50,13 +62,19 @@ public class SoknadXmlValiderer {
     }
 
     @Test
-    public void testAapXml() throws Exception {
-        testOmXmlValiderer("aap_ordinaer.xml");
+    public void testAapOrdinaerXml() throws Exception {
+        testOmXmlValiderer("aap/aap_ordinaer.xml");
+    }
+
+    @Test
+    public void testAapGjenopptakXml() throws Exception {
+        testOmXmlValiderer("aap/aap_gjenopptak.xml");
     }
 
     private void testOmXmlValiderer(String xmlFilNavn) throws Exception {
         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        Schema schema = schemaFactory.newSchema(new StreamSource(getClass().getClassLoader().getResourceAsStream("soknader/soknadstruktur.xsd")));
+        File xsdFil = Paths.get("src/main/resources/soknader/soknadstruktur.xsd").toFile();
+        Schema schema = schemaFactory.newSchema(xsdFil);
         Validator validator = schema.newValidator();
 
         StreamSource xmlSource = new XmlService().lastXmlFil("soknader/" + xmlFilNavn);
