@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.sikkerhet;
 
+import no.nav.modig.core.exception.AuthorizationException;
 import no.nav.modig.security.tilgangskontroll.URN;
 import no.nav.modig.security.tilgangskontroll.policy.attributes.values.StringValue;
 import no.nav.modig.security.tilgangskontroll.policy.enrichers.EnvironmentRequestEnricher;
@@ -16,6 +17,8 @@ import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import java.util.Objects;
 
 import static java.lang.String.valueOf;
 import static java.util.Arrays.asList;
@@ -71,6 +74,9 @@ public class Tilgangskontroll {
     }
 
     public void verifiserBrukerHarTilgangTilSoknad(String eier, Long soknadId) {
+        if  (Objects.isNull(eier)) {
+            throw new AuthorizationException("");
+        }
         String aktorId = getSubjectHandler().getUid();
         SubjectAttribute aktorSubjectId = new SubjectAttribute(new URN("urn:nav:ikt:tilgangskontroll:xacml:subject:aktor-id"), new StringValue(aktorId));
 
