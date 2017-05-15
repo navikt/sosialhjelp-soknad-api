@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
 import no.nav.modig.core.context.StaticSubjectHandler;
-import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
@@ -34,10 +33,7 @@ import org.springframework.context.ApplicationContext;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.lang.System.setProperty;
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
@@ -149,7 +145,7 @@ public class SoknadServiceTest {
     public void skalHenteSoknadsIdForEttersendingTilBehandlingskjedeId() {
         WebSoknad soknad = new WebSoknad();
         soknad.setSoknadId(1L);
-        when(soknadRepository.hentEttersendingMedBehandlingskjedeId(anyString())).thenReturn(Optional.optional(soknad));
+        when(soknadRepository.hentEttersendingMedBehandlingskjedeId(anyString())).thenReturn(Optional.of(soknad));
 
         WebSoknad webSoknad = soknadService.hentEttersendingForBehandlingskjedeId("123");
 
@@ -160,7 +156,7 @@ public class SoknadServiceTest {
     public void skalFaNullNarManProverAHenteEttersendingMedBehandlingskjedeIdSomIkkeHarNoenEttersending() {
         WebSoknad soknad = new WebSoknad();
         soknad.setSoknadId(1L);
-        when(soknadRepository.hentEttersendingMedBehandlingskjedeId(anyString())).thenReturn(Optional.<WebSoknad>none());
+        when(soknadRepository.hentEttersendingMedBehandlingskjedeId(anyString())).thenReturn(Optional.empty());
 
         WebSoknad webSoknad = soknadService.hentEttersendingForBehandlingskjedeId("123");
 
