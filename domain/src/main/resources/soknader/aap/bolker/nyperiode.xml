@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl">
+    <faktum>
+        <id>nyperiode.gjenopptagelsesdato</id>
+        <type>date</type>
+        <panel>NyPeriode</panel>
+    </faktum>
+    <faktum>
+        <id>nyperiode.grunn</id>
+        <type>checkboxGroup</type>
+        <panel>NyPeriode</panel>
+    </faktum>
+    <faktum>
+        <id>nyperiode.grunn.arbeid</id>
+        <type>checkbox</type>
+        <dependOn>nyperiode.grunn</dependOn>
+    </faktum>
+    <faktum>
+        <id>nyperiode.grunn.fodselspermisjon</id>
+        <type>checkbox</type>
+        <dependOn>nyperiode.grunn</dependOn>
+    </faktum>
+    <faktum>
+        <id>nyperiode.grunn.annet</id>
+        <type>checkbox</type>
+        <dependOn>nyperiode.grunn</dependOn>
+    </faktum>
+    <faktum>
+        <id>nyperiode.grunn.annet.fritekst</id>
+        <type>textbox</type>
+        <dependOn>nyperiode.grunn.annet</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+
+</soknad>

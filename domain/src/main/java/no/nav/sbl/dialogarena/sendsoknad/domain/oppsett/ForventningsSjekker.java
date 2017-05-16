@@ -20,6 +20,10 @@ public class ForventningsSjekker {
         CONTEXT.setTypeComparator(new StandardTypeComparator() {
             @Override
             public int compare(Object left, Object right) {
+                if (left == null || right == null) {
+                    return super.compare(left, right);
+                }
+
                 if (left.getClass() == String.class && right.getClass() != String.class) {
                     Class<?> clazz = right.getClass();
                     if (Number.class.isAssignableFrom(right.getClass())) {
