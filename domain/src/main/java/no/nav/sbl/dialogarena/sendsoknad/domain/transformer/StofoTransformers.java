@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer;
 
-import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.tilleggsstonader.StofoKodeverkVerdier;
@@ -9,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.LoggerFactory;
 
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigInteger;
 import java.util.HashMap;
@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.lagDatatypeFactory;
 
 
 
@@ -26,6 +27,8 @@ public final class StofoTransformers {
 
     private static final Map<Class<?>, Transformer<String, ?>> TRANSFORMERS = new HashMap<>();
     private static final Map<Class<?>, Transformer<Faktum, ?>> FAKTUM_TRANSFORMERS = new HashMap<>();
+
+    private static DatatypeFactory datatypeFactory = lagDatatypeFactory();
 
     static {
         TRANSFORMERS.put(String.class, new Transformer<String, String>() {
@@ -63,7 +66,7 @@ public final class StofoTransformers {
         TRANSFORMERS.put(XMLGregorianCalendar.class, new Transformer<String, XMLGregorianCalendar>() {
             @Override
             public XMLGregorianCalendar transform(String s) {
-                return new XMLGregorianCalendarImpl(DateTime.parse(s).toGregorianCalendar());
+                return datatypeFactory.newXMLGregorianCalendar(DateTime.parse(s).toGregorianCalendar());
             }
         });
         TRANSFORMERS.put(Innsendingsintervaller.class, new Transformer<String, Innsendingsintervaller>() {
@@ -216,11 +219,11 @@ public final class StofoTransformers {
 
             String fom = properties.get(FOM);
             if (fom != null) {
-                periode.setFom(new XMLGregorianCalendarImpl(DateTime.parse(fom).toGregorianCalendar()));
+                periode.setFom(datatypeFactory.newXMLGregorianCalendar(DateTime.parse(fom).toGregorianCalendar()));
             }
             String tom = properties.get(TOM);
             if (tom != null) {
-                periode.setTom(new XMLGregorianCalendarImpl(DateTime.parse(tom).toGregorianCalendar()));
+                periode.setTom(datatypeFactory.newXMLGregorianCalendar(DateTime.parse(tom).toGregorianCalendar()));
             }
             if (periode.getFom() == null && periode.getTom() == null) {
                 return null;
@@ -240,4 +243,5 @@ public final class StofoTransformers {
         }
         return sum;
     }
+
 }
