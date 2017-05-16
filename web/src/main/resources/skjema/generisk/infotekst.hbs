@@ -15,6 +15,9 @@
     {{else}}
         {{#hvisTekstFinnes (concat key ".infotekst.tekst")}}
             <h{{niva}}>{{{ hentTekst "infotekst.oppsummering.tittel" }}}</h{{niva}}>
+                {{#hvisTekstFinnes (concat key ".infotekst.tittel")}}
+                    <div>{{{ hentTekst (concat key ".infotekst.tittel") }}}</div>
+                {{/hvisTekstFinnes}}
                 {{{ hentTekst (concat key ".infotekst.tekst") }}}
                 {{#hvisTekstFinnes (concat key ".infotekst.tekst2")}}
                     {{{ hentTekst (concat key ".infotekst.tekst2") }}}
