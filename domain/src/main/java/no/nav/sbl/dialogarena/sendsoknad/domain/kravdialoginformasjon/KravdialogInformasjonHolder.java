@@ -29,8 +29,7 @@ public class KravdialogInformasjonHolder {
                 new BilstonadInformasjon(),
                 new SoknadTilleggsstonader(),
                 new TiltakspengerInformasjon(),
-                new SoknadRefusjonDagligreise(),
-                new IntegrationTestInformasjon()
+                new SoknadRefusjonDagligreise()
                 //new ForeldrepengerOverforingInformasjon()
         ));
     }
