@@ -20,6 +20,7 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
 import static java.util.stream.Collectors.toList;
@@ -196,13 +197,14 @@ public class SoknadTester extends JerseyTest {
     public class FaktumTester {
 
         private final Faktum faktum;
+        private String value;
 
         private FaktumTester(Faktum faktumMedKey) {
             this.faktum = faktumMedKey;
         }
 
-        public FaktumTester setValue(String value) {
-            faktum.setValue(value);
+        public FaktumTester withValue(String value) {
+            this.value = value;
             return this;
         }
 
@@ -212,6 +214,10 @@ public class SoknadTester extends JerseyTest {
         }
 
         SoknadTester utforEndring() {
+            if (Objects.isNull(value)) {
+                throw new RuntimeException("Ingen endring å utføre  - ingen value er satt.");
+            }
+            faktum.setValue(value);
             return endreFaktum(faktum);
         }
 
