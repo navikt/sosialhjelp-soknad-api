@@ -6,10 +6,7 @@ import no.nav.metrics.Timer;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.modig.lang.collections.predicate.InstanceOf;
 import no.nav.modig.lang.option.Optional;
-import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
@@ -25,16 +22,21 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseS
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
 import org.apache.commons.collections15.Transformer;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadTilleggsstonader;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.ByteArrayInputStream;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.sort;
 import static java.util.UUID.randomUUID;
@@ -252,6 +254,26 @@ public class SoknadDataFletter {
         if (medData) {
             soknad = populerSoknadMedData(populerSystemfakta, soknad);
         }
+
+        SoknadTilleggsstonader soknadTilleggsstonader = new SoknadTilleggsstonader();
+
+        if(soknadTilleggsstonader.getSkjemanummer().contains(soknad.getskjemaNummer())){
+            List<Faktum> periodeFaktum = soknad.getFaktaMedKey("bostotte.samling")
+                    .stream()
+                    .filter(faktum -> (faktum.harPropertySomMatcher("fom")))
+                    .filter(faktum -> (faktum.harPropertySomMatcher("tom")))
+                    .collect(Collectors.toList());
+
+            for (Faktum datofaktum : periodeFaktum){
+                DateTimeFormatter formaterer = DateTimeFormat.forPattern("yyyy-MM-dd");
+                try {
+                    formaterer.parseLocalDate(datofaktum.getValue());
+                } catch (IllegalArgumentException e) {
+                    soknad.medDelstegStatus(DelstegStatus.UTFYLLING);
+                }
+            }
+        }
+
         return soknad;
     }
 
