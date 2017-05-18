@@ -37,12 +37,11 @@ public class AAPVedleggIT {
         System.setProperty(TestProperties.CONTAINER_PORT, "" + PORT);
         System.setProperty(TestProperties.LOG_TRAFFIC, "true");
         System.setProperty("jersey.test.host", "localhost");
+        System.setProperty("no.nav.sbl.dialogarena.sendsoknad.hsqldb", "true");
     }
 
     @Test
-    public void vedlegg() throws Exception {
-        System.setProperty("spring.profiles.active", "integration");
-        System.setProperty("no.nav.sbl.dialogarena.sendsoknad.hsqldb", "true");
+    public void alleVedleggsKrav() throws Exception {
         StartSoknadJetty jetty = new StartSoknadJetty(
                 StartSoknadJetty.Env.Intellij,
                 new File(TEST_RESOURCES, "override-web-integration.xml"),
@@ -51,7 +50,7 @@ public class AAPVedleggIT {
         );
         jetty.jetty.start();
 
-        setupTestData();
+        setupMockWsEndpointData();
 
         String aapOrdinaerSkjemaNummer = new AAPOrdinaerInformasjon().getSkjemanummer().get(0);
         SoknadTester.startSoknad(aapOrdinaerSkjemaNummer)
@@ -86,10 +85,19 @@ public class AAPVedleggIT {
 
     }
 
-    private void setupTestData() throws Exception {
+    private void setupMockWsEndpointData() throws Exception {
+        mockSendSoknadEndpoint();
+        mockBrukerProfilEndpoint();
+        mockPersonEndpoint();
+        mockDkifService();
+    }
+
+    private void mockSendSoknadEndpoint() {
         SendSoknadPortType soknad = getMocked("sendSoknadEndpoint");
         when(soknad.startSoknad(any(WSStartSoknadRequest.class))).thenReturn(new WSBehandlingsId().withBehandlingsId("TEST-123"));
+    }
 
+    private void mockBrukerProfilEndpoint() throws Exception {
         BrukerprofilPortType brukerProfil = getMocked("brukerProfilEndpoint");
         when(brukerProfil.hentKontaktinformasjonOgPreferanser(any())).thenReturn(
                 new XMLHentKontaktinformasjonOgPreferanserResponse().withPerson(
@@ -100,31 +108,37 @@ public class AAPVedleggIT {
                                 .withIdent(new XMLNorskIdent().withIdent("***REMOVED***"))
                 )
         );
+    }
 
+    private void mockPersonEndpoint() throws Exception {
         PersonPortType personEndpoint = getMocked("personEndpoint");
         HentKjerneinformasjonResponse hentKjerneinformasjonResponse = new HentKjerneinformasjonResponse();
 
         Foedselsdato foedselsdato = new Foedselsdato();
         foedselsdato.setFoedselsdato(new XMLGregorianCalendarImpl());
 
-        Person person = new Person();
-        Familierelasjon e = new Familierelasjon();
         Familierelasjoner familierelasjoner = new Familierelasjoner();
         familierelasjoner.setValue("BARN");
-        e.setTilRolle(familierelasjoner);
+
+        Familierelasjon familierelasjon = new Familierelasjon();
+        familierelasjon.setTilRolle(familierelasjoner);
+
+        Person person = new Person();
         Person barn = new Person();
         NorskIdent norskIdent = new NorskIdent();
         norskIdent.setIdent("***REMOVED***");
         barn.setIdent(norskIdent);
         barn.setFoedselsdato(foedselsdato);
-        e.setTilPerson(barn);
-        person.getHarFraRolleI().add(e);
+        familierelasjon.setTilPerson(barn);
+        person.getHarFraRolleI().add(familierelasjon);
 
         person.setFoedselsdato(foedselsdato);
         hentKjerneinformasjonResponse.setPerson(person);
 
         when(personEndpoint.hentKjerneinformasjon(any())).thenReturn(hentKjerneinformasjonResponse);
+    }
 
+    private void mockDkifService() throws Exception {
         DigitalKontaktinformasjonV1 dkif = getMocked("dkifService");
         when(dkif.hentDigitalKontaktinformasjon(any())).thenReturn(
                 new WSHentDigitalKontaktinformasjonResponse()
@@ -133,4 +147,5 @@ public class AAPVedleggIT {
                         )
         );
     }
+
 }
