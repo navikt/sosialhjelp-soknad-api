@@ -263,8 +263,8 @@ public class SoknadDataFletter {
         if (soknadTilleggsstonader.getSkjemanummer().contains(soknad.getskjemaNummer())) {
             List<Faktum> periodeFaktum = soknad.getFaktaMedKey("bostotte.samling")
                     .stream()
-                    .filter(faktum -> (faktum.hasEgenskap("fom")))
-                    .filter(faktum -> (faktum.hasEgenskap("tom")))
+                    .filter(faktum -> faktum.hasEgenskap("fom"))
+                    .filter(faktum -> faktum.hasEgenskap("tom"))
                     .collect(Collectors.toList());
 
             for (Faktum datofaktum : periodeFaktum) {
