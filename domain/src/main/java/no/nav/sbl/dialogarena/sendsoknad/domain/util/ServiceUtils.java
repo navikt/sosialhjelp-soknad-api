@@ -1,9 +1,10 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.util;
 
-import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 public class ServiceUtils {
@@ -12,7 +13,7 @@ public class ServiceUtils {
     }
 
     public static XMLGregorianCalendar stringTilXmldato(String dato) {
-        return new XMLGregorianCalendarImpl(DateTime.parse(dato).toGregorianCalendar());
+        return lagDatatypeFactory().newXMLGregorianCalendar(DateTime.parse(dato).toGregorianCalendar());
     }
 
     public static String nullToBlank(Object value) {
@@ -20,5 +21,13 @@ public class ServiceUtils {
             return value.toString();
         }
         return "";
+    }
+
+    public static DatatypeFactory lagDatatypeFactory() {
+        try {
+            return DatatypeFactory.newInstance();
+        } catch (DatatypeConfigurationException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
