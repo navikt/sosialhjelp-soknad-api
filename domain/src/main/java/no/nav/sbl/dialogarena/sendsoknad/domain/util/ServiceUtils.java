@@ -13,11 +13,7 @@ public class ServiceUtils {
     }
 
     public static XMLGregorianCalendar stringTilXmldato(String dato) {
-        try {
-            return DatatypeFactory.newInstance().newXMLGregorianCalendar(DateTime.parse(dato).toGregorianCalendar());
-        } catch(DatatypeConfigurationException e) {
-            throw new RuntimeException("Klarte ikke konvertere datostreng til XML-dato");
-        }
+        return lagDatatypeFactory().newXMLGregorianCalendar(DateTime.parse(dato).toGregorianCalendar());
     }
 
     public static String nullToBlank(Object value) {
@@ -25,5 +21,13 @@ public class ServiceUtils {
             return value.toString();
         }
         return "";
+    }
+
+    public static DatatypeFactory lagDatatypeFactory() {
+        try {
+            return DatatypeFactory.newInstance();
+        } catch (DatatypeConfigurationException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
