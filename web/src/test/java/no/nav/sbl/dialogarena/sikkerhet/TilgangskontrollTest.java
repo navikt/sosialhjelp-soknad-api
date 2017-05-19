@@ -36,4 +36,10 @@ public class TilgangskontrollTest {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("XXX");
     }
 
+    @Test(expected = AuthorizationException.class)
+    public void skalFeileHvisEierErNull() {
+        System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
+        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(null, null);
+    }
+
 }
