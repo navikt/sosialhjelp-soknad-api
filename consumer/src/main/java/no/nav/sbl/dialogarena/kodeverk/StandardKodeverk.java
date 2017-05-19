@@ -208,7 +208,7 @@ public class StandardKodeverk implements Kodeverk {
             dumpIfPossible(navn, kodeverket);
         }
         if (!POSTNUMMER.toString().equals(navn)) {
-            sort(kodeverket.getKode(), comparing(o->o.getTerm().get(0).getNavn(), Collator.getInstance(Locale.forLanguageTag("NO"))));
+            sort(kodeverket.getKode(), comparing(o -> o.getTerm().get(0).getNavn(), Collator.getInstance(Locale.forLanguageTag("NO"))));
         }
         return kodeverket;
     }
@@ -242,8 +242,7 @@ public class StandardKodeverk implements Kodeverk {
     }
 
     private void dumpIfPossible(String dumpName, XMLKodeverk kodeverket) {
-        //for (File dumpFile : dumpDirectory.map(makeDirs()).map(appendPathname(dumpName + ".xml"))) {
-        if(dumpDirectory.isPresent() && dumpDirectory.get().exists()){
+        if (dumpDirectory.isPresent() && dumpDirectory.get().exists()) {
             File dumpFile = new File(dumpDirectory.get(), dumpName + ".xml");
             logger.info("Dumper til filen '{}'", dumpFile);
             try (Writer out = new FileWriter(dumpFile)) {
