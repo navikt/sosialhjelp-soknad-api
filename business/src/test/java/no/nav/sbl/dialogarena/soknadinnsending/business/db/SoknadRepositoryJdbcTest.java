@@ -65,7 +65,6 @@ public class SoknadRepositoryJdbcTest {
 
     @Test
     public void skalSetteSistLagret() {
-        new ArrayList<String>().add(null);
         opprettOgPersisterSoknad();
         soknadRepository.settSistLagretTidspunkt(soknadId);
         WebSoknad endret = soknadRepository.hentSoknad(soknadId);
