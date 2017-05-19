@@ -255,25 +255,29 @@ public class SoknadDataFletter {
             soknad = populerSoknadMedData(populerSystemfakta, soknad);
         }
 
+        return sjekkDatoVerdierOgOppdaterDelstegStatus(soknad);
+    }
+
+    public WebSoknad sjekkDatoVerdierOgOppdaterDelstegStatus(WebSoknad soknad) {
         SoknadTilleggsstonader soknadTilleggsstonader = new SoknadTilleggsstonader();
 
-        if(soknadTilleggsstonader.getSkjemanummer().contains(soknad.getskjemaNummer())){
+        if (soknadTilleggsstonader.getSkjemanummer().contains(soknad.getskjemaNummer())) {
             List<Faktum> periodeFaktum = soknad.getFaktaMedKey("bostotte.samling")
                     .stream()
-                    .filter(faktum -> (faktum.harPropertySomMatcher("fom")))
-                    .filter(faktum -> (faktum.harPropertySomMatcher("tom")))
+                    .filter(faktum -> (faktum.hasEgenskap("fom")))
+                    .filter(faktum -> (faktum.hasEgenskap("tom")))
                     .collect(Collectors.toList());
 
-            for (Faktum datofaktum : periodeFaktum){
+            for (Faktum datofaktum : periodeFaktum) {
                 DateTimeFormatter formaterer = DateTimeFormat.forPattern("yyyy-MM-dd");
                 try {
-                    formaterer.parseLocalDate(datofaktum.getValue());
+                    formaterer.parseLocalDate(datofaktum.getProperties().get("fom"));
+                    formaterer.parseLocalDate(datofaktum.getProperties().get("tom"));
                 } catch (IllegalArgumentException e) {
                     soknad.medDelstegStatus(DelstegStatus.UTFYLLING);
                 }
             }
         }
-
         return soknad;
     }
 
