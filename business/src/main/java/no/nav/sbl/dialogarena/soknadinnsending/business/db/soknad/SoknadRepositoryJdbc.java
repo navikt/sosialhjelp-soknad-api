@@ -1,8 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad;
 
-import com.google.common.base.Function;
-import no.nav.modig.lang.collections.iter.ReduceFunction;
-import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
@@ -20,15 +17,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.sql.DataSource;
 import java.sql.Types;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static com.google.common.collect.Maps.uniqueIndex;
-import static no.nav.modig.lang.collections.IterUtils.on;
-import static no.nav.modig.lang.option.Optional.none;
-import static no.nav.modig.lang.option.Optional.optional;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.*;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -87,16 +79,10 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     public void populerFraStruktur(WebSoknad soknad) {
         insertSoknad(soknad, soknad.getSoknadId());
-        List<FaktumEgenskap> egenskaper = on(soknad.getFakta()).reduce(new ReduceFunction<Faktum, List<FaktumEgenskap>>() {
-            public List<FaktumEgenskap> reduce(List<FaktumEgenskap> egenskaper, Faktum faktum) {
-                egenskaper.addAll(faktum.getFaktumEgenskaper());
-                return egenskaper;
-            }
+        List<FaktumEgenskap> egenskaper = soknad.getFakta().stream()
+                .flatMap(faktum -> faktum.getFaktumEgenskaper().stream())
+                .collect(toList());
 
-            public List<FaktumEgenskap> identity() {
-                return new ArrayList<>();
-            }
-        });
         getNamedParameterJdbcTemplate().batchUpdate(INSERT_FAKTUM, SqlParameterSourceUtils.createBatch(soknad.getFakta().toArray()));
         getNamedParameterJdbcTemplate().batchUpdate(INSERT_FAKTUMEGENSKAP, SqlParameterSourceUtils.createBatch(egenskaper.toArray()));
         for (Vedlegg vedlegg : soknad.getVedlegg()) {
@@ -106,7 +92,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     public Optional<WebSoknad> hentEttersendingMedBehandlingskjedeId(String behandlingsId) {
         String sql = "select * from soknad where behandlingskjedeid = ? and status = 'UNDER_ARBEID'";
-        return on(getJdbcTemplate().query(sql, SOKNAD_ROW_MAPPER, behandlingsId)).head();
+        return getJdbcTemplate().query(sql, SOKNAD_ROW_MAPPER, behandlingsId).stream().findFirst();
     }
 
     public Faktum hentFaktumMedKey(Long soknadId, String faktumKey) {
@@ -139,14 +125,14 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     public Optional<WebSoknad> plukkSoknadTilMellomlagring() {
         while (true) {
             String select = "select * from soknad where sistlagret < CURRENT_TIMESTAMP - (INTERVAL '1' HOUR) and batch_status = 'LEDIG'" + limit(1);
-            Optional<WebSoknad> soknad = on(getJdbcTemplate().query(select, new SoknadRowMapper())).head();
-            if (!soknad.isSome()) {
-                return none();
+            Optional<WebSoknad> soknad = getJdbcTemplate().query(select, new SoknadRowMapper()).stream().findFirst();
+            if (!soknad.isPresent()) {
+                return Optional.empty();
             }
             String update = "update soknad set batch_status ='TATT' where soknad_id = ? and batch_status = 'LEDIG'";
             int rowsAffected = getJdbcTemplate().update(update, soknad.get().getSoknadId());
             if (rowsAffected == 1) {
-                return optional(hentSoknadMedData(soknad.get().getSoknadId()));
+                return Optional.ofNullable(hentSoknadMedData(soknad.get().getSoknadId()));
             }
         }
     }
@@ -264,16 +250,15 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         String sql = "select * from SOKNADBRUKERDATA where soknad_id = ? and key = ? and type= ?";
         List<Faktum> fakta = getJdbcTemplate().query(sql, FAKTUM_ROW_MAPPER, soknadId, key, SYSTEMREGISTRERT.toString());
         List<FaktumEgenskap> egenskaper = select("select * from FAKTUMEGENSKAP where soknad_id = ?", FAKTUM_EGENSKAP_ROW_MAPPER, soknadId);
-        Map<Long, Faktum> faktaMap = uniqueIndex(fakta, new Function<Faktum, Long>() {
-            public Long apply(Faktum input) {
-                return input.getFaktumId();
-            }
-        });
+
+        Map<Long, Faktum> faktaMap = fakta.stream().collect(toMap(Faktum::getFaktumId, faktum -> faktum));
+
         for (FaktumEgenskap faktumEgenskap : egenskaper) {
             if (faktaMap.containsKey(faktumEgenskap.getFaktumId())) {
                 faktaMap.get(faktumEgenskap.getFaktumId()).getProperties().put(faktumEgenskap.getKey(), faktumEgenskap.getValue());
             }
         }
+
         if (!fakta.isEmpty()) {
             return fakta;
         } else {
@@ -374,11 +359,9 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
                 "select * from FAKTUMEGENSKAP where soknad_id = (select soknad_id from SOKNAD where brukerbehandlingid = ?)",
                 FAKTUM_EGENSKAP_ROW_MAPPER,
                 behandlingsId);
-        Map<Long, Faktum> faktaMap = uniqueIndex(fakta, new Function<Faktum, Long>() {
-            public Long apply(Faktum input) {
-                return input.getFaktumId();
-            }
-        });
+
+        Map<Long, Faktum> faktaMap = fakta.stream().collect(toMap(Faktum::getFaktumId, faktum -> faktum));
+
         for (FaktumEgenskap faktumEgenskap : egenskaper) {
             if (faktaMap.containsKey(faktumEgenskap.getFaktumId())) {
                 faktaMap.get(faktumEgenskap.getFaktumId()).medEgenskap(faktumEgenskap);
