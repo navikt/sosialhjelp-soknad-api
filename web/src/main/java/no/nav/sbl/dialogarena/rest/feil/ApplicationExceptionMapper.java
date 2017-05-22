@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.rest.feil;
 
 import no.nav.modig.core.exception.AuthorizationException;
 import no.nav.modig.core.exception.ModigException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AlleredeHandtertException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.IkkeFunnetException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigOpplastingTypeException;
@@ -39,6 +40,8 @@ public class ApplicationExceptionMapper implements ExceptionMapper<ModigExceptio
         } else if (e instanceof IkkeFunnetException) {
             response = status(NOT_FOUND);
             logger.warn("Fant ikke ressurs", e);
+        } else if (e instanceof AlleredeHandtertException) {
+            response = serverError().header(NO_BIGIP_5XX_REDIRECT, true);
         } else {
             response = serverError().header(NO_BIGIP_5XX_REDIRECT, true);
             logger.error("REST-kall feilet", e);
