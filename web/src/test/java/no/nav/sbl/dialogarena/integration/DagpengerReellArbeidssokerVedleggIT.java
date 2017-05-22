@@ -4,7 +4,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.DagpengerO
 import org.junit.Before;
 import org.junit.Test;
 
-public class DagpengerVedleggIT extends AbstractIT {
+public class DagpengerReellArbeidssokerVedleggIT extends AbstractIT {
 
     private String dagpengerSkjemaNummer = new DagpengerOrdinaerInformasjon().getSkjemanummer().get(0);
 
