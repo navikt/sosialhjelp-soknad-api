@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer;
 
+import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.tilleggsstonader.StofoKodeverkVerdier;
@@ -8,8 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigInteger;
 import java.util.HashMap;
@@ -64,11 +63,7 @@ public final class StofoTransformers {
         TRANSFORMERS.put(XMLGregorianCalendar.class, new Transformer<String, XMLGregorianCalendar>() {
             @Override
             public XMLGregorianCalendar transform(String s) {
-                try {
-                    return DatatypeFactory.newInstance().newXMLGregorianCalendar(DateTime.parse(s).toGregorianCalendar());
-                } catch(DatatypeConfigurationException e) {
-                    throw new RuntimeException("Klarte ikke transformere datostreng til XML-dato");
-                }
+                return new XMLGregorianCalendarImpl(DateTime.parse(s).toGregorianCalendar());
             }
         });
         TRANSFORMERS.put(Innsendingsintervaller.class, new Transformer<String, Innsendingsintervaller>() {
@@ -221,20 +216,11 @@ public final class StofoTransformers {
 
             String fom = properties.get(FOM);
             if (fom != null) {
-                try {
-                    periode.setFom(DatatypeFactory.newInstance().newXMLGregorianCalendar(DateTime.parse(fom).toGregorianCalendar()));
-                    periode.setFom(DatatypeFactory.newInstance().newXMLGregorianCalendar(DateTime.parse(fom).toGregorianCalendar()));
-                } catch(DatatypeConfigurationException e) {
-                    throw new RuntimeException("Klarte ikke konvertere periode til XML-dato");
-                }
+                periode.setFom(new XMLGregorianCalendarImpl(DateTime.parse(fom).toGregorianCalendar()));
             }
             String tom = properties.get(TOM);
             if (tom != null) {
-                try {
-                    periode.setTom(DatatypeFactory.newInstance().newXMLGregorianCalendar(DateTime.parse(tom).toGregorianCalendar()));
-                } catch(DatatypeConfigurationException e) {
-                    throw new RuntimeException("Klarte ikke konvertere periode til XML-dato");
-                }
+                periode.setTom(new XMLGregorianCalendarImpl(DateTime.parse(tom).toGregorianCalendar()));
             }
             if (periode.getFom() == null && periode.getTom() == null) {
                 return null;
