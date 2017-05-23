@@ -4,6 +4,10 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.DagpengerO
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Collections;
+
+import static java.util.Collections.singletonMap;
+
 public class DagpengerBarneTilleggVedleggIT extends AbstractIT {
 
     private String dagpengerSkjemaNummer = new DagpengerOrdinaerInformasjon().getSkjemanummer().get(0);
@@ -18,6 +22,14 @@ public class DagpengerBarneTilleggVedleggIT extends AbstractIT {
         soknadMedDelstegstatusOpprettet(dagpengerSkjemaNummer)
                 .hentPaakrevdeVedlegg()
                 .skalIkkeKreveNoenVedlegg();
+    }
+
+    @Test
+    public void skalHaX8VedleggVedBarn() {
+        soknadMedDelstegstatusOpprettet(dagpengerSkjemaNummer)
+                .opprettFaktumWithValueAndProperties("barn", null, singletonMap("vedlegg", "true"))
+                .hentPaakrevdeVedlegg()
+                .skalHaVedlegg("X8");
     }
 
 }
