@@ -451,7 +451,6 @@
         <dependency>
             <groupId>no.nav.sbl</groupId>
             <artifactId>dkif-tjenestespesifikasjon</artifactId>
-            <scope>test</scope>
         </dependency>
 
 
