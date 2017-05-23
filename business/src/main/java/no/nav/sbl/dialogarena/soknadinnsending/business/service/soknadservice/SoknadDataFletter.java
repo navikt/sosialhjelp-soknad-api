@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.*;
+import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
 import no.nav.modig.core.exception.ApplicationException;
@@ -274,6 +275,9 @@ public class SoknadDataFletter {
                     formaterer.parseLocalDate(datofaktum.getProperties().get("tom"));
                 } catch (IllegalArgumentException e) {
                     soknad.medDelstegStatus(DelstegStatus.UTFYLLING);
+                    Event event = MetricsFactory.createEvent("stofo.korruptdato");
+                    event.addFieldToReport("stofo.korruptdato.behandlingId", soknad.getBrukerBehandlingId());
+                    event.report();
                 }
             }
         }
