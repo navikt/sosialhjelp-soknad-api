@@ -276,7 +276,7 @@ public class SoknadDataFletter {
                 } catch (IllegalArgumentException e) {
                     soknad.medDelstegStatus(DelstegStatus.UTFYLLING);
                     Event event = MetricsFactory.createEvent("stofo.korruptdato");
-                    event.addFieldToReport("stofo.korruptdato.behandlingId", soknad.getBrukerBehandlingId());
+                    event.addTagToReport("stofo.korruptdato.behandlingId", soknad.getBrukerBehandlingId());
                     event.report();
                 }
             }
