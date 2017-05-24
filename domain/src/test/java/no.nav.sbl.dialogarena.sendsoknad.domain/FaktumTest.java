@@ -2,15 +2,14 @@ package no.nav.sbl.dialogarena.sendsoknad.domain;
 
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
+import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.Periode;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.StofoTransformers;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.xml.bind.JAXB;
-import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import java.io.ByteArrayOutputStream;
 import java.util.GregorianCalendar;
 
 import static org.hamcrest.Matchers.is;
@@ -21,12 +20,10 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.lagData
 
 public class FaktumTest {
     private Faktum faktum;
-    private DatatypeFactory datatypeFactory;
 
     @Before
     public void setup() {
         faktum = lagFaktum();
-        datatypeFactory = lagDatatypeFactory();
     }
 
     private Faktum lagFaktum() {
@@ -75,26 +72,18 @@ public class FaktumTest {
 
     @Test
     public void skalKonvertereDatostrengTilXML() {
-        GregorianCalendar forventetDato1 = DateTime.parse("2017-05-15T15:15+01:00").toGregorianCalendar();
-        XMLGregorianCalendar testdato1 = datatypeFactory.newXMLGregorianCalendar(forventetDato1);
+        GregorianCalendar forventetDato1 = DateTime.parse("2017-01-01T13:27").toGregorianCalendar();
+        XMLGregorianCalendar testdato1 = lagDatatypeFactory().newXMLGregorianCalendar(forventetDato1);
         XMLGregorianCalendarImpl testdato2 = new XMLGregorianCalendarImpl(forventetDato1);
-        ByteArrayOutputStream xmlTestdato1 = new ByteArrayOutputStream();
-        JAXB.marshal(testdato1, xmlTestdato1);
-        ByteArrayOutputStream xmlTestdato2 = new ByteArrayOutputStream();
-        JAXB.marshal(testdato2, xmlTestdato2);
 
-        GregorianCalendar forventetDato2 = DateTime.parse("2014-12-31T23:59").toGregorianCalendar();
-        XMLGregorianCalendar testdato3 = datatypeFactory.newXMLGregorianCalendar(forventetDato2);
+        GregorianCalendar forventetDato2 = DateTime.parse("2014-12-31T00:00").toGregorianCalendar();
+        XMLGregorianCalendar testdato3 = lagDatatypeFactory().newXMLGregorianCalendar(forventetDato2);
         XMLGregorianCalendarImpl testdato4 = new XMLGregorianCalendarImpl(forventetDato2);
-        ByteArrayOutputStream xmlTestdato3 = new ByteArrayOutputStream();
-        JAXB.marshal(testdato3, xmlTestdato3);
-        ByteArrayOutputStream xmlTestdato4 = new ByteArrayOutputStream();
-        JAXB.marshal(testdato4, xmlTestdato4);
 
+        assertThat(testdato1.toString(), is(testdato2.toString()));
         assertThat(testdato1.toXMLFormat(), is(testdato2.toXMLFormat()));
+        assertThat(testdato3.toString(), is(testdato4.toString()));
         assertThat(testdato3.toXMLFormat(), is(testdato4.toXMLFormat()));
         assertThat(testdato1.getXMLSchemaType(), is(testdato2.getXMLSchemaType()));
-        assertThat(xmlTestdato1.toByteArray(), is(xmlTestdato2.toByteArray()));
-        assertThat(xmlTestdato3.toByteArray(), is(xmlTestdato4.toByteArray()));
     }
 }
