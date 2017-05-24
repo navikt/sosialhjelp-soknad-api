@@ -78,16 +78,12 @@ public class PersonMock {
 
     private Foedselsdato fodseldato(int year, int month, int day) {
         Foedselsdato foedselsdato = new Foedselsdato();
-        foedselsdato.setFoedselsdato(lagDatatypeFactory().newXMLGregorianCalendarDate(year, month, day, 0));
-        return foedselsdato;
-    }
-
-    private DatatypeFactory lagDatatypeFactory() {
         try {
-            return DatatypeFactory.newInstance();
+            foedselsdato.setFoedselsdato(DatatypeFactory.newInstance().newXMLGregorianCalendarDate(year, month, day, 0));
         } catch (DatatypeConfigurationException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Klarte ikke å sette fødselsdato", e);
         }
+        return foedselsdato;
     }
 
 }
