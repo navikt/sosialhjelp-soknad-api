@@ -24,6 +24,7 @@ import no.nav.sbl.dialogarena.pdf.PdfWatermarker;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AlleredeHandtertException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigOpplastingTypeException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
@@ -58,8 +59,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 import static java.util.Collections.sort;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
@@ -232,7 +231,11 @@ public class VedleggService {
     }
 
     public byte[] lagForhandsvisning(Long vedleggId, int side) {
-        return new ConvertToPng(new Dimension(600, 800), side).transform(vedleggRepository.hentVedleggData(vedleggId));
+        try {
+            return new ConvertToPng(new Dimension(600, 800), side).transform(vedleggRepository.hentVedleggData(vedleggId));
+        } catch (RuntimeException e) {
+            throw new AlleredeHandtertException();
+        }
     }
 
     @Transactional

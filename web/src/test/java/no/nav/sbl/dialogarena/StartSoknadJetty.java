@@ -27,9 +27,7 @@ public final class StartSoknadJetty {
 
     public StartSoknadJetty(Env env, File overrideWebXmlFile, DataSource dataSource) throws Exception {
         this(env, overrideWebXmlFile, dataSource, PORT);
-
     }
-
 
     public StartSoknadJetty(Env env, File overrideWebXmlFile, DataSource dataSource, int port) throws Exception {
         configureSecurity();
@@ -37,7 +35,6 @@ public final class StartSoknadJetty {
         disableBatch();
         setProperty("java.security.auth.login.config", env.getLoginConf());
         TestCertificates.setupKeyAndTrustStore();
-
         JAASLoginService jaasLoginService = new JAASLoginService("OpenAM Realm");
         jaasLoginService.setLoginModuleName("openam");
         jetty = usingWar(WEBAPP_SOURCE)
@@ -46,7 +43,8 @@ public final class StartSoknadJetty {
                 .overrideWebXml(overrideWebXmlFile)
                 .sslPort(port + 100)
                 .addDatasource(dataSource, "jdbc/SoknadInnsendingDS")
-                .port(port).buildJetty();
+                .port(port)
+                .buildJetty();
     }
 
     public void startAndWaitForKeypress() {
