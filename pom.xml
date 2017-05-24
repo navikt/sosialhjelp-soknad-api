@@ -22,7 +22,7 @@
     <description>Innsending av elektronisk søknad.</description>
     <groupId>no.nav.sbl.dialogarena</groupId>
     <artifactId>sendsoknad</artifactId>
-    <version>18.0.0-SNAPSHOT</version>
+    <version>18.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -815,8 +815,6 @@
                         <propertiesFiler>
                             <ssnb>sendsoknad_nb_NO.properties</ssnb>
                             <ssen>sendsoknad_en.properties</ssen>
-                            <dpnb>dagpenger_nb_NO.properties</dpnb>
-                            <dpen>dagpenger_en.properties</dpen>
                             <bsnb>bilstonad_nb_NO.properties</bsnb>
                             <tsnb>tilleggsstonader_nb_NO.properties</tsnb>
                             <rdrnb>refusjondagligreise_nb_NO.properties</rdrnb>
@@ -825,8 +823,6 @@
                         <menyPunktPaths>
                             <ssnb>/site/18/app/sendsoknad/nb_NO/tekster</ssnb>
                             <ssen>/site/18/app/sendsoknad/en/tekster</ssen>
-                            <dpnb>/site/18/app/dagpenger/nb_NO/tekster</dpnb>
-                            <dpen>/site/18/app/dagpenger/en/tekster</dpen>
                             <bsnb>/site/18/app/bilstonad/nb_NO/tekster</bsnb>
                             <tsnb>/site/18/app/tilleggsstonader/nb_NO/tekster</tsnb>
                             <rdrnb>/site/18/app/refusjondagligreise/nb_NO/tekster</rdrnb>

@@ -114,6 +114,6 @@ public class DagpengerUtils {
     }
 
     private static boolean harUtenlandskAdresseIEOS(Personalia personalia) {
-        return personalia.harUtenlandskAdresseIEOS() && (!personalia.harNorskMidlertidigAdresse());
+        return personalia.harUtenlandskAdresseIEOS() && !personalia.harNorskMidlertidigAdresse();
     }
 }
