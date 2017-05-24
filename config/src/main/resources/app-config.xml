@@ -65,6 +65,8 @@
     </resources>
 
     <serverOptions>
+        <cron description="Slett tmp-filer" schedule="0 2 * * *" command="find /tmp/ -name 'gs_*' -mtime +5 -delete"/>
+        <cron description="Slett app-tmp-filer" schedule="0 2 * * *" command="find /app/sendsoknad/temp/java-tmp/ -name 'rep*tmp' -mtime +5 -delete"/>
         <memoryParameters resourceAlias="brukerdialog-memparams"/>
     </serverOptions>
 

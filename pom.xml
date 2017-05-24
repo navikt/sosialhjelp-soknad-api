@@ -893,21 +893,6 @@
 
     <profiles>
         <profile>
-            <id>integration</id>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <artifactId>maven-surefire-plugin</artifactId>
-                            <configuration>
-                                <groups>${integration.classes}</groups>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
-        </profile>
-        <profile>
             <id>sonar</id>
             <activation>
                 <property>

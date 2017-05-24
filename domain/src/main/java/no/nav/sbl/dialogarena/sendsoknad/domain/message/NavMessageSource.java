@@ -1,25 +1,34 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.message;
 
+import org.slf4j.Logger;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 public class NavMessageSource extends ReloadableResourceBundleMessageSource {
     private Map<String, FileTuple> basenames = new HashMap<>();
     private FileTuple fellesBasename;
+    public static final Logger log = getLogger(NavMessageSource.class);
 
     public Properties getBundleFor(String type, Locale locale) {
         if (basenames.containsKey(type)) {
             Properties properties = new Properties();
 
-            properties.putAll(hentRemoteEllerLocal(fellesBasename, locale));
-            properties.putAll(hentRemoteEllerLocal(basenames.get(type), locale));
+            try {
+                properties.putAll(hentRemoteEllerLocal(fellesBasename, locale));
+                properties.putAll(hentRemoteEllerLocal(basenames.get(type), locale));
+            } catch (Exception ex) {
+                log.error(
+                        "Kunne ikke hente bundle for type=[{}], locale=[{}], basenames=[{}], fellesbasenames=[{}]",
+                        type,
+                        locale,
+                        basenames,
+                        fellesBasename
+                );
+                throw ex;
+            }
 
             return properties;
         } else {
