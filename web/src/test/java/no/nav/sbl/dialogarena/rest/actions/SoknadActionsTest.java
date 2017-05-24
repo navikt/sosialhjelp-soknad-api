@@ -104,6 +104,7 @@ public class SoknadActionsTest {
         verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), eq(true));
         verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), eq("/skjema/kvittering"));
     }
+
     @Test
     public void sendGjenopptakSkalLageGjenopptakPdfMedKodeverksverdier() throws Exception {
         when(soknadService.hentSoknad(BEHANDLINGS_ID, true, true)).thenReturn(soknad().medSoknadPrefix("dagpenger.gjenopptak"));
