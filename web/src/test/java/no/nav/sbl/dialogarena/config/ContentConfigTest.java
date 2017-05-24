@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.config;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import org.assertj.core.api.Condition;
+import org.glassfish.jersey.jaxb.internal.XmlJaxbElementProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ContentConfigTest {
+public class ContentConfigTest extends ApplicationContextTest {
 
     @Mock
     File brukerprofilDataDirectory;
@@ -48,7 +49,7 @@ public class ContentConfigTest {
                         && fileTuple.getLocalFile().equals("classpath:content/sendsoknad");
             }
         });
-        assertThat(basenames).hasSize(8);
+        assertThat(basenames).hasSize(7);
     }
 
 }
