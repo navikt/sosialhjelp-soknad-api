@@ -4,8 +4,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.DagpengerO
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Collections;
-
 import static java.util.Collections.singletonMap;
 
 public class DagpengerBarneTilleggVedleggIT extends AbstractIT {
