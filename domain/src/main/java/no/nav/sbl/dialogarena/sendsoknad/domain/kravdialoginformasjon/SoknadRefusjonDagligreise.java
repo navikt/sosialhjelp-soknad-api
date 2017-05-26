@@ -4,6 +4,7 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Steg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.refusjondagligreise.RefusjonDagligreiseTilXml;
 import org.apache.commons.collections15.Transformer;
 import org.springframework.context.MessageSource;
@@ -42,8 +43,8 @@ public class SoknadRefusjonDagligreise extends KravdialogInformasjon.DefaultOpps
     }
 
     @Override
-    public List<Transformer<WebSoknad, AlternativRepresentasjon>> getTransformers(MessageSource messageSource) {
-        Transformer<WebSoknad, AlternativRepresentasjon> tilleggsstonaderTilXml = new RefusjonDagligreiseTilXml();
+    public List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource) {
+        AlternativRepresentasjonTransformer tilleggsstonaderTilXml = new RefusjonDagligreiseTilXml();
         return Arrays.asList(tilleggsstonaderTilXml);
     }
 
