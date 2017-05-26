@@ -4,6 +4,7 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad.ForeldrepengerEngangsstonadTilXml;
 import org.apache.commons.collections15.Transformer;
 import org.springframework.context.MessageSource;
@@ -38,8 +39,8 @@ public class ForeldrepengerInformasjon extends KravdialogInformasjon.DefaultOpps
         return Arrays.asList("NAV 14-05.06", "NAV 14-05.07", "NAV 14-05.08", "NAV 14-05.09", "NAV 14-05.10");
     }
     @Override
-    public List<Transformer<WebSoknad, AlternativRepresentasjon>> getTransformers(MessageSource messageSource) {
-        Transformer<WebSoknad, AlternativRepresentasjon> engangsstonadTilXml = new ForeldrepengerEngangsstonadTilXml(messageSource);
+    public List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource) {
+        AlternativRepresentasjonTransformer engangsstonadTilXml = new ForeldrepengerEngangsstonadTilXml(messageSource);
         return asList(engangsstonadTilXml);
     }
 
