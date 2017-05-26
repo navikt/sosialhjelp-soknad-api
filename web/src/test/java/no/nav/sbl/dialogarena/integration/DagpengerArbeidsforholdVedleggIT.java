@@ -106,8 +106,6 @@ public class DagpengerArbeidsforholdVedleggIT extends AbstractIT {
 
     @Test
     public void skalHaG2VedleggVedPermitteringsperiode() {
-        Map<String, String> properties = new HashMap<>();
-        properties.put("","");
         soknadMedDelstegstatusOpprettet(dagpengerSkjemaNummer)
                 .opprettFaktumWithValueAndProperties("arbeidsforhold", "true", singletonMap("type", "permittert"))
                 .opprettFaktumWithValue("arbeidsforhold.permitteringsperiode", null)
