@@ -13,7 +13,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
-import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
@@ -24,7 +23,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
-import org.apache.commons.collections15.Transformer;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.context.ApplicationContext;
@@ -83,6 +81,9 @@ public class SoknadDataFletter {
 
     @Inject
     private NavMessageSource messageSource;
+
+    @Inject
+    AlternativRepresentasjonService alternativRepresentasjonService;
 
     @Inject
     private SoknadMetricsService soknadMetricsService;
@@ -329,23 +330,9 @@ public class SoknadDataFletter {
     }
 
     private List<XMLAlternativRepresentasjon> lagListeMedXMLAlternativeRepresentasjoner(WebSoknad soknad) {
-        List<XMLAlternativRepresentasjon> alternativRepresentasjonListe = new ArrayList<>();
-        List<AlternativRepresentasjonTransformer> transformers = kravdialogInformasjonHolder.hentKonfigurasjon(soknad.getskjemaNummer()).getTransformers(messageSource);
-        soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(config.hentStruktur(soknad.getskjemaNummer()));
-        for (Transformer<WebSoknad, AlternativRepresentasjon> transformer : transformers) {
-            AlternativRepresentasjon altrep = transformer.transform(soknad);
-            fillagerService.lagreFil(soknad.getBrukerBehandlingId(),
-                    altrep.getUuid(),
-                    soknad.getAktoerId(),
-                    new ByteArrayInputStream(altrep.getContent()));
-
-            alternativRepresentasjonListe.add(new XMLAlternativRepresentasjon()
-                    .withFilnavn(altrep.getFilnavn())
-                    .withFilstorrelse(altrep.getContent().length + "")
-                    .withMimetype(altrep.getMimetype())
-                    .withUuid(altrep.getUuid()));
-        }
-        return alternativRepresentasjonListe;
+        List<AlternativRepresentasjon> alternativeRepresentasjoner = alternativRepresentasjonService.hentAlternativeRepresentasjoner(soknad, messageSource);
+        alternativRepresentasjonService.lagreTilFillager(soknad.getBrukerBehandlingId(), soknad.getAktoerId(), alternativeRepresentasjoner);
+        return alternativRepresentasjonService.lagXmlFormat(alternativeRepresentasjoner);
     }
 
     public Long hentOpprinneligInnsendtDato(String behandlingsId) {
