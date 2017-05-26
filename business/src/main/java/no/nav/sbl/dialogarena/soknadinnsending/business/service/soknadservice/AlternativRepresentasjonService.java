@@ -60,14 +60,3 @@ public class AlternativRepresentasjonService {
 
     }
 }
-
-/**
- * for (Transformer<WebSoknad, AlternativRepresentasjon> transformer : transformers) {
- * <p>
- * fillagerService.lagreFil(soknad.getBrukerBehandlingId(),
- * altrep.getUuid(),
- * soknad.getAktoerId(),
- * new ByteArrayInputStream(altrep.getContent()));
- * <p>
- * }
- **/
