@@ -1,9 +1,6 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad;
 
-import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.FoedselEllerAdopsjon;
 import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
-import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.Soknadsvalg;
-import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.Stoenadstype;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
@@ -28,6 +25,7 @@ public class ForeldrepengerEngangsstonadTilXml implements AlternativRepresentasj
         ByteArrayOutputStream xml = new ByteArrayOutputStream();
         JAXB.marshal(engangsstonad, xml);
         return new AlternativRepresentasjon()
+                .medRepresentasjonsType(AlternativRepresentasjonType.XML)
                 .medMimetype("application/xml")
                 .medFilnavn("Engangsstonad.xml")
                 .medUuid(UUID.randomUUID().toString())
