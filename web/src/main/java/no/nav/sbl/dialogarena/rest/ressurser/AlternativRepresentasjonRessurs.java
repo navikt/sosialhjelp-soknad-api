@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
@@ -7,6 +8,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresenta
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonType;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.AlternativRepresentasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,9 +27,7 @@ import static javax.ws.rs.core.MediaType.TEXT_XML;
 public class AlternativRepresentasjonRessurs {
 
     @Inject
-    private KravdialogInformasjonHolder kravdialogInformasjonHolder;
-    @Inject
-    private WebSoknadConfig config;
+    private AlternativRepresentasjonService alternativRepresentasjonService;
     @Inject
     private NavMessageSource messageSource;
     @Inject
@@ -45,14 +45,11 @@ public class AlternativRepresentasjonRessurs {
     public byte[] xmlRepresentasjon(@PathParam("behandlingsId") String behandlingsId) throws IOException {
         erRessursAktiv("xmlRepresentasjon");
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
-        List<AlternativRepresentasjonTransformer> transformers = kravdialogInformasjonHolder.hentKonfigurasjon(soknad.getskjemaNummer()).getTransformers(messageSource);
+        List<AlternativRepresentasjon> representasjoner = alternativRepresentasjonService.hentAlternativeRepresentasjoner(soknad, messageSource);
 
-        Optional<AlternativRepresentasjonTransformer> optionalTransformer = transformers.stream().filter(r -> r.getRepresentasjonsType().equals(AlternativRepresentasjonType.XML)).findFirst();
-        AlternativRepresentasjonTransformer xmlTransformer = optionalTransformer.get();
+        Optional<AlternativRepresentasjon> optionalRepresentasjoner = representasjoner.stream().filter(r -> r.getRepresentasjonsType().equals(AlternativRepresentasjonType.XML)).findFirst();
 
-        soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(config.hentStruktur(soknad.getskjemaNummer()));
-
-        return xmlTransformer.transform(soknad).getContent();
+        return optionalRepresentasjoner.get().getContent();
     }
 
     private void erRessursAktiv(String metode) {

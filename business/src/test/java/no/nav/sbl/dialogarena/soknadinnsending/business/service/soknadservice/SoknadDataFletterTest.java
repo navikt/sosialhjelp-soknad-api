@@ -99,6 +99,10 @@ public class SoknadDataFletterTest {
     @InjectMocks
     private SoknadDataFletter soknadServiceUtil;
 
+    @InjectMocks
+    private AlternativRepresentasjonService alternativRepresentasjonService;
+
+
     @SuppressWarnings("unchecked")
     @Before
     public void before() {
@@ -109,6 +113,7 @@ public class SoknadDataFletterTest {
         when(applicationContex.getBeansOfType(BolkService.class)).thenReturn(bolker);
 
         soknadServiceUtil.initBolker();
+        soknadServiceUtil.alternativRepresentasjonService = alternativRepresentasjonService;
         setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         when(lokalDb.hentSoknadType(anyLong())).thenReturn(DAGPENGER);
         when(config.getSoknadBolker(any(WebSoknad.class), any(List.class))).thenReturn(new ArrayList());
