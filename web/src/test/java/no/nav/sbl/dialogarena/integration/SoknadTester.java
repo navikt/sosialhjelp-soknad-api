@@ -117,6 +117,17 @@ public class SoknadTester extends JerseyTest {
         return opprettFaktumWithValueAndProperties(key, value, emptyMap());
     }
 
+    SoknadTester opprettFaktumWithValueAndParent(String key, String value, String parentKey) {
+        List<Faktum> faktaMedKey = soknad.getFaktaMedKey(parentKey);
+        Faktum faktum = new Faktum().medKey(key).medValue(value);
+        Faktum parentFaktum = faktaMedKey.get(0);
+        faktum.setParrentFaktum(parentFaktum.getFaktumId());
+        faktumResource(webTarget -> webTarget.queryParam("behandlingsId", brukerBehandlingId))
+                .buildPost(Entity.json(faktum))
+                .invoke();
+        return hentFakta();
+    }
+
     SoknadTester opprettFaktumWithValueAndProperties(String key, String value, Map<String, String> properties) {
         Faktum faktum = new Faktum().medKey(key).medValue(value);
         properties.forEach(faktum::medProperty);
