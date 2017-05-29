@@ -26,6 +26,11 @@ public class RefusjonDagligreiseTilXml implements AlternativRepresentasjonTransf
         return AlternativRepresentasjonType.XML;
     }
 
+    @Override
+    public AlternativRepresentasjon apply(WebSoknad webSoknad) {
+        return transform(webSoknad);
+    }
+
     private static final class FaktumTilUtgiftsperiode implements Transformer<Faktum, Utgiftsperioder> {
         private Boolean trengerParkering;
 
@@ -84,7 +89,6 @@ public class RefusjonDagligreiseTilXml implements AlternativRepresentasjonTransf
         return skjema;
     }
 
-    @Override
     public AlternativRepresentasjon transform(WebSoknad webSoknad) {
         PaaloepteUtgifter refusjonDagligreise = refusjonDagligreise(webSoknad);
         ByteArrayOutputStream xml = new ByteArrayOutputStream();
