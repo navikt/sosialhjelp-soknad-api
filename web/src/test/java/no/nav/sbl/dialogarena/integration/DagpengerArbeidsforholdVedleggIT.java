@@ -108,7 +108,7 @@ public class DagpengerArbeidsforholdVedleggIT extends AbstractIT {
     public void skalHaG2VedleggVedPermitteringsperiode() {
         soknadMedDelstegstatusOpprettet(dagpengerSkjemaNummer)
                 .opprettFaktumWithValueAndProperties("arbeidsforhold", "true", singletonMap("type", "permittert"))
-                .opprettFaktumWithValue("arbeidsforhold.permitteringsperiode", null)
+                .opprettFaktumWithValueAndParent("arbeidsforhold.permitteringsperiode", null, "arbeidsforhold")
                 .hentPaakrevdeVedlegg()
                 .skalHaVedlegg("G2");
     }
