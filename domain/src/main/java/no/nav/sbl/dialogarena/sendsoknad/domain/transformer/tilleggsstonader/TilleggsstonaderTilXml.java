@@ -5,7 +5,8 @@ import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import org.apache.commons.collections15.Transformer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
@@ -27,7 +28,7 @@ import java.util.UUID;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.StofoTransformers.extractValue;
 
-public class TilleggsstonaderTilXml implements Transformer<WebSoknad, AlternativRepresentasjon> {
+public class TilleggsstonaderTilXml implements AlternativRepresentasjonTransformer {
     private static final Logger LOG = LoggerFactory.getLogger(TilleggsstonaderTilXml.class);
     private final MessageSource messageSource;
 
@@ -139,5 +140,10 @@ public class TilleggsstonaderTilXml implements Transformer<WebSoknad, Alternativ
             JAXB.marshal(skjema, baos);
             LOG.warn("Validering av skjema feilet: " + e + ". Xml: " + baos.toString(), e);
         }
+    }
+
+    @Override
+    public AlternativRepresentasjonType getRepresentasjonsType() {
+        return AlternativRepresentasjonType.XML;
     }
 }
