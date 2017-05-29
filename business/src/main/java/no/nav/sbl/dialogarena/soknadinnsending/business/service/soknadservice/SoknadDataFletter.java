@@ -257,7 +257,12 @@ public class SoknadDataFletter {
             soknad = populerSoknadMedData(populerSystemfakta, soknad);
         }
 
-        return sjekkDatoVerdierOgOppdaterDelstegStatus(soknad);
+        return erForbiUtfyllingssteget(soknad) ? sjekkDatoVerdierOgOppdaterDelstegStatus(soknad) : soknad;
+    }
+
+    private boolean erForbiUtfyllingssteget(WebSoknad soknad){
+        return !(soknad.getDelstegStatus() == DelstegStatus.OPPRETTET ||
+                soknad.getDelstegStatus() == DelstegStatus.UTFYLLING);
     }
 
     public WebSoknad sjekkDatoVerdierOgOppdaterDelstegStatus(WebSoknad soknad) {
