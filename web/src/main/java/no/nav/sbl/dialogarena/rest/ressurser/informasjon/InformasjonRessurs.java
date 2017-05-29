@@ -43,7 +43,7 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 public class InformasjonRessurs {
 
     private static final Logger logger = LoggerFactory.getLogger(InformasjonRessurs.class);
-    private static final Logger klientlogger = LoggerFactory.getLogger("klientlogger=klientlogger");
+    private static final Logger klientlogger = LoggerFactory.getLogger("klientlogger");
 
     @Inject
     private InformasjonService informasjon;
