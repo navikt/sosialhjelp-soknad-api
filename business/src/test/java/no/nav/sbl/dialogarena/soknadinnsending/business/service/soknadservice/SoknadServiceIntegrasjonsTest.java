@@ -173,9 +173,21 @@ public class SoknadServiceIntegrasjonsTest {
     }
 
     @Test
-    public void sendSoknadSkalLagreEnFilTilHenvendelseHvisForeldrepenger() {
+    public void sendSoknadSkalLagreToFilerTilHenvendelseHvisForeldrepenger() {
         ((ThreadLocalSubjectHandler) getSubjectHandler()).setSubject(getSubject());
         skjemaNummer = "NAV 14-05.06";
+        String behandlingsId = nyBehandlnigsId();
+        opprettOgPersisterSoknad(behandlingsId, "aktor");
+
+        soknadService.sendSoknad(behandlingsId, new byte[]{});
+
+        verify(fillagerEndpoint, times(2)).lagre(eq(behandlingsId), any(String.class), any(String.class), any(DataHandler.class));
+    }
+
+    @Test
+    public void sendSoknadSkalLagreEnFilTilHenvendelseHvisBilstonad() {
+        ((ThreadLocalSubjectHandler) getSubjectHandler()).setSubject(getSubject());
+        skjemaNummer = "NAV 10-07.40";
         String behandlingsId = nyBehandlnigsId();
         opprettOgPersisterSoknad(behandlingsId, "aktor");
 
