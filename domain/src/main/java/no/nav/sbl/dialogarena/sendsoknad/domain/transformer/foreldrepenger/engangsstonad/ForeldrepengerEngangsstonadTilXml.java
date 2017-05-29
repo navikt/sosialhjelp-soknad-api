@@ -19,13 +19,12 @@ public class ForeldrepengerEngangsstonadTilXml implements AlternativRepresentasj
         this.messageSource = messageSource;
     }
 
-    @Override
     public AlternativRepresentasjon transform(WebSoknad webSoknad) {
         SoeknadsskjemaEngangsstoenad engangsstonad = tilSoeknadsskjemaEngangsstoenad(webSoknad, messageSource);
         ByteArrayOutputStream xml = new ByteArrayOutputStream();
         JAXB.marshal(engangsstonad, xml);
         return new AlternativRepresentasjon()
-                .medRepresentasjonsType(AlternativRepresentasjonType.XML)
+                .medRepresentasjonsType(getRepresentasjonsType())
                 .medMimetype("application/xml")
                 .medFilnavn("Engangsstonad.xml")
                 .medUuid(UUID.randomUUID().toString())
@@ -40,4 +39,11 @@ public class ForeldrepengerEngangsstonadTilXml implements AlternativRepresentasj
     public AlternativRepresentasjonType getRepresentasjonsType() {
         return AlternativRepresentasjonType.XML;
     }
+
+    @Override
+    public AlternativRepresentasjon apply(WebSoknad webSoknad) {
+        return transform(webSoknad);
+    }
+
+
 }
