@@ -14,7 +14,7 @@ public class ForeldrepengerEngangsstonadVedleggIT extends AbstractIT {
     }
 
     @Test
-    public void skalHaP5VedleggVedRettigheterOvertakFodsel() {
+    public void skalHaP5VedleggVedOvertattOmsorgFodsel() {
         soknadMedDelstegstatusOpprettet(foreldrepengerOrdinaerSkjemaNummer)
                 .faktum("soknadsvalg.fodselelleradopsjon").withValue("fodsel").utforEndring()
                 .faktum("rettigheter.overtak").withValue("overtattOmsorgInnen53UkerFodsel").utforEndring()
@@ -23,7 +23,7 @@ public class ForeldrepengerEngangsstonadVedleggIT extends AbstractIT {
     }
 
     @Test
-    public void skalHaP5VedleggVedRettigheterOvertakAdopsjon() {
+    public void skalHaP5VedleggVedOvertattOmsorgAdopsjon() {
         soknadMedDelstegstatusOpprettet(foreldrepengerOrdinaerSkjemaNummer)
                 .faktum("soknadsvalg.fodselelleradopsjon").withValue("fodsel").utforEndring()
                 .faktum("rettigheter.overtak").withValue("overtattOmsorgInnen53UkerAdopsjon").utforEndring()
@@ -32,7 +32,7 @@ public class ForeldrepengerEngangsstonadVedleggIT extends AbstractIT {
     }
 
     @Test
-    public void skalHaP5VedleggVedAdopsjonJa() {
+    public void skalHaP5VedleggVedAdopsjonBekreftetOvertakelse() {
         soknadMedDelstegstatusOpprettet(foreldrepengerOrdinaerSkjemaNummer)
                 .faktum("veiledning.adopsjon.overtakelse").withValue("ja").utforEndring()
                 .hentPaakrevdeVedlegg()
@@ -40,7 +40,7 @@ public class ForeldrepengerEngangsstonadVedleggIT extends AbstractIT {
     }
 
     @Test
-    public void skalHaP5VedleggVedAdopsjonNei() {
+    public void skalHaP5VedleggVedAdopsjonIkkeBekreftetOvertakelse() {
         soknadMedDelstegstatusOpprettet(foreldrepengerOrdinaerSkjemaNummer)
                 .faktum("veiledning.adopsjon.overtakelse").withValue("nei").utforEndring()
                 .hentPaakrevdeVedlegg()
@@ -48,9 +48,17 @@ public class ForeldrepengerEngangsstonadVedleggIT extends AbstractIT {
     }
 
     @Test
-    public void skalHaP3VedleggVedTerminbekreftelseMor() {
+    public void skalHaP3VedleggVedTerminbekreftelseMerEnn26UkerMor() {
         soknadMedDelstegstatusOpprettet(foreldrepengerOrdinaerSkjemaNummer)
                 .faktum("veiledning.mor.terminbekreftelse").withValue("merEnn26Uker").utforEndring()
+                .hentPaakrevdeVedlegg()
+                .skalHaVedlegg("P3");
+    }
+
+    @Test
+    public void skalHaP3VedleggVedTerminbekreftelseMindreEnn26UkerMor() {
+        soknadMedDelstegstatusOpprettet(foreldrepengerOrdinaerSkjemaNummer)
+                .faktum("veiledning.mor.terminbekreftelse").withValue("mindreEnn26Uker").utforEndring()
                 .hentPaakrevdeVedlegg()
                 .skalHaVedlegg("P3");
     }
