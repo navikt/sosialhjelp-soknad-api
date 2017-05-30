@@ -1,16 +1,27 @@
 package no.nav.sbl.dialogarena.integration;
 
 
+import no.nav.sbl.dialogarena.config.IntegrationConfig;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.DagpengerOrdinaerInformasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.when;
 
 public class DagpengerUtdanningVedleggIT extends AbstractIT {
     private String dagpengerSkjemaNummer = new DagpengerOrdinaerInformasjon().getSkjemanummer().get(0);
 
+    private NavMessageSource navMessageSource;
+
     @Before
     public void setup() throws Exception {
         EndpointDataMocking.setupMockWsEndpointData();
+        navMessageSource = IntegrationConfig.getMocked("navMessageSource");
+        when(navMessageSource.finnTekst(eq("utdanning.underutdanning"), any(), any())).thenReturn("whatever");
     }
 
     @Test
@@ -30,6 +41,7 @@ public class DagpengerUtdanningVedleggIT extends AbstractIT {
 
     @Test
     public void skalhaT1VedleggVedAvsluttetUtdanningKveld() {
+        when(navMessageSource.finnTekst(eq("utdanning.kveld"), any(), any())).thenReturn("whatever");
         soknadMedDelstegstatusOpprettet(dagpengerSkjemaNummer)
                 .faktum("utdanning").withValue("underUtdanning").utforEndring()
                 .faktum("utdanning.underutdanning").withValue("true").utforEndring()
@@ -40,6 +52,7 @@ public class DagpengerUtdanningVedleggIT extends AbstractIT {
 
     @Test
     public void skalHaT1VedleggVedKortvarigUtdanning() {
+        when(navMessageSource.finnTekst(eq("utdanning.kortvarig"), any(), any())).thenReturn("whatever");
         soknadMedDelstegstatusOpprettet(dagpengerSkjemaNummer)
                 .faktum("utdanning").withValue("underUtdanning").utforEndring()
                 .faktum("utdanning.underutdanning").withValue("true").utforEndring()
@@ -50,6 +63,7 @@ public class DagpengerUtdanningVedleggIT extends AbstractIT {
 
     @Test
     public void skalHaT1VedleggVedNorskUtdanning() {
+        when(navMessageSource.finnTekst(eq("utdanning.norsk"), any(), any())).thenReturn("whatever");
         soknadMedDelstegstatusOpprettet(dagpengerSkjemaNummer)
                 .faktum("utdanning").withValue("underUtdanning").utforEndring()
                 .faktum("utdanning.underutdanning").withValue("true").utforEndring()
@@ -60,6 +74,7 @@ public class DagpengerUtdanningVedleggIT extends AbstractIT {
 
     @Test
     public void skalHaT1VedleggVedIntroduksjon() {
+        when(navMessageSource.finnTekst(eq("utdanning.introduksjon"), any(), any())).thenReturn("whatever");
         soknadMedDelstegstatusOpprettet(dagpengerSkjemaNummer)
                 .faktum("utdanning").withValue("underUtdanning").utforEndring()
                 .faktum("utdanning.underutdanning").withValue("true").utforEndring()
