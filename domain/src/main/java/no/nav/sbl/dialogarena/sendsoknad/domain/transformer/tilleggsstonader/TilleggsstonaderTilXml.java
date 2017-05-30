@@ -111,6 +111,10 @@ public class TilleggsstonaderTilXml implements AlternativRepresentasjonTransform
     }
 
     @Override
+    public AlternativRepresentasjon apply(WebSoknad webSoknad) {
+        return transform(webSoknad);
+    }
+
     public AlternativRepresentasjon transform(WebSoknad webSoknad) {
         Tilleggsstoenadsskjema tilleggsstoenadsskjema = tilTilleggsstoenadSkjema(webSoknad, messageSource);
         validerSkjema(tilleggsstoenadsskjema);
@@ -146,4 +150,6 @@ public class TilleggsstonaderTilXml implements AlternativRepresentasjonTransform
     public AlternativRepresentasjonType getRepresentasjonsType() {
         return AlternativRepresentasjonType.XML;
     }
+
+
 }
