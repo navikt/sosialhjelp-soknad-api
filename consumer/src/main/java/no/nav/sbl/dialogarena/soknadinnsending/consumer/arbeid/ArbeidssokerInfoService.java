@@ -48,32 +48,19 @@ public class ArbeidssokerInfoService {
         Timer timer = MetricsFactory.createTimer("rest.arbeidssoker");
         timer.start();
         try(CloseableHttpResponse response = httpclient.execute(httpget)) {
-            String status = hentStatusFraResponse(responseHandler.handleResponse(response));
-            reportSuccess(timer);
-            return status;
+            return hentStatusFraResponse(responseHandler.handleResponse(response));
         } catch (IOException e) {
+            timer.setFailed();
             logger.warn("Feil ved henting av status fra SBL Arbeid for fnr {}: {}", fnr, e);
         } catch (JsonSyntaxException e) {
+            timer.setFailed();
             logger.error("Feil ved parsing av JSON-status fra SBL Arbeid for fnr {}: {}", fnr, e);
+        } finally {
+            timer.stop();
+            timer.report();
         }
-        reportFailed(timer);
 
         return ukjent;
-    }
-
-    private void reportSuccess(Timer timer) {
-        timer.setSuccess();
-        stopAndReport(timer);
-    }
-
-    private void stopAndReport(Timer timer) {
-        timer.stop();
-        timer.report();
-    }
-
-    private void reportFailed(Timer timer) {
-        timer.setFailed();
-        stopAndReport(timer);
     }
 
     private String hentStatusFraResponse(String response) {
