@@ -1,6 +1,8 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad;
 
+import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.Rettigheter;
 import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
+import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.TilknytningNorge;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
@@ -32,7 +34,9 @@ public class ForeldrepengerEngangsstonadTilXml implements AlternativRepresentasj
     }
 
     private SoeknadsskjemaEngangsstoenad tilSoeknadsskjemaEngangsstoenad(WebSoknad webSoknad, MessageSource messageSource) {
-        return new SoeknadsskjemaEngangsstoenad();
+        return new SoeknadsskjemaEngangsstoenad()
+                .withRettigheter(new RettigheterFarAdopsjonTilXml().apply(webSoknad))
+                .withTilknytningNorge(new TilknytningTilXml().apply(webSoknad));
     }
 
     @Override
