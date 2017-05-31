@@ -1,11 +1,13 @@
 package no.nav.sbl.dialogarena.integration;
 
 import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
+import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.Utenlandsopphold;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.ForeldrepengerInformasjon;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,7 +30,6 @@ public class AlternativRepresentasjonIT extends AbstractIT {
                 .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
         assertThat(soknad.getRettigheter()).isNotNull();
         assertThat(soknad.getRettigheter().getGrunnlagForAnsvarsovertakelse()).isEqualTo("overtattPaGrunnAvDod");
-
     }
 
     @Test
@@ -49,6 +50,13 @@ public class AlternativRepresentasjonIT extends AbstractIT {
 
         assertThat(soknad.getTilknytningNorge()).isNotNull();
         assertThat(soknad.getTilknytningNorge().isOppholdNorgeNaa()).isTrue();
+        assertThat(soknad.getTilknytningNorge().isTidligereOppholdNorge()).isFalse();
+        assertThat(soknad.getTilknytningNorge().isFremtidigOppholdNorge()).isTrue();
+
+        List<Utenlandsopphold> tidligereUtenlandsopphold = soknad.getTilknytningNorge().getTidligereOppholdUtenlands();
+        assertThat(tidligereUtenlandsopphold.get(0).getLand().getKode()).isEqualTo("AFG");
+        assertThat(tidligereUtenlandsopphold.get(0).getPeriode().getFom().toString()).isEqualTo("2017-01-02");
+        assertThat(tidligereUtenlandsopphold.get(0).getPeriode().getTom().toString()).isEqualTo("2017-04-01");
     }
 
 }
