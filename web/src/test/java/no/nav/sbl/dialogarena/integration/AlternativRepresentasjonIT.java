@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class AlternativRepresentasjonIT extends AbstractIT {
 
-    private String foreldrepengerSkjemanummer = new ForeldrepengerInformasjon().getSkjemanummer().get(0);
+    private String engangsstonadAdopsjonSkjemanummer = new ForeldrepengerInformasjon().getSkjemanummer().get(4);
 
     @Before
     public void setup() throws Exception {
@@ -18,7 +18,10 @@ public class AlternativRepresentasjonIT extends AbstractIT {
 
     @Test
     public void alternativRepresentasjonTest() {
-        SoeknadsskjemaEngangsstoenad soknad = soknadMedDelstegstatusOpprettet(foreldrepengerSkjemanummer)
+        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
+            .faktum("soknadsvalg.fodselelleradopsjon").withValue("fodsel").utforEndring()
+            .faktum("rettigheter.overtak").withValue("overtattPaGrunnAvDod").utforEndring();
+        SoeknadsskjemaEngangsstoenad soknad = soknadTester
                 .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
         assertThat(soknad.getRettigheter()).isNotNull();
 
