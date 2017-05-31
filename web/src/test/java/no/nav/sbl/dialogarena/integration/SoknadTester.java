@@ -18,11 +18,10 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 
+import static java.util.Collections.emptyMap;
 import static java.util.stream.Collectors.toList;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
@@ -115,7 +114,23 @@ public class SoknadTester extends JerseyTest {
     }
 
     SoknadTester opprettFaktumWithValue(String key, String value) {
+        return opprettFaktumWithValueAndProperties(key, value, emptyMap());
+    }
+
+    SoknadTester opprettFaktumWithValueAndParent(String key, String value, String parentKey) {
+        List<Faktum> faktaMedKey = soknad.getFaktaMedKey(parentKey);
         Faktum faktum = new Faktum().medKey(key).medValue(value);
+        Faktum parentFaktum = faktaMedKey.get(0);
+        faktum.setParrentFaktum(parentFaktum.getFaktumId());
+        faktumResource(webTarget -> webTarget.queryParam("behandlingsId", brukerBehandlingId))
+                .buildPost(Entity.json(faktum))
+                .invoke();
+        return hentFakta();
+    }
+
+    SoknadTester opprettFaktumWithValueAndProperties(String key, String value, Map<String, String> properties) {
+        Faktum faktum = new Faktum().medKey(key).medValue(value);
+        properties.forEach(faktum::medProperty);
         faktumResource(webTarget -> webTarget.queryParam("behandlingsId", brukerBehandlingId))
                 .buildPost(Entity.json(faktum))
                 .invoke();
@@ -134,6 +149,8 @@ public class SoknadTester extends JerseyTest {
         List<Faktum> faktumMedKey = soknad.getFaktaMedKey(key);
         if (faktumMedKey.size() > 1) {
             throw new RuntimeException(String.format("Fant flere faktum for key [%s]", key));
+        } else if (faktumMedKey.isEmpty()) {
+            throw new RuntimeException(String.format("Fant ingen faktum for key [%s]", key));
         }
         return new FaktumTester(faktumMedKey.get(0));
     }
