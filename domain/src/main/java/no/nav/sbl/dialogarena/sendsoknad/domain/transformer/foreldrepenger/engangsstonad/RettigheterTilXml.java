@@ -9,7 +9,7 @@ public class RettigheterTilXml implements Function<WebSoknad, Rettigheter> {
 
     @Override
     public Rettigheter apply(WebSoknad webSoknad) {
-        String overtak = webSoknad.getFaktumMedKey("rettigheter.overtak").getValue();
+        String overtak = webSoknad.getValueForFaktum("rettigheter.overtak");
 
         return new Rettigheter().withGrunnlagForAnsvarsovertakelse(overtak);
     }
