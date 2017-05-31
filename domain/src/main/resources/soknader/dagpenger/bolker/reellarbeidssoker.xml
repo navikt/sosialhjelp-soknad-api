@@ -220,8 +220,7 @@
     </vedlegg>
 
     <vedlegg>
-        <faktum>reellarbeidssoker.villigpendle.grunn.eneansvarbarnopptil18aar
-        </faktum>
+        <faktum>reellarbeidssoker.villigpendle.grunn.eneansvarbarnopptil18aar</faktum>
         <onValues>
             <value>true</value>
         </onValues>
