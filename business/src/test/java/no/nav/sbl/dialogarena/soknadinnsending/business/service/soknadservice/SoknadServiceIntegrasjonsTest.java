@@ -77,6 +77,7 @@ public class SoknadServiceIntegrasjonsTest {
 //        System.setProperty("no.nav.modig.security.systemuser.username", "dummyvalue");
 //        System.setProperty("no.nav.modig.security.systemuser.password", "");
         System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
+        System.setProperty("soknad.feature.foreldrepenger.alternativrepresentasjon.enabled", "true");
 //        getProperties().setProperty(TILLATMOCK_PROPERTY, DEFAULT_MOCK_TILLATT);
 //
 //        SimpleNamingContextBuilder builder = new SimpleNamingContextBuilder();
