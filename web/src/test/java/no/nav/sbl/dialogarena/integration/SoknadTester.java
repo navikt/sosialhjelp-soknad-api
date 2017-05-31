@@ -18,10 +18,11 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
-import static java.util.Collections.emptyMap;
 import static java.util.stream.Collectors.toList;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
 import static javax.ws.rs.core.MediaType.TEXT_XML;
@@ -118,7 +119,7 @@ public class SoknadTester extends JerseyTest {
     }
 
 
-    public SoknadTester endreFaktum(Faktum faktum) {
+    private SoknadTester endreFaktum(Faktum faktum) {
         String faktumId = faktum.getFaktumId().toString();
         Response response = faktumResource(webTarget -> webTarget.path(faktumId))
                 .build("PUT", Entity.json(faktum))
@@ -127,28 +128,16 @@ public class SoknadTester extends JerseyTest {
         return this;
     }
 
-    SoknadTester opprettFaktumWithValue(String key, String value) {
-        return opprettFaktumWithValueAndProperties(key, value, emptyMap());
+    public FaktumOppretter nyttFaktum(String key) {
+        return new FaktumOppretter(key);
     }
 
-    SoknadTester opprettFaktumWithValueAndParent(String key, String value, String parentKey) {
-        List<Faktum> faktaMedKey = soknad.getFaktaMedKey(parentKey);
-        Faktum faktum = new Faktum().medKey(key).medValue(value);
-        Faktum parentFaktum = faktaMedKey.get(0);
-        faktum.setParrentFaktum(parentFaktum.getFaktumId());
+    private SoknadTester opprettFaktum(Faktum faktum) {
         faktumResource(webTarget -> webTarget.queryParam("behandlingsId", brukerBehandlingId))
                 .buildPost(Entity.json(faktum))
                 .invoke();
-        return hentFakta();
-    }
-
-    SoknadTester opprettFaktumWithValueAndProperties(String key, String value, Map<String, String> properties) {
-        Faktum faktum = new Faktum().medKey(key).medValue(value);
-        properties.forEach(faktum::medProperty);
-        faktumResource(webTarget -> webTarget.queryParam("behandlingsId", brukerBehandlingId))
-                .buildPost(Entity.json(faktum))
-                .invoke();
-        return hentFakta();
+        hentFakta();
+        return this;
     }
 
     private void checkResponse(Response invoke, int status) {
@@ -176,7 +165,8 @@ public class SoknadTester extends JerseyTest {
 
     public SoknadTester hentFakta() {
         Response response = soknadResource("/fakta").build("GET").invoke();
-        soknad.setFakta(response.readEntity(new GenericType<List<Faktum>>(){}));
+        soknad.setFakta(response.readEntity(new GenericType<List<Faktum>>() {
+        }));
         checkResponse(response, SC_OK);
         return this;
     }
@@ -188,7 +178,8 @@ public class SoknadTester extends JerseyTest {
 
     public VedleggTester hentPaakrevdeVedlegg() {
         Response response = soknadResource("/vedlegg").build("GET").invoke();
-        soknad.setVedlegg(response.readEntity(new GenericType<List<Vedlegg>>(){}));
+        soknad.setVedlegg(response.readEntity(new GenericType<List<Vedlegg>>() {
+        }));
         return new VedleggTester();
     }
 
@@ -199,7 +190,7 @@ public class SoknadTester extends JerseyTest {
     }
 
     public class VedleggTester {
-        public VedleggTester skalHaVedlegg(String... skjemanummer){
+        public VedleggTester skalHaVedlegg(String... skjemanummer) {
             assertThat(soknad.getVedlegg()).extracting("skjemaNummer").contains(skjemanummer);
             return this;
         }
@@ -269,7 +260,7 @@ public class SoknadTester extends JerseyTest {
             this.faktumTestere = faktumTestere;
         }
 
-        FaktaTester skalVareSystemFaktum(){
+        FaktaTester skalVareSystemFaktum() {
             faktumTestere.forEach(FaktumTester::skalVareSystemFaktum);
             return this;
         }
@@ -283,5 +274,38 @@ public class SoknadTester extends JerseyTest {
             return SoknadTester.this;
         }
 
+    }
+
+    public class FaktumOppretter {
+
+        private Faktum faktum;
+
+        FaktumOppretter(String key) {
+            this.faktum = new Faktum().medKey(key);
+        }
+
+        public FaktumOppretter withValue(String value) {
+            faktum.medValue(value);
+            return this;
+        }
+
+        public FaktumOppretter withParentFaktum(String parentKey) {
+            List<Faktum> faktaMedKey = soknad.getFaktaMedKey(parentKey);
+            if (faktaMedKey.isEmpty())
+                throw new IllegalArgumentException(String.format("Fant ingen fakta parentKey: [%s]", parentKey));
+            if (faktaMedKey.size() > 1)
+                throw new IllegalArgumentException(String.format("Fant flere fakta for parentKey: [%s], men kan bare ha en parent", parentKey));
+            faktum.medParrentFaktumId(faktaMedKey.get(0).getFaktumId());
+            return this;
+        }
+
+        public SoknadTester opprett() {
+            return SoknadTester.this.opprettFaktum(faktum);
+        }
+
+        public FaktumOppretter withProperty(String key, String value) {
+            faktum.medProperty(key, value);
+            return this;
+        }
     }
 }
