@@ -111,6 +111,28 @@
         </onValues>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
+    <vedlegg>
+        <faktum>arbeidsforhold</faktum>
+        <skjemaNummer>O2</skjemaNummer>
+        <skjemanummerTillegg>arbeidsgiverkonkurs</skjemanummerTillegg>
+        <property>arbeidsgivernavn</property>
+        <onProperty>type</onProperty>
+        <onValues>
+            <value>arbeidsgivererkonkurs</value>
+        </onValues>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <faktum>arbeidsforhold</faktum>
+        <skjemaNummer>O2</skjemaNummer>
+        <skjemanummerTillegg>permittert</skjemanummerTillegg>
+        <property>arbeidsgivernavn</property>
+        <onProperty>type</onProperty>
+        <onValues>
+            <value>permittert</value>
+        </onValues>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 
     <vedlegg>
         <faktum>arbeidsforhold</faktum>
