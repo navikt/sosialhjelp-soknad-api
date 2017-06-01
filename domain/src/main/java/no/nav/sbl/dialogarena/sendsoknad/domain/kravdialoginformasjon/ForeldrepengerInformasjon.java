@@ -19,8 +19,6 @@ import no.nav.metrics.MetricsFactory;
 public class ForeldrepengerInformasjon extends KravdialogInformasjon.DefaultOppsett {
 
     public static final List<String> STONADSTYPER_PERSONALIA = asList("overforing", "engangsstonadMor", "engangsstonadFar", "endringMor", "endringFar");
-    private static final boolean ALTERNATIV_REPRESENTASJON_AKTIVERT = Boolean.valueOf(System.getProperty("soknad.feature.foreldrepenger.alternativrepresentasjon.enabled", "false"));
-
 
     public String getSoknadTypePrefix() {
         return "foreldresoknad";
@@ -44,9 +42,10 @@ public class ForeldrepengerInformasjon extends KravdialogInformasjon.DefaultOpps
 
     @Override
     public List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource) {
-        if (ALTERNATIV_REPRESENTASJON_AKTIVERT) {
+        if (alternativRepresentasjonAktivert()) {
             Event event = MetricsFactory.createEvent("soknad.foreldrepenger.alternativrepresentasjon.aktiv");
             event.report();
+
             return singletonList(new ForeldrepengerEngangsstonadTilXml(messageSource));
         } else {
             return emptyList();
@@ -70,6 +69,10 @@ public class ForeldrepengerInformasjon extends KravdialogInformasjon.DefaultOpps
     @Override
     public boolean brukerEnonicLedetekster() {
         return false;
+    }
+
+    private boolean alternativRepresentasjonAktivert() {
+        return Boolean.valueOf(System.getProperty("soknad.feature.foreldrepenger.alternativrepresentasjon.enabled", "false"));
     }
 }
 
