@@ -4,7 +4,6 @@ import no.nav.modig.core.exception.SystemException;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils;
-import org.apache.commons.collections15.Predicate;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.springframework.dao.DataAccessException;
@@ -28,9 +27,9 @@ import java.io.InputStream;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
-import static no.nav.modig.lang.collections.IterUtils.on;
-import static no.nav.modig.lang.collections.PredicateUtils.not;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Named("vedleggRepository")
@@ -64,7 +63,9 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
         List<Vedlegg> vedlegg = getJdbcTemplate().query("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, opprinneliginnsendingsvalg, storrelse, opprettetdato," +
                 " antallsider, fillagerReferanse, aarsak from Vedlegg where soknad_id = (select soknad_id from SOKNAD where brukerbehandlingid = ?) and innsendingsvalg != 'UnderBehandling' ",
                 new VedleggRowMapper(false), behandlingsId);
-        return on(vedlegg).filter(not(ER_KVITTERING)).collect();
+        return vedlegg.stream()
+                .filter(IKKE_KVITTERING)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -232,12 +233,7 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
                 new VedleggRowMapper(false), soknadId, faktumId);
     }
 
-    private static final Predicate<? super Vedlegg> ER_KVITTERING = new Predicate<Vedlegg>() {
-        @Override
-        public boolean evaluate(Vedlegg vedlegg) {
-            return vedlegg.getSkjemaNummer().equalsIgnoreCase(Kodeverk.KVITTERING);
-        }
-    };
+    private static final Predicate<? super Vedlegg> IKKE_KVITTERING = (Predicate<Vedlegg>) vedlegg -> !Kodeverk.KVITTERING.equalsIgnoreCase(vedlegg.getSkjemaNummer());
 
     private static String getSkjemanummerMedTillegg(Vedlegg vedlegg) {
         String skjemanummerMedTillegg = vedlegg.getSkjemaNummer();
