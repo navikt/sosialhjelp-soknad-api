@@ -116,7 +116,6 @@ public class SoknadTester extends JerseyTest {
     public <T> T hentAlternativRepresentasjon(Class<T> soeknadsskjemaEngangsstoenadClass) {
         Response response = alternativRepresentasjonResource().buildGet().invoke();
         return response.readEntity(soeknadsskjemaEngangsstoenadClass);
-        // checkResponse(response, SC_OK);
     }
 
 
