@@ -4,6 +4,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+import no.nav.metrics.MetricsFactory;
+import no.nav.metrics.Timer;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -43,12 +45,22 @@ public class ArbeidssokerInfoService {
         HttpGet httpget = new HttpGet(sblArbeidBaseUrl + "personer/" + fnr + "/status");
         httpget.setHeader("Authorization", String.format("Basic %s", encodedAuth));
 
+        Timer timer = MetricsFactory.createTimer("rest.arbeidssoker");
+        timer.start();
         try(CloseableHttpResponse response = httpclient.execute(httpget)) {
             return hentStatusFraResponse(responseHandler.handleResponse(response));
-        } catch (IOException | JsonSyntaxException e) {
-            logger.error("Feil ved henting av status fra SBL Arbeid for fnr {}: {}", fnr, e);
-            return ukjent;
+        } catch (IOException e) {
+            timer.setFailed();
+            logger.warn("Feil ved henting av status fra SBL Arbeid for fnr {}: {}", fnr, e);
+        } catch (JsonSyntaxException e) {
+            timer.setFailed();
+            logger.error("Feil ved parsing av JSON-status fra SBL Arbeid for fnr {}: {}", fnr, e);
+        } finally {
+            timer.stop();
+            timer.report();
         }
+
+        return ukjent;
     }
 
     private String hentStatusFraResponse(String response) {

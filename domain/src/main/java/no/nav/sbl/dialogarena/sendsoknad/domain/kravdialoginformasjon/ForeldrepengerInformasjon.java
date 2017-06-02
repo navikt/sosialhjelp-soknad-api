@@ -15,7 +15,6 @@ import static java.util.Collections.singletonList;
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 
-
 public class ForeldrepengerInformasjon extends KravdialogInformasjon.DefaultOppsett {
 
     public static final List<String> STONADSTYPER_PERSONALIA = asList("overforing", "engangsstonadMor", "engangsstonadFar", "endringMor", "endringFar");
