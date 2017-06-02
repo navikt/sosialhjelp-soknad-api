@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad;
 
 
-import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
@@ -9,6 +8,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface SoknadRepository {
 

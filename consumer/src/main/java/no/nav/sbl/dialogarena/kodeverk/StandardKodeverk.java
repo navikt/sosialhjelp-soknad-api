@@ -2,16 +2,12 @@ package no.nav.sbl.dialogarena.kodeverk;
 
 import no.nav.modig.common.MDCOperations;
 import no.nav.modig.core.exception.SystemException;
-import no.nav.modig.lang.option.Optional;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.HentKodeverkHentKodeverkKodeverkIkkeFunnet;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLEnkeltKodeverk;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLKode;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLKodeverk;
-import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLPeriode;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.meldinger.XMLHentKodeverkRequest;
-import org.apache.commons.collections15.Predicate;
-import org.apache.commons.collections15.Transformer;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -25,23 +21,14 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.text.Collator;
+import java.util.*;
 
 import static java.util.Collections.sort;
+import static java.util.Comparator.comparing;
+import static java.util.Optional.empty;
+import static java.util.stream.Collectors.toList;
 import static javax.xml.bind.JAXBContext.newInstance;
-import static no.nav.modig.lang.collections.IterUtils.on;
-import static no.nav.modig.lang.collections.PredicateUtils.exists;
-import static no.nav.modig.lang.collections.PredicateUtils.fileExists;
-import static no.nav.modig.lang.collections.PredicateUtils.where;
-import static no.nav.modig.lang.collections.TransformerUtils.appendPathname;
-import static no.nav.modig.lang.collections.TransformerUtils.makeDirs;
-import static no.nav.modig.lang.option.Optional.none;
-import static no.nav.modig.lang.option.Optional.optional;
-import static no.nav.sbl.dialogarena.common.Comparators.compareBy;
 import static no.nav.sbl.dialogarena.kodeverk.Kodeverk.EksponertKodeverk.LANDKODE;
 import static no.nav.sbl.dialogarena.kodeverk.Kodeverk.EksponertKodeverk.POSTNUMMER;
 import static org.joda.time.DateTime.now;
@@ -67,14 +54,14 @@ public class StandardKodeverk implements Kodeverk {
      * @param locale        Hvilket locale kodeverkoppslagene skal gjøres for.
      * @param dumpDirectory Katalog hvor kodverk lastet fra tjeneste vil bli dumpet til fil(er).
      *                      Her <em>må</em> applikasjonen ha full skrivetilgang (opprette, endre, slette kataloger og filer).
-     *                      Ved å angi {@link Optional#none()} vil fallback til fildump være deaktivert.
+     *                      Ved å angi {@link Optional#empty()} ()} vil fallback til fildump være deaktivert.
      */
     public StandardKodeverk(KodeverkPortType webservice, Locale locale, Optional<File> dumpDirectory) {
         this.webservice = webservice;
         this.spraak = locale.getLanguage();
         this.dumpDirectory = dumpDirectory;
         this.kodeverk = new HashMap<>();
-        if (dumpDirectory.isSome()) {
+        if (dumpDirectory.isPresent()) {
             logger.info("Benytter katalog {} til å ta vare på kodeverk, i tilfelle tjeneste går ned.", dumpDirectory);
         } else {
             logger.info("Kodeverk-failback er ikke aktivert.");
@@ -152,7 +139,11 @@ public class StandardKodeverk implements Kodeverk {
     }
 
     private List<XMLKode> getGyldigeKodeverk(XMLEnkeltKodeverk enkeltkodeverk) {
-          return on(enkeltkodeverk.getKode()).filter(where(GYLDIGHETSPERIODER, exists(periodeMed(now())))).collect();
+        DateTime now = now();
+        return enkeltkodeverk.getKode().stream()
+                  .filter(kode -> kode.getGyldighetsperiode().stream()
+                          .anyMatch(periode -> now.isAfter(periode.getFom()) && now.isBefore(periode.getTom())))
+                  .collect(toList());
     }
 
     private XMLEnkeltKodeverk kodeverkMedNavn(String kodeverknavn) {
@@ -165,7 +156,9 @@ public class StandardKodeverk implements Kodeverk {
     }
 
     public List<String> hentAlleKodenavnFraKodeverk(EksponertKodeverk kodeverknavn) {
-        return on(kodeverkMedNavn(kodeverknavn.toString()).getKode()).map(KODENAVN).collect();
+        return kodeverkMedNavn(kodeverknavn.toString()).getKode().stream()
+                .map(xmlKode->xmlKode.getNavn())
+                .collect(toList());
     }
 
     public Map<String, String> hentAlleKodenavnMedForsteTerm(EksponertKodeverk kodeverknavn) {
@@ -188,16 +181,16 @@ public class StandardKodeverk implements Kodeverk {
 
     private XMLEnkeltKodeverk hentKodeverk(String navn) {
         XMLEnkeltKodeverk kodeverket = null;
-        Optional<RuntimeException> webserviceException = none();
+        Optional<RuntimeException> webserviceException = empty();
         try {
             kodeverket = (XMLEnkeltKodeverk) webservice.hentKodeverk(new XMLHentKodeverkRequest().withNavn(navn).withSpraak(spraak)).getKodeverk();
         } catch (HentKodeverkHentKodeverkKodeverkIkkeFunnet kodeverkIkkeFunnet) {
             throw new SystemException("Kodeverk '" + navn + "' (" + spraak + "): " + kodeverkIkkeFunnet.getMessage(), kodeverkIkkeFunnet);
         } catch (RuntimeException e) {
-            webserviceException = optional(e);
+            webserviceException = Optional.of(e);
         }
 
-        if (webserviceException.isSome()) {
+        if (webserviceException.isPresent()) {
             RuntimeException kodeverkfeil = webserviceException.get();
             if (kodeverk.containsKey(navn)) {
                 logger.warn("Kodeverktjeneste feilet ({}) for {}. Benytter eksisterende kodeverk i minne.", kodeverkfeil.getMessage(), navn);
@@ -215,39 +208,9 @@ public class StandardKodeverk implements Kodeverk {
             dumpIfPossible(navn, kodeverket);
         }
         if (!POSTNUMMER.toString().equals(navn)) {
-            sort(kodeverket.getKode(), compareBy(TERMNAVN));
+            sort(kodeverket.getKode(), comparing(o -> o.getTerm().get(0).getNavn(), Collator.getInstance(Locale.forLanguageTag("NO"))));
         }
         return kodeverket;
-    }
-
-    private static final Transformer<XMLKode, String> KODENAVN = new Transformer<XMLKode, String>() {
-        @Override
-        public String transform(XMLKode xmlKode) {
-            return xmlKode.getNavn();
-        }
-    };
-
-    private static final Transformer<XMLKode, String> TERMNAVN = new Transformer<XMLKode, String>() {
-        @Override
-        public String transform(XMLKode xmlKode) {
-            return xmlKode.getTerm().get(0).getNavn();
-        }
-    };
-
-    private static final Transformer<XMLKode, List<XMLPeriode>> GYLDIGHETSPERIODER = new Transformer<XMLKode, List<XMLPeriode>>() {
-        @Override
-        public List<XMLPeriode> transform(XMLKode kode) {
-            return optional(kode.getGyldighetsperiode()).getOrElse(Collections.<XMLPeriode>emptyList());
-        }
-    };
-
-    private static Predicate<XMLPeriode> periodeMed(final DateTime atTime) {
-        return new Predicate<XMLPeriode>() {
-            @Override
-            public boolean evaluate(XMLPeriode periode) {
-                return atTime.isAfter(periode.getFom()) && atTime.isBefore(periode.getTom());
-            }
-        };
     }
 
     private static final JAXBContext JAXB;
@@ -266,9 +229,10 @@ public class StandardKodeverk implements Kodeverk {
 
     @SuppressWarnings("unchecked")
 	private XMLKodeverk readFromDump(String dumpName) {
-        for (File dumpFile : dumpDirectory.map(fileExists(), appendPathname(dumpName + ".xml"))) {
-            logger.info("Leser dump fra fil '{}'", dumpFile);
+        if(dumpDirectory.isPresent() && dumpDirectory.get().exists()){
+            File dumpFile = new File(dumpDirectory.get(),dumpName + ".xml");
             try {
+                logger.info("Leser dump fra fil '{}'", dumpFile);
                 return ((JAXBElement<XMLKodeverk>) JAXB.createUnmarshaller().unmarshal(dumpFile)).getValue();
             } catch (JAXBException e) {
                 throw new RuntimeException("Feil ved innlasting av dump " + dumpFile + ": " + e.getMessage(), e);
@@ -278,7 +242,8 @@ public class StandardKodeverk implements Kodeverk {
     }
 
     private void dumpIfPossible(String dumpName, XMLKodeverk kodeverket) {
-        for (File dumpFile : dumpDirectory.map(makeDirs()).map(appendPathname(dumpName + ".xml"))) {
+        if (dumpDirectory.isPresent() && dumpDirectory.get().exists()) {
+            File dumpFile = new File(dumpDirectory.get(), dumpName + ".xml");
             logger.info("Dumper til filen '{}'", dumpFile);
             try (Writer out = new FileWriter(dumpFile)) {
                 JAXB.createMarshaller().marshal(createJAXBElement(dumpName, kodeverket), out);

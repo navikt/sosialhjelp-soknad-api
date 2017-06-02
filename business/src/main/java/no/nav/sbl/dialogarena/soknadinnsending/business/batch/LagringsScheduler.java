@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.batch;
 
-import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
@@ -17,6 +16,7 @@ import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -67,7 +67,7 @@ public class LagringsScheduler {
     }
 
     private void mellomlagre(List<Optional<WebSoknad>> feilListe) throws InterruptedException {
-        for (Optional<WebSoknad> ws = soknadRepository.plukkSoknadTilMellomlagring(); ws.isSome(); ws = soknadRepository.plukkSoknadTilMellomlagring()) {
+        for (Optional<WebSoknad> ws = soknadRepository.plukkSoknadTilMellomlagring(); ws.isPresent(); ws = soknadRepository.plukkSoknadTilMellomlagring()) {
             if (isPaabegyntEttersendelse(ws)) {
                 if (!avbrytOgSlettEttersendelse(ws)) {
                     feilListe.add(ws);
