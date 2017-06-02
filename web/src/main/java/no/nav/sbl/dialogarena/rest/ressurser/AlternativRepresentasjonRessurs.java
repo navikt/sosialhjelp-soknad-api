@@ -47,9 +47,11 @@ public class AlternativRepresentasjonRessurs {
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
         List<AlternativRepresentasjon> representasjoner = alternativRepresentasjonService.hentAlternativeRepresentasjoner(soknad, messageSource);
 
-        Optional<AlternativRepresentasjon> optionalRepresentasjoner = representasjoner.stream().filter(r -> r.getRepresentasjonsType().equals(AlternativRepresentasjonType.XML)).findFirst();
-
-        return optionalRepresentasjoner.get().getContent();
+        return representasjoner.stream()
+                .filter(r -> r.getRepresentasjonsType().equals(AlternativRepresentasjonType.XML))
+                .findFirst()
+                .map(AlternativRepresentasjon::getContent)
+                .orElseThrow(() -> new NotFoundException(String.format("Ingen alternativ representasjon for [%s] funnet (%s)", behandlingsId, soknad.getSoknadPrefix())));
     }
 
     private void erRessursAktiv(String metode) {
