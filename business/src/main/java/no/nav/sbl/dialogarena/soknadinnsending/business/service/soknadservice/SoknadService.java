@@ -56,7 +56,7 @@ public class SoknadService {
     }
 
     public WebSoknad hentEttersendingForBehandlingskjedeId(String behandlingsId) {
-        return lokalDb.hentEttersendingMedBehandlingskjedeId(behandlingsId).orNull();
+        return lokalDb.hentEttersendingMedBehandlingskjedeId(behandlingsId).orElse(null);
     }
 
     @Transactional

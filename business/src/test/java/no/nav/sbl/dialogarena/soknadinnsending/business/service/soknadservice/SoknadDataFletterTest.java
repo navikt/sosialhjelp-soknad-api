@@ -56,6 +56,7 @@ import static org.mockito.Mockito.*;
 public class SoknadDataFletterTest {
 
     public static final String SKJEMA_NUMMER = "NAV 04-01.03";
+    private static final List<String> SKJEMANUMMER_TILLEGGSSTONAD = asList("NAV 11-12.12", "NAV 11-12.13");
     private static final Vedlegg KVITTERING_REF = new Vedlegg()
             .medFillagerReferanse("kvitteringRef")
             .medSkjemaNummer(Kodeverk.KVITTERING)
@@ -319,16 +320,6 @@ public class SoknadDataFletterTest {
         assertThat(webSoknad.getSoknadId()).isEqualTo(11L);
     }
 
-    private static List<Vedlegg> mockHentVedleggForventninger(WebSoknad soknad) {
-
-        List<Vedlegg> vedleggForventninger = soknad.getVedlegg();
-        Vedlegg kvittering = KVITTERING_REF;
-        if (kvittering != null) {
-            vedleggForventninger.add(kvittering);
-        }
-        return vedleggForventninger;
-    }
-
     @Test
     public void lagreSystemfakumSomDefinertForSoknadVedHenting() {
         WebSoknad soknad = new WebSoknad()
@@ -344,6 +335,46 @@ public class SoknadDataFletterTest {
         verify(personaliaBolk, times(1)).genererSystemFakta(anyString(), anyLong());
         verify(barnBolk, times(1)).genererSystemFakta(anyString(), anyLong());
         verify(arbeidsforholdBolk, never()).genererSystemFakta(anyString(), anyLong());
+    }
+
+    @Test
+    public void skalSetteDelstegTilUtfyllingVedUgyldigDatoVerdiForTilleggsStonader() {
+        WebSoknad soknad = new WebSoknad()
+                .medBehandlingId("123")
+                .medskjemaNummer(SKJEMANUMMER_TILLEGGSSTONAD.get(0))
+                .medId(1L)
+                .medFaktum(
+                        new Faktum()
+                                .medKey("bostotte.samling")
+                                .medProperty("fom", "NaN-aN-aN")
+                                .medProperty("tom", "NaN-aN-aN"));
+        soknad = soknadServiceUtil.sjekkDatoVerdierOgOppdaterDelstegStatus(soknad);
+        assertThat(soknad.getDelstegStatus()).isEqualTo(DelstegStatus.UTFYLLING);
+    }
+
+    @Test
+    public void skalIkkeSetteDelstegTilUtfyllingVedGyldigeDatoVerdierForTilleggsStonader() {
+        WebSoknad soknad = new WebSoknad()
+                .medBehandlingId("123")
+                .medskjemaNummer(SKJEMANUMMER_TILLEGGSSTONAD.get(0))
+                .medId(1L)
+                .medFaktum(
+                        new Faktum()
+                                .medKey("bostotte.samling")
+                                .medProperty("fom", "2017-01-01")
+                                .medProperty("tom", "2017-02-02"));
+        soknad = soknadServiceUtil.sjekkDatoVerdierOgOppdaterDelstegStatus(soknad);
+        assertThat(soknad.getDelstegStatus()).isNotEqualTo(DelstegStatus.UTFYLLING);
+    }
+
+    private static List<Vedlegg> mockHentVedleggForventninger(WebSoknad soknad) {
+
+        List<Vedlegg> vedleggForventninger = soknad.getVedlegg();
+        Vedlegg kvittering = KVITTERING_REF;
+        if (kvittering != null) {
+            vedleggForventninger.add(kvittering);
+        }
+        return vedleggForventninger;
     }
 
 }
