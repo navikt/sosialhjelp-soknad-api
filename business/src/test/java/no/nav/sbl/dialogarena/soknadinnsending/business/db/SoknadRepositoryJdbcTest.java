@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 
-import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
@@ -18,10 +17,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -381,7 +377,7 @@ public class SoknadRepositoryJdbcTest {
                 public Void call() throws Exception {
                     while (true) {
                         Optional<WebSoknad> soknad = soknadRepository.plukkSoknadTilMellomlagring();
-                        if (soknad.isSome()) {
+                        if (soknad.isPresent()) {
                             soknaderSomBleMellomlagret.add(soknad.get().getSoknadId());
                         } else {
                             break;
@@ -447,7 +443,7 @@ public class SoknadRepositoryJdbcTest {
 
         Optional<WebSoknad> res = soknadRepository.hentEttersendingMedBehandlingskjedeId(behandlingsId);
 
-        assertThat(res.isSome(), is(true));
+        assertThat(res.isPresent(), is(true));
         assertThat(res.get().getDelstegStatus(), is(DelstegStatus.ETTERSENDING_OPPRETTET));
     }
 
@@ -455,7 +451,7 @@ public class SoknadRepositoryJdbcTest {
     public void skalFaaNullDersomManProverAHenteEttersendingMedBehandlingskjedeIdOgDetIkkeFinnesNoen() {
         Optional<WebSoknad> res = soknadRepository.hentEttersendingMedBehandlingskjedeId(behandlingsId);
 
-        assertThat(res.isSome(), is(false));
+        assertThat(res.isPresent(), is(false));
     }
 
     @Test

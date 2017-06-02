@@ -23,14 +23,14 @@ public class TransformersTest {
                 .medProperty("type", KONTRAKT_UTGAATT);
 
 
-        assertThat(Transformers.DATO_TIL.transform(faktum), is(equalTo(new LocalDate("2013-01-01"))));
-        assertThat(Transformers.DATO_TIL.transform(faktum.medProperty("type", AVSKJEDIGET)), is(equalTo(new LocalDate("2013-01-01"))));
-        assertThat(Transformers.DATO_TIL.transform(faktum.medProperty("type", REDUSERT_ARBEIDSTID)), is(equalTo(new LocalDate("2013-01-02"))));
-        assertThat(Transformers.DATO_TIL.transform(faktum.medProperty("type", ARBEIDSGIVER_ERKONKURS)), is(equalTo(new LocalDate("2013-01-03"))));
-        assertThat(Transformers.DATO_TIL.transform(faktum.medProperty("type", SAGTOPP_AV_ARBEIDSGIVER)), is(equalTo(new LocalDate("2013-01-01"))));
-        assertThat(Transformers.DATO_TIL.transform(faktum.medProperty("type", SAGTOPP_SELV)), is(equalTo(new LocalDate("2013-01-01"))));
-        assertThat(Transformers.DATO_TIL.transform(faktum.medProperty("type", "tullball")), is(nullValue()));
-        assertThat(Transformers.DATO_TIL_PERMITTERING.transform(faktum.medProperty("type", DagpengerUtils.PERMITTERT)), is(equalTo(new LocalDate("2013-01-04"))));
+        assertThat(Transformers.DATO_TIL.apply(faktum), is(equalTo(new LocalDate("2013-01-01"))));
+        assertThat(Transformers.DATO_TIL.apply(faktum.medProperty("type", AVSKJEDIGET)), is(equalTo(new LocalDate("2013-01-01"))));
+        assertThat(Transformers.DATO_TIL.apply(faktum.medProperty("type", REDUSERT_ARBEIDSTID)), is(equalTo(new LocalDate("2013-01-02"))));
+        assertThat(Transformers.DATO_TIL.apply(faktum.medProperty("type", ARBEIDSGIVER_ERKONKURS)), is(equalTo(new LocalDate("2013-01-03"))));
+        assertThat(Transformers.DATO_TIL.apply(faktum.medProperty("type", SAGTOPP_AV_ARBEIDSGIVER)), is(equalTo(new LocalDate("2013-01-01"))));
+        assertThat(Transformers.DATO_TIL.apply(faktum.medProperty("type", SAGTOPP_SELV)), is(equalTo(new LocalDate("2013-01-01"))));
+        assertThat(Transformers.DATO_TIL.apply(faktum.medProperty("type", "tullball")), is(nullValue()));
+        assertThat(Transformers.DATO_TIL_PERMITTERING.apply(faktum.medProperty("type", DagpengerUtils.PERMITTERT)), is(equalTo(new LocalDate("2013-01-04"))));
     }
 
     @Test

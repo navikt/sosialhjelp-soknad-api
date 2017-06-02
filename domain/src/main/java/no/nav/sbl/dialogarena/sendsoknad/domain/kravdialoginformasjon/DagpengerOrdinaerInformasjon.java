@@ -51,6 +51,11 @@ public class DagpengerOrdinaerInformasjon extends KravdialogInformasjon.DefaultO
         return "dagpenger";
     }
 
+    @Override
+    public boolean brukerEnonicLedetekster() {
+        return false;
+    }
+
     public static boolean erDagpengerOrdinaer(String skjema) {
         return skjemanummer.contains(skjema);
     }
