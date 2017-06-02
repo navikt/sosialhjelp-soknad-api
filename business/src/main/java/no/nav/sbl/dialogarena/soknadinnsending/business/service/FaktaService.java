@@ -19,7 +19,6 @@ import javax.inject.Named;
 import java.util.Arrays;
 import java.util.List;
 
-import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -75,9 +74,7 @@ public class FaktaService {
 
     @Transactional
     public void lagreSystemFakta(final WebSoknad soknad, List<Faktum> fakta) {
-        on(fakta).forEach(new Closure<Faktum>() {
-            @Override
-            public void execute(Faktum faktum) {
+        fakta.forEach(faktum->{
                 Faktum existing;
 
                 if (faktum.getUnikProperty() == null) {
@@ -97,7 +94,7 @@ public class FaktaService {
                     repository.opprettFaktum(soknad.getSoknadId(), faktum, true);
                 }
             }
-        });
+        );
     }
 
     @Transactional

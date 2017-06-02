@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.sendsoknad.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.apache.commons.collections15.Predicate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -13,18 +12,14 @@ import javax.xml.bind.annotation.XmlTransient;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.IkkeVedlegg;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Vedlegg {
-    public static final Predicate<Vedlegg> PAAKREVDE_VEDLEGG = new Predicate<Vedlegg>() {
-        @Override
-        public boolean evaluate(Vedlegg vedlegg) {
-            return vedlegg != null && !vedlegg.getInnsendingsvalg().equals(IkkeVedlegg);
-        }
-    };
+    public static final Predicate<Vedlegg> PAAKREVDE_VEDLEGG = vedlegg -> vedlegg != null && !vedlegg.getInnsendingsvalg().equals(IkkeVedlegg);
     private Long vedleggId;
     private Long soknadId;
     private Long faktumId;
@@ -364,19 +359,11 @@ public class Vedlegg {
         return getSkjemaNummer().equals("N6") ? getNavn() : getSkjemaNummer();
     }
 
-    public static final Predicate<Vedlegg> ER_ANNET_VEDLEGG = new Predicate<Vedlegg>() {
-        @Override
-        public boolean evaluate(Vedlegg vedlegg) {
-            return "N6".equals(vedlegg.skjemaNummer);
-        }
-    };
+    public static final Predicate<Vedlegg> ER_ANNET_VEDLEGG = vedlegg -> "N6".equals(vedlegg.skjemaNummer);
 
-    public static final Predicate<Vedlegg> ER_LASTET_OPP = new Predicate<Vedlegg>() {
-        @Override
-        public boolean evaluate(Vedlegg vedlegg) {
-            return vedlegg.innsendingsvalg.er(Status.LastetOpp) || vedlegg.opprinneligInnsendingsvalg != null && vedlegg.opprinneligInnsendingsvalg.er(Status.LastetOpp);
-        }
-    };
+    public static final Predicate<Vedlegg> ER_LASTET_OPP = vedlegg ->
+            vedlegg.innsendingsvalg.er(Status.LastetOpp) || vedlegg.opprinneligInnsendingsvalg != null
+                    && vedlegg.opprinneligInnsendingsvalg.er(Status.LastetOpp);
 
 
     /**
