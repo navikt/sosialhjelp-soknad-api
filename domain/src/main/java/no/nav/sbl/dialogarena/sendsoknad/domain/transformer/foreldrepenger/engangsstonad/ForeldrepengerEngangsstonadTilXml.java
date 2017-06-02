@@ -48,7 +48,9 @@ public class ForeldrepengerEngangsstonadTilXml implements AlternativRepresentasj
     }
 
     private SoeknadsskjemaEngangsstoenad tilSoeknadsskjemaEngangsstoenad(WebSoknad webSoknad, MessageSource messageSource) {
-        return new SoeknadsskjemaEngangsstoenad();
+        return new SoeknadsskjemaEngangsstoenad()
+                .withRettigheter(new RettigheterTilXml().apply(webSoknad))
+                .withTilknytningNorge(new TilknytningTilXml().apply(webSoknad));
     }
 
     @Override
