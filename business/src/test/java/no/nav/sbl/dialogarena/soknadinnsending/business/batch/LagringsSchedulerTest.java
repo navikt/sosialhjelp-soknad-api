@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.batch;
 
-import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
@@ -14,9 +13,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.InputStream;
+import java.util.Optional;
 
-import static no.nav.modig.lang.option.Optional.none;
-import static no.nav.modig.lang.option.Optional.optional;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
@@ -35,8 +33,8 @@ public class LagringsSchedulerTest {
     @Test
     public void skalFlytteAlleSoknaderTilHenvendelse() throws InterruptedException {
         System.setProperty("sendsoknad.batch.enabled", "true");
-        Optional<WebSoknad> tom = none();
-        Optional<WebSoknad> soknad = Optional.optional(new WebSoknad().medId(1).medStatus(SoknadInnsendingStatus.UNDER_ARBEID));
+        Optional<WebSoknad> tom = Optional.empty();
+        Optional<WebSoknad> soknad = Optional.of(new WebSoknad().medId(1).medStatus(SoknadInnsendingStatus.UNDER_ARBEID));
         when(soknadRepository.plukkSoknadTilMellomlagring()).thenReturn(soknad, soknad, tom);
         scheduler.mellomlagreSoknaderOgNullstillLokalDb();
         verify(soknadRepository, times(2)).slettSoknad(anyLong());
@@ -45,8 +43,8 @@ public class LagringsSchedulerTest {
     @Test
     public void skalLagreSoknadIHenvendelseOgSletteFraDatabase() throws InterruptedException {
         WebSoknad webSoknad = new WebSoknad().medId(1).medAktorId("11111111111").medBehandlingId("1").medUuid("1234").medStatus(SoknadInnsendingStatus.UNDER_ARBEID);
-        when(soknadRepository.plukkSoknadTilMellomlagring()).thenReturn(optional(webSoknad));
-        scheduler.lagreFilTilHenvendelseOgSlettILokalDb(optional(webSoknad));
+        when(soknadRepository.plukkSoknadTilMellomlagring()).thenReturn(Optional.of(webSoknad));
+        scheduler.lagreFilTilHenvendelseOgSlettILokalDb(Optional.of(webSoknad));
         verify(fillagerService).lagreFil(eq(webSoknad.getBrukerBehandlingId()), eq(webSoknad.getUuid()), eq(webSoknad.getAktoerId()), any(InputStream.class));
         verify(soknadRepository).slettSoknad(webSoknad.getSoknadId());
     }
@@ -62,7 +60,7 @@ public class LagringsSchedulerTest {
                 .medUuid("1234")
                 .medDelstegStatus(DelstegStatus.ETTERSENDING_OPPRETTET)
                 .medStatus(SoknadInnsendingStatus.UNDER_ARBEID);
-        when(soknadRepository.plukkSoknadTilMellomlagring()).thenReturn(optional(webSoknad),Optional.<WebSoknad>none());
+        when(soknadRepository.plukkSoknadTilMellomlagring()).thenReturn(Optional.of(webSoknad),Optional.empty());
         scheduler.mellomlagreSoknaderOgNullstillLokalDb();
         verify(henvendelseService).avbrytSoknad(behandlingsId);
         verify(soknadRepository).slettSoknad(webSoknad.getSoknadId());
@@ -72,8 +70,8 @@ public class LagringsSchedulerTest {
     public void leggerTilbakeSoknadenHvisNoeFeiler() throws InterruptedException {
         WebSoknad webSoknad = new WebSoknad();
         when(soknadRepository.plukkSoknadTilMellomlagring())
-                .thenReturn(optional(webSoknad))
-                .thenReturn(Optional.<WebSoknad>none());
+                .thenReturn(Optional.of(webSoknad))
+                .thenReturn(Optional.empty());
         doThrow(new RuntimeException("NEI!")).when(fillagerService).lagreFil(anyString(), anyString(), anyString(), any(InputStream.class));
         scheduler.mellomlagreSoknaderOgNullstillLokalDb();
         verify(soknadRepository).leggTilbake(webSoknad);

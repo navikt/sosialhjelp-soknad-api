@@ -5,7 +5,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService;
-import org.apache.commons.collections15.Transformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
@@ -16,8 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-
-import static no.nav.modig.lang.collections.IterUtils.on;
+import java.util.stream.Collectors;
 
 @Service
 public class ArbeidsforholdBolk implements BolkService {
@@ -33,7 +31,11 @@ public class ArbeidsforholdBolk implements BolkService {
 
     public List<Faktum> genererArbeidsforhold(String fodselsnummer, final Long soknadId) {
         List<Faktum> arbeidsforholdFakta =  new ArrayList<>();
-        arbeidsforholdFakta.addAll(on(arbeidsforholdService.hentArbeidsforhold(fodselsnummer)).map(arbeidsforholdTransformer(soknadId)).collect());
+        arbeidsforholdFakta.addAll(
+                arbeidsforholdService.hentArbeidsforhold(fodselsnummer).stream()
+                        .map(arbeidsforhold -> transformerTilFaktum(arbeidsforhold,soknadId))
+                        .collect(Collectors.toList())
+        );
         if (!arbeidsforholdFakta.isEmpty()) {
             Faktum yrkesaktiv = faktaService.hentFaktumMedKey(soknadId, "arbeidsforhold.yrkesaktiv");
 
@@ -52,11 +54,8 @@ public class ArbeidsforholdBolk implements BolkService {
         return yrkesaktiv.getValue() == null || "true".equals(yrkesaktiv.getValue());
     }
 
-    private static Transformer<Arbeidsforhold, Faktum> arbeidsforholdTransformer(final Long soknadId) {
-        return new Transformer<Arbeidsforhold, Faktum>() {
-            @Override
-            public Faktum transform(Arbeidsforhold arbeidsforhold) {
-                return new Faktum()
+    private Faktum transformerTilFaktum(final Arbeidsforhold arbeidsforhold, final Long soknadId) {
+        return new Faktum()
                         .medSoknadId(soknadId)
                         .medKey("arbeidsforhold")
                         .medSystemProperty("orgnr", Objects.toString(arbeidsforhold.orgnr, ""))
@@ -70,8 +69,6 @@ public class ArbeidsforholdBolk implements BolkService {
                         .medSystemProperty("kilde", "EDAG")
                         .medSystemProperty("edagref", "" + arbeidsforhold.edagId)
                         .medUnikProperty("edagref");
-            }
-        };
     }
 
 
