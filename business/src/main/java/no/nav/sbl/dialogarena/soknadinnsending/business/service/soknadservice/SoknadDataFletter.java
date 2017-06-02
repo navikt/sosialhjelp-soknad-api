@@ -1,15 +1,11 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.*;
+import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
 import no.nav.modig.core.exception.ApplicationException;
-import no.nav.modig.lang.collections.predicate.InstanceOf;
-import no.nav.modig.lang.option.Optional;
-import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
@@ -22,32 +18,36 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
 import org.apache.commons.collections15.Transformer;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadTilleggsstonader;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.ByteArrayInputStream;
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.sort;
 import static java.util.UUID.randomUUID;
 import static javax.xml.bind.JAXB.unmarshal;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.LASTET_OPP;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
-import static no.nav.modig.lang.collections.IterUtils.on;
-import static no.nav.modig.lang.collections.PredicateUtils.equalTo;
-import static no.nav.modig.lang.collections.PredicateUtils.where;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.FERDIG;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.valueOf;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur.sammenlignEtterDependOn;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.convertToXmlVedleggListe;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.*;
@@ -59,6 +59,8 @@ public class SoknadDataFletter {
     private static final Logger logger = getLogger(SoknadDataFletter.class);
     private static final boolean MED_DATA = true;
     private static final boolean MED_VEDLEGG = true;
+    private final Predicate<WSBehandlingskjedeElement> STATUS_FERDIG = soknad -> FERDIG.equals(valueOf(soknad.getStatus()));
+
     @Inject
     public ApplicationContext applicationContext;
     @Inject
@@ -97,11 +99,13 @@ public class SoknadDataFletter {
     private WebSoknad hentFraHenvendelse(String behandlingsId, boolean hentFaktumOgVedlegg) {
         WSHentSoknadResponse wsSoknadsdata = henvendelseService.hentSoknad(behandlingsId);
 
-        Optional<XMLMetadata> hovedskjemaOptional = on(((XMLMetadataListe) wsSoknadsdata.getAny()).getMetadata())
-                .filter(new InstanceOf<XMLMetadata>(XMLHovedskjema.class)).head();
-        XMLHovedskjema hovedskjema = (XMLHovedskjema) hovedskjemaOptional.getOrThrow(new ApplicationException("Kunne ikke hente opp søknad"));
+        Optional<XMLMetadata> hovedskjemaOptional = ((XMLMetadataListe) wsSoknadsdata.getAny()).getMetadata().stream()
+                .filter(xmlMetadata -> xmlMetadata instanceof XMLHovedskjema)
+                .findFirst();
 
-        SoknadInnsendingStatus status = SoknadInnsendingStatus.valueOf(wsSoknadsdata.getStatus());
+        XMLHovedskjema hovedskjema = (XMLHovedskjema) hovedskjemaOptional.orElseThrow(() -> new ApplicationException("Kunne ikke hente opp søknad"));
+
+        SoknadInnsendingStatus status = valueOf(wsSoknadsdata.getStatus());
         if (status.equals(UNDER_ARBEID)) {
             WebSoknad soknadFraFillager = unmarshal(new ByteArrayInputStream(fillagerService.hentFil(hovedskjema.getUuid())), WebSoknad.class);
             lokalDb.populerFraStruktur(soknadFraFillager);
@@ -252,6 +256,38 @@ public class SoknadDataFletter {
         if (medData) {
             soknad = populerSoknadMedData(populerSystemfakta, soknad);
         }
+
+        return erForbiUtfyllingssteget(soknad) ? sjekkDatoVerdierOgOppdaterDelstegStatus(soknad) : soknad;
+    }
+
+    private boolean erForbiUtfyllingssteget(WebSoknad soknad){
+        return !(soknad.getDelstegStatus() == DelstegStatus.OPPRETTET ||
+                soknad.getDelstegStatus() == DelstegStatus.UTFYLLING);
+    }
+
+    public WebSoknad sjekkDatoVerdierOgOppdaterDelstegStatus(WebSoknad soknad) {
+        SoknadTilleggsstonader soknadTilleggsstonader = new SoknadTilleggsstonader();
+
+        if (soknadTilleggsstonader.getSkjemanummer().contains(soknad.getskjemaNummer())) {
+            List<Faktum> periodeFaktum = soknad.getFaktaMedKey("bostotte.samling")
+                    .stream()
+                    .filter(faktum -> faktum.hasEgenskap("fom"))
+                    .filter(faktum -> faktum.hasEgenskap("tom"))
+                    .collect(Collectors.toList());
+
+            for (Faktum datofaktum : periodeFaktum) {
+                DateTimeFormatter formaterer = DateTimeFormat.forPattern("yyyy-MM-dd");
+                try {
+                    formaterer.parseLocalDate(datofaktum.getProperties().get("fom"));
+                    formaterer.parseLocalDate(datofaktum.getProperties().get("tom"));
+                } catch (IllegalArgumentException e) {
+                    soknad.medDelstegStatus(DelstegStatus.UTFYLLING);
+                    Event event = MetricsFactory.createEvent("stofo.korruptdato");
+                    event.addTagToReport("stofo.korruptdato.behandlingId", soknad.getBrukerBehandlingId());
+                    event.report();
+                }
+            }
+        }
         return soknad;
     }
 
@@ -348,19 +384,21 @@ public class SoknadDataFletter {
     }
 
     public Long hentOpprinneligInnsendtDato(String behandlingsId) {
-        return on(henvendelseService.hentBehandlingskjede(behandlingsId))
-                .filter(where(STATUS, equalTo(FERDIG)))
-                .collect(ELDSTE_FORST)
-                .get(0)
+        return henvendelseService.hentBehandlingskjede(behandlingsId).stream()
+                .filter(STATUS_FERDIG)
+                .sorted(ELDSTE_FORST)
+                .findFirst()
+                .get()
                 .getInnsendtDato()
                 .getMillis();
     }
 
     public String hentSisteInnsendteBehandlingsId(String behandlingsId) {
-        return on(henvendelseService.hentBehandlingskjede(behandlingsId))
-                .filter(where(STATUS, equalTo(FERDIG)))
-                .collect(NYESTE_FORST)
-                .get(0)
+        return henvendelseService.hentBehandlingskjede(behandlingsId).stream()
+                .filter(STATUS_FERDIG)
+                .sorted(NYESTE_FORST)
+                .findFirst()
+                .get()
                 .getBehandlingsId();
     }
 }

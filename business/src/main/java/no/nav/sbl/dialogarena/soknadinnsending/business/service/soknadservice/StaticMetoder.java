@@ -5,12 +5,12 @@ import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
-import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
 import org.joda.time.DateTime;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Predicate;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.modig.lang.collections.PredicateUtils.equalTo;
@@ -36,27 +36,11 @@ public class StaticMetoder {
         return journalforendeEnhet;
     }
 
-    public static final Transformer<WSBehandlingskjedeElement, SoknadInnsendingStatus> STATUS = new Transformer<WSBehandlingskjedeElement, SoknadInnsendingStatus>() {
-        public SoknadInnsendingStatus transform(WSBehandlingskjedeElement input) {
-            return SoknadInnsendingStatus.valueOf(input.getStatus());
-        }
-    };
-
-    public static final Transformer<WSBehandlingskjedeElement, String> BEHANDLINGS_ID = new Transformer<WSBehandlingskjedeElement, String>() {
-        public String transform(WSBehandlingskjedeElement input) {
-            return input.getBehandlingsId();
-        }
-    };
+    public static final Transformer<WSBehandlingskjedeElement, String> BEHANDLINGS_ID = input -> input.getBehandlingsId();
 
 
-    public static Predicate<XMLMetadata> kvittering() {
-        return new Predicate<XMLMetadata>() {
-            @Override
-            public boolean evaluate(XMLMetadata xmlMetadata) {
-                return xmlMetadata instanceof XMLVedlegg && KVITTERING.equals(((XMLVedlegg) xmlMetadata).getSkjemanummer());
-            }
-        };
-    }
+    public static Predicate<XMLMetadata> IKKE_KVITTERING = xmlMetadata ->
+            !(xmlMetadata instanceof XMLVedlegg && KVITTERING.equals(((XMLVedlegg) xmlMetadata).getSkjemanummer()));
 
     public static DateTime hentOrginalInnsendtDato(List<WSBehandlingskjedeElement> behandlingskjede, String behandlingsId) {
         return on(behandlingskjede)
@@ -66,19 +50,9 @@ public class StaticMetoder {
                 .getInnsendtDato();
     }
 
-    public static final Comparator<WSBehandlingskjedeElement> ELDSTE_FORST = new Comparator<WSBehandlingskjedeElement>() {
-        @Override
-        public int compare(WSBehandlingskjedeElement o1, WSBehandlingskjedeElement o2) {
-            return sammenlignBehandlingBasertPaaDato(o1, o2);
-        }
-    };
+    public static final Comparator<WSBehandlingskjedeElement> ELDSTE_FORST = (o1, o2) -> sammenlignBehandlingBasertPaaDato(o1, o2);
 
-    public static final Comparator<WSBehandlingskjedeElement> NYESTE_FORST = new Comparator<WSBehandlingskjedeElement>() {
-        @Override
-        public int compare(WSBehandlingskjedeElement o1, WSBehandlingskjedeElement o2) {
-            return sammenlignBehandlingBasertPaaDato(o2, o1);
-        }
-    };
+    public static final Comparator<WSBehandlingskjedeElement> NYESTE_FORST = (o1, o2) -> sammenlignBehandlingBasertPaaDato(o2, o1);
 
     private static int sammenlignBehandlingBasertPaaDato(WSBehandlingskjedeElement forst, WSBehandlingskjedeElement sist) {
         DateTime dato1 = forst.getInnsendtDato();

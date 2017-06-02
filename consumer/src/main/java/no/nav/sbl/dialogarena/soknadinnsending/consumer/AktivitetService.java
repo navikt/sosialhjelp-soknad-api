@@ -1,9 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.*;
@@ -12,7 +8,7 @@ import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetOgV
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetOgVedtakDagligReiseListeResponse;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetsinformasjonListeRequest;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.meldinger.WSFinnAktivitetsinformasjonListeResponse;
-import org.apache.commons.collections15.Transformer;
+
 import org.joda.time.LocalDate;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -22,24 +18,26 @@ import javax.inject.Named;
 import java.util.Collections;
 import java.util.List;
 
-import static no.nav.modig.lang.collections.IterUtils.on;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class AktivitetService {
 
-    private static final Predicate<Faktum> BARE_AKTIVITETER_SOM_KAN_HA_STONADER = new Predicate<Faktum>() {
-        @Override
-        public boolean apply(Faktum faktum) {
-            return faktum.harPropertySomMatcher("erStoenadsberettiget", "true");
-        }
-    };
+    private static final Predicate<Faktum> BARE_AKTIVITETER_SOM_KAN_HA_STONADER = faktum ->
+            faktum.harPropertySomMatcher("erStoenadsberettiget", "true");
     private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(AktivitetService.class);
+
     @Inject
     @Named("sakOgAktivitetEndpoint")
     private SakOgAktivitetV1 aktivitetWebService;
 
-    private AktiviteterTransformer transformer = new AktiviteterTransformer();
-    private VedtakTransformer vedtakTransformer = new VedtakTransformer();
+
+
 
 
     public List<Faktum> hentAktiviteter(String fodselnummer) {
@@ -48,8 +46,11 @@ public class AktivitetService {
             if (aktiviteter == null) {
                 return Collections.emptyList();
             }
-            List<Faktum> listeMedAktiviteter = Lists.transform(aktiviteter.getAktivitetListe(), transformer);
-            return Lists.newArrayList(Iterables.filter(listeMedAktiviteter, BARE_AKTIVITETER_SOM_KAN_HA_STONADER));
+            return aktiviteter.getAktivitetListe().stream()
+                    .map(new AktiviteterTransformer())
+                    .filter(BARE_AKTIVITETER_SOM_KAN_HA_STONADER)
+                    .collect(toList());
+
         } catch (FinnAktivitetsinformasjonListePersonIkkeFunnet e) {
             LOG.debug("person ikke funnet i arena: " + fodselnummer + ": " + e, e);
             return Collections.emptyList();
@@ -64,10 +65,12 @@ public class AktivitetService {
                     .withPersonident(fodselsnummer)
                     .withPeriode(new WSPeriode().withFom(LocalDate.now().minusMonths(6)).withTom(LocalDate.now().plusMonths(2)));
             WSFinnAktivitetOgVedtakDagligReiseListeResponse response = aktivitetWebService.finnAktivitetOgVedtakDagligReiseListe(request);
+
             if (response == null) {
-                return Lists.newArrayList();
+                return Collections.emptyList();
             }
-            return on(response.getAktivitetOgVedtakListe()).flatmap(vedtakTransformer).collect();
+            return response.getAktivitetOgVedtakListe().stream().flatMap(new VedtakTransformer()).collect(toList());
+
         } catch (FinnAktivitetOgVedtakDagligReiseListePersonIkkeFunnet e) {
             LOG.debug("person ikke funnet i arena: " + fodselsnummer + ": " + e, e);
             return Collections.emptyList();
@@ -104,27 +107,20 @@ public class AktivitetService {
 
     }
 
-    private static class VedtakTransformer implements Transformer<WSAktivitetOgVedtak, Iterable<Faktum>> {
+    private static class VedtakTransformer implements Function<WSAktivitetOgVedtak, Stream<Faktum>> {
         @Override
-        public Iterable<Faktum> transform(WSAktivitetOgVedtak wsAktivitetOgVedtak) {
-            return Lists.transform(wsAktivitetOgVedtak.getSaksinformasjon().getVedtaksinformasjon(), new VedtakinformasjonTransformer(wsAktivitetOgVedtak));
-        }
-    }
+        public Stream<Faktum> apply(WSAktivitetOgVedtak wsAktivitetOgVedtak) {
+            return wsAktivitetOgVedtak.getSaksinformasjon().getVedtaksinformasjon().stream()
+                    .map(wsVedtaksinformasjon -> transformerTilFaktum(wsVedtaksinformasjon, wsAktivitetOgVedtak));
 
-    private static class VedtakinformasjonTransformer implements Function<WSVedtaksinformasjon, Faktum> {
-        private final WSAktivitetOgVedtak aktivitet;
-
-        public VedtakinformasjonTransformer(WSAktivitetOgVedtak aktivitet) {
-            this.aktivitet = aktivitet;
         }
 
-        @Override
-        public Faktum apply(WSVedtaksinformasjon input) {
+        private Faktum transformerTilFaktum(WSVedtaksinformasjon input, WSAktivitetOgVedtak aktivitet) {
             Faktum faktum = new Faktum()
                     .medKey("vedtak")
                     .medProperty("aktivitetId", aktivitet.getAktivitetId())
                     .medProperty("aktivitetNavn", aktivitet.getAktivitetsnavn())
-                    .medProperty("tema", hentTema())
+                    .medProperty("tema", hentTema(aktivitet.getSaksinformasjon()))
                     .medProperty("erStoenadsberettiget", "" + aktivitet.isErStoenadsberettigetAktivitet())
                     .medProperty("forventetDagligParkeringsutgift", ServiceUtils.nullToBlank(input.getForventetDagligParkeringsutgift()))
                     .medProperty("dagsats", ServiceUtils.nullToBlank(input.getDagsats()))
@@ -141,12 +137,12 @@ public class AktivitetService {
             return faktum;
         }
 
-        private String hentTema() {
-            if(aktivitet.getSaksinformasjon() != null && aktivitet.getSaksinformasjon().getSakstype() != null) {
-                WSSakstyper sakstype = aktivitet.getSaksinformasjon().getSakstype();
-                return (sakstype != null && sakstype.getValue() != null) ? sakstype.getValue() : "TSO";
-            }
-            return "TSO";
+        private String hentTema(WSSaksinformasjon saksinformasjon) {
+            return Optional.ofNullable(saksinformasjon)
+                    .map(WSSaksinformasjon::getSakstype)
+                    .map(WSKodeverdi::getValue)
+                    .orElse("TSO");
         }
     }
+
 }
