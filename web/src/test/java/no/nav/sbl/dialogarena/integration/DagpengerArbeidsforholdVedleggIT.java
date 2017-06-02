@@ -4,9 +4,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.DagpengerO
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static java.util.Collections.singletonMap;
 
 public class DagpengerArbeidsforholdVedleggIT extends AbstractIT {
@@ -25,51 +22,48 @@ public class DagpengerArbeidsforholdVedleggIT extends AbstractIT {
     }
 
     @Test
-    public void skalHaT8VedleggVedSagtOppAvArbeidsgiver() {
+    public void skalHaT8OgO2VedleggVedSagtOppAvArbeidsgiver() {
         soknadMedDelstegstatusOpprettet(dagpengerSkjemaNummer)
                 .opprettFaktumWithValueAndProperties("arbeidsforhold", "true", singletonMap("type", "sagtoppavarbeidsgiver"))
                 .hentPaakrevdeVedlegg()
-                .skalHaVedleggMedSkjemaNummerTillegg("T8", "sagtoppavarbeidsgiver");
+                .skalHaVedleggMedSkjemaNummerTillegg("T8", "sagtoppavarbeidsgiver")
+                .skalHaVedleggMedSkjemaNummerTillegg("O2", "sagtoppavarbeidsgiver");
     }
 
     @Test
-    public void skalHaT8VedleggVedSagtOppSelv() {
+    public void skalHaT8OgO2VedleggVedSagtOppSelv() {
         soknadMedDelstegstatusOpprettet(dagpengerSkjemaNummer)
                 .opprettFaktumWithValueAndProperties("arbeidsforhold", "true", singletonMap("type", "sagtoppselv"))
                 .hentPaakrevdeVedlegg()
-                .skalHaVedleggMedSkjemaNummerTillegg("T8", "sagtoppselv");
+                .skalHaVedleggMedSkjemaNummerTillegg("T8", "sagtoppselv")
+                .skalHaVedleggMedSkjemaNummerTillegg("O2", "sagtoppselv");
     }
 
     @Test
-    public void skalHaT8VedleggVedKontraktUtgaatt() {
+    public void skalHaT8OgO2VedleggVedKontraktUtgaatt() {
         soknadMedDelstegstatusOpprettet(dagpengerSkjemaNummer)
                 .opprettFaktumWithValueAndProperties("arbeidsforhold", "true", singletonMap("type", "kontraktutgaatt"))
                 .hentPaakrevdeVedlegg()
-                .skalHaVedleggMedSkjemaNummerTillegg("T8", "kontraktutgaatt");
+                .skalHaVedleggMedSkjemaNummerTillegg("T8", "kontraktutgaatt")
+                .skalHaVedleggMedSkjemaNummerTillegg("O2", "kontraktutgaatt");
     }
 
     @Test
-    public void skalHaT8VedleggVedRedusertArbeidstid() {
+    public void skalHaT8OgO2VedleggVedRedusertArbeidstid() {
         soknadMedDelstegstatusOpprettet(dagpengerSkjemaNummer)
                 .opprettFaktumWithValueAndProperties("arbeidsforhold", "true", singletonMap("type", "redusertarbeidstid"))
                 .hentPaakrevdeVedlegg()
-                .skalHaVedleggMedSkjemaNummerTillegg("T8", "redusertarbeidstid");
+                .skalHaVedleggMedSkjemaNummerTillegg("T8", "redusertarbeidstid")
+                .skalHaVedleggMedSkjemaNummerTillegg("O2", "redusertarbeidstid");
     }
 
     @Test
-    public void skalHaT8VedleggVedAvskjediget() {
+    public void skalHaT8OgO2VedleggVedAvskjediget() {
         soknadMedDelstegstatusOpprettet(dagpengerSkjemaNummer)
                 .opprettFaktumWithValueAndProperties("arbeidsforhold", "true", singletonMap("type", "avskjediget"))
                 .hentPaakrevdeVedlegg()
-                .skalHaVedleggMedSkjemaNummerTillegg("T8", "avskjediget");
-    }
-
-    @Test
-    public void skalHaO2Vedlegg() {
-        soknadMedDelstegstatusOpprettet(dagpengerSkjemaNummer)
-                .opprettFaktumWithValue("arbeidsforhold", "true")
-                .hentPaakrevdeVedlegg()
-                .skalHaVedlegg("O2");
+                .skalHaVedleggMedSkjemaNummerTillegg("T8", "avskjediget")
+                .skalHaVedleggMedSkjemaNummerTillegg("O2", "avskjediget");
     }
 
     @Test
@@ -81,19 +75,21 @@ public class DagpengerArbeidsforholdVedleggIT extends AbstractIT {
     }
 
     @Test
-    public void skalHaA2OgM7VedleggVedArbeidsgiverKonkurs() {
+    public void skalHaA2OgM7OgO2VedleggVedArbeidsgiverKonkurs() {
         soknadMedDelstegstatusOpprettet(dagpengerSkjemaNummer)
                 .opprettFaktumWithValueAndProperties("arbeidsforhold", "true", singletonMap("type", "arbeidsgivererkonkurs"))
                 .hentPaakrevdeVedlegg()
-                .skalHaVedlegg("A2", "M7");
+                .skalHaVedlegg("A2", "M7")
+                .skalHaVedleggMedSkjemaNummerTillegg("O2", "arbeidsgivererkonkurs");
     }
 
     @Test
-    public void skalHaT6VedleggVedPermittert() {
+    public void skalHaT6OgO2VedleggVedPermittert() {
         soknadMedDelstegstatusOpprettet(dagpengerSkjemaNummer)
                 .opprettFaktumWithValueAndProperties("arbeidsforhold", "true", singletonMap("type", "permittert"))
                 .hentPaakrevdeVedlegg()
-                .skalHaVedlegg("T6");
+                .skalHaVedlegg("T6")
+                .skalHaVedleggMedSkjemaNummerTillegg("O2", "permittert");
     }
 
     @Test
