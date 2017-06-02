@@ -6,11 +6,8 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import org.joda.time.LocalDate;
 
 import java.util.List;
-
-import static java.util.Collections.*;
-import static no.nav.modig.lang.collections.ComparatorUtils.*;
-import static no.nav.modig.lang.collections.IterUtils.*;
-import static no.nav.modig.lang.collections.PredicateUtils.*;
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.*;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.PersonaliaUtils.*;
 
@@ -49,9 +46,10 @@ public class DagpengerUtils {
     }
 
     private static String finnSluttaarsakSisteArbeidsforhold(WebSoknad soknad) {
-        List<Faktum> sorterteArbeidsforholdIkkePermittert = on(soknad.getFaktaMedKey("arbeidsforhold"))
-                .filter(where(TYPE, not(equalTo(PERMITTERT))))
-                .collect(reverseOrder(compareWith(DATO_TIL)));
+        List<Faktum> sorterteArbeidsforholdIkkePermittert = soknad.getFaktaMedKey("arbeidsforhold").stream()
+                .filter(faktum -> !PERMITTERT.equals(TYPE.transform(faktum)))
+                .sorted(comparing(DATO_TIL).reversed())
+                .collect(toList());
 
         LocalDate sluttdatoSistePermitteringsperiode = getSluttdatoForSistePermitteringsperiode(soknad);
         LocalDate sluttdatoSisteArbeidsforholdIkkePermittert = getSluttdatoForSisteArbeidsforhold(sorterteArbeidsforholdIkkePermittert);
@@ -71,19 +69,24 @@ public class DagpengerUtils {
     }
 
     private static boolean erSisteSluttaarsakRedusertArbeidstid(LocalDate datoSisteArberidsforhold, List<Faktum> arbeidsforholdSortert) {
-        List<Faktum> arbeidsforholdMedDatoTilSattTilSisteDag = on(arbeidsforholdSortert).filter(where(DATO_TIL, equalTo(datoSisteArberidsforhold))).collect();
-        return on(arbeidsforholdMedDatoTilSattTilSisteDag).filter(where(TYPE, equalTo(REDUSERT_ARBEIDSTID))).head().isSome();
+        return arbeidsforholdSortert.stream()
+                .filter(faktum -> DATO_TIL.apply(faktum).equals(datoSisteArberidsforhold))
+                .filter(faktum  -> REDUSERT_ARBEIDSTID.equals(TYPE.transform(faktum)))
+                .findFirst()
+                .isPresent();
     }
 
     private static LocalDate getSluttdatoForSistePermitteringsperiode(WebSoknad soknad) {
-        List<Faktum> permitteringsperioder = on(soknad.getFaktaMedKey("arbeidsforhold.permitteringsperiode"))
-                .filter(where(parentFaktumType(soknad), equalTo(PERMITTERT)))
-                .collect(reverseOrder(compareWith(DATO_TIL_PERMITTERING)));
-        return on(permitteringsperioder).map(DATO_TIL_PERMITTERING).head().getOrElse(null);
+        return soknad.getFaktaMedKey("arbeidsforhold.permitteringsperiode").stream()
+                .filter(faktum -> PERMITTERT.equals(parentFaktumType(soknad, faktum)))
+                .sorted(comparing(DATO_TIL_PERMITTERING).reversed())
+                .map(DATO_TIL_PERMITTERING)
+                .findFirst()
+                .orElse(null);
     }
 
     private static LocalDate getSluttdatoForSisteArbeidsforhold(List<Faktum> arbeidsforholdSortert) {
-        return on(arbeidsforholdSortert).map(DATO_TIL).head().getOrElse(null);
+        return arbeidsforholdSortert.stream().map(DATO_TIL).findFirst().orElse(null);
     }
 
     private static boolean varPermittertForrigeGangDuSokteOmDagpenger(WebSoknad soknad) {
