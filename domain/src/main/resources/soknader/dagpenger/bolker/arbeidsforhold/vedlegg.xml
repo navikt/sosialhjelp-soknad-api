@@ -114,7 +114,7 @@
     <vedlegg>
         <faktum>arbeidsforhold</faktum>
         <skjemaNummer>O2</skjemaNummer>
-        <skjemanummerTillegg>arbeidsgiverkonkurs</skjemanummerTillegg>
+        <skjemanummerTillegg>arbeidsgivererkonkurs</skjemanummerTillegg>
         <property>arbeidsgivernavn</property>
         <onProperty>type</onProperty>
         <onValues>
