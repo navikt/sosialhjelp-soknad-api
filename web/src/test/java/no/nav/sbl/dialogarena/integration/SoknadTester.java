@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.integration;
 
 
+import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 import no.nav.sbl.dialogarena.rest.SoknadApplication;
 import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
@@ -24,6 +25,7 @@ import java.util.function.Function;
 import static java.util.Collections.emptyMap;
 import static java.util.stream.Collectors.toList;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
+import static javax.ws.rs.core.MediaType.TEXT_XML;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static org.apache.http.HttpStatus.SC_NO_CONTENT;
 import static org.apache.http.HttpStatus.SC_OK;
@@ -86,8 +88,16 @@ public class SoknadTester extends JerseyTest {
                 .accept(APPLICATION_JSON_TYPE);
     }
 
+
     private Invocation.Builder soknadResource() {
         return soknadResource("");
+    }
+
+    private Invocation.Builder alternativRepresentasjonResource() {
+        WebTarget target = target("/sendsoknad/representasjon/xml/" + this.brukerBehandlingId);
+        return target
+                .request(TEXT_XML)
+                .accept(TEXT_XML);
     }
 
     private Invocation.Builder faktumResource(Function<WebTarget, WebTarget> webTargetDecorator) {
@@ -101,6 +111,11 @@ public class SoknadTester extends JerseyTest {
         soknad = response.readEntity(WebSoknad.class);
         checkResponse(response, SC_OK);
         return this;
+    }
+
+    public <T> T hentAlternativRepresentasjon(Class<T> soeknadsskjemaEngangsstoenadClass) {
+        Response response = alternativRepresentasjonResource().buildGet().invoke();
+        return response.readEntity(soeknadsskjemaEngangsstoenadClass);
     }
 
 
