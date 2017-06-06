@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad;
 
 import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.OpplysningerOmBarn;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 
 import java.time.LocalDate;
@@ -16,8 +17,8 @@ public class OpplysningerOmBarnTilXml implements Function<WebSoknad, Opplysninge
         boolean erMor = erMor(webSoknad);
         boolean erFodsel = erFodsel(webSoknad);
 
-        LocalDate dato = LocalDate.parse(webSoknad.getValueForFaktum("barnet.dato"));
-        int antallBarn = Integer.parseInt(webSoknad.getValueForFaktum("barnet.antall"));
+        LocalDate dato = hentDato(webSoknad, "barnet.dato");
+        int antallBarn = hentInteger(webSoknad, "barnet.antall");
         
         OpplysningerOmBarn opplysningerOmBarn = new OpplysningerOmBarn();
 
@@ -26,7 +27,7 @@ public class OpplysningerOmBarnTilXml implements Function<WebSoknad, Opplysninge
                 opplysningerOmBarn
                         .withTermindato(dato)
                         .withAntallBarn(antallBarn)
-                        .withTerminbekreftelsedato(LocalDate.parse(webSoknad.getValueForFaktum("barnet.termindatering")))
+                        .withTerminbekreftelsedato(hentDato(webSoknad, "barnet.termindatering"))
                         .withNavnPaaTerminbekreftelse(webSoknad.getValueForFaktum("barnet.signertterminbekreftelse"));
             } else {
                 opplysningerOmBarn
@@ -58,6 +59,20 @@ public class OpplysningerOmBarnTilXml implements Function<WebSoknad, Opplysninge
 
     private boolean barnetFodt(WebSoknad soknad) {
         return "fodt".equals(soknad.getValueForFaktum("veiledning.mor.terminbekreftelse"));
+    }
+
+    private LocalDate hentDato(WebSoknad soknad, String key) {
+        Faktum faktum = soknad.getFaktumMedKey(key);
+        return faktumErTom(faktum) ? null : LocalDate.parse(faktum.getValue());
+    }
+
+    private int hentInteger(WebSoknad soknad, String key) {
+        Faktum faktum = soknad.getFaktumMedKey(key);
+        return faktumErTom(faktum) ? 0 : Integer.parseInt(faktum.getValue());
+    }
+
+    private boolean faktumErTom(Faktum faktum) {
+        return faktum == null || faktum.getValue().equals("");
     }
 
 }
