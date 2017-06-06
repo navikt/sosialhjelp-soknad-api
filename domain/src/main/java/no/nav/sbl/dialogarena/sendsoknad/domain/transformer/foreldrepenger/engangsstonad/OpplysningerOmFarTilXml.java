@@ -12,10 +12,6 @@ public class OpplysningerOmFarTilXml implements Function<WebSoknad, Opplysninger
 
         String fornavn = webSoknad.getValueForFaktum("infofar.opplysninger.fornavn");
         String etternavn = webSoknad.getValueForFaktum("infofar.opplysninger.etternavn");
-        String personidentifikator = webSoknad
-                .getFaktumMedKey("infofar.opplysninger.personinfo")
-                .finnEgenskap("personnummer")
-                .getValue();
 
         Boolean kanIkkeOppgi = Boolean.valueOf(webSoknad.getValueForFaktum("infofar.opplysninger.kanIkkeOppgi"));
         String kanIkkeOppgiArsak = webSoknad.getValueForFaktum("infofar.opplysninger.kanIkkeOppgi.true.arsak");
@@ -43,6 +39,11 @@ public class OpplysningerOmFarTilXml implements Function<WebSoknad, Opplysninger
         else{
             opplysningerOmFar.setFornavn(fornavn);
             opplysningerOmFar.setEtternavn(etternavn);
+
+            String personidentifikator = webSoknad
+                    .getFaktumMedKey("infofar.opplysninger.personinfo")
+                    .finnEgenskap("personnummer")
+                    .getValue();
             opplysningerOmFar.setPersonidentifikator(personidentifikator);
         }
 

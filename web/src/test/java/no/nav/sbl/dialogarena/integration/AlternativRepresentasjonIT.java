@@ -59,4 +59,26 @@ public class AlternativRepresentasjonIT extends AbstractIT {
         assertThat(tidligereUtenlandsopphold.get(0).getPeriode().getTom().toString()).isEqualTo("2017-04-01");
     }
 
+    @Test
+    public void alternativRepresentasjonOpplysningerOmFarEnkeltLøpTest() {
+        Map<String,String> personInfoProperties = new HashMap<>();
+        personInfoProperties.put("land", "ARG");
+
+        SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
+                .faktum("infofar.opplysninger.fornavn").withValue("Fornavn").utforEndring()
+                .faktum("infofar.opplysninger.etternavn").withValue("Etternavn").utforEndring()
+                .faktum("infofar.opplysninger.kanIkkeOppgi").withValue("true").utforEndring()
+                .opprettFaktumWithValueAndProperties("infofar.opplysninger.kanIkkeOppgi.true.arsak","utenlandsk", personInfoProperties)
+                .faktum("infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.fodselsnummer").withValue("11111111111").utforEndring();
+
+        SoeknadsskjemaEngangsstoenad soknad = testSoknad
+                .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+
+        assertThat(soknad.getOpplysningerOmFar().getFornavn()).isEqualTo("Fornavn");
+        assertThat(soknad.getOpplysningerOmFar().getEtternavn()).isEqualTo("Etternavn");
+        assertThat(soknad.getOpplysningerOmFar().getKanIkkeOppgiFar().getAarsak()).isEqualTo("utenlandsk");
+        assertThat(soknad.getOpplysningerOmFar().getKanIkkeOppgiFar().getUtenlandskfnr()).isEqualTo("11111111111");
+        assertThat(soknad.getOpplysningerOmFar().getKanIkkeOppgiFar().getUtenlandskfnrLand().getKode()).isEqualTo("ARG");
+    }
+
 }
