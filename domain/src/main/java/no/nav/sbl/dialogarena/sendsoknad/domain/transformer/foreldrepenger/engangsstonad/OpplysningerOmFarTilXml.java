@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.enga
 
 import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+
 import java.util.function.Function;
 
 public class OpplysningerOmFarTilXml implements Function<WebSoknad, OpplysningerOmFar> {
@@ -16,10 +17,10 @@ public class OpplysningerOmFarTilXml implements Function<WebSoknad, Opplysninger
         Boolean kanIkkeOppgi = Boolean.valueOf(webSoknad.getValueForFaktum("infofar.opplysninger.kanIkkeOppgi"));
         String kanIkkeOppgiArsak = webSoknad.getValueForFaktum("infofar.opplysninger.kanIkkeOppgi.true.arsak");
 
-        if(kanIkkeOppgi){
+        if (kanIkkeOppgi) {
             KanIkkeOppgiFar kanIkkeOppgiFar = new KanIkkeOppgiFar();
             kanIkkeOppgiFar.setAarsak(kanIkkeOppgiArsak);
-            if(kanIkkeOppgiArsak.equals("utenlandsk")){
+            if (kanIkkeOppgiArsak.equals("utenlandsk")) {
                 opplysningerOmFar.setFornavn(fornavn);
                 opplysningerOmFar.setEtternavn(etternavn);
 
@@ -35,8 +36,7 @@ public class OpplysningerOmFarTilXml implements Function<WebSoknad, Opplysninger
             }
 
             opplysningerOmFar.setKanIkkeOppgiFar(kanIkkeOppgiFar);
-        }
-        else{
+        } else {
             opplysningerOmFar.setFornavn(fornavn);
             opplysningerOmFar.setEtternavn(etternavn);
 
