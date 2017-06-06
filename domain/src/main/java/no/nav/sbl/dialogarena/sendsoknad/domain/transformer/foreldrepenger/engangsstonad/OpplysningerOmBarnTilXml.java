@@ -13,7 +13,6 @@ public class OpplysningerOmBarnTilXml implements Function<WebSoknad, Opplysninge
 
     @Override
     public OpplysningerOmBarn apply(WebSoknad webSoknad) {
-
         boolean erMor = erMor(webSoknad);
         boolean erFodsel = erFodsel(webSoknad);
 
@@ -45,16 +44,15 @@ public class OpplysningerOmBarnTilXml implements Function<WebSoknad, Opplysninge
                     );
         }
 
-
         return opplysningerOmBarn;
     }
 
     private boolean erMor(WebSoknad soknad) {
-        return "engangsstonadMor".equals(soknad.getValueForFaktum("soknadsvalg.stonadstype")); // engangsstonadFar || engangsstonadMor
+        return "engangsstonadMor".equals(soknad.getValueForFaktum("soknadsvalg.stonadstype"));
     }
 
     private boolean erFodsel(WebSoknad soknad) {
-        return "fodsel".equals(soknad.getValueForFaktum("soknadsvalg.fodselelleradopsjon")); // adopsjon || fodsel
+        return "fodsel".equals(soknad.getValueForFaktum("soknadsvalg.fodselelleradopsjon"));
     }
 
     private boolean barnetFodt(WebSoknad soknad) {
