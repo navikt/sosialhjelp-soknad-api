@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad;
 
 import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 
 import java.util.function.Function;
@@ -28,10 +29,9 @@ public class OpplysningerOmFarTilXml implements Function<WebSoknad, Opplysninger
                         .getValueForFaktum("infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.fodselsnummer");
                 kanIkkeOppgiFar.setUtenlandskfnr(utenlandskPersonnummer);
 
-                String landkodeForPersonnummer = webSoknad.
-                        getFaktumMedKey("infofar.opplysninger.kanIkkeOppgi.true.arsak")
-                        .finnEgenskap("land")
-                        .getValue();
+                String landkodeForPersonnummer = hentStringFraProperty(
+                        webSoknad.getFaktumMedKey("infofar.opplysninger.kanIkkeOppgi.true.arsak"),
+                        "land");
                 kanIkkeOppgiFar.setUtenlandskfnrLand(new Landkoder().withKode(landkodeForPersonnummer));
             }
 
@@ -40,13 +40,15 @@ public class OpplysningerOmFarTilXml implements Function<WebSoknad, Opplysninger
             opplysningerOmFar.setFornavn(fornavn);
             opplysningerOmFar.setEtternavn(etternavn);
 
-            String personidentifikator = webSoknad
-                    .getFaktumMedKey("infofar.opplysninger.personinfo")
-                    .finnEgenskap("personnummer")
-                    .getValue();
+            String personidentifikator = hentStringFraProperty(
+                    webSoknad.getFaktumMedKey("infofar.opplysninger.personinfo"), "personnummer");
             opplysningerOmFar.setPersonidentifikator(personidentifikator);
         }
 
         return opplysningerOmFar;
+    }
+
+    private String hentStringFraProperty(Faktum faktum, String property){
+        return faktum == null ? null : faktum.finnEgenskap(property) == null ? null : faktum.finnEgenskap(property).getValue();
     }
 }
