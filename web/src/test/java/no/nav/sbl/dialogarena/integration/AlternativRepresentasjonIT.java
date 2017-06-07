@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Foreldrepe
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +58,28 @@ public class AlternativRepresentasjonIT extends AbstractIT {
         assertThat(tidligereUtenlandsopphold.get(0).getLand().getKode()).isEqualTo("AFG");
         assertThat(tidligereUtenlandsopphold.get(0).getPeriode().getFom().toString()).isEqualTo("2017-01-02");
         assertThat(tidligereUtenlandsopphold.get(0).getPeriode().getTom().toString()).isEqualTo("2017-04-01");
+    }
+
+    @Test
+    public void alternativRepresentasjonOpplysningerOmMorTest() {
+        SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
+                .faktum("infomor.opplysninger.fornavn").withValue("Test").utforEndring()
+                .faktum("infomor.opplysninger.etternavn").withValue("Testesen").utforEndring()
+                .faktum("infomor.opplysninger.kanIkkeOppgi").withValue("true").utforEndring()
+                .faktum("infomor.opplysninger.kanIkkeOppgi.true.arsak").withValue("utenlandsk").withProperties(Collections.singletonMap("land", "AFG")).utforEndring()
+                .faktum("infomor.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.fodselsnummer").withValue("1234567890").utforEndring();
+
+        SoeknadsskjemaEngangsstoenad soknad = testSoknad
+                .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+
+        assertThat(soknad.getOpplysningerOmMor()).isNotNull();
+        assertThat(soknad.getOpplysningerOmMor().getFornavn()).isEqualTo("Test");
+        assertThat(soknad.getOpplysningerOmMor().getEtternavn()).isEqualTo("Testesen");
+        assertThat(soknad.getOpplysningerOmMor().getPersonidentifikator()).isNull();
+        assertThat(soknad.getOpplysningerOmMor().getKanIkkeOppgiMor().getAarsak()).isEqualTo("utenlandsk");
+        assertThat(soknad.getOpplysningerOmMor().getKanIkkeOppgiMor().getUtenlandskfnr()).isEqualTo("1234567890");
+        assertThat(soknad.getOpplysningerOmMor().getKanIkkeOppgiMor().getUtenlandskfnrLand().getKode()).isEqualTo("AFG");
+
     }
 
 }
