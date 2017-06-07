@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Collections;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,7 +80,22 @@ public class AlternativRepresentasjonIT extends AbstractIT {
         assertThat(soknad.getOpplysningerOmMor().getKanIkkeOppgiMor().getAarsak()).isEqualTo("utenlandsk");
         assertThat(soknad.getOpplysningerOmMor().getKanIkkeOppgiMor().getUtenlandskfnr()).isEqualTo("1234567890");
         assertThat(soknad.getOpplysningerOmMor().getKanIkkeOppgiMor().getUtenlandskfnrLand().getKode()).isEqualTo("AFG");
-
     }
+
+    @Test
+    public void opplysningerBarnTest() {
+        SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
+                .faktum("soknadsvalg.stonadstype").withValue("engangsstonadFar").utforEndring()
+                .faktum("soknadsvalg.fodselelleradopsjon").withValue("fodsel").utforEndring()
+                .faktum("barnet.dato").withValue("2017-01-01").utforEndring()
+                .faktum("barnet.antall").withValue("999").utforEndring();
+
+        SoeknadsskjemaEngangsstoenad soknad = testSoknad
+                .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+
+        assertThat(soknad.getOpplysningerOmBarn().getFoedselsdatoes().get(0)).isEqualTo(LocalDate.of(2017, 1, 1));
+        assertThat(soknad.getOpplysningerOmBarn().getAntallBarn()).isEqualTo(999);
+   }
+
 
 }
