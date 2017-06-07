@@ -60,7 +60,7 @@ public class AlternativRepresentasjonIT extends AbstractIT {
     }
 
     @Test
-    public void alternativRepresentasjonOpplysningerOmFarEnkeltLøpTest() {
+    public void alternativRepresentasjonOpplysningerOmFarEnkeltLopTest() {
         Map<String,String> personInfoProperties = new HashMap<>();
         personInfoProperties.put("land", "ARG");
 
@@ -68,12 +68,13 @@ public class AlternativRepresentasjonIT extends AbstractIT {
                 .faktum("infofar.opplysninger.fornavn").withValue("Fornavn").utforEndring()
                 .faktum("infofar.opplysninger.etternavn").withValue("Etternavn").utforEndring()
                 .faktum("infofar.opplysninger.kanIkkeOppgi").withValue("true").utforEndring()
-                .opprettFaktumWithValueAndProperties("infofar.opplysninger.kanIkkeOppgi.true.arsak","utenlandsk", personInfoProperties)
+                .faktum("infofar.opplysninger.kanIkkeOppgi.true.arsak").withValue("utenlandsk").withProperties(personInfoProperties).utforEndring()
                 .faktum("infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.fodselsnummer").withValue("***REMOVED***").utforEndring();
 
         SoeknadsskjemaEngangsstoenad soknad = testSoknad
                 .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
 
+        assertThat(soknad.getOpplysningerOmFar()).isNotNull();
         assertThat(soknad.getOpplysningerOmFar().getFornavn()).isEqualTo("Fornavn");
         assertThat(soknad.getOpplysningerOmFar().getEtternavn()).isEqualTo("Etternavn");
         assertThat(soknad.getOpplysningerOmFar().getKanIkkeOppgiFar().getAarsak()).isEqualTo("utenlandsk");
