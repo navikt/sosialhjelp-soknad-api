@@ -6,12 +6,12 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Foreldrepe
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Collections;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AlternativRepresentasjonIT extends AbstractIT {
@@ -67,7 +67,7 @@ public class AlternativRepresentasjonIT extends AbstractIT {
                 .faktum("infomor.opplysninger.fornavn").withValue("Test").utforEndring()
                 .faktum("infomor.opplysninger.etternavn").withValue("Testesen").utforEndring()
                 .faktum("infomor.opplysninger.kanIkkeOppgi").withValue("true").utforEndring()
-                .faktum("infomor.opplysninger.kanIkkeOppgi.true.arsak").withValue("utenlandsk").withProperties(Collections.singletonMap("land", "AFG")).utforEndring()
+                .faktum("infomor.opplysninger.kanIkkeOppgi.true.arsak").withValue("utenlandsk").withProperties(singletonMap("land", "AFG")).utforEndring()
                 .faktum("infomor.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.fodselsnummer").withValue("1234567890").utforEndring();
 
         SoeknadsskjemaEngangsstoenad soknad = testSoknad
