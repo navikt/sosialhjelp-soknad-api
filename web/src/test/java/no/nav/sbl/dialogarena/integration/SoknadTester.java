@@ -241,7 +241,6 @@ public class SoknadTester extends JerseyTest {
         }
 
         public FaktumTester withProperties(Map<String,String> properties){
-            //this.faktum.setProperties(properties);
             for(String property : properties.keySet()){
                 this.faktum.medProperty(property, properties.get(property));
             }
