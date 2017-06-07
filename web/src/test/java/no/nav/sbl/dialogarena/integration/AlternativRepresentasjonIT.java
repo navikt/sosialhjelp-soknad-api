@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Foreldrepe
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,5 +59,20 @@ public class AlternativRepresentasjonIT extends AbstractIT {
         assertThat(tidligereUtenlandsopphold.get(0).getPeriode().getFom().toString()).isEqualTo("2017-01-02");
         assertThat(tidligereUtenlandsopphold.get(0).getPeriode().getTom().toString()).isEqualTo("2017-04-01");
     }
+
+    @Test
+    public void opplysningerBarnTest() {
+        SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
+                .faktum("soknadsvalg.stonadstype").withValue("engangsstonadFar").utforEndring()
+                .faktum("soknadsvalg.fodselelleradopsjon").withValue("fodsel").utforEndring()
+                .faktum("barnet.dato").withValue("2017-01-01").utforEndring()
+                .faktum("barnet.antall").withValue("999").utforEndring();
+
+        SoeknadsskjemaEngangsstoenad soknad = testSoknad
+                .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+
+        assertThat(soknad.getOpplysningerOmBarn().getFoedselsdatoes().get(0)).isEqualTo(LocalDate.of(2017, 1, 1));
+        assertThat(soknad.getOpplysningerOmBarn().getAntallBarn()).isEqualTo(999);
+   }
 
 }
