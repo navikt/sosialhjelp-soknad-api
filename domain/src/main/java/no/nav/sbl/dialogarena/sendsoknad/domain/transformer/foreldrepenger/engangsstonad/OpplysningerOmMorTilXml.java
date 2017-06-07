@@ -4,6 +4,7 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.enga
 import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.KanIkkeOppgiMor;
 import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.Landkoder;
 import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.OpplysningerOmMor;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 
 import java.util.function.Function;
@@ -38,10 +39,15 @@ public class OpplysningerOmMorTilXml implements Function<WebSoknad, Opplysninger
 
             opplysningerOmMor.withKanIkkeOppgiMor(kanIkkeOppgiMor);
         } else {
+            Faktum personinfoFaktum = webSoknad.getFaktumMedKey("infomor.opplysninger.personinfo");
+
+            if (personinfoFaktum != null && personinfoFaktum.getProperties() != null) {
+                opplysningerOmMor.withPersonidentifikator(personinfoFaktum.getProperties().get("personnummer"));
+            }
+
             opplysningerOmMor
                     .withFornavn(fornavn)
-                    .withEtternavn(etternavn)
-                    .withPersonidentifikator(webSoknad.getFaktumMedKey("infomor.opplysninger.personinfo").getProperties().get("personnummer"));
+                    .withEtternavn(etternavn);
         }
 
         return opplysningerOmMor;
