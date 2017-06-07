@@ -35,7 +35,8 @@ public class ForeldrepengerEngangsstonadTilXml implements AlternativRepresentasj
         return new SoeknadsskjemaEngangsstoenad()
                 .withRettigheter(new RettigheterTilXml().apply(webSoknad))
                 .withTilknytningNorge(new TilknytningTilXml().apply(webSoknad))
-                .withOpplysningerOmFar(new OpplysningerOmFarTilXml().apply(webSoknad));
+                .withOpplysningerOmFar(new OpplysningerOmFarTilXml().apply(webSoknad))
+                .withOpplysningerOmBarn(new OpplysningerOmBarnTilXml().apply(webSoknad));
     }
 
     @Override
