@@ -18,24 +18,30 @@ public class OpplysningerOmMorTilXml implements Function<WebSoknad, Opplysninger
         String etternavn = webSoknad.getValueForFaktum("infomor.opplysninger.etternavn");
 
         Boolean kanIkkeOppgiFnr = Boolean.valueOf(webSoknad.getValueForFaktum("infomor.opplysninger.kanIkkeOppgi"));
+
         if (kanIkkeOppgiFnr) {
             KanIkkeOppgiMor kanIkkeOppgiMor = new KanIkkeOppgiMor();
             String arsak = webSoknad.getValueForFaktum("infomor.opplysninger.kanIkkeOppgi.true.arsak");
             kanIkkeOppgiMor.withAarsak(arsak);
             if (arsak.equals("utenlandsk")) {
+                opplysningerOmMor
+                        .withFornavn(fornavn)
+                        .withEtternavn(etternavn);
                 kanIkkeOppgiMor.withUtenlandskfnr(webSoknad.getValueForFaktum("infomor.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.fodselsnummer"));
-                Faktum faktumMedLand = webSoknad.getFakta().stream().filter(
-                        faktum -> faktum.getKey().equals("infomor.opplysninger.kanIkkeOppgi.true.arsak") && faktum.getProperties().containsKey("land"))
-                        .findFirst()
-                        .orElse(null);
-                kanIkkeOppgiMor.withUtenlandskfnrLand(new Landkoder().withKode(faktumMedLand.getProperties().get("land")));
+
+                String landkode = webSoknad.getFaktumMedKey("infomor.opplysninger.kanIkkeOppgi.true.arsak").getProperties().get("land");
+                kanIkkeOppgiMor.withUtenlandskfnrLand(new Landkoder().withKode(landkode));
             } else {
                 kanIkkeOppgiMor.withBegrunnelse(webSoknad.getValueForFaktum("infomor.opplysninger.kanIkkeOppgi.true.arsak.ukjent.begrunnelse"));
             }
+            opplysningerOmMor.withKanIkkeOppgiMor(kanIkkeOppgiMor);
+        } else {
+            opplysningerOmMor
+                    .withFornavn(fornavn)
+                    .withEtternavn(etternavn)
+                    .withPersonidentifikator(webSoknad.getFaktumMedKey("infomor.opplysninger.personinfo").getProperties().get("personnummer"));
         }
 
-        return opplysningerOmMor
-                .withFornavn(fornavn)
-                .withEtternavn(etternavn);
+        return opplysningerOmMor;
     }
 }
