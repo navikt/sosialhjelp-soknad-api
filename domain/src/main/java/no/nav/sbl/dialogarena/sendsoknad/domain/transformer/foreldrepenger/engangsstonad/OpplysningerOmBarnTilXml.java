@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.function.Function;
 
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 public class OpplysningerOmBarnTilXml implements Function<WebSoknad, OpplysningerOmBarn> {
 
@@ -70,7 +71,7 @@ public class OpplysningerOmBarnTilXml implements Function<WebSoknad, Opplysninge
     }
 
     private boolean faktumErTom(Faktum faktum) {
-        return faktum == null || faktum.getValue().equals("");
+        return faktum == null || isEmpty(faktum.getValue());
     }
 
 }
