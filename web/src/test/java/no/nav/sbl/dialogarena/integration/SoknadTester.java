@@ -240,8 +240,7 @@ public class SoknadTester extends JerseyTest {
             return this;
         }
 
-        public FaktumTester withProperties(Map<String,String> properties){
-            //this.faktum.setProperties(properties);
+        public FaktumTester withProperties(Map<String,String> properties) {
             for(String property : properties.keySet()){
                 this.faktum.medProperty(property, properties.get(property));
             }
