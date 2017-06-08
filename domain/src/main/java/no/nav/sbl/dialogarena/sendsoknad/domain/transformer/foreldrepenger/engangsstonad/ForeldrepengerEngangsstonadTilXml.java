@@ -21,7 +21,7 @@ public class ForeldrepengerEngangsstonadTilXml implements AlternativRepresentasj
     }
 
     public AlternativRepresentasjon transform(WebSoknad webSoknad) {
-        SoeknadsskjemaEngangsstoenad engangsstonad = tilSoeknadsskjemaEngangsstoenad(webSoknad, messageSource);
+        SoeknadsskjemaEngangsstoenad engangsstonad = tilSoeknadsskjemaEngangsstoenad(webSoknad);
         ByteArrayOutputStream xml = new ByteArrayOutputStream();
         JAXB.marshal(engangsstonad, xml);
         return new AlternativRepresentasjon()
@@ -32,14 +32,15 @@ public class ForeldrepengerEngangsstonadTilXml implements AlternativRepresentasj
                 .medContent(xml.toByteArray());
     }
 
-    private SoeknadsskjemaEngangsstoenad tilSoeknadsskjemaEngangsstoenad(WebSoknad webSoknad, MessageSource messageSource) {
+    private SoeknadsskjemaEngangsstoenad tilSoeknadsskjemaEngangsstoenad(WebSoknad webSoknad) {
         return new SoeknadsskjemaEngangsstoenad()
                 .withBruker(new AktoerTilXml().apply(webSoknad))
                 .withRettigheter(new RettigheterTilXml().apply(webSoknad))
                 .withTilknytningNorge(new TilknytningTilXml().apply(webSoknad))
                 .withOpplysningerOmMor(new OpplysningerOmMorTilXml().apply(webSoknad))
                 .withOpplysningerOmFar(new OpplysningerOmFarTilXml().apply(webSoknad))
-                .withOpplysningerOmBarn(new OpplysningerOmBarnTilXml().apply(webSoknad));
+                .withOpplysningerOmBarn(new OpplysningerOmBarnTilXml().apply(webSoknad))
+                .withVedleggListes(new VedleggTilXml().apply(webSoknad));
     }
 
     @Override
