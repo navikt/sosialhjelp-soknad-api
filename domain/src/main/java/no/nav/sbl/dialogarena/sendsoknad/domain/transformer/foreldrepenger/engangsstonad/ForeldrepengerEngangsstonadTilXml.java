@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.enga
 
 import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonType;
@@ -36,7 +37,9 @@ public class ForeldrepengerEngangsstonadTilXml implements AlternativRepresentasj
 
     public AlternativRepresentasjon transform(WebSoknad webSoknad) {
         SoeknadsskjemaEngangsstoenad engangsstonad = tilSoeknadsskjemaEngangsstoenad(webSoknad, messageSource);
-        validerSkjema(engangsstonad);
+        if(brukerErPaaOppsummeringssiden(webSoknad)){
+            validerSkjema(engangsstonad);
+        }
         ByteArrayOutputStream xml = new ByteArrayOutputStream();
         JAXB.marshal(engangsstonad, xml);
         return new AlternativRepresentasjon()
@@ -45,6 +48,10 @@ public class ForeldrepengerEngangsstonadTilXml implements AlternativRepresentasj
                 .medFilnavn("Engangsstonad.xml")
                 .medUuid(UUID.randomUUID().toString())
                 .medContent(xml.toByteArray());
+    }
+
+    private boolean brukerErPaaOppsummeringssiden(WebSoknad soknad){
+        return soknad.getDelstegStatus() == DelstegStatus.VEDLEGG_VALIDERT;
     }
 
     private SoeknadsskjemaEngangsstoenad tilSoeknadsskjemaEngangsstoenad(WebSoknad webSoknad, MessageSource messageSource) {
