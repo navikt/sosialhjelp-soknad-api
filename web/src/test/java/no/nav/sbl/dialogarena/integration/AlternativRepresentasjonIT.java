@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AlternativRepresentasjonIT extends AbstractIT {
@@ -61,6 +62,27 @@ public class AlternativRepresentasjonIT extends AbstractIT {
     }
 
     @Test
+    public void alternativRepresentasjonOpplysningerOmMorTest() {
+        SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
+                .faktum("infomor.opplysninger.fornavn").withValue("Test").utforEndring()
+                .faktum("infomor.opplysninger.etternavn").withValue("Testesen").utforEndring()
+                .faktum("infomor.opplysninger.kanIkkeOppgi").withValue("true").utforEndring()
+                .faktum("infomor.opplysninger.kanIkkeOppgi.true.arsak").withValue("utenlandsk").withProperties(singletonMap("land", "AFG")).utforEndring()
+                .faktum("infomor.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.fodselsnummer").withValue("1234567890").utforEndring();
+
+        SoeknadsskjemaEngangsstoenad soknad = testSoknad
+                .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+
+        assertThat(soknad.getOpplysningerOmMor()).isNotNull();
+        assertThat(soknad.getOpplysningerOmMor().getFornavn()).isEqualTo("Test");
+        assertThat(soknad.getOpplysningerOmMor().getEtternavn()).isEqualTo("Testesen");
+        assertThat(soknad.getOpplysningerOmMor().getPersonidentifikator()).isNull();
+        assertThat(soknad.getOpplysningerOmMor().getKanIkkeOppgiMor().getAarsak()).isEqualTo("utenlandsk");
+        assertThat(soknad.getOpplysningerOmMor().getKanIkkeOppgiMor().getUtenlandskfnr()).isEqualTo("1234567890");
+        assertThat(soknad.getOpplysningerOmMor().getKanIkkeOppgiMor().getUtenlandskfnrLand().getKode()).isEqualTo("AFG");
+    }
+
+    @Test
     public void alternativRepresentasjonOpplysningerOmFarEnkeltLopTest() {
         Map<String,String> personInfoProperties = new HashMap<>();
         personInfoProperties.put("land", "ARG");
@@ -97,5 +119,6 @@ public class AlternativRepresentasjonIT extends AbstractIT {
         assertThat(soknad.getOpplysningerOmBarn().getFoedselsdatoes().get(0)).isEqualTo(LocalDate.of(2017, 1, 1));
         assertThat(soknad.getOpplysningerOmBarn().getAntallBarn()).isEqualTo(999);
    }
+
 
 }
