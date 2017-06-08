@@ -75,7 +75,12 @@ public class ForeldrepengerEngangsstonadTilXml implements AlternativRepresentasj
         JAXBElement<SoeknadsskjemaEngangsstoenad> skjema = new JAXBElement<>(qname, SoeknadsskjemaEngangsstoenad.class, engangsstoenadSkjema);
         try {
             SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            Schema schema = factory.newSchema(new StreamSource(ForeldrepengerEngangsstonadTilXml.class.getResourceAsStream("/tjenestespesifikasjon/no/nav/melding/virksomhet/soeknadsskjemaEngangsstoenad/v1/v1.xsd")));
+            Schema schema = factory.newSchema(
+                            new StreamSource(
+                                    ForeldrepengerEngangsstonadTilXml.class
+                                            .getResourceAsStream("/tjenestespesifikasjon/no/nav/melding/virksomhet/soeknadsskjemaEngangsstoenad/v1/v1.xsd")
+                            )
+            );
             Marshaller marshaller = JAXBContext.newInstance(SoeknadsskjemaEngangsstoenad.class).createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.setSchema(schema);
