@@ -61,6 +61,29 @@ public class AlternativRepresentasjonIT extends AbstractIT {
     }
 
     @Test
+    public void alternativRepresentasjonOpplysningerOmFarEnkeltLopTest() {
+        Map<String,String> personInfoProperties = new HashMap<>();
+        personInfoProperties.put("land", "ARG");
+
+        SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
+                .faktum("infofar.opplysninger.fornavn").withValue("Fornavn").utforEndring()
+                .faktum("infofar.opplysninger.etternavn").withValue("Etternavn").utforEndring()
+                .faktum("infofar.opplysninger.kanIkkeOppgi").withValue("true").utforEndring()
+                .faktum("infofar.opplysninger.kanIkkeOppgi.true.arsak").withValue("utenlandsk").withProperties(personInfoProperties).utforEndring()
+                .faktum("infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.fodselsnummer").withValue("11111111111").utforEndring();
+
+        SoeknadsskjemaEngangsstoenad soknad = testSoknad
+                .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+
+        assertThat(soknad.getOpplysningerOmFar()).isNotNull();
+        assertThat(soknad.getOpplysningerOmFar().getFornavn()).isEqualTo("Fornavn");
+        assertThat(soknad.getOpplysningerOmFar().getEtternavn()).isEqualTo("Etternavn");
+        assertThat(soknad.getOpplysningerOmFar().getKanIkkeOppgiFar().getAarsak()).isEqualTo("utenlandsk");
+        assertThat(soknad.getOpplysningerOmFar().getKanIkkeOppgiFar().getUtenlandskfnr()).isEqualTo("11111111111");
+        assertThat(soknad.getOpplysningerOmFar().getKanIkkeOppgiFar().getUtenlandskfnrLand().getKode()).isEqualTo("ARG");
+    }
+
+    @Test
     public void opplysningerBarnTest() {
         SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
                 .faktum("soknadsvalg.stonadstype").withValue("engangsstonadFar").utforEndring()
