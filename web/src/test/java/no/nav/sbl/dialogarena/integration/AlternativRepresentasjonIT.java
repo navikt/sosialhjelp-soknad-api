@@ -2,7 +2,9 @@ package no.nav.sbl.dialogarena.integration;
 
 import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.Utenlandsopphold;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.ForeldrepengerInformasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad.DokumentTypeId;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,7 +46,7 @@ public class AlternativRepresentasjonIT extends AbstractIT {
         SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
                 .faktum("tilknytningnorge.oppholder").withValue("true").utforEndring()
                 .faktum("tilknytningnorge.tidligere").withValue("false").utforEndring()
-                .opprettFaktumWithValueAndProperties("tilknytningnorge.tidligere.periode", null, periodeProperties)
+                .nyttFaktum("tilknytningnorge.tidligere.periode").withProperties(periodeProperties).opprett()
                 .faktum("tilknytningnorge.fremtidig").withValue("true").utforEndring();
 
         SoeknadsskjemaEngangsstoenad soknad = testSoknad
