@@ -109,11 +109,14 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.nav</groupId>
+            <artifactId>metrics</artifactId>
         </dependency>
 
     </dependencies>
