@@ -15,8 +15,6 @@ public class AktoerTilXmlTest {
         WebSoknad soknad = new WebSoknad();
 
         soknad.medAktorId("010101010101");
-        soknad.getFakta().add(new Faktum().medKey("soknadsvalg.stonadstype").medValue("engangsstonadMor"));
-        soknad.getFakta().add(new Faktum().medKey("soknadsvalg.fodselelleradopsjon").medValue("fodsel"));
 
         AktoerId resultat = (AktoerId) new AktoerTilXml().apply(soknad);
         assertThat(resultat.getAktoerId()).isEqualTo("010101010101");
