@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad;
 
 import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
+import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
@@ -90,7 +91,8 @@ public class ForeldrepengerEngangsstonadTilXml implements AlternativRepresentasj
         } catch (Exception e) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             JAXB.marshal(skjema, baos);
-            logger.warn("Validering av skjema feilet: " + e + ". Xml: " + baos.toString(), e);
+            logger.error("Validering av skjema feilet: " + e + ". Xml: " + baos.toString(), e);
+            throw new ApplicationException("Validering av skjema feilet");
         }
 
     }
