@@ -26,6 +26,7 @@ import org.springframework.stereotype.Controller;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
@@ -109,14 +110,9 @@ public class InformasjonRessurs {
         if (sprak == null || sprak.trim().isEmpty()) {
             sprak = "nb_NO";
         }
-        List<KravdialogInformasjon> allKravdialogInformasjon = kravdialogInformasjonHolder.getSoknadsKonfigurasjoner();
 
-        List<String> bundleNames = on(allKravdialogInformasjon).map(new Transformer<KravdialogInformasjon, String>() {
-            @Override
-            public String transform(KravdialogInformasjon kravdialogInformasjon) {
-                return kravdialogInformasjon.getBundleName();
-            }
-        }).collect();
+        List<String> bundleNames = kravdialogInformasjonHolder.getSoknadsKonfigurasjoner().
+                stream().map(k -> k.getBundleName()).collect(Collectors.toList());
 
         if(isNotEmpty(type) && !bundleNames.contains(type.toLowerCase())){
             String prefiksetType = new StringBuilder("soknad").append(type.toLowerCase()).toString();
