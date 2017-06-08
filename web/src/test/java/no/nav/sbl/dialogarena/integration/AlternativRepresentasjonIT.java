@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class AlternativRepresentasjonIT extends AbstractIT {
 
-    private String engangsstonadAdopsjonSkjemanummer = new ForeldrepengerInformasjon().getSkjemanummer().get(4);
+    private String engangsstonadAdopsjonSkjemanummer = new ForeldrepengerInformasjon().getSkjemanummer().get(1);
 
     @Before
     public void setup() throws Exception {
@@ -26,8 +26,8 @@ public class AlternativRepresentasjonIT extends AbstractIT {
     @Test
     public void alternativRepresentasjonRettigheterTest() {
         SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
-            .faktum("soknadsvalg.fodselelleradopsjon").withValue("fodsel").utforEndring()
-            .faktum("rettigheter.overtak").withValue("overtattPaGrunnAvDod").utforEndring();
+                .faktum("soknadsvalg.stonadstype").withValue("engangsstonadFar").utforEndring()
+                .faktum("rettigheter.overtak").withValue("overtattPaGrunnAvDod").utforEndring();
         SoeknadsskjemaEngangsstoenad soknad = testSoknad
                 .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
         assertThat(soknad.getRettigheter()).isNotNull();
@@ -64,6 +64,7 @@ public class AlternativRepresentasjonIT extends AbstractIT {
     @Test
     public void alternativRepresentasjonOpplysningerOmMorTest() {
         SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
+                .faktum("soknadsvalg.stonadstype").withValue("engangsstonadFar").utforEndring()
                 .faktum("infomor.opplysninger.fornavn").withValue("Test").utforEndring()
                 .faktum("infomor.opplysninger.etternavn").withValue("Testesen").utforEndring()
                 .faktum("infomor.opplysninger.kanIkkeOppgi").withValue("true").utforEndring()
@@ -88,6 +89,7 @@ public class AlternativRepresentasjonIT extends AbstractIT {
         personInfoProperties.put("land", "ARG");
 
         SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
+                .faktum("soknadsvalg.stonadstype").withValue("engangsstonadMor").utforEndring()
                 .faktum("infofar.opplysninger.fornavn").withValue("Fornavn").utforEndring()
                 .faktum("infofar.opplysninger.etternavn").withValue("Etternavn").utforEndring()
                 .faktum("infofar.opplysninger.kanIkkeOppgi").withValue("true").utforEndring()
