@@ -44,7 +44,7 @@ public class AlternativRepresentasjonIT extends AbstractIT {
         SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
                 .faktum("tilknytningnorge.oppholder").withValue("true").utforEndring()
                 .faktum("tilknytningnorge.tidligere").withValue("false").utforEndring()
-                .opprettFaktumWithValueAndProperties("tilknytningnorge.tidligere.periode", null, periodeProperties)
+                .nyttFaktum("tilknytningnorge.tidligere.periode").withProperties(periodeProperties).opprett()
                 .faktum("tilknytningnorge.fremtidig").withValue("true").utforEndring();
 
         SoeknadsskjemaEngangsstoenad soknad = testSoknad
