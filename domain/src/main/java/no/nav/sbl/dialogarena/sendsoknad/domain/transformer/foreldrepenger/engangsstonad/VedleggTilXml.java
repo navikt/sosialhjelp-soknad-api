@@ -22,13 +22,17 @@ public class VedleggTilXml implements Function<WebSoknad, List<Vedlegg>> {
     }
 
     private Function<no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg, Vedlegg> TO_VEDLEGG = soknadVedlegg -> new Vedlegg()
-            .withSkjemanummer(DokumentTypeId.get(soknadVedlegg.getSkjemaNummer()))
+            .withSkjemanummer(dokumentTypeId(soknadVedlegg.getSkjemaNummer()))
             .withErPaakrevdISoeknadsdialog(erPaakrevd(soknadVedlegg.getSkjemaNummer()))
             .withInnsendingsvalg(innsendingsvalg(soknadVedlegg.getInnsendingsvalg()))
             .withTilleggsinfo(soknadVedlegg.getAarsak());
 
+    private String dokumentTypeId(String skjemanummer) {
+        return Skjemanummer.valueOf(skjemanummer).dokumentTypeId();
+    }
+
     private boolean erPaakrevd(String skjemanummer) {
-        return !"N6".equals(skjemanummer);
+        return Skjemanummer.valueOf(skjemanummer).erPaakrevd();
     }
 
     private Innsendingsvalg innsendingsvalg(Status innsendingsvalg) {

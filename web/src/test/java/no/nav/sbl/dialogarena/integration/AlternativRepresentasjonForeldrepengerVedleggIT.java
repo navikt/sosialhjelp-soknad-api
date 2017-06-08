@@ -3,20 +3,18 @@ package no.nav.sbl.dialogarena.integration;
 import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.Innsendingsvalg;
 import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 import no.nav.sbl.dialogarena.config.IntegrationConfig;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.ForeldrepengerInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
-import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad.DokumentTypeId;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.util.Locale;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.reducing;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad.Skjemanummer.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -46,34 +44,34 @@ public class AlternativRepresentasjonForeldrepengerVedleggIT extends AbstractIT 
                     .withParentFaktum("arbeidsforhold.yrkesaktiv")
                     .opprett()
                 .hentPaakrevdeVedlegg()
-                .vedlegg("N6").withInnsendingsValg(Vedlegg.Status.LastetOpp).utforEndring().hentPaakrevdeVedlegg()
-                .vedlegg("M6").withInnsendingsValg(Vedlegg.Status.VedleggAlleredeSendt).utforEndring().hentPaakrevdeVedlegg()
-                .vedlegg("K4").withInnsendingsValg(Vedlegg.Status.VedleggSendesIkke).withAarsak("aarsak").utforEndring().hentPaakrevdeVedlegg()
-                .vedlegg("L4").withInnsendingsValg(Vedlegg.Status.VedleggSendesAvAndre).utforEndring()
+                .vedlegg(N6).withInnsendingsValg(Status.LastetOpp).utforEndring().hentPaakrevdeVedlegg()
+                .vedlegg(M6).withInnsendingsValg(Status.VedleggAlleredeSendt).utforEndring().hentPaakrevdeVedlegg()
+                .vedlegg(K4).withInnsendingsValg(Status.VedleggSendesIkke).withAarsak("aarsak").utforEndring().hentPaakrevdeVedlegg()
+                .vedlegg(L4).withInnsendingsValg(Status.VedleggSendesAvAndre).utforEndring()
                 .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
 
         assertThat(soknad.getVedleggListes()).extracting("skjemanummer").contains(
-                DokumentTypeId.get("N6"),
-                DokumentTypeId.get("M6"),
-                DokumentTypeId.get("K4"),
-                DokumentTypeId.get("L4")
+                N6.dokumentTypeId(),
+                M6.dokumentTypeId(),
+                K4.dokumentTypeId(),
+                L4.dokumentTypeId()
         );
 
         soknad.getVedleggListes().forEach(xmlVedlegg -> {
-            if (DokumentTypeId.get("N6").equals(xmlVedlegg.getSkjemanummer())) {
+            if (N6.dokumentTypeId().equals(xmlVedlegg.getSkjemanummer())) {
                 assertThat(xmlVedlegg.getInnsendingsvalg()).isEqualTo(Innsendingsvalg.LASTET_OPP);
                 assertThat(xmlVedlegg.isErPaakrevdISoeknadsdialog()).isFalse();
             }
-            if (DokumentTypeId.get("M6").equals(xmlVedlegg.getSkjemanummer())) {
+            if (M6.dokumentTypeId().equals(xmlVedlegg.getSkjemanummer())) {
                 assertThat(xmlVedlegg.getInnsendingsvalg()).isEqualTo(Innsendingsvalg.VEDLEGG_ALLEREDE_SENDT);
                 assertThat(xmlVedlegg.isErPaakrevdISoeknadsdialog()).isTrue();
             }
-            if (DokumentTypeId.get("K4").equals(xmlVedlegg.getSkjemanummer())) {
+            if (K4.dokumentTypeId().equals(xmlVedlegg.getSkjemanummer())) {
                 assertThat(xmlVedlegg.getInnsendingsvalg()).isEqualTo(Innsendingsvalg.SENDES_IKKE);
                 assertThat(xmlVedlegg.getTilleggsinfo()).isEqualTo("aarsak");
                 assertThat(xmlVedlegg.isErPaakrevdISoeknadsdialog()).isTrue();
             }
-            if (DokumentTypeId.get("L4").equals(xmlVedlegg.getSkjemanummer())) {
+            if (L4.dokumentTypeId().equals(xmlVedlegg.getSkjemanummer())) {
                 assertThat(xmlVedlegg.getInnsendingsvalg()).isEqualTo(Innsendingsvalg.VEDLEGG_SENDES_AV_ANDRE);
                 assertThat(xmlVedlegg.isErPaakrevdISoeknadsdialog()).isTrue();
             }
@@ -91,11 +89,11 @@ public class AlternativRepresentasjonForeldrepengerVedleggIT extends AbstractIT 
                 .withParentFaktum("arbeidsforhold.yrkesaktiv")
                 .opprett()
                 .hentPaakrevdeVedlegg()
-                .vedlegg("T8").withInnsendingsValg(Vedlegg.Status.LastetOpp).utforEndring()
+                .vedlegg(T8).withInnsendingsValg(Status.LastetOpp).utforEndring()
                 .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
 
         assertThat(soknad.getVedleggListes()).extracting("skjemanummer").contains(
-                DokumentTypeId.get("T8")
+                T8.dokumentTypeId()
         );
     }
 
@@ -104,16 +102,16 @@ public class AlternativRepresentasjonForeldrepengerVedleggIT extends AbstractIT 
         SoeknadsskjemaEngangsstoenad soknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
                 .faktum("veiledning.mor.terminbekreftelse").withValue("merEnn26Uker").withProperty("skalHaFodselsattest", "true").utforEndring()
                 .hentPaakrevdeVedlegg()
-                .vedlegg("P3").withInnsendingsValg(Vedlegg.Status.LastetOpp).utforEndring()
+                .vedlegg(P3).withInnsendingsValg(Status.LastetOpp).utforEndring()
                 .hentPaakrevdeVedlegg()
-                .vedlegg("R4").withInnsendingsValg(Vedlegg.Status.LastetOpp).utforEndring()
+                .vedlegg(R4).withInnsendingsValg(Status.LastetOpp).utforEndring()
                 .hentPaakrevdeVedlegg()
                 .soknad()
                 .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
 
         assertThat(soknad.getVedleggListes()).extracting("skjemanummer").contains(
-                DokumentTypeId.get("P3"),
-                DokumentTypeId.get("R4")
+                P3.dokumentTypeId(),
+                R4.dokumentTypeId()
         );
     }
 
@@ -122,11 +120,11 @@ public class AlternativRepresentasjonForeldrepengerVedleggIT extends AbstractIT 
         SoeknadsskjemaEngangsstoenad soknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
                 .faktum("veiledning.adopsjon.overtakelse").withValue("ja").utforEndring()
                 .hentPaakrevdeVedlegg()
-                .vedlegg("P5").withInnsendingsValg(Vedlegg.Status.LastetOpp).utforEndring()
+                .vedlegg(P5).withInnsendingsValg(Status.LastetOpp).utforEndring()
                 .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
 
         assertThat(soknad.getVedleggListes()).hasSize(1);
-        assertThat(soknad.getVedleggListes()).extracting("skjemanummer").contains(DokumentTypeId.get("P5"));
+        assertThat(soknad.getVedleggListes()).extracting("skjemanummer").contains(P5.dokumentTypeId());
     }
 
     @Test
@@ -135,11 +133,11 @@ public class AlternativRepresentasjonForeldrepengerVedleggIT extends AbstractIT 
                 .faktum("egennaering.arbeidegennaering").withValue("false").utforEndring()
                 .nyttFaktum("naeringsvirksomhet").withValue("false").withProperty("regnskapsforer", "true").withParentFaktum("egennaering.arbeidegennaering").opprett()
                 .hentPaakrevdeVedlegg()
-                .vedlegg("T7").withInnsendingsValg(Vedlegg.Status.LastetOpp).utforEndring()
+                .vedlegg(T7).withInnsendingsValg(Status.LastetOpp).utforEndring()
                 .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
 
         assertThat(soknad.getVedleggListes()).hasSize(1);
-        assertThat(soknad.getVedleggListes()).extracting("skjemanummer").contains(DokumentTypeId.get("T7"));
+        assertThat(soknad.getVedleggListes()).extracting("skjemanummer").contains(T7.dokumentTypeId());
     }
 
     @Test
@@ -147,11 +145,11 @@ public class AlternativRepresentasjonForeldrepengerVedleggIT extends AbstractIT 
         SoeknadsskjemaEngangsstoenad soknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
                 .faktum("fedrekvote").withValue("sykdom").utforEndring()
                 .hentPaakrevdeVedlegg()
-                .vedlegg("L9").withInnsendingsValg(Vedlegg.Status.LastetOpp).utforEndring()
+                .vedlegg(L9).withInnsendingsValg(Status.LastetOpp).utforEndring()
                 .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
 
         assertThat(soknad.getVedleggListes()).hasSize(1);
-        assertThat(soknad.getVedleggListes()).extracting("skjemanummer").contains(DokumentTypeId.get("L9"));
+        assertThat(soknad.getVedleggListes()).extracting("skjemanummer").contains(L9.dokumentTypeId());
     }
 
     @Test
@@ -159,12 +157,12 @@ public class AlternativRepresentasjonForeldrepengerVedleggIT extends AbstractIT 
         SoeknadsskjemaEngangsstoenad soknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
                 .faktum("fedrekvote").withValue("helseinstitusjon").utforEndring()
                 .hentPaakrevdeVedlegg()
-                .vedlegg("N9").withInnsendingsValg(Vedlegg.Status.LastetOpp).utforEndring()
+                .vedlegg(N9).withInnsendingsValg(Status.LastetOpp).utforEndring()
                 .hentPaakrevdeVedlegg().soknad()
                 .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
 
         assertThat(soknad.getVedleggListes()).hasSize(1);
-        assertThat(soknad.getVedleggListes()).extracting("skjemanummer").contains(DokumentTypeId.get("N9"));
+        assertThat(soknad.getVedleggListes()).extracting("skjemanummer").contains(N9.dokumentTypeId());
     }
 
     @Test
@@ -172,11 +170,11 @@ public class AlternativRepresentasjonForeldrepengerVedleggIT extends AbstractIT 
         SoeknadsskjemaEngangsstoenad soknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
                 .faktum("vedlegg.hjelpefaktum").withValue("true").withProperty("graderingsskjema", "true").utforEndring()
                 .hentPaakrevdeVedlegg()
-                .vedlegg("H1").withInnsendingsValg(Vedlegg.Status.LastetOpp).utforEndring()
+                .vedlegg(H1).withInnsendingsValg(Status.LastetOpp).utforEndring()
                 .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
 
         assertThat(soknad.getVedleggListes()).hasSize(1);
-        assertThat(soknad.getVedleggListes()).extracting("skjemanummer").contains(DokumentTypeId.get("H1"));
+        assertThat(soknad.getVedleggListes()).extracting("skjemanummer").contains(H1.dokumentTypeId());
     }
 
     @Test
@@ -190,11 +188,11 @@ public class AlternativRepresentasjonForeldrepengerVedleggIT extends AbstractIT 
                     .withProperty("type", "ferie")
                     .opprett()
                 .hentPaakrevdeVedlegg()
-                .vedlegg("Z6").withInnsendingsValg(Vedlegg.Status.LastetOpp).utforEndring()
+                .vedlegg(Z6).withInnsendingsValg(Status.LastetOpp).utforEndring()
                 .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
 
         assertThat(soknad.getVedleggListes()).hasSize(1);
-        assertThat(soknad.getVedleggListes()).extracting("skjemanummer").contains(DokumentTypeId.get("Z6"));
+        assertThat(soknad.getVedleggListes()).extracting("skjemanummer").contains(Z6.dokumentTypeId());
     }
 
     @Test
@@ -206,11 +204,11 @@ public class AlternativRepresentasjonForeldrepengerVedleggIT extends AbstractIT 
                     .withProperty("studier", "true")
                     .opprett()
                 .hentPaakrevdeVedlegg()
-                .vedlegg("O9").withInnsendingsValg(Vedlegg.Status.LastetOpp).utforEndring()
+                .vedlegg(O9).withInnsendingsValg(Status.LastetOpp).utforEndring()
                 .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
 
         assertThat(soknad.getVedleggListes()).hasSize(1);
-        assertThat(soknad.getVedleggListes()).extracting("skjemanummer").contains(DokumentTypeId.get("O9"));
+        assertThat(soknad.getVedleggListes()).extracting("skjemanummer").contains(O9.dokumentTypeId());
     }
 
     @Test
@@ -222,11 +220,11 @@ public class AlternativRepresentasjonForeldrepengerVedleggIT extends AbstractIT 
                 .withProperty("introduksjonsprogram", "true")
                 .opprett()
                 .hentPaakrevdeVedlegg()
-                .vedlegg("T1").withInnsendingsValg(Vedlegg.Status.LastetOpp).utforEndring()
+                .vedlegg(T1).withInnsendingsValg(Status.LastetOpp).utforEndring()
                 .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
 
         assertThat(soknad.getVedleggListes()).hasSize(1);
-        assertThat(soknad.getVedleggListes()).extracting("skjemanummer").contains(DokumentTypeId.get("T1"));
+        assertThat(soknad.getVedleggListes()).extracting("skjemanummer").contains(T1.dokumentTypeId());
     }
 
     @Test
@@ -238,11 +236,11 @@ public class AlternativRepresentasjonForeldrepengerVedleggIT extends AbstractIT 
                 .withProperty("kvalifiseringsprogram", "true")
                 .opprett()
                 .hentPaakrevdeVedlegg()
-                .vedlegg("K3").withInnsendingsValg(Vedlegg.Status.LastetOpp).utforEndring()
+                .vedlegg(K3).withInnsendingsValg(Status.LastetOpp).utforEndring()
                 .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
 
         assertThat(soknad.getVedleggListes()).hasSize(1);
-        assertThat(soknad.getVedleggListes()).extracting("skjemanummer").contains(DokumentTypeId.get("K3"));
+        assertThat(soknad.getVedleggListes()).extracting("skjemanummer").contains(K3.dokumentTypeId());
     }
 
     @Test
@@ -250,11 +248,11 @@ public class AlternativRepresentasjonForeldrepengerVedleggIT extends AbstractIT 
         SoeknadsskjemaEngangsstoenad soknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
                 .faktum("ytelser.vartpenger").withValue("true").utforEndring()
                 .hentPaakrevdeVedlegg()
-                .vedlegg("K1").withInnsendingsValg(Vedlegg.Status.LastetOpp).utforEndring()
+                .vedlegg(K1).withInnsendingsValg(Status.LastetOpp).utforEndring()
                 .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
 
         assertThat(soknad.getVedleggListes()).hasSize(1);
-        assertThat(soknad.getVedleggListes()).extracting("skjemanummer").contains(DokumentTypeId.get("K1"));
+        assertThat(soknad.getVedleggListes()).extracting("skjemanummer").contains(K1.dokumentTypeId());
     }
 
     @Test
@@ -262,11 +260,11 @@ public class AlternativRepresentasjonForeldrepengerVedleggIT extends AbstractIT 
         SoeknadsskjemaEngangsstoenad soknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
                 .faktum("ytelser.avtjening").withValue("true").utforEndring()
                 .hentPaakrevdeVedlegg()
-                .vedlegg("O5").withInnsendingsValg(Vedlegg.Status.LastetOpp).utforEndring()
+                .vedlegg(O5).withInnsendingsValg(Status.LastetOpp).utforEndring()
                 .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
 
         assertThat(soknad.getVedleggListes()).hasSize(1);
-        assertThat(soknad.getVedleggListes()).extracting("skjemanummer").contains(DokumentTypeId.get("O5"));
+        assertThat(soknad.getVedleggListes()).extracting("skjemanummer").contains(O5.dokumentTypeId());
     }
 
     @Test
@@ -274,12 +272,12 @@ public class AlternativRepresentasjonForeldrepengerVedleggIT extends AbstractIT 
         SoeknadsskjemaEngangsstoenad soknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
                 .faktum("ytelser.sluttpakke").withValue("true").utforEndring()
                 .hentPaakrevdeVedlegg()
-                .vedlegg("Y4").withInnsendingsValg(Vedlegg.Status.LastetOpp).utforEndring()
+                .vedlegg(Y4).withInnsendingsValg(Status.LastetOpp).utforEndring()
                 .hentPaakrevdeVedlegg()
                 .soknad()
                 .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
 
         assertThat(soknad.getVedleggListes()).hasSize(1);
-        assertThat(soknad.getVedleggListes()).extracting("skjemanummer").contains(DokumentTypeId.get("Y4"));
+        assertThat(soknad.getVedleggListes()).extracting("skjemanummer").contains(Y4.dokumentTypeId());
     }
 }

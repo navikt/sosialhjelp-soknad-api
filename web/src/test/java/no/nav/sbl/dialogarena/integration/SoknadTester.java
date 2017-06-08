@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad.Skjemanummer;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.assertj.core.api.AbstractObjectAssert;
@@ -234,6 +235,10 @@ public class SoknadTester extends JerseyTest {
         public VedleggTester skalIkkeKreveNoenVedlegg() {
             assertThat(soknad.getVedlegg()).isEmpty();
             return this;
+        }
+
+        public VedleggTester vedlegg(Skjemanummer skjemanummer) {
+            return vedlegg(skjemanummer.toString());
         }
 
         public VedleggTester vedlegg(String skjemaNummer) {
