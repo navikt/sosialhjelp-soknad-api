@@ -13,13 +13,10 @@
     <!-- Søknadsvalg -->
     <faktum>
         <id>soknadsvalg.stonadstype</id>
-        <dependOn>soknadsvalg.fodselelleradopsjon</dependOn>
-        <dependOnValues>
-            <value>fodsel</value>
-        </dependOnValues>
     </faktum>
     <faktum>
         <id>soknadsvalg.fodselelleradopsjon</id>
+        <dependOn>soknadsvald.stonadstype</dependOn>
     </faktum>
 
     <!-- Veiledning -->
