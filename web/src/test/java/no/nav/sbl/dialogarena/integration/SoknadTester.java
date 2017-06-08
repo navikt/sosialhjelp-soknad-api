@@ -240,16 +240,24 @@ public class SoknadTester extends JerseyTest {
             return this;
         }
 
+        public FaktumTester withProperties(Map<String,String> properties){
+            for(String property : properties.keySet()){
+                this.faktum.medProperty(property, properties.get(property));
+            }
+            return this;
+        }
+
         FaktumTester skalVareSystemFaktum() {
             assertThat(faktum.getType()).isEqualTo(SYSTEMREGISTRERT);
             return this;
         }
 
         SoknadTester utforEndring() {
-            if (Objects.isNull(value)) {
+            if (Objects.isNull(value) || Objects.isNull(faktum.getProperties())) {
                 throw new RuntimeException("Ingen endring å utføre  - ingen value er satt.");
             }
             faktum.setValue(value);
+            faktum.setProperties(faktum.getProperties());
             return endreFaktum(faktum);
         }
 
