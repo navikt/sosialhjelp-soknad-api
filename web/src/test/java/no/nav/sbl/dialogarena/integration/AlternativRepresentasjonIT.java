@@ -103,8 +103,8 @@ public class AlternativRepresentasjonIT extends AbstractIT {
     @Test
     public void soknadsvalgTest() {
         SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
-                .faktum("soknadsvalg.fodselelleradopsjon").withValue("adopsjon").utforEndring()
-                .faktum("soknadsvalg.stonadstype").withValue("engangsstonadFar").utforEndring();
+                .faktum("soknadsvalg.stonadstype").withValue("engangsstonadFar").utforEndring()
+                .faktum("soknadsvalg.fodselelleradopsjon").withValue("adopsjon").utforEndring();
 
         SoeknadsskjemaEngangsstoenad soknad = testSoknad
                 .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
