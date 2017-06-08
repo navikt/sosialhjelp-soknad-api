@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.integration;
 
 import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.Innsendingsvalg;
 import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
+import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.Vedlegg;
 import no.nav.sbl.dialogarena.config.IntegrationConfig;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.ForeldrepengerInformasjon;
@@ -279,5 +280,35 @@ public class AlternativRepresentasjonForeldrepengerVedleggIT extends AbstractIT 
 
         assertThat(soknad.getVedleggListes()).hasSize(1);
         assertThat(soknad.getVedleggListes()).extracting("skjemanummer").contains(Y4.dokumentTypeId());
+    }
+
+    @Test
+    public void skalBareSetteTilleggsinfoForStatusSendesIkkeEllerStatusSendTidligere() {
+        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
+                .faktum("ytelser.sluttpakke").withValue("true").utforEndring()
+                .hentPaakrevdeVedlegg()
+                .vedlegg(Y4).withInnsendingsValg(Status.LastetOpp).withAarsak("aarsak").utforEndring()
+                .hentPaakrevdeVedlegg()
+                .soknad();
+
+        SoeknadsskjemaEngangsstoenad soknad = soknadTester.hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+        assertThat(soknad.getVedleggListes()).hasSize(1);
+        assertThat(soknad.getVedleggListes().get(0).getTilleggsinfo()).isNull();
+
+        soknad = soknadTester.hentPaakrevdeVedlegg()
+                .vedlegg(Y4).withInnsendingsValg(Status.VedleggSendesIkke).utforEndring()
+                .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+        assertThat(soknad.getVedleggListes().get(0).getTilleggsinfo()).isEqualTo("aarsak");
+
+        soknad = soknadTester.hentPaakrevdeVedlegg()
+                .vedlegg(Y4).withInnsendingsValg(Status.VedleggSendesAvAndre).utforEndring()
+                .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+        assertThat(soknad.getVedleggListes().get(0).getTilleggsinfo()).isNull();
+
+
+        soknad = soknadTester.hentPaakrevdeVedlegg()
+                .vedlegg(Y4).withInnsendingsValg(Status.VedleggAlleredeSendt).utforEndring()
+                .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+        assertThat(soknad.getVedleggListes().get(0).getTilleggsinfo()).isEqualTo("aarsak");
     }
 }
