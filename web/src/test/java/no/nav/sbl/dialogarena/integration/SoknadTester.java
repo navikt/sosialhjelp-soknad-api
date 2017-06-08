@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.integration;
 
 
-import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 import no.nav.sbl.dialogarena.rest.SoknadApplication;
 import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
@@ -240,8 +239,8 @@ public class SoknadTester extends JerseyTest {
             return this;
         }
 
-        public FaktumTester withProperties(Map<String,String> properties){
-            for(String property : properties.keySet()){
+        public FaktumTester withProperties(Map<String, String> properties) {
+            for (String property : properties.keySet()) {
                 this.faktum.medProperty(property, properties.get(property));
             }
             return this;
