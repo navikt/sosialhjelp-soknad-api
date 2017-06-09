@@ -1,8 +1,7 @@
 package no.nav.sbl.dialogarena.integration;
 
-import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.Innsendingsvalg;
-import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
-import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.Vedlegg;
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Innsendingsvalg;
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 import no.nav.sbl.dialogarena.config.IntegrationConfig;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.ForeldrepengerInformasjon;

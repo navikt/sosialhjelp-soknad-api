@@ -1,6 +1,8 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad;
 
-import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.*;
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.KanIkkeOppgiFar;
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Landkoder;
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.OpplysningerOmFar;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 
@@ -48,7 +50,7 @@ public class OpplysningerOmFarTilXml implements Function<WebSoknad, Opplysninger
         return opplysningerOmFar;
     }
 
-    private String hentStringFraProperty(Faktum faktum, String property){
+    private String hentStringFraProperty(Faktum faktum, String property) {
         return faktum == null ? null : faktum.finnEgenskap(property) == null ? null : faktum.finnEgenskap(property).getValue();
     }
 }
