@@ -1,9 +1,9 @@
 package no.nav.sbl.dialogarena.integration;
 
-import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.FoedselEllerAdopsjon;
-import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
-import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.Stoenadstype;
-import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.Utenlandsopphold;
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon;
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Stoenadstype;
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Utenlandsopphold;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.ForeldrepengerInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad.Stonadstyper;
 import org.junit.Before;
@@ -28,16 +28,17 @@ public class AlternativRepresentasjonIT extends AbstractIT {
     }
 
     @Test
-    public void skalValidereXMLKunLikeForInnsending(){
+    public void skalIkkeValidereXMLForOpprettetStatus(){
         SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer).settDelstegstatus("opprettet");
         Response response = testSoknad.hentAlternativRepresentasjonResponseMedStatus();
-        assertThat(response.getStatusInfo().getStatusCode()).isNotEqualTo(500);
+        assertThat(response.getStatusInfo().getStatusCode()).isEqualTo(200);
 
-        testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer).settDelstegstatus("oppsummering");
-        response = testSoknad.hentAlternativRepresentasjonResponseMedStatus();
+    }
+    @Test
+    public void skalValidereXMLForOppsummringStatus(){
+        SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer).settDelstegstatus("oppsummering");
+        Response response = testSoknad.hentAlternativRepresentasjonResponseMedStatus();
         assertThat(response.getStatusInfo().getStatusCode()).isEqualTo(500);
-
-
     }
 
     @Test

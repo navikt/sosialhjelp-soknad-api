@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad;
 
-import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.Innsendingsvalg;
-import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.Vedlegg;
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Innsendingsvalg;
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AlleredeHandtertException;
