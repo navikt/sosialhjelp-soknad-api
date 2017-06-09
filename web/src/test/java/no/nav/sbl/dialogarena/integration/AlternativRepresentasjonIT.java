@@ -162,4 +162,39 @@ public class AlternativRepresentasjonIT extends AbstractIT {
         assertThat(soknad.getTilleggsopplysninger()).isNull();
     }
 
+    @Test
+    public void skalIkkeViseOpplysningerOmMorOgRettigheterVedEngangsstonadMor() {
+        SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
+                .faktum("soknadsvalg.stonadstype").withValue("engangsstonadMor").utforEndring()
+                .faktum("soknadsvalg.fodselelleradopsjon").withValue("adopsjon").utforEndring()
+                .faktum("infofar.opplysninger.fornavn").withValue("Fornavn").utforEndring()
+                .faktum("infofar.opplysninger.etternavn").withValue("Etternavn").utforEndring();
+
+        SoeknadsskjemaEngangsstoenad soknad = testSoknad
+                .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+
+        assertThat(soknad.getOpplysningerOmMor()).isNull();
+        assertThat(soknad.getRettigheter()).isNull();
+        assertThat(soknad.getOpplysningerOmFar()).isNotNull();
+    }
+
+    @Test
+    public void skalViseRettigheterOgIkkeOpplysningerOmFarVedEngangsstonadFar() {
+        SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
+                .faktum("soknadsvalg.stonadstype").withValue("engangsstonadFar").utforEndring()
+                .faktum("soknadsvalg.fodselelleradopsjon").withValue("fodsel").utforEndring()
+                .faktum("infomor.opplysninger.fornavn").withValue("Fornavn").utforEndring()
+                .faktum("infomor.opplysninger.etternavn").withValue("Etternavn").utforEndring()
+                .faktum("rettigheter.overtak").withValue("overtattOmsorgInnen53UkerFodsel").utforEndring();
+
+        SoeknadsskjemaEngangsstoenad soknad = testSoknad
+                .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+
+        assertThat(soknad.getOpplysningerOmFar()).isNull();
+        assertThat(soknad.getOpplysningerOmMor()).isNotNull();
+        assertThat(soknad.getRettigheter()).isNotNull();
+        assertThat(soknad.getRettigheter().getGrunnlagForAnsvarsovertakelse())
+                .isEqualTo("overtattOmsorgInnen53UkerFodsel");
+    }
+
 }
