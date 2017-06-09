@@ -6,16 +6,16 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class AktoerTilXmlTest {
+public class BrukerTilXmlTest {
 
     @Test
-    public void medAktoerId() {
+    public void medPersonnummerTest() {
         WebSoknad soknad = new WebSoknad();
 
         soknad.medAktorId("***REMOVED***1");
 
-        AktoerId resultat = (AktoerId) new AktoerTilXml().apply(soknad);
-        assertThat(resultat.getAktoerId()).isEqualTo("***REMOVED***1");
+        Bruker resultat = (Bruker) new BrukerTilXml().apply(soknad);
+        assertThat(resultat.getPersonidentifikator()).isEqualTo("***REMOVED***1");
 
     }
 }
