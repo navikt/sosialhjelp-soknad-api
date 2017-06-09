@@ -17,6 +17,7 @@ public class ForeldrepengerEngangsstonadVedleggIT extends AbstractIT {
     public void skalHaP5VedleggVedOvertattOmsorgFodsel() {
         soknadMedDelstegstatusOpprettet(foreldrepengerOrdinaerSkjemaNummer)
                 .faktum("soknadsvalg.fodselelleradopsjon").withValue("fodsel").utforEndring()
+                .faktum("soknadsvalg.stonadstype").withValue("engangsstonadFar").utforEndring()
                 .faktum("rettigheter.overtak").withValue("overtattOmsorgInnen53UkerFodsel").utforEndring()
                 .hentPaakrevdeVedlegg()
                 .skalHaVedleggMedSkjemaNummerTillegg("P5", "overtatt");
@@ -25,7 +26,8 @@ public class ForeldrepengerEngangsstonadVedleggIT extends AbstractIT {
     @Test
     public void skalHaP5VedleggVedOvertattOmsorgAdopsjon() {
         soknadMedDelstegstatusOpprettet(foreldrepengerOrdinaerSkjemaNummer)
-                .faktum("soknadsvalg.fodselelleradopsjon").withValue("fodsel").utforEndring()
+                .faktum("soknadsvalg.fodselelleradopsjon").withValue("adopsjon").utforEndring()
+                .faktum("soknadsvalg.stonadstype").withValue("engangsstonadFar").utforEndring()
                 .faktum("rettigheter.overtak").withValue("overtattOmsorgInnen53UkerAdopsjon").utforEndring()
                 .hentPaakrevdeVedlegg()
                 .skalHaVedleggMedSkjemaNummerTillegg("P5", "overtatt");
