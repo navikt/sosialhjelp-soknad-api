@@ -16,7 +16,7 @@
     </faktum>
     <faktum>
         <id>soknadsvalg.fodselelleradopsjon</id>
-        <dependOn>soknadsvald.stonadstype</dependOn>
+        <dependOn>soknadsvalg.stonadstype</dependOn>
     </faktum>
 
     <!-- Veiledning -->

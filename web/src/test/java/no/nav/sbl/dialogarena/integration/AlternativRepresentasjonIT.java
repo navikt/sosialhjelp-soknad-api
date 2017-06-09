@@ -1,6 +1,8 @@
 package no.nav.sbl.dialogarena.integration;
 
+import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.FoedselEllerAdopsjon;
 import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
+import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.Stoenadstype;
 import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.Utenlandsopphold;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.ForeldrepengerInformasjon;
 import org.junit.Before;
@@ -44,7 +46,7 @@ public class AlternativRepresentasjonIT extends AbstractIT {
         SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
                 .faktum("tilknytningnorge.oppholder").withValue("true").utforEndring()
                 .faktum("tilknytningnorge.tidligere").withValue("false").utforEndring()
-                .opprettFaktumWithValueAndProperties("tilknytningnorge.tidligere.periode", null, periodeProperties)
+                .nyttFaktum("tilknytningnorge.tidligere.periode").withProperties(periodeProperties).opprett()
                 .faktum("tilknytningnorge.fremtidig").withValue("true").utforEndring();
 
         SoeknadsskjemaEngangsstoenad soknad = testSoknad
@@ -120,7 +122,44 @@ public class AlternativRepresentasjonIT extends AbstractIT {
 
         assertThat(soknad.getOpplysningerOmBarn().getFoedselsdatoes().get(0)).isEqualTo(LocalDate.of(2017, 1, 1));
         assertThat(soknad.getOpplysningerOmBarn().getAntallBarn()).isEqualTo(999);
-   }
+    }
 
+    @Test
+    public void soknadsvalgTest() {
+        SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
+                .faktum("soknadsvalg.stonadstype").withValue("engangsstonadFar").utforEndring()
+                .faktum("soknadsvalg.fodselelleradopsjon").withValue("adopsjon").utforEndring();
+
+        SoeknadsskjemaEngangsstoenad soknad = testSoknad
+                .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+
+        assertThat(soknad.getSoknadsvalg()).isNotNull();
+        assertThat(soknad.getSoknadsvalg().getFoedselEllerAdopsjon()).isEqualTo(FoedselEllerAdopsjon.ADOPSJON);
+        assertThat(soknad.getSoknadsvalg().getStoenadstype()).isEqualTo(Stoenadstype.ENGANGSSTOENADFAR);
+    }
+
+    @Test
+    public void alternativRepresentasjonTilleggsopplysningerMedTest() {
+        SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
+                .faktum("tilleggsopplysninger.fritekst").withValue("Test tilleggsopplysninger").utforEndring();
+
+        SoeknadsskjemaEngangsstoenad soknad = testSoknad
+                .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+
+        assertThat(soknad.getTilleggsopplysninger()).isNotNull();
+        assertThat(soknad.getTilleggsopplysninger()).isEqualTo("Test tilleggsopplysninger");
+    }
+
+    @Test
+    public void alternativRepresentasjonIkkeTilleggsopplysningerTest() {
+        SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
+                .faktum("soknadsvalg.stonadstype").withValue("engangsstonadFar").utforEndring()
+                .faktum("soknadsvalg.fodselelleradopsjon").withValue("adopsjon").utforEndring();
+
+        SoeknadsskjemaEngangsstoenad soknad = testSoknad
+                .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+
+        assertThat(soknad.getTilleggsopplysninger()).isNull();
+    }
 
 }

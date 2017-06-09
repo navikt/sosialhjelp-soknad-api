@@ -25,7 +25,7 @@ public class DagpengerBarneTilleggVedleggIT extends AbstractIT {
     @Test
     public void skalHaX8VedleggVedBarn() {
         soknadMedDelstegstatusOpprettet(dagpengerSkjemaNummer)
-                .opprettFaktumWithValueAndProperties("barn", null, singletonMap("vedlegg", "true"))
+                .nyttFaktum("barn").withProperty("vedlegg", "true").opprett()
                 .hentPaakrevdeVedlegg()
                 .skalHaVedlegg("X8");
     }

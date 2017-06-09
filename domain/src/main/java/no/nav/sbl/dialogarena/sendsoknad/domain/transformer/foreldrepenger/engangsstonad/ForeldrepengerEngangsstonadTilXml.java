@@ -20,7 +20,7 @@ public class ForeldrepengerEngangsstonadTilXml implements AlternativRepresentasj
     }
 
     public AlternativRepresentasjon transform(WebSoknad webSoknad) {
-        SoeknadsskjemaEngangsstoenad engangsstonad = tilSoeknadsskjemaEngangsstoenad(webSoknad, messageSource);
+        SoeknadsskjemaEngangsstoenad engangsstonad = tilSoeknadsskjemaEngangsstoenad(webSoknad);
         ByteArrayOutputStream xml = new ByteArrayOutputStream();
         JAXB.marshal(engangsstonad, xml);
         return new AlternativRepresentasjon()
@@ -31,20 +31,27 @@ public class ForeldrepengerEngangsstonadTilXml implements AlternativRepresentasj
                 .medContent(xml.toByteArray());
     }
 
-    private SoeknadsskjemaEngangsstoenad tilSoeknadsskjemaEngangsstoenad(WebSoknad webSoknad, MessageSource messageSource) {
-        SoeknadsskjemaEngangsstoenad soknadEngangsstonad = new SoeknadsskjemaEngangsstoenad();
+    private SoeknadsskjemaEngangsstoenad tilSoeknadsskjemaEngangsstoenad(WebSoknad webSoknad) {
+        SoeknadsskjemaEngangsstoenad soeknadsskjemaEngangsstoenad = new SoeknadsskjemaEngangsstoenad();
+        String tilleggsopplysninger = webSoknad.getValueForFaktum("tilleggsopplysninger.fritekst");
+        if (!tilleggsopplysninger.equals("")) {
+            soeknadsskjemaEngangsstoenad.withTilleggsopplysninger(tilleggsopplysninger);
+        }
+
         if ("engangsstonadFar".equals(webSoknad.getValueForFaktum("soknadsvalg.stonadstype"))) {
-            soknadEngangsstonad
+            soeknadsskjemaEngangsstoenad
                     .withOpplysningerOmMor(new OpplysningerOmMorTilXml().apply(webSoknad))
                     .withRettigheter(new RettigheterTilXml().apply(webSoknad));
         } else if ("engangsstonadMor".equals(webSoknad.getValueForFaktum("soknadsvalg.stonadstype"))) {
-            soknadEngangsstonad.withOpplysningerOmFar(new OpplysningerOmFarTilXml().apply(webSoknad));
+            soeknadsskjemaEngangsstoenad.withOpplysningerOmFar(new OpplysningerOmFarTilXml().apply(webSoknad));
         }
 
-        return soknadEngangsstonad
+        return soeknadsskjemaEngangsstoenad
                 .withBruker(new AktoerTilXml().apply(webSoknad))
                 .withTilknytningNorge(new TilknytningTilXml().apply(webSoknad))
-                .withOpplysningerOmBarn(new OpplysningerOmBarnTilXml().apply(webSoknad));
+                .withOpplysningerOmBarn(new OpplysningerOmBarnTilXml().apply(webSoknad))
+                .withVedleggListes(new VedleggTilXml().apply(webSoknad))
+                .withSoknadsvalg(new SoknadsvalgTilXml().apply(webSoknad));
     }
 
     @Override
