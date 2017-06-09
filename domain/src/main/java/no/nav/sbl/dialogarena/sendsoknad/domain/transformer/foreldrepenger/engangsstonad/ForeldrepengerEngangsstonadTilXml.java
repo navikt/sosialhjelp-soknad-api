@@ -32,7 +32,13 @@ public class ForeldrepengerEngangsstonadTilXml implements AlternativRepresentasj
     }
 
     private SoeknadsskjemaEngangsstoenad tilSoeknadsskjemaEngangsstoenad(WebSoknad webSoknad) {
-        return new SoeknadsskjemaEngangsstoenad()
+        SoeknadsskjemaEngangsstoenad soeknadsskjemaEngangsstoenad = new SoeknadsskjemaEngangsstoenad();
+        String tilleggsopplysninger = webSoknad.getValueForFaktum("tilleggsopplysninger.fritekst");
+        if (!tilleggsopplysninger.equals("")) {
+            soeknadsskjemaEngangsstoenad.withTilleggsopplysninger(tilleggsopplysninger);
+        }
+
+        return soeknadsskjemaEngangsstoenad
                 .withBruker(new AktoerTilXml().apply(webSoknad))
                 .withRettigheter(new RettigheterTilXml().apply(webSoknad))
                 .withTilknytningNorge(new TilknytningTilXml().apply(webSoknad))
@@ -40,8 +46,7 @@ public class ForeldrepengerEngangsstonadTilXml implements AlternativRepresentasj
                 .withOpplysningerOmFar(new OpplysningerOmFarTilXml().apply(webSoknad))
                 .withOpplysningerOmBarn(new OpplysningerOmBarnTilXml().apply(webSoknad))
                 .withVedleggListes(new VedleggTilXml().apply(webSoknad))
-                .withSoknadsvalg(new SoknadsvalgTilXml().apply(webSoknad))
-                .withTilleggsopplysninger(webSoknad.getValueForFaktum("tilleggsopplysninger.fritekst"));
+                .withSoknadsvalg(new SoknadsvalgTilXml().apply(webSoknad));
     }
 
     @Override
