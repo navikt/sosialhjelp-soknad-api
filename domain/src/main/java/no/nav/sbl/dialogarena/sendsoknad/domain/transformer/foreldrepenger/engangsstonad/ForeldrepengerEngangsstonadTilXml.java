@@ -85,14 +85,14 @@ public class ForeldrepengerEngangsstonadTilXml implements AlternativRepresentasj
     }
 
     public void validerSkjema(SoeknadsskjemaEngangsstoenad engangsstoenadSkjema, WebSoknad soknad) {
-        QName qname = new QName("http://nav.no/melding/virksomhet/soeknadsskjemaEngangsstoenad/v1", "soeknadsskjemaengangsstoenad");
+        QName qname = new QName("http://nav.no/foreldrepenger/soeknadsskjema/engangsstoenad/v1", "soeknadsskjemaEngangsstoenad");
         JAXBElement<SoeknadsskjemaEngangsstoenad> skjema = new JAXBElement<>(qname, SoeknadsskjemaEngangsstoenad.class, engangsstoenadSkjema);
         try {
             SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             Schema schema = factory.newSchema(
                             new StreamSource(
                                     ForeldrepengerEngangsstonadTilXml.class
-                                            .getResourceAsStream("/tjenestespesifikasjon/no/nav/melding/virksomhet/soeknadsskjemaEngangsstoenad/v1/v1.xsd")
+                                            .getResourceAsStream("/tjenestespesifikasjon/foreldrepenger-soeknadsskjemaEngangsstoenad-v1.xsd")
                             )
             );
             Marshaller marshaller = JAXBContext.newInstance(SoeknadsskjemaEngangsstoenad.class).createMarshaller();
