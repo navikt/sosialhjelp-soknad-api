@@ -10,8 +10,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-
+import static java.util.stream.Collectors.toList;
 import static java.util.Collections.emptyList;
 
 public class OppsummeringsFaktum implements OppsummeringsBase{
@@ -31,7 +30,7 @@ public class OppsummeringsFaktum implements OppsummeringsBase{
         if(struktur.getProperties() != null) {
             barneProperties = struktur.getProperties().stream()
                                     .map(s -> new OppsummeringsProperty(s))
-                                    .collect(Collectors.toList());
+                                    .collect(toList());
         }else {
             barneProperties = emptyList();
         }

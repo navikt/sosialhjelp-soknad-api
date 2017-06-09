@@ -8,10 +8,9 @@ import org.joda.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
 import static no.nav.sbl.dialogarena.service.HandlebarsUtils.*;
 
 @Component
@@ -30,13 +29,16 @@ public class ForPerioderHelper extends RegistryAwareHelper<Object> {
     @Override
     public CharSequence apply(Object context, Options options) throws IOException {
 
-        DateTimeFormatter dt = DateTimeFormat.forPattern("yyyy-MM-dd").withLocale(NO_LOCALE);
+        final DateTimeFormatter dt = DateTimeFormat.forPattern("yyyy-MM-dd").withLocale(NO_LOCALE);
 
         List<Faktum> sortertFaktaEtterDato = finnWebSoknad(options.context)
                 .getFaktaSomStarterMed("perioder.tidsrom")
                 .stream()
-                .sorted(Comparator.comparing(d -> dt.parseDateTime(d.getProperties().get("fradato"))))
-                .collect(Collectors.toList());
+                .sorted((d1, d2) ->
+                        dt.parseDateTime(d1.getProperties().get("fradato"))
+                                .compareTo(dt.parseDateTime(d2.getProperties().get("fradato")))
+                        )
+                .collect(toList());
 
         if (sortertFaktaEtterDato.isEmpty()) {
             return options.inverse();
@@ -45,3 +47,4 @@ public class ForPerioderHelper extends RegistryAwareHelper<Object> {
         }
     }
 }
+

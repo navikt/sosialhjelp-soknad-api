@@ -27,8 +27,7 @@ public class HvisFlereErTrueHelper extends RegistryAwareHelper<String> {
 
         int size = (int)finnWebSoknad(options.context).getFaktaSomStarterMed(key).stream()
                 .map(f -> f.getValue())
-                .filter(f -> f != null)
-                .filter(f -> f.equals("true"))
+                .filter(v -> "true".equals(v))
                 .count();
 
         if (size > grense) {
