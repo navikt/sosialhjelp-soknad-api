@@ -14,7 +14,7 @@ public class OpplysningerOmBarnTilXmlTest {
 
     @Test
     public void morFodselHarTermin() {
-        WebSoknad soknad = settOppSoknad("engangsstonadMor", "fodsel");
+        WebSoknad soknad = settOppSoknad(Stonadstyper.ENGANGSSTONAD_MOR, "fodsel");
         soknad.getFakta().add(new Faktum().medKey("veiledning.mor.terminbekreftelse").medValue("merEnn26Uker"));
         soknad.getFakta().add(new Faktum().medKey("barnet.termindatering").medValue("2017-05-01"));
         soknad.getFakta().add(new Faktum().medKey("barnet.signertterminbekreftelse").medValue("Jordmor Mats"));
@@ -28,7 +28,7 @@ public class OpplysningerOmBarnTilXmlTest {
 
     @Test
     public void morFodselHarFodt() {
-        WebSoknad soknad = settOppSoknad("engangsstonadMor", "fodsel");
+        WebSoknad soknad = settOppSoknad(Stonadstyper.ENGANGSSTONAD_MOR, "fodsel");
         soknad.getFakta().add(new Faktum().medKey("veiledning.mor.terminbekreftelse").medValue("fodt"));
 
         OpplysningerOmBarn resultat = new OpplysningerOmBarnTilXml().apply(soknad);
@@ -38,7 +38,7 @@ public class OpplysningerOmBarnTilXmlTest {
 
     @Test
     public void farFodsel() {
-        WebSoknad soknad = settOppSoknad("engangsstonadFar", "fodsel");
+        WebSoknad soknad = settOppSoknad(Stonadstyper.ENGANGSSTONAD_FAR, "fodsel");
 
         OpplysningerOmBarn resultat = new OpplysningerOmBarnTilXml().apply(soknad);
         assertThat(resultat.getFoedselsdatoes().get(0)).isEqualTo(LocalDate.of(2017, 6, 3));
@@ -47,7 +47,7 @@ public class OpplysningerOmBarnTilXmlTest {
 
     @Test
     public void adopsjon() {
-        WebSoknad soknad = settOppSoknad("engangsstonadFar", "adopsjon");
+        WebSoknad soknad = settOppSoknad(Stonadstyper.ENGANGSSTONAD_FAR, "adopsjon");
         soknad.getFakta().add(new Faktum().medKey("barnet.alder").medValue("2013-01-02"));
         soknad.getFakta().add(new Faktum().medKey("barnet.alder").medValue("2015-02-03"));
 

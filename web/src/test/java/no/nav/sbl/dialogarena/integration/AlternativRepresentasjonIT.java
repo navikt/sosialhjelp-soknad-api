@@ -5,6 +5,7 @@ import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEnga
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Stoenadstype;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Utenlandsopphold;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.ForeldrepengerInformasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad.Stonadstyper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class AlternativRepresentasjonIT extends AbstractIT {
 
-    private String engangsstonadAdopsjonSkjemanummer = new ForeldrepengerInformasjon().getSkjemanummer().get(4);
+    private String engangsstonadAdopsjonSkjemanummer = new ForeldrepengerInformasjon().getSkjemanummer().get(1);
 
     @Before
     public void setup() throws Exception {
@@ -42,8 +43,8 @@ public class AlternativRepresentasjonIT extends AbstractIT {
     @Test
     public void alternativRepresentasjonRettigheterTest() {
         SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
-            .faktum("soknadsvalg.fodselelleradopsjon").withValue("fodsel").utforEndring()
-            .faktum("rettigheter.overtak").withValue("overtattPaGrunnAvDod").utforEndring();
+                .faktum("soknadsvalg.stonadstype").withValue(Stonadstyper.ENGANGSSTONAD_FAR).utforEndring()
+                .faktum("rettigheter.overtak").withValue("overtattPaGrunnAvDod").utforEndring();
         SoeknadsskjemaEngangsstoenad soknad = testSoknad
                 .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
         assertThat(soknad.getRettigheter()).isNotNull();
@@ -80,6 +81,7 @@ public class AlternativRepresentasjonIT extends AbstractIT {
     @Test
     public void alternativRepresentasjonOpplysningerOmMorTest() {
         SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
+                .faktum("soknadsvalg.stonadstype").withValue(Stonadstyper.ENGANGSSTONAD_FAR).utforEndring()
                 .faktum("infomor.opplysninger.fornavn").withValue("Test").utforEndring()
                 .faktum("infomor.opplysninger.etternavn").withValue("Testesen").utforEndring()
                 .faktum("infomor.opplysninger.kanIkkeOppgi").withValue("true").utforEndring()
@@ -104,6 +106,7 @@ public class AlternativRepresentasjonIT extends AbstractIT {
         personInfoProperties.put("land", "ARG");
 
         SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
+                .faktum("soknadsvalg.stonadstype").withValue(Stonadstyper.ENGANGSSTONAD_MOR).utforEndring()
                 .faktum("infofar.opplysninger.fornavn").withValue("Fornavn").utforEndring()
                 .faktum("infofar.opplysninger.etternavn").withValue("Etternavn").utforEndring()
                 .faktum("infofar.opplysninger.kanIkkeOppgi").withValue("true").utforEndring()
@@ -124,7 +127,7 @@ public class AlternativRepresentasjonIT extends AbstractIT {
     @Test
     public void opplysningerBarnTest() {
         SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
-                .faktum("soknadsvalg.stonadstype").withValue("engangsstonadFar").utforEndring()
+                .faktum("soknadsvalg.stonadstype").withValue(Stonadstyper.ENGANGSSTONAD_FAR).utforEndring()
                 .faktum("soknadsvalg.fodselelleradopsjon").withValue("fodsel").utforEndring()
                 .faktum("barnet.dato").withValue("2017-01-01").utforEndring()
                 .faktum("barnet.antall").withValue("999").utforEndring();
@@ -139,7 +142,7 @@ public class AlternativRepresentasjonIT extends AbstractIT {
     @Test
     public void soknadsvalgTest() {
         SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
-                .faktum("soknadsvalg.stonadstype").withValue("engangsstonadFar").utforEndring()
+                .faktum("soknadsvalg.stonadstype").withValue(Stonadstyper.ENGANGSSTONAD_FAR).utforEndring()
                 .faktum("soknadsvalg.fodselelleradopsjon").withValue("adopsjon").utforEndring();
 
         SoeknadsskjemaEngangsstoenad soknad = testSoknad
@@ -165,13 +168,48 @@ public class AlternativRepresentasjonIT extends AbstractIT {
     @Test
     public void alternativRepresentasjonIkkeTilleggsopplysningerTest() {
         SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
-                .faktum("soknadsvalg.stonadstype").withValue("engangsstonadFar").utforEndring()
+                .faktum("soknadsvalg.stonadstype").withValue(Stonadstyper.ENGANGSSTONAD_FAR).utforEndring()
                 .faktum("soknadsvalg.fodselelleradopsjon").withValue("adopsjon").utforEndring();
 
         SoeknadsskjemaEngangsstoenad soknad = testSoknad
                 .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
 
         assertThat(soknad.getTilleggsopplysninger()).isNull();
+    }
+
+    @Test
+    public void skalIkkeViseOpplysningerOmMorOgRettigheterVedEngangsstonadMor() {
+        SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
+                .faktum("soknadsvalg.stonadstype").withValue(Stonadstyper.ENGANGSSTONAD_MOR).utforEndring()
+                .faktum("soknadsvalg.fodselelleradopsjon").withValue("adopsjon").utforEndring()
+                .faktum("infofar.opplysninger.fornavn").withValue("Fornavn").utforEndring()
+                .faktum("infofar.opplysninger.etternavn").withValue("Etternavn").utforEndring();
+
+        SoeknadsskjemaEngangsstoenad soknad = testSoknad
+                .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+
+        assertThat(soknad.getOpplysningerOmMor()).isNull();
+        assertThat(soknad.getRettigheter()).isNull();
+        assertThat(soknad.getOpplysningerOmFar()).isNotNull();
+    }
+
+    @Test
+    public void skalViseRettigheterOgIkkeOpplysningerOmFarVedEngangsstonadFar() {
+        SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
+                .faktum("soknadsvalg.stonadstype").withValue(Stonadstyper.ENGANGSSTONAD_FAR).utforEndring()
+                .faktum("soknadsvalg.fodselelleradopsjon").withValue("fodsel").utforEndring()
+                .faktum("infomor.opplysninger.fornavn").withValue("Fornavn").utforEndring()
+                .faktum("infomor.opplysninger.etternavn").withValue("Etternavn").utforEndring()
+                .faktum("rettigheter.overtak").withValue("overtattOmsorgInnen53UkerFodsel").utforEndring();
+
+        SoeknadsskjemaEngangsstoenad soknad = testSoknad
+                .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+
+        assertThat(soknad.getOpplysningerOmFar()).isNull();
+        assertThat(soknad.getOpplysningerOmMor()).isNotNull();
+        assertThat(soknad.getRettigheter()).isNotNull();
+        assertThat(soknad.getRettigheter().getGrunnlagForAnsvarsovertakelse())
+                .isEqualTo("overtattOmsorgInnen53UkerFodsel");
     }
 
 }

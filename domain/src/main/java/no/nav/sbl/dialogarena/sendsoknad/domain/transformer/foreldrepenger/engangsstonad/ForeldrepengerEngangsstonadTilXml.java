@@ -63,12 +63,18 @@ public class ForeldrepengerEngangsstonadTilXml implements AlternativRepresentasj
         if (!tilleggsopplysninger.equals("")) {
             soeknadsskjemaEngangsstoenad.withTilleggsopplysninger(tilleggsopplysninger);
         }
+
+        if (Stonadstyper.ENGANGSSTONAD_FAR.equals(webSoknad.getValueForFaktum("soknadsvalg.stonadstype"))) {
+            soeknadsskjemaEngangsstoenad
+                    .withOpplysningerOmMor(new OpplysningerOmMorTilXml().apply(webSoknad))
+                    .withRettigheter(new RettigheterTilXml().apply(webSoknad));
+        } else if (Stonadstyper.ENGANGSSTONAD_MOR.equals(webSoknad.getValueForFaktum("soknadsvalg.stonadstype"))) {
+            soeknadsskjemaEngangsstoenad.withOpplysningerOmFar(new OpplysningerOmFarTilXml().apply(webSoknad));
+        }
+
         return soeknadsskjemaEngangsstoenad
                 .withBruker(new BrukerTilXml().apply(webSoknad))
-                .withRettigheter(new RettigheterTilXml().apply(webSoknad))
                 .withTilknytningNorge(new TilknytningTilXml().apply(webSoknad))
-                .withOpplysningerOmMor(new OpplysningerOmMorTilXml().apply(webSoknad))
-                .withOpplysningerOmFar(new OpplysningerOmFarTilXml().apply(webSoknad))
                 .withOpplysningerOmBarn(new OpplysningerOmBarnTilXml().apply(webSoknad))
                 .withVedleggListes(new VedleggTilXml().apply(webSoknad))
                 .withSoknadsvalg(new SoknadsvalgTilXml().apply(webSoknad));
