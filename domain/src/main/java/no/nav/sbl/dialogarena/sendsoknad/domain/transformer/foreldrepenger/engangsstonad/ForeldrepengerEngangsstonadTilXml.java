@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad;
 
-import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.AktoerId;
 import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
@@ -21,7 +20,7 @@ public class ForeldrepengerEngangsstonadTilXml implements AlternativRepresentasj
     }
 
     public AlternativRepresentasjon transform(WebSoknad webSoknad) {
-        SoeknadsskjemaEngangsstoenad engangsstonad = tilSoeknadsskjemaEngangsstoenad(webSoknad, messageSource);
+        SoeknadsskjemaEngangsstoenad engangsstonad = tilSoeknadsskjemaEngangsstoenad(webSoknad);
         ByteArrayOutputStream xml = new ByteArrayOutputStream();
         JAXB.marshal(engangsstonad, xml);
         return new AlternativRepresentasjon()
@@ -32,7 +31,7 @@ public class ForeldrepengerEngangsstonadTilXml implements AlternativRepresentasj
                 .medContent(xml.toByteArray());
     }
 
-    private SoeknadsskjemaEngangsstoenad tilSoeknadsskjemaEngangsstoenad(WebSoknad webSoknad, MessageSource messageSource) {
+    private SoeknadsskjemaEngangsstoenad tilSoeknadsskjemaEngangsstoenad(WebSoknad webSoknad) {
         return new SoeknadsskjemaEngangsstoenad()
                 .withBruker(new AktoerTilXml().apply(webSoknad))
                 .withRettigheter(new RettigheterTilXml().apply(webSoknad))
@@ -40,6 +39,7 @@ public class ForeldrepengerEngangsstonadTilXml implements AlternativRepresentasj
                 .withOpplysningerOmMor(new OpplysningerOmMorTilXml().apply(webSoknad))
                 .withOpplysningerOmFar(new OpplysningerOmFarTilXml().apply(webSoknad))
                 .withOpplysningerOmBarn(new OpplysningerOmBarnTilXml().apply(webSoknad))
+                .withVedleggListes(new VedleggTilXml().apply(webSoknad))
                 .withSoknadsvalg(new SoknadsvalgTilXml().apply(webSoknad))
                 .withTilleggsopplysninger(webSoknad.getValueForFaktum("tilleggsopplysninger.fritekst"));
     }
