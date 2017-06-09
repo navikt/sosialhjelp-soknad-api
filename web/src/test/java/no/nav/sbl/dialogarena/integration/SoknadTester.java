@@ -120,8 +120,12 @@ public class SoknadTester extends JerseyTest {
         return this;
     }
 
+    public Response hentAlternativRepresentasjonResponseMedStatus() {
+        return alternativRepresentasjonResource().buildGet().invoke();
+    }
+
     public <T> T hentAlternativRepresentasjon(Class<T> soeknadsskjemaEngangsstoenadClass) {
-        Response response = alternativRepresentasjonResource().buildGet().invoke();
+        Response response = hentAlternativRepresentasjonResponseMedStatus();
         return response.readEntity(soeknadsskjemaEngangsstoenadClass);
     }
 
