@@ -1,9 +1,9 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad;
 
 
-import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.FoedselEllerAdopsjon;
-import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.Soknadsvalg;
-import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.Stoenadstype;
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon;
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Soknadsvalg;
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Stoenadstype;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 
 import java.util.function.Function;

@@ -1,9 +1,9 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad;
 
 
-import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.KanIkkeOppgiMor;
-import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.Landkoder;
-import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.OpplysningerOmMor;
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.KanIkkeOppgiMor;
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Landkoder;
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.OpplysningerOmMor;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 
