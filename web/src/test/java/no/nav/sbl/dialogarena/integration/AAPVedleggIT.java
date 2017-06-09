@@ -83,7 +83,7 @@ public class AAPVedleggIT extends AbstractIT {
                 .hentPaakrevdeVedlegg()
                 .skalIkkeHaVedlegg("X8")
                 .soknad()
-                .opprettFaktumWithValue("barn", null)
+                .nyttFaktum("barn").opprett()
                 .hentPaakrevdeVedlegg()
                 .skalHaVedlegg("X8");
     }
@@ -91,7 +91,7 @@ public class AAPVedleggIT extends AbstractIT {
     @Test
     public void ekstraVedlegg() {
         soknadMedDelstegstatusOpprettet(aapOrdinaerSkjemaNummer)
-                .opprettFaktumWithValue("ekstraVedlegg", "true")
+                .nyttFaktum("ekstraVedlegg").withValue("true").opprett()
                 .hentPaakrevdeVedlegg()
                 .skalHaVedlegg("N6");
     }
