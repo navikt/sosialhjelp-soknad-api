@@ -118,7 +118,44 @@ public class AlternativRepresentasjonIT extends AbstractIT {
 
         assertThat(soknad.getOpplysningerOmBarn().getFoedselsdatoes().get(0)).isEqualTo(LocalDate.of(2017, 1, 1));
         assertThat(soknad.getOpplysningerOmBarn().getAntallBarn()).isEqualTo(999);
-   }
+    }
 
+    @Test
+    public void soknadsvalgTest() {
+        SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
+                .faktum("soknadsvalg.stonadstype").withValue("engangsstonadFar").utforEndring()
+                .faktum("soknadsvalg.fodselelleradopsjon").withValue("adopsjon").utforEndring();
+
+        SoeknadsskjemaEngangsstoenad soknad = testSoknad
+                .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+
+        assertThat(soknad.getSoknadsvalg()).isNotNull();
+        assertThat(soknad.getSoknadsvalg().getFoedselEllerAdopsjon()).isEqualTo(FoedselEllerAdopsjon.ADOPSJON);
+        assertThat(soknad.getSoknadsvalg().getStoenadstype()).isEqualTo(Stoenadstype.ENGANGSSTOENADFAR);
+    }
+
+    @Test
+    public void alternativRepresentasjonTilleggsopplysningerMedTest() {
+        SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
+                .faktum("tilleggsopplysninger.fritekst").withValue("Test tilleggsopplysninger").utforEndring();
+
+        SoeknadsskjemaEngangsstoenad soknad = testSoknad
+                .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+
+        assertThat(soknad.getTilleggsopplysninger()).isNotNull();
+        assertThat(soknad.getTilleggsopplysninger()).isEqualTo("Test tilleggsopplysninger");
+    }
+
+    @Test
+    public void alternativRepresentasjonIkkeTilleggsopplysningerTest() {
+        SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
+                .faktum("soknadsvalg.stonadstype").withValue("engangsstonadFar").utforEndring()
+                .faktum("soknadsvalg.fodselelleradopsjon").withValue("adopsjon").utforEndring();
+
+        SoeknadsskjemaEngangsstoenad soknad = testSoknad
+                .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+
+        assertThat(soknad.getTilleggsopplysninger()).isNull();
+    }
 
 }
