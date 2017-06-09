@@ -49,7 +49,7 @@ public class OpplysningerOmBarnTilXml implements Function<WebSoknad, Opplysninge
     }
 
     private boolean erMor(WebSoknad soknad) {
-        return "engangsstonadMor".equals(soknad.getValueForFaktum("soknadsvalg.stonadstype"));
+        return Stonadstyper.ENGANGSSTONAD_MOR.equals(soknad.getValueForFaktum("soknadsvalg.stonadstype"));
     }
 
     private boolean erFodsel(WebSoknad soknad) {
