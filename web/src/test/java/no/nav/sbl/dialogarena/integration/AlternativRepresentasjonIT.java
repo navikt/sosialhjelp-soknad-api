@@ -1,6 +1,8 @@
 package no.nav.sbl.dialogarena.integration;
 
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Stoenadstype;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Utenlandsopphold;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.ForeldrepengerInformasjon;
 import org.junit.Before;
