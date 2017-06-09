@@ -38,11 +38,11 @@ public class ForeldrepengerEngangsstonadTilXml implements AlternativRepresentasj
             soeknadsskjemaEngangsstoenad.withTilleggsopplysninger(tilleggsopplysninger);
         }
 
-        if ("engangsstonadFar".equals(webSoknad.getValueForFaktum("soknadsvalg.stonadstype"))) {
+        if (Stonadstyper.ENGANGSSTONAD_FAR.equals(webSoknad.getValueForFaktum("soknadsvalg.stonadstype"))) {
             soeknadsskjemaEngangsstoenad
                     .withOpplysningerOmMor(new OpplysningerOmMorTilXml().apply(webSoknad))
                     .withRettigheter(new RettigheterTilXml().apply(webSoknad));
-        } else if ("engangsstonadMor".equals(webSoknad.getValueForFaktum("soknadsvalg.stonadstype"))) {
+        } else if (Stonadstyper.ENGANGSSTONAD_MOR.equals(webSoknad.getValueForFaktum("soknadsvalg.stonadstype"))) {
             soeknadsskjemaEngangsstoenad.withOpplysningerOmFar(new OpplysningerOmFarTilXml().apply(webSoknad));
         }
 

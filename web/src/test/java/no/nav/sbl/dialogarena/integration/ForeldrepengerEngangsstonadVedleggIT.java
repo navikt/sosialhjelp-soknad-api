@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.integration;
 
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.ForeldrepengerInformasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad.Stonadstyper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,7 +18,7 @@ public class ForeldrepengerEngangsstonadVedleggIT extends AbstractIT {
     public void skalHaP5VedleggVedOvertattOmsorgFodsel() {
         soknadMedDelstegstatusOpprettet(foreldrepengerOrdinaerSkjemaNummer)
                 .faktum("soknadsvalg.fodselelleradopsjon").withValue("fodsel").utforEndring()
-                .faktum("soknadsvalg.stonadstype").withValue("engangsstonadFar").utforEndring()
+                .faktum("soknadsvalg.stonadstype").withValue(Stonadstyper.ENGANGSSTONAD_FAR).utforEndring()
                 .faktum("rettigheter.overtak").withValue("overtattOmsorgInnen53UkerFodsel").utforEndring()
                 .hentPaakrevdeVedlegg()
                 .skalHaVedleggMedSkjemaNummerTillegg("P5", "overtatt");
@@ -27,7 +28,7 @@ public class ForeldrepengerEngangsstonadVedleggIT extends AbstractIT {
     public void skalHaP5VedleggVedOvertattOmsorgAdopsjon() {
         soknadMedDelstegstatusOpprettet(foreldrepengerOrdinaerSkjemaNummer)
                 .faktum("soknadsvalg.fodselelleradopsjon").withValue("adopsjon").utforEndring()
-                .faktum("soknadsvalg.stonadstype").withValue("engangsstonadFar").utforEndring()
+                .faktum("soknadsvalg.stonadstype").withValue(Stonadstyper.ENGANGSSTONAD_FAR).utforEndring()
                 .faktum("rettigheter.overtak").withValue("overtattOmsorgInnen53UkerAdopsjon").utforEndring()
                 .hentPaakrevdeVedlegg()
                 .skalHaVedleggMedSkjemaNummerTillegg("P5", "overtatt");

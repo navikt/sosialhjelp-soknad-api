@@ -14,7 +14,7 @@ public class SoknadsvalgTilXmlTest {
     @Test
     public void farOgAdopsjon() {
         WebSoknad webSoknad = new WebSoknad();
-        webSoknad.getFakta().add(new Faktum().medKey("soknadsvalg.stonadstype").medValue("engangsstonadFar"));
+        webSoknad.getFakta().add(new Faktum().medKey("soknadsvalg.stonadstype").medValue(Stonadstyper.ENGANGSSTONAD_FAR));
         webSoknad.getFakta().add(new Faktum().medKey("soknadsvalg.fodselelleradopsjon").medValue("adopsjon"));
 
         Soknadsvalg transformResultat = new SoknadsvalgTilXml().apply(webSoknad);
@@ -27,7 +27,7 @@ public class SoknadsvalgTilXmlTest {
     @Test
     public void morOgAdopsjon() {
         WebSoknad webSoknad = new WebSoknad();
-        webSoknad.getFakta().add(new Faktum().medKey("soknadsvalg.stonadstype").medValue("engangsstonadMor"));
+        webSoknad.getFakta().add(new Faktum().medKey("soknadsvalg.stonadstype").medValue(Stonadstyper.ENGANGSSTONAD_MOR));
         webSoknad.getFakta().add(new Faktum().medKey("soknadsvalg.fodselelleradopsjon").medValue("adopsjon"));
 
         Soknadsvalg transformResultat = new SoknadsvalgTilXml().apply(webSoknad);
@@ -40,7 +40,7 @@ public class SoknadsvalgTilXmlTest {
     @Test
     public void farOgFodsel() {
         WebSoknad webSoknad = new WebSoknad();
-        webSoknad.getFakta().add(new Faktum().medKey("soknadsvalg.stonadstype").medValue("engangsstonadFar"));
+        webSoknad.getFakta().add(new Faktum().medKey("soknadsvalg.stonadstype").medValue(Stonadstyper.ENGANGSSTONAD_FAR));
         webSoknad.getFakta().add(new Faktum().medKey("soknadsvalg.fodselelleradopsjon").medValue("fodsel"));
 
         Soknadsvalg transformResultat = new SoknadsvalgTilXml().apply(webSoknad);
@@ -53,7 +53,7 @@ public class SoknadsvalgTilXmlTest {
     @Test
     public void morOgFodsel() {
         WebSoknad webSoknad = new WebSoknad();
-        webSoknad.getFakta().add(new Faktum().medKey("soknadsvalg.stonadstype").medValue("engangsstonadMor"));
+        webSoknad.getFakta().add(new Faktum().medKey("soknadsvalg.stonadstype").medValue(Stonadstyper.ENGANGSSTONAD_MOR));
         webSoknad.getFakta().add(new Faktum().medKey("soknadsvalg.fodselelleradopsjon").medValue("fodsel"));
 
         Soknadsvalg transformResultat = new SoknadsvalgTilXml().apply(webSoknad);
