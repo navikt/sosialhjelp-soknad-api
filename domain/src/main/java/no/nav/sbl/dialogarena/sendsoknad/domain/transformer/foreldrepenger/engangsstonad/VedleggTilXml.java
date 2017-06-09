@@ -25,7 +25,14 @@ public class VedleggTilXml implements Function<WebSoknad, List<Vedlegg>> {
             .withSkjemanummer(dokumentTypeId(soknadVedlegg.getSkjemaNummer()))
             .withErPaakrevdISoeknadsdialog(erPaakrevd(soknadVedlegg.getSkjemaNummer()))
             .withInnsendingsvalg(innsendingsvalg(soknadVedlegg.getInnsendingsvalg()))
-            .withTilleggsinfo(soknadVedlegg.getAarsak());
+            .withTilleggsinfo(aarsak(soknadVedlegg));
+
+    private String aarsak(no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg vedlegg) {
+        if (vedlegg.getInnsendingsvalg() == Status.VedleggSendesIkke || vedlegg.getInnsendingsvalg() == Status.VedleggAlleredeSendt) {
+            return vedlegg.getAarsak();
+        }
+        return null;
+    }
 
     private String dokumentTypeId(String skjemanummer) {
         return Skjemanummer.valueOf(skjemanummer).dokumentTypeId();

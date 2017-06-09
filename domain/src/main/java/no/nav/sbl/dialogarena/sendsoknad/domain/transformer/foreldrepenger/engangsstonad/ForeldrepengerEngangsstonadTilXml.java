@@ -57,15 +57,21 @@ public class ForeldrepengerEngangsstonadTilXml implements AlternativRepresentasj
         return soknad.getDelstegStatus() == DelstegStatus.VEDLEGG_VALIDERT;
     }
 
-    private SoeknadsskjemaEngangsstoenad tilSoeknadsskjemaEngangsstoenad(WebSoknad webSoknad, MessageSource messageSource) {
-        return new SoeknadsskjemaEngangsstoenad()
+    private SoeknadsskjemaEngangsstoenad tilSoeknadsskjemaEngangsstoenad(WebSoknad webSoknad) {
+        SoeknadsskjemaEngangsstoenad soeknadsskjemaEngangsstoenad = new SoeknadsskjemaEngangsstoenad();
+        String tilleggsopplysninger = webSoknad.getValueForFaktum("tilleggsopplysninger.fritekst");
+        if (!tilleggsopplysninger.equals("")) {
+            soeknadsskjemaEngangsstoenad.withTilleggsopplysninger(tilleggsopplysninger);
+        }
+        return soeknadsskjemaEngangsstoenad
                 .withBruker(new AktoerTilXml().apply(webSoknad))
                 .withRettigheter(new RettigheterTilXml().apply(webSoknad))
                 .withTilknytningNorge(new TilknytningTilXml().apply(webSoknad))
                 .withOpplysningerOmMor(new OpplysningerOmMorTilXml().apply(webSoknad))
                 .withOpplysningerOmFar(new OpplysningerOmFarTilXml().apply(webSoknad))
                 .withOpplysningerOmBarn(new OpplysningerOmBarnTilXml().apply(webSoknad))
-                .withVedleggListes(new VedleggTilXml().apply(webSoknad));
+                .withVedleggListes(new VedleggTilXml().apply(webSoknad))
+                .withSoknadsvalg(new SoknadsvalgTilXml().apply(webSoknad));
     }
 
     @Override

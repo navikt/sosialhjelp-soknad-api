@@ -40,7 +40,7 @@ public class OpplysningerOmBarnTilXml implements Function<WebSoknad, Opplysninge
                     .withAntallBarn(antallBarn)
                     .withFoedselsdatoes(
                             webSoknad.getFaktaMedKey("barnet.alder").stream()
-                                    .map(e -> LocalDate.parse(e.getValue()))
+                                    .map(f -> faktumErTom(f) ? null : LocalDate.parse(f.getValue()))
                                     .collect(toList())
                     );
         }
