@@ -136,4 +136,28 @@ public class AlternativRepresentasjonIT extends AbstractIT {
         assertThat(soknad.getSoknadsvalg().getStoenadstype()).isEqualTo(Stoenadstype.ENGANGSSTOENADFAR);
     }
 
+    @Test
+    public void alternativRepresentasjonTilleggsopplysningerMedTest() {
+        SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
+                .faktum("tilleggsopplysninger.fritekst").withValue("Test tilleggsopplysninger").utforEndring();
+
+        SoeknadsskjemaEngangsstoenad soknad = testSoknad
+                .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+
+        assertThat(soknad.getTilleggsopplysninger()).isNotNull();
+        assertThat(soknad.getTilleggsopplysninger()).isEqualTo("Test tilleggsopplysninger");
+    }
+
+    @Test
+    public void alternativRepresentasjonIkkeTilleggsopplysningerTest() {
+        SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
+                .faktum("soknadsvalg.stonadstype").withValue("engangsstonadFar").utforEndring()
+                .faktum("soknadsvalg.fodselelleradopsjon").withValue("adopsjon").utforEndring();
+
+        SoeknadsskjemaEngangsstoenad soknad = testSoknad
+                .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+
+        assertThat(soknad.getTilleggsopplysninger()).isNull();
+    }
+
 }
