@@ -28,16 +28,17 @@ public class AlternativRepresentasjonIT extends AbstractIT {
     }
 
     @Test
-    public void skalValidereXMLKunLikeForInnsending(){
+    public void skalIkkeValidereXMLForOpprettetStatus(){
         SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer).settDelstegstatus("opprettet");
         Response response = testSoknad.hentAlternativRepresentasjonResponseMedStatus();
-        assertThat(response.getStatusInfo().getStatusCode()).isNotEqualTo(500);
+        assertThat(response.getStatusInfo().getStatusCode()).isEqualTo(200);
 
-        testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer).settDelstegstatus("oppsummering");
-        response = testSoknad.hentAlternativRepresentasjonResponseMedStatus();
+    }
+    @Test
+    public void skalValidereXMLForOppsummringStatus(){
+        SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer).settDelstegstatus("oppsummering");
+        Response response = testSoknad.hentAlternativRepresentasjonResponseMedStatus();
         assertThat(response.getStatusInfo().getStatusCode()).isEqualTo(500);
-
-
     }
 
     @Test
