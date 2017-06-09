@@ -1,13 +1,12 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad;
 
-import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.AktoerId;
 import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
-import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AlleredeHandtertException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonType;
 import org.slf4j.Logger;
@@ -102,7 +101,7 @@ public class ForeldrepengerEngangsstonadTilXml implements AlternativRepresentasj
             logger.error("Validering av skjema feilet: " + e + ". Xml: " + baos.toString(), e);
             Event event = MetricsFactory.createEvent("soknad.xmlrepresentasjon.valideringsfeil");
             event.report();
-            throw new ApplicationException("Validering av skjema feilet");
+            throw new AlleredeHandtertException();
         }
 
     }
