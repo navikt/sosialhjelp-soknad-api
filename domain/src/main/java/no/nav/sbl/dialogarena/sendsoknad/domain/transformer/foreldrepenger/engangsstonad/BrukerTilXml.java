@@ -6,13 +6,13 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 
 import java.util.function.Function;
 
-public class AktoerTilXml implements Function<WebSoknad, Aktoer> {
+public class BrukerTilXml implements Function<WebSoknad, Aktoer> {
 
     @Override
     public Aktoer apply(WebSoknad webSoknad) {
-        String aktoerId = webSoknad.getAktoerId();
+        String personnummer = webSoknad.getAktoerId();
 
-        return new AktoerId().withAktoerId(aktoerId);
+        return new Bruker().withPersonidentifikator(personnummer);
     }
 
 }
