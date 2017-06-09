@@ -38,9 +38,9 @@ public class ForeldrepengerEngangsstonadTilXml implements AlternativRepresentasj
     }
 
     public AlternativRepresentasjon transform(WebSoknad webSoknad) {
-        SoeknadsskjemaEngangsstoenad engangsstonad = tilSoeknadsskjemaEngangsstoenad(webSoknad, messageSource);
+        SoeknadsskjemaEngangsstoenad engangsstonad = tilSoeknadsskjemaEngangsstoenad(webSoknad);
         if(brukerErPaaOppsummeringssiden(webSoknad)){
-            validerSkjema(engangsstonad);
+            validerSkjema(engangsstonad,webSoknad);
         }
 
         ByteArrayOutputStream xml = new ByteArrayOutputStream();
@@ -84,7 +84,7 @@ public class ForeldrepengerEngangsstonadTilXml implements AlternativRepresentasj
         return transform(webSoknad);
     }
 
-    public void validerSkjema(SoeknadsskjemaEngangsstoenad engangsstoenadSkjema) {
+    public void validerSkjema(SoeknadsskjemaEngangsstoenad engangsstoenadSkjema, WebSoknad soknad) {
         QName qname = new QName("http://nav.no/melding/virksomhet/soeknadsskjemaEngangsstoenad/v1", "soeknadsskjemaengangsstoenad");
         JAXBElement<SoeknadsskjemaEngangsstoenad> skjema = new JAXBElement<>(qname, SoeknadsskjemaEngangsstoenad.class, engangsstoenadSkjema);
         try {
@@ -106,6 +106,7 @@ public class ForeldrepengerEngangsstonadTilXml implements AlternativRepresentasj
             JAXB.marshal(skjema, baos);
             logger.error("Validering av skjema feilet: " + e + ". Xml: " + baos.toString(), e);
             Event event = MetricsFactory.createEvent("soknad.xmlrepresentasjon.valideringsfeil");
+            event.addTagToReport("soknad.xmlrepresentasjon.valideringsfeil.skjemanummer",soknad.getskjemaNummer());
             event.report();
             throw new AlleredeHandtertException();
         }
