@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad;
 
+import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.AktoerId;
 import no.nav.melding.virksomhet.soeknadsskjemaengangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
@@ -11,7 +12,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresenta
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonType;
 import org.slf4j.Logger;
 import org.springframework.context.MessageSource;
-import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXB;
@@ -43,6 +43,7 @@ public class ForeldrepengerEngangsstonadTilXml implements AlternativRepresentasj
         if(brukerErPaaOppsummeringssiden(webSoknad)){
             validerSkjema(engangsstonad);
         }
+
         ByteArrayOutputStream xml = new ByteArrayOutputStream();
         JAXB.marshal(engangsstonad, xml);
         return new AlternativRepresentasjon()
@@ -59,8 +60,13 @@ public class ForeldrepengerEngangsstonadTilXml implements AlternativRepresentasj
 
     private SoeknadsskjemaEngangsstoenad tilSoeknadsskjemaEngangsstoenad(WebSoknad webSoknad, MessageSource messageSource) {
         return new SoeknadsskjemaEngangsstoenad()
+                .withBruker(new AktoerTilXml().apply(webSoknad))
                 .withRettigheter(new RettigheterTilXml().apply(webSoknad))
-                .withTilknytningNorge(new TilknytningTilXml().apply(webSoknad));
+                .withTilknytningNorge(new TilknytningTilXml().apply(webSoknad))
+                .withOpplysningerOmMor(new OpplysningerOmMorTilXml().apply(webSoknad))
+                .withOpplysningerOmFar(new OpplysningerOmFarTilXml().apply(webSoknad))
+                .withOpplysningerOmBarn(new OpplysningerOmBarnTilXml().apply(webSoknad))
+                .withVedleggListes(new VedleggTilXml().apply(webSoknad));
     }
 
     @Override

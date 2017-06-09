@@ -28,12 +28,10 @@ public class IntegrationConfig {
                 for (ClassPath.ClassInfo classInfo : tjenester) {
                     for (Method method: classInfo.load().getMethods()) {
                         Invokable<?, Object> from = Invokable.from(method);
-                        System.out.println(method + " : " + from.isAnnotationPresent(Bean.class));
                         if(from.isAnnotationPresent(Bean.class)){
                             Object mock = mockClass(from.getReturnType().getRawType());
                             beanFactory.registerSingleton(from.getName(), mock);
                             MOCKS.put(from.getName(), mock);
-                            System.out.println("register: " + classInfo);
                         }
                     }
                 }

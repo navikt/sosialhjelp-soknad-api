@@ -27,7 +27,7 @@ public class DagpengerArbeidsforholdVedleggIT extends AbstractIT {
     @Test
     public void skalHaT8VedleggVedSagtOppAvArbeidsgiver() {
         soknadMedDelstegstatusOpprettet(dagpengerSkjemaNummer)
-                .opprettFaktumWithValueAndProperties("arbeidsforhold", "true", singletonMap("type", "sagtoppavarbeidsgiver"))
+                .nyttFaktum("arbeidsforhold").withValue("true").withProperty("type", "sagtoppavarbeidsgiver").opprett()
                 .hentPaakrevdeVedlegg()
                 .skalHaVedleggMedSkjemaNummerTillegg("T8", "sagtoppavarbeidsgiver");
     }
@@ -35,7 +35,7 @@ public class DagpengerArbeidsforholdVedleggIT extends AbstractIT {
     @Test
     public void skalHaT8VedleggVedSagtOppSelv() {
         soknadMedDelstegstatusOpprettet(dagpengerSkjemaNummer)
-                .opprettFaktumWithValueAndProperties("arbeidsforhold", "true", singletonMap("type", "sagtoppselv"))
+                .nyttFaktum("arbeidsforhold").withValue("true").withProperty("type", "sagtoppselv").opprett()
                 .hentPaakrevdeVedlegg()
                 .skalHaVedleggMedSkjemaNummerTillegg("T8", "sagtoppselv");
     }
@@ -43,7 +43,7 @@ public class DagpengerArbeidsforholdVedleggIT extends AbstractIT {
     @Test
     public void skalHaT8VedleggVedKontraktUtgaatt() {
         soknadMedDelstegstatusOpprettet(dagpengerSkjemaNummer)
-                .opprettFaktumWithValueAndProperties("arbeidsforhold", "true", singletonMap("type", "kontraktutgaatt"))
+                .nyttFaktum("arbeidsforhold").withValue("true").withProperty("type", "kontraktutgaatt").opprett()
                 .hentPaakrevdeVedlegg()
                 .skalHaVedleggMedSkjemaNummerTillegg("T8", "kontraktutgaatt");
     }
@@ -51,7 +51,7 @@ public class DagpengerArbeidsforholdVedleggIT extends AbstractIT {
     @Test
     public void skalHaT8VedleggVedRedusertArbeidstid() {
         soknadMedDelstegstatusOpprettet(dagpengerSkjemaNummer)
-                .opprettFaktumWithValueAndProperties("arbeidsforhold", "true", singletonMap("type", "redusertarbeidstid"))
+                .nyttFaktum("arbeidsforhold").withValue("true").withProperty("type", "redusertarbeidstid").opprett()
                 .hentPaakrevdeVedlegg()
                 .skalHaVedleggMedSkjemaNummerTillegg("T8", "redusertarbeidstid");
     }
@@ -59,7 +59,7 @@ public class DagpengerArbeidsforholdVedleggIT extends AbstractIT {
     @Test
     public void skalHaT8VedleggVedAvskjediget() {
         soknadMedDelstegstatusOpprettet(dagpengerSkjemaNummer)
-                .opprettFaktumWithValueAndProperties("arbeidsforhold", "true", singletonMap("type", "avskjediget"))
+                .nyttFaktum("arbeidsforhold").withValue("true").withProperty("type", "avskjediget").opprett()
                 .hentPaakrevdeVedlegg()
                 .skalHaVedleggMedSkjemaNummerTillegg("T8", "avskjediget");
     }
@@ -67,7 +67,7 @@ public class DagpengerArbeidsforholdVedleggIT extends AbstractIT {
     @Test
     public void skalHaO2Vedlegg() {
         soknadMedDelstegstatusOpprettet(dagpengerSkjemaNummer)
-                .opprettFaktumWithValue("arbeidsforhold", "true")
+                .nyttFaktum("arbeidsforhold").withValue("true").opprett()
                 .hentPaakrevdeVedlegg()
                 .skalHaVedlegg("O2");
     }
@@ -75,7 +75,7 @@ public class DagpengerArbeidsforholdVedleggIT extends AbstractIT {
     @Test
     public void skalHaU1VedleggVedArbeidsgiverIEOS() {
         soknadMedDelstegstatusOpprettet(dagpengerSkjemaNummer)
-                .opprettFaktumWithValueAndProperties("arbeidsforhold", "true", singletonMap("eosland", "true"))
+                .nyttFaktum("arbeidsforhold").withValue("true").withProperty("eosland", "true").opprett()
                 .hentPaakrevdeVedlegg()
                 .skalHaVedlegg("U1");
     }
@@ -83,7 +83,7 @@ public class DagpengerArbeidsforholdVedleggIT extends AbstractIT {
     @Test
     public void skalHaA2OgM7VedleggVedArbeidsgiverKonkurs() {
         soknadMedDelstegstatusOpprettet(dagpengerSkjemaNummer)
-                .opprettFaktumWithValueAndProperties("arbeidsforhold", "true", singletonMap("type", "arbeidsgivererkonkurs"))
+                .nyttFaktum("arbeidsforhold").withValue("true").withProperty("type", "arbeidsgivererkonkurs").opprett()
                 .hentPaakrevdeVedlegg()
                 .skalHaVedlegg("A2", "M7");
     }
@@ -91,7 +91,7 @@ public class DagpengerArbeidsforholdVedleggIT extends AbstractIT {
     @Test
     public void skalHaT6VedleggVedPermittert() {
         soknadMedDelstegstatusOpprettet(dagpengerSkjemaNummer)
-                .opprettFaktumWithValueAndProperties("arbeidsforhold", "true", singletonMap("type", "permittert"))
+                .nyttFaktum("arbeidsforhold").withValue("true").withProperty("type", "permittert").opprett()
                 .hentPaakrevdeVedlegg()
                 .skalHaVedlegg("T6");
     }
@@ -99,7 +99,7 @@ public class DagpengerArbeidsforholdVedleggIT extends AbstractIT {
     @Test
     public void skalHaM6VedleggVedRotasjonsTurnus() {
         soknadMedDelstegstatusOpprettet(dagpengerSkjemaNummer)
-                .opprettFaktumWithValueAndProperties("arbeidsforhold", "true", singletonMap("rotasjonskiftturnus", "jarotasjon"))
+                .nyttFaktum("arbeidsforhold").withValue("true").withProperty("rotasjonskiftturnus", "jarotasjon").opprett()
                 .hentPaakrevdeVedlegg()
                 .skalHaVedlegg("M6");
     }
@@ -107,8 +107,8 @@ public class DagpengerArbeidsforholdVedleggIT extends AbstractIT {
     @Test
     public void skalHaG2VedleggVedPermitteringsperiode() {
         soknadMedDelstegstatusOpprettet(dagpengerSkjemaNummer)
-                .opprettFaktumWithValueAndProperties("arbeidsforhold", "true", singletonMap("type", "permittert"))
-                .opprettFaktumWithValueAndParent("arbeidsforhold.permitteringsperiode", null, "arbeidsforhold")
+                .nyttFaktum("arbeidsforhold").withValue("true").withProperty("type", "permittert").opprett()
+                .nyttFaktum("arbeidsforhold.permitteringsperiode").withParentFaktum("arbeidsforhold").opprett()
                 .hentPaakrevdeVedlegg()
                 .skalHaVedlegg("G2");
     }
