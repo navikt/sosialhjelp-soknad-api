@@ -9,6 +9,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engan
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.ws.rs.core.Response;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +25,19 @@ public class AlternativRepresentasjonIT extends AbstractIT {
     @Before
     public void setup() throws Exception {
         EndpointDataMocking.setupMockWsEndpointData();
+    }
+
+    @Test
+    public void skalValidereXMLKunLikeForInnsending(){
+        SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer).settDelstegstatus("opprettet");
+        Response response = testSoknad.hentAlternativRepresentasjonResponseMedStatus();
+        assertThat(response.getStatusInfo().getStatusCode()).isNotEqualTo(500);
+
+        testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer).settDelstegstatus("oppsummering");
+        response = testSoknad.hentAlternativRepresentasjonResponseMedStatus();
+        assertThat(response.getStatusInfo().getStatusCode()).isEqualTo(500);
+
+
     }
 
     @Test
