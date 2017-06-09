@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad;
 
-import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.AktoerId;
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Bruker;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import org.junit.Test;
 
