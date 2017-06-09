@@ -14,9 +14,9 @@ public class SoknadsvalgTilXml implements Function<WebSoknad, Soknadsvalg> {
         Soknadsvalg soknadsvalg = new Soknadsvalg();
 
         String stonadstype = webSoknad.getValueForFaktum("soknadsvalg.stonadstype");
-        if (stonadstype.equals("engangsstonadFar")) {
+        if (stonadstype.equals(Stonadstyper.ENGANGSSTONAD_FAR)) {
             soknadsvalg.withStoenadstype(Stoenadstype.ENGANGSSTOENADFAR);
-        } else if (stonadstype.equals("engangsstonadMor")) {
+        } else if (stonadstype.equals(Stonadstyper.ENGANGSSTONAD_MOR)) {
             soknadsvalg.withStoenadstype(Stoenadstype.ENGANGSSTOENADMOR);
         }
 
