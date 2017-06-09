@@ -39,7 +39,7 @@ public class ForeldrepengerEngangsstonadTilXml implements AlternativRepresentasj
         }
 
         return soeknadsskjemaEngangsstoenad
-                .withBruker(new AktoerTilXml().apply(webSoknad))
+                .withBruker(new BrukerTilXml().apply(webSoknad))
                 .withRettigheter(new RettigheterTilXml().apply(webSoknad))
                 .withTilknytningNorge(new TilknytningTilXml().apply(webSoknad))
                 .withOpplysningerOmMor(new OpplysningerOmMorTilXml().apply(webSoknad))
