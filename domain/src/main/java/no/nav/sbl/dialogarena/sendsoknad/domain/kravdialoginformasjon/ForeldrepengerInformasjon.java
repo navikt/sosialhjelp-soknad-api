@@ -7,6 +7,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresenta
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad.ForeldrepengerEngangsstonadTilXml;
 import org.springframework.context.MessageSource;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -40,8 +41,9 @@ public class ForeldrepengerInformasjon extends KravdialogInformasjon.DefaultOpps
     }
 
     @Override
-    public List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource) {
-        if (alternativRepresentasjonAktivert()) {
+    public List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource, WebSoknad soknad) {
+        List<String> engangsstonadSkjemanummerListe = Arrays.asList("NAV 14-05.07","NAV 14-05.08");
+        if (alternativRepresentasjonAktivert() && engangsstonadSkjemanummerListe.contains(soknad.getskjemaNummer())) {
             Event event = MetricsFactory.createEvent("soknad.foreldrepenger.alternativrepresentasjon.aktiv");
             event.report();
 

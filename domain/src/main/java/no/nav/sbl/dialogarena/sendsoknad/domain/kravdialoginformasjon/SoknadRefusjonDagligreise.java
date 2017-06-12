@@ -43,7 +43,7 @@ public class SoknadRefusjonDagligreise extends KravdialogInformasjon.DefaultOpps
     }
 
     @Override
-    public List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource) {
+    public List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource, WebSoknad soknad) {
         AlternativRepresentasjonTransformer tilleggsstonaderTilXml = new RefusjonDagligreiseTilXml();
         return Arrays.asList(tilleggsstonaderTilXml);
     }
