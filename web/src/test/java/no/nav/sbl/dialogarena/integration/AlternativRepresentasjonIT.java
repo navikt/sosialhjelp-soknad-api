@@ -213,4 +213,20 @@ public class AlternativRepresentasjonIT extends AbstractIT {
                 .isEqualTo("overtattOmsorgInnen53UkerFodsel");
     }
 
+    @Test
+    public void skalHaMedBegrunnelseVedForSenSoknad() {
+        SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
+                .faktum("soknadsvalg.stonadstype").withValue(Stonadstyper.ENGANGSSTONAD_MOR).utforEndring()
+                .faktum("soknadsvalg.fodselelleradopsjon").withValue("fodsel").utforEndring()
+                .faktum("veiledning.mor.terminbekreftelse").withValue("fodt").utforEndring()
+                .faktum("barnet.dato").withValue("2016-10-31").utforEndring()
+                .faktum("barnet.forsensoknad.fritekst").withValue("Begrunnelse").utforEndring();
+
+        SoeknadsskjemaEngangsstoenad soknad = testSoknad
+                .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+
+        assertThat(soknad.getOpplysningerOmBarn()).isNotNull();
+        assertThat(soknad.getOpplysningerOmBarn().getBegrunnelse()).isEqualTo("Begrunnelse");
+    }
+
 }
