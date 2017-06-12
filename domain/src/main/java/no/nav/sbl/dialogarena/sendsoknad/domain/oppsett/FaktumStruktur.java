@@ -1,9 +1,7 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.oppsett;
 
-
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import org.apache.commons.collections15.Predicate;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.xml.bind.annotation.*;
@@ -11,10 +9,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.*;
 
-import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.TekstStruktur.HJELPETEKST;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.TekstStruktur.INFOTEKST;
+
+import static java.util.stream.Collectors.toList;
 
 @XmlType(propOrder = {})
 public class FaktumStruktur implements Serializable, StrukturConfigurable {
@@ -258,11 +258,11 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
             return new ArrayList<>();
         }
 
-        return on(tekster)
+        return tekster.stream()
                 .filter(tekstOppfyllerDependOn(faktum))
-                .filter(tekstStrukturOppfyllerConstraints(soknad, faktum))
+                .filter(tekstStrukturOppfyllerConstraints(soknad,faktum))
                 .filter(tekstErType(INFOTEKST))
-                .collect();
+                .collect(toList());
     }
 
     public List<TekstStruktur> getHjelpetekster(WebSoknad soknad, Faktum faktum) {
@@ -270,48 +270,29 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
             return new ArrayList<>();
         }
 
-        return on(tekster)
+        return tekster.stream()
                 .filter(tekstOppfyllerDependOn(faktum))
                 .filter(tekstStrukturOppfyllerConstraints(soknad, faktum))
                 .filter(tekstErType(HJELPETEKST))
-                .collect();
+                .collect(toList());
     }
 
-    private Predicate<TekstStruktur> tekstStrukturOppfyllerConstraints(final WebSoknad soknad, final Faktum faktum) {
-        return new Predicate<TekstStruktur>() {
-            @Override
-            public boolean evaluate(TekstStruktur tekst) {
-                for(Constraint constraint: tekst.getConstraints()) {
-                    Faktum constraintFaktum = getConstraintFaktum(constraint, soknad, faktum);
-                    if(!ForventningsSjekker.sjekkForventning(constraint.getExpression(), constraintFaktum)) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-        };
+    private Predicate<TekstStruktur> tekstStrukturOppfyllerConstraints(final WebSoknad soknad, final Faktum faktum){
+        return tekstStruktur -> tekstStruktur.getConstraints()
+                .stream()
+                .anyMatch(constraint -> ForventningsSjekker.sjekkForventning(constraint.getExpression(),getConstraintFaktum(constraint,soknad,faktum)));
+
     }
 
-    private Predicate<TekstStruktur> tekstOppfyllerDependOn(final Faktum faktum) {
-        return new Predicate<TekstStruktur>() {
-            @Override
-            public boolean evaluate(TekstStruktur tekst) {
-                List<String> tekstDependOnValues = tekst.getDependOnValues();
-                if (tekstDependOnValues == null || tekstDependOnValues.isEmpty()) {
-                    return true;
-                }
-                return tekstDependOnValues.contains(faktum.getValue());
-            }
+    private Predicate<TekstStruktur> tekstOppfyllerDependOn(final Faktum faktum){
+        return tekstStruktur -> {List<String> tekstDependOnValues = tekstStruktur.getDependOnValues();
+                    if(tekstDependOnValues == null || tekstDependOnValues.isEmpty()) {return true; }
+            return tekstDependOnValues.contains(faktum.getValue());
         };
     }
 
     private Predicate<TekstStruktur> tekstErType(final String type) {
-        return new Predicate<TekstStruktur>() {
-            @Override
-            public boolean evaluate(TekstStruktur tekst) {
-                return tekst.getType().equals(type);
-            }
-        };
+        return tekstStruktur -> tekstStruktur.getType().equals(type);
     }
 
     private Faktum getConstraintFaktum(Constraint constraint, WebSoknad soknad, Faktum faktum) {
