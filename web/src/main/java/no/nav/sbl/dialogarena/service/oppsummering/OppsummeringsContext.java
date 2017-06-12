@@ -4,14 +4,12 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
-import org.apache.commons.collections15.Transformer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
-import static no.nav.modig.lang.collections.IterUtils.on;
-
+import static java.util.stream.Collectors.toList;
 
 public class OppsummeringsContext {
     public final boolean utvidetSoknad;
@@ -39,20 +37,14 @@ public class OppsummeringsContext {
             return new ArrayList<>();
         }
 
-        return on(fakta).map(new Transformer<Faktum, OppsummeringsFaktum>() {
-            @Override
-            public OppsummeringsFaktum transform(final Faktum faktum) {
-                List<VedleggForFaktumStruktur> vedleggForFaktumStrukturs = soknadStruktur.vedleggFor(faktum);
-                List<OppsummeringsFaktum.OppsummeringsVedlegg> vedlegg = on(vedleggForFaktumStrukturs).map(new Transformer<VedleggForFaktumStruktur, OppsummeringsFaktum.OppsummeringsVedlegg>() {
-                    @Override
-                    public OppsummeringsFaktum.OppsummeringsVedlegg transform(VedleggForFaktumStruktur vedleggForFaktumStruktur) {
-                        return new OppsummeringsFaktum.OppsummeringsVedlegg(faktum, soknad.finnVedleggSomMatcherForventning(vedleggForFaktumStruktur, faktum.getFaktumId()), vedleggForFaktumStruktur);
-                    }
-                }).collect();
-                return new OppsummeringsFaktum(soknad, faktumStruktur, faktum, finnBarnOppsummering(faktumStruktur, faktum, soknadStruktur, soknad), vedlegg);
-            }
-        }).collect();
+        Function<Faktum,List<OppsummeringsFaktum.OppsummeringsVedlegg>> vedleggForFaktum = f -> soknadStruktur.vedleggFor(f)
+                .stream()
+                .map(v -> new OppsummeringsFaktum.OppsummeringsVedlegg(f,soknad.finnVedleggSomMatcherForventning(v,f.getFaktumId()),v))
+                .collect(toList());
 
+       return fakta.stream()
+                .map(f ->  new OppsummeringsFaktum(soknad,faktumStruktur,f,finnBarnOppsummering(faktumStruktur,f,soknadStruktur,soknad), vedleggForFaktum.apply(f)))
+                .collect(toList());
     }
 
     private List<OppsummeringsFaktum> finnBarnOppsummering(FaktumStruktur forelderStruktur, final Faktum parentFaktum, final SoknadStruktur soknadStruktur, final WebSoknad soknad) {
