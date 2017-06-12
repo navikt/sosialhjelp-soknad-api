@@ -46,6 +46,7 @@ public class ForeldrepengerInformasjon extends KravdialogInformasjon.DefaultOpps
         if (alternativRepresentasjonAktivert() && engangsstonadSkjemanummerListe.contains(soknad.getskjemaNummer())) {
             Event event = MetricsFactory.createEvent("soknad.alternativrepresentasjon.aktiv");
             event.addTagToReport("skjemanummer", soknad.getskjemaNummer());
+            event.addTagToReport("soknadstype", getSoknadTypePrefix());
             event.report();
 
             return singletonList(new ForeldrepengerEngangsstonadTilXml(messageSource));
