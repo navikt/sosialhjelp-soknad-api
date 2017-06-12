@@ -44,7 +44,8 @@ public class ForeldrepengerInformasjon extends KravdialogInformasjon.DefaultOpps
     public List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource, WebSoknad soknad) {
         List<String> engangsstonadSkjemanummerListe = Arrays.asList("NAV 14-05.07","NAV 14-05.08");
         if (alternativRepresentasjonAktivert() && engangsstonadSkjemanummerListe.contains(soknad.getskjemaNummer())) {
-            Event event = MetricsFactory.createEvent("soknad.foreldrepenger.alternativrepresentasjon.aktiv");
+            Event event = MetricsFactory.createEvent("soknad.alternativrepresentasjon.aktiv");
+            event.addTagToReport("skjemanummer", soknad.getskjemaNummer());
             event.report();
 
             return singletonList(new ForeldrepengerEngangsstonadTilXml(messageSource));
