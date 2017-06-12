@@ -47,6 +47,7 @@ public class SoknadRefusjonDagligreise extends KravdialogInformasjon.DefaultOpps
         AlternativRepresentasjonTransformer tilleggsstonaderTilXml = new RefusjonDagligreiseTilXml();
         Event event = MetricsFactory.createEvent("soknad.alternativrepresentasjon.aktiv");
         event.addTagToReport("skjemanummer", soknad.getskjemaNummer());
+        event.addTagToReport("soknadstype", getSoknadTypePrefix());
         event.report();
         return Arrays.asList(tilleggsstonaderTilXml);
     }

@@ -146,7 +146,7 @@ public class TilleggsstonaderTilXml implements AlternativRepresentasjonTransform
             JAXB.marshal(skjema, baos);
             LOG.warn("Validering av skjema feilet: " + e + ". Xml: " + baos.toString(), e);
             Event event = MetricsFactory.createEvent("soknad.xmlrepresentasjon.valideringsfeil");
-            event.addTagToReport("soknad.xmlrepresentasjon.valideringsfeil.skjemanummer",soknad.getskjemaNummer());
+            event.addTagToReport("soknad.xmlrepresentasjon.valideringsfeil.skjemanummer", soknad.getskjemaNummer());
             event.report();
         }
     }
