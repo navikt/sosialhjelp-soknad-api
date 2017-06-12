@@ -37,7 +37,7 @@ public class SoknadTilleggsstonader extends KravdialogInformasjon.DefaultOppsett
     }
 
     @Override
-    public List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource) {
+    public List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource, WebSoknad soknad) {
         AlternativRepresentasjonTransformer tilleggsstonaderTilXml = new TilleggsstonaderTilXml(messageSource);
         return asList(tilleggsstonaderTilXml);
     }

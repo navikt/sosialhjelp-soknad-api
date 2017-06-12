@@ -35,7 +35,7 @@ public interface KravdialogInformasjon {
 
     List<String> getSkjemanummer();
 
-    List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource);
+    List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource, WebSoknad soknad);
 
     boolean brukerNyOppsummering();
 
@@ -47,7 +47,7 @@ public interface KravdialogInformasjon {
 
     abstract class DefaultOppsett implements KravdialogInformasjon {
         @Override
-        public List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource) {
+        public List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource, WebSoknad soknad) {
             return new ArrayList<>();
         }
 
