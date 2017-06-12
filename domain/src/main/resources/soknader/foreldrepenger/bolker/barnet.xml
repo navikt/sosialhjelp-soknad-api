@@ -22,7 +22,13 @@
             <value>mindreEnn26Uker</value>
         </dependOnValues>
     </faktum>
-
+    <faktum>
+        <id>barnet.forsensoknad.fritekst</id>
+        <dependOn>veiledning.mor.terminbekreftelse</dependOn>
+        <dependOnValues>
+            <value>fodt</value>
+        </dependOnValues>
+    </faktum>
     <faktum>
         <id>barnet.alder</id>
         <dependOn>soknadsvalg.fodselelleradopsjon</dependOn>
