@@ -29,7 +29,7 @@ public class AlternativRepresentasjonService {
 
 
     public List<AlternativRepresentasjon> hentAlternativeRepresentasjoner(WebSoknad soknad, NavMessageSource messageSource) {
-        List<AlternativRepresentasjonTransformer> transformers = kravdialogInformasjonHolder.hentKonfigurasjon(soknad.getskjemaNummer()).getTransformers(messageSource);
+        List<AlternativRepresentasjonTransformer> transformers = kravdialogInformasjonHolder.hentKonfigurasjon(soknad.getskjemaNummer()).getTransformers(messageSource, soknad);
 
         soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(config.hentStruktur(soknad.getskjemaNummer()));
         return transformers.stream().map(transformer -> transformer.apply(soknad)).collect(toList());
