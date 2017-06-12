@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.*;
+import java.util.function.Predicate;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.TekstStruktur.HJELPETEKST;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.TekstStruktur.INFOTEKST;
