@@ -78,6 +78,7 @@ public class SoknadStruktur implements Serializable {
 
         return vedlegg.stream()
                 .filter(v -> v != null)
+                .filter(v -> v.getSkjemaNummer().equals(skjemaNr))
                 .filter(v -> v.getSkjemanummerTillegg().equals(tillegg))
                 .collect(toList());
 
@@ -137,7 +138,7 @@ public class SoknadStruktur implements Serializable {
 
     public List<FaktumStruktur> finnBarneStrukturer(final String parent) {
         return fakta.stream()
-                .filter(f -> (f.getDependOn() != null && f.getDependOn().getId().equals(parent)))
+                .filter(f -> f.getDependOn() != null && f.getDependOn().getId().equals(parent))
                 .collect(toList());
     }
 }
