@@ -22,6 +22,10 @@ public class OpplysningerOmBarnTilXml implements Function<WebSoknad, Opplysninge
         
         OpplysningerOmBarn opplysningerOmBarn = new OpplysningerOmBarn();
 
+        if (sokerForSent(webSoknad)) {
+            opplysningerOmBarn.withBegrunnelse(webSoknad.getValueForFaktum("barnet.forsensoknad.fritekst"));
+        }
+
         if (erFodsel) {
             if (erMor && !barnetFodt(webSoknad)) {
                 opplysningerOmBarn
@@ -72,6 +76,19 @@ public class OpplysningerOmBarnTilXml implements Function<WebSoknad, Opplysninge
 
     private boolean faktumErTom(Faktum faktum) {
         return faktum == null || isEmpty(faktum.getValue());
+    }
+
+    public boolean sokerForSent(WebSoknad soknad) {
+        LocalDate fodselsdato = hentDato(soknad, "barnet.dato");
+        if (fodselsdato != null) {
+            LocalDate sisteGyldigeDato = fodselsdato.plusMonths(6).minusDays(1);
+            LocalDate dagensDato = LocalDate.now();
+            if (dagensDato.isAfter(sisteGyldigeDato)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }
