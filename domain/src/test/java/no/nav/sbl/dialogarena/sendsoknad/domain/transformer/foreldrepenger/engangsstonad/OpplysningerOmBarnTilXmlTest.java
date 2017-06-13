@@ -72,9 +72,10 @@ public class OpplysningerOmBarnTilXmlTest {
     @Test
     public void ikkeForSenSoknad() {
         WebSoknad soknad = new WebSoknad();
+        LocalDate enMaanedTilbakeITid = LocalDate.now().minusMonths(1);
         soknad.getFakta().add(new Faktum().medKey("soknadsvalg.stonadstype").medValue(Stonadstyper.ENGANGSSTONAD_FAR));
         soknad.getFakta().add(new Faktum().medKey("soknadsvalg.fodselelleradopsjon").medValue("fodsel"));
-        soknad.getFakta().add(new Faktum().medKey("barnet.dato").medValue("2017-04-01"));
+        soknad.getFakta().add(new Faktum().medKey("barnet.dato").medValue(enMaanedTilbakeITid.toString()));
 
         OpplysningerOmBarnTilXml test = new OpplysningerOmBarnTilXml();
         assertThat(test.sokerForSent(soknad)).isFalse();
