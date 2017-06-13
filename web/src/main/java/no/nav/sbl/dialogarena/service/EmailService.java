@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.service;
 
+import no.nav.metrics.Event;
+import no.nav.metrics.MetricsFactory;
 import no.nav.modig.core.exception.ApplicationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +33,7 @@ public class EmailService {
 
     public void sendEpost(final String ePost, final String subject, final String innhold, String behandlingId) {
         final String htmlInnhold = "<p>" + innhold + "</p>";
-        addTask(getMimePreperator(ePost, subject, htmlInnhold), behandlingId, ePost, htmlInnhold, 0);
+        addTask(getMimePreperator(ePost, subject, htmlInnhold), behandlingId, 0);
     }
 
     private MimeMessagePreparator getMimePreperator(final String epost, final String subject, final String innhold) {
@@ -43,7 +45,6 @@ public class EmailService {
                     mimeMessage.setContent(innhold, "text/html;charset=utf-8");
                     mimeMessage.setSubject(subject);
                 } catch (MessagingException e) {
-                    logger.error("Kunne ikke opprette e-post", e);
                     throw new ApplicationException("Kunne ikke opprette e-post", e);
                 }
             }
@@ -51,18 +52,22 @@ public class EmailService {
         return preparator;
     }
 
-    private void addTask(final MimeMessagePreparator preparator, final String behandlingId, final String tilEpost, final String epostinnhold, final int loopCheck) {
+    private void addTask(final MimeMessagePreparator preparator, final String behandlingId, final int loopCheck) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    logger.info("Epost sendes til: " + tilEpost + " med innhold: " + epostinnhold + " BrukerbehandlingId: " + behandlingId);
                     mailSender.send(preparator);
+                    Event event = MetricsFactory.createEvent("sendsoknad.epostsendt");
+                    event.report();
                 } catch (MailException me) {
                     if (loopCheck < 5) {
-                        addTask(preparator, behandlingId, tilEpost, epostinnhold, loopCheck + 1);
+                        addTask(preparator, behandlingId, loopCheck + 1);
                     } else {
-                        logger.warn("Epost kunne ikke sendes til: " + tilEpost + " med innhold: " + epostinnhold + " BrukerbehandlingId: " + behandlingId, me);
+                        Event event = MetricsFactory.createEvent("sendsoknad.epostsendt");
+                        event.setFailed();
+                        event.report();
+                        logger.warn("Epost kunne ikke sendes til bruker med BrukerbehandlingId: {}", behandlingId, me);
                     }
                 }
             }
