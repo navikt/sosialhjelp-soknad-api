@@ -1,12 +1,12 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon;
 
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
+import no.nav.metrics.Event;
+import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Steg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.refusjondagligreise.RefusjonDagligreiseTilXml;
-import org.apache.commons.collections15.Transformer;
 import org.springframework.context.MessageSource;
 
 import java.util.Arrays;
@@ -45,6 +45,10 @@ public class SoknadRefusjonDagligreise extends KravdialogInformasjon.DefaultOpps
     @Override
     public List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource, WebSoknad soknad) {
         AlternativRepresentasjonTransformer tilleggsstonaderTilXml = new RefusjonDagligreiseTilXml();
+        Event event = MetricsFactory.createEvent("soknad.alternativrepresentasjon.aktiv");
+        event.addTagToReport("skjemanummer", soknad.getskjemaNummer());
+        event.addTagToReport("soknadstype", getSoknadTypePrefix());
+        event.report();
         return Arrays.asList(tilleggsstonaderTilXml);
     }
 
