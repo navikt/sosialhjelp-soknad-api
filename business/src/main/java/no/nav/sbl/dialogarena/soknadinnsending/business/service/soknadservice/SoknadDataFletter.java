@@ -6,6 +6,7 @@ import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AlleredeHandtertException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
@@ -22,6 +23,7 @@ import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlings
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
 import org.apache.commons.collections15.Transformer;
 import org.joda.time.DateTime;
+import org.joda.time.base.BaseDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
@@ -388,9 +390,9 @@ public class SoknadDataFletter {
                 .filter(STATUS_FERDIG)
                 .sorted(ELDSTE_FORST)
                 .findFirst()
-                .get()
-                .getInnsendtDato()
-                .getMillis();
+                .map(WSBehandlingskjedeElement::getInnsendtDato)
+                .map(BaseDateTime::getMillis)
+                .orElseThrow(() -> new ApplicationException(String.format("Kunne ikke hente ut opprinneligInnsendtDato for %s", behandlingsId)));
     }
 
     public String hentSisteInnsendteBehandlingsId(String behandlingsId) {
