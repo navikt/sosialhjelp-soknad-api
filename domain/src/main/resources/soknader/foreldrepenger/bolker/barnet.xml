@@ -7,6 +7,9 @@
         <id>barnet.antall</id>
     </faktum>
     <faktum>
+        <id>barnet.forsensoknad.fritekst</id>
+    </faktum>
+    <faktum>
         <id>barnet.termindatering</id>
         <dependOn>veiledning.mor.terminbekreftelse</dependOn>
         <dependOnValues>
@@ -22,7 +25,6 @@
             <value>mindreEnn26Uker</value>
         </dependOnValues>
     </faktum>
-
     <faktum>
         <id>barnet.alder</id>
         <dependOn>soknadsvalg.fodselelleradopsjon</dependOn>
