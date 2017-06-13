@@ -280,13 +280,17 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
     private Predicate<TekstStruktur> tekstStrukturOppfyllerConstraints(final WebSoknad soknad, final Faktum faktum){
         return tekstStruktur -> tekstStruktur.getConstraints()
                 .stream()
-                .anyMatch(constraint -> ForventningsSjekker.sjekkForventning(constraint.getExpression(),getConstraintFaktum(constraint,soknad,faktum)));
+                .allMatch(constraint ->
+                        ForventningsSjekker.sjekkForventning(constraint.getExpression(), getConstraintFaktum(constraint, soknad, faktum)));
 
     }
 
     private Predicate<TekstStruktur> tekstOppfyllerDependOn(final Faktum faktum){
-        return tekstStruktur -> {List<String> tekstDependOnValues = tekstStruktur.getDependOnValues();
-                    if(tekstDependOnValues == null || tekstDependOnValues.isEmpty()) {return true; }
+        return tekstStruktur ->
+        {List<String> tekstDependOnValues = tekstStruktur.getDependOnValues();
+            if(tekstDependOnValues == null || tekstDependOnValues.isEmpty()) {
+                return true;
+            }
             return tekstDependOnValues.contains(faktum.getValue());
         };
     }
