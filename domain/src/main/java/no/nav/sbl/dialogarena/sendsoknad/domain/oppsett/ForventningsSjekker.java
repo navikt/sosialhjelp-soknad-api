@@ -46,6 +46,9 @@ public class ForventningsSjekker {
     }
 
     public static boolean sjekkForventning(String forventning, Faktum value) {
+        if (value == null) {
+            return false;
+        }
         try {
             return PARSER.parseExpression(forventning).getValue(CONTEXT, value, Boolean.class);
         } catch (EvaluationException e) {

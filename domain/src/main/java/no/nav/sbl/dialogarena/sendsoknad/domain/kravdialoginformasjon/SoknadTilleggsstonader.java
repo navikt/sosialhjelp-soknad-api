@@ -1,9 +1,11 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon;
 
 
+import no.nav.metrics.Event;
+import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.tilleggsstonader.*;
-import org.apache.commons.collections15.*;
 import org.springframework.context.*;
 
 import java.util.*;
@@ -37,8 +39,12 @@ public class SoknadTilleggsstonader extends KravdialogInformasjon.DefaultOppsett
     }
 
     @Override
-    public List<Transformer<WebSoknad, AlternativRepresentasjon>> getTransformers(MessageSource messageSource) {
-        Transformer<WebSoknad, AlternativRepresentasjon> tilleggsstonaderTilXml = new TilleggsstonaderTilXml(messageSource);
+    public List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource, WebSoknad soknad) {
+        AlternativRepresentasjonTransformer tilleggsstonaderTilXml = new TilleggsstonaderTilXml(messageSource);
+        Event event = MetricsFactory.createEvent("soknad.alternativrepresentasjon.aktiv");
+        event.addTagToReport("skjemanummer", soknad.getskjemaNummer());
+        event.addTagToReport("soknadstype", getSoknadTypePrefix());
+        event.report();
         return asList(tilleggsstonaderTilXml);
     }
 

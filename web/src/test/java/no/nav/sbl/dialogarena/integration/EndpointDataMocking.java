@@ -5,6 +5,9 @@ import no.nav.sbl.dialogarena.config.IntegrationConfig;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingsId;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStartSoknadRequest;
+import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
+import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerRequest;
+import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerResponse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBankkontoNorge;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBankkontonummer;
@@ -18,10 +21,9 @@ import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentD
 import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
-import org.mockito.Matchers;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
+
+import static org.mockito.Matchers.any;
 
 public class EndpointDataMocking {
 
@@ -32,17 +34,18 @@ public class EndpointDataMocking {
         mockBrukerProfilEndpoint();
         mockPersonEndpoint();
         mockDkifService();
+        mockArbeidsForholdService();
     }
 
     static void mockSendSoknadEndpoint() {
         SendSoknadPortType soknad = IntegrationConfig.getMocked("sendSoknadEndpoint");
-        Mockito.when(soknad.startSoknad(Matchers.any(WSStartSoknadRequest.class)))
+        Mockito.when(soknad.startSoknad(any(WSStartSoknadRequest.class)))
                 .then(invocationOnMock -> new WSBehandlingsId().withBehandlingsId("TEST" + behandlingsIdCounter++));
     }
 
     static void mockBrukerProfilEndpoint() throws Exception {
         BrukerprofilPortType brukerProfil = IntegrationConfig.getMocked("brukerProfilEndpoint");
-        Mockito.when(brukerProfil.hentKontaktinformasjonOgPreferanser(Matchers.any())).thenReturn(
+        Mockito.when(brukerProfil.hentKontaktinformasjonOgPreferanser(any())).thenReturn(
                 new XMLHentKontaktinformasjonOgPreferanserResponse().withPerson(
                         new XMLBruker()
                                 .withBankkonto(new XMLBankkontoNorge()
@@ -78,16 +81,22 @@ public class EndpointDataMocking {
         person.setFoedselsdato(foedselsdato);
         hentKjerneinformasjonResponse.setPerson(person);
 
-        Mockito.when(personEndpoint.hentKjerneinformasjon(Matchers.any())).thenReturn(hentKjerneinformasjonResponse);
+        Mockito.when(personEndpoint.hentKjerneinformasjon(any())).thenReturn(hentKjerneinformasjonResponse);
     }
 
     static void mockDkifService() throws Exception {
         DigitalKontaktinformasjonV1 dkif = IntegrationConfig.getMocked("dkifService");
-        Mockito.when(dkif.hentDigitalKontaktinformasjon(Matchers.any())).thenReturn(
+        Mockito.when(dkif.hentDigitalKontaktinformasjon(any())).thenReturn(
                 new WSHentDigitalKontaktinformasjonResponse()
                         .withDigitalKontaktinformasjon(new WSKontaktinformasjon()
                                 .withEpostadresse(new WSEpostadresse().withValue(""))
                         )
         );
+    }
+
+    static void mockArbeidsForholdService() throws Exception {
+        ArbeidsforholdV3 arbeidEndpont = IntegrationConfig.getMocked("arbeidEndpoint");
+        Mockito.when(arbeidEndpont.finnArbeidsforholdPrArbeidstaker(any(FinnArbeidsforholdPrArbeidstakerRequest.class)))
+                .thenReturn(new FinnArbeidsforholdPrArbeidstakerResponse());
     }
 }

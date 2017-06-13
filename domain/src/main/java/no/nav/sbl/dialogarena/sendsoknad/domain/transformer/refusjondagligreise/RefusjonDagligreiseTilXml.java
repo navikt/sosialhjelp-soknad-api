@@ -5,6 +5,8 @@ import no.nav.melding.virksomhet.paaloepteutgifter.v1.paaloepteutgifter.Utgiftsd
 import no.nav.melding.virksomhet.paaloepteutgifter.v1.paaloepteutgifter.Utgiftsperioder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import org.apache.commons.collections15.Transformer;
@@ -18,7 +20,17 @@ import java.util.UUID;
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.FaktumPredicates.harPropertyMedValue;
 
-public class RefusjonDagligreiseTilXml implements Transformer<WebSoknad, AlternativRepresentasjon> {
+public class RefusjonDagligreiseTilXml implements AlternativRepresentasjonTransformer {
+    @Override
+    public AlternativRepresentasjonType getRepresentasjonsType() {
+        return AlternativRepresentasjonType.XML;
+    }
+
+    @Override
+    public AlternativRepresentasjon apply(WebSoknad webSoknad) {
+        return transform(webSoknad);
+    }
+
     private static final class FaktumTilUtgiftsperiode implements Transformer<Faktum, Utgiftsperioder> {
         private Boolean trengerParkering;
 
@@ -77,7 +89,6 @@ public class RefusjonDagligreiseTilXml implements Transformer<WebSoknad, Alterna
         return skjema;
     }
 
-    @Override
     public AlternativRepresentasjon transform(WebSoknad webSoknad) {
         PaaloepteUtgifter refusjonDagligreise = refusjonDagligreise(webSoknad);
         ByteArrayOutputStream xml = new ByteArrayOutputStream();
