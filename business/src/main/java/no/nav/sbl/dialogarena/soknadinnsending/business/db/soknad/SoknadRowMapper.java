@@ -20,7 +20,7 @@ public class SoknadRowMapper implements RowMapper<WebSoknad> {
         		.medBehandlingId(rs.getString("brukerbehandlingid"))
                 .medUuid(rs.getString("uuid"))
         		.medskjemaNummer(rs.getString("navsoknadid"))
-        		.medAktorId(rs.getString("aktorid"))
+        		.medFodselsnummer(rs.getString("aktorid"))
                 .medStatus(SoknadInnsendingStatus.valueOf(rs.getString("status")))
                 .medBehandlingskjedeId(rs.getString("behandlingskjedeid"))
                 .medDelstegStatus(DelstegStatus.valueOf(rs.getString("delstegstatus")))
