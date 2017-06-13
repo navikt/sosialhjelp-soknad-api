@@ -28,7 +28,7 @@ public class CmsTekst {
         }
 
         if (tekst == null) {
-            LOG.warn(String.format("Fant ikke tekst til oppsummering for nokkel %s i bundelen %s", key, bundleName));
+            LOG.debug(String.format("Fant ikke tekst til oppsummering for nokkel %s i bundelen %s", key, bundleName));
             return tekst;
         } else {
             return MessageFormat.format(tekst, parameters);

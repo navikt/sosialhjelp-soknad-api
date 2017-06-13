@@ -77,6 +77,7 @@ public class SoknadServiceIntegrasjonsTest {
 //        System.setProperty("no.nav.modig.security.systemuser.username", "dummyvalue");
 //        System.setProperty("no.nav.modig.security.systemuser.password", "");
         System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
+        System.setProperty("soknad.feature.foreldrepenger.alternativrepresentasjon.enabled", "true");
 //        getProperties().setProperty(TILLATMOCK_PROPERTY, DEFAULT_MOCK_TILLATT);
 //
 //        SimpleNamingContextBuilder builder = new SimpleNamingContextBuilder();
@@ -173,9 +174,21 @@ public class SoknadServiceIntegrasjonsTest {
     }
 
     @Test
-    public void sendSoknadSkalLagreEnFilTilHenvendelseHvisForeldrepenger() {
+    public void sendSoknadSkalLagreToFilerTilHenvendelseHvisForeldrepengerEngangsstonad() {
         ((ThreadLocalSubjectHandler) getSubjectHandler()).setSubject(getSubject());
-        skjemaNummer = "NAV 14-05.06";
+        skjemaNummer = "NAV 14-05.07";
+        String behandlingsId = nyBehandlnigsId();
+        opprettOgPersisterSoknad(behandlingsId, "aktor");
+
+        soknadService.sendSoknad(behandlingsId, new byte[]{});
+
+        verify(fillagerEndpoint, times(2)).lagre(eq(behandlingsId), any(String.class), any(String.class), any(DataHandler.class));
+    }
+
+    @Test
+    public void sendSoknadSkalLagreEnFilTilHenvendelseHvisBilstonad() {
+        ((ThreadLocalSubjectHandler) getSubjectHandler()).setSubject(getSubject());
+        skjemaNummer = "NAV 10-07.40";
         String behandlingsId = nyBehandlnigsId();
         opprettOgPersisterSoknad(behandlingsId, "aktor");
 
