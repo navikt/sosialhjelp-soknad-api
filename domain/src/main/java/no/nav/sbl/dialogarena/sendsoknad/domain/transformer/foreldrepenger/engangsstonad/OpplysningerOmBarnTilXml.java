@@ -22,6 +22,10 @@ public class OpplysningerOmBarnTilXml implements Function<WebSoknad, Opplysninge
         
         OpplysningerOmBarn opplysningerOmBarn = new OpplysningerOmBarn();
 
+        if (sokerForSent(webSoknad)) {
+            opplysningerOmBarn.withBegrunnelse(webSoknad.getValueForFaktum("barnet.forsensoknad.fritekst"));
+        }
+
         if (erFodsel) {
             if (erMor && !barnetFodt(webSoknad)) {
                 opplysningerOmBarn
@@ -30,10 +34,6 @@ public class OpplysningerOmBarnTilXml implements Function<WebSoknad, Opplysninge
                         .withTerminbekreftelsedato(hentDato(webSoknad, "barnet.termindatering"))
                         .withNavnPaaTerminbekreftelse(webSoknad.getValueForFaktum("barnet.signertterminbekreftelse"));
             } else {
-                if (barnetFodt(webSoknad) && sokerForSent(webSoknad)) {
-                    opplysningerOmBarn.withBegrunnelse(webSoknad.getValueForFaktum("barnet.forsensoknad.fritekst"));
-                }
-
                 opplysningerOmBarn
                         .withFoedselsdatoes(dato)
                         .withAntallBarn(antallBarn);

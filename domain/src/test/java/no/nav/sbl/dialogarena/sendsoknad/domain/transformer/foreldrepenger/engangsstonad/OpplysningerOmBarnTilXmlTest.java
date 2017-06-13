@@ -61,8 +61,6 @@ public class OpplysningerOmBarnTilXmlTest {
     @Test
     public void forSenSoknad() {
         WebSoknad soknad = new WebSoknad();
-        soknad.getFakta().add(new Faktum().medKey("soknadsvalg.stonadstype").medValue(Stonadstyper.ENGANGSSTONAD_FAR));
-        soknad.getFakta().add(new Faktum().medKey("soknadsvalg.fodselelleradopsjon").medValue("fodsel"));
         soknad.getFakta().add(new Faktum().medKey("barnet.dato").medValue("2016-10-31"));
 
         OpplysningerOmBarnTilXml test = new OpplysningerOmBarnTilXml();
@@ -70,11 +68,29 @@ public class OpplysningerOmBarnTilXmlTest {
     }
 
     @Test
+    public void enDagForSenSoknad() {
+        LocalDate seksManederTilbakeITid = LocalDate.now().minusMonths(6);
+
+        WebSoknad soknad = new WebSoknad();
+        soknad.getFakta().add(new Faktum().medKey("barnet.dato").medValue(seksManederTilbakeITid.toString()));
+        OpplysningerOmBarnTilXml test = new OpplysningerOmBarnTilXml();
+        assertThat(test.sokerForSent(soknad)).isTrue();
+    }
+
+    @Test
+    public void enDagUnnaForSenSoknad() {
+        LocalDate seksManederTilbakeITidFraIMorgen = LocalDate.now().minusMonths(6).plusDays(1);
+
+        WebSoknad soknad = new WebSoknad();
+        soknad.getFakta().add(new Faktum().medKey("barnet.dato").medValue(seksManederTilbakeITidFraIMorgen.toString()));
+        OpplysningerOmBarnTilXml test = new OpplysningerOmBarnTilXml();
+        assertThat(test.sokerForSent(soknad)).isFalse();
+    }
+
+    @Test
     public void ikkeForSenSoknad() {
         WebSoknad soknad = new WebSoknad();
         LocalDate enMaanedTilbakeITid = LocalDate.now().minusMonths(1);
-        soknad.getFakta().add(new Faktum().medKey("soknadsvalg.stonadstype").medValue(Stonadstyper.ENGANGSSTONAD_FAR));
-        soknad.getFakta().add(new Faktum().medKey("soknadsvalg.fodselelleradopsjon").medValue("fodsel"));
         soknad.getFakta().add(new Faktum().medKey("barnet.dato").medValue(enMaanedTilbakeITid.toString()));
 
         OpplysningerOmBarnTilXml test = new OpplysningerOmBarnTilXml();
@@ -84,9 +100,6 @@ public class OpplysningerOmBarnTilXmlTest {
     @Test
     public void begrunnelseSkalVaereMedForSenSoknad() {
         WebSoknad soknad = new WebSoknad();
-        soknad.getFakta().add(new Faktum().medKey("soknadsvalg.stonadstype").medValue(Stonadstyper.ENGANGSSTONAD_FAR));
-        soknad.getFakta().add(new Faktum().medKey("soknadsvalg.fodselelleradopsjon").medValue("fodsel"));
-        soknad.getFakta().add(new Faktum().medKey("veiledning.mor.terminbekreftelse").medValue("fodt"));
         soknad.getFakta().add(new Faktum().medKey("barnet.dato").medValue("2016-10-01"));
         soknad.getFakta().add(new Faktum().medKey("barnet.forsensoknad.fritekst").medValue("Begrunnelse"));
 
