@@ -45,7 +45,7 @@ public class SoknadRepositoryJdbcTest {
 
     private Long soknadId;
 
-    private String aktorId = "1";
+    private String fodelsnummer = "1";
     private String behandlingsId = "1";
     private String skjemaNummer = "skjemaNummer";
     private String uuid = "123";
@@ -75,7 +75,7 @@ public class SoknadRepositoryJdbcTest {
     }
 
     @Test(expected = DataIntegrityViolationException.class)
-    public void skalIkkeKunneOppretteUtenAktorId() {
+    public void skalIkkeKunneOppretteUtenFodselsnummer() {
         soknad = WebSoknad.startSoknad()
                 .medUuid(uuid)
                 .medBehandlingId(behandlingsId)
@@ -89,7 +89,7 @@ public class SoknadRepositoryJdbcTest {
     public void skalIkkeKunneOppretteUtenBehandlingId() {
         soknad = WebSoknad.startSoknad()
                 .medUuid(uuid)
-                .medAktorId(aktorId)
+                .medFodselsnummer(fodelsnummer)
                 .medskjemaNummer(skjemaNummer)
                 .medOppretteDato(now());
 
@@ -100,7 +100,7 @@ public class SoknadRepositoryJdbcTest {
     public void skalIkkeKunneOppretteUtenskjemaNummer() {
         soknad = WebSoknad.startSoknad()
                 .medUuid(uuid)
-                .medAktorId(aktorId)
+                .medFodselsnummer(fodelsnummer)
                 .medBehandlingId(behandlingsId)
                 .medOppretteDato(now());
 
@@ -114,7 +114,7 @@ public class SoknadRepositoryJdbcTest {
         WebSoknad opprettetSoknad = soknadRepository.hentSoknad(soknadId);
         assertThat(opprettetSoknad, notNullValue());
         assertThat(opprettetSoknad.getStatus(), is(SoknadInnsendingStatus.UNDER_ARBEID));
-        assertThat(opprettetSoknad.getAktoerId(), is(aktorId));
+        assertThat(opprettetSoknad.getFodselsnummer(), is(fodelsnummer));
         assertThat(opprettetSoknad.getBrukerBehandlingId(), is(behandlingsId));
         assertThat(opprettetSoknad.getskjemaNummer(), is(skjemaNummer));
     }
@@ -122,13 +122,13 @@ public class SoknadRepositoryJdbcTest {
     @Test
     public void skalKunneHenteOpprettetSoknadMedBehandlingsId() {
         String behId = randomUUID().toString();
-        opprettOgPersisterSoknad(behId, "aktor-3");
+        opprettOgPersisterSoknad(behId, "fodselsnummer-3");
 
         WebSoknad opprettetSoknad = soknadRepository.hentSoknad(behId);
 
         assertThat(opprettetSoknad, notNullValue());
         assertThat(opprettetSoknad.getStatus(), is(SoknadInnsendingStatus.UNDER_ARBEID));
-        assertThat(opprettetSoknad.getAktoerId(), is("aktor-3"));
+        assertThat(opprettetSoknad.getFodselsnummer(), is("fodselsnummer-3"));
         assertThat(opprettetSoknad.getBrukerBehandlingId(), is(behId));
         assertThat(opprettetSoknad.getskjemaNummer(), is(skjemaNummer));
     }
@@ -196,7 +196,7 @@ public class SoknadRepositoryJdbcTest {
 
     @Test
     public void skalFinneBehandlingsIdTilSoknadFraFaktumId() {
-        Long soknadId = opprettOgPersisterSoknad("123abc", "aktor");
+        Long soknadId = opprettOgPersisterSoknad("123abc", "fodelsnummer");
         Long faktumId = lagreData(soknadId, "key", null, "value");
         String behandlingsIdTilFaktum = soknadRepository.hentBehandlingsIdTilFaktum(faktumId);
         assertThat(behandlingsIdTilFaktum, is("123abc"));
@@ -419,7 +419,7 @@ public class SoknadRepositoryJdbcTest {
         soknad = WebSoknad.startSoknad()
                 .medId(101L)
                 .medUuid(uuid)
-                .medAktorId("123123")
+                .medFodselsnummer("123123")
                 .medBehandlingId("AH123")
                 .medskjemaNummer(skjemaNummer)
                 .medOppretteDato(now())
@@ -502,17 +502,13 @@ public class SoknadRepositoryJdbcTest {
     }
 
     private Long opprettOgPersisterSoknad() {
-        return opprettOgPersisterSoknad(behandlingsId, aktorId);
-    }
-
-    private Long opprettOgPersisterSoknad(String nyAktorId) {
-        return opprettOgPersisterSoknad(randomUUID().toString(), nyAktorId);
+        return opprettOgPersisterSoknad(behandlingsId, fodelsnummer);
     }
 
     private Long opprettOgPersisterEttersending() {
         soknad = WebSoknad.startEttersending(behandlingsId)
                 .medUuid(uuid)
-                .medAktorId(aktorId)
+                .medFodselsnummer(fodelsnummer)
                 .medDelstegStatus(DelstegStatus.ETTERSENDING_OPPRETTET)
                 .medBehandlingskjedeId(behandlingsId)
                 .medskjemaNummer(skjemaNummer).medOppretteDato(now());
@@ -521,10 +517,10 @@ public class SoknadRepositoryJdbcTest {
         return soknadId;
     }
 
-    private Long opprettOgPersisterSoknad(String behId, String aktor) {
+    private Long opprettOgPersisterSoknad(String behId, String fodselsnummer) {
         soknad = WebSoknad.startSoknad()
                 .medUuid(uuid)
-                .medAktorId(aktor)
+                .medFodselsnummer(fodselsnummer)
                 .medBehandlingId(behId)
                 .medDelstegStatus(DelstegStatus.OPPRETTET)
                 .medskjemaNummer(skjemaNummer).medOppretteDato(now());
