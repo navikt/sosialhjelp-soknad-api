@@ -22,7 +22,7 @@ public class OppsummeringsContext {
         for (FaktumStruktur faktumStruktur : soknadStruktur.getFakta()) {
             if (faktumStruktur.getDependOn() == null
                     && !"hidden".equals(faktumStruktur.getType())
-                    && ( utvidetSoknad || !faktumStruktur.getKunUtvidet())) {
+                    && (utvidetSoknad || !faktumStruktur.getKunUtvidet())) {
                 OppsummeringsBolk bolk = hentOgOpprettBolkOmIkkeFinnes(faktumStruktur.getPanel());
                 bolk.fakta.addAll(hentOppsummeringForFaktum(faktumStruktur, null, soknadStruktur, soknad));
             }
@@ -37,13 +37,22 @@ public class OppsummeringsContext {
             return new ArrayList<>();
         }
 
-        Function<Faktum,List<OppsummeringsFaktum.OppsummeringsVedlegg>> vedleggForFaktum = f -> soknadStruktur.vedleggFor(f)
-                .stream()
-                .map(v -> new OppsummeringsFaktum.OppsummeringsVedlegg(f,soknad.finnVedleggSomMatcherForventning(v,f.getFaktumId()),v))
-                .collect(toList());
+        Function<Faktum, List<OppsummeringsFaktum.OppsummeringsVedlegg>> vedleggForFaktum =
+                faktum -> soknadStruktur.vedleggFor(faktum)
+                        .stream()
+                        .map(vedlegg ->
+                                new OppsummeringsFaktum.OppsummeringsVedlegg(faktum, soknad.finnVedleggSomMatcherForventning(vedlegg, faktum.getFaktumId()), vedlegg))
+                        .collect(toList());
 
-       return fakta.stream()
-                .map(f ->  new OppsummeringsFaktum(soknad,faktumStruktur,f,finnBarnOppsummering(faktumStruktur,f,soknadStruktur,soknad), vedleggForFaktum.apply(f)))
+        Function<Faktum, List<OppsummeringsFaktum>> barnOppsummering =
+                faktum -> finnBarnOppsummering(faktumStruktur, faktum, soknadStruktur, soknad);
+
+        return fakta.stream()
+                .map(faktum -> {
+                    List<OppsummeringsFaktum> oppsummeringsFaktum = barnOppsummering.apply(faktum);
+                    List<OppsummeringsFaktum.OppsummeringsVedlegg> oppsummeringsVedlegg = vedleggForFaktum.apply(faktum);
+                    return new OppsummeringsFaktum(soknad, faktumStruktur, faktum, oppsummeringsFaktum, oppsummeringsVedlegg);
+                })
                 .collect(toList());
     }
 
