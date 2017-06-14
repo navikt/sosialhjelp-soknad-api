@@ -21,8 +21,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static java.util.UUID.randomUUID;
 import static java.util.stream.Collectors.toList;
@@ -104,7 +102,7 @@ public class EttersendingService {
     private WebSoknad lagSoknad(String behandlingsId, String behandlingskjedeId, XMLHovedskjema hovedskjema) {
         return WebSoknad.startEttersending(behandlingsId)
                 .medUuid(randomUUID().toString())
-                .medAktorId(getSubjectHandler().getUid())
+                .medFodselsnummer(getSubjectHandler().getUid())
                 .medskjemaNummer(hovedskjema.getSkjemanummer())
                 .medBehandlingskjedeId(behandlingskjedeId)
                 .medJournalforendeEnhet(hovedskjema.getJournalforendeEnhet());
