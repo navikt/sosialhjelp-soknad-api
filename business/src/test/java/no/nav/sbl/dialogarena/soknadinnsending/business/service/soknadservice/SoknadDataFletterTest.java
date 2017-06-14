@@ -141,7 +141,7 @@ public class SoknadDataFletterTest {
                 .medBehandlingId("123")
                 .medUuid(uid.getValue())
                 .medskjemaNummer(DAGPENGER)
-                .medAktorId(bruker)
+                .medFodselsnummer(bruker)
                 .medOppretteDato(new DateTime())
                 .medStatus(UNDER_ARBEID)
                 .medDelstegStatus(OPPRETTET);
@@ -165,7 +165,7 @@ public class SoknadDataFletterTest {
                         .medSkjemaNummer("L7")
                         .medInnsendingsvalg(Vedlegg.Status.SendesIkke));
 
-        WebSoknad soknad = new WebSoknad().medAktorId("123456")
+        WebSoknad soknad = new WebSoknad().medFodselsnummer("123456")
                 .medBehandlingId(behandlingsId)
                 .medUuid("uidHovedskjema")
                 .medskjemaNummer(DAGPENGER)
@@ -194,7 +194,7 @@ public class SoknadDataFletterTest {
 
         String behandlingsId = "123";
         WebSoknad webSoknad = new WebSoknad().medId(1L)
-                .medAktorId("123456")
+                .medFodselsnummer("123456")
                 .medBehandlingId(behandlingsId)
                 .medUuid("uidHovedskjema")
                 .medskjemaNummer(DAGPENGER)
