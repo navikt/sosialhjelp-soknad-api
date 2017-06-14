@@ -1,6 +1,9 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonType;
+
 public class AlternativRepresentasjon {
+    private AlternativRepresentasjonType representasjonsType;
     private String filnavn;
     private String mimetype;
     private String uuid;
@@ -39,6 +42,14 @@ public class AlternativRepresentasjon {
 
     public AlternativRepresentasjon medContent(byte[] content) {
         this.content = content;
+        return this;
+    }
+
+    public AlternativRepresentasjonType getRepresentasjonsType() {
+        return representasjonsType;
+    }
+    public AlternativRepresentasjon medRepresentasjonsType(AlternativRepresentasjonType type) {
+        this.representasjonsType = type;
         return this;
     }
 }

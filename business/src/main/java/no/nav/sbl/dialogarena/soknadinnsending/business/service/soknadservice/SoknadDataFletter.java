@@ -6,6 +6,7 @@ import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AlleredeHandtertException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
@@ -20,8 +21,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
-import org.apache.commons.collections15.Transformer;
 import org.joda.time.DateTime;
+import org.joda.time.base.BaseDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
@@ -84,6 +85,9 @@ public class SoknadDataFletter {
 
     @Inject
     private NavMessageSource messageSource;
+
+    @Inject
+    AlternativRepresentasjonService alternativRepresentasjonService;
 
     @Inject
     private SoknadMetricsService soknadMetricsService;
@@ -211,7 +215,7 @@ public class SoknadDataFletter {
                 .medBehandlingId(behandlingsId)
                 .medskjemaNummer(skjemanummer)
                 .medUuid(uuid)
-                .medAktorId(aktorId)
+                .medFodselsnummer(aktorId)
                 .medOppretteDato(DateTime.now());
 
         Long soknadId = lokalDb.opprettSoknad(nySoknad);
@@ -324,7 +328,7 @@ public class SoknadDataFletter {
         }
 
         logger.info("Lagrer søknad som fil til henvendelse for behandling {}", soknad.getBrukerBehandlingId());
-        fillagerService.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(pdf));
+        fillagerService.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getFodselsnummer(), new ByteArrayInputStream(pdf));
 
         XMLHovedskjema hovedskjema = lagXmlHovedskjemaMedAlternativRepresentasjon(pdf, soknad, fullSoknad);
         XMLVedlegg[] vedlegg = convertToXmlVedleggListe(vedleggService.hentVedleggOgKvittering(soknad));
@@ -355,7 +359,7 @@ public class SoknadDataFletter {
                         .withFilnavn(skjemanummer(soknad))
                         .withMimetype("application/pdf-fullversjon")
                         .withFilstorrelse("" + fullSoknad.length);
-                fillagerService.lagreFil(soknad.getBrukerBehandlingId(), fullSoknadRepr.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(fullSoknad));
+                fillagerService.lagreFil(soknad.getBrukerBehandlingId(), fullSoknadRepr.getUuid(), soknad.getFodselsnummer(), new ByteArrayInputStream(fullSoknad));
                 xmlAlternativRepresentasjonListe.withAlternativRepresentasjon(fullSoknadRepr);
             }
         }
@@ -364,23 +368,9 @@ public class SoknadDataFletter {
     }
 
     private List<XMLAlternativRepresentasjon> lagListeMedXMLAlternativeRepresentasjoner(WebSoknad soknad) {
-        List<XMLAlternativRepresentasjon> alternativRepresentasjonListe = new ArrayList<>();
-        List<Transformer<WebSoknad, AlternativRepresentasjon>> transformers = kravdialogInformasjonHolder.hentKonfigurasjon(soknad.getskjemaNummer()).getTransformers(messageSource);
-        soknad.fjernFaktaSomIkkeSkalVaereSynligISoknaden(config.hentStruktur(soknad.getskjemaNummer()));
-        for (Transformer<WebSoknad, AlternativRepresentasjon> transformer : transformers) {
-            AlternativRepresentasjon altrep = transformer.transform(soknad);
-            fillagerService.lagreFil(soknad.getBrukerBehandlingId(),
-                    altrep.getUuid(),
-                    soknad.getAktoerId(),
-                    new ByteArrayInputStream(altrep.getContent()));
-
-            alternativRepresentasjonListe.add(new XMLAlternativRepresentasjon()
-                    .withFilnavn(altrep.getFilnavn())
-                    .withFilstorrelse(altrep.getContent().length + "")
-                    .withMimetype(altrep.getMimetype())
-                    .withUuid(altrep.getUuid()));
-        }
-        return alternativRepresentasjonListe;
+        List<AlternativRepresentasjon> alternativeRepresentasjoner = alternativRepresentasjonService.hentAlternativeRepresentasjoner(soknad, messageSource);
+        alternativRepresentasjonService.lagreTilFillager(soknad.getBrukerBehandlingId(), soknad.getFodselsnummer(), alternativeRepresentasjoner);
+        return alternativRepresentasjonService.lagXmlFormat(alternativeRepresentasjoner);
     }
 
     public Long hentOpprinneligInnsendtDato(String behandlingsId) {
@@ -388,9 +378,9 @@ public class SoknadDataFletter {
                 .filter(STATUS_FERDIG)
                 .sorted(ELDSTE_FORST)
                 .findFirst()
-                .get()
-                .getInnsendtDato()
-                .getMillis();
+                .map(WSBehandlingskjedeElement::getInnsendtDato)
+                .map(BaseDateTime::getMillis)
+                .orElseThrow(() -> new ApplicationException(String.format("Kunne ikke hente ut opprinneligInnsendtDato for %s", behandlingsId)));
     }
 
     public String hentSisteInnsendteBehandlingsId(String behandlingsId) {

@@ -168,7 +168,7 @@ public class VedleggRepositoryJdbcTest {
         return new WebSoknad()
                 .medBehandlingId(BEHANDLINGS_ID)
                 .medskjemaNummer("NAV007")
-                .medAktorId("DEF")
+                .medFodselsnummer("DEF")
                 .medOppretteDato(DateTime.now())
                 .medStatus(SoknadInnsendingStatus.UNDER_ARBEID)
                 .medDelstegStatus(DelstegStatus.UTFYLLING)

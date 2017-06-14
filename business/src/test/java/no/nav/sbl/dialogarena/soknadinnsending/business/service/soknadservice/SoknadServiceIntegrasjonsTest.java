@@ -77,6 +77,7 @@ public class SoknadServiceIntegrasjonsTest {
 //        System.setProperty("no.nav.modig.security.systemuser.username", "dummyvalue");
 //        System.setProperty("no.nav.modig.security.systemuser.password", "");
         System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
+        System.setProperty("soknad.feature.foreldrepenger.alternativrepresentasjon.enabled", "true");
 //        getProperties().setProperty(TILLATMOCK_PROPERTY, DEFAULT_MOCK_TILLATT);
 //
 //        SimpleNamingContextBuilder builder = new SimpleNamingContextBuilder();
@@ -94,7 +95,7 @@ public class SoknadServiceIntegrasjonsTest {
     public void henterTemakode_FOR_forForeldrepenger() {
         skjemaNummer = "NAV 14-05.06";
         when(kodeverk.getKode("NAV 14-05.06", Kodeverk.Nokkel.TEMA)).thenReturn("FOR");
-        opprettOgPersisterSoknadMedData("behId", "aktor");
+        opprettOgPersisterSoknadMedData("behId", "fodselsnummer");
         SoknadStruktur soknadStruktur = soknadService.hentSoknadStruktur(skjemaNummer);
         assertThat(soknadStruktur.getTemaKode()).isEqualTo("FOR");
     }
@@ -111,12 +112,12 @@ public class SoknadServiceIntegrasjonsTest {
     @Test
     public void hentSoknadFraLokalDbReturnererPopulertSoknad() {
         skjemaNummer = "NAV 14-05.06";
-        Long soknadId = opprettOgPersisterSoknad(EN_BEHANDLINGSID, "aktor");
+        Long soknadId = opprettOgPersisterSoknad(EN_BEHANDLINGSID, "fodselsnummer");
 
         WebSoknad webSoknad = soknadService.hentSoknadFraLokalDb(soknadId);
 
         assertThat(webSoknad.getBrukerBehandlingId()).isEqualTo(EN_BEHANDLINGSID);
-        assertThat(webSoknad.getAktoerId()).isEqualTo("aktor");
+        assertThat(webSoknad.getFodselsnummer()).isEqualTo("fodselsnummer");
         assertThat(webSoknad.getUuid()).isEqualTo(uuid);
         assertThat(webSoknad.getDelstegStatus()).isEqualTo(DelstegStatus.OPPRETTET);
         assertThat(webSoknad.getskjemaNummer()).isEqualTo(skjemaNummer);
@@ -124,7 +125,7 @@ public class SoknadServiceIntegrasjonsTest {
 
     @Test
     public void settDelstegPersistererNyttDelstegTilDb() {
-        Long soknadId = opprettOgPersisterSoknad(EN_BEHANDLINGSID, "aktor");
+        Long soknadId = opprettOgPersisterSoknad(EN_BEHANDLINGSID, "fodselsnummer");
 
         soknadService.settDelsteg(EN_BEHANDLINGSID, DelstegStatus.SAMTYKKET);
 
@@ -134,7 +135,7 @@ public class SoknadServiceIntegrasjonsTest {
 
     @Test
     public void settJournalforendeEnhetPersistererNyJournalforendeEnhetTilDb() {
-        Long soknadId = opprettOgPersisterSoknad(EN_BEHANDLINGSID, "aktor");
+        Long soknadId = opprettOgPersisterSoknad(EN_BEHANDLINGSID, "fodselsnummer");
 
         soknadService.settJournalforendeEnhet(EN_BEHANDLINGSID, "NAV UTLAND");
 
@@ -144,7 +145,7 @@ public class SoknadServiceIntegrasjonsTest {
 
     @Test
     public void avbrytSoknadSletterSoknadenFraLokalDb() {
-        Long soknadId = opprettOgPersisterSoknad(EN_BEHANDLINGSID, "aktor");
+        Long soknadId = opprettOgPersisterSoknad(EN_BEHANDLINGSID, "fodselsnummer");
 
         soknadService.avbrytSoknad(EN_BEHANDLINGSID);
 
@@ -154,7 +155,7 @@ public class SoknadServiceIntegrasjonsTest {
 
     @Test
     public void avbrytSoknadSletterSoknadenFraHenvendelse() {
-        opprettOgPersisterSoknad(EN_BEHANDLINGSID, "aktor");
+        opprettOgPersisterSoknad(EN_BEHANDLINGSID, "fodselsnummer");
 
         soknadService.avbrytSoknad(EN_BEHANDLINGSID);
 
@@ -165,7 +166,7 @@ public class SoknadServiceIntegrasjonsTest {
     @Test
     public void avbrytSoknadAvbryterSoknadenIHenvendelse() {
         String behandlingsId = nyBehandlnigsId();
-        opprettOgPersisterSoknad(behandlingsId, "aktor");
+        opprettOgPersisterSoknad(behandlingsId, "fodselsnummer");
 
         soknadService.avbrytSoknad(behandlingsId);
 
@@ -173,11 +174,23 @@ public class SoknadServiceIntegrasjonsTest {
     }
 
     @Test
-    public void sendSoknadSkalLagreEnFilTilHenvendelseHvisForeldrepenger() {
+    public void sendSoknadSkalLagreToFilerTilHenvendelseHvisForeldrepengerEngangsstonad() {
         ((ThreadLocalSubjectHandler) getSubjectHandler()).setSubject(getSubject());
-        skjemaNummer = "NAV 14-05.06";
+        skjemaNummer = "NAV 14-05.07";
         String behandlingsId = nyBehandlnigsId();
         opprettOgPersisterSoknad(behandlingsId, "aktor");
+
+        soknadService.sendSoknad(behandlingsId, new byte[]{});
+
+        verify(fillagerEndpoint, times(2)).lagre(eq(behandlingsId), any(String.class), any(String.class), any(DataHandler.class));
+    }
+
+    @Test
+    public void sendSoknadSkalLagreEnFilTilHenvendelseHvisBilstonad() {
+        ((ThreadLocalSubjectHandler) getSubjectHandler()).setSubject(getSubject());
+        skjemaNummer = "NAV 10-07.40";
+        String behandlingsId = nyBehandlnigsId();
+        opprettOgPersisterSoknad(behandlingsId, "fodselsnummer");
 
         soknadService.sendSoknad(behandlingsId, new byte[]{});
 
@@ -189,7 +202,7 @@ public class SoknadServiceIntegrasjonsTest {
         ((ThreadLocalSubjectHandler) getSubjectHandler()).setSubject(getSubject());
         skjemaNummer = "NAV 11-12.12";
         String behandlingsId = nyBehandlnigsId();
-        opprettOgPersisterSoknadMedData(behandlingsId, "aktor");
+        opprettOgPersisterSoknadMedData(behandlingsId, "fodselsnummer");
         lokalDb.opprettFaktum(soknadId, maalgruppeFaktum(), true);
 
         soknadService.sendSoknad(behandlingsId, new byte[]{});
@@ -210,10 +223,10 @@ public class SoknadServiceIntegrasjonsTest {
         return UUID.randomUUID().toString();
     }
 
-    private Long opprettOgPersisterSoknad(String behId, String aktor) {
+    private Long opprettOgPersisterSoknad(String behId, String fodselsnummer) {
         soknad = WebSoknad.startSoknad()
                 .medUuid(uuid)
-                .medAktorId(aktor)
+                .medFodselsnummer(fodselsnummer)
                 .medBehandlingId(behId)
                 .medDelstegStatus(DelstegStatus.OPPRETTET)
                 .medskjemaNummer(skjemaNummer).medOppretteDato(now());
@@ -222,10 +235,10 @@ public class SoknadServiceIntegrasjonsTest {
         return soknadId;
     }
 
-    private Long opprettOgPersisterSoknadMedData(String behId, String aktor) {
+    private Long opprettOgPersisterSoknadMedData(String behId, String fodselsnummerr) {
         soknad = WebSoknad.startSoknad()
                 .medUuid(uuid)
-                .medAktorId(aktor)
+                .medFodselsnummer(fodselsnummerr)
                 .medBehandlingId(behId)
                 .medDelstegStatus(DelstegStatus.OPPRETTET)
                 .medskjemaNummer(skjemaNummer).medOppretteDato(now());

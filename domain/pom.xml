@@ -64,6 +64,10 @@
             <classifier>jaxb</classifier>
         </dependency>
         <dependency>
+            <groupId>no.nav.sbl.dialogarena</groupId>
+            <artifactId>soeknadsskjemaEngangsstoenad-v1-meldingsdefinisjon</artifactId>
+        </dependency>
+        <dependency>
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-security-core</artifactId>
         </dependency>
@@ -101,11 +105,14 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.nav</groupId>
+            <artifactId>metrics</artifactId>
         </dependency>
 
     </dependencies>
