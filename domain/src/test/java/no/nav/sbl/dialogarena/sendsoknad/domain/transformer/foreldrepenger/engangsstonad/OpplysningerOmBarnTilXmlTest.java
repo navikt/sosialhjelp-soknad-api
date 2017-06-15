@@ -58,6 +58,56 @@ public class OpplysningerOmBarnTilXmlTest {
         assertThat(resultat.getFoedselsdatoes().get(1)).isEqualTo(LocalDate.of(2015, 2, 3));
     }
 
+    @Test
+    public void forSenSoknad() {
+        WebSoknad soknad = new WebSoknad();
+        soknad.getFakta().add(new Faktum().medKey("barnet.dato").medValue("2016-10-31"));
+
+        OpplysningerOmBarnTilXml test = new OpplysningerOmBarnTilXml();
+        assertThat(test.sokerForSent(soknad)).isTrue();
+    }
+
+    @Test
+    public void enDagForSenSoknad() {
+        LocalDate seksManederTilbakeITid = LocalDate.now().minusMonths(6);
+
+        WebSoknad soknad = new WebSoknad();
+        soknad.getFakta().add(new Faktum().medKey("barnet.dato").medValue(seksManederTilbakeITid.toString()));
+        OpplysningerOmBarnTilXml test = new OpplysningerOmBarnTilXml();
+        assertThat(test.sokerForSent(soknad)).isTrue();
+    }
+
+    @Test
+    public void enDagUnnaForSenSoknad() {
+        LocalDate seksManederTilbakeITidFraIMorgen = LocalDate.now().minusMonths(6).plusDays(1);
+
+        WebSoknad soknad = new WebSoknad();
+        soknad.getFakta().add(new Faktum().medKey("barnet.dato").medValue(seksManederTilbakeITidFraIMorgen.toString()));
+        OpplysningerOmBarnTilXml test = new OpplysningerOmBarnTilXml();
+        assertThat(test.sokerForSent(soknad)).isFalse();
+    }
+
+    @Test
+    public void ikkeForSenSoknad() {
+        WebSoknad soknad = new WebSoknad();
+        LocalDate enMaanedTilbakeITid = LocalDate.now().minusMonths(1);
+        soknad.getFakta().add(new Faktum().medKey("barnet.dato").medValue(enMaanedTilbakeITid.toString()));
+
+        OpplysningerOmBarnTilXml test = new OpplysningerOmBarnTilXml();
+        assertThat(test.sokerForSent(soknad)).isFalse();
+    }
+
+    @Test
+    public void begrunnelseSkalVaereMedForSenSoknad() {
+        WebSoknad soknad = new WebSoknad();
+        soknad.getFakta().add(new Faktum().medKey("barnet.dato").medValue("2016-10-01"));
+        soknad.getFakta().add(new Faktum().medKey("barnet.forsensoknad.fritekst").medValue("Begrunnelse"));
+
+        OpplysningerOmBarn resultat = new OpplysningerOmBarnTilXml().apply(soknad);
+        assertThat(resultat.getBegrunnelse()).isNotNull();
+        assertThat(resultat.getBegrunnelse()).isEqualTo("Begrunnelse");
+    }
+
     private WebSoknad settOppSoknad(String soknadsType, String fodselEllerAdopsjon) {
         WebSoknad soknad = new WebSoknad();
 

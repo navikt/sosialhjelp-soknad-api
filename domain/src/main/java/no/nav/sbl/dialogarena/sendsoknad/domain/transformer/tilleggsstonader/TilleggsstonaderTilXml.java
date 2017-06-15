@@ -1,6 +1,8 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.tilleggsstonader;
 
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.*;
+import no.nav.metrics.Event;
+import no.nav.metrics.MetricsFactory;
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
@@ -117,7 +119,7 @@ public class TilleggsstonaderTilXml implements AlternativRepresentasjonTransform
 
     public AlternativRepresentasjon transform(WebSoknad webSoknad) {
         Tilleggsstoenadsskjema tilleggsstoenadsskjema = tilTilleggsstoenadSkjema(webSoknad, messageSource);
-        validerSkjema(tilleggsstoenadsskjema);
+        validerSkjema(tilleggsstoenadsskjema, webSoknad);
         ByteArrayOutputStream xml = new ByteArrayOutputStream();
         JAXB.marshal(tilleggsstoenadsskjema, xml);
         return new AlternativRepresentasjon()
@@ -127,7 +129,7 @@ public class TilleggsstonaderTilXml implements AlternativRepresentasjonTransform
                 .medContent(xml.toByteArray());
     }
 
-    private void validerSkjema(Tilleggsstoenadsskjema tilleggsstoenadsskjema) {
+    private void validerSkjema(Tilleggsstoenadsskjema tilleggsstoenadsskjema, WebSoknad soknad) {
         QName qname = new QName("http://nav.no/melding/virksomhet/soeknadsskjema/v1/soeknadsskjema", "tilleggsstoenadsskjema");
         JAXBElement<Tilleggsstoenadsskjema> skjema = new JAXBElement<>(qname, Tilleggsstoenadsskjema.class, tilleggsstoenadsskjema);
         try {
@@ -143,6 +145,9 @@ public class TilleggsstonaderTilXml implements AlternativRepresentasjonTransform
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             JAXB.marshal(skjema, baos);
             LOG.warn("Validering av skjema feilet: " + e + ". Xml: " + baos.toString(), e);
+            Event event = MetricsFactory.createEvent("soknad.xmlrepresentasjon.valideringsfeil");
+            event.addTagToReport("soknad.xmlrepresentasjon.valideringsfeil.skjemanummer", soknad.getskjemaNummer());
+            event.report();
         }
     }
 
