@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Steg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
 import org.apache.commons.collections15.Transformer;
 import org.springframework.context.MessageSource;
 
@@ -34,7 +35,7 @@ public interface KravdialogInformasjon {
 
     List<String> getSkjemanummer();
 
-    List<Transformer<WebSoknad, AlternativRepresentasjon>> getTransformers(MessageSource messageSource);
+    List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource, WebSoknad soknad);
 
     boolean brukerNyOppsummering();
 
@@ -46,7 +47,7 @@ public interface KravdialogInformasjon {
 
     abstract class DefaultOppsett implements KravdialogInformasjon {
         @Override
-        public List<Transformer<WebSoknad, AlternativRepresentasjon>> getTransformers(MessageSource messageSource) {
+        public List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource, WebSoknad soknad) {
             return new ArrayList<>();
         }
 

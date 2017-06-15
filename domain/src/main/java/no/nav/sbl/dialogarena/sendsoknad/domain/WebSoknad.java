@@ -296,6 +296,12 @@ public class WebSoknad implements Serializable {
         return null;
     }
 
+    public String getValueForFaktum(final String key) {
+        return Optional.ofNullable(getFaktumMedKey(key))
+                .map(Faktum::getValue)
+                .orElse("");
+    }
+
     /**
      * Returnerer liste over vedlegg som er lastet opp i denne behandlingen.
      *
