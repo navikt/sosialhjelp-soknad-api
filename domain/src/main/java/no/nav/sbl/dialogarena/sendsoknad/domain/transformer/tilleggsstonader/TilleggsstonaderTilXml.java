@@ -1,11 +1,14 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.tilleggsstonader;
 
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.*;
+import no.nav.metrics.Event;
+import no.nav.metrics.MetricsFactory;
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import org.apache.commons.collections15.Transformer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
@@ -27,7 +30,7 @@ import java.util.UUID;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.StofoTransformers.extractValue;
 
-public class TilleggsstonaderTilXml implements Transformer<WebSoknad, AlternativRepresentasjon> {
+public class TilleggsstonaderTilXml implements AlternativRepresentasjonTransformer {
     private static final Logger LOG = LoggerFactory.getLogger(TilleggsstonaderTilXml.class);
     private final MessageSource messageSource;
 
@@ -110,9 +113,13 @@ public class TilleggsstonaderTilXml implements Transformer<WebSoknad, Alternativ
     }
 
     @Override
+    public AlternativRepresentasjon apply(WebSoknad webSoknad) {
+        return transform(webSoknad);
+    }
+
     public AlternativRepresentasjon transform(WebSoknad webSoknad) {
         Tilleggsstoenadsskjema tilleggsstoenadsskjema = tilTilleggsstoenadSkjema(webSoknad, messageSource);
-        validerSkjema(tilleggsstoenadsskjema);
+        validerSkjema(tilleggsstoenadsskjema, webSoknad);
         ByteArrayOutputStream xml = new ByteArrayOutputStream();
         JAXB.marshal(tilleggsstoenadsskjema, xml);
         return new AlternativRepresentasjon()
@@ -122,7 +129,7 @@ public class TilleggsstonaderTilXml implements Transformer<WebSoknad, Alternativ
                 .medContent(xml.toByteArray());
     }
 
-    private void validerSkjema(Tilleggsstoenadsskjema tilleggsstoenadsskjema) {
+    private void validerSkjema(Tilleggsstoenadsskjema tilleggsstoenadsskjema, WebSoknad soknad) {
         QName qname = new QName("http://nav.no/melding/virksomhet/soeknadsskjema/v1/soeknadsskjema", "tilleggsstoenadsskjema");
         JAXBElement<Tilleggsstoenadsskjema> skjema = new JAXBElement<>(qname, Tilleggsstoenadsskjema.class, tilleggsstoenadsskjema);
         try {
@@ -138,6 +145,16 @@ public class TilleggsstonaderTilXml implements Transformer<WebSoknad, Alternativ
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             JAXB.marshal(skjema, baos);
             LOG.warn("Validering av skjema feilet: " + e + ". Xml: " + baos.toString(), e);
+            Event event = MetricsFactory.createEvent("soknad.xmlrepresentasjon.valideringsfeil");
+            event.addTagToReport("soknad.xmlrepresentasjon.valideringsfeil.skjemanummer", soknad.getskjemaNummer());
+            event.report();
         }
     }
+
+    @Override
+    public AlternativRepresentasjonType getRepresentasjonsType() {
+        return AlternativRepresentasjonType.XML;
+    }
+
+
 }
