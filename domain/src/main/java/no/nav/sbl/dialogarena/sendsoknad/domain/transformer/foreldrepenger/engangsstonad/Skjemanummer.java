@@ -13,13 +13,13 @@ public enum Skjemanummer {
     Y4("I000044", true),
     K3("I000051", true),
     K4("I000052", true),
-    K1("I000053", true),
-    M6("I000054", true),
-    O9("I000056", true),
-    P3("I000058", true),
-    R4("I000059", true),
-    T1("I000060", true),
-    Z6("I000061", true);
+    K1("I000058", true),
+    M6("I000059", true),
+    O9("I000061", true),
+    P3("I000062", true),
+    R4("I000063", true),
+    T1("I000064", true),
+    Z6("I000065", true);
 
     private final String dokumentTypeId;
     private final boolean erPaakrevd;
