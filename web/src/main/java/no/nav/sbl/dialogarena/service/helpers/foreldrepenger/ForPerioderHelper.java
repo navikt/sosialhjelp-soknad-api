@@ -9,12 +9,15 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.function.BiFunction;
 
 import static java.util.stream.Collectors.toList;
 import static no.nav.sbl.dialogarena.service.HandlebarsUtils.*;
 
 @Component
 public class ForPerioderHelper extends RegistryAwareHelper<Object> {
+
+    private final DateTimeFormatter dt = DateTimeFormat.forPattern("yyyy-MM-dd").withLocale(NO_LOCALE);
 
     @Override
     public String getNavn() {
@@ -29,15 +32,10 @@ public class ForPerioderHelper extends RegistryAwareHelper<Object> {
     @Override
     public CharSequence apply(Object context, Options options) throws IOException {
 
-        final DateTimeFormatter dt = DateTimeFormat.forPattern("yyyy-MM-dd").withLocale(NO_LOCALE);
-
         List<Faktum> sortertFaktaEtterDato = finnWebSoknad(options.context)
                 .getFaktaSomStarterMed("perioder.tidsrom")
                 .stream()
-                .sorted((d1, d2) ->
-                        dt.parseDateTime(d1.getProperties().get("fradato"))
-                                .compareTo(dt.parseDateTime(d2.getProperties().get("fradato")))
-                        )
+                .sorted((f1, f2) -> compareFaktumFradato.apply(f1, f2))
                 .collect(toList());
 
         if (sortertFaktaEtterDato.isEmpty()) {
@@ -46,5 +44,10 @@ public class ForPerioderHelper extends RegistryAwareHelper<Object> {
             return lagItererbarRespons(options, sortertFaktaEtterDato);
         }
     }
+
+    private BiFunction<Faktum, Faktum, Integer> compareFaktumFradato =
+            (f1, f2) ->
+                    dt.parseDateTime(f1.getProperties().get("fradato"))
+                            .compareTo(dt.parseDateTime(f2.getProperties().get("fradato")));
 }
 
