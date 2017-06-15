@@ -19,7 +19,6 @@ import static java.util.stream.Collectors.toList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.lagDatatypeFactory;
 
 
-
 public final class StofoTransformers {
     public static final String TOM = "tom";
     public static final String FOM = "fom";
@@ -69,7 +68,8 @@ public final class StofoTransformers {
                 extractValue(faktum, String.class, "land"),
                 extractValue(faktum, String.class, "adresse"),
                 extractValue(faktum, String.class, "postnr"),
-                extractValue(faktum, String.class, "utenlandskadresse")));
+                extractValue(faktum, String.class, "utenlandskadresse"))
+        );
         TRANSFORMERS.put(ErUtgifterDekket.class, faktumVerdi -> {
             ErUtgifterDekket erUtgifterDekket = new ErUtgifterDekket();
             erUtgifterDekket.setKodeverksRef("");
@@ -176,6 +176,7 @@ public final class StofoTransformers {
     public static Double sumDouble(Faktum... fakta) {
         return sumDouble(null, fakta);
     }
+
     public static Double sumDouble(String property, Faktum... fakta) {
         Double sum = 0D;
         for (Faktum faktum : fakta) {

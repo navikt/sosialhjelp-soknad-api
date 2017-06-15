@@ -1,7 +1,5 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.tilleggsstonader;
 
-import org.apache.commons.collections15.Transformer;
-
 import java.util.function.Function;
 
 public class StofoKodeverkVerdier {
