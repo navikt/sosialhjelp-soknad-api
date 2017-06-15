@@ -115,4 +115,68 @@ public class ForeldrepengerTilXmlFullstendigIT extends AbstractIT {
         assertThat(soknad.getTilknytningNorge().getFremtidigOppholdUtenlands()).isEmpty();
 
     }
+
+    @Test
+    public void farFodsel() {
+
+        Map<String, String> periodeProperties = new HashMap<>();
+        periodeProperties.put("land", "FRO");
+        periodeProperties.put("fradato", "2016-10-06");
+        periodeProperties.put("tildato", "2017-05-01");
+
+        SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadSkjemanummer)
+                .faktum("soknadsvalg.stonadstype").withValue(Stonadstyper.ENGANGSSTONAD_FAR).utforEndring()
+
+                .faktum("rettigheter.overtak").withValue("overtattOmsorgInnen53UkerFodsel").utforEndring()
+
+                .faktum("tilknytningnorge.oppholder").withValue("true").utforEndring()
+                .faktum("tilknytningnorge.tidligere").withValue("false").utforEndring()
+                .nyttFaktum("tilknytningnorge.tidligere.periode").withProperties(periodeProperties).opprett()
+
+                .faktum("barnet.antall").withValue("3").utforEndring()
+                .faktum("barnet.dato").withValue("2017-01-26").utforEndring()
+
+                .faktum("infomor.opplysninger.fornavn").withValue("Prøve").utforEndring()
+                .faktum("infomor.opplysninger.etternavn").withValue("Kanin").utforEndring()
+                .faktum("infomor.opplysninger.kanIkkeOppgi").withValue("true").utforEndring()
+                .faktum("infomor.opplysninger.kanIkkeOppgi.true.arsak")
+                    .withValue("utenlandsk").withProperty("land", "AZE").utforEndring()
+                .faktum("infomor.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.fodselsnummer")
+                    .withValue("010185").utforEndring()
+
+                .faktum("tilleggsopplysninger.fritekst").withValue("Joda, her er det masse info!").utforEndring()
+
+                .hentPaakrevdeVedlegg()
+                .vedlegg(P5).withInnsendingsValg(Vedlegg.Status.SendesSenere).utforEndring()
+                .hentPaakrevdeVedlegg()
+                .soknad().settDelstegstatus("oppsummering");
+
+        //Er alt med?
+        assertThat(testSoknad.hentAlternativRepresentasjonResponseMedStatus().getStatus()).isEqualTo(500);
+
+        //Glemte disse!
+        testSoknad
+                .faktum("soknadsvalg.fodselelleradopsjon").withValue("fodsel").utforEndring()
+                .faktum("tilknytningnorge.fremtidig").withValue("true").utforEndring();
+
+        //Nå da?
+        assertThat(testSoknad.hentAlternativRepresentasjonResponseMedStatus().getStatus()).isEqualTo(200);
+
+        SoeknadsskjemaEngangsstoenad soknad = testSoknad.hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+
+        assertThat(soknad.getOpplysningerOmFar()).isNull();
+        assertThat(soknad.getRettigheter().getGrunnlagForAnsvarsovertakelse()).isEqualTo("overtattOmsorgInnen53UkerFodsel");
+        assertThat(soknad.getOpplysningerOmBarn().getBegrunnelse()).isNull();
+        assertThat(soknad.getOpplysningerOmBarn().getAntallBarn() == 3);
+
+        assertThat(soknad.getOpplysningerOmMor()).isNotNull();
+        assertThat(soknad.getOpplysningerOmMor().getFornavn().equals("Prøve"));
+        assertThat(soknad.getOpplysningerOmMor().getEtternavn().equals("Kanin"));
+        assertThat(soknad.getOpplysningerOmMor().getKanIkkeOppgiMor().getUtenlandskfnrLand().equals("AZE"));
+
+        assertThat(soknad.getTilknytningNorge().getTidligereOppholdUtenlands().size()>0);
+        assertThat(soknad.getTilknytningNorge().isOppholdNorgeNaa()).isTrue();
+        assertThat(soknad.getTilknytningNorge().isFremtidigOppholdNorge()).isTrue();
+
+    }
 }
