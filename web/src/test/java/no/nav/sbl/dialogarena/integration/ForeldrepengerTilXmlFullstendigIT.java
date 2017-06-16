@@ -152,7 +152,7 @@ public class ForeldrepengerTilXmlFullstendigIT extends AbstractIT {
                 .soknad().settDelstegstatus("oppsummering");
 
         //Er alt med?
-        assertThat(testSoknad.hentAlternativRepresentasjonResponseMedStatus().getStatus()).isEqualTo(500);
+        assertThat(testSoknad.hentAlternativRepresentasjonResponseMedStatus().getStatus()).isNotEqualTo(200);
 
         //Glemte disse!
         testSoknad
@@ -167,14 +167,14 @@ public class ForeldrepengerTilXmlFullstendigIT extends AbstractIT {
         assertThat(soknad.getOpplysningerOmFar()).isNull();
         assertThat(soknad.getRettigheter().getGrunnlagForAnsvarsovertakelse()).isEqualTo("overtattOmsorgInnen53UkerFodsel");
         assertThat(soknad.getOpplysningerOmBarn().getBegrunnelse()).isNull();
-        assertThat(soknad.getOpplysningerOmBarn().getAntallBarn() == 3);
+        assertThat(soknad.getOpplysningerOmBarn().getAntallBarn()).isEqualTo(3);
 
         assertThat(soknad.getOpplysningerOmMor()).isNotNull();
         assertThat(soknad.getOpplysningerOmMor().getFornavn().equals("Prøve"));
         assertThat(soknad.getOpplysningerOmMor().getEtternavn().equals("Kanin"));
         assertThat(soknad.getOpplysningerOmMor().getKanIkkeOppgiMor().getUtenlandskfnrLand().equals("AZE"));
 
-        assertThat(soknad.getTilknytningNorge().getTidligereOppholdUtenlands().size()>0);
+        assertThat(soknad.getTilknytningNorge().getTidligereOppholdUtenlands().size()).isGreaterThan(0);
         assertThat(soknad.getTilknytningNorge().isOppholdNorgeNaa()).isTrue();
         assertThat(soknad.getTilknytningNorge().isFremtidigOppholdNorge()).isTrue();
 
