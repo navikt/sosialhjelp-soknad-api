@@ -41,7 +41,10 @@ public class DagpengerArbeidsforholdVedleggIT extends AbstractIT {
     @Test
     public void skalHaT8OgO2VedleggVedKontraktUtgaatt() {
         soknadMedDelstegstatusOpprettet(dagpengerSkjemaNummer)
-                .nyttFaktum("arbeidsforhold").withValue("true").withProperty("type", "kontraktutgaatt").opprett()
+                .nyttFaktum("arbeidsforhold").withValue("true")
+                .withProperty("type", "kontraktutgaatt")
+                .withProperty("tilbudomjobbannetsted", "true")
+                .withProperty("skalHaT8Vedlegg", "true").opprett()
                 .hentPaakrevdeVedlegg()
                 .skalHaVedleggMedSkjemaNummerTillegg("T8", "kontraktutgaatt")
                 .skalHaVedleggMedSkjemaNummerTillegg("O2", "kontraktutgaatt");
