@@ -16,7 +16,7 @@
         <skjemaNummer>T8</skjemaNummer>
         <skjemanummerTillegg>kontraktutgaatt</skjemanummerTillegg>
         <property>arbeidsgivernavn</property>
-        <onProperty>skalHaT8Vedlegg</onProperty>
+        <onProperty>skalHaT8VedleggForKontraktUtgaatt</onProperty>
         <onValues>
             <value>true</value>
         </onValues>

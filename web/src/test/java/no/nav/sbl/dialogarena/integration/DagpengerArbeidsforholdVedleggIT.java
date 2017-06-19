@@ -44,7 +44,7 @@ public class DagpengerArbeidsforholdVedleggIT extends AbstractIT {
                 .nyttFaktum("arbeidsforhold").withValue("true")
                 .withProperty("type", "kontraktutgaatt")
                 .withProperty("tilbudomjobbannetsted", "true")
-                .withProperty("skalHaT8Vedlegg", "true").opprett()
+                .withProperty("skalHaT8VedleggForKontraktUtgaatt", "true").opprett()
                 .hentPaakrevdeVedlegg()
                 .skalHaVedleggMedSkjemaNummerTillegg("T8", "kontraktutgaatt")
                 .skalHaVedleggMedSkjemaNummerTillegg("O2", "kontraktutgaatt");
