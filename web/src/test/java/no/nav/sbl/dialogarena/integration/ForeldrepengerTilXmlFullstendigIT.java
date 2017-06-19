@@ -36,6 +36,7 @@ public class ForeldrepengerTilXmlFullstendigIT extends AbstractIT {
         SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadSkjemanummer)
                 .faktum("soknadsvalg.stonadstype").withValue(Stonadstyper.ENGANGSSTONAD_MOR).utforEndring()
                 .faktum("soknadsvalg.fodselelleradopsjon").withValue("fodsel").utforEndring()
+                .faktum("veiledning.mor.terminbekreftelse").withValue("fodt").utforEndring()
 
                 .faktum("tilknytningnorge.oppholder").withValue("true").utforEndring()
                 .faktum("tilknytningnorge.tidligere").withValue("false").utforEndring()
@@ -44,7 +45,6 @@ public class ForeldrepengerTilXmlFullstendigIT extends AbstractIT {
 
                 .faktum("barnet.dato").withValue(seksManederTilbakeITid.toString()).utforEndring()
                 .faktum("barnet.antall").withValue("2").utforEndring()
-                .faktum("veiledning.mor.terminbekreftelse").withValue("fodt").utforEndring()
                 .faktum("barnet.forsensoknad.fritekst").withValue("Testbegrunnelse").utforEndring()
 
                 .faktum("infofar.opplysninger.fornavn").withValue("Test").utforEndring()
@@ -55,7 +55,7 @@ public class ForeldrepengerTilXmlFullstendigIT extends AbstractIT {
                 .faktum("infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.fodselsnummer")
                 .withValue("123456").utforEndring()
 
-                .faktum("tilleggsopplysninger.fritekst").withValue("Test").utforEndring()
+                .faktum("tilleggsopplysninger.fritekst").withValue("Test tilleggsopplysninger").utforEndring()
                 .settDelstegstatus("oppsummering");
 
         SoeknadsskjemaEngangsstoenad soknad = testSoknad.hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
@@ -63,12 +63,14 @@ public class ForeldrepengerTilXmlFullstendigIT extends AbstractIT {
         assertThat(testSoknad.hentAlternativRepresentasjonResponseMedStatus().getStatus()).isEqualTo(200);
         assertThat(soknad.getOpplysningerOmMor()).isNull();
         assertThat(soknad.getOpplysningerOmFar()).isNotNull();
+        assertThat(soknad.getOpplysningerOmFar().getFornavn()).isEqualTo("Test");
+        assertThat(soknad.getOpplysningerOmFar().getEtternavn()).isEqualTo("Testesen");
         assertThat(soknad.getOpplysningerOmFar().getPersonidentifikator()).isNull();
         assertThat(soknad.getTilknytningNorge()).isNotNull();
         assertThat(soknad.getTilknytningNorge().getTidligereOppholdUtenlands()).hasSize(1);
         assertThat(soknad.getTilknytningNorge().getFremtidigOppholdUtenlands()).isEmpty();
         assertThat(soknad.getRettigheter()).isNull();
-        assertThat(soknad.getTilleggsopplysninger()).isEqualTo("Test");
+        assertThat(soknad.getTilleggsopplysninger()).isEqualTo("Test tilleggsopplysninger");
         assertThat(soknad.getOpplysningerOmBarn().getBegrunnelse()).isEqualTo("Testbegrunnelse");
 
     }
@@ -107,6 +109,9 @@ public class ForeldrepengerTilXmlFullstendigIT extends AbstractIT {
         assertThat(soknad.getRettigheter().getGrunnlagForAnsvarsovertakelse()).isEqualTo("overtattOmsorgInnen53UkerAdopsjon");
         assertThat(soknad.getOpplysningerOmBarn().getBegrunnelse()).isNull();
         assertThat(soknad.getOpplysningerOmMor()).isNotNull();
+        assertThat(soknad.getOpplysningerOmMor().getFornavn()).isEqualTo("Test");
+        assertThat(soknad.getOpplysningerOmMor().getEtternavn()).isEqualTo("Testesen");
+        assertThat(soknad.getOpplysningerOmMor().getPersonidentifikator()).isEqualTo("***REMOVED***");
         assertThat(soknad.getOpplysningerOmMor().getKanIkkeOppgiMor()).isNull();
         assertThat(soknad.getTilknytningNorge().isOppholdNorgeNaa()).isTrue();
         assertThat(soknad.getTilknytningNorge().isFremtidigOppholdNorge()).isTrue();
