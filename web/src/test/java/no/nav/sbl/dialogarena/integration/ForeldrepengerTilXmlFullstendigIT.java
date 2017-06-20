@@ -57,7 +57,7 @@ public class ForeldrepengerTilXmlFullstendigIT extends AbstractIT {
         assertThat(soknad_farOvertaOmsorg.getOpplysningerOmMor()).isNotNull();
         assertThat(soknad_farOvertaOmsorg.getOpplysningerOmMor().getFornavn()).isEqualTo("Prøve");
         assertThat(soknad_farOvertaOmsorg.getOpplysningerOmMor().getKanIkkeOppgiMor().getUtenlandskfnrLand().getKode()).isEqualTo("AZE");
-        assertThat(soknad_farOvertaOmsorg.getOpplysningerOmMor().getKanIkkeOppgiMor().getUtenlandskfnr()).isEqualTo("Ukjent");
+        assertThat(soknad_farOvertaOmsorg.getOpplysningerOmMor().getKanIkkeOppgiMor().getUtenlandskfnrEllerForklaring()).isEqualTo("Ukjent");
     }
 
     @Test
@@ -74,24 +74,25 @@ public class ForeldrepengerTilXmlFullstendigIT extends AbstractIT {
     public void testRettigheter() {
         assertThat(soknad_morFodsel.getRettigheter()).isNull();
 
-        assertThat(soknad_farAdopsjon.getRettigheter().getGrunnlagForAnsvarsovertakelse()).isEqualTo("overtattOmsorgInnen53UkerAdopsjon");
+        assertThat(soknad_farAdopsjon.getRettigheter().getGrunnlagForAnsvarsovertakelse().value()).isEqualTo("overtattOmsorgInnen53UkerAdopsjon");
 
-        assertThat(soknad_farOvertaOmsorg.getRettigheter().getGrunnlagForAnsvarsovertakelse()).isEqualTo("overtattOmsorgInnen53UkerFodsel");
+        assertThat(soknad_farOvertaOmsorg.getRettigheter().getGrunnlagForAnsvarsovertakelse().value()).isEqualTo("overtattOmsorgInnen53UkerFodsel");
     }
 
     @Test
     public void testTilknyttningNorge() {
         assertThat(soknad_morFodsel.getTilknytningNorge()).isNotNull();
-        assertThat(soknad_morFodsel.getTilknytningNorge().getTidligereOppholdUtenlands()).hasSize(1);
-        assertThat(soknad_morFodsel.getTilknytningNorge().getFremtidigOppholdUtenlands()).isEmpty();
+        assertThat(soknad_morFodsel.getTilknytningNorge().getTidligereOppholdUtenlands()).isNotNull();
+        assertThat(soknad_morFodsel.getTilknytningNorge().getTidligereOppholdUtenlands().getUtenlandsoppholds()).hasSize(1);
+        assertThat(soknad_morFodsel.getTilknytningNorge().getFremtidigOppholdUtenlands()).isNull();
 
         assertThat(soknad_farAdopsjon.getTilknytningNorge().isOppholdNorgeNaa()).isTrue();
         assertThat(soknad_farAdopsjon.getTilknytningNorge().isFremtidigOppholdNorge()).isTrue();
         assertThat(soknad_farAdopsjon.getTilknytningNorge().isTidligereOppholdNorge()).isTrue();
-        assertThat(soknad_farAdopsjon.getTilknytningNorge().getTidligereOppholdUtenlands()).isEmpty();
-        assertThat(soknad_farAdopsjon.getTilknytningNorge().getFremtidigOppholdUtenlands()).isEmpty();
+           assertThat(soknad_farAdopsjon.getTilknytningNorge().getTidligereOppholdUtenlands()).isNull();
+           assertThat(soknad_farAdopsjon.getTilknytningNorge().getFremtidigOppholdUtenlands()).isNull();
 
-        assertThat(soknad_farOvertaOmsorg.getTilknytningNorge().getTidligereOppholdUtenlands().size()).isGreaterThan(0);
+        assertThat(soknad_farOvertaOmsorg.getTilknytningNorge().getTidligereOppholdUtenlands().getUtenlandsoppholds().size()).isGreaterThan(0);
         assertThat(soknad_farOvertaOmsorg.getTilknytningNorge().isOppholdNorgeNaa()).isTrue();
         assertThat(soknad_farOvertaOmsorg.getTilknytningNorge().isFremtidigOppholdNorge()).isTrue();
     }
@@ -105,10 +106,10 @@ public class ForeldrepengerTilXmlFullstendigIT extends AbstractIT {
 
     @Test
     public void testVedlegg() {
-        assertThat(soknad_morFodsel.getVedleggListes()).isEmpty();
+        assertThat(soknad_morFodsel.getVedleggListe().getVedleggs()).isEmpty();
 
-        assertThat(soknad_farAdopsjon.getVedleggListes()).isNotEmpty();
-        assertThat(soknad_farAdopsjon.getVedleggListes().contains(P5));
+        assertThat(soknad_farAdopsjon.getVedleggListe().getVedleggs()).isNotEmpty();
+        assertThat(soknad_farAdopsjon.getVedleggListe().getVedleggs().contains(P5));
     }
 
     private void lagMorFodsel() {
