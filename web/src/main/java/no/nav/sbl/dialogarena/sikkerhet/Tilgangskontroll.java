@@ -49,15 +49,15 @@ public class Tilgangskontroll {
 
     public void verifiserBrukerHarTilgangTilSoknad(String behandlingsId) {
         Long soknadId = null;
-        String aktoerId = "undefined";
+        String fodselsnummer = "undefined";
         try {
             WebSoknad soknad = soknadService.hentSoknad(behandlingsId, false, false);
             soknadId = soknad.getSoknadId();
-            aktoerId = soknad.getAktoerId();
+            fodselsnummer = soknad.getFodselsnummer();
         } catch (Exception e) {
             logger.warn("Kunne ikke avgjøre hvem som eier søknad med behandlingsId {} -> Ikke tilgang.", behandlingsId, e);
         }
-        verifiserBrukerHarTilgangTilSoknad(aktoerId, soknadId);
+        verifiserBrukerHarTilgangTilSoknad(fodselsnummer, soknadId);
     }
 
     public void verifiserBrukerHarTilgangTilHenvendelse(String behandlingsId) {

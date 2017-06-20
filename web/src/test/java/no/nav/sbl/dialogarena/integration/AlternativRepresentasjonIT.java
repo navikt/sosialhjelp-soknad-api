@@ -1,9 +1,6 @@
 package no.nav.sbl.dialogarena.integration;
 
-import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon;
-import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
-import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Stoenadstype;
-import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Utenlandsopphold;
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.ForeldrepengerInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad.Stonadstyper;
 import org.junit.Before;
@@ -16,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Collections.singletonMap;
+import static no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.GrunnlagForAnsvarsovertakelse.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AlternativRepresentasjonIT extends AbstractIT {
@@ -46,10 +44,21 @@ public class AlternativRepresentasjonIT extends AbstractIT {
         SoknadTester testSoknad = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
                 .faktum("soknadsvalg.stonadstype").withValue(Stonadstyper.ENGANGSSTONAD_FAR).utforEndring()
                 .faktum("rettigheter.overtak").withValue("overtattPaGrunnAvDod").utforEndring();
-        SoeknadsskjemaEngangsstoenad soknad = testSoknad
-                .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
-        assertThat(soknad.getRettigheter()).isNotNull();
-        assertThat(soknad.getRettigheter().getGrunnlagForAnsvarsovertakelse()).isEqualTo("overtattPaGrunnAvDod");
+
+        SoeknadsskjemaEngangsstoenad soknad = testSoknad.hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+        assertThat(soknad.getRettigheter().getGrunnlagForAnsvarsovertakelse()).isEqualTo(OVERTATT_PA_GRUNN_AV_DOD);
+
+        testSoknad.faktum("rettigheter.overtak").withValue("adoptererAlene").utforEndring();
+        soknad = testSoknad.hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+        assertThat(soknad.getRettigheter().getGrunnlagForAnsvarsovertakelse()).isEqualTo(ADOPTERER_ALENE);
+
+        testSoknad.faktum("rettigheter.overtak").withValue("overtattOmsorgInnen53UkerFodsel").utforEndring();
+        soknad = testSoknad.hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+        assertThat(soknad.getRettigheter().getGrunnlagForAnsvarsovertakelse()).isEqualTo(OVERTATT_OMSORG_INNEN_53_UKER_FODSEL);
+
+        testSoknad.faktum("rettigheter.overtak").withValue("overtattOmsorgInnen53UkerAdopsjon").utforEndring();
+        soknad = testSoknad.hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+        assertThat(soknad.getRettigheter().getGrunnlagForAnsvarsovertakelse()).isEqualTo(OVERTATT_OMSORG_INNEN_53_UKER_ADOPSJON);
     }
 
     @Test
@@ -73,7 +82,7 @@ public class AlternativRepresentasjonIT extends AbstractIT {
         assertThat(soknad.getTilknytningNorge().isTidligereOppholdNorge()).isFalse();
         assertThat(soknad.getTilknytningNorge().isFremtidigOppholdNorge()).isTrue();
 
-        List<Utenlandsopphold> tidligereUtenlandsopphold = soknad.getTilknytningNorge().getTidligereOppholdUtenlands();
+        List<Utenlandsopphold> tidligereUtenlandsopphold = soknad.getTilknytningNorge().getTidligereOppholdUtenlands().getUtenlandsoppholds();
         assertThat(tidligereUtenlandsopphold.get(0).getLand().getKode()).isEqualTo("AFG");
         assertThat(tidligereUtenlandsopphold.get(0).getPeriode().getFom().toString()).isEqualTo("2017-01-02");
         assertThat(tidligereUtenlandsopphold.get(0).getPeriode().getTom().toString()).isEqualTo("2017-04-01");
@@ -97,7 +106,7 @@ public class AlternativRepresentasjonIT extends AbstractIT {
         assertThat(soknad.getOpplysningerOmMor().getEtternavn()).isEqualTo("Testesen");
         assertThat(soknad.getOpplysningerOmMor().getPersonidentifikator()).isNull();
         assertThat(soknad.getOpplysningerOmMor().getKanIkkeOppgiMor().getAarsak()).isEqualTo("utenlandsk");
-        assertThat(soknad.getOpplysningerOmMor().getKanIkkeOppgiMor().getUtenlandskfnr()).isEqualTo("1234567890");
+        assertThat(soknad.getOpplysningerOmMor().getKanIkkeOppgiMor().getUtenlandskfnrEllerForklaring()).isEqualTo("1234567890");
         assertThat(soknad.getOpplysningerOmMor().getKanIkkeOppgiMor().getUtenlandskfnrLand().getKode()).isEqualTo("AFG");
     }
 
@@ -121,7 +130,7 @@ public class AlternativRepresentasjonIT extends AbstractIT {
         assertThat(soknad.getOpplysningerOmFar().getFornavn()).isEqualTo("Fornavn");
         assertThat(soknad.getOpplysningerOmFar().getEtternavn()).isEqualTo("Etternavn");
         assertThat(soknad.getOpplysningerOmFar().getKanIkkeOppgiFar().getAarsak()).isEqualTo("utenlandsk");
-        assertThat(soknad.getOpplysningerOmFar().getKanIkkeOppgiFar().getUtenlandskfnr()).isEqualTo("11111111111");
+        assertThat(soknad.getOpplysningerOmFar().getKanIkkeOppgiFar().getUtenlandskfnrEllerForklaring()).isEqualTo("11111111111");
         assertThat(soknad.getOpplysningerOmFar().getKanIkkeOppgiFar().getUtenlandskfnrLand().getKode()).isEqualTo("ARG");
     }
 
@@ -210,7 +219,7 @@ public class AlternativRepresentasjonIT extends AbstractIT {
         assertThat(soknad.getOpplysningerOmMor()).isNotNull();
         assertThat(soknad.getRettigheter()).isNotNull();
         assertThat(soknad.getRettigheter().getGrunnlagForAnsvarsovertakelse())
-                .isEqualTo("overtattOmsorgInnen53UkerFodsel");
+                .isEqualTo(OVERTATT_OMSORG_INNEN_53_UKER_FODSEL);
     }
 
     @Test
