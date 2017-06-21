@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Named("vedleggRepository")
@@ -65,7 +66,7 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
                 new VedleggRowMapper(false), behandlingsId);
         return vedlegg.stream()
                 .filter(IKKE_KVITTERING)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @Override
