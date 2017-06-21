@@ -4,7 +4,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
-import org.apache.commons.collections15.Predicate;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -13,7 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.*;
 
-import static no.nav.modig.lang.collections.IterUtils.on;
+import static java.util.stream.Collectors.toList;
 
 @XmlRootElement(name = "soknad")
 public class SoknadStruktur implements Serializable {
@@ -68,31 +67,20 @@ public class SoknadStruktur implements Serializable {
     }
 
     public List<VedleggForFaktumStruktur> vedleggFor(final Faktum faktum) {
-        return on(vedlegg).filter(new Predicate<VedleggForFaktumStruktur>() {
-            @Override
-            public boolean evaluate(VedleggForFaktumStruktur vedleggForFaktumStruktur) {
-                return vedleggForFaktumStruktur.getFaktum().getId().equals(faktum.getKey());
-            }
-        }).filter(new Predicate<VedleggForFaktumStruktur>() {
-            @Override
-            public boolean evaluate(VedleggForFaktumStruktur vedleggForFaktumStruktur) {
-                return vedleggForFaktumStruktur.harFilterProperty(faktum);
-            }
-        }).collect();
 
+        return vedlegg.stream()
+                .filter(v -> v.getFaktum().getId().equals(faktum.getKey()))
+                .filter(v -> v.harFilterProperty(faktum))
+                .collect(toList());
     }
 
     public List<VedleggForFaktumStruktur> vedleggForSkjemanrMedTillegg(final String skjemaNr, final String tillegg) {
-        return on(vedlegg).filter(new Predicate<VedleggForFaktumStruktur>() {
-            @Override
-            public boolean evaluate(VedleggForFaktumStruktur vedleggForFaktumStruktur) {
-                if(vedleggForFaktumStruktur.getSkjemaNummer().equals(skjemaNr)) {
-                    String skjemaTillegg = vedleggForFaktumStruktur.getSkjemanummerTillegg();
-                    return Objects.equals(skjemaTillegg, tillegg);
-                }
-                return false;
-            }
-        }).collect();
+
+        return vedlegg.stream()
+                .filter(v -> v != null)
+                .filter(v -> v.getSkjemaNummer().equals(skjemaNr))
+                .filter(v -> v.getSkjemanummerTillegg().equals(tillegg))
+                .collect(toList());
 
     }
 
@@ -140,21 +128,17 @@ public class SoknadStruktur implements Serializable {
     }
 
     public FaktumStruktur finnStrukturForKey(final String key) {
-        List<FaktumStruktur> strukturListe = on(fakta).filter(new Predicate<FaktumStruktur>() {
-            @Override
-            public boolean evaluate(FaktumStruktur faktumStruktur) {
-                return faktumStruktur.getId().equals(key);
-            }
-        }).collect();
+
+        List<FaktumStruktur> strukturListe = fakta.stream()
+                .filter(f -> f.getId().equals(key))
+                .collect(toList());
+
         return strukturListe.isEmpty()? null: strukturListe.get(0);
     }
 
     public List<FaktumStruktur> finnBarneStrukturer(final String parent) {
-        return on(fakta).filter(new Predicate<FaktumStruktur>() {
-            @Override
-            public boolean evaluate(FaktumStruktur faktumStruktur) {
-                return faktumStruktur.getDependOn() != null && faktumStruktur.getDependOn().getId().equals(parent);
-            }
-        }).collect();
+        return fakta.stream()
+                .filter(f -> f.getDependOn() != null && f.getDependOn().getId().equals(parent))
+                .collect(toList());
     }
 }

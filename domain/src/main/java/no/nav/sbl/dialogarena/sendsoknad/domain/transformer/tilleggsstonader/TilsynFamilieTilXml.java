@@ -3,14 +3,11 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.tilleggsstonader;
 import no.nav.melding.virksomhet.soeknadsskjema.v1.soeknadsskjema.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 import org.apache.commons.collections15.*;
-import org.apache.commons.lang3.*;
 
-import java.util.*;
-
-import static no.nav.modig.lang.collections.IterUtils.*;
+import static java.util.stream.Collectors.joining;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.FaktumPredicates.*;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.StofoTransformers.*;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.tilleggsstonader.StofoKodeverkVerdier.TilsynForetasAv.TRANSFORMER;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.tilleggsstonader.StofoKodeverkVerdier.TilsynForetasAv.TO_TILSYN_FORETAS_AV_ENUM;
 
 public class TilsynFamilieTilXml implements Transformer<WebSoknad, TilsynsutgifterFamilie> {
     @Override
@@ -29,7 +26,10 @@ public class TilsynFamilieTilXml implements Transformer<WebSoknad, Tilsynsutgift
     }
 
     private String foretasAv(final Faktum faktum) {
-        List<String> tilsyn = on(faktum.getProperties()).filter(propertyIsValue("true")).map(KEYS).map(TRANSFORMER).collect();
-        return StringUtils.join(tilsyn, ",");
+        return faktum.getProperties().entrySet().stream()
+                .filter(propertyIsValue("true"))
+                .map(GET_KEY)
+                .map(TO_TILSYN_FORETAS_AV_ENUM)
+                .collect(joining(","));
     }
 }
