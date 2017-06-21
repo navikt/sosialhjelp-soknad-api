@@ -190,7 +190,6 @@ public class SoknadDataFletter {
                         .medFaktumId(faktumId)
                         .medSoknadId(soknadId)
                         .medKey(faktumStruktur.getId())
-                        .medValue(null)
                         .medType(BRUKERREGISTRERT);
 
                 faktumKeyTilFaktumId.put(faktumStruktur.getId(), faktumId);
