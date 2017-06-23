@@ -214,7 +214,7 @@ public class SoknadDataFletter {
                 .medBehandlingId(behandlingsId)
                 .medskjemaNummer(skjemanummer)
                 .medUuid(uuid)
-                .medFodselsnummer(aktorId)
+                .medAktorId(aktorId)
                 .medOppretteDato(DateTime.now());
 
         Long soknadId = lokalDb.opprettSoknad(nySoknad);
@@ -327,7 +327,7 @@ public class SoknadDataFletter {
         }
 
         logger.info("Lagrer søknad som fil til henvendelse for behandling {}", soknad.getBrukerBehandlingId());
-        fillagerService.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getFodselsnummer(), new ByteArrayInputStream(pdf));
+        fillagerService.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(pdf));
 
         XMLHovedskjema hovedskjema = lagXmlHovedskjemaMedAlternativRepresentasjon(pdf, soknad, fullSoknad);
         XMLVedlegg[] vedlegg = convertToXmlVedleggListe(vedleggService.hentVedleggOgKvittering(soknad));
@@ -358,7 +358,7 @@ public class SoknadDataFletter {
                         .withFilnavn(skjemanummer(soknad))
                         .withMimetype("application/pdf-fullversjon")
                         .withFilstorrelse("" + fullSoknad.length);
-                fillagerService.lagreFil(soknad.getBrukerBehandlingId(), fullSoknadRepr.getUuid(), soknad.getFodselsnummer(), new ByteArrayInputStream(fullSoknad));
+                fillagerService.lagreFil(soknad.getBrukerBehandlingId(), fullSoknadRepr.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(fullSoknad));
                 xmlAlternativRepresentasjonListe.withAlternativRepresentasjon(fullSoknadRepr);
             }
         }
@@ -368,7 +368,7 @@ public class SoknadDataFletter {
 
     private List<XMLAlternativRepresentasjon> lagListeMedXMLAlternativeRepresentasjoner(WebSoknad soknad) {
         List<AlternativRepresentasjon> alternativeRepresentasjoner = alternativRepresentasjonService.hentAlternativeRepresentasjoner(soknad, messageSource);
-        alternativRepresentasjonService.lagreTilFillager(soknad.getBrukerBehandlingId(), soknad.getFodselsnummer(), alternativeRepresentasjoner);
+        alternativRepresentasjonService.lagreTilFillager(soknad.getBrukerBehandlingId(), soknad.getAktoerId(), alternativeRepresentasjoner);
         return alternativRepresentasjonService.lagXmlFormat(alternativeRepresentasjoner);
     }
 

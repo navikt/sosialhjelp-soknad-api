@@ -264,7 +264,7 @@ public class VedleggService {
         forventning.leggTilInnhold(doc, vedleggUnderBehandling.size());
 
         logger.info("Lagrer fil til henvendelse for behandling {}, UUID: {}", soknad.getBrukerBehandlingId(), forventning.getFillagerReferanse());
-        fillagerService.lagreFil(soknad.getBrukerBehandlingId(), forventning.getFillagerReferanse(), soknad.getFodselsnummer(), new ByteArrayInputStream(doc));
+        fillagerService.lagreFil(soknad.getBrukerBehandlingId(), forventning.getFillagerReferanse(), soknad.getAktoerId(), new ByteArrayInputStream(doc));
 
         vedleggRepository.slettVedleggUnderBehandling(soknadId, forventning.getFaktumId(), forventning.getSkjemaNummer(), forventning.getSkjemanummerTillegg());
         vedleggRepository.lagreVedleggMedData(soknadId, vedleggId, forventning);
@@ -400,7 +400,7 @@ public class VedleggService {
             oppdaterInnholdIKvittering(kvitteringVedlegg, kvittering);
             vedleggRepository.lagreVedleggMedData(soknad.getSoknadId(), kvitteringVedlegg.getVedleggId(), kvitteringVedlegg);
         }
-        fillagerService.lagreFil(soknad.getBrukerBehandlingId(), kvitteringVedlegg.getFillagerReferanse(), soknad.getFodselsnummer(), new ByteArrayInputStream(kvitteringVedlegg.getData()));
+        fillagerService.lagreFil(soknad.getBrukerBehandlingId(), kvitteringVedlegg.getFillagerReferanse(), soknad.getAktoerId(), new ByteArrayInputStream(kvitteringVedlegg.getData()));
     }
 
     private void oppdaterInnholdIKvittering(Vedlegg vedlegg, byte[] data) {
