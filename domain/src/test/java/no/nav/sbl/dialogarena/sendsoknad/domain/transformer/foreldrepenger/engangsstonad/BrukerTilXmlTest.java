@@ -12,7 +12,7 @@ public class BrukerTilXmlTest {
     public void medPersonnummerTest() {
         WebSoknad soknad = new WebSoknad();
 
-        soknad.medFodselsnummer("010101010101");
+        soknad.medAktorId("010101010101");
 
         Bruker resultat = (Bruker) new BrukerTilXml().apply(soknad);
         assertThat(resultat.getPersonidentifikator()).isEqualTo("010101010101");
