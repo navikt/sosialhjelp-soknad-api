@@ -42,10 +42,10 @@ public class LagringsSchedulerTest {
 
     @Test
     public void skalLagreSoknadIHenvendelseOgSletteFraDatabase() throws InterruptedException {
-        WebSoknad webSoknad = new WebSoknad().medId(1).medFodselsnummer("11111111111").medBehandlingId("1").medUuid("1234").medStatus(SoknadInnsendingStatus.UNDER_ARBEID);
+        WebSoknad webSoknad = new WebSoknad().medId(1).medAktorId("11111111111").medBehandlingId("1").medUuid("1234").medStatus(SoknadInnsendingStatus.UNDER_ARBEID);
         when(soknadRepository.plukkSoknadTilMellomlagring()).thenReturn(Optional.of(webSoknad));
         scheduler.lagreFilTilHenvendelseOgSlettILokalDb(Optional.of(webSoknad));
-        verify(fillagerService).lagreFil(eq(webSoknad.getBrukerBehandlingId()), eq(webSoknad.getUuid()), eq(webSoknad.getFodselsnummer()), any(InputStream.class));
+        verify(fillagerService).lagreFil(eq(webSoknad.getBrukerBehandlingId()), eq(webSoknad.getUuid()), eq(webSoknad.getAktoerId()), any(InputStream.class));
         verify(soknadRepository).slettSoknad(webSoknad.getSoknadId());
     }
 
@@ -55,7 +55,7 @@ public class LagringsSchedulerTest {
         int soknadId = 1;
         WebSoknad webSoknad = new WebSoknad()
                 .medId(soknadId)
-                .medFodselsnummer("11111111111")
+                .medAktorId("11111111111")
                 .medBehandlingId(behandlingsId)
                 .medUuid("1234")
                 .medDelstegStatus(DelstegStatus.ETTERSENDING_OPPRETTET)
