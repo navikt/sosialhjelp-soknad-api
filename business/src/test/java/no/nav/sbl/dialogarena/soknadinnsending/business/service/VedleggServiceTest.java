@@ -14,6 +14,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -133,7 +134,7 @@ public class VedleggServiceTest {
         when(vedleggRepository.hentVedlegg(2L)).thenReturn(vedlegg);
         when(vedleggRepository.hentVedleggUnderBehandling("ABC", vedlegg.getFillagerReferanse())).thenReturn(Arrays.asList(new Vedlegg().medVedleggId(10L)));
         when(vedleggRepository.hentVedleggData(10L)).thenReturn(bytes);
-        when(soknadRepository.hentSoknad("ABC")).thenReturn(new WebSoknad().medBehandlingId("ABC").medFodselsnummer("234").medId(1L));
+        when(soknadRepository.hentSoknad("ABC")).thenReturn(new WebSoknad().medBehandlingId("ABC").medAktorId("234").medId(1L));
         vedleggService.genererVedleggFaktum("ABC", 2L);
         vedleggSjekk.setData(vedlegg.getData());
         vedleggSjekk.medStorrelse((long) vedlegg.getData().length);
@@ -150,7 +151,7 @@ public class VedleggServiceTest {
 
     @Test
     public void skalSletteVedlegg() {
-        when(soknadService.hentSoknadFraLokalDb(1L)).thenReturn(new WebSoknad().medBehandlingId("123").medFodselsnummer("234").medDelstegStatus(OPPRETTET).medId(1L));
+        when(soknadService.hentSoknadFraLokalDb(1L)).thenReturn(new WebSoknad().medBehandlingId("123").medAktorId("234").medDelstegStatus(OPPRETTET).medId(1L));
         when(vedleggService.hentVedlegg(2L, false)).thenReturn(new Vedlegg().medSoknadId(1L));
 
         vedleggService.slettVedlegg(2L);

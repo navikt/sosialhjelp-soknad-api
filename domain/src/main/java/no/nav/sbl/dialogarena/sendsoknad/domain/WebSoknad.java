@@ -2,14 +2,9 @@ package no.nav.sbl.dialogarena.sendsoknad.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigDelstegEndringException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.*;
 import org.apache.commons.lang3.LocaleUtils;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import org.apache.commons.lang3.builder.*;
 import org.joda.time.DateTime;
 
 import javax.xml.bind.annotation.*;
@@ -26,7 +21,7 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Dag
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@JsonIgnoreProperties(ignoreUnknown = true, value = "fodselsnummer")
+@JsonIgnoreProperties(ignoreUnknown = true)
 @SuppressWarnings("PMD.TooManyMethods")
 public class WebSoknad implements Serializable {
     private Long soknadId;
@@ -42,7 +37,7 @@ public class WebSoknad implements Serializable {
     })
     private List<Faktum> fakta;
     private SoknadInnsendingStatus status;
-    private String fodselsnummer;
+    private String aktoerId;
     private DateTime opprettetDato;
     private DateTime sistLagret;
     private DelstegStatus delstegStatus;
@@ -175,24 +170,17 @@ public class WebSoknad implements Serializable {
         return antallFaktum;
     }
 
-    /**
-     * @deprecated Returnerer egentlig fødselssnummer, bruk getFodselsnummer istedet
-     */
-    @Deprecated
-    public String getAktoerId() {
-        return fodselsnummer;
-    }
 
-    public String getFodselsnummer() {
-        return fodselsnummer;
+    public String getAktoerId() {
+        return aktoerId;
     }
 
     public SoknadInnsendingStatus getStatus() {
         return status;
     }
 
-    public WebSoknad medFodselsnummer(String fodselsnummer) {
-        this.fodselsnummer = fodselsnummer;
+    public WebSoknad medAktorId(String aktorId) {
+        this.aktoerId = aktorId;
         return this;
     }
 
@@ -389,7 +377,7 @@ public class WebSoknad implements Serializable {
                 .append(this.brukerBehandlingId, rhs.brukerBehandlingId)
                 .append(this.fakta, rhs.fakta)
                 .append(this.status, rhs.status)
-                .append(this.fodselsnummer, rhs.fodselsnummer)
+                .append(this.aktoerId, rhs.aktoerId)
                 .append(this.opprettetDato, rhs.opprettetDato)
                 .append(this.sistLagret, rhs.sistLagret)
                 .append(this.delstegStatus, rhs.delstegStatus)
@@ -406,7 +394,7 @@ public class WebSoknad implements Serializable {
                 .append(brukerBehandlingId)
                 .append(fakta)
                 .append(status)
-                .append(fodselsnummer)
+                .append(aktoerId)
                 .append(opprettetDato)
                 .append(sistLagret)
                 .append(delstegStatus)
@@ -423,7 +411,7 @@ public class WebSoknad implements Serializable {
                 .append("brukerBehandlingId", brukerBehandlingId)
                 .append("fakta", fakta)
                 .append("status", status)
-                .append("fodselsnummer", fodselsnummer)
+                .append("aktoerId", aktoerId)
                 .append("medOppretteDato", opprettetDato)
                 .append("sistLagret", sistLagret)
                 .append("delstegStatus", delstegStatus)
