@@ -29,7 +29,7 @@ public class OpplysningerOmFarTilXml implements Function<WebSoknad, Opplysninger
 
                 String utenlandskPersonnummer = webSoknad
                         .getValueForFaktum("infofar.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.fodselsnummer");
-                kanIkkeOppgiFar.setUtenlandskfnr(utenlandskPersonnummer);
+                kanIkkeOppgiFar.setUtenlandskfnrEllerForklaring(utenlandskPersonnummer);
 
                 String landkodeForPersonnummer = hentStringFraProperty(
                         webSoknad.getFaktumMedKey("infofar.opplysninger.kanIkkeOppgi.true.arsak"),

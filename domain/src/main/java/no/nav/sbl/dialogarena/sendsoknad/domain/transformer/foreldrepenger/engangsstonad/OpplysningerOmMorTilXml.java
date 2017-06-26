@@ -29,7 +29,7 @@ public class OpplysningerOmMorTilXml implements Function<WebSoknad, Opplysninger
                         .withFornavn(fornavn)
                         .withEtternavn(etternavn);
 
-                kanIkkeOppgiMor.withUtenlandskfnr(webSoknad.getValueForFaktum("infomor.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.fodselsnummer"));
+                kanIkkeOppgiMor.withUtenlandskfnrEllerForklaring(webSoknad.getValueForFaktum("infomor.opplysninger.kanIkkeOppgi.true.arsak.utenlandsk.fodselsnummer"));
 
                 String landkode = webSoknad.getFaktumMedKey("infomor.opplysninger.kanIkkeOppgi.true.arsak").getProperties().get("land");
                 kanIkkeOppgiMor.withUtenlandskfnrLand(new Landkoder().withKode(landkode));

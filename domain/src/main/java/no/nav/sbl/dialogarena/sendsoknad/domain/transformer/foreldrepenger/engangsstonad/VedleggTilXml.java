@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.enga
 
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Innsendingsvalg;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Vedlegg;
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.VedleggListe;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AlleredeHandtertException;
@@ -13,12 +14,13 @@ import java.util.function.Function;
 import static java.util.stream.Collectors.toList;
 import static org.slf4j.LoggerFactory.getLogger;
 
-public class VedleggTilXml implements Function<WebSoknad, List<Vedlegg>> {
+public class VedleggTilXml implements Function<WebSoknad, VedleggListe> {
     private static final Logger log = getLogger(VedleggTilXml.class);
 
     @Override
-    public List<Vedlegg> apply(WebSoknad webSoknad) {
-        return webSoknad.getVedlegg().stream().map(TO_VEDLEGG).collect(toList());
+    public VedleggListe apply(WebSoknad webSoknad) {
+        List<Vedlegg> vedlegg = webSoknad.getVedlegg().stream().map(TO_VEDLEGG).collect(toList());
+        return new VedleggListe(vedlegg);
     }
 
     private Function<no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg, Vedlegg> TO_VEDLEGG = soknadVedlegg -> new Vedlegg()
