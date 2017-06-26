@@ -294,8 +294,8 @@ public class SoknadTester extends JerseyTest {
         }
 
         SoknadTester utforEndring() {
-            if (Objects.isNull(value)) {
-                throw new RuntimeException("Ingen endring å utføre  - ingen value er satt.");
+            if (Objects.isNull(value) && properties.isEmpty()) {
+                throw new RuntimeException("Ingen endring å utføre  - ingen value eller property er satt.");
             }
             faktum.setValue(value);
             properties.forEach(faktum::medProperty);
