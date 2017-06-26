@@ -69,7 +69,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
                         soknad.getUuid(),
                         soknad.getBrukerBehandlingId(),
                         soknad.getskjemaNummer(),
-                        soknad.getFodselsnummer(),
+                        soknad.getAktoerId(),
                         soknad.getOpprettetDato().toDate(),
                         soknad.getStatus().name(),
                         soknad.getDelstegStatus().name(),
