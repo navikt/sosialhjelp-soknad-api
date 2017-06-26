@@ -62,7 +62,7 @@ public class VedleggServiceTest {
 
     @Test
     public void skalOppretteKvitteringHvisDenIkkeFinnes() {
-        when(soknadRepository.hentSoknad(BEHANDLING_ID)).thenReturn(new WebSoknad().medBehandlingId("XXX").medFodselsnummer("aktor-1"));
+        when(soknadRepository.hentSoknad(BEHANDLING_ID)).thenReturn(new WebSoknad().medBehandlingId("XXX").medAktorId("aktor-1"));
         byte[] kvittering = {'b', 'o', 'o', 'm'};
         vedleggService.lagreKvitteringSomVedlegg(BEHANDLING_ID, kvittering);
         verify(vedleggRepository).opprettEllerEndreVedlegg(any(Vedlegg.class), eq(kvittering));
@@ -70,7 +70,7 @@ public class VedleggServiceTest {
 
     @Test
     public void skalOppdatereKvitteringHvisDenAlleredeFinnes() {
-        when(soknadRepository.hentSoknad(BEHANDLING_ID)).thenReturn(new WebSoknad().medBehandlingId(BEHANDLING_ID).medFodselsnummer("aktor-1").medId(SOKNAD_ID));
+        when(soknadRepository.hentSoknad(BEHANDLING_ID)).thenReturn(new WebSoknad().medBehandlingId(BEHANDLING_ID).medAktorId("aktor-1").medId(SOKNAD_ID));
         Vedlegg eksisterendeKvittering = new Vedlegg(SOKNAD_ID, null, KVITTERING, LastetOpp);
         when(vedleggRepository.hentVedleggForskjemaNummer(SOKNAD_ID, null, KVITTERING)).thenReturn(eksisterendeKvittering);
         byte[] kvitteringPdf = {'b', 'o', 'o', 'm'};

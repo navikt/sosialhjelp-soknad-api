@@ -10,9 +10,9 @@ public class BrukerTilXml implements Function<WebSoknad, Aktoer> {
 
     @Override
     public Aktoer apply(WebSoknad webSoknad) {
-        String fodselsnummer = webSoknad.getFodselsnummer();
+        String personnummer = webSoknad.getAktoerId();
 
-        return new Bruker().withPersonidentifikator(fodselsnummer);
+        return new Bruker().withPersonidentifikator(personnummer);
     }
 
 }
