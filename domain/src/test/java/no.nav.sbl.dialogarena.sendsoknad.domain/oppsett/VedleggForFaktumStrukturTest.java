@@ -19,7 +19,10 @@ public class VedleggForFaktumStrukturTest {
     Faktum permittert = new Faktum().medKey("arbeidforhold").medProperty("type", "permittert");
     Faktum sagtOppAvArbeidsgiver = new Faktum().medKey("arbeidforhold").medProperty("type", "sagtoppavarbeidsgiver");
 
-    Faktum kontraktUtgaat = new Faktum().medKey("arbeidforhold").medProperty("type", "kontraktutgaatt");
+    Faktum kontraktUtgaat = new Faktum().medKey("arbeidforhold")
+            .medProperty("type", "kontraktutgaatt")
+            .medProperty("tilbudomjobbannetsted", "true")
+            .medProperty("skalHaT8VedleggForKontraktUtgaatt", "true");
     Faktum sagtOppSelv = new Faktum().medKey("arbeidforhold").medProperty("type", "sagtoppselv");
     Faktum redusertArbeidstid = new Faktum().medKey("arbeidforhold").medProperty("type", "redusertarbeidstid");
     Faktum avskjediget = new Faktum().medKey("arbeidforhold").medProperty("type", "avskjediget");
