@@ -16,9 +16,9 @@
         <skjemaNummer>T8</skjemaNummer>
         <skjemanummerTillegg>kontraktutgaatt</skjemanummerTillegg>
         <property>arbeidsgivernavn</property>
-        <onProperty>type</onProperty>
+        <onProperty>skalHaT8VedleggForKontraktUtgaatt</onProperty>
         <onValues>
-            <value>kontraktutgaatt</value>
+            <value>true</value>
         </onValues>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
@@ -55,12 +55,85 @@
         </onValues>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
+
     <vedlegg>
         <faktum>arbeidsforhold</faktum>
         <skjemaNummer>O2</skjemaNummer>
+        <skjemanummerTillegg>sagtoppavarbeidsgiver</skjemanummerTillegg>
         <property>arbeidsgivernavn</property>
+        <onProperty>type</onProperty>
+        <onValues>
+            <value>sagtoppavarbeidsgiver</value>
+        </onValues>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
+    <vedlegg>
+        <faktum>arbeidsforhold</faktum>
+        <skjemaNummer>O2</skjemaNummer>
+        <skjemanummerTillegg>kontraktutgaatt</skjemanummerTillegg>
+        <property>arbeidsgivernavn</property>
+        <onProperty>type</onProperty>
+        <onValues>
+            <value>kontraktutgaatt</value>
+        </onValues>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <faktum>arbeidsforhold</faktum>
+        <skjemaNummer>O2</skjemaNummer>
+        <skjemanummerTillegg>sagtoppselv</skjemanummerTillegg>
+        <property>arbeidsgivernavn</property>
+        <onProperty>type</onProperty>
+        <onValues>
+            <value>sagtoppselv</value>
+        </onValues>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <faktum>arbeidsforhold</faktum>
+        <skjemaNummer>O2</skjemaNummer>
+        <skjemanummerTillegg>redusertarbeidstid</skjemanummerTillegg>
+        <property>arbeidsgivernavn</property>
+        <onProperty>type</onProperty>
+        <onValues>
+            <value>redusertarbeidstid</value>
+        </onValues>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <faktum>arbeidsforhold</faktum>
+        <skjemaNummer>O2</skjemaNummer>
+        <skjemanummerTillegg>avskjediget</skjemanummerTillegg>
+        <property>arbeidsgivernavn</property>
+        <onProperty>type</onProperty>
+        <onValues>
+            <value>avskjediget</value>
+        </onValues>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <faktum>arbeidsforhold</faktum>
+        <skjemaNummer>O2</skjemaNummer>
+        <skjemanummerTillegg>arbeidsgivererkonkurs</skjemanummerTillegg>
+        <property>arbeidsgivernavn</property>
+        <onProperty>type</onProperty>
+        <onValues>
+            <value>arbeidsgivererkonkurs</value>
+        </onValues>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <faktum>arbeidsforhold</faktum>
+        <skjemaNummer>O2</skjemaNummer>
+        <skjemanummerTillegg>permittert</skjemanummerTillegg>
+        <property>arbeidsgivernavn</property>
+        <onProperty>type</onProperty>
+        <onValues>
+            <value>permittert</value>
+        </onValues>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
     <vedlegg>
         <faktum>arbeidsforhold</faktum>
         <skjemaNummer>U1</skjemaNummer>
