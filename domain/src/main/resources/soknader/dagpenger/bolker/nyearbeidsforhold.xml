@@ -71,6 +71,14 @@
             <value>false</value>
         </dependOnValues>
     </faktum>
+    <faktum>
+        <id>arbeidsforhold.arbeidstilstand</id>
+        <type>java.lang.String</type>
+        <dependOn>nyearbeidsforhold.reberegning.arbeidstid</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
 
 
     <faktum>
