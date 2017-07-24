@@ -30,7 +30,7 @@ public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett
 
     //TODO ta i bruk riktig skjemanummer
     public List<String> getSkjemanummer() {
-        return Arrays.asList("NAV 11-12.10", "NAV 11-12.11");
+        return Arrays.asList("NAV 76-13.45");
     }
 
     @Override

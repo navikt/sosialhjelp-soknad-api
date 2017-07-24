@@ -62,6 +62,7 @@
         <fileLibrary alias="soknadforeldrepenger.ledetekster" mapToProperty="folder.foreldrepenger" />
         <fileLibrary alias="soknadaap.ledetekster" mapToProperty="folder.soknadaap" />
         <fileLibrary alias="soknaddagpenger.ledetekster" mapToProperty="folder.dagpenger" />
+        <fileLibrary alias="soknadsosialhjelp.ledetekster" mapToProperty="folder.soknadsosialhjelp" />
     </resources>
 
     <serverOptions>
