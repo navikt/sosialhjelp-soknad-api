@@ -66,7 +66,6 @@ public class HenvendelseService {
             }
             return wsBehandlingskjedeElementer;
         } catch (SOAPFaultException e) {
-            logger.error("Feil ved henting av behandlingdskjede" + e, e);
             throw new SystemException("Kunne ikke hente behandlingskjede", e, "exception.system.baksystem");
         }
     }
@@ -79,7 +78,6 @@ public class HenvendelseService {
             logger.info("Søknad avsluttet " + behandlingsId + " " + hovedskjema.getSkjemanummer() + " (" + hovedskjema.getJournalforendeEnhet() + ") " + vedlegg.length + " vedlegg");
             sendSoknadEndpoint.sendSoknad(parameters);
         } catch (SOAPFaultException e) {
-            logger.error("Feil ved innsending av søknad: " + e, e);
             throw new SystemException("Kunne ikke sende inn søknad", e, "exception.system.baksystem");
         }
     }
@@ -98,7 +96,6 @@ public class HenvendelseService {
             }
             sendSoknadPortType.avbrytSoknad(behandlingsId);
         } catch (SOAPFaultException e) {
-            logger.error("Kunne ikke avbryte søknad med ID {}", behandlingsId, e);
             throw new SystemException("Kunne ikke avbryte søknad", e, "exception.system.baksystem");
         }
     }
@@ -107,7 +104,6 @@ public class HenvendelseService {
         try {
             return sendSoknadEndpoint.startSoknad(startSoknadRequest).getBehandlingsId();
         } catch (SOAPFaultException e) {
-            logger.error("Feil ved start søknad for bruker " + startSoknadRequest.getFodselsnummer(), e);
             throw new SystemException("Kunne ikke opprette ny søknad", e, "exception.system.baksystem");
         }
     }
