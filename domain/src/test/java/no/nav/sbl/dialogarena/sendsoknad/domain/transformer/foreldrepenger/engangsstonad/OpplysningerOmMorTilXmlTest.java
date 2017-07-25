@@ -46,7 +46,7 @@ public class OpplysningerOmMorTilXmlTest {
         assertThat(transformResultat.getEtternavn()).isEqualTo("Testesen");
         assertThat(transformResultat.getPersonidentifikator()).isNull();
         assertThat(transformResultat.getKanIkkeOppgiMor().getAarsak()).isEqualTo("utenlandsk");
-        assertThat(transformResultat.getKanIkkeOppgiMor().getUtenlandskfnr()).isEqualTo("1234567890");
+        assertThat(transformResultat.getKanIkkeOppgiMor().getUtenlandskfnrEllerForklaring()).isEqualTo("1234567890");
         assertThat(transformResultat.getKanIkkeOppgiMor().getUtenlandskfnrLand().getKode()).isEqualTo("ARG");
     }
 

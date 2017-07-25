@@ -76,7 +76,7 @@ public class ForeldrepengerEngangsstonadTilXml implements AlternativRepresentasj
                 .withBruker(new BrukerTilXml().apply(webSoknad))
                 .withTilknytningNorge(new TilknytningTilXml().apply(webSoknad))
                 .withOpplysningerOmBarn(new OpplysningerOmBarnTilXml().apply(webSoknad))
-                .withVedleggListes(new VedleggTilXml().apply(webSoknad))
+                .withVedleggListe(new VedleggTilXml().apply(webSoknad))
                 .withSoknadsvalg(new SoknadsvalgTilXml().apply(webSoknad));
     }
 
