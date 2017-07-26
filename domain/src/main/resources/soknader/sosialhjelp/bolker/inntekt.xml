@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl">
+    <faktum>
+        <id>inntekt.mottarytelser</id>
+        <type>java.lang.Boolean</type>
+        <panel>inntekt</panel>
+    </faktum>
+
+</soknad>
