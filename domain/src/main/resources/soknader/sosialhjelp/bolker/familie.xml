@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl">
+    <faktum>
+        <id>familie.sivilstatus</id>
+        <type>checkboxGroup</type>
+        <panel>familie</panel>
+    </faktum>
+    <faktum>
+        <id>familie.barn</id>
+        <type>java.lang.Boolean</type>
+        <panel>familie</panel>
+    </faktum>
+    <faktum>
+        <id>familie.andrebarn</id>
+        <type>java.lang.Boolean</type>
+        <panel>familie</panel>
+    </faktum>
+</soknad>
