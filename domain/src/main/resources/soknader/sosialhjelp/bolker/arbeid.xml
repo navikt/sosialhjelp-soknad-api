@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl">
+    <faktum>
+        <id>arbeid.dinsituasjon</id>
+        <type>checkboxGroup</type>
+        <panel>arbeid</panel>
+    </faktum>
+    <faktum>
+        <id>arbeid.dinsituasjon.student.heltid</id>
+        <type>java.lang.Boolean</type>
+        <panel>arbeid</panel>
+        <dependOn>arbeid.dinsituasjon</dependOn>
+        <dependOnValues>
+            <value>student</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>arbeid.dinsituasjon.annensituasjon</id>
+        <type>textbox</type>
+        <panel>arbeid</panel>
+        <dependOn>arbeid.dinsituasjon</dependOn>
+        <dependOnValues>
+            <value>annensituasjon</value>
+        </dependOnValues>
+    </faktum>
+</soknad>

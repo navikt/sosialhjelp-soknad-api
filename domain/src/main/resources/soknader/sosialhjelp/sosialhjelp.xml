@@ -7,7 +7,10 @@
     </faktum>
 
     <!-- Bolker -->
-
+    <xi:include href="bolker/arbeid.xml" />
+    <xi:include href="bolker/familie.xml" />
+    <xi:include href="bolker/begrunnelse.xml" />
+    <xi:include href="bolker/bosituasjon.xml" />
 
     <!-- Fellesting -->
     <xi:include href="../felles/tilleggsopplysninger.xml" />
