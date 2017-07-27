@@ -284,10 +284,11 @@ public class SoknadDataFletter {
                 try {
                     formaterer.parseLocalDate(datofaktum.getProperties().get("fom"));
                     formaterer.parseLocalDate(datofaktum.getProperties().get("tom"));
-                } catch (IllegalArgumentException e) {
+                } catch (NullPointerException|IllegalArgumentException e) {
                     soknad.medDelstegStatus(DelstegStatus.UTFYLLING);
                     Event event = MetricsFactory.createEvent("stofo.korruptdato");
                     event.addTagToReport("stofo.korruptdato.behandlingId", soknad.getBrukerBehandlingId());
+                    event.addFieldToReport("Exception", e.getClass().getSimpleName());
                     event.report();
                 }
             }
