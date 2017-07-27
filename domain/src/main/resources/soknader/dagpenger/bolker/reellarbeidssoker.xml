@@ -2,7 +2,7 @@
 <soknad xmlns="urn:no.nav.sbl">
     <faktum>
         <id>reellarbeidssoker.villigdeltid</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>ReellArbeidssoker</panel>
         <tekster>
             <tekst>
@@ -36,37 +36,37 @@
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigdeltid.grunn.reduserthelse</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>ReellArbeidssoker</panel>
         <dependOn>reellarbeidssoker.villigdeltid.grunn</dependOn>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigdeltid.grunn.omsorgbarnunder1aar</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>ReellArbeidssoker</panel>
         <dependOn>reellarbeidssoker.villigdeltid.grunn</dependOn>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigdeltid.grunn.eneansvarbarnunder5skoleaar</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>ReellArbeidssoker</panel>
         <dependOn>reellarbeidssoker.villigdeltid.grunn</dependOn>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigdeltid.grunn.eneansvarbarnopptil18aar</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>ReellArbeidssoker</panel>
         <dependOn>reellarbeidssoker.villigdeltid.grunn</dependOn>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigdeltid.grunn.omsorgansvar</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>ReellArbeidssoker</panel>
         <dependOn>reellarbeidssoker.villigdeltid.grunn</dependOn>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigdeltid.grunn.annensituasjon</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>ReellArbeidssoker</panel>
         <dependOn>reellarbeidssoker.villigdeltid.grunn</dependOn>
     </faktum>
@@ -95,7 +95,7 @@
 
     <faktum>
         <id>reellarbeidssoker.villigpendle</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>ReellArbeidssoker</panel>
         <tekster>
             <tekst>
@@ -129,37 +129,37 @@
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigpendle.grunn.reduserthelse</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>ReellArbeidssoker</panel>
         <dependOn>reellarbeidssoker.villigpendle.grunn</dependOn>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigpendle.grunn.omsorgbarnunder1aar</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>ReellArbeidssoker</panel>
         <dependOn>reellarbeidssoker.villigpendle.grunn</dependOn>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigpendle.grunn.eneansvarbarnunder5skoleaar</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>ReellArbeidssoker</panel>
         <dependOn>reellarbeidssoker.villigpendle.grunn</dependOn>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigpendle.grunn.eneansvarbarnopptil18aar</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>ReellArbeidssoker</panel>
         <dependOn>reellarbeidssoker.villigpendle.grunn</dependOn>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigpendle.grunn.omsorgansvar</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>ReellArbeidssoker</panel>
         <dependOn>reellarbeidssoker.villigpendle.grunn</dependOn>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigpendle.grunn.annensituasjon</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>ReellArbeidssoker</panel>
         <dependOn>reellarbeidssoker.villigpendle.grunn</dependOn>
     </faktum>
@@ -167,7 +167,7 @@
 
     <faktum>
         <id>reellarbeidssoker.villighelse</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>ReellArbeidssoker</panel>
     </faktum>
     <faktum>
@@ -183,7 +183,7 @@
 
     <faktum>
         <id>reellarbeidssoker.villigjobb</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>ReellArbeidssoker</panel>
     </faktum>
 

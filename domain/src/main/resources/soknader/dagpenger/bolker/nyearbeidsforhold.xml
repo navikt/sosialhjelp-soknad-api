@@ -4,7 +4,7 @@
 
     <faktum>
         <id>nyearbeidsforhold.arbeidsidensist</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>NyeArbeidsforhold</panel>
     </faktum>
 
@@ -46,7 +46,7 @@
 
     <faktum>
         <id>nyearbeidsforhold.reberegning</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>NyeArbeidsforhold</panel>
         <constraints>
             <constraint>
@@ -57,7 +57,7 @@
     </faktum>
     <faktum>
         <id>nyearbeidsforhold.reberegning.startdato</id>
-        <type>java.lang.String</type>
+        <type>string</type>
         <dependOn>nyearbeidsforhold.reberegning</dependOn>
         <dependOnValues>
             <value>false</value>
@@ -65,7 +65,7 @@
     </faktum>
     <faktum>
         <id>nyearbeidsforhold.reberegning.arbeidstid</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <dependOn>nyearbeidsforhold.reberegning</dependOn>
         <dependOnValues>
             <value>false</value>
@@ -73,7 +73,7 @@
     </faktum>
     <faktum>
         <id>arbeidsforhold.arbeidstilstand</id>
-        <type>java.lang.String</type>
+        <type>string</type>
         <dependOn>nyearbeidsforhold.reberegning.arbeidstid</dependOn>
         <dependOnValues>
             <value>true</value>
@@ -84,7 +84,7 @@
     <faktum>
         <id>arbeidsforhold.grensearbeider</id>
         <panel>NyeArbeidsforhold</panel>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <constraints>
             <constraint>
                 <faktum>personalia</faktum>
