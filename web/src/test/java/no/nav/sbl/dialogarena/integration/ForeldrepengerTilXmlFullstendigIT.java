@@ -189,6 +189,7 @@ public class ForeldrepengerTilXmlFullstendigIT extends AbstractIT {
         periodeProperties.put("land", "FRO");
         periodeProperties.put("fradato", "2016-10-06");
         periodeProperties.put("tildato", "2017-05-01");
+        LocalDate treMaanederTilbakeITid = LocalDate.now().minusMonths(3);
 
         testSoknadFarOvertaOmsorg = soknadMedDelstegstatusOpprettet(engangsstonadSkjemanummer)
                 .faktum("soknadsvalg.stonadstype").withValue(Stonadstyper.ENGANGSSTONAD_FAR).utforEndring()
@@ -202,7 +203,7 @@ public class ForeldrepengerTilXmlFullstendigIT extends AbstractIT {
                 .faktum("tilknytningnorge.fremtidig").withValue("true").utforEndring()
 
                 .faktum("barnet.antall").withValue("3").utforEndring()
-                .faktum("barnet.dato").withValue("2017-01-26").utforEndring()
+                .faktum("barnet.dato").withValue(treMaanederTilbakeITid.toString()).utforEndring()
 
                 .faktum("infomor.opplysninger.fornavn").withValue("Prøve").utforEndring()
                 .faktum("infomor.opplysninger.etternavn").withValue("Kanin").utforEndring()
