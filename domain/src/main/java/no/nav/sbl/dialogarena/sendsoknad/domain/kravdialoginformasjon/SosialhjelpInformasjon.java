@@ -17,7 +17,7 @@ public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett
     }
 
     public String getFortsettSoknadUrlKey() {
-        return "soknadsosialhjelp.path";
+        return "soknadsosialhjelp.fortsett.path";
     }
 
     public List<String> getSoknadBolker(WebSoknad soknad) {
@@ -25,12 +25,12 @@ public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett
     }
 
     public String getStrukturFilnavn() {
-        return "soknadsosialhjelp.xml";
+        return "sosialhjelp/sosialhjelp.xml";
     }
 
     //TODO ta i bruk riktig skjemanummer
     public List<String> getSkjemanummer() {
-        return Arrays.asList("NAV 76-13.45");
+        return Arrays.asList("NAV DIGISOS");
     }
 
     @Override
@@ -39,7 +39,17 @@ public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett
     }
 
     @Override
+    public boolean brukerNyOppsummering() {
+        return true;
+    }
+
+    @Override
     public boolean brukerEnonicLedetekster() {
         return false;
+    }
+
+    @Override
+    public SoknadType getSoknadstype() {
+        return SoknadType.SEND_SOKNAD_KOMMUNAL;
     }
 }

@@ -6,7 +6,7 @@ import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataL
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.modig.core.exception.SystemException;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.SoknadType;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
 import no.nav.tjeneste.domene.brukerdialog.henvendelse.v2.henvendelse.HenvendelsePortType;
 import no.nav.tjeneste.domene.brukerdialog.henvendelse.v2.meldinger.WSHentHenvendelseRequest;
 import no.nav.tjeneste.domene.brukerdialog.henvendelse.v2.meldinger.WSHentHenvendelseResponse;
@@ -23,8 +23,7 @@ import java.util.List;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.IKKE_VALGT;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.modig.lang.option.Optional.optional;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.SoknadType.SEND_SOKNAD;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.SoknadType.SEND_SOKNAD_ETTERSENDING;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType.SEND_SOKNAD_ETTERSENDING;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -43,10 +42,10 @@ public class HenvendelseService {
     @Inject
     private HenvendelsePortType henvendelseInformasjonEndpoint;
 
-    public String startSoknad(String fnr, String skjema, String uid) {
+    public String startSoknad(String fnr, String skjema, String uid, SoknadType soknadType) {
         logger.info("Starter søknad");
         return opprettSoknadIHenvendelse(
-                lagOpprettSoknadRequest(fnr, SEND_SOKNAD, new XMLMetadataListe().withMetadata(createXMLSkjema(skjema, uid))));
+                lagOpprettSoknadRequest(fnr, soknadType, new XMLMetadataListe().withMetadata(createXMLSkjema(skjema, uid))));
     }
 
     public String startEttersending(WSHentSoknadResponse soknadResponse) {
