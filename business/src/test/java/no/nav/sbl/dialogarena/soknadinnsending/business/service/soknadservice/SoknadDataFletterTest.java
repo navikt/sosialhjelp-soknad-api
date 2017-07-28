@@ -127,7 +127,7 @@ public class SoknadDataFletterTest {
     public void skalStarteSoknad() {
         final long soknadId = 69L;
         DateTimeUtils.setCurrentMillisFixed(System.currentTimeMillis());
-        when(henvendelsesConnector.startSoknad(anyString(), anyString(), anyString(), SoknadType.SEND_SOKNAD)).thenReturn("123");
+        when(henvendelsesConnector.startSoknad(anyString(), anyString(), anyString(), Matchers.any(SoknadType.class))).thenReturn("123");
         when(lokalDb.hentFaktumMedKey(anyLong(), anyString())).thenReturn(new Faktum().medFaktumId(1L));
         when(lokalDb.hentFaktum(anyLong())).thenReturn(new Faktum().medFaktumId(1L));
         when(lokalDb.opprettSoknad(any(WebSoknad.class))).thenReturn(soknadId);
@@ -136,7 +136,7 @@ public class SoknadDataFletterTest {
 
         ArgumentCaptor<String> uid = ArgumentCaptor.forClass(String.class);
         String bruker = StaticSubjectHandler.getSubjectHandler().getUid();
-        verify(henvendelsesConnector).startSoknad(eq(bruker), eq(DAGPENGER), uid.capture(), SoknadType.SEND_SOKNAD);
+        verify(henvendelsesConnector).startSoknad(eq(bruker), eq(DAGPENGER), uid.capture(), Matchers.any(SoknadType.class));
         WebSoknad soknad = new WebSoknad()
                 .medId(soknadId)
                 .medBehandlingId("123")
