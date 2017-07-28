@@ -6,8 +6,10 @@ import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AlleredeHandtertException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadTilleggsstonader;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
@@ -29,7 +31,6 @@ import org.slf4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadTilleggsstonader;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -46,9 +47,7 @@ import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLIn
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.FERDIG;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.valueOf;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.*;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur.sammenlignEtterDependOn;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.convertToXmlVedleggListe;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.*;
@@ -132,26 +131,28 @@ public class SoknadDataFletter {
         if (!kravdialogInformasjonHolder.hentAlleSkjemanumre().contains(skjemanummer)) {
             throw new ApplicationException("Ikke gyldig skjemanummer " + skjemanummer);
         }
-        String soknadsType = kravdialogInformasjonHolder.hentKonfigurasjon(skjemanummer).getSoknadTypePrefix();
+        KravdialogInformasjon kravdialog = kravdialogInformasjonHolder.hentKonfigurasjon(skjemanummer);
+        String soknadnavn = kravdialog.getSoknadTypePrefix();
+        SoknadType soknadType = kravdialog.getSoknadstype();
         String mainUid = randomUUID().toString();
 
-        Timer startTimer = createDebugTimer("startTimer", soknadsType, mainUid);
+        Timer startTimer = createDebugTimer("startTimer", soknadnavn, mainUid);
 
         String aktorId = getSubjectHandler().getUid();
-        Timer henvendelseTimer = createDebugTimer("startHenvendelse", soknadsType, mainUid);
-        String behandlingsId = henvendelseService.startSoknad(aktorId, skjemanummer, mainUid);
+        Timer henvendelseTimer = createDebugTimer("startHenvendelse", soknadnavn, mainUid);
+        String behandlingsId = henvendelseService.startSoknad(aktorId, skjemanummer, mainUid, soknadType);
         henvendelseTimer.stop();
         henvendelseTimer.report();
 
 
-        Timer oprettIDbTimer = createDebugTimer("oprettIDb", soknadsType, mainUid);
+        Timer oprettIDbTimer = createDebugTimer("oprettIDb", soknadnavn, mainUid);
         Long soknadId = lagreSoknadILokalDb(skjemanummer, mainUid, aktorId, behandlingsId).getSoknadId();
         faktaService.lagreFaktum(soknadId, bolkerFaktum(soknadId));
         faktaService.lagreSystemFaktum(soknadId, personalia(soknadId));
         oprettIDbTimer.stop();
         oprettIDbTimer.report();
 
-        lagreTommeFaktaFraStrukturTilLokalDb(soknadId, skjemanummer, soknadsType, mainUid);
+        lagreTommeFaktaFraStrukturTilLokalDb(soknadId, skjemanummer, soknadnavn, mainUid);
 
         soknadMetricsService.startetSoknad(skjemanummer, false);
 
@@ -264,7 +265,7 @@ public class SoknadDataFletter {
         return erForbiUtfyllingssteget(soknad) ? sjekkDatoVerdierOgOppdaterDelstegStatus(soknad) : soknad;
     }
 
-    private boolean erForbiUtfyllingssteget(WebSoknad soknad){
+    private boolean erForbiUtfyllingssteget(WebSoknad soknad) {
         return !(soknad.getDelstegStatus() == DelstegStatus.OPPRETTET ||
                 soknad.getDelstegStatus() == DelstegStatus.UTFYLLING);
     }
