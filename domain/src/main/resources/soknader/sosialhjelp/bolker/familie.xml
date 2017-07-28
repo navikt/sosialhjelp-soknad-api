@@ -7,12 +7,12 @@
     </faktum>
     <faktum>
         <id>familie.barn</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>familie</panel>
     </faktum>
     <faktum>
         <id>familie.andrebarn</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>familie</panel>
     </faktum>
 </soknad>
