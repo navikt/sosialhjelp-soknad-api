@@ -3,6 +3,7 @@
     <faktum>
         <id>begrunnelse.hvorfor</id>
         <type>textbox</type>
+        <optional>true</optional>
         <panel>begrunnelse</panel>
     </faktum>
     <faktum>

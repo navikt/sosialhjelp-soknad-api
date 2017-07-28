@@ -2,7 +2,7 @@
 <soknad xmlns="urn:no.nav.sbl">
     <faktum>
         <id>bosituasjon</id>
-        <type>java.lang.Boolean</type>
+        <type>radio</type>
         <panel>bosituasjon</panel>
     </faktum>
 </soknad>
