@@ -38,7 +38,7 @@
             </property>
             <property>
                 <id>ikkebarneinntekt</id>
-                <type>java.lang.Boolean</type>
+                <type>bool</type>
                 <constraints>
                     <constraint>properties['barnetillegg'] == 'true'</constraint>
                 </constraints>
