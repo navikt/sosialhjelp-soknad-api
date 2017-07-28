@@ -7,32 +7,32 @@
     </faktum>
     <faktum>
         <id>arbeid.dinsituasjon.arbeidsledig</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>arbeid</panel>
         <dependOn>arbeid.dinsituasjon</dependOn>
     </faktum>
     <faktum>
         <id>arbeid.dinsituasjon.jobb</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>arbeid</panel>
         <dependOn>arbeid.dinsituasjon</dependOn>
     </faktum>
     <faktum>
         <id>arbeid.dinsituasjon.student</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>arbeid</panel>
         <dependOn>arbeid.dinsituasjon</dependOn>
     </faktum>
     <faktum>
         <id>arbeid.dinsituasjon.annensituasjon</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>arbeid</panel>
         <dependOn>arbeid.dinsituasjon</dependOn>
     </faktum>
 
     <faktum>
         <id>arbeid.dinsituasjon.student.heltid</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>arbeid</panel>
         <dependOn>arbeid.dinsituasjon.student</dependOn>
         <dependOnValues>

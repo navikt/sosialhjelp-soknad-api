@@ -2,7 +2,7 @@
 <soknad xmlns="urn:no.nav.sbl">
     <faktum>
         <id>inntekt.mottarytelser</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
     </faktum>
     <faktum>
@@ -17,48 +17,48 @@
 
     <faktum>
         <id>inntekt.mottarytelser.false.ytelserarbeid.dagpenger</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.mottarytelser.false.ytelserarbeid</dependOn>
     </faktum>
     <faktum>
         <id>inntekt.mottarytelser.false.ytelserarbeid.aap</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.mottarytelser.false.ytelserarbeid</dependOn>
     </faktum>
 
     <faktum>
         <id>inntekt.mottarytelser.false.ytelserarbeid.tiltakspenger</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.mottarytelser.false.ytelserarbeid</dependOn>
     </faktum>
 
     <faktum>
         <id>inntekt.mottarytelser.false.ytelserarbeid.tilleggstonader</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.mottarytelser.false.ytelserarbeid</dependOn>
     </faktum>
 
     <faktum>
         <id>inntekt.mottarytelser.false.ytelserarbeid.kvalifiseringsstonad</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.mottarytelser.false.ytelserarbeid</dependOn>
     </faktum>
 
     <faktum>
         <id>inntekt.mottarytelser.false.ytelserarbeid.introduksjonsstonad</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.mottarytelser.false.ytelserarbeid</dependOn>
     </faktum>
 
     <faktum>
         <id>inntekt.mottarytelser.false.ytelserarbeid.ingen</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.mottarytelser.false.ytelserarbeid</dependOn>
     </faktum>
@@ -75,62 +75,62 @@
     </faktum>
     <faktum>
         <id>inntekt.mottarytelser.false.ytelserfamilie.foreldrepenger</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.mottarytelser.false.ytelserfamilie</dependOn>
     </faktum>
     <faktum>
         <id>inntekt.mottarytelser.false.ytelserfamilie.barnetilsyn</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.mottarytelser.false.ytelserfamilie</dependOn>
     </faktum>
     <faktum>
         <id>inntekt.mottarytelser.false.ytelserfamilie.engangsstonad</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.mottarytelser.false.ytelserfamilie</dependOn>
     </faktum>
     <faktum>
         <id>inntekt.mottarytelser.false.ytelserfamilie.overgangsstonad</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.mottarytelser.false.ytelserfamilie</dependOn>
     </faktum>
     <faktum>
         <id>inntekt.mottarytelser.false.ytelserfamilie.barnetrygd</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.mottarytelser.false.ytelserfamilie</dependOn>
     </faktum>
     <faktum>
         <id>inntekt.mottarytelser.false.ytelserfamilie.bidragsforskudd</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.mottarytelser.false.ytelserfamilie</dependOn>
     </faktum>
     <faktum>
         <id>inntekt.mottarytelser.false.ytelserfamilie.kontantstotte</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.mottarytelser.false.ytelserfamilie</dependOn>
     </faktum>
     <faktum>
         <id>inntekt.mottarytelser.false.ytelserfamilie.utdanningsstonad</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.mottarytelser.false.ytelserfamilie</dependOn>
     </faktum>
     <faktum>
         <id>inntekt.mottarytelser.false.ytelserfamilie.ingen</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.mottarytelser.false.ytelserfamilie</dependOn>
     </faktum>
 
     <faktum>
         <id>inntekt.soktytelser</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
     </faktum>
 
@@ -141,31 +141,31 @@
     </faktum>
     <faktum>
         <id>inntekt.stotte.lanekassen</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.stotte</dependOn>
     </faktum>
     <faktum>
         <id>inntekt.stotte.husbanken</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.stotte</dependOn>
     </faktum>
     <faktum>
         <id>inntekt.stotte.kommunalbostotte</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.stotte</dependOn>
     </faktum>
     <faktum>
         <id>inntekt.stotte.barnebidrag</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.stotte</dependOn>
     </faktum>
     <faktum>
         <id>inntekt.stotte.annet</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.stotte</dependOn>
     </faktum>
@@ -188,31 +188,31 @@
     </faktum>
     <faktum>
         <id>inntekt.formue.bolig</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.formue</dependOn>
     </faktum>
     <faktum>
         <id>inntekt.formue.kjoretoy</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.formue</dependOn>
     </faktum>
     <faktum>
         <id>inntekt.formue.campingvogn</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.formue</dependOn>
     </faktum>
     <faktum>
         <id>inntekt.formue.fritidseiendom</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.formue</dependOn>
     </faktum>
     <faktum>
         <id>inntekt.formue.annet</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.formue</dependOn>
     </faktum>
@@ -235,31 +235,31 @@
     </faktum>
     <faktum>
         <id>inntekt.bankinnskudd.sparekonto</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.bankinnskudd</dependOn>
     </faktum>
     <faktum>
         <id>inntekt.bankinnskudd.brukskonto</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.bankinnskudd</dependOn>
     </faktum>
     <faktum>
         <id>inntekt.bankinnskudd.livsforsikring</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.bankinnskudd</dependOn>
     </faktum>
     <faktum>
         <id>inntekt.bankinnskudd.aksjer</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.bankinnskudd</dependOn>
     </faktum>
     <faktum>
         <id>inntekt.bankinnskudd.annet</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.bankinnskudd</dependOn>
     </faktum>
@@ -277,7 +277,7 @@
 
     <faktum>
         <id>inntekt.inntekter</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
     </faktum>
 
@@ -290,31 +290,31 @@
     </faktum>
     <faktum>
         <id>inntekt.inntekter.false.type.utbytte</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.inntekter.false.type</dependOn>
     </faktum>
     <faktum>
         <id>inntekt.inntekter.false.type.salg</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.inntekter.false.type</dependOn>
     </faktum>
     <faktum>
         <id>inntekt.inntekter.false.type.leieinntekter</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.inntekter.false.type</dependOn>
     </faktum>
     <faktum>
         <id>inntekt.inntekter.false.type.forsikringsutbetalinger</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.inntekter.false.type</dependOn>
     </faktum>
     <faktum>
         <id>inntekt.inntekter.false.type.annet</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.inntekter.false.type</dependOn>
     </faktum>
