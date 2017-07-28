@@ -6,21 +6,46 @@
         <panel>arbeid</panel>
     </faktum>
     <faktum>
-        <id>arbeid.dinsituasjon.student.heltid</id>
+        <id>arbeid.dinsituasjon.arbeidsledig</id>
         <type>java.lang.Boolean</type>
         <panel>arbeid</panel>
         <dependOn>arbeid.dinsituasjon</dependOn>
-        <dependOnValues>
-            <value>student</value>
-        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>arbeid.dinsituasjon.jobb</id>
+        <type>java.lang.Boolean</type>
+        <panel>arbeid</panel>
+        <dependOn>arbeid.dinsituasjon</dependOn>
+    </faktum>
+    <faktum>
+        <id>arbeid.dinsituasjon.student</id>
+        <type>java.lang.Boolean</type>
+        <panel>arbeid</panel>
+        <dependOn>arbeid.dinsituasjon</dependOn>
     </faktum>
     <faktum>
         <id>arbeid.dinsituasjon.annensituasjon</id>
-        <type>textbox</type>
+        <type>java.lang.Boolean</type>
         <panel>arbeid</panel>
         <dependOn>arbeid.dinsituasjon</dependOn>
+    </faktum>
+
+    <faktum>
+        <id>arbeid.dinsituasjon.student.heltid</id>
+        <type>java.lang.Boolean</type>
+        <panel>arbeid</panel>
+        <dependOn>arbeid.dinsituasjon.student</dependOn>
         <dependOnValues>
-            <value>annensituasjon</value>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>arbeid.dinsituasjon.annensituasjon.beskrivelse</id>
+        <type>textbox</type>
+        <panel>arbeid</panel>
+        <dependOn>arbeid.dinsituasjon.annensituasjon</dependOn>
+        <dependOnValues>
+            <value>true</value>
         </dependOnValues>
     </faktum>
 </soknad>

@@ -6,6 +6,8 @@
         <erSystemFaktum>true</erSystemFaktum>
     </faktum>
 
+    <xi:include href="../felles/personalia.xml" />
+
     <!-- Bolker -->
     <xi:include href="bolker/arbeid.xml" />
     <xi:include href="bolker/familie.xml" />
@@ -14,6 +16,5 @@
     <xi:include href="bolker/inntekt.xml" />
 
     <!-- Fellesting -->
-    <xi:include href="../felles/tilleggsopplysninger.xml" />
     <xi:include href="../felles/ekstravedlegg.xml" />
 </soknad>
