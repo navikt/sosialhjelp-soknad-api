@@ -9,7 +9,7 @@
 
     <faktum>
         <id>navaerendesituasjon.iarbeid</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <dependOn>navaerendesituasjon</dependOn>
     </faktum>
 
@@ -24,22 +24,22 @@
 
     <faktum>
         <id>navaerendesituasjon.iarbeid.arbeidsforhold.ansatt</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <dependOn>navaerendesituasjon.iarbeid.arbeidsforhold</dependOn>
     </faktum>
     <faktum>
         <id>navaerendesituasjon.iarbeid.arbeidsforhold.selvstendig</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <dependOn>navaerendesituasjon.iarbeid.arbeidsforhold</dependOn>
     </faktum>
     <faktum>
         <id>navaerendesituasjon.sykmeldt</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <dependOn>navaerendesituasjon</dependOn>
     </faktum>
     <faktum>
         <id>navaerendesituasjon.arbeidsledig</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <dependOn>navaerendesituasjon</dependOn>
     </faktum>
     <faktum>
@@ -48,7 +48,7 @@
     </faktum>
     <faktum>
         <id>navaerendesituasjon.student.studererfortsatt</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <dependOn>navaerendesituasjon.student</dependOn>
         <dependOnValues>
             <value>true</value>
@@ -56,7 +56,7 @@
     </faktum>
     <faktum>
         <id>navaerendesituasjon.student.avbruttstudie.ikketilbake</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <dependOn>navaerendesituasjon.student.studererfortsatt</dependOn>
         <dependOnValues>
             <value>false</value>

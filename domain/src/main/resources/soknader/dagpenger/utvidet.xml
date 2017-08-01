@@ -8,7 +8,7 @@
     <faktum kunUtvidet="true">
         <id>utslagskriterier.dagpenger.utbetaling</id>
         <panel>Utslagskriterier</panel>
-        <type>radiobox</type>
+        <type>radio</type>
     </faktum>
     <faktum kunUtvidet="true">
         <id>informasjonsside</id>
