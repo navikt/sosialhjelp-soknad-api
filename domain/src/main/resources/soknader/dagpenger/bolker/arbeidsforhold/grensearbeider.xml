@@ -21,7 +21,7 @@
     </faktum>
     <faktum>
         <id>arbeidsforhold.grensearbeider.false.oftehjem</id>
-        <type>java.lang.String</type>
+        <type>string</type>
         <dependOn>arbeidsforhold.grensearbeider</dependOn>
         <dependOnValues>
             <value>false</value>

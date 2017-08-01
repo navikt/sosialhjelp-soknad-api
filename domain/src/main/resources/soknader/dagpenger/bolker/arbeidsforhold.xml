@@ -9,7 +9,7 @@
     </faktum>
     <faktum>
         <id>arbeidsforhold.arbeidstilstand</id>
-        <type>java.lang.String</type>
+        <type>string</type>
         <panel>Arbeidsforhold</panel>
     </faktum>
 
@@ -30,7 +30,7 @@
     <faktum>
         <id>arbeidsforhold.grensearbeider</id>
         <panel>Arbeidsforhold</panel>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <constraints>
             <constraint>
                 <faktum>personalia</faktum>

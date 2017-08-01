@@ -123,7 +123,7 @@
     </property>
     <property>
         <id>sagtoppavarbeidsgiver.tilbudomjobbannetsted</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <constraints>
             <constraint>properties['type'] == 'sagtoppavarbeidsgiver'</constraint>
         </constraints>

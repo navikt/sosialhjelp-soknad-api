@@ -44,7 +44,7 @@
         <cxf.version>2.7.9</cxf.version>
         <modig-security.version>1.0.30</modig-security.version>
         <sendsoknad.tjenestespec.version>0.0.23</sendsoknad.tjenestespec.version>
-        <behandlingsinformasjon.tjenestespec.version>0.0.46</behandlingsinformasjon.tjenestespec.version>
+        <behandlingsinformasjon.tjenestespec.version>1.0.0</behandlingsinformasjon.tjenestespec.version>
         <fillager.tjenestespec.version>0.0.3</fillager.tjenestespec.version>
         <dkif-tjenestespesifikasjon.version>1.2</dkif-tjenestespesifikasjon.version>
         <lokalt.kodeverk>1.12.10</lokalt.kodeverk>
