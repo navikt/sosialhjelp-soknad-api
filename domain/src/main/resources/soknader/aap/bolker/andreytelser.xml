@@ -9,25 +9,25 @@
     <faktum>
         <id>andreytelser.ytelserfranav.kvalifiseringsstonad</id>
         <panel>AndreYtelser</panel>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <dependOn>andreytelser.ytelserfranav</dependOn>
     </faktum>
     <faktum>
         <id>andreytelser.ytelserfranav.okonomisksosialhjelp</id>
         <panel>AndreYtelser</panel>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <dependOn>andreytelser.ytelserfranav</dependOn>
     </faktum>
     <faktum>
         <id>andreytelser.ytelserfranav.ikkemottattellersokt</id>
         <panel>AndreYtelser</panel>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <dependOn>andreytelser.ytelserfranav</dependOn>
     </faktum>
     <faktum>
         <id>andreytelser.fraarbeidsgiver</id>
         <panel>AndreYtelser</panel>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <constraints>
             <constraint>
                 <faktum>soknadstype</faktum>
@@ -47,7 +47,7 @@
     <faktum>
         <id>andreytelser.fraarbeidsgiver.false.utbetalingsmetode.engangsbelop</id>
         <panel>AndreYtelser</panel>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <dependOn>andreytelser.fraarbeidsgiver.false.utbetalingsmetode</dependOn>
     </faktum>
     <faktum>
@@ -62,7 +62,7 @@
     <faktum>
         <id>andreytelser.fraarbeidsgiver.false.utbetalingsmetode.lopendeutbetaling</id>
         <panel>AndreYtelser</panel>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <dependOn>andreytelser.fraarbeidsgiver.false.utbetalingsmetode</dependOn>
     </faktum>
     <faktum>
@@ -100,22 +100,22 @@
     </faktum>
     <faktum>
         <id>andreytelser.fraandre.omsorgslonn</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <dependOn>andreytelser.fraandre</dependOn>
     </faktum>
     <faktum>
         <id>andreytelser.fraandre.fosterhjemsgodtgjorelse</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <dependOn>andreytelser.fraandre</dependOn>
     </faktum>
     <faktum>
         <id>andreytelser.fraandre.verv</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <dependOn>andreytelser.fraandre</dependOn>
     </faktum>
     <faktum>
         <id>andreytelser.fraandre.utenlandsketrygdemyndigheter</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <dependOn>andreytelser.fraandre</dependOn>
     </faktum>
     <faktum>
@@ -136,7 +136,7 @@
     </faktum>
     <faktum>
         <id>andreytelser.fraandre.annet</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <dependOn>andreytelser.fraandre</dependOn>
     </faktum>
     <faktum>
@@ -157,7 +157,7 @@
     </faktum>
     <faktum>
         <id>andreytelser.fraandre.ikkemottattellersokt</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <dependOn>andreytelser.fraandre</dependOn>
     </faktum>
 
