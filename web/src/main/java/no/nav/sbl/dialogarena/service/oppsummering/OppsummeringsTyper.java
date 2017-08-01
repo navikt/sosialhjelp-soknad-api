@@ -18,6 +18,8 @@ public enum OppsummeringsTyper {
     infotekst("skjema/generisk/infotekst"),
     radio("skjema/generisk/default"),
     tekster("skjema/generisk/tekster"),
+    string("skjema/generisk/default"),
+    bool("skjema/generisk/default"),
     inlineproperties("skjema/generisk/inlineproperties");
 
 
@@ -33,7 +35,7 @@ public enum OppsummeringsTyper {
             try {
                 return valueOf(type).template;
             } catch(IllegalArgumentException e) {
-                logger.info("Ukjent oppsumeringsstype {}, bruker default", type);
+                logger.info("Ukjent oppsummeringstype {}, bruker default", type);
             }
         }
         return radio.template;
