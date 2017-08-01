@@ -3,7 +3,7 @@
     <!--student enkel-->
     <faktum>
         <id>samtalemednav.student.tilbaketilstudiet</id>
-        <type>java.lang.String</type>
+        <type>string</type>
         <panel>samtalemednav</panel>
         <constraints>
             <constraint>
@@ -15,7 +15,7 @@
     <!--student fullvisning-->
     <faktum>
         <id>samtalemednav.student.ikketilbaketilstudiet</id>
-        <type>java.lang.String</type>
+        <type>string</type>
         <panel>samtalemednav</panel>
         <constraints>
             <constraint>
