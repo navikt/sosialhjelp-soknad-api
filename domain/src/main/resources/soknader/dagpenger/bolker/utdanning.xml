@@ -2,7 +2,7 @@
 <soknad xmlns="urn:no.nav.sbl">
     <faktum>
         <id>utdanning</id>
-        <type>java.lang.String</type>
+        <type>string</type>
         <panel>Utdanning</panel>
     </faktum>
 
@@ -17,13 +17,13 @@
 
     <faktum>
         <id>utdanning.kveld</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.underutdanning</dependOn>
     </faktum>
     <faktum>
         <id>utdanning.kveld.progresjonUnder50</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.kveld</dependOn>
         <dependOnValues>
@@ -32,7 +32,7 @@
     </faktum>
     <faktum>
         <id>utdanning.kveld.paabegyntUnder6mnd</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.kveld.progresjonUnder50</dependOn>
         <dependOnValues>
@@ -79,7 +79,7 @@
 
     <faktum>
         <id>utdanning.kortvarig</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.underutdanning</dependOn>
     </faktum>
@@ -112,7 +112,7 @@
     </faktum>
     <faktum>
         <id>utdanning.norsk</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.underutdanning</dependOn>
     </faktum>
@@ -137,14 +137,14 @@
 
     <faktum>
         <id>utdanning.introduksjon</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.underutdanning</dependOn>
     </faktum>
 
     <faktum>
         <id>utdanning.annet</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>Utdanning</panel>
         <dependOn>utdanning.underutdanning</dependOn>
     </faktum>

@@ -7,7 +7,7 @@
     </faktum>
     <faktum>
         <id>samtalemednav</id>
-        <type>java.lang.String</type>
+        <type>string</type>
         <panel>samtalemednav</panel>
         <constraints>
             <constraint>
@@ -19,7 +19,7 @@
 
     <faktum>
         <id>samtalemednav.arbeidsmuligheter</id>
-        <type>java.lang.String</type>
+        <type>string</type>
         <dependOn>samtalemednav</dependOn>
         <dependOnValues>
             <value>harikkehattsamtale</value>
