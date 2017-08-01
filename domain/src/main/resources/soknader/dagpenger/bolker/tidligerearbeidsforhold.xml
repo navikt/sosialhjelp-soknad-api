@@ -2,7 +2,7 @@
 <soknad xmlns="urn:no.nav.sbl">
     <faktum>
         <id>tidligerearbeidsforhold.permittert</id>
-        <type>radiobox</type>
+        <type>radio</type>
         <panel>TidligereArbeidsforhold</panel>
     </faktum>
 
@@ -19,7 +19,7 @@
 
     <faktum>
         <id>tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsidensist</id>
-        <type>radiobox</type>
+        <type>radio</type>
         <panel>TidligereArbeidsforhold</panel>
         <dependOn>tidligerearbeidsforhold.permittert</dependOn>
         <dependOnValues>
@@ -30,7 +30,7 @@
 
     <faktum>
         <id>tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsammenhengende</id>
-        <type>radiobox</type>
+        <type>radio</type>
         <panel>TidligereArbeidsforhold</panel>
         <dependOn>tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsidensist</dependOn>
         <useExpression>true</useExpression>
@@ -46,7 +46,7 @@
     </faktum>
     <faktum>
         <id>tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsammenhengende.fiske</id>
-        <type>radiobox</type>
+        <type>radio</type>
         <panel>TidligereArbeidsforhold</panel>
         <dependOn>tidligerearbeidsforhold.tidligerearbeidsgiver.jobbetsidensist</dependOn>
         <useExpression>true</useExpression>
@@ -63,7 +63,7 @@
 
     <faktum>
         <id>tidligerearbeidsforhold.tidligerearbeidsgiver.fortsattansatt</id>
-        <type>radiobox</type>
+        <type>radio</type>
         <panel>TidligereArbeidsforhold</panel>
         <dependOn>tidligerearbeidsforhold.permittert</dependOn>
         <dependOnValues>
