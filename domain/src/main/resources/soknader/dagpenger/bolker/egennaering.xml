@@ -2,7 +2,7 @@
 <soknad xmlns="urn:no.nav.sbl">
     <faktum>
         <id>egennaering.driveregennaering</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>EgenNaering</panel>
     </faktum>
     <faktum>
@@ -28,7 +28,7 @@
 
     <faktum>
         <id>egennaering.gardsbruk</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>EgenNaering</panel>
     </faktum>
     <faktum>
@@ -51,25 +51,25 @@
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.type.dyr</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.gardsbruk.false.type</dependOn>
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.type.jord</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.gardsbruk.false.type</dependOn>
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.type.skog</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.gardsbruk.false.type</dependOn>
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.type.annet</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.gardsbruk.false.type</dependOn>
     </faktum>
@@ -84,19 +84,19 @@
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.eier.jeg</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.gardsbruk.false.eier</dependOn>
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.eier.ektefelle</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.gardsbruk.false.eier</dependOn>
     </faktum>
     <faktum>
         <id>egennaering.gardsbruk.false.eier.annet</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.gardsbruk.false.eier</dependOn>
     </faktum>
@@ -176,12 +176,12 @@
 
     <faktum>
         <id>egennaering.fangstogfiske</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>EgenNaering</panel>
     </faktum>
     <faktum>
         <id>egennaering.fangstogfiske.false.arbeid</id>
-        <type>java.lang.Boolean</type>
+        <type>bool</type>
         <panel>EgenNaering</panel>
         <dependOn>egennaering.fangstogfiske</dependOn>
         <dependOnValues>
