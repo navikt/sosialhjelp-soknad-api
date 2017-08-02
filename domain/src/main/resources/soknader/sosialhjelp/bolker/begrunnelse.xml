@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl">
+    <faktum>
+        <id>begrunnelse.hvorfor</id>
+        <type>textbox</type>
+        <optional>true</optional>
+        <panel>begrunnelse</panel>
+    </faktum>
+    <faktum>
+        <id>begrunnelse.hva</id>
+        <type>textbox</type>
+        <panel>begrunnelse</panel>
+    </faktum>
+</soknad>

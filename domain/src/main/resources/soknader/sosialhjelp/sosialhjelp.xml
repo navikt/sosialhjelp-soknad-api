@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<soknad temaKode="FOR" xmlns="urn:no.nav.sbl" xmlns:xi="http://www.w3.org/2001/XInclude">
+    <!-- Systemfakta -->
+    <xi:include href="../felles/personalia.xml" />
+
+    <!-- Bolker -->
+    <xi:include href="bolker/arbeid.xml" />
+    <xi:include href="bolker/familie.xml" />
+    <xi:include href="bolker/begrunnelse.xml" />
+    <xi:include href="bolker/bosituasjon.xml" />
+    <xi:include href="bolker/inntekt.xml" />
+
+    <!-- Fellesting -->
+    <xi:include href="../felles/ekstravedlegg.xml" />
+</soknad>
