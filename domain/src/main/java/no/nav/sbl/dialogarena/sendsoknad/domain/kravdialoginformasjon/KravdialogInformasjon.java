@@ -1,10 +1,8 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Steg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
-import org.apache.commons.collections15.Transformer;
 import org.springframework.context.MessageSource;
 
 import java.util.ArrayList;
@@ -45,6 +43,8 @@ public interface KravdialogInformasjon {
 
     boolean brukerEnonicLedetekster();
 
+    SoknadType getSoknadstype();
+
     abstract class DefaultOppsett implements KravdialogInformasjon {
         @Override
         public List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource, WebSoknad soknad) {
@@ -65,6 +65,9 @@ public interface KravdialogInformasjon {
         }
         public boolean brukerEnonicLedetekster(){
             return true;
+        }
+        public SoknadType getSoknadstype() {
+            return SoknadType.SEND_SOKNAD;
         }
     }
 }
