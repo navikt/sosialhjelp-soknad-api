@@ -1,10 +1,17 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon;
 
 
+import no.nav.metrics.Event;
+import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpTilXml;
+import org.springframework.context.MessageSource;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static java.util.Collections.singletonList;
 
 public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett {
 
@@ -31,6 +38,16 @@ public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett
     //TODO ta i bruk riktig skjemanummer
     public List<String> getSkjemanummer() {
         return Arrays.asList("NAV DIGISOS");
+    }
+
+    @Override
+    public List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource, WebSoknad soknad) {
+
+        Event event = MetricsFactory.createEvent("soknad.alternativrepresentasjon.aktiv");
+        event.addTagToReport("skjemanummer", soknad.getskjemaNummer());
+        event.addTagToReport("soknadstype", getSoknadTypePrefix());
+        event.report();
+        return singletonList(new SosialhjelpTilXml(messageSource));
     }
 
     @Override
