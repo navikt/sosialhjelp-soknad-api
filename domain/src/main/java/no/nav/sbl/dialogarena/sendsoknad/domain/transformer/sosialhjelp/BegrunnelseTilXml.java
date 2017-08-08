@@ -7,7 +7,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 
 import java.util.function.Function;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.Kilde.BRUKER;
+import static no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLKilde.BRUKER;
 
 
 public class BegrunnelseTilXml implements Function<WebSoknad, Begrunnelse> {
@@ -16,11 +16,11 @@ public class BegrunnelseTilXml implements Function<WebSoknad, Begrunnelse> {
     public Begrunnelse apply(WebSoknad webSoknad) {
         HvorforSoke hvorforSoke = new HvorforSoke()
                 .withValue(webSoknad.getValueForFaktum("begrunnelse.hvorfor"))
-                .withKilde(BRUKER.toString());
+                .withKilde(BRUKER);
 
         HvaSokesOm hvaSokesOm = new HvaSokesOm()
                 .withValue(webSoknad.getValueForFaktum("begrunnelse.hva"))
-                .withKilde(BRUKER.toString());
+                .withKilde(BRUKER);
 
         return new Begrunnelse()
                 .withHvorforSoke(hvorforSoke)
