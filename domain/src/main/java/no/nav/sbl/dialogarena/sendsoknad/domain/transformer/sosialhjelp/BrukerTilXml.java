@@ -35,7 +35,7 @@ public class BrukerTilXml implements Function<WebSoknad, Personalia> {
 
         EpostAdresse epostAdresse = new EpostAdresse()
                 .withKilde(SYSTEM)
-                .withValue(personaliaProperties.get("epost").isEmpty() ? "ingen" : personaliaProperties.get("epost"));
+                .withValue(personaliaProperties.get("epost") == null ? "ingen epost" : personaliaProperties.get("epost"));
 
         return new Personalia().withPerson(new Person()
                 .withPersonIdentifikator(personIdentifikator)
