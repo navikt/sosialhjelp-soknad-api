@@ -21,7 +21,7 @@ public class BrukerTilXml implements Function<WebSoknad, Personalia> {
 
         XMLSoknadsosialhjelp.Personalia.Person.PersonIdentifikator personIdentifikator = new PersonIdentifikator()
                 .withKilde(SYSTEM)
-                .withValue(new BigInteger(personnummer));
+                .withValue(personnummer);
 
         Map<String, String> personaliaProperties = webSoknad.getFaktumMedKey("personalia").getProperties();
 
