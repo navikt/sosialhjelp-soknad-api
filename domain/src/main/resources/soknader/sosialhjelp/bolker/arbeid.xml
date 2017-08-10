@@ -48,4 +48,12 @@
             <value>true</value>
         </dependOnValues>
     </faktum>
+
+    <vedlegg>
+        <faktum>arbeid.dinsituasjon.arbeidsledig</faktum>
+        <skjemaNummer>P5</skjemaNummer>
+        <onValues>
+            <value>true</value>
+        </onValues>
+    </vedlegg>
 </soknad>
