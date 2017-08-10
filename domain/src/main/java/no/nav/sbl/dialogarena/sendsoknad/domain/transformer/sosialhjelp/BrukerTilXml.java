@@ -1,9 +1,10 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp;
 
-import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLSoknadsosialhjelp;
+import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLBoolean;
 import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLPersonalia;
 import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLPersonalia.Person.*;
 import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLPersonalia.Person;
+import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLString;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 
 import java.util.Map;
@@ -18,21 +19,21 @@ public class BrukerTilXml implements Function<WebSoknad, XMLPersonalia> {
     public XMLPersonalia apply(WebSoknad webSoknad) {
         String personnummer = webSoknad.getAktoerId();
 
-        XMLPersonalia.Person.PersonIdentifikator personIdentifikator = new PersonIdentifikator()
+        XMLString personIdentifikator = new XMLString()
                 .withKilde(SYSTEM)
                 .withValue(personnummer);
 
         Map<String, String> personaliaProperties = webSoknad.getFaktumMedKey("personalia").getProperties();
 
-        Navn navn = new Navn()
+        XMLString navn = new XMLString()
                 .withKilde(SYSTEM)
                 .withValue(personaliaProperties.get("navn"));
 
-        Statsborgerskap statsborgerskap = new Statsborgerskap()
+        XMLString statsborgerskap = new XMLString()
                 .withKilde(SYSTEM)
                 .withValue(personaliaProperties.get("statsborgerskap"));
 
-        EpostAdresse epostAdresse = new EpostAdresse()
+        XMLString epostAdresse = new XMLString()
                 .withKilde(SYSTEM)
                 .withValue(personaliaProperties.get("epost") == null ? "ingen epost" : personaliaProperties.get("epost"));
 
