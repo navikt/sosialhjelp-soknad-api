@@ -1,18 +1,18 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp;
 
-import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLSoknadsosialhjelp.ArbeidUtdanning;
-import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLSoknadsosialhjelp.ArbeidUtdanning.*;
+import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLArbeidUtdanning;
+import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLArbeidUtdanning.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 
 import java.util.function.Function;
 
 import static no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLKilde.BRUKER;
 
-public class ArbeidOgUtdanningTilXml implements Function<WebSoknad, ArbeidUtdanning> {
+public class ArbeidOgUtdanningTilXml implements Function<WebSoknad, XMLArbeidUtdanning> {
 
     @Override
-    public ArbeidUtdanning apply(WebSoknad webSoknad) {
-        ArbeidUtdanning arbeidUtdanning = new ArbeidUtdanning();
+    public XMLArbeidUtdanning apply(WebSoknad webSoknad) {
+        XMLArbeidUtdanning arbeidUtdanning = new XMLArbeidUtdanning();
 
         Arbeidsledig arbeidsledig = new Arbeidsledig()
                 .withKilde(BRUKER)
@@ -34,14 +34,24 @@ public class ArbeidOgUtdanningTilXml implements Function<WebSoknad, ArbeidUtdann
             arbeidUtdanning.withStudererGrad(studererGrad);
         }
 
+        Boolean annenSituasjon = Boolean.valueOf(webSoknad.getValueForFaktum("arbeid.dinsituasjon.annensituasjon"));
         Annet annet = new Annet()
                 .withKilde(BRUKER)
-                .withValue(Boolean.valueOf(webSoknad.getValueForFaktum("arbeid.dinsituasjon.annensituasjon")));
+                .withValue(annenSituasjon);
 
-        return arbeidUtdanning
+        arbeidUtdanning
                 .withAnnet(annet)
                 .withJobb(jobb)
                 .withArbeidsledig(arbeidsledig)
                 .withStudent(student);
+
+        if(annenSituasjon) {
+            AnnetBeskrivelse beskrivelse = new AnnetBeskrivelse()
+                    .withKilde(BRUKER)
+                    .withValue(webSoknad.getValueForFaktum("arbeid.dinsituasjon.annensituasjon.beskrivelse"));
+            arbeidUtdanning.withAnnetBeskrivelse(beskrivelse);
+        }
+
+        return arbeidUtdanning;
     }
 }

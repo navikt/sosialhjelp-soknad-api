@@ -1,8 +1,7 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp;
 
-import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLSoknadsosialhjelp.Begrunnelse;
-import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLSoknadsosialhjelp.Begrunnelse.*;
-
+import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLBegrunnelse;
+import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLBegrunnelse.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 
 import java.util.function.Function;
@@ -10,10 +9,10 @@ import java.util.function.Function;
 import static no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLKilde.BRUKER;
 
 
-public class BegrunnelseTilXml implements Function<WebSoknad, Begrunnelse> {
+public class BegrunnelseTilXml implements Function<WebSoknad, XMLBegrunnelse> {
 
     @Override
-    public Begrunnelse apply(WebSoknad webSoknad) {
+    public XMLBegrunnelse apply(WebSoknad webSoknad) {
         HvorforSoke hvorforSoke = new HvorforSoke()
                 .withValue(webSoknad.getValueForFaktum("begrunnelse.hvorfor"))
                 .withKilde(BRUKER);
@@ -22,7 +21,7 @@ public class BegrunnelseTilXml implements Function<WebSoknad, Begrunnelse> {
                 .withValue(webSoknad.getValueForFaktum("begrunnelse.hva"))
                 .withKilde(BRUKER);
 
-        return new Begrunnelse()
+        return new XMLBegrunnelse()
                 .withHvorforSoke(hvorforSoke)
                 .withHvaSokesOm(hvaSokesOm);
     }
