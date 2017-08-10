@@ -1,7 +1,8 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp;
 
 import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLArbeidUtdanning;
-import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLArbeidUtdanning.*;
+import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLBoolean;
+import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLString;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 
 import java.util.function.Function;
@@ -14,28 +15,29 @@ public class ArbeidOgUtdanningTilXml implements Function<WebSoknad, XMLArbeidUtd
     public XMLArbeidUtdanning apply(WebSoknad webSoknad) {
         XMLArbeidUtdanning arbeidUtdanning = new XMLArbeidUtdanning();
 
-        Arbeidsledig arbeidsledig = new Arbeidsledig()
+        XMLBoolean arbeidsledig = new XMLBoolean()
                 .withKilde(BRUKER)
                 .withValue(Boolean.valueOf(webSoknad.getValueForFaktum("arbeid.dinsituasjon.arbeidsledig")));
 
-        Jobb jobb = new Jobb()
+        XMLBoolean jobb = new XMLBoolean()
                 .withKilde(BRUKER)
                 .withValue(Boolean.valueOf(webSoknad.getValueForFaktum("arbeid.dinsituasjon.jobb")));
 
         Boolean erStudent = Boolean.valueOf(webSoknad.getValueForFaktum("arbeid.dinsituasjon.student"));
-        Student student = new Student()
+        XMLBoolean student = new XMLBoolean()
                 .withKilde(BRUKER)
                 .withValue(erStudent);
 
         if (erStudent) {
-            StudererGrad studererGrad = new StudererGrad()
+            XMLBoolean studererGrad = new XMLBoolean()
                     .withKilde(BRUKER)
                     .withValue(Boolean.valueOf(webSoknad.getValueForFaktum("arbeid.dinsituasjon.student.heltid")));
             arbeidUtdanning.withStudererGrad(studererGrad);
         }
 
         Boolean annenSituasjon = Boolean.valueOf(webSoknad.getValueForFaktum("arbeid.dinsituasjon.annensituasjon"));
-        Annet annet = new Annet()
+
+        XMLBoolean annet = new XMLBoolean()
                 .withKilde(BRUKER)
                 .withValue(annenSituasjon);
 
@@ -46,7 +48,7 @@ public class ArbeidOgUtdanningTilXml implements Function<WebSoknad, XMLArbeidUtd
                 .withStudent(student);
 
         if(annenSituasjon) {
-            AnnetBeskrivelse beskrivelse = new AnnetBeskrivelse()
+            XMLString beskrivelse = new XMLString()
                     .withKilde(BRUKER)
                     .withValue(webSoknad.getValueForFaktum("arbeid.dinsituasjon.annensituasjon.beskrivelse"));
             arbeidUtdanning.withAnnetBeskrivelse(beskrivelse);
