@@ -4,6 +4,7 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.context.MethodValueResolver;
 import com.github.jknack.handlebars.io.URLTemplateSource;
+import no.nav.sbl.dialogarena.common.suspend.SuspendServlet;
 import no.nav.sbl.dialogarena.config.ContentConfig;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
@@ -18,23 +19,15 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.URI;
 
-import static no.nav.sbl.dialogarena.rest.utils.MocksetupUtils.MocksetupFields;
-import static no.nav.sbl.dialogarena.rest.utils.MocksetupUtils.getDiskresjonskode;
-import static no.nav.sbl.dialogarena.rest.utils.MocksetupUtils.getMocksetupFields;
-import static no.nav.sbl.dialogarena.rest.utils.MocksetupUtils.settPostadressetype;
-import static no.nav.sbl.dialogarena.rest.utils.MocksetupUtils.settSekundarAdressetype;
+import static no.nav.sbl.dialogarena.rest.utils.MocksetupUtils.*;
 
 @Controller
 @Path("/internal")
@@ -55,8 +48,13 @@ public class InternalRessurs {
     @GET
     @Path("/isAlive")
     @Produces(MediaType.APPLICATION_JSON)
-    public String isAlive() {
-        return "{status: \"ok\", message: \"soknadsapiet fungerer\"}";
+    public String isAlive(@Context HttpServletResponse response) throws IOException {
+        if(!SuspendServlet.isRunning()) {
+            response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+            return "Service is suspended for application update";
+        } else {
+            return "{status: \"ok\", message: \"soknadsapiet fungerer\"}";
+        }
     }
 
     @POST

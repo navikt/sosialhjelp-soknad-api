@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.batch;
 
+import no.nav.sbl.dialogarena.common.suspend.SuspendServlet;
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
@@ -80,6 +81,10 @@ public class LagringsScheduler {
             // Avslutt prosessen hvis det er gått for lang tid. Tyder på at noe er nede.
             if (harGaattForLangTid()) {
                 logger.warn("Jobben har kjørt i mer enn {} ms. Den blir derfor terminert", SCHEDULE_INTERRUPT_MS);
+                return;
+            }
+            if (!SuspendServlet.isRunning()) {
+                logger.warn("Avbryter jobben da appen skal suspendes");
                 return;
             }
         }
