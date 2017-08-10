@@ -283,6 +283,11 @@
                 <version>${engangsstonad.meldingsdefinisjon.version}</version>
             </dependency>
             <dependency>
+                <groupId>no.nav.sbl.dialogarena</groupId>
+                <artifactId>soeknadsskjemaSosialhjelp-v1-meldingsdefinisjon</artifactId>
+                <version>1.0.2</version>
+            </dependency>
+            <dependency>
                 <groupId>no.nav.meldinger.virksomhet</groupId>
                 <artifactId>nav-virksomhet-paaloepteUtgifter-v1-meldingsdefinisjon</artifactId>
                 <version>1.0.3</version>
