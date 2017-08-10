@@ -63,7 +63,8 @@ public class SosialhjelpTilXml implements AlternativRepresentasjonTransformer {
         return soknadSosialStonad
                 .withPersonalia(new BrukerTilXml().apply(webSoknad))
                 .withBegrunnelse(new BegrunnelseTilXml().apply(webSoknad))
-                .withArbeidUtdanning(new ArbeidOgUtdanningTilXml().apply(webSoknad));
+                .withArbeidUtdanning(new ArbeidOgUtdanningTilXml().apply(webSoknad))
+                .withVedleggListe(new VedleggTilXml().apply(webSoknad));
     }
 
     @Override
