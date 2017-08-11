@@ -5,4 +5,41 @@
         <type>radio</type>
         <panel>bosituasjon</panel>
     </faktum>
+    <faktum>
+        <id>bosituasjon.annen.botype</id>
+        <type>checkboxGroup</type>
+        <panel>bosituasjon</panel>
+        <dependOn>bosituasjon</dependOn>
+        <dependOnValues><value>annet</value></dependOnValues>
+    </faktum>
+    <faktum>
+        <id>bosituasjon.annen.botype.institusjon</id>
+        <type>bool</type>
+        <dependOn>bosituasjon.annen.botype</dependOn>
+    </faktum>
+    <faktum>
+        <id>bosituasjon.annen.botype.fengsel</id>
+        <type>bool</type>
+        <dependOn>bosituasjon.annen.botype</dependOn>
+    </faktum>
+    <faktum>
+        <id>bosituasjon.annen.botype.foreldre</id>
+        <type>bool</type>
+        <dependOn>bosituasjon.annen.botype</dependOn>
+    </faktum>
+    <faktum>
+        <id>bosituasjon.annen.botype.krisesenter</id>
+        <type>bool</type>
+        <dependOn>bosituasjon.annen.botype</dependOn>
+    </faktum>
+    <faktum>
+        <id>bosituasjon.annen.botype.venner</id>
+        <type>bool</type>
+        <dependOn>bosituasjon.annen.botype</dependOn>
+    </faktum>
+    <faktum>
+        <id>bosituasjon.annen.botype.familie</id>
+        <type>bool</type>
+        <dependOn>bosituasjon.annen.botype</dependOn>
+    </faktum>
 </soknad>
