@@ -5,128 +5,6 @@
         <type>bool</type>
         <panel>inntekt</panel>
     </faktum>
-    <!--<faktum>-->
-    <!--<id>inntekt.mottarytelser.false.ytelserarbeid</id>-->
-    <!--<type>checkboxGroup</type>-->
-    <!--<panel>inntekt</panel>-->
-    <!--<dependOn>inntekt.mottarytelser</dependOn>-->
-    <!--<dependOnValues>-->
-    <!--<value>false</value>-->
-    <!--</dependOnValues>-->
-    <!--</faktum>-->
-
-    <!--<faktum>-->
-    <!--<id>inntekt.mottarytelser.false.ytelserarbeid.dagpenger</id>-->
-    <!--<type>bool</type>-->
-    <!--<panel>inntekt</panel>-->
-    <!--<dependOn>inntekt.mottarytelser.false.ytelserarbeid</dependOn>-->
-    <!--</faktum>-->
-    <!--<faktum>-->
-    <!--<id>inntekt.mottarytelser.false.ytelserarbeid.aap</id>-->
-    <!--<type>bool</type>-->
-    <!--<panel>inntekt</panel>-->
-    <!--<dependOn>inntekt.mottarytelser.false.ytelserarbeid</dependOn>-->
-    <!--</faktum>-->
-
-    <!--<faktum>-->
-    <!--<id>inntekt.mottarytelser.false.ytelserarbeid.tiltakspenger</id>-->
-    <!--<type>bool</type>-->
-    <!--<panel>inntekt</panel>-->
-    <!--<dependOn>inntekt.mottarytelser.false.ytelserarbeid</dependOn>-->
-    <!--</faktum>-->
-
-    <!--<faktum>-->
-    <!--<id>inntekt.mottarytelser.false.ytelserarbeid.tilleggstonader</id>-->
-    <!--<type>bool</type>-->
-    <!--<panel>inntekt</panel>-->
-    <!--<dependOn>inntekt.mottarytelser.false.ytelserarbeid</dependOn>-->
-    <!--</faktum>-->
-
-    <!--<faktum>-->
-    <!--<id>inntekt.mottarytelser.false.ytelserarbeid.kvalifiseringsstonad</id>-->
-    <!--<type>bool</type>-->
-    <!--<panel>inntekt</panel>-->
-    <!--<dependOn>inntekt.mottarytelser.false.ytelserarbeid</dependOn>-->
-    <!--</faktum>-->
-
-    <!--<faktum>-->
-    <!--<id>inntekt.mottarytelser.false.ytelserarbeid.introduksjonsstonad</id>-->
-    <!--<type>bool</type>-->
-    <!--<panel>inntekt</panel>-->
-    <!--<dependOn>inntekt.mottarytelser.false.ytelserarbeid</dependOn>-->
-    <!--</faktum>-->
-
-    <!--<faktum>-->
-    <!--<id>inntekt.mottarytelser.false.ytelserarbeid.ingen</id>-->
-    <!--<type>bool</type>-->
-    <!--<panel>inntekt</panel>-->
-    <!--<dependOn>inntekt.mottarytelser.false.ytelserarbeid</dependOn>-->
-    <!--</faktum>-->
-
-
-    <!--<faktum>-->
-    <!--<id>inntekt.mottarytelser.false.ytelserfamilie</id>-->
-    <!--<type>checkboxGroup</type>-->
-    <!--<panel>inntekt</panel>-->
-    <!--<dependOn>inntekt.mottarytelser</dependOn>-->
-    <!--<dependOnValues>-->
-    <!--<value>false</value>-->
-    <!--</dependOnValues>-->
-    <!--</faktum>-->
-    <!--<faktum>-->
-    <!--<id>inntekt.mottarytelser.false.ytelserfamilie.foreldrepenger</id>-->
-    <!--<type>bool</type>-->
-    <!--<panel>inntekt</panel>-->
-    <!--<dependOn>inntekt.mottarytelser.false.ytelserfamilie</dependOn>-->
-    <!--</faktum>-->
-    <!--<faktum>-->
-    <!--<id>inntekt.mottarytelser.false.ytelserfamilie.barnetilsyn</id>-->
-    <!--<type>bool</type>-->
-    <!--<panel>inntekt</panel>-->
-    <!--<dependOn>inntekt.mottarytelser.false.ytelserfamilie</dependOn>-->
-    <!--</faktum>-->
-    <!--<faktum>-->
-    <!--<id>inntekt.mottarytelser.false.ytelserfamilie.engangsstonad</id>-->
-    <!--<type>bool</type>-->
-    <!--<panel>inntekt</panel>-->
-    <!--<dependOn>inntekt.mottarytelser.false.ytelserfamilie</dependOn>-->
-    <!--</faktum>-->
-    <!--<faktum>-->
-    <!--<id>inntekt.mottarytelser.false.ytelserfamilie.overgangsstonad</id>-->
-    <!--<type>bool</type>-->
-    <!--<panel>inntekt</panel>-->
-    <!--<dependOn>inntekt.mottarytelser.false.ytelserfamilie</dependOn>-->
-    <!--</faktum>-->
-    <!--<faktum>-->
-    <!--<id>inntekt.mottarytelser.false.ytelserfamilie.barnetrygd</id>-->
-    <!--<type>bool</type>-->
-    <!--<panel>inntekt</panel>-->
-    <!--<dependOn>inntekt.mottarytelser.false.ytelserfamilie</dependOn>-->
-    <!--</faktum>-->
-    <!--<faktum>-->
-    <!--<id>inntekt.mottarytelser.false.ytelserfamilie.bidragsforskudd</id>-->
-    <!--<type>bool</type>-->
-    <!--<panel>inntekt</panel>-->
-    <!--<dependOn>inntekt.mottarytelser.false.ytelserfamilie</dependOn>-->
-    <!--</faktum>-->
-    <!--<faktum>-->
-    <!--<id>inntekt.mottarytelser.false.ytelserfamilie.kontantstotte</id>-->
-    <!--<type>bool</type>-->
-    <!--<panel>inntekt</panel>-->
-    <!--<dependOn>inntekt.mottarytelser.false.ytelserfamilie</dependOn>-->
-    <!--</faktum>-->
-    <!--<faktum>-->
-    <!--<id>inntekt.mottarytelser.false.ytelserfamilie.utdanningsstonad</id>-->
-    <!--<type>bool</type>-->
-    <!--<panel>inntekt</panel>-->
-    <!--<dependOn>inntekt.mottarytelser.false.ytelserfamilie</dependOn>-->
-    <!--</faktum>-->
-    <!--<faktum>-->
-    <!--<id>inntekt.mottarytelser.false.ytelserfamilie.ingen</id>-->
-    <!--<type>bool</type>-->
-    <!--<panel>inntekt</panel>-->
-    <!--<dependOn>inntekt.mottarytelser.false.ytelserfamilie</dependOn>-->
-    <!--</faktum>-->
 
     <faktum>
         <id>inntekt.soktytelser</id>
@@ -218,54 +96,6 @@
     </faktum>
 
     <!--  bankinnskudd -->
-
-    <!--<faktum>-->
-    <!--<id>inntekt.stotte</id>-->
-    <!--<type>checkboxGroup</type>-->
-    <!--<panel>inntekt</panel>-->
-    <!--</faktum>-->
-    <!--<faktum>-->
-    <!--<id>inntekt.stotte.lanekassen</id>-->
-    <!--<type>bool</type>-->
-    <!--<panel>inntekt</panel>-->
-    <!--<dependOn>inntekt.stotte</dependOn>-->
-    <!--</faktum>-->
-    <!--<faktum>-->
-    <!--<id>inntekt.stotte.husbanken</id>-->
-    <!--<type>bool</type>-->
-    <!--<panel>inntekt</panel>-->
-    <!--<dependOn>inntekt.stotte</dependOn>-->
-    <!--</faktum>-->
-    <!--<faktum>-->
-    <!--<id>inntekt.stotte.kommunalbostotte</id>-->
-    <!--<type>bool</type>-->
-    <!--<panel>inntekt</panel>-->
-    <!--<dependOn>inntekt.stotte</dependOn>-->
-    <!--</faktum>-->
-    <!--<faktum>-->
-    <!--<id>inntekt.stotte.barnebidrag</id>-->
-    <!--<type>bool</type>-->
-    <!--<panel>inntekt</panel>-->
-    <!--<dependOn>inntekt.stotte</dependOn>-->
-    <!--</faktum>-->
-    <!--<faktum>-->
-    <!--<id>inntekt.stotte.annet</id>-->
-    <!--<type>bool</type>-->
-    <!--<panel>inntekt</panel>-->
-    <!--<dependOn>inntekt.stotte</dependOn>-->
-    <!--</faktum>-->
-
-    <!--<faktum>-->
-    <!--<id>inntekt.stotte.annet.true.beskrivelse</id>-->
-    <!--<type>textbox</type>-->
-    <!--<panel>inntekt</panel>-->
-    <!--<dependOn>inntekt.stotte.annet</dependOn>-->
-    <!--<dependOnValues>-->
-    <!--<value>true</value>-->
-    <!--</dependOnValues>-->
-    <!--</faktum>-->
-
-
     <faktum>
         <id>inntekt.bankinnskudd</id>
         <type>bool</type>
@@ -321,7 +151,7 @@
         </dependOnValues>
     </faktum>
 
-<!-- stopp -->
+<!--inntekter-->
     <faktum>
         <id>inntekt.inntekter</id>
         <type>bool</type>
