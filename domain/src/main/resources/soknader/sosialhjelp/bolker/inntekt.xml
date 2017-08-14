@@ -217,102 +217,111 @@
         </dependOnValues>
     </faktum>
 
-<!--  stopp -->
+    <!--  bankinnskudd -->
 
-    <faktum>
-        <id>inntekt.stotte</id>
-        <type>checkboxGroup</type>
-        <panel>inntekt</panel>
-    </faktum>
-    <faktum>
-        <id>inntekt.stotte.lanekassen</id>
-        <type>bool</type>
-        <panel>inntekt</panel>
-        <dependOn>inntekt.stotte</dependOn>
-    </faktum>
-    <faktum>
-        <id>inntekt.stotte.husbanken</id>
-        <type>bool</type>
-        <panel>inntekt</panel>
-        <dependOn>inntekt.stotte</dependOn>
-    </faktum>
-    <faktum>
-        <id>inntekt.stotte.kommunalbostotte</id>
-        <type>bool</type>
-        <panel>inntekt</panel>
-        <dependOn>inntekt.stotte</dependOn>
-    </faktum>
-    <faktum>
-        <id>inntekt.stotte.barnebidrag</id>
-        <type>bool</type>
-        <panel>inntekt</panel>
-        <dependOn>inntekt.stotte</dependOn>
-    </faktum>
-    <faktum>
-        <id>inntekt.stotte.annet</id>
-        <type>bool</type>
-        <panel>inntekt</panel>
-        <dependOn>inntekt.stotte</dependOn>
-    </faktum>
+    <!--<faktum>-->
+    <!--<id>inntekt.stotte</id>-->
+    <!--<type>checkboxGroup</type>-->
+    <!--<panel>inntekt</panel>-->
+    <!--</faktum>-->
+    <!--<faktum>-->
+    <!--<id>inntekt.stotte.lanekassen</id>-->
+    <!--<type>bool</type>-->
+    <!--<panel>inntekt</panel>-->
+    <!--<dependOn>inntekt.stotte</dependOn>-->
+    <!--</faktum>-->
+    <!--<faktum>-->
+    <!--<id>inntekt.stotte.husbanken</id>-->
+    <!--<type>bool</type>-->
+    <!--<panel>inntekt</panel>-->
+    <!--<dependOn>inntekt.stotte</dependOn>-->
+    <!--</faktum>-->
+    <!--<faktum>-->
+    <!--<id>inntekt.stotte.kommunalbostotte</id>-->
+    <!--<type>bool</type>-->
+    <!--<panel>inntekt</panel>-->
+    <!--<dependOn>inntekt.stotte</dependOn>-->
+    <!--</faktum>-->
+    <!--<faktum>-->
+    <!--<id>inntekt.stotte.barnebidrag</id>-->
+    <!--<type>bool</type>-->
+    <!--<panel>inntekt</panel>-->
+    <!--<dependOn>inntekt.stotte</dependOn>-->
+    <!--</faktum>-->
+    <!--<faktum>-->
+    <!--<id>inntekt.stotte.annet</id>-->
+    <!--<type>bool</type>-->
+    <!--<panel>inntekt</panel>-->
+    <!--<dependOn>inntekt.stotte</dependOn>-->
+    <!--</faktum>-->
 
-    <faktum>
-        <id>inntekt.stotte.annet.true.beskrivelse</id>
-        <type>textbox</type>
-        <panel>inntekt</panel>
-        <dependOn>inntekt.stotte.annet</dependOn>
-        <dependOnValues>
-            <value>true</value>
-        </dependOnValues>
-    </faktum>
+    <!--<faktum>-->
+    <!--<id>inntekt.stotte.annet.true.beskrivelse</id>-->
+    <!--<type>textbox</type>-->
+    <!--<panel>inntekt</panel>-->
+    <!--<dependOn>inntekt.stotte.annet</dependOn>-->
+    <!--<dependOnValues>-->
+    <!--<value>true</value>-->
+    <!--</dependOnValues>-->
+    <!--</faktum>-->
 
 
     <faktum>
         <id>inntekt.bankinnskudd</id>
+        <type>bool</type>
+        <panel>inntekt</panel>
+    </faktum>
+    <faktum>
+        <id>inntekt.bankinnskudd.false.type</id>
         <type>checkboxGroup</type>
         <panel>inntekt</panel>
+        <dependOn>inntekt.bankinnskudd</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
     </faktum>
     <faktum>
-        <id>inntekt.bankinnskudd.sparekonto</id>
+        <id>inntekt.bankinnskudd.false.type.sparekonto</id>
         <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.bankinnskudd</dependOn>
     </faktum>
     <faktum>
-        <id>inntekt.bankinnskudd.brukskonto</id>
+        <id>inntekt.bankinnskudd.false.type.brukskonto</id>
         <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.bankinnskudd</dependOn>
     </faktum>
     <faktum>
-        <id>inntekt.bankinnskudd.livsforsikring</id>
+        <id>inntekt.bankinnskudd.false.type.livsforsikring</id>
         <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.bankinnskudd</dependOn>
     </faktum>
     <faktum>
-        <id>inntekt.bankinnskudd.aksjer</id>
+        <id>inntekt.bankinnskudd.false.type.aksjer</id>
         <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.bankinnskudd</dependOn>
     </faktum>
     <faktum>
-        <id>inntekt.bankinnskudd.annet</id>
+        <id>inntekt.bankinnskudd.false.type.annet</id>
         <type>bool</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.bankinnskudd</dependOn>
     </faktum>
 
     <faktum>
-        <id>inntekt.bankinnskudd.annet.true.beskrivelse</id>
+        <id>inntekt.bankinnskudd.false.type.annet.true.beskrivelse</id>
         <type>textbox</type>
         <panel>inntekt</panel>
-        <dependOn>inntekt.bankinnskudd.annet</dependOn>
+        <dependOn>inntekt.bankinnskudd.false.type.annet</dependOn>
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
     </faktum>
 
-
+<!-- stopp -->
     <faktum>
         <id>inntekt.inntekter</id>
         <type>bool</type>
