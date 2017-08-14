@@ -202,9 +202,9 @@
         <id>inntekt.inntekter.false.type.annet.true.beskrivelse</id>
         <type>textbox</type>
         <panel>inntekt</panel>
-        <dependOn>inntekt.inntekter.false.type</dependOn>
+        <dependOn>inntekt.inntekter.false.type.annet</dependOn>
         <dependOnValues>
-            <value>annet</value>
+            <value>true</value>
         </dependOnValues>
     </faktum>
 </soknad>

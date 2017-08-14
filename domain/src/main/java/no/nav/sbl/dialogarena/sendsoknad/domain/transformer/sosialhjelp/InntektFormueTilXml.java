@@ -123,11 +123,54 @@ public class InntektFormueTilXml implements Function<WebSoknad, XMLInntektFormue
             }
         }
 
+        String inntekterVerdi = webSoknad.getValueForFaktum("inntekt.inntekter");
+        XMLBoolean inntekter = new XMLBoolean().withKilde(BRUKER).withValue(Boolean.valueOf(inntekterVerdi));
+
+        if (inntekterVerdi.equals("false")) {
+            xmlInntektFormue.withUtbytte(new XMLBoolean()
+                    .withValue(Boolean.valueOf(webSoknad.getValueForFaktum(
+                            "inntekt.inntekter.false.type.utbytte"
+                    )))
+                    .withKilde(BRUKER));
+
+            xmlInntektFormue.withSalg(new XMLBoolean()
+                    .withValue(Boolean.valueOf(webSoknad.getValueForFaktum(
+                            "inntekt.inntekter.false.type.salg"
+                    )))
+                    .withKilde(BRUKER));
+
+            xmlInntektFormue.withLeieinntekter(new XMLBoolean()
+                    .withValue(Boolean.valueOf(webSoknad.getValueForFaktum(
+                            "inntekt.inntekter.false.type.leieinntekter"
+                    )))
+                    .withKilde(BRUKER));
+
+            xmlInntektFormue.withForsikringsutbetaling(new XMLBoolean()
+                    .withValue(Boolean.valueOf(webSoknad.getValueForFaktum(
+                            "inntekt.inntekter.false.type.forsikringsutbetalinger"
+                    )))
+                    .withKilde(BRUKER));
+
+            Boolean annetVerdi = Boolean.valueOf(webSoknad.getValueForFaktum(
+                    "inntekt.inntekter.false.type.annet"
+            ));
+            xmlInntektFormue.withAndreInntekter(new XMLBoolean()
+                    .withValue(annetVerdi)
+                    .withKilde(BRUKER));
+
+            if(annetVerdi) {
+                xmlInntektFormue.withAndreInntekterBeskrivelse(new XMLString()
+                        .withValue(webSoknad.getValueForFaktum("inntekt.inntekter.false.type.annet.true.beskrivelse"))
+                        .withKilde(BRUKER));
+            }
+        }
+
         return xmlInntektFormue
                 .withMottarYtelser(mottarYtelser)
                 .withSoktYtelser(soktYtelser)
                 .withMottarBostotte(mottarBostotte)
                 .withEierandeler(eierandeler)
-                .withBankinnskudd(bankinnskudd);
+                .withBankinnskudd(bankinnskudd)
+                .withInntekter(inntekter);
     }
 }
