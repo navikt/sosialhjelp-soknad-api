@@ -46,37 +46,37 @@ public class InntektFormueTilXml implements Function<WebSoknad, XMLInntektFormue
         if (eierandelerVerdi.equals("false")) {
             xmlInntektFormue.withBolig(new XMLBoolean()
                     .withValue(Boolean.valueOf(webSoknad.getValueForFaktum(
-                            "inntekt.eierandeler.type.bolig"
+                            "inntekt.eierandeler.false.type.bolig"
                     )))
                     .withKilde(BRUKER));
 
             xmlInntektFormue.withKjoretoy(new XMLBoolean()
                     .withValue(Boolean.valueOf(webSoknad.getValueForFaktum(
-                            "inntekt.eierandeler.type.kjoretoy"
+                            "inntekt.eierandeler.false.type.kjoretoy"
                     )))
                     .withKilde(BRUKER));
 
             xmlInntektFormue.withCampingvogn(new XMLBoolean()
                     .withValue(Boolean.valueOf(webSoknad.getValueForFaktum(
-                            "inntekt.eierandeler.type.campingvogn"
+                            "inntekt.eierandeler.false.type.campingvogn"
                     )))
                     .withKilde(BRUKER));
 
             xmlInntektFormue.withFritidseiendom(new XMLBoolean()
                     .withValue(Boolean.valueOf(webSoknad.getValueForFaktum(
-                            "inntekt.eierandeler.type.fritidseiendom"
+                            "inntekt.eierandeler.false.type.fritidseiendom"
                     )))
                     .withKilde(BRUKER));
 
             Boolean annetVerdi = Boolean.valueOf(webSoknad.getValueForFaktum(
-                    "inntekt.eierandeler.type.annet"
+                    "inntekt.eierandeler.false.type.annet"
             ));
             xmlInntektFormue.withAnnet(new XMLBoolean()
                     .withValue(annetVerdi)
                     .withKilde(BRUKER));
             if(annetVerdi) {
                 xmlInntektFormue.withAnnetBeskrivelse(new XMLString()
-                        .withValue(webSoknad.getValueForFaktum("inntekt.eierandeler.type.annet.true.beskrivelse"))
+                        .withValue(webSoknad.getValueForFaktum("inntekt.eierandeler.false.type.annet.true.beskrivelse"))
                         .withKilde(BRUKER));
             }
         }

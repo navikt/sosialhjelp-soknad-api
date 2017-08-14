@@ -168,7 +168,7 @@
         <panel>inntekt</panel>
     </faktum>
     <faktum>
-        <id>inntekt.eierandeler.type</id>
+        <id>inntekt.eierandeler.false.type</id>
         <type>checkboxGroup</type>
         <panel>inntekt</panel>
         <dependOn>inntekt.eierandeler</dependOn>
@@ -177,41 +177,41 @@
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>inntekt.eierandeler.type.bolig</id>
+        <id>inntekt.eierandeler.false.type.bolig</id>
         <type>bool</type>
         <panel>inntekt</panel>
-        <dependOn>inntekt.eierandeler.type</dependOn>
+        <dependOn>inntekt.eierandeler.false.type</dependOn>
     </faktum>
     <faktum>
-        <id>inntekt.eierandeler.type.kjoretoy</id>
+        <id>inntekt.eierandeler.false.type.kjoretoy</id>
         <type>bool</type>
         <panel>inntekt</panel>
-        <dependOn>inntekt.eierandeler.type</dependOn>
+        <dependOn>inntekt.eierandeler.false.type</dependOn>
     </faktum>
     <faktum>
-        <id>inntekt.eierandeler.type.campingvogn</id>
+        <id>inntekt.eierandeler.type.false.campingvogn</id>
         <type>bool</type>
         <panel>inntekt</panel>
-        <dependOn>inntekt.eierandeler.type</dependOn>
+        <dependOn>inntekt.eierandeler.false.type</dependOn>
     </faktum>
     <faktum>
-        <id>inntekt.eierandeler.type.fritidseiendom</id>
+        <id>inntekt.eierandeler.false.type.fritidseiendom</id>
         <type>bool</type>
         <panel>inntekt</panel>
-        <dependOn>inntekt.eierandeler.type</dependOn>
+        <dependOn>inntekt.eierandeler.false.type</dependOn>
     </faktum>
     <faktum>
-        <id>inntekt.eierandeler.type.annet</id>
+        <id>inntekt.eierandeler.false.type.annet</id>
         <type>bool</type>
         <panel>inntekt</panel>
-        <dependOn>inntekt.eierandeler.type</dependOn>
+        <dependOn>inntekt.eierandeler.false.type</dependOn>
     </faktum>
 
     <faktum>
-        <id>inntekt.eierandeler.type.annet.true.beskrivelse</id>
+        <id>inntekt.eierandeler.false.type.annet.true.beskrivelse</id>
         <type>textbox</type>
         <panel>inntekt</panel>
-        <dependOn>inntekt.eierandeler.type.annet</dependOn>
+        <dependOn>inntekt.eierandeler.false.type.annet</dependOn>
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
