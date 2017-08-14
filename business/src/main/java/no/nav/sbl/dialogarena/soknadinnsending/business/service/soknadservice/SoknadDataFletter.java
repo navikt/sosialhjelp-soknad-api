@@ -287,7 +287,7 @@ public class SoknadDataFletter {
                     soknad.medDelstegStatus(DelstegStatus.UTFYLLING);
                     Event event = MetricsFactory.createEvent("stofo.korruptdato");
                     event.addTagToReport("stofo.korruptdato.behandlingId", soknad.getBrukerBehandlingId());
-                    event.addFieldToReport("Exception", e.getClass().getSimpleName());
+                    event.addTagToReport("Exception", e.getClass().getSimpleName());
                     event.report();
                 }
             }
