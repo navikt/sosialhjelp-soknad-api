@@ -281,8 +281,8 @@ public class SoknadDataFletter {
             for (Faktum datofaktum : periodeFaktum) {
                 DateTimeFormatter formaterer = DateTimeFormat.forPattern("yyyy-MM-dd");
                 try {
-                    if (!datofaktum.getProperties().containsKey("fom") || !datofaktum.getProperties().containsKey("tom")){
-                        throw new IllegalArgumentException("Datofaktum mangler fra-og-med- og/eller til-og-med-verider");
+                    if(datofaktum.getProperties().get("fom") == null || datofaktum.getProperties().get("tom") == null){
+                        throw new IllegalArgumentException("fra-og-med(fom)- og/eller til-og-med(tom)-verdien er null");
                     }
                     formaterer.parseLocalDate(datofaktum.getProperties().get("fom"));
                     formaterer.parseLocalDate(datofaktum.getProperties().get("tom"));
