@@ -281,13 +281,15 @@ public class SoknadDataFletter {
             for (Faktum datofaktum : periodeFaktum) {
                 DateTimeFormatter formaterer = DateTimeFormat.forPattern("yyyy-MM-dd");
                 try {
+                    if (!datofaktum.getProperties().containsKey("fom") || !datofaktum.getProperties().containsKey("tom")){
+                        throw new IllegalArgumentException("Datofaktum mangler fra-og-med- og/eller til-og-med-verider");
+                    }
                     formaterer.parseLocalDate(datofaktum.getProperties().get("fom"));
                     formaterer.parseLocalDate(datofaktum.getProperties().get("tom"));
-                } catch (NullPointerException|IllegalArgumentException e) {
+                } catch (IllegalArgumentException e) {
                     soknad.medDelstegStatus(DelstegStatus.UTFYLLING);
                     Event event = MetricsFactory.createEvent("stofo.korruptdato");
                     event.addTagToReport("stofo.korruptdato.behandlingId", soknad.getBrukerBehandlingId());
-                    event.addTagToReport("Exception", e.getClass().getSimpleName());
                     event.report();
                 }
             }
