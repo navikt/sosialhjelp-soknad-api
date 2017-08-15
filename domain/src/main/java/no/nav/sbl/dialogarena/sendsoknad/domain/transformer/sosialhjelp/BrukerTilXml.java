@@ -37,11 +37,16 @@ public class BrukerTilXml implements Function<WebSoknad, XMLPersonalia> {
                 .withKilde(SYSTEM)
                 .withValue(personaliaProperties.get("epost") == null ? "ingen epost" : personaliaProperties.get("epost"));
 
+        XMLString adresse = new XMLString()
+                .withKilde(SYSTEM)
+                .withValue(personaliaProperties.get("gjeldendeAdresse"));
+
         return new XMLPersonalia().withPerson(new Person()
                 .withPersonIdentifikator(personIdentifikator)
                 .withNavn(navn)
                 .withStatsborgerskap(statsborgerskap)
                 .withEpostAdresse(epostAdresse)
+                .withAdresse(adresse)
         );
     }
 }
