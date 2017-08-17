@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
+import no.nav.metrics.Event;
+import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
@@ -74,7 +76,23 @@ public class SoknadRessurs {
     @Produces("application/vnd.kvitteringforinnsendtsoknad+json")
     @SjekkTilgangTilSoknad(type = Henvendelse)
     public InnsendtSoknad hentInnsendtSoknad(@PathParam("behandlingsId") String behandlingsId, @QueryParam("sprak") String sprak) {
-        return innsendtSoknadService.hentInnsendtSoknad(behandlingsId, sprak);
+        InnsendtSoknad innsendtSoknad = innsendtSoknadService.hentInnsendtSoknad(behandlingsId, sprak);
+        if (innsendtSoknad.getTemakode().equals("DAG")) {
+            Event event = MetricsFactory.createEvent("soknad.innsendingsstatistikk");
+            if (innsendtSoknad.getIkkeInnsendteVedlegg().isEmpty()) {
+                event.addTagToReport("soknad.innsendingsstatistikk.komplett", "true");
+            }
+            else {
+                event.addTagToReport("soknad.innsendingsstatistikk.komplett", "false");
+                List<Vedlegg> ikkeInnsendteVedlegg = innsendtSoknad.getIkkeInnsendteVedlegg();
+                for (Vedlegg vedlegg : ikkeInnsendteVedlegg) {
+                    event.addFieldToReport("vedlegg."+vedlegg.getSkjemaNummer(), vedlegg.getTittel());
+                    event.addFieldToReport("vedlegg."+vedlegg.getSkjemaNummer(), vedlegg.getInnsendingsvalg());
+                }
+            }
+            event.report();
+        }
+        return innsendtSoknad;
     }
 
     /*
