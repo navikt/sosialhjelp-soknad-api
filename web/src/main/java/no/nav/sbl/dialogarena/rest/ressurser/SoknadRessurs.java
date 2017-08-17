@@ -88,7 +88,8 @@ public class SoknadRessurs {
                 List<Vedlegg> ikkeInnsendteVedlegg = innsendtSoknad.getIkkeInnsendteVedlegg();
                 Event ikkeKomplett = MetricsFactory.createEvent("soknad.innsendingsstatistikkIkkeKompletteSoknader");
                 for (Vedlegg vedlegg : ikkeInnsendteVedlegg) {
-                    event.addFieldToReport("vedleggtype", vedlegg.getTittel());
+                    LOG.info(vedlegg.getTittel());
+                    ikkeKomplett.addFieldToReport("vedleggtype", vedlegg.getTittel());
                 }
                 ikkeKomplett.report();
             }
