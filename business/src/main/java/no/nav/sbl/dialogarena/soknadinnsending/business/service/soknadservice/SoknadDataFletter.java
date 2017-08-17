@@ -270,24 +270,26 @@ public class SoknadDataFletter {
 
     public WebSoknad sjekkDatoVerdierOgOppdaterDelstegStatus(WebSoknad soknad) {
         SoknadTilleggsstonader soknadTilleggsstonader = new SoknadTilleggsstonader();
+        DateTimeFormatter formaterer = DateTimeFormat.forPattern("yyyy-MM-dd");
 
         if (soknadTilleggsstonader.getSkjemanummer().contains(soknad.getskjemaNummer())) {
 
-            for (Faktum datofaktum : soknad.getDatoFaktum()) {
-                DateTimeFormatter formaterer = DateTimeFormat.forPattern("yyyy-MM-dd");
+            soknad.getDatoFaktum().stream().forEach(datofaktum -> {
                 try {
-                    if(datofaktum.getProperties().get("fom") == null || datofaktum.getProperties().get("tom") == null){
-                        throw new IllegalArgumentException("fra-og-med(fom)- og/eller til-og-med(tom)-verdien er null");
-                    }
-                    formaterer.parseLocalDate(datofaktum.getProperties().get("fom"));
-                    formaterer.parseLocalDate(datofaktum.getProperties().get("tom"));
+                    datofaktum.getDatoProperties().entrySet().stream()
+                            .forEach(datoProperty -> {
+                                if (datoProperty.getValue() == null) {
+                                    throw new IllegalArgumentException(datoProperty.getKey() + " er null");
+                                }
+                                formaterer.parseLocalDate(datoProperty.getValue());
+                            });
                 } catch (IllegalArgumentException e) {
                     soknad.medDelstegStatus(DelstegStatus.UTFYLLING);
                     Event event = MetricsFactory.createEvent("stofo.korruptdato");
                     event.addTagToReport("stofo.korruptdato.behandlingId", soknad.getBrukerBehandlingId());
                     event.report();
                 }
-            }
+            });
         }
         return soknad;
     }
