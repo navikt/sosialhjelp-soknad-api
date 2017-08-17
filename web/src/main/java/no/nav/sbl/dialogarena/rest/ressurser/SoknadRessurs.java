@@ -80,11 +80,11 @@ public class SoknadRessurs {
         if (innsendtSoknad.getTemakode().equals("DAG")) {
             Event event = MetricsFactory.createEvent("soknad.innsendingsstatistikk");
             if (innsendtSoknad.getIkkeInnsendteVedlegg().isEmpty()) {
-                event.addTagToReport("soknad.innsendingsstatistikk.komplett", "true");
+                event.addFieldToReport("soknad.innsendingsstatistikk.komplett", "true");
             }
             else {
                 LOG.info("Else kjører!");
-                event.addTagToReport("soknad.innsendingsstatistikk.komplett", "false");
+                event.addFieldToReport("soknad.innsendingsstatistikk.komplett", "false");
                 List<Vedlegg> ikkeInnsendteVedlegg = innsendtSoknad.getIkkeInnsendteVedlegg();
                 /*
                 for (Vedlegg vedlegg : ikkeInnsendteVedlegg) {
