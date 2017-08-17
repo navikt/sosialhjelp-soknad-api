@@ -278,6 +278,12 @@ public class WebSoknad implements Serializable {
         return getFakta().stream().filter(faktum ->  faktum.getKey().equals(key)).collect(toList());
     }
 
+    public List<Faktum> getDatoFaktum(){
+        return getFakta().stream()
+                .filter( faktum -> faktum.hasDatoEgenskap())
+                .collect(toList());
+    }
+
     public Faktum getFaktumMedKey(final String key) {
         for (Faktum faktum : fakta) {
             if (faktum.getKey().equals(key)) {

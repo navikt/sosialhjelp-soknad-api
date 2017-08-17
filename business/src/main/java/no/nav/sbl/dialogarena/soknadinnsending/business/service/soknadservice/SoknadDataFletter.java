@@ -272,13 +272,8 @@ public class SoknadDataFletter {
         SoknadTilleggsstonader soknadTilleggsstonader = new SoknadTilleggsstonader();
 
         if (soknadTilleggsstonader.getSkjemanummer().contains(soknad.getskjemaNummer())) {
-            List<Faktum> periodeFaktum = soknad.getFaktaMedKey("bostotte.samling")
-                    .stream()
-                    .filter(faktum -> faktum.hasEgenskap("fom"))
-                    .filter(faktum -> faktum.hasEgenskap("tom"))
-                    .collect(Collectors.toList());
 
-            for (Faktum datofaktum : periodeFaktum) {
+            for (Faktum datofaktum : soknad.getDatoFaktum()) {
                 DateTimeFormatter formaterer = DateTimeFormat.forPattern("yyyy-MM-dd");
                 try {
                     if(datofaktum.getProperties().get("fom") == null || datofaktum.getProperties().get("tom") == null){
