@@ -12,6 +12,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import java.io.Serializable;
 import java.util.*;
 
+import static java.util.stream.Collectors.toList;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Faktum implements Serializable {
@@ -91,6 +93,16 @@ public class Faktum implements Serializable {
         }
         return properties;
     }
+
+    public Map<String,String> getDatoProperties(){
+        Map<String,String> datoProperties = new HashMap<>();
+         getProperties().entrySet().stream()
+                 .filter(property -> datoKeys().contains(property.getKey()))
+                 .forEach(property -> datoProperties.put(property.getKey(),property.getValue()));
+
+         return datoProperties;
+    }
+
     @JsonIgnore
     public String getUnikProperty(){
         return getProperties().get(UNIQUE_KEY);
