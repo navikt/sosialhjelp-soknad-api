@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
+import javax.naming.Name;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
@@ -83,15 +84,13 @@ public class SoknadRessurs {
                 event.addFieldToReport("soknad.innsendingsstatistikk.komplett", "true");
             }
             else {
-                LOG.info("Else kjører!");
                 event.addFieldToReport("soknad.innsendingsstatistikk.komplett", "false");
                 List<Vedlegg> ikkeInnsendteVedlegg = innsendtSoknad.getIkkeInnsendteVedlegg();
-                /*
+                Event ikkeKomplett = MetricsFactory.createEvent("soknad.innsendingsstatistikkIkkeKompletteSoknader");
                 for (Vedlegg vedlegg : ikkeInnsendteVedlegg) {
-                    event.addFieldToReport("vedlegg."+vedlegg.getSkjemaNummer(), vedlegg.getTittel());
-                    event.addFieldToReport("vedlegg."+vedlegg.getSkjemaNummer(), vedlegg.getInnsendingsvalg());
+                    event.addFieldToReport("vedleggtype", vedlegg.getTittel());
                 }
-                */
+                ikkeKomplett.report();
             }
             event.report();
         }
