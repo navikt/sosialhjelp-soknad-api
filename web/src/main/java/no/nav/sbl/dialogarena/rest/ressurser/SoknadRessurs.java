@@ -83,6 +83,7 @@ public class SoknadRessurs {
                 event.addTagToReport("soknad.innsendingsstatistikk.komplett", "true");
             }
             else {
+                LOG.info("Else kjører!");
                 event.addTagToReport("soknad.innsendingsstatistikk.komplett", "false");
                 List<Vedlegg> ikkeInnsendteVedlegg = innsendtSoknad.getIkkeInnsendteVedlegg();
                 for (Vedlegg vedlegg : ikkeInnsendteVedlegg) {
