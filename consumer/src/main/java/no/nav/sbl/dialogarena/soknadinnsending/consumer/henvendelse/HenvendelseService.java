@@ -6,7 +6,6 @@ import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataL
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.modig.core.exception.SystemException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
 import no.nav.tjeneste.domene.brukerdialog.henvendelse.v2.henvendelse.HenvendelsePortType;
 import no.nav.tjeneste.domene.brukerdialog.henvendelse.v2.meldinger.WSHentHenvendelseRequest;
 import no.nav.tjeneste.domene.brukerdialog.henvendelse.v2.meldinger.WSHentHenvendelseResponse;
@@ -19,10 +18,11 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.ws.soap.SOAPFaultException;
 import java.util.List;
+import java.util.Optional;
 
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.IKKE_VALGT;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
-import static no.nav.modig.lang.option.Optional.optional;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType.SEND_SOKNAD_ETTERSENDING;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -50,7 +50,8 @@ public class HenvendelseService {
 
     public String startEttersending(WSHentSoknadResponse soknadResponse) {
         logger.info("Starter ettersending");
-        String behandlingskjedeId = optional(soknadResponse.getBehandlingskjedeId()).getOrElse(soknadResponse.getBehandlingsId());
+
+        String behandlingskjedeId = Optional.ofNullable(soknadResponse.getBehandlingskjedeId()).orElse(soknadResponse.getBehandlingsId());
 
         return opprettSoknadIHenvendelse(
                 lagOpprettSoknadRequest(getSubjectHandler().getUid(), SEND_SOKNAD_ETTERSENDING, (XMLMetadataListe) soknadResponse.getAny())
