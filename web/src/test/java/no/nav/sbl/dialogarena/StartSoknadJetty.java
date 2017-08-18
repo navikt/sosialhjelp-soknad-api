@@ -11,9 +11,6 @@ import java.io.IOException;
 
 import static java.lang.System.setProperty;
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
-import static no.nav.modig.lang.collections.FactoryUtils.gotKeypress;
-import static no.nav.modig.lang.collections.RunnableUtils.first;
-import static no.nav.modig.lang.collections.RunnableUtils.waitFor;
 import static no.nav.modig.test.util.FilesAndDirs.TEST_RESOURCES;
 import static no.nav.modig.test.util.FilesAndDirs.WEBAPP_SOURCE;
 import static no.nav.sbl.dialogarena.common.jetty.Jetty.usingWar;
@@ -47,12 +44,8 @@ public final class StartSoknadJetty {
                 .buildJetty();
     }
 
-    public void startAndWaitForKeypress() {
-        jetty.startAnd(first(waitFor(gotKeypress())).then(jetty.stop));
-    }
-
-    public void startAndDo(Runnable test) {
-        jetty.startAnd(first(test).then(jetty.stop));
+    public void start() {
+        jetty.start();
     }
 
     private void disableBatch() {
@@ -92,7 +85,7 @@ public final class StartSoknadJetty {
     private static class Intellij {
         public static void main(String[] args) throws Exception {
             setFrom("environment-test.properties");
-            new StartSoknadJetty(Env.Intellij, new File(TEST_RESOURCES, "override-web.xml"), buildDataSource()).startAndWaitForKeypress();
+            new StartSoknadJetty(Env.Intellij, new File(TEST_RESOURCES, "override-web.xml"), buildDataSource()).start();
         }
     }
 
@@ -100,7 +93,7 @@ public final class StartSoknadJetty {
     private static class Eclipse {
         public static void main(String[] args) throws Exception {
             setFrom("environment-test.properties");
-            new StartSoknadJetty(Env.Eclipse, new File(TEST_RESOURCES, "override-web.xml"), buildDataSource()).startAndWaitForKeypress();
+            new StartSoknadJetty(Env.Eclipse, new File(TEST_RESOURCES, "override-web.xml"), buildDataSource()).start();
             ;
         }
     }
