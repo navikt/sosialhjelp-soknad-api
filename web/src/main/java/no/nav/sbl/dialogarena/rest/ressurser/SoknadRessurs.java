@@ -86,10 +86,15 @@ public class SoknadRessurs {
             else {
                 event.addFieldToReport("soknad.innsendingsstatistikk.komplett", "false");
                 List<Vedlegg> ikkeInnsendteVedlegg = innsendtSoknad.getIkkeInnsendteVedlegg();
-                Event ikkeKomplett = MetricsFactory.createEvent("soknad.innsendingsstatistikkIkkeKompletteSoknader");
+                Event ikkeKomplett = MetricsFactory.createEvent("soknad.ikkeKompletteSoknader");
                 for (Vedlegg vedlegg : ikkeInnsendteVedlegg) {
                     LOG.info(vedlegg.getTittel());
-                    ikkeKomplett.addFieldToReport("vedleggtype", vedlegg.getTittel());
+                    if(vedlegg.getTittel().equals("Arbeidsavtale")) {
+                        ikkeKomplett.addFieldToReport("soknad.ikkeKompletteSoknader.vedleggtype", "true");
+                    }
+                    else if(vedlegg.getTittel().equals("Dokumentasjon av arbeidsforhold")) {
+                        ikkeKomplett.addFieldToReport("soknad.ikkeKompletteSoknader.vedleggtype", "false");
+                    }
                 }
                 ikkeKomplett.report();
             }
