@@ -86,11 +86,12 @@ public class SoknadRessurs {
             else {
                 event.addFieldToReport("soknad.innsendingsstatistikk.komplett", "false");
                 List<Vedlegg> ikkeInnsendteVedlegg = innsendtSoknad.getIkkeInnsendteVedlegg();
-                Event event2 = MetricsFactory.createEvent("soknad.ikkeKompletteSoknader");
                 for (Vedlegg vedlegg : ikkeInnsendteVedlegg) {
-                    event2.addTagToReport(vedlegg.getSkjemaNummer(), vedlegg.getInnsendingsvalg().name());
+                    Event event2 = MetricsFactory.createEvent("soknad.ikkeInnsendteVedlegg");
+                    event2.addTagToReport("skjemanummer", vedlegg.getSkjemaNummer());
+                    event2.addTagToReport("innsendingsvalg", vedlegg.getInnsendingsvalg().name());
+                    event2.report();
                 }
-                event2.report();
             }
             event.report();
         }
