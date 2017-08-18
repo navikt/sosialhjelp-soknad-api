@@ -4,14 +4,12 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
-import org.apache.commons.collections15.Transformer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
-import static no.nav.modig.lang.collections.IterUtils.on;
-
+import static java.util.stream.Collectors.toList;
 
 public class OppsummeringsContext {
     public final boolean utvidetSoknad;
@@ -24,7 +22,7 @@ public class OppsummeringsContext {
         for (FaktumStruktur faktumStruktur : soknadStruktur.getFakta()) {
             if (faktumStruktur.getDependOn() == null
                     && !"hidden".equals(faktumStruktur.getType())
-                    && ( utvidetSoknad || !faktumStruktur.getKunUtvidet())) {
+                    && (utvidetSoknad || !faktumStruktur.getKunUtvidet())) {
                 OppsummeringsBolk bolk = hentOgOpprettBolkOmIkkeFinnes(faktumStruktur.getPanel());
                 bolk.fakta.addAll(hentOppsummeringForFaktum(faktumStruktur, null, soknadStruktur, soknad));
             }
@@ -39,20 +37,23 @@ public class OppsummeringsContext {
             return new ArrayList<>();
         }
 
-        return on(fakta).map(new Transformer<Faktum, OppsummeringsFaktum>() {
-            @Override
-            public OppsummeringsFaktum transform(final Faktum faktum) {
-                List<VedleggForFaktumStruktur> vedleggForFaktumStrukturs = soknadStruktur.vedleggFor(faktum);
-                List<OppsummeringsFaktum.OppsummeringsVedlegg> vedlegg = on(vedleggForFaktumStrukturs).map(new Transformer<VedleggForFaktumStruktur, OppsummeringsFaktum.OppsummeringsVedlegg>() {
-                    @Override
-                    public OppsummeringsFaktum.OppsummeringsVedlegg transform(VedleggForFaktumStruktur vedleggForFaktumStruktur) {
-                        return new OppsummeringsFaktum.OppsummeringsVedlegg(faktum, soknad.finnVedleggSomMatcherForventning(vedleggForFaktumStruktur, faktum.getFaktumId()), vedleggForFaktumStruktur);
-                    }
-                }).collect();
-                return new OppsummeringsFaktum(soknad, faktumStruktur, faktum, finnBarnOppsummering(faktumStruktur, faktum, soknadStruktur, soknad), vedlegg);
-            }
-        }).collect();
+        Function<Faktum, List<OppsummeringsFaktum.OppsummeringsVedlegg>> vedleggForFaktum =
+                faktum -> soknadStruktur.vedleggFor(faktum)
+                        .stream()
+                        .map(vedlegg ->
+                                new OppsummeringsFaktum.OppsummeringsVedlegg(faktum, soknad.finnVedleggSomMatcherForventning(vedlegg, faktum.getFaktumId()), vedlegg))
+                        .collect(toList());
 
+        Function<Faktum, List<OppsummeringsFaktum>> barnOppsummering =
+                faktum -> finnBarnOppsummering(faktumStruktur, faktum, soknadStruktur, soknad);
+
+        return fakta.stream()
+                .map(faktum -> {
+                    List<OppsummeringsFaktum> oppsummeringsFaktum = barnOppsummering.apply(faktum);
+                    List<OppsummeringsFaktum.OppsummeringsVedlegg> oppsummeringsVedlegg = vedleggForFaktum.apply(faktum);
+                    return new OppsummeringsFaktum(soknad, faktumStruktur, faktum, oppsummeringsFaktum, oppsummeringsVedlegg);
+                })
+                .collect(toList());
     }
 
     private List<OppsummeringsFaktum> finnBarnOppsummering(FaktumStruktur forelderStruktur, final Faktum parentFaktum, final SoknadStruktur soknadStruktur, final WebSoknad soknad) {
