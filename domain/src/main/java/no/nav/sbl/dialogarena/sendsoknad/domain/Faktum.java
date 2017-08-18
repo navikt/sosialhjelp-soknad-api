@@ -97,7 +97,7 @@ public class Faktum implements Serializable {
     public Map<String,String> getDatoProperties(){
         Map<String,String> datoProperties = new HashMap<>();
          getProperties().entrySet().stream()
-                 .filter(property -> datoKeys().contains(property.getKey()))
+                 .filter(property -> FaktumEgenskap.datoKeys().contains(property.getKey()))
                  .forEach(property -> datoProperties.put(property.getKey(),property.getValue()));
 
          return datoProperties;
@@ -230,21 +230,8 @@ public class Faktum implements Serializable {
         return res;
     }
 
-    private Set<String> datoKeys(){
-        Set<String> keys = new HashSet<String>();
-        keys.add("fom");
-        keys.add("tom");
-        keys.add("fradato");
-        keys.add("tildato");
-        keys.add("startdato");
-        keys.add("sekundarAdresseGyldigFra");
-        keys.add("sekundarAdresseGyldigTil");
-        keys.add("gjeldendeAdresseGyldigTil");
-        return keys;
-    }
-
     public boolean hasDatoEgenskap(){
-        return hasEgenskapIn(datoKeys());
+        return hasEgenskapIn(FaktumEgenskap.datoKeys());
     }
 
     public boolean hasEgenskapIn(Collection<String> keys){

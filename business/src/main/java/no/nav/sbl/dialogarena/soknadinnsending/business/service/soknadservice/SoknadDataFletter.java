@@ -6,7 +6,6 @@ import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AlleredeHandtertException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
@@ -37,7 +36,6 @@ import javax.inject.Named;
 import java.io.ByteArrayInputStream;
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.sort;
 import static java.util.UUID.randomUUID;
@@ -273,7 +271,6 @@ public class SoknadDataFletter {
         DateTimeFormatter formaterer = DateTimeFormat.forPattern("yyyy-MM-dd");
 
         if (soknadTilleggsstonader.getSkjemanummer().contains(soknad.getskjemaNummer())) {
-
             soknad.getDatoFaktum().stream().forEach(datofaktum -> {
                 try {
                     datofaktum.getDatoProperties().entrySet().stream()
