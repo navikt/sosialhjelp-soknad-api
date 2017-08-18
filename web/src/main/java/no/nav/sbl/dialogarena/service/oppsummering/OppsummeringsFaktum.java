@@ -6,14 +6,12 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.PropertyStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
-import org.apache.commons.collections15.Transformer;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
+import static java.util.stream.Collectors.toList;
 import static java.util.Collections.emptyList;
-import static no.nav.modig.lang.collections.IterUtils.on;
 
 public class OppsummeringsFaktum implements OppsummeringsBase{
     private final WebSoknad soknad;
@@ -30,12 +28,9 @@ public class OppsummeringsFaktum implements OppsummeringsBase{
         this.barneFakta = barnFakta;
         this.vedlegg = vedlegg;
         if(struktur.getProperties() != null) {
-            barneProperties = on(struktur.getProperties()).map(new Transformer<PropertyStruktur, OppsummeringsProperty>() {
-                @Override
-                public OppsummeringsProperty transform(PropertyStruktur propertyStruktur) {
-                    return new OppsummeringsProperty(propertyStruktur);
-                }
-            }).collect();
+            barneProperties = struktur.getProperties().stream()
+                                    .map(s -> new OppsummeringsProperty(s))
+                                    .collect(toList());
         }else {
             barneProperties = emptyList();
         }
