@@ -28,7 +28,7 @@ public class FaktumEgenskap implements Serializable {
     }
 
     private static void initDatoKeys(){
-        datoKeys = new HashSet<String>();
+        datoKeys = new HashSet<>();
         datoKeys.add("fom");
         datoKeys.add("tom");
         datoKeys.add("fradato");
