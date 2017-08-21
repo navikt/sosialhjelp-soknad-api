@@ -108,6 +108,7 @@ public class InnsendtSoknadService {
                     event2.report();
                 }
 
+
             }
             event.report();
         }
