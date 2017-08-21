@@ -10,4 +10,5 @@ public enum DelstegStatus {
     public boolean erEttersending() {
         return ETTERSENDING.contains(this);
     }
+
 }

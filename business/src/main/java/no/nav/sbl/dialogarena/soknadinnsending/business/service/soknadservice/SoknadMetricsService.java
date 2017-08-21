@@ -2,14 +2,17 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.InnsendtSoknad;
 import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.List;
 import java.util.Map;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -62,6 +65,29 @@ public class SoknadMetricsService {
             logger.info("Databasestatus for {} er {}", entry.getKey(), entry.getValue());
             Event event = MetricsFactory.createEvent("status.database." + entry.getKey());
             event.addFieldToReport("antall", entry.getValue());
+            event.report();
+        }
+    }
+
+    public void rapporterKompletteOgIkkeKompletteSoknader(InnsendtSoknad innsendtSoknad) {
+        if (innsendtSoknad.getTemakode().equals("DAG")) {
+            Event event = MetricsFactory.createEvent("soknad.innsendingsstatistikk");
+            if (innsendtSoknad.getIkkeInnsendteVedlegg().isEmpty()) {
+                event.addFieldToReport("soknad.innsendingsstatistikk.komplett", "true");
+            }
+            else {
+                event.addFieldToReport("soknad.innsendingsstatistikk.komplett", "false");
+                List<Vedlegg> ikkeSendteVedlegg = innsendtSoknad.getIkkeInnsendteVedlegg();
+
+                for (Vedlegg vedlegg : ikkeSendteVedlegg) {
+                    Event event2 = MetricsFactory.createEvent("soknad.ikkeInnsendteVedlegg");
+                    event2.addTagToReport("skjemanummer", vedlegg.getSkjemaNummer());
+                    event2.addTagToReport("innsendingsvalg", vedlegg.getInnsendingsvalg().name());
+                    event2.report();
+                }
+
+
+            }
             event.report();
         }
     }
