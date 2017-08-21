@@ -100,10 +100,10 @@ public class InnsendtSoknadService {
             else {
                 event.addFieldToReport("soknad.innsendingsstatistikk.komplett", "false");
                 //List<Vedlegg> ikkeInnsendteVedlegg = innsendtSoknad.getIkkeInnsendteVedlegg();
-                for (Vedlegg v : ikkeInnsendteVedlegg) {
+                for (Vedlegg vedlagt : ikkeInnsendteVedlegg) {
                     Event event2 = MetricsFactory.createEvent("soknad.ikkeInnsendteVedlegg");
-                    event2.addTagToReport("skjemanummer", v.getSkjemaNummer());
-                    event2.addTagToReport("innsendingsvalg", v.getInnsendingsvalg().name());
+                    event2.addTagToReport("skjemanummer", vedlagt.getSkjemaNummer());
+                    event2.addTagToReport("innsendingsvalg", vedlagt.getInnsendingsvalg().name());
                     event2.report();
                 }
             }
