@@ -91,7 +91,7 @@ public class InnsendtSoknadService {
                 .medInnsendteVedlegg(innsendteVedlegg)
                 .medIkkeInnsendteVedlegg(ikkeInnsendteVedlegg)
                 .medDato(xmlHenvendelse.getAvsluttetDato());
-        /*
+
         if (innsendtSoknad.getTemakode().equals("DAG")) {
             Event event = MetricsFactory.createEvent("soknad.innsendingsstatistikk");
             if (innsendtSoknad.getIkkeInnsendteVedlegg().isEmpty()) {
@@ -99,17 +99,19 @@ public class InnsendtSoknadService {
             }
             else {
                 event.addFieldToReport("soknad.innsendingsstatistikk.komplett", "false");
-                //List<Vedlegg> ikkeInnsendteVedlegg = innsendtSoknad.getIkkeInnsendteVedlegg();
-                for (Vedlegg vedlagt : ikkeInnsendteVedlegg) {
+                List<Vedlegg> ikkeSendteVedlegg = innsendtSoknad.getIkkeInnsendteVedlegg();
+
+                for (Vedlegg ikkeVedlagt : ikkeSendteVedlegg) {
                     Event event2 = MetricsFactory.createEvent("soknad.ikkeInnsendteVedlegg");
-                    event2.addTagToReport("skjemanummer", vedlagt.getSkjemaNummer());
-                    event2.addTagToReport("innsendingsvalg", vedlagt.getInnsendingsvalg().name());
+                    event2.addTagToReport("skjemanummer", ikkeVedlagt.getSkjemaNummer());
+                    event2.addTagToReport("innsendingsvalg", ikkeVedlagt.getInnsendingsvalg().name());
                     event2.report();
                 }
+
             }
             event.report();
         }
-        */
+
         return innsendtSoknad;
     }
 
