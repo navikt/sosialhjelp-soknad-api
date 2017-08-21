@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -69,26 +71,31 @@ public class SoknadMetricsService {
         }
     }
 
-    public void rapporterKompletteOgIkkeKompletteSoknader(InnsendtSoknad innsendtSoknad) {
-        if (innsendtSoknad.getTemakode().equals("DAG")) {
-            Event event = MetricsFactory.createEvent("soknad.innsendingsstatistikk");
-            if (innsendtSoknad.getIkkeInnsendteVedlegg().isEmpty()) {
-                event.addFieldToReport("soknad.innsendingsstatistikk.komplett", "true");
+    public void rapporterKompletteOgIkkeKompletteSoknader(XMLVedlegg[] vedlegg) {
+        Event event = MetricsFactory.createEvent("soknad.innsendingsstatistikk");
+
+        List<XMLVedlegg> ikkeInnsendteVedlegg = new ArrayList<XMLVedlegg>();
+        for (XMLVedlegg xmlVedlegg : vedlegg) {
+            if(xmlVedlegg.getInnsendingsvalg() != null) {
+                ikkeInnsendteVedlegg.add(xmlVedlegg);
             }
-            else {
-                event.addFieldToReport("soknad.innsendingsstatistikk.komplett", "false");
-                List<Vedlegg> ikkeSendteVedlegg = innsendtSoknad.getIkkeInnsendteVedlegg();
-
-                for (Vedlegg vedlegg : ikkeSendteVedlegg) {
-                    Event event2 = MetricsFactory.createEvent("soknad.ikkeInnsendteVedlegg");
-                    event2.addTagToReport("skjemanummer", vedlegg.getSkjemaNummer());
-                    event2.addTagToReport("innsendingsvalg", vedlegg.getInnsendingsvalg().name());
-                    event2.report();
-                }
-
-
-            }
-            event.report();
         }
+
+        if (ikkeInnsendteVedlegg.isEmpty()) {
+            event.addFieldToReport("soknad.innsendingsstatistikk.komplett", "true");
+        }
+        else {
+            event.addFieldToReport("soknad.innsendingsstatistikk.komplett", "false");
+
+            for (XMLVedlegg xmlvedlegg : ikkeInnsendteVedlegg) {
+                Event event2 = MetricsFactory.createEvent("soknad.ikkeInnsendteVedlegg");
+                event2.addTagToReport("skjemanummer", xmlvedlegg.getSkjemanummer());
+                event2.addTagToReport("innsendingsvalg", xmlvedlegg.getInnsendingsvalg());
+                event2.report();
+            }
+
+
+        }
+        event.report();
     }
 }
