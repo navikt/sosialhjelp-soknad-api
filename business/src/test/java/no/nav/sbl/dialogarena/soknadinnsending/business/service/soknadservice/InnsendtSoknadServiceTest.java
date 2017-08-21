@@ -61,7 +61,7 @@ public class InnsendtSoknadServiceTest {
         xmlHenvendelse = new XMLHenvendelse();
         xmlMetadataListe = new XMLMetadataListe();
         when(henvendelseService.hentInformasjonOmAvsluttetSoknad(anyString())).thenReturn(
-                xmlHenvendelse.withMetadataListe(xmlMetadataListe));
+                xmlHenvendelse.withMetadataListe(xmlMetadataListe).withTema("DAG"));
     }
 
     @Test
