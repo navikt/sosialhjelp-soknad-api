@@ -77,25 +77,7 @@ public class SoknadRessurs {
     @Produces("application/vnd.kvitteringforinnsendtsoknad+json")
     @SjekkTilgangTilSoknad(type = Henvendelse)
     public InnsendtSoknad hentInnsendtSoknad(@PathParam("behandlingsId") String behandlingsId, @QueryParam("sprak") String sprak) {
-        InnsendtSoknad innsendtSoknad = innsendtSoknadService.hentInnsendtSoknad(behandlingsId, sprak);
-        if (innsendtSoknad.getTemakode().equals("DAG")) {
-            Event event = MetricsFactory.createEvent("soknad.innsendingsstatistikk");
-            if (innsendtSoknad.getIkkeInnsendteVedlegg().isEmpty()) {
-                event.addFieldToReport("soknad.innsendingsstatistikk.komplett", "true");
-            }
-            else {
-                event.addFieldToReport("soknad.innsendingsstatistikk.komplett", "false");
-                List<Vedlegg> ikkeInnsendteVedlegg = innsendtSoknad.getIkkeInnsendteVedlegg();
-                for (Vedlegg vedlegg : ikkeInnsendteVedlegg) {
-                    Event event2 = MetricsFactory.createEvent("soknad.ikkeInnsendteVedlegg");
-                    event2.addTagToReport("skjemanummer", vedlegg.getSkjemaNummer());
-                    event2.addTagToReport("innsendingsvalg", vedlegg.getInnsendingsvalg().name());
-                    event2.report();
-                }
-            }
-            event.report();
-        }
-        return innsendtSoknad;
+        return innsendtSoknadService.hentInnsendtSoknad(behandlingsId, sprak);
     }
 
     /*
