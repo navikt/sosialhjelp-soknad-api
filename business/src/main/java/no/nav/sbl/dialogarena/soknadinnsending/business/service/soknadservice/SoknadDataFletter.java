@@ -335,6 +335,9 @@ public class SoknadDataFletter {
         lokalDb.slettSoknad(soknad.getSoknadId());
 
         soknadMetricsService.sendtSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
+
+        //SETT INN METRICS HER
+
     }
 
     private XMLHovedskjema lagXmlHovedskjemaMedAlternativRepresentasjon(byte[] pdf, WebSoknad soknad, byte[] fullSoknad) {
