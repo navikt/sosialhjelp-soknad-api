@@ -385,13 +385,11 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     public void settDelstegstatus(Long soknadId, DelstegStatus status) {
         getJdbcTemplate()
                 .update("update soknad set delstegstatus=? where soknad_id = ?", status.name(), soknadId);
-        logger.info(status.name() + "soknad_id"); //INFO
     }
 
     public void settDelstegstatus(String behandlingsId, DelstegStatus status) {
         getJdbcTemplate()
                 .update("update soknad set delstegstatus=? where brukerbehandlingid = ?", status.name(), behandlingsId);
-        logger.info(status.name() + "behandlingid"); //INFO
     }
 
     public void settJournalforendeEnhet(String behandlingsId, String journalforendeEnhet) {

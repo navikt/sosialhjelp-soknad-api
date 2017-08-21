@@ -101,7 +101,6 @@ public class WebSoknad implements Serializable {
 
     public void setDelstegStatus(DelstegStatus delstegStatus) {
         this.delstegStatus = delstegStatus;
-        logger.info(delstegStatus.name()); //INFO
     }
 
     public final String getUuid() {
@@ -253,6 +252,7 @@ public class WebSoknad implements Serializable {
 
     public WebSoknad medStatus(SoknadInnsendingStatus status) {
         this.status = status;
+        logger.info(status.name()); //INFO
         return this;
     }
 
