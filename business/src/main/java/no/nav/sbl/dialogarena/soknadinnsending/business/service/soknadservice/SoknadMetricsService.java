@@ -74,7 +74,7 @@ public class SoknadMetricsService {
     public void rapporterKompletteOgIkkeKompletteSoknader(XMLVedlegg[] vedlegg) {
         Event event = MetricsFactory.createEvent("soknad.innsendingsstatistikk");
 
-        List<XMLVedlegg> ikkeInnsendteVedlegg = new ArrayList<XMLVedlegg>();
+        List<XMLVedlegg> ikkeInnsendteVedlegg = new ArrayList<>();
         for (XMLVedlegg xmlVedlegg : vedlegg) {
             if(xmlVedlegg.getInnsendingsvalg() != null) {
                 ikkeInnsendteVedlegg.add(xmlVedlegg);
