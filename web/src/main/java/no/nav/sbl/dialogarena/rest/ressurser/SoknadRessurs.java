@@ -1,7 +1,5 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
-import no.nav.metrics.Event;
-import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
