@@ -91,7 +91,7 @@ public class InnsendtSoknadService {
                 .medInnsendteVedlegg(innsendteVedlegg)
                 .medIkkeInnsendteVedlegg(ikkeInnsendteVedlegg)
                 .medDato(xmlHenvendelse.getAvsluttetDato());
-
+        /*
         if (innsendtSoknad.getTemakode().equals("DAG")) {
             Event event = MetricsFactory.createEvent("soknad.innsendingsstatistikk");
             if (innsendtSoknad.getIkkeInnsendteVedlegg().isEmpty()) {
@@ -109,7 +109,7 @@ public class InnsendtSoknadService {
             }
             event.report();
         }
-
+        */
         return innsendtSoknad;
     }
 
