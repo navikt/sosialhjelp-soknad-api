@@ -97,10 +97,25 @@ public class Faktum implements Serializable {
     public Map<String,String> getDatoProperties(){
         Map<String,String> datoProperties = new HashMap<>();
          getProperties().entrySet().stream()
-                 .filter(property -> FaktumEgenskap.datoKeys().contains(property.getKey()))
+                 .filter(property -> datoKeys().contains(property.getKey()))
                  .forEach(property -> datoProperties.put(property.getKey(),property.getValue()));
 
          return datoProperties;
+    }
+
+    public boolean hasDatoProperty(){
+       return getProperties().keySet()
+               .stream()
+               .anyMatch(key -> datoKeys().contains(key));
+    }
+
+    private static Set<String> datoKeys(){
+        HashSet<String> datoKeys = new HashSet();
+        datoKeys.add("fom");
+        datoKeys.add("tom");
+        datoKeys.add("fradato");
+        datoKeys.add("tildato");
+        return datoKeys;
     }
 
     @JsonIgnore
@@ -228,14 +243,6 @@ public class Faktum implements Serializable {
             res = res || egenskap.getKey().equals(key);
         }
         return res;
-    }
-
-    public boolean hasDatoEgenskap(){
-        return hasEgenskapIn(FaktumEgenskap.datoKeys());
-    }
-
-    public boolean hasEgenskapIn(Collection<String> keys){
-        return faktumEgenskaper.stream().anyMatch(egenskap -> keys.contains(egenskap.getKey()));
     }
 
     public FaktumEgenskap finnEgenskap(String key) {
