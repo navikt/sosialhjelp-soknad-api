@@ -280,7 +280,7 @@ public class WebSoknad implements Serializable {
 
     public List<Faktum> getDatoFaktum(){
         return getFakta().stream()
-                .filter( faktum -> faktum.hasDatoEgenskap())
+                .filter( faktum -> faktum.hasDatoProperty())
                 .collect(toList());
     }
 
