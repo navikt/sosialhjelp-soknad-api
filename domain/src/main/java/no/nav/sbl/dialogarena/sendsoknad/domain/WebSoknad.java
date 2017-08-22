@@ -19,9 +19,6 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.ER_LASTET_OPP;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.DagpengerGjenopptakInformasjon.erDagpengerGjenopptak;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.DagpengerOrdinaerInformasjon.erDagpengerOrdinaer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -50,8 +47,6 @@ public class WebSoknad implements Serializable {
     private String soknadUrl;
     private String fortsettSoknadUrl;
     private Steg[] stegliste;
-
-    private static final Logger logger = LoggerFactory.getLogger(WebSoknad.class);
 
 
     public WebSoknad() {
@@ -252,7 +247,6 @@ public class WebSoknad implements Serializable {
 
     public WebSoknad medStatus(SoknadInnsendingStatus status) {
         this.status = status;
-        logger.info(status.name()); //INFO
         return this;
     }
 
