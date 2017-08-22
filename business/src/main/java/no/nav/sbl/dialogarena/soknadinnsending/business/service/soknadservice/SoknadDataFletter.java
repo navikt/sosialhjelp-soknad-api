@@ -294,7 +294,7 @@ public class SoknadDataFletter {
     }
 
     private Predicate<Faktum> erPeriodeLagret = faktum ->
-            (faktum.getProperties().containsKey("periodeLagret") && faktum.getProperties().get("periodeLagret").equals("true"));
+            faktum.getProperties().containsKey("periodeLagret") && faktum.getProperties().get("periodeLagret").equals("true");
 
     private WebSoknad populerSoknadMedData(boolean populerSystemfakta, WebSoknad soknad) {
         soknad = lokalDb.hentSoknadMedData(soknad.getSoknadId());
