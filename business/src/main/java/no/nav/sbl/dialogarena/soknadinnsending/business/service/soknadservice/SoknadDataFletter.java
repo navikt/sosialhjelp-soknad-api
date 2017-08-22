@@ -272,8 +272,7 @@ public class SoknadDataFletter {
 
         if (soknadTilleggsstonader.getSkjemanummer().contains(soknad.getskjemaNummer())) {
             soknad.getDatoFaktum().stream()
-                    .filter(datoFaktum -> datoFaktum.getProperties().containsKey("periodeLagret"))
-                    .filter(datoFaktum -> datoFaktum.getProperties().get("periodeLagret").equals("true"))
+                    .filter(erPeriodeLagret)
                     .forEach(datofaktum -> {
                 try {
                     datofaktum.getDatoProperties().entrySet().stream()
@@ -293,6 +292,9 @@ public class SoknadDataFletter {
         }
         return soknad;
     }
+
+    private Predicate<Faktum> erPeriodeLagret = faktum ->
+            (faktum.getProperties().containsKey("periodeLagret") && faktum.getProperties().get("periodeLagret").equals("true"));
 
     private WebSoknad populerSoknadMedData(boolean populerSystemfakta, WebSoknad soknad) {
         soknad = lokalDb.hentSoknadMedData(soknad.getSoknadId());

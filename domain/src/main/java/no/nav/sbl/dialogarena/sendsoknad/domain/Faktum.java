@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.io.Serializable;
 import java.util.*;
+import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toList;
 
@@ -25,6 +26,7 @@ public class Faktum implements Serializable {
     private String value;
     private Set<FaktumEgenskap> faktumEgenskaper;
     private Map<String, String> properties = new HashMap<>();
+    private static Set<String> datoKeys = new HashSet<>();
     private FaktumType type;
 
     public Long getFaktumId() {
@@ -110,11 +112,16 @@ public class Faktum implements Serializable {
     }
 
     private static Set<String> datoKeys(){
-        HashSet<String> datoKeys = new HashSet();
-        datoKeys.add("fom");
-        datoKeys.add("tom");
-        datoKeys.add("fradato");
-        datoKeys.add("tildato");
+        if(datoKeys.isEmpty()) {
+            datoKeys.add("fom");
+            datoKeys.add("tom");
+            datoKeys.add("fradato");
+            datoKeys.add("tildato");
+            datoKeys.add("sekundarAdresseGyldigFra");
+            datoKeys.add("sekundarAdresseGyldigTil");
+            datoKeys.add("gjeldendeAdresseGyldigFra");
+            datoKeys.add("gjeldendeAdresseGyldigTil");
+        }
         return datoKeys;
     }
 
