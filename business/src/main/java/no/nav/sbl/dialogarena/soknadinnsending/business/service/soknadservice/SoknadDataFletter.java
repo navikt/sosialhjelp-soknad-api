@@ -271,7 +271,10 @@ public class SoknadDataFletter {
         DateTimeFormatter formaterer = DateTimeFormat.forPattern("yyyy-MM-dd");
 
         if (soknadTilleggsstonader.getSkjemanummer().contains(soknad.getskjemaNummer())) {
-            soknad.getDatoFaktum().stream().forEach(datofaktum -> {
+            soknad.getDatoFaktum().stream()
+                    .filter(datoFaktum -> datoFaktum.getProperties().containsKey("periodeLagret"))
+                    .filter(datoFaktum -> datoFaktum.getProperties().get("periodeLagret").equals("true"))
+                    .forEach(datofaktum -> {
                 try {
                     datofaktum.getDatoProperties().entrySet().stream()
                             .forEach(datoProperty -> {
