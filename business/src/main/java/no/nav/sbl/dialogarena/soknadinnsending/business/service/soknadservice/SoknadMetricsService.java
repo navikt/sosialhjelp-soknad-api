@@ -89,14 +89,13 @@ public class SoknadMetricsService {
         else {
             event.addFieldToReport("soknad.innsendingsstatistikk.komplett", "false");
             logger.info("ikke innsendte vedlegg har innhold");
-        /**
+
             for (XMLVedlegg xmlvedlegg : ikkeInnsendteVedlegg) {
                 Event event2 = MetricsFactory.createEvent("soknad.innsendteVedlegg");
                 event2.addTagToReport("skjemanummer", xmlvedlegg.getSkjemanummer());
                 event2.addTagToReport("innsendingsvalg", xmlvedlegg.getInnsendingsvalg());
                 event2.report();
             }
-        **/
 
         }
         event.report();
