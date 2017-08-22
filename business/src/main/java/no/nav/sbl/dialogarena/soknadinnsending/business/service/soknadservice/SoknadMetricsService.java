@@ -77,6 +77,7 @@ public class SoknadMetricsService {
         List<XMLVedlegg> ikkeInnsendteVedlegg = new ArrayList<>();
         for (XMLVedlegg xmlVedlegg : vedlegg) {
             if(xmlVedlegg.getInnsendingsvalg() != null) {
+                logger.info(xmlVedlegg.getInnsendingsvalg());
                 ikkeInnsendteVedlegg.add(xmlVedlegg);
             }
         }
