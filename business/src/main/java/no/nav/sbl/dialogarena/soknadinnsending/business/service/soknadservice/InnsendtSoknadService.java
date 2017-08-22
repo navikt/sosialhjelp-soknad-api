@@ -3,8 +3,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHenvendelse;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
-import no.nav.metrics.Event;
-import no.nav.metrics.MetricsFactory;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
@@ -84,15 +82,13 @@ public class InnsendtSoknadService {
         List<Vedlegg> innsendteVedlegg = vedlegg.stream().filter(LASTET_OPP).collect(toList());
         List<Vedlegg> ikkeInnsendteVedlegg = vedlegg.stream().filter(IKKE_LASTET_OPP).collect(toList());
 
-        innsendtSoknad = innsendtSoknad
+        return innsendtSoknad
                 .medTittel(hovedskjemaVedlegg.orElse(new Vedlegg()).getTittel())
                 .medBehandlingId(xmlHenvendelse.getBehandlingsId())
                 .medTemakode(xmlHenvendelse.getTema())
                 .medInnsendteVedlegg(innsendteVedlegg)
                 .medIkkeInnsendteVedlegg(ikkeInnsendteVedlegg)
                 .medDato(xmlHenvendelse.getAvsluttetDato());
-
-        return innsendtSoknad;
     }
 
     private Predicate<Vedlegg> medSkjemanummer(final String skjemanummer) {
