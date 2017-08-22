@@ -76,7 +76,7 @@ public class SoknadMetricsService {
 
         List<XMLVedlegg> ikkeInnsendteVedlegg = new ArrayList<>();
         for (XMLVedlegg xmlVedlegg : vedlegg) {
-            if(xmlVedlegg.getInnsendingsvalg() != null) {
+            if(xmlVedlegg.getInnsendingsvalg() != "LASTET_OPP") {
                 logger.info(xmlVedlegg.getInnsendingsvalg());
                 ikkeInnsendteVedlegg.add(xmlVedlegg);
             }
