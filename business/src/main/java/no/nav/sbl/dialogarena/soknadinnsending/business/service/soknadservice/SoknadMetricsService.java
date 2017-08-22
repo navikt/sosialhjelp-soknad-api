@@ -71,12 +71,27 @@ public class SoknadMetricsService {
         }
     }
 
-    public void rapporterKompletteOgIkkeKompletteSoknader(XMLVedlegg[] vedlegg) {
+    public void rapporterKompletteOgIkkeKompletteSoknader(XMLVedlegg[] vedlegg, String skjemanummer) {
+        String skjematype;
+
+        switch (skjemanummer) {
+            case "NAV 04-16.03": skjematype = "DagpengerGjenoppta";
+            break;
+            case "NAV 04-16.04": skjematype = "DagpengerGjenoppta";
+            break;
+            case "NAV 04-01.03": skjematype = "DagpengerOrdinear";
+            break;
+            case "NAV 04-01.04": skjematype = "DagpengerOrdinear";
+            break;
+            default: skjematype = "Annet";
+            break;
+        }
+
         Event event = MetricsFactory.createEvent("soknad.innsendingsstatistikk");
 
         List<XMLVedlegg> ikkeInnsendteVedlegg = new ArrayList<>();
         for (XMLVedlegg xmlVedlegg : vedlegg) {
-            if(!xmlVedlegg.getInnsendingsvalg().equals("LASTET_OPP")) {
+            if (!xmlVedlegg.getInnsendingsvalg().equals("LASTET_OPP")) {
                 logger.info(xmlVedlegg.getInnsendingsvalg());
                 ikkeInnsendteVedlegg.add(xmlVedlegg);
             }
@@ -85,8 +100,7 @@ public class SoknadMetricsService {
         if (ikkeInnsendteVedlegg.isEmpty()) {
             event.addFieldToReport("soknad.innsendingsstatistikk.komplett", "true");
             logger.info("ikke innsendte vedlegg er tom");
-        }
-        else {
+        } else {
             event.addFieldToReport("soknad.innsendingsstatistikk.komplett", "false");
             logger.info("ikke innsendte vedlegg har innhold");
 
@@ -94,10 +108,12 @@ public class SoknadMetricsService {
                 Event event2 = MetricsFactory.createEvent("soknad.innsendteVedlegg");
                 event2.addTagToReport("skjemanummer", xmlvedlegg.getSkjemanummer());
                 event2.addTagToReport("innsendingsvalg", xmlvedlegg.getInnsendingsvalg());
+                event2.addTagToReport("skjematype", skjematype);
                 event2.report();
             }
 
         }
+        event.addTagToReport("skjematype", skjematype);
         event.report();
     }
 }
