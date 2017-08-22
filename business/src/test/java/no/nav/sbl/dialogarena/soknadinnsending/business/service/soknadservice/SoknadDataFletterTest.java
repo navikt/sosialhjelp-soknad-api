@@ -347,6 +347,7 @@ public class SoknadDataFletterTest {
                         new Faktum()
                                 .medKey("bostotte.samling")
                                 .medProperty("fom", "NaN-aN-aN")
+                                .medProperty("periodeLagret","true")
                                 .medProperty("tom", "NaN-aN-aN"));
         soknad = soknadServiceUtil.sjekkDatoVerdierOgOppdaterDelstegStatus(soknad);
         assertThat(soknad.getDelstegStatus()).isEqualTo(DelstegStatus.UTFYLLING);
@@ -362,6 +363,7 @@ public class SoknadDataFletterTest {
                         new Faktum()
                                 .medKey("bostotte.samling")
                                 .medProperty("fradato", null)
+                                .medProperty("periodeLagret","true")
                                 .medProperty("tildato", null)
                 );
         soknad = soknadServiceUtil.sjekkDatoVerdierOgOppdaterDelstegStatus(soknad);
