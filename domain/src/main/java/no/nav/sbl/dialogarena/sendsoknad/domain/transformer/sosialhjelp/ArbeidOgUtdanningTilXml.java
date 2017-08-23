@@ -1,47 +1,45 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp;
 
-import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLSoknadsosialhjelp.ArbeidUtdanning;
-import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLSoknadsosialhjelp.ArbeidUtdanning.*;
+import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLArbeidUtdanning;
+import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLBoolean;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 
 import java.util.function.Function;
 
-import static no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLKilde.BRUKER;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SoknadSosialhjelpUtils.tilXMLBoolean;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SoknadSosialhjelpUtils.tilXMLString;
 
-public class ArbeidOgUtdanningTilXml implements Function<WebSoknad, ArbeidUtdanning> {
+public class ArbeidOgUtdanningTilXml implements Function<WebSoknad, XMLArbeidUtdanning> {
 
     @Override
-    public ArbeidUtdanning apply(WebSoknad webSoknad) {
-        ArbeidUtdanning arbeidUtdanning = new ArbeidUtdanning();
+    public XMLArbeidUtdanning apply(WebSoknad webSoknad) {
+        XMLArbeidUtdanning arbeidUtdanning = new XMLArbeidUtdanning();
 
-        Arbeidsledig arbeidsledig = new Arbeidsledig()
-                .withKilde(BRUKER)
-                .withValue(Boolean.valueOf(webSoknad.getValueForFaktum("arbeid.dinsituasjon.arbeidsledig")));
+        XMLBoolean arbeidsledig = tilXMLBoolean(webSoknad, "arbeid.dinsituasjon.arbeidsledig");
 
-        Jobb jobb = new Jobb()
-                .withKilde(BRUKER)
-                .withValue(Boolean.valueOf(webSoknad.getValueForFaktum("arbeid.dinsituasjon.jobb")));
+        XMLBoolean jobb = tilXMLBoolean(webSoknad, "arbeid.dinsituasjon.jobb");
 
         Boolean erStudent = Boolean.valueOf(webSoknad.getValueForFaktum("arbeid.dinsituasjon.student"));
-        Student student = new Student()
-                .withKilde(BRUKER)
-                .withValue(erStudent);
+        XMLBoolean student = tilXMLBoolean(erStudent);
 
         if (erStudent) {
-            StudererGrad studererGrad = new StudererGrad()
-                    .withKilde(BRUKER)
-                    .withValue(Boolean.valueOf(webSoknad.getValueForFaktum("arbeid.dinsituasjon.student.heltid")));
-            arbeidUtdanning.withStudererGrad(studererGrad);
+            arbeidUtdanning.withStudererGrad(tilXMLBoolean(webSoknad, "arbeid.dinsituasjon.student.heltid"));
         }
 
-        Annet annet = new Annet()
-                .withKilde(BRUKER)
-                .withValue(Boolean.valueOf(webSoknad.getValueForFaktum("arbeid.dinsituasjon.annensituasjon")));
+        Boolean annenSituasjon = Boolean.valueOf(webSoknad.getValueForFaktum("arbeid.dinsituasjon.annensituasjon"));
 
-        return arbeidUtdanning
+        XMLBoolean annet = tilXMLBoolean(annenSituasjon);
+
+        arbeidUtdanning
                 .withAnnet(annet)
                 .withJobb(jobb)
                 .withArbeidsledig(arbeidsledig)
                 .withStudent(student);
+
+        if (annenSituasjon) {
+            arbeidUtdanning.withAnnetBeskrivelse(tilXMLString(webSoknad, "arbeid.dinsituasjon.annensituasjon.beskrivelse"));
+        }
+
+        return arbeidUtdanning;
     }
 }
