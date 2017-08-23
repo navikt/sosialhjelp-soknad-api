@@ -96,35 +96,6 @@ public class Faktum implements Serializable {
         return properties;
     }
 
-    public Map<String,String> getDatoProperties(){
-        Map<String,String> datoProperties = new HashMap<>();
-         getProperties().entrySet().stream()
-                 .filter(property -> datoKeys().contains(property.getKey()))
-                 .forEach(property -> datoProperties.put(property.getKey(),property.getValue()));
-
-         return datoProperties;
-    }
-
-    public boolean hasDatoProperty(){
-       return getProperties().keySet()
-               .stream()
-               .anyMatch(key -> datoKeys().contains(key));
-    }
-
-    private static Set<String> datoKeys(){
-        if(datoKeys.isEmpty()) {
-            datoKeys.add("fom");
-            datoKeys.add("tom");
-            datoKeys.add("fradato");
-            datoKeys.add("tildato");
-            datoKeys.add("sekundarAdresseGyldigFra");
-            datoKeys.add("sekundarAdresseGyldigTil");
-            datoKeys.add("gjeldendeAdresseGyldigFra");
-            datoKeys.add("gjeldendeAdresseGyldigTil");
-        }
-        return datoKeys;
-    }
-
     @JsonIgnore
     public String getUnikProperty(){
         return getProperties().get(UNIQUE_KEY);

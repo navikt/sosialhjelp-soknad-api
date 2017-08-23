@@ -2,15 +2,14 @@ package no.nav.sbl.dialogarena.sendsoknad.domain;
 
 import java.io.Serializable;
 
-
 public class FaktumEgenskap implements Serializable {
     private Long faktumId;
     private Long soknadId;
     private String key;
     private String value;
     private Integer systemEgenskap;
-    public FaktumEgenskap() {
 
+    public FaktumEgenskap() {
     }
 
     public FaktumEgenskap(Long soknadId, Long faktumId, String key, String value, Boolean systemEgenskap) {

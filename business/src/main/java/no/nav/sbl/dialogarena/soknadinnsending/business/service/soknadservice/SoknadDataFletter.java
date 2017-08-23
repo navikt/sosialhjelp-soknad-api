@@ -261,7 +261,7 @@ public class SoknadDataFletter {
         return erForbiUtfyllingssteget(soknad) ? sjekkDatoVerdierOgOppdaterDelstegStatus(soknad) : soknad;
     }
 
-    private boolean erForbiUtfyllingssteget(WebSoknad soknad){
+    private boolean erForbiUtfyllingssteget(WebSoknad soknad) {
         return !(soknad.getDelstegStatus() == DelstegStatus.OPPRETTET ||
                 soknad.getDelstegStatus() == DelstegStatus.UTFYLLING);
     }
@@ -271,27 +271,49 @@ public class SoknadDataFletter {
         DateTimeFormatter formaterer = DateTimeFormat.forPattern("yyyy-MM-dd");
 
         if (soknadTilleggsstonader.getSkjemanummer().contains(soknad.getskjemaNummer())) {
-            soknad.getDatoFaktum().stream()
-                    .filter(erPeriodeLagret)
-                    .forEach(datofaktum -> {
-                try {
-                    datofaktum.getDatoProperties().entrySet().stream()
-                            .forEach(datoProperty -> {
-                                if (datoProperty.getValue() == null) {
-                                    throw new IllegalArgumentException(datoProperty.getKey() + " er null");
-                                }
-                                formaterer.parseLocalDate(datoProperty.getValue());
-                            });
-                } catch (IllegalArgumentException e) {
-                    soknad.medDelstegStatus(DelstegStatus.UTFYLLING);
-                    Event event = MetricsFactory.createEvent("stofo.korruptdato");
-                    event.addTagToReport("stofo.korruptdato.behandlingId", soknad.getBrukerBehandlingId());
-                    event.report();
-                }
-            });
+            soknad.getFakta().stream()
+                    .filter(erFaktumViVetFeiler)
+                    .forEach(faktum -> {
+                        try {
+                            faktum.getProperties().entrySet().stream()
+                                    .filter(isDatoProperty)
+                                    .forEach(property -> {
+                                        if (property.getValue() == null) {
+                                            throw new IllegalArgumentException("Invalid format: value = null");
+                                        }
+                                        formaterer.parseLocalDate(property.getValue());
+                                    });
+                        } catch (IllegalArgumentException e) {
+                            soknad.medDelstegStatus(DelstegStatus.UTFYLLING);
+
+                            logger.warn("catch IllegalArgumentException " + e.getMessage() + "  -  Søknad med skjemanr: " + soknad.getskjemaNummer()
+                                    + " har ikke gyldig dato-property for faktum " + faktum.getKey());
+
+                            Event event = MetricsFactory.createEvent("stofo.korruptdato");
+                            event.addTagToReport("stofo.korruptdato.behandlingId", soknad.getBrukerBehandlingId());
+                            event.report();
+                        }
+                    });
         }
         return soknad;
     }
+
+    private Predicate<Map.Entry<String, String>> isDatoProperty = property -> {
+        List<String> datoKeys = new ArrayList<>();
+        datoKeys.add("tom");
+        datoKeys.add("fom");
+        return datoKeys.contains(property.getKey());
+    };
+
+
+
+    private Predicate<Faktum> erFaktumViVetFeiler = faktum -> {
+        List<String> faktumFeilerKeys = new ArrayList<>();
+        faktumFeilerKeys.add("reise.samling.fleresamlinger.samling");
+        faktumFeilerKeys.add("reise.samling.aktivitetsperiode");
+        faktumFeilerKeys.add("bostotte.samling");
+        return faktumFeilerKeys.contains(faktum.getKey());
+    };
 
     private Predicate<Faktum> erPeriodeLagret = faktum ->
             faktum.getProperties().containsKey("periodeLagret") && faktum.getProperties().get("periodeLagret").equals("true");
