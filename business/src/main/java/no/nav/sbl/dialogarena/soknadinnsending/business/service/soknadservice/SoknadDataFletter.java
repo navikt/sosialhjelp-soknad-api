@@ -6,7 +6,6 @@ import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AlleredeHandtertException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
@@ -41,7 +40,6 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.sort;
 import static java.util.UUID.randomUUID;
-import static java.util.stream.Collectors.toList;
 import static javax.xml.bind.JAXB.unmarshal;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.LASTET_OPP;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
@@ -336,7 +334,7 @@ public class SoknadDataFletter {
         henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, vedlegg);
         lokalDb.slettSoknad(soknad.getSoknadId());
 
-        soknadMetricsService.rapporterKompletteOgIkkeKompletteSoknader(vedlegg, soknad.getskjemaNummer());
+        soknadMetricsService.rapporterKompletteOgIkkeKompletteSoknader(soknad.getIkkeInnsendteVedlegg(), soknad.getskjemaNummer());
         soknadMetricsService.sendtSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
 
     }
