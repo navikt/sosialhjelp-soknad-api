@@ -9,6 +9,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import java.util.function.Function;
 
 import static no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLKilde.BRUKER;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SoknadSosialhjelpUtils.tilXMLBoolean;
 
 
 public class FamiliesituasjonTilXml implements Function<WebSoknad, XMLFamiliesituasjon> {
@@ -33,17 +34,9 @@ public class FamiliesituasjonTilXml implements Function<WebSoknad, XMLFamiliesit
                 sivilstatus.withValue(XMLSivilstatus.SKILT);
         }
 
-        XMLBoolean hjemmeboendeBarn = new XMLBoolean()
-                .withValue(Boolean.valueOf(webSoknad.getValueForFaktum("familie.barn")))
-                .withKilde(BRUKER);
-
-        XMLBoolean andreHjemmeboendeBarn = new XMLBoolean()
-                .withKilde(BRUKER)
-                .withValue(Boolean.valueOf(webSoknad.getValueForFaktum("familie.andrebarn")));
-
         return new XMLFamiliesituasjon()
                 .withSivilstatus(sivilstatus)
-                .withHjemmeboendeBarn(hjemmeboendeBarn)
-                .withAndreHjemmeboendeBarn(andreHjemmeboendeBarn);
+                .withHjemmeboendeBarn(tilXMLBoolean(webSoknad, "familie.barn"))
+                .withAndreHjemmeboendeBarn(tilXMLBoolean(webSoknad, "familie.andrebarn"));
     }
 }

@@ -1,13 +1,12 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp;
 
-import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLBoolean;
-import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLString;
 import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLUtgifter;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 
 import java.util.function.Function;
 
-import static no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLKilde.BRUKER;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SoknadSosialhjelpUtils.tilXMLBoolean;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SoknadSosialhjelpUtils.tilXMLString;
 
 
 public class UtgifterTilXml implements Function<WebSoknad, XMLUtgifter> {
@@ -17,40 +16,21 @@ public class UtgifterTilXml implements Function<WebSoknad, XMLUtgifter> {
         XMLUtgifter utgifter = new XMLUtgifter();
 
         String harBoutgifterVerdi = webSoknad.getValueForFaktum("utgifter.boutgift");
-        utgifter.withBoutgifter(new XMLBoolean()
-                .withValue(Boolean.valueOf(harBoutgifterVerdi))
-                .withKilde(BRUKER));
+        utgifter.withBoutgifter(tilXMLBoolean(Boolean.valueOf(harBoutgifterVerdi)));
 
         if (harBoutgifterVerdi.equals("false")) {
-            utgifter.withUtgiftHusleie(new XMLBoolean()
-                    .withKilde(BRUKER)
-                    .withValue(Boolean.valueOf(webSoknad.getValueForFaktum("utgifter.boutgift.false.type.husleie"))));
-
-            utgifter.withUtgiftStrom(new XMLBoolean()
-                    .withKilde(BRUKER)
-                    .withValue(Boolean.valueOf(webSoknad.getValueForFaktum("utgifter.boutgift.false.type.strom"))));
-
-            utgifter.withUtgiftKommunaleAvgifter(new XMLBoolean()
-                    .withKilde(BRUKER)
-                    .withValue(Boolean.valueOf(webSoknad.getValueForFaktum("utgifter.boutgift.false.type.kommunaleutgifter"))));
-
-            utgifter.withUtgiftOppvarming(new XMLBoolean()
-                    .withKilde(BRUKER)
-                    .withValue(Boolean.valueOf(webSoknad.getValueForFaktum("utgifter.boutgift.false.type.oppvarming"))));
-
-            utgifter.withUtgiftAvdragRenterBoliglaan(new XMLBoolean()
-                    .withKilde(BRUKER)
-                    .withValue(Boolean.valueOf(webSoknad.getValueForFaktum("utgifter.boutgift.false.type.avdraglaan"))));
+            utgifter
+                    .withUtgiftHusleie(tilXMLBoolean(webSoknad, "utgifter.boutgift.false.type.husleie"))
+                    .withUtgiftStrom(tilXMLBoolean(webSoknad, "utgifter.boutgift.false.type.strom"))
+                    .withUtgiftKommunaleAvgifter(tilXMLBoolean(webSoknad, "utgifter.boutgift.false.type.kommunaleutgifter"))
+                    .withUtgiftOppvarming(tilXMLBoolean(webSoknad, "utgifter.boutgift.false.type.oppvarming"))
+                    .withUtgiftAvdragRenterBoliglaan(tilXMLBoolean(webSoknad, "utgifter.boutgift.false.type.avdraglaan"));
 
             Boolean andreUtgifterVerdi = Boolean.valueOf(webSoknad.getValueForFaktum("utgifter.boutgift.false.type.andreutgifter"));
-            utgifter.withAndreUtgifter(new XMLBoolean()
-                    .withKilde(BRUKER)
-                    .withValue(andreUtgifterVerdi));
+            utgifter.withAndreUtgifter(tilXMLBoolean(andreUtgifterVerdi));
 
             if (andreUtgifterVerdi) {
-                utgifter.withBeskrivelseAndreUtgifter(new XMLString()
-                        .withKilde(BRUKER)
-                        .withValue(webSoknad.getValueForFaktum("utgifter.boutgift.false.type.andreutgifter.true.beskrivelse")));
+                utgifter.withBeskrivelseAndreUtgifter(tilXMLString(webSoknad, "utgifter.boutgift.false.type.andreutgifter.true.beskrivelse"));
             }
         }
 
