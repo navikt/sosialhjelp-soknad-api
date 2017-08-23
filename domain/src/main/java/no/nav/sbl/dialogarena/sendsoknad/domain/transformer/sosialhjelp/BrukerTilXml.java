@@ -1,47 +1,29 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp;
 
-import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLSoknadsosialhjelp;
-import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLSoknadsosialhjelp.Personalia;
-import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLSoknadsosialhjelp.Personalia.Person.*;
-import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLSoknadsosialhjelp.Personalia.Person;
+import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLPersonalia;
+import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLPersonalia.Person;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 
-import java.math.BigInteger;
 import java.util.Map;
 import java.util.function.Function;
 
 import static no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLKilde.SYSTEM;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SoknadSosialhjelpUtils.tilXMLString;
 
 
-public class BrukerTilXml implements Function<WebSoknad, Personalia> {
+public class BrukerTilXml implements Function<WebSoknad, XMLPersonalia> {
 
     @Override
-    public XMLSoknadsosialhjelp.Personalia apply(WebSoknad webSoknad) {
+    public XMLPersonalia apply(WebSoknad webSoknad) {
         String personnummer = webSoknad.getAktoerId();
-
-        XMLSoknadsosialhjelp.Personalia.Person.PersonIdentifikator personIdentifikator = new PersonIdentifikator()
-                .withKilde(SYSTEM)
-                .withValue(personnummer);
-
         Map<String, String> personaliaProperties = webSoknad.getFaktumMedKey("personalia").getProperties();
 
-        Navn navn = new Navn()
-                .withKilde(SYSTEM)
-                .withValue(personaliaProperties.get("navn"));
-
-        Statsborgerskap statsborgerskap = new Statsborgerskap()
-                .withKilde(SYSTEM)
-                .withValue(personaliaProperties.get("statsborgerskap"));
-
-        EpostAdresse epostAdresse = new EpostAdresse()
-                .withKilde(SYSTEM)
-                .withValue(personaliaProperties.get("epost") == null ? "ingen epost" : personaliaProperties.get("epost"));
-
-        return new Personalia().withPerson(new Person()
-                .withPersonIdentifikator(personIdentifikator)
-                .withNavn(navn)
-                .withStatsborgerskap(statsborgerskap)
-                .withEpostAdresse(epostAdresse)
+        return new XMLPersonalia().withPerson(new Person()
+                .withPersonIdentifikator(tilXMLString(personnummer, SYSTEM))
+                .withNavn(tilXMLString(personaliaProperties.get("navn"), SYSTEM))
+                .withStatsborgerskap(tilXMLString(personaliaProperties.get("statsborgerskap"), SYSTEM))
+                .withEpostAdresse(tilXMLString(personaliaProperties.get("epost") == null ? "ingen epost" : personaliaProperties.get("epost"), SYSTEM))
+                .withAdresse(tilXMLString(personaliaProperties.get("gjeldendeAdresse"), SYSTEM))
         );
     }
 }
