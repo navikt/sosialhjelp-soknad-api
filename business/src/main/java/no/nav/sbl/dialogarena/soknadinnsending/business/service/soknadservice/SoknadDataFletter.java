@@ -315,9 +315,6 @@ public class SoknadDataFletter {
         return faktumFeilerKeys.contains(faktum.getKey());
     };
 
-    private Predicate<Faktum> erPeriodeLagret = faktum ->
-            faktum.getProperties().containsKey("periodeLagret") && faktum.getProperties().get("periodeLagret").equals("true");
-
     private WebSoknad populerSoknadMedData(boolean populerSystemfakta, WebSoknad soknad) {
         soknad = lokalDb.hentSoknadMedData(soknad.getSoknadId());
         soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknad.getSoknadId()))
