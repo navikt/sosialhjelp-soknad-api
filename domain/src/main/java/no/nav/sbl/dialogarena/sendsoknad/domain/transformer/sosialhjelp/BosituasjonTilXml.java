@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import java.util.function.Function;
 
 import static no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLKilde.BRUKER;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SoknadSosialhjelpUtils.tilXMLBoolean;
 
 
 public class BosituasjonTilXml implements Function<WebSoknad, XMLBosituasjon> {
@@ -35,15 +36,14 @@ public class BosituasjonTilXml implements Function<WebSoknad, XMLBosituasjon> {
         XMLBosituasjon xmlBosituasjon = new XMLBosituasjon();
 
         if(botypeVerdi.equals("annet")) {
-            xmlBosituasjon.withInstitusjon(new XMLBoolean().withKilde(BRUKER).withValue(Boolean.valueOf(webSoknad.getValueForFaktum("bosituasjon.annen.botype.institusjon"))));
-            xmlBosituasjon.withFengsel(new XMLBoolean().withKilde(BRUKER).withValue(Boolean.valueOf(webSoknad.getValueForFaktum("bosituasjon.annen.botype.fengsel"))));
-            xmlBosituasjon.withForeldre(new XMLBoolean().withKilde(BRUKER).withValue(Boolean.valueOf(webSoknad.getValueForFaktum("bosituasjon.annen.botype.foreldre"))));
-            xmlBosituasjon.withKrisesenter(new XMLBoolean().withKilde(BRUKER).withValue(Boolean.valueOf(webSoknad.getValueForFaktum("bosituasjon.annen.botype.krisesenter"))));
-            xmlBosituasjon.withVenner(new XMLBoolean().withKilde(BRUKER).withValue(Boolean.valueOf(webSoknad.getValueForFaktum("bosituasjon.annen.botype.venner"))));
-            xmlBosituasjon.withFamilie(new XMLBoolean().withKilde(BRUKER).withValue(Boolean.valueOf(webSoknad.getValueForFaktum("bosituasjon.annen.botype.familie"))));
+            xmlBosituasjon.withInstitusjon(tilXMLBoolean(webSoknad, "bosituasjon.annen.botype.institusjon"));
+            xmlBosituasjon.withFengsel(tilXMLBoolean(webSoknad, "bosituasjon.annen.botype.fengsel"));
+            xmlBosituasjon.withForeldre(tilXMLBoolean(webSoknad, "bosituasjon.annen.botype.foreldre"));
+            xmlBosituasjon.withKrisesenter(tilXMLBoolean(webSoknad, "bosituasjon.annen.botype.krisesenter"));
+            xmlBosituasjon.withVenner(tilXMLBoolean(webSoknad, "bosituasjon.annen.botype.venner"));
+            xmlBosituasjon.withFamilie(tilXMLBoolean(webSoknad, "bosituasjon.annen.botype.familie"));
         }
 
-        return xmlBosituasjon
-                .withBotype(botype);
+        return xmlBosituasjon.withBotype(botype);
     }
 }
