@@ -1,19 +1,18 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.DagpengerGjenopptakInformasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.DagpengerOrdinaerInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.InnsendtSoknad;
 import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -71,49 +70,31 @@ public class SoknadMetricsService {
         }
     }
 
-    public void rapporterKompletteOgIkkeKompletteSoknader(XMLVedlegg[] vedlegg, String skjemanummer) {
-        String skjematype;
+    public void rapporterKompletteOgIkkeKompletteSoknader(List<Vedlegg> ikkeInnsendteVedlegg, String skjemanummer) {
 
-        switch (skjemanummer) {
-            case "NAV 04-16.03": skjematype = "DagpengerGjenoppta";
-            break;
-            case "NAV 04-16.04": skjematype = "DagpengerGjenoppta";
-            break;
-            case "NAV 04-01.03": skjematype = "DagpengerOrdinear";
-            break;
-            case "NAV 04-01.04": skjematype = "DagpengerOrdinear";
-            break;
-            default: skjematype = "Annet";
-            break;
-        }
+        if(DagpengerOrdinaerInformasjon.erDagpengerOrdinaer(skjemanummer)
+                || DagpengerGjenopptakInformasjon.erDagpengerGjenopptak(skjemanummer)) {
 
-        Event event = MetricsFactory.createEvent("soknad.innsendingsstatistikk");
+            String skjematype = kravdialogInformasjonHolder.hentKonfigurasjon(skjemanummer).getSoknadTypePrefix();
 
-        List<XMLVedlegg> ikkeInnsendteVedlegg = new ArrayList<>();
-        for (XMLVedlegg xmlVedlegg : vedlegg) {
-            if (!xmlVedlegg.getInnsendingsvalg().equals("LASTET_OPP")) {
-                logger.info(xmlVedlegg.getInnsendingsvalg());
-                ikkeInnsendteVedlegg.add(xmlVedlegg);
+            Event eventForInnsendteSkjema = MetricsFactory.createEvent("soknad.innsendingsstatistikk");
+
+            if (ikkeInnsendteVedlegg.isEmpty()) {
+                eventForInnsendteSkjema.addFieldToReport("soknad.innsendingsstatistikk.komplett", "true");
+            } else {
+                eventForInnsendteSkjema.addFieldToReport("soknad.innsendingsstatistikk.komplett", "false");
+
+                for (Vedlegg vedlegg : ikkeInnsendteVedlegg) {
+                    Event eventForInnsendteVedlegg = MetricsFactory.createEvent("soknad.innsendteVedlegg");
+                    eventForInnsendteVedlegg.addTagToReport("skjemanummer", vedlegg.getSkjemaNummer());
+                    eventForInnsendteVedlegg.addTagToReport("innsendingsvalg", vedlegg.getInnsendingsvalg().name());
+                    eventForInnsendteVedlegg.addTagToReport("skjematype", skjematype);
+                    eventForInnsendteVedlegg.report();
+                }
+
             }
+            eventForInnsendteSkjema.addTagToReport("skjematype", skjematype);
+            eventForInnsendteSkjema.report();
         }
-
-        if (ikkeInnsendteVedlegg.isEmpty()) {
-            event.addFieldToReport("soknad.innsendingsstatistikk.komplett", "true");
-            logger.info("ikke innsendte vedlegg er tom");
-        } else {
-            event.addFieldToReport("soknad.innsendingsstatistikk.komplett", "false");
-            logger.info("ikke innsendte vedlegg har innhold");
-
-            for (XMLVedlegg xmlvedlegg : ikkeInnsendteVedlegg) {
-                Event event2 = MetricsFactory.createEvent("soknad.innsendteVedlegg");
-                event2.addTagToReport("skjemanummer", xmlvedlegg.getSkjemanummer());
-                event2.addTagToReport("innsendingsvalg", xmlvedlegg.getInnsendingsvalg());
-                event2.addTagToReport("skjematype", skjematype);
-                event2.report();
-            }
-
-        }
-        event.addTagToReport("skjematype", skjematype);
-        event.report();
     }
 }
