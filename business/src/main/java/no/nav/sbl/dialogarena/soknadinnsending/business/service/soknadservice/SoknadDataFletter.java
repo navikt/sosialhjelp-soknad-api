@@ -286,8 +286,9 @@ public class SoknadDataFletter {
                         } catch (IllegalArgumentException e) {
                             soknad.medDelstegStatus(DelstegStatus.UTFYLLING);
 
-                            logger.warn("catch IllegalArgumentException " + e.getMessage() + "  -  Søknad med skjemanr: " + soknad.getskjemaNummer()
-                                    + " har ikke gyldig dato-property for faktum " + faktum.getKey());
+                            logger.warn("catch IllegalArgumentException " + e.getMessage()
+                                    + " -  Søknad med skjemanr: " + soknad.getskjemaNummer() +" har ikke gyldig dato-property for faktum " + faktum.getKey()
+                                    + " -  BehandlingId: " + soknad.getBrukerBehandlingId());
 
                             Event event = MetricsFactory.createEvent("stofo.korruptdato");
                             event.addTagToReport("stofo.korruptdato.behandlingId", soknad.getBrukerBehandlingId());
