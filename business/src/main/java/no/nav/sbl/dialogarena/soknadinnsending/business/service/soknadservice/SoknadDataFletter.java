@@ -6,7 +6,6 @@ import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AlleredeHandtertException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
@@ -53,6 +52,7 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur.sa
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.convertToXmlVedleggListe;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.*;
 import static org.slf4j.LoggerFactory.getLogger;
+
 
 @Component
 public class SoknadDataFletter {
@@ -334,7 +334,9 @@ public class SoknadDataFletter {
         henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, vedlegg);
         lokalDb.slettSoknad(soknad.getSoknadId());
 
+        soknadMetricsService.rapporterKompletteOgIkkeKompletteSoknader(soknad.getIkkeInnsendteVedlegg(), soknad.getskjemaNummer());
         soknadMetricsService.sendtSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
+
     }
 
     private XMLHovedskjema lagXmlHovedskjemaMedAlternativRepresentasjon(byte[] pdf, WebSoknad soknad, byte[] fullSoknad) {

@@ -2,6 +2,9 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.DagpengerGjenopptakInformasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.DagpengerOrdinaerInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import org.slf4j.Logger;
@@ -10,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.List;
 import java.util.Map;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -63,6 +67,34 @@ public class SoknadMetricsService {
             Event event = MetricsFactory.createEvent("status.database." + entry.getKey());
             event.addFieldToReport("antall", entry.getValue());
             event.report();
+        }
+    }
+
+    public void rapporterKompletteOgIkkeKompletteSoknader(List<Vedlegg> ikkeInnsendteVedlegg, String skjemanummer) {
+
+        if(DagpengerOrdinaerInformasjon.erDagpengerOrdinaer(skjemanummer)
+                || DagpengerGjenopptakInformasjon.erDagpengerGjenopptak(skjemanummer)) {
+
+            String skjematype = kravdialogInformasjonHolder.hentKonfigurasjon(skjemanummer).getSoknadTypePrefix();
+
+            Event eventForInnsendteSkjema = MetricsFactory.createEvent("soknad.innsendingsstatistikk");
+
+            if (ikkeInnsendteVedlegg.isEmpty()) {
+                eventForInnsendteSkjema.addFieldToReport("soknad.innsendingsstatistikk.komplett", "true");
+            } else {
+                eventForInnsendteSkjema.addFieldToReport("soknad.innsendingsstatistikk.komplett", "false");
+
+                for (Vedlegg vedlegg : ikkeInnsendteVedlegg) {
+                    Event eventForInnsendteVedlegg = MetricsFactory.createEvent("soknad.innsendteVedlegg");
+                    eventForInnsendteVedlegg.addTagToReport("skjemanummer", vedlegg.getSkjemaNummer());
+                    eventForInnsendteVedlegg.addTagToReport("innsendingsvalg", vedlegg.getInnsendingsvalg().name());
+                    eventForInnsendteVedlegg.addTagToReport("skjematype", skjematype);
+                    eventForInnsendteVedlegg.report();
+                }
+
+            }
+            eventForInnsendteSkjema.addTagToReport("skjematype", skjematype);
+            eventForInnsendteSkjema.report();
         }
     }
 }
