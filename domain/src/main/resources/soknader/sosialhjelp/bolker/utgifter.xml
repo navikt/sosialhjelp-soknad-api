@@ -6,56 +6,99 @@
         <panel>utgifter</panel>
     </faktum>
     <faktum>
-        <id>utgifter.boutgift.type</id>
+        <id>utgifter.boutgift.true.type</id>
         <type>checkboxGroup</type>
-        <panel>inntekt</panel>
         <dependOn>utgifter.boutgift</dependOn>
         <dependOnValues>
-            <value>false</value>
+            <value>true</value>
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>utgifter.boutgift.type.husleie</id>
+        <id>utgifter.boutgift.true.type.husleie</id>
         <type>bool</type>
-        <panel>inntekt</panel>
-        <dependOn>utgifter.boutgift.type</dependOn>
+        <dependOn>utgifter.boutgift.true.type</dependOn>
     </faktum>
     <faktum>
-        <id>utgifter.boutgift.type.strom</id>
+        <id>utgifter.boutgift.true.type.strom</id>
         <type>bool</type>
-        <panel>inntekt</panel>
-        <dependOn>utgifter.boutgift.type</dependOn>
+        <dependOn>utgifter.boutgift.true.type</dependOn>
     </faktum>
     <faktum>
-        <id>utgifter.boutgift.type.kommunaleavgifter</id>
+        <id>utgifter.boutgift.true.type.kommunaleavgifter</id>
         <type>bool</type>
-        <panel>inntekt</panel>
-        <dependOn>utgifter.boutgift.type</dependOn>
+        <dependOn>utgifter.boutgift.true.type</dependOn>
     </faktum>
     <faktum>
-        <id>utgifter.boutgift.type.oppvarming</id>
+        <id>utgifter.boutgift.true.type.oppvarming</id>
         <type>bool</type>
-        <panel>inntekt</panel>
-        <dependOn>utgifter.boutgift.type</dependOn>
+        <dependOn>utgifter.boutgift.true.type</dependOn>
     </faktum>
     <faktum>
-        <id>utgifter.boutgift.type.avdraglaan</id>
+        <id>utgifter.boutgift.true.type.avdraglaan</id>
         <type>bool</type>
-        <panel>inntekt</panel>
-        <dependOn>utgifter.boutgift.type</dependOn>
+        <dependOn>utgifter.boutgift.true.type</dependOn>
     </faktum>
     <faktum>
-        <id>utgifter.boutgift.type.andreutgifter</id>
+        <id>utgifter.boutgift.true.type.andreutgifter</id>
         <type>bool</type>
-        <panel>inntekt</panel>
-        <dependOn>utgifter.boutgift.type</dependOn>
+        <dependOn>utgifter.boutgift.true.type</dependOn>
     </faktum>
 
     <faktum>
-        <id>utgifter.boutgift.type.andreutgifter.true.beskrivelse</id>
+        <id>utgifter.boutgift.true.type.andreutgifter.true.beskrivelse</id>
         <type>textbox</type>
-        <panel>inntekt</panel>
-        <dependOn>utgifter.boutgift.type.andreutgifter</dependOn>
+        <dependOn>utgifter.boutgift.true.type.andreutgifter</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+
+
+    <faktum>
+        <id>utgifter.barn</id>
+        <type>bool</type>
+        <panel>utgifter</panel>
+    </faktum>
+
+    <faktum>
+        <id>utgifter.barn.true.utgifter</id>
+        <type>checkboxGroup</type>
+        <dependOn>utgifter.barn</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+
+    <faktum>
+        <id>utgifter.barn.true.utgifter.fritidsaktivitet</id>
+        <type>bool</type>
+        <dependOn>utgifter.barn.true.utgifter</dependOn>
+    </faktum>
+    <faktum>
+        <id>utgifter.barn.true.utgifter.barnehage</id>
+        <type>bool</type>
+        <dependOn>utgifter.barn.true.utgifter</dependOn>
+    </faktum>
+    <faktum>
+        <id>utgifter.barn.true.utgifter.tannbehandling</id>
+        <type>bool</type>
+        <dependOn>utgifter.barn.true.utgifter</dependOn>
+    </faktum>
+    <faktum>
+        <id>utgifter.barn.true.utgifter.helse</id>
+        <type>bool</type>
+        <dependOn>utgifter.barn.true.utgifter</dependOn>
+    </faktum>
+    <faktum>
+        <id>utgifter.barn.true.utgifter.annet</id>
+        <type>bool</type>
+        <dependOn>utgifter.barn.true.utgifter</dependOn>
+    </faktum>
+
+    <faktum>
+        <id>utgifter.barn.true.utgifter.annet.true.beskrivelse</id>
+        <type>textbox</type>
+        <dependOn>utgifter.barn.true.utgifter.annet</dependOn>
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
