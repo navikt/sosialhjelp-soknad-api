@@ -18,19 +18,19 @@ public class UtgifterTilXml implements Function<WebSoknad, XMLUtgifter> {
         String harBoutgifterVerdi = webSoknad.getValueForFaktum("utgifter.boutgift");
         utgifter.withBoutgifter(tilXMLBoolean(Boolean.valueOf(harBoutgifterVerdi)));
 
-        if (harBoutgifterVerdi.equals("false")) {
+        if (harBoutgifterVerdi.equals("true")) {
             utgifter
-                    .withUtgiftHusleie(tilXMLBoolean(webSoknad, "utgifter.boutgift.false.type.husleie"))
-                    .withUtgiftStrom(tilXMLBoolean(webSoknad, "utgifter.boutgift.false.type.strom"))
-                    .withUtgiftKommunaleAvgifter(tilXMLBoolean(webSoknad, "utgifter.boutgift.false.type.kommunaleutgifter"))
-                    .withUtgiftOppvarming(tilXMLBoolean(webSoknad, "utgifter.boutgift.false.type.oppvarming"))
-                    .withUtgiftAvdragRenterBoliglaan(tilXMLBoolean(webSoknad, "utgifter.boutgift.false.type.avdraglaan"));
+                    .withUtgiftHusleie(tilXMLBoolean(webSoknad, "utgifter.boutgift.true.type.husleie"))
+                    .withUtgiftStrom(tilXMLBoolean(webSoknad, "utgifter.boutgift.true.type.strom"))
+                    .withUtgiftKommunaleAvgifter(tilXMLBoolean(webSoknad, "utgifter.boutgift.true.type.kommunaleutgifter"))
+                    .withUtgiftOppvarming(tilXMLBoolean(webSoknad, "utgifter.boutgift.true.type.oppvarming"))
+                    .withUtgiftAvdragRenterBoliglaan(tilXMLBoolean(webSoknad, "utgifter.boutgift.true.type.avdraglaan"));
 
-            Boolean andreUtgifterVerdi = Boolean.valueOf(webSoknad.getValueForFaktum("utgifter.boutgift.false.type.andreutgifter"));
+            Boolean andreUtgifterVerdi = Boolean.valueOf(webSoknad.getValueForFaktum("utgifter.boutgift.true.type.andreutgifter"));
             utgifter.withAndreUtgifter(tilXMLBoolean(andreUtgifterVerdi));
 
             if (andreUtgifterVerdi) {
-                utgifter.withBeskrivelseAndreUtgifter(tilXMLString(webSoknad, "utgifter.boutgift.false.type.andreutgifter.true.beskrivelse"));
+                utgifter.withBeskrivelseAndreUtgifter(tilXMLString(webSoknad, "utgifter.boutgift.true.type.andreutgifter.true.beskrivelse"));
             }
         }
 
