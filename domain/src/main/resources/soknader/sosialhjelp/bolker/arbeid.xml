@@ -3,37 +3,32 @@
     <faktum>
         <id>arbeid.dinsituasjon</id>
         <type>checkboxGroup</type>
-        <panel>arbeid</panel>
+        <panel>arbeidbolk</panel>
     </faktum>
     <faktum>
         <id>arbeid.dinsituasjon.arbeidsledig</id>
         <type>bool</type>
-        <panel>arbeid</panel>
         <dependOn>arbeid.dinsituasjon</dependOn>
     </faktum>
     <faktum>
         <id>arbeid.dinsituasjon.jobb</id>
         <type>bool</type>
-        <panel>arbeid</panel>
         <dependOn>arbeid.dinsituasjon</dependOn>
     </faktum>
     <faktum>
         <id>arbeid.dinsituasjon.student</id>
         <type>bool</type>
-        <panel>arbeid</panel>
         <dependOn>arbeid.dinsituasjon</dependOn>
     </faktum>
     <faktum>
         <id>arbeid.dinsituasjon.annensituasjon</id>
         <type>bool</type>
-        <panel>arbeid</panel>
         <dependOn>arbeid.dinsituasjon</dependOn>
     </faktum>
 
     <faktum>
         <id>arbeid.dinsituasjon.student.heltid</id>
         <type>bool</type>
-        <panel>arbeid</panel>
         <dependOn>arbeid.dinsituasjon.student</dependOn>
         <dependOnValues>
             <value>true</value>
@@ -42,7 +37,6 @@
     <faktum>
         <id>arbeid.dinsituasjon.annensituasjon.beskrivelse</id>
         <type>textbox</type>
-        <panel>arbeid</panel>
         <dependOn>arbeid.dinsituasjon.annensituasjon</dependOn>
         <dependOnValues>
             <value>true</value>

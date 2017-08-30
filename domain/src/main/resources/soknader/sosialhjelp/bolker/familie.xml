@@ -3,16 +3,16 @@
     <faktum>
         <id>familie.sivilstatus</id>
         <type>radio</type>
-        <panel>familie</panel>
+        <panel>familieBolk</panel>
     </faktum>
     <faktum>
         <id>familie.barn</id>
         <type>bool</type>
-        <panel>familie</panel>
+        <panel>familieBolk</panel>
     </faktum>
     <faktum>
         <id>familie.andrebarn</id>
         <type>bool</type>
-        <panel>familie</panel>
+        <panel>familieBolk</panel>
     </faktum>
 </soknad>
