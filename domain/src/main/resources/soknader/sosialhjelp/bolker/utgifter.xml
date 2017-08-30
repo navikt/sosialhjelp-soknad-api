@@ -3,7 +3,7 @@
     <faktum>
         <id>utgifter.boutgift</id>
         <type>bool</type>
-        <panel>utgifter</panel>
+        <panel>utgifterBolk</panel>
     </faktum>
     <faktum>
         <id>utgifter.boutgift.true.type</id>

@@ -3,12 +3,11 @@
     <faktum>
         <id>bosituasjon</id>
         <type>radio</type>
-        <panel>bosituasjon</panel>
+        <panel>bosituasjonBolk</panel>
     </faktum>
     <faktum>
         <id>bosituasjon.annen.botype</id>
         <type>checkboxGroup</type>
-        <panel>bosituasjon</panel>
         <dependOn>bosituasjon</dependOn>
         <dependOnValues><value>annet</value></dependOnValues>
     </faktum>
