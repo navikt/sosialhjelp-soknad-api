@@ -4,6 +4,7 @@
     <xi:include href="../felles/personalia.xml" />
 
     <!-- Bolker -->
+    <xi:include href="bolker/kontakt.xml" />
     <xi:include href="bolker/arbeid.xml" />
     <xi:include href="bolker/familie.xml" />
     <xi:include href="bolker/begrunnelse.xml" />
