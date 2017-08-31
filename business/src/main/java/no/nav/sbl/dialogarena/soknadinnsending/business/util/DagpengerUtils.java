@@ -45,6 +45,21 @@ public class DagpengerUtils {
         return RUTES_I_BRUT;
     }
 
+    public static String konverterSkjemanummerTilTittel(String skjemanummer) {
+        switch (skjemanummer) {
+            case "NAV 04-01.03":
+                return "Ordinær";
+            case "NAV 04-01.04":
+                return "OrdinærPerm";
+            case "NAV 04-16.03":
+                return "Gjenopptak";
+            case "NAV 04-16.04":
+                return "GjenopptakPerm";
+            default:
+                return "Annet";
+        }
+    }
+
     private static String finnSluttaarsakSisteArbeidsforhold(WebSoknad soknad) {
         List<Faktum> sorterteArbeidsforholdIkkePermittert = soknad.getFaktaMedKey("arbeidsforhold").stream()
                 .filter(faktum -> !PERMITTERT.equals(TYPE.transform(faktum)))
