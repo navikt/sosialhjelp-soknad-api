@@ -66,12 +66,12 @@
         <dependOn>inntekt.eierandeler.true.type</dependOn>
     </faktum>
     <faktum>
-        <id>inntekt.eierandeler.false.type.fritidseiendom</id>
+        <id>inntekt.eierandeler.true.type.fritidseiendom</id>
         <type>bool</type>
         <dependOn>inntekt.eierandeler.true.type</dependOn>
     </faktum>
     <faktum>
-        <id>inntekt.eierandeler.false.type.annet</id>
+        <id>inntekt.eierandeler.true.type.annet</id>
         <type>bool</type>
         <dependOn>inntekt.eierandeler.true.type</dependOn>
     </faktum>
