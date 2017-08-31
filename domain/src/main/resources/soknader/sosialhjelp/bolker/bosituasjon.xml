@@ -6,39 +6,39 @@
         <panel>bosituasjonBolk</panel>
     </faktum>
     <faktum>
-        <id>bosituasjon.annen.botype</id>
+        <id>bosituasjon.annet.botype</id>
         <type>checkboxGroup</type>
         <dependOn>bosituasjon</dependOn>
         <dependOnValues><value>annet</value></dependOnValues>
     </faktum>
     <faktum>
-        <id>bosituasjon.annen.botype.institusjon</id>
+        <id>bosituasjon.annet.botype.institusjon</id>
         <type>bool</type>
-        <dependOn>bosituasjon.annen.botype</dependOn>
+        <dependOn>bosituasjon.annet.botype</dependOn>
     </faktum>
     <faktum>
-        <id>bosituasjon.annen.botype.fengsel</id>
+        <id>bosituasjon.annet.botype.fengsel</id>
         <type>bool</type>
-        <dependOn>bosituasjon.annen.botype</dependOn>
+        <dependOn>bosituasjon.annet.botype</dependOn>
     </faktum>
     <faktum>
-        <id>bosituasjon.annen.botype.foreldre</id>
+        <id>bosituasjon.annet.botype.foreldre</id>
         <type>bool</type>
-        <dependOn>bosituasjon.annen.botype</dependOn>
+        <dependOn>bosituasjon.annet.botype</dependOn>
     </faktum>
     <faktum>
-        <id>bosituasjon.annen.botype.krisesenter</id>
+        <id>bosituasjon.annet.botype.krisesenter</id>
         <type>bool</type>
-        <dependOn>bosituasjon.annen.botype</dependOn>
+        <dependOn>bosituasjon.annet.botype</dependOn>
     </faktum>
     <faktum>
-        <id>bosituasjon.annen.botype.venner</id>
+        <id>bosituasjon.annet.botype.venner</id>
         <type>bool</type>
-        <dependOn>bosituasjon.annen.botype</dependOn>
+        <dependOn>bosituasjon.annet.botype</dependOn>
     </faktum>
     <faktum>
-        <id>bosituasjon.annen.botype.familie</id>
+        <id>bosituasjon.annet.botype.familie</id>
         <type>bool</type>
-        <dependOn>bosituasjon.annen.botype</dependOn>
+        <dependOn>bosituasjon.annet.botype</dependOn>
     </faktum>
 </soknad>
