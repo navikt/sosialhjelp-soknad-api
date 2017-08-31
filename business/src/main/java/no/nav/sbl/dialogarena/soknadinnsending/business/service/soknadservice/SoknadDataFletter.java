@@ -334,7 +334,7 @@ public class SoknadDataFletter {
         henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, vedlegg);
         lokalDb.slettSoknad(soknad.getSoknadId());
 
-        soknadMetricsService.rapporterKompletteOgIkkeKompletteSoknader(soknad.getIkkeInnsendteVedlegg(), soknad.getskjemaNummer());
+        soknadMetricsService.rapporterKompletteOgIkkeKompletteSoknader(soknad.getIkkeInnsendteVedlegg(), skjemanummer(soknad));
         soknadMetricsService.sendtSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
 
     }

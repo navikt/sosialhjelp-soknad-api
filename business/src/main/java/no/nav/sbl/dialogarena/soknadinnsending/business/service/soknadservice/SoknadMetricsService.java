@@ -75,26 +75,40 @@ public class SoknadMetricsService {
         if(DagpengerOrdinaerInformasjon.erDagpengerOrdinaer(skjemanummer)
                 || DagpengerGjenopptakInformasjon.erDagpengerGjenopptak(skjemanummer)) {
 
-            String skjematype = kravdialogInformasjonHolder.hentKonfigurasjon(skjemanummer).getSoknadTypePrefix();
-
-            Event eventForInnsendteSkjema = MetricsFactory.createEvent("soknad.innsendingsstatistikk");
+            Event eventForInnsendteSkjema = MetricsFactory.createEvent("soknad.innsendteskjema");
 
             if (ikkeInnsendteVedlegg.isEmpty()) {
-                eventForInnsendteSkjema.addFieldToReport("soknad.innsendingsstatistikk.komplett", "true");
+                eventForInnsendteSkjema.addFieldToReport("soknad.innsendtskjema.komplett", "true");
             } else {
-                eventForInnsendteSkjema.addFieldToReport("soknad.innsendingsstatistikk.komplett", "false");
+                eventForInnsendteSkjema.addFieldToReport("soknad.innsendtskjema.komplett", "false");
 
                 for (Vedlegg vedlegg : ikkeInnsendteVedlegg) {
-                    Event eventForInnsendteVedlegg = MetricsFactory.createEvent("soknad.innsendteVedlegg");
-                    eventForInnsendteVedlegg.addTagToReport("skjemanummer", vedlegg.getSkjemaNummer());
-                    eventForInnsendteVedlegg.addTagToReport("innsendingsvalg", vedlegg.getInnsendingsvalg().name());
-                    eventForInnsendteVedlegg.addTagToReport("skjematype", skjematype);
-                    eventForInnsendteVedlegg.report();
-                }
+                    Event eventForIkkeInnsendteVedlegg = MetricsFactory.createEvent("soknad.ikkeSendtVedlegg");
 
+                    eventForIkkeInnsendteVedlegg.addTagToReport("vedleggskjemanummer", vedlegg.getSkjemaNummer());
+                    eventForIkkeInnsendteVedlegg.addTagToReport("innsendingsvalg", vedlegg.getInnsendingsvalg().name());
+                    eventForIkkeInnsendteVedlegg.addTagToReport("skjematype", konverterSkjemanummerTilTittel(skjemanummer));
+                    eventForIkkeInnsendteVedlegg.report();
+                }
             }
-            eventForInnsendteSkjema.addTagToReport("skjematype", skjematype);
+            logger.info(skjemanummer);
+            eventForInnsendteSkjema.addTagToReport("skjematype", konverterSkjemanummerTilTittel(skjemanummer));
             eventForInnsendteSkjema.report();
+        }
+    }
+
+    public String konverterSkjemanummerTilTittel(String skjemanummer) {
+        switch (skjemanummer) {
+            case "NAV 04-01.03":
+                return "Ordinær";
+            case "NAV 04-01.04":
+                return "OrdinærPerm";
+            case "NAV 04-16.03":
+                return "Gjenopptak";
+            case "NAV 04-16.04":
+                return "GjenopptakPerm";
+            default:
+                return "Annet";
         }
     }
 }
