@@ -7,6 +7,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.DagpengerG
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.DagpengerOrdinaerInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils;
 import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -71,9 +72,10 @@ public class SoknadMetricsService {
     }
 
     public void rapporterKompletteOgIkkeKompletteSoknader(List<Vedlegg> ikkeInnsendteVedlegg, String skjemanummer) {
-
         if(DagpengerOrdinaerInformasjon.erDagpengerOrdinaer(skjemanummer)
                 || DagpengerGjenopptakInformasjon.erDagpengerGjenopptak(skjemanummer)) {
+
+            String skjematype = DagpengerUtils.konverterSkjemanummerTilTittel(skjemanummer);
 
             Event eventForInnsendteSkjema = MetricsFactory.createEvent("soknad.innsendteskjema");
 
@@ -87,28 +89,12 @@ public class SoknadMetricsService {
 
                     eventForIkkeInnsendteVedlegg.addTagToReport("vedleggskjemanummer", vedlegg.getSkjemaNummer());
                     eventForIkkeInnsendteVedlegg.addTagToReport("innsendingsvalg", vedlegg.getInnsendingsvalg().name());
-                    eventForIkkeInnsendteVedlegg.addTagToReport("skjematype", konverterSkjemanummerTilTittel(skjemanummer));
+                    eventForIkkeInnsendteVedlegg.addTagToReport("skjematype", skjematype);
                     eventForIkkeInnsendteVedlegg.report();
                 }
             }
-            logger.info(skjemanummer);
-            eventForInnsendteSkjema.addTagToReport("skjematype", konverterSkjemanummerTilTittel(skjemanummer));
+            eventForInnsendteSkjema.addTagToReport("skjematype", skjematype);
             eventForInnsendteSkjema.report();
-        }
-    }
-
-    public String konverterSkjemanummerTilTittel(String skjemanummer) {
-        switch (skjemanummer) {
-            case "NAV 04-01.03":
-                return "Ordinær";
-            case "NAV 04-01.04":
-                return "OrdinærPerm";
-            case "NAV 04-16.03":
-                return "Gjenopptak";
-            case "NAV 04-16.04":
-                return "GjenopptakPerm";
-            default:
-                return "Annet";
         }
     }
 }
