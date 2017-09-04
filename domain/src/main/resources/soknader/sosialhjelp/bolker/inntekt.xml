@@ -138,7 +138,7 @@
     <faktum>
         <id>inntekt.inntekter</id>
         <type>bool</type>
-        <panel>inntekt</panel>
+        <panel>inntektBolk</panel>
     </faktum>
 
     <faktum>
