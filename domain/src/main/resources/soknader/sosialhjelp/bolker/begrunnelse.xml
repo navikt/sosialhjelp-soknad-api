@@ -4,11 +4,11 @@
         <id>begrunnelse.hvorfor</id>
         <type>textbox</type>
         <optional>true</optional>
-        <panel>begrunnelse</panel>
+        <panel>begrunnelseBolk</panel>
     </faktum>
     <faktum>
         <id>begrunnelse.hva</id>
         <type>textbox</type>
-        <panel>begrunnelse</panel>
+        <panel>begrunnelseBolk</panel>
     </faktum>
 </soknad>

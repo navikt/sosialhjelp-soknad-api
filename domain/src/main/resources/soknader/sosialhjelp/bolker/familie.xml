@@ -3,16 +3,93 @@
     <faktum>
         <id>familie.sivilstatus</id>
         <type>radio</type>
-        <panel>familie</panel>
+        <panel>familieBolk</panel>
     </faktum>
+    <faktum>
+        <id>familie.sivilstatus.gift.navn</id>
+        <type>textbox</type>
+        <dependOn>familie.sivilstatus</dependOn>
+        <dependOnValues>
+            <value>gift</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>familie.sivilstatus.gift.fnr</id>
+        <type>textbox</type>
+        <dependOn>familie.sivilstatus</dependOn>
+        <dependOnValues>
+            <value>gift</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>familie.sivilstatus.gift.pnr</id>
+        <type>textbox</type>
+        <dependOn>familie.sivilstatus</dependOn>
+        <dependOnValues>
+            <value>gift</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>familie.sivilstatus.gift.borsammen</id>
+        <type>bool</type>
+        <dependOn>familie.sivilstatus</dependOn>
+        <dependOnValues>
+            <value>gift</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>familie.sivilstatus.gift.borsammen.false.beskrivelse</id>
+        <type>bool</type>
+        <dependOn>familie.sivilstatus.gift.borsammen</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+
+
     <faktum>
         <id>familie.barn</id>
         <type>bool</type>
-        <panel>familie</panel>
+        <panel>familieBolk</panel>
     </faktum>
     <faktum>
-        <id>familie.andrebarn</id>
+        <id>familie.barn.true.navn</id>
+        <type>textbox</type>
+        <dependOn>familie.barn</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>familie.barn.true.fnr</id>
+        <type>textbox</type>
+        <dependOn>familie.barn</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>familie.barn.true.pnr</id>
+        <type>textbox</type>
+        <dependOn>familie.barn</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>familie.barn.true.borsammen</id>
         <type>bool</type>
-        <panel>familie</panel>
+        <dependOn>familie.barn</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>familie.barn.true.borsammen.true.grad</id>
+        <type>bool</type>
+        <dependOn>familie.barn.true.borsammen</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
     </faktum>
 </soknad>

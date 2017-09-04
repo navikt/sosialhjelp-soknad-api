@@ -1,59 +1,30 @@
 <?xml version="1.0" ?>
 <soknad xmlns="urn:no.nav.sbl">
     <faktum>
-        <id>arbeid.dinsituasjon</id>
-        <type>checkboxGroup</type>
-        <panel>arbeid</panel>
-    </faktum>
-    <faktum>
-        <id>arbeid.dinsituasjon.arbeidsledig</id>
+        <id>dinsituasjon.jobb</id>
         <type>bool</type>
-        <panel>arbeid</panel>
-        <dependOn>arbeid.dinsituasjon</dependOn>
+        <panel>arbeidbolk</panel>
     </faktum>
     <faktum>
-        <id>arbeid.dinsituasjon.jobb</id>
+        <id>dinsituasjon.jobb.true.grad</id>
         <type>bool</type>
-        <panel>arbeid</panel>
-        <dependOn>arbeid.dinsituasjon</dependOn>
-    </faktum>
-    <faktum>
-        <id>arbeid.dinsituasjon.student</id>
-        <type>bool</type>
-        <panel>arbeid</panel>
-        <dependOn>arbeid.dinsituasjon</dependOn>
-    </faktum>
-    <faktum>
-        <id>arbeid.dinsituasjon.annensituasjon</id>
-        <type>bool</type>
-        <panel>arbeid</panel>
-        <dependOn>arbeid.dinsituasjon</dependOn>
-    </faktum>
-
-    <faktum>
-        <id>arbeid.dinsituasjon.student.heltid</id>
-        <type>bool</type>
-        <panel>arbeid</panel>
-        <dependOn>arbeid.dinsituasjon.student</dependOn>
-        <dependOnValues>
-            <value>true</value>
-        </dependOnValues>
-    </faktum>
-    <faktum>
-        <id>arbeid.dinsituasjon.annensituasjon.beskrivelse</id>
-        <type>textbox</type>
-        <panel>arbeid</panel>
-        <dependOn>arbeid.dinsituasjon.annensituasjon</dependOn>
+        <dependOn>dinsituasjon.jobb</dependOn>
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
     </faktum>
 
-    <vedlegg>
-        <faktum>arbeid.dinsituasjon.arbeidsledig</faktum>
-        <skjemaNummer>P5</skjemaNummer>
-        <onValues>
+    <faktum>
+        <id>dinsituasjon.studerer</id>
+        <type>bool</type>
+        <panel>arbeidbolk</panel>
+    </faktum>
+    <faktum>
+        <id>dinsituasjon.studerer.true.grad</id>
+        <type>bool</type>
+        <dependOn>dinsituasjon.studerer</dependOn>
+        <dependOnValues>
             <value>true</value>
-        </onValues>
-    </vedlegg>
+        </dependOnValues>
+    </faktum>
 </soknad>
