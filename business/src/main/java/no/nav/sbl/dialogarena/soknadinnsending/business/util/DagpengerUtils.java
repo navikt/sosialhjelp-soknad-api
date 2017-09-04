@@ -47,16 +47,16 @@ public class DagpengerUtils {
 
     public static String konverterSkjemanummerTilTittel(String skjemanummer) {
         switch (skjemanummer) {
-            case "NAV 04-01.03":
-                return "Ordinær";
-            case "NAV 04-01.04":
-                return "OrdinærPerm";
-            case "NAV 04-16.03":
-                return "Gjenopptak";
-            case "NAV 04-16.04":
-                return "GjenopptakPerm";
+            case DAGPENGER:
+                return "Ordinære Dagpenger";
+            case DAGPENGER_VED_PERMITTERING:
+                return "Ordinære Dagpenger Ved Permittering";
+            case GJENOPPTAK:
+                return "Gjenopptak Av Dagpenger";
+            case GJENOPPTAK_VED_PERMITTERING:
+                return "Gjenopptak Av Dagpenger Ved Permittering";
             default:
-                return "Annet";
+                return skjemanummer;
         }
     }
 
