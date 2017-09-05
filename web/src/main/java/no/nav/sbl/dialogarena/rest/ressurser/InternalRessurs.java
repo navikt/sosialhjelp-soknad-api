@@ -4,7 +4,6 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.context.MethodValueResolver;
 import com.github.jknack.handlebars.io.URLTemplateSource;
-import no.nav.sbl.dialogarena.common.suspend.SuspendServlet;
 import no.nav.sbl.dialogarena.config.ContentConfig;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
@@ -19,10 +18,8 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.URI;
@@ -44,18 +41,6 @@ public class InternalRessurs {
     private PersonPortTypeMock personPortTypeMock = PersonMock.getInstance().getPersonPortTypeMock();
 
     private static final Logger LOG = LoggerFactory.getLogger(InternalRessurs.class);
-
-    @GET
-    @Path("/isAlive")
-    @Produces(MediaType.APPLICATION_JSON)
-    public String isAlive(@Context HttpServletResponse response) throws IOException {
-        if(!SuspendServlet.isRunning()) {
-            response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
-            return "Service is suspended for application update";
-        } else {
-            return "{status: \"ok\", message: \"soknadsapiet fungerer\"}";
-        }
-    }
 
     @POST
     @Path(value = "/lagre")
