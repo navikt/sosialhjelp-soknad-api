@@ -138,6 +138,14 @@
         <url-pattern>/management/suspend</url-pattern>
     </filter-mapping>
     <servlet>
+        <servlet-name>isAlive</servlet-name>
+        <servlet-class>no.nav.sbl.dialogarena.common.suspend.IsAliveServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>isAlive</servlet-name>
+        <url-pattern>/internal/isAlive</url-pattern>
+    </servlet-mapping>
+    <servlet>
         <servlet-name>suspend</servlet-name>
         <servlet-class>no.nav.sbl.dialogarena.common.suspend.SuspendServlet</servlet-class>
         <init-param>
