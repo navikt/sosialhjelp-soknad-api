@@ -78,8 +78,8 @@ public class SoknadStruktur implements Serializable {
 
         return vedlegg.stream()
                 .filter(v -> v != null)
-                .filter(v -> v.getSkjemaNummer().equals(skjemaNr))
-                .filter(v -> v.getSkjemanummerTillegg().equals(tillegg))
+                .filter(v -> Objects.equals(v.getSkjemaNummer(),skjemaNr))
+                .filter(v -> Objects.equals(v.getSkjemanummerTillegg(),tillegg))
                 .collect(toList());
 
     }
