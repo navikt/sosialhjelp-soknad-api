@@ -41,4 +41,30 @@
         <type>bool</type>
         <dependOn>bosituasjon.annet.botype</dependOn>
     </faktum>
+    <faktum>
+        <id>bosituasjon.barnunder18</id>
+        <type>bool</type>
+        <panel>bosituasjonBolk</panel>
+    </faktum>
+    <faktum>
+        <id>bosituasjon.barnunder18.true.antall</id>
+        <type>textbox</type>
+        <dependOn>bosituasjon.barnunder18</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>bosituasjon.personover18</id>
+        <type>bool</type>
+        <panel>bosituasjonBolk</panel>
+    </faktum>
+    <faktum>
+        <id>bosituasjon.personover18.true.antall</id>
+        <type>textbox</type>
+        <dependOn>bosituasjon.personover18</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
 </soknad>
