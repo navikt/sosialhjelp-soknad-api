@@ -1,11 +1,13 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.batch;
 
+import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.common.suspend.SuspendServlet;
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
+import no.nav.metrics.Timer;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -46,10 +48,16 @@ public class LagringsScheduler {
         feilet = 0;
         if (Boolean.valueOf(System.getProperty("sendsoknad.batch.enabled", "true"))) {
             logger.info("Starter flytting av søknader til henvendelse-jobb");
+            Timer batchTimer = MetricsFactory.createTimer("debug.lagringsjobb");
+            batchTimer.start();
 
-            mellomlagre(feilListe);
+            mellomlagre(feilListe, batchTimer);
             leggTilbakeFeilende(feilListe);
 
+            batchTimer.stop();
+            batchTimer.addFieldToReport("vellykket", vellykket);
+            batchTimer.addFieldToReport("feilet", feilet);
+            batchTimer.report();
             logger.info("Jobb fullført: {} vellykket, {} feilet", vellykket, feilet);
         } else {
             logger.warn("Batch disabled. Må sette environment property sendsoknad.batch.enabled til true for å sette den på igjen");
@@ -67,7 +75,7 @@ public class LagringsScheduler {
         }
     }
 
-    private void mellomlagre(List<Optional<WebSoknad>> feilListe) throws InterruptedException {
+    private void mellomlagre(List<Optional<WebSoknad>> feilListe, Timer metrikk) throws InterruptedException {
         for (Optional<WebSoknad> ws = soknadRepository.plukkSoknadTilMellomlagring(); ws.isPresent(); ws = soknadRepository.plukkSoknadTilMellomlagring()) {
             if (isPaabegyntEttersendelse(ws)) {
                 if (!avbrytOgSlettEttersendelse(ws)) {
@@ -81,10 +89,12 @@ public class LagringsScheduler {
             // Avslutt prosessen hvis det er gått for lang tid. Tyder på at noe er nede.
             if (harGaattForLangTid()) {
                 logger.warn("Jobben har kjørt i mer enn {} ms. Den blir derfor terminert", SCHEDULE_INTERRUPT_MS);
+                metrikk.addFieldToReport("avbruttPgaTid", true);
                 return;
             }
             if (!SuspendServlet.isRunning()) {
                 logger.warn("Avbryter jobben da appen skal suspendes");
+                metrikk.addFieldToReport("avbruttPgaAppErSuspendert", true);
                 return;
             }
         }
