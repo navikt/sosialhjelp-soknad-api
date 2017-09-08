@@ -7,6 +7,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.DagpengerG
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.DagpengerOrdinaerInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils;
 import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -71,27 +72,26 @@ public class SoknadMetricsService {
     }
 
     public void rapporterKompletteOgIkkeKompletteSoknader(List<Vedlegg> ikkeInnsendteVedlegg, String skjemanummer) {
-
         if(DagpengerOrdinaerInformasjon.erDagpengerOrdinaer(skjemanummer)
                 || DagpengerGjenopptakInformasjon.erDagpengerGjenopptak(skjemanummer)) {
 
-            String skjematype = kravdialogInformasjonHolder.hentKonfigurasjon(skjemanummer).getSoknadTypePrefix();
+            String skjematype = DagpengerUtils.konverterSkjemanummerTilTittel(skjemanummer);
 
-            Event eventForInnsendteSkjema = MetricsFactory.createEvent("soknad.innsendingsstatistikk");
+            Event eventForInnsendteSkjema = MetricsFactory.createEvent("soknad.innsendteskjema");
 
             if (ikkeInnsendteVedlegg.isEmpty()) {
-                eventForInnsendteSkjema.addFieldToReport("soknad.innsendingsstatistikk.komplett", "true");
+                eventForInnsendteSkjema.addFieldToReport("soknad.innsendtskjema.komplett", "true");
             } else {
-                eventForInnsendteSkjema.addFieldToReport("soknad.innsendingsstatistikk.komplett", "false");
+                eventForInnsendteSkjema.addFieldToReport("soknad.innsendtskjema.komplett", "false");
 
                 for (Vedlegg vedlegg : ikkeInnsendteVedlegg) {
-                    Event eventForInnsendteVedlegg = MetricsFactory.createEvent("soknad.innsendteVedlegg");
-                    eventForInnsendteVedlegg.addTagToReport("skjemanummer", vedlegg.getSkjemaNummer());
-                    eventForInnsendteVedlegg.addTagToReport("innsendingsvalg", vedlegg.getInnsendingsvalg().name());
-                    eventForInnsendteVedlegg.addTagToReport("skjematype", skjematype);
-                    eventForInnsendteVedlegg.report();
-                }
+                    Event eventForIkkeInnsendteVedlegg = MetricsFactory.createEvent("soknad.ikkeSendtVedlegg");
 
+                    eventForIkkeInnsendteVedlegg.addTagToReport("vedleggskjemanummer", vedlegg.getSkjemaNummer());
+                    eventForIkkeInnsendteVedlegg.addTagToReport("innsendingsvalg", vedlegg.getInnsendingsvalg().name());
+                    eventForIkkeInnsendteVedlegg.addTagToReport("skjematype", skjematype);
+                    eventForIkkeInnsendteVedlegg.report();
+                }
             }
             eventForInnsendteSkjema.addTagToReport("skjematype", skjematype);
             eventForInnsendteSkjema.report();
