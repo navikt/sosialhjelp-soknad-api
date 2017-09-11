@@ -150,7 +150,7 @@
         <servlet-class>no.nav.sbl.dialogarena.common.suspend.SuspendServlet</servlet-class>
         <init-param>
             <param-name>shutdownTimeMs</param-name>
-            <param-value>10000</param-value>
+            <param-value>25000</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>
