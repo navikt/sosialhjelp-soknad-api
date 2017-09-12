@@ -58,6 +58,7 @@
         <applicationCertificate alias="srvSendsoknad"/>
         <credential alias="arena.personInfoService" mapToProperty="arena.personInfoService"/>
         <credential alias="arbeidservice" mapToProperty="arbeidservice"/>
+        <credential alias="suspender" />
 
         <fileLibrary alias="soknadforeldrepenger.ledetekster" mapToProperty="folder.foreldrepenger" />
         <fileLibrary alias="soknadaap.ledetekster" mapToProperty="folder.soknadaap" />
@@ -79,4 +80,6 @@
     </security>
 
     <loadBalancer isAlive="/sendsoknad/internal/isAlive"/>
+    <suspend url="/sendsoknad/management/suspend" credential="suspender" timeoutSeconds="25" />
+
 </application>
