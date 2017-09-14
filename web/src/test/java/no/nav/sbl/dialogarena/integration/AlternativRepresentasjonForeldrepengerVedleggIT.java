@@ -284,36 +284,6 @@ public class AlternativRepresentasjonForeldrepengerVedleggIT extends AbstractIT 
         assertThat(soknad.getVedleggListe().getVedleggs()).extracting("skjemanummer").contains(Y4.dokumentTypeId());
     }
 
-    @Test
-    public void skalBareSetteTilleggsinfoForStatusSendesIkkeEllerStatusSendTidligere() {
-        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
-                .faktum("ytelser.sluttpakke").withValue("true").utforEndring()
-                .hentPaakrevdeVedlegg()
-                .vedlegg(Y4).withInnsendingsValg(Status.LastetOpp).withAarsak("aarsak").utforEndring()
-                .hentPaakrevdeVedlegg()
-                .soknad();
-
-        SoeknadsskjemaEngangsstoenad soknad = soknadTester.hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
-        assertThat(singleVedlegg(soknad).getTilleggsinfo()).isNull();
-
-        soknad = soknadTester.hentPaakrevdeVedlegg()
-                .vedlegg(Y4).withInnsendingsValg(Status.VedleggSendesIkke).utforEndring()
-                .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
-        assertThat(singleVedlegg(soknad).getTilleggsinfo()).isEqualTo("aarsak");
-
-        soknad = soknadTester.hentPaakrevdeVedlegg()
-                .vedlegg(Y4).withInnsendingsValg(Status.VedleggSendesAvAndre).utforEndring()
-                .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
-        assertThat(singleVedlegg(soknad).getTilleggsinfo()).isNull();
-
-
-        soknad = soknadTester.hentPaakrevdeVedlegg()
-                .vedlegg(Y4).withInnsendingsValg(Status.VedleggAlleredeSendt).utforEndring()
-                .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
-        assertThat(singleVedlegg(soknad).getTilleggsinfo()).isEqualTo("aarsak");
-    }
-
-
     private Vedlegg singleVedlegg(SoeknadsskjemaEngangsstoenad soknad) {
         List<Vedlegg> vedlegg = soknad.getVedleggListe().getVedleggs();
         assertThat(vedlegg).hasSize(1);
