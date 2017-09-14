@@ -25,7 +25,7 @@ public class RefusjonDagligreiseTilXmlTest {
                 .medProperty("registrert", "false");
         WebSoknad soknad = new WebSoknad().medFaktum(vedtak).medFaktum(betalingsplan);
 
-        AlternativRepresentasjon representasjon = new RefusjonDagligreiseTilXml().apply(soknad);
+        AlternativRepresentasjon representasjon = new RefusjonDagligreiseTilXml().transform(soknad);
 
         assertThat(representasjon.getMimetype()).isEqualTo("application/xml");
         assertThat(representasjon.getFilnavn()).isEqualTo("RefusjonDagligreise.xml");

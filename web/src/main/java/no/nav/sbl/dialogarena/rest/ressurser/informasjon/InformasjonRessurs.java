@@ -5,6 +5,7 @@ import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.rest.Logg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.PersonAlder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.dto.Land;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
@@ -16,6 +17,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.LandService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeid.ArbeidssokerInfoService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService;
 import no.nav.sbl.dialogarena.utils.InnloggetBruker;
+import org.apache.commons.collections15.Transformer;
 import org.apache.commons.lang3.LocaleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,9 +27,9 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import java.util.*;
 
-import static java.util.stream.Collectors.toList;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
+import static no.nav.modig.lang.collections.IterUtils.on;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 
@@ -107,10 +109,14 @@ public class InformasjonRessurs {
         if (sprak == null || sprak.trim().isEmpty()) {
             sprak = "nb_NO";
         }
+        List<KravdialogInformasjon> allKravdialogInformasjon = kravdialogInformasjonHolder.getSoknadsKonfigurasjoner();
 
-        List<String> bundleNames = kravdialogInformasjonHolder.getSoknadsKonfigurasjoner().stream()
-                .map(k -> k.getBundleName())
-                .collect(toList());
+        List<String> bundleNames = on(allKravdialogInformasjon).map(new Transformer<KravdialogInformasjon, String>() {
+            @Override
+            public String transform(KravdialogInformasjon kravdialogInformasjon) {
+                return kravdialogInformasjon.getBundleName();
+            }
+        }).collect();
 
         if(isNotEmpty(type) && !bundleNames.contains(type.toLowerCase())){
             String prefiksetType = new StringBuilder("soknad").append(type.toLowerCase()).toString();

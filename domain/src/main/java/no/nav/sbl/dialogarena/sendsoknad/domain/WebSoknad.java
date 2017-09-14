@@ -120,8 +120,7 @@ public class WebSoknad implements Serializable {
         }
         return vedlegg;
     }
-
-    public List<Vedlegg> hentPaakrevdeVedlegg() {
+    public List<Vedlegg> hentPaakrevdeVedlegg(){
         return getVedlegg().stream().filter(Vedlegg.PAAKREVDE_VEDLEGG).collect(toList());
     }
 
@@ -138,9 +137,9 @@ public class WebSoknad implements Serializable {
     }
 
     public void setFakta(List<Faktum> nyeFakta) {
-        if (nyeFakta == null) {
+        if(nyeFakta == null){
             fakta = new ArrayList<>();
-        } else {
+        }else{
             fakta = nyeFakta;
         }
     }
@@ -194,7 +193,6 @@ public class WebSoknad implements Serializable {
         setBrukerBehandlingId(behandlingsId);
         return this;
     }
-
     public WebSoknad medFaktum(Faktum faktum) {
         getFakta().add(faktum);
         return this;
@@ -219,13 +217,12 @@ public class WebSoknad implements Serializable {
         this.soknadUrl = url;
         return this;
     }
-
-    public WebSoknad medStegliste(Steg[] stegliste) {
+    public WebSoknad medStegliste(Steg[] stegliste){
         this.stegliste = stegliste;
         return this;
     }
 
-    public WebSoknad medFortsettSoknadUrl(String url) {
+    public WebSoknad medFortsettSoknadUrl(String url){
         this.fortsettSoknadUrl = url;
         return this;
     }
@@ -267,7 +264,6 @@ public class WebSoknad implements Serializable {
         this.vedlegg = new ArrayList<>(vedlegg);
         return this;
     }
-
     public WebSoknad medVedlegg(Vedlegg... vedlegg) {
         getVedlegg().addAll(Arrays.asList(vedlegg));
         return this;
@@ -279,7 +275,7 @@ public class WebSoknad implements Serializable {
     }
 
     public List<Faktum> getFaktaMedKey(final String key) {
-        return getFakta().stream().filter(faktum -> faktum.getKey().equals(key)).collect(toList());
+        return getFakta().stream().filter(faktum ->  faktum.getKey().equals(key)).collect(toList());
     }
 
     public Faktum getFaktumMedKey(final String key) {
@@ -455,7 +451,6 @@ public class WebSoknad implements Serializable {
                 .collect(toList())
                 .isEmpty();
     }
-
     public boolean erUnderArbeid() {
         return status.equals(SoknadInnsendingStatus.UNDER_ARBEID);
     }
@@ -468,16 +463,13 @@ public class WebSoknad implements Serializable {
         soknadPrefix = prefix;
         return this;
     }
-
     public String getSoknadPrefix() {
         return soknadPrefix;
     }
-
     public String getSoknadUrl() {
         return soknadUrl;
     }
-
-    public Steg[] getStegliste() {
+    public Steg[] getStegliste(){
         return stegliste;
     }
 
@@ -486,7 +478,7 @@ public class WebSoknad implements Serializable {
     }
 
     public void validerDelstegEndring(DelstegStatus nyStatus) {
-        if (delstegStatus.erEttersending() && !nyStatus.erEttersending()) {
+        if(delstegStatus.erEttersending() && !nyStatus.erEttersending()){
             throw new UgyldigDelstegEndringException(String.format("Kan ikke endre status fra %s til %s", delstegStatus, nyStatus), "soknad.delsteg.endring.ettersending");
         }
     }
@@ -543,11 +535,11 @@ public class WebSoknad implements Serializable {
 
     public void fjernFaktaSomIkkeSkalVaereSynligISoknaden(SoknadStruktur struktur) {
         Iterator<Faktum> iterator = getFakta().iterator();
-        while (iterator.hasNext()) {
+        while(iterator.hasNext()){
             Faktum next = iterator.next();
             FaktumStruktur faktumStruktur = struktur.finnStrukturForKey(next.getKey());
 
-            if (faktumStruktur != null && !faktumStruktur.erSynlig(this, next)) {
+            if(faktumStruktur != null && !faktumStruktur.erSynlig(this, next)){
                 iterator.remove();
             }
         }

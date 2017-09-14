@@ -18,13 +18,23 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
-import javax.ws.rs.*;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.URI;
 
-import static no.nav.sbl.dialogarena.rest.utils.MocksetupUtils.*;
+import static no.nav.sbl.dialogarena.rest.utils.MocksetupUtils.MocksetupFields;
+import static no.nav.sbl.dialogarena.rest.utils.MocksetupUtils.getDiskresjonskode;
+import static no.nav.sbl.dialogarena.rest.utils.MocksetupUtils.getMocksetupFields;
+import static no.nav.sbl.dialogarena.rest.utils.MocksetupUtils.settPostadressetype;
+import static no.nav.sbl.dialogarena.rest.utils.MocksetupUtils.settSekundarAdressetype;
 
 @Controller
 @Path("/internal")
@@ -41,6 +51,13 @@ public class InternalRessurs {
     private PersonPortTypeMock personPortTypeMock = PersonMock.getInstance().getPersonPortTypeMock();
 
     private static final Logger LOG = LoggerFactory.getLogger(InternalRessurs.class);
+
+    @GET
+    @Path("/isAlive")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String isAlive() {
+        return "{status: \"ok\", message: \"soknadsapiet fungerer\"}";
+    }
 
     @POST
     @Path(value = "/lagre")
