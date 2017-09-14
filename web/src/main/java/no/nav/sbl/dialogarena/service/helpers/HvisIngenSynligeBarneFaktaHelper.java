@@ -2,18 +2,24 @@ package no.nav.sbl.dialogarena.service.helpers;
 
 import com.github.jknack.handlebars.Options;
 import no.nav.sbl.dialogarena.service.oppsummering.OppsummeringsFaktum;
+import org.apache.commons.collections15.Predicate;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.function.Predicate;
+
+import static no.nav.modig.lang.collections.IterUtils.*;
 
 @Component
 public class HvisIngenSynligeBarneFaktaHelper extends RegistryAwareHelper<List<? extends OppsummeringsFaktum>> {
 
-    private Predicate<OppsummeringsFaktum> faktaErSynligPredicate(){
-        return oppsummeringsFaktum -> oppsummeringsFaktum.erSynlig();
-    }
+    private Predicate<OppsummeringsFaktum> faktaErSynligPredicate = new Predicate<OppsummeringsFaktum>() {
+        @Override
+        public boolean evaluate(OppsummeringsFaktum oppsummeringsFaktum) {
+            return oppsummeringsFaktum.erSynlig();
+        }
+    };
+
 
     @Override
     public String getNavn() {
@@ -27,7 +33,8 @@ public class HvisIngenSynligeBarneFaktaHelper extends RegistryAwareHelper<List<?
 
     @Override
     public CharSequence apply(List<? extends OppsummeringsFaktum> fakta, Options options) throws IOException {
-        boolean ingenSynlige = fakta.stream().noneMatch(faktaErSynligPredicate());
+        boolean ingenSynlige = on(fakta).filter(faktaErSynligPredicate).isEmpty();
+
         return ingenSynlige ? options.fn() : options.inverse();
     }
 }

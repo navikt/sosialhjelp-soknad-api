@@ -82,6 +82,7 @@ public class InnsendtSoknadService {
         List<Vedlegg> innsendteVedlegg = vedlegg.stream().filter(LASTET_OPP).collect(toList());
         List<Vedlegg> ikkeInnsendteVedlegg = vedlegg.stream().filter(IKKE_LASTET_OPP).collect(toList());
 
+
         return innsendtSoknad
                 .medTittel(hovedskjemaVedlegg.orElse(new Vedlegg()).getTittel())
                 .medBehandlingId(xmlHenvendelse.getBehandlingsId())

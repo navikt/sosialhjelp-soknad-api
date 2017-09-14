@@ -27,7 +27,6 @@ import static no.bekk.bekkopen.person.FodselsnummerValidator.getFodselsnummer;
 import static org.apache.commons.lang3.ArrayUtils.reverse;
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.StringUtils.split;
-import static org.slf4j.LoggerFactory.getLogger;
 
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.ExcessiveClassLength"})
 public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
@@ -49,26 +48,19 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
 
     @Override
     public String fyllHtmlMalMedInnhold(WebSoknad soknad, boolean utvidetSoknad) throws IOException {
-        try {
-            SoknadStruktur soknadStruktur = webSoknadConfig.hentStruktur(soknad.getskjemaNummer());
-            OppsummeringsContext context = new OppsummeringsContext(soknad, soknadStruktur, utvidetSoknad);
-            return getHandlebars()
-                    .infiniteLoops(true)
-                    .compile("/skjema/generisk")
-                    .apply(Context.newBuilder(context)
-                            .resolver(
-                                    JavaBeanValueResolver.INSTANCE,
-                                    FieldValueResolver.INSTANCE,
-                                    MapValueResolver.INSTANCE,
-                                    MethodValueResolver.INSTANCE
-                            )
-                            .build());
-        }catch (IllegalArgumentException e){
-            getLogger(HandleBarKjoerer.class).warn("catch IllegalArgumentException " + e.getMessage()
-                    + " -  Søknad med skjemanr: " + soknad.getskjemaNummer() + "har faktum med ugyldig datoverdi."
-                    + " -  BehandlingId: " + soknad.getBrukerBehandlingId());
-            throw e;
-        }
+        SoknadStruktur soknadStruktur = webSoknadConfig.hentStruktur(soknad.getskjemaNummer());
+        OppsummeringsContext context = new OppsummeringsContext(soknad, soknadStruktur, utvidetSoknad);
+        return getHandlebars()
+                .infiniteLoops(true)
+                .compile("/skjema/generisk")
+                .apply(Context.newBuilder(context)
+                        .resolver(
+                                JavaBeanValueResolver.INSTANCE,
+                                FieldValueResolver.INSTANCE,
+                                MapValueResolver.INSTANCE,
+                                MethodValueResolver.INSTANCE
+                        )
+                        .build());
     }
 
     @Override

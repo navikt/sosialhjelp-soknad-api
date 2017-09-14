@@ -353,22 +353,6 @@ public class SoknadDataFletterTest {
     }
 
     @Test
-    public void skalSetteDelstegTilUtfyllingVedNullVerdiForTilleggsStonader() {
-        WebSoknad soknad = new WebSoknad()
-                .medBehandlingId("123")
-                .medskjemaNummer(SKJEMANUMMER_TILLEGGSSTONAD.get(0))
-                .medId(1L)
-                .medFaktum(
-                        new Faktum()
-                                .medKey("bostotte.samling")
-                                .medProperty("fom", null)
-                                .medProperty("tom", null)
-                );
-        soknad = soknadServiceUtil.sjekkDatoVerdierOgOppdaterDelstegStatus(soknad);
-        assertThat(soknad.getDelstegStatus()).isEqualTo(DelstegStatus.UTFYLLING);
-    }
-
-    @Test
     public void skalIkkeSetteDelstegTilUtfyllingVedGyldigeDatoVerdierForTilleggsStonader() {
         WebSoknad soknad = new WebSoknad()
                 .medBehandlingId("123")

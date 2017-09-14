@@ -15,8 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.stream.Collectors.toList;
+import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.lagDatatypeFactory;
+
 
 
 public final class StofoTransformers {
@@ -30,104 +31,162 @@ public final class StofoTransformers {
     private static DatatypeFactory datatypeFactory = lagDatatypeFactory();
 
     static {
-        TRANSFORMERS.put(String.class, s -> s);
-        TRANSFORMERS.put(Boolean.class, s -> Boolean.valueOf(s));
-        TRANSFORMERS.put(Double.class, s -> Double.valueOf(s.replaceAll(",", ".")));
-        TRANSFORMERS.put(BigInteger.class, s -> new BigInteger(s.replaceAll("[.,][0-9]*", "")));
-        TRANSFORMERS.put(XMLGregorianCalendar.class, s -> datatypeFactory.newXMLGregorianCalendar(DateTime.parse(s).toGregorianCalendar()));
-
-        TRANSFORMERS.put(DrosjeTransportutgifter.class, s -> {
-            DrosjeTransportutgifter drosjeTransportutgifter = new DrosjeTransportutgifter();
-            drosjeTransportutgifter.setBeloep(new BigInteger(s));
-            return drosjeTransportutgifter;
-        });
-
-        TRANSFORMERS.put(Innsendingsintervaller.class, s -> {
-            Innsendingsintervaller innsendingsintervaller = new Innsendingsintervaller();
-            StofoKodeverkVerdier.InnsendingsintervallerKodeverk kodeverk = StofoKodeverkVerdier.InnsendingsintervallerKodeverk.valueOf(s);
-            innsendingsintervaller.setValue(kodeverk != null ? kodeverk.kodeverksverdi : null);
-            return innsendingsintervaller;
-        });
-
-        TRANSFORMERS.put(KollektivTransportutgifter.class, s -> {
-            KollektivTransportutgifter utgift = new KollektivTransportutgifter();
-            utgift.setBeloepPerMaaned(new BigInteger(s));
-            return utgift;
-        });
-
-        TRANSFORMERS.put(Formaal.class, s -> {
-            Formaal formaal = new Formaal();
-            formaal.setKodeverksRef("");
-            StofoKodeverkVerdier.FormaalKodeverk formaalKodeverk = StofoKodeverkVerdier.FormaalKodeverk.valueOf(s);
-            formaal.setValue(formaalKodeverk != null ? formaalKodeverk.kodeverksverdi : null);
-            return formaal;
-        });
-
-        FAKTUM_TRANSFORMERS.put(Periode.class, faktum -> faktumTilPeriode(faktum));
-        FAKTUM_TRANSFORMERS.put(StofoKodeverkVerdier.SammensattAdresse.class, faktum -> new StofoKodeverkVerdier.SammensattAdresse(
-                extractValue(faktum, String.class, "land"),
-                extractValue(faktum, String.class, "adresse"),
-                extractValue(faktum, String.class, "postnr"),
-                extractValue(faktum, String.class, "utenlandskadresse"))
-        );
-        TRANSFORMERS.put(ErUtgifterDekket.class, faktumVerdi -> {
-            ErUtgifterDekket erUtgifterDekket = new ErUtgifterDekket();
-            erUtgifterDekket.setKodeverksRef("");
-            switch (faktumVerdi) {
-                case "ja":
-                    erUtgifterDekket.setValue("JA");
-                    break;
-                case "nei":
-                    erUtgifterDekket.setValue("NEI");
-                    break;
-                case "delvis":
-                    erUtgifterDekket.setValue("DEL");
-                    break;
+        TRANSFORMERS.put(String.class, new Transformer<String, String>() {
+            @Override
+            public String transform(String s) {
+                return s;
             }
-            return erUtgifterDekket;
         });
-        TRANSFORMERS.put(Skolenivaaer.class, faktumVerdi -> {
-            Skolenivaaer skolenivaaer = new Skolenivaaer();
-            skolenivaaer.setKodeverksRef("");
-            skolenivaaer.setValue(StofoKodeverkVerdier.SkolenivaaerKodeverk.valueOf(faktumVerdi).kodeverk);
-            return skolenivaaer;
+        TRANSFORMERS.put(Boolean.class, new Transformer<String, Boolean>() {
+            @Override
+            public Boolean transform(String s) {
+                return Boolean.valueOf(s);
+            }
         });
-        FAKTUM_TRANSFORMERS.put(Tilsynskategorier.class, faktum -> {
-            Tilsynskategorier tilsynskategorier = new Tilsynskategorier();
-            tilsynskategorier.setKodeverksRef("");
-
-            if ("barnehage".equals(faktum.getValue())) {
-                tilsynskategorier.setValue(StofoKodeverkVerdier.TilsynForetasAvKodeverk.barnehage.kodeverksverdi);
+        TRANSFORMERS.put(Double.class, new Transformer<String, Double>() {
+            @Override
+            public Double transform(String s) {
+                return Double.valueOf(s.replaceAll(",", "."));
             }
-            if ("dagmamma".equals(faktum.getValue())) {
-                tilsynskategorier.setValue(StofoKodeverkVerdier.TilsynForetasAvKodeverk.dagmamma.kodeverksverdi);
-            }
-            if ("privat".equals(faktum.getValue())) {
-                tilsynskategorier.setValue(StofoKodeverkVerdier.TilsynForetasAvKodeverk.privat.kodeverksverdi);
-            }
-
-            return tilsynskategorier;
         });
-        FAKTUM_TRANSFORMERS.put(Barn.class, faktum -> {
-            Barn barn = new Barn();
-            barn.setNavn(faktum.getProperties().get("fornavn"));
-
-            if (faktum.getType() == Faktum.FaktumType.BRUKERREGISTRERT) {
-                barn.setPersonidentifikator(faktum.getProperties().get("fodselsdato"));
-            } else {
-                barn.setPersonidentifikator(faktum.getProperties().get("fnr"));
+        TRANSFORMERS.put(BigInteger.class, new Transformer<String, BigInteger>() {
+            @Override
+            public BigInteger transform(String s) {
+                return new BigInteger(s.replaceAll("[.,][0-9]*", ""));
             }
+        });
+        TRANSFORMERS.put(DrosjeTransportutgifter.class, new Transformer<String, DrosjeTransportutgifter>() {
+            @Override
+            public DrosjeTransportutgifter transform(String s) {
+                DrosjeTransportutgifter drosjeTransportutgifter = new DrosjeTransportutgifter();
+                drosjeTransportutgifter.setBeloep(new BigInteger(s));
+                return drosjeTransportutgifter;
+            }
+        });
+        TRANSFORMERS.put(XMLGregorianCalendar.class, new Transformer<String, XMLGregorianCalendar>() {
+            @Override
+            public XMLGregorianCalendar transform(String s) {
+                return datatypeFactory.newXMLGregorianCalendar(DateTime.parse(s).toGregorianCalendar());
+            }
+        });
+        TRANSFORMERS.put(Innsendingsintervaller.class, new Transformer<String, Innsendingsintervaller>() {
+            @Override
+            public Innsendingsintervaller transform(String s) {
+                Innsendingsintervaller innsendingsintervaller = new Innsendingsintervaller();
+                StofoKodeverkVerdier.InnsendingsintervallerKodeverk kodeverk = StofoKodeverkVerdier.InnsendingsintervallerKodeverk.valueOf(s);
+                innsendingsintervaller.setValue(kodeverk != null ? kodeverk.kodeverksverdi : null);
+                return innsendingsintervaller;
+            }
+        });
+        TRANSFORMERS.put(KollektivTransportutgifter.class, new Transformer<String, KollektivTransportutgifter>() {
+            @Override
+            public KollektivTransportutgifter transform(String s) {
+                KollektivTransportutgifter utgift = new KollektivTransportutgifter();
+                utgift.setBeloepPerMaaned(new BigInteger(s));
+                return utgift;
+            }
+        });
+        TRANSFORMERS.put(Formaal.class, new Transformer<String, Formaal>() {
+            @Override
+            public Formaal transform(String s) {
+                Formaal formaal = new Formaal();
+                formaal.setKodeverksRef("");
+                StofoKodeverkVerdier.FormaalKodeverk formaalKodeverk = StofoKodeverkVerdier.FormaalKodeverk.valueOf(s);
+                formaal.setValue(formaalKodeverk != null ? formaalKodeverk.kodeverksverdi : null);
+                return formaal;
+            }
+        });
 
-            return barn;
+        FAKTUM_TRANSFORMERS.put(Periode.class, new Transformer<Faktum, Periode>() {
+            @Override
+            public Periode transform(Faktum faktum) {
+                return faktumTilPeriode(faktum);
+            }
+        });
+        FAKTUM_TRANSFORMERS.put(StofoKodeverkVerdier.SammensattAdresse.class, new Transformer<Faktum, StofoKodeverkVerdier.SammensattAdresse>() {
+            @Override
+            public StofoKodeverkVerdier.SammensattAdresse transform(Faktum faktum) {
+                return new StofoKodeverkVerdier.SammensattAdresse(
+                        extractValue(faktum, String.class, "land"),
+                        extractValue(faktum, String.class, "adresse"),
+                        extractValue(faktum, String.class, "postnr"),
+                        extractValue(faktum, String.class, "utenlandskadresse"));
+            }
+        });
+        TRANSFORMERS.put(ErUtgifterDekket.class, new Transformer<String, ErUtgifterDekket>() {
+            @Override
+            public ErUtgifterDekket transform(String faktumVerdi) {
+                ErUtgifterDekket erUtgifterDekket = new ErUtgifterDekket();
+                erUtgifterDekket.setKodeverksRef("");
+                switch (faktumVerdi) {
+                    case "ja":
+                        erUtgifterDekket.setValue("JA");
+                        break;
+                    case "nei":
+                        erUtgifterDekket.setValue("NEI");
+                        break;
+                    case "delvis":
+                        erUtgifterDekket.setValue("DEL");
+                        break;
+                }
+                return erUtgifterDekket;
+            }
+        });
+        TRANSFORMERS.put(Skolenivaaer.class, new Transformer<String, Skolenivaaer>() {
+            @Override
+            public Skolenivaaer transform(String faktumVerdi) {
+                Skolenivaaer skolenivaaer = new Skolenivaaer();
+                skolenivaaer.setKodeverksRef("");
+                skolenivaaer.setValue(StofoKodeverkVerdier.SkolenivaaerKodeverk.valueOf(faktumVerdi).kodeverk);
+                return skolenivaaer;
+            }
+        });
+        FAKTUM_TRANSFORMERS.put(Tilsynskategorier.class, new Transformer<Faktum, Tilsynskategorier>() {
+            @Override
+            public Tilsynskategorier transform(Faktum faktum) {
+                Tilsynskategorier tilsynskategorier = new Tilsynskategorier();
+                tilsynskategorier.setKodeverksRef("");
+
+                if ("barnehage".equals(faktum.getValue())) {
+                    tilsynskategorier.setValue(StofoKodeverkVerdier.TilsynForetasAvKodeverk.barnehage.kodeverksverdi);
+                }
+                if ("dagmamma".equals(faktum.getValue())) {
+                    tilsynskategorier.setValue(StofoKodeverkVerdier.TilsynForetasAvKodeverk.dagmamma.kodeverksverdi);
+                }
+                if ("privat".equals(faktum.getValue())) {
+                    tilsynskategorier.setValue(StofoKodeverkVerdier.TilsynForetasAvKodeverk.privat.kodeverksverdi);
+                }
+
+                return tilsynskategorier;
+            }
+        });
+        FAKTUM_TRANSFORMERS.put(Barn.class, new Transformer<Faktum, Barn>() {
+            @Override
+            public Barn transform(Faktum faktum) {
+                Barn barn = new Barn();
+                barn.setNavn(faktum.getProperties().get("fornavn"));
+
+                if (faktum.getType() == Faktum.FaktumType.BRUKERREGISTRERT) {
+                    barn.setPersonidentifikator(faktum.getProperties().get("fodselsdato"));
+                } else {
+                    barn.setPersonidentifikator(faktum.getProperties().get("fnr"));
+                }
+
+                return barn;
+            }
         });
     }
 
     public static <T> T extractValue(Faktum faktum, Class<T> clazz) {
         return extractValue(faktum, clazz, null);
     }
-
     public static <T> List<T> extractValue(List<Faktum> fakta, final Class<T> clazz) {
-        return fakta.stream().map(faktum -> extractValue(faktum, clazz, null)).collect(toList());
+        return on(fakta).map(new Transformer<Faktum, T>() {
+            @Override
+            public T transform(Faktum faktum) {
+                return extractValue(faktum, clazz, null);
+            }
+        }).collect();
     }
 
     @SuppressWarnings("unchecked")
@@ -176,7 +235,6 @@ public final class StofoTransformers {
     public static Double sumDouble(Faktum... fakta) {
         return sumDouble(null, fakta);
     }
-
     public static Double sumDouble(String property, Faktum... fakta) {
         Double sum = 0D;
         for (Faktum faktum : fakta) {

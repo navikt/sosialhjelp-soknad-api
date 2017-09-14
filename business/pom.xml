@@ -34,6 +34,10 @@
         </dependency>
         <dependency>
             <groupId>no.nav.modig</groupId>
+            <artifactId>modig-lang</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.modig</groupId>
             <artifactId>modig-security-core</artifactId>
         </dependency>
         <dependency>
@@ -136,10 +140,6 @@
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>common-types</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>common-suspend</artifactId>
         </dependency>
 
         <!-- Avhengigheter med runtime-scope -->

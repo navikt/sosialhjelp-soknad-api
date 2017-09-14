@@ -19,10 +19,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.ws.soap.SOAPFaultException;
 import java.util.List;
-import java.util.Optional;
 
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.IKKE_VALGT;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
+import static no.nav.modig.lang.option.Optional.optional;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.SoknadType.SEND_SOKNAD;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.SoknadType.SEND_SOKNAD_ETTERSENDING;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -51,8 +51,7 @@ public class HenvendelseService {
 
     public String startEttersending(WSHentSoknadResponse soknadResponse) {
         logger.info("Starter ettersending");
-
-        String behandlingskjedeId = Optional.ofNullable(soknadResponse.getBehandlingskjedeId()).orElse(soknadResponse.getBehandlingsId());
+        String behandlingskjedeId = optional(soknadResponse.getBehandlingskjedeId()).getOrElse(soknadResponse.getBehandlingsId());
 
         return opprettSoknadIHenvendelse(
                 lagOpprettSoknadRequest(getSubjectHandler().getUid(), SEND_SOKNAD_ETTERSENDING, (XMLMetadataListe) soknadResponse.getAny())

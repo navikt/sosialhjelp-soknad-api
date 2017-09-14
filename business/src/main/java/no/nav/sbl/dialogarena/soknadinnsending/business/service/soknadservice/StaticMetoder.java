@@ -2,14 +2,19 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadata;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
+import org.apache.commons.collections15.Transformer;
 import org.joda.time.DateTime;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 
+import static no.nav.modig.lang.collections.IterUtils.on;
+import static no.nav.modig.lang.collections.PredicateUtils.equalTo;
+import static no.nav.modig.lang.collections.PredicateUtils.where;
 import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.KVITTERING;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.getJournalforendeEnhet;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.getSkjemanummer;
@@ -31,13 +36,16 @@ public class StaticMetoder {
         return journalforendeEnhet;
     }
 
+    public static final Transformer<WSBehandlingskjedeElement, String> BEHANDLINGS_ID = input -> input.getBehandlingsId();
+
+
     public static Predicate<XMLMetadata> IKKE_KVITTERING = xmlMetadata ->
             !(xmlMetadata instanceof XMLVedlegg && KVITTERING.equals(((XMLVedlegg) xmlMetadata).getSkjemanummer()));
 
     public static DateTime hentOrginalInnsendtDato(List<WSBehandlingskjedeElement> behandlingskjede, String behandlingsId) {
-        return behandlingskjede.stream()
-                .filter(element-> element.getBehandlingsId().equals(behandlingsId))
-                .findFirst()
+        return on(behandlingskjede)
+                .filter(where(BEHANDLINGS_ID, equalTo(behandlingsId)))
+                .head()
                 .get()
                 .getInnsendtDato();
     }

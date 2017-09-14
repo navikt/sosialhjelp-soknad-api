@@ -7,7 +7,7 @@ import org.springframework.context.*;
 
 import java.util.*;
 
-import static java.util.stream.Collectors.toList;
+import static no.nav.modig.lang.collections.IterUtils.*;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.FaktumPredicates.*;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.StofoTransformers.*;
 import static org.apache.commons.lang3.BooleanUtils.*;
@@ -35,7 +35,7 @@ public class TilsynBarnepassTilXml extends CmsTransformer<WebSoknad, Tilsynsutgi
     }
 
     private void barnSomDetSokesBarnepassOm(WebSoknad soknad) {
-        List<Faktum> sokerBarnepassBarn = soknad.getFaktaMedKey(SOKERBARNEPASS).stream().filter(harValue("true")).collect(toList());
+        List<Faktum> sokerBarnepassBarn = on(soknad.getFaktaMedKey(SOKERBARNEPASS)).filter(harValue("true")).collect();
         for (Faktum barnepass : sokerBarnepassBarn) {
             Faktum barn = soknad.finnFaktum(Long.valueOf(barnepass.getProperties().get("tilknyttetbarn")));
             if (barn != null) {

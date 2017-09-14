@@ -6,6 +6,7 @@ import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AlleredeHandtertException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
@@ -36,6 +37,7 @@ import javax.inject.Named;
 import java.io.ByteArrayInputStream;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.sort;
 import static java.util.UUID.randomUUID;
@@ -51,7 +53,6 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur.sa
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.convertToXmlVedleggListe;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.*;
 import static org.slf4j.LoggerFactory.getLogger;
-
 
 @Component
 public class SoknadDataFletter {
@@ -262,60 +263,36 @@ public class SoknadDataFletter {
         return erForbiUtfyllingssteget(soknad) ? sjekkDatoVerdierOgOppdaterDelstegStatus(soknad) : soknad;
     }
 
-    private boolean erForbiUtfyllingssteget(WebSoknad soknad) {
+    private boolean erForbiUtfyllingssteget(WebSoknad soknad){
         return !(soknad.getDelstegStatus() == DelstegStatus.OPPRETTET ||
                 soknad.getDelstegStatus() == DelstegStatus.UTFYLLING);
     }
 
     public WebSoknad sjekkDatoVerdierOgOppdaterDelstegStatus(WebSoknad soknad) {
         SoknadTilleggsstonader soknadTilleggsstonader = new SoknadTilleggsstonader();
-        DateTimeFormatter formaterer = DateTimeFormat.forPattern("yyyy-MM-dd");
 
         if (soknadTilleggsstonader.getSkjemanummer().contains(soknad.getskjemaNummer())) {
-            soknad.getFakta().stream()
-                    .filter(erFaktumViVetFeiler)
-                    .forEach(faktum -> {
-                        try {
-                            faktum.getProperties().entrySet().stream()
-                                    .filter(isDatoProperty)
-                                    .forEach(property -> {
-                                        if (property.getValue() == null) {
-                                            throw new IllegalArgumentException("Invalid format: value = null");
-                                        }
-                                        formaterer.parseLocalDate(property.getValue());
-                                    });
-                        } catch (IllegalArgumentException e) {
-                            soknad.medDelstegStatus(DelstegStatus.UTFYLLING);
+            List<Faktum> periodeFaktum = soknad.getFaktaMedKey("bostotte.samling")
+                    .stream()
+                    .filter(faktum -> faktum.hasEgenskap("fom"))
+                    .filter(faktum -> faktum.hasEgenskap("tom"))
+                    .collect(Collectors.toList());
 
-                            logger.warn("catch IllegalArgumentException " + e.getMessage()
-                                    + " -  Søknad med skjemanr: " + soknad.getskjemaNummer() +" har ikke gyldig dato-property for faktum " + faktum.getKey()
-                                    + " -  BehandlingId: " + soknad.getBrukerBehandlingId());
-
-                            Event event = MetricsFactory.createEvent("stofo.korruptdato");
-                            event.addTagToReport("stofo.korruptdato.behandlingId", soknad.getBrukerBehandlingId());
-                            event.report();
-                        }
-                    });
+            for (Faktum datofaktum : periodeFaktum) {
+                DateTimeFormatter formaterer = DateTimeFormat.forPattern("yyyy-MM-dd");
+                try {
+                    formaterer.parseLocalDate(datofaktum.getProperties().get("fom"));
+                    formaterer.parseLocalDate(datofaktum.getProperties().get("tom"));
+                } catch (IllegalArgumentException e) {
+                    soknad.medDelstegStatus(DelstegStatus.UTFYLLING);
+                    Event event = MetricsFactory.createEvent("stofo.korruptdato");
+                    event.addTagToReport("stofo.korruptdato.behandlingId", soknad.getBrukerBehandlingId());
+                    event.report();
+                }
+            }
         }
         return soknad;
     }
-
-    private Predicate<Map.Entry<String, String>> isDatoProperty = property -> {
-        List<String> datoKeys = new ArrayList<>();
-        datoKeys.add("tom");
-        datoKeys.add("fom");
-        return datoKeys.contains(property.getKey());
-    };
-
-
-
-    private Predicate<Faktum> erFaktumViVetFeiler = faktum -> {
-        List<String> faktumFeilerKeys = new ArrayList<>();
-        faktumFeilerKeys.add("reise.samling.fleresamlinger.samling");
-        faktumFeilerKeys.add("reise.samling.aktivitetsperiode");
-        faktumFeilerKeys.add("bostotte.samling");
-        return faktumFeilerKeys.contains(faktum.getKey());
-    };
 
     private WebSoknad populerSoknadMedData(boolean populerSystemfakta, WebSoknad soknad) {
         soknad = lokalDb.hentSoknadMedData(soknad.getSoknadId());
@@ -357,9 +334,7 @@ public class SoknadDataFletter {
         henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, vedlegg);
         lokalDb.slettSoknad(soknad.getSoknadId());
 
-        soknadMetricsService.rapporterKompletteOgIkkeKompletteSoknader(soknad.getIkkeInnsendteVedlegg(), skjemanummer(soknad));
         soknadMetricsService.sendtSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
-
     }
 
     private XMLHovedskjema lagXmlHovedskjemaMedAlternativRepresentasjon(byte[] pdf, WebSoknad soknad, byte[] fullSoknad) {
