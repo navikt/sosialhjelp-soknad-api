@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.tilleggsstonader;
 
-import org.apache.commons.collections15.Transformer;
+import java.util.function.Function;
 
 public class StofoKodeverkVerdier {
     public static final class SammensattAdresse {
@@ -85,14 +85,11 @@ public class StofoKodeverkVerdier {
             this.stofoString = stofoString;
         }
 
-        public static final Transformer<String, String> TRANSFORMER = new Transformer<String, String>() {
-            @Override
-            public String transform(String kodeverk) {
-                try {
-                    return TilsynForetasAv.valueOf(kodeverk).stofoString;
-                } catch (IllegalArgumentException ignore) {
-                    return "";
-                }
+        public static final Function<String, String> TO_TILSYN_FORETAS_AV_ENUM = kodeverk -> {
+            try {
+                return TilsynForetasAv.valueOf(kodeverk).stofoString;
+            } catch (IllegalArgumentException ignore) {
+                return "";
             }
         };
     }
