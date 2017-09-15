@@ -9,18 +9,20 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresenta
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import org.apache.commons.collections15.Transformer;
 import org.joda.time.LocalDate;
 
 import javax.xml.bind.JAXB;
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
+import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
 
-import static no.nav.modig.lang.collections.IterUtils.on;
+import static java.util.stream.Collectors.toList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.FaktumPredicates.harPropertyMedValue;
 
 public class RefusjonDagligreiseTilXml implements AlternativRepresentasjonTransformer {
+
     @Override
     public AlternativRepresentasjonType getRepresentasjonsType() {
         return AlternativRepresentasjonType.XML;
@@ -28,18 +30,41 @@ public class RefusjonDagligreiseTilXml implements AlternativRepresentasjonTransf
 
     @Override
     public AlternativRepresentasjon apply(WebSoknad webSoknad) {
-        return transform(webSoknad);
+        PaaloepteUtgifter refusjonDagligreise = refusjonDagligreise(webSoknad);
+        ByteArrayOutputStream xml = new ByteArrayOutputStream();
+        JAXB.marshal(refusjonDagligreise, xml);
+        return new AlternativRepresentasjon()
+                .medMimetype("application/xml")
+                .medFilnavn("RefusjonDagligreise.xml")
+                .medUuid(UUID.randomUUID().toString())
+                .medContent(xml.toByteArray());
     }
 
-    private static final class FaktumTilUtgiftsperiode implements Transformer<Faktum, Utgiftsperioder> {
+    public static PaaloepteUtgifter refusjonDagligreise(WebSoknad webSoknad) {
+        PaaloepteUtgifter skjema = new PaaloepteUtgifter();
+        Faktum vedtak = webSoknad.getFaktumMedKey("vedtak");
+        boolean trengerParkering = "true".equals(vedtak.getProperties().get("trengerParkering"));
+        FaktumTilUtgiftsperiode faktumTilUtgiftsperiode = new FaktumTilUtgiftsperiode(trengerParkering);
+
+        skjema.setVedtaksId(vedtak.getProperties().get("id"));
+        List<Utgiftsperioder> utgiftsperioder = webSoknad.getFaktaMedKey("vedtak.betalingsplan").stream()
+                .filter(harPropertyMedValue("registrert", "true"))
+                .map(faktumTilUtgiftsperiode)
+                .collect(toList());
+        skjema.getUtgiftsperioder().addAll(utgiftsperioder);
+
+        return skjema;
+    }
+
+    private static final class FaktumTilUtgiftsperiode implements Function<Faktum, Utgiftsperioder> {
         private Boolean trengerParkering;
 
-        public FaktumTilUtgiftsperiode(Boolean trengerParkering) {
+        FaktumTilUtgiftsperiode(Boolean trengerParkering) {
             this.trengerParkering = trengerParkering;
         }
 
         @Override
-        public Utgiftsperioder transform(Faktum faktum) {
+        public Utgiftsperioder apply(Faktum faktum) {
             Utgiftsperioder utgiftsperioder = new Utgiftsperioder();
             utgiftsperioder.setBetalingsplanId(faktum.getProperties().get("id"));
 
@@ -76,27 +101,4 @@ public class RefusjonDagligreiseTilXml implements AlternativRepresentasjonTransf
         }
     }
 
-    public static PaaloepteUtgifter refusjonDagligreise(WebSoknad webSoknad) {
-        PaaloepteUtgifter skjema = new PaaloepteUtgifter();
-        Faktum vedtak = webSoknad.getFaktumMedKey("vedtak");
-        FaktumTilUtgiftsperiode faktumTransformer = new FaktumTilUtgiftsperiode("true".equals(vedtak.getProperties().get("trengerParkering")));
-
-        skjema.setVedtaksId(vedtak.getProperties().get("id"));
-        skjema.getUtgiftsperioder().addAll(on(webSoknad.getFaktaMedKey("vedtak.betalingsplan"))
-                .filter(harPropertyMedValue("registrert", "true"))
-                .map(faktumTransformer).collect());
-
-        return skjema;
-    }
-
-    public AlternativRepresentasjon transform(WebSoknad webSoknad) {
-        PaaloepteUtgifter refusjonDagligreise = refusjonDagligreise(webSoknad);
-        ByteArrayOutputStream xml = new ByteArrayOutputStream();
-        JAXB.marshal(refusjonDagligreise, xml);
-        return new AlternativRepresentasjon()
-                .medMimetype("application/xml")
-                .medFilnavn("RefusjonDagligreise.xml")
-                .medUuid(UUID.randomUUID().toString())
-                .medContent(xml.toByteArray());
-    }
 }
