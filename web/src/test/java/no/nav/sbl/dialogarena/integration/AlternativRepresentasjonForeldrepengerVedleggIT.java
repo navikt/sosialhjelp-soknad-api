@@ -284,6 +284,39 @@ public class AlternativRepresentasjonForeldrepengerVedleggIT extends AbstractIT 
         assertThat(soknad.getVedleggListe().getVedleggs()).extracting("skjemanummer").contains(Y4.dokumentTypeId());
     }
 
+    @Test
+    public void skalSetteTilleggsinfoForVedleggSomIkkeErLastetOpp() {
+        SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
+                .faktum("ytelser.sluttpakke").withValue("true").utforEndring()
+                .hentPaakrevdeVedlegg()
+                .vedlegg(Y4).withInnsendingsValg(Status.LastetOpp).utforEndring()
+                .hentPaakrevdeVedlegg()
+                .soknad();
+
+        SoeknadsskjemaEngangsstoenad soknad = soknadTester.hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+        assertThat(singleVedlegg(soknad).getTilleggsinfo()).isNull();
+
+        soknad = soknadTester.hentPaakrevdeVedlegg()
+                .vedlegg(Y4).withInnsendingsValg(Status.VedleggSendesIkke).withAarsak("aarsak").utforEndring()
+                .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+        assertThat(singleVedlegg(soknad).getTilleggsinfo()).isEqualTo("aarsak");
+
+        soknad = soknadTester.hentPaakrevdeVedlegg()
+                .vedlegg(Y4).withInnsendingsValg(Status.VedleggSendesAvAndre).withAarsak("aarsak").utforEndring()
+                .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+        assertThat(singleVedlegg(soknad).getTilleggsinfo()).isEqualTo("aarsak");
+
+        soknad = soknadTester.hentPaakrevdeVedlegg()
+                .vedlegg(Y4).withInnsendingsValg(Status.VedleggAlleredeSendt).withAarsak("aarsak").utforEndring()
+                .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+        assertThat(singleVedlegg(soknad).getTilleggsinfo()).isEqualTo("aarsak");
+
+        soknad = soknadTester.hentPaakrevdeVedlegg()
+                .vedlegg(Y4).withInnsendingsValg(Status.SendesSenere).withAarsak("aarsak").utforEndring()
+                .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+        assertThat(singleVedlegg(soknad).getTilleggsinfo()).isEqualTo("aarsak");
+    }
+
     private Vedlegg singleVedlegg(SoeknadsskjemaEngangsstoenad soknad) {
         List<Vedlegg> vedlegg = soknad.getVedleggListe().getVedleggs();
         assertThat(vedlegg).hasSize(1);
