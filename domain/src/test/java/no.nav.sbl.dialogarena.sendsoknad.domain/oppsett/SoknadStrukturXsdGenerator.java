@@ -62,7 +62,6 @@ public class SoknadStrukturXsdGenerator {
     private String fiksTingDerViErUenigMedJaxbMenFortsattVilHaTingAutogenerert(String skjemaStreng) {
         String fiksetSkjema = gjorConfigOptional(skjemaStreng);
         fiksetSkjema = gjorAtSoknadElementerKanLiggeIVilkarligRekkefolge(fiksetSkjema);
-        fiksetSkjema = tvingConstraintFaktumTilAVaereDefinert(fiksetSkjema);
         fiksetSkjema = endreLineEndingsFraJaxb(fiksetSkjema);
 
         return fiksetSkjema;
@@ -80,10 +79,6 @@ public class SoknadStrukturXsdGenerator {
         matcher.appendReplacement(sb, "<xs:complexType name=\"soknadStruktur\">" + matcher.group(1) + "<xs:choice maxOccurs=\"unbounded\">" + matcher.group(2) + "</xs:choice>");
         matcher.appendTail(sb);
         return sb.toString();
-    }
-
-    private String tvingConstraintFaktumTilAVaereDefinert(String skjemaStreng) {
-        return skjemaStreng.replace("<xs:element name=\"faktum\" type=\"xs:string\" minOccurs=\"0\"/>", "<xs:element name=\"faktum\" type=\"xs:IDREF\" minOccurs=\"0\"/>");
     }
 
     private String endreLineEndingsFraJaxb(String skjemaStreng) {

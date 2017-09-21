@@ -32,7 +32,7 @@ public class HvisFaktumstrukturHarInfoteksterHelperTest {
         Faktum contrainedFaktum = new Faktum().medKey("etfaktum").medProperty("prop", "11");
         FaktumStruktur faktumStruktur = new FaktumStruktur();
         TekstStruktur tekstStruktur = new TekstStruktur();
-        Constraint constraint = new Constraint("etfaktum", "properties['prop'] > 10");
+        Constraint constraint = new Constraint(new FaktumStruktur().medId("etfaktum"), "properties['prop'] > 10");
         WebSoknad webSoknad = new WebSoknad().medFaktum(contrainedFaktum);
 
         tekstStruktur.setKey("enkey");
@@ -55,7 +55,7 @@ public class HvisFaktumstrukturHarInfoteksterHelperTest {
         Faktum contrainedFaktum = new Faktum().medKey("etfaktum").medProperty("prop", "5");
         FaktumStruktur faktumStruktur = new FaktumStruktur();
         TekstStruktur tekstStruktur = new TekstStruktur();
-        Constraint constraint = new Constraint("etfaktum", "properties['prop'] > 10");
+        Constraint constraint = new Constraint(new FaktumStruktur().medId("etfaktum"), "properties['prop'] > 10");
         WebSoknad webSoknad = new WebSoknad().medFaktum(contrainedFaktum);
 
         tekstStruktur.setKey("enkey");
