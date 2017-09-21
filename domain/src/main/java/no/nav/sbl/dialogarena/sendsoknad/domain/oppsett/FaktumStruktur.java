@@ -248,9 +248,20 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
         boolean result = false;
         for (Constraint constraint : constraints) {
             Faktum constraintFaktum = getConstraintFaktum(constraint, soknad, faktum);
-            result = result || ForventningsSjekker.sjekkForventning(constraint.getExpression(), constraintFaktum);
+
+            boolean constrainedErSynlig = constrainedErSynlig(soknad, constraint.getFaktumStruktur(), constraintFaktum);
+            boolean forventningOppfylt = ForventningsSjekker.sjekkForventning(constraint.getExpression(), constraintFaktum);
+
+            result = result || (constrainedErSynlig && forventningOppfylt);
         }
         return result;
+    }
+
+    private boolean constrainedErSynlig(WebSoknad soknad, FaktumStruktur constraintStruktur, Faktum constraintFaktum) {
+        if (constraintStruktur == null || constraintStruktur == this) {
+            return true;
+        }
+        return constraintStruktur.erSynlig(soknad, constraintFaktum);
     }
 
     public List<TekstStruktur> getInfotekster(WebSoknad soknad, Faktum faktum) {
@@ -301,8 +312,8 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
 
     private Faktum getConstraintFaktum(Constraint constraint, WebSoknad soknad, Faktum faktum) {
         Faktum constraintFaktum = faktum;
-        if (constraint.getFaktum() != null && !constraint.getFaktum().isEmpty()) {
-            constraintFaktum = soknad.getFaktumMedKey(constraint.getFaktum());
+        if (constraint.getFaktumStruktur() != null) {
+            constraintFaktum = soknad.getFaktumMedKey(constraint.getFaktumStruktur().id);
         }
         return constraintFaktum;
     }
