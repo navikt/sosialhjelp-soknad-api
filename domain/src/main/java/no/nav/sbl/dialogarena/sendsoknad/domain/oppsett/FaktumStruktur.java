@@ -258,7 +258,7 @@ public class FaktumStruktur implements Serializable, StrukturConfigurable {
     }
 
     private boolean constrainedErSynlig(WebSoknad soknad, FaktumStruktur constraintStruktur, Faktum constraintFaktum) {
-        if (constraintStruktur == null || constraintStruktur == this) {
+        if (constraintStruktur == null || constraintStruktur.equals(this)) {
             return true;
         }
         return constraintStruktur.erSynlig(soknad, constraintFaktum);
