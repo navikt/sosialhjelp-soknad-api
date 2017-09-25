@@ -58,8 +58,9 @@ public class SynligeFaktaServiceTest {
     public void returnererSynligeFakta() {
         List<FaktumStruktur> synligeFakta = synligeFaktaService.finnSynligeFaktaForSoknad("10000BBB", "panel1");
 
-        assertEquals(1, synligeFakta.size());
-        assertEquals("key1.spm1", synligeFakta.get(0).getId());
+        assertEquals(2, synligeFakta.size());
+        assertEquals("hidden", synligeFakta.get(0).getType());
+        assertEquals("key1.spm1", synligeFakta.get(1).getId());
     }
 
 }

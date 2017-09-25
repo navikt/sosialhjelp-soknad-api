@@ -22,7 +22,6 @@ public class SynligeFaktaService {
 
         return struktur.getFakta().stream()
                 .filter(faktumStruktur -> panelFilter.equals(finnPanelForStruktur(faktumStruktur)))
-                .filter(faktumStruktur -> !"hidden".equals(faktumStruktur.getType()))
                 .filter(faktumStruktur -> {
                     Faktum faktum = soknad.getFaktumMedKey(faktumStruktur.getId());
                     return faktumStruktur.erSynlig(soknad, faktum);
