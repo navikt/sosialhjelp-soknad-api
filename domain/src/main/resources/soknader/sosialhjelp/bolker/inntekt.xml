@@ -61,7 +61,7 @@
         <dependOn>inntekt.eierandeler.true.type</dependOn>
     </faktum>
     <faktum>
-        <id>inntekt.eierandeler.type.true.campingvogn</id>
+        <id>inntekt.eierandeler.true.type.campingvogn</id>
         <type>bool</type>
         <dependOn>inntekt.eierandeler.true.type</dependOn>
     </faktum>
@@ -102,27 +102,27 @@
     <faktum>
         <id>inntekt.bankinnskudd.true.type.sparekonto</id>
         <type>bool</type>
-        <dependOn>inntekt.bankinnskudd</dependOn>
+        <dependOn>inntekt.bankinnskudd.true.type</dependOn>
     </faktum>
     <faktum>
         <id>inntekt.bankinnskudd.true.type.brukskonto</id>
         <type>bool</type>
-        <dependOn>inntekt.bankinnskudd</dependOn>
+        <dependOn>inntekt.bankinnskudd.true.type</dependOn>
     </faktum>
     <faktum>
         <id>inntekt.bankinnskudd.true.type.livsforsikring</id>
         <type>bool</type>
-        <dependOn>inntekt.bankinnskudd</dependOn>
+        <dependOn>inntekt.bankinnskudd.true.type</dependOn>
     </faktum>
     <faktum>
         <id>inntekt.bankinnskudd.true.type.aksjer</id>
         <type>bool</type>
-        <dependOn>inntekt.bankinnskudd</dependOn>
+        <dependOn>inntekt.bankinnskudd.true.type</dependOn>
     </faktum>
     <faktum>
         <id>inntekt.bankinnskudd.true.type.annet</id>
         <type>bool</type>
-        <dependOn>inntekt.bankinnskudd</dependOn>
+        <dependOn>inntekt.bankinnskudd.true.type</dependOn>
     </faktum>
 
     <faktum>
@@ -156,11 +156,6 @@
     </faktum>
     <faktum>
         <id>inntekt.inntekter.true.type.salg</id>
-        <type>bool</type>
-        <dependOn>inntekt.inntekter.true.type</dependOn>
-    </faktum>
-    <faktum>
-        <id>inntekt.inntekter.true.type.leieinntekter</id>
         <type>bool</type>
         <dependOn>inntekt.inntekter.true.type</dependOn>
     </faktum>
