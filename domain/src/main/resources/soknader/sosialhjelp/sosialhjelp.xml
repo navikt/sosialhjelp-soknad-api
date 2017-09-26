@@ -4,6 +4,7 @@
     <xi:include href="../felles/personalia.xml" />
 
     <!-- Bolker -->
+    <xi:include href="bolker/bosted.xml" />
     <xi:include href="bolker/kontakt.xml" />
     <xi:include href="bolker/arbeid.xml" />
     <xi:include href="bolker/familie.xml" />
@@ -11,6 +12,7 @@
     <xi:include href="bolker/bosituasjon.xml" />
     <xi:include href="bolker/inntekt.xml" />
     <xi:include href="bolker/utgifter.xml" />
+    <xi:include href="bolker/ekstrainfo.xml" />
 
     <!-- Fellesting -->
     <xi:include href="../felles/ekstravedlegg.xml" />
