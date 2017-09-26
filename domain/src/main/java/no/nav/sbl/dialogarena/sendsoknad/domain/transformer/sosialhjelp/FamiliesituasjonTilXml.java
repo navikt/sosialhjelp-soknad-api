@@ -1,15 +1,12 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp;
 
-import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLBoolean;
 import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLFamiliesituasjon;
-import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLFamiliesituasjon.Sivilstatus;
-import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLSivilstatus;
+import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.kodeverk.XMLSivilstatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 
 import java.util.function.Function;
 
-import static no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLKilde.BRUKER;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SoknadSosialhjelpUtils.tilXMLBoolean;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SoknadSosialhjelpUtils.tilString;
 
 
 public class FamiliesituasjonTilXml implements Function<WebSoknad, XMLFamiliesituasjon> {
@@ -17,26 +14,25 @@ public class FamiliesituasjonTilXml implements Function<WebSoknad, XMLFamiliesit
     @Override
     public XMLFamiliesituasjon apply(WebSoknad webSoknad) {
 
-        Sivilstatus sivilstatus = new Sivilstatus()
-                .withKilde(BRUKER);
+        XMLFamiliesituasjon familiesituasjon = new XMLFamiliesituasjon();
+        XMLFamiliesituasjon.XMLSivilstatus sivilstatus = new XMLFamiliesituasjon.XMLSivilstatus();
 
         String sivilstatusVerdi = webSoknad.getValueForFaktum("familie.sivilstatus");
         switch (sivilstatusVerdi) {
             case "gift":
-                sivilstatus.withValue(XMLSivilstatus.GIFT);
+                sivilstatus.withStatus(tilString(XMLSivilstatus.GIFT.value()));
             case "ugift":
-                sivilstatus.withValue(XMLSivilstatus.UGIFT);
+                sivilstatus.withStatus(tilString(XMLSivilstatus.UGIFT.value()));
             case "samboer":
-                sivilstatus.withValue(XMLSivilstatus.SAMBOER);
+                sivilstatus.withStatus(tilString(XMLSivilstatus.SAMBOER.value()));
             case "enke":
-                sivilstatus.withValue(XMLSivilstatus.ENKE);
+                sivilstatus.withStatus(tilString(XMLSivilstatus.ENKE.value()));
             case "skilt":
-                sivilstatus.withValue(XMLSivilstatus.SKILT);
+                sivilstatus.withStatus(tilString(XMLSivilstatus.SKILT.value()));
         }
 
-        return new XMLFamiliesituasjon()
-                .withSivilstatus(sivilstatus)
-                .withHjemmeboendeBarn(tilXMLBoolean(webSoknad, "familie.barn"))
-                .withAndreHjemmeboendeBarn(tilXMLBoolean(webSoknad, "familie.andrebarn"));
+        return familiesituasjon.withSivilstatus(sivilstatus);
+//                .withHjemmeboendeBarn(SoknadSosialhjelpUtils.tilBoolean(webSoknad, "familie.barn"))
+//                .withAndreHjemmeboendeBarn(SoknadSosialhjelpUtils.tilBoolean(webSoknad, "familie.andrebarn"));
     }
 }
