@@ -1,26 +1,30 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.oppsett;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType(propOrder = {})
 public class Constraint {
-    private String faktum;
+    private FaktumStruktur faktumStruktur;
     private String expression;
 
     public Constraint() {
     }
 
-    public Constraint(String faktum, String exception) {
-        this.faktum = faktum;
-        this.expression = exception;
+    public Constraint(FaktumStruktur faktum, String expression) {
+        this.faktumStruktur = faktum;
+        this.expression = expression;
     }
 
-    public String getFaktum() {
-        return faktum;
+    @XmlIDREF
+    @XmlElement(name = "faktum")
+    public FaktumStruktur getFaktumStruktur() {
+        return faktumStruktur;
     }
 
-    public void setFaktum(String faktum) {
-        this.faktum = faktum;
+    public void setFaktumStruktur(FaktumStruktur faktum) {
+        this.faktumStruktur = faktum;
     }
 
     public String getExpression() {
