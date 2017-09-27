@@ -6,28 +6,21 @@ import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLInntek
 import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLInntektFormue.XMLBostotte.XMLBostotteliste;
 import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLInntektFormue.XMLUtbetalinger.XMLUtbetalingerliste;
 import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLInntektFormue.XMLVerdier.XMLVerdierliste;
-import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLKildeString;
 import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.kodeverk.XMLUtbetaling;
 import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.kodeverk.XMLVerdi;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.kodeverk.XMLBankinnskudd.*;
 import static no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.kodeverk.XMLBankinnskudd.ANNET;
 import static no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.kodeverk.XMLBostotte.HUSBANKEN;
 import static no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.kodeverk.XMLBostotte.KOMMUNAL;
-import static no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.kodeverk.XMLUtbetaling.FORSIKRINGSUTBETALING;
-import static no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.kodeverk.XMLUtbetaling.SALG;
-import static no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.kodeverk.XMLUtbetaling.UTBYTTE;
+import static no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.kodeverk.XMLUtbetaling.*;
 import static no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.kodeverk.XMLVerdi.*;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SoknadSosialhjelpUtils.tilBoolean;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SoknadSosialhjelpUtils.tilString;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SoknadSosialhjelpUtils.*;
 
 
 public class InntektFormueTilXml implements Function<WebSoknad, XMLInntektFormue> {
@@ -71,13 +64,6 @@ public class InntektFormueTilXml implements Function<WebSoknad, XMLInntektFormue
         map.put("inntekt.inntekter.true.type.forsikringsutbetalinger", FORSIKRINGSUTBETALING.value());
         map.put("inntekt.inntekter.true.type.annet", XMLUtbetaling.ANNET.value());
         return map;
-    }
-
-    private List<XMLKildeString> lagListeFraFakta(WebSoknad webSoknad, Map<String, String> keyTilEnum) {
-        return keyTilEnum.entrySet().stream()
-                .filter(e -> webSoknad.getValueForFaktum(e.getKey()).equals("true"))
-                .map(e -> tilString(e.getValue()))
-                .collect(Collectors.toList());
     }
 
     @Override
