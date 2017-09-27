@@ -75,9 +75,8 @@ public class InntektFormueTilXml implements Function<WebSoknad, XMLInntektFormue
 
     private List<XMLKildeString> lagListeFraFakta(WebSoknad webSoknad, Map<String, String> keyTilEnum) {
         return keyTilEnum.entrySet().stream()
-                .map((e) -> webSoknad.getValueForFaktum(e.getKey()).equals("true") ? e.getValue() : null)
-                .filter(Objects::nonNull)
-                .map(SoknadSosialhjelpUtils::tilString)
+                .filter(e -> webSoknad.getValueForFaktum(e.getKey()).equals("true"))
+                .map(e -> tilString(e.getValue()))
                 .collect(Collectors.toList());
     }
 
@@ -85,7 +84,7 @@ public class InntektFormueTilXml implements Function<WebSoknad, XMLInntektFormue
     public XMLInntektFormue apply(WebSoknad webSoknad) {
         return new XMLInntektFormue()
                 .withNavYtelser(new XMLNavYtelser()
-                        .withMottarYtelser(tilBoolean(webSoknad, "inntekt.bostotte"))
+                        .withMottarYtelser(tilBoolean(webSoknad, "inntekt.mottarytelser"))
                         .withIkkeFerdigbehandledeYtelser(tilBoolean(webSoknad, "inntekt.soktytelser")))
                 .withBostotte(new XMLBostotte()
                         // TODO sette true/false siden listen ikke er påkrevd?
