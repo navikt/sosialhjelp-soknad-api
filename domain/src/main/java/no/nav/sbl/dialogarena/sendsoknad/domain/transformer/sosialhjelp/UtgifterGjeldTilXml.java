@@ -49,9 +49,11 @@ public class UtgifterGjeldTilXml implements Function<WebSoknad, XMLUtgifterGjeld
     public XMLUtgifterGjeld apply(WebSoknad webSoknad) {
         return new XMLUtgifterGjeld()
                 .withBoutgifter(new XMLBoutgifter()
+                        .withHarBoutgifter(tilString(webSoknad, "utgifter.boutgift"))
                         .withBoutgifterliste(new XMLBoutgifterliste(lagListeFraFakta(webSoknad, BOUTGIFT_MAP)))
                         .withAnnetBeskrivelse(tilString(webSoknad, "utgifter.boutgift.true.type.andreutgifter.true.beskrivelse")))
                 .withBarnutgifter(new XMLBarnutgifter()
+                        .withHarBarneutgifter(tilString(webSoknad, "utgifter.barn"))
                         .withBarnutgifterliste(new XMLBarnutgifterliste(lagListeFraFakta(webSoknad, BARNEUTGIFT_MAP)))
                         .withAnnetBeskrivelse(tilString(webSoknad, "utgifter.barn.true.utgifter.annet.true.beskrivelse")));
     }
