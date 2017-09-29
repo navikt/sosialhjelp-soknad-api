@@ -5,12 +5,16 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 
 import java.util.function.Function;
 
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SoknadSosialhjelpUtils.tilString;
+
 public class ArbeidOgUtdanningTilXml implements Function<WebSoknad, XMLArbeidUtdanning> {
 
     @Override
     public XMLArbeidUtdanning apply(WebSoknad webSoknad) {
-        XMLArbeidUtdanning arbeidUtdanning = new XMLArbeidUtdanning();
-
-        return arbeidUtdanning;
+        return new XMLArbeidUtdanning()
+                .withErIJobb(tilString(webSoknad, "dinsituasjon.jobb"))
+                .withJobbGrad(tilString(webSoknad, "dinsituasjon.jobb.true.grad"))
+                .withErStudent(tilString(webSoknad, "dinsituasjon.studerer"))
+                .withStudentGrad(tilString(webSoknad, "dinsituasjon.studerer.true.grad"));
     }
 }
