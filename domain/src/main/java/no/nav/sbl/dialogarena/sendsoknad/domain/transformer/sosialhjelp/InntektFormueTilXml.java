@@ -20,7 +20,8 @@ import static no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.ko
 import static no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.kodeverk.XMLBostotte.KOMMUNAL;
 import static no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.kodeverk.XMLUtbetaling.*;
 import static no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.kodeverk.XMLVerdi.*;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SoknadSosialhjelpUtils.*;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SoknadSosialhjelpUtils.lagListeFraFakta;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SoknadSosialhjelpUtils.tilString;
 
 
 public class InntektFormueTilXml implements Function<WebSoknad, XMLInntektFormue> {
@@ -70,18 +71,21 @@ public class InntektFormueTilXml implements Function<WebSoknad, XMLInntektFormue
     public XMLInntektFormue apply(WebSoknad webSoknad) {
         return new XMLInntektFormue()
                 .withNavYtelser(new XMLNavYtelser()
-                        .withMottarYtelser(tilBoolean(webSoknad, "inntekt.mottarytelser"))
-                        .withIkkeFerdigbehandledeYtelser(tilBoolean(webSoknad, "inntekt.soktytelser")))
+                        .withMottarYtelser(tilString(webSoknad, "inntekt.mottarytelser"))
+                        .withIkkeFerdigbehandledeYtelser(tilString(webSoknad, "inntekt.soktytelser")))
                 .withBostotte(new XMLBostotte()
-                        // TODO sette true/false siden listen ikke er påkrevd?
+                        .withMottarBostotte(tilString(webSoknad, "inntekt.bostotte"))
                         .withBostotteliste(new XMLBostotteliste(lagListeFraFakta(webSoknad, BOSTOTTE_MAP))))
                 .withVerdier(new XMLVerdier()
+                        .withHarVerdier(tilString(webSoknad, "inntekt.eierandeler"))
                         .withVerdierliste(new XMLVerdierliste(lagListeFraFakta(webSoknad, VERDI_MAP)))
                         .withAnnetBeskrivelse(tilString(webSoknad, "inntekt.eierandeler.true.type.annet.true.beskrivelse")))
                 .withBankinnskudd(new XMLBankinnskudd()
+                        .withHarBankinnskudd(tilString(webSoknad, "inntekt.bankinnskudd"))
                         .withBankinnskuddliste(new XMLBankinnskuddliste(lagListeFraFakta(webSoknad, BANKINNSKUDD_MAP)))
                         .withAnnetBeskrivelse(tilString(webSoknad, "inntekt.bankinnskudd.true.type.annet.true.beskrivelse")))
                 .withUtbetalinger(new XMLUtbetalinger()
+                        .withHarUtbetalinger(tilString(webSoknad, "inntekt.inntekter"))
                         .withUtbetalingerliste(new XMLUtbetalingerliste(lagListeFraFakta(webSoknad, UTBETALINGER_MAP)))
                         .withAnnetBeskrivelse(tilString(webSoknad, "inntekt.inntekter.true.type.annet.true.beskrivelse")));
     }
