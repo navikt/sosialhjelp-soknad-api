@@ -5,66 +5,18 @@
         <type>radio</type>
         <panel>bosituasjonBolk</panel>
     </faktum>
+
     <faktum>
         <id>bosituasjon.annet.botype</id>
-        <type>checkboxGroup</type>
+        <type>radio</type>
         <dependOn>bosituasjon</dependOn>
         <dependOnValues><value>annet</value></dependOnValues>
     </faktum>
+
     <faktum>
-        <id>bosituasjon.annet.botype.institusjon</id>
-        <type>bool</type>
-        <dependOn>bosituasjon.annet.botype</dependOn>
-    </faktum>
-    <faktum>
-        <id>bosituasjon.annet.botype.fengsel</id>
-        <type>bool</type>
-        <dependOn>bosituasjon.annet.botype</dependOn>
-    </faktum>
-    <faktum>
-        <id>bosituasjon.annet.botype.foreldre</id>
-        <type>bool</type>
-        <dependOn>bosituasjon.annet.botype</dependOn>
-    </faktum>
-    <faktum>
-        <id>bosituasjon.annet.botype.krisesenter</id>
-        <type>bool</type>
-        <dependOn>bosituasjon.annet.botype</dependOn>
-    </faktum>
-    <faktum>
-        <id>bosituasjon.annet.botype.venner</id>
-        <type>bool</type>
-        <dependOn>bosituasjon.annet.botype</dependOn>
-    </faktum>
-    <faktum>
-        <id>bosituasjon.annet.botype.familie</id>
-        <type>bool</type>
-        <dependOn>bosituasjon.annet.botype</dependOn>
-    </faktum>
-    <faktum>
-        <id>bosituasjon.barnunder18</id>
-        <type>bool</type>
+        <id>bosituasjon.antallpersoner</id>
+        <type>textbox</type>
         <panel>bosituasjonBolk</panel>
     </faktum>
-    <faktum>
-        <id>bosituasjon.barnunder18.true.antall</id>
-        <type>textbox</type>
-        <dependOn>bosituasjon.barnunder18</dependOn>
-        <dependOnValues>
-            <value>true</value>
-        </dependOnValues>
-    </faktum>
-    <faktum>
-        <id>bosituasjon.personover18</id>
-        <type>bool</type>
-        <panel>bosituasjonBolk</panel>
-    </faktum>
-    <faktum>
-        <id>bosituasjon.personover18.true.antall</id>
-        <type>textbox</type>
-        <dependOn>bosituasjon.personover18</dependOn>
-        <dependOnValues>
-            <value>true</value>
-        </dependOnValues>
-    </faktum>
+
 </soknad>

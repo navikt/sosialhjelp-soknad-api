@@ -1,9 +1,11 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp;
 
 import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLKilde;
+import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLKildeInteger;
 import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLKildeString;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,6 +30,20 @@ class SoknadSosialhjelpUtils {
         return  new XMLKildeString()
                 .withKilde(kilde.value())
                 .withValue(verdi);
+    }
+
+    static XMLKildeInteger tilInteger(WebSoknad webSoknad, String faktum) {
+        String verdi = webSoknad.getValueForFaktum(faktum);
+        Long result = verdi.isEmpty() ? null : Long.parseLong(verdi);
+
+        return tilInteger(result, BRUKER);
+    }
+
+
+    static XMLKildeInteger tilInteger(Long verdi, XMLKilde kilde) {
+        return  new XMLKildeInteger()
+                .withKilde(kilde.value())
+                .withValue(verdi != null ? BigInteger.valueOf(verdi) : null);
     }
 
     static List<XMLKildeString> lagListeFraFakta(WebSoknad webSoknad, Map<String, String> faktumKeyTilEnumVerdi) {
