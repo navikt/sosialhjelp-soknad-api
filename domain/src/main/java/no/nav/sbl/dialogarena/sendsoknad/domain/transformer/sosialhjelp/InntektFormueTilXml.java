@@ -1,10 +1,12 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp;
 
 import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLInntektFormue;
-import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLInntektFormue.*;
+import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLInntektFormue.XMLBankinnskudd;
 import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLInntektFormue.XMLBankinnskudd.XMLBankinnskuddliste;
-import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLInntektFormue.XMLBostotte.XMLBostotteliste;
+import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLInntektFormue.XMLBostotte;
+import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLInntektFormue.XMLUtbetalinger;
 import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLInntektFormue.XMLUtbetalinger.XMLUtbetalingerliste;
+import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLInntektFormue.XMLVerdier;
 import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLInntektFormue.XMLVerdier.XMLVerdierliste;
 import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.kodeverk.XMLUtbetaling;
 import no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.kodeverk.XMLVerdi;
@@ -16,8 +18,6 @@ import java.util.function.Function;
 
 import static no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.kodeverk.XMLBankinnskudd.*;
 import static no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.kodeverk.XMLBankinnskudd.ANNET;
-import static no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.kodeverk.XMLBostotte.HUSBANKEN;
-import static no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.kodeverk.XMLBostotte.KOMMUNAL;
 import static no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.kodeverk.XMLUtbetaling.*;
 import static no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.kodeverk.XMLVerdi.*;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SoknadSosialhjelpUtils.lagListeFraFakta;
@@ -26,17 +26,9 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.S
 
 public class InntektFormueTilXml implements Function<WebSoknad, XMLInntektFormue> {
 
-    private static final Map<String, String> BOSTOTTE_MAP = lagBostotteMap();
     private static final Map<String, String> VERDI_MAP = lagVerdiMap();
     private static final Map<String, String> BANKINNSKUDD_MAP = lagBankinnskuddMap();
     private static final Map<String, String> UTBETALINGER_MAP = lagUtbetalingerMap();
-
-    private static Map<String, String> lagBostotteMap() {
-        Map<String, String> map = new HashMap<>();
-        map.put("inntekt.bostotte.true.type.husbanken", HUSBANKEN.value());
-        map.put("inntekt.bostotte.true.type.kommunal", KOMMUNAL.value());
-        return map;
-    }
 
     private static Map<String, String> lagVerdiMap() {
         Map<String, String> map = new HashMap<>();
@@ -70,12 +62,8 @@ public class InntektFormueTilXml implements Function<WebSoknad, XMLInntektFormue
     @Override
     public XMLInntektFormue apply(WebSoknad webSoknad) {
         return new XMLInntektFormue()
-                .withNavYtelser(new XMLNavYtelser()
-                        .withMottarYtelser(tilString(webSoknad, "inntekt.mottarytelser"))
-                        .withIkkeFerdigbehandledeYtelser(tilString(webSoknad, "inntekt.soktytelser")))
                 .withBostotte(new XMLBostotte()
-                        .withMottarBostotte(tilString(webSoknad, "inntekt.bostotte"))
-                        .withBostotteliste(new XMLBostotteliste(lagListeFraFakta(webSoknad, BOSTOTTE_MAP))))
+                        .withMottarBostotte(tilString(webSoknad, "inntekt.bostotte")))
                 .withVerdier(new XMLVerdier()
                         .withHarVerdier(tilString(webSoknad, "inntekt.eierandeler"))
                         .withVerdierliste(new XMLVerdierliste(lagListeFraFakta(webSoknad, VERDI_MAP)))
