@@ -5,7 +5,11 @@
         <panel>kontakt</panel>
         <type>textbox</type>
     </faktum>
-
+    <faktum>
+        <id>kontakt.kontonummer.harIkke</id>
+        <panel>kontakt</panel>
+        <type>bool</type>
+    </faktum>
     <faktum>
         <id>kontakt.telefon</id>
         <panel>kontakt</panel>
