@@ -40,7 +40,6 @@ public class UtgifterGjeldTilXml implements Function<WebSoknad, XMLUtgifterGjeld
         map.put("utgifter.barn.true.utgifter.fritidsaktivitet", FRITIDSAKTIVITETER.value());
         map.put("utgifter.barn.true.utgifter.barnehage", BARNEHAGE.value());
         map.put("utgifter.barn.true.utgifter.tannbehandling", TANNBEHANDLING.value());
-        map.put("utgifter.barn.true.utgifter.helse", HELSE.value());
         map.put("utgifter.barn.true.utgifter.annet", XMLBarnutgift.ANNET.value());
         return map;
     }
