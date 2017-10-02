@@ -79,7 +79,7 @@
             </property>
             <property>
                 <id>grad</id>
-                <type>bool</type>
+                <type>textbox</type>
                 <constraints>
                     <constraint>properties['borsammen'] == 'true'</constraint>
                 </constraints>
