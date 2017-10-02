@@ -85,11 +85,6 @@
         <dependOn>utgifter.barn.true.utgifter</dependOn>
     </faktum>
     <faktum>
-        <id>utgifter.barn.true.utgifter.helse</id>
-        <type>bool</type>
-        <dependOn>utgifter.barn.true.utgifter</dependOn>
-    </faktum>
-    <faktum>
         <id>utgifter.barn.true.utgifter.annet</id>
         <type>bool</type>
         <dependOn>utgifter.barn.true.utgifter</dependOn>
