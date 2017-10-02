@@ -6,13 +6,13 @@
         <type>textbox</type>
         <constraints>
             <constraint>
-                <faktum>kontakt.kontonummer.harIkke</faktum>
+                <faktum>kontakt.kontonummer.harikke</faktum>
                 <expression>value != 'true'</expression>
             </constraint>
         </constraints>
     </faktum>
     <faktum>
-        <id>kontakt.kontonummer.harIkke</id>
+        <id>kontakt.kontonummer.harikke</id>
         <panel>kontakt</panel>
         <type>bool</type>
     </faktum>
