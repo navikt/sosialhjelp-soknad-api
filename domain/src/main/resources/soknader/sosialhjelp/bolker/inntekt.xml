@@ -5,24 +5,6 @@
         <type>bool</type>
         <panel>inntektBolk</panel>
     </faktum>
-    <faktum>
-        <id>inntekt.bostotte.true.type</id>
-        <type>checkboxGroup</type>
-        <dependOn>inntekt.bostotte</dependOn>
-        <dependOnValues>
-            <value>true</value>
-        </dependOnValues>
-    </faktum>
-    <faktum>
-        <id>inntekt.bostotte.true.type.husbanken</id>
-        <type>bool</type>
-        <dependOn>inntekt.bostotte.true.type</dependOn>
-    </faktum>
-    <faktum>
-        <id>inntekt.bostotte.true.type.kommunal</id>
-        <type>bool</type>
-        <dependOn>inntekt.bostotte.true.type</dependOn>
-    </faktum>
 
     <!-- Eierandeler-->
     <faktum>
