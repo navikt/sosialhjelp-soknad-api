@@ -61,6 +61,7 @@ public class SosialhjelpTilXml implements AlternativRepresentasjonTransformer {
         XMLSoknadsosialhjelp soknadSosialStonad = new XMLSoknadsosialhjelp();
 
         return soknadSosialStonad
+                .withVersion("1")
                 .withPersonalia(new BrukerTilXml().apply(webSoknad))
                 .withArbeidUtdanning(new ArbeidOgUtdanningTilXml().apply(webSoknad))
                 .withFamiliesituasjon(new FamiliesituasjonTilXml().apply(webSoknad))
