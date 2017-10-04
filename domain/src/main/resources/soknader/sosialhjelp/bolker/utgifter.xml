@@ -57,7 +57,7 @@
     <faktum>
         <id>utgifter.barn</id>
         <type>bool</type>
-        <panel>utgifter</panel>
+        <panel>utgifterBolk</panel>
     </faktum>
 
     <faktum>

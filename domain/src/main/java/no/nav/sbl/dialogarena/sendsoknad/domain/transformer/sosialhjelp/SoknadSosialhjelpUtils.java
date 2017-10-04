@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static no.nav.melding.domene.brukerdialog.soeknadsskjemasosialhjelp.v1.XMLKilde.BRUKER;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 class SoknadSosialhjelpUtils {
 
@@ -31,18 +32,23 @@ class SoknadSosialhjelpUtils {
                 .withValue(verdi);
     }
 
-    static XMLKildeInteger tilInteger(WebSoknad webSoknad, String faktum) {
-        String verdi = webSoknad.getValueForFaktum(faktum);
-        Long result = verdi.isEmpty() ? null : Long.parseLong(verdi);
-
-        return tilInteger(result, BRUKER);
+    static XMLKildeInteger tilInteger(String verdi) {
+        return tilInteger(verdi, BRUKER);
     }
 
-
-    static XMLKildeInteger tilInteger(Long verdi, XMLKilde kilde) {
+    static XMLKildeInteger tilInteger(String verdi, XMLKilde kilde) {
         return new XMLKildeInteger()
                 .withKilde(kilde.value())
-                .withValue(verdi != null ? verdi.toString() : null);
+                .withValue(isNotBlank(verdi) ? verdi : null);
+    }
+
+    static XMLKildeInteger tilInteger(WebSoknad webSoknad, String faktum) {
+        String verdi = webSoknad.getValueForFaktum(faktum);
+        return tilInteger(verdi, BRUKER);
+    }
+
+    static XMLKildeInteger tilInteger(Long verdi, XMLKilde kilde) {
+        return tilInteger(verdi != null ? verdi.toString() : null, kilde);
     }
 
     static List<XMLKildeString> lagListeFraFakta(WebSoknad webSoknad, Map<String, String> faktumKeyTilEnumVerdi) {
