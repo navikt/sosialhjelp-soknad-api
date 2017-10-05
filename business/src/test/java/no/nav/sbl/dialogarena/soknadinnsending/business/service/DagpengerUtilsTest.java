@@ -17,7 +17,6 @@ import static org.junit.Assert.*;
 
 public class DagpengerUtilsTest {
 
-    public static final String EOS_DAGPENGER = "4465";
     public static final String RUTES_I_BRUT = "";
 
     @Test
@@ -93,7 +92,7 @@ public class DagpengerUtilsTest {
         Faktum personalia = getPersonaliaFaktum(soknad);
         setGjeldendeAdressePaaPersonaliaFaktum(personalia, utlandeos);
 
-        assertEquals(EOS_DAGPENGER, getJournalforendeEnhet(soknad));
+        assertEquals(RUTES_I_BRUT, getJournalforendeEnhet(soknad));
     }
 
     @Test
@@ -104,7 +103,7 @@ public class DagpengerUtilsTest {
         setUtenlanskEOSStatsborger(personalia);
         setBrukerTilAVaereGrensearbeider(soknad.getFaktumMedKey("arbeidsforhold.grensearbeider"));
 
-        assertEquals(EOS_DAGPENGER, getJournalforendeEnhet(soknad));
+        assertEquals(RUTES_I_BRUT, getJournalforendeEnhet(soknad));
     }
 
     @Test
@@ -141,7 +140,7 @@ public class DagpengerUtilsTest {
         setIngenNyeArbeidsforhold(soknad.getFaktumMedKey("nyearbeidsforhold.arbeidsidensist"));
         setPermittertForrigeGangHanFikkDagpenger(soknad.getFaktumMedKey("tidligerearbeidsforhold.permittert"));
 
-        assertEquals(EOS_DAGPENGER, getJournalforendeEnhet(soknad));
+        assertEquals(RUTES_I_BRUT, getJournalforendeEnhet(soknad));
     }
 
     @Test
