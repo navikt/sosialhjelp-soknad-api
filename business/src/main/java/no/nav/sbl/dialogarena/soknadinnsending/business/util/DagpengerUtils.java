@@ -16,7 +16,6 @@ public class DagpengerUtils {
     public static final String DAGPENGER_VED_PERMITTERING = "NAV 04-01.04";
     public static final String GJENOPPTAK = "NAV 04-16.03";
     public static final String GJENOPPTAK_VED_PERMITTERING = "NAV 04-16.04";
-    public static final String EOS_DAGPENGER = "4465";
     public static final String RUTES_I_BRUT = "";
     public static final String PERMITTERT = "permittert";
     public static final String ANNEN_AARSAK = "Annen årsak";
@@ -30,18 +29,6 @@ public class DagpengerUtils {
     }
 
     public static String getJournalforendeEnhet(WebSoknad webSoknad) {
-        String sluttaarsak = finnSluttaarsakSisteArbeidsforhold(webSoknad);
-        Personalia personalia = adresserOgStatsborgerskap(webSoknad);
-
-        if (sluttaarsak.equals(PERMITTERT) || (sluttaarsak.equals(REDUSERT_ARBEIDSTID))) {
-            if (harUtenlandskAdresseIEOS(personalia)) {
-                return EOS_DAGPENGER;
-            }
-            boolean erUtenlandskStatsborger = !personalia.getStatsborgerskap().equals("NOR");
-            if (erGrensearbeider(webSoknad) && erUtenlandskStatsborger) {
-                return EOS_DAGPENGER;
-            }
-        }
         return RUTES_I_BRUT;
     }
 
