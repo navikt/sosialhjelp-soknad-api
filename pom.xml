@@ -286,7 +286,7 @@
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>soeknadsskjemaSosialhjelp-v1-meldingsdefinisjon</artifactId>
                 <!-- Bør du bumpe versjon i SosialhjelpTilXml? -->
-                <version>1.5.1</version>
+                <version>1.5.3</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.meldinger.virksomhet</groupId>

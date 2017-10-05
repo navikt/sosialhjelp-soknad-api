@@ -23,6 +23,9 @@ public class BrukerTilXml implements Function<WebSoknad, XMLPersonalia> {
                 .withStatsborgerskap(tilString(personaliaProperties.get(STATSBORGERSKAP_KEY), SYSTEM))
                 .withFornavn(tilString(personaliaProperties.get(FORNAVN_KEY), SYSTEM))
                 .withMellomnavn(tilString(personaliaProperties.get(MELLOMNAVN_KEY), SYSTEM))
-                .withEtternavn(tilString(personaliaProperties.get(ETTERNAVN_KEY), SYSTEM));
+                .withEtternavn(tilString(personaliaProperties.get(ETTERNAVN_KEY), SYSTEM))
+                .withHarIkkeKontonr(tilString(webSoknad, "kontakt.kontonummer.harikke"))
+                .withKontonr(tilString(webSoknad, "kontakt.kontonummer"))
+                .withTelefonnr(tilString(webSoknad, "kontakt.telefon"));
     }
 }
