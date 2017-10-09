@@ -105,17 +105,4 @@ public class DagpengerUtils {
         Faktum nyeArbeidsforhold = soknad.getFaktumMedKey("nyearbeidsforhold.arbeidsidensist");
         return nyeArbeidsforhold != null && "true".equals(nyeArbeidsforhold.getValue());
     }
-
-    private static boolean erGrensearbeider(WebSoknad webSoknad) {
-        Faktum grensearbeiderFaktum = webSoknad.getFaktumMedKey("arbeidsforhold.grensearbeider");
-        boolean erGrensearbeider = false;
-        if (grensearbeiderFaktum != null && grensearbeiderFaktum.getValue() != null) {
-            erGrensearbeider = grensearbeiderFaktum.getValue().equals("false");
-        }
-        return erGrensearbeider;
-    }
-
-    private static boolean harUtenlandskAdresseIEOS(Personalia personalia) {
-        return personalia.harUtenlandskAdresseIEOS() && !personalia.harNorskMidlertidigAdresse();
-    }
 }
