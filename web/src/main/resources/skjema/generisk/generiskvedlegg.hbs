@@ -100,17 +100,22 @@
                     {{/hvisLik}}
 
                     {{#hvisLik innsendingsvalg "VedleggSendesAvAndre"}}
-                        {{#if @root.utvidetSoknad }}
-                            <h4>{{ hentTekst "vedlegg.behandlet.sendesAvAndre.fritekst.sporsmal" }}</h4>
+                        {{#if aarsak}}
+                            {{#if @root.utvidetSoknad }}
+                                <h4>{{ hentTekst "vedlegg.behandlet.sendesAvAndre.fritekst.sporsmal" }}</h4>
+                            {{/if}}
+                            <p class="aarsak">{{ aarsak }}</p>
                         {{/if}}
-                        <p class="aarsak">{{ aarsak }}</p>
+
                     {{/hvisLik}}
 
                     {{#hvisLik innsendingsvalg "SendesSenere"}}
-                        {{#if @root.utvidetSoknad }}
-                            <h4>{{ hentTekst "vedlegg.behandlet.sendesSenere.fritekst.sporsmal" }}</h4>
+                        {{#if aarsak}}
+                            {{#if @root.utvidetSoknad }}
+                                <h4>{{ hentTekst "vedlegg.behandlet.sendesSenere.fritekst.sporsmal" }}</h4>
+                            {{/if}}
+                             <p class="aarsak">{{ aarsak }}</p>
                         {{/if}}
-                        <p class="aarsak">{{ aarsak }}</p>
                     {{/hvisLik}}
                 {{/hvisLik}}
             </div>
