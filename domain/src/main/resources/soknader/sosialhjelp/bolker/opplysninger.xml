@@ -1,0 +1,94 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl">
+    <faktum>
+        <id>opplysninger.utgifter</id>
+        <type>hidden</type>
+        <panel>opplysningerBolk</panel>
+    </faktum>
+
+    <faktum>
+        <id>opplysninger.husleie</id>
+        <type>composite</type>
+        <dependOn>opplysninger.utgifter</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>utgifter.boutgift.true.type.husleie</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+        <properties>
+            <property>
+                <id>permnd</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+    </faktum>
+
+    <faktum>
+        <id>opplysninger.strom</id>
+        <type>composite</type>
+        <dependOn>opplysninger.utgifter</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>utgifter.boutgift.true.type.strom</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+        <properties>
+            <property>
+                <id>sisteregning</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+    </faktum>
+
+    <faktum>
+        <id>opplysninger.boliglan</id>
+        <type>composite</type>
+        <dependOn>opplysninger.utgifter</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>utgifter.boutgift.true.type.avdraglaan</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+        <properties>
+            <property>
+                <id>avdragprmnd</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>renderprmnd</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+
+    <faktum>
+        <id>opplysninger.bosituasjon</id>
+        <type>hidden</type>
+        <panel>opplysningerBolk</panel>
+    </faktum>
+
+    <faktum>
+        <id>opplysninger.annenbosituasjon</id>
+        <type>composite</type>
+        <dependOn>opplysninger.utgifter</dependOn>
+        <constraints>
+            <constraint>
+                <!-- todo -->
+                <faktum>utgifter.boutgift.true.type.avdraglaan</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+        <properties>
+            <property>
+                <id>permnd</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+    </faktum>
+
+</soknad>
