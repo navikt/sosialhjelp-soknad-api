@@ -23,7 +23,7 @@ public class SynligeFaktaService {
         return struktur.getFakta().stream()
                 .filter(faktumStruktur -> panelFilter.equals(finnPanelForStruktur(faktumStruktur)))
                 .filter(faktumStruktur -> {
-                    Faktum faktum = soknad.getFaktumMedKey(faktumStruktur.getId());
+                    Faktum faktum = finnFaktumForStruktur(faktumStruktur, soknad);
                     return faktumStruktur.erSynlig(soknad, faktum);
                 }).collect(Collectors.toList());
     }
@@ -36,6 +36,31 @@ public class SynligeFaktaService {
         } else {
             return null;
         }
+    }
+
+    private Faktum finnFaktumForStruktur(FaktumStruktur faktumStruktur, WebSoknad soknad) {
+        Faktum faktum = soknad.getFaktumMedKey(faktumStruktur.getId());
+        if (faktum != null) {
+            return faktum;
+        }
+
+        if ("true".equals(faktumStruktur.getFlereTillatt())) {
+            return lagDummyFaktum(faktumStruktur, soknad);
+        }
+
+        return null;
+    }
+
+    private Faktum lagDummyFaktum(FaktumStruktur faktumStruktur, WebSoknad soknad) {
+        Long parrentFaktum = null;
+        if (faktumStruktur.getDependOn() != null) {
+            parrentFaktum = soknad.getFaktumMedKey(faktumStruktur.getDependOn().getId()).getFaktumId();
+        }
+
+        return new Faktum()
+                .medKey(faktumStruktur.getId())
+                .medParrentFaktumId(parrentFaktum)
+                .medValue("");
     }
 
 }

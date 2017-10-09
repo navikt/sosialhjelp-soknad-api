@@ -41,8 +41,10 @@ public class SynligeFaktaServiceTest {
         FaktumStruktur spm1Struktur = new FaktumStruktur().medId("key1.spm1").medDependOn(key1Struktur).medDependOnValues(asList("123"));
         spm1Struktur.setPanel("");
         FaktumStruktur spm2Struktur = new FaktumStruktur().medId("key1.spm2").medDependOn(key1Struktur).medDependOnValues(asList("456"));
+        FaktumStruktur spm3Struktur = new FaktumStruktur().medId("key1.spm3").medDependOn(key1Struktur);
+        spm3Struktur.setFlereTillatt("true");
 
-        soknadStruktur.setFakta(asList(key1Struktur, key2Struktur, spm1Struktur, spm2Struktur));
+        soknadStruktur.setFakta(asList(key1Struktur, key2Struktur, spm1Struktur, spm2Struktur, spm3Struktur));
 
         when(soknadService.hentSoknadStruktur(anyString())).thenReturn(soknadStruktur);
 
@@ -58,9 +60,10 @@ public class SynligeFaktaServiceTest {
     public void returnererSynligeFakta() {
         List<FaktumStruktur> synligeFakta = synligeFaktaService.finnSynligeFaktaForSoknad("10000BBB", "panel1");
 
-        assertEquals(2, synligeFakta.size());
+        assertEquals(3, synligeFakta.size());
         assertEquals("hidden", synligeFakta.get(0).getType());
         assertEquals("key1.spm1", synligeFakta.get(1).getId());
+        assertEquals("key1.spm3", synligeFakta.get(2).getId());
     }
 
 }
