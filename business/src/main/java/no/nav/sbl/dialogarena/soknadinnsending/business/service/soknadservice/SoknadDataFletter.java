@@ -320,11 +320,6 @@ public class SoknadDataFletter {
     };
 
     private WebSoknad populerSoknadMedData(boolean populerSystemfakta, WebSoknad soknad) {
-        soknad = lokalDb.hentSoknadMedData(soknad.getSoknadId());
-        soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknad.getSoknadId()))
-                .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
-                .medStegliste(config.getStegliste(soknad.getSoknadId()))
-                .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
         if (populerSystemfakta) {
             if (soknad.erEttersending()) {
                 faktaService.lagreSystemFakta(soknad, bolker.get(PersonaliaBolk.class.getName()).genererSystemFakta(getSubjectHandler().getUid(), soknad.getSoknadId()));
@@ -336,6 +331,12 @@ public class SoknadDataFletter {
                 faktaService.lagreSystemFakta(soknad, systemfaktum);
             }
         }
+
+        soknad = lokalDb.hentSoknadMedData(soknad.getSoknadId());
+        soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknad.getSoknadId()))
+                .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
+                .medStegliste(config.getStegliste(soknad.getSoknadId()))
+                .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
         return soknad;
     }
 
