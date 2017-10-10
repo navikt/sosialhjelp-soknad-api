@@ -9,5 +9,6 @@
         <id>personalia.bydel</id>
         <type>textbox</type>
         <panel>personaliaBolk</panel>
+        <dependOn>personalia.kommune</dependOn>
     </faktum>
 </soknad>
