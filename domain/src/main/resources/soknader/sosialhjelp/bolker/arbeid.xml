@@ -4,6 +4,7 @@
         <id>dinsituasjon.jobb</id>
         <type>bool</type>
         <panel>arbeidbolk</panel>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>dinsituasjon.jobb.true.grad</id>
@@ -12,12 +13,14 @@
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
+        <optional>true</optional>
     </faktum>
 
     <faktum>
         <id>dinsituasjon.studerer</id>
         <type>bool</type>
         <panel>arbeidbolk</panel>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>dinsituasjon.studerer.true.grad</id>
@@ -26,5 +29,6 @@
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
+        <optional>true</optional>
     </faktum>
 </soknad>
