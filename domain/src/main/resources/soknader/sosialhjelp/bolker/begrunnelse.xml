@@ -9,6 +9,7 @@
     <faktum>
         <id>begrunnelse.hva</id>
         <type>textbox</type>
+        <optional>true</optional>
         <panel>begrunnelseBolk</panel>
     </faktum>
 </soknad>

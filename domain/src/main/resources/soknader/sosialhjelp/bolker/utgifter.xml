@@ -4,6 +4,7 @@
         <id>utgifter.boutgift</id>
         <type>bool</type>
         <panel>utgifterBolk</panel>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>utgifter.boutgift.true.type</id>
@@ -12,36 +13,43 @@
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>utgifter.boutgift.true.type.husleie</id>
         <type>bool</type>
         <dependOn>utgifter.boutgift.true.type</dependOn>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>utgifter.boutgift.true.type.strom</id>
         <type>bool</type>
         <dependOn>utgifter.boutgift.true.type</dependOn>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>utgifter.boutgift.true.type.kommunaleavgifter</id>
         <type>bool</type>
         <dependOn>utgifter.boutgift.true.type</dependOn>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>utgifter.boutgift.true.type.oppvarming</id>
         <type>bool</type>
         <dependOn>utgifter.boutgift.true.type</dependOn>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>utgifter.boutgift.true.type.avdraglaan</id>
         <type>bool</type>
         <dependOn>utgifter.boutgift.true.type</dependOn>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>utgifter.boutgift.true.type.andreutgifter</id>
         <type>bool</type>
         <dependOn>utgifter.boutgift.true.type</dependOn>
+        <optional>true</optional>
     </faktum>
 
     <faktum>
@@ -51,13 +59,14 @@
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
+        <optional>true</optional>
     </faktum>
-
 
     <faktum>
         <id>utgifter.barn</id>
         <type>bool</type>
         <panel>utgifterBolk</panel>
+        <optional>true</optional>
     </faktum>
 
     <faktum>
@@ -67,27 +76,32 @@
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
+        <optional>true</optional>
     </faktum>
 
     <faktum>
         <id>utgifter.barn.true.utgifter.fritidsaktivitet</id>
         <type>bool</type>
         <dependOn>utgifter.barn.true.utgifter</dependOn>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>utgifter.barn.true.utgifter.barnehage</id>
         <type>bool</type>
         <dependOn>utgifter.barn.true.utgifter</dependOn>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>utgifter.barn.true.utgifter.tannbehandling</id>
         <type>bool</type>
         <dependOn>utgifter.barn.true.utgifter</dependOn>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>utgifter.barn.true.utgifter.annet</id>
         <type>bool</type>
         <dependOn>utgifter.barn.true.utgifter</dependOn>
+        <optional>true</optional>
     </faktum>
 
     <faktum>
@@ -97,5 +111,6 @@
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
+        <optional>true</optional>
     </faktum>
 </soknad>
