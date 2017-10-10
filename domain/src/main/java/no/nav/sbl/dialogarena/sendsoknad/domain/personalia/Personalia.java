@@ -1,11 +1,11 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.personalia;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.*;
-import org.joda.time.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.StatsborgerskapType;
+import org.joda.time.LocalDate;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Adressetype.*;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.LandListe.*;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.LandListe.EOS;
 
 public class Personalia {
 
@@ -20,6 +20,9 @@ public class Personalia {
     public static final String STATSBORGERSKAP_KEY = "statsborgerskap";
     public static final String STATSBORGERSKAPTYPE_KEY = "statsborgerskapType";
     public static final String NAVN_KEY = "navn";
+    public static final String FORNAVN_KEY = "fornavn";
+    public static final String MELLOMNAVN_KEY = "mellomnavn";
+    public static final String ETTERNAVN_KEY = "etternavn";
     public static final String KJONN_KEY = "kjonn";
     public static final String GJELDENDEADRESSE_KEY = "gjeldendeAdresse";
     public static final String DISKRESJONSKODE = "diskresjonskode";
@@ -37,6 +40,9 @@ public class Personalia {
     private LocalDate fodselsdato;
     private String alder;
     private String navn;
+    private String fornavn;
+    private String mellomnavn;
+    private String etternavn;
     private String epost;
     private String statsborgerskap;
     private String kjonn;
@@ -81,6 +87,30 @@ public class Personalia {
 
     public void setNavn(String navn) {
         this.navn = navn;
+    }
+
+    public String getFornavn() {
+        return fornavn;
+    }
+
+    public void setFornavn(String fornavn) {
+        this.fornavn = fornavn;
+    }
+
+    public String getMellomnavn() {
+        return mellomnavn;
+    }
+
+    public void setMellomnavn(String mellomnavn) {
+        this.mellomnavn = mellomnavn;
+    }
+
+    public String getEtternavn() {
+        return etternavn;
+    }
+
+    public void setEtternavn(String etternavn) {
+        this.etternavn = etternavn;
     }
 
     public String getDiskresjonskode() {
