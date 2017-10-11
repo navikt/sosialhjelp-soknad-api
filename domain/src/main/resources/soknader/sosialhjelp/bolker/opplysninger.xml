@@ -1,5 +1,281 @@
 <?xml version="1.0" ?>
 <soknad xmlns="urn:no.nav.sbl">
+
+
+    <!-- Arbeid / utdanning -->
+    <faktum>
+        <id>opplysninger.arbeid</id>
+        <type>hidden</type>
+        <panel>opplysningerBolk</panel>
+    </faktum>
+
+    <faktum>
+        <id>opplysninger.arbeid.jobb</id>
+        <type>composite</type>
+        <dependOn>opplysninger.arbeid</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>dinsituasjon.jobb</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+        <properties>
+            <property>
+                <id>bruttolonn</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>nettolonn</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+    <faktum>
+        <id>opplysninger.arbeid.student</id>
+        <type>composite</type>
+        <dependOn>opplysninger.arbeid</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>dinsituasjon.studerer</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+        <properties>
+            <property>
+                <id>utbetaling</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+    </faktum>
+
+
+
+    <!-- Familiesituasjon -->
+    <faktum>
+        <id>opplysninger.familiesituasjon</id>
+        <type>hidden</type>
+        <panel>opplysningerBolk</panel>
+    </faktum>
+
+    <faktum>
+        <id>opplysninger.familiesituasjon.barnmottar</id>
+        <type>composite</type>
+        <dependOn>opplysninger.familiesituasjon</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>familie.barn.true.barn</faktum>
+                <expression>properties['borsammen'] == 'true' &amp;&amp; properties['grad'] > 50</expression>
+            </constraint>
+        </constraints>
+        <properties>
+            <property>
+                <id>bidragmottar</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+    </faktum>
+
+    <faktum>
+        <id>opplysninger.familiesituasjon.barnbetaler</id>
+        <type>composite</type>
+        <dependOn>opplysninger.familiesituasjon</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>familie.barn.true.barn</faktum>
+                <expression>properties['borsammen'] == 'true' &amp;&amp; properties['grad'] &lt;= 50</expression>
+            </constraint>
+        </constraints>
+        <properties>
+            <property>
+                <id>bidragbetaler</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+    </faktum>
+
+
+
+    <!-- Inntekter / formue -->
+    <faktum>
+        <id>opplysninger.inntekt</id>
+        <type>hidden</type>
+        <panel>opplysningerBolk</panel>
+    </faktum>
+
+    <faktum>
+        <id>opplysninger.inntekt.bostotte</id>
+        <type>composite</type>
+        <dependOn>opplysninger.inntekt</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>inntekt.bostotte</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+        <properties>
+            <property>
+                <id>utbetaling</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+    </faktum>
+
+    <faktum>
+        <id>opplysninger.inntekt.bankinnskudd.brukskonto</id>
+        <type>composite</type>
+        <dependOn>opplysninger.inntekt</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>inntekt.bankinnskudd.true.type.brukskonto</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+        <properties>
+            <property>
+                <id>saldo</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+    <faktum>
+        <id>opplysninger.inntekt.bankinnskudd.sparekonto</id>
+        <type>composite</type>
+        <dependOn>opplysninger.inntekt</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>inntekt.bankinnskudd.true.type.sparekonto</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+        <properties>
+            <property>
+                <id>saldo</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+    <faktum>
+        <id>opplysninger.inntekt.bankinnskudd.livsforsikring</id>
+        <type>composite</type>
+        <dependOn>opplysninger.inntekt</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>inntekt.bankinnskudd.true.type.livsforsikring</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+        <properties>
+            <property>
+                <id>saldo</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+    <faktum>
+        <id>opplysninger.inntekt.bankinnskudd.aksjer</id>
+        <type>composite</type>
+        <dependOn>opplysninger.inntekt</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>inntekt.bankinnskudd.true.type.aksjer</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+        <properties>
+            <property>
+                <id>saldo</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+    <faktum>
+        <id>opplysninger.inntekt.bankinnskudd.annet</id>
+        <type>composite</type>
+        <dependOn>opplysninger.inntekt</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>inntekt.bankinnskudd.true.type.annet</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+        <properties>
+            <property>
+                <id>saldo</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+    <faktum>
+        <id>opplysninger.inntekt.inntekter.salg</id>
+        <type>composite</type>
+        <dependOn>opplysninger.inntekt</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>inntekt.inntekter.true.type.salg</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+        <properties>
+            <property>
+                <id>sum</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+    <faktum>
+        <id>opplysninger.inntekt.inntekter.forsikringsutbetalinger</id>
+        <type>composite</type>
+        <dependOn>opplysninger.inntekt</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>inntekt.inntekter.true.type.forsikringsutbetalinger</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+        <properties>
+            <property>
+                <id>sum</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+    <faktum>
+        <id>opplysninger.inntekt.inntekter.annet</id>
+        <type>composite</type>
+        <dependOn>opplysninger.inntekt</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>inntekt.inntekter.true.type.annet</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+        <properties>
+            <property>
+                <id>sum</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+
+    <!-- Utgifter -->
     <faktum>
         <id>opplysninger.utgifter</id>
         <type>hidden</type>
@@ -7,7 +283,7 @@
     </faktum>
 
     <faktum>
-        <id>opplysninger.husleie</id>
+        <id>opplysninger.utgifter.boutgift.husleie</id>
         <type>composite</type>
         <dependOn>opplysninger.utgifter</dependOn>
         <constraints>
@@ -25,7 +301,7 @@
     </faktum>
 
     <faktum>
-        <id>opplysninger.strom</id>
+        <id>opplysninger.utgifter.boutgift.strom</id>
         <type>composite</type>
         <dependOn>opplysninger.utgifter</dependOn>
         <constraints>
@@ -43,7 +319,43 @@
     </faktum>
 
     <faktum>
-        <id>opplysninger.boliglan</id>
+        <id>opplysninger.utgifter.boutgift.kommunaleavgifter</id>
+        <type>composite</type>
+        <dependOn>opplysninger.utgifter</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>utgifter.boutgift.true.type.kommunaleavgifter</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+        <properties>
+            <property>
+                <id>sisteregning</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+    </faktum>
+
+    <faktum>
+        <id>opplysninger.utgifter.boutgift.oppvarming</id>
+        <type>composite</type>
+        <dependOn>opplysninger.utgifter</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>utgifter.boutgift.true.type.oppvarming</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+        <properties>
+            <property>
+                <id>sisteregning</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+    </faktum>
+
+    <faktum>
+        <id>opplysninger.utgifter.boutgift.avdraglaan</id>
         <type>composite</type>
         <dependOn>opplysninger.utgifter</dependOn>
         <constraints>
@@ -54,11 +366,34 @@
         </constraints>
         <properties>
             <property>
-                <id>avdragprmnd</id>
+                <id>avdrag</id>
                 <type>textbox</type>
             </property>
             <property>
-                <id>renderprmnd</id>
+                <id>renter</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+    <faktum>
+        <id>opplysninger.utgifter.boutgift.andreutgifter</id>
+        <type>composite</type>
+        <dependOn>opplysninger.utgifter</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>utgifter.boutgift.true.type.andreutgifter</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+        <properties>
+            <property>
+                <id>type</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>sisteregning</id>
                 <type>textbox</type>
             </property>
         </properties>
@@ -67,28 +402,82 @@
 
 
     <faktum>
-        <id>opplysninger.bosituasjon</id>
-        <type>hidden</type>
-        <panel>opplysningerBolk</panel>
-    </faktum>
-
-    <faktum>
-        <id>opplysninger.annenbosituasjon</id>
+        <id>opplysninger.utgifter.barn.fritidsaktivitet</id>
         <type>composite</type>
         <dependOn>opplysninger.utgifter</dependOn>
         <constraints>
             <constraint>
-                <!-- todo -->
-                <faktum>utgifter.boutgift.true.type.avdraglaan</faktum>
+                <faktum>utgifter.barn.true.utgifter.fritidsaktivitet</faktum>
                 <expression>value == 'true'</expression>
             </constraint>
         </constraints>
         <properties>
             <property>
-                <id>permnd</id>
+                <id>sisteregning</id>
                 <type>textbox</type>
             </property>
         </properties>
+        <flereTillatt>true</flereTillatt>
     </faktum>
 
+    <faktum>
+        <id>opplysninger.utgifter.barn.barnehage</id>
+        <type>composite</type>
+        <dependOn>opplysninger.utgifter</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>utgifter.barn.true.utgifter.barnehage</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+        <properties>
+            <property>
+                <id>sistemnd</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+    <faktum>
+        <id>opplysninger.utgifter.barn.tannbehandling</id>
+        <type>composite</type>
+        <dependOn>opplysninger.utgifter</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>utgifter.barn.true.utgifter.tannbehandling</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+        <properties>
+            <property>
+                <id>sisteregning</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+    <faktum>
+        <id>opplysninger.utgifter.barn.annet</id>
+        <type>composite</type>
+        <dependOn>opplysninger.utgifter</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>opplysninger.utgifter.barn.annet</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+        <properties>
+            <property>
+                <id>type</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>sisteregning</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
 </soknad>
