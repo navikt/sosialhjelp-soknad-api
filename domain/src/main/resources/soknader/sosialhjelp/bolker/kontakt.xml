@@ -2,7 +2,7 @@
 <soknad xmlns="urn:no.nav.sbl">
     <faktum>
         <id>kontakt.kontonummer</id>
-        <panel>kontakt</panel>
+        <panel>personaliaBolk</panel>
         <type>textbox</type>
         <constraints>
             <constraint>
@@ -10,20 +10,23 @@
                 <expression>value != 'true'</expression>
             </constraint>
         </constraints>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>kontakt.kontonummer.harikke</id>
-        <panel>kontakt</panel>
-        <type>bool</type>
+        <panel>personaliaBolk</panel>
+        <type>checkbox</type>
     </faktum>
     <faktum>
         <id>kontakt.telefon</id>
-        <panel>kontakt</panel>
+        <panel>personaliaBolk</panel>
         <type>textbox</type>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>kontakt.statsborger</id>
-        <panel>kontakt</panel>
+        <panel>personaliaBolk</panel>
         <type>bool</type>
+        <optional>true</optional>
     </faktum>
 </soknad>
