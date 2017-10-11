@@ -1,16 +1,18 @@
-{{> skjema/generisk/sporsmal}}
-{{> skjema/generisk/infotekst}}
+{{#visCheckbox value key }}
+    {{> skjema/generisk/sporsmal}}
+    {{> skjema/generisk/infotekst}}
 
-<ul class="svar-liste">
-    <li>
-        {{#if value}}
-            {{ hentTekst (concat key "." value) }}
-        {{else}}
-            {{ hentTekst (concat key ".false") }}
-        {{/if}}
-        {{> skjema/generisk/infotekstvalue}}
-        {{> skjema/generisk/barnefakta}}
-    </li>
-</ul>
+    <ul class="svar-liste">
+        <li>
+            {{#if value}}
+                {{ hentTekst (concat key "." value) }}
+            {{else}}
+                {{ hentTekst (concat key ".false") }}
+            {{/if}}
+            {{> skjema/generisk/infotekstvalue}}
+            {{> skjema/generisk/barnefakta}}
+        </li>
+    </ul>
 
-{{> skjema/generisk/vedlegg}}
+    {{> skjema/generisk/vedlegg}}
+{{/visCheckbox}}

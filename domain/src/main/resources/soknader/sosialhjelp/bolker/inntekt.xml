@@ -4,6 +4,7 @@
         <id>inntekt.bostotte</id>
         <type>bool</type>
         <panel>inntektBolk</panel>
+        <optional>true</optional>
     </faktum>
 
     <!-- Eierandeler-->
@@ -11,6 +12,7 @@
         <id>inntekt.eierandeler</id>
         <type>bool</type>
         <panel>inntektBolk</panel>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>inntekt.eierandeler.true.type</id>
@@ -19,31 +21,37 @@
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>inntekt.eierandeler.true.type.bolig</id>
         <type>bool</type>
         <dependOn>inntekt.eierandeler.true.type</dependOn>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>inntekt.eierandeler.true.type.kjoretoy</id>
         <type>bool</type>
         <dependOn>inntekt.eierandeler.true.type</dependOn>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>inntekt.eierandeler.true.type.campingvogn</id>
         <type>bool</type>
         <dependOn>inntekt.eierandeler.true.type</dependOn>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>inntekt.eierandeler.true.type.fritidseiendom</id>
         <type>bool</type>
         <dependOn>inntekt.eierandeler.true.type</dependOn>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>inntekt.eierandeler.true.type.annet</id>
         <type>bool</type>
         <dependOn>inntekt.eierandeler.true.type</dependOn>
+        <optional>true</optional>
     </faktum>
 
     <faktum>
@@ -53,6 +61,7 @@
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
+        <optional>true</optional>
     </faktum>
 
     <!--  bankinnskudd -->
@@ -60,6 +69,7 @@
         <id>inntekt.bankinnskudd</id>
         <type>bool</type>
         <panel>inntektBolk</panel>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>inntekt.bankinnskudd.true.type</id>
@@ -68,31 +78,37 @@
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>inntekt.bankinnskudd.true.type.sparekonto</id>
         <type>bool</type>
         <dependOn>inntekt.bankinnskudd.true.type</dependOn>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>inntekt.bankinnskudd.true.type.brukskonto</id>
         <type>bool</type>
         <dependOn>inntekt.bankinnskudd.true.type</dependOn>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>inntekt.bankinnskudd.true.type.livsforsikring</id>
         <type>bool</type>
         <dependOn>inntekt.bankinnskudd.true.type</dependOn>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>inntekt.bankinnskudd.true.type.aksjer</id>
         <type>bool</type>
         <dependOn>inntekt.bankinnskudd.true.type</dependOn>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>inntekt.bankinnskudd.true.type.annet</id>
         <type>bool</type>
         <dependOn>inntekt.bankinnskudd.true.type</dependOn>
+        <optional>true</optional>
     </faktum>
 
     <faktum>
@@ -102,6 +118,7 @@
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
+        <optional>true</optional>
     </faktum>
 
 <!--inntekter-->
@@ -109,6 +126,7 @@
         <id>inntekt.inntekter</id>
         <type>bool</type>
         <panel>inntektBolk</panel>
+        <optional>true</optional>
     </faktum>
 
     <faktum>
@@ -118,26 +136,31 @@
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>inntekt.inntekter.true.type.utbytte</id>
         <type>bool</type>
         <dependOn>inntekt.inntekter.true.type</dependOn>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>inntekt.inntekter.true.type.salg</id>
         <type>bool</type>
         <dependOn>inntekt.inntekter.true.type</dependOn>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>inntekt.inntekter.true.type.forsikringsutbetalinger</id>
         <type>bool</type>
         <dependOn>inntekt.inntekter.true.type</dependOn>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>inntekt.inntekter.true.type.annet</id>
         <type>bool</type>
         <dependOn>inntekt.inntekter.true.type</dependOn>
+        <optional>true</optional>
     </faktum>
 
     <faktum>
@@ -147,5 +170,6 @@
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
+        <optional>true</optional>
     </faktum>
 </soknad>

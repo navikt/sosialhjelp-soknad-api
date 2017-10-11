@@ -4,6 +4,7 @@
         <id>familie.sivilstatus</id>
         <type>radio</type>
         <panel>familieBolk</panel>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>familie.sivilstatus.gift.ektefelle</id>
@@ -37,12 +38,14 @@
                 </constraints>
             </property>
         </properties>
+        <optional>true</optional>
     </faktum>
 
     <faktum>
         <id>familie.barn</id>
         <type>bool</type>
         <panel>familieBolk</panel>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>familie.barn.true.barn</id>
@@ -77,5 +80,6 @@
                 </constraints>
             </property>
         </properties>
+        <optional>true</optional>
     </faktum>
 </soknad>
