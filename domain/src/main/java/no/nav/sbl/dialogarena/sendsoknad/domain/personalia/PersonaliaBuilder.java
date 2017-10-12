@@ -8,6 +8,9 @@ public class PersonaliaBuilder {
     private LocalDate fodselsdato;
     private String alder;
     private String navn;
+    private String fornavn;
+    private String mellomnavn;
+    private String etternavn;
     private String epost;
     private String diskresjonskode;
     private String statsborgerskap;
@@ -45,6 +48,21 @@ public class PersonaliaBuilder {
 
     public PersonaliaBuilder navn(String navn) {
         this.navn = navn;
+        return this;
+    }
+
+    public PersonaliaBuilder withFornavn(String fornavn) {
+        this.fornavn = fornavn;
+        return this;
+    }
+
+    public PersonaliaBuilder withMellomnavn(String mellomnavn) {
+        this.mellomnavn = mellomnavn;
+        return this;
+    }
+
+    public PersonaliaBuilder withEtternavn(String etternavn) {
+        this.etternavn = etternavn;
         return this;
     }
 
@@ -99,6 +117,9 @@ public class PersonaliaBuilder {
         personalia.setFnr(fnr);
         personalia.setFodselsdato(fodselsdato);
         personalia.setNavn(navn);
+        personalia.setFornavn(fornavn);
+        personalia.setMellomnavn(mellomnavn);
+        personalia.setEtternavn(etternavn);
         personalia.setEpost(epost);
         personalia.setStatsborgerskap(statsborgerskap);
         personalia.setKjonn(kjonn);

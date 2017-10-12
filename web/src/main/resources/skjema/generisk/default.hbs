@@ -3,7 +3,13 @@
 
 <ul class="svar-liste">
     <li>
-        {{ hentTekst (concat key "." value) }}
+      {{#hvisIkkeTom value}}
+                  {{ hentTekst (concat key "." value) }}
+            {{else}}
+                {{#if optional}}
+                    <i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+                {{/if}}
+        {{/hvisIkkeTom}}
         {{> skjema/generisk/infotekstvalue}}
         {{> skjema/generisk/barnefakta}}
     </li>

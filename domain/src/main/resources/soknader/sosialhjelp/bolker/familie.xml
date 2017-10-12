@@ -4,53 +4,48 @@
         <id>familie.sivilstatus</id>
         <type>radio</type>
         <panel>familieBolk</panel>
+        <optional>true</optional>
     </faktum>
     <faktum>
-        <id>familie.sivilstatus.gift.navn</id>
-        <type>textbox</type>
+        <id>familie.sivilstatus.gift.ektefelle</id>
+        <type>composite</type>
         <dependOn>familie.sivilstatus</dependOn>
         <dependOnValues>
             <value>gift</value>
         </dependOnValues>
+        <properties>
+            <property>
+                <id>navn</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>fnr</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>pnr</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>borsammen</id>
+                <type>bool</type>
+            </property>
+            <property>
+                <id>ikkesammenbeskrivelse</id>
+                <type>textbox</type>
+                <constraints>
+                    <constraint>properties['borsammen'] == 'true'</constraint>
+                </constraints>
+            </property>
+        </properties>
+        <optional>true</optional>
     </faktum>
-    <faktum>
-        <id>familie.sivilstatus.gift.fnr</id>
-        <type>textbox</type>
-        <dependOn>familie.sivilstatus</dependOn>
-        <dependOnValues>
-            <value>gift</value>
-        </dependOnValues>
-    </faktum>
-    <faktum>
-        <id>familie.sivilstatus.gift.pnr</id>
-        <type>textbox</type>
-        <dependOn>familie.sivilstatus</dependOn>
-        <dependOnValues>
-            <value>gift</value>
-        </dependOnValues>
-    </faktum>
-    <faktum>
-        <id>familie.sivilstatus.gift.borsammen</id>
-        <type>bool</type>
-        <dependOn>familie.sivilstatus</dependOn>
-        <dependOnValues>
-            <value>gift</value>
-        </dependOnValues>
-    </faktum>
-    <faktum>
-        <id>familie.sivilstatus.gift.borsammen.false.beskrivelse</id>
-        <type>bool</type>
-        <dependOn>familie.sivilstatus.gift.borsammen</dependOn>
-        <dependOnValues>
-            <value>false</value>
-        </dependOnValues>
-    </faktum>
-
 
     <faktum>
         <id>familie.barn</id>
         <type>bool</type>
         <panel>familieBolk</panel>
+        <optional>true</optional>
     </faktum>
     <faktum>
         <id>familie.barn.true.barn</id>
@@ -79,11 +74,12 @@
             </property>
             <property>
                 <id>grad</id>
-                <type>bool</type>
+                <type>textbox</type>
                 <constraints>
                     <constraint>properties['borsammen'] == 'true'</constraint>
                 </constraints>
             </property>
         </properties>
+        <optional>true</optional>
     </faktum>
 </soknad>
