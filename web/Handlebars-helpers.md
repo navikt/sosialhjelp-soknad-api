@@ -84,6 +84,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * toLowerCase - Gjør om en tekst til kun små bokstaver
 * variabel - Lager en variabel med en bestemt verdi som kun er tilgjengelig innenfor helperen
 * vedleggCmsNokkel - Henter teksten for et vedlegg
+* visCheckbox - hvis value er "true" eller key.false-teksten finnes
 
 
 #### Eksempler
@@ -560,5 +561,14 @@ Leser fra model på context
 {{#forVedlegg}}
     {{{hentTekst (vedleggCmsNokkel this)}}}
 {{/forVedlegg}}
+```
+
+
+##### visCheckbox
+
+```
+{{#visCheckbox "value" "en.nokkel"}}
+   Value er "true" eller teksten "en.nokkel.false" finnes
+{{/visCheckbox}}
 ```
 
