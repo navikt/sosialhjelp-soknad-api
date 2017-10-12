@@ -285,11 +285,11 @@ public class AlternativRepresentasjonForeldrepengerVedleggIT extends AbstractIT 
     }
 
     @Test
-    public void skalBareSetteTilleggsinfoForStatusSendesIkkeEllerStatusSendTidligere() {
+    public void skalSetteTilleggsinfoForVedleggSomIkkeErLastetOpp() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(engangsstonadAdopsjonSkjemanummer)
                 .faktum("ytelser.sluttpakke").withValue("true").utforEndring()
                 .hentPaakrevdeVedlegg()
-                .vedlegg(Y4).withInnsendingsValg(Status.LastetOpp).withAarsak("aarsak").utforEndring()
+                .vedlegg(Y4).withInnsendingsValg(Status.LastetOpp).utforEndring()
                 .hentPaakrevdeVedlegg()
                 .soknad();
 
@@ -297,22 +297,25 @@ public class AlternativRepresentasjonForeldrepengerVedleggIT extends AbstractIT 
         assertThat(singleVedlegg(soknad).getTilleggsinfo()).isNull();
 
         soknad = soknadTester.hentPaakrevdeVedlegg()
-                .vedlegg(Y4).withInnsendingsValg(Status.VedleggSendesIkke).utforEndring()
+                .vedlegg(Y4).withInnsendingsValg(Status.VedleggSendesIkke).withAarsak("aarsak").utforEndring()
                 .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
         assertThat(singleVedlegg(soknad).getTilleggsinfo()).isEqualTo("aarsak");
 
         soknad = soknadTester.hentPaakrevdeVedlegg()
-                .vedlegg(Y4).withInnsendingsValg(Status.VedleggSendesAvAndre).utforEndring()
+                .vedlegg(Y4).withInnsendingsValg(Status.VedleggSendesAvAndre).withAarsak("aarsak").utforEndring()
                 .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
-        assertThat(singleVedlegg(soknad).getTilleggsinfo()).isNull();
-
+        assertThat(singleVedlegg(soknad).getTilleggsinfo()).isEqualTo("aarsak");
 
         soknad = soknadTester.hentPaakrevdeVedlegg()
-                .vedlegg(Y4).withInnsendingsValg(Status.VedleggAlleredeSendt).utforEndring()
+                .vedlegg(Y4).withInnsendingsValg(Status.VedleggAlleredeSendt).withAarsak("aarsak").utforEndring()
+                .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
+        assertThat(singleVedlegg(soknad).getTilleggsinfo()).isEqualTo("aarsak");
+
+        soknad = soknadTester.hentPaakrevdeVedlegg()
+                .vedlegg(Y4).withInnsendingsValg(Status.SendesSenere).withAarsak("aarsak").utforEndring()
                 .hentAlternativRepresentasjon(SoeknadsskjemaEngangsstoenad.class);
         assertThat(singleVedlegg(soknad).getTilleggsinfo()).isEqualTo("aarsak");
     }
-
 
     private Vedlegg singleVedlegg(SoeknadsskjemaEngangsstoenad soknad) {
         List<Vedlegg> vedlegg = soknad.getVedleggListe().getVedleggs();
