@@ -182,6 +182,25 @@
     </faktum>
 
     <faktum>
+        <id>opplysninger.inntekt.inntekter.utbytte</id>
+        <type>composite</type>
+        <dependOn>opplysninger.inntekt</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>inntekt.inntekter.true.type.utbytte</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+        <properties>
+            <property>
+                <id>sum</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+    <faktum>
         <id>opplysninger.inntekt.inntekter.salg</id>
         <type>composite</type>
         <dependOn>opplysninger.inntekt</dependOn>
@@ -428,7 +447,7 @@
         <dependOn>opplysninger.utgifter</dependOn>
         <constraints>
             <constraint>
-                <faktum>opplysninger.utgifter.barn.annet</faktum>
+                <faktum>utgifter.barn.true.utgifter.annet</faktum>
                 <expression>value == 'true'</expression>
             </constraint>
         </constraints>
