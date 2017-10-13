@@ -28,10 +28,6 @@ public class DagpengerUtils {
         return erPermittert ? DAGPENGER_VED_PERMITTERING : DAGPENGER;
     }
 
-    public static String getJournalforendeEnhet(WebSoknad webSoknad) {
-        return RUTES_I_BRUT;
-    }
-
     public static String konverterSkjemanummerTilTittel(String skjemanummer) {
         switch (skjemanummer) {
             case DAGPENGER:
