@@ -29,12 +29,7 @@ public class VedleggTilXml implements Function<WebSoknad, VedleggListe> {
             .withInnsendingsvalg(innsendingsvalg(soknadVedlegg.getInnsendingsvalg()))
             .withTilleggsinfo(aarsak(soknadVedlegg));
 
-    private String aarsak(no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg vedlegg) {
-        if (vedlegg.getInnsendingsvalg() == Status.VedleggSendesIkke || vedlegg.getInnsendingsvalg() == Status.VedleggAlleredeSendt) {
-            return vedlegg.getAarsak();
-        }
-        return null;
-    }
+    private String aarsak(no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg vedlegg) { return vedlegg.getAarsak(); }
 
     private String dokumentTypeId(String skjemanummer) {
         return Skjemanummer.valueOf(skjemanummer).dokumentTypeId();
