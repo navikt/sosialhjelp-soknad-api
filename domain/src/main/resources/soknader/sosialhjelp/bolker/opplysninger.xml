@@ -5,7 +5,7 @@
     <!-- Arbeid / utdanning -->
     <faktum>
         <id>opplysninger.arbeid</id>
-        <type>hidden</type>
+        <type>gruppe</type>
         <panel>opplysningerBolk</panel>
     </faktum>
 
@@ -29,6 +29,7 @@
                 <type>textbox</type>
             </property>
         </properties>
+        <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
 
@@ -48,23 +49,22 @@
                 <type>textbox</type>
             </property>
         </properties>
+        <optional>true</optional>
     </faktum>
-
 
 
     <!-- Familiesituasjon -->
     <faktum>
         <id>opplysninger.familiesituasjon</id>
-        <type>hidden</type>
+        <type>gruppe</type>
         <panel>opplysningerBolk</panel>
     </faktum>
-
 
 
     <!-- Inntekter / formue -->
     <faktum>
         <id>opplysninger.inntekt</id>
-        <type>hidden</type>
+        <type>gruppe</type>
         <panel>opplysningerBolk</panel>
     </faktum>
 
@@ -84,6 +84,7 @@
                 <type>textbox</type>
             </property>
         </properties>
+        <optional>true</optional>
     </faktum>
 
     <faktum>
@@ -102,6 +103,7 @@
                 <type>textbox</type>
             </property>
         </properties>
+        <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
 
@@ -121,6 +123,7 @@
                 <type>textbox</type>
             </property>
         </properties>
+        <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
 
@@ -140,6 +143,7 @@
                 <type>textbox</type>
             </property>
         </properties>
+        <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
 
@@ -159,6 +163,7 @@
                 <type>textbox</type>
             </property>
         </properties>
+        <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
 
@@ -178,6 +183,7 @@
                 <type>textbox</type>
             </property>
         </properties>
+        <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
 
@@ -197,6 +203,7 @@
                 <type>textbox</type>
             </property>
         </properties>
+        <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
 
@@ -216,6 +223,7 @@
                 <type>textbox</type>
             </property>
         </properties>
+        <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
 
@@ -235,6 +243,7 @@
                 <type>textbox</type>
             </property>
         </properties>
+        <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
 
@@ -254,6 +263,7 @@
                 <type>textbox</type>
             </property>
         </properties>
+        <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
 
@@ -261,7 +271,7 @@
     <!-- Utgifter -->
     <faktum>
         <id>opplysninger.utgifter</id>
-        <type>hidden</type>
+        <type>gruppe</type>
         <panel>opplysningerBolk</panel>
     </faktum>
 
@@ -281,6 +291,7 @@
                 <type>textbox</type>
             </property>
         </properties>
+        <optional>true</optional>
     </faktum>
 
     <faktum>
@@ -299,6 +310,7 @@
                 <type>textbox</type>
             </property>
         </properties>
+        <optional>true</optional>
     </faktum>
 
     <faktum>
@@ -317,6 +329,7 @@
                 <type>textbox</type>
             </property>
         </properties>
+        <optional>true</optional>
     </faktum>
 
     <faktum>
@@ -335,6 +348,7 @@
                 <type>textbox</type>
             </property>
         </properties>
+        <optional>true</optional>
     </faktum>
 
     <faktum>
@@ -357,6 +371,7 @@
                 <type>textbox</type>
             </property>
         </properties>
+        <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
 
@@ -380,6 +395,7 @@
                 <type>textbox</type>
             </property>
         </properties>
+        <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
 
@@ -400,6 +416,7 @@
                 <type>textbox</type>
             </property>
         </properties>
+        <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
 
@@ -419,6 +436,7 @@
                 <type>textbox</type>
             </property>
         </properties>
+        <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
 
@@ -438,6 +456,7 @@
                 <type>textbox</type>
             </property>
         </properties>
+        <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
 
@@ -461,6 +480,7 @@
                 <type>textbox</type>
             </property>
         </properties>
+        <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
 </soknad>
