@@ -15,49 +15,35 @@
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>inntekt.eierandeler.true.type</id>
-        <type>checkboxGroup</type>
-        <dependOn>inntekt.eierandeler</dependOn>
-        <dependOnValues>
-            <value>true</value>
-        </dependOnValues>
+        <id>inntekt.eierandeler.type.bolig</id>
+        <type>bool</type>
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>inntekt.eierandeler.true.type.bolig</id>
+        <id>inntekt.eierandeler.type.kjoretoy</id>
         <type>bool</type>
-        <dependOn>inntekt.eierandeler.true.type</dependOn>
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>inntekt.eierandeler.true.type.kjoretoy</id>
+        <id>inntekt.eierandeler.type.campingvogn</id>
         <type>bool</type>
-        <dependOn>inntekt.eierandeler.true.type</dependOn>
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>inntekt.eierandeler.true.type.campingvogn</id>
+        <id>inntekt.eierandeler.type.fritidseiendom</id>
         <type>bool</type>
-        <dependOn>inntekt.eierandeler.true.type</dependOn>
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>inntekt.eierandeler.true.type.fritidseiendom</id>
+        <id>inntekt.eierandeler.type.annet</id>
         <type>bool</type>
-        <dependOn>inntekt.eierandeler.true.type</dependOn>
-        <optional>true</optional>
-    </faktum>
-    <faktum>
-        <id>inntekt.eierandeler.true.type.annet</id>
-        <type>bool</type>
-        <dependOn>inntekt.eierandeler.true.type</dependOn>
         <optional>true</optional>
     </faktum>
 
     <faktum>
-        <id>inntekt.eierandeler.true.type.annet.true.beskrivelse</id>
+        <id>inntekt.eierandeler.type.annet.true.beskrivelse</id>
         <type>textbox</type>
-        <dependOn>inntekt.eierandeler.true.type.annet</dependOn>
+        <dependOn>inntekt.eierandeler.type.annet</dependOn>
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
@@ -72,49 +58,35 @@
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>inntekt.bankinnskudd.true.type</id>
-        <type>checkboxGroup</type>
-        <dependOn>inntekt.bankinnskudd</dependOn>
-        <dependOnValues>
-            <value>true</value>
-        </dependOnValues>
+        <id>inntekt.bankinnskudd.type.sparekonto</id>
+        <type>bool</type>
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>inntekt.bankinnskudd.true.type.sparekonto</id>
+        <id>inntekt.bankinnskudd.type.brukskonto</id>
         <type>bool</type>
-        <dependOn>inntekt.bankinnskudd.true.type</dependOn>
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>inntekt.bankinnskudd.true.type.brukskonto</id>
+        <id>inntekt.bankinnskudd.type.livsforsikring</id>
         <type>bool</type>
-        <dependOn>inntekt.bankinnskudd.true.type</dependOn>
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>inntekt.bankinnskudd.true.type.livsforsikring</id>
+        <id>inntekt.bankinnskudd.type.aksjer</id>
         <type>bool</type>
-        <dependOn>inntekt.bankinnskudd.true.type</dependOn>
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>inntekt.bankinnskudd.true.type.aksjer</id>
+        <id>inntekt.bankinnskudd.type.annet</id>
         <type>bool</type>
-        <dependOn>inntekt.bankinnskudd.true.type</dependOn>
-        <optional>true</optional>
-    </faktum>
-    <faktum>
-        <id>inntekt.bankinnskudd.true.type.annet</id>
-        <type>bool</type>
-        <dependOn>inntekt.bankinnskudd.true.type</dependOn>
         <optional>true</optional>
     </faktum>
 
     <faktum>
-        <id>inntekt.bankinnskudd.true.type.annet.true.beskrivelse</id>
+        <id>inntekt.bankinnskudd.type.annet.true.beskrivelse</id>
         <type>textbox</type>
-        <dependOn>inntekt.bankinnskudd.true.type.annet</dependOn>
+        <dependOn>inntekt.bankinnskudd.type.annet</dependOn>
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
