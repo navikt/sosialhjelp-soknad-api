@@ -389,6 +389,12 @@
             <property>
                 <id>type</id>
                 <type>textbox</type>
+                <configuration>
+                    <entry>
+                        <key>validering</key>
+                        <value>text</value>
+                    </entry>
+                </configuration>
             </property>
             <property>
                 <id>sisteregning</id>
@@ -474,6 +480,12 @@
             <property>
                 <id>type</id>
                 <type>textbox</type>
+                <configuration>
+                    <entry>
+                        <key>validering</key>
+                        <value>text</value>
+                    </entry>
+                </configuration>
             </property>
             <property>
                 <id>sisteregning</id>
