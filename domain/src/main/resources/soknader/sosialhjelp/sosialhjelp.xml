@@ -7,6 +7,7 @@
     <xi:include href="bolker/progresjon.xml" />
 
     <!-- Bolker -->
+    <xi:include href="bolker/informasjon.xml" />
     <xi:include href="bolker/start.xml" />
     <xi:include href="bolker/kontakt.xml" />
     <xi:include href="bolker/arbeid.xml" />
