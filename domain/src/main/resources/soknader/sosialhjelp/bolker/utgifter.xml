@@ -92,6 +92,12 @@
         <optional>true</optional>
     </faktum>
     <faktum>
+        <id>utgifter.barn.true.utgifter.sfo</id>
+        <type>bool</type>
+        <dependOn>utgifter.barn.true.utgifter</dependOn>
+        <optional>true</optional>
+    </faktum>
+    <faktum>
         <id>utgifter.barn.true.utgifter.tannbehandling</id>
         <type>bool</type>
         <dependOn>utgifter.barn.true.utgifter</dependOn>
