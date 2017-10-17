@@ -542,14 +542,9 @@ public class WebSoknad implements Serializable {
     }
 
     public void fjernFaktaSomIkkeSkalVaereSynligISoknaden(SoknadStruktur struktur) {
-        Iterator<Faktum> iterator = getFakta().iterator();
-        while (iterator.hasNext()) {
-            Faktum next = iterator.next();
-            FaktumStruktur faktumStruktur = struktur.finnStrukturForKey(next.getKey());
-
-            if (faktumStruktur != null && !faktumStruktur.erSynlig(this, next)) {
-                iterator.remove();
-            }
-        }
+        fakta = fakta.stream().filter(faktum -> {
+            FaktumStruktur faktumStruktur = struktur.finnStrukturForKey(faktum.getKey());
+            return faktumStruktur == null || faktumStruktur.erSynlig(this, faktum);
+        }).collect(toList());
     }
 }
