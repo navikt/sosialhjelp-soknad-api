@@ -118,6 +118,10 @@ public class OppsummeringsFaktum implements OppsummeringsBase{
         public String template() {
             return OppsummeringsTyper.resolve(struktur.getType());
         }
+
+        public boolean optional() {
+            return OppsummeringsFaktum.this.optional();
+        }
     }
     public static class OppsummeringsVedlegg {
         public Vedlegg vedlegg;

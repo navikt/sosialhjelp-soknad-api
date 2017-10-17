@@ -20,6 +20,7 @@ public enum OppsummeringsTyper {
     tekster("skjema/generisk/tekster"),
     string("skjema/generisk/default"),
     bool("skjema/generisk/default"),
+    gruppe("skjema/generisk/gruppe"),
     inlineproperties("skjema/generisk/inlineproperties");
 
 
