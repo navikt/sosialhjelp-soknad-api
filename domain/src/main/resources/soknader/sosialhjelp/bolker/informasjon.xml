@@ -1,9 +1,5 @@
 <?xml version="1.0"?>
 <soknad xmlns="urn:no.nav.sbl">
-    <faktum>
-        <id>informasjon.bekreftelse</id>
-        <type>checkbox</type>
-    </faktum>
     <faktum kunUtvidet="true">
         <id>informasjon.tekster</id>
         <type>infotekst</type>
