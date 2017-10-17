@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Import;
         AlternativRepresentasjonService.class,
         EttersendingService.class,
         XmlService.class,
+        SynligeFaktaService.class,
         SoknadMetricsService.class
 })
 public class ServiceConfig {
