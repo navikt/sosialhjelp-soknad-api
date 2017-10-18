@@ -11,7 +11,7 @@ import java.util.function.Predicate;
 @Component
 public class HvisNoenAvkryssetBarneFaktaHelper extends RegistryAwareHelper<List<? extends OppsummeringsFaktum>> {
 
-    private Predicate<OppsummeringsFaktum> faktaErAvhuketPredicate(){
+    private Predicate<OppsummeringsFaktum> faktaErAvkryssetPredicate(){
         return oppsummeringsFaktum -> oppsummeringsFaktum.value().equals("true");
     }
 
@@ -22,12 +22,12 @@ public class HvisNoenAvkryssetBarneFaktaHelper extends RegistryAwareHelper<List<
 
     @Override
     public String getBeskrivelse() {
-        return "For bruk i generisk oppsummering, undersøker innsendt liste over fakta og ser om noen er avhuket.";
+        return "For bruk i generisk oppsummering, undersøker innsendt liste over fakta og ser om noen er avkrysset.";
     }
 
     @Override
     public CharSequence apply(List<? extends OppsummeringsFaktum> fakta, Options options) throws IOException {
-        boolean ingenSynlige = fakta.stream().anyMatch(faktaErAvhuketPredicate());
+        boolean ingenSynlige = fakta.stream().anyMatch(faktaErAvkryssetPredicate());
         return ingenSynlige ? options.fn() : options.inverse();
     }
 }
