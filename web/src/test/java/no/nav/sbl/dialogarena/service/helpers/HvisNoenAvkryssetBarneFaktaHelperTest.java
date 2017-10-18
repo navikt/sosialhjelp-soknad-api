@@ -51,14 +51,14 @@ public class HvisNoenAvkryssetBarneFaktaHelperTest {
         fakta.add(ikkeAvkryssetFaktum);
         fakta.add(avkryssetFaktum);
 
-        sjekkHelper(fakta, "Ingen synlige fakta");
+        sjekkHelper(fakta, "Avkrysset fakta");
     }
 
     private void sjekkHelper(List<OppsummeringsFaktum> fakta, String forventetResultat) throws IOException {
         Context context = Context.newContext(null);
         context.data("fakta", fakta);
 
-        String forFaktaCompiled = handlebars.compileInline("{{#hvisNoenAvkryssetBarneFakta fakta}}Ingen synlige fakta{{/hvisNoenAvkryssetBarneFakta}}").apply(context);
+        String forFaktaCompiled = handlebars.compileInline("{{#hvisNoenAvkryssetBarneFakta fakta}}Avkrysset fakta{{/hvisNoenAvkryssetBarneFakta}}").apply(context);
         assertThat(forFaktaCompiled).isEqualTo(forventetResultat);
     }
 
