@@ -17,7 +17,6 @@ import static org.junit.Assert.*;
 
 public class DagpengerUtilsTest {
 
-    public static final String EOS_DAGPENGER = "4465";
     public static final String RUTES_I_BRUT = "";
 
     @Test
@@ -71,92 +70,6 @@ public class DagpengerUtilsTest {
         WebSoknad soknad = lagSoknad(arbeidsforholdIkkePermittert, permitteringsperiode);
 
         assertEquals(DAGPENGER, getSkjemanummer(soknad));
-    }
-
-    @Test
-    public void harSkjemanummer0000DerMinstEnErPermitteringOgBrukerBorInnenlands() {
-        DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagAvskjediget("2014-1-1"), lagPermittert(3L), lagPermitteringsperiode(3L, "2014-1-1"), lagAvskjediget("2014-1-1"));
-
-        Faktum personalia = getPersonaliaFaktum(soknad);
-        setGjeldendeAdressePaaPersonaliaFaktum(personalia, lagUtenlandskEOSAdresse());
-        setSekundarAdressePaaPersonaliaFaktum(personalia, lagSekundarAdresseNorge());
-
-        assertEquals(RUTES_I_BRUT, getJournalforendeEnhet(soknad));
-    }
-
-    @Test
-    public void skalRuteSoknadTilEosLand() {
-        DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagPermittert(3L), lagPermitteringsperiode(3L, "2014-1-1"));
-        Adresse utlandeos = lagUtenlandskEOSAdresse();
-        Faktum personalia = getPersonaliaFaktum(soknad);
-        setGjeldendeAdressePaaPersonaliaFaktum(personalia, utlandeos);
-
-        assertEquals(EOS_DAGPENGER, getJournalforendeEnhet(soknad));
-    }
-
-    @Test
-    public void skalRuteSoknadTilEosLandHvisBrukerErUtenlandskOgGrensearbeider() {
-        DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagPermittert(3L), lagPermitteringsperiode(3L, "2014-1-1"), lagGrensearbeiderFaktum());
-        Faktum personalia = getPersonaliaFaktum(soknad);
-        setUtenlanskEOSStatsborger(personalia);
-        setBrukerTilAVaereGrensearbeider(soknad.getFaktumMedKey("arbeidsforhold.grensearbeider"));
-
-        assertEquals(EOS_DAGPENGER, getJournalforendeEnhet(soknad));
-    }
-
-    @Test
-    public void skalRuteSoknadNormaltHvisBrukerErUtenlandskMenIkkeGrensearbeider() {
-        DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagPermittert(3L), lagPermitteringsperiode(3L, "2014-1-1"), lagGrensearbeiderFaktum());
-        Faktum personalia = getPersonaliaFaktum(soknad);
-        setUtenlanskEOSStatsborger(personalia);
-        setBrukerTilIkkeGrensearbeider(soknad.getFaktumMedKey("arbeidsforhold.grensearbeider"));
-
-        assertEquals(RUTES_I_BRUT, getJournalforendeEnhet(soknad));
-    }
-
-    @Test
-    public void skalRuteSoknadNormaltHvisBrukerErGrensearbeiderOgNorskStatsborger() {
-        DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagPermittert(3L), lagPermitteringsperiode(3L, "2014-1-1"), lagGrensearbeiderFaktum());
-        Faktum personalia = getPersonaliaFaktum(soknad);
-        setNorskStatsborger(personalia);
-        setBrukerTilAVaereGrensearbeider(soknad.getFaktumMedKey("arbeidsforhold.grensearbeider"));
-
-        assertEquals(RUTES_I_BRUT, getJournalforendeEnhet(soknad));
-    }
-
-    @Test
-    public void skalRutesTilEOSHvisGjenopptakOgBrukerHarIngenNyeArbforholOgErGrensearbeiderOgPermittertForrigeGangHanFikkDagpenger() {
-        DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagGrensearbeiderFaktum(), lagArbeidSidenSistFaktum(), lagPermittertForrigeGangFaktum());
-        Faktum personalia = getPersonaliaFaktum(soknad);
-
-        setTilGjenopptak(soknad);
-        setUtenlanskEOSStatsborger(personalia);
-        setBrukerTilAVaereGrensearbeider(soknad.getFaktumMedKey("arbeidsforhold.grensearbeider"));
-        setIngenNyeArbeidsforhold(soknad.getFaktumMedKey("nyearbeidsforhold.arbeidsidensist"));
-        setPermittertForrigeGangHanFikkDagpenger(soknad.getFaktumMedKey("tidligerearbeidsforhold.permittert"));
-
-        assertEquals(EOS_DAGPENGER, getJournalforendeEnhet(soknad));
-    }
-
-    @Test
-    public void skalRuteSoknadTilEosLandMed3Caser() {
-        DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(
-                lagRedusertArbeidstid("2014-01-01"),
-                lagAvskjediget("2014-03-06"),
-                lagPermittert(3L),
-                lagPermitteringsperiode(3L, "2014-1-1"));
-        Adresse utlandeos = lagUtenlandskEOSAdresse();
-        Faktum personalia = getPersonaliaFaktum(soknad);
-        setGjeldendeAdressePaaPersonaliaFaktum(personalia, utlandeos);
-
-        assertEquals(RUTES_I_BRUT, getJournalforendeEnhet(soknad));
     }
 
     @Test
