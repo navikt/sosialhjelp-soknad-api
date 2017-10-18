@@ -93,7 +93,7 @@
         <dependOn>opplysninger.inntekt</dependOn>
         <constraints>
             <constraint>
-                <faktum>inntekt.bankinnskudd.true.type.brukskonto</faktum>
+                <faktum>inntekt.bankinnskudd.brukskonto</faktum>
                 <expression>value == 'true'</expression>
             </constraint>
         </constraints>
@@ -113,7 +113,7 @@
         <dependOn>opplysninger.inntekt</dependOn>
         <constraints>
             <constraint>
-                <faktum>inntekt.bankinnskudd.true.type.sparekonto</faktum>
+                <faktum>inntekt.bankinnskudd.sparekonto</faktum>
                 <expression>value == 'true'</expression>
             </constraint>
         </constraints>
@@ -133,7 +133,7 @@
         <dependOn>opplysninger.inntekt</dependOn>
         <constraints>
             <constraint>
-                <faktum>inntekt.bankinnskudd.true.type.livsforsikring</faktum>
+                <faktum>inntekt.bankinnskudd.livsforsikring</faktum>
                 <expression>value == 'true'</expression>
             </constraint>
         </constraints>
@@ -153,7 +153,7 @@
         <dependOn>opplysninger.inntekt</dependOn>
         <constraints>
             <constraint>
-                <faktum>inntekt.bankinnskudd.true.type.aksjer</faktum>
+                <faktum>inntekt.bankinnskudd.aksjer</faktum>
                 <expression>value == 'true'</expression>
             </constraint>
         </constraints>
@@ -173,7 +173,7 @@
         <dependOn>opplysninger.inntekt</dependOn>
         <constraints>
             <constraint>
-                <faktum>inntekt.bankinnskudd.true.type.annet</faktum>
+                <faktum>inntekt.bankinnskudd.annet</faktum>
                 <expression>value == 'true'</expression>
             </constraint>
         </constraints>
