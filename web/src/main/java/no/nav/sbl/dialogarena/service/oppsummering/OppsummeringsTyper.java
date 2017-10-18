@@ -16,10 +16,10 @@ public enum OppsummeringsTyper {
     hidden("skjema/generisk/hidden"),
     inputgroup("skjema/generisk/inputgroup"),
     infotekst("skjema/generisk/infotekst"),
-    radio("skjema/generisk/default"),
+    radio("skjema/generisk/radio"),
     tekster("skjema/generisk/tekster"),
     string("skjema/generisk/default"),
-    bool("skjema/generisk/default"),
+    bool("skjema/generisk/radio"),
     gruppe("skjema/generisk/gruppe"),
     inlineproperties("skjema/generisk/inlineproperties");
 

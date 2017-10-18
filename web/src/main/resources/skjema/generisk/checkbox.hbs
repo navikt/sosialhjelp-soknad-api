@@ -4,11 +4,13 @@
 
     <ul class="svar-liste">
         <li>
-            {{#if value}}
-                {{ hentTekst (concat key "." value) }}
-            {{else}}
-                {{ hentTekst (concat key ".false") }}
-            {{/if}}
+            <span class="verdi verdi--checkbox">
+                {{#if value}}
+                    {{ hentTekst (concat key "." value) }}
+                {{else}}
+                    {{ hentTekst (concat key ".false") }}
+                {{/if}}
+            </span>
             {{> skjema/generisk/infotekstvalue}}
             {{> skjema/generisk/barnefakta}}
         </li>
