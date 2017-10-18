@@ -10,40 +10,44 @@
     <!-- Eierandeler-->
     <faktum>
         <id>inntekt.eierandeler</id>
-        <type>bool</type>
+        <type>checkboxGroup</type>
         <panel>inntektBolk</panel>
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>inntekt.eierandeler.type.bolig</id>
+        <id>inntekt.eierandeler.bolig</id>
         <type>bool</type>
+        <dependOn>inntekt.eierandeler</dependOn>
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>inntekt.eierandeler.type.kjoretoy</id>
+        <id>inntekt.eierandeler.kjoretoy</id>
         <type>bool</type>
+        <dependOn>inntekt.eierandeler</dependOn>
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>inntekt.eierandeler.type.campingvogn</id>
+        <id>inntekt.eierandeler.campingvogn</id>
         <type>bool</type>
+        <dependOn>inntekt.eierandeler</dependOn>
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>inntekt.eierandeler.type.fritidseiendom</id>
+        <id>inntekt.eierandeler.fritidseiendom</id>
         <type>bool</type>
+        <dependOn>inntekt.eierandeler</dependOn>
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>inntekt.eierandeler.type.annet</id>
+        <id>inntekt.eierandeler.annet</id>
         <type>bool</type>
+        <dependOn>inntekt.eierandeler</dependOn>
         <optional>true</optional>
     </faktum>
-
     <faktum>
-        <id>inntekt.eierandeler.type.annet.true.beskrivelse</id>
+        <id>inntekt.eierandeler.annet.true.beskrivelse</id>
         <type>textbox</type>
-        <dependOn>inntekt.eierandeler.type.annet</dependOn>
+        <dependOn>inntekt.eierandeler.annet</dependOn>
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
@@ -53,40 +57,50 @@
     <!--  bankinnskudd -->
     <faktum>
         <id>inntekt.bankinnskudd</id>
-        <type>bool</type>
+        <type>checkboxGroup</type>
         <panel>inntektBolk</panel>
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>inntekt.bankinnskudd.type.sparekonto</id>
+        <id>inntekt.bankinnskudd.sparekonto</id>
         <type>bool</type>
+        <dependOn>inntekt.bankinnskudd</dependOn>
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>inntekt.bankinnskudd.type.brukskonto</id>
+        <id>inntekt.bankinnskudd.brukskonto</id>
         <type>bool</type>
+        <dependOn>inntekt.bankinnskudd</dependOn>
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>inntekt.bankinnskudd.type.livsforsikring</id>
+        <id>inntekt.bankinnskudd.livsforsikring</id>
         <type>bool</type>
+        <dependOn>inntekt.bankinnskudd</dependOn>
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>inntekt.bankinnskudd.type.aksjer</id>
+        <id>inntekt.bankinnskudd.aksjer</id>
         <type>bool</type>
+        <dependOn>inntekt.bankinnskudd</dependOn>
         <optional>true</optional>
     </faktum>
     <faktum>
-        <id>inntekt.bankinnskudd.type.annet</id>
+        <id>inntekt.bankinnskudd.bsu</id>
         <type>bool</type>
+        <dependOn>inntekt.bankinnskudd</dependOn>
         <optional>true</optional>
     </faktum>
-
     <faktum>
-        <id>inntekt.bankinnskudd.type.annet.true.beskrivelse</id>
+        <id>inntekt.bankinnskudd.annet</id>
+        <type>bool</type>
+        <dependOn>inntekt.bankinnskudd</dependOn>
+        <optional>true</optional>
+    </faktum>
+    <faktum>
+        <id>inntekt.bankinnskudd.annet.true.beskrivelse</id>
         <type>textbox</type>
-        <dependOn>inntekt.bankinnskudd.type.annet</dependOn>
+        <dependOn>inntekt.bankinnskudd.annet</dependOn>
         <dependOnValues>
             <value>true</value>
         </dependOnValues>
