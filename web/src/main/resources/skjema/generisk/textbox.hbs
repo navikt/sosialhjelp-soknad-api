@@ -1,15 +1,19 @@
 {{> skjema/generisk/sporsmal}}
 {{> skjema/generisk/infotekst}}
 
-{{ hentTekst (concat key ".label") }}
+<span class="label">{{ hentTekst (concat key ".label") }}</span>
 <ul class="svar-liste">
     <li>
         {{#hvisIkkeTom originalValue}}
-            {{originalValue}}
+            <span class="verdi verdi--tekst">
+                {{originalValue}}
+            </span>
         {{else}}
-            {{#if optional}}
-                <i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
-            {{/if}}
+            <span class="verdi verdi--ikkeUtfylt">
+                {{#if optional}}
+                    <i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+                {{/if}}
+            </span>
         {{/hvisIkkeTom}}
         {{#hvisTekstFinnes (concat key ".enhet")}}
             {{ hentTekst (concat key ".enhet") }}

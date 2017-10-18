@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.KVITTERING;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.getJournalforendeEnhet;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.RUTES_I_BRUT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.getSkjemanummer;
 
 public class StaticMetoder {
@@ -24,7 +24,7 @@ public class StaticMetoder {
         String journalforendeEnhet;
 
         if (soknad.erDagpengeSoknad()) {
-            journalforendeEnhet = getJournalforendeEnhet(soknad);
+            journalforendeEnhet = RUTES_I_BRUT;
         } else {
             journalforendeEnhet = soknad.getJournalforendeEnhet();
         }

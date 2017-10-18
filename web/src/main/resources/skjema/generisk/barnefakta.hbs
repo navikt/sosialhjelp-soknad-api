@@ -1,4 +1,4 @@
-<ul class="fakta-liste">
+<ul class="fakta-liste{{#hvisIngenSynligeBarneFakta barneFakta}} tomListe{{/hvisIngenSynligeBarneFakta}}">
     {{#variabel "niva" (inc niva)}}
         {{#each barneFakta}}
             {{> skjema/generisk/faktum}}
