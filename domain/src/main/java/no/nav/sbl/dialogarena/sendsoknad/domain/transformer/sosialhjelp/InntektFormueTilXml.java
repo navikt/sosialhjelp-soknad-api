@@ -32,23 +32,23 @@ public class InntektFormueTilXml implements Function<WebSoknad, XMLInntektFormue
 
     private static Map<String, String> lagVerdiMap() {
         Map<String, String> map = new HashMap<>();
-        map.put("inntekt.eierandeler.bolig", BOLIG.value());
-        map.put("inntekt.eierandeler.kjoretoy", KJORETOY.value());
-        map.put("inntekt.eierandeler.campingvogn", CAMPINGVOGN.value());
-        map.put("inntekt.eierandeler.fritidseiendom", FRITIDSEIENDOM.value());
-        map.put("inntekt.eierandeler.annet", XMLVerdi.ANNET.value());
+        map.put("inntekt.eierandeler.true.type.bolig", BOLIG.value());
+        map.put("inntekt.eierandeler.true.type.kjoretoy", KJORETOY.value());
+        map.put("inntekt.eierandeler.true.type.campingvogn", CAMPINGVOGN.value());
+        map.put("inntekt.eierandeler.true.type.fritidseiendom", FRITIDSEIENDOM.value());
+        map.put("inntekt.eierandeler.true.type.annet", XMLVerdi.ANNET.value());
         return map;
     }
 
     private static Map<String, String> lagBankinnskuddMap() {
         Map<String, String> map = new HashMap<>();
-        map.put("inntekt.bankinnskudd.sparekonto", SPAREKONTO.value());
-        map.put("inntekt.bankinnskudd.brukskonto", BRUKSKONTO.value());
-        map.put("inntekt.bankinnskudd.livsforsikring", LIVSFORSIKRING.value());
-        map.put("inntekt.bankinnskudd.aksjer", AKSJER.value());
+        map.put("inntekt.bankinnskudd.true.type.sparekonto", SPAREKONTO.value());
+        map.put("inntekt.bankinnskudd.true.type.brukskonto", BRUKSKONTO.value());
+        map.put("inntekt.bankinnskudd.true.type.livsforsikring", LIVSFORSIKRING.value());
+        map.put("inntekt.bankinnskudd.true.type.aksjer", AKSJER.value());
         // TODO: Bruk enum for bsu når xsd er oppdatert
-        map.put("inntekt.bankinnskudd.bsu", "bsu");
-        map.put("inntekt.bankinnskudd.annet", ANNET.value());
+        map.put("inntekt.bankinnskudd.true.type.bsu", "bsu");
+        map.put("inntekt.bankinnskudd.true.type.annet", ANNET.value());
         return map;
     }
 
