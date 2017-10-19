@@ -32,11 +32,11 @@ public class InntektFormueTilXml implements Function<WebSoknad, XMLInntektFormue
 
     private static Map<String, String> lagVerdiMap() {
         Map<String, String> map = new HashMap<>();
-        map.put("inntekt.eierandeler.type.bolig", BOLIG.value());
-        map.put("inntekt.eierandeler.type.kjoretoy", KJORETOY.value());
-        map.put("inntekt.eierandeler.type.campingvogn", CAMPINGVOGN.value());
-        map.put("inntekt.eierandeler.type.fritidseiendom", FRITIDSEIENDOM.value());
-        map.put("inntekt.eierandeler.type.annet", XMLVerdi.ANNET.value());
+        map.put("inntekt.eierandeler.bolig", BOLIG.value());
+        map.put("inntekt.eierandeler.kjoretoy", KJORETOY.value());
+        map.put("inntekt.eierandeler.campingvogn", CAMPINGVOGN.value());
+        map.put("inntekt.eierandeler.fritidseiendom", FRITIDSEIENDOM.value());
+        map.put("inntekt.eierandeler.annet", XMLVerdi.ANNET.value());
         return map;
     }
 
