@@ -71,6 +71,7 @@ public class InntektFormueTilXml implements Function<WebSoknad, XMLInntektFormue
                         .withVerdierliste(new XMLVerdierliste(lagListeFraFakta(webSoknad, VERDI_MAP)))
                         .withAnnetBeskrivelse(tilString(webSoknad, "inntekt.eierandeler.true.type.annet.true.beskrivelse")))
                 .withBankinnskudd(new XMLBankinnskudd()
+                        .withHarBankinnskudd(tilString(webSoknad, "inntekt.bankinnskudd"))
                         .withBankinnskuddliste(new XMLBankinnskuddliste(lagListeFraFakta(webSoknad, BANKINNSKUDD_MAP)))
                         .withAnnetBeskrivelse(tilString(webSoknad, "inntekt.bankinnskudd.true.type.annet.true.beskrivelse")))
                 .withUtbetalinger(new XMLUtbetalinger()
