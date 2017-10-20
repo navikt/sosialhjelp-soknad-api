@@ -5,6 +5,8 @@ import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.EkstraMetadataTransformer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMetadataTransformer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpTilXml;
 import org.springframework.context.MessageSource;
 
@@ -48,6 +50,11 @@ public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett
         event.addTagToReport("soknadstype", getSoknadTypePrefix());
         event.report();
         return singletonList(new SosialhjelpTilXml(messageSource));
+    }
+
+    @Override
+    public List<EkstraMetadataTransformer> getMetadataTransformers() {
+        return singletonList(new FiksMetadataTransformer());
     }
 
     @Override
