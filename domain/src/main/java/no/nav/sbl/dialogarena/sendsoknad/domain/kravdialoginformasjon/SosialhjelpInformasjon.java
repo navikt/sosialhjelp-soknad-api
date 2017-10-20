@@ -37,7 +37,6 @@ public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett
         return "sosialhjelp/sosialhjelp.xml";
     }
 
-    //TODO ta i bruk riktig skjemanummer
     public List<String> getSkjemanummer() {
         return Arrays.asList("NAV 35-18.01");
     }
