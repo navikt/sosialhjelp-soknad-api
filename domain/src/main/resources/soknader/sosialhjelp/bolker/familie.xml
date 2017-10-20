@@ -48,6 +48,15 @@
         <optional>true</optional>
     </faktum>
     <faktum>
+        <id>familie.barn.true.barnebidrag</id>
+        <dependOn>familie.barn</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+        <type>radio</type>
+        <optional>true</optional>
+    </faktum>
+    <faktum>
         <id>familie.barn.true.barn</id>
         <dependOn>familie.barn</dependOn>
         <dependOnValues>
