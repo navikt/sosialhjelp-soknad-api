@@ -74,6 +74,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hvisLik - Sjekker om to strenger er like
 * hvisMer - Evaluerer en string til double og sjekker om verdien er mer enn grenseverdien gitt ved andre inputparameter
 * hvisMindre - Evaluerer en string til integer og sjekker om verdien er mindre enn andre inputparameter
+* hvisNoenAvkryssetBarneFakta - For bruk i generisk oppsummering, undersøker innsendt liste over fakta og ser om noen er avkrysset.
 * hvisSant - Dersom variabelen er "true" vil innholdet vises
 * hvisTekstFinnes - Henter tekst fra cms, prøver med søknadens prefix + key, før den prøver med bare keyen. Kan sende inn parametere.
 * kortDato - Formatterer en datostreng på formatet yyyy-mm-dd til dd.mm.aaaa
@@ -466,6 +467,15 @@ må ha et faktum i context, f. eks. via
     {{else}}
     Verdi er lik eller større enn 50
 {{/hvisMindre}}
+```
+
+
+##### hvisNoenAvkryssetBarneFakta
+
+```
+{{#hvisNoenAvkryssetBarneFakta barneFakta}}
+    Avkrysset fakta
+{{/hvisNoenAvkryssetBarneFakta}}
 ```
 
 

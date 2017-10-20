@@ -46,6 +46,8 @@ public class InntektFormueTilXml implements Function<WebSoknad, XMLInntektFormue
         map.put("inntekt.bankinnskudd.true.type.brukskonto", BRUKSKONTO.value());
         map.put("inntekt.bankinnskudd.true.type.livsforsikring", LIVSFORSIKRING.value());
         map.put("inntekt.bankinnskudd.true.type.aksjer", AKSJER.value());
+        // TODO: Bruk enum for bsu når xsd er oppdatert
+        map.put("inntekt.bankinnskudd.true.type.bsu", "bsu");
         map.put("inntekt.bankinnskudd.true.type.annet", ANNET.value());
         return map;
     }

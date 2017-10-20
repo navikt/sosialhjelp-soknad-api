@@ -2,15 +2,19 @@
 {{> skjema/generisk/infotekst}}
 
 <ul class="svar-liste">
-    {{#each barneFakta}}
-        {{#hvisSant value}}
-            <li>
-                <span class="verdi verdi--check">{{ hentTekst key }}</span>
-                {{> skjema/generisk/infotekst}}
-                {{> skjema/generisk/infotekstvalue}}
-                {{> skjema/generisk/vedlegg}}
-                {{> skjema/generisk/barnefakta}}
-            </li>
-        {{/hvisSant}}
-    {{/each}}
+    {{#hvisNoenAvkryssetBarneFakta barneFakta}}
+        {{#each barneFakta}}
+            {{#hvisSant value}}
+                <li>
+                    <span class="verdi verdi--check">{{ hentTekst key }}</span>
+                    {{> skjema/generisk/infotekst}}
+                    {{> skjema/generisk/infotekstvalue}}
+                    {{> skjema/generisk/vedlegg}}
+                    {{> skjema/generisk/barnefakta}}
+                </li>
+            {{/hvisSant}}
+        {{/each}}
+    {{else}}
+        <li><i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i></li>
+    {{/hvisNoenAvkryssetBarneFakta}}
 </ul>
