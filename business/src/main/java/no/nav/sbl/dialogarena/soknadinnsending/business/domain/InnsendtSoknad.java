@@ -23,6 +23,8 @@ public class InnsendtSoknad {
     private String tittelCmsKey;
     private final DateTimeFormatter datoFormatter;
     private final DateTimeFormatter klokkeslettFormatter;
+    private String navkontor;
+    private String orgnummer;
 
     public InnsendtSoknad(){
         this(new Locale("nb_NO"));
@@ -67,6 +69,16 @@ public class InnsendtSoknad {
         return this;
     }
 
+    public InnsendtSoknad medNavkontor(String navkontor) {
+        this.navkontor = navkontor;
+        return this;
+    }
+
+    public InnsendtSoknad medOrgnummer(String orgnummer) {
+        this.orgnummer = orgnummer;
+        return this;
+    }
+
     public String getBehandlingsId() {
         return behandlingsId;
     }
@@ -97,5 +109,13 @@ public class InnsendtSoknad {
 
     public String getTittelCmsKey() {
         return tittelCmsKey;
+    }
+
+    public String getNavkontor() {
+        return navkontor;
+    }
+
+    public String getOrgnummer() {
+        return orgnummer;
     }
 }
