@@ -89,6 +89,9 @@ public class SoknadDataFletter {
     AlternativRepresentasjonService alternativRepresentasjonService;
 
     @Inject
+    EkstraMetadataService ekstraMetadataService;
+
+    @Inject
     private SoknadMetricsService soknadMetricsService;
 
     private Map<String, BolkService> bolker;
@@ -357,7 +360,8 @@ public class SoknadDataFletter {
 
         XMLHovedskjema hovedskjema = lagXmlHovedskjemaMedAlternativRepresentasjon(pdf, soknad, fullSoknad);
         XMLVedlegg[] vedlegg = convertToXmlVedleggListe(vedleggService.hentVedleggOgKvittering(soknad));
-        henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, vedlegg);
+        XMLMetadata[] ekstraMetadata = ekstraMetadataService.hentEkstraMetadata(soknad).toArray(new XMLMetadata[0]);
+        henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, vedlegg, ekstraMetadata);
         lokalDb.slettSoknad(soknad.getSoknadId());
 
         soknadMetricsService.rapporterKompletteOgIkkeKompletteSoknader(soknad.getIkkeInnsendteVedlegg(), skjemanummer(soknad));

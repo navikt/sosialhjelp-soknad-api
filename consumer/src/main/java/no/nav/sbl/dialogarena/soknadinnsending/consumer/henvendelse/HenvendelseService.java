@@ -1,9 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse;
 
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHenvendelse;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.*;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.modig.core.exception.SystemException;
 import no.nav.tjeneste.domene.brukerdialog.henvendelse.v2.henvendelse.HenvendelsePortType;
@@ -70,11 +67,12 @@ public class HenvendelseService {
         }
     }
 
-    public void avsluttSoknad(String behandlingsId, XMLHovedskjema hovedskjema, XMLVedlegg... vedlegg) {
+    public void avsluttSoknad(String behandlingsId, XMLHovedskjema hovedskjema, XMLVedlegg[] vedlegg, XMLMetadata[] ekstraData) {
         try {
             WSSoknadsdata parameters = new WSSoknadsdata().withBehandlingsId(behandlingsId).withAny(new XMLMetadataListe()
                     .withMetadata(hovedskjema)
-                    .withMetadata(vedlegg));
+                    .withMetadata(vedlegg)
+                    .withMetadata(ekstraData));
             logger.info("Søknad avsluttet " + behandlingsId + " " + hovedskjema.getSkjemanummer() + " (" + hovedskjema.getJournalforendeEnhet() + ") " + vedlegg.length + " vedlegg");
             sendSoknadEndpoint.sendSoknad(parameters);
         } catch (SOAPFaultException e) {

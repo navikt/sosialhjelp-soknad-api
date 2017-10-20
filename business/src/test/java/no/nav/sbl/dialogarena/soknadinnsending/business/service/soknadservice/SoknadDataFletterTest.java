@@ -102,6 +102,8 @@ public class SoknadDataFletterTest {
 
     @InjectMocks
     private AlternativRepresentasjonService alternativRepresentasjonService;
+    @InjectMocks
+    private EkstraMetadataService ekstraMetadataService;
 
 
     @SuppressWarnings("unchecked")
@@ -115,6 +117,7 @@ public class SoknadDataFletterTest {
 
         soknadServiceUtil.initBolker();
         soknadServiceUtil.alternativRepresentasjonService = alternativRepresentasjonService;
+        soknadServiceUtil.ekstraMetadataService = ekstraMetadataService;
         setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         when(lokalDb.hentSoknadType(anyLong())).thenReturn(DAGPENGER);
         when(config.getSoknadBolker(any(WebSoknad.class), any(List.class))).thenReturn(new ArrayList());
@@ -213,7 +216,7 @@ public class SoknadDataFletterTest {
         soknadServiceUtil.sendSoknad(behandlingsId, new byte[]{1, 2, 3}, new byte[]{4,5,6});
 
         verify(henvendelsesConnector).avsluttSoknad(eq(behandlingsId), argument.capture(),
-                refEq(
+                refEq(new XMLVedlegg[] {
                         new XMLVedlegg()
                                 .withUuid("uidVedlegg1")
                                 .withInnsendingsvalg(XMLInnsendingsvalg.LASTET_OPP.toString())
@@ -222,24 +225,23 @@ public class SoknadDataFletterTest {
                                 .withFilstorrelse("2")
                                 .withSideantall(3)
                                 .withMimetype("application/pdf")
-                                .withSkjemanummer("N6")),
-                refEq(
-                        new XMLVedlegg()
-                                .withInnsendingsvalg(XMLInnsendingsvalg.SENDES_IKKE.toString())
-                                .withTilleggsinfo("")
-                                .withSkjemanummer("L8")
-                                .withFilnavn("L8")),
-                refEq(
-                        new XMLVedlegg()
-                                .withUuid("kvitteringRef")
-                                .withInnsendingsvalg(XMLInnsendingsvalg.LASTET_OPP.toString())
-                                .withFilnavn(Kodeverk.KVITTERING)
-                                .withTilleggsinfo("")
-                                .withFilstorrelse("3")
-                                .withSideantall(1)
-                                .withMimetype("application/pdf")
-                                .withSkjemanummer(Kodeverk.KVITTERING))
-        );
+                                .withSkjemanummer("N6"),
+                                new XMLVedlegg()
+                                        .withInnsendingsvalg(XMLInnsendingsvalg.SENDES_IKKE.toString())
+                                        .withTilleggsinfo("")
+                                        .withSkjemanummer("L8")
+                                        .withFilnavn("L8"),
+                                new XMLVedlegg()
+                                        .withUuid("kvitteringRef")
+                                        .withInnsendingsvalg(XMLInnsendingsvalg.LASTET_OPP.toString())
+                                        .withFilnavn(Kodeverk.KVITTERING)
+                                        .withTilleggsinfo("")
+                                        .withFilstorrelse("3")
+                                        .withSideantall(1)
+                                        .withMimetype("application/pdf")
+                                        .withSkjemanummer(Kodeverk.KVITTERING)
+                })
+        , eq(new XMLMetadata[0]));
 
         XMLHovedskjema xmlHovedskjema = argument.getValue();
         assertThat(xmlHovedskjema.getJournalforendeEnhet()).isEqualTo(RUTES_I_BRUT);
