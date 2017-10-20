@@ -60,6 +60,63 @@
         <panel>opplysningerBolk</panel>
     </faktum>
 
+    <faktum>
+        <id>opplysninger.familiesituasjon.barnebidrag.betaler</id>
+        <type>composite</type>
+        <dependOn>opplysninger.familiesituasjon</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>familie.barn.true.barnebidrag</faktum>
+                <expression>value == 'betaler'</expression>
+            </constraint>
+        </constraints>
+        <properties>
+            <property>
+                <id>betaler</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+    </faktum>
+
+    <faktum>
+        <id>opplysninger.familiesituasjon.barnebidrag.mottar</id>
+        <type>composite</type>
+        <dependOn>opplysninger.familiesituasjon</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>familie.barn.true.barnebidrag</faktum>
+                <expression>value == 'mottar'</expression>
+            </constraint>
+        </constraints>
+        <properties>
+            <property>
+                <id>mottar</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+    </faktum>
+
+    <faktum>
+        <id>opplysninger.familiesituasjon.barnebidrag.begge</id>
+        <type>composite</type>
+        <dependOn>opplysninger.familiesituasjon</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>familie.barn.true.barnebidrag</faktum>
+                <expression>value == 'begge'</expression>
+            </constraint>
+        </constraints>
+        <properties>
+            <property>
+                <id>betaler</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>mottar</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+    </faktum>
 
     <!-- Inntekter / formue -->
     <faktum>
