@@ -168,6 +168,25 @@
     </faktum>
 
     <faktum>
+        <id>opplysninger.inntekt.bankinnskudd.bsu</id>
+        <type>composite</type>
+        <dependOn>opplysninger.inntekt</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>inntekt.bankinnskudd.true.type.bsu</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+        <properties>
+            <property>
+                <id>saldo</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+        <optional>true</optional>
+    </faktum>
+
+    <faktum>
         <id>opplysninger.inntekt.bankinnskudd.sparekonto</id>
         <type>composite</type>
         <dependOn>opplysninger.inntekt</dependOn>
@@ -493,6 +512,26 @@
         <constraints>
             <constraint>
                 <faktum>utgifter.barn.true.utgifter.barnehage</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+        <properties>
+            <property>
+                <id>sistemnd</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+    <faktum>
+        <id>opplysninger.utgifter.barn.sfo</id>
+        <type>composite</type>
+        <dependOn>opplysninger.utgifter</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>utgifter.barn.true.utgifter.sfo</faktum>
                 <expression>value == 'true'</expression>
             </constraint>
         </constraints>
