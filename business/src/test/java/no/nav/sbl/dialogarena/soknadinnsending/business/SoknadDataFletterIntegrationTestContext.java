@@ -48,6 +48,11 @@ public class SoknadDataFletterIntegrationTestContext {
     }
 
     @Bean
+    public EkstraMetadataService ekstraMetadataService() {
+        return new EkstraMetadataService();
+    }
+
+    @Bean
     public HenvendelseService henvendelseService() {
         return new HenvendelseService();
     }
