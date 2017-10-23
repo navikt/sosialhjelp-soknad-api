@@ -113,6 +113,11 @@ public class VedleggServiceIntegrationMockContext {
     }
 
     @Bean
+    public EkstraMetadataService ekstraMetadataService() {
+        return mock(EkstraMetadataService.class);
+    }
+
+    @Bean
     public AlternativRepresentasjonService alternativRepresentasjonService() {
         return mock(AlternativRepresentasjonService.class);
     }
