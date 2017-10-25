@@ -273,7 +273,7 @@ public class SoknadDataFletter {
 
         if (soknadTilleggsstonader.getSkjemanummer().contains(soknad.getskjemaNummer())) {
             soknad.getFakta().stream()
-                    .filter(erFaktumViVetFeiler)
+                    .filter(faktum -> erFaktumViVetFeiler(soknad).contains(faktum))
                     .forEach(faktum -> {
                         try {
                             faktum.getProperties().entrySet().stream()
@@ -300,21 +300,21 @@ public class SoknadDataFletter {
         return soknad;
     }
 
+    private List<String> erFaktumViVetFeiler(WebSoknad soknad) {
+        List<String> faktumFeilerKeys = new ArrayList<>();
+        if(soknad.getFaktaMedKey("reise.samling.fleresamlinger").get(0).getValue() != null) {
+            faktumFeilerKeys.add("reise.samling.fleresamlinger.samling");
+        }
+        faktumFeilerKeys.add("reise.samling.aktivitetsperiode");
+        faktumFeilerKeys.add("bostotte.samling");
+        return faktumFeilerKeys;
+    }
+
     private Predicate<Map.Entry<String, String>> isDatoProperty = property -> {
         List<String> datoKeys = new ArrayList<>();
         datoKeys.add("tom");
         datoKeys.add("fom");
         return datoKeys.contains(property.getKey());
-    };
-
-
-
-    private Predicate<Faktum> erFaktumViVetFeiler = faktum -> {
-        List<String> faktumFeilerKeys = new ArrayList<>();
-        faktumFeilerKeys.add("reise.samling.fleresamlinger.samling");
-        faktumFeilerKeys.add("reise.samling.aktivitetsperiode");
-        faktumFeilerKeys.add("bostotte.samling");
-        return faktumFeilerKeys.contains(faktum.getKey());
     };
 
     private WebSoknad populerSoknadMedData(boolean populerSystemfakta, WebSoknad soknad) {
