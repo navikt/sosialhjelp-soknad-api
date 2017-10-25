@@ -5,7 +5,9 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 import java.util.Locale;
 
@@ -23,7 +25,7 @@ public class InnsendtSoknad {
     private String tittelCmsKey;
     private final DateTimeFormatter datoFormatter;
     private final DateTimeFormatter klokkeslettFormatter;
-    private String navkontor;
+    private String navenhet;
     private String orgnummer;
 
     public InnsendtSoknad(){
@@ -69,8 +71,8 @@ public class InnsendtSoknad {
         return this;
     }
 
-    public InnsendtSoknad medNavkontor(String navkontor) {
-        this.navkontor = navkontor;
+    public InnsendtSoknad medNavenhet(String navenhet) {
+        this.navenhet = navenhet;
         return this;
     }
 
@@ -111,8 +113,8 @@ public class InnsendtSoknad {
         return tittelCmsKey;
     }
 
-    public String getNavkontor() {
-        return navkontor;
+    public String getNavenhet() {
+        return navenhet;
     }
 
     public String getOrgnummer() {

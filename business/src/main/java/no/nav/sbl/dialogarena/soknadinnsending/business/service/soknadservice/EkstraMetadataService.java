@@ -2,6 +2,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
 
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadata;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLSoknadMetadata;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLSoknadMetadata.Verdi;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.EkstraMetadataTransformer;
@@ -9,8 +11,7 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import java.util.List;
-
-import static java.util.stream.Collectors.toList;
+import java.util.Map;
 
 @Component
 public class EkstraMetadataService {
@@ -18,13 +19,34 @@ public class EkstraMetadataService {
     @Inject
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
 
-    public List<XMLMetadata> hentEkstraMetadata(WebSoknad soknad) {
+    public XMLSoknadMetadata hentEkstraMetadata(WebSoknad soknad) {
         List<EkstraMetadataTransformer> transformers = kravdialogInformasjonHolder.hentKonfigurasjon(soknad.getskjemaNummer())
                 .getMetadataTransformers();
 
-        return transformers.stream()
+        XMLSoknadMetadata soknadMetadata = new XMLSoknadMetadata();
+
+        transformers.stream()
                 .map(transformer -> transformer.apply(soknad))
-                .collect(toList());
+                .forEach(map -> {
+                    for (Map.Entry<String, String> v : map.entrySet()) {
+                        soknadMetadata.withVerdi(new Verdi(v.getKey(), v.getValue()));
+                    }
+                });
+
+        return soknadMetadata;
+    }
+
+    public String finnMetadataVerdi(List<XMLMetadata> metadataListe, String key) {
+        return metadataListe.stream()
+                .filter(xmlMetadata -> xmlMetadata instanceof XMLSoknadMetadata)
+                .map(xmlMetadata -> (XMLSoknadMetadata) xmlMetadata)
+                .findFirst()
+                .map(soknadMetadata -> soknadMetadata.getVerdi().stream()
+                        .filter(verdi -> key.equals(verdi.getKey()))
+                        .findFirst()
+                        .map(Verdi::getValue)
+                        .orElse(null)
+                ).orElse(null);
     }
 
 }
