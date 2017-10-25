@@ -1,6 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.*;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHenvendelse;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadata;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
@@ -19,6 +22,8 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toList;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMetadataTransformer.FIKS_ENHET_KEY;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMetadataTransformer.FIKS_ORGNR_KEY;
 
 @Component
 public class InnsendtSoknadService {
@@ -33,6 +38,9 @@ public class InnsendtSoknadService {
 
     @Inject
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
+
+    @Inject
+    EkstraMetadataService ekstraMetadataService;
 
     private static final java.util.function.Predicate<Vedlegg> IKKE_KVITTERING = vedlegg -> !SKJEMANUMMER_KVITTERING.equalsIgnoreCase(vedlegg.getSkjemaNummer());
 
@@ -77,13 +85,6 @@ public class InnsendtSoknadService {
 
         }).filter(IKKE_KVITTERING).collect(toList());
 
-        metadata.stream()
-                .filter(xmlMetadata -> xmlMetadata instanceof XMLFiksMetadata)
-                .findFirst()
-                .ifPresent(fiksMetadata -> innsendtSoknad
-                        .medNavkontor(((XMLFiksMetadata) fiksMetadata).getKontornavn())
-                        .medOrgnummer(((XMLFiksMetadata) fiksMetadata).getOrgnr()));
-
         Optional<Vedlegg> hovedskjemaVedlegg = vedlegg.stream()
                 .filter(medSkjemanummer(hovedskjema.getSkjemanummer())).findFirst();
 
@@ -96,7 +97,9 @@ public class InnsendtSoknadService {
                 .medTemakode(xmlHenvendelse.getTema())
                 .medInnsendteVedlegg(innsendteVedlegg)
                 .medIkkeInnsendteVedlegg(ikkeInnsendteVedlegg)
-                .medDato(xmlHenvendelse.getAvsluttetDato());
+                .medDato(xmlHenvendelse.getAvsluttetDato())
+                .medNavenhet(ekstraMetadataService.finnMetadataVerdi(metadata, FIKS_ENHET_KEY))
+                .medOrgnummer(ekstraMetadataService.finnMetadataVerdi(metadata, FIKS_ORGNR_KEY));
     }
 
     private Predicate<Vedlegg> medSkjemanummer(final String skjemanummer) {
