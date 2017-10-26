@@ -302,8 +302,11 @@ public class SoknadDataFletter {
 
     private List<String> erFaktumViVetFeiler(WebSoknad soknad) {
         List<String> faktumFeilerKeys = new ArrayList<>();
-        if(soknad.getFaktaMedKey("reise.samling.fleresamlinger").get(0).getValue() != null) {
-            faktumFeilerKeys.add("reise.samling.fleresamlinger.samling");
+        List<Faktum> fleresamlinger = soknad.getFaktaMedKey("reise.samling.fleresamlinger");
+        if(fleresamlinger.size() > 0) {
+            if(fleresamlinger.get(0).getValue() != null) {
+                faktumFeilerKeys.add("reise.samling.fleresamlinger.samling");
+            }
         }
         faktumFeilerKeys.add("reise.samling.aktivitetsperiode");
         faktumFeilerKeys.add("bostotte.samling");
