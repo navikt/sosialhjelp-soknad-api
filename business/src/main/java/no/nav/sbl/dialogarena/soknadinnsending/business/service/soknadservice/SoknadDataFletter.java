@@ -39,7 +39,6 @@ import java.util.function.Predicate;
 
 import static java.util.Collections.sort;
 import static java.util.UUID.randomUUID;
-import static java.util.stream.Collectors.toList;
 import static javax.xml.bind.JAXB.unmarshal;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.LASTET_OPP;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
@@ -275,7 +274,6 @@ public class SoknadDataFletter {
         if (soknadTilleggsstonader.getSkjemanummer().contains(soknad.getskjemaNummer())) {
             soknad.getFakta().stream()
                     .filter(erFaktumViVetFeiler(soknad))
-                    .collect(toList())
                     .forEach(faktum -> {
                         try {
                             faktum.getProperties().entrySet().stream()
