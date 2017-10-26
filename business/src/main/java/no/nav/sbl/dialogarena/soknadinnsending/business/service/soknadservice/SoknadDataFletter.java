@@ -39,6 +39,7 @@ import java.util.function.Predicate;
 
 import static java.util.Collections.sort;
 import static java.util.UUID.randomUUID;
+import static java.util.stream.Collectors.toList;
 import static javax.xml.bind.JAXB.unmarshal;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.LASTET_OPP;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
@@ -273,7 +274,8 @@ public class SoknadDataFletter {
 
         if (soknadTilleggsstonader.getSkjemanummer().contains(soknad.getskjemaNummer())) {
             soknad.getFakta().stream()
-                    .filter(faktum -> erFaktumViVetFeiler(soknad).contains(faktum))
+                    .filter(erFaktumViVetFeiler(soknad))
+                    .collect(toList())
                     .forEach(faktum -> {
                         try {
                             faktum.getProperties().entrySet().stream()
@@ -300,7 +302,7 @@ public class SoknadDataFletter {
         return soknad;
     }
 
-    private List<String> erFaktumViVetFeiler(WebSoknad soknad) {
+    private Predicate<Faktum> erFaktumViVetFeiler(WebSoknad soknad) {
         List<String> faktumFeilerKeys = new ArrayList<>();
         List<Faktum> fleresamlinger = soknad.getFaktaMedKey("reise.samling.fleresamlinger");
         if(fleresamlinger.size() > 0) {
@@ -310,7 +312,7 @@ public class SoknadDataFletter {
         }
         faktumFeilerKeys.add("reise.samling.aktivitetsperiode");
         faktumFeilerKeys.add("bostotte.samling");
-        return faktumFeilerKeys;
+        return faktum -> faktumFeilerKeys.contains(faktum.getKey());
     }
 
     private Predicate<Map.Entry<String, String>> isDatoProperty = property -> {
