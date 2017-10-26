@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.*;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLSoknadMetadata.Verdi;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
@@ -20,6 +21,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.Arrays;
 import java.util.Collection;
 
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMetadataTransformer.FIKS_ORGNR_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Matchers.anyString;
@@ -51,11 +53,14 @@ public class InnsendtSoknadServiceTest {
     private KravdialogInformasjon kravdialogInformasjon;
 
     @InjectMocks
+    private EkstraMetadataService ekstraMetadataService;
+
+    @InjectMocks
     private InnsendtSoknadService service;
 
     @Before
     public void setUp() throws Exception {
-
+        service.ekstraMetadataService = ekstraMetadataService;
         when(kravdialogInformasjonHolder.hentKonfigurasjon(HOVEDSKJEMA.getSkjemanummer())).thenReturn(kravdialogInformasjon);
         when(kravdialogInformasjon.getSoknadTypePrefix()).thenReturn(SOKNAD_PREFIX);
         xmlHenvendelse = new XMLHenvendelse();
@@ -69,8 +74,8 @@ public class InnsendtSoknadServiceTest {
         xmlMetadataListe.withMetadata(
                 HOVEDSKJEMA,
                 new XMLVedlegg()
-                .withInnsendingsvalg("LASTET_OPP")
-                .withSkjemanummer(SKJEMANUMMER_KVITTERING));
+                        .withInnsendingsvalg("LASTET_OPP")
+                        .withSkjemanummer(SKJEMANUMMER_KVITTERING));
 
         InnsendtSoknad soknad = service.hentInnsendtSoknad("ID01", SPRAK);
         assertThat(soknad.getIkkeInnsendteVedlegg()).areNot(liktSkjemanummer(SKJEMANUMMER_KVITTERING));
@@ -130,13 +135,25 @@ public class InnsendtSoknadServiceTest {
     public void skalKasteExceptionOmHovedskjemaMangler() throws Exception {
         xmlMetadataListe.withMetadata(new XMLMetadata());
 
-        try{
-        service.hentInnsendtSoknad("ID01", SPRAK);
-        fail("Skal kaste exception når Hovedskjema mangler");
-        }catch (Exception e){
+        try {
+            service.hentInnsendtSoknad("ID01", SPRAK);
+            fail("Skal kaste exception når Hovedskjema mangler");
+        } catch (Exception e) {
             assertThat(e).isInstanceOf(ApplicationException.class);
         }
 
+    }
+
+    @Test
+    public void setterMetadataVerdier() {
+        xmlMetadataListe
+                .withMetadata(HOVEDSKJEMA)
+                .withMetadata(
+                        new XMLSoknadMetadata()
+                                .withVerdi(new Verdi(FIKS_ORGNR_KEY, "123456789")));
+
+        InnsendtSoknad innsendtSoknad = service.hentInnsendtSoknad("ID01", SPRAK);
+        assertThat(innsendtSoknad.getOrgnummer()).isEqualTo("123456789");
     }
 
     private Condition<Vedlegg> liktSkjemanummer(final String skjemanummer) {
