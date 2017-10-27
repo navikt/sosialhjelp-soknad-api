@@ -93,13 +93,22 @@ public class FamiliesituasjonTilXml implements Function<WebSoknad, XMLFamiliesit
         }
     }
 
+    private String fjernAarhundreFraFodselsdato(String fodselsdato) {
+        if (fodselsdato.isEmpty()) {
+            return fodselsdato;
+        }
+        return fodselsdato.substring(0,2)
+                .concat(fodselsdato.substring(2,4))
+                .concat(fodselsdato.substring(6,8));
+    }
+
     private XMLPerson faktumTilPerson(Faktum faktum, XMLKilde kilde) {
         Map<String, String> props = faktum.getProperties();
         return new XMLPerson()
                 .withKilde(kilde.value())
                 // TODO navn er splittet
                 .withFornavn(props.getOrDefault("navn", ""))
-                .withFodselsdato(props.getOrDefault("fnr", ""))
+                .withFodselsdato(fjernAarhundreFraFodselsdato(props.getOrDefault("fnr", "")))
                 .withPersonnummer(props.getOrDefault("pnr", ""));
     }
 }
