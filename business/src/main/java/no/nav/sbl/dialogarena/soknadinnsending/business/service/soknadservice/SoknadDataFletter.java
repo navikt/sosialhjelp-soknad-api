@@ -302,14 +302,20 @@ public class SoknadDataFletter {
 
     private Predicate<Faktum> erFaktumViVetFeiler(WebSoknad soknad) {
         List<String> faktumFeilerKeys = new ArrayList<>();
-        List<Faktum> fleresamlinger = soknad.getFaktaMedKey("reise.samling.fleresamlinger");
-        if(fleresamlinger.size() > 0) {
-            if(fleresamlinger.get(0).getValue().equalsIgnoreCase("flere")) {
-                faktumFeilerKeys.add("reise.samling.fleresamlinger.samling");
-            }
+        boolean harValgtFlereReisesamlinger = soknad.getValueForFaktum("informasjonsside.stonad.reisesamling").equals("true") &&
+                soknad.getValueForFaktum("reise.samling.fleresamlinger").equalsIgnoreCase("flere");
+        boolean harValgtDagligReise = soknad.getValueForFaktum("informasjonsside.stonad.reiseaktivitet").equals("true");
+        boolean harValgtBostotte = soknad.getValueForFaktum("informasjonsside.stonad.bostotte").equals("true");
+
+        if(harValgtFlereReisesamlinger) {
+            faktumFeilerKeys.add("reise.samling.fleresamlinger.samling");
         }
-        faktumFeilerKeys.add("reise.samling.aktivitetsperiode");
-        faktumFeilerKeys.add("bostotte.samling");
+        if(harValgtDagligReise){
+            faktumFeilerKeys.add("reise.samling.aktivitetsperiode");
+        }
+        if(harValgtBostotte){
+            faktumFeilerKeys.add("bostotte.samling");
+        }
         return faktum -> faktumFeilerKeys.contains(faktum.getKey());
     }
 
