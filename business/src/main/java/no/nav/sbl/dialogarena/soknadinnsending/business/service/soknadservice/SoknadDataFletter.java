@@ -304,7 +304,7 @@ public class SoknadDataFletter {
         List<String> faktumFeilerKeys = new ArrayList<>();
         List<Faktum> fleresamlinger = soknad.getFaktaMedKey("reise.samling.fleresamlinger");
         if(fleresamlinger.size() > 0) {
-            if(fleresamlinger.get(0).getValue() == "flere") {
+            if(fleresamlinger.get(0).getValue().equalsIgnoreCase("flere")) {
                 faktumFeilerKeys.add("reise.samling.fleresamlinger.samling");
             }
         }
