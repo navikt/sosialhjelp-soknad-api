@@ -358,6 +358,11 @@ public class SoknadDataFletterTest {
                 .medId(1L)
                 .medFaktum(
                         new Faktum()
+                            .medKey("informasjonsside.stonad.bostotte")
+                            .medValue("true")
+                )
+                .medFaktum(
+                        new Faktum()
                                 .medKey("bostotte.samling")
                                 .medProperty("fom", "NaN-aN-aN")
                                 .medProperty("tom", "NaN-aN-aN"));
@@ -371,6 +376,11 @@ public class SoknadDataFletterTest {
                 .medBehandlingId("123")
                 .medskjemaNummer(SKJEMANUMMER_TILLEGGSSTONAD.get(0))
                 .medId(1L)
+                .medFaktum(
+                        new Faktum()
+                                .medKey("informasjonsside.stonad.bostotte")
+                                .medValue("true")
+                )
                 .medFaktum(
                         new Faktum()
                                 .medKey("bostotte.samling")
@@ -387,6 +397,11 @@ public class SoknadDataFletterTest {
                 .medBehandlingId("123")
                 .medskjemaNummer(SKJEMANUMMER_TILLEGGSSTONAD.get(0))
                 .medId(1L)
+                .medFaktum(
+                        new Faktum()
+                                .medKey("informasjonsside.stonad.bostotte")
+                                .medValue("true")
+                )
                 .medFaktum(
                         new Faktum()
                                 .medKey("bostotte.samling")

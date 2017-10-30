@@ -278,7 +278,7 @@ public class SoknadDataFletter {
 
         if (soknadTilleggsstonader.getSkjemanummer().contains(soknad.getskjemaNummer())) {
             soknad.getFakta().stream()
-                    .filter(erFaktumViVetFeiler)
+                    .filter(erFaktumViVetFeiler(soknad))
                     .forEach(faktum -> {
                         try {
                             faktum.getProperties().entrySet().stream()
@@ -305,21 +305,30 @@ public class SoknadDataFletter {
         return soknad;
     }
 
+    private Predicate<Faktum> erFaktumViVetFeiler(WebSoknad soknad) {
+        List<String> faktumFeilerKeys = new ArrayList<>();
+        boolean harValgtFlereReisesamlinger = soknad.getValueForFaktum("informasjonsside.stonad.reisesamling").equals("true") &&
+                soknad.getValueForFaktum("reise.samling.fleresamlinger").equalsIgnoreCase("flere");
+        boolean harValgtDagligReise = soknad.getValueForFaktum("informasjonsside.stonad.reiseaktivitet").equals("true");
+        boolean harValgtBostotte = soknad.getValueForFaktum("informasjonsside.stonad.bostotte").equals("true");
+
+        if(harValgtFlereReisesamlinger) {
+            faktumFeilerKeys.add("reise.samling.fleresamlinger.samling");
+        }
+        if(harValgtDagligReise){
+            faktumFeilerKeys.add("reise.samling.aktivitetsperiode");
+        }
+        if(harValgtBostotte){
+            faktumFeilerKeys.add("bostotte.samling");
+        }
+        return faktum -> faktumFeilerKeys.contains(faktum.getKey());
+    }
+
     private Predicate<Map.Entry<String, String>> isDatoProperty = property -> {
         List<String> datoKeys = new ArrayList<>();
         datoKeys.add("tom");
         datoKeys.add("fom");
         return datoKeys.contains(property.getKey());
-    };
-
-
-
-    private Predicate<Faktum> erFaktumViVetFeiler = faktum -> {
-        List<String> faktumFeilerKeys = new ArrayList<>();
-        faktumFeilerKeys.add("reise.samling.fleresamlinger.samling");
-        faktumFeilerKeys.add("reise.samling.aktivitetsperiode");
-        faktumFeilerKeys.add("bostotte.samling");
-        return faktumFeilerKeys.contains(faktum.getKey());
     };
 
     private WebSoknad populerSoknadMedData(boolean populerSystemfakta, WebSoknad soknad) {
