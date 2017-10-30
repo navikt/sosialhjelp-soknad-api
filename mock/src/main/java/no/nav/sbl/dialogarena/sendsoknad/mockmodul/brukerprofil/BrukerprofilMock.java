@@ -3,6 +3,8 @@ package no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.*;
 import org.joda.time.DateTime;
 
+import java.math.BigInteger;
+
 public class BrukerprofilMock {
     private static final String FODSELSNUMMER = "03076321565";
     private static final String FORNAVN = "Donald";
@@ -11,9 +13,9 @@ public class BrukerprofilMock {
     private static final String EPOST = "test@epost.com";
     private static final String GATENAVN = "Grepalida";
     private static final String HUSNUMMER = "44";
-    private static final String HUSBOKSTAV = "B";
+    private static final String BOLIGNUMMER = "1234";
     private static final String POSTNUMMER = "0560";
-    private static final String POSTSTED = "Oslo";
+    private static final String KOMMUNENUMMER = "0701";
     private static final String LANDKODE = "NOR";
     private static final String LANDKODE_UTENLANDSK = "FIN";
     private static final String ADRESSELINJE1 = "Poitigatan 55";
@@ -31,7 +33,7 @@ public class BrukerprofilMock {
     private static final String BANKKONTO_BANK = "Nordea";
     private static final String BANKKONTO_KONTONUMMER = "9876 98 98765";
 
-    public static final String POSTTYPE_NORSK = "POSTADRESSE";
+    public static final String POSTTYPE_NORSK = "BOSTEDSADRESSE";
     public static final String POSTTYPE_UTENLANDSK = "UTENLANDSK_ADRESSE";
 
     public enum Adressetyper {INGEN, NORSK, UTENLANDSK;}
@@ -77,8 +79,8 @@ public class BrukerprofilMock {
     public void settPostadresse(XMLBruker xmlBruker, Adressetyper adressetype) {
         XMLPostadressetyper postAdresseType = xmlBruker.getGjeldendePostadresseType();
         if (adressetype.equals(Adressetyper.NORSK)) {
-            XMLPostadresse postadresse = new XMLPostadresse().withUstrukturertAdresse(lagUstrukturertPostadresse());
-            xmlBruker.setPostadresse(postadresse);
+            XMLBostedsadresse adresse = new XMLBostedsadresse().withStrukturertAdresse(lagStrukturertPostadresse());
+            xmlBruker.setBostedsadresse(adresse);
             postAdresseType.setValue(POSTTYPE_NORSK);
         } else if (adressetype.equals(Adressetyper.UTENLANDSK)) {
             xmlBruker.setPostadresse(lagUtenlandskPostadresse(4));
@@ -120,12 +122,14 @@ public class BrukerprofilMock {
         return new XMLPostadresse().withUstrukturertAdresse(adresse);
     }
 
-    private XMLUstrukturertAdresse lagUstrukturertPostadresse() {
-        XMLUstrukturertAdresse xmlUstrukturertAdresse = new XMLUstrukturertAdresse();
-        xmlUstrukturertAdresse.setAdresselinje1(String.format("%s %s%s", GATENAVN, HUSNUMMER, HUSBOKSTAV));
-        xmlUstrukturertAdresse.setAdresselinje2(String.format("%s %s", POSTNUMMER, POSTSTED));
-        xmlUstrukturertAdresse.setLandkode(lagLandkode(LANDKODE));
-        return xmlUstrukturertAdresse;
+    private XMLStrukturertAdresse lagStrukturertPostadresse() {
+        return new XMLGateadresse()
+                .withKommunenummer(KOMMUNENUMMER)
+                .withBolignummer(BOLIGNUMMER)
+                .withPoststed(new XMLPostnummer().withValue(POSTNUMMER))
+                .withGatenavn(GATENAVN)
+                .withHusnummer(new BigInteger(HUSNUMMER))
+                .withLandkode(lagLandkode(LANDKODE));
     }
 
     private XMLUstrukturertAdresse lagUstrukturertUtenlandskPostadresse(int antallLinjer) {

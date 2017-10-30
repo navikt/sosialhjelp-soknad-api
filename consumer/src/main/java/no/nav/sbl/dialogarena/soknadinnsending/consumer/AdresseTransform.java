@@ -16,11 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static no.nav.modig.lang.option.Optional.optional;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Adressetype.BOSTEDSADRESSE;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Adressetype.POSTADRESSE;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Adressetype.UTENLANDSK_ADRESSE;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Adressetype.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class AdresseTransform {
@@ -35,7 +31,7 @@ public class AdresseTransform {
     public Adresse mapGjeldendeAdresse(XMLBruker soapPerson, Kodeverk kodeverk) {
         this.kodeverk = kodeverk;
 
-        if(harHemmeligAdresse(soapPerson)){
+        if (harHemmeligAdresse(soapPerson)) {
             return new Adresse();
         } else if (harMidlertidigAdresseSomErGjeldendeAdresse(soapPerson)) {
             return finnMidlertidigAdresse(soapPerson.getMidlertidigPostadresse());
@@ -48,7 +44,8 @@ public class AdresseTransform {
         }
     }
 
-    private static final List<String> HEMMELIGE_DISKRESJONSKODER = Arrays.asList("6","7");
+    private static final List<String> HEMMELIGE_DISKRESJONSKODER = Arrays.asList("6", "7");
+
     private boolean harHemmeligAdresse(XMLBruker soapPerson) {
         return soapPerson.getDiskresjonskode() != null && HEMMELIGE_DISKRESJONSKODER.contains(soapPerson.getDiskresjonskode().getValue());
     }
@@ -56,7 +53,7 @@ public class AdresseTransform {
     public Adresse mapSekundarAdresse(XMLBruker soapPerson, Kodeverk kodeverk) {
         this.kodeverk = kodeverk;
 
-        if(harHemmeligAdresse(soapPerson)){
+        if (harHemmeligAdresse(soapPerson)) {
             return new Adresse();
         } else if (harMidlertidigAdresseSomIkkeErGjeldendeAdresse(soapPerson)) {
             return finnMidlertidigAdresse(soapPerson.getMidlertidigPostadresse());
@@ -291,6 +288,7 @@ public class AdresseTransform {
         adresse.setAdressetype(MIDLERTIDIG_POSTADRESSE_NORGE.name());
         adresse.setGyldigFra(DATE_TIME_FORMATTER.print(gyldigFra));
         adresse.setGyldigTil(DATE_TIME_FORMATTER.print(gyldigTil));
+        adresse.setStrukturertAdresse(tilMatrikkeladresse(xmlMatrikkelAdresse));
 
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -315,8 +313,10 @@ public class AdresseTransform {
         adresse.setAdressetype(MIDLERTIDIG_POSTADRESSE_NORGE.name());
         adresse.setGyldigFra(DATE_TIME_FORMATTER.print(gyldigFra));
         adresse.setGyldigTil(DATE_TIME_FORMATTER.print(gyldigTil));
+        adresse.setStrukturertAdresse(tilGatedresse(xmlGateAdresse));
+
         StringBuilder stringBuilder = new StringBuilder();
-        if(xmlGateAdresse.getTilleggsadresse() != null) {
+        if (xmlGateAdresse.getTilleggsadresse() != null) {
             stringBuilder.append(C_O).append(' ').append(xmlGateAdresse.getTilleggsadresse()).append(", ");
         }
         stringBuilder.append(xmlGateAdresse.getGatenavn());
@@ -335,6 +335,7 @@ public class AdresseTransform {
     private Adresse hentBostedsAdresse(XMLGateadresse xmlGateAdresse) {
         Adresse adresse = new Adresse();
         adresse.setAdressetype(BOSTEDSADRESSE.name());
+        adresse.setStrukturertAdresse(tilGatedresse(xmlGateAdresse));
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(xmlGateAdresse.getGatenavn());
@@ -368,6 +369,34 @@ public class AdresseTransform {
 
     private String getHusbokstav(XMLGateadresse xmlGateAdresse) {
         return xmlGateAdresse.getHusbokstav() != null ? xmlGateAdresse.getHusbokstav() : "";
+    }
+
+    private Adresse.Gateadresse tilGatedresse(XMLGateadresse xmlAdresse) {
+        Adresse.Gateadresse adresse = new Adresse.Gateadresse();
+        adresse.bolignummer = xmlAdresse.getBolignummer();
+        adresse.kommunenummer = xmlAdresse.getKommunenummer();
+        adresse.poststed = xmlAdresse.getPoststed() != null ? xmlAdresse.getPoststed().getValue() : "";
+        adresse.gatenavn = xmlAdresse.getGatenavn();
+        adresse.husnummer = xmlAdresse.getHusnummer() != null ? xmlAdresse.getHusnummer().toString() : "";
+
+        return adresse;
+    }
+
+    private Adresse.MatrikkelAdresse tilMatrikkeladresse(XMLMatrikkeladresse xmlAdresse) {
+        Adresse.MatrikkelAdresse adresse = new Adresse.MatrikkelAdresse();
+        adresse.kommunenummer = xmlAdresse.getKommunenummer();
+        adresse.bolignummer = xmlAdresse.getBolignummer();
+        adresse.poststed = xmlAdresse.getPoststed() != null ? xmlAdresse.getPoststed().getValue() : "";
+        adresse.eiendomsnavn = xmlAdresse.getEiendomsnavn();
+        XMLMatrikkelnummer matrikkel = xmlAdresse.getMatrikkelnummer();
+        if (matrikkel != null) {
+            adresse.gaardsnummer = matrikkel.getGaardsnummer();
+            adresse.bruksnummer = matrikkel.getBruksnummer();
+            adresse.festenummer = matrikkel.getFestenummer();
+            adresse.seksjonsnummer = matrikkel.getSeksjonsnummer();
+            adresse.undernummer = matrikkel.getUndernummer();
+        }
+        return adresse;
     }
 
 }

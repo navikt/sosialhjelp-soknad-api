@@ -6,6 +6,7 @@ public class Adresse {
     private String gyldigFra;
     private String adresseString;
     private String landkode;
+    private StrukturertAdresse strukturertAdresse;
 
     public String getAdressetype() {
         return adressetype;
@@ -45,5 +46,44 @@ public class Adresse {
 
     public void setLandkode(String landkode) {
         this.landkode = landkode;
+    }
+
+    public StrukturertAdresse getStrukturertAdresse() {
+        return strukturertAdresse;
+    }
+
+    public void setStrukturertAdresse(StrukturertAdresse strukturertAdresse) {
+        this.strukturertAdresse = strukturertAdresse;
+    }
+
+    public static abstract class StrukturertAdresse {
+        public String type;
+        public String kommunenummer;
+        public String bolignummer;
+        public String poststed;
+    }
+
+    public static class Gateadresse extends StrukturertAdresse {
+       public String gatenavn;
+       public String husnummer;
+
+        public Gateadresse() {
+            this.type = "gateadresse";
+        }
+
+    }
+
+    public static class MatrikkelAdresse extends StrukturertAdresse {
+        public String eiendomsnavn;
+        public String gaardsnummer;
+        public String bruksnummer;
+        public String festenummer;
+        public String seksjonsnummer;
+        public String undernummer;
+
+        public MatrikkelAdresse() {
+            this.type = "matrikkeladresse";
+        }
+
     }
 }
