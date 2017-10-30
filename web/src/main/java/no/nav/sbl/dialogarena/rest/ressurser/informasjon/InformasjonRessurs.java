@@ -1,8 +1,11 @@
 package no.nav.sbl.dialogarena.rest.ressurser.informasjon;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.rest.Logg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse.StrukturertAdresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.PersonAlder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.dto.Land;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
@@ -25,6 +28,7 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import java.util.*;
 
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
@@ -42,6 +46,8 @@ public class InformasjonRessurs {
 
     private static final Logger logger = LoggerFactory.getLogger(InformasjonRessurs.class);
     private static final Logger klientlogger = LoggerFactory.getLogger("klientlogger");
+
+    private static final List<String> DIGISOS_KOMMUNER = asList("0701", "0703", "0717");
 
     @Inject
     private InformasjonService informasjon;
@@ -187,6 +193,30 @@ public class InformasjonRessurs {
         String uid = getSubjectHandler().getUid();
 
         return new PersonAlder(uid).getAlder();
+    }
+
+    @GET
+    @Path("/utslagskriterier/adresse")
+    public Map<String, Object> hentAdresse() {
+        String uid = getSubjectHandler().getUid();
+        Personalia personalia = personaliaBolk.hentPersonalia(uid);
+
+        Map<String, Object> resultat = new HashMap<>();
+
+        boolean harTilgangTilDigisos = false;
+
+        if (personalia.getGjeldendeAdresse().getStrukturertAdresse() != null) {
+            StrukturertAdresse adresse = personalia.getGjeldendeAdresse().getStrukturertAdresse();
+            if (DIGISOS_KOMMUNER.contains(adresse.kommunenummer)) {
+                harTilgangTilDigisos = true;
+            }
+
+            Map<String, Object> adresseVerdier = new ObjectMapper().convertValue(adresse, new TypeReference<Map<String, Object>>(){});
+            resultat.putAll(adresseVerdier);
+        }
+
+        resultat.put("pilotSosialhjelp", harTilgangTilDigisos);
+        return resultat;
     }
 
     @POST
