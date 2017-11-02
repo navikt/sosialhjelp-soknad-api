@@ -39,12 +39,4 @@
         <type>hidden</type>
     </faktum>
 
-    <!-- Legeerklæring, skal komme på ordinærsøknaden uansett hvilke valg som blir gjort -->
-    <vedlegg>
-        <faktum>soknadstype</faktum>
-        <onValues>
-            <value>ordinaer</value>
-        </onValues>
-        <skjemaNummer>L9</skjemaNummer>
-    </vedlegg>
 </soknad>
