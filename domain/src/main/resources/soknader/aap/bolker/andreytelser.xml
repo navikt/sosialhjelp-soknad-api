@@ -19,6 +19,12 @@
         <dependOn>andreytelser.ytelserfranav</dependOn>
     </faktum>
     <faktum>
+        <id>andreytelser.ytelserfranav.introduksjonsstonad</id>
+        <panel>AndreYtelser</panel>
+        <type>bool</type>
+        <dependOn>andreytelser.ytelserfranav</dependOn>
+    </faktum>
+    <faktum>
         <id>andreytelser.ytelserfranav.ikkemottattellersokt</id>
         <panel>AndreYtelser</panel>
         <type>bool</type>
