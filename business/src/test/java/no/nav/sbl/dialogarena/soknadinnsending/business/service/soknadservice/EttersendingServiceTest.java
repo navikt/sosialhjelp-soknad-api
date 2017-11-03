@@ -74,7 +74,6 @@ public class EttersendingServiceTest {
     ApplicationContext applicationContex;
     @Mock
     SoknadMetricsService soknadMetricsService;
-
     @InjectMocks
     private SoknadDataFletter soknadServiceUtil;
 
