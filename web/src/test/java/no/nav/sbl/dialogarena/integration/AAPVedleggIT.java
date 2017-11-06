@@ -25,15 +25,6 @@ public class AAPVedleggIT extends AbstractIT {
     }
 
     @Test
-    public void registrertFlyktningVedlegg() {
-        soknadMedDelstegstatusOpprettet(aapOrdinaerSkjemaNummer)
-                .faktum("tilknytningnorge.oppholdinorgesistetreaar").withValue("false").utforEndring()
-                .faktum("tilknytningnorge.oppholdinorgesistetreaar.false.registrertflyktning").withValue("true").utforEndring()
-                .hentPaakrevdeVedlegg()
-                .skalHaVedlegg("P2");
-    }
-
-    @Test
     public void unguforSpesialistErklaring() {
         soknadMedDelstegstatusOpprettet(aapOrdinaerSkjemaNummer)
                 .faktum("ungufor").withValue("false").utforEndring()
