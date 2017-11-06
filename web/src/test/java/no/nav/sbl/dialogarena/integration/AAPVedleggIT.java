@@ -34,14 +34,6 @@ public class AAPVedleggIT extends AbstractIT {
     }
 
     @Test
-    public void unguforSpesialistErklaring() {
-        soknadMedDelstegstatusOpprettet(aapOrdinaerSkjemaNummer)
-                .faktum("ungufor").withValue("false").utforEndring()
-                .hentPaakrevdeVedlegg()
-                .skalHaVedlegg("V1");
-    }
-
-    @Test
     public void andreYtelserFraArbeidsgiverVedlegg() {
         soknadMedDelstegstatusOpprettet(aapOrdinaerSkjemaNummer)
                 .faktum("soknadstype").withValue("ordinaer").utforEndring()
