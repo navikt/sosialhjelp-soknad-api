@@ -17,14 +17,6 @@ public class AAPVedleggIT extends AbstractIT {
     }
 
     @Test
-    public void skalAlltidKreveLegeErklæring() {
-        soknadMedDelstegstatusOpprettet(aapOrdinaerSkjemaNummer)
-                .faktum("soknadstype").withValue("ordinaer").utforEndring()
-                .hentPaakrevdeVedlegg()
-                .skalHaVedlegg("L9");
-    }
-
-    @Test
     public void registrertFlyktningVedlegg() {
         soknadMedDelstegstatusOpprettet(aapOrdinaerSkjemaNummer)
                 .faktum("tilknytningnorge.oppholdinorgesistetreaar").withValue("false").utforEndring()
