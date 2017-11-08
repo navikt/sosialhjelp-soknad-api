@@ -4,9 +4,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.AAPOrdinae
 import org.junit.Before;
 import org.junit.Test;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext.buildDataSource;
-import static org.mockito.Matchers.any;
-
 public class AAPVedleggIT extends AbstractIT {
 
     private String aapOrdinaerSkjemaNummer = new AAPOrdinaerInformasjon().getSkjemanummer().get(0);
@@ -15,7 +12,7 @@ public class AAPVedleggIT extends AbstractIT {
     public void setup() throws Exception {
         EndpointDataMocking.setupMockWsEndpointData();
     }
-    
+
     @Test
     public void andreYtelserFraArbeidsgiverVedlegg() {
         soknadMedDelstegstatusOpprettet(aapOrdinaerSkjemaNummer)
