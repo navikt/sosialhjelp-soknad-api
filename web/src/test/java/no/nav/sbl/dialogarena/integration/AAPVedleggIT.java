@@ -15,23 +15,7 @@ public class AAPVedleggIT extends AbstractIT {
     public void setup() throws Exception {
         EndpointDataMocking.setupMockWsEndpointData();
     }
-
-    @Test
-    public void skalAlltidKreveLegeErklæring() {
-        soknadMedDelstegstatusOpprettet(aapOrdinaerSkjemaNummer)
-                .faktum("soknadstype").withValue("ordinaer").utforEndring()
-                .hentPaakrevdeVedlegg()
-                .skalHaVedlegg("L9");
-    }
-
-    @Test
-    public void unguforSpesialistErklaring() {
-        soknadMedDelstegstatusOpprettet(aapOrdinaerSkjemaNummer)
-                .faktum("ungufor").withValue("false").utforEndring()
-                .hentPaakrevdeVedlegg()
-                .skalHaVedlegg("V1");
-    }
-
+    
     @Test
     public void andreYtelserFraArbeidsgiverVedlegg() {
         soknadMedDelstegstatusOpprettet(aapOrdinaerSkjemaNummer)

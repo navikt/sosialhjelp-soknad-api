@@ -7,44 +7,8 @@
     </faktum>
 
     <faktum>
-        <id>soknadsvalg.mottattsisteuker.ja</id>
-        <type>checkboxGroup</type>
-        <dependOn>soknadsvalg.mottattsisteuker</dependOn>
-        <dependOnValues>
-            <value>ja</value>
-        </dependOnValues>
-    </faktum>
-
-    <faktum>
-        <id>soknadsvalg.mottattsisteuker.ja.sakavsluttet</id>
-        <type>checkbox</type>
-        <dependOn>soknadsvalg.mottattsisteuker.ja</dependOn>
-    </faktum>
-
-    <faktum>
-        <id>soknadsvalg.mottattsisteuker.ja.innvilget</id>
-        <type>checkbox</type>
-        <dependOn>soknadsvalg.mottattsisteuker.ja</dependOn>
-    </faktum>
-
-    <faktum>
-        <id>soknadsvalg.mottattsisteuker.ja.ingensituasjon</id>
-        <type>checkbox</type>
-        <dependOn>soknadsvalg.mottattsisteuker.ja</dependOn>
-    </faktum>
-
-
-    <faktum>
         <id>soknadstype</id>
         <type>hidden</type>
     </faktum>
 
-    <!-- Legeerklæring, skal komme på ordinærsøknaden uansett hvilke valg som blir gjort -->
-    <vedlegg>
-        <faktum>soknadstype</faktum>
-        <onValues>
-            <value>ordinaer</value>
-        </onValues>
-        <skjemaNummer>L9</skjemaNummer>
-    </vedlegg>
 </soknad>
