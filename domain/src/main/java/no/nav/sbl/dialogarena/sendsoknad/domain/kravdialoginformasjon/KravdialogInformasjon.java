@@ -49,6 +49,8 @@ public interface KravdialogInformasjon {
 
     SoknadType getSoknadstype();
 
+    String getKvitteringTemplate();
+
     abstract class DefaultOppsett implements KravdialogInformasjon {
         @Override
         public List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource, WebSoknad soknad) {
@@ -77,6 +79,10 @@ public interface KravdialogInformasjon {
         }
         public SoknadType getSoknadstype() {
             return SoknadType.SEND_SOKNAD;
+        }
+
+        public String getKvitteringTemplate() {
+            return "/skjema/kvittering";
         }
     }
 }
