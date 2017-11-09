@@ -8,11 +8,11 @@
                 {{ hentTekst (concat key "." value) }}
             </span>
         {{else}}
-            <span class="verdi verdi--ikkeUtfylt">
-                {{#if optional}}
+            {{#if optional}}
+                <span class="verdi verdi--ikkeUtfylt">
                     <i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
-                {{/if}}
-            </span>
+                </span>
+            {{/if}}
         {{/hvisIkkeTom}}
         {{> skjema/generisk/infotekstvalue}}
         {{> skjema/generisk/barnefakta}}
