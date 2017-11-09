@@ -75,4 +75,9 @@ public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett
     public SoknadType getSoknadstype() {
         return SoknadType.SEND_SOKNAD_KOMMUNAL;
     }
+
+    @Override
+    public String getKvitteringTemplate() {
+        return "/skjema/sosialhjelp/kvittering";
+    }
 }

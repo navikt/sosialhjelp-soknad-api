@@ -1,0 +1,55 @@
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+        <style type="text/css">
+            @page:first { margin: 12mm 2cm 2.5cm; }
+            *       { box-sizing: border-box; }
+            body    { font-family: ArialSystem, sans-serif; font-size: 10pt; line-height: 1.4em; margin: 0; color: #3e3832; }
+
+            .typo-undertittel  { font-family: Modus, ArialSystem, sans-serif; font-size: 15pt; font-weight: bold; }
+            .typo-element-regular  { font-family: ArialSystem, sans-serif; font-size: 10.5pt; font-weight: normal; }
+            .typo-element  { font-family: ArialSystem, sans-serif; font-size: 10.5pt; font-weight: bold; }
+
+            .logo      { display: block; margin-left: 80mm; width: 20mm; }
+            .hode      { text-align: center; margin: 5.2mm 0 10.5mm; padding-bottom: 8.4mm; border-bottom: .5pt solid #b7b1a9; }
+            .hode hr   { border: none; border-top: .5pt solid #b7b1a9; width: 8mm; margin: 5.2mm auto 8.4mm; }
+
+            ul { list-style: none; padding-left: 0; margin-top: 0;}
+            .innsendt li { background: url(img/hake_sort_200.jpg) no-repeat left center; padding-left: 4mm; background-size: 2.3mm; }
+            .ikke-innsendt li { background: url(img/minus_sort.gif) no-repeat left center; padding-left: 4mm; background-size: 2mm; }
+
+            .informasjon {padding-bottom: 8.4mm; border-bottom: .5pt solid #b7b1a9; }
+
+            .blokk-xxs { margin-bottom: 2.1mm; }
+            .blokk-s   { margin-bottom: 5.4mm; }
+            .blokk-m   { margin-bottom: 8.4mm; }
+            .blokk-l   { margin-bottom: 10.5mm; }
+        </style>
+	</head>
+	<body>
+        <div id="kvittering">
+            <img class="logo blokk-s" src="img/nav-logo-stor.gif"/>
+            <div class="hode">
+                <h1 class="typo-undertittel">{{ hentTekst "kvittering.tittel" }}</h1>
+                {{#hvisEttersending}}
+                    <h1>{{ hentTekst "ettersending.kvittering.tittel" }}</h1>
+                {{/hvisEttersending}}
+                <h2 class="typo-element-regular">{{ hentTekst "skjema.tittel" }}</h2>
+                <hr/>
+                {{#forFaktum "personalia"}}
+                    <div class="personalia">
+                            <h1 class="nvn typo-undertittel">{{properties.navn}}</h1>
+                            <h2 class="fnr typo-element">{{properties.fnr}}</h2>
+                    </div>
+                {{/forFaktum}}
+            </div>
+            <div class="informasjon">
+                <h2 class="typo-undertittel">{{ hentTekst "kvittering.undertittel" }}</h2>
+                <p>
+                    {{ hentTekst "kvittering.tekst.pre"}}
+                    <strong>{{ hentNavEnhetNavn }}</strong>{{ hentTekst "kvittering.tekst.post" }}
+                </p>
+            </div>
+        </div>
+	</body>
+</html>
