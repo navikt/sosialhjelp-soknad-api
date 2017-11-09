@@ -33,7 +33,7 @@
     <faktum>
         <id>andreytelser.fraarbeidsgiver</id>
         <panel>AndreYtelser</panel>
-        <type>bool</type>
+        <type>string</type>
         <constraints>
             <constraint>
                 <faktum>soknadstype</faktum>
