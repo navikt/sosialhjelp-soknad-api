@@ -59,6 +59,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hentFaktumValue - Returnerer verdien til et faktum tilhørende keyen som sendes inn
 * hentLand - Henter land fra Kodeverk basert på landkode.
 * hentMiljovariabel - Finner miljovariabel fra key
+* hentNavEnhetNavn - Henter navnet på NAV enheten som bruker har valgt
 * hentPoststed - Henter poststed for et postnummer fra kodeverk
 * hentSkjemanummer - Setter inn søknadens skjemanummer, også om det er en søknad for dagpenger
 * hentTekst - Henter tekst fra cms, prøver med søknadens prefix + key, før den prøver med bare keyen. Kan sende inn parametere.
@@ -315,6 +316,13 @@ må ha et faktum i context, f. eks. via
  {{hentTekst "personalia.intro" (hentMiljovariabel "soknad.brukerprofil.url")}}
 
  {{hentMiljovariabel "soknad.brukerprofil.url"}}
+```
+
+
+##### hentNavEnhetNavn
+
+```
+{{hentNavEnhetNavn}}
 ```
 
 
