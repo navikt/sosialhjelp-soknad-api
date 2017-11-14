@@ -30,8 +30,7 @@ public class KommuneTilNavEnhetMapper {
 
 
     private static final Map<String, NavEnhet> map = ImmutableMap.of(
-            "horten", new NavEnhet("NAV Horten", "123456798"),
-            "frogner", new NavEnhet("NAV Frogner", "123456789")
+            "horten", new NavEnhet("NAV Horten", "910940066")
     );
 
     public static NavEnhet getNavEnhetFromWebSoknad(WebSoknad webSoknad) {

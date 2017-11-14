@@ -67,6 +67,11 @@ public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett
     }
 
     @Override
+    public boolean skalSendeMedFullSoknad() {
+        return true;
+    }
+
+    @Override
     public boolean brukerEnonicLedetekster() {
         return false;
     }
