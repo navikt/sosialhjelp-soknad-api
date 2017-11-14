@@ -34,7 +34,7 @@
                 <id>ikkesammenbeskrivelse</id>
                 <type>textbox</type>
                 <constraints>
-                    <constraint>properties['borsammen'] == 'true'</constraint>
+                    <constraint>properties['borsammen'] == 'false'</constraint>
                 </constraints>
             </property>
         </properties>
