@@ -4,6 +4,7 @@ import com.github.jknack.handlebars.Handlebars;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -34,7 +35,9 @@ public class HentNavEnhetNavnHelperTest {
         assertThat(compiled).isEqualTo("NAV Horten");
     }
 
+
     @Test
+    @Ignore("Ingen bydeler for øyeblikket")
     public void viserNavnetPaaNavEnhetMedBydel() throws IOException {
         WebSoknad webSoknad = new WebSoknad()
                 .medFaktum(new Faktum().medKey("personalia.kommune").medValue("oslo"))
