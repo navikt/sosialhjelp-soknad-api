@@ -29,6 +29,8 @@ public interface KravdialogInformasjon {
 
     String getFortsettSoknadUrlKey();
 
+    //TODO: Legge på getSoknadStrukturVersjon f.eks med implementasjon på hardkodet versjon 1 for alle soknader.
+
     List<String> getSoknadBolker(WebSoknad soknad);
 
     String getStrukturFilnavn();
