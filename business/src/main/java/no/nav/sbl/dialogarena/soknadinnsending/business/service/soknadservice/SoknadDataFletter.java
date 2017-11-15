@@ -332,6 +332,9 @@ public class SoknadDataFletter {
                 .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
                 .medStegliste(config.getStegliste(soknad.getSoknadId()))
                 .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
+
+        //TODO: Legge til sjekk på versjonnr av faktum-struktur og ved ulikheter kalle en Migrasjon* metode/klasse
+
         if (populerSystemfakta) {
             if (soknad.erEttersending()) {
                 faktaService.lagreSystemFakta(soknad, bolker.get(PersonaliaBolk.class.getName()).genererSystemFakta(getSubjectHandler().getUid(), soknad.getSoknadId()));
