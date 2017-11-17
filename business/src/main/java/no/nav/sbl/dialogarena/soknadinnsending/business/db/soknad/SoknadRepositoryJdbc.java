@@ -58,6 +58,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     public Long opprettSoknad(WebSoknad soknad) {
         Long databasenokkel = getJdbcTemplate().queryForObject(selectNextSequenceValue("SOKNAD_ID_SEQ"), Long.class);
         insertSoknad(soknad, databasenokkel);
+        insertHendelse(databasenokkel, "OPPRETTET", 1);
         return databasenokkel;
     }
 
@@ -75,6 +76,15 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
                         soknad.getDelstegStatus().name(),
                         soknad.getBehandlingskjedeId(),
                         soknad.getJournalforendeEnhet());
+    }
+
+    private void insertHendelse(Long soknad_id, String type, int verdi){
+        getJdbcTemplate()
+                .update("insert into hendelse (soknad_id, type, opprettetdato, verdi)" +
+                            " values (?,?,CURRENT_TIMESTAMP,?)",
+                        soknad_id,
+                        type,
+                        verdi);
     }
 
     public void populerFraStruktur(WebSoknad soknad) {
@@ -113,6 +123,8 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         String sql = "select * from SOKNAD where brukerbehandlingid = ?";
         return hentEtObjectAv(sql, SOKNAD_ROW_MAPPER, behandlingsId);
     }
+
+
 
     private <T> T hentEtObjectAv(String sql, RowMapper<T> mapper, Object... args) {
         List<T> objekter = getJdbcTemplate().query(sql, mapper, args);
