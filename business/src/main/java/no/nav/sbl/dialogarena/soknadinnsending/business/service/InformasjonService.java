@@ -68,9 +68,23 @@ public class InformasjonService implements Miljovariabler {
         result.put("dineutbetalinger.link.url", dineUtbetalingerLink);
         result.put("soknad.ettersending.antalldager", antallDager);
 
+        result.putAll(hentFrontendFeatureToggles());
+
         result.putAll(getTestSpesifikkConfig());
 
         return result;
+    }
+
+    private Map<String, String> hentFrontendFeatureToggles() {
+        Map<String, String> features = new HashMap<>();
+
+        System.getProperties().stringPropertyNames().forEach(prop -> {
+            if (prop.startsWith("feature.frontend.")) {
+                features.put(prop, System.getProperty(prop));
+            }
+        });
+
+        return features;
     }
 
     public Map<String,String> hentVedleggsskjemaForBehandlingsId(String behandlingsId) {

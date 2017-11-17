@@ -184,6 +184,7 @@
             </property>
         </properties>
         <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
     </faktum>
 
     <faktum>
