@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
@@ -58,7 +59,8 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     public Long opprettSoknad(WebSoknad soknad) {
         Long databasenokkel = getJdbcTemplate().queryForObject(selectNextSequenceValue("SOKNAD_ID_SEQ"), Long.class);
         insertSoknad(soknad, databasenokkel);
-        insertHendelse(databasenokkel, "OPPRETTET", 1);
+
+        insertHendelse(soknad.getBrukerBehandlingId(), "SOKNAD_OPPRETTET", 1 , soknad.getskjemaNummer());
         return databasenokkel;
     }
 
@@ -78,13 +80,14 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
                         soknad.getJournalforendeEnhet());
     }
 
-    private void insertHendelse(Long soknad_id, String type, int verdi){
+    private void insertHendelse(String behandlingsid, String hendelse_type, int versjon, String skjemanummer){
         getJdbcTemplate()
-                .update("insert into hendelse (soknad_id, type, opprettetdato, verdi)" +
-                            " values (?,?,CURRENT_TIMESTAMP,?)",
-                        soknad_id,
-                        type,
-                        verdi);
+                .update("insert into hendelse (BEHANDLINGSID, HENDELSE_TYPE, HENDELSE_TIDSPUNKT, VERSJON, SKJEMANUMMER)" +
+                            " values (?,?,CURRENT_TIMESTAMP,?,?)",
+                        behandlingsid,
+                        hendelse_type,
+                        versjon,
+                        skjemanummer);
     }
 
     public void populerFraStruktur(WebSoknad soknad) {
