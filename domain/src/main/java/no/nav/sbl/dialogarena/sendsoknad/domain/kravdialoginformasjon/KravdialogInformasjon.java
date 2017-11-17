@@ -33,7 +33,7 @@ public interface KravdialogInformasjon {
 
     String getStrukturFilnavn();
 
-    static int getSkjemaVersjon() { return 1; }
+    int getSkjemaVersjon();
 
     List<String> getSkjemanummer();
 
@@ -79,6 +79,7 @@ public interface KravdialogInformasjon {
         public boolean brukerEnonicLedetekster(){
             return true;
         }
+
         public SoknadType getSoknadstype() {
             return SoknadType.SEND_SOKNAD;
         }
@@ -86,5 +87,8 @@ public interface KravdialogInformasjon {
         public String getKvitteringTemplate() {
             return "/skjema/kvittering";
         }
+
+        public int getSkjemaVersjon() { return 1; }
+
     }
 }
