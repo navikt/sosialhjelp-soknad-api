@@ -31,7 +31,7 @@ public interface KravdialogInformasjon {
 
     String getStrukturFilnavn();
 
-    static int getSkjemaVersjon() { return 1; }
+    int getSkjemaVersjon();
 
     List<String> getSkjemanummer();
 
@@ -66,5 +66,6 @@ public interface KravdialogInformasjon {
         public boolean brukerEnonicLedetekster(){
             return true;
         }
+        public int getSkjemaVersjon() { return 1; }
     }
 }
