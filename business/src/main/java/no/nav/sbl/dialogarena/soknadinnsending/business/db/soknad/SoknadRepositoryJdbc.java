@@ -80,7 +80,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
                         soknad.getJournalforendeEnhet());
     }
 
-    private void insertHendelse(String behandlingsid, String hendelse_type, int versjon, String skjemanummer){
+    public void insertHendelse(String behandlingsid, String hendelse_type, int versjon, String skjemanummer){
         getJdbcTemplate()
                 .update("insert into hendelse (BEHANDLINGSID, HENDELSE_TYPE, HENDELSE_TIDSPUNKT, VERSJON, SKJEMANUMMER)" +
                             " values (?,?,CURRENT_TIMESTAMP,?,?)",
