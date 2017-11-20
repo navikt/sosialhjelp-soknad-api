@@ -595,4 +595,36 @@
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
+
+    <!-- Ekstrainfo -->
+    <faktum>
+        <id>opplysninger.ekstrainfo</id>
+        <type>gruppe</type>
+        <panel>opplysningerBolk</panel>
+    </faktum>
+
+    <faktum>
+        <id>opplysninger.ekstrainfo.utgifter</id>
+        <type>composite</type>
+        <dependOn>opplysninger.ekstrainfo</dependOn>
+        <properties>
+            <property>
+                <id>beskrivelse</id>
+                <type>textbox</type>
+                <configuration>
+                    <entry>
+                        <key>validering</key>
+                        <value>text</value>
+                    </entry>
+                </configuration>
+            </property>
+            <property>
+                <id>utgift</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
 </soknad>
