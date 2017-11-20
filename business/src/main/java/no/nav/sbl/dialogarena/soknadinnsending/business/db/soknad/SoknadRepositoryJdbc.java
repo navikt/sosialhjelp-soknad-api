@@ -60,7 +60,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         Long databasenokkel = getJdbcTemplate().queryForObject(selectNextSequenceValue("SOKNAD_ID_SEQ"), Long.class);
         insertSoknad(soknad, databasenokkel);
 
-        insertHendelse(soknad.getBrukerBehandlingId(), "SOKNAD_OPPRETTET", 1 , soknad.getskjemaNummer());
+        insertHendelse(soknad.getBrukerBehandlingId(), HendelseType.SOKNAD_OPPRETTET.name(), 1 , soknad.getskjemaNummer());
         return databasenokkel;
     }
 
