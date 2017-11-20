@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
+import no.nav.metrics.Event;
+import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.migrasjon.FakeMigrasjon;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.migrasjon.Migrasjon;
@@ -23,6 +25,10 @@ public class MigrasjonHandterer{
             //Versjon som er hardkodet, må byttes ut med en soknad.getSkjemaVersjon for eksempel når det er på plass
             if (migrasjon.skalMigrere(migrertSoknad.getskjemaNummer(),1)){
                 migrertSoknad = migrasjon.migreer(migrertSoknad,1);
+
+                Event metrikk = MetricsFactory.createEvent("sendsoknad.skjemamigrasjon");
+                metrikk.addTagToReport("skjemanummer",migrertSoknad.getskjemaNummer());
+                metrikk.report();
             }
         }
         return migrertSoknad;
