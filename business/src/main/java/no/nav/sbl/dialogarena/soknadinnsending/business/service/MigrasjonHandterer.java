@@ -9,14 +9,13 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.migrasjon.Migras
 import java.util.*;
 
 public class MigrasjonHandterer{
-    Map<String,List<Migrasjon>> migreringsMap = new HashMap<>();
+    List<Migrasjon> migrasjoner = new ArrayList<>();
 
     public MigrasjonHandterer(){
-        migreringsMap.put("NAV XO.XO-XO", Arrays.asList(new FakeMigrasjon()));
+        migrasjoner = migrasjoner();
     }
 
     public WebSoknad handterMigrasjon(WebSoknad soknad){
-        List<Migrasjon> migrasjoner = migreringsMap.get(soknad.getskjemaNummer());
         WebSoknad migrertSoknad = soknad;
 
         if(migrasjoner == null) return soknad;
@@ -32,5 +31,14 @@ public class MigrasjonHandterer{
             }
         }
         return migrertSoknad;
+    }
+
+    public static List<Migrasjon> migrasjoner() {
+        List<Migrasjon> migrasjonsListe = new ArrayList<>();
+
+        //Tanken blir å legge til migrasjoner nedover her, i rekkefølge.
+        migrasjonsListe.add(new FakeMigrasjon());
+
+        return migrasjonsListe;
     }
 }
