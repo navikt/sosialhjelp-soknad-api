@@ -337,6 +337,7 @@ public class SoknadDataFletter {
         soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknad.getSoknadId()))
                 .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
                 .medStegliste(config.getStegliste(soknad.getSoknadId()))
+                .medVersjon(lokalDb.hentVersjon(soknad.getBrukerBehandlingId()))
                 .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
 
         //TODO: Legge til sjekk på versjonnr av faktum-struktur og ved ulikheter kalle en Migrasjon* metode/klasse
