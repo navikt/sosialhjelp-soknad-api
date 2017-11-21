@@ -722,7 +722,7 @@
             <dependency>
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-testcertificates</artifactId>
-                <version>1.2.2</version>
+                <version>1.2.4</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -793,6 +793,12 @@
                 <artifactId>common-jetty</artifactId>
                 <version>1.0.23</version>
                 <scope>test</scope>
+                <!--<exclusions>
+                    <exclusion>
+                        <groupId>no.nav.modig</groupId>
+                        <artifactId>modig-testcertificates</artifactId>
+                    </exclusion>
+                </exclusions>-->
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
