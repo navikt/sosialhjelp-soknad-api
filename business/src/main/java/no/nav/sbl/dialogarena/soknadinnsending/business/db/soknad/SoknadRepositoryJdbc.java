@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
@@ -58,6 +59,8 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     public Long opprettSoknad(WebSoknad soknad) {
         Long databasenokkel = getJdbcTemplate().queryForObject(selectNextSequenceValue("SOKNAD_ID_SEQ"), Long.class);
         insertSoknad(soknad, databasenokkel);
+
+        insertHendelse(soknad.getBrukerBehandlingId(), HendelseType.SOKNAD_OPPRETTET.name(), 1 , soknad.getskjemaNummer());
         return databasenokkel;
     }
 
@@ -75,6 +78,16 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
                         soknad.getDelstegStatus().name(),
                         soknad.getBehandlingskjedeId(),
                         soknad.getJournalforendeEnhet());
+    }
+
+    public void insertHendelse(String behandlingsid, String hendelse_type, int versjon, String skjemanummer){
+        getJdbcTemplate()
+                .update("insert into hendelse (BEHANDLINGSID, HENDELSE_TYPE, HENDELSE_TIDSPUNKT, VERSJON, SKJEMANUMMER)" +
+                            " values (?,?,CURRENT_TIMESTAMP,?,?)",
+                        behandlingsid,
+                        hendelse_type,
+                        versjon,
+                        skjemanummer);
     }
 
     public void populerFraStruktur(WebSoknad soknad) {
@@ -113,6 +126,8 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         String sql = "select * from SOKNAD where brukerbehandlingid = ?";
         return hentEtObjectAv(sql, SOKNAD_ROW_MAPPER, behandlingsId);
     }
+
+
 
     private <T> T hentEtObjectAv(String sql, RowMapper<T> mapper, Object... args) {
         List<T> objekter = getJdbcTemplate().query(sql, mapper, args);
