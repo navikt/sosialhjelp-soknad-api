@@ -23,7 +23,7 @@ public class MigrasjonHandterer{
         for(Migrasjon migrasjon : migrasjoner) {
             //Versjon som er hardkodet, må byttes ut med en soknad.getSkjemaVersjon for eksempel når det er på plass
             if (migrasjon.skalMigrere(migrertSoknad.getskjemaNummer(),1)){
-                migrertSoknad = migrasjon.migreer(migrertSoknad,1);
+                migrertSoknad = migrasjon.migrer(migrertSoknad,1);
 
                 Event metrikk = MetricsFactory.createEvent("sendsoknad.skjemamigrasjon");
                 metrikk.addTagToReport("skjemanummer",migrertSoknad.getskjemaNummer());
