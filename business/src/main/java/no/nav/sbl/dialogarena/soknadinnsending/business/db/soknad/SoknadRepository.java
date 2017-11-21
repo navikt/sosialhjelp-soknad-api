@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
 
@@ -45,6 +46,8 @@ public interface SoknadRepository {
     void slettBrukerFaktum(Long soknadId, Long faktumId);
 
     void slettSoknad(long soknadId);
+
+    void slettSoknad(WebSoknad soknad, HendelseType avsluttHendelse);
 
     String hentSoknadType(Long soknadId);
 
