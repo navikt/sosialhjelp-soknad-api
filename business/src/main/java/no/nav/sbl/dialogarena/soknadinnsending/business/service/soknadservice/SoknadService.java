@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
@@ -75,7 +76,7 @@ public class SoknadService {
          * */
         fillagerService.slettAlle(soknad.getBrukerBehandlingId());
         henvendelseService.avbrytSoknad(soknad.getBrukerBehandlingId());
-        lokalDb.slettSoknad(soknad.getSoknadId());
+        lokalDb.slettSoknad(soknad, HendelseType.SOKNAD_AVBRUTT);
 
         soknadMetricsService.avbruttSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
     }

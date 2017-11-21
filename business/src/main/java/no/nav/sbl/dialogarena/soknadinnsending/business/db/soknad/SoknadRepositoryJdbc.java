@@ -393,6 +393,12 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         getJdbcTemplate().update("delete from soknad where soknad_id = ?", soknadId);
     }
 
+    public void slettSoknad(WebSoknad soknad, HendelseType avsluttHendelse) {
+        insertHendelse(soknad.getBehandlingskjedeId(),avsluttHendelse.name(),0,soknad.getskjemaNummer());
+        slettSoknad(soknad.getSoknadId());
+    }
+
+
     public String hentSoknadType(Long soknadId) {
         return getJdbcTemplate().queryForObject("select navsoknadid from soknad where soknad_id = ? ", String.class, soknadId);
     }
