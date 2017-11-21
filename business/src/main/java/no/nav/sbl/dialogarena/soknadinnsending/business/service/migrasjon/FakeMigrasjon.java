@@ -14,7 +14,7 @@ public class FakeMigrasjon extends Migrasjon {
     }
 
     @Override
-    public WebSoknad migreer(WebSoknad soknad, int versjon) {
+    public WebSoknad migrer(WebSoknad soknad, int versjon) {
         logger.debug("Migrerer til fake versjon");
         //her kan vi vurdere om vi alltid skal sende bruker tilbake til utfylling
         soknad.setDelstegStatus(DelstegStatus.UTFYLLING);

@@ -6,13 +6,13 @@ public abstract class Migrasjon {
     static int tilVersjon;
     static String migrasjonSkjemanummer;
 
-    public Migrasjon(int versjon, String skjemanummer) {
-        tilVersjon = versjon;
+    public Migrasjon(int nyVersjon, String skjemanummer) {
+        tilVersjon = nyVersjon;
         migrasjonSkjemanummer = skjemanummer;
     }
 
-    public static boolean skalMigrere(String skjemanummer, int versjon) {
-        return migrasjonSkjemanummer.equalsIgnoreCase(skjemanummer) && tilVersjon -versjon == 1;
+    public static boolean skalMigrere(String skjemanummer, int nyVersjon) {
+        return migrasjonSkjemanummer.equalsIgnoreCase(skjemanummer) && tilVersjon - nyVersjon == 1;
     }
-    public abstract WebSoknad migreer(WebSoknad soknad, int versjon);
+    public abstract WebSoknad migrer(WebSoknad soknad, int versjon);
 }
