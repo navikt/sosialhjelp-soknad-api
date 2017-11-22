@@ -33,8 +33,6 @@ public interface KravdialogInformasjon {
 
     String getStrukturFilnavn();
 
-    int getSkjemaVersjon();
-
     List<String> getSkjemanummer();
 
     List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource, WebSoknad soknad);
@@ -89,6 +87,5 @@ public interface KravdialogInformasjon {
         }
 
         public int getSkjemaVersjon() { return 1; }
-
     }
 }
