@@ -14,10 +14,11 @@ public class FakeMigrasjon extends Migrasjon {
     }
 
     @Override
-    public WebSoknad migrer(WebSoknad soknad, int versjon) {
+    public WebSoknad migrer(WebSoknad soknad, int fraVersjon) {
         logger.debug("Migrerer til fake versjon");
         //her kan vi vurdere om vi alltid skal sende bruker tilbake til utfylling
         soknad.setDelstegStatus(DelstegStatus.UTFYLLING);
+        //TODO: set ny versjon: soknad.setSkjemaVersjon(super.tilVersjon)
         return new WebSoknad();
     }
 }
