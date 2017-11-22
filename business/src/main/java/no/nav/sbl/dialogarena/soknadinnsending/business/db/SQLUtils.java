@@ -14,6 +14,14 @@ public class SQLUtils {
 		}
 	}
 
+	public static String whereLimit(int limit) {
+		if ("hsqldb".equals(getProperty(DIALECT_PROPERTY))) {
+			return "limit " + limit;
+		} else {
+			return "where rownum <= " + limit;
+		}
+	}
+
 	public static String selectNextSequenceValue(String sequence) {
 		if ("hsqldb".equals(getProperty(DIALECT_PROPERTY))) {
 			return "call next value for " + sequence;
