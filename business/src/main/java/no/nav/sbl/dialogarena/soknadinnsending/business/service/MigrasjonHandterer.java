@@ -9,6 +9,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.migrasjon.Migras
 
 import java.util.*;
 
+import static java.util.stream.Collectors.toList;
+
 public class MigrasjonHandterer{
     List<Migrasjon> migrasjoner = new ArrayList<>();
 
@@ -19,20 +21,24 @@ public class MigrasjonHandterer{
     public WebSoknad handterMigrasjon(WebSoknad soknad){
         WebSoknad migrertSoknad = soknad;
 
-        if(migrasjoner == null) return soknad;
+        if(migrasjoner == null || migrasjoner.size() <= 0) return soknad;
 
-        for(Migrasjon migrasjon : migrasjoner) {
+        Optional<Migrasjon> migrasjon = hentMigrasjonForSkjemanummerOgVersjon(1, migrertSoknad.getskjemaNummer());
+
+        if(migrasjon.isPresent()){
             //Versjon som er hardkodet, må byttes ut med en soknad.getSkjemaVersjon for eksempel når det er på plass
-            if (migrasjon.skalMigrere(1, migrertSoknad.getskjemaNummer())){
-                migrertSoknad = migrasjon.migrer(migrertSoknad,1);
+            migrasjon.get().migrer(1, migrertSoknad);
 
-                Event metrikk = MetricsFactory.createEvent("sendsoknad.skjemamigrasjon");
-                String soknadTypePrefix = new KravdialogInformasjonHolder().hentKonfigurasjon(migrertSoknad.getskjemaNummer()).getSoknadTypePrefix();
-                metrikk.addTagToReport("soknadstype", soknadTypePrefix);
-                metrikk.report();
-                return migrertSoknad;
-            }
+            Event metrikk = MetricsFactory.createEvent("sendsoknad.skjemamigrasjon");
+            String soknadTypePrefix = new KravdialogInformasjonHolder()
+                    .hentKonfigurasjon(migrertSoknad.getskjemaNummer())
+                    .getSoknadTypePrefix();
+            metrikk.addTagToReport("soknadstype", soknadTypePrefix);
+            metrikk.addTagToReport("skjemaversjon", String.valueOf(migrasjon.get().getTilVersjon()));
+
+            metrikk.report();
         }
+
         return migrertSoknad;
     }
 
@@ -42,5 +48,12 @@ public class MigrasjonHandterer{
         migrasjonsListe.add(new FakeMigrasjon());
 
         return migrasjonsListe;
+    }
+
+    private Optional<Migrasjon> hentMigrasjonForSkjemanummerOgVersjon(int versjon, String skjemanummer) {
+        return migrasjoner.stream()
+                .filter(migrasjon -> migrasjon.getMigrasjonSkjemanummer().equalsIgnoreCase(skjemanummer))
+                .filter(migrasjon -> migrasjon.skalMigrere(versjon, skjemanummer))
+                .findFirst();
     }
 }
