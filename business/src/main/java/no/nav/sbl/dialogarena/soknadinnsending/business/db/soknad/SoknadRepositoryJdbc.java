@@ -127,8 +127,8 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     }
 
     public int hentVersjon(String behandlingsId) {
-        String sql_constraints = "(hendelse_type = 'SOKNAD_OPPRETTET' OR hendelse_type = 'SOKNAD_MIGRERT') AND behandlingsid = ?";
-        String sql = "SELECT versjon FROM hendelse WHERE hendelse_tidspunkt = (SELECT max(hendelse_tidspunkt) FROM hendelse WHERE" + sql_constraints + ")";
+        String gyldigHendelseTyper = "(hendelse_type = 'SOKNAD_OPPRETTET' OR hendelse_type = 'SOKNAD_MIGRERT')";
+        String sql = "SELECT * FROM (SELECT versjon FROM hendelse WHERE" + gyldigHendelseTyper + "  AND behandlingsid = ? ORDER BY hendelse_tidspunkt DESC)" + whereLimit(1);
         return getJdbcTemplate().queryForObject(sql, new Object[] {behandlingsId}, Integer.class);
     }
 
