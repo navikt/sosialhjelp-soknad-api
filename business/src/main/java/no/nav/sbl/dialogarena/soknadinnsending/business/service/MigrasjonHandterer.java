@@ -27,7 +27,7 @@ public class MigrasjonHandterer{
 
         if(migrasjon.isPresent()){
             //Versjon som er hardkodet, må byttes ut med en soknad.getSkjemaVersjon for eksempel når det er på plass
-            migrasjon.get().migrer(1, migrertSoknad);
+            migrertSoknad = migrasjon.get().migrer(1, migrertSoknad);
 
             Event metrikk = MetricsFactory.createEvent("sendsoknad.skjemamigrasjon");
             String soknadTypePrefix = new KravdialogInformasjonHolder()
