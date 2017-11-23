@@ -394,7 +394,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     }
 
     public void slettSoknad(WebSoknad soknad, HendelseType avsluttHendelse) {
-        insertHendelse(soknad.getBehandlingskjedeId(),avsluttHendelse.name(),0,soknad.getskjemaNummer());
+        insertHendelse(soknad.getBehandlingskjedeId(), avsluttHendelse.name(), 0, soknad.getskjemaNummer());
         slettSoknad(soknad.getSoknadId());
     }
 
