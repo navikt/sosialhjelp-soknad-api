@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
@@ -127,7 +126,11 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         return hentEtObjectAv(sql, SOKNAD_ROW_MAPPER, behandlingsId);
     }
 
-
+    public int hentVersjon(String behandlingsId) {
+        String gyldigHendelseTyper = "(hendelse_type = 'SOKNAD_OPPRETTET' OR hendelse_type = 'SOKNAD_MIGRERT')";
+        String sql = "SELECT * FROM (SELECT versjon FROM hendelse WHERE" + gyldigHendelseTyper + "  AND behandlingsid = ? ORDER BY hendelse_tidspunkt DESC)" + whereLimit(1);
+        return getJdbcTemplate().queryForObject(sql, new Object[] {behandlingsId}, Integer.class);
+    }
 
     private <T> T hentEtObjectAv(String sql, RowMapper<T> mapper, Object... args) {
         List<T> objekter = getJdbcTemplate().query(sql, mapper, args);

@@ -40,6 +40,8 @@ public interface SoknadRepository {
 
     List<Faktum> hentSystemFaktumList(Long soknadId, String key);
 
+    int hentVersjon(String behandlingsId);
+
     void settSistLagretTidspunkt(Long soknadId);
 
     void slettBrukerFaktum(Long soknadId, Long faktumId);
