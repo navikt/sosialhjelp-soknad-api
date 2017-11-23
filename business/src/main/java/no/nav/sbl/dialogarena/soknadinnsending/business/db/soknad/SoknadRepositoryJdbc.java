@@ -59,7 +59,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         Long databasenokkel = getJdbcTemplate().queryForObject(selectNextSequenceValue("SOKNAD_ID_SEQ"), Long.class);
         insertSoknad(soknad, databasenokkel);
 
-        insertHendelse(soknad.getBrukerBehandlingId(), HendelseType.SOKNAD_OPPRETTET.name(), 1 , soknad.getskjemaNummer());
+        insertHendelse(soknad.getBrukerBehandlingId(), HendelseType.SOKNAD_OPPRETTET.name(), soknad.getVersjon() , soknad.getskjemaNummer());
         return databasenokkel;
     }
 
@@ -397,7 +397,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     }
 
     public void slettSoknad(WebSoknad soknad, HendelseType avsluttHendelse) {
-        insertHendelse(soknad.getBehandlingskjedeId(), avsluttHendelse.name(), 0, soknad.getskjemaNummer());
+        insertHendelse(soknad.getBehandlingskjedeId(), avsluttHendelse.name(), soknad.getVersjon(), soknad.getskjemaNummer());
         slettSoknad(soknad.getSoknadId());
     }
 
