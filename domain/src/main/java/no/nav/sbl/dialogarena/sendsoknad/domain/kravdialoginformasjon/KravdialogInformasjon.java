@@ -1,10 +1,8 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Steg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
-import org.apache.commons.collections15.Transformer;
 import org.springframework.context.MessageSource;
 
 import java.util.ArrayList;
@@ -28,8 +26,6 @@ public interface KravdialogInformasjon {
     String getSoknadUrlKey();
 
     String getFortsettSoknadUrlKey();
-
-    //TODO: Legge på getSoknadStrukturVersjon f.eks med implementasjon på hardkodet versjon 1 for alle soknader.
 
     List<String> getSoknadBolker(WebSoknad soknad);
 
