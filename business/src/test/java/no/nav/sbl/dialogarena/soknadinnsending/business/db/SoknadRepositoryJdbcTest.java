@@ -196,6 +196,13 @@ public class SoknadRepositoryJdbcTest {
     }
 
     @Test
+    public void skalKunneHenteVersjon() {
+        opprettOgPersisterSoknad();
+        int versjon = soknadRepository.hentVersjon(behandlingsId);
+        assertThat(versjon, is(1));
+    }
+
+    @Test
     public void skalFinneBehandlingsIdTilSoknadFraFaktumId() {
         Long soknadId = opprettOgPersisterSoknad("123abc", "aktor");
         Long faktumId = lagreData(soknadId, "key", null, "value");
