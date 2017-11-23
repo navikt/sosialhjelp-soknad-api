@@ -22,6 +22,8 @@ import java.util.*;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType.SOKNAD_MIGRERT;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType.SOKNAD_OPPRETTET;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -59,7 +61,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         Long databasenokkel = getJdbcTemplate().queryForObject(selectNextSequenceValue("SOKNAD_ID_SEQ"), Long.class);
         insertSoknad(soknad, databasenokkel);
 
-        insertHendelse(soknad.getBrukerBehandlingId(), HendelseType.SOKNAD_OPPRETTET.name(), 1 , soknad.getskjemaNummer());
+        insertHendelse(soknad.getBrukerBehandlingId(), SOKNAD_OPPRETTET.name(), soknad.getVersjon() , soknad.getskjemaNummer());
         return databasenokkel;
     }
 
@@ -127,7 +129,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     }
 
     public int hentVersjon(String behandlingsId) {
-        String gyldigHendelseTyper = "(hendelse_type = 'SOKNAD_OPPRETTET' OR hendelse_type = 'SOKNAD_MIGRERT')";
+        String gyldigHendelseTyper = " hendelse_type in ('"+ SOKNAD_OPPRETTET.name() + "','" + SOKNAD_MIGRERT.name() + "')";
         String sql = "SELECT * FROM (SELECT versjon FROM hendelse WHERE" + gyldigHendelseTyper + "  AND behandlingsid = ? ORDER BY hendelse_tidspunkt DESC)" + whereLimit(1);
         return getJdbcTemplate().queryForObject(sql, new Object[] {behandlingsId}, Integer.class);
     }
@@ -397,7 +399,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     }
 
     public void slettSoknad(WebSoknad soknad, HendelseType avsluttHendelse) {
-        insertHendelse(soknad.getBehandlingskjedeId(), avsluttHendelse.name(), 0, soknad.getskjemaNummer());
+        insertHendelse(soknad.getBehandlingskjedeId(), avsluttHendelse.name(), soknad.getVersjon(), soknad.getskjemaNummer());
         slettSoknad(soknad.getSoknadId());
     }
 
