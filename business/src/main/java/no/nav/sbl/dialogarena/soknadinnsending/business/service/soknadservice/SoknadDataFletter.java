@@ -367,7 +367,7 @@ public class SoknadDataFletter {
         XMLHovedskjema hovedskjema = lagXmlHovedskjemaMedAlternativRepresentasjon(pdf, soknad, fullSoknad);
         XMLVedlegg[] vedlegg = convertToXmlVedleggListe(vedleggService.hentVedleggOgKvittering(soknad));
         henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, vedlegg);
-        lokalDb.slettSoknad(soknad,HendelseType.SOKNAD_INNSENDT);
+        lokalDb.slettSoknad(soknad, HendelseType.SOKNAD_INNSENDT);
 
         soknadMetricsService.rapporterKompletteOgIkkeKompletteSoknader(soknad.getIkkeInnsendteVedlegg(), skjemanummer(soknad));
         soknadMetricsService.sendtSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
