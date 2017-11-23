@@ -47,6 +47,7 @@ public class SoknadRepositoryJdbcTest {
 
     private String aktorId = "1";
     private String behandlingsId = "1";
+    private int versjonsnr = 1;
     private String skjemaNummer = "skjemaNummer";
     private String uuid = "123";
 
@@ -534,6 +535,7 @@ public class SoknadRepositoryJdbcTest {
                 .medUuid(uuid)
                 .medAktorId(aktor)
                 .medBehandlingId(behId)
+                .medVersjon(versjonsnr)
                 .medDelstegStatus(DelstegStatus.OPPRETTET)
                 .medskjemaNummer(skjemaNummer).medOppretteDato(now());
         soknadId = soknadRepository.opprettSoknad(soknad);
