@@ -5,6 +5,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad.ForeldrepengerEngangsstonadTilXml;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.FeatureToggler;
 import org.springframework.context.MessageSource;
 
 import java.util.Arrays;
@@ -75,7 +76,7 @@ public class ForeldrepengerInformasjon extends KravdialogInformasjon.DefaultOpps
     }
 
     private boolean alternativRepresentasjonAktivert() {
-        return Boolean.valueOf(System.getProperty("soknad.feature.foreldrepenger.alternativrepresentasjon.enabled", "false"));
+        return FeatureToggler.erFeatureAktiv(FeatureToggler.FORELDREPENGER_ALTERNATIV_REPRESENTASJON);
     }
 }
 
