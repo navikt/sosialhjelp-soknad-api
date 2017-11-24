@@ -7,7 +7,6 @@ import static java.lang.System.clearProperty;
 import static java.lang.System.setProperty;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.FeatureToggler.*;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.FeatureToggler.Toggle.*;
-//import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
