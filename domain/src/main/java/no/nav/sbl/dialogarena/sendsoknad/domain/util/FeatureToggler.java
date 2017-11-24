@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.util;
 public class FeatureToggler {
 
     public static boolean erFeatureAktiv(Toggle toggle) {
-        return Boolean.valueOf(System.getProperty(toggle.propertyNavn, "false"));
+        return Boolean.valueOf(System.getProperty(toggle.getPropertyNavn(), "false"));
     }
 
     public enum Toggle {
@@ -18,6 +18,14 @@ public class FeatureToggler {
         Toggle(String propertyNavn, String beskrivelse) {
             this.propertyNavn = propertyNavn;
             this.beskrivelse = beskrivelse;
+        }
+
+        public String getBeskrivelse() {
+            return beskrivelse;
+        }
+
+        public String getPropertyNavn() {
+            return propertyNavn;
         }
     }
 }
