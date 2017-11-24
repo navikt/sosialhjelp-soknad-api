@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static javax.ws.rs.core.MediaType.TEXT_XML;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.FeatureToggler.erFeatureAktiv;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.FeatureToggler.Toggle.RESSURS_ALTERNATIVREPRESENTASJON;
 
 @Controller
 @Path("/representasjon")
@@ -34,8 +36,6 @@ public class AlternativRepresentasjonRessurs {
     @Inject
     private SoknadDataFletter soknadDataFletter;
     private static final Logger LOG = LoggerFactory.getLogger(AlternativRepresentasjonRessurs.class);
-
-    private static final boolean RESSURS_AKTIVERT = FeatureToggler.erFeatureAktiv(FeatureToggler.ALTERNATIV_REPRESENTASJON);
 
     @Deprecated
     @GET
@@ -56,7 +56,7 @@ public class AlternativRepresentasjonRessurs {
 
     private void erRessursAktiv(String metode) {
         LOG.warn("OppsummeringRessurs metode {} forsøkt aksessert", metode);
-        if (!RESSURS_AKTIVERT) {
+        if (!erFeatureAktiv(RESSURS_ALTERNATIVREPRESENTASJON)) {
             throw new NotFoundException("Denne informasjonen er ikke tilgjengelig");
         }
     }
