@@ -9,7 +9,8 @@ public class FeatureToggler {
     public enum Toggle {
         RESSURS_ALTERNATIVREPRESENTASJON("soknad.alternativrepresentasjon.ressurs.enabled", "Skrur på en ressurs for å hente ut alternativrepresetasjon på en url for testformål"),
         RESSURS_FULLOPPSUMERING("soknad.fulloppsummering.ressurs.enabled", "Skrur på ressurs for fulloppsummering"),
-        ARKIVER_ALTERNATIVREPRESENTASJON_FORELDREPENGER("soknad.feature.foreldrepenger.alternativrepresentasjon.enabled", "Skrur på muligheten til å akrivere alternativ representasjon i foreldrepenger");
+        ARKIVER_ALTERNATIVREPRESENTASJON_FORELDREPENGER("soknad.feature.foreldrepenger.alternativrepresentasjon.enabled",
+                "Skrur på muligheten til å akrivere alternativ representasjon i foreldrepenger");
 
         private String propertyNavn;
         private String beskrivelse;
