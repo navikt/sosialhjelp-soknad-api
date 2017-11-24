@@ -51,6 +51,8 @@ public interface SoknadRepository {
 
     void slettSoknad(WebSoknad soknad, HendelseType avsluttHendelse);
 
+    void insertHendelse(String behandlingsid, String hendelse_type);
+
     String hentSoknadType(Long soknadId);
 
     Boolean isVedleggPaakrevd(Long soknadId, VedleggForFaktumStruktur vedleggForFaktumStruktur);
