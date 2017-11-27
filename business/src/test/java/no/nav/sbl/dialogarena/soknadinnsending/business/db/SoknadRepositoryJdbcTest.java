@@ -203,6 +203,12 @@ public class SoknadRepositoryJdbcTest {
         assertThat(versjon, is(1));
     }
 
+     @Test
+     public void skalKunneHenteGamleIkkeAvsluttedeHendelser(){
+        opprettOgPersisterSoknad();
+        assertThat(soknadRepository.hentIkkeAvsluttedeEtter8Uker().isEmpty(),is(true));
+     }
+
     @Test
     public void skalFinneBehandlingsIdTilSoknadFraFaktumId() {
         Long soknadId = opprettOgPersisterSoknad("123abc", "aktor");

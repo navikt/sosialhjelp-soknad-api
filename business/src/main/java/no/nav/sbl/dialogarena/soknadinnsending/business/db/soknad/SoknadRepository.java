@@ -1,10 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad;
 
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
 
 import java.util.List;
@@ -42,6 +39,8 @@ public interface SoknadRepository {
     List<Faktum> hentSystemFaktumList(Long soknadId, String key);
 
     int hentVersjon(String behandlingsId);
+
+    List<String> hentIkkeAvsluttedeEtter8Uker();
 
     void settSistLagretTidspunkt(Long soknadId);
 

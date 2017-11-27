@@ -22,8 +22,7 @@ import java.util.*;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType.SOKNAD_MIGRERT;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType.SOKNAD_OPPRETTET;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType.*;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -136,6 +135,24 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         String gyldigHendelseTyper = " hendelse_type in ('"+ SOKNAD_OPPRETTET.name() + "','" + SOKNAD_MIGRERT.name() + "')";
         String sql = "SELECT * FROM (SELECT versjon FROM hendelse WHERE" + gyldigHendelseTyper + "  AND behandlingsid = ? ORDER BY hendelse_tidspunkt DESC)" + whereLimit(1);
         return getJdbcTemplate().queryForObject(sql, new Object[] {behandlingsId}, Integer.class);
+    }
+
+    public List<String> hentIkkeAvsluttedeEtter8Uker() {
+        String ATTE_UKER = "56";
+        String avsluttetHendelse = "HENDELSE_TYPE in ('"+ SOKNAD_SLETTET.name() +"','" + SOKNAD_AVBRUTT.name() +"','" + SOKNAD_INNSENDT.name() + "')";
+        String gyldigeHendelseTyper = " hendelse_type in ('"+ SOKNAD_OPPRETTET.name() + "','" + SOKNAD_MIGRERT.name() + "','" + SOKNAD_LAGERT_I_HENVENDELSE.name() + "')";
+
+
+        String sql = " SELECT BEHANDLINGSID FROM HENDELSE H1 WHERE " + gyldigeHendelseTyper +
+                " AND NOT EXISTS " +
+                " ( SELECT H2.BEHANDLINGSID FROM HENDELSE H2 " +
+                " WHERE " + gyldigeHendelseTyper  +
+                " AND HENDELSE_TIDSPUNKT > CURRENT_TIMESTAMP - (INTERVAL '" + ATTE_UKER + "' DAY)  AND H1.BEHANDLINGSID = H2.BEHANDLINGSID ) " +
+                " AND NOT EXISTS " +
+                " ( SELECT H3.BEHANDLINGSID FROM HENDELSE H3 " +
+                " WHERE " + avsluttetHendelse + " AND H1.BEHANDLINGSID = H3.BEHANDLINGSID) ";
+
+        return getJdbcTemplate().queryForList(sql,String.class);
     }
 
     private <T> T hentEtObjectAv(String sql, RowMapper<T> mapper, Object... args) {
