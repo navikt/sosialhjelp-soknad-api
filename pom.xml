@@ -787,12 +787,12 @@
                 <artifactId>common-jetty</artifactId>
                 <version>1.0.23</version>
                 <scope>test</scope>
-                <!--<exclusions>
+                <exclusions>
                     <exclusion>
                         <groupId>no.nav.modig</groupId>
                         <artifactId>modig-testcertificates</artifactId>
                     </exclusion>
-                </exclusions>-->
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
