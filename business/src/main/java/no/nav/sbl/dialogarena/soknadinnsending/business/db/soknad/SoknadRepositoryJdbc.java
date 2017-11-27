@@ -137,7 +137,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         return getJdbcTemplate().queryForObject(sql, new Object[] {behandlingsId}, Integer.class);
     }
 
-    public List<String> hentIkkeAvsluttedeEtter8Uker() {
+    public Collection<String> hentIkkeAvsluttedeEtter8Uker() {
         String ATTE_UKER = "56";
         String avsluttetHendelse = "HENDELSE_TYPE in ('"+ SOKNAD_SLETTET.name() +"','" + SOKNAD_AVBRUTT.name() +"','" + SOKNAD_INNSENDT.name() + "')";
         String gyldigeHendelseTyper = " hendelse_type in ('"+ SOKNAD_OPPRETTET.name() + "','" + SOKNAD_MIGRERT.name() + "','" + SOKNAD_LAGERT_I_HENVENDELSE.name() + "')";
@@ -152,7 +152,10 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
                 " ( SELECT H3.BEHANDLINGSID FROM HENDELSE H3 " +
                 " WHERE " + avsluttetHendelse + " AND H1.BEHANDLINGSID = H3.BEHANDLINGSID) ";
 
-        return getJdbcTemplate().queryForList(sql,String.class);
+         HashSet<String> resultSet = new HashSet<>();
+         resultSet.addAll(getJdbcTemplate().queryForList(sql,String.class));
+
+        return resultSet;
     }
 
     private <T> T hentEtObjectAv(String sql, RowMapper<T> mapper, Object... args) {

@@ -4,6 +4,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -40,7 +41,7 @@ public interface SoknadRepository {
 
     int hentVersjon(String behandlingsId);
 
-    List<String> hentIkkeAvsluttedeEtter8Uker();
+    Collection<String> hentIkkeAvsluttedeEtter8Uker();
 
     void settSistLagretTidspunkt(Long soknadId);
 
