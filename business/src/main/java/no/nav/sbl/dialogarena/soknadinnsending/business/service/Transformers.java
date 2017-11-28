@@ -13,13 +13,9 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.*;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.LastetOpp;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.SendesIkke;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.SendesSenere;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.VedleggAlleredeSendt;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.VedleggSendesAvAndre;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.VedleggSendesIkke;
-import static org.apache.commons.lang3.StringUtils.*;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.*;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 
 public class Transformers {
@@ -78,7 +74,7 @@ public class Transformers {
                 xmlVedlegg = new XMLVedlegg()
                         .withFilnavn(vedlegg.lagFilNavn())
                         .withSideantall(vedlegg.getAntallSider())
-                        .withMimetype("application/pdf")
+                        .withMimetype(isEmpty(vedlegg.getMimetype()) ? "application/pdf" : vedlegg.getMimetype())
                         .withTilleggsinfo(vedlegg.getNavn())
                         .withFilstorrelse(vedlegg.getStorrelse().toString())
                         .withSkjemanummer(vedlegg.getSkjemaNummer())
