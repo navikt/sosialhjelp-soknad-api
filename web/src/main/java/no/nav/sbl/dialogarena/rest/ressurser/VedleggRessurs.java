@@ -5,6 +5,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import org.apache.commons.io.IOUtils;
@@ -36,6 +37,9 @@ public class VedleggRessurs {
 
     @Inject
     private VedleggService vedleggService;
+
+    @Inject
+    private VedleggOriginalFilerService vedleggOriginalFilerService;
 
     @Inject
     private SoknadService soknadService;
@@ -144,5 +148,36 @@ public class VedleggRessurs {
 
         return totalStorrelse > MAKS_TOTAL_FILSTORRELSE;
     }
+
+    @POST
+    @Path("/originalfil")
+    @Consumes(MULTIPART_FORM_DATA)
+    @SjekkTilgangTilSoknad(type = Vedlegg)
+    public Vedlegg lastOppOriginalfil(@PathParam("vedleggId") final Long vedleggId, @QueryParam("behandlingsId") String behandlingsId, @FormDataParam("file") final FormDataBodyPart fil) {
+        if (fil.getValueAs(File.class).length() > MAKS_TOTAL_FILSTORRELSE) {
+            throw new OpplastingException("Kunne ikke lagre fil fordi total filstørrelse er for stor", null, "vedlegg.opplasting.feil.forStor");
+        }
+
+        String filnavn = fil.getContentDisposition().getFileName();
+        byte[] data = getByteArray(fil);
+
+        vedleggOriginalFilerService.leggTilOriginalVedlegg(behandlingsId, vedleggId, data, filnavn);
+        return vedleggService.hentVedlegg(vedleggId, false);
+    }
+
+
+    @GET
+    @Path("/originalfil")
+    @SjekkTilgangTilSoknad(type = Vedlegg)
+    public void lastnedOriginalFil(@PathParam("vedleggId") final Long vedleggId, HttpServletResponse response) {
+        Vedlegg vedlegg = vedleggService.hentVedlegg(vedleggId, true);
+
+        // TODO
+        /*
+        response.setContentType("todo");
+        response.getOutputStream().write(vedlegg.getData());
+        */
+    }
+
 
 }
