@@ -2,10 +2,15 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.migrasjon.FakeMigrasjon;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.migrasjon.Migrasjon;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -17,7 +22,9 @@ public class MigrasjonHandtererTest {
 
     @Before
     public void setup() {
-        handterer = new MigrasjonHandterer();
+        List<Migrasjon> testMigrasjoner = new ArrayList<>();
+        testMigrasjoner.add(new FakeMigrasjon());
+        handterer = new MigrasjonHandterer(testMigrasjoner);
         innsendtSoknad = new WebSoknad().medId(1L).medskjemaNummer("NAV XO.XO-XO").medVersjon(1);
     }
 

@@ -5,7 +5,6 @@ import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.migrasjon.FakeMigrasjon;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.migrasjon.Migrasjon;
 
 import java.util.*;
@@ -15,6 +14,10 @@ public class MigrasjonHandterer{
 
     public MigrasjonHandterer(){
         migrasjoner = migrasjoner();
+    }
+
+    public MigrasjonHandterer(List<Migrasjon> nyeMigrasjoner) {
+        migrasjoner = nyeMigrasjoner;
     }
 
     public WebSoknad handterMigrasjon(WebSoknad soknad){
@@ -48,8 +51,6 @@ public class MigrasjonHandterer{
 
     public static List<Migrasjon> migrasjoner() {
         List<Migrasjon> migrasjonsListe = new ArrayList<>();
-
-        migrasjonsListe.add(new FakeMigrasjon());
 
         return migrasjonsListe;
     }
