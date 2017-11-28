@@ -24,9 +24,11 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static javax.ws.rs.core.MediaType.*;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static javax.ws.rs.core.MediaType.MULTIPART_FORM_DATA;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.UnderBehandling;
 import static no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad.Type.Vedlegg;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 
 @Controller
@@ -74,11 +76,12 @@ public class VedleggRessurs {
 
     @GET
     @Path("/fil")
-    @Produces(APPLICATION_OCTET_STREAM)
     @SjekkTilgangTilSoknad(type = Vedlegg)
     public byte[] hentVedleggData(@PathParam("vedleggId") final Long vedleggId, @Context HttpServletResponse response) {
         Vedlegg vedlegg = vedleggService.hentVedlegg(vedleggId, true);
-        response.setHeader("Content-Disposition", "attachment; filename=\"" + vedlegg.getVedleggId() + ".pdf\"");
+        String type = isEmpty(vedlegg.getMimetype()) ? "application/pdf" : vedlegg.getMimetype();
+        response.setContentType(type);
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + vedlegg.lagFilNavn() + "\"");
         return vedlegg.getData();
     }
 
@@ -164,20 +167,5 @@ public class VedleggRessurs {
         vedleggOriginalFilerService.leggTilOriginalVedlegg(behandlingsId, vedleggId, data, filnavn);
         return vedleggService.hentVedlegg(vedleggId, false);
     }
-
-
-    @GET
-    @Path("/originalfil")
-    @SjekkTilgangTilSoknad(type = Vedlegg)
-    public void lastnedOriginalFil(@PathParam("vedleggId") final Long vedleggId, HttpServletResponse response) {
-        Vedlegg vedlegg = vedleggService.hentVedlegg(vedleggId, true);
-
-        // TODO
-        /*
-        response.setContentType("todo");
-        response.getOutputStream().write(vedlegg.getData());
-        */
-    }
-
 
 }
