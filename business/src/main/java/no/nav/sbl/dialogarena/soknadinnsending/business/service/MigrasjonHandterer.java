@@ -32,14 +32,11 @@ public class MigrasjonHandterer{
 
             Event metrikk = MetricsFactory.createEvent("sendsoknad.skjemamigrasjon");
             String soknadTypePrefix;
-            try {
-                KravdialogInformasjon kravdialogInformasjon = new KravdialogInformasjonHolder()
-                        .hentKonfigurasjon(migrertSoknad.getskjemaNummer());
-                soknadTypePrefix = kravdialogInformasjon.getSoknadTypePrefix();
-            }
-            catch (Exception e) {
-                soknadTypePrefix = "";
-            }
+
+            KravdialogInformasjon kravdialogInformasjon = new KravdialogInformasjonHolder()
+                    .hentKonfigurasjon(migrertSoknad.getskjemaNummer());
+            soknadTypePrefix = kravdialogInformasjon.getSoknadTypePrefix();
+
             metrikk.addTagToReport("soknadstype", soknadTypePrefix);
             metrikk.addTagToReport("skjemaversjon", String.valueOf(migrasjon.get().getTilVersjon()));
 
