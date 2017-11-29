@@ -141,7 +141,7 @@ public class LagringsScheduler {
                 fillagerService.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(xml.toString().getBytes()));
             }
             soknadRepository.slettSoknad(soknad.getSoknadId());
-            soknadRepository.insertHendelse(soknad.getBrukerBehandlingId(),SOKNAD_LAGERT_I_HENVENDELSE.name());
+            soknadRepository.insertHendelse(soknad.getBrukerBehandlingId(),SOKNAD_LAGERT_I_HENVENDELSE.name(),soknad.getVersjon(),soknad.getskjemaNummer());
 
             logger.info("Lagret soknad til henvendelse og slettet lokalt. Soknadsid: {}", soknad.getSoknadId());
             vellykket++;
