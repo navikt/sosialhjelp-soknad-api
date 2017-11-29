@@ -2,11 +2,31 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.util;
 
 public class FeatureToggler {
 
-    public static String ALTERNATIV_REPRESENTASJON = "soknad.alternativrepresentasjon.ressurs.enabled";
-    public static String FULLOPPSUMMERING = "soknad.fulloppsummering.enabled";
-    public static String FORELDREPENGER_ALTERNATIV_REPRESENTASJON = "soknad.feature.foreldrepenger.alternativrepresentasjon.enabled";
+    public static boolean erFeatureAktiv(Toggle toggle) {
+        return Boolean.valueOf(System.getProperty(toggle.getPropertyNavn(), "false"));
+    }
 
-    public static boolean erFeatureAktiv(final String propertyNavn) {
-        return Boolean.valueOf(System.getProperty(propertyNavn, "false"));
+    public enum Toggle {
+        RESSURS_ALTERNATIVREPRESENTASJON("soknad.alternativrepresentasjon.ressurs.enabled", "Skrur på en ressurs for å hente ut alternativrepresetasjon på en url for testformål"),
+        RESSURS_FULLOPPSUMERING("soknad.fulloppsummering.ressurs.enabled", "Skrur på ressurs for fulloppsummering"),
+        ARKIVER_ALTERNATIVREPRESENTASJON_FORELDREPENGER("soknad.feature.foreldrepenger.alternativrepresentasjon.enabled",
+                "Skrur på muligheten til å akrivere alternativ representasjon i foreldrepenger");
+
+        private String propertyNavn;
+        private String beskrivelse;
+
+        Toggle(String propertyNavn, String beskrivelse) {
+            this.propertyNavn = propertyNavn;
+            this.beskrivelse = beskrivelse;
+        }
+
+        public String getBeskrivelse() {
+            return beskrivelse;
+        }
+
+        public String getPropertyNavn() {
+            return propertyNavn;
+        }
     }
 }
+
