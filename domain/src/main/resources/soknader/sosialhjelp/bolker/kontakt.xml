@@ -1,6 +1,49 @@
 <?xml version="1.0" ?>
 <soknad xmlns="urn:no.nav.sbl">
     <faktum>
+        <id>kontakt.system.adresse</id>
+        <panel>personaliaBolk</panel>
+        <type>textbox</type>
+    </faktum>
+    <faktum>
+        <id>kontakt.system.adresse.gateadresse</id>
+        <panel>personaliaBolk</panel>
+        <type>textbox</type>
+    </faktum>
+    <faktum>
+        <id>kontakt.system.adresse.postnummer</id>
+        <panel>personaliaBolk</panel>
+        <type>textbox</type>
+    </faktum>
+    <faktum>
+        <id>kontakt.system.adresse.poststed</id>
+        <panel>personaliaBolk</panel>
+        <type>textbox</type>
+    </faktum>
+    <faktum>
+        <id>kontakt.adresse.gateadresse</id>
+        <panel>personaliaBolk</panel>
+        <type>textbox</type>
+        <optional>true</optional>
+    </faktum>
+    <faktum>
+        <id>kontakt.adresse.postnummer</id>
+        <panel>personaliaBolk</panel>
+        <type>textbox</type>
+        <optional>true</optional>
+    </faktum>
+    <faktum>
+        <id>kontakt.adresse.poststed</id>
+        <panel>personaliaBolk</panel>
+        <type>textbox</type>
+        <optional>true</optional>
+    </faktum>
+    <faktum>
+        <id>kontakt.system.kontonummer</id>
+        <panel>personaliaBolk</panel>
+        <type>textbox</type>
+    </faktum>
+    <faktum>
         <id>kontakt.kontonummer</id>
         <panel>personaliaBolk</panel>
         <type>textbox</type>
@@ -16,6 +59,11 @@
         <id>kontakt.kontonummer.harikke</id>
         <panel>personaliaBolk</panel>
         <type>checkbox</type>
+    </faktum>
+    <faktum>
+        <id>kontakt.system.telefon</id>
+        <panel>personaliaBolk</panel>
+        <type>textbox</type>
     </faktum>
     <faktum>
         <id>kontakt.telefon</id>
