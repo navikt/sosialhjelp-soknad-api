@@ -10,7 +10,7 @@ public class FakeMigrasjon extends Migrasjon {
     private static final Logger logger = getLogger(FakeMigrasjon.class);
 
     public FakeMigrasjon() {
-        super(2,"NAV XO.XO-XO");
+        super(2,"NAV 11-13.05");
     }
 
     @Override
