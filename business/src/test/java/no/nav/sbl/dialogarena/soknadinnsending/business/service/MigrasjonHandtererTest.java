@@ -25,14 +25,14 @@ public class MigrasjonHandtererTest {
         List<Migrasjon> testMigrasjoner = new ArrayList<>();
         testMigrasjoner.add(new FakeMigrasjon());
         handterer = new MigrasjonHandterer(testMigrasjoner);
-        innsendtSoknad = new WebSoknad().medId(1L).medskjemaNummer("NAV XO.XO-XO").medVersjon(1);
+        innsendtSoknad = new WebSoknad().medId(1L).medskjemaNummer("NAV 11-13.05").medVersjon(1);
     }
 
     @Test
     public void migreringSkjerForFakeSoknadMedEnVersjonLavere() {
         WebSoknad migrertSoknad = handterer.handterMigrasjon(innsendtSoknad);
 
-        assertThat(migrertSoknad.getskjemaNummer()).isEqualTo("NAV XO.XO-XO");
+        assertThat(migrertSoknad.getskjemaNummer()).isEqualTo("NAV 11-13.05");
         assertThat(migrertSoknad.getVersjon()).isEqualTo(2);
         assertThat(migrertSoknad.getDelstegStatus()).isEqualTo(DelstegStatus.UTFYLLING);
     }
