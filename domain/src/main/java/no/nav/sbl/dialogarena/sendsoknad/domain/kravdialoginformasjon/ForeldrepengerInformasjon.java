@@ -5,7 +5,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad.ForeldrepengerEngangsstonadTilXml;
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.FeatureToggler;
 import org.springframework.context.MessageSource;
 
 import java.util.Arrays;
@@ -14,6 +13,9 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.FeatureToggler.erFeatureAktiv;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.FeatureToggler.Toggle.ARKIVER_ALTERNATIVREPRESENTASJON_FORELDREPENGER;
+
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 
@@ -76,7 +78,7 @@ public class ForeldrepengerInformasjon extends KravdialogInformasjon.DefaultOpps
     }
 
     private boolean alternativRepresentasjonAktivert() {
-        return FeatureToggler.erFeatureAktiv(FeatureToggler.FORELDREPENGER_ALTERNATIV_REPRESENTASJON);
+        return erFeatureAktiv(ARKIVER_ALTERNATIVREPRESENTASJON_FORELDREPENGER);
     }
 }
 
