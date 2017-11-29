@@ -53,6 +53,8 @@ public interface SoknadRepository {
 
     void insertHendelse(String behandlingsid, String hendelse_type);
 
+    void insertHendelse(String behandlingsid, String hendelse_type, int versjon, String skjemanummer);
+
     String hentSoknadType(Long soknadId);
 
     Boolean isVedleggPaakrevd(Long soknadId, VedleggForFaktumStruktur vedleggForFaktumStruktur);

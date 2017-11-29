@@ -1,9 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.batch;
 
 import no.nav.modig.core.exception.ApplicationException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
 import org.slf4j.Logger;
@@ -32,8 +30,10 @@ public class SlettSoknadScheduler {
 
     @Scheduled(cron = KLOKKEN_FIRE_OM_NATTEN)
     public void opprettHendelserForSoknaderSlettetIHenvendelse(){
-        logger.info("Starter sjekk om urørte søknader er slettet i henvendelse");
-        soknadRepository.hentIkkeAvsluttedeEtter8Uker().stream().forEach(
+
+        if (Boolean.valueOf(System.getProperty("sendsoknad.batch.enabled", "true"))) {
+            logger.info("Starter sjekk om urørte søknader er slettet i henvendelse");
+            soknadRepository.hentIkkeAvsluttedeEtter8Uker().stream().forEach(
                 bid -> {
                     try {
                         List<WSBehandlingskjedeElement> result = henvendelseService.hentBehandlingskjede(bid);
@@ -43,13 +43,16 @@ public class SlettSoknadScheduler {
                         settSoknadAvsluttet(bid);
                     }
                 }
-        );
+            );
+        } else {
+            logger.warn("Batch disabled. Må sette environment property sendsoknad.batch.enabled til true for å sette den på igjen");
+        }
     }
 
 
 
 
-    public void settSoknadAvsluttet(String behandlingsId) {
+    private void settSoknadAvsluttet(String behandlingsId) {
         soknadRepository.insertHendelse(behandlingsId,SOKNAD_SLETTET.name());
     }
 }
