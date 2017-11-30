@@ -59,6 +59,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hentFaktumValue - Returnerer verdien til et faktum tilhørende keyen som sendes inn
 * hentLand - Henter land fra Kodeverk basert på landkode.
 * hentMiljovariabel - Finner miljovariabel fra key
+* hentNavEnhetNavn - Henter navnet på NAV enheten som bruker har valgt
 * hentPoststed - Henter poststed for et postnummer fra kodeverk
 * hentSkjemanummer - Setter inn søknadens skjemanummer, også om det er en søknad for dagpenger
 * hentTekst - Henter tekst fra cms, prøver med søknadens prefix + key, før den prøver med bare keyen. Kan sende inn parametere.
@@ -74,6 +75,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hvisLik - Sjekker om to strenger er like
 * hvisMer - Evaluerer en string til double og sjekker om verdien er mer enn grenseverdien gitt ved andre inputparameter
 * hvisMindre - Evaluerer en string til integer og sjekker om verdien er mindre enn andre inputparameter
+* hvisNoenAvkryssetBarneFakta - For bruk i generisk oppsummering, undersøker innsendt liste over fakta og ser om noen er avkrysset.
 * hvisSant - Dersom variabelen er "true" vil innholdet vises
 * hvisTekstFinnes - Henter tekst fra cms, prøver med søknadens prefix + key, før den prøver med bare keyen. Kan sende inn parametere.
 * kortDato - Formatterer en datostreng på formatet yyyy-mm-dd til dd.mm.aaaa
@@ -84,6 +86,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * toLowerCase - Gjør om en tekst til kun små bokstaver
 * variabel - Lager en variabel med en bestemt verdi som kun er tilgjengelig innenfor helperen
 * vedleggCmsNokkel - Henter teksten for et vedlegg
+* visCheckbox - hvis value er "true" eller key.false-teksten finnes
 
 
 #### Eksempler
@@ -316,6 +319,13 @@ må ha et faktum i context, f. eks. via
 ```
 
 
+##### hentNavEnhetNavn
+
+```
+{{hentNavEnhetNavn}}
+```
+
+
 ##### hentPoststed
 
 ```
@@ -468,6 +478,15 @@ må ha et faktum i context, f. eks. via
 ```
 
 
+##### hvisNoenAvkryssetBarneFakta
+
+```
+{{#hvisNoenAvkryssetBarneFakta barneFakta}}
+    Avkrysset fakta
+{{/hvisNoenAvkryssetBarneFakta}}
+```
+
+
 ##### hvisSant
 
 ```
@@ -560,5 +579,14 @@ Leser fra model på context
 {{#forVedlegg}}
     {{{hentTekst (vedleggCmsNokkel this)}}}
 {{/forVedlegg}}
+```
+
+
+##### visCheckbox
+
+```
+{{#visCheckbox "value" "en.nokkel"}}
+   Value er "true" eller teksten "en.nokkel.false" finnes
+{{/visCheckbox}}
 ```
 
