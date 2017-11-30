@@ -32,6 +32,7 @@ public class SlettSoknadScheduler {
     public void opprettHendelserForSoknaderSlettetIHenvendelse(){
 
         if (Boolean.valueOf(System.getProperty("sendsoknad.batch.enabled", "true"))) {
+            logger.info("Kron: " + KLOKKEN_FIRE_OM_NATTEN);
             logger.info("Starter sjekk om urørte søknader er slettet i henvendelse");
             soknadRepository.hentIkkeAvsluttedeEtter8Uker().stream().forEach(
                 bid -> {
@@ -48,9 +49,6 @@ public class SlettSoknadScheduler {
             logger.warn("Batch disabled. Må sette environment property sendsoknad.batch.enabled til true for å sette den på igjen");
         }
     }
-
-
-
 
     private void settSoknadAvsluttet(String behandlingsId) {
         soknadRepository.insertHendelse(behandlingsId,SOKNAD_SLETTET.name());
