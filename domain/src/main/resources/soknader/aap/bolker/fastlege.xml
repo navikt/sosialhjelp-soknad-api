@@ -34,12 +34,6 @@
         <id>fastlege.harIkkeFastlege</id>
         <type>checkbox</type>
         <dependOn>fastlege</dependOn>
-        <constraints>
-            <constraint>
-                <faktum>fastlege.harIkkeFastlege</faktum>
-                <expression>value == 'true'</expression>
-            </constraint>
-        </constraints>
     </faktum>
 
     <faktum>

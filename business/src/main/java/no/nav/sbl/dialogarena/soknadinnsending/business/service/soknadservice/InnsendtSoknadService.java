@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHenvendelse;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadata;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
@@ -21,6 +22,8 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toList;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMetadataTransformer.FIKS_ENHET_KEY;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMetadataTransformer.FIKS_ORGNR_KEY;
 
 @Component
 public class InnsendtSoknadService {
@@ -36,6 +39,9 @@ public class InnsendtSoknadService {
     @Inject
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
 
+    @Inject
+    EkstraMetadataService ekstraMetadataService;
+
     private static final java.util.function.Predicate<Vedlegg> IKKE_KVITTERING = vedlegg -> !SKJEMANUMMER_KVITTERING.equalsIgnoreCase(vedlegg.getSkjemaNummer());
 
     private static final Predicate<Vedlegg> LASTET_OPP = v -> Vedlegg.Status.LastetOpp.equals(v.getInnsendingsvalg());
@@ -45,7 +51,8 @@ public class InnsendtSoknadService {
     public InnsendtSoknad hentInnsendtSoknad(String behandlingsId, String sprak) {
         final XMLHenvendelse xmlHenvendelse = henvendelseService.hentInformasjonOmAvsluttetSoknad(behandlingsId);
 
-        XMLHovedskjema hovedskjema = (XMLHovedskjema) xmlHenvendelse.getMetadataListe().getMetadata().stream()
+        List<XMLMetadata> metadata = xmlHenvendelse.getMetadataListe().getMetadata();
+        XMLHovedskjema hovedskjema = (XMLHovedskjema) metadata.stream()
                 .filter(xmlMetadata -> xmlMetadata instanceof XMLHovedskjema)
                 .findFirst()
                 .orElseThrow(()->new ApplicationException(String.format("Soknaden %s har ikke noe hovedskjema", behandlingsId)));
@@ -64,7 +71,9 @@ public class InnsendtSoknadService {
             * */
         }
 
-        final List<Vedlegg> vedlegg = xmlHenvendelse.getMetadataListe().getMetadata().stream().map(xmlMetadata -> {
+        final List<Vedlegg> vedlegg = metadata.stream()
+                .filter(xmlMetadata -> xmlMetadata instanceof XMLVedlegg)
+                .map(xmlMetadata -> {
                 XMLVedlegg xmlVedlegg = (XMLVedlegg) xmlMetadata;
                 Vedlegg v = new Vedlegg()
                         .medInnsendingsvalg(Transformers.toInnsendingsvalg(xmlVedlegg.getInnsendingsvalg()))
@@ -88,7 +97,9 @@ public class InnsendtSoknadService {
                 .medTemakode(xmlHenvendelse.getTema())
                 .medInnsendteVedlegg(innsendteVedlegg)
                 .medIkkeInnsendteVedlegg(ikkeInnsendteVedlegg)
-                .medDato(xmlHenvendelse.getAvsluttetDato());
+                .medDato(xmlHenvendelse.getAvsluttetDato())
+                .medNavenhet(ekstraMetadataService.finnMetadataVerdi(metadata, FIKS_ENHET_KEY))
+                .medOrgnummer(ekstraMetadataService.finnMetadataVerdi(metadata, FIKS_ORGNR_KEY));
     }
 
     private Predicate<Vedlegg> medSkjemanummer(final String skjemanummer) {

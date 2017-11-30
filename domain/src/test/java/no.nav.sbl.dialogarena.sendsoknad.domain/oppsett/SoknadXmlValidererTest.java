@@ -71,6 +71,11 @@ public class SoknadXmlValidererTest {
         testOmXmlValiderer("aap/aap_gjenopptak.xml");
     }
 
+    @Test
+    public void testSosialhjelpXml() throws Exception {
+        testOmXmlValiderer("sosialhjelp/sosialhjelp.xml");
+    }
+
     private void testOmXmlValiderer(String xmlFilNavn) throws Exception {
         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         File xsdFil = Paths.get("src/main/resources/soknader/soknadstruktur.xsd").toFile();

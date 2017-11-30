@@ -1,12 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse;
 
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHenvendelse;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.*;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.modig.core.exception.SystemException;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.SoknadType;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
 import no.nav.tjeneste.domene.brukerdialog.henvendelse.v2.henvendelse.HenvendelsePortType;
 import no.nav.tjeneste.domene.brukerdialog.henvendelse.v2.meldinger.WSHentHenvendelseRequest;
 import no.nav.tjeneste.domene.brukerdialog.henvendelse.v2.meldinger.WSHentHenvendelseResponse;
@@ -23,8 +20,7 @@ import java.util.Optional;
 
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.IKKE_VALGT;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.SoknadType.SEND_SOKNAD;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.SoknadType.SEND_SOKNAD_ETTERSENDING;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType.SEND_SOKNAD_ETTERSENDING;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -43,10 +39,10 @@ public class HenvendelseService {
     @Inject
     private HenvendelsePortType henvendelseInformasjonEndpoint;
 
-    public String startSoknad(String fnr, String skjema, String uid) {
+    public String startSoknad(String fnr, String skjema, String uid, SoknadType soknadType) {
         logger.info("Starter søknad");
         return opprettSoknadIHenvendelse(
-                lagOpprettSoknadRequest(fnr, SEND_SOKNAD, new XMLMetadataListe().withMetadata(createXMLSkjema(skjema, uid))));
+                lagOpprettSoknadRequest(fnr, soknadType, new XMLMetadataListe().withMetadata(createXMLSkjema(skjema, uid))));
     }
 
     public String startEttersending(WSHentSoknadResponse soknadResponse) {
@@ -71,11 +67,12 @@ public class HenvendelseService {
         }
     }
 
-    public void avsluttSoknad(String behandlingsId, XMLHovedskjema hovedskjema, XMLVedlegg... vedlegg) {
+    public void avsluttSoknad(String behandlingsId, XMLHovedskjema hovedskjema, XMLVedlegg[] vedlegg, XMLMetadata ekstraData) {
         try {
             WSSoknadsdata parameters = new WSSoknadsdata().withBehandlingsId(behandlingsId).withAny(new XMLMetadataListe()
                     .withMetadata(hovedskjema)
-                    .withMetadata(vedlegg));
+                    .withMetadata(vedlegg)
+                    .withMetadata(ekstraData));
             logger.info("Søknad avsluttet " + behandlingsId + " " + hovedskjema.getSkjemanummer() + " (" + hovedskjema.getJournalforendeEnhet() + ") " + vedlegg.length + " vedlegg");
             sendSoknadEndpoint.sendSoknad(parameters);
         } catch (SOAPFaultException e) {
