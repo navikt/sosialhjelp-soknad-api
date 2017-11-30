@@ -1,0 +1,22 @@
+{{> skjema/generisk/sporsmal}}
+{{> skjema/generisk/infotekst}}
+
+<ul class="svar-liste">
+    <li>
+        {{#hvisIkkeTom value}}
+            <span class="verdi verdi--radio">
+                {{ hentTekst (concat key "." value) }}
+            </span>
+        {{else}}
+            <span class="verdi verdi--ikkeUtfylt">
+                {{#if optional}}
+                    <i>{{ hentTekst 'oppsummering.ikkeutfylt' }}</i>
+                {{/if}}
+            </span>
+        {{/hvisIkkeTom}}
+        {{> skjema/generisk/infotekstvalue}}
+        {{> skjema/generisk/barnefakta}}
+    </li>
+</ul>
+
+{{> skjema/generisk/vedlegg}}

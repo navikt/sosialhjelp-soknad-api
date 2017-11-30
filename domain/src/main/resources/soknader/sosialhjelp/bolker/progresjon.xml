@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<soknad xmlns="urn:no.nav.sbl">
+    <faktum>
+        <id>progresjon</id>
+        <type>hidden</type>
+        <panel>skjema</panel>
+    </faktum>
+</soknad>
