@@ -340,10 +340,8 @@ public class SoknadDataFletter {
                 .medVersjon(lokalDb.hentVersjon(soknad.getBrukerBehandlingId()))
                 .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
 
-<<<<<<< HEAD
+
         //TODO: Legge til sjekk på versjonnr av faktum-struktur og ved ulikheter kalle en Migrasjon* metode/klasse
-=======
->>>>>>> c0c7575f54e1ac9001f5f240aea5bded88ddc39f
         MigrasjonHandterer handterer = new MigrasjonHandterer();
         soknad = handterer.handterMigrasjon(soknad);
 
