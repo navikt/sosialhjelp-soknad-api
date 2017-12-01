@@ -5,4 +5,5 @@ public enum HendelseType {
     SOKNAD_INNSENDT,
     SOKNAD_AVBRUTT,
     SOKNAD_MIGRERT;
+
 }
