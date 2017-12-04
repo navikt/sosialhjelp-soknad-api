@@ -36,7 +36,6 @@
         <type>textbox</type>
         <constraints>
             <constraint>
-                <faktum>kontakt.system.kontonummer</faktum>
                 <expression>value != null</expression>
             </constraint>
         </constraints>
