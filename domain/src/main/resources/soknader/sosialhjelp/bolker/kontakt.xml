@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <soknad xmlns="urn:no.nav.sbl">
     <faktum>
-        <id>kontakt.adresse.brukerendret</id>
+        <id>kontakt.adresse.brukerendrettoggle</id>
         <panel>personaliaBolk</panel>
         <type>hidden</type>
     </faktum>
@@ -11,7 +11,7 @@
         <type>composite</type>
         <constraints>
             <constraint>
-                <faktum>kontakt.adresse.brukerendret</faktum>
+                <faktum>kontakt.adresse.brukerendrettoggle</faktum>
                 <expression>value == 'true'</expression>
             </constraint>
         </constraints>
@@ -41,7 +41,7 @@
         </constraints>
     </faktum>
     <faktum>
-        <id>kontakt.kontonummer.brukerendret</id>
+        <id>kontakt.kontonummer.brukerendrettoggle</id>
         <panel>personaliaBolk</panel>
         <type>hidden</type>
     </faktum>
@@ -68,7 +68,7 @@
         <type>textbox</type>
     </faktum>
     <faktum>
-        <id>kontakt.telefon.brukerendring</id>
+        <id>kontakt.telefon.brukerendrettoggle</id>
         <panel>personaliaBolk</panel>
         <type>hidden</type>
     </faktum>
