@@ -134,6 +134,10 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         return getJdbcTemplate().queryForObject(sql, new Object[] {behandlingsId}, Integer.class);
     }
 
+    public void settVersjon(String behandlingsId, int versjon, String skjemanummer) {
+        insertHendelse(behandlingsId, SOKNAD_MIGRERT.name(), versjon, skjemanummer);
+    }
+
     private <T> T hentEtObjectAv(String sql, RowMapper<T> mapper, Object... args) {
         List<T> objekter = getJdbcTemplate().query(sql, mapper, args);
         if (!objekter.isEmpty()) {
