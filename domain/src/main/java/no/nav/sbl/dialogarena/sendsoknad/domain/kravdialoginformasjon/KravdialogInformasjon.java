@@ -52,6 +52,8 @@ public interface KravdialogInformasjon {
 
     String getKvitteringTemplate();
 
+    int getSkjemaVersjon();
+
     abstract class DefaultOppsett implements KravdialogInformasjon {
         @Override
         public List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource, WebSoknad soknad) {
