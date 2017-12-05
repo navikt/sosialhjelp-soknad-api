@@ -5,15 +5,20 @@ import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.migrasjon.Migrasjon;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.migrasjon.TestMigrasjon;
 
 import java.util.*;
 
 public class MigrasjonHandterer{
+    private SoknadRepository lokalDb;
+
     List<Migrasjon> migrasjoner = new ArrayList<>();
 
-    public MigrasjonHandterer(){
+    public MigrasjonHandterer(SoknadRepository repo){
         migrasjoner = migrasjoner();
+        lokalDb = repo;
     }
 
     public MigrasjonHandterer(List<Migrasjon> nyeMigrasjoner) {
@@ -29,6 +34,12 @@ public class MigrasjonHandterer{
 
         if(migrasjon.isPresent()){
             migrertSoknad = migrasjon.get().migrer(migrertSoknad.getVersjon(), migrertSoknad);
+
+            lokalDb.settVersjon(
+                            migrertSoknad.getBrukerBehandlingId(),
+                            migrertSoknad.getVersjon(),
+                            migrertSoknad.getskjemaNummer()
+                    );
 
             Event metrikk = MetricsFactory.createEvent("sendsoknad.skjemamigrasjon");
             String soknadTypePrefix;
@@ -48,7 +59,7 @@ public class MigrasjonHandterer{
 
     public static List<Migrasjon> migrasjoner() {
         List<Migrasjon> migrasjonsListe = new ArrayList<>();
-
+        migrasjonsListe.add(new TestMigrasjon());
         return migrasjonsListe;
     }
 

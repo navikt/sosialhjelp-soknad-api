@@ -341,8 +341,7 @@ public class SoknadDataFletter {
                 .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
 
 
-        //TODO: Legge til sjekk på versjonnr av faktum-struktur og ved ulikheter kalle en Migrasjon* metode/klasse
-        MigrasjonHandterer handterer = new MigrasjonHandterer();
+        MigrasjonHandterer handterer = new MigrasjonHandterer(lokalDb);
         soknad = handterer.handterMigrasjon(soknad);
 
         if (populerSystemfakta) {
