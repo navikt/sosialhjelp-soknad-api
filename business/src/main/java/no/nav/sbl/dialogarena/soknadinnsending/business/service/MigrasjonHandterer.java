@@ -20,8 +20,9 @@ public class MigrasjonHandterer{
         lokalDb = repo;
     }
 
-    public MigrasjonHandterer(List<Migrasjon> nyeMigrasjoner) {
+    public MigrasjonHandterer(List<Migrasjon> nyeMigrasjoner, SoknadRepository repository) {
         migrasjoner = nyeMigrasjoner;
+        lokalDb = repository;
     }
 
     public WebSoknad handterMigrasjon(WebSoknad soknad){
