@@ -95,6 +95,9 @@ public class SoknadDataFletter {
     @Inject
     private SoknadMetricsService soknadMetricsService;
 
+    @Inject
+    private MigrasjonHandterer migrasjonHandterer;
+
     private Map<String, BolkService> bolker;
 
     @PostConstruct
@@ -343,8 +346,7 @@ public class SoknadDataFletter {
                 .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
 
 
-        MigrasjonHandterer handterer = new MigrasjonHandterer(lokalDb);
-        soknad = handterer.handterMigrasjon(soknad);
+        soknad = migrasjonHandterer.handterMigrasjon(soknad);
 
         if (populerSystemfakta) {
             if (soknad.erEttersending()) {
