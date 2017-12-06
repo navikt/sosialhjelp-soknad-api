@@ -134,7 +134,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         return getJdbcTemplate().queryForObject(sql, new Object[] {behandlingsId}, Integer.class);
     }
 
-    public void settVersjon(String behandlingsId, int versjon, String skjemanummer) {
+    public void lagreMigrasjonshendelse(String behandlingsId, int versjon, String skjemanummer) {
         insertHendelse(behandlingsId, SOKNAD_MIGRERT.name(), versjon, skjemanummer);
     }
 

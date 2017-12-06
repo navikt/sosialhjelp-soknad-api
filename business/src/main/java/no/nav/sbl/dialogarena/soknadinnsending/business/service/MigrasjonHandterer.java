@@ -35,7 +35,7 @@ public class MigrasjonHandterer{
         if(migrasjon.isPresent()){
             migrertSoknad = migrasjon.get().migrer(migrertSoknad.getVersjon(), migrertSoknad);
 
-            lokalDb.settVersjon(
+            lokalDb.lagreMigrasjonshendelse(
                             migrertSoknad.getBrukerBehandlingId(),
                             migrertSoknad.getVersjon(),
                             migrertSoknad.getskjemaNummer()
