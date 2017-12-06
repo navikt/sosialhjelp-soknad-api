@@ -52,6 +52,7 @@
 
         <applicationProperties alias="soknad.ettersending.properties"/>
         <applicationProperties alias="soknad.properties"/>
+        <applicationProperties alias="soknad.featuretoggles"/>
 
         <smtpServer alias="dokumentinnsending.smtpServer" mapToProperty="dokumentinnsending.smtpServer"/>
         <directory name="sendsoknad" mapToProperty="sendsoknad.datadir" temporary="false"/>
