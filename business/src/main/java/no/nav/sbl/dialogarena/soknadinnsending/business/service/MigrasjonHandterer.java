@@ -7,23 +7,20 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Kravdialog
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.migrasjon.Migrasjon;
+import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.*;
 
+@Component
 public class MigrasjonHandterer{
+
+    @Inject
+    @Named("soknadInnsendingRepository")
     private SoknadRepository lokalDb;
 
-    List<Migrasjon> migrasjoner = new ArrayList<>();
-
-    public MigrasjonHandterer(SoknadRepository repo){
-        migrasjoner = migrasjoner();
-        lokalDb = repo;
-    }
-
-    public MigrasjonHandterer(List<Migrasjon> nyeMigrasjoner, SoknadRepository repository) {
-        migrasjoner = nyeMigrasjoner;
-        lokalDb = repository;
-    }
+    List<Migrasjon> migrasjoner = migrasjoner();
 
     public WebSoknad handterMigrasjon(WebSoknad soknad){
         WebSoknad migrertSoknad = soknad;
