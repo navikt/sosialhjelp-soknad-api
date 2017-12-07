@@ -140,7 +140,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     public Collection<String> hentIkkeAvsluttedeEtter8Uker() {
         String ATTE_UKER = "56";
         String avsluttetHendelse = "HENDELSE_TYPE in ('"+ SOKNAD_SLETTET.name() +"','" + SOKNAD_AVBRUTT.name() +"','" + SOKNAD_INNSENDT.name() + "')";
-        String gyldigeHendelseTyper = " hendelse_type in ('"+ SOKNAD_OPPRETTET.name() + "','" + SOKNAD_MIGRERT.name() + "','" + SOKNAD_LAGERT_I_HENVENDELSE.name() + "')";
+        String gyldigeHendelseTyper = " hendelse_type in ('"+ SOKNAD_OPPRETTET.name() + "','" + SOKNAD_MIGRERT.name() + "','" + SOKNAD_LAGRET_I_HENVENDELSE.name() + "')";
 
 
         String sql = " SELECT BEHANDLINGSID FROM HENDELSE H1 WHERE " + gyldigeHendelseTyper +
