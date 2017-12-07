@@ -4,6 +4,8 @@ import no.nav.modig.core.context.SubjectHandler;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.pdf.PdfWatermarker;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
@@ -27,12 +29,17 @@ public class PDFService {
     @Inject
     private WebSoknadConfig webSoknadConfig;
 
+    @Inject
+    private KravdialogInformasjonHolder kravdialogInformasjonHolder;
+
     private PdfWatermarker watermarker = new PdfWatermarker();
 
 
     public byte[] genererKvitteringPdf(WebSoknad soknad, String servletPath) {
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
-        return lagPdfFraSkjema(soknad, "/skjema/kvittering", servletPath);
+        String skjemanummer = soknad.getskjemaNummer();
+        KravdialogInformasjon kravdialogInformasjon = kravdialogInformasjonHolder.hentKonfigurasjon(skjemanummer);
+        return lagPdfFraSkjema(soknad, kravdialogInformasjon.getKvitteringTemplate(), servletPath);
     }
 
     public byte[] genererEttersendingPdf(WebSoknad soknad, String servletPath) {

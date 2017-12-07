@@ -1,25 +1,37 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia;
 
-import no.nav.modig.core.exception.*;
-import no.nav.sbl.dialogarena.kodeverk.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.*;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.*;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.*;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.*;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.*;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.*;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.*;
-import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.*;
-import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.*;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.*;
-import no.nav.tjeneste.virksomhet.person.v1.meldinger.*;
-import org.joda.time.*;
-import org.slf4j.*;
-import org.springframework.stereotype.*;
+import no.nav.modig.core.exception.ApplicationException;
+import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
+import no.nav.sbl.dialogarena.sendsoknad.domain.PersonAlder;
+import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
+import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.PersonaliaBuilder;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.AdresseTransform;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.IkkeFunnetException;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.EpostService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBankkonto;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBankkontoNorge;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBankkontoUtland;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBruker;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserRequest;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.informasjon.WSKontaktinformasjon;
+import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentDigitalKontaktinformasjonResponse;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Diskresjonskoder;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Statsborgerskap;
+import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
+import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
 
-import javax.inject.*;
-import javax.xml.ws.*;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.xml.ws.WebServiceException;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -82,6 +94,9 @@ public class PersonaliaFletter {
                 .alder(finnAlder(finnFnr(xmlBruker)))
                 .diskresjonskode(diskresjonskodeString)
                 .navn(finnSammensattNavn(xmlBruker))
+                .withFornavn(finnFornavn(xmlBruker).trim())
+                .withMellomnavn(finnMellomNavn(xmlBruker).trim())
+                .withEtternavn(finnEtterNavn(xmlBruker))
                 .epost(finnEpost(dkifResponse))
                 .statsborgerskap(finnStatsborgerskap(xmlPerson))
                 .kjonn(finnKjonn(xmlBruker))

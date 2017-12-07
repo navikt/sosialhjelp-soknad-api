@@ -10,15 +10,13 @@ public class FakeMigrasjon extends Migrasjon {
     private static final Logger logger = getLogger(FakeMigrasjon.class);
 
     public FakeMigrasjon() {
-        super(2,"NAV XO.XO-XO");
+        super(2,"NAV 11-13.05");
     }
 
     @Override
     public WebSoknad migrer(int fraVersjon, WebSoknad soknad) {
-        logger.debug("Migrerer til fake versjon");
-        //her kan vi vurdere om vi alltid skal sende bruker tilbake til utfylling
-        soknad.setDelstegStatus(DelstegStatus.UTFYLLING);
-        //TODO: set ny versjon: soknad.setSkjemaVersjon(super.tilVersjon)
-        return new WebSoknad();
+        soknad.medDelstegStatus(DelstegStatus.UTFYLLING)
+                .medVersjon(super.getTilVersjon());
+        return soknad;
     }
 }

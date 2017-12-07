@@ -18,8 +18,10 @@ import org.springframework.context.annotation.Import;
         FaktaService.class,
         SoknadDataFletter.class,
         AlternativRepresentasjonService.class,
+        EkstraMetadataService.class,
         EttersendingService.class,
         XmlService.class,
+        SynligeFaktaService.class,
         SoknadMetricsService.class
 })
 public class ServiceConfig {

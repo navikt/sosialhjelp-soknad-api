@@ -3,9 +3,12 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Steg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.EkstraMetadataTransformer;
+
 import org.springframework.context.MessageSource;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Steg.OPPSUMMERING;
@@ -35,6 +38,8 @@ public interface KravdialogInformasjon {
 
     List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource, WebSoknad soknad);
 
+    List<EkstraMetadataTransformer> getMetadataTransformers();
+
     boolean brukerNyOppsummering();
 
     boolean skalSendeMedFullSoknad();
@@ -43,10 +48,19 @@ public interface KravdialogInformasjon {
 
     boolean brukerEnonicLedetekster();
 
+    SoknadType getSoknadstype();
+
+    String getKvitteringTemplate();
+
     abstract class DefaultOppsett implements KravdialogInformasjon {
         @Override
         public List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource, WebSoknad soknad) {
             return new ArrayList<>();
+        }
+
+        @Override
+        public List<EkstraMetadataTransformer> getMetadataTransformers() {
+            return Collections.emptyList();
         }
 
         @Override
@@ -64,5 +78,15 @@ public interface KravdialogInformasjon {
         public boolean brukerEnonicLedetekster(){
             return true;
         }
+
+        public SoknadType getSoknadstype() {
+            return SoknadType.SEND_SOKNAD;
+        }
+
+        public String getKvitteringTemplate() {
+            return "/skjema/kvittering";
+        }
+
+        public int getSkjemaVersjon() { return 1; }
     }
 }
