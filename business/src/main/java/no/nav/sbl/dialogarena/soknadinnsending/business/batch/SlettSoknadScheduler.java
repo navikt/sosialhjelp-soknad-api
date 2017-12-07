@@ -53,7 +53,7 @@ public class SlettSoknadScheduler {
                     event.addTagToReport("avslutterSoknad",behandlingsid);
                     counter++;
                 }
-                if ((System.currentTimeMillis() - start > MAKS_KJORETID_MS)) {
+                if (System.currentTimeMillis() - start > MAKS_KJORETID_MS) {
                     logger.info("Har kjørt for lenge. Avbryter for å unngå å ta for mye ressurser");
                     break;
                 }
