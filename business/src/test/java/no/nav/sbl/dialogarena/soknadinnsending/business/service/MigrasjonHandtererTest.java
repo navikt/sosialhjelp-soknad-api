@@ -23,7 +23,7 @@ public class MigrasjonHandtererTest {
     private SoknadRepository lokalDb;
 
     @InjectMocks
-    private MigrasjonHandterer handterer = new MigrasjonHandterer();
+    private MigrasjonHandterer handterer;
 
     WebSoknad innsendtSoknad;
 
