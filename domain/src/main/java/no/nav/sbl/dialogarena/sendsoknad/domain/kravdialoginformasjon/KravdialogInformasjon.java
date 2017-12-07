@@ -89,6 +89,7 @@ public interface KravdialogInformasjon {
             return "/skjema/kvittering";
         }
 
+        @Override
         public int getSkjemaVersjon() { return 1; }
     }
 }
