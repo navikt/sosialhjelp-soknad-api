@@ -12,6 +12,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadReposito
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepositoryJdbc;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.MigrasjonHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
@@ -36,6 +37,9 @@ import static org.mockito.Mockito.mock;
 public class SoknadDataFletterIntegrationTestContext {
     @Inject
     private DataSource dataSource;
+
+    @Bean
+    public MigrasjonHandterer migrasjonHandterer() {return new MigrasjonHandterer();}
 
     @Bean
     public SoknadDataFletter fletter() {
