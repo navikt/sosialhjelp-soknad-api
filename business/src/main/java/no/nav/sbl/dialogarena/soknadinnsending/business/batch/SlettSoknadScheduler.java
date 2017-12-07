@@ -24,7 +24,7 @@ public class SlettSoknadScheduler {
 
     private static final Logger logger = getLogger(SlettSoknadScheduler.class);
     private static final String KLOKKEN_FEM_OM_NATTEN = "0 0 5 * * *";
-    private static final long MAKS_KJORETID_MS = 2 * 1000 * 3600;
+    private static final long MAKS_KJORETID_MS = 1000 * 60 * 10; // Ti minutter
 
 
     @Inject
