@@ -3,13 +3,11 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.migrasjon.FakeMigrasjon;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.migrasjon.Migrasjon;
 
 import java.util.*;
-
-import static java.util.stream.Collectors.toList;
 
 public class MigrasjonHandterer{
     List<Migrasjon> migrasjoner = new ArrayList<>();
@@ -18,21 +16,27 @@ public class MigrasjonHandterer{
         migrasjoner = migrasjoner();
     }
 
+    public MigrasjonHandterer(List<Migrasjon> nyeMigrasjoner) {
+        migrasjoner = nyeMigrasjoner;
+    }
+
     public WebSoknad handterMigrasjon(WebSoknad soknad){
         WebSoknad migrertSoknad = soknad;
 
         if(migrasjoner == null || migrasjoner.size() <= 0) return soknad;
 
-        Optional<Migrasjon> migrasjon = hentMigrasjonForSkjemanummerOgVersjon(1, migrertSoknad.getskjemaNummer());
+        Optional<Migrasjon> migrasjon = hentMigrasjonForSkjemanummerOgVersjon(migrertSoknad.getVersjon(), migrertSoknad.getskjemaNummer());
 
         if(migrasjon.isPresent()){
-            //Versjon som er hardkodet, må byttes ut med en soknad.getSkjemaVersjon for eksempel når det er på plass
-            migrertSoknad = migrasjon.get().migrer(1, migrertSoknad);
+            migrertSoknad = migrasjon.get().migrer(migrertSoknad.getVersjon(), migrertSoknad);
 
             Event metrikk = MetricsFactory.createEvent("sendsoknad.skjemamigrasjon");
-            String soknadTypePrefix = new KravdialogInformasjonHolder()
-                    .hentKonfigurasjon(migrertSoknad.getskjemaNummer())
-                    .getSoknadTypePrefix();
+            String soknadTypePrefix;
+
+            KravdialogInformasjon kravdialogInformasjon = new KravdialogInformasjonHolder()
+                    .hentKonfigurasjon(migrertSoknad.getskjemaNummer());
+            soknadTypePrefix = kravdialogInformasjon.getSoknadTypePrefix();
+
             metrikk.addTagToReport("soknadstype", soknadTypePrefix);
             metrikk.addTagToReport("skjemaversjon", String.valueOf(migrasjon.get().getTilVersjon()));
 
@@ -44,8 +48,6 @@ public class MigrasjonHandterer{
 
     public static List<Migrasjon> migrasjoner() {
         List<Migrasjon> migrasjonsListe = new ArrayList<>();
-
-        migrasjonsListe.add(new FakeMigrasjon());
 
         return migrasjonsListe;
     }

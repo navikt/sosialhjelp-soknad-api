@@ -4,6 +4,10 @@ import no.nav.modig.core.context.ThreadLocalSubjectHandler;
 import no.nav.sbl.dialogarena.config.SoknadActionsTestConfig;
 import no.nav.sbl.dialogarena.rest.meldinger.SoknadBekreftelse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.ForeldrepengerInformasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.service.EmailService;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
@@ -52,6 +56,8 @@ public class SoknadActionsTest {
     SoknadActions actions;
     @Inject
     WebSoknadConfig webSoknadConfig;
+    @Inject
+    KravdialogInformasjonHolder kravdialogInformasjonHolder;
 
 
     ServletContext context = mock(ServletContext.class);
@@ -66,6 +72,7 @@ public class SoknadActionsTest {
         when(context.getRealPath(anyString())).thenReturn("");
         when(webSoknadConfig.brukerNyOppsummering(anyLong())).thenReturn(false);
         when(webSoknadConfig.skalSendeMedFullSoknad(anyLong())).thenReturn(false);
+        when(kravdialogInformasjonHolder.hentKonfigurasjon(anyString())).thenReturn(new ForeldrepengerInformasjon());
     }
 
     @Test

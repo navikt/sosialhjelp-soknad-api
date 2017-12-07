@@ -52,6 +52,7 @@
 
         <applicationProperties alias="soknad.ettersending.properties"/>
         <applicationProperties alias="soknad.properties"/>
+        <applicationProperties alias="soknad.featuretoggles"/>
 
         <smtpServer alias="dokumentinnsending.smtpServer" mapToProperty="dokumentinnsending.smtpServer"/>
         <directory name="sendsoknad" mapToProperty="sendsoknad.datadir" temporary="false"/>
@@ -63,6 +64,7 @@
         <fileLibrary alias="soknadforeldrepenger.ledetekster" mapToProperty="folder.foreldrepenger" />
         <fileLibrary alias="soknadaap.ledetekster" mapToProperty="folder.soknadaap" />
         <fileLibrary alias="soknaddagpenger.ledetekster" mapToProperty="folder.dagpenger" />
+        <fileLibrary alias="soknadsosialhjelp.ledetekster" mapToProperty="folder.soknadsosialhjelp" />
     </resources>
 
     <serverOptions>

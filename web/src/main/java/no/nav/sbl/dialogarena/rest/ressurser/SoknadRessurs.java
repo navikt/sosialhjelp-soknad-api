@@ -7,6 +7,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
@@ -15,6 +16,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.InnsendtSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SynligeFaktaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -60,6 +62,9 @@ public class SoknadRessurs {
 
     @Inject
     private WebSoknadConfig webSoknadConfig;
+
+    @Inject
+    private SynligeFaktaService synligeFaktaService;
 
     @GET
     @Path("/{behandlingsId}")
@@ -170,6 +175,14 @@ public class SoknadRessurs {
     public List<Vedlegg> hentPaakrevdeVedlegg(@PathParam("behandlingsId") String behandlingsId) {
         return vedleggService.hentPaakrevdeVedlegg(behandlingsId);
     }
+
+    @GET
+    @Path("/{behandlingsId}/synligsoknadstruktur")
+    @SjekkTilgangTilSoknad
+    public List<FaktumStruktur> hentSynligSoknadStruktur(@PathParam("behandlingsId") String behandlingsId, @QueryParam("panelFilter") String filter) {
+        return synligeFaktaService.finnSynligeFaktaForSoknad(behandlingsId, filter);
+    }
+
 
     private void settJournalforendeEnhet(String behandlingsId, String delsteg) {
         soknadService.settJournalforendeEnhet(behandlingsId, delsteg);

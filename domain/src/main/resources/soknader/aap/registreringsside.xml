@@ -6,7 +6,6 @@
         <type>tekster</type>
         <constraints>
             <constraint>
-                <faktum>registreringsside</faktum>
                 <expression>properties != null &amp;&amp; properties.size() != 0</expression>
             </constraint>
         </constraints>
