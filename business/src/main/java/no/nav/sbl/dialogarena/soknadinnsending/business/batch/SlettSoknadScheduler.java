@@ -44,8 +44,7 @@ public class SlettSoknadScheduler {
 
             Collection<String> ikkeAvsluttede = soknadRepository.hentIkkeAvsluttedeEtter8Uker();
             int counter = 0;
-            int maksAntall = soknadRepository.hentIkkeAvsluttedeEtter8Uker().size();
-            event.addTagToReport("antallIkkeAvsluttede","" + maksAntall);
+            event.addTagToReport("antallIkkeAvsluttede","" + ikkeAvsluttede.size());
 
             for(String behandlingsid : ikkeAvsluttede){
                 WSHentSoknadResponse wsHentSoknadResponse = henvendelseService.hentSoknad(behandlingsid);
@@ -54,8 +53,8 @@ public class SlettSoknadScheduler {
                     event.addTagToReport("avslutterSoknad",behandlingsid);
                     counter++;
                 }
-                if ((System.currentTimeMillis() - start > MAKS_KJORETID_MS) || counter > maksAntall) {
-                    logger.info("Har kjørt for lenge eller maks antall slettet er oppnådd. Avbryter for å unngå å ta for mye ressurser");
+                if ((System.currentTimeMillis() - start > MAKS_KJORETID_MS)) {
+                    logger.info("Har kjørt for lenge. Avbryter for å unngå å ta for mye ressurser");
                     break;
                 }
             }
