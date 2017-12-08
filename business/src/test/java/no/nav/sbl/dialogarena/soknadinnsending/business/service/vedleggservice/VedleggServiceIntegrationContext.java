@@ -11,6 +11,9 @@ import static org.mockito.Mockito.mock;
 public class VedleggServiceIntegrationContext {
 
     @Bean
+    public MigrasjonHandterer migrasjonHandterer() { return new MigrasjonHandterer(); }
+
+    @Bean
     public VedleggService vedleggService() {
         return new VedleggService();
     }

@@ -95,6 +95,9 @@ public class SoknadDataFletter {
     @Inject
     private SoknadMetricsService soknadMetricsService;
 
+    @Inject
+    private MigrasjonHandterer migrasjonHandterer;
+
     private Map<String, BolkService> bolker;
 
     @PostConstruct
@@ -150,7 +153,8 @@ public class SoknadDataFletter {
 
 
         Timer oprettIDbTimer = createDebugTimer("oprettIDb", soknadnavn, mainUid);
-        Long soknadId = lagreSoknadILokalDb(skjemanummer, mainUid, aktorId, behandlingsId).getSoknadId();
+        int versjon = kravdialog.getSkjemaVersjon();
+        Long soknadId = lagreSoknadILokalDb(skjemanummer, mainUid, aktorId, behandlingsId, versjon).getSoknadId();
         faktaService.lagreFaktum(soknadId, bolkerFaktum(soknadId));
         faktaService.lagreSystemFaktum(soknadId, personalia(soknadId));
         oprettIDbTimer.stop();
@@ -214,13 +218,14 @@ public class SoknadDataFletter {
         lagreTimer.report();
     }
 
-    private WebSoknad lagreSoknadILokalDb(String skjemanummer, String uuid, String aktorId, String behandlingsId) {
+    private WebSoknad lagreSoknadILokalDb(String skjemanummer, String uuid, String aktorId, String behandlingsId, int versjon) {
         WebSoknad nySoknad = WebSoknad.startSoknad()
                 .medBehandlingId(behandlingsId)
                 .medskjemaNummer(skjemanummer)
                 .medUuid(uuid)
                 .medAktorId(aktorId)
-                .medOppretteDato(DateTime.now());
+                .medOppretteDato(DateTime.now())
+                .medVersjon(versjon);
 
         Long soknadId = lokalDb.opprettSoknad(nySoknad);
         nySoknad.setSoknadId(soknadId);
@@ -341,9 +346,7 @@ public class SoknadDataFletter {
                 .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
 
 
-        //TODO: Legge til sjekk på versjonnr av faktum-struktur og ved ulikheter kalle en Migrasjon* metode/klasse
-        MigrasjonHandterer handterer = new MigrasjonHandterer();
-        soknad = handterer.handterMigrasjon(soknad);
+        soknad = migrasjonHandterer.handterMigrasjon(soknad);
 
         if (populerSystemfakta) {
             if (soknad.erEttersending()) {
