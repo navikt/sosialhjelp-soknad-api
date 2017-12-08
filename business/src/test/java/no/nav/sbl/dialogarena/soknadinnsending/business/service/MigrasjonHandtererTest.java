@@ -2,29 +2,34 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.migrasjon.FakeMigrasjon;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.migrasjon.Migrasjon;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doNothing;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MigrasjonHandtererTest {
 
-    MigrasjonHandterer handterer;
+    @Mock(name="soknadInnsendingRepository")
+    private SoknadRepository lokalDb;
+
+    @InjectMocks
+    private MigrasjonHandterer handterer;
+
     WebSoknad innsendtSoknad;
 
     @Before
     public void setup() {
-        List<Migrasjon> testMigrasjoner = new ArrayList<>();
-        testMigrasjoner.add(new FakeMigrasjon());
-        handterer = new MigrasjonHandterer(testMigrasjoner);
+        handterer.migrasjoner.add(new FakeMigrasjon());
         innsendtSoknad = new WebSoknad().medId(1L).medskjemaNummer("NAV 11-13.05").medVersjon(1);
     }
 
@@ -32,6 +37,7 @@ public class MigrasjonHandtererTest {
     public void migreringSkjerForFakeSoknadMedEnVersjonLavere() {
         WebSoknad migrertSoknad = handterer.handterMigrasjon(innsendtSoknad);
 
+        doNothing().when(lokalDb).lagreMigrasjonshendelse(anyString(), anyInt(), anyString());
         assertThat(migrertSoknad.getskjemaNummer()).isEqualTo("NAV 11-13.05");
         assertThat(migrertSoknad.getVersjon()).isEqualTo(2);
         assertThat(migrertSoknad.getDelstegStatus()).isEqualTo(DelstegStatus.UTFYLLING);

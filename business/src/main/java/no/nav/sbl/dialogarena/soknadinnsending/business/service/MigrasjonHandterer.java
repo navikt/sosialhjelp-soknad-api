@@ -5,20 +5,22 @@ import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.migrasjon.Migrasjon;
+import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.*;
 
+@Component
 public class MigrasjonHandterer{
-    List<Migrasjon> migrasjoner = new ArrayList<>();
 
-    public MigrasjonHandterer(){
-        migrasjoner = migrasjoner();
-    }
+    @Inject
+    @Named("soknadInnsendingRepository")
+    private SoknadRepository lokalDb;
 
-    public MigrasjonHandterer(List<Migrasjon> nyeMigrasjoner) {
-        migrasjoner = nyeMigrasjoner;
-    }
+    List<Migrasjon> migrasjoner = migrasjoner();
 
     public WebSoknad handterMigrasjon(WebSoknad soknad){
         WebSoknad migrertSoknad = soknad;
@@ -29,6 +31,12 @@ public class MigrasjonHandterer{
 
         if(migrasjon.isPresent()){
             migrertSoknad = migrasjon.get().migrer(migrertSoknad.getVersjon(), migrertSoknad);
+
+            lokalDb.lagreMigrasjonshendelse(
+                            migrertSoknad.getBrukerBehandlingId(),
+                            migrertSoknad.getVersjon(),
+                            migrertSoknad.getskjemaNummer()
+                    );
 
             Event metrikk = MetricsFactory.createEvent("sendsoknad.skjemamigrasjon");
             String soknadTypePrefix;
@@ -48,7 +56,6 @@ public class MigrasjonHandterer{
 
     public static List<Migrasjon> migrasjoner() {
         List<Migrasjon> migrasjonsListe = new ArrayList<>();
-
         return migrasjonsListe;
     }
 
