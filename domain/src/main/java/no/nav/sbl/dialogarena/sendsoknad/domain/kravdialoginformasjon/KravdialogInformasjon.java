@@ -90,6 +90,6 @@ public interface KravdialogInformasjon {
         }
 
         @Override
-        public int getSkjemaVersjon() { return 1; }
+        public int getSkjemaVersjon() { return 0; }
     }
 }
