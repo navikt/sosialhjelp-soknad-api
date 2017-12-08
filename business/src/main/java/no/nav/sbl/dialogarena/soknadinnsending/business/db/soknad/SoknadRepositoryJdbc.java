@@ -137,6 +137,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         return getJdbcTemplate().queryForObject(sql, new Object[] {behandlingsId}, Integer.class);
     }
 
+<<<<<<< HEAD
     public Collection<String> hentBehandlingsIdForIkkeAvsluttede(int dagerGammel) {
 
         String avsluttetHendelse = "HENDELSE_TYPE in ('"+ SOKNAD_SLETTET.name() +"','" + SOKNAD_AVBRUTT.name() +"','" + SOKNAD_INNSENDT.name() + "')";
@@ -162,6 +163,10 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
          resultSet.addAll(getJdbcTemplate().queryForList(sql,String.class));
 
         return resultSet;
+    }
+
+    public void lagreMigrasjonshendelse(String behandlingsId, int versjon, String skjemanummer) {
+        insertHendelse(behandlingsId, SOKNAD_MIGRERT.name(), versjon, skjemanummer);
     }
 
     private <T> T hentEtObjectAv(String sql, RowMapper<T> mapper, Object... args) {
