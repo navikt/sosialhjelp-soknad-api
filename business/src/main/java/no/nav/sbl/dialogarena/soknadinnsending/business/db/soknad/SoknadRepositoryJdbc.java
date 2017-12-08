@@ -137,20 +137,26 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         return getJdbcTemplate().queryForObject(sql, new Object[] {behandlingsId}, Integer.class);
     }
 
-    public Collection<String> hentIkkeAvsluttedeEtter8Uker() {
-        String ATTE_UKER = "56";
+    public Collection<String> hentBehandlingsIdForIkkeAvsluttede(int dagerGammel) {
+
         String avsluttetHendelse = "HENDELSE_TYPE in ('"+ SOKNAD_SLETTET.name() +"','" + SOKNAD_AVBRUTT.name() +"','" + SOKNAD_INNSENDT.name() + "')";
-        String gyldigeHendelseTyper = " hendelse_type in ('"+ SOKNAD_OPPRETTET.name() + "','" + SOKNAD_MIGRERT.name() + "','" + SOKNAD_LAGRET_I_HENVENDELSE.name() + "')";
+        String gyldigeHendelseTyper = " HENDELSE_TYPE in ('"+ SOKNAD_OPPRETTET.name() + "','" + SOKNAD_MIGRERT.name() + "','" + SOKNAD_LAGRET_I_HENVENDELSE.name() + "')";
+
+        String sqlSubSelect1 = " ( SELECT H2.BEHANDLINGSID FROM HENDELSE H2 " +
+                " WHERE H1.BEHANDLINGSID = H2.BEHANDLINGSID " +
+                " AND HENDELSE_TIDSPUNKT > CURRENT_TIMESTAMP - (INTERVAL '" + dagerGammel + "' DAY)  " +
+                " AND " + gyldigeHendelseTyper  +  " ) ";
+
+        String sqlSubSelect2 =  " ( SELECT H3.BEHANDLINGSID FROM HENDELSE H3 " +
+                " WHERE H1.BEHANDLINGSID = H3.BEHANDLINGSID AND " + avsluttetHendelse + " ) ";
 
 
         String sql = " SELECT BEHANDLINGSID FROM HENDELSE H1 WHERE " + gyldigeHendelseTyper +
                 " AND NOT EXISTS " +
-                " ( SELECT H2.BEHANDLINGSID FROM HENDELSE H2 " +
-                " WHERE " + gyldigeHendelseTyper  +
-                " AND HENDELSE_TIDSPUNKT > CURRENT_TIMESTAMP - (INTERVAL '" + ATTE_UKER + "' DAY)  AND H1.BEHANDLINGSID = H2.BEHANDLINGSID ) " +
+                sqlSubSelect1 +
                 " AND NOT EXISTS " +
-                " ( SELECT H3.BEHANDLINGSID FROM HENDELSE H3 " +
-                " WHERE " + avsluttetHendelse + " AND H1.BEHANDLINGSID = H3.BEHANDLINGSID) ";
+                sqlSubSelect2;
+
 
          HashSet<String> resultSet = new HashSet<>();
          resultSet.addAll(getJdbcTemplate().queryForList(sql,String.class));
