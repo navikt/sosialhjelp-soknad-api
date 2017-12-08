@@ -137,7 +137,6 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         return getJdbcTemplate().queryForObject(sql, new Object[] {behandlingsId}, Integer.class);
     }
 
-<<<<<<< HEAD
     public Collection<String> hentBehandlingsIdForIkkeAvsluttede(int dagerGammel) {
 
         String avsluttetHendelse = "HENDELSE_TYPE in ('"+ SOKNAD_SLETTET.name() +"','" + SOKNAD_AVBRUTT.name() +"','" + SOKNAD_INNSENDT.name() + "')";
