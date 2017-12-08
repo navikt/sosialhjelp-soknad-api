@@ -41,7 +41,7 @@ public interface SoknadRepository {
 
     int hentVersjon(String behandlingsId);
 
-    Collection<String> hentIkkeAvsluttedeEtter8Uker();
+    Collection<String> hentBehandlingsIdForIkkeAvsluttede(int dagerGammel);
 
     void settSistLagretTidspunkt(Long soknadId);
 

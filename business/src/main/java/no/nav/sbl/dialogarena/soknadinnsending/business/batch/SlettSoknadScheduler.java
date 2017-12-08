@@ -25,6 +25,7 @@ public class SlettSoknadScheduler {
     private static final Logger logger = getLogger(SlettSoknadScheduler.class);
     private static final String KLOKKEN_FEM_OM_NATTEN = "0 0 5 * * *";
     private static final long MAKS_KJORETID_MS = 1000 * 60 * 10; // Ti minutter
+    private static final int DAGER_GAMMELT = 7 * 8; // Åtte uker
 
 
     @Inject
@@ -42,7 +43,7 @@ public class SlettSoknadScheduler {
 
             long start = System.currentTimeMillis();
 
-            Collection<String> ikkeAvsluttede = soknadRepository.hentIkkeAvsluttedeEtter8Uker();
+            Collection<String> ikkeAvsluttede = soknadRepository.hentBehandlingsIdForIkkeAvsluttede(DAGER_GAMMELT);
             int counter = 0;
             event.addTagToReport("antallIkkeAvsluttede","" + ikkeAvsluttede.size());
 
