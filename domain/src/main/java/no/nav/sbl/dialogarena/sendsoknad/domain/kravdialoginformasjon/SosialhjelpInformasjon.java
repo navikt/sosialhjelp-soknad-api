@@ -1,6 +1,13 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon;
 
 
+import static java.util.Collections.singletonList;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.springframework.context.MessageSource;
+
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
@@ -8,12 +15,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresenta
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.EkstraMetadataTransformer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMetadataTransformer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpTilXml;
-import org.springframework.context.MessageSource;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static java.util.Collections.singletonList;
 
 public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett {
 
@@ -30,7 +31,7 @@ public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett
     }
 
     public List<String> getSoknadBolker(WebSoknad soknad) {
-        return Arrays.asList(BOLK_PERSONALIA);
+        return Arrays.asList(BOLK_PERSONALIA, "SosialhjelpKontakt");
     }
 
     public String getStrukturFilnavn() {
