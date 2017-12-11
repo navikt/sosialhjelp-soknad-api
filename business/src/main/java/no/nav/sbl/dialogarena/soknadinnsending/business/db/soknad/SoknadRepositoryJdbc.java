@@ -169,6 +169,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         WebSoknad soknad = hentSoknad(id);
         if (soknad != null) {
             leggTilBrukerdataOgVedleggPaaSoknad(soknad, soknad.getBrukerBehandlingId());
+            soknad.medVersjon(hentVersjon(soknad.getBrukerBehandlingId()));
         }
         return soknad;
     }
