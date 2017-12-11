@@ -54,7 +54,7 @@ public interface SoknadRepository {
 
     void insertHendelse(String behandlingsid, String hendelse_type);
 
-    void insertHendelse(String behandlingsid, String hendelse_type, int versjon, String skjemanummer);
+    void insertHendelse(String behandlingsid, String hendelse_type, Integer versjon, String skjemanummer);
 
     String hentSoknadType(Long soknadId);
 
