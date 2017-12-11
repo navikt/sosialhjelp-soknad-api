@@ -67,12 +67,18 @@ public class HenvendelseService {
         }
     }
 
-    public void avsluttSoknad(String behandlingsId, XMLHovedskjema hovedskjema, XMLVedlegg[] vedlegg, XMLMetadata ekstraData) {
+    public void avsluttSoknad(String behandlingsId, XMLHovedskjema hovedskjema, XMLVedlegg[] vedlegg, XMLSoknadMetadata ekstraData) {
         try {
-            WSSoknadsdata parameters = new WSSoknadsdata().withBehandlingsId(behandlingsId).withAny(new XMLMetadataListe()
+            XMLMetadataListe metadataliste = new XMLMetadataListe()
                     .withMetadata(hovedskjema)
-                    .withMetadata(vedlegg)
-                    .withMetadata(ekstraData));
+                    .withMetadata(vedlegg);
+
+            if (ekstraData.getVerdi().size() > 0) {
+                metadataliste.withMetadata(ekstraData);
+            }
+
+            WSSoknadsdata parameters = new WSSoknadsdata().withBehandlingsId(behandlingsId).withAny(metadataliste);
+
             logger.info("Søknad avsluttet " + behandlingsId + " " + hovedskjema.getSkjemanummer() + " (" + hovedskjema.getJournalforendeEnhet() + ") " + vedlegg.length + " vedlegg");
             sendSoknadEndpoint.sendSoknad(parameters);
         } catch (SOAPFaultException e) {
