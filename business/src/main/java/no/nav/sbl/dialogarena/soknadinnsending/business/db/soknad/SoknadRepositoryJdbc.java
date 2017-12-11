@@ -81,10 +81,10 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     }
 
     public void insertHendelse(String behandlingsid, String hendelse_type){
-        insertHendelse(behandlingsid,hendelse_type,0,null);
+        insertHendelse(behandlingsid,hendelse_type,null,null);
     }
 
-    public void insertHendelse(String behandlingsid, String hendelse_type, int versjon, String skjemanummer){
+    public void insertHendelse(String behandlingsid, String hendelse_type, Integer versjon, String skjemanummer){
         getJdbcTemplate()
                 .update("insert into hendelse (BEHANDLINGSID, HENDELSE_TYPE, HENDELSE_TIDSPUNKT, VERSJON, SKJEMANUMMER)" +
                             " values (?,?,CURRENT_TIMESTAMP,?,?)",
@@ -144,12 +144,11 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
         String sqlSubSelect1 = " ( SELECT H2.BEHANDLINGSID FROM HENDELSE H2 " +
                 " WHERE H1.BEHANDLINGSID = H2.BEHANDLINGSID " +
-                " AND HENDELSE_TIDSPUNKT > CURRENT_TIMESTAMP - (INTERVAL '" + dagerGammel + "' DAY)  " +
+                " AND HENDELSE_TIDSPUNKT > CURRENT_TIMESTAMP - NUMTODSINTERVAL(?,'DAY')  " +
                 " AND " + gyldigeHendelseTyper  +  " ) ";
 
         String sqlSubSelect2 =  " ( SELECT H3.BEHANDLINGSID FROM HENDELSE H3 " +
                 " WHERE H1.BEHANDLINGSID = H3.BEHANDLINGSID AND " + avsluttetHendelse + " ) ";
-
 
         String sql = " SELECT BEHANDLINGSID FROM HENDELSE H1 WHERE " + gyldigeHendelseTyper +
                 " AND NOT EXISTS " +
@@ -157,9 +156,8 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
                 " AND NOT EXISTS " +
                 sqlSubSelect2;
 
-
          HashSet<String> resultSet = new HashSet<>();
-         resultSet.addAll(getJdbcTemplate().queryForList(sql,String.class));
+         resultSet.addAll(getJdbcTemplate().queryForList(sql,String.class,dagerGammel));
 
         return resultSet;
     }
