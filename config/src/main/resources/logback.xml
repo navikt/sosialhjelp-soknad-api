@@ -102,6 +102,10 @@
         <appender-ref ref="batchlog"/>
     </logger>
 
+    <logger name="no.nav.sbl.dialogarena.soknadinnsending.business.batch.SlettSoknadScheduler" level="info">
+        <appender-ref ref="batchlog"/>
+    </logger>
+
     <logger name="klientlogger" level="debug" additivity="false">
         <appender-ref ref="klientlogg"/>
         <appender-ref ref="SYSLOG"/>
