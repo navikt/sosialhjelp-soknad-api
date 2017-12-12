@@ -52,7 +52,7 @@ public interface KravdialogInformasjon {
 
     String getKvitteringTemplate();
 
-    int getSkjemaVersjon();
+    Integer getSkjemaVersjon();
 
     abstract class DefaultOppsett implements KravdialogInformasjon {
         @Override
@@ -90,6 +90,6 @@ public interface KravdialogInformasjon {
         }
 
         @Override
-        public int getSkjemaVersjon() { return 0; }
+        public Integer getSkjemaVersjon() { return 0; }
     }
 }

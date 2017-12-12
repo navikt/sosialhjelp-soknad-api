@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.migrasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 
 public abstract class Migrasjon {
-    static int tilVersjon;
+    static Integer tilVersjon;
     static String migrasjonSkjemanummer;
 
     public Migrasjon(int tilVersjon, String skjemanummer) {
@@ -11,11 +11,11 @@ public abstract class Migrasjon {
         migrasjonSkjemanummer = skjemanummer;
     }
 
-    public static int getTilVersjon() {
+    public static Integer getTilVersjon() {
         return tilVersjon;
     }
 
-    public static void setTilVersjon(int tilVersjon) {
+    public static void setTilVersjon(Integer tilVersjon) {
         Migrasjon.tilVersjon = tilVersjon;
     }
 
@@ -27,8 +27,8 @@ public abstract class Migrasjon {
         Migrasjon.migrasjonSkjemanummer = migrasjonSkjemanummer;
     }
 
-    public static boolean skalMigrere(int fraVersjon, String skjemanummer) {
+    public static boolean skalMigrere(Integer fraVersjon, String skjemanummer) {
         return migrasjonSkjemanummer.equalsIgnoreCase(skjemanummer) && tilVersjon - fraVersjon == 1;
     }
-    public abstract WebSoknad migrer(int fraVersjon, WebSoknad soknad);
+    public abstract WebSoknad migrer(Integer fraVersjon, WebSoknad soknad);
 }
