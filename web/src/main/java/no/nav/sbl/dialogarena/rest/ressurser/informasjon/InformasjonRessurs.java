@@ -48,6 +48,7 @@ public class InformasjonRessurs {
     private static final Logger klientlogger = LoggerFactory.getLogger("klientlogger");
 
     private static final List<String> DIGISOS_KOMMUNER = asList("0701", "0703", "0717");
+    private static final List<String> DISKRESJONSKODER = asList("6", "7");
 
     @Inject
     private InformasjonService informasjon;
@@ -196,26 +197,37 @@ public class InformasjonRessurs {
     }
 
     @GET
-    @Path("/utslagskriterier/adresse")
+    @Path("/utslagskriterier/sosialhjelp")
     public Map<String, Object> hentAdresse() {
         String uid = getSubjectHandler().getUid();
         Personalia personalia = personaliaBolk.hentPersonalia(uid);
 
         Map<String, Object> resultat = new HashMap<>();
 
-        boolean harTilgangTilDigisos = false;
+        boolean harTilgang = false;
+        String sperrekode = "";
 
-        if (personalia.getGjeldendeAdresse().getStrukturertAdresse() != null) {
-            StrukturertAdresse adresse = personalia.getGjeldendeAdresse().getStrukturertAdresse();
-            if (DIGISOS_KOMMUNER.contains(adresse.kommunenummer)) {
-                harTilgangTilDigisos = true;
+        if (DISKRESJONSKODER.contains(personalia.getDiskresjonskode())) {
+            harTilgang = false;
+            sperrekode = "bruker";
+        } else {
+            if (personalia.getGjeldendeAdresse().getStrukturertAdresse() != null) {
+                StrukturertAdresse adresse = personalia.getGjeldendeAdresse().getStrukturertAdresse();
+                Map<String, Object> adresseVerdier = new ObjectMapper().convertValue(adresse, new TypeReference<Map<String, Object>>(){});
+                resultat.putAll(adresseVerdier);
+
+                if (DIGISOS_KOMMUNER.contains(adresse.kommunenummer)) {
+                    harTilgang = true;
+                } else {
+                    harTilgang = false;
+                    sperrekode = "pilot";
+                }
             }
-
-            Map<String, Object> adresseVerdier = new ObjectMapper().convertValue(adresse, new TypeReference<Map<String, Object>>(){});
-            resultat.putAll(adresseVerdier);
         }
 
-        resultat.put("pilotSosialhjelp", harTilgangTilDigisos);
+        resultat.put("harTilgang", harTilgang);
+        resultat.put("sperrekode", sperrekode);
+
         return resultat;
     }
 
