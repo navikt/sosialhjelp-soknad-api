@@ -10,6 +10,7 @@ import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonPortTypeMock;
 import no.nav.sbl.dialogarena.service.helpers.HvisLikHelper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
+import no.nav.sbl.dialogarena.soknadinnsending.business.batch.SlettSoknadScheduler;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,8 @@ public class InternalRessurs {
     @Inject
     private LagringsScheduler lagringsScheduler;
     @Inject
+    private SlettSoknadScheduler slettSoknadScheduler;
+    @Inject
     private CacheManager cacheManager;
     @Inject
     private NavMessageSource messageSource;
@@ -48,6 +51,15 @@ public class InternalRessurs {
         logAccess("kjorLagring");
         lagringsScheduler.mellomlagreSoknaderOgNullstillLokalDb();
     }
+
+    @POST
+    @Path(value = "/slettgamlesoknader")
+    public void slettGamleSoknader() {
+        logAccess("slettGamleSoknader");
+        slettSoknadScheduler.opprettHendelserForSoknaderSlettetIHenvendelse();
+    }
+
+
 
     @GET
     @Path(value = "/mocksetup")
