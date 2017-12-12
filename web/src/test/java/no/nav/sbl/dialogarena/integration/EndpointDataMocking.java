@@ -72,7 +72,7 @@ public class EndpointDataMocking {
         Person person = new Person();
         Person barn = new Person();
         NorskIdent norskIdent = new NorskIdent();
-        norskIdent.setIdent("12129912345");
+        norskIdent.setIdent("04031659235");
         barn.setIdent(norskIdent);
         barn.setFoedselsdato(foedselsdato);
         familierelasjon.setTilPerson(barn);
