@@ -131,7 +131,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         return hentEtObjectAv(sql, SOKNAD_ROW_MAPPER, behandlingsId);
     }
 
-    public int hentVersjon(String behandlingsId) {
+    public Integer hentVersjon(String behandlingsId) {
         String gyldigHendelseTyper = " hendelse_type in ('"+ SOKNAD_OPPRETTET.name() + "','" + SOKNAD_MIGRERT.name() + "')";
         String sql = "SELECT * FROM (SELECT versjon FROM hendelse WHERE" + gyldigHendelseTyper + "  AND behandlingsid = ? ORDER BY hendelse_tidspunkt DESC)" + whereLimit(1);
         return getJdbcTemplate().queryForObject(sql, new Object[] {behandlingsId}, Integer.class);
