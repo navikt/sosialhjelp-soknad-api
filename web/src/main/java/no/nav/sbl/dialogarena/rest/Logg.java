@@ -72,9 +72,12 @@ public class Logg {
     }
 
     public String melding() {
-        String useragentWithoutSpace = userAgent.replaceAll(" ", "_");
-        String useragentWithoutSpaceAndComma = useragentWithoutSpace.replaceAll(",", "_");
-
+        String useragentWithoutSpace = "";
+        String useragentWithoutSpaceAndComma = "";
+        if (userAgent != null) {
+            useragentWithoutSpace = userAgent.replaceAll(" ", "_");
+            useragentWithoutSpaceAndComma = useragentWithoutSpace.replaceAll(",", "_");
+        }
         return format("jsmessagehash=%s, fileUrl=%s:%s:%s, url=%s, userAgent=%s, melding: %s", message.hashCode(), jsFileUrl, lineNumber, columnNumber, url, useragentWithoutSpaceAndComma, message);
     }
 }
