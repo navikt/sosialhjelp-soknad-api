@@ -14,7 +14,7 @@ public class FakeMigrasjon extends Migrasjon {
     }
 
     @Override
-    public WebSoknad migrer(int fraVersjon, WebSoknad soknad) {
+    public WebSoknad migrer(Integer fraVersjon, WebSoknad soknad) {
         soknad.medDelstegStatus(DelstegStatus.UTFYLLING)
                 .medVersjon(super.getTilVersjon());
         return soknad;

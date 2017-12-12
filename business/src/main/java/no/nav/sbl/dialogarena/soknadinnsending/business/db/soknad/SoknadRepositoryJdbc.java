@@ -84,7 +84,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         insertHendelse(behandlingsid,hendelse_type,0,null);
     }
 
-    public void insertHendelse(String behandlingsid, String hendelse_type, int versjon, String skjemanummer){
+    public void insertHendelse(String behandlingsid, String hendelse_type, Integer versjon, String skjemanummer){
         getJdbcTemplate()
                 .update("insert into hendelse (BEHANDLINGSID, HENDELSE_TYPE, HENDELSE_TIDSPUNKT, VERSJON, SKJEMANUMMER)" +
                             " values (?,?,CURRENT_TIMESTAMP,?,?)",
@@ -131,7 +131,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         return hentEtObjectAv(sql, SOKNAD_ROW_MAPPER, behandlingsId);
     }
 
-    public int hentVersjon(String behandlingsId) {
+    public Integer hentVersjon(String behandlingsId) {
         String gyldigHendelseTyper = " hendelse_type in ('"+ SOKNAD_OPPRETTET.name() + "','" + SOKNAD_MIGRERT.name() + "')";
         String sql = "SELECT * FROM (SELECT versjon FROM hendelse WHERE" + gyldigHendelseTyper + "  AND behandlingsid = ? ORDER BY hendelse_tidspunkt DESC)" + whereLimit(1);
         return getJdbcTemplate().queryForObject(sql, new Object[] {behandlingsId}, Integer.class);
@@ -199,7 +199,6 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         WebSoknad soknad = hentSoknad(id);
         if (soknad != null) {
             leggTilBrukerdataOgVedleggPaaSoknad(soknad, soknad.getBrukerBehandlingId());
-            soknad.medVersjon(hentVersjon(soknad.getBrukerBehandlingId()));
         }
         return soknad;
     }

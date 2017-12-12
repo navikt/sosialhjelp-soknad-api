@@ -39,7 +39,7 @@ public interface SoknadRepository {
 
     List<Faktum> hentSystemFaktumList(Long soknadId, String key);
 
-    int hentVersjon(String behandlingsId);
+    Integer hentVersjon(String behandlingsId);
     void lagreMigrasjonshendelse(String behandlingsId, int versjon, String skjemanummer);
 
     Collection<String> hentBehandlingsIdForIkkeAvsluttede(int dagerGammel);
@@ -54,7 +54,7 @@ public interface SoknadRepository {
 
     void insertHendelse(String behandlingsid, String hendelse_type);
 
-    void insertHendelse(String behandlingsid, String hendelse_type, int versjon, String skjemanummer);
+    void insertHendelse(String behandlingsid, String hendelse_type, Integer versjon, String skjemanummer);
 
     String hentSoknadType(Long soknadId);
 
