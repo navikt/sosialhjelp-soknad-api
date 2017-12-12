@@ -59,7 +59,7 @@ public class MigrasjonHandterer{
         return migrasjonsListe;
     }
 
-    private Optional<Migrasjon> hentMigrasjonForSkjemanummerOgVersjon(int versjon, String skjemanummer) {
+    private Optional<Migrasjon> hentMigrasjonForSkjemanummerOgVersjon(Integer versjon, String skjemanummer) {
         return migrasjoner.stream()
                 .filter(migrasjon -> migrasjon.getMigrasjonSkjemanummer().equalsIgnoreCase(skjemanummer))
                 .filter(migrasjon -> migrasjon.skalMigrere(versjon, skjemanummer))

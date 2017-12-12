@@ -433,6 +433,7 @@ public class SoknadRepositoryJdbcTest {
                 .medBehandlingId("AH123")
                 .medskjemaNummer(skjemaNummer)
                 .medOppretteDato(now())
+                .medVersjon(0)
                 .leggTilFaktum(new Faktum().medSoknadId(101L).medFaktumId(11L).medKey("key1").medValue("val1").medType(BRUKERREGISTRERT).medProperty("test", "test"))
                 .leggTilFaktum(new Faktum().medSoknadId(101L).medFaktumId(12L).medKey("key2").medValue("val2").medType(SYSTEMREGISTRERT).medProperty("test2", "test2"))
                 .medVedlegg(Arrays.asList(new Vedlegg(101L, 11L, "L6", Vedlegg.Status.LastetOpp).medOpprettetDato(System.currentTimeMillis())));
