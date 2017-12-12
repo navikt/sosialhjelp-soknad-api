@@ -27,6 +27,7 @@ import static java.util.Collections.sort;
 import static java.util.UUID.randomUUID;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType.*;
 import static org.hamcrest.Matchers.*;
 import static org.joda.time.DateTime.now;
 import static org.junit.Assert.*;
@@ -498,6 +499,28 @@ public class SoknadRepositoryJdbcTest {
         assertFalse(barneFaktum.contains(ikkeChild3));
 
         assertTrue(barneFaktum.get(0).getProperties().containsValue("value"));
+    }
+
+    @Test
+    public void skalHenteIkkeAvsluttede(){
+        setupHendelser();
+
+        assertThat(soknadRepository.hentBehandlingsIdForIkkeAvsluttede(-1).size(), is(2));
+
+        assertThat(soknadRepository.hentBehandlingsIdForIkkeAvsluttede(1).size(), is(0));
+
+    }
+
+    private void setupHendelser(){
+        soknadRepository.insertHendelse("1",SOKNAD_OPPRETTET.name(),1,"TEST_1");
+        soknadRepository.insertHendelse("1",SOKNAD_LAGRET_I_HENVENDELSE.name(),1,"TEST_1");
+        soknadRepository.insertHendelse("1",SOKNAD_MIGRERT.name(),2,"TEST_1");
+
+        soknadRepository.insertHendelse("2",SOKNAD_OPPRETTET.name(),1,"TEST_2");
+
+        soknadRepository.insertHendelse("3",SOKNAD_OPPRETTET.name(),2,"TEST_1");
+        soknadRepository.insertHendelse("3",SOKNAD_LAGRET_I_HENVENDELSE.name(),2,"TEST_1");
+        soknadRepository.insertHendelse("3",SOKNAD_INNSENDT.name(),2,"TEST_1");
     }
 
     private List<Long> lagreXSoknader(int antall, int timerSidenLagring) {
