@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.batch;
 
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
+import no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
@@ -14,10 +15,9 @@ import javax.inject.Inject;
 
 import java.util.Collection;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType.SOKNAD_SLETTET;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType.AVBRUTT_AUTOMATISK;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.*;
 
 @Service
 public class SlettSoknadScheduler {
@@ -66,6 +66,6 @@ public class SlettSoknadScheduler {
     }
 
     private void settSoknadAvsluttet(String behandlingsId) {
-        soknadRepository.insertHendelse(behandlingsId,SOKNAD_SLETTET.name());
+        soknadRepository.insertHendelse(behandlingsId, HendelseType.AVBRUTT_AUTOMATISK.name());
     }
 }

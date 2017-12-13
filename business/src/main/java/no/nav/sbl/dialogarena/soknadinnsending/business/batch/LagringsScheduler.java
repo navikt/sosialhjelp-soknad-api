@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType.SOKNAD_LAGRET_I_HENVENDELSE;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType.LAGRET_I_HENVENDELSE;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
@@ -141,7 +141,7 @@ public class LagringsScheduler {
                 fillagerService.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(xml.toString().getBytes()));
             }
             soknadRepository.slettSoknad(soknad.getSoknadId());
-            soknadRepository.insertHendelse(soknad.getBrukerBehandlingId(), SOKNAD_LAGRET_I_HENVENDELSE.name(),soknad.getVersjon(),soknad.getskjemaNummer());
+            soknadRepository.insertHendelse(soknad.getBrukerBehandlingId(), LAGRET_I_HENVENDELSE.name(),soknad.getVersjon(),soknad.getskjemaNummer());
 
             logger.info("Lagret soknad til henvendelse og slettet lokalt. Soknadsid: {}", soknad.getSoknadId());
             vellykket++;

@@ -388,7 +388,7 @@ public class SoknadDataFletter {
 
         XMLSoknadMetadata soknadMetadata = ekstraMetadataService.hentEkstraMetadata(soknad);
         henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, vedlegg, soknadMetadata);
-        lokalDb.slettSoknad(soknad,HendelseType.SOKNAD_INNSENDT);
+        lokalDb.slettSoknad(soknad,HendelseType.INNSENDT);
 
 
         soknadMetricsService.rapporterKompletteOgIkkeKompletteSoknader(soknad.getIkkeInnsendteVedlegg(), skjemanummer(soknad));
