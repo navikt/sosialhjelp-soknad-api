@@ -15,6 +15,7 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.IkkeVedlegg;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.VedleggKreves;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -351,6 +352,13 @@ public class Vedlegg {
         this.innsendingsvalg = Status.LastetOpp;
         this.antallSider = antallSider;
         this.storrelse = (long) doc.length;
+    }
+
+    public void fjernInnhold() {
+        this.data = new byte[0];
+        this.innsendingsvalg = VedleggKreves;
+        this.antallSider = 0;
+        this.storrelse = 0L;
     }
 
     public void leggTilURL(String nokkel, String url) {
