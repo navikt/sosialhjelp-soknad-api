@@ -1,6 +1,51 @@
 <?xml version="1.0" ?>
 <soknad xmlns="urn:no.nav.sbl">
     <faktum>
+        <id>kontakt.adresse.brukerendrettoggle</id>
+        <panel>personaliaBolk</panel>
+        <type>hidden</type>
+    </faktum>
+    <faktum>
+        <id>kontakt.adresse.bruker</id>
+        <panel>personaliaBolk</panel>
+        <type>composite</type>
+        <constraints>
+            <constraint>
+                <faktum>kontakt.adresse.brukerendrettoggle</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+        <properties>
+            <property>
+                <id>gateadresse</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>postnummer</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>poststed</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+    </faktum>
+    <faktum>
+        <id>kontakt.system.kontonummer</id>
+        <panel>personaliaBolk</panel>
+        <type>textbox</type>
+        <constraints>
+            <constraint>
+                <expression>value != null</expression>
+            </constraint>
+        </constraints>
+    </faktum>
+    <faktum>
+        <id>kontakt.kontonummer.brukerendrettoggle</id>
+        <panel>personaliaBolk</panel>
+        <type>hidden</type>
+    </faktum>
+    <faktum>
         <id>kontakt.kontonummer</id>
         <panel>personaliaBolk</panel>
         <type>textbox</type>
@@ -16,6 +61,16 @@
         <id>kontakt.kontonummer.harikke</id>
         <panel>personaliaBolk</panel>
         <type>checkbox</type>
+    </faktum>
+    <faktum>
+        <id>kontakt.system.telefon</id>
+        <panel>personaliaBolk</panel>
+        <type>textbox</type>
+    </faktum>
+    <faktum>
+        <id>kontakt.telefon.brukerendrettoggle</id>
+        <panel>personaliaBolk</panel>
+        <type>hidden</type>
     </faktum>
     <faktum>
         <id>kontakt.telefon</id>
