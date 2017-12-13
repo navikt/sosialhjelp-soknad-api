@@ -60,7 +60,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         Long databasenokkel = getJdbcTemplate().queryForObject(selectNextSequenceValue("SOKNAD_ID_SEQ"), Long.class);
         insertSoknad(soknad, databasenokkel);
 
-        insertHendelse(soknad.getBrukerBehandlingId(), SOKNAD_OPPRETTET.name(), soknad.getVersjon() , soknad.getskjemaNummer());
+        insertHendelse(soknad.getBrukerBehandlingId(), OPPRETTET.name(), soknad.getVersjon() , soknad.getskjemaNummer());
         return databasenokkel;
     }
 
@@ -132,15 +132,15 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     }
 
     public Integer hentVersjon(String behandlingsId) {
-        String gyldigHendelseTyper = " hendelse_type in ('"+ SOKNAD_OPPRETTET.name() + "','" + SOKNAD_MIGRERT.name() + "')";
+        String gyldigHendelseTyper = " hendelse_type in ('"+ OPPRETTET.name() + "','" + MIGRERT.name() + "')";
         String sql = "SELECT * FROM (SELECT versjon FROM hendelse WHERE" + gyldigHendelseTyper + "  AND behandlingsid = ? ORDER BY hendelse_tidspunkt DESC)" + whereLimit(1);
         return getJdbcTemplate().queryForObject(sql, new Object[] {behandlingsId}, Integer.class);
     }
 
     public Collection<String> hentBehandlingsIdForIkkeAvsluttede(int dagerGammel) {
 
-        String avsluttetHendelse = "HENDELSE_TYPE in ('"+ SOKNAD_SLETTET.name() +"','" + SOKNAD_AVBRUTT.name() +"','" + SOKNAD_INNSENDT.name() + "')";
-        String gyldigeHendelseTyper = " HENDELSE_TYPE in ('"+ SOKNAD_OPPRETTET.name() + "','" + SOKNAD_MIGRERT.name() + "','" + SOKNAD_LAGRET_I_HENVENDELSE.name() + "')";
+        String avsluttetHendelse = "HENDELSE_TYPE in ('"+ AVBRUTT_AUTOMATISK.name() +"','" + AVBRUTT_AV_BRUKER.name() +"','" + INNSENDT.name() + "')";
+        String gyldigeHendelseTyper = " HENDELSE_TYPE in ('"+ OPPRETTET.name() + "','" + MIGRERT.name() + "','" + LAGRET_I_HENVENDELSE.name() + "')";
 
         String sqlSubSelect1 = " ( SELECT H2.BEHANDLINGSID FROM HENDELSE H2 " +
                 " WHERE H1.BEHANDLINGSID = H2.BEHANDLINGSID " +
@@ -163,7 +163,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     }
 
     public void lagreMigrasjonshendelse(String behandlingsId, int versjon, String skjemanummer) {
-        insertHendelse(behandlingsId, SOKNAD_MIGRERT.name(), versjon, skjemanummer);
+        insertHendelse(behandlingsId, MIGRERT.name(), versjon, skjemanummer);
     }
 
     private <T> T hentEtObjectAv(String sql, RowMapper<T> mapper, Object... args) {

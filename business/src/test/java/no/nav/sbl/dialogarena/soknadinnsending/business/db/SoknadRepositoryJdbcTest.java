@@ -513,15 +513,15 @@ public class SoknadRepositoryJdbcTest {
     }
 
     private void setupHendelser(){
-        soknadRepository.insertHendelse("1",SOKNAD_OPPRETTET.name(),1,"TEST_1");
-        soknadRepository.insertHendelse("1",SOKNAD_LAGRET_I_HENVENDELSE.name(),1,"TEST_1");
-        soknadRepository.insertHendelse("1",SOKNAD_MIGRERT.name(),2,"TEST_1");
+        soknadRepository.insertHendelse("1", OPPRETTET.name(),1,"TEST_1");
+        soknadRepository.insertHendelse("1", LAGRET_I_HENVENDELSE.name(),1,"TEST_1");
+        soknadRepository.insertHendelse("1", MIGRERT.name(),2,"TEST_1");
 
-        soknadRepository.insertHendelse("2",SOKNAD_OPPRETTET.name(),1,"TEST_2");
+        soknadRepository.insertHendelse("2", OPPRETTET.name(),1,"TEST_2");
 
-        soknadRepository.insertHendelse("3",SOKNAD_OPPRETTET.name(),2,"TEST_1");
-        soknadRepository.insertHendelse("3",SOKNAD_LAGRET_I_HENVENDELSE.name(),2,"TEST_1");
-        soknadRepository.insertHendelse("3",SOKNAD_INNSENDT.name(),2,"TEST_1");
+        soknadRepository.insertHendelse("3", OPPRETTET.name(),2,"TEST_1");
+        soknadRepository.insertHendelse("3", LAGRET_I_HENVENDELSE.name(),2,"TEST_1");
+        soknadRepository.insertHendelse("3", INNSENDT.name(),2,"TEST_1");
     }
 
     private List<Long> lagreXSoknader(int antall, int timerSidenLagring) {

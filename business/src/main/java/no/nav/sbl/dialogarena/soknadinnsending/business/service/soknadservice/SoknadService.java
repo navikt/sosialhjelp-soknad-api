@@ -76,7 +76,7 @@ public class SoknadService {
          * */
         fillagerService.slettAlle(soknad.getBrukerBehandlingId());
         henvendelseService.avbrytSoknad(soknad.getBrukerBehandlingId());
-        lokalDb.slettSoknad(soknad, HendelseType.SOKNAD_AVBRUTT);
+        lokalDb.slettSoknad(soknad, HendelseType.AVBRUTT_AV_BRUKER);
 
         soknadMetricsService.avbruttSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
     }
