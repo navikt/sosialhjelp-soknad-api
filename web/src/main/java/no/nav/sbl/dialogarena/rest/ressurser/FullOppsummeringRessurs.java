@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.sbl.dialogarena.rest.utils.PDFService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.FeatureToggler;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
@@ -17,6 +18,8 @@ import javax.ws.rs.core.Context;
 import java.io.IOException;
 
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.FeatureToggler.erFeatureAktiv;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.FeatureToggler.Toggle.RESSURS_FULLOPPSUMERING;
 
 @Controller
 @Path("/fulloppsummering")
@@ -31,8 +34,6 @@ public class FullOppsummeringRessurs {
     @Inject
     private PDFService pdfService;
     private static final Logger LOG = LoggerFactory.getLogger(FullOppsummeringRessurs.class);
-
-    private static final boolean FULLOPPSUMMERING_AKTIVERT = Boolean.valueOf(System.getProperty("soknad.fulloppsummering.enabled", "false"));
 
     @Deprecated
     @GET
@@ -75,7 +76,7 @@ public class FullOppsummeringRessurs {
 
     private void sjekkOmFullOppsummeringErAktivert(String metode) {
         LOG.warn("OppsummeringRessurs metode {} forsøkt aksessert", metode);
-        if (!FULLOPPSUMMERING_AKTIVERT) {
+        if (!erFeatureAktiv(RESSURS_FULLOPPSUMERING)) {
             throw new NotFoundException("Ikke aktivert fulloppsummering");
         }
     }
