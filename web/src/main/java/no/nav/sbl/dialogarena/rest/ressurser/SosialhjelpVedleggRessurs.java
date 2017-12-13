@@ -19,7 +19,9 @@ import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -126,6 +128,16 @@ public class SosialhjelpVedleggRessurs {
     @SjekkTilgangTilSoknad(type = Vedlegg)
     public void slettOriginalFil(@PathParam("vedleggId") final Long vedleggId) {
         vedleggOriginalFilerService.slettOriginalVedlegg(vedleggId);
+    }
+
+    @GET
+    @Path("/{vedleggId}/fil")
+    @SjekkTilgangTilSoknad(type = Vedlegg)
+    public byte[] hentVedleggData(@PathParam("vedleggId") final Long vedleggId, @Context HttpServletResponse response) {
+        Vedlegg vedlegg = vedleggService.hentVedlegg(vedleggId, true);
+        response.setContentType(vedlegg.getMimetype());
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + vedlegg.lagFilNavn() + "\"");
+        return vedlegg.getData();
     }
 
     private static byte[] getByteArray(FormDataBodyPart file) {
