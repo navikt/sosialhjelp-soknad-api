@@ -6,8 +6,10 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigOpplastingTypeException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -16,11 +18,13 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.ByteArrayInputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import static java.util.Collections.sort;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.VedleggKreves;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur.sammenlignEtterDependOn;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -44,6 +48,9 @@ public class VedleggOriginalFilerService {
     @Inject
     private VedleggService vedleggService;
 
+    @Inject
+    private SoknadService soknadService;
+
     private static Map<String, String> MIME_TIL_EXT;
 
     @PostConstruct
@@ -52,6 +59,50 @@ public class VedleggOriginalFilerService {
         MIME_TIL_EXT.put("application/pdf", ".pdf");
         MIME_TIL_EXT.put("image/png", ".png");
         MIME_TIL_EXT.put("image/jpeg", ".jpg");
+    }
+
+    public WebSoknad oppdaterVedleggOgBelopFaktum(String behandlingsId) {
+        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
+
+        List<FaktumStruktur> faktaStruktur = soknadService.hentSoknadStruktur(soknad.getskjemaNummer()).getFakta();
+        sort(faktaStruktur, sammenlignEtterDependOn());
+
+        List<FaktumStruktur> opplysninger = faktaStruktur.stream()
+                .filter(struktur -> struktur.getId().startsWith("opplysninger."))
+                .filter(struktur -> soknad.getFaktaMedKey(struktur.getId()).isEmpty())
+                .collect(Collectors.toList());
+
+        Iterator<Long> faktumIder = repository.hentLedigeFaktumIder(opplysninger.size()).iterator();
+
+        List<Faktum> nyeFakta = new ArrayList<>();
+
+        for (FaktumStruktur struktur : opplysninger) {
+            Long parentFaktumId = null;
+
+            if (struktur.getDependOn() != null) {
+                if (soknad.getFaktumMedKey(struktur.getDependOn().getId()) != null) {
+                    parentFaktumId = soknad.getFaktumMedKey(struktur.getDependOn().getId()).getFaktumId();
+                } else {
+                    parentFaktumId = nyeFakta.stream()
+                            .filter(f -> f.getKey().equals(struktur.getDependOn().getId()))
+                            .findFirst()
+                            .map(Faktum::getFaktumId)
+                            .orElse(null);
+                }
+            }
+
+            nyeFakta.add(new Faktum()
+                    .medFaktumId(faktumIder.next())
+                    .medParrentFaktumId(parentFaktumId)
+                    .medKey(struktur.getId())
+                    .medType(BRUKERREGISTRERT)
+                    .medSoknadId(soknad.getSoknadId()));
+        }
+
+        repository.batchOpprettTommeFakta(nyeFakta);
+
+        WebSoknad soknadOppdatert = soknadService.hentSoknad(behandlingsId, true, true);
+        return soknadOppdatert;
     }
 
     /**
