@@ -36,12 +36,12 @@ public class SosialhjelpKontaktBolk implements BolkService {
     
     private List<Faktum> genererPersonaliaFaktum(Long soknadId, Personalia personalia) {
         return Arrays.asList(
-                new Faktum().medSoknadId(soknadId).medKey("kontakt.system.kontonummer").medValue(norskMobiltelefon(personalia)),
+                new Faktum().medSoknadId(soknadId).medKey("kontakt.system.kontonummer").medValue(norskKontonummer(personalia)),
                 new Faktum().medSoknadId(soknadId).medKey("kontakt.system.telefon").medValue(personalia.getMobiltelefonnummer())
         );
     }
 
-    private String norskMobiltelefon(Personalia personalia) {
+    private String norskKontonummer(Personalia personalia) {
         if (personalia.getErUtenlandskBankkonto() != null && personalia.getErUtenlandskBankkonto()) {
             return "";
         } else {
