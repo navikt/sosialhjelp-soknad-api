@@ -1,10 +1,12 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad;
 
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -39,22 +41,11 @@ public interface SoknadRepository {
 
     List<Faktum> hentSystemFaktumList(Long soknadId, String key);
 
-    Integer hentVersjon(String behandlingsId);
-    void lagreMigrasjonshendelse(String behandlingsId, int versjon, String skjemanummer);
-
-    Collection<String> hentBehandlingsIdForIkkeAvsluttede(int dagerGammel);
-
     void settSistLagretTidspunkt(Long soknadId);
 
     void slettBrukerFaktum(Long soknadId, Long faktumId);
 
-    void slettSoknad(long soknadId);
-
     void slettSoknad(WebSoknad soknad, HendelseType avsluttHendelse);
-
-    void insertHendelse(String behandlingsid, String hendelse_type);
-
-    void insertHendelse(String behandlingsid, String hendelse_type, Integer versjon, String skjemanummer);
 
     String hentSoknadType(Long soknadId);
 

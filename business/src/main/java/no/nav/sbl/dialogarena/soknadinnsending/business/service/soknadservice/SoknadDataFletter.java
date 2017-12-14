@@ -13,6 +13,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
@@ -75,6 +76,9 @@ public class SoknadDataFletter {
     @Inject
     @Named("soknadInnsendingRepository")
     private SoknadRepository lokalDb;
+    @Inject
+    @Named("hendelseRepository")
+    private HendelseRepository hendelseRepository;
     @Inject
     private WebSoknadConfig config;
     @Inject
@@ -342,7 +346,7 @@ public class SoknadDataFletter {
         soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknad.getSoknadId()))
                 .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
                 .medStegliste(config.getStegliste(soknad.getSoknadId()))
-                .medVersjon(lokalDb.hentVersjon(soknad.getBrukerBehandlingId()))
+                .medVersjon(hendelseRepository.hentVersjon(soknad.getBrukerBehandlingId()))
                 .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
 
 
