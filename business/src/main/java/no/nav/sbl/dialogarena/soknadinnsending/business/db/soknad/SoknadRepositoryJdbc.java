@@ -22,7 +22,6 @@ import java.util.*;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType.*;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -48,6 +47,10 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     @Inject
     private VedleggRepository vedleggRepository;
 
+    @Inject
+    private HendelseRepository hendelseRepository;
+
+
     public SoknadRepositoryJdbc() {
     }
 
@@ -60,7 +63,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         Long databasenokkel = getJdbcTemplate().queryForObject(selectNextSequenceValue("SOKNAD_ID_SEQ"), Long.class);
         insertSoknad(soknad, databasenokkel);
 
-        insertHendelse(soknad.getBrukerBehandlingId(), OPPRETTET.name(), soknad.getVersjon() , soknad.getskjemaNummer());
+        hendelseRepository.registrerOpprettetHendelse(soknad);
         return databasenokkel;
     }
 
@@ -80,19 +83,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
                         soknad.getJournalforendeEnhet());
     }
 
-    public void insertHendelse(String behandlingsid, String hendelse_type){
-        insertHendelse(behandlingsid,hendelse_type,null,null);
-    }
 
-    public void insertHendelse(String behandlingsid, String hendelse_type, Integer versjon, String skjemanummer){
-        getJdbcTemplate()
-                .update("insert into hendelse (BEHANDLINGSID, HENDELSE_TYPE, HENDELSE_TIDSPUNKT, VERSJON, SKJEMANUMMER)" +
-                            " values (?,?,CURRENT_TIMESTAMP,?,?)",
-                        behandlingsid,
-                        hendelse_type,
-                        versjon,
-                        skjemanummer);
-    }
 
     public void populerFraStruktur(WebSoknad soknad) {
         insertSoknad(soknad, soknad.getSoknadId());
@@ -131,40 +122,6 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         return hentEtObjectAv(sql, SOKNAD_ROW_MAPPER, behandlingsId);
     }
 
-    public Integer hentVersjon(String behandlingsId) {
-        String gyldigHendelseTyper = " hendelse_type in ('"+ OPPRETTET.name() + "','" + MIGRERT.name() + "')";
-        String sql = "SELECT * FROM (SELECT versjon FROM hendelse WHERE" + gyldigHendelseTyper + "  AND behandlingsid = ? ORDER BY hendelse_tidspunkt DESC)" + whereLimit(1);
-        return getJdbcTemplate().queryForObject(sql, new Object[] {behandlingsId}, Integer.class);
-    }
-
-    public Collection<String> hentBehandlingsIdForIkkeAvsluttede(int dagerGammel) {
-
-        String avsluttetHendelse = "HENDELSE_TYPE in ('"+ AVBRUTT_AUTOMATISK.name() +"','" + AVBRUTT_AV_BRUKER.name() +"','" + INNSENDT.name() + "')";
-        String gyldigeHendelseTyper = " HENDELSE_TYPE in ('"+ OPPRETTET.name() + "','" + MIGRERT.name() + "','" + LAGRET_I_HENVENDELSE.name() + "')";
-
-        String sqlSubSelect1 = " ( SELECT H2.BEHANDLINGSID FROM HENDELSE H2 " +
-                " WHERE H1.BEHANDLINGSID = H2.BEHANDLINGSID " +
-                " AND HENDELSE_TIDSPUNKT > CURRENT_TIMESTAMP - NUMTODSINTERVAL(?,'DAY')  " +
-                " AND " + gyldigeHendelseTyper  +  " ) ";
-
-        String sqlSubSelect2 =  " ( SELECT H3.BEHANDLINGSID FROM HENDELSE H3 " +
-                " WHERE H1.BEHANDLINGSID = H3.BEHANDLINGSID AND " + avsluttetHendelse + " ) ";
-
-        String sql = " SELECT BEHANDLINGSID FROM HENDELSE H1 WHERE " + gyldigeHendelseTyper +
-                " AND NOT EXISTS " +
-                sqlSubSelect1 +
-                " AND NOT EXISTS " +
-                sqlSubSelect2;
-
-         HashSet<String> resultSet = new HashSet<>();
-         resultSet.addAll(getJdbcTemplate().queryForList(sql,String.class,dagerGammel));
-
-        return resultSet;
-    }
-
-    public void lagreMigrasjonshendelse(String behandlingsId, int versjon, String skjemanummer) {
-        insertHendelse(behandlingsId, MIGRERT.name(), versjon, skjemanummer);
-    }
 
     private <T> T hentEtObjectAv(String sql, RowMapper<T> mapper, Object... args) {
         List<T> objekter = getJdbcTemplate().query(sql, mapper, args);
@@ -422,7 +379,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         return fakta;
     }
 
-    public void slettSoknad(long soknadId) {
+    private void slettSoknad(long soknadId) {
         logger.debug("Sletter søknad med ID: " + soknadId);
         getJdbcTemplate().update("delete from faktumegenskap where soknad_id = ?", soknadId);
         getJdbcTemplate().update("delete from soknadbrukerdata where soknad_id = ?", soknadId);
@@ -430,9 +387,9 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         getJdbcTemplate().update("delete from soknad where soknad_id = ?", soknadId);
     }
 
-    public void slettSoknad(WebSoknad soknad, HendelseType avsluttHendelse) {
-        insertHendelse(soknad.getBrukerBehandlingId(), avsluttHendelse.name(), soknad.getVersjon(), soknad.getskjemaNummer());
+    public void slettSoknad(WebSoknad soknad, HendelseType bakgrunnForLokalSletting) {
         slettSoknad(soknad.getSoknadId());
+        hendelseRepository.registrerHendelse(soknad, bakgrunnForLokalSletting);
     }
 
 

@@ -2,9 +2,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.batch;
 
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
-import no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
 import org.slf4j.Logger;
@@ -12,11 +11,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-
 import java.util.Collection;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType.AVBRUTT_AUTOMATISK;
-
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
@@ -29,7 +26,7 @@ public class SlettSoknadScheduler {
 
 
     @Inject
-    private SoknadRepository soknadRepository;
+    private HendelseRepository hendelseRepository;
     @Inject
     private HenvendelseService henvendelseService;
 
@@ -43,7 +40,7 @@ public class SlettSoknadScheduler {
 
             long start = System.currentTimeMillis();
 
-            Collection<String> ikkeAvsluttede = soknadRepository.hentBehandlingsIdForIkkeAvsluttede(DAGER_GAMMELT);
+            Collection<String> ikkeAvsluttede = hendelseRepository.hentBehandlingsIdForIkkeAvsluttede(DAGER_GAMMELT);
             int counter = 0;
             event.addTagToReport("antallIkkeAvsluttede","" + ikkeAvsluttede.size());
 
@@ -66,6 +63,6 @@ public class SlettSoknadScheduler {
     }
 
     private void settSoknadAvsluttet(String behandlingsId) {
-        soknadRepository.insertHendelse(behandlingsId, HendelseType.AVBRUTT_AUTOMATISK.name());
+        hendelseRepository.registrerAutomatiskAvsluttetHendelse(behandlingsId);
     }
 }

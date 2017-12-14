@@ -2,6 +2,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepositoryJdbc;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepositoryJdbc;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
@@ -24,6 +26,11 @@ public class DbTestConfig {
     @Bean
     public SoknadRepository soknadInnsendingRepository() {
         return new SoknadRepositoryJdbc();
+    }
+
+    @Bean
+    public HendelseRepository hendelseRepository() {
+        return new HendelseRepositoryJdbc();
     }
 
     @Bean

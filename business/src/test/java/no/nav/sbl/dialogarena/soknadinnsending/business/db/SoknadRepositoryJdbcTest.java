@@ -4,6 +4,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
@@ -38,6 +39,10 @@ public class SoknadRepositoryJdbcTest {
 
     @Inject
     private SoknadRepository soknadRepository;
+
+
+    @Inject
+    private HendelseRepository hendelseRepository;
 
     @Inject
     private RepositoryTestSupport soknadRepositoryTestSupport;
@@ -200,7 +205,7 @@ public class SoknadRepositoryJdbcTest {
     @Test
     public void skalKunneHenteVersjon() {
         opprettOgPersisterSoknad();
-        int versjon = soknadRepository.hentVersjon(behandlingsId);
+        int versjon = hendelseRepository.hentVersjon(behandlingsId);
         assertThat(versjon, is(1));
     }
 
@@ -408,7 +413,7 @@ public class SoknadRepositoryJdbcTest {
     @Test
     public void skalKunneSletteSoknad() {
         opprettOgPersisterSoknad();
-        soknadRepository.slettSoknad(soknadId);
+        soknadRepository.slettSoknad(soknad, AVBRUTT_AV_BRUKER);
         assertNull(soknadRepository.hentSoknad(soknadId));
     }
 
@@ -502,27 +507,7 @@ public class SoknadRepositoryJdbcTest {
         assertTrue(barneFaktum.get(0).getProperties().containsValue("value"));
     }
 
-    @Test
-    public void skalHenteIkkeAvsluttede(){
-        setupHendelser();
 
-        assertThat(soknadRepository.hentBehandlingsIdForIkkeAvsluttede(-1).size(), is(2));
-
-        assertThat(soknadRepository.hentBehandlingsIdForIkkeAvsluttede(1).size(), is(0));
-
-    }
-
-    private void setupHendelser(){
-        soknadRepository.insertHendelse("1", OPPRETTET.name(),1,"TEST_1");
-        soknadRepository.insertHendelse("1", LAGRET_I_HENVENDELSE.name(),1,"TEST_1");
-        soknadRepository.insertHendelse("1", MIGRERT.name(),2,"TEST_1");
-
-        soknadRepository.insertHendelse("2", OPPRETTET.name(),1,"TEST_2");
-
-        soknadRepository.insertHendelse("3", OPPRETTET.name(),2,"TEST_1");
-        soknadRepository.insertHendelse("3", LAGRET_I_HENVENDELSE.name(),2,"TEST_1");
-        soknadRepository.insertHendelse("3", INNSENDT.name(),2,"TEST_1");
-    }
 
     private List<Long> lagreXSoknader(int antall, int timerSidenLagring) {
         List<Long> soknadsIder = new ArrayList<>(antall);
