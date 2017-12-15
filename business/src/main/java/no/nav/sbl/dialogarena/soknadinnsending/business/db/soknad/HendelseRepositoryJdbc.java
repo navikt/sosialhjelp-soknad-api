@@ -88,8 +88,10 @@ public class HendelseRepositoryJdbc extends NamedParameterJdbcDaoSupport impleme
 
     private void insertHendelse(String behandlingsid, String hendelse_type, Integer versjon, String skjemanummer){
         getJdbcTemplate()
-                .update("insert into hendelse (BEHANDLINGSID, HENDELSE_TYPE, HENDELSE_TIDSPUNKT, VERSJON, SKJEMANUMMER)" +
-                            " values (?,?,CURRENT_TIMESTAMP,?,?)",
+                .update("update hendelse set SIST_HENDELSE = 0 where BEHANDLINGSID = ? AND SIST_HENDELSE=1", behandlingsid);
+        getJdbcTemplate()
+                .update("insert into hendelse (BEHANDLINGSID, HENDELSE_TYPE, HENDELSE_TIDSPUNKT, VERSJON, SKJEMANUMMER, SIST_HENDELSE)" +
+                            " values (?,?,CURRENT_TIMESTAMP,?,?, 1)",
                         behandlingsid,
                         hendelse_type,
                         versjon,
