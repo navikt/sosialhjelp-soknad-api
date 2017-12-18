@@ -12,12 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.sql.DataSource;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.toDate;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.whereLimit;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -60,25 +60,21 @@ public class HendelseRepositoryJdbc extends NamedParameterJdbcDaoSupport impleme
     }
 
     public Integer hentVersjon(String behandlingsId) {
-        String gyldigHendelseTyper = " hendelse_type in ('"+ OPPRETTET.name() + "','" + MIGRERT.name() + "')";
-        String sql = "SELECT * FROM (SELECT versjon FROM hendelse WHERE" + gyldigHendelseTyper + "  AND behandlingsid = ? ORDER BY hendelse_tidspunkt DESC)" + whereLimit(1);
-        return getJdbcTemplate().queryForObject(sql, new Object[] {behandlingsId}, Integer.class);
+        Object[] args = {OPPRETTET.name(), MIGRERT.name(), behandlingsId};
+        return getJdbcTemplate().queryForObject("SELECT * FROM (" +
+                        "SELECT versjon FROM hendelse WHERE (hendelse_type = ? or hendelse_type = ?) AND behandlingsid = ? ORDER BY hendelse_tidspunkt DESC)"
+                        + whereLimit(1),
+                args, Integer.class);
     }
 
     public List<String> hentSoknaderUnderArbeidEldreEnn(int antallDager) {
-        List<String> avsluttetHendelser = Stream.of(AVBRUTT_AUTOMATISK, INNSENDT, AVBRUTT_AV_BRUKER)
-                .map(type -> type.name())
-                .collect(toList());
+        List<String> avsluttetHendelser = Stream.of(AVBRUTT_AUTOMATISK, INNSENDT, AVBRUTT_AV_BRUKER).map(HendelseType::name).collect(toList());
 
-        List<String> args = new ArrayList<>();
-        args.addAll(avsluttetHendelser);
-        args.add(String.valueOf(antallDager));
-
-        List<String> soknaderUnderArbeid =        getJdbcTemplate()
+        List<String> soknaderUnderArbeid = getJdbcTemplate()
                 .queryForList("select BEHANDLINGSID from hendelse " +
                         "where SIST_HENDELSE=1 " +
                         "and ( HENDELSE_TYPE = ? or HENDELSE_TYPE = ? or HENDELSE_TYPE = ?)" +
-                        "and HENDELSE_TIDSPUNKT > CURRENT_TIMESTAMP - ? DAY", String.class, args.toArray());
+                        "and HENDELSE_TIDSPUNKT > " + toDate(antallDager), String.class, avsluttetHendelser.toArray());
 
 
         return soknaderUnderArbeid;
