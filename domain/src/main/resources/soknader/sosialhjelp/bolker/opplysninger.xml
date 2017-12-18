@@ -32,6 +32,19 @@
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
+    <faktum>
+        <id>opplysninger.arbeid.jobb.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.arbeid.jobb</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.arbeid.jobb.vedlegg</faktum>
+        <skjemaNummer>lonnslipp</skjemaNummer>
+        <skjemanummerTillegg>arbeid</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 
     <faktum>
         <id>opplysninger.arbeid.student</id>
@@ -51,6 +64,19 @@
         </properties>
         <optional>true</optional>
     </faktum>
+    <faktum>
+        <id>opplysninger.arbeid.student.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.arbeid.student</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.arbeid.student.vedlegg</faktum>
+        <skjemaNummer>student</skjemaNummer>
+        <skjemanummerTillegg>vedtak</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 
 
     <!-- Familiesituasjon -->
@@ -78,6 +104,19 @@
             </property>
         </properties>
     </faktum>
+    <faktum>
+        <id>opplysninger.familiesituasjon.barnebidrag.betaler.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.familiesituasjon.barnebidrag.betaler</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.familiesituasjon.barnebidrag.betaler.vedlegg</faktum>
+        <skjemaNummer>barnebidrag</skjemaNummer>
+        <skjemanummerTillegg>betaler</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 
     <faktum>
         <id>opplysninger.familiesituasjon.barnebidrag.mottar</id>
@@ -97,6 +136,20 @@
             </property>
         </properties>
     </faktum>
+    <faktum>
+        <id>opplysninger.familiesituasjon.barnebidrag.mottar.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.familiesituasjon.barnebidrag.mottar</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+    <vedlegg>
+        <faktum>opplysninger.familiesituasjon.barnebidrag.mottar.vedlegg</faktum>
+        <skjemaNummer>barnebidrag</skjemaNummer>
+        <skjemanummerTillegg>mottar</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 
     <faktum>
         <id>opplysninger.familiesituasjon.barnebidrag.begge</id>
@@ -146,6 +199,19 @@
         </properties>
         <optional>true</optional>
     </faktum>
+    <faktum>
+        <id>opplysninger.inntekt.bostotte.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.inntekt.bostotte</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.inntekt.bostotte.vedlegg</faktum>
+        <skjemaNummer>bostotte</skjemaNummer>
+        <skjemanummerTillegg>vedtak</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 
     <faktum>
         <id>opplysninger.inntekt.bankinnskudd.brukskonto</id>
@@ -166,6 +232,19 @@
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
+    <faktum>
+        <id>opplysninger.inntekt.bankinnskudd.brukskonto.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.inntekt.bankinnskudd.brukskonto</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.inntekt.bankinnskudd.brukskonto.vedlegg</faktum>
+        <skjemaNummer>kontooversikt</skjemaNummer>
+        <skjemanummerTillegg>brukskonto</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 
     <faktum>
         <id>opplysninger.inntekt.bankinnskudd.bsu</id>
@@ -186,6 +265,19 @@
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
+    <faktum>
+        <id>opplysninger.inntekt.bankinnskudd.bsu.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.inntekt.bankinnskudd.bsu</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.inntekt.bankinnskudd.bsu.vedlegg</faktum>
+        <skjemaNummer>kontooversikt</skjemaNummer>
+        <skjemanummerTillegg>bsu</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 
     <faktum>
         <id>opplysninger.inntekt.bankinnskudd.sparekonto</id>
@@ -206,6 +298,19 @@
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
+    <faktum>
+        <id>opplysninger.inntekt.bankinnskudd.sparekonto.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.inntekt.bankinnskudd.sparekonto</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.inntekt.bankinnskudd.sparekonto.vedlegg</faktum>
+        <skjemaNummer>kontooversikt</skjemaNummer>
+        <skjemanummerTillegg>sparekonto</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 
     <faktum>
         <id>opplysninger.inntekt.bankinnskudd.livsforsikring</id>
@@ -226,6 +331,19 @@
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
+    <faktum>
+        <id>opplysninger.inntekt.bankinnskudd.livsforsikring.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.inntekt.bankinnskudd.livsforsikring</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.inntekt.bankinnskudd.livsforsikring.vedlegg</faktum>
+        <skjemaNummer>kontooversikt</skjemaNummer>
+        <skjemanummerTillegg>livsforsikring</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 
     <faktum>
         <id>opplysninger.inntekt.bankinnskudd.aksjer</id>
@@ -246,6 +364,19 @@
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
+    <faktum>
+        <id>opplysninger.inntekt.bankinnskudd.aksjer.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.inntekt.bankinnskudd.aksjer</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.inntekt.bankinnskudd.aksjer.vedlegg</faktum>
+        <skjemaNummer>kontooversikt</skjemaNummer>
+        <skjemanummerTillegg>aksjer</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 
     <faktum>
         <id>opplysninger.inntekt.bankinnskudd.annet</id>
@@ -266,6 +397,19 @@
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
+    <faktum>
+        <id>opplysninger.inntekt.bankinnskudd.annet.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.inntekt.bankinnskudd.annet</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.inntekt.bankinnskudd.annet.vedlegg</faktum>
+        <skjemaNummer>kontooversikt</skjemaNummer>
+        <skjemanummerTillegg>annet</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 
     <faktum>
         <id>opplysninger.inntekt.inntekter.utbytte</id>
@@ -286,6 +430,19 @@
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
+    <faktum>
+        <id>opplysninger.inntekt.inntekter.utbytte.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.inntekt.inntekter.utbytte</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.inntekt.inntekter.utbytte.vedlegg</faktum>
+        <skjemaNummer>dokumentasjon</skjemaNummer>
+        <skjemanummerTillegg>utbytte</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 
     <faktum>
         <id>opplysninger.inntekt.inntekter.salg</id>
@@ -306,6 +463,19 @@
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
+    <faktum>
+        <id>opplysninger.inntekt.inntekter.salg.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.inntekt.inntekter.salg</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.inntekt.inntekter.salg.vedlegg</faktum>
+        <skjemaNummer>salgsoppgjor</skjemaNummer>
+        <skjemanummerTillegg>eiendom</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 
     <faktum>
         <id>opplysninger.inntekt.inntekter.forsikringsutbetalinger</id>
@@ -326,6 +496,19 @@
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
+    <faktum>
+        <id>opplysninger.inntekt.inntekter.forsikringsutbetalinger.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.inntekt.inntekter.forsikringsutbetalinger</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.inntekt.inntekter.forsikringsutbetalinger.vedlegg</faktum>
+        <skjemaNummer>dokumentasjon</skjemaNummer>
+        <skjemanummerTillegg>forsikringsutbetalinger</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 
     <faktum>
         <id>opplysninger.inntekt.inntekter.annet</id>
@@ -346,6 +529,19 @@
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
+    <faktum>
+        <id>opplysninger.inntekt.inntekter.annet.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.inntekt.inntekter.annet</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.inntekt.inntekter.annet.vedlegg</faktum>
+        <skjemaNummer>dokumentasjon</skjemaNummer>
+        <skjemanummerTillegg>annetinntekter</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 
 
     <!-- Utgifter -->
@@ -373,6 +569,19 @@
         </properties>
         <optional>true</optional>
     </faktum>
+    <faktum>
+        <id>opplysninger.utgifter.boutgift.husleie.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.utgifter.boutgift.husleie</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.utgifter.boutgift.husleie.vedlegg</faktum>
+        <skjemaNummer>faktura</skjemaNummer>
+        <skjemanummerTillegg>husleie</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 
     <faktum>
         <id>opplysninger.utgifter.boutgift.strom</id>
@@ -392,6 +601,19 @@
         </properties>
         <optional>true</optional>
     </faktum>
+    <faktum>
+        <id>opplysninger.utgifter.boutgift.strom.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.utgifter.boutgift.strom</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.utgifter.boutgift.strom.vedlegg</faktum>
+        <skjemaNummer>faktura</skjemaNummer>
+        <skjemanummerTillegg>strom</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 
     <faktum>
         <id>opplysninger.utgifter.boutgift.kommunaleavgifter</id>
@@ -411,6 +633,19 @@
         </properties>
         <optional>true</optional>
     </faktum>
+    <faktum>
+        <id>opplysninger.utgifter.boutgift.kommunaleavgifter.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.utgifter.boutgift.kommunaleavgifter</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.utgifter.boutgift.kommunaleavgifter.vedlegg</faktum>
+        <skjemaNummer>faktura</skjemaNummer>
+        <skjemanummerTillegg>kommunaleavgifter</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 
     <faktum>
         <id>opplysninger.utgifter.boutgift.oppvarming</id>
@@ -430,6 +665,19 @@
         </properties>
         <optional>true</optional>
     </faktum>
+    <faktum>
+        <id>opplysninger.utgifter.boutgift.oppvarming.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.utgifter.boutgift.oppvarming</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.utgifter.boutgift.oppvarming.vedlegg</faktum>
+        <skjemaNummer>faktura</skjemaNummer>
+        <skjemanummerTillegg>oppvarming</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 
     <faktum>
         <id>opplysninger.utgifter.boutgift.avdraglaan</id>
@@ -454,6 +702,19 @@
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
+    <faktum>
+        <id>opplysninger.utgifter.boutgift.avdraglaan.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.utgifter.boutgift.avdraglaan</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.utgifter.boutgift.avdraglaan.vedlegg</faktum>
+        <skjemaNummer>nedbetalingsplan</skjemaNummer>
+        <skjemanummerTillegg>avdraglaan</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 
     <faktum>
         <id>opplysninger.utgifter.boutgift.andreutgifter</id>
@@ -484,6 +745,19 @@
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
+    <faktum>
+        <id>opplysninger.utgifter.boutgift.andreutgifter.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.utgifter.boutgift.andreutgifter</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.utgifter.boutgift.andreutgifter.vedlegg</faktum>
+        <skjemaNummer>dokumentasjon</skjemaNummer>
+        <skjemanummerTillegg>annetboutgift</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 
 
     <faktum>
@@ -505,6 +779,19 @@
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
+    <faktum>
+        <id>opplysninger.utgifter.barn.fritidsaktivitet.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.utgifter.barn.fritidsaktivitet</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.utgifter.barn.fritidsaktivitet.vedlegg</faktum>
+        <skjemaNummer>faktura</skjemaNummer>
+        <skjemanummerTillegg>fritidsaktivitet</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 
     <faktum>
         <id>opplysninger.utgifter.barn.barnehage</id>
@@ -525,6 +812,19 @@
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
+    <faktum>
+        <id>opplysninger.utgifter.barn.barnehage.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.utgifter.barn.barnehage</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.utgifter.barn.barnehage.vedlegg</faktum>
+        <skjemaNummer>faktura</skjemaNummer>
+        <skjemanummerTillegg>barnehage</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 
     <faktum>
         <id>opplysninger.utgifter.barn.sfo</id>
@@ -545,6 +845,19 @@
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
+    <faktum>
+        <id>opplysninger.utgifter.barn.sfo.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.utgifter.barn.sfo</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.utgifter.barn.sfo.vedlegg</faktum>
+        <skjemaNummer>faktura</skjemaNummer>
+        <skjemanummerTillegg>sfo</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 
     <faktum>
         <id>opplysninger.utgifter.barn.tannbehandling</id>
@@ -565,6 +878,19 @@
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
+    <faktum>
+        <id>opplysninger.utgifter.barn.tannbehandling.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.utgifter.barn.tannbehandling</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.utgifter.barn.tannbehandling.vedlegg</faktum>
+        <skjemaNummer>faktura</skjemaNummer>
+        <skjemanummerTillegg>tannbehandling</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 
     <faktum>
         <id>opplysninger.utgifter.barn.annet</id>
@@ -595,6 +921,19 @@
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
+    <faktum>
+        <id>opplysninger.utgifter.barn.annet.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.utgifter.barn.annet</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.utgifter.barn.annet.vedlegg</faktum>
+        <skjemaNummer>faktura</skjemaNummer>
+        <skjemanummerTillegg>annetbarnutgift</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 
     <!-- Ekstrainfo -->
     <faktum>
@@ -626,5 +965,18 @@
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
+    <faktum>
+        <id>opplysninger.ekstrainfo.utgifter.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.ekstrainfo.utgifter</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.ekstrainfo.utgifter.vedlegg</faktum>
+        <skjemaNummer>annet</skjemaNummer>
+        <skjemanummerTillegg>annet</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 
 </soknad>
