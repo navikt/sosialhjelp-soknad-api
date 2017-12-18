@@ -12,9 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.sql.DataSource;
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.toList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType.*;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.whereLimit;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -25,6 +27,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 @Named("hendelseRepository")
 @Component
+//hva er dette?
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
 public class HendelseRepositoryJdbc extends NamedParameterJdbcDaoSupport implements HendelseRepository {
 
@@ -33,17 +36,18 @@ public class HendelseRepositoryJdbc extends NamedParameterJdbcDaoSupport impleme
     public HendelseRepositoryJdbc() {
     }
 
+
     @Inject
     public void setDS(DataSource ds) {
         super.setDataSource(ds);
     }
 
     public void registrerOpprettetHendelse(WebSoknad soknad) {
-        insertHendelse(soknad.getBrukerBehandlingId(), OPPRETTET.name(), soknad.getVersjon() , soknad.getskjemaNummer());
+        insertHendelse(soknad.getBrukerBehandlingId(), OPPRETTET.name(), soknad.getVersjon(), soknad.getskjemaNummer());
     }
 
     public void registrerHendelse(WebSoknad soknad, HendelseType hendelse) {
-        insertHendelse(soknad.getBrukerBehandlingId(), hendelse.name(), soknad.getVersjon() , soknad.getskjemaNummer());
+        insertHendelse(soknad.getBrukerBehandlingId(), hendelse.name(), soknad.getVersjon(), soknad.getskjemaNummer());
     }
 
     public void registrerMigrertHendelse(WebSoknad soknad) {
@@ -61,37 +65,31 @@ public class HendelseRepositoryJdbc extends NamedParameterJdbcDaoSupport impleme
         return getJdbcTemplate().queryForObject(sql, new Object[] {behandlingsId}, Integer.class);
     }
 
-    public Collection<String> hentBehandlingsIdForIkkeAvsluttede(int dagerGammel) {
+    public List<String> hentSoknaderUnderArbeidEldreEnn(int antallDager) {
+        List<String> avsluttetHendelser = Stream.of(AVBRUTT_AUTOMATISK, INNSENDT, AVBRUTT_AV_BRUKER)
+                .map(type -> type.name())
+                .collect(toList());
 
-        String avsluttetHendelse = "HENDELSE_TYPE in ('"+ AVBRUTT_AUTOMATISK.name() +"','" + AVBRUTT_AV_BRUKER.name() +"','" + INNSENDT.name() + "')";
-        String gyldigeHendelseTyper = " HENDELSE_TYPE in ('"+ OPPRETTET.name() + "','" + MIGRERT.name() + "','" + LAGRET_I_HENVENDELSE.name() + "')";
+        List<String> args = new ArrayList<>();
+        args.addAll(avsluttetHendelser);
+        args.add(String.valueOf(antallDager));
 
-        String sqlSubSelect1 = " ( SELECT H2.BEHANDLINGSID FROM HENDELSE H2 " +
-                " WHERE H1.BEHANDLINGSID = H2.BEHANDLINGSID " +
-                " AND HENDELSE_TIDSPUNKT > CURRENT_TIMESTAMP - NUMTODSINTERVAL(?,'DAY')  " +
-                " AND " + gyldigeHendelseTyper  +  " ) ";
+        List<String> soknaderUnderArbeid =        getJdbcTemplate()
+                .queryForList("select BEHANDLINGSID from hendelse " +
+                        "where SIST_HENDELSE=1 " +
+                        "and ( HENDELSE_TYPE = ? or HENDELSE_TYPE = ? or HENDELSE_TYPE = ?)" +
+                        "and HENDELSE_TIDSPUNKT > CURRENT_TIMESTAMP - ? DAY", String.class, args.toArray());
 
-        String sqlSubSelect2 =  " ( SELECT H3.BEHANDLINGSID FROM HENDELSE H3 " +
-                " WHERE H1.BEHANDLINGSID = H3.BEHANDLINGSID AND " + avsluttetHendelse + " ) ";
 
-        String sql = " SELECT BEHANDLINGSID FROM HENDELSE H1 WHERE " + gyldigeHendelseTyper +
-                " AND NOT EXISTS " +
-                sqlSubSelect1 +
-                " AND NOT EXISTS " +
-                sqlSubSelect2;
-
-        HashSet<String> resultSet = new HashSet<>();
-        resultSet.addAll(getJdbcTemplate().queryForList(sql,String.class,dagerGammel));
-
-        return resultSet;
+        return soknaderUnderArbeid;
     }
 
-    private void insertHendelse(String behandlingsid, String hendelse_type, Integer versjon, String skjemanummer){
+    private void insertHendelse(String behandlingsid, String hendelse_type, Integer versjon, String skjemanummer) {
         getJdbcTemplate()
                 .update("update hendelse set SIST_HENDELSE = 0 where BEHANDLINGSID = ? AND SIST_HENDELSE=1", behandlingsid);
         getJdbcTemplate()
                 .update("insert into hendelse (BEHANDLINGSID, HENDELSE_TYPE, HENDELSE_TIDSPUNKT, VERSJON, SKJEMANUMMER, SIST_HENDELSE)" +
-                            " values (?,?,CURRENT_TIMESTAMP,?,?, 1)",
+                                " values (?,?,CURRENT_TIMESTAMP,?,?, 1)",
                         behandlingsid,
                         hendelse_type,
                         versjon,
