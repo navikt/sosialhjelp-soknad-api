@@ -60,7 +60,7 @@ public class VedleggOriginalFilerServiceTest {
                         .medFillagerReferanse("filuid-1234")
         );
 
-        when(soknadRepository.hentSoknad(9999L)).thenReturn(
+        when(soknadRepository.hentSoknadMedData(9999L)).thenReturn(
                 new WebSoknad()
                         .medId(9999L)
                         .medFaktum(new Faktum().medKey("opplysning.vedlegg").medFaktumId(4567L))
@@ -85,7 +85,7 @@ public class VedleggOriginalFilerServiceTest {
                 .medFillagerReferanse("filuid-1234");
         when(vedleggRepository.hentVedlegg(1234L)).thenReturn(vedlegg);
 
-        when(soknadRepository.hentSoknad(9999L)).thenReturn(
+        when(soknadRepository.hentSoknadMedData(9999L)).thenReturn(
                 new WebSoknad()
                         .medId(9999L)
                         .medFaktum(new Faktum().medKey("opplysning.vedlegg").medFaktumId(4567L))
