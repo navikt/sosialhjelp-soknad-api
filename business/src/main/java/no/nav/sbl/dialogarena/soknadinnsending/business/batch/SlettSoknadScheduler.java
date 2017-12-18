@@ -11,7 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import java.util.Collection;
+import java.util.List;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType.AVBRUTT_AUTOMATISK;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -40,14 +40,15 @@ public class SlettSoknadScheduler {
 
             long start = System.currentTimeMillis();
 
-            Collection<String> ikkeAvsluttede = hendelseRepository.hentBehandlingsIdForIkkeAvsluttede(DAGER_GAMMELT);
-            int counter = 0;
-            event.addTagToReport("antallIkkeAvsluttede","" + ikkeAvsluttede.size());
+            List<String> soknaderUnderArbeid = hendelseRepository.hentSoknaderUnderArbeidEldreEnn(DAGER_GAMMELT);
 
-            for(String behandlingsid : ikkeAvsluttede){
+            int counter = 0;
+            event.addTagToReport("antallIkkeAvsluttede","" + soknaderUnderArbeid.size());
+
+            for(String behandlingsid : soknaderUnderArbeid){
                 WSHentSoknadResponse wsHentSoknadResponse = henvendelseService.hentSoknad(behandlingsid);
                 if(AVBRUTT_AUTOMATISK.equals(SoknadInnsendingStatus.valueOf(wsHentSoknadResponse.getStatus()))){
-                    settSoknadAvsluttet(behandlingsid);
+                    hendelseRepository.registrerAutomatiskAvsluttetHendelse(behandlingsid);
                     event.addTagToReport("avslutterSoknad",behandlingsid);
                     counter++;
                 }
@@ -62,7 +63,4 @@ public class SlettSoknadScheduler {
         }
     }
 
-    private void settSoknadAvsluttet(String behandlingsId) {
-        hendelseRepository.registrerAutomatiskAvsluttetHendelse(behandlingsId);
-    }
 }

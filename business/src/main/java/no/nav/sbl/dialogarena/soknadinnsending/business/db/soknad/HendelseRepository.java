@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface HendelseRepository {
 
@@ -17,5 +17,5 @@ public interface HendelseRepository {
 
     Integer hentVersjon(String behandlingsId);
 
-    Collection<String> hentBehandlingsIdForIkkeAvsluttede(int dagerGammel);
+    List<String> hentSoknaderUnderArbeidEldreEnn(int antallDager);
 }
