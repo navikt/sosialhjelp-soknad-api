@@ -7,6 +7,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad.Type;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService.Forventning;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
@@ -50,7 +51,7 @@ public class SosialhjelpVedleggRessurs {
     @Path("/originalfil/{faktumId}")
     @Consumes(MULTIPART_FORM_DATA)
     @SjekkTilgangTilSoknad(type = Type.Faktum)
-    public Vedlegg lastOppOriginalfil(@PathParam("faktumId") final Long faktumId, @FormDataParam("file") final FormDataBodyPart fil) {
+    public Forventning lastOppOriginalfil(@PathParam("faktumId") final Long faktumId, @FormDataParam("file") final FormDataBodyPart fil) {
         if (fil.getValueAs(File.class).length() > MAKS_TOTAL_FILSTORRELSE) {
             throw new OpplastingException("Kunne ikke lagre fil fordi total filstørrelse er for stor", null, "vedlegg.opplasting.feil.forStor");
         }
@@ -58,16 +59,18 @@ public class SosialhjelpVedleggRessurs {
         String filnavn = fil.getContentDisposition().getFileName();
         byte[] data = getByteArray(fil);
 
-        Vedlegg vedlegg = vedleggOriginalFilerService.lagEllerFinnVedleggsForventning(faktumId);
-        vedleggOriginalFilerService.leggTilOriginalVedlegg(vedlegg, data, filnavn);
-        return vedleggService.hentVedlegg(vedlegg.getVedleggId(), false);
+        Forventning forventning = vedleggOriginalFilerService.lagEllerFinnVedleggsForventning(faktumId);
+        vedleggOriginalFilerService.leggTilOriginalVedlegg(forventning.vedlegg, data, filnavn);
+        Vedlegg oppdatertVedlegg = vedleggService.hentVedlegg(forventning.vedlegg.getVedleggId(), false);
+
+        return new Forventning(forventning.faktum, oppdatertVedlegg, forventning.nyForventning);
     }
 
     @DELETE
     @Path("/{vedleggId}")
     @SjekkTilgangTilSoknad(type = Vedlegg)
-    public void slettOriginalFil(@PathParam("vedleggId") final Long vedleggId) {
-        vedleggOriginalFilerService.slettOriginalVedlegg(vedleggId);
+    public Vedlegg slettOriginalFil(@PathParam("vedleggId") final Long vedleggId) {
+        return vedleggOriginalFilerService.slettOriginalVedlegg(vedleggId);
     }
 
     @GET

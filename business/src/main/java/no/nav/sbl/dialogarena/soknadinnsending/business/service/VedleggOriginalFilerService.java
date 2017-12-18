@@ -111,9 +111,9 @@ public class VedleggOriginalFilerService {
      * gitt at det ikke allerede er lastet opp. Om ikke, eller det finnes flere,
      * lager vi ny
      */
-    public Vedlegg lagEllerFinnVedleggsForventning(Long faktumId) {
+    public Forventning lagEllerFinnVedleggsForventning(Long faktumId) {
         String behandlingsId = faktaService.hentBehandlingsId(faktumId);
-        WebSoknad soknad = repository.hentSoknad(behandlingsId);
+        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, false);
 
         Faktum faktum = soknad.getFaktumMedId(faktumId + "");
         String vedleggKey = faktum.getKey() + ".vedlegg";
@@ -127,14 +127,15 @@ public class VedleggOriginalFilerService {
         Vedlegg vedlegg = vedleggService.hentPaakrevdeVedlegg(vedleggFaktum.getFaktumId()).get(0);
 
         if (vedleggsFakta.size() == 1 && vedlegg.getInnsendingsvalg().er(VedleggKreves)) {
-            return vedlegg;
+            return new Forventning(vedleggFaktum, vedlegg, false);
         } else {
             Faktum nyttVedleggFaktum = new Faktum()
                     .medKey(vedleggKey)
                     .medParrentFaktumId(faktumId);
-            faktaService.opprettBrukerFaktum(soknad.getBrukerBehandlingId(), nyttVedleggFaktum);
+            nyttVedleggFaktum = faktaService.opprettBrukerFaktum(soknad.getBrukerBehandlingId(), nyttVedleggFaktum);
+            Vedlegg nyttVedlegg = vedleggService.hentPaakrevdeVedlegg(nyttVedleggFaktum.getFaktumId()).get(0);
 
-            return vedleggService.hentPaakrevdeVedlegg(nyttVedleggFaktum.getFaktumId()).get(0);
+            return new Forventning(nyttVedleggFaktum, nyttVedlegg, true);
         }
     }
 
@@ -154,10 +155,10 @@ public class VedleggOriginalFilerService {
         vedleggRepository.lagreVedleggMedData(soknad.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
     }
 
-    public void slettOriginalVedlegg(Long vedleggId) {
+    public Vedlegg slettOriginalVedlegg(Long vedleggId) {
         Vedlegg vedlegg = vedleggRepository.hentVedlegg(vedleggId);
         Long soknadId = vedlegg.getSoknadId();
-        WebSoknad soknad = repository.hentSoknad(soknadId);
+        WebSoknad soknad = repository.hentSoknadMedData(soknadId);
 
         Long faktumId = vedlegg.getFaktumId();
         Faktum faktum = soknad.getFaktumMedId(faktumId + "");
@@ -167,12 +168,16 @@ public class VedleggOriginalFilerService {
         if (fakta.size() == 1) {
             vedlegg.fjernInnhold();
             vedleggRepository.lagreVedleggMedData(soknad.getSoknadId(), vedleggId, vedlegg);
+
+            fillagerService.slettFil(vedlegg.getFillagerReferanse());
+            return vedleggRepository.hentVedlegg(vedleggId);
         } else {
             vedleggRepository.slettVedleggMedVedleggId(vedleggId);
             repository.slettBrukerFaktum(soknad.getSoknadId(), faktumId);
-        }
 
-        fillagerService.slettFil(vedlegg.getFillagerReferanse());
+            fillagerService.slettFil(vedlegg.getFillagerReferanse());
+            return null;
+        }
     }
 
     private void validerFil(byte[] data) {
@@ -190,6 +195,9 @@ public class VedleggOriginalFilerService {
         if (separator != -1) {
             filnavn = opplastetNavn.substring(0, separator);
         }
+
+        filnavn = filnavn.replaceAll("[^a-zA-Z0-9_-]", "");
+
         if (filnavn.length() > 50) {
             filnavn = filnavn.substring(0, 50);
         }
@@ -198,6 +206,18 @@ public class VedleggOriginalFilerService {
         filnavn += MIME_TIL_EXT.get(mimetype);
 
         return filnavn;
+    }
+
+    public static class Forventning {
+        public final Faktum faktum;
+        public final Vedlegg vedlegg;
+        public final boolean nyForventning;
+
+        public Forventning(Faktum faktum, Vedlegg vedlegg, boolean nyForventning) {
+            this.faktum = faktum;
+            this.vedlegg = vedlegg;
+            this.nyForventning = nyForventning;
+        }
     }
 
 }

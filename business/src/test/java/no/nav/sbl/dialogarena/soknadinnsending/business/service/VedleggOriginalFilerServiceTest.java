@@ -46,6 +46,9 @@ public class VedleggOriginalFilerServiceTest {
                 "image/jpeg", "5c2a1cea-ef05-4db6-9c98-1b6c9b3faa99");
         assertEquals("etkjempelangtfilnavn123456789012345678901234567890-5c2a1cea.jpg", truncate);
 
+        String medSpesialTegn = service.lagFilnavn("en.filmedææå()ogmyerart.png", "image/jpeg", "abc-ef05");
+        assertEquals("enfilmedogmyerart-abc.jpg", medSpesialTegn);
+
     }
 
     @Test
@@ -65,7 +68,8 @@ public class VedleggOriginalFilerServiceTest {
                         .medFaktum(new Faktum().medKey("opplysning.noeabsoluttheltannet"))
         );
 
-        vedleggOriginalFilerService.slettOriginalVedlegg(1234L);
+        Vedlegg vedlegg = vedleggOriginalFilerService.slettOriginalVedlegg(1234L);
+        assertEquals(null, vedlegg);
 
         verify(vedleggRepository).slettVedleggMedVedleggId(1234L);
         verify(soknadRepository).slettBrukerFaktum(9999L, 4567L);
@@ -87,7 +91,8 @@ public class VedleggOriginalFilerServiceTest {
                         .medFaktum(new Faktum().medKey("opplysning.vedlegg").medFaktumId(4567L))
         );
 
-        vedleggOriginalFilerService.slettOriginalVedlegg(1234L);
+        Vedlegg slettetVedlegg = vedleggOriginalFilerService.slettOriginalVedlegg(1234L);
+        assertEquals(1234L, slettetVedlegg.getVedleggId().longValue());
 
         verify(vedleggRepository).lagreVedleggMedData(9999L, 1234L, vedlegg);
         assertEquals(VedleggKreves, vedlegg.getInnsendingsvalg());

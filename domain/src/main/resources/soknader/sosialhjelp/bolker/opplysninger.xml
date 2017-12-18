@@ -36,14 +36,15 @@
     <faktum>
         <id>opplysninger.arbeid.jobb.vedlegg</id>
         <type>hidden</type>
-        <dependOn>opplysninger.arbeid</dependOn>
+        <dependOn>opplysninger.arbeid.jobb</dependOn>
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
 
     <vedlegg>
         <faktum>opplysninger.arbeid.jobb.vedlegg</faktum>
-        <skjemaNummer>X8</skjemaNummer>
+        <skjemaNummer>lonnslipp</skjemaNummer>
+        <skjemanummerTillegg>arbeid</skjemanummerTillegg>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
