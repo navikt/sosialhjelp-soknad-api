@@ -98,6 +98,7 @@ public class PersonaliaFletter {
                 .withMellomnavn(finnMellomNavn(xmlBruker).trim())
                 .withEtternavn(finnEtterNavn(xmlBruker))
                 .epost(finnEpost(dkifResponse))
+                .mobiltelefon(finnMobiltelefonnummer(dkifResponse))
                 .statsborgerskap(finnStatsborgerskap(xmlPerson))
                 .kjonn(finnKjonn(xmlBruker))
                 .gjeldendeAdresse(finnGjeldendeAdresse(xmlBruker, kodeverk))
@@ -167,6 +168,14 @@ public class PersonaliaFletter {
         return new LocalDate(person.getFoedselsdato().getFoedselsdato().toGregorianCalendar());
     }
 
+    private static String finnMobiltelefonnummer(WSHentDigitalKontaktinformasjonResponse dkifResponse) {
+        WSKontaktinformasjon digitalKontaktinformasjon = dkifResponse.getDigitalKontaktinformasjon();
+        if (digitalKontaktinformasjon == null || digitalKontaktinformasjon.getMobiltelefonnummer() == null) {
+            return "";
+        }
+        return digitalKontaktinformasjon.getMobiltelefonnummer().getValue();
+    }
+    
     private static String finnEpost(WSHentDigitalKontaktinformasjonResponse dkifResponse) {
         WSKontaktinformasjon digitalKontaktinformasjon = dkifResponse.getDigitalKontaktinformasjon();
         if (digitalKontaktinformasjon == null || digitalKontaktinformasjon.getEpostadresse() == null) {
