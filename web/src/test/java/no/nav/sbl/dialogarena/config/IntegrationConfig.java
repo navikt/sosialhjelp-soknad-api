@@ -4,18 +4,18 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.ClassPath;
 import com.google.common.reflect.Invokable;
 import no.finn.unleash.FakeUnleash;
-import no.finn.unleash.Unleash;
+import no.finn.unleash.UnleashContextProvider;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import org.mockito.Mockito;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.mockito.Mockito.mock;
 
 @Configuration
 public class IntegrationConfig {
@@ -42,15 +42,21 @@ public class IntegrationConfig {
             }
 
 
-            NavMessageSource mock = Mockito.mock(NavMessageSource.class);
+            NavMessageSource mock = mock(NavMessageSource.class);
+
+
+            String name = "navMessageSource";
+            MOCKS.put(name, mock);
+            beanFactory.registerSingleton(name, mock);
 
             FakeUnleash fakeUnleash = new FakeUnleash();
             fakeUnleash.enableAll();
-            String name = "navMessageSource";
-            MOCKS.put(name, mock);
             MOCKS.put("unleashToggle", fakeUnleash);
-            beanFactory.registerSingleton(name, mock);
             beanFactory.registerSingleton("unleashToggle", fakeUnleash);
+
+            UnleashContextProvider mockContext = mock(UnleashContextProvider.class);
+            MOCKS.put("unleashContextProvider", mockContext);
+            beanFactory.registerSingleton("unleashContextProvider", mockContext);
         };
     }
 
@@ -59,7 +65,7 @@ public class IntegrationConfig {
     private static Map<String, Object> MOCKS = new HashMap<>();
 
     private Object mockClass(Class<?> type) throws Exception {
-        Object mock = Mockito.mock(type);
+        Object mock = mock(type);
         System.out.println("mocking " + type);
         return mock;
     }

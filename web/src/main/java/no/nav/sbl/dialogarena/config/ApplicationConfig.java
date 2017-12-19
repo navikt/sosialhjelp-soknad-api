@@ -2,7 +2,10 @@ package no.nav.sbl.dialogarena.config;
 
 import no.finn.unleash.DefaultUnleash;
 import no.finn.unleash.Unleash;
+import no.finn.unleash.UnleashContext;
+import no.finn.unleash.UnleashContextProvider;
 import no.finn.unleash.util.UnleashConfig;
+import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.service.EmailService;
 import no.nav.sbl.dialogarena.service.HandleBarKjoerer;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
@@ -18,6 +21,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
+import javax.inject.Inject;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -94,10 +98,20 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public Unleash unleashToggle() throws UnknownHostException {
+    public UnleashContextProvider unleashContextProvider(){
+        return () -> UnleashContext
+                .builder()
+                .userId(SubjectHandler.getSubjectHandler().getUid())
+                .build();
+    }
+
+    @Inject
+    @Bean
+    public Unleash unleashToggle(UnleashContextProvider provider) throws UnknownHostException {
         UnleashConfig config = UnleashConfig.builder()
                 .appName(System.getProperty("application.name"))
                 .instanceId(InetAddress.getLocalHost().getHostName()) // miljø
+                .unleashContextProvider(provider)
                 .unleashAPI(System.getProperty("unleash.api.url", "https://unleash.nais.oera-q.local/api/"))
                 .build();
 
