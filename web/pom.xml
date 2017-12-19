@@ -295,6 +295,10 @@
             <artifactId>gson</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>no.finn.unleash</groupId>
+            <artifactId>unleash-client-java</artifactId>
+        </dependency>
 
         <!-- Avhengigheter med scope test -->
 

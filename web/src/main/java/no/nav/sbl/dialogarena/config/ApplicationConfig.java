@@ -1,5 +1,8 @@
 package no.nav.sbl.dialogarena.config;
 
+import no.finn.unleash.DefaultUnleash;
+import no.finn.unleash.Unleash;
+import no.finn.unleash.util.UnleashConfig;
 import no.nav.sbl.dialogarena.service.EmailService;
 import no.nav.sbl.dialogarena.service.HandleBarKjoerer;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
@@ -14,6 +17,9 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * Applikasjonskontekst for ear-modulen.
@@ -85,6 +91,17 @@ public class ApplicationConfig {
     @Bean
     public HtmlGenerator handleBarKjoerer() {
         return new HandleBarKjoerer();
+    }
+
+    @Bean
+    public Unleash unleashToggle() throws UnknownHostException {
+        UnleashConfig config = UnleashConfig.builder()
+                .appName("sendsoknad") //$application.name
+                .instanceId(InetAddress.getLocalHost().getHostName())
+                .unleashAPI("https://unleash.nais.preprod.local/")
+                .build();
+
+        return new DefaultUnleash(config);
     }
 
 }

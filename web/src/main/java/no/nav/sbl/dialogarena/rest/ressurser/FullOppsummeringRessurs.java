@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
+import no.finn.unleash.Unleash;
 import no.nav.sbl.dialogarena.rest.utils.PDFService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.FeatureToggler;
@@ -34,6 +35,9 @@ public class FullOppsummeringRessurs {
     @Inject
     private PDFService pdfService;
     private static final Logger LOG = LoggerFactory.getLogger(FullOppsummeringRessurs.class);
+
+    @Inject
+    private Unleash featuretoggle;
 
     @Deprecated
     @GET
@@ -76,7 +80,7 @@ public class FullOppsummeringRessurs {
 
     private void sjekkOmFullOppsummeringErAktivert(String metode) {
         LOG.warn("OppsummeringRessurs metode {} forsøkt aksessert", metode);
-        if (!erFeatureAktiv(RESSURS_FULLOPPSUMERING)) {
+        if (!featuretoggle.isEnabled(RESSURS_FULLOPPSUMERING.getPropertyNavn())) {
             throw new NotFoundException("Ikke aktivert fulloppsummering");
         }
     }
