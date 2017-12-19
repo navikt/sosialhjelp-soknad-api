@@ -97,8 +97,8 @@ public class ApplicationConfig {
     public Unleash unleashToggle() throws UnknownHostException {
         UnleashConfig config = UnleashConfig.builder()
                 .appName("sendsoknad") //$application.name
-                .instanceId(InetAddress.getLocalHost().getHostName())
-                .unleashAPI("https://unleash.nais.preprod.local/")
+                .instanceId(InetAddress.getLocalHost().getHostName()) // miljø
+                .unleashAPI("https://unleash.nais.preprod.local/api/")
                 .build();
 
         return new DefaultUnleash(config);
