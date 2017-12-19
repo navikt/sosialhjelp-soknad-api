@@ -15,6 +15,8 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.IkkeVedlegg;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.VedleggKreves;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -36,6 +38,8 @@ public class Vedlegg {
     private Map<String, String> urls = new HashMap<>();
     private String tittel;
     private String aarsak;
+    private String filnavn;
+    private String mimetype;
 
     public Vedlegg() {
     }
@@ -114,6 +118,16 @@ public class Vedlegg {
 
     public Vedlegg medAarsak(String aarsak) {
         this.setAarsak(aarsak);
+        return this;
+    }
+
+    public Vedlegg medFilnavn(String filnavn) {
+        this.setFilnavn(filnavn);
+        return this;
+    }
+
+    public Vedlegg medMimetype(String mimetype) {
+        this.setMimetype(mimetype);
         return this;
     }
 
@@ -229,6 +243,22 @@ public class Vedlegg {
         return urls;
     }
 
+    public String getFilnavn() {
+        return filnavn;
+    }
+
+    public void setFilnavn(String filnavn) {
+        this.filnavn = filnavn;
+    }
+
+    public String getMimetype() {
+        return mimetype;
+    }
+
+    public void setMimetype(String mimetype) {
+        this.mimetype = mimetype;
+    }
+
     @XmlTransient
     @JsonIgnore
     public byte[] getData() {
@@ -264,6 +294,8 @@ public class Vedlegg {
                 .append(this.urls, rhs.urls)
                 .append(this.tittel, rhs.tittel)
                 .append(this.aarsak, rhs.aarsak)
+                .append(this.filnavn, rhs.filnavn)
+                .append(this.mimetype, rhs.mimetype)
                 .isEquals();
     }
 
@@ -286,6 +318,8 @@ public class Vedlegg {
                 .append(urls)
                 .append(tittel)
                 .append(aarsak)
+                .append(filnavn)
+                .append(mimetype)
                 .toHashCode();
     }
 
@@ -308,6 +342,8 @@ public class Vedlegg {
                 .append("urls", urls)
                 .append("tittel", tittel)
                 .append("aarsak", aarsak)
+                .append("filnavn", filnavn)
+                .append("mimetype", mimetype)
                 .toString();
     }
 
@@ -316,6 +352,13 @@ public class Vedlegg {
         this.innsendingsvalg = Status.LastetOpp;
         this.antallSider = antallSider;
         this.storrelse = (long) doc.length;
+    }
+
+    public void fjernInnhold() {
+        this.data = new byte[0];
+        this.innsendingsvalg = VedleggKreves;
+        this.antallSider = 0;
+        this.storrelse = 0L;
     }
 
     public void leggTilURL(String nokkel, String url) {
@@ -356,7 +399,11 @@ public class Vedlegg {
 
     @JsonIgnore
     public String lagFilNavn() {
-        return getSkjemaNummer().equals("N6") ? getNavn() : getSkjemaNummer();
+        if (isEmpty(filnavn)) {
+            return getSkjemaNummer().equals("N6") ? getNavn() : getSkjemaNummer();
+        } else {
+            return filnavn;
+        }
     }
 
     public static final Predicate<Vedlegg> ER_ANNET_VEDLEGG = vedlegg -> "N6".equals(vedlegg.skjemaNummer);
