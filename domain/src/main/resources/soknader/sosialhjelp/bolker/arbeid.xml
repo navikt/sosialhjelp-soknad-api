@@ -31,4 +31,35 @@
         </dependOnValues>
         <optional>true</optional>
     </faktum>
+
+    <faktum>
+        <id>opplysninger.arbeidsituasjon</id>
+        <type>composite</type>
+        <properties>
+            <property>
+                <id>navn</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>startet</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>sluttet</id>
+            </property>
+            <property>
+                <id>stillingsprosent</id>
+            </property>
+
+        </properties>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+    <faktum>
+        <id>opplysninger.arbeidsituasjon.kommentarer</id>
+        <type>composite</type>
+
+    </faktum>
+
 </soknad>
