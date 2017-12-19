@@ -3,6 +3,8 @@ package no.nav.sbl.dialogarena.config;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.ClassPath;
 import com.google.common.reflect.Invokable;
+import no.finn.unleash.FakeUnleash;
+import no.finn.unleash.Unleash;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import org.mockito.Mockito;
 import org.springframework.beans.BeansException;
@@ -41,11 +43,18 @@ public class IntegrationConfig {
 
 
             NavMessageSource mock = Mockito.mock(NavMessageSource.class);
+
+            FakeUnleash fakeUnleash = new FakeUnleash();
+            fakeUnleash.enableAll();
             String name = "navMessageSource";
             MOCKS.put(name, mock);
+            MOCKS.put("unleashToggle", fakeUnleash);
             beanFactory.registerSingleton(name, mock);
+            beanFactory.registerSingleton("unleashToggle", fakeUnleash);
         };
     }
+
+
 
     private static Map<String, Object> MOCKS = new HashMap<>();
 
