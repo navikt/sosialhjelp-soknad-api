@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.integration;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.AAPOrdinaerInformasjon;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext.buildDataSource;
@@ -76,6 +77,7 @@ public class AAPVedleggIT extends AbstractIT {
     }
 
     @Test
+    @Ignore
     public void barneVedlegg() {
         soknadMedDelstegstatusOpprettet(aapOrdinaerSkjemaNummer)
                 .alleFaktum("barn").skalVareAntall(1).skalVareSystemFaktum()
