@@ -6,6 +6,110 @@
         <type>hidden</type>
     </faktum>
     <faktum>
+        <id>kontakt.system.adresse</id>
+        <panel>personaliaBolk</panel>
+        <type>composite</type>
+        <constraints>
+            <constraint>
+                <faktum>kontakt.adresse.brukerendrettoggle</faktum>
+                <expression>value != 'true'</expression>
+            </constraint>
+        </constraints>
+        <properties>
+            <property>
+                <id>adresse</id>
+                <type>textbox</type>
+                <constraints>
+                    <constraint>properties['type'] == 'ustrukturert'</constraint>
+                </constraints>
+            </property>
+            <property>
+                <id>kommunenummer</id>
+                <type>textbox</type>
+                <constraints>
+                    <constraint>properties['type'] == 'gateadresse' or properties['type'] == 'matrikkeladresse'</constraint>
+                </constraints>
+            </property>
+            <property>
+                <id>bolignummer</id>
+                <type>textbox</type>
+                <constraints>
+                    <constraint>properties['type'] == 'gateadresse' or properties['type'] == 'matrikkeladresse'</constraint>
+                </constraints>
+            </property>
+            <property>
+                <id>postnummer</id>
+                <type>textbox</type>
+                <constraints>
+                    <constraint>properties['type'] == 'gateadresse' or properties['type'] == 'matrikkeladresse'</constraint>
+                </constraints>
+            </property>
+            <property>
+                <id>poststed</id>
+                <type>textbox</type>
+                <constraints>
+                    <constraint>properties['type'] == 'gateadresse' or properties['type'] == 'matrikkeladresse'</constraint>
+                </constraints>
+            </property>
+            <property>	            
+                <id>gatenavn</id>
+                <type>textbox</type>
+                <constraints>
+                    <constraint>properties['type'] == 'gateadresse'</constraint>
+                </constraints>
+            </property>
+            <property>              
+                <id>husnummer</id>
+                <type>textbox</type>
+                <constraints>
+                    <constraint>properties['type'] == 'gateadresse'</constraint>
+                </constraints>
+            </property>
+            <property>              
+                <id>eiendomsnavn</id>
+                <type>textbox</type>
+                <constraints>
+                    <constraint>properties['type'] == 'matrikkeladresse'</constraint>
+                </constraints>
+            </property>
+            <property>              
+                <id>gaardsnummer</id>
+                <type>textbox</type>
+                <constraints>
+                    <constraint>properties['type'] == 'matrikkeladresse'</constraint>
+                </constraints>
+            </property>
+            <property>              
+                <id>bruksnummer</id>
+                <type>textbox</type>
+                <constraints>
+                    <constraint>properties['type'] == 'matrikkeladresse'</constraint>
+                </constraints>
+            </property>
+            <property>              
+                <id>festenummer</id>
+                <type>textbox</type>
+                <constraints>
+                    <constraint>properties['type'] == 'matrikkeladresse'</constraint>
+                </constraints>
+            </property>
+            <property>              
+                <id>seksjonsnummer</id>
+                <type>textbox</type>
+                <constraints>
+                    <constraint>properties['type'] == 'matrikkeladresse'</constraint>
+                </constraints>
+            </property>
+            <property>              
+                <id>undernummer</id>
+                <type>textbox</type>
+                <constraints>
+                    <constraint>properties['type'] == 'matrikkeladresse'</constraint>
+                </constraints>
+            </property>
+        </properties>
+    </faktum>
+    <faktum>
         <id>kontakt.adresse.bruker</id>
         <panel>personaliaBolk</panel>
         <type>composite</type>
