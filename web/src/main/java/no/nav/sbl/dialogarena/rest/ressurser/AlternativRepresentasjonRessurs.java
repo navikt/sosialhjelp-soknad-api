@@ -1,14 +1,11 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
+import no.finn.unleash.Unleash;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
-import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonType;
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.FeatureToggler;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.AlternativRepresentasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
 import org.slf4j.Logger;
@@ -19,10 +16,8 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 import static javax.ws.rs.core.MediaType.TEXT_XML;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.FeatureToggler.erFeatureAktiv;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.FeatureToggler.Toggle.RESSURS_ALTERNATIVREPRESENTASJON;
 
 @Controller
@@ -36,6 +31,10 @@ public class AlternativRepresentasjonRessurs {
     @Inject
     private SoknadDataFletter soknadDataFletter;
     private static final Logger LOG = LoggerFactory.getLogger(AlternativRepresentasjonRessurs.class);
+
+    @Inject
+    private Unleash featuretoggle;
+
 
     @Deprecated
     @GET
@@ -56,7 +55,7 @@ public class AlternativRepresentasjonRessurs {
 
     private void erRessursAktiv(String metode) {
         LOG.warn("OppsummeringRessurs metode {} forsøkt aksessert", metode);
-        if (!erFeatureAktiv(RESSURS_ALTERNATIVREPRESENTASJON)) {
+        if (!featuretoggle.isEnabled(RESSURS_ALTERNATIVREPRESENTASJON.getPropertyNavn())) {
             throw new NotFoundException("Denne informasjonen er ikke tilgjengelig");
         }
     }

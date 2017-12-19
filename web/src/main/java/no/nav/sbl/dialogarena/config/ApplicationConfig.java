@@ -96,7 +96,7 @@ public class ApplicationConfig {
     @Bean
     public Unleash unleashToggle() throws UnknownHostException {
         UnleashConfig config = UnleashConfig.builder()
-                .appName("sendsoknad") //$application.name
+                .appName(System.getProperty("application.name"))
                 .instanceId(InetAddress.getLocalHost().getHostName()) // miljø
                 .unleashAPI("https://unleash.nais.preprod.local/api/")
                 .build();
