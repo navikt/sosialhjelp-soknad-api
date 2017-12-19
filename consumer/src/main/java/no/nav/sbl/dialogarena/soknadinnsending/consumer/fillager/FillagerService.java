@@ -83,4 +83,8 @@ public class FillagerService {
             throw new SystemException("Kunne ikke slette filer fra baksystem", e, "exception.system.baksystem");
         }
     }
+
+    public void slettFil(String uuid) {
+        filLagerEndpoint.slett(uuid);
+    }
 }
