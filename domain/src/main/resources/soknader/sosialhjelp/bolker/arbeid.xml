@@ -32,23 +32,26 @@
         <optional>true</optional>
     </faktum>
 
+
     <faktum>
-        <id>opplysninger.arbeidsituasjon</id>
+        <id>arbeidsforhold</id>
         <type>composite</type>
         <properties>
             <property>
-                <id>navn</id>
+                <id>arbeidsgivernavn</id>
                 <type>textbox</type>
             </property>
             <property>
-                <id>startet</id>
+                <id>fom</id>
                 <type>textbox</type>
             </property>
             <property>
-                <id>sluttet</id>
+                <id>tom</id>
+                <type>textbox</type>
             </property>
             <property>
                 <id>stillingsprosent</id>
+                <type>textbox</type>
             </property>
 
         </properties>
