@@ -30,7 +30,7 @@ public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett
     }
 
     public List<String> getSoknadBolker(WebSoknad soknad) {
-        return Arrays.asList(BOLK_PERSONALIA);
+        return Arrays.asList(BOLK_PERSONALIA, "SosialhjelpArbeidsforhold");
     }
 
     public String getStrukturFilnavn() {
