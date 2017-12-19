@@ -53,6 +53,7 @@ public class Personalia {
     private Boolean erUtenlandskBankkonto;
     private String utenlandskKontoBanknavn;
     private String utenlandskKontoLand;
+    private String mobiltelefonnummer;
 
     public Personalia() {
     }
@@ -119,6 +120,14 @@ public class Personalia {
 
     public void setDiskresjonskode(String diskresjonskode) {
         this.diskresjonskode = diskresjonskode;
+    }
+    
+    public String getMobiltelefonnummer() {
+        return mobiltelefonnummer;
+    }
+    
+    public void setMobiltelefonnummer(String mobiltelefonnummer) {
+        this.mobiltelefonnummer = mobiltelefonnummer;
     }
 
     public String getEpost() {
