@@ -98,7 +98,7 @@ public class ApplicationConfig {
         UnleashConfig config = UnleashConfig.builder()
                 .appName(System.getProperty("application.name"))
                 .instanceId(InetAddress.getLocalHost().getHostName()) // miljø
-                .unleashAPI("https://unleash.nais.preprod.local/api/")
+                .unleashAPI(System.getProperty("unleash.api.url", "https://unleash.nais.oera-q.local/api/"))
                 .build();
 
         return new DefaultUnleash(config);
