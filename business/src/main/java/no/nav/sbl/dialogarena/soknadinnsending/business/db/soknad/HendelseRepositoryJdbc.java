@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
@@ -12,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.sql.DataSource;
+import java.sql.Timestamp;
+import java.time.Clock;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -32,6 +35,9 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class HendelseRepositoryJdbc extends NamedParameterJdbcDaoSupport implements HendelseRepository {
 
     private static final Logger logger = getLogger(HendelseRepositoryJdbc.class);
+
+    @Autowired
+    private Clock clock;
 
     public HendelseRepositoryJdbc() {
     }
@@ -73,8 +79,8 @@ public class HendelseRepositoryJdbc extends NamedParameterJdbcDaoSupport impleme
         List<String> soknaderUnderArbeid = getJdbcTemplate()
                 .queryForList("select BEHANDLINGSID from hendelse " +
                         "where SIST_HENDELSE=1 " +
-                        "and ( HENDELSE_TYPE = ? or HENDELSE_TYPE = ? or HENDELSE_TYPE = ?)" +
-                        "and HENDELSE_TIDSPUNKT > " + toDate(antallDager), String.class, avsluttetHendelser.toArray());
+                        "and not ( HENDELSE_TYPE = ? or HENDELSE_TYPE = ? or HENDELSE_TYPE = ?)" +
+                        "and HENDELSE_TIDSPUNKT < " + toDate(antallDager), String.class, avsluttetHendelser.toArray());
 
 
         return soknaderUnderArbeid;
@@ -85,9 +91,10 @@ public class HendelseRepositoryJdbc extends NamedParameterJdbcDaoSupport impleme
                 .update("update hendelse set SIST_HENDELSE = 0 where BEHANDLINGSID = ? AND SIST_HENDELSE=1", behandlingsid);
         getJdbcTemplate()
                 .update("insert into hendelse (BEHANDLINGSID, HENDELSE_TYPE, HENDELSE_TIDSPUNKT, VERSJON, SKJEMANUMMER, SIST_HENDELSE)" +
-                                " values (?,?,CURRENT_TIMESTAMP,?,?, 1)",
+                                " values (?,?,?,?,?, 1)",
                         behandlingsid,
                         hendelse_type,
+                        new Timestamp(clock.instant().toEpochMilli()),
                         versjon,
                         skjemanummer);
     }

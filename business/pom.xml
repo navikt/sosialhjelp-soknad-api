@@ -269,6 +269,11 @@
             <artifactId>spring-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>no.digipost</groupId>
+            <artifactId>digg</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>no.nav.meldinger.virksomhet</groupId>
