@@ -4,8 +4,11 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseReposi
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadInnsendingDBConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepositoryJdbc;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepositoryJdbc;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+
+import java.time.Clock;
 
 @Configuration
 @Import({
@@ -15,5 +18,10 @@ import org.springframework.context.annotation.Import;
         SoknadInnsendingDBConfig.class
 })
 public class DbConfig {
+
+    @Bean
+    public Clock clock(){
+        return Clock.systemDefaultZone();
+    }
 
 }

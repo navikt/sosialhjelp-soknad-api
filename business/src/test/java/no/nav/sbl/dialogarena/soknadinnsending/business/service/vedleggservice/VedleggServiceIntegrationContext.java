@@ -10,11 +10,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+import java.time.Clock;
+
 import static org.mockito.Mockito.mock;
 
 @Configuration
 @Import({VedleggServiceIntegrationMockContext.class})
 public class VedleggServiceIntegrationContext {
+
+    @Bean
+    public Clock clock(){ return Clock.systemDefaultZone(); }
 
     @Bean
     public MigrasjonHandterer migrasjonHandterer() { return new MigrasjonHandterer(); }

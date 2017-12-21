@@ -31,6 +31,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
+import java.time.Clock;
+
 import static org.mockito.Mockito.mock;
 
 @Import(value = {DatabaseTestContext.class})
@@ -39,6 +41,9 @@ import static org.mockito.Mockito.mock;
 public class SoknadDataFletterIntegrationTestContext {
     @Inject
     private DataSource dataSource;
+
+    @Bean
+    public Clock clock(){ return Clock.systemDefaultZone(); }
 
     @Bean
     public MigrasjonHandterer migrasjonHandterer() {return new MigrasjonHandterer();}
