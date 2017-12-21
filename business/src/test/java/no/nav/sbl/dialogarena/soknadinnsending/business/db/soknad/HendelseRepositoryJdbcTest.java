@@ -21,9 +21,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ContextConfiguration(classes = {DbTestConfig.class})
 public class HendelseRepositoryJdbcTest {
 
-    public static final int FEMTI_DAGER = 50;
     public static final int FEMTISEKS_DAGER = 56;
     public static final int EN_DAG = 1;
+    public static final int FEMTI_DAGER = 50;
     @Inject
     private HendelseRepository hendelseRepository;
 
@@ -53,7 +53,7 @@ public class HendelseRepositoryJdbcTest {
         stillTidenTilbake(EN_DAG);
         hendelseRepository.registrerOpprettetHendelse(soknad("1"));
 
-        assertThat(hendelseRepository.hentSoknaderUnderArbeidEldreEnn(50)).isEmpty();
+        assertThat(hendelseRepository.hentSoknaderUnderArbeidEldreEnn(FEMTI_DAGER)).isEmpty();
     }
 
     @Test
@@ -62,7 +62,7 @@ public class HendelseRepositoryJdbcTest {
         hendelseRepository.registrerOpprettetHendelse(soknad("1"));
         hendelseRepository.registrerMigrertHendelse(soknad("1").medVersjon(2));
 
-        assertThat(hendelseRepository.hentSoknaderUnderArbeidEldreEnn(50)).hasSize(1);
+        assertThat(hendelseRepository.hentSoknaderUnderArbeidEldreEnn(FEMTI_DAGER)).hasSize(1);
     }
 
     @Test
@@ -71,7 +71,7 @@ public class HendelseRepositoryJdbcTest {
         hendelseRepository.registrerOpprettetHendelse(soknad("1"));
         hendelseRepository.registrerHendelse(soknad("1"), HendelseType.LAGRET_I_HENVENDELSE);
 
-        assertThat(hendelseRepository.hentSoknaderUnderArbeidEldreEnn(50)).hasSize(1);
+        assertThat(hendelseRepository.hentSoknaderUnderArbeidEldreEnn(FEMTI_DAGER)).hasSize(1);
     }
 
     @Test
@@ -81,7 +81,7 @@ public class HendelseRepositoryJdbcTest {
         hendelseRepository.registrerHendelse(soknad("1"), HendelseType.LAGRET_I_HENVENDELSE);
         hendelseRepository.registrerHendelse(soknad("1"), HendelseType.HENTET_FRA_HENVENDELSE);
 
-        assertThat(hendelseRepository.hentSoknaderUnderArbeidEldreEnn(50)).hasSize(1);
+        assertThat(hendelseRepository.hentSoknaderUnderArbeidEldreEnn(FEMTI_DAGER)).hasSize(1);
     }
     @Test
     public void skalIkkeHenteSakHvorSisteHendelseErAvbruttAvBruker() {
@@ -93,7 +93,7 @@ public class HendelseRepositoryJdbcTest {
         hendelseRepository.registrerOpprettetHendelse(soknad("2"));
         hendelseRepository.registrerHendelse(soknad("2"), HendelseType.AVBRUTT_AV_BRUKER);
 
-        assertThat(hendelseRepository.hentSoknaderUnderArbeidEldreEnn(50)).isEmpty();
+        assertThat(hendelseRepository.hentSoknaderUnderArbeidEldreEnn(FEMTI_DAGER)).isEmpty();
     }
 
     @Test
@@ -108,7 +108,7 @@ public class HendelseRepositoryJdbcTest {
         hendelseRepository.registrerHendelse(soknad("2"), HendelseType.LAGRET_I_HENVENDELSE);
         hendelseRepository.registrerAutomatiskAvsluttetHendelse("2");
 
-        assertThat(hendelseRepository.hentSoknaderUnderArbeidEldreEnn(50)).isEmpty();
+        assertThat(hendelseRepository.hentSoknaderUnderArbeidEldreEnn(FEMTI_DAGER)).isEmpty();
     }
 
     @Test
@@ -121,7 +121,7 @@ public class HendelseRepositoryJdbcTest {
         hendelseRepository.registrerOpprettetHendelse(soknad("2"));
         hendelseRepository.registrerHendelse(soknad("2"), HendelseType.INNSENDT);
 
-        assertThat(hendelseRepository.hentSoknaderUnderArbeidEldreEnn(50)).isEmpty();
+        assertThat(hendelseRepository.hentSoknaderUnderArbeidEldreEnn(FEMTI_DAGER)).isEmpty();
     }
 
 
