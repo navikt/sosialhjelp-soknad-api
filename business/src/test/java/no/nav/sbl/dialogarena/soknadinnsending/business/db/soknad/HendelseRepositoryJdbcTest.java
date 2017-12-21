@@ -21,6 +21,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ContextConfiguration(classes = {DbTestConfig.class})
 public class HendelseRepositoryJdbcTest {
 
+    public static final int FEMTI_DAGER = 50;
+    public static final int FEMTISEKS_DAGER = 56;
+    public static final int EN_DAG = 1;
     @Inject
     private HendelseRepository hendelseRepository;
 
@@ -36,71 +39,73 @@ public class HendelseRepositoryJdbcTest {
 
     @Test
     public void skalHenteForGammelUnderArbeidSak() {
-        controllableClock.set(LocalDateTime.now().minusDays(56));
+        stillTidenTilbake(FEMTISEKS_DAGER);
 
-        hendelseRepository.registrerOpprettetHendelse(soknad());
+        hendelseRepository.registrerOpprettetHendelse(soknad("1"));
 
-        assertThat(hendelseRepository.hentSoknaderUnderArbeidEldreEnn(50)).hasSize(1);
+        assertThat(hendelseRepository.hentSoknaderUnderArbeidEldreEnn(FEMTI_DAGER)).hasSize(1);
     }
+
+
 
     @Test
     public void skalIkkeHenteNyereUnderArbeidSak() {
-        controllableClock.set(LocalDateTime.now().minusDays(1));
-        hendelseRepository.registrerOpprettetHendelse(soknad());
+        stillTidenTilbake(EN_DAG);
+        hendelseRepository.registrerOpprettetHendelse(soknad("1"));
 
         assertThat(hendelseRepository.hentSoknaderUnderArbeidEldreEnn(50)).isEmpty();
     }
 
     @Test
     public void skalBehandleMigertSoknadSomUnderArbeid() {
-        controllableClock.set(LocalDateTime.now().minusDays(56));
-        hendelseRepository.registrerOpprettetHendelse(soknad());
-        hendelseRepository.registrerMigrertHendelse(soknad().medVersjon(2));
+        stillTidenTilbake(FEMTISEKS_DAGER);
+        hendelseRepository.registrerOpprettetHendelse(soknad("1"));
+        hendelseRepository.registrerMigrertHendelse(soknad("1").medVersjon(2));
 
         assertThat(hendelseRepository.hentSoknaderUnderArbeidEldreEnn(50)).hasSize(1);
     }
 
     @Test
     public void skalBehandleMellomlagretSoknadSomUnderArbeid() {
-        controllableClock.set(LocalDateTime.now().minusDays(56));
-        hendelseRepository.registrerOpprettetHendelse(soknad());
-        hendelseRepository.registrerHendelse(soknad(), HendelseType.LAGRET_I_HENVENDELSE);
+        stillTidenTilbake(FEMTISEKS_DAGER);
+        hendelseRepository.registrerOpprettetHendelse(soknad("1"));
+        hendelseRepository.registrerHendelse(soknad("1"), HendelseType.LAGRET_I_HENVENDELSE);
 
         assertThat(hendelseRepository.hentSoknaderUnderArbeidEldreEnn(50)).hasSize(1);
     }
 
     @Test
     public void skalBehandleOpphentetSoknadSomUnderArbeid() {
-        controllableClock.set(LocalDateTime.now().minusDays(56));
-        hendelseRepository.registrerOpprettetHendelse(soknad());
-        hendelseRepository.registrerHendelse(soknad(), HendelseType.LAGRET_I_HENVENDELSE);
-        hendelseRepository.registrerHendelse(soknad(), HendelseType.HENTET_FRA_HENVENDELSE);
+        stillTidenTilbake(FEMTISEKS_DAGER);
+        hendelseRepository.registrerOpprettetHendelse(soknad("1"));
+        hendelseRepository.registrerHendelse(soknad("1"), HendelseType.LAGRET_I_HENVENDELSE);
+        hendelseRepository.registrerHendelse(soknad("1"), HendelseType.HENTET_FRA_HENVENDELSE);
 
         assertThat(hendelseRepository.hentSoknaderUnderArbeidEldreEnn(50)).hasSize(1);
     }
     @Test
     public void skalIkkeHenteSakHvorSisteHendelseErAvbruttAvBruker() {
-        controllableClock.set(LocalDateTime.now().minusDays(56));
-        hendelseRepository.registrerOpprettetHendelse(soknad().medBehandlingId("1"));
-        hendelseRepository.registrerHendelse(soknad().medBehandlingId("1"), HendelseType.AVBRUTT_AV_BRUKER);
+        stillTidenTilbake(FEMTISEKS_DAGER);
+        hendelseRepository.registrerOpprettetHendelse(soknad("1"));
+        hendelseRepository.registrerHendelse(soknad("1"), HendelseType.AVBRUTT_AV_BRUKER);
 
-        controllableClock.set(LocalDateTime.now().minusDays(1));
-        hendelseRepository.registrerOpprettetHendelse(soknad().medBehandlingId("2"));
-        hendelseRepository.registrerHendelse(soknad().medBehandlingId("2"), HendelseType.AVBRUTT_AV_BRUKER);
+        stillTidenTilbake(EN_DAG);
+        hendelseRepository.registrerOpprettetHendelse(soknad("2"));
+        hendelseRepository.registrerHendelse(soknad("2"), HendelseType.AVBRUTT_AV_BRUKER);
 
         assertThat(hendelseRepository.hentSoknaderUnderArbeidEldreEnn(50)).isEmpty();
     }
 
     @Test
     public void skalIkkeHenteSakHvorSisteHendelseErAvbruttAutomatisk() {
-        controllableClock.set(LocalDateTime.now().minusDays(56));
-        hendelseRepository.registrerOpprettetHendelse(soknad().medBehandlingId("1"));
-        hendelseRepository.registrerHendelse(soknad().medBehandlingId("1"), HendelseType.LAGRET_I_HENVENDELSE);
+        stillTidenTilbake(FEMTISEKS_DAGER);
+        hendelseRepository.registrerOpprettetHendelse(soknad("1"));
+        hendelseRepository.registrerHendelse(soknad("1"), HendelseType.LAGRET_I_HENVENDELSE);
         hendelseRepository.registrerAutomatiskAvsluttetHendelse("1");
 
-        controllableClock.set(LocalDateTime.now().minusDays(1));
-        hendelseRepository.registrerOpprettetHendelse(soknad().medBehandlingId("2"));
-        hendelseRepository.registrerHendelse(soknad().medBehandlingId("2"), HendelseType.LAGRET_I_HENVENDELSE);
+        stillTidenTilbake(EN_DAG);
+        hendelseRepository.registrerOpprettetHendelse(soknad("2"));
+        hendelseRepository.registrerHendelse(soknad("2"), HendelseType.LAGRET_I_HENVENDELSE);
         hendelseRepository.registrerAutomatiskAvsluttetHendelse("2");
 
         assertThat(hendelseRepository.hentSoknaderUnderArbeidEldreEnn(50)).isEmpty();
@@ -108,20 +113,24 @@ public class HendelseRepositoryJdbcTest {
 
     @Test
     public void skalIkkeHenteSakHvorSisteHendelseErInnsendt() {
-        controllableClock.set(LocalDateTime.now().minusDays(56));
-        hendelseRepository.registrerOpprettetHendelse(soknad().medBehandlingId("1"));
-        hendelseRepository.registrerHendelse(soknad().medBehandlingId("1"), HendelseType.INNSENDT);
+        stillTidenTilbake(FEMTISEKS_DAGER);
+        hendelseRepository.registrerOpprettetHendelse(soknad("1"));
+        hendelseRepository.registrerHendelse(soknad("1"), HendelseType.INNSENDT);
 
-        controllableClock.set(LocalDateTime.now().minusDays(1));
-        hendelseRepository.registrerOpprettetHendelse(soknad().medBehandlingId("2"));
-        hendelseRepository.registrerHendelse(soknad().medBehandlingId("2"), HendelseType.INNSENDT);
+        stillTidenTilbake(EN_DAG);
+        hendelseRepository.registrerOpprettetHendelse(soknad("2"));
+        hendelseRepository.registrerHendelse(soknad("2"), HendelseType.INNSENDT);
 
         assertThat(hendelseRepository.hentSoknaderUnderArbeidEldreEnn(50)).isEmpty();
     }
 
 
-    private WebSoknad soknad() {
-        return new WebSoknad().medskjemaNummer("NAV-01").medBehandlingId("1").medVersjon(1);
+    private WebSoknad soknad(String behandlingsId) {
+        return new WebSoknad().medskjemaNummer("NAV-01").medBehandlingId(behandlingsId).medVersjon(1);
+    }
+
+    private void stillTidenTilbake(int antallDager) {
+        controllableClock.set(LocalDateTime.now().minusDays(antallDager));
     }
 
 
