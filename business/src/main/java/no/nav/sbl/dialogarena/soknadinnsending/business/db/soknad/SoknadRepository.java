@@ -45,7 +45,7 @@ public interface SoknadRepository {
 
     void slettBrukerFaktum(Long soknadId, Long faktumId);
 
-    void slettSoknad(WebSoknad soknad, HendelseType avsluttHendelse);
+    void slettSoknad(WebSoknad soknad, HendelseType aarsakTilSletting);
 
     String hentSoknadType(Long soknadId);
 
