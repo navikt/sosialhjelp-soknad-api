@@ -8,7 +8,6 @@
         <type>gruppe</type>
         <panel>opplysningerBolk</panel>
     </faktum>
-
     <faktum>
         <id>opplysninger.arbeid.jobb</id>
         <type>composite</type>

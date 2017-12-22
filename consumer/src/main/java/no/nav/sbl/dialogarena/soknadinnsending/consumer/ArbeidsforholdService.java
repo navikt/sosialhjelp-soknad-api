@@ -38,9 +38,9 @@ public class ArbeidsforholdService {
     private DatatypeFactory datatypeFactory = lagDatatypeFactory();
 
 
-    public List<Arbeidsforhold> hentArbeidsforhold(String fodselsnummer) {
+    public List<Arbeidsforhold> hentArbeidsforhold(String fodselsnummer, Sokeperiode soekeperiode) {
         try {
-            FinnArbeidsforholdPrArbeidstakerRequest finnArbeidsforholdPrArbeidstakerRequest = lagArbeidsforholdRequest(fodselsnummer);
+            FinnArbeidsforholdPrArbeidstakerRequest finnArbeidsforholdPrArbeidstakerRequest = lagArbeidsforholdRequest(fodselsnummer, lagPeriode(soekeperiode.fom, soekeperiode.tom));
 
             List<no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold> arbeidsforhold
                     = arbeidsforholdWebWervice.finnArbeidsforholdPrArbeidstaker(finnArbeidsforholdPrArbeidstakerRequest).getArbeidsforhold();
@@ -50,9 +50,9 @@ public class ArbeidsforholdService {
         }
     }
 
-    private FinnArbeidsforholdPrArbeidstakerRequest lagArbeidsforholdRequest(String fodselsnummer) {
+    private FinnArbeidsforholdPrArbeidstakerRequest lagArbeidsforholdRequest(String fodselsnummer, Periode periode ) {
         FinnArbeidsforholdPrArbeidstakerRequest request = new FinnArbeidsforholdPrArbeidstakerRequest();
-        request.setArbeidsforholdIPeriode(lagSporrePeriode());
+            request.setArbeidsforholdIPeriode(periode);
         request.setRapportertSomRegelverk(AA_ORDNINGEN);
         request.setIdent(lagIdent(fodselsnummer));
         return request;
@@ -64,11 +64,35 @@ public class ArbeidsforholdService {
         return ident;
     }
 
-    private Periode lagSporrePeriode() {
+
+    private Periode lagPeriode(DateTime fom, DateTime tom) {
         Periode periode = new Periode();
-        periode.setFom(datatypeFactory.newXMLGregorianCalendar(new DateTime().minusMonths(10).toGregorianCalendar()));
-        periode.setTom(datatypeFactory.newXMLGregorianCalendar(new DateTime().toGregorianCalendar()));
+        periode.setFom(datatypeFactory.newXMLGregorianCalendar(fom.toGregorianCalendar()));
+        periode.setTom(datatypeFactory.newXMLGregorianCalendar(tom.toGregorianCalendar()));
         return periode;
     }
 
+    public static final class Sokeperiode {
+
+        private final DateTime fom;
+
+
+        private final DateTime tom;
+
+        public Sokeperiode(DateTime fom, DateTime tom) {
+            this.fom = fom;
+            this.tom = tom;
+        }
+
+        public DateTime getFom() {
+            return fom;
+        }
+
+
+        public DateTime getTom() {
+            return tom;
+        }
+
+
+    }
 }
