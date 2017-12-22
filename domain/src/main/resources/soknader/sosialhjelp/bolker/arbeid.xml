@@ -36,6 +36,8 @@
     <faktum>
         <id>arbeidsforhold</id>
         <type>composite</type>
+
+        <panel>arbeidbolk</panel>
         <properties>
             <property>
                 <id>arbeidsgivernavn</id>
@@ -61,6 +63,7 @@
 
     <faktum>
         <id>opplysninger.arbeidsituasjon.kommentarer</id>
+        <panel>arbeidbolk</panel>
         <type>composite</type>
 
     </faktum>
