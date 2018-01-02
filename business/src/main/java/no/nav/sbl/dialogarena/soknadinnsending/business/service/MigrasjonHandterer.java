@@ -17,7 +17,6 @@ import java.util.*;
 public class MigrasjonHandterer{
 
     @Inject
-    @Named("hendelseRepository")
     private HendelseRepository hendelseRepository;
 
     List<Migrasjon> migrasjoner = migrasjoner();

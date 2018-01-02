@@ -28,10 +28,8 @@ import static org.slf4j.LoggerFactory.getLogger;
  * marker alle metoder som transactional. Alle operasjoner vil skje i en
  * transactional write context. Read metoder kan overstyre dette om det trengs.
  */
-@Named("hendelseRepository")
 @Component
-//hva er dette?
-@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
+@Transactional
 public class HendelseRepositoryJdbc extends NamedParameterJdbcDaoSupport implements HendelseRepository {
 
     private static final Logger logger = getLogger(HendelseRepositoryJdbc.class);
@@ -65,6 +63,7 @@ public class HendelseRepositoryJdbc extends NamedParameterJdbcDaoSupport impleme
         insertHendelse(behandlingsId, AVBRUTT_AUTOMATISK.name(), null, null);
     }
 
+    @Transactional(readOnly = true)
     public Integer hentVersjon(String behandlingsId) {
         Object[] args = {OPPRETTET.name(), MIGRERT.name(), behandlingsId};
         return getJdbcTemplate().queryForObject("SELECT * FROM (" +
@@ -73,6 +72,7 @@ public class HendelseRepositoryJdbc extends NamedParameterJdbcDaoSupport impleme
                 args, Integer.class);
     }
 
+    @Transactional(readOnly = true)
     public List<String> hentSoknaderUnderArbeidEldreEnn(int antallDager) {
         List<String> avsluttetHendelser = Stream.of(AVBRUTT_AUTOMATISK, INNSENDT, AVBRUTT_AV_BRUKER).map(HendelseType::name).collect(toList());
 

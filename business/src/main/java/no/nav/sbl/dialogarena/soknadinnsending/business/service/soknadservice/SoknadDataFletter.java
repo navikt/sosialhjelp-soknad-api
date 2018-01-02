@@ -77,7 +77,6 @@ public class SoknadDataFletter {
     @Named("soknadInnsendingRepository")
     private SoknadRepository lokalDb;
     @Inject
-    @Named("hendelseRepository")
     private HendelseRepository hendelseRepository;
     @Inject
     private WebSoknadConfig config;
