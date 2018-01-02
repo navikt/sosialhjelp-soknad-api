@@ -31,7 +31,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 @Named("soknadInnsendingRepository")
 @Component
-@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
+@Transactional
 public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implements SoknadRepository {
 
     private static final Logger logger = getLogger(SoknadRepositoryJdbc.class);
