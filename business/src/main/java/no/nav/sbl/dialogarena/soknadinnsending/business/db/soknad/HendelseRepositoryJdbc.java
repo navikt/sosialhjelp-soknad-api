@@ -2,16 +2,12 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.sql.DataSource;
 import java.sql.Timestamp;
 import java.time.Clock;
@@ -22,17 +18,11 @@ import static java.util.stream.Collectors.toList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType.*;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.toDate;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.whereLimit;
-import static org.slf4j.LoggerFactory.getLogger;
 
-/**
- * marker alle metoder som transactional. Alle operasjoner vil skje i en
- * transactional write context. Read metoder kan overstyre dette om det trengs.
- */
+
 @Component
 @Transactional
 public class HendelseRepositoryJdbc extends NamedParameterJdbcDaoSupport implements HendelseRepository {
-
-    private static final Logger logger = getLogger(HendelseRepositoryJdbc.class);
 
     @Autowired
     private Clock clock;
