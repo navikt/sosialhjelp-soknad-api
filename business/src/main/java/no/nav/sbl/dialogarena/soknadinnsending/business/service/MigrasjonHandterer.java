@@ -31,7 +31,7 @@ public class MigrasjonHandterer{
         if(migrasjon.isPresent()){
             migrertSoknad = migrasjon.get().migrer(migrertSoknad.getVersjon(), migrertSoknad);
 
-            hendelseRepository.registrerOpprettetHendelse(migrertSoknad);
+            hendelseRepository.registrerMigrertHendelse(migrertSoknad);
 
             Event metrikk = MetricsFactory.createEvent("sendsoknad.skjemamigrasjon");
             String soknadTypePrefix;
