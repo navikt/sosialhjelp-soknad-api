@@ -140,7 +140,8 @@
         <type>textbox</type>
         <constraints>
             <constraint>
-                <expression>value != null</expression>
+                <faktum>kontakt.kontonummer.brukerendrettoggle</faktum>
+                <expression>value != 'true'</expression>
             </constraint>
         </constraints>
     </faktum>
@@ -155,8 +156,8 @@
         <type>textbox</type>
         <constraints>
             <constraint>
-                <faktum>kontakt.kontonummer.harikke</faktum>
-                <expression>value != 'true'</expression>
+                <faktum>kontakt.kontonummer.brukerendrettoggle</faktum>
+                <expression>value == 'true'</expression>
             </constraint>
         </constraints>
         <optional>true</optional>
@@ -170,6 +171,12 @@
         <id>kontakt.system.telefon</id>
         <panel>personaliaBolk</panel>
         <type>textbox</type>
+        <constraints>
+            <constraint>
+                <faktum>kontakt.telefon.brukerendrettoggle</faktum>
+                <expression>value != 'true'</expression>
+            </constraint>
+        </constraints>
     </faktum>
     <faktum>
         <id>kontakt.telefon.brukerendrettoggle</id>
@@ -180,6 +187,12 @@
         <id>kontakt.telefon</id>
         <panel>personaliaBolk</panel>
         <type>textbox</type>
+        <constraints>
+            <constraint>
+                <faktum>kontakt.telefon.brukerendrettoggle</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
         <optional>true</optional>
     </faktum>
     <faktum>
