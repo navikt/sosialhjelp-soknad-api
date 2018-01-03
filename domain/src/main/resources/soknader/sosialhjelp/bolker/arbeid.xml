@@ -31,4 +31,41 @@
         </dependOnValues>
         <optional>true</optional>
     </faktum>
+
+
+    <faktum>
+        <id>arbeidsforhold</id>
+        <type>composite</type>
+
+        <panel>arbeidbolk</panel>
+        <properties>
+            <property>
+                <id>arbeidsgivernavn</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>fom</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>tom</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>stillingsprosent</id>
+                <type>textbox</type>
+            </property>
+
+        </properties>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+    <faktum>
+        <id>opplysninger.arbeidsituasjon.kommentarer</id>
+        <panel>arbeidbolk</panel>
+        <type>composite</type>
+
+    </faktum>
+
 </soknad>

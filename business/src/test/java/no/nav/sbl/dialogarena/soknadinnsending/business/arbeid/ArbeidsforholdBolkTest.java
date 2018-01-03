@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.arbeid;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.dto.Land;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
@@ -7,6 +8,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ArbeidsforholdTransformer;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import org.joda.time.DateTime;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.joda.time.Months.monthsBetween;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
@@ -48,15 +51,32 @@ public class ArbeidsforholdBolkTest {
 
     private long yrkesAktivFaktumId = 1L;
 
+
     @Before
     public void setOpp() {
         when(faktaService.hentFaktumMedKey(anyLong(), eq("arbeidsforhold.yrkesaktiv"))).thenReturn(new Faktum().medKey("arbeidsforhold.yrkesaktiv").medValue("true").medFaktumId(yrkesAktivFaktumId));
+
+    }
+
+
+    @Test
+    public void testGetSoekeperiode() {
+
+        ArbeidsforholdService.Sokeperiode sokeperiode;
+
+        sokeperiode = arbeidsforholdBolk.getSoekeperiode();
+
+        DateTime fom = sokeperiode.getFom();
+        DateTime tom = sokeperiode.getTom();
+
+        Assert.assertEquals(-10, monthsBetween(tom, fom).getMonths());
+
     }
 
     @Test
     public void skalLagreSystemfakta() throws Exception {
         no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold arbeidsforhold = lagArbeidsforhold();
-        when(arbeidsforholdService.hentArbeidsforhold(any(String.class))).thenReturn(Arrays.asList(arbeidsforhold));
+        when(arbeidsforholdService.hentArbeidsforhold(any(String.class), any(ArbeidsforholdService.Sokeperiode.class))).thenReturn(Arrays.asList(arbeidsforhold));
 
         List<Faktum> arbeidsforholdFakta = arbeidsforholdBolk.genererArbeidsforhold("123", 11L);
         assertThat(arbeidsforholdFakta.size(), equalTo(2));
@@ -65,7 +85,7 @@ public class ArbeidsforholdBolkTest {
     @Test
     public void skalSetteAlleFaktumFelter() throws Exception {
         no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold arbeidsforhold = lagArbeidsforhold();
-        when(arbeidsforholdService.hentArbeidsforhold(any(String.class))).thenReturn(Arrays.asList(arbeidsforhold));
+        when(arbeidsforholdService.hentArbeidsforhold(any(String.class), any(ArbeidsforholdService.Sokeperiode.class))).thenReturn(Arrays.asList(arbeidsforhold));
         List<Faktum> faktums = arbeidsforholdBolk.genererArbeidsforhold("123", 11L);
         Faktum faktum = faktums.get(0);
 
@@ -84,7 +104,7 @@ public class ArbeidsforholdBolkTest {
     @Test
     public void arbeidsforholdSkalHaRiktigParrentFaktum() {
         no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold arbeidsforhold = lagArbeidsforhold();
-        when(arbeidsforholdService.hentArbeidsforhold(any(String.class))).thenReturn(Arrays.asList(arbeidsforhold));
+        when(arbeidsforholdService.hentArbeidsforhold(any(String.class), any(ArbeidsforholdService.Sokeperiode.class))).thenReturn(Arrays.asList(arbeidsforhold));
         when(faktaService.hentFaktumMedKey(anyLong(), eq("arbeidsforhold.yrkesaktiv"))).thenReturn(new Faktum().medKey("arbeidsforhold.yrkesaktiv").medValue("false").medFaktumId(yrkesAktivFaktumId));
 
         List<Faktum> faktums = arbeidsforholdBolk.genererArbeidsforhold("123", 11L);
@@ -95,8 +115,8 @@ public class ArbeidsforholdBolkTest {
 
     @Test
     public void skalSetteVariabel() throws Exception {
-        no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold arbeidsforhold = lagArbeidsforhold();
-        when(arbeidsforholdService.hentArbeidsforhold(any(String.class))).thenReturn(Arrays.asList(arbeidsforhold));
+        Arbeidsforhold arbeidsforhold = lagArbeidsforhold();
+        when(arbeidsforholdService.hentArbeidsforhold(any(String.class), any(ArbeidsforholdService.Sokeperiode.class))).thenReturn(Arrays.asList(arbeidsforhold));
         arbeidsforhold.harFastStilling = false;
         arbeidsforhold.fastStillingsprosent = 0L;
         arbeidsforhold.variabelStillingsprosent = true;
@@ -110,7 +130,7 @@ public class ArbeidsforholdBolkTest {
     @Test
     public void skalSetteMixed() throws Exception {
         no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold arbeidsforhold = lagArbeidsforhold();
-        when(arbeidsforholdService.hentArbeidsforhold(any(String.class))).thenReturn(Arrays.asList(arbeidsforhold));
+        when(arbeidsforholdService.hentArbeidsforhold(any(String.class), any(ArbeidsforholdService.Sokeperiode.class))).thenReturn(Arrays.asList(arbeidsforhold));
 
         arbeidsforhold.variabelStillingsprosent = true;
         List<Faktum> faktums = arbeidsforholdBolk.genererArbeidsforhold("123", 11L);
@@ -123,7 +143,7 @@ public class ArbeidsforholdBolkTest {
     @Test
     public void skalSettePagaende() throws Exception {
         no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold arbeidsforhold = lagArbeidsforhold();
-        when(arbeidsforholdService.hentArbeidsforhold(any(String.class))).thenReturn(Arrays.asList(arbeidsforhold));
+        when(arbeidsforholdService.hentArbeidsforhold(any(String.class), any(ArbeidsforholdService.Sokeperiode.class))).thenReturn(Arrays.asList(arbeidsforhold));
 
         arbeidsforhold.tom = null;
         List<Faktum> faktums = arbeidsforholdBolk.genererArbeidsforhold("123", 11L);
