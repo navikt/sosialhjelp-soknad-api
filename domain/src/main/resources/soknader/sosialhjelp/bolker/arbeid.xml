@@ -64,7 +64,7 @@
     <faktum>
         <id>opplysninger.arbeidsituasjon.kommentarer</id>
         <panel>arbeidbolk</panel>
-        <type>composite</type>
+        <type>textbox</type>
 
     </faktum>
 
