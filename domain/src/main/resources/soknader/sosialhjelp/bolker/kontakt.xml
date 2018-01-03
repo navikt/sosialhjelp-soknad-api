@@ -6,6 +6,12 @@
         <type>hidden</type>
     </faktum>
     <faktum>
+        <id>kontakt.statsborger</id>
+        <panel>personaliaBolk</panel>
+        <type>bool</type>
+        <optional>true</optional>
+    </faktum>
+    <faktum>
         <id>kontakt.system.adresse</id>
         <panel>personaliaBolk</panel>
         <type>composite</type>
@@ -16,6 +22,7 @@
             </constraint>
         </constraints>
         <properties>
+            <!--
             <property>
                 <id>kommunenummer</id>
                 <type>textbox</type>
@@ -23,6 +30,7 @@
                     <constraint>properties['type'] == 'gateadresse' or properties['type'] == 'matrikkeladresse'</constraint>
                 </constraints>
             </property>
+            -->
             <property>
                 <id>bolignummer</id>
                 <type>textbox</type>
@@ -135,6 +143,34 @@
         </properties>
     </faktum>
     <faktum>
+        <id>kontakt.system.telefon</id>
+        <panel>personaliaBolk</panel>
+        <type>textbox</type>
+        <constraints>
+            <constraint>
+                <faktum>kontakt.telefon.brukerendrettoggle</faktum>
+                <expression>value != 'true'</expression>
+            </constraint>
+        </constraints>
+    </faktum>
+    <faktum>
+        <id>kontakt.telefon.brukerendrettoggle</id>
+        <panel>personaliaBolk</panel>
+        <type>hidden</type>
+    </faktum>
+    <faktum>
+        <id>kontakt.telefon</id>
+        <panel>personaliaBolk</panel>
+        <type>textbox</type>
+        <constraints>
+            <constraint>
+                <faktum>kontakt.telefon.brukerendrettoggle</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+        <optional>true</optional>
+    </faktum>
+    <faktum>
         <id>kontakt.system.kontonummer</id>
         <panel>personaliaBolk</panel>
         <type>textbox</type>
@@ -166,39 +202,5 @@
         <id>kontakt.kontonummer.harikke</id>
         <panel>personaliaBolk</panel>
         <type>checkbox</type>
-    </faktum>
-    <faktum>
-        <id>kontakt.system.telefon</id>
-        <panel>personaliaBolk</panel>
-        <type>textbox</type>
-        <constraints>
-            <constraint>
-                <faktum>kontakt.telefon.brukerendrettoggle</faktum>
-                <expression>value != 'true'</expression>
-            </constraint>
-        </constraints>
-    </faktum>
-    <faktum>
-        <id>kontakt.telefon.brukerendrettoggle</id>
-        <panel>personaliaBolk</panel>
-        <type>hidden</type>
-    </faktum>
-    <faktum>
-        <id>kontakt.telefon</id>
-        <panel>personaliaBolk</panel>
-        <type>textbox</type>
-        <constraints>
-            <constraint>
-                <faktum>kontakt.telefon.brukerendrettoggle</faktum>
-                <expression>value == 'true'</expression>
-            </constraint>
-        </constraints>
-        <optional>true</optional>
-    </faktum>
-    <faktum>
-        <id>kontakt.statsborger</id>
-        <panel>personaliaBolk</panel>
-        <type>bool</type>
-        <optional>true</optional>
     </faktum>
 </soknad>
