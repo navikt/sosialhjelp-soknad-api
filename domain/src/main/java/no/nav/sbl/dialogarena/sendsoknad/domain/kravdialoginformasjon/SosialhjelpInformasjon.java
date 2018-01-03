@@ -1,13 +1,6 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon;
 
 
-import static java.util.Collections.singletonList;
-
-import java.util.Arrays;
-import java.util.List;
-
-import org.springframework.context.MessageSource;
-
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
@@ -15,6 +8,13 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresenta
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.EkstraMetadataTransformer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMetadataTransformer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpTilXml;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpVedleggTilJson;
+import org.springframework.context.MessageSource;
+
+import java.util.List;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett {
 
@@ -31,7 +31,7 @@ public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett
     }
 
     public List<String> getSoknadBolker(WebSoknad soknad) {
-        return Arrays.asList(BOLK_PERSONALIA, "SosialhjelpArbeidsforhold", "SosialhjelpKontakt");
+        return asList(BOLK_PERSONALIA, "SosialhjelpArbeidsforhold", "SosialhjelpKontakt");
     }
 
     public String getStrukturFilnavn() {
@@ -39,7 +39,7 @@ public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett
     }
 
     public List<String> getSkjemanummer() {
-        return Arrays.asList("NAV 35-18.01");
+        return asList("NAV 35-18.01");
     }
 
     @Override
@@ -49,7 +49,7 @@ public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett
         event.addTagToReport("skjemanummer", soknad.getskjemaNummer());
         event.addTagToReport("soknadstype", getSoknadTypePrefix());
         event.report();
-        return singletonList(new SosialhjelpTilXml(messageSource));
+        return asList(new SosialhjelpTilXml(messageSource), new SosialhjelpVedleggTilJson());
     }
 
     @Override
