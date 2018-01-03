@@ -4,9 +4,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.AAPOrdinae
 import org.junit.Before;
 import org.junit.Test;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext.buildDataSource;
-import static org.mockito.Matchers.any;
-
 public class AAPVedleggIT extends AbstractIT {
 
     private String aapOrdinaerSkjemaNummer = new AAPOrdinaerInformasjon().getSkjemanummer().get(0);
@@ -14,31 +11,6 @@ public class AAPVedleggIT extends AbstractIT {
     @Before
     public void setup() throws Exception {
         EndpointDataMocking.setupMockWsEndpointData();
-    }
-
-    @Test
-    public void skalAlltidKreveLegeErklæring() {
-        soknadMedDelstegstatusOpprettet(aapOrdinaerSkjemaNummer)
-                .faktum("soknadstype").withValue("ordinaer").utforEndring()
-                .hentPaakrevdeVedlegg()
-                .skalHaVedlegg("L9");
-    }
-
-    @Test
-    public void registrertFlyktningVedlegg() {
-        soknadMedDelstegstatusOpprettet(aapOrdinaerSkjemaNummer)
-                .faktum("tilknytningnorge.oppholdinorgesistetreaar").withValue("false").utforEndring()
-                .faktum("tilknytningnorge.oppholdinorgesistetreaar.false.registrertflyktning").withValue("true").utforEndring()
-                .hentPaakrevdeVedlegg()
-                .skalHaVedlegg("P2");
-    }
-
-    @Test
-    public void unguforSpesialistErklaring() {
-        soknadMedDelstegstatusOpprettet(aapOrdinaerSkjemaNummer)
-                .faktum("ungufor").withValue("false").utforEndring()
-                .hentPaakrevdeVedlegg()
-                .skalHaVedlegg("V1");
     }
 
     @Test
