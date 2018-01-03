@@ -87,7 +87,7 @@ public class SosialhjelpKontaktBolk implements BolkService {
     private void populerStrukturertAdresse(final Faktum adresseFaktum, final StrukturertAdresse adresse) {
         adresseFaktum
                 .medSystemProperty("type", adresse.type)
-                .medSystemProperty("kommunenummer", adresse.kommunenummer)
+                // .medSystemProperty("kommunenummer", adresse.kommunenummer)
                 .medSystemProperty("bolignummer", adresse.bolignummer)
                 .medSystemProperty("postnummer", adresse.postnummer)
                 .medSystemProperty("poststed", adresse.poststed)
