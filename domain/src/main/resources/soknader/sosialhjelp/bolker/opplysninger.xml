@@ -506,7 +506,7 @@
     <vedlegg>
         <faktum>opplysninger.inntekt.inntekter.forsikringsutbetalinger.vedlegg</faktum>
         <skjemaNummer>dokumentasjon</skjemaNummer>
-        <skjemanummerTillegg>forsikringsutbetalinger</skjemanummerTillegg>
+        <skjemanummerTillegg>forsikringsutbetaling</skjemanummerTillegg>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
