@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.person;
 
-import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.*;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -28,7 +28,7 @@ public class PersonMock {
         List<Familierelasjon> familieRelasjoner = person.getHarFraRolleI();
 
         Doedsdato doedsdato = new Doedsdato();
-        doedsdato.setDoedsdato(XMLGregorianCalendarImpl.createDate(2014, 2, 2, 0));
+        doedsdato.setDoedsdato(ServiceUtils.stringTilXmldato("2014-02-02"));
         familieRelasjoner.add(lagBarn("***REMOVED***", "Dole", "Mockmann", doedsdato));
         familieRelasjoner.add(lagBarn("***REMOVED***", "Ole", "Mockmann"));
         familieRelasjoner.add(lagBarn("***REMOVED***", "Doffen", "Mockmann"));
