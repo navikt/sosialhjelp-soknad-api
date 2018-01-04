@@ -12,6 +12,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Kravdialog
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.ArbeidsforholdBolk;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
@@ -56,6 +57,8 @@ public class EttersendingServiceTest {
     @Mock(name = "lokalDb")
     private SoknadRepository lokalDb;
     @Mock
+    private HendelseRepository hendelseRepository;
+    @Mock
     private HenvendelseService henvendelsesConnector;
     @Mock
     private VedleggService vedleggService;
@@ -95,6 +98,7 @@ public class EttersendingServiceTest {
         soknadServiceUtil.initBolker();
         setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         when(lokalDb.hentSoknadType(anyLong())).thenReturn(DAGPENGER);
+        when(hendelseRepository.hentVersjon(anyString())).thenReturn(1);
         when(config.getSoknadBolker(any(WebSoknad.class), any(List.class))).thenReturn(new ArrayList());
         when(config.hentStruktur(any(Long.class))).thenReturn(new SoknadStruktur());
         when(kravdialogInformasjonHolder.hentAlleSkjemanumre()).thenReturn(new KravdialogInformasjonHolder().hentAlleSkjemanumre());

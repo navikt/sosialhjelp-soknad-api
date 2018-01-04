@@ -13,6 +13,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.ArbeidsforholdBolk;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnBolk;
@@ -78,6 +79,8 @@ public class SoknadDataFletterTest {
 
     @Mock(name = "lokalDb")
     private SoknadRepository lokalDb;
+    @Mock
+    private HendelseRepository hendelseRepository;
     @Mock
     private HenvendelseService henvendelsesConnector;
     @Mock

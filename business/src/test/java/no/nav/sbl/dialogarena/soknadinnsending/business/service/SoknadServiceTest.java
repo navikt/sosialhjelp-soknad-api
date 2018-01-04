@@ -139,7 +139,7 @@ public class SoknadServiceTest {
         WebSoknad soknad = new WebSoknad().medBehandlingId("123").medId(11L);
         when(soknadRepository.hentSoknad("123")).thenReturn(soknad);
         soknadService.avbrytSoknad("123");
-        verify(soknadRepository).slettSoknad(soknad, HendelseType.SOKNAD_AVBRUTT);
+        verify(soknadRepository).slettSoknad(soknad, HendelseType.AVBRUTT_AV_BRUKER);
         verify(henvendelsesConnector).avbrytSoknad("123");
     }
 

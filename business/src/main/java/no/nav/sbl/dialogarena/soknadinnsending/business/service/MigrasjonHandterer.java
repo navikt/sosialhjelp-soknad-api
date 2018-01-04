@@ -5,7 +5,7 @@ import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.migrasjon.Migrasjon;
 import org.springframework.stereotype.Component;
 
@@ -17,8 +17,7 @@ import java.util.*;
 public class MigrasjonHandterer{
 
     @Inject
-    @Named("soknadInnsendingRepository")
-    private SoknadRepository lokalDb;
+    private HendelseRepository hendelseRepository;
 
     List<Migrasjon> migrasjoner = migrasjoner();
 
@@ -32,11 +31,7 @@ public class MigrasjonHandterer{
         if(migrasjon.isPresent()){
             migrertSoknad = migrasjon.get().migrer(migrertSoknad.getVersjon(), migrertSoknad);
 
-            lokalDb.lagreMigrasjonshendelse(
-                            migrertSoknad.getBrukerBehandlingId(),
-                            migrertSoknad.getVersjon(),
-                            migrertSoknad.getskjemaNummer()
-                    );
+            hendelseRepository.registrerMigrertHendelse(migrertSoknad);
 
             Event metrikk = MetricsFactory.createEvent("sendsoknad.skjemamigrasjon");
             String soknadTypePrefix;
