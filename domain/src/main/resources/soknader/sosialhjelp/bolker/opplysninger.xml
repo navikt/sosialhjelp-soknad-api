@@ -1,6 +1,37 @@
 <?xml version="1.0" ?>
 <soknad xmlns="urn:no.nav.sbl">
 
+    <!-- Oppholdstillatelse -->
+    <faktum>
+        <id>opplysninger.statsborgerskap</id>
+        <type>gruppe</type>
+        <panel>opplysningerBolk</panel>
+    </faktum>
+    <faktum>
+        <id>opplysninger.statsborgerskap.nordisk</id>
+        <type>composite</type>
+        <dependOn>opplysninger.statsborgerskap</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>personalia</faktum>
+                <expression>properties['statsborgerskap'] != 'NOR' &amp;&amp; properties['statsborgerskap'] != 'SWE' &amp;&amp; properties['statsborgerskap'] != 'FRO' &amp;&amp; properties['statsborgerskap'] != 'ISL' &amp;&amp; properties['statsborgerskap'] != 'DNK' &amp;&amp; properties['statsborgerskap'] != 'FIN' </expression>
+            </constraint>
+        </constraints>
+        <optional>true</optional>
+    </faktum>
+    <faktum>
+        <id>opplysninger.statsborgerskap.nordisk.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.statsborgerskap.nordisk</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.statsborgerskap.nordisk.vedlegg</faktum>
+        <skjemaNummer>oppholdstillatelse</skjemaNummer>
+        <skjemanummerTillegg>oppholdstillatelse</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 
     <!-- Arbeid / utdanning -->
     <faktum>
@@ -173,6 +204,67 @@
         </properties>
     </faktum>
 
+
+
+    <!-- Bosituasjon -->
+    <faktum>
+        <id>opplysninger.bosituasjon</id>
+        <type>gruppe</type>
+        <panel>opplysningerBolk</panel>
+    </faktum>
+
+    <faktum>
+        <id>opplysninger.bosituasjon.eier</id>
+        <type>composite</type>
+        <dependOn>opplysninger.bosituasjon</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>bosituasjon</faktum>
+                <expression>value == 'eier'</expression>
+            </constraint>
+        </constraints>
+        <optional>true</optional>
+    </faktum>
+    <faktum>
+        <id>opplysninger.bosituasjon.eier.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.bosituasjon.eier</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.bosituasjon.eier.vedlegg</faktum>
+        <skjemaNummer>kjopekontrakt</skjemaNummer>
+        <skjemanummerTillegg>kjopekontrakt</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
+    <faktum>
+        <id>opplysninger.bosituasjon.leier</id>
+        <type>composite</type>
+        <dependOn>opplysninger.bosituasjon</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>bosituasjon</faktum>
+                <expression>value == 'leier'</expression>
+            </constraint>
+        </constraints>
+        <optional>true</optional>
+    </faktum>
+    <faktum>
+        <id>opplysninger.bosituasjon.leier.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.bosituasjon.leier</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.bosituasjon.leier.vedlegg</faktum>
+        <skjemaNummer>husleiekontrakt</skjemaNummer>
+        <skjemanummerTillegg>husleiekontrakt</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
     <!-- Inntekter / formue -->
     <faktum>
         <id>opplysninger.inntekt</id>
@@ -209,6 +301,136 @@
         <faktum>opplysninger.inntekt.bostotte.vedlegg</faktum>
         <skjemaNummer>bostotte</skjemaNummer>
         <skjemanummerTillegg>vedtak</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
+    <faktum>
+        <id>opplysninger.inntekt.eierandeler.bolig</id>
+        <type>composite</type>
+        <dependOn>opplysninger.inntekt</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>inntekt.eierandeler.true.type.bolig</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+        <optional>true</optional>
+    </faktum>
+    <faktum>
+        <id>opplysninger.inntekt.eierandeler.bolig.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.inntekt.eierandeler.bolig</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.inntekt.eierandeler.bolig.vedlegg</faktum>
+        <skjemaNummer>kjopekontrakt</skjemaNummer>
+        <skjemanummerTillegg>kjopekontrakt</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
+    <faktum>
+        <id>opplysninger.inntekt.eierandeler.kjoretoy</id>
+        <type>composite</type>
+        <dependOn>opplysninger.inntekt</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>inntekt.eierandeler.true.type.kjoretoy</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+        <optional>true</optional>
+    </faktum>
+    <faktum>
+        <id>opplysninger.inntekt.eierandeler.kjoretoy.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.inntekt.eierandeler.kjoretoy</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.inntekt.eierandeler.kjoretoy.vedlegg</faktum>
+        <skjemaNummer>dokumentasjon</skjemaNummer>
+        <skjemanummerTillegg>kjoretoy</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
+    <faktum>
+        <id>opplysninger.inntekt.eierandeler.campingvogn</id>
+        <type>composite</type>
+        <dependOn>opplysninger.inntekt</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>inntekt.eierandeler.true.type.campingvogn</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+        <optional>true</optional>
+    </faktum>
+    <faktum>
+        <id>opplysninger.inntekt.eierandeler.campingvogn.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.inntekt.eierandeler.campingvogn</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.inntekt.eierandeler.campingvogn.vedlegg</faktum>
+        <skjemaNummer>dokumentasjon</skjemaNummer>
+        <skjemanummerTillegg>campingvogn</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
+    <faktum>
+        <id>opplysninger.inntekt.eierandeler.fritidseiendom</id>
+        <type>composite</type>
+        <dependOn>opplysninger.inntekt</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>inntekt.eierandeler.true.type.fritidseiendom</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+        <optional>true</optional>
+    </faktum>
+    <faktum>
+        <id>opplysninger.inntekt.eierandeler.fritidseiendom.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.inntekt.eierandeler.fritidseiendom</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.inntekt.eierandeler.fritidseiendom.vedlegg</faktum>
+        <skjemaNummer>dokumentasjon</skjemaNummer>
+        <skjemanummerTillegg>fritidseiendom</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
+    <faktum>
+        <id>opplysninger.inntekt.eierandeler.annet</id>
+        <type>composite</type>
+        <dependOn>opplysninger.inntekt</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>inntekt.eierandeler.true.type.annet</faktum>
+                <expression>value == 'true'</expression>
+            </constraint>
+        </constraints>
+        <optional>true</optional>
+    </faktum>
+    <faktum>
+        <id>opplysninger.inntekt.eierandeler.annet.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.inntekt.eierandeler.annet</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.inntekt.eierandeler.annet.vedlegg</faktum>
+        <skjemaNummer>dokumentasjon</skjemaNummer>
+        <skjemanummerTillegg>annetverdi</skjemanummerTillegg>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
