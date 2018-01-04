@@ -33,7 +33,7 @@
         </dependOnValues>
     </faktum>
     <faktum>
-        <id>soknadsvalg.overtaMedmor</id>
+        <id>soknadsvalg.overtamedmor</id>
         <dependOn>soknadsvalg.stonadstype</dependOn>
         <dependOnValues>
             <value>overtaMedmor</value>
