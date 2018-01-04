@@ -2,11 +2,14 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.migrasjon.FakeMigrasjon;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -19,8 +22,8 @@ import static org.mockito.Mockito.doNothing;
 @RunWith(MockitoJUnitRunner.class)
 public class MigrasjonHandtererTest {
 
-    @Mock(name="soknadInnsendingRepository")
-    private SoknadRepository lokalDb;
+    @Mock
+    private HendelseRepository lokalDb;
 
     @InjectMocks
     private MigrasjonHandterer handterer;
@@ -37,7 +40,6 @@ public class MigrasjonHandtererTest {
     public void migreringSkjerForFakeSoknadMedEnVersjonLavere() {
         WebSoknad migrertSoknad = handterer.handterMigrasjon(innsendtSoknad);
 
-        doNothing().when(lokalDb).lagreMigrasjonshendelse(anyString(), anyInt(), anyString());
         assertThat(migrertSoknad.getskjemaNummer()).isEqualTo("NAV 11-13.05");
         assertThat(migrertSoknad.getVersjon()).isEqualTo(2);
         assertThat(migrertSoknad.getDelstegStatus()).isEqualTo(DelstegStatus.UTFYLLING);

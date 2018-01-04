@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.batch;
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
 import org.slf4j.Logger;
@@ -11,13 +11,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.util.List;
 
-import java.util.Collection;
-
-import static no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType.SOKNAD_SLETTET;
-
+import static no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType.AVBRUTT_AUTOMATISK;
 import static org.slf4j.LoggerFactory.getLogger;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.*;
 
 @Service
 public class SlettSoknadScheduler {
@@ -29,7 +26,7 @@ public class SlettSoknadScheduler {
 
 
     @Inject
-    private SoknadRepository soknadRepository;
+    private HendelseRepository hendelseRepository;
     @Inject
     private HenvendelseService henvendelseService;
 
@@ -43,14 +40,15 @@ public class SlettSoknadScheduler {
 
             long start = System.currentTimeMillis();
 
-            Collection<String> ikkeAvsluttede = soknadRepository.hentBehandlingsIdForIkkeAvsluttede(DAGER_GAMMELT);
-            int counter = 0;
-            event.addTagToReport("antallIkkeAvsluttede","" + ikkeAvsluttede.size());
+            List<String> soknaderUnderArbeid = hendelseRepository.hentSoknaderUnderArbeidEldreEnn(DAGER_GAMMELT);
 
-            for(String behandlingsid : ikkeAvsluttede){
+            int counter = 0;
+            event.addTagToReport("antallIkkeAvsluttede","" + soknaderUnderArbeid.size());
+
+            for(String behandlingsid : soknaderUnderArbeid){
                 WSHentSoknadResponse wsHentSoknadResponse = henvendelseService.hentSoknad(behandlingsid);
                 if(AVBRUTT_AUTOMATISK.equals(SoknadInnsendingStatus.valueOf(wsHentSoknadResponse.getStatus()))){
-                    settSoknadAvsluttet(behandlingsid);
+                    hendelseRepository.registrerAutomatiskAvsluttetHendelse(behandlingsid);
                     event.addTagToReport("avslutterSoknad",behandlingsid);
                     counter++;
                 }
@@ -65,7 +63,4 @@ public class SlettSoknadScheduler {
         }
     }
 
-    private void settSoknadAvsluttet(String behandlingsId) {
-        soknadRepository.insertHendelse(behandlingsId,SOKNAD_SLETTET.name());
-    }
 }
