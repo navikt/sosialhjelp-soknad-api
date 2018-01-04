@@ -173,7 +173,6 @@
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
-
     <vedlegg>
         <faktum>opplysninger.familiesituasjon.barnebidrag.mottar.vedlegg</faktum>
         <skjemaNummer>barnebidrag</skjemaNummer>
@@ -203,6 +202,31 @@
             </property>
         </properties>
     </faktum>
+
+    <faktum>
+        <id>opplysninger.familiesituasjon.barn.samvarsavtale</id>
+        <type>composite</type>
+        <dependOn>opplysninger.familiesituasjon</dependOn>
+        <optional>true</optional>
+        <constraints>
+            <constraint>
+                <expression>properties['skalvises'] == 'true'</expression>
+            </constraint>
+        </constraints>
+    </faktum>
+    <faktum>
+        <id>opplysninger.familiesituasjon.barn.samvarsavtale.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.familiesituasjon.barn.samvarsavtale</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.familiesituasjon.barn.samvarsavtale.vedlegg</faktum>
+        <skjemaNummer>samvarsavtale</skjemaNummer>
+        <skjemanummerTillegg>barn</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 
 
 

@@ -101,8 +101,35 @@ public class VedleggOriginalFilerService {
 
         repository.batchOpprettTommeFakta(nyeFakta);
 
+        settSamvarsStatus(soknad);
+
         WebSoknad soknadOppdatert = soknadService.hentSoknad(behandlingsId, true, true);
         return soknadOppdatert;
+    }
+
+    private void settSamvarsStatus(WebSoknad soknad) {
+        boolean skalBeOmSamvaersavtale = false;
+
+        List<Faktum> barneFakta = soknad.getFaktaMedKey("familie.barn.true.barn");
+
+        for (Faktum barn : barneFakta) {
+            Map<String, String> props = barn.getProperties();
+            boolean borIkkeSammen = "false".equals(props.get("borsammen"));
+            int grad = 100;
+            try {
+                grad = Integer.parseInt(props.get("grad"));
+            } catch (NumberFormatException e) {
+                // ignore
+            }
+            if (borIkkeSammen && grad < 50) {
+                skalBeOmSamvaersavtale = true;
+                break;
+            }
+        }
+
+        Faktum avtaleFaktum = soknad.getFaktumMedKey("opplysninger.familiesituasjon.barn.samvarsavtale");
+        avtaleFaktum.medProperty("skalvises", skalBeOmSamvaersavtale ? "true" : "false");
+        faktaService.lagreBrukerFaktum(avtaleFaktum);
     }
 
     /**
