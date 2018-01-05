@@ -1180,6 +1180,33 @@
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
+    <!-- Generell -->
+    <faktum>
+        <id>opplysninger.generell</id>
+        <type>gruppe</type>
+        <panel>opplysningerBolk</panel>
+    </faktum>
+
+    <faktum>
+        <id>opplysninger.generell.skattemelding</id>
+        <type>composite</type>
+        <dependOn>opplysninger.generell</dependOn>
+        <optional>true</optional>
+    </faktum>
+    <faktum>
+        <id>opplysninger.generell.skattemelding.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.generell.skattemelding</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.generell.skattemelding.vedlegg</faktum>
+        <skjemaNummer>skattemelding</skjemaNummer>
+        <skjemanummerTillegg>skattemelding</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
     <!-- Ekstrainfo -->
     <faktum>
         <id>opplysninger.ekstrainfo</id>
