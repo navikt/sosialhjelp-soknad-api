@@ -76,6 +76,10 @@
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
         </dependency>
+        <dependency>
+            <groupId>no.nav.sbl.dialogarena</groupId>
+            <artifactId>sendsoknad-domain</artifactId>
+        </dependency>
 
     </dependencies>
 
