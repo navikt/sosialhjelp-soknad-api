@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.integration;
 
-import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 import no.nav.sbl.dialogarena.config.IntegrationConfig;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingsId;
@@ -22,6 +21,8 @@ import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 import org.mockito.Mockito;
+
+import javax.xml.datatype.DatatypeFactory;
 
 import static org.mockito.Matchers.any;
 
@@ -61,7 +62,7 @@ public class EndpointDataMocking {
         HentKjerneinformasjonResponse hentKjerneinformasjonResponse = new HentKjerneinformasjonResponse();
 
         Foedselsdato foedselsdato = new Foedselsdato();
-        foedselsdato.setFoedselsdato(new XMLGregorianCalendarImpl());
+        foedselsdato.setFoedselsdato(DatatypeFactory.newInstance().newXMLGregorianCalendar());
 
         Familierelasjoner familierelasjoner = new Familierelasjoner();
         familierelasjoner.setValue("BARN");
