@@ -6,10 +6,7 @@ import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadTilleggsstonader;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
@@ -152,6 +149,31 @@ public class SoknadDataFletter {
         Long soknadId = lagreSoknadILokalDb(skjemanummer, mainUid, aktorId, behandlingsId).getSoknadId();
         faktaService.lagreFaktum(soknadId, bolkerFaktum(soknadId));
         faktaService.lagreSystemFaktum(soknadId, personalia(soknadId));
+
+        /*  TODO: Teknisk gjeld -
+         *    Bakgrunn for endringen i no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter
+         *
+         *    Koden som skal håndtere at man ikke overskriver systemdata med brukerdata er basert på at faktum allerede har blitt lagret
+         *   (sjekken ligger i "SoknadRepository"). Opprettelse av søknaden og populering av data (bolk) gjøres som to separate steg.
+         *   Av sikkerhetsgrunner er det derfor nødvendig å lagre systemfaktumet som en del av søknadsopprettelsen.
+         *
+         *    Det å opprette systemfaktum som en del av søknadsopprettelse benyttes allerede i dag for å sikre "personalia".
+         *
+         *    For søknad om økonomisk sosialhjelp er det viktig at arbeidsholddataene ikke kan redigeres av bruker uten at dette blir markert.
+         *    Vi trenger derfor å benytte samme løsning for å sikre "arbeidsforhold" som i dag benyttes for "personalia".
+         *
+         *    Løsninger hvis man ønsker å bli kvitt behovet for å opprette faktum som en del av søknadsopprettelse:
+         *
+         *    1) Kalle på bolkene og lagre systemdata som en del av søknadsopprettelsen.
+         *    2) Bruke XML-definisjonen til faktumet for å verifisere at brukerendring er tillatt fremfor dagens løsning
+         *    som er basert på sjekk av lagret faktum.
+         */
+        if (SosialhjelpInformasjon.SKJEMANUMMER.equals(skjemanummer)) {
+            faktaService.lagreSystemFaktum(soknadId, arbeidsforhold(soknadId));
+
+
+        }
+
         oprettIDbTimer.stop();
         oprettIDbTimer.report();
 
@@ -240,6 +262,13 @@ public class SoknadDataFletter {
                 .medKey("personalia");
     }
 
+    private Faktum arbeidsforhold(Long soknadId) {
+        return new Faktum()
+                .medSoknadId(soknadId)
+                .medType(SYSTEMREGISTRERT)
+                .medKey("arbeidsforhold");
+    }
+
     public WebSoknad hentSoknad(String behandlingsId, boolean medData, boolean medVedlegg) {
         return this.hentSoknad(behandlingsId, medData, medVedlegg, true);
     }
@@ -293,7 +322,7 @@ public class SoknadDataFletter {
                             soknad.medDelstegStatus(DelstegStatus.UTFYLLING);
 
                             logger.warn("catch IllegalArgumentException " + e.getMessage()
-                                    + " -  Søknad med skjemanr: " + soknad.getskjemaNummer() +" har ikke gyldig dato-property for faktum " + faktum.getKey()
+                                    + " -  Søknad med skjemanr: " + soknad.getskjemaNummer() + " har ikke gyldig dato-property for faktum " + faktum.getKey()
                                     + " -  BehandlingId: " + soknad.getBrukerBehandlingId());
 
                             Event event = MetricsFactory.createEvent("stofo.korruptdato");
@@ -312,13 +341,13 @@ public class SoknadDataFletter {
         boolean harValgtDagligReise = soknad.getValueForFaktum("informasjonsside.stonad.reiseaktivitet").equals("true");
         boolean harValgtBostotte = soknad.getValueForFaktum("informasjonsside.stonad.bostotte").equals("true");
 
-        if(harValgtFlereReisesamlinger) {
+        if (harValgtFlereReisesamlinger) {
             faktumFeilerKeys.add("reise.samling.fleresamlinger.samling");
         }
-        if(harValgtDagligReise){
+        if (harValgtDagligReise) {
             faktumFeilerKeys.add("reise.samling.aktivitetsperiode");
         }
-        if(harValgtBostotte){
+        if (harValgtBostotte) {
             faktumFeilerKeys.add("bostotte.samling");
         }
         return faktum -> faktumFeilerKeys.contains(faktum.getKey());
