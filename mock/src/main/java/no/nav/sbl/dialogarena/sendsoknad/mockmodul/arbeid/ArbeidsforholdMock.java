@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.arbeid;
 
-import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.*;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerRequest;
@@ -46,8 +46,8 @@ public class ArbeidsforholdMock {
     private AnsettelsesPeriode hentPeriode() {
         AnsettelsesPeriode periode = new AnsettelsesPeriode();
         Gyldighetsperiode gperiode = new Gyldighetsperiode();
-        gperiode.setFom(XMLGregorianCalendarImpl.createDate(2014, 1, 1, 0));
-//        gperiode.setTom(XMLGregorianCalendarImpl.createDate(2015, 1, 1, 0)); // Denne avgjør om man er ansatt eller ikke for øyeblikket
+        gperiode.setFom(ServiceUtils.stringTilXmldato("2014-01-02"));
+//        gperiode.setTom(ServiceUtils.stringTilXmldato("2015-01-01")); // Denne avgjør om man er ansatt eller ikke for øyeblikket
         periode.setPeriode(gperiode);
         return periode;
     }
