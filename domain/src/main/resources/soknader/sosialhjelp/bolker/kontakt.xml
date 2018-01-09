@@ -185,6 +185,12 @@
         <id>kontakt.kontonummer.brukerendrettoggle</id>
         <panel>personaliaBolk</panel>
         <type>hidden</type>
+        <properties>
+            <property>
+                <id>harikke</id>
+                <type>checkbox</type>
+            </property>
+        </properties>
     </faktum>
     <faktum>
         <id>kontakt.kontonummer</id>
@@ -193,7 +199,7 @@
         <constraints>
             <constraint>
                 <faktum>kontakt.kontonummer.brukerendrettoggle</faktum>
-                <expression>value == 'true'</expression>
+                <expression>value == 'true' and properties['harikke'] != 'true'</expression>
             </constraint>
         </constraints>
         <optional>true</optional>
