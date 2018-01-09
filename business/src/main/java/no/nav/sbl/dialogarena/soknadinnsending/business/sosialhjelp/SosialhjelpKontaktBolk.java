@@ -42,10 +42,11 @@ public class SosialhjelpKontaktBolk implements BolkService {
         return Arrays.asList(
                 new Faktum().medSoknadId(soknadId).medKey("kontakt.system.kontonummer").medValue(norskKontonummer(personalia)),
                 new Faktum().medSoknadId(soknadId).medKey("kontakt.system.telefon").medValue(personalia.getMobiltelefonnummer()),
+                new Faktum().medSoknadId(soknadId).medKey("kontakt.system.personalia.statsborgerskap").medValue(personalia.getStatsborgerskap()),
                 genererAdresseFaktum(soknadId, personalia)
         );
     }
-
+ 
     private String norskKontonummer(Personalia personalia) {
         if (personalia.getErUtenlandskBankkonto() != null && personalia.getErUtenlandskBankkonto()) {
             return "";
