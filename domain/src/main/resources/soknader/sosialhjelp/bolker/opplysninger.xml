@@ -207,7 +207,6 @@
         <id>opplysninger.familiesituasjon.barn.samvarsavtale</id>
         <type>composite</type>
         <dependOn>opplysninger.familiesituasjon</dependOn>
-        <optional>true</optional>
         <constraints>
             <constraint>
                 <expression>properties['skalvises'] == 'true'</expression>
