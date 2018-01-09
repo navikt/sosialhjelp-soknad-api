@@ -18,6 +18,8 @@ import static java.util.Collections.singletonList;
 
 public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett {
 
+    public static final String SKJEMANUMMER = "NAV 35-18.01";
+
     public String getSoknadTypePrefix() {
         return "soknadsosialhjelp";
     }
@@ -39,7 +41,7 @@ public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett
     }
 
     public List<String> getSkjemanummer() {
-        return asList("NAV 35-18.01");
+        return asList(SKJEMANUMMER);
     }
 
     @Override
