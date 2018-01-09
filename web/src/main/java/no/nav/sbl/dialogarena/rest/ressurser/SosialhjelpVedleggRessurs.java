@@ -12,12 +12,15 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,7 +33,6 @@ import static no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad.Type.Vedleg
 
 @Controller
 @Path("/sosialhjelpvedlegg")
-@Produces(APPLICATION_JSON)
 @Timed
 public class SosialhjelpVedleggRessurs {
 
@@ -42,6 +44,7 @@ public class SosialhjelpVedleggRessurs {
 
     @GET
     @Path("/oppdaterVedlegg/{behandlingsId}")
+    @Produces(APPLICATION_JSON)
     @SjekkTilgangTilSoknad
     public WebSoknad oppdaterVedleggFaktum(@PathParam("behandlingsId") String behandlingsId) {
         return vedleggOriginalFilerService.oppdaterVedleggOgBelopFaktum(behandlingsId);
@@ -50,6 +53,7 @@ public class SosialhjelpVedleggRessurs {
     @POST
     @Path("/originalfil/{faktumId}")
     @Consumes(MULTIPART_FORM_DATA)
+    @Produces(APPLICATION_JSON)
     @SjekkTilgangTilSoknad(type = Type.Faktum)
     public Forventning lastOppOriginalfil(@PathParam("faktumId") final Long faktumId, @FormDataParam("file") final FormDataBodyPart fil) {
         if (fil.getValueAs(File.class).length() > MAKS_TOTAL_FILSTORRELSE) {
@@ -68,6 +72,7 @@ public class SosialhjelpVedleggRessurs {
 
     @DELETE
     @Path("/{vedleggId}")
+    @Produces(APPLICATION_JSON)
     @SjekkTilgangTilSoknad(type = Vedlegg)
     public Vedlegg slettOriginalFil(@PathParam("vedleggId") final Long vedleggId) {
         return vedleggOriginalFilerService.slettOriginalVedlegg(vedleggId);
@@ -76,11 +81,10 @@ public class SosialhjelpVedleggRessurs {
     @GET
     @Path("/{vedleggId}/fil")
     @SjekkTilgangTilSoknad(type = Vedlegg)
-    public byte[] hentVedleggData(@PathParam("vedleggId") final Long vedleggId, @Context HttpServletResponse response) {
+    public Response hentVedleggData(@PathParam("vedleggId") final Long vedleggId, @Context HttpServletResponse response) {
         Vedlegg vedlegg = vedleggService.hentVedlegg(vedleggId, true);
-        response.setContentType(vedlegg.getMimetype());
         response.setHeader("Content-Disposition", "attachment; filename=\"" + vedlegg.lagFilNavn() + "\"");
-        return vedlegg.getData();
+        return Response.ok(vedlegg.getData()).type(vedlegg.getMimetype()).build();
     }
 
     private static byte[] getByteArray(FormDataBodyPart file) {
