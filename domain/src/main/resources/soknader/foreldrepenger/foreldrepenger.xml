@@ -15,6 +15,13 @@
         <id>soknadsvalg.stonadstype</id>
     </faktum>
     <faktum>
+        <id>soknadsvalg.sokersommedmor</id>
+        <dependOn>soknadsvalg.stonadstype</dependOn>
+        <dependOnValues>
+            <value>engangsstonadFar</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
         <id>soknadsvalg.fodselelleradopsjon</id>
         <dependOn>soknadsvalg.stonadstype</dependOn>
     </faktum>
