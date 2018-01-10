@@ -28,8 +28,8 @@
     </faktum>
     <vedlegg>
         <faktum>opplysninger.statsborgerskap.nordisk.vedlegg</faktum>
-        <skjemaNummer>oppholdstillatelse</skjemaNummer>
-        <skjemanummerTillegg>oppholdstillatelse</skjemanummerTillegg>
+        <skjemaNummer>oppholdstillatel</skjemaNummer>
+        <skjemanummerTillegg>oppholdstillatel</skjemanummerTillegg>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 

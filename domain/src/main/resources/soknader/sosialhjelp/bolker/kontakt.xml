@@ -6,10 +6,9 @@
         <type>hidden</type>
     </faktum>
     <faktum>
-        <id>kontakt.statsborger</id>
+        <id>kontakt.system.personalia.statsborgerskap</id>
         <panel>personaliaBolk</panel>
-        <type>bool</type>
-        <optional>true</optional>
+        <type>textbox</type>
     </faktum>
     <faktum>
         <id>kontakt.system.adresse</id>
