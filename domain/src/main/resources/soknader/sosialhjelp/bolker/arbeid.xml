@@ -50,6 +50,9 @@
             <property>
                 <id>tom</id>
                 <type>textbox</type>
+                <constraints>
+                    <constraint>properties['tom'] != ''</constraint>
+                </constraints>
             </property>
             <property>
                 <id>stillingsprosent</id>
