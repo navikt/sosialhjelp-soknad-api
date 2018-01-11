@@ -57,8 +57,17 @@
             <property>
                 <id>stillingsprosent</id>
                 <type>textbox</type>
+                <constraints>
+                    <constraint>properties['stillingsprosent'] != '0'</constraint>
+                </constraints>
             </property>
-
+            <property>
+                <id>stillingstype</id>
+                <type>textbox</type>
+                <constraints>
+                    <constraint>properties['stillingstype'] == 'variabel'</constraint>
+                </constraints>
+            </property>
         </properties>
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
