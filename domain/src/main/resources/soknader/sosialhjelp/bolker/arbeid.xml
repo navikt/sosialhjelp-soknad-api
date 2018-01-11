@@ -69,6 +69,11 @@
                 </constraints>
             </property>
         </properties>
+        <constraints>
+            <constraint>
+                <expression>properties['fom'] != null</expression>
+            </constraint>
+        </constraints>
         <optional>true</optional>
         <flereTillatt>true</flereTillatt>
     </faktum>
