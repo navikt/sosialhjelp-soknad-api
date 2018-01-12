@@ -6,6 +6,8 @@
         <panel>arbeidbolk</panel>
         <optional>true</optional>
     </faktum>
+    
+    <!--
     <faktum>
         <id>dinsituasjon.jobb.true.grad</id>
         <type>bool</type>
@@ -15,6 +17,7 @@
         </dependOnValues>
         <optional>true</optional>
     </faktum>
+    -->
 
     <faktum>
         <id>dinsituasjon.studerer</id>
