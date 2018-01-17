@@ -11,6 +11,7 @@ public class PersonaliaBuilder {
     private String fornavn;
     private String mellomnavn;
     private String etternavn;
+    private String mobiltelefonnummer;
     private String epost;
     private String diskresjonskode;
     private String statsborgerskap;
@@ -66,6 +67,12 @@ public class PersonaliaBuilder {
         return this;
     }
 
+
+    public PersonaliaBuilder mobiltelefon(String mobiltelefonnummer) {
+        this.mobiltelefonnummer = mobiltelefonnummer;
+        return this;
+    }
+    
     public PersonaliaBuilder epost(String epost) {
         this.epost = epost;
         return this;
@@ -120,6 +127,7 @@ public class PersonaliaBuilder {
         personalia.setFornavn(fornavn);
         personalia.setMellomnavn(mellomnavn);
         personalia.setEtternavn(etternavn);
+        personalia.setMobiltelefonnummer(mobiltelefonnummer);
         personalia.setEpost(epost);
         personalia.setStatsborgerskap(statsborgerskap);
         personalia.setKjonn(kjonn);
