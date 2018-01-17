@@ -64,11 +64,20 @@
                         {{/variabel}}
                     {{/hvisIngenSynligeBarneFakta}}
                 </ul>
+                {{#hvisLik navn "opplysningerBolk"}}
+                    {{#hvisLik soknad.skjemaNummer "NAV 35-18.01"}}
+                        {{> skjema/sosialhjelp/vedlegg}}
+                    {{/hvisLik}}
+                {{/hvisLik}}
             </div>
         {{/each}}
-        <div class="js-vedlegg">
-            {{> skjema/generisk/generiskvedlegg }}
-        </div>
+
+        {{#hvisLik soknad.skjemaNummer "NAV 35-18.01"}}
+        {{else}}
+            <div class="js-vedlegg">
+                {{> skjema/generisk/generiskvedlegg }}
+            </div>
+        {{/hvisLik}}
     </div>
 
     <div class="brosjyre-signatur js-signatur">
@@ -84,6 +93,7 @@
         </ul>
 
     </div>
+
 </div>
 </body>
 </html>
