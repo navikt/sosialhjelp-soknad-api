@@ -30,7 +30,7 @@ public class KommuneTilNavEnhetMapper {
 
 
     private static final Map<String, NavEnhet> map = ImmutableMap.of(
-            "horten", new NavEnhet("NAV Horten", "910940066"),
+            "horten", new NavEnhet("NAV Horten", "974605171"),
             "frogner", new NavEnhet("NAV Oslo Bydel Frogner", "910229699"),
             "grunerlokka", new NavEnhet("NAV Oslo Bydel Grünerløkka", "974778866"),
             "grorud", new NavEnhet("NAV Oslo Bydel Grünerløkka", "910229702")
