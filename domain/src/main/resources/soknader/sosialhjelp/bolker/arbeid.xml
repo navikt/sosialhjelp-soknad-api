@@ -6,6 +6,8 @@
         <panel>arbeidbolk</panel>
         <optional>true</optional>
     </faktum>
+    
+    <!--
     <faktum>
         <id>dinsituasjon.jobb.true.grad</id>
         <type>bool</type>
@@ -15,6 +17,7 @@
         </dependOnValues>
         <optional>true</optional>
     </faktum>
+    -->
 
     <faktum>
         <id>dinsituasjon.studerer</id>
@@ -31,4 +34,58 @@
         </dependOnValues>
         <optional>true</optional>
     </faktum>
+
+
+    <faktum>
+        <id>arbeidsforhold</id>
+        <type>composite</type>
+
+        <panel>arbeidbolk</panel>
+        <properties>
+            <property>
+                <id>arbeidsgivernavn</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>fom</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>tom</id>
+                <type>textbox</type>
+                <constraints>
+                    <constraint>properties['tom'] != ''</constraint>
+                </constraints>
+            </property>
+            <property>
+                <id>stillingsprosent</id>
+                <type>textbox</type>
+                <constraints>
+                    <constraint>properties['stillingsprosent'] != '0'</constraint>
+                </constraints>
+            </property>
+            <property>
+                <id>stillingstype</id>
+                <type>textbox</type>
+                <constraints>
+                    <constraint>properties['stillingstype'] == 'variabel'</constraint>
+                </constraints>
+            </property>
+        </properties>
+        <constraints>
+            <constraint>
+                <expression>properties['fom'] != null</expression>
+            </constraint>
+        </constraints>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+
+    <faktum>
+        <id>opplysninger.arbeidsituasjon.kommentarer</id>
+        <panel>arbeidbolk</panel>
+        <type>textbox</type>
+
+    </faktum>
+
 </soknad>

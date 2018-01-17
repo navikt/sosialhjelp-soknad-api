@@ -67,6 +67,12 @@
         <type>bool</type>
         <panel>utgifterBolk</panel>
         <optional>true</optional>
+        <constraints>
+            <constraint>
+                <faktum>familie.barn</faktum>
+                <expression>value == "true"</expression>
+            </constraint>
+        </constraints>
     </faktum>
 
     <faktum>
