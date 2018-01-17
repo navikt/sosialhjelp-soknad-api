@@ -60,6 +60,7 @@ public class Adresse {
         public String type;
         public String kommunenummer;
         public String bolignummer;
+        public String postnummer;
         public String poststed;
     }
 
