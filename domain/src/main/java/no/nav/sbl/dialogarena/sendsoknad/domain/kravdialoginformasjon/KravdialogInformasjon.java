@@ -55,6 +55,9 @@ public interface KravdialogInformasjon {
     Integer getSkjemaVersjon();
 
     abstract class DefaultOppsett implements KravdialogInformasjon {
+
+        public static final int VERSJON = 0;
+
         @Override
         public List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource, WebSoknad soknad) {
             return new ArrayList<>();
@@ -90,6 +93,6 @@ public interface KravdialogInformasjon {
         }
 
         @Override
-        public Integer getSkjemaVersjon() { return 0; }
+        public Integer getSkjemaVersjon() { return VERSJON; }
     }
 }
