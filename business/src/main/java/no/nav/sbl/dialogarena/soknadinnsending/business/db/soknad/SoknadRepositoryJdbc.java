@@ -87,6 +87,8 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     public void populerFraStruktur(WebSoknad soknad) {
         insertSoknad(soknad, soknad.getSoknadId());
+        hendelseRepository.registrerHendelse(soknad, HendelseType.HENTET_FRA_HENVENDELSE);
+
         List<FaktumEgenskap> egenskaper = soknad.getFakta().stream()
                 .flatMap(faktum -> faktum.getFaktumEgenskaper().stream())
                 .collect(toList());
