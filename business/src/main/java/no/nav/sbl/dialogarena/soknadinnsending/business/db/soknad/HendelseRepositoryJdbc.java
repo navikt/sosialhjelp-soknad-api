@@ -4,6 +4,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,19 +57,19 @@ public class HendelseRepositoryJdbc extends NamedParameterJdbcDaoSupport impleme
 
     @Transactional(readOnly = true)
     public Integer hentVersjon(String behandlingsId) {
-        String selector = "SELECT versjon FROM hendelse WHERE (hendelse_type = ? or hendelse_type = ?) AND behandlingsid = ?";
-        Boolean finnesOpprettetEllerMigrertHendelse = getJdbcTemplate().queryForObject(
-                "EXISTS (" + selector + ")",
-                new String[]{OPPRETTET.name(), behandlingsId}, Boolean.class);
-
-        if(finnesOpprettetEllerMigrertHendelse){
+        try {
             Object[] args = {OPPRETTET.name(), MIGRERT.name(), behandlingsId};
             return getJdbcTemplate().queryForObject(
-                    "SELECT * FROM (" + selector + " ORDER BY hendelse_tidspunkt DESC)"
+                    "SELECT * FROM (" + "SELECT versjon FROM hendelse WHERE (hendelse_type = ? or hendelse_type = ?) AND behandlingsid = ?" + " ORDER BY hendelse_tidspunkt DESC)"
                             + whereLimit(1),
                     args, Integer.class);
-        }
-        else {
+        } catch (EmptyResultDataAccessException e) {
+            /**
+             * Dersom det ikke finnes noen hendelser hvor det er satt versjon antar vi at soknader er opprettet før
+             * migrering var en mulighet og gir den dermed defaultversjonen. Når man skal gjøre en migrering
+             * vil det være viktig å avstemme søknadene under arbeid i henvendelse med innholdet i hendelsene for å sjekke
+             * de ligger i hendelsetabellen med rett versjon
+             **/
             return new Integer(KravdialogInformasjon.DefaultOppsett.VERSJON);
         }
     }
