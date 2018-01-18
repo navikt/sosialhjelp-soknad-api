@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.stereotype.Component;
@@ -55,12 +56,23 @@ public class HendelseRepositoryJdbc extends NamedParameterJdbcDaoSupport impleme
 
     @Transactional(readOnly = true)
     public Integer hentVersjon(String behandlingsId) {
-        Object[] args = {OPPRETTET.name(), MIGRERT.name(), behandlingsId};
-        return getJdbcTemplate().queryForObject("SELECT * FROM (" +
-                        "SELECT versjon FROM hendelse WHERE (hendelse_type = ? or hendelse_type = ?) AND behandlingsid = ? ORDER BY hendelse_tidspunkt DESC)"
-                        + whereLimit(1),
-                args, Integer.class);
+        String selector = "SELECT versjon FROM hendelse WHERE (hendelse_type = ? or hendelse_type = ?) AND behandlingsid = ?";
+        Boolean finnesOpprettetEllerMigrertHendelse = getJdbcTemplate().queryForObject(
+                "EXISTS (" + selector + ")",
+                new String[]{OPPRETTET.name(), behandlingsId}, Boolean.class);
+
+        if(finnesOpprettetEllerMigrertHendelse){
+            Object[] args = {OPPRETTET.name(), MIGRERT.name(), behandlingsId};
+            return getJdbcTemplate().queryForObject(
+                    "SELECT * FROM (" + selector + " ORDER BY hendelse_tidspunkt DESC)"
+                            + whereLimit(1),
+                    args, Integer.class);
+        }
+        else {
+            return new Integer(KravdialogInformasjon.DefaultOppsett.VERSJON);
+        }
     }
+
 
     @Transactional(readOnly = true)
     public List<String> hentSoknaderUnderArbeidEldreEnn(int antallDager) {
