@@ -7,7 +7,7 @@
         <type>gruppe</type>
         <panel>opplysningerBolk</panel>
     </faktum>
-    <faktum>
+    <faktum kunUtvidet="true">
         <id>opplysninger.statsborgerskap.nordisk</id>
         <type>composite</type>
         <dependOn>opplysninger.statsborgerskap</dependOn>
@@ -203,7 +203,7 @@
         </properties>
     </faktum>
 
-    <faktum>
+    <faktum kunUtvidet="true">
         <id>opplysninger.familiesituasjon.barn.samvarsavtale</id>
         <type>composite</type>
         <dependOn>opplysninger.familiesituasjon</dependOn>
@@ -236,7 +236,7 @@
         <panel>opplysningerBolk</panel>
     </faktum>
 
-    <faktum>
+    <faktum kunUtvidet="true">
         <id>opplysninger.bosituasjon.eier</id>
         <type>composite</type>
         <dependOn>opplysninger.bosituasjon</dependOn>
@@ -262,7 +262,7 @@
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
-    <faktum>
+    <faktum kunUtvidet="true">
         <id>opplysninger.bosituasjon.leier</id>
         <type>composite</type>
         <dependOn>opplysninger.bosituasjon</dependOn>
@@ -327,7 +327,7 @@
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
-    <faktum>
+    <faktum kunUtvidet="true">
         <id>opplysninger.inntekt.eierandeler.bolig</id>
         <type>composite</type>
         <dependOn>opplysninger.inntekt</dependOn>
@@ -353,7 +353,7 @@
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
-    <faktum>
+    <faktum kunUtvidet="true">
         <id>opplysninger.inntekt.eierandeler.kjoretoy</id>
         <type>composite</type>
         <dependOn>opplysninger.inntekt</dependOn>
@@ -379,7 +379,7 @@
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
-    <faktum>
+    <faktum kunUtvidet="true">
         <id>opplysninger.inntekt.eierandeler.campingvogn</id>
         <type>composite</type>
         <dependOn>opplysninger.inntekt</dependOn>
@@ -405,7 +405,7 @@
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
-    <faktum>
+    <faktum kunUtvidet="true">
         <id>opplysninger.inntekt.eierandeler.fritidseiendom</id>
         <type>composite</type>
         <dependOn>opplysninger.inntekt</dependOn>
@@ -431,7 +431,7 @@
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
-    <faktum>
+    <faktum kunUtvidet="true">
         <id>opplysninger.inntekt.eierandeler.annet</id>
         <type>composite</type>
         <dependOn>opplysninger.inntekt</dependOn>
@@ -1186,7 +1186,7 @@
         <panel>opplysningerBolk</panel>
     </faktum>
 
-    <faktum>
+    <faktum kunUtvidet="true">
         <id>opplysninger.generell.skattemelding</id>
         <type>composite</type>
         <dependOn>opplysninger.generell</dependOn>
