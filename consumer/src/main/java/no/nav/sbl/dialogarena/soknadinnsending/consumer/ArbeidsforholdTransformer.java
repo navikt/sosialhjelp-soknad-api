@@ -11,6 +11,7 @@ import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.HentOrganisasjonRequ
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personnavn;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 import org.apache.commons.collections15.Transformer;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 @Service
 public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold, Arbeidsforhold>,
@@ -113,11 +116,9 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
 
             Personnavn personnavn = hentKjerneinformasjonResponse.getPerson().getPersonnavn();
 
-            String mellomnavn = (personnavn.getMellomnavn() != null && !personnavn.getMellomnavn().isEmpty()) ? " " + personnavn.getMellomnavn() + " " : " ";
-            String navn = personnavn.getFornavn() + mellomnavn + personnavn.getEtternavn();
-
-            return navn;
-
+            return Arrays.asList(personnavn.getFornavn(), personnavn.getMellomnavn(), personnavn.getEtternavn()).stream()
+                    .filter(navn -> (navn != null && StringUtils.isNotEmpty(navn)))
+                    .collect(Collectors.joining(" "));
         } else
 
         {
