@@ -3,13 +3,13 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsavtale;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Gyldighetsperiode;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.HistoriskArbeidsgiverMedArbeidsgivernummer;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Organisasjon;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
+import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.*;
 import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.OrganisasjonV4;
 import no.nav.tjeneste.virksomhet.organisasjon.v4.informasjon.UstrukturertNavn;
 import no.nav.tjeneste.virksomhet.organisasjon.v4.meldinger.HentOrganisasjonRequest;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personnavn;
+import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 import org.apache.commons.collections15.Transformer;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -28,6 +28,9 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
     @Inject
     @Named("organisasjonEndpoint")
     private OrganisasjonV4 organisasjonWebService;
+
+    @Inject
+    private PersonService personService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ArbeidsforholdTransformer.class);
     public static final String KODEVERK_AVLONNING_FAST = "fast";
@@ -91,9 +94,28 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
             }
         } else if (arbeidsforhold.getArbeidsgiver() instanceof HistoriskArbeidsgiverMedArbeidsgivernummer) {
             return ((HistoriskArbeidsgiverMedArbeidsgivernummer) arbeidsforhold.getArbeidsgiver()).getNavn();
-        } else {
+        }
+
+        // Forenklet oppgjørsordning
+        else if (arbeidsforhold.getArbeidsgiver() instanceof Person) {
+
+            Person arbeidsgiver = (Person) arbeidsforhold.getArbeidsgiver();
+
+            String fnr = arbeidsgiver.getIdent().getIdent();
+
+            // Trenger å bruke ws til å hente ut navn
+            HentKjerneinformasjonResponse hentKjerneinformasjonResponse = personService.hentKjerneinformasjon(fnr);
+
+            Personnavn personnavn = hentKjerneinformasjonResponse.getPerson().getPersonnavn();
+
+            return personnavn.getFornavn() + " " + personnavn.getEtternavn();
+
+        } else
+
+        {
             return "";
         }
+
     }
 
     private HentOrganisasjonRequest lagOrgRequest(String orgnr) {
