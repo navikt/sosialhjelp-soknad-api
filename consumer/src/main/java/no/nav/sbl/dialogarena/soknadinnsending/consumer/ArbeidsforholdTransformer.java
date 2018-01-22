@@ -103,12 +103,20 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
 
             String fnr = arbeidsgiver.getIdent().getIdent();
 
-            // Trenger å bruke ws til å hente ut navn
-            HentKjerneinformasjonResponse hentKjerneinformasjonResponse = personService.hentKjerneinformasjon(fnr);
+            HentKjerneinformasjonResponse hentKjerneinformasjonResponse;
+
+            try {
+                hentKjerneinformasjonResponse = personService.hentKjerneinformasjon(fnr);
+            } catch (Exception e) {
+                return "";
+            }
 
             Personnavn personnavn = hentKjerneinformasjonResponse.getPerson().getPersonnavn();
 
-            return personnavn.getFornavn() + " " + personnavn.getEtternavn();
+            String mellomnavn = (personnavn.getMellomnavn() != null && !personnavn.getMellomnavn().isEmpty()) ? " " + personnavn.getMellomnavn() + " " : " ";
+            String navn = personnavn.getFornavn() + mellomnavn + personnavn.getEtternavn();
+
+            return navn;
 
         } else
 
