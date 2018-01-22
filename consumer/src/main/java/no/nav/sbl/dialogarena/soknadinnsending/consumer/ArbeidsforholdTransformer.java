@@ -117,7 +117,7 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
             Personnavn personnavn = hentKjerneinformasjonResponse.getPerson().getPersonnavn();
 
             return Arrays.asList(personnavn.getFornavn(), personnavn.getMellomnavn(), personnavn.getEtternavn()).stream()
-                    .filter(navn -> (navn != null && StringUtils.isNotEmpty(navn)))
+                    .filter(navn -> navn != null && StringUtils.isNotEmpty(navn))
                     .collect(Collectors.joining(" "));
         } else
 
