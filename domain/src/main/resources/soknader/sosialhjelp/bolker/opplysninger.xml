@@ -48,6 +48,10 @@
                 <faktum>dinsituasjon.jobb</faktum>
                 <expression>value == 'true'</expression>
             </constraint>
+            <constraint>
+                <faktum>dinsituasjon.registrertjobb</faktum>
+                <expression>properties['hararbeidsforhold'] == 'true'</expression>
+            </constraint>
         </constraints>
         <properties>
             <property>
