@@ -22,8 +22,14 @@ public class SosialhjelpArbeidsforholdBolk extends ArbeidsforholdBolk {
 
     @Override
     protected void afterGenererArbeidsforhold(List<Faktum> arbeidsforholdFakta, Long soknadId) {
-        final boolean harArbeid = !arbeidsforholdFakta.isEmpty();
-        final Faktum dinSituasjonJobb = new Faktum().medSoknadId(soknadId).medKey("dinsituasjon.jobb").medValue(Boolean.toString(harArbeid));
+        boolean harArbeid = !arbeidsforholdFakta.isEmpty();
+        boolean harAvsluttetArbeidsforhold = arbeidsforholdFakta.stream()
+                .anyMatch(arbeid -> "false".equals(arbeid.getProperties().get("ansatt")));
+
+        Faktum dinSituasjonJobb = new Faktum().medSoknadId(soknadId).medKey("dinsituasjon.registrertjobb")
+                .medSystemProperty("harhentetfraaareg", "true")
+                .medSystemProperty("hararbeidsforhold", Boolean.toString(harArbeid))
+                .medSystemProperty("haravsluttetarbeidsforhold", Boolean.toString(harAvsluttetArbeidsforhold));
         arbeidsforholdFakta.add(dinSituasjonJobb);
     }
 }
