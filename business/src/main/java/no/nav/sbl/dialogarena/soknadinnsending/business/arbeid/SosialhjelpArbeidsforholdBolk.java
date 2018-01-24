@@ -25,10 +25,13 @@ public class SosialhjelpArbeidsforholdBolk extends ArbeidsforholdBolk {
         boolean harArbeid = !arbeidsforholdFakta.isEmpty();
         boolean harAvsluttetArbeidsforhold = arbeidsforholdFakta.stream()
                 .anyMatch(arbeid -> "false".equals(arbeid.getProperties().get("ansatt")));
+        boolean harGjeldendeArbeidsforhold = arbeidsforholdFakta.stream()
+                .anyMatch(arbeid -> "true".equals(arbeid.getProperties().get("ansatt")));
 
         Faktum dinSituasjonJobb = new Faktum().medSoknadId(soknadId).medKey("dinsituasjon.registrertjobb")
                 .medSystemProperty("harhentetfraaareg", "true")
                 .medSystemProperty("hararbeidsforhold", Boolean.toString(harArbeid))
+                .medSystemProperty("hargjeldendearbeidsforhold", Boolean.toString(harGjeldendeArbeidsforhold))
                 .medSystemProperty("haravsluttetarbeidsforhold", Boolean.toString(harAvsluttetArbeidsforhold));
         arbeidsforholdFakta.add(dinSituasjonJobb);
     }

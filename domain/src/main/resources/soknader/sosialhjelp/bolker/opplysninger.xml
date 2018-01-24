@@ -50,7 +50,7 @@
             </constraint>
             <constraint>
                 <faktum>dinsituasjon.registrertjobb</faktum>
-                <expression>properties['hararbeidsforhold'] == 'true'</expression>
+                <expression>properties['hargjeldendearbeidsforhold'] == 'true'</expression>
             </constraint>
         </constraints>
         <properties>
@@ -76,6 +76,43 @@
     <vedlegg>
         <faktum>opplysninger.arbeid.jobb.vedlegg</faktum>
         <skjemaNummer>lonnslipp</skjemaNummer>
+        <skjemanummerTillegg>arbeid</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
+    <faktum>
+        <id>opplysninger.arbeid.avsluttet</id>
+        <type>composite</type>
+        <dependOn>opplysninger.arbeid</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>dinsituasjon.registrertjobb</faktum>
+                <expression>properties['haravsluttetarbeidsforhold'] == 'true'</expression>
+            </constraint>
+        </constraints>
+        <properties>
+            <property>
+                <id>brutto</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>netto</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <faktum>
+        <id>opplysninger.arbeid.avsluttet.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.arbeid.avsluttet</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.arbeid.avsluttet.vedlegg</faktum>
+        <skjemaNummer>sluttoppgjor</skjemaNummer>
         <skjemanummerTillegg>arbeid</skjemanummerTillegg>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
