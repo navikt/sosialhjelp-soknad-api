@@ -70,7 +70,7 @@
         <constraints>
             <constraint>
                 <faktum>familie.barn</faktum>
-                <expression>value == "true"</expression>
+                <expression>value != "false"</expression>
             </constraint>
         </constraints>
     </faktum>
