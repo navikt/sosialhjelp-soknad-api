@@ -27,14 +27,14 @@
     </faktum>
     <faktum>
         <id>soknadsvalg.endringmedmor</id>
-        <dependOn>soknadsvalg.stonadstype.endringOverforingType</dependOn>
+        <dependOn>soknadsvalg.stonadstype</dependOn>
         <dependOnValues>
-            <value>engangsstonadMedmor</value>
+            <value>endringMedmor</value>
         </dependOnValues>
     </faktum>
     <faktum>
         <id>soknadsvalg.overtamedmor</id>
-        <dependOn>soknadsvalg.stonadstype.endringOverforingType</dependOn>
+        <dependOn>soknadsvalg.stonadstype</dependOn>
         <dependOnValues>
             <value>overtaMedmor</value>
         </dependOnValues>
