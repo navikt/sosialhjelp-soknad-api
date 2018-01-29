@@ -111,6 +111,7 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
             try {
                 hentKjerneinformasjonResponse = personService.hentKjerneinformasjon(fnr);
             } catch (Exception e) {
+                LOGGER.warn("Kunne ikke sette navn på arbeidsgiver", e);
                 return "";
             }
 
