@@ -43,6 +43,16 @@ public class AdresseTransform {
             return new Adresse();
         }
     }
+    
+    public Adresse mapFolkeregistrertAdresse(XMLBruker soapPerson, Kodeverk kodeverk) {
+        this.kodeverk = kodeverk;
+        
+        if (harStrukturertAdresseSomErGjeldendeAdresse(soapPerson)) {
+            return hentBostedsAdresse((XMLGateadresse) soapPerson.getBostedsadresse().getStrukturertAdresse());
+        } else {
+            return null;
+        }
+    }
 
     private static final List<String> HEMMELIGE_DISKRESJONSKODER = Arrays.asList("6", "7");
 
@@ -380,6 +390,7 @@ public class AdresseTransform {
         adresse.poststed = kodeverk.getPoststed(adresse.postnummer);
         adresse.gatenavn = xmlAdresse.getGatenavn();
         adresse.husnummer = xmlAdresse.getHusnummer() != null ? xmlAdresse.getHusnummer().toString() : "";
+        adresse.husbokstav = xmlAdresse.getHusbokstav() != null ? xmlAdresse.getHusbokstav().toString() : "";
 
         return adresse;
     }

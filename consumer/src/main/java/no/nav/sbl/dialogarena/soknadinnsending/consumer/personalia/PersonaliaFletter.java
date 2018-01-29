@@ -103,6 +103,7 @@ public class PersonaliaFletter {
                 .kjonn(finnKjonn(xmlBruker))
                 .gjeldendeAdresse(finnGjeldendeAdresse(xmlBruker, kodeverk))
                 .sekundarAdresse(finnSekundarAdresse(xmlBruker, kodeverk))
+                .folkeregistrertAdresse(finnFolkeregistrertAdresse(xmlBruker, kodeverk))
                 .kontonummer(finnKontonummer(xmlBruker))
                 .erUtenlandskBankkonto(erUtenlandskKonto(xmlBruker))
                 .utenlandskKontoBanknavn(finnUtenlandsKontoNavn(xmlBruker))
@@ -149,6 +150,10 @@ public class PersonaliaFletter {
 
     private static Adresse finnGjeldendeAdresse(XMLBruker xmlBruker, Kodeverk kodeverk) {
         return new AdresseTransform().mapGjeldendeAdresse(xmlBruker, kodeverk);
+    }
+    
+    private static Adresse finnFolkeregistrertAdresse(XMLBruker xmlBruker, Kodeverk kodeverk) {
+        return new AdresseTransform().mapFolkeregistrertAdresse(xmlBruker, kodeverk);
     }
 
     private static Adresse finnSekundarAdresse(XMLBruker xmlBruker, Kodeverk kodeverk) {
