@@ -28,6 +28,9 @@ public final class JsonSoknadConverter {
     private static JsonData toData(WebSoknad webSoknad) {
         final JsonData data = new JsonData();
         data.setPersonalia(JsonPersonaliaConverter.toPersonalia(webSoknad));
+        data.setArbeid(JsonArbeidConverter.toArbeid(webSoknad));
+        data.setUtdanning(JsonUtdanningConverter.toUtdanning(webSoknad));
+        data.setFamilie(JsonFamilieConverter.toFamilie(webSoknad));
         return data;
     }
 }
