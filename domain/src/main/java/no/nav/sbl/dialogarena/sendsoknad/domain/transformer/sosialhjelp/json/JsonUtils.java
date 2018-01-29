@@ -30,7 +30,11 @@ public final class JsonUtils {
         return verdi != null && Boolean.parseBoolean(verdi);
     }
     
+    public static boolean empty(String s) {
+        return s == null || s.length() == 0;
+    }
+    
     public static boolean nonEmpty(String s) {
-        return s != null && s.length() > 0;
+        return !empty(s);
     }
 }

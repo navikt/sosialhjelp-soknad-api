@@ -67,9 +67,6 @@
             <property>
                 <id>stillingstype</id>
                 <type>textbox</type>
-                <constraints>
-                    <constraint>properties['stillingstype'] == 'variabel'</constraint>
-                </constraints>
             </property>
         </properties>
         <constraints>
