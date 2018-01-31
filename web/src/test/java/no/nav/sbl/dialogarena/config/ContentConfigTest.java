@@ -49,7 +49,7 @@ public class ContentConfigTest extends ApplicationContextTest {
                         && fileTuple.getLocalFile().equals("classpath:content/sendsoknad");
             }
         });
-        assertThat(basenames).hasSize(8);
+        assertThat(basenames).hasSize(9);
     }
 
 }
