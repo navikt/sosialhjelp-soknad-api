@@ -82,6 +82,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * lagKjorelisteUker - Bygger en nestet liste over uker for et betalingsvedtak, der ukene inneholder dager det er søkt for refusjon.
 * property - Returnerer verdien til gitt property på modellen i context, gitt at den er propertyaware
 * sendtInnInfo - Tilgjengeliggjør informasjon om søknaden (innsendte vedlegg, påkrevde vedlegg og dato)
+* sosialhjelpVedlegg - Helper for å liste ut vedlegg for sosialhjelp
 * toCapitalized - Gjør om en tekst til at alle ord starter med store bokstaver
 * toLowerCase - Gjør om en tekst til kun små bokstaver
 * variabel - Lager en variabel med en bestemt verdi som kun er tilgjengelig innenfor helperen
@@ -545,6 +546,15 @@ Leser fra model på context
     påkrevde: {{ikkeSendtInn}}
     innsendt dato: {{innsendtDato}}
 {{/sendtInnInfo}}
+```
+
+
+##### sosialhjelpVedlegg
+
+```
+{{#sosialhjelpVedlegg}}
+    får grupperte vedlegg
+{{/sosialhjelpVedlegg}}
 ```
 
 
