@@ -46,7 +46,7 @@ public final class JsonArbeidConverter {
                     .withArbeidsgivernavn(finnPropertyEllerNullOmTom(forhold, "arbeidsgivernavn"))
                     .withFom(finnPropertyEllerNullOmTom(forhold, "fom"))
                     .withTom(finnPropertyEllerNullOmTom(forhold, "tom"))
-                    .withStillingsprosent(finnInteger(finnPropertyEllerNullOmTom(forhold, "stillingsprosent")))
+                    .withStillingsprosent(tilInteger(finnPropertyEllerNullOmTom(forhold, "stillingsprosent")))
                     .withStillingstype(tilStillingstype(forhold.get("stillingstype")))
 
                     /*
