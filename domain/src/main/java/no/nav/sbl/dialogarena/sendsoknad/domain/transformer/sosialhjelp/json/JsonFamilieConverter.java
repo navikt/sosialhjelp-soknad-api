@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import java.util.HashMap;
 import java.util.Map;
 
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.erTom;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public final class JsonFamilieConverter {
@@ -33,7 +34,7 @@ public final class JsonFamilieConverter {
 
     private static JsonSivilstatus tilJsonSivilstatus(WebSoknad webSoknad) {
         final String sivilstatus = webSoknad.getValueForFaktum("familie.sivilstatus");
-        if (JsonUtils.erTom(sivilstatus)) {
+        if (erTom(sivilstatus)) {
             return null;
         }
 
@@ -87,7 +88,7 @@ public final class JsonFamilieConverter {
 
         final String fodselsdato = ektefelle.get("fnr");
         final String personnummer = ektefelle.get("pnr");
-        if (JsonUtils.erTom(fodselsdato) || fodselsdato.length() != 8 || JsonUtils.erTom(personnummer)) {
+        if (erTom(fodselsdato) || fodselsdato.length() != 8 || erTom(personnummer)) {
             return null;
         }
 
@@ -95,7 +96,7 @@ public final class JsonFamilieConverter {
     }
 
     private static String tilJsonFodselsdato(String fodselsdato) {
-        if (fodselsdato == null || fodselsdato.trim().equals("")) {
+        if (erTom(fodselsdato)) {
             return null;
         }
 

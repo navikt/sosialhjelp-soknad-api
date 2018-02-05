@@ -13,7 +13,7 @@ public final class JsonUtils {
 
     public static String finnPropertyEllerNullOmTom(Map<String, String> properties, String propertyName) {
         final String property = properties.get(propertyName);
-        if (property == null || property.trim().equals("")) {
+        if (erTom(property)) {
             return null;
         } else {
             return property;
@@ -29,8 +29,16 @@ public final class JsonUtils {
         return verdi != null && Boolean.parseBoolean(verdi);
     }
 
+
+    public static Integer finnInteger(String s) {
+        if (erTom(s)) {
+            return null;
+        }
+        return Integer.valueOf(s);
+    }
+
     public static boolean erTom(String s) {
-        return s == null || s.length() == 0;
+        return s == null || s.trim().length() == 0;
     }
 
     public static boolean erIkkeTom(String s) {
