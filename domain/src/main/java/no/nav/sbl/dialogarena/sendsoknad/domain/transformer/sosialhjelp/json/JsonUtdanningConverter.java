@@ -6,6 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning.Studentgrad;
 import org.slf4j.Logger;
 
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.erTom;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public final class JsonUtdanningConverter {
@@ -32,7 +33,7 @@ public final class JsonUtdanningConverter {
     }
 
     private static Studentgrad tilStudentgrad(String s) {
-        if (s == null || s.trim().equals("")) {
+        if (erTom(s)) {
             return null;
         }
 

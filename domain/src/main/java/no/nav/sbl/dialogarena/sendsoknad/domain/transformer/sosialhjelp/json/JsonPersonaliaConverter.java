@@ -56,9 +56,6 @@ public final class JsonPersonaliaConverter {
     }
 
     private static boolean erNordiskBorger(String statsborgerskap) {
-        if (statsborgerskap == null) {
-            return false;
-        }
         
         /* TODO: Ligger denne logikken et annet sted? Hvor bør dette legges? */
         switch (statsborgerskap) {

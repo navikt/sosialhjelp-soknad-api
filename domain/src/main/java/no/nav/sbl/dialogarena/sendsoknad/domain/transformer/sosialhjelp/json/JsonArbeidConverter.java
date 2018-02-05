@@ -39,16 +39,16 @@ public final class JsonArbeidConverter {
     private static List<JsonArbeidsforhold> tilJsonArbeidsforhold(WebSoknad webSoknad) {
         final List<Faktum> fakta = webSoknad.getFaktaMedKey("arbeidsforhold");
 
-        final List<JsonArbeidsforhold> arbeidsforhold = fakta.stream().map(faktum -> {
+        return fakta.stream().map(faktum -> {
             final Map<String, String> forhold = faktum.getProperties();
             return new JsonArbeidsforhold()
                     .withKilde((erAlleSystemProperties(faktum)) ? JsonKilde.SYSTEM : JsonKilde.BRUKER)
                     .withArbeidsgivernavn(finnPropertyEllerNullOmTom(forhold, "arbeidsgivernavn"))
                     .withFom(finnPropertyEllerNullOmTom(forhold, "fom"))
                     .withTom(finnPropertyEllerNullOmTom(forhold, "tom"))
-                    .withStillingsprosent(tilInteger(finnPropertyEllerNullOmTom(forhold, "stillingsprosent")))
+                    .withStillingsprosent(finnInteger(finnPropertyEllerNullOmTom(forhold, "stillingsprosent")))
                     .withStillingstype(tilStillingstype(forhold.get("stillingstype")))
-                    
+
                     /*
                      * Denne må settes hvis man ønsker at bruker skal overstyre systemproperties:
                      * Systemproperty som er overstyrt skal ha "true" som verdi.
@@ -56,12 +56,10 @@ public final class JsonArbeidConverter {
                     .withOverstyrtAvBruker(false)
                     ;
         }).collect(Collectors.toList());
-
-        return arbeidsforhold;
     }
 
     private static Stillingstype tilStillingstype(String s) {
-        if (s == null || s.equals("")) {
+        if (erTom(s)) {
             return null;
         }
 
@@ -78,12 +76,6 @@ public final class JsonArbeidConverter {
         return null;
     }
 
-    private static Integer tilInteger(String s) {
-        if (s == null) {
-            return null;
-        }
-        return Integer.valueOf(s);
-    }
 
     private static JsonKommentarTilArbeidsforhold tilJsonKommentarTilArbeidsforhold(WebSoknad webSoknad) {
         final String kommentar = webSoknad.getValueForFaktum("opplysninger.arbeidsituasjon.kommentarer");
