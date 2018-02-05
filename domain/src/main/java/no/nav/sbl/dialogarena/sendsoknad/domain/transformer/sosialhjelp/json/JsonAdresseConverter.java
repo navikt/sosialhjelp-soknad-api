@@ -27,23 +27,23 @@ public final class JsonAdresseConverter {
 
     }
 
-    public static JsonAdresse toFolkeregistrertAdresse(WebSoknad webSoknad) {
+    public static JsonAdresse tilFolkeregistrertAdresse(WebSoknad webSoknad) {
         final Faktum faktum = webSoknad.getFaktumMedKey("kontakt.system.folkeregistrert.adresse");
-        return toSystemAdresse(faktum);
+        return tilSystemAdresse(faktum);
     }
 
-    public static JsonAdresse toOppholdsadresse(WebSoknad webSoknad) {
+    public static JsonAdresse tilOppholdsadresse(WebSoknad webSoknad) {
         try {
-            if (isFaktumVerdi(webSoknad, "kontakt.adresse.brukerendrettoggle")) {
+            if (faktumVerdiErTrue(webSoknad, "kontakt.adresse.brukerendrettoggle")) {
                 final Faktum faktum = webSoknad.getFaktumMedKey("kontakt.adresse.bruker");
                 if (faktum == null) {
                     return null;
                 }
 
-                return toBrukersUstrukturertAdresse(faktum);
+                return tilBrukersUstrukturertAdresse(faktum);
             } else {
                 final Faktum faktum = webSoknad.getFaktumMedKey("kontakt.system.adresse");
-                return toSystemAdresse(faktum);
+                return tilSystemAdresse(faktum);
             }
         } catch (RuntimeException e) {
             logger.error("Uventet feil: Kan ikke sende med folkeregistrert adresse", e);
@@ -51,10 +51,10 @@ public final class JsonAdresseConverter {
         }
     }
 
-    public static JsonAdresse toPostadresse(WebSoknad webSoknad) {
+    public static JsonAdresse tilPostadresse(WebSoknad webSoknad) {
         /* TODO: Implementer støtte for postadresse. */
 
-        final JsonAdresse jsonAdresse = toOppholdsadresse(webSoknad);
+        final JsonAdresse jsonAdresse = tilOppholdsadresse(webSoknad);
         if (jsonAdresse == null) {
             return null;
         }
@@ -64,7 +64,7 @@ public final class JsonAdresseConverter {
         return jsonAdresse;
     }
 
-    private static JsonAdresse toBrukersUstrukturertAdresse(final Faktum faktum) {
+    private static JsonAdresse tilBrukersUstrukturertAdresse(final Faktum faktum) {
         /*
          * TODO: Fjerne denne metoden når grensesnittet er endret til at brukeradresse er strukturert.
          */
@@ -75,16 +75,16 @@ public final class JsonAdresseConverter {
 
         final List<String> adresselinjer = new ArrayList<>();
         final String gateadresse = adresse.get("gateadresse");
-        if (nonEmpty(gateadresse)) {
+        if (erIkkeTom(gateadresse)) {
             adresselinjer.add(gateadresse);
         }
         final String postnummer = adresse.get("postnummer");
         final String poststed = adresse.get("poststed");
         String postnummerlinje = "";
-        if (nonEmpty(postnummer)) {
+        if (erIkkeTom(postnummer)) {
             postnummerlinje += postnummer;
         }
-        if (nonEmpty(poststed)) {
+        if (erIkkeTom(poststed)) {
             postnummerlinje += " " + poststed;
         }
         if (!postnummerlinje.trim().equals("")) {
@@ -95,13 +95,13 @@ public final class JsonAdresseConverter {
         return ustrukturertAdresse;
     }
 
-    private static JsonAdresse toSystemAdresse(Faktum faktum) {
+    private static JsonAdresse tilSystemAdresse(Faktum faktum) {
         if (faktum == null) {
             return null;
         }
 
         try {
-            final JsonAdresse adresse = toJsonAdresse(faktum);
+            final JsonAdresse adresse = tilJsonAdresse(faktum);
             if (adresse != null && adresse.getKilde() != JsonKilde.SYSTEM) {
                 throw new IllegalStateException("Systemadresse skal kun innehold systemdata. Har bruker forsøkt å endre adresse med direkte POST-kall? Faktumkey: " + faktum.getKey());
             }
@@ -112,7 +112,7 @@ public final class JsonAdresseConverter {
         }
     }
 
-    private static JsonAdresse toJsonAdresse(Faktum faktum) {
+    private static JsonAdresse tilJsonAdresse(Faktum faktum) {
         final Map<String, String> adresse = faktum.getProperties();
 
         final String type = adresse.get("type");
@@ -122,24 +122,24 @@ public final class JsonAdresseConverter {
 
         JsonAdresse jsonAdresse;
         if (type.equals("gateadresse")) {
-            jsonAdresse = toGateAdresse(adresse);
+            jsonAdresse = tilGateAdresse(adresse);
         } else if (type.equals("matrikkeladresse")) {
-            jsonAdresse = toMatrikkelAdresse(adresse);
+            jsonAdresse = tilMatrikkelAdresse(adresse);
         } else if (type.equals("ustrukturert")) {
-            jsonAdresse = toUstrukturertAdresse(adresse);
+            jsonAdresse = tilUstrukturertAdresse(adresse);
         } else if (type.equals("postboks")) {
             throw new IllegalStateException("Adresser av typen \"postboks\" har ikke blitt implementert ennå.");
         } else {
             throw new IllegalStateException("Ukjent adressetype: \"" + type + "\" for faktum: " + faktum.getKey());
         }
 
-        jsonAdresse.setKilde(isSystemProperties(faktum) ? JsonKilde.SYSTEM : JsonKilde.BRUKER);
+        jsonAdresse.setKilde(erAlleSystemProperties(faktum) ? JsonKilde.SYSTEM : JsonKilde.BRUKER);
 
         return jsonAdresse;
     }
 
-    private static JsonAdresse toUstrukturertAdresse(Map<String, String> adresse) {
-        final String adresseStreng = nullWhenEmpty(adresse, "adresse");
+    private static JsonAdresse tilUstrukturertAdresse(Map<String, String> adresse) {
+        final String adresseStreng = finnPropertyEllerNullOmTom(adresse, "adresse");
         if (adresseStreng == null) {
             return null;
         }
@@ -152,28 +152,28 @@ public final class JsonAdresseConverter {
         return ustrukturertAdresse;
     }
 
-    private static JsonAdresse toGateAdresse(final Map<String, String> adresse) {
+    private static JsonAdresse tilGateAdresse(final Map<String, String> adresse) {
         final JsonGateAdresse gateAdresse = new JsonGateAdresse();
         gateAdresse.setType(Type.GATEADRESSE);
-        gateAdresse.setLandkode(nullWhenEmpty(adresse, "landkode"));
-        gateAdresse.setKommunenummer(nullWhenEmpty(adresse, "kommunenummer"));
-        gateAdresse.setBolignummer(nullWhenEmpty(adresse, "bolignummer"));
-        gateAdresse.setGatenavn(nullWhenEmpty(adresse, "gatenavn"));
-        gateAdresse.setHusnummer(nullWhenEmpty(adresse, "husnummer"));
-        gateAdresse.setHusbokstav(nullWhenEmpty(adresse, "husbokstav"));
-        gateAdresse.setPostnummer(nullWhenEmpty(adresse, "postnummer"));
-        gateAdresse.setPoststed(nullWhenEmpty(adresse, "poststed"));
+        gateAdresse.setLandkode(finnPropertyEllerNullOmTom(adresse, "landkode"));
+        gateAdresse.setKommunenummer(finnPropertyEllerNullOmTom(adresse, "kommunenummer"));
+        gateAdresse.setBolignummer(finnPropertyEllerNullOmTom(adresse, "bolignummer"));
+        gateAdresse.setGatenavn(finnPropertyEllerNullOmTom(adresse, "gatenavn"));
+        gateAdresse.setHusnummer(finnPropertyEllerNullOmTom(adresse, "husnummer"));
+        gateAdresse.setHusbokstav(finnPropertyEllerNullOmTom(adresse, "husbokstav"));
+        gateAdresse.setPostnummer(finnPropertyEllerNullOmTom(adresse, "postnummer"));
+        gateAdresse.setPoststed(finnPropertyEllerNullOmTom(adresse, "poststed"));
         return gateAdresse;
     }
 
-    private static JsonAdresse toMatrikkelAdresse(final Map<String, String> adresse) {
+    private static JsonAdresse tilMatrikkelAdresse(final Map<String, String> adresse) {
         final JsonMatrikkelAdresse matrikkelAdresse = new JsonMatrikkelAdresse();
         matrikkelAdresse.setType(Type.MATRIKKELADRESSE);
-        matrikkelAdresse.setGaardsnummer(nullWhenEmpty(adresse, "gaardsnummer"));
-        matrikkelAdresse.setBruksnummer(nullWhenEmpty(adresse, "bruksnummer"));
-        matrikkelAdresse.setFestenummer(nullWhenEmpty(adresse, "festenummer"));
-        matrikkelAdresse.setSeksjonsnummer(nullWhenEmpty(adresse, "seksjonsnummer"));
-        matrikkelAdresse.setUndernummer(nullWhenEmpty(adresse, "undernummer"));
+        matrikkelAdresse.setGaardsnummer(finnPropertyEllerNullOmTom(adresse, "gaardsnummer"));
+        matrikkelAdresse.setBruksnummer(finnPropertyEllerNullOmTom(adresse, "bruksnummer"));
+        matrikkelAdresse.setFestenummer(finnPropertyEllerNullOmTom(adresse, "festenummer"));
+        matrikkelAdresse.setSeksjonsnummer(finnPropertyEllerNullOmTom(adresse, "seksjonsnummer"));
+        matrikkelAdresse.setUndernummer(finnPropertyEllerNullOmTom(adresse, "undernummer"));
         return matrikkelAdresse;
     }
 

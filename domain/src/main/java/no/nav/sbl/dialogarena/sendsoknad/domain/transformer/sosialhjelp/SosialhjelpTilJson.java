@@ -32,7 +32,7 @@ public class SosialhjelpTilJson implements AlternativRepresentasjonTransformer {
     private AlternativRepresentasjon transform(WebSoknad webSoknad) {
         String json;
         try {
-            final JsonSoknad jsonSoknad = JsonSoknadConverter.toJsonSoknad(webSoknad);
+            final JsonSoknad jsonSoknad = JsonSoknadConverter.tilJsonSoknad(webSoknad);
             json = new ObjectMapper().writeValueAsString(jsonSoknad);
         } catch (JsonProcessingException e) {
             logger.error("Kunne ikke generere soknads-JSON for {}", webSoknad.getBrukerBehandlingId(), e);

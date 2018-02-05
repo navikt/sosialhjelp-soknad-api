@@ -12,9 +12,9 @@ public final class JsonSoknadConverter {
 
     }
 
-    public static JsonSoknad toJsonSoknad(WebSoknad webSoknad) {
+    public static JsonSoknad tilJsonSoknad(WebSoknad webSoknad) {
         final JsonSoknad jsonSoknad = new JsonSoknad();
-        jsonSoknad.setData(toData(webSoknad));
+        jsonSoknad.setData(tilData(webSoknad));
         jsonSoknad.setKompatibilitet(Collections.emptyList());
 
         // TODO: Generer driftsmelding:
@@ -23,12 +23,12 @@ public final class JsonSoknadConverter {
         return jsonSoknad;
     }
 
-    private static JsonData toData(WebSoknad webSoknad) {
+    private static JsonData tilData(WebSoknad webSoknad) {
         final JsonData data = new JsonData();
-        data.setPersonalia(JsonPersonaliaConverter.toPersonalia(webSoknad));
-        data.setArbeid(JsonArbeidConverter.toArbeid(webSoknad));
-        data.setUtdanning(JsonUtdanningConverter.toUtdanning(webSoknad));
-        data.setFamilie(JsonFamilieConverter.toFamilie(webSoknad));
+        data.setPersonalia(JsonPersonaliaConverter.tilPersonalia(webSoknad));
+        data.setArbeid(JsonArbeidConverter.tilArbeid(webSoknad));
+        data.setUtdanning(JsonUtdanningConverter.tilUtdanning(webSoknad));
+        data.setFamilie(JsonFamilieConverter.tilFamilie(webSoknad));
         return data;
     }
 }

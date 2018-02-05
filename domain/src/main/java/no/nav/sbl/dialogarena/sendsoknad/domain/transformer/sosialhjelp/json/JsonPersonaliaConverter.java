@@ -7,8 +7,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
 import java.util.Map;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia.*;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.isFaktumVerdi;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.nonEmpty;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.erIkkeTom;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.faktumVerdiErTrue;
 
 public final class JsonPersonaliaConverter {
 
@@ -16,7 +16,7 @@ public final class JsonPersonaliaConverter {
 
     }
 
-    public static JsonPersonalia toPersonalia(WebSoknad webSoknad) {
+    public static JsonPersonalia tilPersonalia(WebSoknad webSoknad) {
         final JsonPersonalia personalia = new JsonPersonalia();
 
         final Map<String, String> personaliaProperties = webSoknad.getFaktumMedKey("personalia").getProperties();
@@ -29,33 +29,33 @@ public final class JsonPersonaliaConverter {
         );
 
         final String statsborgerskap = personaliaProperties.get(STATSBORGERSKAP_KEY);
-        if (nonEmpty(statsborgerskap) && !statsborgerskap.equals("???")) {
+        if (erIkkeTom(statsborgerskap) && !statsborgerskap.equals("???")) {
             personalia.setStatsborgerskap(new JsonStatsborgerskap()
                     .withKilde(JsonKilde.SYSTEM)
                     .withVerdi(statsborgerskap));
             personalia.setNordiskBorger(new JsonNordiskBorger()
                     .withKilde(JsonKilde.SYSTEM)
-                    .withVerdi(isNordiskBorger(statsborgerskap)));
+                    .withVerdi(erNordiskBorger(statsborgerskap)));
         } else {
             final String nordiskBorger = webSoknad.getValueForFaktum("kontakt.statsborger");
-            if (nonEmpty(nordiskBorger)) {
+            if (erIkkeTom(nordiskBorger)) {
                 personalia.setNordiskBorger(new JsonNordiskBorger()
                         .withKilde(JsonKilde.BRUKER)
                         .withVerdi(Boolean.parseBoolean(nordiskBorger)));
             }
         }
 
-        personalia.setTelefonnummer(toJsonTelefonnummer(webSoknad));
-        personalia.setKontonummer(toJsonKontonummer(webSoknad));
+        personalia.setTelefonnummer(tilJsonTelefonnummer(webSoknad));
+        personalia.setKontonummer(tilJsonKontonummer(webSoknad));
 
-        personalia.setFolkeregistrertAdresse(JsonAdresseConverter.toFolkeregistrertAdresse(webSoknad));
-        personalia.setOppholdsadresse(JsonAdresseConverter.toOppholdsadresse(webSoknad));
-        personalia.setPostadresse(JsonAdresseConverter.toPostadresse(webSoknad));
+        personalia.setFolkeregistrertAdresse(JsonAdresseConverter.tilFolkeregistrertAdresse(webSoknad));
+        personalia.setOppholdsadresse(JsonAdresseConverter.tilOppholdsadresse(webSoknad));
+        personalia.setPostadresse(JsonAdresseConverter.tilPostadresse(webSoknad));
 
         return personalia;
     }
 
-    private static boolean isNordiskBorger(String statsborgerskap) {
+    private static boolean erNordiskBorger(String statsborgerskap) {
         if (statsborgerskap == null) {
             return false;
         }
@@ -74,17 +74,17 @@ public final class JsonPersonaliaConverter {
         }
     }
 
-    private static JsonTelefonnummer toJsonTelefonnummer(WebSoknad webSoknad) {
-        if (isFaktumVerdi(webSoknad, "kontakt.telefon.brukerendrettoggle")) {
-            return toBrukerJsonTelefonnummer(webSoknad);
+    private static JsonTelefonnummer tilJsonTelefonnummer(WebSoknad webSoknad) {
+        if (faktumVerdiErTrue(webSoknad, "kontakt.telefon.brukerendrettoggle")) {
+            return tilBrukerJsonTelefonnummer(webSoknad);
         } else {
-            return toSystemJsonTelefonnummer(webSoknad);
+            return tilSystemJsonTelefonnummer(webSoknad);
         }
     }
 
-    private static JsonTelefonnummer toBrukerJsonTelefonnummer(WebSoknad webSoknad) {
+    private static JsonTelefonnummer tilBrukerJsonTelefonnummer(WebSoknad webSoknad) {
         final String telefonnummer = webSoknad.getValueForFaktum("kontakt.telefon");
-        if (nonEmpty(telefonnummer)) {
+        if (erIkkeTom(telefonnummer)) {
             final JsonTelefonnummer jsonTelefonnummer = new JsonTelefonnummer();
             jsonTelefonnummer.setVerdi(telefonnummer);
             jsonTelefonnummer.setKilde(JsonKilde.BRUKER);
@@ -94,9 +94,9 @@ public final class JsonPersonaliaConverter {
         }
     }
 
-    private static JsonTelefonnummer toSystemJsonTelefonnummer(WebSoknad webSoknad) {
+    private static JsonTelefonnummer tilSystemJsonTelefonnummer(WebSoknad webSoknad) {
         final String telefonnummer = webSoknad.getValueForFaktum("kontakt.system.telefon");
-        if (nonEmpty(telefonnummer)) {
+        if (erIkkeTom(telefonnummer)) {
             final JsonTelefonnummer jsonTelefonnummer = new JsonTelefonnummer();
             jsonTelefonnummer.setVerdi(telefonnummer);
             jsonTelefonnummer.setKilde(JsonKilde.SYSTEM);
@@ -106,36 +106,36 @@ public final class JsonPersonaliaConverter {
         }
     }
 
-    private static JsonKontonummer toJsonKontonummer(WebSoknad webSoknad) {
+    private static JsonKontonummer tilJsonKontonummer(WebSoknad webSoknad) {
         final JsonKontonummer jsonKontonummer = new JsonKontonummer();
-        if (isFaktumVerdi(webSoknad, "kontakt.kontonummer.brukerendrettoggle")) {
-            toBrukerJsonKontonummer(webSoknad, jsonKontonummer);
+        if (faktumVerdiErTrue(webSoknad, "kontakt.kontonummer.brukerendrettoggle")) {
+            tilBrukerJsonKontonummer(webSoknad, jsonKontonummer);
         } else {
-            toSystemJsonKontonummer(webSoknad, jsonKontonummer);
+            tilSystemJsonKontonummer(webSoknad, jsonKontonummer);
         }
 
         return jsonKontonummer;
     }
 
-    private static void toBrukerJsonKontonummer(WebSoknad webSoknad, final JsonKontonummer jsonKontonummer) {
+    private static void tilBrukerJsonKontonummer(WebSoknad webSoknad, final JsonKontonummer jsonKontonummer) {
         jsonKontonummer.setKilde(JsonKilde.BRUKER);
 
         final String harIkkeKontonummer = webSoknad.getValueForFaktum("kontakt.kontonummer.harikke");
-        if (nonEmpty(harIkkeKontonummer)) {
+        if (erIkkeTom(harIkkeKontonummer)) {
             jsonKontonummer.setHarIkkeKonto(Boolean.valueOf(harIkkeKontonummer));
         }
 
         final String kontonummer = webSoknad.getValueForFaktum("kontakt.kontonummer");
-        if (nonEmpty(kontonummer)) {
+        if (erIkkeTom(kontonummer)) {
             jsonKontonummer.setVerdi(kontonummer);
         }
     }
 
-    private static void toSystemJsonKontonummer(WebSoknad webSoknad, final JsonKontonummer jsonKontonummer) {
+    private static void tilSystemJsonKontonummer(WebSoknad webSoknad, final JsonKontonummer jsonKontonummer) {
         jsonKontonummer.setKilde(JsonKilde.SYSTEM);
 
         final String kontonummer = webSoknad.getValueForFaktum("kontakt.system.kontonummer");
-        if (nonEmpty(kontonummer)) {
+        if (erIkkeTom(kontonummer)) {
             jsonKontonummer.setVerdi(kontonummer);
         }
     }

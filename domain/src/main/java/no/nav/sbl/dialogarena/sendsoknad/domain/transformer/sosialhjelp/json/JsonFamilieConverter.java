@@ -23,37 +23,37 @@ public final class JsonFamilieConverter {
 
     }
 
-    public static JsonFamilie toFamilie(WebSoknad webSoknad) {
+    public static JsonFamilie tilFamilie(WebSoknad webSoknad) {
         final JsonFamilie jsonFamilie = new JsonFamilie();
-        jsonFamilie.setSivilstatus(toJsonSivilstatus(webSoknad));
+        jsonFamilie.setSivilstatus(tilJsonSivilstatus(webSoknad));
         // TODO: Fortsette på familie...
 
         return jsonFamilie;
     }
 
-    private static JsonSivilstatus toJsonSivilstatus(WebSoknad webSoknad) {
+    private static JsonSivilstatus tilJsonSivilstatus(WebSoknad webSoknad) {
         final String sivilstatus = webSoknad.getValueForFaktum("familie.sivilstatus");
-        if (JsonUtils.empty(sivilstatus)) {
+        if (JsonUtils.erTom(sivilstatus)) {
             return null;
         }
 
         final JsonSivilstatus jsonSivilstatus = new JsonSivilstatus();
         jsonSivilstatus.setKilde(JsonKilde.BRUKER);
 
-        final Status status = toStatus(sivilstatus);
+        final Status status = tilStatus(sivilstatus);
         jsonSivilstatus.setStatus(status);
 
         if (status == Status.GIFT) {
             final Map<String, String> ektefelle = getEktefelleproperties(webSoknad);
-            jsonSivilstatus.setEktefelle(toJsonEktefelle(ektefelle));
+            jsonSivilstatus.setEktefelle(tilJsonEktefelle(ektefelle));
 
             final String borSammenMed = ektefelle.get("borsammen");
-            if (JsonUtils.nonEmpty(borSammenMed)) {
+            if (JsonUtils.erIkkeTom(borSammenMed)) {
                 jsonSivilstatus.setBorSammenMed(Boolean.valueOf(borSammenMed));
             }
 
             final String borIkkeSammenMedBegrunnelse = ektefelle.get("ikkesammenbeskrivelse");
-            if (JsonUtils.nonEmpty(borIkkeSammenMedBegrunnelse)) {
+            if (JsonUtils.erIkkeTom(borIkkeSammenMedBegrunnelse)) {
                 jsonSivilstatus.setBorIkkeSammenMedBegrunnelse(borIkkeSammenMedBegrunnelse);
             }
         }
@@ -69,32 +69,32 @@ public final class JsonFamilieConverter {
         return faktum.getProperties();
     }
 
-    private static JsonEktefelle toJsonEktefelle(Map<String, String> ektefelle) {
+    private static JsonEktefelle tilJsonEktefelle(Map<String, String> ektefelle) {
         final JsonEktefelle jsonEktefelle = new JsonEktefelle();
         jsonEktefelle.setNavn(new JsonNavn()
                 .withFornavn(xxxFornavnFraNavn(ektefelle.get("navn")))
                 .withMellomnavn("")
                 .withEtternavn(xxxEtternavnFraNavn(ektefelle.get("navn")))
         );
-        jsonEktefelle.setFodselsdato(toJsonFodselsdato(ektefelle.get("fnr"))); // XXX: "Fødselsdato kan ikke hete "fnr" og må bytte navn.
-        jsonEktefelle.setPersonIdentifikator(toJsonPersonidentifikator(ektefelle));
+        jsonEktefelle.setFodselsdato(tilJsonFodselsdato(ektefelle.get("fnr"))); // XXX: "Fødselsdato kan ikke hete "fnr" og må bytte navn.
+        jsonEktefelle.setPersonIdentifikator(tilJsonPersonidentifikator(ektefelle));
 
         return jsonEktefelle;
     }
 
-    private static String toJsonPersonidentifikator(Map<String, String> ektefelle) {
+    private static String tilJsonPersonidentifikator(Map<String, String> ektefelle) {
         // XXX: Ha et eget sammensatt felt for fødselsnummer fremfor denne galskapen...
 
         final String fodselsdato = ektefelle.get("fnr");
         final String personnummer = ektefelle.get("pnr");
-        if (JsonUtils.empty(fodselsdato) || fodselsdato.length() != 8 || JsonUtils.empty(personnummer)) {
+        if (JsonUtils.erTom(fodselsdato) || fodselsdato.length() != 8 || JsonUtils.erTom(personnummer)) {
             return null;
         }
 
         return fodselsdato.substring(0, 4) + fodselsdato.substring(6) + personnummer;
     }
 
-    private static String toJsonFodselsdato(String fodselsdato) {
+    private static String tilJsonFodselsdato(String fodselsdato) {
         if (fodselsdato == null || fodselsdato.trim().equals("")) {
             return null;
         }
@@ -130,7 +130,7 @@ public final class JsonFamilieConverter {
         return trimmedNavn.substring(trimmedNavn.lastIndexOf(' ') + 1);
     }
 
-    private static Status toStatus(String sivilstatus) {
+    private static Status tilStatus(String sivilstatus) {
         final Status status = Status.fromValue(sivilstatus);
         if (status == null) {
             logger.error("Ukjent sivilstatus: " + sivilstatus);
