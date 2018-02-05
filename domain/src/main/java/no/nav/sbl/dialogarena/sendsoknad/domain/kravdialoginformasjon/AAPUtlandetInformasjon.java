@@ -39,7 +39,7 @@ public class AAPUtlandetInformasjon extends KravdialogInformasjon.DefaultOppsett
 
     @Override
     public boolean skalSendeMedFullSoknad() {
-        return true;
+        return false;
     }
 
     @Override
