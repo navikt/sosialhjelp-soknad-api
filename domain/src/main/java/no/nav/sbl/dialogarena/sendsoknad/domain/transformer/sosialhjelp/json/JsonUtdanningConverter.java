@@ -16,22 +16,22 @@ public final class JsonUtdanningConverter {
 
     }
 
-    public static JsonUtdanning toUtdanning(WebSoknad webSoknad) {
+    public static JsonUtdanning tilUtdanning(WebSoknad webSoknad) {
         final JsonUtdanning jsonUtdanning = new JsonUtdanning();
         jsonUtdanning.setKilde(JsonKilde.BRUKER);
 
         final String studerer = webSoknad.getValueForFaktum("dinsituasjon.studerer");
-        if (JsonUtils.nonEmpty(studerer)) {
+        if (JsonUtils.erIkkeTom(studerer)) {
             jsonUtdanning.setErStudent(Boolean.parseBoolean(studerer));
         }
 
         final String studentgrad = webSoknad.getValueForFaktum("dinsituasjon.studerer.true.grad");
-        jsonUtdanning.setStudentgrad(toStudentgrad(studentgrad));
+        jsonUtdanning.setStudentgrad(tilStudentgrad(studentgrad));
 
         return jsonUtdanning;
     }
 
-    private static Studentgrad toStudentgrad(String s) {
+    private static Studentgrad tilStudentgrad(String s) {
         if (s == null || s.trim().equals("")) {
             return null;
         }

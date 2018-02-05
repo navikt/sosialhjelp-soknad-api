@@ -25,29 +25,29 @@ public final class JsonArbeidConverter {
 
     }
 
-    public static JsonArbeid toArbeid(WebSoknad webSoknad) {
+    public static JsonArbeid tilArbeid(WebSoknad webSoknad) {
         final JsonArbeid jsonArbeid = new JsonArbeid();
 
         // TODO: Støtte "situasjon" når AA-registeret er nede.
 
-        jsonArbeid.setForhold(toJsonArbeidsforhold(webSoknad));
-        jsonArbeid.setKommentarTilArbeidsforhold(toJsonKommentarTilArbeidsforhold(webSoknad));
+        jsonArbeid.setForhold(tilJsonArbeidsforhold(webSoknad));
+        jsonArbeid.setKommentarTilArbeidsforhold(tilJsonKommentarTilArbeidsforhold(webSoknad));
 
         return jsonArbeid;
     }
 
-    private static List<JsonArbeidsforhold> toJsonArbeidsforhold(WebSoknad webSoknad) {
+    private static List<JsonArbeidsforhold> tilJsonArbeidsforhold(WebSoknad webSoknad) {
         final List<Faktum> fakta = webSoknad.getFaktaMedKey("arbeidsforhold");
 
         final List<JsonArbeidsforhold> arbeidsforhold = fakta.stream().map(faktum -> {
             final Map<String, String> forhold = faktum.getProperties();
             return new JsonArbeidsforhold()
-                    .withKilde((isSystemProperties(faktum)) ? JsonKilde.SYSTEM : JsonKilde.BRUKER)
-                    .withArbeidsgivernavn(nullWhenEmpty(forhold, "arbeidsgivernavn"))
-                    .withFom(nullWhenEmpty(forhold, "fom"))
-                    .withTom(nullWhenEmpty(forhold, "tom"))
-                    .withStillingsprosent(toInteger(nullWhenEmpty(forhold, "stillingsprosent")))
-                    .withStillingstype(toStillingstype(forhold.get("stillingstype")))
+                    .withKilde((erAlleSystemProperties(faktum)) ? JsonKilde.SYSTEM : JsonKilde.BRUKER)
+                    .withArbeidsgivernavn(finnPropertyEllerNullOmTom(forhold, "arbeidsgivernavn"))
+                    .withFom(finnPropertyEllerNullOmTom(forhold, "fom"))
+                    .withTom(finnPropertyEllerNullOmTom(forhold, "tom"))
+                    .withStillingsprosent(tilInteger(finnPropertyEllerNullOmTom(forhold, "stillingsprosent")))
+                    .withStillingstype(tilStillingstype(forhold.get("stillingstype")))
                     
                     /*
                      * Denne må settes hvis man ønsker at bruker skal overstyre systemproperties:
@@ -60,7 +60,7 @@ public final class JsonArbeidConverter {
         return arbeidsforhold;
     }
 
-    private static Stillingstype toStillingstype(String s) {
+    private static Stillingstype tilStillingstype(String s) {
         if (s == null || s.equals("")) {
             return null;
         }
@@ -78,16 +78,16 @@ public final class JsonArbeidConverter {
         return null;
     }
 
-    private static Integer toInteger(String s) {
+    private static Integer tilInteger(String s) {
         if (s == null) {
             return null;
         }
         return Integer.valueOf(s);
     }
 
-    private static JsonKommentarTilArbeidsforhold toJsonKommentarTilArbeidsforhold(WebSoknad webSoknad) {
+    private static JsonKommentarTilArbeidsforhold tilJsonKommentarTilArbeidsforhold(WebSoknad webSoknad) {
         final String kommentar = webSoknad.getValueForFaktum("opplysninger.arbeidsituasjon.kommentarer");
-        if (empty(kommentar)) {
+        if (erTom(kommentar)) {
             return null;
         }
 
