@@ -1,16 +1,5 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.empty;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.isSystemProperties;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.nullWhenEmpty;
-import static org.slf4j.LoggerFactory.getLogger;
-
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
@@ -19,31 +8,37 @@ import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold.Stillingsty
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonKommentarTilArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
+import org.slf4j.Logger;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.*;
+import static org.slf4j.LoggerFactory.getLogger;
 
 public final class JsonArbeidConverter {
-    
+
     private static final Logger logger = getLogger(JsonArbeidConverter.class);
-    
+
     private JsonArbeidConverter() {
-        
+
     }
-    
 
     public static JsonArbeid toArbeid(WebSoknad webSoknad) {
-        final JsonArbeid jsonArbeid= new JsonArbeid();
-        
+        final JsonArbeid jsonArbeid = new JsonArbeid();
+
         // TODO: Støtte "situasjon" når AA-registeret er nede.
-        
+
         jsonArbeid.setForhold(toJsonArbeidsforhold(webSoknad));
         jsonArbeid.setKommentarTilArbeidsforhold(toJsonKommentarTilArbeidsforhold(webSoknad));
-        
+
         return jsonArbeid;
     }
 
-
     private static List<JsonArbeidsforhold> toJsonArbeidsforhold(WebSoknad webSoknad) {
         final List<Faktum> fakta = webSoknad.getFaktaMedKey("arbeidsforhold");
-        
+
         final List<JsonArbeidsforhold> arbeidsforhold = fakta.stream().map(faktum -> {
             final Map<String, String> forhold = faktum.getProperties();
             return new JsonArbeidsforhold()
@@ -61,25 +56,28 @@ public final class JsonArbeidConverter {
                     .withOverstyrtAvBruker(false)
                     ;
         }).collect(Collectors.toList());
-        
+
         return arbeidsforhold;
     }
-    
+
     private static Stillingstype toStillingstype(String s) {
         if (s == null || s.equals("")) {
             return null;
         }
-        
-        switch(s) {
-        case "fast": return Stillingstype.FAST;
-        case "variabel": return Stillingstype.VARIABEL;
-        case "fastOgVariabel": return Stillingstype.FAST_OG_VARIABEL;
+
+        switch (s) {
+            case "fast":
+                return Stillingstype.FAST;
+            case "variabel":
+                return Stillingstype.VARIABEL;
+            case "fastOgVariabel":
+                return Stillingstype.FAST_OG_VARIABEL;
         }
-        
+
         logger.error("Ukjent stillingstype: " + s);
         return null;
     }
-    
+
     private static Integer toInteger(String s) {
         if (s == null) {
             return null;
@@ -92,7 +90,7 @@ public final class JsonArbeidConverter {
         if (empty(kommentar)) {
             return null;
         }
-        
+
         return new JsonKommentarTilArbeidsforhold()
                 .withKilde(JsonKildeBruker.BRUKER)
                 .withVerdi(kommentar);
