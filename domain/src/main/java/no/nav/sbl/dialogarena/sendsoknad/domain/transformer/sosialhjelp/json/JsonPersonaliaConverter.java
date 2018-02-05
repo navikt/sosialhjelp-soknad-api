@@ -1,43 +1,33 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia.ETTERNAVN_KEY;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia.FORNAVN_KEY;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia.MELLOMNAVN_KEY;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia.STATSBORGERSKAP_KEY;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.isFaktumVerdi;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.nonEmpty;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
 
 import java.util.Map;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonNordiskBorger;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonStatsborgerskap;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia.*;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.isFaktumVerdi;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.nonEmpty;
 
 public final class JsonPersonaliaConverter {
-    
+
     private JsonPersonaliaConverter() {
-        
+
     }
-    
 
     public static JsonPersonalia toPersonalia(WebSoknad webSoknad) {
         final JsonPersonalia personalia = new JsonPersonalia();
-        
+
         final Map<String, String> personaliaProperties = webSoknad.getFaktumMedKey("personalia").getProperties();
-        
+
         personalia.setPersonIdentifikator(new JsonPersonIdentifikator().withVerdi(webSoknad.getAktoerId()));
         personalia.setNavn(new JsonSokernavn()
                 .withFornavn(personaliaProperties.get(FORNAVN_KEY))
                 .withMellomnavn(personaliaProperties.get(MELLOMNAVN_KEY))
                 .withEtternavn(personaliaProperties.get(ETTERNAVN_KEY))
-                );
-               
+        );
+
         final String statsborgerskap = personaliaProperties.get(STATSBORGERSKAP_KEY);
         if (nonEmpty(statsborgerskap) && !statsborgerskap.equals("???")) {
             personalia.setStatsborgerskap(new JsonStatsborgerskap()
@@ -54,18 +44,17 @@ public final class JsonPersonaliaConverter {
                         .withVerdi(Boolean.parseBoolean(nordiskBorger)));
             }
         }
-        
+
         personalia.setTelefonnummer(toJsonTelefonnummer(webSoknad));
         personalia.setKontonummer(toJsonKontonummer(webSoknad));
-        
+
         personalia.setFolkeregistrertAdresse(JsonAdresseConverter.toFolkeregistrertAdresse(webSoknad));
         personalia.setOppholdsadresse(JsonAdresseConverter.toOppholdsadresse(webSoknad));
         personalia.setPostadresse(JsonAdresseConverter.toPostadresse(webSoknad));
-        
+
         return personalia;
     }
-    
-    
+
     private static boolean isNordiskBorger(String statsborgerskap) {
         if (statsborgerskap == null) {
             return false;
@@ -73,15 +62,15 @@ public final class JsonPersonaliaConverter {
         
         /* TODO: Ligger denne logikken et annet sted? Hvor bør dette legges? */
         switch (statsborgerskap) {
-        case "NOR":
-        case "SWE":
-        case "FRO":
-        case "ISL":
-        case "DNK":
-        case "FIN":
-            return true;
-        default:
-            return false;
+            case "NOR":
+            case "SWE":
+            case "FRO":
+            case "ISL":
+            case "DNK":
+            case "FIN":
+                return true;
+            default:
+                return false;
         }
     }
 
@@ -124,28 +113,27 @@ public final class JsonPersonaliaConverter {
         } else {
             toSystemJsonKontonummer(webSoknad, jsonKontonummer);
         }
-        
+
         return jsonKontonummer;
     }
 
     private static void toBrukerJsonKontonummer(WebSoknad webSoknad, final JsonKontonummer jsonKontonummer) {
         jsonKontonummer.setKilde(JsonKilde.BRUKER);
-        
+
         final String harIkkeKontonummer = webSoknad.getValueForFaktum("kontakt.kontonummer.harikke");
         if (nonEmpty(harIkkeKontonummer)) {
             jsonKontonummer.setHarIkkeKonto(Boolean.valueOf(harIkkeKontonummer));
         }
-        
+
         final String kontonummer = webSoknad.getValueForFaktum("kontakt.kontonummer");
         if (nonEmpty(kontonummer)) {
             jsonKontonummer.setVerdi(kontonummer);
         }
     }
 
-
     private static void toSystemJsonKontonummer(WebSoknad webSoknad, final JsonKontonummer jsonKontonummer) {
         jsonKontonummer.setKilde(JsonKilde.SYSTEM);
-        
+
         final String kontonummer = webSoknad.getValueForFaktum("kontakt.system.kontonummer");
         if (nonEmpty(kontonummer)) {
             jsonKontonummer.setVerdi(kontonummer);
