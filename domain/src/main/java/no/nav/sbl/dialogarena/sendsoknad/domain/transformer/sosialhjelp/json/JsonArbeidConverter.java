@@ -72,7 +72,7 @@ public final class JsonArbeidConverter {
                 return Stillingstype.FAST_OG_VARIABEL;
         }
 
-        logger.error("Ukjent stillingstype: " + s);
+        logger.warn("Ukjent stillingstype: {}", s);
         return null;
     }
 
