@@ -44,7 +44,7 @@ public final class JsonUtdanningConverter {
                 return Studentgrad.DELTID;
         }
 
-        logger.error("Ukjent studentgrad: " + s);
+        logger.warn("Ukjent studentgrad: {}", s);
         return null;
     }
 

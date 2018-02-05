@@ -103,7 +103,7 @@ public final class JsonFamilieConverter {
         }
 
         if (fodselsdato.length() != 8) {
-            logger.error("Feil lengde på fodselsdato");
+            logger.warn("Feil lengde på fodselsdato, {}", fodselsdato);
             return null;
         }
 
@@ -136,7 +136,7 @@ public final class JsonFamilieConverter {
     private static Status tilStatus(String sivilstatus) {
         final Status status = Status.fromValue(sivilstatus);
         if (status == null) {
-            logger.error("Ukjent sivilstatus: " + sivilstatus);
+            logger.warn("Ukjent sivilstatus: {}", sivilstatus);
         }
         return status;
     }
