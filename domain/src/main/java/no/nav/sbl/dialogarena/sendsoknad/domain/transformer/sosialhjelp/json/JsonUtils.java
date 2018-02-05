@@ -30,7 +30,7 @@ public final class JsonUtils {
     }
 
 
-    public static Integer finnInteger(String s) {
+    public static Integer tilInteger(String s) {
         if (erTom(s)) {
             return null;
         }

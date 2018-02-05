@@ -3,15 +3,16 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonEktefelle;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.*;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status;
 import org.slf4j.Logger;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.erTom;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -27,6 +28,7 @@ public final class JsonFamilieConverter {
     public static JsonFamilie tilFamilie(WebSoknad webSoknad) {
         final JsonFamilie jsonFamilie = new JsonFamilie();
         jsonFamilie.setSivilstatus(tilJsonSivilstatus(webSoknad));
+        jsonFamilie.setForsorgerplikt(tilJsonForsorgerPlikt(webSoknad));
         // TODO: Fortsette på familie...
 
         return jsonFamilie;
@@ -109,7 +111,7 @@ public final class JsonFamilieConverter {
     }
 
     private static String xxxFornavnFraNavn(String navn) {
-        // TODO: Fjern når navn er oppdelt slik det skal i grensesnittet. 
+        // TODO: Fjern når navn er oppdelt slik det skal i grensesnittet.
         if (navn == null) {
             return "";
         }
@@ -122,7 +124,7 @@ public final class JsonFamilieConverter {
     }
 
     private static String xxxEtternavnFraNavn(String navn) {
-        // TODO: Fjern når navn er oppdelt slik det skal i grensesnittet. 
+        // TODO: Fjern når navn er oppdelt slik det skal i grensesnittet.
         if (navn == null || !navn.trim().contains(" ")) {
             return "";
         }
@@ -139,4 +141,59 @@ public final class JsonFamilieConverter {
         return status;
     }
 
+
+    private static JsonForsorgerplikt tilJsonForsorgerPlikt(WebSoknad webSoknad) {
+        return new JsonForsorgerplikt()
+                .withHarForsorgerplikt(tilHarForsorgerPlikt(webSoknad))
+                .withBarnebidrag(tilBarnebidrag(webSoknad))
+                .withAnsvar(tilAnsvar(webSoknad));
+    }
+
+    private static JsonHarForsorgerplikt tilHarForsorgerPlikt(WebSoknad webSoknad) {
+        String harBarn = webSoknad.getValueForFaktum("familie.barn");
+
+        if (erTom(harBarn)) {
+            return null;
+        }
+
+        return new JsonHarForsorgerplikt()
+                .withKilde(JsonKilde.BRUKER)
+                .withVerdi(Boolean.parseBoolean(harBarn));
+    }
+
+    private static JsonBarnebidrag tilBarnebidrag(WebSoknad webSoknad) {
+        String barnebidrag = webSoknad.getValueForFaktum("familie.barn.true.barnebidrag");
+
+        if (erTom(barnebidrag)) {
+            return null;
+        }
+
+        return new JsonBarnebidrag()
+                .withKilde(JsonKildeBruker.BRUKER)
+                .withVerdi(tilBarnebidragVerdi(barnebidrag));
+    }
+
+    private static JsonBarnebidrag.Verdi tilBarnebidragVerdi(String s) {
+        switch (s) {
+            case "betaler":
+                return JsonBarnebidrag.Verdi.BETALER;
+            case "mottar":
+                return JsonBarnebidrag.Verdi.MOTTAR;
+            case "begge":
+                return JsonBarnebidrag.Verdi.BEGGE;
+            case "ingen":
+                return JsonBarnebidrag.Verdi.INGEN;
+        }
+        logger.warn("Ukjent barnebidragsvalg {}", s);
+        return null;
+    }
+
+    private static List<JsonAnsvar> tilAnsvar(WebSoknad webSoknad) {
+        List<Faktum> barnefakta = webSoknad.getFaktaMedKey("familie.barn.true.barn");
+
+        return barnefakta.stream().map(faktum -> {
+            return new JsonAnsvar(); // TODO
+
+        }).collect(Collectors.toList());
+    }
 }
