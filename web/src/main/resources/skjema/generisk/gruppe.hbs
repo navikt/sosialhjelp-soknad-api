@@ -1,4 +1,23 @@
-{{#hvisIngenSynligeBarneFakta barneFakta}}
+{{#hvisIngenSynligeBarneFaktaForGruppe barneFakta utvidetSoknad}}
 {{else}}
-    {{> skjema/generisk/default }}
-{{/hvisIngenSynligeBarneFakta}}
+    {{> skjema/generisk/sporsmal}}
+    {{> skjema/generisk/infotekst}}
+
+    <ul class="svar-liste">
+        <li>
+            <ul class="fakta-liste{{#hvisIngenSynligeBarneFakta barneFakta}} tomListe{{/hvisIngenSynligeBarneFakta}}">
+                {{#variabel "niva" (inc niva)}}
+                    {{#each barneFakta}}
+                        {{#hvisLik utvidetSoknad "true"}}
+                            {{> skjema/generisk/faktum}}
+                        {{else}}
+                            {{#hvisLik struktur.kunUtvidet "false"}}
+                                {{> skjema/generisk/faktum}}
+                            {{/hvisLik}}
+                        {{/hvisLik}}
+                    {{/each}}
+                {{/variabel}}
+            </ul>
+        </li>
+    </ul>
+{{/hvisIngenSynligeBarneFaktaForGruppe}}
