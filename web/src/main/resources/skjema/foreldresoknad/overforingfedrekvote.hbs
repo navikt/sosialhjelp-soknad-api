@@ -8,7 +8,16 @@
                     {{#hvisLik value "sykdom"}}{{hentTekst "fedrekvote.valg.sykdom"}}{{/hvisLik}}
                     {{#hvisLik value "aleneomsorg"}}{{hentTekst "fedrekvote.valg.aleneomsorg"}}{{/hvisLik}}
                     {{#hvisLik value "helseinstitusjon"}}{{hentTekst "fedrekvote.valg.helseinstitusjon"}}{{/hvisLik}}
-                    {{#hvisLik value "ikkerett"}}{{hentTekst "fedrekvote.valg.ikkerett"}}{{/hvisLik}}
+                    {{#hvisLik value "ikkerett"}}
+                    {{#forFaktum "soknadsvalg.stonadstype"}}
+                         {{#hvisLik "overforing" value}}
+                                  {{hentTekst "fedrekvote.valg.ikkerett"}}
+                           {{/hvisLik}}
+                           {{#hvisLik "overforingMedmor" value}}
+                                     {{hentTekst "medmorkvote.valg.ikkerett"}}
+                           {{/hvisLik}}
+                    {{/forFaktum}}
+                    {{/hvisLik}}
                 </span>
             </td>
         </tr>
@@ -21,4 +30,5 @@
             </td>
         {{/hvisLik}}
     {{/forFaktum}}
+
 </table>
