@@ -20,7 +20,6 @@ public class SosialhjelpArbeidsforholdBolkTest {
 
     @Test
     public void testGetSoekeperiode() {
-
         ArbeidsforholdService.Sokeperiode sokeperiode;
 
         sokeperiode = sosialhjelpArbeidsforholdBolk.getSoekeperiode();
@@ -29,6 +28,5 @@ public class SosialhjelpArbeidsforholdBolkTest {
         DateTime tom = sokeperiode.getTom();
 
         Assert.assertEquals(-3, monthsBetween(tom, fom).getMonths());
-
     }
 }
