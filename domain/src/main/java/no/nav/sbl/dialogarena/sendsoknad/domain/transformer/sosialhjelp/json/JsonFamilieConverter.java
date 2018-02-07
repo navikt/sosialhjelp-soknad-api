@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.erTom;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonUtils.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public final class JsonFamilieConverter {
@@ -80,58 +80,11 @@ public final class JsonFamilieConverter {
                 .withEtternavn(xxxEtternavnFraNavn(ektefelle.get("navn")))
         );
         jsonEktefelle.setFodselsdato(tilJsonFodselsdato(ektefelle.get("fnr"))); // XXX: "Fødselsdato kan ikke hete "fnr" og må bytte navn.
-        jsonEktefelle.setPersonIdentifikator(tilJsonPersonidentifikator(ektefelle));
+        jsonEktefelle.setPersonIdentifikator(tilJsonPersonidentifikator(ektefelle.get("fnr"), ektefelle.get("pnr")));
 
         return jsonEktefelle;
     }
 
-    private static String tilJsonPersonidentifikator(Map<String, String> ektefelle) {
-        // XXX: Ha et eget sammensatt felt for fødselsnummer fremfor denne galskapen...
-
-        final String fodselsdato = ektefelle.get("fnr");
-        final String personnummer = ektefelle.get("pnr");
-        if (erTom(fodselsdato) || fodselsdato.length() != 8 || erTom(personnummer)) {
-            return null;
-        }
-
-        return fodselsdato.substring(0, 4) + fodselsdato.substring(6) + personnummer;
-    }
-
-    private static String tilJsonFodselsdato(String fodselsdato) {
-        if (erTom(fodselsdato)) {
-            return null;
-        }
-
-        if (fodselsdato.length() != 8) {
-            logger.warn("Feil lengde på fodselsdato, {}", fodselsdato);
-            return null;
-        }
-
-        return fodselsdato.substring(4) + "-" + fodselsdato.substring(2, 4) + "-" + fodselsdato.substring(0, 2);
-    }
-
-    private static String xxxFornavnFraNavn(String navn) {
-        // TODO: Fjern når navn er oppdelt slik det skal i grensesnittet.
-        if (navn == null) {
-            return "";
-        }
-
-        final String trimmedNavn = navn.trim();
-        if (!trimmedNavn.contains(" ")) {
-            return navn;
-        }
-        return trimmedNavn.substring(0, trimmedNavn.lastIndexOf(' '));
-    }
-
-    private static String xxxEtternavnFraNavn(String navn) {
-        // TODO: Fjern når navn er oppdelt slik det skal i grensesnittet.
-        if (navn == null || !navn.trim().contains(" ")) {
-            return "";
-        }
-
-        final String trimmedNavn = navn.trim();
-        return trimmedNavn.substring(trimmedNavn.lastIndexOf(' ') + 1);
-    }
 
     private static Status tilStatus(String sivilstatus) {
         final Status status = Status.fromValue(sivilstatus);
@@ -191,9 +144,87 @@ public final class JsonFamilieConverter {
     private static List<JsonAnsvar> tilAnsvar(WebSoknad webSoknad) {
         List<Faktum> barnefakta = webSoknad.getFaktaMedKey("familie.barn.true.barn");
 
-        return barnefakta.stream().map(faktum -> {
-            return new JsonAnsvar(); // TODO
+        return barnefakta.stream().map(JsonFamilieConverter::faktumTilAnsvar).collect(Collectors.toList());
+    }
 
-        }).collect(Collectors.toList());
+    private static JsonAnsvar faktumTilAnsvar(Faktum faktum) {
+        Map<String, String> props = faktum.getProperties();
+        JsonBarn barn = new JsonBarn()
+                .withNavn(new JsonNavn()
+                        .withFornavn(xxxFornavnFraNavn(props.get("navn")))
+                        .withMellomnavn("")
+                        .withEtternavn(xxxEtternavnFraNavn(props.get("navn")))
+                )
+                .withFodselsdato(tilJsonFodselsdato(props.get("fnr")))
+                .withPersonIdentifikator(tilJsonPersonidentifikator(props.get("fnr"), props.get("pnr")));
+
+        JsonAnsvar ansvar = new JsonAnsvar()
+                .withBarn(barn);
+
+        if (erIkkeTom(props.get("borsammen"))) {
+            boolean borsammen = Boolean.parseBoolean(props.get("borsammen"));
+            ansvar.withBorSammenMed(
+                    new JsonBorSammenMed()
+                            .withVerdi(borsammen)
+                            .withKilde(JsonKildeBruker.BRUKER)
+            );
+
+            if (!borsammen) {
+                if (erIkkeTom(props.get("grad"))) {
+                    ansvar.withSamvarsgrad(
+                            new JsonSamvarsgrad()
+                                    .withVerdi(tilInteger(props.get("grad")))
+                                    .withKilde(JsonKildeBruker.BRUKER)
+                    );
+                }
+            }
+        }
+
+        return ansvar;
+    }
+
+
+    private static String tilJsonPersonidentifikator(String fodselsdato, String personnummer) {
+        if (erTom(fodselsdato) || fodselsdato.length() != 8 || erTom(personnummer)) {
+            return null;
+        }
+
+        return fodselsdato.substring(0, 4) + fodselsdato.substring(6) + personnummer;
+    }
+
+    private static String tilJsonFodselsdato(String fodselsdato) {
+        if (erTom(fodselsdato)) {
+            return null;
+        }
+
+        if (fodselsdato.length() != 8) {
+            logger.warn("Feil lengde på fodselsdato, {}", fodselsdato);
+            return null;
+        }
+
+        return fodselsdato.substring(4) + "-" + fodselsdato.substring(2, 4) + "-" + fodselsdato.substring(0, 2);
+    }
+
+    private static String xxxFornavnFraNavn(String navn) {
+        // TODO: Fjern når navn er oppdelt slik det skal i grensesnittet.
+        if (navn == null) {
+            return "";
+        }
+
+        final String trimmedNavn = navn.trim();
+        if (!trimmedNavn.contains(" ")) {
+            return navn;
+        }
+        return trimmedNavn.substring(0, trimmedNavn.lastIndexOf(' '));
+    }
+
+    private static String xxxEtternavnFraNavn(String navn) {
+        // TODO: Fjern når navn er oppdelt slik det skal i grensesnittet.
+        if (navn == null || !navn.trim().contains(" ")) {
+            return "";
+        }
+
+        final String trimmedNavn = navn.trim();
+        return trimmedNavn.substring(trimmedNavn.lastIndexOf(' ') + 1);
     }
 }
