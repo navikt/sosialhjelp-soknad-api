@@ -70,7 +70,7 @@
                 <id>stillingstype</id>
                 <type>textbox</type>
                 <constraints>
-                    <constraint>properties['stillingstype'] == 'variabel'</constraint>
+                    <constraint>properties['stillingstype'] != ''</constraint>
                 </constraints>
             </property>
         </properties>
