@@ -29,6 +29,7 @@ public final class JsonSoknadConverter {
                 .withArbeid(JsonArbeidConverter.tilArbeid(webSoknad))
                 .withUtdanning(JsonUtdanningConverter.tilUtdanning(webSoknad))
                 .withFamilie(JsonFamilieConverter.tilFamilie(webSoknad))
-                .withBegrunnelse(JsonBegrunnelseConverter.tilBegrunnelse(webSoknad));
+                .withBegrunnelse(JsonBegrunnelseConverter.tilBegrunnelse(webSoknad))
+                .withBosituasjon(JsonBosituasjonConverter.tilBosituasjon(webSoknad));
     }
 }
