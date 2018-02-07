@@ -24,11 +24,10 @@ public final class JsonSoknadConverter {
     }
 
     private static JsonData tilData(WebSoknad webSoknad) {
-        final JsonData data = new JsonData();
-        data.setPersonalia(JsonPersonaliaConverter.tilPersonalia(webSoknad));
-        data.setArbeid(JsonArbeidConverter.tilArbeid(webSoknad));
-        data.setUtdanning(JsonUtdanningConverter.tilUtdanning(webSoknad));
-        data.setFamilie(JsonFamilieConverter.tilFamilie(webSoknad));
-        return data;
+        return new JsonData()
+                .withPersonalia(JsonPersonaliaConverter.tilPersonalia(webSoknad))
+                .withArbeid(JsonArbeidConverter.tilArbeid(webSoknad))
+                .withUtdanning(JsonUtdanningConverter.tilUtdanning(webSoknad))
+                .withFamilie(JsonFamilieConverter.tilFamilie(webSoknad));
     }
 }
