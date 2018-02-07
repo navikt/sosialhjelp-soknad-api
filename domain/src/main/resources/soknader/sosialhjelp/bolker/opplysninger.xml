@@ -278,32 +278,6 @@
     </faktum>
 
     <faktum kunUtvidet="true">
-        <id>opplysninger.bosituasjon.eier</id>
-        <type>composite</type>
-        <dependOn>opplysninger.bosituasjon</dependOn>
-        <constraints>
-            <constraint>
-                <faktum>bosituasjon</faktum>
-                <expression>value == 'eier'</expression>
-            </constraint>
-        </constraints>
-        <optional>true</optional>
-    </faktum>
-    <faktum>
-        <id>opplysninger.bosituasjon.eier.vedlegg</id>
-        <type>hidden</type>
-        <dependOn>opplysninger.bosituasjon.eier</dependOn>
-        <optional>true</optional>
-        <flereTillatt>true</flereTillatt>
-    </faktum>
-    <vedlegg>
-        <faktum>opplysninger.bosituasjon.eier.vedlegg</faktum>
-        <skjemaNummer>kjopekontrakt</skjemaNummer>
-        <skjemanummerTillegg>kjopekontrakt</skjemanummerTillegg>
-        <flereTillatt>true</flereTillatt>
-    </vedlegg>
-
-    <faktum kunUtvidet="true">
         <id>opplysninger.bosituasjon.leier</id>
         <type>composite</type>
         <dependOn>opplysninger.bosituasjon</dependOn>
