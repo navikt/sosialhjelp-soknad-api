@@ -4,6 +4,8 @@ import no.digipost.time.ControllableClock;
 import no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbTestConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.TestSupport;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +31,9 @@ public class HendelseRepositoryJdbcTest {
     private HendelseRepository hendelseRepository;
 
     @Inject
+    private TestSupport support;
+
+    @Inject
     private Clock systemClock;
     private ControllableClock controllableClock;
 
@@ -38,12 +43,24 @@ public class HendelseRepositoryJdbcTest {
         controllableClock = (ControllableClock) systemClock;
     }
 
+    @After
+    public void teardown() throws Exception {
+        support.getJdbcTemplate().execute("DELETE FROM hendelse");
+    }
+
     @Test
     public void skalHenteVersjonForOpprettetSoknad() {
         hendelseRepository.registrerOpprettetHendelse(soknad(BEHANDLINGS_ID_1));
 
         assertThat(hendelseRepository.hentVersjon(BEHANDLINGS_ID_1)).isEqualTo(1);
     }
+
+    @Test
+    public void skalGiDefaultversjonForSoknadUtenHendelser() {
+        assertThat(hendelseRepository.hentVersjon(BEHANDLINGS_ID_1)).isEqualTo(0);
+        assertThat(hendelseRepository.hentVersjon("XX")).isEqualTo(0);
+    }
+
 
     @Test
     public void skalHenteVersjonForMigrertSoknad() {
