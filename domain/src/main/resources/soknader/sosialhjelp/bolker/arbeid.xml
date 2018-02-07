@@ -5,19 +5,21 @@
         <type>bool</type>
         <panel>arbeidbolk</panel>
         <optional>true</optional>
+        <constraints>
+            <constraint>
+                <faktum>dinsituasjon.registrertjobb</faktum>
+                <expression>properties['harhentetfraaareg'] != 'true'</expression>
+            </constraint>
+        </constraints>
     </faktum>
-    
-    <!--
+
     <faktum>
-        <id>dinsituasjon.jobb.true.grad</id>
-        <type>bool</type>
-        <dependOn>dinsituasjon.jobb</dependOn>
-        <dependOnValues>
-            <value>true</value>
-        </dependOnValues>
+        <id>dinsituasjon.registrertjobb</id>
+        <type>hidden</type>
+        <panel>arbeidbolk</panel>
         <optional>true</optional>
     </faktum>
-    -->
+
 
     <faktum>
         <id>dinsituasjon.studerer</id>
@@ -54,7 +56,7 @@
                 <id>tom</id>
                 <type>textbox</type>
                 <constraints>
-                    <constraint>properties['tom'] != ''</constraint>
+                    <constraint>properties['tom'] != null and properties['tom'] != ''</constraint>
                 </constraints>
             </property>
             <property>
