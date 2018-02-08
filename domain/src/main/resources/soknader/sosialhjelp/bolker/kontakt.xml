@@ -30,7 +30,7 @@
                 <id>bolignummer</id>
                 <type>textbox</type>
                 <constraints>
-                    <constraint>properties['type'] == 'gateadresse' or properties['type'] == 'matrikkeladresse'</constraint>
+                    <constraint>(properties['type'] == 'gateadresse' or properties['type'] == 'matrikkeladresse') and properties['bolignummer'] != null and properties['bolignummer'] != ''</constraint>
                 </constraints>
             </property>
             <property>
