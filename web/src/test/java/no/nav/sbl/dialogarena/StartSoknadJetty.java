@@ -94,7 +94,7 @@ public final class StartSoknadJetty {
         public static void main(String[] args) throws Exception {
             setFrom("environment-test.properties");
             new StartSoknadJetty(Env.Eclipse, new File(TEST_RESOURCES, "override-web.xml"), buildDataSource()).start();
-            ;
+
         }
     }
 }
