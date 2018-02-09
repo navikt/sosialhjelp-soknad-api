@@ -303,6 +303,32 @@
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
+    <faktum kunUtvidet="true">
+        <id>opplysninger.bosituasjon.kommunal</id>
+        <type>composite</type>
+        <dependOn>opplysninger.bosituasjon</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>bosituasjon</faktum>
+                <expression>value == 'kommunal'</expression>
+            </constraint>
+        </constraints>
+        <optional>true</optional>
+    </faktum>
+    <faktum>
+        <id>opplysninger.bosituasjon.kommunal.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.bosituasjon.kommunal</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.bosituasjon.kommunal.vedlegg</faktum>
+        <skjemaNummer>husleiekontrakt</skjemaNummer>
+        <skjemanummerTillegg>kommunal</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
     <!-- Inntekter / formue -->
     <faktum>
         <id>opplysninger.inntekt</id>
