@@ -167,6 +167,10 @@
                 <faktum>familie.barn.true.barnebidrag</faktum>
                 <expression>value == 'betaler'</expression>
             </constraint>
+            <constraint>
+                <faktum>familie.barn.true.barnebidrag</faktum>
+                <expression>value == 'begge'</expression>
+            </constraint>
         </constraints>
         <properties>
             <property>
@@ -199,6 +203,10 @@
                 <faktum>familie.barn.true.barnebidrag</faktum>
                 <expression>value == 'mottar'</expression>
             </constraint>
+            <constraint>
+                <faktum>familie.barn.true.barnebidrag</faktum>
+                <expression>value == 'begge'</expression>
+            </constraint>
         </constraints>
         <properties>
             <property>
@@ -220,29 +228,6 @@
         <skjemanummerTillegg>mottar</skjemanummerTillegg>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
-
-    <faktum>
-        <id>opplysninger.familiesituasjon.barnebidrag.begge</id>
-        <type>composite</type>
-        <dependOn>opplysninger.familiesituasjon</dependOn>
-        <optional>true</optional>
-        <constraints>
-            <constraint>
-                <faktum>familie.barn.true.barnebidrag</faktum>
-                <expression>value == 'begge'</expression>
-            </constraint>
-        </constraints>
-        <properties>
-            <property>
-                <id>betaler</id>
-                <type>textbox</type>
-            </property>
-            <property>
-                <id>mottar</id>
-                <type>textbox</type>
-            </property>
-        </properties>
-    </faktum>
 
     <faktum kunUtvidet="true">
         <id>opplysninger.familiesituasjon.barn.samvarsavtale</id>
