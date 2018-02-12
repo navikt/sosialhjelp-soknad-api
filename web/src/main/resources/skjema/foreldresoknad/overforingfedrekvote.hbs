@@ -5,9 +5,36 @@
             <td class="sjekket"></td>
             <td>
                 <span>
-                    {{#hvisLik value "sykdom"}}{{hentTekst "fedrekvote.valg.sykdom"}}{{/hvisLik}}
-                    {{#hvisLik value "aleneomsorg"}}{{hentTekst "fedrekvote.valg.aleneomsorg"}}{{/hvisLik}}
-                    {{#hvisLik value "helseinstitusjon"}}{{hentTekst "fedrekvote.valg.helseinstitusjon"}}{{/hvisLik}}
+                 {{#hvisLik value "sykdom"}}
+                 {{#forFaktum "soknadsvalg.stonadstype"}}
+                          {{#hvisLik "overforing" value}}
+                                      {{hentTekst "fedrekvote.valg.sykdom"}}
+                          {{/hvisLik}}
+                          {{#hvisLik "overforingMedmor" value}}
+                                      {{hentTekst "medmorkvote.valg.sykdom"}}
+                           {{/hvisLik}}
+                    {{/forFaktum}}
+                    {{/hvisLik}}
+                    {{#hvisLik value "aleneomsorg"}}
+                                     {{#forFaktum "soknadsvalg.stonadstype"}}
+                                              {{#hvisLik "overforing" value}}
+                                                          {{hentTekst "fedrekvote.valg.aleneomsorg"}}
+                                              {{/hvisLik}}
+                                              {{#hvisLik "overforingMedmor" value}}
+                                                          {{hentTekst "medmorkvote.valg.aleneomsorg"}}
+                                               {{/hvisLik}}
+                                        {{/forFaktum}}
+                    {{/hvisLik}}
+                    {{#hvisLik value "helseinstitusjon"}}
+                    {{#forFaktum "soknadsvalg.stonadstype"}}
+                      {{#hvisLik "overforing" value}}
+                             {{hentTekst "fedrekvote.valg.helseinstitusjon"}}
+                      {{/hvisLik}}
+                      {{#hvisLik "overforingMedmor" value}}
+                             {{hentTekst "medmorkvote.valg.helseinstitusjon"}}
+                      {{/hvisLik}}
+                      {{/forFaktum}}
+                      {{/hvisLik}}
                     {{#hvisLik value "ikkerett"}}
                     {{#forFaktum "soknadsvalg.stonadstype"}}
                          {{#hvisLik "overforing" value}}
