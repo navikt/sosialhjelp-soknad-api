@@ -66,13 +66,6 @@
                     <constraint>properties['stillingsprosent'] != '0'</constraint>
                 </constraints>
             </property>
-            <property>
-                <id>stillingstype</id>
-                <type>textbox</type>
-                <constraints>
-                    <constraint>properties['stillingstype'] != ''</constraint>
-                </constraints>
-            </property>
         </properties>
         <constraints>
             <constraint>
