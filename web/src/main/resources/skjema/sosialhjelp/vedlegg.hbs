@@ -1,0 +1,24 @@
+<h3>{{ hentTekst "vedlegg.oppsummering.tittel" }}</h3>
+
+{{#sosialhjelpVedlegg}}
+
+<span>{{{ hentTekst (concat "vedlegg." this.[0].skjemaNummer "." this.[0].skjemanummerTillegg ".tittel") }}}</span>
+<br />
+
+{{#each this}}
+    {{#hvisLik innsendingsvalg "VedleggSendesIkke"}}
+        <i>{{ hentTekst "vedlegg.oppsummering.ikkelastetopp" }}</i>
+    {{/hvisLik}}
+    {{#hvisLik innsendingsvalg "VedleggKreves"}}
+        <i>{{ hentTekst "vedlegg.oppsummering.ikkelastetopp" }}</i>
+    {{/hvisLik}}
+
+    {{#hvisLik innsendingsvalg "LastetOpp"}}
+        <a href="/sendsoknad/sosialhjelpvedlegg/{{vedleggId}}/fil" target="_blank">{{filnavn}}</a>
+    {{/hvisLik}}
+
+    <br />
+{{/each}}
+
+<br />
+{{/sosialhjelpVedlegg}}

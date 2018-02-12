@@ -8,35 +8,36 @@
         <panel>Tilknytningnorge</panel>
     </faktum>
 
-
     <faktum>
-        <id>tilknytningnorge.oppholdinorgesistetreaar.false</id>
-        <type>checkboxGroup</type>
+        <id>tilknytningnorge.oppholdinorgesistetreaar.periode</id>
+        <flereTillatt>true</flereTillatt>
         <dependOn>tilknytningnorge.oppholdinorgesistetreaar</dependOn>
         <dependOnValues>
             <value>false</value>
         </dependOnValues>
-    </faktum>
-
-    <faktum>
-        <id>tilknytningnorge.oppholdinorgesistetreaar.false.boddinorgesisteaaret</id>
-        <type>checkbox</type>
-        <dependOn>tilknytningnorge.oppholdinorgesistetreaar.false</dependOn>
-    </faktum>
-    <faktum>
-        <id>tilknytningnorge.oppholdinorgesistetreaar.false.boddieoslandsistetreaar</id>
-        <type>checkbox</type>
-        <dependOn>tilknytningnorge.oppholdinorgesistetreaar.false</dependOn>
-    </faktum>
-    <faktum>
-        <id>tilknytningnorge.oppholdinorgesistetreaar.false.registrertflyktning</id>
-        <type>checkbox</type>
-        <dependOn>tilknytningnorge.oppholdinorgesistetreaar.false</dependOn>
-    </faktum>
-    <faktum>
-        <id>tilknytningnorge.oppholdinorgesistetreaar.false.ingenpassendesituasjoner</id>
-        <type>checkbox</type>
-        <dependOn>tilknytningnorge.oppholdinorgesistetreaar.false</dependOn>
+        <type>composite</type>
+        <properties>
+            <property>
+                <id>land</id>
+                <type>country</type>
+            </property>
+            <property>
+                <id>fraMaaned</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>fraAar</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>tilMaaned</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>tilAar</id>
+                <type>textbox</type>
+            </property>
+        </properties>
     </faktum>
 
     <!-- Arbeid i utlandet før sykdom -->
@@ -77,16 +78,4 @@
             </property>
         </properties>
     </faktum>
-
-
-    <!-- Bekreftelse på flyktningstatus -->
-    <vedlegg>
-        <faktum>tilknytningnorge.oppholdinorgesistetreaar.false.registrertflyktning</faktum>
-        <onValues>
-            <value>true</value>
-        </onValues>
-        <skjemaNummer>P2</skjemaNummer>
-    </vedlegg>
-
-
 </soknad>
