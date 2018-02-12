@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeUtils;
 import org.joda.time.Interval;
 import org.junit.After;
 import org.junit.Assert;
@@ -65,6 +66,8 @@ public class SoknadRepositoryJdbcTest {
 
     @Test
     public void skalSetteSistLagret() {
+        DateTimeUtils.setCurrentMillisFixed(new Date().getTime());
+
         opprettOgPersisterSoknad();
         soknadRepository.settSistLagretTidspunkt(soknadId);
         WebSoknad endret = soknadRepository.hentSoknad(soknadId);
