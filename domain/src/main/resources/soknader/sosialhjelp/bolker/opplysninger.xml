@@ -167,6 +167,10 @@
                 <faktum>familie.barn.true.barnebidrag</faktum>
                 <expression>value == 'betaler'</expression>
             </constraint>
+            <constraint>
+                <faktum>familie.barn.true.barnebidrag</faktum>
+                <expression>value == 'begge'</expression>
+            </constraint>
         </constraints>
         <properties>
             <property>
@@ -199,6 +203,10 @@
                 <faktum>familie.barn.true.barnebidrag</faktum>
                 <expression>value == 'mottar'</expression>
             </constraint>
+            <constraint>
+                <faktum>familie.barn.true.barnebidrag</faktum>
+                <expression>value == 'begge'</expression>
+            </constraint>
         </constraints>
         <properties>
             <property>
@@ -220,29 +228,6 @@
         <skjemanummerTillegg>mottar</skjemanummerTillegg>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
-
-    <faktum>
-        <id>opplysninger.familiesituasjon.barnebidrag.begge</id>
-        <type>composite</type>
-        <dependOn>opplysninger.familiesituasjon</dependOn>
-        <optional>true</optional>
-        <constraints>
-            <constraint>
-                <faktum>familie.barn.true.barnebidrag</faktum>
-                <expression>value == 'begge'</expression>
-            </constraint>
-        </constraints>
-        <properties>
-            <property>
-                <id>betaler</id>
-                <type>textbox</type>
-            </property>
-            <property>
-                <id>mottar</id>
-                <type>textbox</type>
-            </property>
-        </properties>
-    </faktum>
 
     <faktum kunUtvidet="true">
         <id>opplysninger.familiesituasjon.barn.samvarsavtale</id>
@@ -300,6 +285,32 @@
         <faktum>opplysninger.bosituasjon.leier.vedlegg</faktum>
         <skjemaNummer>husleiekontrakt</skjemaNummer>
         <skjemanummerTillegg>husleiekontrakt</skjemanummerTillegg>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
+    <faktum kunUtvidet="true">
+        <id>opplysninger.bosituasjon.kommunal</id>
+        <type>composite</type>
+        <dependOn>opplysninger.bosituasjon</dependOn>
+        <constraints>
+            <constraint>
+                <faktum>bosituasjon</faktum>
+                <expression>value == 'kommunal'</expression>
+            </constraint>
+        </constraints>
+        <optional>true</optional>
+    </faktum>
+    <faktum>
+        <id>opplysninger.bosituasjon.kommunal.vedlegg</id>
+        <type>hidden</type>
+        <dependOn>opplysninger.bosituasjon.kommunal</dependOn>
+        <optional>true</optional>
+        <flereTillatt>true</flereTillatt>
+    </faktum>
+    <vedlegg>
+        <faktum>opplysninger.bosituasjon.kommunal.vedlegg</faktum>
+        <skjemaNummer>husleiekontrakt</skjemaNummer>
+        <skjemanummerTillegg>kommunal</skjemanummerTillegg>
         <flereTillatt>true</flereTillatt>
     </vedlegg>
 
