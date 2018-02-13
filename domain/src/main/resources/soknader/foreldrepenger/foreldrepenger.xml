@@ -26,13 +26,6 @@
         <dependOn>soknadsvalg.stonadstype</dependOn>
     </faktum>
     <faktum>
-        <id>soknadsvalg.sokersommedmor</id>
-        <dependOn>soknadsvalg.stonadstype</dependOn>
-        <dependOnValues>
-            <value>engangsstonadFar</value>
-        </dependOnValues>
-    </faktum>
-    <faktum>
         <id>soknadsvalg.endringmedmor</id>
         <dependOn>soknadsvalg.stonadstype</dependOn>
         <dependOnValues>
