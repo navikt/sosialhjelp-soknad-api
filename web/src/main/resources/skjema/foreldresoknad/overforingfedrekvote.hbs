@@ -1,4 +1,13 @@
-<h2> {{hentTekst "overforingfedrekvote.tittel"}}</h2>
+{{#forFaktum "soknadsvalg.stonadstype"}}
+<h2>
+{{#hvisLik "overforing" value}}
+    {{hentTekst "overforingfedrekvote.tittel"}}
+{{/hvisLik}}
+{{#hvisLik "overforingMedmor" value}}
+    {{hentTekst "overforingmedmorkvote.tittel"}}
+{{/hvisLik}}
+</h2>
+{{/forFaktum}}
 <table>
     {{#forFaktum "fedrekvote"}}
         <tr>
