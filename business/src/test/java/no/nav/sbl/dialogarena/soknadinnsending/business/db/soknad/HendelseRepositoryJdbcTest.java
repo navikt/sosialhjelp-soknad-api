@@ -26,7 +26,7 @@ public class HendelseRepositoryJdbcTest {
     public static final int FEMTISEKS_DAGER = 56;
     public static final int EN_DAG = 1;
     public static final int FEMTI_DAGER = 50;
-    public static final String BEHANDLINGS_ID_1 = "1";
+    public static final String BEHANDLINGS_ID_1 = "99";
     @Inject
     private HendelseRepository hendelseRepository;
 
@@ -64,10 +64,12 @@ public class HendelseRepositoryJdbcTest {
 
     @Test
     public void skalHenteVersjonForMigrertSoknad() {
-        hendelseRepository.registrerOpprettetHendelse(soknad(BEHANDLINGS_ID_1));
-        hendelseRepository.registrerMigrertHendelse(soknad(BEHANDLINGS_ID_1).medVersjon(2));
+        String behandlingsId1 = "ABD";
+        hendelseRepository.registrerOpprettetHendelse(soknad(behandlingsId1));
+        controllableClock.set(LocalDateTime.now().plusMinutes(1));
+        hendelseRepository.registrerMigrertHendelse(soknad(behandlingsId1).medVersjon(2));
 
-        assertThat(hendelseRepository.hentVersjon(BEHANDLINGS_ID_1)).isEqualTo(2);
+        assertThat(hendelseRepository.hentVersjon(behandlingsId1)).isEqualTo(2);
     }
 
     @Test
@@ -83,6 +85,7 @@ public class HendelseRepositoryJdbcTest {
         hendelseRepository.registrerOpprettetHendelse(soknad(BEHANDLINGS_ID_1));
         hendelseRepository.registrerHendelse(new WebSoknad().medBehandlingId(BEHANDLINGS_ID_1), HendelseType.LAGRET_I_HENVENDELSE);
         hendelseRepository.registrerHendelse(new WebSoknad().medBehandlingId(BEHANDLINGS_ID_1), HendelseType.HENTET_FRA_HENVENDELSE);
+        controllableClock.set(LocalDateTime.now().plusMinutes(1));
         hendelseRepository.registrerMigrertHendelse(soknad(BEHANDLINGS_ID_1).medVersjon(2));
 
         assertThat(hendelseRepository.hentVersjon(BEHANDLINGS_ID_1)).isEqualTo(2);
