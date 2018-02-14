@@ -14,7 +14,6 @@ public class FeatureToggleTest {
 
     @After
     public void teardown() {
-        clearProperty(ARKIVER_ALTERNATIVREPRESENTASJON_FORELDREPENGER.getPropertyNavn());
         clearProperty(RESSURS_ALTERNATIVREPRESENTASJON.getPropertyNavn());
         clearProperty(RESSURS_FULLOPPSUMERING.getPropertyNavn());
     }
@@ -33,15 +32,6 @@ public class FeatureToggleTest {
         setProperty(RESSURS_ALTERNATIVREPRESENTASJON.getPropertyNavn(), "false");
 
         final boolean erAktiv = erFeatureAktiv(RESSURS_ALTERNATIVREPRESENTASJON);
-
-        assertThat(erAktiv, is(false));
-    }
-
-    @Test
-    public void erFeatureAktivReturnererFalseHvisPropertyErSattTilNoeAnnetEnnTrueEllerFalse() {
-        setProperty(ARKIVER_ALTERNATIVREPRESENTASJON_FORELDREPENGER.getPropertyNavn(), "Test");
-
-        final boolean erAktiv = erFeatureAktiv(ARKIVER_ALTERNATIVREPRESENTASJON_FORELDREPENGER);
 
         assertThat(erAktiv, is(false));
     }
