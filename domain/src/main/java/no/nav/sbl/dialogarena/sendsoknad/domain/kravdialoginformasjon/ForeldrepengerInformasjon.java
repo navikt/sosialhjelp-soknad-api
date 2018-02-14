@@ -1,6 +1,8 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon;
 
 
+import no.nav.metrics.Event;
+import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
@@ -42,6 +44,11 @@ public class ForeldrepengerInformasjon extends KravdialogInformasjon.DefaultOpps
     public List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource, WebSoknad soknad) {
         List<String> engangsstonadSkjemanummerListe = Arrays.asList("NAV 14-05.07","NAV 14-05.08");
         if (engangsstonadSkjemanummerListe.contains(soknad.getskjemaNummer())) {
+            Event event = MetricsFactory.createEvent("soknad.alternativrepresentasjon.aktiv");
+            event.addTagToReport("skjemanummer", soknad.getskjemaNummer());
+            event.addTagToReport("soknadstype", getSoknadTypePrefix());
+            event.report();
+
             return singletonList(new ForeldrepengerEngangsstonadTilXml(messageSource));
         } else {
             return emptyList();
