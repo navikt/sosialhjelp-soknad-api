@@ -50,6 +50,10 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
             }
         }
 
+        if(properties == null){
+            return hentRemoteEllerLocal(fileTuple, new Locale("nb", "NO"));
+        }
+
         return properties;
     }
 
