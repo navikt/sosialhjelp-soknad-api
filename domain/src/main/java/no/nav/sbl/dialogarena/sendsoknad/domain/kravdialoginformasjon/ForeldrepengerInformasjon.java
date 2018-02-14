@@ -13,11 +13,6 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.FeatureToggler.erFeatureAktiv;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.FeatureToggler.Toggle.ARKIVER_ALTERNATIVREPRESENTASJON_FORELDREPENGER;
-
-import no.nav.metrics.Event;
-import no.nav.metrics.MetricsFactory;
 
 public class ForeldrepengerInformasjon extends KravdialogInformasjon.DefaultOppsett {
 
@@ -46,12 +41,7 @@ public class ForeldrepengerInformasjon extends KravdialogInformasjon.DefaultOpps
     @Override
     public List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource, WebSoknad soknad) {
         List<String> engangsstonadSkjemanummerListe = Arrays.asList("NAV 14-05.07","NAV 14-05.08");
-        if (alternativRepresentasjonAktivert() && engangsstonadSkjemanummerListe.contains(soknad.getskjemaNummer())) {
-            Event event = MetricsFactory.createEvent("soknad.alternativrepresentasjon.aktiv");
-            event.addTagToReport("skjemanummer", soknad.getskjemaNummer());
-            event.addTagToReport("soknadstype", getSoknadTypePrefix());
-            event.report();
-
+        if (engangsstonadSkjemanummerListe.contains(soknad.getskjemaNummer())) {
             return singletonList(new ForeldrepengerEngangsstonadTilXml(messageSource));
         } else {
             return emptyList();
@@ -75,10 +65,6 @@ public class ForeldrepengerInformasjon extends KravdialogInformasjon.DefaultOpps
     @Override
     public boolean brukerEnonicLedetekster() {
         return false;
-    }
-
-    private boolean alternativRepresentasjonAktivert() {
-        return erFeatureAktiv(ARKIVER_ALTERNATIVREPRESENTASJON_FORELDREPENGER);
     }
 }
 
