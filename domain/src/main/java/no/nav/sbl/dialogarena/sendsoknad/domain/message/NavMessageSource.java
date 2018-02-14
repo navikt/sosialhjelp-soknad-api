@@ -51,6 +51,7 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
         }
 
         if(properties == null){
+            log.warn("Finner ikke tekster for {} for språkbundle {}.", fileTuple, locale.getLanguage());
             return hentRemoteEllerLocal(fileTuple, new Locale("nb", "NO"));
         }
 
