@@ -28,12 +28,20 @@ public class KommuneTilNavEnhetMapper {
         }
     }
 
-
+    /* Hardkodet */
     private static final Map<String, NavEnhet> map = ImmutableMap.of(
+            // Prod:
             "horten", new NavEnhet("NAV Horten", "974605171"),
+            // Prod:
             "frogner", new NavEnhet("NAV Oslo Bydel Frogner", "910229699"),
+            // Prod:
             "grunerlokka", new NavEnhet("NAV Oslo Bydel Grünerløkka", "974778866"),
-            "grorud", new NavEnhet("NAV Oslo Bydel Grünerløkka", "910229702")
+            // ???:
+            // "grorud", new NavEnhet("NAV Oslo Bydel Grünerløkka", "910229702"),
+            // Test:
+            "bergenhus", new NavEnhet("NAV Bergen Bydel Bergenhus", "910230158"),
+            // Test:
+            "ytrebygda", new NavEnhet("NAV Berge Bydel Ytrebygda", "910230158")
     );
 
     public static NavEnhet getNavEnhetFromWebSoknad(WebSoknad webSoknad) {
