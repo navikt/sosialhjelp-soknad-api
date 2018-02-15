@@ -28,21 +28,37 @@ public class KommuneTilNavEnhetMapper {
         }
     }
 
-    /* Hardkodet */
-    private static final Map<String, NavEnhet> map = ImmutableMap.of(
-            // Prod:
-            "horten", new NavEnhet("NAV Horten", "974605171"),
-            // Prod:
-            "frogner", new NavEnhet("NAV Oslo Bydel Frogner", "910229699"),
-            // Prod:
-            "grunerlokka", new NavEnhet("NAV Oslo Bydel Grünerløkka", "974778866"),
-            // ???:
-            // "grorud", new NavEnhet("NAV Oslo Bydel Grünerløkka", "910229702"),
-            // Test:
-            "bergenhus", new NavEnhet("NAV Bergen Bydel Bergenhus", "910230158"),
-            // Test:
-            "ytrebygda", new NavEnhet("NAV Berge Bydel Ytrebygda", "910230158")
-    );
+
+    private static final Map<String, NavEnhet> map = new ImmutableMap.Builder<String, NavEnhet>()
+
+            // GAMMEL
+            /*
+            .put("horten", new NavEnhet("NAV Horten", "974605171"))  //PROD
+            .put("frogner", new NavEnhet("NAV Oslo Bydel Frogner", "910229699")) // TEST
+            .put("grunerlokka", new NavEnhet("NAV Oslo Bydel Grünerløkka", "974778866")) // PROD
+            .put("grorud", new NavEnhet("NAV Oslo Bydel Grünerløkka", "910229702")) // TEST
+            */
+
+            // PROD
+            /*
+            .put("horten", new NavEnhet("NAV Horten", "974605171"))
+            .put("bergenhus", new NavEnhet("NAV Bergen Bydel Bergenhus", "976830563")) //OK
+            .put("ytrebygda", new NavEnhet("NAV Bergen Bydel Ytrebygda", "976830652")) //OK
+            .put("frogner", new NavEnhet("NAV Oslo Bydel Frogner", "874778702")) //OK
+            .put("grunerlokka", new NavEnhet("NAV Oslo Bydel Grünerløkka", "870534612")) //OK
+            .put("grorud", new NavEnhet("NAV Oslo Bydel Grorud", "974778866")) //OK
+            */
+
+            // TEST
+            .put("horten", new NavEnhet("NAV Horten", "910940066"))
+            .put("bergenhus", new NavEnhet("NAV Bergen Bydel Bergenhus", "910230158")) //OK
+            .put("ytrebygda", new NavEnhet("NAV Bergen Bydel Ytrebygda", "910230158")) //OK
+            .put("frogner", new NavEnhet("NAV Oslo Bydel Frogner", "910229699"))
+            .put("grunerlokka", new NavEnhet("NAV Oslo Bydel Grünerløkka", "974778866"))
+            .put("grorud", new NavEnhet("NAV Oslo Bydel Grorud", "910229702"))
+
+            .build();
+
 
     public static NavEnhet getNavEnhetFromWebSoknad(WebSoknad webSoknad) {
         String key;
@@ -53,7 +69,7 @@ public class KommuneTilNavEnhetMapper {
         }
 
         NavEnhet navEnhet = map.get(key);
-        if( navEnhet == null) {
+        if (navEnhet == null) {
             throw new IllegalStateException("Innsendt kommune/bydel har ikke NAVEnhet");
         }
         return navEnhet;
