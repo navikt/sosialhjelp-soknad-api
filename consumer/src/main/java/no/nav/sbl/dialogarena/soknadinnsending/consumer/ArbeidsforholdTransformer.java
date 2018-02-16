@@ -75,7 +75,7 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
     }
 
     private boolean erFastStilling(Arbeidsavtale arbeidsavtale) {
-        return arbeidsavtale.getAvloenningstype().getKodeRef().equals(KODEVERK_AVLONNING_FAST);
+        return true;
     }
 
 
