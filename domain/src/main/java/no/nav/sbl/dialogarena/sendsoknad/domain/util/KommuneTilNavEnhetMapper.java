@@ -40,23 +40,25 @@ public class KommuneTilNavEnhetMapper {
             */
 
             // PROD
-            /*
+
             .put("horten", new NavEnhet("NAV Horten", "974605171"))
             .put("bergenhus", new NavEnhet("NAV Bergen Bydel Bergenhus", "976830563")) //OK
             .put("ytrebygda", new NavEnhet("NAV Bergen Bydel Ytrebygda", "976830652")) //OK
-            .put("frogner", new NavEnhet("NAV Oslo Bydel Frogner", "874778702")) //OK
-            .put("grunerlokka", new NavEnhet("NAV Oslo Bydel Grünerløkka", "870534612")) //OK
-            .put("grorud", new NavEnhet("NAV Oslo Bydel Grorud", "974778866")) //OK
-            */
+            //.put("frogner", new NavEnhet("NAV Oslo Bydel Frogner", "874778702")) //OK
+            //.put("grunerlokka", new NavEnhet("NAV Oslo Bydel Grünerløkka", "870534612")) //OK
+            //.put("grorud", new NavEnhet("NAV Oslo Bydel Grorud", "974778866")) //OK
+
+
 
             // TEST
+            /*
             .put("horten", new NavEnhet("NAV Horten", "910940066"))
             .put("bergenhus", new NavEnhet("NAV Bergen Bydel Bergenhus", "910230158")) //OK
             .put("ytrebygda", new NavEnhet("NAV Bergen Bydel Ytrebygda", "910230158")) //OK
-            .put("frogner", new NavEnhet("NAV Oslo Bydel Frogner", "910229699"))
-            .put("grunerlokka", new NavEnhet("NAV Oslo Bydel Grünerløkka", "974778866"))
-            .put("grorud", new NavEnhet("NAV Oslo Bydel Grorud", "910229702"))
-
+            .put("frogner", new NavEnhet("NAV Oslo Bydel Frogner", "910229699")) // OK
+            //.put("grunerlokka", new NavEnhet("NAV Oslo Bydel Grünerløkka", "974778866")) // TAS UT FORELØPIG SIDEN DE IKKE HAR TESTMILJØ
+            .put("grorud", new NavEnhet("NAV Oslo Bydel Grorud", "910229702")) // OK
+            */
             .build();
 
 
