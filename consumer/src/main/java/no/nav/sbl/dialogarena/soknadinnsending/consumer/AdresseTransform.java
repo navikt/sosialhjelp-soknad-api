@@ -46,8 +46,9 @@ public class AdresseTransform {
     
     public Adresse mapFolkeregistrertAdresse(XMLBruker soapPerson, Kodeverk kodeverk) {
         this.kodeverk = kodeverk;
-        
-        if (harStrukturertAdresseSomErGjeldendeAdresse(soapPerson)) {
+        if (harHemmeligAdresse(soapPerson)) {
+            return new Adresse();
+        } else if (harStrukturertAdresseSomErGjeldendeAdresse(soapPerson)) {
             return hentBostedsAdresse((XMLGateadresse) soapPerson.getBostedsadresse().getStrukturertAdresse());
         } else {
             return null;
