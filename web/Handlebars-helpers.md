@@ -71,6 +71,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hvisHarInnsendteDokumenter - Sjekker om søknaden har ett eller flere innsendte dokumenter
 * hvisIkkeTom - Dersom variabelen ikke er tom vil innholdet vises
 * hvisIngenSynligeBarneFakta - For bruk i generisk oppsummering, undersøker innsendt liste over fakta og ser om alle er skjult.
+* hvisIngenSynligeBarneFaktaForGruppe - For gruppe-template brukt for sosialhjelp, der vi ønsker utvidet definisjon av hva som er synlige barnefakta mtp utvidet søknad
 * hvisKunStudent - Sjekker om brukeren har en annen status enn student (f.eks sykmeldt, i arbeid osv.)
 * hvisLik - Sjekker om to strenger er like
 * hvisMer - Evaluerer en string til double og sjekker om verdien er mer enn grenseverdien gitt ved andre inputparameter
@@ -82,6 +83,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * lagKjorelisteUker - Bygger en nestet liste over uker for et betalingsvedtak, der ukene inneholder dager det er søkt for refusjon.
 * property - Returnerer verdien til gitt property på modellen i context, gitt at den er propertyaware
 * sendtInnInfo - Tilgjengeliggjør informasjon om søknaden (innsendte vedlegg, påkrevde vedlegg og dato)
+* sosialhjelpVedlegg - Helper for å liste ut vedlegg for sosialhjelp
 * toCapitalized - Gjør om en tekst til at alle ord starter med store bokstaver
 * toLowerCase - Gjør om en tekst til kun små bokstaver
 * variabel - Lager en variabel med en bestemt verdi som kun er tilgjengelig innenfor helperen
@@ -427,9 +429,19 @@ må ha et faktum i context, f. eks. via
 ##### hvisIngenSynligeBarneFakta
 
 ```
-{{#hvisIngenSynligeBarneFakta fakta}}
+{{#hvisIngenSynligeBarneFakta fakta utvidetSoknad}}
     Ingen synlige fakta
 {{/hvisIngenSynligeBarneFakta}}
+
+```
+
+
+##### hvisIngenSynligeBarneFaktaForGruppe
+
+```
+{{#hvisIngenSynligeBarneFaktaForGruppe fakta}}
+    Ingen synlige fakta
+{{/hvisIngenSynligeBarneFaktaForGruppe}}
 
 ```
 
@@ -545,6 +557,15 @@ Leser fra model på context
     påkrevde: {{ikkeSendtInn}}
     innsendt dato: {{innsendtDato}}
 {{/sendtInnInfo}}
+```
+
+
+##### sosialhjelpVedlegg
+
+```
+{{#sosialhjelpVedlegg}}
+    får grupperte vedlegg
+{{/sosialhjelpVedlegg}}
 ```
 
 
