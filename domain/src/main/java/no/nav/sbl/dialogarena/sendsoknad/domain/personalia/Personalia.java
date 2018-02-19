@@ -48,6 +48,7 @@ public class Personalia {
     private String kjonn;
     private Adresse gjeldendeAdresse;
     private Adresse sekundarAdresse;
+    private Adresse folkeregistrertAdresse;
     private String kontonummer;
     private String diskresjonskode;
     private Boolean erUtenlandskBankkonto;
@@ -168,6 +169,14 @@ public class Personalia {
 
     public void setSekundarAdresse(Adresse sekundarAdresse) {
         this.sekundarAdresse = sekundarAdresse;
+    }
+    
+    public Adresse getFolkeregistrertAdresse() {
+        return folkeregistrertAdresse;
+    }
+    
+    public void setFolkeregistrertAdresse(Adresse folkeregistrertAdresse) {
+        this.folkeregistrertAdresse = folkeregistrertAdresse;
     }
 
     public boolean harUtenlandskAdresse() {

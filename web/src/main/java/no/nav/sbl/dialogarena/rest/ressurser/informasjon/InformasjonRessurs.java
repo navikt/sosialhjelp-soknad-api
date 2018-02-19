@@ -47,7 +47,7 @@ public class InformasjonRessurs {
     private static final Logger logger = LoggerFactory.getLogger(InformasjonRessurs.class);
     private static final Logger klientlogger = LoggerFactory.getLogger("klientlogger");
 
-    private static final List<String> DIGISOS_KOMMUNER = asList("0701", "0703", "0717");
+    private static final List<String> DIGISOS_KOMMUNER = asList("0701", "0703", "0717", "1201");
     private static final List<String> DISKRESJONSKODER = asList("6", "7");
 
     @Inject
