@@ -18,6 +18,7 @@ public class PersonaliaBuilder {
     private String kjonn;
     private Adresse gjeldendeAdresse;
     private Adresse sekundarAdresse;
+    private Adresse folkeregistrertAdresse;
     private String kontonummer;
     private Boolean erUtenlandskBankkonto;
     private String utenlandskKontoBanknavn;
@@ -117,6 +118,11 @@ public class PersonaliaBuilder {
         this.utenlandskKontoLand = utenlandskKontoLand;
         return this;
     }
+    
+    public PersonaliaBuilder folkeregistrertAdresse(Adresse folkeregistrertAdresse) {
+        this.folkeregistrertAdresse = folkeregistrertAdresse;
+        return this;
+    }
 
     public Personalia build() {
         Personalia personalia = new Personalia();
@@ -133,6 +139,7 @@ public class PersonaliaBuilder {
         personalia.setKjonn(kjonn);
         personalia.setGjeldendeAdresse(gjeldendeAdresse);
         personalia.setSekundarAdresse(sekundarAdresse);
+        personalia.setFolkeregistrertAdresse(folkeregistrertAdresse);
         personalia.setDiskresjonskode(diskresjonskode);
         personalia.setAlder(alder);
         personalia.setKontonummer(kontonummer);
