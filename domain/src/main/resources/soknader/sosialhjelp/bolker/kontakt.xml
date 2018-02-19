@@ -11,6 +11,11 @@
         <type>textbox</type>
     </faktum>
     <faktum>
+        <id>kontakt.system.folkeregistrert.adresse</id>
+        <panel>personaliaBolk</panel>
+        <type>hidden</type>
+    </faktum>
+    <faktum>
         <id>kontakt.system.adresse</id>
         <panel>personaliaBolk</panel>
         <type>composite</type>
@@ -21,20 +26,11 @@
             </constraint>
         </constraints>
         <properties>
-            <!--
-            <property>
-                <id>kommunenummer</id>
-                <type>textbox</type>
-                <constraints>
-                    <constraint>properties['type'] == 'gateadresse' or properties['type'] == 'matrikkeladresse'</constraint>
-                </constraints>
-            </property>
-            -->
             <property>
                 <id>bolignummer</id>
                 <type>textbox</type>
                 <constraints>
-                    <constraint>properties['type'] == 'gateadresse' or properties['type'] == 'matrikkeladresse'</constraint>
+                    <constraint>(properties['type'] == 'gateadresse' or properties['type'] == 'matrikkeladresse') and properties['bolignummer'] != null and properties['bolignummer'] != ''</constraint>
                 </constraints>
             </property>
             <property>
@@ -53,6 +49,13 @@
             </property>
             <property>              
                 <id>husnummer</id>
+                <type>textbox</type>
+                <constraints>
+                    <constraint>properties['type'] == 'gateadresse'</constraint>
+                </constraints>
+            </property>
+            <property>              
+                <id>husbokstav</id>
                 <type>textbox</type>
                 <constraints>
                     <constraint>properties['type'] == 'gateadresse'</constraint>

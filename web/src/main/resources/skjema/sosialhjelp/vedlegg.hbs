@@ -17,6 +17,10 @@
         <a href="/sendsoknad/sosialhjelpvedlegg/{{vedleggId}}/fil" target="_blank">{{filnavn}}</a>
     {{/hvisLik}}
 
+    {{#hvisLik innsendingsvalg "VedleggAlleredeSendt"}}
+    <span class="status">{{ hentTekst "oppsummering.vedleggAlleredeSendt" }}</span>
+    {{/hvisLik}}
+
     <br />
 {{/each}}
 
