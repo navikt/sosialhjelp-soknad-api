@@ -207,7 +207,7 @@ public class VedleggOriginalFilerService {
         }
     }
 
-    private void validerFil(byte[] data) {
+    public void validerFil(byte[] data) {
         if (!(Detect.isImage(data) || Detect.isPdf(data))) {
             throw new UgyldigOpplastingTypeException(
                     "Ugyldig filtype for opplasting", null,
