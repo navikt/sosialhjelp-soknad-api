@@ -168,6 +168,8 @@ public class VedleggOriginalFilerService {
 
 
     public void leggTilOriginalVedlegg(Vedlegg vedlegg, byte[] data, String filnavn) {
+        validerFil(data);
+
         WebSoknad soknad = repository.hentSoknad(vedlegg.getSoknadId());
 
         String contentType = Detect.CONTENT_TYPE.transform(data);
