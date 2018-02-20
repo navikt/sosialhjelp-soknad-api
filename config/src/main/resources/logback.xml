@@ -119,6 +119,8 @@
         <appender-ref ref="infolog" />
     </logger>
 
+    <logger name="org.apache.http.client.protocol.ResponseProcessCookies" level="ERROR"></logger>
+
     <logger name="org.apache.cxf" level="OFF">
         <appender-ref ref="infolog" />
     </logger>
