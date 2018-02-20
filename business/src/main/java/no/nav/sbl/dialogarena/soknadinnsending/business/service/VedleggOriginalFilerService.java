@@ -168,8 +168,6 @@ public class VedleggOriginalFilerService {
 
 
     public void leggTilOriginalVedlegg(Vedlegg vedlegg, byte[] data, String filnavn) {
-        validerFil(data);
-
         WebSoknad soknad = repository.hentSoknad(vedlegg.getSoknadId());
 
         String contentType = Detect.CONTENT_TYPE.transform(data);
@@ -207,7 +205,7 @@ public class VedleggOriginalFilerService {
         }
     }
 
-    private void validerFil(byte[] data) {
+    public void validerFil(byte[] data) {
         if (!(Detect.isImage(data) || Detect.isPdf(data))) {
             throw new UgyldigOpplastingTypeException(
                     "Ugyldig filtype for opplasting", null,
