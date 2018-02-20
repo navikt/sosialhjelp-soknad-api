@@ -121,7 +121,7 @@ public class VedleggOriginalFilerService {
             } catch (NumberFormatException e) {
                 // ignore
             }
-            if (borIkkeSammen && grad < 50) {
+            if (borIkkeSammen && grad <= 50) {
                 skalBeOmSamvaersavtale = true;
                 break;
             }
