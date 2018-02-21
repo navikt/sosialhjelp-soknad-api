@@ -1,20 +1,22 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon;
 
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
+
+import java.util.List;
+
+import org.springframework.context.MessageSource;
+
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.EkstraMetadataTransformer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMetadataTransformer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpTilJson;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpTilXml;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpVedleggTilJson;
-import org.springframework.context.MessageSource;
-
-import java.util.List;
-
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 
 public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett {
 
@@ -51,7 +53,7 @@ public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett
         event.addTagToReport("skjemanummer", soknad.getskjemaNummer());
         event.addTagToReport("soknadstype", getSoknadTypePrefix());
         event.report();
-        return asList(new SosialhjelpTilXml(messageSource), new SosialhjelpVedleggTilJson());
+        return asList(new SosialhjelpTilXml(messageSource), new SosialhjelpVedleggTilJson(), new SosialhjelpTilJson());
     }
 
     @Override
