@@ -41,12 +41,17 @@ public final class JsonArbeidConverter {
 
         return fakta.stream().map(faktum -> {
             final Map<String, String> forhold = faktum.getProperties();
+            
+            final String fom = forhold.get("fom");
+            if (erTom(fom)) {
+                throw new IllegalStateException("fom er mangler og er et påkrevet felt.");
+            }
             return new JsonArbeidsforhold()
                     .withKilde((erAlleSystemProperties(faktum)) ? JsonKilde.SYSTEM : JsonKilde.BRUKER)
-                    .withArbeidsgivernavn(finnPropertyEllerNullOmTom(forhold, "arbeidsgivernavn"))
-                    .withFom(finnPropertyEllerNullOmTom(forhold, "fom"))
+                    .withArbeidsgivernavn(finnPropertyEllerTom(forhold, "arbeidsgivernavn"))
+                    .withFom(fom)
                     .withTom(finnPropertyEllerNullOmTom(forhold, "tom"))
-                    .withStillingsprosent(tilInteger(finnPropertyEllerNullOmTom(forhold, "stillingsprosent")))
+                    .withStillingsprosent(tilInt(finnPropertyEllerNullOmTom(forhold, "stillingsprosent")))
                     .withStillingstype(tilStillingstype(forhold.get("stillingstype")))
 
                     /*
