@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 
 import java.util.Collections;
 
@@ -30,6 +31,7 @@ public final class JsonSoknadConverter {
                 .withUtdanning(JsonUtdanningConverter.tilUtdanning(webSoknad))
                 .withFamilie(JsonFamilieConverter.tilFamilie(webSoknad))
                 .withBegrunnelse(JsonBegrunnelseConverter.tilBegrunnelse(webSoknad))
-                .withBosituasjon(JsonBosituasjonConverter.tilBosituasjon(webSoknad));
+                .withBosituasjon(JsonBosituasjonConverter.tilBosituasjon(webSoknad))
+                .withOkonomi(JsonOkonomiConverter.tilOkonomi(webSoknad));
     }
 }
