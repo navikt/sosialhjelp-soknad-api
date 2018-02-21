@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn.Kilde;
 
 import java.util.Map;
 
@@ -23,6 +24,7 @@ public final class JsonPersonaliaConverter {
 
         personalia.setPersonIdentifikator(new JsonPersonIdentifikator().withVerdi(webSoknad.getAktoerId()));
         personalia.setNavn(new JsonSokernavn()
+                .withKilde(Kilde.SYSTEM)
                 .withFornavn(personaliaProperties.get(FORNAVN_KEY))
                 .withMellomnavn(personaliaProperties.get(MELLOMNAVN_KEY))
                 .withEtternavn(personaliaProperties.get(ETTERNAVN_KEY))
