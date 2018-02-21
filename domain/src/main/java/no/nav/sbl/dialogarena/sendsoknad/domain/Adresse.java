@@ -67,6 +67,7 @@ public class Adresse {
     public static class Gateadresse extends StrukturertAdresse {
        public String gatenavn;
        public String husnummer;
+       public String husbokstav;
 
         public Gateadresse() {
             this.type = "gateadresse";
