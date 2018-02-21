@@ -121,7 +121,7 @@ public class VedleggOriginalFilerService {
             } catch (NumberFormatException e) {
                 // ignore
             }
-            if (borIkkeSammen && grad < 50) {
+            if (borIkkeSammen && grad <= 50) {
                 skalBeOmSamvaersavtale = true;
                 break;
             }
@@ -207,7 +207,7 @@ public class VedleggOriginalFilerService {
         }
     }
 
-    private void validerFil(byte[] data) {
+    public void validerFil(byte[] data) {
         if (!(Detect.isImage(data) || Detect.isPdf(data))) {
             throw new UgyldigOpplastingTypeException(
                     "Ugyldig filtype for opplasting", null,
