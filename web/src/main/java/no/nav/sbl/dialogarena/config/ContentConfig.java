@@ -136,7 +136,7 @@ public class ContentConfig {
 
     private void saveLocal(String filename, URI uri) throws IOException {
         File file = new File(brukerprofilDataDirectory, filename);
-        logger.info("Leser inn innholdstekster fra " + uri + " til: " + file.toString());
+        logger.debug("Leser inn innholdstekster fra " + uri + " til: " + file.toString());
         Content<Innholdstekst> content = enonicContentRetriever().getContent(uri);
         StringBuilder data = new StringBuilder();
         Map<String, Innholdstekst> innhold = content.toMap(Innholdstekst.KEY);
