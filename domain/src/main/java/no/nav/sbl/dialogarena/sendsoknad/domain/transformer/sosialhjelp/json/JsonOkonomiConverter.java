@@ -64,7 +64,15 @@ public class JsonOkonomiConverter {
     }
 
     private static List<JsonOkonomiOpplysningUtbetaling> tilJsonOkonomiopplysningerUtbetaling(WebSoknad webSoknad) {
-        return null;
+
+        final List<JsonOkonomiOpplysningUtbetaling> result = new ArrayList<>();
+        result.addAll(opplysningUtbetaling("utbytte",
+                "Utbytte fra aksjer, obligasjoner eller fond",
+                webSoknad.getFaktaMedKey("opplysninger.inntekt.inntekter.utbytte"),
+                "sum"));
+
+        return result.stream().filter(r -> r != null).collect(Collectors.toList());
+
     }
 
 
@@ -96,7 +104,7 @@ public class JsonOkonomiConverter {
                 webSoknad.getFaktaMedKey("opplysninger.inntekt.bankinnskudd.aksjer"),
                 "saldo"));
 
-        result.addAll(oversiktFormue("belopit ",
+        result.addAll(oversiktFormue("belop",
                 "Annen form for sparing",
                 webSoknad.getFaktaMedKey("opplysninger.inntekt.bankinnskudd.annet"),
                 "saldo"));
@@ -171,6 +179,18 @@ public class JsonOkonomiConverter {
         return fakta.stream().filter(f -> f != null).map(faktum -> {
             final Map<String, String> properties = faktum.getProperties();
             return new JsonOkonomioversiktFormue()
+                    .withKilde(JsonKilde.BRUKER)
+                    .withType(type)
+                    .withTittel(tittel)
+                    .withBelop(JsonUtils.tilInteger(properties.get(belopNavn)))
+                    .withOverstyrtAvBruker(false);
+        }).collect(Collectors.toList());
+    }
+
+    private static List<JsonOkonomiOpplysningUtbetaling> opplysningUtbetaling(String type, String tittel, List<Faktum> fakta, String belopNavn) {
+        return fakta.stream().filter(f -> f != null).map(faktum -> {
+            final Map<String, String> properties = faktum.getProperties();
+            return new JsonOkonomiOpplysningUtbetaling()
                     .withKilde(JsonKilde.BRUKER)
                     .withType(type)
                     .withTittel(tittel)
