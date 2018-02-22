@@ -76,6 +76,32 @@ public class JsonOkonomiConverter {
                 webSoknad.getFaktaMedKey("opplysninger.inntekt.bankinnskudd.brukskonto"),
                 "saldo"));
 
+        result.addAll(oversiktFormue("bsu",
+                "BSU",
+                webSoknad.getFaktaMedKey("opplysninger.inntekt.bankinnskudd.bsu"),
+                "saldo"));
+
+        result.addAll(oversiktFormue("sparekonto",
+                "Sparekonto",
+                webSoknad.getFaktaMedKey("opplysninger.inntekt.bankinnskudd.sparekonto"),
+                "saldo"));
+
+        result.addAll(oversiktFormue("livsforsikringssparedel",
+                "Livsforsikringssparedel",
+                webSoknad.getFaktaMedKey("opplysninger.inntekt.bankinnskudd.livsforsikring"),
+                "saldo"));
+
+        result.addAll(oversiktFormue("verdipapirer",
+                "Aksjer, obligasjoner eller fond",
+                webSoknad.getFaktaMedKey("opplysninger.inntekt.bankinnskudd.aksjer"),
+                "saldo"));
+
+        result.addAll(oversiktFormue("belopit ",
+                "Annen form for sparing",
+                webSoknad.getFaktaMedKey("opplysninger.inntekt.bankinnskudd.annet"),
+                "saldo"));
+
+
         return result.stream().filter(r -> r != null).collect(Collectors.toList());
     }
 
