@@ -69,7 +69,14 @@ public class JsonOkonomiConverter {
 
 
     private static List<JsonOkonomioversiktFormue> tilJsonOkonomioversiktFormue(WebSoknad webSoknad) {
-        return null;
+
+        final List<JsonOkonomioversiktFormue> result = new ArrayList<>();
+        result.addAll(oversiktFormue("brukskonto",
+                "Brukskonto",
+                webSoknad.getFaktaMedKey("opplysninger.inntekt.bankinnskudd.brukskonto"),
+                "saldo"));
+
+        return result.stream().filter(r -> r != null).collect(Collectors.toList());
     }
 
     private static List<JsonOkonomioversiktUtgift> tilJsonOkonomioversiktUtgift(WebSoknad webSoknad) {
@@ -97,7 +104,7 @@ public class JsonOkonomiConverter {
                 webSoknad.getFaktaMedKey("opplysninger.arbeid.jobb"),
                 "bruttolonn",
                 "nettolonn"
-                ));
+        ));
 
         result.addAll(oversiktInntekt("studielanOgStipend",
                 "Studielån og -stipend",
@@ -134,4 +141,16 @@ public class JsonOkonomiConverter {
         }).collect(Collectors.toList());
     }
 
+    private static List<JsonOkonomioversiktFormue> oversiktFormue(String type, String tittel, List<Faktum> fakta, String belopNavn) {
+        return fakta.stream().filter(f -> f != null).map(faktum -> {
+            final Map<String, String> properties = faktum.getProperties();
+            return new JsonOkonomioversiktFormue()
+                    .withKilde(JsonKilde.BRUKER)
+                    .withType(type)
+                    .withTittel(tittel)
+                    .withBelop(JsonUtils.tilInteger(properties.get(belopNavn)))
+                    .withOverstyrtAvBruker(false);
+        }).collect(Collectors.toList());
+    }
 }
+
