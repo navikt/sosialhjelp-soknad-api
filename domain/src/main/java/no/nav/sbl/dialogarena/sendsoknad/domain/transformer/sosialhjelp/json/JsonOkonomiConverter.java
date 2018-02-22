@@ -17,6 +17,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktU
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class JsonOkonomiConverter {
     public static JsonOkonomi tilOkonomi(WebSoknad webSoknad) {
@@ -86,42 +87,51 @@ public class JsonOkonomiConverter {
     private static List<JsonOkonomioversiktInntekt> tilJsonOkonomioversiktInntekt(WebSoknad webSoknad) {
         final List<JsonOkonomioversiktInntekt> result = new ArrayList<>();
 
-        final List<Faktum> fakta = webSoknad.getFaktaMedKey("opplysninger.inntekt.bostotte");
+        result.addAll(oversiktInntekt("bostotte",
+                "Bostøtte",
+                webSoknad.getFaktaMedKey("opplysninger.inntekt.bostotte"),
+                "utbetaling"));
 
-        for (Faktum faktum : fakta) {
+        result.addAll(oversiktInntekt("jobb",
+                "Lønnsinntekt",
+                webSoknad.getFaktaMedKey("opplysninger.arbeid.jobb"),
+                "bruttolonn",
+                "nettolonn"
+                ));
 
-            List<Faktum> faktumer = new ArrayList<Faktum>();
-            faktumer.add(faktum);
+        result.addAll(oversiktInntekt("studielanOgStipend",
+                "Studielån og -stipend",
+                webSoknad.getFaktaMedKey("opplysninger.arbeid.student"),
+                "utbetaling"
 
-            oversiktInntekt("bostotte", "Bostøtte", faktumer, "utbetaling");
+        ));
 
-        }
-        return result;
+        result.addAll(oversiktInntekt("barnebidrag",
+                "Barnebidrag",
+                webSoknad.getFaktaMedKey("opplysninger.familiesituasjon.barnebidrag.betaler"),
+                "betaler"
+
+        ));
+
+
+        return result.stream().filter(r -> r != null).collect(Collectors.toList());
     }
 
     private static List<JsonOkonomioversiktInntekt> oversiktInntekt(String type, String tittel, List<Faktum> fakta, String belopNavn) {
-
-        List<JsonOkonomioversiktInntekt> jsonOkonomioversiktInntektList = new ArrayList<JsonOkonomioversiktInntekt>();
-
-        for (Faktum faktum : fakta) {
-            jsonOkonomioversiktInntektList.add(oversiktInntekt(type, tittel, faktum, belopNavn, belopNavn));
-        }
-        return jsonOkonomioversiktInntektList;
+        return oversiktInntekt(type, tittel, fakta, belopNavn, belopNavn);
     }
 
-    private static JsonOkonomioversiktInntekt oversiktInntekt(String type, String tittel, Faktum faktum, String bruttoNavn, String nettoNavn) {
-        if (faktum == null) {
-            return null;
-        }
-
-        final Map<String, String> properties = faktum.getProperties();
-        return new JsonOkonomioversiktInntekt()
-                .withKilde(JsonKilde.BRUKER)
-                .withType(type)
-                .withTittel(tittel)
-                .withBrutto(JsonUtils.tilInteger(properties.get(bruttoNavn)))
-                .withNetto(JsonUtils.tilInteger(properties.get(nettoNavn)))
-                .withOverstyrtAvBruker(false);
+    private static List<JsonOkonomioversiktInntekt> oversiktInntekt(String type, String tittel, List<Faktum> fakta, String bruttoNavn, String nettoNavn) {
+        return fakta.stream().filter(f -> f != null).map(faktum -> {
+            final Map<String, String> properties = faktum.getProperties();
+            return new JsonOkonomioversiktInntekt()
+                    .withKilde(JsonKilde.BRUKER)
+                    .withType(type)
+                    .withTittel(tittel)
+                    .withBrutto(JsonUtils.tilInteger(properties.get(bruttoNavn)))
+                    .withNetto(JsonUtils.tilInteger(properties.get(nettoNavn)))
+                    .withOverstyrtAvBruker(false);
+        }).collect(Collectors.toList());
     }
 
 }
