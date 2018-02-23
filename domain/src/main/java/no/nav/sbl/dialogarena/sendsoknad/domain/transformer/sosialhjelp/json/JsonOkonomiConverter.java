@@ -163,13 +163,7 @@ public class JsonOkonomiConverter {
                 webSoknad.getFaktaMedKey("opplysninger.utgifter.boutgift.oppvarming"),
                 "sisteregning"));
 
-        Jeg kom hit
-                /Du har svart at du har oppvarming som boutgift, vi ber deg derfor oppgi
-
-
-
         return result.stream().filter(r -> r != null).collect(Collectors.toList());
-
     }
 
     private static final <E> void addIfNotNull(List<? super E> liste, E... elementer) {
