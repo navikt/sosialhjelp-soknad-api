@@ -15,6 +15,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktI
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -52,16 +53,26 @@ public class JsonOkonomiConverter {
     }
 
     private static JsonOkonomibeskrivelserAvAnnet tilJsonOkonomiopplysningerBeskrivelseAvAnnet(WebSoknad webSoknad) {
-        return null;
+       return null;
+
     }
 
     private static List<JsonOkonomibekreftelse> tilJsonOkonomiopplysningerBekreftelse(WebSoknad webSoknad) {
-        return null;
+
+        final List<JsonOkonomibekreftelse> result = new ArrayList<>();
+
+        return result.stream().filter(r -> r != null).collect(Collectors.toList());
+
     }
 
     private static List<JsonOkonomiOpplysningUtgift> tilJsonOkonomiopplysningerUtgift(WebSoknad webSoknad) {
-        return null;
+
+        final List<JsonOkonomiOpplysningUtgift> result = new ArrayList<>();
+
+        return result.stream().filter(r -> r != null).collect(Collectors.toList());
+
     }
+
 
     private static List<JsonOkonomiOpplysningUtbetaling> tilJsonOkonomiopplysningerUtbetaling(WebSoknad webSoknad) {
 
@@ -70,6 +81,23 @@ public class JsonOkonomiConverter {
                 "Utbytte fra aksjer, obligasjoner eller fond",
                 webSoknad.getFaktaMedKey("opplysninger.inntekt.inntekter.utbytte"),
                 "sum"));
+
+        result.addAll(opplysningUtbetaling("salg",
+                "Solgt eiendom og/eller eiendel",
+                webSoknad.getFaktaMedKey("opplysninger.inntekt.inntekter.salg"),
+                "sum"));
+
+               result.addAll(opplysningUtbetaling("forsikring",
+                "Forsikringsutbetaling",
+                webSoknad.getFaktaMedKey("opplysninger.inntekt.inntekter.forsikringsutbetalinger"),
+                "sum"));
+
+        result.addAll(opplysningUtbetaling("annen",
+                "Annen utbetaling",
+                webSoknad.getFaktaMedKey("opplysninger.inntekt.inntekter.annet"),
+                "sum"));
+
+
 
         return result.stream().filter(r -> r != null).collect(Collectors.toList());
 
@@ -114,7 +142,20 @@ public class JsonOkonomiConverter {
     }
 
     private static List<JsonOkonomioversiktUtgift> tilJsonOkonomioversiktUtgift(WebSoknad webSoknad) {
-        return null;
+        final List<JsonOkonomioversiktUtgift> result = new ArrayList<>();
+        result.addAll(oversiktUtgift("husleie",
+                "Husleie",
+                webSoknad.getFaktaMedKey("opplysninger.utgifter.boutgift.husleie"),
+                "permnd"));
+
+        result.addAll(oversiktUtgift("husleie",
+                "Husleie",
+                webSoknad.getFaktaMedKey("opplysninger.utgifter.boutgift.strom"),
+                "permnd"));
+
+
+        return result.stream().filter(r -> r != null).collect(Collectors.toList());
+
     }
 
     private static final <E> void addIfNotNull(List<? super E> liste, E... elementer) {
@@ -197,6 +238,43 @@ public class JsonOkonomiConverter {
                     .withBelop(JsonUtils.tilInteger(properties.get(belopNavn)))
                     .withOverstyrtAvBruker(false);
         }).collect(Collectors.toList());
+
+
     }
+
+
+    private static Collection<? extends JsonOkonomiOpplysningUtgift> opplysningUtgift(String type, String tittel, List<Faktum> fakta, String belopNavn) {
+
+        return fakta.stream().filter(f -> f != null).map(faktum -> {
+            final Map<String, String> properties = faktum.getProperties();
+            return new JsonOkonomiOpplysningUtgift()
+                    .withKilde(JsonKilde.BRUKER)
+                    .withType(type)
+                    .withTittel(tittel)
+                    .withBelop(JsonUtils.tilInteger(properties.get(belopNavn)))
+                    .withOverstyrtAvBruker(false);
+        }).collect(Collectors.toList());
+
+
+    }
+
+    private static Collection<? extends JsonOkonomioversiktUtgift> oversiktUtgift(String type, String tittel, List<Faktum> fakta, String belopNavn) {
+
+        return fakta.stream().filter(f -> f != null).map(faktum -> {
+            final Map<String, String> properties = faktum.getProperties();
+            return new JsonOkonomioversiktUtgift()
+                    .withKilde(JsonKilde.BRUKER)
+                    .withType(type)
+                    .withTittel(tittel)
+                    .withBelop(JsonUtils.tilInteger(properties.get(belopNavn)))
+                    .withOverstyrtAvBruker(false);
+        }).collect(Collectors.toList());
+
+
+    }
+
+
+
+
 }
 
