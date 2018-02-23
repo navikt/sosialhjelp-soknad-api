@@ -148,10 +148,24 @@ public class JsonOkonomiConverter {
                 webSoknad.getFaktaMedKey("opplysninger.utgifter.boutgift.husleie"),
                 "permnd"));
 
-        result.addAll(oversiktUtgift("husleie",
-                "Husleie",
+        result.addAll(oversiktUtgift("strom",
+                "Strøm (siste regning)",
                 webSoknad.getFaktaMedKey("opplysninger.utgifter.boutgift.strom"),
-                "permnd"));
+                "sisteregning"));
+
+        result.addAll(oversiktUtgift("kommunalAvgift",
+                "Kommunal avgift (siste regning)",
+                webSoknad.getFaktaMedKey("opplysninger.utgifter.boutgift.kommunaleavgifter"),
+                "sisteregning"));
+
+        result.addAll(oversiktUtgift("oppvarming",
+                "Oppvarming (siste regning)",
+                webSoknad.getFaktaMedKey("opplysninger.utgifter.boutgift.oppvarming"),
+                "sisteregning"));
+
+        Jeg kom hit
+                /Du har svart at du har oppvarming som boutgift, vi ber deg derfor oppgi
+
 
 
         return result.stream().filter(r -> r != null).collect(Collectors.toList());
