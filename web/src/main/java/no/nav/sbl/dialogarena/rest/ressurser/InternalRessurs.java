@@ -10,7 +10,6 @@ import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonPortTypeMock;
 import no.nav.sbl.dialogarena.service.helpers.HvisLikHelper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
-import no.nav.sbl.dialogarena.soknadinnsending.business.batch.SlettSoknadScheduler;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,8 +34,6 @@ public class InternalRessurs {
     @Inject
     private LagringsScheduler lagringsScheduler;
     @Inject
-    private SlettSoknadScheduler slettSoknadScheduler;
-    @Inject
     private CacheManager cacheManager;
     @Inject
     private NavMessageSource messageSource;
@@ -51,14 +48,6 @@ public class InternalRessurs {
         logAccess("kjorLagring");
         lagringsScheduler.mellomlagreSoknaderOgNullstillLokalDb();
     }
-
-    @POST
-    @Path(value = "/slettgamlesoknader")
-    public void slettGamleSoknader() {
-        logAccess("slettGamleSoknader");
-        slettSoknadScheduler.opprettHendelserForSoknaderSlettetIHenvendelse();
-    }
-
 
 
     @GET
@@ -80,9 +69,9 @@ public class InternalRessurs {
     @POST
     @Path(value = "/mocksetup")
     public Response mocksetup(@FormParam("statsborgerskap") String statsborgerskap,
-                                  @FormParam("kode6") String kode6,
-                                  @FormParam("primar_adressetype") String primarAdressetype,
-                                  @FormParam("sekundar_adressetype") String sekundarAdressetype) throws InterruptedException {
+                              @FormParam("kode6") String kode6,
+                              @FormParam("primar_adressetype") String primarAdressetype,
+                              @FormParam("sekundar_adressetype") String sekundarAdressetype) throws InterruptedException {
         logAccess("mocksetupPost");
         Boolean skalHaKode6 = "true".equalsIgnoreCase(kode6);
 
