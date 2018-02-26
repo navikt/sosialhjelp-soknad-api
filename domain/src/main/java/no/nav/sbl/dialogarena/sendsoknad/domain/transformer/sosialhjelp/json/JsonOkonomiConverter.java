@@ -53,7 +53,7 @@ public class JsonOkonomiConverter {
     }
 
     private static JsonOkonomibeskrivelserAvAnnet tilJsonOkonomiopplysningerBeskrivelseAvAnnet(WebSoknad webSoknad) {
-       return null;
+        return null;
 
     }
 
@@ -87,7 +87,7 @@ public class JsonOkonomiConverter {
                 webSoknad.getFaktaMedKey("opplysninger.inntekt.inntekter.salg"),
                 "sum"));
 
-               result.addAll(opplysningUtbetaling("forsikring",
+        result.addAll(opplysningUtbetaling("forsikring",
                 "Forsikringsutbetaling",
                 webSoknad.getFaktaMedKey("opplysninger.inntekt.inntekter.forsikringsutbetalinger"),
                 "sum"));
@@ -96,7 +96,6 @@ public class JsonOkonomiConverter {
                 "Annen utbetaling",
                 webSoknad.getFaktaMedKey("opplysninger.inntekt.inntekter.annet"),
                 "sum"));
-
 
 
         return result.stream().filter(r -> r != null).collect(Collectors.toList());
@@ -162,6 +161,12 @@ public class JsonOkonomiConverter {
                 "Oppvarming (siste regning)",
                 webSoknad.getFaktaMedKey("opplysninger.utgifter.boutgift.oppvarming"),
                 "sisteregning"));
+
+
+
+        // Du har svart at du har oppvarming som boutgift, vi ber deg derfor oppgi
+
+
 
         return result.stream().filter(r -> r != null).collect(Collectors.toList());
     }
@@ -280,8 +285,6 @@ public class JsonOkonomiConverter {
 
 
     }
-
-
 
 
 }
