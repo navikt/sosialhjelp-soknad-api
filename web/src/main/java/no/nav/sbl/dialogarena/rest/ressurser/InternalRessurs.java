@@ -49,6 +49,7 @@ public class InternalRessurs {
         lagringsScheduler.mellomlagreSoknaderOgNullstillLokalDb();
     }
 
+
     @GET
     @Path(value = "/mocksetup")
     public String mocksetup(@Context ServletContext servletContext) throws IOException {
@@ -68,9 +69,9 @@ public class InternalRessurs {
     @POST
     @Path(value = "/mocksetup")
     public Response mocksetup(@FormParam("statsborgerskap") String statsborgerskap,
-                                  @FormParam("kode6") String kode6,
-                                  @FormParam("primar_adressetype") String primarAdressetype,
-                                  @FormParam("sekundar_adressetype") String sekundarAdressetype) throws InterruptedException {
+                              @FormParam("kode6") String kode6,
+                              @FormParam("primar_adressetype") String primarAdressetype,
+                              @FormParam("sekundar_adressetype") String sekundarAdressetype) throws InterruptedException {
         logAccess("mocksetupPost");
         Boolean skalHaKode6 = "true".equalsIgnoreCase(kode6);
 
