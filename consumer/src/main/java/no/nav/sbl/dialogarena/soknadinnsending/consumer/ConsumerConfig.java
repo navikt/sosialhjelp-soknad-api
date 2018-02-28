@@ -37,7 +37,6 @@ public class ConsumerConfig {
     @Profile("!integration")
     @Import({
             SendSoknadWSConfig.class,
-            FilLagerWSConfig.class,
             PersonInfoWSConfig.class,
             ArbeidWSConfig.class,
             OrganisasjonWSConfig.class,
