@@ -19,11 +19,10 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
-import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStatus;
 import org.joda.time.DateTime;
@@ -32,16 +31,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.*;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
 import org.springframework.context.ApplicationContext;
 
 import javax.activation.DataHandler;
 import javax.xml.bind.JAXB;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -315,18 +311,6 @@ public class SoknadDataFletterTest {
         DataHandler handler = mock(DataHandler.class);
         when(fillagerService.hentFil("uidHovedskjema"))
                 .thenReturn(baos.toByteArray());
-        when(fillagerService.hentFiler("123"))
-                .thenReturn(asList(
-                        new WSInnhold().withUuid("uidVedlegg").withInnhold(handler)
-                ));
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                OutputStream os = (OutputStream) invocation.getArguments()[0];
-                os.write(new byte[]{1, 2, 3});
-                return null;
-            }
-        }).when(handler).writeTo(any(OutputStream.class));
         WebSoknad webSoknad = soknadServiceUtil.hentSoknad("123", true, false);
         soknadServiceUtil.hentSoknad("123", true, false);
         verify(lokalDb, atMost(1)).populerFraStruktur(eq(soknadCheck));
