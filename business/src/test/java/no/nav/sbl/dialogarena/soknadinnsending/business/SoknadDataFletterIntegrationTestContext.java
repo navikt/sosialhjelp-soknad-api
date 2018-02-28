@@ -18,7 +18,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
-import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import no.nav.tjeneste.domene.brukerdialog.henvendelse.v2.henvendelse.HenvendelsePortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import org.springframework.context.annotation.Bean;
@@ -85,15 +84,7 @@ public class SoknadDataFletterIntegrationTestContext {
     public FillagerRepository fillagerRepository() {
         return mock(FillagerRepository.class);
     }
-    public FilLagerPortType fillagerEndpoint() {
-        FilLagerPortType mock = mock(FilLagerPortType.class);
-        return mock;
-    }
 
-    @Bean
-    public FilLagerPortType fillagerSelftestEndpoint() {
-        return mock(FilLagerPortType.class);
-    }
     @Bean
     public VedleggService vedleggService() {
         return new VedleggService();
