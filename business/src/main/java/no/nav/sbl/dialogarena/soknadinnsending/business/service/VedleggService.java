@@ -29,12 +29,11 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggsGrunnlag;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.fillager.FillagerRepository.Fil;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
-import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
 import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -510,15 +509,15 @@ public class VedleggService {
         return soknadVedlegg;
     }
 
-    public void populerVedleggMedDataFraHenvendelse(WebSoknad soknad, List<WSInnhold> innhold) {
-        for (WSInnhold wsInnhold : innhold) {
+    public void populerVedleggMedDataFraHenvendelse(WebSoknad soknad, List<Fil> innhold) {
+        for (Fil fil : innhold) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             try {
-                wsInnhold.getInnhold().writeTo(baos);
+                baos.write(fil.data);
             } catch (IOException e) {
                 throw new ApplicationException("Kunne ikke hente opp soknaddata", e);
             }
-            Vedlegg vedlegg = soknad.hentVedleggMedUID(wsInnhold.getUuid());
+            Vedlegg vedlegg = soknad.hentVedleggMedUID(fil.uuid);
             if (vedlegg != null) {
                 vedlegg.setData(baos.toByteArray());
                 vedleggRepository.lagreVedleggMedData(soknad.getSoknadId(), vedlegg.getVedleggId(), vedlegg);

@@ -1,28 +1,37 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.vedleggservice;
 
-import net.jcip.annotations.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.*;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.*;
-import no.nav.sbl.dialogarena.soknadinnsending.business.*;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.*;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.*;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.*;
-import org.junit.*;
-import org.junit.runner.*;
-import org.mockito.*;
-import org.mockito.runners.*;
+import net.jcip.annotations.NotThreadSafe;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadDataFletter;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import javax.xml.bind.*;
-import java.util.*;
+import javax.xml.bind.JAXB;
+import java.util.Arrays;
+import java.util.List;
 
-import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.*;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.*;
-import static org.assertj.core.api.Assertions.*;
+import static no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.KVITTERING;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.LastetOpp;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.VedleggKreves;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 @NotThreadSafe

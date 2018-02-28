@@ -89,6 +89,8 @@ public class DatabaseTestContext {
             st.execute("create sequence SOKNAD_BRUKER_DATA_ID_SEQ as integer start with 1 increment by 1");
             st.execute("drop sequence VEDLEGG_ID_SEQ if exists");
             st.execute("create sequence VEDLEGG_ID_SEQ as integer start with 1 increment by 1");
+            st.execute("drop table FILLAGER if exists");
+            st.execute("create table FILLAGER (behandlingsid varchar(255), uuid varchar(255), eier varchar(255), data blob)");
         } catch (SQLException e) {
             throw new RuntimeException("Feil ved oppretting av databasen", e);
         }

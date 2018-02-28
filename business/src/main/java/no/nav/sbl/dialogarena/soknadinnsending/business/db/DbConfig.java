@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.fillager.FillagerRepositoryJdbc;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadInnsendingDBConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepositoryJdbc;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepositoryJdbc;
@@ -10,6 +11,7 @@ import org.springframework.context.annotation.Import;
 @Import({
         SoknadRepositoryJdbc.class,
         VedleggRepositoryJdbc.class,
+        FillagerRepositoryJdbc.class,
         SoknadInnsendingDBConfig.class
 })
 public class DbConfig {

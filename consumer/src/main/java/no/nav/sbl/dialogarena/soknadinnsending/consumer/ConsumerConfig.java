@@ -1,21 +1,22 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeid.*;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.*;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.*;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.*;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.*;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.*;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeid.ArbeidssokerInfoService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.EpostService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFletter;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.*;
-import org.springframework.cache.annotation.*;
-import org.springframework.context.annotation.*;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
 
-import static java.lang.System.*;
+import static java.lang.System.setProperty;
 
 @Configuration
 @EnableCaching
 @Import({
-        FillagerService.class,
         HenvendelseService.class,
         PersonService.class,
         PersonInfoService.class,

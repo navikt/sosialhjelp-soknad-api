@@ -11,11 +11,11 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.SoknadDataFletterIntegrationTestContext;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.fillager.FillagerRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.fillager.FillagerRepository.Fil;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
-import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
-import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingsId;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStartSoknadRequest;
@@ -24,10 +24,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatcher;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import javax.activation.DataHandler;
 import javax.inject.Inject;
 import javax.naming.NamingException;
 import javax.security.auth.Subject;
@@ -62,10 +62,10 @@ public class SoknadServiceIntegrasjonsTest {
     private SendSoknadPortType sendSoknadEndpoint;
 
     @Inject
-    private FilLagerPortType fillagerEndpoint;
+    private FillagerService fillagerService;
 
     @Inject
-    private FillagerService fillagerService;
+    private FillagerRepository fillagerRepository;
 
     @Inject
     private FaktaService faktaService;
@@ -159,7 +159,7 @@ public class SoknadServiceIntegrasjonsTest {
 
         soknadService.avbrytSoknad(EN_BEHANDLINGSID);
 
-        List<WSInnhold> filer = fillagerService.hentFiler(EN_BEHANDLINGSID);
+        List<Fil> filer = fillagerService.hentFiler(EN_BEHANDLINGSID);
         assertThat(filer).isEmpty();
     }
 
@@ -173,6 +173,15 @@ public class SoknadServiceIntegrasjonsTest {
         verify(sendSoknadEndpoint).avbrytSoknad(behandlingsId);
     }
 
+    private ArgumentMatcher<Fil> filMatcher(String behandlingsId) {
+        return new ArgumentMatcher<Fil>() {
+            @Override
+            public boolean matches(Object argument) {
+                return ((Fil) argument).behandlingsId.equals(behandlingsId);
+            }
+        };
+    }
+
     @Test
     public void sendSoknadSkalLagreToFilerTilHenvendelseHvisForeldrepengerEngangsstonad() {
         ((ThreadLocalSubjectHandler) getSubjectHandler()).setSubject(getSubject());
@@ -182,7 +191,7 @@ public class SoknadServiceIntegrasjonsTest {
 
         soknadService.sendSoknad(behandlingsId, new byte[]{});
 
-        verify(fillagerEndpoint, times(2)).lagre(eq(behandlingsId), any(String.class), any(String.class), any(DataHandler.class));
+        verify(fillagerRepository, times(2)).lagreFil(argThat(filMatcher(behandlingsId)));
     }
 
     @Test
@@ -194,7 +203,7 @@ public class SoknadServiceIntegrasjonsTest {
 
         soknadService.sendSoknad(behandlingsId, new byte[]{});
 
-        verify(fillagerEndpoint, times(1)).lagre(eq(behandlingsId), any(String.class), any(String.class), any(DataHandler.class));
+        verify(fillagerRepository, times(1)).lagreFil(argThat(filMatcher(behandlingsId)));
     }
 
     @Test
@@ -207,7 +216,7 @@ public class SoknadServiceIntegrasjonsTest {
 
         soknadService.sendSoknad(behandlingsId, new byte[]{});
 
-        verify(fillagerEndpoint, times(2)).lagre(eq(behandlingsId), any(String.class), any(String.class), any(DataHandler.class));
+        verify(fillagerRepository, times(2)).lagreFil(argThat(filMatcher(behandlingsId)));
     }
 
     private Subject getSubject() {
