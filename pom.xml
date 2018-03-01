@@ -759,6 +759,12 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
+                <groupId>no.digipost</groupId>
+                <artifactId>digg</artifactId>
+                <version>0.13</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>4.11</version>
@@ -804,6 +810,12 @@
                 <artifactId>common-jetty</artifactId>
                 <version>1.0.23</version>
                 <scope>test</scope>
+                <!--<exclusions>
+                    <exclusion>
+                        <groupId>no.nav.modig</groupId>
+                        <artifactId>modig-testcertificates</artifactId>
+                    </exclusion>
+                </exclusions>-->
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
