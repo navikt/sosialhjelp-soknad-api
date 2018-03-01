@@ -19,6 +19,11 @@ public final class JsonUtils {
             return property;
         }
     }
+    
+    public static String finnPropertyEllerTom(Map<String, String> properties, String propertyName) {
+        final String s = finnPropertyEllerNullOmTom(properties, propertyName);
+        return s != null ? s : "";
+    }
 
     public static boolean erAlleSystemProperties(Faktum faktum) {
         return faktum.getFaktumEgenskaper().stream().allMatch(e -> e.getSystemEgenskap() != null && e.getSystemEgenskap() == 1);
@@ -30,6 +35,13 @@ public final class JsonUtils {
     }
 
 
+    public static int tilInt(String s) {
+        if (erTom(s)) {
+            return 0;
+        }
+        return Integer.parseInt(s);
+    }
+    
     public static Integer tilInteger(String s) {
         if (erTom(s)) {
             return null;
