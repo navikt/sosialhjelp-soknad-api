@@ -855,16 +855,12 @@
                         <propertiesFiler>
                             <ssnb>sendsoknad_nb_NO.properties</ssnb>
                             <ssen>sendsoknad_en.properties</ssen>
-                            <tsnb>tilleggsstonader_nb_NO.properties</tsnb>
                             <rdrnb>refusjondagligreise_nb_NO.properties</rdrnb>
-                            <tpnb>tiltakspenger_nb_NO.properties</tpnb>
                         </propertiesFiler>
                         <menyPunktPaths>
                             <ssnb>/site/18/app/sendsoknad/nb_NO/tekster</ssnb>
                             <ssen>/site/18/app/sendsoknad/en/tekster</ssen>
-                            <tsnb>/site/18/app/tilleggsstonader/nb_NO/tekster</tsnb>
                             <rdrnb>/site/18/app/refusjondagligreise/nb_NO/tekster</rdrnb>
-                            <tpnb>/site/18/app/tiltakspenger/nb_NO/tekster</tpnb>
                         </menyPunktPaths>
                     </configuration>
                 </plugin>

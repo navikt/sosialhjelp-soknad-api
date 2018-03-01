@@ -52,4 +52,9 @@ public class SoknadTilleggsstonader extends KravdialogInformasjon.DefaultOppsett
     public String getBundleName() {
         return "tilleggsstonader";
     }
+
+    @Override
+    public boolean brukerEnonicLedetekster() {
+        return false;
+    }
 }
