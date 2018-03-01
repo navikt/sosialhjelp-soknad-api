@@ -16,11 +16,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseReposi
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.MigrasjonHandterer;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStatus;

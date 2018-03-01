@@ -8,7 +8,6 @@ import no.nav.modig.core.domain.SluttBruker;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.SoknadDataFletterIntegrationTestContext;
@@ -17,9 +16,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.fillager.FillagerRepo
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingsId;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStartSoknadRequest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -40,7 +37,6 @@ import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType.AVBRUTT_AUTOMATISK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.joda.time.DateTime.now;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -61,9 +57,6 @@ public class SoknadServiceIntegrasjonsTest {
     private SoknadService soknadService;
 
     @Inject
-    private SendSoknadPortType sendSoknadEndpoint;
-
-    @Inject
     private FillagerService fillagerService;
 
     @Inject
@@ -81,7 +74,6 @@ public class SoknadServiceIntegrasjonsTest {
     @Before
     public void beforeEach() {
         WSBehandlingsId wsBehandlingsId = new WSBehandlingsId().withBehandlingsId(EN_BEHANDLINGSID);
-        when(sendSoknadEndpoint.startSoknad(any(WSStartSoknadRequest.class))).thenReturn(wsBehandlingsId);
     }
 
     @Test
@@ -91,16 +83,6 @@ public class SoknadServiceIntegrasjonsTest {
         opprettOgPersisterSoknadMedData("behId", "aktor");
         SoknadStruktur soknadStruktur = soknadService.hentSoknadStruktur(skjemaNummer);
         assertThat(soknadStruktur.getTemaKode()).isEqualTo("FOR");
-    }
-
-    @Test
-    public void startSoknadHenterBehandlingsIdFraHenvendelse() {
-        ((ThreadLocalSubjectHandler) getSubjectHandler()).setSubject(getSubject());
-
-        String behandlingsId = soknadService.startSoknad("NAV 14-05.06");
-        soknad = soknadService.hentSoknad(behandlingsId, false, false);
-
-        assertThat(behandlingsId).isEqualTo(EN_BEHANDLINGSID);
     }
 
     @Test
@@ -148,23 +130,13 @@ public class SoknadServiceIntegrasjonsTest {
     }
 
     @Test
-    public void avbrytSoknadSletterSoknadenFraHenvendelse() {
+    public void avbrytSoknadSletterFiler() {
         opprettOgPersisterSoknad(EN_BEHANDLINGSID, "aktor");
 
         soknadService.avbrytSoknad(EN_BEHANDLINGSID);
 
         List<Fil> filer = fillagerService.hentFiler(EN_BEHANDLINGSID);
         assertThat(filer).isEmpty();
-    }
-
-    @Test
-    public void avbrytSoknadAvbryterSoknadenIHenvendelse() {
-        String behandlingsId = nyBehandlnigsId();
-        opprettOgPersisterSoknad(behandlingsId, "aktor");
-
-        soknadService.avbrytSoknad(behandlingsId);
-
-        verify(sendSoknadEndpoint).avbrytSoknad(behandlingsId);
     }
 
     private ArgumentMatcher<Fil> filMatcher(String behandlingsId) {

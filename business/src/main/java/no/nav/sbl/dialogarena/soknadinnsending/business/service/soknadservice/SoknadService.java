@@ -8,7 +8,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
