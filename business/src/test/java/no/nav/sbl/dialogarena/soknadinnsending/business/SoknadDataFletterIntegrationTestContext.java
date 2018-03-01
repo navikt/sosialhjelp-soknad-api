@@ -8,12 +8,15 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.RepositoryTestSupport
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.TestSupport;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.fillager.FillagerRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepositoryJdbc;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepositoryJdbc;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepositoryJdbc;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.MigrasjonHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
@@ -28,6 +31,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
+import java.time.Clock;
+
 import static org.mockito.Mockito.mock;
 
 @Import(value = {DatabaseTestContext.class})
@@ -36,6 +41,12 @@ import static org.mockito.Mockito.mock;
 public class SoknadDataFletterIntegrationTestContext {
     @Inject
     private DataSource dataSource;
+
+    @Bean
+    public Clock clock(){ return Clock.systemDefaultZone(); }
+
+    @Bean
+    public MigrasjonHandterer migrasjonHandterer() {return new MigrasjonHandterer();}
 
     @Bean
     public SoknadDataFletter fletter() {
@@ -93,6 +104,11 @@ public class SoknadDataFletterIntegrationTestContext {
     @Bean
     public SoknadRepository soknadInnsendingRepository() {
         return new SoknadRepositoryJdbc();
+    }
+
+    @Bean
+    public HendelseRepository hendelseRepository() {
+        return new HendelseRepositoryJdbc();
     }
 
     @Bean

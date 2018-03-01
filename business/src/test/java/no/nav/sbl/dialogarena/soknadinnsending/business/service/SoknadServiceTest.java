@@ -4,6 +4,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
 import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
@@ -134,9 +135,10 @@ public class SoknadServiceTest {
 
     @Test
     public void skalAvbryteSoknad() {
-        when(soknadRepository.hentSoknad("123")).thenReturn(new WebSoknad().medBehandlingId("123").medId(11L));
+        WebSoknad soknad = new WebSoknad().medBehandlingId("123").medId(11L);
+        when(soknadRepository.hentSoknad("123")).thenReturn(soknad);
         soknadService.avbrytSoknad("123");
-        verify(soknadRepository).slettSoknad(11L);
+        verify(soknadRepository).slettSoknad(soknad, HendelseType.AVBRUTT_AV_BRUKER);
         verify(henvendelsesConnector).avbrytSoknad("123");
     }
 

@@ -8,6 +8,7 @@ import no.nav.modig.core.domain.SluttBruker;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.SoknadDataFletterIntegrationTestContext;
@@ -36,6 +37,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType.AVBRUTT_AUTOMATISK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.joda.time.DateTime.now;
 import static org.mockito.Matchers.any;
@@ -72,17 +74,8 @@ public class SoknadServiceIntegrasjonsTest {
 
     @BeforeClass
     public static void beforeClass() throws IOException, NamingException {
-//        load("/environment-test.properties");
-//        System.setProperty("no.nav.modig.security.sts.url", "dummyvalue");
-//        System.setProperty("no.nav.modig.security.systemuser.username", "dummyvalue");
-//        System.setProperty("no.nav.modig.security.systemuser.password", "");
         System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
         System.setProperty("soknad.feature.foreldrepenger.alternativrepresentasjon.enabled", "true");
-//        getProperties().setProperty(TILLATMOCK_PROPERTY, DEFAULT_MOCK_TILLATT);
-//
-//        SimpleNamingContextBuilder builder = new SimpleNamingContextBuilder();
-//        builder.bind("jdbc/SoknadInnsendingDS", Mockito.mock(DataSource.class));
-//        builder.activate();
     }
 
     @Before
@@ -105,6 +98,7 @@ public class SoknadServiceIntegrasjonsTest {
         ((ThreadLocalSubjectHandler) getSubjectHandler()).setSubject(getSubject());
 
         String behandlingsId = soknadService.startSoknad("NAV 14-05.06");
+        soknad = soknadService.hentSoknad(behandlingsId, false, false);
 
         assertThat(behandlingsId).isEqualTo(EN_BEHANDLINGSID);
     }
@@ -249,6 +243,7 @@ public class SoknadServiceIntegrasjonsTest {
                 .medUuid(uuid)
                 .medAktorId(aktor)
                 .medBehandlingId(behId)
+                .medVersjon(0)
                 .medDelstegStatus(DelstegStatus.OPPRETTET)
                 .medskjemaNummer(skjemaNummer).medOppretteDato(now());
 
@@ -283,7 +278,7 @@ public class SoknadServiceIntegrasjonsTest {
 
     @After
     public void afterEach() {
-        lokalDb.slettSoknad(soknadId);
+        lokalDb.slettSoknad(soknad.medId(soknadId), AVBRUTT_AUTOMATISK);
     }
 
 }
