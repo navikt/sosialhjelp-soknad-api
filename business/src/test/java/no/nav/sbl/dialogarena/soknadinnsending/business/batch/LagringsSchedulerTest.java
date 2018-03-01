@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.batch;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
+import no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
@@ -37,7 +38,7 @@ public class LagringsSchedulerTest {
         Optional<WebSoknad> soknad = Optional.of(new WebSoknad().medId(1).medStatus(SoknadInnsendingStatus.UNDER_ARBEID));
         when(soknadRepository.plukkSoknadTilMellomlagring()).thenReturn(soknad, soknad, tom);
         scheduler.mellomlagreSoknaderOgNullstillLokalDb();
-        verify(soknadRepository, times(2)).slettSoknad(anyLong());
+        verify(soknadRepository, times(2)).slettSoknad(eq(soknad.get()), eq(HendelseType.LAGRET_I_HENVENDELSE));
     }
 
     @Test
@@ -46,7 +47,7 @@ public class LagringsSchedulerTest {
         when(soknadRepository.plukkSoknadTilMellomlagring()).thenReturn(Optional.of(webSoknad));
         scheduler.lagreFilTilHenvendelseOgSlettILokalDb(Optional.of(webSoknad));
         verify(fillagerService).lagreFil(eq(webSoknad.getBrukerBehandlingId()), eq(webSoknad.getUuid()), eq(webSoknad.getAktoerId()), any(InputStream.class));
-        verify(soknadRepository).slettSoknad(webSoknad.getSoknadId());
+        verify(soknadRepository).slettSoknad(eq(webSoknad), eq(HendelseType.LAGRET_I_HENVENDELSE));
     }
 
     @Test
@@ -63,7 +64,7 @@ public class LagringsSchedulerTest {
         when(soknadRepository.plukkSoknadTilMellomlagring()).thenReturn(Optional.of(webSoknad),Optional.empty());
         scheduler.mellomlagreSoknaderOgNullstillLokalDb();
         verify(henvendelseService).avbrytSoknad(behandlingsId);
-        verify(soknadRepository).slettSoknad(webSoknad.getSoknadId());
+        verify(soknadRepository).slettSoknad(eq(webSoknad), eq(HendelseType.LAGRET_I_HENVENDELSE));
     }
 
     @Test
