@@ -38,4 +38,9 @@ public class TiltakspengerInformasjon extends KravdialogInformasjon.DefaultOppse
     public String getBundleName() {
         return "tiltakspenger";
     }
+
+    @Override
+    public boolean brukerEnonicLedetekster() {
+        return false;
+    }
 }

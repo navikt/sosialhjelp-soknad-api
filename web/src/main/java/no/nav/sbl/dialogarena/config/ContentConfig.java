@@ -92,8 +92,6 @@ public class ContentConfig {
         try {
             saveLocal("enonic/sendsoknad_nb_NO.properties", new URI(cmsBaseUrl + "/app/sendsoknad/nb_NO/tekster"));
             saveLocal("enonic/sendsoknad_en.properties", new URI(cmsBaseUrl + "/app/sendsoknad/en/tekster"));
-            saveLocal("enonic/tilleggsstonader_nb_NO.properties", new URI(cmsBaseUrl + "/app/tilleggsstonader/nb_NO/tekster"));
-            saveLocal("enonic/tiltakspenger_nb_NO.properties", new URI(cmsBaseUrl + "/app/tiltakspenger/nb_NO/tekster"));
             saveLocal("enonic/refusjondagligreise_nb_NO.properties", new URI(cmsBaseUrl + "/app/refusjondagligreise/nb_NO/tekster"));
         } catch (Exception e) {
             logger.warn("Feilet under henting av enonic innholdstekster: " + e, e);

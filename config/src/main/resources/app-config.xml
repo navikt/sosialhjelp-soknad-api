@@ -67,6 +67,8 @@
         <fileLibrary alias="soknadsosialhjelp.ledetekster" mapToProperty="folder.soknadsosialhjelp" />
         <fileLibrary alias="soknadbilstonad.ledetekster" mapToProperty="folder.bilstonad" />
         <fileLibrary alias="soknad-aap-utland.ledetekster" mapToProperty="folder.soknad-aap-utland" />
+        <fileLibrary alias="soknadtiltakspenger.ledetekster" mapToProperty="folder.soknadtiltakspenger" />
+        <fileLibrary alias="soknadtilleggsstonader.ledetekster" mapToProperty="folder.soknadtilleggsstonader" />
     </resources>
 
     <serverOptions>
