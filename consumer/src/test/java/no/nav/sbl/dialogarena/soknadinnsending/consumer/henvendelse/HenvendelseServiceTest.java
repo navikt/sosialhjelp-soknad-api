@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
-import no.nav.modig.core.exception.ApplicationException;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingsId;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
@@ -37,21 +36,6 @@ public class HenvendelseServiceTest {
     public void setUp() {
         setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         when(sendSoknadEndpoint.startSoknad(any(WSStartSoknadRequest.class))).thenReturn(new WSBehandlingsId());
-    }
-
-    @Test
-    public void yoyoyo() {
-        Long databasenokkel = 35L;
-        String applikasjonsprefix = "10";
-        Long base = Long.parseLong(applikasjonsprefix + "0000000", 36);
-        long i = base + databasenokkel;
-        String s = Long.toString(i, 36);
-        String replace = s.toUpperCase().replace("O", "o");
-        String behandlingsId = replace.replace("I", "i");
-        if (!behandlingsId.startsWith(applikasjonsprefix)) {
-            throw new ApplicationException("Tildelt sekvensrom for behandlingsId er brukt opp. Kan ikke generer behandlingsId " + behandlingsId);
-        }
-        System.out.println(behandlingsId);
     }
 
     @Test
