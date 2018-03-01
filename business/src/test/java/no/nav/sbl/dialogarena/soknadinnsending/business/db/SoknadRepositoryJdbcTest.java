@@ -4,6 +4,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.VedleggForFaktumStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeUtils;
@@ -28,6 +29,7 @@ import static java.util.Collections.sort;
 import static java.util.UUID.randomUUID;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType.*;
 import static org.hamcrest.Matchers.*;
 import static org.joda.time.DateTime.now;
 import static org.junit.Assert.*;
@@ -39,6 +41,10 @@ public class SoknadRepositoryJdbcTest {
     @Inject
     private SoknadRepository soknadRepository;
 
+
+    @Inject
+    private HendelseRepository hendelseRepository;
+
     @Inject
     private RepositoryTestSupport soknadRepositoryTestSupport;
 
@@ -48,6 +54,7 @@ public class SoknadRepositoryJdbcTest {
 
     private String aktorId = "1";
     private String behandlingsId = "1";
+    private int versjonsnr = 1;
     private String skjemaNummer = "skjemaNummer";
     private String uuid = "123";
 
@@ -57,6 +64,7 @@ public class SoknadRepositoryJdbcTest {
         soknadRepositoryTestSupport.getJdbcTemplate().update("delete from faktumegenskap");
         soknadRepositoryTestSupport.getJdbcTemplate().update("delete from soknadbrukerdata");
         soknadRepositoryTestSupport.getJdbcTemplate().update("delete from Soknad");
+        soknadRepositoryTestSupport.getJdbcTemplate().update("delete from Hendelse");
     }
 
     @Test
@@ -195,6 +203,13 @@ public class SoknadRepositoryJdbcTest {
         lagreData("key3", null, "value3");
 
         soknadRepository.hentFaktum(faktumId);
+    }
+
+    @Test
+    public void skalKunneHenteVersjon() {
+        opprettOgPersisterSoknad();
+        int versjon = hendelseRepository.hentVersjon(behandlingsId);
+        assertThat(versjon, is(1));
     }
 
     @Test
@@ -401,7 +416,7 @@ public class SoknadRepositoryJdbcTest {
     @Test
     public void skalKunneSletteSoknad() {
         opprettOgPersisterSoknad();
-        soknadRepository.slettSoknad(soknadId);
+        soknadRepository.slettSoknad(soknad, AVBRUTT_AV_BRUKER);
         assertNull(soknadRepository.hentSoknad(soknadId));
     }
 
@@ -426,6 +441,7 @@ public class SoknadRepositoryJdbcTest {
                 .medBehandlingId("AH123")
                 .medskjemaNummer(skjemaNummer)
                 .medOppretteDato(now())
+                .medVersjon(0)
                 .leggTilFaktum(new Faktum().medSoknadId(101L).medFaktumId(11L).medKey("key1").medValue("val1").medType(BRUKERREGISTRERT).medProperty("test", "test"))
                 .leggTilFaktum(new Faktum().medSoknadId(101L).medFaktumId(12L).medKey("key2").medValue("val2").medType(SYSTEMREGISTRERT).medProperty("test2", "test2"))
                 .medVedlegg(Arrays.asList(new Vedlegg(101L, 11L, "L6", Vedlegg.Status.LastetOpp).medOpprettetDato(System.currentTimeMillis())));
@@ -494,6 +510,8 @@ public class SoknadRepositoryJdbcTest {
         assertTrue(barneFaktum.get(0).getProperties().containsValue("value"));
     }
 
+
+
     private List<Long> lagreXSoknader(int antall, int timerSidenLagring) {
         List<Long> soknadsIder = new ArrayList<>(antall);
         for (int i = 0; i < antall; i++) {
@@ -529,6 +547,7 @@ public class SoknadRepositoryJdbcTest {
                 .medUuid(uuid)
                 .medAktorId(aktor)
                 .medBehandlingId(behId)
+                .medVersjon(versjonsnr)
                 .medDelstegStatus(DelstegStatus.OPPRETTET)
                 .medskjemaNummer(skjemaNummer).medOppretteDato(now());
         soknadId = soknadRepository.opprettSoknad(soknad);
