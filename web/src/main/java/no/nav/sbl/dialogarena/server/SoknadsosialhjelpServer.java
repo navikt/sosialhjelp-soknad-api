@@ -22,10 +22,12 @@ public class SoknadsosialhjelpServer {
     public static final int PORT = 8080;
     public final Jetty jetty;
 
-    public SoknadsosialhjelpServer(DataSource dataSource) throws Exception {
+    public SoknadsosialhjelpServer() throws Exception {
         configureSecurity();
         configureLocalConfig();
         disableBatch();
+        
+        final DataSource dataSource = buildDataSource();
         
         setProperty("java.security.auth.login.config", "login.conf");
         //JAASLoginService jaasLoginService = new JAASLoginService("OpenAM Realm");
@@ -63,6 +65,11 @@ public class SoknadsosialhjelpServer {
     private void configureLocalConfig() throws IOException {
         setFrom("environment-test.properties");
         mapNaisProperties();
+        /*
+        if (System.getProperty("db.url") == null) {
+            updateJavaProperties(readProperties("oracledb.properties"));
+        }
+        */
         setProperty("no.nav.sbl.dialogarena.sendsoknad.sslMock", "true");
         setProperty(StaticSubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
     }
@@ -70,6 +77,10 @@ public class SoknadsosialhjelpServer {
     public static void setFrom(String resource) throws IOException {
         final Properties props = readProperties(resource);
         
+        updateJavaProperties(props);
+    }
+
+    private static void updateJavaProperties(final Properties props) {
         for (String entry : props.stringPropertyNames()) {
             System.setProperty(entry, props.getProperty(entry));
         }
@@ -91,28 +102,18 @@ public class SoknadsosialhjelpServer {
 
     // For å logge inn lokalt må du sette cookie i selftesten: document.cookie="nav-esso=***REMOVED***-4; path=/sendsoknad/"
     
-    public static DataSource buildDataSource(String propertyFileName) throws IOException {
+    public static DataSource buildDataSource() throws IOException {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        //
-        //dataSource.setSuppressClose(true);
-        Properties env = dbProperties(propertyFileName);
-        dataSource.setDriverClassName(env.getProperty("db.driverClassName"));
-        dataSource.setUrl(env.getProperty("db.url"));
-        dataSource.setUsername(env.getProperty("db.username"));
-        dataSource.setPassword(env.getProperty("db.password"));
+        dataSource.setDriverClassName("oracle.jdbc.driver.OracleDriver");
+        dataSource.setUrl(System.getProperty("db.url"));
+        dataSource.setUsername(System.getProperty("db.username"));
+        dataSource.setPassword(System.getProperty("db.password"));
         return dataSource;
     }
     
-    private static Properties dbProperties(String propertyFileName) throws IOException {
-        Properties env = new Properties();
-        env.load(SoknadsosialhjelpServer.class.getResourceAsStream("/" + propertyFileName));
-        return env;
-    }
-
-    
     public static void main(String[] args) {
         try {
-            final SoknadsosialhjelpServer server = new SoknadsosialhjelpServer(buildDataSource("oracledb.properties"));
+            final SoknadsosialhjelpServer server = new SoknadsosialhjelpServer();
             server.start();
         } catch (Exception e) {
             log.error("Kunne ikke starte opp soknadsosialhjelp-server", e);

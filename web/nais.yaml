@@ -22,6 +22,8 @@ resources:
     memory: 2Gi
 fasitResources:
   used:
+  - alias: soknadsosialhjelpDataSource
+    resourceType: datasource
   - alias: virksomhet:Brukerprofil_v1
     resourceType: webserviceendpoint
   - alias: virksomhet:DigitalKontakinformasjon_v1
