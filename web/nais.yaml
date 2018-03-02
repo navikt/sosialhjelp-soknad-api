@@ -1,0 +1,88 @@
+image: docker.adeo.no:5000/soknadsosialhjelp-server
+prometheus:
+  enabled: true
+  path: /prometheus
+healthcheck:
+  liveness:
+    path: /soknadsosialhjelp-server/internal/isAlive
+    initialDelay: 60
+    timeout: 1
+    periodSeconds: 10
+    failureThreshold: 10
+  readiness:
+    path: /soknadsosialhjelp-server/internal/isAlive
+    initialDelay: 60
+    timeout: 1
+resources:
+  limits:
+    cpu: 1
+    memory: 2Gi
+  requests:
+    cpu: 1
+    memory: 2Gi
+fasitResources:
+  used:
+  - alias: virksomhet:Brukerprofil_v1
+    resourceType: webserviceendpoint
+  - alias: virksomhet:DigitalKontakinformasjon_v1
+    resourceType: webserviceendpoint
+  - alias: virksomhet:Person_v1
+    resourceType: webserviceendpoint
+  - alias: virksomhet:Arbeidsforhold_v3
+    resourceType: webserviceendpoint
+  - alias: virksomhet:Organisasjon_v4
+    resourceType: webserviceendpoint
+  - alias: virksomhet:SakOgAktivitet_v1
+    resourceType: webserviceendpoint
+  - alias: virksomhet:Maalgruppe_v1
+    resourceType: webserviceendpoint
+  - alias: domene.Brukerdialog:Henvendelse_v2
+    resourceType: webserviceendpoint
+  - alias: domene.Brukerdialog:sendsoknadservice_v1
+    resourceType: webserviceendpoint
+  - alias: domene.Brukerdialog:fillagerservice_v1
+    resourceType: webserviceendpoint
+  - alias: virksomhet:Kodeverk_v2
+    resourceType: webserviceendpoint
+  - alias: innlogging.navnetjeneste
+    resourceType: baseurl
+  - alias: saksoversikt.link
+    resourceType: baseurl
+  - alias: dittnav.link
+    resourceType: baseurl
+  - alias: appres.cms
+    resourceType: baseurl
+  - alias: dialogarena.navnolink
+    resourceType: baseurl
+  - alias: soknadinnsending.link
+    resourceType: baseurl
+  - alias: arbeid.rest
+    resourceType: baseurl
+#  - alias: soknad.skjemaveileder
+#    resourceType: baseurl
+#  - alias: soknad.alderspensjon
+#    resourceType: baseurl
+#  - alias: soknad.reelarbeidsoker
+#    resourceType: baseurl
+#  - alias: soknad.dagpengerbrosjyre
+#    resourceType: baseurl
+#  - alias: soknad.brukerprofil
+#    resourceType: baseurl
+#  - alias: soknad.sluttaarsak
+#    resourceType: baseurl
+#  - alias: soknad.lonnskravskjema
+#    resourceType: baseurl
+#  - alias: soknad.permitteringsskjema
+#    resourceType: baseurl
+  - alias: arena.personinfoservice
+    resourceType: baseurl
+  - alias: dineutbetalinger.link
+    resourceType: baseurl
+  - alias: dokumentinnsending.smtpServer
+    resourceType: smtpserver
+  - alias: arena.personInfoService
+    resourceType: credential
+  - alias: arbeidservice
+    resourceType: credential
+#  - alias: suspender
+#    resourceType: credential

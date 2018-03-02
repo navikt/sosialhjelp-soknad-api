@@ -146,6 +146,14 @@
         <url-pattern>/internal/isAlive</url-pattern>
     </servlet-mapping>
     <servlet>
+        <servlet-name>debug</servlet-name>
+        <servlet-class>no.nav.sbl.dialogarena.selftest.DebugServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>debug</servlet-name>
+        <url-pattern>/internal/debug</url-pattern>
+    </servlet-mapping>
+    <servlet>
         <servlet-name>suspend</servlet-name>
         <servlet-class>no.nav.sbl.dialogarena.common.suspend.SuspendServlet</servlet-class>
         <init-param>
