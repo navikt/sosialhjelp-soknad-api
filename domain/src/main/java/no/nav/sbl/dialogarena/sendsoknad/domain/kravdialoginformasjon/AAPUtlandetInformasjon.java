@@ -50,10 +50,4 @@ public class AAPUtlandetInformasjon extends KravdialogInformasjon.DefaultOppsett
     public List<String> getSoknadBolker(WebSoknad soknad) {
         return Collections.singletonList(BOLK_PERSONALIA);
     }
-
-    @Override
-    public boolean brukerEnonicLedetekster() {
-        return false;
-    }
-
 }

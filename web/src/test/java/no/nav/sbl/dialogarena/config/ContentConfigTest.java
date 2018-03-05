@@ -45,8 +45,7 @@ public class ContentConfigTest extends ApplicationContextTest {
         assertThat(source.getFellesBasename()).is(new Condition<NavMessageSource.FileTuple>() {
             @Override
             public boolean matches(NavMessageSource.FileTuple fileTuple) {
-                return fileTuple.getRemoteFile().equals("uri/enonic/sendsoknad")
-                        && fileTuple.getLocalFile().equals("classpath:content/sendsoknad");
+                return fileTuple.getRemoteFile().equals("file:/c:/Temp/sendsoknad/utave/sendsoknad/tekster/sendsoknad");
             }
         });
         assertThat(basenames).hasSize(9);
