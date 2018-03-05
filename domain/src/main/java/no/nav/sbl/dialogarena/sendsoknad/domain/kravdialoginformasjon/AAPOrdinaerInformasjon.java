@@ -50,9 +50,4 @@ public class AAPOrdinaerInformasjon extends KravdialogInformasjon.DefaultOppsett
     public List<String> getSoknadBolker(WebSoknad soknad) {
         return asList(BOLK_PERSONALIA, BOLK_BARN);
     }
-
-    @Override
-    public boolean brukerEnonicLedetekster() {
-        return false;
-    }
 }

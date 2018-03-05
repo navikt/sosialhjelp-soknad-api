@@ -37,9 +37,4 @@ public class BilstonadInformasjon extends KravdialogInformasjon.DefaultOppsett {
     public String getBundleName() {
         return "bilstonad";
     }
-
-    @Override
-    public boolean brukerEnonicLedetekster(){
-        return false;
-    }
 }
