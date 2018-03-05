@@ -41,13 +41,6 @@ public class ContentConfigTest extends ApplicationContextTest {
     public void skalReturnereRettAntallBundles(){
         NavMessageSource source = contentConfig.navMessageSource();
         Map<String, NavMessageSource.FileTuple> basenames = source.getBasenames();
-
-        assertThat(source.getFellesBasename()).is(new Condition<NavMessageSource.FileTuple>() {
-            @Override
-            public boolean matches(NavMessageSource.FileTuple fileTuple) {
-                return fileTuple.getRemoteFile().equals("file:/c:/Temp/sendsoknad/utave/sendsoknad/tekster/sendsoknad");
-            }
-        });
         assertThat(basenames).hasSize(9);
     }
 
