@@ -62,6 +62,7 @@ public class SosialhjelpVedleggRessurs {
 
         String filnavn = fil.getContentDisposition().getFileName();
         byte[] data = getByteArray(fil);
+        vedleggOriginalFilerService.validerFil(data);
 
         Forventning forventning = vedleggOriginalFilerService.lagEllerFinnVedleggsForventning(faktumId);
         vedleggOriginalFilerService.leggTilOriginalVedlegg(forventning.vedlegg, data, filnavn);
