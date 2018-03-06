@@ -69,8 +69,8 @@
         <fileLibrary alias="soknadforeldrepenger.ledetekster" mapToProperty="folder.foreldrepenger" />
         <fileLibrary alias="soknadrefusjondagligreise.ledetekster" mapToProperty="folder.refusjondagligreise" />
         <fileLibrary alias="soknadsosialhjelp.ledetekster" mapToProperty="folder.soknadsosialhjelp" />
-        <fileLibrary alias="soknadtilleggsstonader.ledetekster" mapToProperty="folder.soknadtilleggsstonader" />
-        <fileLibrary alias="soknadtiltakspenger.ledetekster" mapToProperty="folder.soknadtiltakspenger" />
+        <fileLibrary alias="soknadtilleggsstonader.ledetekster" mapToProperty="folder.tilleggsstonader" />
+        <fileLibrary alias="soknadtiltakspenger.ledetekster" mapToProperty="folder.tiltakspenger" />
     </resources>
 
     <serverOptions>

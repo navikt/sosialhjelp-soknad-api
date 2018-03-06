@@ -30,7 +30,12 @@ public class ContentConfig {
 
         NavMessageSource.Bundle[] bundles = new NavMessageSource.Bundle[kravdialogInformasjonHolder.getSoknadsKonfigurasjoner().size()];
         int index = 0;
+
         for (KravdialogInformasjon kravdialogInformasjon : kravdialogInformasjonHolder.getSoknadsKonfigurasjoner()) {
+            String property = System.getProperty(getPropertyKey(kravdialogInformasjon.getBundleName()));
+            if( property == null ) {
+                throw new RuntimeException("Property: " + getPropertyKey(kravdialogInformasjon.getBundleName()) + " finnes ikke");
+            }
             bundles[index++] = getBundle(kravdialogInformasjon.getBundleName());
         }
 
@@ -44,9 +49,13 @@ public class ContentConfig {
         return messageSource;
     }
 
+    private String getPropertyKey(String bundleName) {
+        return "folder." + bundleName + ".path";
+    }
+
     private NavMessageSource.Bundle getBundle(String bundleName) {
         NavMessageSource.Bundle dialogBundle;
-        final String remoteFile = new File(System.getProperty("folder." + bundleName + ".path")).toURI().toString() + delstiTilbundlefilPaaDisk + "/" + bundleName;
+        final String remoteFile = new File(System.getProperty(getPropertyKey(bundleName))).toURI().toString() + delstiTilbundlefilPaaDisk + "/" + bundleName;
         dialogBundle = new NavMessageSource.Bundle(bundleName, remoteFile, null);
         return dialogBundle;
     }
