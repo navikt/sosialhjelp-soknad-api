@@ -29,7 +29,6 @@ public final class JsonFamilieConverter {
         final JsonFamilie jsonFamilie = new JsonFamilie();
         jsonFamilie.setSivilstatus(tilJsonSivilstatus(webSoknad));
         jsonFamilie.setForsorgerplikt(tilJsonForsorgerPlikt(webSoknad));
-        // TODO: Fortsette på familie...
 
         return jsonFamilie;
     }
