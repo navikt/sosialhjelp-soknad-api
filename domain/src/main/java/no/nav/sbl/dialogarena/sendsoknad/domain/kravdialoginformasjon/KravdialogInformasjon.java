@@ -46,8 +46,6 @@ public interface KravdialogInformasjon {
 
     String getBundleName();
 
-    boolean brukerEnonicLedetekster();
-
     SoknadType getSoknadstype();
 
     String getKvitteringTemplate();
@@ -79,9 +77,6 @@ public interface KravdialogInformasjon {
         }
         public boolean skalSendeMedFullSoknad(){
             return false;
-        }
-        public boolean brukerEnonicLedetekster(){
-            return true;
         }
 
         public SoknadType getSoknadstype() {

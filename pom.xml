@@ -846,29 +846,6 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <!-- for å synke innhold mot Enonic kjør: mvn modig-content:sync -Denonic.username=XXX -Denonic.password=XXX -Denonic.url=http://<ip-adresse til admin-node i sbs>:8080 Se https://fasit.adeo.no/applications/edit?0&application=837789 for IP-adresser -->
-                    <groupId>no.nav.modig</groupId>
-                    <artifactId>modig-content-maven-plugin</artifactId>
-                    <version>2.0.0</version>
-                    <configuration>
-                        <propertiesFilesRoot>${project.basedir}/web/src/main/resources/content</propertiesFilesRoot>
-                        <propertiesFiler>
-                            <ssnb>sendsoknad_nb_NO.properties</ssnb>
-                            <ssen>sendsoknad_en.properties</ssen>
-                            <tsnb>tilleggsstonader_nb_NO.properties</tsnb>
-                            <rdrnb>refusjondagligreise_nb_NO.properties</rdrnb>
-                            <tpnb>tiltakspenger_nb_NO.properties</tpnb>
-                        </propertiesFiler>
-                        <menyPunktPaths>
-                            <ssnb>/site/18/app/sendsoknad/nb_NO/tekster</ssnb>
-                            <ssen>/site/18/app/sendsoknad/en/tekster</ssen>
-                            <tsnb>/site/18/app/tilleggsstonader/nb_NO/tekster</tsnb>
-                            <rdrnb>/site/18/app/refusjondagligreise/nb_NO/tekster</rdrnb>
-                            <tpnb>/site/18/app/tiltakspenger/nb_NO/tekster</tpnb>
-                        </menyPunktPaths>
-                    </configuration>
-                </plugin>
-                <plugin>
                     <groupId>org.jboss.as.plugins</groupId>
                     <artifactId>jboss-as-maven-plugin</artifactId>
                     <version>7.4.Final</version>

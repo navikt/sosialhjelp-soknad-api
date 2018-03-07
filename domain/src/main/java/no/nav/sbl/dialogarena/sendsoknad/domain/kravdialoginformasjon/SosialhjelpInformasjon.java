@@ -77,11 +77,6 @@ public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett
     }
 
     @Override
-    public boolean brukerEnonicLedetekster() {
-        return false;
-    }
-
-    @Override
     public SoknadType getSoknadstype() {
         return SoknadType.SEND_SOKNAD_KOMMUNAL;
     }
