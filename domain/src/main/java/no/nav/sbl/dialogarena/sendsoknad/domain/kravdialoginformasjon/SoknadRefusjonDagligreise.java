@@ -61,5 +61,4 @@ public class SoknadRefusjonDagligreise extends KravdialogInformasjon.DefaultOpps
     public Steg[] getStegliste() {
         return new Steg[]{SOKNAD, OPPSUMMERING};
     }
-
 }
