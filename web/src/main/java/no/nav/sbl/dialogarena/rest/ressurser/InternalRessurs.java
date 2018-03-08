@@ -30,8 +30,6 @@ import static no.nav.sbl.dialogarena.rest.utils.MocksetupUtils.*;
 @Path("/internal")
 public class InternalRessurs {
     @Inject
-    private ContentConfig contentConfig;
-    @Inject
     private LagringsScheduler lagringsScheduler;
     @Inject
     private CacheManager cacheManager;
@@ -92,7 +90,6 @@ public class InternalRessurs {
         if ("cms".equals(type)) {
             cacheManager.getCache("cms.content").clear();
             cacheManager.getCache("cms.article").clear();
-            contentConfig.lastInnNyeInnholdstekster();
             messageSource.clearCache();
             return "CACHE RESET OK";
         }
