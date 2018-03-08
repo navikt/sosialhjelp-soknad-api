@@ -18,10 +18,14 @@ resources:
     cpu: 1
     memory: 2Gi
   requests:
-    cpu: 1
+    cpu: 0.5
     memory: 2Gi
 fasitResources:
   used:
+  - alias: srvSoknadsosialhjelpCredential
+    resourceType: credential
+  - alias: srvSoknadsosialhjelp
+    resourceType: certificate
   - alias: soknadsosialhjelpDataSource
     resourceType: datasource
   - alias: virksomhet:Brukerprofil_v1
@@ -88,3 +92,40 @@ fasitResources:
     resourceType: credential
 #  - alias: suspender
 #    resourceType: credential
+
+# TODO:
+# <applicationCertificate alias="srvSendsoknad"/>
+# <fileLibrary alias="soknadsosialhjelp.ledetekster" mapToProperty="folder.soknadsosialhjelp" />
+# ... alle utkommenterte linjer i nais-oppsettet over.
+#
+# Bør håndteres etterhvert:
+# <directory name="sendsoknad" mapToProperty="sendsoknad.datadir" temporary="false"/>
+# <fileLibrary alias="soknadforeldrepenger.ledetekster" mapToProperty="folder.foreldrepenger" />
+# <fileLibrary alias="soknadaap.ledetekster" mapToProperty="folder.soknadaap" />
+# <fileLibrary alias="soknaddagpenger.ledetekster" mapToProperty="folder.dagpenger" />
+# <fileLibrary alias="soknadbilstonad.ledetekster" mapToProperty="folder.bilstonad" />
+# <fileLibrary alias="soknad-aap-utland.ledetekster" mapToProperty="folder.soknad-aap-utland" />
+#
+# Kan trolig ignoreres for DigiSos:
+# <applicationProperties alias="soknad.ettersending.properties"/>
+# <applicationProperties alias="soknad.properties"/>
+# <applicationProperties alias="soknad.featuretoggles"/>
+#
+#
+# TODO - ANNET OPPSETT FRA app_config:
+#    <serverOptions>
+#        <cron description="Slett tmp-filer" schedule="0 2 * * *" command="find /tmp/ -name 'gs_*' -mtime +5 -delete"/>
+#        <cron description="Slett app-tmp-filer" schedule="0 2 * * *" command="find /app/sendsoknad/temp/java-tmp/ -name 'rep*tmp' -mtime +5 -delete"/>
+#        <memoryParameters resourceAlias="brukerdialog-memparams"/>
+#    </serverOptions>
+#
+#    <security serviceUserResourceAlias="srvSendsoknad">
+#        <logins>
+#            <openAm>
+#                <contextRoot>sendsoknad</contextRoot>
+#            </openAm>
+#        </logins>
+#    </security>
+#
+#    <loadBalancer isAlive="/sendsoknad/internal/isAlive"/>
+#    <suspend url="/sendsoknad/management/suspend" credential="suspender" timeoutSeconds="25" />
