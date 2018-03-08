@@ -1,0 +1,37 @@
+package no.nav.sbl.dialogarena.server;
+
+import javax.security.auth.Subject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import no.nav.modig.core.context.SubjectHandler;
+
+public class ThreadLocalSubjectHandler extends SubjectHandler {
+    
+    private static final Logger log = LoggerFactory.getLogger(ThreadLocalSubjectHandler.class);
+
+    @Override
+    protected Subject getSubject() {
+        return null;
+        
+        /* TODO: Noe à la:
+        final ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (servletRequestAttributes == null) {
+            throw new RuntimeException("Ingen request funnet på RequestContextHolder. \n" +
+                    "ThreadLocalSubjectHandler krever at request holdes av Spring. \n" +
+                    "Benytt RequestContextListener eller RequestContextFilter til å ta vare på request. \n" +
+                    "Disse konfigureres opp i web.xml");
+        }
+        final Request request = (Request) servletRequestAttributes.getRequest();
+        final Authentication authentication = request.getAuthentication();
+
+        if (authentication instanceof Authentication.User) {
+            return ((Authentication.User) authentication).getUserIdentity().getSubject();
+        } else {
+            return null;
+        }
+        */
+    }
+
+}
