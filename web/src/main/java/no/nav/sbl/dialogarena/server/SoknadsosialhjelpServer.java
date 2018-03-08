@@ -54,6 +54,7 @@ public class SoknadsosialhjelpServer {
             readEnvironmentProperties();
             System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
         } else {
+            log.info("Running with DEVELOPER (local) setup.");
             configureLocalSecurity();
         }
         
