@@ -14,7 +14,6 @@
         <module>domain</module>
         <module>consumer</module>
         <module>web</module>
-        <module>jee</module>
         <module>mock</module>
     </modules>
 
