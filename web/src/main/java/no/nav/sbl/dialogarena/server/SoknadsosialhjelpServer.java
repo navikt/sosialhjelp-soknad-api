@@ -2,13 +2,14 @@ package no.nav.sbl.dialogarena.server;
 
 import static java.lang.System.setProperty;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
 import javax.sql.DataSource;
 
-//import org.eclipse.jetty.jaas.JAASLoginService;
+import org.eclipse.jetty.jaas.JAASLoginService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -18,35 +19,50 @@ import no.nav.modig.core.context.StaticSubjectHandler;
 public class SoknadsosialhjelpServer {
 
     private static final Logger log = LoggerFactory.getLogger(SoknadsosialhjelpServer.class);
-    //public static final int PORT = 8181;
     public static final int PORT = 8080;
     public final Jetty jetty;
 
+    
     public SoknadsosialhjelpServer() throws Exception {
-        configureSecurity();
-        configureLocalConfig();
-        disableBatch();
+        this(PORT, null, "/soknadsosialhjelp-server");
+    }
+    
+    public SoknadsosialhjelpServer(int listenPort, File overrideWebXmlFile, String contextPath) throws Exception {
+        configure();
         
         final DataSource dataSource = buildDataSource();
         
         setProperty("java.security.auth.login.config", "login.conf");
-        //JAASLoginService jaasLoginService = new JAASLoginService("OpenAM Realm");
-        //jaasLoginService.setLoginModuleName("openam");
+        final JAASLoginService jaasLoginService = new JAASLoginService("OpenAM Realm");
+        jaasLoginService.setLoginModuleName("openam");
         jetty = new Jetty.JettyBuilder()
-                .at("/soknadsosialhjelp-server")
-                //.withLoginService(jaasLoginService)
-                //.overrideWebXml(new File("src/main/resources/override-web.xml"))
+                .at(contextPath)
+                .withLoginService(jaasLoginService)
+                .overrideWebXml(overrideWebXmlFile)
                 //.sslPort(PORT + 100)
                 .addDatasource(dataSource, "jdbc/SoknadInnsendingDS")
-                .port(PORT)
+                .port(listenPort)
                 .buildJetty();
     }
+    
     
     public void start() {
         jetty.start();
     }
     
-    public void mapNaisProperties() throws IOException {
+    private void configure() throws IOException {
+        if (isRunningOnNais()) {
+            mapNaisProperties();
+            readEnvironmentProperties();
+            System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
+        } else {
+            configureLocalSecurity();
+        }
+        
+        disableBatch();
+    }
+    
+    private void mapNaisProperties() throws IOException {
         final Properties props = readProperties("naisPropertyMapping.properties");
 
         for (String env : props.stringPropertyNames()) {
@@ -61,19 +77,25 @@ public class SoknadsosialhjelpServer {
     private void disableBatch() {
         setProperty("sendsoknad.batch.enabled", "false");
     }
-
-    private void configureLocalConfig() throws IOException {
-        setFrom("environment-test.properties");
-        mapNaisProperties();
-        /*
-        if (System.getProperty("db.url") == null) {
-            updateJavaProperties(readProperties("oracledb.properties"));
-        }
-        */
-        setProperty("no.nav.sbl.dialogarena.sendsoknad.sslMock", "true");
-        setProperty(StaticSubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
+    
+    private static boolean isRunningOnNais() {
+        return determineEnvironment() != null;
     }
     
+    private static String determineEnvironment() {
+        final String env = System.getenv("FASIT_ENVIRONMENT_NAME");
+        if (env == null || env.trim().equals("")) {
+            return null;
+        }
+        return env;
+    }
+    
+    private void readEnvironmentProperties() throws IOException {
+        final String env = determineEnvironment();
+        setFrom("environment/" + env + "/environment.properties");
+        log.info("Lastet inn oppsett for miljø: " + env);
+    }
+
     public static void setFrom(String resource) throws IOException {
         final Properties props = readProperties(resource);
         
@@ -93,16 +115,15 @@ public class SoknadsosialhjelpServer {
         return props;
     }
 
-    private void configureSecurity() {
-        setProperty("no.nav.modig.security.sts.url", "http://e34jbsl01634.devillo.no:8080/SecurityTokenServiceProvider"); // Microscopium U1
-        setProperty("no.nav.modig.security.systemuser.username", "srvSendsoknad");
-        setProperty("no.nav.modig.security.systemuser.password", "test");
-        setProperty("org.apache.cxf.stax.allowInsecureParser", "true");
+    private void configureLocalSecurity() throws IOException {
+        setFrom("environment-test.properties");
+        updateJavaProperties(readProperties("oracledb.properties"));
+        setProperty(StaticSubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
     }
 
     // For å logge inn lokalt må du sette cookie i selftesten: document.cookie="nav-esso=01015245464-4; path=/sendsoknad/"
     
-    public static DataSource buildDataSource() throws IOException {
+    private static DataSource buildDataSource() throws IOException {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("oracle.jdbc.driver.OracleDriver");
         dataSource.setUrl(System.getProperty("db.url"));
