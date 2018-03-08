@@ -14,8 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
-import no.nav.modig.core.context.StaticSubjectHandler;
-
 public class SoknadsosialhjelpServer {
 
     private static final Logger log = LoggerFactory.getLogger(SoknadsosialhjelpServer.class);
@@ -24,13 +22,13 @@ public class SoknadsosialhjelpServer {
 
     
     public SoknadsosialhjelpServer() throws Exception {
-        this(PORT, null, "/soknadsosialhjelp-server");
+        this(PORT, null, "/soknadsosialhjelp-server", null);
     }
     
-    public SoknadsosialhjelpServer(int listenPort, File overrideWebXmlFile, String contextPath) throws Exception {
+    public SoknadsosialhjelpServer(int listenPort, File overrideWebXmlFile, String contextPath, DataSource dataSource) throws Exception {
         configure();
         
-        final DataSource dataSource = buildDataSource();
+        final DataSource ds = (dataSource != null) ? dataSource : buildDataSource();
         
         setProperty("java.security.auth.login.config", "login.conf");
         final JAASLoginService jaasLoginService = new JAASLoginService("OpenAM Realm");
@@ -40,7 +38,7 @@ public class SoknadsosialhjelpServer {
                 .withLoginService(jaasLoginService)
                 .overrideWebXml(overrideWebXmlFile)
                 //.sslPort(PORT + 100)
-                .addDatasource(dataSource, "jdbc/SoknadInnsendingDS")
+                .addDatasource(ds, "jdbc/SoknadInnsendingDS")
                 .port(listenPort)
                 .buildJetty();
     }
@@ -118,7 +116,6 @@ public class SoknadsosialhjelpServer {
     private void configureLocalSecurity() throws IOException {
         setFrom("environment-test.properties");
         updateJavaProperties(readProperties("oracledb.properties"));
-        setProperty(StaticSubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
     }
 
     // For å logge inn lokalt må du sette cookie i selftesten: document.cookie="nav-esso=***REMOVED***-4; path=/sendsoknad/"

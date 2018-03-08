@@ -1,34 +1,33 @@
 package no.nav.sbl.dialogarena.integration;
 
-import no.nav.sbl.dialogarena.StartSoknadJetty;
+import static java.lang.System.setProperty;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext.buildDataSource;
+import static no.nav.sbl.dialogarena.test.path.FilesAndDirs.TEST_RESOURCES;
+
+import java.io.File;
+
 import org.glassfish.jersey.test.TestProperties;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-import java.io.File;
-
-import static no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext.buildDataSource;
-import static no.nav.sbl.dialogarena.test.path.FilesAndDirs.TEST_RESOURCES;
+import no.nav.modig.core.context.StaticSubjectHandler;
+import no.nav.sbl.dialogarena.server.SoknadsosialhjelpServer;
 
 public abstract class AbstractIT {
     private static final int PORT = 10001;
-    private static StartSoknadJetty jetty;
+    private static SoknadsosialhjelpServer jetty;
 
     @BeforeClass
     public static void beforeClass() throws Exception {
+        System.setProperty("no.nav.sbl.dialogarena.sendsoknad.hsqldb", "true");
         System.setProperty(TestProperties.CONTAINER_FACTORY, "org.glassfish.jersey.test.external.ExternalTestContainerFactory");
         System.setProperty(TestProperties.CONTAINER_PORT, "" + PORT);
         System.setProperty(TestProperties.LOG_TRAFFIC, "true");
         System.setProperty("jersey.test.host", "localhost");
+        jetty = new SoknadsosialhjelpServer(PORT, new File(TEST_RESOURCES, "override-web.xml"), "/sendsoknad", buildDataSource("hsqldb.properties"));
         System.setProperty("no.nav.sbl.dialogarena.sendsoknad.hsqldb", "true");
-
-        jetty = new StartSoknadJetty(
-                StartSoknadJetty.Env.Intellij,
-                new File(TEST_RESOURCES, "override-web-integration.xml"),
-                buildDataSource("hsqldb.properties"),
-                PORT
-        );
-        jetty.jetty.start();
+        setProperty(StaticSubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
+        jetty.start();
     }
 
     @AfterClass
