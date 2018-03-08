@@ -123,7 +123,11 @@ public final class Jetty {
         
         private static void useWebapp(WebAppContext webAppContext) {
             if (isDevEnviroment()) {
-                webAppContext.setResourceBase("src/main/resources/webapp");
+                if (new File("src/main/resources/webapp").exists()) {
+                    webAppContext.setResourceBase("src/main/resources/webapp");
+                } else {
+                    webAppContext.setResourceBase("web/src/main/resources/webapp");
+                }
             } else {
                 webAppContext.setBaseResource(Resource.newClassPathResource("webapp", true, false));
             }
