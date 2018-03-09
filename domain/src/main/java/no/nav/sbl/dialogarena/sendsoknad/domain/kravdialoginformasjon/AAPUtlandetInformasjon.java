@@ -32,15 +32,6 @@ public class AAPUtlandetInformasjon extends KravdialogInformasjon.DefaultOppsett
         return skjemanummer;
     }
 
-    @Override
-    public boolean brukerNyOppsummering() {
-        return true;
-    }
-
-    @Override
-    public boolean skalSendeMedFullSoknad() {
-        return false;
-    }
 
     @Override
     public String getBundleName() {
