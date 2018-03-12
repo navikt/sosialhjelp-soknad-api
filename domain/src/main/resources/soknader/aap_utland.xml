@@ -10,7 +10,6 @@
     </faktum>
     <faktum>
         <id>oppholdikkehinder</id>
-        <type>bool</type>
     </faktum>
 
     <xi:include href="/felles/personalia.xml" />
