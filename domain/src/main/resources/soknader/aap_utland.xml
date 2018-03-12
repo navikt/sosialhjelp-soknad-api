@@ -8,6 +8,9 @@
     <faktum>
         <id>tildato</id>
     </faktum>
+    <faktum>
+        <id>oppholdikkehinder</id>
+    </faktum>
 
     <xi:include href="/felles/personalia.xml" />
 </soknad>
