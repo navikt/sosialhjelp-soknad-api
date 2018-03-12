@@ -2,8 +2,12 @@ package no.nav.sbl.dialogarena.server;
 
 import javax.security.auth.Subject;
 
+import org.eclipse.jetty.server.Authentication;
+import org.eclipse.jetty.server.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import no.nav.modig.core.context.SubjectHandler;
 
@@ -12,10 +16,7 @@ public class ThreadLocalSubjectHandler extends SubjectHandler {
     private static final Logger log = LoggerFactory.getLogger(ThreadLocalSubjectHandler.class);
 
     @Override
-    protected Subject getSubject() {
-        return null;
-        
-        /* TODO: Noe à la:
+    public Subject getSubject() {
         final ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (servletRequestAttributes == null) {
             throw new RuntimeException("Ingen request funnet på RequestContextHolder. \n" +
@@ -31,7 +32,6 @@ public class ThreadLocalSubjectHandler extends SubjectHandler {
         } else {
             return null;
         }
-        */
     }
 
 }

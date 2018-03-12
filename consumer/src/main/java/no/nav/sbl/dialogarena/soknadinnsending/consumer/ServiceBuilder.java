@@ -21,7 +21,7 @@ import java.util.Map;
 import static java.lang.System.getProperty;
 import static no.nav.modig.security.sts.utility.STSConfigurationUtility.configureStsForExternalSSO;
 import static no.nav.modig.security.sts.utility.STSConfigurationUtility.configureStsForSystemUser;
-import static org.apache.cxf.common.util.SOAPConstants.MTOM_ENABLED;
+//import static org.apache.cxf.common.util.SOAPConstants.MTOM_ENABLED;
 import static org.apache.cxf.frontend.ClientProxy.getClient;
 import static org.apache.cxf.ws.security.SecurityConstants.MUST_UNDERSTAND;
 
@@ -89,7 +89,8 @@ public final class ServiceBuilder<T> {
 
     public ServiceBuilder<T> withProperties() {
         Map<String, Object> props = new HashMap<>();
-        props.put(MTOM_ENABLED, "true");
+        // TODO: Trenger vi denne med ny versjon av CXF? :
+        //props.put(MTOM_ENABLED, "true");
         props.put(MUST_UNDERSTAND, false);
         // Denne må settes for å unngå at CXF instansierer EhCache med en non-default konfigurasjon. Denne sørger
         // for at vår konfigurasjon faktisk blir lastet.

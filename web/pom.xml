@@ -233,6 +233,15 @@
             <artifactId>modig-security-filter</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>no.nav.modig</groupId>
+            <artifactId>modig-security-ws</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.modig</groupId>
+            <artifactId>modig-security-sts</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -252,7 +261,7 @@
         </dependency>
         <dependency>
             <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache-core</artifactId>
+            <artifactId>ehcache</artifactId>
             <scope>runtime</scope>
         </dependency>
         <dependency>
