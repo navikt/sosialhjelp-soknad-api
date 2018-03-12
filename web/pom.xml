@@ -328,8 +328,8 @@
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-jaas</artifactId>
             <scope>compile</scope>
-            <version>9.0.5.***REMOVED***15</version>
-        </dependency>
+            <version>9.4.8.***REMOVED***21</version>
+                 </dependency>
         <!--
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
@@ -338,38 +338,36 @@
             <version>9.0.5.***REMOVED***15</version>
         </dependency>
         -->
-        
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-security</artifactId>
             <scope>compile</scope>
-            <version>9.0.5.***REMOVED***15</version>
+            <version>9.4.8.***REMOVED***21</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-http</artifactId>
             <scope>compile</scope>
-            <version>9.0.5.***REMOVED***15</version>
+            <version>9.4.8.***REMOVED***21</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
             <scope>compile</scope>
-            <version>9.0.5.***REMOVED***15</version>
+            <version>9.4.8.***REMOVED***21</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-util</artifactId>
             <scope>compile</scope>
-            <version>9.0.5.***REMOVED***15</version>
+            <version>9.4.8.***REMOVED***21</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-webapp</artifactId>
             <scope>compile</scope>
-            <version>9.0.5.***REMOVED***15</version>
+            <version>9.4.8.***REMOVED***21</version>
         </dependency>
-        
         <dependency>
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-lang</artifactId>
@@ -382,12 +380,11 @@
             <groupId>net.sourceforge.collections</groupId>
             <artifactId>collections-generic</artifactId>
         </dependency>
-        
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-plus</artifactId>
             <scope>compile</scope>
-            <version>9.0.5.***REMOVED***15</version>
+            <version>9.4.8.***REMOVED***21</version>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>

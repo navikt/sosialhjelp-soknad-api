@@ -808,7 +808,7 @@
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-jaas</artifactId>
                 <scope>test</scope>
-                <version>9.0.5.***REMOVED***15</version>
+                <version>9.4.8.***REMOVED***21</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>
