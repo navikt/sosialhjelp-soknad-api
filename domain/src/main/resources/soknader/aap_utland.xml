@@ -11,6 +11,9 @@
         <id>tildato</id>
         <type>dato</type>
     </faktum>
+    <faktum>
+        <id>oppholdikkehinder</id>
+    </faktum>
 
     <xi:include href="/felles/personalia.xml" />
 </soknad>
