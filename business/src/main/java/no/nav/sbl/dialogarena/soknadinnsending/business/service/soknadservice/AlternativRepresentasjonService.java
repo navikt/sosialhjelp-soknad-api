@@ -1,13 +1,13 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
 
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLAlternativRepresentasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.FilData;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
 import org.springframework.stereotype.Component;
 
@@ -44,14 +44,14 @@ public class AlternativRepresentasjonService {
         }
     }
 
-    public List<XMLAlternativRepresentasjon> lagXmlFormat(List<AlternativRepresentasjon> alternativeRepresentasjoner) {
-        return alternativeRepresentasjoner.stream().map(r ->
-                new XMLAlternativRepresentasjon()
-                        .withFilnavn(r.getFilnavn())
-                        .withFilstorrelse(r.getContent().length + "")
-                        .withMimetype(r.getMimetype())
-                        .withUuid(r.getUuid()))
-                .collect(toList());
-
+    public List<FilData> lagXmlFormat(List<AlternativRepresentasjon> alternativeRepresentasjoner) {
+        return alternativeRepresentasjoner.stream().map(r -> {
+            FilData f = new FilData();
+            f.filnavn = r.getFilnavn();
+            f.filStorrelse = "" + r.getContent().length;
+            f.mimetype = r.getMimetype();
+            f.filUuid = r.getUuid();
+            return f;
+        }).collect(toList());
     }
 }

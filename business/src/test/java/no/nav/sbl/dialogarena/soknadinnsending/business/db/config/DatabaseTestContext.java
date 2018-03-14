@@ -95,6 +95,11 @@ public class DatabaseTestContext {
             st.execute("create sequence VEDLEGG_ID_SEQ as integer start with 1 increment by 1");
             st.execute("drop table FILLAGER if exists");
             st.execute("create table FILLAGER (behandlingsid varchar(255), uuid varchar(255), eier varchar(255), data blob)");
+            st.execute("drop sequence METADATA_ID_SEQ if exists");
+            st.execute("create sequence METADATA_ID_SEQ as integer start with 1 increment by 1");
+            st.execute("create table SOKNADMETADATA (id numeric not null, behandlingsId varchar(255) not null, tilknyttetBehandlingsId varchar(255), skjema varchar(255), fnr varchar(255), " +
+                    "hovedskjema clob, vedlegg clob, orgnr varchar(255), navenhet varchar(255), fiksforsendelseid varchar(255), soknadtype varchar(255), innsendingstatus varchar(255), " +
+                    "opprettetdato timestamp, sistendretdato timestamp, innsendtdato timestamp)");
         } catch (SQLException e) {
             throw new RuntimeException("Feil ved oppretting av databasen", e);
         }

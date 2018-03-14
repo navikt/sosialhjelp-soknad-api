@@ -129,8 +129,8 @@ public class EttersendingServiceTest {
                                 new XMLHovedskjema().withUuid("uidHovedskjema"),
                                 new XMLVedlegg().withSkjemanummer("MittSkjemaNummer").withInnsendingsvalg(Vedlegg.Status.SendesSenere.name())));
 
-        when(henvendelsesConnector.hentSoknad(ettersendingsBehandlingId)).thenReturn(ettersendingResponse);
-        when(henvendelsesConnector.hentSoknad(behandlingsId)).thenReturn(orginalInnsending);
+//        when(henvendelsesConnector.hentSoknad(ettersendingsBehandlingId)).thenReturn(ettersendingResponse);
+//        when(henvendelsesConnector.hentSoknad(behandlingsId)).thenReturn(orginalInnsending);
         when(henvendelsesConnector.hentBehandlingskjede(behandlingsId)).thenReturn(asList(behandlingsKjedeElement));
         when(henvendelsesConnector.startEttersending(orginalInnsending)).thenReturn(ettersendingsBehandlingId);
 
@@ -161,7 +161,7 @@ public class EttersendingServiceTest {
                 .withBehandlingsId(behandlingsId)
                 .withStatus(WSStatus.UNDER_ARBEID.toString());
         when(henvendelsesConnector.hentBehandlingskjede(behandlingsId)).thenReturn(asList(behandlingskjedeElement));
-        when(henvendelsesConnector.hentSoknad(behandlingsId)).thenReturn(orginalInnsending);
+//        when(henvendelsesConnector.hentSoknad(behandlingsId)).thenReturn(orginalInnsending);
 
         ettersendingService.start(behandlingsId);
     }

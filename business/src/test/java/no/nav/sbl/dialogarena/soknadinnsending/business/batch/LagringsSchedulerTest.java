@@ -61,7 +61,7 @@ public class LagringsSchedulerTest {
                 .medStatus(SoknadInnsendingStatus.UNDER_ARBEID);
         when(soknadRepository.plukkSoknadTilMellomlagring()).thenReturn(Optional.of(webSoknad),Optional.empty());
         scheduler.mellomlagreSoknaderOgNullstillLokalDb();
-        verify(henvendelseService).avbrytSoknad(behandlingsId);
+        verify(henvendelseService).avbrytSoknad(behandlingsId, true);
         verify(soknadRepository).slettSoknad(eq(webSoknad), eq(HendelseType.LAGRET_I_HENVENDELSE));
     }
 

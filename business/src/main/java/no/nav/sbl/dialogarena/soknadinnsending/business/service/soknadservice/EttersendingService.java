@@ -13,6 +13,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseServi
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
+import org.apache.commons.lang3.NotImplementedException;
 import org.joda.time.DateTime;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -52,6 +53,9 @@ public class EttersendingService {
     private SoknadMetricsService soknadMetricsService;
 
     public String start(String behandlingsIdDetEttersendesPaa) {
+        if (true) {
+            throw new NotImplementedException("Støtter ikke ettersendelse enda"); // TODO
+        }
         List<WSBehandlingskjedeElement> behandlingskjede = henvendelseService.hentBehandlingskjede(behandlingsIdDetEttersendesPaa);
         WSHentSoknadResponse nyesteSoknad = hentNyesteSoknadFraHenvendelse(behandlingskjede);
 
@@ -72,11 +76,12 @@ public class EttersendingService {
                 .sorted(NYESTE_FORST)
                 .collect(toList());
 
-        return henvendelseService.hentSoknad(nyesteForstBehandlinger.get(0).getBehandlingsId());
+        return null; // TODO støtte ettersendelse
+//        return henvendelseService.hentSoknad(nyesteForstBehandlinger.get(0).getBehandlingsId());
     }
 
     private WebSoknad lagreEttersendingTilLokalDb(String originalBehandlingsId, List<WSBehandlingskjedeElement> behandlingskjede, String behandlingskjedeId, String ettersendingsBehandlingId) {
-        List<XMLMetadata> alleVedlegg = ((XMLMetadataListe) henvendelseService.hentSoknad(ettersendingsBehandlingId).getAny()).getMetadata();
+        List<XMLMetadata> alleVedlegg = null; // TODO ((XMLMetadataListe) henvendelseService.hentSoknad(ettersendingsBehandlingId).getAny()).getMetadata();
         List<XMLMetadata> vedleggBortsettFraKvittering = alleVedlegg.stream().filter(IKKE_KVITTERING).collect(toList());
 
                 WebSoknad ettersending = lagSoknad(ettersendingsBehandlingId, behandlingskjedeId, finnHovedskjema(vedleggBortsettFraKvittering));
