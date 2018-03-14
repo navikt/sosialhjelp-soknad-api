@@ -106,11 +106,10 @@ public class ContentConfig {
         return new Pingable() {
             @Override
             public Ping ping() {
-                String url = "";
+                final String pingUrl = cmsBaseUrl + "/app/sendsoknad/nb_NO/tekster";
                 HttpURLConnection connection = null;
                 try {
-                    url = System.getProperty("dialogarena.cms.url");
-                    connection = (HttpURLConnection) new URL(url).openConnection();
+                    connection = (HttpURLConnection) new URL(pingUrl).openConnection();
                     connection.setConnectTimeout(10000);
                     if (connection.getResponseCode() == HTTP_OK) {
                         return Ping.lyktes("APPRES_CMS");
@@ -118,7 +117,7 @@ public class ContentConfig {
                         throw new ApplicationException("Fikk feilkode fra CMS: " + connection.getResponseCode() + ": " + connection.getResponseMessage());
                     }
                 } catch (Exception e) {
-                    logger.warn("CMS not reachable on " + url, e);
+                    logger.warn("CMS not reachable on " + pingUrl, e);
                     return Ping.feilet("APPRES_CMS", e);
                 } finally {
                     if (connection != null) {
