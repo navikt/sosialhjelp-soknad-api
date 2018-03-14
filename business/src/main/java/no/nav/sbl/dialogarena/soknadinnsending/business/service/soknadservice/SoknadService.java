@@ -75,7 +75,7 @@ public class SoknadService {
          * I tillegg blir det liggende igjen mange vedlegg for søknader som er avbrutt før dette kallet ble lagt til.
          * */
         fillagerService.slettAlle(soknad.getBrukerBehandlingId());
-        henvendelseService.avbrytSoknad(soknad.getBrukerBehandlingId());
+        henvendelseService.avbrytSoknad(soknad.getBrukerBehandlingId(), false);
         lokalDb.slettSoknad(soknad, HendelseType.AVBRUTT_AV_BRUKER);
 
         soknadMetricsService.avbruttSoknad(soknad.getskjemaNummer(), soknad.erEttersending());

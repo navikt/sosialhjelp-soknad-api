@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.*;
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
@@ -12,11 +11,14 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.FilData;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.HovedskjemaMetadata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadataListe;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
 import org.joda.time.DateTime;
 import org.joda.time.base.BaseDateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -36,7 +38,6 @@ import java.util.function.Predicate;
 import static java.util.Collections.sort;
 import static java.util.UUID.randomUUID;
 import static javax.xml.bind.JAXB.unmarshal;
-import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.LASTET_OPP;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
@@ -102,17 +103,11 @@ public class SoknadDataFletter {
 
 
     private WebSoknad hentFraHenvendelse(String behandlingsId, boolean hentFaktumOgVedlegg) {
-        WSHentSoknadResponse wsSoknadsdata = henvendelseService.hentSoknad(behandlingsId);
+        SoknadMetadata soknadMetadata = henvendelseService.hentSoknad(behandlingsId);
 
-        Optional<XMLMetadata> hovedskjemaOptional = ((XMLMetadataListe) wsSoknadsdata.getAny()).getMetadata().stream()
-                .filter(xmlMetadata -> xmlMetadata instanceof XMLHovedskjema)
-                .findFirst();
-
-        XMLHovedskjema hovedskjema = (XMLHovedskjema) hovedskjemaOptional.orElseThrow(() -> new ApplicationException("Kunne ikke hente opp søknad"));
-
-        SoknadInnsendingStatus status = valueOf(wsSoknadsdata.getStatus());
-        if (status.equals(UNDER_ARBEID)) {
-            WebSoknad soknadFraFillager = unmarshal(new ByteArrayInputStream(fillagerService.hentFil(hovedskjema.getUuid())), WebSoknad.class);
+        if (UNDER_ARBEID.equals(soknadMetadata.status)) {
+            byte[] xmlFraFillager = fillagerService.hentFil(soknadMetadata.hovedskjema.filUuid);
+            WebSoknad soknadFraFillager = unmarshal(new ByteArrayInputStream(xmlFraFillager), WebSoknad.class);
             lokalDb.populerFraStruktur(soknadFraFillager);
             vedleggService.populerVedleggMedDataFraHenvendelse(soknadFraFillager, fillagerService.hentFiler(soknadFraFillager.getBrukerBehandlingId()));
             if (hentFaktumOgVedlegg) {
@@ -120,11 +115,11 @@ public class SoknadDataFletter {
             }
             return lokalDb.hentSoknad(behandlingsId);
         } else {
-            // søkndadsdata er slettet i henvendelse, har kun metadata
+            // søkndadsdata er slettet, har kun metadata
             return new WebSoknad()
                     .medBehandlingId(behandlingsId)
-                    .medStatus(status)
-                    .medskjemaNummer(hovedskjema.getSkjemanummer());
+                    .medStatus(soknadMetadata.status)
+                    .medskjemaNummer(soknadMetadata.skjema);
         }
     }
 
@@ -410,11 +405,11 @@ public class SoknadDataFletter {
         logger.info("Lagrer søknad som fil til henvendelse for behandling {}", soknad.getBrukerBehandlingId());
         fillagerService.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(pdf));
 
-        XMLHovedskjema hovedskjema = lagXmlHovedskjemaMedAlternativRepresentasjon(pdf, soknad, fullSoknad);
-        XMLVedlegg[] vedlegg = convertToXmlVedleggListe(vedleggService.hentVedleggOgKvittering(soknad));
+        HovedskjemaMetadata hovedskjema = lagHovedskjemaMedAlternativRepresentasjon(pdf, soknad, fullSoknad);
+        VedleggMetadataListe vedlegg = convertToXmlVedleggListe(vedleggService.hentVedleggOgKvittering(soknad));
+        Map<String, String> ekstraMetadata = ekstraMetadataService.hentEkstraMetadata(soknad);
 
-        XMLSoknadMetadata soknadMetadata = ekstraMetadataService.hentEkstraMetadata(soknad);
-        henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, vedlegg, soknadMetadata);
+        henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, vedlegg, ekstraMetadata);
         lokalDb.slettSoknad(soknad,HendelseType.INNSENDT);
 
 
@@ -423,39 +418,29 @@ public class SoknadDataFletter {
 
     }
 
-    private XMLHovedskjema lagXmlHovedskjemaMedAlternativRepresentasjon(byte[] pdf, WebSoknad soknad, byte[] fullSoknad) {
-        XMLHovedskjema hovedskjema = new XMLHovedskjema()
-                .withInnsendingsvalg(LASTET_OPP.toString())
-                .withSkjemanummer(skjemanummer(soknad))
-                .withFilnavn(skjemanummer(soknad))
-                .withMimetype("application/pdf")
-                .withFilstorrelse("" + pdf.length)
-                .withUuid(soknad.getUuid())
-                .withJournalforendeEnhet(journalforendeEnhet(soknad));
+    private HovedskjemaMetadata lagHovedskjemaMedAlternativRepresentasjon(byte[] pdf, WebSoknad soknad, byte[] fullSoknad) {
+        HovedskjemaMetadata hovedskjema = new HovedskjemaMetadata();
+        hovedskjema.filnavn = skjemanummer(soknad);
+        hovedskjema.mimetype = "application/pdf";
+        hovedskjema.filStorrelse = "" + pdf.length;
+        hovedskjema.filUuid = soknad.getUuid();
 
-        if (!soknad.erEttersending()) {
-            XMLAlternativRepresentasjonListe xmlAlternativRepresentasjonListe = new XMLAlternativRepresentasjonListe();
-            hovedskjema = hovedskjema.withAlternativRepresentasjonListe(
-                    xmlAlternativRepresentasjonListe
-                            .withAlternativRepresentasjon(lagListeMedXMLAlternativeRepresentasjoner(soknad)));
-            if (fullSoknad != null) {
-                XMLAlternativRepresentasjon fullSoknadRepr = new XMLAlternativRepresentasjon()
-                        .withUuid(UUID.randomUUID().toString())
-                        .withFilnavn(skjemanummer(soknad))
-                        .withMimetype("application/pdf-fullversjon")
-                        .withFilstorrelse("" + fullSoknad.length);
-                fillagerService.lagreFil(soknad.getBrukerBehandlingId(), fullSoknadRepr.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(fullSoknad));
-                xmlAlternativRepresentasjonListe.withAlternativRepresentasjon(fullSoknadRepr);
-            }
+        List<AlternativRepresentasjon> alternativeRepresentasjoner = alternativRepresentasjonService.hentAlternativeRepresentasjoner(soknad, messageSource);
+        alternativRepresentasjonService.lagreTilFillager(soknad.getBrukerBehandlingId(), soknad.getAktoerId(), alternativeRepresentasjoner);
+        hovedskjema.alternativRepresentasjon.addAll(alternativRepresentasjonService.lagXmlFormat(alternativeRepresentasjoner));
+
+        if (fullSoknad != null) {
+            FilData full = new FilData();
+            full.filUuid = UUID.randomUUID().toString();
+            full.filnavn = skjemanummer(soknad);
+            full.mimetype = "application/pdf-fullversjon";
+            full.filStorrelse ="" + fullSoknad.length;
+
+            fillagerService.lagreFil(soknad.getBrukerBehandlingId(), full.filUuid, soknad.getAktoerId(), new ByteArrayInputStream(fullSoknad));
+            hovedskjema.alternativRepresentasjon.add(full);
         }
 
         return hovedskjema;
-    }
-
-    private List<XMLAlternativRepresentasjon> lagListeMedXMLAlternativeRepresentasjoner(WebSoknad soknad) {
-        List<AlternativRepresentasjon> alternativeRepresentasjoner = alternativRepresentasjonService.hentAlternativeRepresentasjoner(soknad, messageSource);
-        alternativRepresentasjonService.lagreTilFillager(soknad.getBrukerBehandlingId(), soknad.getAktoerId(), alternativeRepresentasjoner);
-        return alternativRepresentasjonService.lagXmlFormat(alternativeRepresentasjoner);
     }
 
     public Long hentOpprinneligInnsendtDato(String behandlingsId) {

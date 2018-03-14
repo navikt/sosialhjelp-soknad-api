@@ -1,24 +1,25 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.*;
-import no.nav.modig.core.exception.SystemException;
+import no.nav.modig.core.exception.ApplicationException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMetadataTransformer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.HovedskjemaMetadata;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSSoknadsdata;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStartSoknadRequest;
+import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import javax.xml.ws.soap.SOAPFaultException;
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
-import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.IKKE_VALGT;
-import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType.SEND_SOKNAD_ETTERSENDING;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -29,104 +30,79 @@ public class HenvendelseService {
     @Inject
     private SoknadMetadataRepository soknadMetadataRepository;
 
+    @Inject
+    private Clock clock;
+
     public String startSoknad(String fnr, String skjema, String uid, SoknadType soknadType) {
         logger.info("Starter søknad");
-        return opprettSoknadIHenvendelse(
-                lagOpprettSoknadRequest(fnr, soknadType, new XMLMetadataListe().withMetadata(createXMLSkjema(skjema, uid))));
+
+        SoknadMetadata meta = new SoknadMetadata();
+        meta.id = soknadMetadataRepository.hentNesteId();
+        meta.behandlingsId = lagBehandlingsId(meta.id);
+        meta.fnr = fnr;
+        meta.type = soknadType;
+        meta.skjema = skjema;
+        meta.status = SoknadInnsendingStatus.UNDER_ARBEID;
+        meta.opprettetDato = LocalDateTime.now(clock);
+        meta.sistEndretDato = LocalDateTime.now(clock);
+
+        meta.hovedskjema = new HovedskjemaMetadata();
+        meta.hovedskjema.filUuid = uid;
+
+        soknadMetadataRepository.opprett(meta);
+
+        return meta.behandlingsId;
+    }
+
+    static String lagBehandlingsId(long databasenokkel) {
+        String applikasjonsprefix = "11";
+        Long base = Long.parseLong(applikasjonsprefix + "0000000", 36);
+        String behandlingsId = Long.toString(base + databasenokkel, 36).toUpperCase().replace("O", "o").replace("I", "i");
+        if (!behandlingsId.startsWith(applikasjonsprefix)) {
+            throw new ApplicationException("Tildelt sekvensrom for behandlingsId er brukt opp. Kan ikke generer behandlingsId " + behandlingsId);
+        }
+        return behandlingsId;
     }
 
     public String startEttersending(WSHentSoknadResponse soknadResponse) {
-        logger.info("Starter ettersending");
-
-        String behandlingskjedeId = Optional.ofNullable(soknadResponse.getBehandlingskjedeId()).orElse(soknadResponse.getBehandlingsId());
-
-        return opprettSoknadIHenvendelse(
-                lagOpprettSoknadRequest(getSubjectHandler().getUid(), SEND_SOKNAD_ETTERSENDING, (XMLMetadataListe) soknadResponse.getAny())
-                        .withBehandlingskjedeId(behandlingskjedeId));
+        throw new NotImplementedException("støtter ikke ettersending enda");
     }
 
     public List<WSBehandlingskjedeElement> hentBehandlingskjede(String behandlingskjedeId) {
-        try {
-//            List<WSBehandlingskjedeElement> wsBehandlingskjedeElementer = sendSoknadEndpoint.hentBehandlingskjede(behandlingskjedeId);
-//            if (wsBehandlingskjedeElementer.isEmpty()) {
-//                throw new ApplicationException("Fant ingen behandlinger i en behandlingskjede med behandlingsID " + behandlingskjedeId);
-//            }
-//            return wsBehandlingskjedeElementer;
-            return null;
-        } catch (SOAPFaultException e) {
-            throw new SystemException("Kunne ikke hente behandlingskjede", e, "exception.system.baksystem");
-        }
+        throw new NotImplementedException("støtter ikke ettersendelser");
     }
 
-    public void avsluttSoknad(String behandlingsId, XMLHovedskjema hovedskjema, XMLVedlegg[] vedlegg, XMLSoknadMetadata ekstraData) {
-        try {
-            XMLMetadataListe metadataliste = new XMLMetadataListe()
-                    .withMetadata(hovedskjema)
-                    .withMetadata(vedlegg);
+    public void avsluttSoknad(String behandlingsId, HovedskjemaMetadata hovedskjema, SoknadMetadata.VedleggMetadataListe vedlegg, Map<String, String> ekstraMetadata) {
+        SoknadMetadata meta = soknadMetadataRepository.hent(behandlingsId);
 
-            if (ekstraData.getVerdi().size() > 0) {
-                metadataliste.withMetadata(ekstraData);
-            }
+        meta.hovedskjema = hovedskjema;
+        meta.vedlegg = vedlegg;
+        meta.orgnr = ekstraMetadata.get(FiksMetadataTransformer.FIKS_ORGNR_KEY);
+        meta.navEnhet = ekstraMetadata.get(FiksMetadataTransformer.FIKS_ENHET_KEY);
+        meta.sistEndretDato = LocalDateTime.now(clock);
+        meta.innsendtDato = LocalDateTime.now(clock);
 
-            WSSoknadsdata parameters = new WSSoknadsdata().withBehandlingsId(behandlingsId).withAny(metadataliste);
+        meta.status = FERDIG;
+        soknadMetadataRepository.oppdater(meta);
 
-            logger.info("Søknad avsluttet " + behandlingsId + " " + hovedskjema.getSkjemanummer() + " (" + hovedskjema.getJournalforendeEnhet() + ") " + vedlegg.length + " vedlegg");
-//            sendSoknadEndpoint.sendSoknad(parameters);
-        } catch (SOAPFaultException e) {
-            throw new SystemException("Kunne ikke sende inn søknad", e, "exception.system.baksystem");
-        }
+        logger.info("Søknad avsluttet " + behandlingsId + " " + meta.skjema + ", " + vedlegg.vedleggListe.size());
     }
 
-    public WSHentSoknadResponse hentSoknad(String behandlingsId) {
-        return null;
-//        return sendSoknadEndpoint.hentSoknad(new WSBehandlingsId().withBehandlingsId(behandlingsId));
+    public SoknadMetadata hentSoknad(String behandlingsId) {
+        SoknadMetadata hentet = soknadMetadataRepository.hent(behandlingsId);
+        hentet.sistEndretDato = LocalDateTime.now(clock);
+        soknadMetadataRepository.oppdater(hentet);
+
+        return hentet;
     }
 
-    public void avbrytSoknad(String behandlingsId) {
-        logger.debug("Avbryt søknad");
-        try {
-//            SendSoknadPortType sendSoknadPortType = sendSoknadEndpoint;
-//            if (getSubjectHandler().getIdentType() == null) {
-//                sendSoknadPortType = sendSoknadSelftestEndpoint;
-//                logger.debug("Bruker systembruker for avbrytkall");
-//            }
-//            sendSoknadPortType.avbrytSoknad(behandlingsId);
-        } catch (SOAPFaultException e) {
-            throw new SystemException("Kunne ikke avbryte søknad", e, "exception.system.baksystem");
-        }
+    public void avbrytSoknad(String behandlingsId, boolean avbruttAutomatisk) {
+        SoknadMetadata metadata = soknadMetadataRepository.hent(behandlingsId);
+        metadata.status = avbruttAutomatisk ? AVBRUTT_AUTOMATISK : AVBRUTT_AV_BRUKER;
+        metadata.sistEndretDato = LocalDateTime.now(clock);
+
+        soknadMetadataRepository.oppdater(metadata);
     }
 
-    private String opprettSoknadIHenvendelse(WSStartSoknadRequest startSoknadRequest) {
-        try {
-            return null;
-//            return sendSoknadEndpoint.startSoknad(startSoknadRequest).getBehandlingsId();
-        } catch (SOAPFaultException e) {
-            throw new SystemException("Kunne ikke opprette ny søknad", e, "exception.system.baksystem");
-        }
-    }
-
-    public XMLHenvendelse hentInformasjonOmAvsluttetSoknad(String behandlingsId) {
-//        WSHentHenvendelseResponse wsHentHenvendelseResponse = henvendelseInformasjonEndpoint.hentHenvendelse(
-//                new WSHentHenvendelseRequest()
-//                        .withBehandlingsId(behandlingsId));
-//        return (XMLHenvendelse) wsHentHenvendelseResponse.getAny();
-        return null;
-
-    }
-
-    private WSStartSoknadRequest lagOpprettSoknadRequest(String fnr, SoknadType soknadType, XMLMetadataListe xmlMetadataListe) {
-        return new WSStartSoknadRequest()
-                .withFodselsnummer(fnr)
-                .withType(soknadType.name())
-                .withBehandlingskjedeId("")
-                .withAny(xmlMetadataListe);
-    }
-
-    private XMLHovedskjema createXMLSkjema(String skjema, String uid) {
-        return new XMLHovedskjema()
-                .withSkjemanummer(skjema)
-                .withUuid(uid)
-                .withInnsendingsvalg(IKKE_VALGT.toString());
-    }
 
 }

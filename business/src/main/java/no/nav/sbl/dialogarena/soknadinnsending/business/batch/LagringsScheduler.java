@@ -104,7 +104,7 @@ public class LagringsScheduler {
     private boolean avbrytOgSlettEttersendelse(Optional<WebSoknad> ws) throws InterruptedException {
         WebSoknad soknad = ws.get();
         try {
-            henvendelseService.avbrytSoknad(soknad.getBrukerBehandlingId());
+            henvendelseService.avbrytSoknad(soknad.getBrukerBehandlingId(), true);
             slettFiler(soknad);
             soknadRepository.slettSoknad(soknad, LAGRET_I_HENVENDELSE);
 

@@ -138,7 +138,7 @@ public class SoknadServiceTest {
         when(soknadRepository.hentSoknad("123")).thenReturn(soknad);
         soknadService.avbrytSoknad("123");
         verify(soknadRepository).slettSoknad(soknad, HendelseType.AVBRUTT_AV_BRUKER);
-        verify(henvendelsesConnector).avbrytSoknad("123");
+        verify(henvendelsesConnector).avbrytSoknad("123", false);
     }
 
     @Test

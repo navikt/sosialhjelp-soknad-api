@@ -1,16 +1,15 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.*;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLSoknadMetadata.Verdi;
-import no.nav.modig.core.exception.ApplicationException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.InnsendtSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import org.assertj.core.api.Condition;
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,13 +17,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.time.LocalDateTime;
+import java.util.List;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMetadataTransformer.FIKS_ORGNR_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -32,13 +28,7 @@ public class InnsendtSoknadServiceTest {
 
     public static final String SKJEMANUMMER_KVITTERING = InnsendtSoknadService.SKJEMANUMMER_KVITTERING;
     public static final String SOKNAD_PREFIX = "kravdialog.prefix";
-    public static final XMLHovedskjema HOVEDSKJEMA = new XMLHovedskjema()
-            .withSkjemanummer("NAV 11-12.12")
-            .withInnsendingsvalg("LASTET_OPP");
     public static final String SPRAK = "no_NB";
-
-    private XMLMetadataListe xmlMetadataListe;
-    private XMLHenvendelse xmlHenvendelse;
 
     @Mock
     private HenvendelseService henvendelseService;
@@ -53,107 +43,60 @@ public class InnsendtSoknadServiceTest {
     private KravdialogInformasjon kravdialogInformasjon;
 
     @InjectMocks
-    private EkstraMetadataService ekstraMetadataService;
-
-    @InjectMocks
     private InnsendtSoknadService service;
 
     @Before
     public void setUp() throws Exception {
-        service.ekstraMetadataService = ekstraMetadataService;
-        when(kravdialogInformasjonHolder.hentKonfigurasjon(HOVEDSKJEMA.getSkjemanummer())).thenReturn(kravdialogInformasjon);
+        when(kravdialogInformasjonHolder.hentKonfigurasjon("NAV 11-12.12")).thenReturn(kravdialogInformasjon);
         when(kravdialogInformasjon.getSoknadTypePrefix()).thenReturn(SOKNAD_PREFIX);
-        xmlHenvendelse = new XMLHenvendelse();
-        xmlMetadataListe = new XMLMetadataListe();
-        when(henvendelseService.hentInformasjonOmAvsluttetSoknad(anyString())).thenReturn(
-                xmlHenvendelse.withMetadataListe(xmlMetadataListe));
+
+        SoknadMetadata soknadMetadata = new SoknadMetadata();
+        soknadMetadata.status = SoknadInnsendingStatus.FERDIG;
+        soknadMetadata.skjema = "NAV 11-12.12";
+        soknadMetadata.behandlingsId = "123beh";
+        soknadMetadata.navEnhet = "NAV Oslo";
+        soknadMetadata.orgnr = "999123";
+        soknadMetadata.innsendtDato = LocalDateTime.of(2018, 3, 14, 13, 37, 55);
+
+        List<VedleggMetadata> vedlegg = soknadMetadata.vedlegg.vedleggListe;
+        VedleggMetadata v1 = new VedleggMetadata();
+        v1.status = Vedlegg.Status.LastetOpp;
+        v1.skjema = "123";
+        v1.filnavn = "abc.jpg";
+        vedlegg.add(v1);
+
+        VedleggMetadata v2 = new VedleggMetadata();
+        v2.status = Vedlegg.Status.SendesIkke;
+        vedlegg.add(v2);
+
+        VedleggMetadata kvittering = new VedleggMetadata();
+        kvittering.status = Vedlegg.Status.LastetOpp;
+        kvittering.skjema = "L7";
+        vedlegg.add(kvittering);
+
+        when(henvendelseService.hentSoknad("123beh")).thenReturn(soknadMetadata);
     }
 
     @Test
     public void skalFjerneKvitteringerFraVedleggene() throws Exception {
-        xmlMetadataListe.withMetadata(
-                HOVEDSKJEMA,
-                new XMLVedlegg()
-                        .withInnsendingsvalg("LASTET_OPP")
-                        .withSkjemanummer(SKJEMANUMMER_KVITTERING));
-
-        InnsendtSoknad soknad = service.hentInnsendtSoknad("ID01", SPRAK);
+        InnsendtSoknad soknad = service.hentInnsendtSoknad("123beh", SPRAK);
         assertThat(soknad.getIkkeInnsendteVedlegg()).areNot(liktSkjemanummer(SKJEMANUMMER_KVITTERING));
         assertThat(soknad.getInnsendteVedlegg()).areNot(liktSkjemanummer(SKJEMANUMMER_KVITTERING));
     }
 
     @Test
     public void skalPlassereOpplastetVedleggUnderInnsendteVedlegg() throws Exception {
-        xmlMetadataListe.withMetadata(HOVEDSKJEMA);
-        InnsendtSoknad soknad = service.hentInnsendtSoknad("ID01", SPRAK);
-        assertThat(soknad.getInnsendteVedlegg()).are(liktSkjemanummer(HOVEDSKJEMA.getSkjemanummer()));
-        assertThat(soknad.getIkkeInnsendteVedlegg()).hasSize(0);
+        InnsendtSoknad soknad = service.hentInnsendtSoknad("123beh", SPRAK);
+        assertThat(soknad.getInnsendteVedlegg()).hasSize(1);
+        assertThat(soknad.getIkkeInnsendteVedlegg()).hasSize(1);
     }
 
     @Test
     public void skalMappeDetaljerFraHenvendelse() throws Exception {
-        xmlMetadataListe.withMetadata(HOVEDSKJEMA);
-        xmlHenvendelse
-                .withAvsluttetDato(new DateTime(2016, 01, 01, 12, 00))
-                .withTema("TSO");
-
-        InnsendtSoknad soknad = service.hentInnsendtSoknad("ID01", SPRAK);
-        assertThat(soknad.getDato()).isEqualTo("1. januar 2016");
-        assertThat(soknad.getKlokkeslett()).isEqualTo("12.00");
-        assertThat(soknad.getTemakode()).isEqualToIgnoringCase("TSO");
-    }
-
-    @Test
-    public void skalMappeDetaljerFraHenvendelsePaEngelsk() throws Exception {
-        xmlMetadataListe.withMetadata(HOVEDSKJEMA);
-        xmlHenvendelse
-                .withAvsluttetDato(new DateTime(2016, 01, 01, 12, 00))
-                .withTema("TSO");
-
-        InnsendtSoknad soknad = service.hentInnsendtSoknad("ID01", "en");
-        assertThat(soknad.getDato()).isEqualTo("1. January 2016");
-        assertThat(soknad.getKlokkeslett()).isEqualTo("12.00");
-    }
-
-    @Test
-    public void skalPlassereIkkeOpplastetVedleggUnderIkkeInnsendteVedlegg() throws Exception {
-        Collection<XMLMetadata> ikkeInnsendteVedlegg = Arrays.asList(
-                (XMLMetadata) new XMLVedlegg().withInnsendingsvalg("VEDLEGG_SENDES_AV_ANDRE"),
-                new XMLVedlegg().withInnsendingsvalg("SEND_SENERE"),
-                new XMLVedlegg().withInnsendingsvalg("VEDLEGG_ALLEREDE_SENDT"),
-                new XMLVedlegg().withInnsendingsvalg("VEDLEGG_SENDES_IKKE"));
-        xmlMetadataListe.withMetadata(HOVEDSKJEMA);
-        xmlMetadataListe.withMetadata(ikkeInnsendteVedlegg);
-
-        InnsendtSoknad soknad = service.hentInnsendtSoknad("ID01", SPRAK);
-        assertThat(soknad.getInnsendteVedlegg()).hasSize(1);
-        assertThat(soknad.getIkkeInnsendteVedlegg()).hasSameSizeAs(ikkeInnsendteVedlegg);
-
-    }
-
-    @Test
-    public void skalKasteExceptionOmHovedskjemaMangler() throws Exception {
-        xmlMetadataListe.withMetadata(new XMLMetadata());
-
-        try {
-            service.hentInnsendtSoknad("ID01", SPRAK);
-            fail("Skal kaste exception når Hovedskjema mangler");
-        } catch (Exception e) {
-            assertThat(e).isInstanceOf(ApplicationException.class);
-        }
-
-    }
-
-    @Test
-    public void setterMetadataVerdier() {
-        xmlMetadataListe
-                .withMetadata(HOVEDSKJEMA)
-                .withMetadata(
-                        new XMLSoknadMetadata()
-                                .withVerdi(new Verdi(FIKS_ORGNR_KEY, "123456789")));
-
-        InnsendtSoknad innsendtSoknad = service.hentInnsendtSoknad("ID01", SPRAK);
-        assertThat(innsendtSoknad.getOrgnummer()).isEqualTo("123456789");
+        InnsendtSoknad soknad = service.hentInnsendtSoknad("123beh", SPRAK);
+        assertThat(soknad.getDato()).isEqualTo("14. mars 2018");
+        assertThat(soknad.getKlokkeslett()).isEqualTo("13.37");
+        assertThat(soknad.getNavenhet()).isEqualToIgnoringCase("NAV Oslo");
     }
 
     private Condition<Vedlegg> liktSkjemanummer(final String skjemanummer) {
