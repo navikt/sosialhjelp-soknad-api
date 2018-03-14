@@ -271,6 +271,7 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
@@ -551,6 +552,9 @@
                             <id>app</id>
                         </program>
                     </programs>
+                    <configurationDirectory>.</configurationDirectory>
+                    <configurationSourceDirectory>src/main/docker</configurationSourceDirectory>
+                    <copyConfigurationDirectory>true</copyConfigurationDirectory>
                 </configuration>
                 <executions>
                     <execution>
