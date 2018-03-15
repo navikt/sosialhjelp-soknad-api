@@ -14,9 +14,12 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.SoknadDataFletterIntegra
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.fillager.FillagerRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.fillager.FillagerRepository.Fil;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,12 +64,20 @@ public class SoknadServiceIntegrasjonsTest {
     private FillagerRepository fillagerRepository;
 
     @Inject
+    private SoknadMetadataRepository soknadMetadataRepository;
+
+    @Inject
     private FaktaService faktaService;
 
     @BeforeClass
     public static void beforeClass() throws IOException, NamingException {
         System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
         System.setProperty("soknad.feature.foreldrepenger.alternativrepresentasjon.enabled", "true");
+    }
+
+    @Before
+    public void setUp() {
+        when(soknadMetadataRepository.hent(anyString())).thenReturn(new SoknadMetadata());
     }
 
     @Test

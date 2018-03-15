@@ -59,6 +59,7 @@ public class SoknadMetadata {
                 CONTEXT = JAXBContext.newInstance(
                         FilData.class,
                         VedleggMetadata.class,
+                        VedleggMetadataListe.class,
                         HovedskjemaMetadata.class
                 );
             } catch (JAXBException e) {
