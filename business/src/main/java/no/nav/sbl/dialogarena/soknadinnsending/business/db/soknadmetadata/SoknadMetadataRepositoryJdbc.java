@@ -57,9 +57,8 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
     public void oppdater(SoknadMetadata metadata) {
         getJdbcTemplate().update("UPDATE soknadmetadata SET tilknyttetBehandlingsId = ?, skjema = ?, " +
                         "fnr = ?, hovedskjema = ?, vedlegg = ?, orgnr = ?, navenhet = ?, fiksforsendelseid = ?, soknadtype = ?, " +
-                        "innsendingstatus = ?, sistendretdato = ?, innsendtdato = ?) " +
-                        "WHERE id = ?" +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        "innsendingstatus = ?, sistendretdato = ?, innsendtdato = ? " +
+                        "WHERE id = ?",
                 metadata.tilknyttetBehandlingsId,
                 metadata.skjema,
                 metadata.fnr,
@@ -89,12 +88,12 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
                     m.vedlegg = SoknadMetadata.JAXB.unmarshal(rs.getString("vedlegg"), VedleggMetadataListe.class);
                     m.orgnr = rs.getString("orgnr");
                     m.navEnhet = rs.getString("navenhet");
-                    m.fiksForsendelseId = rs.getString("fiksforsendelsid");
+                    m.fiksForsendelseId = rs.getString("fiksforsendelseid");
                     m.type = SoknadType.valueOf(rs.getString("soknadtype"));
                     m.status = SoknadInnsendingStatus.valueOf(rs.getString("innsendingstatus"));
-                    m.opprettetDato = rs.getTimestamp("opprettetdato").toLocalDateTime();
-                    m.sistEndretDato = rs.getTimestamp("sistendretdato").toLocalDateTime();
-                    m.innsendtDato = rs.getTimestamp("innsendtdato").toLocalDateTime();
+                    m.opprettetDato = timestampTilTid(rs.getTimestamp("opprettetdato"));
+                    m.sistEndretDato = timestampTilTid(rs.getTimestamp("sistendretdato"));
+                    m.innsendtDato = timestampTilTid(rs.getTimestamp("innsendtdato"));
                     return m;
                 },
                 behandlingsId);
@@ -108,6 +107,12 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
     private Timestamp tidTilTimestamp(LocalDateTime tid) {
         return tid != null
                 ? Timestamp.valueOf(tid)
+                : null;
+    }
+
+    private LocalDateTime timestampTilTid(Timestamp timestamp) {
+        return timestamp != null
+                ? timestamp.toLocalDateTime()
                 : null;
     }
 }
