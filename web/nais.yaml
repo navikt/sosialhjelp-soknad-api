@@ -93,17 +93,8 @@ fasitResources:
 #    resourceType: credential
 
 # TODO:
-# <applicationCertificate alias="srvSendsoknad"/>
-# <fileLibrary alias="soknadsosialhjelp.ledetekster" mapToProperty="folder.soknadsosialhjelp" />
+# For sendsoknad, skru tilbake til: <applicationCertificate alias="srvSendsoknad"/>
 # ... alle utkommenterte linjer i nais-oppsettet over.
-#
-# Bør håndteres etterhvert:
-# <directory name="sendsoknad" mapToProperty="sendsoknad.datadir" temporary="false"/>
-# <fileLibrary alias="soknadforeldrepenger.ledetekster" mapToProperty="folder.foreldrepenger" />
-# <fileLibrary alias="soknadaap.ledetekster" mapToProperty="folder.soknadaap" />
-# <fileLibrary alias="soknaddagpenger.ledetekster" mapToProperty="folder.dagpenger" />
-# <fileLibrary alias="soknadbilstonad.ledetekster" mapToProperty="folder.bilstonad" />
-# <fileLibrary alias="soknad-aap-utland.ledetekster" mapToProperty="folder.soknad-aap-utland" />
 #
 # Kan trolig ignoreres for DigiSos:
 # <applicationProperties alias="soknad.ettersending.properties"/>
@@ -126,5 +117,4 @@ fasitResources:
 #        </logins>
 #    </security>
 #
-#    <loadBalancer isAlive="/sendsoknad/internal/isAlive"/>
 #    <suspend url="/sendsoknad/management/suspend" credential="suspender" timeoutSeconds="25" />
