@@ -18,7 +18,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggReposi
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
-import no.nav.tjeneste.domene.brukerdialog.henvendelse.v2.henvendelse.HenvendelsePortType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -66,12 +65,6 @@ public class SoknadDataFletterIntegrationTestContext {
     @Bean
     public SoknadMetadataRepository soknadMetadataRepository() {
         return mock(SoknadMetadataRepository.class);
-    }
-
-    @Bean
-    public HenvendelsePortType henvendelseEndpoint() {
-        HenvendelsePortType portType = mock(HenvendelsePortType.class);
-        return portType;
     }
 
     @Bean

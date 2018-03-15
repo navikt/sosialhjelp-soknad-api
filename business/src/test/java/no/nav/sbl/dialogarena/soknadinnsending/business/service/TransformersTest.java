@@ -2,15 +2,13 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 
-import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.*;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.*;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class TransformersTest {
     @Test
@@ -33,12 +31,4 @@ public class TransformersTest {
         assertThat(Transformers.DATO_TIL_PERMITTERING.apply(faktum.medProperty("type", DagpengerUtils.PERMITTERT)), is(equalTo(new LocalDate("2013-01-04"))));
     }
 
-    @Test
-    public void skalKonvertereInnsendingsvalg(){
-        assertThat(Transformers.toXmlInnsendingsvalg(Vedlegg.Status.LastetOpp), is(equalTo(LASTET_OPP.toString())));
-        assertThat(Transformers.toXmlInnsendingsvalg(Vedlegg.Status.SendesIkke), is(equalTo(SENDES_IKKE.toString())));
-        assertThat(Transformers.toXmlInnsendingsvalg(Vedlegg.Status.SendesSenere), is(equalTo(SEND_SENERE.toString())));
-        assertThat(Transformers.toXmlInnsendingsvalg(Vedlegg.Status.IkkeVedlegg), is(equalTo(SENDES_IKKE.toString())));
-        assertThat(Transformers.toXmlInnsendingsvalg(Vedlegg.Status.VedleggAlleredeSendt), is(equalTo(VEDLEGG_ALLEREDE_SENDT.toString())));
-    }
 }

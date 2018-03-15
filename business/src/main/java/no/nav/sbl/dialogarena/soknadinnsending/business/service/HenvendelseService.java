@@ -7,8 +7,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMeta
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.HovedskjemaMetadata;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
 import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -16,7 +14,6 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import java.time.Clock;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.*;
@@ -64,11 +61,11 @@ public class HenvendelseService {
         return behandlingsId;
     }
 
-    public String startEttersending(WSHentSoknadResponse soknadResponse) {
+    public String startEttersending(Object soknadResponse) {
         throw new NotImplementedException("støtter ikke ettersending enda");
     }
 
-    public List<WSBehandlingskjedeElement> hentBehandlingskjede(String behandlingskjedeId) {
+    public void hentBehandlingskjede(String behandlingskjedeId) {
         throw new NotImplementedException("støtter ikke ettersendelser");
     }
 

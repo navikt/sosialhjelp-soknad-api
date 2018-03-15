@@ -16,9 +16,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.fillager.FillagerRepo
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingsId;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -69,11 +67,6 @@ public class SoknadServiceIntegrasjonsTest {
     public static void beforeClass() throws IOException, NamingException {
         System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
         System.setProperty("soknad.feature.foreldrepenger.alternativrepresentasjon.enabled", "true");
-    }
-
-    @Before
-    public void beforeEach() {
-        WSBehandlingsId wsBehandlingsId = new WSBehandlingsId().withBehandlingsId(EN_BEHANDLINGSID);
     }
 
     @Test
