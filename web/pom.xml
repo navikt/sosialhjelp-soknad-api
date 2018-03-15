@@ -19,6 +19,12 @@
         <!-- Lagrer IT-info til enhetstestfil -->
         <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco-ut.exec</sonar.jacoco.reportPath>
         <fitnesse.port>9977</fitnesse.port>
+        <version.tekster.soknadsosialhjelp>1.0.506.187</version.tekster.soknadsosialhjelp>
+        <version.tekster.soknaddagpenger>1.1.225.13</version.tekster.soknaddagpenger>
+        <version.tekster.soknadaap>1.0.163.28</version.tekster.soknadaap>
+        <version.tekster.soknadbilstonad>1.0.7.5</version.tekster.soknadbilstonad>
+        <version.tekster.soknad-aap-utland>0.1.13.12</version.tekster.soknad-aap-utland>
+        <version.tekster.soknadforeldrepenger>1.1.630.73-SD-38-tvilling-trilling-SNAPSHOT</version.tekster.soknadforeldrepenger>
     </properties>
 
     <dependencies>
@@ -586,6 +592,61 @@
                             </usedDependencies>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>unpack-tekster</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>no.nav.sbl</groupId>
+                                    <artifactId>soknadsosialhjelp-tekster</artifactId>
+                                    <version>${version.tekster.soknadsosialhjelp}</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>no.nav.sbl</groupId>
+                                    <artifactId>soknaddagpenger-tekster</artifactId>
+                                    <version>${version.tekster.soknaddagpenger}</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>no.nav.sbl</groupId>
+                                    <artifactId>soknadaap-tekster</artifactId>
+                                    <version>${version.tekster.soknadaap}</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>no.nav.sbl</groupId>
+                                    <artifactId>soknadbilstonad-tekster</artifactId>
+                                    <version>${version.tekster.soknadbilstonad}</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>no.nav.sbl</groupId>
+                                    <artifactId>soknad-aap-utland-tekster</artifactId>
+                                    <version>${version.tekster.soknad-aap-utland}</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>no.nav.sbl</groupId>
+                                    <artifactId>soknadforeldrepenger-tekster</artifactId>
+                                    <version>${version.tekster.soknadforeldrepenger}</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}/appassembler</outputDirectory>
+                            <includes>tekster/**/*</includes>
+                        </configuration>
+                   </execution>
                 </executions>
             </plugin>
             <plugin>
