@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -47,9 +48,9 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
                 metadata.fiksForsendelseId,
                 metadata.type.name(),
                 metadata.status.name(),
-                Timestamp.valueOf(metadata.opprettetDato),
-                Timestamp.valueOf(metadata.sistEndretDato),
-                Timestamp.valueOf(metadata.innsendtDato));
+                tidTilTimestamp(metadata.opprettetDato),
+                tidTilTimestamp(metadata.sistEndretDato),
+                tidTilTimestamp(metadata.innsendtDato));
     }
 
     @Override
@@ -69,8 +70,8 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
                 metadata.fiksForsendelseId,
                 metadata.type.name(),
                 metadata.status.name(),
-                Timestamp.valueOf(metadata.sistEndretDato),
-                Timestamp.valueOf(metadata.innsendtDato),
+                tidTilTimestamp(metadata.sistEndretDato),
+                tidTilTimestamp(metadata.innsendtDato),
                 metadata.id);
     }
 
@@ -102,5 +103,11 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
             return resultat.get(0);
         }
         return null;
+    }
+
+    private Timestamp tidTilTimestamp(LocalDateTime tid) {
+        return tid != null
+                ? Timestamp.valueOf(tid)
+                : null;
     }
 }
