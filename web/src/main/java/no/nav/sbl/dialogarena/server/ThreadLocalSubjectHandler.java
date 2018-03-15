@@ -19,10 +19,7 @@ public class ThreadLocalSubjectHandler extends SubjectHandler {
     public Subject getSubject() {
         final ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (servletRequestAttributes == null) {
-            throw new RuntimeException("Ingen request funnet på RequestContextHolder. \n" +
-                    "ThreadLocalSubjectHandler krever at request holdes av Spring. \n" +
-                    "Benytt RequestContextListener eller RequestContextFilter til å ta vare på request. \n" +
-                    "Disse konfigureres opp i web.xml");
+            return null;
         }
         final Request request = (Request) servletRequestAttributes.getRequest();
         final Authentication authentication = request.getAuthentication();
