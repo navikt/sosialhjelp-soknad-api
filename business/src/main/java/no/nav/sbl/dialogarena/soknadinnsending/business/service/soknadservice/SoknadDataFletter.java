@@ -18,9 +18,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.Ve
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
 import org.joda.time.DateTime;
-import org.joda.time.base.BaseDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
@@ -41,10 +39,10 @@ import static javax.xml.bind.JAXB.unmarshal;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.*;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur.sammenlignEtterDependOn;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.convertToXmlVedleggListe;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.StaticMetoder.skjemanummer;
 import static org.slf4j.LoggerFactory.getLogger;
 
 
@@ -54,7 +52,6 @@ public class SoknadDataFletter {
     private static final Logger logger = getLogger(SoknadDataFletter.class);
     private static final boolean MED_DATA = true;
     private static final boolean MED_VEDLEGG = true;
-    private final Predicate<WSBehandlingskjedeElement> STATUS_FERDIG = soknad -> FERDIG.equals(valueOf(soknad.getStatus()));
 
     @Inject
     public ApplicationContext applicationContext;
@@ -444,21 +441,21 @@ public class SoknadDataFletter {
     }
 
     public Long hentOpprinneligInnsendtDato(String behandlingsId) {
-        return henvendelseService.hentBehandlingskjede(behandlingsId).stream()
+        return null; /* henvendelseService.hentBehandlingskjede(behandlingsId).stream()
                 .filter(STATUS_FERDIG)
                 .sorted(ELDSTE_FORST)
                 .findFirst()
                 .map(WSBehandlingskjedeElement::getInnsendtDato)
                 .map(BaseDateTime::getMillis)
-                .orElseThrow(() -> new ApplicationException(String.format("Kunne ikke hente ut opprinneligInnsendtDato for %s", behandlingsId)));
+                .orElseThrow(() -> new ApplicationException(String.format("Kunne ikke hente ut opprinneligInnsendtDato for %s", behandlingsId)));*/
     }
 
     public String hentSisteInnsendteBehandlingsId(String behandlingsId) {
-        return henvendelseService.hentBehandlingskjede(behandlingsId).stream()
+        return null; /*henvendelseService.hentBehandlingskjede(behandlingsId).stream()
                 .filter(STATUS_FERDIG)
                 .sorted(NYESTE_FORST)
                 .findFirst()
                 .get()
-                .getBehandlingsId();
+                .getBehandlingsId();*/
     }
 }

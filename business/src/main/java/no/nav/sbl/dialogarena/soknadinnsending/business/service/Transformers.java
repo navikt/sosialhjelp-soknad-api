@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.*;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.*;
 
 
@@ -81,25 +80,6 @@ public class Transformers {
         }).collect(Collectors.toList());
 
         return liste;
-    }
-
-    public static String toXmlInnsendingsvalg(Vedlegg.Status innsendingsvalg) {
-        switch (innsendingsvalg) {
-            case LastetOpp:
-                return LASTET_OPP.toString();
-            case SendesSenere:
-                return SEND_SENERE.toString();
-            case SendesIkke:
-                return SENDES_IKKE.toString();
-            case VedleggSendesAvAndre:
-                return VEDLEGG_SENDES_AV_ANDRE.toString();
-            case VedleggSendesIkke:
-                return VEDLEGG_SENDES_IKKE.toString();
-            case VedleggAlleredeSendt:
-                return VEDLEGG_ALLEREDE_SENDT.toString();
-            default:
-                return SENDES_IKKE.toString();
-        }
     }
 
     public static Vedlegg.Status toInnsendingsvalg(String xmlInnsendingsvalg) {

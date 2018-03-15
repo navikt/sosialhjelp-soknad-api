@@ -34,7 +34,6 @@ public class ConsumerConfig {
     @Configuration
     @Profile("!integration")
     @Import({
-            SendSoknadWSConfig.class,
             PersonInfoWSConfig.class,
             ArbeidWSConfig.class,
             OrganisasjonWSConfig.class,
@@ -43,8 +42,7 @@ public class ConsumerConfig {
             KodeverkWSConfig.class,
             PersonWSConfig.class,
             MaalgruppeWSConfig.class,
-            SakOgAktivitetWSConfig.class,
-            HenvendelseInformasjonConfig.class
+            SakOgAktivitetWSConfig.class
     })
     public static class WsServices {
     }

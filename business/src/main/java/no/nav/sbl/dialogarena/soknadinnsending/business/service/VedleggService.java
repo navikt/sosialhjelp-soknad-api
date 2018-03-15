@@ -6,10 +6,6 @@ import com.lowagie.text.PageSize;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
 import com.lowagie.text.pdf.PdfWriter;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadata;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.detect.Detect;
@@ -64,8 +60,6 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus.SKJEMA_VALI
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.PAAKREVDE_VEDLEGG;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.LastetOpp;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.UnderBehandling;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.toInnsendingsvalg;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -471,42 +465,6 @@ public class VedleggService {
         stamper.close();
         pdfReader.close();
         return returnBaos;
-    }
-
-    public List<Vedlegg> hentVedleggOgPersister(XMLMetadataListe xmlVedleggListe, Long soknadId) {
-
-        List<XMLMetadata> vedlegg = xmlVedleggListe.getMetadata().stream()
-                        .filter(metadata -> metadata instanceof XMLVedlegg)
-                        .collect(Collectors.toList());
-
-        List<Vedlegg> soknadVedlegg = new ArrayList<>();
-        for (XMLMetadata xmlMetadata : vedlegg) {
-            if (xmlMetadata instanceof XMLHovedskjema) {
-                continue;
-            }
-            XMLVedlegg xmlVedlegg = (XMLVedlegg) xmlMetadata;
-
-            Integer antallSider = xmlVedlegg.getSideantall() != null ? xmlVedlegg.getSideantall() : 0;
-
-            Vedlegg v = new Vedlegg()
-                    .medSkjemaNummer(xmlVedlegg.getSkjemanummer())
-                    .medAntallSider(antallSider)
-                    .medInnsendingsvalg(toInnsendingsvalg(xmlVedlegg.getInnsendingsvalg()))
-                    .medOpprinneligInnsendingsvalg(toInnsendingsvalg(xmlVedlegg.getInnsendingsvalg()))
-                    .medSoknadId(soknadId)
-                    .medNavn(xmlVedlegg.getTilleggsinfo());
-
-            String skjemanummerTillegg = xmlVedlegg.getSkjemanummerTillegg();
-            if (isNotBlank(skjemanummerTillegg)) {
-                v.setSkjemaNummer(v.getSkjemaNummer() + "|" + skjemanummerTillegg);
-            }
-
-            vedleggRepository.opprettEllerEndreVedlegg(v, null);
-            soknadVedlegg.add(v);
-        }
-
-        leggTilKodeverkFelter(soknadVedlegg);
-        return soknadVedlegg;
     }
 
     public void populerVedleggMedDataFraHenvendelse(WebSoknad soknad, List<Fil> innhold) {
