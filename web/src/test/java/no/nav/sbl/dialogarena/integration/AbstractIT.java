@@ -24,7 +24,7 @@ public abstract class AbstractIT {
         System.setProperty(TestProperties.CONTAINER_PORT, "" + PORT);
         System.setProperty(TestProperties.LOG_TRAFFIC, "true");
         System.setProperty("jersey.test.host", "localhost");
-        jetty = new SoknadsosialhjelpServer(PORT, new File(TEST_RESOURCES, "override-web.xml"), "/sendsoknad", buildDataSource("hsqldb.properties"));
+        jetty = new SoknadsosialhjelpServer(PORT, new File(TEST_RESOURCES, "override-web-integration.xml"), "/sendsoknad", buildDataSource("hsqldb.properties"));
         System.setProperty("no.nav.sbl.dialogarena.sendsoknad.hsqldb", "true");
         setProperty(StaticSubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         jetty.start();
