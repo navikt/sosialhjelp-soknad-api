@@ -2,6 +2,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 
+import java.util.Optional;
+
 public interface SoknadMetadataRepository {
 
     Long hentNesteId();
@@ -11,6 +13,10 @@ public interface SoknadMetadataRepository {
     void oppdater(SoknadMetadata metadata);
 
     SoknadMetadata hent(String behandlingsId);
+
+    Optional<SoknadMetadata> hentForBatch(int antallDagerGammel);
+
+    void leggTilbakeBatch(Long id);
 
 
 }
