@@ -1,0 +1,87 @@
+package no.nav.sbl.dialogarena.soknadinnsending.business.batch;
+
+import no.nav.metrics.MetricsFactory;
+import no.nav.metrics.Timer;
+import no.nav.sbl.dialogarena.common.suspend.SuspendServlet;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
+import org.slf4j.Logger;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.AVBRUTT_AUTOMATISK;
+import static org.slf4j.LoggerFactory.getLogger;
+
+@Service
+public class AvbrytAutomatiskSheduler {
+
+    private static final Logger logger = getLogger(AvbrytAutomatiskSheduler.class);
+
+    private static final String KLOKKEN_FIRE_OM_NATTEN = "0 0 4 * * *";
+    private static final int SCHEDULE_INTERRUPT_S = 60 * 10;
+    private static final int DAGER_GAMMELT = 7 * 8;
+
+    private LocalDateTime batchStartTime;
+    private int vellykket;
+
+    @Inject
+    private FillagerService fillagerService;
+    @Inject
+    private SoknadMetadataRepository soknadMetadataRepository;
+
+    @Scheduled(cron = KLOKKEN_FIRE_OM_NATTEN)
+    public void avbrytGamleSoknader() throws InterruptedException {
+        batchStartTime = LocalDateTime.now();
+        vellykket = 0;
+        if (Boolean.valueOf(System.getProperty("sendsoknad.batch.enabled", "true"))) {
+            logger.info("Starter avbryting av gamle søknader");
+            Timer batchTimer = MetricsFactory.createTimer("sosialhjelp.debug.avbryt");
+            batchTimer.start();
+
+            avbryt();
+
+            batchTimer.stop();
+            batchTimer.addFieldToReport("vellykket", vellykket);
+            batchTimer.report();
+            logger.info("Jobb fullført: {} vellykket", vellykket);
+        } else {
+            logger.warn("Batch disabled. Må sette environment property sendsoknad.batch.enabled til true for å sette den på igjen");
+        }
+    }
+
+    private void avbryt() throws InterruptedException {
+        Optional<SoknadMetadata> soknad = soknadMetadataRepository.hentForBatch(DAGER_GAMMELT);
+
+        while (soknad.isPresent()) {
+            SoknadMetadata soknadMetadata = soknad.get();
+            soknadMetadata.status = AVBRUTT_AUTOMATISK;
+            soknadMetadata.sistEndretDato = LocalDateTime.now();
+            soknadMetadataRepository.oppdater(soknadMetadata);
+
+            fillagerService.slettAlle(soknadMetadata.behandlingsId);
+
+            soknadMetadataRepository.leggTilbakeBatch(soknadMetadata.id);
+
+            if (harGaattForLangTid()) {
+                logger.warn("Jobben har kjørt i mer enn {} s. Den blir derfor terminert", SCHEDULE_INTERRUPT_S);
+                return;
+            }
+            if (!SuspendServlet.isRunning()) {
+                logger.warn("Avbryter jobben da appen skal suspendes");
+                return;
+            }
+            soknad = soknadMetadataRepository.hentForBatch(DAGER_GAMMELT);
+        }
+
+    }
+
+    private boolean harGaattForLangTid() {
+        return LocalDateTime.now().isAfter(batchStartTime.plusSeconds(SCHEDULE_INTERRUPT_S));
+    }
+}
+
