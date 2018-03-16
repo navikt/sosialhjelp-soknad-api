@@ -68,6 +68,9 @@
         </dependOnValues>
     </faktum>
     <faktum>
+        <id>reise.aktivitet.reisedager</id>
+    </faktum>
+    <faktum>
         <id>reise.aktivitet.periode</id>
     </faktum>
     <faktum>
