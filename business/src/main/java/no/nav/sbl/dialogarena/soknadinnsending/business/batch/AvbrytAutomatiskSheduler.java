@@ -66,6 +66,7 @@ public class AvbrytAutomatiskSheduler {
             fillagerService.slettAlle(soknadMetadata.behandlingsId);
 
             soknadMetadataRepository.leggTilbakeBatch(soknadMetadata.id);
+            vellykket++;
 
             if (harGaattForLangTid()) {
                 logger.warn("Jobben har kjørt i mer enn {} s. Den blir derfor terminert", SCHEDULE_INTERRUPT_S);
