@@ -109,6 +109,13 @@
         </dependOnValues>
     </faktum>
     <faktum>
+        <id>reise.aktivitet.offentligtransport.aarsak.transport.tekst</id>
+        <dependOn>reise.aktivitet.offentligtransport.aarsak.transport</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
         <id>reise.aktivitet.offentligtransport.aarsak.henting</id>
         <dependOn>reise.aktivitet.offentligtransport</dependOn>
         <dependOnValues>
