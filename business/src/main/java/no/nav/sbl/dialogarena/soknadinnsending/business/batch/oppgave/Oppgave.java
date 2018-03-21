@@ -12,8 +12,8 @@ public class Oppgave {
     public String type;
     public Status status;
     public int steg;
-    public FiksData oppgaveData;
-    public FiksResultat oppgaveResultat;
+    public FiksData oppgaveData = new FiksData();
+    public FiksResultat oppgaveResultat = new FiksResultat();
     public LocalDateTime opprettet;
     public LocalDateTime sistKjort;
     public LocalDateTime nesteForsok;

@@ -1,11 +1,11 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.FilData;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.HovedskjemaMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadata;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 public class MetadataInnfyllerTest {
 
     @Mock
-    HenvendelseService henvendelseService;
+    SoknadMetadataRepository soknadMetadataRepository;
 
     @InjectMocks
     MetadataInnfyller metadataInnfyller;
@@ -56,7 +56,7 @@ public class MetadataInnfyllerTest {
         vedlegg2.filUuid = "uid-v2";
         mockData.vedlegg.vedleggListe.add(vedlegg2);
 
-        when(henvendelseService.hentSoknad("id1234")).thenReturn(mockData);
+        when(soknadMetadataRepository.hent("id1234")).thenReturn(mockData);
     }
 
     @Test
