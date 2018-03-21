@@ -2,8 +2,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksData.DokumentInfo;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -15,10 +15,10 @@ import java.util.stream.Collectors;
 public class MetadataInnfyller {
 
     @Inject
-    HenvendelseService henvendelseService;
+    SoknadMetadataRepository soknadMetadataRepository;
 
     public void byggOppFiksData(FiksData data) {
-        SoknadMetadata soknadMetadata = henvendelseService.hentSoknad(data.behandlingsId);
+        SoknadMetadata soknadMetadata = soknadMetadataRepository.hent(data.behandlingsId);
 
         data.avsenderFodselsnummer = soknadMetadata.fnr;
         data.mottakerOrgNr = soknadMetadata.orgnr;
@@ -26,6 +26,12 @@ public class MetadataInnfyller {
         data.innsendtDato = soknadMetadata.innsendtDato;
 
         byggOppDokumentInfo(data, soknadMetadata);
+    }
+
+    public void lagreFiksId(FiksData data, FiksResultat resultat) {
+        SoknadMetadata soknadMetadata = soknadMetadataRepository.hent(data.behandlingsId);
+        soknadMetadata.fiksForsendelseId = resultat.fiksForsendelsesId;
+        soknadMetadataRepository.oppdater(soknadMetadata);
     }
 
     private void byggOppDokumentInfo(FiksData data, SoknadMetadata metadata) {

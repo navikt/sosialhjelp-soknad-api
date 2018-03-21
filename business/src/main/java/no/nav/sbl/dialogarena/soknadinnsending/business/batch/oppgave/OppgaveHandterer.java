@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.Oppgave.Status;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksHandterer;
+import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksSender;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.MetadataInnfyller;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.oppgave.OppgaveRepository;
 import org.slf4j.Logger;
@@ -19,7 +20,8 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Service
 @Import({
         FiksHandterer.class,
-        MetadataInnfyller.class
+        MetadataInnfyller.class,
+        FiksSender.class
 })
 public class OppgaveHandterer {
 
