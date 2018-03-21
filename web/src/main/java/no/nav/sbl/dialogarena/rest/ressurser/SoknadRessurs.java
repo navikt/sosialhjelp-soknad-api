@@ -169,6 +169,13 @@ public class SoknadRessurs {
         return faktaService.hentFakta(behandlingsId);
     }
 
+    @PUT
+    @Path("/{behandlingsId}/fakta")
+    @SjekkTilgangTilSoknad
+    public void lagreFakta(@PathParam("behandlingsId") String behandlingsId, WebSoknad soknad) {
+        soknad.getFakta().stream().forEach(faktum -> faktaService.lagreBrukerFaktum(faktum));
+    }
+
     @GET
     @Path("/{behandlingsId}/vedlegg")
     @SjekkTilgangTilSoknad
