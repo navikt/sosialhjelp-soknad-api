@@ -12,8 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.sql.DataSource;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -48,9 +46,9 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
                 metadata.fiksForsendelseId,
                 metadata.type.name(),
                 metadata.status.name(),
-                tidTilTimestamp(metadata.opprettetDato),
-                tidTilTimestamp(metadata.sistEndretDato),
-                tidTilTimestamp(metadata.innsendtDato));
+                SQLUtils.tidTilTimestamp(metadata.opprettetDato),
+                SQLUtils.tidTilTimestamp(metadata.sistEndretDato),
+                SQLUtils.tidTilTimestamp(metadata.innsendtDato));
     }
 
     @Override
@@ -69,8 +67,8 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
                 metadata.fiksForsendelseId,
                 metadata.type.name(),
                 metadata.status.name(),
-                tidTilTimestamp(metadata.sistEndretDato),
-                tidTilTimestamp(metadata.innsendtDato),
+                SQLUtils.tidTilTimestamp(metadata.sistEndretDato),
+                SQLUtils.tidTilTimestamp(metadata.innsendtDato),
                 metadata.id);
     }
 
@@ -91,9 +89,9 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
                     m.fiksForsendelseId = rs.getString("fiksforsendelseid");
                     m.type = SoknadType.valueOf(rs.getString("soknadtype"));
                     m.status = SoknadInnsendingStatus.valueOf(rs.getString("innsendingstatus"));
-                    m.opprettetDato = timestampTilTid(rs.getTimestamp("opprettetdato"));
-                    m.sistEndretDato = timestampTilTid(rs.getTimestamp("sistendretdato"));
-                    m.innsendtDato = timestampTilTid(rs.getTimestamp("innsendtdato"));
+                    m.opprettetDato = SQLUtils.timestampTilTid(rs.getTimestamp("opprettetdato"));
+                    m.sistEndretDato = SQLUtils.timestampTilTid(rs.getTimestamp("sistendretdato"));
+                    m.innsendtDato = SQLUtils.timestampTilTid(rs.getTimestamp("innsendtdato"));
                     return m;
                 },
                 behandlingsId);
@@ -104,15 +102,4 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
         return null;
     }
 
-    private Timestamp tidTilTimestamp(LocalDateTime tid) {
-        return tid != null
-                ? Timestamp.valueOf(tid)
-                : null;
-    }
-
-    private LocalDateTime timestampTilTid(Timestamp timestamp) {
-        return timestamp != null
-                ? timestamp.toLocalDateTime()
-                : null;
-    }
 }
