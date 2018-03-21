@@ -13,7 +13,6 @@ public class FiksData {
 
     public String behandlingsId;
     public String avsenderFodselsnummer;
-    public String aktorId;
     public String mottakerOrgNr;
     public String mottakerNavn;
     public List<DokumentInfo> dokumentInfoer;
