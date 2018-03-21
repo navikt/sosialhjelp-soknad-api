@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.fillager.FillagerRepositoryJdbc;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.oppgave.OppgaveRepositoryJdbc;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepositoryJdbc;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadInnsendingDBConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepositoryJdbc;
@@ -19,7 +20,8 @@ import java.time.Clock;
         VedleggRepositoryJdbc.class,
         FillagerRepositoryJdbc.class,
         SoknadMetadataRepositoryJdbc.class,
-        SoknadInnsendingDBConfig.class
+        OppgaveRepositoryJdbc.class,
+        SoknadInnsendingDBConfig.class,
 })
 public class DbConfig {
 
