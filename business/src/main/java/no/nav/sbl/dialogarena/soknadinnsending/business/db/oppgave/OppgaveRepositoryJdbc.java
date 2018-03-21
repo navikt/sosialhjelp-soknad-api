@@ -49,7 +49,7 @@ public class OppgaveRepositoryJdbc extends NamedParameterJdbcDaoSupport implemen
 
     @Override
     public Optional<Oppgave> hentNeste() {
-        String select = "SELECT * FROM oppgave WHERE status = ? and (nesteforsok is null OR nesteforsok < ?)" + limit(1);
+        String select = "SELECT * FROM oppgave WHERE status = ? and (nesteforsok is null OR nesteforsok < ?) " + limit(1);
 
         while (true) {
             Optional<Oppgave> resultat = getJdbcTemplate().query(select, oppgaveRowMapper, KLAR.name(), tidTilTimestamp(LocalDateTime.now()))
