@@ -24,7 +24,7 @@ public class OppgaveRepositoryJdbc extends NamedParameterJdbcDaoSupport implemen
     private RowMapper<Oppgave> oppgaveRowMapper = (rs, rowNum) -> {
         Oppgave oppgave = new Oppgave();
         oppgave.id = rs.getLong("id");
-        oppgave.behandlingId = rs.getString("behandlingsid");
+        oppgave.behandlingsId = rs.getString("behandlingsid");
         oppgave.type = rs.getString("type");
         oppgave.status = Oppgave.Status.valueOf(rs.getString("status"));
         oppgave.steg = rs.getInt("steg");

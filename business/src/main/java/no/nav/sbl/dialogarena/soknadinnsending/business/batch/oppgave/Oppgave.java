@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 public class Oppgave {
     public Long id;
-    public String behandlingId;
+    public String behandlingsId;
     public String type;
     public Status status;
     public int steg;
