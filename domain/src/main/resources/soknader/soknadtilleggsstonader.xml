@@ -116,6 +116,13 @@
         </dependOnValues>
     </faktum>
     <faktum>
+        <id>reise.aktivitet.offentligtransport.aarsak.henting.adresse</id>
+        <dependOn>reise.aktivitet.offentligtransport.aarsak.henting</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
         <id>reise.aktivitet.offentligtransport.aarsak.annet</id>
         <dependOn>reise.aktivitet.offentligtransport</dependOn>
         <dependOnValues>
@@ -310,6 +317,13 @@
         </dependOnValues>
     </faktum>
     <faktum>
+        <id>reise.samling.offentligtransport.aarsak.henting.adresse</id>
+        <dependOn>reise.samling.offentligtransport.aarsak.henting</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
         <id>reise.samling.offentligtransport.aarsak.annet</id>
         <dependOn>reise.samling.offentligtransport</dependOn>
         <dependOnValues>
@@ -493,6 +507,13 @@
     <faktum>
         <id>reise.arbeidssoker.offentligtransport.aarsak.henting</id>
         <dependOn>reise.arbeidssoker.offentligtransport</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.arbeidssoker.offentligtransport.aarsak.henting.adresse</id>
+        <dependOn>reise.arbeidssoker.offentligtransport.aarsak.henting</dependOn>
         <dependOnValues>
             <value>false</value>
         </dependOnValues>
@@ -697,6 +718,13 @@
     <faktum>
         <id>reise.midlertidig.offentligtransport.aarsak.henting</id>
         <dependOn>reise.midlertidig.offentligtransport</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.midlertidig.offentligtransport.aarsak.henting.adresse</id>
+        <dependOn>reise.midlertidig.offentligtransport.aarsak.henting</dependOn>
         <dependOnValues>
             <value>false</value>
         </dependOnValues>
