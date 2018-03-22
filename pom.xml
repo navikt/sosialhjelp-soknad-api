@@ -639,6 +639,11 @@
                 <artifactId>bcpkix-jdk15on</artifactId>
                 <version>1.57</version>
             </dependency>
+            <dependency>
+                <groupId>com.migesok</groupId>
+                <artifactId>jaxb-java-time-adapters</artifactId>
+                <version>1.1.3</version>
+            </dependency>
 
             <!-- Avhengigheter med scope runtime -->
 
