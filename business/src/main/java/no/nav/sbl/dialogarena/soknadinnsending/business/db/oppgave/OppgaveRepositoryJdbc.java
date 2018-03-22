@@ -11,10 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.Oppgave.Status.KLAR;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.Oppgave.Status.UNDER_ARBEID;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.Oppgave.Status.*;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.*;
 
 @Component
@@ -70,5 +71,15 @@ public class OppgaveRepositoryJdbc extends NamedParameterJdbcDaoSupport implemen
     @Override
     public void oppdater(Oppgave oppgave) {
 
+    }
+
+    @Override
+    public Map<String, Integer> hentStatus() {
+        Map<String, Integer> statuser = new HashMap<>();
+
+        Integer feilede = getJdbcTemplate().queryForObject("SELECT count(*) FROM oppgave WHERE status = ?", Integer.class, FEILET.name());
+        statuser.put("feilede", feilede);
+
+        return statuser;
     }
 }
