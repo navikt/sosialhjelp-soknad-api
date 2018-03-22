@@ -60,8 +60,8 @@ public class OppgaveRepositoryJdbc extends NamedParameterJdbcDaoSupport implemen
                 return Optional.empty();
             }
 
-            String update = "UPDATE oppgave SET status = ? WHERE status = ? AND id = ?";
-            int rowsAffected = getJdbcTemplate().update(update, UNDER_ARBEID.name(), KLAR.name(), resultat.get().id);
+            String update = "UPDATE oppgave SET status = ?, sistkjort = ? WHERE status = ? AND id = ?";
+            int rowsAffected = getJdbcTemplate().update(update, UNDER_ARBEID.name(), tidTilTimestamp(LocalDateTime.now()), KLAR.name(), resultat.get().id);
             if (rowsAffected == 1) {
                 return resultat;
             }
@@ -77,8 +77,9 @@ public class OppgaveRepositoryJdbc extends NamedParameterJdbcDaoSupport implemen
     public Map<String, Integer> hentStatus() {
         Map<String, Integer> statuser = new HashMap<>();
 
-        Integer feilede = getJdbcTemplate().queryForObject("SELECT count(*) FROM oppgave WHERE status = ?", Integer.class, FEILET.name());
-        statuser.put("feilede", feilede);
+        statuser.put("feilede", getJdbcTemplate().queryForObject("SELECT count(*) FROM oppgave WHERE status = ?", Integer.class, FEILET.name()));
+        statuser.put("lengearbeid", getJdbcTemplate().queryForObject("SELECT count(*) FROM oppgave WHERE status = ? AND sistkjort < ?",
+                Integer.class, UNDER_ARBEID.name(), tidTilTimestamp(LocalDateTime.now().minusMinutes(10))));
 
         return statuser;
     }
