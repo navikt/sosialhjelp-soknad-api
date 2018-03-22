@@ -636,7 +636,7 @@
             </dependency>
             <dependency>
                 <groupId>org.bouncycastle</groupId>
-                <artifactId>bcmail-jdk15on</artifactId>
+                <artifactId>bcpkix-jdk15on</artifactId>
                 <version>1.57</version>
             </dependency>
 
