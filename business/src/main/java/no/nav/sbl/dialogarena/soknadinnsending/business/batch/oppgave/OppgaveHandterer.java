@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave;
 
+import no.nav.metrics.Event;
+import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.Oppgave.Status;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksSender;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Optional;
 
 import static java.lang.Math.pow;
@@ -26,7 +29,10 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class OppgaveHandterer {
 
     private static final Logger logger = getLogger(OppgaveHandterer.class);
+
     private static final int FEIL_THRESHOLD = 20;
+    private static final int PROSESS_RATE = 10 * 1000; // 10 sek etter forrige
+    private static final int RAPPORTER_RATE = 15 * 60 * 1000; // hvert kvarter
 
     @Inject
     private
@@ -36,7 +42,7 @@ public class OppgaveHandterer {
     private
     OppgaveRepository oppgaveRepository;
 
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = PROSESS_RATE)
     public void prosesserOppgaver() {
         while (true) {
             Optional<Oppgave> oppgaveOptional = oppgaveRepository.hentNeste();
@@ -60,6 +66,18 @@ public class OppgaveHandterer {
             oppgaveRepository.oppdater(oppgave);
         }
 
+    }
+
+    @Scheduled(fixedRate = RAPPORTER_RATE)
+    public void rapporterFeilede() {
+        Map<String, Integer> statuser = oppgaveRepository.hentStatus();
+
+        for (Map.Entry<String, Integer> entry : statuser.entrySet()) {
+            logger.info("Databasestatus for oppgaver: {} er {}", entry.getKey(), entry.getValue());
+            Event event = MetricsFactory.createEvent("status.oppgave." + entry.getKey());
+            event.addFieldToReport("antall", entry.getValue());
+            event.report();
+        }
     }
 
     private void oppgaveFeilet(Oppgave oppgave) {
