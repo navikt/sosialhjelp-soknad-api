@@ -4,6 +4,13 @@
         <id>ikkeavtjentverneplikt</id>
         <type>bool</type>
         <panel>IkkeAvtjentVerneplikt</panel>
+
+        <constraints>
+            <constraint>
+                <faktum>personalia</faktum>
+                <expression>properties['alder'] lt 45</expression>
+            </constraint>
+        </constraints>
     </faktum>
 
 
