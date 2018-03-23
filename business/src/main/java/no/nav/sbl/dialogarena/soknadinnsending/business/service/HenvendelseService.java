@@ -4,6 +4,7 @@ import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMetadataTransformer;
+import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.HovedskjemaMetadata;
@@ -26,6 +27,9 @@ public class HenvendelseService {
 
     @Inject
     private SoknadMetadataRepository soknadMetadataRepository;
+
+    @Inject
+    private OppgaveHandterer oppgaveHandterer;
 
     @Inject
     private Clock clock;
@@ -81,6 +85,7 @@ public class HenvendelseService {
 
         meta.status = FERDIG;
         soknadMetadataRepository.oppdater(meta);
+        oppgaveHandterer.leggTilOppgave(behandlingsId);
 
         logger.info("Søknad avsluttet " + behandlingsId + " " + meta.skjema + ", " + vedlegg.vedleggListe.size());
     }
