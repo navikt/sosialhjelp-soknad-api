@@ -13,7 +13,8 @@ CREATE TABLE SOKNADMETADATA (
     innsendingstatus varchar(255),
     opprettetdato timestamp,
     sistendretdato timestamp,
-    innsendtdato timestamp
+    innsendtdato timestamp,
+    batchstatus varchar(255)
 );
 
 CREATE INDEX INDEX_SOKNADMETADATA_ID on SOKNADMETADATA(id);
