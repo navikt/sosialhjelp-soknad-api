@@ -27,13 +27,27 @@ public class FillagerRepositoryJdbc extends NamedParameterJdbcDaoSupport impleme
 
     @Override
     public void lagreFil(Fil fil) {
-        getJdbcTemplate().update("INSERT INTO fillager (behandlingsid, uuid, data, eier) VALUES (?,?,?,?)",
-                ps -> {
-                    ps.setString(1, fil.behandlingsId);
-                    ps.setString(2, fil.uuid);
-                    ps.setBytes(3, fil.data);
-                    ps.setString(4, fil.eier);
-                });
+        Fil eksisterende = hentFil(fil.uuid);
+
+        if (eksisterende != null) {
+            if (!eksisterende.eier.equals(fil.eier)) {
+                throw new RuntimeException("Ny fil tilhører ikke eksisterende eier");
+            }
+            getJdbcTemplate().update("UPDATE fillager SET data = ? WHERE uuid = ?",
+                    ps -> {
+                        ps.setBytes(1, fil.data);
+                        ps.setString(2, fil.uuid);
+                    });
+        } else {
+            getJdbcTemplate().update("INSERT INTO fillager (behandlingsid, uuid, data, eier) VALUES (?,?,?,?)",
+                    ps -> {
+                        ps.setString(1, fil.behandlingsId);
+                        ps.setString(2, fil.uuid);
+                        ps.setBytes(3, fil.data);
+                        ps.setString(4, fil.eier);
+                    });
+        }
+
     }
 
     @Override

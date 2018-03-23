@@ -25,7 +25,8 @@ import org.springframework.context.annotation.Import;
         XmlService.class,
         SynligeFaktaService.class,
         SoknadMetricsService.class,
-        FillagerService.class
+        FillagerService.class,
+        HenvendelseService.class
 })
 public class ServiceConfig {
 }

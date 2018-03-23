@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
 import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.HendelseType;
@@ -19,13 +18,10 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.So
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadMetricsService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -89,9 +85,6 @@ public class SoknadServiceTest {
     @Mock
     SoknadMetricsService soknadMetricsService;
 
-    @Captor
-    ArgumentCaptor<XMLHovedskjema> argument;
-
     @InjectMocks
     private SoknadService soknadService;
 
@@ -139,7 +132,7 @@ public class SoknadServiceTest {
         when(soknadRepository.hentSoknad("123")).thenReturn(soknad);
         soknadService.avbrytSoknad("123");
         verify(soknadRepository).slettSoknad(soknad, HendelseType.AVBRUTT_AV_BRUKER);
-        verify(henvendelsesConnector).avbrytSoknad("123");
+        verify(henvendelsesConnector).avbrytSoknad("123", false);
     }
 
     @Test
