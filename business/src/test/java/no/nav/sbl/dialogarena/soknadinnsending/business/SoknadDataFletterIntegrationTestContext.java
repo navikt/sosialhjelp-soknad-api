@@ -4,6 +4,7 @@ import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.XmlService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
+import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.RepositoryTestSupport;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.TestSupport;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext;
@@ -146,5 +147,10 @@ public class SoknadDataFletterIntegrationTestContext {
     @Bean
     public SoknadMetricsService metricsService() {
         return mock(SoknadMetricsService.class);
+    }
+
+    @Bean
+    public OppgaveHandterer oppgaveHandterer() {
+        return mock(OppgaveHandterer.class);
     }
 }

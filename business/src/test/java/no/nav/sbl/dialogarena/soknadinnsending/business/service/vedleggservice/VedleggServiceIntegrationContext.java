@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.vedleggservice;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.fillager.FillagerRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepositoryJdbc;
@@ -50,4 +51,8 @@ public class VedleggServiceIntegrationContext {
         return new HendelseRepositoryJdbc();
     }
 
+    @Bean
+    public OppgaveHandterer oppgaveHandterer() {
+        return mock(OppgaveHandterer.class);
+    }
 }

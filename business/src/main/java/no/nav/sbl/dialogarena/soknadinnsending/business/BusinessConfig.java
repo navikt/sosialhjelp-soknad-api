@@ -6,7 +6,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.ArbeidsforholdBol
 import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.SosialhjelpArbeidsforholdBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.AvbrytAutomatiskSheduler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
-import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
+import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandtererImpl;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
@@ -35,7 +35,7 @@ import org.springframework.context.annotation.Import;
         ArbeidsforholdService.class,
         ArbeidsforholdTransformer.class,
         SosialhjelpKontaktBolk.class,
-        OppgaveHandterer.class,
+        OppgaveHandtererImpl.class,
         AvbrytAutomatiskSheduler.class
 })
 public class BusinessConfig {
