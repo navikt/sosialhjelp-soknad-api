@@ -1,9 +1,6 @@
 package no.nav.sbl.dialogarena.integration;
 
 import no.nav.sbl.dialogarena.config.IntegrationConfig;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingsId;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStartSoknadRequest;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerRequest;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerResponse;
@@ -31,17 +28,10 @@ public class EndpointDataMocking {
     private static int behandlingsIdCounter = 1;
 
     static void setupMockWsEndpointData() throws Exception {
-        mockSendSoknadEndpoint();
         mockBrukerProfilEndpoint();
         mockPersonEndpoint();
         mockDkifService();
         mockArbeidsForholdService();
-    }
-
-    static void mockSendSoknadEndpoint() {
-        SendSoknadPortType soknad = IntegrationConfig.getMocked("sendSoknadEndpoint");
-        Mockito.when(soknad.startSoknad(any(WSStartSoknadRequest.class)))
-                .then(invocationOnMock -> new WSBehandlingsId().withBehandlingsId("TEST" + behandlingsIdCounter++));
     }
 
     static void mockBrukerProfilEndpoint() throws Exception {

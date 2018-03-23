@@ -7,22 +7,17 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.RepositoryTestSupport;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.TestSupport;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.fillager.FillagerRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepositoryJdbc;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepositoryJdbc;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepositoryJdbc;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.MigrasjonHandterer;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
-import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
-import no.nav.tjeneste.domene.brukerdialog.henvendelse.v2.henvendelse.HenvendelsePortType;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -30,7 +25,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.inject.Inject;
 import javax.sql.DataSource;
-
 import java.time.Clock;
 
 import static org.mockito.Mockito.mock;
@@ -69,21 +63,8 @@ public class SoknadDataFletterIntegrationTestContext {
     }
 
     @Bean
-    public SendSoknadPortType sendSoknadEndpoint() {
-        SendSoknadPortType portType = mock(SendSoknadPortType.class);
-        return portType;
-    }
-
-    @Bean
-    public SendSoknadPortType sendSoknadSelftestEndpoint() {
-        SendSoknadPortType portType = mock(SendSoknadPortType.class);
-        return portType;
-    }
-
-    @Bean
-    public HenvendelsePortType henvendelseEndpoint() {
-        HenvendelsePortType portType = mock(HenvendelsePortType.class);
-        return portType;
+    public SoknadMetadataRepository soknadMetadataRepository() {
+        return mock(SoknadMetadataRepository.class);
     }
 
     @Bean
@@ -92,14 +73,8 @@ public class SoknadDataFletterIntegrationTestContext {
     }
 
     @Bean
-    public FilLagerPortType fillagerEndpoint() {
-        FilLagerPortType mock = mock(FilLagerPortType.class);
-        return mock;
-    }
-
-    @Bean
-    public FilLagerPortType fillagerSelftestEndpoint() {
-        return mock(FilLagerPortType.class);
+    public FillagerRepository fillagerRepository() {
+        return mock(FillagerRepository.class);
     }
 
     @Bean
