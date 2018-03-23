@@ -1,21 +1,19 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadataListe;
 import org.apache.commons.collections15.Transformer;
 import org.joda.time.LocalDate;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
-import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.*;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.*;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 
 public class Transformers {
@@ -66,54 +64,22 @@ public class Transformers {
         return soknad.getFaktumMedId(faktum.getParrentFaktum().toString()).getProperties().get("type");
     }
 
-    public static XMLVedlegg[] convertToXmlVedleggListe(List<Vedlegg> vedleggForventnings) {
-        List<XMLVedlegg> resultat = new ArrayList<>();
-        for (Vedlegg vedlegg : vedleggForventnings) {
-            XMLVedlegg xmlVedlegg;
-            if (vedlegg.getInnsendingsvalg().er(LastetOpp)) {
-                xmlVedlegg = new XMLVedlegg()
-                        .withFilnavn(vedlegg.lagFilNavn())
-                        .withSideantall(vedlegg.getAntallSider())
-                        .withMimetype(isEmpty(vedlegg.getMimetype()) ? "application/pdf" : vedlegg.getMimetype())
-                        .withTilleggsinfo(vedlegg.getNavn())
-                        .withFilstorrelse(vedlegg.getStorrelse().toString())
-                        .withSkjemanummer(vedlegg.getSkjemaNummer())
-                        .withUuid(vedlegg.getFillagerReferanse())
-                        .withInnsendingsvalg(LASTET_OPP.value());
-            } else {
-                xmlVedlegg = new XMLVedlegg()
-                        .withFilnavn(vedlegg.lagFilNavn())
-                        .withTilleggsinfo(vedlegg.getNavn())
-                        .withSkjemanummer(vedlegg.getSkjemaNummer())
-                        .withInnsendingsvalg(toXmlInnsendingsvalg(vedlegg.getInnsendingsvalg()));
-            }
-            String skjemanummerTillegg = vedlegg.getSkjemanummerTillegg();
-            if (isNotBlank(skjemanummerTillegg)) {
-                xmlVedlegg.setSkjemanummerTillegg(skjemanummerTillegg);
-            }
-            resultat.add(xmlVedlegg);
+    public static VedleggMetadataListe convertToXmlVedleggListe(List<Vedlegg> vedleggForventnings) {
+        VedleggMetadataListe liste = new VedleggMetadataListe();
 
-        }
-        return resultat.toArray(new XMLVedlegg[resultat.size()]);
-    }
+        liste.vedleggListe = vedleggForventnings.stream().map(forv -> {
+            VedleggMetadata m = new VedleggMetadata();
+            m.skjema = forv.getSkjemaNummer();
+            m.tillegg = forv.getSkjemanummerTillegg();
+            m.filnavn = forv.lagFilNavn();
+            m.status = forv.getInnsendingsvalg();
+            m.filUuid = forv.getFillagerReferanse();
+            m.mimetype = forv.getMimetype();
+            m.filStorrelse = forv.getStorrelse() != null ? forv.getStorrelse().toString() : "0";
+            return m;
+        }).collect(Collectors.toList());
 
-    public static String toXmlInnsendingsvalg(Vedlegg.Status innsendingsvalg) {
-        switch (innsendingsvalg) {
-            case LastetOpp:
-                return LASTET_OPP.toString();
-            case SendesSenere:
-                return SEND_SENERE.toString();
-            case SendesIkke:
-                return SENDES_IKKE.toString();
-            case VedleggSendesAvAndre:
-                return VEDLEGG_SENDES_AV_ANDRE.toString();
-            case VedleggSendesIkke:
-                return VEDLEGG_SENDES_IKKE.toString();
-            case VedleggAlleredeSendt:
-                return VEDLEGG_ALLEREDE_SENDT.toString();
-            default:
-                return SENDES_IKKE.toString();
-        }
+        return liste;
     }
 
     public static Vedlegg.Status toInnsendingsvalg(String xmlInnsendingsvalg) {
