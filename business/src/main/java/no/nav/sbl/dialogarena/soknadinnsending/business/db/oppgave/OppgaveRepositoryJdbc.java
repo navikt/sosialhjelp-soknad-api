@@ -45,7 +45,34 @@ public class OppgaveRepositoryJdbc extends NamedParameterJdbcDaoSupport implemen
 
     @Override
     public void opprett(Oppgave oppgave) {
+        oppgave.id = getJdbcTemplate().queryForObject(selectNextSequenceValue("OPPGAVE_ID_SEQ"), Long.class);
+        getJdbcTemplate().update("INSERT INTO oppgave (id, behandlingsid, type, status, steg, oppgavedata, oppgaveresultat, " +
+                        "opprettet, sistkjort, nesteforsok, retries) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                oppgave.id,
+                oppgave.behandlingsId,
+                oppgave.type,
+                oppgave.status.name(),
+                oppgave.steg,
+                Oppgave.JAXB.marshal(oppgave.oppgaveData),
+                Oppgave.JAXB.marshal(oppgave.oppgaveResultat),
+                tidTilTimestamp(oppgave.opprettet),
+                tidTilTimestamp(oppgave.sistKjort),
+                tidTilTimestamp(oppgave.nesteForsok),
+                oppgave.retries
+        );
+    }
 
+    @Override
+    public void oppdater(Oppgave oppgave) {
+        getJdbcTemplate().update("UPDATE oppgave SET status = ?, steg = ?, oppgavedata = ?, oppgaveresultat = ?, " +
+                        "nesteforsok = ?, retries = ?",
+                oppgave.status.name(),
+                oppgave.steg,
+                Oppgave.JAXB.marshal(oppgave.oppgaveData),
+                Oppgave.JAXB.marshal(oppgave.oppgaveResultat),
+                tidTilTimestamp(oppgave.nesteForsok),
+                oppgave.retries
+        );
     }
 
     @Override
@@ -66,11 +93,6 @@ public class OppgaveRepositoryJdbc extends NamedParameterJdbcDaoSupport implemen
                 return resultat;
             }
         }
-    }
-
-    @Override
-    public void oppdater(Oppgave oppgave) {
-
     }
 
     @Override

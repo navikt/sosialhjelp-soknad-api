@@ -103,8 +103,7 @@ public class OppgaveHandterer {
         oppgave.opprettet = LocalDateTime.now();
         oppgave.nesteForsok = LocalDateTime.now();
         oppgave.steg = 0;
-
-        // TODO id
+        oppgave.retries = 0;
 
         oppgaveRepository.opprett(oppgave);
     }
