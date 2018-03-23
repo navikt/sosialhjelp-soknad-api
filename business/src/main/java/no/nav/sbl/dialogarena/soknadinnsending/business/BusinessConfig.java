@@ -4,6 +4,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Kravdialog
 import no.nav.sbl.dialogarena.soknadinnsending.business.aktivitetbetalingsplan.AktivitetBetalingsplanBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.ArbeidsforholdBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.SosialhjelpArbeidsforholdBolk;
+import no.nav.sbl.dialogarena.soknadinnsending.business.batch.AvbrytAutomatiskSheduler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbConfig;
@@ -34,7 +35,8 @@ import org.springframework.context.annotation.Import;
         ArbeidsforholdService.class,
         ArbeidsforholdTransformer.class,
         SosialhjelpKontaktBolk.class,
-        OppgaveHandterer.class
+        OppgaveHandterer.class,
+        AvbrytAutomatiskSheduler.class
 })
 public class BusinessConfig {
 
