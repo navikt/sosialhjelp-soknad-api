@@ -7,7 +7,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -104,7 +104,7 @@ public class LagringsScheduler {
     private boolean avbrytOgSlettEttersendelse(Optional<WebSoknad> ws) throws InterruptedException {
         WebSoknad soknad = ws.get();
         try {
-            henvendelseService.avbrytSoknad(soknad.getBrukerBehandlingId());
+            henvendelseService.avbrytSoknad(soknad.getBrukerBehandlingId(), true);
             slettFiler(soknad);
             soknadRepository.slettSoknad(soknad, LAGRET_I_HENVENDELSE);
 

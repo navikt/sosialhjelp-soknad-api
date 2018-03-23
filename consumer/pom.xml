@@ -30,24 +30,11 @@
         </dependency>
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>dialogarena-behandlingsinformasjon</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>sendsoknad-tjenestespesifikasjon</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>brukerprofil-tjenestespesifikasjon</artifactId>
         </dependency>
         <dependency>
             <groupId>no.nav.sbl</groupId>
             <artifactId>dkif-tjenestespesifikasjon</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>henvendelse-informasjon-v2</artifactId>
-            <version>${henvendelse-informasjon-v2.version}</version>
         </dependency>
         <dependency>
             <groupId>no.nav.tjenester.fim</groupId>
@@ -140,10 +127,6 @@
             <artifactId>wss4j</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-security-core</artifactId>
-        </dependency>
         <dependency>
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-security-authorization</artifactId>

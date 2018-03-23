@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.*;
 import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
@@ -16,23 +15,23 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.ArbeidsforholdBol
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.HovedskjemaMetadata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadataListe;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.FillagerService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.MigrasjonHandterer;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStatus;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Matchers;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.context.ApplicationContext;
 
@@ -51,14 +50,12 @@ import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus.OPPRETTET;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.DAGPENGER;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils.RUTES_I_BRUT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.refEq;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -105,9 +102,6 @@ public class SoknadDataFletterTest {
     SoknadMetricsService soknadMetricsService;
     @Mock
     MigrasjonHandterer migrasjonHandterer;
-
-    @Captor
-    ArgumentCaptor<XMLHovedskjema> argument;
 
     @InjectMocks
     private SoknadDataFletter soknadServiceUtil;
@@ -229,51 +223,21 @@ public class SoknadDataFletterTest {
         when(migrasjonHandterer.handterMigrasjon(any(WebSoknad.class))).thenReturn(webSoknad);
         soknadServiceUtil.sendSoknad(behandlingsId, new byte[]{1, 2, 3}, new byte[]{4,5,6});
 
-        verify(henvendelsesConnector).avsluttSoknad(eq(behandlingsId), argument.capture(),
-                refEq(new XMLVedlegg[] {
-                        new XMLVedlegg()
-                                .withUuid("uidVedlegg1")
-                                .withInnsendingsvalg(XMLInnsendingsvalg.LASTET_OPP.toString())
-                                .withFilnavn("Test Annet vedlegg")
-                                .withTilleggsinfo("Test Annet vedlegg")
-                                .withFilstorrelse("2")
-                                .withSideantall(3)
-                                .withMimetype("application/pdf")
-                                .withSkjemanummer("N6"),
-                                new XMLVedlegg()
-                                        .withInnsendingsvalg(XMLInnsendingsvalg.SENDES_IKKE.toString())
-                                        .withTilleggsinfo("")
-                                        .withSkjemanummer("L8")
-                                        .withFilnavn("L8"),
-                                new XMLVedlegg()
-                                        .withUuid("kvitteringRef")
-                                        .withInnsendingsvalg(XMLInnsendingsvalg.LASTET_OPP.toString())
-                                        .withFilnavn(Kodeverk.KVITTERING)
-                                        .withTilleggsinfo("")
-                                        .withFilstorrelse("3")
-                                        .withSideantall(1)
-                                        .withMimetype("application/pdf")
-                                        .withSkjemanummer(Kodeverk.KVITTERING)
-                })
-        , any());
+        ArgumentCaptor<HovedskjemaMetadata> hovedCaptor = ArgumentCaptor.forClass(HovedskjemaMetadata.class);
+        ArgumentCaptor<VedleggMetadataListe> vedleggCaptor = ArgumentCaptor.forClass(VedleggMetadataListe.class);
+        verify(henvendelsesConnector).avsluttSoknad(eq(behandlingsId), hovedCaptor.capture(), vedleggCaptor.capture(), any());
 
-        XMLHovedskjema xmlHovedskjema = argument.getValue();
-        assertThat(xmlHovedskjema.getJournalforendeEnhet()).isEqualTo(RUTES_I_BRUT);
-        assertThat(xmlHovedskjema.getUuid()).isEqualTo("uidHovedskjema");
-        assertThat(xmlHovedskjema.getInnsendingsvalg()).isEqualTo(XMLInnsendingsvalg.LASTET_OPP.toString());
-        assertThat(xmlHovedskjema.getFilnavn()).isEqualTo(DAGPENGER);
-        assertThat(xmlHovedskjema.getFilstorrelse()).isEqualTo("3");
-        assertThat(xmlHovedskjema.getMimetype()).isEqualTo("application/pdf");
-        assertThat(xmlHovedskjema.getSkjemanummer()).isEqualTo(DAGPENGER);
-        assertThat(xmlHovedskjema.getAlternativRepresentasjonListe().getAlternativRepresentasjon().get(0))
-                .isEqualToComparingFieldByField(
-                        new XMLAlternativRepresentasjon()
-                        .withFilnavn(DAGPENGER)
-                        .withFilstorrelse("3")
-                        .withMimetype("application/pdf-fullversjon")
-                        .withUuid(xmlHovedskjema.getAlternativRepresentasjonListe().getAlternativRepresentasjon().get(0).getUuid())
-                );
-        assertThat(xmlHovedskjema.getAlternativRepresentasjonListe().getAlternativRepresentasjon().get(0)).isNotEqualTo(xmlHovedskjema.getUuid());
+        HovedskjemaMetadata capturedHoved = hovedCaptor.getValue();
+        assertThat(capturedHoved.filUuid).isEqualTo("uidHovedskjema");
+        assertThat(capturedHoved.filnavn).isEqualTo(DAGPENGER);
+        assertThat(capturedHoved.mimetype).isEqualTo("application/pdf");
+        assertThat(capturedHoved.filStorrelse).isEqualTo("3");
+        assertThat(capturedHoved.alternativRepresentasjon.get(0).mimetype).isEqualTo("application/pdf-fullversjon");
+
+        VedleggMetadataListe capturedVedlegg = vedleggCaptor.getValue();
+        assertThat(capturedVedlegg.vedleggListe).hasSize(3);
+        assertThat(capturedVedlegg.vedleggListe.get(0).filnavn).isEqualTo("Test Annet vedlegg");
+        assertThat(capturedVedlegg.vedleggListe.get(2).skjema).isEqualTo(Kodeverk.KVITTERING);
     }
 
     @Test
@@ -294,7 +258,7 @@ public class SoknadDataFletterTest {
     }
 
     @Test
-    public void skalPopulereFraHenvendelseNaarSoknadIkkeFinnes() throws IOException {
+    public void skalPopulereFraMetadataNaarSoknadIkkeFinnes() throws IOException {
         Vedlegg vedlegg = new Vedlegg().medVedleggId(4L).medFillagerReferanse("uidVedlegg");
         Vedlegg vedleggCheck = new Vedlegg().medVedleggId(4L).medFillagerReferanse("uidVedlegg").medData(new byte[]{1, 2, 3});
         WebSoknad soknad = new WebSoknad().medBehandlingId("123").medskjemaNummer(SKJEMA_NUMMER).medId(11L)
@@ -303,15 +267,16 @@ public class SoknadDataFletterTest {
                 .medVedlegg(asList(vedleggCheck));
 
         when(migrasjonHandterer.handterMigrasjon(any(WebSoknad.class))).thenReturn(soknad);
-        when(henvendelsesConnector.hentSoknad("123")).thenReturn(
-                new WSHentSoknadResponse()
-                        .withBehandlingsId("123")
-                        .withStatus(WSStatus.UNDER_ARBEID.toString())
-                        .withAny(new XMLMetadataListe()
-                                .withMetadata(
-                                        new XMLHovedskjema().withUuid("uidHovedskjema"),
-                                        new XMLVedlegg().withUuid("uidVedlegg")))
-        );
+
+        SoknadMetadata metadata = new SoknadMetadata();
+        metadata.status = UNDER_ARBEID;
+        metadata.hovedskjema = new HovedskjemaMetadata();
+        metadata.hovedskjema.filUuid = "uidHovedskjema";
+        VedleggMetadata v = new VedleggMetadata();
+        v.filUuid = "uidVedlegg";
+        metadata.vedlegg.vedleggListe.add(v);
+
+        when(henvendelsesConnector.hentSoknad("123")).thenReturn(metadata);
         when(lokalDb.hentSoknad("123")).thenReturn(null, soknad, soknad);
         when(lokalDb.hentSoknadMedVedlegg("123")).thenReturn(soknad, soknad);
         when(lokalDb.hentSoknadMedData(11L)).thenReturn(soknad);
@@ -323,7 +288,12 @@ public class SoknadDataFletterTest {
                 .thenReturn(baos.toByteArray());
         WebSoknad webSoknad = soknadServiceUtil.hentSoknad("123", true, false);
         soknadServiceUtil.hentSoknad("123", true, false);
-        verify(lokalDb, atMost(1)).populerFraStruktur(eq(soknadCheck));
+        ArgumentCaptor<WebSoknad> captor = ArgumentCaptor.forClass(WebSoknad.class);
+        verify(lokalDb, times(1)).populerFraStruktur(captor.capture());
+
+        WebSoknad captured = captor.getValue();
+        assertThat(captured.getVedlegg().get(0).getFillagerReferanse()).isEqualTo("uidVedlegg");
+
         assertThat(webSoknad.getSoknadId()).isEqualTo(11L);
     }
 
