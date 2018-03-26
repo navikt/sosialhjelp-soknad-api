@@ -16,6 +16,7 @@ import org.assertj.core.api.AbstractObjectAssert;
 import org.assertj.core.groups.Tuple;
 import org.glassfish.jersey.test.JerseyTest;
 
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
@@ -39,6 +40,7 @@ import static org.assertj.core.groups.Tuple.tuple;
 
 public class SoknadTester extends JerseyTest {
     private final String skjemaNummer;
+    private String user;
     private String brukerBehandlingId;
     private WebSoknad soknad;
     private Pair<String, String> xhrHeader;
@@ -46,6 +48,7 @@ public class SoknadTester extends JerseyTest {
     private SoknadTester(String skjemaNummer) {
         super();
         this.skjemaNummer = skjemaNummer;
+        this.user = "***REMOVED***";
     }
 
     public static SoknadTester startSoknad(String skjemaNummer) throws Exception {
@@ -95,6 +98,7 @@ public class SoknadTester extends JerseyTest {
     private Invocation.Builder soknadResource(String suburl, Function<WebTarget, WebTarget> webTargetDecorator) {
         WebTarget target = target("/sendsoknad/soknader/" + brukerBehandlingId + suburl);
         return webTargetDecorator.apply(target)
+                .queryParam("fnr", user)
                 .request(APPLICATION_JSON_TYPE)
                 .accept(APPLICATION_JSON_TYPE);
     }
@@ -107,18 +111,21 @@ public class SoknadTester extends JerseyTest {
     private Invocation.Builder alternativRepresentasjonResource() {
         WebTarget target = target("/sendsoknad/representasjon/xml/" + this.brukerBehandlingId);
         return target
+                .queryParam("fnr", user)
                 .request(TEXT_XML)
                 .accept(TEXT_XML);
     }
 
     private Invocation.Builder faktumResource(Function<WebTarget, WebTarget> webTargetDecorator) {
         return webTargetDecorator.apply(target("/sendsoknad/fakta/"))
+                .queryParam("fnr", user)
                 .request(APPLICATION_JSON_TYPE)
                 .accept(APPLICATION_JSON_TYPE);
     }
 
     private Invocation.Builder vedleggResource(Function<WebTarget, WebTarget> webTargetDecorator) {
         return webTargetDecorator.apply(target("/sendsoknad/vedlegg/"))
+                .queryParam("fnr", user)
                 .request(APPLICATION_JSON_TYPE)
                 .accept(APPLICATION_JSON_TYPE);
     }
@@ -172,8 +179,11 @@ public class SoknadTester extends JerseyTest {
         return this;
     }
 
-    private void checkResponse(Response invoke, int status) {
-        assertThat(invoke.getStatus()).isEqualTo(status);
+    private void checkResponse(Response invoke, int expectedStatusCode) {
+        int actualStatusCode = invoke.getStatus();
+        if (actualStatusCode != expectedStatusCode ){
+            throw new WebApplicationException(actualStatusCode);
+        }
     }
 
     public AbstractObjectAssert<?, WebSoknad> assertSoknad() {
@@ -201,9 +211,10 @@ public class SoknadTester extends JerseyTest {
 
     public SoknadTester hentFakta() {
         Response response = soknadResource("/fakta").build("GET").invoke();
+        checkResponse(response, SC_OK);
         soknad.setFakta(response.readEntity(new GenericType<List<Faktum>>() {
         }));
-        checkResponse(response, SC_OK);
+
         return this;
     }
 
@@ -222,6 +233,11 @@ public class SoknadTester extends JerseyTest {
     public SoknadTester sendInn() {
         Response response = soknadResource("/actions/send").build("POST").invoke();
         checkResponse(response, SC_NO_CONTENT);
+        return this;
+    }
+
+    public SoknadTester somBruker(String fnr) {
+        this.user = fnr;
         return this;
     }
 
