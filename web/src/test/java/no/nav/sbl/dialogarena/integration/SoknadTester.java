@@ -293,7 +293,7 @@ public class SoknadTester extends JerseyTest {
             return this;
         }
 
-        SoknadTester utforEndring() {
+        public SoknadTester utforEndring() {
             if (Objects.isNull(value) && properties.isEmpty()) {
                 throw new RuntimeException("Ingen endring å utføre  - ingen value eller property er satt.");
             }
@@ -302,7 +302,7 @@ public class SoknadTester extends JerseyTest {
             return endreFaktum(faktum);
         }
 
-        FaktumTester withProperty(String key, String value) {
+        public FaktumTester withProperty(String key, String value) {
             properties.put(key, value);
             return this;
         }

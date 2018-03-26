@@ -5,7 +5,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.AAPUtlande
 import org.junit.Before;
 import org.junit.Test;
 
-public class SoknadAapUtlandVedleggIT extends AbstractIT {
+public class AAPUtlandVedleggIT extends AbstractIT {
     private String skjemanummer = new AAPUtlandetInformasjon().getSkjemanummer().get(0);
 
     @Before
