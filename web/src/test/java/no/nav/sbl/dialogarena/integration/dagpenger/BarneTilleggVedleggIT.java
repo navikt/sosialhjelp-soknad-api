@@ -1,10 +1,15 @@
-package no.nav.sbl.dialogarena.integration;
+package no.nav.sbl.dialogarena.integration.dagpenger;
 
+import no.nav.sbl.dialogarena.integration.AbstractIT;
+import no.nav.sbl.dialogarena.integration.EndpointDataMocking;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.DagpengerOrdinaerInformasjon;
 import org.junit.Before;
 import org.junit.Test;
 
-public class DagpengerVernepliktVedleggIT extends AbstractIT {
+import static java.util.Collections.singletonMap;
+
+public class BarneTilleggVedleggIT extends AbstractIT {
+
     private String dagpengerSkjemaNummer = new DagpengerOrdinaerInformasjon().getSkjemanummer().get(0);
 
     @Before
@@ -20,11 +25,11 @@ public class DagpengerVernepliktVedleggIT extends AbstractIT {
     }
 
     @Test
-    public void skalHaT3VedleggVedAvtjentVerneplikt() {
+    public void skalHaX8VedleggVedBarn() {
         soknadMedDelstegstatusOpprettet(dagpengerSkjemaNummer)
-                .faktum("ikkeavtjentverneplikt").withValue("false").utforEndring()
+                .nyttFaktum("barn").withProperty("vedlegg", "true").opprett()
                 .hentPaakrevdeVedlegg()
-                .skalHaVedlegg("T3");
+                .skalHaVedlegg("X8");
     }
 
 }

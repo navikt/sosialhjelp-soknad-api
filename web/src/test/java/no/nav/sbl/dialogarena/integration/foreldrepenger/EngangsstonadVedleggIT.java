@@ -1,12 +1,14 @@
-package no.nav.sbl.dialogarena.integration;
+package no.nav.sbl.dialogarena.integration.foreldrepenger;
 
 
+import no.nav.sbl.dialogarena.integration.AbstractIT;
+import no.nav.sbl.dialogarena.integration.EndpointDataMocking;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.ForeldrepengerInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad.Stonadstyper;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ForeldrepengerEngangsstonadVedleggIT extends AbstractIT {
+public class EngangsstonadVedleggIT extends AbstractIT {
     private String foreldrepengerOrdinaerSkjemaNummer = new ForeldrepengerInformasjon().getSkjemanummer().get(0);
 
     @Before
