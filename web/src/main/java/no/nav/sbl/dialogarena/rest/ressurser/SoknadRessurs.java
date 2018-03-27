@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad.Type.Henvendelse;
+import static no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad.Type.Metadata;
 import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.generateXsrfToken;
 
 @Controller
@@ -77,7 +77,7 @@ public class SoknadRessurs {
     @GET
     @Path("/{behandlingsId}")
     @Produces("application/vnd.kvitteringforinnsendtsoknad+json")
-    @SjekkTilgangTilSoknad(type = Henvendelse)
+    @SjekkTilgangTilSoknad(type = Metadata)
     public InnsendtSoknad hentInnsendtSoknad(@PathParam("behandlingsId") String behandlingsId, @QueryParam("sprak") String sprak) {
         return innsendtSoknadService.hentInnsendtSoknad(behandlingsId, sprak);
     }

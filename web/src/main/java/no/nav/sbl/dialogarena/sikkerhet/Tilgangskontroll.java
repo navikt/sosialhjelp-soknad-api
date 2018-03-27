@@ -12,15 +12,15 @@ import no.nav.modig.security.tilgangskontroll.policy.pep.PEPImpl;
 import no.nav.modig.security.tilgangskontroll.policy.request.attributes.SubjectAttribute;
 import no.nav.sbl.dialogarena.config.SikkerhetsConfig;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import java.util.Objects;
 
-import static java.lang.String.valueOf;
 import static java.util.Arrays.asList;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.modig.security.tilgangskontroll.utils.AttributeUtils.*;
@@ -40,6 +40,8 @@ public class Tilgangskontroll {
     private final EnforcementPoint pep;
     @Inject
     private SoknadService soknadService;
+    @Inject
+    private SoknadMetadataRepository soknadMetadataRepository;
 
     public Tilgangskontroll() {
         DecisionPoint pdp = new PicketLinkDecisionPoint(SikkerhetsConfig.class.getResource("/security/policyConfig.xml"));
@@ -48,32 +50,28 @@ public class Tilgangskontroll {
     }
 
     public void verifiserBrukerHarTilgangTilSoknad(String behandlingsId) {
-        Long soknadId = null;
         String aktoerId = "undefined";
         try {
             WebSoknad soknad = soknadService.hentSoknad(behandlingsId, false, false);
-            soknadId = soknad.getSoknadId();
             aktoerId = soknad.getAktoerId();
         } catch (Exception e) {
             logger.warn("Kunne ikke avgjøre hvem som eier søknad med behandlingsId {} -> Ikke tilgang.", behandlingsId, e);
         }
-        verifiserBrukerHarTilgangTilSoknad(aktoerId, soknadId);
+        verifiserTilgangMotPep(aktoerId, behandlingsId);
     }
 
-    public void verifiserBrukerHarTilgangTilHenvendelse(String behandlingsId) {
-        String aktorId = getSubjectHandler().getUid();
-
-        SubjectAttribute aktorSubjectId = new SubjectAttribute(new URN("urn:nav:ikt:tilgangskontroll:xacml:subject:aktor-id"), new StringValue(aktorId));
-
-        pep.assertAccess(
-                forRequest(resourceType("HENVENDELSE"),
-                        resourceId(behandlingsId),
-                        ownerId(aktorId),
-                        resourceAttribute(URN_ENDEPUNKT, "Ekstern"),
-                        actionId("Read"), aktorSubjectId));
+    public void verifiserBrukerHarTilgangTilMetadata(String behandlingsId) {
+        String aktoerId = "undefined";
+        try {
+            SoknadMetadata metadata = soknadMetadataRepository.hent(behandlingsId);
+            aktoerId = metadata.fnr;
+        } catch (Exception e) {
+            logger.warn("Kunne ikke avgjøre hvem som eier søknad med behandlingsId {} -> Ikke tilgang.", behandlingsId, e);
+        }
+        verifiserTilgangMotPep(aktoerId, behandlingsId);
     }
 
-    public void verifiserBrukerHarTilgangTilSoknad(String eier, Long soknadId) {
+    public void verifiserTilgangMotPep(String eier, String behandlingsId) {
         if  (Objects.isNull(eier)) {
             throw new AuthorizationException("");
         }
@@ -83,7 +81,7 @@ public class Tilgangskontroll {
         pep.assertAccess(
                 forRequest(
                         resourceType("Soknad"),
-                        resourceId(valueOf(soknadId)),
+                        resourceId(behandlingsId),
                         ownerId(eier),
                         aktorSubjectId));
     }
