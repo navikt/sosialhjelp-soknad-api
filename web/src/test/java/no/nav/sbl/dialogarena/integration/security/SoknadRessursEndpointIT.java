@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.integration.security;
 
 
-import no.nav.sbl.dialogarena.integration.AbstractIT;
+import no.nav.sbl.dialogarena.integration.AbstractSecurityIT;
 import no.nav.sbl.dialogarena.integration.EndpointDataMocking;
 import no.nav.sbl.dialogarena.integration.SoknadTester;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.AAPUtlandetInformasjon;
@@ -14,7 +14,7 @@ import javax.ws.rs.core.Response;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-public class SoknadEndpointIT extends AbstractIT {
+public class SoknadRessursEndpointIT extends AbstractSecurityIT {
     public static final String ANNEN_BRUKER = "12345679811";
     private String skjemanummer = new AAPUtlandetInformasjon().getSkjemanummer().get(0);
 
