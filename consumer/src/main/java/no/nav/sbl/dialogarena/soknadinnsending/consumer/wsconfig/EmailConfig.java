@@ -18,7 +18,7 @@ public class EmailConfig {
     private String host;
 
     @Value("${dokumentinnsending.smtpServer.port}")
-    private int port = 25;
+    private int port;
 
     private static final int SMTP_TIMEOUT = 3000;
 
