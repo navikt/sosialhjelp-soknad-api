@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig;
 
 import no.nav.sbl.dialogarena.types.Pingable;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -25,23 +26,26 @@ public class EmailConfig {
     public Pingable pingable() {
         return new Pingable() {
             @Override
+            @Cacheable("emailPingCache")
             public Ping ping () {
                 SocketAddress socketAddress = new InetSocketAddress(host, port);
                 Socket socket = new Socket();
+                Ping pingResultat;
 
                 try {
                     socket.connect(socketAddress, SMTP_TIMEOUT);
-                    return Ping.lyktes("Epost-utsending");
+                    pingResultat = Ping.lyktes("Mail-utsending");
 
                 } catch (IOException e) {
-                    return Ping.feilet("Epost-utsending", e);
+                    pingResultat = Ping.feilet("Mail-utsending", e);
                 } finally {
                     try {
                         socket.close();
                     } catch (IOException e) {
-                        Ping.feilet("Epost-utsending", e);
+                        pingResultat = Ping.feilet("Mail-utsending", e);
                     }
                 }
+                return pingResultat;
             }
         };
 
