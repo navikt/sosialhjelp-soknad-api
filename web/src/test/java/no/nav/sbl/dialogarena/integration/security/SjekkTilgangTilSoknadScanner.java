@@ -14,10 +14,12 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
-import static junit.framework.TestCase.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SjekkTilgangTilSoknadScanner {
 
+
+    //Denne kan i fremtiden fikses til å hente alle @Path-annotasjoner fra Jersey og anta noe om testene i security-pakka for å sjekke om alle testes
 
     @Test
     public void sjekkAtAlleKlasserMedSikkerhetsannotasjonHarEnKlasseHer() {
@@ -26,18 +28,22 @@ public class SjekkTilgangTilSoknadScanner {
                         .setUrls(ClasspathHelper.forPackage("no.nav.sbl.dialogarena.rest"))
                         .setScanners(new MethodAnnotationsScanner()));
         Set<Method> annotatedMethods = restResourceReflections.getMethodsAnnotatedWith(SjekkTilgangTilSoknad.class);
+
         Set<String> classnames = new HashSet<>();
+
         for (Method method : annotatedMethods){
             classnames.add(method.getDeclaringClass().getSimpleName());
         }
+
         Reflections testResourceReflections = new Reflections(
                 new ConfigurationBuilder()
-                        .setUrls(ClasspathHelper.forPackage("no.nav.sbl.dialogarena.integration.security"))
+                        .setUrls(ClasspathHelper.forPackage("no.nav.sbl.dialogarena.integration"))
                         .setScanners(new SubTypesScanner()));
-        Set<Class<? extends AbstractSecurityIT>> testClasses = testResourceReflections.getSubTypesOf(AbstractSecurityIT.class);
+
+        Set<Class<? extends AbstractSecurityIT>> subTypesOf = testResourceReflections.getSubTypesOf(AbstractSecurityIT.class);
 
         Set<String> classnamesForTest = new HashSet<>();
-        for (Class clazz : testClasses){
+        for (Class clazz : subTypesOf){
             classnamesForTest.add(clazz.getSimpleName());
         }
         //Fjern testklasse som er fanget opp med reflection
@@ -52,8 +58,7 @@ public class SjekkTilgangTilSoknadScanner {
 
 
         for(String classname : classnames){
-            String expectedTestName = classname + "EndpointIT";
-            assertTrue("Foventer en klasse "+expectedTestName+ " som extender AbstractSecurityIT",classnamesForTest.contains(expectedTestName));
+            assertThat(classnamesForTest).contains(classname + "EndpointIT");
         }
 
     }
