@@ -68,7 +68,7 @@ public class SoknadTester extends JerseyTest {
         StartSoknad soknadType = new StartSoknad();
         soknadType.setSoknadType(skjemaNummer);
         Entity sokEntity = Entity.json(soknadType);
-        Response response = target("/sendsoknad/soknader")
+        Response response = sendsoknad().path("soknader")
                 .request(APPLICATION_JSON_TYPE)
                 .accept(APPLICATION_JSON_TYPE)
                 .buildPost(sokEntity)
@@ -77,6 +77,10 @@ public class SoknadTester extends JerseyTest {
         brukerBehandlingId = (String) response.readEntity(Map.class).get("brukerBehandlingId");
         saveXhrValue(response.getCookies().get(SoknadRessurs.XSRF_TOKEN).getValue());
         return this;
+    }
+
+    private WebTarget sendsoknad() {
+        return target("/sendsoknad/").queryParam("fnr", this.user);
     }
 
     private void saveXhrValue(String value){
@@ -97,9 +101,8 @@ public class SoknadTester extends JerseyTest {
     }
 
     private Invocation.Builder soknadResource(String suburl, Function<WebTarget, WebTarget> webTargetDecorator) {
-        WebTarget target = target("/sendsoknad/soknader/" + brukerBehandlingId + suburl);
+        WebTarget target = sendsoknad().path("soknader/").path(brukerBehandlingId).path(suburl);
         return webTargetDecorator.apply(target)
-                .queryParam("fnr", user)
                 .request(APPLICATION_JSON_TYPE)
                 .accept(APPLICATION_JSON_TYPE);
     }
@@ -110,7 +113,7 @@ public class SoknadTester extends JerseyTest {
     }
 
     private Invocation.Builder alternativRepresentasjonResource() {
-        WebTarget target = target("/sendsoknad/representasjon/xml/" + this.brukerBehandlingId);
+        WebTarget target = sendsoknad().path("representasjon/xml/").path(this.brukerBehandlingId);
         return target
                 .queryParam("fnr", user)
                 .request(TEXT_XML)
@@ -118,15 +121,13 @@ public class SoknadTester extends JerseyTest {
     }
 
     private Invocation.Builder faktumResource(Function<WebTarget, WebTarget> webTargetDecorator) {
-        return webTargetDecorator.apply(target("/sendsoknad/fakta/"))
-                .queryParam("fnr", user)
+        return webTargetDecorator.apply(sendsoknad().path("fakta/"))
                 .request(APPLICATION_JSON_TYPE)
                 .accept(APPLICATION_JSON_TYPE);
     }
 
     private Invocation.Builder vedleggResource(Function<WebTarget, WebTarget> webTargetDecorator) {
-        return webTargetDecorator.apply(target("/sendsoknad/vedlegg/"))
-                .queryParam("fnr", user)
+        return webTargetDecorator.apply(sendsoknad().path("vedlegg/"))
                 .request(APPLICATION_JSON_TYPE)
                 .accept(APPLICATION_JSON_TYPE);
     }
@@ -237,10 +238,6 @@ public class SoknadTester extends JerseyTest {
         return this;
     }
 
-    public SoknadTester somBruker(String fnr) {
-        this.user = fnr;
-        return this;
-    }
 
     public class VedleggTester {
 
