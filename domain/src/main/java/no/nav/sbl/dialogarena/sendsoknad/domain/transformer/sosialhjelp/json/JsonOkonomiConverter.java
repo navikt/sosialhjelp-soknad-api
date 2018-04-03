@@ -185,7 +185,24 @@ public class JsonOkonomiConverter {
                 webSoknad.getFaktaMedKey("opplysninger.inntekt.bankinnskudd.annet"),
                 "saldo"));
 
+        appendIfTrue(result, "bolig", "Bolig", webSoknad.getValueForFaktum("inntekt.eierandeler.true.type.bolig"));
+        appendIfTrue(result, "campingvogn", "Campingvogn og/eller båt", webSoknad.getValueForFaktum("inntekt.eierandeler.true.type.campingvogn"));
+        appendIfTrue(result, "kjoretoy", "Kjøretøy", webSoknad.getValueForFaktum("inntekt.eierandeler.true.type.kjoretoy"));
+        appendIfTrue(result, "fritidseiendom", "Fritidseiendom", webSoknad.getValueForFaktum("inntekt.eierandeler.true.type.fritidseiendom"));
+        appendIfTrue(result, "annet", "Annet", webSoknad.getValueForFaktum("inntekt.eierandeler.true.type.annet"));
+        
         return result.stream().filter(r -> r != null).collect(Collectors.toList());
+    }
+    
+    private static void appendIfTrue(List<JsonOkonomioversiktFormue> result, String type, String tittel, String value) {
+        if (value != null && !value.trim().equals("") && Boolean.parseBoolean(value)) {
+            result.add(new JsonOkonomioversiktFormue()
+                .withKilde(JsonKilde.BRUKER)
+                .withType(type)
+                .withTittel(tittel)
+                .withOverstyrtAvBruker(false)
+            );
+        }
     }
 
     private static List<JsonOkonomiOpplysningUtgift> tilJsonOkonomiopplysningerUtgift(WebSoknad webSoknad) {
@@ -285,7 +302,7 @@ public class JsonOkonomiConverter {
                     .withOverstyrtAvBruker(false);
         }).collect(Collectors.toList());
     }
-
+    
     private static List<JsonOkonomioversiktFormue> oversiktFormue(String type, String tittel, List<Faktum> fakta, String belopNavn) {
         return fakta.stream().filter(f -> f != null).map(faktum -> {
             final Map<String, String> properties = faktum.getProperties();
