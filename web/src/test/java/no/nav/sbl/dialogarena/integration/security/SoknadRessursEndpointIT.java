@@ -18,6 +18,7 @@ public class SoknadRessursEndpointIT extends AbstractSecurityIT {
     public static final String ANNEN_BRUKER = "12345679811";
     private String skjemanummer = new AAPUtlandetInformasjon().getSkjemanummer().get(0);
 
+
     @Before
     public void setup() throws Exception {
         EndpointDataMocking.setupMockWsEndpointData();
@@ -27,21 +28,15 @@ public class SoknadRessursEndpointIT extends AbstractSecurityIT {
     @Test
     public void skalIkkeHaTilgangTilSeFakta() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
-        try{
-            soknadTester.somBruker(ANNEN_BRUKER).hentFakta();
-            fail("Fikk ikke exception ved ulovlig aksess");
-        }catch (WebApplicationException e){
-            assertForbiddenStatus(e);
-        }
+
+        String url = "soknader/" + soknadTester.getBrukerBehandlingId() + "/fakta";
+        Response response = soknadTester.sendsoknadResource(url, webTarget ->
+                webTarget.queryParam("fnr", ANNEN_BRUKER))
+                .buildGet()
+                .invoke();
+        assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
+
     }
-
-
-    private void assertForbiddenStatus(WebApplicationException e) {
-        assertThat(e.getResponse().getStatusInfo()).isEqualToComparingFieldByField(Response.Status.FORBIDDEN);
-    }
-
-
-
 
 
 }

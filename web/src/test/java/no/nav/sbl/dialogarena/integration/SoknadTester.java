@@ -396,7 +396,7 @@ public class SoknadTester extends JerseyTest {
 
     }
     public Invocation.Builder sendsoknadResource(String suburl, Function<WebTarget, WebTarget> webTargetDecorator) {
-        WebTarget target = target("/sendsoknad" + suburl);
+        WebTarget target = target("/sendsoknad/" + suburl);
         return webTargetDecorator.apply(target)
                 .request(APPLICATION_JSON_TYPE)
                 .accept(APPLICATION_JSON_TYPE);
