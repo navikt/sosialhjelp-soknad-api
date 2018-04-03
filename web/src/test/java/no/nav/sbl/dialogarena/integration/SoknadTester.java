@@ -41,10 +41,11 @@ import static org.assertj.core.groups.Tuple.tuple;
 public class SoknadTester extends JerseyTest {
     private final String skjemaNummer;
     private String user;
+
     private String brukerBehandlingId;
+
     private WebSoknad soknad;
     private Pair<String, String> xhrHeader;
-
     private SoknadTester(String skjemaNummer) {
         super();
         this.skjemaNummer = skjemaNummer;
@@ -295,14 +296,14 @@ public class SoknadTester extends JerseyTest {
             vedlegg.setAarsak(aarsak);
             return this;
         }
-    }
 
+    }
     public class FaktumTester {
 
         private final Faktum faktum;
+
         private String value;
         private Map<String, String> properties = new HashMap<>();
-
         private FaktumTester(Faktum faktumMedKey) {
             this.faktum = faktumMedKey;
         }
@@ -335,11 +336,11 @@ public class SoknadTester extends JerseyTest {
             properties.put(key, value);
             return this;
         }
+
     }
-
     public class FaktaTester {
-        private List<FaktumTester> faktumTestere;
 
+        private List<FaktumTester> faktumTestere;
         FaktaTester(List<FaktumTester> faktumTestere) {
             this.faktumTestere = faktumTestere;
         }
@@ -358,8 +359,8 @@ public class SoknadTester extends JerseyTest {
             return SoknadTester.this;
         }
 
-    }
 
+    }
     public class FaktumOppretter {
 
         private Faktum faktum;
@@ -392,5 +393,16 @@ public class SoknadTester extends JerseyTest {
             periodeProperties.forEach(faktum::medProperty);
             return this;
         }
+
+    }
+    public Invocation.Builder sendsoknadResource(String suburl, Function<WebTarget, WebTarget> webTargetDecorator) {
+        WebTarget target = target("/sendsoknad" + suburl);
+        return webTargetDecorator.apply(target)
+                .request(APPLICATION_JSON_TYPE)
+                .accept(APPLICATION_JSON_TYPE);
+    }
+
+    public String getBrukerBehandlingId() {
+        return brukerBehandlingId;
     }
 }
