@@ -149,6 +149,7 @@ public final class JsonFamilieConverter {
     private static JsonAnsvar faktumTilAnsvar(Faktum faktum) {
         Map<String, String> props = faktum.getProperties();
         JsonBarn barn = new JsonBarn()
+                .withKilde(JsonKilde.BRUKER)
                 .withNavn(new JsonNavn()
                         .withFornavn(xxxFornavnFraNavn(props.get("navn")))
                         .withMellomnavn("")
