@@ -68,6 +68,13 @@
         </dependOnValues>
     </faktum>
     <faktum>
+        <id>reise.aktivitet.reisedager</id>
+        <dependOn>informasjonsside.stonad.reiseaktivitet</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
         <id>reise.aktivitet.periode</id>
     </faktum>
     <faktum>
@@ -109,8 +116,22 @@
         </dependOnValues>
     </faktum>
     <faktum>
+        <id>reise.aktivitet.offentligtransport.aarsak.transport.tekst</id>
+        <dependOn>reise.aktivitet.offentligtransport.aarsak.transport</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
         <id>reise.aktivitet.offentligtransport.aarsak.henting</id>
         <dependOn>reise.aktivitet.offentligtransport</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.aktivitet.offentligtransport.aarsak.henting.adresse</id>
+        <dependOn>reise.aktivitet.offentligtransport.aarsak.henting</dependOn>
         <dependOnValues>
             <value>false</value>
         </dependOnValues>
@@ -303,8 +324,22 @@
         </dependOnValues>
     </faktum>
     <faktum>
+        <id>reise.samling.offentligtransport.aarsak.transport.tekst</id>
+        <dependOn>reise.samling.offentligtransport.aarsak.transport</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
         <id>reise.samling.offentligtransport.aarsak.henting</id>
         <dependOn>reise.samling.offentligtransport</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.samling.offentligtransport.aarsak.henting.adresse</id>
+        <dependOn>reise.samling.offentligtransport.aarsak.henting</dependOn>
         <dependOnValues>
             <value>false</value>
         </dependOnValues>
@@ -491,8 +526,22 @@
         </dependOnValues>
     </faktum>
     <faktum>
+        <id>reise.arbeidssoker.offentligtransport.aarsak.transport.tekst</id>
+        <dependOn>reise.arbeidssoker.offentligtransport.aarsak.transport</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
         <id>reise.arbeidssoker.offentligtransport.aarsak.henting</id>
         <dependOn>reise.arbeidssoker.offentligtransport</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.arbeidssoker.offentligtransport.aarsak.henting.adresse</id>
+        <dependOn>reise.arbeidssoker.offentligtransport.aarsak.henting</dependOn>
         <dependOnValues>
             <value>false</value>
         </dependOnValues>
@@ -695,8 +744,22 @@
         </dependOnValues>
     </faktum>
     <faktum>
+        <id>reise.midlertidig.offentligtransport.aarsak.transport.tekst</id>
+        <dependOn>reise.midlertidig.offentligtransport.aarsak.transport</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
         <id>reise.midlertidig.offentligtransport.aarsak.henting</id>
         <dependOn>reise.midlertidig.offentligtransport</dependOn>
+        <dependOnValues>
+            <value>false</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>reise.midlertidig.offentligtransport.aarsak.henting.adresse</id>
+        <dependOn>reise.midlertidig.offentligtransport.aarsak.henting</dependOn>
         <dependOnValues>
             <value>false</value>
         </dependOnValues>
