@@ -34,15 +34,14 @@ public class EmailConfig {
 
                 try {
                     socket.connect(socketAddress, SMTP_TIMEOUT);
-                    pingResultat = Ping.lyktes("Mail-utsending");
-
+                    pingResultat = Ping.lyktes("SMTP-server for mail-utsending");
                 } catch (IOException e) {
-                    pingResultat = Ping.feilet("Mail-utsending", e);
+                    pingResultat = Ping.feilet("SMTP-server for mail-utsending", e);
                 } finally {
                     try {
                         socket.close();
                     } catch (IOException e) {
-                        pingResultat = Ping.feilet("Mail-utsending", e);
+                        pingResultat = Ping.feilet("SMTP-server for mail-utsending", e);
                     }
                 }
                 return pingResultat;
