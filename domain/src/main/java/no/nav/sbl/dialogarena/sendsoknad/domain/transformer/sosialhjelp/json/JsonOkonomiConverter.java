@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
@@ -15,10 +16,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktF
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class JsonOkonomiConverter {
@@ -50,6 +48,13 @@ public class JsonOkonomiConverter {
                 .withBekreftelse(tilJsonOkonomiopplysningerBekreftelse(webSoknad))
                 .withBeskrivelseAvAnnet(tilJsonOkonomiopplysningerBeskrivelseAvAnnet(webSoknad))
                 ;
+    }
+
+    private static String getTittel(String key, NavMessageSource navMessageSource) {
+        Properties properties = navMessageSource.getBundleFor("sendsoknad", new Locale("nb", "NO"));
+
+        return properties.getProperty(key);
+
     }
 
     private static List<JsonOkonomioversiktUtgift> tilJsonOkonomioversiktUtgift(WebSoknad webSoknad) {
@@ -92,10 +97,10 @@ public class JsonOkonomiConverter {
         jsonOkonomibeskrivelserAvAnnet.setVerdi(webSoknad.getValueForFaktum("inntekt.eierandeler.true.type.annet.true.beskrivelse"));
 
         // 6 - Hva har du av innskudd og/eller sparing? Annet
-        jsonOkonomibeskrivelserAvAnnet.setSparing(webSoknad.getValueForFaktum( "inntekt.bankinnskudd.true.type.annet.true.beskrivelse"));
+        jsonOkonomibeskrivelserAvAnnet.setSparing(webSoknad.getValueForFaktum("inntekt.bankinnskudd.true.type.annet.true.beskrivelse"));
 
         // 6 - Har du de siste tre månedene fått utbetalt penger som ikke er lønn og/eller penger fra NAV? Annet
-        jsonOkonomibeskrivelserAvAnnet.setUtbetaling(webSoknad.getValueForFaktum( "inntekt.inntekter.true.type.annet.true.beskrivelse"));
+        jsonOkonomibeskrivelserAvAnnet.setUtbetaling(webSoknad.getValueForFaktum("inntekt.inntekter.true.type.annet.true.beskrivelse"));
 
         // 7 - Har du boutgifter? Andre utgifter
         jsonOkonomibeskrivelserAvAnnet.setBoutgifter(webSoknad.getValueForFaktum("utgifter.boutgift.true.type.andreutgifter.true.beskrivelse"));
@@ -190,17 +195,17 @@ public class JsonOkonomiConverter {
         appendIfTrue(result, "kjoretoy", "Kjøretøy", webSoknad.getValueForFaktum("inntekt.eierandeler.true.type.kjoretoy"));
         appendIfTrue(result, "fritidseiendom", "Fritidseiendom", webSoknad.getValueForFaktum("inntekt.eierandeler.true.type.fritidseiendom"));
         appendIfTrue(result, "annet", "Annet", webSoknad.getValueForFaktum("inntekt.eierandeler.true.type.annet"));
-        
+
         return result.stream().filter(r -> r != null).collect(Collectors.toList());
     }
-    
+
     private static void appendIfTrue(List<JsonOkonomioversiktFormue> result, String type, String tittel, String value) {
         if (value != null && !value.trim().equals("") && Boolean.parseBoolean(value)) {
             result.add(new JsonOkonomioversiktFormue()
-                .withKilde(JsonKilde.BRUKER)
-                .withType(type)
-                .withTittel(tittel)
-                .withOverstyrtAvBruker(false)
+                    .withKilde(JsonKilde.BRUKER)
+                    .withType(type)
+                    .withTittel(tittel)
+                    .withOverstyrtAvBruker(false)
             );
         }
     }
@@ -302,7 +307,7 @@ public class JsonOkonomiConverter {
                     .withOverstyrtAvBruker(false);
         }).collect(Collectors.toList());
     }
-    
+
     private static List<JsonOkonomioversiktFormue> oversiktFormue(String type, String tittel, List<Faktum> fakta, String belopNavn) {
         return fakta.stream().filter(f -> f != null).map(faktum -> {
             final Map<String, String> properties = faktum.getProperties();
