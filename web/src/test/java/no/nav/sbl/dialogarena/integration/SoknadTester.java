@@ -30,8 +30,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import static java.util.stream.Collectors.toList;
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
-import static javax.ws.rs.core.MediaType.TEXT_XML;
+import static javax.ws.rs.core.MediaType.*;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static org.apache.http.HttpStatus.SC_NO_CONTENT;
 import static org.apache.http.HttpStatus.SC_OK;
@@ -396,7 +395,7 @@ public class SoknadTester extends JerseyTest {
         WebTarget target = target("/sendsoknad/" + suburl);
         return webTargetDecorator.apply(target)
                 .request(APPLICATION_JSON_TYPE)
-                .accept(APPLICATION_JSON_TYPE);
+                .accept(APPLICATION_JSON_TYPE, TEXT_XML_TYPE);
     }
 
     public String getBrukerBehandlingId() {
