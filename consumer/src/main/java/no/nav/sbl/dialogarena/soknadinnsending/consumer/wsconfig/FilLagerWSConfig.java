@@ -36,13 +36,13 @@ public class FilLagerWSConfig {
         return new Pingable() {
             @Override
             public Ping ping() {
+                Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(serviceEndpoint,"Fillager", true);
                 try {
                     fillagerSelftestEndpoint().ping();
-                    return Ping.lyktes("Fillager");
-                } catch (Exception ex) {
-                    return Ping.feilet("Fillager", ex);
-                }
-            }
+                    return Pingable.Ping.lyktes(metadata);
+                } catch (Exception e) {
+                    return Pingable.Ping.feilet(metadata, e);
+                }            }
         };
     }
 }

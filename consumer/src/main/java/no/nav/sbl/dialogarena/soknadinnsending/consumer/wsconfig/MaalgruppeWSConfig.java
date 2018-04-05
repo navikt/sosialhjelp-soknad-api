@@ -58,13 +58,13 @@ public class MaalgruppeWSConfig {
         return new Pingable() {
             @Override
             public Ping ping() {
+                Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(maalgruppeEndpoint,"ArenaMålgruppe", true);
                 try {
                     maalgruppeSelftestEndpoint().ping();
-                    return Ping.lyktes("ArenaMålgruppe");
+                    return Pingable.Ping.lyktes(metadata);
                 } catch (Exception e) {
-                    return Ping.feilet("ArenaMålgruppe", e);
-                }
-            }
+                    return Pingable.Ping.feilet(metadata, e);
+                }            }
         };
     }
 }

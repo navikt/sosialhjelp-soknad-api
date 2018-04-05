@@ -49,11 +49,12 @@ public class OrganisasjonWSConfig {
         return new Pingable() {
             @Override
             public Ping ping() {
+                Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(organisasjonEndpoint,"Organisasjon_v4", true);
                 try {
-                    organisasjonEndpoint().ping();
-                    return Ping.lyktes("Organisasjon_v4");
+                    organisasjonSelftestEndpoint().ping();
+                    return Pingable.Ping.lyktes(metadata);
                 } catch (Exception e) {
-                    return Ping.feilet("Organisasjon_v4", e);
+                    return Pingable.Ping.feilet(metadata, e);
                 }
             }
         };

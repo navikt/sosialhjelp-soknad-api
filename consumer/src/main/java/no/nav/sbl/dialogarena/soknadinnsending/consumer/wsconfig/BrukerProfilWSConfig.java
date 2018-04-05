@@ -45,11 +45,12 @@ public class BrukerProfilWSConfig {
         return new Pingable() {
             @Override
             public Ping ping() {
+                Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(brukerProfilEndpoint,"Brukerprofil_v1", true);
                 try {
                     brukerProfilSelftestEndpoint().ping();
-                    return Ping.lyktes("Brukerprofil");
+                    return Pingable.Ping.lyktes(metadata);
                 } catch (Exception e) {
-                    return Ping.feilet("Brukerprofil", e);
+                    return Pingable.Ping.feilet(metadata, e);
                 }
             }
         };
