@@ -4,6 +4,7 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon;
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.EkstraMetadataTransformer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMetadataTransformer;
@@ -52,7 +53,7 @@ public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett
         event.addTagToReport("skjemanummer", soknad.getskjemaNummer());
         event.addTagToReport("soknadstype", getSoknadTypePrefix());
         event.report();
-        return asList(new SosialhjelpTilXml(messageSource), new SosialhjelpVedleggTilJson(), new SosialhjelpTilJson(messageSource));
+        return asList(new SosialhjelpTilXml(messageSource), new SosialhjelpVedleggTilJson(), new SosialhjelpTilJson((NavMessageSource) messageSource));
 
     }
 
