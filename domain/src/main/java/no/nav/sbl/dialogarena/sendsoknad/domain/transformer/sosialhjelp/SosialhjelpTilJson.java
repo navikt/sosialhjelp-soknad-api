@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AlternativRepresentasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AlleredeHandtertException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json.JsonSoknadConverter;
@@ -13,7 +14,6 @@ import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidationException;
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import org.slf4j.Logger;
-import org.springframework.context.MessageSource;
 
 import java.util.UUID;
 
@@ -23,9 +23,9 @@ public class SosialhjelpTilJson implements AlternativRepresentasjonTransformer {
 
     private static final Logger logger = getLogger(SosialhjelpTilJson.class);
 
-    private MessageSource messageSource;
+    private NavMessageSource messageSource;
 
-    public SosialhjelpTilJson(MessageSource messageSource) {
+    public SosialhjelpTilJson(NavMessageSource messageSource) {
         this.messageSource = messageSource;
     }
 

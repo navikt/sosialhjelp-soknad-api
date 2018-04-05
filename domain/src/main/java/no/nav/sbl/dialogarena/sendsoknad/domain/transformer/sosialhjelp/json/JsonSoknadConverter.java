@@ -35,6 +35,6 @@ public final class JsonSoknadConverter {
                 .withFamilie(JsonFamilieConverter.tilFamilie(webSoknad))
                 .withBegrunnelse(JsonBegrunnelseConverter.tilBegrunnelse(webSoknad))
                 .withBosituasjon(JsonBosituasjonConverter.tilBosituasjon(webSoknad))
-                .withOkonomi(JsonOkonomiConverter.tilOkonomi(webSoknad));
+                .withOkonomi(JsonOkonomiConverter.tilOkonomi(inputSource));
     }
 }
