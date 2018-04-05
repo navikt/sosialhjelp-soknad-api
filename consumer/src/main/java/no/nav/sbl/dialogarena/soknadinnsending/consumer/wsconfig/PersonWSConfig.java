@@ -47,11 +47,12 @@ public class PersonWSConfig {
         return new Pingable() {
             @Override
             public Ping ping() {
+                Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(personEndpoint,"TPS Person", true);
                 try {
                     personSelftestEndpoint().ping();
-                    return Ping.lyktes("TPS_PERSON");
-                } catch (Exception ex) {
-                    return Ping.feilet("TPS_PERSON", ex);
+                    return Pingable.Ping.lyktes(metadata);
+                } catch (Exception e) {
+                    return Pingable.Ping.feilet(metadata, e);
                 }
             }
         };

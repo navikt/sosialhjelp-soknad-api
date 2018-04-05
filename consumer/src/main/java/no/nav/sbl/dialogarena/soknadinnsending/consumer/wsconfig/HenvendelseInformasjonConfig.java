@@ -49,11 +49,13 @@ public class HenvendelseInformasjonConfig {
         return new Pingable() {
             @Override
             public Ping ping() {
+                Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(
+                        System.getProperty("soknad.webservice.henvendelse.informasjonservice.url"),"Henvendelse Informasjonservice", true);
                 try {
                     ws.ping();
-                    return lyktes("Henvendelse");
+                    return Pingable.Ping.lyktes(metadata);
                 } catch (Exception e) {
-                    return feilet("Henvendelse", e);
+                    return Pingable.Ping.feilet(metadata, e);
                 }
             }
         };

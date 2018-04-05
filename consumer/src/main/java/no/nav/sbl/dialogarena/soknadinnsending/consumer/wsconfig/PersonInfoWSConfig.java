@@ -71,12 +71,12 @@ public class PersonInfoWSConfig {
             @Override
             public Ping ping() {
                 Fodselsnr fodselsnr = new Fodselsnr().withFodselsnummer("01034128789");
+                Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(endpoint,"Arena Personinfo", true);
                 try {
                     personInfoEndpoint().hentPersonStatus(fodselsnr);
-                    return Ping.lyktes("ARENA_PERSONINFO");
-
-                } catch (Exception ex) {
-                    return Ping.feilet("ARENA_PERSONINFO", ex);
+                    return Pingable.Ping.lyktes(metadata);
+                } catch (Exception e) {
+                    return Pingable.Ping.feilet(metadata, e);
                 }
             }
         };

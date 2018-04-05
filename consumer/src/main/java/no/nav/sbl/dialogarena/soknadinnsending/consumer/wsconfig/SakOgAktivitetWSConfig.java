@@ -53,11 +53,12 @@ public class SakOgAktivitetWSConfig {
         return new Pingable() {
             @Override
             public Ping ping() {
+                Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(sakOgAktivitetEndpoint,"SakOgAktivitet_v1", true);
                 try {
                     sakOgAktivitetSelftestEndpoint().ping();
-                    return Ping.lyktes("SakOgAktivitet");
+                    return Pingable.Ping.lyktes(metadata);
                 } catch (Exception e) {
-                    return Pingable.Ping.feilet("SakOgAktivitet", e);
+                    return Pingable.Ping.feilet(metadata, e);
                 }
             }
         };

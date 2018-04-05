@@ -46,11 +46,12 @@ public class SendSoknadWSConfig {
         return new Pingable() {
             @Override
             public Ping ping() {
+                Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(soknadServiceEndpoint,"SoknadService", true);
                 try {
                     sendSoknadSelftestEndpoint().ping();
-                    return Ping.lyktes("Henvendelse");
+                    return Pingable.Ping.lyktes(metadata);
                 } catch (Exception e) {
-                    return Ping.feilet("Henvendelse", e);
+                    return Pingable.Ping.feilet(metadata, e);
                 }
             }
         };

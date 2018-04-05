@@ -44,11 +44,12 @@ public class KodeverkWSConfig {
         return new Pingable() {
             @Override
             public Ping ping() {
+                Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(kodeverkEndPoint,"Kodeverk_v2", true);
                 try {
                     kodeverkSelftestEndpoint().ping();
-                    return Ping.lyktes("Kodeverk_v2");
+                    return Pingable.Ping.lyktes(metadata);
                 } catch (Exception e) {
-                    return Ping.feilet("Kodeverk_v2", e);
+                    return Pingable.Ping.feilet(metadata, e);
                 }
             }
         };

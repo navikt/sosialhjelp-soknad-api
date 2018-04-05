@@ -31,12 +31,13 @@ public class SoknadInnsendingDBConfig {
         return new Pingable() {
             @Override
             public Ping ping() {
+                Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata("jdbc/SoknadInnsendingDS", "jdbc:SoknadInnsendingDS", true);
                 try {
                     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource());
                     jdbcTemplate.queryForList("select * from dual");
-                    return Ping.lyktes("jdbc/SoknadInnsendingDS");
+                    return Pingable.Ping.lyktes(metadata);
                 } catch (Exception e) {
-                    return Ping.feilet("jdbc/SoknadInnsendingDS", e);
+                    return Pingable.Ping.feilet(metadata, e);
                 }
             }
         };

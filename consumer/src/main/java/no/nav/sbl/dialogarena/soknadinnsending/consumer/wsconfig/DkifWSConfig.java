@@ -36,11 +36,12 @@ public class DkifWSConfig {
         return new Pingable() {
             @Override
             public Ping ping() {
+                Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(dkifEndpoint,"Dkif_v1", true);
                 try {
                     dkifServiceSelftest().ping();
-                    return Ping.lyktes("Dkif");
-                } catch (Exception ex) {
-                    return Ping.feilet("Dkif", ex);
+                    return Pingable.Ping.lyktes(metadata);
+                } catch (Exception e) {
+                    return Pingable.Ping.feilet(metadata, e);
                 }
             }
         };

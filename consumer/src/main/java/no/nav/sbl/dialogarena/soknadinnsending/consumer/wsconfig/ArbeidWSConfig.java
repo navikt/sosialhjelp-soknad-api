@@ -49,11 +49,12 @@ public class ArbeidWSConfig {
         return new Pingable() {
             @Override
             public Ping ping() {
+                Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(arbeidsforholdEndpoint,"Arbeidsforhold_v3", true);
                 try {
                     arbeidSelftestEndpoint().ping();
-                    return Ping.lyktes("Arbeidsforhold_v3");
+                    return Pingable.Ping.lyktes(metadata);
                 } catch (Exception e) {
-                    return Ping.feilet("Arbeidsforhold_v3", e);
+                    return Pingable.Ping.feilet(metadata, e);
                 }
             }
         };
