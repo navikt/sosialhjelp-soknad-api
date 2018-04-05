@@ -71,7 +71,7 @@ public class PersonInfoWSConfig {
             @Override
             public Ping ping() {
                 Fodselsnr fodselsnr = new Fodselsnr().withFodselsnummer("***REMOVED***");
-                Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(endpoint,"Arena Personinfo", true);
+                Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(endpoint,"Arena Personinfo", false);
                 try {
                     personInfoEndpoint().hentPersonStatus(fodselsnr);
                     return Pingable.Ping.lyktes(metadata);
