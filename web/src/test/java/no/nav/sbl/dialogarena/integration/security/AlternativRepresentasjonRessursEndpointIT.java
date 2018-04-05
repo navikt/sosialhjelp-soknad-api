@@ -24,8 +24,8 @@ public class AlternativRepresentasjonRessursEndpointIT extends AbstractSecurityI
     @Test
     public void nektetTilgangUtenToken_xmlRepresentasjon() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
-        String url = "representasjon/xml/" + soknadTester.getBrukerBehandlingId();
-        Response response = soknadTester.sendsoknadResource(url, webTarget ->
+        String subUrl = "representasjon/xml/" + soknadTester.getBrukerBehandlingId();
+        Response response = soknadTester.sendsoknadResource(subUrl, webTarget ->
                 webTarget.queryParam("fnr", ANNEN_BRUKER))
                 .buildGet()
                 .invoke();
@@ -36,8 +36,8 @@ public class AlternativRepresentasjonRessursEndpointIT extends AbstractSecurityI
     @Test
     public void nektetTilgangUtenToken_jsonRepresentasjon() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
-        String url = "representasjon/json/" + soknadTester.getBrukerBehandlingId();
-        Response response = soknadTester.sendsoknadResource(url, webTarget ->
+        String subUrl = "representasjon/json/" + soknadTester.getBrukerBehandlingId();
+        Response response = soknadTester.sendsoknadResource(subUrl, webTarget ->
                 webTarget.queryParam("fnr", ANNEN_BRUKER))
                 .buildGet()
                 .invoke();
