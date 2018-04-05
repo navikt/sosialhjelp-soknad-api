@@ -22,7 +22,7 @@ public class AlternativRepresentasjonRessursEndpointIT extends AbstractSecurityI
     }
 
     @Test
-    public void nektetTilgangUtenToken_xmlRepresentasjon() {
+    public void accessDeniedMedAnnenBruker_xmlRepresentasjon() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
         String subUrl = "representasjon/xml/" + soknadTester.getBrukerBehandlingId();
         Response response = soknadTester.sendsoknadResource(subUrl, webTarget ->
@@ -30,11 +30,17 @@ public class AlternativRepresentasjonRessursEndpointIT extends AbstractSecurityI
                 .buildGet()
                 .invoke();
 
+        Response responseUtenFnr = soknadTester.sendsoknadResource(subUrl, webTarget ->
+                webTarget)
+                .buildGet()
+                .invoke();
+
         assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
+        assertThat(responseUtenFnr.getStatus()).isNotEqualTo(Response.Status.FORBIDDEN.getStatusCode());
     }
 
     @Test
-    public void nektetTilgangUtenToken_jsonRepresentasjon() {
+    public void accessDeniedMedAnnenBruker_jsonRepresentasjon() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
         String subUrl = "representasjon/json/" + soknadTester.getBrukerBehandlingId();
         Response response = soknadTester.sendsoknadResource(subUrl, webTarget ->
@@ -42,6 +48,12 @@ public class AlternativRepresentasjonRessursEndpointIT extends AbstractSecurityI
                 .buildGet()
                 .invoke();
 
+        Response responseUtenFnr = soknadTester.sendsoknadResource(subUrl, webTarget ->
+                webTarget)
+                .buildGet()
+                .invoke();
+
         assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
+        assertThat(responseUtenFnr.getStatus()).isNotEqualTo(Response.Status.FORBIDDEN.getStatusCode());
     }
 }
