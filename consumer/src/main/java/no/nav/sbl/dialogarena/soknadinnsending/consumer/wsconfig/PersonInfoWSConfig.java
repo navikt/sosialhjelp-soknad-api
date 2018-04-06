@@ -5,6 +5,7 @@ import no.nav.arena.tjenester.person.v1.PersonInfoServiceSoap;
 import no.nav.sbl.dialogarena.common.cxf.TimeoutFeature;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.personinfo.PersonInfoMock;
 import no.nav.sbl.dialogarena.types.Pingable;
+import no.nav.sbl.dialogarena.types.Pingable.Ping.PingMetadata;
 import org.apache.cxf.feature.LoggingFeature;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor;
@@ -71,7 +72,7 @@ public class PersonInfoWSConfig {
             @Override
             public Ping ping() {
                 Fodselsnr fodselsnr = new Fodselsnr().withFodselsnummer("***REMOVED***");
-                Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(endpoint,"Arena Personinfo", false);
+                PingMetadata metadata = new PingMetadata(endpoint,"ARENA - Personinfo (Status på personen)", false);
                 try {
                     personInfoEndpoint().hentPersonStatus(fodselsnr);
                     return Pingable.Ping.lyktes(metadata);
