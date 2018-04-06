@@ -26,6 +26,7 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Dag
 public class WebSoknad implements Serializable {
     private Long soknadId;
     private String skjemaNummer;
+    private Integer versjon;
     private String uuid;
     private String brukerBehandlingId;
     private String behandlingskjedeId;
@@ -114,6 +115,10 @@ public class WebSoknad implements Serializable {
         return skjemaNummer;
     }
 
+    public final Integer getVersjon() { return versjon; }
+
+    private void setVersjon(Integer versjon) { this.versjon = versjon; }
+
     public List<Vedlegg> getVedlegg() {
         if (vedlegg == null) {
             vedlegg = new ArrayList<>();
@@ -187,6 +192,11 @@ public class WebSoknad implements Serializable {
 
     public WebSoknad medskjemaNummer(String skjemaNummer) {
         setSkjemaNummer(skjemaNummer);
+        return this;
+    }
+
+    public WebSoknad medVersjon(Integer versjon) {
+        setVersjon(versjon);
         return this;
     }
 
