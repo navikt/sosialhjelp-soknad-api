@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad;
 
 import no.nav.sbl.dialogarena.types.Pingable;
+import no.nav.sbl.dialogarena.types.Pingable.Ping.PingMetadata;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -31,7 +32,7 @@ public class SoknadInnsendingDBConfig {
         return new Pingable() {
             @Override
             public Ping ping() {
-                Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata("jdbc/SoknadInnsendingDS", "jdbc:SoknadInnsendingDS", true);
+                PingMetadata metadata = new PingMetadata("jdbc/SoknadInnsendingDS", "jdbc:SoknadInnsendingDS", true);
                 try {
                     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource());
                     jdbcTemplate.queryForList("select * from dual");
