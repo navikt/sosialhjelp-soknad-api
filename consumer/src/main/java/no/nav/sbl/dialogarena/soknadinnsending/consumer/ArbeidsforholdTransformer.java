@@ -37,8 +37,9 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
     public Arbeidsforhold transform(no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold arbeidsforhold) {
         Arbeidsforhold result = new Arbeidsforhold();
         result.edagId = arbeidsforhold.getArbeidsforholdIDnav();
-        result.orgnr = getNavn(arbeidsforhold);
-        result.arbeidsgivernavn = hentOrgNavn(arbeidsforhold, result.orgnr);
+        result.orgnr = hentOrganisasjonsnummer(arbeidsforhold);
+        result.arbeidsgivernavn =  erOrganisasjon(arbeidsforhold) ||
+                erHistoriskArbeidsgiver(arbeidsforhold) ? hentOrgNavn(arbeidsforhold, result.orgnr) : "Privatperson";
 
         Gyldighetsperiode periode = arbeidsforhold.getAnsettelsesPeriode().getPeriode();
         result.fom = toStringDate(periode.getFom());
@@ -58,12 +59,16 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
 
     }
 
-    private String getNavn(no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold arbeidsforhold) {
-        if (arbeidsforhold.getArbeidsgiver() instanceof Organisasjon) {
-            return ((Organisasjon) arbeidsforhold.getArbeidsgiver()).getOrgnummer();
-        } else {
-            return null;
-        }
+    private boolean erOrganisasjon(no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold arbeidsforhold) {
+        return arbeidsforhold.getArbeidsgiver() instanceof Organisasjon;
+    }
+
+    private boolean erHistoriskArbeidsgiver(no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold arbeidsforhold) {
+        return arbeidsforhold.getArbeidsgiver() instanceof HistoriskArbeidsgiverMedArbeidsgivernummer;
+    }
+
+    private String hentOrganisasjonsnummer(no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold arbeidsforhold) {
+        return erOrganisasjon(arbeidsforhold) ? ((Organisasjon) arbeidsforhold.getArbeidsgiver()).getOrgnummer() : null;
     }
 
     private String toStringDate(XMLGregorianCalendar fom) {
@@ -89,7 +94,7 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
                 LOGGER.warn("Kunne ikke hente orgnr: " + orgnr, ex);
                 return "";
             }
-        } else if (arbeidsforhold.getArbeidsgiver() instanceof HistoriskArbeidsgiverMedArbeidsgivernummer) {
+        } else if (erHistoriskArbeidsgiver(arbeidsforhold)) {
             return ((HistoriskArbeidsgiverMedArbeidsgivernummer) arbeidsforhold.getArbeidsgiver()).getNavn();
         } else {
             return "";
