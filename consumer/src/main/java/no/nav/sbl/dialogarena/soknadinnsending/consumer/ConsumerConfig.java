@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeid.ArbeidssokerInfoService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.EpostService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personalia.PersonaliaFletter;
@@ -21,7 +22,8 @@ import static java.lang.System.setProperty;
         EpostService.class,
         ArbeidssokerInfoService.class,
         ConsumerConfig.WsServices.class,
-        PersonaliaFletter.class
+        PersonaliaFletter.class,
+        DokumentKrypterer.class
 })
 
 public class ConsumerConfig {
@@ -42,7 +44,8 @@ public class ConsumerConfig {
             KodeverkWSConfig.class,
             PersonWSConfig.class,
             MaalgruppeWSConfig.class,
-            SakOgAktivitetWSConfig.class
+            SakOgAktivitetWSConfig.class,
+            FiksWSConfig.class
     })
     public static class WsServices {
     }

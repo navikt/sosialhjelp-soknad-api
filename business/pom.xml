@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>no.nav.sbl.dialogarena</groupId>
@@ -63,6 +64,15 @@
         <dependency>
             <groupId>no.nav.sbl</groupId>
             <artifactId>arena-maalgruppe_v1</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.sbl.dialogarena</groupId>
+            <artifactId>svarut-ks-forsendelsesservice</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.migesok</groupId>
+            <artifactId>jaxb-java-time-adapters</artifactId>
         </dependency>
 
         <dependency>
@@ -128,6 +138,11 @@
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>common-suspend</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-api</artifactId>
         </dependency>
 
         <!-- Avhengigheter med runtime-scope -->
@@ -222,7 +237,7 @@
             <type>test-jar</type>
         </dependency>
         <dependency>
-        <groupId>no.nav.sbl.dialogarena</groupId>
+            <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>common-test</artifactId>
             <scope>test</scope>
         </dependency>

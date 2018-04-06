@@ -13,12 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.sql.DataSource;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.limit;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.timestampTilTid;
 
 @Component
 @Transactional
@@ -72,9 +71,9 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
                 metadata.fiksForsendelseId,
                 metadata.type.name(),
                 metadata.status.name(),
-                tidTilTimestamp(metadata.opprettetDato),
-                tidTilTimestamp(metadata.sistEndretDato),
-                tidTilTimestamp(metadata.innsendtDato));
+                SQLUtils.tidTilTimestamp(metadata.opprettetDato),
+                SQLUtils.tidTilTimestamp(metadata.sistEndretDato),
+                SQLUtils.tidTilTimestamp(metadata.innsendtDato));
     }
 
     @Override
@@ -93,8 +92,8 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
                 metadata.fiksForsendelseId,
                 metadata.type.name(),
                 metadata.status.name(),
-                tidTilTimestamp(metadata.sistEndretDato),
-                tidTilTimestamp(metadata.innsendtDato),
+                SQLUtils.tidTilTimestamp(metadata.sistEndretDato),
+                SQLUtils.tidTilTimestamp(metadata.innsendtDato),
                 metadata.id);
     }
 
@@ -134,15 +133,4 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
         getJdbcTemplate().update(update, id);
     }
 
-    private Timestamp tidTilTimestamp(LocalDateTime tid) {
-        return tid != null
-                ? Timestamp.valueOf(tid)
-                : null;
-    }
-
-    private LocalDateTime timestampTilTid(Timestamp timestamp) {
-        return timestamp != null
-                ? timestamp.toLocalDateTime()
-                : null;
-    }
 }

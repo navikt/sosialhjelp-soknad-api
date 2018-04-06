@@ -281,6 +281,11 @@
                 <version>1.0.2</version>
             </dependency>
             <dependency>
+                <groupId>no.nav.sbl.dialogarena</groupId>
+                <artifactId>svarut-ks-forsendelsesservice</artifactId>
+                <version>9.0.0</version>
+            </dependency>
+            <dependency>
                 <groupId>no.nav.meldinger.virksomhet</groupId>
                 <artifactId>nav-virksomhet-paaloepteUtgifter-v1-meldingsdefinisjon</artifactId>
                 <version>1.0.3</version>
@@ -623,6 +628,21 @@
                         <artifactId>jsr305</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk15on</artifactId>
+                <version>1.57</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcpkix-jdk15on</artifactId>
+                <version>1.57</version>
+            </dependency>
+            <dependency>
+                <groupId>com.migesok</groupId>
+                <artifactId>jaxb-java-time-adapters</artifactId>
+                <version>1.1.3</version>
             </dependency>
 
             <!-- Avhengigheter med scope runtime -->
