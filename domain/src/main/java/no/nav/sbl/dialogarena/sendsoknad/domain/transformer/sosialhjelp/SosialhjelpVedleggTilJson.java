@@ -31,7 +31,7 @@ public class SosialhjelpVedleggTilJson implements AlternativRepresentasjonTransf
             JsonVedleggSpesifikasjon jsonObjekt = new JsonVedleggSpesifikasjon().withVedlegg(vedlegg);
             leggPaGarbageDataForAHindreValidering(jsonObjekt);
             json = new ObjectMapper().writeValueAsString(jsonObjekt);
-            JsonSosialhjelpValidator.ensureValidVedlegg(json);
+            //JsonSosialhjelpValidator.ensureValidVedlegg(json);
         } catch (JsonSosialhjelpValidationException|JsonProcessingException e) {
             logger.error("Kunne ikke generere XML for {}", webSoknad.getBrukerBehandlingId(), e);
             throw new AlleredeHandtertException();
