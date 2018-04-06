@@ -38,7 +38,7 @@ public class ArbeidsforholdTransformer implements Transformer<no.nav.tjeneste.vi
         Arbeidsforhold result = new Arbeidsforhold();
         result.edagId = arbeidsforhold.getArbeidsforholdIDnav();
         result.orgnr = getNavn(arbeidsforhold);
-        result.arbridsgiverNavn = hentOrgNavn(arbeidsforhold, result.orgnr);
+        result.arbeidsgivernavn = hentOrgNavn(arbeidsforhold, result.orgnr);
 
         Gyldighetsperiode periode = arbeidsforhold.getAnsettelsesPeriode().getPeriode();
         result.fom = toStringDate(periode.getFom());

@@ -5,7 +5,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.dto.Land;
 
 public class Arbeidsforhold {
     public String orgnr;
-    public String arbridsgiverNavn;
+    public String arbeidsgivernavn;
     public Land land;
     public String fom;
     public String tom;

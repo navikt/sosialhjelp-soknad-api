@@ -70,11 +70,13 @@ public class ArbeidsforholdBolk implements BolkService {
     }
 
     private Faktum transformerTilFaktum(final Arbeidsforhold arbeidsforhold, final Long soknadId) {
+        boolean erIngenEllerTomtArbeidsgivernavn = arbeidsforhold.arbeidsgivernavn == null || arbeidsforhold.arbeidsgivernavn.equals("");
+        String arbeidsgivernavn = erIngenEllerTomtArbeidsgivernavn ? "Privatperson" : arbeidsforhold.arbeidsgivernavn;
         return new Faktum()
                 .medSoknadId(soknadId)
                 .medKey("arbeidsforhold")
                 .medSystemProperty("orgnr", Objects.toString(arbeidsforhold.orgnr, ""))
-                .medSystemProperty("arbeidsgivernavn", arbeidsforhold.arbridsgiverNavn)
+                .medSystemProperty("arbeidsgivernavn", arbeidsgivernavn)
                 .medSystemProperty("ansatt", trueFalse(arbeidsforhold.tom == null))
                 .medSystemProperty("fom", Objects.toString(arbeidsforhold.fom, ""))
                 .medSystemProperty("tom", Objects.toString(arbeidsforhold.tom, ""))
