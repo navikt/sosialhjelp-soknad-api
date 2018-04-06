@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.integration;
 import no.nav.sbl.dialogarena.config.IntegrationConfig;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingsId;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStartSoknadRequest;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerRequest;
@@ -20,11 +21,17 @@ import no.nav.tjeneste.virksomhet.digitalkontaktinformasjon.v1.meldinger.WSHentD
 import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
+import org.apache.cxf.binding.soap.SoapFault;
 import org.mockito.Mockito;
 
 import javax.xml.datatype.DatatypeFactory;
+import javax.xml.namespace.QName;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.startsWith;
 
 public class EndpointDataMocking {
 
@@ -42,6 +49,15 @@ public class EndpointDataMocking {
         SendSoknadPortType soknad = IntegrationConfig.getMocked("sendSoknadEndpoint");
         Mockito.when(soknad.startSoknad(any(WSStartSoknadRequest.class)))
                 .then(invocationOnMock -> new WSBehandlingsId().withBehandlingsId("TEST" + behandlingsIdCounter++));
+    }
+
+    public static void mockSendHenvendelse() {
+        List<WSBehandlingskjedeElement> behandlingskjedeElements = Arrays.asList(new WSBehandlingskjedeElement().withBehandlingsId("INNSENDTSOKNAD_1").withStatus("FERDIG"));
+        SendSoknadPortType soknad = IntegrationConfig.getMocked("sendSoknadEndpoint");
+        Mockito.when(soknad.hentBehandlingskjede(startsWith("INNSENDTSOKNAD_1")))
+                .then(invocationOnMock -> behandlingskjedeElements);
+        Mockito.when(soknad.hentBehandlingskjede(startsWith("INNSENDTSOKNAD_2")))
+                .thenThrow(new SoapFault("Access denied. PolicyRequest {Used attributes: Resource= HENVENDELSE, Resource= 1000EB02D, Resource= Ekstern, Action= Read, Subject= 1000096233942}" , QName.valueOf("")));
     }
 
     static void mockBrukerProfilEndpoint() throws Exception {
