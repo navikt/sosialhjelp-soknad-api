@@ -62,8 +62,17 @@ function publish() {
     mvn deploy --batch-mode -DskipTests
 }
 
+function build_and_deploy_docker() {
+    (
+        cd web/target/appassembler
+        docker build . -t docker.adeo.no:5000/soknadsosialhjelp-server:${versjon}
+        docker push docker.adeo.no:5000/soknadsosialhjelp-server:${versjon}
+    )
+} 
+
 go_to_project_root
 set_version
 build_backend
 publish
+build_and_deploy_docker
 revert_version
