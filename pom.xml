@@ -701,6 +701,22 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+            <dependency>
+                <groupId>no.nav.sbl.dialogarena</groupId>
+                <artifactId>soknadsosialhjelp-filformat</artifactId>
+                <version>1.0.68.17</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.google.code.findbugs</groupId>
+                        <artifactId>jsr305</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>javax.mail</groupId>
+                        <artifactId>mailapi</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
 
             <!-- Avhengigheter med scope runtime -->
 
@@ -817,6 +833,12 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
+                <groupId>no.digipost</groupId>
+                <artifactId>digg</artifactId>
+                <version>0.13</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>4.11</version>
@@ -862,6 +884,12 @@
                 <artifactId>common-jetty</artifactId>
                 <version>1.0.23</version>
                 <scope>test</scope>
+                <!--<exclusions>
+                    <exclusion>
+                        <groupId>no.nav.modig</groupId>
+                        <artifactId>modig-testcertificates</artifactId>
+                    </exclusion>
+                </exclusions>-->
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
@@ -895,29 +923,6 @@
     <build>
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <!-- for å synke innhold mot Enonic kjør: mvn modig-content:sync -Denonic.username=XXX -Denonic.password=XXX -Denonic.url=http://<ip-adresse til admin-node i sbs>:8080 Se https://fasit.adeo.no/applications/edit?0&application=837789 for IP-adresser -->
-                    <groupId>no.nav.modig</groupId>
-                    <artifactId>modig-content-maven-plugin</artifactId>
-                    <version>2.0.0</version>
-                    <configuration>
-                        <propertiesFilesRoot>${project.basedir}/web/src/main/resources/content</propertiesFilesRoot>
-                        <propertiesFiler>
-                            <ssnb>sendsoknad_nb_NO.properties</ssnb>
-                            <ssen>sendsoknad_en.properties</ssen>
-                            <tsnb>tilleggsstonader_nb_NO.properties</tsnb>
-                            <rdrnb>refusjondagligreise_nb_NO.properties</rdrnb>
-                            <tpnb>tiltakspenger_nb_NO.properties</tpnb>
-                        </propertiesFiler>
-                        <menyPunktPaths>
-                            <ssnb>/site/18/app/sendsoknad/nb_NO/tekster</ssnb>
-                            <ssen>/site/18/app/sendsoknad/en/tekster</ssen>
-                            <tsnb>/site/18/app/tilleggsstonader/nb_NO/tekster</tsnb>
-                            <rdrnb>/site/18/app/refusjondagligreise/nb_NO/tekster</rdrnb>
-                            <tpnb>/site/18/app/tiltakspenger/nb_NO/tekster</tpnb>
-                        </menyPunktPaths>
-                    </configuration>
-                </plugin>
                 <plugin>
                     <groupId>org.jboss.as.plugins</groupId>
                     <artifactId>jboss-as-maven-plugin</artifactId>

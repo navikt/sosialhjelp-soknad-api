@@ -25,7 +25,20 @@
         <id>soknadsvalg.fodselelleradopsjon</id>
         <dependOn>soknadsvalg.stonadstype</dependOn>
     </faktum>
-
+    <faktum>
+        <id>soknadsvalg.endringmedmor</id>
+        <dependOn>soknadsvalg.stonadstype</dependOn>
+        <dependOnValues>
+            <value>endringMedmor</value>
+        </dependOnValues>
+    </faktum>
+    <faktum>
+        <id>soknadsvalg.overtamedmor</id>
+        <dependOn>soknadsvalg.stonadstype</dependOn>
+        <dependOnValues>
+            <value>overforingMedmor</value>
+        </dependOnValues>
+    </faktum>
     <!-- Veiledning -->
     <faktum>
         <id>veiledning.mor.terminbekreftelse</id>

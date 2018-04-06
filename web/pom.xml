@@ -19,12 +19,16 @@
         <!-- Lagrer IT-info til enhetstestfil -->
         <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco-ut.exec</sonar.jacoco.reportPath>
         <fitnesse.port>9977</fitnesse.port>
-        <version.tekster.soknadsosialhjelp>1.0.506.187</version.tekster.soknadsosialhjelp>
-        <version.tekster.soknaddagpenger>1.1.225.13</version.tekster.soknaddagpenger>
+        <version.tekster.soknadsosialhjelp>1.0.528.205</version.tekster.soknadsosialhjelp>
+        <version.tekster.soknaddagpenger>1.1.231.19</version.tekster.soknaddagpenger>
         <version.tekster.soknadaap>1.0.163.28</version.tekster.soknadaap>
-        <version.tekster.soknadbilstonad>1.0.7.5</version.tekster.soknadbilstonad>
+        <version.tekster.soknadbilstonad>1.0.12.10</version.tekster.soknadbilstonad>
         <version.tekster.soknad-aap-utland>0.1.13.12</version.tekster.soknad-aap-utland>
         <version.tekster.soknadforeldrepenger>1.1.630.73-SD-38-tvilling-trilling-SNAPSHOT</version.tekster.soknadforeldrepenger>
+        <version.tekster.sendsoknad>1.0.8.6</version.tekster.sendsoknad> 
+        <version.tekster.soknadrefusjondagligreise>1.0.4.5</version.tekster.soknadrefusjondagligreise>
+        <version.tekster.soknadtilleggsstonader>1.0.17.14</version.tekster.soknadtilleggsstonader>
+        <version.tekster.soknadtiltakspenger>1.0.7.7</version.tekster.soknadtiltakspenger>
     </properties>
 
     <dependencies>
@@ -643,6 +647,34 @@
                                     <groupId>no.nav.sbl</groupId>
                                     <artifactId>soknadforeldrepenger-tekster</artifactId>
                                     <version>${version.tekster.soknadforeldrepenger}</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>no.nav.sbl</groupId>
+                                    <artifactId>sendsoknad-tekster</artifactId>
+                                    <version>${version.tekster.sendsoknad}</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>no.nav.sbl</groupId>
+                                    <artifactId>soknadrefusjondagligreise-tekster</artifactId>
+                                    <version>${version.tekster.soknadrefusjondagligreise}</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>no.nav.sbl</groupId>
+                                    <artifactId>soknadtilleggsstonader-tekster</artifactId>
+                                    <version>${version.tekster.soknadtilleggsstonader}</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>no.nav.sbl</groupId>
+                                    <artifactId>soknadtiltakspenger-tekster</artifactId>
+                                    <version>${version.tekster.soknadtiltakspenger}</version>
                                     <type>jar</type>
                                     <overWrite>false</overWrite>
                                 </artifactItem>

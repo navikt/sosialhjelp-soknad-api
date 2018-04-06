@@ -10,10 +10,12 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.MigrasjonHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.StartDatoUtil;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerService;
@@ -72,6 +74,8 @@ public class SoknadDataFletter {
     @Named("soknadInnsendingRepository")
     private SoknadRepository lokalDb;
     @Inject
+    private HendelseRepository hendelseRepository;
+    @Inject
     private WebSoknadConfig config;
     @Inject
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
@@ -90,6 +94,9 @@ public class SoknadDataFletter {
 
     @Inject
     private SoknadMetricsService soknadMetricsService;
+
+    @Inject
+    private MigrasjonHandterer migrasjonHandterer;
 
     private Map<String, BolkService> bolker;
 
@@ -146,7 +153,8 @@ public class SoknadDataFletter {
 
 
         Timer oprettIDbTimer = createDebugTimer("oprettIDb", soknadnavn, mainUid);
-        Long soknadId = lagreSoknadILokalDb(skjemanummer, mainUid, aktorId, behandlingsId).getSoknadId();
+        int versjon = kravdialog.getSkjemaVersjon();
+        Long soknadId = lagreSoknadILokalDb(skjemanummer, mainUid, aktorId, behandlingsId, versjon).getSoknadId();
         faktaService.lagreFaktum(soknadId, bolkerFaktum(soknadId));
         faktaService.lagreSystemFaktum(soknadId, personalia(soknadId));
 
@@ -235,13 +243,14 @@ public class SoknadDataFletter {
         lagreTimer.report();
     }
 
-    private WebSoknad lagreSoknadILokalDb(String skjemanummer, String uuid, String aktorId, String behandlingsId) {
+    private WebSoknad lagreSoknadILokalDb(String skjemanummer, String uuid, String aktorId, String behandlingsId, int versjon) {
         WebSoknad nySoknad = WebSoknad.startSoknad()
                 .medBehandlingId(behandlingsId)
                 .medskjemaNummer(skjemanummer)
                 .medUuid(uuid)
                 .medAktorId(aktorId)
-                .medOppretteDato(DateTime.now());
+                .medOppretteDato(DateTime.now())
+                .medVersjon(versjon);
 
         Long soknadId = lokalDb.opprettSoknad(nySoknad);
         nySoknad.setSoknadId(soknadId);
@@ -361,6 +370,16 @@ public class SoknadDataFletter {
     };
 
     private WebSoknad populerSoknadMedData(boolean populerSystemfakta, WebSoknad soknad) {
+        soknad = lokalDb.hentSoknadMedData(soknad.getSoknadId());
+        soknad.medSoknadPrefix(config.getSoknadTypePrefix(soknad.getSoknadId()))
+                .medSoknadUrl(config.getSoknadUrl(soknad.getSoknadId()))
+                .medStegliste(config.getStegliste(soknad.getSoknadId()))
+                .medVersjon(hendelseRepository.hentVersjon(soknad.getBrukerBehandlingId()))
+                .medFortsettSoknadUrl(config.getFortsettSoknadUrl(soknad.getSoknadId()));
+
+
+        soknad = migrasjonHandterer.handterMigrasjon(soknad);
+
         if (populerSystemfakta) {
             if (soknad.erEttersending()) {
                 faktaService.lagreSystemFakta(soknad, bolker.get(PersonaliaBolk.class.getName()).genererSystemFakta(getSubjectHandler().getUid(), soknad.getSoknadId()));
@@ -398,10 +417,11 @@ public class SoknadDataFletter {
 
         XMLHovedskjema hovedskjema = lagXmlHovedskjemaMedAlternativRepresentasjon(pdf, soknad, fullSoknad);
         XMLVedlegg[] vedlegg = convertToXmlVedleggListe(vedleggService.hentVedleggOgKvittering(soknad));
-        XMLSoknadMetadata soknadMetadata = ekstraMetadataService.hentEkstraMetadata(soknad);
 
+        XMLSoknadMetadata soknadMetadata = ekstraMetadataService.hentEkstraMetadata(soknad);
         henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, vedlegg, soknadMetadata);
-        lokalDb.slettSoknad(soknad.getSoknadId());
+        lokalDb.slettSoknad(soknad,HendelseType.INNSENDT);
+
 
         soknadMetricsService.rapporterKompletteOgIkkeKompletteSoknader(soknad.getIkkeInnsendteVedlegg(), skjemanummer(soknad));
         soknadMetricsService.sendtSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
