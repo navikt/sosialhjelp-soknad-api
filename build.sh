@@ -64,7 +64,7 @@ function publish() {
 
 function build_and_deploy_docker() {
     (
-        cd web/target/appassembler
+        cd web/target/appassembler || ( echo "Missing target directory."; exit 1; )
         docker build . -t docker.adeo.no:5000/soknadsosialhjelp-server:${versjon}
         docker push docker.adeo.no:5000/soknadsosialhjelp-server:${versjon}
     )
