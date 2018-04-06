@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import javax.xml.namespace.QName;
 
 import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.*;
 
 @Configuration
 public class SakOgAktivitetWSConfig {
@@ -57,9 +58,9 @@ public class SakOgAktivitetWSConfig {
                 PingMetadata metadata = new PingMetadata(sakOgAktivitetEndpoint,"Sak Og Aktivitet v1", false);
                 try {
                     sakOgAktivitetSelftestEndpoint().ping();
-                    return Pingable.Ping.lyktes(metadata);
+                    return lyktes(metadata);
                 } catch (Exception e) {
-                    return Pingable.Ping.feilet(metadata, e);
+                    return feilet(metadata, e);
                 }
             }
         };

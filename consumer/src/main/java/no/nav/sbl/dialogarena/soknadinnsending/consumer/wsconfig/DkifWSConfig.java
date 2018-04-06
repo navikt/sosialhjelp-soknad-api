@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import javax.xml.namespace.QName;
 
 import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.*;
 
 @Configuration
 public class DkifWSConfig {
@@ -40,9 +41,9 @@ public class DkifWSConfig {
                 PingMetadata metadata = new PingMetadata(dkifEndpoint,"Digital Kontaktinformasjon v1 (Dkif_v1) - E-post service, ", false);
                 try {
                     dkifServiceSelftest().ping();
-                    return Pingable.Ping.lyktes(metadata);
+                    return lyktes(metadata);
                 } catch (Exception e) {
-                    return Pingable.Ping.feilet(metadata, e);
+                    return feilet(metadata, e);
                 }
             }
         };
