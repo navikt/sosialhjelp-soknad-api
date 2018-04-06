@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.kodeverk.KodeverkMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder;
 import no.nav.sbl.dialogarena.types.Pingable;
+import no.nav.sbl.dialogarena.types.Pingable.Ping.PingMetadata;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -44,7 +45,7 @@ public class KodeverkWSConfig {
         return new Pingable() {
             @Override
             public Ping ping() {
-                Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(kodeverkEndPoint,"Kodeverk_v2", true);
+                PingMetadata metadata = new PingMetadata(kodeverkEndPoint,"Kodeverk v2 ", false);
                 try {
                     kodeverkSelftestEndpoint().ping();
                     return Pingable.Ping.lyktes(metadata);
