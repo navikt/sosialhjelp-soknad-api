@@ -4,6 +4,7 @@ import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.*;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.tjenester.HenvendelseInformasjonMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder;
 import no.nav.sbl.dialogarena.types.Pingable;
+import no.nav.sbl.dialogarena.types.Pingable.Ping.PingMetadata;
 import no.nav.tjeneste.domene.brukerdialog.henvendelse.v2.henvendelse.HenvendelsePortType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -49,8 +50,8 @@ public class HenvendelseInformasjonConfig {
         return new Pingable() {
             @Override
             public Ping ping() {
-                Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(
-                        System.getProperty("soknad.webservice.henvendelse.informasjonservice.url"),"Henvendelse Informasjonservice", true);
+                PingMetadata metadata = new PingMetadata(
+                        System.getProperty("soknad.webservice.henvendelse.informasjonservice.url"),"Henvendelse - Hente innsendte søknader", true);
                 try {
                     ws.ping();
                     return Pingable.Ping.lyktes(metadata);
