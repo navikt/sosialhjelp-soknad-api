@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.*;
 
 @Configuration
 public class PersonWSConfig {
@@ -51,9 +52,9 @@ public class PersonWSConfig {
                 PingMetadata metadata = new PingMetadata(personEndpoint,"TPS - Person", true);
                 try {
                     personSelftestEndpoint().ping();
-                    return Pingable.Ping.lyktes(metadata);
+                    return lyktes(metadata);
                 } catch (Exception e) {
-                    return Pingable.Ping.feilet(metadata, e);
+                    return feilet(metadata, e);
                 }
             }
         };

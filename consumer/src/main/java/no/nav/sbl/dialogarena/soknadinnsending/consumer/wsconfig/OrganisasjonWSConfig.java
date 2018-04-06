@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import javax.xml.namespace.QName;
 
 import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.*;
 
 @Configuration
 public class OrganisasjonWSConfig {
@@ -53,9 +54,9 @@ public class OrganisasjonWSConfig {
                 PingMetadata metadata = new PingMetadata(organisasjonEndpoint,"Organisasjon v4 - Henter organisasjonsinfo for arbeidsforhold", false);
                 try {
                     organisasjonSelftestEndpoint().ping();
-                    return Pingable.Ping.lyktes(metadata);
+                    return lyktes(metadata);
                 } catch (Exception e) {
-                    return Pingable.Ping.feilet(metadata, e);
+                    return feilet(metadata, e);
                 }
             }
         };

@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.*;
+
 @Configuration
 public class SendSoknadWSConfig {
 
@@ -50,9 +52,9 @@ public class SendSoknadWSConfig {
                 PingMetadata metadata = new PingMetadata(soknadServiceEndpoint,"Henvendelse - SoknadService: oprette og utføre operasjoner på påbegynte søknader", true);
                 try {
                     sendSoknadSelftestEndpoint().ping();
-                    return Pingable.Ping.lyktes(metadata);
+                    return lyktes(metadata);
                 } catch (Exception e) {
-                    return Pingable.Ping.feilet(metadata, e);
+                    return feilet(metadata, e);
                 }
             }
         };

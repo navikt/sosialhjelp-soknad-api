@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.*;
+
 @Configuration
 public class FilLagerWSConfig {
     @Value("${soknad.webservice.henvendelse.fillager.url}")
@@ -40,9 +42,9 @@ public class FilLagerWSConfig {
                 PingMetadata metadata = new PingMetadata(serviceEndpoint,"Fillager v1 - Lagring mot henvendelse", true);
                 try {
                     fillagerSelftestEndpoint().ping();
-                    return Pingable.Ping.lyktes(metadata);
+                    return lyktes(metadata);
                 } catch (Exception e) {
-                    return Pingable.Ping.feilet(metadata, e);
+                    return feilet(metadata, e);
                 }            }
         };
     }

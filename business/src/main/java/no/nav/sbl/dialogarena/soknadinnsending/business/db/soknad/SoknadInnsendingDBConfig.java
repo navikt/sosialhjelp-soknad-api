@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.*;
+
 @Configuration
 @EnableTransactionManagement
 public class SoknadInnsendingDBConfig {
@@ -36,9 +38,9 @@ public class SoknadInnsendingDBConfig {
                 try {
                     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource());
                     jdbcTemplate.queryForList("select * from dual");
-                    return Pingable.Ping.lyktes(metadata);
+                    return lyktes(metadata);
                 } catch (Exception e) {
-                    return Pingable.Ping.feilet(metadata, e);
+                    return feilet(metadata, e);
                 }
             }
         };
