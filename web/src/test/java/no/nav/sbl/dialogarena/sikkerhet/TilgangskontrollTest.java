@@ -4,6 +4,8 @@ import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.modig.core.exception.AuthorizationException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,6 +22,8 @@ public class TilgangskontrollTest {
     private Tilgangskontroll tilgangskontroll;
     @Mock
     private SoknadService soknadService;
+    @Mock
+    private SoknadMetadataRepository soknadMetadataRepository;
 
     @Test
     public void skalGiTilgangForBruker() {
@@ -37,9 +41,35 @@ public class TilgangskontrollTest {
     }
 
     @Test(expected = AuthorizationException.class)
+    public void skalFeileOmSoknadenIkkeFinnes() {
+        System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
+        when(soknadService.hentSoknad("123", false, false)).thenReturn(null);
+        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123");
+    }
+
+    @Test
+    public void skalGiTilgangForBrukerMetadata() {
+        System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
+        StaticSubjectHandler subjectHandler = (StaticSubjectHandler) SubjectHandler.getSubjectHandler();
+        SoknadMetadata metadata = new SoknadMetadata();
+        metadata.fnr = subjectHandler.getUid();
+        when(soknadMetadataRepository.hent("123")).thenReturn(metadata);
+        tilgangskontroll.verifiserBrukerHarTilgangTilMetadata("123");
+    }
+
+    @Test(expected = AuthorizationException.class)
+    public void skalFeileForAndreMetadata() {
+        System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
+        SoknadMetadata metadata = new SoknadMetadata();
+        metadata.fnr = "other_user";
+        when(soknadMetadataRepository.hent("123")).thenReturn(metadata);
+        tilgangskontroll.verifiserBrukerHarTilgangTilMetadata("123");
+    }
+
+    @Test(expected = AuthorizationException.class)
     public void skalFeileHvisEierErNull() {
         System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
-        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(null, null);
+        tilgangskontroll.verifiserTilgangMotPep(null, "");
     }
 
 }
