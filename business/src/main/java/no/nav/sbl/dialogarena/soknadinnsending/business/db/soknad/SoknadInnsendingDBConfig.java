@@ -34,7 +34,7 @@ public class SoknadInnsendingDBConfig {
         return new Pingable() {
             @Override
             public Ping ping() {
-                PingMetadata metadata = new PingMetadata("jdbc/SoknadInnsendingDS", "jdbc:SoknadInnsendingDS", true);
+                PingMetadata metadata = new PingMetadata("jdbc/SoknadInnsendingDS", "JDBC:Sendsøknad Database", true);
                 try {
                     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource());
                     jdbcTemplate.queryForList("select * from dual");
