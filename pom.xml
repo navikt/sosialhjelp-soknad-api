@@ -890,6 +890,12 @@
                 <version>1.7.1</version>
                 <scope>test</scope>
             </dependency>
+
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-hikaricp</artifactId>
+                <version>5.2.2.Final</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <build>
