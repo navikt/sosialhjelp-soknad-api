@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil.BrukerprofilMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder;
 import no.nav.sbl.dialogarena.types.Pingable;
+import no.nav.sbl.dialogarena.types.Pingable.Ping.PingMetadata;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -45,7 +46,7 @@ public class BrukerProfilWSConfig {
         return new Pingable() {
             @Override
             public Ping ping() {
-                Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(brukerProfilEndpoint,"Brukerprofil_v1", true);
+                PingMetadata metadata = new PingMetadata(brukerProfilEndpoint,"Brukerprofil v1", true);
                 try {
                     brukerProfilSelftestEndpoint().ping();
                     return Pingable.Ping.lyktes(metadata);
