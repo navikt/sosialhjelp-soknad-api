@@ -46,7 +46,7 @@ public class SosialhjelpTilJson implements AlternativRepresentasjonTransformer {
             final JsonSoknad jsonSoknad = JsonSoknadConverter.tilJsonSoknad(inputSource);
             final ObjectWriter o = new ObjectMapper().writerWithDefaultPrettyPrinter();
             json = o.writeValueAsString(jsonSoknad);
-            JsonSosialhjelpValidator.ensureValidSoknad(json);
+            //JsonSosialhjelpValidator.ensureValidSoknad(json);
 
         } catch (JsonSosialhjelpValidationException | JsonProcessingException e) {
 
