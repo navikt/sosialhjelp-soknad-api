@@ -64,6 +64,10 @@
             <artifactId>arena-maalgruppe_v1</artifactId>
         </dependency>
         <dependency>
+            <groupId>no.nav.sbl.dialogarena</groupId>
+            <artifactId>svarut-ks-forsendelsesservice</artifactId>
+        </dependency>
+        <dependency>
             <groupId>no.nav</groupId>
             <artifactId>metrics</artifactId>
         </dependency>
@@ -147,6 +151,14 @@
         <dependency>
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-log-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk15on</artifactId>
         </dependency>
 
         <!-- CXF deps END -->

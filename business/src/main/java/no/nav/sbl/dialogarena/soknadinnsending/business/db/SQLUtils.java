@@ -1,5 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 import static java.lang.System.getProperty;
 
 public class SQLUtils {
@@ -46,4 +49,15 @@ public class SQLUtils {
 		}
 	}
 
+	public static Timestamp tidTilTimestamp(LocalDateTime tid) {
+        return tid != null
+                ? Timestamp.valueOf(tid)
+                : null;
+    }
+
+	public static LocalDateTime timestampTilTid(Timestamp timestamp) {
+        return timestamp != null
+                ? timestamp.toLocalDateTime()
+                : null;
+    }
 }
