@@ -1,15 +1,19 @@
 package no.nav.sbl.dialogarena.utils;
 
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.pdf.BaseFont;
-import com.lowagie.text.pdf.PdfWriter;
-import no.nav.modig.core.exception.ApplicationException;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import org.apache.commons.io.IOUtils;
 import org.xhtmlrenderer.pdf.DefaultPDFCreationListener;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import org.apache.pdfbox.PDFBox;
+
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.pdf.BaseFont;
+import com.lowagie.text.pdf.PdfWriter;
+
+import no.nav.modig.core.exception.ApplicationException;
 
 
 public class PDFFabrikk {
@@ -34,17 +38,17 @@ public class PDFFabrikk {
             });
 
             renderer.setDocumentFromString(html, skjemaPath);
-
+            
             renderer.getFontResolver().addFont("/fonts/modus/ModusRegular.ttf", "Modus", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
             renderer.getFontResolver().addFont("/fonts/modus/ModusLight.ttf", "Modus", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
             renderer.getFontResolver().addFont("/fonts/modus/ModusBold.ttf", "Modus", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
             renderer.getFontResolver().addFont("/fonts/modus/ModusSemiBold.ttf", "Modus", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
             renderer.getFontResolver().addFont("/fonts/arial/arial.ttf", "ArialSystem", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
             renderer.getFontResolver().addFont("/fonts/arial/arialbd.ttf", "ArialSystem", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
-            renderer.getFontResolver().addFont("/org/apache/pdfbox/resources/ttf/ArialMT.ttf", "Arial", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
-            renderer.getFontResolver().addFont("/org/apache/pdfbox/resources/ttf/ArialMT.ttf", "Arial", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
-            renderer.getFontResolver().addFont("/org/apache/pdfbox/resources/ttf/Arial-BoldMT.ttf", "Arial", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
-            renderer.getFontResolver().addFont("/org/apache/pdfbox/resources/ttf/Arial-BoldItalicMT.ttf", "Arial", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
+            renderer.getFontResolver().addFont(inPdfBox("/org/apache/pdfbox/resources/ttf/ArialMT.ttf"), "Arial", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
+            renderer.getFontResolver().addFont(inPdfBox("/org/apache/pdfbox/resources/ttf/ArialMT.ttf"), "Arial", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
+            renderer.getFontResolver().addFont(inPdfBox("/org/apache/pdfbox/resources/ttf/Arial-BoldMT.ttf"), "Arial", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
+            renderer.getFontResolver().addFont(inPdfBox("/org/apache/pdfbox/resources/ttf/Arial-BoldItalicMT.ttf"), "Arial", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
             renderer.layout();
             renderer.setPDFVersion(PdfWriter.VERSION_1_4);
             renderer.createPDF(os, false, 0);
@@ -55,5 +59,9 @@ public class PDFFabrikk {
             throw new ApplicationException("Kunne ikke lagre oppsummering som PDF", e);
         }
         return os.toByteArray();
+    }
+    
+    private static String inPdfBox(String path) {
+        return PDFBox.class.getResource(path).toString();
     }
 }
