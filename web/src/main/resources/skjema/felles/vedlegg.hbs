@@ -52,10 +52,8 @@
                         {{/hvisLik}}
                     </p>
 
-                    {{#hvisLik innsendingsvalg "VedleggSendesIkke"}}
-                        <p><span class="aarsak">{{ aarsak }}</span></p>
-                    {{/hvisLik}}
-                    {{#hvisLik innsendingsvalg "VedleggAlleredeSendt"}}
+                    {{#hvisLik innsendingsvalg "LastetOpp"}}
+                    {{else}}
                         <p><span class="aarsak">{{ aarsak }}</span></p>
                     {{/hvisLik}}
                 </div>
