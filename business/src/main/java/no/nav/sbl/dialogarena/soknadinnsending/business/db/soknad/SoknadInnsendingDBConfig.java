@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad;
 
 import no.nav.sbl.dialogarena.types.Pingable;
+import no.nav.sbl.dialogarena.types.Pingable.Ping.PingMetadata;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -10,6 +11,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
+
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.*;
 
 @Configuration
 @EnableTransactionManagement
@@ -31,12 +34,13 @@ public class SoknadInnsendingDBConfig {
         return new Pingable() {
             @Override
             public Ping ping() {
+                PingMetadata metadata = new PingMetadata("jdbc/SoknadInnsendingDS", "JDBC:Sendsøknad Database", true);
                 try {
                     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource());
                     jdbcTemplate.queryForList("select * from dual");
-                    return Ping.lyktes("jdbc/SoknadInnsendingDS");
+                    return lyktes(metadata);
                 } catch (Exception e) {
-                    return Ping.feilet("jdbc/SoknadInnsendingDS", e);
+                    return feilet(metadata, e);
                 }
             }
         };
