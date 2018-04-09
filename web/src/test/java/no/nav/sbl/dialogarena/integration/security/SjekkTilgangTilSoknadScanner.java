@@ -53,7 +53,6 @@ public class SjekkTilgangTilSoknadScanner {
         classnames.remove("AlternativRepresentasjonRessurs");
         classnames.remove("VedleggRessurs");
         classnames.remove("SoknadActions");
-        classnames.remove("FullOppsummeringRessurs");
         classnames.remove("SosialhjelpVedleggRessurs");
 
 

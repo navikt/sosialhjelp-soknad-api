@@ -22,6 +22,7 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.List;
@@ -30,8 +31,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import static java.util.stream.Collectors.toList;
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
-import static javax.ws.rs.core.MediaType.TEXT_XML;
+import static javax.ws.rs.core.MediaType.*;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static org.apache.http.HttpStatus.SC_NO_CONTENT;
 import static org.apache.http.HttpStatus.SC_OK;
@@ -394,9 +394,10 @@ public class SoknadTester extends JerseyTest {
     }
     public Invocation.Builder sendsoknadResource(String suburl, Function<WebTarget, WebTarget> webTargetDecorator) {
         WebTarget target = target("/sendsoknad/" + suburl);
+        MediaType APPLICATION_PDF_TYPE = new MediaType("application", "pdf");
         return webTargetDecorator.apply(target)
                 .request(APPLICATION_JSON_TYPE)
-                .accept(APPLICATION_JSON_TYPE);
+                .accept(APPLICATION_JSON_TYPE, TEXT_HTML_TYPE, APPLICATION_PDF_TYPE);
     }
 
     public String getBrukerBehandlingId() {
