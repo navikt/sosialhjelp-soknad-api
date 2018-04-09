@@ -50,6 +50,8 @@
         <baseUrl alias="arena.personinfoservice" mapToProperty="soknad.webservice.arena.personinfo"/>
         <baseUrl alias="dineutbetalinger.link" mapToProperty="dineutbetalinger.link"/>
 
+        <baseUrl alias="ekstern:fiks_svarut_v1" mapToProperty="fiks.svarut"/>
+
         <applicationProperties alias="soknad.ettersending.properties"/>
         <applicationProperties alias="soknad.properties"/>
         <applicationProperties alias="soknad.featuretoggles"/>
