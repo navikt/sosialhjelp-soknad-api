@@ -130,11 +130,8 @@ public class SoknadsosialhjelpServer {
     }
 
     private static DataSource buildDataSource() throws IOException {
-
-        return NAVHickaryDatasource.getDataSource();
-
+        return NAVHikariDatasource.getDataSource();
     }
-
 
     public static void main(String[] args) {
         try {
