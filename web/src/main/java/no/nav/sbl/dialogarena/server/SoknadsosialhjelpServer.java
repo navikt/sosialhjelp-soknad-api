@@ -1,18 +1,17 @@
 package no.nav.sbl.dialogarena.server;
 
-import static java.lang.System.setProperty;
+import org.eclipse.jetty.jaas.JAASLoginService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
+import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import javax.sql.DataSource;
-
-import org.eclipse.jetty.jaas.JAASLoginService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import static java.lang.System.setProperty;
 
 public class SoknadsosialhjelpServer {
 
@@ -20,16 +19,16 @@ public class SoknadsosialhjelpServer {
     public static final int PORT = 8080;
     public final Jetty jetty;
 
-    
+
     public SoknadsosialhjelpServer() throws Exception {
         this(PORT, null, "/soknadsosialhjelp-server", null);
     }
-    
+
     public SoknadsosialhjelpServer(int listenPort, File overrideWebXmlFile, String contextPath, DataSource dataSource) throws Exception {
         configure();
-        
+
         final DataSource ds = (dataSource != null) ? dataSource : buildDataSource();
-        
+
         setProperty("java.security.auth.login.config", "login.conf");
         final JAASLoginService jaasLoginService = new JAASLoginService("OpenAM Realm");
         jaasLoginService.setLoginModuleName("openam");
@@ -42,12 +41,12 @@ public class SoknadsosialhjelpServer {
                 .port(listenPort)
                 .buildJetty();
     }
-    
-    
+
+
     public void start() {
         jetty.start();
     }
-    
+
     private void configure() throws IOException {
         if (isRunningOnNais()) {
             mapNaisProperties();
@@ -57,10 +56,10 @@ public class SoknadsosialhjelpServer {
             log.info("Running with DEVELOPER (local) setup.");
             configureLocalSecurity();
         }
-        
+
         disableBatch();
     }
-    
+
     private void mapNaisProperties() throws IOException {
         final Properties props = readProperties("naisPropertyMapping.properties");
 
@@ -76,11 +75,11 @@ public class SoknadsosialhjelpServer {
     private void disableBatch() {
         setProperty("sendsoknad.batch.enabled", "false");
     }
-    
+
     private static boolean isRunningOnNais() {
         return determineEnvironment() != null;
     }
-    
+
     private static String determineEnvironment() {
         final String env = System.getenv("FASIT_ENVIRONMENT_NAME");
         if (env == null || env.trim().equals("")) {
@@ -88,7 +87,7 @@ public class SoknadsosialhjelpServer {
         }
         return env;
     }
-    
+
     private void readEnvironmentProperties() throws IOException {
         final String env = determineEnvironment();
         setFrom("environment/" + env + "/environment.properties");
@@ -97,7 +96,7 @@ public class SoknadsosialhjelpServer {
 
     public static void setFrom(String resource) throws IOException {
         final Properties props = readProperties(resource);
-        
+
         updateJavaProperties(props);
     }
 
@@ -120,8 +119,8 @@ public class SoknadsosialhjelpServer {
     }
 
     // For å logge inn lokalt må du sette cookie i selftesten: document.cookie="nav-esso=***REMOVED***-4; path=/sendsoknad/"
-    
-    private static DataSource buildDataSource() throws IOException {
+
+    private static DataSource buildDataSourceOld() throws IOException {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("oracle.jdbc.driver.OracleDriver");
         dataSource.setUrl(System.getProperty("db.url"));
@@ -129,7 +128,14 @@ public class SoknadsosialhjelpServer {
         dataSource.setPassword(System.getProperty("db.password"));
         return dataSource;
     }
-    
+
+    private static DataSource buildDataSource() throws IOException {
+
+        return NAVHickaryDatasource.getDataSource();
+
+    }
+
+
     public static void main(String[] args) {
         try {
             final SoknadsosialhjelpServer server = new SoknadsosialhjelpServer();
