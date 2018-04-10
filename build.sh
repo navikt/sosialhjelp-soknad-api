@@ -71,9 +71,9 @@ function build_and_deploy_docker() {
 } 
 
 function update_nais_settings() {
-    curl --user "${NEXUS_USERNAME}:${NEXUS_PASSWORD}" --upload-file web/nais.yaml "https://repo.adeo.no/repository/raw/nais/soknadsosialhjelp-server/${versjon}/nais.yaml"
-    curl --user "${NEXUS_USERNAME}:${NEXUS_PASSWORD}" --upload-file config/src/main/resources/openam/app-policies.xml "https://repo.adeo.no/repository/raw/nais/soknadsosialhjelp-server/${versjon}/am/app-policies.xml"
-    curl --user "${NEXUS_USERNAME}:${NEXUS_PASSWORD}" --upload-file config/src/main/resources/openam/not-enforced-urls.txt "https://repo.adeo.no/repository/raw/nais/soknadsosialhjelp-server/${versjon}/am/not-enforced-urls.txt"
+    curl -v -s -S --user "${NEXUS_USERNAME}:${NEXUS_PASSWORD}" --upload-file web/nais.yaml "https://repo.adeo.no/repository/raw/nais/soknadsosialhjelp-server/${versjon}/nais.yaml"
+    curl -v -s -S --user "${NEXUS_USERNAME}:${NEXUS_PASSWORD}" --upload-file config/src/main/resources/openam/app-policies.xml "https://repo.adeo.no/repository/raw/nais/soknadsosialhjelp-server/${versjon}/am/app-policies.xml"
+    curl -v -s -S --user "${NEXUS_USERNAME}:${NEXUS_PASSWORD}" --upload-file config/src/main/resources/openam/not-enforced-urls.txt "https://repo.adeo.no/repository/raw/nais/soknadsosialhjelp-server/${versjon}/am/not-enforced-urls.txt"
 }
 
 go_to_project_root
