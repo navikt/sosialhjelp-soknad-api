@@ -70,9 +70,16 @@ function build_and_deploy_docker() {
     )
 } 
 
+function update_nais_settings() {
+    curl -s -S --user "${NEXUS_USERNAME}:${NEXUS_PASSWORD}" --upload-file web/nais.yaml "https://repo.adeo.no/repository/raw/nais/soknadsosialhjelp-server/${versjon}/nais.yaml"
+    curl -s -S --user "${NEXUS_USERNAME}:${NEXUS_PASSWORD}" --upload-file config/src/main/resources/openam/app-policies.xml "https://repo.adeo.no/repository/raw/nais/soknadsosialhjelp-server/${versjon}/am/app-policies.xml"
+    curl -s -S --user "${NEXUS_USERNAME}:${NEXUS_PASSWORD}" --upload-file config/src/main/resources/openam/not-enforced-urls.txt "https://repo.adeo.no/repository/raw/nais/soknadsosialhjelp-server/${versjon}/am/not-enforced-urls.txt"
+}
+
 go_to_project_root
 set_version
 build_backend
 publish
 build_and_deploy_docker
+update_nais_settings
 revert_version
