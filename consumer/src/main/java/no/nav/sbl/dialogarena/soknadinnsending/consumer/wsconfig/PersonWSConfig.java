@@ -4,12 +4,14 @@ import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonPortTypeMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder;
 import no.nav.sbl.dialogarena.types.Pingable;
+import no.nav.sbl.dialogarena.types.Pingable.Ping.PingMetadata;
 import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.*;
 
 @Configuration
 public class PersonWSConfig {
@@ -47,11 +49,12 @@ public class PersonWSConfig {
         return new Pingable() {
             @Override
             public Ping ping() {
+                PingMetadata metadata = new PingMetadata(personEndpoint,"TPS - Person", true);
                 try {
                     personSelftestEndpoint().ping();
-                    return Ping.lyktes("TPS_PERSON");
-                } catch (Exception ex) {
-                    return Ping.feilet("TPS_PERSON", ex);
+                    return lyktes(metadata);
+                } catch (Exception e) {
+                    return feilet(metadata, e);
                 }
             }
         };
