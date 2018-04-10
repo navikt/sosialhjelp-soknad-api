@@ -51,21 +51,21 @@ public class SoknadActionsEndpointIT extends AbstractSecurityIT {
     public void sendEpost_fortsettsenere() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
         String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/fortsettsenere";
-        Response response = soknadTester.sendsoknadResource(subUrl, webTarget ->
+        Response responseMedBrukersEgenXSRFToken = soknadTester.sendsoknadResource(subUrl, webTarget ->
                 webTarget.queryParam("fnr", ANNEN_BRUKER))
                 .header("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken("BRUKER_2_SIN_BEHANDLINGSID"))
                 .buildPost(Entity.json(""))
                 .invoke();
 
-        assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
+        assertThat(responseMedBrukersEgenXSRFToken.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
 
-        response = soknadTester.sendsoknadResource(subUrl, webTarget ->
+        Response responseMedStjeltXSRFToken = soknadTester.sendsoknadResource(subUrl, webTarget ->
                 webTarget.queryParam("fnr", ANNEN_BRUKER))
                 .header("X-XSRF-TOKEN", soknadTester.getXhrHeader())
                 .buildPost(Entity.json(""))
                 .invoke();
 
-        assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
+        assertThat(responseMedStjeltXSRFToken.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
     }
 
     @Test
