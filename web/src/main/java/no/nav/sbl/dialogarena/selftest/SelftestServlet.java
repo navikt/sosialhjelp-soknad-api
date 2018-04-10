@@ -9,7 +9,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import javax.servlet.ServletException;
 import java.util.Collection;
 
-public class SelftestServlet extends SelfTestBaseServlet{
+public class SelftestServlet extends SelfTestBaseServlet {
     private static final String APPLIKASJONS_NAVN = "Søknadsapi";
     private ApplicationContext ctx = null;
 
