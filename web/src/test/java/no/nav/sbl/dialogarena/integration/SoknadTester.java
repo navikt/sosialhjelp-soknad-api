@@ -83,6 +83,10 @@ public class SoknadTester extends JerseyTest {
         return target("/sendsoknad/").queryParam("fnr", this.user);
     }
 
+    public String getXhrHeader() {
+        return xhrHeader.getValue();
+    }
+
     private void saveXhrValue(String value){
         this.xhrHeader =  new ImmutablePair("X-XSRF-TOKEN", value);
     }
@@ -397,7 +401,7 @@ public class SoknadTester extends JerseyTest {
         MediaType APPLICATION_PDF_TYPE = new MediaType("application", "pdf");
         return webTargetDecorator.apply(target)
                 .request(APPLICATION_JSON_TYPE)
-                .accept(APPLICATION_JSON_TYPE, TEXT_HTML_TYPE, APPLICATION_PDF_TYPE);
+                .accept(APPLICATION_JSON_TYPE, TEXT_PLAIN_TYPE, TEXT_HTML_TYPE, APPLICATION_PDF_TYPE);
     }
 
     public String getBrukerBehandlingId() {
