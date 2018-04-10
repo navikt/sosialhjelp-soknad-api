@@ -30,11 +30,11 @@ public class KommuneTilNavEnhetMapper {
 
     private static final Map<String, NavEnhet> TEST_ORGNR = new ImmutableMap.Builder<String, NavEnhet>()
             .put("horten", new NavEnhet("NAV Horten", "910940066"))
-            .put("bergenhus", new NavEnhet("NAV Bergen Bydel Bergenhus", "910230158")) //OK
-            .put("ytrebygda", new NavEnhet("NAV Bergen Bydel Ytrebygda", "910230158")) //OK
-            .put("frogner", new NavEnhet("NAV Oslo Bydel Frogner", "910229699")) // OK
+            .put("bergenhus", new NavEnhet("NAV Bydel Bergenhus, Bergen kommune", "910230158")) //OK
+            .put("ytrebygda", new NavEnhet("NAV Bydel Ytrebygda, Bergen kommune", "910230158")) //OK
+            .put("frogner", new NavEnhet("NAV Bydel Frogner, Oslo kommune", "910229699")) // OK
             //.put("grunerlokka", new NavEnhet("NAV Oslo Bydel Grünerløkka", "974778866")) // TAS UT FORELØPIG SIDEN DE IKKE HAR TESTMILJØ
-            .put("grorud", new NavEnhet("NAV Oslo Bydel Grorud", "910229702")) // OK
+            .put("grorud", new NavEnhet("NAV Bydel Grorud, Oslo kommune", "910229702")) // OK
             .build();
 
 
