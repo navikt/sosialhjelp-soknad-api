@@ -76,10 +76,47 @@ function update_nais_settings() {
     curl -v -s -S --user "${nexusUploader}" --upload-file config/src/main/resources/openam/not-enforced-urls.txt "https://repo.adeo.no/repository/raw/nais/soknadsosialhjelp-server/${versjon}/am/not-enforced-urls.txt"
 }
 
+function determine_deploy() {
+    nais_deploy_environment="";
+
+    IFS=$'\n';
+    for line in $(git log --first-parent --pretty=oneline -10)
+    do
+        IFS=' ';
+        single_commit=($line)
+        IFS=$'\n';
+        if ! git show-ref --tags -d | grep --quiet "${single_commit[0]}"
+        then
+            if echo "$line" | grep '\[deploy [tq][1-9]\]'
+            then
+                unset IFS;
+                nais_deploy_environment=$(echo "$line" | sed 's/^.*\[deploy \([tq][1-9]\)\].*$/\1/');
+                return;
+            fi
+        else
+            unset IFS;
+            return;
+        fi
+    done
+
+    unset IFS;
+    return;
+}
+
+function deploy_if_requested_by_committer() {
+    determine_deploy
+    if [[ "${nais_deploy_environment}" != "" ]]
+    then
+        echo "Deploying on ${nais_deploy_environment}";
+        echo '{"application": "soknadsosialhjelp-server","version": "'"${versjon}"'", "environment": "'"${nais_deploy_environment}"'", "zone": "sbs", "namespace": "'"${nais_deploy_environment}"'", "username": "'"${domenebrukernavn}"'", "password": "'"${domenepassord}"'", "manifesturl": "https://repo.adeo.no/repository/raw/nais/soknadsosialhjelp-server/'"${versjon}"'/nais.yaml"}' | curl -s -S -k --data-binary @- https://daemon.nais.oera-q.local/deploy
+    fi
+}
+
 go_to_project_root
 set_version
 build_backend
 publish
 build_and_deploy_docker
 update_nais_settings
+deploy_if_requested_by_committer
 revert_version
