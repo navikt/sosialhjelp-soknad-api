@@ -256,6 +256,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -265,6 +266,7 @@
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
             <version>4.10</version>
+            <scope>runtime</scope>
           </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
