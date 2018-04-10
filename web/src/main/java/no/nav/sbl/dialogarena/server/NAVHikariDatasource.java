@@ -6,7 +6,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class NAVHickaryDatasource {
+public class NAVHikariDatasource {
 
     private static HikariConfig config = new HikariConfig();
     private static HikariDataSource ds;
@@ -20,18 +20,17 @@ public class NAVHickaryDatasource {
         config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
         ds = new HikariDataSource(config);
     }
-;
 
-    public NAVHickaryDatasource() {
+    ;
+
+    public NAVHikariDatasource() {
     }
 
     public static Connection getConnection() throws SQLException {
         return ds.getConnection();
     }
 
-
     public static javax.sql.DataSource getDataSource() {
-
         return ds;
     }
 }
