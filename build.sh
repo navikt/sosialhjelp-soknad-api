@@ -108,7 +108,12 @@ function deploy_if_requested_by_committer() {
     if [[ "${nais_deploy_environment}" != "" ]]
     then
         echo "Deploying version ${versjon} on ${nais_deploy_environment} with user ${domenebrukernavn}";
-        curl -s -S -k -d '{"application": "soknadsosialhjelp-server","version": "'"${versjon}"'", "fasitEnvironment": "'"${nais_deploy_environment}"'", "zone": "sbs", "namespace": "'"${nais_deploy_environment}"'", "fasitUsername": "'"${domenebrukernavn}"'", "fasitPassword": "'"${domenepassord}"'", "manifesturl": "https://repo.adeo.no/repository/raw/nais/soknadsosialhjelp-server/'"${versjon}"'/nais.yaml"}' https://daemon.nais.oera-q.local/deploy || ( echo "Deploy feilet!"; exit 1; )
+        deploy_result=$(curl -s -S -k --output /dev/stderr --write-out "%{http_code}" -d '{"application": "soknadsosialhjelp-server","version": "'${versjon}'", "fasitEnvironment": "'${nais_deploy_environment}'", "zone": "sbs", "namespace": "'${nais_deploy_environment}'", "fasitUsername": "'${domenebrukernavn}'", "fasitPassword": "'${domenepassord}'", "manifesturl": "https://repo.adeo.no/repository/raw/nais/soknadsosialhjelp-server/'${versjon}'/nais.yaml"}' https://daemon.nais.oera-q.local/deploy) 
+        if [[ "${deploy_result}" != "200" ]]
+        then
+            echo "Deployment failed!";
+            exit 1;
+        fi
     fi
 }
 
