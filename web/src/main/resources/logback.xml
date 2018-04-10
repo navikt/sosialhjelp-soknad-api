@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="30 seconds">
+
+    <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+    </appender>
+  
+
+    <logger name="org.springframework" level="warn"></logger>
+
+    <logger name="no.nav.modig.lang.reflect" level="warn"></logger>
+
+    <logger name="no.nav.sbl.dialogarena.config" level="info"></logger>
+
+    <logger name="org.apache.pdfbox" level="error"></logger>
+
+    <logger name="no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler" level="info"></logger>
+
+    <logger name="klientlogger" level="debug"></logger>
+
+    <logger name="org.apache.http.impl.client" level="info"></logger>
+
+    <logger name="no.nav.modig.security.sts.client.NAVSTSClient" level="OFF"></logger>
+
+    <logger name="no.nav.sbl.dialogarena.common.cxf.CXFMaskSAMLTokenLoggingOutInterceptor" level="OFF"></logger>
+
+    <logger name="org.apache.http.client.protocol.ResponseProcessCookies" level="ERROR"></logger>
+
+    <logger name="org.apache.cxf" level="OFF"></logger>
+
+    <root level="${ROOT_LOG_LEVEL:-INFO}">
+        <appender-ref ref="stdout_json"/>
+    </root>
+</configuration>
