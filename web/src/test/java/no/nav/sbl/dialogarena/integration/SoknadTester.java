@@ -3,16 +3,20 @@ package no.nav.sbl.dialogarena.integration;
 
 import no.nav.sbl.dialogarena.rest.SoknadApplication;
 import no.nav.sbl.dialogarena.rest.meldinger.StartSoknad;
+import no.nav.sbl.dialogarena.rest.ressurser.SoknadRessurs;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad.Skjemanummer;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.assertj.core.api.AbstractObjectAssert;
 import org.assertj.core.groups.Tuple;
 import org.glassfish.jersey.test.JerseyTest;
 
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
@@ -27,6 +31,7 @@ import java.util.function.Function;
 
 import static java.util.stream.Collectors.toList;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
+import static javax.ws.rs.core.MediaType.TEXT_PLAIN_TYPE;
 import static javax.ws.rs.core.MediaType.TEXT_XML;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static org.apache.http.HttpStatus.SC_NO_CONTENT;
@@ -36,12 +41,16 @@ import static org.assertj.core.groups.Tuple.tuple;
 
 public class SoknadTester extends JerseyTest {
     private final String skjemaNummer;
-    private String brukerBehandlingId;
-    private WebSoknad soknad;
+    private String user;
 
+    private String brukerBehandlingId;
+
+    private WebSoknad soknad;
+    private Pair<String, String> xhrHeader;
     private SoknadTester(String skjemaNummer) {
         super();
         this.skjemaNummer = skjemaNummer;
+        this.user = "01015245464";
     }
 
     public static SoknadTester startSoknad(String skjemaNummer) throws Exception {
@@ -60,18 +69,32 @@ public class SoknadTester extends JerseyTest {
         StartSoknad soknadType = new StartSoknad();
         soknadType.setSoknadType(skjemaNummer);
         Entity sokEntity = Entity.json(soknadType);
-        Response response = target("/sendsoknad/soknader")
+        Response response = sendsoknad().path("soknader")
                 .request(APPLICATION_JSON_TYPE)
                 .accept(APPLICATION_JSON_TYPE)
                 .buildPost(sokEntity)
                 .invoke();
         checkResponse(response, SC_OK);
         brukerBehandlingId = (String) response.readEntity(Map.class).get("brukerBehandlingId");
+        saveXhrValue(response.getCookies().get(SoknadRessurs.XSRF_TOKEN).getValue());
         return this;
+    }
+
+    private WebTarget sendsoknad() {
+        return target("/sendsoknad/").queryParam("fnr", this.user);
+    }
+
+    public String getXhrHeader() {
+        return xhrHeader.getValue();
+    }
+
+    private void saveXhrValue(String value){
+        this.xhrHeader =  new ImmutablePair("X-XSRF-TOKEN", value);
     }
 
     public SoknadTester settDelstegstatus(String status) {
         Response invoke = soknadResource("", webTarget -> webTarget.queryParam("delsteg", status))
+                .header(this.xhrHeader.getLeft(), this.xhrHeader.getRight())
                 .buildPut(Entity.json(""))
                 .invoke();
         checkResponse(invoke, SC_NO_CONTENT);
@@ -83,7 +106,7 @@ public class SoknadTester extends JerseyTest {
     }
 
     private Invocation.Builder soknadResource(String suburl, Function<WebTarget, WebTarget> webTargetDecorator) {
-        WebTarget target = target("/sendsoknad/soknader/" + brukerBehandlingId + suburl);
+        WebTarget target = sendsoknad().path("soknader/").path(brukerBehandlingId).path(suburl);
         return webTargetDecorator.apply(target)
                 .request(APPLICATION_JSON_TYPE)
                 .accept(APPLICATION_JSON_TYPE);
@@ -95,20 +118,21 @@ public class SoknadTester extends JerseyTest {
     }
 
     private Invocation.Builder alternativRepresentasjonResource() {
-        WebTarget target = target("/sendsoknad/representasjon/xml/" + this.brukerBehandlingId);
+        WebTarget target = sendsoknad().path("representasjon/xml/").path(this.brukerBehandlingId);
         return target
+                .queryParam("fnr", user)
                 .request(TEXT_XML)
                 .accept(TEXT_XML);
     }
 
     private Invocation.Builder faktumResource(Function<WebTarget, WebTarget> webTargetDecorator) {
-        return webTargetDecorator.apply(target("/sendsoknad/fakta/"))
+        return webTargetDecorator.apply(sendsoknad().path("fakta/"))
                 .request(APPLICATION_JSON_TYPE)
                 .accept(APPLICATION_JSON_TYPE);
     }
 
     private Invocation.Builder vedleggResource(Function<WebTarget, WebTarget> webTargetDecorator) {
-        return webTargetDecorator.apply(target("/sendsoknad/vedlegg/"))
+        return webTargetDecorator.apply(sendsoknad().path("vedlegg/"))
                 .request(APPLICATION_JSON_TYPE)
                 .accept(APPLICATION_JSON_TYPE);
     }
@@ -132,6 +156,7 @@ public class SoknadTester extends JerseyTest {
     private SoknadTester endreFaktum(Faktum faktum) {
         String faktumId = faktum.getFaktumId().toString();
         Response response = faktumResource(webTarget -> webTarget.path(faktumId))
+                .header(this.xhrHeader.getLeft(), this.xhrHeader.getRight())
                 .build("PUT", Entity.json(faktum))
                 .invoke();
         checkResponse(response, SC_OK);
@@ -141,6 +166,7 @@ public class SoknadTester extends JerseyTest {
     private SoknadTester endreVedlegg(Vedlegg vedlegg) {
         String vedleggsId = vedlegg.getVedleggId().toString();
         Response response = vedleggResource(webTarget -> webTarget.path(vedleggsId))
+                .header(this.xhrHeader.getLeft(), this.xhrHeader.getRight())
                 .build("PUT", Entity.json(vedlegg))
                 .invoke();
         checkResponse(response, SC_NO_CONTENT);
@@ -153,14 +179,18 @@ public class SoknadTester extends JerseyTest {
 
     private SoknadTester opprettFaktum(Faktum faktum) {
         faktumResource(webTarget -> webTarget.queryParam("behandlingsId", brukerBehandlingId))
+                .header(this.xhrHeader.getLeft(), this.xhrHeader.getRight())
                 .buildPost(Entity.json(faktum))
                 .invoke();
         hentFakta();
         return this;
     }
 
-    private void checkResponse(Response invoke, int status) {
-        assertThat(invoke.getStatus()).isEqualTo(status);
+    private void checkResponse(Response invoke, int expectedStatusCode) {
+        int actualStatusCode = invoke.getStatus();
+        if (actualStatusCode != expectedStatusCode ){
+            throw new WebApplicationException(actualStatusCode);
+        }
     }
 
     public AbstractObjectAssert<?, WebSoknad> assertSoknad() {
@@ -188,9 +218,10 @@ public class SoknadTester extends JerseyTest {
 
     public SoknadTester hentFakta() {
         Response response = soknadResource("/fakta").build("GET").invoke();
+        checkResponse(response, SC_OK);
         soknad.setFakta(response.readEntity(new GenericType<List<Faktum>>() {
         }));
-        checkResponse(response, SC_OK);
+
         return this;
     }
 
@@ -211,6 +242,7 @@ public class SoknadTester extends JerseyTest {
         checkResponse(response, SC_NO_CONTENT);
         return this;
     }
+
 
     public class VedleggTester {
 
@@ -266,14 +298,14 @@ public class SoknadTester extends JerseyTest {
             vedlegg.setAarsak(aarsak);
             return this;
         }
-    }
 
+    }
     public class FaktumTester {
 
         private final Faktum faktum;
+
         private String value;
         private Map<String, String> properties = new HashMap<>();
-
         private FaktumTester(Faktum faktumMedKey) {
             this.faktum = faktumMedKey;
         }
@@ -293,7 +325,7 @@ public class SoknadTester extends JerseyTest {
             return this;
         }
 
-        SoknadTester utforEndring() {
+        public SoknadTester utforEndring() {
             if (Objects.isNull(value) && properties.isEmpty()) {
                 throw new RuntimeException("Ingen endring å utføre  - ingen value eller property er satt.");
             }
@@ -302,15 +334,15 @@ public class SoknadTester extends JerseyTest {
             return endreFaktum(faktum);
         }
 
-        FaktumTester withProperty(String key, String value) {
+        public FaktumTester withProperty(String key, String value) {
             properties.put(key, value);
             return this;
         }
+
     }
-
     public class FaktaTester {
-        private List<FaktumTester> faktumTestere;
 
+        private List<FaktumTester> faktumTestere;
         FaktaTester(List<FaktumTester> faktumTestere) {
             this.faktumTestere = faktumTestere;
         }
@@ -329,8 +361,8 @@ public class SoknadTester extends JerseyTest {
             return SoknadTester.this;
         }
 
-    }
 
+    }
     public class FaktumOppretter {
 
         private Faktum faktum;
@@ -363,5 +395,16 @@ public class SoknadTester extends JerseyTest {
             periodeProperties.forEach(faktum::medProperty);
             return this;
         }
+
+    }
+    public Invocation.Builder sendsoknadResource(String suburl, Function<WebTarget, WebTarget> webTargetDecorator) {
+        WebTarget target = target("/sendsoknad/" + suburl);
+        return webTargetDecorator.apply(target)
+                .request(APPLICATION_JSON_TYPE)
+                .accept(APPLICATION_JSON_TYPE, TEXT_PLAIN_TYPE);
+    }
+
+    public String getBrukerBehandlingId() {
+        return brukerBehandlingId;
     }
 }
