@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.arbeid.ArbeidsforholdMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder;
 import no.nav.sbl.dialogarena.types.Pingable;
+import no.nav.sbl.dialogarena.types.Pingable.Ping.PingMetadata;
 import no.nav.tjeneste.virksomhet.organisasjon.v4.binding.OrganisasjonV4;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import javax.xml.namespace.QName;
 
 import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.*;
 
 @Configuration
 public class OrganisasjonWSConfig {
@@ -49,11 +51,12 @@ public class OrganisasjonWSConfig {
         return new Pingable() {
             @Override
             public Ping ping() {
+                PingMetadata metadata = new PingMetadata(organisasjonEndpoint,"Organisasjon v4 - Henter organisasjonsinfo for arbeidsforhold", false);
                 try {
-                    organisasjonEndpoint().ping();
-                    return Ping.lyktes("Organisasjon_v4");
+                    organisasjonSelftestEndpoint().ping();
+                    return lyktes(metadata);
                 } catch (Exception e) {
-                    return Ping.feilet("Organisasjon_v4", e);
+                    return feilet(metadata, e);
                 }
             }
         };
