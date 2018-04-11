@@ -75,7 +75,7 @@ public class VedleggRessurs {
     @Produces(APPLICATION_OCTET_STREAM)
     @SjekkTilgangTilSoknad(type = Vedlegg)
     public byte[] hentVedleggData(@PathParam("vedleggId") final Long vedleggId, @Context HttpServletResponse response) {
-        Event event = MetricsFactory.createEvent("hentVedleggData.event");
+        Event event = MetricsFactory.createEvent("henterVedleggData");
         event.report();
 
         Vedlegg vedlegg = vedleggService.hentVedlegg(vedleggId, true);
