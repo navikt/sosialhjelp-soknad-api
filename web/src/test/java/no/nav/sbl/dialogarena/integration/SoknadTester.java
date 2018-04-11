@@ -22,6 +22,7 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.List;
@@ -80,6 +81,10 @@ public class SoknadTester extends JerseyTest {
 
     private WebTarget sendsoknad() {
         return target("/sendsoknad/").queryParam("fnr", this.user);
+    }
+
+    public String getXhrHeader() {
+        return xhrHeader.getValue();
     }
 
     private void saveXhrValue(String value){
@@ -393,9 +398,10 @@ public class SoknadTester extends JerseyTest {
     }
     public Invocation.Builder sendsoknadResource(String suburl, Function<WebTarget, WebTarget> webTargetDecorator) {
         WebTarget target = target("/sendsoknad/" + suburl);
+        MediaType APPLICATION_PDF_TYPE = new MediaType("application", "pdf");
         return webTargetDecorator.apply(target)
                 .request(APPLICATION_JSON_TYPE)
-                .accept(APPLICATION_JSON_TYPE, WILDCARD_TYPE);
+                .accept(APPLICATION_JSON_TYPE, TEXT_PLAIN_TYPE, TEXT_HTML_TYPE, APPLICATION_PDF_TYPE, WILDCARD_TYPE);
     }
 
     public String getBrukerBehandlingId() {
