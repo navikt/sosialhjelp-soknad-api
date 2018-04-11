@@ -262,21 +262,28 @@ public final class Jetty {
     public Jetty startAnd(Runnable doWhenStarted) {
         try {
             server.start();
-            LOG.info("STARTED JETTY");
-            LOG.info(" * WAR: " + warPath);
-            LOG.info(" * Context path: " + contextPath);
-            LOG.info(" * Http port: " + port);
-            for (Integer httpsPort : sslPort) {
-                LOG.info(" * Https port: " + httpsPort);
-            }
-            for (URL url : getBaseUrls()) {
-                LOG.info(" * " + url);
-            }
+            LOG.info(getStatusString());
             doWhenStarted.run();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
         return this;
+    }
+
+    private String getStatusString() {
+        final StringBuilder statusBuilder = new StringBuilder(
+                    "STARTED JETTY"
+                    + "\n * WAR: " + warPath
+                    + "\n * Context path: " + contextPath
+                    + "\n * Http port: " + port
+                    );
+        for (Integer httpsPort : sslPort) {
+            statusBuilder.append("\n * Https port: " + httpsPort);
+        }
+        for (URL url : getBaseUrls()) {
+            statusBuilder.append("\n * " + url);
+        }
+        return statusBuilder.toString();
     }
 
     public Iterable<URL> getBaseUrls() {
