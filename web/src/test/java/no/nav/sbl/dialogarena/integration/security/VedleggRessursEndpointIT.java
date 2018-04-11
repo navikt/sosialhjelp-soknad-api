@@ -66,7 +66,7 @@ public class VedleggRessursEndpointIT extends AbstractSecurityIT {
                 .invoke();
 
         Response responseMedSammeBruker = soknadTester.sendsoknadResource(subUrl, webTarget -> webTarget)
-                .header("X-XSRF-TOKEN", soknadTester.getXhrValue())
+                .header("X-XSRF-TOKEN", soknadTester.getXhrHeader())
                 .buildPut(Entity.json(testVedlegg))
                 .invoke();
 
@@ -91,12 +91,12 @@ public class VedleggRessursEndpointIT extends AbstractSecurityIT {
 
         Response responseMedAnnenBruker = soknadTester.sendsoknadResource(subUrl, webTarget ->
                 webTarget.queryParam("fnr", ANNEN_BRUKER))
-                .header("X-XSRF-TOKEN", soknadTester.getXhrValue())
+                .header("X-XSRF-TOKEN", soknadTester.getXhrHeader())
                 .buildDelete()
                 .invoke();
 
         Response responseMedSammeBruker = soknadTester.sendsoknadResource(subUrl, webTarget -> webTarget)
-                .header("X-XSRF-TOKEN", soknadTester.getXhrValue())
+                .header("X-XSRF-TOKEN", soknadTester.getXhrHeader())
                 .buildDelete()
                 .invoke();
 

@@ -83,10 +83,6 @@ public class SoknadTester extends JerseyTest {
         return target("/sendsoknad/").queryParam("fnr", this.user);
     }
 
-    public String getXhrHeader() {
-        return xhrHeader.getValue();
-    }
-
     private void saveXhrValue(String value){
         this.xhrHeader =  new ImmutablePair("X-XSRF-TOKEN", value);
     }
@@ -408,5 +404,8 @@ public class SoknadTester extends JerseyTest {
         return brukerBehandlingId;
     }
 
-    public String getXhrValue() { return xhrHeader.getValue(); }
+    public String getXhrHeader() {
+        return xhrHeader.getValue();
+    }
+
 }

@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
+import no.nav.metrics.Event;
+import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
@@ -73,6 +75,9 @@ public class VedleggRessurs {
     @Produces(APPLICATION_OCTET_STREAM)
     @SjekkTilgangTilSoknad(type = Vedlegg)
     public byte[] hentVedleggData(@PathParam("vedleggId") final Long vedleggId, @Context HttpServletResponse response) {
+        Event event = MetricsFactory.createEvent("hentVedleggData.event");
+        event.report();
+
         Vedlegg vedlegg = vedleggService.hentVedlegg(vedleggId, true);
         response.setHeader("Content-Disposition", "attachment; filename=\"" + vedlegg.getVedleggId() + ".pdf\"");
         return vedlegg.getData();
