@@ -460,7 +460,6 @@
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-bindings-soap</artifactId>
-            <scope>test</scope>
         </dependency>
 
 
