@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 public class SoknadsosialhjelpServer {
-
+    
     private static final Logger log = LoggerFactory.getLogger(SoknadsosialhjelpServer.class);
     public static final int PORT = 8080;
     public final Jetty jetty;
@@ -42,8 +42,7 @@ public class SoknadsosialhjelpServer {
                 .port(listenPort)
                 .buildJetty();
     }
-    
-    
+
     public void start() {
         jetty.start();
     }
@@ -110,6 +109,9 @@ public class SoknadsosialhjelpServer {
     private static Properties readProperties(String resource) throws IOException {
         Properties props = new Properties();
         InputStream inputStream = SoknadsosialhjelpServer.class.getClassLoader().getResourceAsStream(resource);
+        if (inputStream == null) {
+            throw new IllegalStateException("Kunne ikke finne propertiesfil: " + resource);
+        }
         props.load(inputStream);
         return props;
     }
