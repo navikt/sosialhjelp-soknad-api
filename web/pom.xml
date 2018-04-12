@@ -472,10 +472,6 @@
             <artifactId>modig-lang</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-        </dependency>
-        <dependency>
             <groupId>net.sourceforge.collections</groupId>
             <artifactId>collections-generic</artifactId>
         </dependency>
@@ -595,8 +591,10 @@
             <groupId>no.nav.sbl</groupId>
             <artifactId>dkif-tjenestespesifikasjon</artifactId>
         </dependency>
-
-
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+         </dependency>
     </dependencies>
 
     <build>
