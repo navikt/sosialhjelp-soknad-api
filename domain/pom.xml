@@ -134,7 +134,21 @@
             <groupId>no.nav</groupId>
             <artifactId>metrics</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>no.nav.sbl.dialogarena</groupId>
+            <artifactId>soknadsosialhjelp-filformat</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.activation</groupId>
+                    <artifactId>activation</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

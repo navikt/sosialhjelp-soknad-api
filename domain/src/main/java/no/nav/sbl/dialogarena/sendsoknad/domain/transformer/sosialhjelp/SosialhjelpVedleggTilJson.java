@@ -8,6 +8,8 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AlleredeHandtertException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonType;
+import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidationException;
+import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
@@ -29,7 +31,8 @@ public class SosialhjelpVedleggTilJson implements AlternativRepresentasjonTransf
             JsonVedleggSpesifikasjon jsonObjekt = new JsonVedleggSpesifikasjon().withVedlegg(vedlegg);
             leggPaGarbageDataForAHindreValidering(jsonObjekt);
             json = new ObjectMapper().writeValueAsString(jsonObjekt);
-        } catch (JsonProcessingException e) {
+            JsonSosialhjelpValidator.ensureValidVedlegg(json);
+        } catch (JsonSosialhjelpValidationException|JsonProcessingException e) {
             logger.error("Kunne ikke generere XML for {}", webSoknad.getBrukerBehandlingId(), e);
             throw new AlleredeHandtertException();
         }
