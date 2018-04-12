@@ -4,19 +4,18 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.internal.Files;
 import com.github.jknack.handlebars.io.StringTemplateSource;
 import com.github.jknack.handlebars.io.TemplateSource;
-import no.nav.sbl.dialogarena.config.ContentConfig;
 import no.nav.sbl.dialogarena.config.HandlebarsHelperConfig;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.service.HandlebarRegistry;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.Miljovariabler;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -26,6 +25,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.net.URL;
+import java.time.Clock;
 import java.util.*;
 
 import static org.junit.Assert.fail;
@@ -130,6 +130,16 @@ public class RegistryAwareHelperTest {
         @Bean()
         public Miljovariabler informasjonService() {
             return mock(Miljovariabler.class);
+        }
+
+        @Bean
+        public SoknadMetadataRepository soknadMetadataRepository() {
+            return mock(SoknadMetadataRepository.class);
+        }
+
+        @Bean
+        public Clock clock() {
+            return Clock.systemDefaultZone();
         }
 
     }
