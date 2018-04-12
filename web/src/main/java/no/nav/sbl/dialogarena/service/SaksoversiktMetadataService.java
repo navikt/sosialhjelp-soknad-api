@@ -3,18 +3,21 @@ package no.nav.sbl.dialogarena.service;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadataListe;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.*;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.FERDIG;
@@ -26,12 +29,18 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class SaksoversiktMetadataService {
 
     private static final Logger logger = getLogger(SaksoversiktMetadataService.class);
+    public static final int ETTERSENDELSE_FRIST_DAGER = 21;
+
 
     @Inject
     private SoknadMetadataRepository soknadMetadataRepository;
 
     @Inject
     private NavMessageSource navMessageSource;
+
+    @Inject
+    Clock clock;
+
 
     public List<InnsendtSoknad> hentInnsendteSoknaderForFnr(String fnr) {
         Properties bundle = getBundle();
@@ -50,7 +59,7 @@ public class SaksoversiktMetadataService {
                         .withInnsendtDato(tilDate(soknad.innsendtDato))
                         .withHoveddokument(new Hoveddokument()
                                 .withTittel(bundle.getProperty("saksoversikt.soknadsnavn")))
-                        .withVedlegg(tilJsonVedlegg(soknad.vedlegg, bundle))
+                        .withVedlegg(tilJsonVedlegg(soknad.vedlegg, erLastetOpp, bundle))
                         .withTema("KOM")
                         .withTemanavn(bundle.getProperty("saksoversikt.temanavn"))
                         .withLenke(null)).collect(toList());
@@ -72,9 +81,29 @@ public class SaksoversiktMetadataService {
         ).collect(toList());
     }
 
-    private List<Vedlegg> tilJsonVedlegg(VedleggMetadataListe vedlegg, Properties bundle) {
+    // TODO håndtere at typer kan være ettersendelser
+
+    public List<EttersendingsSoknad> hentSoknaderBrukerKanEttersendePa(String fnr) {
+        Properties bundle = getBundle();
+        LocalDateTime ettersendelseFrist = LocalDateTime.now(clock)
+                .minusDays(ETTERSENDELSE_FRIST_DAGER);
+
+        List<SoknadMetadata> soknader = soknadMetadataRepository.hentSoknaderForEttersending(fnr, ettersendelseFrist);
+
+        return soknader.stream().map(soknad ->
+            new EttersendingsSoknad()
+                .withBehandlingsId(soknad.behandlingsId)
+                .withTittel(bundle.getProperty("saksoversikt.soknadsnavn"))
+                .withLenke(null)
+                .withVedlegg(tilJsonVedlegg(soknad.vedlegg, erLastetOpp.negate(), bundle))
+        ).collect(toList());
+    }
+
+    private Predicate<VedleggMetadata> erLastetOpp = v -> v.status.er(LastetOpp);
+
+    private List<Vedlegg> tilJsonVedlegg(VedleggMetadataListe vedlegg, Predicate<VedleggMetadata> filter, Properties bundle) {
         return vedlegg.vedleggListe.stream()
-                .filter(v -> v.status.er(LastetOpp))
+                .filter(filter)
                 .map(v -> "vedlegg." + v.skjema + "." + v.tillegg + ".tittel")
                 .distinct()
                 .map(bundle::getProperty)

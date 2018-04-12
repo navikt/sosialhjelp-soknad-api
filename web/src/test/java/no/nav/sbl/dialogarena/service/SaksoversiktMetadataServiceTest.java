@@ -6,10 +6,13 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadata;
+import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.EttersendingsSoknad;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.InnsendtSoknad;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
@@ -17,7 +20,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Properties;
 
@@ -40,17 +45,21 @@ public class SaksoversiktMetadataServiceTest {
     @InjectMocks
     SaksoversiktMetadataService saksoversiktMetadataService;
 
+    @Captor
+    ArgumentCaptor<LocalDateTime> timeCaptor;
+
+
+    SoknadMetadata soknadMetadata;
+
     @Before
     public void setUp() {
         Properties props = mock(Properties.class);
         when(props.getProperty(anyString())).then(new ReturnsArgumentAt(0));
 
+        saksoversiktMetadataService.clock = Clock.fixed(LocalDateTime.of(2018, 5, 31, 13, 33, 37).atZone(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault());
         when(navMessageSource.getBundleFor(anyString(), any())).thenReturn(props);
-    }
 
-    @Test
-    public void henterForBruker() throws ParseException {
-        SoknadMetadata soknadMetadata = new SoknadMetadata();
+        soknadMetadata = new SoknadMetadata();
         soknadMetadata.fnr = "12345";
         soknadMetadata.behandlingsId = "beh123";
         soknadMetadata.innsendtDato = LocalDateTime.of(2018, 4, 11, 13, 30, 0);
@@ -72,7 +81,10 @@ public class SaksoversiktMetadataServiceTest {
         vedleggListe.add(v);
         vedleggListe.add(v2);
         vedleggListe.add(v3);
+    }
 
+    @Test
+    public void henterForBruker() throws ParseException {
         when(soknadMetadataRepository.hentSoknaderMedStatusForBruker("12345", SoknadInnsendingStatus.FERDIG))
                 .thenReturn(asList(soknadMetadata));
 
@@ -86,4 +98,25 @@ public class SaksoversiktMetadataServiceTest {
         assertEquals(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2018-04-11 13:30:00"), soknad.getInnsendtDato());
     }
 
+    @Test
+    public void hentForEttersendelse() {
+        when(soknadMetadataRepository.hentSoknaderForEttersending(anyString(), any())).thenReturn(asList(soknadMetadata));
+
+        List<EttersendingsSoknad> resultat = saksoversiktMetadataService.hentSoknaderBrukerKanEttersendePa("12345");
+
+        assertEquals(1, resultat.size());
+        EttersendingsSoknad soknad = resultat.get(0);
+        assertEquals("saksoversikt.soknadsnavn", soknad.getTittel());
+        assertEquals(1, soknad.getVedlegg().size());
+        assertEquals("vedlegg.skjema2.tillegg1.tittel", soknad.getVedlegg().get(0).getTittel());
+    }
+
+    @Test
+    public void hentForEttersendelseHarRiktigInterval() {
+        when(soknadMetadataRepository.hentSoknaderForEttersending(anyString(), timeCaptor.capture())).thenReturn(asList(soknadMetadata));
+
+        saksoversiktMetadataService.hentSoknaderBrukerKanEttersendePa("12345");
+
+        assertEquals(LocalDateTime.of(2018, 5, 10, 13, 33, 37), timeCaptor.getValue());
+    }
 }
