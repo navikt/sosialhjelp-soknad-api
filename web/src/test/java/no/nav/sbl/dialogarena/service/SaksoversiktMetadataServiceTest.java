@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.service;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
@@ -62,6 +62,7 @@ public class SaksoversiktMetadataServiceTest {
         soknadMetadata = new SoknadMetadata();
         soknadMetadata.fnr = "12345";
         soknadMetadata.behandlingsId = "beh123";
+        soknadMetadata.type = SoknadType.SEND_SOKNAD_KOMMUNAL;
         soknadMetadata.innsendtDato = LocalDateTime.of(2018, 4, 11, 13, 30, 0);
 
         VedleggMetadata v = new VedleggMetadata();
@@ -84,8 +85,8 @@ public class SaksoversiktMetadataServiceTest {
     }
 
     @Test
-    public void henterForBruker() throws ParseException {
-        when(soknadMetadataRepository.hentSoknaderMedStatusForBruker("12345", SoknadInnsendingStatus.FERDIG))
+    public void henterInnsendteForBruker() throws ParseException {
+        when(soknadMetadataRepository.hentInnsendteSoknaderForBruker("12345"))
                 .thenReturn(asList(soknadMetadata));
 
         List<InnsendtSoknad> resultat = saksoversiktMetadataService.hentInnsendteSoknaderForFnr("12345");
@@ -93,6 +94,7 @@ public class SaksoversiktMetadataServiceTest {
         assertEquals(1, resultat.size());
         InnsendtSoknad soknad = resultat.get(0);
         assertEquals("beh123", soknad.getBehandlingsId());
+        assertEquals("saksoversikt.soknadsnavn", soknad.getHoveddokument().getTittel());
         assertEquals(1, soknad.getVedlegg().size());
         assertEquals("vedlegg.skjema1.tillegg1.tittel", soknad.getVedlegg().get(0).getTittel());
         assertEquals(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2018-04-11 13:30:00"), soknad.getInnsendtDato());

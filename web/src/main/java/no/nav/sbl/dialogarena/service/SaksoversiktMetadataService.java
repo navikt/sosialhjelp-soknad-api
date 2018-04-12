@@ -20,9 +20,8 @@ import java.util.Properties;
 import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toList;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.FERDIG;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.LastetOpp;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType.SEND_SOKNAD_KOMMUNAL;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
@@ -45,7 +44,7 @@ public class SaksoversiktMetadataService {
     public List<InnsendtSoknad> hentInnsendteSoknaderForFnr(String fnr) {
         Properties bundle = getBundle();
 
-        List<SoknadMetadata> soknader = soknadMetadataRepository.hentSoknaderMedStatusForBruker(fnr, FERDIG);
+        List<SoknadMetadata> soknader = soknadMetadataRepository.hentInnsendteSoknaderForBruker(fnr);
 
         List<InnsendtSoknad> innsendte = soknader.stream().map(soknad ->
                 new InnsendtSoknad()
@@ -58,11 +57,11 @@ public class SaksoversiktMetadataService {
                         .withBehandlingsId(soknad.behandlingsId)
                         .withInnsendtDato(tilDate(soknad.innsendtDato))
                         .withHoveddokument(new Hoveddokument()
-                                .withTittel(bundle.getProperty("saksoversikt.soknadsnavn")))
+                                .withTittel(soknad.type.equals(SEND_SOKNAD_KOMMUNAL) ? bundle.getProperty("saksoversikt.soknadsnavn") : bundle.getProperty("saksoversikt.soknadsnavn.ettersending")))
                         .withVedlegg(tilJsonVedlegg(soknad.vedlegg, erLastetOpp, bundle))
                         .withTema("KOM")
                         .withTemanavn(bundle.getProperty("saksoversikt.temanavn"))
-                        .withLenke(null)).collect(toList());
+                        .withLenke(null)).collect(toList()); // TODO lenke til ettersendelser?
 
         return innsendte;
     }
@@ -70,7 +69,7 @@ public class SaksoversiktMetadataService {
     public List<PabegyntSoknad> hentPabegynteSoknaderForBruker(String fnr) {
         Properties bundle = getBundle();
 
-        List<SoknadMetadata> soknader = soknadMetadataRepository.hentSoknaderMedStatusForBruker(fnr, UNDER_ARBEID);
+        List<SoknadMetadata> soknader = soknadMetadataRepository.hentPabegynteSoknaderForBruker(fnr);
 
         return soknader.stream().map(soknad ->
                 new PabegyntSoknad()
@@ -80,8 +79,6 @@ public class SaksoversiktMetadataService {
                         .withLenke(null)
         ).collect(toList());
     }
-
-    // TODO håndtere at typer kan være ettersendelser
 
     public List<EttersendingsSoknad> hentSoknaderBrukerKanEttersendePa(String fnr) {
         Properties bundle = getBundle();
