@@ -1,7 +1,5 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
-import no.nav.metrics.Event;
-import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
@@ -15,9 +13,7 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -68,19 +64,6 @@ public class VedleggRessurs {
     public List<Vedlegg> hentVedleggUnderBehandling(@PathParam("vedleggId") final Long vedleggId, @QueryParam("behandlingsId") final String behandlingsId) {
         Vedlegg forventning = vedleggService.hentVedlegg(vedleggId, false);
         return vedleggService.hentVedleggUnderBehandling(behandlingsId, forventning.getFillagerReferanse());
-    }
-
-    @GET
-    @Path("/fil")
-    @Produces(APPLICATION_OCTET_STREAM)
-    @SjekkTilgangTilSoknad(type = Vedlegg)
-    public byte[] hentVedleggData(@PathParam("vedleggId") final Long vedleggId, @Context HttpServletResponse response) {
-        Event event = MetricsFactory.createEvent("henterVedleggData");
-        event.report();
-
-        Vedlegg vedlegg = vedleggService.hentVedlegg(vedleggId, true);
-        response.setHeader("Content-Disposition", "attachment; filename=\"" + vedlegg.getVedleggId() + ".pdf\"");
-        return vedlegg.getData();
     }
 
     @GET
