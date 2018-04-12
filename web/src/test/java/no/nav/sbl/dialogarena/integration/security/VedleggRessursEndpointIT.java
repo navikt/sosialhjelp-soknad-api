@@ -159,6 +159,12 @@ public class VedleggRessursEndpointIT extends AbstractSecurityIT {
     }
 
     /*
+
+    Starten på en sikkerhetstest for lastOppFiler. Denne testen feiler nå fordi man prøver å konvertere MultiPartFormDataen
+    til json - dette kan fikses i GsonProvider-klassen (ville ikke committe den fiksen siden det ikke feiler for andre tester).
+    Når det er gjort, vil man få 400 i stedet for 403, dvs. at det er noe i denne requesten som ikke er satt opp riktig, sannsynligvis
+    MultipartFormData/files[]-delen. Har prøvd å sette accept og request headere i sendsoknadResource-metoden uten hell.
+
     @Test
     public void accessDeniedMedAnnenBruker_lastOppFiler() throws IOException {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer)
