@@ -26,7 +26,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
 public class SaksoversiktMetadataService {
-
     private static final Logger logger = getLogger(SaksoversiktMetadataService.class);
     public static final int ETTERSENDELSE_FRIST_DAGER = 21;
 
@@ -39,7 +38,6 @@ public class SaksoversiktMetadataService {
 
     @Inject
     Clock clock;
-
 
     public List<InnsendtSoknad> hentInnsendteSoknaderForFnr(String fnr) {
         Properties bundle = getBundle();
@@ -61,7 +59,8 @@ public class SaksoversiktMetadataService {
                         .withVedlegg(tilJsonVedlegg(soknad.vedlegg, erLastetOpp, bundle))
                         .withTema("KOM")
                         .withTemanavn(bundle.getProperty("saksoversikt.temanavn"))
-                        .withLenke(null)).collect(toList()); // TODO lenke til ettersendelser?
+                        .withLenke(lagEttersendelseLenke(soknad.behandlingsId)))
+                .collect(toList());
 
         return innsendte;
     }
@@ -76,7 +75,7 @@ public class SaksoversiktMetadataService {
                         .withBehandlingsId(soknad.behandlingsId)
                         .withTittel(bundle.getProperty("saksoversikt.soknadsnavn"))
                         .withSisteEndring(tilDate(soknad.sistEndretDato))
-                        .withLenke(null)
+                        .withLenke(lagFortsettSoknadLenke(soknad.behandlingsId))
         ).collect(toList());
     }
 
@@ -91,7 +90,7 @@ public class SaksoversiktMetadataService {
             new EttersendingsSoknad()
                 .withBehandlingsId(soknad.behandlingsId)
                 .withTittel(bundle.getProperty("saksoversikt.soknadsnavn"))
-                .withLenke(null)
+                .withLenke(lagEttersendelseLenke(soknad.behandlingsId))
                 .withVedlegg(tilJsonVedlegg(soknad.vedlegg, erLastetOpp.negate(), bundle))
         ).collect(toList());
     }
@@ -114,6 +113,21 @@ public class SaksoversiktMetadataService {
 
     private Properties getBundle() {
         return navMessageSource.getBundleFor("soknadsosialhjelp", new Locale("nb", "NO"));
+    }
+
+    private String lagEttersendelseLenke(String behandlingsId) {
+        return lagContextLenke() + "skjema/" + behandlingsId + "/ettersendelse";
+    }
+
+    private String lagFortsettSoknadLenke(String behandlingsId) {
+        return lagContextLenke() + "skjema/" + behandlingsId + "/1";
+    }
+
+    private String lagContextLenke() {
+        String miljo = System.getProperty("environment.name");
+
+        // TODO FIX FOR PROD
+        return "https://tjeneste-" + miljo + ".nav.no/soknadsosialhjelp/";
     }
 
 }
