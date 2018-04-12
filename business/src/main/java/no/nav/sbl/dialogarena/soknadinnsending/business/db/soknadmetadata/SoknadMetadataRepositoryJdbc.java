@@ -136,19 +136,19 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
     @Override
     public List<SoknadMetadata> hentInnsendteSoknaderForBruker(String fnr) {
         String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ?";
-        return getJdbcTemplate().query(query, soknadMetadataRowMapper, fnr, SoknadInnsendingStatus.FERDIG);
+        return getJdbcTemplate().query(query, soknadMetadataRowMapper, fnr, SoknadInnsendingStatus.FERDIG.name());
     }
 
     @Override
     public List<SoknadMetadata> hentPabegynteSoknaderForBruker(String fnr) {
         String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND soknadtype = ?";
-        return getJdbcTemplate().query(query, soknadMetadataRowMapper, fnr, SoknadInnsendingStatus.UNDER_ARBEID, SoknadType.SEND_SOKNAD_KOMMUNAL);
+        return getJdbcTemplate().query(query, soknadMetadataRowMapper, fnr, SoknadInnsendingStatus.UNDER_ARBEID.name(), SoknadType.SEND_SOKNAD_KOMMUNAL.name());
     }
     @Override
     public List<SoknadMetadata> hentSoknaderForEttersending(String fnr, LocalDateTime tidsgrense) {
         String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND innsendtdato > ?";
         return getJdbcTemplate().query(query, soknadMetadataRowMapper,
-                fnr, SoknadInnsendingStatus.FERDIG, tidTilTimestamp(tidsgrense));
+                fnr, SoknadInnsendingStatus.FERDIG.name(), tidTilTimestamp(tidsgrense));
     }
 
 }
