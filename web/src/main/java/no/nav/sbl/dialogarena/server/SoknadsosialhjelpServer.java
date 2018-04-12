@@ -1,9 +1,10 @@
 package no.nav.sbl.dialogarena.server;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.eclipse.jetty.jaas.JAASLoginService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
 import java.io.File;
@@ -14,7 +15,7 @@ import java.util.Properties;
 import static java.lang.System.setProperty;
 
 public class SoknadsosialhjelpServer {
-    
+
     private static final Logger log = LoggerFactory.getLogger(SoknadsosialhjelpServer.class);
     public static final int PORT = 8080;
     public final Jetty jetty;
@@ -42,7 +43,7 @@ public class SoknadsosialhjelpServer {
                 .buildJetty();
     }
 
-  
+
     public void start() {
         jetty.start();
     }
@@ -121,19 +122,19 @@ public class SoknadsosialhjelpServer {
         updateJavaProperties(readProperties("oracledb.properties"));
     }
 
-    // For å logge inn lokalt må du sette cookie i selftesten: document.cookie="nav-esso=***REMOVED***-4; path=/sendsoknad/"
-
-    private static DataSource buildDataSourceOld() throws IOException {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("oracle.jdbc.driver.OracleDriver");
-        dataSource.setUrl(System.getProperty("db.url"));
-        dataSource.setUsername(System.getProperty("db.username"));
-        dataSource.setPassword(System.getProperty("db.password"));
-        return dataSource;
-    }
-
     private static DataSource buildDataSource() throws IOException {
-        return NAVHikariDatasource.getDataSource();
+
+        final HikariConfig config = new HikariConfig();
+
+        config.setJdbcUrl(System.getProperty("db.url"));
+        config.setUsername(System.getProperty("db.username"));
+        config.setPassword(System.getProperty("db.password"));
+        config.addDataSourceProperty("cachePrepStmts", "true");
+        config.addDataSourceProperty("prepStmtCacheSize", "250");
+        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+
+        return new HikariDataSource(config);
+
     }
 
     public static void main(String[] args) {
