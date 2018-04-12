@@ -12,11 +12,13 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Kravdialog
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.arbeid.ArbeidsforholdBolk;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.HendelseRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.BolkService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.MigrasjonHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseService;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
@@ -55,6 +57,8 @@ public class EttersendingServiceTest {
     @Mock(name = "lokalDb")
     private SoknadRepository lokalDb;
     @Mock
+    private HendelseRepository hendelseRepository;
+    @Mock
     private HenvendelseService henvendelsesConnector;
     @Mock
     private VedleggService vedleggService;
@@ -74,6 +78,8 @@ public class EttersendingServiceTest {
     ApplicationContext applicationContex;
     @Mock
     SoknadMetricsService soknadMetricsService;
+    @Mock
+    MigrasjonHandterer migrasjonHandterer;
     @InjectMocks
     private SoknadDataFletter soknadServiceUtil;
 
@@ -92,6 +98,7 @@ public class EttersendingServiceTest {
         soknadServiceUtil.initBolker();
         setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         when(lokalDb.hentSoknadType(anyLong())).thenReturn(DAGPENGER);
+        when(hendelseRepository.hentVersjon(anyString())).thenReturn(1);
         when(config.getSoknadBolker(any(WebSoknad.class), any(List.class))).thenReturn(new ArrayList());
         when(config.hentStruktur(any(Long.class))).thenReturn(new SoknadStruktur());
         when(kravdialogInformasjonHolder.hentAlleSkjemanumre()).thenReturn(new KravdialogInformasjonHolder().hentAlleSkjemanumre());
@@ -174,6 +181,7 @@ public class EttersendingServiceTest {
         when(config.getSoknadBolker(any(WebSoknad.class), anyListOf(BolkService.class))).thenReturn(asList(personaliaBolk, barnBolk));
         when(lokalDb.hentSoknadMedVedlegg(anyString())).thenReturn(soknad);
         when(lokalDb.hentSoknadMedData(1L)).thenReturn(soknad);
+        when(migrasjonHandterer.handterMigrasjon(any(WebSoknad.class))).thenReturn(soknad);
         soknadServiceUtil.hentSoknad("123", true, true);
         verify(personaliaBolk, times(1)).genererSystemFakta(anyString(), anyLong());
         verify(barnBolk, never()).genererSystemFakta(anyString(), anyLong());

@@ -14,7 +14,7 @@ import java.util.Properties;
 import static java.lang.System.setProperty;
 
 public class SoknadsosialhjelpServer {
-
+    
     private static final Logger log = LoggerFactory.getLogger(SoknadsosialhjelpServer.class);
     public static final int PORT = 8080;
     public final Jetty jetty;
@@ -42,7 +42,7 @@ public class SoknadsosialhjelpServer {
                 .buildJetty();
     }
 
-
+  
     public void start() {
         jetty.start();
     }
@@ -109,6 +109,9 @@ public class SoknadsosialhjelpServer {
     private static Properties readProperties(String resource) throws IOException {
         Properties props = new Properties();
         InputStream inputStream = SoknadsosialhjelpServer.class.getClassLoader().getResourceAsStream(resource);
+        if (inputStream == null) {
+            throw new IllegalStateException("Kunne ikke finne propertiesfil: " + resource);
+        }
         props.load(inputStream);
         return props;
     }

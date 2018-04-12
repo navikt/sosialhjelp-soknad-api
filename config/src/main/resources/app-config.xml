@@ -61,12 +61,16 @@
         <credential alias="arbeidservice" mapToProperty="arbeidservice"/>
         <credential alias="suspender" />
 
-        <fileLibrary alias="soknadforeldrepenger.ledetekster" mapToProperty="folder.foreldrepenger" />
-        <fileLibrary alias="soknadaap.ledetekster" mapToProperty="folder.soknadaap" />
-        <fileLibrary alias="soknaddagpenger.ledetekster" mapToProperty="folder.dagpenger" />
-        <fileLibrary alias="soknadsosialhjelp.ledetekster" mapToProperty="folder.soknadsosialhjelp" />
-        <fileLibrary alias="soknadbilstonad.ledetekster" mapToProperty="folder.bilstonad" />
+        <fileLibrary alias="sendsoknad.ledetekster" mapToProperty="folder.sendsoknad" />
         <fileLibrary alias="soknad-aap-utland.ledetekster" mapToProperty="folder.soknad-aap-utland" />
+        <fileLibrary alias="soknadaap.ledetekster" mapToProperty="folder.soknadaap" />
+        <fileLibrary alias="soknadbilstonad.ledetekster" mapToProperty="folder.bilstonad" />
+        <fileLibrary alias="soknaddagpenger.ledetekster" mapToProperty="folder.dagpenger" />
+        <fileLibrary alias="soknadforeldrepenger.ledetekster" mapToProperty="folder.foreldrepenger" />
+        <fileLibrary alias="soknadrefusjondagligreise.ledetekster" mapToProperty="folder.refusjondagligreise" />
+        <fileLibrary alias="soknadsosialhjelp.ledetekster" mapToProperty="folder.soknadsosialhjelp" />
+        <fileLibrary alias="soknadtilleggsstonader.ledetekster" mapToProperty="folder.tilleggsstonader" />
+        <fileLibrary alias="soknadtiltakspenger.ledetekster" mapToProperty="folder.tiltakspenger" />
     </resources>
 
     <serverOptions>

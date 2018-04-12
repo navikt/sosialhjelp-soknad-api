@@ -31,7 +31,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 @Named("soknadInnsendingRepository")
 @Component
-@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
+@Transactional
 public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implements SoknadRepository {
 
     private static final Logger logger = getLogger(SoknadRepositoryJdbc.class);
@@ -47,6 +47,10 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     @Inject
     private VedleggRepository vedleggRepository;
 
+    @Inject
+    private HendelseRepository hendelseRepository;
+
+
     public SoknadRepositoryJdbc() {
     }
 
@@ -58,6 +62,8 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     public Long opprettSoknad(WebSoknad soknad) {
         Long databasenokkel = getJdbcTemplate().queryForObject(selectNextSequenceValue("SOKNAD_ID_SEQ"), Long.class);
         insertSoknad(soknad, databasenokkel);
+
+        hendelseRepository.registrerOpprettetHendelse(soknad);
         return databasenokkel;
     }
 
@@ -77,8 +83,12 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
                         soknad.getJournalforendeEnhet());
     }
 
+
+
     public void populerFraStruktur(WebSoknad soknad) {
         insertSoknad(soknad, soknad.getSoknadId());
+        hendelseRepository.registrerHendelse(soknad, HendelseType.HENTET_FRA_HENVENDELSE);
+
         List<FaktumEgenskap> egenskaper = soknad.getFakta().stream()
                 .flatMap(faktum -> faktum.getFaktumEgenskaper().stream())
                 .collect(toList());
@@ -113,6 +123,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         String sql = "select * from SOKNAD where brukerbehandlingid = ?";
         return hentEtObjectAv(sql, SOKNAD_ROW_MAPPER, behandlingsId);
     }
+
 
     private <T> T hentEtObjectAv(String sql, RowMapper<T> mapper, Object... args) {
         List<T> objekter = getJdbcTemplate().query(sql, mapper, args);
@@ -370,13 +381,19 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         return fakta;
     }
 
-    public void slettSoknad(long soknadId) {
+    private void slettSoknad(long soknadId) {
         logger.debug("Sletter søknad med ID: " + soknadId);
         getJdbcTemplate().update("delete from faktumegenskap where soknad_id = ?", soknadId);
         getJdbcTemplate().update("delete from soknadbrukerdata where soknad_id = ?", soknadId);
         getJdbcTemplate().update("delete from vedlegg where soknad_id = ?", soknadId);
         getJdbcTemplate().update("delete from soknad where soknad_id = ?", soknadId);
     }
+
+    public void slettSoknad(WebSoknad soknad, HendelseType aarsakTilSletting) {
+        slettSoknad(soknad.getSoknadId());
+        hendelseRepository.registrerHendelse(soknad, aarsakTilSletting);
+    }
+
 
     public String hentSoknadType(Long soknadId) {
         return getJdbcTemplate().queryForObject("select navsoknadid from soknad where soknad_id = ? ", String.class, soknadId);
