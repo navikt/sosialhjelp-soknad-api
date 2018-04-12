@@ -923,6 +923,12 @@
                 <version>1.7.1</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>com.zaxxer</groupId>
+                <artifactId>HikariCP</artifactId>
+                <version>2.7.8</version>
+                <scope>compile</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <build>
@@ -1051,3 +1057,4 @@
         </profile>
     </profiles>
 </project>
+
