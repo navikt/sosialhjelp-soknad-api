@@ -13,11 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.sql.DataSource;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.limit;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.timestampTilTid;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.*;
 
 @Component
 @Transactional
@@ -137,6 +137,13 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
     public List<SoknadMetadata> hentSoknaderMedStatusForBruker(String fnr, SoknadInnsendingStatus status) {
         String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ?";
         return getJdbcTemplate().query(query, soknadMetadataRowMapper, fnr, status.name());
+    }
+
+    @Override
+    public List<SoknadMetadata> hentSoknaderForEttersending(String fnr, LocalDateTime tidsgrense) {
+        String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND innsendtdato > ?";
+        return getJdbcTemplate().query(query, soknadMetadataRowMapper,
+                fnr, SoknadInnsendingStatus.FERDIG, tidTilTimestamp(tidsgrense));
     }
 
 }

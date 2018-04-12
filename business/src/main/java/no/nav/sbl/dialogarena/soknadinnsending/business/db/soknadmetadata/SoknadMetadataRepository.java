@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata;
 import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,5 +23,6 @@ public interface SoknadMetadataRepository {
 
     List<SoknadMetadata> hentSoknaderMedStatusForBruker(String fnr, SoknadInnsendingStatus status);
 
+    List<SoknadMetadata> hentSoknaderForEttersending(String fnr, LocalDateTime after);
 
 }

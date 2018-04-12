@@ -13,7 +13,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import java.util.List;
 
-import static java.util.Arrays.asList;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -50,10 +49,10 @@ public class SaksoversiktMetadataRessurs {
         String fnr = SubjectHandler.getSubjectHandler().getUid();
         logger.info("ettersendelse for fnr {}", fnr);
 
+        List<EttersendingsSoknad> ettersendingsSoknader = saksoversiktMetadataService.hentSoknaderBrukerKanEttersendePa(fnr);
 
         return new EttersendingerRespons()
-                .withEttersendingsSoknader(asList(new EttersendingsSoknad()
-                        .withTittel("fnr var " + fnr)));
+                .withEttersendingsSoknader(ettersendingsSoknader);
     }
 
 
