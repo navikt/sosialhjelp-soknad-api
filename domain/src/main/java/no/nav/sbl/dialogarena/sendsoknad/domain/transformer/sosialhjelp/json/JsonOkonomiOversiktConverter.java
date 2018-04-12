@@ -65,6 +65,14 @@ public class JsonOkonomiOversiktConverter {
                 webSoknad.getFaktaMedKey(key),
                 "sistemnd"));
 
+        key = "opplysninger.familiesituasjon.barnebidrag.betaler";
+        result.addAll(oversiktUtgift("barnebidrag",
+                getTittel(key, navMessageSource),
+                webSoknad.getFaktaMedKey(key),
+                "betaler"
+
+        ));
+
         return result.stream().filter(r -> r != null).collect(Collectors.toList());
     }
 
@@ -157,11 +165,11 @@ public class JsonOkonomiOversiktConverter {
                 "utbetaling"
         ));
 
-        key = "opplysninger.familiesituasjon.barnebidrag.betaler";
+        key = "opplysninger.familiesituasjon.barnebidrag.mottar";
         result.addAll(oversiktInntekt("barnebidrag",
                 getTittel(key, navMessageSource),
                 webSoknad.getFaktaMedKey(key),
-                "betaler"
+                "mottar"
 
         ));
         return result.stream().filter(r -> r != null).collect(Collectors.toList());
