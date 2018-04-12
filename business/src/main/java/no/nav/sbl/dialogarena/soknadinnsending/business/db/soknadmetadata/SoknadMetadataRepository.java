@@ -1,7 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface SoknadMetadataRepository {
@@ -17,6 +19,8 @@ public interface SoknadMetadataRepository {
     Optional<SoknadMetadata> hentForBatch(int antallDagerGammel);
 
     void leggTilbakeBatch(Long id);
+
+    List<SoknadMetadata> hentSoknaderMedStatusForBruker(String fnr, SoknadInnsendingStatus status);
 
 
 }

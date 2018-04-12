@@ -133,4 +133,10 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
         getJdbcTemplate().update(update, id);
     }
 
+    @Override
+    public List<SoknadMetadata> hentSoknaderMedStatusForBruker(String fnr, SoknadInnsendingStatus status) {
+        String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ?";
+        return getJdbcTemplate().query(query, soknadMetadataRowMapper, fnr, status.name());
+    }
+
 }
