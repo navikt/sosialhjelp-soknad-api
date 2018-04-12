@@ -65,13 +65,14 @@ public class OppgaveRepositoryJdbc extends NamedParameterJdbcDaoSupport implemen
     @Override
     public void oppdater(Oppgave oppgave) {
         getJdbcTemplate().update("UPDATE oppgave SET status = ?, steg = ?, oppgavedata = ?, oppgaveresultat = ?, " +
-                        "nesteforsok = ?, retries = ?",
+                        "nesteforsok = ?, retries = ? WHERE id = ?",
                 oppgave.status.name(),
                 oppgave.steg,
                 Oppgave.JAXB.marshal(oppgave.oppgaveData),
                 Oppgave.JAXB.marshal(oppgave.oppgaveResultat),
                 tidTilTimestamp(oppgave.nesteForsok),
-                oppgave.retries
+                oppgave.retries,
+                oppgave.id
         );
     }
 
