@@ -127,7 +127,7 @@ public class SaksoversiktMetadataService {
         String miljo = System.getProperty("environment.name");
 
         // TODO FIX FOR PROD
-        return "https://tjeneste-" + miljo + ".nav.no/soknadsosialhjelp/";
+        return "https://tjenester-" + miljo + ".nav.no/soknadsosialhjelp/";
     }
 
 }
