@@ -2,13 +2,16 @@ package no.nav.sbl.dialogarena.rest.ressurser.eksponerte;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.modig.core.context.SubjectHandler;
+import no.nav.sbl.dialogarena.service.SaksoversiktMetadataService;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.*;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import java.util.List;
 
 import static java.util.Arrays.asList;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -22,25 +25,23 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Path("/metadata")
 @Timed
 @Produces(APPLICATION_JSON)
-public class MetadataRessurs {
+public class SaksoversiktMetadataRessurs {
 
-    private static final Logger logger = getLogger(MetadataRessurs.class);
+    private static final Logger logger = getLogger(SaksoversiktMetadataRessurs.class);
+
+    @Inject
+    private SaksoversiktMetadataService saksoversiktMetadataService;
 
     @GET
     @Path("/innsendte")
     public InnsendteSoknaderRespons hentInnsendteSoknaderForBruker() {
-
         String fnr = SubjectHandler.getSubjectHandler().getUid();
-        logger.info("innsendte for fnr {}", fnr);
+        logger.info("Henter innsendte for fnr {}", fnr);
 
-        InnsendtSoknad dummyInnsendt = new InnsendtSoknad().withAvsender(
-                new Part()
-                        .withVisningsNavn("Deg (fnr " + fnr + ")")
-                        .withType(Part.Type.BRUKER)
-        );
+        List<InnsendtSoknad> innsendteSoknader = saksoversiktMetadataService.hentInnsendteSoknaderForFnr(fnr);
 
         return new InnsendteSoknaderRespons()
-                .withInnsendteSoknader(asList(dummyInnsendt));
+                .withInnsendteSoknader(innsendteSoknader);
     }
 
     @GET
@@ -52,7 +53,7 @@ public class MetadataRessurs {
 
         return new EttersendingerRespons()
                 .withEttersendingsSoknader(asList(new EttersendingsSoknad()
-                .withTittel("fnr var " + fnr)));
+                        .withTittel("fnr var " + fnr)));
     }
 
 
@@ -62,9 +63,9 @@ public class MetadataRessurs {
         String fnr = SubjectHandler.getSubjectHandler().getUid();
         logger.info("pabegynte for fnr {}", fnr);
 
+        List<PabegyntSoknad> pabegynte = saksoversiktMetadataService.hentPabegynteSoknaderForBruker(fnr);
 
         return new PabegynteSoknaderRespons()
-                .withPabegynteSoknader(asList(new PabegyntSoknad()
-                        .withTittel("fnr var " + fnr)));
+                .withPabegynteSoknader(pabegynte);
     }
 }
