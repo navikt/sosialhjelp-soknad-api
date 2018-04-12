@@ -9,7 +9,7 @@ CREATE TABLE OPPGAVE (
   opprettet timestamp,
   sistkjort timestamp,
   nesteforsok timestamp,
-  retries numeric
+  retries numeric,
 
   CONSTRAINT UNIK_ID UNIQUE (id)
 );
