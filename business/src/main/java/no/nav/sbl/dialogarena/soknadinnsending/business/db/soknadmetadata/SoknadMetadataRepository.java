@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 
 import java.time.LocalDateTime;
@@ -21,7 +20,9 @@ public interface SoknadMetadataRepository {
 
     void leggTilbakeBatch(Long id);
 
-    List<SoknadMetadata> hentSoknaderMedStatusForBruker(String fnr, SoknadInnsendingStatus status);
+    List<SoknadMetadata> hentInnsendteSoknaderForBruker(String fnr);
+
+    List<SoknadMetadata> hentPabegynteSoknaderForBruker(String fnr);
 
     List<SoknadMetadata> hentSoknaderForEttersending(String fnr, LocalDateTime after);
 

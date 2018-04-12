@@ -134,11 +134,16 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
     }
 
     @Override
-    public List<SoknadMetadata> hentSoknaderMedStatusForBruker(String fnr, SoknadInnsendingStatus status) {
+    public List<SoknadMetadata> hentInnsendteSoknaderForBruker(String fnr) {
         String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ?";
-        return getJdbcTemplate().query(query, soknadMetadataRowMapper, fnr, status.name());
+        return getJdbcTemplate().query(query, soknadMetadataRowMapper, fnr, SoknadInnsendingStatus.FERDIG);
     }
 
+    @Override
+    public List<SoknadMetadata> hentPabegynteSoknaderForBruker(String fnr) {
+        String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND soknadtype = ?";
+        return getJdbcTemplate().query(query, soknadMetadataRowMapper, fnr, SoknadInnsendingStatus.UNDER_ARBEID, SoknadType.SEND_SOKNAD_KOMMUNAL);
+    }
     @Override
     public List<SoknadMetadata> hentSoknaderForEttersending(String fnr, LocalDateTime tidsgrense) {
         String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND innsendtdato > ?";
