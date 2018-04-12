@@ -51,6 +51,7 @@ public class SaksoversiktMetadataService {
                         .withHoveddokument(new Hoveddokument()
                                 .withTittel(bundle.getProperty("saksoversikt.soknadsnavn")))
                         .withVedlegg(tilJsonVedlegg(soknad.vedlegg, bundle))
+                        .withTema("KOM")
                         .withTemanavn(bundle.getProperty("saksoversikt.temanavn"))
                         .withLenke(null)).collect(toList());
 
