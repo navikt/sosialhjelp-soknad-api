@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.tjenester.MaalgrupperMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder;
 import no.nav.sbl.dialogarena.types.Pingable;
+import no.nav.sbl.dialogarena.types.Pingable.Ping.PingMetadata;
 import no.nav.tjeneste.virksomhet.maalgruppe.v1.MaalgruppeV1;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import javax.xml.namespace.QName;
 
 import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.*;
 
 @Configuration
 public class MaalgruppeWSConfig {
@@ -58,13 +60,13 @@ public class MaalgruppeWSConfig {
         return new Pingable() {
             @Override
             public Ping ping() {
+                PingMetadata metadata = new PingMetadata(maalgruppeEndpoint,"ARENA - Målgruppe", true);
                 try {
                     maalgruppeSelftestEndpoint().ping();
-                    return Ping.lyktes("ArenaMålgruppe");
+                    return lyktes(metadata);
                 } catch (Exception e) {
-                    return Ping.feilet("ArenaMålgruppe", e);
-                }
-            }
+                    return feilet(metadata, e);
+                }            }
         };
     }
 }
