@@ -21,7 +21,7 @@ public class FiksWSConfig {
     private ServiceBuilder<ForsendelsesServiceV9>.PortTypeBuilder<ForsendelsesServiceV9> factory() {
         return new ServiceBuilder<>(ForsendelsesServiceV9.class)
                 .asStandardService()
-                .withAddress("https://pep-gw-t1.oera-t.local:9443/")
+                .withAddress(fiksEndpoint)
                 .withWsdl("classpath:/tjenestespesifikasjon/svarUt.wsdl")
                 .build()
                 .withHttpsMock();
