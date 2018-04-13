@@ -397,7 +397,7 @@ public class SoknadTester extends JerseyTest {
         MediaType APPLICATION_PDF_TYPE = new MediaType("application", "pdf");
         return webTargetDecorator.apply(target)
                 .request(APPLICATION_JSON_TYPE)
-                .accept(APPLICATION_JSON_TYPE, TEXT_PLAIN_TYPE, TEXT_HTML_TYPE, APPLICATION_PDF_TYPE, WILDCARD_TYPE);
+                .accept(APPLICATION_JSON_TYPE, TEXT_PLAIN_TYPE, TEXT_HTML_TYPE, TEXT_XML_TYPE, APPLICATION_PDF_TYPE, WILDCARD_TYPE);
     }
 
     public String getBrukerBehandlingId() {
