@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.EttersendelseVedleggService.EttersendelseVedlegg.Fil;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import org.slf4j.Logger;
@@ -23,6 +24,18 @@ public class EttersendelseVedleggService {
 
     @Inject
     private SoknadService soknadService;
+
+    @Inject
+    private VedleggService vedleggService;
+
+    @Inject
+    private VedleggRepository vedleggRepository;
+
+    @Inject
+    private FillagerService fillagerService;
+
+    @Inject
+    private VedleggOriginalFilerService vedleggOriginalFilerService;
 
 
     public static class EttersendelseVedlegg {
@@ -75,13 +88,27 @@ public class EttersendelseVedleggService {
         return new ArrayList<>(ettersendelseVedlegg.values());
     }
 
+    public List<EttersendelseVedlegg> lastOppVedlegg(Long vedleggId, byte[] data, String filnavn) {
+        String behandlingsId = vedleggService.hentBehandlingsId(vedleggId);
+        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, false);
 
-    // lastOpp
-    // finn vedlegg på id
-    // om vedlegg er lastet opp, lag en kopi
-    // hent soknad på vedlegg?
-    public List<EttersendelseVedlegg> lastOppVedlegg(Long faktumId, byte[] data, String filnavn) {
-        return null;
+        Vedlegg originalVedlegg = soknad.getVedlegg()
+                .stream().filter(v -> v.getVedleggId().equals(vedleggId))
+                .findFirst().get();
+
+        if (originalVedlegg.getInnsendingsvalg().er(Status.LastetOpp)) {
+            Vedlegg nyttVedlegg = new Vedlegg()
+                    .medSoknadId(soknad.getSoknadId())
+                    .medSkjemaNummer(originalVedlegg.getSkjemaNummer())
+                    .medSkjemanummerTillegg(originalVedlegg.getSkjemanummerTillegg());
+
+            vedleggRepository.opprettEllerEndreVedlegg(nyttVedlegg, null);
+            vedleggOriginalFilerService.leggTilOriginalVedlegg(nyttVedlegg, data, filnavn, soknad);
+        } else {
+            vedleggOriginalFilerService.leggTilOriginalVedlegg(originalVedlegg, data, filnavn, soknad);
+        }
+
+        return hentVedleggForSoknad(behandlingsId);
     }
 
     // slett
