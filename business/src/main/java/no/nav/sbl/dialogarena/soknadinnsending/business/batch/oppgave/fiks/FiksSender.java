@@ -76,7 +76,7 @@ public class FiksSender {
 
         return new Dokument()
                 .withFilnavn(info.filnavn)
-                .withMimetype(info.mimetype)
+                .withMimetype(info.mimetype != null ? info.mimetype : "application/pdf")
                 .withEkskluderesFraPrint(info.ekskluderesFraPrint)
                 .withData(new DataHandler(dataSource));
     }
