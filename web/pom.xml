@@ -12,20 +12,108 @@
     <artifactId>sendsoknad-web</artifactId>
     <version>18.1.0-SNAPSHOT</version>
     <name>${project.artifactId}</name>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <properties>
         <jetty.port>8080</jetty.port>
         <!-- Lagrer IT-info til enhetstestfil -->
         <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco-ut.exec</sonar.jacoco.reportPath>
         <fitnesse.port>9977</fitnesse.port>
+
+        <!-- Teksterversjoner oppdateres gjennom å kjøre "mvn versions:update-properties" for dette prosjektet (kun "web"). -->
+        <version.tekster.soknadsosialhjelp>1.0.540.215</version.tekster.soknadsosialhjelp>
+        <version.tekster.soknaddagpenger>1.1.231.19</version.tekster.soknaddagpenger>
+        <version.tekster.soknadaap>1.0.165.30</version.tekster.soknadaap>
+        <version.tekster.soknadbilstonad>1.0.12.10</version.tekster.soknadbilstonad>
+        <version.tekster.soknad-aap-utland>1.0.3.1</version.tekster.soknad-aap-utland>
+        <version.tekster.soknadforeldrepenger>1.1.630.73-SD-38-tvilling-trilling-SNAPSHOT</version.tekster.soknadforeldrepenger>
+        <version.tekster.sendsoknad>1.0.9.11</version.tekster.sendsoknad> 
+        <version.tekster.soknadrefusjondagligreise>1.0.4.5</version.tekster.soknadrefusjondagligreise>
+        <version.tekster.soknadtilleggsstonader>1.0.17.14</version.tekster.soknadtilleggsstonader>
+        <version.tekster.soknadtiltakspenger>1.0.7.7</version.tekster.soknadtiltakspenger>
     </properties>
 
     <dependencies>
+        <!-- Disse dependency-ene ligger her for å kunne støtte bruk av "mvn versions:update-properties" -->
+        <dependency>
+            <groupId>no.nav.sbl</groupId>
+            <artifactId>soknadsosialhjelp-tekster</artifactId>
+            <version>${version.tekster.soknadsosialhjelp}</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.sbl</groupId>
+            <artifactId>soknaddagpenger-tekster</artifactId>
+            <version>${version.tekster.soknaddagpenger}</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.sbl</groupId>
+            <artifactId>soknadaap-tekster</artifactId>
+            <version>${version.tekster.soknadaap}</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.sbl</groupId>
+            <artifactId>soknadbilstonad-tekster</artifactId>
+            <version>${version.tekster.soknadbilstonad}</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.sbl</groupId>
+            <artifactId>soknad-aap-utland-tekster</artifactId>
+            <version>${version.tekster.soknad-aap-utland}</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.sbl</groupId>
+            <artifactId>soknadforeldrepenger-tekster</artifactId>
+            <version>${version.tekster.soknadforeldrepenger}</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.sbl</groupId>
+            <artifactId>sendsoknad-tekster</artifactId>
+            <version>${version.tekster.sendsoknad}</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.sbl</groupId>
+            <artifactId>soknadrefusjondagligreise-tekster</artifactId>
+            <version>${version.tekster.soknadrefusjondagligreise}</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.sbl</groupId>
+            <artifactId>soknadtilleggsstonader-tekster</artifactId>
+            <version>${version.tekster.soknadtilleggsstonader}</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.sbl</groupId>
+            <artifactId>soknadtiltakspenger-tekster</artifactId>
+            <version>${version.tekster.soknadtiltakspenger}</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- Avhengigheter med scope compile -->
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>common-lokalt-kodeverk</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -233,6 +321,11 @@
             <artifactId>modig-security-filter</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>no.nav.modig</groupId>
+            <artifactId>modig-security-ws</artifactId>
+            <scope>runtime</scope>
+        </dependency>
 
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -242,8 +335,13 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
-            <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>4.10</version>
+            <scope>runtime</scope>
+          </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>log4j-over-slf4j</artifactId>
@@ -252,7 +350,7 @@
         </dependency>
         <dependency>
             <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache-core</artifactId>
+            <artifactId>ehcache</artifactId>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -262,6 +360,7 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
@@ -326,20 +425,60 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-jaas</artifactId>
-            <scope>test</scope>
-            <version>9.0.5.v20130815</version>
-        </dependency>
+            <scope>compile</scope>
+            <version>9.4.8.v20171121</version>
+                 </dependency>
+        <!--
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-jndi</artifactId>
-            <scope>test</scope>
+            <scope>compile</scope>
             <version>9.0.5.v20130815</version>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-security</artifactId>
+            <scope>compile</scope>
+            <version>9.4.8.v20171121</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-http</artifactId>
+            <scope>compile</scope>
+            <version>9.4.8.v20171121</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <scope>compile</scope>
+            <version>9.4.8.v20171121</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-util</artifactId>
+            <scope>compile</scope>
+            <version>9.4.8.v20171121</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-webapp</artifactId>
+            <scope>compile</scope>
+            <version>9.4.8.v20171121</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.modig</groupId>
+            <artifactId>modig-lang</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.collections</groupId>
+            <artifactId>collections-generic</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-plus</artifactId>
-            <scope>test</scope>
-            <version>9.0.5.v20130815</version>
+            <scope>compile</scope>
+            <version>9.4.8.v20171121</version>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
@@ -451,8 +590,10 @@
             <groupId>no.nav.sbl</groupId>
             <artifactId>dkif-tjenestespesifikasjon</artifactId>
         </dependency>
-
-
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+         </dependency>
     </dependencies>
 
     <build>
@@ -486,6 +627,31 @@
         </testResources>
         <plugins>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>appassembler-maven-plugin</artifactId>
+                <version>1.10</version>
+                <configuration>
+                    <extraJvmArguments>-Djavax.net.ssl.trustStore=${NAV_TRUSTSTORE_PATH} -Djavax.net.ssl.trustStorePassword=${NAV_TRUSTSTORE_PASSWORD} -Djavax.net.ssl.keyStore=${SRVSOKNADSOSIALHJELP_KEYSTORE} -Djavax.net.ssl.keyStorePassword=${SRVSOKNADSOSIALHJELP_PASSWORD}</extraJvmArguments>
+                    <programs>
+                        <program>
+                            <mainClass>no.nav.sbl.dialogarena.server.SoknadsosialhjelpServer</mainClass>
+                            <id>app</id>
+                        </program>
+                    </programs>
+                    <configurationDirectory>.</configurationDirectory>
+                    <configurationSourceDirectory>src/main/docker</configurationSourceDirectory>
+                    <copyConfigurationDirectory>true</copyConfigurationDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>assemble</id>
+                        <goals>
+                            <goal>assemble</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <configuration>
@@ -510,16 +676,100 @@
                             </usedDependencies>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>unpack-tekster</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>no.nav.sbl</groupId>
+                                    <artifactId>soknadsosialhjelp-tekster</artifactId>
+                                    <version>${version.tekster.soknadsosialhjelp}</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>no.nav.sbl</groupId>
+                                    <artifactId>soknaddagpenger-tekster</artifactId>
+                                    <version>${version.tekster.soknaddagpenger}</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>no.nav.sbl</groupId>
+                                    <artifactId>soknadaap-tekster</artifactId>
+                                    <version>${version.tekster.soknadaap}</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>no.nav.sbl</groupId>
+                                    <artifactId>soknadbilstonad-tekster</artifactId>
+                                    <version>${version.tekster.soknadbilstonad}</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>no.nav.sbl</groupId>
+                                    <artifactId>soknad-aap-utland-tekster</artifactId>
+                                    <version>${version.tekster.soknad-aap-utland}</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>no.nav.sbl</groupId>
+                                    <artifactId>soknadforeldrepenger-tekster</artifactId>
+                                    <version>${version.tekster.soknadforeldrepenger}</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>no.nav.sbl</groupId>
+                                    <artifactId>sendsoknad-tekster</artifactId>
+                                    <version>${version.tekster.sendsoknad}</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>no.nav.sbl</groupId>
+                                    <artifactId>soknadrefusjondagligreise-tekster</artifactId>
+                                    <version>${version.tekster.soknadrefusjondagligreise}</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>no.nav.sbl</groupId>
+                                    <artifactId>soknadtilleggsstonader-tekster</artifactId>
+                                    <version>${version.tekster.soknadtilleggsstonader}</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>no.nav.sbl</groupId>
+                                    <artifactId>soknadtiltakspenger-tekster</artifactId>
+                                    <version>${version.tekster.soknadtiltakspenger}</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}/appassembler</outputDirectory>
+                            <includes>tekster/**/*</includes>
+                        </configuration>
+                   </execution>
                 </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
                 <configuration>
                     <archive>
-                        <manifestEntries>
-                            <Implementation-Version>${project.version}</Implementation-Version>
-                        </manifestEntries>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
                     </archive>
                 </configuration>
             </plugin>
@@ -575,3 +825,4 @@
     </profiles>
 
 </project>
+
