@@ -50,7 +50,6 @@ public class SjekkTilgangTilSoknadScanner {
         classnames.remove("Testclass");
 
         // Fjern klasser som enda ikke har fått tester
-        classnames.remove("AlternativRepresentasjonRessurs");
         classnames.remove("VedleggRessurs");
         classnames.remove("SosialhjelpVedleggRessurs");
 
