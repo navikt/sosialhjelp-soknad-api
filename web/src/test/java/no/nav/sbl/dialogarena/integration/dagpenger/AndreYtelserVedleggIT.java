@@ -1,18 +1,18 @@
-package no.nav.sbl.dialogarena.integration;
+package no.nav.sbl.dialogarena.integration.dagpenger;
 
 import no.nav.sbl.dialogarena.config.IntegrationConfig;
+import no.nav.sbl.dialogarena.integration.AbstractIT;
+import no.nav.sbl.dialogarena.integration.EndpointDataMocking;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.DagpengerOrdinaerInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.inject.Inject;
-
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
-public class DagpengerAndreYtelserVedleggIT extends AbstractIT {
+public class AndreYtelserVedleggIT extends AbstractIT {
     private String dagpengerSkjemaNummer = new DagpengerOrdinaerInformasjon().getSkjemanummer().get(0);
 
     private NavMessageSource navMessageSource;

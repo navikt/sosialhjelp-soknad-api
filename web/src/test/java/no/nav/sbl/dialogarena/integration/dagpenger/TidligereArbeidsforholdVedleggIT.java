@@ -1,10 +1,12 @@
-package no.nav.sbl.dialogarena.integration;
+package no.nav.sbl.dialogarena.integration.dagpenger;
 
+import no.nav.sbl.dialogarena.integration.AbstractIT;
+import no.nav.sbl.dialogarena.integration.EndpointDataMocking;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.DagpengerGjenopptakInformasjon;
 import org.junit.Before;
 import org.junit.Test;
 
-public class DagpengerTidligereArbeidsforholdVedleggIT extends AbstractIT {
+public class TidligereArbeidsforholdVedleggIT extends AbstractIT {
 
     private String dagpengerSkjemaNummer = new DagpengerGjenopptakInformasjon().getSkjemanummer().get(1);
 
