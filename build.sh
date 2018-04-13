@@ -62,8 +62,66 @@ function publish() {
     mvn deploy --batch-mode -DskipTests
 }
 
+function build_and_deploy_docker() {
+    (
+        cd web/target/appassembler || ( echo "Missing target directory."; exit 1; )
+        docker build . -t docker.adeo.no:5000/soknadsosialhjelp-server:${versjon}
+        docker push docker.adeo.no:5000/soknadsosialhjelp-server:${versjon}
+    )
+} 
+
+function update_nais_settings() {
+    curl -v -s -S --user "${nexusUploader}" --upload-file web/nais.yaml "https://repo.adeo.no/repository/raw/nais/soknadsosialhjelp-server/${versjon}/nais.yaml"
+    curl -v -s -S --user "${nexusUploader}" --upload-file config/src/main/resources/openam/app-policies.xml "https://repo.adeo.no/repository/raw/nais/soknadsosialhjelp-server/${versjon}/am/app-policies.xml"
+    curl -v -s -S --user "${nexusUploader}" --upload-file config/src/main/resources/openam/not-enforced-urls.txt "https://repo.adeo.no/repository/raw/nais/soknadsosialhjelp-server/${versjon}/am/not-enforced-urls.txt"
+}
+
+function determine_deploy() {
+    nais_deploy_environment="";
+
+    IFS=$'\n';
+    for line in $(git log --first-parent --pretty=oneline -10)
+    do
+        IFS=' ';
+        single_commit=($line)
+        IFS=$'\n';
+        if ! git show-ref --tags -d | grep --quiet "${single_commit[0]}"
+        then
+            if echo "$line" | grep '\[deploy [tq][1-9]\]'
+            then
+                unset IFS;
+                nais_deploy_environment=$(echo "$line" | sed 's/^.*\[deploy \([tq][1-9]\)\].*$/\1/');
+                return;
+            fi
+        else
+            unset IFS;
+            return;
+        fi
+    done
+
+    unset IFS;
+    return;
+}
+
+function deploy_if_requested_by_committer() {
+    determine_deploy
+    if [[ "${nais_deploy_environment}" != "" ]]
+    then
+        echo "Deploying version ${versjon} on ${nais_deploy_environment} with user ${domenebrukernavn}";
+        deploy_result=$(curl -s -S -k --output /dev/stderr --write-out "%{http_code}" -d '{"application": "soknadsosialhjelp-server","version": "'${versjon}'", "fasitEnvironment": "'${nais_deploy_environment}'", "zone": "sbs", "namespace": "'${nais_deploy_environment}'", "fasitUsername": "'${domenebrukernavn}'", "fasitPassword": "'${domenepassord//\"/\\\"}'", "manifesturl": "https://repo.adeo.no/repository/raw/nais/soknadsosialhjelp-server/'${versjon}'/nais.yaml"}' https://daemon.nais.oera-q.local/deploy) 
+        if [[ "${deploy_result}" != "200" ]]
+        then
+            echo "Deployment failed!";
+            exit 1;
+        fi
+    fi
+}
+
 go_to_project_root
 set_version
 build_backend
 publish
+build_and_deploy_docker
+update_nais_settings
+deploy_if_requested_by_committer
 revert_version

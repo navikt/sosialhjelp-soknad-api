@@ -72,17 +72,22 @@ public class Tilgangskontroll {
     }
 
     public void verifiserTilgangMotPep(String eier, String behandlingsId) {
-        if  (Objects.isNull(eier)) {
+        if (Objects.isNull(eier)) {
             throw new AuthorizationException("");
         }
         String aktorId = getSubjectHandler().getUid();
         SubjectAttribute aktorSubjectId = new SubjectAttribute(new URN("urn:nav:ikt:tilgangskontroll:xacml:subject:aktor-id"), new StringValue(aktorId));
 
-        pep.assertAccess(
-                forRequest(
-                        resourceType("Soknad"),
-                        resourceId(behandlingsId),
-                        ownerId(eier),
-                        aktorSubjectId));
+
+        try {
+            pep.assertAccess(
+                    forRequest(
+                            resourceType("Soknad"),
+                            resourceId(behandlingsId),
+                            ownerId(eier),
+                            aktorSubjectId));
+        } catch (RuntimeException e) {
+            throw new AuthorizationException(e.getMessage(), e);
+        }
     }
 }
