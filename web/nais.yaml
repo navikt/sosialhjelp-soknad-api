@@ -67,8 +67,8 @@ fasitResources:
     resourceType: baseurl
   - alias: arbeid.rest
     resourceType: baseurl
-  - alias: ekstern:fiks_svarut_v1
-    resourceType: baseurl
+  - alias: ekstern:ks_svarut_v1
+    resourceType: webserviceendpoint
 #  - alias: soknad.skjemaveileder
 #    resourceType: baseurl
 #  - alias: soknad.alderspensjon
