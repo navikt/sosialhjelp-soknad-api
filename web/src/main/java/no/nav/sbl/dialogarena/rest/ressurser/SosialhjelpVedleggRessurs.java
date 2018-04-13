@@ -9,10 +9,8 @@ import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad.Type;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService.Forventning;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
-import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
@@ -20,13 +18,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.MULTIPART_FORM_DATA;
+import static no.nav.sbl.dialogarena.rest.ressurser.EttersendingRessurs.getByteArray;
 import static no.nav.sbl.dialogarena.rest.ressurser.VedleggRessurs.MAKS_TOTAL_FILSTORRELSE;
 import static no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad.Type.Vedlegg;
 
@@ -86,14 +82,6 @@ public class SosialhjelpVedleggRessurs {
         Vedlegg vedlegg = vedleggService.hentVedlegg(vedleggId, true);
         response.setHeader("Content-Disposition", "attachment; filename=\"" + vedlegg.lagFilNavn() + "\"");
         return Response.ok(vedlegg.getData()).type(vedlegg.getMimetype()).build();
-    }
-
-    private static byte[] getByteArray(FormDataBodyPart file) {
-        try {
-            return IOUtils.toByteArray(file.getValueAs(InputStream.class));
-        } catch (IOException e) {
-            throw new OpplastingException("Kunne ikke lagre fil", e, "vedlegg.opplasting.feil.generell");
-        }
     }
 
 }
