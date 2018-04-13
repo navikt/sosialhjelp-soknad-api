@@ -3,12 +3,14 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.brukerprofil.BrukerprofilMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder;
 import no.nav.sbl.dialogarena.types.Pingable;
+import no.nav.sbl.dialogarena.types.Pingable.Ping.PingMetadata;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.*;
 
 @Configuration
 public class BrukerProfilWSConfig {
@@ -45,11 +47,12 @@ public class BrukerProfilWSConfig {
         return new Pingable() {
             @Override
             public Ping ping() {
+                PingMetadata metadata = new PingMetadata(brukerProfilEndpoint,"Brukerprofil v1", true);
                 try {
                     brukerProfilSelftestEndpoint().ping();
-                    return Ping.lyktes("Brukerprofil");
+                    return lyktes(metadata);
                 } catch (Exception e) {
-                    return Ping.feilet("Brukerprofil", e);
+                    return feilet(metadata, e);
                 }
             }
         };
