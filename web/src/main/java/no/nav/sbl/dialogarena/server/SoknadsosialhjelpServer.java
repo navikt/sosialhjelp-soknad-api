@@ -1,18 +1,21 @@
 package no.nav.sbl.dialogarena.server;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
-import org.eclipse.jetty.jaas.JAASLoginService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static java.lang.System.setProperty;
 
-import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import static java.lang.System.setProperty;
+import javax.sql.DataSource;
+
+import org.eclipse.jetty.jaas.JAASLoginService;
+import org.flywaydb.core.Flyway;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 public class SoknadsosialhjelpServer {
 
@@ -29,6 +32,10 @@ public class SoknadsosialhjelpServer {
         configure();
 
         final DataSource ds = (dataSource != null) ? dataSource : buildDataSource();
+        
+        if (isRunningOnNais()) {
+            databaseSchemaMigration(ds);
+        }
 
         setProperty("java.security.auth.login.config", "login.conf");
         final JAASLoginService jaasLoginService = new JAASLoginService("OpenAM Realm");
@@ -41,6 +48,14 @@ public class SoknadsosialhjelpServer {
                 .addDatasource(ds, "jdbc/SoknadInnsendingDS")
                 .port(listenPort)
                 .buildJetty();
+    }
+
+    private void databaseSchemaMigration(final DataSource ds) {
+        log.debug("Running Flyway migration.");
+        final Flyway flyway = new Flyway();
+        flyway.setDataSource(ds);
+        final int migrations = flyway.migrate();
+        log.info("Flyway migration successfully executed. Number of new applied migrations: " + migrations);
     }
 
 

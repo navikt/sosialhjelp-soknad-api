@@ -105,6 +105,12 @@
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>5.0.7</version>
+        </dependency>
 
         <!-- Avhengigheter med scope compile -->
         <dependency>
