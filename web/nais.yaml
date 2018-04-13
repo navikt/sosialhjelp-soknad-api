@@ -20,6 +20,10 @@ resources:
   requests:
     memory: 2Gi
 fasitResources:
+  exposed:
+  - alias: soknadsosialhjelpSaksoversikt
+    resourceType: restservice
+    path: soknadsosialhjelp-server/metadata
   used:
   - alias: srvSoknadsosialhjelpCredential
     resourceType: credential
@@ -62,6 +66,8 @@ fasitResources:
   - alias: soknadinnsending.link
     resourceType: baseurl
   - alias: arbeid.rest
+    resourceType: baseurl
+  - alias: ekstern:fiks_svarut_v1
     resourceType: baseurl
 #  - alias: soknad.skjemaveileder
 #    resourceType: baseurl
