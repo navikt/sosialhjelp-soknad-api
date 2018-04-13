@@ -79,7 +79,7 @@ public class PDFService {
 
     private byte[] lagPdfFraMarkup(String pdfMarkup, String servletPath) {
         String fnr = SubjectHandler.getSubjectHandler().getUid();
-        byte[] pdf = lagPdfFil(pdfMarkup, new File(servletPath).toURI().toString());
+        byte[] pdf = lagPdfFil(pdfMarkup, servletPath);
         pdf = watermarker.applyOn(pdf, fnr, true);
         return pdf;
     }

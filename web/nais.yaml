@@ -1,0 +1,120 @@
+image: docker.adeo.no:5000/soknadsosialhjelp-server
+prometheus:
+  enabled: true
+  path: /prometheus
+healthcheck:
+  liveness:
+    path: /soknadsosialhjelp-server/internal/isAlive
+    initialDelay: 60
+    timeout: 1
+    periodSeconds: 10
+    failureThreshold: 10
+  readiness:
+    path: /soknadsosialhjelp-server/internal/isAlive
+    initialDelay: 60
+    timeout: 1
+resources:
+  limits:
+    cpu: 3
+    memory: 2Gi
+  requests:
+    memory: 2Gi
+fasitResources:
+  used:
+  - alias: srvSoknadsosialhjelpCredential
+    resourceType: credential
+  - alias: srvSoknadsosialhjelp
+    resourceType: certificate
+  - alias: soknadsosialhjelpDataSource
+    resourceType: datasource
+  - alias: virksomhet:Brukerprofil_v1
+    resourceType: webserviceendpoint
+  - alias: virksomhet:DigitalKontakinformasjon_v1
+    resourceType: webserviceendpoint
+  - alias: virksomhet:Person_v1
+    resourceType: webserviceendpoint
+  - alias: virksomhet:Arbeidsforhold_v3
+    resourceType: webserviceendpoint
+  - alias: virksomhet:Organisasjon_v4
+    resourceType: webserviceendpoint
+  - alias: virksomhet:SakOgAktivitet_v1
+    resourceType: webserviceendpoint
+  - alias: virksomhet:Maalgruppe_v1
+    resourceType: webserviceendpoint
+  - alias: domene.Brukerdialog:Henvendelse_v2
+    resourceType: webserviceendpoint
+  - alias: domene.Brukerdialog:sendsoknadservice_v1
+    resourceType: webserviceendpoint
+  - alias: domene.Brukerdialog:fillagerservice_v1
+    resourceType: webserviceendpoint
+  - alias: virksomhet:Kodeverk_v2
+    resourceType: webserviceendpoint
+  - alias: innlogging.navnetjeneste
+    resourceType: baseurl
+  - alias: saksoversikt.link
+    resourceType: baseurl
+  - alias: dittnav.link
+    resourceType: baseurl
+  - alias: appres.cms
+    resourceType: baseurl
+  - alias: dialogarena.navnolink
+    resourceType: baseurl
+  - alias: soknadinnsending.link
+    resourceType: baseurl
+  - alias: arbeid.rest
+    resourceType: baseurl
+#  - alias: soknad.skjemaveileder
+#    resourceType: baseurl
+#  - alias: soknad.alderspensjon
+#    resourceType: baseurl
+#  - alias: soknad.reelarbeidsoker
+#    resourceType: baseurl
+#  - alias: soknad.dagpengerbrosjyre
+#    resourceType: baseurl
+#  - alias: soknad.brukerprofil
+#    resourceType: baseurl
+#  - alias: soknad.sluttaarsak
+#    resourceType: baseurl
+#  - alias: soknad.lonnskravskjema
+#    resourceType: baseurl
+#  - alias: soknad.permitteringsskjema
+#    resourceType: baseurl
+  - alias: arena.personinfoservice
+    resourceType: baseurl
+  - alias: dineutbetalinger.link
+    resourceType: baseurl
+  - alias: dokumentinnsending.smtpServer
+    resourceType: smtpserver
+  - alias: arena.personInfoService
+    resourceType: credential
+  - alias: arbeidservice
+    resourceType: credential
+#  - alias: suspender
+#    resourceType: credential
+
+# TODO:
+# For sendsoknad, skru tilbake til: <applicationCertificate alias="srvSendsoknad"/>
+# ... alle utkommenterte linjer i nais-oppsettet over.
+#
+# Kan trolig ignoreres for DigiSos:
+# <applicationProperties alias="soknad.ettersending.properties"/>
+# <applicationProperties alias="soknad.properties"/>
+# <applicationProperties alias="soknad.featuretoggles"/>
+#
+#
+# TODO - ANNET OPPSETT FRA app_config:
+#    <serverOptions>
+#        <cron description="Slett tmp-filer" schedule="0 2 * * *" command="find /tmp/ -name 'gs_*' -mtime +5 -delete"/>
+#        <cron description="Slett app-tmp-filer" schedule="0 2 * * *" command="find /app/sendsoknad/temp/java-tmp/ -name 'rep*tmp' -mtime +5 -delete"/>
+#        <memoryParameters resourceAlias="brukerdialog-memparams"/>
+#    </serverOptions>
+#
+#    <security serviceUserResourceAlias="srvSendsoknad">
+#        <logins>
+#            <openAm>
+#                <contextRoot>sendsoknad</contextRoot>
+#            </openAm>
+#        </logins>
+#    </security>
+#
+#    <suspend url="/sendsoknad/management/suspend" credential="suspender" timeoutSeconds="25" />

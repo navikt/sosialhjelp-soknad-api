@@ -25,9 +25,9 @@ public final class JsonPersonaliaConverter {
         personalia.setPersonIdentifikator(new JsonPersonIdentifikator().withVerdi(webSoknad.getAktoerId()));
         personalia.setNavn(new JsonSokernavn()
                 .withKilde(Kilde.SYSTEM)
-                .withFornavn(personaliaProperties.get(FORNAVN_KEY))
-                .withMellomnavn(personaliaProperties.get(MELLOMNAVN_KEY))
-                .withEtternavn(personaliaProperties.get(ETTERNAVN_KEY))
+                .withFornavn(JsonUtils.finnPropertyEllerTom(personaliaProperties, FORNAVN_KEY))
+                .withMellomnavn(JsonUtils.finnPropertyEllerTom(personaliaProperties, MELLOMNAVN_KEY))
+                .withEtternavn(JsonUtils.finnPropertyEllerTom(personaliaProperties, ETTERNAVN_KEY))
         );
 
         final String statsborgerskap = personaliaProperties.get(STATSBORGERSKAP_KEY);

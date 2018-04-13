@@ -32,15 +32,6 @@ public class AAPUtlandetInformasjon extends KravdialogInformasjon.DefaultOppsett
         return skjemanummer;
     }
 
-    @Override
-    public boolean brukerNyOppsummering() {
-        return true;
-    }
-
-    @Override
-    public boolean skalSendeMedFullSoknad() {
-        return false;
-    }
 
     @Override
     public String getBundleName() {
@@ -50,10 +41,4 @@ public class AAPUtlandetInformasjon extends KravdialogInformasjon.DefaultOppsett
     public List<String> getSoknadBolker(WebSoknad soknad) {
         return Collections.singletonList(BOLK_PERSONALIA);
     }
-
-    @Override
-    public boolean brukerEnonicLedetekster() {
-        return false;
-    }
-
 }
