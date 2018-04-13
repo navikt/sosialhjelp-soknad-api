@@ -1,14 +1,18 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.EttersendelseVedleggService.EttersendelseVedlegg.Fil;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -23,26 +27,52 @@ public class EttersendelseVedleggService {
 
     public static class EttersendelseVedlegg {
         public long vedleggId;
-        public String skjemanummerTillegg;
-        public Vedlegg.Status innsendingsvalg;
         public String skjemaNummer;
-        public List<Filer> filer = new ArrayList<>();
+        public String skjemanummerTillegg;
+        public Status innsendingsvalg;
+        public List<Fil> filer = new ArrayList<>();
 
 
-        public static class Filer {
+        public static class Fil {
             public long filId;
             public String filnavn;
+
+            public Fil() {
+            }
+
+            public Fil(long filId, String filnavn) {
+                this.filId = filId;
+                this.filnavn = filnavn;
+            }
         }
     }
 
-    // hent
-    // bare finn alle vedlegg rått, og merge til riktig struktur
     public List<EttersendelseVedlegg> hentVedleggForSoknad(String behandlingsId) {
 
         WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, true, true);
-        webSoknad.getVedlegg(); // TODO
+        List<Vedlegg> originaleVedlegg = webSoknad.getVedlegg();
 
-        return null;
+        Map<String, EttersendelseVedlegg> ettersendelseVedlegg = new HashMap<>();
+
+        originaleVedlegg.stream().forEach(vedlegg -> {
+            String sammensattNavn = vedlegg.getSkjemaNummer() + "|" + vedlegg.getSkjemanummerTillegg();
+
+            if (!ettersendelseVedlegg.containsKey(sammensattNavn)) {
+                EttersendelseVedlegg ettersendelse = new EttersendelseVedlegg();
+                ettersendelse.vedleggId = vedlegg.getVedleggId();
+                ettersendelse.skjemaNummer = vedlegg.getSkjemaNummer();
+                ettersendelse.skjemanummerTillegg = vedlegg.getSkjemanummerTillegg();
+                ettersendelse.innsendingsvalg = vedlegg.getInnsendingsvalg();
+
+                ettersendelseVedlegg.put(sammensattNavn, ettersendelse);
+            }
+
+            if (vedlegg.getInnsendingsvalg().er(Status.LastetOpp)) {
+                ettersendelseVedlegg.get(sammensattNavn).filer.add(new Fil(vedlegg.getVedleggId(), vedlegg.getFilnavn()));
+            }
+        });
+
+        return new ArrayList<>(ettersendelseVedlegg.values());
     }
 
 
