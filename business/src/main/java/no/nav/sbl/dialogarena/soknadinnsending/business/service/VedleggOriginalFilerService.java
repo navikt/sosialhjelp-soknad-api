@@ -167,10 +167,12 @@ public class VedleggOriginalFilerService {
 
 
     public void leggTilOriginalVedlegg(Vedlegg vedlegg, byte[] data, String filnavn) {
-        validerFil(data);
-
         WebSoknad soknad = repository.hentSoknad(vedlegg.getSoknadId());
 
+        leggTilOriginalVedlegg(vedlegg, data, filnavn, soknad);
+    }
+
+    public void leggTilOriginalVedlegg(Vedlegg vedlegg, byte[] data, String filnavn, WebSoknad soknad) {
         String contentType = Detect.CONTENT_TYPE.transform(data);
         vedlegg.leggTilInnhold(data, 1);
         vedlegg.setMimetype(contentType);
