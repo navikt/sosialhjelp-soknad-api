@@ -22,7 +22,7 @@ public class FiksWSConfig {
         return new ServiceBuilder<>(ForsendelsesServiceV9.class)
                 .asStandardService()
                 .withAddress(fiksEndpoint)
-                .withWsdl("classpath:/ForsendelsesServiceV9.wsdl")
+                .withWsdl("classpath:/tjenestespesifikasjon/svarUt.wsdl")
                 .build()
                 .withHttpsMock();
     }
