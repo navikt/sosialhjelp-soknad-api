@@ -4,17 +4,13 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Steg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.EkstraMetadataTransformer;
-
 import org.springframework.context.MessageSource;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Steg.OPPSUMMERING;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Steg.SOKNAD;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Steg.VEDLEGG;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.Steg.VEILEDNING;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Steg.*;
 
 public interface KravdialogInformasjon {
 
@@ -38,7 +34,7 @@ public interface KravdialogInformasjon {
 
     List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource, WebSoknad soknad);
 
-    List<EkstraMetadataTransformer> getMetadataTransformers();
+    List<EkstraMetadataTransformer> getMetadataTransformers(WebSoknad soknad);
 
     boolean brukerNyOppsummering();
 
@@ -62,7 +58,7 @@ public interface KravdialogInformasjon {
         }
 
         @Override
-        public List<EkstraMetadataTransformer> getMetadataTransformers() {
+        public List<EkstraMetadataTransformer> getMetadataTransformers(WebSoknad soknad) {
             return Collections.emptyList();
         }
 

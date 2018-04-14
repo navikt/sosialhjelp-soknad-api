@@ -19,7 +19,7 @@ public class EkstraMetadataService {
 
     public Map<String, String> hentEkstraMetadata(WebSoknad soknad) {
         List<EkstraMetadataTransformer> transformers = kravdialogInformasjonHolder.hentKonfigurasjon(soknad.getskjemaNummer())
-                .getMetadataTransformers();
+                .getMetadataTransformers(soknad);
 
         Map<String, String> metaData = new HashMap<>();
 

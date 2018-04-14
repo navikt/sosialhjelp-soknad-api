@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksData.DokumentInfo;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
@@ -38,11 +39,18 @@ public class MetadataInnfyller {
         List<DokumentInfo> infoer = new ArrayList<>();
 
         // Bestemt rekkefølge på ting...
-        infoer.add(leggTilSoknadJson(metadata.hovedskjema));
-        infoer.add(leggTilPdf(metadata.hovedskjema));
-        infoer.add(leggTilVedleggJson(metadata.hovedskjema));
-        infoer.add(leggTilJuridiskPdf(metadata.hovedskjema));
-        infoer.addAll(leggTilVedlegg(metadata.vedlegg));
+        if (metadata.type == SoknadType.SEND_SOKNAD_KOMMUNAL) {
+            infoer.add(leggTilSoknadJson(metadata.hovedskjema));
+            infoer.add(leggTilPdf(metadata.hovedskjema));
+            infoer.add(leggTilVedleggJson(metadata.hovedskjema));
+            infoer.add(leggTilJuridiskPdf(metadata.hovedskjema));
+            infoer.addAll(leggTilVedlegg(metadata.vedlegg));
+        } else if (metadata.type == SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
+            infoer.add(leggTilVedleggJson(metadata.hovedskjema));
+            infoer.addAll(leggTilVedlegg(metadata.vedlegg));
+        } else {
+            throw new RuntimeException("Ugyldig innsendingstype");
+        }
 
         data.dokumentInfoer = infoer;
     }

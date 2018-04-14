@@ -1,8 +1,6 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon;
 
 
-import no.nav.metrics.Event;
-import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
@@ -16,6 +14,7 @@ import org.springframework.context.MessageSource;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
 public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett {
@@ -48,17 +47,18 @@ public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett
 
     @Override
     public List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource, WebSoknad soknad) {
+        if (soknad.erEttersending()) {
+            return singletonList(new SosialhjelpVedleggTilJson());
+        }
 
-        Event event = MetricsFactory.createEvent("soknad.alternativrepresentasjon.aktiv");
-        event.addTagToReport("skjemanummer", soknad.getskjemaNummer());
-        event.addTagToReport("soknadstype", getSoknadTypePrefix());
-        event.report();
         return asList(new SosialhjelpTilXml(messageSource), new SosialhjelpVedleggTilJson(), new SosialhjelpTilJson((NavMessageSource) messageSource));
-
     }
 
     @Override
-    public List<EkstraMetadataTransformer> getMetadataTransformers() {
+    public List<EkstraMetadataTransformer> getMetadataTransformers(WebSoknad soknad) {
+        if (soknad.erEttersending()) {
+            return emptyList();
+        }
         return singletonList(new FiksMetadataTransformer());
     }
 
