@@ -101,7 +101,8 @@ public class EttersendelseVedleggService {
             Vedlegg nyttVedlegg = new Vedlegg()
                     .medSoknadId(soknad.getSoknadId())
                     .medSkjemaNummer(originalVedlegg.getSkjemaNummer())
-                    .medSkjemanummerTillegg(originalVedlegg.getSkjemanummerTillegg());
+                    .medSkjemanummerTillegg(originalVedlegg.getSkjemanummerTillegg())
+                    .medInnsendingsvalg(Status.LastetOpp);
 
             vedleggRepository.opprettEllerEndreVedlegg(nyttVedlegg, null);
             vedleggOriginalFilerService.leggTilOriginalVedlegg(nyttVedlegg, data, filnavn, soknad);

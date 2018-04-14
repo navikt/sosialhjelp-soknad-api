@@ -61,7 +61,7 @@ public class EttersendingRessurs {
     }
 
     @DELETE
-    @Path("/{vedleggId}")
+    @Path("/vedlegg/{vedleggId}")
     @Produces(APPLICATION_JSON)
     @SjekkTilgangTilSoknad(type = Vedlegg)
     public List<EttersendelseVedlegg> slettVedlegg(@QueryParam("filId") Long filId, @PathParam("vedleggId") final Long vedleggId) {
