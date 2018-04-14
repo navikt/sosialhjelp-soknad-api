@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.sendsoknad.mockmodul.fiks;
 
 import no.ks.svarut.servicesv9.Forsendelse;
 import no.ks.svarut.servicesv9.ForsendelsesServiceV9;
+import no.ks.svarut.servicesv9.OrganisasjonDigitalAdresse;
 import org.slf4j.Logger;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
@@ -22,12 +23,16 @@ public class ForsendelseServiceMock {
                 Forsendelse forsendelse = invocation.getArgumentAt(0, Forsendelse.class);
                 String behId = forsendelse.getEksternref();
 
+                String mottakerOrg = ((OrganisasjonDigitalAdresse) forsendelse.getMottaker().getDigitalAdresse()).getOrgnr();
+                String mottakerNavn = forsendelse.getMottaker().getPostAdresse().getNavn();
+
+                String fiksId = "fake-fiksid-" + behId;
+                logger.info("Mocker kall til Fiks, sendt til {}/{}, returnerer fake-fiksid: {}", mottakerNavn, mottakerOrg , fiksId);
+
                 if (!isEmpty(forsendelse.getSvarPaForsendelse())) {
                     logger.info("Sendt til Mock-Fiks som ettersendelse på {}", forsendelse.getSvarPaForsendelse());
                 }
 
-                String fiksId = "fake-fiksid-" + behId;
-                logger.info("Mocker kall til Fiks, returnerer fake-fiksid: {}", fiksId);
                 return fiksId;
             });
         } catch (Exception ignored) {
