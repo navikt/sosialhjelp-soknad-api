@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 
 import java.util.*;
 
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.LastetOpp;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class SosialhjelpVedleggTilJson implements AlternativRepresentasjonTransformer {
@@ -24,7 +25,12 @@ public class SosialhjelpVedleggTilJson implements AlternativRepresentasjonTransf
     private static final Logger logger = getLogger(SosialhjelpVedleggTilJson.class);
 
     public AlternativRepresentasjon transform(WebSoknad webSoknad) {
-        List<JsonVedlegg> vedlegg = grupperVedleggFiler(webSoknad);
+        List<JsonVedlegg> vedlegg;
+        if (webSoknad.erEttersending()) {
+            vedlegg = grupperVedleggForEttersendelse(webSoknad);
+        } else {
+            vedlegg = grupperVedleggFiler(webSoknad);
+        }
 
         String json;
         try {
@@ -32,7 +38,7 @@ public class SosialhjelpVedleggTilJson implements AlternativRepresentasjonTransf
             leggPaGarbageDataForAHindreValidering(jsonObjekt);
             json = new ObjectMapper().writeValueAsString(jsonObjekt);
             JsonSosialhjelpValidator.ensureValidVedlegg(json);
-        } catch (JsonSosialhjelpValidationException|JsonProcessingException e) {
+        } catch (JsonSosialhjelpValidationException | JsonProcessingException e) {
             logger.error("Kunne ikke generere XML for {}", webSoknad.getBrukerBehandlingId(), e);
             throw new AlleredeHandtertException();
         }
@@ -45,13 +51,42 @@ public class SosialhjelpVedleggTilJson implements AlternativRepresentasjonTransf
                 .medContent(json.getBytes());
     }
 
+    private List<JsonVedlegg> grupperVedleggForEttersendelse(WebSoknad webSoknad) {
+        List<Vedlegg> alleVedlegg = webSoknad.getVedlegg();
+
+        Map<String, JsonVedlegg> vedleggMap = new HashMap<>();
+
+        for (Vedlegg vedlegg : alleVedlegg) {
+            if (vedlegg.getInnsendingsvalg().erIkke(LastetOpp)) {
+                continue;
+            }
+
+            String sammensattNavn = vedlegg.getSkjemaNummer() + "|" + vedlegg.getSkjemanummerTillegg();
+            JsonVedlegg jsonVedlegg = vedleggMap.get(sammensattNavn);
+
+            if (jsonVedlegg == null) {
+                jsonVedlegg = new JsonVedlegg()
+                        .withType(vedlegg.getSkjemaNummer())
+                        .withTilleggsinfo(vedlegg.getSkjemanummerTillegg())
+                        .withFiler(new ArrayList<>());
+                vedleggMap.put(sammensattNavn, jsonVedlegg);
+            }
+
+            jsonVedlegg.getFiler().add(new JsonFiler()
+                    .withFilnavn(vedlegg.getFilnavn()));
+
+        }
+
+        return new ArrayList<>(vedleggMap.values());
+    }
+
     protected List<JsonVedlegg> grupperVedleggFiler(WebSoknad webSoknad) {
-        List<Vedlegg> vedlegg = webSoknad.getVedlegg(); // er den populert?
+        List<Vedlegg> vedlegg = webSoknad.getVedlegg();
 
         Map<Long, JsonVedlegg> vedleggMap = new HashMap<>();
 
         for (Vedlegg v : vedlegg) {
-            if (v.getInnsendingsvalg().erIkke(Vedlegg.Status.LastetOpp)) {
+            if (v.getInnsendingsvalg().erIkke(LastetOpp)) {
                 continue;
             }
 
