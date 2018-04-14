@@ -167,16 +167,18 @@ public class VedleggOriginalFilerService {
 
 
     public void leggTilOriginalVedlegg(Vedlegg vedlegg, byte[] data, String filnavn) {
-        validerFil(data);
-
         WebSoknad soknad = repository.hentSoknad(vedlegg.getSoknadId());
 
+        leggTilOriginalVedlegg(vedlegg, data, filnavn, soknad);
+    }
+
+    public void leggTilOriginalVedlegg(Vedlegg vedlegg, byte[] data, String filnavn, WebSoknad soknad) {
         String contentType = Detect.CONTENT_TYPE.transform(data);
         vedlegg.leggTilInnhold(data, 1);
         vedlegg.setMimetype(contentType);
         vedlegg.setFilnavn(lagFilnavn(filnavn, contentType, vedlegg.getFillagerReferanse()));
 
-        logger.info("Lagrer originalfil til henvendelse for behandling {}, UUID: {}", soknad.getBrukerBehandlingId(), vedlegg.getFillagerReferanse());
+        logger.info("Lagrer originalfil for behandlingsid {}, UUID: {}", soknad.getBrukerBehandlingId(), vedlegg.getFillagerReferanse());
         fillagerService.lagreFil(soknad.getBrukerBehandlingId(), vedlegg.getFillagerReferanse(), soknad.getAktoerId(), new ByteArrayInputStream(data));
         vedleggRepository.lagreVedleggMedData(soknad.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
     }
