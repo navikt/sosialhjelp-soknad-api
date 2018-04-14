@@ -178,7 +178,7 @@ public class VedleggOriginalFilerService {
         vedlegg.setMimetype(contentType);
         vedlegg.setFilnavn(lagFilnavn(filnavn, contentType, vedlegg.getFillagerReferanse()));
 
-        logger.info("Lagrer originalfil til henvendelse for behandling {}, UUID: {}", soknad.getBrukerBehandlingId(), vedlegg.getFillagerReferanse());
+        logger.info("Lagrer originalfil for behandlingsid {}, UUID: {}", soknad.getBrukerBehandlingId(), vedlegg.getFillagerReferanse());
         fillagerService.lagreFil(soknad.getBrukerBehandlingId(), vedlegg.getFillagerReferanse(), soknad.getAktoerId(), new ByteArrayInputStream(data));
         vedleggRepository.lagreVedleggMedData(soknad.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
     }
