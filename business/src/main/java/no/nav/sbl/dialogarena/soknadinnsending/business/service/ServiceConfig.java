@@ -22,6 +22,7 @@ import org.springframework.context.annotation.Import;
         AlternativRepresentasjonService.class,
         EkstraMetadataService.class,
         EttersendingService.class,
+        EttersendelseVedleggService.class,
         XmlService.class,
         SynligeFaktaService.class,
         SoknadMetricsService.class,

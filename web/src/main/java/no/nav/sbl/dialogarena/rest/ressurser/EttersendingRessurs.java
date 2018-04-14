@@ -1,0 +1,79 @@
+package no.nav.sbl.dialogarena.rest.ressurser;
+
+import no.nav.metrics.aspects.Timed;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
+import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.EttersendelseVedleggService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.EttersendelseVedleggService.EttersendelseVedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggOriginalFilerService;
+import org.apache.commons.io.IOUtils;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.springframework.stereotype.Controller;
+
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static javax.ws.rs.core.MediaType.MULTIPART_FORM_DATA;
+import static no.nav.sbl.dialogarena.rest.ressurser.VedleggRessurs.MAKS_TOTAL_FILSTORRELSE;
+import static no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad.Type.Vedlegg;
+
+
+@Controller
+@Path("/ettersendelsevedlegg")
+@Timed
+public class EttersendingRessurs {
+
+    @Inject
+    private EttersendelseVedleggService ettersendelseVedleggService;
+
+    @Inject
+    private VedleggOriginalFilerService vedleggOriginalFilerService;
+
+    @GET
+    @Path("/{behandlingsId}")
+    @Produces(APPLICATION_JSON)
+    @SjekkTilgangTilSoknad
+    public List<EttersendelseVedlegg> hentVedlegg(@PathParam("behandlingsId") String behandlingsId) {
+        return ettersendelseVedleggService.hentVedleggForSoknad(behandlingsId);
+    }
+
+    @POST
+    @Path("/vedlegg/{faktumId}")
+    @Consumes(MULTIPART_FORM_DATA)
+    @Produces(APPLICATION_JSON)
+    @SjekkTilgangTilSoknad(type = Vedlegg)
+    public List<EttersendelseVedlegg> lastOppVedlegg(@PathParam("faktumId") final Long faktumId, @FormDataParam("file") final FormDataBodyPart fil) {
+        if (fil.getValueAs(File.class).length() > MAKS_TOTAL_FILSTORRELSE) {
+            throw new OpplastingException("Kunne ikke lagre fil fordi total filstørrelse er for stor", null, "vedlegg.opplasting.feil.forStor");
+        }
+
+        String filnavn = fil.getContentDisposition().getFileName();
+        byte[] data = getByteArray(fil);
+        vedleggOriginalFilerService.validerFil(data);
+
+        return ettersendelseVedleggService.lastOppVedlegg(faktumId, data, filnavn);
+    }
+
+    @DELETE
+    @Path("/vedlegg/{vedleggId}")
+    @Produces(APPLICATION_JSON)
+    @SjekkTilgangTilSoknad(type = Vedlegg)
+    public List<EttersendelseVedlegg> slettVedlegg(@QueryParam("filId") Long filId, @PathParam("vedleggId") final Long vedleggId) {
+        return ettersendelseVedleggService.slettVedlegg(filId);
+    }
+
+    public static byte[] getByteArray(FormDataBodyPart file) {
+        try {
+            return IOUtils.toByteArray(file.getValueAs(InputStream.class));
+        } catch (IOException e) {
+            throw new OpplastingException("Kunne ikke lagre fil", e, "vedlegg.opplasting.feil.generell");
+        }
+    }
+
+}

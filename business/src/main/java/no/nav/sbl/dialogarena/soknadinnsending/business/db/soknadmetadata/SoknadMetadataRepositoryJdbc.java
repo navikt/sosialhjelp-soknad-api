@@ -134,6 +134,12 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
     }
 
     @Override
+    public List<SoknadMetadata> hentBehandlingskjede(String behandlingsId) {
+        String select = "SELECT * FROM soknadmetadata WHERE TILKNYTTETBEHANDLINGSID = ?";
+        return getJdbcTemplate().query(select, soknadMetadataRowMapper, behandlingsId);
+    }
+
+    @Override
     public List<SoknadMetadata> hentInnsendteSoknaderForBruker(String fnr) {
         String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ?";
         return getJdbcTemplate().query(query, soknadMetadataRowMapper, fnr, SoknadInnsendingStatus.FERDIG.name());
