@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.stream.Collectors.toList;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -92,8 +93,8 @@ public class EttersendelseVedleggService {
         String behandlingsId = vedleggService.hentBehandlingsId(vedleggId);
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, false);
 
-        Vedlegg originalVedlegg = soknad.getVedlegg()
-                .stream().filter(v -> v.getVedleggId().equals(vedleggId))
+        Vedlegg originalVedlegg = soknad.getVedlegg().stream()
+                .filter(v -> v.getVedleggId().equals(vedleggId))
                 .findFirst().get();
 
         if (originalVedlegg.getInnsendingsvalg().er(Status.LastetOpp)) {
@@ -111,13 +112,30 @@ public class EttersendelseVedleggService {
         return hentVedleggForSoknad(behandlingsId);
     }
 
-    // slett
-    // filid kan være likt vedleggid...
-    // finn alle vedlegg som er av samme type som den for filid
-    // om det er flere > 1, bare slett vedlegget med filID
-    // om det er 1, slett data og sett status
-    public List<EttersendelseVedlegg> slettVedlegg() {
-        return null;
+    public List<EttersendelseVedlegg> slettVedlegg(Long vedleggId) {
+        String behandlingsId = vedleggService.hentBehandlingsId(vedleggId);
+        WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, false);
+
+        Vedlegg skalSlettes = soknad.getVedlegg().stream()
+                .filter(v -> v.getVedleggId().equals(vedleggId))
+                .findFirst().get();
+
+        List<Vedlegg> likeVedlegg = soknad.getVedlegg().stream()
+                .filter(
+                        v -> skalSlettes.getSkjemaNummer().equals(v.getSkjemaNummer()) &&
+                                skalSlettes.getSkjemanummerTillegg().equals(v.getSkjemanummerTillegg())
+                ).collect(toList());
+
+        if (likeVedlegg.size() == 1) {
+            skalSlettes.fjernInnhold();
+            vedleggRepository.lagreVedleggMedData(soknad.getSoknadId(), vedleggId, skalSlettes);
+            fillagerService.slettFil(skalSlettes.getFillagerReferanse());
+        } else {
+            vedleggRepository.slettVedleggMedVedleggId(vedleggId);
+            fillagerService.slettFil(skalSlettes.getFillagerReferanse());
+        }
+
+        return hentVedleggForSoknad(behandlingsId);
     }
 
 }

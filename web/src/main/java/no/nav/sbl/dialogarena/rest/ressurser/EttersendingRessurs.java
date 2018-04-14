@@ -64,8 +64,8 @@ public class EttersendingRessurs {
     @Path("/{vedleggId}")
     @Produces(APPLICATION_JSON)
     @SjekkTilgangTilSoknad(type = Vedlegg)
-    public List<EttersendelseVedlegg> slettVedlegg(@QueryParam("filId") String filId, @PathParam("vedleggId") final Long vedleggId) {
-        return ettersendelseVedleggService.slettVedlegg();
+    public List<EttersendelseVedlegg> slettVedlegg(@QueryParam("filId") Long filId, @PathParam("vedleggId") final Long vedleggId) {
+        return ettersendelseVedleggService.slettVedlegg(filId);
     }
 
     public static byte[] getByteArray(FormDataBodyPart file) {
