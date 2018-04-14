@@ -1,24 +1,115 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
+import no.nav.modig.core.exception.ApplicationException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
-import org.apache.commons.lang3.NotImplementedException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.vedlegg.VedleggRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
+import java.util.UUID;
+
+import static java.util.stream.Collectors.toList;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.FERDIG;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType.SEND_SOKNAD_KOMMUNAL;
 
 @Component
 public class EttersendingService {
+    public static final int ETTERSENDELSE_FRIST_DAGER = 21;
 
     @Inject
     @Named("soknadInnsendingRepository")
     private SoknadRepository lokalDb;
 
+    @Inject
+    HenvendelseService henvendelseService;
+
+    @Inject
+    private VedleggRepository vedleggRepository;
+
+    @Inject
+    Clock clock;
+
     public String start(String behandlingsIdDetEttersendesPaa) {
-        if (true) {
-            throw new NotImplementedException("Støtter ikke ettersendelse enda"); // TODO
+        SoknadMetadata originalSoknad = hentOgVerifiserSoknad(behandlingsIdDetEttersendesPaa);
+        SoknadMetadata nyesteSoknad = hentNyesteSoknadIKjede(originalSoknad);
+
+        String uuid = UUID.randomUUID().toString();
+        String nyBehandlingsId = henvendelseService.startEttersending(nyesteSoknad, uuid);
+
+        Long soknadId = lagreSoknadILokalDb(originalSoknad, uuid, nyBehandlingsId);
+
+        List<VedleggMetadata> manglendeVedlegg = lagListeOverVedlegg(nyesteSoknad);
+        lagreVedleggPaSoknad(soknadId, manglendeVedlegg);
+
+        return nyBehandlingsId;
+    }
+
+    protected SoknadMetadata hentOgVerifiserSoknad(String behandlingsId) {
+        SoknadMetadata soknad = henvendelseService.hentSoknad(behandlingsId);
+        if (soknad.type != SEND_SOKNAD_KOMMUNAL) {
+            throw new ApplicationException("Kan ikke starte ettersendelse på noe som ikke er originalsøknad");
+        } else if (soknad.status != FERDIG) {
+            throw new ApplicationException("Kan ikke starte ettersendelse på noe som ikke er innsendt");
+        } else if (soknad.innsendtDato.isBefore(LocalDateTime.now(clock).minusDays(ETTERSENDELSE_FRIST_DAGER))) {
+            throw new ApplicationException("Kan ikke starte ettersendelse så sent på en søknad");
         }
-        return null;
+
+        return soknad;
+    }
+
+    protected SoknadMetadata hentNyesteSoknadIKjede(SoknadMetadata originalSoknad) {
+        return henvendelseService.hentBehandlingskjede(originalSoknad.behandlingsId).stream()
+                .filter(e -> e.status == FERDIG)
+                .sorted(Comparator.comparing(o -> o.innsendtDato))
+                .findFirst()
+                .orElse(originalSoknad);
+    }
+
+    protected List<VedleggMetadata> lagListeOverVedlegg(SoknadMetadata nyesteSoknad) {
+        List<VedleggMetadata> manglendeVedlegg = nyesteSoknad.vedlegg.vedleggListe.stream()
+                .filter(v -> v.status == Vedlegg.Status.VedleggKreves)
+                .collect(toList());
+
+        if (manglendeVedlegg.stream()
+                .noneMatch(v -> "annet".equals(v.skjema) && "annet".equals(v.tillegg))) {
+            VedleggMetadata annetVedlegg = new VedleggMetadata();
+            annetVedlegg.skjema = "annet";
+            annetVedlegg.tillegg = "annet";
+            manglendeVedlegg.add(annetVedlegg);
+        }
+
+        return manglendeVedlegg;
+    }
+
+    protected Long lagreSoknadILokalDb(SoknadMetadata originalSoknad, String uuid, String nyBehandlingsId) {
+        WebSoknad ettersendingSoknad = WebSoknad.startEttersending(nyBehandlingsId)
+                .medUuid(uuid)
+                .medAktorId(originalSoknad.fnr)
+                .medskjemaNummer(originalSoknad.skjema)
+                .medBehandlingskjedeId(originalSoknad.behandlingsId);
+
+        return lokalDb.opprettSoknad(ettersendingSoknad);
+    }
+
+    protected void lagreVedleggPaSoknad(Long soknadId, List<VedleggMetadata> manglendeVedlegg) {
+        manglendeVedlegg.forEach(v -> {
+            Vedlegg nyttVedlegg = new Vedlegg()
+                    .medSoknadId(soknadId)
+                    .medSkjemaNummer(v.skjema)
+                    .medSkjemanummerTillegg(v.tillegg)
+                    .medInnsendingsvalg(Vedlegg.Status.VedleggKreves);
+            vedleggRepository.opprettEllerEndreVedlegg(nyttVedlegg, null);
+        });
     }
 
 }

@@ -22,13 +22,13 @@ import java.util.function.Predicate;
 import static java.util.stream.Collectors.toList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.LastetOpp;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType.SEND_SOKNAD_KOMMUNAL;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EttersendingService.ETTERSENDELSE_FRIST_DAGER;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
 public class SaksoversiktMetadataService {
-    private static final Logger logger = getLogger(SaksoversiktMetadataService.class);
-    public static final int ETTERSENDELSE_FRIST_DAGER = 21;
 
+    private static final Logger logger = getLogger(SaksoversiktMetadataService.class);
 
     @Inject
     private SoknadMetadataRepository soknadMetadataRepository;
