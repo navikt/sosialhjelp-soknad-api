@@ -28,7 +28,13 @@ public class HentNavEnhetNavnHelper extends RegistryAwareHelper<Object> {
     @Override
     public CharSequence apply(Object context, Options options) throws IOException {
         WebSoknad soknad = finnWebSoknad(options.context);
-        NavEnhet navEnhet = getNavEnhetFromWebSoknad(soknad);
-        return navEnhet.getNavn();
+
+        if (soknad.erEttersending()) {
+            return soknad.getValueForFaktum("ettersendelse.sendestil");
+        } else {
+            NavEnhet navEnhet = getNavEnhetFromWebSoknad(soknad);
+            return navEnhet.getNavn();
+        }
+
     }
 }
