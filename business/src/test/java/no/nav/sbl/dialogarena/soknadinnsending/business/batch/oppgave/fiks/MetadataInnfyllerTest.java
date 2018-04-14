@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.FilData;
@@ -30,6 +31,7 @@ public class MetadataInnfyllerTest {
         SoknadMetadata mockData = new SoknadMetadata();
         mockData.hovedskjema = new HovedskjemaMetadata();
         mockData.hovedskjema.filUuid = "uid-hoved";
+        mockData.type = SoknadType.SEND_SOKNAD_KOMMUNAL;
 
         FilData json = new FilData();
         json.mimetype = "application/json";
