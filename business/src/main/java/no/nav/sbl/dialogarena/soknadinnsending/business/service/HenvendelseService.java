@@ -97,8 +97,12 @@ public class HenvendelseService {
 
         meta.hovedskjema = hovedskjema;
         meta.vedlegg = vedlegg;
-        meta.orgnr = ekstraMetadata.get(FiksMetadataTransformer.FIKS_ORGNR_KEY);
-        meta.navEnhet = ekstraMetadata.get(FiksMetadataTransformer.FIKS_ENHET_KEY);
+
+        if (meta.type != SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
+            meta.orgnr = ekstraMetadata.get(FiksMetadataTransformer.FIKS_ORGNR_KEY);
+            meta.navEnhet = ekstraMetadata.get(FiksMetadataTransformer.FIKS_ENHET_KEY);
+        }
+
         meta.sistEndretDato = LocalDateTime.now(clock);
         meta.innsendtDato = LocalDateTime.now(clock);
 
