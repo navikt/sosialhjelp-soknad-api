@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
-import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
@@ -158,35 +157,6 @@ public class SoknadDataFletterTest {
         verify(lokalDb).opprettSoknad(soknad);
         verify(faktaService, atLeastOnce()).lagreFaktum(anyLong(), any(Faktum.class));
         DateTimeUtils.setCurrentMillisSystem();
-    }
-
-    @Test(expected = ApplicationException.class)
-    public void skalIkkeSendeSoknadMedN6VedleggSomIkkeErSendtInn() {
-        String behandlingsId = "10000000ABC";
-        List<Vedlegg> vedlegg = asList(
-                new Vedlegg()
-                        .medSkjemaNummer("N6")
-                        .medFillagerReferanse("uidVedlegg1")
-                        .medInnsendingsvalg(Vedlegg.Status.VedleggKreves)
-                        .medStorrelse(0L)
-                        .medNavn("Test Annet vedlegg")
-                        .medAntallSider(3),
-                new Vedlegg()
-                        .medSkjemaNummer("L7")
-                        .medInnsendingsvalg(Vedlegg.Status.SendesIkke));
-
-        WebSoknad soknad = new WebSoknad().medAktorId("123456")
-                .medBehandlingId(behandlingsId)
-                .medUuid("uidHovedskjema")
-                .medskjemaNummer(DAGPENGER)
-                .medFaktum(new Faktum().medKey("personalia"))
-                .medVedlegg(vedlegg)
-                .medId(1L);
-        when(lokalDb.hentSoknadMedVedlegg(behandlingsId)).thenReturn(soknad);
-        when(lokalDb.hentSoknadMedData(1L)).thenReturn(soknad);
-        when(migrasjonHandterer.handterMigrasjon(any(WebSoknad.class))).thenReturn(soknad);
-
-        soknadServiceUtil.sendSoknad(behandlingsId, new byte[]{1, 2, 3}, null);
     }
 
     @Test
