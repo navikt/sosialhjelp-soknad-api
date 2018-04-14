@@ -4,6 +4,7 @@ import no.ks.svarut.servicesv9.Forsendelse;
 import no.ks.svarut.servicesv9.ForsendelsesServiceV9;
 import org.slf4j.Logger;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -20,6 +21,10 @@ public class ForsendelseServiceMock {
             when(amock.sendForsendelse(any())).then(invocation -> {
                 Forsendelse forsendelse = invocation.getArgumentAt(0, Forsendelse.class);
                 String behId = forsendelse.getEksternref();
+
+                if (!isEmpty(forsendelse.getSvarPaForsendelse())) {
+                    logger.info("Sendt til Mock-Fiks som ettersendelse på {}", forsendelse.getSvarPaForsendelse());
+                }
 
                 String fiksId = "fake-fiksid-" + behId;
                 logger.info("Mocker kall til Fiks, returnerer fake-fiksid: {}", fiksId);

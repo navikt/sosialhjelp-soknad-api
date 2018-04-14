@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+
 @Service
 public class MetadataInnfyller {
 
@@ -27,6 +29,14 @@ public class MetadataInnfyller {
         data.innsendtDato = soknadMetadata.innsendtDato;
 
         byggOppDokumentInfo(data, soknadMetadata);
+
+        if (soknadMetadata.type == SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
+            SoknadMetadata originalSoknad = soknadMetadataRepository.hent(soknadMetadata.tilknyttetBehandlingsId);
+            if (isEmpty(originalSoknad.fiksForsendelseId)) {
+                throw new RuntimeException("Kan ikke ettersende, originalsoknaden ikke fått fiksid enda");
+            }
+            data.ettersendelsePa = originalSoknad.fiksForsendelseId;
+        }
     }
 
     public void lagreFiksId(FiksData data, FiksResultat resultat) {

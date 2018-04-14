@@ -19,6 +19,8 @@ public class FiksData {
     @XmlJavaTypeAdapter(LocalDateTimeXmlAdapter.class)
     public LocalDateTime innsendtDato;
 
+    public String ettersendelsePa;
+
     @XmlRootElement
     @XmlType(name="fiksDokumentInfo")
     public static class DokumentInfo {
