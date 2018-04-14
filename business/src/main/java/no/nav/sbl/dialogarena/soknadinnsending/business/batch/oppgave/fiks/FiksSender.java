@@ -10,6 +10,7 @@ import javax.activation.DataHandler;
 import javax.inject.Inject;
 
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Service
 public class FiksSender {
@@ -51,7 +52,7 @@ public class FiksSender {
                 .withPrintkonfigurasjon(fakePrintConfig)
                 .withKryptert(skalKryptere)
                 .withKrevNiva4Innlogging(skalKryptere)
-                .withSvarPaForsendelse(null) // For ettersendelser
+                .withSvarPaForsendelse(isEmpty(data.ettersendelsePa) ? null : data.ettersendelsePa) // For ettersendelser
                 .withDokumenter(data.dokumentInfoer.stream()
                         .map(i -> fiksDokumentFraDokumentInfo(i, skalKryptere))
                         .collect(toList()))
