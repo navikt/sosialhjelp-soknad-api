@@ -8,13 +8,13 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHan
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.HovedskjemaMetadata;
-import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.*;
@@ -65,12 +65,31 @@ public class HenvendelseService {
         return behandlingsId;
     }
 
-    public String startEttersending(Object soknadResponse) {
-        throw new NotImplementedException("støtter ikke ettersending enda");
+    public String startEttersending(SoknadMetadata ettersendesPaSoknad, String uid) {
+        SoknadMetadata ettersendelse = new SoknadMetadata();
+        ettersendelse.id = soknadMetadataRepository.hentNesteId();
+        ettersendelse.behandlingsId = lagBehandlingsId(ettersendelse.id);
+        ettersendelse.tilknyttetBehandlingsId = ettersendesPaSoknad.behandlingsId;
+        ettersendelse.fnr = ettersendesPaSoknad.fnr;
+        ettersendelse.type = SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING;
+        ettersendelse.skjema = ettersendesPaSoknad.skjema;
+        ettersendelse.status = UNDER_ARBEID;
+        ettersendelse.opprettetDato = LocalDateTime.now(clock);
+        ettersendelse.sistEndretDato = LocalDateTime.now(clock);
+
+        ettersendelse.hovedskjema = new HovedskjemaMetadata();
+        ettersendelse.hovedskjema.filUuid = uid;
+
+        ettersendelse.orgnr = ettersendesPaSoknad.orgnr;
+        ettersendelse.navEnhet = ettersendesPaSoknad.navEnhet;
+
+        soknadMetadataRepository.opprett(ettersendelse);
+
+        return ettersendelse.behandlingsId;
     }
 
-    public void hentBehandlingskjede(String behandlingskjedeId) {
-        throw new NotImplementedException("støtter ikke ettersendelser");
+    public List<SoknadMetadata> hentBehandlingskjede(String behandlingskjedeId) {
+        return soknadMetadataRepository.hentBehandlingskjede(behandlingskjedeId);
     }
 
     public void avsluttSoknad(String behandlingsId, HovedskjemaMetadata hovedskjema, SoknadMetadata.VedleggMetadataListe vedlegg, Map<String, String> ekstraMetadata) {
