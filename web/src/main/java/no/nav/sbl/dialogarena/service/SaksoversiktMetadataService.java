@@ -126,8 +126,12 @@ public class SaksoversiktMetadataService {
     private String lagContextLenke() {
         String miljo = System.getProperty("environment.name");
 
-        // TODO FIX FOR PROD
-        return "https://tjenester-" + miljo + ".nav.no/soknadsosialhjelp/";
+        String tjenesterPostfix = "";
+        if (miljo.contains("t") || miljo.contains("q")) {
+            tjenesterPostfix = "-" + miljo;
+        }
+
+        return "https://tjenester" + tjenesterPostfix + ".nav.no/soknadsosialhjelp/";
     }
 
 }
