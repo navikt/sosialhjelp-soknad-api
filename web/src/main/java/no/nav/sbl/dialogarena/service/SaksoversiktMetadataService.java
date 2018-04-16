@@ -124,7 +124,7 @@ public class SaksoversiktMetadataService {
     }
 
     private String lagContextLenke() {
-        String miljo = System.getProperty("environment.name");
+        String miljo = System.getProperty("environment.name", "");
 
         String tjenesterPostfix = "";
         if (miljo.contains("t") || miljo.contains("q")) {
