@@ -23,7 +23,7 @@ import java.util.UUID;
 import static java.util.stream.Collectors.toList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.FERDIG;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType.SEND_SOKNAD_KOMMUNAL;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING;
 
 @Component
 public class EttersendingService {
@@ -50,7 +50,7 @@ public class EttersendingService {
         SoknadMetadata nyesteSoknad = hentNyesteSoknadIKjede(originalSoknad);
 
         String uuid = UUID.randomUUID().toString();
-        String nyBehandlingsId = henvendelseService.startEttersending(nyesteSoknad, uuid);
+        String nyBehandlingsId = henvendelseService.startEttersending(originalSoknad, uuid);
 
         Long soknadId = lagreSoknadILokalDb(originalSoknad, uuid, nyBehandlingsId);
 
@@ -71,14 +71,15 @@ public class EttersendingService {
 
     protected SoknadMetadata hentOgVerifiserSoknad(String behandlingsId) {
         SoknadMetadata soknad = henvendelseService.hentSoknad(behandlingsId);
-        if (soknad.type != SEND_SOKNAD_KOMMUNAL) {
-            throw new ApplicationException("Kan ikke starte ettersendelse på noe som ikke er originalsøknad");
-        } else if (soknad.status != FERDIG) {
+        if (soknad.type == SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
+            soknad = henvendelseService.hentSoknad(soknad.tilknyttetBehandlingsId);
+        }
+
+        if (soknad.status != FERDIG) {
             throw new ApplicationException("Kan ikke starte ettersendelse på noe som ikke er innsendt");
         } else if (soknad.innsendtDato.isBefore(LocalDateTime.now(clock).minusDays(ETTERSENDELSE_FRIST_DAGER))) {
             throw new ApplicationException("Kan ikke starte ettersendelse så sent på en søknad");
         }
-
         return soknad;
     }
 
