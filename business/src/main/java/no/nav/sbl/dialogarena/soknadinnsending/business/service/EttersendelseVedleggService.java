@@ -62,8 +62,9 @@ public class EttersendelseVedleggService {
     }
 
     public List<EttersendelseVedlegg> hentVedleggForSoknad(String behandlingsId) {
-
         WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, true, true);
+        soknadService.settSistLagret(webSoknad.getSoknadId());
+
         List<Vedlegg> originaleVedlegg = webSoknad.getVedlegg();
 
         Map<String, EttersendelseVedlegg> ettersendelseVedlegg = new HashMap<>();

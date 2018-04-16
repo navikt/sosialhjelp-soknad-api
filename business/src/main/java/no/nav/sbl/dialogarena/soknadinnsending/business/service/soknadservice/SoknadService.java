@@ -44,6 +44,10 @@ public class SoknadService {
         lokalDb.settDelstegstatus(behandlingsId, delstegStatus);
     }
 
+    public void settSistLagret(long soknadId) {
+        lokalDb.settSistLagretTidspunkt(soknadId);
+    }
+
     public void settJournalforendeEnhet(String behandlingsId, String journalforendeEnhet) {
         lokalDb.settJournalforendeEnhet(behandlingsId, journalforendeEnhet);
     }

@@ -48,7 +48,7 @@ public class EttersendelseVedleggServiceTest {
     @InjectMocks
     EttersendelseVedleggService ettersendelseVedleggService;
 
-    WebSoknad webSoknad = new WebSoknad();
+    WebSoknad webSoknad = new WebSoknad().medId(999L);
 
     @Before
     public void setup() {
