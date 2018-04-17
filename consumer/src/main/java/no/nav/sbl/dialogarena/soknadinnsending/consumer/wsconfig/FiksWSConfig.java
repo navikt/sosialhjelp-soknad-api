@@ -30,7 +30,7 @@ public class FiksWSConfig {
     @Bean
     public ForsendelsesServiceV9 forsendelsesServiceV9() {
         ForsendelsesServiceV9 mock = new ForsendelseServiceMock().forsendelseMock();
-        ForsendelsesServiceV9 prod = factory().withUserSecurity().get();
+        ForsendelsesServiceV9 prod = factory().withSystemSecurity().get();
         return createMetricsProxyWithInstanceSwitcher("FiksForsendelse", prod, mock, FIKS_KEY, ForsendelsesServiceV9.class);
     }
 
