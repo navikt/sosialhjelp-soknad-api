@@ -2,10 +2,13 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig;
 
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder;
 import no.nav.sbl.dialogarena.types.Pingable;
+import no.nav.sbl.dialogarena.types.Pingable.Ping.PingMetadata;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.*;
 
 @Configuration
 public class FilLagerWSConfig {
@@ -36,13 +39,13 @@ public class FilLagerWSConfig {
         return new Pingable() {
             @Override
             public Ping ping() {
+                PingMetadata metadata = new PingMetadata(serviceEndpoint,"Fillager v1 - Lagring mot henvendelse", true);
                 try {
                     fillagerSelftestEndpoint().ping();
-                    return Ping.lyktes("Fillager");
-                } catch (Exception ex) {
-                    return Ping.feilet("Fillager", ex);
-                }
-            }
+                    return lyktes(metadata);
+                } catch (Exception e) {
+                    return feilet(metadata, e);
+                }            }
         };
     }
 }
