@@ -948,10 +948,7 @@
                         <artifactId>cxf-api</artifactId>
                     </exclusion>
                 </exclusions>
-
-
             </dependency>
-
             <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/preflight -->
             <dependency>
                 <groupId>org.apache.pdfbox</groupId>
@@ -959,7 +956,6 @@
                 <version>1.8.1</version>
                 <scope>provided</scope>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
     <build>

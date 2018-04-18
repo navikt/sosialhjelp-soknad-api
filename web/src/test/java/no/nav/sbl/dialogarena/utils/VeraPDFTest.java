@@ -26,6 +26,7 @@ import java.util.Set;
 public class VeraPDFTest {
 
     private static final String pathToDir = "src/test/java/no/nav/sbl/dialogarena/utils";
+    private static final boolean logResult = true;
 
     private PDFAParser parser;
     private PDFAFlavour flavour;
@@ -36,6 +37,7 @@ public class VeraPDFTest {
     private ValidationResult result;
     private ProfileDetails profileDetails;
     private Set<TestAssertion> testAssertions;
+
 
     @Before
     public void setup() {
@@ -51,7 +53,7 @@ public class VeraPDFTest {
     public void testVeraPDFUtenVannmerkePDFA1B() {
 
         flavour = PDFAFlavour.fromString("1b");
-        PDFAValidator validator = Foundries.defaultInstance().createValidator(flavour, true);
+        PDFAValidator validator = Foundries.defaultInstance().createValidator(flavour, logResult);
 
         result = runPDFTest(pdfUtenVannmerkeFile, validator);
 
@@ -62,7 +64,7 @@ public class VeraPDFTest {
     public void testVeraPDFMedVannmerkePDFA1B() {
 
         flavour = PDFAFlavour.fromString("1b");
-        PDFAValidator validator = Foundries.defaultInstance().createValidator(flavour, true);
+        PDFAValidator validator = Foundries.defaultInstance().createValidator(flavour, logResult);
 
         result = runPDFTest(pdfMedVannmerkeFile, validator);
 
@@ -73,7 +75,7 @@ public class VeraPDFTest {
     public void testVeraPDFMedVannmerkePDFA1A() {
 
         flavour = PDFAFlavour.fromString("1a");
-        PDFAValidator validator = Foundries.defaultInstance().createValidator(flavour, true);
+        PDFAValidator validator = Foundries.defaultInstance().createValidator(flavour, logResult);
 
         result = runPDFTest(pdfMedVannmerkeFile, validator);
 
@@ -83,7 +85,7 @@ public class VeraPDFTest {
     public void testVeraPDUtenVannmerkePDFA1A() {
 
         flavour = PDFAFlavour.fromString("1a");
-        PDFAValidator validator = Foundries.defaultInstance().createValidator(flavour, true);
+        PDFAValidator validator = Foundries.defaultInstance().createValidator(flavour, logResult);
 
         result = runPDFTest(pdfUtenVannmerkeFile, validator);
 
