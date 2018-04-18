@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.BehandlingsKjede;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.BehandlingsKjede.InnsendtSoknad;
@@ -53,6 +54,7 @@ public class InnsendtSoknadService {
 
     private List<SoknadMetadata> hentEttersendelser(String behandlingsId) {
         return henvendelseService.hentBehandlingskjede(behandlingsId).stream()
+                .filter(soknad -> soknad.status.equals(SoknadInnsendingStatus.FERDIG))
                 .sorted(Comparator.comparing(o -> o.innsendtDato))
                 .collect(toList());
     }
