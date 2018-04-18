@@ -58,6 +58,10 @@
             <artifactId>joda-time</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-joda</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
         </dependency>
@@ -134,7 +138,6 @@
             <groupId>no.nav</groupId>
             <artifactId>metrics</artifactId>
         </dependency>
-
     </dependencies>
     <build>
         <plugins>

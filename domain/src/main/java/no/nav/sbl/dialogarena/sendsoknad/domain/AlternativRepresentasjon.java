@@ -8,6 +8,7 @@ public class AlternativRepresentasjon {
     private String mimetype;
     private String uuid;
     private byte[] content;
+    private String skjemaNummer;
 
     public String getFilnavn() {
         return filnavn;
@@ -51,5 +52,9 @@ public class AlternativRepresentasjon {
     public AlternativRepresentasjon medRepresentasjonsType(AlternativRepresentasjonType type) {
         this.representasjonsType = type;
         return this;
+    }
+
+    public String getSkjemaNummer() {
+        return skjemaNummer;
     }
 }

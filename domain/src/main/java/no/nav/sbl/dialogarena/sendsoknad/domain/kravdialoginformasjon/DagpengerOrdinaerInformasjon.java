@@ -5,7 +5,7 @@ import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
-import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.dagpenger.ordinaer.DagpengerOrdinaerTilXml;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.dagpenger.ordinaer.DagpengerOrdinaerTilJson;
 import org.springframework.context.MessageSource;
 
 import java.util.List;
@@ -64,7 +64,7 @@ public class DagpengerOrdinaerInformasjon extends KravdialogInformasjon.DefaultO
             event.addTagToReport("soknadstype", getSoknadTypePrefix());
             event.report();
 
-            return singletonList(new DagpengerOrdinaerTilXml(messageSource));
+            return singletonList(new DagpengerOrdinaerTilJson());
     }
 
     public static boolean erDagpengerOrdinaer(String skjema) {
