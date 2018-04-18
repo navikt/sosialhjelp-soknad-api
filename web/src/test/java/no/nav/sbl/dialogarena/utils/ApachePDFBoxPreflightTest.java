@@ -37,27 +37,26 @@ public class ApachePDFBoxPreflightTest {
     public void testApachePDFBoxPreflightUtenVannmarke() throws IOException {
         ValidationResult result = getValidationResult(pdfUtenVannmerkeFile.toString());
 
-        printValidationResult(result);
+        printValidationResult(result, pdfUtenVannmerkeFile);
     }
 
     @Test
     public void testApachePDFBoxPreflightMedVannmerke() throws IOException {
         ValidationResult result = getValidationResult(pdfMedVannmerkeFile.toString());
 
-        printValidationResult(result);
+        printValidationResult(result, pdfMedVannmerkeFile);
     }
 
-    private void printValidationResult(ValidationResult result) {
+    private void printValidationResult(ValidationResult result, File fil) {
         if (result.isValid()) {
-            System.out.println("The file " + pdfMedVannmerkeFile + " is a valid PDF/A-1b file");
+            System.out.println("The file " + fil + " is a valid PDF/A-1b file");
         } else {
-            System.out.println("The file" + pdfMedVannmerkeFile + " is not valid, error(s) :");
+            System.out.println("The file" + fil + " is not valid, error(s) :");
             for (ValidationResult.ValidationError error : result.getErrorsList()) {
                 System.out.println(error.getErrorCode() + " : " + error.getDetails());
             }
         }
     }
-
 
     private ValidationResult getValidationResult(String filename) throws IOException {
         ValidationResult result = null;
