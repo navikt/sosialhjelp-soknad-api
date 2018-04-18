@@ -114,10 +114,15 @@ public class HenvendelseService {
     }
 
     public SoknadMetadata hentSoknad(String behandlingsId) {
-        SoknadMetadata hentet = soknadMetadataRepository.hent(behandlingsId);
-        hentet.sistEndretDato = LocalDateTime.now(clock);
-        soknadMetadataRepository.oppdater(hentet);
+        return hentSoknad(behandlingsId, false);
+    }
 
+    public SoknadMetadata hentSoknad(String behandlingsId, boolean oppdaterSistEndret) {
+        SoknadMetadata hentet = soknadMetadataRepository.hent(behandlingsId);
+        if (oppdaterSistEndret) {
+            hentet.sistEndretDato = LocalDateTime.now(clock);
+            soknadMetadataRepository.oppdater(hentet);
+        }
         return hentet;
     }
 

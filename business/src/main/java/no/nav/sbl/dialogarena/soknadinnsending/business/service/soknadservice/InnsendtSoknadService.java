@@ -1,24 +1,20 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.InnsendtSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.BehandlingsKjede;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.BehandlingsKjede.InnsendtSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
-import org.apache.commons.lang3.LocaleUtils;
-import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toList;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING;
 
 @Component
 public class InnsendtSoknadService {
@@ -28,55 +24,70 @@ public class InnsendtSoknadService {
     @Inject
     private HenvendelseService henvendelseService;
 
-    @Inject
-    private VedleggService vedleggService;
+    private Predicate<VedleggMetadata> ikkeKvittering = v -> !SKJEMANUMMER_KVITTERING.equals(v.skjema);
+    private Predicate<VedleggMetadata> lastetOpp = v -> v.status.er(Vedlegg.Status.LastetOpp);
+    private Predicate<VedleggMetadata> ikkeLastetOpp = lastetOpp.negate();
 
-    @Inject
-    private KravdialogInformasjonHolder kravdialogInformasjonHolder;
+    private DateTimeFormatter datoFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    private DateTimeFormatter tidFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-    private static final java.util.function.Predicate<Vedlegg> IKKE_KVITTERING = vedlegg -> !SKJEMANUMMER_KVITTERING.equalsIgnoreCase(vedlegg.getSkjemaNummer());
+    public BehandlingsKjede hentBehandlingskjede(String behandlingsId) {
+        SoknadMetadata originalSoknad = hentOriginalSoknad(behandlingsId);
+        List<SoknadMetadata> ettersendelser = hentEttersendelser(originalSoknad.behandlingsId);
 
-    private static final Predicate<Vedlegg> LASTET_OPP = v -> Vedlegg.Status.LastetOpp.equals(v.getInnsendingsvalg());
+        return new BehandlingsKjede()
+                .medOriginalSoknad(konverter(originalSoknad))
+                .medEttersendelser(ettersendelser.stream()
+                        .map(this::konverter)
+                        .collect(toList())
+                );
+    }
 
-    private static final Predicate<Vedlegg> IKKE_LASTET_OPP = LASTET_OPP.negate();
-
-    public InnsendtSoknad hentInnsendtSoknad(String behandlingsId, String sprak) {
-        SoknadMetadata soknadMetadata = henvendelseService.hentSoknad(behandlingsId);
-        if (!soknadMetadata.status.equals(SoknadInnsendingStatus.FERDIG)) {
-            throw new RuntimeException("Søknad ikke innsendt");
+    private SoknadMetadata hentOriginalSoknad(String behandlingsId) {
+        SoknadMetadata soknad = henvendelseService.hentSoknad(behandlingsId);
+        if (soknad.type == SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
+            soknad = henvendelseService.hentSoknad(soknad.tilknyttetBehandlingsId);
         }
+        return soknad;
+    }
 
-        String skjemaNummer = soknadMetadata.skjema;
-        KravdialogInformasjon konfigurasjon = kravdialogInformasjonHolder.hentKonfigurasjon(skjemaNummer);
-        final Locale locale = LocaleUtils.toLocale(sprak);
-        String prefix = konfigurasjon.getSoknadTypePrefix();
+    private List<SoknadMetadata> hentEttersendelser(String behandlingsId) {
+        return henvendelseService.hentBehandlingskjede(behandlingsId).stream()
+                .sorted(Comparator.comparing(o -> o.innsendtDato))
+                .collect(toList());
+    }
 
-        final List<Vedlegg> vedlegg = soknadMetadata.vedlegg.vedleggListe.stream()
-                .map(vedleggMetadata -> {
-                   Vedlegg v = new Vedlegg()
-                            .medInnsendingsvalg(vedleggMetadata.status)
-                            .medSkjemaNummer(vedleggMetadata.skjema)
-                            .medSkjemanummerTillegg(vedleggMetadata.tillegg)
-                            .medNavn(vedleggMetadata.filnavn);
-                    vedleggService.medKodeverk(v, locale);
-                    return v;
-                }).filter(IKKE_KVITTERING).collect(toList());
+    private InnsendtSoknad konverter(SoknadMetadata metadata) {
+        return new InnsendtSoknad()
+                .medBehandlingId(metadata.behandlingsId)
+                .medInnsendtDato(metadata.innsendtDato.format(datoFormatter))
+                .medInnsendtTidspunkt(metadata.innsendtDato.format(tidFormatter))
+                .medNavenhet(metadata.navEnhet)
+                .medOrgnummer(metadata.orgnr)
+                .medInnsendteVedlegg(tilVedlegg(metadata.vedlegg.vedleggListe, lastetOpp))
+                .medIkkeInnsendteVedlegg(tilVedlegg(metadata.vedlegg.vedleggListe, ikkeLastetOpp));
+    }
 
-        Vedlegg hovedSkjema = new Vedlegg().medSkjemaNummer(skjemaNummer);
-        vedleggService.medKodeverk(hovedSkjema, locale);
+    private List<InnsendtSoknad.Vedlegg> tilVedlegg(List<VedleggMetadata> vedlegg, Predicate<VedleggMetadata> status) {
+        List<VedleggMetadata> vedleggMedRiktigStatus = vedlegg.stream()
+                .filter(ikkeKvittering)
+                .filter(status)
+                .collect(toList());
 
-        List<Vedlegg> innsendteVedlegg = vedlegg.stream().filter(LASTET_OPP).collect(toList());
-        List<Vedlegg> ikkeInnsendteVedlegg = vedlegg.stream().filter(IKKE_LASTET_OPP).collect(toList());
+        Map<String, InnsendtSoknad.Vedlegg> unikeVedlegg = new HashMap<>();
 
-        return new InnsendtSoknad(locale)
-                .medTittelCmsKey(prefix.concat(".").concat("skjema.tittel"))
-                .medTittel(hovedSkjema.getTittel())
-                .medBehandlingId(soknadMetadata.behandlingsId)
-                .medInnsendteVedlegg(innsendteVedlegg)
-                .medIkkeInnsendteVedlegg(ikkeInnsendteVedlegg)
-                .medDato(DateTime.parse(soknadMetadata.innsendtDato.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)))
-                .medNavenhet(soknadMetadata.navEnhet)
-                .medOrgnummer(soknadMetadata.orgnr);
+        vedleggMedRiktigStatus.forEach(v -> {
+            String sammensattnavn = v.skjema + "|" + v.tillegg;
+            if (!unikeVedlegg.containsKey(sammensattnavn)) {
+                unikeVedlegg.put(sammensattnavn, new InnsendtSoknad.Vedlegg(
+                        v.skjema,
+                        v.tillegg,
+                        v.status
+                ));
+            }
+        });
+
+        return new ArrayList<>(unikeVedlegg.values());
     }
 
 }
