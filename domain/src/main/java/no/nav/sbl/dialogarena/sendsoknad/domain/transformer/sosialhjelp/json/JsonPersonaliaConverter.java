@@ -82,10 +82,11 @@ public final class JsonPersonaliaConverter {
     }
 
     private static JsonTelefonnummer tilBrukerJsonTelefonnummer(WebSoknad webSoknad) {
+        final String landkode = "+47";
         final String telefonnummer = webSoknad.getValueForFaktum("kontakt.telefon");
         if (erIkkeTom(telefonnummer)) {
             final JsonTelefonnummer jsonTelefonnummer = new JsonTelefonnummer();
-            jsonTelefonnummer.setVerdi(telefonnummer);
+            jsonTelefonnummer.setVerdi(landkode + telefonnummer);
             jsonTelefonnummer.setKilde(JsonKilde.BRUKER);
             return jsonTelefonnummer;
         } else {
