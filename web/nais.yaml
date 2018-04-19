@@ -21,9 +21,12 @@ resources:
     memory: 2Gi
 fasitResources:
   used:
-  - alias: srvSoknadsosialhjelpCredential
+  - alias: srvsoknadsosialhjelp-server
     resourceType: credential
-  - alias: srvSoknadsosialhjelp
+    propertyMap:
+      username: SRVSOKNADSOSIALHJELP-SERVER_CREDENTIALS_USERNAME
+      password: SRVSOKNADSOSIALHJELP-SERVER_CREDENTIALS_PASSWORD
+  - alias: srvsoknadsosialhjelp-server
     resourceType: certificate
   - alias: soknadsosialhjelpDataSource
     resourceType: datasource
