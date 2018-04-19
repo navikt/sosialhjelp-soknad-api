@@ -1,18 +1,11 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig;
 
-import static java.lang.System.getProperty;
-import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder.CONNECTION_TIMEOUT;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder.RECEIVE_TIMEOUT;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.security.auth.callback.Callback;
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.UnsupportedCallbackException;
-
+import no.aetat.arena.fodselsnr.Fodselsnr;
+import no.nav.arena.tjenester.person.v1.PersonInfoServiceSoap;
+import no.nav.sbl.dialogarena.common.cxf.TimeoutFeature;
+import no.nav.sbl.dialogarena.sendsoknad.mockmodul.personinfo.PersonInfoMock;
+import no.nav.sbl.dialogarena.types.Pingable;
+import no.nav.sbl.dialogarena.types.Pingable.Ping.PingMetadata;
 import org.apache.cxf.feature.LoggingFeature;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor;
@@ -22,11 +15,19 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import no.aetat.arena.fodselsnr.Fodselsnr;
-import no.nav.arena.tjenester.person.v1.PersonInfoServiceSoap;
-import no.nav.sbl.dialogarena.common.cxf.TimeoutFeature;
-import no.nav.sbl.dialogarena.sendsoknad.mockmodul.personinfo.PersonInfoMock;
-import no.nav.sbl.dialogarena.types.Pingable;
+import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.UnsupportedCallbackException;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import static java.lang.System.getProperty;
+import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder.CONNECTION_TIMEOUT;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder.RECEIVE_TIMEOUT;
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
 
 @Configuration
 public class PersonInfoWSConfig {
@@ -73,12 +74,12 @@ public class PersonInfoWSConfig {
             @Override
             public Ping ping() {
                 Fodselsnr fodselsnr = new Fodselsnr().withFodselsnummer("***REMOVED***");
+                PingMetadata metadata = new PingMetadata(endpoint,"ARENA - Personinfo (Status på personen)", false);
                 try {
                     personInfoEndpoint().hentPersonStatus(fodselsnr);
-                    return Ping.lyktes("ARENA_PERSONINFO");
-
-                } catch (Exception ex) {
-                    return Ping.feilet("ARENA_PERSONINFO", ex);
+                    return lyktes(metadata);
+                } catch (Exception e) {
+                    return feilet(metadata, e);
                 }
             }
         };
