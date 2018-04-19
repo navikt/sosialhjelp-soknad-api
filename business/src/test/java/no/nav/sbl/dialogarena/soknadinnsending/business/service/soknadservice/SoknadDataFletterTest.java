@@ -246,7 +246,7 @@ public class SoknadDataFletterTest {
         v.filUuid = "uidVedlegg";
         metadata.vedlegg.vedleggListe.add(v);
 
-        when(henvendelsesConnector.hentSoknad("123")).thenReturn(metadata);
+        when(henvendelsesConnector.hentSoknad("123", true)).thenReturn(metadata);
         when(lokalDb.hentSoknad("123")).thenReturn(null, soknad, soknad);
         when(lokalDb.hentSoknadMedVedlegg("123")).thenReturn(soknad, soknad);
         when(lokalDb.hentSoknadMedData(11L)).thenReturn(soknad);
