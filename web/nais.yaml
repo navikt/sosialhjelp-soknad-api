@@ -24,8 +24,8 @@ fasitResources:
   - alias: srvsoknadsosialhjelp-server
     resourceType: credential
     propertyMap:
-      username: SRVSOKNADSOSIALHJELP-SERVER_CREDENTIALS_USERNAME
-      password: SRVSOKNADSOSIALHJELP-SERVER_CREDENTIALS_PASSWORD
+      username: SRVSOKNADSOSIALHJELP_SERVER_CREDENTIALS_USERNAME
+      password: SRVSOKNADSOSIALHJELP_SERVER_CREDENTIALS_PASSWORD
   - alias: srvsoknadsosialhjelp-server
     resourceType: certificate
   - alias: soknadsosialhjelpDataSource
