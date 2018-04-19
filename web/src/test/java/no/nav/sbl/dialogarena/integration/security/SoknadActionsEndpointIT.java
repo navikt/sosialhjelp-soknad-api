@@ -79,28 +79,4 @@ public class SoknadActionsEndpointIT extends AbstractSecurityIT {
 
         assertThat(response.getStatus()).isEqualTo(Response.Status.FORBIDDEN.getStatusCode());
     }
-
-    @Test
-    public void finnOpprinneligInnsendtDato() throws Exception {
-        EndpointDataMocking.mockSendHenvendelse();
-        SoknadTester soknadTester = SoknadTester.startSoknad(skjemanummer);
-        String subUrl = "soknader/INNSENDTSOKNAD/actions/opprinneliginnsendtdato";
-        Response response = soknadTester.sendsoknadResource(subUrl, webTarget -> webTarget)
-                .buildGet()
-                .invoke();
-
-        assertThat(response.getStatus()).isEqualTo(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
-    }
-
-    @Test
-    public void finnSisteInnsendteBehandlingsId() throws Exception {
-        EndpointDataMocking.mockSendHenvendelse();
-        SoknadTester soknadTester = SoknadTester.startSoknad(skjemanummer);
-        String subUrl = "soknader/INNSENDTSOKNAD/actions/sistinnsendtebehandlingsid";
-        Response response = soknadTester.sendsoknadResource(subUrl, webTarget -> webTarget)
-                .buildGet()
-                .invoke();
-
-        assertThat(response.getStatus()).isEqualTo(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
-    }
 }
