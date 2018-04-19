@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
 
 @Configuration
 public class FiksWSConfig {
@@ -38,13 +40,15 @@ public class FiksWSConfig {
     Pingable arbeidPing() {
         ForsendelsesServiceV9 selftestEndpoint = factory().withSystemSecurity().get();
         return new Pingable() {
+            Ping.PingMetadata metadata = new Ping.PingMetadata(fiksEndpoint,"Fiks_v9", false);
+
             @Override
             public Ping ping() {
                 try {
                     selftestEndpoint.retreiveForsendelseTyper();
-                    return Ping.lyktes("Fiks");
+                    return lyktes(metadata);
                 } catch (Exception e) {
-                    return Ping.feilet("Fiks", e);
+                    return feilet(metadata, e);
                 }
             }
         };
