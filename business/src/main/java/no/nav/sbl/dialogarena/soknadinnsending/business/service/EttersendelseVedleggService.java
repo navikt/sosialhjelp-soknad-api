@@ -91,6 +91,8 @@ public class EttersendelseVedleggService {
     }
 
     public List<EttersendelseVedlegg> lastOppVedlegg(Long vedleggId, byte[] data, String filnavn) {
+        vedleggOriginalFilerService.validerFil(data);
+
         String behandlingsId = vedleggService.hentBehandlingsId(vedleggId);
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, false);
 
