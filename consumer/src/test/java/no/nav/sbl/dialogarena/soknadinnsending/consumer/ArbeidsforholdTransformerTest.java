@@ -60,7 +60,7 @@ public class ArbeidsforholdTransformerTest {
         assertThat(arbeidsforhold.variabelStillingsprosent, equalTo(false));
         assertThat(arbeidsforhold.fom, equalTo("2015-01-01"));
         assertThat(arbeidsforhold.tom, equalTo(null));
-        assertThat(arbeidsforhold.arbridsgiverNavn, equalTo("Testesen A/S, andre linje"));
+        assertThat(arbeidsforhold.arbeidsgivernavn, equalTo("Testesen A/S, andre linje"));
     }
 
     @Ignore
