@@ -1,6 +1,9 @@
-package no.nav.sbl.dialogarena.integration;
+package no.nav.sbl.dialogarena.integration.foreldrepenger;
 
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.*;
+import no.nav.sbl.dialogarena.integration.AbstractIT;
+import no.nav.sbl.dialogarena.integration.EndpointDataMocking;
+import no.nav.sbl.dialogarena.integration.SoknadTester;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.ForeldrepengerInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad.Stonadstyper;
 import org.junit.Before;

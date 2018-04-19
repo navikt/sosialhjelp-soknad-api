@@ -155,7 +155,7 @@ public class ArbeidsforholdBolkTest {
     private no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold lagArbeidsforhold() {
         no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold arbeidsforhold = new no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold();
         arbeidsforhold.orgnr = "12345";
-        arbeidsforhold.arbridsgiverNavn = "test";
+        arbeidsforhold.arbeidsgivernavn = "test";
         arbeidsforhold.harFastStilling = true;
         arbeidsforhold.variabelStillingsprosent = false;
         arbeidsforhold.land = new Land("norge", "NO");

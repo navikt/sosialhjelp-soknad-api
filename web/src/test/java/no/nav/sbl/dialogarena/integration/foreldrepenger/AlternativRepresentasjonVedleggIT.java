@@ -1,9 +1,12 @@
-package no.nav.sbl.dialogarena.integration;
+package no.nav.sbl.dialogarena.integration.foreldrepenger;
 
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Innsendingsvalg;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Vedlegg;
 import no.nav.sbl.dialogarena.config.IntegrationConfig;
+import no.nav.sbl.dialogarena.integration.AbstractIT;
+import no.nav.sbl.dialogarena.integration.EndpointDataMocking;
+import no.nav.sbl.dialogarena.integration.SoknadTester;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.ForeldrepengerInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
@@ -21,7 +24,7 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenge
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-public class AlternativRepresentasjonForeldrepengerVedleggIT extends AbstractIT {
+public class AlternativRepresentasjonVedleggIT extends AbstractIT {
 
     private String engangsstonadAdopsjonSkjemanummer = new ForeldrepengerInformasjon().getSkjemanummer().get(1);
 
