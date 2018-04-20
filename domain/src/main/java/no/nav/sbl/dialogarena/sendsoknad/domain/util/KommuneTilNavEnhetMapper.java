@@ -40,8 +40,9 @@ public class KommuneTilNavEnhetMapper {
 
     private static final Map<String, NavEnhet> PROD_ORGNR = new ImmutableMap.Builder<String, NavEnhet>()
             .put("horten", new NavEnhet("NAV Horten", "974605171"))
-            .put("bergenhus", new NavEnhet("NAV Bergen Bydel Bergenhus", "976830563")) //OK
-            .put("ytrebygda", new NavEnhet("NAV Bergen Bydel Ytrebygda", "976830652")) //OK
+            .put("bergenhus", new NavEnhet("NAV Bergenhus, Bergen", "976830563")) //OK
+            .put("ytrebygda", new NavEnhet("NAV Ytrebygda, Bergen", "976830652")) //OK
+            .put("gamleoslo", new NavEnhet("NAV Gamle Oslo, Oslo", "974778866")) //OK
             //.put("frogner", new NavEnhet("NAV Oslo Bydel Frogner", "874778702")) //OK
             //.put("grunerlokka", new NavEnhet("NAV Oslo Bydel Grünerløkka", "870534612")) //OK
             //.put("grorud", new NavEnhet("NAV Oslo Bydel Grorud", "974778866")) //OK
