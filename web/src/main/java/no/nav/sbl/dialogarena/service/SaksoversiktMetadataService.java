@@ -56,7 +56,7 @@ public class SaksoversiktMetadataService {
                         .withInnsendtDato(tilDate(soknad.innsendtDato))
                         .withHoveddokument(new Hoveddokument()
                                 .withTittel(soknad.type.equals(SEND_SOKNAD_KOMMUNAL) ? bundle.getProperty("saksoversikt.soknadsnavn") : bundle.getProperty("saksoversikt.soknadsnavn.ettersending")))
-                        .withVedlegg(tilJsonVedlegg(soknad.vedlegg, erLastetOpp, bundle))
+                        .withVedlegg(tilInnsendteVedlegg(soknad.vedlegg, bundle))
                         .withTema("KOM")
                         .withTemanavn(bundle.getProperty("saksoversikt.temanavn"))
                         .withLenke(lagEttersendelseLenke(soknad.behandlingsId)))
@@ -91,15 +91,26 @@ public class SaksoversiktMetadataService {
                 .withBehandlingsId(soknad.behandlingsId)
                 .withTittel(bundle.getProperty("saksoversikt.soknadsnavn"))
                 .withLenke(lagEttersendelseLenke(soknad.behandlingsId))
-                .withVedlegg(tilJsonVedlegg(soknad.vedlegg, erLastetOpp.negate(), bundle))
+                .withVedlegg(tilEttersendelseVedlegg(soknad.vedlegg, bundle))
         ).collect(toList());
     }
 
     private Predicate<VedleggMetadata> erLastetOpp = v -> v.status.er(LastetOpp);
 
-    private List<Vedlegg> tilJsonVedlegg(VedleggMetadataListe vedlegg, Predicate<VedleggMetadata> filter, Properties bundle) {
+    private List<Vedlegg> tilEttersendelseVedlegg(VedleggMetadataListe vedlegg, Properties bundle) {
         return vedlegg.vedleggListe.stream()
-                .filter(filter)
+                .filter(erLastetOpp.negate())
+                .filter(v -> !"annet".equals(v.skjema) || !"annet".equals(v.tillegg))
+                .map(v -> "vedlegg." + v.skjema + "." + v.tillegg + ".tittel")
+                .distinct()
+                .map(bundle::getProperty)
+                .map(navn -> new Vedlegg().withTittel(navn))
+                .collect(toList());
+    }
+
+    private List<Vedlegg> tilInnsendteVedlegg(VedleggMetadataListe vedlegg, Properties bundle) {
+        return vedlegg.vedleggListe.stream()
+                .filter(erLastetOpp)
                 .map(v -> "vedlegg." + v.skjema + "." + v.tillegg + ".tittel")
                 .distinct()
                 .map(bundle::getProperty)
