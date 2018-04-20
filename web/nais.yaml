@@ -25,9 +25,12 @@ fasitResources:
     resourceType: restservice
     path: /soknadsosialhjelp-server/metadata
   used:
-  - alias: srvSoknadsosialhjelpCredential
+  - alias: srvsoknadsosialhjelp-server
     resourceType: credential
-  - alias: srvSoknadsosialhjelp
+    propertyMap:
+      username: SRVSOKNADSOSIALHJELP_SERVER_CREDENTIALS_USERNAME
+      password: SRVSOKNADSOSIALHJELP_SERVER_CREDENTIALS_PASSWORD
+  - alias: srvsoknadsosialhjelp-server
     resourceType: certificate
   - alias: soknadsosialhjelpDataSource
     resourceType: datasource
