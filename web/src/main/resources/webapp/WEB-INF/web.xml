@@ -114,14 +114,6 @@
         <servlet-name>SelftestServlet</servlet-name>
         <url-pattern>/internal/selftest</url-pattern>
     </servlet-mapping>
-    <servlet>
-        <servlet-name>SelftestJsonServlet</servlet-name>
-        <servlet-class>no.nav.sbl.dialogarena.selftest.SelftestJsonServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>SelftestJsonServlet</servlet-name>
-        <url-pattern>/internal/selftest.json</url-pattern>
-    </servlet-mapping>
     
     <resource-ref>
         <res-ref-name>jdbc/SoknadInnsendingDS</res-ref-name>

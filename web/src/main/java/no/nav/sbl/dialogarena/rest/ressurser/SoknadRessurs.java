@@ -11,10 +11,8 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.InnsendtSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.FaktaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.InnsendtSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SynligeFaktaService;
 import org.slf4j.Logger;
@@ -33,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad.Type.Metadata;
 import static no.nav.sbl.dialogarena.sikkerhet.XsrfGenerator.generateXsrfToken;
 
 @Controller
@@ -55,9 +52,6 @@ public class SoknadRessurs {
     private SoknadService soknadService;
 
     @Inject
-    private InnsendtSoknadService innsendtSoknadService;
-
-    @Inject
     private HtmlGenerator pdfTemplate;
 
     @Inject
@@ -72,14 +66,6 @@ public class SoknadRessurs {
     public WebSoknad hentSoknadData(@PathParam("behandlingsId") String behandlingsId, @Context HttpServletResponse response) {
         response.addCookie(xsrfCookie(behandlingsId));
         return soknadService.hentSoknad(behandlingsId, true, false);
-    }
-
-    @GET
-    @Path("/{behandlingsId}")
-    @Produces("application/vnd.kvitteringforinnsendtsoknad+json")
-    @SjekkTilgangTilSoknad(type = Metadata)
-    public InnsendtSoknad hentInnsendtSoknad(@PathParam("behandlingsId") String behandlingsId, @QueryParam("sprak") String sprak) {
-        return innsendtSoknadService.hentInnsendtSoknad(behandlingsId, sprak);
     }
 
     /*
@@ -167,6 +153,13 @@ public class SoknadRessurs {
     @SjekkTilgangTilSoknad
     public List<Faktum> hentFakta(@PathParam("behandlingsId") String behandlingsId) {
         return faktaService.hentFakta(behandlingsId);
+    }
+
+    @PUT
+    @Path("/{behandlingsId}/fakta")
+    @SjekkTilgangTilSoknad
+    public void lagreFakta(@PathParam("behandlingsId") String behandlingsId, WebSoknad soknad) {
+        soknad.getFakta().stream().forEach(faktum -> faktaService.lagreBrukerFaktum(faktum));
     }
 
     @GET

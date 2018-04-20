@@ -1,0 +1,12 @@
+{{#forFaktum "aktivitet"}}
+    <h2>{{hentTekst "opprett.dineaktiviteter.tittel"}}</h2>
+    {{#hvisLik properties.id "arbeidssoking" }}
+        <p>{{hentTekst "opprett.dineaktiviteter.arbeidssoking" }}</p>
+    {{else}}
+        {{#hvisLik properties.id "ikkeaktuelt" }}
+            <p>{{hentTekst "opprett.dineaktiviteter.ikkeaktuelt" }}</p>
+        {{else}}
+            <p>{{hentTekst "opprett.dineaktiviteter.aktivitet" properties.navn properties.fom properties.tom }}</p>
+        {{/hvisLik}}
+    {{/hvisLik}}
+{{/forFaktum}}

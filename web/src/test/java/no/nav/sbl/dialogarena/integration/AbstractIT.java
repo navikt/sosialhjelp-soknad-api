@@ -35,7 +35,7 @@ public abstract class AbstractIT {
         jetty.jetty.stop.run();
     }
 
-    SoknadTester soknadMedDelstegstatusOpprettet(String dagpengerSkjemaNummer) {
+    protected SoknadTester soknadMedDelstegstatusOpprettet(String dagpengerSkjemaNummer) {
         try {
             return SoknadTester.startSoknad(dagpengerSkjemaNummer)
                     .settDelstegstatus("opprettet")

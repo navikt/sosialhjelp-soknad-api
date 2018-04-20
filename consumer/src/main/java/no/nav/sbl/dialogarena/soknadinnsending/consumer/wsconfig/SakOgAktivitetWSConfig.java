@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.tjenester.AktiviteterMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder;
 import no.nav.sbl.dialogarena.types.Pingable;
+import no.nav.sbl.dialogarena.types.Pingable.Ping.PingMetadata;
 import no.nav.tjeneste.virksomhet.sakogaktivitet.v1.SakOgAktivitetV1;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import javax.xml.namespace.QName;
 
 import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.*;
 
 @Configuration
 public class SakOgAktivitetWSConfig {
@@ -53,11 +55,12 @@ public class SakOgAktivitetWSConfig {
         return new Pingable() {
             @Override
             public Ping ping() {
+                PingMetadata metadata = new PingMetadata(sakOgAktivitetEndpoint,"Sak Og Aktivitet v1", false);
                 try {
                     sakOgAktivitetSelftestEndpoint().ping();
-                    return Ping.lyktes("SakOgAktivitet");
+                    return lyktes(metadata);
                 } catch (Exception e) {
-                    return Pingable.Ping.feilet("SakOgAktivitet", e);
+                    return feilet(metadata, e);
                 }
             }
         };
