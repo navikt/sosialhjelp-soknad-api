@@ -23,7 +23,7 @@ fasitResources:
   exposed:
   - alias: soknadsosialhjelpSaksoversikt
     resourceType: restservice
-    path: soknadsosialhjelp-server/metadata
+    path: /soknadsosialhjelp-server/metadata
   used:
   - alias: srvSoknadsosialhjelpCredential
     resourceType: credential

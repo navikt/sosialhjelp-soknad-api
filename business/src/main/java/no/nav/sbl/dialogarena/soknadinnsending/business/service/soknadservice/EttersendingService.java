@@ -86,7 +86,7 @@ public class EttersendingService {
     protected SoknadMetadata hentNyesteSoknadIKjede(SoknadMetadata originalSoknad) {
         return henvendelseService.hentBehandlingskjede(originalSoknad.behandlingsId).stream()
                 .filter(e -> e.status == FERDIG)
-                .sorted(Comparator.comparing(o -> o.innsendtDato))
+                .sorted(Comparator.comparing((SoknadMetadata o) -> o.innsendtDato).reversed())
                 .findFirst()
                 .orElse(originalSoknad);
     }
