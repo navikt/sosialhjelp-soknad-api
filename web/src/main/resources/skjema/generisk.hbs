@@ -34,21 +34,21 @@
     </div>
 
     <div>
-    {{#if @root.utvidetSoknad}}
-        <div class="personalia">
-            {{> skjema/dagpenger/personaliaBolk}}
-      </div>
-    {{/if}}
+        {{#if @root.utvidetSoknad}}
+            <div class="personalia">
+                {{> skjema/dagpenger/personaliaBolk}}
+            </div>
+        {{/if}}
         {{#each bolker}}
             <div class="bolk js-bolk">
                 <h2 class="bolk__tittel">{{ hentTekst (concat (toLowerCase navn) ".tittel") }}</h2>
                 {{#if @root.utvidetSoknad}}
-                <div class="hjelpeInfotekst">
-                    {{#hvisTekstFinnes (concat (toLowerCase navn) ".informasjon")}}
-                    <h3>Ingress:</h3>
-                    <div>{{{ hentTekst (concat (toLowerCase navn) ".informasjon") }}}</div>
-                    {{/hvisTekstFinnes}}
-                </div>
+                    <div class="hjelpeInfotekst">
+                        {{#hvisTekstFinnes (concat (toLowerCase navn) ".informasjon")}}
+                            <h3>Ingress:</h3>
+                            <div>{{{ hentTekst (concat (toLowerCase navn) ".informasjon") }}}</div>
+                        {{/hvisTekstFinnes}}
+                    </div>
                 {{/if}}
 
                 <ul class="fakta-liste">
@@ -89,11 +89,22 @@
                         {{{ hentTekst "oppsummering.bekreftOpplysninger" }}}
 
                     </li>
-                    <li>
-                        {{#hvisLik soknad.skjemaNummer "NAV 35-18.01"}}
-                            {{{hentTekst "oppsummering.bekreftOpplysninger"}}}
-                        {{/hvisLik}}
-                    </li>
+
+                    {{#hvisLik soknad.skjemaNummer "NAV 35-18.01"}}
+                        <h3>Informasjon om samtykke</h3>
+                        <li>
+                            {{{hentTekst "oppsummering.samtykke.oversendelse.pdf"}}}
+                        </li>
+                    {{/hvisLik}}
+
+
+                    {{#hvisLik soknad.skjemaNummer "NAV 35-18.01"}}
+                        <h3>Samtykke om personopplysninger for denne søknaden</h3>
+                        <li>
+                            {{{hentTekst "oppsummering.samtykke.sannferdig.pdf"}}}
+                        </li>
+                    {{/hvisLik}}
+
                 </ul>
             </li>
         </ul>
