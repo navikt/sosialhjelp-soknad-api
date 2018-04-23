@@ -30,21 +30,21 @@ public class HentEttersendelsesFilnavnHelper extends RegistryAwareHelper<Object>
     public CharSequence apply(Object o, Options options) throws IOException {
         WebSoknad soknad = finnWebSoknad(options.context);
 
-
         List<Vedlegg> vedlegg = soknad.getVedlegg();
 
-        System.out.println(NAVN);
+        System.out.println(this.getClass().getName() + " : " + NAVN);
 
         String s;
-        StringJoiner joiner = new StringJoiner("\n");
+        StringJoiner joiner = new StringJoiner("<br/ >");
         for (Vedlegg vedlegget : vedlegg) {
-            System.out.println("Filnavn : " + vedlegget.getFilnavn());
+
+            System.out.println("Filnavn ettersending : " + vedlegget.getFilnavn());
+
             if (Boolean.parseBoolean(vedlegget.getFilnavn())) {
                 joiner.add(vedlegget.getFilnavn());
             }
         }
-        s = joiner.toString();
+        return joiner.toString();
 
-        return "";
     }
 }
