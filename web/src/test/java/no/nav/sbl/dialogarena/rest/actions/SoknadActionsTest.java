@@ -123,13 +123,13 @@ public class SoknadActionsTest {
     }
 
     @Test
-    public void sendEttersendingSkalLageEttersendingDummyPdf() throws Exception {
+    public void sendEttersendingSkalLageEttersendingsPdf() throws Exception {
         when(soknadService.hentSoknad(BEHANDLINGS_ID, true, true)).thenReturn(soknad().medDelstegStatus(DelstegStatus.ETTERSENDING_OPPRETTET));
         when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyString())).thenReturn("<html></html>");
 
         actions.sendSoknad(BEHANDLINGS_ID, context);
 
-        verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), eq("skjema/ettersending/dummy"));
+        verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), eq("skjema/ettersending/kvitteringUnderEttersendelse"));
     }
 
     @Test

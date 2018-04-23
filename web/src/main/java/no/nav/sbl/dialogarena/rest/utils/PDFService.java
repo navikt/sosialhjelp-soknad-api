@@ -43,7 +43,7 @@ public class PDFService {
     }
 
     public byte[] genererEttersendingPdf(WebSoknad soknad, String servletPath) {
-        return lagPdfFraSkjema(soknad, "skjema/ettersending/dummy", servletPath);
+        return lagPdfFraSkjema(soknad, "skjema/ettersending/kvitteringUnderEttersendelse", servletPath);
     }
 
     public byte[] genererOppsummeringPdf(WebSoknad soknad, String servletPath, boolean fullSoknad) {
@@ -80,7 +80,7 @@ public class PDFService {
     private byte[] lagPdfFraMarkup(String pdfMarkup, String servletPath) {
         String fnr = SubjectHandler.getSubjectHandler().getUid();
         byte[] pdf = lagPdfFil(pdfMarkup, servletPath);
-        pdf = watermarker.applyOn(pdf, fnr, true);
+        //pdf = watermarker.applyOn(pdf, fnr, true);
         return pdf;
     }
 
