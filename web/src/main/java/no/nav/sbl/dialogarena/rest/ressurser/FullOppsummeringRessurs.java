@@ -81,7 +81,7 @@ public class FullOppsummeringRessurs {
     @Produces("application/pdf")
     @SjekkTilgangTilSoknad
     public byte[] ettersendelsepdf(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext) throws IOException {
-        sjekkOmFullOppsummeringErAktivert("fullSoknadPdf");
+        sjekkOmFullOppsummeringErAktivert("ettersendelsepdf");
         WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
         vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
         String servletPath = servletContext.getRealPath("/");
