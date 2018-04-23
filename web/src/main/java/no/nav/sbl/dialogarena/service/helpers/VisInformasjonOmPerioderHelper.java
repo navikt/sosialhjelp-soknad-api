@@ -14,12 +14,11 @@ import static no.nav.sbl.dialogarena.service.HandlebarsUtils.finnWebSoknad;
 public class VisInformasjonOmPerioderHelper extends RegistryAwareHelper<Object>{
 
     public static final String NAVN = "visInformasjonOmPerioder";
-    public static final DateTime TIDSPUNKT_HVOR_FORELDREPENGEPERIODEFEILEN_BLE_RETTET = new DateTime(2018, 04, 17, 16, 00);
 
     @Override
     public CharSequence apply(Object key, Options options) throws IOException {
         WebSoknad soknad = finnWebSoknad(options.context);
-        if (ForeldrepengerInformasjon.FORSTEGANGSSOKNADER.contains(soknad.getskjemaNummer()) && soknad.getOpprettetDato().isBefore(TIDSPUNKT_HVOR_FORELDREPENGEPERIODEFEILEN_BLE_RETTET)) {
+        if (ForeldrepengerInformasjon.FORSTEGANGSSOKNADER.contains(soknad.getskjemaNummer())) {
             return options.fn(this);
         } else {
             return options.inverse(this);
@@ -33,6 +32,6 @@ public class VisInformasjonOmPerioderHelper extends RegistryAwareHelper<Object>{
 
     @Override
     public String getBeskrivelse() {
-        return "Sjekker om en søknad er opprettet før en hardkodet dato og er en førstegangssøknad for foreldrepenger";
+        return "Sjekker om en søknad er en førstegangssøknad for foreldrepenger";
     }
 }
