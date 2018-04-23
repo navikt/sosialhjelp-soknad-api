@@ -26,10 +26,11 @@ public class HentEttersendelsestidspunktHelper extends RegistryAwareHelper<Objec
 
     @Override
     public CharSequence apply(Object o, Options options) throws IOException {
+        System.out.println(this.getClass().getName() + " : " + NAVN);
 
         WebSoknad soknad = finnWebSoknad(options.context);
-        System.out.println(NAVN);
-        if (soknad.erEttersending() && soknad.getInnsendteVedlegg().get(0) != null ) {
+
+        if (soknad.erEttersending() && soknad.getInnsendteVedlegg().get(0) != null) {
             return new Date(soknad.getInnsendteVedlegg().get(0).getOpprettetDato()).toLocaleString();
         }
 
