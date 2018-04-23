@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.sql.DataSource;
 
@@ -66,6 +68,8 @@ public class SoknadsosialhjelpServer {
     private void configure() throws IOException {
         if (isRunningOnNais()) {
             mapNaisProperties();
+            setFrom("environment/environment.properties");
+            readEnvironmentClassProperties();
             readEnvironmentProperties();
             System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
         } else {
@@ -81,7 +85,7 @@ public class SoknadsosialhjelpServer {
 
         for (String env : props.stringPropertyNames()) {
             final String interntNavn = props.getProperty(env);
-            final String value = System.getenv(env);
+            final String value = findVariableValue(env);
             if (value != null) {
                 System.setProperty(interntNavn, value);
             }
@@ -103,6 +107,16 @@ public class SoknadsosialhjelpServer {
         }
         return env;
     }
+    
+    private void readEnvironmentClassProperties() throws IOException {
+        final String env = determineEnvironment();
+        if (env.startsWith("p")) {
+            return;
+        }
+        final String envClass = env.substring(0, 1);
+        setFrom("environment/" + envClass + "/environment.properties");
+        log.info("Lastet inn oppsett for miljøområde: " + envClass);
+    }
 
     private void readEnvironmentProperties() throws IOException {
         final String env = determineEnvironment();
@@ -118,8 +132,40 @@ public class SoknadsosialhjelpServer {
 
     private static void updateJavaProperties(final Properties props) {
         for (String entry : props.stringPropertyNames()) {
-            System.setProperty(entry, props.getProperty(entry));
+            final String value = withEnvironmentVariableExpansion(props.getProperty(entry));
+            System.setProperty(entry, value);
         }
+    }
+
+    static String withEnvironmentVariableExpansion(String value) {
+        if (value == null) {
+            return null;
+        }
+
+        final Pattern p = Pattern.compile("\\$\\{([^}]*)\\}");
+        final Matcher m = p.matcher(value);
+        final StringBuffer sb = new StringBuffer();
+        while (m.find()) {
+            final String variableName = m.group(1);
+            final String replacement = Matcher.quoteReplacement(findVariableValue(variableName));
+            m.appendReplacement(sb, replacement);
+        }
+        m.appendTail(sb);
+        
+        return sb.toString();
+    }
+
+    private static String findVariableValue(final String variableName) {
+        final String envValue = System.getenv(variableName);
+        if (envValue != null) {
+            return envValue;
+        }
+        final String propValue = System.getProperty(variableName);
+        if (propValue != null) {
+            return propValue;
+        }
+        
+        throw new IllegalStateException("Kunne ikke finne referert variabel med navn: " + variableName);
     }
 
     private static Properties readProperties(String resource) throws IOException {
