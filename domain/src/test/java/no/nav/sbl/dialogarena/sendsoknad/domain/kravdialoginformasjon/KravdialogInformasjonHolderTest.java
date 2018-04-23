@@ -21,6 +21,13 @@ public class KravdialogInformasjonHolderTest {
     public void skalKasteFeilHvisSkjemanummerIkkeFinnes() {
         new KravdialogInformasjonHolder().hentKonfigurasjon("skjemaSomIkkeFinnes");
     }
+
+    @Test
+    public void alleForeldrepengeskjema() {
+        KravdialogInformasjonHolder kravdialogInformasjonHolder = new KravdialogInformasjonHolder();
+        KravdialogInformasjon konfigurasjon = kravdialogInformasjonHolder.hentKonfigurasjon(ForeldrepengerInformasjon.ENDRING_OVERFORING.get(0));
+        assertThat(konfigurasjon.getSkjemanummer(), containsInAnyOrder("NAV 14-05.06", "NAV 14-05.07", "NAV 14-05.08", "NAV 14-05.09", "NAV 14-05.10"));
+    }
     
     @Test
     public void skalHenteAlleSkjemanummerSomFinnes() {
