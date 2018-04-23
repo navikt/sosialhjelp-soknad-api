@@ -74,6 +74,20 @@ public class FullOppsummeringRessurs {
         return pdfService.genererOppsummeringPdf(soknad, servletPath, true);
     }
 
+
+    @Deprecated
+    @GET
+    @Path("/{behandlingsId}/ettersendelsespdf")
+    @Produces("application/pdf")
+    @SjekkTilgangTilSoknad
+    public byte[] ettersendelsepdf(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext) throws IOException {
+        sjekkOmFullOppsummeringErAktivert("fullSoknadPdf");
+        WebSoknad soknad = soknadDataFletter.hentSoknad(behandlingsId, true, true, false);
+        vedleggService.leggTilKodeverkFelter(soknad.hentPaakrevdeVedlegg());
+        String servletPath = servletContext.getRealPath("/");
+        return pdfService.genererEttersendingPdf(soknad, servletPath);
+    }
+
     private void sjekkOmFullOppsummeringErAktivert(String metode) {
         LOG.warn("OppsummeringRessurs metode {} forsøkt aksessert", metode);
         if (!erFeatureAktiv(RESSURS_FULLOPPSUMERING)) {

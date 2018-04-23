@@ -56,6 +56,8 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * formaterDato - Formaterer en innsendt dato på et gitt format som også sendes inn
 * formaterLangDato - Gjør en datostreng om til langt, norsk format. F. eks. '17. januar 2015'
 * harBarnetInntekt - Henter summen hvis barnet har inntekt. Må brukes innenfor en #forFaktum eller #forFakta helper. 
+* hentEttersendelsesFilnavn - Henter listen over filnavn for ettersendte vedlegg til bruk i kvittering
+* hentEttersendelsestidspunkt - Henter tidspunkt for ettersendte vedlegg
 * hentFaktumValue - Returnerer verdien til et faktum tilhørende keyen som sendes inn
 * hentLand - Henter land fra Kodeverk basert på landkode.
 * hentMiljovariabel - Finner miljovariabel fra key
@@ -293,6 +295,20 @@ må ha et faktum i context, f. eks. via
         Barnet har ikke inntekt.
     {{/harBarnetInntekt}}
 {{/forFaktum}}
+
+```
+
+
+##### hentEttersendelsesFilnavn
+
+```
+
+```
+
+
+##### hentEttersendelsestidspunkt
+
+```
 
 ```
 
