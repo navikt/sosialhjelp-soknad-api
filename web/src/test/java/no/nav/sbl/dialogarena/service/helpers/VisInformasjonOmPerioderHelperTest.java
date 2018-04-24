@@ -1,11 +1,11 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
 import com.github.jknack.handlebars.Handlebars;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.ForeldrepengerInformasjon;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -79,6 +79,36 @@ public class VisInformasjonOmPerioderHelperTest {
     public void viserAnnetInnholdNarSoknadHarFeilSkjemanummer() throws IOException {
         String compiled = handlebars.compileInline("{{#visInformasjonOmPerioder}}JA{{else}}NEI{{/visInformasjonOmPerioder}}").apply(
                 opprettSoknad(ForeldrepengerInformasjon.ENGANGSSTONADER.get(0))
+        );
+        assertThat(compiled).isEqualTo("NEI");
+    }
+
+    @Test
+    public void viserAnnetInnholdNarBarnetErFodtForForsteMars() throws IOException {
+        WebSoknad soknad = opprettSoknad(ForeldrepengerInformasjon.FORSTEGANGSSOKNADER.get(0));
+        soknad.medFaktum(new Faktum().medKey("barnet.dato").medValue("2018-02-28"));
+        String compiled = handlebars.compileInline("{{#visInformasjonOmPerioder}}JA{{else}}NEI{{/visInformasjonOmPerioder}}").apply(
+                soknad
+        );
+        assertThat(compiled).isEqualTo("NEI");
+    }
+
+    @Test
+    public void viserAnnetInnholdNarBarnetErFodtEtterMars() throws IOException {
+        WebSoknad soknad = opprettSoknad(ForeldrepengerInformasjon.FORSTEGANGSSOKNADER.get(0));
+        soknad.medFaktum(new Faktum().medKey("barnet.dato").medValue("2018-03-01"));
+        String compiled = handlebars.compileInline("{{#visInformasjonOmPerioder}}JA{{else}}NEI{{/visInformasjonOmPerioder}}").apply(
+                soknad
+        );
+        assertThat(compiled).isEqualTo("JA");
+    }
+
+    @Test
+    public void viserAnnetInnholdNarBarnetErFodtForsteJuli() throws IOException {
+        WebSoknad soknad = opprettSoknad(ForeldrepengerInformasjon.FORSTEGANGSSOKNADER.get(0));
+        soknad.medFaktum(new Faktum().medKey("barnet.dato").medValue("2018-07-01"));
+        String compiled = handlebars.compileInline("{{#visInformasjonOmPerioder}}JA{{else}}NEI{{/visInformasjonOmPerioder}}").apply(
+                soknad
         );
         assertThat(compiled).isEqualTo("NEI");
     }
