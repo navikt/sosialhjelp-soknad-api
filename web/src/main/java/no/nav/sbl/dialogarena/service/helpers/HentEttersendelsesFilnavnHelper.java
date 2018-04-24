@@ -28,6 +28,8 @@ public class HentEttersendelsesFilnavnHelper extends RegistryAwareHelper<Object>
     public CharSequence apply(Object o, Options options) throws IOException {
         final WebSoknad soknad = finnWebSoknad(options.context);
 
+        System.out.println(NAVN + getBeskrivelse());
+
         return soknad.getVedlegg().stream().map(
                 vedlegg -> vedlegg.getFilnavn()).filter(vedlegg -> vedlegg != null).collect(Collectors.joining("\n"));
 
