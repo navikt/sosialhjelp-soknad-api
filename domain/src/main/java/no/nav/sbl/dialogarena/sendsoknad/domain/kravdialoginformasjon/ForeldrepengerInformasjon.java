@@ -9,8 +9,9 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresenta
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad.ForeldrepengerEngangsstonadTilXml;
 import org.springframework.context.MessageSource;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -36,14 +37,21 @@ public class ForeldrepengerInformasjon extends KravdialogInformasjon.DefaultOpps
         return "foreldrepenger/foreldrepenger.xml";
     }
 
+    public static final List<String> FORSTEGANGSSOKNADER = asList("NAV 14-05.06", "NAV 14-05.09");
+    public static final List<String> ENGANGSSTONADER = asList("NAV 14-05.07", "NAV 14-05.08");
+    public static final List<String> ENDRING_OVERFORING = asList("NAV 14-05.10");
+
     public List<String> getSkjemanummer() {
-        return asList("NAV 14-05.06", "NAV 14-05.07", "NAV 14-05.08", "NAV 14-05.09", "NAV 14-05.10");
+        return Stream.concat(
+                ENDRING_OVERFORING.stream(),
+                Stream.concat(FORSTEGANGSSOKNADER.stream(),
+                        ENGANGSSTONADER.stream())
+        ).collect(Collectors.toList());
     }
 
     @Override
     public List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource, WebSoknad soknad) {
-        List<String> engangsstonadSkjemanummerListe = Arrays.asList("NAV 14-05.07","NAV 14-05.08");
-        if (engangsstonadSkjemanummerListe.contains(soknad.getskjemaNummer())) {
+        if (ENGANGSSTONADER.contains(soknad.getskjemaNummer())) {
             Event event = MetricsFactory.createEvent("soknad.alternativrepresentasjon.aktiv");
             event.addTagToReport("skjemanummer", soknad.getskjemaNummer());
             event.addTagToReport("soknadstype", getSoknadTypePrefix());

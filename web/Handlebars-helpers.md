@@ -89,6 +89,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * variabel - Lager en variabel med en bestemt verdi som kun er tilgjengelig innenfor helperen
 * vedleggCmsNokkel - Henter teksten for et vedlegg
 * visCheckbox - hvis value er "true" eller key.false-teksten finnes
+* visInformasjonOmPerioder - Sjekker om en søknad er opprettet før en hardkodet dato og er en førstegangssøknad for foreldrepenger
 
 
 #### Eksempler
@@ -609,5 +610,15 @@ Leser fra model på context
 {{#visCheckbox "value" "en.nokkel"}}
    Value er "true" eller teksten "en.nokkel.false" finnes
 {{/visCheckbox}}
+```
+
+
+##### visInformasjonOmPerioder
+
+```
+{{#visInformasjonOmPerioder}}
+Dersom du fylte ut søknaden mellom fredag 13. april og tirsdag 17. april, kan du ha fått feil informasjon om lengden på stønadsperiodene. I dette tidsrommet kan søknaden ha foreslått for mange uker dersom du fylte ut en førstegangssøknad. Vi ber deg gå tilbake til skjema, slette periodene og fylle ut disse på nytt. Vi beklager ulempene dette medfører.
+{{/visInformasjonOmPerioder}}
+
 ```
 

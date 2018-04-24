@@ -32,7 +32,6 @@ public class KravdialogInformasjonHolder {
                 new TiltakspengerInformasjon(),
                 new SoknadRefusjonDagligreise(),
                 new SosialhjelpInformasjon()
-                //new ForeldrepengerOverforingInformasjon()
         ));
     }
 
