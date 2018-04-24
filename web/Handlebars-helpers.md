@@ -39,6 +39,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 #### Helpers på nytt registreringsformat
 
 * concat - Legger sammen alle parametrene til tekststring
+* filnavnEttersendteSosialhjelpVedlegg - Helper for å liste ut filnavn for ettersendte vedlegg
 * fnrTilKortDato - Formatterer et gyldig fødselnummer til dato på formatet dd.mm.aaaa
 * forBarnefakta - Itererer over alle fakta som har den gitte keyen og parentfaktum satt til nærmeste faktum oppover i context.
 * forFakta - Finner alle fakta med en gitt key og setter hvert faktum som aktiv context etter tur. Har inverse ved ingen fakta.
@@ -99,6 +100,13 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 
 ```
 {{ concat "a" "b" "c" "d" }}
+```
+
+
+##### filnavnEttersendteSosialhjelpVedlegg
+
+```
+
 ```
 
 
