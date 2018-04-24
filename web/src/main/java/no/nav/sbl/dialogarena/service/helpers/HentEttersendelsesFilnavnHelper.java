@@ -29,7 +29,7 @@ public class HentEttersendelsesFilnavnHelper extends RegistryAwareHelper<Object>
         final WebSoknad soknad = finnWebSoknad(options.context);
 
         return soknad.getVedlegg().stream().map(
-                vedlegg -> vedlegg.getFilnavn()).filter(vedlegg -> vedlegg != null).collect(Collectors.joining("<br />"));
+                vedlegg -> vedlegg.getFilnavn()).filter(vedlegg -> vedlegg != null).collect(Collectors.joining("\n"));
 
     }
 }
