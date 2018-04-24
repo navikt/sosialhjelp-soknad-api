@@ -130,6 +130,6 @@ public class KommuneTilNavEnhetMapper {
     }
 
     private static boolean isProduction() {
-        return System.getProperty("environment.name").equals("p");
+        return "p".equals(System.getProperty("environment.name"));
     }
 }
