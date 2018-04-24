@@ -68,7 +68,9 @@ public class EttersendelseVedleggService {
         List<Vedlegg> originaleVedlegg = webSoknad.getVedlegg();
 
         SortedMap<String, EttersendelseVedlegg> ettersendelseVedlegg = new TreeMap<>((o1, o2) -> {
-            if (o1.equals("annet|annet")) {
+            if (o1.equals(o2)) {
+                return 0;
+            } else if (o1.equals("annet|annet")) {
                 return 1;
             } else if (o2.equals("annet|annet")) {
                 return -1;
