@@ -26,7 +26,6 @@ public class HentEttersendelsestidspunktHelper extends RegistryAwareHelper<Objec
 
     @Override
     public CharSequence apply(Object o, Options options) throws IOException {
-        System.out.println(this.getClass().getName() + " : " + NAVN);
 
         WebSoknad soknad = finnWebSoknad(options.context);
 
