@@ -12,8 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -250,25 +250,28 @@ public class InformasjonRessurs {
     
     @GET
     @Path("/kommunevalg")
-    public Collection<EnhetEllerGruppe> hentKommunevalg() {
-        final Map<String, EnhetEllerGruppe> enheter = new HashMap<String, EnhetEllerGruppe>();
-        for (Entry<String, NavEnhet> entry : KommuneTilNavEnhetMapper.getNavEnheter().entrySet()) {
-            final String kontorId = entry.getKey();
+    public Collection<NavEnhetFrontend> hentKommunevalg() {
+        final Collection<NavEnhetFrontend> navEnheter = KommuneTilNavEnhetMapper.getNavEnheter().entrySet().stream().map(entry -> {
             final NavEnhet navEnhet = entry.getValue();
-            
-            if (navEnhet.getKommune() == null) {
-                enheter.put(kontorId, new EnhetEllerGruppe(kontorId, navEnhet.getKontornavn(), navEnhet.getNavn(), "enhet"));
-            } else {
-                EnhetEllerGruppe kommune = enheter.get(navEnhet.getKommune());
-                if (kommune == null) {
-                    kommune = new EnhetEllerGruppe(navEnhet.getKommune(), navEnhet.getKommunenavn(), null, "gruppe");
-                    enheter.put(navEnhet.getKommune(), kommune);
-                }
-                kommune.addBydel(new Enhet(kontorId, navEnhet.getKontornavn(), navEnhet.getNavn()));
-            }
-        }
+            return new NavEnhetFrontend(entry.getKey(),
+                    navEnhet.getKontornavn(),
+                    navEnhet.getKommune(),
+                    navEnhet.getNavn(),
+                    (navEnhet.getKommune() == null) ? "KOMMUNE" : "BYDEL");
+        }).collect(Collectors.toList());
         
-        return enheter.values();
+        final Collection<NavEnhetFrontend> kommuner = KommuneTilNavEnhetMapper.getKommunerMedBydeler().entrySet().stream().map(entry -> {
+            return new NavEnhetFrontend(entry.getKey(),
+                    entry.getValue(),
+                    null,
+                    null,
+                    "KOMMUNE");
+        }).collect(Collectors.toList());
+        
+        final List<NavEnhetFrontend> navEnheterMedKommuner = new ArrayList<>();
+        navEnheterMedKommuner.addAll(navEnheter);
+        navEnheterMedKommuner.addAll(kommuner);
+        return navEnheterMedKommuner;
     }
 
     @POST
@@ -294,37 +297,19 @@ public class InformasjonRessurs {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     @SuppressWarnings("unused")
-    private static class EnhetEllerGruppe {
+    private static class NavEnhetFrontend {
         public String id;
         public String navn;
+        public String kommuneId;
         public String fulltNavn;
         public String type;
-        public List<Enhet> bydeler = new ArrayList<Enhet>();
         
-        private EnhetEllerGruppe(String id, String navn, String fulltNavn, String type) {
+        private NavEnhetFrontend(String id, String navn, String kommuneId, String fulltNavn, String type) {
             this.id = id;
             this.navn = navn;
+            this.kommuneId = kommuneId;
             this.fulltNavn = fulltNavn;
             this.type = type;
         }
-        
-        void addBydel(Enhet bydel) {
-            bydeler.add(bydel);
-        }
-    }
-
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @SuppressWarnings("unused")
-    private static class Enhet {
-        public String id;
-        public String navn;
-        public String fulltNavn;
-        
-        private Enhet(String id, String navn, String fulltNavn) {
-            this.id = id;
-            this.navn = navn;
-            this.fulltNavn = fulltNavn;
-        }
-    }
-    
+    }   
 }
