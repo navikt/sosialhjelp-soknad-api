@@ -106,6 +106,10 @@ public class KommuneTilNavEnhetMapper {
         return mapper;
     }
 
+    public static Map<String, String> getKommunerMedBydeler() {
+        return kommunenavnMapper;
+    }
+
     public static NavEnhet getNavEnhetFromWebSoknad(WebSoknad webSoknad) {
         String key;
         if (webSoknad.getFaktumMedKey("personalia.bydel") == null || isEmpty(webSoknad.getFaktumMedKey("personalia.bydel").getValue())) {
