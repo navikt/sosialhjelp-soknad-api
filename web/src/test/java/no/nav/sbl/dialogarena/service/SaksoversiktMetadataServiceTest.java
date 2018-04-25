@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadata;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EttersendingService;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.EttersendingsSoknad;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.InnsendtSoknad;
 import org.junit.Before;
@@ -39,6 +40,9 @@ public class SaksoversiktMetadataServiceTest {
 
     @Mock
     SoknadMetadataRepository soknadMetadataRepository;
+
+    @Mock
+    EttersendingService ettersendingService;
 
     @Mock
     NavMessageSource navMessageSource;
@@ -109,6 +113,7 @@ public class SaksoversiktMetadataServiceTest {
     @Test
     public void hentForEttersendelse() {
         when(soknadMetadataRepository.hentSoknaderForEttersending(anyString(), any())).thenReturn(asList(soknadMetadata));
+        when(ettersendingService.hentNyesteSoknadIKjede(any())).thenReturn(soknadMetadata);
 
         List<EttersendingsSoknad> resultat = saksoversiktMetadataService.hentSoknaderBrukerKanEttersendePa("12345");
 
@@ -122,6 +127,7 @@ public class SaksoversiktMetadataServiceTest {
     @Test
     public void hentForEttersendelseHarRiktigInterval() {
         when(soknadMetadataRepository.hentSoknaderForEttersending(anyString(), timeCaptor.capture())).thenReturn(asList(soknadMetadata));
+        when(ettersendingService.hentNyesteSoknadIKjede(any())).thenReturn(soknadMetadata);
 
         saksoversiktMetadataService.hentSoknaderBrukerKanEttersendePa("12345");
 
