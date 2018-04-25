@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.service.helpers;
 
 import com.github.jknack.handlebars.Options;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -29,12 +30,13 @@ public class HentEttersendelsestidspunktHelper extends RegistryAwareHelper<Objec
 
         WebSoknad soknad = finnWebSoknad(options.context);
 
-        System.out.println(NAVN + " : " + getBeskrivelse());
+        if (soknad.erEttersending()) {
 
-        if (soknad.erEttersending() && soknad.getInnsendteVedlegg().get(0) != null) {
-            return new Date(soknad.getInnsendteVedlegg().get(0).getOpprettetDato()).toLocaleString();
+            DateTime dateTime = soknad.getOpprettetDato();
+
+            return new Date(dateTime.getMillis()).toLocaleString();
+
         }
-
-        return null;
+        return "";
     }
 }
