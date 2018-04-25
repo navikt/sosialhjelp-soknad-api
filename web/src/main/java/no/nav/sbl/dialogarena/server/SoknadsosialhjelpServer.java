@@ -70,7 +70,6 @@ public class SoknadsosialhjelpServer {
             readEnvironmentClassProperties();
             readEnvironmentProperties();
             System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
-            log.info("soknad.alternativrepresentasjon.ressurs.enabled = " + System.getProperty("soknad.alternativrepresentasjon.ressurs.enabled"));
         } else {
             log.info("Running with DEVELOPER (local) setup.");
             configureLocalSecurity();
