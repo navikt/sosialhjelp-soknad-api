@@ -3,11 +3,11 @@ package no.nav.sbl.dialogarena.rest.actions;
 import no.nav.modig.core.context.ThreadLocalSubjectHandler;
 import no.nav.sbl.dialogarena.config.SoknadActionsTestConfig;
 import no.nav.sbl.dialogarena.rest.meldinger.SoknadBekreftelse;
-import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.DelstegStatus;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.ForeldrepengerInformasjon;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.service.EmailService;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
@@ -99,7 +99,7 @@ public class SoknadActionsTest {
     }
 
     @Test
-    public void sendSoknadSkalSendeMedUtvidetSoknadOmDetErSattPaaConfig()throws Exception{
+    public void sendSoknadSkalSendeMedUtvidetSoknadOmDetErSattPaaConfig() throws Exception {
         when(soknadService.hentSoknad(BEHANDLINGS_ID, true, true)).thenReturn(soknad().medSoknadPrefix("dagpenger.ordinaer"));
         when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyBoolean())).thenReturn("<html></html>").thenReturn("<html></html>");
         when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyString())).thenReturn("<html></html>");
@@ -123,13 +123,13 @@ public class SoknadActionsTest {
     }
 
     @Test
-    public void sendEttersendingSkalLageEttersendingDummyPdf() throws Exception {
+    public void sendEttersendingSkalLageEttersendingsPdf() throws Exception {
         when(soknadService.hentSoknad(BEHANDLINGS_ID, true, true)).thenReturn(soknad().medDelstegStatus(DelstegStatus.ETTERSENDING_OPPRETTET));
         when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyString())).thenReturn("<html></html>");
 
         actions.sendSoknad(BEHANDLINGS_ID, context);
 
-        verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), eq("skjema/ettersending/dummy"));
+        verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), eq("skjema/ettersending/kvitteringUnderEttersendelse"));
     }
 
     @Test
