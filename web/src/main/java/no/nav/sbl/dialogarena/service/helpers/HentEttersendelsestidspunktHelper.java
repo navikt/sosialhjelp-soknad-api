@@ -3,10 +3,12 @@ package no.nav.sbl.dialogarena.service.helpers;
 import com.github.jknack.handlebars.Options;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Date;
+import java.util.Locale;
 
 import static no.nav.sbl.dialogarena.service.HandlebarsUtils.finnWebSoknad;
 
@@ -32,10 +34,13 @@ public class HentEttersendelsestidspunktHelper extends RegistryAwareHelper<Objec
 
         if (soknad.erEttersending()) {
 
-            DateTime dateTime = soknad.getOpprettetDato();
+            Locale sprak = soknad.getSprak();
+            DateTime now = DateTime.now();
 
-            return new Date(dateTime.getMillis()).toLocaleString();
+            DateTimeFormatter datoFormatter = DateTimeFormat.forPattern("d. MMMM yyyy").withLocale(sprak);
+            DateTimeFormatter klokkeslettFormatter = DateTimeFormat.forPattern("HH.mm").withLocale(sprak);
 
+            return datoFormatter.print(now) + " " + klokkeslettFormatter.print(now);
         }
         return "";
     }
