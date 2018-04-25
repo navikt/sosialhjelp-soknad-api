@@ -3,8 +3,8 @@ package no.nav.sbl.dialogarena.service;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadataListe;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EttersendingService;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.*;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
-import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.LastetOpp;
@@ -32,6 +31,9 @@ public class SaksoversiktMetadataService {
 
     @Inject
     private SoknadMetadataRepository soknadMetadataRepository;
+
+    @Inject
+    private EttersendingService ettersendingService;
 
     @Inject
     private NavMessageSource navMessageSource;
@@ -91,15 +93,15 @@ public class SaksoversiktMetadataService {
                 .withBehandlingsId(soknad.behandlingsId)
                 .withTittel(bundle.getProperty("saksoversikt.soknadsnavn"))
                 .withLenke(lagEttersendelseLenke(soknad.behandlingsId))
-                .withVedlegg(tilEttersendelseVedlegg(soknad.vedlegg, bundle))
+                .withVedlegg(finnManglendeVedlegg(soknad, bundle))
         ).collect(toList());
     }
 
-    private Predicate<VedleggMetadata> erLastetOpp = v -> v.status.er(LastetOpp);
+    private List<Vedlegg> finnManglendeVedlegg(SoknadMetadata soknad, Properties bundle) {
+        SoknadMetadata nyesteSoknad = ettersendingService.hentNyesteSoknadIKjede(soknad);
 
-    private List<Vedlegg> tilEttersendelseVedlegg(VedleggMetadataListe vedlegg, Properties bundle) {
-        return vedlegg.vedleggListe.stream()
-                .filter(erLastetOpp.negate())
+        return nyesteSoknad.vedlegg.vedleggListe.stream()
+                .filter(v -> v.status.erIkke(LastetOpp))
                 .filter(v -> !"annet".equals(v.skjema) || !"annet".equals(v.tillegg))
                 .map(v -> "vedlegg." + v.skjema + "." + v.tillegg + ".tittel")
                 .distinct()
@@ -110,7 +112,7 @@ public class SaksoversiktMetadataService {
 
     private List<Vedlegg> tilInnsendteVedlegg(VedleggMetadataListe vedlegg, Properties bundle) {
         return vedlegg.vedleggListe.stream()
-                .filter(erLastetOpp)
+                .filter(v -> v.status.er(LastetOpp))
                 .map(v -> "vedlegg." + v.skjema + "." + v.tillegg + ".tittel")
                 .distinct()
                 .map(bundle::getProperty)
