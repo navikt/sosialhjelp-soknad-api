@@ -77,13 +77,18 @@
         <hr/>
         <br/>
 
-        Følgengde vedlegg er sendt {{toCapitalized
-            (formaterDato dato "EEEE")}} {{hentEttersendelsestidspunkt}}:
+        <h3>Følgende vedlegg er sendt {{toCapitalized
+                (formaterDato dato "EEEE")}} {{hentEttersendelsestidspunkt}}:</h3>
 
+
+<br/>
         {{#ettersendteVedlegg}}
+            <p>
+            <span>{{{ hentTekst (concat "vedlegg." this.[0].skjemaNummer "." this.[0].skjemanummerTillegg ".tittel") }}}</span><br/>Filer:<br/>
             {{#each this}}
                 Filnavn : {{this.filnavn}}  <br/>
             {{/each}}
+            </p>
         {{/ettersendteVedlegg}}
 
 
