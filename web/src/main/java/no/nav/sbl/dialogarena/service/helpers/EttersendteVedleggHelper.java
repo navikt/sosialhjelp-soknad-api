@@ -21,21 +21,15 @@ public class EttersendteVedleggHelper extends RegistryAwareHelper<Object> {
     @Override
     public CharSequence apply(Object key, Options options) throws IOException {
 
-        System.out.println(NAVN + getBeskrivelse());
-
+        System.out.println(NAVN + " : " + getBeskrivelse());
+        
         WebSoknad soknad = finnWebSoknad(options.context);
-
-        //    List<String> filnavnene = soknad.getVedlegg().stream().map(
-        //          vedlegg -> vedlegg.getFilnavn()).filter(vedlegg -> vedlegg != null).collect(Collectors.toList());
 
         List<Vedlegg> alleVedlegg = soknad.getVedlegg();
 
         Map<String, Vedlegg> vedleggMap = new HashMap<>();
 
         for (Vedlegg vedlegg : alleVedlegg) {
-          /*  if (vedlegg.getInnsendingsvalg().erIkke(LastetOpp)) {
-                continue;
-            }*/
 
             String sammensattNavn = vedlegg.getSkjemaNummer() + "|" + vedlegg.getSkjemanummerTillegg();
             Vedlegg vedlegget = vedleggMap.get(sammensattNavn);

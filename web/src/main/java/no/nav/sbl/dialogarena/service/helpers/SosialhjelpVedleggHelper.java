@@ -21,7 +21,10 @@ public class SosialhjelpVedleggHelper extends RegistryAwareHelper<Object>{
 
     @Override
     public CharSequence apply(Object key, Options options) throws IOException {
+        System.out.println(NAVN + " : " + getBeskrivelse());
+
         WebSoknad soknad = finnWebSoknad(options.context);
+
 
         List<Vedlegg> vedlegg = soknad.getVedlegg();
 

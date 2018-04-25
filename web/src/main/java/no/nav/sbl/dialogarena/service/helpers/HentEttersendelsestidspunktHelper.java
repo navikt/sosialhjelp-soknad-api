@@ -29,7 +29,7 @@ public class HentEttersendelsestidspunktHelper extends RegistryAwareHelper<Objec
 
         WebSoknad soknad = finnWebSoknad(options.context);
 
-        System.out.println(NAVN + getBeskrivelse());
+        System.out.println(NAVN + " : " + getBeskrivelse());
 
         if (soknad.erEttersending() && soknad.getInnsendteVedlegg().get(0) != null) {
             return new Date(soknad.getInnsendteVedlegg().get(0).getOpprettetDato()).toLocaleString();
