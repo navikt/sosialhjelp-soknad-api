@@ -80,11 +80,9 @@
         Følgengde vedlegg er sendt {{toCapitalized
             (formaterDato dato "EEEE")}} {{hentEttersendelsestidspunkt}}:
 
-
-
         {{#ettersendteVedlegg}}
             {{#each this}}
-            Filnavn : {{this}}  <br />
+                Filnavn : {{this.filnavn}}  <br/>
             {{/each}}
         {{/ettersendteVedlegg}}
 
