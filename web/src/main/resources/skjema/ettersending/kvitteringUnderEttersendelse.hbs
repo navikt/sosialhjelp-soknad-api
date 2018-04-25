@@ -83,7 +83,9 @@
 
 
         {{#ettersendteVedlegg}}
-            <p>Filnavn : {{this}} </p>
+            {{#each this}}
+            Filnavn : {{this}}  <br />
+            {{/each}}
         {{/ettersendteVedlegg}}
 
 
