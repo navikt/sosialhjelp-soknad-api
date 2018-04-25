@@ -1,7 +1,37 @@
 package no.nav.sbl.dialogarena.rest.ressurser.informasjon;
 
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
+import org.apache.commons.lang3.LocaleUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.rest.Logg;
@@ -12,6 +42,8 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Kravdialog
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper.NavEnhet;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
@@ -19,20 +51,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.LandService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeid.ArbeidssokerInfoService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService;
 import no.nav.sbl.dialogarena.utils.InnloggetBruker;
-import org.apache.commons.lang3.LocaleUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-
-import javax.inject.Inject;
-import javax.ws.rs.*;
-import java.util.*;
-
-import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.toList;
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 
 /**
@@ -47,7 +65,6 @@ public class InformasjonRessurs {
     private static final Logger logger = LoggerFactory.getLogger(InformasjonRessurs.class);
     private static final Logger klientlogger = LoggerFactory.getLogger("klientlogger");
 
-    private static final List<String> DIGISOS_KOMMUNER = asList("0701", "0703", "0717", "1201", "0301");
     private static final List<String> DISKRESJONSKODER = asList("6", "7");
 
     @Inject
@@ -216,7 +233,7 @@ public class InformasjonRessurs {
                 Map<String, Object> adresseVerdier = new ObjectMapper().convertValue(adresse, new TypeReference<Map<String, Object>>(){});
                 resultat.putAll(adresseVerdier);
 
-                if (DIGISOS_KOMMUNER.contains(adresse.kommunenummer)) {
+                if (KommuneTilNavEnhetMapper.getDigisoskommuner().contains(adresse.kommunenummer)) {
                     harTilgang = true;
                 } else {
                     harTilgang = false;
@@ -229,6 +246,32 @@ public class InformasjonRessurs {
         resultat.put("sperrekode", sperrekode);
 
         return resultat;
+    }
+    
+    @GET
+    @Path("/kommunevalg")
+    public Collection<NavEnhetFrontend> hentKommunevalg() {
+        final Collection<NavEnhetFrontend> navEnheter = KommuneTilNavEnhetMapper.getNavEnheter().entrySet().stream().map(entry -> {
+            final NavEnhet navEnhet = entry.getValue();
+            return new NavEnhetFrontend(entry.getKey(),
+                    navEnhet.getKontornavn(),
+                    navEnhet.getKommune(),
+                    navEnhet.getNavn(),
+                    (navEnhet.getKommune() == null) ? "KOMMUNE" : "BYDEL");
+        }).collect(Collectors.toList());
+        
+        final Collection<NavEnhetFrontend> kommuner = KommuneTilNavEnhetMapper.getKommunerMedBydeler().entrySet().stream().map(entry -> {
+            return new NavEnhetFrontend(entry.getKey(),
+                    entry.getValue(),
+                    null,
+                    null,
+                    "KOMMUNE");
+        }).collect(Collectors.toList());
+        
+        final List<NavEnhetFrontend> navEnheterMedKommuner = new ArrayList<>();
+        navEnheterMedKommuner.addAll(navEnheter);
+        navEnheterMedKommuner.addAll(kommuner);
+        return navEnheterMedKommuner;
     }
 
     @POST
@@ -252,6 +295,21 @@ public class InformasjonRessurs {
         }
     }
 
-
-
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @SuppressWarnings("unused")
+    private static class NavEnhetFrontend {
+        public String id;
+        public String navn;
+        public String kommuneId;
+        public String fulltNavn;
+        public String type;
+        
+        private NavEnhetFrontend(String id, String navn, String kommuneId, String fulltNavn, String type) {
+            this.id = id;
+            this.navn = navn;
+            this.kommuneId = kommuneId;
+            this.fulltNavn = fulltNavn;
+            this.type = type;
+        }
+    }   
 }

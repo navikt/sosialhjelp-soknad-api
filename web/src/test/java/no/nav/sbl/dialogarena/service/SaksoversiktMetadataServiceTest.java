@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Properties;
 
 import static java.util.Arrays.asList;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EttersendingService.ETTERSENDELSE_FRIST_DAGER;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -124,6 +125,6 @@ public class SaksoversiktMetadataServiceTest {
 
         saksoversiktMetadataService.hentSoknaderBrukerKanEttersendePa("12345");
 
-        assertEquals(LocalDateTime.of(2018, 5, 10, 13, 33, 37), timeCaptor.getValue());
+        assertEquals(LocalDateTime.of(2018, 5, 31, 13, 33, 37).minusDays(ETTERSENDELSE_FRIST_DAGER), timeCaptor.getValue());
     }
 }
