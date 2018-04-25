@@ -18,12 +18,13 @@ public class FilnavnEttersendteSosialhjelpVedleggHelper extends RegistryAwareHel
 
     @Override
     public CharSequence apply(Object key, Options options) throws IOException {
+
+        System.out.println(NAVN + getBeskrivelse());
+
         WebSoknad soknad = finnWebSoknad(options.context);
 
         List<String> filnavnene = soknad.getVedlegg().stream().map(
-                vedlegg -> vedlegg.getFilnavn()).filter(vedlegg -> vedlegg != null && soknad.erEttersending()).collect(Collectors.toList());
-
-        System.out.println(NAVN + getBeskrivelse());
+                vedlegg -> vedlegg.getFilnavn()).filter(vedlegg -> vedlegg != null).collect(Collectors.toList());
 
         return lagItererbarRespons(options, filnavnene);
     }
