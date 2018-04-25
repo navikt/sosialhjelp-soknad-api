@@ -12,9 +12,9 @@ import static no.nav.sbl.dialogarena.service.HandlebarsUtils.finnWebSoknad;
 import static no.nav.sbl.dialogarena.service.HandlebarsUtils.lagItererbarRespons;
 
 @Component
-public class FilnavnEttersendteSosialhjelpVedleggHelper extends RegistryAwareHelper<Object> {
+public class EttersendteVedleggHelper extends RegistryAwareHelper<Object> {
 
-    public static final String NAVN = "filnavnEttersendteSosialhjelpVedlegg";
+    public static final String NAVN = "ettersendteVedlegg";
 
     @Override
     public CharSequence apply(Object key, Options options) throws IOException {

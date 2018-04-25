@@ -39,7 +39,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 #### Helpers på nytt registreringsformat
 
 * concat - Legger sammen alle parametrene til tekststring
-* filnavnEttersendteSosialhjelpVedlegg - Helper for å liste ut filnavn for ettersendte vedlegg
+* ettersendteVedlegg - Helper for å liste ut filnavn for ettersendte vedlegg
 * fnrTilKortDato - Formatterer et gyldig fødselnummer til dato på formatet dd.mm.aaaa
 * forBarnefakta - Itererer over alle fakta som har den gitte keyen og parentfaktum satt til nærmeste faktum oppover i context.
 * forFakta - Finner alle fakta med en gitt key og setter hvert faktum som aktiv context etter tur. Har inverse ved ingen fakta.
@@ -57,7 +57,6 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * formaterDato - Formaterer en innsendt dato på et gitt format som også sendes inn
 * formaterLangDato - Gjør en datostreng om til langt, norsk format. F. eks. '17. januar 2015'
 * harBarnetInntekt - Henter summen hvis barnet har inntekt. Må brukes innenfor en #forFaktum eller #forFakta helper. 
-* hentEttersendelsesFilnavn - Henter listen over filnavn for ettersendte vedlegg til bruk i kvittering
 * hentEttersendelsestidspunkt - Henter tidspunkt for ettersendte vedlegg
 * hentFaktumValue - Returnerer verdien til et faktum tilhørende keyen som sendes inn
 * hentLand - Henter land fra Kodeverk basert på landkode.
@@ -103,10 +102,12 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 ```
 
 
-##### filnavnEttersendteSosialhjelpVedlegg
+##### ettersendteVedlegg
 
 ```
-
+{{#ettersendteVedlegg}}
+    får grupperte vedlegg
+{{/ettersendteVedlegg}}
 ```
 
 
@@ -303,13 +304,6 @@ må ha et faktum i context, f. eks. via
         Barnet har ikke inntekt.
     {{/harBarnetInntekt}}
 {{/forFaktum}}
-
-```
-
-
-##### hentEttersendelsesFilnavn
-
-```
 
 ```
 
