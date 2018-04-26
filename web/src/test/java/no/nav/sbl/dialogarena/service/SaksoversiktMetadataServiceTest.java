@@ -81,11 +81,11 @@ public class SaksoversiktMetadataServiceTest {
         VedleggMetadata v3 = new VedleggMetadata();
         v3.skjema = "skjema2";
         v3.tillegg = "tillegg1";
-        v3.status = Status.SendesSenere;
+        v3.status = Status.VedleggKreves;
         VedleggMetadata v4 = new VedleggMetadata();
         v4.skjema = "annet";
         v4.tillegg = "annet";
-        v4.status = Status.SendesSenere;
+        v4.status = Status.VedleggKreves;
 
         List<VedleggMetadata> vedleggListe = soknadMetadata.vedlegg.vedleggListe;
         vedleggListe.add(v);
