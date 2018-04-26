@@ -16,10 +16,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.*;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -39,6 +37,7 @@ import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {RegistryAwareHelperTest.HandlebarsHelperTestConfig.class})
+@ActiveProfiles("RegistryTest")
 public class RegistryAwareHelperTest {
 
 
@@ -115,6 +114,7 @@ public class RegistryAwareHelperTest {
     @Import({
             CmsTekst.class
     })
+    @Profile("RegistryTest")
     public static class HandlebarsHelperTestConfig {
 
         @Bean
