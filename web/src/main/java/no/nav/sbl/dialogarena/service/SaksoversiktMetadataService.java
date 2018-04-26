@@ -20,6 +20,7 @@ import java.util.Properties;
 
 import static java.util.stream.Collectors.toList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.LastetOpp;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.VedleggKreves;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType.SEND_SOKNAD_KOMMUNAL;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EttersendingService.ETTERSENDELSE_FRIST_DAGER;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -101,7 +102,7 @@ public class SaksoversiktMetadataService {
         SoknadMetadata nyesteSoknad = ettersendingService.hentNyesteSoknadIKjede(soknad);
 
         return nyesteSoknad.vedlegg.vedleggListe.stream()
-                .filter(v -> v.status.erIkke(LastetOpp))
+                .filter(v -> v.status.er(VedleggKreves))
                 .filter(v -> !"annet".equals(v.skjema) || !"annet".equals(v.tillegg))
                 .map(v -> "vedlegg." + v.skjema + "." + v.tillegg + ".tittel")
                 .distinct()
