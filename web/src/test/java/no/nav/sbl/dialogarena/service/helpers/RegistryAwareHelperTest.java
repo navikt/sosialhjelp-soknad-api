@@ -4,10 +4,10 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.internal.Files;
 import com.github.jknack.handlebars.io.StringTemplateSource;
 import com.github.jknack.handlebars.io.TemplateSource;
-import no.nav.sbl.dialogarena.config.HandlebarsHelperConfig;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
+import no.nav.sbl.dialogarena.service.CmsTekst;
 import no.nav.sbl.dialogarena.service.HandlebarRegistry;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.Miljovariabler;
@@ -16,7 +16,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.*;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -35,8 +36,11 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {RegistryAwareHelperTest.HandlebarsHelperTestConfig.class, HandlebarsHelperConfig.class})
+@ContextConfiguration(classes = {RegistryAwareHelperTest.HandlebarsHelperTestConfig.class})
+@ActiveProfiles("RegistryTest")
 public class RegistryAwareHelperTest {
+
+
 
     private static final Logger LOG = LoggerFactory.getLogger(RegistryAwareHelperTest.class);
     public static final String NAVN = "navn";
@@ -105,6 +109,12 @@ public class RegistryAwareHelperTest {
         verify(registry, atLeastOnce()).registrerHelper(anyString(), any(RegistryAwareHelper.class));
     }
 
+    @Configuration
+    @ComponentScan(basePackageClasses = ConcatHelper.class)
+    @Import({
+            CmsTekst.class
+    })
+    @Profile("RegistryTest")
     public static class HandlebarsHelperTestConfig {
 
         @Bean
@@ -114,7 +124,7 @@ public class RegistryAwareHelperTest {
 
         @Bean
         public NavMessageSource navMessageSource() {
-          return mock(NavMessageSource.class);
+            return mock(NavMessageSource.class);
         }
 
         @Bean()

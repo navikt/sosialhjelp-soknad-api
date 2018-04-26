@@ -43,7 +43,7 @@ public class PDFService {
     }
 
     public byte[] genererEttersendingPdf(WebSoknad soknad, String servletPath) {
-        return lagPdfFraSkjema(soknad, "skjema/ettersending/dummy", servletPath);
+        return lagPdfFraSkjema(soknad, "skjema/ettersending/kvitteringUnderEttersendelse", servletPath);
     }
 
     public byte[] genererOppsummeringPdf(WebSoknad soknad, String servletPath, boolean fullSoknad) {
