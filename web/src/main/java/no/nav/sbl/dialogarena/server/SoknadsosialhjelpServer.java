@@ -1,7 +1,13 @@
 package no.nav.sbl.dialogarena.server;
 
-import static java.lang.System.setProperty;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import org.eclipse.jetty.jaas.JAASLoginService;
+import org.flywaydb.core.Flyway;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,15 +15,7 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.sql.DataSource;
-
-import org.eclipse.jetty.jaas.JAASLoginService;
-import org.flywaydb.core.Flyway;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
+import static java.lang.System.setProperty;
 
 public class SoknadsosialhjelpServer {
 
@@ -76,8 +74,6 @@ public class SoknadsosialhjelpServer {
             log.info("Running with DEVELOPER (local) setup.");
             configureLocalSecurity();
         }
-
-        disableBatch();
     }
 
     private void mapNaisProperties() throws IOException {
