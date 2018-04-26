@@ -6,6 +6,10 @@
                 {{> skjema/tilleggsstonader/felles/aktivitetsperiode}}
             {{/forFaktum}}
 
+            {{#forFaktum "reise.aktivitet.reisedager"}}
+                {{> skjema/tilleggsstonader/reiseaktivitet/reisedager}}
+            {{/forFaktum}}
+
             {{> skjema/tilleggsstonader/reiseaktivitet/avstand}}
 
             {{#variabel "faktumKey" "reise.aktivitet.reisemaal"}}

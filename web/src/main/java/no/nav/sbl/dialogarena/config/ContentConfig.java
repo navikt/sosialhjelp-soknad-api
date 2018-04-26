@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.inject.Inject;
 import java.io.File;
@@ -23,6 +24,7 @@ public class ContentConfig {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
     final static String delstiTilbundlefilPaaDisk = "tekster";
+    private static final long FEM_MINUTTER = 1000*60*5;
 
     @Bean
     public NavMessageSource navMessageSource() {
@@ -47,6 +49,11 @@ public class ContentConfig {
         //Sjekk for nye filer en gang hvert 15. sekund.
         messageSource.setCacheSeconds(15);
         return messageSource;
+    }
+
+    @Scheduled(fixedRate = FEM_MINUTTER)
+    private void slettCache() {
+        navMessageSource().clearCache();
     }
 
     private String getPropertyKey(String bundleName) {

@@ -56,6 +56,7 @@ public class MetadataInnfyller {
             infoer.add(leggTilJuridiskPdf(metadata.hovedskjema));
             infoer.addAll(leggTilVedlegg(metadata.vedlegg));
         } else if (metadata.type == SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
+            infoer.add(leggTilEttersendelsePdf(metadata.hovedskjema));
             infoer.add(leggTilVedleggJson(metadata.hovedskjema));
             infoer.addAll(leggTilVedlegg(metadata.vedlegg));
         } else {
@@ -71,6 +72,10 @@ public class MetadataInnfyller {
                 .filter(v -> !"0".equals(v.filStorrelse))
                 .map(v -> new DokumentInfo(v.filUuid, v.filnavn, v.mimetype, true))
                 .collect(Collectors.toList());
+    }
+    
+    private DokumentInfo leggTilEttersendelsePdf(SoknadMetadata.HovedskjemaMetadata hovedskjema) {
+        return new DokumentInfo(hovedskjema.filUuid, "ettersendelse.pdf", hovedskjema.mimetype);
     }
 
     private DokumentInfo leggTilPdf(SoknadMetadata.HovedskjemaMetadata hovedskjema) {

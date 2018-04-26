@@ -52,13 +52,19 @@ public class OppgaveHandtererImpl implements OppgaveHandterer {
             }
 
             Oppgave oppgave = oppgaveOptional.get();
+            Event event = MetricsFactory.createEvent("digisos.oppgaver");
+            event.addTagToReport("oppgavetype", oppgave.type);
+            event.addTagToReport("steg", oppgave.steg + "");
+            event.addFieldToReport("behandlingsid", oppgave.behandlingsId);
 
             try {
                 fiksHandterer.eksekver(oppgave);
             } catch (Exception e) {
                 logger.error("Oppgave feilet, id: {}, beh: {}", oppgave.id, oppgave.behandlingsId, e);
                 oppgaveFeilet(oppgave);
+                event.setFailed();
             }
+            event.report();
 
             if (oppgave.status == Status.UNDER_ARBEID) {
                 oppgave.status = Status.KLAR;

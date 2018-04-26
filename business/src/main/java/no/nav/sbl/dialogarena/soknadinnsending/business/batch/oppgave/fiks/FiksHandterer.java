@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+
 @Service
 public class FiksHandterer {
 
@@ -37,8 +39,9 @@ public class FiksHandterer {
             metadataInnfyller.byggOppFiksData(data);
             oppgaveKjede.nesteSteg();
         } else if (oppgaveKjede.steg == 1) {
-            Event event = MetricsFactory.createEvent("digisos.fiks.sendt");
-            event.addTagToReport("mottaker", data.mottakerNavn);
+            Event event = MetricsFactory.createEvent("digisos.fikshandterer.sendt");
+            event.addTagToReport("ettersendelse", isEmpty(data.ettersendelsePa) ? "false" : "true");
+            event.addTagToReport("mottaker", tilInfluxNavn(data.mottakerNavn));
             try {
                 resultat.fiksForsendelsesId = fiksSender.sendTilFiks(data);
                 logger.info("Søknad {} fikk id {} i Fiks", data.behandlingsId, resultat.fiksForsendelsesId);
@@ -57,5 +60,14 @@ public class FiksHandterer {
             metadataInnfyller.lagreFiksId(data, resultat);
             oppgaveKjede.ferdigstill();
         }
+    }
+
+    private String tilInfluxNavn(String mottaker) {
+        if (mottaker == null) {
+            return "";
+        }
+        return mottaker
+                .replace("NAV", "")
+                .replace(",", "");
     }
 }

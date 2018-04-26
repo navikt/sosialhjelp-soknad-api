@@ -45,8 +45,8 @@ public class VedleggOriginalFilerServiceTest {
                 "image/jpeg", "5c2a1cea-ef05-4db6-9c98-1b6c9b3faa99");
         assertEquals("etkjempelangtfilnavn123456789012345678901234567890-5c2a1cea.jpg", truncate);
 
-        String medSpesialTegn = service.lagFilnavn("en.filmedææå()ogmyerart.png", "image/jpeg", "abc-ef05");
-        assertEquals("enfilmedogmyerart-abc.jpg", medSpesialTegn);
+        String medSpesialTegn = service.lagFilnavn("en.filmedææå()ogmyerartsjø.png", "image/jpeg", "abc-ef05");
+        assertEquals("enfilmedeeaogmyerartsjo-abc.jpg", medSpesialTegn);
 
     }
 

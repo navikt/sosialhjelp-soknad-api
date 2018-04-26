@@ -56,7 +56,7 @@ public class EttersendelseVedleggServiceTest {
     }
 
     @Test
-    public void slarSammenVedlegg() {
+    public void slarSammenVedleggRiktigRekkefolge() {
         Vedlegg v1 = new Vedlegg()
                 .medVedleggId(111L)
                 .medFilnavn("fil1.jpg")
@@ -70,19 +70,25 @@ public class EttersendelseVedleggServiceTest {
                 .medSkjemanummerTillegg("tillegg1")
                 .medInnsendingsvalg(Status.LastetOpp);
         Vedlegg v3 = new Vedlegg()
+                .medVedleggId(444L)
+                .medSkjemaNummer("annet")
+                .medSkjemanummerTillegg("annet")
+                .medInnsendingsvalg(Status.VedleggKreves);
+        Vedlegg v4 = new Vedlegg()
                 .medVedleggId(333L)
                 .medSkjemaNummer("skjema2")
                 .medSkjemanummerTillegg("tillegg2")
                 .medInnsendingsvalg(Status.VedleggKreves);
 
-        webSoknad.medVedlegg(asList(v1, v2, v3));
+        webSoknad.medVedlegg(asList(v1, v2, v3, v4));
 
         List<EttersendelseVedlegg> resultat = ettersendelseVedleggService.hentVedleggForSoknad("1234beh");
 
-        assertEquals(2, resultat.size());
+        assertEquals(3, resultat.size());
 
         EttersendelseVedlegg vedlegg1 = resultat.get(0);
         EttersendelseVedlegg vedlegg2 = resultat.get(1);
+        EttersendelseVedlegg vedlegg3 = resultat.get(2);
 
         assertEquals(Status.LastetOpp, vedlegg1.innsendingsvalg);
         assertEquals(111L, vedlegg1.vedleggId);
@@ -97,6 +103,8 @@ public class EttersendelseVedleggServiceTest {
         assertEquals(Status.VedleggKreves, vedlegg2.innsendingsvalg);
         assertEquals("skjema2", vedlegg2.skjemaNummer);
         assertEquals(0, vedlegg2.filer.size());
+
+        assertEquals("annet", vedlegg3.skjemaNummer);
     }
 
     @Test

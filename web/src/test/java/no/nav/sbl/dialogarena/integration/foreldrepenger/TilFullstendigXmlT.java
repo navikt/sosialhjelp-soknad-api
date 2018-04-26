@@ -1,7 +1,10 @@
-package no.nav.sbl.dialogarena.integration;
+package no.nav.sbl.dialogarena.integration.foreldrepenger;
 
 
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
+import no.nav.sbl.dialogarena.integration.AbstractIT;
+import no.nav.sbl.dialogarena.integration.EndpointDataMocking;
+import no.nav.sbl.dialogarena.integration.SoknadTester;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.ForeldrepengerInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad.Stonadstyper;
@@ -17,7 +20,7 @@ import static java.util.stream.Collectors.toList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.engangsstonad.Skjemanummer.P5;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ForeldrepengerTilXmlFullstendigIT extends AbstractIT {
+public class TilFullstendigXmlT extends AbstractIT {
 
     private String engangsstonadSkjemanummer = new ForeldrepengerInformasjon().getSkjemanummer().get(1);
     private SoknadTester testSoknadMorFodsel, testSoknadFarAdopsjon, testSoknadFarOvertaOmsorg, testSoknadUkomplett;

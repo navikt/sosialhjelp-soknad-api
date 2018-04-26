@@ -100,7 +100,7 @@ public class SoknadDataFletter {
 
 
     private WebSoknad hentFraHenvendelse(String behandlingsId, boolean hentFaktumOgVedlegg) {
-        SoknadMetadata soknadMetadata = henvendelseService.hentSoknad(behandlingsId);
+        SoknadMetadata soknadMetadata = henvendelseService.hentSoknad(behandlingsId, true);
 
         if (UNDER_ARBEID.equals(soknadMetadata.status)) {
             byte[] xmlFraFillager = fillagerService.hentFil(soknadMetadata.hovedskjema.filUuid);

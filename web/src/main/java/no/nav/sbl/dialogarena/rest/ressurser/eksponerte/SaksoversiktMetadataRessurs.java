@@ -55,7 +55,6 @@ public class SaksoversiktMetadataRessurs {
                 .withEttersendingsSoknader(ettersendingsSoknader);
     }
 
-
     @GET
     @Path("/pabegynte")
     public PabegynteSoknaderRespons hentPabegynteSoknaderForBruker() {
@@ -66,5 +65,13 @@ public class SaksoversiktMetadataRessurs {
 
         return new PabegynteSoknaderRespons()
                 .withPabegynteSoknader(pabegynte);
+    }
+
+    @GET
+    @Path("/ping")
+    public PingRespons ping() {
+        return new PingRespons()
+                .withStatus(PingRespons.Status.OK)
+                .withMelding("Sosialhjelp Saksoversikt API er oppe");
     }
 }

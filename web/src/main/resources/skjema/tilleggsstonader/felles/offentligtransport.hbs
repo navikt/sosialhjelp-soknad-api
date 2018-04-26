@@ -40,13 +40,29 @@
                     {{#forFaktumHvisSant (concat faktumPrefiks "offentligtransport.aarsak.transport")}}
                         <tr>
                             <td class="sjekket"></td>
-                            <td><span>{{hentTekst "soknad.reise.offentligtransport.aarsak.transport"}}</span></td>
+                            <td>
+                                <span>{{hentTekst "soknad.reise.offentligtransport.aarsak.transport"}}</span>
+                                {{#forFaktum (concat faktumPrefiks "offentligtransport.aarsak.transport.tekst")}}
+                                    <em>{{value}}</em>
+                                {{/forFaktum}}
+                            </td>
                         </tr>
                     {{/forFaktumHvisSant}}
                     {{#forFaktumHvisSant (concat faktumPrefiks "offentligtransport.aarsak.henting")}}
                         <tr>
                             <td class="sjekket"></td>
-                            <td><span>{{hentTekst "soknad.reise.offentligtransport.aarsak.henting"}}</span></td>
+                            <td>
+                                <span>{{hentTekst "soknad.reise.offentligtransport.aarsak.henting"}}</span>
+                                {{#hvisHarDiskresjonskode}}
+                                {{else}}
+                                    {{#forFaktum (concat faktumPrefiks "offentligtransport.aarsak.henting.adresse")}}
+                                        <br/>
+                                        <span>{{ hentTekst "soknad.reise.offentligtransport.ikkeoffentlig.henteadresse.sporsmal" }}
+                                            <em>{{properties.adresse}}, {{properties.postnr}} {{hentPoststed properties.postnr}}</em>
+                                        </span>
+                                    {{/forFaktum}}
+                                {{/hvisHarDiskresjonskode}}
+                            </td>
                         </tr>
                     {{/forFaktumHvisSant}}
                     {{#forFaktumHvisSant (concat faktumPrefiks "offentligtransport.aarsak.annet")}}

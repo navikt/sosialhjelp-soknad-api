@@ -27,7 +27,7 @@ public class EndpointDataMocking {
 
     private static int behandlingsIdCounter = 1;
 
-    static void setupMockWsEndpointData() throws Exception {
+    public static void setupMockWsEndpointData() throws Exception {
         mockBrukerProfilEndpoint();
         mockPersonEndpoint();
         mockDkifService();
