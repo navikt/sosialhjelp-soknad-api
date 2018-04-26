@@ -111,6 +111,13 @@ public class JsonOkonomiOpplysningerConverter {
                 webSoknad.getFaktaMedKey(key),
                 "sum"));
 
+
+        key = "opplysninger.arbeid.avsluttet";
+        result.addAll(opplysningUtbetaling("sluttoppgjoer",
+                getTittel(key, navMessageSource),
+                webSoknad.getFaktaMedKey(key),
+                "netto"));
+
         return result.stream().filter(r -> r != null).collect(Collectors.toList());
 
     }
