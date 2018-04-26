@@ -27,7 +27,7 @@ import static no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad.Type.Vedleg
 
 
 @Controller
-@Path("/ettersendelsevedlegg")
+@Path("/ettersendelse")
 @Timed
 @Produces(APPLICATION_JSON)
 public class EttersendingRessurs {
@@ -47,7 +47,7 @@ public class EttersendingRessurs {
     }
 
     @GET
-    @Path("/{behandlingsId}")
+    @Path("/vedlegg/{behandlingsId}")
     @SjekkTilgangTilSoknad
     public List<EttersendelseVedlegg> hentVedlegg(@PathParam("behandlingsId") String behandlingsId) {
         return ettersendelseVedleggService.hentVedleggForSoknad(behandlingsId);
