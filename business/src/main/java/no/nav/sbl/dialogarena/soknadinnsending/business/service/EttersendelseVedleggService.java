@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import static java.util.stream.Collectors.toList;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -67,7 +67,16 @@ public class EttersendelseVedleggService {
 
         List<Vedlegg> originaleVedlegg = webSoknad.getVedlegg();
 
-        Map<String, EttersendelseVedlegg> ettersendelseVedlegg = new HashMap<>();
+        SortedMap<String, EttersendelseVedlegg> ettersendelseVedlegg = new TreeMap<>((o1, o2) -> {
+            if (o1.equals(o2)) {
+                return 0;
+            } else if (o1.equals("annet|annet")) {
+                return 1;
+            } else if (o2.equals("annet|annet")) {
+                return -1;
+            }
+            return o1.compareTo(o2);
+        });
 
         originaleVedlegg.stream().forEach(vedlegg -> {
             String sammensattNavn = vedlegg.getSkjemaNummer() + "|" + vedlegg.getSkjemanummerTillegg();
@@ -91,6 +100,8 @@ public class EttersendelseVedleggService {
     }
 
     public List<EttersendelseVedlegg> lastOppVedlegg(Long vedleggId, byte[] data, String filnavn) {
+        vedleggOriginalFilerService.validerFil(data);
+
         String behandlingsId = vedleggService.hentBehandlingsId(vedleggId);
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, false);
 

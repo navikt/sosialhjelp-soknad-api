@@ -3,8 +3,8 @@ package no.nav.sbl.dialogarena.service;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadataListe;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EttersendingService;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.*;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -17,10 +17,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
-import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.LastetOpp;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.VedleggKreves;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType.SEND_SOKNAD_KOMMUNAL;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EttersendingService.ETTERSENDELSE_FRIST_DAGER;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -32,6 +32,9 @@ public class SaksoversiktMetadataService {
 
     @Inject
     private SoknadMetadataRepository soknadMetadataRepository;
+
+    @Inject
+    private EttersendingService ettersendingService;
 
     @Inject
     private NavMessageSource navMessageSource;
@@ -56,7 +59,7 @@ public class SaksoversiktMetadataService {
                         .withInnsendtDato(tilDate(soknad.innsendtDato))
                         .withHoveddokument(new Hoveddokument()
                                 .withTittel(soknad.type.equals(SEND_SOKNAD_KOMMUNAL) ? bundle.getProperty("saksoversikt.soknadsnavn") : bundle.getProperty("saksoversikt.soknadsnavn.ettersending")))
-                        .withVedlegg(tilJsonVedlegg(soknad.vedlegg, erLastetOpp, bundle))
+                        .withVedlegg(tilInnsendteVedlegg(soknad.vedlegg, bundle))
                         .withTema("KOM")
                         .withTemanavn(bundle.getProperty("saksoversikt.temanavn"))
                         .withLenke(lagEttersendelseLenke(soknad.behandlingsId)))
@@ -91,15 +94,26 @@ public class SaksoversiktMetadataService {
                 .withBehandlingsId(soknad.behandlingsId)
                 .withTittel(bundle.getProperty("saksoversikt.soknadsnavn"))
                 .withLenke(lagEttersendelseLenke(soknad.behandlingsId))
-                .withVedlegg(tilJsonVedlegg(soknad.vedlegg, erLastetOpp.negate(), bundle))
+                .withVedlegg(finnManglendeVedlegg(soknad, bundle))
         ).collect(toList());
     }
 
-    private Predicate<VedleggMetadata> erLastetOpp = v -> v.status.er(LastetOpp);
+    private List<Vedlegg> finnManglendeVedlegg(SoknadMetadata soknad, Properties bundle) {
+        SoknadMetadata nyesteSoknad = ettersendingService.hentNyesteSoknadIKjede(soknad);
 
-    private List<Vedlegg> tilJsonVedlegg(VedleggMetadataListe vedlegg, Predicate<VedleggMetadata> filter, Properties bundle) {
+        return nyesteSoknad.vedlegg.vedleggListe.stream()
+                .filter(v -> v.status.er(VedleggKreves))
+                .filter(v -> !"annet".equals(v.skjema) || !"annet".equals(v.tillegg))
+                .map(v -> "vedlegg." + v.skjema + "." + v.tillegg + ".tittel")
+                .distinct()
+                .map(bundle::getProperty)
+                .map(navn -> new Vedlegg().withTittel(navn))
+                .collect(toList());
+    }
+
+    private List<Vedlegg> tilInnsendteVedlegg(VedleggMetadataListe vedlegg, Properties bundle) {
         return vedlegg.vedleggListe.stream()
-                .filter(filter)
+                .filter(v -> v.status.er(LastetOpp))
                 .map(v -> "vedlegg." + v.skjema + "." + v.tillegg + ".tittel")
                 .distinct()
                 .map(bundle::getProperty)

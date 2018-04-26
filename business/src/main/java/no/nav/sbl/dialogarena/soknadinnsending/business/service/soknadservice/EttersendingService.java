@@ -27,7 +27,7 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Sok
 
 @Component
 public class EttersendingService {
-    public static final int ETTERSENDELSE_FRIST_DAGER = 21;
+    public static final int ETTERSENDELSE_FRIST_DAGER = 70;
 
     @Inject
     @Named("soknadInnsendingRepository")
@@ -83,7 +83,7 @@ public class EttersendingService {
         return soknad;
     }
 
-    protected SoknadMetadata hentNyesteSoknadIKjede(SoknadMetadata originalSoknad) {
+    public SoknadMetadata hentNyesteSoknadIKjede(SoknadMetadata originalSoknad) {
         return henvendelseService.hentBehandlingskjede(originalSoknad.behandlingsId).stream()
                 .filter(e -> e.status == FERDIG)
                 .sorted(Comparator.comparing((SoknadMetadata o) -> o.innsendtDato).reversed())

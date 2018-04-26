@@ -224,6 +224,14 @@ public class VedleggOriginalFilerService {
             filnavn = opplastetNavn.substring(0, separator);
         }
 
+        filnavn = filnavn
+                .replace("æ", "e")
+                .replace("ø", "o")
+                .replace("å", "a")
+                .replace("Æ", "E")
+                .replace("Ø", "O")
+                .replace("Å", "A");
+
         filnavn = filnavn.replaceAll("[^a-zA-Z0-9_-]", "");
 
         if (filnavn.length() > 50) {

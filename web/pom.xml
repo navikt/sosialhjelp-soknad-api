@@ -21,7 +21,7 @@
         <fitnesse.port>9977</fitnesse.port>
 
         <!-- Teksterversjoner oppdateres gjennom å kjøre "mvn versions:update-properties" for dette prosjektet (kun "web"). -->
-        <version.tekster.soknadsosialhjelp>1.0.556.229</version.tekster.soknadsosialhjelp>
+        <version.tekster.soknadsosialhjelp>1.0.560.232</version.tekster.soknadsosialhjelp>
         <version.tekster.soknaddagpenger>1.1.231.19</version.tekster.soknaddagpenger>
         <version.tekster.soknadaap>1.0.165.30</version.tekster.soknadaap>
         <version.tekster.soknadbilstonad>1.0.12.10</version.tekster.soknadbilstonad>
@@ -420,6 +420,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>common-jetty</artifactId>
             <scope>test</scope>
@@ -600,8 +605,21 @@
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
          </dependency>
+        <dependency>
+            <groupId>org.verapdf</groupId>
+            <artifactId>validation-model</artifactId>
+            <version>1.4.5</version>
+        </dependency>
+        <dependency>
+        <groupId>org.apache.pdfbox</groupId>
+        <artifactId>preflight</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.verapdf</groupId>
+            <artifactId>core</artifactId>
+            <version>1.4.1</version>
+        </dependency>
     </dependencies>
-
     <build>
         <resources>
             <resource>
