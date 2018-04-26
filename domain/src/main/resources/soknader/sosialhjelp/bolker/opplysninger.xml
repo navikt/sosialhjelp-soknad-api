@@ -92,10 +92,6 @@
         </constraints>
         <properties>
             <property>
-                <id>brutto</id>
-                <type>textbox</type>
-            </property>
-            <property>
                 <id>netto</id>
                 <type>textbox</type>
             </property>
