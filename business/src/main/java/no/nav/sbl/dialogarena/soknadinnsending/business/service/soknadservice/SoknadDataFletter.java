@@ -118,6 +118,7 @@ public class SoknadDataFletter {
         SoknadInnsendingStatus status = valueOf(wsSoknadsdata.getStatus());
         if (status.equals(UNDER_ARBEID)) {
             WebSoknad soknadFraFillager = unmarshal(new ByteArrayInputStream(fillagerService.hentFil(hovedskjema.getUuid())), WebSoknad.class);
+            soknadFraFillager.medOppretteDato(wsSoknadsdata.getOpprettetDato());
             lokalDb.populerFraStruktur(soknadFraFillager);
             vedleggService.populerVedleggMedDataFraHenvendelse(soknadFraFillager, fillagerService.hentFiler(soknadFraFillager.getBrukerBehandlingId()));
             if (hentFaktumOgVedlegg) {
