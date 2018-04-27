@@ -254,18 +254,22 @@ public class InformasjonRessurs {
         final Collection<NavEnhetFrontend> navEnheter = KommuneTilNavEnhetMapper.getNavEnheter().entrySet().stream().map(entry -> {
             final NavEnhet navEnhet = entry.getValue();
             return new NavEnhetFrontend(entry.getKey(),
+                    navEnhet.getOrgnummer(),
                     navEnhet.getKontornavn(),
                     navEnhet.getKommune(),
                     navEnhet.getNavn(),
-                    (navEnhet.getKommune() == null) ? "KOMMUNE" : "BYDEL");
+                    (navEnhet.getKommune() == null) ? "KOMMUNE" : "BYDEL",
+                    navEnhet.getFeatures());
         }).collect(Collectors.toList());
         
         final Collection<NavEnhetFrontend> kommuner = KommuneTilNavEnhetMapper.getKommunerMedBydeler().entrySet().stream().map(entry -> {
             return new NavEnhetFrontend(entry.getKey(),
+                    null,
                     entry.getValue(),
                     null,
                     null,
-                    "KOMMUNE");
+                    "KOMMUNE",
+                    new HashMap<>());
         }).collect(Collectors.toList());
         
         final List<NavEnhetFrontend> navEnheterMedKommuner = new ArrayList<>();
@@ -299,17 +303,21 @@ public class InformasjonRessurs {
     @SuppressWarnings("unused")
     private static class NavEnhetFrontend {
         public String id;
+        public String orgnr;
         public String navn;
         public String kommuneId;
         public String fulltNavn;
         public String type;
+        public Map<String, Boolean> features;
         
-        private NavEnhetFrontend(String id, String navn, String kommuneId, String fulltNavn, String type) {
+        private NavEnhetFrontend(String id, String orgnr, String navn, String kommuneId, String fulltNavn, String type, Map<String, Boolean> features) {
             this.id = id;
+            this.orgnr = orgnr;
             this.navn = navn;
             this.kommuneId = kommuneId;
             this.fulltNavn = fulltNavn;
             this.type = type;
+            this.features = features;
         }
     }   
 }
