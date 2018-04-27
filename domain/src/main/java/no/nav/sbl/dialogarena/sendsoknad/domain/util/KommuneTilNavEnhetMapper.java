@@ -4,6 +4,7 @@ import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,11 +24,20 @@ public class KommuneTilNavEnhetMapper {
         private String kontornavn;
         private String kommune;
         private String orgnummer;
+        private Map<String, Boolean> features;
 
         NavEnhet(String kontornavn, String kommune, String orgnummer) {
+            this(kontornavn, kommune, orgnummer, Collections.emptyMap());
+        }
+        
+        NavEnhet(String kontornavn, String kommune, String orgnummer, Map<String, Boolean> features) {
             this.kontornavn = kontornavn;
             this.kommune = kommune;
             this.orgnummer = orgnummer;
+            
+            final Map<String, Boolean> featuresAndDefaults = new HashMap<>(defaultFeatures());
+            featuresAndDefaults.putAll(features);
+            this.features = featuresAndDefaults;
         }
 
         public String getOrgnummer() {
@@ -58,6 +68,16 @@ public class KommuneTilNavEnhetMapper {
             }
             return kommunenavn;
         }
+        
+        public Map<String, Boolean> getFeatures() {
+            return features;
+        }
+    }
+    
+    private static Map<String, Boolean> defaultFeatures() {
+        final Map<String, Boolean> features = new HashMap<>();
+        features.put("ettersendelse", false);
+        return features;
     }
     
 
@@ -71,13 +91,13 @@ public class KommuneTilNavEnhetMapper {
             .build();
     
     private static final Map<String, NavEnhet> TEST_ORGNR = new ImmutableMap.Builder<String, NavEnhet>()
-            .put("horten", new NavEnhet("Horten", null, "910940066"))
+            .put("horten", new NavEnhet("Horten", null, "910940066", Collections.singletonMap("ettersendelse", true)))
             .put("bergenhus", new NavEnhet("Bergenhus", "bergen", "910230158"))
-            .put("ytrebygda", new NavEnhet("Ytrebygda", "bergen", "910230158"))
-            .put("frogner", new NavEnhet("Frogner", "oslo", "910229699"))
-            .put("askoy", new NavEnhet( "Askøy", null, "910230182"))
-            .put("grunerlokka", new NavEnhet("Grünerløkka", "oslo", "811213322"))
-            .put("grorud", new NavEnhet("Grorud", "oslo", "910229702"))
+            .put("ytrebygda", new NavEnhet("Ytrebygda", "bergen", "910230158", Collections.singletonMap("ettersendelse", true)))
+            .put("frogner", new NavEnhet("Frogner", "oslo", "910229699", Collections.singletonMap("ettersendelse", true)))
+            .put("askoy", new NavEnhet( "Askøy", null, "910230182", Collections.singletonMap("ettersendelse", true)))
+            .put("grunerlokka", new NavEnhet("Grünerløkka", "oslo", "811213322", Collections.singletonMap("ettersendelse", true)))
+            .put("grorud", new NavEnhet("Grorud", "oslo", "910229702", Collections.singletonMap("ettersendelse", true)))
             .build();
 
 
@@ -85,7 +105,7 @@ public class KommuneTilNavEnhetMapper {
             .put("horten", new NavEnhet("Horten", null, "974605171"))
             .put("bergenhus", new NavEnhet("Bergenhus", "bergen", "976830563"))
             .put("ytrebygda", new NavEnhet("Ytrebygda", "bergen", "976830652"))
-            .put("gamleoslo", new NavEnhet("Gamle Oslo", "oslo", "974778742")) 
+            .put("gamleoslo", new NavEnhet("Gamle Oslo", "oslo", "974778742", Collections.singletonMap("ettersendelse", true))) 
             //.put("frogner", new NavEnhet("Frogner", "oslo", "874778702")) //OK
             //.put("grunerlokka", new NavEnhet("Grünerløkka", "oslo", "870534612")) //OK
             //.put("grorud", new NavEnhet("Grorud", "oslo", "974778866")) //OK
