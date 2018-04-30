@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.util;
 
-
 import java.util.*;
 
 import static java.util.Arrays.asList;
@@ -15,8 +14,50 @@ import static java.util.Arrays.asList;
  */
 public class LandListe {
 
-    public static final List<String> EOS_LAND = asList("BEL", "BGR", "DNK", "CZE", "EST", "FIN", "FRA", "GRC", "IRL", "ISL", "ITA", "HRV", "CYP", "LVA", "LIE", "LTU", "LUX", "MLT", "NLD"
-            , "POL", "PRT", "ROU", "SVK", "SVN", "ESP", "GBR", "CHE", "SWE", "DEU", "HUN", "AUT");
-    public static final String EOS = "eos";
+    public static final List<String> NORDEN_LAND = asList(
+            "ALA",
+            "DNK",
+            "FIN",
+            "FRO",
+            "GRL",
+            "ISL",
+            "NOR",
+            "SWE"
+    );
 
+    public static final List<String> EOS_LAND = asList(
+            "AUT",
+            "BEL",
+            "BGR",
+            "CHE",
+            "CYP",
+            "CZE",
+            "DEU",
+            "DNK",
+            "ESP",
+            "EST",
+            "FIN",
+            "FRA",
+            "GBR",
+            "GRC",
+            "HRV",
+            "HUN",
+            "IRL",
+            "ISL",
+            "ITA",
+            "LIE",
+            "LTU",
+            "LUX",
+            "LVA",
+            "MLT",
+            "NLD",
+            "POL",
+            "PRT",
+            "ROU",
+            "SVK",
+            "SVN",
+            "SWE"
+    );
+
+    public static final String EOS = "eos";
 }
