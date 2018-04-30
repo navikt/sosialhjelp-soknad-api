@@ -6,16 +6,10 @@
     <vedlegg>
         <faktum>personalia</faktum>
         <skjemaNummer>T4</skjemaNummer>
-        <onProperty>statsborgerskap</onProperty>
+        <onProperty>statsborgerskapType</onProperty>
         <onValues>
-            <value>NOR</value>
-            <value>SWE</value>
-            <value>FRO</value>
-            <value>ISL</value>
-            <value>DNK</value>
-            <value>FIN</value>
+            <value>ikkeEos</value>
         </onValues>
-        <inverted>true</inverted>
         <forSystemfaktum>true</forSystemfaktum>
     </vedlegg>
 </soknad>
