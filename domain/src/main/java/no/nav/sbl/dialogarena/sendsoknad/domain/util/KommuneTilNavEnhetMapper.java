@@ -1,24 +1,22 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.util;
 
-import static java.util.Arrays.asList;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
+import com.google.common.collect.ImmutableMap;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.ImmutableMap;
-
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import static java.util.Arrays.asList;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 public class KommuneTilNavEnhetMapper {
 
     private static final Logger log = LoggerFactory.getLogger(KommuneTilNavEnhetMapper.class);
-    
+
     public static class NavEnhet {
 
         private String kontornavn;
@@ -29,12 +27,12 @@ public class KommuneTilNavEnhetMapper {
         NavEnhet(String kontornavn, String kommune, String orgnummer) {
             this(kontornavn, kommune, orgnummer, Collections.emptyMap());
         }
-        
+
         NavEnhet(String kontornavn, String kommune, String orgnummer, Map<String, Boolean> features) {
             this.kontornavn = kontornavn;
             this.kommune = kommune;
             this.orgnummer = orgnummer;
-            
+
             final Map<String, Boolean> featuresAndDefaults = new HashMap<>(defaultFeatures());
             featuresAndDefaults.putAll(features);
             this.features = featuresAndDefaults;
@@ -48,15 +46,15 @@ public class KommuneTilNavEnhetMapper {
             final String kommunenavntillegg = (kommune == null) ? "" : ", " + getKommunenavn() + " kommune";
             return "NAV " + kontornavn + kommunenavntillegg;
         }
-        
+
         public String getKontornavn() {
             return kontornavn;
         }
-        
+
         public String getKommune() {
             return kommune;
         }
-        
+
         public String getKommunenavn() {
             if (kommune == null) {
                 return null;
@@ -68,38 +66,41 @@ public class KommuneTilNavEnhetMapper {
             }
             return kommunenavn;
         }
-        
+
         public Map<String, Boolean> getFeatures() {
             return features;
         }
     }
-    
+
     private static Map<String, Boolean> defaultFeatures() {
         final Map<String, Boolean> features = new HashMap<>();
         features.put("ettersendelse", false);
         return features;
     }
-    
+
 
     private static final List<String> TEST_DIGISOS_KOMMUNER = Collections.unmodifiableList(asList("0701", "0703", "0717", "1201", "0301", "1247"));
-    
+
     private static final List<String> PROD_DIGISOS_KOMMUNER = Collections.unmodifiableList(asList("0701", "0703", "0717", "1201", "0301"));
 
     private static final Map<String, String> kommunenavnMapper = new ImmutableMap.Builder<String, String>()
             .put("oslo", "Oslo")
             .put("bergen", "Bergen")
             .build();
-    
+
     private static final Map<String, NavEnhet> TEST_ORGNR = new ImmutableMap.Builder<String, NavEnhet>()
             .put("horten", new NavEnhet("Horten", null, "910940066", Collections.singletonMap("ettersendelse", true)))
             .put("bergenhus", new NavEnhet("Bergenhus", "bergen", "910230158"))
             .put("ytrebygda", new NavEnhet("Ytrebygda", "bergen", "910230158"))
             .put("frogner", new NavEnhet("Frogner", "oslo", "910229699", Collections.singletonMap("ettersendelse", true)))
-            .put("askoy", new NavEnhet( "Askøy", null, "910230182", Collections.singletonMap("ettersendelse", true)))
+            .put("askoy", new NavEnhet("Askøy", null, "910230182", Collections.singletonMap("ettersendelse", true)))
             .put("grunerlokka", new NavEnhet("Grünerløkka", "oslo", "811213322", Collections.singletonMap("ettersendelse", true)))
             .put("grorud", new NavEnhet("Grorud", "oslo", "910229702", Collections.singletonMap("ettersendelse", true)))
+            .put("stovner", new NavEnhet("Stovner", "oslo", "910589792", Collections.singletonMap("ettersendelse", true)))
+            .put("sagene", new NavEnhet("Sagene", "oslo", "910565338", Collections.singletonMap("ettersendelse", true)))
+            .put("nordstrand", new NavEnhet("Nordstrand", "oslo", "910309935", Collections.singletonMap("ettersendelse", true)))
+            .put("sondreNordstrand", new NavEnhet("Søndre Nordstrand", "oslo", "910723499", Collections.singletonMap("ettersendelse", true)))
             .build();
-
 
     private static final Map<String, NavEnhet> PROD_ORGNR = new ImmutableMap.Builder<String, NavEnhet>()
             .put("horten", new NavEnhet("Horten", null, "974605171"))
@@ -116,12 +117,13 @@ public class KommuneTilNavEnhetMapper {
 
     /**
      * Angir kommune som søker må være bosatt i for å kunne komme inn på løsningen.
+     *
      * @return Liste med kommunenumre.
      */
     public static List<String> getDigisoskommuner() {
         return isProduction() ? PROD_DIGISOS_KOMMUNER : TEST_DIGISOS_KOMMUNER;
     }
-    
+
     public static Map<String, NavEnhet> getNavEnheter() {
         return mapper;
     }
