@@ -4,6 +4,7 @@
     <base href="/sendsoknad/"></base>
     {{> skjema/generisk/generisk-styling }}
 </head>
+
 <body>
 
 <div class="header">
@@ -65,23 +66,13 @@
                     {{/hvisIngenSynligeBarneFakta}}
                 </ul>
                 {{#hvisLik navn "opplysningerBolk"}}
-                    {{#hvisLik soknad.skjemaNummer "NAV 35-18.01"}}
-                        {{> skjema/sosialhjelp/vedlegg}}
-                    {{/hvisLik}}
+                    {{> skjema/sosialhjelp/vedlegg}}
                 {{/hvisLik}}
             </div>
         {{/each}}
-
-        {{#hvisLik soknad.skjemaNummer "NAV 35-18.01"}}
-        {{else}}
-            <div class="js-vedlegg">
-                {{> skjema/generisk/generiskvedlegg }}
-            </div>
-        {{/hvisLik}}
     </div>
 
     <div class="brosjyre-signatur js-signatur">
-
         <ul class="fakta-liste">
             <li>
                 <ul class="svar-liste">
