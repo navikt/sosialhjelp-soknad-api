@@ -655,7 +655,7 @@
                 <artifactId>appassembler-maven-plugin</artifactId>
                 <version>1.10</version>
                 <configuration>
-                    <extraJvmArguments>-Djavax.net.ssl.trustStore=${NAV_TRUSTSTORE_PATH} -Djavax.net.ssl.trustStorePassword=${NAV_TRUSTSTORE_PASSWORD} -Djavax.net.ssl.keyStore=${SRVSOKNADSOSIALHJELP_KEYSTORE} -Djavax.net.ssl.keyStorePassword=${SRVSOKNADSOSIALHJELP_PASSWORD} -Xmx1024G -Xms1024G</extraJvmArguments>
+                    <extraJvmArguments>-Djavax.net.ssl.trustStore=${NAV_TRUSTSTORE_PATH} -Djavax.net.ssl.trustStorePassword=${NAV_TRUSTSTORE_PASSWORD} -Djavax.net.ssl.keyStore=${SRVSOKNADSOSIALHJELP_KEYSTORE} -Djavax.net.ssl.keyStorePassword=${SRVSOKNADSOSIALHJELP_PASSWORD} -Xmx1024M -Xms1024M</extraJvmArguments>
                     <programs>
                         <program>
                             <mainClass>no.nav.sbl.dialogarena.server.SoknadsosialhjelpServer</mainClass>
