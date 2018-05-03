@@ -59,7 +59,7 @@ public class KommuneTilNavEnhetMapper {
             if (kommune == null) {
                 return null;
             }
-            final String kommunenavn = kommunenavnMapper.get(kommune);
+            final String kommunenavn = getKommunerMedBydeler().get(kommune);
             if (kommunenavn == null) {
                 log.error("Mangler navn på kommune: " + kommune);
                 return kommune;
@@ -83,10 +83,15 @@ public class KommuneTilNavEnhetMapper {
 
     private static final List<String> PROD_DIGISOS_KOMMUNER = Collections.unmodifiableList(asList("0701", "0703", "0717", "1201", "0301"));
 
-    private static final Map<String, String> kommunenavnMapper = new ImmutableMap.Builder<String, String>()
+    private static final Map<String, String> TEST_KOMMUNENAVN = new ImmutableMap.Builder<String, String>()
             .put("oslo", "Oslo")
             .put("bergen", "Bergen")
             .build();
+
+    private static final Map<String, String> PROD_KOMMUNENAVN = new ImmutableMap.Builder<String, String>()
+            .put("bergen", "Bergen")
+            .build();
+    
 
     private static final Map<String, NavEnhet> TEST_ORGNR = new ImmutableMap.Builder<String, NavEnhet>()
             .put("horten", new NavEnhet("Horten", null, "910940066", Collections.singletonMap("ettersendelse", true)))
@@ -129,7 +134,7 @@ public class KommuneTilNavEnhetMapper {
     }
 
     public static Map<String, String> getKommunerMedBydeler() {
-        return kommunenavnMapper;
+        return isProduction() ? PROD_KOMMUNENAVN : TEST_KOMMUNENAVN;
     }
 
     public static NavEnhet getNavEnhetFromWebSoknad(WebSoknad webSoknad) {

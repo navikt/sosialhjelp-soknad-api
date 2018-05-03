@@ -41,13 +41,26 @@ public class SosialhjelpKontaktBolk implements BolkService {
     private List<Faktum> genererPersonaliaFaktum(Long soknadId, Personalia personalia) {
         return Arrays.asList(
                 new Faktum().medSoknadId(soknadId).medKey("kontakt.system.kontonummer").medValue(norskKontonummer(personalia)),
-                new Faktum().medSoknadId(soknadId).medKey("kontakt.system.telefon").medValue(personalia.getMobiltelefonnummer()),
+                new Faktum().medSoknadId(soknadId).medKey("kontakt.system.telefon").medValue(norskTelefonnummer(personalia.getMobiltelefonnummer())),
                 new Faktum().medSoknadId(soknadId).medKey("kontakt.system.personalia.statsborgerskap").medValue(personalia.getStatsborgerskap()),
                 genererAdresseFaktum(soknadId, personalia),
                 genererFolkeregistrertAdresseFaktum(soknadId, personalia)
         );
     }
  
+    static String norskTelefonnummer(String mobiltelefonnummer) {
+        if (mobiltelefonnummer == null) {
+            return null;
+        }
+        if (mobiltelefonnummer.length() == 8) {
+            return "+47" + mobiltelefonnummer;
+        }
+        if (mobiltelefonnummer.startsWith("+47") && mobiltelefonnummer.length() == 11) {
+            return mobiltelefonnummer;
+        }
+        return null;
+    }
+
     private String norskKontonummer(Personalia personalia) {
         if (personalia.getErUtenlandskBankkonto() != null && personalia.getErUtenlandskBankkonto()) {
             return "";
