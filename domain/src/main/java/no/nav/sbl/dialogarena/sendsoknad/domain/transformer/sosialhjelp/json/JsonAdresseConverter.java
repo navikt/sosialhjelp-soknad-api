@@ -28,8 +28,13 @@ public final class JsonAdresseConverter {
     }
 
     public static JsonAdresse tilFolkeregistrertAdresse(WebSoknad webSoknad) {
-        final Faktum faktum = webSoknad.getFaktumMedKey("kontakt.system.folkeregistrert.adresse");
-        return tilSystemAdresse(faktum);
+        try {
+            final Faktum faktum = webSoknad.getFaktumMedKey("kontakt.system.folkeregistrert.adresse");
+            return tilSystemAdresse(faktum);
+        } catch (RuntimeException e) {
+            logger.info("Kan ikke legge med folkeregistrert adresse", e);
+            return null;
+        }
     }
 
     public static JsonAdresse tilOppholdsadresse(WebSoknad webSoknad) {
@@ -46,7 +51,7 @@ public final class JsonAdresseConverter {
                 return tilSystemAdresse(faktum);
             }
         } catch (RuntimeException e) {
-            logger.error("Uventet feil: Kan ikke sende med folkeregistrert adresse", e);
+            logger.error("Uventet feil: Kan ikke sende med oppholdsadresse", e);
             return null;
         }
     }
