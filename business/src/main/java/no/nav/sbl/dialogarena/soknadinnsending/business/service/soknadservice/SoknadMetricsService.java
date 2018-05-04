@@ -71,30 +71,38 @@ public class SoknadMetricsService {
         }
     }
 
-    public void rapporterKompletteOgIkkeKompletteSoknader(List<Vedlegg> ikkeInnsendteVedlegg, String skjemanummer) {
+    public void rapporterKompletteOgIkkeKompletteSoknader(List<Vedlegg> innsendteVedlegg, List<Vedlegg> ikkeInnsendteVedlegg, String skjemanummer) {
         if(DagpengerOrdinaerInformasjon.erDagpengerOrdinaer(skjemanummer)
                 || DagpengerGjenopptakInformasjon.erDagpengerGjenopptak(skjemanummer)) {
 
             String skjematype = DagpengerUtils.konverterSkjemanummerTilTittel(skjemanummer);
 
             Event eventForInnsendteSkjema = MetricsFactory.createEvent("soknad.innsendteskjema");
-
-            if (ikkeInnsendteVedlegg.isEmpty()) {
-                eventForInnsendteSkjema.addFieldToReport("soknad.innsendtskjema.komplett", "true");
-            } else {
-                eventForInnsendteSkjema.addFieldToReport("soknad.innsendtskjema.komplett", "false");
-
-                for (Vedlegg vedlegg : ikkeInnsendteVedlegg) {
-                    Event eventForIkkeInnsendteVedlegg = MetricsFactory.createEvent("soknad.ikkeSendtVedlegg");
-
-                    eventForIkkeInnsendteVedlegg.addTagToReport("vedleggskjemanummer", vedlegg.getSkjemaNummer());
-                    eventForIkkeInnsendteVedlegg.addTagToReport("innsendingsvalg", vedlegg.getInnsendingsvalg().name());
-                    eventForIkkeInnsendteVedlegg.addTagToReport("skjematype", skjematype);
-                    eventForIkkeInnsendteVedlegg.report();
-                }
-            }
+            eventForInnsendteSkjema.addFieldToReport("soknad.innsendtskjema.komplett", erSoknadKomplett(ikkeInnsendteVedlegg));
             eventForInnsendteSkjema.addTagToReport("skjematype", skjematype);
             eventForInnsendteSkjema.report();
+
+            rapporterStatusPaaVedlegg(innsendteVedlegg, "soknad.sendtVedlegg", skjematype);
+            rapporterStatusPaaVedlegg(ikkeInnsendteVedlegg, "soknad.ikkeSendtVedlegg", skjematype);
+        }
+    }
+
+    private String erSoknadKomplett(List<Vedlegg> ikkeInnsendteVedlegg) {
+        return Boolean.toString(ikkeInnsendteVedlegg.isEmpty());
+    }
+
+    private void rapporterStatusPaaVedlegg(List<Vedlegg> vedleggsListe, String eventNavn, String skjematype) {
+        if (vedleggsListe.isEmpty()) {
+            return;
+        }
+
+        for (Vedlegg vedlegg : vedleggsListe) {
+            Event eventForInnsendteVedlegg = MetricsFactory.createEvent(eventNavn);
+
+            eventForInnsendteVedlegg.addTagToReport("vedleggskjemanummer", vedlegg.getSkjemaNummer());
+            eventForInnsendteVedlegg.addTagToReport("innsendingsvalg", vedlegg.getInnsendingsvalg().name());
+            eventForInnsendteVedlegg.addTagToReport("skjematype", skjematype);
+            eventForInnsendteVedlegg.report();
         }
     }
 }

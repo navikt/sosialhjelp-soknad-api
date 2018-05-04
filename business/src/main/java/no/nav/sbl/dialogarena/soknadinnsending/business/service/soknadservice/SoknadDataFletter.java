@@ -423,10 +423,8 @@ public class SoknadDataFletter {
         henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, vedlegg, soknadMetadata);
         lokalDb.slettSoknad(soknad,HendelseType.INNSENDT);
 
-
-        soknadMetricsService.rapporterKompletteOgIkkeKompletteSoknader(soknad.getIkkeInnsendteVedlegg(), skjemanummer(soknad));
+        soknadMetricsService.rapporterKompletteOgIkkeKompletteSoknader(soknad.getInnsendteVedlegg(), soknad.getIkkeInnsendteVedlegg(), skjemanummer(soknad));
         soknadMetricsService.sendtSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
-
     }
 
     private XMLHovedskjema lagXmlHovedskjemaMedAlternativRepresentasjon(byte[] pdf, WebSoknad soknad, byte[] fullSoknad) {
