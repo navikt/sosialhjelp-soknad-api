@@ -43,12 +43,18 @@ public class AvbrytAutomatiskSheduler {
             Timer batchTimer = MetricsFactory.createTimer("sosialhjelp.debug.avbryt");
             batchTimer.start();
 
-            avbryt();
+            try {
+                avbryt();
+            } catch (RuntimeException e) {
+                logger.error("Batchjobb feilet", e);
+                batchTimer.setFailed();
+            } finally {
+                batchTimer.stop();
+                batchTimer.addFieldToReport("vellykket", vellykket);
+                batchTimer.report();
+                logger.info("Jobb fullført: {} vellykket", vellykket);
+            }
 
-            batchTimer.stop();
-            batchTimer.addFieldToReport("vellykket", vellykket);
-            batchTimer.report();
-            logger.info("Jobb fullført: {} vellykket", vellykket);
         } else {
             logger.warn("Batch disabled. Må sette environment property sendsoknad.batch.enabled til true for å sette den på igjen");
         }
