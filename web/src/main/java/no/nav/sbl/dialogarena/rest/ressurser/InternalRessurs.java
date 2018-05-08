@@ -4,12 +4,12 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.context.MethodValueResolver;
 import com.github.jknack.handlebars.io.URLTemplateSource;
-import no.nav.sbl.dialogarena.config.ContentConfig;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonPortTypeMock;
 import no.nav.sbl.dialogarena.service.helpers.HvisLikHelper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,9 +36,18 @@ public class InternalRessurs {
     @Inject
     private NavMessageSource messageSource;
 
+    @Inject
+    UtbetalingService utbetalingService;
+
     private PersonPortTypeMock personPortTypeMock = PersonMock.getInstance().getPersonPortTypeMock();
 
     private static final Logger LOG = LoggerFactory.getLogger(InternalRessurs.class);
+
+    @GET
+    @Path(value = "/utbetaling")
+    public String utbetaling() {
+        return utbetalingService.dummy();
+    }
 
     @POST
     @Path(value = "/lagre")
