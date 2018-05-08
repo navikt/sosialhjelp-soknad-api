@@ -89,6 +89,7 @@ public class KommuneTilNavEnhetMapper {
             .build();
 
     private static final Map<String, String> PROD_KOMMUNENAVN = new ImmutableMap.Builder<String, String>()
+            .put("oslo", "Oslo")
             .put("bergen", "Bergen")
             .build();
     
