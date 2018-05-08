@@ -112,9 +112,11 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
 
     @Override
     public Optional<SoknadMetadata> hentForBatch(int antallDagerGammel) {
+        LocalDateTime frist = LocalDateTime.now().minusDays(antallDagerGammel);
+
         while (true) {
-            String select = "SELECT * FROM soknadmetadata WHERE sistendretdato < CURRENT_TIMESTAMP - (INTERVAL '?' DAY) AND batchstatus = 'LEDIG' " + limit(1);
-            Optional<SoknadMetadata> resultat = getJdbcTemplate().query(select, soknadMetadataRowMapper, antallDagerGammel)
+            String select = "SELECT * FROM soknadmetadata WHERE sistendretdato < ? AND batchstatus = 'LEDIG' " + limit(1);
+            Optional<SoknadMetadata> resultat = getJdbcTemplate().query(select, soknadMetadataRowMapper, tidTilTimestamp(frist))
                     .stream().findFirst();
             if (!resultat.isPresent()) {
                 return Optional.empty();
