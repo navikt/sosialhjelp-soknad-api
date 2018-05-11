@@ -120,6 +120,14 @@ public class SoknadTester extends JerseyTest {
                 .accept(TEXT_XML);
     }
 
+    private Invocation.Builder alternativJSONRepresentasjonResource() {
+        WebTarget target = sendsoknad().path("representasjon/json/").path(this.brukerBehandlingId);
+        return target
+                .queryParam("fnr", user)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON);
+    }
+
     private Invocation.Builder faktumResource(Function<WebTarget, WebTarget> webTargetDecorator) {
         return webTargetDecorator.apply(sendsoknad().path("fakta/"))
                 .request(APPLICATION_JSON_TYPE)
@@ -137,6 +145,10 @@ public class SoknadTester extends JerseyTest {
         soknad = response.readEntity(WebSoknad.class);
         checkResponse(response, SC_OK);
         return this;
+    }
+
+    public Response hentAlternativJSONRepresentasjonResponseMedStatus() {
+        return alternativJSONRepresentasjonResource().buildGet().invoke();
     }
 
     public Response hentAlternativRepresentasjonResponseMedStatus() {

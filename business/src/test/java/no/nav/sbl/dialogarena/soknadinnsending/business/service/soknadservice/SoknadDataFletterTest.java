@@ -66,7 +66,8 @@ import static org.mockito.Matchers.refEq;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class SoknadDataFletterTest {
+public class
+SoknadDataFletterTest {
 
     public static final String SKJEMA_NUMMER = "NAV 04-01.03";
     private static final List<String> SKJEMANUMMER_TILLEGGSSTONAD = asList("NAV 11-12.12", "NAV 11-12.13");
@@ -269,15 +270,15 @@ public class SoknadDataFletterTest {
         assertThat(xmlHovedskjema.getFilstorrelse()).isEqualTo("3");
         assertThat(xmlHovedskjema.getMimetype()).isEqualTo("application/pdf");
         assertThat(xmlHovedskjema.getSkjemanummer()).isEqualTo(DAGPENGER);
-        assertThat(xmlHovedskjema.getAlternativRepresentasjonListe().getAlternativRepresentasjon().get(0))
+        assertThat(xmlHovedskjema.getAlternativRepresentasjonListe().getAlternativRepresentasjon().get(1))
                 .isEqualToComparingFieldByField(
                         new XMLAlternativRepresentasjon()
                         .withFilnavn(DAGPENGER)
                         .withFilstorrelse("3")
                         .withMimetype("application/pdf-fullversjon")
-                        .withUuid(xmlHovedskjema.getAlternativRepresentasjonListe().getAlternativRepresentasjon().get(0).getUuid())
+                        .withUuid(xmlHovedskjema.getAlternativRepresentasjonListe().getAlternativRepresentasjon().get(1).getUuid())
                 );
-        assertThat(xmlHovedskjema.getAlternativRepresentasjonListe().getAlternativRepresentasjon().get(0)).isNotEqualTo(xmlHovedskjema.getUuid());
+        assertThat(xmlHovedskjema.getAlternativRepresentasjonListe().getAlternativRepresentasjon().get(1)).isNotEqualTo(xmlHovedskjema.getUuid());
     }
 
     @Test

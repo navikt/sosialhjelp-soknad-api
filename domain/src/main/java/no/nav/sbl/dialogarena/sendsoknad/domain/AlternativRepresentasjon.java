@@ -8,7 +8,6 @@ public class AlternativRepresentasjon {
     private String mimetype;
     private String uuid;
     private byte[] content;
-
     public String getFilnavn() {
         return filnavn;
     }
