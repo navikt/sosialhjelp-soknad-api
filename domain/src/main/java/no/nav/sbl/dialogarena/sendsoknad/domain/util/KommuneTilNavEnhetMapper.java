@@ -94,11 +94,24 @@ public class KommuneTilNavEnhetMapper {
     
 
     private static final Map<String, NavEnhet> TEST_ORGNR = new ImmutableMap.Builder<String, NavEnhet>()
+            // Kommuner uten bydeler
             .put("horten", new NavEnhet("Horten", null, "910940066", Collections.singletonMap("ettersendelse", true)))
-            .put("bergenhus", new NavEnhet("Bergenhus", "bergen", "910230158"))
-            .put("ytrebygda", new NavEnhet("Ytrebygda", "bergen", "910230158"))
-            .put("frogner", new NavEnhet("Frogner", "oslo", "910229699", Collections.singletonMap("ettersendelse", true)))
             .put("askoy", new NavEnhet("Askøy", null, "910230182", Collections.singletonMap("ettersendelse", true)))
+            // Kommuner med bydeler
+            //Bergen
+            //.put("bergenhus", new NavEnhet("Bergenhus", "bergen", "910230158"))
+            //.put("ytrebygda", new NavEnhet("Ytrebygda", "bergen", "910230158"))
+            .put("arna", new NavEnhet("Arna", "bergen", "910230530", Collections.singletonMap("ettersendelse", true)))
+            .put("bergenhus", new NavEnhet("Bergenhus", "bergen", "910230158", Collections.singletonMap("ettersendelse", true)))
+            .put("fana", new NavEnhet("Fana", "bergen", "910230506", Collections.singletonMap("ettersendelse", true)))
+            .put("fyllingsdalen", new NavEnhet("Fyllingsdalen", "bergen", "910230514", Collections.singletonMap("ettersendelse", true)))
+            .put("laksevag", new NavEnhet("Laksevåg", "bergen", "910230514", Collections.singletonMap("ettersendelse", true)))
+            .put("ytrebygda", new NavEnhet("Ytrebygda", "bergen", "910230506", Collections.singletonMap("ettersendelse", true)))
+            .put("arstad", new NavEnhet("Årstad", "bergen", "910230158", Collections.singletonMap("ettersendelse", true)))
+            .put("asane", new NavEnhet("Åsane", "bergen", "910230530", Collections.singletonMap("ettersendelse", true)))
+
+            // Oslo
+            .put("frogner", new NavEnhet("Frogner", "oslo", "910229699", Collections.singletonMap("ettersendelse", true)))
             .put("grunerlokka", new NavEnhet("Grünerløkka", "oslo", "811213322", Collections.singletonMap("ettersendelse", true)))
             .put("grorud", new NavEnhet("Grorud", "oslo", "910229702", Collections.singletonMap("ettersendelse", true)))
             .put("stovner", new NavEnhet("Stovner", "oslo", "910589792", Collections.singletonMap("ettersendelse", true)))
