@@ -12,6 +12,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.ServiceConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.sosialhjelp.SosialhjelpKontaktBolk;
+import no.nav.sbl.dialogarena.soknadinnsending.business.utbetaling.UtbetalingBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.*;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -28,6 +29,7 @@ import org.springframework.context.annotation.Import;
         ConsumerConfig.class,
         ArbeidsforholdBolk.class,
         SosialhjelpArbeidsforholdBolk.class,
+        UtbetalingBolk.class,
         ServiceConfig.class,
         ServicesApplicationConfig.class,
         KravdialogInformasjonHolder.class,
