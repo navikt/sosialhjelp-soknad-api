@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.service.EmailService;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.MetricsEventFactory;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadMetricsService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import org.springframework.context.annotation.Bean;
@@ -68,5 +69,10 @@ public class SoknadActionsTestConfig {
     @Bean
     public KravdialogInformasjonHolder kravdialogInformasjonHolder() {
         return mock(KravdialogInformasjonHolder.class);
+    }
+
+    @Bean
+    public MetricsEventFactory metricsEventFactory() {
+        return new MetricsEventFactory();
     }
 }

@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business;
 import no.nav.sbl.dialogarena.common.kodeverk.JsonKodeverk;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.kodeverk.StandardKodeverk;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.MetricsEventFactory;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,10 +42,5 @@ public class ServicesApplicationConfig {
     @Bean
     public JsonKodeverk jsonKodeverk(){
         return new JsonKodeverk(getClass().getResourceAsStream("/kodeverk.json"));
-    }
-
-    @Bean
-    public MetricsEventFactory metricsEventFactory() {
-        return new MetricsEventFactory();
     }
 }

@@ -87,8 +87,8 @@ public class SoknadMetricsService {
             eventForInnsendteSkjema.addTagToReport("ettersending", String.valueOf(erEttersending));
             eventForInnsendteSkjema.report();
 
-            rapporterStatusPaaVedlegg(getInnsendteVedleggSomSkalTelles(innsendteVedlegg), "soknad.sendtVedlegg", skjematype, erEttersending);
-            rapporterStatusPaaVedlegg(getInnsendteVedleggSomSkalTelles(ikkeInnsendteVedlegg), "soknad.ikkeSendtVedlegg", skjematype, erEttersending);
+            rapporterStatusPaaVedlegg(finnVedleggSomSkalTelles(innsendteVedlegg), "soknad.sendtVedlegg", skjematype, erEttersending);
+            rapporterStatusPaaVedlegg(finnVedleggSomSkalTelles(ikkeInnsendteVedlegg), "soknad.ikkeSendtVedlegg", skjematype, erEttersending);
         }
     }
 
@@ -112,7 +112,7 @@ public class SoknadMetricsService {
         }
     }
 
-    private List<Vedlegg> getInnsendteVedleggSomSkalTelles(List<Vedlegg> vedleggsListe) {
+    private List<Vedlegg> finnVedleggSomSkalTelles(List<Vedlegg> vedleggsListe) {
         return vedleggsListe
                 .stream()
                 .filter(vedlegg -> vedlegg.getOpprinneligInnsendingsvalg() != vedlegg.getInnsendingsvalg())

@@ -172,4 +172,9 @@ public class SoknadDataFletterIntegrationTestContext {
     public SoknadMetricsService metricsService() {
         return mock(SoknadMetricsService.class);
     }
+
+    @Bean
+    public MetricsEventFactory metricsEventFactory() {
+        return new MetricsEventFactory();
+    }
 }
