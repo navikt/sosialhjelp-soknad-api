@@ -99,8 +99,6 @@ public class KommuneTilNavEnhetMapper {
             .put("askoy", new NavEnhet("Askøy", null, "910230182", Collections.singletonMap("ettersendelse", true)))
             // Kommuner med bydeler
             //Bergen
-            //.put("bergenhus", new NavEnhet("Bergenhus", "bergen", "910230158"))
-            //.put("ytrebygda", new NavEnhet("Ytrebygda", "bergen", "910230158"))
             .put("arna", new NavEnhet("Arna", "bergen", "910230530", Collections.singletonMap("ettersendelse", true)))
             .put("bergenhus", new NavEnhet("Bergenhus", "bergen", "910230158", Collections.singletonMap("ettersendelse", true)))
             .put("fana", new NavEnhet("Fana", "bergen", "910230506", Collections.singletonMap("ettersendelse", true)))
