@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
 import no.nav.metrics.Event;
-import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.DagpengerGjenopptakInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.DagpengerOrdinaerInformasjon;
@@ -27,6 +26,9 @@ public class SoknadMetricsService {
     private static final long RAPPORTERINGS_RATE = 15 * 60 * 1000; // hvert kvarter
 
     @Inject
+    private MetricsEventFactory metricsEventFactory;
+
+    @Inject
     @Named("soknadInnsendingRepository")
     private SoknadRepository lokalDb;
 
@@ -48,7 +50,7 @@ public class SoknadMetricsService {
     private void rapporterSoknad(String name, String skjemanummer, boolean erEttersending) {
         String soknadstype = getSoknadstype(skjemanummer, erEttersending);
 
-        Event event = MetricsFactory.createEvent(name);
+        Event event = metricsEventFactory.createEvent(name);
         event.addFieldToReport("soknadstype", soknadstype);
         event.report();
     }
@@ -65,7 +67,7 @@ public class SoknadMetricsService {
 
         for (Map.Entry<String, Integer> entry : statuser.entrySet()) {
             logger.info("Databasestatus for {} er {}", entry.getKey(), entry.getValue());
-            Event event = MetricsFactory.createEvent("status.database." + entry.getKey());
+            Event event = metricsEventFactory.createEvent("status.database." + entry.getKey());
             event.addFieldToReport("antall", entry.getValue());
             event.report();
         }
@@ -77,7 +79,7 @@ public class SoknadMetricsService {
 
             String skjematype = DagpengerUtils.konverterSkjemanummerTilTittel(skjemanummer);
 
-            Event eventForInnsendteSkjema = MetricsFactory.createEvent("soknad.innsendteskjema");
+            Event eventForInnsendteSkjema = metricsEventFactory.createEvent("soknad.innsendteskjema");
             eventForInnsendteSkjema.addFieldToReport("soknad.innsendtskjema.komplett", erSoknadKomplett(ikkeInnsendteVedlegg));
             eventForInnsendteSkjema.addTagToReport("skjematype", skjematype);
             eventForInnsendteSkjema.report();
