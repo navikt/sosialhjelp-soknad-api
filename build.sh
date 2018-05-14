@@ -212,7 +212,7 @@ function deploy() {
                     "key": "DEPLOY"
                 },
                 "issuetype": {
-                    "id": "14302",
+                    "id": "14302"
                 },
                 "customfield_14811": {
                     "id": "${environmentId}",
