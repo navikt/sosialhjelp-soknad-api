@@ -230,7 +230,7 @@ function deploy() {
 EOF
 
     deploy_result=$(curl -s -S --output /dev/stderr --write-out "%{http_code}" --user "${JIRA_USERNAME}:${JIRA_PASSWORD}" -X POST --header "Content-Type: application/json" -d "${postBodyString}" "https://jira.adeo.no/rest/api/2/issue/")
-    if [[ "${deploy_result}" != "200" ]]
+    if [[ "${deploy_result}" != "201" ]]
     then
         echo "Deployment failed!";
         exit 1;
