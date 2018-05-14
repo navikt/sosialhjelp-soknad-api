@@ -13,8 +13,10 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -73,7 +75,7 @@ public class SoknadMetricsService {
         }
     }
 
-    public void rapporterKompletteOgIkkeKompletteSoknader(List<Vedlegg> innsendteVedlegg, List<Vedlegg> ikkeInnsendteVedlegg, String skjemanummer) {
+    public void rapporterKompletteOgIkkeKompletteSoknader(List<Vedlegg> innsendteVedlegg, List<Vedlegg> ikkeInnsendteVedlegg, String skjemanummer, Boolean erEttersending) {
         if(DagpengerOrdinaerInformasjon.erDagpengerOrdinaer(skjemanummer)
                 || DagpengerGjenopptakInformasjon.erDagpengerGjenopptak(skjemanummer)) {
 
@@ -82,10 +84,11 @@ public class SoknadMetricsService {
             Event eventForInnsendteSkjema = metricsEventFactory.createEvent("soknad.innsendteskjema");
             eventForInnsendteSkjema.addFieldToReport("soknad.innsendtskjema.komplett", erSoknadKomplett(ikkeInnsendteVedlegg));
             eventForInnsendteSkjema.addTagToReport("skjematype", skjematype);
+            eventForInnsendteSkjema.addTagToReport("ettersending", String.valueOf(erEttersending));
             eventForInnsendteSkjema.report();
 
-            rapporterStatusPaaVedlegg(innsendteVedlegg, "soknad.sendtVedlegg", skjematype);
-            rapporterStatusPaaVedlegg(ikkeInnsendteVedlegg, "soknad.ikkeSendtVedlegg", skjematype);
+            rapporterStatusPaaVedlegg(getInnsendteVedleggSomSkalTelles(innsendteVedlegg), "soknad.sendtVedlegg", skjematype, erEttersending);
+            rapporterStatusPaaVedlegg(getInnsendteVedleggSomSkalTelles(ikkeInnsendteVedlegg), "soknad.ikkeSendtVedlegg", skjematype, erEttersending);
         }
     }
 
@@ -93,18 +96,26 @@ public class SoknadMetricsService {
         return Boolean.toString(ikkeInnsendteVedlegg.isEmpty());
     }
 
-    private void rapporterStatusPaaVedlegg(List<Vedlegg> vedleggsListe, String eventNavn, String skjematype) {
+    private void rapporterStatusPaaVedlegg(List<Vedlegg> vedleggsListe, String eventNavn, String skjematype, Boolean erEttersending) {
         if (vedleggsListe.isEmpty()) {
             return;
         }
 
         for (Vedlegg vedlegg : vedleggsListe) {
-            Event eventForInnsendteVedlegg = MetricsFactory.createEvent(eventNavn);
+            Event eventForInnsendteVedlegg = metricsEventFactory.createEvent(eventNavn);
 
             eventForInnsendteVedlegg.addTagToReport("vedleggskjemanummer", vedlegg.getSkjemaNummer());
             eventForInnsendteVedlegg.addTagToReport("innsendingsvalg", vedlegg.getInnsendingsvalg().name());
             eventForInnsendteVedlegg.addTagToReport("skjematype", skjematype);
+            eventForInnsendteVedlegg.addTagToReport("ettersending", String.valueOf(erEttersending));
             eventForInnsendteVedlegg.report();
         }
+    }
+
+    private List<Vedlegg> getInnsendteVedleggSomSkalTelles(List<Vedlegg> vedleggsListe) {
+        return vedleggsListe
+                .stream()
+                .filter(vedlegg -> vedlegg.getOpprinneligInnsendingsvalg() != vedlegg.getInnsendingsvalg())
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 }

@@ -37,6 +37,7 @@ import javax.inject.Named;
 import java.io.ByteArrayInputStream;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.sort;
 import static java.util.UUID.randomUUID;
@@ -423,7 +424,12 @@ public class SoknadDataFletter {
         henvendelseService.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, vedlegg, soknadMetadata);
         lokalDb.slettSoknad(soknad,HendelseType.INNSENDT);
 
-        soknadMetricsService.rapporterKompletteOgIkkeKompletteSoknader(soknad.getInnsendteVedlegg(), soknad.getIkkeInnsendteVedlegg(), skjemanummer(soknad));
+        soknadMetricsService.rapporterKompletteOgIkkeKompletteSoknader(
+                soknad.getInnsendteVedlegg(),
+                soknad.getIkkeInnsendteVedlegg(),
+                skjemanummer(soknad),
+                soknad.erEttersending()
+        );
         soknadMetricsService.sendtSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
     }
 
