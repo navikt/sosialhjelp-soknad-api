@@ -229,11 +229,14 @@ function deploy() {
         }
 EOF
 
-    deploy_result=$(curl -s -S --output /dev/stderr --write-out "%{http_code}" --user "${JIRA_USERNAME}:${JIRA_PASSWORD}" -X POST --header "Content-Type: application/json" -d "${postBodyString}" "https://jira.adeo.no/rest/api/2/issue/")
+    echo "Deploying version ${releaseVersion} on ${namespace} with user ${JIRA_USERNAME}";
+    deploy_result=$(curl --output /dev/stderr --write-out "%{http_code}" --user "${JIRA_USERNAME}:${JIRA_PASSWORD}" -X POST --header "Content-Type: application/json" -d "${postBodyString}" "https://jira.adeo.no/rest/api/2/issue/")
     if [[ "${deploy_result}" != "201" ]]
     then
         echo "Deployment failed!";
         exit 1;
+    else
+        echo "Deployment initiated.";
     fi
 }
 
@@ -241,7 +244,6 @@ function deploy_if_requested_by_committer() {
     determine_deploy
     if [[ "${nais_deploy_environment}" != "" ]]
     then
-        echo "Deploying version ${versjon} on ${nais_deploy_environment} with user ${domenebrukernavn}";
         deploy "soknadsosialhjelp-server" "${nais_deploy_environment}" "${versjon}"
     fi
 }
