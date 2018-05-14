@@ -23,6 +23,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.URI;
+import java.time.LocalDate;
 
 import static no.nav.sbl.dialogarena.rest.utils.MocksetupUtils.*;
 
@@ -46,7 +47,11 @@ public class InternalRessurs {
     @GET
     @Path(value = "/utbetaling")
     public String utbetaling() {
-        return utbetalingService.dummy();
+        return utbetalingService.hentUtbetalingerForBrukerIPeriode(
+                "123456789101",
+                LocalDate.now().minusDays(30),
+                LocalDate.now().plusDays(20)
+        );
     }
 
     @POST
