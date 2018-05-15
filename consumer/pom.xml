@@ -72,6 +72,10 @@
             <artifactId>metrics</artifactId>
         </dependency>
         <dependency>
+            <groupId>no.nav.sbl</groupId>
+            <artifactId>rest</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>

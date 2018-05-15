@@ -98,6 +98,8 @@ fasitResources:
     resourceType: credential
   - alias: arbeidservice
     resourceType: credential
+  - alias: tpsws.api.v1
+    resourceType: restservice
 #  - alias: suspender
 #    resourceType: credential
 

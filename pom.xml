@@ -603,6 +603,11 @@
                 </exclusions>
             </dependency>
             <dependency>
+                <groupId>no.nav.sbl</groupId>
+                <artifactId>rest</artifactId>
+                <version>2018.05.15.11.54</version>
+            </dependency>
+            <dependency>
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-security-authorization</artifactId>
                 <version>${modig-security.version}</version>
