@@ -3,6 +3,7 @@
 
 # Stop scriptet om en kommando feiler
 set -e
+set -x
 
 # Usage string
 usage="Script som bygger prosjektet og publiserer til nexus
