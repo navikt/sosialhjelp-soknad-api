@@ -89,6 +89,7 @@ public class KommuneTilNavEnhetMapper {
             .build();
 
     private static final Map<String, String> PROD_KOMMUNENAVN = new ImmutableMap.Builder<String, String>()
+            .put("oslo", "Oslo")
             .put("bergen", "Bergen")
             .build();
     
@@ -123,7 +124,7 @@ public class KommuneTilNavEnhetMapper {
             .put("horten", new NavEnhet("Horten", null, "974605171"))
             .put("bergenhus", new NavEnhet("Bergenhus", "bergen", "976830563"))
             .put("ytrebygda", new NavEnhet("Ytrebygda", "bergen", "976830652"))
-            //.put("gamleoslo", new NavEnhet("Gamle Oslo", "oslo", "974778742", Collections.singletonMap("ettersendelse", true))) 
+            .put("gamleoslo", new NavEnhet("Gamle Oslo", "oslo", "974778742", Collections.singletonMap("ettersendelse", true)))
             //.put("frogner", new NavEnhet("Frogner", "oslo", "874778702")) //OK
             //.put("grunerlokka", new NavEnhet("Grünerløkka", "oslo", "870534612")) //OK
             //.put("grorud", new NavEnhet("Grorud", "oslo", "974778866")) //OK
