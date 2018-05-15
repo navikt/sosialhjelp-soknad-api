@@ -3,7 +3,7 @@
 
 # Stop scriptet om en kommando feiler
 set -e
-set -x
+
 # Usage string
 usage="Script som bygger prosjektet og publiserer til nexus
 
@@ -205,7 +205,7 @@ function deploy() {
     environmentId=${environmentIds[${environment}]}
     zoneId=${zoneIds[${zone}]}
 
-    read -d '' postBodyString << EOF
+    (read -d '' postBodyString << EOF
         {
             "fields": {
                 "project": {
@@ -228,6 +228,7 @@ function deploy() {
             }
         }
 EOF
+) || true
 
     echo "Deploying version ${releaseVersion} on ${namespace} with user ${JIRA_USERNAME}";
     deploy_result=$(curl --output /dev/stderr --write-out "%{http_code}" --user "${JIRA_USERNAME}:${JIRA_PASSWORD}" -X POST --header "Content-Type: application/json" -d "${postBodyString}" "https://jira.adeo.no/rest/api/2/issue/")
