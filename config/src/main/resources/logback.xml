@@ -68,7 +68,7 @@
         <appender-ref ref="klientlogg-sync" />
     </appender>
 
-    <appender name="SYSLOG-SYNC" class="ch.qos.logback.classic.net.SyslogAppender">
+    <appender name="SYSLOG-SYNC" class="com.spotify.logging.logback.MillisecondPrecisionSyslogAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>${syslog.filter.level:-INFO}</level>
         </filter>

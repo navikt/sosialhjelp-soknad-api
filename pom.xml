@@ -634,6 +634,11 @@
                 <version>1.0.13</version>
             </dependency>
             <dependency>
+                <groupId>com.spotify</groupId>
+                <artifactId>logging</artifactId>
+                <version>2.2.2</version>
+            </dependency>
+            <dependency>
                 <groupId>org.hsqldb</groupId>
                 <artifactId>hsqldb</artifactId>
                 <version>2.3.2</version>
