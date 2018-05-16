@@ -11,16 +11,18 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
 import no.nav.sbl.dialogarena.sendsoknad.domain.dto.Land;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
+import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet;
+import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet.Kontaktinformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper.NavEnhet;
 import no.nav.sbl.dialogarena.soknadinnsending.business.WebSoknadConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.LandService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeid.ArbeidssokerInfoService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoService;
 import no.nav.sbl.dialogarena.utils.InnloggetBruker;
 import org.apache.commons.lang3.LocaleUtils;
@@ -80,6 +82,8 @@ public class InformasjonRessurs {
     private KravdialogInformasjonHolder kravdialogInformasjonHolder;
     @Inject
     private AdresseSokService adresseSokService;
+    @Inject
+    private NorgService norgService;
 
 
     @Path("/tjenester")
@@ -244,12 +248,24 @@ public class InformasjonRessurs {
     public List<AdresseForslag> adresseSok(@QueryParam("sokestreng") String sokestreng) {
         return adresseSokService.sokEtterAdresser(sokestreng);
     }
-    
+
+    @GET
+    @Path("/enhet/geografisktilknytning")
+    public NavEnhet finnEnhet(@QueryParam("gt") String gt) {
+        return norgService.finnEnhetForGt(gt);
+    }
+
+    @GET
+    @Path("/enhet/kontaktinfo")
+    public Kontaktinformasjon kontaktInfo(@QueryParam("enhetId") String enhetId) {
+        return norgService.hentKontaktInformasjon(enhetId);
+    }
+
     @GET
     @Path("/kommunevalg")
     public Collection<NavEnhetFrontend> hentKommunevalg() {
         final Collection<NavEnhetFrontend> navEnheter = KommuneTilNavEnhetMapper.getNavEnheter().entrySet().stream().map(entry -> {
-            final NavEnhet navEnhet = entry.getValue();
+            final KommuneTilNavEnhetMapper.NavEnhet navEnhet = entry.getValue();
             return new NavEnhetFrontend(entry.getKey(),
                     navEnhet.getOrgnummer(),
                     navEnhet.getKontornavn(),
