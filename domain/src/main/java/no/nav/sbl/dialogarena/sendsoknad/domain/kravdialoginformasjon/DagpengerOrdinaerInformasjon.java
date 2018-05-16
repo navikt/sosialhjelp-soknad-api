@@ -1,11 +1,17 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon;
 
 
+import no.nav.metrics.Event;
+import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.dagpenger.ordinaer.DagpengerOrdinaerTilJson;
+import org.springframework.context.MessageSource;
 
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 
 public class DagpengerOrdinaerInformasjon extends KravdialogInformasjon.DefaultOppsett {
@@ -51,7 +57,19 @@ public class DagpengerOrdinaerInformasjon extends KravdialogInformasjon.DefaultO
         return "dagpenger";
     }
 
+    @Override
+    public List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource, WebSoknad soknad) {
+            Event event = MetricsFactory.createEvent("soknad.alternativrepresentasjon.aktiv");
+            event.addTagToReport("skjemanummer", soknad.getskjemaNummer());
+            event.addTagToReport("soknadstype", getSoknadTypePrefix());
+            event.report();
+
+            return singletonList(new DagpengerOrdinaerTilJson());
+    }
+
     public static boolean erDagpengerOrdinaer(String skjema) {
         return skjemanummer.contains(skjema);
     }
+
+
 }

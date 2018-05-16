@@ -8,12 +8,41 @@
         <skjemaNummer>T4</skjemaNummer>
         <onProperty>statsborgerskap</onProperty>
         <onValues>
-            <value>NOR</value>
-            <value>SWE</value>
-            <value>FRO</value>
-            <value>ISL</value>
+            <value>ALA</value><!-- Åland, Norden -->
+            <value>AUT</value>
+            <value>BEL</value>
+            <value>BGR</value>
+            <value>CHE</value>
+            <value>CYP</value>
+            <value>CZE</value>
+            <value>DEU</value>
             <value>DNK</value>
+            <value>ESP</value>
+            <value>EST</value>
             <value>FIN</value>
+            <value>FRA</value>
+            <value>FRO</value><!-- Færøyene, Norden -->
+            <value>GBR</value>
+            <value>GRC</value>
+            <value>GRL</value><!-- Grønland, Norden -->
+            <value>HRV</value>
+            <value>HUN</value>
+            <value>IRL</value>
+            <value>ISL</value>
+            <value>ITA</value>
+            <value>LIE</value>
+            <value>LTU</value>
+            <value>LUX</value>
+            <value>LVA</value>
+            <value>MLT</value>
+            <value>NLD</value>
+            <value>NOR</value>
+            <value>POL</value>
+            <value>PRT</value>
+            <value>ROU</value>
+            <value>SVK</value>
+            <value>SVN</value>
+            <value>SWE</value>
         </onValues>
         <inverted>true</inverted>
         <forSystemfaktum>true</forSystemfaktum>
