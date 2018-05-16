@@ -1,8 +1,8 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.adresse;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseConsumer;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseConsumer.AdresseData;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseConsumer.AdressesokRespons;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdresseData;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdressesokRespons;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
@@ -12,11 +12,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.slf4j.LoggerFactory.getLogger;
 
-public class AdresseConsumerMock {
-    private static final Logger logger = getLogger(AdresseConsumerMock.class);
+public class AdresseSokConsumerMock {
+    private static final Logger logger = getLogger(AdresseSokConsumerMock.class);
 
-    public AdresseConsumer adresseRestService() {
-        AdresseConsumer mock = mock(AdresseConsumer.class);
+    public AdresseSokConsumer adresseRestService() {
+        AdresseSokConsumer mock = mock(AdresseSokConsumer.class);
 
         when(mock.sokAdresse(anyString())).thenAnswer(invocation -> {
             String param = invocation.getArgumentAt(0, String.class);

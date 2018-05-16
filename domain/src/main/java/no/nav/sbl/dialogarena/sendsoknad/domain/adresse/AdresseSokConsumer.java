@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.adresse;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface AdresseConsumer {
+public interface AdresseSokConsumer {
 
     AdressesokRespons sokAdresse(String adresse);
 
