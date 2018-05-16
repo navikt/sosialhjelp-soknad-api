@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse;
 
+import no.nav.modig.common.MDCOperations;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseConsumer;
 import org.slf4j.Logger;
 
@@ -7,6 +8,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.Response;
 
+import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class AdresseConsumerImpl implements AdresseConsumer {
@@ -39,24 +41,26 @@ public class AdresseConsumerImpl implements AdresseConsumer {
             }
         } catch (RuntimeException e) {
             logger.info("Noe uventet gikk galt ved oppslag av adresse", e);
+            throw e;
         } finally {
             if (response != null) {
                 response.close();
             }
         }
-
-        return null;
     }
 
     private Invocation.Builder lagRequest(String adresse) {
+        String consumerId = getSubjectHandler().getConsumerId();
+        String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
+
         return client.target(endpoint + "/adressesoek")
                 .queryParam("adresse", adresse)
                 .queryParam("soketype", "E")
                 .queryParam("alltidRetur", "true")
                 .queryParam("maxretur", "100")
                 .request()
-                .header("Nav-Call-Id", "dummy")
-                .header("Nav-Consumer-Id", "srvSosialhjelp");
+                .header("Nav-Call-Id", callId)
+                .header("Nav-Consumer-Id", consumerId);
     }
 
 
