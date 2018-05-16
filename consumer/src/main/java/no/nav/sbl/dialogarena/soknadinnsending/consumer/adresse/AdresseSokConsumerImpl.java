@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse;
 
 import no.nav.modig.common.MDCOperations;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import org.slf4j.Logger;
 
 import javax.ws.rs.client.Client;
@@ -41,7 +42,7 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
             }
         } catch (RuntimeException e) {
             logger.info("Noe uventet gikk galt ved oppslag av adresse", e);
-            throw e;
+            throw new TjenesteUtilgjengeligException("TPS adresse", e);
         } finally {
             if (response != null) {
                 response.close();
