@@ -6,7 +6,10 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toList;
 
@@ -35,8 +38,16 @@ public class AdresseSokService {
                     adresse.gatekode = data.gatekode;
                     adresse.bydel = data.bydel;
                     return adresse;
-                }).collect(toList());
+                })
+                .filter(distinkte())
+                .collect(toList());
 
         return forslag;
     }
+
+    private Predicate<AdresseForslag> distinkte() {
+        Set<String> funnet = new HashSet<>();
+        return a -> funnet.add(a.adresse + "|" + a.kommunenummer + "|" + a.bydel + "|" + a.gatekode);
+    }
+
 }
