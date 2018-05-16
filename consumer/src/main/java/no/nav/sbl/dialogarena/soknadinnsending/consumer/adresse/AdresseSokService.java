@@ -1,8 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseConsumer;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseConsumer.AdressesokRespons;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdressesokRespons;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -17,14 +17,14 @@ import static java.util.stream.Collectors.toList;
 public class AdresseSokService {
 
     @Inject
-    private AdresseConsumer adresseConsumer;
+    private AdresseSokConsumer adresseSokConsumer;
 
     public List<AdresseForslag> sokEtterAdresser(String sok) {
         if (sok == null || sok.trim().length() <= 2) {
             return null;
         }
 
-        AdressesokRespons adressesokRespons = adresseConsumer.sokAdresse(sok);
+        AdressesokRespons adressesokRespons = adresseSokConsumer.sokAdresse(sok);
 
         List<AdresseForslag> forslag = adressesokRespons.adresseDataList.stream()
                 .map(data -> {

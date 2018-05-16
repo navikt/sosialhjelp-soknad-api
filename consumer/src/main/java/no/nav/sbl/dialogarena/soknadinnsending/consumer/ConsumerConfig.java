@@ -48,7 +48,7 @@ public class ConsumerConfig {
             MaalgruppeWSConfig.class,
             SakOgAktivitetWSConfig.class,
             FiksWSConfig.class,
-            AdresseRestConfig.class
+            AdresseSokRestConfig.class
     })
     public static class WsServices {
     }

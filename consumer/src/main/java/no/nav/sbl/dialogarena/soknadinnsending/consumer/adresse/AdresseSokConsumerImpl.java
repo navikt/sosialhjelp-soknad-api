@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse;
 
 import no.nav.modig.common.MDCOperations;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseConsumer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
 import org.slf4j.Logger;
 
 import javax.ws.rs.client.Client;
@@ -11,14 +11,14 @@ import javax.ws.rs.core.Response;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static org.slf4j.LoggerFactory.getLogger;
 
-public class AdresseConsumerImpl implements AdresseConsumer {
+public class AdresseSokConsumerImpl implements AdresseSokConsumer {
 
-    private static final Logger logger = getLogger(AdresseConsumerImpl.class);
+    private static final Logger logger = getLogger(AdresseSokConsumerImpl.class);
 
     private Client client;
     private String endpoint;
 
-    public AdresseConsumerImpl(Client client, String endpoint) {
+    public AdresseSokConsumerImpl(Client client, String endpoint) {
         this.client = client;
         this.endpoint = endpoint;
     }
