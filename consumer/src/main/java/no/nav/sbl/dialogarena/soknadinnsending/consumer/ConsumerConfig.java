@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeid.ArbeidssokerInfoService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.EpostService;
@@ -25,7 +25,7 @@ import static java.lang.System.setProperty;
         ConsumerConfig.WsServices.class,
         PersonaliaFletter.class,
         DokumentKrypterer.class,
-        AdresseService.class
+        AdresseSokService.class
 })
 
 public class ConsumerConfig {
