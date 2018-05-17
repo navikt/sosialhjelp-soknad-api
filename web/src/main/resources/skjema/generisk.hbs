@@ -43,6 +43,11 @@
         {{#each bolker}}
             <div class="bolk js-bolk">
                 <h2 class="bolk__tittel">{{ hentTekst (concat (toLowerCase navn) ".tittel") }}</h2>
+
+                {{#hvisLik navn "opplysningerBolk"}}
+                    {{{hentTekst "opplysninger.informasjon"}}}
+                {{/hvisLik}}
+
                 {{#if @root.utvidetSoknad}}
                     <div class="hjelpeInfotekst">
                         {{#hvisTekstFinnes (concat (toLowerCase navn) ".informasjon")}}
@@ -66,6 +71,7 @@
                     {{/hvisIngenSynligeBarneFakta}}
                 </ul>
                 {{#hvisLik navn "opplysningerBolk"}}
+
                     {{> skjema/sosialhjelp/vedlegg}}
                 {{/hvisLik}}
             </div>
