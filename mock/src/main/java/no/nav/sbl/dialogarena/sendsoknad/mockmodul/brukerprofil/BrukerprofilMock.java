@@ -51,10 +51,14 @@ public class BrukerprofilMock {
 
     private BrukerprofilMock(){
         XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(true);
-        xmlBruker.setGjeldendePostadresseType(new XMLPostadressetyper());
-
+        xmlBruker.setGjeldendePostadresseType(new XMLPostadressetyper().withValue(""));
+        
         settPostadresse(xmlBruker, Adressetyper.NORSK);
         settSekundarAdresse(xmlBruker, Adressetyper.UTENLANDSK);
+        
+        //settMatrikkeladresse(xmlBruker);
+        //xmlBruker.setGjeldendePostadresseType(new XMLPostadressetyper().withValue("midlertidig"));
+        //settMidlertidigPostadresse(xmlBruker);
 
         brukerprofilPortTypeMock.setPerson(xmlBruker);
     }
@@ -74,6 +78,28 @@ public class BrukerprofilMock {
         }
         xmlGyldighetsperiode.setTom(new DateTime(ADRESSE_GYLDIG_TIL));
         return xmlGyldighetsperiode;
+    }
+    
+    public void settMidlertidigPostadresse(XMLBruker xmlBruker) {
+        final XMLMidlertidigPostadresse midlertidigPostadresse = new XMLMidlertidigPostadresseNorge()
+                .withStrukturertAdresse(lagStrukturertPostadresse("42"));
+        xmlBruker.setMidlertidigPostadresse(midlertidigPostadresse);
+    }
+    
+    public void settMatrikkeladresse(XMLBruker xmlBruker) {
+        final XMLBostedsadresse adresse = new XMLBostedsadresse().withStrukturertAdresse(new XMLMatrikkeladresse()
+                .withEiendomsnavn("Eiendommens navn")
+                .withKommunenummer("0301")
+                .withLandkode(lagLandkode(LANDKODE))
+                .withMatrikkelnummer(new XMLMatrikkelnummer()
+                        .withGaardsnummer("1")
+                        .withBruksnummer("2")
+                        .withFestenummer("3")
+                        .withSeksjonsnummer("4")
+                        .withUndernummer("5")
+                        )
+                );
+        xmlBruker.setBostedsadresse(adresse);
     }
 
     public void settPostadresse(XMLBruker xmlBruker, Adressetyper adressetype) {
@@ -123,12 +149,16 @@ public class BrukerprofilMock {
     }
 
     private XMLStrukturertAdresse lagStrukturertPostadresse() {
+        return lagStrukturertPostadresse(HUSNUMMER);
+    }
+    
+    private XMLStrukturertAdresse lagStrukturertPostadresse(String husnummer) {
         return new XMLGateadresse()
                 .withKommunenummer(KOMMUNENUMMER)
                 .withBolignummer(BOLIGNUMMER)
                 .withPoststed(new XMLPostnummer().withValue(POSTNUMMER))
                 .withGatenavn(GATENAVN)
-                .withHusnummer(new BigInteger(HUSNUMMER))
+                .withHusnummer(new BigInteger(husnummer))
                 .withLandkode(lagLandkode(LANDKODE));
     }
 
