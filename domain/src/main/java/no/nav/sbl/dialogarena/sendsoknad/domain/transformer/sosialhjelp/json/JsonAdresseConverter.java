@@ -48,7 +48,11 @@ public final class JsonAdresseConverter {
                 return tilBrukersUstrukturertAdresse(faktum);
             } else {
                 final Faktum faktum = webSoknad.getFaktumMedKey("kontakt.system.adresse");
-                return tilSystemAdresse(faktum);
+                final JsonAdresse adresse = tilSystemAdresse(faktum);
+                if (adresse.getType() == Type.POSTBOKS) {
+                    return null;
+                }
+                return adresse;
             }
         } catch (RuntimeException e) {
             logger.error("Uventet feil: Kan ikke sende med oppholdsadresse", e);
@@ -63,7 +67,7 @@ public final class JsonAdresseConverter {
         if (jsonAdresse == null) {
             return null;
         }
-        if (jsonAdresse.getType() == Type.POSTBOKS) {
+        if (jsonAdresse.getType() == Type.MATRIKKELADRESSE) {
             return null;
         }
         return jsonAdresse;
