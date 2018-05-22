@@ -31,6 +31,14 @@
             </constraint>
         </constraints>
         <properties>
+            <property>              
+                <id>kommunenummer</id>
+                <type>textbox</type>
+                <constraints>
+                    <constraint>properties['type'] == 'matrikkeladresse'</constraint>
+                </constraints>
+            </property>
+        
             <property>
                 <id>bolignummer</id>
                 <type>textbox</type>
