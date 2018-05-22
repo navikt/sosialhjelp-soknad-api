@@ -406,6 +406,28 @@ public class AdresseTransform {
         adresse.setAdressetype(BOSTEDSADRESSE.name());
         adresse.setStrukturertAdresse(tilMatrikkeladresse(xmlMatrikkeladresse));
 
+        final XMLMatrikkelnummer matrikkelnummer = xmlMatrikkeladresse.getMatrikkelnummer();
+        final StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(xmlMatrikkeladresse.getKommunenummer());
+        stringBuilder.append('-');
+        stringBuilder.append(matrikkelnummer.getGaardsnummer());
+        stringBuilder.append('/');
+        stringBuilder.append(matrikkelnummer.getBruksnummer());
+        if (matrikkelnummer.getFestenummer() != null && !matrikkelnummer.getFestenummer().equals("")) {
+            stringBuilder.append('/');
+            stringBuilder.append(matrikkelnummer.getFestenummer());
+            if (matrikkelnummer.getUndernummer() != null && !matrikkelnummer.getUndernummer().equals("")) {
+                stringBuilder.append('-');
+                stringBuilder.append(matrikkelnummer.getUndernummer());
+            }
+        }
+        if (matrikkelnummer.getSeksjonsnummer() != null && !matrikkelnummer.getSeksjonsnummer().equals("")) {
+            stringBuilder.append(", snr. ");
+            stringBuilder.append(matrikkelnummer.getSeksjonsnummer());
+        }
+        
+        adresse.setAdresse(stringBuilder.toString());
+        
         return adresse;
     }
 

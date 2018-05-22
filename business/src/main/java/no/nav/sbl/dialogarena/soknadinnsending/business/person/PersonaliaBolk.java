@@ -52,6 +52,7 @@ public class PersonaliaBolk implements BolkService {
                 .medSystemProperty(STATSBORGERSKAP_KEY, statsborgerskap)
                 .medSystemProperty(STATSBORGERSKAPTYPE_KEY, StatsborgerskapType.get(statsborgerskap))
                 .medSystemProperty(KJONN_KEY, personalia.getKjonn())
+                .medSystemProperty(FOLKEREGISTRERTADRESSE_KEY, personalia.getFolkeregistrertAdresse().getAdresse())
                 .medSystemProperty(GJELDENDEADRESSE_KEY, personalia.getGjeldendeAdresse().getAdresse())
                 .medSystemProperty(DISKRESJONSKODE, personalia.getDiskresjonskode())
                 .medSystemProperty(GJELDENDEADRESSE_TYPE_KEY, personalia.getGjeldendeAdresse().getAdressetype())
