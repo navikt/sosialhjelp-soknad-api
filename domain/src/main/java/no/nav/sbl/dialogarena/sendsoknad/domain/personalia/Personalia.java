@@ -24,6 +24,7 @@ public class Personalia {
     public static final String MELLOMNAVN_KEY = "mellomnavn";
     public static final String ETTERNAVN_KEY = "etternavn";
     public static final String KJONN_KEY = "kjonn";
+    public static final String FOLKEREGISTRERTADRESSE_KEY = "folkeregistrertAdresse";
     public static final String GJELDENDEADRESSE_KEY = "gjeldendeAdresse";
     public static final String DISKRESJONSKODE = "diskresjonskode";
     public static final String GJELDENDEADRESSE_TYPE_KEY = "gjeldendeAdresseType";

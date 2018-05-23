@@ -28,15 +28,16 @@ public class AdresseTransform {
     private static final Logger logger = getLogger(AdresseTransform.class);
     private static final String NORGE = "NOR";
 
-    public Adresse mapGjeldendeAdresse(XMLBruker soapPerson, Kodeverk kodeverk) {
+    public Adresse mapPostAdresse(XMLBruker soapPerson, Kodeverk kodeverk) {
         this.kodeverk = kodeverk;
 
         if (harHemmeligAdresse(soapPerson)) {
             return new Adresse();
         } else if (harMidlertidigAdresseSomErGjeldendeAdresse(soapPerson)) {
             return finnMidlertidigAdresse(soapPerson.getMidlertidigPostadresse());
-        } else if (harStrukturertAdresseSomErGjeldendeAdresse(soapPerson)) {
-            return hentBostedsAdresse((XMLGateadresse) soapPerson.getBostedsadresse().getStrukturertAdresse());
+        } else if (harStrukturertAdresseSomErGjeldendeAdresse(soapPerson)
+                && soapPerson.getBostedsadresse() != null && soapPerson.getBostedsadresse().getStrukturertAdresse() instanceof XMLGateadresse) {
+            return hentBostedGateAdresse((XMLGateadresse) soapPerson.getBostedsadresse().getStrukturertAdresse());
         } else if (harUstrukturertAdresseSomErGjeldendeAdresse(soapPerson)) {
             return finnPostAdresse(soapPerson.getPostadresse());
         } else {
@@ -44,15 +45,52 @@ public class AdresseTransform {
         }
     }
     
+    public Adresse mapGjeldendeAdresse(XMLBruker soapPerson, Kodeverk kodeverk) {
+        this.kodeverk = kodeverk;
+
+        if (harHemmeligAdresse(soapPerson)) {
+            return new Adresse();
+        } else if (harMidlertidigAdresseSomErGjeldendeAdresse(soapPerson)) {
+            return finnMidlertidigAdresse(soapPerson.getMidlertidigPostadresse());
+        } else if (harStrukturertBostadsadresse(soapPerson)) {
+            return hentBostedsAdresse(soapPerson.getBostedsadresse());
+        } else if (harUstrukturertAdresseSomErGjeldendeAdresse(soapPerson)) {
+            return finnPostAdresse(soapPerson.getPostadresse());
+        } else {
+            return new Adresse();
+        }
+    }
+
+    private boolean harStrukturertBostadsadresse(XMLBruker soapPerson) {
+        return soapPerson.getBostedsadresse() != null && soapPerson.getBostedsadresse().getStrukturertAdresse() != null;
+    }
+    
     public Adresse mapFolkeregistrertAdresse(XMLBruker soapPerson, Kodeverk kodeverk) {
         this.kodeverk = kodeverk;
         if (harHemmeligAdresse(soapPerson)) {
             return new Adresse();
-        } else if (harStrukturertAdresseSomErGjeldendeAdresse(soapPerson)) {
-            return hentBostedsAdresse((XMLGateadresse) soapPerson.getBostedsadresse().getStrukturertAdresse());
         } else {
+            final XMLBostedsadresse bostedsadresse = soapPerson.getBostedsadresse();
+            return hentBostedsAdresse(bostedsadresse);
+        }
+    }
+    
+    private Adresse hentBostedsAdresse(XMLBostedsadresse bostedsadresse) {
+        if (bostedsadresse == null) {
             return null;
         }
+        final XMLStrukturertAdresse strukturertAdresse = bostedsadresse.getStrukturertAdresse();
+        if (strukturertAdresse == null) {
+            return null;
+        }
+        
+        if (strukturertAdresse instanceof XMLGateadresse) {
+            return hentBostedGateAdresse((XMLGateadresse) strukturertAdresse);
+        }
+        if (strukturertAdresse instanceof XMLMatrikkeladresse) {
+            return hentBostedMatrikkelAdresse((XMLMatrikkeladresse) strukturertAdresse);
+        }
+        return null;
     }
 
     private static final List<String> HEMMELIGE_DISKRESJONSKODER = Arrays.asList("6", "7");
@@ -69,7 +107,7 @@ public class AdresseTransform {
         } else if (harMidlertidigAdresseSomIkkeErGjeldendeAdresse(soapPerson)) {
             return finnMidlertidigAdresse(soapPerson.getMidlertidigPostadresse());
         } else if (harStrukturertAdresseSomIkkeErGjeldendeAdresse(soapPerson)) {
-            return hentBostedsAdresse((XMLGateadresse) soapPerson.getBostedsadresse().getStrukturertAdresse());
+            return hentBostedGateAdresse((XMLGateadresse) soapPerson.getBostedsadresse().getStrukturertAdresse());
         } else if (harUstrukturertAdresseSomIkkeErGjeldendeAdresse(soapPerson)) {
             return finnPostAdresse(soapPerson.getPostadresse());
         } else {
@@ -344,7 +382,7 @@ public class AdresseTransform {
         return adresse;
     }
 
-    private Adresse hentBostedsAdresse(XMLGateadresse xmlGateAdresse) {
+    private Adresse hentBostedGateAdresse(XMLGateadresse xmlGateAdresse) {
         Adresse adresse = new Adresse();
         adresse.setAdressetype(BOSTEDSADRESSE.name());
         adresse.setStrukturertAdresse(tilGatedresse(xmlGateAdresse));
@@ -360,6 +398,36 @@ public class AdresseTransform {
         stringBuilder.append(kodeverk.getPoststed(getPostnummerString(xmlGateAdresse)));
         adresse.setAdresse(stringBuilder.toString());
 
+        return adresse;
+    }
+    
+    private Adresse hentBostedMatrikkelAdresse(XMLMatrikkeladresse xmlMatrikkeladresse) {
+        Adresse adresse = new Adresse();
+        adresse.setAdressetype(BOSTEDSADRESSE.name());
+        adresse.setStrukturertAdresse(tilMatrikkeladresse(xmlMatrikkeladresse));
+
+        final XMLMatrikkelnummer matrikkelnummer = xmlMatrikkeladresse.getMatrikkelnummer();
+        final StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(xmlMatrikkeladresse.getKommunenummer());
+        stringBuilder.append('-');
+        stringBuilder.append(matrikkelnummer.getGaardsnummer());
+        stringBuilder.append('/');
+        stringBuilder.append(matrikkelnummer.getBruksnummer());
+        if (matrikkelnummer.getFestenummer() != null && !matrikkelnummer.getFestenummer().equals("")) {
+            stringBuilder.append('/');
+            stringBuilder.append(matrikkelnummer.getFestenummer());
+            if (matrikkelnummer.getUndernummer() != null && !matrikkelnummer.getUndernummer().equals("")) {
+                stringBuilder.append('-');
+                stringBuilder.append(matrikkelnummer.getUndernummer());
+            }
+        }
+        if (matrikkelnummer.getSeksjonsnummer() != null && !matrikkelnummer.getSeksjonsnummer().equals("")) {
+            stringBuilder.append(", snr. ");
+            stringBuilder.append(matrikkelnummer.getSeksjonsnummer());
+        }
+        
+        adresse.setAdresse(stringBuilder.toString());
+        
         return adresse;
     }
 
