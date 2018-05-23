@@ -74,14 +74,14 @@ public class KommuneTilNavEnhetMapper {
 
     private static Map<String, Boolean> defaultFeatures() {
         final Map<String, Boolean> features = new HashMap<>();
-        features.put("ettersendelse", false);
+        features.put("ettersendelse", true);
         return features;
     }
 
 
     private static final List<String> TEST_DIGISOS_KOMMUNER = Collections.unmodifiableList(asList("0701", "0703", "0717", "1201", "0301", "1247"));
 
-    private static final List<String> PROD_DIGISOS_KOMMUNER = Collections.unmodifiableList(asList("0701", "0703", "0717", "1201", "0301"));
+    private static final List<String> PROD_DIGISOS_KOMMUNER = Collections.unmodifiableList(asList("0701", "0703", "0717", "1201", "0301", "1247"));
 
     private static final Map<String, String> TEST_KOMMUNENAVN = new ImmutableMap.Builder<String, String>()
             .put("oslo", "Oslo")
@@ -92,42 +92,62 @@ public class KommuneTilNavEnhetMapper {
             .put("oslo", "Oslo")
             .put("bergen", "Bergen")
             .build();
-    
+
 
     private static final Map<String, NavEnhet> TEST_ORGNR = new ImmutableMap.Builder<String, NavEnhet>()
             // Kommuner uten bydeler
-            .put("horten", new NavEnhet("Horten", null, "910940066", Collections.singletonMap("ettersendelse", true)))
-            .put("askoy", new NavEnhet("Askøy", null, "910230182", Collections.singletonMap("ettersendelse", true)))
-            //.put("barum", new NavEnhet("Bærum", null, "910230484", Collections.singletonMap("ettersendelse", true)))
+            .put("horten", new NavEnhet("Horten", null, "910940066"))
+            .put("askoy", new NavEnhet("Askøy", null, "910230182"))
+            //.put("barum", new NavEnhet("Bærum", null, "910230484"))
             // Kommuner med bydeler
             //Bergen
-            .put("arna", new NavEnhet("Arna", "bergen", "910230530", Collections.singletonMap("ettersendelse", true)))
-            .put("bergenhus", new NavEnhet("Bergenhus", "bergen", "910230158", Collections.singletonMap("ettersendelse", true)))
-            .put("fana", new NavEnhet("Fana", "bergen", "910230506", Collections.singletonMap("ettersendelse", true)))
-            .put("fyllingsdalen", new NavEnhet("Fyllingsdalen", "bergen", "910230514", Collections.singletonMap("ettersendelse", true)))
-            .put("laksevag", new NavEnhet("Laksevåg", "bergen", "910230514", Collections.singletonMap("ettersendelse", true)))
-            .put("ytrebygda", new NavEnhet("Ytrebygda", "bergen", "910230506", Collections.singletonMap("ettersendelse", true)))
-            .put("arstad", new NavEnhet("Årstad", "bergen", "910230158", Collections.singletonMap("ettersendelse", true)))
-            .put("asane", new NavEnhet("Åsane", "bergen", "910230530", Collections.singletonMap("ettersendelse", true)))
+            .put("arna", new NavEnhet("Arna", "bergen", "910230530"))
+            .put("bergenhus", new NavEnhet("Bergenhus", "bergen", "910230158"))
+            .put("fana", new NavEnhet("Fana", "bergen", "910230506"))
+            .put("fyllingsdalen", new NavEnhet("Fyllingsdalen", "bergen", "910230514"))
+            .put("laksevag", new NavEnhet("Laksevåg", "bergen", "910230514"))
+            .put("ytrebygda", new NavEnhet("Ytrebygda", "bergen", "910230506"))
+            .put("arstad", new NavEnhet("Årstad", "bergen", "910230158"))
+            .put("asane", new NavEnhet("Åsane", "bergen", "910230530"))
 
             // Oslo
-            .put("frogner", new NavEnhet("Frogner", "oslo", "910229699", Collections.singletonMap("ettersendelse", true)))
-            .put("grunerlokka", new NavEnhet("Grünerløkka", "oslo", "811213322", Collections.singletonMap("ettersendelse", true)))
-            .put("grorud", new NavEnhet("Grorud", "oslo", "910229702", Collections.singletonMap("ettersendelse", true)))
-            .put("stovner", new NavEnhet("Stovner", "oslo", "910589792", Collections.singletonMap("ettersendelse", true)))
-            .put("sagene", new NavEnhet("Sagene", "oslo", "910565338", Collections.singletonMap("ettersendelse", true)))
-            .put("nordstrand", new NavEnhet("Nordstrand", "oslo", "910309935", Collections.singletonMap("ettersendelse", true)))
-            .put("sondreNordstrand", new NavEnhet("Søndre Nordstrand", "oslo", "910723499", Collections.singletonMap("ettersendelse", true)))
+            .put("frogner", new NavEnhet("Frogner", "oslo", "910229699"))
+            .put("grunerlokka", new NavEnhet("Grünerløkka", "oslo", "811213322"))
+            .put("grorud", new NavEnhet("Grorud", "oslo", "910229702"))
+            .put("stovner", new NavEnhet("Stovner", "oslo", "910589792"))
+            .put("sagene", new NavEnhet("Sagene", "oslo", "910565338"))
+            .put("nordstrand", new NavEnhet("Nordstrand", "oslo", "910309935"))
+            .put("sondreNordstrand", new NavEnhet("Søndre Nordstrand", "oslo", "910723499"))
             .build();
 
     private static final Map<String, NavEnhet> PROD_ORGNR = new ImmutableMap.Builder<String, NavEnhet>()
-            .put("horten", new NavEnhet("Horten", null, "974605171"))
-            .put("bergenhus", new NavEnhet("Bergenhus", "bergen", "976830563"))
-            .put("ytrebygda", new NavEnhet("Ytrebygda", "bergen", "976830652"))
-            .put("gamleoslo", new NavEnhet("Gamle Oslo", "oslo", "974778742", Collections.singletonMap("ettersendelse", true)))
-            //.put("frogner", new NavEnhet("Frogner", "oslo", "874778702")) //OK
-            //.put("grunerlokka", new NavEnhet("Grünerløkka", "oslo", "870534612")) //OK
-            //.put("grorud", new NavEnhet("Grorud", "oslo", "974778866")) //OK
+            .put("horten",          new NavEnhet("Horten", null,                "974605171"))
+            .put("askoy",           new NavEnhet("Askøy", null,                 "974600889"))
+
+            .put("arna",            new NavEnhet("Arna", "bergen",              "976829786"))
+            .put("bergenhus",       new NavEnhet("Bergenhus", "bergen",         "976830563"))
+            .put("fana",            new NavEnhet("Fana", "bergen",              "976829948"))
+            .put("fyllingsdalen",   new NavEnhet("Fyllingsdalen", "bergen",     "976830032"))
+            .put("laksevag",        new NavEnhet("Laksevåg", "bergen",          "976830121"))
+            .put("ytrebygda",       new NavEnhet("Ytrebygda", "bergen",         "976830652"))
+            .put("arstad",          new NavEnhet("Årstad", "bergen",            "976830172"))
+            .put("asane",           new NavEnhet("Åsane", "bergen",             "976830784"))
+
+            .put("alna",            new NavEnhet("Alna", "oslo",                "970534644"))
+            .put("bjerke",          new NavEnhet("Bjerke", "oslo",              "974778874"))
+            .put("frogner",         new NavEnhet("Frogner", "oslo",             "874778702"))
+            .put("gamleoslo",       new NavEnhet("Gamle Oslo", "oslo",          "974778742"))
+            .put("grorud",          new NavEnhet("Grorud", "oslo",              "974778866"))
+            .put("grunerlokka",     new NavEnhet("Grünerløkka", "oslo",         "870534612"))
+            .put("nordreaker",      new NavEnhet("Nordre Aker", "oslo",         "974778882"))
+            .put("nordstrand",      new NavEnhet("Nordstrand", "oslo",          "970534679"))
+            .put("sagene",          new NavEnhet("Sagene", "oslo",              "974778726"))
+            .put("sthanshaugen",    new NavEnhet("St.Hanshaugen", "oslo",       "971179686"))
+            .put("stovner",         new NavEnhet("Stovner", "oslo",             "874778842"))
+            .put("sondrenordstrand",new NavEnhet("Søndre Nordstrand", "oslo",   "972408875"))
+            .put("ullern",          new NavEnhet("Ullern", "oslo",              "971022051"))
+            .put("vestreaker",      new NavEnhet("Vestre Aker", "oslo",         "970145311"))
+            .put("ostensjo",        new NavEnhet("Østensjø", "oslo",            "974778807"))
             .build();
 
     private static final Map<String, NavEnhet> mapper = velgMapperUtFraMiljo();
