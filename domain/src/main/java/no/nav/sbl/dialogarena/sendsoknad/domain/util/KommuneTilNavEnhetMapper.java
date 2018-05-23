@@ -95,11 +95,23 @@ public class KommuneTilNavEnhetMapper {
 
 
     private static final Map<String, NavEnhet> TEST_ORGNR = new ImmutableMap.Builder<String, NavEnhet>()
+            // Kommuner uten bydeler
             .put("horten", new NavEnhet("Horten", null, "910940066"))
-            .put("bergenhus", new NavEnhet("Bergenhus", "bergen", "910230158", Collections.singletonMap("ettersendelse", false)))
-            .put("ytrebygda", new NavEnhet("Ytrebygda", "bergen", "910230158", Collections.singletonMap("ettersendelse", false)))
-            .put("frogner", new NavEnhet("Frogner", "oslo", "910229699"))
             .put("askoy", new NavEnhet("Askøy", null, "910230182"))
+            //.put("barum", new NavEnhet("Bærum", null, "910230484"))
+            // Kommuner med bydeler
+            //Bergen
+            .put("arna", new NavEnhet("Arna", "bergen", "910230530"))
+            .put("bergenhus", new NavEnhet("Bergenhus", "bergen", "910230158"))
+            .put("fana", new NavEnhet("Fana", "bergen", "910230506"))
+            .put("fyllingsdalen", new NavEnhet("Fyllingsdalen", "bergen", "910230514"))
+            .put("laksevag", new NavEnhet("Laksevåg", "bergen", "910230514"))
+            .put("ytrebygda", new NavEnhet("Ytrebygda", "bergen", "910230506"))
+            .put("arstad", new NavEnhet("Årstad", "bergen", "910230158"))
+            .put("asane", new NavEnhet("Åsane", "bergen", "910230530"))
+
+            // Oslo
+            .put("frogner", new NavEnhet("Frogner", "oslo", "910229699"))
             .put("grunerlokka", new NavEnhet("Grünerløkka", "oslo", "811213322"))
             .put("grorud", new NavEnhet("Grorud", "oslo", "910229702"))
             .put("stovner", new NavEnhet("Stovner", "oslo", "910589792"))
