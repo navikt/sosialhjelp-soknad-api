@@ -24,7 +24,7 @@ public class SoknadActionsEndpointIT extends AbstractSecurityIT {
     }
 
     @Test
-    public void leggVedVedlegg() {
+    public void GET_leggVedVedlegg_leggved() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
         String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/leggved";
         Response response = soknadTester.sendsoknadResource(subUrl, webTarget ->
@@ -36,7 +36,7 @@ public class SoknadActionsEndpointIT extends AbstractSecurityIT {
     }
 
     @Test
-    public void sendSoknad() {
+    public void POST_sendSoknad_send() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
         String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/send";
         Response response = soknadTester.sendsoknadResource(subUrl, webTarget ->
@@ -48,7 +48,7 @@ public class SoknadActionsEndpointIT extends AbstractSecurityIT {
     }
 
     @Test
-    public void sendEpost_fortsettsenere() {
+    public void POST_sendEpost_fortsettsenere() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
         String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/fortsettsenere";
         Response responseMedBrukersEgenXSRFToken = soknadTester.sendsoknadResource(subUrl, webTarget ->
@@ -69,7 +69,7 @@ public class SoknadActionsEndpointIT extends AbstractSecurityIT {
     }
 
     @Test
-    public void sendEpost_bekreftinnsending() {
+    public void POST_sendEpost_bekreftinnsending() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
         String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/bekreftinnsending";
         Response response = soknadTester.sendsoknadResource(subUrl, webTarget ->
@@ -81,7 +81,7 @@ public class SoknadActionsEndpointIT extends AbstractSecurityIT {
     }
 
     @Test
-    public void finnOpprinneligInnsendtDato() throws Exception {
+    public void GET_finnOpprinneligInnsendtDato_opprinneliginnsendtdato() throws Exception {
         EndpointDataMocking.mockSendHenvendelse();
         SoknadTester soknadTester = SoknadTester.startSoknad(skjemanummer);
         String subUrl = "soknader/INNSENDTSOKNAD/actions/opprinneliginnsendtdato";
@@ -93,7 +93,7 @@ public class SoknadActionsEndpointIT extends AbstractSecurityIT {
     }
 
     @Test
-    public void finnSisteInnsendteBehandlingsId() throws Exception {
+    public void GET_finnSisteInnsendteBehandlingsId_sistinnsendtebehandlingsid() throws Exception {
         EndpointDataMocking.mockSendHenvendelse();
         SoknadTester soknadTester = SoknadTester.startSoknad(skjemanummer);
         String subUrl = "soknader/INNSENDTSOKNAD/actions/sistinnsendtebehandlingsid";

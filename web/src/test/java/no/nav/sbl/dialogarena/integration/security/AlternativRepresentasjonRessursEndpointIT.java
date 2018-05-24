@@ -22,7 +22,7 @@ public class AlternativRepresentasjonRessursEndpointIT extends AbstractSecurityI
     }
 
     @Test
-    public void accessDeniedMedAnnenBruker_xmlRepresentasjon() {
+    public void GET_xmlRepresentasjon_xml_behandlingsId() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
         String subUrl = "representasjon/xml/" + soknadTester.getBrukerBehandlingId();
         Response response = soknadTester.sendsoknadResource(subUrl, webTarget ->
@@ -40,7 +40,7 @@ public class AlternativRepresentasjonRessursEndpointIT extends AbstractSecurityI
     }
 
     @Test
-    public void accessDeniedMedAnnenBruker_jsonRepresentasjon() {
+    public void GET_jsonRepresentasjon_json_behandlingsId() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
         String subUrl = "representasjon/json/" + soknadTester.getBrukerBehandlingId();
         Response response = soknadTester.sendsoknadResource(subUrl, webTarget ->
