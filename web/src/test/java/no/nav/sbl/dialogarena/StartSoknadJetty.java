@@ -62,13 +62,13 @@ public final class StartSoknadJetty {
         setProperty("folder.bilstonad.path", System.getProperty("user.home") + "/Temp/sendsoknad/utave/bilstonad");
         setProperty("folder.dagpenger.path", System.getProperty("user.home") + "/Temp/sendsoknad/utave/soknaddagpenger");
         setProperty("folder.foreldrepenger.path", System.getProperty("user.home") + "/Temp/sendsoknad/utave/foreldrepenger");
-        setProperty("folder.sendsoknad.path", System.getProperty("user.home") + "/Temp/sendsoknad/utave/sendsoknad");
+        setProperty("folder.sendsoknad.path", System.getProperty("user.home") + "/Temp/sendsoknad/utave/sendsoknad/");
         setProperty("folder.soknad-aap-utland.path", System.getProperty("user.home") + "/Temp/sendsoknad/utave/soknad-aap-utland");
         setProperty("folder.soknadaap.path", System.getProperty("user.home") + "/Temp/sendsoknad/utave/soknadaap");
         setProperty("folder.refusjondagligreise.path", System.getProperty("user.home") + "/Temp/sendsoknad/utave/soknadrefusjondagligreise");
         setProperty("folder.soknadsosialhjelp.path", System.getProperty("user.home") + "/Temp/sendsoknad/utave/soknadsosialhjelp");
         setProperty("folder.tilleggsstonader.path", System.getProperty("user.home") + "/Temp/sendsoknad/utave/soknadtilleggsstonader");
-        setProperty("folder.tiltakspenger.path", System.getProperty("user.home") + "/Temp/sendsoknad/utave/soknadtiltakspenger");
+        setProperty("folder.tiltakspenger.path", System.getProperty("user.home") + "/Temp/sendsoknad/utave/soknadtiltakspenger/");
     }
 
     private void configureSecurity() {
