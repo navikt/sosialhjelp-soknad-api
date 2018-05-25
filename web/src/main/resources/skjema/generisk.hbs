@@ -43,10 +43,8 @@
         {{#each bolker}}
             <div class="bolk js-bolk">
                 <h2 class="bolk__tittel">{{ hentTekst (concat (toLowerCase navn) ".tittel") }}</h2>
-
                 {{#hvisLik navn "arbeidbolk"}}
                     {{#hvisIngenArbeidsforhold}}
-
                         <h3>{{{hentTekst "arbeidsforhold.sporsmal"}}}</h3>
                         <p>{{{hentTekst "arbeidsforhold.infotekst"}}}</p>
                         <p>{{{hentTekst "arbeidsforhold.ingen"}}}</p>
@@ -54,6 +52,8 @@
                                 "opplysninger.arbeidsituasjon.kommentarer.label"}}}</p>
                     {{/hvisIngenArbeidsforhold}}
                 {{/hvisLik}}
+
+
 
                 {{#hvisLik navn "opplysningerBolk"}}
                     {{{hentTekst "opplysninger.informasjon"}}}
@@ -79,7 +79,7 @@
                         {{#variabel "key" (toLowerCase navn)}}
                             {{> skjema/generisk/harikkebarn }}
                         {{/variabel}}
-                    {{/hvisIngenSynligeBarneFakta}}
+                    {{/hvisIngenSynligeBarneFakta}}l2018
                 </ul>
                 {{#hvisLik navn "opplysningerBolk"}}
 
