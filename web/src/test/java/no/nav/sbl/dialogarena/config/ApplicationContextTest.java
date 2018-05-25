@@ -30,6 +30,20 @@ public class ApplicationContextTest {
     @BeforeClass
     public static void beforeClass() throws IOException, NamingException {
         load("/environment-test.properties");
+
+        System.setProperty("sendsoknad.datadir", System.getProperty("user.home") + "dummypath");
+
+        setProperty("folder.bilstonad.path", System.getProperty("user.home") + "dummypath");
+        setProperty("folder.dagpenger.path", System.getProperty("user.home") + "dummypath");
+        setProperty("folder.foreldrepenger.path", System.getProperty("user.home") + "dummypath");
+        setProperty("folder.sendsoknad.path", System.getProperty("user.home") + "dummypath");
+        setProperty("folder.soknad-aap-utland.path", System.getProperty("user.home") + "dummypath");
+        setProperty("folder.soknadaap.path", System.getProperty("user.home") + "dummypath");
+        setProperty("folder.refusjondagligreise.path", System.getProperty("user.home") + "dummypath");
+        setProperty("folder.soknadsosialhjelp.path", System.getProperty("user.home") + "dummypath");
+        setProperty("folder.tilleggsstonader.path", System.getProperty("user.home") + "dummypath");
+        setProperty("folder.tiltakspenger.path", System.getProperty("user.home") + "dummypath");
+
         System.setProperty("no.nav.modig.security.sts.url", "dummyvalue");
         System.setProperty("no.nav.modig.security.systemuser.username", "dummyvalue");
         System.setProperty("no.nav.modig.security.systemuser.password", "");
