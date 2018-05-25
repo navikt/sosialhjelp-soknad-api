@@ -1,11 +1,17 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon;
 
 
+import no.nav.metrics.Event;
+import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.dagpenger.ordinaer.DagpengerTilJson;
+import org.springframework.context.MessageSource;
 
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 @SuppressWarnings("squid:")
 public class DagpengerGjenopptakInformasjon extends KravdialogInformasjon.DefaultOppsett {
@@ -53,5 +59,15 @@ public class DagpengerGjenopptakInformasjon extends KravdialogInformasjon.Defaul
 
     public static boolean erDagpengerGjenopptak(String skjema) {
         return skjemanummer.contains(skjema);
+    }
+
+    @Override
+    public List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource, WebSoknad soknad) {
+        Event event = MetricsFactory.createEvent("soknad.alternativrepresentasjon.aktiv");
+        event.addTagToReport("skjemanummer", soknad.getskjemaNummer());
+        event.addTagToReport("soknadstype", getSoknadTypePrefix());
+        event.report();
+
+        return singletonList(new DagpengerTilJson(getSoknadTypePrefix()));
     }
 }

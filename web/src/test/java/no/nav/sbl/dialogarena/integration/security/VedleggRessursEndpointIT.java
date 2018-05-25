@@ -29,7 +29,7 @@ public class VedleggRessursEndpointIT extends AbstractSecurityIT {
 
 
     @Test
-    public void accessDeniedMedAnnenBruker_hentVedlegg() {
+    public void GET_hentVedlegg() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer)
                 .nyttFaktum("arbeidsforhold").withValue("true").withProperty("type", "sagtoppselv").opprett();
 
@@ -52,7 +52,7 @@ public class VedleggRessursEndpointIT extends AbstractSecurityIT {
 
 
     @Test
-    public void accessDeniedMedAnnenBruker_lagreVedlegg() {
+    public void PUT_lagreVedlegg() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer)
                 .nyttFaktum("arbeidsforhold").withValue("true").withProperty("type", "sagtoppselv").opprett();
 
@@ -81,7 +81,7 @@ public class VedleggRessursEndpointIT extends AbstractSecurityIT {
     }
 
     @Test
-    public void accessDeniedMedAnnenBruker_slettVedlegg() {
+    public void DELETE_slettVedlegg() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer)
                 .nyttFaktum("arbeidsforhold").withValue("true").withProperty("type", "sagtoppselv").opprett();
 
@@ -111,7 +111,7 @@ public class VedleggRessursEndpointIT extends AbstractSecurityIT {
     }
 
     @Test
-    public void accessDeniedMedAnnenBruker_hentVedleggUnderBehandling() {
+    public void GET_hentVedleggUnderBehandling_fil() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer)
                 .nyttFaktum("arbeidsforhold").withValue("true").withProperty("type", "sagtoppselv").opprett();
 
@@ -136,7 +136,7 @@ public class VedleggRessursEndpointIT extends AbstractSecurityIT {
 
 
     @Test
-    public void accessDeniedMedAnnenBruker_lagForhandsvisningForVedlegg() {
+    public void GET_lagForhandsvisningForVedlegg_filpng() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer)
                 .nyttFaktum("arbeidsforhold").withValue("true").withProperty("type", "sagtoppselv").opprett();
 

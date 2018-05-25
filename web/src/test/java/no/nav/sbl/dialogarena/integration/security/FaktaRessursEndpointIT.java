@@ -24,7 +24,7 @@ public class FaktaRessursEndpointIT extends AbstractSecurityIT {
     }
 
     @Test
-    public void nektetTilgang_hentFaktum() {
+    public void GET_hentFaktum_faktumId() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
             Response response = soknadTester.sendsoknadResource("fakta/1", webTarget -> webTarget
                     .queryParam("fnr", ANNEN_BRUKER)) //fake annen bruker, se FakeLoginFilter
@@ -34,7 +34,7 @@ public class FaktaRessursEndpointIT extends AbstractSecurityIT {
     }
 
     @Test
-    public void nektetTilgangUtenToken_opprettFaktum() {
+    public void POST_opprettFaktum() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
         Response response = soknadTester.sendsoknadResource("fakta", webTarget -> webTarget
                 .queryParam("fnr", ANNEN_BRUKER) //fake annen bruker, se FakeLoginFilter

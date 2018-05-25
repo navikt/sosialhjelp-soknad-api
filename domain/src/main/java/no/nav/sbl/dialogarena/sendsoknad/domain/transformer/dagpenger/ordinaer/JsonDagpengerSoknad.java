@@ -9,6 +9,9 @@ import java.util.List;
 public class JsonDagpengerSoknad {
 
     private Long soknadId;
+
+
+    private String soknadsType;
     private String skjemaNummer;
     private Integer versjon;
     private String uuid;
@@ -25,6 +28,11 @@ public class JsonDagpengerSoknad {
     private String soknadPrefix;
     private String soknadUrl;
     private String fortsettSoknadUrl;
+
+    public JsonDagpengerSoknad medSoknadsType(String soknadsType) {
+        this.soknadsType = soknadsType;
+        return this;
+    }
 
 
     public JsonDagpengerSoknad medSoknadId(Long soknadId){
@@ -181,4 +189,9 @@ public class JsonDagpengerSoknad {
     public String getFortsettSoknadUrl() {
         return fortsettSoknadUrl;
     }
+
+    public String getSoknadsType() {
+        return soknadsType;
+    }
+
 }
