@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 
 public class AlternativRepresentasjonVedleggIT extends AbstractIT {
 
-    private String engangsstonadAdopsjonSkjemanummer = new ForeldrepengerInformasjon().getSkjemanummer().get(1);
+    private String engangsstonadAdopsjonSkjemanummer = ForeldrepengerInformasjon.ENGANGSSTONADER.get(1);
 
     @Before
     public void setup() throws Exception {

@@ -88,6 +88,6 @@
     </security>
 
     <loadBalancer isAlive="/sendsoknad/internal/isAlive"/>
-    <suspend url="/sendsoknad/management/suspend" credential="suspender" timeoutSeconds="25" />
+    <suspend url="/sendsoknad/management/suspend" credential="suspender" timeoutSeconds="26" />
 
 </application>

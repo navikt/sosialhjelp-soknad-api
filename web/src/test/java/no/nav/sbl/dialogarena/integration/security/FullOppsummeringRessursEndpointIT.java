@@ -21,7 +21,7 @@ public class FullOppsummeringRessursEndpointIT extends AbstractSecurityIT {
     }
 
     @Test
-    public void hentOppsummeringNew() {
+    public void GET_hentOppsummeringNew_behandlingsId_nyoppsummering() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
         String suburl = "fulloppsummering/" + soknadTester.getBrukerBehandlingId() + "/nyoppsummering";
         Response response = soknadTester.sendsoknadResource(suburl, webTarget -> webTarget
@@ -37,7 +37,7 @@ public class FullOppsummeringRessursEndpointIT extends AbstractSecurityIT {
     }
 
     @Test
-    public void fullSoknad() {
+    public void GET_fullSoknad_behandlingsId_fullsoknad() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
         String suburl = "fulloppsummering/" + soknadTester.getBrukerBehandlingId() + "/fullsoknad";
         Response response = soknadTester.sendsoknadResource(suburl, webTarget -> webTarget
@@ -54,7 +54,7 @@ public class FullOppsummeringRessursEndpointIT extends AbstractSecurityIT {
     }
 
     @Test
-    public void fullSoknadPdf() {
+    public void GET_fullSoknadPdf_behandlingsId_fullsoknadpdf() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
         String suburl = "fulloppsummering/" + soknadTester.getBrukerBehandlingId() + "/fullsoknadpdf";
         Response response = soknadTester.sendsoknadResource(suburl, webTarget -> webTarget

@@ -9,7 +9,7 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.LastetOpp;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.joda.time.DateTime.now;
 
-public class DagpengerOrdinaerTilJsonTest {
+public class DagpengerTilJsonTest {
 
 
     private JsonDagpengerSoknad jsonSoknad;
@@ -37,8 +37,9 @@ public class DagpengerOrdinaerTilJsonTest {
                         .medStorrelse(12345L)
                         .medAntallSider(1));
 
-        jsonSoknad = new DagpengerOrdinaerTilJson().transform(soknad);
+        jsonSoknad = new DagpengerTilJson("dagpenger.ordinaer").transform(soknad);
 
+        assertThat(jsonSoknad.getSoknadsType()).isEqualTo("dagpenger.ordinaer");
         assertThat(jsonSoknad.getSkjemaNummer()).isEqualTo("NAV 04-01.03");
         assertThat(jsonSoknad.getAktoerId()).isEqualTo("12345");
         assertThat(jsonSoknad.getStatus()).isEqualTo(UNDER_ARBEID);

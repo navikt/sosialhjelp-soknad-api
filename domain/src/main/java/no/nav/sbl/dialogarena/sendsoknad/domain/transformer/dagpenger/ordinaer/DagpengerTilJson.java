@@ -15,11 +15,14 @@ import java.util.UUID;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
-public class DagpengerOrdinaerTilJson implements AlternativRepresentasjonTransformer {
+public class DagpengerTilJson implements AlternativRepresentasjonTransformer {
 
-    private static final Logger logger = getLogger(DagpengerOrdinaerTilJson.class);
+    private static final Logger logger = getLogger(DagpengerTilJson.class);
+    private String soknadstype;
 
-    public DagpengerOrdinaerTilJson() {
+    public DagpengerTilJson(String soknadstype ) {
+
+        this.soknadstype = soknadstype;
     }
 
     @Override
@@ -40,7 +43,7 @@ public class DagpengerOrdinaerTilJson implements AlternativRepresentasjonTransfo
             return new AlternativRepresentasjon()
                     .medRepresentasjonsType(getRepresentasjonsType())
                     .medMimetype("application/json")
-                    .medFilnavn("DagpengerOrdinaer.json")
+                    .medFilnavn("dagpenger.json")
                     .medUuid(UUID.randomUUID().toString())
                     .medContent(json.getBytes());
 
@@ -52,6 +55,6 @@ public class DagpengerOrdinaerTilJson implements AlternativRepresentasjonTransfo
 
 
     protected JsonDagpengerSoknad transform(WebSoknad webSoknad) {
-        return JsonDagpengerSoknadConverter.tilJsonSoknad(webSoknad);
+        return JsonDagpengerSoknadConverter.tilJsonSoknad(soknadstype, webSoknad);
         }
     }

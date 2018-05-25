@@ -43,7 +43,7 @@ function go_to_project_root() {
 }
 
 function build_backend() {
-    mvn clean package dependency:tree help:effective-pom --batch-mode -U
+    mvn clean verify dependency:tree help:effective-pom --batch-mode -U
 }
 
 function set_version() {
