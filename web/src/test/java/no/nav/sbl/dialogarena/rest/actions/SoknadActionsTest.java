@@ -216,7 +216,7 @@ public class SoknadActionsTest {
     }
 
     private WebSoknad soknad() {
-        return new WebSoknad().medBehandlingId(BEHANDLINGS_ID);
+        return new WebSoknad().medBehandlingId(BEHANDLINGS_ID).medskjemaNummer("NAV 11-13.05");
     }
 
 }
