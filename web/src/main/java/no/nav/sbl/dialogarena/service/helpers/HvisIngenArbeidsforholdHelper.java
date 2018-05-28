@@ -31,7 +31,7 @@ public class HvisIngenArbeidsforholdHelper extends RegistryAwareHelper<Object> {
 
         List<Faktum> arbeidsforholdFakta = soknad.getFaktaMedKey("arbeidsforhold");
 
-        // Hvis det ikke er slik at listen med arbeidsforholdfakta er tom eller det er slik at størrelsen på listen er 1 med et arbeidsforholdfaktum lik null, så har personen arbeid
+        // Hvis det IKKE er slik at ((listen med arbeidsforholdfakta er tom) ELLER (det er slik at størrelsen på listen er 1 med et arbeidsforholdfaktum LIK NULL)), så har personen arbeid
 
         boolean harArbeid = !(arbeidsforholdFakta.isEmpty() || (arbeidsforholdFakta.size() == 1 && arbeidsforholdFakta.get(0).getValue() == null));
 
