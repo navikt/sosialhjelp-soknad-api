@@ -872,6 +872,7 @@
                     <artifactId>jboss-as-maven-plugin</artifactId>
                     <version>7.4.Final</version>
                 </plugin>
+
                 <plugin>
                     <groupId>com.googlecode.flyway</groupId>
                     <artifactId>flyway-maven-plugin</artifactId>
@@ -920,7 +921,6 @@
                 </plugin>
             </plugins>
         </pluginManagement>
-
     </build>
     <scm>
         <developerConnection>scm:git:http://stash.devillo.no/scm/sokd/sendsoknad.git</developerConnection>
