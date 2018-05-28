@@ -12,9 +12,10 @@ final class JsonDagpengerSoknadConverter {
 
     }
 
-    static JsonDagpengerSoknad tilJsonSoknad(WebSoknad webSoknad) {
+    static JsonDagpengerSoknad tilJsonSoknad(String soknadsType, WebSoknad webSoknad) {
 
         return new JsonDagpengerSoknad()
+                .medSoknadsType(soknadsType)
                 .medSoknadId(webSoknad.getSoknadId())
                 .medSkjemaNummer(webSoknad.getskjemaNummer())
                 .medVersjon(webSoknad.getVersjon())

@@ -26,7 +26,7 @@ public class SoknadRessursEndpointIT extends AbstractSecurityIT {
 
 
     @Test
-    public void skalIkkeHaTilgangTilSeFakta() {
+    public void GET_hentFakta_behandlingsId_fakta() {
         SoknadTester soknadTester = soknadMedDelstegstatusOpprettet(skjemanummer);
 
         String url = "soknader/" + soknadTester.getBrukerBehandlingId() + "/fakta";
