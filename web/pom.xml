@@ -461,6 +461,10 @@
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-bindings-soap</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.spotify</groupId>
+            <artifactId>logging</artifactId>
+        </dependency>
 
 
     </dependencies>
@@ -517,6 +521,7 @@
                         <configuration>
                             <usedDependencies>
                                 <usedDependency>org.apache.httpcomponents:httpclient</usedDependency>
+                                <usedDependency>com.spotify:logging</usedDependency>
                             </usedDependencies>
                         </configuration>
                     </execution>
