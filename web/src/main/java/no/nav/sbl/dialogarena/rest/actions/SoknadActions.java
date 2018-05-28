@@ -37,6 +37,7 @@ import static no.nav.sbl.dialogarena.utils.UrlUtils.getFortsettUrl;
 public class SoknadActions {
 
     private static Logger logger = LoggerFactory.getLogger(SoknadActions.class);
+    private static final String AAP_UTLAND_SKJEMANUMMER = "NAV 11-03.07";
 
     @Inject
     private VedleggService vedleggService;
@@ -71,8 +72,10 @@ public class SoknadActions {
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
         String servletPath = servletContext.getRealPath("/");
 
-        byte[] kvittering = pdfService.genererKvitteringPdf(soknad, servletPath);
-        vedleggService.lagreKvitteringSomVedlegg(behandlingsId, kvittering);
+        if (!soknad.getskjemaNummer().equals(AAP_UTLAND_SKJEMANUMMER)) {
+            byte[] kvittering = pdfService.genererKvitteringPdf(soknad, servletPath);
+            vedleggService.lagreKvitteringSomVedlegg(behandlingsId, kvittering);
+        }
 
         if (soknad.erEttersending()) {
             byte[] dummyPdfSomHovedskjema = pdfService.genererEttersendingPdf(soknad, servletPath);

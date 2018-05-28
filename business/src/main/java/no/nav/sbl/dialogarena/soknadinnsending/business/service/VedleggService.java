@@ -72,6 +72,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Component
 public class VedleggService {
     private static final Logger logger = getLogger(VedleggService.class);
+    private static final String AAP_UTLAND_SKJEMANUMMER = "NAV 11-03.07";
 
     @Inject
     @Named("soknadInnsendingRepository")
@@ -133,9 +134,12 @@ public class VedleggService {
 
     public List<Vedlegg> hentVedleggOgKvittering(WebSoknad soknad) {
         ArrayList<Vedlegg> vedleggForventninger = new ArrayList(soknad.hentPaakrevdeVedlegg());
-        Vedlegg kvittering = vedleggRepository.hentVedleggForskjemaNummer(soknad.getSoknadId(), null, KVITTERING);
-        if (kvittering != null) {
-            vedleggForventninger.add(kvittering);
+        if (!soknad.getskjemaNummer().equals(AAP_UTLAND_SKJEMANUMMER)) {
+            Vedlegg kvittering = vedleggRepository.hentVedleggForskjemaNummer(soknad.getSoknadId(), null, KVITTERING);
+
+            if (kvittering != null) {
+                vedleggForventninger.add(kvittering);
+            }
         }
         return vedleggForventninger;
     }
