@@ -37,6 +37,8 @@ public class ApplicationConfig {
     private String smtpServerPort;
     @Value("${dokumentinnsending.smtpServer.host}")
     private String smtpServerHost;
+    @Value("${unleash.api.url}")
+    private String unleashApiUrl;
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
         PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
@@ -110,9 +112,9 @@ public class ApplicationConfig {
     public Unleash unleashToggle(UnleashContextProvider provider) throws UnknownHostException {
         UnleashConfig config = UnleashConfig.builder()
                 .appName(System.getProperty("application.name"))
-                .instanceId(InetAddress.getLocalHost().getHostName()) // miljø
+                .instanceId(InetAddress.getLocalHost().getHostName())
                 .unleashContextProvider(provider)
-                .unleashAPI(System.getProperty("unleash.api.url", "https://unleash.nais.oera-q.local/api/"))
+                .unleashAPI(unleashApiUrl)
                 .build();
 
         return new DefaultUnleash(config);

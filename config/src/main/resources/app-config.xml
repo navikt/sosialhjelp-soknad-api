@@ -52,7 +52,8 @@
 
         <applicationProperties alias="soknad.ettersending.properties"/>
         <applicationProperties alias="soknad.properties"/>
-        <applicationProperties alias="soknad.featuretoggles"/>
+        <rest alias="unleash-api" mapToProperty="unleash.api"/>
+
 
         <smtpServer alias="dokumentinnsending.smtpServer" mapToProperty="dokumentinnsending.smtpServer"/>
         <directory name="sendsoknad" mapToProperty="sendsoknad.datadir" temporary="false"/>

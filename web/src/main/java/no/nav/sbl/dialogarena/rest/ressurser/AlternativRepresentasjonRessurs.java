@@ -19,8 +19,6 @@ import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.TEXT_XML;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.FeatureToggler.Toggle.RESSURS_ALTERNATIVREPRESENTASJON;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.FeatureToggler.erFeatureAktiv;
 
 @Controller
 @Path("/representasjon")
@@ -54,6 +52,7 @@ public class AlternativRepresentasjonRessurs {
                 .map(AlternativRepresentasjon::getContent)
                 .orElseThrow(() -> new NotFoundException(String.format("Ingen alternativ representasjon for [%s] funnet (%s)", behandlingsId, soknad.getSoknadPrefix())));
     }
+
     @Deprecated
     @GET
     @Path("/json/{behandlingsId}")
@@ -74,7 +73,7 @@ public class AlternativRepresentasjonRessurs {
 
     private void erRessursAktiv(String metode) {
         LOG.warn("OppsummeringRessurs metode {} forsøkt aksessert", metode);
-        if (!featuretoggle.isEnabled(RESSURS_ALTERNATIVREPRESENTASJON.getPropertyNavn())) {
+        if (!featuretoggle.isEnabled("sendsoknad.ressurs.alternativrepresentasjon", false)) {
             throw new NotFoundException("Denne informasjonen er ikke tilgjengelig");
         }
     }
