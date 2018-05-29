@@ -4,6 +4,7 @@ import no.nav.modig.core.context.ThreadLocalSubjectHandler;
 import no.nav.sbl.dialogarena.config.SoknadActionsTestConfig;
 import no.nav.sbl.dialogarena.rest.meldinger.SoknadBekreftelse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.AAPUtlandetInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.ForeldrepengerInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
@@ -30,7 +31,6 @@ import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.AdditionalMatchers.not;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -86,8 +86,10 @@ public class SoknadActionsTest {
 
     @Test
     public void sendSoknadSkalIkkeSendeL7VedleggForAAPUtland() throws Exception {
-        final String SKJEMANUMMER_AAP_UTLAND = "NAV 11-03.07";
-        when(soknadService.hentSoknad(BEHANDLINGS_ID, true, true)).thenReturn(soknad().medskjemaNummer(SKJEMANUMMER_AAP_UTLAND).medSoknadPrefix("aap.utland"));
+        AAPUtlandetInformasjon aapUtlandetInformasjon = new AAPUtlandetInformasjon();
+        when(soknadService.hentSoknad(BEHANDLINGS_ID, true, true)).thenReturn(
+                soknad().medskjemaNummer(aapUtlandetInformasjon.getSkjemanummer().get(0))
+                        .medSoknadPrefix(aapUtlandetInformasjon.getSoknadTypePrefix()));
         when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyString())).thenReturn("<html></html>");
 
         actions.sendSoknad(BEHANDLINGS_ID, context);
@@ -110,7 +112,7 @@ public class SoknadActionsTest {
     }
 
     @Test
-    public void sendSoknadSkalSendeMedUtvidetSoknadOmDetErSattPaaConfig()throws Exception{
+    public void sendSoknadSkalSendeMedUtvidetSoknadOmDetErSattPaaConfig() throws Exception {
         when(soknadService.hentSoknad(BEHANDLINGS_ID, true, true)).thenReturn(soknad().medSoknadPrefix("dagpenger.ordinaer"));
         when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyBoolean())).thenReturn("<html></html>").thenReturn("<html></html>");
         when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyString())).thenReturn("<html></html>");
@@ -227,7 +229,7 @@ public class SoknadActionsTest {
     }
 
     private WebSoknad soknad() {
-        return new WebSoknad().medBehandlingId(BEHANDLINGS_ID).medskjemaNummer("NAV 11-13.05");
+        return new WebSoknad().medBehandlingId(BEHANDLINGS_ID);
     }
 
 }

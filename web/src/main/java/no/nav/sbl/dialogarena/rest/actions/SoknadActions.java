@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.rest.meldinger.SoknadBekreftelse;
 import no.nav.sbl.dialogarena.rest.utils.PDFService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.AAPUtlandetInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.service.EmailService;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
@@ -37,7 +38,6 @@ import static no.nav.sbl.dialogarena.utils.UrlUtils.getFortsettUrl;
 public class SoknadActions {
 
     private static Logger logger = LoggerFactory.getLogger(SoknadActions.class);
-    private static final String AAP_UTLAND_SKJEMANUMMER = "NAV 11-03.07";
 
     @Inject
     private VedleggService vedleggService;
@@ -71,8 +71,9 @@ public class SoknadActions {
     public void sendSoknad(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext) {
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
         String servletPath = servletContext.getRealPath("/");
+        final String AAP_UTLAND_SKJEMANUMMER = new AAPUtlandetInformasjon().getSkjemanummer().get(0);
 
-        if (!soknad.getskjemaNummer().equals(AAP_UTLAND_SKJEMANUMMER)) {
+        if (!AAP_UTLAND_SKJEMANUMMER.equals(soknad.getskjemaNummer())) {
             byte[] kvittering = pdfService.genererKvitteringPdf(soknad, servletPath);
             vedleggService.lagreKvitteringSomVedlegg(behandlingsId, kvittering);
         }

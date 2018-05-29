@@ -24,6 +24,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AlleredeHandtertException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigOpplastingTypeException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.AAPUtlandetInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
@@ -72,7 +73,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Component
 public class VedleggService {
     private static final Logger logger = getLogger(VedleggService.class);
-    private static final String AAP_UTLAND_SKJEMANUMMER = "NAV 11-03.07";
 
     @Inject
     @Named("soknadInnsendingRepository")
@@ -134,7 +134,8 @@ public class VedleggService {
 
     public List<Vedlegg> hentVedleggOgKvittering(WebSoknad soknad) {
         ArrayList<Vedlegg> vedleggForventninger = new ArrayList(soknad.hentPaakrevdeVedlegg());
-        if (!soknad.getskjemaNummer().equals(AAP_UTLAND_SKJEMANUMMER)) {
+        final String AAP_UTLAND_SKJEMANUMMER = new AAPUtlandetInformasjon().getSkjemanummer().get(0);
+        if (!AAP_UTLAND_SKJEMANUMMER.equals(soknad.getskjemaNummer())) {
             Vedlegg kvittering = vedleggRepository.hentVedleggForskjemaNummer(soknad.getSoknadId(), null, KVITTERING);
 
             if (kvittering != null) {
