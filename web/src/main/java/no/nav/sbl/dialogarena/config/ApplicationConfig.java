@@ -9,6 +9,7 @@ import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.service.EmailService;
 import no.nav.sbl.dialogarena.service.HandleBarKjoerer;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
+import no.nav.sbl.dialogarena.togglestrategies.IsNotProdStrategy;
 import no.nav.sbl.dialogarena.utils.InnloggetBruker;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +26,8 @@ import javax.inject.Inject;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import static no.nav.sbl.dialogarena.togglestrategies.IsNotProdStrategy.ENVIRONMENT_NAME;
+
 /**
  * Applikasjonskontekst for ear-modulen.
  */
@@ -39,8 +42,8 @@ public class ApplicationConfig {
     private String smtpServerHost;
     @Value("${unleash.api.url}")
     private String unleashApiUrl;
-    @Value("${environment.class}")
-    private String environmentClass;
+    @Value("${environment.name}")
+    private String environmentName;
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
         PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
@@ -106,7 +109,7 @@ public class ApplicationConfig {
         return () -> UnleashContext
                 .builder()
                 .userId(SubjectHandler.getSubjectHandler().getUid())
-                .addProperty("environment.class", environmentClass)
+                .addProperty(ENVIRONMENT_NAME, environmentName)
                 .build();
     }
 
@@ -120,7 +123,7 @@ public class ApplicationConfig {
                 .unleashAPI(unleashApiUrl)
                 .build();
 
-        return new DefaultUnleash(config);
+        return new DefaultUnleash(config, new IsNotProdStrategy());
     }
 
 }
