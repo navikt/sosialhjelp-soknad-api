@@ -5,9 +5,7 @@ import no.nav.sbl.dialogarena.config.SoknadActionsTestConfig;
 import no.nav.sbl.dialogarena.rest.meldinger.SoknadBekreftelse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.ForeldrepengerInformasjon;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.service.EmailService;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
@@ -32,6 +30,7 @@ import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.AdditionalMatchers.not;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -83,6 +82,18 @@ public class SoknadActionsTest {
         actions.sendSoknad(BEHANDLINGS_ID, context);
 
         verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), eq("/skjema/dagpenger.ordinaer"));
+    }
+
+    @Test
+    public void sendSoknadSkalIkkeSendeL7VedleggForAAPUtland() throws Exception {
+        final String SKJEMANUMMER_AAP_UTLAND = "NAV 11-03.07";
+        when(soknadService.hentSoknad(BEHANDLINGS_ID, true, true)).thenReturn(soknad().medskjemaNummer(SKJEMANUMMER_AAP_UTLAND).medSoknadPrefix("aap.utland"));
+        when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyBoolean())).thenReturn("<html></html>");
+        when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyString())).thenReturn("<html></html>");
+
+        actions.sendSoknad(BEHANDLINGS_ID, context);
+
+        verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), not(eq("/skjema/kvittering")));
     }
 
     @Test
