@@ -11,12 +11,14 @@ public class PersonaliaBuilder {
     private String fornavn;
     private String mellomnavn;
     private String etternavn;
+    private String mobiltelefonnummer;
     private String epost;
     private String diskresjonskode;
     private String statsborgerskap;
     private String kjonn;
     private Adresse gjeldendeAdresse;
     private Adresse sekundarAdresse;
+    private Adresse folkeregistrertAdresse;
     private String kontonummer;
     private Boolean erUtenlandskBankkonto;
     private String utenlandskKontoBanknavn;
@@ -66,6 +68,12 @@ public class PersonaliaBuilder {
         return this;
     }
 
+
+    public PersonaliaBuilder mobiltelefon(String mobiltelefonnummer) {
+        this.mobiltelefonnummer = mobiltelefonnummer;
+        return this;
+    }
+    
     public PersonaliaBuilder epost(String epost) {
         this.epost = epost;
         return this;
@@ -110,6 +118,11 @@ public class PersonaliaBuilder {
         this.utenlandskKontoLand = utenlandskKontoLand;
         return this;
     }
+    
+    public PersonaliaBuilder folkeregistrertAdresse(Adresse folkeregistrertAdresse) {
+        this.folkeregistrertAdresse = folkeregistrertAdresse;
+        return this;
+    }
 
     public Personalia build() {
         Personalia personalia = new Personalia();
@@ -120,11 +133,13 @@ public class PersonaliaBuilder {
         personalia.setFornavn(fornavn);
         personalia.setMellomnavn(mellomnavn);
         personalia.setEtternavn(etternavn);
+        personalia.setMobiltelefonnummer(mobiltelefonnummer);
         personalia.setEpost(epost);
         personalia.setStatsborgerskap(statsborgerskap);
         personalia.setKjonn(kjonn);
         personalia.setGjeldendeAdresse(gjeldendeAdresse);
         personalia.setSekundarAdresse(sekundarAdresse);
+        personalia.setFolkeregistrertAdresse(folkeregistrertAdresse);
         personalia.setDiskresjonskode(diskresjonskode);
         personalia.setAlder(alder);
         personalia.setKontonummer(kontonummer);

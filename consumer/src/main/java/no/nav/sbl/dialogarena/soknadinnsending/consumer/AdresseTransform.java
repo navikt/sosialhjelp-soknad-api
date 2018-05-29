@@ -43,6 +43,17 @@ public class AdresseTransform {
             return new Adresse();
         }
     }
+    
+    public Adresse mapFolkeregistrertAdresse(XMLBruker soapPerson, Kodeverk kodeverk) {
+        this.kodeverk = kodeverk;
+        if (harHemmeligAdresse(soapPerson)) {
+            return new Adresse();
+        } else if (harStrukturertAdresseSomErGjeldendeAdresse(soapPerson)) {
+            return hentBostedsAdresse((XMLGateadresse) soapPerson.getBostedsadresse().getStrukturertAdresse());
+        } else {
+            return null;
+        }
+    }
 
     private static final List<String> HEMMELIGE_DISKRESJONSKODER = Arrays.asList("6", "7");
 
@@ -231,6 +242,7 @@ public class AdresseTransform {
         midlertidigAdresse.setGyldigTil(postleveringsPeriode != null ? DATE_TIME_FORMATTER.print(postleveringsPeriode.getTom()) : "");
     }
 
+    // XXX: setLandkode???
     private void setLandkode(Adresse midlertidigAdresse, XMLUstrukturertAdresse ustrukturertAdresse) {
         if (ustrukturertAdresse != null) {
             String adresse = StringUtils.join(hentAdresseLinjer(ustrukturertAdresse), ", ");
@@ -375,9 +387,11 @@ public class AdresseTransform {
         Adresse.Gateadresse adresse = new Adresse.Gateadresse();
         adresse.bolignummer = xmlAdresse.getBolignummer();
         adresse.kommunenummer = xmlAdresse.getKommunenummer();
-        adresse.poststed = xmlAdresse.getPoststed() != null ? xmlAdresse.getPoststed().getValue() : "";
+        adresse.postnummer = getPostnummerString(xmlAdresse);
+        adresse.poststed = kodeverk.getPoststed(adresse.postnummer);
         adresse.gatenavn = xmlAdresse.getGatenavn();
         adresse.husnummer = xmlAdresse.getHusnummer() != null ? xmlAdresse.getHusnummer().toString() : "";
+        adresse.husbokstav = xmlAdresse.getHusbokstav() != null ? xmlAdresse.getHusbokstav().toString() : "";
 
         return adresse;
     }
@@ -386,7 +400,8 @@ public class AdresseTransform {
         Adresse.MatrikkelAdresse adresse = new Adresse.MatrikkelAdresse();
         adresse.kommunenummer = xmlAdresse.getKommunenummer();
         adresse.bolignummer = xmlAdresse.getBolignummer();
-        adresse.poststed = xmlAdresse.getPoststed() != null ? xmlAdresse.getPoststed().getValue() : "";
+        adresse.postnummer = xmlAdresse.getPoststed() != null ? xmlAdresse.getPoststed().getValue() : "";
+        adresse.poststed = kodeverk.getPoststed(adresse.postnummer);
         adresse.eiendomsnavn = xmlAdresse.getEiendomsnavn();
         XMLMatrikkelnummer matrikkel = xmlAdresse.getMatrikkelnummer();
         if (matrikkel != null) {

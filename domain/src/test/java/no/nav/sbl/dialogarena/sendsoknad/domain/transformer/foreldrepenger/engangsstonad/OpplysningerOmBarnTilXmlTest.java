@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.foreldrepenger.enga
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.OpplysningerOmBarn;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.time.LocalDate;
@@ -78,6 +79,7 @@ public class OpplysningerOmBarnTilXmlTest {
     }
 
     @Test
+    @Ignore
     public void enDagUnnaForSenSoknad() {
         LocalDate seksManederTilbakeITidFraIMorgen = LocalDate.now().minusMonths(6).plusDays(1);
 

@@ -7,7 +7,7 @@
     <name>sendsoknad</name>
 
     <selftest>
-        <path>/sendsoknad/internal/selftest.json</path>
+        <path>/sendsoknad/internal/selftest</path>
         <humanReadablePath>/sendsoknad/internal/selftest</humanReadablePath>
     </selftest>
 
@@ -61,10 +61,16 @@
         <credential alias="arbeidservice" mapToProperty="arbeidservice"/>
         <credential alias="suspender" />
 
-        <fileLibrary alias="soknadforeldrepenger.ledetekster" mapToProperty="folder.foreldrepenger" />
+        <fileLibrary alias="sendsoknad.ledetekster" mapToProperty="folder.sendsoknad" />
+        <fileLibrary alias="soknad-aap-utland.ledetekster" mapToProperty="folder.soknad-aap-utland" />
         <fileLibrary alias="soknadaap.ledetekster" mapToProperty="folder.soknadaap" />
+        <fileLibrary alias="soknadbilstonad.ledetekster" mapToProperty="folder.bilstonad" />
         <fileLibrary alias="soknaddagpenger.ledetekster" mapToProperty="folder.dagpenger" />
+        <fileLibrary alias="soknadforeldrepenger.ledetekster" mapToProperty="folder.foreldrepenger" />
+        <fileLibrary alias="soknadrefusjondagligreise.ledetekster" mapToProperty="folder.refusjondagligreise" />
         <fileLibrary alias="soknadsosialhjelp.ledetekster" mapToProperty="folder.soknadsosialhjelp" />
+        <fileLibrary alias="soknadtilleggsstonader.ledetekster" mapToProperty="folder.tilleggsstonader" />
+        <fileLibrary alias="soknadtiltakspenger.ledetekster" mapToProperty="folder.tiltakspenger" />
     </resources>
 
     <serverOptions>
@@ -82,6 +88,6 @@
     </security>
 
     <loadBalancer isAlive="/sendsoknad/internal/isAlive"/>
-    <suspend url="/sendsoknad/management/suspend" credential="suspender" timeoutSeconds="25" />
+    <suspend url="/sendsoknad/management/suspend" credential="suspender" timeoutSeconds="26" />
 
 </application>

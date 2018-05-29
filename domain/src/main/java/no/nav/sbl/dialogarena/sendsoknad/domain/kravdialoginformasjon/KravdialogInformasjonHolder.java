@@ -23,6 +23,7 @@ public class KravdialogInformasjonHolder {
         soknadsKonfigurasjoner.addAll(asList(
                 new AAPOrdinaerInformasjon(),
                 new AAPGjenopptakInformasjon(),
+                new AAPUtlandetInformasjon(),
                 new DagpengerGjenopptakInformasjon(),
                 new DagpengerOrdinaerInformasjon(),
                 new ForeldrepengerInformasjon(),
@@ -31,7 +32,6 @@ public class KravdialogInformasjonHolder {
                 new TiltakspengerInformasjon(),
                 new SoknadRefusjonDagligreise(),
                 new SosialhjelpInformasjon()
-                //new ForeldrepengerOverforingInformasjon()
         ));
     }
 

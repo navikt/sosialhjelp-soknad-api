@@ -60,12 +60,14 @@ public class Adresse {
         public String type;
         public String kommunenummer;
         public String bolignummer;
+        public String postnummer;
         public String poststed;
     }
 
     public static class Gateadresse extends StrukturertAdresse {
        public String gatenavn;
        public String husnummer;
+       public String husbokstav;
 
         public Gateadresse() {
             this.type = "gateadresse";

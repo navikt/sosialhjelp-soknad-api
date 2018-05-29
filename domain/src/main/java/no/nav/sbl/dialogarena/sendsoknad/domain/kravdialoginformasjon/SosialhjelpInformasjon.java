@@ -1,21 +1,26 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon;
 
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
+
+import java.util.List;
+
+import org.springframework.context.MessageSource;
+
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.EkstraMetadataTransformer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMetadataTransformer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpTilJson;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpTilXml;
-import org.springframework.context.MessageSource;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static java.util.Collections.singletonList;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpVedleggTilJson;
 
 public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett {
+
+    public static final String SKJEMANUMMER = "NAV 35-18.01";
 
     public String getSoknadTypePrefix() {
         return "soknadsosialhjelp";
@@ -30,7 +35,7 @@ public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett
     }
 
     public List<String> getSoknadBolker(WebSoknad soknad) {
-        return Arrays.asList(BOLK_PERSONALIA);
+        return asList(BOLK_PERSONALIA, "SosialhjelpArbeidsforhold", "SosialhjelpKontakt");
     }
 
     public String getStrukturFilnavn() {
@@ -38,7 +43,7 @@ public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett
     }
 
     public List<String> getSkjemanummer() {
-        return Arrays.asList("NAV 35-18.01");
+        return asList(SKJEMANUMMER);
     }
 
     @Override
@@ -48,7 +53,7 @@ public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett
         event.addTagToReport("skjemanummer", soknad.getskjemaNummer());
         event.addTagToReport("soknadstype", getSoknadTypePrefix());
         event.report();
-        return singletonList(new SosialhjelpTilXml(messageSource));
+        return asList(new SosialhjelpTilXml(messageSource), new SosialhjelpVedleggTilJson(), new SosialhjelpTilJson());
     }
 
     @Override
@@ -69,11 +74,6 @@ public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett
     @Override
     public boolean skalSendeMedFullSoknad() {
         return true;
-    }
-
-    @Override
-    public boolean brukerEnonicLedetekster() {
-        return false;
     }
 
     @Override

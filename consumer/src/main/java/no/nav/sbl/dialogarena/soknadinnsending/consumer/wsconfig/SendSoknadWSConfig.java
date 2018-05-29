@@ -7,12 +7,15 @@ import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ServiceBuilder;
 import no.nav.sbl.dialogarena.types.Pingable;
+import no.nav.sbl.dialogarena.types.Pingable.Ping.PingMetadata;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSSoknadsdata;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStartSoknadRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import static no.nav.sbl.dialogarena.types.Pingable.Ping.*;
 
 @Configuration
 public class SendSoknadWSConfig {
@@ -46,11 +49,12 @@ public class SendSoknadWSConfig {
         return new Pingable() {
             @Override
             public Ping ping() {
+                PingMetadata metadata = new PingMetadata(soknadServiceEndpoint,"Henvendelse - SoknadService: oprette og utføre operasjoner på påbegynte søknader", true);
                 try {
                     sendSoknadSelftestEndpoint().ping();
-                    return Ping.lyktes("Henvendelse");
+                    return lyktes(metadata);
                 } catch (Exception e) {
-                    return Ping.feilet("Henvendelse", e);
+                    return feilet(metadata, e);
                 }
             }
         };

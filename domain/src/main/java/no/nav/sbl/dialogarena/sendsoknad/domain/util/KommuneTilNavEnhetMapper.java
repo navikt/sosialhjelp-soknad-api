@@ -28,10 +28,26 @@ public class KommuneTilNavEnhetMapper {
         }
     }
 
+    private static final Map<String, NavEnhet> TEST_ORGNR = new ImmutableMap.Builder<String, NavEnhet>()
+            .put("horten", new NavEnhet("NAV Horten", "910940066"))
+            .put("bergenhus", new NavEnhet("NAV Bergen Bydel Bergenhus", "910230158")) //OK
+            .put("ytrebygda", new NavEnhet("NAV Bergen Bydel Ytrebygda", "910230158")) //OK
+            .put("frogner", new NavEnhet("NAV Oslo Bydel Frogner", "910229699")) // OK
+            //.put("grunerlokka", new NavEnhet("NAV Oslo Bydel Grünerløkka", "974778866")) // TAS UT FORELØPIG SIDEN DE IKKE HAR TESTMILJØ
+            .put("grorud", new NavEnhet("NAV Oslo Bydel Grorud", "910229702")) // OK
+            .build();
 
-    private static final Map<String, NavEnhet> map = ImmutableMap.of(
-            "horten", new NavEnhet("NAV Horten", "910940066")
-    );
+
+    private static final Map<String, NavEnhet> PROD_ORGNR = new ImmutableMap.Builder<String, NavEnhet>()
+            .put("horten", new NavEnhet("NAV Horten", "974605171"))
+            .put("bergenhus", new NavEnhet("NAV Bergenhus Bergen", "976830563")) //OK
+            .put("ytrebygda", new NavEnhet("NAV Ytrebygda Bergen", "976830652")) //OK
+            .put("gamleoslo", new NavEnhet("NAV Gamle Oslo Oslo", "974778742")) //OK
+            //.put("frogner", new NavEnhet("NAV Oslo Bydel Frogner", "874778702")) //OK
+            //.put("grunerlokka", new NavEnhet("NAV Oslo Bydel Grünerløkka", "870534612")) //OK
+            //.put("grorud", new NavEnhet("NAV Oslo Bydel Grorud", "974778866")) //OK
+            .build();
+
 
     public static NavEnhet getNavEnhetFromWebSoknad(WebSoknad webSoknad) {
         String key;
@@ -41,8 +57,8 @@ public class KommuneTilNavEnhetMapper {
             key = webSoknad.getFaktumMedKey("personalia.bydel").getValue();
         }
 
-        NavEnhet navEnhet = map.get(key);
-        if( navEnhet == null) {
+        NavEnhet navEnhet = PROD_ORGNR.get(key);
+        if (navEnhet == null) {
             throw new IllegalStateException("Innsendt kommune/bydel har ikke NAVEnhet");
         }
         return navEnhet;

@@ -71,6 +71,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hvisHarInnsendteDokumenter - Sjekker om søknaden har ett eller flere innsendte dokumenter
 * hvisIkkeTom - Dersom variabelen ikke er tom vil innholdet vises
 * hvisIngenSynligeBarneFakta - For bruk i generisk oppsummering, undersøker innsendt liste over fakta og ser om alle er skjult.
+* hvisIngenSynligeBarneFaktaForGruppe - For gruppe-template brukt for sosialhjelp, der vi ønsker utvidet definisjon av hva som er synlige barnefakta mtp utvidet søknad
 * hvisKunStudent - Sjekker om brukeren har en annen status enn student (f.eks sykmeldt, i arbeid osv.)
 * hvisLik - Sjekker om to strenger er like
 * hvisMer - Evaluerer en string til double og sjekker om verdien er mer enn grenseverdien gitt ved andre inputparameter
@@ -82,11 +83,13 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * lagKjorelisteUker - Bygger en nestet liste over uker for et betalingsvedtak, der ukene inneholder dager det er søkt for refusjon.
 * property - Returnerer verdien til gitt property på modellen i context, gitt at den er propertyaware
 * sendtInnInfo - Tilgjengeliggjør informasjon om søknaden (innsendte vedlegg, påkrevde vedlegg og dato)
+* sosialhjelpVedlegg - Helper for å liste ut vedlegg for sosialhjelp
 * toCapitalized - Gjør om en tekst til at alle ord starter med store bokstaver
 * toLowerCase - Gjør om en tekst til kun små bokstaver
 * variabel - Lager en variabel med en bestemt verdi som kun er tilgjengelig innenfor helperen
 * vedleggCmsNokkel - Henter teksten for et vedlegg
 * visCheckbox - hvis value er "true" eller key.false-teksten finnes
+* visInformasjonOmPerioder - Sjekker om en søknad er opprettet før en hardkodet dato og er en førstegangssøknad for foreldrepenger
 
 
 #### Eksempler
@@ -427,9 +430,19 @@ må ha et faktum i context, f. eks. via
 ##### hvisIngenSynligeBarneFakta
 
 ```
-{{#hvisIngenSynligeBarneFakta fakta}}
+{{#hvisIngenSynligeBarneFakta fakta utvidetSoknad}}
     Ingen synlige fakta
 {{/hvisIngenSynligeBarneFakta}}
+
+```
+
+
+##### hvisIngenSynligeBarneFaktaForGruppe
+
+```
+{{#hvisIngenSynligeBarneFaktaForGruppe fakta}}
+    Ingen synlige fakta
+{{/hvisIngenSynligeBarneFaktaForGruppe}}
 
 ```
 
@@ -548,6 +561,15 @@ Leser fra model på context
 ```
 
 
+##### sosialhjelpVedlegg
+
+```
+{{#sosialhjelpVedlegg}}
+    får grupperte vedlegg
+{{/sosialhjelpVedlegg}}
+```
+
+
 ##### toCapitalized
 
 ```
@@ -588,5 +610,15 @@ Leser fra model på context
 {{#visCheckbox "value" "en.nokkel"}}
    Value er "true" eller teksten "en.nokkel.false" finnes
 {{/visCheckbox}}
+```
+
+
+##### visInformasjonOmPerioder
+
+```
+{{#visInformasjonOmPerioder}}
+Dersom du fylte ut søknaden mellom fredag 13. april og tirsdag 17. april, kan du ha fått feil informasjon om lengden på stønadsperiodene. I dette tidsrommet kan søknaden ha foreslått for mange uker dersom du fylte ut en førstegangssøknad. Vi ber deg gå tilbake til skjema, slette periodene og fylle ut disse på nytt. Vi beklager ulempene dette medfører.
+{{/visInformasjonOmPerioder}}
+
 ```
 

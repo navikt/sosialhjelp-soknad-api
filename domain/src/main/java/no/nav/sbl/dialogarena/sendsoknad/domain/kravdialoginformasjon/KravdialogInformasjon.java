@@ -4,6 +4,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Steg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonTransformer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.EkstraMetadataTransformer;
+
 import org.springframework.context.MessageSource;
 
 import java.util.ArrayList;
@@ -45,13 +46,16 @@ public interface KravdialogInformasjon {
 
     String getBundleName();
 
-    boolean brukerEnonicLedetekster();
-
     SoknadType getSoknadstype();
 
     String getKvitteringTemplate();
 
+    Integer getSkjemaVersjon();
+
     abstract class DefaultOppsett implements KravdialogInformasjon {
+
+        public static final int VERSJON = 0;
+
         @Override
         public List<AlternativRepresentasjonTransformer> getTransformers(MessageSource messageSource, WebSoknad soknad) {
             return new ArrayList<>();
@@ -74,9 +78,7 @@ public interface KravdialogInformasjon {
         public boolean skalSendeMedFullSoknad(){
             return false;
         }
-        public boolean brukerEnonicLedetekster(){
-            return true;
-        }
+
         public SoknadType getSoknadstype() {
             return SoknadType.SEND_SOKNAD;
         }
@@ -84,5 +86,8 @@ public interface KravdialogInformasjon {
         public String getKvitteringTemplate() {
             return "/skjema/kvittering";
         }
+
+        @Override
+        public Integer getSkjemaVersjon() { return VERSJON; }
     }
 }

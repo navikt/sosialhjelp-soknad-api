@@ -53,8 +53,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.sort;
@@ -425,8 +423,12 @@ public class VedleggService {
     }
 
     public void medKodeverk(Vedlegg vedlegg, Locale locale) {
-        boolean soknadErEngelsk = locale.equals(Locale.ENGLISH);
-        medKodeverk(vedlegg, soknadErEngelsk);
+        try {
+            boolean soknadErEngelsk = locale.equals(Locale.ENGLISH);
+            medKodeverk(vedlegg, soknadErEngelsk);
+        } catch (Exception ignore) {
+            logger.debug("ignored exception");
+        }
     }
 
     private void medKodeverk(Vedlegg vedlegg) {

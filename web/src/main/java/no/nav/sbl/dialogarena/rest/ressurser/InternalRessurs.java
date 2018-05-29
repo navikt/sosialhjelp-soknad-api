@@ -30,8 +30,6 @@ import static no.nav.sbl.dialogarena.rest.utils.MocksetupUtils.*;
 @Path("/internal")
 public class InternalRessurs {
     @Inject
-    private ContentConfig contentConfig;
-    @Inject
     private LagringsScheduler lagringsScheduler;
     @Inject
     private CacheManager cacheManager;
@@ -48,6 +46,7 @@ public class InternalRessurs {
         logAccess("kjorLagring");
         lagringsScheduler.mellomlagreSoknaderOgNullstillLokalDb();
     }
+
 
     @GET
     @Path(value = "/mocksetup")
@@ -68,9 +67,9 @@ public class InternalRessurs {
     @POST
     @Path(value = "/mocksetup")
     public Response mocksetup(@FormParam("statsborgerskap") String statsborgerskap,
-                                  @FormParam("kode6") String kode6,
-                                  @FormParam("primar_adressetype") String primarAdressetype,
-                                  @FormParam("sekundar_adressetype") String sekundarAdressetype) throws InterruptedException {
+                              @FormParam("kode6") String kode6,
+                              @FormParam("primar_adressetype") String primarAdressetype,
+                              @FormParam("sekundar_adressetype") String sekundarAdressetype) throws InterruptedException {
         logAccess("mocksetupPost");
         Boolean skalHaKode6 = "true".equalsIgnoreCase(kode6);
 
@@ -91,7 +90,6 @@ public class InternalRessurs {
         if ("cms".equals(type)) {
             cacheManager.getCache("cms.content").clear();
             cacheManager.getCache("cms.article").clear();
-            contentConfig.lastInnNyeInnholdstekster();
             messageSource.clearCache();
             return "CACHE RESET OK";
         }

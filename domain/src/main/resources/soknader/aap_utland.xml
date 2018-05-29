@@ -1,0 +1,16 @@
+<soknad temaKode="AAP" xmlns="urn:no.nav.sbl" xmlns:xi="http://www.w3.org/2001/XInclude">
+    <faktum>
+        <id>land</id>
+    </faktum>
+    <faktum>
+        <id>fradato</id>
+    </faktum>
+    <faktum>
+        <id>tildato</id>
+    </faktum>
+    <faktum>
+        <id>oppholdikkehinder</id>
+    </faktum>
+
+    <xi:include href="/felles/personalia.xml" />
+</soknad>
