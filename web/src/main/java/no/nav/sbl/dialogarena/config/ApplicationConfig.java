@@ -39,6 +39,8 @@ public class ApplicationConfig {
     private String smtpServerHost;
     @Value("${unleash.api.url}")
     private String unleashApiUrl;
+    @Value("${environment.class}")
+    private String environmentClass;
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
         PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
@@ -104,6 +106,7 @@ public class ApplicationConfig {
         return () -> UnleashContext
                 .builder()
                 .userId(SubjectHandler.getSubjectHandler().getUid())
+                .addProperty("environment.class", environmentClass)
                 .build();
     }
 
