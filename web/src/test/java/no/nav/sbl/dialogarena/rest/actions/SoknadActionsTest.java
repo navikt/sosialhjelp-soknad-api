@@ -88,12 +88,12 @@ public class SoknadActionsTest {
     public void sendSoknadSkalIkkeSendeL7VedleggForAAPUtland() throws Exception {
         final String SKJEMANUMMER_AAP_UTLAND = "NAV 11-03.07";
         when(soknadService.hentSoknad(BEHANDLINGS_ID, true, true)).thenReturn(soknad().medskjemaNummer(SKJEMANUMMER_AAP_UTLAND).medSoknadPrefix("aap.utland"));
-        when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyBoolean())).thenReturn("<html></html>");
         when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyString())).thenReturn("<html></html>");
 
         actions.sendSoknad(BEHANDLINGS_ID, context);
 
-        verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), not(eq("/skjema/kvittering")));
+        verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), eq("/skjema/aap.utland"));
+        verify(pdfTemplate, times(1)).fyllHtmlMalMedInnhold(any(WebSoknad.class), anyString());
     }
 
     @Test
