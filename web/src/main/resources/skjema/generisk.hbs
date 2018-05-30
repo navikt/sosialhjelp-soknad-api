@@ -44,13 +44,13 @@
             <div class="bolk js-bolk">
                 <h2 class="bolk__tittel">{{ hentTekst (concat (toLowerCase navn) ".tittel") }}</h2>
                 {{#hvisLik navn "arbeidbolk"}}
+                    <h3>{{{hentTekst "arbeidsforhold.sporsmal"}}}</h3>
+                    <p>{{{hentTekst "arbeidsforhold.infotekst"}}}</p>
                     {{#hvisIngenArbeidsforhold}}
-                        <h3>{{{hentTekst "arbeidsforhold.sporsmal"}}}</h3>
-                        <p>{{{hentTekst "arbeidsforhold.infotekst"}}}</p>
                         <p>{{{hentTekst "arbeidsforhold.ingen"}}}</p>
-                        <p>{{{hentTekst
-                                "opplysninger.arbeidsituasjon.kommentarer.label"}}}</p>
                     {{/hvisIngenArbeidsforhold}}
+                    <p>{{{hentTekst
+                            "opplysninger.arbeidsituasjon.kommentarer.label"}}}</p>
                 {{/hvisLik}}
 
 
