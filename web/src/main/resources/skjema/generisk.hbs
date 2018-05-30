@@ -70,7 +70,9 @@
                 <ul class="fakta-liste">
                     {{#variabel "niva" "3"}}
                         {{#each fakta}}
-                            {{> skjema/generisk/faktum }}
+                            {{#hvisUlik fakta "opplysninger.arbeidsituasjon.kommentarer"}}
+                                {{> skjema/generisk/faktum }}
+                            {{/hvisUlik}}
                         {{/each}}
                     {{/variabel}}
 
@@ -78,10 +80,9 @@
                         {{#variabel "key" (toLowerCase navn)}}
                             {{> skjema/generisk/harikkebarn }}
                         {{/variabel}}
-                    {{/hvisIngenSynligeBarneFakta}}l2018
+                    {{/hvisIngenSynligeBarneFakta}}
                 </ul>
                 {{#hvisLik navn "opplysningerBolk"}}
-
                     {{> skjema/sosialhjelp/vedlegg}}
                 {{/hvisLik}}
             </div>
