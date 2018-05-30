@@ -76,6 +76,11 @@
         <flereTillatt>true</flereTillatt>
     </faktum>
 
+    <faktum>
+        <id>opplysninger.arbeidsituasjon.kommentarer</id>
+        <panel>arbeidbolk</panel>
+        <type>textbox</type>
 
+    </faktum>
 
 </soknad>
