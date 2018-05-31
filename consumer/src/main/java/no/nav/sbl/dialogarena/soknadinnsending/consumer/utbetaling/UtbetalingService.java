@@ -1,21 +1,23 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.HentUtbetalingsinformasjonIkkeTilgang;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.HentUtbetalingsinformasjonPeriodeIkkeGyldig;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.HentUtbetalingsinformasjonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.UtbetalingV1;
-import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.WSForespurtPeriode;
-import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.WSIdent;
-import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.WSIdentroller;
-import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.WSIdenttyper;
+import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.meldinger.WSHentUtbetalingsinformasjonRequest;
+import no.nav.tjeneste.virksomhet.utbetaling.v1.meldinger.WSHentUtbetalingsinformasjonResponse;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
+import static java.util.stream.Collectors.toList;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
@@ -26,31 +28,97 @@ public class UtbetalingService {
     @Inject
     private UtbetalingV1 utbetalingV1;
 
-    public String hentUtbetalingerForBrukerIPeriode(String brukerFnr, LocalDate fom, LocalDate tom) {
+    public List<Utbetaling> hentUtbetalingerForBrukerIPeriode(String brukerFnr, LocalDate fom, LocalDate tom) {
         logger.info("Henter utbetalinger for {} i perioden {} til {}", brukerFnr, fom, tom);
         try {
-            utbetalingV1.hentUtbetalingsinformasjon(
-                    new WSHentUtbetalingsinformasjonRequest()
-                            .withId(
-                                    new WSIdent()
-                                            .withIdentType(new WSIdenttyper().withValue("Personnr"))
-                                            .withIdent(brukerFnr)
-                                            .withRolle(new WSIdentroller().withValue("Rettighetshaver")))
-                            .withPeriode(
-                                    new WSForespurtPeriode()
-                                            .withFom(tilDateTime(fom))
-                                            .withTom(tilDateTime(tom))
-                            )
-            );
-            return "ok";
+            WSHentUtbetalingsinformasjonResponse wsUtbetalinger = utbetalingV1.hentUtbetalingsinformasjon(lagHentUtbetalingRequest(brukerFnr, fom, tom));
+            return mapTilUtbetalinger(wsUtbetalinger);
         } catch (HentUtbetalingsinformasjonPeriodeIkkeGyldig | HentUtbetalingsinformasjonPersonIkkeFunnet | HentUtbetalingsinformasjonIkkeTilgang e) {
             logger.error("Kunne ikke hente utbetalinger for {}", brukerFnr, e);
+            return new ArrayList<>(); // TODO håndtere?
         }
 
-        return "feil";
     }
+
+    private WSHentUtbetalingsinformasjonRequest lagHentUtbetalingRequest(String brukerFnr, LocalDate fom, LocalDate tom) {
+        return new WSHentUtbetalingsinformasjonRequest()
+                .withId(
+                        new WSIdent()
+                                .withIdentType(new WSIdenttyper().withValue("Personnr"))
+                                .withIdent(brukerFnr)
+                                .withRolle(new WSIdentroller().withValue("Rettighetshaver")))
+                .withPeriode(
+                        new WSForespurtPeriode()
+                                .withFom(tilDateTime(fom))
+                                .withTom(tilDateTime(tom))
+                );
+    }
+
+    private List<Utbetaling> mapTilUtbetalinger(WSHentUtbetalingsinformasjonResponse wsUtbetalinger) {
+        if (wsUtbetalinger.getUtbetalingListe() == null) {
+            return new ArrayList<>();
+        }
+
+        return wsUtbetalinger.getUtbetalingListe().stream()
+                .flatMap(wsUtbetaling ->
+                        wsUtbetaling.getYtelseListe()
+                                .stream()
+                                .map(ytelse -> ytelseTilUtbetaling(wsUtbetaling, ytelse)))
+                .collect(toList());
+    }
+
+
+    private Utbetaling ytelseTilUtbetaling(WSUtbetaling wsUtbetaling, WSYtelse ytelse) {
+        Utbetaling utbetaling = new Utbetaling();
+
+        utbetaling.type = ytelse.getYtelsestype() != null ? ytelse.getYtelsestype().getValue() : "";
+        utbetaling.netto = ytelse.getYtelseNettobeloep();
+        utbetaling.brutto = ytelse.getYtelseskomponentersum();
+        utbetaling.skatteTrekk = ytelse.getSkattsum();
+        utbetaling.andreTrekk = ytelse.getTrekksum();
+        utbetaling.bilagsNummer = ytelse.getBilagsnummer();
+
+        WSPeriode wsPeriode = ytelse.getYtelsesperiode();
+        if (wsPeriode != null && wsPeriode.getFom() != null && wsPeriode.getTom() != null) {
+            utbetaling.periode = new Utbetaling.Periode();
+            utbetaling.periode.fom = tilLocalDate(wsPeriode.getFom());
+            utbetaling.periode.tom = tilLocalDate(wsPeriode.getTom());
+        }
+
+        utbetaling.utbetalingsDato = wsUtbetaling.getUtbetalingsdato() != null ?
+                tilLocalDate(wsUtbetaling.getUtbetalingsdato()) :
+                tilLocalDate(wsUtbetaling.getForfallsdato());
+
+        if (ytelse.getYtelseskomponentListe() != null) {
+            utbetaling.komponenter = ytelse.getYtelseskomponentListe().stream()
+                    .map(wsYtelseskomponent -> {
+                        Utbetaling.Komponent komponent = new Utbetaling.Komponent();
+
+                        komponent.type = wsYtelseskomponent.getYtelseskomponenttype();
+                        komponent.belop = nullSafe(wsYtelseskomponent.getSatsbeloep());
+
+                        komponent.satsType = wsYtelseskomponent.getSatstype();
+                        komponent.satsBelop = nullSafe(wsYtelseskomponent.getSatsbeloep());
+                        komponent.satsAntall = nullSafe(wsYtelseskomponent.getSatsantall());
+
+                        return komponent;
+                    }).collect(toList());
+        }
+
+        return utbetaling;
+    }
+
 
     private DateTime tilDateTime(LocalDate date) {
         return new DateTime(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), 0, 0);
     }
+
+    private LocalDate tilLocalDate(DateTime dateTime) {
+        return LocalDate.of(dateTime.getYear(), dateTime.getMonthOfYear(), dateTime.getDayOfMonth());
+    }
+
+    private double nullSafe(Double d) {
+        return d != null ? d : 0;
+    }
+
 }
