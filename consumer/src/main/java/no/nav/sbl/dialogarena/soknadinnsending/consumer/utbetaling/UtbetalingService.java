@@ -80,9 +80,8 @@ public class UtbetalingService {
 
         WSPeriode wsPeriode = ytelse.getYtelsesperiode();
         if (wsPeriode != null && wsPeriode.getFom() != null && wsPeriode.getTom() != null) {
-            utbetaling.periode = new Utbetaling.Periode();
-            utbetaling.periode.fom = tilLocalDate(wsPeriode.getFom());
-            utbetaling.periode.tom = tilLocalDate(wsPeriode.getTom());
+            utbetaling.periodeFom = tilLocalDate(wsPeriode.getFom());
+            utbetaling.periodeTom = tilLocalDate(wsPeriode.getTom());
         }
 
         utbetaling.utbetalingsDato = wsUtbetaling.getUtbetalingsdato() != null ?
