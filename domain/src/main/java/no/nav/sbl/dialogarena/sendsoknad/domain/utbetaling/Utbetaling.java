@@ -13,14 +13,10 @@ public class Utbetaling {
     public double andreTrekk;
 
     public String bilagsNummer;
-    public Periode periode;
     public LocalDate utbetalingsDato;
+    public LocalDate periodeFom;
+    public LocalDate periodeTom;
     public List<Komponent> komponenter = new ArrayList<>();
-
-    public static class Periode {
-        public LocalDate fom;
-        public LocalDate tom;
-    }
 
     public static class Komponent {
         public String type;
