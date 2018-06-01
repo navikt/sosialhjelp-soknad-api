@@ -9,7 +9,6 @@ import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonPortTypeMock;
 import no.nav.sbl.dialogarena.service.helpers.HvisLikHelper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +22,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.URI;
-import java.time.LocalDate;
 
 import static no.nav.sbl.dialogarena.rest.utils.MocksetupUtils.*;
 
@@ -37,22 +35,9 @@ public class InternalRessurs {
     @Inject
     private NavMessageSource messageSource;
 
-    @Inject
-    UtbetalingService utbetalingService;
-
     private PersonPortTypeMock personPortTypeMock = PersonMock.getInstance().getPersonPortTypeMock();
 
     private static final Logger LOG = LoggerFactory.getLogger(InternalRessurs.class);
-
-    @GET
-    @Path(value = "/utbetaling")
-    public String utbetaling() {
-        return utbetalingService.hentUtbetalingerForBrukerIPeriode(
-                "123456789101",
-                LocalDate.now().minusDays(30),
-                LocalDate.now().plusDays(20)
-        );
-    }
 
     @POST
     @Path(value = "/lagre")
