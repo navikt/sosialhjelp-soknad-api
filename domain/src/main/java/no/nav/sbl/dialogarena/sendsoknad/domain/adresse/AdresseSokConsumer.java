@@ -24,5 +24,8 @@ public interface AdresseSokConsumer {
         public String geografiskTilknytning;
         public String gatekode;
         public String bydel;
+        
+        public String husnummer;
+        public String husbokstav;
     }
 }
