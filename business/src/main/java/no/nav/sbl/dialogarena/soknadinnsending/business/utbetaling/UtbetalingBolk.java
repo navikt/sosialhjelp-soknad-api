@@ -7,6 +7,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingSer
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +19,8 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Kra
 
 @Service
 public class UtbetalingBolk implements BolkService {
+
+    private static final NumberFormat df = new DecimalFormat("#.00");
 
     @Inject
     UtbetalingService utbetalingService;
@@ -57,10 +61,10 @@ public class UtbetalingBolk implements BolkService {
                 .medUnikProperty("id")
                 .medSystemProperty("id", lagId(utbetaling))
                 .medSystemProperty("type", utbetaling.type)
-                .medSystemProperty("netto", utbetaling.netto + "")
-                .medSystemProperty("brutto", utbetaling.brutto + "")
-                .medSystemProperty("skatteTrekk", utbetaling.skatteTrekk + "")
-                .medSystemProperty("andreTrekk", utbetaling.andreTrekk + "")
+                .medSystemProperty("netto", formatTall(utbetaling.netto))
+                .medSystemProperty("brutto", formatTall(utbetaling.brutto))
+                .medSystemProperty("skatteTrekk", formatTall(utbetaling.skatteTrekk))
+                .medSystemProperty("andreTrekk", formatTall(utbetaling.andreTrekk))
                 .medSystemProperty("periodeFom", utbetaling.periodeFom != null ? utbetaling.periodeFom.toString() : null)
                 .medSystemProperty("periodeTom", utbetaling.periodeTom != null ? utbetaling.periodeTom.toString() : null)
                 .medSystemProperty("utbetalingsDato", utbetaling.utbetalingsDato.toString())
@@ -71,10 +75,10 @@ public class UtbetalingBolk implements BolkService {
             String komponentNavn = "komponent_" + i + "_";
             faktum
                     .medSystemProperty(komponentNavn + "type", komponent.type)
-                    .medSystemProperty(komponentNavn + "belop", komponent.belop + "")
+                    .medSystemProperty(komponentNavn + "belop", formatTall(komponent.belop))
                     .medSystemProperty(komponentNavn + "satsType", komponent.satsType)
-                    .medSystemProperty(komponentNavn + "satsBelop", komponent.satsBelop + "")
-                    .medSystemProperty(komponentNavn + "satsAntall", komponent.satsAntall + "");
+                    .medSystemProperty(komponentNavn + "satsBelop", formatTall(komponent.satsBelop))
+                    .medSystemProperty(komponentNavn + "satsAntall", formatTall(komponent.satsAntall));
 
         }
         return faktum;
@@ -88,5 +92,9 @@ public class UtbetalingBolk implements BolkService {
         }
 
         return id;
+    }
+
+    private String formatTall(double d) {
+        return df.format(d);
     }
 }
