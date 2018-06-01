@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,37 +30,54 @@ public class UtbetalingBolk implements BolkService {
     public List<Faktum> genererSystemFakta(String fodselsnummer, Long soknadId) {
         List<Utbetaling> utbetalinger = utbetalingService.hentUtbetalingerForBrukerIPeriode(fodselsnummer, LocalDate.now().minusDays(30), LocalDate.now());
 
-        return utbetalinger.stream()
-                .map(utbetaling -> {
-                    Faktum faktum = new Faktum()
-                            .medSoknadId(soknadId)
-                            .medType(SYSTEMREGISTRERT)
-                            .medKey("utbetalinger.utbetaling")
-                            .medUnikProperty("id")
-                            .medSystemProperty("id", lagId(utbetaling))
-                            .medSystemProperty("type", utbetaling.type)
-                            .medSystemProperty("netto", utbetaling.netto + "")
-                            .medSystemProperty("brutto", utbetaling.brutto + "")
-                            .medSystemProperty("skatteTrekk", utbetaling.skatteTrekk + "")
-                            .medSystemProperty("andreTrekk", utbetaling.andreTrekk + "")
-                            .medSystemProperty("periodeFom", utbetaling.periodeFom != null ? utbetaling.periodeFom.toString() : null)
-                            .medSystemProperty("periodeTom", utbetaling.periodeTom != null ? utbetaling.periodeTom.toString() : null)
-                            .medSystemProperty("utbetalingsDato", utbetaling.utbetalingsDato.toString())
-                            .medSystemProperty("komponenter", utbetaling.komponenter.size() + "");
 
-                    for (int i = 0; i < utbetaling.komponenter.size(); i++) {
-                        Utbetaling.Komponent komponent = utbetaling.komponenter.get(i);
-                        String komponentNavn = "komponent_" + i + "_";
-                        faktum
-                                .medSystemProperty(komponentNavn + "type", komponent.type)
-                                .medSystemProperty(komponentNavn + "belop", komponent.belop + "")
-                                .medSystemProperty(komponentNavn + "satsType", komponent.satsType)
-                                .medSystemProperty(komponentNavn + "satsBelop", komponent.satsBelop + "")
-                                .medSystemProperty(komponentNavn + "satsAntall", komponent.satsAntall + "");
+        List<Faktum> fakta = new ArrayList<>();
 
-                    }
-                    return faktum;
-                }).collect(Collectors.toList());
+        fakta.add(lagHarUtbetalingerFaktum(!utbetalinger.isEmpty()));
+
+        fakta.addAll(utbetalinger.stream()
+                .map(utbetaling -> lagFaktumForUtbetaling(soknadId, utbetaling))
+                .collect(Collectors.toList()));
+
+        return fakta;
+    }
+
+    private Faktum lagHarUtbetalingerFaktum(boolean harUtbetalinger) {
+        return new Faktum()
+                .medType(SYSTEMREGISTRERT)
+                .medKey("utbetalinger.ingen")
+                .medValue(!harUtbetalinger + "");
+    }
+
+    private Faktum lagFaktumForUtbetaling(Long soknadId, Utbetaling utbetaling) {
+        Faktum faktum = new Faktum()
+                .medSoknadId(soknadId)
+                .medType(SYSTEMREGISTRERT)
+                .medKey("utbetalinger.utbetaling")
+                .medUnikProperty("id")
+                .medSystemProperty("id", lagId(utbetaling))
+                .medSystemProperty("type", utbetaling.type)
+                .medSystemProperty("netto", utbetaling.netto + "")
+                .medSystemProperty("brutto", utbetaling.brutto + "")
+                .medSystemProperty("skatteTrekk", utbetaling.skatteTrekk + "")
+                .medSystemProperty("andreTrekk", utbetaling.andreTrekk + "")
+                .medSystemProperty("periodeFom", utbetaling.periodeFom != null ? utbetaling.periodeFom.toString() : null)
+                .medSystemProperty("periodeTom", utbetaling.periodeTom != null ? utbetaling.periodeTom.toString() : null)
+                .medSystemProperty("utbetalingsDato", utbetaling.utbetalingsDato.toString())
+                .medSystemProperty("komponenter", utbetaling.komponenter.size() + "");
+
+        for (int i = 0; i < utbetaling.komponenter.size(); i++) {
+            Utbetaling.Komponent komponent = utbetaling.komponenter.get(i);
+            String komponentNavn = "komponent_" + i + "_";
+            faktum
+                    .medSystemProperty(komponentNavn + "type", komponent.type)
+                    .medSystemProperty(komponentNavn + "belop", komponent.belop + "")
+                    .medSystemProperty(komponentNavn + "satsType", komponent.satsType)
+                    .medSystemProperty(komponentNavn + "satsBelop", komponent.satsBelop + "")
+                    .medSystemProperty(komponentNavn + "satsAntall", komponent.satsAntall + "");
+
+        }
+        return faktum;
     }
 
     private String lagId(Utbetaling utbetaling) {
