@@ -30,6 +30,8 @@ public class AdresseSokService {
                 .map(data -> {
                     AdresseForslag adresse = new AdresseForslag();
                     adresse.adresse = data.adressenavn;
+                    adresse.husnummer = data.husnummer;
+                    adresse.husbokstav = data.husbokstav;
                     adresse.kommunenummer = data.kommunenummer;
                     adresse.kommunenavn = data.kommunenavn;
                     adresse.postnummer = data.postnummer;
