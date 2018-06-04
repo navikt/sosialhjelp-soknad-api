@@ -44,13 +44,13 @@
             <div class="bolk js-bolk">
                 <h2 class="bolk__tittel">{{ hentTekst (concat (toLowerCase navn) ".tittel") }}</h2>
                 {{#hvisLik navn "arbeidbolk"}}
+                    <h3>{{{hentTekst "arbeidsforhold.sporsmal"}}}</h3>
+                    <p>{{{hentTekst "arbeidsforhold.infotekst"}}}</p>
                     {{#hvisIngenArbeidsforhold}}
-                        <h3>{{{hentTekst "arbeidsforhold.sporsmal"}}}</h3>
-                        <p>{{{hentTekst "arbeidsforhold.infotekst"}}}</p>
                         <p>{{{hentTekst "arbeidsforhold.ingen"}}}</p>
-                        <p>{{{hentTekst
-                                "opplysninger.arbeidsituasjon.kommentarer.label"}}}</p>
                     {{/hvisIngenArbeidsforhold}}
+                    <p>{{{hentTekst
+                            "opplysninger.arbeidsituasjon.kommentarer.label"}}}</p>
                 {{/hvisLik}}
 
 
@@ -70,7 +70,9 @@
                 <ul class="fakta-liste">
                     {{#variabel "niva" "3"}}
                         {{#each fakta}}
-                            {{> skjema/generisk/faktum }}
+                            {{#hvisUlik fakta "opplysninger.arbeidsituasjon.kommentarer"}}
+                                {{> skjema/generisk/faktum }}
+                            {{/hvisUlik}}
                         {{/each}}
                     {{/variabel}}
 
@@ -78,10 +80,9 @@
                         {{#variabel "key" (toLowerCase navn)}}
                             {{> skjema/generisk/harikkebarn }}
                         {{/variabel}}
-                    {{/hvisIngenSynligeBarneFakta}}l2018
+                    {{/hvisIngenSynligeBarneFakta}}
                 </ul>
                 {{#hvisLik navn "opplysningerBolk"}}
-
                     {{> skjema/sosialhjelp/vedlegg}}
                 {{/hvisLik}}
             </div>
