@@ -20,7 +20,7 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Kra
 @Service
 public class UtbetalingBolk implements BolkService {
 
-    private static final NumberFormat df = new DecimalFormat("#.00");
+    private static final NumberFormat df = new DecimalFormat("0.00");
 
     @Inject
     UtbetalingService utbetalingService;
@@ -68,6 +68,7 @@ public class UtbetalingBolk implements BolkService {
                 .medSystemProperty("periodeFom", utbetaling.periodeFom != null ? utbetaling.periodeFom.toString() : null)
                 .medSystemProperty("periodeTom", utbetaling.periodeTom != null ? utbetaling.periodeTom.toString() : null)
                 .medSystemProperty("utbetalingsDato", utbetaling.utbetalingsDato.toString())
+                .medSystemProperty("erUtbetalt", utbetaling.erUtbetalt + "")
                 .medSystemProperty("komponenter", utbetaling.komponenter.size() + "");
 
         for (int i = 0; i < utbetaling.komponenter.size(); i++) {

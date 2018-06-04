@@ -84,6 +84,7 @@ public class UtbetalingService {
             utbetaling.periodeTom = tilLocalDate(wsPeriode.getTom());
         }
 
+        utbetaling.erUtbetalt = wsUtbetaling.getUtbetalingsdato() != null;
         utbetaling.utbetalingsDato = wsUtbetaling.getUtbetalingsdato() != null ?
                 tilLocalDate(wsUtbetaling.getUtbetalingsdato()) :
                 tilLocalDate(wsUtbetaling.getForfallsdato());
