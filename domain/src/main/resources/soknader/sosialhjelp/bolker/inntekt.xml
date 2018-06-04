@@ -2,6 +2,11 @@
 <soknad xmlns="urn:no.nav.sbl">
 
     <faktum>
+        <id>navytelser</id>
+        <panel>inntektBolk</panel>
+    </faktum>
+
+    <faktum>
         <id>utbetalinger</id>
         <panel>inntektBolk</panel>
     </faktum>
