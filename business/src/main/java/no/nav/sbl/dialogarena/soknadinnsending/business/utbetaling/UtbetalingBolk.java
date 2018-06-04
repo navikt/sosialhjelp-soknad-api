@@ -20,7 +20,7 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.Kra
 @Service
 public class UtbetalingBolk implements BolkService {
 
-    private static final NumberFormat df = new DecimalFormat("0.00");
+    public static final NumberFormat UTBETALING_FORMATTER = new DecimalFormat("##,##0.00");
 
     @Inject
     UtbetalingService utbetalingService;
@@ -96,6 +96,6 @@ public class UtbetalingBolk implements BolkService {
     }
 
     private String formatTall(double d) {
-        return df.format(d);
+        return UTBETALING_FORMATTER.format(d);
     }
 }

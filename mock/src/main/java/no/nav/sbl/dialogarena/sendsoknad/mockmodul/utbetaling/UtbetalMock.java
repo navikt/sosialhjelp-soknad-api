@@ -73,7 +73,7 @@ public class UtbetalMock implements UtbetalingV1 {
                                                 .withYtelseskomponentListe(new WSYtelseskomponent()
                                                                 .withYtelseskomponenttype("Sjekk")
                                                                 .withSatsbeloep(0.0)
-                                                                .withYtelseskomponentbeloep(10000.0),
+                                                                .withYtelseskomponentbeloep(10000.37),
                                                         new WSYtelseskomponent()
                                                                 .withYtelseskomponenttype("Pengesekk")
                                                                 .withSatstype("Dag")
