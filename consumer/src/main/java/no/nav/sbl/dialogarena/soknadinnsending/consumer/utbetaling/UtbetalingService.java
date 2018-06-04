@@ -95,7 +95,7 @@ public class UtbetalingService {
                         Utbetaling.Komponent komponent = new Utbetaling.Komponent();
 
                         komponent.type = wsYtelseskomponent.getYtelseskomponenttype();
-                        komponent.belop = nullSafe(wsYtelseskomponent.getSatsbeloep());
+                        komponent.belop = nullSafe(wsYtelseskomponent.getYtelseskomponentbeloep());
 
                         komponent.satsType = wsYtelseskomponent.getSatstype();
                         komponent.satsBelop = nullSafe(wsYtelseskomponent.getSatsbeloep());
