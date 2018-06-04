@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.rest.meldinger.SoknadBekreftelse;
 import no.nav.sbl.dialogarena.rest.utils.PDFService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.AAPUtlandetInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.service.EmailService;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
@@ -70,9 +71,12 @@ public class SoknadActions {
     public void sendSoknad(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext) {
         WebSoknad soknad = soknadService.hentSoknad(behandlingsId, true, true);
         String servletPath = servletContext.getRealPath("/");
+        final String AAP_UTLAND_SKJEMANUMMER = new AAPUtlandetInformasjon().getSkjemanummer().get(0);
 
-        byte[] kvittering = pdfService.genererKvitteringPdf(soknad, servletPath);
-        vedleggService.lagreKvitteringSomVedlegg(behandlingsId, kvittering);
+        if (!AAP_UTLAND_SKJEMANUMMER.equals(soknad.getskjemaNummer())) {
+            byte[] kvittering = pdfService.genererKvitteringPdf(soknad, servletPath);
+            vedleggService.lagreKvitteringSomVedlegg(behandlingsId, kvittering);
+        }
 
         if (soknad.erEttersending()) {
             byte[] dummyPdfSomHovedskjema = pdfService.genererEttersendingPdf(soknad, servletPath);

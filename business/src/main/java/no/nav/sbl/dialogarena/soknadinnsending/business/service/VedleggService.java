@@ -24,6 +24,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AlleredeHandtertException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigOpplastingTypeException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.AAPUtlandetInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.FaktumStruktur;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oppsett.SoknadStruktur;
@@ -133,9 +134,13 @@ public class VedleggService {
 
     public List<Vedlegg> hentVedleggOgKvittering(WebSoknad soknad) {
         ArrayList<Vedlegg> vedleggForventninger = new ArrayList(soknad.hentPaakrevdeVedlegg());
-        Vedlegg kvittering = vedleggRepository.hentVedleggForskjemaNummer(soknad.getSoknadId(), null, KVITTERING);
-        if (kvittering != null) {
-            vedleggForventninger.add(kvittering);
+        final String AAP_UTLAND_SKJEMANUMMER = new AAPUtlandetInformasjon().getSkjemanummer().get(0);
+        if (!AAP_UTLAND_SKJEMANUMMER.equals(soknad.getskjemaNummer())) {
+            Vedlegg kvittering = vedleggRepository.hentVedleggForskjemaNummer(soknad.getSoknadId(), null, KVITTERING);
+
+            if (kvittering != null) {
+                vedleggForventninger.add(kvittering);
+            }
         }
         return vedleggForventninger;
     }

@@ -4,10 +4,9 @@ import no.nav.modig.core.context.ThreadLocalSubjectHandler;
 import no.nav.sbl.dialogarena.config.SoknadActionsTestConfig;
 import no.nav.sbl.dialogarena.rest.meldinger.SoknadBekreftelse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.AAPUtlandetInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.ForeldrepengerInformasjon;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.service.EmailService;
 import no.nav.sbl.dialogarena.service.HtmlGenerator;
@@ -86,6 +85,20 @@ public class SoknadActionsTest {
     }
 
     @Test
+    public void sendSoknadSkalIkkeSendeL7VedleggForAAPUtland() throws Exception {
+        AAPUtlandetInformasjon aapUtlandetInformasjon = new AAPUtlandetInformasjon();
+        when(soknadService.hentSoknad(BEHANDLINGS_ID, true, true)).thenReturn(
+                soknad().medskjemaNummer(aapUtlandetInformasjon.getSkjemanummer().get(0))
+                        .medSoknadPrefix(aapUtlandetInformasjon.getSoknadTypePrefix()));
+        when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyString())).thenReturn("<html></html>");
+
+        actions.sendSoknad(BEHANDLINGS_ID, context);
+
+        verify(pdfTemplate).fyllHtmlMalMedInnhold(any(WebSoknad.class), eq("/skjema/aap.utland"));
+        verify(pdfTemplate, times(1)).fyllHtmlMalMedInnhold(any(WebSoknad.class), anyString());
+    }
+
+    @Test
     public void sendSoknadSkalBrukeNyPdfLogikkOmDetErSattPaaConfig() throws Exception {
         when(soknadService.hentSoknad(BEHANDLINGS_ID, true, true)).thenReturn(soknad().medSoknadPrefix("dagpenger.ordinaer"));
         when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyBoolean())).thenReturn("<html></html>");
@@ -99,7 +112,7 @@ public class SoknadActionsTest {
     }
 
     @Test
-    public void sendSoknadSkalSendeMedUtvidetSoknadOmDetErSattPaaConfig()throws Exception{
+    public void sendSoknadSkalSendeMedUtvidetSoknadOmDetErSattPaaConfig() throws Exception {
         when(soknadService.hentSoknad(BEHANDLINGS_ID, true, true)).thenReturn(soknad().medSoknadPrefix("dagpenger.ordinaer"));
         when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyBoolean())).thenReturn("<html></html>").thenReturn("<html></html>");
         when(pdfTemplate.fyllHtmlMalMedInnhold(any(WebSoknad.class), anyString())).thenReturn("<html></html>");
