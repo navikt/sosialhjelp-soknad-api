@@ -10,6 +10,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHan
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.BarnBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBolk;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.AdresseService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.ServiceConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.sosialhjelp.SosialhjelpKontaktBolk;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.*;
@@ -36,7 +37,8 @@ import org.springframework.context.annotation.Import;
         ArbeidsforholdTransformer.class,
         SosialhjelpKontaktBolk.class,
         OppgaveHandtererImpl.class,
-        AvbrytAutomatiskSheduler.class
+        AvbrytAutomatiskSheduler.class,
+        AdresseService.class
 })
 public class BusinessConfig {
 
