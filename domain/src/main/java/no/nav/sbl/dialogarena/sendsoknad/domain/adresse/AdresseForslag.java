@@ -11,4 +11,5 @@ public class AdresseForslag {
     public String geografiskTilknytning;
     public String gatekode;
     public String bydel;
+    public String type;
 }
