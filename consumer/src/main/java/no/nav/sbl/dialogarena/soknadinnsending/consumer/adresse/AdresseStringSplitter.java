@@ -15,19 +15,45 @@ public final class AdresseStringSplitter {
         if (adresse == null || adresse.trim().length() <= 1) {
             return new Adressefelter().withAdresse(adresse);
         }
-        final Pattern p = Pattern.compile("^([^0-9,]*) ?([0-9]*)?([^,])?,? ?([0-9]*)? ?(.*)?$");
-        final Matcher m = p.matcher(adresse);
-        if (!m.matches()) {
-            return new Adressefelter().withAdresse(adresse);
-        }
-        return new Adressefelter()
-                .withAdresse(m.group(1).trim())
-                .withHusnummer(m.group(2))
-                .withHusbokstav(m.group(3))
-                .withPostnummer(m.group(4))
-                .withPoststed(m.group(5));
+
+        return firstNonNull(
+            postnummerMatch(adresse),
+            fullstendigGateadresseMatch(adresse),
+            new Adressefelter().withAdresse(adresse)
+        );
     }
     
+    private static Adressefelter fullstendigGateadresseMatch(String adresse) {
+        final Pattern p = Pattern.compile("^([^0-9,]*) ?([0-9]*)?([^,])?,? ?([0-9][0-9][0-9][0-9])? ?(.*)?$");
+        final Matcher m = p.matcher(adresse);
+        if (m.matches()) {
+            return new Adressefelter()
+                    .withAdresse(m.group(1).trim())
+                    .withHusnummer(m.group(2))
+                    .withHusbokstav(m.group(3))
+                    .withPostnummer(m.group(4))
+                    .withPoststed(m.group(5));
+        }
+        return null;
+    }
+
+    private static Adressefelter postnummerMatch(String adresse) {
+        final Pattern p = Pattern.compile("^([0-9][0-9][0-9][0-9]) *$");
+        final Matcher m = p.matcher(adresse);
+        if (m.matches()) {
+            return new Adressefelter().withPostnummer(m.group(1));
+        }
+        return null;
+    }
+    
+    private static Adressefelter firstNonNull(Adressefelter... elems) {
+        for (Adressefelter e : elems) {
+            if (e != null) {
+                return e;
+            }
+        }
+        return null;
+    }
 
     static class Adressefelter {
         String adresse;
