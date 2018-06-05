@@ -75,7 +75,7 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
                 .queryParam("alltidRetur", "true")
                 .queryParam("maxretur", "100");
         
-        if (adressefelter.adresse != null) {
+        if (adressefelter.adresse != null && !adressefelter.adresse.trim().equals("")) {
             b = b.queryParam("adresse", adressefelter.adresse);
         }
         if (adressefelter.postnummer != null) {
