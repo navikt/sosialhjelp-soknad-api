@@ -31,7 +31,7 @@ public class AdresseSokService {
                     AdresseForslag adresse = new AdresseForslag();
                     adresse.adresse = data.adressenavn;
                     adresse.husnummer = data.husnummer;
-                    adresse.husbokstav = data.husbokstav;
+                    adresse.husbokstav = upperCase(data.husbokstav);
                     adresse.kommunenummer = data.kommunenummer;
                     adresse.kommunenavn = data.kommunenavn;
                     adresse.postnummer = data.postnummer;
@@ -39,12 +39,20 @@ public class AdresseSokService {
                     adresse.geografiskTilknytning = data.geografiskTilknytning;
                     adresse.gatekode = data.gatekode;
                     adresse.bydel = data.bydel;
+                    adresse.type = "gateadresse"; // TODO: Legge til støtte for filtering / andre typer.
                     return adresse;
                 })
                 .filter(distinkte())
                 .collect(toList());
 
         return forslag;
+    }
+
+    private String upperCase(String s) {
+        if (s == null) {
+            return null;
+        }
+        return s.toUpperCase();
     }
 
     private Predicate<AdresseForslag> distinkte() {
