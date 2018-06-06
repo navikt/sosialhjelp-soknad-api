@@ -17,6 +17,26 @@ public class KommuneTilNavEnhetMapper {
 
     private static final Logger log = LoggerFactory.getLogger(KommuneTilNavEnhetMapper.class);
 
+    private static final Map<String, String> TEST_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
+            .put("0701","910940066")
+            .put("1209", "910230158")
+            .put("1210", "910230158")
+            .put("0312", "910229699")
+            .put("1247", "910230182")
+            .put("0315", "811213322")
+            .put("0328", "910229702")
+            .put("0327", "910589792")
+            .put("0314", "910565338")
+            .put("0318", "910309935")
+            .put("0319", "910723499")
+            .build();
+
+    public static String getTestOrganisasjonsnummer(String enhetNr) {
+        return TEST_ORGANISASJONSNUMMER.get(enhetNr);
+    }
+
+    // Alt er deprecated under -- fjernes 2 uker etter ny versjon (grunnet gamle lagrede søknader):
+
     public static class NavEnhet {
 
         private String kontornavn;
