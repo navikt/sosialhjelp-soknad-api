@@ -49,10 +49,7 @@
                     {{#hvisIngenArbeidsforhold}}
                         <p>{{{hentTekst "arbeidsforhold.ingen"}}}</p>
                     {{/hvisIngenArbeidsforhold}}
-                    <p>{{{hentTekst
-                            "opplysninger.arbeidsituasjon.kommentarer.label"}}}</p>
                 {{/hvisLik}}
-
 
                 {{#hvisLik navn "opplysningerBolk"}}
                     {{{hentTekst "opplysninger.informasjon"}}}
@@ -70,9 +67,7 @@
                 <ul class="fakta-liste">
                     {{#variabel "niva" "3"}}
                         {{#each fakta}}
-                            {{#hvisUlik fakta "opplysninger.arbeidsituasjon.kommentarer"}}
-                                {{> skjema/generisk/faktum }}
-                            {{/hvisUlik}}
+                            {{> skjema/generisk/faktum }}
                         {{/each}}
                     {{/variabel}}
 
