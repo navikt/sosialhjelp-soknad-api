@@ -225,7 +225,7 @@ public class InformasjonRessurs {
 
         Map<String, Object> resultat = new HashMap<>();
 
-        boolean harTilgang = false;
+        boolean harTilgang = true;
         String sperrekode = "";
 
         if (DISKRESJONSKODER.contains(personalia.getDiskresjonskode())) {
