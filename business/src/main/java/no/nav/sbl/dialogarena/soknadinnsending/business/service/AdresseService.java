@@ -35,6 +35,9 @@ public class AdresseService {
         }
         if ("matrikkeladresse".equals(type)) {
             final String kommunenummer = adresse.get("kommunenummer");
+            if (kommunenummer == null) {
+                return null;
+            }
             final AdresseForslag adresseForslag = new AdresseForslag();
             adresseForslag.kommunenummer = kommunenummer;
             adresseForslag.geografiskTilknytning = kommunenummer;
@@ -67,7 +70,7 @@ public class AdresseService {
         }
     }
 
-    String lagSokestreng(final Map<String, String> adresse) {
+    private String lagSokestreng(final Map<String, String> adresse) {
         // TODO: Strukturert søk fremfor å bruke sokestreng:
         return ((adresse.get("gatenavn") + " " + adresse.get("husnummer") + adresse.get("husbokstav")).trim() + ", " + adresse.get("postnummer") + " " + adresse.get("poststed")).trim();
     }
