@@ -5,13 +5,11 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 public class KommuneTilNavEnhetMapper {
 
@@ -38,7 +36,10 @@ public class KommuneTilNavEnhetMapper {
 
     public static Map<String, Boolean> getFeaturesForEnhet(String enhetNr) {
         final Map<String, Boolean> featuresAndDefaults = new HashMap<>(defaultFeatures());
-        featuresAndDefaults.putAll(FEATURES_FOR_ENHET.get(enhetNr));
+        final Map<String, Boolean> featuresForEnhet = FEATURES_FOR_ENHET.get(enhetNr);
+        if (!isEmpty(featuresForEnhet)) {
+            featuresAndDefaults.putAll(FEATURES_FOR_ENHET.get(enhetNr));
+        }
         return featuresAndDefaults;
     }
 
