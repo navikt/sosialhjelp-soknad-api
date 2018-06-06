@@ -5,17 +5,52 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 public class KommuneTilNavEnhetMapper {
 
     private static final Logger log = LoggerFactory.getLogger(KommuneTilNavEnhetMapper.class);
+
+    private static final Map<String, String> TEST_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
+            .put("0701","910940066")
+            .put("1209", "910230158")
+            .put("1210", "910230158")
+            .put("0312", "910229699")
+            .put("1247", "910230182")
+            .put("0315", "811213322")
+            .put("0328", "910229702")
+            .put("0327", "910589792")
+            .put("0314", "910565338")
+            .put("0318", "910309935")
+            .put("0319", "910723499")
+            .build();
+    private static final Map<String, Map<String, Boolean>> FEATURES_FOR_ENHET = new HashMap<>();
+
+    public static String getTestOrganisasjonsnummer(String enhetNr) {
+        return TEST_ORGANISASJONSNUMMER.get(enhetNr);
+    }
+
+    public static Map<String, Boolean> getFeaturesForEnhet(String enhetNr) {
+        final Map<String, Boolean> featuresAndDefaults = new HashMap<>(defaultFeatures());
+        final Map<String, Boolean> featuresForEnhet = FEATURES_FOR_ENHET.get(enhetNr);
+        if (!isEmpty(featuresForEnhet)) {
+            featuresAndDefaults.putAll(FEATURES_FOR_ENHET.get(enhetNr));
+        }
+        return featuresAndDefaults;
+    }
+
+    private static Map<String, Boolean> defaultFeatures() {
+        final Map<String, Boolean> features = new HashMap<>();
+        features.put("ettersendelse", true);
+        return features;
+    }
+
+
+    // Alt er deprecated under -- fjernes 2 uker etter ny versjon (grunnet gamle lagrede søknader):
 
     public static class NavEnhet {
 
@@ -71,13 +106,6 @@ public class KommuneTilNavEnhetMapper {
             return features;
         }
     }
-
-    private static Map<String, Boolean> defaultFeatures() {
-        final Map<String, Boolean> features = new HashMap<>();
-        features.put("ettersendelse", true);
-        return features;
-    }
-
 
     private static final List<String> TEST_DIGISOS_KOMMUNER = Collections.unmodifiableList(asList("0701", "0703", "0717", "1201", "0301", "1247"));
 
