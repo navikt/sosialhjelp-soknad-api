@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper.getFeaturesForEnhet;
 
 @Controller
 @Path("/adresse")
@@ -64,7 +65,7 @@ public class AdresseRessurs {
                 .withKommunenummer(adresseForslag.kommunenummer)
                 .withKommunenavn(adresseForslag.kommunenavn)
                 .withSosialOrgnr(navEnhet.sosialOrgnr)
-                .withFeatures(new HashMap<>()); // TODO: Gjenbruk featuretogglefunksjonalitet.
+                .withFeatures(getFeaturesForEnhet(navEnhet.enhetNr));
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)

@@ -30,10 +30,24 @@ public class KommuneTilNavEnhetMapper {
             .put("0318", "910309935")
             .put("0319", "910723499")
             .build();
+    private static final Map<String, Map<String, Boolean>> FEATURES_FOR_ENHET = new HashMap<>();
 
     public static String getTestOrganisasjonsnummer(String enhetNr) {
         return TEST_ORGANISASJONSNUMMER.get(enhetNr);
     }
+
+    public static Map<String, Boolean> getFeaturesForEnhet(String enhetNr) {
+        final Map<String, Boolean> featuresAndDefaults = new HashMap<>(defaultFeatures());
+        featuresAndDefaults.putAll(FEATURES_FOR_ENHET.get(enhetNr));
+        return featuresAndDefaults;
+    }
+
+    private static Map<String, Boolean> defaultFeatures() {
+        final Map<String, Boolean> features = new HashMap<>();
+        features.put("ettersendelse", true);
+        return features;
+    }
+
 
     // Alt er deprecated under -- fjernes 2 uker etter ny versjon (grunnet gamle lagrede søknader):
 
@@ -91,13 +105,6 @@ public class KommuneTilNavEnhetMapper {
             return features;
         }
     }
-
-    private static Map<String, Boolean> defaultFeatures() {
-        final Map<String, Boolean> features = new HashMap<>();
-        features.put("ettersendelse", true);
-        return features;
-    }
-
 
     private static final List<String> TEST_DIGISOS_KOMMUNER = Collections.unmodifiableList(asList("0701", "0703", "0717", "1201", "0301", "1247"));
 
