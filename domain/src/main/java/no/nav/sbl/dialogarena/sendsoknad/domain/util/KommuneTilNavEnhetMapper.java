@@ -1,15 +1,23 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.util;
 
-import com.google.common.collect.ImmutableMap;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.*;
-
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.springframework.util.CollectionUtils.isEmpty;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.ImmutableMap;
+
+import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+
 
 public class KommuneTilNavEnhetMapper {
 
@@ -49,6 +57,52 @@ public class KommuneTilNavEnhetMapper {
         return features;
     }
 
+    public static Soknadsmottaker getSoknadsmottaker(WebSoknad webSoknad) {
+        final Faktum nyttFaktum = webSoknad.getFaktumMedKey("soknadsmottaker");
+        final Map<String, String> properties = nyttFaktum.getProperties();
+        if (nyttFaktum != null && !StringUtils.isEmpty(properties.get("sosialOrgnr"))) {
+            final String sosialOrgnr = properties.get("sosialOrgnr");
+            final String enhetsnavn = properties.get("enhetsnavn");
+            final String kommunenavn = properties.get("kommunenavn");
+            if (StringUtils.isEmpty(enhetsnavn)) {
+                throw new IllegalStateException("Mangler enhetsnavn.");
+            }
+            if (StringUtils.isEmpty(kommunenavn)) {
+                throw new IllegalStateException("Mangler kommunenavn.");
+            }
+            
+            return new Soknadsmottaker(sosialOrgnr, enhetsnavn, kommunenavn);
+        }
+        
+        final NavEnhet navEnhet = getNavEnhetFromWebSoknad(webSoknad);
+        return new Soknadsmottaker(navEnhet.getOrgnummer(), "NAV " + navEnhet.getKontornavn(), navEnhet.getKommunenavn());
+    }
+    
+    public static final class Soknadsmottaker {
+        private final String sosialOrgnr;
+        private final String enhetsnavn;
+        private final String kommunenavn;
+        
+        
+        public Soknadsmottaker(String sosialOrgnr, String enhetsnavn, String kommunenavn) {
+            this.sosialOrgnr = sosialOrgnr;
+            this.enhetsnavn = enhetsnavn;
+            this.kommunenavn = kommunenavn;
+        }
+        
+        
+        public String getSosialOrgnr() {
+            return sosialOrgnr;
+        }
+        
+        public String getEnhetsnavn() {
+            return enhetsnavn;
+        }
+        
+        public String getKommunenavn() {
+            return kommunenavn;
+        }
+    }
 
     // Alt er deprecated under -- fjernes 2 uker etter ny versjon (grunnet gamle lagrede søknader):
 
@@ -185,8 +239,8 @@ public class KommuneTilNavEnhetMapper {
     public static Map<String, String> getKommunerMedBydeler() {
         return isProduction() ? PROD_KOMMUNENAVN : TEST_KOMMUNENAVN;
     }
-
-    public static NavEnhet getNavEnhetFromWebSoknad(WebSoknad webSoknad) {
+    
+    private static NavEnhet getNavEnhetFromWebSoknad(WebSoknad webSoknad) {       
         String key;
         if (webSoknad.getFaktumMedKey("personalia.bydel") == null || isEmpty(webSoknad.getFaktumMedKey("personalia.bydel").getValue())) {
             key = webSoknad.getFaktumMedKey("personalia.kommune").getValue();
