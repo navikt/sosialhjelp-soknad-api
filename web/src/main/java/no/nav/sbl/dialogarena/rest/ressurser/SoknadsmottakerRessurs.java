@@ -28,7 +28,7 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMa
 @Timed
 @Produces(APPLICATION_JSON)
 public class SoknadsmottakerRessurs {
-    private static final Logger LOG = LoggerFactory.getLogger(SoknadsmottakerRessurs.class);
+    private static final Logger logger = LoggerFactory.getLogger(SoknadsmottakerRessurs.class);
 
     @Inject
     private SoknadService soknadService;
@@ -54,7 +54,7 @@ public class SoknadsmottakerRessurs {
 
     NavEnhetFrontend mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(AdresseForslag adresseForslag, NavEnhet navEnhet) {
         if (navEnhet == null) {
-            LOG.warn("Kunne ikke hente NAV-enhet");
+            logger.warn("Kunne ikke hente NAV-enhet");
             return null;
         }
         return new NavEnhetFrontend()

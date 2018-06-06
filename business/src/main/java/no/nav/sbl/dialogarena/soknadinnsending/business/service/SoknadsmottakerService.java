@@ -14,7 +14,7 @@ import java.util.Map;
 
 @Component
 public class SoknadsmottakerService {
-    private static final Logger LOG = LoggerFactory.getLogger(SoknadsmottakerService.class);
+    private static final Logger logger = LoggerFactory.getLogger(SoknadsmottakerService.class);
 
     @Inject
     private AdresseSokService adresseSokService;
@@ -46,7 +46,7 @@ public class SoknadsmottakerService {
             final String sokestreng = lagSokestreng(adresse);
             final List<AdresseForslag> adresser = adresseSokService.sokEtterAdresser(sokestreng);
             if (adresser == null || adresser.size() != 1) {
-                LOG.warn("Fant ikke entydig adresse for søkekriterier {}", sokestreng);
+                logger.warn("Fant ikke entydig adresse for søkekriterier {}", sokestreng);
                 return null;
             }
             return adresser.get(0);
@@ -55,7 +55,7 @@ public class SoknadsmottakerService {
 
     Faktum hentAdresseFaktum(final WebSoknad webSoknad) {
         if (webSoknad == null) {
-            LOG.warn("Søknaden er null");
+            logger.warn("Søknaden er null");
             return null;
         }
         final String adressevalg = webSoknad.getValueForFaktum("kontakt.system.oppholdsadresse.valg");
