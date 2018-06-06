@@ -11,4 +11,31 @@
         <panel>personaliaBolk</panel>
         <dependOn>personalia.kommune</dependOn>
     </faktum>
+    <faktum>
+        <id>soknadsmottaker</id>
+        <type>composite</type>
+        <panel>personaliaBolk</panel>
+        <properties>
+            <property>
+                <id>enhetsId</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>enhetsnavn</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>kommunenummer</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>kommunenavn</id>
+                <type>textbox</type>
+            </property>
+            <property>
+                <id>sosialOrgnr</id>
+                <type>textbox</type>
+            </property>
+        </properties>
+    </faktum>
 </soknad>

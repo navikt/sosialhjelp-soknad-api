@@ -1,14 +1,16 @@
 package no.nav.sbl.dialogarena.service.helpers;
 
-import com.github.jknack.handlebars.Options;
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper.NavEnhet;
-import org.springframework.stereotype.Component;
+import static no.nav.sbl.dialogarena.service.HandlebarsUtils.finnWebSoknad;
 
 import java.io.IOException;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper.getNavEnhetFromWebSoknad;
-import static no.nav.sbl.dialogarena.service.HandlebarsUtils.finnWebSoknad;
+import org.springframework.stereotype.Component;
+
+import com.github.jknack.handlebars.Options;
+
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper.Soknadsmottaker;
 
 @Component
 public class HentNavEnhetNavnHelper extends RegistryAwareHelper<Object> {
@@ -32,8 +34,8 @@ public class HentNavEnhetNavnHelper extends RegistryAwareHelper<Object> {
         if (soknad.erEttersending()) {
             return soknad.getValueForFaktum("ettersendelse.sendestil");
         } else {
-            NavEnhet navEnhet = getNavEnhetFromWebSoknad(soknad);
-            return navEnhet.getNavn();
+            final Soknadsmottaker soknadsmottaker = KommuneTilNavEnhetMapper.getSoknadsmottaker(soknad);
+            return soknadsmottaker.getEnhetsnavn() + ", " + soknadsmottaker.getKommunenavn();
         }
 
     }

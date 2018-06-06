@@ -1,13 +1,12 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.EkstraMetadataTransformer;
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper.NavEnhet;
-
 import java.util.HashMap;
 import java.util.Map;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper.getNavEnhetFromWebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.EkstraMetadataTransformer;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper.Soknadsmottaker;
 
 public class FiksMetadataTransformer implements EkstraMetadataTransformer {
 
@@ -16,11 +15,11 @@ public class FiksMetadataTransformer implements EkstraMetadataTransformer {
 
     @Override
     public Map<String, String> apply(WebSoknad webSoknad) {
-        HashMap<String, String> map = new HashMap<>();
-        NavEnhet navEnhet = getNavEnhetFromWebSoknad(webSoknad);
+        final HashMap<String, String> map = new HashMap<>();
+        final Soknadsmottaker soknadsmottaker = KommuneTilNavEnhetMapper.getSoknadsmottaker(webSoknad);
 
-        map.put(FIKS_ORGNR_KEY, navEnhet.getOrgnummer());
-        map.put(FIKS_ENHET_KEY, navEnhet.getNavn());
+        map.put(FIKS_ORGNR_KEY, soknadsmottaker.getSosialOrgnr());
+        map.put(FIKS_ENHET_KEY, soknadsmottaker.getEnhetsnavn() + ", " + soknadsmottaker.getKommunenavn());
 
         return map;
     }
