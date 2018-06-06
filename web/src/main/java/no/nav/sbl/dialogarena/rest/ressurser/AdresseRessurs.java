@@ -39,7 +39,7 @@ public class AdresseRessurs {
 
     @GET
     @Path("/{behandlingsId}")
-    @SjekkTilgangTilSoknad //bytte ut annotasjon
+    @SjekkTilgangTilSoknad
     public NavEnhetFrontend hentEnhetsInfo(@PathParam("behandlingsId") String behandlingsId, @Context HttpServletResponse response) {
         final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, true, false);
 
