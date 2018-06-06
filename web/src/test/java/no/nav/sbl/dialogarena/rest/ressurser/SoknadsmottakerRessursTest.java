@@ -2,32 +2,23 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.AdresseService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import org.junit.Test;
-import org.mockito.Mock;
 
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 
-public class AdresseRessursTest {
-    @Mock
-    private SoknadService soknadService;
-    @Mock
-    private NorgService norgService;
-    @Mock
-    private AdresseService adresseService;
+public class SoknadsmottakerRessursTest {
 
-    private AdresseRessurs adresseRessurs = new AdresseRessurs();
+    private SoknadsmottakerRessurs soknadsmottakerRessurs = new SoknadsmottakerRessurs();
 
     @Test
     public void mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontendMapperFelterKorrektForGateadresse() {
         AdresseForslag adresseForslagGateadresse = getAdresseForslagGateadresse();
         NavEnhet navEnhet = getNavEnhet();
 
-        AdresseRessurs.NavEnhetFrontend navEnhetFrontend = adresseRessurs.mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(adresseForslagGateadresse, navEnhet);
+        SoknadsmottakerRessurs.NavEnhetFrontend navEnhetFrontend = soknadsmottakerRessurs.mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(adresseForslagGateadresse, navEnhet);
 
         assertThat(navEnhetFrontend.enhetsId, is(navEnhet.enhetNr));
         assertThat(navEnhetFrontend.enhetsnavn, is(navEnhet.navn));
@@ -35,7 +26,7 @@ public class AdresseRessursTest {
         assertThat(navEnhetFrontend.kommunenavn, is(adresseForslagGateadresse.kommunenavn));
         assertThat(navEnhetFrontend.bydelsnummer, is(adresseForslagGateadresse.bydel));
         assertThat(navEnhetFrontend.sosialOrgnr, is(navEnhet.sosialOrgnr));
-        assertThat(navEnhetFrontend.features.size(), is(0));
+        assertThat(navEnhetFrontend.features, is(notNullValue()));
 
     }
 
@@ -44,7 +35,7 @@ public class AdresseRessursTest {
         AdresseForslag adresseForslagMatrikkeladresse = getAdresseForslagMatrikkeladresse();
         NavEnhet navEnhet = getNavEnhet();
 
-        AdresseRessurs.NavEnhetFrontend navEnhetFrontend = adresseRessurs.mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(adresseForslagMatrikkeladresse, navEnhet);
+        SoknadsmottakerRessurs.NavEnhetFrontend navEnhetFrontend = soknadsmottakerRessurs.mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(adresseForslagMatrikkeladresse, navEnhet);
 
         assertThat(navEnhetFrontend.enhetsId, is(navEnhet.enhetNr));
         assertThat(navEnhetFrontend.enhetsnavn, is(navEnhet.navn));
@@ -52,7 +43,7 @@ public class AdresseRessursTest {
         assertThat(navEnhetFrontend.kommunenavn, is(nullValue()));
         assertThat(navEnhetFrontend.bydelsnummer, is(nullValue()));
         assertThat(navEnhetFrontend.sosialOrgnr, is(navEnhet.sosialOrgnr));
-        assertThat(navEnhetFrontend.features.size(), is(0));
+        assertThat(navEnhetFrontend.features, is(notNullValue()));
 
     }
 

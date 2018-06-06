@@ -5,7 +5,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet;
 import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.AdresseService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadsmottakerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import org.slf4j.Logger;
@@ -18,33 +18,32 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import java.util.HashMap;
 import java.util.Map;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper.getFeaturesForEnhet;
 
 @Controller
-@Path("/adresse")
+@Path("/soknadsmottaker")
 @Timed
 @Produces(APPLICATION_JSON)
-public class AdresseRessurs {
-    private static final Logger LOG = LoggerFactory.getLogger(AdresseRessurs.class);
+public class SoknadsmottakerRessurs {
+    private static final Logger LOG = LoggerFactory.getLogger(SoknadsmottakerRessurs.class);
 
     @Inject
     private SoknadService soknadService;
     @Inject
     private NorgService norgService;
     @Inject
-    private AdresseService adresseService;
+    private SoknadsmottakerService soknadsmottakerService;
 
     @GET
     @Path("/{behandlingsId}")
     @SjekkTilgangTilSoknad
-    public NavEnhetFrontend hentEnhetsInfo(@PathParam("behandlingsId") String behandlingsId, @Context HttpServletResponse response) {
+    public NavEnhetFrontend hentSoknadsmottaker(@PathParam("behandlingsId") String behandlingsId, @Context HttpServletResponse response) {
         final WebSoknad webSoknad = soknadService.hentSoknad(behandlingsId, true, false);
 
-        final AdresseForslag adresseForslag = adresseService.finnAdresseFraSoknad(webSoknad);
+        final AdresseForslag adresseForslag = soknadsmottakerService.finnAdresseFraSoknad(webSoknad);
         if (adresseForslag == null) {
             return null;
         }

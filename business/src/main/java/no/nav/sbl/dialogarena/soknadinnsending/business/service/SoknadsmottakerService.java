@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class AdresseService {
-    private static final Logger LOG = LoggerFactory.getLogger(AdresseService.class);
+public class SoknadsmottakerService {
+    private static final Logger LOG = LoggerFactory.getLogger(SoknadsmottakerService.class);
 
     @Inject
     private AdresseSokService adresseSokService;
@@ -71,7 +71,6 @@ public class AdresseService {
     }
 
     private String lagSokestreng(final Map<String, String> adresse) {
-        // TODO: Strukturert søk fremfor å bruke sokestreng:
         return ((adresse.get("gatenavn") + " " + adresse.get("husnummer") + adresse.get("husbokstav")).trim() + ", " + adresse.get("postnummer") + " " + adresse.get("poststed")).trim();
     }
 }
