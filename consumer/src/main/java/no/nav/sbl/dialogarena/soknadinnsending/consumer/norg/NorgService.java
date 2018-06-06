@@ -7,6 +7,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet.Kontaktinformasjon
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet.Kontaktinformasjon.Telefon;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer.*;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -34,6 +35,9 @@ public class NorgService {
         enhet.enhetNr = rsNorgEnhet.enhetNr;
         enhet.navn = rsNorgEnhet.navn;
         enhet.sosialOrgnr = rsNorgEnhet.orgNrTilKommunaltNavKontor;
+        if (!isProduction()) {
+            enhet.sosialOrgnr = KommuneTilNavEnhetMapper.getTestOrganisasjonsnummer(rsNorgEnhet.enhetNr);
+        }
         return enhet;
     }
 
@@ -89,4 +93,7 @@ public class NorgService {
         }
     }
 
+    private static boolean isProduction() {
+        return "p".equals(System.getProperty("environment.name"));
+    }
 }
