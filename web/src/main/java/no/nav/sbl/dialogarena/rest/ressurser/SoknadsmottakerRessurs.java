@@ -67,8 +67,6 @@ public class SoknadsmottakerRessurs {
                 .withFeatures(getFeaturesForEnhet(navEnhet.enhetNr));
     }
 
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @SuppressWarnings("unused")
     public static class NavEnhetFrontend {
         public String enhetsId;
         public String enhetsnavn;
