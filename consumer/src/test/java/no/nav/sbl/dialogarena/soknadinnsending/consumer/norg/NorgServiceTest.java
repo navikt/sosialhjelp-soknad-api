@@ -2,12 +2,14 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.norg;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static java.lang.System.clearProperty;
 import static java.lang.System.setProperty;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper.getTestOrganisasjonsnummer;
 import static org.hamcrest.core.Is.is;
@@ -45,6 +47,11 @@ public class NorgServiceTest {
         NavEnhet navEnhet = norgService.finnEnhetForGt(GT);
 
         assertThat(navEnhet.sosialOrgnr, is(ORGNUMMER_PROD));
+    }
+
+    @After
+    public void teardown() {
+        clearProperty("environment.name");
     }
 
     private NorgConsumer.RsNorgEnhet lagRsNorgEnhet() {
