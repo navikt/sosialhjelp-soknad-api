@@ -8,6 +8,8 @@ import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import org.apache.commons.io.IOUtils;
+import org.bouncycastle.jcajce.provider.digest.SHA512;
+import org.bouncycastle.util.encoders.Hex;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.stereotype.Controller;
@@ -21,7 +23,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static javax.ws.rs.core.MediaType.*;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static javax.ws.rs.core.MediaType.MULTIPART_FORM_DATA;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status.UnderBehandling;
 import static no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad.Type.Vedlegg;
 
@@ -87,8 +90,16 @@ public class VedleggRessurs {
         }
 
         List<Vedlegg> res = new ArrayList<>();
+
+
         for (FormDataBodyPart file : files) {
             byte[] in = getByteArray(file);
+
+            SHA512.Digest sha512 = new SHA512.Digest();
+            sha512.update(in);
+            String sha = Hex.toHexString(sha512.digest());
+
+
             Vedlegg vedlegg = new Vedlegg()
                     .medVedleggId(null)
                     .medSoknadId(soknad.getSoknadId())
@@ -100,6 +111,7 @@ public class VedleggRessurs {
                     .medAntallSider(1)
                     .medFillagerReferanse(forventning.getFillagerReferanse())
                     .medData(in)
+                    .medSha(sha)
                     .medOpprettetDato(forventning.getOpprettetDato())
                     .medInnsendingsvalg(UnderBehandling);
 
