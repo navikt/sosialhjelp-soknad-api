@@ -14,11 +14,11 @@
     <faktum>
         <id>soknadsmottaker</id>
         <type>composite</type>
-        <panel>personaliaBolk</panel>
+        <panel>soknadsmottakerBolk</panel>
         <properties>
             <property>
                 <id>enhetsId</id>
-                <type>textbox</type>
+                <type>hidden</type>
             </property>
             <property>
                 <id>enhetsnavn</id>
@@ -26,7 +26,7 @@
             </property>
             <property>
                 <id>kommunenummer</id>
-                <type>textbox</type>
+                <type>hidden</type>
             </property>
             <property>
                 <id>kommunenavn</id>
@@ -34,7 +34,7 @@
             </property>
             <property>
                 <id>sosialOrgnr</id>
-                <type>textbox</type>
+                <type>hidden</type>
             </property>
         </properties>
     </faktum>
