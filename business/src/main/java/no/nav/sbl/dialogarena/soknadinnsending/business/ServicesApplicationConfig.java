@@ -43,5 +43,4 @@ public class ServicesApplicationConfig {
     public JsonKodeverk jsonKodeverk(){
         return new JsonKodeverk(getClass().getResourceAsStream("/kodeverk.json"));
     }
-
 }
