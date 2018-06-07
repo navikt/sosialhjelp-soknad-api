@@ -40,6 +40,7 @@ public class Vedlegg {
     private String aarsak;
     private String filnavn;
     private String mimetype;
+    private String sha;
 
     public Vedlegg() {
     }
@@ -139,6 +140,16 @@ public class Vedlegg {
     public Vedlegg medOpprinneligInnsendingsvalg(Status opprinneligInnsendingsvalg) {
         this.opprinneligInnsendingsvalg = opprinneligInnsendingsvalg;
         return this;
+    }
+
+
+    public Vedlegg medSha(String sha) {
+        this.sha = sha;
+        return this;
+    }
+
+    public String getSha() {
+        return sha;
     }
 
     public String getAarsak() {
@@ -296,6 +307,7 @@ public class Vedlegg {
                 .append(this.aarsak, rhs.aarsak)
                 .append(this.filnavn, rhs.filnavn)
                 .append(this.mimetype, rhs.mimetype)
+                .append(this.sha, rhs.sha)
                 .isEquals();
     }
 
@@ -320,6 +332,7 @@ public class Vedlegg {
                 .append(aarsak)
                 .append(filnavn)
                 .append(mimetype)
+                .append(sha)
                 .toHashCode();
     }
 
@@ -344,6 +357,7 @@ public class Vedlegg {
                 .append("aarsak", aarsak)
                 .append("filnavn", filnavn)
                 .append("mimetype", mimetype)
+                .append("sha", sha)
                 .toString();
     }
 
@@ -393,7 +407,7 @@ public class Vedlegg {
         }
     }
 
-    public boolean erNyttVedlegg(){
+    public boolean erNyttVedlegg() {
         return vedleggId == null;
     }
 
@@ -429,6 +443,7 @@ public class Vedlegg {
         VedleggAlleredeSendt(7);
 
         private int prioritet;
+
         private Status(int prioritet) {
             this.prioritet = prioritet;
         }
