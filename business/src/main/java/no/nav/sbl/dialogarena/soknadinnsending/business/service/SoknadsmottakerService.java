@@ -70,7 +70,18 @@ public class SoknadsmottakerService {
         }
     }
 
+    private static String emptyIfNull(String s) {
+        return (s != null) ? s : "";
+    }
     private String lagSokestreng(final Map<String, String> adresse) {
-        return ((adresse.get("gatenavn") + " " + adresse.get("husnummer") + adresse.get("husbokstav")).trim() + ", " + adresse.get("postnummer") + " " + adresse.get("poststed")).trim();
+        // TODO: Denne metoden er midlertidig og skal fjernes før produksjon (søk bør gjøres strukturert). 
+
+        final String gatenavn = emptyIfNull(adresse.get("gatenavn"));
+        final String husnummer = emptyIfNull(adresse.get("husnummer"));
+        final String husbokstav = emptyIfNull(adresse.get("husbokstav"));
+        final String postnummer = emptyIfNull(adresse.get("postnummer"));
+        final String poststed = emptyIfNull(adresse.get("poststed"));
+        
+        return ((gatenavn + " " + husnummer + husbokstav).trim() + ", " + postnummer + " " + poststed).trim();
     }
 }
