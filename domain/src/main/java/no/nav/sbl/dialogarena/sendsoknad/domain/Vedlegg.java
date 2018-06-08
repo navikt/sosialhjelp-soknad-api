@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.sendsoknad.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -366,6 +367,7 @@ public class Vedlegg {
         this.innsendingsvalg = Status.LastetOpp;
         this.antallSider = antallSider;
         this.storrelse = (long) doc.length;
+        this.sha = ServiceUtils.getSha512FromByteArray(doc);
     }
 
     public void fjernInnhold() {
@@ -373,6 +375,7 @@ public class Vedlegg {
         this.innsendingsvalg = VedleggKreves;
         this.antallSider = 0;
         this.storrelse = 0L;
+        this.sha = null;
     }
 
     public void leggTilURL(String nokkel, String url) {
