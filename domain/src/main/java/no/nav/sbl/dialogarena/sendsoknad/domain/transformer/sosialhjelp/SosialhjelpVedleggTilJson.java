@@ -82,7 +82,7 @@ public class SosialhjelpVedleggTilJson implements AlternativRepresentasjonTransf
 
             jsonVedlegg.getFiler().add(new JsonFiler()
                     .withFilnavn(vedlegg.getFilnavn())
-                    .withSha512(vedlegg.getSha())
+                    .withSha512(vedlegg.getSha512())
             );
 
 
@@ -115,7 +115,7 @@ public class SosialhjelpVedleggTilJson implements AlternativRepresentasjonTransf
 
             jsonVedlegg.getFiler().add(new JsonFiler()
                     .withFilnavn(v.getFilnavn())
-                    .withSha512(v.getSha())
+                    .withSha512(v.getSha512())
             );
         }
         return new ArrayList<>(vedleggMap.values());
