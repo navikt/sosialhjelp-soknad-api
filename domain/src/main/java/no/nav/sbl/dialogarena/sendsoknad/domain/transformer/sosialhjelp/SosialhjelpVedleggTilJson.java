@@ -73,7 +73,10 @@ public class SosialhjelpVedleggTilJson implements AlternativRepresentasjonTransf
             }
 
             jsonVedlegg.getFiler().add(new JsonFiler()
-                    .withFilnavn(vedlegg.getFilnavn()));
+                    .withFilnavn(vedlegg.getFilnavn())
+                    .withSha512(vedlegg.getSha())
+            );
+
 
         }
 
@@ -103,7 +106,9 @@ public class SosialhjelpVedleggTilJson implements AlternativRepresentasjonTransf
             }
 
             jsonVedlegg.getFiler().add(new JsonFiler()
-                    .withFilnavn(v.getFilnavn()));
+                    .withFilnavn(v.getFilnavn())
+                    .withSha512(v.getSha())
+            );
         }
         return new ArrayList<>(vedleggMap.values());
     }
