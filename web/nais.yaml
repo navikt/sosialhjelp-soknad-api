@@ -102,30 +102,5 @@ fasitResources:
     resourceType: restservice
 #  - alias: suspender
 #    resourceType: credential
-
-# TODO:
-# For sendsoknad, skru tilbake til: <applicationCertificate alias="srvSendsoknad"/>
-# ... alle utkommenterte linjer i nais-oppsettet over.
-#
-# Kan trolig ignoreres for DigiSos:
-# <applicationProperties alias="soknad.ettersending.properties"/>
-# <applicationProperties alias="soknad.properties"/>
-# <applicationProperties alias="soknad.featuretoggles"/>
-#
-#
-# TODO - ANNET OPPSETT FRA app_config:
-#    <serverOptions>
-#        <cron description="Slett tmp-filer" schedule="0 2 * * *" command="find /tmp/ -name 'gs_*' -mtime +5 -delete"/>
-#        <cron description="Slett app-tmp-filer" schedule="0 2 * * *" command="find /app/sendsoknad/temp/java-tmp/ -name 'rep*tmp' -mtime +5 -delete"/>
-#        <memoryParameters resourceAlias="brukerdialog-memparams"/>
-#    </serverOptions>
-#
-#    <security serviceUserResourceAlias="srvSendsoknad">
-#        <logins>
-#            <openAm>
-#                <contextRoot>sendsoknad</contextRoot>
-#            </openAm>
-#        </logins>
-#    </security>
-#
-#    <suspend url="/sendsoknad/management/suspend" credential="suspender" timeoutSeconds="25" />
+  - alias: norg2.api.v1
+    resourceType: restservice
