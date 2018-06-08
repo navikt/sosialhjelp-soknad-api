@@ -41,7 +41,7 @@ public class Vedlegg {
     private String aarsak;
     private String filnavn;
     private String mimetype;
-    private String sha;
+    private String sha512;
 
     public Vedlegg() {
     }
@@ -145,12 +145,12 @@ public class Vedlegg {
 
 
     public Vedlegg medSha(String sha) {
-        this.sha = sha;
+        this.sha512 = sha;
         return this;
     }
 
-    public String getSha() {
-        return sha;
+    public String getSha512() {
+        return sha512;
     }
 
     public String getAarsak() {
@@ -308,7 +308,7 @@ public class Vedlegg {
                 .append(this.aarsak, rhs.aarsak)
                 .append(this.filnavn, rhs.filnavn)
                 .append(this.mimetype, rhs.mimetype)
-                .append(this.sha, rhs.sha)
+                .append(this.sha512, rhs.sha512)
                 .isEquals();
     }
 
@@ -333,7 +333,7 @@ public class Vedlegg {
                 .append(aarsak)
                 .append(filnavn)
                 .append(mimetype)
-                .append(sha)
+                .append(sha512)
                 .toHashCode();
     }
 
@@ -358,7 +358,7 @@ public class Vedlegg {
                 .append("aarsak", aarsak)
                 .append("filnavn", filnavn)
                 .append("mimetype", mimetype)
-                .append("sha", sha)
+                .append("sha512", sha512)
                 .toString();
     }
 
@@ -367,7 +367,7 @@ public class Vedlegg {
         this.innsendingsvalg = Status.LastetOpp;
         this.antallSider = antallSider;
         this.storrelse = (long) doc.length;
-        this.sha = ServiceUtils.getSha512FromByteArray(doc);
+        this.sha512 = ServiceUtils.getSha512FromByteArray(doc);
     }
 
     public void fjernInnhold() {
@@ -375,7 +375,7 @@ public class Vedlegg {
         this.innsendingsvalg = VedleggKreves;
         this.antallSider = 0;
         this.storrelse = 0L;
-        this.sha = null;
+        this.sha512 = null;
     }
 
     public void leggTilURL(String nokkel, String url) {
