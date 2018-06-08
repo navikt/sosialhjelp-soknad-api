@@ -19,7 +19,7 @@ public class FiksMetadataTransformer implements EkstraMetadataTransformer {
         final Soknadsmottaker soknadsmottaker = KommuneTilNavEnhetMapper.getSoknadsmottaker(webSoknad);
 
         map.put(FIKS_ORGNR_KEY, soknadsmottaker.getSosialOrgnr());
-        map.put(FIKS_ENHET_KEY, soknadsmottaker.getEnhetsnavn() + ", " + soknadsmottaker.getKommunenavn());
+        map.put(FIKS_ENHET_KEY, soknadsmottaker.getSammensattNavn());
 
         return map;
     }
