@@ -61,9 +61,21 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
 
     private void taMedDataFraRequest(Adressefelter adressefelter, AdressesokRespons result) {
         for (AdresseData adresseData : result.adresseDataList) {
-            adresseData.husnummer = adressefelter.husnummer;
-            adresseData.husbokstav = adressefelter.husbokstav;
+            if (skalTasMed(adresseData)) {
+                adresseData.husnummer = adressefelter.husnummer;
+                adresseData.husbokstav = adressefelter.husbokstav;
+            }
         }
+    }
+
+    private boolean skalTasMed(AdresseData adresseData) {
+        return !isEmpty(adresseData.adressenavn)
+                && !isEmpty(adresseData.postnummer)
+                && !isEmpty(adresseData.poststed);
+    }
+    
+    private static boolean isEmpty(String s) {
+        return s == null || s.trim().length() == 0;
     }
 
     private Invocation.Builder lagRequest(Adressefelter adressefelter ) {
