@@ -1,11 +1,14 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.util;
 
+import org.bouncycastle.jcajce.provider.digest.SHA512;
+import org.bouncycastle.util.encoders.Hex;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+
 
 public class ServiceUtils {
     public static String datoTilString(LocalDate date) {
@@ -29,5 +32,13 @@ public class ServiceUtils {
         } catch (DatatypeConfigurationException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static String getSha512FromByteArray(byte[] bytes) {
+
+        SHA512.Digest sha512 = new SHA512.Digest();
+        sha512.update(bytes);
+
+        return Hex.toHexString(sha512.digest());
     }
 }
