@@ -59,19 +59,21 @@ public class KommuneTilNavEnhetMapper {
 
     public static Soknadsmottaker getSoknadsmottaker(WebSoknad webSoknad) {
         final Faktum nyttFaktum = webSoknad.getFaktumMedKey("soknadsmottaker");
-        final Map<String, String> properties = nyttFaktum.getProperties();
-        if (nyttFaktum != null && !StringUtils.isEmpty(properties.get("sosialOrgnr"))) {
-            final String sosialOrgnr = properties.get("sosialOrgnr");
-            final String enhetsnavn = properties.get("enhetsnavn");
-            final String kommunenavn = properties.get("kommunenavn");
-            if (StringUtils.isEmpty(enhetsnavn)) {
-                throw new IllegalStateException("Mangler enhetsnavn.");
+        if (nyttFaktum != null) {
+            final Map<String, String> properties = nyttFaktum.getProperties();
+            if (!StringUtils.isEmpty(properties.get("sosialOrgnr"))) {
+                final String sosialOrgnr = properties.get("sosialOrgnr");
+                final String enhetsnavn = properties.get("enhetsnavn");
+                final String kommunenavn = properties.get("kommunenavn");
+                if (StringUtils.isEmpty(enhetsnavn)) {
+                    throw new IllegalStateException("Mangler enhetsnavn.");
+                }
+                if (StringUtils.isEmpty(kommunenavn)) {
+                    throw new IllegalStateException("Mangler kommunenavn.");
+                }
+                
+                return new Soknadsmottaker(sosialOrgnr, enhetsnavn, kommunenavn);
             }
-            if (StringUtils.isEmpty(kommunenavn)) {
-                throw new IllegalStateException("Mangler kommunenavn.");
-            }
-            
-            return new Soknadsmottaker(sosialOrgnr, enhetsnavn, kommunenavn);
         }
         
         final NavEnhet navEnhet = getNavEnhetFromWebSoknad(webSoknad);
@@ -101,6 +103,14 @@ public class KommuneTilNavEnhetMapper {
         
         public String getKommunenavn() {
             return kommunenavn;
+        }
+        
+        public String getSammensattNavn() {
+            if (kommunenavn != null) {
+                return enhetsnavn + ", " + kommunenavn;
+            } else {
+                return enhetsnavn;
+            }
         }
     }
 

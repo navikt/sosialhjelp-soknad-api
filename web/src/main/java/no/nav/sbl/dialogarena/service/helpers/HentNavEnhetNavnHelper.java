@@ -35,7 +35,7 @@ public class HentNavEnhetNavnHelper extends RegistryAwareHelper<Object> {
             return soknad.getValueForFaktum("ettersendelse.sendestil");
         } else {
             final Soknadsmottaker soknadsmottaker = KommuneTilNavEnhetMapper.getSoknadsmottaker(soknad);
-            return soknadsmottaker.getEnhetsnavn() + ", " + soknadsmottaker.getKommunenavn();
+            return soknadsmottaker.getSammensattNavn();
         }
 
     }
