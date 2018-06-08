@@ -20,12 +20,14 @@ public interface FillagerRepository {
         public final String uuid;
         public final byte[] data;
         public final String eier;
+        public final String sha512;
 
-        public Fil(String behandlingsId, String uuid, byte[] data, String eier) {
+        public Fil(String behandlingsId, String uuid, byte[] data, String eier, String sha512) {
             this.behandlingsId = behandlingsId;
             this.uuid = uuid;
             this.data = data;
             this.eier = eier;
+            this.sha512 = sha512;
         }
     }
 
