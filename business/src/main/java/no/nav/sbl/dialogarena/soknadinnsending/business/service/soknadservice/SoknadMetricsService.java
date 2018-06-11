@@ -7,12 +7,14 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.DagpengerO
 import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.KravdialogInformasjonHolder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.DagpengerUtils;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -75,16 +77,31 @@ public class SoknadMetricsService {
         }
     }
 
-    public void rapporterKompletteOgIkkeKompletteSoknader(List<Vedlegg> innsendteVedlegg, List<Vedlegg> ikkeInnsendteVedlegg, String skjemanummer, Boolean erEttersending) {
+    public void rapporterKompletteOgIkkeKompletteSoknader(
+            List<Vedlegg> innsendteVedlegg,
+            List<Vedlegg> ikkeInnsendteVedlegg,
+            String skjemanummer,
+            Boolean erEttersending,
+            DateTime stegStartTid
+    ) {
         if(DagpengerOrdinaerInformasjon.erDagpengerOrdinaer(skjemanummer)
                 || DagpengerGjenopptakInformasjon.erDagpengerGjenopptak(skjemanummer)) {
 
             String skjematype = DagpengerUtils.konverterSkjemanummerTilTittel(skjemanummer);
 
             Event eventForInnsendteSkjema = metricsEventFactory.createEvent("soknad.innsendteskjema");
-            eventForInnsendteSkjema.addFieldToReport("soknad.innsendtskjema.komplett", erSoknadKomplett(ikkeInnsendteVedlegg));
+            eventForInnsendteSkjema.addFieldToReport("soknad.innsendtskjema.komplett", Boolean.toString(erSoknadKomplett(ikkeInnsendteVedlegg)));
             eventForInnsendteSkjema.addTagToReport("skjematype", skjematype);
             eventForInnsendteSkjema.addTagToReport("ettersending", String.valueOf(erEttersending));
+
+            if (!erEttersending) {
+                eventForInnsendteSkjema.addFieldToReport("sekundBruktPaaSoknadTilInnsending", beregnAlderISekund(stegStartTid.getMillis()));
+            }
+
+            if (erSoknadKomplett(ikkeInnsendteVedlegg)) {
+                eventForInnsendteSkjema.addFieldToReport("sekundBruktTilKomplett", beregnAlderISekund(stegStartTid.getMillis()));
+            }
+
             eventForInnsendteSkjema.report();
 
             rapporterStatusPaaVedlegg(finnVedleggSomSkalTelles(innsendteVedlegg), "soknad.sendtVedlegg", skjematype, erEttersending);
@@ -92,8 +109,8 @@ public class SoknadMetricsService {
         }
     }
 
-    private String erSoknadKomplett(List<Vedlegg> ikkeInnsendteVedlegg) {
-        return Boolean.toString(ikkeInnsendteVedlegg.isEmpty());
+    private Boolean erSoknadKomplett(List<Vedlegg> ikkeInnsendteVedlegg) {
+        return ikkeInnsendteVedlegg.isEmpty();
     }
 
     private void rapporterStatusPaaVedlegg(List<Vedlegg> vedleggsListe, String eventNavn, String skjematype, Boolean erEttersending) {
@@ -108,8 +125,18 @@ public class SoknadMetricsService {
             eventForInnsendteVedlegg.addTagToReport("innsendingsvalg", vedlegg.getInnsendingsvalg().name());
             eventForInnsendteVedlegg.addTagToReport("skjematype", skjematype);
             eventForInnsendteVedlegg.addTagToReport("ettersending", String.valueOf(erEttersending));
+            eventForInnsendteVedlegg.addFieldToReport("alderISekund", beregnAlderPaaVedleggISekund(vedlegg));
+
             eventForInnsendteVedlegg.report();
         }
+    }
+
+    private long beregnAlderPaaVedleggISekund(Vedlegg vedlegg) {
+        return beregnAlderISekund(vedlegg.getOpprettetDato());
+    }
+
+    private long beregnAlderISekund(Long dato) {
+        return Instant.now().getEpochSecond() - (dato / 1000);
     }
 
     private List<Vedlegg> finnVedleggSomSkalTelles(List<Vedlegg> vedleggsListe) {

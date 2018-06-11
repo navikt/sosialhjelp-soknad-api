@@ -37,7 +37,6 @@ import javax.inject.Named;
 import java.io.ByteArrayInputStream;
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.sort;
 import static java.util.UUID.randomUUID;
@@ -428,9 +427,18 @@ public class SoknadDataFletter {
                 soknad.getInnsendteVedlegg(),
                 soknad.getIkkeInnsendteVedlegg(),
                 skjemanummer(soknad),
-                soknad.erEttersending()
+                soknad.erEttersending(),
+                getStegStartTid(soknad)
         );
         soknadMetricsService.sendtSoknad(soknad.getskjemaNummer(), soknad.erEttersending());
+    }
+
+    private DateTime getStegStartTid(WebSoknad soknad) {
+        if (!soknad.erEttersending()) {
+            return soknad.getOpprettetDato();
+        }
+
+        return new DateTime(Long.parseLong(soknad.getFaktumMedKey("soknadInnsendingsDato").getValue()));
     }
 
     private XMLHovedskjema lagXmlHovedskjemaMedAlternativRepresentasjon(byte[] pdf, WebSoknad soknad, byte[] fullSoknad) {

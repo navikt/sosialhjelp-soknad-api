@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +35,7 @@ public class SoknadMetricsServiceTest {
 
     @Test
     public void testInnsendteSkjemaBlirRapportert() {
-        soknadMetricsService.rapporterKompletteOgIkkeKompletteSoknader(innsendteVedlegg, ikkeInnsendteVedlegg, DAGPENGER_SKJEMA, false);
+        soknadMetricsService.rapporterKompletteOgIkkeKompletteSoknader(innsendteVedlegg, ikkeInnsendteVedlegg, DAGPENGER_SKJEMA, false, new DateTime());
 
         verifiserAtVedleggRapporteres("soknad.innsendteskjema");
     }
@@ -43,7 +44,7 @@ public class SoknadMetricsServiceTest {
     public void testInnsendteVedleggBlirRapportert() {
         innsendteVedlegg.add(vedleggMedStatus(LastetOpp));
 
-        soknadMetricsService.rapporterKompletteOgIkkeKompletteSoknader(innsendteVedlegg, ikkeInnsendteVedlegg, DAGPENGER_SKJEMA, false);
+        soknadMetricsService.rapporterKompletteOgIkkeKompletteSoknader(innsendteVedlegg, ikkeInnsendteVedlegg, DAGPENGER_SKJEMA, false, new DateTime());
 
         verifiserAtVedleggRapporteres("soknad.sendtVedlegg");
     }
@@ -52,7 +53,7 @@ public class SoknadMetricsServiceTest {
     public void testManglendeVedleggBlirRapportert() {
         ikkeInnsendteVedlegg.add(vedleggMedStatus(SendesSenere));
 
-        soknadMetricsService.rapporterKompletteOgIkkeKompletteSoknader(innsendteVedlegg, ikkeInnsendteVedlegg, DAGPENGER_SKJEMA, false);
+        soknadMetricsService.rapporterKompletteOgIkkeKompletteSoknader(innsendteVedlegg, ikkeInnsendteVedlegg, DAGPENGER_SKJEMA, false, new DateTime());
 
         verifiserAtVedleggRapporteres("soknad.ikkeSendtVedlegg");
     }
@@ -62,7 +63,7 @@ public class SoknadMetricsServiceTest {
         innsendteVedlegg.add(vedleggSomLastesOppVedEttersending());
         ikkeInnsendteVedlegg.add(vedleggSomIkkeLastesOppVedEttersending());
 
-        soknadMetricsService.rapporterKompletteOgIkkeKompletteSoknader(innsendteVedlegg, ikkeInnsendteVedlegg, DAGPENGER_SKJEMA, true);
+        soknadMetricsService.rapporterKompletteOgIkkeKompletteSoknader(innsendteVedlegg, ikkeInnsendteVedlegg, DAGPENGER_SKJEMA, true, new DateTime());
 
         verifiserAtKunEttersendtVedleggRapporteres();
     }
@@ -79,8 +80,9 @@ public class SoknadMetricsServiceTest {
 
     private Vedlegg vedleggMedStatus(Vedlegg.Status status) {
         return new Vedlegg()
-                    .medSkjemaNummer("123")
-                    .medInnsendingsvalg(status);
+                .medSkjemaNummer("123")
+                .medInnsendingsvalg(status)
+                .medOpprettetDato(new DateTime().minusSeconds(5).getMillis() * 1000);
     }
 
     private void verifiserAtVedleggRapporteres(String eventNavn) {
