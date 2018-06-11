@@ -17,9 +17,7 @@ public class FillagerRepositoryJdbc extends NamedParameterJdbcDaoSupport impleme
             rs.getString("behandlingsid"),
             rs.getString("uuid"),
             rs.getBytes("data"),
-            rs.getString("eier"),
-            rs.getString("sha512")
-    );
+            rs.getString("eier"));
 
     @Inject
     public void setDS(DataSource ds) {
@@ -40,13 +38,13 @@ public class FillagerRepositoryJdbc extends NamedParameterJdbcDaoSupport impleme
                         ps.setString(2, fil.uuid);
                     });
         } else {
-            getJdbcTemplate().update("INSERT INTO fillager (behandlingsid, uuid, data, eier) VALUES (?,?,?,?,?)",
+            getJdbcTemplate().update("INSERT INTO fillager (behandlingsid, uuid, data, eier) VALUES (?,?,?,?)",
                     ps -> {
                         ps.setString(1, fil.behandlingsId);
                         ps.setString(2, fil.uuid);
                         ps.setBytes(3, fil.data);
                         ps.setString(4, fil.eier);
-                        ps.setString(4, fil.sha512);
+
                     });
         }
 
