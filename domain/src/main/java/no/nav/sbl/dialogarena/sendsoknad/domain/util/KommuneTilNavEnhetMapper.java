@@ -79,13 +79,14 @@ public class KommuneTilNavEnhetMapper {
     }
 
 
-    private static final List<String> TEST_DIGISOS_KOMMUNER = Collections.unmodifiableList(asList("0701", "0703", "0717", "1201", "0301", "1247"));
+    private static final List<String> TEST_DIGISOS_KOMMUNER = Collections.unmodifiableList(asList("0701", "0703", "0717", "1201", "0301", "1247", "0219"));
 
     private static final List<String> PROD_DIGISOS_KOMMUNER = Collections.unmodifiableList(asList("0701", "0703", "0717", "1201", "0301", "1247"));
 
     private static final Map<String, String> TEST_KOMMUNENAVN = new ImmutableMap.Builder<String, String>()
             .put("oslo", "Oslo")
             .put("bergen", "Bergen")
+            .put("barum", "Bærum")
             .build();
 
     private static final Map<String, String> PROD_KOMMUNENAVN = new ImmutableMap.Builder<String, String>()
@@ -98,7 +99,8 @@ public class KommuneTilNavEnhetMapper {
             // Kommuner uten bydeler
             .put("horten", new NavEnhet("Horten", null, "910940066"))
             .put("askoy", new NavEnhet("Askøy", null, "910230182"))
-            //.put("barum", new NavEnhet("Bærum", null, "910230484"))
+            .put("barum", new NavEnhet("Bærum", null, "910230484"))
+
             // Kommuner med bydeler
             //Bergen
             .put("arna", new NavEnhet("Arna", "bergen", "910230530"))
