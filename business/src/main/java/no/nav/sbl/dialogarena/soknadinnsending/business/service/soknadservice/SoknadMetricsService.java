@@ -95,7 +95,7 @@ public class SoknadMetricsService {
             eventForInnsendteSkjema.addTagToReport("ettersending", String.valueOf(erEttersending));
 
             if (!erEttersending) {
-                eventForInnsendteSkjema.addFieldToReport("sekundBruktPaaSoknadTilInnsending", beregnAlderISekund(stegStartTid.getMillis()));
+                eventForInnsendteSkjema.addFieldToReport("sekundBruktTilInnsending", beregnAlderISekund(stegStartTid.getMillis()));
             }
 
             if (erSoknadKomplett(ikkeInnsendteVedlegg)) {
@@ -104,8 +104,8 @@ public class SoknadMetricsService {
 
             eventForInnsendteSkjema.report();
 
-            rapporterStatusPaaVedlegg(finnVedleggSomSkalTelles(innsendteVedlegg), "soknad.sendtVedlegg", skjematype, erEttersending);
-            rapporterStatusPaaVedlegg(finnVedleggSomSkalTelles(ikkeInnsendteVedlegg), "soknad.ikkeSendtVedlegg", skjematype, erEttersending);
+            rapporterStatusPaaVedlegg(finnVedleggSomSkalTelles(innsendteVedlegg), "soknad.sendtVedlegg", skjematype, erEttersending, stegStartTid);
+            rapporterStatusPaaVedlegg(finnVedleggSomSkalTelles(ikkeInnsendteVedlegg), "soknad.ikkeSendtVedlegg", skjematype, erEttersending, stegStartTid);
         }
     }
 
@@ -113,7 +113,7 @@ public class SoknadMetricsService {
         return ikkeInnsendteVedlegg.isEmpty();
     }
 
-    private void rapporterStatusPaaVedlegg(List<Vedlegg> vedleggsListe, String eventNavn, String skjematype, Boolean erEttersending) {
+    private void rapporterStatusPaaVedlegg(List<Vedlegg> vedleggsListe, String eventNavn, String skjematype, Boolean erEttersending, DateTime stegStartTid) {
         if (vedleggsListe.isEmpty()) {
             return;
         }
@@ -125,7 +125,12 @@ public class SoknadMetricsService {
             eventForInnsendteVedlegg.addTagToReport("innsendingsvalg", vedlegg.getInnsendingsvalg().name());
             eventForInnsendteVedlegg.addTagToReport("skjematype", skjematype);
             eventForInnsendteVedlegg.addTagToReport("ettersending", String.valueOf(erEttersending));
-            eventForInnsendteVedlegg.addFieldToReport("alderISekund", beregnAlderPaaVedleggISekund(vedlegg));
+
+            if (erEttersending) {
+                eventForInnsendteVedlegg.addFieldToReport("sekundBruktTilInnsending", beregnAlderISekund(stegStartTid.getMillis()));
+            } else {
+                eventForInnsendteVedlegg.addFieldToReport("sekundBruktTilInnsending", beregnAlderPaaVedleggISekund(vedlegg));
+            }
 
             eventForInnsendteVedlegg.report();
         }
