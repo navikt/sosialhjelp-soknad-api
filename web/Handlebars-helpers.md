@@ -72,6 +72,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hvisHarIkkeInnsendteDokumenter - Sjekker om søknaden har ikke-innsendte vedlegg
 * hvisHarInnsendteDokumenter - Sjekker om søknaden har ett eller flere innsendte dokumenter
 * hvisIkkeTom - Dersom variabelen ikke er tom vil innholdet vises
+* hvisIngenArbeidsforhold - Sjekk om søker har noen arbeidsforhold.
 * hvisIngenSynligeBarneFakta - For bruk i generisk oppsummering, undersøker innsendt liste over fakta og ser om alle er skjult.
 * hvisIngenSynligeBarneFaktaForGruppe - For gruppe-template brukt for sosialhjelp, der vi ønsker utvidet definisjon av hva som er synlige barnefakta mtp utvidet søknad
 * hvisKunStudent - Sjekker om brukeren har en annen status enn student (f.eks sykmeldt, i arbeid osv.)
@@ -81,6 +82,7 @@ registert inn eksplisitt via `handlebars.registerHelper("helpernavn", helpermeto
 * hvisNoenAvkryssetBarneFakta - For bruk i generisk oppsummering, undersøker innsendt liste over fakta og ser om noen er avkrysset.
 * hvisSant - Dersom variabelen er "true" vil innholdet vises
 * hvisTekstFinnes - Henter tekst fra cms, prøver med søknadens prefix + key, før den prøver med bare keyen. Kan sende inn parametere.
+* hvisUlik - Sjekker om to strenger er ulike
 * kortDato - Formatterer en datostreng på formatet yyyy-mm-dd til dd.mm.aaaa
 * lagKjorelisteUker - Bygger en nestet liste over uker for et betalingsvedtak, der ukene inneholder dager det er søkt for refusjon.
 * property - Returnerer verdien til gitt property på modellen i context, gitt at den er propertyaware
@@ -444,6 +446,17 @@ må ha et faktum i context, f. eks. via
 ```
 
 
+##### hvisIngenArbeidsforhold
+
+```
+{{#hvisIngenArbeidsforhold}}
+    Ikke arbeidsforhold
+{{else}}
+    Arbeidsforhold
+{{/hvisIngenArbeidsforhold}}
+```
+
+
 ##### hvisIngenSynligeBarneFakta
 
 ```
@@ -536,6 +549,17 @@ må ha et faktum i context, f. eks. via
 {{else}}
     false
 {{/hvisTekstFinnes}}
+```
+
+
+##### hvisUlik
+
+```
+{{#hvisUlik "verdi 1" "verdi 2"}}
+    Verdiene er ikke like
+{{else}}
+    Verdiene er like
+{{/hvisUlik}}
 ```
 
 
