@@ -29,7 +29,7 @@ public class NorgConsumerImpl implements NorgConsumer {
     @Override
     public RsNorgEnhet finnEnhetForGeografiskTilknytning(String geografiskTilknytning) {
         Response response = null;
-        final Invocation.Builder request = lagRequest(endpoint + "/enhet/navkontor/" + geografiskTilknytning);
+        final Invocation.Builder request = lagRequest(endpoint + "enhet/navkontor/" + geografiskTilknytning);
 
         try {
             response = request.get();
@@ -50,7 +50,7 @@ public class NorgConsumerImpl implements NorgConsumer {
     @Override
     public RsKontaktinformasjon hentKontaktinformasjonForEnhet(String enhetNr) {
         Response response = null;
-        final Invocation.Builder request = lagRequest(endpoint + "/enhet/" + enhetNr + "/kontaktinformasjon");
+        final Invocation.Builder request = lagRequest(endpoint + "enhet/" + enhetNr + "/kontaktinformasjon");
 
         try {
             response = request.get();
@@ -68,7 +68,7 @@ public class NorgConsumerImpl implements NorgConsumer {
     private Invocation.Builder lagRequest(String endpoint) {
         String consumerId = getSubjectHandler().getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
-        final String apiKey = getenv("SOKNADSOSIALHJELP-SERVER-NORG2_API_V1-APIKEY_USERNAME");
+        final String apiKey = getenv("SOKNADSOSIALHJELP_SERVER_NORG2_API_V1_APIKEY_PASSWORD");
 
         WebTarget b = client.target(endpoint);
 
