@@ -72,22 +72,6 @@ fasitResources:
     resourceType: baseurl
   - alias: ekstern:ks_svarut_v1
     resourceType: webserviceendpoint
-#  - alias: soknad.skjemaveileder
-#    resourceType: baseurl
-#  - alias: soknad.alderspensjon
-#    resourceType: baseurl
-#  - alias: soknad.reelarbeidsoker
-#    resourceType: baseurl
-#  - alias: soknad.dagpengerbrosjyre
-#    resourceType: baseurl
-#  - alias: soknad.brukerprofil
-#    resourceType: baseurl
-#  - alias: soknad.sluttaarsak
-#    resourceType: baseurl
-#  - alias: soknad.lonnskravskjema
-#    resourceType: baseurl
-#  - alias: soknad.permitteringsskjema
-#    resourceType: baseurl
   - alias: arena.personinfoservice
     resourceType: baseurl
   - alias: dineutbetalinger.link
@@ -100,7 +84,9 @@ fasitResources:
     resourceType: credential
   - alias: tpsws.api.v1
     resourceType: restservice
-#  - alias: suspender
-#    resourceType: credential
+  - alias: soknadsosialhjelp-server-tpsws.api.v1-apiKey
+    resourceType: credential
   - alias: norg2.api.v1
     resourceType: restservice
+  - alias: soknadsosialhjelp-server-norg2.api.v1-apiKey
+    resourceType: credential

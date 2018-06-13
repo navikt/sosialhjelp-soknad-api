@@ -11,7 +11,9 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
+import static java.lang.System.getenv;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class AdresseSokConsumerImpl implements AdresseSokConsumer {
@@ -81,8 +83,9 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
     private Invocation.Builder lagRequest(Adressefelter adressefelter ) {
         String consumerId = getSubjectHandler().getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
+        final String apiKey = getenv("SOKNADSOSIALHJELP_SERVER_TPSWS_API_V1_APIKEY_PASSWORD");
         
-        WebTarget b = client.target(endpoint + "/adressesoek")
+        WebTarget b = client.target(endpoint + "adressesoek")
                 .queryParam("soketype", "E")
                 .queryParam("alltidRetur", "true")
                 .queryParam("maxretur", "100");
@@ -92,6 +95,12 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
         }
         if (adressefelter.postnummer != null) {
             b = b.queryParam("postnr", adressefelter.postnummer);
+        }
+        if (isNotEmpty(apiKey)) {
+            return b.request()
+                    .header("Nav-Call-Id", callId)
+                    .header("Nav-Consumer-Id", consumerId)
+                    .header("x-nav-apiKey", apiKey);
         }
         return b.request()
                 .header("Nav-Call-Id", callId)

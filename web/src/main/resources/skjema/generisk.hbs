@@ -4,6 +4,7 @@
     <base href="/sendsoknad/"></base>
     {{> skjema/generisk/generisk-styling }}
 </head>
+
 <body>
 
 <div class="header">
@@ -42,6 +43,18 @@
         {{#each bolker}}
             <div class="bolk js-bolk">
                 <h2 class="bolk__tittel">{{ hentTekst (concat (toLowerCase navn) ".tittel") }}</h2>
+                {{#hvisLik navn "arbeidbolk"}}
+                    <h3>{{{hentTekst "arbeidsforhold.sporsmal"}}}</h3>
+                    <p>{{{hentTekst "arbeidsforhold.infotekst"}}}</p>
+                    {{#hvisIngenArbeidsforhold}}
+                        <p>{{{hentTekst "arbeidsforhold.ingen"}}}</p>
+                    {{/hvisIngenArbeidsforhold}}
+                {{/hvisLik}}
+
+                {{#hvisLik navn "opplysningerBolk"}}
+                    {{{hentTekst "opplysninger.informasjon"}}}
+                {{/hvisLik}}
+
                 {{#if @root.utvidetSoknad}}
                     <div class="hjelpeInfotekst">
                         {{#hvisTekstFinnes (concat (toLowerCase navn) ".informasjon")}}
@@ -65,52 +78,33 @@
                     {{/hvisIngenSynligeBarneFakta}}
                 </ul>
                 {{#hvisLik navn "opplysningerBolk"}}
-                    {{#hvisLik soknad.skjemaNummer "NAV 35-18.01"}}
-                        {{> skjema/sosialhjelp/vedlegg}}
-                    {{/hvisLik}}
+                    {{> skjema/sosialhjelp/vedlegg}}
                 {{/hvisLik}}
             </div>
         {{/each}}
-
-        {{#hvisLik soknad.skjemaNummer "NAV 35-18.01"}}
-        {{else}}
-            <div class="js-vedlegg">
-                {{> skjema/generisk/generiskvedlegg }}
-            </div>
-        {{/hvisLik}}
     </div>
 
     <div class="brosjyre-signatur js-signatur">
-
         <ul class="fakta-liste">
             <li>
                 <ul class="svar-liste">
+                    <h3>Informasjon om samtykke</h3>
                     <li>
-                        {{{ hentTekst "oppsummering.bekreftOpplysninger" }}}
-
+                        {{{hentTekst "oppsummering.samtykke.oversendelse.pdf"}}}
                     </li>
 
-                    {{#hvisLik soknad.skjemaNummer "NAV 35-18.01"}}
-                        <h3>Informasjon om samtykke</h3>
-                        <li>
-                            {{{hentTekst "oppsummering.samtykke.oversendelse.pdf"}}}
-                        </li>
-                    {{/hvisLik}}
+                    <h3>Samtykke om personopplysninger for denne søknaden</h3>
+                    <li>
+                        {{{hentTekst "oppsummering.samtykke.sannferdig.pdf"}}}
+                    </li>
 
-
-                    {{#hvisLik soknad.skjemaNummer "NAV 35-18.01"}}
-                        <h3>Samtykke om personopplysninger for denne søknaden</h3>
-                        <li>
-                            {{{hentTekst "oppsummering.samtykke.sannferdig.pdf"}}}
-                        </li>
-                    {{/hvisLik}}
-
+                    <li>
+                        {{{ hentTekst "oppsummering.bekreftOpplysninger" }}}
+                    </li>
                 </ul>
             </li>
         </ul>
-
     </div>
-
 </div>
 </body>
 </html>
