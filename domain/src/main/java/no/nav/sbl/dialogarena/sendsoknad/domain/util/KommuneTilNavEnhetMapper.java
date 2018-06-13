@@ -25,8 +25,10 @@ public class KommuneTilNavEnhetMapper {
 
     private static final Map<String, String> TEST_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
             .put("0701","910940066")
+            .put("1208", "910230158")
             .put("1209", "910230158")
-            .put("1210", "910230158")
+            .put("1210", "910230506")
+            .put("1202", "910230506")
             .put("0312", "910229699")
             .put("1247", "910230182")
             .put("0315", "811213322")
@@ -35,6 +37,11 @@ public class KommuneTilNavEnhetMapper {
             .put("0314", "910565338")
             .put("0318", "910309935")
             .put("0319", "910723499")
+            .put("0219", "910230484")
+            .put("1204", "910230530")
+            .put("1203", "910230530")
+            .put("1205", "910230514")
+            .put("1206", "910230514")
             .build();
     private static final Map<String, Map<String, Boolean>> FEATURES_FOR_ENHET = new HashMap<>();
 
@@ -71,40 +78,40 @@ public class KommuneTilNavEnhetMapper {
                 if (StringUtils.isEmpty(kommunenavn)) {
                     throw new IllegalStateException("Mangler kommunenavn.");
                 }
-                
+
                 return new Soknadsmottaker(sosialOrgnr, enhetsnavn, kommunenavn);
             }
         }
-        
+
         final NavEnhet navEnhet = getNavEnhetFromWebSoknad(webSoknad);
         return new Soknadsmottaker(navEnhet.getOrgnummer(), "NAV " + navEnhet.getKontornavn(), navEnhet.getKommunenavn());
     }
-    
+
     public static final class Soknadsmottaker {
         private final String sosialOrgnr;
         private final String enhetsnavn;
         private final String kommunenavn;
-        
-        
+
+
         public Soknadsmottaker(String sosialOrgnr, String enhetsnavn, String kommunenavn) {
             this.sosialOrgnr = sosialOrgnr;
             this.enhetsnavn = enhetsnavn;
             this.kommunenavn = kommunenavn;
         }
-        
-        
+
+
         public String getSosialOrgnr() {
             return sosialOrgnr;
         }
-        
+
         public String getEnhetsnavn() {
             return enhetsnavn;
         }
-        
+
         public String getKommunenavn() {
             return kommunenavn;
         }
-        
+
         public String getSammensattNavn() {
             if (kommunenavn != null) {
                 return enhetsnavn + ", " + kommunenavn;
@@ -187,11 +194,24 @@ public class KommuneTilNavEnhetMapper {
 
 
     private static final Map<String, NavEnhet> TEST_ORGNR = new ImmutableMap.Builder<String, NavEnhet>()
+            // Kommuner uten bydeler
             .put("horten", new NavEnhet("Horten", null, "910940066"))
-            .put("bergenhus", new NavEnhet("Bergenhus", "bergen", "910230158", Collections.singletonMap("ettersendelse", false)))
-            .put("ytrebygda", new NavEnhet("Ytrebygda", "bergen", "910230158", Collections.singletonMap("ettersendelse", false)))
-            .put("frogner", new NavEnhet("Frogner", "oslo", "910229699"))
             .put("askoy", new NavEnhet("Askøy", null, "910230182"))
+            .put("barum", new NavEnhet("Bærum", null, "910230484"))
+
+            // Kommuner med bydeler
+            //Bergen
+            .put("arna", new NavEnhet("Arna", "bergen", "910230530"))
+            .put("bergenhus", new NavEnhet("Bergenhus", "bergen", "910230158"))
+            .put("fana", new NavEnhet("Fana", "bergen", "910230506"))
+            .put("fyllingsdalen", new NavEnhet("Fyllingsdalen", "bergen", "910230514"))
+            .put("laksevag", new NavEnhet("Laksevåg", "bergen", "910230514"))
+            .put("ytrebygda", new NavEnhet("Ytrebygda", "bergen", "910230506"))
+            .put("arstad", new NavEnhet("Årstad", "bergen", "910230158"))
+            .put("asane", new NavEnhet("Åsane", "bergen", "910230530"))
+
+            // Oslo
+            .put("frogner", new NavEnhet("Frogner", "oslo", "910229699"))
             .put("grunerlokka", new NavEnhet("Grünerløkka", "oslo", "811213322"))
             .put("grorud", new NavEnhet("Grorud", "oslo", "910229702"))
             .put("stovner", new NavEnhet("Stovner", "oslo", "910589792"))
@@ -249,8 +269,8 @@ public class KommuneTilNavEnhetMapper {
     public static Map<String, String> getKommunerMedBydeler() {
         return isProduction() ? PROD_KOMMUNENAVN : TEST_KOMMUNENAVN;
     }
-    
-    private static NavEnhet getNavEnhetFromWebSoknad(WebSoknad webSoknad) {       
+
+    private static NavEnhet getNavEnhetFromWebSoknad(WebSoknad webSoknad) {
         String key;
         if (webSoknad.getFaktumMedKey("personalia.bydel") == null || isEmpty(webSoknad.getFaktumMedKey("personalia.bydel").getValue())) {
             key = webSoknad.getFaktumMedKey("personalia.kommune").getValue();
