@@ -111,7 +111,7 @@ public class VedleggRessurs {
                     .medAntallSider(1)
                     .medFillagerReferanse(forventning.getFillagerReferanse())
                     .medData(in)
-                    .medSha(sha)
+                    .medSha512(sha)
                     .medOpprettetDato(forventning.getOpprettetDato())
                     .medInnsendingsvalg(UnderBehandling);
 
@@ -121,6 +121,8 @@ public class VedleggRessurs {
             }
         }
         return res;
+
+
     }
 
     private static byte[] getByteArray(FormDataBodyPart file) {
