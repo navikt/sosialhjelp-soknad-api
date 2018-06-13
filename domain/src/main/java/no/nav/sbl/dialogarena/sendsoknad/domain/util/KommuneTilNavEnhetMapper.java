@@ -25,8 +25,10 @@ public class KommuneTilNavEnhetMapper {
 
     private static final Map<String, String> TEST_ORGANISASJONSNUMMER = new ImmutableMap.Builder<String, String>()
             .put("0701","910940066")
+            .put("1208", "910230158")
             .put("1209", "910230158")
-            .put("1210", "910230158")
+            .put("1210", "910230506")
+            .put("1202", "910230506")
             .put("0312", "910229699")
             .put("1247", "910230182")
             .put("0315", "811213322")
@@ -35,6 +37,11 @@ public class KommuneTilNavEnhetMapper {
             .put("0314", "910565338")
             .put("0318", "910309935")
             .put("0319", "910723499")
+            .put("0219", "910230484")
+            .put("1204", "910230530")
+            .put("1203", "910230530")
+            .put("1205", "910230514")
+            .put("1206", "910230514")
             .build();
     private static final Map<String, Map<String, Boolean>> FEATURES_FOR_ENHET = new HashMap<>();
 
