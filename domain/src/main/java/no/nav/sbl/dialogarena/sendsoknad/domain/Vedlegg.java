@@ -144,8 +144,8 @@ public class Vedlegg {
     }
 
 
-    public Vedlegg medSha(String sha) {
-        this.sha512 = sha;
+    public Vedlegg medSha512(String sha512) {
+        this.sha512 = sha512;
         return this;
     }
 
