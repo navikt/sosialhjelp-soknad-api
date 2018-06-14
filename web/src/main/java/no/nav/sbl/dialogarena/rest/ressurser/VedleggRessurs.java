@@ -111,7 +111,6 @@ public class VedleggRessurs {
                     .medAntallSider(1)
                     .medFillagerReferanse(forventning.getFillagerReferanse())
                     .medData(in)
-                    .medSha512(sha)
                     .medOpprettetDato(forventning.getOpprettetDato())
                     .medInnsendingsvalg(UnderBehandling);
 
