@@ -49,7 +49,6 @@ public class VedleggRowMapper implements RowMapper<Vedlegg> {
                 .medFilnavn(rs.getString("filnavn"))
                 .medMimetype(rs.getString("mimetype"));
 
-
         String skjemanummerFraDb = rs.getString("skjemaNummer");
         result.setSkjemaNummer(skjemanummerFraDb.split("\\|")[0]);
         if(skjemanummerFraDb.contains("|")) {

@@ -95,11 +95,6 @@ public class VedleggRessurs {
         for (FormDataBodyPart file : files) {
             byte[] in = getByteArray(file);
 
-            SHA512.Digest sha512 = new SHA512.Digest();
-            sha512.update(in);
-            String sha = Hex.toHexString(sha512.digest());
-
-
             Vedlegg vedlegg = new Vedlegg()
                     .medVedleggId(null)
                     .medSoknadId(soknad.getSoknadId())
