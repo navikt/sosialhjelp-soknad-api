@@ -66,7 +66,7 @@ public class DatabaseTestContext {
 
     private static void createNonJpaTables(DataSource dataSource) {
 
-        try (Connection conn = dataSource.getConnection(); Statement st = conn.createStatement()) {
+       try (Connection conn = dataSource.getConnection(); Statement st = conn.createStatement()) {
             st.execute("drop table HENVENDELSE if exists");
             st.execute("create table HENVENDELSE (henvendelse_id bigint, behandlingsid varchar(255), behandlingskjedeId varchar(255), traad varchar(255), type varchar(255), opprettetdato timestamp, " +
                     "lestdato timestamp, sistendretdato timestamp, tema varchar(255), aktor varchar(255), status varchar(255), behandlingsresultat varchar(2048), sensitiv integer)");
