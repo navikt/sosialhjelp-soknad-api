@@ -8,8 +8,6 @@ import no.nav.sbl.dialogarena.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import org.apache.commons.io.IOUtils;
-import org.bouncycastle.jcajce.provider.digest.SHA512;
-import org.bouncycastle.util.encoders.Hex;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.stereotype.Controller;
@@ -91,7 +89,6 @@ public class VedleggRessurs {
 
         List<Vedlegg> res = new ArrayList<>();
 
-
         for (FormDataBodyPart file : files) {
             byte[] in = getByteArray(file);
 
@@ -115,8 +112,6 @@ public class VedleggRessurs {
             }
         }
         return res;
-
-
     }
 
     private static byte[] getByteArray(FormDataBodyPart file) {
@@ -140,5 +135,4 @@ public class VedleggRessurs {
 
         return totalStorrelse > MAKS_TOTAL_FILSTORRELSE;
     }
-
 }
