@@ -36,6 +36,10 @@ public class ServiceUtils {
 
     public static String getSha512FromByteArray(byte[] bytes) {
 
+        if (bytes == null) {
+            return "";
+        }
+
         SHA512.Digest sha512 = new SHA512.Digest();
         sha512.update(bytes);
 

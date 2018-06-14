@@ -44,6 +44,7 @@ public class Vedlegg {
     private String sha512;
 
     public Vedlegg() {
+        this.sha512 = "";
     }
 
     public Vedlegg(Long soknadId, Long faktumId, String skjemaNummer, Status innsendingsvalg) {
@@ -51,6 +52,7 @@ public class Vedlegg {
         this.faktumId = faktumId;
         this.skjemaNummer = skjemaNummer;
         this.innsendingsvalg = innsendingsvalg;
+        this.sha512 = "";
     }
 
     public Vedlegg medVedleggId(Long vedleggId) {
@@ -144,10 +146,6 @@ public class Vedlegg {
     }
 
 
-    public Vedlegg medSha512(String sha512) {
-        this.sha512 = sha512;
-        return this;
-    }
 
     public String getSha512() {
         return sha512;
@@ -400,6 +398,7 @@ public class Vedlegg {
 
     public void setData(byte[] data) {
         this.data = data != null ? data.clone() : null;
+        this.sha512 = ServiceUtils.getSha512FromByteArray(data);
     }
 
     public void oppdatertInnsendtStatus() {
