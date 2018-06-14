@@ -32,15 +32,8 @@ public class SosialhjelpVedleggTilJson implements AlternativRepresentasjonTransf
             vedlegg = grupperVedleggFiler(webSoknad);
         }
 
-
-        for (JsonVedlegg jsonVedlegg : vedlegg) {
-            for (JsonFiler jsonFiler : jsonVedlegg.getFiler()){
-                System.out.println("Filnavn : " + jsonFiler.getFilnavn() + ", sha : " +jsonFiler.getSha512());
-
-            }
-        }
-
         String json;
+        
         try {
             JsonVedleggSpesifikasjon jsonObjekt = new JsonVedleggSpesifikasjon().withVedlegg(vedlegg);
             leggPaGarbageDataForAHindreValidering(jsonObjekt);

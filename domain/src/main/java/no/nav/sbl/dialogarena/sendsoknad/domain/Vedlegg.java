@@ -373,7 +373,7 @@ public class Vedlegg {
         this.innsendingsvalg = VedleggKreves;
         this.antallSider = 0;
         this.storrelse = 0L;
-        this.sha512 = null;
+        this.sha512 = "";
     }
 
     public void leggTilURL(String nokkel, String url) {
