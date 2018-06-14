@@ -77,7 +77,7 @@ public class SoknadsosialhjelpServer {
     }
 
     private void mapNaisProperties() throws IOException {
-        final Properties props = readProperties("naisPropertyMapping.properties");
+        final Properties props = readProperties("naisPropertyMapping.properties", true);
 
         for (String env : props.stringPropertyNames()) {
             final String interntNavn = props.getProperty(env);
@@ -116,12 +116,16 @@ public class SoknadsosialhjelpServer {
 
     private void readEnvironmentProperties() throws IOException {
         final String env = determineEnvironment();
-        setFrom("environment/" + env + "/environment.properties");
+        setFrom("environment/" + env + "/environment.properties", false);
         log.info("Lastet inn oppsett for miljø: " + env);
     }
-
+    
     public static void setFrom(String resource) throws IOException {
-        final Properties props = readProperties(resource);
+        setFrom(resource, true);
+    }
+
+    public static void setFrom(String resource, boolean required) throws IOException {
+        final Properties props = readProperties(resource, required);
 
         updateJavaProperties(props);
     }
@@ -164,11 +168,15 @@ public class SoknadsosialhjelpServer {
         throw new IllegalStateException("Kunne ikke finne referert variabel med navn: " + variableName);
     }
 
-    private static Properties readProperties(String resource) throws IOException {
+    private static Properties readProperties(String resource, boolean required) throws IOException {
         Properties props = new Properties();
         InputStream inputStream = SoknadsosialhjelpServer.class.getClassLoader().getResourceAsStream(resource);
         if (inputStream == null) {
-            throw new IllegalStateException("Kunne ikke finne propertiesfil: " + resource);
+            if (required) {
+                throw new IllegalStateException("Kunne ikke finne propertiesfil: " + resource);
+            } else {
+                return props;
+            }
         }
         props.load(inputStream);
         return props;
@@ -176,7 +184,7 @@ public class SoknadsosialhjelpServer {
 
     private void configureLocalSecurity() throws IOException {
         setFrom("environment-test.properties");
-        updateJavaProperties(readProperties("oracledb.properties"));
+        updateJavaProperties(readProperties("oracledb.properties", true));
     }
 
     private static DataSource buildDataSource() throws IOException {
