@@ -5,9 +5,15 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresentasjonType;
+import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
+import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
@@ -59,4 +65,53 @@ public class SosialhjelpVedleggTilJsonTest {
         assertThat(new String(representasjon.getContent()), containsString("garbage"));
     }
 
+    @Test
+    public void testSha512() {
+
+        String pathToDir = "src/test/java/no/nav/sbl/dialogarena/sendsoknad/domain";
+        byte[] data = null;
+
+        Path dokument = Paths.get(pathToDir + "/soknad.pdf");
+
+        try {
+            data = Files.readAllBytes(dokument);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Vedlegg vedlegg1 = new Vedlegg().medSkjemaNummer("V1").medSkjemanummerTillegg("BARN")
+                .medFaktumId(2L).medFilnavn("fil1.png").medInnsendingsvalg(Vedlegg.Status.LastetOpp);
+
+        // Tom data skal gi tom streng som sha
+        Assert.assertTrue(vedlegg1.getSha512().equals(""));
+
+        String sha1 = ServiceUtils.getSha512FromByteArray(data);
+        Vedlegg vedlegg2 = new Vedlegg().medData(data);
+        String sha2 = vedlegg2.getSha512();
+
+        // Vedleggsklassen skal generere riktig basert på fildata'ene
+        Assert.assertEquals(sha1, sha2);
+
+        WebSoknad soknad = new WebSoknad()
+                .medFaktum(new Faktum().medKey("belop1").medFaktumId(1L))
+                .medFaktum(new Faktum().medKey("proxy1-1").medFaktumId(2L).medParrentFaktumId(1L))
+                .medFaktum(new Faktum().medKey("proxy1-2").medFaktumId(3L).medParrentFaktumId(1L))
+                .medFaktum(new Faktum().medKey("belop2").medFaktumId(4L))
+                .medFaktum(new Faktum().medKey("proxy2-1").medFaktumId(5L).medParrentFaktumId(4L))
+                .medFaktum(new Faktum().medKey("belop3").medFaktumId(6L))
+                .medFaktum(new Faktum().medKey("proxy2-1").medFaktumId(7L).medParrentFaktumId(6L))
+                .medVedlegg(
+                        new Vedlegg().medSkjemaNummer("V1").medSkjemanummerTillegg("BARN")
+                                .medFaktumId(2L).medFilnavn("soknad.pdf").medInnsendingsvalg(Vedlegg.Status.LastetOpp).medData(data)
+                );
+
+        SosialhjelpVedleggTilJson sosialhjelpVedleggTilJson = new SosialhjelpVedleggTilJson();
+
+        AlternativRepresentasjon representasjon = sosialhjelpVedleggTilJson.transform(soknad);
+        String json = new String(representasjon.getContent());
+
+        // Json-objektet sin streng-representasjon skal inneholde sha'en
+        Assert.assertTrue(json.contains(sha1));
+
+    }
 }
