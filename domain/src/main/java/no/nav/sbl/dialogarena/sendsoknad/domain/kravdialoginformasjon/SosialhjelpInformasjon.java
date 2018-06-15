@@ -7,7 +7,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.AlternativRepresenta
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.EkstraMetadataTransformer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.FiksMetadataTransformer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpTilJson;
-import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpTilXml;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.SosialhjelpVedleggTilJson;
 import org.springframework.context.MessageSource;
 
@@ -51,7 +50,7 @@ public class SosialhjelpInformasjon extends KravdialogInformasjon.DefaultOppsett
             return singletonList(new SosialhjelpVedleggTilJson());
         }
 
-        return asList(new SosialhjelpTilXml(messageSource), new SosialhjelpVedleggTilJson(), new SosialhjelpTilJson((NavMessageSource) messageSource));
+        return asList(new SosialhjelpVedleggTilJson(), new SosialhjelpTilJson((NavMessageSource) messageSource));
     }
 
     @Override
