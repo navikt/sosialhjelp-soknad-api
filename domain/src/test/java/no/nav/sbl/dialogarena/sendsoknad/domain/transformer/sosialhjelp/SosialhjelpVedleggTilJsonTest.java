@@ -89,7 +89,7 @@ public class SosialhjelpVedleggTilJsonTest {
         Vedlegg vedlegg2 = new Vedlegg().medData(data);
         String sha2 = vedlegg2.getSha512();
 
-        // Vedleggsklassen skal generere riktig basert på fildata'ene
+        // Vedleggsklassen skal generere riktig sha512 basert på fildata'ene
         Assert.assertEquals(sha1, sha2);
 
         WebSoknad soknad = new WebSoknad()
@@ -110,7 +110,7 @@ public class SosialhjelpVedleggTilJsonTest {
         AlternativRepresentasjon representasjon = sosialhjelpVedleggTilJson.transform(soknad);
         String json = new String(representasjon.getContent());
 
-        // Json-objektet sin streng-representasjon skal inneholde sha'en
+        // Json-objektet sin streng-representasjon skal inneholde shaen
         Assert.assertTrue(json.contains(sha1));
 
     }
