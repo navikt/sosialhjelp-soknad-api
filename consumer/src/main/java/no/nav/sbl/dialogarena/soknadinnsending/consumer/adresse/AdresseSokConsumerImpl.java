@@ -1,20 +1,20 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse;
 
-import no.nav.modig.common.MDCOperations;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseStringSplitter.Adressefelter;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
-import org.slf4j.Logger;
+import static java.lang.System.getenv;
+import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.slf4j.LoggerFactory.getLogger;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
-import static java.lang.System.getenv;
-import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-import static org.slf4j.LoggerFactory.getLogger;
+import org.slf4j.Logger;
+
+import no.nav.modig.common.MDCOperations;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 
 public class AdresseSokConsumerImpl implements AdresseSokConsumer {
 
@@ -30,14 +30,19 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
 
     @Override
     public AdressesokRespons sokAdresse(String adresse) {
-        final Adressefelter adressefelter = AdresseStringSplitter.toAdressefelter(adresse);
-        final Invocation.Builder request = lagRequest(adressefelter);
+        final Sokedata sokedata = AdresseStringSplitter.toSokedata(adresse);
+        return sokAdresse(sokedata);
+    }
+    
+    @Override
+    public AdressesokRespons sokAdresse(Sokedata sokedata) {
+        final Invocation.Builder request = lagRequest(sokedata);
         Response response = null;
 
         try {
             response = request.get();
             if (response.getStatus() == 200) {
-                return createAdressesokRespons(adressefelter, response);
+                return createAdressesokRespons(sokedata, response);
             } else if (response.getStatus() == 404) {
                 // Ingen funnet
                 return new AdressesokRespons();
@@ -55,17 +60,17 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
         }
     }
 
-    private AdressesokRespons createAdressesokRespons(Adressefelter adressefelter, Response response) {
+    private AdressesokRespons createAdressesokRespons(Sokedata sokedata, Response response) {
         final AdressesokRespons result = response.readEntity(AdressesokRespons.class);
-        taMedDataFraRequest(adressefelter, result);
+        taMedDataFraRequest(sokedata, result);
         return result;
     }
 
-    private void taMedDataFraRequest(Adressefelter adressefelter, AdressesokRespons result) {
+    private void taMedDataFraRequest(Sokedata sokedata, AdressesokRespons result) {
         for (AdresseData adresseData : result.adresseDataList) {
             if (skalTasMed(adresseData)) {
-                adresseData.husnummer = adressefelter.husnummer;
-                adresseData.husbokstav = adressefelter.husbokstav;
+                adresseData.husnummer = sokedata.husnummer;
+                adresseData.husbokstav = sokedata.husbokstav;
             }
         }
     }
@@ -80,7 +85,7 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
         return s == null || s.trim().length() == 0;
     }
 
-    private Invocation.Builder lagRequest(Adressefelter adressefelter ) {
+    private Invocation.Builder lagRequest(Sokedata sokedata) {
         String consumerId = getSubjectHandler().getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
         final String apiKey = getenv("SOKNADSOSIALHJELP_SERVER_TPSWS_API_V1_APIKEY_PASSWORD");
@@ -90,11 +95,14 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
                 .queryParam("alltidRetur", "true")
                 .queryParam("maxretur", "100");
         
-        if (adressefelter.adresse != null && !adressefelter.adresse.trim().equals("")) {
-            b = b.queryParam("adresse", adressefelter.adresse);
+        if (sokedata.adresse != null && !sokedata.adresse.trim().equals("")) {
+            b = b.queryParam("adresse", sokedata.adresse);
         }
-        if (adressefelter.postnummer != null) {
-            b = b.queryParam("postnr", adressefelter.postnummer);
+        if (sokedata.postnummer != null) {
+            b = b.queryParam("postnr", sokedata.postnummer);
+        }
+        if (sokedata.kommunenummer != null) {
+            b = b.queryParam("kommunenr", sokedata.kommunenummer);
         }
         if (isNotEmpty(apiKey)) {
             return b.request()
@@ -106,6 +114,4 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
                 .header("Nav-Call-Id", callId)
                 .header("Nav-Consumer-Id", consumerId);
     }
-
-
 }
