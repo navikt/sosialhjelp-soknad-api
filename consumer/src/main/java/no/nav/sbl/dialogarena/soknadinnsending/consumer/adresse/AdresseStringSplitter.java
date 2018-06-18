@@ -3,6 +3,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
+
 
 public final class AdresseStringSplitter {
 
@@ -11,23 +13,23 @@ public final class AdresseStringSplitter {
     }
     
     
-    static Adressefelter toAdressefelter(String adresse) {
+    static Sokedata toSokedata(String adresse) {
         if (adresse == null || adresse.trim().length() <= 1) {
-            return new Adressefelter().withAdresse(adresse);
+            return new Sokedata().withAdresse(adresse);
         }
 
         return firstNonNull(
             postnummerMatch(adresse),
             fullstendigGateadresseMatch(adresse),
-            new Adressefelter().withAdresse(adresse)
+            new Sokedata().withAdresse(adresse)
         );
     }
     
-    private static Adressefelter fullstendigGateadresseMatch(String adresse) {
+    private static Sokedata fullstendigGateadresseMatch(String adresse) {
         final Pattern p = Pattern.compile("^([^0-9,]*) ?([0-9]*)?([^,])?,? ?([0-9][0-9][0-9][0-9])? ?(.*)?$");
         final Matcher m = p.matcher(adresse);
         if (m.matches()) {
-            return new Adressefelter()
+            return new Sokedata()
                     .withAdresse(m.group(1).trim())
                     .withHusnummer(m.group(2))
                     .withHusbokstav(m.group(3))
@@ -37,17 +39,17 @@ public final class AdresseStringSplitter {
         return null;
     }
 
-    private static Adressefelter postnummerMatch(String adresse) {
+    private static Sokedata postnummerMatch(String adresse) {
         final Pattern p = Pattern.compile("^([0-9][0-9][0-9][0-9]) *$");
         final Matcher m = p.matcher(adresse);
         if (m.matches()) {
-            return new Adressefelter().withPostnummer(m.group(1));
+            return new Sokedata().withPostnummer(m.group(1));
         }
         return null;
     }
     
-    private static Adressefelter firstNonNull(Adressefelter... elems) {
-        for (Adressefelter e : elems) {
+    private static Sokedata firstNonNull(Sokedata... elems) {
+        for (Sokedata e : elems) {
             if (e != null) {
                 return e;
             }
@@ -55,36 +57,5 @@ public final class AdresseStringSplitter {
         return null;
     }
 
-    static class Adressefelter {
-        String adresse;
-        String husnummer;
-        String husbokstav;
-        String postnummer;
-        String poststed;
-        
-        Adressefelter withAdresse(String adresse) {
-            this.adresse = adresse;
-            return this;
-        }
-        
-        Adressefelter withHusnummer(String husnummer) {
-            this.husnummer = husnummer;
-            return this;
-        }
-        
-        Adressefelter withHusbokstav(String husbokstav) {
-            this.husbokstav = husbokstav;
-            return this;
-        }
-        
-        Adressefelter withPostnummer(String postnummer) {
-            this.postnummer = postnummer;
-            return this;
-        }
-        
-        Adressefelter withPoststed(String poststed) {
-            this.poststed = poststed;
-            return this;
-        }
-    }
+    
 }

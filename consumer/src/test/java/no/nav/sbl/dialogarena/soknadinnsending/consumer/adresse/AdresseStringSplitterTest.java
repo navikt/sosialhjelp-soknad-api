@@ -3,35 +3,35 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse;
 import org.junit.Assert;
 import org.junit.Test;
 
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseStringSplitter.Adressefelter;
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
 
 public class AdresseStringSplitterTest {
 
     @Test
     public void tomStrengGirBlanktSvar() {
-        Assert.assertEquals("", AdresseStringSplitter.toAdressefelter("").adresse);
+        Assert.assertEquals("", AdresseStringSplitter.toSokedata("").adresse);
     }
     
     @Test
     public void nullStrengGirNullSvar() {
-        Assert.assertEquals(null, AdresseStringSplitter.toAdressefelter(null).adresse);
+        Assert.assertEquals(null, AdresseStringSplitter.toSokedata(null).adresse);
     }
     
     @Test
     public void kunAdresseVirker() {
-        Assert.assertEquals("asdf", AdresseStringSplitter.toAdressefelter("asdf").adresse);
+        Assert.assertEquals("asdf", AdresseStringSplitter.toSokedata("asdf").adresse);
     }
     
     @Test
     public void husnummer() {
-        final Adressefelter result = AdresseStringSplitter.toAdressefelter("asdf 2");
+        final Sokedata result = AdresseStringSplitter.toSokedata("asdf 2");
         Assert.assertEquals("asdf", result.adresse);
         Assert.assertEquals("2", result.husnummer);
     }
     
     @Test
     public void husbokstav() {
-        final Adressefelter result = AdresseStringSplitter.toAdressefelter("asdf 2G");
+        final Sokedata result = AdresseStringSplitter.toSokedata("asdf 2G");
         Assert.assertEquals("asdf", result.adresse);
         Assert.assertEquals("2", result.husnummer);
         Assert.assertEquals("G", result.husbokstav);
@@ -39,7 +39,7 @@ public class AdresseStringSplitterTest {
     
     @Test
     public void postnummer() {
-        final Adressefelter result = AdresseStringSplitter.toAdressefelter("asdf 2G, 0882");
+        final Sokedata result = AdresseStringSplitter.toSokedata("asdf 2G, 0882");
         Assert.assertEquals("asdf", result.adresse);
         Assert.assertEquals("2", result.husnummer);
         Assert.assertEquals("G", result.husbokstav);
@@ -48,7 +48,7 @@ public class AdresseStringSplitterTest {
     
     @Test
     public void poststed() {
-        final Adressefelter result = AdresseStringSplitter.toAdressefelter("asdf 2G, 0882 OSLO");
+        final Sokedata result = AdresseStringSplitter.toSokedata("asdf 2G, 0882 OSLO");
         Assert.assertEquals("asdf", result.adresse);
         Assert.assertEquals("2", result.husnummer);
         Assert.assertEquals("G", result.husbokstav);
@@ -58,7 +58,7 @@ public class AdresseStringSplitterTest {
     
     @Test
     public void utenHusnummer() {
-        final Adressefelter result = AdresseStringSplitter.toAdressefelter("asdf, 0882 OSLO");
+        final Sokedata result = AdresseStringSplitter.toSokedata("asdf, 0882 OSLO");
         Assert.assertEquals("asdf", result.adresse);
         Assert.assertEquals("0882", result.postnummer);
         Assert.assertEquals("OSLO", result.poststed);
