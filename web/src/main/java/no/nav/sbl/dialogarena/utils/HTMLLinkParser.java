@@ -1,10 +1,10 @@
 package no.nav.sbl.dialogarena.utils;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class HTMLLinkExtractor {
+public class HTMLLinkParser {
 
     public static Pattern patternTag, patternLink;
     private static Matcher matcherTag, matcherLink;
@@ -14,24 +14,18 @@ public class HTMLLinkExtractor {
             "\\s*(?i)href\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))";
 
 
-    public static Vector<HTMLLinkExtractor.HtmlLink> getLinks(final String html) {
+    public static ArrayList<HTMLLinkParser.HtmlLink> getLinks(final String html) {
         patternTag = Pattern.compile(HTML_A_TAG_PATTERN);
         patternLink = Pattern.compile(HTML_A_HREF_TAG_PATTERN);
 
 
-        return HTMLLinkExtractor.grabHTMLLinks(html);
+        return HTMLLinkParser.extractHTMLLinks(html);
 
     }
 
-    /**
-     * Validate html with regular expression
-     *
-     * @param html html content for validation
-     * @return Vector links and link text
-     */
-    public static Vector<HtmlLink> grabHTMLLinks(final String html) {
+    public static ArrayList<HtmlLink> extractHTMLLinks(final String html) {
 
-        Vector<HtmlLink> result = new Vector<HtmlLink>();
+        ArrayList<HtmlLink> result = new ArrayList<>();
 
         matcherTag = patternTag.matcher(html);
 
@@ -45,11 +39,11 @@ public class HTMLLinkExtractor {
             while (matcherLink.find()) {
 
                 String link = matcherLink.group(1); // link
-                HtmlLink obj = new HtmlLink();
-                obj.setLink(link);
-                obj.setLinkText(linkText);
+                HtmlLink htmlLink = new HtmlLink();
+                htmlLink.setLink(link);
+                htmlLink.setLinkText(linkText);
 
-                result.add(obj);
+                result.add(htmlLink);
 
             }
 
@@ -61,13 +55,9 @@ public class HTMLLinkExtractor {
 
     static class HtmlLink {
 
-        String link;
-        String linkText;
+        private String link;
+        private String linkText;
 
-        HtmlLink() {
-        }
-
-        ;
 
         @Override
         public String toString() {
