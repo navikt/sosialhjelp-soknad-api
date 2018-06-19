@@ -118,6 +118,9 @@ public class JsonOkonomiOpplysningerConverter {
                 webSoknad.getFaktaMedKey(key),
                 "netto"));
 
+        key = "utbetalinger.utbetaling";
+        result.addAll(opplysningUtbetalingFraNav(webSoknad.getFaktaMedKey(key)));
+
         return result.stream().filter(r -> r != null).collect(Collectors.toList());
 
     }
@@ -192,6 +195,18 @@ public class JsonOkonomiOpplysningerConverter {
                     .withType(type)
                     .withTittel(tittel)
                     .withBelop(JsonUtils.tilInteger(properties.get(belopNavn)))
+                    .withOverstyrtAvBruker(false);
+        }).collect(Collectors.toList());
+    }
+
+    private static List<JsonOkonomiOpplysningUtbetaling> opplysningUtbetalingFraNav(List<Faktum> fakta) {
+        return fakta.stream().filter(f -> f != null).map(faktum -> {
+            final Map<String, String> properties = faktum.getProperties();
+            return new JsonOkonomiOpplysningUtbetaling()
+                    .withKilde(JsonKilde.SYSTEM)
+                    .withType("navytelse")
+                    .withTittel(properties.get("type"))
+                    .withBelop(JsonUtils.tilIntegerMedAvrunding(properties.get("netto")))
                     .withOverstyrtAvBruker(false);
         }).collect(Collectors.toList());
     }
