@@ -24,7 +24,7 @@ public class AvbrytAutomatiskSheduler {
 
     private static final String KLOKKEN_FIRE_OM_NATTEN = "0 0 4 * * *";
     private static final int SCHEDULE_INTERRUPT_S = 60 * 10;
-    private static final int DAGER_GAMMELT = 7 * 8;
+    private static final int DAGER_GAMMELT = 7 * 2;
 
     private LocalDateTime batchStartTime;
     private int vellykket;
@@ -43,12 +43,18 @@ public class AvbrytAutomatiskSheduler {
             Timer batchTimer = MetricsFactory.createTimer("sosialhjelp.debug.avbryt");
             batchTimer.start();
 
-            avbryt();
+            try {
+                avbryt();
+            } catch (RuntimeException e) {
+                logger.error("Batchjobb feilet", e);
+                batchTimer.setFailed();
+            } finally {
+                batchTimer.stop();
+                batchTimer.addFieldToReport("vellykket", vellykket);
+                batchTimer.report();
+                logger.info("Jobb fullført: {} vellykket", vellykket);
+            }
 
-            batchTimer.stop();
-            batchTimer.addFieldToReport("vellykket", vellykket);
-            batchTimer.report();
-            logger.info("Jobb fullført: {} vellykket", vellykket);
         } else {
             logger.warn("Batch disabled. Må sette environment property sendsoknad.batch.enabled til true for å sette den på igjen");
         }
