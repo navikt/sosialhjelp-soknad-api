@@ -1,16 +1,16 @@
 package no.nav.sbl.dialogarena.utils;
 
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.lang.System.getProperty;
 
-
 public class UrlUtils {
     public static final String HOSTNAME_REGEX = "(^http.://.*?)/";
 
     public static String getStartDagpengerUrl() {
-        return getProperty("soknad.dagpenger.fortsett.path") + "/start" ;
+        return getProperty("soknad.dagpenger.fortsett.path") + "/start";
     }
 
     public static String getFortsettUrl(String behandlingId) {
@@ -29,5 +29,23 @@ public class UrlUtils {
         }
         return baseUrl;
     }
+
+
+    public static String removeUrl(String commentstr) {
+
+        Pattern p = Pattern.compile(HTMLLinkExtractor.HTML_A_TAG_PATTERN, Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(commentstr);
+
+
+        while (m.find()) {
+            Vector<HTMLLinkExtractor.HtmlLink> links = HTMLLinkExtractor.getLinks(commentstr);
+            commentstr = commentstr.replace(m.group(), links.get(0).toString()).trim();
+
+        }
+        return commentstr;
+    }
+
 }
+
+
 
