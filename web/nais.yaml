@@ -82,3 +82,5 @@ fasitResources:
     resourceType: credential
   - alias: arbeidservice
     resourceType: credential
+  - alias: dineutbetalinger.link
+    resourceType: baseurl
