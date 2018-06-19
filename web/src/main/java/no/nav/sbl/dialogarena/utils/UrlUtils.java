@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.utils;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,18 +31,18 @@ public class UrlUtils {
     }
 
 
-    public static String removeUrl(String commentstr) {
+    public static String removeUrls(String html) {
 
-        Pattern p = Pattern.compile(HTMLLinkExtractor.HTML_A_TAG_PATTERN, Pattern.CASE_INSENSITIVE);
-        Matcher m = p.matcher(commentstr);
+        Pattern p = Pattern.compile(HTMLLinkParser.HTML_A_TAG_PATTERN, Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(html);
 
 
         while (m.find()) {
-            Vector<HTMLLinkExtractor.HtmlLink> links = HTMLLinkExtractor.getLinks(commentstr);
-            commentstr = commentstr.replace(m.group(), links.get(0).toString()).trim();
+            ArrayList<HTMLLinkParser.HtmlLink> links = HTMLLinkParser.getLinks(m.group());
+            html = html.replace(m.group(), links.get(0).toString()).trim();
 
         }
-        return commentstr;
+        return html;
     }
 
 }
