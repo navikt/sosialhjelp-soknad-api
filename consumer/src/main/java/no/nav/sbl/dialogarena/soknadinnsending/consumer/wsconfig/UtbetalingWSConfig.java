@@ -19,7 +19,7 @@ public class UtbetalingWSConfig {
 
     public static final String UTBETALING_KEY = "start.utbetaling.withmock";
 
-    @Value("${Utbetaling_v1.url}")
+    @Value("${utbetaling.v1.url}")
     private String utbetalingEndpoint;
 
     private ServiceBuilder<UtbetalingV1>.PortTypeBuilder<UtbetalingV1> factory() {
