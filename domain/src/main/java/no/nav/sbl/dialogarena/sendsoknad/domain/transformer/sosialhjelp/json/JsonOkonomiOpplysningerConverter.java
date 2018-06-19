@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.json;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vedlegg.Status;
 import no.nav.sbl.dialogarena.sendsoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.sendsoknad.domain.message.NavMessageSource;
 import no.nav.sbl.dialogarena.sendsoknad.domain.transformer.sosialhjelp.InputSource;
@@ -14,6 +15,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskriv
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class JsonOkonomiOpplysningerConverter {
 
@@ -167,11 +169,33 @@ public class JsonOkonomiOpplysningerConverter {
                 "sisteregning", "type"));
 
         key = "opplysninger.ekstrainfo.utgifter";
-        result.addAll(opplysningUtgift("annen", getTittel(key, navMessageSource),
+        final Collection<? extends JsonOkonomiOpplysningUtgift> andreUtgifter = opplysningUtgift("annen", getTittel(key, navMessageSource),
                 webSoknad.getFaktaMedKey(key),
-                "utgift", "beskrivelse"));
+                "utgift", "beskrivelse", true);
+        result.addAll(andreUtgifter);
+        if (andreUtgifter.size() == 0 && harVedleg(webSoknad, "annet", "annet")) {
+            extracted(result, navMessageSource, key);
+        }
 
         return result.stream().filter(r -> r != null).collect(Collectors.toList());
+    }
+
+
+    private static void extracted(final List<JsonOkonomiOpplysningUtgift> result,
+            final NavMessageSource navMessageSource, String key) {
+        result.add(new JsonOkonomiOpplysningUtgift()
+                .withKilde(JsonKilde.BRUKER)
+                .withType("annen")
+                .withTittel(getTittel(key, navMessageSource))
+                .withOverstyrtAvBruker(false));
+    }
+    
+    private static boolean harVedleg(WebSoknad webSoknad, String skjemaNummer, String skjemanummmerTillegg) {
+        return webSoknad.getVedlegg().stream().anyMatch(v ->
+            skjemaNummer.equals(v.getSkjemaNummer())
+            && skjemanummmerTillegg.equals(v.getSkjemanummerTillegg())
+            && (v.getInnsendingsvalg() == Status.LastetOpp || v.getInnsendingsvalg() == Status.VedleggAlleredeSendt)
+        );
     }
 
 
@@ -212,12 +236,26 @@ public class JsonOkonomiOpplysningerConverter {
     }
 
     private static Collection<? extends JsonOkonomiOpplysningUtgift> opplysningUtgift(String type, String tittel, List<Faktum> fakta, String belopNavn) {
-        return opplysningUtgift(type, tittel, fakta, belopNavn, null);
+        return opplysningUtgift(type, tittel, fakta, belopNavn, null, false);
     }
 
     private static Collection<? extends JsonOkonomiOpplysningUtgift> opplysningUtgift(String type, String tittel, List<Faktum> fakta, String belopNavn, String tittelDelNavn) {
+        return opplysningUtgift(type, tittel, fakta, belopNavn, tittelDelNavn, false);
+    }
+    
+    private static Collection<? extends JsonOkonomiOpplysningUtgift> opplysningUtgift(String type, String tittel, List<Faktum> fakta, String belopNavn, String tittelDelNavn, boolean kunHvisVerdiSatt) {
 
-        return fakta.stream().filter(f -> f != null).map(faktum -> {
+        Stream<Faktum> stream = fakta.stream().filter(f -> f != null);
+        if (kunHvisVerdiSatt) {
+            stream = stream.filter(f -> {
+                final Map<String, String> properties = f.getProperties();
+                if (tittelDelNavn != null && JsonUtils.erIkkeTom(properties.get(tittelDelNavn))) {
+                    return true;
+                }
+                return JsonUtils.tilInteger(properties.get(belopNavn)) != null;
+            });
+        }
+        return stream.map(faktum -> {
             final Map<String, String> properties = faktum.getProperties();
             final String tittelDel;
             if (tittelDelNavn != null) {

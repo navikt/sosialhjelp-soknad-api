@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.sendsoknad.domain.personalia.Personalia;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.StatsborgerskapType;
@@ -52,6 +53,7 @@ public class PersonaliaBolk implements BolkService {
                 .medSystemProperty(STATSBORGERSKAP_KEY, statsborgerskap)
                 .medSystemProperty(STATSBORGERSKAPTYPE_KEY, StatsborgerskapType.get(statsborgerskap))
                 .medSystemProperty(KJONN_KEY, personalia.getKjonn())
+                .medSystemProperty(FOLKEREGISTRERTADRESSE_KEY, folkeregistrertAdresseString(personalia))
                 .medSystemProperty(GJELDENDEADRESSE_KEY, personalia.getGjeldendeAdresse().getAdresse())
                 .medSystemProperty(DISKRESJONSKODE, personalia.getDiskresjonskode())
                 .medSystemProperty(GJELDENDEADRESSE_TYPE_KEY, personalia.getGjeldendeAdresse().getAdressetype())
@@ -62,5 +64,13 @@ public class PersonaliaBolk implements BolkService {
                 .medSystemProperty(SEKUNDARADRESSE_TYPE_KEY, personalia.getSekundarAdresse().getAdressetype())
                 .medSystemProperty(SEKUNDARADRESSE_GYLDIGFRA_KEY, personalia.getSekundarAdresse().getGyldigFra())
                 .medSystemProperty(SEKUNDARADRESSE_GYLDIGTIL_KEY, personalia.getSekundarAdresse().getGyldigTil()));
+    }
+
+    private String folkeregistrertAdresseString(Personalia personalia) {
+        final Adresse folkeregistrertAdresse = personalia.getFolkeregistrertAdresse();
+        if (folkeregistrertAdresse == null) {
+            return null;
+        }
+        return folkeregistrertAdresse.getAdresse();
     }
 }

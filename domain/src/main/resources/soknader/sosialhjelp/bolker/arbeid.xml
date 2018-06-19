@@ -1,5 +1,8 @@
 <?xml version="1.0" ?>
 <soknad xmlns="urn:no.nav.sbl">
+
+
+
     <faktum>
         <id>dinsituasjon.jobb</id>
         <type>bool</type>
@@ -21,21 +24,6 @@
     </faktum>
 
 
-    <faktum>
-        <id>dinsituasjon.studerer</id>
-        <type>bool</type>
-        <panel>arbeidbolk</panel>
-        <optional>true</optional>
-    </faktum>
-    <faktum>
-        <id>dinsituasjon.studerer.true.grad</id>
-        <type>bool</type>
-        <dependOn>dinsituasjon.studerer</dependOn>
-        <dependOnValues>
-            <value>true</value>
-        </dependOnValues>
-        <optional>true</optional>
-    </faktum>
 
 
     <faktum>
@@ -81,6 +69,22 @@
         <panel>arbeidbolk</panel>
         <type>textbox</type>
 
+    </faktum>
+
+    <faktum>
+        <id>dinsituasjon.studerer</id>
+        <type>bool</type>
+        <panel>arbeidbolk</panel>
+        <optional>true</optional>
+    </faktum>
+    <faktum>
+        <id>dinsituasjon.studerer.true.grad</id>
+        <type>bool</type>
+        <dependOn>dinsituasjon.studerer</dependOn>
+        <dependOnValues>
+            <value>true</value>
+        </dependOnValues>
+        <optional>true</optional>
     </faktum>
 
 </soknad>

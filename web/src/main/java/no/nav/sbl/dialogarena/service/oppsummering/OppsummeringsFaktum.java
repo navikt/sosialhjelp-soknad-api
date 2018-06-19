@@ -36,6 +36,11 @@ public class OppsummeringsFaktum implements OppsummeringsBase{
         }
     }
 
+    @Override
+    public String toString(){
+        return faktum.getKey();
+    }
+
     public boolean erSynlig() {
         return struktur.erSynlig(soknad, faktum);
     }
