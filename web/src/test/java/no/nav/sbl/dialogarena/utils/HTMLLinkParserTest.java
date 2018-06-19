@@ -20,20 +20,6 @@ public class HTMLLinkParserTest {
     }
 
 
-    public Object[][] HTMLContentProvider() {
-        return new Object[][]{
-                new Object[]{"abc hmmmm <a href='" + TEST_LINK + "'>NAV</a>"},
-                new Object[]{"abc hmmmm <a HREF='" + TEST_LINK + "'>NAV</a>"},
-
-                new Object[]{"abc hmmmm <A HREF='" + TEST_LINK + "'>NAV</A> , "
-                        + "abc hmmmm <A HREF='" + TEST_LINK + "' target='_blank'>NAV</A>"},
-
-                new Object[]{"abc hmmmm <A HREF='" + TEST_LINK + "' target='_blank'>NAV</A>"},
-                new Object[]{"abc hmmmm <A target='_blank' HREF='" + TEST_LINK + "'>NAV</A>"},
-                new Object[]{"abc hmmmm <A target='_blank' HREF=\"" + TEST_LINK + "\">NAV</A>"},
-                new Object[]{"abc hmmmm <a HREF=" + TEST_LINK + ">NAV</a>"},};
-    }
-
     @Test
     public void testValidHTML() {
 
@@ -49,5 +35,19 @@ public class HTMLLinkParserTest {
             Assert.assertEquals(htmlLinks.getLink(), TEST_LINK);
         }
 
+    }
+
+    private Object[][] HTMLContentProvider() {
+        return new Object[][]{
+                new Object[]{"abc hmmmm <a href='" + TEST_LINK + "'>NAV</a>"},
+                new Object[]{"abc hmmmm <a HREF='" + TEST_LINK + "'>NAV</a>"},
+
+                new Object[]{"abc hmmmm <A HREF='" + TEST_LINK + "'>NAV</A> , "
+                        + "abc hmmmm <A HREF='" + TEST_LINK + "' target='_blank'>NAV</A>"},
+
+                new Object[]{"abc hmmmm <A HREF='" + TEST_LINK + "' target='_blank'>NAV</A>"},
+                new Object[]{"abc hmmmm <A target='_blank' HREF='" + TEST_LINK + "'>NAV</A>"},
+                new Object[]{"abc hmmmm <A target='_blank' HREF=\"" + TEST_LINK + "\">NAV</A>"},
+                new Object[]{"abc hmmmm <a HREF=" + TEST_LINK + ">NAV</a>"},};
     }
 }
