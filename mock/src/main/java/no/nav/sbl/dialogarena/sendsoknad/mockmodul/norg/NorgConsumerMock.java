@@ -1,32 +1,129 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.norg;
 
+import com.google.common.collect.ImmutableMap;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer;
-import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer.RsNorgEnhet;
-import org.slf4j.Logger;
 
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.slf4j.LoggerFactory.getLogger;
+import java.util.Map;
 
-public class NorgConsumerMock {
-    private static final Logger logger = getLogger(NorgConsumerMock.class);
-
-    public NorgConsumer norgMock() {
-        NorgConsumer mock = mock(NorgConsumer.class);
-
-        when(mock.finnEnhetForGeografiskTilknytning(anyString())).thenAnswer(invocation -> {
-            String param = invocation.getArgumentAt(0, String.class);
-
-            logger.info("Henter norg enhet for gt {}", param);
-
-            RsNorgEnhet e = new RsNorgEnhet();
-            e.enhetId = 123;
-            e.navn = "NAV Gamle Oslo";
-            e.orgNrTilKommunaltNavKontor = "123456789";
-            return e;
-        });
-
-        return mock;
+public class NorgConsumerMock implements NorgConsumer {
+    @Override
+    public RsNorgEnhet finnEnhetForGeografiskTilknytning(String geografiskTilknytning) {
+        return ENHETER_PROD.get(geografiskTilknytning);
     }
+
+    @Override
+    public RsKontaktinformasjon hentKontaktinformasjonForEnhet(String enhetNr) {
+        throw new UnsupportedOperationException("Kontaktinformasjon for enhet er ikke støttet ennå");
+    }
+
+    private static final Map<String, RsNorgEnhet> ENHETER_PROD = new ImmutableMap.Builder<String, RsNorgEnhet>()
+            .put("0701", new RsNorgEnhet().withEnhetId(100000141)
+                    .withEnhetNr("0701")
+                    .withNavn("NAV Horten")
+                    .withOrgNrTilKommunaltNavKontor("974605171"))
+            .put("120107", new RsNorgEnhet().withEnhetId(100000249)
+                    .withEnhetNr("1208")
+                    .withNavn("NAV Årstad")
+                    .withOrgNrTilKommunaltNavKontor("976830172"))
+            .put("120102", new RsNorgEnhet().withEnhetId(100000250)
+                    .withEnhetNr("1209")
+                    .withNavn("NAV Bergenhus")
+                    .withOrgNrTilKommunaltNavKontor("976830563"))
+            .put("120106", new RsNorgEnhet().withEnhetId(100000251)
+                    .withEnhetNr("1210")
+                    .withNavn("NAV Ytrebygda")
+                    .withOrgNrTilKommunaltNavKontor("976830652"))
+            .put("120103", new RsNorgEnhet().withEnhetId(100000244)
+                    .withEnhetNr("1202")
+                    .withNavn("NAV Fana")
+                    .withOrgNrTilKommunaltNavKontor("976829948"))
+            .put("030105", new RsNorgEnhet().withEnhetId(100000046)
+                    .withEnhetNr("0312")
+                    .withNavn("NAV Frogner")
+                    .withOrgNrTilKommunaltNavKontor("874778702"))
+            .put("1247", new RsNorgEnhet().withEnhetId(100000273)
+                    .withEnhetNr("1247")
+                    .withNavn("NAV Askøy")
+                    .withOrgNrTilKommunaltNavKontor("974600889"))
+            .put("030102", new RsNorgEnhet().withEnhetId(100000049)
+                    .withEnhetNr("0315")
+                    .withNavn("NAV Grünerløkka")
+                    .withOrgNrTilKommunaltNavKontor("870534612"))
+            .put("030110", new RsNorgEnhet().withEnhetId(100000056)
+                    .withEnhetNr("0328")
+                    .withNavn("NAV Grorud")
+                    .withOrgNrTilKommunaltNavKontor("974778866"))
+            .put("030111", new RsNorgEnhet().withEnhetId(100000055)
+                    .withEnhetNr("0327")
+                    .withNavn("NAV Stovner")
+                    .withOrgNrTilKommunaltNavKontor("874778842"))
+            .put("030103", new RsNorgEnhet().withEnhetId(100000048)
+                    .withEnhetNr("0314")
+                    .withNavn("NAV Sagene")
+                    .withOrgNrTilKommunaltNavKontor("974778726"))
+            .put("030114", new RsNorgEnhet().withEnhetId(100000051)
+                    .withEnhetNr("0318")
+                    .withNavn("NAV Nordstrand")
+                    .withOrgNrTilKommunaltNavKontor("970534679"))
+            .put("030115", new RsNorgEnhet().withEnhetId(100000052)
+                    .withEnhetNr("0319")
+                    .withNavn("NAV Søndre Nordstrand")
+                    .withOrgNrTilKommunaltNavKontor("972408875"))
+            .put("0219", new RsNorgEnhet().withEnhetId(100000027)
+                    .withEnhetNr("0219")
+                    .withNavn("NAV Bærum")
+                    .withOrgNrTilKommunaltNavKontor(""))
+            .put("120101", new RsNorgEnhet().withEnhetId(100000246)
+                    .withEnhetNr("1204")
+                    .withNavn("NAV Arna")
+                    .withOrgNrTilKommunaltNavKontor("976829786"))
+            .put("120108", new RsNorgEnhet().withEnhetId(100000245)
+                    .withEnhetNr("1203")
+                    .withNavn("NAV Åsane")
+                    .withOrgNrTilKommunaltNavKontor("976830784"))
+            .put("120104", new RsNorgEnhet().withEnhetId(100000247)
+                    .withEnhetNr("1205")
+                    .withNavn("NAV Fyllingsdalen")
+                    .withOrgNrTilKommunaltNavKontor("976830032"))
+            .put("120105", new RsNorgEnhet().withEnhetId(100000248)
+                    .withEnhetNr("1206")
+                    .withNavn("NAV Laksevåg")
+                    .withOrgNrTilKommunaltNavKontor("976830121"))
+            .put("030112", new RsNorgEnhet().withEnhetId(100000054)
+                    .withEnhetNr("0326")
+                    .withNavn("NAV Alna")
+                    .withOrgNrTilKommunaltNavKontor("970534644"))
+            .put("030109", new RsNorgEnhet().withEnhetId(100000057)
+                    .withEnhetNr("0330")
+                    .withNavn("NAV Bjerke")
+                    .withOrgNrTilKommunaltNavKontor("974778874"))
+            .put("030101", new RsNorgEnhet().withEnhetId(100000050)
+                    .withEnhetNr("0316")
+                    .withNavn("NAV Gamle Oslo")
+                    .withOrgNrTilKommunaltNavKontor("974778742"))
+            .put("030108", new RsNorgEnhet().withEnhetId(100000058)
+                    .withEnhetNr("0331")
+                    .withNavn("NAV Nordre Aker")
+                    .withOrgNrTilKommunaltNavKontor("974778882"))
+            .put("030104", new RsNorgEnhet().withEnhetId(100000047)
+                    .withEnhetNr("0313")
+                    .withNavn("NAV St.Hanshaugen")
+                    .withOrgNrTilKommunaltNavKontor("971179686"))
+            .put("030116", new RsNorgEnhet().withEnhetId(100000047)
+                    .withEnhetNr("0313")
+                    .withNavn("NAV St.Hanshaugen")
+                    .withOrgNrTilKommunaltNavKontor("971179686"))
+            .put("030106", new RsNorgEnhet().withEnhetId(100000060)
+                    .withEnhetNr("0335")
+                    .withNavn("NAV Ullern")
+                    .withOrgNrTilKommunaltNavKontor("971022051"))
+            .put("030107", new RsNorgEnhet().withEnhetId(100000059)
+                    .withEnhetNr("0334")
+                    .withNavn("NAV Vestre Aker")
+                    .withOrgNrTilKommunaltNavKontor("970145311"))
+            .put("030113", new RsNorgEnhet().withEnhetId(100000053)
+                    .withEnhetNr("0321")
+                    .withNavn("NAV Østensjø")
+                    .withOrgNrTilKommunaltNavKontor("974778807"))
+            .build();
 }
