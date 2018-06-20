@@ -46,7 +46,7 @@ public class FiksSender {
                         .withPostAdresse(fakeAdresse))
                 .withAvgivendeSystem("digisos_avsender")
                 .withForsendelseType("nav.digisos")
-                .withEksternref(data.behandlingsId)
+                .withEksternref(environmentNameIfTest() + data.behandlingsId)
                 .withTittel("Søknad til NAV")
                 .withKunDigitalLevering(false)
                 .withPrintkonfigurasjon(fakePrintConfig)
@@ -62,6 +62,15 @@ public class FiksSender {
                 );
 
         return forsendelsesService.sendForsendelse(forsendelse);
+    }
+
+    private String environmentNameIfTest() {
+        final String environment = System.getProperty("environment.name");
+        if (environment == null || "p".equals(environment)) {
+            return "";
+        }
+        
+        return environment + "-";
     }
 
     public Dokument fiksDokumentFraDokumentInfo(FiksData.DokumentInfo info, boolean skalKryptere) {
