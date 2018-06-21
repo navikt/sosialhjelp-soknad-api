@@ -24,7 +24,7 @@ public class AvbrytAutomatiskSheduler {
 
     private static final String KLOKKEN_FIRE_OM_NATTEN = "0 0 4 * * *";
     private static final int SCHEDULE_INTERRUPT_S = 60 * 10;
-    private static final int DAGER_GAMMELT = 7 * 8;
+    private static final int DAGER_GAMMELT = 7 * 2;
 
     private LocalDateTime batchStartTime;
     private int vellykket;
